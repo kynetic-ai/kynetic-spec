@@ -220902,6 +220902,17 @@ reviews:
         required: true
         created_at: 2026-05-22T21:55:52.401Z
         completed_at: 2026-05-22T21:55:52.401Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: task-update-plan-review-storage-specs names exact existing refs/AC IDs and wording, but
+          does not specify final implementation status for @plan-crud,
+          @review-record-storage-and-identity, or @daemon-entity-cache.
+        name: Existing spec update explicitness
+        required: true
+        created_at: 2026-05-22T21:56:02.253Z
+        completed_at: 2026-05-22T21:56:02.253Z
     events:
       - _ulid: 01KS8TWS1PFDJWD1GSPTKEZ4CX
         actor: Jacob Chapel
@@ -220958,6 +220969,13 @@ reviews:
           status: pass
           name: Prior blocker verification
         timestamp: 2026-05-22T21:55:53.968Z
+      - _ulid: 01KS8V0E1VTA5GZXG6HJ8CZ6KE
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Existing spec update explicitness
+        timestamp: 2026-05-22T21:56:03.771Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -221029,5 +221047,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-22T21:54:03.960Z
-    updated_at: 2026-05-22T21:55:52.401Z
+    updated_at: 2026-05-22T21:56:02.253Z
     notes: []
