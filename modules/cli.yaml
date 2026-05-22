@@ -6537,6 +6537,7 @@ features:
           - _ulid: 01KS8XAV5D6XDAQ3WJX5AEHQ95
             slugs:
               - plan-resource-derivation-semantics-1
+              - plan-resource-derivation-semantics
             title: Plan Resource Derivation Semantics
             type: requirement
             description: |
