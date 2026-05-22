@@ -7,7 +7,7 @@ description: >
   What:
 
   - Verify the daemon resource routes use the cache invalidation behavior implemented by
-  @task-folder-backed-plan-review-cache-invalidation; do not add a second route-specific watcher.
+  @task-folder-backed-plan-review-cache-invalidation-1; do not add a second route-specific watcher.
 
   - Keep `/api/plans` list fast by using index/resource summaries only.
 
@@ -41,7 +41,7 @@ description: >
   `missing_resource_file`; invalid multipart `replace` returns 400 `invalid_replace_value`; missing
   plan or resource returns 404 with `plan_not_found`/`resource_not_found`; id/path collisions return
   409 `resource_conflict`; incompatible storage returns HTTP 409 using the shared
-  `entity_storage_incompatible` envelope from @task-entity-storage-version-compatibility-gates,
+  `entity_storage_incompatible` envelope from @task-entity-storage-version-compatibility-gates-1,
   including top-level error, domain-specific code, migration suggestion, and cache-domain context.
   Non-compatibility resource error bodies use `{ "error": string, "code": string, "message": string,
   "resource_id": string|null, "path": string|null }`.
@@ -82,8 +82,8 @@ description: >
   `assets/resources/plan/<plan-ulid>/...`.
 
 
-  Covers: @folder-backed-plan-storage ac-plan-document-sidecar-is-authoritative,
-  ac-plan-index-has-bounded-projection, @trait-entity-scoped-local-resources
+  Covers: @folder-backed-plan-storage-1 ac-plan-document-sidecar-is-authoritative,
+  ac-plan-index-has-bounded-projection, @trait-entity-scoped-local-resources-1
   ac-resource-reference-resolves-within-owner, ac-resource-metadata-exposes-safe-preview-fields,
   ac-path-escape-rejected, ac-static-export-copies-resource-assets
 spec_ref: "@folder-backed-plan-storage-1"
@@ -101,5 +101,191 @@ tags:
   - daemon
   - web-ui
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      description:
+        new: >
+          What:
+
+          - Verify the daemon resource routes use the cache invalidation behavior implemented by
+          @task-folder-backed-plan-review-cache-invalidation-1; do not add a second route-specific
+          watcher.
+
+          - Keep `/api/plans` list fast by using index/resource summaries only.
+
+          - Keep `/api/plans/:ref` returning `PlanDetail.content` while adding resource summary data
+          and safe resource fetch URLs.
+
+          - Use this exact `ResourceMetadata` shape in every plan resource API response: `{ "id":
+          string, "label": string|null, "path": string, "content_type": string, "bytes": number,
+          "sha256": string, "git_commit": string|null, "git_path": string|null, "description":
+          string|null }`.
+
+          - For API uploads, apply the shared `content_type` rule: explicit multipart `content_type`
+          values must be non-empty `type/subtype` tokens with no whitespace; omitted values are
+          inferred from final resource path extension; unknown extensions store
+          `application/octet-stream`.
+
+          - Add exact authenticated/project-scoped plan resource endpoints using the shared
+          resolver: `GET /api/plans/:ref/resources` returns HTTP 200 `{ "resources":
+          <ResourceMetadata[]> }`; `GET /api/plans/:ref/resources/:resourceId` returns HTTP 200 `{
+          "resource": <ResourceMetadata> }`; `GET /api/plans/:ref/resources/:resourceId/bytes`
+          returns HTTP 200 raw bytes with `Content-Type` and `X-Kspec-Resource-Sha256`; `POST
+          /api/plans/:ref/resources` accepts `multipart/form-data` with file field `file` and text
+          fields `id`, `path`, optional `label`, optional `description`, optional `content_type`,
+          optional `replace`; `replace` is false when omitted, true only when the field value is
+          exactly `true` or `1`, false when exactly `false` or `0`, and any other value fails with
+          400 `invalid_replace_value`; `DELETE /api/plans/:ref/resources/:resourceId` deletes the
+          manifest entry and owned file.
+
+          - Define plan resource API status/error mapping: POST create returns 201 `{ "resource":
+          <ResourceMetadata>, "replaced": false }`; POST replace returns 200 `{ "resource":
+          <ResourceMetadata>, "replaced": true }`; DELETE returns 200 `{ "removed": { "id": string,
+          "path": string } }`; invalid id/path or missing fields return 400 with
+          `invalid_resource_id`/`invalid_resource_path`; missing multipart `file` returns 400
+          `missing_resource_file`; invalid multipart `replace` returns 400 `invalid_replace_value`;
+          missing plan or resource returns 404 with `plan_not_found`/`resource_not_found`; id/path
+          collisions return 409 `resource_conflict`; incompatible storage returns HTTP 409 using the
+          shared `entity_storage_incompatible` envelope from
+          @task-entity-storage-version-compatibility-gates-1, including top-level error,
+          domain-specific code, migration suggestion, and cache-domain context. Non-compatibility
+          resource error bodies use `{ "error": string, "code": string, "message": string,
+          "resource_id": string|null, "path": string|null }`.
+
+          - Update web UI plan rendering so `./resources/<relative-path>` image/resource links are
+          rewritten to safe plan-scoped resource URLs.
+
+          - Update static JSON export/static UI so plan resources are copied under
+          `assets/resources/plan/<plan-ulid>/<relative-path>` and markdown/resource metadata points
+          at those exported paths.
+
+
+          Why:
+
+          - Moving content/resources out of the monolithic file must not regress the current plan
+          UI, daemon route, cache, WebSocket invalidation, or static export behavior.
+
+
+          How:
+
+          - Do not load resource bytes for list routes or cache warm-up.
+
+          - Serve only resolved entity-local resources through the shared resolver.
+
+          - Keep markdown rendering fallback behavior for unresolved resources with visible
+          guidance.
+
+
+          Testing:
+
+          - Daemon route tests for list/detail/resource metadata/resource bytes, multipart POST
+          create/replace, missing multipart file, valid/invalid `replace` field values, DELETE,
+          invalid id/path rejection, 404 missing plan/resource, 409 resource conflicts, and
+          shared-envelope 409 incompatibility responses.
+
+          - Web UI tests for plan markdown with a local image/resource link.
+
+          - Static export tests for resource metadata and offline resource loading from
+          `assets/resources/plan/<plan-ulid>/...`.
+
+
+          Covers: @folder-backed-plan-storage-1 ac-plan-document-sidecar-is-authoritative,
+          ac-plan-index-has-bounded-projection, @trait-entity-scoped-local-resources-1
+          ac-resource-reference-resolves-within-owner,
+          ac-resource-metadata-exposes-safe-preview-fields, ac-path-escape-rejected,
+          ac-static-export-copies-resource-assets
+        previous: >
+          What:
+
+          - Verify the daemon resource routes use the cache invalidation behavior implemented by
+          @task-folder-backed-plan-review-cache-invalidation; do not add a second route-specific
+          watcher.
+
+          - Keep `/api/plans` list fast by using index/resource summaries only.
+
+          - Keep `/api/plans/:ref` returning `PlanDetail.content` while adding resource summary data
+          and safe resource fetch URLs.
+
+          - Use this exact `ResourceMetadata` shape in every plan resource API response: `{ "id":
+          string, "label": string|null, "path": string, "content_type": string, "bytes": number,
+          "sha256": string, "git_commit": string|null, "git_path": string|null, "description":
+          string|null }`.
+
+          - For API uploads, apply the shared `content_type` rule: explicit multipart `content_type`
+          values must be non-empty `type/subtype` tokens with no whitespace; omitted values are
+          inferred from final resource path extension; unknown extensions store
+          `application/octet-stream`.
+
+          - Add exact authenticated/project-scoped plan resource endpoints using the shared
+          resolver: `GET /api/plans/:ref/resources` returns HTTP 200 `{ "resources":
+          <ResourceMetadata[]> }`; `GET /api/plans/:ref/resources/:resourceId` returns HTTP 200 `{
+          "resource": <ResourceMetadata> }`; `GET /api/plans/:ref/resources/:resourceId/bytes`
+          returns HTTP 200 raw bytes with `Content-Type` and `X-Kspec-Resource-Sha256`; `POST
+          /api/plans/:ref/resources` accepts `multipart/form-data` with file field `file` and text
+          fields `id`, `path`, optional `label`, optional `description`, optional `content_type`,
+          optional `replace`; `replace` is false when omitted, true only when the field value is
+          exactly `true` or `1`, false when exactly `false` or `0`, and any other value fails with
+          400 `invalid_replace_value`; `DELETE /api/plans/:ref/resources/:resourceId` deletes the
+          manifest entry and owned file.
+
+          - Define plan resource API status/error mapping: POST create returns 201 `{ "resource":
+          <ResourceMetadata>, "replaced": false }`; POST replace returns 200 `{ "resource":
+          <ResourceMetadata>, "replaced": true }`; DELETE returns 200 `{ "removed": { "id": string,
+          "path": string } }`; invalid id/path or missing fields return 400 with
+          `invalid_resource_id`/`invalid_resource_path`; missing multipart `file` returns 400
+          `missing_resource_file`; invalid multipart `replace` returns 400 `invalid_replace_value`;
+          missing plan or resource returns 404 with `plan_not_found`/`resource_not_found`; id/path
+          collisions return 409 `resource_conflict`; incompatible storage returns HTTP 409 using the
+          shared `entity_storage_incompatible` envelope from
+          @task-entity-storage-version-compatibility-gates, including top-level error,
+          domain-specific code, migration suggestion, and cache-domain context. Non-compatibility
+          resource error bodies use `{ "error": string, "code": string, "message": string,
+          "resource_id": string|null, "path": string|null }`.
+
+          - Update web UI plan rendering so `./resources/<relative-path>` image/resource links are
+          rewritten to safe plan-scoped resource URLs.
+
+          - Update static JSON export/static UI so plan resources are copied under
+          `assets/resources/plan/<plan-ulid>/<relative-path>` and markdown/resource metadata points
+          at those exported paths.
+
+
+          Why:
+
+          - Moving content/resources out of the monolithic file must not regress the current plan
+          UI, daemon route, cache, WebSocket invalidation, or static export behavior.
+
+
+          How:
+
+          - Do not load resource bytes for list routes or cache warm-up.
+
+          - Serve only resolved entity-local resources through the shared resolver.
+
+          - Keep markdown rendering fallback behavior for unresolved resources with visible
+          guidance.
+
+
+          Testing:
+
+          - Daemon route tests for list/detail/resource metadata/resource bytes, multipart POST
+          create/replace, missing multipart file, valid/invalid `replace` field values, DELETE,
+          invalid id/path rejection, 404 missing plan/resource, 409 resource conflicts, and
+          shared-envelope 409 incompatibility responses.
+
+          - Web UI tests for plan markdown with a local image/resource link.
+
+          - Static export tests for resource metadata and offline resource loading from
+          `assets/resources/plan/<plan-ulid>/...`.
+
+
+          Covers: @folder-backed-plan-storage ac-plan-document-sidecar-is-authoritative,
+          ac-plan-index-has-bounded-projection, @trait-entity-scoped-local-resources
+          ac-resource-reference-resolves-within-owner,
+          ac-resource-metadata-exposes-safe-preview-fields, ac-path-escape-rejected,
+          ac-static-export-copies-resource-assets
+    command: task-set
+    timestamp: 2026-05-22T22:51:14.993Z
 created_at: 2026-05-22T22:36:47.077Z
 todos: []
