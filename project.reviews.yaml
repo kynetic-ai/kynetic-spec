@@ -220427,6 +220427,17 @@ reviews:
         required: true
         created_at: 2026-05-22T21:05:04.479Z
         completed_at: 2026-05-22T21:05:04.479Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The Covers lines map each plan AC to concrete owner tasks, docs-only ACs are covered by
+          the docs task, and previously stale existing-spec references are now aligned with current
+          @plan-crud and @review-record-storage-and-identity ACs.
+        name: Coverage and references
+        required: true
+        created_at: 2026-05-22T21:05:14.911Z
+        completed_at: 2026-05-22T21:05:14.911Z
     events:
       - _ulid: 01KS8QYW7N9MM9BF0JZ8WNKA5Q
         actor: Jacob Chapel
@@ -220511,6 +220522,13 @@ reviews:
           status: pass
           name: Dependency ordering
         timestamp: 2026-05-22T21:05:05.983Z
+      - _ulid: 01KS8R3E3WFH18090JWBA92A9G
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Coverage and references
+        timestamp: 2026-05-22T21:05:16.412Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -220634,5 +220652,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-22T21:02:47.033Z
-    updated_at: 2026-05-22T21:05:04.479Z
+    updated_at: 2026-05-22T21:05:14.911Z
     notes: []
