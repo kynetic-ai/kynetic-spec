@@ -220865,3 +220865,29 @@ reviews:
     created_at: 2026-05-22T21:11:07.293Z
     updated_at: 2026-05-22T21:12:16.864Z
     notes: []
+  - _ulid: 01KS8TWS1SYTAEC8QVTP6E2EGA
+    slugs: []
+    title: "Strict plan review: Folder-Backed Plans, Reviews, and Local Resources"
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KS8TWS1PFDJWD1GSPTKEZ4CX
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-22T21:54:03.958Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-22T21:54:03.960Z
+    updated_at: null
+    notes: []
