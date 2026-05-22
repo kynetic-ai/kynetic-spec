@@ -220404,6 +220404,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KS8QZQ9RRNK9X6FHJYYS70P4
         timestamp: 2026-05-22T21:03:16.329Z
+      - _ulid: 01KS8R051Z7T0ASGCN492JQZM6
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KS8R03ECEWQGFSW4P03RTQEY
+        timestamp: 2026-05-22T21:03:28.831Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -220433,7 +220440,26 @@ reviews:
               decline."
             created_at: 2026-05-22T21:03:14.744Z
         kind: blocker
+      - _ulid: 01KS8R03ECEWQGFSW4P03RTQEY
+        anchor:
+          type: structured
+          ref: "@task-review-screenshot-resource-ui"
+          section: tasks
+        entries:
+          - _ulid: 01KS8R03EDD7G2JKQZ2RT0ETA7
+            author: Jacob Chapel
+            body: "The cycle-4 review CLI blocker is only partially fixed. The task now defines JSON error codes
+              for missing reviews, confirmation_required, and operation_cancelled, but it still does
+              not define exit behavior for those failures or for invalid id/path,
+              resource_not_found, resource_conflict, and entity_storage_incompatible. The prior
+              blocker explicitly required the complete CLI --json error envelope and exit behavior.
+              Impact: review resource commands can diverge from plan resource commands and from
+              automation expectations while satisfying the written JSON shape. Exact fix: add
+              explicit exit-code behavior for every review resource CLI failure case, including
+              non-interactive remove without --force and interactive prompt decline."
+            created_at: 2026-05-22T21:03:27.181Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-22T21:02:47.033Z
-    updated_at: 2026-05-22T21:03:14.744Z
+    updated_at: 2026-05-22T21:03:27.181Z
     notes: []
