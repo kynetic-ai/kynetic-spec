@@ -29676,6 +29676,7 @@
 - _ulid: 01KS8XAYZTG0MN48Z78D45PBV6
   slugs:
     - task-plan-review-folder-storage-migration-1
+    - task-plan-review-folder-storage-migration
   title: Implement plan and review storage migration plus upgrade integration
   type: task
   spec_ref: "@entity-folder-migration-and-compatibility-1"
