@@ -143,6 +143,137 @@ traits:
     tags: []
     created: 2026-05-22T22:35:39.394Z
     notes: []
+  - _ulid: 01KS8XATZ8KGQ7D6CRQX142RQK
+    slugs:
+      - trait-folder-backed-entity-1
+    title: Folder-Backed Entity Trait
+    type: trait
+    description: |
+      An entity that adopts folder-backed storage owns a stable per-entity
+      directory, keeps list/index projections bounded, preserves unknown files,
+      and can rebuild its index from authoritative folder contents. This trait is
+      storage-shape behavior shared by tasks, plans, reviews, and future
+      folder-backed entities.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: |
+          A folder-backed entity exists in the system
+        id: ac-entity-has-ulid-directory
+        then: >
+          The entity has its own directory named by its full ULID under that entity type's storage
+          root
+        when: |
+          The entity is persisted
+      - given: |
+          Folder-backed entities exist in a project
+        id: ac-index-excludes-heavy-detail-bytes
+        then: >
+          The index contains bounded identity, lifecycle, summary, and relationship fields without
+          embedding full documents, unbounded detail logs, or resource file bytes
+        when: >
+          The entity index is read for listing, filtering, cache warm-up, or dashboard summary
+          surfaces
+      - given: |
+          A folder-backed entity directory contains unknown files or directories
+        id: ac-unknown-files-preserved
+        then: |
+          Unknown entries are ignored by entity semantics and preserved across writes
+        when: |
+          The entity is read or updated
+      - given: |
+          A folder-backed entity index has drifted from entity directories
+        id: ac-index-rebuilds-from-folders
+        then: |
+          The index can be regenerated from entity folders and sidecar metadata
+        when: |
+          An index rebuild is requested
+    tags: []
+    created: 2026-05-22T22:36:41.832Z
+    notes: []
+  - _ulid: 01KS8XAV0DHA0V3WD5T98D4RMA
+    slugs:
+      - trait-entity-scoped-local-resources-1
+    title: Entity-Scoped Local Resources Trait
+    type: trait
+    description: |
+      A folder-backed entity that owns rich context can include local resource
+      files beside its structured data. Resource files live under the owning
+      entity's `resources/` directory and are declared in `resources.yaml`.
+      User-authored references use `./resources/<relative-path>`; consumers
+      receive normalized owner/type/resource metadata instead of arbitrary file
+      paths.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits:
+      - "@trait-folder-backed-entity-1"
+    acceptance_criteria:
+      - given: |
+          A folder-backed entity contains a declared local resource
+        id: ac-resource-reference-resolves-within-owner
+        then: >
+          The reference resolves only to a declared file inside the owning entity's `resources/` tree
+        when: >
+          A user, UI route, API route, static export, or agent resolves a
+          `./resources/<relative-path>` reference for that entity
+      - given: |
+          A folder-backed entity has one or more declared local resources
+        id: ac-resource-metadata-exposes-safe-preview-fields
+        then: >
+          Consumers can discover resource id, label, relative path, content type, byte size, content
+          hash, and git version metadata without embedding large file contents in index records
+        when: |
+          The entity is read through list, detail, API, static export, or agent-context surfaces
+      - given: >
+          A resource reference contains an absolute path, parent traversal, an undeclared resource
+          path, or a symlink escape
+        id: ac-path-escape-rejected
+        then: >
+          The operation is rejected with actionable guidance and no file outside the owning entity
+          resource tree is read or written
+        when: |
+          The resource is imported, attached, served, exported, or resolved
+      - given: |
+          A local resource is binary or large text
+        id: ac-binary-resources-are-not-inlined-into-yaml
+        then: >
+          The resource remains as a sidecar file and structured records store only bounded metadata
+          or pointers
+        when: |
+          The entity is persisted
+      - given: |
+          A folder-backed entity with local resources is deleted
+        id: ac-resource-delete-follows-owner-delete
+        then: >
+          The entity's owned resource files are removed in the same logical mutation as the entity
+          record
+        when: |
+          The deletion is persisted
+      - given: |
+          A resource version is recorded for later resolution or drift detection
+        id: ac-versioning-uses-git-backed-identity
+        then: >
+          The version metadata uses content hash plus git commit and repository-relative path when a
+          commit is available, without maintaining a separate resource history log inside kspec
+        when: |
+          The project is stored in git
+      - given: |
+          A static export includes entities with declared local resources
+        id: ac-static-export-copies-resource-assets
+        then: >
+          Resource files are copied under
+          `assets/resources/<entity-type>/<entity-ulid>/<relative-path>` and exported metadata
+          reports that exported path
+        when: |
+          The export is generated
+    tags: []
+    created: 2026-05-22T22:36:41.869Z
+    notes: []
 features:
   - _ulid: 01KEZCJPHZTTRBTEXCF6WYQYR3
     slugs:
@@ -1940,6 +2071,62 @@ features:
             tags: []
             created: 2026-05-22T22:35:39.674Z
             notes: []
+          - _ulid: 01KS8XAV969C11Z8GMSVKXMQ7X
+            slugs:
+              - folder-backed-review-storage-1
+            title: Folder-Backed Review Storage
+            type: requirement
+            description: |
+              Reviews are stored as folder-backed entities so review records can own
+              local evidence such as screenshots, logs, and supporting files without
+              rewriting or bloating one project-wide YAML file. The first slice stores
+              the full structured ReviewRecord in `review.yaml` and does not split
+              threads, checks, verdicts, notes, or events into separate sidecars.
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits:
+              - "@trait-entity-scoped-local-resources-1"
+            acceptance_criteria:
+              - given: |
+                  A folder-backed review is loaded or mutated
+                id: ac-review-detail-file-is-cohesive
+                then: >
+                  `.kspec/reviews/<review-ulid>/review.yaml` contains the full review detail record,
+                  including subject, related refs, threads, checks, verdicts, events, notes, and
+                  external links
+                when: |
+                  Consumers request the review record
+              - given: |
+                  Folder-backed reviews exist in a project
+                id: ac-review-index-has-bounded-projection
+                then: >
+                  The index contains review ULID, lifecycle, subject summary, related refs,
+                  disposition, timestamps, and resource summaries, but not full review detail or
+                  resource bytes
+                when: >
+                  `.kspec/project.reviews.yaml` is read for list, filter, cache warm-up, or
+                  dashboard summary surfaces
+              - given: |
+                  A review has an attached screenshot resource declared in `resources.yaml`
+                id: ac-review-screenshot-resource-loads-in-ui
+                then: >
+                  The screenshot can be discovered and loaded from a stable review-scoped resource
+                  URL or exported asset path
+                when: |
+                  The review is opened in the web UI or exported to the static UI snapshot
+              - given: |
+                  A folder-backed review is deleted through review storage behavior
+                id: ac-review-delete-removes-owned-folder
+                then: >
+                  The review index entry and `.kspec/reviews/<review-ulid>/` directory are removed
+                  in one logical shadow mutation
+                when: |
+                  The deletion is persisted
+            tags: []
+            created: 2026-05-22T22:36:42.150Z
+            notes: []
         created: 2026-03-14T08:45:51.685Z
         notes: []
       - _ulid: 01KKNRBY6VD6FQ19B4NA8TAG7Y
@@ -3101,6 +3288,44 @@ modules:
         tags: []
         created: 2026-05-22T22:35:39.744Z
         notes: []
+      - _ulid: 01KS8XAVBDYNS408T9BQ5HXX6Y
+        slugs:
+          - folder-backed-resource-documentation-1
+        title: Folder-Backed Resource Documentation
+        type: requirement
+        description: |
+          User-facing documentation and CLI help describe the folder-backed plan and
+          review layouts, exact resource commands, exact resource API routes,
+          resource reference syntax, derivation copy/reference behavior, upgrade
+          behavior, and troubleshooting guidance. Documentation follows the
+          implementation contracts from the storage/resource specs; it does not
+          create separate storage behavior.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              The folder-backed resource feature is documented
+            id: ac-resource-docs-name-exact-interfaces
+            then: >
+              The docs name the exact plan/review resource commands, resource API routes,
+              `resources.yaml` fields, and `kspec plan derive --materialize-resources` behavior
+            when: |
+              A user reads the documentation or command help
+          - given: |
+              The folder-backed storage format is released
+            id: ac-upgrade-docs-explain-compatibility-gate
+            then: >
+              The docs explain the `kynetic: "1.2"` manifest fields, `kspec upgrade` migration path,
+              previous-shadow-commit rollback guidance, and `entity_storage_incompatible` recovery
+              options
+            when: |
+              A user reads upgrade or troubleshooting documentation
+        tags: []
+        created: 2026-05-22T22:36:42.221Z
+        notes: []
     created: 2026-04-20T23:55:27.748Z
     notes: []
 requirements:
@@ -3223,6 +3448,90 @@ requirements:
           The route handles the storage incompatibility
     tags: []
     created: 2026-05-22T22:35:39.707Z
+    notes: []
+  - _ulid: 01KS8XAVAA8E2V5CAFZSSH9CQN
+    slugs:
+      - entity-folder-migration-and-compatibility-1
+    title: Entity Folder Migration and Compatibility
+    type: requirement
+    description: |
+      Projects using monolithic plan or review files migrate to folder-backed
+      storage through `kspec upgrade`. The new project format is `kynetic: "1.2"`
+      with `task_storage.format: split`, `plan_storage.format: folder`,
+      `review_storage.format: folder`, and `resource_storage.format:
+      entity_scoped`. Newer kspec versions that require folder-backed plans or
+      reviews block incompatible projects with structured guidance instead of
+      silently reading or rewriting ambiguous data.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: >
+          A new project is created with the kspec version that includes folder-backed plans and
+          reviews
+        id: ac-new-projects-declare-folder-storage
+        then: >
+          The manifest declares `kynetic: "1.2"`, `task_storage.format: split`,
+          `plan_storage.format: folder`, `review_storage.format: folder`, and
+          `resource_storage.format: entity_scoped`
+        when: |
+          The project manifest is generated
+      - given: |
+          A project has monolithic plan or review records
+        id: ac-upgrade-dry-run-previews-layout
+        then: >
+          The command reports the target manifest fields, directories, sidecar files, index changes,
+          resource manifest changes, warnings, and previous shadow commit without writing them
+        when: |
+          The user runs `kspec upgrade --dry-run`
+      - given: |
+          A project has monolithic plan or review records and the user runs `kspec upgrade`
+        id: ac-upgrade-executes-folder-migration
+        then: >
+          Plans and reviews are decomposed into the folder-backed layout, lean indexes are written,
+          the manifest is updated to the 1.2 storage fields, and all changes are committed as one
+          logical shadow mutation
+        when: |
+          The storage migration succeeds
+      - given: |
+          A monolithic plan or review record contains existing fields or unknown fields
+        id: ac-migration-preserves-record-identity-and-unknown-fields
+        then: >
+          The migrated entity preserves its ULID, slugs, refs, timestamps, lifecycle state, known
+          fields, and unknown record fields
+        when: |
+          It is migrated to folder-backed storage
+      - given: >
+          A newer kspec command or daemon route needs folder-backed plan, review, or resource
+          behavior and finds `kynetic` below `1.2` or missing `plan_storage.format: folder` or
+          `review_storage.format: folder`
+        id: ac-unmigrated-projects-are-blocked-with-guidance
+        then: >
+          It fails with `entity_storage_incompatible` guidance to run `kspec upgrade` or use a kspec
+          version compatible with the existing manifest
+        when: |
+          The operation cannot safely continue
+      - given: >
+          A project declares folder-backed plan or review storage but has monolithic records without
+          corresponding entity directories or index entries that do not match folders
+        id: ac-partial-folder-layouts-are-blocked
+        then: >
+          It fails with a structured `partial_entity_storage_layout` incompatibility instead of
+          partially reading or rewriting ambiguous data
+        when: |
+          The relevant entity storage manager initializes
+      - given: |
+          A daemon API route needs plan, review, or resource data from an incompatible project
+        id: ac-daemon-returns-structured-conflict
+        then: >
+          The response is HTTP 409 with top-level error `entity_storage_incompatible`, a
+          domain-specific code, migration suggestion, and cache-domain context when available
+        when: |
+          The route handles the storage incompatibility
+    tags: []
+    created: 2026-05-22T22:36:42.186Z
     notes: []
 notes:
   - _ulid: 01KFA9VSSX2B220DNRCKBBT5WX

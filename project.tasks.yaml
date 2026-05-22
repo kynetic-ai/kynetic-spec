@@ -29734,3 +29734,236 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-22T22:35:44.178Z
+- _ulid: 01KS8XAVCKZE09Y0F4WMENFY47
+  slugs:
+    - task-update-plan-review-storage-specs-1
+  title: Update existing plan and review storage specs for folder-backed layouts
+  type: task
+  spec_ref: "@entity-folder-migration-and-compatibility-1"
+  plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - specs
+    - plans
+    - reviews
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-22T22:36:42.259Z
+- _ulid: 01KS8XAVRQCA2ATTCEE98CXKW6
+  slugs:
+    - task-folder-backed-entity-trait-foundation-1
+  title: Implement a shared folder-backed entity trait foundation
+  type: task
+  spec_ref: "@trait-folder-backed-entity-1"
+  plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-update-plan-review-storage-specs-1"
+  priority: 1
+  tags:
+    - storage
+    - schema
+    - parser
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-22T22:36:42.647Z
+- _ulid: 01KS8XAW3HQ2DGQPD6HFC19FAV
+  slugs:
+    - task-entity-local-resource-model-1
+  title: Implement a shared entity-local resource trait and resolver
+  type: task
+  spec_ref: "@trait-entity-scoped-local-resources-1"
+  plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-folder-backed-entity-trait-foundation-1"
+  priority: 1
+  tags:
+    - resources
+    - schema
+    - parser
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-22T22:36:42.993Z
+- _ulid: 01KS8XAWNAQ1AA9SJS8BYH9056
+  slugs:
+    - task-entity-storage-version-compatibility-gates-1
+  title: Implement entity storage version and incompatibility gates
+  type: task
+  spec_ref: "@entity-folder-migration-and-compatibility-1"
+  plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-entity-local-resource-model-1"
+  priority: 2
+  tags:
+    - migration
+    - manifest
+    - daemon
+    - cli
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-22T22:36:43.562Z
+- _ulid: 01KS8XAY52P099Y1PQ8PFJ6G0P
+  slugs:
+    - task-folder-backed-plan-storage-manager-1
+  title: Convert plan persistence to a folder-backed storage manager
+  type: task
+  spec_ref: "@folder-backed-plan-storage-1"
+  plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-entity-storage-version-compatibility-gates-1"
+  priority: 3
+  tags:
+    - plans
+    - parser
+    - migration
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-22T22:36:45.090Z
+- _ulid: 01KS8XAYMQSFXPMHEG9FZZ3C36
+  slugs:
+    - task-folder-backed-review-storage-manager-1
+  title: Convert review persistence to folder-backed storage with resource support
+  type: task
+  spec_ref: "@folder-backed-review-storage-1"
+  plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-entity-storage-version-compatibility-gates-1"
+  priority: 3
+  tags:
+    - reviews
+    - parser
+    - migration
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-22T22:36:45.591Z
+- _ulid: 01KS8XAYZTG0MN48Z78D45PBV6
+  slugs:
+    - task-plan-review-folder-storage-migration-1
+  title: Implement plan and review storage migration plus upgrade integration
+  type: task
+  spec_ref: "@entity-folder-migration-and-compatibility-1"
+  plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-folder-backed-plan-storage-manager-1"
+    - "@task-folder-backed-review-storage-manager-1"
+  priority: 4
+  tags:
+    - migration
+    - upgrade
+    - cli
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-22T22:36:45.946Z
+- _ulid: 01KS8XAZBR1ZS1KKEHZ2PSZ4S5
+  slugs:
+    - task-folder-backed-plan-review-cache-invalidation-1
+  title: Update daemon cache invalidation for folder-backed plan and review directories
+  type: task
+  spec_ref: "@daemon-entity-cache"
+  plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-folder-backed-plan-storage-manager-1"
+    - "@task-folder-backed-review-storage-manager-1"
+  priority: 5
+  tags:
+    - daemon
+    - cache
+    - plans
+    - reviews
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-22T22:36:46.328Z
+- _ulid: 01KS8XAZQ5478RV2AVKG8MNB0S
+  slugs:
+    - task-plan-resource-import-and-derive-1
+  title: Add plan import, resource attachment, and derivation semantics
+  type: task
+  spec_ref: "@plan-resource-derivation-semantics-1"
+  plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-plan-review-folder-storage-migration-1"
+  priority: 5
+  tags:
+    - plans
+    - resources
+    - cli
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-22T22:36:46.693Z
+- _ulid: 01KS8XB035D6C69W9TR1JZDR4P
+  slugs:
+    - task-plan-resource-api-ui-static
+  title: Update plan daemon API, cache, web UI, and static export for resources
+  type: task
+  spec_ref: "@folder-backed-plan-storage-1"
+  plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-plan-resource-import-and-derive-1"
+    - "@task-folder-backed-plan-review-cache-invalidation-1"
+  priority: 5
+  tags:
+    - plans
+    - daemon
+    - web-ui
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-22T22:36:47.077Z
+- _ulid: 01KS8XB0EKNTMZS4XJMC4ED4SK
+  slugs:
+    - task-review-screenshot-resource-ui
+  title: Add review screenshot/evidence API and UI support
+  type: task
+  spec_ref: "@folder-backed-review-storage-1"
+  plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-plan-review-folder-storage-migration-1"
+    - "@task-folder-backed-plan-review-cache-invalidation-1"
+  priority: 5
+  tags:
+    - reviews
+    - daemon
+    - web-ui
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-22T22:36:47.443Z
+- _ulid: 01KS8XB0SSRJ871MAMN8V25GW0
+  slugs:
+    - task-folder-backed-resources-docs
+  title: Document resource references and folder-backed entity maintenance
+  type: task
+  spec_ref: "@folder-backed-resource-documentation-1"
+  plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-plan-resource-api-ui-static"
+    - "@task-review-screenshot-resource-ui"
+  priority: 5
+  tags:
+    - docs
+    - resources
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-22T22:36:47.801Z

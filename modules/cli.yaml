@@ -5788,6 +5788,62 @@ features:
             tags: []
             created: 2026-05-22T22:35:39.430Z
             notes: []
+          - _ulid: 01KS8XAV1D4A57ZHVASWVJC70P
+            slugs:
+              - folder-backed-plan-storage-1
+            title: Folder-Backed Plan Storage
+            type: requirement
+            description: |
+              Plans are stored as folder-backed entities so the markdown plan document and
+              local supporting resources can live together without bloating the plan index.
+              Each plan directory contains `plan.md`, `plan.yaml`, optional `notes.yaml`,
+              `resources.yaml`, and `resources/`. List and detail consumers continue to
+              see the same plan identity, status, lifecycle, content, notes, and
+              derived-ref semantics.
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits:
+              - "@trait-entity-scoped-local-resources-1"
+            acceptance_criteria:
+              - given: |
+                  A folder-backed plan is loaded for detail or derivation
+                id: ac-plan-document-sidecar-is-authoritative
+                then: >
+                  `.kspec/plans/<plan-ulid>/plan.md` is the authoritative source of plan markdown
+                  content
+                when: |
+                  The plan document is needed
+              - given: |
+                  A folder-backed plan is loaded or mutated
+                id: ac-plan-metadata-sidecar-is-authoritative
+                then: >
+                  `.kspec/plans/<plan-ulid>/plan.yaml` stores the authoritative bounded plan
+                  metadata while `notes.yaml` stores plan notes when notes are present
+                when: >
+                  Plan identity, status, source path, module, branch, timestamps, notes, or derived
+                  refs are needed
+              - given: |
+                  Folder-backed plans exist in a project
+                id: ac-plan-index-has-bounded-projection
+                then: >
+                  The index contains plan ULID, slugs, title, status, source path, module, branch,
+                  derived refs, timestamps, and resource summaries, but not full markdown content,
+                  notes, or resource file bytes
+                when: |
+                  `.kspec/project.plans.yaml` is read for listing, filtering, or cache warm-up
+              - given: |
+                  A folder-backed plan is eligible for removal under the existing plan removal rules
+                id: ac-plan-delete-removes-owned-folder
+                then: >
+                  The plan index entry and `.kspec/plans/<plan-ulid>/` directory are removed in one
+                  logical shadow mutation
+                when: |
+                  The plan is removed
+            tags: []
+            created: 2026-05-22T22:36:41.901Z
+            notes: []
         created: 2026-02-04T08:58:57.716Z
         notes: []
       - _ulid: 01KGKY0S2M184ZC2AMBWDHPCSV
@@ -6593,6 +6649,67 @@ features:
                   The plan is derived
             tags: []
             created: 2026-05-22T22:35:39.558Z
+            notes: []
+          - _ulid: 01KS8XAV5D6XDAQ3WJX5AEHQ95
+            slugs:
+              - plan-resource-derivation-semantics-1
+            title: Plan Resource Derivation Semantics
+            type: requirement
+            description: |
+              Plan task definitions can explicitly reference plan-owned resources via a
+              `resource_refs` list containing `./resources/<relative-path>` entries.
+              Derived tasks keep versioned references to those plan resources by default;
+              task-owned copies are only created by an explicit materialize/copy option.
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            acceptance_criteria:
+              - given: |
+                  A plan document contains a manual task definition in the `## Tasks` YAML block
+                id: ac-plan-task-resource-refs-are-structured
+                then: >
+                  The task definition can declare `resource_refs: ["./resources/<relative-path>"]`
+                  entries that must resolve against the source plan's `resources.yaml` manifest
+                when: |
+                  The task needs one or more plan-local resources
+              - given: |
+                  A plan task definition declares one or more valid `resource_refs`
+                id: ac-derived-task-keeps-plan-resource-reference
+                then: >
+                  The derived task records plan-owned resource references instead of copying
+                  resource bytes into the task directory
+                when: |
+                  The plan is derived into tasks without explicit materialization
+              - given: |
+                  A derived task records a reference to a plan-owned local resource
+                id: ac-derived-task-records-resource-version
+                then: >
+                  The task resource reference records owner type, owner ref, resource id, relative
+                  path, content hash, and available git commit/path identity from derivation time
+                when: |
+                  The task is created
+              - given: >
+                  A task references a plan resource whose current content no longer matches the
+                  version recorded at derivation time
+                id: ac-resource-drift-is-visible
+                then: >
+                  The consumer is told the resource has changed rather than silently receiving an
+                  unversioned replacement
+                when: |
+                  The task detail, agent context, or API resource resolver presents the resource
+              - given: >
+                  A derivation command explicitly requests materialized task-owned copies of plan
+                  resources
+                id: ac-explicit-copy-mode-creates-task-owned-resource
+                then: >
+                  Each copied resource is stored under the derived task's resource tree and the task
+                  resource reference points at the task-owned copy
+                when: |
+                  The plan is derived
+            tags: []
+            created: 2026-05-22T22:36:42.029Z
             notes: []
         created: 2026-03-10T22:42:09.670Z
         notes: []

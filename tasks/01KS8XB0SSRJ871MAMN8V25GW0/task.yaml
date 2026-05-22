@@ -1,0 +1,73 @@
+_ulid: 01KS8XB0SSRJ871MAMN8V25GW0
+slugs:
+  - task-folder-backed-resources-docs
+title: Document resource references and folder-backed entity maintenance
+type: task
+description: >
+  What:
+
+  - Document the exact folder layouts for plans and reviews: `.kspec/project.plans.yaml` and
+  `.kspec/project.reviews.yaml` remain lean indexes; `.kspec/plans/<plan-ulid>/` contains `plan.md`,
+  `plan.yaml`, optional `notes.yaml`, `resources.yaml`, and `resources/`;
+  `.kspec/reviews/<review-ulid>/` contains cohesive `review.yaml`, `resources.yaml`, and
+  `resources/`.
+
+  - Document the exact `resources.yaml` / `ResourceMetadata` fields: `id`, `label`, `path`,
+  `content_type`, `bytes`, `sha256`, `git_commit`, `git_path`, and `description`; document resource
+  id pattern `[a-z0-9][a-z0-9._-]{0,127}` and path restrictions.
+
+  - Document `./resources/<relative-path>` authoring references, plan-task `resource_refs`,
+  normalized internal resource references, static export paths, and daemon/API resource URLs.
+
+  - Document the copy-vs-reference rule: derived tasks keep versioned references to plan-owned
+  resources by default, including content hash and git identity; `kspec plan derive ...
+  --materialize-resources` is the only mode that copies bytes into
+  `.kspec/tasks/<task-ulid>/resources/plan/<plan-ulid>/<relative-path>` using ids
+  `plan-<resource-id>`.
+
+  - Update release notes and upgrade docs for the `kynetic: "1.2"` storage-format change.
+
+  - Add troubleshooting guidance for stale indexes, missing resources, drifted resource hashes,
+  `entity_storage_incompatible`, and partial folder layouts.
+
+
+  Why:
+
+  - Resource references are a new cross-cutting concept. Users and agents need a stable convention,
+  not ad hoc local file paths.
+
+
+  How:
+
+  - Use examples: plan research PDF, plan UX screenshot, plan task `resource_refs`, review
+  screenshot, review log/evidence file.
+
+  - Keep docs format-neutral where possible; avoid telling users to edit `.kspec` internals manually
+  except where documenting the storage format itself.
+
+
+  Testing:
+
+  - Run docs checks if applicable.
+
+  - Run focused CLI help/documentation tests if command help output changes.
+
+
+  Covers: @folder-backed-resource-documentation ac-resource-docs-name-exact-interfaces,
+  ac-upgrade-docs-explain-compatibility-gate
+spec_ref: "@folder-backed-resource-documentation-1"
+plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-plan-resource-api-ui-static"
+  - "@task-review-screenshot-resource-ui"
+context: []
+priority: 5
+tags:
+  - docs
+  - resources
+vcs_refs: []
+created_at: 2026-05-22T22:36:47.801Z
+todos: []
