@@ -50731,7 +50731,7 @@ plans:
           - Extend the plan document manual task schema so each additional task may include `resource_refs: ["./resources/<relative-path>"]`; reject refs that do not resolve against the source plan's `resources.yaml` at derive time.
           - Add exact plan-resource CLI commands: `kspec plan resource add <plan-ref> <source-file> --id <resource-id> --path <relative-path> [--label <label>] [--description <text>] [--content-type <mime>] [--replace] [--json]`; `kspec plan resource list <plan-ref> [--json]`; `kspec plan resource get <plan-ref> <resource-id> [--json]`; `kspec plan resource remove <plan-ref> <resource-id> [--force] [--json]`.
           - `plan resource add` requires explicit `--id` and `--path`; id or path collisions fail with `resource_conflict` unless `--replace` is supplied. Replacement updates one existing resource id, replaces the file bytes and metadata, removes the old file if the path changes, and refuses to overwrite a different resource id's path. `remove` deletes the manifest entry and owned file; without `--force` it prompts in interactive mode and fails in non-interactive mode.
-          - Define plan resource CLI `--json` success output exactly: `add` returns `{ "resource": <ResourceMetadata>, "replaced": boolean }`; `list` returns `{ "resources": <ResourceMetadata[]> }`; `get` returns `{ "resource": <ResourceMetadata> }`; `remove` returns `{ "removed": { "id": string, "path": string } }`. CLI JSON failures use `{ "error": string, "code": "invalid_resource_id"|"invalid_resource_path"|"resource_conflict"|"resource_not_found"|"entity_storage_incompatible", "message": string, "resource_id": string|null, "path": string|null }`.
+          - Define plan resource CLI `--json` success output exactly: `add` returns `{ "resource": <ResourceMetadata>, "replaced": boolean }`; `list` returns `{ "resources": <ResourceMetadata[]> }`; `get` returns `{ "resource": <ResourceMetadata> }`; `remove` returns `{ "removed": { "id": string, "path": string } }`. CLI JSON failures use `{ "error": string, "code": "invalid_resource_id"|"invalid_resource_path"|"resource_conflict"|"resource_not_found"|"plan_not_found"|"confirmation_required"|"operation_cancelled"|"entity_storage_incompatible", "message": string, "resource_id": string|null, "path": string|null }`. Missing plan refs return `plan_not_found`; non-interactive `remove` without `--force` returns `confirmation_required`; interactive remove answered no returns `operation_cancelled`.
           - Plan resource API routes and upload body shapes are owned by @task-plan-resource-api-ui-static, not this task.
           - During `kspec plan derive`, preserve plan resource references on derived tasks by default and record owner type, owner ref, resource id, relative path, content hash, and available git commit/path identity.
           - Add exact derivation flag `kspec plan derive ... --materialize-resources`; when present, copy each referenced resource into `.kspec/tasks/<task-ulid>/resources/plan/<plan-ulid>/<relative-path>`, add task resource manifest ids as `plan-<resource-id>`, and point the task reference at the task-owned copy. Without this flag, no resource bytes are copied.
@@ -50745,7 +50745,7 @@ plans:
           - Surface drift if the current plan resource hash no longer matches the hash recorded on the task.
 
           Testing:
-          - CLI tests for `kspec plan resource add/list/get/remove`, required `--id`/`--path`, `--replace` collisions, non-interactive remove without `--force`, invalid paths, `--json`, and stable error codes.
+          - CLI tests for `kspec plan resource add/list/get/remove`, required `--id`/`--path`, missing plan refs, `--replace` collisions, non-interactive remove without `--force`, interactive remove cancellation, invalid paths, `--json`, and stable error codes.
           - Parser/import/set tests for valid `resource_refs`, unresolved `resource_refs`, valid markdown links with sibling import manifest, unresolved markdown links during import, and unresolved markdown links during `plan set`.
           - Derive tests for default resource refs, hash/git version metadata, drift reporting, and exact `--materialize-resources` copy mode/path/id behavior.
 
@@ -50764,7 +50764,7 @@ plans:
           - Keep `/api/plans` list fast by using index/resource summaries only.
           - Keep `/api/plans/:ref` returning `PlanDetail.content` while adding resource summary data and safe resource fetch URLs.
           - Add exact authenticated/project-scoped plan resource endpoints using the shared resolver: `GET /api/plans/:ref/resources` returns HTTP 200 `{ "resources": <ResourceMetadata[]> }`; `GET /api/plans/:ref/resources/:resourceId` returns HTTP 200 `{ "resource": <ResourceMetadata> }`; `GET /api/plans/:ref/resources/:resourceId/bytes` returns HTTP 200 raw bytes with `Content-Type` and `X-Kspec-Resource-Sha256`; `POST /api/plans/:ref/resources` accepts `multipart/form-data` with file field `file` and text fields `id`, `path`, optional `label`, optional `description`, optional `content_type`, optional boolean `replace`; `DELETE /api/plans/:ref/resources/:resourceId` deletes the manifest entry and owned file.
-          - Define plan resource API status/error mapping: POST create returns 201 `{ "resource": <ResourceMetadata>, "replaced": false }`; POST replace returns 200 `{ "resource": <ResourceMetadata>, "replaced": true }`; DELETE returns 200 `{ "removed": { "id": string, "path": string } }`; invalid id/path or missing fields return 400 with `invalid_resource_id`/`invalid_resource_path`; missing plan or resource returns 404 with `plan_not_found`/`resource_not_found`; id/path collisions return 409 `resource_conflict`; incompatible storage returns 409 `entity_storage_incompatible`. Error bodies use `{ "error": string, "code": string, "message": string, "resource_id": string|null, "path": string|null }`.
+          - Define plan resource API status/error mapping: POST create returns 201 `{ "resource": <ResourceMetadata>, "replaced": false }`; POST replace returns 200 `{ "resource": <ResourceMetadata>, "replaced": true }`; DELETE returns 200 `{ "removed": { "id": string, "path": string } }`; invalid id/path or missing fields return 400 with `invalid_resource_id`/`invalid_resource_path`; missing multipart `file` returns 400 `missing_resource_file`; missing plan or resource returns 404 with `plan_not_found`/`resource_not_found`; id/path collisions return 409 `resource_conflict`; incompatible storage returns HTTP 409 using the shared `entity_storage_incompatible` envelope from @task-entity-storage-version-compatibility-gates, including top-level error, domain-specific code, migration suggestion, and cache-domain context. Non-compatibility resource error bodies use `{ "error": string, "code": string, "message": string, "resource_id": string|null, "path": string|null }`.
           - Update web UI plan rendering so `./resources/<relative-path>` image/resource links are rewritten to safe plan-scoped resource URLs.
           - Update static JSON export/static UI so plan resources are copied under `assets/resources/plan/<plan-ulid>/<relative-path>` and markdown/resource metadata points at those exported paths.
 
@@ -50777,7 +50777,7 @@ plans:
           - Keep markdown rendering fallback behavior for unresolved resources with visible guidance.
 
           Testing:
-          - Daemon route tests for list/detail/resource metadata/resource bytes, multipart POST create/replace, DELETE, invalid id/path rejection, 404 missing plan/resource, 409 resource conflicts, and 409 incompatibility responses.
+          - Daemon route tests for list/detail/resource metadata/resource bytes, multipart POST create/replace, missing multipart file, DELETE, invalid id/path rejection, 404 missing plan/resource, 409 resource conflicts, and shared-envelope 409 incompatibility responses.
           - Web UI tests for plan markdown with a local image/resource link.
           - Static export tests for resource metadata and offline resource loading from `assets/resources/plan/<plan-ulid>/...`.
 
@@ -50794,9 +50794,9 @@ plans:
           What:
           - Add exact review-resource CLI commands matching the plan resource shape: `kspec review resource add <review-ref> <source-file> --id <resource-id> --path <relative-path> [--label <label>] [--description <text>] [--content-type <mime>] [--replace] [--json]`; `kspec review resource list <review-ref> [--json]`; `kspec review resource get <review-ref> <resource-id> [--json]`; `kspec review resource remove <review-ref> <resource-id> [--force] [--json]`.
           - `review resource add` requires explicit `--id` and `--path`; id or path collisions fail with `resource_conflict` unless `--replace` is supplied. Replacement updates one existing resource id, replaces file bytes and metadata, removes the old file if the path changes, and refuses to overwrite a different resource id's path. `remove` deletes the manifest entry and owned file; without `--force` it prompts in interactive mode and fails in non-interactive mode.
-          - Define review resource CLI `--json` success output exactly: `add` returns `{ "resource": <ResourceMetadata>, "replaced": boolean }`; `list` returns `{ "resources": <ResourceMetadata[]> }`; `get` returns `{ "resource": <ResourceMetadata> }`; `remove` returns `{ "removed": { "id": string, "path": string } }`. CLI JSON failures use `{ "error": string, "code": "invalid_resource_id"|"invalid_resource_path"|"resource_conflict"|"resource_not_found"|"entity_storage_incompatible", "message": string, "resource_id": string|null, "path": string|null }`.
+          - Define review resource CLI `--json` success output exactly: `add` returns `{ "resource": <ResourceMetadata>, "replaced": boolean }`; `list` returns `{ "resources": <ResourceMetadata[]> }`; `get` returns `{ "resource": <ResourceMetadata> }`; `remove` returns `{ "removed": { "id": string, "path": string } }`. CLI JSON failures use `{ "error": string, "code": "invalid_resource_id"|"invalid_resource_path"|"resource_conflict"|"resource_not_found"|"review_not_found"|"confirmation_required"|"operation_cancelled"|"entity_storage_incompatible", "message": string, "resource_id": string|null, "path": string|null }`. Missing review refs return `review_not_found`; non-interactive `remove` without `--force` returns `confirmation_required`; interactive remove answered no returns `operation_cancelled`.
           - Add exact review-resource daemon routes: `GET /api/reviews/:ref/resources` returns HTTP 200 `{ "resources": <ResourceMetadata[]> }`; `GET /api/reviews/:ref/resources/:resourceId` returns HTTP 200 `{ "resource": <ResourceMetadata> }`; `GET /api/reviews/:ref/resources/:resourceId/bytes` returns HTTP 200 raw bytes with `Content-Type` and `X-Kspec-Resource-Sha256`; `POST /api/reviews/:ref/resources` accepts `multipart/form-data` with file field `file` and text fields `id`, `path`, optional `label`, optional `description`, optional `content_type`, optional boolean `replace`; `DELETE /api/reviews/:ref/resources/:resourceId` deletes the manifest entry and owned file.
-          - Define review resource API status/error mapping: POST create returns 201 `{ "resource": <ResourceMetadata>, "replaced": false }`; POST replace returns 200 `{ "resource": <ResourceMetadata>, "replaced": true }`; DELETE returns 200 `{ "removed": { "id": string, "path": string } }`; invalid id/path or missing fields return 400 with `invalid_resource_id`/`invalid_resource_path`; missing review or resource returns 404 with `review_not_found`/`resource_not_found`; id/path collisions return 409 `resource_conflict`; incompatible storage returns 409 `entity_storage_incompatible`. Error bodies use `{ "error": string, "code": string, "message": string, "resource_id": string|null, "path": string|null }`.
+          - Define review resource API status/error mapping: POST create returns 201 `{ "resource": <ResourceMetadata>, "replaced": false }`; POST replace returns 200 `{ "resource": <ResourceMetadata>, "replaced": true }`; DELETE returns 200 `{ "removed": { "id": string, "path": string } }`; invalid id/path or missing fields return 400 with `invalid_resource_id`/`invalid_resource_path`; missing multipart `file` returns 400 `missing_resource_file`; missing review or resource returns 404 with `review_not_found`/`resource_not_found`; id/path collisions return 409 `resource_conflict`; incompatible storage returns HTTP 409 using the shared `entity_storage_incompatible` envelope from @task-entity-storage-version-compatibility-gates, including top-level error, domain-specific code, migration suggestion, and cache-domain context. Non-compatibility resource error bodies use `{ "error": string, "code": string, "message": string, "resource_id": string|null, "path": string|null }`.
           - Update review detail UI so screenshot/evidence resources can be previewed or opened from the review page.
           - Update static export so review resources are copied under `assets/resources/review/<review-ulid>/<relative-path>` and review metadata points at those exported paths.
           - Update cache/WebSocket invalidation so `.kspec/reviews/` directory changes invalidate review list/detail data.
@@ -50809,7 +50809,7 @@ plans:
           - Do not inline screenshots into review YAML or API list payloads.
 
           Testing:
-          - CLI/API tests for `kspec review resource add/list/get/remove`, required `--id`/`--path`, `--replace` collisions, non-interactive remove without `--force`, invalid paths, `--json`, exact review resource routes, multipart POST create/replace, DELETE, resource bytes, 404 missing review/resource, 409 resource conflicts, and 409 incompatibility responses.
+          - CLI/API tests for `kspec review resource add/list/get/remove`, required `--id`/`--path`, missing review refs, `--replace` collisions, non-interactive remove without `--force`, interactive remove cancellation, invalid paths, `--json`, exact review resource routes, multipart POST create/replace, missing multipart file, DELETE, resource bytes, 404 missing review/resource, 409 resource conflicts, and shared-envelope 409 incompatibility responses.
           - Web UI tests for rendering review resource summaries and previewing screenshot resources.
           - Static export test that review screenshots load from `assets/resources/review/<review-ulid>/...`.
 
@@ -51029,8 +51029,10 @@ plans:
       "git_path": string|null, "description": string|null }`.
 
       - CLI and API resource errors share codes: `invalid_resource_id`, `invalid_resource_path`,
-      `resource_conflict`, `resource_not_found`, `plan_not_found`, `review_not_found`, and
-      `entity_storage_incompatible`.
+      `missing_resource_file`, `resource_conflict`, `resource_not_found`, `plan_not_found`,
+      `review_not_found`, `confirmation_required`, `operation_cancelled`, and
+      `entity_storage_incompatible`. API `entity_storage_incompatible` always uses the shared
+      storage-compatibility envelope rather than the resource-error envelope.
 
       - Rebuild-index JSON for plans/reviews uses one shared envelope with `domain`, `status`,
       `dry_run`, `repair`, `force`, `summary`, `changes`, and `conflicts`; status is `clean`,
@@ -51092,3 +51094,9 @@ plans:
           rebuild JSON envelope, plan route ownership, docs hierarchy/spec_ref"
         author: Jacob Chapel
         created_at: 2026-05-22T20:41:37.336Z
+      - _ulid: 01KS8QRRD5HMNMTP3C4SH8PPP6
+        content: "Address review @01KS8PXHDS0CAA9W4NPDC9Q25V blockers: CLI owner-not-found and confirmation
+          JSON errors, missing multipart file API errors, shared entity_storage_incompatible
+          envelope"
+        author: Jacob Chapel
+        created_at: 2026-05-22T20:59:26.501Z
