@@ -118,5 +118,13 @@ history:
           Covers: @plan-resource-derivation-semantics ac-plan-task-resource-refs-are-structured, ac-derived-task-keeps-plan-resource-reference, ac-derived-task-records-resource-version, ac-resource-drift-is-visible, ac-explicit-copy-mode-creates-task-owned-resource
     command: task-set
     timestamp: 2026-05-22T22:51:05.930Z
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-05-22T22:52:42.253Z
 created_at: 2026-05-22T22:36:46.693Z
 todos: []
+automation: eligible
