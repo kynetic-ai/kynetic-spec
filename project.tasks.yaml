@@ -29560,25 +29560,6 @@
   submitted_at: 2026-05-19T14:35:23.086Z
   completed_at: 2026-05-19T15:18:02.547Z
   automation: eligible
-- _ulid: 01KS8X8Z3VKV0JH9M7HJGPVXJ2
-  slugs:
-    - task-entity-local-resource-model
-  title: Implement a shared entity-local resource trait and resolver
-  type: task
-  spec_ref: "@trait-entity-scoped-local-resources"
-  plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
-  status: pending
-  blocked_by: []
-  depends_on:
-    - "@task-folder-backed-entity-trait-foundation"
-  priority: 1
-  tags:
-    - resources
-    - schema
-    - parser
-  notes_count: 0
-  todos_count: 0
-  created_at: 2026-05-22T22:35:40.539Z
 - _ulid: 01KS8X8ZQCEJXBSS4RJ3Q2NNC1
   slugs:
     - task-entity-storage-version-compatibility-gates
