@@ -3250,44 +3250,6 @@ modules:
         tags: []
         created: 2026-04-20T23:55:27.988Z
         notes: []
-      - _ulid: 01KS8X8YAZ0HDZ3BB75FG6VGSY
-        slugs:
-          - folder-backed-resource-documentation
-        title: Folder-Backed Resource Documentation
-        type: requirement
-        description: |
-          User-facing documentation and CLI help describe the folder-backed plan and
-          review layouts, exact resource commands, exact resource API routes,
-          resource reference syntax, derivation copy/reference behavior, upgrade
-          behavior, and troubleshooting guidance. Documentation follows the
-          implementation contracts from the storage/resource specs; it does not
-          create separate storage behavior.
-        depends_on: []
-        implements: []
-        relates_to: []
-        tests: []
-        traits: []
-        acceptance_criteria:
-          - given: |
-              The folder-backed resource feature is documented
-            id: ac-resource-docs-name-exact-interfaces
-            then: >
-              The docs name the exact plan/review resource commands, resource API routes,
-              `resources.yaml` fields, and `kspec plan derive --materialize-resources` behavior
-            when: |
-              A user reads the documentation or command help
-          - given: |
-              The folder-backed storage format is released
-            id: ac-upgrade-docs-explain-compatibility-gate
-            then: >
-              The docs explain the `kynetic: "1.2"` manifest fields, `kspec upgrade` migration path,
-              previous-shadow-commit rollback guidance, and `entity_storage_incompatible` recovery
-              options
-            when: |
-              A user reads upgrade or troubleshooting documentation
-        tags: []
-        created: 2026-05-22T22:35:39.744Z
-        notes: []
       - _ulid: 01KS8XAVBDYNS408T9BQ5HXX6Y
         slugs:
           - folder-backed-resource-documentation-1
