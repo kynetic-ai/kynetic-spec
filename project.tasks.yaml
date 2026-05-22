@@ -29560,27 +29560,6 @@
   submitted_at: 2026-05-19T14:35:23.086Z
   completed_at: 2026-05-19T15:18:02.547Z
   automation: eligible
-- _ulid: 01KS8X92A4RHC4J0RS8SWVKNXQ
-  slugs:
-    - task-folder-backed-plan-review-cache-invalidation
-  title: Update daemon cache invalidation for folder-backed plan and review directories
-  type: task
-  spec_ref: "@daemon-entity-cache"
-  plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
-  status: pending
-  blocked_by: []
-  depends_on:
-    - "@task-folder-backed-plan-storage-manager"
-    - "@task-folder-backed-review-storage-manager"
-  priority: 5
-  tags:
-    - daemon
-    - cache
-    - plans
-    - reviews
-  notes_count: 0
-  todos_count: 0
-  created_at: 2026-05-22T22:35:43.812Z
 - _ulid: 01KS8X92NJV9VR13WH0T7WRQ8Q
   slugs:
     - task-plan-resource-import-and-derive
