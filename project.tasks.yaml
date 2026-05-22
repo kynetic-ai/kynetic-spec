@@ -29678,6 +29678,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-22T22:36:45.591Z
+  automation: eligible
 - _ulid: 01KS8XAYZTG0MN48Z78D45PBV6
   slugs:
     - task-plan-review-folder-storage-migration-1
