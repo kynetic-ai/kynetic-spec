@@ -220418,6 +220418,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KS8R0GAM3R6YSYBNZ172FP3N
         timestamp: 2026-05-22T21:03:42.004Z
+      - _ulid: 01KS8R0XV7E4RV6WY8M65M47D9
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KS8R0W7WAFRBXDE9BBXYAK9V
+        timestamp: 2026-05-22T21:03:54.215Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -220485,7 +220492,24 @@ reviews:
               exact contract."
             created_at: 2026-05-22T21:03:40.373Z
         kind: blocker
+      - _ulid: 01KS8R0W7WAFRBXDE9BBXYAK9V
+        anchor:
+          type: structured
+          ref: "@task-review-screenshot-resource-ui"
+          section: tasks
+        entries:
+          - _ulid: 01KS8R0W7WESB9JGZZKRSRQ2EM
+            author: Jacob Chapel
+            body: "The review resource multipart upload shape repeats the undefined `replace` contract. POST
+              accepts multipart/form-data with optional boolean `replace`, but the plan does not
+              define the accepted text value(s), whether field presence alone is true, or the
+              invalid-value response status/code. Impact: review resource API and UI agents can
+              diverge from plan resource behavior and from documentation. Exact fix: define the
+              exact multipart `replace` wire representation and invalid-value response, matching the
+              plan resource API contract where intended."
+            created_at: 2026-05-22T21:03:52.573Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-22T21:02:47.033Z
-    updated_at: 2026-05-22T21:03:40.373Z
+    updated_at: 2026-05-22T21:03:52.573Z
     notes: []
