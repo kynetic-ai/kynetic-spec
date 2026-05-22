@@ -29636,6 +29636,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-22T22:36:43.562Z
+  automation: eligible
 - _ulid: 01KS8XAY52P099Y1PQ8PFJ6G0P
   slugs:
     - task-folder-backed-plan-storage-manager-1
