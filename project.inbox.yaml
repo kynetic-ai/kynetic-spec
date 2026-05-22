@@ -3621,3 +3621,21 @@ inbox:
       - follow-up
     added_by: Jacob Chapel
     created_at: 2026-05-19T18:36:26.185Z
+  - _ulid: 01KS8YG25Y5TY0G84BPQJDNG9V
+    text: "Investigate invalid derived task priority handling in plan derivation. During derivation of
+      @plan-folder-backed-plans-reviews-and-local-resources, the approved plan contained generated
+      task priorities 6/7 even though the task schema only allows 1-5. `kspec plan derive` failed on
+      the schema violation after partially materializing derived refs, which required manual
+      cleanup/re-import before a successful derive. Desired follow-up: make derive validate all
+      generated task payloads before writing any derived metadata, produce a clear error that points
+      at the offending plan task priority and allowed range, and avoid partial refs/aliases when
+      derivation fails. Reproduce in a disposable project/copy only; do not run migration/upgrade
+      experiments against live kynetic-spec or kynetic-spec-dispatch clones."
+    tags:
+      - derive
+      - validation
+      - task-priority
+      - transactionality
+      - follow-up
+    added_by: Jacob Chapel
+    created_at: 2026-05-22T22:57:01.631Z
