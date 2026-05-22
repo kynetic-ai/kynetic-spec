@@ -50477,6 +50477,33 @@ plans:
               The route handles the storage incompatibility
             then: |
               The response is HTTP 409 with top-level error `entity_storage_incompatible`, a domain-specific code, migration suggestion, and cache-domain context when available
+
+      - title: Folder-Backed Resource Documentation
+        slug: folder-backed-resource-documentation
+        type: requirement
+        parent: "@core"
+        description: |
+          User-facing documentation and CLI help describe the folder-backed plan and
+          review layouts, exact resource commands, exact resource API routes,
+          resource reference syntax, derivation copy/reference behavior, upgrade
+          behavior, and troubleshooting guidance. Documentation follows the
+          implementation contracts from the storage/resource specs; it does not
+          create separate storage behavior.
+        acceptance_criteria:
+          - id: ac-resource-docs-name-exact-interfaces
+            given: |
+              The folder-backed resource feature is documented
+            when: |
+              A user reads the documentation or command help
+            then: |
+              The docs name the exact plan/review resource commands, resource API routes, `resources.yaml` fields, and `kspec plan derive --materialize-resources` behavior
+          - id: ac-upgrade-docs-explain-compatibility-gate
+            given: |
+              The folder-backed storage format is released
+            when: |
+              A user reads upgrade or troubleshooting documentation
+            then: |
+              The docs explain the `kynetic: "1.2"` manifest fields, `kspec upgrade` migration path, previous-shadow-commit rollback guidance, and `entity_storage_incompatible` recovery options
       ```
 
 
@@ -50514,7 +50541,7 @@ plans:
           - Run `kspec validate --warnings-ok`.
           - Run focused parser/schema tests that exercise plan/review specs if changed.
 
-          Covers: @entity-folder-migration-and-compatibility ac-migration-preserves-record-identity-and-unknown-fields
+          Covers: spec-maintenance prerequisite only; no migration/runtime AC is claimed by this task.
 
       - title: Implement a shared folder-backed entity trait foundation
         slug: task-folder-backed-entity-trait-foundation
@@ -50566,7 +50593,7 @@ plans:
           Testing:
           - Unit-test valid references, absolute path rejection, parent traversal rejection, undeclared path rejection, symlink escape rejection, metadata hash computation, git version metadata capture, binary-resource metadata, missing-resource guidance, and static-export path generation.
 
-          Covers: @trait-entity-scoped-local-resources ac-resource-reference-resolves-within-owner, ac-resource-metadata-exposes-safe-preview-fields, ac-path-escape-rejected, ac-binary-resources-are-not-inlined-into-yaml, ac-resource-delete-follows-owner-delete, ac-versioning-uses-git-backed-identity, ac-static-export-copies-resource-assets
+          Covers: @trait-entity-scoped-local-resources ac-resource-reference-resolves-within-owner, ac-resource-metadata-exposes-safe-preview-fields, ac-path-escape-rejected, ac-binary-resources-are-not-inlined-into-yaml, ac-versioning-uses-git-backed-identity, ac-static-export-copies-resource-assets
 
       - title: Implement entity storage version and incompatibility gates
         slug: task-entity-storage-version-compatibility-gates
@@ -50611,7 +50638,7 @@ plans:
           - Keep `.kspec/project.plans.yaml` as a lean index with ULID, slugs, title, status, source path, module, branch, derived refs, timestamps, and bounded resource summaries.
           - Keep `loadPlans`, `findPlanByRef`, `savePlan`, `mutatePlanAtomically`, and `deletePlan` consumer semantics stable while moving physical reads/writes behind the manager.
           - Preserve unknown files in plan directories and delete owned directories/resources when deleting a plan.
-          - Add `kspec plan rebuild-index --dry-run/--repair/--force` or an equivalent shared rebuild command.
+          - Add exactly `kspec plan rebuild-index` with `--dry-run`, `--repair`, `--force`, and `--json` flags. Default/no flag validates drift and exits nonzero if drift exists without writing. `--dry-run` prints the same drift summary and never writes. `--repair` rewrites `.kspec/project.plans.yaml` from plan folders. `--force` is accepted only with `--repair` and permits dropping stale index entries whose entity folders are missing; without `--force`, missing folders are a conflict and no files are written.
           - When the manager sees old/missing/partial storage markers, raise the shared entity-storage incompatibility errors from @task-entity-storage-version-compatibility-gates instead of dual-reading or silently migrating.
 
           Why:
@@ -50623,10 +50650,10 @@ plans:
           - Treat `plan.md` as authoritative when index/core metadata and document content disagree.
 
           Testing:
-          - Add plan storage unit tests for create/list/detail/update/delete, unknown file preservation, content sidecar authority, index projection, rebuild drift repair, and incompatibility errors for old or partial layouts.
+          - Add plan storage unit tests for create/list/detail/update/delete, owned resource cleanup on plan delete, unknown file preservation, content sidecar authority, index projection, rebuild drift detection, `--repair`, `--force` stale-entry handling, and incompatibility errors for old or partial layouts.
           - Run existing plan parser/import/derive tests to prove consumer semantics did not change.
 
-          Covers: @folder-backed-plan-storage ac-plan-document-sidecar-is-authoritative, ac-plan-metadata-sidecar-is-authoritative, ac-plan-index-has-bounded-projection, ac-plan-delete-removes-owned-folder, @trait-folder-backed-entity ac-entity-has-ulid-directory, ac-index-excludes-heavy-detail-bytes, ac-unknown-files-preserved, ac-index-rebuilds-from-folders
+          Covers: @folder-backed-plan-storage ac-plan-document-sidecar-is-authoritative, ac-plan-metadata-sidecar-is-authoritative, ac-plan-index-has-bounded-projection, ac-plan-delete-removes-owned-folder, @trait-folder-backed-entity ac-entity-has-ulid-directory, ac-index-excludes-heavy-detail-bytes, ac-unknown-files-preserved, ac-index-rebuilds-from-folders, @trait-entity-scoped-local-resources ac-resource-delete-follows-owner-delete
 
       - title: Convert review persistence to folder-backed storage with resource support
         slug: task-folder-backed-review-storage-manager
@@ -50641,7 +50668,7 @@ plans:
           - Store the full cohesive ReviewRecord shape in `review.yaml`; do not split threads, checks, verdicts, notes, or events into separate files in this plan.
           - Keep `loadReviewRecords`, `findReviewByRef`, `saveReviewRecord`, `mutateReviewAtomically`, and delete semantics stable for existing callers.
           - Keep `.kspec/project.reviews.yaml` as a lean index with ULID, lifecycle, subject summary, related refs, disposition, timestamps, and bounded resource summaries.
-          - Add `kspec review rebuild-index --dry-run/--repair/--force` or a shared equivalent.
+          - Add exactly `kspec review rebuild-index` with `--dry-run`, `--repair`, `--force`, and `--json` flags. Default/no flag validates drift and exits nonzero if drift exists without writing. `--dry-run` prints the same drift summary and never writes. `--repair` rewrites `.kspec/project.reviews.yaml` from review folders. `--force` is accepted only with `--repair` and permits dropping stale index entries whose entity folders are missing; without `--force`, missing folders are a conflict and no files are written.
           - When the manager sees old/missing/partial storage markers, raise the shared entity-storage incompatibility errors from @task-entity-storage-version-compatibility-gates instead of dual-reading or silently migrating.
 
           Why:
@@ -50652,10 +50679,10 @@ plans:
           - Delete owned resources with the review directory.
 
           Testing:
-          - Review storage unit tests for create/list/detail/mutations against the cohesive review detail file, screenshot resource metadata, delete cleanup, unknown file preservation, index rebuild, and incompatibility errors for old or partial layouts.
+          - Review storage unit tests for create/list/detail/mutations against the cohesive review detail file, screenshot resource metadata, owned resource cleanup on review delete, unknown file preservation, index rebuild drift detection, `--repair`, `--force` stale-entry handling, and incompatibility errors for old or partial layouts.
           - Existing review CLI/API tests should pass unchanged except where they assert monolithic storage internals.
 
-          Covers: @folder-backed-review-storage ac-review-detail-file-is-cohesive, ac-review-index-has-bounded-projection, ac-review-screenshot-resource-loads-in-ui, ac-review-delete-removes-owned-folder, @trait-folder-backed-entity ac-entity-has-ulid-directory, ac-index-excludes-heavy-detail-bytes, ac-unknown-files-preserved, ac-index-rebuilds-from-folders
+          Covers: @folder-backed-review-storage ac-review-detail-file-is-cohesive, ac-review-index-has-bounded-projection, ac-review-screenshot-resource-loads-in-ui, ac-review-delete-removes-owned-folder, @trait-folder-backed-entity ac-entity-has-ulid-directory, ac-index-excludes-heavy-detail-bytes, ac-unknown-files-preserved, ac-index-rebuilds-from-folders, @trait-entity-scoped-local-resources ac-resource-delete-follows-owner-delete
 
       - title: Implement plan and review storage migration plus upgrade integration
         slug: task-plan-review-folder-storage-migration
@@ -50697,11 +50724,14 @@ plans:
           - "@task-plan-review-folder-storage-migration"
         description: |
           What:
-          - Extend `kspec plan import` and `kspec plan set`/related commands so plan markdown accepts `./resources/<relative-path>` links resolved against the plan resource manifest without embedding resource bytes inline.
-          - Extend the plan document manual task schema so each additional task may include `resource_refs: ["./resources/<relative-path>"]`; reject refs that do not resolve against the source plan's `resources.yaml`.
-          - Add CLI/API affordances to attach, list, inspect, and remove plan resources. Attachment writes the file under `.kspec/plans/<plan-ulid>/resources/` and updates `resources.yaml` with id/path/hash/git metadata.
+          - Extend `kspec plan import <plan-md>` so any `./resources/<relative-path>` markdown link requires a sibling `resources.yaml` beside the imported markdown file; the manifest must declare each linked path with an explicit id, and import copies declared files from the sibling `resources/` directory into `.kspec/plans/<plan-ulid>/resources/`.
+          - Extend `kspec plan set @plan --content-file <plan-md>` so `./resources/<relative-path>` markdown links must resolve against the existing plan `resources.yaml`; users attach resources before setting content that references them.
+          - Extend the plan document manual task schema so each additional task may include `resource_refs: ["./resources/<relative-path>"]`; reject refs that do not resolve against the source plan's `resources.yaml` at derive time.
+          - Add exact plan-resource CLI commands: `kspec plan resource add <plan-ref> <source-file> --id <resource-id> --path <relative-path> [--label <label>] [--description <text>] [--content-type <mime>] [--replace] [--json]`; `kspec plan resource list <plan-ref> [--json]`; `kspec plan resource get <plan-ref> <resource-id> [--json]`; `kspec plan resource remove <plan-ref> <resource-id> [--force] [--json]`.
+          - `plan resource add` requires explicit `--id` and `--path`; id or path collisions fail with `resource_conflict` unless `--replace` is supplied. Replacement updates one existing resource id, replaces the file bytes and metadata, removes the old file if the path changes, and refuses to overwrite a different resource id's path. `remove` deletes the manifest entry and owned file; without `--force` it prompts in interactive mode and fails in non-interactive mode.
+          - Add exact plan-resource daemon routes: `GET /api/plans/:ref/resources`, `GET /api/plans/:ref/resources/:resourceId`, `GET /api/plans/:ref/resources/:resourceId/bytes`, `POST /api/plans/:ref/resources`, and `DELETE /api/plans/:ref/resources/:resourceId`, with the same id/path/collision/error semantics as the CLI.
           - During `kspec plan derive`, preserve plan resource references on derived tasks by default and record owner type, owner ref, resource id, relative path, content hash, and available git commit/path identity.
-          - Add an explicit materialize/copy flag for derivation; when present, copy each referenced resource into the derived task resource tree and point the task reference at the task-owned copy.
+          - Add exact derivation flag `kspec plan derive ... --materialize-resources`; when present, copy each referenced resource into `.kspec/tasks/<task-ulid>/resources/plan/<plan-ulid>/<relative-path>`, add task resource manifest ids as `plan-<resource-id>`, and point the task reference at the task-owned copy. Without this flag, no resource bytes are copied.
 
           Why:
           - A UX plan may include screenshots or research PDFs that task workers need to consult. Default copying creates drift and duplicate bytes; unversioned links hide changes.
@@ -50712,9 +50742,9 @@ plans:
           - Surface drift if the current plan resource hash no longer matches the hash recorded on the task.
 
           Testing:
-          - CLI tests for attach/list/inspect/remove/invalid path.
-          - Parser tests for valid `resource_refs`, unresolved `resource_refs`, valid markdown links, and unresolved markdown links.
-          - Derive tests for default resource refs, hash/git version metadata, drift reporting, and explicit materialize/copy mode.
+          - CLI tests for `kspec plan resource add/list/get/remove`, required `--id`/`--path`, `--replace` collisions, non-interactive remove without `--force`, invalid paths, `--json`, and stable error codes.
+          - Parser/import/set tests for valid `resource_refs`, unresolved `resource_refs`, valid markdown links with sibling import manifest, unresolved markdown links during import, and unresolved markdown links during `plan set`.
+          - Derive tests for default resource refs, hash/git version metadata, drift reporting, and exact `--materialize-resources` copy mode/path/id behavior.
 
           Covers: @plan-resource-derivation-semantics ac-plan-task-resource-refs-are-structured, ac-derived-task-keeps-plan-resource-reference, ac-derived-task-records-resource-version, ac-resource-drift-is-visible, ac-explicit-copy-mode-creates-task-owned-resource
 
@@ -50758,8 +50788,9 @@ plans:
           - "@task-plan-review-folder-storage-migration"
         description: |
           What:
-          - Add CLI/API affordances to attach/list/inspect/remove review resources, especially screenshots and log/evidence files.
-          - Add daemon routes for review resource metadata and bytes using the shared resolver.
+          - Add exact review-resource CLI commands matching the plan resource shape: `kspec review resource add <review-ref> <source-file> --id <resource-id> --path <relative-path> [--label <label>] [--description <text>] [--content-type <mime>] [--replace] [--json]`; `kspec review resource list <review-ref> [--json]`; `kspec review resource get <review-ref> <resource-id> [--json]`; `kspec review resource remove <review-ref> <resource-id> [--force] [--json]`.
+          - `review resource add` requires explicit `--id` and `--path`; id or path collisions fail with `resource_conflict` unless `--replace` is supplied. Replacement updates one existing resource id, replaces file bytes and metadata, removes the old file if the path changes, and refuses to overwrite a different resource id's path. `remove` deletes the manifest entry and owned file; without `--force` it prompts in interactive mode and fails in non-interactive mode.
+          - Add exact review-resource daemon routes: `GET /api/reviews/:ref/resources`, `GET /api/reviews/:ref/resources/:resourceId`, `GET /api/reviews/:ref/resources/:resourceId/bytes`, `POST /api/reviews/:ref/resources`, and `DELETE /api/reviews/:ref/resources/:resourceId`, with the same id/path/collision/error semantics as the CLI.
           - Update review detail UI so screenshot/evidence resources can be previewed or opened from the review page.
           - Update static export so review resources are copied under `assets/resources/review/<review-ulid>/<relative-path>` and review metadata points at those exported paths.
           - Update cache/WebSocket invalidation so `.kspec/reviews/` directory changes invalidate review list/detail data.
@@ -50772,7 +50803,7 @@ plans:
           - Do not inline screenshots into review YAML or API list payloads.
 
           Testing:
-          - API tests for attach/list/inspect/detail/resource bytes/path rejection and 409 incompatibility responses.
+          - CLI/API tests for `kspec review resource add/list/get/remove`, required `--id`/`--path`, `--replace` collisions, non-interactive remove without `--force`, invalid paths, `--json`, exact review resource routes, resource bytes, and 409 incompatibility responses.
           - Web UI tests for rendering review resource summaries and previewing screenshot resources.
           - Static export test that review screenshots load from `assets/resources/review/<review-ulid>/...`.
 
@@ -50805,7 +50836,7 @@ plans:
           - Run docs checks if applicable.
           - Run focused CLI help/documentation tests if command help output changes.
 
-          Covers: @trait-entity-scoped-local-resources ac-resource-reference-resolves-within-owner, ac-static-export-copies-resource-assets, @plan-resource-derivation-semantics ac-derived-task-keeps-plan-resource-reference, @entity-folder-migration-and-compatibility ac-new-projects-declare-folder-storage, ac-unmigrated-projects-are-blocked-with-guidance
+          Covers: @folder-backed-resource-documentation ac-resource-docs-name-exact-interfaces, ac-upgrade-docs-explain-compatibility-gate
       ```
 
 
@@ -50969,6 +51000,31 @@ plans:
       migration does not create parallel backup files that duplicate git history.
 
 
+      ### Final command and route decisions
+
+
+      - Plan resources use `kspec plan resource add|list|get|remove`; review resources use `kspec
+      review resource add|list|get|remove`. `add` always requires explicit `--id` and `--path`.
+      Collisions fail unless `--replace` is present. `remove` requires `--force` in non-interactive
+      mode.
+
+      - Plan resource routes are `/api/plans/:ref/resources`,
+      `/api/plans/:ref/resources/:resourceId`, and `/api/plans/:ref/resources/:resourceId/bytes`,
+      with `POST` on the collection and `DELETE` on the resource id. Review resource routes mirror
+      this under `/api/reviews/:ref/resources`.
+
+      - Plan import validates `./resources/` links against a sibling `resources.yaml` plus sibling
+      `resources/` directory. Plan set validates links against the existing plan manifest. Plan
+      derive validates task `resource_refs` against the source plan manifest.
+
+      - The only task-resource materialization flag is `kspec plan derive ...
+      --materialize-resources`. Default derivation keeps versioned plan-owned references.
+
+      - Rebuild commands are exact per-domain commands: `kspec plan rebuild-index` and `kspec review
+      rebuild-index`, with `--dry-run`, `--repair`, `--force`, and `--json`. There is no unspecified
+      shared alternative in this plan.
+
+
       ### Main implementation risks
 
 
@@ -51003,3 +51059,8 @@ plans:
           semantics"
         author: Jacob Chapel
         created_at: 2026-05-22T20:17:06.925Z
+      - _ulid: 01KS8P59PF5WN3Z1DQKZV2V465
+        content: "Address review @01KS8NGVRBMTVRCP6DSXZTBKQE blockers: exact resource commands/routes, exact
+          rebuild-index commands, corrected coverage overclaims, concrete resource delete coverage"
+        author: Jacob Chapel
+        created_at: 2026-05-22T20:31:20.271Z
