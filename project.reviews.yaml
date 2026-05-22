@@ -221129,7 +221129,94 @@ reviews:
     slugs: []
     title: "Strict re-review: Folder-Backed Plans, Reviews, and Local Resources"
     author: codex
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Dry-run succeeded for plans/folder-backed-plans-reviews-and-resources.md; no changes made;
+          derived specs/tasks 0.
+        name: Plan import dry-run
+        required: true
+        runner: kspec plan import --dry-run
+        created_at: 2026-05-22T22:13:08.072Z
+        completed_at: 2026-05-22T22:13:08.072Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation passed with existing warnings; schema and references OK; exit 0 due to
+          warnings-ok.
+        name: Project validation baseline
+        required: true
+        runner: kspec validate --warnings-ok
+        created_at: 2026-05-22T22:13:11.963Z
+        completed_at: 2026-05-22T22:13:11.963Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Verified task-update-plan-review-storage-specs names final statuses plan-crud implemented,
+          review-record-storage-and-identity implemented, daemon-entity-cache in_progress;
+          task-folder-backed-plan-review-cache-invalidation owns daemon-entity-cache
+          ac-folder-backed-entity-directory-invalidation for both .kspec/plans/<ulid>/ and
+          .kspec/reviews/<ulid>/ paths; content_type behavior is exact and non-null with
+          unknown-extension octet-stream fallback.
+        name: Prior blocker verification
+        required: true
+        runner: manual plan review
+        created_at: 2026-05-22T22:13:15.890Z
+        completed_at: 2026-05-22T22:13:15.890Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Existing-spec update task names exact refs @plan-crud,
+          @review-record-storage-and-identity, @daemon-entity-cache; exact AC ids ac-1, ac-2, ac-3,
+          ac-folder-backed-entity-directory-invalidation; final Given/When/Then wording; final
+          implementation statuses; and verification commands.
+        name: Existing spec update explicitness
+        required: true
+        runner: manual plan review
+        created_at: 2026-05-22T22:13:19.935Z
+        completed_at: 2026-05-22T22:13:19.935Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Implementation-relevant decisions are embedded in task bodies: resource
+          commands/routes/errors, rebuild-index envelopes and exit codes, 1.2 compatibility gates,
+          path containment, cache invalidation ownership, and derive default-reference versus
+          materialize behavior."
+        name: Standalone task executability
+        required: true
+        runner: manual plan review
+        created_at: 2026-05-22T22:13:24.144Z
+        completed_at: 2026-05-22T22:13:24.144Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Lean plan/review indexes, exact resource CLI/API surfaces, rebuild-index JSON/exit codes,
+          upgrade compatibility, path containment, default reference derivation,
+          materialize-resources copy mode, and conversion scope plans then reviews only remain
+          intact.
+        name: Approved design contract sanity check
+        required: true
+        runner: manual plan review
+        created_at: 2026-05-22T22:13:28.177Z
+        completed_at: 2026-05-22T22:13:28.177Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: No blocker-level ambiguity found in current draft. Ownership boundaries and expected tests
+          are explicit for each task.
+        name: No ambiguous worker decisions
+        required: true
+        runner: manual plan review
+        created_at: 2026-05-22T22:13:32.064Z
+        completed_at: 2026-05-22T22:13:32.064Z
     events:
       - _ulid: 01KS8VY4SK3Q5VMTTQAE5E1E2D
         actor: codex
@@ -221137,9 +221224,81 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-05-22T22:12:17.332Z
+      - _ulid: 01KS8VZKZJ10H75XVK7CXQ4FX1
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-05-22T22:13:05.650Z
+      - _ulid: 01KS8VZQV2NHAZ0VKQ24KPVE7K
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Plan import dry-run
+        timestamp: 2026-05-22T22:13:09.602Z
+      - _ulid: 01KS8VZVK611ZBXS05AYJP4B2G
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Project validation baseline
+        timestamp: 2026-05-22T22:13:13.447Z
+      - _ulid: 01KS8VZZHK6V335YV6Z5BH9DFT
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Prior blocker verification
+        timestamp: 2026-05-22T22:13:17.491Z
+      - _ulid: 01KS8W03H5FYRYFWR9CZQ2ZRZR
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Existing spec update explicitness
+        timestamp: 2026-05-22T22:13:21.573Z
+      - _ulid: 01KS8W07KBEFD7HP7YRHFFV456
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Standalone task executability
+        timestamp: 2026-05-22T22:13:25.739Z
+      - _ulid: 01KS8W0BFNWSM8QKNEFV1FB1FG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Approved design contract sanity check
+        timestamp: 2026-05-22T22:13:29.717Z
+      - _ulid: 01KS8W0F7RE5MTSXMWAQVXBNXT
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: No ambiguous worker decisions
+        timestamp: 2026-05-22T22:13:33.560Z
+      - _ulid: 01KS8W0KBFF6H5NJEW0KM9FV0N
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-05-22T22:13:37.776Z
+      - _ulid: 01KS8W0KBG03XP6MTC2ASS3S9B
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-22T22:13:37.776Z
     examined_commit: null
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -221147,7 +221306,14 @@ reviews:
       ref: "@plan-folder-backed-plans-reviews-and-local-resources"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-22T22:13:37.775Z
     created_at: 2026-05-22T22:12:17.340Z
-    updated_at: null
+    updated_at: 2026-05-22T22:13:37.776Z
     notes: []
