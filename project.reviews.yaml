@@ -220891,6 +220891,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KS8TXWXYAM548NXE3EZ9YX5V
         timestamp: 2026-05-22T21:54:42.227Z
+      - _ulid: 01KS8TY9R63SZ9MP1JP5A332MW
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KS8TY88GJ3DBSH9JY53TH9SW
+        timestamp: 2026-05-22T21:54:53.830Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -220921,7 +220928,26 @@ reviews:
               existing spec.
             created_at: 2026-05-22T21:54:40.703Z
         kind: blocker
+      - _ulid: 01KS8TY88GJ3DBSH9JY53TH9SW
+        anchor:
+          type: structured
+          field: covers
+          ref: "@task-plan-resource-api-ui-static"
+          section: tasks
+        entries:
+          - _ulid: 01KS8TY88GQNKHH34NA15V1CGV
+            author: Jacob Chapel
+            body: The plan adds @daemon-entity-cache ac-folder-backed-entity-directory-invalidation, but no
+              implementation task claims that AC in its Covers line. This task says it updates
+              .kspec/plans/ directory invalidation, and @task-review-screenshot-resource-ui says it
+              updates .kspec/reviews/ invalidation, but neither Covers the new cache AC. A derived
+              worker could complete all claimed ACs while the newly added cache requirement remains
+              untracked. Add explicit Covers ownership for @daemon-entity-cache
+              ac-folder-backed-entity-directory-invalidation, with the plan/review split stated on
+              the relevant task(s), or create a dedicated cache task.
+            created_at: 2026-05-22T21:54:52.304Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-22T21:54:03.960Z
-    updated_at: 2026-05-22T21:54:40.703Z
+    updated_at: 2026-05-22T21:54:52.304Z
     notes: []
