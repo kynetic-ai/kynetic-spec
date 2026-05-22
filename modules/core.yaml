@@ -16,6 +16,7 @@ traits:
     slugs:
       - trait-folder-backed-entity-1
       - trait-folder-backed-entity
+      - trait-folder-backed-entity
     title: Folder-Backed Entity Trait
     type: trait
     description: |
