@@ -3,7 +3,7 @@ slugs:
   - task-yaml-seed-session-tests
 title: Replace CLI spawns with YAML seeding in session start tests
 type: task
-spec_ref: "@session-start-inbox-triage"
+spec_ref: null
 meta_ref: null
 plan_ref: null
 status: completed
@@ -29,6 +29,14 @@ submission_linkage:
   remote_url: git@github.com:kynetic-ai/kynetic-spec.git
   upstream_ref: refs/heads/main
 session_id: 01KKSTFJA9FJEKS3QJ0J3JKTZY
+history:
+  - author: Jacob Chapel
+    changes:
+      spec_ref:
+        new: null
+        previous: "@session-start-inbox-triage"
+    command: item-delete-ref-cleanup
+    timestamp: 2026-05-22T22:42:34.054Z
 created_at: 2026-03-15T17:05:26.133Z
 started_at: 2026-03-15T22:39:59.261Z
 submitted_at: 2026-03-15T22:51:29.850Z

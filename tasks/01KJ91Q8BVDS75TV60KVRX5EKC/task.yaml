@@ -3,7 +3,7 @@ slugs:
   - task-hierarchical-activity-timeline
 title: Implement hierarchical activity timeline display
 type: task
-spec_ref: "@session-start-activity-timeline"
+spec_ref: null
 meta_ref: null
 plan_ref: null
 status: completed
@@ -17,6 +17,14 @@ priority: 3
 tags:
   - cli
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      spec_ref:
+        new: null
+        previous: "@session-start-activity-timeline"
+    command: item-delete-ref-cleanup
+    timestamp: 2026-05-22T22:42:34.054Z
 created_at: 2026-02-25T00:03:30.299Z
 started_at: 2026-02-25T01:58:11.607Z
 completed_at: 2026-02-25T02:20:59.330Z

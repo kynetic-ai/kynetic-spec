@@ -592,7 +592,6 @@
   slugs: []
   title: Add contextual command hints to session start output
   type: task
-  spec_ref: "@session-start-hints"
   status: completed
   blocked_by: []
   depends_on: []
@@ -10361,7 +10360,6 @@
     - implement-session-start-dependency-display
   title: Implement Session Start Dependency Display
   type: task
-  spec_ref: "@session-start-unlocks"
   plan_ref: "@plan-session-start-output-redesign"
   status: completed
   blocked_by: []
@@ -10379,7 +10377,6 @@
     - implement-session-start-activity-timeline
   title: Implement Session Start Activity Timeline
   type: task
-  spec_ref: "@session-start-activity-timeline"
   plan_ref: "@plan-session-start-output-redesign"
   status: completed
   blocked_by: []
@@ -10398,7 +10395,6 @@
     - implement-session-start-inbox-triage-awareness
   title: Implement Session Start Inbox Triage Awareness
   type: task
-  spec_ref: "@session-start-inbox-triage"
   plan_ref: "@plan-session-start-output-redesign"
   status: completed
   blocked_by: []
@@ -10416,7 +10412,6 @@
     - implement-session-start-computed-json-fields
   title: Implement Session Start Computed JSON Fields
   type: task
-  spec_ref: "@session-start-computed-json"
   plan_ref: "@plan-session-start-output-redesign"
   status: completed
   blocked_by: []
@@ -10618,7 +10613,6 @@
     - task-hierarchical-activity-timeline
   title: Implement hierarchical activity timeline display
   type: task
-  spec_ref: "@session-start-activity-timeline"
   status: completed
   blocked_by: []
   depends_on: []
@@ -18268,7 +18262,6 @@
     - task-yaml-seed-session-tests
   title: Replace CLI spawns with YAML seeding in session start tests
   type: task
-  spec_ref: "@session-start-inbox-triage"
   status: completed
   blocked_by: []
   depends_on: []

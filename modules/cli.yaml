@@ -11317,34 +11317,6 @@ requirements:
         when: JSON output renders
     tags: []
     requirements:
-      - _ulid: 01KF2C60QQP8CT8F77PTRGQ7YB
-        slugs:
-          - session-start-hints
-        title: Contextual Command Hints
-        type: requirement
-        description: "Add a 'Quick Commands' section to session start output showing relevant commands based
-          on current state. Commands are contextual: task note/complete when active work exists,
-          task start when ready tasks available, inbox promote for oldest inbox item, git commit
-          when working tree dirty. Uses actual refs from session context for copy-paste
-          convenience."
-        status:
-          maturity: draft
-          implementation: implemented
-        depends_on: []
-        implements: []
-        relates_to: []
-        tests: []
-        acceptance_criteria:
-          - given: ready tasks exist in the project
-            id: ac-1
-            then: Quick Commands section shows 'kspec task start @ref' hint
-            when: kspec session start runs
-          - given: a task is in progress
-            id: ac-2
-            then: Quick Commands section shows task note and complete hints
-            when: kspec session start runs
-        tags: []
-        created: 2026-01-16T03:04:33.272Z
       - _ulid: 01KJ74T828FK1YK7JQ17NFMXM8
         slugs:
           - session-start-unlocks
@@ -11386,73 +11358,6 @@ requirements:
               unlocks count is computed
         tags: []
         created: 2026-02-24T06:19:05.160Z
-        notes: []
-      - _ulid: 01KJ74T85REJ1B436WE944N061
-        slugs:
-          - session-start-activity-timeline
-        title: Session Start Activity Timeline
-        type: requirement
-        description: |
-          Merge recently completed tasks and git commits into a single
-          chronological "Recent Activity" timeline. Commits matched to tasks
-          via Task: @slug trailer in commit body. Deduplicates linked entries.
-          Replaces separate "Recently Completed" and "Recent Commits" sections
-          in human output. Raw arrays preserved in JSON.
-        status:
-          maturity: draft
-          implementation: implemented
-        depends_on:
-          - "@session-start-unlocks"
-        implements: []
-        relates_to: []
-        tests: []
-        traits: []
-        acceptance_criteria:
-          - given: |
-              completed tasks and git commits exist
-            id: ac-activity-merge
-            then: |
-              both sources appear in a single chronological list
-            when: |
-              recent activity section renders
-          - given: |
-              a commit has Task: @slug trailer in its body
-            id: ac-activity-trailer-link
-            then: |
-              that commit shows linked task info alongside it
-            when: |
-              recent activity renders
-          - given: |
-              activity items have mixed timestamps
-            id: ac-activity-sort
-            then: task groups sorted by most recent event (completion or latest commit); commits within a group
-              sorted chronologically
-            when: |
-              timeline renders
-          - given: "multiple commits are linked to the same task via Task: @slug trailers"
-            id: ac-activity-dedup
-            then: commits are grouped under a single task entry as nested children, not shown as separate
-              top-level entries
-            when: |
-              timeline renders
-          - given: |
-              --no-git flag is passed
-            id: ac-activity-no-git
-            then: |
-              only task completions shown, no commit entries
-            when: |
-              activity timeline renders
-          - given: linked commits and completed tasks exist
-            id: ac-activity-hierarchy
-            then: tasks are top-level entries and linked commits appear nested beneath their task with a visual
-              connector
-            when: human-readable timeline renders
-          - given: "a commit has no Task: @slug trailer"
-            id: ac-activity-orphan
-            then: the commit appears as a standalone indented entry visually distinct from task entries
-            when: human-readable timeline renders
-        tags: []
-        created: 2026-02-24T06:19:05.272Z
         notes: []
       - _ulid: 01KJ74T891RXXWJMVM5WZN5FQ5
         slugs:
@@ -11503,53 +11408,6 @@ requirements:
               triage status computed
         tags: []
         created: 2026-02-24T06:19:05.377Z
-        notes: []
-      - _ulid: 01KJ74T8C9CHXCAT6FRW3DDRF5
-        slugs:
-          - session-start-computed-json
-        title: Session Start Computed JSON Fields
-        type: requirement
-        description: |
-          JSON output includes a computed key with derived data: inbox triage
-          counts, task unlocks map, and merged activity timeline. Raw source
-          arrays (recently_completed, recent_commits) preserved unchanged.
-          Computed fields are additive - no existing JSON fields modified.
-        status:
-          maturity: draft
-          implementation: implemented
-        depends_on:
-          - "@session-start-unlocks"
-          - "@session-start-activity-timeline"
-          - "@session-start-inbox-triage"
-        implements: []
-        relates_to: []
-        tests: []
-        traits: []
-        acceptance_criteria:
-          - given: |
-              --json flag used
-            id: ac-computed-inbox
-            then: >
-              computed.inbox_untriaged_count, computed.inbox_deferred_count, and
-              computed.inbox_total are present
-            when: |
-              JSON output renders
-          - given: |
-              --json flag used
-            id: ac-computed-unlocks
-            then: |
-              computed.task_unlocks map (ref to count) present for tasks with dependents
-            when: |
-              JSON output renders
-          - given: |
-              --json flag used
-            id: ac-computed-activity
-            then: |
-              computed.recent_activity timeline array present with merged entries
-            when: |
-              JSON output renders
-        tags: []
-        created: 2026-02-24T06:19:05.481Z
         notes: []
     created: 2026-01-16T03:04:22.540Z
   - _ulid: 01KFFG8XS20YMJR11CA4YZNX9N
