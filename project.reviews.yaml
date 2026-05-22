@@ -220700,7 +220700,78 @@ reviews:
     slugs: []
     title: "Plan review: Folder-Backed Plans, Reviews, and Local Resources (cycle 6)"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec plan import plans/folder-backed-plans-reviews-and-resources.md --dry-run exited 0
+          and reported no state changes.
+        name: Plan import dry-run
+        required: true
+        runner: kspec plan import --dry-run
+        created_at: 2026-05-22T21:11:50.453Z
+        completed_at: 2026-05-22T21:11:50.453Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate --warnings-ok exited 0; schema and references are OK with existing warnings
+          only.
+        name: Project validation baseline
+        required: true
+        runner: kspec validate --warnings-ok
+        created_at: 2026-05-22T21:11:54.433Z
+        completed_at: 2026-05-22T21:11:54.433Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Verified blockers from @01KS8MV5, @01KS8NGVRBMTVRCP6DSXZTBKQE,
+          @01KS8PCN04Z6ACMYWCMMJFRT6A, @01KS8PXHDS0CAA9W4NPDC9Q25V, and @01KS8QYW7SQFY2DKWN6E894BN8
+          are addressed in the current draft.
+        name: Prior blocker verification
+        required: true
+        runner: manual cycle comparison
+        created_at: 2026-05-22T21:11:58.493Z
+        completed_at: 2026-05-22T21:11:58.493Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Plan/review resource CLI commands define JSON success/error envelopes, source-file errors,
+          owner-not-found errors, confirmation failures, exact exit codes, API routes, multipart
+          upload fields, exact replace values, missing-file errors, conflict status, and the shared
+          API entity_storage_incompatible 409 envelope.
+        name: Command and API specificity
+        required: true
+        runner: manual plan review
+        created_at: 2026-05-22T21:12:02.397Z
+        completed_at: 2026-05-22T21:12:02.397Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Every plan AC is claimed by concrete implementation or docs owner tasks; docs-only ACs are
+          limited to the docs task; inherited trait ACs needed for plan/review owners are claimed
+          where integration behavior is required; referenced existing specs/functions were checked.
+        name: Coverage and references
+        required: true
+        runner: manual plan review
+        created_at: 2026-05-22T21:12:06.406Z
+        completed_at: 2026-05-22T21:12:06.406Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Spec update, shared folder/resource traits, and version gates precede storage managers;
+          migration precedes APIs, UI, static export, and docs; no P1 task depends on a
+          lower-priority task.
+        name: Dependency ordering
+        required: true
+        runner: manual dependency review
+        created_at: 2026-05-22T21:12:10.418Z
+        completed_at: 2026-05-22T21:12:10.418Z
     events:
       - _ulid: 01KS8RE4RRSPZJZK6BK00TQWGW
         actor: Jacob Chapel
@@ -220708,9 +220779,74 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-05-22T21:11:07.288Z
+      - _ulid: 01KS8RFCDV4YJ4071H5X5MRM1G
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-05-22T21:11:47.899Z
+      - _ulid: 01KS8RFGF973ZEVBMJ4J2613W7
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Plan import dry-run
+        timestamp: 2026-05-22T21:11:52.041Z
+      - _ulid: 01KS8RFMBGWQ0HN4CKPADBRKCM
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Project validation baseline
+        timestamp: 2026-05-22T21:11:56.016Z
+      - _ulid: 01KS8RFRAGBS5524J7TVV8WDJA
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Prior blocker verification
+        timestamp: 2026-05-22T21:12:00.080Z
+      - _ulid: 01KS8RFW3HCFMG1FW2K2DSP9TM
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Command and API specificity
+        timestamp: 2026-05-22T21:12:03.953Z
+      - _ulid: 01KS8RFZYJJHZKNGZ1J7A41XW5
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Coverage and references
+        timestamp: 2026-05-22T21:12:07.890Z
+      - _ulid: 01KS8RG3VYNN7T9RVPZR3MD39Q
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering
+        timestamp: 2026-05-22T21:12:11.902Z
+      - _ulid: 01KS8RG8Q013HCDZAYEH9118JD
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-05-22T21:12:16.864Z
+      - _ulid: 01KS8RG8Q0FFD1GTPAWXXD71NS
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-22T21:12:16.864Z
     examined_commit: null
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -220718,7 +220854,14 @@ reviews:
       ref: "@plan-folder-backed-plans-reviews-and-local-resources"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-22T21:12:16.863Z
     created_at: 2026-05-22T21:11:07.293Z
-    updated_at: null
+    updated_at: 2026-05-22T21:12:16.864Z
     notes: []
