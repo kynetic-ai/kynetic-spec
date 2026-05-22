@@ -3147,6 +3147,7 @@ requirements:
   - _ulid: 01KS8XAVAA8E2V5CAFZSSH9CQN
     slugs:
       - entity-folder-migration-and-compatibility-1
+      - entity-folder-migration-and-compatibility
     title: Entity Folder Migration and Compatibility
     type: requirement
     description: |
