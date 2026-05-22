@@ -29560,24 +29560,6 @@
   submitted_at: 2026-05-19T14:35:23.086Z
   completed_at: 2026-05-19T15:18:02.547Z
   automation: eligible
-- _ulid: 01KS8X8YC21RF4JP3XB10DNP40
-  slugs:
-    - task-update-plan-review-storage-specs
-  title: Update existing plan and review storage specs for folder-backed layouts
-  type: task
-  spec_ref: "@entity-folder-migration-and-compatibility"
-  plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
-  status: pending
-  blocked_by: []
-  depends_on: []
-  priority: 1
-  tags:
-    - specs
-    - plans
-    - reviews
-  notes_count: 0
-  todos_count: 0
-  created_at: 2026-05-22T22:35:39.778Z
 - _ulid: 01KS8X8YRSCG64P10HX4H63MZ9
   slugs:
     - task-folder-backed-entity-trait-foundation
