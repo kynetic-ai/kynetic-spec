@@ -220869,7 +220869,17 @@ reviews:
     slugs: []
     title: "Strict plan review: Folder-Backed Plans, Reviews, and Local Resources"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ran kspec plan import plans/folder-backed-plans-reviews-and-resources.md --dry-run; parsed
+          as draft plan with full document stored and no specs/tasks derived.
+        name: Plan import dry-run
+        required: true
+        created_at: 2026-05-22T21:55:32.108Z
+        completed_at: 2026-05-22T21:55:32.108Z
     events:
       - _ulid: 01KS8TWS1PFDJWD1GSPTKEZ4CX
         actor: Jacob Chapel
@@ -220905,6 +220915,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KS8TYKS4WDB21MNWCBVAGDFN
         timestamp: 2026-05-22T21:55:05.634Z
+      - _ulid: 01KS8TZGKGQZWWHX48E52QEJ30
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Plan import dry-run
+        timestamp: 2026-05-22T21:55:33.616Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -220976,5 +220993,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-22T21:54:03.960Z
-    updated_at: 2026-05-22T21:55:04.100Z
+    updated_at: 2026-05-22T21:55:32.108Z
     notes: []
