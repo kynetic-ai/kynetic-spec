@@ -220405,6 +220405,18 @@ reviews:
         runner: kspec validate --warnings-ok
         created_at: 2026-05-22T21:04:42.964Z
         completed_at: 2026-05-22T21:04:42.964Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Cycle-1 through cycle-3 blockers and the cycle-4
+          owner-not-found/missing-file/shared-envelope code mappings are mostly addressed, but the
+          cycle-4 CLI findings also required exit behavior for each JSON failure case and the
+          current plan still does not define it.
+        name: Prior blocker verification
+        required: true
+        created_at: 2026-05-22T21:04:54.321Z
+        completed_at: 2026-05-22T21:04:54.321Z
     events:
       - _ulid: 01KS8QYW7N9MM9BF0JZ8WNKA5Q
         actor: Jacob Chapel
@@ -220475,6 +220487,13 @@ reviews:
           status: pass
           name: Project validation baseline
         timestamp: 2026-05-22T21:04:44.544Z
+      - _ulid: 01KS8R2T0M9JJ6DS864FC0PZEM
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Prior blocker verification
+        timestamp: 2026-05-22T21:04:55.828Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -220598,5 +220617,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-22T21:02:47.033Z
-    updated_at: 2026-05-22T21:04:42.964Z
+    updated_at: 2026-05-22T21:04:54.321Z
     notes: []
