@@ -51177,8 +51177,8 @@ plans:
 
       - Static export must copy resource files to deterministic exported asset paths so the static
       UI can load images/PDFs offline.
-    status: draft
-    approved_at: null
+    status: approved
+    approved_at: 2026-05-22T22:35:13.184Z
     branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
     derived_specs: []
     derived_tasks: []
