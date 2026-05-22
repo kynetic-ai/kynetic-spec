@@ -220432,6 +220432,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KS8R1B6SJDKQKCTPHMKDMMGN
         timestamp: 2026-05-22T21:04:09.536Z
+      - _ulid: 01KS8R1R5NE3CPMV3SJRFDE8PN
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KS8R1PKKJHHJ59HVFR44D41S
+        timestamp: 2026-05-22T21:04:21.173Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -220535,7 +220542,25 @@ reviews:
               destination resource path."
             created_at: 2026-05-22T21:04:07.897Z
         kind: blocker
+      - _ulid: 01KS8R1PKKJHHJ59HVFR44D41S
+        anchor:
+          type: structured
+          ref: "@task-review-screenshot-resource-ui"
+          section: tasks
+        entries:
+          - _ulid: 01KS8R1PKKBAEZMV704SMTFV5W
+            author: Jacob Chapel
+            body: "The review resource add command has the same undefined JSON failure for the required
+              `<source-file>` input. The task defines errors for resource id/path, collisions,
+              missing review/resource, confirmation, cancellation, and incompatible storage, but not
+              for a source file that is missing, unreadable, a directory, or otherwise cannot be
+              copied. Impact: review resource CLI behavior can diverge from plan resource CLI
+              behavior for a required argument. Exact fix: define the JSON code, envelope fields,
+              message guidance, and exit behavior for source-file read/copy failures, matching the
+              plan command where intended."
+            created_at: 2026-05-22T21:04:19.571Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-22T21:02:47.033Z
-    updated_at: 2026-05-22T21:04:07.897Z
+    updated_at: 2026-05-22T21:04:19.571Z
     notes: []
