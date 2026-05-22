@@ -29560,25 +29560,6 @@
   submitted_at: 2026-05-19T14:35:23.086Z
   completed_at: 2026-05-19T15:18:02.547Z
   automation: eligible
-- _ulid: 01KS8X8YRSCG64P10HX4H63MZ9
-  slugs:
-    - task-folder-backed-entity-trait-foundation
-  title: Implement a shared folder-backed entity trait foundation
-  type: task
-  spec_ref: "@trait-folder-backed-entity"
-  plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
-  status: pending
-  blocked_by: []
-  depends_on:
-    - "@task-update-plan-review-storage-specs"
-  priority: 1
-  tags:
-    - storage
-    - schema
-    - parser
-  notes_count: 0
-  todos_count: 0
-  created_at: 2026-05-22T22:35:40.185Z
 - _ulid: 01KS8X8Z3VKV0JH9M7HJGPVXJ2
   slugs:
     - task-entity-local-resource-model
