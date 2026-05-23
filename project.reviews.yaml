@@ -226926,9 +226926,25 @@ reviews:
           kind: nit
           thread_ulid: 01KSBC1KE3FZCX4FGZSQR96ZH6
         timestamp: 2026-05-23T21:32:18.231Z
+      - _ulid: 01KSBC1YQBA8NE1SC8A61R1C5X
+        actor: codex-reviewer
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-23T21:32:28.268Z
+      - _ulid: 01KSBC1YQCKCRD19HQ18XH4T89
+        actor: codex-reviewer
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-23T21:32:28.268Z
     examined_commit: c81ed98ce2337fdd426aec3da370bb73d29d4b6f
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -226994,7 +227010,14 @@ reviews:
               quality/source scanning, AC coverage, integration with daemon fixture helpers."
             created_at: 2026-05-23T21:32:16.708Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex-reviewer
+        role: reviewer
+        created_at: 2026-05-23T21:32:28.267Z
     created_at: 2026-05-23T21:19:42.759Z
-    updated_at: 2026-05-23T21:32:16.708Z
+    updated_at: 2026-05-23T21:32:28.268Z
     notes: []

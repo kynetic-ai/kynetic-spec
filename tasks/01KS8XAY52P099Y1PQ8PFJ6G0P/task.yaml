@@ -75,7 +75,7 @@ description: >
 spec_ref: "@folder-backed-plan-storage-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-entity-storage-version-compatibility-gates-1"
@@ -95,7 +95,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: 01KSB8CYW8Q9G8ANQKHKXA86HQ
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -303,6 +303,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-23T21:19:46.953Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KSB8CYW8Q9G8ANQKHKXA86HQ
+    command: review-verdict-needs-work
+    timestamp: 2026-05-23T21:32:30.531Z
 created_at: 2026-05-22T22:36:45.090Z
 started_at: 2026-05-23T20:29:07.105Z
 submitted_at: 2026-05-23T21:16:44.200Z
