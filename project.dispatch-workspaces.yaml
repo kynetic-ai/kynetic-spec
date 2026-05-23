@@ -10951,7 +10951,7 @@ workspaces:
         head: 984af0c7589a8044eedb252a02bd2cde4992f69d
         last_seen_at: 2026-05-23T22:46:01.043Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-folder-backed-plan-storage-manager-1-01ks8xay
-  - active_role: worker
+  - active_role: null
     base_branch_point: 44fa00bca19764eb8af3e57983f8a0d01f861e68
     bootstrap:
       status: succeeded
@@ -11421,12 +11421,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-23T22:59:48.421Z
+      updated_at: 2026-05-23T23:08:00.581Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-23T22:59:48.421Z
+      updated_at: 2026-05-23T23:08:00.581Z
     integration:
       status: pending
       detail: null
@@ -11434,17 +11434,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
       target_commit: 44fa00bca19764eb8af3e57983f8a0d01f861e68
-      updated_at: 2026-05-23T22:59:48.421Z
-    lifecycle_state: active
+      updated_at: 2026-05-23T23:08:00.581Z
+    lifecycle_state: ready
     resolved_base_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
     task_ref: "@01KS8XAYMQSFXPMHEG9FZZ3C36"
     task_slug: task-folder-backed-review-storage-manager-1
     timestamps:
       closed_at: null
       last_active_at: 2026-05-23T22:45:56.601Z
-      last_reconciled_at: 2026-05-23T22:59:48.421Z
+      last_reconciled_at: 2026-05-23T23:08:00.581Z
       created_at: 2026-05-23T21:19:06.228Z
-      updated_at: 2026-05-23T22:59:48.421Z
+      updated_at: 2026-05-23T23:08:00.581Z
     workspace_id: dispatch-workspace-01KS8XAYMQSFXPMHEG9FZZ3C36
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
