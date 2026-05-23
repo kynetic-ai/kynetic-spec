@@ -215,3 +215,74 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-23T17:29:57.832Z
+  - _ulid: 01KSB1G3T0YE0AK7TSCVQFTY3Q
+    content: >-
+      Fix cycle 3 complete (commit ae12bb9916): addressed all three reviewer blockers.
+
+
+      Blocker 3 (countMonolithicEntries):
+
+      - Replaced the entry-count heuristic with the AC-stated index/folder drift check in
+      src/parser/entity-storage-compatibility.ts. detectPartialLayoutForDomain now reads index ULIDs
+      from project.plans.yaml/project.reviews.yaml and lists .kspec/<domain>/<ulid>/ directories
+      whose authoritative sidecar (plan.yaml/review.yaml) is present, reporting BOTH directions of
+      drift (entries without folders AND folders without entries). Valid folder-backed layouts (lean
+      index entry + matching folder) now pass — verified by re-running the reviewer's exact probe.
+
+
+      Blockers 1 and 2 (route cache fast-path):
+
+      - Moved the strict-gate enforcement to cache warm-up so the route's cache-ready fast path
+      becomes safe. src/daemon/entity-cache.ts now runs requirePlanFolderStorage(ctx) /
+      requireReviewFolderStorage(ctx) BEFORE loadPlans(ctx) / loadReviewRecords(ctx) in
+      doLoadDomain. The existing catch handler transitions the domain to "degraded" with the
+      EntityStorageCompatibilityError stored as lastError on incompatible projects; the daemon
+      route's cache-ready short-circuit therefore only serves data that already passed the strict
+      gate, preserving @daemon-read-path ac-no-per-request-sync (no per-request initContext on the
+      warm path) and satisfying @entity-folder-migration-and-compatibility-1
+      ac-unmigrated-projects-are-blocked-with-guidance (incompatible projects route through the
+      gate-at-route-entry fallback where the structured 409 is emitted).
+
+      - getCacheDiagnostics now surfaces errorReason + recoveryGuidance for plans/reviews when
+      lastError is an EntityStorageCompatibilityError, mirroring the existing task-storage
+      diagnostic channel.
+
+
+      Test coverage (all behavioural, no source-scanning):
+
+      - tests/entity-storage-compatibility.test.ts: drift tests cover valid folder-backed layout
+      (lean index + matching folder passes), index entries without matching folders, orphan folders
+      without index entries, mixed drift, and subdirectories without the sidecar are ignored.
+
+      - tests/daemon-entity-cache.test.ts: 4 new tests assert plans/reviews domains transition to
+      degraded with the correct errorReason (legacy_plan_storage_removed,
+      missing_plan_folder_storage, legacy_review_storage_removed, partial_entity_storage_layout) on
+      incompatible projects. Existing detail-on-demand tests updated to declare folder-backed
+      storage so they exercise the post-warm-up contract.
+
+
+      Test impact on multi-dir fixture: pre-existing daemon-entity-cache.test.ts cases that
+      exercised plans/reviews against the kynetic 1.1 multi-dir fixture were updated to override the
+      fixture manifest with the 1.2 folder-declared shape so they continue to exercise their
+      original AC (detail-on-demand, refs endpoint loading contract). No tests skipped or coverage
+      reduced.
+
+
+      Verification (commit ae12bb9916):
+
+      - npm test: 2503 suites passed / 9396 tests passed / 109 skipped / 0 failures.
+
+      - npm run build: clean (TypeScript, shared, daemon, web UI, docs search, plugin).
+
+      - kspec validate --warnings-ok: passes (only pre-existing unresolved-target warnings in
+      unrelated files).
+
+      - Reviewer's executable probe (folder + lean index entry) now passes requirePlanFolderStorage.
+
+
+      Protected live projects (/home/chapel/Projects/kynetic-spec,
+      /home/chapel/Projects/kynetic-spec-dispatch) untouched: this work runs against tests/fixtures
+      and createTempDir() workspaces only.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-23T18:27:57.888Z
