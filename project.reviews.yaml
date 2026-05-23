@@ -225401,3 +225401,29 @@ reviews:
     created_at: 2026-05-23T09:37:14.092Z
     updated_at: 2026-05-23T09:51:16.822Z
     notes: []
+  - _ulid: 01KSAHA1303G3VNXJD346E6BG4
+    slugs: []
+    title: Review entity storage version and incompatibility gates
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KSAHA12WVA1CKTW3B50W154K
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-23T13:45:01.276Z
+    examined_commit: 2ca12c313383daac0e564ed02b6a77be06c61bf8
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KS8XAWNAQ1AA9SJS8BYH9056"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-23T13:45:01.280Z
+    updated_at: null
+    notes: []
