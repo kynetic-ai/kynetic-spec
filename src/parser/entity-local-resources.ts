@@ -39,6 +39,8 @@ import {
   ResourceManifestSchema,
   type ResourceMetadata,
   ResourceMetadataSchema,
+  ResourcePathSchema,
+  checkResourceRelativePath,
 } from "../schema/resources.js";
 import { readYamlFile, writeYamlFile } from "./yaml.js";
 
@@ -48,6 +50,8 @@ export {
   RESOURCE_MANIFEST_SCHEMA_KEYS,
   ResourceManifestSchema,
   ResourceMetadataSchema,
+  ResourcePathSchema,
+  checkResourceRelativePath,
 };
 export type { ResourceManifest, ResourceMetadata };
 
@@ -211,12 +215,9 @@ export function validateResourceId(id: string): ResourceValidationResult<string>
 
 /**
  * Validate that a string is a safe POSIX-relative path under an entity's
- * `resources/` directory. Rejects:
- *   - empty paths or paths ending in `/`,
- *   - absolute paths (`/`-prefixed),
- *   - paths containing backslashes (Windows-style separators leak),
- *   - paths with `..` or empty segments (traversal),
- *   - paths with literal `.` segments (always redundant; rejected for clarity).
+ * `resources/` directory. Delegates to `checkResourceRelativePath` from the
+ * schema module so the runtime validator and the manifest schema reject
+ * identical shapes.
  *
  * The validator is purely textual — it does not touch the filesystem. Pair
  * it with `resolveResourcePath` to enforce symlink-safe resolution.
@@ -226,54 +227,8 @@ export function validateResourceId(id: string): ResourceValidationResult<string>
 export function validateResourceRelativePath(
   relativePath: string,
 ): ResourceValidationResult<string> {
-  if (typeof relativePath !== "string" || relativePath.length === 0) {
-    return {
-      ok: false,
-      error:
-        "Resource path must be a non-empty POSIX-relative path under the entity resources/ directory.",
-    };
-  }
-  if (relativePath.startsWith("/")) {
-    return {
-      ok: false,
-      error: `Resource path "${relativePath}" uses an absolute path; resource references must be POSIX-relative to the entity's resources/ directory.`,
-    };
-  }
-  if (relativePath.endsWith("/")) {
-    return {
-      ok: false,
-      error: `Resource path "${relativePath}" ends with "/"; it must point to a file inside the entity's resources/ directory.`,
-    };
-  }
-  if (relativePath.includes("\\")) {
-    return {
-      ok: false,
-      error: `Resource path "${relativePath}" contains a backslash; use POSIX-style forward slashes only.`,
-    };
-  }
-
-  const segments = relativePath.split("/");
-  for (const segment of segments) {
-    if (segment === "") {
-      return {
-        ok: false,
-        error: `Resource path "${relativePath}" contains an empty segment ("//"); use a single forward slash between path components.`,
-      };
-    }
-    if (segment === "..") {
-      return {
-        ok: false,
-        error: `Resource path "${relativePath}" contains a parent traversal segment (".."); resource references must stay within the entity's resources/ tree.`,
-      };
-    }
-    if (segment === ".") {
-      return {
-        ok: false,
-        error: `Resource path "${relativePath}" contains a "." segment; use a clean relative path without "./" components.`,
-      };
-    }
-  }
-
+  const error = checkResourceRelativePath(relativePath);
+  if (error !== null) return { ok: false, error };
   return { ok: true, value: relativePath };
 }
 
@@ -343,10 +298,18 @@ export interface ResolvedResourceLocation {
  *
  * The resolver:
  *   1. validates the relative path textually,
- *   2. resolves the realpath of the owner resources root,
- *   3. resolves the realpath of the candidate file,
+ *   2. checks that the owner resources directory is itself a real
+ *      directory (not a symlink to outside the entity tree),
+ *   3. resolves the realpath of the owner resources root and the
+ *      candidate file,
  *   4. requires the candidate realpath to be located *inside* the owner
  *      realpath. Anything outside is rejected with actionable guidance.
+ *
+ * Step 2 is essential: without it, a symlinked `<entity>/resources/`
+ * directory would silently redirect every declared file to whichever
+ * outside tree the symlink targets, and the realpath-based containment
+ * check below would still pass because both the owner and its files
+ * resolve into the same (outside) target.
  *
  * If a `manifest` is supplied, the relative path must additionally appear
  * in the manifest's `resources[*].path` list — undeclared paths are
@@ -374,6 +337,28 @@ export async function resolveResourcePath(options: {
         error: `Resource path "${relativePath}" is not declared in the owning entity's resources.yaml manifest. Add an entry with this path or use an existing declared path.`,
       };
     }
+  }
+
+  let ownerStat;
+  try {
+    ownerStat = await fs.lstat(options.ownerResourcesDir);
+  } catch {
+    return {
+      ok: false,
+      error: `Owning entity has no resources directory yet; declare resources via resources.yaml before resolving "${relativePath}".`,
+    };
+  }
+  if (ownerStat.isSymbolicLink()) {
+    return {
+      ok: false,
+      error: `Resource path "${relativePath}" cannot be resolved: the owning entity's resources/ directory is itself a symlink, which is rejected so all resolution stays inside the entity tree.`,
+    };
+  }
+  if (!ownerStat.isDirectory()) {
+    return {
+      ok: false,
+      error: `Resource path "${relativePath}" cannot be resolved: the owning entity's resources/ path is not a directory.`,
+    };
   }
 
   let realOwner: string;

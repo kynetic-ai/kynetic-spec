@@ -35,6 +35,72 @@ export const ContentTypeSchema = z
   );
 
 /**
+ * Predicate validator for resource paths. Returns an actionable error
+ * string when the path is unsafe, or `null` when it is a clean POSIX
+ * relative path under an entity's `resources/` directory.
+ *
+ * Rejected shapes:
+ *   - empty paths or non-strings,
+ *   - absolute paths (`/`-prefixed),
+ *   - paths ending in `/` (would point at a directory),
+ *   - paths containing backslashes (Windows-style separator leak),
+ *   - paths with `..` segments (parent traversal),
+ *   - paths with literal `.` segments (always redundant),
+ *   - paths with empty segments (`//`).
+ *
+ * Shared between the schema (which uses it to reject unsafe `path` values
+ * at the resources.yaml boundary) and the runtime validator in
+ * `src/parser/entity-local-resources.ts`.
+ *
+ * AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+ */
+export function checkResourceRelativePath(input: unknown): string | null {
+  if (typeof input !== "string" || input.length === 0) {
+    return "Resource path must be a non-empty POSIX-relative path under the entity resources/ directory.";
+  }
+  if (input.startsWith("/")) {
+    return `Resource path "${input}" uses an absolute path; resource references must be POSIX-relative to the entity's resources/ directory.`;
+  }
+  if (input.endsWith("/")) {
+    return `Resource path "${input}" ends with "/"; it must point to a file inside the entity's resources/ directory.`;
+  }
+  if (input.includes("\\")) {
+    return `Resource path "${input}" contains a backslash; use POSIX-style forward slashes only.`;
+  }
+  const segments = input.split("/");
+  for (const segment of segments) {
+    if (segment === "") {
+      return `Resource path "${input}" contains an empty segment ("//"); use a single forward slash between path components.`;
+    }
+    if (segment === "..") {
+      return `Resource path "${input}" contains a parent traversal segment (".."); resource references must stay within the entity's resources/ tree.`;
+    }
+    if (segment === ".") {
+      return `Resource path "${input}" contains a "." segment; use a clean relative path without "./" components.`;
+    }
+  }
+  return null;
+}
+
+/**
+ * Schema for a resource's `path` field. Rejects absolute paths, parent
+ * traversal, backslashes, and empty/redundant segments at the manifest
+ * boundary so unsafe paths cannot reach list/detail/API/static-export
+ * surfaces before the resolver gets a chance to inspect them.
+ *
+ * AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+ */
+export const ResourcePathSchema = z.string().superRefine((value, ctx) => {
+  const error = checkResourceRelativePath(value);
+  if (error !== null) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: error,
+    });
+  }
+});
+
+/**
  * SHA-256 hash pattern: 64 lowercase hex characters.
  */
 export const SHA256_PATTERN = /^[0-9a-f]{64}$/;
@@ -65,7 +131,7 @@ export const GitCommitSchema = z
 export const ResourceMetadataSchema = z.object({
   id: ResourceIdSchema,
   label: z.string().nullable(),
-  path: z.string().min(1, "path must be a non-empty relative path"),
+  path: ResourcePathSchema,
   content_type: ContentTypeSchema,
   bytes: z.number().int().nonnegative(),
   sha256: Sha256Schema,

@@ -388,6 +388,73 @@ describe("entity-scoped local-resources trait foundation", () => {
     });
 
     // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+    it("rejects resolution when the resources/ directory itself is a symlink to outside the entity tree", async () => {
+      const ulid = testUlid("WGT");
+      const entityDir = path.join(specDir, WIDGET_LAYOUT.storageRoot, ulid);
+      await fs.mkdir(entityDir, { recursive: true });
+
+      // Outside dir contains a file matching what a malicious manifest would
+      // declare. If the symlinked resources root were treated as the trust
+      // root, this declared file would resolve "successfully" outside the
+      // entity tree.
+      const outsideDir = path.join(tempDir, "outside-resources");
+      await fs.mkdir(outsideDir, { recursive: true });
+      const escapedSecret = path.join(outsideDir, "secret.txt");
+      await fs.writeFile(escapedSecret, "secret content");
+
+      // Make <entity>/resources itself a symlink to the outside directory.
+      const resourcesDir = path.join(entityDir, RESOURCES_DIR_NAME);
+      try {
+        await fs.symlink(outsideDir, resourcesDir);
+      } catch (err) {
+        const errno = (err as NodeJS.ErrnoException).code;
+        if (errno === "EPERM" || errno === "ENOSYS") return;
+        throw err;
+      }
+
+      const manifest: ResourceManifest = {
+        resources: [
+          {
+            id: "secret",
+            label: null,
+            path: "secret.txt",
+            content_type: "text/plain",
+            bytes: 14,
+            sha256: "0".repeat(64),
+            git_commit: null,
+            git_path: null,
+            description: null,
+          },
+        ],
+      };
+
+      const result = await resolveResourcePath({
+        ownerResourcesDir: resourcesDir,
+        relativePath: "secret.txt",
+        manifest,
+      });
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.error).toMatch(/symlink|escape|not a directory/i);
+      }
+
+      // No path is leaked through the static-export helper either.
+      const exportRoot = path.join(tempDir, "export-out");
+      const exportResult = await copyResourceForStaticExport({
+        ownerResourcesDir: resourcesDir,
+        relativePath: "secret.txt",
+        exportRoot,
+        entityType: WIDGET_LAYOUT.entityType,
+        entityUlid: ulid,
+        manifest,
+      });
+      expect(exportResult.ok).toBe(false);
+
+      // The outside file must remain untouched.
+      await expect(fs.readFile(escapedSecret, "utf-8")).resolves.toBe("secret content");
+    });
+
+    // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
     it("rejects resolution through a symlink that escapes the resources tree", async () => {
       const widget = await createWidget(specDir);
       // Place the secret outside the entity directory entirely.
@@ -1129,6 +1196,60 @@ describe("entity-scoped local-resources trait foundation", () => {
 
       const emptyCt = { ...ok, content_type: "" };
       expect(() => ResourceMetadataSchema.parse(emptyCt)).toThrow();
+    });
+
+    // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+    it("ResourceMetadataSchema rejects absolute, traversal, and backslash paths at the manifest boundary", () => {
+      const base: ResourceMetadata = {
+        id: "x",
+        label: null,
+        path: "ok.txt",
+        content_type: "text/plain",
+        bytes: 1,
+        sha256: "0".repeat(64),
+        git_commit: null,
+        git_path: null,
+        description: null,
+      };
+
+      for (const badPath of [
+        "/etc/passwd",
+        "../secret.txt",
+        "a\\b\\c.png",
+        "",
+        "logs/../escape.txt",
+        "a/./b.txt",
+        "a//b.txt",
+        "a/",
+      ]) {
+        const candidate = { ...base, path: badPath };
+        const parsed = ResourceMetadataSchema.safeParse(candidate);
+        expect(parsed.success, `path "${badPath}" must be rejected by the schema`).toBe(false);
+      }
+    });
+
+    // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+    it("loadResourceManifest rejects a resources.yaml that declares an absolute path", async () => {
+      const widget = await createWidget(specDir);
+      const sha = "0".repeat(64);
+      await fs.writeFile(
+        getResourcesManifestPath(widget.entityDir),
+        `resources:\n  - id: x\n    label: null\n    path: /etc/passwd\n    content_type: text/plain\n    bytes: 1\n    sha256: ${sha}\n    git_commit: null\n    git_path: null\n    description: null\n`,
+        "utf-8",
+      );
+      await expect(loadResourceManifest(widget.entityDir)).rejects.toThrow();
+    });
+
+    // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+    it("loadResourceManifest rejects a resources.yaml that declares a parent-traversal path", async () => {
+      const widget = await createWidget(specDir);
+      const sha = "0".repeat(64);
+      await fs.writeFile(
+        getResourcesManifestPath(widget.entityDir),
+        `resources:\n  - id: y\n    label: null\n    path: ../escape.txt\n    content_type: text/plain\n    bytes: 1\n    sha256: ${sha}\n    git_commit: null\n    git_path: null\n    description: null\n`,
+        "utf-8",
+      );
+      await expect(loadResourceManifest(widget.entityDir)).rejects.toThrow();
     });
 
     // AC: @trait-entity-scoped-local-resources-1 ac-binary-resources-are-not-inlined-into-yaml
