@@ -29827,3 +29827,103 @@
   todos_count: 0
   created_at: 2026-05-22T22:36:47.801Z
   automation: eligible
+- _ulid: 01KSBDY9ZTTX8QSKW7DSJX0ZCJ
+  slugs:
+    - task-align-merge-helper-branch-lock-specs
+  title: Align merge-helper and integration-target specs around branch-lock ownership
+  type: task
+  spec_ref: "@detached-reviewer-merge-helper"
+  plan_ref: "@plan-dispatch-merge-helper-target-lock-hardening"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - spec-update
+    - dispatch
+    - merge-helper
+    - worktree
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-23T22:05:25.882Z
+- _ulid: 01KSBDYACQ93J6FVJBRVWEABYW
+  slugs:
+    - task-rework-detached-reviewer-merge-helper-ephemeral-target
+  title: Rework detached reviewer merge helper to use an ephemeral target worktree
+  type: task
+  spec_ref: "@detached-reviewer-merge-helper"
+  plan_ref: "@plan-dispatch-merge-helper-target-lock-hardening"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-align-merge-helper-branch-lock-specs"
+  priority: 1
+  tags:
+    - dispatch
+    - merge-helper
+    - git
+    - worktree
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-23T22:05:26.295Z
+- _ulid: 01KSBDYARQPE50RZFHSFXMYBS8
+  slugs:
+    - task-add-detached-merge-helper-branch-lock-regressions
+  title: Add regression coverage for helper branch-lock release
+  type: task
+  spec_ref: "@detached-reviewer-merge-helper"
+  plan_ref: "@plan-dispatch-merge-helper-target-lock-hardening"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-rework-detached-reviewer-merge-helper-ephemeral-target"
+  priority: 1
+  tags:
+    - tests
+    - dispatch
+    - merge-helper
+    - worktree
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-23T22:05:26.679Z
+- _ulid: 01KSBDYBAT2344BYHEVDXD745Q
+  slugs:
+    - task-clear-occupied-checkout-degraded-state-on-retry
+  title: Clear occupied-checkout degraded state when target locks are released
+  type: task
+  spec_ref: "@dispatch-remote-branch-sync"
+  plan_ref: "@plan-dispatch-merge-helper-target-lock-hardening"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-align-merge-helper-branch-lock-specs"
+  priority: 2
+  tags:
+    - dispatch
+    - remote-sync
+    - degraded-state
+    - worktree
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-23T22:05:27.258Z
+- _ulid: 01KSBDYBZDDMX2Y3HEGKS67QDF
+  slugs:
+    - task-add-plan-target-lock-e2e-regression
+  title: Add end-to-end plan-target lock regression for manual_merge dispatch
+  type: task
+  spec_ref: "@dispatch-integration-mutation-scope"
+  plan_ref: "@plan-dispatch-merge-helper-target-lock-hardening"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-rework-detached-reviewer-merge-helper-ephemeral-target"
+    - "@task-clear-occupied-checkout-degraded-state-on-retry"
+  priority: 2
+  tags:
+    - tests
+    - dispatch
+    - plan-branch
+    - merge-helper
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-23T22:05:27.917Z

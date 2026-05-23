@@ -1,0 +1,74 @@
+_ulid: 01KSBDYBZDDMX2Y3HEGKS67QDF
+slugs:
+  - task-add-plan-target-lock-e2e-regression
+title: Add end-to-end plan-target lock regression for manual_merge dispatch
+type: task
+description: >
+  What:
+
+  - Add an integration-style regression proving a plan-scoped manual_merge review can merge into a
+  plan integration target without leaving that plan target branch checked out in `.kspec-worktrees`
+  or any helper-created auxiliary worktree.
+
+  - The test should provision a plan-scoped task whose integration target differs from the dispatch
+  root branch, run the reviewer merge helper path, and then run/trigger target push or periodic sync
+  from the dispatch root.
+
+  - Assert the root dispatch checkout can push/sync the plan target branch, `git worktree list
+  --porcelain` has no lingering `branch refs/heads/<plan-target>` in auxiliary worktrees, and the
+  engine does not enter or remain in degraded state for that target.
+
+
+  Why:
+
+  Unit tests around the helper and degraded map are necessary but not sufficient. The incident was
+  the cross-product of plan-scoped target branches, manual_merge reviewer flow, helper guidance, and
+  dispatch remote sync.
+
+
+  How:
+
+  - Reuse existing dispatch engine test helpers for workspace provisioning and manual_merge mode
+  where possible.
+
+  - Keep the test in a temp repo; do not use the live self-hosting checkout or active
+  `.kspec-worktrees`.
+
+  - If full engine orchestration is too heavy for one test, split into a helper-level test plus a
+  dispatch-sync test, but keep assertions tied to the same plan target branch shape.
+
+
+  Testing:
+
+  - npm test -- --fresh tests/agent-dispatch-engine.test.ts
+
+  - npm test -- --fresh tests/detached-reviewer-merge.test.ts
+
+  - npm run typecheck
+
+  - kspec validate --alignment --warnings-ok
+
+  - kspec validate --completeness --warnings-ok
+
+
+  Covers: @dispatch-integration-mutation-scope ac-auxiliary-worktrees-do-not-hold-target-locks;
+  @dispatch-remote-branch-sync ac-push-target-periodic, ac-occupied-checkout-degraded-recovery;
+  @detached-reviewer-merge-helper ac-helper-leaves-no-target-branch-lock
+spec_ref: "@dispatch-integration-mutation-scope"
+plan_ref: "@plan-dispatch-merge-helper-target-lock-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-rework-detached-reviewer-merge-helper-ephemeral-target"
+  - "@task-clear-occupied-checkout-degraded-state-on-retry"
+context: []
+priority: 2
+tags:
+  - tests
+  - dispatch
+  - plan-branch
+  - merge-helper
+vcs_refs: []
+created_at: 2026-05-23T22:05:27.917Z
+todos: []

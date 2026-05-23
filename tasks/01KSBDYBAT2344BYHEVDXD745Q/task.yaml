@@ -1,0 +1,72 @@
+_ulid: 01KSBDYBAT2344BYHEVDXD745Q
+slugs:
+  - task-clear-occupied-checkout-degraded-state-on-retry
+title: Clear occupied-checkout degraded state when target locks are released
+type: task
+description: >
+  What:
+
+  - Update dispatch remote-sync/degraded-target handling so an integration target degraded because
+  `resolveDispatchIntegrationMutationScope()` found the branch checked out elsewhere is retried and
+  cleared once that checkout is no longer present.
+
+  - Preserve hard failures for genuinely unsafe states: dirty target checkout, divergent branch
+  history, missing refs that cannot be fetched, or ambiguous mutation surfaces.
+
+  - Add a focused test where a target first enters degraded state because another worktree has the
+  target branch checked out, the test detaches/removes that worktree, the next sync/push evaluation
+  succeeds or no-ops, and `kspec agent dispatch status`/the engine status object reports no degraded
+  target without restarting the engine.
+
+
+  Why:
+
+  In the incident, detaching the blocking worktree freed the branch, but the dispatch engine still
+  needed a restart to clear cached degraded state and spawn queued work. Operators should not have
+  to restart dispatch after applying the recommended recovery.
+
+
+  How:
+
+  - Locate the degraded-target map/state in `src/agent-runtime/dispatch.ts` and the target sync path
+  that calls `runDispatchIntegrationTargetGit()`/`resolveDispatchIntegrationMutationScope()`.
+
+  - Ensure periodic sync and post-invocation target push paths re-evaluate degraded targets instead
+  of skipping them forever solely because they are degraded.
+
+  - Classify the occupied-checkout error separately enough to report the blocking worktree path
+  while still allowing later retries.
+
+  - Keep branch divergence behavior unchanged unless a successful fast-forward/push proves recovery.
+
+
+  Testing:
+
+  - npm test -- --fresh tests/agent-dispatch-engine.test.ts -t "degraded"
+
+  - npm test -- --fresh tests/dispatch-remote-branch-sync.test.ts
+
+  - npm run typecheck
+
+  - kspec validate --refs --warnings-ok
+
+
+  Covers: @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery;
+  @dispatch-integration-mutation-scope ac-4
+spec_ref: "@dispatch-remote-branch-sync"
+plan_ref: "@plan-dispatch-merge-helper-target-lock-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-align-merge-helper-branch-lock-specs"
+context: []
+priority: 2
+tags:
+  - dispatch
+  - remote-sync
+  - degraded-state
+  - worktree
+vcs_refs: []
+created_at: 2026-05-23T22:05:27.258Z
+todos: []
