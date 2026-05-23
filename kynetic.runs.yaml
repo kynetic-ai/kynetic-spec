@@ -51932,7 +51932,7 @@ runs:
     completed_at: 2026-05-23T13:42:19.428Z
   - _ulid: 01KSAJ9EKTR4QF2HBEH8MXED1W
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -51947,7 +51947,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-23T14:02:51.326Z
-        completed_at: 2026-05-23T14:02:51.326Z
+        completed_at: 2026-05-23T14:03:03.563Z
+        notes: "Friction points: running npm test --fresh and npm run build concurrently contaminated
+          CLI/dist tests, producing two false failures that required a targeted rerun to classify;
+          review evidence logs still have to be written as a free-form nit thread, but existing
+          observation @01KR2JD1 already tracks lack of first-class review evidence placement."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-23T14:03:03.563Z
+        completed_at: 2026-05-23T14:03:03.563Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-23T14:02:10.938Z
