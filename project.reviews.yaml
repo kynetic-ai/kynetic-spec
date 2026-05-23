@@ -227355,6 +227355,19 @@ reviews:
         runner: kspec validate
         created_at: 2026-05-23T23:02:15.087Z
         completed_at: 2026-05-23T23:02:15.087Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Direct oxlint on the 8 changed files exited 1. The hard error is the pre-existing
+          no-source-scanning hit at tests/daemon-api/helpers.ts:287 (line unchanged from base);
+          additional no-shadow warnings are also pre-existing. No new blocking lint regression
+          identified in this review.
+        name: oxlint changed files
+        required: false
+        runner: oxlint
+        created_at: 2026-05-23T23:02:27.175Z
+        completed_at: 2026-05-23T23:02:27.175Z
     events:
       - _ulid: 01KSBGAX0KGPDF06GHVVAFE5AG
         actor: Jacob Chapel
@@ -227411,6 +227424,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-05-23T23:02:17.301Z
+      - _ulid: 01KSBH6RS3860E9N1935R5CM2J
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: oxlint changed files
+        timestamp: 2026-05-23T23:02:28.899Z
     examined_commit: 984af0c7589a8044eedb252a02bd2cde4992f69d
     external_links: []
     lifecycle_state: open
@@ -227447,5 +227467,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-05-23T22:47:15.738Z
-    updated_at: 2026-05-23T23:02:15.087Z
+    updated_at: 2026-05-23T23:02:27.175Z
     notes: []
