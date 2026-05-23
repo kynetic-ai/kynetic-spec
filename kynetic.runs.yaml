@@ -51932,7 +51932,7 @@ runs:
     completed_at: 2026-05-23T13:42:19.428Z
   - _ulid: 01KSAJ9EKTR4QF2HBEH8MXED1W
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -51963,7 +51963,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-23T14:03:11.821Z
-        completed_at: 2026-05-23T14:03:11.821Z
+        completed_at: 2026-05-23T14:03:19.961Z
+        notes: "Proposal: capture an inbox item for a test/build concurrency guard. It would prevent or warn
+          when npm run build mutates dist while npm test is executing CLI/dist-based suites, or
+          otherwise isolate test runner dist inputs from build output. Benefit: avoids contaminated
+          failures and review misclassification. Scope: small-to-medium, likely test runner/build
+          script coordination."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-23T14:03:19.961Z
+        completed_at: 2026-05-23T14:03:19.961Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-23T14:02:10.938Z
