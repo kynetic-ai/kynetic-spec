@@ -29561,18 +29561,15 @@
   type: task
   spec_ref: "@entity-folder-migration-and-compatibility-1"
   plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
-  status: blocked
-  blocked_by:
-    - 'Agent task-worker failed 3 consecutive times: Internal error: Failed to authenticate. API
-      Error: 401 {"type":"error","error":{"type":"authentication_error","message":"Invalid
-      authentication credentials"},"request_id":"req_011CbJRzZP6jmoDZPTNmehaF"}'
+  status: pending
+  blocked_by: []
   depends_on: []
   priority: 1
   tags:
     - specs
     - plans
     - reviews
-  notes_count: 3
+  notes_count: 4
   todos_count: 0
   created_at: 2026-05-22T22:36:42.259Z
   automation: eligible

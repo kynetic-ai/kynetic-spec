@@ -20,3 +20,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-22T22:55:27.825Z
+  - _ulid: 01KS9AGKEBD4M8JWDMJXA5RVKX
+    content: "Unblocking per Jacob after daemon restart: the previous block was an operational
+      authentication failure caused by the daemon auto-starting under an environment without Claude
+      credentials, not a task-scope or implementation blocker. Retry should proceed under the
+      corrected daemon environment."
+    supersedes: null
+    author: Hermes
+    created_at: 2026-05-23T02:27:02.219Z
