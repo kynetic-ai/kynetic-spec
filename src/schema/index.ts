@@ -11,6 +11,7 @@ export * from "./inbox.js";
 export * from "./schedules.js";
 export * from "./meta.js";
 export * from "./plan.js";
+export * from "./resources.js";
 export * from "./spec.js";
 export * from "./task.js";
 export * from "./triage.js";
