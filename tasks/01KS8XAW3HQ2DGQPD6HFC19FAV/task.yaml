@@ -73,7 +73,7 @@ description: >
 spec_ref: "@trait-entity-scoped-local-resources-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-folder-backed-entity-trait-foundation-1"
@@ -84,6 +84,7 @@ tags:
   - schema
   - parser
 vcs_refs: []
+session_id: 01KS9MFRJXCMK72DBJM147CH0G
 history:
   - author: Jacob Chapel
     changes:
@@ -246,6 +247,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-05-22T22:52:37.756Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KS9MFRJXCMK72DBJM147CH0G
+        previous: null
+      started_at:
+        new: 2026-05-23T05:21:55.863Z
+        previous: null
+    command: task-start
+    timestamp: 2026-05-23T05:21:55.863Z
 created_at: 2026-05-22T22:36:42.993Z
+started_at: 2026-05-23T05:21:55.863Z
 todos: []
 automation: eligible
