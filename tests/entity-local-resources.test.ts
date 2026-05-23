@@ -654,6 +654,38 @@ describe("entity-scoped local-resources trait foundation", () => {
   // ── Git Version Metadata ─────────────────────────────────────────────────
 
   describe("captureResourceGitVersion", () => {
+    /**
+     * Initialize a clean git repo at `repoDir` with a single committed
+     * baseline file. Returns `null` if git is unavailable (some CIs run
+     * without git), in which case callers should skip the assertion path.
+     */
+    async function initRepoWithBaseline(repoDir: string): Promise<string | null> {
+      const inits = [
+        ["init", "-q"],
+        ["config", "user.email", "kspec-test@example.invalid"],
+        ["config", "user.name", "kspec-test"],
+        ["config", "commit.gpgsign", "false"],
+      ];
+      for (const args of inits) {
+        const r = spawnSync("git", args, { cwd: repoDir, stdio: "ignore" });
+        if (r.status !== 0) return null;
+      }
+      await fs.writeFile(path.join(repoDir, "README"), "baseline\n");
+      const add = spawnSync("git", ["add", "README"], { cwd: repoDir, stdio: "ignore" });
+      if (add.status !== 0) return null;
+      const commit = spawnSync("git", ["commit", "-q", "-m", "init"], {
+        cwd: repoDir,
+        stdio: "ignore",
+      });
+      if (commit.status !== 0) return null;
+      const head = spawnSync("git", ["rev-parse", "HEAD"], {
+        cwd: repoDir,
+        encoding: "utf-8",
+      });
+      if (head.status !== 0) return null;
+      return (head.stdout ?? "").trim();
+    }
+
     // AC: @trait-entity-scoped-local-resources-1 ac-versioning-uses-git-backed-identity
     it("returns null commit and null path when the file is not in a git repo", async () => {
       const base = await nonGitTempBase();
@@ -706,6 +738,130 @@ describe("entity-scoped local-resources trait foundation", () => {
       const result = captureResourceGitVersion(resourcePath);
       expect(result.git_commit).toMatch(/^[0-9a-f]{40}$/);
       expect(result.git_path).toBe("resources/diagram.svg");
+    });
+
+    // AC: @trait-entity-scoped-local-resources-1 ac-versioning-uses-git-backed-identity
+    it("returns null git fields for an untracked resource even when the worktree has a HEAD", async () => {
+      const repoDir = await fs.mkdtemp(path.join(tempDir, "git-repo-untracked-"));
+      const head = await initRepoWithBaseline(repoDir);
+      if (head === null) return;
+
+      // Write a new untracked resource file. HEAD exists but this file is
+      // NOT present in HEAD — recording HEAD/path would be misleading.
+      const resourcePath = path.join(repoDir, "resources", "new.txt");
+      await fs.mkdir(path.dirname(resourcePath), { recursive: true });
+      await fs.writeFile(resourcePath, "fresh content");
+
+      const result = captureResourceGitVersion(resourcePath);
+      expect(result.git_commit).toBeNull();
+      expect(result.git_path).toBeNull();
+    });
+
+    // AC: @trait-entity-scoped-local-resources-1 ac-versioning-uses-git-backed-identity
+    it("returns null git fields for a staged-but-not-committed resource", async () => {
+      const repoDir = await fs.mkdtemp(path.join(tempDir, "git-repo-staged-"));
+      const head = await initRepoWithBaseline(repoDir);
+      if (head === null) return;
+
+      const resourcePath = path.join(repoDir, "resources", "staged.txt");
+      await fs.mkdir(path.dirname(resourcePath), { recursive: true });
+      await fs.writeFile(resourcePath, "staged content");
+      const add = spawnSync("git", ["add", "resources/staged.txt"], {
+        cwd: repoDir,
+        stdio: "ignore",
+      });
+      if (add.status !== 0) return;
+
+      // The file is staged but not committed; HEAD does not contain it, so
+      // the recorded HEAD/path pair could not resolve this resource.
+      const result = captureResourceGitVersion(resourcePath);
+      expect(result.git_commit).toBeNull();
+      expect(result.git_path).toBeNull();
+    });
+
+    // AC: @trait-entity-scoped-local-resources-1 ac-versioning-uses-git-backed-identity
+    it("returns null git fields when a tracked resource has uncommitted modifications", async () => {
+      const repoDir = await fs.mkdtemp(path.join(tempDir, "git-repo-dirty-"));
+      const head = await initRepoWithBaseline(repoDir);
+      if (head === null) return;
+
+      const resourcePath = path.join(repoDir, "resources", "doc.txt");
+      await fs.mkdir(path.dirname(resourcePath), { recursive: true });
+      await fs.writeFile(resourcePath, "original");
+      const add = spawnSync("git", ["add", "resources/doc.txt"], {
+        cwd: repoDir,
+        stdio: "ignore",
+      });
+      if (add.status !== 0) return;
+      const commit = spawnSync("git", ["commit", "-q", "-m", "add doc"], {
+        cwd: repoDir,
+        stdio: "ignore",
+      });
+      if (commit.status !== 0) return;
+
+      // Modify the working tree without committing — HEAD no longer
+      // represents this file's content.
+      await fs.writeFile(resourcePath, "modified");
+
+      const result = captureResourceGitVersion(resourcePath);
+      expect(result.git_commit).toBeNull();
+      expect(result.git_path).toBeNull();
+    });
+
+    // AC: @trait-entity-scoped-local-resources-1 ac-versioning-uses-git-backed-identity
+    it("returns null git fields when a tracked resource has been deleted from the working tree", async () => {
+      const repoDir = await fs.mkdtemp(path.join(tempDir, "git-repo-deleted-"));
+      const head = await initRepoWithBaseline(repoDir);
+      if (head === null) return;
+
+      const resourcePath = path.join(repoDir, "resources", "gone.txt");
+      await fs.mkdir(path.dirname(resourcePath), { recursive: true });
+      await fs.writeFile(resourcePath, "to be deleted");
+      const add = spawnSync("git", ["add", "resources/gone.txt"], {
+        cwd: repoDir,
+        stdio: "ignore",
+      });
+      if (add.status !== 0) return;
+      const commit = spawnSync("git", ["commit", "-q", "-m", "add gone"], {
+        cwd: repoDir,
+        stdio: "ignore",
+      });
+      if (commit.status !== 0) return;
+
+      await fs.rm(resourcePath);
+      const result = captureResourceGitVersion(resourcePath);
+      expect(result.git_commit).toBeNull();
+      expect(result.git_path).toBeNull();
+    });
+
+    // AC: @trait-entity-scoped-local-resources-1 ac-versioning-uses-git-backed-identity
+    it("captures git fields when the working tree exactly matches HEAD for that path", async () => {
+      const repoDir = await fs.mkdtemp(path.join(tempDir, "git-repo-clean-"));
+      const head = await initRepoWithBaseline(repoDir);
+      if (head === null) return;
+
+      const resourcePath = path.join(repoDir, "resources", "kept.txt");
+      await fs.mkdir(path.dirname(resourcePath), { recursive: true });
+      await fs.writeFile(resourcePath, "committed content");
+      const add = spawnSync("git", ["add", "resources/kept.txt"], {
+        cwd: repoDir,
+        stdio: "ignore",
+      });
+      if (add.status !== 0) return;
+      const commit = spawnSync("git", ["commit", "-q", "-m", "add kept"], {
+        cwd: repoDir,
+        stdio: "ignore",
+      });
+      if (commit.status !== 0) return;
+      const newHead = spawnSync("git", ["rev-parse", "HEAD"], {
+        cwd: repoDir,
+        encoding: "utf-8",
+      });
+      if (newHead.status !== 0) return;
+
+      const result = captureResourceGitVersion(resourcePath);
+      expect(result.git_commit).toBe((newHead.stdout ?? "").trim());
+      expect(result.git_path).toBe("resources/kept.txt");
     });
   });
 

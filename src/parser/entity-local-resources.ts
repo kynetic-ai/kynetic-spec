@@ -497,10 +497,22 @@ export async function hashResourceFile(
 /**
  * Capture git-backed version identity for a resource file when the project
  * is stored in git: returns the HEAD commit and the repository-relative
- * path to the file. Returns `{ git_commit: null, git_path: null }` when git
- * metadata is unavailable (no repo, file not tracked, etc.) — callers store
- * the resulting nullable fields without recording a separate per-resource
- * history log.
+ * path to the file ONLY when that exact (commit, path) pair can resolve the
+ * file's current content. The recorded identity must be authoritative —
+ * consumers will use it for drift detection and later resolution, so any
+ * mismatch between HEAD and the working tree (untracked, staged-but-not-
+ * committed, modified, deleted) yields `{ git_commit: null, git_path: null }`
+ * instead of a misleading commit/path pair.
+ *
+ * Verification uses two git-plumbing checks against the path:
+ *   1. `git ls-tree HEAD -- <relPath>` must return a blob entry, proving
+ *      the path exists in the HEAD tree.
+ *   2. `git diff --quiet HEAD -- <relPath>` must exit zero, proving the
+ *      working-tree content matches HEAD (no staged/unstaged drift).
+ *
+ * Both must pass for the (commit, path) pair to be returned; otherwise the
+ * fields are null. Callers persist the nullable result without keeping a
+ * separate per-resource history log.
  *
  * AC: @trait-entity-scoped-local-resources-1 ac-versioning-uses-git-backed-identity
  */
@@ -522,6 +534,18 @@ export function captureResourceGitVersion(absolutePath: string): {
   // Normalize to POSIX separators for cross-platform stability.
   relPath = relPath.split(path.sep).join("/");
 
+  // The path must exist as a blob in the HEAD tree.
+  const headEntry = runGit(topLevel, ["ls-tree", "HEAD", "--", relPath]);
+  if (!headEntry || !/^\d+\s+blob\s+[0-9a-f]{40,64}\b/.test(headEntry)) {
+    return { git_commit: null, git_path: null };
+  }
+
+  // The working-tree content must match HEAD's blob at that path. Any
+  // staged-only change, unstaged modification, or deletion fails this
+  // check and disqualifies the (commit, path) pair.
+  const diffStatus = runGitExit(topLevel, ["diff", "--quiet", "HEAD", "--", relPath]);
+  if (diffStatus !== 0) return { git_commit: null, git_path: null };
+
   return { git_commit: head, git_path: relPath };
 }
 
@@ -534,6 +558,15 @@ function runGit(cwd: string, args: string[]): string | null {
   if (result.error || result.status !== 0) return null;
   const stdout = (result.stdout ?? "").trim();
   return stdout || null;
+}
+
+function runGitExit(cwd: string, args: string[]): number | null {
+  const result = spawnSync("git", args, {
+    cwd,
+    stdio: ["ignore", "ignore", "ignore"],
+  });
+  if (result.error) return null;
+  return result.status;
 }
 
 // ── Compose Metadata From a File ─────────────────────────────────────────────
