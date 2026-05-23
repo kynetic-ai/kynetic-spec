@@ -221969,9 +221969,25 @@ reviews:
           kind: nit
           thread_ulid: 01KS9QHB5DQ83V1J3PKFXAFQ0T
         timestamp: 2026-05-23T06:14:39.617Z
+      - _ulid: 01KS9QHPS51XBJ8RVCGDQZM8HB
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-23T06:14:49.893Z
+      - _ulid: 01KS9QHPS5A649781BVAQVPHGB
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-23T06:14:49.893Z
     examined_commit: 6f450883299b16fa3401a44e29b014f3ce37edd7
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -224373,7 +224389,14 @@ reviews:
               static export, test quality, AC annotation coverage, integration checks."
             created_at: 2026-05-23T06:14:37.997Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-23T06:14:49.892Z
     created_at: 2026-05-23T06:00:09.228Z
-    updated_at: 2026-05-23T06:14:37.997Z
+    updated_at: 2026-05-23T06:14:49.893Z
     notes: []
