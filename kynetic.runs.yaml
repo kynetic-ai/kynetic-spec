@@ -52071,7 +52071,7 @@ runs:
     completed_at: 2026-05-23T15:38:13.248Z
   - _ulid: 01KSAWS3KE1TK74SJ4BJGAQSPW
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -52084,7 +52084,48 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-23T17:05:52.246Z
-        completed_at: 2026-05-23T17:05:52.246Z
+        completed_at: 2026-05-23T17:07:17.435Z
+        notes: >-
+          Searched 7 keyword variants across specs/tasks/inbox — no duplicates found.
+
+
+          HIGH CONFIDENCE friction (only one meets the bar):
+
+          - Pattern: When a plan splits 'install storage gate' from 'implement folder-backed storage
+          manager' into separate tasks landing in that order, every existing test that uses the
+          legacy fixture and exercises the now-strict-gated route is forced into describe.skip /
+          it.skip until the sibling lands. This task installed plan/review gates and produced ~10
+          test files with 109 skipped cases that all point to the same sibling-task dependency
+          (folder-backed plan/review storage manager + e2e fixture migration). The pattern will
+          recur for each entity domain migrated this way (task-storage already did, plan/review just
+          did, resource migration is next).
+
+          - Concrete: 109 tests skipped across reviews-list, reviews-threads,
+          daemon-review-verdicts-api, daemon-review-websocket, plans.test.ts (2 cases),
+          daemon-api-input-validation (1 case); plus 4 cli-plan-* integration tests using
+          downgradeManifestToLegacyStorage helper.
+
+          - Systemic: Affects every gates-first/manager-later task split in this plan. Each
+          gate-only task creates a wave of disabled coverage that the sibling task must restore.
+
+          - Cause: Plan splits gate work from manager work along a boundary that creates a
+          fixture-incompatible interim window.
+
+
+          LOWER CONFIDENCE (not capturing):
+
+          - Behavioural fs.access ENOENT pattern in write-gate tests — useful but it's a coding
+          pattern, not friction/success worth tracking.
+
+          - 'kspec task note --message' isn't an option (positional <message>) — trivial CLI
+          surface, not systemic.
+
+          - 'kspec review check' on closed reviews — was actually correct-by-design; my command
+          syntax was wrong, not the CLI.
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-23T17:07:17.435Z
+        completed_at: 2026-05-23T17:07:17.435Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-23T17:05:29.710Z
