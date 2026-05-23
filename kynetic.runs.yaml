@@ -52141,7 +52141,7 @@ runs:
     completed_at: 2026-05-23T17:08:02.078Z
   - _ulid: 01KSAY7Q1M6T7WN8XSNP1SVXB1
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -52177,7 +52177,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-23T17:32:35.210Z
-        completed_at: 2026-05-23T17:32:35.210Z
+        completed_at: 2026-05-23T17:32:47.527Z
+        notes: "Proposed improvements: no new standalone capture. The actionable improvements are already
+          embodied in review @01KSAX2K: add ready-cache incompatibility coverage for plan/review
+          routes, and add positive compatibility coverage for valid folder-backed lean indexes with
+          matching entity directories. Rough scope is small-to-medium and belongs in the current
+          task's fix cycle rather than a separate inbox item."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-23T17:32:47.527Z
+        completed_at: 2026-05-23T17:32:47.527Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-23T17:30:56.948Z
