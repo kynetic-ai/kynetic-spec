@@ -51342,9 +51342,23 @@ runs:
     completed_at: 2026-05-23T02:33:52.793Z
   - _ulid: 01KS9BS7BGNKTJ8XNT56Z8V3P5
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-23T02:49:13.328Z
+        completed_at: 2026-05-23T02:49:51.408Z
+        notes: "What worked well: The kspec review record flow was effective for a detached reviewer
+          snapshot: review add/open/check/verdict produced a closed approved review with explicit
+          evidence. Direct kspec item get lookups made the catalog-only task easy to verify against
+          exact AC wording and final statuses. The detached reviewer merge helper handled the
+          already-integrated canonical branch cleanly as a no-op, avoiding manual checkout or merge
+          commands in the snapshot."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-23T02:49:51.408Z
+        completed_at: 2026-05-23T02:49:51.408Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-23T02:49:13.328Z
