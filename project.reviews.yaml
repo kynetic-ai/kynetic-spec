@@ -225311,6 +225311,13 @@ reviews:
           status: pass
           name: npm run lint
         timestamp: 2026-05-23T09:40:48.386Z
+      - _ulid: 01KSA3XGA014GEPRC8FZ0DVTP4
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KSA3XEQZS0C2BFG2F6YT03FY
+        timestamp: 2026-05-23T09:50:59.392Z
     examined_commit: 7f298c5ed5b0df61289800fe1539060e47dedc25
     external_links: []
     lifecycle_state: open
@@ -225320,8 +225327,36 @@ reviews:
       content_hash: ""
       ref: "@01KS8XAW3HQ2DGQPD6HFC19FAV"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KSA3XEQZS0C2BFG2F6YT03FY
+        entries:
+          - _ulid: 01KSA3XEQZ99EF6MY6A8F5MQY4
+            author: Jacob Chapel
+            body: >-
+              Review evidence log:
+
+              Files read: kspec-agents.md, src/schema/resources.ts, src/schema/index.ts,
+              src/parser/entity-local-resources.ts, tests/entity-local-resources.test.ts, prior
+              review @01KSA0JMCV4V4R533JERHZ4EJE, related folder-backed entity helper context.
+
+              Commands run: kspec task get @01KS8XAW3HQ2DGQPD6HFC19FAV; kspec item get
+              @trait-entity-scoped-local-resources-1; kspec review for-task/get; git diff/stat/log;
+              rg AC annotations and call sites; kspec validate --completeness; kspec validate
+              --completeness --warnings-ok; npm test -- --fresh; npm run lint; npm run typecheck;
+              git diff --check; targeted tsx probe for path validation behavior.
+
+              Claims verified: cycle-4 blocker fixed by mandatory manifest argument on
+              resolveResourcePath plus resolveResourceReference loading resources.yaml; undeclared
+              on-disk files are rejected behaviorally; symlink root/file escapes, non-file
+              resources, corrupt manifests, git metadata drift, metadata-only YAML, delete cascade,
+              and static export paths are covered by behavioral tests.
+
+              Categories searched: correctness, AC coverage, edge cases, error handling,
+              security/path containment, test quality/source-scanning, integration/call sites. No
+              blocking findings.
+            created_at: 2026-05-23T09:50:57.791Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-23T09:37:14.092Z
-    updated_at: 2026-05-23T09:40:46.367Z
+    updated_at: 2026-05-23T09:50:57.791Z
     notes: []
