@@ -51699,7 +51699,7 @@ runs:
     completed_at: 2026-05-23T08:21:24.513Z
   - _ulid: 01KSA1FSBWE0SC4SX0K70FGAA1
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -51733,7 +51733,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-23T09:09:37.737Z
-        completed_at: 2026-05-23T09:09:37.737Z
+        completed_at: 2026-05-23T09:09:55.048Z
+        notes: "Proposed improvement: add a scoped validation/review helper for AC coverage that can answer
+          'does this task/spec/trait have uncovered ACs?' without failing on unrelated
+          repository-wide completeness warnings. This would reduce manual warning-list inspection
+          during reviews. Rough scope: medium, likely parser/validate plus CLI/check output. Capture
+          route: observation plus inbox idea, because the friction is clear but exact implementation
+          shape needs triage."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-23T09:09:55.048Z
+        completed_at: 2026-05-23T09:09:55.048Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-23T09:08:32.765Z
