@@ -19273,6 +19273,35 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-05-23T23:07:22.300Z
+  - _ulid: 01KSBHG3E1G7PWB8K98S0Q26WK
+    type: friction
+    content: >-
+      Plan @plan-folder-backed-plans-reviews-and-local-resources lists
+      ac-review-screenshot-resource-loads-in-ui in the 'Covers:' field of both
+      @task-folder-backed-review-storage-manager-1 (storage layer) and
+      @task-review-screenshot-resource-ui (UI/API/static layer). The AC's When/Then is UI-anchored
+      ('opened in the web UI or exported to the static UI snapshot'), so the storage-manager task
+      can only annotate a parser-level test that does not exercise any UI route or exported asset
+      path. Result: the storage-manager task produced a wrong-layer AC annotation, triggered a
+      reviewer blocker, and required a fix cycle to remove the false annotation and defer the AC to
+      the dedicated UI task.
+
+
+      Pattern: when a UI/static-anchored AC appears in two sibling tasks' Covers lists, the
+      lower-layer task will almost certainly produce a wrong-layer annotation that surfaces only at
+      review time. Same pattern likely applies to other entity domains in this plan family
+      (plan-resource-import, plan-cache-invalidation) and future folder-storage migrations.
+
+
+      Mitigations to consider: (1) plan-time validation that flags ACs appearing in multiple sibling
+      tasks' Covers lists, (2) restrict UI/static-anchored ACs to UI/export tasks at plan derivation
+      time, (3) reviewer-side gate that detects AC annotations at incompatible abstraction layers
+      (parser test claiming UI AC).
+    author: "@claude"
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KSBH7H"
+    created_at: 2026-05-23T23:07:34.721Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
