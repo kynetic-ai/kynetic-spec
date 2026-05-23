@@ -224540,6 +224540,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-23T06:57:56.804Z
+      - _ulid: 01KS9T136JCQPMRPJDGWGFJW0N
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KS9T11MY21V5BHGF61VP4BX7
+        timestamp: 2026-05-23T06:58:11.282Z
     examined_commit: 5f4503684e7447da5fb464255d4b3b7785aafcc5
     external_links: []
     lifecycle_state: open
@@ -224595,7 +224602,34 @@ reviews:
               boundary."
             created_at: 2026-05-23T06:57:12.403Z
         kind: blocker
+      - _ulid: 01KS9T11MY21V5BHGF61VP4BX7
+        entries:
+          - _ulid: 01KS9T11MY2SC6V4F32628ANRQ
+            author: Jacob Chapel
+            body: >-
+              Review evidence log:
+
+              Files read: kspec-agents.md, src/parser/entity-local-resources.ts,
+              src/schema/resources.ts, src/schema/index.ts, tests/entity-local-resources.test.ts,
+              package.json, previous review @01KS9PPTRCHJF2WTMSAKMXVCZG.
+
+              Commands run: kspec task get @01KS8XAW3HQ2DGQPD6HFC19FAV; kspec item get
+              @trait-entity-scoped-local-resources-1; kspec review for-task/get/add/open; git
+              diff/stat/show; rg AC annotations; node --import tsx probes for symlinked resources
+              root and schema path acceptance; kspec validate; npm run lint; npm run typecheck; npm
+              test -- --fresh.
+
+              Claims verified: the prior git-version blocker was addressed with HEAD blob and
+              clean-diff checks plus regression tests; the full suite passes; the resolver and
+              schema still miss the two path-safety cases recorded as blockers.
+
+              Categories searched: correctness, path traversal/symlink edge cases, manifest
+              validation, git-version drift, content-type validation/inference, binary preview
+              behavior, static export behavior, test quality, AC annotation coverage, integration
+              checks.
+            created_at: 2026-05-23T06:58:09.695Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-23T06:41:54.695Z
-    updated_at: 2026-05-23T06:57:55.216Z
+    updated_at: 2026-05-23T06:58:09.695Z
     notes: []
