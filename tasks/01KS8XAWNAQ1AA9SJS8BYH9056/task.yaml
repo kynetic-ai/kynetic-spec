@@ -77,7 +77,7 @@ description: >
 spec_ref: "@entity-folder-migration-and-compatibility-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-entity-local-resource-model-1"
@@ -98,7 +98,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-entity-storage-version-compatibility-gates-1/01ks8xaw
-session_id: null
+session_id: 01KSAV9F07WM40VGV6XJPX9PFT
 history:
   - author: Jacob Chapel
     changes:
@@ -373,8 +373,21 @@ history:
         previous: 01KSAJD14PT7Y1DKSZAS5WAKZS
     command: review-verdict-needs-work
     timestamp: 2026-05-23T15:33:57.018Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KSAV9F07WM40VGV6XJPX9PFT
+        previous: null
+      started_at:
+        new: 2026-05-23T17:02:15.325Z
+        previous: 2026-05-23T14:07:43.798Z
+    command: task-start
+    timestamp: 2026-05-23T17:02:15.332Z
 created_at: 2026-05-22T22:36:43.562Z
-started_at: 2026-05-23T14:07:43.798Z
+started_at: 2026-05-23T17:02:15.325Z
 submitted_at: 2026-05-23T14:57:54.953Z
 todos: []
 automation: eligible
