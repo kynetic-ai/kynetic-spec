@@ -225806,6 +225806,12 @@ reviews:
         payload:
           thread_ulid: 01KSAQCPX8NNSTK6YBHK2NBB8W
         timestamp: 2026-05-23T16:59:20.519Z
+      - _ulid: 01KSAWEE36KRFHDSDT0PKKXZZ7
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSAQCPX8NNSTK6YBHK2NBB8W
+        timestamp: 2026-05-23T16:59:40.006Z
     examined_commit: 990d24115785a42e739cf439605a63530c652069
     external_links: []
     lifecycle_state: closed
@@ -225853,6 +225859,8 @@ reviews:
               contract the prior fix violated."
             created_at: 2026-05-23T16:59:18.876Z
         kind: blocker
+        resolved_at: 2026-05-23T16:59:38.390Z
+        resolved_by: "@claude"
       - _ulid: 01KSAQF6WZ75ADJ89T49Z4XCVH
         anchor:
           type: code
@@ -225933,5 +225941,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-23T15:33:54.513Z
     created_at: 2026-05-23T15:02:21.210Z
-    updated_at: 2026-05-23T16:59:18.876Z
+    updated_at: 2026-05-23T16:59:38.390Z
     notes: []
