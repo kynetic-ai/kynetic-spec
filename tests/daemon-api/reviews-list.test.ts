@@ -67,6 +67,10 @@ function request(urlPath: string, init?: RequestInit) {
   return makeRequest(app, tempDir, urlPath, init);
 }
 
+// setupFixtures() promotes the copied e2e fixture to kynetic 1.2 with folder-
+// backed plan/review/resource storage and materialises matching folder shells,
+// so the daemon's strict requireReviewFolderStorage gate passes and these
+// tests exercise the post-upgrade review API contract.
 describe("Review List API (GET /api/reviews)", () => {
   it("returns paginated list shape", async () => {
     const response = await request("/api/reviews");

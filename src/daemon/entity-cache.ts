@@ -57,6 +57,11 @@ import { loadReviewRecords, type LoadedReviewRecord } from "../parser/reviews.js
 import { type LoadedPlan } from "../parser/plans.js";
 import { computeDisposition } from "../parser/review-operations.js";
 import { getUnresolvedBlockers } from "../parser/review-threads.js";
+import {
+  EntityStorageCompatibilityError,
+  requirePlanFolderStorage,
+  requireReviewFolderStorage,
+} from "../parser/entity-storage-compatibility.js";
 import { getShadowStatus, hasRemoteTracking } from "../parser/shadow.js";
 import {
   type SessionLogSummary,
@@ -1026,7 +1031,10 @@ export class ProjectEntityCache {
       // AC: @daemon-server ac-cache-diagnostics-recovery-readiness
       // Tasks domain surfaces deterministic task-storage incompatibility
       // diagnostics so clients can distinguish "stuck on user action" from
-      // "transient failure". Other domains report nulls/false.
+      // "transient failure". Plans and reviews domains surface deterministic
+      // entity-storage incompatibility codes from any
+      // EntityStorageCompatibilityError that landed in lastError during
+      // cache warm-up. Other domains report nulls/false.
       let errorReason: string | null = null;
       let recoveryGuidance: string | null = null;
       let recoveryWaitingOnProjectState = false;
@@ -1034,6 +1042,16 @@ export class ProjectEntityCache {
         errorReason = this.tasks.storageIncompatibility.code;
         recoveryGuidance = this.tasks.storageIncompatibility.suggestion;
         recoveryWaitingOnProjectState = !this.tasks.needsTaskStorageRecheck;
+      } else if (
+        (domain === "plans" || domain === "reviews") &&
+        store.lastError instanceof EntityStorageCompatibilityError
+      ) {
+        errorReason = store.lastError.code;
+        recoveryGuidance = store.lastError.suggestion ?? null;
+        // The cache loader cannot recover without a project-state change
+        // (manifest upgrade, migration, or layout fix). The next watcher-
+        // driven reload after such a change will retry.
+        recoveryWaitingOnProjectState = true;
       }
 
       domains[domain] = {
@@ -1184,6 +1202,19 @@ export class ProjectEntityCache {
         break;
       }
       case "plans": {
+        // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+        // AC: @daemon-read-path ac-no-per-request-sync
+        //     — run the strict folder-storage gate BEFORE loadPlans() so the
+        //     cache cannot enter "ready" with monolithic data warmed via the
+        //     lenient gate. Without this, the daemon plan routes' cache-ready
+        //     fast path would serve legacy data with 200 instead of the
+        //     required structured 409. When this throws, the catch block in
+        //     runNonMetaDomainReload marks the plans domain "degraded" with
+        //     the stored EntityStorageCompatibilityError; route handlers
+        //     observe a non-"ready" state and run the gate at request entry,
+        //     where the deterministic incompatibility is translated into 409.
+        await requirePlanFolderStorage(ctx);
+        if (this.disposed) return;
         const loadedPlans = await loadPlans(ctx);
         if (this.disposed) return;
         // AC: @daemon-entity-cache ac-stale-during-reload — atomic swap
@@ -1204,6 +1235,14 @@ export class ProjectEntityCache {
         break;
       }
       case "reviews": {
+        // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+        // AC: @daemon-read-path ac-no-per-request-sync
+        //     — run the strict folder-storage gate BEFORE loadReviewRecords()
+        //     so the cache cannot enter "ready" with monolithic data warmed
+        //     via the lenient gate (see the "plans" case for the full
+        //     rationale).
+        await requireReviewFolderStorage(ctx);
+        if (this.disposed) return;
         const reviewRecords = await loadReviewRecords(ctx);
         if (this.disposed) return;
         // AC: @daemon-entity-cache ac-stale-during-reload — atomic swap

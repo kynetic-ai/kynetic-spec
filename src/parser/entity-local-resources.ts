@@ -42,7 +42,8 @@ import {
   ResourcePathSchema,
   checkResourceRelativePath,
 } from "../schema/resources.js";
-import { readYamlFile, writeYamlFile } from "./yaml.js";
+import { requireResourceFolderStorage } from "./entity-storage-compatibility.js";
+import { type KspecContext, readYamlFile, writeYamlFile } from "./yaml.js";
 
 export {
   CONTENT_TYPE_PATTERN,
@@ -430,13 +431,26 @@ export async function resolveResourcePath(options: {
  * resolve an undeclared file via this helper, satisfying
  * `ac-resource-reference-resolves-within-owner` and `ac-path-escape-rejected`.
  *
+ * The required `ctx` argument lets the resolver enforce the entity-storage
+ * compatibility gate before touching the resources tree: entity-scoped
+ * resources only exist under folder-backed entity layouts, so legacy
+ * (kynetic < 1.2) projects and 1.2 projects missing the
+ * `resource_storage.format: entity_scoped` declaration must surface a
+ * structured `entity_storage_incompatible` error here rather than appearing
+ * to "work" for callers that do not own a separate manifest probe. Daemon
+ * routes that expose this resolver thread the same error through their
+ * `entityStorageIncompatibilityResponse` mapping to produce the 409 contract.
+ *
  * AC: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner
  * AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+ * AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
  */
 export async function resolveResourceReference(options: {
+  ctx: KspecContext;
   ownerEntityDir: string;
   relativePath: string;
 }): Promise<ResourceValidationResult<ResolvedResourceLocation>> {
+  await requireResourceFolderStorage(options.ctx);
   const manifest = await loadResourceManifest(options.ownerEntityDir);
   return resolveResourcePath({
     ownerResourcesDir: getResourcesDir(options.ownerEntityDir),

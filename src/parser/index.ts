@@ -5,6 +5,7 @@ export * from "./alignment.js";
 export * from "./config.js";
 export * from "./dispatch-workspaces.js";
 export * from "./assess.js";
+export * from "./entity-storage-compatibility.js";
 export * from "./convention-validation.js";
 export * from "./coverage-cache.js";
 export * from "./file-lock.js";

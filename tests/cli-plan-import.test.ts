@@ -9,6 +9,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
   cleanupTempDir,
   createTempDir,
+  downgradeManifestToLegacyStorage,
   initGitRepo,
   kspec as kspecRun,
   kspecJson,
@@ -57,6 +58,11 @@ async function setupShadowProject(projectDir: string): Promise<void> {
   if (result.exitCode !== 0) {
     throw new Error(`kspec init --no-prompt failed: ${result.stderr}`);
   }
+  // kspec init writes kynetic 1.2 with folder-backed plan/review/resource
+  // storage declared. The folder-backed storage managers that make those
+  // declarations functional are implemented by sibling tasks under the same
+  // plan; until they land, plan/review CRUD only works on a legacy manifest.
+  await downgradeManifestToLegacyStorage(projectDir);
 }
 
 function getShadowCommitCount(projectDir: string): number {

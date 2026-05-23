@@ -6,8 +6,8 @@ import {
   cleanupTempDir,
   createTempDir,
   createTestApp,
+  FOLDER_BACKED_INLINE_MANIFEST,
   initGitRepo,
-  LEGACY_INLINE_MANIFEST,
   makeRequest,
   requestJson,
   setupInlineFixtures,
@@ -26,7 +26,12 @@ let app: Elysia;
 
 function setupValidationFixtures(dir: string) {
   setupInlineFixtures(dir, {
-    manifest: LEGACY_INLINE_MANIFEST,
+    // AC: @entity-folder-migration-and-compatibility-1 ac-new-projects-declare-folder-storage
+    //   — folder-backed manifest so the daemon review-route gate passes and
+    //   the verdict execution test can exercise the mutation path. Validation
+    //   tests (400 cases) still fire at the Elysia schema layer before the
+    //   gate, so they remain unaffected by the manifest change.
+    manifest: FOLDER_BACKED_INLINE_MANIFEST,
     modules: {
       "test.yaml": `features:
   - _ulid: "${SPEC_ULID}"
@@ -38,19 +43,24 @@ function setupValidationFixtures(dir: string) {
     created: "2026-01-01T00:00:00Z"
 `,
     },
-    tasksFile: `tasks:
-  - _ulid: "${TASK_ULID}"
-    slugs:
-      - task-test
-    title: "Test Task"
-    description: "A test task"
-    status: pending_review
-    type: task
-    automation: eligible
-    spec_ref: "@test-feature"
-    review_ref: "@review-open"
-    created_at: "2026-01-01T00:00:00Z"
-`,
+    splitTasks: [
+      {
+        _ulid: TASK_ULID,
+        slugs: ["task-test"],
+        title: "Test Task",
+        description: "A test task",
+        status: "pending_review",
+        type: "task",
+        automation: "eligible",
+        spec_ref: "@test-feature",
+        review_ref: "@review-open",
+        priority: 2,
+        depends_on: [],
+        notes: [],
+        todos: [],
+        created_at: "2026-01-01T00:00:00Z",
+      },
+    ],
     reviews: `kynetic_reviews: "1.0"
 reviews:
   - _ulid: "${REVIEW_OPEN_ULID}"

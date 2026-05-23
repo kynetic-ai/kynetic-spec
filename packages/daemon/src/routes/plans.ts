@@ -18,6 +18,7 @@ import {
   resolveTaskDataManager,
   type LoadedPlan,
 } from "../../parser/index.js";
+import { requirePlanFolderStorage } from "../../parser/entity-storage-compatibility.js";
 import { PlanStatusSchema } from "../../schema/plan.js";
 import {
   countPlanTaskProgress,
@@ -31,6 +32,7 @@ import { enumArrayUnion } from "./enum-utils.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import { wrapResponse } from "./response-envelope.js";
 import { taskStorageIncompatibilityResponse } from "./task-storage-error.js";
+import { entityStorageIncompatibilityResponse } from "./entity-storage-error.js";
 
 interface PlansRouteOptions {
   getEntityCache?: EntityCacheAccessor;
@@ -65,6 +67,17 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
 
   return (
     new Elysia({ prefix: "/api/plans" })
+      // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+      //     — catch any plan-storage incompatibility that escapes a per-route
+      //     try/catch (e.g. cache-write-through paths) and surface a structured
+      //     409 instead of an unhandled 500.
+      .onError(({ error: err, set }) => {
+        const conflict = entityStorageIncompatibilityResponse(err);
+        if (conflict) {
+          set.status = conflict.status;
+          return conflict.body;
+        }
+      })
       // AC: @ui-plans-view ac-1 - List plans with progress
       // AC: @daemon-entity-cache ac-serve-from-memory — serve from cache when available
       .get(
@@ -73,12 +86,6 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
           // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext for cache hits
           const cache = getEntityCache?.(projectContext.path);
 
-          // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
-          const plansDomainState = cache?.getDomainState("plans");
-          if (cache && plansDomainState === "loading") {
-            return wrapResponse([] as PlanSummary[], { cacheDomainState: "loading", total: 0 });
-          }
-
           let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
           // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
           const getCtx = async () => {
@@ -86,14 +93,53 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
             return _ctx;
           };
 
+          // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
+          const plansDomainState = cache?.getDomainState("plans");
+          if (cache && plansDomainState === "loading") {
+            return wrapResponse([] as PlanSummary[], { cacheDomainState: "loading", total: 0 });
+          }
+
+          // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+          // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+          //     — plan routes require folder-backed plan storage. Reject legacy
+          //     projects (kynetic < 1.2 with no plan_storage declaration), 1.2
+          //     projects with a missing or non-folder declaration, and partial
+          //     folder layouts with a structured 409 before serving any data.
+          //
+          // AC: @daemon-read-path ac-no-per-request-sync — skip the gate when
+          //     the cache has already proved this project is compatible at
+          //     load time. The cache loader runs requirePlanFolderStorage()
+          //     before loadPlans() during warm-up, so a "ready" plans domain
+          //     means the strict gate already passed — incompatible projects
+          //     mark the domain "degraded" and fall through to the
+          //     gate-at-route-entry path below, where the strict error is
+          //     translated into the structured 409 response.
+          if (!cache || plansDomainState !== "ready") {
+            try {
+              await requirePlanFolderStorage(await getCtx());
+            } catch (err) {
+              const conflict = entityStorageIncompatibilityResponse(err, { cache });
+              if (conflict) return errorResponse(conflict.status, conflict.body);
+              throw err;
+            }
+          }
+
           // Try cache for plans (index tier has PlanIndexSummary, disk fallback gives LoadedPlan)
+          // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+          //     — translate plan-storage incompatibility into a structured 409.
           let plans: (LoadedPlan | PlanIndexSummary)[];
           const cachedPlans = cache && plansDomainState === "ready" ? cache.getPlansIndex() : null;
           if (cachedPlans) {
             plans = cachedPlans;
           } else {
             const ctx = await getCtx();
-            plans = await loadPlans(ctx);
+            try {
+              plans = await loadPlans(ctx);
+            } catch (err) {
+              const conflict = entityStorageIncompatibilityResponse(err, { cache });
+              if (conflict) return errorResponse(conflict.status, conflict.body);
+              throw err;
+            }
           }
 
           // Try cache for tasks (needed for progress computation)
@@ -156,6 +202,28 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
           return wrapResponse(null, { cacheDomainState: "loading" });
         }
 
+        // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+        // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+        //     — plan detail routes require folder-backed plan storage, the same
+        //     contract the list route enforces. Without this gate, requests for
+        //     a specific @plan ref on a legacy project would either resolve via
+        //     the lenient storage manager and surface monolithic data, or fall
+        //     through to a 404 — both contradict the structured 409 contract.
+        //
+        // AC: @daemon-read-path ac-no-per-request-sync — skip the gate when
+        //     the cache has already proved this project is compatible. See
+        //     the list route for the full rationale (cache loader runs the
+        //     strict gate at warm-up, so a "ready" domain proves compatibility).
+        if (!cache || plansDomainState !== "ready") {
+          try {
+            await requirePlanFolderStorage(await getCtx());
+          } catch (err) {
+            const conflict = entityStorageIncompatibilityResponse(err, { cache });
+            if (conflict) return errorResponse(conflict.status, conflict.body);
+            throw err;
+          }
+        }
+
         const cleanRef = params.ref.startsWith("@") ? params.ref.slice(1) : params.ref;
 
         // AC: @daemon-entity-cache ac-detail-on-demand — resolve via index, load from detail tier
@@ -177,7 +245,15 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
           }
         }
         if (!plan) {
-          plan = await findPlanByRef(await getCtx(), params.ref);
+          // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+          //     — translate plan-storage incompatibility into a structured 409.
+          try {
+            plan = await findPlanByRef(await getCtx(), params.ref);
+          } catch (err) {
+            const conflict = entityStorageIncompatibilityResponse(err, { cache });
+            if (conflict) return errorResponse(conflict.status, conflict.body);
+            throw err;
+          }
           // Cache the loaded detail for subsequent requests
           if (plan && cache) {
             cache.setPlanDetail(plan._ulid, plan);

@@ -47,6 +47,7 @@ import { resolveRefTitle, resolveRefEntries } from "./ref-resolution.js";
 import type { EntityCacheAccessor, WriteThroughHint } from "./entity-cache-types.js";
 import { wrapResponse } from "./response-envelope.js";
 import { taskStorageIncompatibilityResponse } from "./task-storage-error.js";
+import { entityStorageIncompatibilityResponse } from "./entity-storage-error.js";
 
 interface TasksRouteOptions {
   pubsub: PubSubManager;
@@ -74,6 +75,16 @@ export function createTasksRoutes(options: TasksRouteOptions) {
 
   return (
     new Elysia({ prefix: "/api/tasks" })
+      // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+      //     — task routes load plan data for plan-aware progress; surface storage
+      //     incompatibility as 409 instead of letting it escape as 500.
+      .onError(({ error: err, set }) => {
+        const conflict = entityStorageIncompatibilityResponse(err);
+        if (conflict) {
+          set.status = conflict.status;
+          return conflict.body;
+        }
+      })
       // AC: @api-contract ac-2, ac-3, ac-4 - List tasks with filters and pagination
       // AC: @task-data-manager ac-2 - Uses resolveTaskDataManager(ctx).listTasks for index-only read
       // AC: @daemon-entity-cache ac-serve-from-memory — serve from cache when available

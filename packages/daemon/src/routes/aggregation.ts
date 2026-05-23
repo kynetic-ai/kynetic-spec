@@ -33,6 +33,7 @@ import type {
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import { wrapResponse } from "./response-envelope.js";
 import { taskStorageIncompatibilityResponse } from "./task-storage-error.js";
+import { entityStorageIncompatibilityResponse } from "./entity-storage-error.js";
 
 interface AggregationRouteOptions {
   getEntityCache?: EntityCacheAccessor;
@@ -43,6 +44,16 @@ export function createAggregationRoutes(_options: AggregationRouteOptions = {}) 
 
   return (
     new Elysia({ prefix: "/api/aggregation" })
+      // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+      //     — validation/alignment may load plans and reviews; surface storage
+      //     incompatibility as 409 instead of letting it escape as 500.
+      .onError(({ error: err, set }) => {
+        const conflict = entityStorageIncompatibilityResponse(err);
+        if (conflict) {
+          set.status = conflict.status;
+          return conflict.body;
+        }
+      })
       // AC: @ui-api-aggregation ac-1 - Task status summary with dependency-aware distinctions
       // AC: @daemon-read-path ac-no-per-request-sync, ac-index-from-cache — serve from cached task index
       .get("/tasks/summary", async ({ error: errorResponse, projectContext }) => {

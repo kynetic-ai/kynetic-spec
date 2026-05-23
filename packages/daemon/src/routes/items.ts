@@ -35,6 +35,7 @@ import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import type { ItemSummary } from "../../daemon/entity-cache.js";
 import { wrapResponse } from "./response-envelope.js";
 import { taskStorageIncompatibilityResponse } from "./task-storage-error.js";
+import { entityStorageIncompatibilityResponse } from "./entity-storage-error.js";
 
 interface ItemsRouteOptions {
   getEntityCache?: EntityCacheAccessor;
@@ -159,6 +160,16 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
 
   return (
     new Elysia({ prefix: "/api/items" })
+      // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+      //     — items aggregation may need plan/review data; surface incompatibility
+      //     as structured 409 instead of letting it escape as 500.
+      .onError(({ error: err, set }) => {
+        const conflict = entityStorageIncompatibilityResponse(err);
+        if (conflict) {
+          set.status = conflict.status;
+          return conflict.body;
+        }
+      })
       // AC: @api-contract ac-8, ac-9 - List items with type filter
       // AC: @daemon-entity-cache ac-serve-from-memory — serve from cache when available
       .get(
