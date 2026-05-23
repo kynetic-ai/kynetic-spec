@@ -19136,6 +19136,29 @@ observations:
     resolved_by: codex
     workflow_ref: "@session-reflect"
     created_at: 2026-05-23T09:10:20.243Z
+  - _ulid: 01KSA47KQVQ9MQQE5BZBMZGPDQ
+    type: friction
+    content: 'Detached reviewer merge helper friction: in this review the integration target worktree
+      already existed at the target commit but was detached, so the helper refused with "target
+      branch is not checked out in any worktree". Manually switching the clean target worktree onto
+      KSPEC_DISPATCH_MERGE_TARGET allowed the supported helper to proceed. Consider teaching the
+      helper to recognize and reattach a clean detached target worktree before merging.'
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KSA420"
+    created_at: 2026-05-23T09:56:30.587Z
+  - _ulid: 01KSA47M27QDV2G23BXJN1WYTY
+    type: success
+    content: "Review/fix-cycle evidence flow worked well: creating a fresh per-cycle review, reading
+      prior closed review threads, recording deterministic checks, and using an explicit
+      evidence-log thread made the final approval and merge auditable while preserving the
+      no-code-fixes reviewer boundary."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KSA420"
+    created_at: 2026-05-23T09:56:30.919Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
