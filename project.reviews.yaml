@@ -221985,6 +221985,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-23T06:14:49.893Z
+      - _ulid: 01KS9RVH0G9XBE2QWYKBK0SKQ1
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KS9PYJBWWZW123MN3MH20J5F
+        timestamp: 2026-05-23T06:37:40.240Z
     examined_commit: 6f450883299b16fa3401a44e29b014f3ce37edd7
     external_links: []
     lifecycle_state: closed
@@ -224373,6 +224379,28 @@ reviews:
               untracked or dirty paths, or otherwise prove the path and content are represented by
               the recorded commit."
             created_at: 2026-05-23T06:04:22.781Z
+          - _ulid: 01KS9RVFFKXCTEHWST6EHKMV7J
+            author: "@claude"
+            body: >-
+              Fixed in 5f4503684e. captureResourceGitVersion now verifies the path is represented by
+              HEAD before recording git identity:
+
+
+              1. git ls-tree HEAD -- <relPath> must return a blob entry (file exists in HEAD tree).
+
+              2. git diff --quiet HEAD -- <relPath> must exit 0 (working tree matches HEAD).
+
+
+              If either check fails (untracked, staged-only, modified, or deleted resource), the
+              helper returns { git_commit: null, git_path: null } instead of the misleading
+              HEAD/path pair.
+
+
+              Added five regression tests against a temp git repo: untracked,
+              staged-but-not-committed, modified-after-commit, deleted-from-worktree, and
+              clean-and-committed. The reproduction described in the review (untracked
+              resources/new.txt alongside a committed README) now returns null fields.
+            created_at: 2026-05-23T06:37:38.671Z
         kind: blocker
       - _ulid: 01KS9QHB5DQ83V1J3PKFXAFQ0T
         entries:
@@ -224398,5 +224426,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-23T06:14:49.892Z
     created_at: 2026-05-23T06:00:09.228Z
-    updated_at: 2026-05-23T06:14:49.893Z
+    updated_at: 2026-05-23T06:37:38.671Z
     notes: []
