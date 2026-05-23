@@ -458,14 +458,52 @@ export async function detectPartialLayoutForDomain(
 // ── Caller-facing gates ──────────────────────────────────────────────────────
 
 /**
- * Storage-manager gate for plan storage. The monolithic plan parser
- * (loadPlans / savePlan / mutatePlanAtomically / deletePlan) calls this
- * before any read or write so it refuses to operate on layouts that no
- * longer have an unambiguous source of truth.
+ * Build the write-side incompatibility for a domain. This is the lenient
+ * manifest check PLUS an additional rule: when the manifest declares
+ * folder-backed storage, the monolithic storage manager must NOT create new
+ * monolithic records. Without this rule, a fresh kynetic 1.2 project (which
+ * declares folder storage by default) could have monolithic data created via
+ * savePlan/saveReview before the partial-layout detector trips, immediately
+ * producing the partial layout this task is supposed to prevent.
  *
- * The gate is lenient on the manifest declaration:
+ * Returns the appropriate `partial_entity_storage_layout` error in that case
+ * so the structured 409 contract stays consistent across daemon and CLI.
+ */
+function describeMonolithicWriteIncompatibility(
+  manifest: Manifest | null | undefined,
+  domain: "plans" | "reviews",
+): EntityStorageCompatibilityError | null {
+  const cfg = DOMAIN_CONFIG[domain];
+  const declared = getDeclaredFormat(manifest, domain);
+  if (declared === cfg.folderFormat) {
+    return new EntityStorageCompatibilityError(
+      `Project declares folder-backed ${cfg.displayName} storage (${cfg.field} = "${cfg.folderFormat}"). ` +
+        `The monolithic ${cfg.displayName} storage manager cannot create new ${cfg.displayName} records under a folder manifest; writes must route through the folder-backed ${cfg.displayName} storage manager.`,
+      {
+        code: PARTIAL_ENTITY_STORAGE_LAYOUT_CODE,
+        domain,
+        suggestion:
+          'Run "kspec upgrade" to complete the migration, or use a kspec version compatible with the existing manifest.',
+        field: cfg.field,
+        cacheDomain: domain,
+      },
+    );
+  }
+  return null;
+}
+
+/**
+ * Storage-manager READ gate for plan storage. The monolithic plan parser
+ * (loadPlans / findPlanByRef) calls this before reading so it refuses to
+ * serve data from layouts that no longer have an unambiguous source of
+ * truth.
+ *
+ * The read gate is lenient on the manifest declaration:
  *   - Legacy projects (kynetic < 1.2, no `plan_storage` declaration) pass
- *     so the monolithic store continues serving them until upgrade.
+ *     so the monolithic store continues serving CLI reads until upgrade.
+ *     Daemon plan routes still raise the strict gate at the route entry
+ *     (`requirePlanFolderStorage`) so unmigrated daemon reads fail with
+ *     `legacy_plan_storage_removed` / `missing_plan_folder_storage`.
  *   - Folder-declared projects (`plan_storage.format: folder`) pass the
  *     manifest check, but the partial-layout detector then runs and fails
  *     with `partial_entity_storage_layout` if monolithic plan records
@@ -484,7 +522,33 @@ export async function assertPlanStorageCompatible(ctx: KspecContext): Promise<vo
 }
 
 /**
- * Storage-manager gate for review storage. See {@link assertPlanStorageCompatible}.
+ * Storage-manager WRITE gate for plan storage. The monolithic plan parser
+ * (savePlan / mutatePlanAtomically / deletePlan) calls this before any
+ * write. It enforces every read-time check plus one extra rule:
+ *
+ *   - Folder-declared projects (`plan_storage.format: folder`) MUST NOT
+ *     have new monolithic records written to them, even when the on-disk
+ *     layout is currently clean. Without this rule, a fresh kynetic 1.2
+ *     project (which declares folder storage by default) could call
+ *     savePlan and create a monolithic `project.plans.yaml` under a folder
+ *     manifest, immediately producing the partial layout this task is
+ *     supposed to prevent. Writes must route through the folder-backed
+ *     plan storage manager (delivered by a sibling task).
+ *
+ * AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+ * AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+ */
+export async function assertPlanStorageWritable(ctx: KspecContext): Promise<void> {
+  const manifestErr = describeLenientManifestIncompatibility(ctx.manifest, "plans");
+  if (manifestErr) throw manifestErr;
+  const partialErr = await detectPartialLayoutForDomain(ctx, "plans");
+  if (partialErr) throw partialErr;
+  const writeErr = describeMonolithicWriteIncompatibility(ctx.manifest, "plans");
+  if (writeErr) throw writeErr;
+}
+
+/**
+ * Storage-manager READ gate for review storage. See {@link assertPlanStorageCompatible}.
  * Fires `partial_entity_storage_layout` when `review_storage.format: folder`
  * is declared but monolithic review records remain in `project.reviews.yaml`.
  *
@@ -496,6 +560,22 @@ export async function assertReviewStorageCompatible(ctx: KspecContext): Promise<
   if (manifestErr) throw manifestErr;
   const partialErr = await detectPartialLayoutForDomain(ctx, "reviews");
   if (partialErr) throw partialErr;
+}
+
+/**
+ * Storage-manager WRITE gate for review storage. See {@link assertPlanStorageWritable}.
+ * Refuses to create monolithic review records under a folder-declared manifest.
+ *
+ * AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+ * AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+ */
+export async function assertReviewStorageWritable(ctx: KspecContext): Promise<void> {
+  const manifestErr = describeLenientManifestIncompatibility(ctx.manifest, "reviews");
+  if (manifestErr) throw manifestErr;
+  const partialErr = await detectPartialLayoutForDomain(ctx, "reviews");
+  if (partialErr) throw partialErr;
+  const writeErr = describeMonolithicWriteIncompatibility(ctx.manifest, "reviews");
+  if (writeErr) throw writeErr;
 }
 
 /**

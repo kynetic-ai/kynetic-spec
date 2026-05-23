@@ -27,6 +27,7 @@ import {
   kspecJson,
   setupTempFixtures,
   cleanupTempDir,
+  downgradeManifestToLegacyStorage,
   initGitRepo,
   CLI_PATH,
 } from "./helpers/cli.js";
@@ -659,6 +660,13 @@ describe("batch command integration", () => {
   // AC: @plan-import-content-only ac-module-optional
   // AC: @plan-import-content-only ac-content-only
   it("treats content-only plan import as success in batch mode", async () => {
+    // The folder-backed plan storage manager is implemented by a sibling task
+    // under the same plan; until it lands, plan import on a freshly-init'd
+    // 1.2 folder-declared project is rejected by the write gate. Downgrade
+    // the fixture to legacy storage so the monolithic plan store still
+    // accepts the import.
+    await downgradeManifestToLegacyStorage(tempDir);
+
     const { writeFile } = await import("node:fs/promises");
     const { join } = await import("node:path");
     const planPath = join(tempDir, "content-only-plan.md");

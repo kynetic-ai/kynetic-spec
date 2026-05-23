@@ -25,8 +25,10 @@ import {
   MISSING_REVIEW_FOLDER_STORAGE_CODE,
   PARTIAL_ENTITY_STORAGE_LAYOUT_CODE,
   assertPlanStorageCompatible,
+  assertPlanStorageWritable,
   assertResourceStorageCompatible,
   assertReviewStorageCompatible,
+  assertReviewStorageWritable,
   buildManifestStorageReport,
   describeLenientManifestIncompatibility,
   describeStrictManifestIncompatibility,
@@ -461,6 +463,90 @@ reviews:
   it("assertResourceStorageCompatible does not raise partial_entity_storage_layout (no monolithic resource file exists)", async () => {
     const ctx = makeContext(specDir, makeManifest());
     await expect(assertResourceStorageCompatible(ctx)).resolves.toBeUndefined();
+  });
+});
+
+describe("assertPlanStorageWritable / assertReviewStorageWritable — folder-declared write rejection (Blocker 3)", () => {
+  let tempDir: string;
+  let specDir: string;
+
+  beforeEach(async () => {
+    tempDir = await createTempDir("kspec-entity-storage-writable-");
+    specDir = path.join(tempDir, ".kspec");
+    await fs.mkdir(specDir, { recursive: true });
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  // The read-side gate (assertPlanStorageCompatible) intentionally passes on a
+  // clean folder-declared project so that loadPlans can return [] when the
+  // folder-backed manager has nothing to serve. The write-side gate must
+  // reject the same state — otherwise a fresh kynetic 1.2 project would let
+  // savePlan create a monolithic project.plans.yaml beneath a folder manifest.
+  it("assertPlanStorageWritable rejects on a clean folder-declared project (the write-side rule that loadPlans does NOT enforce)", async () => {
+    const ctx = makeContext(specDir, makeManifest());
+    // Sanity: the read gate accepts this state.
+    await expect(assertPlanStorageCompatible(ctx)).resolves.toBeUndefined();
+    // The write gate must reject it.
+    await expect(assertPlanStorageWritable(ctx)).rejects.toMatchObject({
+      code: PARTIAL_ENTITY_STORAGE_LAYOUT_CODE,
+      domain: "plans",
+      field: "plan_storage.format",
+    });
+  });
+
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  it("assertReviewStorageWritable rejects on a clean folder-declared project (the write-side rule that loadReviewRecords does NOT enforce)", async () => {
+    const ctx = makeContext(specDir, makeManifest());
+    await expect(assertReviewStorageCompatible(ctx)).resolves.toBeUndefined();
+    await expect(assertReviewStorageWritable(ctx)).rejects.toMatchObject({
+      code: PARTIAL_ENTITY_STORAGE_LAYOUT_CODE,
+      domain: "reviews",
+      field: "review_storage.format",
+    });
+  });
+
+  // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+  it("assertPlanStorageWritable still passes on legacy projects (CLI commands on unmigrated projects continue to work through the storage manager)", async () => {
+    const ctx = makeContext(
+      specDir,
+      makeManifest({ kynetic: "1.1", plan_storage: undefined }),
+    );
+    await expect(assertPlanStorageWritable(ctx)).resolves.toBeUndefined();
+  });
+
+  // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+  it("assertReviewStorageWritable still passes on legacy projects", async () => {
+    const ctx = makeContext(
+      specDir,
+      makeManifest({ kynetic: "1.1", review_storage: undefined }),
+    );
+    await expect(assertReviewStorageWritable(ctx)).resolves.toBeUndefined();
+  });
+
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  it("assertPlanStorageWritable rejects partial layouts with partial_entity_storage_layout (same as the read-side gate)", async () => {
+    await fs.writeFile(
+      path.join(specDir, "project.plans.yaml"),
+      "plans:\n  - _ulid: 01ABCDEFGHJKMNPQRSTUVWXYZ\n    title: Stale\n",
+    );
+    const ctx = makeContext(specDir, makeManifest());
+    await expect(assertPlanStorageWritable(ctx)).rejects.toMatchObject({
+      code: PARTIAL_ENTITY_STORAGE_LAYOUT_CODE,
+      domain: "plans",
+    });
+  });
+
+  // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+  it("assertPlanStorageWritable rejects 1.2 projects with no plan_storage with missing_plan_folder_storage (mirrors the read gate)", async () => {
+    const ctx = makeContext(specDir, makeManifest({ plan_storage: undefined }));
+    await expect(assertPlanStorageWritable(ctx)).rejects.toMatchObject({
+      code: MISSING_PLAN_FOLDER_STORAGE_CODE,
+      domain: "plans",
+    });
   });
 });
 

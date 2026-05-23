@@ -14,7 +14,10 @@ import { withFileLock } from "./file-lock.js";
 import { type Plan, type PlanInput, PlanSchema, PlansFileSchema } from "../schema/index.js";
 import type { KspecContext } from "./yaml.js";
 import { readYamlFile, warnSkippedRecord, writeYamlFilePreserveFormat } from "./yaml.js";
-import { assertPlanStorageCompatible } from "./entity-storage-compatibility.js";
+import {
+  assertPlanStorageCompatible,
+  assertPlanStorageWritable,
+} from "./entity-storage-compatibility.js";
 
 /**
  * Loaded plan with runtime metadata
@@ -278,7 +281,7 @@ export function createPlan(input: PlanInput, _author?: string): Plan {
  * added by Zod defaults.
  */
 export async function savePlan(ctx: KspecContext, plan: LoadedPlan): Promise<void> {
-  await assertPlanStorageCompatible(ctx);
+  await assertPlanStorageWritable(ctx);
   const plansPath = getPlansFilePath(ctx);
 
   // Lock the file to prevent concurrent read-modify-write races
@@ -324,7 +327,7 @@ export async function mutatePlanAtomically(
   plan: LoadedPlan,
   mutate: (latestPlan: LoadedPlan) => Plan | LoadedPlan | Promise<Plan | LoadedPlan>,
 ): Promise<LoadedPlan> {
-  await assertPlanStorageCompatible(ctx);
+  await assertPlanStorageWritable(ctx);
   const plansPath = plan._sourceFile || getPlansFilePath(ctx);
   let updatedPlan: LoadedPlan | undefined;
 
@@ -385,7 +388,7 @@ export async function mutatePlanAtomically(
  * AC: @plan-crud ac-40
  */
 export async function deletePlan(ctx: KspecContext, planUlid: string): Promise<void> {
-  await assertPlanStorageCompatible(ctx);
+  await assertPlanStorageWritable(ctx);
   const plansPath = getPlansFilePath(ctx);
 
   // Lock the file to prevent concurrent read-modify-write races

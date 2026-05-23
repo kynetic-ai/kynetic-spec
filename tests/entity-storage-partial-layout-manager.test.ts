@@ -246,6 +246,60 @@ describe("Plan storage manager — partial-layout rejection", () => {
     }
     expectPartialLayoutError(captured, "plans");
   });
+
+  // ── Blocker 3 (fix cycle 2): clean folder-declared projects ───────────
+  // A fresh kynetic 1.2 project that declares `plan_storage.format: folder`
+  // has no monolithic project.plans.yaml on disk yet. Without an explicit
+  // write-side rejection the monolithic savePlan/mutatePlanAtomically/
+  // deletePlan would happily create or rewrite a monolithic file beneath the
+  // folder manifest, immediately constructing the very partial layout the
+  // task is supposed to prevent. The behavioural tests below pin the
+  // storage manager to the AC-required rejection so a regression to the
+  // pre-fix behaviour (silently creating monolithic data) fails the build.
+
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  it("savePlan rejects on a clean folder-declared project so it cannot create a monolithic plans file beneath a folder manifest", async () => {
+    const ctx = makeContext(specDir, folderDeclaredManifest());
+    const newPlan: LoadedPlan = {
+      ...createPlan({ _ulid: testUlid("NEW"), title: "Net-new plan" }),
+    };
+    await expect(savePlan(ctx, newPlan)).rejects.toMatchObject({
+      code: PARTIAL_ENTITY_STORAGE_LAYOUT_CODE,
+      domain: "plans",
+    });
+    // The rejection must happen BEFORE any file is written.
+    await expect(fs.access(path.join(specDir, "project.plans.yaml"))).rejects.toThrow(/ENOENT/);
+  });
+
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  it("mutatePlanAtomically rejects on a clean folder-declared project (no monolithic file is created by the mutation path)", async () => {
+    const ctx = makeContext(specDir, folderDeclaredManifest());
+    const targetPlan: LoadedPlan = {
+      ...createPlan({ _ulid: testUlid("MUT"), title: "Target plan" }),
+    };
+    let mutationCallbackInvoked = false;
+    await expect(
+      mutatePlanAtomically(ctx, targetPlan, (latest) => {
+        mutationCallbackInvoked = true;
+        return latest;
+      }),
+    ).rejects.toMatchObject({
+      code: PARTIAL_ENTITY_STORAGE_LAYOUT_CODE,
+      domain: "plans",
+    });
+    expect(mutationCallbackInvoked).toBe(false);
+    await expect(fs.access(path.join(specDir, "project.plans.yaml"))).rejects.toThrow(/ENOENT/);
+  });
+
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  it("deletePlan rejects on a clean folder-declared project (no monolithic file is created or touched by the delete path)", async () => {
+    const ctx = makeContext(specDir, folderDeclaredManifest());
+    await expect(deletePlan(ctx, testUlid("PLN"))).rejects.toMatchObject({
+      code: PARTIAL_ENTITY_STORAGE_LAYOUT_CODE,
+      domain: "plans",
+    });
+    await expect(fs.access(path.join(specDir, "project.plans.yaml"))).rejects.toThrow(/ENOENT/);
+  });
 });
 
 describe("Review storage manager — partial-layout rejection", () => {
@@ -364,5 +418,63 @@ describe("Review storage manager — partial-layout rejection", () => {
       captured = err;
     }
     expectPartialLayoutError(captured, "reviews");
+  });
+
+  // ── Blocker 3 (fix cycle 2): clean folder-declared projects ───────────
+  // Same write-side rejection as the plan domain — a fresh folder-declared
+  // project must not allow the monolithic review storage manager to create
+  // a project.reviews.yaml beneath the folder manifest.
+
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  it("saveReviewRecord rejects on a clean folder-declared project so it cannot create a monolithic reviews file beneath a folder manifest", async () => {
+    const ctx = makeContext(specDir, folderDeclaredManifest());
+    const newReview: LoadedReviewRecord = {
+      ...createReviewRecord({
+        _ulid: testUlid("NEW"),
+        title: "Net-new review",
+        author: "x@y",
+        subject: { type: "code", base_commit: "a", head_commit: "b" },
+      }),
+    };
+    await expect(saveReviewRecord(ctx, newReview)).rejects.toMatchObject({
+      code: PARTIAL_ENTITY_STORAGE_LAYOUT_CODE,
+      domain: "reviews",
+    });
+    await expect(fs.access(path.join(specDir, "project.reviews.yaml"))).rejects.toThrow(/ENOENT/);
+  });
+
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  it("mutateReviewAtomically rejects on a clean folder-declared project (no monolithic file is created by the mutation path)", async () => {
+    const ctx = makeContext(specDir, folderDeclaredManifest());
+    const targetReview: LoadedReviewRecord = {
+      ...createReviewRecord({
+        _ulid: testUlid("MUT"),
+        title: "Target review",
+        author: "x@y",
+        subject: { type: "code", base_commit: "abc", head_commit: "def" },
+      }),
+    };
+    let mutationCallbackInvoked = false;
+    await expect(
+      mutateReviewAtomically(ctx, targetReview, (latest) => {
+        mutationCallbackInvoked = true;
+        return latest;
+      }),
+    ).rejects.toMatchObject({
+      code: PARTIAL_ENTITY_STORAGE_LAYOUT_CODE,
+      domain: "reviews",
+    });
+    expect(mutationCallbackInvoked).toBe(false);
+    await expect(fs.access(path.join(specDir, "project.reviews.yaml"))).rejects.toThrow(/ENOENT/);
+  });
+
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  it("deleteReviewRecord rejects on a clean folder-declared project (no monolithic file is created or touched by the delete path)", async () => {
+    const ctx = makeContext(specDir, folderDeclaredManifest());
+    await expect(deleteReviewRecord(ctx, testUlid("REV"))).rejects.toMatchObject({
+      code: PARTIAL_ENTITY_STORAGE_LAYOUT_CODE,
+      domain: "reviews",
+    });
+    await expect(fs.access(path.join(specDir, "project.reviews.yaml"))).rejects.toThrow(/ENOENT/);
   });
 });

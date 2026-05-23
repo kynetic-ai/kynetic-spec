@@ -50,8 +50,25 @@ import {
   type ResourceManifest,
   type ResourceMetadata,
 } from "../src/parser/entity-local-resources.js";
-import { readYamlFile } from "../src/parser/yaml.js";
+import { type KspecContext, readYamlFile } from "../src/parser/yaml.js";
 import { cleanupTempDir, createTempDir, readTestOutput, testUlid } from "./helpers/cli.js";
+
+/**
+ * Build a minimal KspecContext whose `manifest.resource_storage.format` is
+ * "entity_scoped" so the resource compatibility gate inside
+ * `resolveResourceReference` passes. The function only reads
+ * `ctx.manifest` so the rest of the context can be left undefined; tests
+ * that exercise the gate directly construct their own ctx with a missing
+ * or legacy manifest instead.
+ */
+function buildEntityScopedCtx(): KspecContext {
+  return {
+    manifest: {
+      kynetic: "1.2",
+      resource_storage: { format: "entity_scoped" },
+    },
+  } as unknown as KspecContext;
+}
 
 // ── Fixture Entity Type ──────────────────────────────────────────────────────
 
@@ -719,6 +736,7 @@ describe("entity-scoped local-resources trait foundation", () => {
       await writeResourceManifest(widget.entityDir, manifest);
 
       const result = await resolveResourceReference({
+        ctx: buildEntityScopedCtx(),
         ownerEntityDir: widget.entityDir,
         relativePath: "diagrams/flow.svg",
       });
@@ -759,6 +777,7 @@ describe("entity-scoped local-resources trait foundation", () => {
       await writeResourceManifest(widget.entityDir, manifest);
 
       const undeclared = await resolveResourceReference({
+        ctx: buildEntityScopedCtx(),
         ownerEntityDir: widget.entityDir,
         relativePath: "stale-orphan.png",
       });
@@ -767,6 +786,7 @@ describe("entity-scoped local-resources trait foundation", () => {
 
       // The declared sibling still resolves.
       const declared = await resolveResourceReference({
+        ctx: buildEntityScopedCtx(),
         ownerEntityDir: widget.entityDir,
         relativePath: "declared.png",
       });
@@ -782,6 +802,7 @@ describe("entity-scoped local-resources trait foundation", () => {
       await writeResourceFile(widget.resourcesDir, "untracked.png", "DATA");
 
       const result = await resolveResourceReference({
+        ctx: buildEntityScopedCtx(),
         ownerEntityDir: widget.entityDir,
         relativePath: "untracked.png",
       });
@@ -794,6 +815,7 @@ describe("entity-scoped local-resources trait foundation", () => {
       const widget = await createWidget(specDir);
       // No manifest needed — path validation rejects before manifest lookup.
       const abs = await resolveResourceReference({
+        ctx: buildEntityScopedCtx(),
         ownerEntityDir: widget.entityDir,
         relativePath: "/etc/passwd",
       });
@@ -801,11 +823,135 @@ describe("entity-scoped local-resources trait foundation", () => {
       if (!abs.ok) expect(abs.error).toMatch(/absolute path/i);
 
       const trav = await resolveResourceReference({
+        ctx: buildEntityScopedCtx(),
         ownerEntityDir: widget.entityDir,
         relativePath: "../escape.txt",
       });
       expect(trav.ok).toBe(false);
       if (!trav.ok) expect(trav.error).toMatch(/parent traversal|\.\./i);
+    });
+
+    // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+    // Behavioural coverage for the resource-storage compatibility gate: the
+    // resolver must surface a deterministic entity_storage_incompatible error
+    // before touching the resources tree when the project's manifest does not
+    // declare entity-scoped resource storage. Without this gate an unmigrated
+    // project could load entity-local resources via the resolver and silently
+    // bypass the structured 409 contract.
+    it("rejects resolution on a legacy project (kynetic < 1.2, no resource_storage)", async () => {
+      const widget = await createWidget(specDir);
+      const abs = await writeResourceFile(widget.resourcesDir, "declared.png", "DATA");
+      const _realAbs = await fs.realpath(abs);
+      const manifest: ResourceManifest = {
+        resources: [
+          {
+            id: "declared",
+            label: null,
+            path: "declared.png",
+            content_type: "image/png",
+            bytes: 4,
+            sha256: "0".repeat(64),
+            git_commit: null,
+            git_path: null,
+            description: null,
+          },
+        ],
+      };
+      await writeResourceManifest(widget.entityDir, manifest);
+
+      const legacyCtx = {
+        manifest: { kynetic: "1.1" },
+      } as unknown as KspecContext;
+
+      await expect(
+        resolveResourceReference({
+          ctx: legacyCtx,
+          ownerEntityDir: widget.entityDir,
+          relativePath: "declared.png",
+        }),
+      ).rejects.toMatchObject({
+        name: "EntityStorageCompatibilityError",
+        code: "legacy_plan_storage_removed",
+        domain: "resources",
+        field: "resource_storage.format",
+      });
+    });
+
+    // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+    it("rejects resolution on a 1.2 project that does not declare resource_storage", async () => {
+      const widget = await createWidget(specDir);
+      await writeResourceFile(widget.resourcesDir, "declared.png", "DATA");
+      const manifest: ResourceManifest = {
+        resources: [
+          {
+            id: "declared",
+            label: null,
+            path: "declared.png",
+            content_type: "image/png",
+            bytes: 4,
+            sha256: "0".repeat(64),
+            git_commit: null,
+            git_path: null,
+            description: null,
+          },
+        ],
+      };
+      await writeResourceManifest(widget.entityDir, manifest);
+
+      const missingDeclarationCtx = {
+        manifest: { kynetic: "1.2" },
+      } as unknown as KspecContext;
+
+      await expect(
+        resolveResourceReference({
+          ctx: missingDeclarationCtx,
+          ownerEntityDir: widget.entityDir,
+          relativePath: "declared.png",
+        }),
+      ).rejects.toMatchObject({
+        name: "EntityStorageCompatibilityError",
+        code: "missing_plan_folder_storage",
+        domain: "resources",
+        field: "resource_storage.format",
+      });
+    });
+
+    // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+    it("rejects resolution on a 1.2 project that declares a non-entity_scoped resource_storage", async () => {
+      const widget = await createWidget(specDir);
+      await writeResourceFile(widget.resourcesDir, "declared.png", "DATA");
+      const manifest: ResourceManifest = {
+        resources: [
+          {
+            id: "declared",
+            label: null,
+            path: "declared.png",
+            content_type: "image/png",
+            bytes: 4,
+            sha256: "0".repeat(64),
+            git_commit: null,
+            git_path: null,
+            description: null,
+          },
+        ],
+      };
+      await writeResourceManifest(widget.entityDir, manifest);
+
+      const wrongFormatCtx = {
+        manifest: { kynetic: "1.2", resource_storage: { format: "monolithic" } },
+      } as unknown as KspecContext;
+
+      await expect(
+        resolveResourceReference({
+          ctx: wrongFormatCtx,
+          ownerEntityDir: widget.entityDir,
+          relativePath: "declared.png",
+        }),
+      ).rejects.toMatchObject({
+        name: "EntityStorageCompatibilityError",
+        code: "missing_plan_folder_storage",
+        domain: "resources",
+      });
     });
   });
 

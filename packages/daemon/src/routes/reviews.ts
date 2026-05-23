@@ -79,6 +79,7 @@ import type { ReviewIndexSummary } from "../../daemon/entity-cache.js";
 import { wrapResponse } from "./response-envelope.js";
 import { taskStorageIncompatibilityResponse } from "./task-storage-error.js";
 import { entityStorageIncompatibilityResponse } from "./entity-storage-error.js";
+import { requireReviewFolderStorage } from "../../parser/entity-storage-compatibility.js";
 
 interface ReviewsRouteOptions {
   pubsub: PubSubManager;
@@ -209,6 +210,13 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           // AC: @daemon-entity-cache ac-serve-from-memory — defer initContext for cache hits
           const cache = getEntityCache?.(projectContext.path);
 
+          let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+          const getCtx = async () => {
+            if (!_ctx) _ctx = await initContext(projectContext.path, { syncMode: "skip" });
+            return _ctx;
+          };
+
           // AC: @daemon-entity-cache ac-warming-availability — return loading indicator
           const reviewsDomainState = cache?.getDomainState("reviews");
           if (cache && reviewsDomainState === "loading") {
@@ -220,12 +228,26 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
             });
           }
 
-          let _ctx: Awaited<ReturnType<typeof initContext>> | null = null;
-          // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
-          const getCtx = async () => {
-            if (!_ctx) _ctx = await initContext(projectContext.path, { syncMode: "skip" });
-            return _ctx;
-          };
+          // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+          // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+          //     — review routes require folder-backed review storage. Reject
+          //     legacy projects (kynetic < 1.2 with no review_storage
+          //     declaration), 1.2 projects missing the declaration, and partial
+          //     folder layouts with a structured 409 before serving any data.
+          //
+          // AC: @daemon-read-path ac-no-per-request-sync — skip the gate when
+          //     the cache has already proved this project is compatible at
+          //     load time. Cache invalidation on manifest changes keeps the
+          //     fast path correct.
+          if (!cache || reviewsDomainState !== "ready") {
+            try {
+              await requireReviewFolderStorage(await getCtx());
+            } catch (err) {
+              const conflict = entityStorageIncompatibilityResponse(err, { cache });
+              if (conflict) return errorResponse(conflict.status, conflict.body);
+              throw err;
+            }
+          }
 
           // Try cache for reviews (index tier has ReviewIndexSummary, disk gives full records)
           // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
@@ -419,6 +441,26 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
             return wrapResponse(null, { cacheDomainState: "loading" });
           }
 
+          // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+          // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+          //     — review detail routes share the list route's contract: legacy
+          //     and partial-layout projects must surface a structured 409, not
+          //     fall through to a 404 or serve monolithic data.
+          //
+          // AC: @daemon-read-path ac-no-per-request-sync — skip the gate when
+          //     the cache has already proved this project is compatible. See
+          //     the list route for the full rationale.
+          if (!cache || reviewsDomainState !== "ready") {
+            try {
+              const ctx = await initContext(projectContext.path, { syncMode: "skip" });
+              await requireReviewFolderStorage(ctx);
+            } catch (err) {
+              const conflict = entityStorageIncompatibilityResponse(err, { cache });
+              if (conflict) return errorResponse(conflict.status, conflict.body);
+              throw err;
+            }
+          }
+
           let review;
           if (cache && reviewsDomainState === "ready") {
             // Find ULID in index, then load full record from detail tier
@@ -472,6 +514,13 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
         "/:id/comments",
         async ({ params, body, error: errorResponse, projectContext }) => {
           const ctx = await initContext(projectContext.path);
+          // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+          // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+          //     — review mutation routes require folder-backed review storage,
+          //     same as the list/detail reads. The onError handler translates
+          //     the thrown EntityStorageCompatibilityError into a structured
+          //     409 response.
+          await requireReviewFolderStorage(ctx);
           const reviews = await loadReviewRecords(ctx);
           const review = findReviewByRef(reviews, params.id);
 
@@ -721,6 +770,13 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
         "/:id/comments/:threadId/replies",
         async ({ params, body, error: errorResponse, projectContext }) => {
           const ctx = await initContext(projectContext.path);
+          // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+          // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+          //     — review mutation routes require folder-backed review storage,
+          //     same as the list/detail reads. The onError handler translates
+          //     the thrown EntityStorageCompatibilityError into a structured
+          //     409 response.
+          await requireReviewFolderStorage(ctx);
           const reviews = await loadReviewRecords(ctx);
           const review = findReviewByRef(reviews, params.id);
 
@@ -815,6 +871,13 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
         "/:id/comments/:threadId/resolve",
         async ({ params, body, error: errorResponse, projectContext }) => {
           const ctx = await initContext(projectContext.path);
+          // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+          // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+          //     — review mutation routes require folder-backed review storage,
+          //     same as the list/detail reads. The onError handler translates
+          //     the thrown EntityStorageCompatibilityError into a structured
+          //     409 response.
+          await requireReviewFolderStorage(ctx);
           const reviews = await loadReviewRecords(ctx);
           const review = findReviewByRef(reviews, params.id);
 
@@ -902,6 +965,13 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
         "/:id/comments/:threadId/reopen",
         async ({ params, body, error: errorResponse, projectContext }) => {
           const ctx = await initContext(projectContext.path);
+          // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+          // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+          //     — review mutation routes require folder-backed review storage,
+          //     same as the list/detail reads. The onError handler translates
+          //     the thrown EntityStorageCompatibilityError into a structured
+          //     409 response.
+          await requireReviewFolderStorage(ctx);
           const reviews = await loadReviewRecords(ctx);
           const review = findReviewByRef(reviews, params.id);
 
@@ -1036,6 +1106,13 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           }
 
           const ctx = await initContext(projectContext.path);
+          // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+          // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+          //     — review mutation routes require folder-backed review storage,
+          //     same as the list/detail reads. The onError handler translates
+          //     the thrown EntityStorageCompatibilityError into a structured
+          //     409 response.
+          await requireReviewFolderStorage(ctx);
           const reviews = await loadReviewRecords(ctx);
           const review = findReviewByRef(reviews, params.id);
 
@@ -1226,6 +1303,13 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           }
 
           const ctx = await initContext(projectContext.path);
+          // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+          // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+          //     — review mutation routes require folder-backed review storage,
+          //     same as the list/detail reads. The onError handler translates
+          //     the thrown EntityStorageCompatibilityError into a structured
+          //     409 response.
+          await requireReviewFolderStorage(ctx);
           const reviews = await loadReviewRecords(ctx);
           const review = findReviewByRef(reviews, params.id);
 
@@ -1366,6 +1450,13 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           }
 
           const ctx = await initContext(projectContext.path);
+          // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+          // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+          //     — review mutation routes require folder-backed review storage,
+          //     same as the list/detail reads. The onError handler translates
+          //     the thrown EntityStorageCompatibilityError into a structured
+          //     409 response.
+          await requireReviewFolderStorage(ctx);
           const reviews = await loadReviewRecords(ctx);
           const review = findReviewByRef(reviews, params.id);
 

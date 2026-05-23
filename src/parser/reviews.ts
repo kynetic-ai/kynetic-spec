@@ -20,7 +20,10 @@ import {
 } from "../schema/index.js";
 import type { KspecContext } from "./yaml.js";
 import { readYamlFile, writeYamlFilePreserveFormat } from "./yaml.js";
-import { assertReviewStorageCompatible } from "./entity-storage-compatibility.js";
+import {
+  assertReviewStorageCompatible,
+  assertReviewStorageWritable,
+} from "./entity-storage-compatibility.js";
 
 /**
  * Loaded review record with runtime metadata.
@@ -268,7 +271,7 @@ export async function saveReviewRecord(
   ctx: KspecContext,
   review: LoadedReviewRecord,
 ): Promise<void> {
-  await assertReviewStorageCompatible(ctx);
+  await assertReviewStorageWritable(ctx);
   const reviewsPath = getReviewsFilePath(ctx);
 
   // Lock the file to prevent concurrent read-modify-write races
@@ -313,7 +316,7 @@ export async function mutateReviewAtomically(
     latestReview: LoadedReviewRecord,
   ) => ReviewRecord | LoadedReviewRecord | Promise<ReviewRecord | LoadedReviewRecord>,
 ): Promise<LoadedReviewRecord> {
-  await assertReviewStorageCompatible(ctx);
+  await assertReviewStorageWritable(ctx);
   const reviewsPath = review._sourceFile || getReviewsFilePath(ctx);
   let updatedReview: LoadedReviewRecord | undefined;
 
@@ -373,7 +376,7 @@ export async function mutateReviewAtomically(
  * Delete a review record by ULID.
  */
 export async function deleteReviewRecord(ctx: KspecContext, reviewUlid: string): Promise<boolean> {
-  await assertReviewStorageCompatible(ctx);
+  await assertReviewStorageWritable(ctx);
   const reviewsPath = getReviewsFilePath(ctx);
 
   return withFileLock(reviewsPath, async () => {

@@ -139,62 +139,90 @@ describe("Entity storage incompatibility — 1.2 without folder declaration", ()
   });
 });
 
-describe("Entity storage incompatibility — explicit non-folder format on plans", () => {
+describe("Entity storage incompatibility — explicit non-folder format on plans (kynetic 1.1)", () => {
   beforeEach(() => {
-    // Project explicitly declares plan_storage.format = monolithic — broken
-    // manifest regardless of kynetic version. Lenient gate fires.
+    // Project explicitly declares plan_storage.format = monolithic on kynetic
+    // 1.1. The route-level strict gate (requirePlanFolderStorage) treats a
+    // pre-1.2 manifest as legacy regardless of the explicit format, so the
+    // structured 409 carries `legacy_plan_storage_removed` — the canonical
+    // "this is a pre-folder-storage project, run kspec upgrade" code.
     setupInlineFixtures(tempDir, { manifest: EXPLICIT_NON_FOLDER_PLAN_STORAGE_MANIFEST });
   });
 
   // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
   // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
-  it("GET /api/plans returns 409 with missing_plan_folder_storage", async () => {
+  it("GET /api/plans returns 409 with legacy_plan_storage_removed", async () => {
     const response = await request("/api/plans");
     expect(response.status).toBe(409);
     const body = await response.json();
     const typed = assertIsEntityStorageConflict(body);
-    expect(typed.code).toBe("missing_plan_folder_storage");
+    expect(typed.code).toBe("legacy_plan_storage_removed");
     expect(typed.message).toMatch(/monolithic|folder-backed/i);
   });
 });
 
-describe("Entity storage incompatibility — explicit non-folder format on reviews", () => {
+describe("Entity storage incompatibility — explicit non-folder format on reviews (kynetic 1.1)", () => {
   beforeEach(() => {
     setupInlineFixtures(tempDir, { manifest: EXPLICIT_NON_FOLDER_REVIEW_STORAGE_MANIFEST });
   });
 
   // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
-  it("GET /api/reviews returns 409 with missing_review_folder_storage", async () => {
+  it("GET /api/reviews returns 409 with legacy_review_storage_removed", async () => {
     const response = await request("/api/reviews");
     expect(response.status).toBe(409);
     const body = await response.json();
     const typed = assertIsEntityStorageConflict(body);
-    expect(typed.code).toBe("missing_review_folder_storage");
+    expect(typed.code).toBe("legacy_review_storage_removed");
     expect(typed.message).toMatch(/monolithic|folder-backed/i);
   });
 });
 
-describe("Entity storage compatibility — legacy projects pass lenient gate", () => {
+describe("Entity storage incompatibility — legacy projects (kynetic < 1.2 with no declaration)", () => {
   beforeEach(() => {
     // Legacy 1.1 project with NO plan_storage / review_storage declarations.
-    // Lenient gate passes; routes serve existing monolithic data.
+    // Plan/review reads need folder-backed behaviour and must surface the
+    // structured 409 contract instead of serving the legacy monolithic data
+    // even when project.plans.yaml / project.reviews.yaml exist.
     setupInlineFixtures(tempDir, {
       plans: `kynetic_plans: "1.0"\nplans: []\n`,
       reviews: `kynetic_reviews: "1.0"\nreviews: []\n`,
     });
   });
 
-  it("GET /api/plans returns 200 on legacy 1.1 projects without storage_* declarations", async () => {
+  // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+  // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+  it("GET /api/plans returns 409 with legacy_plan_storage_removed on a legacy project", async () => {
     const response = await request("/api/plans");
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(409);
     const body = await response.json();
-    expect(body).toBeTypeOf("object");
+    const typed = assertIsEntityStorageConflict(body);
+    expect(typed.code).toBe("legacy_plan_storage_removed");
+    expect(typed.field).toBe("plan_storage.format");
+    expect(typed.domain).toBe("plans");
+    expect(typed.cache_domain).toBe("plans");
   });
 
-  it("GET /api/reviews returns 200 on legacy 1.1 projects without storage_* declarations", async () => {
-    const response = await request("/api/reviews");
-    expect(response.status).toBe(200);
+  // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+  it("GET /api/plans/:ref returns 409 (not 404) with legacy_plan_storage_removed", async () => {
+    const response = await request("/api/plans/@some-ref");
+    expect(response.status).not.toBe(404);
+    expect(response.status).toBe(409);
     const body = await response.json();
-    expect(body).toBeTypeOf("object");
+    const typed = assertIsEntityStorageConflict(body);
+    expect(typed.error).not.toBe("not_found");
+    expect(typed.code).toBe("legacy_plan_storage_removed");
+  });
+
+  // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+  // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+  it("GET /api/reviews returns 409 with legacy_review_storage_removed on a legacy project", async () => {
+    const response = await request("/api/reviews");
+    expect(response.status).toBe(409);
+    const body = await response.json();
+    const typed = assertIsEntityStorageConflict(body);
+    expect(typed.code).toBe("legacy_review_storage_removed");
+    expect(typed.field).toBe("review_storage.format");
+    expect(typed.domain).toBe("reviews");
+    expect(typed.cache_domain).toBe("reviews");
   });
 });
