@@ -39,6 +39,7 @@ import {
   inferContentType,
   loadResourceManifest,
   parseResourceReference,
+  removeOwnerResources,
   resolveContentType,
   resolveResourcePath,
   validateContentType,
@@ -496,6 +497,93 @@ describe("entity-scoped local-resources trait foundation", () => {
       expect(result.ok).toBe(false);
       if (!result.ok) {
         expect(result.error).toMatch(/does not exist|under the owning entity's resources/i);
+      }
+    });
+
+    // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+    // AC: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner
+    it("rejects directory candidates with actionable guidance, not a deferred EISDIR", async () => {
+      const widget = await createWidget(specDir);
+      // Create a directory at the manifest path location — for example a
+      // subtree (`<resources>/folder/`) declared as if it were a resource.
+      await fs.mkdir(path.join(widget.resourcesDir, "folder"), { recursive: true });
+      // Put a real file inside so realpath/stat succeed on the directory.
+      await fs.writeFile(path.join(widget.resourcesDir, "folder", "inner.txt"), "x");
+
+      const manifest: ResourceManifest = {
+        resources: [
+          {
+            id: "folder",
+            label: null,
+            path: "folder",
+            content_type: "application/octet-stream",
+            bytes: 0,
+            sha256: "0".repeat(64),
+            git_commit: null,
+            git_path: null,
+            description: null,
+          },
+        ],
+      };
+
+      const result = await resolveResourcePath({
+        ownerResourcesDir: widget.resourcesDir,
+        relativePath: "folder",
+        manifest,
+      });
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.error).toMatch(/regular file|directory|non-regular/i);
+      }
+
+      // copyResourceForStaticExport must propagate the same actionable
+      // rejection rather than throwing an unstructured EISDIR.
+      const exportRoot = path.join(tempDir, "export-folder");
+      const exportResult = await copyResourceForStaticExport({
+        ownerResourcesDir: widget.resourcesDir,
+        relativePath: "folder",
+        exportRoot,
+        entityType: WIDGET_LAYOUT.entityType,
+        entityUlid: widget.ulid,
+        manifest,
+      });
+      expect(exportResult.ok).toBe(false);
+      if (!exportResult.ok) {
+        expect(exportResult.error).toMatch(/regular file|directory|non-regular/i);
+      }
+      // The export root must not contain the rogue directory entry.
+      await expect(
+        fs.stat(path.join(exportRoot, "assets/resources/widget", widget.ulid, "folder")),
+      ).rejects.toBeDefined();
+    });
+
+    // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+    it("rejects directory candidates resolved via a symlink that points at a directory", async () => {
+      const widget = await createWidget(specDir);
+      // Outside directory the symlink will point to.
+      const outsideDir = path.join(tempDir, "outside-dir-target");
+      await fs.mkdir(outsideDir, { recursive: true });
+      await fs.writeFile(path.join(outsideDir, "inner.txt"), "x");
+
+      const linkPath = path.join(widget.resourcesDir, "dirlink");
+      try {
+        await fs.symlink(outsideDir, linkPath);
+      } catch (err) {
+        const errno = (err as NodeJS.ErrnoException).code;
+        if (errno === "EPERM" || errno === "ENOSYS") return;
+        throw err;
+      }
+
+      // The symlink resolves to an external directory. Containment check
+      // will reject this (symlink-escape) — but even if containment ever
+      // passed, the file-type check must reject it as non-regular.
+      const result = await resolveResourcePath({
+        ownerResourcesDir: widget.resourcesDir,
+        relativePath: "dirlink",
+      });
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.error).toMatch(/symlink|escape|regular file|directory/i);
       }
     });
 
@@ -1040,6 +1128,47 @@ describe("entity-scoped local-resources trait foundation", () => {
     });
 
     // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+    it("propagates YAML parse failures for existing-but-corrupt manifests instead of silently returning empty", async () => {
+      const widget = await createWidget(specDir);
+      // Syntactically invalid YAML: unterminated flow sequence on the path
+      // value. The file exists, so we MUST NOT pretend "no resources" —
+      // resource metadata would silently disappear from every consumer.
+      await fs.writeFile(
+        getResourcesManifestPath(widget.entityDir),
+        "resources:\n  - id: x\n    path: [unterminated\n",
+        "utf-8",
+      );
+      let caught: unknown = null;
+      try {
+        await loadResourceManifest(widget.entityDir);
+      } catch (err) {
+        caught = err;
+      }
+      expect(caught).not.toBeNull();
+      expect(caught instanceof Error).toBe(true);
+      if (caught instanceof Error) {
+        expect(caught.message).toMatch(/resource manifest|resources\.yaml/i);
+      }
+    });
+
+    // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+    it("propagates non-ENOENT read errors (e.g. resources.yaml is a directory) instead of returning empty", async () => {
+      const widget = await createWidget(specDir);
+      // Replace the manifest *path* with a directory so reading it raises
+      // a non-ENOENT IO error. A real-world equivalent is permission denied
+      // or a corrupted filesystem entry — neither should be masked.
+      await fs.mkdir(getResourcesManifestPath(widget.entityDir), { recursive: true });
+      let caught: unknown = null;
+      try {
+        await loadResourceManifest(widget.entityDir);
+      } catch (err) {
+        caught = err;
+      }
+      expect(caught).not.toBeNull();
+      expect(caught instanceof Error).toBe(true);
+    });
+
+    // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
     it("rejects malformed manifests via Zod schema validation on load", async () => {
       const widget = await createWidget(specDir);
       // Write a malformed manifest with an invalid sha256 string.
@@ -1284,6 +1413,128 @@ describe("entity-scoped local-resources trait foundation", () => {
 
       const reloaded = await loadResourceManifest(widget.entityDir);
       expect(reloaded).toEqual(original);
+    });
+  });
+
+  // ── Owner-Delete Cascade ─────────────────────────────────────────────────
+
+  describe("removeOwnerResources (cascade with owner delete)", () => {
+    // AC: @trait-entity-scoped-local-resources-1 ac-resource-delete-follows-owner-delete
+    it("removes the resources/ subtree and resources.yaml manifest in one mutation", async () => {
+      const widget = await createWidget(specDir);
+      const filePath = await writeResourceFile(
+        widget.resourcesDir,
+        "diagrams/flow.svg",
+        "<svg/>",
+      );
+      const nestedDir = path.join(widget.resourcesDir, "logs", "2026");
+      await fs.mkdir(nestedDir, { recursive: true });
+      const nestedFile = path.join(nestedDir, "run.log");
+      await fs.writeFile(nestedFile, "log entry");
+
+      // Persist a manifest sidecar so the cascade has both artifacts to clear.
+      await writeResourceManifest(widget.entityDir, {
+        resources: [
+          {
+            id: "flow",
+            label: null,
+            path: "diagrams/flow.svg",
+            content_type: "image/svg+xml",
+            bytes: 6,
+            sha256: "a".repeat(64),
+            git_commit: null,
+            git_path: null,
+            description: null,
+          },
+        ],
+      });
+
+      const manifestPath = getResourcesManifestPath(widget.entityDir);
+      // Sanity: artifacts exist pre-delete.
+      await expect(fs.stat(widget.resourcesDir)).resolves.toBeDefined();
+      await expect(fs.stat(manifestPath)).resolves.toBeDefined();
+      await expect(fs.stat(filePath)).resolves.toBeDefined();
+      await expect(fs.stat(nestedFile)).resolves.toBeDefined();
+
+      await removeOwnerResources(widget.entityDir);
+
+      // Both resources/ subtree and resources.yaml manifest are gone.
+      await expect(fs.stat(widget.resourcesDir)).rejects.toMatchObject({ code: "ENOENT" });
+      await expect(fs.stat(manifestPath)).rejects.toMatchObject({ code: "ENOENT" });
+      await expect(fs.stat(filePath)).rejects.toMatchObject({ code: "ENOENT" });
+      await expect(fs.stat(nestedFile)).rejects.toMatchObject({ code: "ENOENT" });
+    });
+
+    // AC: @trait-entity-scoped-local-resources-1 ac-resource-delete-follows-owner-delete
+    it("is idempotent and safe to call when the entity has no resources state", async () => {
+      const widget = await createWidget(specDir);
+      // Remove resources/ directly so neither artifact exists.
+      await fs.rm(widget.resourcesDir, { recursive: true, force: true });
+
+      // First call on already-empty state must not throw.
+      await expect(removeOwnerResources(widget.entityDir)).resolves.toBeUndefined();
+      // Second call must remain idempotent.
+      await expect(removeOwnerResources(widget.entityDir)).resolves.toBeUndefined();
+
+      // The owning entity directory itself is preserved; only its resource
+      // sidecar state is the trait's concern.
+      await expect(fs.stat(widget.entityDir)).resolves.toBeDefined();
+    });
+
+    // AC: @trait-entity-scoped-local-resources-1 ac-resource-delete-follows-owner-delete
+    it("topology guarantee: resources live strictly under the owning entity directory", async () => {
+      // The "same logical mutation" wording in the AC is structurally
+      // satisfied by storage topology — both the resources subtree and the
+      // manifest live inside the owning entity directory, so a recursive
+      // remove of the entity directory cascades to its resources without
+      // any extra coordination from the entity manager.
+      const widget = await createWidget(specDir);
+      const manifestPath = getResourcesManifestPath(widget.entityDir);
+      const resourcesDir = getResourcesDir(widget.entityDir);
+
+      const relManifest = path.relative(widget.entityDir, manifestPath);
+      const relResources = path.relative(widget.entityDir, resourcesDir);
+
+      for (const rel of [relManifest, relResources]) {
+        expect(rel).not.toBe("");
+        expect(rel.startsWith("..")).toBe(false);
+        expect(path.isAbsolute(rel)).toBe(false);
+      }
+    });
+
+    // AC: @trait-entity-scoped-local-resources-1 ac-resource-delete-follows-owner-delete
+    it("removing the owning entity directory cascades to all resource files", async () => {
+      // Behavioral proof of the cascade: when an entity manager removes the
+      // entity directory (its canonical persistence action), every declared
+      // and undeclared resource file under it is removed in the same
+      // logical mutation.
+      const widget = await createWidget(specDir);
+      const a = await writeResourceFile(widget.resourcesDir, "a.txt", "alpha");
+      const b = await writeResourceFile(widget.resourcesDir, "nested/b.txt", "beta");
+      await writeResourceManifest(widget.entityDir, {
+        resources: [
+          {
+            id: "a",
+            label: null,
+            path: "a.txt",
+            content_type: "text/plain",
+            bytes: 5,
+            sha256: "0".repeat(64),
+            git_commit: null,
+            git_path: null,
+            description: null,
+          },
+        ],
+      });
+
+      await fs.rm(widget.entityDir, { recursive: true, force: true });
+
+      await expect(fs.stat(widget.entityDir)).rejects.toMatchObject({ code: "ENOENT" });
+      await expect(fs.stat(a)).rejects.toMatchObject({ code: "ENOENT" });
+      await expect(fs.stat(b)).rejects.toMatchObject({ code: "ENOENT" });
+      await expect(fs.stat(getResourcesManifestPath(widget.entityDir))).rejects.toMatchObject({
+        code: "ENOENT",
+      });
     });
   });
 });

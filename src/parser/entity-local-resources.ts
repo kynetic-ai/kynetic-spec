@@ -394,6 +394,26 @@ export async function resolveResourcePath(options: {
     };
   }
 
+  // The trait describes local resource *files*; reject directories, sockets,
+  // FIFOs, and other non-regular entries here so callers (static export,
+  // hashing, preview, API) get the same actionable rejection instead of an
+  // unstructured EISDIR/EBADF deeper in the pipeline.
+  let candidateStat;
+  try {
+    candidateStat = await fs.stat(realCandidate);
+  } catch {
+    return {
+      ok: false,
+      error: `Resource file "${relativePath}" does not exist under the owning entity's resources/ directory.`,
+    };
+  }
+  if (!candidateStat.isFile()) {
+    return {
+      ok: false,
+      error: `Resource path "${relativePath}" does not point to a regular file under the owning entity's resources/ directory; resources must be files, not directories or other non-regular entries.`,
+    };
+  }
+
   return { ok: true, value: { absolutePath: realCandidate, relativePath } };
 }
 
@@ -626,17 +646,31 @@ export async function computeResourceMetadata(
 // ── Manifest IO ──────────────────────────────────────────────────────────────
 
 /**
- * Load and validate an entity's resource manifest. Returns an empty manifest
- * when the file is missing — callers may pre-create resources without first
- * writing an empty manifest.
+ * Load and validate an entity's resource manifest.
+ *
+ * Distinguishes "missing manifest" from "corrupt manifest":
+ *   - Missing file (ENOENT) → returns an empty manifest so callers may
+ *     pre-create resources without first writing an empty file.
+ *   - Any other read error or YAML parse failure → surfaces as a thrown
+ *     error annotated with the manifest path so corrupt manifests cannot
+ *     masquerade as "no resources declared."
+ *
+ * Schema validation failures from `ResourceManifestSchema.parse` propagate
+ * normally as `ZodError` so callers can map them to API/CLI diagnostics.
  */
 export async function loadResourceManifest(ownerEntityDir: string): Promise<ResourceManifest> {
   const manifestPath = getResourcesManifestPath(ownerEntityDir);
   let raw: unknown;
   try {
     raw = await readYamlFile<unknown>(manifestPath);
-  } catch {
-    return { resources: [] };
+  } catch (err) {
+    const errno = (err as NodeJS.ErrnoException).code;
+    if (errno === "ENOENT") return { resources: [] };
+    const reason = err instanceof Error ? err.message : String(err);
+    throw new Error(
+      `Failed to load resource manifest at "${manifestPath}": ${reason}. Fix or remove the manifest before resolving resources.`,
+      { cause: err instanceof Error ? err : undefined },
+    );
   }
   if (raw === null || raw === undefined) {
     return { resources: [] };
@@ -653,6 +687,36 @@ export async function writeResourceManifest(
 ): Promise<void> {
   const parsed = ResourceManifestSchema.parse(manifest);
   await writeYamlFile(getResourcesManifestPath(ownerEntityDir), parsed);
+}
+
+/**
+ * Remove an owning entity's resource sidecar state — the `resources/`
+ * subtree and the `resources.yaml` manifest — as a single logical mutation
+ * for the entity's delete flow.
+ *
+ * The trait's storage layout puts both artifacts inside the owning entity
+ * directory (`<entityDir>/resources/` and `<entityDir>/resources.yaml`), so
+ * a concrete entity manager that recursively removes the entity directory
+ * already cascades the delete to its resources. This helper is the
+ * surface-level primitive for managers that want to:
+ *   - prune resource state without removing the parent entity (e.g. a
+ *     "drop all attachments" operation),
+ *   - prove deletion follows the entity record in tests, or
+ *   - share one tested cleanup path across every entity type that adopts
+ *     the trait.
+ *
+ * Behavior:
+ *   - Missing artifacts are tolerated (idempotent — safe to call twice).
+ *   - The manifest is removed before the directory, mirroring the order
+ *     in which the manifest declares what the directory holds.
+ *
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-delete-follows-owner-delete
+ */
+export async function removeOwnerResources(ownerEntityDir: string): Promise<void> {
+  const manifestPath = getResourcesManifestPath(ownerEntityDir);
+  const resourcesDir = getResourcesDir(ownerEntityDir);
+  await fs.rm(manifestPath, { force: true });
+  await fs.rm(resourcesDir, { recursive: true, force: true });
 }
 
 // ── Bounded Preview ──────────────────────────────────────────────────────────
