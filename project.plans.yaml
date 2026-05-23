@@ -51751,40 +51751,12 @@ plans:
       - Do all merge-helper and dispatch-regression testing in temp repos/fixtures. Do not run
       migration or destructive cleanup tests against `~/Projects/kynetic-spec` or
       `~/Projects/kynetic-spec-dispatch`.
-    status: active
+    status: approved
     approved_at: 2026-05-23T22:04:38.881Z
     derived_specs: []
-    derived_tasks:
-      - "@task-align-merge-helper-branch-lock-specs"
-      - "@task-rework-detached-reviewer-merge-helper-ephemeral-target"
-      - "@task-add-detached-merge-helper-branch-lock-regressions"
-      - "@task-clear-occupied-checkout-degraded-state-on-retry"
-      - "@task-add-plan-target-lock-e2e-regression"
+    derived_tasks: []
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec-dispatch/plans/dispatch-merge-helper-target-lock-hardening.md
     created_at: 2026-05-23T22:04:16.442Z
     completed_at: null
-    notes:
-      - _ulid: 01KSBDYCNJHMGKTMJY640M2RZA
-        content: >-
-          - This is an existing-spec update plan. Do not materialize duplicate specs from the `##
-          Specs` block.
-
-          - The immediate product decision is: reviewer/manual_merge helpers may use temporary
-          implementation-owned worktrees, but they must not require or leave persistent
-          integration-target checkouts that block the dispatch root.
-
-          - The root dispatch checkout remains the authoritative mutation surface for integration
-          target sync/push unless it is itself on the integration target branch. Auxiliary worktrees
-          are task/review/helper execution surfaces, not long-lived target locks.
-
-          - The helper should be conservative around pre-existing occupied target checkouts. A clean
-          occupied checkout owned by a human or previous agent should not be silently detached or
-          overwritten unless a later explicit product decision scopes that behavior. The safe first
-          fix is to refuse and say how to free the branch.
-
-          - Do all merge-helper and dispatch-regression testing in temp repos/fixtures. Do not run
-          migration or destructive cleanup tests against `~/Projects/kynetic-spec` or
-          `~/Projects/kynetic-spec-dispatch`.
-        author: Jacob Chapel
-        created_at: 2026-05-23T22:05:28.626Z
+    notes: []
