@@ -227314,6 +227314,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-23T22:47:46.731Z
+      - _ulid: 01KSBH4J4D7290GV6E3WS17TE2
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KSBH4GEY5NBWQP301BMB3QS9
+        timestamp: 2026-05-23T23:01:16.557Z
     examined_commit: 984af0c7589a8044eedb252a02bd2cde4992f69d
     external_links: []
     lifecycle_state: open
@@ -227323,8 +227330,32 @@ reviews:
       content_hash: ""
       ref: "@01KS8XAY52P099Y1PQ8PFJ6G0P"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KSBH4GEY5NBWQP301BMB3QS9
+        entries:
+          - _ulid: 01KSBH4GEYAHQ6MA7GV56ZAA3W
+            author: Jacob Chapel
+            body: "Evidence log: Files read: src/parser/plan-storage-manager.ts, src/parser/plans.ts,
+              src/cli/commands/plan.ts, src/parser/entity-storage-compatibility.ts,
+              src/parser/folder-backed-entity.ts, src/cli/batch-write-buffer.ts,
+              tests/parser-plans-folder.test.ts, tests/plan-rebuild-index.test.ts,
+              tests/daemon-api/helpers.ts, tests/daemon-api/plans.test.ts,
+              tests/entity-storage-partial-layout-manager.test.ts, src/daemon/entity-cache.ts,
+              packages/daemon/src/routes/plans.ts. Commands run: kspec task get
+              @01KS8XAY52P099Y1PQ8PFJ6G0P; kspec item get @folder-backed-plan-storage-1; kspec
+              review get @01KSBBAK57DTXXXJZ4PX9J851E; kspec validate; npm test; npm test --
+              tests/parser-plans-folder.test.ts tests/plan-rebuild-index.test.ts
+              tests/entity-storage-partial-layout-manager.test.ts tests/daemon-api/plans.test.ts;
+              npm run typecheck; oxlint on changed files; git diff --check. Claims verified: fix
+              cycle blocker 1 verified by code/tests that savePlan and mutatePlanAtomically remove
+              notes.yaml and load returns empty notes; blocker 2 verified by code/tests that missing
+              plan.md raises partial_entity_storage_layout and rebuild-index reports it as conflict.
+              Categories searched: correctness, fix-cycle regressions, AC coverage, error handling,
+              batch/delete behavior, CLI envelope/exit codes, daemon cache/API integration,
+              lint/validation/test quality. No blocking regressions found."
+            created_at: 2026-05-23T23:01:14.846Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-23T22:47:15.738Z
-    updated_at: 2026-05-23T22:47:45.003Z
+    updated_at: 2026-05-23T23:01:14.846Z
     notes: []
