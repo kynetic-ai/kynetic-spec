@@ -51293,7 +51293,7 @@ runs:
     completed_at: 2026-05-19T15:21:01.338Z
   - _ulid: 01KS9AT3NHFF2VD39TCYWVT630
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -51315,7 +51315,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-23T02:32:31.533Z
-        completed_at: 2026-05-23T02:32:31.533Z
+        completed_at: 2026-05-23T02:33:33.020Z
+        notes: "Coverage check: searched 'validate scope spec', 'validate per-spec', 'validate filter',
+          'validate noisy warnings', 'kspec validate', 'batch atomic catalog'. The per-spec validate
+          idea is untracked, but it does not clear the loop-mode high-confidence bar — one session
+          of catalog-only friction, --warnings-ok already escape-hatches it, and the cost/benefit of
+          a scoped variant is unclear without more occurrences. The batch + exact-prescribed-text
+          pattern is reinforcement of existing batch guidance, not novel. No captures."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-23T02:33:33.020Z
+        completed_at: 2026-05-23T02:33:33.020Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-23T02:32:13.745Z
