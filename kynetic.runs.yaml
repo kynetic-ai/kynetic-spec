@@ -51760,7 +51760,7 @@ runs:
     completed_at: 2026-05-23T09:10:30.452Z
   - _ulid: 01KSA2WMSSJ21VT635K458QA83
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -51779,7 +51779,22 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-23T09:34:29.576Z
-        completed_at: 2026-05-23T09:34:29.576Z
+        completed_at: 2026-05-23T09:34:41.403Z
+        notes: Identified one HIGH-confidence pattern about this fix cycle, but the underlying lesson
+          (re-read all ACs, address API-design root cause rather than patching cited evidence) is
+          already documented in existing kspec-agents.md conventions ('When fixing bugs or CI
+          failures, investigate root cause before pushing fix commits') and the kspec:task-work
+          skill ('Re-read all ACs — Don't just fix the flagged issue'). No new friction to capture —
+          the gap was in execution against existing guidance, not in the guidance itself. The
+          session-reflect-loop high-bar standard says 'Better to capture nothing than capture
+          noise', so no captures from friction analysis. On the success side, the value of
+          expressing trait contracts at the type level (rather than via runtime checks) is a
+          generalizable pattern worth noting but is also already an implicit convention in this
+          codebase's heavy Zod usage.
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-23T09:34:41.403Z
+        completed_at: 2026-05-23T09:34:41.403Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-23T09:33:02.649Z
