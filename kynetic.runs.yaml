@@ -51699,7 +51699,7 @@ runs:
     completed_at: 2026-05-23T08:21:24.513Z
   - _ulid: 01KSA1FSBWE0SC4SX0K70FGAA1
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -51713,7 +51713,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-23T09:09:11.100Z
-        completed_at: 2026-05-23T09:09:11.100Z
+        completed_at: 2026-05-23T09:09:29.142Z
+        notes: "Friction: kspec validate --completeness is useful for AC coverage, but this repo currently
+          has unrelated global completeness warnings. During review, that made the required check
+          exit 6 even though the reviewed trait had no remaining coverage warning, so I had to rerun
+          with --warnings-ok and manually inspect the warning list. Existing coverage search found
+          no item for this specific validation/review-check ambiguity. The review evidence-log topic
+          is already tracked by @01KR2JD1, so no duplicate there."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-23T09:09:29.142Z
+        completed_at: 2026-05-23T09:09:29.142Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-23T09:08:32.765Z
