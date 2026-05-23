@@ -225546,6 +225546,12 @@ reviews:
         payload:
           thread_ulid: 01KSAJ6ZY3YYH1HFYMR23T36AX
         timestamp: 2026-05-23T14:56:37.871Z
+      - _ulid: 01KSANDG0DBKCMEMZKPWYNJ3Q8
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSAJ4YQ20SPP3MCAMB9HZP47
+        timestamp: 2026-05-23T14:56:49.166Z
     examined_commit: 2ca12c313383daac0e564ed02b6a77be06c61bf8
     external_links: []
     lifecycle_state: closed
@@ -225591,6 +225597,8 @@ reviews:
               behavior so a regression to a manifest-only check fails the build.'
             created_at: 2026-05-23T14:56:16.002Z
         kind: blocker
+        resolved_at: 2026-05-23T14:56:47.590Z
+        resolved_by: "@claude"
       - _ulid: 01KSAJ5BTTAP78A3GF18NM75DR
         anchor:
           type: code
@@ -225656,5 +225664,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-23T14:01:03.050Z
     created_at: 2026-05-23T13:45:01.280Z
-    updated_at: 2026-05-23T14:56:36.197Z
+    updated_at: 2026-05-23T14:56:47.590Z
     notes: []
