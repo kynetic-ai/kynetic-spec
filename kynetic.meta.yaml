@@ -19159,6 +19159,26 @@ observations:
     resolved: false
     workflow_ref: "@01KSA420"
     created_at: 2026-05-23T09:56:30.919Z
+  - _ulid: 01KSAQQP8WSKCBYA85XXGXJ33Y
+    type: friction
+    content: During review, running `npm run build` concurrently with `npm test` can create false CLI
+      test failures because tests execute `dist/cli/index.js` while the build rewrites `dist`.
+      Review guidance or tooling should serialize build/test commands that share generated outputs.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KSAQKB"
+    created_at: 2026-05-23T15:37:20.412Z
+  - _ulid: 01KSAQQPK2JSZCJ5HV62H1SR58
+    type: friction
+    content: A mutating CLI command (`kspec plan add`) accepted an unintended extra positional directory
+      argument and wrote to the current project metadata. Mutating commands should reject unexpected
+      positional arguments so reproduction attempts cannot silently modify the reviewer workspace.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KSAQKB"
+    created_at: 2026-05-23T15:37:20.738Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
