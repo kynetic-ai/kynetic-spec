@@ -227038,6 +227038,18 @@ reviews:
         runner: kspec
         created_at: 2026-05-23T22:29:22.646Z
         completed_at: 2026-05-23T22:29:22.646Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Found annotations for the review storage ACs and inherited traits in
+          tests/parser-reviews-folder.test.ts and tests/review-rebuild-index.test.ts; one false
+          UI/static AC annotation recorded as blocker thread
+        name: AC annotation scan
+        required: false
+        runner: rg
+        created_at: 2026-05-23T22:29:27.497Z
+        completed_at: 2026-05-23T22:29:27.497Z
     events:
       - _ulid: 01KSBEGR4K8JFBMFRWG7A0DZM6
         actor: Jacob Chapel
@@ -227066,6 +227078,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-23T22:29:24.294Z
+      - _ulid: 01KSBFABGCZCBDGCGW17Y8BK0M
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC annotation scan
+        timestamp: 2026-05-23T22:29:29.228Z
     examined_commit: a493bb85ac2a2fb06d93713154692f9243c412b6
     external_links: []
     lifecycle_state: open
@@ -227100,5 +227119,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-23T22:15:30.195Z
-    updated_at: 2026-05-23T22:29:22.646Z
+    updated_at: 2026-05-23T22:29:27.497Z
     notes: []
