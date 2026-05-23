@@ -221345,6 +221345,25 @@ reviews:
         runner: npm
         created_at: 2026-05-23T02:47:14.206Z
         completed_at: 2026-05-23T02:47:14.206Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files/context read: AGENTS.md, kspec-agents.md, task @01KS8XAVCKZE09Y0F4WMENFY47,
+          @plan-crud, @review-record-storage-and-identity, @daemon-entity-cache,
+          @entity-folder-migration-and-compatibility-1, tests/cli-plan.test.ts,
+          tests/review-storage.test.ts, tests/daemon-entity-cache.test.ts. Commands run: git
+          status/diff/log/branch checks, kspec task get, kspec review add/open, kspec item get for
+          affected specs, kspec validate --warnings-ok, rg AC annotations, npm test. Claims
+          verified: exact requested AC text and implementation statuses for all three specs; no code
+          diff in main worktree; existing plan/review/cache AC coverage inspected; full tests
+          passed. Categories searched: spec alignment, test quality, integration, edge cases around
+          folder-backed cache AC scope, validation warnings."
+        name: review evidence log
+        required: false
+        runner: reviewer
+        created_at: 2026-05-23T02:47:27.628Z
+        completed_at: 2026-05-23T02:47:27.628Z
     events:
       - _ulid: 01KS9AW1TVTB355J8929REFEV6
         actor: Jacob Chapel
@@ -221373,6 +221392,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-05-23T02:47:15.736Z
+      - _ulid: 01KS9BP1MJPKS2H269KHXJ1CES
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-23T02:47:29.170Z
     examined_commit: a5ce476850bb299e809c7880cb9c6c8f731c802e
     external_links: []
     lifecycle_state: open
@@ -221385,5 +221411,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-23T02:33:17.403Z
-    updated_at: 2026-05-23T02:47:14.206Z
+    updated_at: 2026-05-23T02:47:27.628Z
     notes: []
