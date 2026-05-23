@@ -227025,7 +227025,19 @@ reviews:
     slugs: []
     title: Review @01KS8XAYMQSFXPMHEG9FZZ3C36
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Schema/references OK; command exited 6 because of pre-existing project-wide warnings
+          (deprecated refs, orphan specs, existing invalid annotations), not new errors for
+          @folder-backed-review-storage-1
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-05-23T22:29:22.646Z
+        completed_at: 2026-05-23T22:29:22.646Z
     events:
       - _ulid: 01KSBEGR4K8JFBMFRWG7A0DZM6
         actor: Jacob Chapel
@@ -227047,6 +227059,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSBEXAQGNDXYNDP57709TYF9
         timestamp: 2026-05-23T22:22:24.548Z
+      - _ulid: 01KSBFA6P61YE48XKC6V9AC8E6
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-23T22:29:24.294Z
     examined_commit: a493bb85ac2a2fb06d93713154692f9243c412b6
     external_links: []
     lifecycle_state: open
@@ -227081,5 +227100,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-23T22:15:30.195Z
-    updated_at: 2026-05-23T22:22:22.448Z
+    updated_at: 2026-05-23T22:29:22.646Z
     notes: []
