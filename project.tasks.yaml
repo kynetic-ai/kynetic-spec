@@ -29610,7 +29610,7 @@
   type: task
   spec_ref: "@trait-entity-scoped-local-resources-1"
   plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-folder-backed-entity-trait-foundation-1"
@@ -29623,7 +29623,7 @@
   notes_count: 8
   todos_count: 0
   created_at: 2026-05-22T22:36:42.993Z
-  started_at: 2026-05-23T07:22:00.857Z
+  started_at: 2026-05-23T08:42:33.668Z
   submitted_at: 2026-05-23T07:22:07.335Z
   automation: eligible
 - _ulid: 01KS8XAWNAQ1AA9SJS8BYH9056
