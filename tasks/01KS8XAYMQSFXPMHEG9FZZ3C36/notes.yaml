@@ -16,3 +16,21 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-23T21:25:06.148Z
+  - _ulid: 01KSBE8RKAKAD943J91GE1FYS2
+    content: |-
+      Implementation complete and committed (a493bb85ac). Summary of changes:
+
+      - src/parser/review-storage-manager.ts (NEW) — folder-backed manager mirroring the plan manager pattern but keeping one cohesive review.yaml per spec ac-review-detail-file-is-cohesive. Lean index projection contains ULID/slugs/title/lifecycle_state/author/subject/related_refs/external_links/created_at/updated_at/examined_commit + pre-computed disposition and thread/check/verdict counts + optional resource_summary; threads/checks/verdicts/events/notes never enter the index. Rebuild contract: drift detection, --repair, --force stale-entry dropping. Owned resources cascade-deleted with the review folder.
+      - src/parser/reviews.ts — usesFolderStorage() dispatcher routes save/mutate/delete/load through the folder manager when manifest declares review_storage.format=folder. findReviewByRef is pure on already-loaded data, so no change there.
+      - src/cli/commands/review.ts — kspec review rebuild-index with --dry-run/--repair/--force/--json; exit codes 0 clean/repaired, 1 drift, 2 blocked. Envelope shape matches plans (domain=reviews).
+      - tests/daemon-api/helpers.ts — materializeFolderShellsFor now writes a cohesive review.yaml sidecar for each record so daemon-api tests exercise the folder reader.
+      - tests/entity-storage-partial-layout-manager.test.ts — updated the three Review clean-folder write tests to reflect new routing behaviour (folder manager writes per-review sidecars, never creates the monolithic file).
+      - tests/parser-reviews-folder.test.ts (NEW) — 17 unit tests covering create, lean index, find by ref, mutation, delete (with owned resource cascade), unknown file/field preservation, screenshot resource resolution via resolveResourceReference, drift detection, --force handling, rebuild-from-folders, partial-layout rejection, missing-format manifest rejection, listing assembly.
+      - tests/review-rebuild-index.test.ts (NEW) — 7 CLI tests covering clean/drift/dry-run/repair/blocked/force/--force-without-repair scenarios with structured JSON envelope assertions.
+
+      Test results: full suite passes (9525 passed, 5 skipped, 0 failed) across all 2507 test suites.
+
+      Cache invalidation for .kspec/reviews/<ulid>/ paths is intentionally out of scope — it is handled by sibling task @task-folder-backed-plan-review-cache-invalidation-1.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-23T22:11:08.522Z
