@@ -29635,7 +29635,7 @@
   type: task
   spec_ref: "@entity-folder-migration-and-compatibility-1"
   plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-entity-local-resource-model-1"
@@ -29646,7 +29646,7 @@
     - daemon
     - cli
   review_ref: "@01KSAX2K0N14KSGJX70FMC6JVQ"
-  notes_count: 8
+  notes_count: 9
   todos_count: 0
   created_at: 2026-05-22T22:36:43.562Z
   started_at: 2026-05-23T17:02:15.325Z

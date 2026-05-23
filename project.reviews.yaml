@@ -226126,9 +226126,25 @@ reviews:
           kind: nit
           thread_ulid: 01KSAY5CK46T02M3RVTK454QHQ
         timestamp: 2026-05-23T17:29:42.336Z
+      - _ulid: 01KSAY5TS9E0V5Y84D5GZ3BCQ6
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-23T17:29:55.241Z
+      - _ulid: 01KSAY5TS9SR24ZWZT9Y2N8DZ0
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-23T17:29:55.241Z
     examined_commit: f4a3446b95e612b82912ab4ecd71cd16753252f0
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -226244,7 +226260,14 @@ reviews:
               storage-manager specs."
             created_at: 2026-05-23T17:29:40.708Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-23T17:29:55.237Z
     created_at: 2026-05-23T17:10:40.405Z
-    updated_at: 2026-05-23T17:29:40.708Z
+    updated_at: 2026-05-23T17:29:55.241Z
     notes: []
