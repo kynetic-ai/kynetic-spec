@@ -225416,6 +225416,16 @@ reviews:
         runner: npm
         created_at: 2026-05-23T14:00:17.023Z
         completed_at: 2026-05-23T14:00:17.023Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --run tests/entity-storage-compatibility.test.ts --fresh: 36 tests passed."
+        name: entity storage focused tests
+        required: true
+        runner: npm
+        created_at: 2026-05-23T14:00:21.323Z
+        completed_at: 2026-05-23T14:00:21.323Z
     events:
       - _ulid: 01KSAHA12WVA1CKTW3B50W154K
         actor: Jacob Chapel
@@ -225451,6 +225461,13 @@ reviews:
           status: pass
           name: npm run build
         timestamp: 2026-05-23T14:00:18.532Z
+      - _ulid: 01KSAJ651B9B9R4M5J9B1JXTRW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: entity storage focused tests
+        timestamp: 2026-05-23T14:00:22.827Z
     examined_commit: 2ca12c313383daac0e564ed02b6a77be06c61bf8
     external_links: []
     lifecycle_state: open
@@ -225505,5 +225522,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-23T13:45:01.280Z
-    updated_at: 2026-05-23T14:00:17.023Z
+    updated_at: 2026-05-23T14:00:21.323Z
     notes: []
