@@ -19096,6 +19096,32 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-05-23T06:18:10.051Z
+  - _ulid: 01KSA0G5E30JZMRXSTQ94A1G43
+    type: friction
+    content: "kspec task submit has no pre-flight gate against kspec validate --completeness on the
+      linked spec's own ACs. Workers can submit work where one of the spec's own ACs has zero test
+      annotations, and the reviewer is the first to surface it (this fix-cycle was kicked back on
+      cycle 3 for exactly that: ac-resource-delete-follows-owner-delete had no annotated test). Even
+      a non-blocking warning at submit time would shorten the loop by an entire fix cycle for tasks
+      linked to specs with several own ACs."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-23T08:51:16.547Z
+  - _ulid: 01KSA0G5QH14MS88VMCJD2TNDZ
+    type: friction
+    content: Spec ACs that describe topological/emergent properties (e.g. "resource files are removed in
+      the same logical mutation as the entity record" — true by directory containment) are easy to
+      miss during implementation because the natural reflex is "already satisfied by storage layout,
+      nothing to do." That reflex creates an AC coverage hole even when the property genuinely
+      holds. The remedy is to (a) write a test that exercises the topological claim end-to-end, or
+      (b) add an explicit helper that makes the claim invokable and testable. Worth surfacing in the
+      task-work / work-gates skill so workers add a topology test when an AC is silent in code but
+      visible in directory layout.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-23T08:51:16.850Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
