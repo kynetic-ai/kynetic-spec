@@ -221483,6 +221483,17 @@ reviews:
         runner: kspec
         created_at: 2026-05-23T03:50:12.151Z
         completed_at: 2026-05-23T03:50:12.151Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: oxfmt --check . reports tests/folder-backed-entity.test.ts has format issues. Read-only
+          oxfmt diff shows reflow needed around lines 230 and 499-505.
+        name: npm run format:check
+        required: true
+        runner: oxfmt
+        created_at: 2026-05-23T03:50:22.701Z
+        completed_at: 2026-05-23T03:50:22.701Z
     events:
       - _ulid: 01KS9E7Y2VBNXMK6GHGQR0MRSH
         actor: Jacob Chapel
@@ -221525,6 +221536,13 @@ reviews:
           status: pass
           name: kspec validate --warnings-ok
         timestamp: 2026-05-23T03:50:13.705Z
+      - _ulid: 01KS9F987D7R6NT2CXD4XD2PW4
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm run format:check
+        timestamp: 2026-05-23T03:50:24.237Z
     examined_commit: 75e09ea3cc7ab4ef0a7d3296a6187c77391b425f
     external_links: []
     lifecycle_state: open
@@ -221537,5 +221555,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-23T03:32:12.515Z
-    updated_at: 2026-05-23T03:50:12.151Z
+    updated_at: 2026-05-23T03:50:22.701Z
     notes: []
