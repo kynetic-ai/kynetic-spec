@@ -3650,3 +3650,18 @@ inbox:
       - format
     added_by: Jacob Chapel
     created_at: 2026-05-23T03:53:50.330Z
+  - _ulid: 01KS9J09H8NHKJJ48GVY8J0EE8
+    text: Improve the detached reviewer merge path so missing integration-target worktrees do not
+      require manual git worktree setup. In this review, the supported helper refused to merge
+      because plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw was not checked out
+      anywhere; the reviewer had to inspect git worktree list, create a target worktree manually,
+      then rerun the helper. Consider either teaching the helper to create/reuse a deterministic
+      target worktree when absent, or having dispatch/bootstrap prepare the integration target
+      worktree before reviewer merge. Include tests for the missing-target-worktree path plus
+      existing dirty/conflict/no-op gates.
+    tags:
+      - reflection
+      - dispatch
+      - merge
+    added_by: Jacob Chapel
+    created_at: 2026-05-23T04:37:56.393Z
