@@ -227206,6 +227206,12 @@ reviews:
         payload:
           thread_ulid: 01KSBFBKRMP12EC9J4CPP1PZ0W
         timestamp: 2026-05-23T23:00:13.922Z
+      - _ulid: 01KSBH2YTC0S9PNTXH2SM74S5P
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSBFBKRMP12EC9J4CPP1PZ0W
+        timestamp: 2026-05-23T23:00:24.012Z
     examined_commit: a493bb85ac2a2fb06d93713154692f9243c412b6
     external_links: []
     lifecycle_state: closed
@@ -227276,6 +227282,8 @@ reviews:
             body: Acknowledged — evidence log noted. No action needed on the storage-manager scope.
             created_at: 2026-05-23T23:00:12.224Z
         kind: nit
+        resolved_at: 2026-05-23T23:00:22.256Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -227285,7 +227293,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-23T22:29:51.090Z
     created_at: 2026-05-23T22:15:30.195Z
-    updated_at: 2026-05-23T23:00:12.224Z
+    updated_at: 2026-05-23T23:00:22.256Z
     notes: []
   - _ulid: 01KSBGAX0TD7SA4WH2ZCTM7H6D
     slugs: []
