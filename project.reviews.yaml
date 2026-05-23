@@ -227311,6 +227311,18 @@ reviews:
         runner: npm test
         created_at: 2026-05-23T23:01:27.548Z
         completed_at: 2026-05-23T23:01:27.548Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed: tests/parser-plans-folder.test.ts, tests/plan-rebuild-index.test.ts,
+          tests/entity-storage-partial-layout-manager.test.ts, tests/daemon-api/plans.test.ts (50
+          tests passed)."
+        name: targeted plan storage tests
+        required: true
+        runner: npm test
+        created_at: 2026-05-23T23:01:41.194Z
+        completed_at: 2026-05-23T23:01:41.194Z
     events:
       - _ulid: 01KSBGAX0KGPDF06GHVVAFE5AG
         actor: Jacob Chapel
@@ -227339,6 +227351,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-05-23T23:01:29.225Z
+      - _ulid: 01KSBH5BWD3NSBDTEXTNQ8YHDG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted plan storage tests
+        timestamp: 2026-05-23T23:01:42.925Z
     examined_commit: 984af0c7589a8044eedb252a02bd2cde4992f69d
     external_links: []
     lifecycle_state: open
@@ -227375,5 +227394,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-05-23T22:47:15.738Z
-    updated_at: 2026-05-23T23:01:27.548Z
+    updated_at: 2026-05-23T23:01:41.194Z
     notes: []
