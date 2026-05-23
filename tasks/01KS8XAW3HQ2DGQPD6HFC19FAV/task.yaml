@@ -73,8 +73,13 @@ description: >
 spec_ref: "@trait-entity-scoped-local-resources-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw at
+  fa4574a625f4793678aa574529764009d77e9a2c after approved review @01KSA34A. Implemented shared
+  entity-local resource schemas, manifest loading, symlink-safe declared-resource resolution,
+  bounded previews, git metadata capture, static export copying, and resource cleanup helpers with
+  AC-annotated tests.
 depends_on:
   - "@task-folder-backed-entity-trait-foundation-1"
 context: []
@@ -524,8 +529,26 @@ history:
         previous: "@01KSA0JMCV4V4R533JERHZ4EJE"
     command: review-link
     timestamp: 2026-05-23T09:37:18.383Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw at
+          fa4574a625f4793678aa574529764009d77e9a2c after approved review @01KSA34A. Implemented
+          shared entity-local resource schemas, manifest loading, symlink-safe declared-resource
+          resolution, bounded previews, git metadata capture, static export copying, and resource
+          cleanup helpers with AC-annotated tests.
+        previous: null
+      completed_at:
+        new: 2026-05-23T09:52:26.401Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-23T09:52:26.420Z
 created_at: 2026-05-22T22:36:42.993Z
 started_at: 2026-05-23T09:32:37.435Z
 submitted_at: 2026-05-23T09:32:40.800Z
+completed_at: 2026-05-23T09:52:26.401Z
 todos: []
 automation: eligible
