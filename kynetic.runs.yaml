@@ -51819,7 +51819,7 @@ runs:
     started_at: 2026-05-23T09:33:02.649Z
     completed_at: 2026-05-23T09:34:58.677Z
   - _ulid: 01KSA420PE2QRS4MRJS1XZCTM7
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -51876,7 +51876,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-23T09:56:16.379Z
-        completed_at: 2026-05-23T09:56:16.379Z
+        completed_at: 2026-05-23T09:56:42.545Z
+        notes: "Captured two observations via kspec batch: friction for detached merge helper refusing an
+          existing clean detached target worktree, and success for the per-cycle review/evidence-log
+          process. Used observations rather than direct task creation so triage can decide whether
+          to promote the helper improvement."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-23T09:53:27.247Z
+    completed_at: 2026-05-23T09:56:42.546Z
