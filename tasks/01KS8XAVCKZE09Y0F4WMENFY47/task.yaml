@@ -85,7 +85,7 @@ description: >
 spec_ref: "@entity-folder-migration-and-compatibility-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -95,6 +95,7 @@ tags:
   - plans
   - reviews
 vcs_refs: []
+session_id: 01KS9AJ53P1PWJ4A5JBW2WK3FA
 history:
   - author: Jacob Chapel
     changes:
@@ -317,7 +318,21 @@ history:
         previous: pending
     command: task-unblock
     timestamp: 2026-05-23T02:27:03.069Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KS9AJ53P1PWJ4A5JBW2WK3FA
+        previous: null
+      started_at:
+        new: 2026-05-23T02:29:18.005Z
+        previous: null
+    command: task-start
+    timestamp: 2026-05-23T02:29:18.010Z
 prior_status: null
 created_at: 2026-05-22T22:36:42.259Z
+started_at: 2026-05-23T02:29:18.005Z
 todos: []
 automation: eligible
