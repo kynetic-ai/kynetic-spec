@@ -225715,6 +225715,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSAQF6WZ75ADJ89T49Z4XCVH
         timestamp: 2026-05-23T15:32:44.132Z
+      - _ulid: 01KSAQFQFRFS2A9F292PQ1VKRN
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSAQFNYB5EPPX0C805A7HVNC
+        timestamp: 2026-05-23T15:32:59.512Z
     examined_commit: 990d24115785a42e739cf439605a63530c652069
     external_links: []
     lifecycle_state: open
@@ -225771,7 +225778,32 @@ reviews:
               boundary with tests for the resource domain."
             created_at: 2026-05-23T15:32:42.527Z
         kind: blocker
+      - _ulid: 01KSAQFNYB5EPPX0C805A7HVNC
+        anchor:
+          type: code
+          commit: 990d24115785a42e739cf439605a63530c652069
+          line_end: 309
+          line_start: 280
+          path: src/parser/plans.ts
+          side: head
+        entries:
+          - _ulid: 01KSAQFNYB7DQAD8E084Q9EN3Q
+            author: Jacob Chapel
+            body: "MUST-FIX: A clean folder-declared project can still be written through the monolithic plan
+              store. New projects now declare `plan_storage.format: folder`, but savePlan first
+              calls the lenient gate, which passes when there are no existing monolithic records,
+              and then writes `project.plans.yaml`. The CLI plan add/import paths still call
+              savePlan (src/cli/commands/plan.ts:748-749 and
+              src/cli/commands/plan-import.ts:236-252), so a fresh 1.2 project can create legacy
+              monolithic plan data under a folder-storage manifest. That immediately creates the
+              partial layout this task is supposed to prevent, and the branch works around it by
+              downgrading several plan integration fixtures to legacy storage. Plan writes for
+              folder-declared projects need to route to folder-backed storage or fail with
+              structured incompatibility until that storage manager is available; they must not
+              create monolithic files under a 1.2 folder manifest."
+            created_at: 2026-05-23T15:32:57.931Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-23T15:02:21.210Z
-    updated_at: 2026-05-23T15:32:42.527Z
+    updated_at: 2026-05-23T15:32:57.931Z
     notes: []
