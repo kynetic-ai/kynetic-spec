@@ -38,3 +38,19 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-23T06:58:23.533Z
+  - _ulid: 01KS9VC3FAY9FCT9MT4A6B3FBJ
+    content: "Fix cycle 2: addressed both blockers from review @01KS9S39G7GYNGF6C6X2D08HD0. (1)
+      resolveResourcePath now lstats ownerResourcesDir and rejects when the resources/ directory
+      itself is a symlink, before any realpath-based containment check — fixes the case where
+      entity/resources -> /outside silently treated outside files as entity-owned. (2) Hoisted
+      relative-path validation into src/schema/resources.ts (checkResourceRelativePath +
+      ResourcePathSchema superRefine) and applied it to ResourceMetadataSchema.path; the runtime
+      validator now delegates to the same predicate so schema-level and runtime-level rejection are
+      identical. Added regression tests for both: a symlinked resources root rejection in
+      resolveResourcePath and copyResourceForStaticExport, and schema-level rejection of unsafe path
+      values via ResourceMetadataSchema.safeParse plus on-disk loadResourceManifest rejection. Full
+      suite 9389/9394 passing (5 skipped, was 9385 before, +4 from new tests), lint and typecheck
+      clean."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-23T07:21:40.587Z
