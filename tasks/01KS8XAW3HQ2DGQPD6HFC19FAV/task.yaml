@@ -73,7 +73,7 @@ description: >
 spec_ref: "@trait-entity-scoped-local-resources-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-folder-backed-entity-trait-foundation-1"
@@ -88,8 +88,8 @@ review_ref: "@01KS9S39G7GYNGF6C6X2D08HD0"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-entity-local-resource-model-1/01ks8xaw
-  captured_at: 2026-05-23T06:38:28.060Z
-  commit: 5f4503684e7447da5fb464255d4b3b7785aafcc5
+  captured_at: 2026-05-23T07:22:07.321Z
+  commit: 5a2b68024f62f82b4394f898bc146d58e66a610c
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-entity-local-resource-model-1/01ks8xaw
@@ -376,8 +376,35 @@ history:
         previous: 2026-05-23T06:38:24.052Z
     command: task-start
     timestamp: 2026-05-23T07:22:00.857Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-entity-local-resource-model-1/01ks8xaw
+          captured_at: 2026-05-23T07:22:07.321Z
+          commit: 5a2b68024f62f82b4394f898bc146d58e66a610c
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-entity-local-resource-model-1/01ks8xaw
+        previous:
+          review_url: null
+          branch: dispatch/task/task-entity-local-resource-model-1/01ks8xaw
+          captured_at: 2026-05-23T06:38:28.060Z
+          commit: 5f4503684e7447da5fb464255d4b3b7785aafcc5
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-entity-local-resource-model-1/01ks8xaw
+      submitted_at:
+        new: 2026-05-23T07:22:07.335Z
+        previous: 2026-05-23T06:38:28.078Z
+    command: task-submit
+    timestamp: 2026-05-23T07:22:07.335Z
 created_at: 2026-05-22T22:36:42.993Z
 started_at: 2026-05-23T07:22:00.857Z
-submitted_at: 2026-05-23T06:38:28.078Z
+submitted_at: 2026-05-23T07:22:07.335Z
 todos: []
 automation: eligible
