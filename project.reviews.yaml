@@ -225686,7 +225686,19 @@ reviews:
     slugs: []
     title: Review entity storage version and incompatibility gates (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full clean rerun passed: 2501 test suites passed; 9471 tests passed; 5 skipped. An
+          earlier full run failed because I ran npm run build concurrently and dist was transiently
+          inconsistent; the failed suite passed on focused retry before the clean full rerun."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-05-23T15:33:16.132Z
+        completed_at: 2026-05-23T15:33:16.132Z
     events:
       - _ulid: 01KSANQM8TZMGTWZ21ZJEQHW5B
         actor: Jacob Chapel
@@ -225722,6 +225734,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSAQFNYB5EPPX0C805A7HVNC
         timestamp: 2026-05-23T15:32:59.512Z
+      - _ulid: 01KSAQG98KZX7XJCFS2ZKWZKHW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-05-23T15:33:17.715Z
     examined_commit: 990d24115785a42e739cf439605a63530c652069
     external_links: []
     lifecycle_state: open
@@ -225805,5 +225824,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-23T15:02:21.210Z
-    updated_at: 2026-05-23T15:32:57.931Z
+    updated_at: 2026-05-23T15:33:16.132Z
     notes: []
