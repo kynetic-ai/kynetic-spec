@@ -9908,11 +9908,11 @@ workspaces:
     canonical_branch: dispatch/task/task-entity-local-resource-model-1/01ks8xaw
     canonical_branch_head: 7f298c5ed5b0df61289800fe1539060e47dedc25
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-05-23T09:53:29.977Z
+      updated_at: 2026-05-23T09:57:32.752Z
     health:
       status: healthy
       issues: []
@@ -9926,16 +9926,16 @@ workspaces:
       target_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
       target_commit: 59f09528af33d2463c3dafccfeda4ab408c2b494
       updated_at: 2026-05-23T09:53:29.977Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
     task_ref: "@01KS8XAW3HQ2DGQPD6HFC19FAV"
     task_slug: task-entity-local-resource-model-1
     timestamps:
-      closed_at: null
+      closed_at: 2026-05-23T09:57:32.752Z
       last_active_at: 2026-05-23T09:35:49.744Z
       last_reconciled_at: 2026-05-23T09:57:23.286Z
       created_at: 2026-05-23T05:20:54.798Z
-      updated_at: 2026-05-23T09:57:23.286Z
+      updated_at: 2026-05-23T09:57:32.752Z
     workspace_id: dispatch-workspace-01KS8XAW3HQ2DGQPD6HFC19FAV
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
