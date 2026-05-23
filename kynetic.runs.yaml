@@ -52418,9 +52418,25 @@ runs:
     completed_at: 2026-05-23T22:33:39.308Z
   - _ulid: 01KSBH7HA3QK4QTMYSFS8W8GV1
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-23T23:02:54.019Z
+        completed_at: 2026-05-23T23:06:37.512Z
+        notes: "Identified one high-confidence friction: plan
+          @plan-folder-backed-plans-reviews-and-local-resources assigned the same UI-layer AC
+          ac-review-screenshot-resource-loads-in-ui to two sibling tasks (storage-manager
+          @task-folder-backed-review-storage-manager-1 and UI @task-review-screenshot-resource-ui).
+          The storage-manager task cannot honestly cover this AC at its abstraction layer, leading
+          to a fix cycle when a parser-level test was annotated with the UI AC. The dedicated UI
+          task is the correct owner. Pattern: AC double-assignment forces per-task re-adjudication
+          during review."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-23T23:06:37.512Z
+        completed_at: 2026-05-23T23:06:37.512Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-23T23:02:54.019Z
