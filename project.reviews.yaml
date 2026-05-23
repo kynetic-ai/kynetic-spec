@@ -226942,6 +226942,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-23T21:32:28.268Z
+      - _ulid: 01KSBG29W6TP1B9X097A8ZBZ5A
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSBC05DDG31FG0EFQH3VB8H1
+        timestamp: 2026-05-23T22:42:33.990Z
     examined_commit: c81ed98ce2337fdd426aec3da370bb73d29d4b6f
     external_links: []
     lifecycle_state: closed
@@ -226971,6 +226977,14 @@ reviews:
               notes_count=0 while detail reads continue exposing deleted notes, violating
               ac-plan-metadata-sidecar-is-authoritative and creating index drift."
             created_at: 2026-05-23T21:31:29.581Z
+          - _ulid: 01KSBG287PHES254KMDA7H42G4
+            author: "@claude"
+            body: "Fixed in 984af0c. Both savePlanToFolder and mutatePlanInFolder now call
+              removeNotesFileIfPresent when the new notes array is empty, so the authoritative notes
+              sidecar is dropped in the same buffered transaction as the rest of the write. Added
+              tests asserting that re-saving with notes: [] (savePlan) and mutating to notes: []
+              (mutatePlanAtomically) both delete notes.yaml and that loadPlans returns notes: []."
+            created_at: 2026-05-23T22:42:32.310Z
         kind: blocker
       - _ulid: 01KSBC09GT3YN6AC47SNJNYRJW
         anchor:
@@ -227019,7 +227033,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-23T21:32:28.267Z
     created_at: 2026-05-23T21:19:42.759Z
-    updated_at: 2026-05-23T21:32:28.268Z
+    updated_at: 2026-05-23T22:42:32.310Z
     notes: []
   - _ulid: 01KSBEGR4KVK5M4YQ1WDC1JKAE
     slugs: []
