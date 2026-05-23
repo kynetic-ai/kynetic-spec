@@ -226031,6 +226031,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSAY2PTS6V89AYDJ0K56843K
         timestamp: 2026-05-23T17:28:14.465Z
+      - _ulid: 01KSAY370MRF12WFYRCHG0V5VC
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSAY35EBV5KTK1NPSSTCRBCM
+        timestamp: 2026-05-23T17:28:29.460Z
     examined_commit: f4a3446b95e612b82912ab4ecd71cd16753252f0
     external_links: []
     lifecycle_state: open
@@ -226072,7 +226079,34 @@ reviews:
               === "ready"` and consumes cached plans at lines 131-133.
             created_at: 2026-05-23T17:28:12.889Z
         kind: blocker
+      - _ulid: 01KSAY35EBV5KTK1NPSSTCRBCM
+        anchor:
+          type: code
+          commit: f4a3446b95e612b82912ab4ecd71cd16753252f0
+          line_end: 263
+          line_start: 242
+          path: packages/daemon/src/routes/reviews.ts
+          side: head
+        entries:
+          - _ulid: 01KSAY35EB78J6E8P3Q8ZVXKTE
+            author: Jacob Chapel
+            body: >-
+              MUST-FIX: The review list route has the same cache fast-path bypass as plans: when
+              `reviewsDomainState === "ready"`, it skips `requireReviewFolderStorage()` and serves
+              `cache.getReviewsIndex()` directly. Cache readiness is not proof of strict
+              compatibility because `ProjectEntityCache` warms the reviews domain with
+              `loadReviewRecords(ctx)`, and the review storage-manager gate is intentionally lenient
+              for legacy projects. Impact: warmed daemon caches can serve legacy monolithic review
+              data with 200 responses instead of the required structured 409.
+
+
+              Evidence: `src/daemon/entity-cache.ts:1206-1210` warms reviews with
+              `loadReviewRecords(ctx)`, while `src/parser/entity-storage-compatibility.ts:558-562`
+              applies the lenient `assertReviewStorageCompatible` gate. This route skips strict
+              validation at lines 242-250 and consumes cached review summaries at lines 255-263.
+            created_at: 2026-05-23T17:28:27.851Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-23T17:10:40.405Z
-    updated_at: 2026-05-23T17:28:12.889Z
+    updated_at: 2026-05-23T17:28:27.851Z
     notes: []
