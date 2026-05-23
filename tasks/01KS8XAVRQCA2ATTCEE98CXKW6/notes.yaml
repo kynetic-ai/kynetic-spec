@@ -14,3 +14,22 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-23T02:54:38.524Z
+  - _ulid: 01KS9DZCRQSRR0381AD957V02K
+    content: "Implementation complete. Created src/parser/folder-backed-entity.ts as the shared trait
+      foundation (ULID validator, FolderBackedEntityLayout type, path helpers, listEntityDirs with
+      unknown-entry preservation, mergePreservingRawShape, indexEntriesEqualForFields,
+      readIndexEntries/writeIndexEntries with wrapper-shape preservation, rebuildEntityIndex
+      template). Refactored src/parser/split-backend.ts to consume the shared module — all existing
+      exports (getTasksDir, getTaskDir, getTaskFilePath, getNotesFilePath, getIndexFilePath,
+      listTaskDirs, indexEntriesEqual, rebuildIndex) preserved as task-specific thin wrappers. Moved
+      mergeTaskPreservingRawShape into split-backend so yaml.ts stays a leaf in the dep graph (no
+      cycle); yaml.ts now exports TASK_SCHEMA_KEYS for the wrapper. Tests:
+      tests/folder-backed-entity.test.ts uses a fixture 'widget' entity (NOT a production type) to
+      exercise all 4 trait ACs — 27 passing tests covering ULID validation, path layout,
+      listEntityDirs with unknown-entry preservation, raw-shape merge semantics, bounded projection,
+      wrapper-shape round-trip, and rebuild-from-folders with sidecar metadata + unknown sibling
+      preservation. Verification: npm test full suite passes (9323 passed, 5 skipped, 0 failed); npm
+      run lint clean (724 warnings, 0 errors — baseline)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-23T03:27:32.632Z
