@@ -48,7 +48,7 @@ description: >
 spec_ref: "@trait-folder-backed-entity-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-update-plan-review-storage-specs-1"
@@ -68,7 +68,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: 01KS9BSW4E18XV9XF0E43HNKTE
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -220,6 +220,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-23T03:32:18.074Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KS9BSW4E18XV9XF0E43HNKTE
+    command: review-verdict-needs-work
+    timestamp: 2026-05-23T03:51:04.976Z
 created_at: 2026-05-22T22:36:42.647Z
 started_at: 2026-05-23T02:50:14.687Z
 submitted_at: 2026-05-23T03:27:39.246Z
