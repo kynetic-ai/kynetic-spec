@@ -73,7 +73,7 @@ description: >
 spec_ref: "@trait-entity-scoped-local-resources-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-folder-backed-entity-trait-foundation-1"
@@ -88,11 +88,11 @@ review_ref: "@01KS9PPTRCHJF2WTMSAKMXVCZG"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-entity-local-resource-model-1/01ks8xaw
-  captured_at: 2026-05-23T05:56:47.016Z
-  commit: 6f450883299b16fa3401a44e29b014f3ce37edd7
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-05-23T06:38:28.060Z
+  commit: 5f4503684e7447da5fb464255d4b3b7785aafcc5
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-entity-local-resource-model-1/01ks8xaw
 session_id: 01KS9QV6YCVK41RXTKXX9SQGA9
 history:
   - author: Jacob Chapel
@@ -319,8 +319,35 @@ history:
         previous: 2026-05-23T05:21:55.863Z
     command: task-start
     timestamp: 2026-05-23T06:38:24.052Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-entity-local-resource-model-1/01ks8xaw
+          captured_at: 2026-05-23T06:38:28.060Z
+          commit: 5f4503684e7447da5fb464255d4b3b7785aafcc5
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-entity-local-resource-model-1/01ks8xaw
+        previous:
+          review_url: null
+          branch: dispatch/task/task-entity-local-resource-model-1/01ks8xaw
+          captured_at: 2026-05-23T05:56:47.016Z
+          commit: 6f450883299b16fa3401a44e29b014f3ce37edd7
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-05-23T06:38:28.078Z
+        previous: 2026-05-23T05:56:47.019Z
+    command: task-submit
+    timestamp: 2026-05-23T06:38:28.079Z
 created_at: 2026-05-22T22:36:42.993Z
 started_at: 2026-05-23T06:38:24.052Z
-submitted_at: 2026-05-23T05:56:47.019Z
+submitted_at: 2026-05-23T06:38:28.078Z
 todos: []
 automation: eligible
