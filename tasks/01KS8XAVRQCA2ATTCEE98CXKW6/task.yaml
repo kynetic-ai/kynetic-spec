@@ -59,7 +59,7 @@ tags:
   - schema
   - parser
 vcs_refs: []
-review_ref: "@01KS9E7Y33NGZTC0Z7NY79PCSJ"
+review_ref: "@01KS9GYHTHSJBYBTGJ3EVF3B0X"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-folder-backed-entity-trait-foundation-1/01ks8xav
@@ -270,6 +270,13 @@ history:
         previous: 2026-05-23T03:27:39.246Z
     command: task-submit
     timestamp: 2026-05-23T04:10:44.992Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KS9GYHTHSJBYBTGJ3EVF3B0X"
+        previous: "@01KS9E7Y33NGZTC0Z7NY79PCSJ"
+    command: review-link
+    timestamp: 2026-05-23T04:19:34.826Z
 created_at: 2026-05-22T22:36:42.647Z
 started_at: 2026-05-23T03:55:47.754Z
 submitted_at: 2026-05-23T04:10:44.991Z
