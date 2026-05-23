@@ -226119,6 +226119,13 @@ reviews:
           status: fail
           name: valid folder index compatibility probe
         timestamp: 2026-05-23T17:29:26.074Z
+      - _ulid: 01KSAY5E60BPBMT6GMXQJFB64P
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KSAY5CK46T02M3RVTK454QHQ
+        timestamp: 2026-05-23T17:29:42.336Z
     examined_commit: f4a3446b95e612b82912ab4ecd71cd16753252f0
     external_links: []
     lifecycle_state: open
@@ -226217,7 +226224,27 @@ reviews:
               with the message that the index entry was a monolithic record.
             created_at: 2026-05-23T17:28:43.854Z
         kind: blocker
+      - _ulid: 01KSAY5CK46T02M3RVTK454QHQ
+        entries:
+          - _ulid: 01KSAY5CK4J3M0G281SEH8BS3Z
+            author: Jacob Chapel
+            body: "Evidence log: Files read: `kspec-agents.md`; task/spec context; prior reviews `@01KSAHA1` and
+              `@01KSANQM`; `src/parser/entity-storage-compatibility.ts`; `src/parser/plans.ts`;
+              `src/parser/reviews.ts`; `src/parser/entity-local-resources.ts`;
+              `src/daemon/entity-cache.ts`; daemon plan/review routes; schema/init/doctor/upgrade
+              changes; focused entity-storage, daemon route, resource, init, and partial-layout
+              tests; changed skip/downgrade fixture diffs. Commands run: `git diff
+              --stat/name-only/log`; `kspec task get`; `kspec item get`; `kspec review
+              for-task/get`; AC annotation search; valid folder-index probe with `node --import
+              tsx/esm`; `kspec validate --warnings-ok`; `npm test`; `npm run build`. Claims
+              verified: prior blockers for route strict gates, resource resolver gate, and
+              monolithic write-side gate were rechecked; worker test/build/validate claims were
+              rerun. Categories searched: correctness, cache edge cases, partial-layout/index edge
+              cases, route error handling, test integrity, AC coverage, integration with sibling
+              storage-manager specs."
+            created_at: 2026-05-23T17:29:40.708Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-23T17:10:40.405Z
-    updated_at: 2026-05-23T17:29:24.448Z
+    updated_at: 2026-05-23T17:29:40.708Z
     notes: []
