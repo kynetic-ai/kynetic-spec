@@ -5746,6 +5746,9 @@ features:
               `resources.yaml`, and `resources/`. List and detail consumers continue to
               see the same plan identity, status, lifecycle, content, notes, and
               derived-ref semantics.
+            status:
+              maturity: draft
+              implementation: in_progress
             depends_on: []
             implements: []
             relates_to: []
