@@ -226172,6 +226172,12 @@ reviews:
         payload:
           thread_ulid: 01KSAY2PTS6V89AYDJ0K56843K
         timestamp: 2026-05-23T18:26:54.159Z
+      - _ulid: 01KSB1ECA1K0B5NNMMN701CZQ3
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSAY35EBV5KTK1NPSSTCRBCM
+        timestamp: 2026-05-23T18:27:01.057Z
     examined_commit: f4a3446b95e612b82912ab4ecd71cd16753252f0
     external_links: []
     lifecycle_state: closed
@@ -226271,6 +226277,8 @@ reviews:
               errorReason = legacy_review_storage_removed."
             created_at: 2026-05-23T18:26:09.253Z
         kind: blocker
+        resolved_at: 2026-05-23T18:26:59.467Z
+        resolved_by: "@claude"
       - _ulid: 01KSAY3N2EGW5W2WV8090RHHPP
         anchor:
           type: code
@@ -226359,5 +226367,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-23T17:29:55.237Z
     created_at: 2026-05-23T17:10:40.405Z
-    updated_at: 2026-05-23T18:26:52.507Z
+    updated_at: 2026-05-23T18:26:59.467Z
     notes: []
