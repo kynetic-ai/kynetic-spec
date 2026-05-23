@@ -1,1 +1,51 @@
-notes: []
+notes:
+  - _ulid: 01KSB8RPWA3CRX4K5NMR30JM7W
+    content: >-
+      Approach:
+
+
+      1. Layout: .kspec/plans/<plan-ulid>/{plan.yaml, plan.md, notes.yaml?, resources.yaml?,
+      resources/?}; lean index at .kspec/project.plans.yaml.
+
+
+      2. New module: src/parser/plan-storage-manager.ts implements folder-backed CRUD via the shared
+      folder-backed-entity helpers (layout, listEntityDirs, mergePreservingRawShape,
+      readIndexEntries/writeIndexEntries, rebuildEntityIndex). plan.md is authoritative for content;
+      plan.yaml stores all other identity/metadata; notes.yaml is sidecar. resources.yaml/resources/
+      are preserved as unknown sidecars by the manager (left to the resource model task).
+
+
+      3. Dispatcher: plans.ts loadPlans/findPlanByRef/savePlan/mutatePlanAtomically/deletePlan check
+      ctx.manifest.plan_storage?.format === "folder" and route to the folder manager. Otherwise fall
+      through to existing monolithic implementation. Existing assertPlanStorageCompatible/Writable
+      already gate partial/legacy cases. The folder manager calls assertPlanStorageCompatible on
+      read and assertPlanStorageWritable on save/delete to raise the shared incompatibility errors
+      (no dual-read/silent migrate).
+
+
+      4. Index projection (bounded): _ulid, slugs, title, status, source_path, module_ref, branch,
+      derived_tasks, derived_specs, created_at, approved_at, completed_at, notes_count,
+      resource_summary (count + total_bytes when manifest is present). NOT in index: content, full
+      notes, resource file bytes.
+
+
+      5. plan rebuild-index command:
+         - default: validate drift, exit 1 if drift, no writes
+         - --dry-run: drift summary, never writes
+         - --repair: rewrites .kspec/project.plans.yaml from folders
+         - --force: only with --repair; permits dropping stale index entries whose folders are missing (without --force, stale entries are a conflict and no files are written)
+         - --json: structured output with summary/changes/conflicts arrays, exit codes 0=clean/repaired, 1=drift, 2=blocked
+
+      6. Tests: parser-plans-folder.test.ts covers create/list/detail/update/delete, owned resource
+      cleanup on plan delete, unknown file preservation, content sidecar authority, index
+      projection, rebuild drift detection, --repair, --force stale-entry handling, and
+      incompatibility errors for partial layouts. Existing parser-plans.test.ts keeps testing
+      monolithic (legacy path) and we add separate tests for folder mode.
+
+
+      7. Existing assertPlanStorageWritable allows operating on consistent folder layouts via the
+      in-place mutate path; for save/delete the folder manager routes through the new path (not the
+      lenient gate), so the no-new-monolithic write rule still protects.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-23T20:34:59.594Z
