@@ -226009,7 +226009,18 @@ reviews:
     slugs: []
     title: Review entity storage version and incompatibility gates (cycle 3)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: TypeScript, shared, daemon, web UI, docs search, and plugin builds completed; only
+          pre-existing Svelte a11y/deprecation warnings were emitted.
+        name: npm run build
+        required: true
+        runner: npm
+        created_at: 2026-05-23T17:29:02.178Z
+        completed_at: 2026-05-23T17:29:02.178Z
     events:
       - _ulid: 01KSAX2K09YD30TY045PDWYT45
         actor: Jacob Chapel
@@ -226045,6 +226056,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSAY3N2EGW5W2WV8090RHHPP
         timestamp: 2026-05-23T17:28:45.475Z
+      - _ulid: 01KSAY48HD0DJYPSTTN7PMXMYH
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm run build
+        timestamp: 2026-05-23T17:29:03.789Z
     examined_commit: f4a3446b95e612b82912ab4ecd71cd16753252f0
     external_links: []
     lifecycle_state: open
@@ -226145,5 +226163,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-23T17:10:40.405Z
-    updated_at: 2026-05-23T17:28:43.854Z
+    updated_at: 2026-05-23T17:29:02.178Z
     notes: []
