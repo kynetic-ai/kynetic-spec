@@ -227188,6 +227188,12 @@ reviews:
           kind: nit
           thread_ulid: 01KSBFBKRMP12EC9J4CPP1PZ0W
         timestamp: 2026-05-23T22:30:12.149Z
+      - _ulid: 01KSBH1NNVX20PDXN1FJ0390CX
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSBEXAQGNDXYNDP57709TYF9
+        timestamp: 2026-05-23T22:59:41.883Z
     examined_commit: a493bb85ac2a2fb06d93713154692f9243c412b6
     external_links: []
     lifecycle_state: closed
@@ -227219,6 +227225,19 @@ reviews:
               the AC, or remove the false AC annotation from this task and leave that AC to the
               dedicated review screenshot resource UI task."
             created_at: 2026-05-23T22:22:22.448Z
+          - _ulid: 01KSBH1KYE10DVTECTZ4SZRX7V
+            author: "@claude"
+            body: "Fixed in 48a17f7b79. Took the second remediation path: removed the over-claimed `// AC:
+              @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui` annotation
+              from tests/parser-reviews-folder.test.ts:408 and updated the file header to make
+              explicit that the UI/static AC is owned by @task-review-screenshot-resource-ui (which
+              covers the daemon GET /api/reviews/:ref/resources/:resourceId/bytes route, web UI
+              preview, and static export copying under assets/resources/review/<review-ulid>/). The
+              screenshot test still validates the parser-layer trait ACs
+              ac-resource-reference-resolves-within-owner and
+              ac-resource-metadata-exposes-safe-preview-fields, which is the correct abstraction
+              layer for this storage-manager task."
+            created_at: 2026-05-23T22:59:40.110Z
         kind: blocker
       - _ulid: 01KSBFBKRMP12EC9J4CPP1PZ0W
         entries:
@@ -227248,7 +227267,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-23T22:29:51.090Z
     created_at: 2026-05-23T22:15:30.195Z
-    updated_at: 2026-05-23T22:30:10.452Z
+    updated_at: 2026-05-23T22:59:40.110Z
     notes: []
   - _ulid: 01KSBGAX0TD7SA4WH2ZCTM7H6D
     slugs: []
