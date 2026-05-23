@@ -225040,6 +225040,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-23T08:53:01.792Z
+      - _ulid: 01KSA1CVVC2DDKB3XJ8ZJA3C3J
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSA1CT802PTKFYSM6YYZCQTN
+        timestamp: 2026-05-23T09:06:57.004Z
     examined_commit: 153ed3a92e5e76a9559d81221f045208d19add18
     external_links: []
     lifecycle_state: open
@@ -225049,8 +225056,32 @@ reviews:
       content_hash: ""
       ref: "@01KS8XAW3HQ2DGQPD6HFC19FAV"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KSA1CT802PTKFYSM6YYZCQTN
+        anchor:
+          type: code
+          commit: 153ed3a92e5e76a9559d81221f045208d19add18
+          line_end: 337
+          line_start: 323
+          path: src/parser/entity-local-resources.ts
+          side: head
+        entries:
+          - _ulid: 01KSA1CT81H24KPD6H0S0HVJ4R
+            author: Jacob Chapel
+            body: "MUST-FIX: resolveResourcePath only rejects undeclared paths when callers provide the optional
+              manifest. If manifest is omitted, the public resolver validates the relative path and
+              resolves any existing file under resources/, which violates
+              @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner and
+              ac-path-escape-rejected: resources must resolve only when declared, and undeclared
+              paths must be rejected. Evidence: the signature makes manifest optional, the
+              undeclared check is conditional on options.manifest, and
+              tests/entity-local-resources.test.ts:305 exercises successful resolution without a
+              manifest. Make the declared manifest check mandatory, or add a higher-level exported
+              resolver that loads resources.yaml and use that as the trait-compliant resolver while
+              keeping any unchecked helper private/internal."
+            created_at: 2026-05-23T09:06:55.361Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-23T08:52:37.403Z
-    updated_at: 2026-05-23T08:53:00.179Z
+    updated_at: 2026-05-23T09:06:55.361Z
     notes: []
