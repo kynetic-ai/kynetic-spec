@@ -221579,6 +221579,12 @@ reviews:
         payload:
           thread_ulid: 01KS9F9JS0E5BTG5VMFE2W4ZC8
         timestamp: 2026-05-23T04:09:42.440Z
+      - _ulid: 01KS9GCSV4R98N88MKS92MXNTK
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KS9F9JS0E5BTG5VMFE2W4ZC8
+        timestamp: 2026-05-23T04:09:49.156Z
     examined_commit: 75e09ea3cc7ab4ef0a7d3296a6187c77391b425f
     external_links: []
     lifecycle_state: closed
@@ -221615,6 +221621,8 @@ reviews:
               failed)."
             created_at: 2026-05-23T04:09:40.874Z
         kind: blocker
+        resolved_at: 2026-05-23T04:09:47.611Z
+        resolved_by: "@claude"
       - _ulid: 01KS9FA246X0CYP5X9ZRJRDZEM
         entries:
           - _ulid: 01KS9FA246AFR7EZQP84HNKAFF
@@ -221640,5 +221648,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-23T03:51:02.547Z
     created_at: 2026-05-23T03:32:12.515Z
-    updated_at: 2026-05-23T04:09:40.874Z
+    updated_at: 2026-05-23T04:09:47.611Z
     notes: []
