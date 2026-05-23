@@ -225699,6 +225699,17 @@ reviews:
         runner: npm
         created_at: 2026-05-23T15:33:16.132Z
         completed_at: 2026-05-23T15:33:16.132Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Build completed: TypeScript, shared, daemon, web UI, docs search, and plugin build
+          passed. Svelte warnings were pre-existing style/a11y warnings."
+        name: npm run build
+        required: true
+        runner: npm
+        created_at: 2026-05-23T15:33:20.756Z
+        completed_at: 2026-05-23T15:33:20.756Z
     events:
       - _ulid: 01KSANQM8TZMGTWZ21ZJEQHW5B
         actor: Jacob Chapel
@@ -225741,6 +225752,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-05-23T15:33:17.715Z
+      - _ulid: 01KSAQGDW5Y3F4K254VZVPN4X2
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm run build
+        timestamp: 2026-05-23T15:33:22.438Z
     examined_commit: 990d24115785a42e739cf439605a63530c652069
     external_links: []
     lifecycle_state: open
@@ -225824,5 +225842,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-23T15:02:21.210Z
-    updated_at: 2026-05-23T15:33:16.132Z
+    updated_at: 2026-05-23T15:33:20.756Z
     notes: []
