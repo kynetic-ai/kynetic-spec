@@ -75,7 +75,7 @@ description: >
 spec_ref: "@folder-backed-plan-storage-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-entity-storage-version-compatibility-gates-1"
@@ -90,11 +90,11 @@ review_ref: "@01KSBBAK57DTXXXJZ4PX9J851E"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-folder-backed-plan-storage-manager-1/01ks8xay
-  captured_at: 2026-05-23T21:16:44.194Z
-  commit: c81ed98ce2337fdd426aec3da370bb73d29d4b6f
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-05-23T22:43:52.189Z
+  commit: 984af0c7589a8044eedb252a02bd2cde4992f69d
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-folder-backed-plan-storage-manager-1/01ks8xay
 session_id: 01KSBEE9YZ9ZR812XXV3WH82R3
 history:
   - author: Jacob Chapel
@@ -326,8 +326,35 @@ history:
         previous: 2026-05-23T20:29:07.105Z
     command: task-start
     timestamp: 2026-05-23T22:43:45.702Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-folder-backed-plan-storage-manager-1/01ks8xay
+          captured_at: 2026-05-23T22:43:52.189Z
+          commit: 984af0c7589a8044eedb252a02bd2cde4992f69d
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-folder-backed-plan-storage-manager-1/01ks8xay
+        previous:
+          review_url: null
+          branch: dispatch/task/task-folder-backed-plan-storage-manager-1/01ks8xay
+          captured_at: 2026-05-23T21:16:44.194Z
+          commit: c81ed98ce2337fdd426aec3da370bb73d29d4b6f
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-05-23T22:43:52.194Z
+        previous: 2026-05-23T21:16:44.200Z
+    command: task-submit
+    timestamp: 2026-05-23T22:43:52.194Z
 created_at: 2026-05-22T22:36:45.090Z
 started_at: 2026-05-23T22:43:45.699Z
-submitted_at: 2026-05-23T21:16:44.200Z
+submitted_at: 2026-05-23T22:43:52.194Z
 todos: []
 automation: eligible
