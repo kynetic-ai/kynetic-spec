@@ -19260,6 +19260,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-23T22:13:20.884Z
+  - _ulid: 01KSBHFQ9WK4743A3DWSX3SK2R
+    type: friction
+    content: "During detached-reviewer manual_merge review, the supported merge helper refused the
+      occupied integration target because that target worktree was detached at the target branch
+      head rather than attached to the branch. Recovery was safe but manual: check out the
+      integration branch in the target worktree, then rerun the helper. Consider teaching the helper
+      to detect detached-at-target-head worktrees and attach or print a precise recovery command
+      while preserving dirty-target refusal and conflict abort behavior."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-23T23:07:22.300Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
