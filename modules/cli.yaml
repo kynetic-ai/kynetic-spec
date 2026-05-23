@@ -5624,11 +5624,12 @@ features:
         acceptance_criteria:
           - given: A user wants to create a plan
             id: ac-1
-            then: A plan is created with ULID, stored in project.plans.yaml, and auto-committed to shadow branch
+            then: A plan is created with ULID-backed identity, retrievable markdown content, lifecycle metadata,
+              and an auto-commit to the shadow branch
             when: kspec plan add --title "Title" --content "Markdown content" is run
           - given: A markdown file exists at a path
             id: ac-2
-            then: File content is read and stored as plan content
+            then: File content is read and becomes the plan's retrievable markdown content
             when: kspec plan add --title "Title" --content-file ./plan.md is run
           - given: A plan exists in draft status
             id: ac-3

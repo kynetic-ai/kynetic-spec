@@ -1875,15 +1875,11 @@ features:
               an @review ref using the shared reference system
             when: |
               It is referenced through kspec commands
-          - given: |
-              Review records are stored in the shadow branch
+          - given: Review records are stored in the shadow branch
             id: ac-3
-            then: |
-              The review data lives in a single dedicated file per project rather
-              than being split across multiple files or embedded inside other entity
-              files, so each shadow branch commit touches one predictable path
-            when: |
-              A review mutation is committed
+            then: The review data is persisted in dedicated first-party review storage rather than embedded
+              inside plans, tasks, module files, or other unrelated entity files
+            when: A review mutation is committed
         tags: []
         parent: "@review-record-core-model"
         requirements:

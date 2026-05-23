@@ -493,6 +493,11 @@ features:
               the tasks cache domain evaluates compatibility against the updated manifest
               state
             when: those task-storage compatibility settings change
+          - given: A file watcher detects a change inside a registered project's folder-backed entity directory
+            id: ac-folder-backed-entity-directory-invalidation
+            then: The cache invalidates and reloads the plans domain for plan-directory changes or the reviews
+              domain for review-directory changes
+            when: The changed path is under .kspec/plans/<plan-ulid>/ or .kspec/reviews/<review-ulid>/
         tags: []
         requirements:
           - _ulid: 01KMMB3S7MJZ9ZJKZT31QPM572
