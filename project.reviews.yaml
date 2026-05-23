@@ -224455,6 +224455,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-23T06:42:08.525Z
+      - _ulid: 01KS9SYYMEBXAT5YHVFE2CRZMW
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KS9SYX2T0C6FVR5D9YNTQ1PX
+        timestamp: 2026-05-23T06:57:01.071Z
     examined_commit: 5f4503684e7447da5fb464255d4b3b7785aafcc5
     external_links: []
     lifecycle_state: open
@@ -224464,8 +224471,31 @@ reviews:
       content_hash: ""
       ref: "@01KS8XAW3HQ2DGQPD6HFC19FAV"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KS9SYX2T0C6FVR5D9YNTQ1PX
+        anchor:
+          type: code
+          commit: 5f4503684e7447da5fb464255d4b3b7785aafcc5
+          line_end: 392
+          line_start: 381
+          path: src/parser/entity-local-resources.ts
+          side: head
+        entries:
+          - _ulid: 01KS9SYX2T1MQN6EMFWA4ZMEXZ
+            author: Jacob Chapel
+            body: 'MUST-FIX: resolveResourcePath treats the realpath of ownerResourcesDir as the trusted
+              resource root. If <entity>/resources is itself a symlink to an outside directory,
+              every declared file under that outside target is accepted as entity-owned. I confirmed
+              this by running a temp fixture where entity/resources -> /tmp/outside and
+              resolveResourcePath({ relativePath: \"secret.txt\", manifest: declared secret.txt })
+              returned ok:true with absolutePath outside the entity. This violates
+              ac-resource-reference-resolves-within-owner and ac-path-escape-rejected because a
+              declared resource can read files outside the owning entity tree. Reject a symlinked
+              resources root or verify the real candidate remains under the lexical entity resources
+              directory, not just under the symlink target.'
+            created_at: 2026-05-23T06:56:59.482Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-23T06:41:54.695Z
-    updated_at: 2026-05-23T06:42:07.019Z
+    updated_at: 2026-05-23T06:56:59.482Z
     notes: []
