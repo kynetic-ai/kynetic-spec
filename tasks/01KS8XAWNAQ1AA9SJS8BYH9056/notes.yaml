@@ -98,3 +98,49 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-23T14:07:57.608Z
+  - _ulid: 01KSANEGKW4DZP88JFQSQJN5J6
+    content: >-
+      Fix cycle 1 complete: addressed both reviewer blockers.
+
+
+      Changes:
+
+      - src/parser/entity-storage-compatibility.ts: assertPlanStorageCompatible and
+      assertReviewStorageCompatible now call detectPartialLayoutForDomain(ctx, ...) after the
+      lenient manifest check. The monolithic plan/review storage managers
+      (loadPlans/savePlan/mutatePlanAtomically/deletePlan and the review equivalents) now refuse to
+      read or rewrite ambiguous data once a project declares folder storage but still has monolithic
+      records on disk. Strict require*FolderStorage gates are unchanged.
+
+      - tests/entity-storage-partial-layout-manager.test.ts (new, 14 behavioral tests): exercises
+      loadPlans/savePlan/mutate/delete and the review equivalents directly to prove the storage
+      managers themselves reject partial layouts. Pins the AC-required behavior so a regression to
+      manifest-only checking fails the build.
+
+      - tests/entity-storage-compatibility.test.ts: flipped the prior "lenient does NOT throw on
+      partial layouts" assertion to expect rejection, and added the matching review-side assertion.
+
+      - tests/helpers/cli.ts + 4 integration test files: added downgradeManifestToLegacyStorage
+      helper and called it from setupShadowProject / setupFreshProject in cli-plan-delete,
+      cli-plan-derive, cli-plan-import, and derivable-default-module. The folder-backed storage
+      managers that make the 1.2 folder declaration functional are implemented by sibling tasks
+      (folder-backed plan/review storage manager tasks) under the same plan; until they land,
+      integration tests that exercise plan/review CRUD on freshly-initialized projects must run
+      against a legacy-format manifest.
+
+
+      Verification:
+
+      - npm test: 2501 suites / 9471 tests passed / 5 skipped, 0 failures.
+
+      - npm run build: clean.
+
+      - kspec validate --warnings-ok: passes (only pre-existing unresolved-target warnings in
+      unrelated files).
+
+      - Protected live projects (/home/chapel/Projects/kynetic-spec,
+      /home/chapel/Projects/kynetic-spec-dispatch) still report kynetic 1.1 with no
+      plan_storage/review_storage declarations and no .kspec/plans or .kspec/reviews directories.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-23T14:57:22.556Z
