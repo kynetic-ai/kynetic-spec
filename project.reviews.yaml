@@ -226509,6 +226509,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-23T18:54:13.189Z
+      - _ulid: 01KSB669GM1FS76RMKT2AQYQP1
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSB2XWGY482XFTFNCRD6421Y
+        timestamp: 2026-05-23T19:49:58.932Z
     examined_commit: ae12bb9916e0ffc3992bd979260ea539d5c4e7c8
     external_links: []
     lifecycle_state: closed
@@ -226542,6 +226548,43 @@ reviews:
               unaffected behavior covered with folder-backed or cache-ready fixtures instead of
               skipping whole suites."
             created_at: 2026-05-23T18:52:57.758Z
+          - _ulid: 01KSB667ZBN6NF8K68XHQ2S4F8
+            author: "@claude"
+            body: >-
+              Fixed: All 109 skipped tests restored. Strategy:
+
+
+              1. Migrated the e2e fixture in setupFixtures() to kynetic 1.2 with folder-backed
+              plan/review/resource storage declarations and auto-materialised matching folder
+              shells. The daemon's requireXFolderStorage gate now passes against the fixture and
+              review/plan list/detail/threads/verdicts tests run against the post-upgrade contract.
+
+
+              2. Added FOLDER_BACKED_INLINE_MANIFEST plus auto-detection in setupInlineFixtures so
+              tests that build inline fixtures (verdicts, websocket, input-validation) declare
+              folder storage and get folder shells created automatically.
+
+
+              3. Relaxed mutate*Atomically to use the compatibility gate (lenient + partial-layout)
+              instead of the writable gate. In-place mutation requires an existing entry and cannot
+              introduce a partial layout; only save/delete need the broader monolithic-write block.
+              This unblocked the daemon thread/verdict/check/lifecycle mutation routes against
+              folder-backed fixtures while keeping the drift-prevention contract for save/delete.
+              Updated the two mutate-on-clean-folder-declared partial-layout-manager tests to
+              reflect the new contract (mutate fails at lookup, no monolithic file created).
+
+
+              4. Replaced helpers.test.ts's single legacy-positive test with two tests — a
+              folder-backed positive that exercises auto-materialised shells, and a legacy-409
+              negative that asserts the structured entity_storage_incompatible contract.
+
+
+              Suite delta: 109 skipped → 5 skipped (the remaining 5 are pre-existing and unrelated).
+              Suites restored: reviews-list (26 tests), reviews-threads (29),
+              daemon-review-verdicts-api (33), daemon-review-websocket (12), daemon-api/plans (2),
+              daemon-api-input-validation (1), daemon-api/helpers (1 replaced with 2 = +1 net). All
+              CRUD assertions preserved.
+            created_at: 2026-05-23T19:49:57.338Z
         kind: blocker
       - _ulid: 01KSB2ZV1DH3AMMN26Z3PTZ5PJ
         entries:
@@ -226569,5 +226612,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-23T18:54:13.189Z
     created_at: 2026-05-23T18:37:05.702Z
-    updated_at: 2026-05-23T18:54:13.189Z
+    updated_at: 2026-05-23T19:49:57.338Z
     notes: []
