@@ -52426,7 +52426,7 @@ runs:
     started_at: 2026-05-23T23:02:54.019Z
   - _ulid: 01KSBHA5JHDEQV0GJDT6RJR330
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -52442,7 +52442,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-23T23:05:17.078Z
-        completed_at: 2026-05-23T23:05:17.078Z
+        completed_at: 2026-05-23T23:05:29.028Z
+        notes: "Friction points: The merge helper initially refused because the occupied target worktree for
+          the integration branch was detached at the target commit instead of attached to the
+          branch; recovery required manually checking out the branch in that separate worktree
+          before rerunning the helper. Lint verification for changed files was noisy: npm run lint
+          -- <files> still ran the repo-wide configured paths, while direct oxlint on changed files
+          exposed pre-existing touched-file lint hits that needed manual non-regression triage. The
+          full npm test run passed but took about 48 minutes, which makes the required review gate
+          expensive in this repository."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-23T23:05:29.028Z
+        completed_at: 2026-05-23T23:05:29.028Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-23T23:04:20.306Z
