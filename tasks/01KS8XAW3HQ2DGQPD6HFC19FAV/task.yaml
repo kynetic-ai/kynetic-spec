@@ -84,7 +84,7 @@ tags:
   - schema
   - parser
 vcs_refs: []
-review_ref: "@01KS9S39G7GYNGF6C6X2D08HD0"
+review_ref: "@01KS9XQFH25P13AS179EFY0YC9"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-entity-local-resource-model-1/01ks8xaw
@@ -403,6 +403,13 @@ history:
         previous: 2026-05-23T06:38:28.078Z
     command: task-submit
     timestamp: 2026-05-23T07:22:07.335Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KS9XQFH25P13AS179EFY0YC9"
+        previous: "@01KS9S39G7GYNGF6C6X2D08HD0"
+    command: review-link
+    timestamp: 2026-05-23T08:02:54.826Z
 created_at: 2026-05-22T22:36:42.993Z
 started_at: 2026-05-23T07:22:00.857Z
 submitted_at: 2026-05-23T07:22:07.335Z
