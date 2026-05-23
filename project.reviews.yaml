@@ -225021,3 +225021,29 @@ reviews:
     created_at: 2026-05-23T08:02:50.530Z
     updated_at: 2026-05-23T08:42:15.609Z
     notes: []
+  - _ulid: 01KSA0JMCV4V4R533JERHZ4EJE
+    slugs: []
+    title: Review entity-local resource trait resolver (cycle 4)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KSA0JMCCJQH83BCXXCRERP12
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-23T08:52:37.389Z
+    examined_commit: 153ed3a92e5e76a9559d81221f045208d19add18
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KS8XAW3HQ2DGQPD6HFC19FAV"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-23T08:52:37.403Z
+    updated_at: null
+    notes: []
