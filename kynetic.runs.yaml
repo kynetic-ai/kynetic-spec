@@ -51464,7 +51464,7 @@ runs:
     completed_at: 2026-05-23T03:54:01.092Z
   - _ulid: 01KS9HW3JAHRKENT8N7HNKPVB4
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -51480,7 +51480,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-23T04:35:55.652Z
-        completed_at: 2026-05-23T04:35:55.652Z
+        completed_at: 2026-05-23T04:36:08.718Z
+        notes: "Friction points: The detached reviewer merge helper could not proceed because the
+          integration target branch was not checked out in any worktree. The prompt said the helper
+          handles occupied-worktree refresh automatically, but this workspace did not already have
+          the occupied target worktree, so the review flow required manual diagnosis with git
+          worktree list and a manual git worktree add before rerunning the supported helper.
+          Secondary minor friction: workflow show requires the run ref even immediately after
+          workflow start, so the caller must carry the returned run id forward."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-23T04:36:08.718Z
+        completed_at: 2026-05-23T04:36:08.718Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-23T04:35:39.211Z
