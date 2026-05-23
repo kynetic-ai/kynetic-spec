@@ -221321,7 +221321,18 @@ reviews:
     slugs: []
     title: Review task-update-plan-review-storage-specs
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate --warnings-ok exited 0. Validation passed; warnings reported are existing
+          project-wide reference/alignment/completeness warnings.
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-05-23T02:47:01.877Z
+        completed_at: 2026-05-23T02:47:01.877Z
     events:
       - _ulid: 01KS9AW1TVTB355J8929REFEV6
         actor: Jacob Chapel
@@ -221336,6 +221347,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-23T02:33:50.512Z
+      - _ulid: 01KS9BN8HJ9K14KTZW3YFZQVRF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-23T02:47:03.474Z
     examined_commit: a5ce476850bb299e809c7880cb9c6c8f731c802e
     external_links: []
     lifecycle_state: open
@@ -221348,5 +221366,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-23T02:33:17.403Z
-    updated_at: 2026-05-23T02:33:48.602Z
+    updated_at: 2026-05-23T02:47:01.877Z
     notes: []
