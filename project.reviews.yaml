@@ -226166,6 +226166,12 @@ reviews:
         payload:
           thread_ulid: 01KSAY5CK46T02M3RVTK454QHQ
         timestamp: 2026-05-23T18:26:42.382Z
+      - _ulid: 01KSB1E5JFPC86FVY5BQG1X2Q4
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSAY2PTS6V89AYDJ0K56843K
+        timestamp: 2026-05-23T18:26:54.159Z
     examined_commit: f4a3446b95e612b82912ab4ecd71cd16753252f0
     external_links: []
     lifecycle_state: closed
@@ -226223,6 +226229,8 @@ reviews:
               the EntityStorageCompatibilityError code via the existing degraded-reason channel."
             created_at: 2026-05-23T18:25:54.542Z
         kind: blocker
+        resolved_at: 2026-05-23T18:26:52.507Z
+        resolved_by: "@claude"
       - _ulid: 01KSAY35EBV5KTK1NPSSTCRBCM
         anchor:
           type: code
@@ -226351,5 +226359,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-23T17:29:55.237Z
     created_at: 2026-05-23T17:10:40.405Z
-    updated_at: 2026-05-23T18:26:40.723Z
+    updated_at: 2026-05-23T18:26:52.507Z
     notes: []
