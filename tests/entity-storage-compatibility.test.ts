@@ -355,6 +355,154 @@ reviews:
     );
     expect(await detectPartialLayoutForDomain(ctx, "plans")).toBeNull();
   });
+
+  // ── Cycle 3 blocker: drift-based detection ─────────────────────────────────
+  // The previous implementation flagged any `project.plans.yaml` /
+  // `project.reviews.yaml` entry with a `_ulid` field as a monolithic record,
+  // which would also reject the valid folder-backed layout required by the
+  // plan/review storage specs (those keep the file as a lean index whose
+  // entries still carry `_ulid`). The detector now compares index ULIDs
+  // against the actual `.kspec/<domain>/<ulid>/` folders so a clean
+  // folder-backed layout passes while either form of drift fails.
+  //
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+
+  async function writeFolderBackedPlan(ulid: string): Promise<void> {
+    const planDir = path.join(specDir, "plans", ulid);
+    await fs.mkdir(planDir, { recursive: true });
+    await fs.writeFile(path.join(planDir, "plan.md"), "# title\n");
+    await fs.writeFile(
+      path.join(planDir, "plan.yaml"),
+      `_ulid: ${ulid}\nslugs: []\ntitle: Folder Plan\nstatus: draft\nderived_tasks: []\nderived_specs: []\nsource_path: null\ncreated_at: "2026-01-01T00:00:00Z"\n`,
+    );
+  }
+
+  async function writeFolderBackedReview(ulid: string): Promise<void> {
+    const reviewDir = path.join(specDir, "reviews", ulid);
+    await fs.mkdir(reviewDir, { recursive: true });
+    await fs.writeFile(
+      path.join(reviewDir, "review.yaml"),
+      `_ulid: ${ulid}\nslugs: []\ntitle: Folder Review\nlifecycle_state: open\nauthor: "x@y"\nrelated_refs: []\nthreads: []\nchecks: []\nverdicts: []\nevents: []\nnotes: []\ncreated_at: "2026-01-01T00:00:00Z"\nupdated_at: "2026-01-01T00:00:00Z"\n`,
+    );
+  }
+
+  async function writeLeanPlanIndex(ulids: string[]): Promise<void> {
+    const entries = ulids
+      .map(
+        (u) =>
+          `  - _ulid: ${u}\n    slugs: []\n    title: Lean Index Entry\n    status: draft\n    derived_tasks: []\n    derived_specs: []\n    source_path: null\n    created_at: "2026-01-01T00:00:00Z"\n`,
+      )
+      .join("");
+    await fs.writeFile(
+      path.join(specDir, "project.plans.yaml"),
+      `kynetic_plans: "1.2"\nplans:\n${entries}`,
+    );
+  }
+
+  async function writeLeanReviewIndex(ulids: string[]): Promise<void> {
+    const entries = ulids
+      .map(
+        (u) =>
+          `  - _ulid: ${u}\n    slugs: []\n    title: Lean Review Entry\n    lifecycle_state: open\n    author: "x@y"\n    related_refs: []\n    created_at: "2026-01-01T00:00:00Z"\n    updated_at: "2026-01-01T00:00:00Z"\n`,
+      )
+      .join("");
+    await fs.writeFile(
+      path.join(specDir, "project.reviews.yaml"),
+      `kynetic_reviews: "1.2"\nreviews:\n${entries}`,
+    );
+  }
+
+  it("returns null on a valid folder-backed plan layout (lean index entry + matching folder)", async () => {
+    const ulid = "01ABCDEFGHJKMNPQRSTUVWXYZ";
+    await writeFolderBackedPlan(ulid);
+    await writeLeanPlanIndex([ulid]);
+    const ctx = makeContext(specDir, makeManifest());
+    expect(await detectPartialLayoutForDomain(ctx, "plans")).toBeNull();
+  });
+
+  it("returns null on a valid folder-backed review layout (lean index entry + matching folder)", async () => {
+    const ulid = "01ABCDEFGHJKMNPQRSTUVWXYZ";
+    await writeFolderBackedReview(ulid);
+    await writeLeanReviewIndex([ulid]);
+    const ctx = makeContext(specDir, makeManifest());
+    expect(await detectPartialLayoutForDomain(ctx, "reviews")).toBeNull();
+  });
+
+  it("returns partial_entity_storage_layout when a plan index entry has no matching folder (stranded or legacy monolithic)", async () => {
+    const folderUlid = "01AAAAAAAAAAAAAAAAAAAAAAAA";
+    const strandedUlid = "01BBBBBBBBBBBBBBBBBBBBBBBB";
+    await writeFolderBackedPlan(folderUlid);
+    await writeLeanPlanIndex([folderUlid, strandedUlid]);
+    const ctx = makeContext(specDir, makeManifest());
+    const err = await detectPartialLayoutForDomain(ctx, "plans");
+    expect(err).not.toBeNull();
+    expect(err!.code).toBe(PARTIAL_ENTITY_STORAGE_LAYOUT_CODE);
+    expect(err!.message).toContain(strandedUlid);
+  });
+
+  it("returns partial_entity_storage_layout when a plan folder has no matching index entry (orphan folder)", async () => {
+    const indexedUlid = "01AAAAAAAAAAAAAAAAAAAAAAAA";
+    const orphanUlid = "01CCCCCCCCCCCCCCCCCCCCCCCC";
+    await writeFolderBackedPlan(indexedUlid);
+    await writeFolderBackedPlan(orphanUlid);
+    await writeLeanPlanIndex([indexedUlid]);
+    const ctx = makeContext(specDir, makeManifest());
+    const err = await detectPartialLayoutForDomain(ctx, "plans");
+    expect(err).not.toBeNull();
+    expect(err!.code).toBe(PARTIAL_ENTITY_STORAGE_LAYOUT_CODE);
+    expect(err!.message).toContain(orphanUlid);
+  });
+
+  it("returns partial_entity_storage_layout when a review index entry has no matching folder", async () => {
+    const folderUlid = "01AAAAAAAAAAAAAAAAAAAAAAAA";
+    const strandedUlid = "01BBBBBBBBBBBBBBBBBBBBBBBB";
+    await writeFolderBackedReview(folderUlid);
+    await writeLeanReviewIndex([folderUlid, strandedUlid]);
+    const ctx = makeContext(specDir, makeManifest());
+    const err = await detectPartialLayoutForDomain(ctx, "reviews");
+    expect(err).not.toBeNull();
+    expect(err!.code).toBe(PARTIAL_ENTITY_STORAGE_LAYOUT_CODE);
+    expect(err!.message).toContain(strandedUlid);
+  });
+
+  it("returns partial_entity_storage_layout when a review folder has no matching index entry", async () => {
+    const indexedUlid = "01AAAAAAAAAAAAAAAAAAAAAAAA";
+    const orphanUlid = "01CCCCCCCCCCCCCCCCCCCCCCCC";
+    await writeFolderBackedReview(indexedUlid);
+    await writeFolderBackedReview(orphanUlid);
+    await writeLeanReviewIndex([indexedUlid]);
+    const ctx = makeContext(specDir, makeManifest());
+    const err = await detectPartialLayoutForDomain(ctx, "reviews");
+    expect(err).not.toBeNull();
+    expect(err!.code).toBe(PARTIAL_ENTITY_STORAGE_LAYOUT_CODE);
+    expect(err!.message).toContain(orphanUlid);
+  });
+
+  it("requirePlanFolderStorage passes on a valid folder-backed layout (lean index + matching folders)", async () => {
+    const ulid = "01ABCDEFGHJKMNPQRSTUVWXYZ";
+    await writeFolderBackedPlan(ulid);
+    await writeLeanPlanIndex([ulid]);
+    const ctx = makeContext(specDir, makeManifest());
+    await expect(requirePlanFolderStorage(ctx)).resolves.toBeUndefined();
+  });
+
+  it("requireReviewFolderStorage passes on a valid folder-backed layout (lean index + matching folders)", async () => {
+    const ulid = "01ABCDEFGHJKMNPQRSTUVWXYZ";
+    await writeFolderBackedReview(ulid);
+    await writeLeanReviewIndex([ulid]);
+    const ctx = makeContext(specDir, makeManifest());
+    await expect(requireReviewFolderStorage(ctx)).resolves.toBeUndefined();
+  });
+
+  it("ignores subdirectories under plans/ that have no plan.yaml sidecar (not a folder-backed entity)", async () => {
+    // A subdirectory without a `plan.yaml` is not a folder-backed plan
+    // entity — it could be a leftover from a partial mkdir or unrelated
+    // content. The detector must not treat such directories as orphan
+    // folders that would otherwise fire partial_entity_storage_layout.
+    await fs.mkdir(path.join(specDir, "plans", "not-a-plan"), { recursive: true });
+    const ctx = makeContext(specDir, makeManifest());
+    expect(await detectPartialLayoutForDomain(ctx, "plans")).toBeNull();
+  });
 });
 
 describe("assertPlanStorageCompatible / assertReviewStorageCompatible / assertResourceStorageCompatible", () => {

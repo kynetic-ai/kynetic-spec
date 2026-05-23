@@ -237,8 +237,11 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           //
           // AC: @daemon-read-path ac-no-per-request-sync — skip the gate when
           //     the cache has already proved this project is compatible at
-          //     load time. Cache invalidation on manifest changes keeps the
-          //     fast path correct.
+          //     load time. The cache loader runs requireReviewFolderStorage()
+          //     before loadReviewRecords() during warm-up, so a "ready"
+          //     reviews domain means the strict gate already passed —
+          //     incompatible projects mark the domain "degraded" and fall
+          //     through to the gate-at-route-entry path below.
           if (!cache || reviewsDomainState !== "ready") {
             try {
               await requireReviewFolderStorage(await getCtx());
@@ -449,7 +452,8 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           //
           // AC: @daemon-read-path ac-no-per-request-sync — skip the gate when
           //     the cache has already proved this project is compatible. See
-          //     the list route for the full rationale.
+          //     the list route for the full rationale (cache loader runs the
+          //     strict gate at warm-up, so a "ready" domain proves compatibility).
           if (!cache || reviewsDomainState !== "ready") {
             try {
               const ctx = await initContext(projectContext.path, { syncMode: "skip" });

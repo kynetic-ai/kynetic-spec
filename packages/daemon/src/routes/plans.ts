@@ -106,14 +106,14 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
           //     projects with a missing or non-folder declaration, and partial
           //     folder layouts with a structured 409 before serving any data.
           //
-          // AC: @daemon-read-path ac-no-per-request-sync — when the entity
-          //     cache is fully populated for plans we skip the gate (and the
-          //     initContext it requires). Cache population already ran the
-          //     storage manager and therefore implicitly proved the project
-          //     passed every gate at load time; the cache invalidates on
-          //     manifest changes so cached state cannot drift past a project
-          //     downgrade. Without this skip the cache-warm fast path would
-          //     pay a synchronous initContext on every request.
+          // AC: @daemon-read-path ac-no-per-request-sync — skip the gate when
+          //     the cache has already proved this project is compatible at
+          //     load time. The cache loader runs requirePlanFolderStorage()
+          //     before loadPlans() during warm-up, so a "ready" plans domain
+          //     means the strict gate already passed — incompatible projects
+          //     mark the domain "degraded" and fall through to the
+          //     gate-at-route-entry path below, where the strict error is
+          //     translated into the structured 409 response.
           if (!cache || plansDomainState !== "ready") {
             try {
               await requirePlanFolderStorage(await getCtx());
@@ -212,7 +212,8 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
         //
         // AC: @daemon-read-path ac-no-per-request-sync — skip the gate when
         //     the cache has already proved this project is compatible. See
-        //     the list route for the full rationale.
+        //     the list route for the full rationale (cache loader runs the
+        //     strict gate at warm-up, so a "ready" domain proves compatibility).
         if (!cache || plansDomainState !== "ready") {
           try {
             await requirePlanFolderStorage(await getCtx());

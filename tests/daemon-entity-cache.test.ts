@@ -454,24 +454,70 @@ describe("ProjectEntityCache", () => {
     });
 
     it("should not eagerly preload plan details during index load", async () => {
-      // Seed plans file in .kspec/ (specDir resolves to .kspec/ via shadow detection)
+      // Cache plan warm-up runs `requirePlanFolderStorage` before `loadPlans`
+      // (AC: @entity-folder-migration-and-compatibility-1
+      // ac-unmigrated-projects-are-blocked-with-guidance), so the project must
+      // declare folder-backed plan storage AND have a consistent folder/index
+      // layout for the domain to reach "ready" state. Override the multi-dir
+      // fixture's 1.1 manifest with a 1.2 folder-declared manifest and seed a
+      // folder-backed plan with its lean index entry — anything else would
+      // degrade the plans domain and the detail-on-demand contract could not
+      // be exercised.
       // Note: Crockford base32 excludes I, L, O, U
       const planUlid = "01PPAN00000000000000000000";
       await fs.writeFile(
+        join(projectA, ".kspec", "kynetic.yaml"),
+        yamlStringify({
+          kynetic: "1.2",
+          project: {
+            name: "Plans Detail-on-Demand Project",
+            version: "0.1.0",
+            status: "draft",
+          },
+          includes: ["modules/test.yaml"],
+          task_storage: { format: "split" },
+          plan_storage: { format: "folder" },
+          review_storage: { format: "folder" },
+          resource_storage: { format: "entity_scoped" },
+        }),
+        "utf-8",
+      );
+      // Folder-backed plan sidecar — proves the strict gate's drift detector
+      // can match the index entry to an entity folder.
+      const planDir = join(projectA, ".kspec", "plans", planUlid);
+      await fs.mkdir(planDir, { recursive: true });
+      await fs.writeFile(join(planDir, "plan.md"), "# Test Plan\n", "utf-8");
+      await fs.writeFile(
+        join(planDir, "plan.yaml"),
+        yamlStringify({
+          _ulid: planUlid,
+          slugs: ["plan-test"],
+          title: "Test Plan",
+          status: "draft",
+          created_at: "2026-01-01T00:00:00.000Z",
+          derived_tasks: [],
+          derived_specs: [],
+          notes: [],
+        }),
+        "utf-8",
+      );
+      // Lean index entry — populated by the (currently monolithic) loadPlans
+      // path. Once folder-backed loadPlans lands, the same lean shape is read
+      // directly from `plans/<ulid>/plan.yaml`; the projection through
+      // toPlanIndexSummary is identical either way.
+      await fs.writeFile(
         join(projectA, ".kspec", "project.plans.yaml"),
         yamlStringify({
-          kynetic_plans: "1.0",
+          kynetic_plans: "1.2",
           plans: [
             {
               _ulid: planUlid,
               slugs: ["plan-test"],
               title: "Test Plan",
               status: "draft",
-              content: "Heavy content that should not be in the index tier",
               created_at: "2026-01-01T00:00:00.000Z",
               derived_tasks: [],
               derived_specs: [],
-              notes: [],
             },
           ],
         }),
@@ -491,12 +537,60 @@ describe("ProjectEntityCache", () => {
     });
 
     it("should not eagerly preload review details during index load", async () => {
-      // Seed reviews file in .kspec/ (specDir resolves to .kspec/ via shadow detection)
+      // Cache review warm-up runs `requireReviewFolderStorage` before
+      // `loadReviewRecords` (AC: @entity-folder-migration-and-compatibility-1
+      // ac-unmigrated-projects-are-blocked-with-guidance), so the project
+      // must declare folder-backed review storage AND have a consistent
+      // folder/index layout for the domain to reach "ready" state. See the
+      // sibling plans test for the full rationale.
       const reviewUlid = "01REVW00000000000000000000";
+      await fs.writeFile(
+        join(projectA, ".kspec", "kynetic.yaml"),
+        yamlStringify({
+          kynetic: "1.2",
+          project: {
+            name: "Reviews Detail-on-Demand Project",
+            version: "0.1.0",
+            status: "draft",
+          },
+          includes: ["modules/test.yaml"],
+          task_storage: { format: "split" },
+          plan_storage: { format: "folder" },
+          review_storage: { format: "folder" },
+          resource_storage: { format: "entity_scoped" },
+        }),
+        "utf-8",
+      );
+      const reviewDir = join(projectA, ".kspec", "reviews", reviewUlid);
+      await fs.mkdir(reviewDir, { recursive: true });
+      await fs.writeFile(
+        join(reviewDir, "review.yaml"),
+        yamlStringify({
+          _ulid: reviewUlid,
+          slugs: ["review-test"],
+          title: "Test Review",
+          lifecycle_state: "open",
+          author: "@test",
+          subject: {
+            type: "task",
+            ref: "@task-test",
+            shadow_commit: "abc123",
+            content_hash: "def456",
+          },
+          related_refs: [],
+          created_at: "2026-01-01T00:00:00.000Z",
+          threads: [],
+          checks: [],
+          verdicts: [],
+          events: [],
+          external_links: [],
+        }),
+        "utf-8",
+      );
       await fs.writeFile(
         join(projectA, ".kspec", "project.reviews.yaml"),
         yamlStringify({
-          kynetic_reviews: "1.0",
+          kynetic_reviews: "1.2",
           reviews: [
             {
               _ulid: reviewUlid,
@@ -3406,6 +3500,30 @@ describe("ProjectEntityCache", () => {
   // AC: @daemon-entity-cache ac-warming-availability
   describe("ac-warming-availability: refs endpoint loading contract", () => {
     it("should report loading state for domains not yet ready", async () => {
+      // Cache plans warm-up enforces the strict folder-storage gate (AC:
+      // @entity-folder-migration-and-compatibility-1
+      // ac-unmigrated-projects-are-blocked-with-guidance), so the project
+      // manifest must declare folder-backed plan/review storage for the
+      // plans domain to reach "ready". The multi-dir fixture is kynetic
+      // 1.1 — rewrite the manifest before warming so this test exercises
+      // the loading→ready transition rather than degrade-on-load.
+      await fs.writeFile(
+        join(projectA, ".kspec", "kynetic.yaml"),
+        yamlStringify({
+          kynetic: "1.2",
+          project: {
+            name: "Refs Endpoint Loading Contract Project",
+            version: "0.1.0",
+            status: "draft",
+          },
+          includes: ["modules/test.yaml"],
+          task_storage: { format: "split" },
+          plan_storage: { format: "folder" },
+          review_storage: { format: "folder" },
+          resource_storage: { format: "entity_scoped" },
+        }),
+        "utf-8",
+      );
       // Simulates the refs endpoint check: if any required domain is loading,
       // return a loading response instead of falling through to disk reads
       const cache = registerEntityCache(projectA);
@@ -3427,6 +3545,162 @@ describe("ProjectEntityCache", () => {
       for (const domain of domainsForRefs) {
         expect(cache.getDomainState(domain)).toBe("ready");
       }
+    });
+  });
+
+  // ─── Entity Storage Compatibility — plans/reviews strict gate ────────────
+  //
+  // Cycle 3 blocker 1 & 2 fix: cache warm-up runs the strict folder-storage
+  // gate before loadPlans() / loadReviewRecords(), so a legacy project
+  // (kynetic < 1.2 without folder declarations) cannot enter "ready" with
+  // monolithic data and the route's cache-warm fast path cannot leak that
+  // data with a 200. These tests pin the cache-loader contract: an
+  // incompatible project produces a "degraded" plans/reviews domain whose
+  // stored error is the EntityStorageCompatibilityError that the daemon
+  // route translates into the 409 entity_storage_incompatible response.
+
+  describe("plans/reviews cache warm-up enforces strict folder-storage gate", () => {
+    // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+    // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+    it("transitions plans domain to degraded with legacy_plan_storage_removed on a kynetic 1.1 project (no plan_storage declaration)", async () => {
+      // The multi-dir fixture is kynetic 1.1 with no plan_storage. The
+      // strict gate must fire before loadPlans so the cache cannot serve
+      // monolithic data through the ready fast path.
+      await fs.writeFile(
+        join(projectA, ".kspec", "project.plans.yaml"),
+        yamlStringify({
+          kynetic_plans: "1.0",
+          plans: [
+            {
+              _ulid: "01LEGCYPLAN0000000000000A",
+              slugs: ["legacy"],
+              title: "Legacy monolithic plan",
+              status: "draft",
+              content: "Heavy content",
+              created_at: "2026-01-01T00:00:00Z",
+              derived_tasks: [],
+              derived_specs: [],
+              notes: [],
+            },
+          ],
+        }),
+        "utf-8",
+      );
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("plans");
+
+      expect(cache.getDomainState("plans")).toBe("degraded");
+      expect(cache.getPlansIndex()).toBeNull();
+      const diagnostics = cache.getCacheDiagnostics();
+      expect(diagnostics.domains.plans.errorReason).toBe("legacy_plan_storage_removed");
+    });
+
+    // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+    it("transitions plans domain to degraded with missing_plan_folder_storage on a kynetic 1.2 project without plan_storage declaration", async () => {
+      await fs.writeFile(
+        join(projectA, ".kspec", "kynetic.yaml"),
+        yamlStringify({
+          kynetic: "1.2",
+          project: { name: "Missing Decl", version: "0.1.0", status: "draft" },
+          includes: ["modules/test.yaml"],
+          task_storage: { format: "split" },
+        }),
+        "utf-8",
+      );
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("plans");
+
+      expect(cache.getDomainState("plans")).toBe("degraded");
+      expect(cache.getPlansIndex()).toBeNull();
+      const diagnostics = cache.getCacheDiagnostics();
+      expect(diagnostics.domains.plans.errorReason).toBe("missing_plan_folder_storage");
+    });
+
+    // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+    it("transitions reviews domain to degraded with legacy_review_storage_removed on a kynetic 1.1 project", async () => {
+      await fs.writeFile(
+        join(projectA, ".kspec", "project.reviews.yaml"),
+        yamlStringify({
+          kynetic_reviews: "1.0",
+          reviews: [
+            {
+              _ulid: "01LEGCYREVIEW00000000000A",
+              slugs: ["legacy-review"],
+              title: "Legacy monolithic review",
+              lifecycle_state: "open",
+              author: "@test",
+              subject: {
+                type: "task",
+                ref: "@task-test",
+                shadow_commit: "abc",
+                content_hash: "def",
+              },
+              related_refs: [],
+              created_at: "2026-01-01T00:00:00Z",
+              threads: [],
+              checks: [],
+              verdicts: [],
+              events: [],
+              external_links: [],
+            },
+          ],
+        }),
+        "utf-8",
+      );
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("reviews");
+
+      expect(cache.getDomainState("reviews")).toBe("degraded");
+      expect(cache.getReviewsIndex()).toBeNull();
+      const diagnostics = cache.getCacheDiagnostics();
+      expect(diagnostics.domains.reviews.errorReason).toBe("legacy_review_storage_removed");
+    });
+
+    // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+    it("transitions plans domain to degraded with partial_entity_storage_layout when folder declared but a plan index entry has no matching folder", async () => {
+      await fs.writeFile(
+        join(projectA, ".kspec", "kynetic.yaml"),
+        yamlStringify({
+          kynetic: "1.2",
+          project: { name: "Partial Layout", version: "0.1.0", status: "draft" },
+          includes: ["modules/test.yaml"],
+          task_storage: { format: "split" },
+          plan_storage: { format: "folder" },
+          review_storage: { format: "folder" },
+          resource_storage: { format: "entity_scoped" },
+        }),
+        "utf-8",
+      );
+      // Index entry without matching `plans/<ulid>/` folder → partial layout
+      await fs.writeFile(
+        join(projectA, ".kspec", "project.plans.yaml"),
+        yamlStringify({
+          kynetic_plans: "1.2",
+          plans: [
+            {
+              _ulid: "01STRANDED00000000000000A",
+              slugs: [],
+              title: "Stranded index entry",
+              status: "draft",
+              created_at: "2026-01-01T00:00:00Z",
+              derived_tasks: [],
+              derived_specs: [],
+            },
+          ],
+        }),
+        "utf-8",
+      );
+
+      const cache = new ProjectEntityCache(projectA);
+      await cache.loadDomain("plans");
+
+      expect(cache.getDomainState("plans")).toBe("degraded");
+      expect(cache.getPlansIndex()).toBeNull();
+      const diagnostics = cache.getCacheDiagnostics();
+      expect(diagnostics.domains.plans.errorReason).toBe("partial_entity_storage_layout");
     });
   });
 
