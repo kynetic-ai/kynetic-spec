@@ -225812,6 +225812,12 @@ reviews:
         payload:
           thread_ulid: 01KSAQCPX8NNSTK6YBHK2NBB8W
         timestamp: 2026-05-23T16:59:40.006Z
+      - _ulid: 01KSAWEYQJ89TBNDGBFKBEE196
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSAQF6WZ75ADJ89T49Z4XCVH
+        timestamp: 2026-05-23T16:59:57.042Z
     examined_commit: 990d24115785a42e739cf439605a63530c652069
     external_links: []
     lifecycle_state: closed
@@ -225883,6 +225889,21 @@ reviews:
               resource manager/callers that need resource behavior, or add an explicit compatibility
               boundary with tests for the resource domain."
             created_at: 2026-05-23T15:32:42.527Z
+          - _ulid: 01KSAWEX4PV882XAKSQFJQENH6
+            author: "@claude"
+            body: "Fixed: resolveResourceReference now takes a required ctx: KspecContext and calls
+              requireResourceFolderStorage(ctx) before loadResourceManifest / resolveResourcePath.
+              The signature change is enforced by the type system so any future caller is forced to
+              thread the project context. Legacy projects (kynetic < 1.2 without resource_storage)
+              raise legacy_plan_storage_removed with domain: 'resources'; 1.2 projects missing or
+              declaring a non-entity_scoped resource_storage raise missing_plan_folder_storage with
+              domain: 'resources'. tests/entity-local-resources.test.ts adds three new behavioural
+              tests against resolveResourceReference that exercise each of those project states and
+              assert EntityStorageCompatibilityError with the correct code, domain, and field. The
+              daemon resource error mapping was already in entityStorageIncompatibilityResponse, so
+              callers that thread the resolver into route handlers will automatically get the 409
+              contract."
+            created_at: 2026-05-23T16:59:55.413Z
         kind: blocker
       - _ulid: 01KSAQFNYB5EPPX0C805A7HVNC
         anchor:
@@ -225941,5 +225962,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-23T15:33:54.513Z
     created_at: 2026-05-23T15:02:21.210Z
-    updated_at: 2026-05-23T16:59:38.390Z
+    updated_at: 2026-05-23T16:59:55.413Z
     notes: []
