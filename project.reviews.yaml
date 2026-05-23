@@ -226813,3 +226813,29 @@ reviews:
     created_at: 2026-05-23T19:56:14.250Z
     updated_at: 2026-05-23T20:11:09.172Z
     notes: []
+  - _ulid: 01KSBBAK57DTXXXJZ4PX9J851E
+    slugs: []
+    title: Review folder-backed plan storage manager
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KSBBAK568R5MMFMSE2HJZHS4
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-23T21:19:42.758Z
+    examined_commit: c81ed98ce2337fdd426aec3da370bb73d29d4b6f
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KS8XAY52P099Y1PQ8PFJ6G0P"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-23T21:19:42.759Z
+    updated_at: null
+    notes: []
