@@ -227194,6 +227194,12 @@ reviews:
         payload:
           thread_ulid: 01KSBEXAQGNDXYNDP57709TYF9
         timestamp: 2026-05-23T22:59:41.883Z
+      - _ulid: 01KSBH290N09JJZQS1DGXSH27B
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSBEXAQGNDXYNDP57709TYF9
+        timestamp: 2026-05-23T23:00:01.685Z
     examined_commit: a493bb85ac2a2fb06d93713154692f9243c412b6
     external_links: []
     lifecycle_state: closed
@@ -227239,6 +227245,8 @@ reviews:
               layer for this storage-manager task."
             created_at: 2026-05-23T22:59:40.110Z
         kind: blocker
+        resolved_at: 2026-05-23T22:59:59.955Z
+        resolved_by: "@claude"
       - _ulid: 01KSBFBKRMP12EC9J4CPP1PZ0W
         entries:
           - _ulid: 01KSBFBKRM5PGK0YEHSHVRTZR2
@@ -227267,7 +227275,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-23T22:29:51.090Z
     created_at: 2026-05-23T22:15:30.195Z
-    updated_at: 2026-05-23T22:59:40.110Z
+    updated_at: 2026-05-23T22:59:59.955Z
     notes: []
   - _ulid: 01KSBGAX0TD7SA4WH2ZCTM7H6D
     slugs: []
