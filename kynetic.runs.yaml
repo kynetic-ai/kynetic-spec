@@ -52257,9 +52257,25 @@ runs:
     completed_at: 2026-05-23T18:57:10.896Z
   - _ulid: 01KSB7H1MRJQM31K0FA3W5RFHW
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-23T20:13:19.897Z
+        completed_at: 2026-05-23T20:13:38.369Z
+        notes: "What worked well: The review record workflow gave a clean audit trail for a multi-cycle
+          review: creating a fresh cycle 5 review, recording required checks, adding an evidence
+          log, then approving made the merge gate explicit. Running the full suite separately from
+          the build avoided the prior dist-race concern and produced a definitive npm test --
+          --fresh result. The detached-reviewer merge helper handled the actual integration safely
+          once the target branch was checked out in its occupied worktree. Reading the previous
+          review first kept the focus on verifying restored daemon API coverage rather than
+          re-litigating already-resolved cycles."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-23T20:13:38.369Z
+        completed_at: 2026-05-23T20:13:38.369Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-23T20:13:19.897Z
