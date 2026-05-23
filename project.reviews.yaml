@@ -226043,6 +226043,19 @@ reviews:
         runner: npm
         created_at: 2026-05-23T17:29:11.492Z
         completed_at: 2026-05-23T17:29:11.492Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Created a temp folder-backed plan layout with plans/<ulid>/plan.md,
+          plans/<ulid>/plan.yaml, and a bounded project.plans.yaml index entry;
+          requirePlanFolderStorage(ctx) threw partial_entity_storage_layout, misclassifying the lean
+          index as monolithic data.
+        name: valid folder index compatibility probe
+        required: false
+        runner: node
+        created_at: 2026-05-23T17:29:24.448Z
+        completed_at: 2026-05-23T17:29:24.448Z
     events:
       - _ulid: 01KSAX2K09YD30TY045PDWYT45
         actor: Jacob Chapel
@@ -226099,6 +226112,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-05-23T17:29:13.157Z
+      - _ulid: 01KSAY4Y9T88DAM5N8GC11XWV5
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: valid folder index compatibility probe
+        timestamp: 2026-05-23T17:29:26.074Z
     examined_commit: f4a3446b95e612b82912ab4ecd71cd16753252f0
     external_links: []
     lifecycle_state: open
@@ -226199,5 +226219,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-23T17:10:40.405Z
-    updated_at: 2026-05-23T17:29:11.492Z
+    updated_at: 2026-05-23T17:29:24.448Z
     notes: []
