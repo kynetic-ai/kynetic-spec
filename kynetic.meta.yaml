@@ -19179,6 +19179,32 @@ observations:
     resolved: false
     workflow_ref: "@01KSAQKB"
     created_at: 2026-05-23T15:37:20.738Z
+  - _ulid: 01KSAWXC2B9T3H7HABQWRHSG8E
+    type: friction
+    content: >-
+      Plan @plan-folder-backed-plans-reviews-and-local-resources splits "install entity-storage
+      gate" from "implement folder-backed storage manager" across sibling tasks. When the gate task
+      lands first, every existing test that uses the legacy e2e fixture and exercises a
+      now-strict-gated route is forced into describe.skip / it.skip until the manager + fixture
+      migration sibling lands.
+
+
+      Task @01KS8XAWN cycle 2 produced 109 skipped tests across 6 files (reviews-list,
+      reviews-threads, daemon-review-verdicts-api, daemon-review-websocket, plans,
+      daemon-api-input-validation) plus 4 cli-plan-* integration tests that now call
+      downgradeManifestToLegacyStorage() to bypass the gate. The pattern will recur for each
+      remaining entity domain migrated this way (task-storage already did, plan/review just did,
+      resource migration is next).
+
+
+      Consider: bundling gate+manager+fixture-migration as one task, or landing the manager before
+      the gate so coverage stays continuous, or adding a folder-backed test fixture variant
+      alongside the gate so post-gate tests can switch at the same time.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KSAWS3"
+    created_at: 2026-05-23T17:07:49.451Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
