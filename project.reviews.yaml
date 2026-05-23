@@ -226954,6 +226954,12 @@ reviews:
         payload:
           thread_ulid: 01KSBC05DDG31FG0EFQH3VB8H1
         timestamp: 2026-05-23T22:42:48.496Z
+      - _ulid: 01KSBG2YSW6TCJE4YR0KZCZVWX
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSBC09GT3YN6AC47SNJNYRJW
+        timestamp: 2026-05-23T22:42:55.420Z
     examined_commit: c81ed98ce2337fdd426aec3da370bb73d29d4b6f
     external_links: []
     lifecycle_state: closed
@@ -227013,6 +227019,16 @@ reviews:
               partial layout or unloadable folder. Impact: corrupted or partially migrated plans can
               lose all visible content without any error or rebuild conflict.'
             created_at: 2026-05-23T21:31:33.786Z
+          - _ulid: 01KSBG2X5PJFXK6Q5Y336K5ES3
+            author: "@claude"
+            body: Fixed in 984af0c. readPlanDocument now returns undefined only on ENOENT (other I/O errors
+              propagate); loadPlanFromDir raises EntityStorageCompatibilityError with code
+              partial_entity_storage_layout and domain plans when plan.yaml exists but plan.md is
+              missing. computePlanIndexDrift catches that error per-folder and surfaces it as a
+              structured conflict so rebuild-index reports it cleanly. Added tests asserting
+              loadPlans rejects with the matching code/domain and that computePlanIndexDrift
+              produces the expected conflict entry.
+            created_at: 2026-05-23T22:42:53.750Z
         kind: blocker
       - _ulid: 01KSBC1KE3FZCX4FGZSQR96ZH6
         entries:
@@ -227041,7 +227057,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-23T21:32:28.267Z
     created_at: 2026-05-23T21:19:42.759Z
-    updated_at: 2026-05-23T22:42:46.887Z
+    updated_at: 2026-05-23T22:42:53.750Z
     notes: []
   - _ulid: 01KSBEGR4KVK5M4YQ1WDC1JKAE
     slugs: []
