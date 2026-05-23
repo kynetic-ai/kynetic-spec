@@ -51635,7 +51635,7 @@ runs:
     completed_at: 2026-05-23T07:00:41.483Z
   - _ulid: 01KS9YP1WYQ90GC1XJGV56DYBT
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -51660,7 +51660,23 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-23T08:20:34.729Z
-        completed_at: 2026-05-23T08:20:34.729Z
+        completed_at: 2026-05-23T08:20:56.664Z
+        notes: >-
+          Coverage search completed. 01KR3W7Q0 [completed] P1 Add guardrail regression tests for
+          detached cleanup timing @task-add-detached-cleanup-timing-regressions
+            matched: notes[2], notes[4], notes[6], notes[9]
+          01KR2JD1 [observation] Review evidence logs currently have no first-class place ...
+            matched: content
+
+          2 result(s) found existing observation @01KR2JD1: review evidence logs currently have no
+          first-class place, so that friction is already tracked. No matches found for "test runner
+          long full suite" and No matches found for "validation warnings trait AC coverage" found no
+          direct matches. Existing project conventions already document shard/caching options, so
+          long full-suite runtime is noted but not enough for a duplicate capture.
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-23T08:20:56.664Z
+        completed_at: 2026-05-23T08:20:56.664Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-23T08:19:32.382Z
