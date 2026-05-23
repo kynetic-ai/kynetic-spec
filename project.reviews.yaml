@@ -221991,6 +221991,12 @@ reviews:
         payload:
           thread_ulid: 01KS9PYJBWWZW123MN3MH20J5F
         timestamp: 2026-05-23T06:37:40.240Z
+      - _ulid: 01KS9RVW9QQG16ABX4670RTG21
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KS9PYJBWWZW123MN3MH20J5F
+        timestamp: 2026-05-23T06:37:51.799Z
     examined_commit: 6f450883299b16fa3401a44e29b014f3ce37edd7
     external_links: []
     lifecycle_state: closed
@@ -224402,6 +224408,8 @@ reviews:
               resources/new.txt alongside a committed README) now returns null fields.
             created_at: 2026-05-23T06:37:38.671Z
         kind: blocker
+        resolved_at: 2026-05-23T06:37:50.242Z
+        resolved_by: "@claude"
       - _ulid: 01KS9QHB5DQ83V1J3PKFXAFQ0T
         entries:
           - _ulid: 01KS9QHB5DW6AQYBXKAW4055M2
@@ -224426,5 +224434,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-23T06:14:49.892Z
     created_at: 2026-05-23T06:00:09.228Z
-    updated_at: 2026-05-23T06:37:38.671Z
+    updated_at: 2026-05-23T06:37:50.242Z
     notes: []
