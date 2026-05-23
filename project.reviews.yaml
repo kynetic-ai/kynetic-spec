@@ -225420,6 +225420,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-23T13:45:34.448Z
+      - _ulid: 01KSAJ5053HK3929VVNPPEYY61
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSAJ4YQ20SPP3MCAMB9HZP47
+        timestamp: 2026-05-23T13:59:45.059Z
     examined_commit: 2ca12c313383daac0e564ed02b6a77be06c61bf8
     external_links: []
     lifecycle_state: open
@@ -225429,8 +225436,29 @@ reviews:
       content_hash: ""
       ref: "@01KS8XAWNAQ1AA9SJS8BYH9056"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KSAJ4YQ20SPP3MCAMB9HZP47
+        anchor:
+          type: code
+          commit: 2ca12c313383daac0e564ed02b6a77be06c61bf8
+          line_end: 184
+          line_start: 184
+          path: src/parser/plans.ts
+          side: head
+        entries:
+          - _ulid: 01KSAJ4YQ2Z42Q8TN45MMVV4BC
+            author: Jacob Chapel
+            body: "MUST-FIX: loadPlans and the plan write paths call assertPlanStorageCompatible, but that gate
+              intentionally skips partial-layout detection. AC ac-partial-folder-layouts-are-blocked
+              requires the relevant entity storage manager to fail with
+              partial_entity_storage_layout instead of partially reading or rewriting ambiguous
+              data. Evidence: src/parser/entity-storage-compatibility.ts lines 459-463 say partial
+              detection is not part of the lenient gate, and
+              tests/entity-storage-compatibility.test.ts lines 390-399 currently assert that a
+              folder-declared project with monolithic plan records resolves successfully."
+            created_at: 2026-05-23T13:59:43.586Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-23T13:45:01.280Z
-    updated_at: 2026-05-23T13:45:32.450Z
+    updated_at: 2026-05-23T13:59:43.586Z
     notes: []
