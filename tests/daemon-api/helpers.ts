@@ -308,7 +308,13 @@ function materializeFolderShellsFor(
     const dir = path.join(folderRoot, id);
     mkdirSync(dir, { recursive: true });
 
-    if (arrayKey === "plans" && sidecarName === "plan.yaml") {
+    if (arrayKey === "reviews" && sidecarName === "review.yaml") {
+      // Reviews are folder-backed and keep ONE cohesive review.yaml — the
+      // full structured ReviewRecord lives inside the per-review sidecar so
+      // the folder-backed manager can serve detail reads directly without
+      // also touching the monolithic file.
+      writeFileSync(path.join(dir, "review.yaml"), yamlStringify(record));
+    } else if (arrayKey === "plans" && sidecarName === "plan.yaml") {
       // Plans are folder-backed: split the monolithic record into the
       // authoritative sidecars (plan.yaml metadata, plan.md content,
       // notes.yaml when notes exist). The folder-backed plan storage
@@ -322,9 +328,8 @@ function materializeFolderShellsFor(
         writeFileSync(path.join(dir, "notes.yaml"), yamlStringify({ notes }));
       }
     } else {
-      // Reviews remain monolithic in this transitional helper — the
-      // folder-backed review storage manager lands in a sibling task and
-      // will replace this branch with a parallel materialiser.
+      // Minimal sidecar — the partial-layout detector only checks
+      // existence, not contents.
       writeFileSync(path.join(dir, sidecarName), `_ulid: "${id}"\n`);
     }
   }
