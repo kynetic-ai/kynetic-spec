@@ -19235,6 +19235,31 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-23T21:18:17.615Z
+  - _ulid: 01KSBECSJSPDRHH849Z6AYJZE3
+    type: friction
+    content: Test fixtures that embed all-numeric strings in YAML (e.g. sha256 hashes like
+      0000000000000000000000000000000000000000000000000000000000000000) get parsed as numbers and
+      fail Zod string validation. Quote the value to keep it a string. Surfaced while writing
+      folder-backed review resource manifest fixtures — caused ResourceManifestSchema.parse
+      rejection with invalid_type expected string received number on the sha256 field.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-23T22:13:20.601Z
+  - _ulid: 01KSBECSVMBZ52A62K75N8ZHNS
+    type: success
+    content: When implementing a folder-backed entity storage manager for a new domain (review), reading
+      the parallel sibling tasks pending_review commit
+      (origin/dispatch/task/task-folder-backed-plan-storage-manager-1/01ks8xay c81ed98ce2) before
+      starting saved significant design time and yielded consistent layout/index/rebuild patterns.
+      The sibling already had reviewer feedback baked into its fix cycle, so following it avoided
+      repeating known footguns (e.g. needing to update materializeFolderShellsFor in
+      tests/daemon-api/helpers.ts, updating entity-storage-partial-layout-manager.test.ts for the
+      routing change).
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-23T22:13:20.884Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
