@@ -85,3 +85,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-23T14:01:05.440Z
+  - _ulid: 01KSAJM1585TXXMW30QDM7EKHB
+    content: "Fix cycle 1 plan: addressing both blockers — partial-layout detection must fire from
+      inside the storage manager (loadPlans/savePlan/mutate/delete and review equivalents), not only
+      from the strict require* gates. Approach: extend the lenient assertPlanStorageCompatible /
+      assertReviewStorageCompatible gates to also call detectPartialLayoutForDomain after the
+      manifest check. The lenient name still fits — backward compatibility for legacy (kynetic <1.2
+      / no declaration) projects is preserved, but folder-declared projects with stranded monolithic
+      records now fail with partial_entity_storage_layout. Tests: flip the existing
+      entity-storage-compatibility partial-layout assertion + add behavioral tests against plans.ts
+      / reviews.ts proving load/save/mutate/delete fail on partial layouts."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-23T14:07:57.608Z
