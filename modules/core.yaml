@@ -81,6 +81,9 @@ traits:
       User-authored references use `./resources/<relative-path>`; consumers
       receive normalized owner/type/resource metadata instead of arbitrary file
       paths.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
