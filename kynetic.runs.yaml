@@ -52316,7 +52316,7 @@ runs:
     completed_at: 2026-05-23T20:16:03.836Z
   - _ulid: 01KSBC3H5214THMKA5HS8KFJSG
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -52330,7 +52330,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-23T21:33:51.597Z
-        completed_at: 2026-05-23T21:33:51.597Z
+        completed_at: 2026-05-23T21:34:00.984Z
+        notes: "Friction: repo-level kspec validate and full lint are noisy during focused reviews, so
+          evidence recording needed extra classification to separate pre-existing baseline noise
+          from task-specific results. Also, review evidence remains manual prose rather than a
+          first-class structured review artifact."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-23T21:34:00.984Z
+        completed_at: 2026-05-23T21:34:00.984Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-23T21:33:19.907Z
