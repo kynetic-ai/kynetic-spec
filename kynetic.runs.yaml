@@ -51820,7 +51820,7 @@ runs:
     completed_at: 2026-05-23T09:34:58.677Z
   - _ulid: 01KSA420PE2QRS4MRJS1XZCTM7
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -51859,7 +51859,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-23T09:55:52.994Z
-        completed_at: 2026-05-23T09:55:52.994Z
+        completed_at: 2026-05-23T09:56:01.748Z
+        notes: "Proposal: extend the detached reviewer merge helper to recognize an existing clean worktree
+          at the integration target commit even when that worktree is detached, switch/reattach it
+          to KSPEC_DISPATCH_MERGE_TARGET, and continue with the existing dirty-target/no-op/conflict
+          safeguards. Benefit: removes a manual recovery step from approved detached reviews and
+          keeps the supported helper as the only merge path. Scope: small-to-medium, mostly helper
+          detection logic plus regression coverage."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-23T09:56:01.748Z
+        completed_at: 2026-05-23T09:56:01.748Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-23T09:53:27.247Z
