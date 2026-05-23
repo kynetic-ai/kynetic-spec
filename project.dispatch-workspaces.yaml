@@ -9441,7 +9441,7 @@ workspaces:
         head: 5a2a941c7fdb460999b8ad0e127bf5e0b8b31bd9
         last_seen_at: 2026-05-23T04:18:31.259Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-folder-backed-entity-trait-foundation-1-01ks8xav
-  - active_role: null
+  - active_role: worker
     base_branch_point: 59f09528af33d2463c3dafccfeda4ab408c2b494
     bootstrap:
       status: succeeded
@@ -9768,7 +9768,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-23T05:20:54.798Z
+      updated_at: 2026-05-23T05:21:21.029Z
     integration:
       status: pending
       detail: null
@@ -9777,16 +9777,16 @@ workspaces:
       target_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
       target_commit: 59f09528af33d2463c3dafccfeda4ab408c2b494
       updated_at: 2026-05-23T05:20:54.798Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
     task_ref: "@01KS8XAW3HQ2DGQPD6HFC19FAV"
     task_slug: task-entity-local-resource-model-1
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-05-23T05:20:54.798Z
+      last_active_at: 2026-05-23T05:21:21.029Z
+      last_reconciled_at: 2026-05-23T05:21:21.029Z
       created_at: 2026-05-23T05:20:54.798Z
-      updated_at: 2026-05-23T05:21:19.886Z
+      updated_at: 2026-05-23T05:21:21.029Z
     workspace_id: dispatch-workspace-01KS8XAW3HQ2DGQPD6HFC19FAV
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
