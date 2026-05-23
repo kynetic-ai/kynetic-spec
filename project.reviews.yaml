@@ -221853,3 +221853,29 @@ reviews:
     created_at: 2026-05-23T04:19:30.769Z
     updated_at: 2026-05-23T04:33:49.447Z
     notes: []
+  - _ulid: 01KS9PPTRCHJF2WTMSAKMXVCZG
+    slugs: []
+    title: Review entity-local resource trait foundation
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KS9PPTR6SH2NQHVC5B28GM1A
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-23T06:00:09.223Z
+    examined_commit: 6f450883299b16fa3401a44e29b014f3ce37edd7
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KS8XAW3HQ2DGQPD6HFC19FAV"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-23T06:00:09.228Z
+    updated_at: null
+    notes: []
