@@ -19205,6 +19205,24 @@ observations:
     resolved: false
     workflow_ref: "@01KSAWS3"
     created_at: 2026-05-23T17:07:49.451Z
+  - _ulid: 01KSB6F0GQJY1CS57QR950X9KP
+    type: friction
+    content: "Daemon mutation route handlers wrap the mutation call in an inner try/catch that returns
+      400 'operation_failed' for ANY thrown error (see packages/daemon/src/routes/reviews.ts:854
+      reply route, plus the resolve/reopen/checks/lifecycle handlers). The route-level onError
+      handler is set up to translate EntityStorageCompatibilityError into structured 409, but the
+      inner catch fires first and rewrites the error to a generic 400 before onError sees it.
+      Currently masked: this task's gate refinement made mutate*Atomically use the compatibility
+      gate, so the common mutation path no longer throws EntityStorageCompatibilityError. The
+      footgun remains for any future mutation that calls saveX/deleteX (which DO use the writable
+      gate) or for any new storage incompatibility that bubbles through the inner catch. Defensive
+      cleanup: inner catches should re-throw EntityStorageCompatibilityError (or check the type and
+      short-circuit to entityStorageIncompatibilityResponse) instead of swallowing it into a generic
+      400."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-23T19:54:44.631Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
