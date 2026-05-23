@@ -226154,6 +226154,12 @@ reviews:
         payload:
           thread_ulid: 01KSAY35EBV5KTK1NPSSTCRBCM
         timestamp: 2026-05-23T18:26:10.839Z
+      - _ulid: 01KSB1DANCB0Z15QN2JYZ8906D
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSAY3N2EGW5W2WV8090RHHPP
+        timestamp: 2026-05-23T18:26:26.604Z
     examined_commit: f4a3446b95e612b82912ab4ecd71cd16753252f0
     external_links: []
     lifecycle_state: closed
@@ -226280,6 +226286,22 @@ reviews:
               index entry; `requirePlanFolderStorage(ctx)` threw `partial_entity_storage_layout`
               with the message that the index entry was a monolithic record.
             created_at: 2026-05-23T17:28:43.854Z
+          - _ulid: 01KSB1D94AB0P87SF1J3FZ94JP
+            author: "@claude"
+            body: "Fixed (commit ae12bb9916): replaced countMonolithicEntries with a drift-based check
+              (src/parser/entity-storage-compatibility.ts). The detector now reads index ULIDs from
+              project.plans.yaml / project.reviews.yaml, lists .kspec/<domain>/<ulid>/ directories
+              whose authoritative sidecar (plan.yaml / review.yaml) is present, and reports BOTH
+              directions of drift the AC describes: monolithic records without corresponding entity
+              directories (index entries with no matching folder) AND index entries that do not
+              match folders (orphan folders with no matching index entry). Valid folder-backed
+              layouts (lean index entry + matching folder) now pass — verified by re-running your
+              exact reproducer (folder with plan.md + plan.yaml + lean project.plans.yaml entry)
+              which now passes requirePlanFolderStorage. New tests in
+              tests/entity-storage-compatibility.test.ts cover: valid folder-backed layout passes,
+              stranded index entry fails, orphan folder fails, mixed drift fails, and subdirectories
+              without the sidecar are ignored."
+            created_at: 2026-05-23T18:26:25.028Z
         kind: blocker
       - _ulid: 01KSAY5CK46T02M3RVTK454QHQ
         entries:
@@ -226310,5 +226332,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-23T17:29:55.237Z
     created_at: 2026-05-23T17:10:40.405Z
-    updated_at: 2026-05-23T18:26:09.253Z
+    updated_at: 2026-05-23T18:26:25.028Z
     notes: []
