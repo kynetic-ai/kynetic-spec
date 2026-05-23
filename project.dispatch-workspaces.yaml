@@ -9403,11 +9403,11 @@ workspaces:
     canonical_branch: dispatch/task/task-folder-backed-entity-trait-foundation-1/01ks8xav
     canonical_branch_head: 5a2a941c7fdb460999b8ad0e127bf5e0b8b31bd9
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-05-23T04:35:03.061Z
+      updated_at: 2026-05-23T04:39:06.132Z
     health:
       status: healthy
       issues: []
@@ -9421,16 +9421,16 @@ workspaces:
       target_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
       target_commit: a5ce476850bb299e809c7880cb9c6c8f731c802e
       updated_at: 2026-05-23T04:35:03.061Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
     task_ref: "@01KS8XAVRQCA2ATTCEE98CXKW6"
     task_slug: task-folder-backed-entity-trait-foundation-1
     timestamps:
-      closed_at: null
+      closed_at: 2026-05-23T04:39:06.132Z
       last_active_at: 2026-05-23T04:18:58.908Z
       last_reconciled_at: 2026-05-23T04:38:28.189Z
       created_at: 2026-05-23T02:49:08.705Z
-      updated_at: 2026-05-23T04:38:28.189Z
+      updated_at: 2026-05-23T04:39:06.132Z
     workspace_id: dispatch-workspace-01KS8XAVRQCA2ATTCEE98CXKW6
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
