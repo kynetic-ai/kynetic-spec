@@ -225437,6 +225437,18 @@ reviews:
         runner: kspec
         created_at: 2026-05-23T14:00:25.642Z
         completed_at: 2026-05-23T14:00:25.642Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "After concurrent build/test overlap caused review-cli and triage-cli failures in the full
+          run, npm test -- --run tests/review-cli.test.ts tests/triage-cli.test.ts --fresh passed:
+          125 tests passed."
+        name: failed-suite retry
+        required: false
+        runner: npm
+        created_at: 2026-05-23T14:00:29.977Z
+        completed_at: 2026-05-23T14:00:29.977Z
     events:
       - _ulid: 01KSAHA12WVA1CKTW3B50W154K
         actor: Jacob Chapel
@@ -225486,6 +225498,13 @@ reviews:
           status: pass
           name: kspec validate --warnings-ok
         timestamp: 2026-05-23T14:00:27.130Z
+      - _ulid: 01KSAJ6DGGE60N7Y12XKZFMV4H
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: failed-suite retry
+        timestamp: 2026-05-23T14:00:31.504Z
     examined_commit: 2ca12c313383daac0e564ed02b6a77be06c61bf8
     external_links: []
     lifecycle_state: open
@@ -225540,5 +225559,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-23T13:45:01.280Z
-    updated_at: 2026-05-23T14:00:25.642Z
+    updated_at: 2026-05-23T14:00:29.977Z
     notes: []
