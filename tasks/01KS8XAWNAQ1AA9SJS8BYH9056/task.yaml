@@ -77,7 +77,7 @@ description: >
 spec_ref: "@entity-folder-migration-and-compatibility-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-entity-local-resource-model-1"
@@ -93,8 +93,8 @@ review_ref: "@01KSAX2K0N14KSGJX70FMC6JVQ"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-entity-storage-version-compatibility-gates-1/01ks8xaw
-  captured_at: 2026-05-23T17:02:18.783Z
-  commit: f4a3446b95e612b82912ab4ecd71cd16753252f0
+  captured_at: 2026-05-23T18:28:12.105Z
+  commit: ae12bb9916e0ffc3992bd979260ea539d5c4e7c8
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-entity-storage-version-compatibility-gates-1/01ks8xaw
@@ -443,8 +443,35 @@ history:
         previous: 2026-05-23T17:02:15.325Z
     command: task-start
     timestamp: 2026-05-23T18:28:08.503Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-entity-storage-version-compatibility-gates-1/01ks8xaw
+          captured_at: 2026-05-23T18:28:12.105Z
+          commit: ae12bb9916e0ffc3992bd979260ea539d5c4e7c8
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-entity-storage-version-compatibility-gates-1/01ks8xaw
+        previous:
+          review_url: null
+          branch: dispatch/task/task-entity-storage-version-compatibility-gates-1/01ks8xaw
+          captured_at: 2026-05-23T17:02:18.783Z
+          commit: f4a3446b95e612b82912ab4ecd71cd16753252f0
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-entity-storage-version-compatibility-gates-1/01ks8xaw
+      submitted_at:
+        new: 2026-05-23T18:28:12.112Z
+        previous: 2026-05-23T17:02:18.791Z
+    command: task-submit
+    timestamp: 2026-05-23T18:28:12.112Z
 created_at: 2026-05-22T22:36:43.562Z
 started_at: 2026-05-23T18:28:08.503Z
-submitted_at: 2026-05-23T17:02:18.791Z
+submitted_at: 2026-05-23T18:28:12.112Z
 todos: []
 automation: eligible
