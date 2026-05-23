@@ -51820,7 +51820,7 @@ runs:
     completed_at: 2026-05-23T09:34:58.677Z
   - _ulid: 01KSA420PE2QRS4MRJS1XZCTM7
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -51866,10 +51866,17 @@ runs:
           safeguards. Benefit: removes a manual recovery step from approved detached reviews and
           keeps the supported helper as the only merge path. Scope: small-to-medium, mostly helper
           detection logic plus regression coverage."
-      - status: completed
+      - status: skipped
         step_index: 4
         started_at: 2026-05-23T09:56:01.748Z
-        completed_at: 2026-05-23T09:56:01.748Z
+        completed_at: 2026-05-23T09:56:16.379Z
+        notes: "Skipped interactive approval prompt: user explicitly requested running session reflection.
+          Proceeding with one high-confidence friction observation and one success observation; no
+          task/spec mutation without later triage."
+      - status: completed
+        step_index: 5
+        started_at: 2026-05-23T09:56:16.379Z
+        completed_at: 2026-05-23T09:56:16.379Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-23T09:53:27.247Z
