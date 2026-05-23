@@ -1901,6 +1901,9 @@ features:
               rewriting or bloating one project-wide YAML file. The first slice stores
               the full structured ReviewRecord in `review.yaml` and does not split
               threads, checks, verdicts, notes, or events into separate sidecars.
+            status:
+              maturity: draft
+              implementation: in_progress
             depends_on: []
             implements: []
             relates_to: []
