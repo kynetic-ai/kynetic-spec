@@ -51403,7 +51403,7 @@ runs:
     completed_at: 2026-05-23T02:50:35.299Z
   - _ulid: 01KS9FBKP65EMWH67653NR3KG6
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -51418,7 +51418,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-23T03:52:12.783Z
-        completed_at: 2026-05-23T03:52:12.783Z
+        completed_at: 2026-05-23T03:52:20.911Z
+        notes: "Friction points: review deterministic checks did not explicitly call out format:check even
+          though package.json defines it, so the formatting gate was discovered only after the long
+          full npm test run; kspec validate exits 6 for broad existing warnings, requiring a second
+          --warnings-ok run to record a passing validation check for a branch that did not introduce
+          those warnings. Both are process/tooling friction rather than implementation complexity."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-23T03:52:20.911Z
+        completed_at: 2026-05-23T03:52:20.911Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-23T03:51:41.510Z
