@@ -8936,7 +8936,7 @@ workspaces:
         head: a5ce476850bb299e809c7880cb9c6c8f731c802e
         last_seen_at: 2026-05-23T02:27:26.533Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-update-plan-review-storage-specs-1-task-upd
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: a5ce476850bb299e809c7880cb9c6c8f731c802e
     bootstrap:
       status: succeeded
@@ -9428,9 +9428,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-23T04:18:58.908Z
-      last_reconciled_at: 2026-05-23T04:35:03.061Z
+      last_reconciled_at: 2026-05-23T04:38:26.779Z
       created_at: 2026-05-23T02:49:08.705Z
-      updated_at: 2026-05-23T04:35:03.061Z
+      updated_at: 2026-05-23T04:38:26.779Z
     workspace_id: dispatch-workspace-01KS8XAVRQCA2ATTCEE98CXKW6
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
