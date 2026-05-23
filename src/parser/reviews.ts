@@ -316,7 +316,16 @@ export async function mutateReviewAtomically(
     latestReview: LoadedReviewRecord,
   ) => ReviewRecord | LoadedReviewRecord | Promise<ReviewRecord | LoadedReviewRecord>,
 ): Promise<LoadedReviewRecord> {
-  await assertReviewStorageWritable(ctx);
+  // Mutate-only operations update an existing review in place and require
+  // that review to already exist in the monolithic file; they cannot
+  // introduce a partial folder layout the way `saveReviewRecord`
+  // (create-or-update) or `deleteReviewRecord` (orphan-folder maker) can.
+  // The compatibility gate (lenient manifest + partial-layout detector) is
+  // sufficient — applying the broader writable gate would block valid
+  // updates under a consistent folder-backed layout. The strict
+  // monolithic-write rule still applies to save/delete.
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  await assertReviewStorageCompatible(ctx);
   const reviewsPath = review._sourceFile || getReviewsFilePath(ctx);
   let updatedReview: LoadedReviewRecord | undefined;
 

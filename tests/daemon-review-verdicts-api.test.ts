@@ -44,9 +44,21 @@ const TASK_ULID = testUlid("TASK", 6);
 let tempDir: string;
 let app: Elysia;
 
-const SPLIT_MANIFEST = `kynetic: "1.1"
+// AC: @entity-folder-migration-and-compatibility-1 ac-new-projects-declare-folder-storage
+// AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+//   — kynetic 1.2 fixture with folder-backed plan/review/resource storage so
+//   the daemon's requireReviewFolderStorage gate passes. setupInlineFixtures
+//   auto-materialises matching `<dir>/reviews/<ulid>/review.yaml` shells so
+//   the partial-layout detector treats the layout as consistent.
+const SPLIT_MANIFEST = `kynetic: "1.2"
 task_storage:
   format: split
+plan_storage:
+  format: folder
+review_storage:
+  format: folder
+resource_storage:
+  format: entity_scoped
 project:
   name: Test Project
   version: "0.1.0"
@@ -185,15 +197,7 @@ function request(method: string, urlPath: string, body?: unknown) {
   return requestJson(app, tempDir, method, urlPath, body);
 }
 
-// SKIPPED — daemon review routes now require folder-backed storage. The shared
-// e2e fixture is kynetic 1.0 with no review_storage declaration, so every
-// mutation below fails with `entity_storage_incompatible`
-// (legacy_review_storage_removed). The folder-backed review storage manager
-// and fixtures are delivered by a sibling task under the same plan; re-enable
-// this suite once that landed and the fixture is migrated.
-//
-// AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
-describe.skip("Review Verdicts API", () => {
+describe("Review Verdicts API", () => {
   beforeEach(async () => {
     tempDir = await createTempDir("kspec-review-verdicts-");
     initGitRepo(tempDir);
@@ -343,15 +347,7 @@ describe.skip("Review Verdicts API", () => {
   });
 });
 
-// SKIPPED — daemon review routes now require folder-backed storage. The shared
-// e2e fixture is kynetic 1.0 with no review_storage declaration, so every
-// mutation below fails with `entity_storage_incompatible`
-// (legacy_review_storage_removed). The folder-backed review storage manager
-// and fixtures are delivered by a sibling task under the same plan; re-enable
-// this suite once that landed and the fixture is migrated.
-//
-// AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
-describe.skip("Review Checks API", () => {
+describe("Review Checks API", () => {
   beforeEach(async () => {
     tempDir = await createTempDir("kspec-review-checks-api-");
     initGitRepo(tempDir);
@@ -497,15 +493,7 @@ describe.skip("Review Checks API", () => {
   });
 });
 
-// SKIPPED — daemon review routes now require folder-backed storage. The shared
-// e2e fixture is kynetic 1.0 with no review_storage declaration, so every
-// mutation below fails with `entity_storage_incompatible`
-// (legacy_review_storage_removed). The folder-backed review storage manager
-// and fixtures are delivered by a sibling task under the same plan; re-enable
-// this suite once that landed and the fixture is migrated.
-//
-// AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
-describe.skip("Review Lifecycle API", () => {
+describe("Review Lifecycle API", () => {
   beforeEach(async () => {
     tempDir = await createTempDir("kspec-review-lifecycle-api-");
     initGitRepo(tempDir);
@@ -675,15 +663,7 @@ describe.skip("Review Lifecycle API", () => {
 // Task: @01KPQ7RDHXBRGDZSDFF0XG13RT
 // Integration test: verify that after a review verdict transitions a task,
 // an immediate task read through the same cache-backed surface sees the new state.
-// SKIPPED — daemon review routes now require folder-backed storage. The shared
-// e2e fixture is kynetic 1.0 with no review_storage declaration, so every
-// mutation below fails with `entity_storage_incompatible`
-// (legacy_review_storage_removed). The folder-backed review storage manager
-// and fixtures are delivered by a sibling task under the same plan; re-enable
-// this suite once that landed and the fixture is migrated.
-//
-// AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
-describe.skip("Review Verdict Task Consistency", () => {
+describe("Review Verdict Task Consistency", () => {
   // Dedicated ULIDs for this describe block to avoid collisions
   const CONSIST_REVIEW_ULID = testUlid("CVRD", 1);
   const CONSIST_TASK_ULID = testUlid("CVTK", 2);
@@ -785,10 +765,18 @@ describe.skip("Review Verdict Task Consistency", () => {
 
   function setupConsistencyFixtures() {
     const consistSpecUlid = testUlid("CVSP", 1);
+    // AC: @entity-folder-migration-and-compatibility-1 ac-new-projects-declare-folder-storage
+    //   — folder-backed manifest so the daemon review route gate passes.
     setupInlineFixtures(tempDir, {
-      manifest: `kynetic: "1.1"
+      manifest: `kynetic: "1.2"
 task_storage:
   format: split
+plan_storage:
+  format: folder
+review_storage:
+  format: folder
+resource_storage:
+  format: entity_scoped
 project:
   name: Consistency Test
   version: "0.1.0"

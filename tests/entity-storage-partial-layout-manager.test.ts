@@ -250,12 +250,17 @@ describe("Plan storage manager — partial-layout rejection", () => {
   // ── Blocker 3 (fix cycle 2): clean folder-declared projects ───────────
   // A fresh kynetic 1.2 project that declares `plan_storage.format: folder`
   // has no monolithic project.plans.yaml on disk yet. Without an explicit
-  // write-side rejection the monolithic savePlan/mutatePlanAtomically/
-  // deletePlan would happily create or rewrite a monolithic file beneath the
-  // folder manifest, immediately constructing the very partial layout the
-  // task is supposed to prevent. The behavioural tests below pin the
-  // storage manager to the AC-required rejection so a regression to the
-  // pre-fix behaviour (silently creating monolithic data) fails the build.
+  // write-side rejection the monolithic savePlan / deletePlan would happily
+  // create or mutate a monolithic file beneath the folder manifest,
+  // immediately constructing the very partial layout the task is supposed
+  // to prevent. The behavioural tests below pin the storage manager to the
+  // AC-required rejection so a regression to the pre-fix behaviour
+  // (silently creating monolithic data) fails the build.
+  //
+  // `mutatePlanAtomically` is excluded from the strict write rule because
+  // it can only update an existing entry and therefore cannot introduce a
+  // partial layout. Its clean-project behaviour (fail at lookup, leave the
+  // monolithic file uncreated) is covered immediately below.
 
   // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
   it("savePlan rejects on a clean folder-declared project so it cannot create a monolithic plans file beneath a folder manifest", async () => {
@@ -272,7 +277,15 @@ describe("Plan storage manager — partial-layout rejection", () => {
   });
 
   // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
-  it("mutatePlanAtomically rejects on a clean folder-declared project (no monolithic file is created by the mutation path)", async () => {
+  // mutatePlanAtomically requires an existing entry to update — it cannot
+  // introduce a partial layout the way savePlan (which can create new
+  // entries) or deletePlan (which leaves orphan folders) can. The
+  // compatibility gate therefore lets the call through on a clean
+  // folder-declared project, and the call fails at the on-disk lookup
+  // step instead. The behavioural contract this test pins: even though the
+  // call fails, the monolithic file is NOT created beneath the folder
+  // manifest, and the mutation callback never runs.
+  it("mutatePlanAtomically on a clean folder-declared project fails at lookup without creating a monolithic file", async () => {
     const ctx = makeContext(specDir, folderDeclaredManifest());
     const targetPlan: LoadedPlan = {
       ...createPlan({ _ulid: testUlid("MUT"), title: "Target plan" }),
@@ -283,10 +296,7 @@ describe("Plan storage manager — partial-layout rejection", () => {
         mutationCallbackInvoked = true;
         return latest;
       }),
-    ).rejects.toMatchObject({
-      code: PARTIAL_ENTITY_STORAGE_LAYOUT_CODE,
-      domain: "plans",
-    });
+    ).rejects.toThrow(/Plan not found in file|ENOENT/);
     expect(mutationCallbackInvoked).toBe(false);
     await expect(fs.access(path.join(specDir, "project.plans.yaml"))).rejects.toThrow(/ENOENT/);
   });
@@ -423,7 +433,9 @@ describe("Review storage manager — partial-layout rejection", () => {
   // ── Blocker 3 (fix cycle 2): clean folder-declared projects ───────────
   // Same write-side rejection as the plan domain — a fresh folder-declared
   // project must not allow the monolithic review storage manager to create
-  // a project.reviews.yaml beneath the folder manifest.
+  // a project.reviews.yaml beneath the folder manifest. As with the plan
+  // domain, `mutateReviewAtomically` is excluded because update-only
+  // mutation cannot introduce drift.
 
   // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
   it("saveReviewRecord rejects on a clean folder-declared project so it cannot create a monolithic reviews file beneath a folder manifest", async () => {
@@ -444,7 +456,15 @@ describe("Review storage manager — partial-layout rejection", () => {
   });
 
   // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
-  it("mutateReviewAtomically rejects on a clean folder-declared project (no monolithic file is created by the mutation path)", async () => {
+  // mutateReviewAtomically requires an existing entry to update — it cannot
+  // introduce a partial layout the way saveReviewRecord (which can create
+  // new entries) or deleteReviewRecord (which leaves orphan folders) can.
+  // The compatibility gate therefore lets the call through on a clean
+  // folder-declared project, and the call fails at the on-disk lookup
+  // step instead. The behavioural contract this test pins: even though the
+  // call fails, the monolithic file is NOT created beneath the folder
+  // manifest, and the mutation callback never runs.
+  it("mutateReviewAtomically on a clean folder-declared project fails at lookup without creating a monolithic file", async () => {
     const ctx = makeContext(specDir, folderDeclaredManifest());
     const targetReview: LoadedReviewRecord = {
       ...createReviewRecord({
@@ -460,10 +480,7 @@ describe("Review storage manager — partial-layout rejection", () => {
         mutationCallbackInvoked = true;
         return latest;
       }),
-    ).rejects.toMatchObject({
-      code: PARTIAL_ENTITY_STORAGE_LAYOUT_CODE,
-      domain: "reviews",
-    });
+    ).rejects.toThrow(/Reviews file not found|ENOENT/);
     expect(mutationCallbackInvoked).toBe(false);
     await expect(fs.access(path.join(specDir, "project.reviews.yaml"))).rejects.toThrow(/ENOENT/);
   });

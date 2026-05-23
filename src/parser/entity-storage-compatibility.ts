@@ -539,13 +539,20 @@ export async function detectPartialLayoutForDomain(
  * Build the write-side incompatibility for a domain. This is the lenient
  * manifest check PLUS an additional rule: when the manifest declares
  * folder-backed storage, the monolithic storage manager must NOT create new
- * monolithic records. Without this rule, a fresh kynetic 1.2 project (which
- * declares folder storage by default) could have monolithic data created via
- * savePlan/saveReview before the partial-layout detector trips, immediately
- * producing the partial layout this task is supposed to prevent.
+ * monolithic records or delete existing ones. Without this rule, a fresh
+ * kynetic 1.2 project (which declares folder storage by default) could have
+ * monolithic data created via savePlan/saveReview before the partial-layout
+ * detector trips, immediately producing the partial layout this task is
+ * supposed to prevent. deletePlan/deleteReview would similarly leave an
+ * orphan folder shell after dropping the index entry.
  *
- * Returns the appropriate `partial_entity_storage_layout` error in that case
- * so the structured 409 contract stays consistent across daemon and CLI.
+ * In-place mutation (`mutatePlanAtomically` / `mutateReviewAtomically`) does
+ * not need this rule — it requires an existing entry and cannot introduce
+ * drift — and only relies on the lenient + partial-layout gate.
+ *
+ * Returns the appropriate `partial_entity_storage_layout` error in the
+ * drift-introducing cases so the structured 409 contract stays consistent
+ * across daemon and CLI.
  */
 function describeMonolithicWriteIncompatibility(
   manifest: Manifest | null | undefined,
@@ -601,8 +608,8 @@ export async function assertPlanStorageCompatible(ctx: KspecContext): Promise<vo
 
 /**
  * Storage-manager WRITE gate for plan storage. The monolithic plan parser
- * (savePlan / mutatePlanAtomically / deletePlan) calls this before any
- * write. It enforces every read-time check plus one extra rule:
+ * (savePlan / deletePlan) calls this before any drift-introducing write.
+ * It enforces every read-time check plus one extra rule:
  *
  *   - Folder-declared projects (`plan_storage.format: folder`) MUST NOT
  *     have new monolithic records written to them, even when the on-disk
@@ -610,8 +617,16 @@ export async function assertPlanStorageCompatible(ctx: KspecContext): Promise<vo
  *     project (which declares folder storage by default) could call
  *     savePlan and create a monolithic `project.plans.yaml` under a folder
  *     manifest, immediately producing the partial layout this task is
- *     supposed to prevent. Writes must route through the folder-backed
- *     plan storage manager (delivered by a sibling task).
+ *     supposed to prevent. The same rule covers deletePlan, which would
+ *     otherwise drop an entry from the monolithic file and leave the
+ *     matching folder shell as an orphan. Both classes of write must route
+ *     through the folder-backed plan storage manager (delivered by a
+ *     sibling task).
+ *
+ * In-place mutation (`mutatePlanAtomically`) requires an existing entry
+ * and cannot introduce drift, so it uses {@link assertPlanStorageCompatible}
+ * (lenient + partial-layout) instead and continues to work on consistent
+ * folder-declared layouts.
  *
  * AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
  * AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
@@ -642,7 +657,10 @@ export async function assertReviewStorageCompatible(ctx: KspecContext): Promise<
 
 /**
  * Storage-manager WRITE gate for review storage. See {@link assertPlanStorageWritable}.
- * Refuses to create monolithic review records under a folder-declared manifest.
+ * Refuses to create or delete monolithic review records under a
+ * folder-declared manifest. In-place mutation (`mutateReviewAtomically`)
+ * uses {@link assertReviewStorageCompatible} instead because update-only
+ * operations cannot introduce drift.
  *
  * AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
  * AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked

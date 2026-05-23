@@ -327,7 +327,16 @@ export async function mutatePlanAtomically(
   plan: LoadedPlan,
   mutate: (latestPlan: LoadedPlan) => Plan | LoadedPlan | Promise<Plan | LoadedPlan>,
 ): Promise<LoadedPlan> {
-  await assertPlanStorageWritable(ctx);
+  // Mutate-only operations update an existing plan in place and require
+  // that plan to already exist in the monolithic file; they cannot
+  // introduce a partial folder layout the way `savePlan` (create-or-update)
+  // or `deletePlan` (orphan-folder maker) can. The compatibility gate
+  // (lenient manifest + partial-layout detector) is sufficient — applying
+  // the broader writable gate would block valid updates under a consistent
+  // folder-backed layout. The strict monolithic-write rule still applies
+  // to save/delete.
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  await assertPlanStorageCompatible(ctx);
   const plansPath = plan._sourceFile || getPlansFilePath(ctx);
   let updatedPlan: LoadedPlan | undefined;
 

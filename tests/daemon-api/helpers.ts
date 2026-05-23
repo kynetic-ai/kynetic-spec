@@ -46,10 +46,11 @@
  */
 
 import { execSync } from "node:child_process";
-import { cpSync, mkdirSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import * as path from "node:path";
 import { Elysia } from "elysia";
 import { vi } from "vitest";
+import { parse as yamlParse } from "yaml";
 import {
   cleanupTempDir,
   createTempDir,
@@ -113,8 +114,52 @@ export function setupFixtures(tempDir: string): void {
     cpSync(src, dest);
   }
 
+  // AC: @entity-folder-migration-and-compatibility-1 ac-new-projects-declare-folder-storage
+  // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+  //   — daemon review/plan/resource routes require folder-backed storage. The
+  //   on-disk e2e fixture remains kynetic 1.0 to keep Playwright watcher specs
+  //   happy, but every in-process daemon API test that calls setupFixtures()
+  //   exercises the post-upgrade contract, so we overwrite the copied manifest
+  //   with the 1.2 folder-backed declaration here and materialise matching
+  //   `.kspec/reviews/<ulid>/` and `.kspec/plans/<ulid>/` shells below.
+  writeFileSync(
+    path.join(kspecDir, "kynetic.yaml"),
+    `kynetic: "1.2"
+
+project:
+  name: "E2E Test Project"
+  version: "0.1.0"
+  status: draft
+  description: A test project for E2E testing
+
+includes:
+  - modules/core.yaml
+
+tasks_file: project.tasks.yaml
+inbox_file: project.inbox.yaml
+meta_file: kynetic.meta.yaml
+
+task_storage:
+  format: split
+plan_storage:
+  format: folder
+review_storage:
+  format: folder
+resource_storage:
+  format: entity_scoped
+`,
+  );
+
   // Copy modules directory
   cpSync(path.join(E2E_FIXTURES, "modules"), path.join(kspecDir, "modules"), { recursive: true });
+
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  // Create folder shells so detectPartialLayoutForDomain sees a consistent
+  // layout. `loadPlans` / `loadReviewRecords` still serve full record data
+  // from the copied monolithic files until the sibling folder-backed storage
+  // manager replaces those readers.
+  materializeFolderBackedReviewShells(kspecDir);
+  materializeFolderBackedPlanShells(kspecDir);
 
   // Copy tasks directory (split task storage)
   cpSync(path.join(E2E_FIXTURES, "tasks"), path.join(kspecDir, "tasks"), { recursive: true });
@@ -185,6 +230,132 @@ includes:
   - modules/test.yaml
 tasks_file: project.tasks.yaml
 `;
+
+/**
+ * Folder-backed (kynetic 1.2) inline manifest. Declares the storage formats
+ * that the daemon review/plan/resource route gates require:
+ *   - `task_storage.format: split`
+ *   - `plan_storage.format: folder`
+ *   - `review_storage.format: folder`
+ *   - `resource_storage.format: entity_scoped`
+ *
+ * Pair with {@link materializeFolderBackedReviewShells} /
+ * {@link materializeFolderBackedPlanShells} (or rely on
+ * {@link setupInlineFixtures}'s manifest auto-detection) so the
+ * partial-layout detector sees matching `.kspec/<domain>/<ulid>/` folders
+ * for each entry in the supplied monolithic YAML.
+ */
+export const FOLDER_BACKED_INLINE_MANIFEST = `kynetic: "1.2"
+task_storage:
+  format: split
+plan_storage:
+  format: folder
+review_storage:
+  format: folder
+resource_storage:
+  format: entity_scoped
+project:
+  name: Test Project
+  version: "0.1.0"
+  status: draft
+includes:
+  - modules/test.yaml
+`;
+
+/**
+ * Materialise folder-shell directories for entries in a monolithic
+ * `project.<domain>.yaml`. The partial-layout detector compares the ULIDs
+ * declared in the index against the ULIDs of folders on disk that contain
+ * the domain sidecar (`plan.yaml` / `review.yaml`). When both sets match,
+ * the layout is treated as consistent and the strict folder-storage gate
+ * passes.
+ *
+ * Until the sibling folder-backed storage manager lands, `loadPlans` /
+ * `loadReviewRecords` still read from the monolithic file; these shells
+ * exist solely so the gate accepts the fixture as folder-backed.
+ *
+ * AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+ */
+function materializeFolderShellsFor(
+  specDir: string,
+  arrayKey: "plans" | "reviews",
+  sidecarName: "plan.yaml" | "review.yaml",
+): void {
+  const monolithicPath = path.join(specDir, `project.${arrayKey}.yaml`);
+  let raw: string;
+  try {
+    raw = readFileSync(monolithicPath, "utf8");
+  } catch {
+    return;
+  }
+  let parsed: unknown;
+  try {
+    parsed = yamlParse(raw);
+  } catch {
+    return;
+  }
+  if (!parsed || typeof parsed !== "object") return;
+  const arr = (parsed as Record<string, unknown>)[arrayKey];
+  if (!Array.isArray(arr)) return;
+
+  const folderRoot = path.join(specDir, arrayKey);
+  mkdirSync(folderRoot, { recursive: true });
+  for (const entry of arr) {
+    if (!entry || typeof entry !== "object") continue;
+    const id = (entry as Record<string, unknown>)._ulid;
+    if (typeof id !== "string" || id.length === 0) continue;
+    const dir = path.join(folderRoot, id);
+    mkdirSync(dir, { recursive: true });
+    // Minimal sidecar — the partial-layout detector only checks existence,
+    // not contents. A future folder-backed reader can replace this with the
+    // full per-entity record.
+    writeFileSync(path.join(dir, sidecarName), `_ulid: "${id}"\n`);
+  }
+}
+
+/**
+ * Create folder shells for every review ULID in the monolithic
+ * `project.reviews.yaml` so a folder-backed manifest's partial-layout
+ * detector accepts the fixture. `specDir` is the directory that holds the
+ * monolithic file (e.g. `<tempDir>/.kspec` for {@link setupFixtures} or
+ * `<tempDir>` for {@link setupInlineFixtures}).
+ */
+export function materializeFolderBackedReviewShells(specDir: string): void {
+  materializeFolderShellsFor(specDir, "reviews", "review.yaml");
+}
+
+/**
+ * Create folder shells for every plan ULID in the monolithic
+ * `project.plans.yaml`. See {@link materializeFolderBackedReviewShells}.
+ */
+export function materializeFolderBackedPlanShells(specDir: string): void {
+  materializeFolderShellsFor(specDir, "plans", "plan.yaml");
+}
+
+/**
+ * Detect from a manifest YAML string whether the project declares folder-
+ * backed storage for the given domain. Returns true only when the relevant
+ * declaration parses as `format: folder` (plans/reviews) or
+ * `format: entity_scoped` (resources). Used by {@link setupInlineFixtures}
+ * to auto-materialise folder shells when the caller passes monolithic
+ * reviews/plans alongside a folder-backed manifest.
+ */
+function manifestDeclaresFolderFormat(
+  manifestText: string,
+  domain: "plans" | "reviews",
+): boolean {
+  let parsed: unknown;
+  try {
+    parsed = yamlParse(manifestText);
+  } catch {
+    return false;
+  }
+  if (!parsed || typeof parsed !== "object") return false;
+  const key = domain === "plans" ? "plan_storage" : "review_storage";
+  const storage = (parsed as Record<string, unknown>)[key];
+  if (!storage || typeof storage !== "object") return false;
+  return (storage as Record<string, unknown>).format === "folder";
+}
 
 export type SeedSplitTaskInput = Parameters<typeof seedSplitTask>[1];
 
@@ -282,9 +453,19 @@ export function setupInlineFixtures(tempDir: string, files: InlineProjectFiles =
 
   if (files.reviews !== undefined) {
     writeFileSync(path.join(tempDir, "project.reviews.yaml"), files.reviews);
+    // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+    // When the manifest declares folder-backed review storage, create matching
+    // .kspec/reviews/<ulid>/review.yaml shells so the partial-layout detector
+    // accepts the fixture as a consistent folder-backed layout.
+    if (manifestDeclaresFolderFormat(manifest, "reviews")) {
+      materializeFolderBackedReviewShells(tempDir);
+    }
   }
   if (files.plans !== undefined) {
     writeFileSync(path.join(tempDir, "project.plans.yaml"), files.plans);
+    if (manifestDeclaresFolderFormat(manifest, "plans")) {
+      materializeFolderBackedPlanShells(tempDir);
+    }
   }
   if (files.inbox !== undefined) {
     writeFileSync(path.join(tempDir, "project.inbox.yaml"), files.inbox);

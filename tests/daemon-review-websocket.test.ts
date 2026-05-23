@@ -15,8 +15,8 @@ import {
   cleanupTempDir,
   createTempDir,
   createTestApp,
+  FOLDER_BACKED_INLINE_MANIFEST,
   initGitRepo,
-  LEGACY_INLINE_MANIFEST,
   requestJson,
   setupInlineFixtures,
   testUlid,
@@ -38,17 +38,18 @@ let app: Elysia;
 let pubsub: PubSubManager;
 let broadcastSpy: ReturnType<typeof captureBroadcasts>;
 
-const REVIEW_FIXTURES_TASK = `tasks:
-  - _ulid: "${TASK_ULID}"
-    slugs:
-      - task-test
-    title: "Test Task"
-    description: "A test task"
-    status: pending_review
-    spec_ref: "@test-feature"
-    review_ref: "@review-open"
-    created_at: "2026-01-01T00:00:00Z"
-`;
+// Split-storage task seed used by setupInlineFixtures({ splitTasks: [...] })
+// under the folder-backed manifest (which declares task_storage.format: split).
+const REVIEW_FIXTURES_SPLIT_TASK = {
+  _ulid: TASK_ULID,
+  slugs: ["task-test"],
+  title: "Test Task",
+  description: "A test task",
+  status: "pending_review",
+  spec_ref: "@test-feature",
+  review_ref: "@review-open",
+  created_at: "2026-01-01T00:00:00Z",
+};
 
 function reviewFixturesYaml(): string {
   return `kynetic_reviews: "1.0"
@@ -134,22 +135,14 @@ const REVIEW_FIXTURE_MODULES = {
 };
 
 // AC: @review-records-daemon-api ac-9
-// SKIPPED — daemon review routes now require folder-backed storage. These
-// tests setup LEGACY_INLINE_MANIFEST (kynetic 1.0) and assert websocket
-// broadcasts fired by review mutations; every mutation now fails with
-// `entity_storage_incompatible` before any broadcast happens. Folder-backed
-// review storage and websocket coverage are delivered by a sibling task under
-// the same plan.
-//
-// AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
-describe.skip("Review WebSocket Broadcasts", () => {
+describe("Review WebSocket Broadcasts", () => {
   beforeEach(async () => {
     tempDir = await createTempDir("kspec-review-ws-");
     initGitRepo(tempDir);
     setupInlineFixtures(tempDir, {
-      manifest: LEGACY_INLINE_MANIFEST,
+      manifest: FOLDER_BACKED_INLINE_MANIFEST,
       modules: REVIEW_FIXTURE_MODULES,
-      tasksFile: REVIEW_FIXTURES_TASK,
+      splitTasks: [REVIEW_FIXTURES_SPLIT_TASK],
       reviews: reviewFixturesYaml(),
     });
 
@@ -419,15 +412,7 @@ describe.skip("Review WebSocket Broadcasts", () => {
 });
 
 // AC: @review-records-daemon-api ac-9
-// SKIPPED — daemon review routes now require folder-backed storage. These
-// tests setup LEGACY_INLINE_MANIFEST (kynetic 1.0) and assert websocket
-// broadcasts fired by review mutations; every mutation now fails with
-// `entity_storage_incompatible` before any broadcast happens. Folder-backed
-// review storage and websocket coverage are delivered by a sibling task under
-// the same plan.
-//
-// AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
-describe.skip("Review WebSocket Event Data Shape", () => {
+describe("Review WebSocket Event Data Shape", () => {
   // Type conformance tests: verify broadcast payloads match the typed interfaces
   // from packages/shared/src/websocket.ts. The import ensures the interfaces
   // compile; the runtime checks verify the actual broadcast data shape.
@@ -442,9 +427,9 @@ describe.skip("Review WebSocket Event Data Shape", () => {
     initGitRepo(localTempDir);
 
     setupInlineFixtures(localTempDir, {
-      manifest: LEGACY_INLINE_MANIFEST,
+      manifest: FOLDER_BACKED_INLINE_MANIFEST,
       modules: REVIEW_FIXTURE_MODULES,
-      tasksFile: "tasks: []\n",
+      splitTasks: [],
       reviews: `kynetic_reviews: "1.0"
 reviews:
   - _ulid: "${testUlid("RVSH", 1)}"
