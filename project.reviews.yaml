@@ -225558,6 +225558,12 @@ reviews:
         payload:
           thread_ulid: 01KSAJ5BTTAP78A3GF18NM75DR
         timestamp: 2026-05-23T14:56:55.874Z
+      - _ulid: 01KSANDXC5EFHDE1P83QDV95KN
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSAJ6ZY3YYH1HFYMR23T36AX
+        timestamp: 2026-05-23T14:57:02.853Z
     examined_commit: 2ca12c313383daac0e564ed02b6a77be06c61bf8
     external_links: []
     lifecycle_state: closed
@@ -225663,6 +225669,8 @@ reviews:
             body: Acknowledged — thanks for the evidence log.
             created_at: 2026-05-23T14:56:36.197Z
         kind: nit
+        resolved_at: 2026-05-23T14:57:01.172Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -225672,5 +225680,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-23T14:01:03.050Z
     created_at: 2026-05-23T13:45:01.280Z
-    updated_at: 2026-05-23T14:56:54.245Z
+    updated_at: 2026-05-23T14:57:01.172Z
     notes: []
