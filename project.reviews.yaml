@@ -226948,6 +226948,12 @@ reviews:
         payload:
           thread_ulid: 01KSBC05DDG31FG0EFQH3VB8H1
         timestamp: 2026-05-23T22:42:33.990Z
+      - _ulid: 01KSBG2R1FQFGVDF0B0PBE78KF
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSBC05DDG31FG0EFQH3VB8H1
+        timestamp: 2026-05-23T22:42:48.496Z
     examined_commit: c81ed98ce2337fdd426aec3da370bb73d29d4b6f
     external_links: []
     lifecycle_state: closed
@@ -226986,6 +226992,8 @@ reviews:
               (mutatePlanAtomically) both delete notes.yaml and that loadPlans returns notes: []."
             created_at: 2026-05-23T22:42:32.310Z
         kind: blocker
+        resolved_at: 2026-05-23T22:42:46.887Z
+        resolved_by: "@claude"
       - _ulid: 01KSBC09GT3YN6AC47SNJNYRJW
         anchor:
           type: code
@@ -227033,7 +227041,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-23T21:32:28.267Z
     created_at: 2026-05-23T21:19:42.759Z
-    updated_at: 2026-05-23T22:42:32.310Z
+    updated_at: 2026-05-23T22:42:46.887Z
     notes: []
   - _ulid: 01KSBEGR4KVK5M4YQ1WDC1JKAE
     slugs: []
