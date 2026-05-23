@@ -3639,3 +3639,14 @@ inbox:
       - follow-up
     added_by: Jacob Chapel
     created_at: 2026-05-22T22:57:01.631Z
+  - _ulid: 01KS9FFHFTNSGP00NP45F9AC86
+    text: Review quality gates should include npm run format:check, preferably before the long full npm
+      test run, so submitted tasks fail fast on formatter issues and reviewers do not spend a full
+      test-suite cycle before discovering a mechanical merge blocker.
+    tags:
+      - reflection
+      - review
+      - tooling
+      - format
+    added_by: Jacob Chapel
+    created_at: 2026-05-23T03:53:50.330Z
