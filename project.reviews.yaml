@@ -226644,7 +226644,50 @@ reviews:
     slugs: []
     title: Review entity storage version and incompatibility gates (cycle 5)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation passed. Warnings were pre-existing reference/alignment/completeness warnings;
+          command exited 0 with --warnings-ok.
+        name: kspec validate --warnings-ok
+        required: true
+        runner: kspec
+        created_at: 2026-05-23T20:10:47.258Z
+        completed_at: 2026-05-23T20:10:47.258Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "2503 suites passed; 9501 tests passed; 5 skipped. Full log:
+          /tmp/kspec-test-cache/01KSB6GGSQ0H17CNQFSWTFZW0Z/5583b8250698c041.log"
+        name: npm test -- --fresh
+        required: true
+        runner: npm test
+        created_at: 2026-05-23T20:10:51.260Z
+        completed_at: 2026-05-23T20:10:51.260Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Build completed successfully: TypeScript, shared package, daemon, web UI, docs search,
+          and plugin build all completed. Existing Svelte warnings only."
+        name: npm run build
+        required: true
+        runner: npm
+        created_at: 2026-05-23T20:10:55.295Z
+        completed_at: 2026-05-23T20:10:55.295Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: No whitespace errors in fa4574a625f4793678aa574529764009d77e9a2c..HEAD.
+        name: git diff --check
+        required: true
+        runner: git
+        created_at: 2026-05-23T20:10:59.402Z
+        completed_at: 2026-05-23T20:10:59.402Z
     events:
       - _ulid: 01KSB6HR13ZEP0HNJDW8SD25AT
         actor: Jacob Chapel
@@ -226659,17 +226702,114 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-23T19:56:31.009Z
+      - _ulid: 01KSB7CE3EXKMBDKAYZH9M9EEF
+        actor: codex
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --warnings-ok
+        timestamp: 2026-05-23T20:10:48.814Z
+      - _ulid: 01KSB7CJ18WCMP7QXMPVMTZ6VW
+        actor: codex
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test -- --fresh
+        timestamp: 2026-05-23T20:10:52.840Z
+      - _ulid: 01KSB7CP19BCY41QR27HRW5N4F
+        actor: codex
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm run build
+        timestamp: 2026-05-23T20:10:56.937Z
+      - _ulid: 01KSB7CSZJY5J2106DKT4D30C9
+        actor: codex
+        event_type: check_added
+        payload:
+          status: pass
+          name: git diff --check
+        timestamp: 2026-05-23T20:11:00.978Z
+      - _ulid: 01KSB7CXYF7DWG93JHXCHRRFPJ
+        actor: codex
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KSB7CWBVWXD50X3C57X3HY59
+        timestamp: 2026-05-23T20:11:05.039Z
+      - _ulid: 01KSB7D1ZM3ECW4BN5FBDXAC3J
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-05-23T20:11:09.172Z
+      - _ulid: 01KSB7D1ZMADMDWD3S48T9ASM9
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-23T20:11:09.172Z
     examined_commit: b4c8c7e087fbb91034ce2e04dc433733f113ae4a
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
       content_hash: ""
       ref: "@01KS8XAWNAQ1AA9SJS8BYH9056"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KSB7CWBVWXD50X3C57X3HY59
+        entries:
+          - _ulid: 01KSB7CWBV9Y0R45S1YVVFESAA
+            author: codex
+            body: >-
+              Review evidence log:
+
+
+              Files read: kspec-agents.md; src/parser/entity-storage-compatibility.ts;
+              src/parser/plans.ts; src/parser/reviews.ts; src/parser/entity-local-resources.ts;
+              src/daemon/entity-cache.ts; packages/daemon/src/routes/entity-storage-error.ts;
+              packages/daemon/src/routes/plans.ts; packages/daemon/src/routes/reviews.ts;
+              packages/daemon/src/routes/{aggregation,items,refs,tasks}.ts; src/schema/spec.ts;
+              src/cli/commands/{init,upgrade,doctor}.ts; src/parser/{shadow,doctor}.ts;
+              packages/shared/src/api.ts; tests covering entity storage compatibility,
+              partial-layout managers, daemon entity cache, daemon route 409 mapping, init
+              declarations, resource resolver, daemon API helpers, restored daemon review/plan API
+              coverage, and CLI downgrade helper.
+
+              Commands run: kspec task get @01KS8XAWNAQ1AA9SJS8BYH9056; kspec item get
+              @entity-folder-migration-and-compatibility-1; kspec review get
+              @01KSB20TS699MH5F9XTD60RN02; git diff --stat/name-only/check; rg AC annotations and
+              skip/source-scan patterns; kspec validate --warnings-ok; npm test -- --fresh; npm run
+              build; protected-project read-only manifest/folder checks.
+
+              Claims verified: cycle 4 restored daemon coverage without new skips (review/plan
+              daemon suites are active and full suite reports only 5 pre-existing skips); strict
+              plan/review gates are enforced during daemon cache warm-up and route fallback; new
+              init manifests declare kynetic 1.2 and folder/entity_scoped storage; partial-layout
+              detection now compares index ULIDs to sidecar-backed folders rather than rejecting
+              valid lean indexes; resource resolver requires the entity storage gate before disk
+              resolution.
+
+              Categories searched: correctness, AC alignment, edge cases for missing/legacy/partial
+              layouts, daemon 409 error mapping, cache warm path integration, test quality/no
+              source-scanning, skipped coverage restoration, protected live project safety,
+              build/test regressions.
+            created_at: 2026-05-23T20:11:03.419Z
+        kind: nit
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-23T20:11:09.172Z
     created_at: 2026-05-23T19:56:14.250Z
-    updated_at: 2026-05-23T19:56:29.392Z
+    updated_at: 2026-05-23T20:11:09.172Z
     notes: []
