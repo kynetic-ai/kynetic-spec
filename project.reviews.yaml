@@ -221591,6 +221591,12 @@ reviews:
         payload:
           thread_ulid: 01KS9FA246X0CYP5X9ZRJRDZEM
         timestamp: 2026-05-23T04:09:55.955Z
+      - _ulid: 01KS9GD70MXD35ZRHSH6EK35DY
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KS9FA246X0CYP5X9ZRJRDZEM
+        timestamp: 2026-05-23T04:10:02.644Z
     examined_commit: 75e09ea3cc7ab4ef0a7d3296a6187c77391b425f
     external_links: []
     lifecycle_state: closed
@@ -221650,6 +221656,8 @@ reviews:
               required from worker; resolving as the underlying gate is now green."
             created_at: 2026-05-23T04:09:54.421Z
         kind: nit
+        resolved_at: 2026-05-23T04:10:00.995Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -221659,5 +221667,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-23T03:51:02.547Z
     created_at: 2026-05-23T03:32:12.515Z
-    updated_at: 2026-05-23T04:09:54.421Z
+    updated_at: 2026-05-23T04:10:00.995Z
     notes: []
