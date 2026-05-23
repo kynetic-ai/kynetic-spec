@@ -52140,7 +52140,7 @@ runs:
     started_at: 2026-05-23T17:05:29.710Z
     completed_at: 2026-05-23T17:08:02.078Z
   - _ulid: 01KSAY7Q1M6T7WN8XSNP1SVXB1
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -52190,10 +52190,16 @@ runs:
         notes: Skipped discussion because no untracked improvement is being proposed for separate capture;
           all actionable findings are already recorded as blockers on review @01KSAX2K and the task
           is in needs_work.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-23T17:32:58.421Z
-        completed_at: 2026-05-23T17:32:58.421Z
+        completed_at: 2026-05-23T17:33:07.502Z
+        notes: "No capture performed. Duplicate prevention: concrete issues are already captured in review
+          @01KSAX2K; broader implementation coverage is already represented by
+          @entity-folder-migration-and-compatibility-1, @daemon-read-path, and pending folder-backed
+          plan/review storage manager tasks. Capturing additional inbox or observation items would
+          add noise."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-23T17:30:56.948Z
+    completed_at: 2026-05-23T17:33:07.505Z
