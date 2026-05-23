@@ -52141,7 +52141,7 @@ runs:
     completed_at: 2026-05-23T17:08:02.078Z
   - _ulid: 01KSAY7Q1M6T7WN8XSNP1SVXB1
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -52156,7 +52156,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-23T17:32:11.961Z
-        completed_at: 2026-05-23T17:32:11.961Z
+        completed_at: 2026-05-23T17:32:21.157Z
+        notes: "Friction points: the review needed manual reasoning across daemon cache warm-up, route cache
+          fast paths, and lenient-vs-strict compatibility gates; current tests covered uncached
+          route paths but not ready-cache incompatibility paths. The partial-layout detector tests
+          only covered stale monolithic files, not the future valid lean-index-plus-folder layout
+          from sibling storage-manager specs. These are systemic review risks for compatibility-gate
+          work because negative-path tests can still miss positive compatibility states."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-23T17:32:21.157Z
+        completed_at: 2026-05-23T17:32:21.157Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-23T17:30:56.948Z
