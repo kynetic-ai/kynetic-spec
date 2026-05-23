@@ -64,3 +64,19 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-23T08:18:47.772Z
+  - _ulid: 01KS9ZZR8Q5J751NW40QRAHD9K
+    content: "Fix cycle 3: addressed all three blockers from review @01KS9XQFH25P13AS179EFY0YC9. (1)
+      resolveResourcePath: added a post-realpath fs.stat check that rejects non-regular files with
+      actionable guidance, so directories or sockets declared as resources no longer leak through to
+      copyResourceForStaticExport as EISDIR. (2) loadResourceManifest: ENOENT now keeps the
+      empty-manifest convenience, but any other read or YAML parse failure throws an Error annotated
+      with the manifest path (and cause), so corrupt resources.yaml files surface as validation
+      failures instead of silently masking declared metadata. (3)
+      ac-resource-delete-follows-owner-delete: new removeOwnerResources(entityDir) helper plus four
+      AC-annotated behavioral tests (single-mutation cleanup, idempotent re-invocation, topology
+      guarantee, full cascade on owner-directory removal); kspec validate --completeness no longer
+      reports uncovered own ACs on the trait. Full test suite 9397/9402 passing (5 skipped, +8 new
+      tests over the prior 9389 baseline), lint and typecheck clean."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-23T08:42:18.775Z

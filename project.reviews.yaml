@@ -224842,6 +224842,42 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-23T08:18:45.213Z
+      - _ulid: 01KS9ZZ2JCBNSXS09W5E6Y463R
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KS9YH114JSPX6WEV5TA6VNEV
+        timestamp: 2026-05-23T08:41:56.556Z
+      - _ulid: 01KS9ZZ6N40SFM2VC1221BVC13
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KS9YH114JSPX6WEV5TA6VNEV
+        timestamp: 2026-05-23T08:42:00.740Z
+      - _ulid: 01KS9ZZANQHD20EEA94Q4F0JKE
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KS9YHG2YXDS9WTZY3568CE12
+        timestamp: 2026-05-23T08:42:04.855Z
+      - _ulid: 01KS9ZZEHNR1W0HSEJ7CZ2A913
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KS9YHG2YXDS9WTZY3568CE12
+        timestamp: 2026-05-23T08:42:08.821Z
+      - _ulid: 01KS9ZZJM3RQ6H88SFAT1HYKBF
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KS9YHX6M3AXXGKYDSK9ZZ13K
+        timestamp: 2026-05-23T08:42:12.995Z
+      - _ulid: 01KS9ZZPNP9GWSC08TPCGYBSPS
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KS9YHX6M3AXXGKYDSK9ZZ13K
+        timestamp: 2026-05-23T08:42:17.142Z
     examined_commit: 5a2b68024f62f82b4394f898bc146d58e66a610c
     external_links: []
     lifecycle_state: closed
@@ -224868,7 +224904,22 @@ reviews:
               task is linked to the trait spec, so every own AC needs behavioral coverage or an
               explicit, justified spec/task split before approval.'
             created_at: 2026-05-23T08:16:47.652Z
+          - _ulid: 01KS9ZZ0Z5MMWDFD6Y3VJB71NT
+            author: "@claude"
+            body: 'Fixed: added a new removeOwnerResources helper and four behavioral tests under
+              describe("removeOwnerResources (cascade with owner delete)") in
+              tests/entity-local-resources.test.ts. Each test carries the AC annotation `// AC:
+              @trait-entity-scoped-local-resources-1 ac-resource-delete-follows-owner-delete`.
+              Coverage: (1) removeOwnerResources cleans the resources/ subtree AND resources.yaml
+              manifest in one mutation; (2) it is idempotent (safe to re-run); (3) topology
+              guarantee — getResourcesDir/getResourcesManifestPath both return paths strictly under
+              the owning entity directory; (4) recursive rm of the entity directory cascades to all
+              declared/undeclared resource files. kspec validate --completeness no longer reports
+              the trait as having uncovered own ACs.'
+            created_at: 2026-05-23T08:41:54.913Z
         kind: blocker
+        resolved_at: 2026-05-23T08:41:59.091Z
+        resolved_by: "@claude"
       - _ulid: 01KS9YHG2YXDS9WTZY3568CE12
         anchor:
           type: code
@@ -224888,7 +224939,19 @@ reviews:
               validation failures so resource metadata is actually loaded and corrupt manifests are
               not masked.'
             created_at: 2026-05-23T08:17:03.070Z
+          - _ulid: 01KS9ZZ933AHSSN8E87CR6YVYN
+            author: "@claude"
+            body: "Fixed: loadResourceManifest now distinguishes ENOENT (missing file → empty manifest, callers
+              may pre-create resources) from any other read or YAML parse failure (corrupt manifest
+              → throws with the manifest path and cause). Added two regression tests: (a)
+              unterminated flow sequence in resources.yaml now throws an Error mentioning the
+              manifest path, and (b) replacing the manifest path with a directory raises a
+              non-ENOENT IO error that is propagated rather than swallowed. ZodError from
+              ResourceManifestSchema.parse continues to propagate normally (already covered)."
+            created_at: 2026-05-23T08:42:03.235Z
         kind: blocker
+        resolved_at: 2026-05-23T08:42:07.238Z
+        resolved_by: "@claude"
       - _ulid: 01KS9YHX6M3AXXGKYDSK9ZZ13K
         anchor:
           type: code
@@ -224908,7 +224971,24 @@ reviews:
               directory, `resolveResourcePath` returned `ok: true`, then static export threw
               `EISDIR`. Reject non-file candidates before returning a resolved resource location."
             created_at: 2026-05-23T08:17:16.500Z
+          - _ulid: 01KS9ZZH2R6Y3H6WNY8RCZ6DT6
+            author: "@claude"
+            body: "Fixed: resolveResourcePath now stats the realpath-resolved candidate and rejects when
+              !candidateStat.isFile() with actionable guidance (\"does not point to a regular file
+              under the owning entity's resources/ directory; resources must be files, not
+              directories or other non-regular entries\"). The new check runs after
+              symlink-containment validation, so directories — declared directly or reached via a
+              directory-targeting symlink — are rejected before the resource flows into static
+              export, hashing, preview, or the API. Added two regression tests: (a) directory
+              resource resolution returns ok:false with the new message, and
+              copyResourceForStaticExport propagates the same actionable rejection (no EISDIR leak,
+              export root left untouched), and (b) a symlink in resources/ pointing at an external
+              directory is rejected (covered by either the symlink-escape or non-regular-file
+              path)."
+            created_at: 2026-05-23T08:42:11.415Z
         kind: blocker
+        resolved_at: 2026-05-23T08:42:15.609Z
+        resolved_by: "@claude"
       - _ulid: 01KS9YM74JC8CWSCRS5Y7HW174
         entries:
           - _ulid: 01KS9YM74JK91ZMXPKKRFS5TDN
@@ -224939,5 +225019,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-23T08:18:45.212Z
     created_at: 2026-05-23T08:02:50.530Z
-    updated_at: 2026-05-23T08:18:45.213Z
+    updated_at: 2026-05-23T08:42:15.609Z
     notes: []
