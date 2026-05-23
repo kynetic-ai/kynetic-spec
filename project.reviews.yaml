@@ -227040,6 +227040,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-23T22:15:59.654Z
+      - _ulid: 01KSBEXCS41PE4M4DHYMP39JCQ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSBEXAQGNDXYNDP57709TYF9
+        timestamp: 2026-05-23T22:22:24.548Z
     examined_commit: a493bb85ac2a2fb06d93713154692f9243c412b6
     external_links: []
     lifecycle_state: open
@@ -227049,8 +227056,30 @@ reviews:
       content_hash: ""
       ref: "@01KS8XAYMQSFXPMHEG9FZZ3C36"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KSBEXAQGNDXYNDP57709TYF9
+        anchor:
+          type: code
+          commit: a493bb85ac2a2fb06d93713154692f9243c412b6
+          line_end: 411
+          line_start: 408
+          path: tests/parser-reviews-folder.test.ts
+          side: head
+        entries:
+          - _ulid: 01KSBEXAQG5C2A49DYMT010074
+            author: Jacob Chapel
+            body: "MUST-FIX: This test is annotated as covering @folder-backed-review-storage-1
+              ac-review-screenshot-resource-loads-in-ui, but it only calls the parser resource
+              resolver and asserts a filesystem path. The AC requires the screenshot to be
+              discoverable and loadable when the review is opened in the web UI or exported to the
+              static UI snapshot, so this is coverage at the wrong abstraction layer and can mark
+              the UI/static behavior covered while no review UI route, resource URL, or static
+              exported asset path is exercised. Replace this with behavioral UI/static coverage for
+              the AC, or remove the false AC annotation from this task and leave that AC to the
+              dedicated review screenshot resource UI task."
+            created_at: 2026-05-23T22:22:22.448Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-23T22:15:30.195Z
-    updated_at: 2026-05-23T22:15:57.980Z
+    updated_at: 2026-05-23T22:22:22.448Z
     notes: []
