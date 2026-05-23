@@ -221879,6 +221879,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KS9PX9KJ1KDDDNRBZAKSJ977
         timestamp: 2026-05-23T06:03:42.947Z
+      - _ulid: 01KS9PYM5AHZSBNQA7EY9QRJV3
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KS9PYJBWWZW123MN3MH20J5F
+        timestamp: 2026-05-23T06:04:24.618Z
     examined_commit: 6f450883299b16fa3401a44e29b014f3ce37edd7
     external_links: []
     lifecycle_state: open
@@ -224245,7 +224252,28 @@ reviews:
               represented by the recorded commit.
             created_at: 2026-05-23T06:03:41.043Z
         kind: blocker
+      - _ulid: 01KS9PYJBWWZW123MN3MH20J5F
+        anchor:
+          type: code
+          commit: 6f450883299b16fa3401a44e29b014f3ce37edd7
+          line_end: 525
+          line_start: 515
+          path: src/parser/entity-local-resources.ts
+          side: head
+        entries:
+          - _ulid: 01KS9PYJBXNHED8KWZ77PGZJ8V
+            author: Jacob Chapel
+            body: "MUST-FIX: captureResourceGitVersion records HEAD and a repo-relative path for any file under
+              a git worktree without verifying that the file is represented by that commit.
+              Reproduction: a temp repo with one committed README plus an untracked
+              resources/new.txt returned a git_commit value and git_path=resources/new.txt. The
+              recorded commit cannot resolve that resource, so consumers get misleading version
+              identity for drift detection or later resolution. Please return null git fields for
+              untracked or dirty paths, or otherwise prove the path and content are represented by
+              the recorded commit."
+            created_at: 2026-05-23T06:04:22.781Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-23T06:00:09.228Z
-    updated_at: 2026-05-23T06:03:41.043Z
+    updated_at: 2026-05-23T06:04:22.781Z
     notes: []
