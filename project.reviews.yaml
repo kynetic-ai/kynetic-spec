@@ -221869,6 +221869,16 @@ reviews:
         runner: npm
         created_at: 2026-05-23T06:13:51.108Z
         completed_at: 2026-05-23T06:13:51.108Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: oxlint completed with exit code 0; reported 724 existing warnings and 0 errors.
+        name: npm run lint
+        required: true
+        runner: oxlint
+        created_at: 2026-05-23T06:13:55.407Z
+        completed_at: 2026-05-23T06:13:55.407Z
     events:
       - _ulid: 01KS9PPTR6SH2NQHVC5B28GM1A
         actor: Jacob Chapel
@@ -221910,6 +221920,13 @@ reviews:
           status: pass
           name: npm test -- --fresh
         timestamp: 2026-05-23T06:13:52.592Z
+      - _ulid: 01KS9QG34K1H5SEYQYPE2F1MS7
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm run lint
+        timestamp: 2026-05-23T06:13:57.011Z
     examined_commit: 6f450883299b16fa3401a44e29b014f3ce37edd7
     external_links: []
     lifecycle_state: open
@@ -224301,5 +224318,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-23T06:00:09.228Z
-    updated_at: 2026-05-23T06:13:51.108Z
+    updated_at: 2026-05-23T06:13:55.407Z
     notes: []
