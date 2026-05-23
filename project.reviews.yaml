@@ -226038,6 +226038,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSAY35EBV5KTK1NPSSTCRBCM
         timestamp: 2026-05-23T17:28:29.460Z
+      - _ulid: 01KSAY3PN37HH206W18QMBESVE
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSAY3N2EGW5W2WV8090RHHPP
+        timestamp: 2026-05-23T17:28:45.475Z
     examined_commit: f4a3446b95e612b82912ab4ecd71cd16753252f0
     external_links: []
     lifecycle_state: open
@@ -226106,7 +226113,37 @@ reviews:
               validation at lines 242-250 and consumes cached review summaries at lines 255-263.
             created_at: 2026-05-23T17:28:27.851Z
         kind: blocker
+      - _ulid: 01KSAY3N2EGW5W2WV8090RHHPP
+        anchor:
+          type: code
+          commit: f4a3446b95e612b82912ab4ecd71cd16753252f0
+          line_end: 404
+          line_start: 399
+          path: src/parser/entity-storage-compatibility.ts
+          side: head
+        entries:
+          - _ulid: 01KSAY3N2E86XMK95E85W74WDT
+            author: Jacob Chapel
+            body: >-
+              MUST-FIX: `countMonolithicEntries()` treats any `project.plans.yaml` /
+              `project.reviews.yaml` entry with an `_ulid` field as monolithic data. That makes the
+              compatibility gate reject the valid folder-backed layout required by the plan/review
+              storage specs, because those specs keep `project.plans.yaml` and
+              `project.reviews.yaml` as lean indexes that still contain `_ulid` entries. It also
+              does not implement the AC's stated index/folder drift check; it only counts entries
+              and never verifies whether index entries match actual entity folders.
+
+
+              Impact: after the sibling folder-backed storage managers or upgrade migration create
+              `.kspec/plans/<ulid>/` plus a bounded `project.plans.yaml` index,
+              `requirePlanFolderStorage()` will throw `partial_entity_storage_layout` and block a
+              correctly migrated project. I confirmed this with an executable probe that created
+              `plans/<ulid>/plan.md`, `plans/<ulid>/plan.yaml`, and a lean `project.plans.yaml`
+              index entry; `requirePlanFolderStorage(ctx)` threw `partial_entity_storage_layout`
+              with the message that the index entry was a monolithic record.
+            created_at: 2026-05-23T17:28:43.854Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-23T17:10:40.405Z
-    updated_at: 2026-05-23T17:28:27.851Z
+    updated_at: 2026-05-23T17:28:43.854Z
     notes: []
