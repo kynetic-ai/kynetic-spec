@@ -1,1 +1,20 @@
-notes: []
+notes:
+  - _ulid: 01KS9MVPM7K6WF6HEQK52HQ5ZK
+    content: "Approach: extract shared module src/parser/entity-local-resources.ts following the
+      folder-backed-entity foundation pattern (storage-shape helpers, exhaustive tests against a
+      fixture entity). Module will provide: Zod schemas (ResourceMetadata, ResourceManifest),
+      constants (RESOURCE_ID_PATTERN, RESOURCE_AUTHORING_PREFIX, DEFAULT_CONTENT_TYPE), path/ref
+      validators, symlink-safe resolveResourcePath via fs.realpath, content_type inference table +
+      validateContentType for type/subtype form, hashFile via createReadStream + node:crypto sha256,
+      loadResourceManifest/writeResourceManifest, getResourcePreview (text-only bounded bytes, no
+      binary inlining), copyResourceForStaticExport copying to assets/resources/<type>/<ulid>/<rel>
+      and capturing git_commit + git_path via spawnSync git. No mime-types dep available; using
+      built-in extension table with application/octet-stream fallback as the spec calls out. Tests
+      against a fixture entity in temp dirs covering: valid references, absolute-path rejection,
+      parent-traversal rejection, undeclared-path rejection, symlink-escape rejection, hash
+      computation, explicit content_type storage, inferred content_type by extension, octet-stream
+      fallback, invalid content-type rejection, git version metadata, binary not inlined to yaml,
+      missing-resource guidance, static-export path generation."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-23T05:27:51.687Z
