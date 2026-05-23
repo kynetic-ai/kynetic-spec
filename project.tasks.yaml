@@ -29635,7 +29635,7 @@
   type: task
   spec_ref: "@entity-folder-migration-and-compatibility-1"
   plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-entity-local-resource-model-1"
@@ -29650,7 +29650,7 @@
   todos_count: 0
   created_at: 2026-05-22T22:36:43.562Z
   started_at: 2026-05-23T14:07:43.798Z
-  submitted_at: 2026-05-23T13:40:18.440Z
+  submitted_at: 2026-05-23T14:57:54.953Z
   automation: eligible
 - _ulid: 01KS8XAY52P099Y1PQ8PFJ6G0P
   slugs:
