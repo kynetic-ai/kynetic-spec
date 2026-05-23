@@ -225777,6 +225777,13 @@ reviews:
           status: pass
           name: kspec validate --warnings-ok
         timestamp: 2026-05-23T15:33:27.137Z
+      - _ulid: 01KSAQH274G0TJEKQ2J3A9MBAX
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KSAQH0KD7A1ZNDPAS1FA6XZF
+        timestamp: 2026-05-23T15:33:43.268Z
     examined_commit: 990d24115785a42e739cf439605a63530c652069
     external_links: []
     lifecycle_state: open
@@ -225858,7 +225865,30 @@ reviews:
               create monolithic files under a 1.2 folder manifest."
             created_at: 2026-05-23T15:32:57.931Z
         kind: blocker
+      - _ulid: 01KSAQH0KD7A1ZNDPAS1FA6XZF
+        entries:
+          - _ulid: 01KSAQH0KE464P6VWKDJVK2BX8
+            author: Jacob Chapel
+            body: "Evidence log: Files read: kspec-agents.md, task/spec context, prior review
+              @01KSAHA1303G3VNXJD346E6BG4, src/parser/entity-storage-compatibility.ts,
+              src/parser/plans.ts, src/parser/reviews.ts, src/parser/entity-local-resources.ts,
+              src/cli/commands/init.ts, src/parser/shadow.ts, src/schema/spec.ts,
+              packages/daemon/src/routes/* entity-storage changes,
+              tests/entity-storage-compatibility.test.ts,
+              tests/entity-storage-partial-layout-manager.test.ts,
+              tests/daemon-api/entity-storage-incompatibility-routes.test.ts,
+              tests/init-folder-storage-declarations.test.ts. Commands run: git diff stat/name-only,
+              rg AC/gate searches, kspec item get, kspec review get/open/comment/check, kspec
+              validate --warnings-ok, npm run build, npm test -- --fresh, npm test -- --fresh
+              tests/cli-agent-commands.test.ts, npm test. Claims verified: prior partial-layout
+              blocker is fixed for monolithic manager reads/writes; new-project manifest
+              declarations are tested; daemon 409 mapping exists for 1.2 missing declarations;
+              legacy daemon reads and resource reads remain ungated. Categories searched:
+              correctness, spec alignment, edge cases, error handling, daemon integration,
+              resource-domain coverage, test quality, AC annotations."
+            created_at: 2026-05-23T15:33:41.614Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-23T15:02:21.210Z
-    updated_at: 2026-05-23T15:33:25.431Z
+    updated_at: 2026-05-23T15:33:41.614Z
     notes: []
