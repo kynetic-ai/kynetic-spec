@@ -52257,7 +52257,7 @@ runs:
     completed_at: 2026-05-23T18:57:10.896Z
   - _ulid: 01KSB7H1MRJQM31K0FA3W5RFHW
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -52275,7 +52275,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-23T20:13:38.369Z
-        completed_at: 2026-05-23T20:13:38.369Z
+        completed_at: 2026-05-23T20:13:54.767Z
+        notes: "Friction points: (1) The detached-reviewer merge helper failed because the integration
+          target branch was not checked out anywhere, even though an occupied target worktree
+          existed at the correct target commit in detached HEAD state. Recovery required manually
+          switching that separate target worktree to the branch before rerunning the helper. (2)
+          Recording an optional review check through batch was awkward: passing required: false
+          still resulted in review output showing the check as required, so the batch argument shape
+          for --no-required is not obvious. (3) The full test suite is long enough that final
+          verification needs periodic polling and clear patience; this is expected but still a
+          review-time cost."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-23T20:13:54.767Z
+        completed_at: 2026-05-23T20:13:54.767Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-23T20:13:19.897Z
