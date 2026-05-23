@@ -48,7 +48,7 @@ description: >
 spec_ref: "@trait-folder-backed-entity-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-update-plan-review-storage-specs-1"
@@ -59,6 +59,14 @@ tags:
   - schema
   - parser
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-folder-backed-entity-trait-foundation-1/01ks8xav
+  captured_at: 2026-05-23T03:27:39.241Z
+  commit: 75e09ea3cc7ab4ef0a7d3296a6187c77391b425f
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KS9BSW4E18XV9XF0E43HNKTE
 history:
   - author: Jacob Chapel
@@ -184,7 +192,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-23T02:50:14.688Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-folder-backed-entity-trait-foundation-1/01ks8xav
+          captured_at: 2026-05-23T03:27:39.241Z
+          commit: 75e09ea3cc7ab4ef0a7d3296a6187c77391b425f
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-23T03:27:39.246Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-23T03:27:39.246Z
 created_at: 2026-05-22T22:36:42.647Z
 started_at: 2026-05-23T02:50:14.687Z
+submitted_at: 2026-05-23T03:27:39.246Z
 todos: []
 automation: eligible
