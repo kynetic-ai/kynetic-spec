@@ -221573,6 +221573,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-23T03:51:02.547Z
+      - _ulid: 01KS9GCK98B7RM7MHFWHC5GG66
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KS9F9JS0E5BTG5VMFE2W4ZC8
+        timestamp: 2026-05-23T04:09:42.440Z
     examined_commit: 75e09ea3cc7ab4ef0a7d3296a6187c77391b425f
     external_links: []
     lifecycle_state: closed
@@ -221600,6 +221606,14 @@ reviews:
               introduced by this task, so the snapshot is not merge-ready even though behavior tests
               pass."
             created_at: 2026-05-23T03:50:35.040Z
+          - _ulid: 01KS9GCHRB1JR8J0X05BEB9CNT
+            author: "@claude"
+            body: "Fixed: ran oxfmt on tests/folder-backed-entity.test.ts to reflow the expectation calls
+              flagged at lines ~230 and ~499-505. npm run format:check now reports 'All matched
+              files use the correct format.' Full verification: format:check pass, typecheck pass,
+              lint clean (0 errors, 724 baseline warnings), npm test pass (9323 passed, 5 skipped, 0
+              failed)."
+            created_at: 2026-05-23T04:09:40.874Z
         kind: blocker
       - _ulid: 01KS9FA246X0CYP5X9ZRJRDZEM
         entries:
@@ -221626,5 +221640,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-23T03:51:02.547Z
     created_at: 2026-05-23T03:32:12.515Z
-    updated_at: 2026-05-23T03:51:02.547Z
+    updated_at: 2026-05-23T04:09:40.874Z
     notes: []
