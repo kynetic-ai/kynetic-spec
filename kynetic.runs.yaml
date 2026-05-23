@@ -51463,7 +51463,7 @@ runs:
     started_at: 2026-05-23T03:51:41.510Z
     completed_at: 2026-05-23T03:54:01.092Z
   - _ulid: 01KS9HW3JAHRKENT8N7HNKPVB4
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -51527,7 +51527,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-23T04:37:40.337Z
-        completed_at: 2026-05-23T04:37:40.337Z
+        completed_at: 2026-05-23T04:38:04.776Z
+        notes: Captured inbox item @01KS9J09 for the missing integration-target worktree friction in the
+          detached reviewer merge path. Did not duplicate existing success observations (@01KRGCTK,
+          @01KMPKJX) or existing inbox @01KRFSG3, which tracks a different helper warning issue. No
+          task created because implementation ownership needs triage.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-23T04:35:39.211Z
+    completed_at: 2026-05-23T04:38:04.776Z
