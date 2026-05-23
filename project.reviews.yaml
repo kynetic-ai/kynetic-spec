@@ -225701,6 +225701,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-23T15:02:46.077Z
+      - _ulid: 01KSAQCRE2VQ2JKYZJ5ZRRJ1A1
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSAQCPX8NNSTK6YBHK2NBB8W
+        timestamp: 2026-05-23T15:31:22.178Z
     examined_commit: 990d24115785a42e739cf439605a63530c652069
     external_links: []
     lifecycle_state: open
@@ -225710,8 +225717,31 @@ reviews:
       content_hash: ""
       ref: "@01KS8XAWNAQ1AA9SJS8BYH9056"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KSAQCPX8NNSTK6YBHK2NBB8W
+        anchor:
+          type: code
+          commit: 990d24115785a42e739cf439605a63530c652069
+          line_end: 280
+          line_start: 277
+          path: src/parser/entity-storage-compatibility.ts
+          side: head
+        entries:
+          - _ulid: 01KSAQCPX8JPP8YJNJ060HHTM8
+            author: Jacob Chapel
+            body: "MUST-FIX: The lenient manifest gate explicitly returns success for legacy projects with no
+              plan_storage/review_storage declarations. Because daemon plan/review routes reach this
+              gate through loadPlans/loadReviewRecords, tests now assert GET /api/plans and GET
+              /api/reviews return 200 for a kynetic 1.1 project without storage declarations
+              (tests/daemon-api/entity-storage-incompatibility-routes.test.ts:177-199). That
+              contradicts the task/AC requirement that unmigrated plan/review reads fail with
+              entity_storage_incompatible guidance and a 409 instead of serving legacy monolithic
+              data. Use the strict gate for daemon routes/callers that require folder-backed
+              behavior, or otherwise ensure old layouts produce legacy_plan_storage_removed /
+              legacy_review_storage_removed with the structured 409 response."
+            created_at: 2026-05-23T15:31:20.616Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-23T15:02:21.210Z
-    updated_at: 2026-05-23T15:02:44.023Z
+    updated_at: 2026-05-23T15:31:20.616Z
     notes: []
