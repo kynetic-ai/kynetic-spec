@@ -49,3 +49,60 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-23T20:34:59.594Z
+  - _ulid: 01KSBB4XVBVNX76AM4RKJ5MW50
+    content: >-
+      Implementation complete.
+
+
+      Delivered:
+
+      - src/parser/plan-storage-manager.ts — folder-backed manager (CRUD + index drift + repair),
+      reuses folder-backed-entity helpers, calls requirePlanFolderStorage (read/write) and
+      describeStrictManifestIncompatibility (rebuild-index manifest-only check). plan.md is
+      authoritative for content; plan.yaml stores bounded metadata; notes.yaml is sidecar-only when
+      notes exist; unknown files and unknown plan.yaml fields are preserved.
+
+      - src/parser/plans.ts — dispatcher routes
+      loadPlans/findPlanByRef/savePlan/mutatePlanAtomically/deletePlan to the folder manager when
+      plan_storage.format=folder; legacy/monolithic path remains intact.
+
+      - src/cli/commands/plan.ts — `kspec plan rebuild-index` with
+      --dry-run/--repair/--force/--json, structured envelope { domain, status:
+      clean|drift|repaired|blocked, dry_run, repair, force,
+      summary{folders,index_entries,added,updated,removed_stale,conflicts}, changes[], conflicts[]
+      }. Exit codes: 0 clean/repaired, 1 drift, 2 blocked. --force rejected without --repair. Repair
+      commits via commitIfShadow.
+
+      - tests/parser-plans-folder.test.ts (17 tests) — folder layout creation, lean index
+      projection, content sidecar authority, notes sidecar emission only when present, findPlanByRef
+      variants, atomic mutation, owned resource cleanup on delete, ENOENT on missing, unknown-file
+      preservation, unknown-field preservation, drift detection (added/stale with and without
+      --force), rebuild non-force, rebuild --force drops stale, partial-layout incompatibility
+      rejection.
+
+      - tests/plan-rebuild-index.test.ts (7 tests) — CLI envelope and exit-code contract for
+      clean/drift/blocked/repaired/--dry-run/--force-without-repair.
+
+      - tests/daemon-api/helpers.ts — materializeFolderShellsFor now splits monolithic plan records
+      into plan.yaml/plan.md/notes.yaml sidecars so daemon API tests exercise the folder-backed read
+      path.
+
+      - tests/daemon-api/plans.test.ts — re-materialises shells after overwriting the monolithic
+      index so the folder manager sees the new authoritative data.
+
+      - tests/entity-storage-partial-layout-manager.test.ts — updates clean-state expectations:
+      writes now succeed via the folder manager and no monolithic file is created.
+
+
+      Validation:
+
+      - Full vitest run: 9525 passed, 5 skipped, 0 failed (2507 test suites)
+
+      - oxlint clean on changed files
+
+      - tsc --noEmit clean
+
+      - kspec validate: my spec @folder-backed-plan-storage-1 not in the missing-AC list
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-23T21:16:37.099Z
