@@ -38,3 +38,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-23T03:51:04.976Z
+  - _ulid: 01KS9GE568BVSARQY4XW42T83Z
+    content: "Fix cycle 1: addressed blocker thread by running oxfmt on
+      tests/folder-backed-entity.test.ts (reflowed expectation calls at lines ~230 and ~499-505 that
+      the original commit left wider than the formatter target). Resolved both review threads.
+      Re-verified all four trait ACs: ULID directory contract, bounded index projection,
+      unknown-file preservation, and rebuild-from-folders all remain covered by the existing
+      behavioral tests; no production source changed. Verification: npm run format:check pass; npm
+      test pass (9323/9328, 5 skipped, 0 failed); typecheck pass; lint 0 errors / 724 baseline
+      warnings."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-23T04:10:33.544Z
