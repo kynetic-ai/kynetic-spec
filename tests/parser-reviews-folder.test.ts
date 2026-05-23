@@ -7,12 +7,12 @@
  * @trait-entity-scoped-local-resources-1 owned-resource cleanup AC the spec
  * inherits.
  *
- * The on-disk screenshot loading AC (ac-review-screenshot-resource-loads-in-ui)
- * is covered behaviorally by exercising the existing entity-scoped local
- * resources resolver (resolveResourceReference) against a folder-backed
- * review that declares a screenshot in `resources.yaml` — proving the
- * resolver can discover and load the file from a folder-backed review at
- * its stable review-scoped path.
+ * The UI/static export AC ac-review-screenshot-resource-loads-in-ui is owned
+ * by @task-review-screenshot-resource-ui, which exercises the review-scoped
+ * resource API routes, web UI rendering, and static export asset copying.
+ * This storage-manager task only proves that declared screenshot resources
+ * can be discovered and resolved at the parser/data layer, which contributes
+ * to the trait ACs annotated on the screenshot test below.
  */
 
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -405,7 +405,6 @@ describe("Folder-backed review storage manager", () => {
     expect(after?.future_field).toEqual({ kept: true });
   });
 
-  // AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
   // AC: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner
   // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
   it("resolves a declared screenshot resource through the review-scoped resource path", async () => {
