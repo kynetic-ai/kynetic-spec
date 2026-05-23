@@ -226389,7 +226389,18 @@ reviews:
     slugs: []
     title: Review entity storage version and incompatibility gates (cycle 4)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Passed. Schema, references, and skills checks succeeded; repository emitted existing
+          warnings under --warnings-ok.
+        name: kspec validate --warnings-ok
+        required: true
+        runner: kspec
+        created_at: 2026-05-23T18:53:08.487Z
+        completed_at: 2026-05-23T18:53:08.487Z
     events:
       - _ulid: 01KSB20TRZMSX1E16MW90K2QDG
         actor: Jacob Chapel
@@ -226411,6 +226422,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSB2XWGY482XFTFNCRD6421Y
         timestamp: 2026-05-23T18:52:59.360Z
+      - _ulid: 01KSB2Y8J7DWF034CFS3GE3T17
+        actor: codex
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --warnings-ok
+        timestamp: 2026-05-23T18:53:10.087Z
     examined_commit: ae12bb9916e0ffc3992bd979260ea539d5c4e7c8
     external_links: []
     lifecycle_state: open
@@ -226447,5 +226465,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-23T18:37:05.702Z
-    updated_at: 2026-05-23T18:52:57.758Z
+    updated_at: 2026-05-23T18:53:08.487Z
     notes: []
