@@ -226486,6 +226486,13 @@ reviews:
           status: pass
           name: focused test rerun
         timestamp: 2026-05-23T18:53:46.847Z
+      - _ulid: 01KSB2ZWKV84A8B8WN94G6D6Y0
+        actor: codex
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KSB2ZV1DH3AMMN26Z3PTZ5PJ
+        timestamp: 2026-05-23T18:54:03.387Z
     examined_commit: ae12bb9916e0ffc3992bd979260ea539d5c4e7c8
     external_links: []
     lifecycle_state: open
@@ -226520,7 +226527,24 @@ reviews:
               skipping whole suites."
             created_at: 2026-05-23T18:52:57.758Z
         kind: blocker
+      - _ulid: 01KSB2ZV1DH3AMMN26Z3PTZ5PJ
+        entries:
+          - _ulid: 01KSB2ZV1DVSS4HDQTV76XWZ2X
+            author: codex
+            body: "Review evidence log: Files read included src/parser/entity-storage-compatibility.ts,
+              src/parser/plans.ts, src/parser/reviews.ts, src/parser/entity-local-resources.ts,
+              packages/daemon/src/routes/entity-storage-error.ts,
+              packages/daemon/src/routes/plans.ts, packages/daemon/src/routes/reviews.ts,
+              src/daemon/entity-cache.ts, src/schema/spec.ts, src/cli/commands/init.ts,
+              src/parser/shadow.ts, src/cli/commands/upgrade.ts, and the changed daemon API tests.
+              Commands run included kspec item get @entity-folder-migration-and-compatibility-1,
+              kspec validate --warnings-ok, npm run build, npm test -- --fresh, and a focused rerun
+              of tests/cli-serve.test.ts plus tests/skill-rendering.test.ts. Categories checked:
+              correctness, AC alignment, daemon structured conflict handling, partial layout edge
+              cases, error propagation, test quality, and integration with cache readiness gates."
+            created_at: 2026-05-23T18:54:01.773Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-23T18:37:05.702Z
-    updated_at: 2026-05-23T18:53:45.259Z
+    updated_at: 2026-05-23T18:54:01.773Z
     notes: []
