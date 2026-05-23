@@ -111,3 +111,32 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-23T21:32:30.531Z
+  - _ulid: 01KSBG3ZNMV59SXT2TE74TS7VC
+    content: >-
+      Fix cycle 1: addressed both review blockers.
+
+
+      Blocker 1 (notes sidecar not cleared): savePlanToFolder and mutatePlanInFolder now remove
+      notes.yaml when the new notes array is empty, in the same buffered transaction. Added
+      removeNotesFileIfPresent helper that is batch-buffer-aware (buffer.delete when active, fs.rm
+      otherwise).
+
+
+      Blocker 2 (silent empty document on missing plan.md): readPlanDocument now returns undefined
+      on ENOENT and propagates other errors. loadPlanFromDir raises
+      EntityStorageCompatibilityError(partial_entity_storage_layout) when plan.yaml exists without
+      plan.md. computePlanIndexDrift catches that per-folder and reports it as a structured conflict
+      so rebuild-index surfaces broken folders instead of crashing.
+
+
+      Validation: full vitest run 9529 passed, 5 skipped, 0 failed (4 new tests vs prior 9525
+      baseline). tsc --noEmit clean. oxlint clean on changed files.
+
+
+      Re-verified all ACs against implementation: ac-plan-document-sidecar-is-authoritative (missing
+      sidecar now errors), ac-plan-metadata-sidecar-is-authoritative (notes sidecar is now truly
+      authoritative — clearing notes drops the file), plus index projection, delete-removes-folder,
+      and trait ACs.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-23T22:43:29.076Z
