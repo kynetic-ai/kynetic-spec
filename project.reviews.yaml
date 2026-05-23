@@ -226425,6 +226425,18 @@ reviews:
         runner: npm
         created_at: 2026-05-23T18:53:34.340Z
         completed_at: 2026-05-23T18:53:34.340Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed: npm test -- --fresh tests/cli-serve.test.ts tests/skill-rendering.test.ts; 45
+          suites and 133 tests passed. Log:
+          /tmp/kspec-test-cache/01KSB1WRF6WMX7PFXD6QR75Z1Y/88e41f426d61c3c4.log."
+        name: focused test rerun
+        required: false
+        runner: npm
+        created_at: 2026-05-23T18:53:45.259Z
+        completed_at: 2026-05-23T18:53:45.259Z
     events:
       - _ulid: 01KSB20TRZMSX1E16MW90K2QDG
         actor: Jacob Chapel
@@ -226467,6 +226479,13 @@ reviews:
           status: fail
           name: npm test -- --fresh
         timestamp: 2026-05-23T18:53:35.937Z
+      - _ulid: 01KSB2ZCEZE3T32HWW3BCZNR02
+        actor: codex
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused test rerun
+        timestamp: 2026-05-23T18:53:46.847Z
     examined_commit: ae12bb9916e0ffc3992bd979260ea539d5c4e7c8
     external_links: []
     lifecycle_state: open
@@ -226503,5 +226522,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-23T18:37:05.702Z
-    updated_at: 2026-05-23T18:53:34.340Z
+    updated_at: 2026-05-23T18:53:45.259Z
     notes: []
