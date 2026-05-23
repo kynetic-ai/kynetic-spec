@@ -226024,6 +226024,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-23T17:10:54.960Z
+      - _ulid: 01KSAY2RC1BZB51AB1EN4SSDVF
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSAY2PTS6V89AYDJ0K56843K
+        timestamp: 2026-05-23T17:28:14.465Z
     examined_commit: f4a3446b95e612b82912ab4ecd71cd16753252f0
     external_links: []
     lifecycle_state: open
@@ -226033,8 +226040,39 @@ reviews:
       content_hash: ""
       ref: "@01KS8XAWNAQ1AA9SJS8BYH9056"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KSAY2PTS6V89AYDJ0K56843K
+        anchor:
+          type: code
+          commit: f4a3446b95e612b82912ab4ecd71cd16753252f0
+          line_end: 133
+          line_start: 117
+          path: packages/daemon/src/routes/plans.ts
+          side: head
+        entries:
+          - _ulid: 01KSAY2PTSK2X4MZ90Z0565YS5
+            author: Jacob Chapel
+            body: >-
+              MUST-FIX: The plans route skips `requirePlanFolderStorage()` whenever the plans cache
+              reports `ready`, then serves `cache.getPlansIndex()` directly. Cache warm-up does not
+              prove strict folder compatibility: `ProjectEntityCache` populates the plans domain via
+              `loadPlans(ctx)`, and `loadPlans` intentionally uses the lenient storage-manager gate
+              that passes legacy `kynetic < 1.2` projects with no `plan_storage` declaration.
+              Impact: a production daemon with a warmed plans cache can return 200 and serve
+              monolithic legacy plan data instead of the required HTTP 409
+              `entity_storage_incompatible` response. The strict route-entry gate needs to run even
+              on the ready-cache path, or cache warm-up must itself use the strict folder gate and
+              degrade instead of caching legacy data.
+
+
+              Evidence: `src/daemon/entity-cache.ts:1186-1190` warms plans with `loadPlans(ctx)`,
+              while `src/parser/entity-storage-compatibility.ts:501-506` documents that `loadPlans`
+              is lenient for legacy projects and relies on daemon routes to run
+              `requirePlanFolderStorage`. This route bypasses that strict gate at `plansDomainState
+              === "ready"` and consumes cached plans at lines 131-133.
+            created_at: 2026-05-23T17:28:12.889Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-23T17:10:40.405Z
-    updated_at: 2026-05-23T17:10:53.342Z
+    updated_at: 2026-05-23T17:28:12.889Z
     notes: []
