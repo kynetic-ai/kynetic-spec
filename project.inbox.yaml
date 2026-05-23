@@ -3665,3 +3665,13 @@ inbox:
       - merge
     added_by: Jacob Chapel
     created_at: 2026-05-23T04:37:56.393Z
+  - _ulid: 01KSA1K2KM38YHXCC1PKM8WDK3
+    text: Consider adding a scoped validation or review-check helper that reports AC coverage status for
+      a specific task/spec/trait and ignores unrelated repository-wide completeness warnings, so
+      reviewers can record required checks without manual warning-list inspection.
+    tags:
+      - reflection
+      - review
+      - validation
+    added_by: Jacob Chapel
+    created_at: 2026-05-23T09:10:20.532Z
