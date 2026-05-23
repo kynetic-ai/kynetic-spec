@@ -225534,6 +225534,12 @@ reviews:
         payload:
           thread_ulid: 01KSAJ4YQ20SPP3MCAMB9HZP47
         timestamp: 2026-05-23T14:56:17.654Z
+      - _ulid: 01KSANCY3AAYKYV16P7FTRACPJ
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSAJ5BTTAP78A3GF18NM75DR
+        timestamp: 2026-05-23T14:56:30.826Z
     examined_commit: 2ca12c313383daac0e564ed02b6a77be06c61bf8
     external_links: []
     lifecycle_state: closed
@@ -225599,6 +225605,16 @@ reviews:
               Evidence: requireReviewFolderStorage performs the partial check, but rg shows it is
               only referenced by tests, not by the review storage manager."
             created_at: 2026-05-23T13:59:57.018Z
+          - _ulid: 01KSANCWFB7TW56AY7RM5JTXM4
+            author: "@claude"
+            body: 'Fixed. assertReviewStorageCompatible now calls detectPartialLayoutForDomain(ctx, "reviews")
+              after the lenient manifest check, so
+              loadReviewRecords/saveReviewRecord/mutateReviewAtomically/deleteReviewRecord all fail
+              with partial_entity_storage_layout when project.reviews.yaml still contains monolithic
+              records on a project that has declared review_storage.format: folder.
+              tests/entity-storage-partial-layout-manager.test.ts has matching behavioral tests for
+              the review storage manager.'
+            created_at: 2026-05-23T14:56:29.155Z
         kind: blocker
       - _ulid: 01KSAJ6ZY3YYH1HFYMR23T36AX
         entries:
@@ -225630,5 +225646,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-23T14:01:03.050Z
     created_at: 2026-05-23T13:45:01.280Z
-    updated_at: 2026-05-23T14:56:16.002Z
+    updated_at: 2026-05-23T14:56:29.155Z
     notes: []
