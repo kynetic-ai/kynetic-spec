@@ -23,3 +23,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-23T06:14:52.560Z
+  - _ulid: 01KS9RWH9M3V497QM2N4VGP2CQ
+    content: "Fix cycle 1: addressed the lone blocker on captureResourceGitVersion. The helper now
+      requires both an HEAD blob entry for the path (git ls-tree HEAD -- <relPath>) AND a clean
+      working tree against HEAD for that path (git diff --quiet HEAD -- <relPath>) before returning
+      the (commit, path) pair. Untracked, staged-only, modified, and deleted resources all yield
+      null git fields. Added five focused regression tests covering each of those states plus the
+      clean-and-committed positive case. Full suite (9385 tests), lint, and typecheck all pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-23T06:38:13.300Z
