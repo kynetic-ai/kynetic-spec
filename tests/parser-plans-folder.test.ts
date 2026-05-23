@@ -438,6 +438,104 @@ describe("Folder-backed plan storage manager", () => {
     });
   });
 
+  // AC: @folder-backed-plan-storage-1 ac-plan-metadata-sidecar-is-authoritative
+  it("clearing a plan's notes removes the notes.yaml sidecar via savePlan", async () => {
+    const plan = createPlan({
+      title: "Notes Cleared via Save",
+      notes: [
+        {
+          _ulid: "01TESTC0000000000000000001",
+          created_at: "2026-05-23T15:00:00Z",
+          author: "@claude",
+          content: "Will be cleared",
+        },
+      ],
+    });
+
+    await savePlan(ctx as any, plan);
+
+    const notesPath = getPlanNotesFilePath(ctx as any, plan._ulid);
+    expect(await pathExists(notesPath)).toBe(true);
+
+    // Re-save with an empty notes array — savePlan must drop the sidecar
+    // so detail reads do not surface the stale note.
+    await savePlan(ctx as any, { ...plan, notes: [] });
+
+    expect(await pathExists(notesPath)).toBe(false);
+
+    const loaded = await loadPlans(ctx as any);
+    expect(loaded).toHaveLength(1);
+    expect(loaded[0].notes).toEqual([]);
+
+    const indexPath = getPlanIndexFilePath(ctx as any);
+    const indexFile = await readIndexFile(indexPath);
+    expect(indexFile?.plans?.[0].notes_count).toBe(0);
+  });
+
+  // AC: @folder-backed-plan-storage-1 ac-plan-metadata-sidecar-is-authoritative
+  it("mutatePlanAtomically removes notes.yaml when the mutation clears the notes array", async () => {
+    const plan = createPlan({
+      title: "Notes Cleared via Mutate",
+      notes: [
+        {
+          _ulid: "01TESTC0000000000000000002",
+          created_at: "2026-05-23T15:30:00Z",
+          author: "@claude",
+          content: "Will be cleared via mutate",
+        },
+      ],
+    });
+    await savePlan(ctx as any, plan);
+
+    const notesPath = getPlanNotesFilePath(ctx as any, plan._ulid);
+    expect(await pathExists(notesPath)).toBe(true);
+
+    await mutatePlanAtomically(ctx as any, plan, (latest) => ({
+      ...latest,
+      notes: [],
+    }));
+
+    expect(await pathExists(notesPath)).toBe(false);
+
+    const loaded = await loadPlans(ctx as any);
+    expect(loaded).toHaveLength(1);
+    expect(loaded[0].notes).toEqual([]);
+
+    const indexFile = await readIndexFile(getPlanIndexFilePath(ctx as any));
+    expect(indexFile?.plans?.[0].notes_count).toBe(0);
+  });
+
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  // AC: @folder-backed-plan-storage-1 ac-plan-document-sidecar-is-authoritative
+  it("loadPlans raises partial_entity_storage_layout when plan.md is missing", async () => {
+    const plan = createPlan({ title: "Missing Document", content: "Body" });
+    await savePlan(ctx as any, plan);
+
+    // Simulate a corrupted/partially-migrated folder: plan.yaml survives but
+    // the authoritative plan.md sidecar disappears. The folder manager must
+    // refuse to silently load this as an empty document.
+    await fs.rm(getPlanDocumentFilePath(ctx as any, plan._ulid));
+
+    await expect(loadPlans(ctx as any)).rejects.toMatchObject({
+      code: "partial_entity_storage_layout",
+      domain: "plans",
+    });
+  });
+
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  it("rebuild-index drift surfaces missing plan.md as a partial-layout conflict", async () => {
+    const plan = createPlan({ title: "Drift Missing Doc", content: "Body" });
+    await savePlan(ctx as any, plan);
+
+    await fs.rm(getPlanDocumentFilePath(ctx as any, plan._ulid));
+
+    const drift = await computePlanIndexDrift(ctx as any);
+    expect(drift.conflicts).toHaveLength(1);
+    expect(drift.conflicts[0].code).toBe("partial_entity_storage_layout");
+    expect(drift.conflicts[0].ref).toBe(plan._ulid);
+    expect(drift.changes).toHaveLength(0);
+  });
+
   // AC: @plan-crud ac-7
   it("listing returns plans in folder order with full content for each", async () => {
     const a = createPlan({ title: "Plan A", content: "Body A" });

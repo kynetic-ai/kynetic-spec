@@ -44,6 +44,8 @@ import {
   writeFileBufferAware,
 } from "../cli/batch-write-buffer.js";
 import {
+  EntityStorageCompatibilityError,
+  PARTIAL_ENTITY_STORAGE_LAYOUT_CODE,
   describeStrictManifestIncompatibility,
   requirePlanFolderStorage,
 } from "./entity-storage-compatibility.js";
@@ -282,14 +284,55 @@ function toCoreData(plan: LoadedPlan): Record<string, unknown> {
   return core as Record<string, unknown>;
 }
 
-/** Read the markdown document for a plan, returning "" when absent. */
-async function readPlanDocument(ctx: KspecContext, ulid: string): Promise<string> {
+/**
+ * Read the markdown document for a plan. Returns the file contents when
+ * present. Returns `undefined` when the file does not exist so callers can
+ * distinguish "missing required sidecar" (partial layout) from "empty body".
+ *
+ * AC: @folder-backed-plan-storage-1 ac-plan-document-sidecar-is-authoritative
+ */
+async function readPlanDocument(
+  ctx: KspecContext,
+  ulid: string,
+): Promise<string | undefined> {
   const docPath = getPlanDocumentFilePath(ctx, ulid);
   try {
     return await fs.readFile(docPath, "utf-8");
-  } catch {
-    return "";
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+      return undefined;
+    }
+    throw err;
   }
+}
+
+/**
+ * Build the deterministic partial-layout incompatibility for a plan folder
+ * that exists with `plan.yaml` but is missing the authoritative `plan.md`
+ * sidecar. The folder layout requires both sidecars; falling back to an
+ * empty document would silently drop the plan body, violating
+ * ac-plan-document-sidecar-is-authoritative.
+ *
+ * AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+ * AC: @folder-backed-plan-storage-1 ac-plan-document-sidecar-is-authoritative
+ */
+function missingPlanDocumentError(
+  ctx: KspecContext,
+  ulid: string,
+): EntityStorageCompatibilityError {
+  const planDir = getPlanDir(ctx, ulid);
+  return new EntityStorageCompatibilityError(
+    `Plan folder ${ulid} is missing its authoritative plan.md sidecar at ${planDir}. ` +
+      `Folder-backed plan storage requires both plan.yaml and plan.md.`,
+    {
+      code: PARTIAL_ENTITY_STORAGE_LAYOUT_CODE,
+      domain: "plans",
+      suggestion:
+        'Restore plan.md from version control, or run "kspec upgrade" to repair the folder layout.',
+      field: "plan_storage.format",
+      cacheDomain: "plans",
+    },
+  );
 }
 
 /** Read the notes sidecar for a plan, returning [] when absent. */
@@ -332,11 +375,18 @@ async function readRawCore(
  * core metadata is missing or schema-invalid — that plan is dropped from
  * listings rather than surfacing partial data.
  *
+ * Raises `EntityStorageCompatibilityError` with `partial_entity_storage_layout`
+ * when `plan.yaml` exists but the authoritative `plan.md` sidecar is missing.
+ * Callers (loadPlansFromFolders, mutate, save) propagate this error; the
+ * rebuild-index diagnostic converts it into a structured conflict instead of
+ * a thrown error.
+ *
  * Implements the document-sidecar authority rule: when core metadata and
  * `plan.md` disagree on the markdown body, `plan.md` wins.
  *
  * AC: @folder-backed-plan-storage-1 ac-plan-document-sidecar-is-authoritative
  * AC: @folder-backed-plan-storage-1 ac-plan-metadata-sidecar-is-authoritative
+ * AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
  */
 async function loadPlanFromDir(
   ctx: KspecContext,
@@ -347,6 +397,9 @@ async function loadPlanFromDir(
     return undefined;
   }
   const documentContent = await readPlanDocument(ctx, ulid);
+  if (documentContent === undefined) {
+    throw missingPlanDocumentError(ctx, ulid);
+  }
   const notes = await readPlanNotes(ctx, ulid);
 
   // plan.md is authoritative for content.
@@ -378,6 +431,23 @@ async function writeDocumentFile(filePath: string, content: string): Promise<voi
 /** Write `notes.yaml` as `{ notes: [...] }`. */
 async function writeNotesFile(filePath: string, notes: unknown[]): Promise<void> {
   await writeFileBufferAware(filePath, toYaml({ notes }));
+}
+
+/**
+ * Remove the notes sidecar — used when a mutation clears the notes array so
+ * detail reads do not surface stale notes. Buffer-aware so the deletion
+ * participates in the surrounding batch transaction; otherwise calls
+ * `fs.rm` with `force: true` (no error when the file is already absent).
+ *
+ * AC: @folder-backed-plan-storage-1 ac-plan-metadata-sidecar-is-authoritative
+ */
+async function removeNotesFileIfPresent(notesPath: string): Promise<void> {
+  const buffer = getActiveBatchBuffer();
+  if (buffer?.isInScope(notesPath)) {
+    buffer.delete(notesPath);
+    return;
+  }
+  await fs.rm(notesPath, { force: true });
 }
 
 // ── Public Manager API ──────────────────────────────────────────────────────
@@ -477,10 +547,13 @@ export async function savePlanToFolder(ctx: KspecContext, plan: LoadedPlan): Pro
       await writeCoreFile(corePath, core, rawCore);
       await writeDocumentFile(docPath, plan.content);
 
-      // notes.yaml is only emitted when notes are present; otherwise we leave
-      // any existing sidecar untouched but never create an empty one.
+      // notes.yaml is authoritative when notes exist and must be removed when
+      // a mutation clears them — otherwise a stale sidecar would re-surface
+      // deleted notes on the next detail read.
       if (plan.notes && plan.notes.length > 0) {
         await writeNotesFile(notesPath, plan.notes);
+      } else {
+        await removeNotesFileIfPresent(notesPath);
       }
 
       const resourceSummary = await readResourceSummary(ctx, plan._ulid);
@@ -535,8 +608,14 @@ export async function mutatePlanInFolder(
       await writeCoreFile(corePath, core, rawCore);
       await writeDocumentFile(docPath, clean.content);
 
+      // Clearing the notes array must drop the sidecar so detail reads do
+      // not return stale notes after a mutation. Without this, a mutation
+      // returning `notes: []` would leave the previous notes.yaml on disk
+      // and `loadPlanFromDir` would still surface the deleted entries.
       if (clean.notes && clean.notes.length > 0) {
         await writeNotesFile(notesPath, clean.notes);
+      } else {
+        await removeNotesFileIfPresent(notesPath);
       }
 
       const oldEntry = toIndexEntry(latest, await readResourceSummary(ctx, plan._ulid));
@@ -715,7 +794,21 @@ export async function computePlanIndexDrift(
 
   for (const ulid of folderUlids) {
     const planDir = getPlanDir(ctx, ulid);
-    const plan = await loadPlanFromDir(ctx, ulid);
+    let plan: LoadedPlan | undefined;
+    try {
+      plan = await loadPlanFromDir(ctx, ulid);
+    } catch (err) {
+      if (err instanceof EntityStorageCompatibilityError) {
+        conflicts.push({
+          code: err.code,
+          ref: ulid,
+          path: planDir,
+          message: err.message,
+        });
+        continue;
+      }
+      throw err;
+    }
     if (!plan) {
       conflicts.push({
         code: "unloadable_plan_folder",
