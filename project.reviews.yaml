@@ -226839,6 +226839,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSBC05DDG31FG0EFQH3VB8H1
         timestamp: 2026-05-23T21:31:31.096Z
+      - _ulid: 01KSBC0B0AFRE0ME9XMVFC0HJD
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSBC09GT3YN6AC47SNJNYRJW
+        timestamp: 2026-05-23T21:31:35.306Z
     examined_commit: c81ed98ce2337fdd426aec3da370bb73d29d4b6f
     external_links: []
     lifecycle_state: open
@@ -226869,7 +226876,27 @@ reviews:
               ac-plan-metadata-sidecar-is-authoritative and creating index drift."
             created_at: 2026-05-23T21:31:29.581Z
         kind: blocker
+      - _ulid: 01KSBC09GT3YN6AC47SNJNYRJW
+        anchor:
+          type: code
+          commit: c81ed98ce2337fdd426aec3da370bb73d29d4b6f
+          line_end: 292
+          line_start: 286
+          path: src/parser/plan-storage-manager.ts
+          side: head
+        entries:
+          - _ulid: 01KSBC09GTEB3651SYVF44T96K
+            author: Jacob Chapel
+            body: 'MUST-FIX: a missing plan.md is silently treated as an empty document. The folder layout
+              requires plan.md as the authoritative plan document, and the task requires
+              missing/partial storage markers to raise the shared incompatibility errors instead of
+              silently loading bad state. Evidence: after saving a folder-backed plan and deleting
+              only plan.md, loadPlans() returned the plan with content: "" rather than reporting a
+              partial layout or unloadable folder. Impact: corrupted or partially migrated plans can
+              lose all visible content without any error or rebuild conflict.'
+            created_at: 2026-05-23T21:31:33.786Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-23T21:19:42.759Z
-    updated_at: 2026-05-23T21:31:29.581Z
+    updated_at: 2026-05-23T21:31:33.786Z
     notes: []
