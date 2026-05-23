@@ -51403,7 +51403,7 @@ runs:
     completed_at: 2026-05-23T02:50:35.299Z
   - _ulid: 01KS9FBKP65EMWH67653NR3KG6
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -51427,7 +51427,16 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-23T03:52:20.911Z
-        completed_at: 2026-05-23T03:52:20.911Z
+        completed_at: 2026-05-23T03:53:10.551Z
+        notes: "Coverage search: 'format:check' only found completed oxlint/oxfmt installation and script/CI
+          update tasks; searches for 'format check review', 'review deterministic checks format',
+          'quality gate format', and 'pre-review format' found no current tracking. 'validation
+          warnings' is partially covered by @read-side-validation-warnings and related inbox items,
+          so I will not duplicate that here."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-23T03:53:10.551Z
+        completed_at: 2026-05-23T03:53:10.551Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-23T03:51:41.510Z
