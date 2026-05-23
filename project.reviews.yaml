@@ -226411,6 +226411,20 @@ reviews:
         runner: npm
         created_at: 2026-05-23T18:53:18.252Z
         completed_at: 2026-05-23T18:53:18.252Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Fresh full suite failed: cli-serve detach startup timeout and skill-rendering
+          updateSpecItem export error; summary also showed 109 skipped tests. Full log:
+          /tmp/kspec-test-cache/01KSB1WRF6WMX7PFXD6QR75Z1Y/76b2e3a18e882f5e.log. Focused rerun of
+          the two failing files passed, so the deterministic blocker recorded separately is the
+          skipped coverage."
+        name: npm test -- --fresh
+        required: true
+        runner: npm
+        created_at: 2026-05-23T18:53:34.340Z
+        completed_at: 2026-05-23T18:53:34.340Z
     events:
       - _ulid: 01KSB20TRZMSX1E16MW90K2QDG
         actor: Jacob Chapel
@@ -226446,6 +226460,13 @@ reviews:
           status: pass
           name: npm run build
         timestamp: 2026-05-23T18:53:19.873Z
+      - _ulid: 01KSB2Z1T0BGGSZDNNA3A8AZJ2
+        actor: codex
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test -- --fresh
+        timestamp: 2026-05-23T18:53:35.937Z
     examined_commit: ae12bb9916e0ffc3992bd979260ea539d5c4e7c8
     external_links: []
     lifecycle_state: open
@@ -226482,5 +226503,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-23T18:37:05.702Z
-    updated_at: 2026-05-23T18:53:18.252Z
+    updated_at: 2026-05-23T18:53:34.340Z
     notes: []
