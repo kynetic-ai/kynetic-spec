@@ -52418,7 +52418,7 @@ runs:
     completed_at: 2026-05-23T22:33:39.308Z
   - _ulid: 01KSBH7HA3QK4QTMYSFS8W8GV1
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -52436,7 +52436,23 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-23T23:06:37.512Z
-        completed_at: 2026-05-23T23:06:37.512Z
+        completed_at: 2026-05-23T23:06:57.660Z
+        notes: "High-confidence friction: AC double-assignment in plan
+          @plan-folder-backed-plans-reviews-and-local-resources. The plan's task design assigned
+          ac-review-screenshot-resource-loads-in-ui to both
+          @task-folder-backed-review-storage-manager-1 (storage layer) and
+          @task-review-screenshot-resource-ui (UI/API/static layer). The AC's When/Then is
+          UI-anchored ('opened in the web UI or exported to the static UI snapshot'), so the
+          storage-manager task can only cover it at the wrong abstraction layer. This produced a
+          reviewer blocker and a fix cycle to remove the false annotation. Pattern: when a
+          UI/static-anchored AC appears in two sibling tasks' 'Covers:' lists, the lower-layer task
+          will almost certainly produce a wrong-layer annotation. No existing observation captures
+          this — distinct from @01KSAWXC (gate-vs-manager test-skipping friction) and @01KFFRD1 (CI
+          test container)."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-23T23:06:57.660Z
+        completed_at: 2026-05-23T23:06:57.660Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-23T23:02:54.019Z
