@@ -221857,7 +221857,18 @@ reviews:
     slugs: []
     title: Review entity-local resource trait foundation
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite passed: 2475 test suites, 9380 passed, 5 skipped. Full log:
+          /tmp/kspec-test-cache/01KS9PNAVJESNV1N8H0FCVKKVA/f409af022887d86b.log"
+        name: npm test -- --fresh
+        required: true
+        runner: npm
+        created_at: 2026-05-23T06:13:51.108Z
+        completed_at: 2026-05-23T06:13:51.108Z
     events:
       - _ulid: 01KS9PPTR6SH2NQHVC5B28GM1A
         actor: Jacob Chapel
@@ -221892,6 +221903,13 @@ reviews:
         payload:
           thread_ulid: 01KS9PX9KJ1KDDDNRBZAKSJ977
         timestamp: 2026-05-23T06:04:29.886Z
+      - _ulid: 01KS9QFYTGV92MGQ7E4VG1MEC3
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test -- --fresh
+        timestamp: 2026-05-23T06:13:52.592Z
     examined_commit: 6f450883299b16fa3401a44e29b014f3ce37edd7
     external_links: []
     lifecycle_state: open
@@ -224283,5 +224301,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-23T06:00:09.228Z
-    updated_at: 2026-05-23T06:04:27.999Z
+    updated_at: 2026-05-23T06:13:51.108Z
     notes: []
