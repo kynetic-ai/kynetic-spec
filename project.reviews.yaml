@@ -224744,6 +224744,18 @@ reviews:
         runner: tsc
         created_at: 2026-05-23T08:17:51.570Z
         completed_at: 2026-05-23T08:17:51.570Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Exit 6. Relevant new blocker: @trait-entity-scoped-local-resources-1 reports uncovered
+          own AC ac-resource-delete-follows-owner-delete;  returned no matches. Other warnings are
+          pre-existing repository-wide validation debt."
+        name: kspec validate --completeness
+        required: true
+        runner: kspec
+        created_at: 2026-05-23T08:18:10.822Z
+        completed_at: 2026-05-23T08:18:10.822Z
     events:
       - _ulid: 01KS9XQFH2WJC4JTV2AR75JG6X
         actor: Jacob Chapel
@@ -224800,6 +224812,13 @@ reviews:
           status: pass
           name: npm run typecheck
         timestamp: 2026-05-23T08:17:53.155Z
+      - _ulid: 01KS9YKKSRDVKFEVJ58NV9FF2G
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate --completeness
+        timestamp: 2026-05-23T08:18:12.408Z
     examined_commit: 5a2b68024f62f82b4394f898bc146d58e66a610c
     external_links: []
     lifecycle_state: open
@@ -224869,5 +224888,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-23T08:02:50.530Z
-    updated_at: 2026-05-23T08:17:51.570Z
+    updated_at: 2026-05-23T08:18:10.822Z
     notes: []
