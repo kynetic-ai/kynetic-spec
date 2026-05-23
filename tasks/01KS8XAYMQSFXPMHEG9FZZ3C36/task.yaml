@@ -73,7 +73,7 @@ description: >
 spec_ref: "@folder-backed-review-storage-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-entity-storage-version-compatibility-gates-1"
@@ -84,6 +84,7 @@ tags:
   - parser
   - migration
 vcs_refs: []
+session_id: 01KSBBA7HDQTPFTJE9P76V3F7A
 history:
   - author: Jacob Chapel
     changes:
@@ -247,6 +248,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-05-22T22:52:40.830Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KSBBA7HDQTPFTJE9P76V3F7A
+        previous: null
+      started_at:
+        new: 2026-05-23T21:20:09.873Z
+        previous: null
+    command: task-start
+    timestamp: 2026-05-23T21:20:09.873Z
 created_at: 2026-05-22T22:36:45.591Z
+started_at: 2026-05-23T21:20:09.873Z
 todos: []
 automation: eligible
