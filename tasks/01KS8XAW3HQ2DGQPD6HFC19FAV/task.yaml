@@ -73,7 +73,7 @@ description: >
 spec_ref: "@trait-entity-scoped-local-resources-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-folder-backed-entity-trait-foundation-1"
@@ -93,7 +93,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-entity-local-resource-model-1/01ks8xaw
-session_id: 01KS9QV6YCVK41RXTKXX9SQGA9
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -353,6 +353,16 @@ history:
         previous: "@01KS9PPTRCHJF2WTMSAKMXVCZG"
     command: review-link
     timestamp: 2026-05-23T06:41:58.631Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KS9QV6YCVK41RXTKXX9SQGA9
+    command: review-verdict-needs-work
+    timestamp: 2026-05-23T06:58:23.533Z
 created_at: 2026-05-22T22:36:42.993Z
 started_at: 2026-05-23T06:38:24.052Z
 submitted_at: 2026-05-23T06:38:28.078Z
