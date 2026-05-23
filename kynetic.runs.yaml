@@ -52369,9 +52369,23 @@ runs:
     completed_at: 2026-05-23T21:34:32.721Z
   - _ulid: 01KSBFDHFPB4VC2T7T9FNNV62B
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-23T22:31:13.654Z
+        completed_at: 2026-05-23T22:32:08.127Z
+        notes: "Meaningful session activity confirmed: created review @01KSBEGR, recorded checks and a
+          blocker, submitted request_changes, and transitioned task @01KS8XAYMQSFXPMHEG9FZZ3C36 to
+          needs_work. Worked well: reading spec/task context before accepting worker claims exposed
+          a false AC coverage annotation; full npm test/typecheck gave concrete verification
+          evidence. Friction: review evidence logs are still a separate nit rather than first-class
+          review metadata, but this is already tracked by observation @01KR2JD1."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-23T22:32:08.127Z
+        completed_at: 2026-05-23T22:32:08.127Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-23T22:31:13.654Z
