@@ -294,28 +294,31 @@ export interface ResolvedResourceLocation {
 /**
  * Resolve a `./resources/<relative-path>` reference (or already-parsed
  * relative path) against an owning entity's resources directory, rejecting
- * anything that escapes the tree via path traversal or symlink redirection.
+ * anything that is not declared in the manifest or that escapes the tree
+ * via path traversal or symlink redirection.
  *
  * The resolver:
  *   1. validates the relative path textually,
- *   2. checks that the owner resources directory is itself a real
+ *   2. requires the relative path to appear in the supplied manifest's
+ *      `resources[*].path` list — undeclared paths are rejected even if
+ *      the file exists on disk, satisfying the "no arbitrary filesystem
+ *      reads" contract for API/static-export/agent surfaces,
+ *   3. checks that the owner resources directory is itself a real
  *      directory (not a symlink to outside the entity tree),
- *   3. resolves the realpath of the owner resources root and the
+ *   4. resolves the realpath of the owner resources root and the
  *      candidate file,
- *   4. requires the candidate realpath to be located *inside* the owner
+ *   5. requires the candidate realpath to be located *inside* the owner
  *      realpath. Anything outside is rejected with actionable guidance.
  *
- * Step 2 is essential: without it, a symlinked `<entity>/resources/`
+ * Step 3 is essential: without it, a symlinked `<entity>/resources/`
  * directory would silently redirect every declared file to whichever
  * outside tree the symlink targets, and the realpath-based containment
  * check below would still pass because both the owner and its files
  * resolve into the same (outside) target.
  *
- * If a `manifest` is supplied, the relative path must additionally appear
- * in the manifest's `resources[*].path` list — undeclared paths are
- * rejected even if they exist on disk inside the resources tree. This
- * satisfies the "no arbitrary filesystem reads" contract for API/static-
- * export/agent surfaces.
+ * The manifest argument is required. Callers that have not yet parsed a
+ * manifest should use `resolveResourceReference`, which loads
+ * `resources.yaml` from disk and then delegates here.
  *
  * AC: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner
  * AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
@@ -323,20 +326,18 @@ export interface ResolvedResourceLocation {
 export async function resolveResourcePath(options: {
   ownerResourcesDir: string;
   relativePath: string;
-  manifest?: ResourceManifest;
+  manifest: ResourceManifest;
 }): Promise<ResourceValidationResult<ResolvedResourceLocation>> {
   const pathValidation = validateResourceRelativePath(options.relativePath);
   if (!pathValidation.ok) return pathValidation;
   const relativePath = pathValidation.value;
 
-  if (options.manifest) {
-    const declared = options.manifest.resources.some((r) => r.path === relativePath);
-    if (!declared) {
-      return {
-        ok: false,
-        error: `Resource path "${relativePath}" is not declared in the owning entity's resources.yaml manifest. Add an entry with this path or use an existing declared path.`,
-      };
-    }
+  const declared = options.manifest.resources.some((r) => r.path === relativePath);
+  if (!declared) {
+    return {
+      ok: false,
+      error: `Resource path "${relativePath}" is not declared in the owning entity's resources.yaml manifest. Add an entry with this path or use an existing declared path.`,
+    };
   }
 
   let ownerStat;
@@ -415,6 +416,33 @@ export async function resolveResourcePath(options: {
   }
 
   return { ok: true, value: { absolutePath: realCandidate, relativePath } };
+}
+
+/**
+ * Resolve a `./resources/<relative-path>` reference against an owning
+ * entity directory by first loading the entity's `resources.yaml`
+ * manifest from disk, then delegating to `resolveResourcePath`.
+ *
+ * This is the trait-compliant entry point for callers that do not
+ * already have a parsed manifest in memory (CLI commands, API handlers,
+ * static-export drivers). The two-step structure ensures every
+ * resolution path is gated by the declared manifest — there is no way to
+ * resolve an undeclared file via this helper, satisfying
+ * `ac-resource-reference-resolves-within-owner` and `ac-path-escape-rejected`.
+ *
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner
+ * AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+ */
+export async function resolveResourceReference(options: {
+  ownerEntityDir: string;
+  relativePath: string;
+}): Promise<ResourceValidationResult<ResolvedResourceLocation>> {
+  const manifest = await loadResourceManifest(options.ownerEntityDir);
+  return resolveResourcePath({
+    ownerResourcesDir: getResourcesDir(options.ownerEntityDir),
+    relativePath: options.relativePath,
+    manifest,
+  });
 }
 
 // ── Content-Type Validation / Inference ──────────────────────────────────────
@@ -827,7 +855,7 @@ export async function copyResourceForStaticExport(options: {
   exportRoot: string;
   entityType: string;
   entityUlid: string;
-  manifest?: ResourceManifest;
+  manifest: ResourceManifest;
 }): Promise<ResourceValidationResult<StaticExportResult>> {
   const resolution = await resolveResourcePath({
     ownerResourcesDir: options.ownerResourcesDir,

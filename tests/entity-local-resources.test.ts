@@ -42,6 +42,7 @@ import {
   removeOwnerResources,
   resolveContentType,
   resolveResourcePath,
+  resolveResourceReference,
   validateContentType,
   validateResourceId,
   validateResourceRelativePath,
@@ -308,9 +309,26 @@ describe("entity-scoped local-resources trait foundation", () => {
       const abs = await writeResourceFile(widget.resourcesDir, "diagrams/flow.svg", "<svg/>");
       const realAbs = await fs.realpath(abs);
 
+      const manifest: ResourceManifest = {
+        resources: [
+          {
+            id: "flow",
+            label: null,
+            path: "diagrams/flow.svg",
+            content_type: "image/svg+xml",
+            bytes: 6,
+            sha256: "a".repeat(64),
+            git_commit: null,
+            git_path: null,
+            description: null,
+          },
+        ],
+      };
+
       const result = await resolveResourcePath({
         ownerResourcesDir: widget.resourcesDir,
         relativePath: "diagrams/flow.svg",
+        manifest,
       });
       expect(result.ok).toBe(true);
       if (result.ok) {
@@ -329,6 +347,7 @@ describe("entity-scoped local-resources trait foundation", () => {
       const result = await resolveResourcePath({
         ownerResourcesDir: widget.resourcesDir,
         relativePath: "../secret.txt",
+        manifest: { resources: [] },
       });
       expect(result.ok).toBe(false);
       if (!result.ok) expect(result.error).toMatch(/parent traversal|\.\./i);
@@ -345,6 +364,7 @@ describe("entity-scoped local-resources trait foundation", () => {
       const result = await resolveResourcePath({
         ownerResourcesDir: widget.resourcesDir,
         relativePath: abs, // absolute on purpose
+        manifest: { resources: [] },
       });
       expect(result.ok).toBe(false);
       if (!result.ok) expect(result.error).toMatch(/absolute path/i);
@@ -476,9 +496,26 @@ describe("entity-scoped local-resources trait foundation", () => {
         throw err;
       }
 
+      const manifest: ResourceManifest = {
+        resources: [
+          {
+            id: "leak",
+            label: null,
+            path: "leak.txt",
+            content_type: "text/plain",
+            bytes: 6,
+            sha256: "0".repeat(64),
+            git_commit: null,
+            git_path: null,
+            description: null,
+          },
+        ],
+      };
+
       const result = await resolveResourcePath({
         ownerResourcesDir: widget.resourcesDir,
         relativePath: "leak.txt",
+        manifest,
       });
       expect(result.ok).toBe(false);
       if (!result.ok) expect(result.error).toMatch(/symlink|escape/i);
@@ -490,9 +527,25 @@ describe("entity-scoped local-resources trait foundation", () => {
     // AC: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner
     it("returns missing-resource guidance when the file does not exist", async () => {
       const widget = await createWidget(specDir);
+      const manifest: ResourceManifest = {
+        resources: [
+          {
+            id: "ghost",
+            label: null,
+            path: "ghost.png",
+            content_type: "image/png",
+            bytes: 0,
+            sha256: "0".repeat(64),
+            git_commit: null,
+            git_path: null,
+            description: null,
+          },
+        ],
+      };
       const result = await resolveResourcePath({
         ownerResourcesDir: widget.resourcesDir,
         relativePath: "ghost.png",
+        manifest,
       });
       expect(result.ok).toBe(false);
       if (!result.ok) {
@@ -574,12 +627,29 @@ describe("entity-scoped local-resources trait foundation", () => {
         throw err;
       }
 
+      const manifest: ResourceManifest = {
+        resources: [
+          {
+            id: "dirlink",
+            label: null,
+            path: "dirlink",
+            content_type: "application/octet-stream",
+            bytes: 0,
+            sha256: "0".repeat(64),
+            git_commit: null,
+            git_path: null,
+            description: null,
+          },
+        ],
+      };
+
       // The symlink resolves to an external directory. Containment check
       // will reject this (symlink-escape) — but even if containment ever
       // passed, the file-type check must reject it as non-regular.
       const result = await resolveResourcePath({
         ownerResourcesDir: widget.resourcesDir,
         relativePath: "dirlink",
+        manifest,
       });
       expect(result.ok).toBe(false);
       if (!result.ok) {
@@ -596,12 +666,146 @@ describe("entity-scoped local-resources trait foundation", () => {
       // resources/ subdirectory has not been created.
       await fs.mkdir(entityDir, { recursive: true });
 
+      const manifest: ResourceManifest = {
+        resources: [
+          {
+            id: "anything",
+            label: null,
+            path: "anything.png",
+            content_type: "image/png",
+            bytes: 0,
+            sha256: "0".repeat(64),
+            git_commit: null,
+            git_path: null,
+            description: null,
+          },
+        ],
+      };
+
       const result = await resolveResourcePath({
         ownerResourcesDir: resourcesDir,
         relativePath: "anything.png",
+        manifest,
       });
       expect(result.ok).toBe(false);
       if (!result.ok) expect(result.error).toMatch(/no resources directory|resources\.yaml/i);
+    });
+  });
+
+  // ── Manifest-Loading Resolver (trait-compliant entry point) ──────────────
+
+  describe("resolveResourceReference", () => {
+    // AC: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner
+    it("loads resources.yaml from disk and resolves a declared resource", async () => {
+      const widget = await createWidget(specDir);
+      const abs = await writeResourceFile(widget.resourcesDir, "diagrams/flow.svg", "<svg/>");
+      const realAbs = await fs.realpath(abs);
+
+      const manifest: ResourceManifest = {
+        resources: [
+          {
+            id: "flow",
+            label: null,
+            path: "diagrams/flow.svg",
+            content_type: "image/svg+xml",
+            bytes: 6,
+            sha256: "a".repeat(64),
+            git_commit: null,
+            git_path: null,
+            description: null,
+          },
+        ],
+      };
+      await writeResourceManifest(widget.entityDir, manifest);
+
+      const result = await resolveResourceReference({
+        ownerEntityDir: widget.entityDir,
+        relativePath: "diagrams/flow.svg",
+      });
+      expect(result.ok).toBe(true);
+      if (result.ok) {
+        expect(result.value.absolutePath).toBe(realAbs);
+        expect(result.value.relativePath).toBe("diagrams/flow.svg");
+      }
+    });
+
+    // AC: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner
+    // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+    it("rejects an undeclared file even when the file exists on disk under resources/", async () => {
+      const widget = await createWidget(specDir);
+      // Declared resource — establishes that a manifest exists.
+      await writeResourceFile(widget.resourcesDir, "declared.png", "OK");
+      // Undeclared file written into the same resources/ tree. Without the
+      // mandatory manifest check, an attacker who could place a file under
+      // resources/ (or a stale orphan file) would be readable. The
+      // trait-compliant helper must refuse it.
+      await writeResourceFile(widget.resourcesDir, "stale-orphan.png", "ATTACKER");
+
+      const manifest: ResourceManifest = {
+        resources: [
+          {
+            id: "declared",
+            label: null,
+            path: "declared.png",
+            content_type: "image/png",
+            bytes: 2,
+            sha256: "0".repeat(64),
+            git_commit: null,
+            git_path: null,
+            description: null,
+          },
+        ],
+      };
+      await writeResourceManifest(widget.entityDir, manifest);
+
+      const undeclared = await resolveResourceReference({
+        ownerEntityDir: widget.entityDir,
+        relativePath: "stale-orphan.png",
+      });
+      expect(undeclared.ok).toBe(false);
+      if (!undeclared.ok) expect(undeclared.error).toMatch(/not declared|resources\.yaml/i);
+
+      // The declared sibling still resolves.
+      const declared = await resolveResourceReference({
+        ownerEntityDir: widget.entityDir,
+        relativePath: "declared.png",
+      });
+      expect(declared.ok).toBe(true);
+    });
+
+    // AC: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner
+    // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+    it("rejects every relative path when no resources.yaml has been written", async () => {
+      const widget = await createWidget(specDir);
+      // A file exists on disk, but no manifest has been authored — the
+      // resource is not declared, so resolution must refuse it.
+      await writeResourceFile(widget.resourcesDir, "untracked.png", "DATA");
+
+      const result = await resolveResourceReference({
+        ownerEntityDir: widget.entityDir,
+        relativePath: "untracked.png",
+      });
+      expect(result.ok).toBe(false);
+      if (!result.ok) expect(result.error).toMatch(/not declared|resources\.yaml/i);
+    });
+
+    // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+    it("rejects absolute paths and parent traversal independently of any manifest", async () => {
+      const widget = await createWidget(specDir);
+      // No manifest needed — path validation rejects before manifest lookup.
+      const abs = await resolveResourceReference({
+        ownerEntityDir: widget.entityDir,
+        relativePath: "/etc/passwd",
+      });
+      expect(abs.ok).toBe(false);
+      if (!abs.ok) expect(abs.error).toMatch(/absolute path/i);
+
+      const trav = await resolveResourceReference({
+        ownerEntityDir: widget.entityDir,
+        relativePath: "../escape.txt",
+      });
+      expect(trav.ok).toBe(false);
+      if (!trav.ok) expect(trav.error).toMatch(/parent traversal|\.\./i);
     });
   });
 
