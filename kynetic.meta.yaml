@@ -19129,8 +19129,11 @@ observations:
       AC coverage warning. Reviewers have to rerun with --warnings-ok and manually inspect the
       warning list to distinguish task-specific blockers from existing global debt.
     author: codex
-    resolution: null
-    resolved: false
+    resolution: Duplicate of existing validation-review friction observations @01KP8124/@01KPVTM6 and
+      targeted validation inbox @01KHWTXF; resolved to avoid adding duplicate reflection noise.
+    resolved: true
+    resolved_at: 2026-05-23T09:11:35.707Z
+    resolved_by: codex
     workflow_ref: "@session-reflect"
     created_at: 2026-05-23T09:10:20.243Z
 schedules:
