@@ -225505,6 +225505,13 @@ reviews:
           status: pass
           name: failed-suite retry
         timestamp: 2026-05-23T14:00:31.504Z
+      - _ulid: 01KSAJ71EKC6ESRBHQDVRH1KG3
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KSAJ6ZY3YYH1HFYMR23T36AX
+        timestamp: 2026-05-23T14:00:51.923Z
     examined_commit: 2ca12c313383daac0e564ed02b6a77be06c61bf8
     external_links: []
     lifecycle_state: open
@@ -225557,7 +225564,28 @@ reviews:
               only referenced by tests, not by the review storage manager."
             created_at: 2026-05-23T13:59:57.018Z
         kind: blocker
+      - _ulid: 01KSAJ6ZY3YYH1HFYMR23T36AX
+        entries:
+          - _ulid: 01KSAJ6ZY4PJ4YBMZE2GG66DFB
+            author: Jacob Chapel
+            body: "Evidence log: Files read: src/parser/entity-storage-compatibility.ts, src/parser/plans.ts,
+              src/parser/reviews.ts, src/schema/spec.ts, src/parser/doctor.ts,
+              src/cli/commands/init.ts, src/cli/commands/upgrade.ts,
+              packages/daemon/src/routes/{entity-storage-error,plans,reviews,items,tasks,refs,aggre\
+              gation}.ts, packages/shared/src/api.ts, tests/entity-storage-compatibility.test.ts,
+              tests/daemon-api/entity-storage-incompatibility-*.test.ts,
+              tests/init-folder-storage-declarations.test.ts. Commands run: git
+              diff/stat/name-status/log vs fa4574a6, kspec task get, kspec item get, kspec validate,
+              kspec validate --warnings-ok, rg AC/source/gate searches, npm test focused
+              entity-storage, npm test full attempt, npm run build, npm test retry for failed
+              suites. Claims verified: new init manifests declare 1.2 fields via tests; protected
+              live projects still show kynetic 1.1 with no plan/review folder dirs; daemon 409
+              helper covered by route/helper tests. Categories searched: correctness, AC alignment,
+              partial-layout edge cases, daemon error handling, test quality, protected-path safety,
+              build/test gates."
+            created_at: 2026-05-23T14:00:50.372Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-23T13:45:01.280Z
-    updated_at: 2026-05-23T14:00:29.977Z
+    updated_at: 2026-05-23T14:00:50.372Z
     notes: []
