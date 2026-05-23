@@ -230,9 +230,7 @@ describe("folder-backed entity trait foundation", () => {
     // AC: @trait-folder-backed-entity-1 ac-entity-has-ulid-directory
     it("derives an entity directory as <storageRoot>/<ulid>", () => {
       const ulid = testUlid("WGT");
-      expect(getEntityDir(ctx, WIDGET_LAYOUT, ulid)).toBe(
-        path.join(ctx.specDir, "widgets", ulid),
-      );
+      expect(getEntityDir(ctx, WIDGET_LAYOUT, ulid)).toBe(path.join(ctx.specDir, "widgets", ulid));
     });
 
     // AC: @trait-folder-backed-entity-1 ac-entity-has-ulid-directory
@@ -496,14 +494,18 @@ describe("folder-backed entity trait foundation", () => {
         tags: ["x"],
       };
 
-      expect(indexEntriesEqualForFields(base, { ...base, status: "completed" }, WIDGET_INDEXED_FIELDS))
-        .toBe(false);
-      expect(indexEntriesEqualForFields(base, { ...base, color: "blue" }, WIDGET_INDEXED_FIELDS))
-        .toBe(false);
-      expect(indexEntriesEqualForFields(base, { ...base, priority: 5 }, WIDGET_INDEXED_FIELDS))
-        .toBe(false);
-      expect(indexEntriesEqualForFields(base, { ...base, tags: ["x", "y"] }, WIDGET_INDEXED_FIELDS))
-        .toBe(false);
+      expect(
+        indexEntriesEqualForFields(base, { ...base, status: "completed" }, WIDGET_INDEXED_FIELDS),
+      ).toBe(false);
+      expect(
+        indexEntriesEqualForFields(base, { ...base, color: "blue" }, WIDGET_INDEXED_FIELDS),
+      ).toBe(false);
+      expect(
+        indexEntriesEqualForFields(base, { ...base, priority: 5 }, WIDGET_INDEXED_FIELDS),
+      ).toBe(false);
+      expect(
+        indexEntriesEqualForFields(base, { ...base, tags: ["x", "y"] }, WIDGET_INDEXED_FIELDS),
+      ).toBe(false);
     });
 
     // AC: @trait-folder-backed-entity-1 ac-index-excludes-heavy-detail-bytes
