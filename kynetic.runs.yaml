@@ -51820,7 +51820,7 @@ runs:
     completed_at: 2026-05-23T09:34:58.677Z
   - _ulid: 01KSA420PE2QRS4MRJS1XZCTM7
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -51837,7 +51837,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-23T09:55:31.277Z
-        completed_at: 2026-05-23T09:55:31.277Z
+        completed_at: 2026-05-23T09:55:43.817Z
+        notes: "Friction: The detached merge helper refused to merge because the integration target branch
+          was not checked out in any worktree, even though a target worktree already existed at the
+          right commit but in detached HEAD state. I had to inspect worktrees, verify the existing
+          target worktree was clean, switch that worktree onto the target branch, then rerun the
+          helper. This is close to the helper's intended occupied-worktree responsibility and is
+          likely repeatable for prepared integration worktrees that are left detached."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-23T09:55:43.817Z
+        completed_at: 2026-05-23T09:55:43.817Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-23T09:53:27.247Z
