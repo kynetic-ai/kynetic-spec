@@ -226919,6 +226919,13 @@ reviews:
           status: fail
           name: lint
         timestamp: 2026-05-23T21:32:13.968Z
+      - _ulid: 01KSBC1MXQ95FWFE8SK94A9MKQ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KSBC1KE3FZCX4FGZSQR96ZH6
+        timestamp: 2026-05-23T21:32:18.231Z
     examined_commit: c81ed98ce2337fdd426aec3da370bb73d29d4b6f
     external_links: []
     lifecycle_state: open
@@ -226969,7 +226976,25 @@ reviews:
               lose all visible content without any error or rebuild conflict.'
             created_at: 2026-05-23T21:31:33.786Z
         kind: blocker
+      - _ulid: 01KSBC1KE3FZCX4FGZSQR96ZH6
+        entries:
+          - _ulid: 01KSBC1KE44DXAMV718S8AJ2HN
+            author: Jacob Chapel
+            body: "Evidence log: Files read: src/parser/plan-storage-manager.ts, src/parser/plans.ts,
+              src/cli/commands/plan.ts, src/parser/folder-backed-entity.ts,
+              src/parser/entity-storage-compatibility.ts, tests/parser-plans-folder.test.ts,
+              tests/plan-rebuild-index.test.ts, tests/daemon-api/helpers.ts,
+              tests/daemon-api/plans.test.ts, tests/entity-storage-partial-layout-manager.test.ts.
+              Commands run: kspec task get, kspec item get for spec/traits, rg AC annotations, kspec
+              validate, npm test, npm run typecheck, npm run lint, targeted oxlint on changed files,
+              one-off tsx reproductions for note clearing and missing plan.md. Claims verified: full
+              test suite pass and typecheck pass; rebuild-index tests cover the CLI envelope;
+              plan.md and notes sidecar authority were independently exercised. Categories searched:
+              correctness, partial/corrupt layout handling, note/content mutation edge cases, test
+              quality/source scanning, AC coverage, integration with daemon fixture helpers."
+            created_at: 2026-05-23T21:32:16.708Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-23T21:19:42.759Z
-    updated_at: 2026-05-23T21:32:12.390Z
+    updated_at: 2026-05-23T21:32:16.708Z
     notes: []
