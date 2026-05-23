@@ -51887,9 +51887,25 @@ runs:
     completed_at: 2026-05-23T09:56:42.546Z
   - _ulid: 01KSAH28JP93VYJKVAKYQ991CK
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-23T13:40:46.806Z
+        completed_at: 2026-05-23T13:41:21.270Z
+        notes: "Step 1: Identify what worked well from this session. Working on the entity storage
+          compatibility gates task resumed from a prior timed-out invocation: the prior agent left a
+          clean, well-structured implementation with self-explanatory code comments and AC
+          annotations embedded throughout, which made the resume straightforward. The dispatch
+          worktree isolation made it safe to verify the protected projects (kynetic-spec,
+          kynetic-spec-dispatch) without risk of contamination. The full test suite caught nothing
+          wrong with the in-flight work — the 51 new entity-storage tests passed cleanly alongside
+          the 9400+ existing tests."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-23T13:41:21.270Z
+        completed_at: 2026-05-23T13:41:21.270Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-23T13:40:46.806Z
