@@ -52426,9 +52426,23 @@ runs:
     started_at: 2026-05-23T23:02:54.019Z
   - _ulid: 01KSBHA5JHDEQV0GJDT6RJR330
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-23T23:04:20.306Z
+        completed_at: 2026-05-23T23:05:17.078Z
+        notes: "What worked well: The detached-review workflow produced a durable review record before
+          integration, so the approval, checks, and merge decision were traceable. Targeted tests
+          plus the full npm test run gave a useful split between fast feature confidence and broad
+          regression coverage. The supported detached-reviewer merge helper kept the reviewer out of
+          manual branch checkout/merge in the snapshot and completed the integration cleanly once
+          the target worktree state was corrected."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-23T23:05:17.078Z
+        completed_at: 2026-05-23T23:05:17.078Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-23T23:04:20.306Z
