@@ -25,6 +25,9 @@ traits:
       and can rebuild its index from authoritative folder contents. This trait is
       storage-shape behavior shared by tasks, plans, reviews, and future
       folder-backed entities.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
