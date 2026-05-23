@@ -28,3 +28,31 @@ notes:
     supersedes: null
     author: Hermes
     created_at: 2026-05-23T02:27:02.219Z
+  - _ulid: 01KS9ARVP55RN4E5MTXEHJF6PX
+    content: >-
+      Catalog-only edits applied via kspec batch (atomic shadow commit 1c2e7b617e):
+
+      - @plan-crud ac-1 Then now reads: "A plan is created with ULID-backed identity, retrievable
+      markdown content, lifecycle metadata, and an auto-commit to the shadow branch". Given/When
+      unchanged.
+
+      - @plan-crud ac-2 Then now reads: "File content is read and becomes the plan's retrievable
+      markdown content". Given/When unchanged.
+
+      - @review-record-storage-and-identity ac-3 Then now reads: "The review data is persisted in
+      dedicated first-party review storage rather than embedded inside plans, tasks, module files,
+      or other unrelated entity files". Given/When unchanged.
+
+      - @daemon-entity-cache gained new AC ac-folder-backed-entity-directory-invalidation with the
+      task-prescribed Given/When/Then. ac-watcher-invalidation and ac-granular-reload untouched.
+
+      - Implementation statuses preserved exactly: @plan-crud=implemented,
+      @review-record-storage-and-identity=implemented, @daemon-entity-cache=in_progress.
+
+      - No inbox/triage/meta storage specs touched (per task scope).
+
+      - No source code, parser, or schema changed; worker branch tree clean. kspec validate
+      --warnings-ok exits 0 (warnings are pre-existing, unrelated to these edits).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-23T02:31:32.805Z

@@ -85,7 +85,7 @@ description: >
 spec_ref: "@entity-folder-migration-and-compatibility-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -95,6 +95,14 @@ tags:
   - plans
   - reviews
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-update-plan-review-storage-specs-1/task-upd
+  captured_at: 2026-05-23T02:31:33.695Z
+  commit: a5ce476850bb299e809c7880cb9c6c8f731c802e
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KS9AJ53P1PWJ4A5JBW2WK3FA
 history:
   - author: Jacob Chapel
@@ -331,8 +339,29 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-23T02:29:18.010Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-update-plan-review-storage-specs-1/task-upd
+          captured_at: 2026-05-23T02:31:33.695Z
+          commit: a5ce476850bb299e809c7880cb9c6c8f731c802e
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-23T02:31:33.698Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-23T02:31:33.698Z
 prior_status: null
 created_at: 2026-05-22T22:36:42.259Z
 started_at: 2026-05-23T02:29:18.005Z
+submitted_at: 2026-05-23T02:31:33.698Z
 todos: []
 automation: eligible
