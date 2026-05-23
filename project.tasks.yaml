@@ -29585,7 +29585,7 @@
   type: task
   spec_ref: "@trait-folder-backed-entity-1"
   plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-update-plan-review-storage-specs-1"
@@ -29599,7 +29599,7 @@
   todos_count: 0
   created_at: 2026-05-22T22:36:42.647Z
   started_at: 2026-05-23T03:55:47.754Z
-  submitted_at: 2026-05-23T03:27:39.246Z
+  submitted_at: 2026-05-23T04:10:44.991Z
   automation: eligible
 - _ulid: 01KS8XAW3HQ2DGQPD6HFC19FAV
   slugs:
