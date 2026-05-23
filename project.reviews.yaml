@@ -225784,9 +225784,25 @@ reviews:
           kind: nit
           thread_ulid: 01KSAQH0KD7A1ZNDPAS1FA6XZF
         timestamp: 2026-05-23T15:33:43.268Z
+      - _ulid: 01KSAQHD6HYYXHAEPW4K5ADGHH
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-23T15:33:54.513Z
+      - _ulid: 01KSAQHD6HM55Y6G2QFNQ0FDC1
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-23T15:33:54.513Z
     examined_commit: 990d24115785a42e739cf439605a63530c652069
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -225888,7 +225904,14 @@ reviews:
               resource-domain coverage, test quality, AC annotations."
             created_at: 2026-05-23T15:33:41.614Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-23T15:33:54.513Z
     created_at: 2026-05-23T15:02:21.210Z
-    updated_at: 2026-05-23T15:33:41.614Z
+    updated_at: 2026-05-23T15:33:54.513Z
     notes: []
