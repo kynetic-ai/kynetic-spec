@@ -227344,6 +227344,17 @@ reviews:
         runner: git diff --check
         created_at: 2026-05-23T23:02:04.001Z
         completed_at: 2026-05-23T23:02:04.001Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exited 6 with repository-wide warnings only; validation reported schema/references OK and
+          @folder-backed-plan-storage-1 was not in the missing-AC list.
+        name: kspec validate
+        required: false
+        runner: kspec validate
+        created_at: 2026-05-23T23:02:15.087Z
+        completed_at: 2026-05-23T23:02:15.087Z
     events:
       - _ulid: 01KSBGAX0KGPDF06GHVVAFE5AG
         actor: Jacob Chapel
@@ -227393,6 +227404,13 @@ reviews:
           status: pass
           name: git diff --check
         timestamp: 2026-05-23T23:02:05.638Z
+      - _ulid: 01KSBH6DENF3C4P1EHVX9D679C
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-05-23T23:02:17.301Z
     examined_commit: 984af0c7589a8044eedb252a02bd2cde4992f69d
     external_links: []
     lifecycle_state: open
@@ -227429,5 +227447,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-05-23T22:47:15.738Z
-    updated_at: 2026-05-23T23:02:04.001Z
+    updated_at: 2026-05-23T23:02:15.087Z
     notes: []
