@@ -387,19 +387,58 @@ describe("assertPlanStorageCompatible / assertReviewStorageCompatible / assertRe
   });
 
   // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
-  it("lenient assertPlanStorageCompatible does NOT throw on partial layouts (strict-only concern)", async () => {
+  it("assertPlanStorageCompatible throws partial_entity_storage_layout when monolithic plans remain alongside a folder declaration", async () => {
     await fs.writeFile(
       path.join(specDir, "project.plans.yaml"),
       "plans:\n  - _ulid: 01ABCDEFGHJKMNPQRSTUVWXYZ\n    title: Stale\n",
     );
-    // Lenient mode lets transitional partial state pass so existing routes
-    // that still write monolithic data can continue. The strict gate is the
-    // one that surfaces partial layouts (see require* tests below).
+    const ctx = makeContext(specDir, makeManifest());
+    await expect(assertPlanStorageCompatible(ctx)).rejects.toMatchObject({
+      code: PARTIAL_ENTITY_STORAGE_LAYOUT_CODE,
+      domain: "plans",
+    });
+  });
+
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  it("assertPlanStorageCompatible passes on a clean folder-declared layout (no monolithic plans)", async () => {
     const ctx = makeContext(specDir, makeManifest());
     await expect(assertPlanStorageCompatible(ctx)).resolves.toBeUndefined();
   });
 
-  it("lenient assertReviewStorageCompatible passes on legacy projects without review_storage", async () => {
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  it("assertReviewStorageCompatible throws partial_entity_storage_layout when monolithic reviews remain alongside a folder declaration", async () => {
+    await fs.writeFile(
+      path.join(specDir, "project.reviews.yaml"),
+      `kynetic_reviews: "1.0"
+reviews:
+  - _ulid: 01ABCDEFGHJKMNPQRSTUVWXYZ
+    slugs: []
+    title: Stale Review
+    lifecycle_state: open
+    subject:
+      type: task
+      ref: "@something"
+      shadow_commit: "abc1234"
+      content_hash: "h"
+    author: "x@y"
+    related_refs: []
+    threads: []
+    checks: []
+    verdicts: []
+    events: []
+    notes: []
+    created_at: "2026-01-01T00:00:00Z"
+    updated_at: "2026-01-01T00:00:00Z"
+`,
+    );
+    const ctx = makeContext(specDir, makeManifest());
+    await expect(assertReviewStorageCompatible(ctx)).rejects.toMatchObject({
+      code: PARTIAL_ENTITY_STORAGE_LAYOUT_CODE,
+      domain: "reviews",
+    });
+  });
+
+  it("assertReviewStorageCompatible passes on legacy projects without review_storage", async () => {
     const ctx = makeContext(
       specDir,
       makeManifest({ kynetic: "1.1", review_storage: undefined }),
@@ -407,11 +446,20 @@ describe("assertPlanStorageCompatible / assertReviewStorageCompatible / assertRe
     await expect(assertReviewStorageCompatible(ctx)).resolves.toBeUndefined();
   });
 
-  it("lenient assertResourceStorageCompatible passes on legacy projects without resource_storage", async () => {
+  it("assertResourceStorageCompatible passes on legacy projects without resource_storage", async () => {
     const ctx = makeContext(
       specDir,
       makeManifest({ kynetic: "1.0", resource_storage: undefined }),
     );
+    await expect(assertResourceStorageCompatible(ctx)).resolves.toBeUndefined();
+  });
+
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  // Resources have no monolithic-vs-folder distinction at the manifest level
+  // for partial detection — they ride along with their owning entity's
+  // directory. The lenient gate only checks the manifest declaration.
+  it("assertResourceStorageCompatible does not raise partial_entity_storage_layout (no monolithic resource file exists)", async () => {
+    const ctx = makeContext(specDir, makeManifest());
     await expect(assertResourceStorageCompatible(ctx)).resolves.toBeUndefined();
   });
 });

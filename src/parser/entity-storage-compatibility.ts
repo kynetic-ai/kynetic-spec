@@ -23,15 +23,22 @@
  * Two gate flavors are provided so callers can pick the right strictness:
  *
  *  - `assertPlanStorageCompatible` / `assertReviewStorageCompatible`:
- *    lenient — passes on legacy (kynetic < 1.2 without folder declaration) so
- *    existing monolithic reads continue to work, but raises
- *    `partial_entity_storage_layout` (and `missing_*_folder_storage` if the
- *    manifest explicitly declares a non-folder format on a 1.2+ project).
+ *    storage-manager mode — passes on legacy (kynetic < 1.2 without folder
+ *    declaration) so existing monolithic reads continue to work, but raises
+ *    `missing_*_folder_storage` when the manifest explicitly declares a
+ *    non-folder format on a 1.2+ project, and raises
+ *    `partial_entity_storage_layout` when the manifest declares folder storage
+ *    but monolithic records still exist on disk. This is the gate the
+ *    monolithic plan/review storage managers call so they refuse to silently
+ *    read or rewrite ambiguous data once a project has been promoted to
+ *    folder-backed storage.
  *  - `requirePlanFolderStorage` / `requireReviewFolderStorage` /
  *    `requireResourceFolderStorage`:
  *    strict — callers that NEED folder-backed behavior. Raises
  *    `legacy_*_storage_removed` on legacy projects and `missing_*_folder_storage`
- *    when the manifest does not declare folder/entity_scoped storage.
+ *    when the manifest does not declare folder/entity_scoped storage. Also
+ *    raises `partial_entity_storage_layout` for plan/review domains when
+ *    monolithic records still exist beside the declared folder layout.
  *
  * Spec: @entity-folder-migration-and-compatibility-1
  */
@@ -451,36 +458,48 @@ export async function detectPartialLayoutForDomain(
 // ── Caller-facing gates ──────────────────────────────────────────────────────
 
 /**
- * Lenient gate for plan storage. Existing routes that still read monolithic
- * data can call this at request entry: it raises only when the manifest is
- * explicitly broken (declared non-folder on a 1.2+ project). Legacy projects
- * with no declared plan_storage continue to pass.
+ * Storage-manager gate for plan storage. The monolithic plan parser
+ * (loadPlans / savePlan / mutatePlanAtomically / deletePlan) calls this
+ * before any read or write so it refuses to operate on layouts that no
+ * longer have an unambiguous source of truth.
  *
- * Partial-layout detection is intentionally NOT part of the lenient gate —
- * during the transition window where monolithic data still exists on a 1.2
- * project that has declared folder storage, the lenient gate must allow
- * those reads/writes to continue. The strict gate (used by the folder
- * storage manager itself) is the one that surfaces partial layouts.
+ * The gate is lenient on the manifest declaration:
+ *   - Legacy projects (kynetic < 1.2, no `plan_storage` declaration) pass
+ *     so the monolithic store continues serving them until upgrade.
+ *   - Folder-declared projects (`plan_storage.format: folder`) pass the
+ *     manifest check, but the partial-layout detector then runs and fails
+ *     with `partial_entity_storage_layout` if monolithic plan records
+ *     still exist next to (or instead of) the declared folder layout.
+ *   - Other 1.2+ projects (missing declaration or explicit non-folder)
+ *     fail with `missing_plan_folder_storage`.
  *
  * AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+ * AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
  */
 export async function assertPlanStorageCompatible(ctx: KspecContext): Promise<void> {
   const manifestErr = describeLenientManifestIncompatibility(ctx.manifest, "plans");
   if (manifestErr) throw manifestErr;
+  const partialErr = await detectPartialLayoutForDomain(ctx, "plans");
+  if (partialErr) throw partialErr;
 }
 
 /**
- * Lenient gate for review storage. See {@link assertPlanStorageCompatible}.
+ * Storage-manager gate for review storage. See {@link assertPlanStorageCompatible}.
+ * Fires `partial_entity_storage_layout` when `review_storage.format: folder`
+ * is declared but monolithic review records remain in `project.reviews.yaml`.
  *
  * AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+ * AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
  */
 export async function assertReviewStorageCompatible(ctx: KspecContext): Promise<void> {
   const manifestErr = describeLenientManifestIncompatibility(ctx.manifest, "reviews");
   if (manifestErr) throw manifestErr;
+  const partialErr = await detectPartialLayoutForDomain(ctx, "reviews");
+  if (partialErr) throw partialErr;
 }
 
 /**
- * Lenient gate for entity-scoped local resource storage.
+ * Storage-manager gate for entity-scoped local resource storage.
  *
  * Resource storage is manifest-only — resources live under their owning
  * entity's directory, so partial-layout detection for resources fires through
