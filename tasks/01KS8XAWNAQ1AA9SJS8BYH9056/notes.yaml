@@ -4,3 +4,79 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-23T13:21:31.305Z
+  - _ulid: 01KSAH16PKH0DYKMW9TSFFNGHN
+    content: >-
+      Implementation complete and ready for review.
+
+
+      Scope delivered:
+
+      - kynetic 1.2 manifest version with folder/entity_scoped storage declarations.
+
+      - src/parser/entity-storage-compatibility.ts: lenient and strict gates, deterministic error
+      codes (legacy_plan_storage_removed, legacy_review_storage_removed,
+      missing_plan_folder_storage, missing_review_folder_storage, partial_entity_storage_layout),
+      EntityStorageCompatibilityError carrying domain/cache_domain/field/suggestion, partial-layout
+      detector.
+
+      - src/cli/commands/init.ts and src/parser/shadow.ts: new projects declare kynetic 1.2 with
+      folder/entity_scoped storage.
+
+      - src/cli/commands/upgrade.ts: probe-based version detection recognises 1.2 while keeping
+      1.0/1.1 caps intact.
+
+      - src/cli/commands/doctor.ts and src/parser/doctor.ts: read-only Entity Storage diagnostics
+      that surface declared formats without raising.
+
+      - packages/daemon/src/routes/entity-storage-error.ts: 409 helper attaching
+      entity_storage_incompatible + domain + field + suggestion + cache_domain/state.
+
+      - Daemon routes (plans/reviews/tasks/items/refs/aggregation) catch storage-incompatibility
+      errors and surface structured 409 instead of 404/500.
+
+      - packages/shared/src/api.ts: ErrorResponse gains optional domain.
+
+      - Parser plans.ts/reviews.ts: gated at loadPlans/savePlan/mutate/delete (and review
+      equivalents) for unmigrated projects.
+
+
+      AC coverage (4 task-targeted ACs, all annotated):
+
+      - ac-new-projects-declare-folder-storage: tests/init-folder-storage-declarations.test.ts +
+      tests/entity-storage-compatibility.test.ts (schema).
+
+      - ac-unmigrated-projects-are-blocked-with-guidance: tests/entity-storage-compatibility.test.ts
+      (strict/lenient describe/assert) +
+      tests/daemon-api/entity-storage-incompatibility-routes.test.ts.
+
+      - ac-partial-folder-layouts-are-blocked: tests/entity-storage-compatibility.test.ts
+      (detectPartialLayoutForDomain + require* gates).
+
+      - ac-daemon-returns-structured-conflict:
+      tests/daemon-api/entity-storage-incompatibility-helper.test.ts +
+      entity-storage-incompatibility-routes.test.ts.
+
+
+      Protected projects (/home/chapel/Projects/kynetic-spec,
+      /home/chapel/Projects/kynetic-spec-dispatch) were verified untouched: both still report
+      kynetic 1.1 with no plan_storage/review_storage declarations and no .kspec/plans or
+      .kspec/reviews directories. All compatibility tests run in createTempDir() fixtures or
+      in-memory schemas.
+
+
+      Verification:
+
+      - npm test: 2498 suites / 9454 passed / 5 skipped (no failures).
+
+      - npm run build: clean.
+
+      - kspec validate --warnings-ok: passes (only pre-existing unresolved-target warnings in
+      unrelated files).
+
+
+      Out-of-scope (handled by sibling tasks): inbox, triage, sessions, broad meta storage; actual
+      upgrade migration (ac-upgrade-dry-run-previews-layout, ac-upgrade-executes-folder-migration,
+      ac-migration-preserves-record-identity-and-unknown-fields).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-23T13:40:12.115Z
