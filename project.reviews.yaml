@@ -224726,6 +224726,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-23T08:03:12.306Z
+      - _ulid: 01KS9YH2J803H8DY3G82WYP5ZM
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KS9YH114JSPX6WEV5TA6VNEV
+        timestamp: 2026-05-23T08:16:49.224Z
     examined_commit: 5a2b68024f62f82b4394f898bc146d58e66a610c
     external_links: []
     lifecycle_state: open
@@ -224735,8 +224742,25 @@ reviews:
       content_hash: ""
       ref: "@01KS8XAW3HQ2DGQPD6HFC19FAV"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KS9YH114JSPX6WEV5TA6VNEV
+        anchor:
+          type: structured
+          field: ac-resource-delete-follows-owner-delete
+          ref: "@trait-entity-scoped-local-resources-1"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KS9YH11427WW1JKSTSA83R5W
+            author: Jacob Chapel
+            body: 'MUST-FIX: The submitted tests do not cover @trait-entity-scoped-local-resources-1
+              ac-resource-delete-follows-owner-delete. Evidence: `rg -n
+              "ac-resource-delete-follows-owner-delete" tests src` returned no matches, and `kspec
+              validate --completeness -v` reports the trait itself has this uncovered own AC. This
+              task is linked to the trait spec, so every own AC needs behavioral coverage or an
+              explicit, justified spec/task split before approval.'
+            created_at: 2026-05-23T08:16:47.652Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-23T08:02:50.530Z
-    updated_at: 2026-05-23T08:03:10.654Z
+    updated_at: 2026-05-23T08:16:47.652Z
     notes: []
