@@ -225824,6 +225824,12 @@ reviews:
         payload:
           thread_ulid: 01KSAQF6WZ75ADJ89T49Z4XCVH
         timestamp: 2026-05-23T17:00:06.802Z
+      - _ulid: 01KSAWFT1G1REQVK4M548ZPJ0G
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSAQFNYB5EPPX0C805A7HVNC
+        timestamp: 2026-05-23T17:00:25.008Z
     examined_commit: 990d24115785a42e739cf439605a63530c652069
     external_links: []
     lifecycle_state: closed
@@ -225937,6 +225943,25 @@ reviews:
               structured incompatibility until that storage manager is available; they must not
               create monolithic files under a 1.2 folder manifest."
             created_at: 2026-05-23T15:32:57.931Z
+          - _ulid: 01KSAWFREZJHMSGBC19E1NBPM4
+            author: "@claude"
+            body: "Fixed: introduced assertPlanStorageWritable / assertReviewStorageWritable as the
+              storage-manager write gate. They run the lenient manifest check + partial-layout
+              detector (same as the read gate) PLUS describeMonolithicWriteIncompatibility, which
+              rejects any write whenever the manifest declares folder/entity_scoped storage — even
+              when the on-disk layout is currently clean. savePlan, mutatePlanAtomically, deletePlan
+              and the review equivalents now call the new writable gate, so a fresh kynetic 1.2
+              project cannot create a monolithic project.plans.yaml / project.reviews.yaml beneath a
+              folder manifest. tests/entity-storage-partial-layout-manager.test.ts pins this
+              behaviour: on a clean folder-declared project, savePlan rejects with
+              partial_entity_storage_layout (domain: plans) BEFORE any file is created (asserted via
+              fs.access raising ENOENT after the rejection). Same coverage for the review side. The
+              plan integration fixtures that previously used a folder-declared manifest now call
+              downgradeManifestToLegacyStorage with an inline comment noting the dependency on the
+              sibling folder-backed plan storage manager task — those tests exercise the legacy
+              storage path that still works on legacy manifests, not the folder-declared write path
+              the gate rejects."
+            created_at: 2026-05-23T17:00:23.386Z
         kind: blocker
       - _ulid: 01KSAQH0KD7A1ZNDPAS1FA6XZF
         entries:
@@ -225970,5 +225995,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-23T15:33:54.513Z
     created_at: 2026-05-23T15:02:21.210Z
-    updated_at: 2026-05-23T17:00:05.203Z
+    updated_at: 2026-05-23T17:00:23.386Z
     notes: []
