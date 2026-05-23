@@ -26,6 +26,7 @@ import { buildRefIndex } from "./ref-resolution.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import { wrapResponse } from "./response-envelope.js";
 import { taskStorageIncompatibilityResponse } from "./task-storage-error.js";
+import { entityStorageIncompatibilityResponse } from "./entity-storage-error.js";
 
 interface RefsRouteOptions {
   getEntityCache?: EntityCacheAccessor;
@@ -36,6 +37,15 @@ export function createRefsRoutes(options: RefsRouteOptions = {}) {
 
   return (
     new Elysia({ prefix: "/api/refs" })
+      // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+      //     — refs index loads plans/reviews; surface incompatibility as 409.
+      .onError(({ error: err, set }) => {
+        const conflict = entityStorageIncompatibilityResponse(err);
+        if (conflict) {
+          set.status = conflict.status;
+          return conflict.body;
+        }
+      })
 
       // AC: @ui-api-ref-resolution ac-4, ac-5 - Lightweight ref index endpoint
       // AC: @trait-api-endpoint ac-1 - Returns 2xx with JSON body

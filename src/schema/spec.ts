@@ -144,6 +144,30 @@ export const ManifestSchema = z.object({
     })
     .optional(),
 
+  // Plan storage format configuration (kynetic 1.2+).
+  // AC: @entity-folder-migration-and-compatibility-1 ac-new-projects-declare-folder-storage
+  plan_storage: z
+    .object({
+      format: z.enum(["monolithic", "folder"]).default("monolithic"),
+    })
+    .optional(),
+
+  // Review storage format configuration (kynetic 1.2+).
+  // AC: @entity-folder-migration-and-compatibility-1 ac-new-projects-declare-folder-storage
+  review_storage: z
+    .object({
+      format: z.enum(["monolithic", "folder"]).default("monolithic"),
+    })
+    .optional(),
+
+  // Entity-scoped local resource storage configuration (kynetic 1.2+).
+  // AC: @entity-folder-migration-and-compatibility-1 ac-new-projects-declare-folder-storage
+  resource_storage: z
+    .object({
+      format: z.enum(["monolithic", "entity_scoped"]).default("monolithic"),
+    })
+    .optional(),
+
   // Session storage configuration
   sessions: z
     .object({

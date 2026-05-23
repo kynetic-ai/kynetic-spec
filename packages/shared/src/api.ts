@@ -122,6 +122,14 @@ export interface ErrorResponse {
    * envelope `meta.cache_status`, which only exposes "ready" | "loading".
    */
   cache_domain_state?: string;
+  /**
+   * Logical entity domain for storage-incompatibility responses
+   * ("plans" | "reviews" | "resources"). Set on entity-storage 409
+   * responses so clients can present domain-specific recovery UI.
+   *
+   * AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+   */
+  domain?: string;
 }
 
 /**

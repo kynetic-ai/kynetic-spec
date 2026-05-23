@@ -14,6 +14,7 @@ import { withFileLock } from "./file-lock.js";
 import { type Plan, type PlanInput, PlanSchema, PlansFileSchema } from "../schema/index.js";
 import type { KspecContext } from "./yaml.js";
 import { readYamlFile, warnSkippedRecord, writeYamlFilePreserveFormat } from "./yaml.js";
+import { assertPlanStorageCompatible } from "./entity-storage-compatibility.js";
 
 /**
  * Loaded plan with runtime metadata
@@ -176,8 +177,11 @@ function stripPlanMetadata(plan: Plan | LoadedPlan): Plan {
 /**
  * Load all plans from the project.
  * AC: @plan-crud ac-7, ac-31 - listing plans
+ * AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+ * AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
  */
 export async function loadPlans(ctx: KspecContext): Promise<LoadedPlan[]> {
+  await assertPlanStorageCompatible(ctx);
   const { getEntityCacheContext } = await import("./yaml.js");
   const cacheContext = getEntityCacheContext();
   if (cacheContext) {
@@ -219,6 +223,7 @@ export async function loadPlans(ctx: KspecContext): Promise<LoadedPlan[]> {
 /**
  * Find a plan by reference (ULID, short ULID, or slug)
  * AC: @plan-crud ac-8 - get plan by reference
+ * AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
  */
 export async function findPlanByRef(
   ctx: KspecContext,
@@ -273,6 +278,7 @@ export function createPlan(input: PlanInput, _author?: string): Plan {
  * added by Zod defaults.
  */
 export async function savePlan(ctx: KspecContext, plan: LoadedPlan): Promise<void> {
+  await assertPlanStorageCompatible(ctx);
   const plansPath = getPlansFilePath(ctx);
 
   // Lock the file to prevent concurrent read-modify-write races
@@ -318,6 +324,7 @@ export async function mutatePlanAtomically(
   plan: LoadedPlan,
   mutate: (latestPlan: LoadedPlan) => Plan | LoadedPlan | Promise<Plan | LoadedPlan>,
 ): Promise<LoadedPlan> {
+  await assertPlanStorageCompatible(ctx);
   const plansPath = plan._sourceFile || getPlansFilePath(ctx);
   let updatedPlan: LoadedPlan | undefined;
 
@@ -378,6 +385,7 @@ export async function mutatePlanAtomically(
  * AC: @plan-crud ac-40
  */
 export async function deletePlan(ctx: KspecContext, planUlid: string): Promise<void> {
+  await assertPlanStorageCompatible(ctx);
   const plansPath = getPlansFilePath(ctx);
 
   // Lock the file to prevent concurrent read-modify-write races

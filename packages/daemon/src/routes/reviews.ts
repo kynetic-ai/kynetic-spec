@@ -78,6 +78,7 @@ import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import type { ReviewIndexSummary } from "../../daemon/entity-cache.js";
 import { wrapResponse } from "./response-envelope.js";
 import { taskStorageIncompatibilityResponse } from "./task-storage-error.js";
+import { entityStorageIncompatibilityResponse } from "./entity-storage-error.js";
 
 interface ReviewsRouteOptions {
   pubsub: PubSubManager;
@@ -182,6 +183,23 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
 
   return (
     new Elysia({ prefix: "/api/reviews" })
+      // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+      //     — translate review-storage incompatibility into a structured 409 instead
+      //     of letting it escape as an unhandled 500. Per-route try/catch wrappers
+      //     would otherwise need to be added at every loadReviewRecords / mutate /
+      //     save call site; an onError handler keeps coverage uniform.
+      .onError(({ error: err, set }) => {
+        const conflict = entityStorageIncompatibilityResponse(err, {
+          cache: getEntityCache
+            ? // Reviews onError lacks request context; cache lookup is best-effort
+              null
+            : null,
+        });
+        if (conflict) {
+          set.status = conflict.status;
+          return conflict.body;
+        }
+      })
 
       // AC: @review-records-daemon-api ac-1 - List reviews with filters and pagination
       // AC: @review-records-web-ui ac-7 - Task filter for task detail page integration
@@ -210,6 +228,8 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           };
 
           // Try cache for reviews (index tier has ReviewIndexSummary, disk gives full records)
+          // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+          //     — translate review-storage incompatibility into a structured 409.
           const cachedReviews =
             cache && reviewsDomainState === "ready" ? cache.getReviewsIndex() : null;
           const fromCache = !!cachedReviews;
@@ -221,7 +241,13 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
             reviews = cachedReviews;
           } else {
             const ctx = await getCtx();
-            reviews = await loadReviewRecords(ctx);
+            try {
+              reviews = await loadReviewRecords(ctx);
+            } catch (err) {
+              const conflict = entityStorageIncompatibilityResponse(err, { cache });
+              if (conflict) return errorResponse(conflict.status, conflict.body);
+              throw err;
+            }
           }
 
           // Try cache for tasks and items (for ref resolution)

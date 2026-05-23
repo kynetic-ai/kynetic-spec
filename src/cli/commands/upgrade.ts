@@ -192,16 +192,23 @@ async function inferVersionFromProbes(
     const manifest = yaml.parse(raw);
     if (manifest) {
       const kyneticVer = manifest.kynetic || manifest.kynetic_spec;
-      if (kyneticVer === "1.1") {
+      if (kyneticVer === "1.2") {
+        // kynetic 1.2 introduces folder-backed plan/review/resource storage
+        probeResults.push({ minVersion: "0.14.0", maxVersion: "99.99.99" });
+        versionedProbeMatched = true;
+      } else if (kyneticVer === "1.1") {
         // kynetic 1.1 was introduced in 0.9
         probeResults.push({ minVersion: "0.9.0", maxVersion: "99.99.99" });
         versionedProbeMatched = true;
-      } else if (kyneticVer && kyneticVer !== "1.1") {
-        // Old manifest version — caps the project at < 0.9 for consistency
+      } else if (kyneticVer && kyneticVer !== "1.0") {
+        // Unknown manifest version — caps the project at < 0.9 for consistency
         // checking, but does NOT count as a positive versioned probe on its
-        // own. A project with only an old manifest and no other probes is
-        // unrecognizable. A project with an old manifest AND a newer probe
+        // own. A project with only an unknown manifest and no other probes is
+        // unrecognizable. A project with an unknown manifest AND a newer probe
         // (like kspec.config.yaml) creates a contradiction → unknown.
+        probeResults.push({ minVersion: "0.1.0", maxVersion: "0.8.99" });
+      } else if (kyneticVer === "1.0") {
+        // kynetic 1.0 caps at < 0.9
         probeResults.push({ minVersion: "0.1.0", maxVersion: "0.8.99" });
       }
       if (manifest.task_storage?.format === "split") {

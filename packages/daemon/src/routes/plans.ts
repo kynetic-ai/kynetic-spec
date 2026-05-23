@@ -31,6 +31,7 @@ import { enumArrayUnion } from "./enum-utils.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import { wrapResponse } from "./response-envelope.js";
 import { taskStorageIncompatibilityResponse } from "./task-storage-error.js";
+import { entityStorageIncompatibilityResponse } from "./entity-storage-error.js";
 
 interface PlansRouteOptions {
   getEntityCache?: EntityCacheAccessor;
@@ -65,6 +66,17 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
 
   return (
     new Elysia({ prefix: "/api/plans" })
+      // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+      //     — catch any plan-storage incompatibility that escapes a per-route
+      //     try/catch (e.g. cache-write-through paths) and surface a structured
+      //     409 instead of an unhandled 500.
+      .onError(({ error: err, set }) => {
+        const conflict = entityStorageIncompatibilityResponse(err);
+        if (conflict) {
+          set.status = conflict.status;
+          return conflict.body;
+        }
+      })
       // AC: @ui-plans-view ac-1 - List plans with progress
       // AC: @daemon-entity-cache ac-serve-from-memory — serve from cache when available
       .get(
@@ -87,13 +99,21 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
           };
 
           // Try cache for plans (index tier has PlanIndexSummary, disk fallback gives LoadedPlan)
+          // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+          //     — translate plan-storage incompatibility into a structured 409.
           let plans: (LoadedPlan | PlanIndexSummary)[];
           const cachedPlans = cache && plansDomainState === "ready" ? cache.getPlansIndex() : null;
           if (cachedPlans) {
             plans = cachedPlans;
           } else {
             const ctx = await getCtx();
-            plans = await loadPlans(ctx);
+            try {
+              plans = await loadPlans(ctx);
+            } catch (err) {
+              const conflict = entityStorageIncompatibilityResponse(err, { cache });
+              if (conflict) return errorResponse(conflict.status, conflict.body);
+              throw err;
+            }
           }
 
           // Try cache for tasks (needed for progress computation)
@@ -177,7 +197,15 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
           }
         }
         if (!plan) {
-          plan = await findPlanByRef(await getCtx(), params.ref);
+          // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+          //     — translate plan-storage incompatibility into a structured 409.
+          try {
+            plan = await findPlanByRef(await getCtx(), params.ref);
+          } catch (err) {
+            const conflict = entityStorageIncompatibilityResponse(err, { cache });
+            if (conflict) return errorResponse(conflict.status, conflict.body);
+            throw err;
+          }
           // Cache the loaded detail for subsequent requests
           if (plan && cache) {
             cache.setPlanDetail(plan._ulid, plan);
