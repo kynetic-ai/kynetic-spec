@@ -221872,6 +221872,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-23T06:00:37.663Z
+      - _ulid: 01KS9PXBF3XXP7G729AGGYYVDE
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KS9PX9KJ1KDDDNRBZAKSJ977
+        timestamp: 2026-05-23T06:03:42.947Z
     examined_commit: 6f450883299b16fa3401a44e29b014f3ce37edd7
     external_links: []
     lifecycle_state: open
@@ -221881,8 +221888,2364 @@ reviews:
       content_hash: ""
       ref: "@01KS8XAW3HQ2DGQPD6HFC19FAV"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KS9PX9KJ1KDDDNRBZAKSJ977
+        anchor:
+          type: code
+          commit: 6f450883299b16fa3401a44e29b014f3ce37edd7
+          line_end: 525
+          line_start: 515
+          path: src/parser/entity-local-resources.ts
+          side: head
+        entries:
+          - _ulid: 01KS9PX9KKAFGNZ8D78EYWTCPC
+            author: Jacob Chapel
+            body: >-
+              MUST-FIX:  records  and a repository-relative path for any file under a git worktree
+              without verifying that the file is tracked and clean at that commit. I confirmed this
+              by creating a temp repo with one committed README plus an untracked ; calling this
+              helper returned  even though that commit cannot resolve the resource. That violates
+              the git-backed identity AC because consumers get a commit/path pair that does not
+              actually identify the resource version; use git plumbing such as
+              .agents/skills/audit/SKILL.md
+
+              .agents/skills/codex/SKILL.md
+
+              .agents/skills/e2e/SKILL.md
+
+              .agents/skills/eval-agents/SKILL.md
+
+              .agents/skills/kspec-create-workflow/SKILL.md
+
+              .agents/skills/kspec-help/SKILL.md
+
+              .agents/skills/kspec-merge/SKILL.md
+
+              .agents/skills/kspec-merge/scripts/detached-reviewer-merge.sh
+
+              .agents/skills/kspec-observations/SKILL.md
+
+              .agents/skills/kspec-observe/SKILL.md
+
+              .agents/skills/kspec-plan/SKILL.md
+
+              .agents/skills/kspec-reflect/SKILL.md
+
+              .agents/skills/kspec-review-plan/SKILL.md
+
+              .agents/skills/kspec-review/SKILL.md
+
+              .agents/skills/kspec-task-work/SKILL.md
+
+              .agents/skills/kspec-triage-automation/SKILL.md
+
+              .agents/skills/kspec-triage-inbox/SKILL.md
+
+              .agents/skills/kspec-triage/SKILL.md
+
+              .agents/skills/kspec-triage/docs/automation.md
+
+              .agents/skills/kspec-triage/docs/inbox.md
+
+              .agents/skills/kspec-triage/docs/observations.md
+
+              .agents/skills/kspec-writing-specs/SKILL.md
+
+              .agents/skills/release/SKILL.md
+
+              .agents/skills/review-gates/SKILL.md
+
+              .agents/skills/svelte-5/SKILL.md
+
+              .agents/skills/ui-data-layer/SKILL.md
+
+              .agents/skills/work-gates/SKILL.md
+
+              .claude/settings.json
+
+              .claude/skills/audit/SKILL.md
+
+              .claude/skills/codex/SKILL.md
+
+              .claude/skills/e2e/SKILL.md
+
+              .claude/skills/eval-agents/SKILL.md
+
+              .claude/skills/release/SKILL.md
+
+              .claude/skills/review-gates/SKILL.md
+
+              .claude/skills/svelte-5/SKILL.md
+
+              .claude/skills/ui-data-layer/SKILL.md
+
+              .claude/skills/ui-design/SKILL.md
+
+              .claude/skills/work-gates/SKILL.md
+
+              .factory/settings.json
+
+              .factory/skills/droid-status/SKILL.md
+
+              .factory/skills/kspec-create-workflow/SKILL.md
+
+              .factory/skills/kspec-help/SKILL.md
+
+              .factory/skills/kspec-merge/SKILL.md
+
+              .factory/skills/kspec-merge/scripts/detached-reviewer-merge.sh
+
+              .factory/skills/kspec-observe/SKILL.md
+
+              .factory/skills/kspec-plan/SKILL.md
+
+              .factory/skills/kspec-reflect/SKILL.md
+
+              .factory/skills/kspec-review-plan/SKILL.md
+
+              .factory/skills/kspec-review/SKILL.md
+
+              .factory/skills/kspec-task-work/SKILL.md
+
+              .factory/skills/kspec-triage-automation/SKILL.md
+
+              .factory/skills/kspec-triage-inbox/SKILL.md
+
+              .factory/skills/kspec-triage/SKILL.md
+
+              .factory/skills/kspec-triage/docs/automation.md
+
+              .factory/skills/kspec-triage/docs/inbox.md
+
+              .factory/skills/kspec-triage/docs/observations.md
+
+              .factory/skills/kspec-writing-specs/SKILL.md
+
+              .factory/skills/review-gates/SKILL.md
+
+              .factory/skills/work-gates/SKILL.md
+
+              .github/ISSUE_TEMPLATE/config.yml
+
+              .github/ISSUE_TEMPLATE/maintainer-approved-issues-and-features.md
+
+              .github/workflows/claude.yml
+
+              .github/workflows/gh-pages-ui.yml
+
+              .github/workflows/gh-pages.yml
+
+              .github/workflows/pr-review-resolution-check.yml
+
+              .github/workflows/publish.yml
+
+              .github/workflows/test.yml
+
+              .gitignore
+
+              .oxfmtrc.json
+
+              .oxlintrc.json
+
+              AGENTS.md
+
+              CLAUDE.md
+
+              INSTALL.md
+
+              README.md
+
+              RELEASE_NOTES.md
+
+              design.pen
+
+              docs/agents-eval-scenarios.md
+
+              docs/concepts/agents-and-dispatch.md
+
+              docs/concepts/index.md
+
+              docs/concepts/reviews.md
+
+              docs/concepts/specs-tasks-plans-inbox.md
+
+              docs/concepts/the-shadow-branch.md
+
+              docs/concepts/traits.md
+
+              docs/concepts/web-ui-and-daemon.md
+
+              docs/concepts/what-kspec-is.md
+
+              docs/concepts/working-with-an-agent.md
+
+              docs/getting-started/connecting-your-agent.md
+
+              docs/getting-started/index.md
+
+              docs/getting-started/initializing-a-project.md
+
+              docs/getting-started/installation.md
+
+              docs/getting-started/overview.md
+
+              docs/getting-started/tutorial.md
+
+              docs/getting-started/where-to-go-next.md
+
+              docs/getting-started/your-first-action.md
+
+              docs/guides/authoring-and-completing-a-task.md
+
+              docs/guides/directing-your-agent.md
+
+              docs/guides/importing-and-approving-a-plan.md
+
+              docs/guides/index.md
+
+              docs/guides/recovering-from-shadow-branch-issues.md
+
+              docs/guides/reviewing-an-agents-work.md
+
+              docs/guides/starting-a-new-project.md
+
+              docs/guides/upgrading-kspec.md
+
+              docs/history/KYNETIC_SPEC_DESIGN.md
+
+              docs/history/living-spec-research.md
+
+              docs/prime-mock.md
+
+              docs/release-notes/index.md
+
+              docs/troubleshooting/cannot-run-from-inside-kspec.md
+
+              docs/troubleshooting/daemon-port-in-use.md
+
+              docs/troubleshooting/dispatch-refuses-to-assign.md
+
+              docs/troubleshooting/index.md
+
+              docs/troubleshooting/review-blocking-merge.md
+
+              docs/troubleshooting/shadow-branch-out-of-sync.md
+
+              docs/troubleshooting/shadow-branch-worktree-broken.md
+
+              docs/troubleshooting/upgrade-pre-plan-state.md
+
+              hooks/pre-commit
+
+              kspec-agents.md
+
+              kspec.config.yaml
+
+              package-lock.json
+
+              package.json
+
+              packages/daemon/package.json
+
+              packages/daemon/src/bun-shim.d.ts
+
+              packages/daemon/src/index.ts
+
+              packages/daemon/src/middleware/project-context.ts
+
+              packages/daemon/src/pid.ts
+
+              packages/daemon/src/project-context.ts
+
+              packages/daemon/src/routes/agent-dispatch.ts
+
+              packages/daemon/src/routes/aggregation.ts
+
+              packages/daemon/src/routes/automation.ts
+
+              packages/daemon/src/routes/command.ts
+
+              packages/daemon/src/routes/debug.ts
+
+              packages/daemon/src/routes/diff.ts
+
+              packages/daemon/src/routes/entity-cache-types.ts
+
+              packages/daemon/src/routes/enum-utils.ts
+
+              packages/daemon/src/routes/inbox.ts
+
+              packages/daemon/src/routes/items.ts
+
+              packages/daemon/src/routes/meta.ts
+
+              packages/daemon/src/routes/plans.ts
+
+              packages/daemon/src/routes/projects.ts
+
+              packages/daemon/src/routes/ref-resolution.ts
+
+              packages/daemon/src/routes/refs.ts
+
+              packages/daemon/src/routes/response-envelope.ts
+
+              packages/daemon/src/routes/reviews.ts
+
+              packages/daemon/src/routes/session-related.ts
+
+              packages/daemon/src/routes/session-summary-utils.ts
+
+              packages/daemon/src/routes/sessions.ts
+
+              packages/daemon/src/routes/task-storage-error.ts
+
+              packages/daemon/src/routes/tasks.ts
+
+              packages/daemon/src/routes/test-hooks.ts
+
+              packages/daemon/src/routes/triage.ts
+
+              packages/daemon/src/routes/validation.ts
+
+              packages/daemon/src/server.ts
+
+              packages/daemon/src/session-sync.ts
+
+              packages/daemon/src/session-watcher.ts
+
+              packages/daemon/src/shadow-sync-manager.ts
+
+              packages/daemon/src/shadow-sync.ts
+
+              packages/daemon/src/watcher-health-monitor.ts
+
+              packages/daemon/src/watcher.ts
+
+              packages/daemon/src/web-ui-entry.ts
+
+              packages/daemon/src/web-ui-static.ts
+
+              packages/daemon/src/websocket/connection-state.ts
+
+              packages/daemon/src/websocket/context-id.ts
+
+              packages/daemon/src/websocket/handler.ts
+
+              packages/daemon/src/websocket/heartbeat.ts
+
+              packages/daemon/src/websocket/lifecycle.ts
+
+              packages/daemon/src/websocket/project-resolution.ts
+
+              packages/daemon/src/websocket/pubsub.ts
+
+              packages/daemon/src/websocket/types.ts
+
+              packages/daemon/tsconfig.json
+
+              packages/shared/package.json
+
+              packages/shared/src/api.ts
+
+              packages/shared/src/index.ts
+
+              packages/shared/src/schemas.ts
+
+              packages/shared/src/websocket.ts
+
+              packages/shared/tests/types.test.ts
+
+              packages/shared/tsconfig.json
+
+              packages/web-ui/.gitignore
+
+              packages/web-ui/.npmrc
+
+              packages/web-ui/README.md
+
+              packages/web-ui/components.json
+
+              packages/web-ui/package.json
+
+              packages/web-ui/postcss.config.js
+
+              packages/web-ui/src/app.css
+
+              packages/web-ui/src/app.d.ts
+
+              packages/web-ui/src/app.html
+
+              packages/web-ui/src/lib/api-static.ts
+
+              packages/web-ui/src/lib/api.ts
+
+              packages/web-ui/src/lib/components/CacheWarmingBanner.svelte
+
+              packages/web-ui/src/lib/components/CommandPalette.svelte
+
+              packages/web-ui/src/lib/components/ConnectionStatus.svelte
+
+              packages/web-ui/src/lib/components/DocsSearch.svelte
+
+              packages/web-ui/src/lib/components/ItemDetail.svelte
+
+              packages/web-ui/src/lib/components/ItemTree.svelte
+
+              packages/web-ui/src/lib/components/MobileNav.svelte
+
+              packages/web-ui/src/lib/components/ProjectSelector.svelte
+
+              packages/web-ui/src/lib/components/ReadOnlyBanner.svelte
+
+              packages/web-ui/src/lib/components/ReferenceLink.svelte
+
+              packages/web-ui/src/lib/components/Sidebar.svelte
+
+              packages/web-ui/src/lib/components/TaskFilters.svelte
+
+              packages/web-ui/src/lib/components/TaskList.svelte
+
+              packages/web-ui/src/lib/components/agents/ActiveInvocationRow.svelte
+
+              packages/web-ui/src/lib/components/agents/AgentCard.svelte
+
+              packages/web-ui/src/lib/components/agents/AgentEditForm.svelte
+
+              packages/web-ui/src/lib/components/agents/DispatchStatus.svelte
+
+              packages/web-ui/src/lib/components/automation/CompositionsSection.svelte
+
+              packages/web-ui/src/lib/components/automation/DispatchTriggersSection.svelte
+
+              packages/web-ui/src/lib/components/automation/EventLogSection.svelte
+
+              packages/web-ui/src/lib/components/automation/HooksSection.svelte
+
+              packages/web-ui/src/lib/components/automation/SchedulesSection.svelte
+
+              packages/web-ui/src/lib/components/board/ActiveFleetRow.svelte
+
+              packages/web-ui/src/lib/components/board/BoardColumn.svelte
+
+              packages/web-ui/src/lib/components/board/BoardSkeleton.svelte
+
+              packages/web-ui/src/lib/components/board/TaskCard.svelte
+
+              packages/web-ui/src/lib/components/board/TaskDetailContent.svelte
+
+              packages/web-ui/src/lib/components/board/TaskDetailModal.svelte
+
+              packages/web-ui/src/lib/components/board/board-utils.ts
+
+              packages/web-ui/src/lib/components/board/fleet-buffer.ts
+
+              packages/web-ui/src/lib/components/content/ContentCommentForm.svelte
+
+              packages/web-ui/src/lib/components/content/ContentInlineThread.svelte
+
+              packages/web-ui/src/lib/components/content/StructuredContentViewer.svelte
+
+              packages/web-ui/src/lib/components/content/index.ts
+
+              packages/web-ui/src/lib/components/diff/CodeDiffViewer.svelte
+
+              packages/web-ui/src/lib/components/diff/DiffCommentForm.svelte
+
+              packages/web-ui/src/lib/components/diff/DiffFileList.svelte
+
+              packages/web-ui/src/lib/components/diff/DiffFileView.svelte
+
+              packages/web-ui/src/lib/components/diff/DiffHunkView.svelte
+
+              packages/web-ui/src/lib/components/diff/DiffInlineThread.svelte
+
+              packages/web-ui/src/lib/components/diff/index.ts
+
+              packages/web-ui/src/lib/components/markdown/StreamingMarkdown.svelte
+
+              packages/web-ui/src/lib/components/plans/PlanEmbeddedBlocks.svelte
+
+              packages/web-ui/src/lib/components/session/MessageBlock.svelte
+
+              packages/web-ui/src/lib/components/session/RelatedSessionsSection.svelte
+
+              packages/web-ui/src/lib/components/session/SessionContextPanel.svelte
+
+              packages/web-ui/src/lib/components/session/SessionFilters.svelte
+
+              packages/web-ui/src/lib/components/session/SessionStream.svelte
+
+              packages/web-ui/src/lib/components/session/SessionStreamSkeleton.svelte
+
+              packages/web-ui/src/lib/components/session/SystemBlock.svelte
+
+              packages/web-ui/src/lib/components/session/ThinkingBlock.svelte
+
+              packages/web-ui/src/lib/components/session/ToolCallView.svelte
+
+              packages/web-ui/src/lib/components/session/session-utils.ts
+
+              packages/web-ui/src/lib/components/ui/accordion/accordion-content.svelte
+
+              packages/web-ui/src/lib/components/ui/accordion/accordion-item.svelte
+
+              packages/web-ui/src/lib/components/ui/accordion/accordion-trigger.svelte
+
+              packages/web-ui/src/lib/components/ui/accordion/accordion.svelte
+
+              packages/web-ui/src/lib/components/ui/accordion/index.ts
+
+              packages/web-ui/src/lib/components/ui/badge/badge.svelte
+
+              packages/web-ui/src/lib/components/ui/badge/index.ts
+
+              packages/web-ui/src/lib/components/ui/button/button.svelte
+
+              packages/web-ui/src/lib/components/ui/button/index.ts
+
+              packages/web-ui/src/lib/components/ui/card/card-action.svelte
+
+              packages/web-ui/src/lib/components/ui/card/card-content.svelte
+
+              packages/web-ui/src/lib/components/ui/card/card-description.svelte
+
+              packages/web-ui/src/lib/components/ui/card/card-footer.svelte
+
+              packages/web-ui/src/lib/components/ui/card/card-header.svelte
+
+              packages/web-ui/src/lib/components/ui/card/card-title.svelte
+
+              packages/web-ui/src/lib/components/ui/card/card.svelte
+
+              packages/web-ui/src/lib/components/ui/card/index.ts
+
+              packages/web-ui/src/lib/components/ui/command/command-dialog.svelte
+
+              packages/web-ui/src/lib/components/ui/command/command-empty.svelte
+
+              packages/web-ui/src/lib/components/ui/command/command-group.svelte
+
+              packages/web-ui/src/lib/components/ui/command/command-input.svelte
+
+              packages/web-ui/src/lib/components/ui/command/command-item.svelte
+
+              packages/web-ui/src/lib/components/ui/command/command-link-item.svelte
+
+              packages/web-ui/src/lib/components/ui/command/command-list.svelte
+
+              packages/web-ui/src/lib/components/ui/command/command-loading.svelte
+
+              packages/web-ui/src/lib/components/ui/command/command-separator.svelte
+
+              packages/web-ui/src/lib/components/ui/command/command-shortcut.svelte
+
+              packages/web-ui/src/lib/components/ui/command/command.svelte
+
+              packages/web-ui/src/lib/components/ui/command/index.ts
+
+              packages/web-ui/src/lib/components/ui/data-table/data-table.svelte.ts
+
+              packages/web-ui/src/lib/components/ui/data-table/flex-render.svelte
+
+              packages/web-ui/src/lib/components/ui/data-table/index.ts
+
+              packages/web-ui/src/lib/components/ui/data-table/render-helpers.ts
+
+              packages/web-ui/src/lib/components/ui/dialog/dialog-close.svelte
+
+              packages/web-ui/src/lib/components/ui/dialog/dialog-content.svelte
+
+              packages/web-ui/src/lib/components/ui/dialog/dialog-description.svelte
+
+              packages/web-ui/src/lib/components/ui/dialog/dialog-footer.svelte
+
+              packages/web-ui/src/lib/components/ui/dialog/dialog-header.svelte
+
+              packages/web-ui/src/lib/components/ui/dialog/dialog-overlay.svelte
+
+              packages/web-ui/src/lib/components/ui/dialog/dialog-portal.svelte
+
+              packages/web-ui/src/lib/components/ui/dialog/dialog-title.svelte
+
+              packages/web-ui/src/lib/components/ui/dialog/dialog-trigger.svelte
+
+              packages/web-ui/src/lib/components/ui/dialog/dialog.svelte
+
+              packages/web-ui/src/lib/components/ui/dialog/index.ts
+
+              packages/web-ui/src/lib/components/ui/input/index.ts
+
+              packages/web-ui/src/lib/components/ui/input/input.svelte
+
+              packages/web-ui/src/lib/components/ui/select/index.ts
+
+              packages/web-ui/src/lib/components/ui/select/select-content.svelte
+
+              packages/web-ui/src/lib/components/ui/select/select-group-heading.svelte
+
+              packages/web-ui/src/lib/components/ui/select/select-group.svelte
+
+              packages/web-ui/src/lib/components/ui/select/select-item.svelte
+
+              packages/web-ui/src/lib/components/ui/select/select-label.svelte
+
+              packages/web-ui/src/lib/components/ui/select/select-portal.svelte
+
+              packages/web-ui/src/lib/components/ui/select/select-scroll-down-button.svelte
+
+              packages/web-ui/src/lib/components/ui/select/select-scroll-up-button.svelte
+
+              packages/web-ui/src/lib/components/ui/select/select-separator.svelte
+
+              packages/web-ui/src/lib/components/ui/select/select-trigger.svelte
+
+              packages/web-ui/src/lib/components/ui/select/select.svelte
+
+              packages/web-ui/src/lib/components/ui/separator/index.ts
+
+              packages/web-ui/src/lib/components/ui/separator/separator.svelte
+
+              packages/web-ui/src/lib/components/ui/sheet/index.ts
+
+              packages/web-ui/src/lib/components/ui/sheet/sheet-close.svelte
+
+              packages/web-ui/src/lib/components/ui/sheet/sheet-content.svelte
+
+              packages/web-ui/src/lib/components/ui/sheet/sheet-description.svelte
+
+              packages/web-ui/src/lib/components/ui/sheet/sheet-footer.svelte
+
+              packages/web-ui/src/lib/components/ui/sheet/sheet-header.svelte
+
+              packages/web-ui/src/lib/components/ui/sheet/sheet-overlay.svelte
+
+              packages/web-ui/src/lib/components/ui/sheet/sheet-portal.svelte
+
+              packages/web-ui/src/lib/components/ui/sheet/sheet-title.svelte
+
+              packages/web-ui/src/lib/components/ui/sheet/sheet-trigger.svelte
+
+              packages/web-ui/src/lib/components/ui/sheet/sheet.svelte
+
+              packages/web-ui/src/lib/components/ui/sidebar/constants.ts
+
+              packages/web-ui/src/lib/components/ui/sidebar/context.svelte.ts
+
+              packages/web-ui/src/lib/components/ui/sidebar/index.ts
+
+              packages/web-ui/src/lib/components/ui/sidebar/sidebar-content.svelte
+
+              packages/web-ui/src/lib/components/ui/sidebar/sidebar-footer.svelte
+
+              packages/web-ui/src/lib/components/ui/sidebar/sidebar-group-action.svelte
+
+              packages/web-ui/src/lib/components/ui/sidebar/sidebar-group-content.svelte
+
+              packages/web-ui/src/lib/components/ui/sidebar/sidebar-group-label.svelte
+
+              packages/web-ui/src/lib/components/ui/sidebar/sidebar-group.svelte
+
+              packages/web-ui/src/lib/components/ui/sidebar/sidebar-header.svelte
+
+              packages/web-ui/src/lib/components/ui/sidebar/sidebar-input.svelte
+
+              packages/web-ui/src/lib/components/ui/sidebar/sidebar-inset.svelte
+
+              packages/web-ui/src/lib/components/ui/sidebar/sidebar-menu-action.svelte
+
+              packages/web-ui/src/lib/components/ui/sidebar/sidebar-menu-badge.svelte
+
+              packages/web-ui/src/lib/components/ui/sidebar/sidebar-menu-button.svelte
+
+              packages/web-ui/src/lib/components/ui/sidebar/sidebar-menu-item.svelte
+
+              packages/web-ui/src/lib/components/ui/sidebar/sidebar-menu-skeleton.svelte
+
+              packages/web-ui/src/lib/components/ui/sidebar/sidebar-menu-sub-button.svelte
+
+              packages/web-ui/src/lib/components/ui/sidebar/sidebar-menu-sub-item.svelte
+
+              packages/web-ui/src/lib/components/ui/sidebar/sidebar-menu-sub.svelte
+
+              packages/web-ui/src/lib/components/ui/sidebar/sidebar-menu.svelte
+
+              packages/web-ui/src/lib/components/ui/sidebar/sidebar-provider.svelte
+
+              packages/web-ui/src/lib/components/ui/sidebar/sidebar-rail.svelte
+
+              packages/web-ui/src/lib/components/ui/sidebar/sidebar-separator.svelte
+
+              packages/web-ui/src/lib/components/ui/sidebar/sidebar-trigger.svelte
+
+              packages/web-ui/src/lib/components/ui/sidebar/sidebar.svelte
+
+              packages/web-ui/src/lib/components/ui/skeleton/index.ts
+
+              packages/web-ui/src/lib/components/ui/skeleton/skeleton.svelte
+
+              packages/web-ui/src/lib/components/ui/table/index.ts
+
+              packages/web-ui/src/lib/components/ui/table/table-body.svelte
+
+              packages/web-ui/src/lib/components/ui/table/table-caption.svelte
+
+              packages/web-ui/src/lib/components/ui/table/table-cell.svelte
+
+              packages/web-ui/src/lib/components/ui/table/table-footer.svelte
+
+              packages/web-ui/src/lib/components/ui/table/table-head.svelte
+
+              packages/web-ui/src/lib/components/ui/table/table-header.svelte
+
+              packages/web-ui/src/lib/components/ui/table/table-row.svelte
+
+              packages/web-ui/src/lib/components/ui/table/table.svelte
+
+              packages/web-ui/src/lib/components/ui/tabs/index.ts
+
+              packages/web-ui/src/lib/components/ui/tabs/tabs-content.svelte
+
+              packages/web-ui/src/lib/components/ui/tabs/tabs-list.svelte
+
+              packages/web-ui/src/lib/components/ui/tabs/tabs-trigger.svelte
+
+              packages/web-ui/src/lib/components/ui/tabs/tabs.svelte
+
+              packages/web-ui/src/lib/components/ui/textarea/index.ts
+
+              packages/web-ui/src/lib/components/ui/textarea/textarea.svelte
+
+              packages/web-ui/src/lib/components/ui/tooltip/index.ts
+
+              packages/web-ui/src/lib/components/ui/tooltip/tooltip-content.svelte
+
+              packages/web-ui/src/lib/components/ui/tooltip/tooltip-portal.svelte
+
+              packages/web-ui/src/lib/components/ui/tooltip/tooltip-provider.svelte
+
+              packages/web-ui/src/lib/components/ui/tooltip/tooltip-trigger.svelte
+
+              packages/web-ui/src/lib/components/ui/tooltip/tooltip.svelte
+
+              packages/web-ui/src/lib/constants.ts
+
+              packages/web-ui/src/lib/daemon-endpoint-host.ts
+
+              packages/web-ui/src/lib/docs-types.ts
+
+              packages/web-ui/src/lib/docs.ts
+
+              packages/web-ui/src/lib/ds/animations.css
+
+              packages/web-ui/src/lib/ds/tokens.css
+
+              packages/web-ui/src/lib/hooks/is-mobile.svelte.ts
+
+              packages/web-ui/src/lib/index.ts
+
+              packages/web-ui/src/lib/query/client.ts
+
+              packages/web-ui/src/lib/query/context.ts
+
+              packages/web-ui/src/lib/query/createQuery.svelte.ts
+
+              packages/web-ui/src/lib/query/index.ts
+
+              packages/web-ui/src/lib/query/keys.ts
+
+              packages/web-ui/src/lib/query/ws-invalidation.ts
+
+              packages/web-ui/src/lib/stores/connection.svelte.ts
+
+              packages/web-ui/src/lib/stores/mode.svelte.ts
+
+              packages/web-ui/src/lib/stores/project.svelte.ts
+
+              packages/web-ui/src/lib/types/snapshot.ts
+
+              packages/web-ui/src/lib/types/triage.ts
+
+              packages/web-ui/src/lib/utils.ts
+
+              packages/web-ui/src/lib/utils/ansi.ts
+
+              packages/web-ui/src/lib/utils/diff.ts
+
+              packages/web-ui/src/lib/utils/docs-markdown.ts
+
+              packages/web-ui/src/lib/utils/docs-utils.ts
+
+              packages/web-ui/src/lib/utils/highlight.ts
+
+              packages/web-ui/src/lib/utils/markdown.ts
+
+              packages/web-ui/src/lib/utils/plan-embedded-content.ts
+
+              packages/web-ui/src/lib/utils/reference.ts
+
+              packages/web-ui/src/lib/utils/sanitize.ts
+
+              packages/web-ui/src/lib/utils/streaming-markdown.ts
+
+              packages/web-ui/src/lib/websocket/manager.ts
+
+              packages/web-ui/src/lib/websocket/types.ts
+
+              packages/web-ui/src/routes/+layout.svelte
+
+              packages/web-ui/src/routes/+layout.ts
+
+              packages/web-ui/src/routes/+page.svelte
+
+              packages/web-ui/src/routes/agents/+page.svelte
+
+              packages/web-ui/src/routes/automation/+page.svelte
+
+              packages/web-ui/src/routes/automation/+page.ts
+
+              packages/web-ui/src/routes/docs/+page.svelte
+
+              packages/web-ui/src/routes/docs/[...slug]/+page.svelte
+
+              packages/web-ui/src/routes/inbox/+page.svelte
+
+              packages/web-ui/src/routes/items/+page.svelte
+
+              packages/web-ui/src/routes/observations/+page.svelte
+
+              packages/web-ui/src/routes/plans/+page.svelte
+
+              packages/web-ui/src/routes/plans/+page.ts
+
+              packages/web-ui/src/routes/reviews/+page.svelte
+
+              packages/web-ui/src/routes/reviews/+page.ts
+
+              packages/web-ui/src/routes/reviews/[id]/+page.svelte
+
+              packages/web-ui/src/routes/reviews/[id]/+page.ts
+
+              packages/web-ui/src/routes/sessions/+page.svelte
+
+              packages/web-ui/src/routes/sessions/[id]/+page.svelte
+
+              packages/web-ui/src/routes/settings/+page.svelte
+
+              packages/web-ui/src/routes/settings/+page.ts
+
+              packages/web-ui/src/routes/specs/+page.svelte
+
+              packages/web-ui/src/routes/tasks/+page.svelte
+
+              packages/web-ui/src/routes/tasks/+page.ts
+
+              packages/web-ui/src/routes/tasks/board/+page.svelte
+
+              packages/web-ui/src/routes/tasks/board/+page.ts
+
+              packages/web-ui/src/routes/triage/+page.svelte
+
+              packages/web-ui/src/routes/validate/+page.svelte
+
+              packages/web-ui/src/routes/workflows/+page.svelte
+
+              packages/web-ui/src/routes/workflows/+page.ts
+
+              packages/web-ui/static/favicon-192.png
+
+              packages/web-ui/static/favicon-32.png
+
+              packages/web-ui/static/favicon.ico
+
+              packages/web-ui/static/robots.txt
+
+              packages/web-ui/svelte.config.js
+
+              packages/web-ui/tailwind.config.js
+
+              packages/web-ui/tsconfig.json
+
+              packages/web-ui/vite-plugin-docs.ts
+
+              packages/web-ui/vite.config.ts
+
+              playwright.config.ts
+
+              scripts/bootstrap.cjs
+
+              scripts/build-daemon.cjs
+
+              scripts/build-docs-search.cjs
+
+              scripts/build-executables.sh
+
+              scripts/build-plugin.cjs
+
+              scripts/dependency-health.cjs
+
+              scripts/test-progress-reporter.cjs
+
+              scripts/test.cjs
+
+              src/acp/client.ts
+
+              src/acp/framing.ts
+
+              src/acp/index.ts
+
+              src/acp/types.ts
+
+              src/agent-runtime/action-executor.ts
+
+              src/agent-runtime/bootstrap.ts
+
+              src/agent-runtime/dispatch.ts
+
+              src/agent-runtime/event-bus.ts
+
+              src/agent-runtime/hook-executor.ts
+
+              src/agent-runtime/index.ts
+
+              src/agent-runtime/invocation.ts
+
+              src/agent-runtime/join-accumulator.ts
+
+              src/agent-runtime/prompts.ts
+
+              src/agent-runtime/schedule-engine.ts
+
+              src/agent-runtime/session-event-accumulator.ts
+
+              src/agent-runtime/session-event-fields.ts
+
+              src/agent-runtime/session-event-types.ts
+
+              src/agent-runtime/session-registry.ts
+
+              src/agent-runtime/workspace.ts
+
+              src/agents/adapters.ts
+
+              src/agents/index.ts
+
+              src/agents/spawner.ts
+
+              src/cli/batch-context.ts
+
+              src/cli/batch-exec.ts
+
+              src/cli/batch-write-buffer.ts
+
+              src/cli/batch.ts
+
+              src/cli/branch-helper.ts
+
+              src/cli/command-annotations.ts
+
+              src/cli/commands/agent.ts
+
+              src/cli/commands/agents.ts
+
+              src/cli/commands/batch.ts
+
+              src/cli/commands/clone-for-testing.ts
+
+              src/cli/commands/derive.ts
+
+              src/cli/commands/doctor.ts
+
+              src/cli/commands/event.ts
+
+              src/cli/commands/export.ts
+
+              src/cli/commands/guard.ts
+
+              src/cli/commands/help.ts
+
+              src/cli/commands/hook.ts
+
+              src/cli/commands/inbox.ts
+
+              src/cli/commands/index.ts
+
+              src/cli/commands/init.ts
+
+              src/cli/commands/item.ts
+
+              src/cli/commands/link.ts
+
+              src/cli/commands/log.ts
+
+              src/cli/commands/merge-driver.ts
+
+              src/cli/commands/meta.ts
+
+              src/cli/commands/module.ts
+
+              src/cli/commands/plan-import.ts
+
+              src/cli/commands/plan.ts
+
+              src/cli/commands/refs.ts
+
+              src/cli/commands/release-notes.ts
+
+              src/cli/commands/review.ts
+
+              src/cli/commands/schedule.ts
+
+              src/cli/commands/search.ts
+
+              src/cli/commands/serve.ts
+
+              src/cli/commands/session.ts
+
+              src/cli/commands/session/checkpoint.ts
+
+              src/cli/commands/session/commands.ts
+
+              src/cli/commands/session/compact.ts
+
+              src/cli/commands/session/context.ts
+
+              src/cli/commands/session/create.ts
+
+              src/cli/commands/session/format.ts
+
+              src/cli/commands/session/index.ts
+
+              src/cli/commands/session/log.ts
+
+              src/cli/commands/session/migrate.ts
+
+              src/cli/commands/session/stale-close.ts
+
+              src/cli/commands/session/types.ts
+
+              src/cli/commands/setup-defaults.ts
+
+              src/cli/commands/setup-seeding.ts
+
+              src/cli/commands/setup.ts
+
+              src/cli/commands/shadow.ts
+
+              src/cli/commands/skill-crud.ts
+
+              src/cli/commands/skill-diff.ts
+
+              src/cli/commands/skill-install.ts
+
+              src/cli/commands/skill.ts
+
+              src/cli/commands/task.ts
+
+              src/cli/commands/tasks.ts
+
+              src/cli/commands/trait.ts
+
+              src/cli/commands/triage.ts
+
+              src/cli/commands/upgrade.ts
+
+              src/cli/commands/util.ts
+
+              src/cli/commands/validate.ts
+
+              src/cli/commands/workflow.ts
+
+              src/cli/daemon-client.ts
+
+              src/cli/daemon-proxy.ts
+
+              src/cli/dispatch-events.ts
+
+              src/cli/enum-help.ts
+
+              src/cli/exit-codes.ts
+
+              src/cli/help/content.ts
+
+              src/cli/index.ts
+
+              src/cli/introspection.ts
+
+              src/cli/output.ts
+
+              src/cli/parse-utils.ts
+
+              src/cli/pid-utils.ts
+
+              src/cli/suggest.ts
+
+              src/cli/sync-mode.ts
+
+              src/cli/validators.ts
+
+              src/daemon-shared/endpoint.ts
+
+              src/daemon/entity-cache.ts
+
+              src/daemon/shadow-sync-manager.ts
+
+              src/export/html.ts
+
+              src/export/index.ts
+
+              src/export/json.ts
+
+              src/export/triage.ts
+
+              src/export/types.ts
+
+              src/index.ts
+
+              src/lib/claude-hooks.ts
+
+              src/lib/claude-plugin-registry.ts
+
+              src/lib/codex-config.ts
+
+              src/lib/plan-summary.ts
+
+              src/merge/arrays.ts
+
+              src/merge/file-type.ts
+
+              src/merge/index.ts
+
+              src/merge/objects.ts
+
+              src/merge/parse.ts
+
+              src/merge/resolve.ts
+
+              src/merge/types.ts
+
+              src/parser/agent-data-sections.ts
+
+              src/parser/agent-detection.ts
+
+              src/parser/alignment.ts
+
+              src/parser/assess.ts
+
+              src/parser/config.ts
+
+              src/parser/convention-validation.ts
+
+              src/parser/coverage-cache.ts
+
+              src/parser/daemon-status.ts
+
+              src/parser/dispatch-workspaces.ts
+
+              src/parser/doctor.ts
+
+              src/parser/entity-local-resources.ts
+
+              src/parser/file-lock.ts
+
+              src/parser/fix.ts
+
+              src/parser/folder-backed-entity.ts
+
+              src/parser/gitignore.ts
+
+              src/parser/index.ts
+
+              src/parser/items.ts
+
+              src/parser/meta.ts
+
+              src/parser/plan-document.ts
+
+              src/parser/plans.ts
+
+              src/parser/refs.ts
+
+              src/parser/release-notes.ts
+
+              src/parser/review-operations.ts
+
+              src/parser/review-task-integration.ts
+
+              src/parser/review-threads.ts
+
+              src/parser/review-validation.ts
+
+              src/parser/reviews.ts
+
+              src/parser/session-branch.ts
+
+              src/parser/session-sync-scheduler.ts
+
+              src/parser/setup-status.ts
+
+              src/parser/shadow-sync-scheduler.ts
+
+              src/parser/shadow.ts
+
+              src/parser/skill-render.ts
+
+              src/parser/split-backend.ts
+
+              src/parser/task-data-manager.ts
+
+              src/parser/traits.ts
+
+              src/parser/validate-skills.ts
+
+              src/parser/validate.ts
+
+              src/parser/yaml.ts
+
+              src/review/checks.ts
+
+              src/review/index.ts
+
+              src/review/subject-bindings.ts
+
+              src/schema/action.ts
+
+              src/schema/batch.ts
+
+              src/schema/common.d.ts.map
+
+              src/schema/common.ts
+
+              src/schema/composition.ts
+
+              src/schema/dispatch-workspace.ts
+
+              src/schema/event-payloads.ts
+
+              src/schema/event-registry.ts
+
+              src/schema/hooks.ts
+
+              src/schema/inbox.d.ts.map
+
+              src/schema/inbox.ts
+
+              src/schema/index.ts
+
+              src/schema/meta.d.ts.map
+
+              src/schema/meta.ts
+
+              src/schema/plan.ts
+
+              src/schema/resources.ts
+
+              src/schema/review-records.ts
+
+              src/schema/schedules.ts
+
+              src/schema/spec.d.ts.map
+
+              src/schema/spec.ts
+
+              src/schema/task.d.ts.map
+
+              src/schema/task.ts
+
+              src/schema/triage.ts
+
+              src/sessions/index.ts
+
+              src/sessions/legacy.ts
+
+              src/sessions/store.ts
+
+              src/sessions/types.ts
+
+              src/strings/errors.ts
+
+              src/strings/guidance.ts
+
+              src/strings/index.ts
+
+              src/strings/labels.ts
+
+              src/strings/validation.ts
+
+              src/triage/actions.ts
+
+              src/triage/constants.ts
+
+              src/triage/index.ts
+
+              src/utils/activity.ts
+
+              src/utils/commit.ts
+
+              src/utils/git-diff-parser.ts
+
+              src/utils/git.ts
+
+              src/utils/grep.ts
+
+              src/utils/index.ts
+
+              src/utils/time.ts
+
+              templates/agents-sections/01-quick-start.md
+
+              templates/agents-sections/02-shadow-branch.md
+
+              templates/agents-sections/03-task-lifecycle.md
+
+              templates/agents-sections/04-pr-workflow.md
+
+              templates/agents-sections/05-commit-convention.md
+
+              templates/agents-sections/06-agent-dispatch-mode.md
+
+              templates/agents-sections/07-batch-usage.md
+
+              templates/hooks/pre-commit
+
+              templates/skills/create-workflow/SKILL.md
+
+              templates/skills/help/SKILL.md
+
+              templates/skills/manifest.yaml
+
+              templates/skills/merge/SKILL.md
+
+              templates/skills/merge/scripts/detached-reviewer-merge.sh
+
+              templates/skills/observe/SKILL.md
+
+              templates/skills/plan/SKILL.md
+
+              templates/skills/reflect/SKILL.md
+
+              templates/skills/review-plan/SKILL.md
+
+              templates/skills/review/SKILL.md
+
+              templates/skills/task-work/SKILL.md
+
+              templates/skills/triage-automation/SKILL.md
+
+              templates/skills/triage-inbox/SKILL.md
+
+              templates/skills/triage/SKILL.md
+
+              templates/skills/triage/docs/automation.md
+
+              templates/skills/triage/docs/inbox.md
+
+              templates/skills/triage/docs/observations.md
+
+              templates/skills/writing-specs/SKILL.md
+
+              tests/ac-annotation-identifier-format.test.ts
+
+              tests/ac-annotation-integrity.test.ts
+
+              tests/ac-annotation-validation.test.ts
+
+              tests/ac-delete-confirmation.test.ts
+
+              tests/ac-id-format-gate.test.ts
+
+              tests/ac-id-format.test.ts
+
+              tests/ac-id-patch-validation.test.ts
+
+              tests/ac-schema-drift.test.ts
+
+              tests/acp.test.ts
+
+              tests/action-model.test.ts
+
+              tests/active-session-registry.test.ts
+
+              tests/activity-display.test.ts
+
+              tests/activity-in-file.test.ts
+
+              tests/agent-action-input.test.ts
+
+              tests/agent-data-sections.test.ts
+
+              tests/agent-detection.test.ts
+
+              tests/agent-dispatch-engine.test.ts
+
+              tests/agent-invocation-lifecycle.test.ts
+
+              tests/agent-runtime/adapter-auto-approve.test.ts
+
+              tests/agent-runtime/session-budget-integration.test.ts
+
+              tests/agent-runtime/session-end-loop.test.ts
+
+              tests/agents-instruction-gen.test.ts
+
+              tests/api-response-envelope.test.ts
+
+              tests/automation-action-type-completeness.test.ts
+
+              tests/automation-eligibility.test.ts
+
+              tests/batch-allowed-commands.test.ts
+
+              tests/batch-commands.test.ts
+
+              tests/batch-exec-engine.test.ts
+
+              tests/batch-schema.test.ts
+
+              tests/batch-write-buffer.test.ts
+
+              tests/bootstrap.test.ts
+
+              tests/canonical-task-workspace-contract.test.ts
+
+              tests/claude-code-renderer.test.ts
+
+              tests/claude-plugin-registry.test.ts
+
+              tests/cli-agent-commands.test.ts
+
+              tests/cli-agent-watch-endpoint.test.ts
+
+              tests/cli-daemon-client.test.ts
+
+              tests/cli-daemon-endpoint-regression.test.ts
+
+              tests/cli-daemon-proxy.test.ts
+
+              tests/cli-filter-input-validation.test.ts
+
+              tests/cli-mutation-input-validation.test.ts
+
+              tests/cli-no-daemon.test.ts
+
+              tests/cli-plan-delete.test.ts
+
+              tests/cli-plan-derive.test.ts
+
+              tests/cli-plan-import.test.ts
+
+              tests/cli-plan.test.ts
+
+              tests/cli-schedule-commands.test.ts
+
+              tests/cli-serve.test.ts
+
+              tests/cli-task-event-endpoint.test.ts
+
+              tests/cli-validators.test.ts
+
+              tests/cli-version.test.ts
+
+              tests/cli-worktree-resolution.test.ts
+
+              tests/cli/session-checkpoint.test.ts
+
+              tests/cli/session-iteration-stats.test.ts
+
+              tests/cli/session-note-limit.test.ts
+
+              tests/cli/session-start-activity-timeline.test.ts
+
+              tests/cli/session-start-computed-json.test.ts
+
+              tests/cli/session-start-format.test.ts
+
+              tests/cli/session-start-inbox-triage.test.ts
+
+              tests/cli/session-start-limit-validation.test.ts
+
+              tests/cli/session-start-notes.test.ts
+
+              tests/cli/session-start-unlocks.test.ts
+
+              tests/cli/setup-seeding.test.ts
+
+              tests/clone-for-testing.test.ts
+
+              tests/comma-separated-tags.test.ts
+
+              tests/command-action.test.ts
+
+              tests/command-group-defaults.test.ts
+
+              tests/composition-join.test.ts
+
+              tests/convention-validation.test.ts
+
+              tests/core-ac-backfill.test.ts
+
+              tests/core-skill-install.test.ts
+
+              tests/core-skill-namespace.test.ts
+
+              tests/core-skill-update.test.ts
+
+              tests/coverage-annotation-scope-boundaries.test.ts
+
+              tests/coverage-cache.test.ts
+
+              tests/coverage-scan-config.test.ts
+
+              tests/cross-platform-robustness.test.ts
+
+              tests/daemon-agent-dispatch-routes.test.ts
+
+              tests/daemon-api-input-validation.test.ts
+
+              tests/daemon-api/agent-dispatch.test.ts
+
+              tests/daemon-api/aggregation.test.ts
+
+              tests/daemon-api/errors.test.ts
+
+              tests/daemon-api/helpers.test.ts
+
+              tests/daemon-api/helpers.ts
+
+              tests/daemon-api/inbox.test.ts
+
+              tests/daemon-api/items.test.ts
+
+              tests/daemon-api/meta.test.ts
+
+              tests/daemon-api/plans.test.ts
+
+              tests/daemon-api/projects.test.ts
+
+              tests/daemon-api/reviews-list.test.ts
+
+              tests/daemon-api/reviews-threads.test.ts
+
+              tests/daemon-api/server.test.ts
+
+              tests/daemon-api/sessions-legacy.test.ts
+
+              tests/daemon-api/sessions-pagination.test.ts
+
+              tests/daemon-api/sessions-search.test.ts
+
+              tests/daemon-api/task-storage-incompatibility-helper.test.ts
+
+              tests/daemon-api/task-storage-incompatibility-routes.test.ts
+
+              tests/daemon-api/tasks.test.ts
+
+              tests/daemon-api/websocket-protocol.test.ts
+
+              tests/daemon-auto-start.test.ts
+
+              tests/daemon-automation-routes.test.ts
+
+              tests/daemon-automation-spawner-wiring.test.ts
+
+              tests/daemon-build.test.ts
+
+              tests/daemon-cache-route-coverage.test.ts
+
+              tests/daemon-command-api.test.ts
+
+              tests/daemon-connection-state.test.ts
+
+              tests/daemon-context-manager.test.ts
+
+              tests/daemon-debug-routes.test.ts
+
+              tests/daemon-diff-api.test.ts
+
+              tests/daemon-endpoint.test.ts
+
+              tests/daemon-entity-cache.test.ts
+
+              tests/daemon-executable.test.ts
+
+              tests/daemon-global-pid-port.test.ts
+
+              tests/daemon-heartbeat.test.ts
+
+              tests/daemon-path-validation-middleware.test.ts
+
+              tests/daemon-pid.test.ts
+
+              tests/daemon-pubsub.test.ts
+
+              tests/daemon-read-path.test.ts
+
+              tests/daemon-review-verdicts-api.test.ts
+
+              tests/daemon-review-websocket.test.ts
+
+              tests/daemon-runtime-adapter.test.ts
+
+              tests/daemon-server.test.ts
+
+              tests/daemon-session-sync-manifest-discovery.test.ts
+
+              tests/daemon-session-sync-multi-project.test.ts
+
+              tests/daemon-shadow-sync-multi-project.test.ts
+
+              tests/daemon-status-endpoint.test.ts
+
+              tests/daemon-triage-write-through.test.ts
+
+              tests/daemon-watcher-chokidar.test.ts
+
+              tests/daemon-watcher-error-handling.test.ts
+
+              tests/daemon-watcher-multi-project.test.ts
+
+              tests/daemon-web-ui-bun-route-order.test.ts
+
+              tests/daemon-web-ui-bundle.test.ts
+
+              tests/daemon-web-ui-entry.test.ts
+
+              tests/daemon-web-ui-startup-asset-coherence.test.ts
+
+              tests/daemon-websocket-close.test.ts
+
+              tests/daemon-websocket-handler.test.ts
+
+              tests/derivable-default-module.test.ts
+
+              tests/detached-reviewer-merge.test.ts
+
+              tests/dispatch-adopted-branch-regression.test.ts
+
+              tests/dispatch-artifact-protection.test.ts
+
+              tests/dispatch-branch-integration-contract.test.ts
+
+              tests/dispatch-branch-push-lifecycle.test.ts
+
+              tests/dispatch-degraded-state.test.ts
+
+              tests/dispatch-multi-turn-integration.test.ts
+
+              tests/dispatch-runtime-bootstrap-contract.test.ts
+
+              tests/dispatch-shadow-mutation-lock.test.ts
+
+              tests/dispatch-target-sync.test.ts
+
+              tests/dispatch-workspace-adopt-branch-lineage.test.ts
+
+              tests/dispatch-workspace-adopted-branch-cleanup.test.ts
+
+              tests/dispatch-workspace-and-scheduler-flow.test.ts
+
+              tests/dispatch-workspace-branch-provenance.test.ts
+
+              tests/dispatch-workspace-cleanup-completion.test.ts
+
+              tests/dispatch-workspace-cleanup.test.ts
+
+              tests/dispatch-workspace-config.test.ts
+
+              tests/dispatch-workspace-discovery.test.ts
+
+              tests/dispatch-workspace-registry-purge.test.ts
+
+              tests/dispatch-workspace-registry.test.ts
+
+              tests/dispatch-workspace-remote-branch-fallback.test.ts
+
+              tests/dispatch-workspace-terminal-reconciliation.test.ts
+
+              tests/dispatch-workspace-unrecoverable-purge.test.ts
+
+              tests/docs-readme-structure.test.ts
+
+              tests/droid-setup-status.test.ts
+
+              tests/e2e-fixture-daemon-cleanup.test.ts
+
+              tests/e2e/agents.spec.ts
+
+              tests/e2e/api-triage.spec.ts
+
+              tests/e2e/api-watcher.spec.ts
+
+              tests/e2e/api-websocket.spec.ts
+
+              tests/e2e/automation-session-idle.spec.ts
+
+              tests/e2e/automation.spec.ts
+
+              tests/e2e/cache-warming-transition.spec.ts
+
+              tests/e2e/cache-warming-views.spec.ts
+
+              tests/e2e/code-diff-viewer.spec.ts
+
+              tests/e2e/connection.spec.ts
+
+              tests/e2e/dashboard.spec.ts
+
+              tests/e2e/docs.spec.ts
+
+              tests/e2e/errors.spec.ts
+
+              tests/e2e/file-watcher.spec.ts
+
+              tests/e2e/fixtures/.kspec-session
+
+              tests/e2e/fixtures/daemon-fixture.ts
+
+              tests/e2e/fixtures/kynetic.meta.yaml
+
+              tests/e2e/fixtures/kynetic.yaml
+
+              tests/e2e/fixtures/modules/core.yaml
+
+              tests/e2e/fixtures/project-tests/coverage-test.test.ts
+
+              tests/e2e/fixtures/project.inbox.yaml
+
+              tests/e2e/fixtures/project.plans.yaml
+
+              tests/e2e/fixtures/project.reviews.yaml
+
+              tests/e2e/fixtures/project.tasks.yaml
+
+              tests/e2e/fixtures/project.triage.yaml
+
+              tests/e2e/fixtures/tasks/01KG0RR6CA45ZT43W2T6HJMVA1/notes.yaml
+
+              tests/e2e/fixtures/tasks/01KG0RR6CA45ZT43W2T6HJMVA1/task.yaml
+
+              tests/e2e/fixtures/tasks/01KG0RR7CC9N4YGP991WD7XS8S/notes.yaml
+
+              tests/e2e/fixtures/tasks/01KG0RR7CC9N4YGP991WD7XS8S/task.yaml
+
+              tests/e2e/fixtures/tasks/01KG0RR8CB8N4YGP991WD7XS9R/notes.yaml
+
+              tests/e2e/fixtures/tasks/01KG0RR8CB8N4YGP991WD7XS9R/task.yaml
+
+              tests/e2e/fixtures/tasks/01KG0RRDCC9N4YGP991WD7XSPR/notes.yaml
+
+              tests/e2e/fixtures/tasks/01KG0RRDCC9N4YGP991WD7XSPR/task.yaml
+
+              tests/e2e/fixtures/tasks/01KG0RRFCC9N4YGP991WD7XSCP/notes.yaml
+
+              tests/e2e/fixtures/tasks/01KG0RRFCC9N4YGP991WD7XSCP/task.yaml
+
+              tests/e2e/fixtures/tasks/01KG0RRGCC9N4YGP991WD7XSNR/notes.yaml
+
+              tests/e2e/fixtures/tasks/01KG0RRGCC9N4YGP991WD7XSNR/task.yaml
+
+              tests/e2e/fixtures/tasks/01KG0RRHCC9N4YGP991WD7XSMN/notes.yaml
+
+              tests/e2e/fixtures/tasks/01KG0RRHCC9N4YGP991WD7XSMN/task.yaml
+
+              tests/e2e/fixtures/tasks/01KG0RRJCC9N4YGP991WD7XSFF/task.yaml
+
+              tests/e2e/fixtures/test-base.ts
+
+              tests/e2e/inbox.spec.ts
+
+              tests/e2e/items.spec.ts
+
+              tests/e2e/navigation.spec.ts
+
+              tests/e2e/observations.spec.ts
+
+              tests/e2e/plans.spec.ts
+
+              tests/e2e/project-selector.spec.ts
+
+              tests/e2e/review-detail-page.spec.ts
+
+              tests/e2e/review-interaction.spec.ts
+
+              tests/e2e/reviews-detail.spec.ts
+
+              tests/e2e/search.spec.ts
+
+              tests/e2e/session-context.spec.ts
+
+              tests/e2e/sessions.spec.ts
+
+              tests/e2e/smoke.spec.ts
+
+              tests/e2e/static-mode.spec.ts
+
+              tests/e2e/task-board.spec.ts
+
+              tests/e2e/tasks.spec.ts
+
+              tests/e2e/triage.spec.ts
+
+              tests/e2e/validate.spec.ts
+
+              tests/e2e/workflows.spec.ts
+
+              tests/enhanced-setup.test.ts
+
+              tests/entity-local-resources.test.ts
+
+              tests/event-bus.test.ts
+
+              tests/event-cli.test.ts
+
+              tests/event-payloads.test.ts
+
+              tests/event-registry.test.ts
+
+              tests/exit-codes.test.ts
+
+              tests/export/cli.test.ts
+
+              tests/export/html.test.ts
+
+              tests/export/json.test.ts
+
+              tests/file-lock.test.ts
+
+              tests/fixtures/daemon-web-ui-bun-route-order.mjs
+
+              tests/fixtures/dispatch-watch-transcripts/empty-before-text-boundary.json
+
+              tests/fixtures/dispatch-watch-transcripts/interleaved-multi-stream-switching.json
+
+              tests/fixtures/dispatch-watch-transcripts/reconnect-boundary.json
+
+              tests/fixtures/dispatch-watch-transcripts/repeated-non-text-boundaries.json
+
+              tests/fixtures/kynetic.meta.yaml
+
+              tests/fixtures/kynetic.yaml
+
+              tests/fixtures/mock-acp-agent-crash.mjs
+
+              tests/fixtures/mock-acp-agent.mjs
+
+              tests/fixtures/modules/core.yaml
+
+              tests/fixtures/multi-dir/README.md
+
+              tests/fixtures/multi-dir/project-a/.kspec/kynetic.yaml
+
+              tests/fixtures/multi-dir/project-a/.kspec/modules/test.yaml
+
+              tests/fixtures/multi-dir/project-a/.kspec/project.tasks.yaml
+
+              tests/fixtures/multi-dir/project-a/.kspec/tasks/01TASKA0000000000000000000/notes.yaml
+
+              tests/fixtures/multi-dir/project-a/.kspec/tasks/01TASKA0000000000000000000/task.yaml
+
+              tests/fixtures/multi-dir/project-b/.kspec/kynetic.yaml
+
+              tests/fixtures/multi-dir/project-b/.kspec/modules/test.yaml
+
+              tests/fixtures/multi-dir/project-b/.kspec/project.tasks.yaml
+
+              tests/fixtures/multi-dir/project-b/.kspec/tasks/01TASKB0000000000000000000/notes.yaml
+
+              tests/fixtures/multi-dir/project-b/.kspec/tasks/01TASKB0000000000000000000/task.yaml
+
+              tests/fixtures/multi-dir/project-invalid/README.md
+
+              tests/fixtures/project.tasks.yaml
+
+              tests/fixtures/task-system-ac-backfill.snapshot.json
+
+              tests/fixtures/tasks/01KF1645CA45ZT43W2T6HJMVA1/notes.yaml
+
+              tests/fixtures/tasks/01KF1645CA45ZT43W2T6HJMVA1/task.yaml
+
+              tests/fixtures/tasks/01KF1645CB8N4YGP991WD7XS9R/notes.yaml
+
+              tests/fixtures/tasks/01KF1645CB8N4YGP991WD7XS9R/task.yaml
+
+              tests/fixtures/tasks/01KF1645CBTNCA6ZQ01X8A6SN0/notes.yaml
+
+              tests/fixtures/tasks/01KF1645CBTNCA6ZQ01X8A6SN0/task.yaml
+
+              tests/fixtures/tasks/01KF1645CC9N4YGP991WD7XS8S/notes.yaml
+
+              tests/fixtures/tasks/01KF1645CC9N4YGP991WD7XS8S/task.yaml
+
+              tests/folder-backed-entity.test.ts
+
+              tests/git-terminal-prompt-suppression.test.ts
+
+              tests/git.test.ts
+
+              tests/gitignore-managed-block.test.ts
+
+              tests/global-setup.ts
+
+              tests/grep.test.ts
+
+              tests/guard-worktree.test.ts
+
+              tests/help-examples.test.ts
+
+              tests/help.test.ts
+
+              tests/helpers-cli-cleanup.test.ts
+
+              tests/helpers/cli.ts
+
+              tests/helpers/daemon-fetch.ts
+
+              tests/helpers/daemon.test.ts
+
+              tests/helpers/daemon.ts
+
+              tests/helpers/inbox.ts
+
+              tests/helpers/mock-daemon.cjs
+
+              tests/helpers/mock-daemon.test.ts
+
+              tests/helpers/mock-daemon.ts
+
+              tests/helpers/process-stop.ts
+
+              tests/helpers/session-types.ts
+
+              tests/helpers/worktree-baseline.ts
+
+              tests/hook-cli.test.ts
+
+              tests/hook-executor.test.ts
+
+              tests/hook-schema.test.ts
+
+              tests/init-from-linked-worktree-empty-main.test.ts
+
+              tests/init-from-linked-worktree-existing-shadow.test.ts
+
+              tests/init-setup-integration.test.ts
+
+              tests/init-setup-sessions-dir.test.ts
+
+              tests/integration.test.ts
+
+              tests/invocation-daemon-isolation.test.ts
+
+              tests/invocation-stall-watchdog.test.ts
+
+              tests/item-delete-children.test.ts
+
+              tests/item-list-under.test.ts
+
+              tests/item-set-enum-validation.test.ts
+
+              tests/item-set-relationships.test.ts
+
+              tests/item-set-traits.test.ts
+
+              tests/kspec-skill-validation.test.ts
+
+              tests/legacy-format-detection.test.ts
+
+              tests/lint-daemon-test-guardrails.test.ts
+
+              tests/lint-no-daemon-ts-imports.test.ts
+
+              tests/lint-no-leaky-test-daemon.test.ts
+
+              tests/merge-arrays.test.ts
+
+              tests/merge-driver-cli.test.ts
+
+              tests/merge-file-type.test.ts
+
+              tests/merge-objects.test.ts
+
+              tests/merge-parse.test.ts
+
+              tests/merge-resolve.test.ts
+
+              tests/meta.test.ts
+
+              tests/mocks/acp-mock.js
+
+              tests/mocks/kspec-capture-mock.cjs
+
+              tests/module.test.ts
+
+              tests/multi-platform-render-cli.test.ts
+
+              tests/multi-turn-invocation.test.ts
+
+              tests/multi-value-status-filter.test.ts
+
+              tests/native-guard-setup.test.ts
+
+              tests/normalize-ref-input.test.ts
+
+              tests/note-supersession-filter.test.ts
+
+              tests/observation-content-search.test.ts
+
+              tests/output-format-option.test.ts
+
+              tests/parser-plans.test.ts
+
+              tests/parser.test.ts
+
+              tests/parser/config.test.ts
+
+              tests/parser/daemon-config.test.ts
+
+              tests/parser/doctor.test.ts
+
+              tests/parser/entity-cache-context.test.ts
+
+              tests/parser/init-context-performance.test.ts
+
+              tests/parser/manifest-cleanup.test.ts
+
+              tests/parser/manifest-discovery.test.ts
+
+              tests/parser/resolve-project-roots.test.ts
+
+              tests/parser/spec-completeness-policy.test.ts
+
+              tests/parser/traits.test.ts
+
+              tests/parser/validate-config.test.ts
+
+              tests/per-task-files.test.ts
+
+              tests/plan-branch-helper.test.ts
+
+              tests/plan-document-parser.test.ts
+
+              tests/plan-embedded-views.test.ts
+
+              tests/plan-inbox-mutation-serialization.test.ts
+
+              tests/plan-summary.test.ts
+
+              tests/platform-renderer.test.ts
+
+              tests/portable-skill-references.test.ts
+
+              tests/read-side-validation-warnings.test.ts
+
+              tests/ref-resolution.test.ts
+
+              tests/refs.test.ts
+
+              tests/release-notes-command.test.ts
+
+              tests/release-notes-parser.test.ts
+
+              tests/repair-from-linked-worktree-broken-main.test.ts
+
+              tests/review-checks.test.ts
+
+              tests/review-cli-task-linkage.test.ts
+
+              tests/review-cli.test.ts
+
+              tests/review-fix-cycle-diff.test.ts
+
+              tests/review-per-cycle-lifecycle.test.ts
+
+              tests/review-records-schema.test.ts
+
+              tests/review-storage.test.ts
+
+              tests/review-subject-bindings.test.ts
+
+              tests/review-task-integration.test.ts
+
+              tests/review-threads.test.ts
+
+              tests/review-validation.test.ts
+
+              tests/review-verdicts-resolution.test.ts
+
+              tests/scaffold-project-config.test.ts
+
+              tests/schedule-engine.test.ts
+
+              tests/schedule-schema.test.ts
+
+              tests/schema-ac-backfill-review.test.ts
+
+              tests/schema-derived-type-definitions.test.ts
+
+              tests/schema.test.ts
+
+              tests/schema/session-storage-config.test.ts
+
+              tests/session-branch-lifecycle.test.ts
+
+              tests/session-branch-worktree.test.ts
+
+              tests/session-budget.test.ts
+
+              tests/session-compact.test.ts
+
+              tests/session-context.test.ts
+
+              tests/session-create.test.ts
+
+              tests/session-event-accumulator.test.ts
+
+              tests/session-event-detail.test.ts
+
+              tests/session-event-fields.test.ts
+
+              tests/session-event-streaming.test.ts
+
+              tests/session-idle-event.test.ts
+
+              tests/session-legacy-cli.test.ts
+
+              tests/session-legacy-fallback.test.ts
+
+              tests/session-lifecycle-events.test.ts
+
+              tests/session-log-list.test.ts
+
+              tests/session-log-runtime-validation.test.ts
+
+              tests/session-log-search.test.ts
+
+              tests/session-log-show.test.ts
+
+              tests/session-log-stats.test.ts
+
+              tests/session-model-evolution.test.ts
+
+              tests/session-parse-hook-input.test.ts
+
+              tests/session-prompt-action.test.ts
+
+              tests/session-related-routes.test.ts
+
+              tests/session-scoped-task-claiming.test.ts
+
+              tests/session-stale-close.test.ts
+
+              tests/session-stale-criteria.test.ts
+
+              tests/session-storage-path-resolution.test.ts
+
+              tests/session-watcher.test.ts
+
+              tests/sessions.test.ts
+
+              tests/setup-builtin-agents.test.ts
+
+              tests/setup-from-linked-worktree.test.ts
+
+              tests/setup-pipeline-unification.test.ts
+
+              tests/setup-reflection-hook.test.ts
+
+              tests/setup.test.ts
+
+              tests/setup.ts
+
+              tests/shadow-commit-call-site-regression.test.ts
+
+              tests/shadow-cross-worktree-isolation.test.ts
+
+              tests/shadow-drift-check.test.ts
+
+              tests/shadow-lifecycle-concurrent.test.ts
+
+              tests/shadow-skill-commit.test.ts
+
+              tests/shadow-sync-scheduler.test.ts
+
+              tests/shadow.test.ts
+
+              tests/skill-cli.test.ts
+
+              tests/skill-content-model.test.ts
+
+              tests/skill-diff.test.ts
+
+              tests/skill-meta-integration.test.ts
+
+              tests/skill-meta-type.test.ts
+
+              tests/skill-parser-integration.test.ts
+
+              tests/skill-rendering.test.ts
+
+              tests/skill-schema.test.ts
+
+              tests/skill-validation.test.ts
+
+              tests/spec-item-mutation-serialization.test.ts
+
+              tests/split-backend.test.ts
+
+              tests/staleness.test.ts
+
+              tests/submission-linkage-worktree.test.ts
+
+              tests/suggest.test.ts
+
+              tests/supporting-file-references.test.ts
+
+              tests/supporting-files-convention.test.ts
+
+              tests/sync-mode.test.ts
+
+              tests/task-add-depends-on.test.ts
+
+              tests/task-add-description.test.ts
+
+              tests/task-atomic-writes.test.ts
+
+              tests/task-branch-helper.test.ts
+
+              tests/task-budget-enforcement.test.ts
+
+              tests/task-cancel-dependency-cleanup.test.ts
+
+              tests/task-clear-deps.test.ts
+
+              tests/task-completion-enforcement.test.ts
+
+              tests/task-data-manager.test.ts
+
+              tests/task-migrate.test.ts
+
+              tests/task-mutation-serialization.test.ts
+
+              tests/task-needs-work.test.ts
+
+              tests/task-plan-ref.test.ts
+
+              tests/task-rebuild-index.test.ts
+
+              tests/task-reset.test.ts
+
+              tests/task-review-url.test.ts
+
+              tests/task-set-batch.test.ts
+
+              tests/task-submission-linkage.test.ts
+
+              tests/task-system-ac-backfill.test.ts
+
+              tests/task-unblock-prior-status.test.ts
+
+              tests/tasks-assess-automation.test.ts
+
+              tests/tasks-ready-needs-work.test.ts
+
+              tests/test-runner.test.ts
+
+              tests/trait-ac-coverage.test.ts
+
+              tests/trait-cli.test.ts
+
+              tests/trait-display.test.ts
+
+              tests/trait-edge-cases.test.ts
+
+              tests/trait-retrospective.test.ts
+
+              tests/trait-validation.test.ts
+
+              tests/traits-field.test.ts
+
+              tests/triage-actions.test.ts
+
+              tests/triage-cli.test.ts
+
+              tests/triage-export.test.ts
+
+              tests/triage-parser.test.ts
+
+              tests/triage-schema.test.ts
+
+              tests/upgrade-command.test.ts
+
+              tests/util.test.ts
+
+              tests/validate-alignment-no-task-policy.test.ts
+
+              tests/validate-exit-codes.test.ts
+
+              tests/validate-integration.test.ts
+
+              tests/validate-mode-selection.test.ts
+
+              tests/validate-task-data-source.test.ts
+
+              tests/web-ui-docs-rendering.test.ts
+
+              tests/web-ui-docs-search.test.ts
+
+              tests/web-ui-session-stream.test.ts
+
+              tests/web-ui/ansi.test.ts
+
+              tests/web-ui/api-envelope.test.ts
+
+              tests/web-ui/api-static.test.ts
+
+              tests/web-ui/board-utils.test.ts
+
+              tests/web-ui/cache-warming-view-states.test.ts
+
+              tests/web-ui/daemon-endpoint-host-parity.test.ts
+
+              tests/web-ui/dev-server-daemon-endpoint.test.ts
+
+              tests/web-ui/fleet-buffer.test.ts
+
+              tests/web-ui/plan-embedded-content.test.ts
+
+              tests/web-ui/query-client-retry.test.ts
+
+              tests/web-ui/reference.test.ts
+
+              tests/web-ui/session-utils.test.ts
+
+              tests/web-ui/ws-cache-invalidation.test.ts
+
+              tests/websocket-manager.test.ts
+
+              tests/workflow-prune.test.ts
+
+              tests/workflow-runs.test.ts
+
+              tests/worktree-context.test.ts
+
+              tests/yaml-atomic-write.test.ts
+
+              tests/yaml-canonical-key-order.test.ts
+
+              tests/yaml-round-trip-stability.test.ts
+
+              tools/eslint-rules/no-daemon-ts-imports.js
+
+              tools/eslint-rules/no-leaky-test-daemon.js
+
+              tools/eslint-rules/no-source-scanning.js
+
+              tsconfig.json
+
+              vitest.config.ts plus dirty checks, or return null git fields when the path is not
+              represented by the recorded commit.
+            created_at: 2026-05-23T06:03:41.043Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-23T06:00:09.228Z
-    updated_at: 2026-05-23T06:00:36.175Z
+    updated_at: 2026-05-23T06:03:41.043Z
     notes: []
