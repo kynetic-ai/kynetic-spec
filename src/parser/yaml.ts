@@ -1214,42 +1214,12 @@ export async function extractRawTaskArray(filePath: string): Promise<{
  * (i.e. non-empty arrays, non-null values, etc.).
  */
 /** Schema-known keys — used to distinguish unknown (extension) fields from
- *  known fields that a mutation intentionally cleared. */
-const TASK_SCHEMA_KEYS = new Set(Object.keys(TaskSchema.shape));
-
-export function mergeTaskPreservingRawShape(
-  rawTask: Record<string, unknown>,
-  normalizedTask: Record<string, unknown>,
-): Record<string, unknown> {
-  const result: Record<string, unknown> = {};
-
-  // Carry forward raw keys that are NOT part of the task schema and NOT
-  // present in the normalizedTask output. These are backend-specific or
-  // forward-compatible extension fields that must survive round-trip
-  // mutations. Schema-known keys that are absent from normalizedTask were
-  // intentionally cleared by the mutation — do not restore them.
-  for (const [key, value] of Object.entries(rawTask)) {
-    if (!(key in normalizedTask) && !TASK_SCHEMA_KEYS.has(key)) {
-      result[key] = value;
-    }
-  }
-
-  for (const [key, value] of Object.entries(normalizedTask)) {
-    if (key in rawTask) {
-      // Field existed in raw — always include (even if value changed)
-      result[key] = value;
-    } else {
-      // Field was added by schema normalization — only include if non-trivial
-      const isEmptyArray = Array.isArray(value) && value.length === 0;
-      const isNull = value === null || value === undefined;
-      if (!isEmptyArray && !isNull) {
-        result[key] = value;
-      }
-    }
-  }
-
-  return result;
-}
+ *  known fields that a mutation intentionally cleared.
+ *
+ *  Exported so the task-specific wrapper in src/parser/split-backend.ts
+ *  can delegate to the shared `mergePreservingRawShape` helper without
+ *  yaml.ts taking a dependency on the trait foundation. */
+export const TASK_SCHEMA_KEYS: ReadonlySet<string> = new Set(Object.keys(TaskSchema.shape));
 
 /**
  * Create a new task with auto-generated fields
