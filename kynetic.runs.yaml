@@ -51293,9 +51293,29 @@ runs:
     completed_at: 2026-05-19T15:21:01.338Z
   - _ulid: 01KS9AT3NHFF2VD39TCYWVT630
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-23T02:32:13.745Z
+        completed_at: 2026-05-23T02:32:31.533Z
+        notes: >-
+          Worked well: kspec batch landed all 4 AC edits as one atomic shadow commit (1c2e7b617e),
+          avoiding the 4-commit churn that sequential item ac set/add would have produced. The task
+          spec listed exact Given/When/Then text per AC, which made post-edit verification
+          mechanical (grep JSON output, compare strings). Implementation statuses were already
+          correct before edits, so no second-order status churn was needed.
+
+
+          Friction: validate output emits 273 pre-existing warnings, making it noisy to spot
+          regressions introduced by a small catalog edit — a per-spec or per-AC scoped validate
+          (e.g. validate @plan-crud) would isolate signal. Not blocking; --warnings-ok worked fine
+          here.
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-23T02:32:31.533Z
+        completed_at: 2026-05-23T02:32:31.533Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-23T02:32:13.745Z
