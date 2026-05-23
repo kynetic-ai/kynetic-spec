@@ -52027,7 +52027,7 @@ runs:
     completed_at: 2026-05-23T15:00:52.200Z
   - _ulid: 01KSAQKB5QQ4GSSH58WES4PRQE
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -52044,7 +52044,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-23T15:35:38.200Z
-        completed_at: 2026-05-23T15:35:38.200Z
+        completed_at: 2026-05-23T15:37:46.457Z
+        notes: "Coverage check complete. Existing tracking found for workflow-show run-ref/documentation
+          friction (for example inbox/workflow CLI improvement items and prior observations), so no
+          duplicate captured. New high-confidence friction captured as observations linked to this
+          workflow: concurrent npm build/test commands can rewrite shared dist outputs and cause
+          false CLI test failures; mutating CLI commands can accept unexpected positional arguments
+          and silently modify the reviewer workspace."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-23T15:37:46.457Z
+        completed_at: 2026-05-23T15:37:46.457Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-23T15:34:57.975Z
