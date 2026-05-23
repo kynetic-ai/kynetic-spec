@@ -8,6 +8,7 @@ import {
   createTestApp,
   initGitRepo,
   makeRequest,
+  materializeFolderBackedPlanShells,
   setupFixtures,
 } from "./helpers.js";
 import { seedSplitTask } from "../helpers/cli.js";
@@ -66,16 +67,18 @@ plans:
 `,
     );
 
-    // setupFixtures materialised `.kspec/plans/<ulid>/` shells for every ULID
-    // in the original fixture's project.plans.yaml. After narrowing the index
-    // to a single plan above, drop the shells whose entries no longer exist
-    // so the folder-backed partial-layout detector still sees a consistent
-    // layout (one index entry, one folder).
+    // setupFixtures materialised `.kspec/plans/<ulid>/` sidecars from the
+    // original fixture. We just overwrote the monolithic file with one new
+    // entry, so rewrite the folder layout from the new index. This drops
+    // stale shells and writes the new authoritative plan.yaml / plan.md
+    // sidecars the folder-backed storage manager reads from.
     // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+    // AC: @folder-backed-plan-storage-1 ac-plan-document-sidecar-is-authoritative
     const plansFolder = path.join(kspecDir, "plans");
     for (const ulid of ["01KG0RRRCA45ZT43W2T6HJMVP2", "01KG0RRSCA45ZT43W2T6HJMVP3"]) {
       rmSync(path.join(plansFolder, ulid), { recursive: true, force: true });
     }
+    materializeFolderBackedPlanShells(kspecDir);
 
     rmSync(path.join(kspecDir, "tasks"), { recursive: true, force: true });
     writeFileSync(path.join(kspecDir, "project.tasks.yaml"), "");
