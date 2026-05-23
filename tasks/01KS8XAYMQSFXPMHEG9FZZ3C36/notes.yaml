@@ -1,1 +1,18 @@
-notes: []
+notes:
+  - _ulid: 01KSBBMEZ4Z1BQJTVZCYZ50W5F
+    content: "Approach: model on origin/dispatch/task/task-folder-backed-plan-storage-manager-1/01ks8xay
+      parallel task. Reuse @trait-folder-backed-entity-1 helpers (FolderBackedEntityLayout,
+      listEntityDirs, mergePreservingRawShape, readIndexEntries, writeIndexEntries) and
+      @trait-entity-scoped-local-resources-1 resource manifest. Differences vs plan manager: reviews
+      keep ONE cohesive review.yaml per spec ac-review-detail-file-is-cohesive
+      (threads/checks/verdicts/notes/events/external_links all inside). Index projection per
+      ac-review-index-has-bounded-projection: ULID, slugs, title, lifecycle, subject, related_refs,
+      author, created_at, updated_at, examined_commit, external_links + pre-computed
+      disposition/thread/check/verdict counts (matches existing ReviewIndexSummary in
+      entity-cache.ts so daemon cache surfaces stay compatible). Files: new
+      src/parser/review-storage-manager.ts; routing in src/parser/reviews.ts; rebuild-index in
+      src/cli/commands/review.ts; helpers.ts split review records into per-review sidecars; unit +
+      CLI tests."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-23T21:25:06.148Z
