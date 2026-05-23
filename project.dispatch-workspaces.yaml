@@ -8075,7 +8075,7 @@ workspaces:
         head: d4202f5fd5b5f3e85d75c2cbbaf0f781d45b45f6
         last_seen_at: 2026-05-19T15:00:26.607Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-cli-no-daemon-auto-start-process-assertion-01ks090w
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: a5ce476850bb299e809c7880cb9c6c8f731c802e
     bootstrap:
       status: succeeded
@@ -8539,34 +8539,34 @@ workspaces:
     canonical_branch: dispatch/task/task-update-plan-review-storage-specs-1/01ks8xav
     canonical_branch_head: a5ce476850bb299e809c7880cb9c6c8f731c802e
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-05-23T02:31:52.622Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-05-23T02:48:17.359Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-23T02:32:22.539Z
+      updated_at: 2026-05-23T02:48:17.359Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
       target_commit: a5ce476850bb299e809c7880cb9c6c8f731c802e
-      updated_at: 2026-05-23T02:31:52.622Z
-    lifecycle_state: integrating
+      updated_at: 2026-05-23T02:48:17.359Z
+    lifecycle_state: closing
     resolved_base_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
     task_ref: "@01KS8XAVCKZE09Y0F4WMENFY47"
     task_slug: task-update-plan-review-storage-specs-1
     timestamps:
       closed_at: null
       last_active_at: 2026-05-23T02:32:22.539Z
-      last_reconciled_at: 2026-05-23T02:32:22.539Z
+      last_reconciled_at: 2026-05-23T02:48:17.359Z
       created_at: 2026-05-22T22:53:59.571Z
-      updated_at: 2026-05-23T02:32:22.539Z
+      updated_at: 2026-05-23T02:48:17.359Z
     workspace_id: dispatch-workspace-01KS8XAVCKZE09Y0F4WMENFY47
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
