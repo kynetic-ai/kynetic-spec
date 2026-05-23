@@ -51579,7 +51579,7 @@ runs:
     completed_at: 2026-05-23T06:19:12.660Z
   - _ulid: 01KS9T2SX9QW01N7FV4ED98KV7
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -51593,7 +51593,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-23T06:59:56.121Z
-        completed_at: 2026-05-23T06:59:56.121Z
+        completed_at: 2026-05-23T07:00:06.633Z
+        notes: "Friction points: npm test -- --fresh took 2436.5s during a review that already had enough
+          evidence for request_changes; kspec validate exited 6 with broad historical warnings, so
+          the review had to record it as optional/contextual evidence; security-focused path probes
+          had to be hand-written in node --import tsx instead of using a reusable review helper."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-23T07:00:06.633Z
+        completed_at: 2026-05-23T07:00:06.633Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-23T06:59:07.305Z
