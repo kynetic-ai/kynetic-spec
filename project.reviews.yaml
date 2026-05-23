@@ -224563,6 +224563,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-23T06:58:21.084Z
+      - _ulid: 01KS9VAD81QQ9N6C0WZ4BB76D7
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KS9SYX2T0C6FVR5D9YNTQ1PX
+        timestamp: 2026-05-23T07:20:45.057Z
     examined_commit: 5f4503684e7447da5fb464255d4b3b7785aafcc5
     external_links: []
     lifecycle_state: closed
@@ -224595,6 +224601,16 @@ reviews:
               resources root or verify the real candidate remains under the lexical entity resources
               directory, not just under the symlink target.'
             created_at: 2026-05-23T06:56:59.482Z
+          - _ulid: 01KS9VABQZE4Y1NMXEDZTMBVJK
+            author: "@claude"
+            body: "Fixed: resolveResourcePath now lstat()s the ownerResourcesDir up-front and rejects when it is
+              a symbolic link (before any realpath-based containment check). A new regression test
+              creates entity/resources -> /tmp/outside, declares a manifest entry there, and asserts
+              both resolveResourcePath and copyResourceForStaticExport reject with actionable
+              guidance while the outside file is untouched. The existing per-file symlink-escape
+              check still handles symlinks at any inner subdirectory level.
+              src/parser/entity-local-resources.ts:342-362."
+            created_at: 2026-05-23T07:20:43.510Z
         kind: blocker
       - _ulid: 01KS9SZ9PJY57Y77X5YVKS1NTS
         anchor:
@@ -224654,5 +224670,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-23T06:58:21.084Z
     created_at: 2026-05-23T06:41:54.695Z
-    updated_at: 2026-05-23T06:58:21.084Z
+    updated_at: 2026-05-23T07:20:43.510Z
     notes: []
