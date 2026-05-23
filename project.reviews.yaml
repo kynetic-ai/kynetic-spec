@@ -224826,9 +224826,25 @@ reviews:
           kind: nit
           thread_ulid: 01KS9YM74JC8CWSCRS5Y7HW174
         timestamp: 2026-05-23T08:18:33.808Z
+      - _ulid: 01KS9YMKTXQXFZ3EGME00XMPDG
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-23T08:18:45.213Z
+      - _ulid: 01KS9YMKTXJGXSRR0EBGX7K1XW
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-23T08:18:45.213Z
     examined_commit: 5a2b68024f62f82b4394f898bc146d58e66a610c
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -224914,7 +224930,14 @@ reviews:
               handling, and integration with schema exports."
             created_at: 2026-05-23T08:18:32.210Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-23T08:18:45.212Z
     created_at: 2026-05-23T08:02:50.530Z
-    updated_at: 2026-05-23T08:18:32.210Z
+    updated_at: 2026-05-23T08:18:45.213Z
     notes: []
