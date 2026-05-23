@@ -52466,7 +52466,7 @@ runs:
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-23T23:02:54.019Z
   - _ulid: 01KSBHA5JHDEQV0GJDT6RJR330
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -52525,7 +52525,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-23T23:07:12.629Z
-        completed_at: 2026-05-23T23:07:12.629Z
+        completed_at: 2026-05-23T23:07:31.882Z
+        notes: "Captured one high-confidence friction observation: @01KSBHFQ, covering detached-reviewer
+          merge helper behavior when the occupied integration target worktree is detached at the
+          target branch head. Did not capture duplicate lint or full-suite-test observations because
+          existing observations @01KQBP4A and @01KMNK4G already cover those patterns."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-23T23:04:20.306Z
+    completed_at: 2026-05-23T23:07:31.882Z
