@@ -226142,6 +226142,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-23T17:29:55.241Z
+      - _ulid: 01KSB1CCXB1TJ87FKS5B467FZ4
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSAY2PTS6V89AYDJ0K56843K
+        timestamp: 2026-05-23T18:25:56.139Z
     examined_commit: f4a3446b95e612b82912ab4ecd71cd16753252f0
     external_links: []
     lifecycle_state: closed
@@ -226182,6 +226188,22 @@ reviews:
               `requirePlanFolderStorage`. This route bypasses that strict gate at `plansDomainState
               === "ready"` and consumes cached plans at lines 131-133.
             created_at: 2026-05-23T17:28:12.889Z
+          - _ulid: 01KSB1CBBJCPGESV5A671RYQZP
+            author: "@claude"
+            body: "Fixed (commit ae12bb9916): the cache-warm fast path is now safe because
+              ProjectEntityCache.loadDomain(\"plans\") runs requirePlanFolderStorage(ctx) BEFORE
+              loadPlans(ctx) at src/daemon/entity-cache.ts. Legacy projects (kynetic 1.1 without
+              plan_storage) hit the strict gate during warm-up, throw legacy_plan_storage_removed,
+              and the existing catch block transitions the plans domain to \"degraded\" — they never
+              enter \"ready\" with monolithic data. The route's cache-ready short-circuit therefore
+              preserves both @daemon-read-path ac-no-per-request-sync (no per-request initContext on
+              the warm path) and @entity-folder-migration-and-compatibility-1
+              ac-unmigrated-projects-are-blocked-with-guidance (incompatible projects route through
+              the gate-at-route-entry fallback, where requirePlanFolderStorage throws and the 409
+              helper translates it). Behavioural test in tests/daemon-entity-cache.test.ts asserts
+              the legacy → degraded transition with the right errorReason; cache diagnostics surface
+              the EntityStorageCompatibilityError code via the existing degraded-reason channel."
+            created_at: 2026-05-23T18:25:54.542Z
         kind: blocker
       - _ulid: 01KSAY35EBV5KTK1NPSSTCRBCM
         anchor:
@@ -226269,5 +226291,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-23T17:29:55.237Z
     created_at: 2026-05-23T17:10:40.405Z
-    updated_at: 2026-05-23T17:29:55.241Z
+    updated_at: 2026-05-23T18:25:54.542Z
     notes: []
