@@ -51978,7 +51978,7 @@ runs:
     started_at: 2026-05-23T14:02:10.938Z
   - _ulid: 01KSANKEBXQGB902K18BR2P2TQ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -51994,7 +51994,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-23T15:00:22.445Z
-        completed_at: 2026-05-23T15:00:22.445Z
+        completed_at: 2026-05-23T15:00:33.267Z
+        notes: "Friction observed but not capturing in loop mode (high-confidence bar): (1) 4 integration
+          test helpers (cli-plan-delete, cli-plan-derive, cli-plan-import, derivable-default-module)
+          duplicate near-identical setupShadowProject/setupFreshProject patterns — adding
+          downgradeManifestToLegacyStorage required editing all 4. Not session-specific, broader
+          test-architecture concern. (2) Sibling-task ordering means kspec init declares folder
+          storage on integration branch before the folder-backed managers ship — new projects can't
+          run plan/review CRUD until those tasks land. Known and intentional per plan sequencing;
+          not a discovery. No high-confidence captures."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-23T15:00:33.267Z
+        completed_at: 2026-05-23T15:00:33.267Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-23T15:00:04.094Z
