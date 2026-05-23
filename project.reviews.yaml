@@ -225708,6 +225708,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSAQCPX8NNSTK6YBHK2NBB8W
         timestamp: 2026-05-23T15:31:22.178Z
+      - _ulid: 01KSAQF8F429Q02KF6YGSK4PQR
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSAQF6WZ75ADJ89T49Z4XCVH
+        timestamp: 2026-05-23T15:32:44.132Z
     examined_commit: 990d24115785a42e739cf439605a63530c652069
     external_links: []
     lifecycle_state: open
@@ -225741,7 +225748,30 @@ reviews:
               legacy_review_storage_removed with the structured 409 response."
             created_at: 2026-05-23T15:31:20.616Z
         kind: blocker
+      - _ulid: 01KSAQF6WZ75ADJ89T49Z4XCVH
+        anchor:
+          type: code
+          commit: 990d24115785a42e739cf439605a63530c652069
+          line_end: 445
+          line_start: 436
+          path: src/parser/entity-local-resources.ts
+          side: head
+        entries:
+          - _ulid: 01KSAQF6WZG8AP4JB6FD5987E2
+            author: Jacob Chapel
+            body: "MUST-FIX: The resource-storage compatibility gate is only defined, not enforced on resource
+              reads. `rg` shows assertResourceStorageCompatible/requireResourceFolderStorage are
+              referenced only in entity-storage-compatibility.ts and tests; the resource entry point
+              here takes only ownerEntityDir/relativePath, loads resources.yaml, and resolves the
+              resource without any KspecContext/manifest check. That leaves the resource domain
+              outside the task contract: an unmigrated or missing `resource_storage.format:
+              entity_scoped` project can still read entity-local resources without an
+              entity_storage_incompatible 409/guidance path. Wire the resource gate into the
+              resource manager/callers that need resource behavior, or add an explicit compatibility
+              boundary with tests for the resource domain."
+            created_at: 2026-05-23T15:32:42.527Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-23T15:02:21.210Z
-    updated_at: 2026-05-23T15:31:20.616Z
+    updated_at: 2026-05-23T15:32:42.527Z
     notes: []
