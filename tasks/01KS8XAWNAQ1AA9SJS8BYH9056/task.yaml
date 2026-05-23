@@ -89,7 +89,7 @@ tags:
   - daemon
   - cli
 vcs_refs: []
-review_ref: "@01KSAX2K0N14KSGJX70FMC6JVQ"
+review_ref: "@01KSB20TS699MH5F9XTD60RN02"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-entity-storage-version-compatibility-gates-1/01ks8xaw
@@ -470,6 +470,13 @@ history:
         previous: 2026-05-23T17:02:18.791Z
     command: task-submit
     timestamp: 2026-05-23T18:28:12.112Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KSB20TS699MH5F9XTD60RN02"
+        previous: "@01KSAX2K0N14KSGJX70FMC6JVQ"
+    command: review-link
+    timestamp: 2026-05-23T18:37:10.017Z
 created_at: 2026-05-22T22:36:43.562Z
 started_at: 2026-05-23T18:28:08.503Z
 submitted_at: 2026-05-23T18:28:12.112Z
