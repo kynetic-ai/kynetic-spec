@@ -221440,7 +221440,18 @@ reviews:
     slugs: []
     title: Review folder-backed entity trait foundation
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "2460 suites passed; 9323 tests passed; 5 skipped. Full log:
+          /tmp/kspec-test-cache/01KS9E4JA179DGRH76HFQYXFQ6/c4f9076a83f954a2.log"
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-05-23T03:49:39.446Z
+        completed_at: 2026-05-23T03:49:39.446Z
     events:
       - _ulid: 01KS9E7Y2VBNXMK6GHGQR0MRSH
         actor: Jacob Chapel
@@ -221455,6 +221466,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-23T03:32:30.351Z
+      - _ulid: 01KS9F7Y1JRDPR0JQZ12ZJ1A12
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-05-23T03:49:41.042Z
     examined_commit: 75e09ea3cc7ab4ef0a7d3296a6187c77391b425f
     external_links: []
     lifecycle_state: open
@@ -221467,5 +221485,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-23T03:32:12.515Z
-    updated_at: 2026-05-23T03:32:28.164Z
+    updated_at: 2026-05-23T03:49:39.446Z
     notes: []
