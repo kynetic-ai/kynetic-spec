@@ -227333,6 +227333,17 @@ reviews:
         runner: npm run typecheck
         created_at: 2026-05-23T23:01:51.772Z
         completed_at: 2026-05-23T23:01:51.772Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: No whitespace errors in diff
+          44fa00bca19764eb8af3e57983f8a0d01f861e68..984af0c7589a8044eedb252a02bd2cde4992f69d.
+        name: git diff --check
+        required: true
+        runner: git diff --check
+        created_at: 2026-05-23T23:02:04.001Z
+        completed_at: 2026-05-23T23:02:04.001Z
     events:
       - _ulid: 01KSBGAX0KGPDF06GHVVAFE5AG
         actor: Jacob Chapel
@@ -227375,6 +227386,13 @@ reviews:
           status: pass
           name: typecheck
         timestamp: 2026-05-23T23:01:53.437Z
+      - _ulid: 01KSBH6226BQ7PBA6MSQWGQFYS
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: git diff --check
+        timestamp: 2026-05-23T23:02:05.638Z
     examined_commit: 984af0c7589a8044eedb252a02bd2cde4992f69d
     external_links: []
     lifecycle_state: open
@@ -227411,5 +227429,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-05-23T22:47:15.738Z
-    updated_at: 2026-05-23T23:01:51.772Z
+    updated_at: 2026-05-23T23:02:04.001Z
     notes: []
