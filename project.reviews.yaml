@@ -224462,6 +224462,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KS9SYX2T0C6FVR5D9YNTQ1PX
         timestamp: 2026-05-23T06:57:01.071Z
+      - _ulid: 01KS9SZB7AJ3CJ9JPKZ38AFD86
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KS9SZ9PJY57Y77X5YVKS1NTS
+        timestamp: 2026-05-23T06:57:13.962Z
     examined_commit: 5f4503684e7447da5fb464255d4b3b7785aafcc5
     external_links: []
     lifecycle_state: open
@@ -224495,7 +224502,29 @@ reviews:
               directory, not just under the symlink target.'
             created_at: 2026-05-23T06:56:59.482Z
         kind: blocker
+      - _ulid: 01KS9SZ9PJY57Y77X5YVKS1NTS
+        anchor:
+          type: code
+          commit: 5f4503684e7447da5fb464255d4b3b7785aafcc5
+          line_end: 69
+          line_start: 65
+          path: src/schema/resources.ts
+          side: head
+        entries:
+          - _ulid: 01KS9SZ9PKP599PGEJ6ZV6PMFH
+            author: Jacob Chapel
+            body: "MUST-FIX: ResourceMetadataSchema validates path only as a non-empty string, so resources.yaml
+              accepts paths that the trait says must be rejected. I confirmed
+              ResourceMetadataSchema.safeParse succeeds for path values /etc/passwd, ../secret.txt,
+              and a backslash-separated path. Because this schema is the shared resources.yaml
+              contract, invalid paths can be loaded and exposed through
+              list/detail/API/static-export metadata before any resolver call gets a chance to
+              reject them. Reuse the resource relative-path validation in the schema or manifest
+              load path so absolute paths, traversal, and backslashes are rejected at the metadata
+              boundary."
+            created_at: 2026-05-23T06:57:12.403Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-23T06:41:54.695Z
-    updated_at: 2026-05-23T06:56:59.482Z
+    updated_at: 2026-05-23T06:57:12.403Z
     notes: []
