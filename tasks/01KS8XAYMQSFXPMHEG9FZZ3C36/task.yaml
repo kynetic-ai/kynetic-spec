@@ -73,7 +73,7 @@ description: >
 spec_ref: "@folder-backed-review-storage-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-entity-storage-version-compatibility-gates-1"
@@ -93,7 +93,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: null
+session_id: 01KSBG8FJ1Y1850CCW02S5J0EX
 history:
   - author: Jacob Chapel
     changes:
@@ -307,8 +307,21 @@ history:
         previous: 01KSBBA7HDQTPFTJE9P76V3F7A
     command: review-verdict-needs-work
     timestamp: 2026-05-23T22:29:53.681Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KSBG8FJ1Y1850CCW02S5J0EX
+        previous: null
+      started_at:
+        new: 2026-05-23T23:02:07.728Z
+        previous: 2026-05-23T21:20:09.873Z
+    command: task-start
+    timestamp: 2026-05-23T23:02:07.729Z
 created_at: 2026-05-22T22:36:45.591Z
-started_at: 2026-05-23T21:20:09.873Z
+started_at: 2026-05-23T23:02:07.728Z
 submitted_at: 2026-05-23T22:11:17.769Z
 todos: []
 automation: eligible
