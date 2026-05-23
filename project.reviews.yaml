@@ -226527,6 +226527,12 @@ reviews:
         payload:
           thread_ulid: 01KSB2ZV1DH3AMMN26Z3PTZ5PJ
         timestamp: 2026-05-23T19:50:21.033Z
+      - _ulid: 01KSB675PGN04771SA9YPC4GQX
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSB2ZV1DH3AMMN26Z3PTZ5PJ
+        timestamp: 2026-05-23T19:50:27.792Z
     examined_commit: ae12bb9916e0ffc3992bd979260ea539d5c4e7c8
     external_links: []
     lifecycle_state: closed
@@ -226621,6 +226627,8 @@ reviews:
             body: Acknowledged — evidence log noted.
             created_at: 2026-05-23T19:50:19.410Z
         kind: nit
+        resolved_at: 2026-05-23T19:50:26.181Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -226630,5 +226638,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-23T18:54:13.189Z
     created_at: 2026-05-23T18:37:05.702Z
-    updated_at: 2026-05-23T19:50:19.410Z
+    updated_at: 2026-05-23T19:50:26.181Z
     notes: []
