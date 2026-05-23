@@ -39,3 +39,20 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-23T22:29:53.681Z
+  - _ulid: 01KSBH3KDXS2W6R6GCW5C7RWRV
+    content: "Fix cycle 1: addressed reviewer blocker on tests/parser-reviews-folder.test.ts:408 by
+      removing the over-claimed `ac-review-screenshot-resource-loads-in-ui` annotation. The AC
+      requires UI/static-export behavioral coverage (review-scoped resource URL or exported asset
+      path), which is owned by @task-review-screenshot-resource-ui (daemon
+      /api/reviews/:ref/resources/:resourceId/bytes route, web UI render, static export copying).
+      The screenshot test still validates the parser-layer trait ACs
+      ac-resource-reference-resolves-within-owner and
+      ac-resource-metadata-exposes-safe-preview-fields. Re-verified all four spec ACs against the
+      implementation: ac-review-detail-file-is-cohesive (saveReviewRecord writes one review.yaml per
+      ULID), ac-review-index-has-bounded-projection (lean index excludes
+      threads/checks/verdicts/events/notes), ac-review-delete-removes-owned-folder (delete cascades
+      the entity dir incl. resources), and ac-review-screenshot-resource-loads-in-ui (deferred to UI
+      task as documented). Commit: 48a17f7b79."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-23T23:00:45.117Z
