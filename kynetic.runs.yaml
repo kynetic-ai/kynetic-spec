@@ -51760,9 +51760,26 @@ runs:
     completed_at: 2026-05-23T09:10:30.452Z
   - _ulid: 01KSA2WMSSJ21VT635K458QA83
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-23T09:33:02.649Z
+        completed_at: 2026-05-23T09:34:29.576Z
+        notes: "What worked well in this fix cycle: (1) The reviewer's two-option suggestion in the blocker
+          was directly actionable — I applied both (making manifest required at the type level AND
+          adding the higher-level resolveResourceReference helper), giving the implementation both
+          type-safety and ergonomics in one pass. (2) Type-level enforcement (required parameter in
+          the type signature) is more robust than runtime checks because callers can't accidentally
+          omit the manifest — a class of bug that runtime validation would catch later but
+          type-level safety prevents at compile time. (3) Adding behavioral tests for the new helper
+          through the same fixture entity pattern kept coverage uniform with the rest of the trait's
+          test suite."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-23T09:34:29.576Z
+        completed_at: 2026-05-23T09:34:29.576Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-23T09:33:02.649Z
