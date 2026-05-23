@@ -50,7 +50,7 @@ import { cpSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import * as path from "node:path";
 import { Elysia } from "elysia";
 import { vi } from "vitest";
-import { parse as yamlParse } from "yaml";
+import { parse as yamlParse, stringify as yamlStringify } from "yaml";
 import {
   cleanupTempDir,
   createTempDir,
@@ -302,14 +302,31 @@ function materializeFolderShellsFor(
   mkdirSync(folderRoot, { recursive: true });
   for (const entry of arr) {
     if (!entry || typeof entry !== "object") continue;
-    const id = (entry as Record<string, unknown>)._ulid;
+    const record = entry as Record<string, unknown>;
+    const id = record._ulid;
     if (typeof id !== "string" || id.length === 0) continue;
     const dir = path.join(folderRoot, id);
     mkdirSync(dir, { recursive: true });
-    // Minimal sidecar — the partial-layout detector only checks existence,
-    // not contents. A future folder-backed reader can replace this with the
-    // full per-entity record.
-    writeFileSync(path.join(dir, sidecarName), `_ulid: "${id}"\n`);
+
+    if (arrayKey === "plans" && sidecarName === "plan.yaml") {
+      // Plans are folder-backed: split the monolithic record into the
+      // authoritative sidecars (plan.yaml metadata, plan.md content,
+      // notes.yaml when notes exist). The folder-backed plan storage
+      // manager reads from these — empty placeholder sidecars are not
+      // enough.
+      const { content, notes, ...core } = record;
+      const documentContent = typeof content === "string" ? content : "";
+      writeFileSync(path.join(dir, "plan.yaml"), yamlStringify(core));
+      writeFileSync(path.join(dir, "plan.md"), documentContent);
+      if (Array.isArray(notes) && notes.length > 0) {
+        writeFileSync(path.join(dir, "notes.yaml"), yamlStringify({ notes }));
+      }
+    } else {
+      // Reviews remain monolithic in this transitional helper — the
+      // folder-backed review storage manager lands in a sibling task and
+      // will replace this branch with a parallel materialiser.
+      writeFileSync(path.join(dir, sidecarName), `_ulid: "${id}"\n`);
+    }
   }
 }
 

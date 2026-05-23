@@ -247,44 +247,45 @@ describe("Plan storage manager — partial-layout rejection", () => {
     expectPartialLayoutError(captured, "plans");
   });
 
-  // ── Blocker 3 (fix cycle 2): clean folder-declared projects ───────────
+  // ── Clean folder-declared projects route through the folder manager ───
   // A fresh kynetic 1.2 project that declares `plan_storage.format: folder`
-  // has no monolithic project.plans.yaml on disk yet. Without an explicit
-  // write-side rejection the monolithic savePlan / deletePlan would happily
-  // create or mutate a monolithic file beneath the folder manifest,
-  // immediately constructing the very partial layout the task is supposed
-  // to prevent. The behavioural tests below pin the storage manager to the
-  // AC-required rejection so a regression to the pre-fix behaviour
-  // (silently creating monolithic data) fails the build.
+  // routes savePlan / mutatePlanAtomically / deletePlan through the folder
+  // storage manager. The dispatcher in src/parser/plans.ts switches on the
+  // manifest declaration; the folder manager writes per-plan sidecars under
+  // `.kspec/plans/<ulid>/` and never creates `.kspec/project.plans.yaml` as
+  // a monolithic file. These behavioural tests pin that contract so a
+  // regression that bypasses the dispatcher and falls back to the
+  // monolithic writer fails the build.
   //
-  // `mutatePlanAtomically` is excluded from the strict write rule because
-  // it can only update an existing entry and therefore cannot introduce a
-  // partial layout. Its clean-project behaviour (fail at lookup, leave the
-  // monolithic file uncreated) is covered immediately below.
-
   // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
-  it("savePlan rejects on a clean folder-declared project so it cannot create a monolithic plans file beneath a folder manifest", async () => {
+  // AC: @folder-backed-plan-storage-1 ac-plan-metadata-sidecar-is-authoritative
+  it("savePlan on a clean folder-declared project writes per-plan sidecars and never creates a monolithic plans file", async () => {
     const ctx = makeContext(specDir, folderDeclaredManifest());
+    const newUlid = testUlid("NEW");
     const newPlan: LoadedPlan = {
-      ...createPlan({ _ulid: testUlid("NEW"), title: "Net-new plan" }),
+      ...createPlan({ _ulid: newUlid, title: "Net-new plan" }),
     };
-    await expect(savePlan(ctx, newPlan)).rejects.toMatchObject({
-      code: PARTIAL_ENTITY_STORAGE_LAYOUT_CODE,
-      domain: "plans",
-    });
-    // The rejection must happen BEFORE any file is written.
-    await expect(fs.access(path.join(specDir, "project.plans.yaml"))).rejects.toThrow(/ENOENT/);
+
+    await savePlan(ctx, newPlan);
+
+    // Folder sidecars exist.
+    await fs.access(path.join(specDir, "plans", newUlid, "plan.yaml"));
+    await fs.access(path.join(specDir, "plans", newUlid, "plan.md"));
+    // The lean index is created (under the folder layout it is the
+    // authoritative bounded projection, not a monolithic record). It must
+    // not carry the full plan body.
+    const indexBody = await fs.readFile(
+      path.join(specDir, "project.plans.yaml"),
+      "utf-8",
+    );
+    expect(indexBody).toContain(newUlid);
+    expect(indexBody).not.toContain("content:");
   });
 
   // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
-  // mutatePlanAtomically requires an existing entry to update — it cannot
-  // introduce a partial layout the way savePlan (which can create new
-  // entries) or deletePlan (which leaves orphan folders) can. The
-  // compatibility gate therefore lets the call through on a clean
-  // folder-declared project, and the call fails at the on-disk lookup
-  // step instead. The behavioural contract this test pins: even though the
-  // call fails, the monolithic file is NOT created beneath the folder
-  // manifest, and the mutation callback never runs.
+  // mutatePlanAtomically requires an existing entry to update. The folder
+  // manager fails at lookup when the plan folder is missing, without ever
+  // creating a monolithic file.
   it("mutatePlanAtomically on a clean folder-declared project fails at lookup without creating a monolithic file", async () => {
     const ctx = makeContext(specDir, folderDeclaredManifest());
     const targetPlan: LoadedPlan = {
@@ -296,18 +297,15 @@ describe("Plan storage manager — partial-layout rejection", () => {
         mutationCallbackInvoked = true;
         return latest;
       }),
-    ).rejects.toThrow(/Plan not found in file|ENOENT/);
+    ).rejects.toThrow(/Plan not found/);
     expect(mutationCallbackInvoked).toBe(false);
     await expect(fs.access(path.join(specDir, "project.plans.yaml"))).rejects.toThrow(/ENOENT/);
   });
 
   // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
-  it("deletePlan rejects on a clean folder-declared project (no monolithic file is created or touched by the delete path)", async () => {
+  it("deletePlan on a clean folder-declared project fails with ENOENT and creates no monolithic file", async () => {
     const ctx = makeContext(specDir, folderDeclaredManifest());
-    await expect(deletePlan(ctx, testUlid("PLN"))).rejects.toMatchObject({
-      code: PARTIAL_ENTITY_STORAGE_LAYOUT_CODE,
-      domain: "plans",
-    });
+    await expect(deletePlan(ctx, testUlid("PLN"))).rejects.toThrow(/Plan not found/);
     await expect(fs.access(path.join(specDir, "project.plans.yaml"))).rejects.toThrow(/ENOENT/);
   });
 });

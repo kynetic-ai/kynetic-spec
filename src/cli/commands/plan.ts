@@ -647,6 +647,11 @@ export function registerPlanCommands(program: Command): void {
   // Register plan import subcommand
   registerPlanImportCommand(plan);
 
+  // kspec plan rebuild-index
+  // AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
+  // AC: @trait-folder-backed-entity-1 ac-index-rebuilds-from-folders
+  registerPlanRebuildIndexCommand(plan);
+
   // kspec plan add
   // AC: @plan-crud ac-1, ac-2
   markMutating(plan.command("add"))
@@ -1643,6 +1648,163 @@ Examples:
         );
       } catch (err) {
         error("Failed to derive plan content", err);
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
+}
+
+/**
+ * Register `kspec plan rebuild-index`. Validates that the lean index in
+ * `.kspec/project.plans.yaml` agrees with the per-plan folders under
+ * `.kspec/plans/<ulid>/`. Exit codes and JSON envelope are defined by
+ * @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection and
+ * @trait-folder-backed-entity-1 ac-index-rebuilds-from-folders.
+ *
+ * Flag semantics:
+ *   default       — validate, exit 1 on drift, never writes
+ *   --dry-run     — same as default, never writes (explicit preview marker)
+ *   --repair      — rewrite the lean index from folders
+ *   --force       — only with --repair; permits dropping stale entries
+ *                   whose folders are missing
+ *   --json        — emits a structured envelope (status, summary, changes,
+ *                   conflicts) and uses exit codes 0/1/2 per status
+ */
+function registerPlanRebuildIndexCommand(plan: Command): void {
+  markMutating(plan.command("rebuild-index"))
+    .description("Rebuild the plan index from .kspec/plans/<ulid>/ folders")
+    .option("--repair", "Rewrite .kspec/project.plans.yaml from plan folders")
+    .option(
+      "--force",
+      "With --repair, drop stale index entries whose folders are missing",
+    )
+    .option("--dry-run", "Report drift without writing — same as default")
+    .addHelpText(
+      "after",
+      `
+Exit codes:
+  0  clean or repaired
+  1  drift detected without --repair
+  2  blocked by conflicts (e.g. stale entry without --force)
+
+Examples:
+  $ kspec plan rebuild-index                  # validate, fail if drift
+  $ kspec plan rebuild-index --dry-run        # preview drift only
+  $ kspec plan rebuild-index --repair         # apply additive drift
+  $ kspec plan rebuild-index --repair --force # drop stale index entries`,
+    )
+    .action(async (options) => {
+      try {
+        const ctx = await initContext();
+        const isDryRun = Boolean(options.dryRun);
+        const isRepair = Boolean(options.repair) && !isDryRun;
+        const isForce = Boolean(options.force);
+
+        if (isForce && !options.repair) {
+          error("--force can only be used with --repair");
+          process.exit(EXIT_CODES.USAGE_ERROR);
+        }
+
+        const {
+          computePlanIndexDrift,
+          rebuildPlanIndex,
+          getPlanIndexFilePath,
+        } = await import("../../parser/plan-storage-manager.js");
+
+        const report = await computePlanIndexDrift(ctx, { force: isForce });
+        const driftCount = report.changes.length;
+        const conflictCount = report.conflicts.length;
+
+        const baseEnvelope = {
+          domain: "plans",
+          dry_run: isDryRun,
+          repair: isRepair,
+          force: isForce,
+          summary: {
+            folders: report.folders,
+            index_entries: report.indexEntries,
+            added: report.added,
+            updated: report.updated,
+            removed_stale: report.removedStale,
+            conflicts: conflictCount,
+          },
+          changes: report.changes.map((c) => ({
+            kind: c.kind,
+            ref: c.ref,
+            path: c.path,
+          })),
+          conflicts: report.conflicts.map((c) => ({
+            code: c.code,
+            ref: c.ref,
+            path: c.path,
+            message: c.message,
+          })),
+        };
+
+        // Blocked: conflicts that cannot be cleared by the current flag set.
+        if (conflictCount > 0) {
+          output(
+            { ...baseEnvelope, status: "blocked" },
+            () => {
+              warn(
+                `${conflictCount} conflict(s) prevent index rebuild. ` +
+                  `Use --force with --repair where applicable.`,
+              );
+              for (const conflict of report.conflicts) {
+                const refSuffix = conflict.ref ? ` (ref: ${conflict.ref})` : "";
+                console.error(`  ${conflict.code}: ${conflict.message}${refSuffix}`);
+              }
+            },
+          );
+          process.exit(2);
+        }
+
+        // Clean: no drift at all.
+        if (driftCount === 0) {
+          output({ ...baseEnvelope, status: "clean" }, () => {
+            success(`Plan index is up to date (${report.folders} folder(s))`);
+          });
+          return;
+        }
+
+        // Repair path — write the new index from folders.
+        if (isRepair) {
+          await rebuildPlanIndex(ctx, { force: isForce });
+          await commitIfShadow(
+            ctx.shadow,
+            "plan-rebuild-index",
+            undefined,
+            `${report.added} added, ${report.updated} updated, ${report.removedStale} stale dropped`,
+          );
+          output({ ...baseEnvelope, status: "repaired" }, () => {
+            for (const change of report.changes) {
+              console.log(`  ${change.kind}  ${change.ref}  (${change.path})`);
+            }
+            success(
+              `Rebuilt plan index from ${report.folders} folder(s): ` +
+                `${report.added} added, ${report.updated} updated, ` +
+                `${report.removedStale} stale dropped`,
+            );
+          });
+          return;
+        }
+
+        // Drift detected but not repairing — print summary and exit 1.
+        const indexPath = getPlanIndexFilePath(ctx);
+        output({ ...baseEnvelope, status: "drift" }, () => {
+          if (isDryRun) {
+            warn("DRY RUN — no changes will be written");
+          }
+          for (const change of report.changes) {
+            console.log(`  ${change.kind}  ${change.ref}  (${change.path})`);
+          }
+          info(
+            `${driftCount} drift change(s) found. ` +
+              `Re-run with --repair to rewrite ${indexPath}.`,
+          );
+        });
+        process.exit(1);
+      } catch (err) {
+        error("Failed to rebuild plan index", err);
         process.exit(EXIT_CODES.ERROR);
       }
     });
