@@ -225830,6 +225830,12 @@ reviews:
         payload:
           thread_ulid: 01KSAQFNYB5EPPX0C805A7HVNC
         timestamp: 2026-05-23T17:00:25.008Z
+      - _ulid: 01KSAWG5AY86ACGGZG1XGAZ651
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSAQFNYB5EPPX0C805A7HVNC
+        timestamp: 2026-05-23T17:00:36.575Z
     examined_commit: 990d24115785a42e739cf439605a63530c652069
     external_links: []
     lifecycle_state: closed
@@ -225963,6 +225969,8 @@ reviews:
               the gate rejects."
             created_at: 2026-05-23T17:00:23.386Z
         kind: blocker
+        resolved_at: 2026-05-23T17:00:34.889Z
+        resolved_by: "@claude"
       - _ulid: 01KSAQH0KD7A1ZNDPAS1FA6XZF
         entries:
           - _ulid: 01KSAQH0KE464P6VWKDJVK2BX8
@@ -225995,5 +226003,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-23T15:33:54.513Z
     created_at: 2026-05-23T15:02:21.210Z
-    updated_at: 2026-05-23T17:00:23.386Z
+    updated_at: 2026-05-23T17:00:34.889Z
     notes: []
