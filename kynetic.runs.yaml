@@ -51464,7 +51464,7 @@ runs:
     completed_at: 2026-05-23T03:54:01.092Z
   - _ulid: 01KS9HW3JAHRKENT8N7HNKPVB4
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -51505,7 +51505,21 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-23T04:37:11.503Z
-        completed_at: 2026-05-23T04:37:11.503Z
+        completed_at: 2026-05-23T04:37:22.596Z
+        notes: "Proposed improvement: Teach the detached reviewer merge path to handle a missing
+          integration-target worktree explicitly. Option A: update the helper to create or reuse a
+          deterministic target worktree when the integration target branch is not checked out
+          anywhere, then continue with the same dirty-target and conflict gates. Option B: update
+          dispatch/bootstrap preparation to ensure the integration target branch is checked out in
+          an occupied worktree before reviewer merge begins. Benefit: reviewers can follow the
+          single supported helper path without manual git worktree diagnosis or ad hoc setup. Rough
+          scope: medium, because it touches helper/bootstrap mechanics and needs tests for
+          missing-target-worktree creation, clean rerun/no-op, dirty refusal, and cleanup/refresh
+          behavior."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-23T04:37:22.596Z
+        completed_at: 2026-05-23T04:37:22.596Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-23T04:35:39.211Z
