@@ -51342,7 +51342,7 @@ runs:
     completed_at: 2026-05-23T02:33:52.793Z
   - _ulid: 01KS9BS7BGNKTJ8XNT56Z8V3P5
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -51358,7 +51358,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-23T02:49:51.408Z
-        completed_at: 2026-05-23T02:49:51.408Z
+        completed_at: 2026-05-23T02:50:01.126Z
+        notes: "Friction points: The detached review snapshot did not expose a local .kspec worktree, so
+          attempting git -C .kspec show for the worker's shadow commit failed; verification had to
+          rely on kspec CLI entity lookups rather than a shadow diff. kspec log @task also returned
+          no commits for this spec-only shadow change, which made the worker's shadow commit note
+          less directly inspectable from the review snapshot. Full npm test took 2582.9s, but that
+          matched the current review gate expectation rather than revealing a clear new process
+          defect."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-23T02:50:01.126Z
+        completed_at: 2026-05-23T02:50:01.126Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-23T02:49:13.328Z
