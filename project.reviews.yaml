@@ -226839,6 +226839,18 @@ reviews:
         runner: npm run typecheck
         created_at: 2026-05-23T21:31:42.401Z
         completed_at: 2026-05-23T21:31:42.401Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Schema/references passed, but command exited 6 because the repo has pre-existing
+          validation warnings (deprecated refs, orphaned specs, missing AC coverage unrelated to
+          @folder-backed-plan-storage-1).
+        name: kspec validate
+        required: false
+        runner: kspec validate
+        created_at: 2026-05-23T21:32:08.080Z
+        completed_at: 2026-05-23T21:32:08.080Z
     events:
       - _ulid: 01KSBBAK568R5MMFMSE2HJZHS4
         actor: Jacob Chapel
@@ -226881,6 +226893,13 @@ reviews:
           status: pass
           name: typecheck
         timestamp: 2026-05-23T21:31:43.938Z
+      - _ulid: 01KSBC1CFSSM4ZYKYX9EHWJ26C
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-05-23T21:32:09.593Z
     examined_commit: c81ed98ce2337fdd426aec3da370bb73d29d4b6f
     external_links: []
     lifecycle_state: open
@@ -226933,5 +226952,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-23T21:19:42.759Z
-    updated_at: 2026-05-23T21:31:42.401Z
+    updated_at: 2026-05-23T21:32:08.080Z
     notes: []
