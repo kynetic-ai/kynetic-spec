@@ -8936,7 +8936,7 @@ workspaces:
         head: a5ce476850bb299e809c7880cb9c6c8f731c802e
         last_seen_at: 2026-05-23T02:27:26.533Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-update-plan-review-storage-specs-1-task-upd
-  - active_role: worker
+  - active_role: null
     base_branch_point: a5ce476850bb299e809c7880cb9c6c8f731c802e
     bootstrap:
       status: succeeded
@@ -9261,12 +9261,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-23T03:28:00.090Z
+      updated_at: 2026-05-23T03:29:34.826Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-23T03:28:00.090Z
+      updated_at: 2026-05-23T03:29:34.826Z
     integration:
       status: pending
       detail: null
@@ -9274,17 +9274,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
       target_commit: a5ce476850bb299e809c7880cb9c6c8f731c802e
-      updated_at: 2026-05-23T03:28:00.090Z
-    lifecycle_state: active
+      updated_at: 2026-05-23T03:29:34.826Z
+    lifecycle_state: ready
     resolved_base_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
     task_ref: "@01KS8XAVRQCA2ATTCEE98CXKW6"
     task_slug: task-folder-backed-entity-trait-foundation-1
     timestamps:
       closed_at: null
       last_active_at: 2026-05-23T02:49:34.730Z
-      last_reconciled_at: 2026-05-23T03:28:00.090Z
+      last_reconciled_at: 2026-05-23T03:29:34.826Z
       created_at: 2026-05-23T02:49:08.705Z
-      updated_at: 2026-05-23T03:28:00.090Z
+      updated_at: 2026-05-23T03:29:34.826Z
     workspace_id: dispatch-workspace-01KS8XAVRQCA2ATTCEE98CXKW6
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
