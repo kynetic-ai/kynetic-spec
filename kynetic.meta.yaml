@@ -19072,6 +19072,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-19T15:20:52.225Z
+  - _ulid: 01KS9E2R8W4WK4B18CPZRRM9TC
+    type: success
+    content: "When extracting a shared trait foundation (folder-backed entity storage), wrote tests
+      against a fixture entity ('widget') that is NOT one of the production entity types. The
+      fixture forces the abstraction to be general — any task-specific assumption that leaks into
+      the foundation makes the fixture test fail. Upcoming plan-storage / review-storage manager
+      tasks (@plan-folder-backed-plans-reviews-and-local-resources) can apply the same pattern: a
+      fictional fixture entity exercises shared trait helpers without coupling tests to production
+      schemas. Concrete usage: tests/folder-backed-entity.test.ts (27 tests, all four trait ACs)."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-23T03:29:22.716Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
