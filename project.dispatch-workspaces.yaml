@@ -9946,3 +9946,79 @@ workspaces:
         head: 7f298c5ed5b0df61289800fe1539060e47dedc25
         last_seen_at: 2026-05-23T09:35:20.537Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-entity-local-resource-model-1-01ks8xaw
+  - active_role: null
+    base_branch_point: fa4574a625f4793678aa574529764009d77e9a2c
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-entity-storage-version-compatibility-gates-1/01ks8xaw
+    canonical_branch_head: fa4574a625f4793678aa574529764009d77e9a2c
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-05-23T12:21:00.124Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-05-23T12:21:00.124Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
+      target_commit: fa4574a625f4793678aa574529764009d77e9a2c
+      updated_at: 2026-05-23T12:21:00.124Z
+    lifecycle_state: ready
+    resolved_base_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
+    task_ref: "@01KS8XAWNAQ1AA9SJS8BYH9056"
+    task_slug: task-entity-storage-version-compatibility-gates-1
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-05-23T12:21:00.124Z
+      created_at: 2026-05-23T12:21:00.124Z
+      updated_at: 2026-05-23T12:21:00.124Z
+    workspace_id: dispatch-workspace-01KS8XAWNAQ1AA9SJS8BYH9056
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-entity-storage-version-compatibility-gates-1/01ks8xaw
+        head: fa4574a625f4793678aa574529764009d77e9a2c
+        last_seen_at: 2026-05-23T12:21:00.124Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-entity-storage-version-compatibility-gates-1-01ks8xaw
