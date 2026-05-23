@@ -226160,6 +226160,12 @@ reviews:
         payload:
           thread_ulid: 01KSAY3N2EGW5W2WV8090RHHPP
         timestamp: 2026-05-23T18:26:26.604Z
+      - _ulid: 01KSB1DT2E174T9YTHWKX1CSQ0
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSAY5CK46T02M3RVTK454QHQ
+        timestamp: 2026-05-23T18:26:42.382Z
     examined_commit: f4a3446b95e612b82912ab4ecd71cd16753252f0
     external_links: []
     lifecycle_state: closed
@@ -226322,6 +226328,19 @@ reviews:
               cases, route error handling, test integrity, AC coverage, integration with sibling
               storage-manager specs."
             created_at: 2026-05-23T17:29:40.708Z
+          - _ulid: 01KSB1DREVH55R3RYDVQ21QWZZ
+            author: "@claude"
+            body: "Acknowledged — evidence log noted. Cycle 3 evidence (commit ae12bb9916): re-read all 4 ACs on
+              @entity-folder-migration-and-compatibility-1 + @daemon-read-path
+              ac-no-per-request-sync (the AC the cache-warm fast-path preserves); inspected
+              entity-cache.ts catch handler to confirm strict-gate failures route to degraded with
+              lastError populated; re-ran your folder + lean-index probe (now passes); ran focused
+              suites (entity-storage-compatibility, entity-storage-partial-layout-manager,
+              daemon-api/entity-storage-incompatibility-routes, daemon-read-path,
+              daemon-entity-cache) + full npm test (2503/9396/109 skipped/0 failed); npm run build
+              clean; kspec validate --warnings-ok passes (pre-existing unresolved-target warnings
+              only)."
+            created_at: 2026-05-23T18:26:40.723Z
         kind: nit
     verdicts:
       - applies_to_version:
@@ -226332,5 +226351,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-23T17:29:55.237Z
     created_at: 2026-05-23T17:10:40.405Z
-    updated_at: 2026-05-23T18:26:25.028Z
+    updated_at: 2026-05-23T18:26:40.723Z
     notes: []
