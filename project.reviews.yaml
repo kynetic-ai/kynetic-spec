@@ -227323,6 +227323,16 @@ reviews:
         runner: npm test
         created_at: 2026-05-23T23:01:41.194Z
         completed_at: 2026-05-23T23:01:41.194Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: tsc --noEmit completed with exit 0.
+        name: typecheck
+        required: true
+        runner: npm run typecheck
+        created_at: 2026-05-23T23:01:51.772Z
+        completed_at: 2026-05-23T23:01:51.772Z
     events:
       - _ulid: 01KSBGAX0KGPDF06GHVVAFE5AG
         actor: Jacob Chapel
@@ -227358,6 +227368,13 @@ reviews:
           status: pass
           name: targeted plan storage tests
         timestamp: 2026-05-23T23:01:42.925Z
+      - _ulid: 01KSBH5P4XETD6QJKBKJ8HM400
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: typecheck
+        timestamp: 2026-05-23T23:01:53.437Z
     examined_commit: 984af0c7589a8044eedb252a02bd2cde4992f69d
     external_links: []
     lifecycle_state: open
@@ -227394,5 +227411,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-05-23T22:47:15.738Z
-    updated_at: 2026-05-23T23:01:41.194Z
+    updated_at: 2026-05-23T23:01:51.772Z
     notes: []
