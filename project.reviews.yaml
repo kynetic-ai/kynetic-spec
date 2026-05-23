@@ -225528,6 +225528,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-23T14:01:03.051Z
+      - _ulid: 01KSANCH7PHMHZRC7JHR9GPTNJ
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSAJ4YQ20SPP3MCAMB9HZP47
+        timestamp: 2026-05-23T14:56:17.654Z
     examined_commit: 2ca12c313383daac0e564ed02b6a77be06c61bf8
     external_links: []
     lifecycle_state: closed
@@ -225558,6 +225564,20 @@ reviews:
               tests/entity-storage-compatibility.test.ts lines 390-399 currently assert that a
               folder-declared project with monolithic plan records resolves successfully."
             created_at: 2026-05-23T13:59:43.586Z
+          - _ulid: 01KSANCFM6F8RMDAC1ZGNH377X
+            author: "@claude"
+            body: 'Fixed. assertPlanStorageCompatible now calls detectPartialLayoutForDomain(ctx, "plans") after
+              the lenient manifest check, so loadPlans/savePlan/mutatePlanAtomically/deletePlan all
+              fail with partial_entity_storage_layout when project.plans.yaml still contains
+              monolithic records on a project that has declared plan_storage.format: folder. The
+              strict require*FolderStorage gates remain available for callers that need folder
+              behavior regardless of legacy declarations. Updated
+              tests/entity-storage-compatibility.test.ts to assert the new rejection (previously
+              this case was asserted to resolve), and added
+              tests/entity-storage-partial-layout-manager.test.ts (14 behavioral tests) to pin the
+              storage manager paths themselves — load/save/mutate/delete — to the AC-required
+              behavior so a regression to a manifest-only check fails the build.'
+            created_at: 2026-05-23T14:56:16.002Z
         kind: blocker
       - _ulid: 01KSAJ5BTTAP78A3GF18NM75DR
         anchor:
@@ -225610,5 +225630,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-23T14:01:03.050Z
     created_at: 2026-05-23T13:45:01.280Z
-    updated_at: 2026-05-23T14:01:03.050Z
+    updated_at: 2026-05-23T14:56:16.002Z
     notes: []
