@@ -3159,6 +3159,9 @@ requirements:
       entity_scoped`. Newer kspec versions that require folder-backed plans or
       reviews block incompatible projects with structured guidance instead of
       silently reading or rewriting ambiguous data.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
