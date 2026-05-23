@@ -296,3 +296,98 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-23T18:54:15.771Z
+  - _ulid: 01KSB69211TW4JDFS2TNFMPGGN
+    content: >-
+      Fix cycle 4 complete (commit b4c8c7e087): addressed the reviewer's MUST-FIX blocker about
+      restored daemon API coverage.
+
+
+      Strategy: Migrate test fixtures to the folder-backed contract rather than asserting 409 for
+      everything.
+
+
+      Test helpers (tests/daemon-api/helpers.ts):
+
+      - Added FOLDER_BACKED_INLINE_MANIFEST (kynetic 1.2 with plan_storage.format: folder,
+      review_storage.format: folder, resource_storage.format: entity_scoped).
+
+      - Added materializeFolderBackedReviewShells / materializeFolderBackedPlanShells that read
+      ULIDs from the monolithic file and create matching .kspec/<domain>/<ulid>/<sidecar>.yaml
+      shells.
+
+      - setupInlineFixtures auto-detects folder-backed manifests and materialises shells when
+      reviews:/plans: are supplied.
+
+      - setupFixtures now overwrites the copied e2e manifest with the 1.2 folder-backed declaration
+      and materialises shells (the source fixture file stays kynetic 1.0 so Playwright watcher specs
+      are unaffected).
+
+
+      Source change (src/parser/{plans,reviews}.ts):
+
+      - mutate*Atomically switched from the writable gate to the compatibility gate. In-place
+      mutation requires an existing entry and cannot introduce a partial layout; only save*/delete*
+      can. This unblocked the daemon mutation routes (thread/reply/resolve/reopen, verdict, check,
+      lifecycle) under the new folder-backed fixtures without weakening the drift-prevention
+      contract for save/delete. Docstrings updated; the writable gate's own docstring
+      (assertPlanStorageWritable / assertReviewStorageWritable) now records that mutate* opts out
+      for the in-place reason.
+
+
+      Partial-layout-manager tests:
+
+      - The two mutate-on-clean-folder-declared tests were updated to reflect the new contract:
+      mutate now fails at the on-disk lookup step rather than at the gate, but the assertion that no
+      monolithic file is created beneath the folder manifest is preserved.
+
+
+      helpers.test.ts:
+
+      - Replaced the single legacy-positive case (which used to assert that daemon /api/reviews/:id
+      served data on a kynetic 1.0 manifest) with two replacement tests: a folder-backed positive
+      that exercises the auto-shell materialisation path, and a legacy-negative that asserts the
+      daemon now returns the structured 409 entity_storage_incompatible /
+      legacy_review_storage_removed contract.
+
+
+      Suites restored (all unskipped, no coverage loss):
+
+      - tests/daemon-api/reviews-list.test.ts: 26 tests
+
+      - tests/daemon-api/reviews-threads.test.ts: 29 tests
+
+      - tests/daemon-review-verdicts-api.test.ts: 33 tests (incl.
+      Verdicts/Checks/Lifecycle/Verdict-Task-Consistency)
+
+      - tests/daemon-review-websocket.test.ts: 12 tests (incl. broadcast and event-shape suites)
+
+      - tests/daemon-api/plans.test.ts: 2 tests
+
+      - tests/daemon-api/helpers.test.ts: legacy-skip replaced (-1 skip, +2 tests)
+
+      - tests/daemon-api-input-validation.test.ts: 1 test
+
+
+      Suite delta: 109 skipped (cycle 3) -> 5 skipped (cycle 4). The remaining 5 skips are
+      pre-existing and unrelated (item-delete-children, meta, task-plan-ref).
+
+
+      Verification (commit b4c8c7e087):
+
+      - npm test --fresh: 2503 suites, 9500 tests passed, 5 skipped, 0 real failures. One flaky
+      failure in tests/enhanced-setup.test.ts (dist race condition from a concurrent build); test
+      passes in isolation.
+
+      - npm run build: clean (TypeScript, shared, daemon, web UI, docs search, plugin).
+
+      - kspec validate --warnings-ok: passes (only pre-existing unresolved-target warnings in
+      unrelated test files).
+
+
+      Protected live projects (/home/chapel/Projects/kynetic-spec and
+      /home/chapel/Projects/kynetic-spec-dispatch) still report kynetic 1.1 with no
+      plan_storage/review_storage declarations and no .kspec/plans/ or .kspec/reviews/ directories.
+      This work runs entirely against tests/fixtures and createTempDir() workspaces.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-23T19:51:29.569Z
