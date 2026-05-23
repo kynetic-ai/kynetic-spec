@@ -226832,6 +226832,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-23T21:19:56.248Z
+      - _ulid: 01KSBC06WRVATPYN3XT0SN11CW
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSBC05DDG31FG0EFQH3VB8H1
+        timestamp: 2026-05-23T21:31:31.096Z
     examined_commit: c81ed98ce2337fdd426aec3da370bb73d29d4b6f
     external_links: []
     lifecycle_state: open
@@ -226841,8 +226848,28 @@ reviews:
       content_hash: ""
       ref: "@01KS8XAY52P099Y1PQ8PFJ6G0P"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KSBC05DDG31FG0EFQH3VB8H1
+        anchor:
+          type: code
+          commit: c81ed98ce2337fdd426aec3da370bb73d29d4b6f
+          line_end: 540
+          line_start: 538
+          path: src/parser/plan-storage-manager.ts
+          side: head
+        entries:
+          - _ulid: 01KSBC05DDSZH6DE65TRWVJM4Y
+            author: Jacob Chapel
+            body: "MUST-FIX: clearing a plan's notes does not clear the authoritative notes sidecar. Both
+              save/update paths only write notes.yaml when the new notes array is non-empty, so an
+              existing notes.yaml survives when the mutation returns notes: []. Evidence: a one-off
+              execution saved a plan with one note, called mutatePlanAtomically(... notes: []), then
+              loadPlans() still returned that stale note. Impact: plan.yaml/index can say
+              notes_count=0 while detail reads continue exposing deleted notes, violating
+              ac-plan-metadata-sidecar-is-authoritative and creating index drift."
+            created_at: 2026-05-23T21:31:29.581Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-23T21:19:42.759Z
-    updated_at: 2026-05-23T21:19:54.756Z
+    updated_at: 2026-05-23T21:31:29.581Z
     notes: []
