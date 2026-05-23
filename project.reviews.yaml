@@ -225025,7 +225025,50 @@ reviews:
     slugs: []
     title: Review entity-local resource trait resolver (cycle 4)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "2476 test suites passed; 9397 tests passed, 5 skipped. Full log:
+          /tmp/kspec-test-cache/01KSA0HNK3PE7CASC4K6YDPG6B/d6a976f0d5d13713.log"
+        name: npm test -- --fresh
+        required: true
+        runner: npm
+        created_at: 2026-05-23T09:07:24.857Z
+        completed_at: 2026-05-23T09:07:24.857Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Exited 0: 0 errors, 725 existing warnings reported."
+        name: npm run lint
+        required: true
+        runner: oxlint
+        created_at: 2026-05-23T09:07:29.050Z
+        completed_at: 2026-05-23T09:07:29.050Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: tsc --noEmit exited 0.
+        name: npm run typecheck
+        required: true
+        runner: tsc
+        created_at: 2026-05-23T09:07:33.331Z
+        completed_at: 2026-05-23T09:07:33.331Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Reviewed command exits 6 due pre-existing global completeness warnings; rerun with
+          --warnings-ok exited 0. No warnings were reported for
+          @trait-entity-scoped-local-resources-1 after this fix cycle.
+        name: kspec validate --completeness
+        required: true
+        runner: kspec
+        created_at: 2026-05-23T09:07:37.409Z
+        completed_at: 2026-05-23T09:07:37.409Z
     events:
       - _ulid: 01KSA0JMCCJQH83BCXXCRERP12
         actor: Jacob Chapel
@@ -225047,9 +225090,60 @@ reviews:
           kind: blocker
           thread_ulid: 01KSA1CT802PTKFYSM6YYZCQTN
         timestamp: 2026-05-23T09:06:57.004Z
+      - _ulid: 01KSA1DRNC095X6TGM3Y94PF64
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test -- --fresh
+        timestamp: 2026-05-23T09:07:26.508Z
+      - _ulid: 01KSA1DWV44EKMRBY7ZXW4BGA5
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm run lint
+        timestamp: 2026-05-23T09:07:30.788Z
+      - _ulid: 01KSA1E0W0Z265RENDA07ATAZD
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm run typecheck
+        timestamp: 2026-05-23T09:07:34.912Z
+      - _ulid: 01KSA1E4SW3SW8YSTJKWVX0NBW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --completeness
+        timestamp: 2026-05-23T09:07:38.940Z
+      - _ulid: 01KSA1E8SRH2C3MZYR81Q0S00M
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KSA1E797TK4HE3SZE7QHJKVK
+        timestamp: 2026-05-23T09:07:43.032Z
+      - _ulid: 01KSA1ECQ09W35EPA83W283XTC
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-23T09:07:47.040Z
+      - _ulid: 01KSA1ECQ0CDA056D9QGPPE2N1
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-23T09:07:47.040Z
     examined_commit: 153ed3a92e5e76a9559d81221f045208d19add18
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -225081,7 +225175,39 @@ reviews:
               keeping any unchecked helper private/internal."
             created_at: 2026-05-23T09:06:55.361Z
         kind: blocker
-    verdicts: []
+      - _ulid: 01KSA1E797TK4HE3SZE7QHJKVK
+        entries:
+          - _ulid: 01KSA1E797NDWCXCS3M25WPMWQ
+            author: Jacob Chapel
+            body: >-
+              Review evidence log:
+
+              Files read: kspec-agents.md, src/parser/entity-local-resources.ts,
+              src/schema/resources.ts, src/schema/index.ts, tests/entity-local-resources.test.ts,
+              src/parser/yaml.ts, prior review @01KS9XQFH25P13AS179EFY0YC9.
+
+              Commands run: kspec task get @01KS8XAW3HQ2DGQPD6HFC19FAV; kspec review for-task
+              @01KS8XAW3HQ2DGQPD6HFC19FAV; kspec review add/open @01KSA0JM; kspec item get
+              @trait-entity-scoped-local-resources-1; git diff/stat/log; rg AC annotations; kspec
+              validate --completeness; kspec validate --completeness --warnings-ok; npm test --
+              --fresh; npm run lint; npm run typecheck.
+
+              Claims verified: prior blockers for non-regular resources, corrupt manifest handling,
+              and delete cascade coverage are addressed; full fresh suite passes.
+
+              Categories searched: correctness, AC/spec alignment, path traversal and symlink
+              handling, undeclared resource behavior, manifest error handling, binary/preview
+              handling, git metadata, static export, test quality.
+            created_at: 2026-05-23T09:07:41.479Z
+        kind: nit
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-23T09:07:47.039Z
     created_at: 2026-05-23T08:52:37.403Z
-    updated_at: 2026-05-23T09:06:55.361Z
+    updated_at: 2026-05-23T09:07:47.040Z
     notes: []
