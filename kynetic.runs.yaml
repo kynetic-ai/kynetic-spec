@@ -52369,7 +52369,7 @@ runs:
     completed_at: 2026-05-23T21:34:32.721Z
   - _ulid: 01KSBFDHFPB4VC2T7T9FNNV62B
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -52385,7 +52385,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-23T22:32:08.127Z
-        completed_at: 2026-05-23T22:32:08.127Z
+        completed_at: 2026-05-23T22:33:21.822Z
+        notes: "High-confidence reflection from the review session: diff-first review plus AC wording checks
+          worked well and caught a false AC coverage annotation before merge. Friction points were
+          review evidence logs requiring manual placement, noisy/manual AC coverage verification,
+          and workflow help examples omitting the required run ref. Search coverage found these are
+          already tracked: @01KR2JD1 for review evidence logs, @01KRYVD7 / @01KR41QV / @01KHWTXF /
+          @01KGGFB2 for focused AC coverage reporting, and @01KR293G / @01KRGCTJ / @01KRYTG7 for
+          workflow run-ref documentation. The review-screenshot resource UI gap is already
+          represented by @task-review-screenshot-resource-ui. No untracked friction currently meets
+          the loop-mode capture bar."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-23T22:33:21.822Z
+        completed_at: 2026-05-23T22:33:21.822Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-23T22:31:13.654Z
