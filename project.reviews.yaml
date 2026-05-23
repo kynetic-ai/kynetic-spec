@@ -221962,6 +221962,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-23T06:14:06.058Z
+      - _ulid: 01KS9QHCR0ZWM5AW2661TX293Y
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KS9QHB5DQ83V1J3PKFXAFQ0T
+        timestamp: 2026-05-23T06:14:39.617Z
     examined_commit: 6f450883299b16fa3401a44e29b014f3ce37edd7
     external_links: []
     lifecycle_state: open
@@ -224351,7 +224358,22 @@ reviews:
               the recorded commit."
             created_at: 2026-05-23T06:04:22.781Z
         kind: blocker
+      - _ulid: 01KS9QHB5DQ83V1J3PKFXAFQ0T
+        entries:
+          - _ulid: 01KS9QHB5DW6AQYBXKAW4055M2
+            author: Jacob Chapel
+            body: "Review evidence log: Files read: src/parser/entity-local-resources.ts,
+              src/schema/resources.ts, src/schema/index.ts, tests/entity-local-resources.test.ts,
+              task and plan/spec context. Commands run: kspec item get, kspec review for-task, kspec
+              validate, npm test -- --fresh, npm run typecheck, npm run lint, git diff, rg AC scans,
+              targeted temp-repo reproduction for git metadata. Claim verified: resource metadata
+              git identity uses HEAD/path; reproduced untracked resource returning a commit/path
+              pair that cannot resolve the resource. Categories searched: correctness, path escape
+              and symlink handling, content-type validation, metadata hashing, preview bounds,
+              static export, test quality, AC annotation coverage, integration checks."
+            created_at: 2026-05-23T06:14:37.997Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-23T06:00:09.228Z
-    updated_at: 2026-05-23T06:14:04.393Z
+    updated_at: 2026-05-23T06:14:37.997Z
     notes: []
