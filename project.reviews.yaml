@@ -225800,6 +225800,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-23T15:33:54.513Z
+      - _ulid: 01KSAWDV27EDS42BB40YA3BK4W
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSAQCPX8NNSTK6YBHK2NBB8W
+        timestamp: 2026-05-23T16:59:20.519Z
     examined_commit: 990d24115785a42e739cf439605a63530c652069
     external_links: []
     lifecycle_state: closed
@@ -225832,6 +225838,20 @@ reviews:
               behavior, or otherwise ensure old layouts produce legacy_plan_storage_removed /
               legacy_review_storage_removed with the structured 409 response."
             created_at: 2026-05-23T15:31:20.616Z
+          - _ulid: 01KSAWDSF2JWNPDCD6YJC754N8
+            author: "@claude"
+            body: "Fixed: daemon plan and review routes now call the strict requirePlanFolderStorage /
+              requireReviewFolderStorage gates at every entry (list, detail, mutation, plus the
+              reviews onError handler). On a legacy project (kynetic < 1.2, no plan_storage /
+              review_storage declaration) the gate raises legacy_plan_storage_removed /
+              legacy_review_storage_removed and the entityStorageIncompatibilityResponse helper
+              turns it into a structured 409 with code, domain, field, suggestion, and cache_domain.
+              tests/daemon-api/entity-storage-incompatibility-routes.test.ts now asserts that GET
+              /api/plans, GET /api/plans/:ref, and GET /api/reviews on a legacy 1.1 project (with
+              project.plans.yaml / project.reviews.yaml present and empty) return 409
+              entity_storage_incompatible with legacy_*_storage_removed instead of 200 — exactly the
+              contract the prior fix violated."
+            created_at: 2026-05-23T16:59:18.876Z
         kind: blocker
       - _ulid: 01KSAQF6WZ75ADJ89T49Z4XCVH
         anchor:
@@ -225913,5 +225933,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-23T15:33:54.513Z
     created_at: 2026-05-23T15:02:21.210Z
-    updated_at: 2026-05-23T15:33:54.513Z
+    updated_at: 2026-05-23T16:59:18.876Z
     notes: []
