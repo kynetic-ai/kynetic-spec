@@ -1,1 +1,16 @@
-notes: []
+notes:
+  - _ulid: 01KS9C34XWKX1WKHWJ2N4PWECS
+    content: "Approach: extract shared helpers into new src/parser/folder-backed-entity.ts module
+      covering: (1) ULID directory pattern + validator, (2) FolderBackedEntityLayout type for entity
+      type metadata (root, index file, wrapper key), (3) path helpers
+      (getStorageRoot/getEntityDir/getEntityFilePath/getEntityIndexPath), (4) listEntityDirs
+      (filters unknown), (5) mergePreservingRawShape (generic unknown-field preservation), (6)
+      indexEntriesEqualForFields (bounded index comparison), (7) readIndexEntries/writeIndexEntries
+      (wrapper-shape-preserving I/O), (8) rebuildEntityIndex template that takes load+project
+      callbacks. Refactor split-backend.ts to consume the shared module (preserving all existing
+      exports as task-specific thin wrappers). Tests: dedicated test file using a fixture 'widget'
+      entity exercising all 4 ACs (ULID directory, bounded index projection, unknown-file
+      preservation, rebuild-from-folders)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-23T02:54:38.524Z
