@@ -19223,6 +19223,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-23T19:54:44.631Z
+  - _ulid: 01KSBB800FX57DQXH69JNDD3W5
+    type: friction
+    content: rebuildEntityIndex (src/parser/folder-backed-entity.ts) takes a synchronous
+      projectToIndexEntry callback, but folder-backed plan (and likely review/resource) projections
+      need async per-entity reads (e.g. resources.yaml for bounded resource summary). Worked around
+      in plan-storage-manager.ts with foldResourceSummariesIntoIndex after rebuildEntityIndex — a
+      two-pass pattern that will repeat for reviews. Consider widening the callback signature to
+      accept Record | Promise<Record>.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-23T21:18:17.615Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
