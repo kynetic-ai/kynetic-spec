@@ -51635,7 +51635,7 @@ runs:
     completed_at: 2026-05-23T07:00:41.483Z
   - _ulid: 01KS9YP1WYQ90GC1XJGV56DYBT
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -51651,7 +51651,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-23T08:20:25.219Z
-        completed_at: 2026-05-23T08:20:25.219Z
+        completed_at: 2026-05-23T08:20:34.729Z
+        notes: "Friction points: full review verification required a very long full-suite run (~41 minutes)
+          before the verdict could be finalized, though that is currently an intentional gate.
+          Review evidence logs are still stored as a regular nit thread rather than a first-class
+          review field. No workflow blocker occurred; task transition and review closure worked
+          cleanly."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-23T08:20:34.729Z
+        completed_at: 2026-05-23T08:20:34.729Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-23T08:19:32.382Z
