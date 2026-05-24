@@ -52810,7 +52810,7 @@ runs:
     completed_at: 2026-05-24T17:09:15.856Z
   - _ulid: 01KSDHDN4WJF77ZHHY286FQSZ8
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -52855,7 +52855,21 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-24T17:46:21.831Z
-        completed_at: 2026-05-24T17:46:21.831Z
+        completed_at: 2026-05-24T17:46:36.280Z
+        notes: "Proposed improvement: Update packages/web-ui/src/lib/query/ws-invalidation.ts so
+          getFileUpdateInvalidationKeys recognizes folder-backed plan and review paths:
+          plans/<ulid>/... should invalidate queryKeys.plans.all; reviews/<ulid>/... should
+          invalidate queryKeys.reviews.all and queryKeys.tasks.all, matching project.reviews.yaml
+          behavior. Add behavioral coverage in tests/web-ui/ws-cache-invalidation.test.ts for
+          plan.md, plan.yaml, notes.yaml, resources.yaml, resources/<file>, review.yaml, review
+          resources, and negative look-alike/non-ULID paths. Benefit: direct files:updates
+          broadcasts for folder-backed sidecar/resource changes refresh the same query families as
+          parent-index changes, instead of relying only on the later cache:status/domain_ready
+          invalidation. Scope: small."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-24T17:46:36.280Z
+        completed_at: 2026-05-24T17:46:36.280Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-24T17:44:43.420Z
