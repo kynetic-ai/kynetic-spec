@@ -228032,6 +228032,12 @@ reviews:
         payload:
           thread_ulid: 01KSDEQN5PEQNP4SPA5XJ4FSXV
         timestamp: 2026-05-24T20:36:27.398Z
+      - _ulid: 01KSDV8D6K5D039N5B826D9J8T
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSDEQFSVDJWD1D52ZGJA8V8X
+        timestamp: 2026-05-24T20:36:37.203Z
     examined_commit: 81cb3f62245f285760d9c25023bef1a1742ce396
     external_links: []
     lifecycle_state: closed
@@ -228210,6 +228216,8 @@ reviews:
               'preserves pre-existing lean index entries when force-migrating a partial layout')."
             created_at: 2026-05-24T20:36:12.566Z
         kind: blocker
+        resolved_at: 2026-05-24T20:36:35.708Z
+        resolved_by: "@claude"
       - _ulid: 01KSDEQN5PEQNP4SPA5XJ4FSXV
         anchor:
           type: code
@@ -228382,7 +228390,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-24T17:06:12.275Z
     created_at: 2026-05-24T16:52:34.109Z
-    updated_at: 2026-05-24T20:36:25.950Z
+    updated_at: 2026-05-24T20:36:35.708Z
     notes: []
   - _ulid: 01KSDGK9C17EZJ7RJNF54XS399
     slugs: []
