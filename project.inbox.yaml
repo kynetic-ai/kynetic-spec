@@ -3681,3 +3681,16 @@ inbox:
       - reviews
     added_by: Jacob Chapel
     created_at: 2026-05-24T17:47:13.152Z
+  - _ulid: 01KSDYB78XVQTHMM14694SAN24
+    text: "Audit other multi-step kspec CLI pipelines (setup, init, scaffold steps) for the per-step
+      commitIfShadow pattern that fix(upgrade): make plan/review/manifest storage migration atomic
+      (6cd0bb4dbb) just removed from upgrade.ts. The pattern is risky for any sequence of
+      logically-coupled mutations: a later failure leaves the shadow branch with the earlier steps
+      already committed. Canonical fix is to wrap related steps in a single runWithBuffer scope with
+      one commitIfShadow after flush."
+    tags:
+      - audit
+      - shadow-commit
+      - atomicity
+    added_by: "@claude"
+    created_at: 2026-05-24T21:30:35.165Z
