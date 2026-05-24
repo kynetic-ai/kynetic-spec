@@ -228796,6 +228796,18 @@ reviews:
         runner: rg
         created_at: 2026-05-24T21:47:07.596Z
         completed_at: 2026-05-24T21:47:07.596Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: git diff --check
+          b588e89919cb699a8e1134993f5061c00f1f4f5a..6cd0bb4dbb5898ea85b231905bb7380bf7d5480c
+          produced no whitespace errors.
+        name: diff whitespace
+        required: false
+        runner: git
+        created_at: 2026-05-24T21:47:19.759Z
+        completed_at: 2026-05-24T21:47:19.759Z
     events:
       - _ulid: 01KSDYEZGNV6DF2KGSQ5N1GSBE
         actor: Jacob Chapel
@@ -228873,6 +228885,13 @@ reviews:
           status: pass
           name: AC annotation scan
         timestamp: 2026-05-24T21:47:09.333Z
+      - _ulid: 01KSDZ9XYT7CEN7C3B111ZSA3M
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: diff whitespace
+        timestamp: 2026-05-24T21:47:21.434Z
     examined_commit: 6cd0bb4dbb5898ea85b231905bb7380bf7d5480c
     external_links: []
     lifecycle_state: open
@@ -228978,5 +228997,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-24T21:32:38.293Z
-    updated_at: 2026-05-24T21:47:07.596Z
+    updated_at: 2026-05-24T21:47:19.759Z
     notes: []
