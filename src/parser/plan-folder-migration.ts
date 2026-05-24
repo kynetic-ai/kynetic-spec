@@ -39,6 +39,7 @@ import {
   PLAN_CORE_FILENAME,
   PLAN_LAYOUT,
   PLAN_NOTES_FILENAME,
+  PLAN_RESOURCES_DIR,
   PLAN_RESOURCES_MANIFEST_FILENAME,
   toIndexEntry as toPlanIndexEntry,
 } from "./plan-storage-manager.js";
@@ -68,6 +69,21 @@ export interface PlanMigrationEntry {
   readonly notes: unknown[];
   /** Final per-plan directory path (under `<specDir>/plans/<ulid>/`). */
   readonly planDir: string;
+  /** Path to the core sidecar (`<planDir>/plan.yaml`). */
+  readonly corePath: string;
+  /** Path to the markdown body (`<planDir>/plan.md`). */
+  readonly documentPath: string;
+  /**
+   * Path to the notes sidecar (`<planDir>/notes.yaml`). Populated whenever
+   * the source record had notes; `null` for entries with empty notes so
+   * the dry-run preview accurately signals which folders will skip the
+   * optional sidecar.
+   */
+  readonly notesPath: string | null;
+  /** Path to the (always-written) empty resource manifest sidecar. */
+  readonly resourceManifestPath: string;
+  /** Path to the (always-created) empty resources subdirectory. */
+  readonly resourcesDir: string;
   /** Lean index entry projection used to rewrite `project.plans.yaml`. */
   readonly indexEntry: Record<string, unknown>;
   /** True when this plan record lacked a valid `_ulid` and one was minted. */
@@ -246,13 +262,19 @@ function buildMigrationEntry(
     }
   }
 
+  const planDir = getEntityDir(ctx, PLAN_LAYOUT, ulid);
   return {
     ulid,
     title: typeof raw.title === "string" ? raw.title : "",
     core,
     content,
     notes,
-    planDir: getEntityDir(ctx, PLAN_LAYOUT, ulid),
+    planDir,
+    corePath: path.join(planDir, PLAN_CORE_FILENAME),
+    documentPath: path.join(planDir, PLAN_DOCUMENT_FILENAME),
+    notesPath: notes.length > 0 ? path.join(planDir, PLAN_NOTES_FILENAME) : null,
+    resourceManifestPath: path.join(planDir, PLAN_RESOURCES_MANIFEST_FILENAME),
+    resourcesDir: path.join(planDir, PLAN_RESOURCES_DIR),
     indexEntry,
     hadGeneratedUlid: hadGenerated,
     preexistingFolder: existingFolderUlids.has(ulid),
@@ -358,22 +380,19 @@ export async function applyPlanMigration(
     for (const entry of report.entries) {
       await mkdirBufferAware(entry.planDir);
 
-      const corePath = path.join(entry.planDir, PLAN_CORE_FILENAME);
-      const docPath = path.join(entry.planDir, PLAN_DOCUMENT_FILENAME);
-      const notesPath = path.join(entry.planDir, PLAN_NOTES_FILENAME);
-      const manifestPath = path.join(entry.planDir, PLAN_RESOURCES_MANIFEST_FILENAME);
-
-      await writeFileBufferAware(corePath, toYaml(entry.core));
-      await writeFileBufferAware(docPath, entry.content);
-      if (entry.notes.length > 0) {
-        await writeFileBufferAware(notesPath, toYaml({ notes: entry.notes }));
+      await writeFileBufferAware(entry.corePath, toYaml(entry.core));
+      await writeFileBufferAware(entry.documentPath, entry.content);
+      if (entry.notes.length > 0 && entry.notesPath) {
+        await writeFileBufferAware(entry.notesPath, toYaml({ notes: entry.notes }));
       }
       // resources.yaml is always written (empty stub) so downstream
-      // resource consumers have a stable sidecar to read. The
-      // resources/<files> directory materialises on first resource
-      // import — keeping it empty avoids carrying around a tracked
-      // empty directory in git.
-      await writeFileBufferAware(manifestPath, toYaml({ resources: [] }));
+      // resource consumers have a stable sidecar to read. The empty
+      // resources/ directory is materialized below so the migrated
+      // folder shape matches the layout contract (plan.md, plan.yaml,
+      // optional notes.yaml, resources.yaml, resources/) before any
+      // resource files exist.
+      await writeFileBufferAware(entry.resourceManifestPath, toYaml({ resources: [] }));
+      await mkdirBufferAware(entry.resourcesDir);
       written += 1;
     }
 

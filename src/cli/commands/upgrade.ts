@@ -35,7 +35,13 @@ export interface SourceVersionResult {
  */
 export interface UpgradeStepResult {
   name: string;
-  status: "done" | "skipped" | "failed";
+  /**
+   * `rolled_back` is reported only by atomic step groups: when one step
+   * in the group fails and the buffered writes from earlier steps are
+   * discarded, those earlier steps are marked `rolled_back` so callers
+   * and follow-up generators do not treat them as completed work.
+   */
+  status: "done" | "skipped" | "failed" | "rolled_back";
   message: string;
   details?: Record<string, unknown>;
 }
@@ -735,6 +741,24 @@ async function runAtomicStorageMigration(
         message: err instanceof Error ? err.message : String(err),
       });
     }
+    // The surrounding `runWithBuffer` discarded every write made before
+    // the failure, so any step that came back from `tryRun` as `done`
+    // never actually landed on disk. Re-label those entries as
+    // `rolled_back` so the upgrade result reports the truth: the work
+    // was rehearsed and then thrown away. Without this rewrite the
+    // outer driver would still add follow-ups like "Plan storage: N
+    // plan(s) migrated" for files that no longer exist.
+    for (let i = 0; i < collected.length; i += 1) {
+      const step = collected[i];
+      if (step.status !== "done") continue;
+      collected[i] = {
+        ...step,
+        status: "rolled_back",
+        message:
+          "rolled back — a later atomic storage migration step failed and " +
+          "the buffered writes for this step were discarded",
+      };
+    }
     // Ensure the orchestrator returns step records for every named step
     // even if the buffer aborted before some steps ran. Without these,
     // a partial-layout failure on the plan step would leave the upgrade
@@ -797,6 +821,9 @@ async function runPlanFolderMigrationStep(
   const { computePlanMigrationReport, applyPlanMigration } = await import(
     "../../parser/plan-folder-migration.js"
   );
+  const { PLAN_RESOURCES_MANIFEST_FILENAME } = await import(
+    "../../parser/plan-storage-manager.js"
+  );
   const { assertSafeMigrationTarget } = await import("../../parser/migration-safety.js");
 
   const report = await computePlanMigrationReport(ctx as Parameters<typeof computePlanMigrationReport>[0]);
@@ -814,6 +841,29 @@ async function runPlanFolderMigrationStep(
   }
 
   if (dryRun) {
+    // Per-entry dry-run preview must surface every sidecar target the
+    // executing migration would write (plan.md, plan.yaml, optional
+    // notes.yaml, resources.yaml) plus the empty resources/ directory
+    // the layout contract requires. Users see the full folder shape
+    // before any write happens.
+    //
+    // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-dry-run-previews-layout
+    const entries = report.entries.map((e) => ({
+      ulid: e.ulid,
+      title: e.title,
+      had_generated_ulid: e.hadGeneratedUlid,
+      preexisting_folder: e.preexistingFolder,
+      has_warning: !!e.validationWarning,
+      plan_dir: e.planDir,
+      sidecars: {
+        plan_yaml: e.corePath,
+        plan_md: e.documentPath,
+        notes_yaml: e.notesPath,
+        resources_yaml: e.resourceManifestPath,
+        resources_dir: e.resourcesDir,
+      },
+    }));
+    const newResourceManifests = report.entries.filter((e) => !e.preexistingFolder).length;
     return {
       name: "Plan storage folder migration",
       status: "done",
@@ -825,16 +875,22 @@ async function runPlanFolderMigrationStep(
         migrated: report.migrated,
         partial_layout: report.partialLayout,
         warnings: report.warnings,
-        entries: report.entries.map((e) => ({
-          ulid: e.ulid,
-          title: e.title,
-          had_generated_ulid: e.hadGeneratedUlid,
-          preexisting_folder: e.preexistingFolder,
-          has_warning: !!e.validationWarning,
-        })),
+        entries,
         folder_root: report.folderRoot,
         index_path: report.indexPath,
         monolithic_path: report.monolithicPath,
+        // Resource manifest changes the executing run would make — one
+        // empty `{ resources: [] }` sidecar per newly-migrated plan.
+        // Surfaced separately from `entries` so dashboards/test
+        // harnesses can summarize the resource-manifest impact without
+        // walking every entry.
+        resource_manifest_changes: {
+          new_empty_manifests: newResourceManifests,
+          manifest_filename: PLAN_RESOURCES_MANIFEST_FILENAME,
+          paths: report.entries
+            .filter((e) => !e.preexistingFolder)
+            .map((e) => e.resourceManifestPath),
+        },
       },
     };
   }
@@ -891,6 +947,9 @@ async function runReviewFolderMigrationStep(
   const { computeReviewMigrationReport, applyReviewMigration } = await import(
     "../../parser/review-folder-migration.js"
   );
+  const { REVIEW_RESOURCES_MANIFEST_FILENAME } = await import(
+    "../../parser/review-storage-manager.js"
+  );
   const { assertSafeMigrationTarget } = await import("../../parser/migration-safety.js");
 
   const report = await computeReviewMigrationReport(
@@ -907,6 +966,25 @@ async function runReviewFolderMigrationStep(
   }
 
   if (dryRun) {
+    // Per-entry dry-run preview must surface every sidecar target the
+    // executing migration would write (review.yaml, resources.yaml)
+    // plus the empty resources/ directory the layout contract requires.
+    //
+    // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-dry-run-previews-layout
+    const entries = report.entries.map((e) => ({
+      ulid: e.ulid,
+      title: e.title,
+      had_generated_ulid: e.hadGeneratedUlid,
+      preexisting_folder: e.preexistingFolder,
+      has_warning: !!e.validationWarning,
+      review_dir: e.reviewDir,
+      sidecars: {
+        review_yaml: e.detailPath,
+        resources_yaml: e.resourceManifestPath,
+        resources_dir: e.resourcesDir,
+      },
+    }));
+    const newResourceManifests = report.entries.filter((e) => !e.preexistingFolder).length;
     return {
       name: "Review storage folder migration",
       status: "done",
@@ -918,16 +996,19 @@ async function runReviewFolderMigrationStep(
         migrated: report.migrated,
         partial_layout: report.partialLayout,
         warnings: report.warnings,
-        entries: report.entries.map((e) => ({
-          ulid: e.ulid,
-          title: e.title,
-          had_generated_ulid: e.hadGeneratedUlid,
-          preexisting_folder: e.preexistingFolder,
-          has_warning: !!e.validationWarning,
-        })),
+        entries,
         folder_root: report.folderRoot,
         index_path: report.indexPath,
         monolithic_path: report.monolithicPath,
+        // Resource manifest changes the executing run would make — one
+        // empty `{ resources: [] }` sidecar per newly-migrated review.
+        resource_manifest_changes: {
+          new_empty_manifests: newResourceManifests,
+          manifest_filename: REVIEW_RESOURCES_MANIFEST_FILENAME,
+          paths: report.entries
+            .filter((e) => !e.preexistingFolder)
+            .map((e) => e.resourceManifestPath),
+        },
       },
     };
   }
@@ -2103,13 +2184,22 @@ export function registerUpgradeCommand(program: Command): void {
 
           // Step results
           for (const step of result.steps) {
-            const icon =
-              step.status === "done"
-                ? chalk.green("✓")
-                : step.status === "skipped"
-                  ? chalk.gray("○")
-                  : chalk.red("✗");
-            const statusText = step.status === "failed" ? chalk.red(" (failed)") : "";
+            let icon: string;
+            if (step.status === "done") {
+              icon = chalk.green("✓");
+            } else if (step.status === "skipped") {
+              icon = chalk.gray("○");
+            } else if (step.status === "rolled_back") {
+              icon = chalk.yellow("↶");
+            } else {
+              icon = chalk.red("✗");
+            }
+            let statusText = "";
+            if (step.status === "failed") {
+              statusText = chalk.red(" (failed)");
+            } else if (step.status === "rolled_back") {
+              statusText = chalk.yellow(" (rolled back)");
+            }
 
             console.log(`${icon} ${step.name}${statusText}`);
             if (step.message) {

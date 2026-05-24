@@ -207,6 +207,15 @@ describe("plan folder migration", () => {
     );
     expect(resourcesManifest).toEqual({ resources: [] });
 
+    // Layout contract: the empty `resources/` subdirectory must exist so
+    // every migrated plan folder ships the full shape
+    // (plan.md, plan.yaml, optional notes.yaml, resources.yaml, resources/)
+    // documented by the task. Resource imports rely on the directory
+    // already existing.
+    const resourcesDirStat = await fs.stat(path.join(planDir, "resources"));
+    expect(resourcesDirStat.isDirectory()).toBe(true);
+    expect(await fs.readdir(path.join(planDir, "resources"))).toEqual([]);
+
     const index = yamlParse(
       await readTestOutput(path.join(ctx.specDir, "project.plans.yaml")),
     );

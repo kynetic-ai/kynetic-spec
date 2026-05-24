@@ -28,7 +28,7 @@ import {
 
 interface UpgradeStep {
   name: string;
-  status: "done" | "skipped" | "failed";
+  status: "done" | "skipped" | "failed" | "rolled_back";
   message: string;
   details?: Record<string, unknown>;
 }
@@ -318,6 +318,29 @@ describe("kspec upgrade — folder storage migration", () => {
     );
     expect(reviewDetail._ulid).toBe(reviewUlid);
 
+    // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-executes-folder-migration
+    // Layout contract: each migrated plan/review folder must contain its
+    // sidecar manifest AND the empty resources/ subdirectory. A
+    // successful migration cannot leave the resources/ dir missing —
+    // downstream resource imports rely on it existing.
+    const planResourcesManifest = yamlParse(
+      await readTestOutput(path.join(specDir, "plans", planUlid, "resources.yaml")),
+    ) as { resources: unknown[] };
+    expect(planResourcesManifest.resources).toEqual([]);
+    const planResourcesDirStat = await fs.stat(
+      path.join(specDir, "plans", planUlid, "resources"),
+    );
+    expect(planResourcesDirStat.isDirectory()).toBe(true);
+
+    const reviewResourcesManifest = yamlParse(
+      await readTestOutput(path.join(specDir, "reviews", reviewUlid, "resources.yaml")),
+    ) as { resources: unknown[] };
+    expect(reviewResourcesManifest.resources).toEqual([]);
+    const reviewResourcesDirStat = await fs.stat(
+      path.join(specDir, "reviews", reviewUlid, "resources"),
+    );
+    expect(reviewResourcesDirStat.isDirectory()).toBe(true);
+
     // Lean indexes exist.
     const planIndex = yamlParse(
       await readTestOutput(path.join(specDir, "project.plans.yaml")),
@@ -378,6 +401,236 @@ describe("kspec upgrade — folder storage migration", () => {
     expect((manifest.review_storage as Record<string, unknown>).format).toBe("folder");
     expect((manifest.resource_storage as Record<string, unknown>).format).toBe(
       "entity_scoped",
+    );
+  });
+
+  // Regression: dry-run details must include every sidecar file the
+  // executing migration would write (plan.md, plan.yaml, optional
+  // notes.yaml, resources.yaml, resources/) AND the resource manifest
+  // change summary. Without this disclosure the user can only see the
+  // folder root + index path, leaving the rest of the layout contract
+  // invisible until the executing run mutates the project.
+  //
+  // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-dry-run-previews-layout
+  it("dry-run reports plan sidecar paths and resource manifest changes", async () => {
+    const { specDir } = await initProject(tempDir);
+
+    const planWithNotesUlid = testUlid("PNOTES");
+    const planNoNotesUlid = testUlid("PBARE");
+    await writeMonolithicPlans(specDir, [
+      {
+        _ulid: planWithNotesUlid,
+        slugs: ["with-notes"],
+        title: "Plan With Notes",
+        content: "Body",
+        status: "draft",
+        derived_tasks: [],
+        derived_specs: [],
+        created_at: "2026-05-22T10:00:00Z",
+        notes: [{ author: "tester", body: "n1", created_at: "2026-05-22T10:00:00Z" }],
+      },
+      {
+        _ulid: planNoNotesUlid,
+        slugs: ["no-notes"],
+        title: "Plan Without Notes",
+        content: "Body",
+        status: "draft",
+        derived_tasks: [],
+        derived_specs: [],
+        created_at: "2026-05-22T10:00:00Z",
+        notes: [],
+      },
+    ]);
+
+    const result = kspecJson<UpgradeResultShape>("upgrade --dry-run", tempDir);
+    const planStep = result.steps.find((s) => s.name === "Plan storage folder migration");
+    expect(planStep?.status).toBe("done");
+
+    const entries = planStep!.details!.entries as Array<{
+      ulid: string;
+      plan_dir: string;
+      sidecars: {
+        plan_yaml: string;
+        plan_md: string;
+        notes_yaml: string | null;
+        resources_yaml: string;
+        resources_dir: string;
+      };
+    }>;
+    expect(entries).toHaveLength(2);
+
+    const notesEntry = entries.find((e) => e.ulid === planWithNotesUlid)!;
+    expect(notesEntry.sidecars.plan_yaml).toBe(
+      path.join(specDir, "plans", planWithNotesUlid, "plan.yaml"),
+    );
+    expect(notesEntry.sidecars.plan_md).toBe(
+      path.join(specDir, "plans", planWithNotesUlid, "plan.md"),
+    );
+    // Notes sidecar must be reported when notes are non-empty.
+    expect(notesEntry.sidecars.notes_yaml).toBe(
+      path.join(specDir, "plans", planWithNotesUlid, "notes.yaml"),
+    );
+    expect(notesEntry.sidecars.resources_yaml).toBe(
+      path.join(specDir, "plans", planWithNotesUlid, "resources.yaml"),
+    );
+    expect(notesEntry.sidecars.resources_dir).toBe(
+      path.join(specDir, "plans", planWithNotesUlid, "resources"),
+    );
+
+    const bareEntry = entries.find((e) => e.ulid === planNoNotesUlid)!;
+    // Notes sidecar must be NULL when source has no notes — the
+    // executing migration skips writing notes.yaml in that case, and
+    // the dry-run preview must reflect that decision.
+    expect(bareEntry.sidecars.notes_yaml).toBeNull();
+    expect(bareEntry.sidecars.resources_yaml).toBe(
+      path.join(specDir, "plans", planNoNotesUlid, "resources.yaml"),
+    );
+    expect(bareEntry.sidecars.resources_dir).toBe(
+      path.join(specDir, "plans", planNoNotesUlid, "resources"),
+    );
+
+    // Resource manifest changes must be summarised separately so dashboards
+    // and JSON consumers do not need to walk every entry.
+    const manifestChanges = planStep!.details!.resource_manifest_changes as {
+      new_empty_manifests: number;
+      manifest_filename: string;
+      paths: string[];
+    };
+    expect(manifestChanges.new_empty_manifests).toBe(2);
+    expect(manifestChanges.manifest_filename).toBe("resources.yaml");
+    expect(manifestChanges.paths).toContain(
+      path.join(specDir, "plans", planWithNotesUlid, "resources.yaml"),
+    );
+    expect(manifestChanges.paths).toContain(
+      path.join(specDir, "plans", planNoNotesUlid, "resources.yaml"),
+    );
+  });
+
+  // Same dry-run contract for the review migration — review.yaml,
+  // resources.yaml, and resources/ targets plus resource manifest changes
+  // must be surfaced before any write occurs.
+  //
+  // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-dry-run-previews-layout
+  it("dry-run reports review sidecar paths and resource manifest changes", async () => {
+    const { specDir } = await initProject(tempDir);
+    const reviewUlid1 = testUlid("RVDR1");
+    const reviewUlid2 = testUlid("RVDR2");
+    const threadUlidA = testUlid("THRX");
+    const entryUlidA = testUlid("ENTX");
+    const threadUlidB = testUlid("THRY");
+    const entryUlidB = testUlid("ENTY");
+
+    await writeMonolithicReviews(specDir, [
+      {
+        _ulid: reviewUlid1,
+        slugs: ["r1"],
+        title: "Review 1",
+        author: "reviewer",
+        subject: {
+          type: "task",
+          ref: "@some-task",
+          shadow_commit: "abc",
+          content_hash: "h",
+        },
+        lifecycle_state: "open",
+        related_refs: [],
+        threads: [
+          {
+            _ulid: threadUlidA,
+            kind: "blocker",
+            entries: [
+              {
+                _ulid: entryUlidA,
+                author: "reviewer",
+                body: "x",
+                created_at: "2026-05-22T10:00:00Z",
+              },
+            ],
+          },
+        ],
+        checks: [],
+        verdicts: [],
+        events: [],
+        notes: [],
+        external_links: [],
+        examined_commit: null,
+        created_at: "2026-05-22T10:00:00Z",
+      },
+      {
+        _ulid: reviewUlid2,
+        slugs: ["r2"],
+        title: "Review 2",
+        author: "reviewer",
+        subject: {
+          type: "task",
+          ref: "@other-task",
+          shadow_commit: "def",
+          content_hash: "h",
+        },
+        lifecycle_state: "open",
+        related_refs: [],
+        threads: [
+          {
+            _ulid: threadUlidB,
+            kind: "blocker",
+            entries: [
+              {
+                _ulid: entryUlidB,
+                author: "reviewer",
+                body: "y",
+                created_at: "2026-05-22T10:00:00Z",
+              },
+            ],
+          },
+        ],
+        checks: [],
+        verdicts: [],
+        events: [],
+        notes: [],
+        external_links: [],
+        examined_commit: null,
+        created_at: "2026-05-22T10:00:00Z",
+      },
+    ]);
+
+    const result = kspecJson<UpgradeResultShape>("upgrade --dry-run", tempDir);
+    const reviewStep = result.steps.find((s) => s.name === "Review storage folder migration");
+    expect(reviewStep?.status).toBe("done");
+
+    const entries = reviewStep!.details!.entries as Array<{
+      ulid: string;
+      review_dir: string;
+      sidecars: {
+        review_yaml: string;
+        resources_yaml: string;
+        resources_dir: string;
+      };
+    }>;
+    expect(entries).toHaveLength(2);
+
+    const e1 = entries.find((e) => e.ulid === reviewUlid1)!;
+    expect(e1.sidecars.review_yaml).toBe(
+      path.join(specDir, "reviews", reviewUlid1, "review.yaml"),
+    );
+    expect(e1.sidecars.resources_yaml).toBe(
+      path.join(specDir, "reviews", reviewUlid1, "resources.yaml"),
+    );
+    expect(e1.sidecars.resources_dir).toBe(
+      path.join(specDir, "reviews", reviewUlid1, "resources"),
+    );
+
+    const manifestChanges = reviewStep!.details!.resource_manifest_changes as {
+      new_empty_manifests: number;
+      manifest_filename: string;
+      paths: string[];
+    };
+    expect(manifestChanges.new_empty_manifests).toBe(2);
+    expect(manifestChanges.manifest_filename).toBe("resources.yaml");
+    expect(manifestChanges.paths).toContain(
+      path.join(specDir, "reviews", reviewUlid1, "resources.yaml"),
+    );
+    expect(manifestChanges.paths).toContain(
+      path.join(specDir, "reviews", reviewUlid2, "resources.yaml"),
     );
   });
 
@@ -842,13 +1095,23 @@ describe("kspec upgrade — folder storage migration", () => {
     const reviewStep = result.steps.find((s) => s.name === "Review storage folder migration");
     const manifestStep = result.steps.find((s) => s.name === "Storage manifest (kynetic 1.2)");
 
-    // Plan migration appears successful in isolation; review fails;
-    // manifest is skipped or rolled back. Critically: every disk
-    // effect of the "done" plan step MUST be rolled back when the
-    // overall transaction aborts.
+    // Atomic rollback contract: plan migration was collected as `done`
+    // in isolation but its buffered writes were discarded when the
+    // review step threw. The orchestrator MUST relabel that step as
+    // `rolled_back` so JSON consumers, follow-up generators, and
+    // tooling do not treat the plan rewrite as committed work.
+    //
+    // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-executes-folder-migration
+    expect(planStep?.status).toBe("rolled_back");
+    expect(planStep?.message).toMatch(/rolled back/i);
     expect(reviewStep?.status).toBe("failed");
     expect(reviewStep?.message).toMatch(/partial/i);
     expect(manifestStep?.status).not.toBe("done");
+
+    // Follow-ups must not advertise rolled-back work as completed.
+    expect(
+      result.follow_ups.some((f) => /plan storage:.*migrated/i.test(f)),
+    ).toBe(false);
 
     // Manifest stays at 1.1 with no plan_storage declaration.
     const manifest = yamlParse(await readTestOutput(manifestPath)) as Record<string, unknown>;
@@ -877,11 +1140,6 @@ describe("kspec upgrade — folder storage migration", () => {
       await readTestOutput(path.join(existingReviewDir, "review.yaml")),
     ) as Record<string, unknown>;
     expect(existingPersisted._ulid).toBe(existingReviewFolderUlid);
-
-    // Capture planStep for clarity in failure output (read but not
-    // strictly asserted — atomicity is the contract, not the
-    // intermediate step status).
-    expect(planStep).toBeDefined();
   });
 
   // Regression: same shape as the plan test but for the review migration —

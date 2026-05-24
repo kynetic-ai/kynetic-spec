@@ -212,6 +212,13 @@ describe("review folder migration", () => {
     );
     expect(resourcesManifest).toEqual({ resources: [] });
 
+    // Layout contract: empty `resources/` subdirectory must exist so
+    // every migrated review folder ships the full shape
+    // (review.yaml, resources.yaml, resources/).
+    const resourcesDirStat = await fs.stat(path.join(reviewDir, "resources"));
+    expect(resourcesDirStat.isDirectory()).toBe(true);
+    expect(await fs.readdir(path.join(reviewDir, "resources"))).toEqual([]);
+
     const index = yamlParse(
       await readTestOutput(path.join(ctx.specDir, "project.reviews.yaml")),
     );

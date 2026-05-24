@@ -35,6 +35,7 @@ import { getUnresolvedBlockers } from "./review-threads.js";
 import {
   REVIEW_DETAIL_FILENAME,
   REVIEW_LAYOUT,
+  REVIEW_RESOURCES_DIR,
   REVIEW_RESOURCES_MANIFEST_FILENAME,
   toIndexEntry as toReviewIndexEntry,
 } from "./review-storage-manager.js";
@@ -56,6 +57,12 @@ export interface ReviewMigrationEntry {
   /** Full record after identity recovery — written verbatim to review.yaml. */
   readonly detail: Record<string, unknown>;
   readonly reviewDir: string;
+  /** Path to the cohesive detail file (`<reviewDir>/review.yaml`). */
+  readonly detailPath: string;
+  /** Path to the (always-written) empty resource manifest sidecar. */
+  readonly resourceManifestPath: string;
+  /** Path to the (always-created) empty resources subdirectory. */
+  readonly resourcesDir: string;
   readonly indexEntry: Record<string, unknown>;
   readonly hadGeneratedUlid: boolean;
   readonly preexistingFolder: boolean;
@@ -211,11 +218,15 @@ function buildMigrationEntry(
     indexEntry = buildRawIndexEntry(ulid, raw);
   }
 
+  const reviewDir = getEntityDir(ctx, REVIEW_LAYOUT, ulid);
   return {
     ulid,
     title: typeof raw.title === "string" ? raw.title : "",
     detail,
-    reviewDir: getEntityDir(ctx, REVIEW_LAYOUT, ulid),
+    reviewDir,
+    detailPath: path.join(reviewDir, REVIEW_DETAIL_FILENAME),
+    resourceManifestPath: path.join(reviewDir, REVIEW_RESOURCES_MANIFEST_FILENAME),
+    resourcesDir: path.join(reviewDir, REVIEW_RESOURCES_DIR),
     indexEntry,
     hadGeneratedUlid: hadGenerated,
     preexistingFolder: existingFolderUlids.has(ulid),
@@ -306,13 +317,13 @@ export async function applyReviewMigration(
     for (const entry of report.entries) {
       await mkdirBufferAware(entry.reviewDir);
 
-      const detailPath = path.join(entry.reviewDir, REVIEW_DETAIL_FILENAME);
-      const manifestPath = path.join(entry.reviewDir, REVIEW_RESOURCES_MANIFEST_FILENAME);
-
-      await writeFileBufferAware(detailPath, toYaml(entry.detail));
-      // resources.yaml is always written (empty stub). resources/<files>
-      // materialises lazily when a resource is imported.
-      await writeFileBufferAware(manifestPath, toYaml({ resources: [] }));
+      await writeFileBufferAware(entry.detailPath, toYaml(entry.detail));
+      // resources.yaml is always written (empty stub). The empty
+      // resources/ directory is materialized below so the migrated
+      // folder shape matches the layout contract (review.yaml,
+      // resources.yaml, resources/) before any resource files exist.
+      await writeFileBufferAware(entry.resourceManifestPath, toYaml({ resources: [] }));
+      await mkdirBufferAware(entry.resourcesDir);
       written += 1;
     }
 
