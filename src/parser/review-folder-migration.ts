@@ -76,6 +76,13 @@ export interface ReviewMigrationReport {
   readonly monolithicPath: string;
   readonly folderRoot: string;
   readonly indexPath: string;
+  /**
+   * Lean index entries already present in `project.reviews.yaml` that do
+   * not describe monolithic records. Carried through to the apply step
+   * so a force-through-partial-layout migration preserves discovery of
+   * pre-existing folder-backed reviews.
+   */
+  readonly preservedLeanEntries: Record<string, unknown>[];
 }
 
 async function readMonolithicReviews(
@@ -230,6 +237,13 @@ export async function computeReviewMigrationReport(
   const { raw } = await readMonolithicReviews(monolithicPath);
   const folderUlids = new Set(await listEntityDirs(ctx, REVIEW_LAYOUT));
   const monolithicRecords = raw.filter(isMonolithicEntry);
+  // Pre-existing lean index entries are kept aside so the apply step can
+  // rebuild the index as the union of migrated entries + preserved
+  // entries. Without preservation, a force-through-partial-layout
+  // migration overwrites the index with monolithic-only data and the
+  // folder-backed reviews disappear from list/get despite their folders
+  // remaining on disk.
+  const preservedLeanEntries = raw.filter((entry) => !isMonolithicEntry(entry));
 
   const warnings: string[] = [];
   const entries: ReviewMigrationEntry[] = monolithicRecords.map((record) =>
@@ -251,6 +265,7 @@ export async function computeReviewMigrationReport(
     monolithicPath,
     folderRoot,
     indexPath,
+    preservedLeanEntries,
   };
 }
 
@@ -284,6 +299,7 @@ export async function applyReviewMigration(
   }
 
   let written = 0;
+  let indexEntriesWritten = 0;
   await runWithBuffer(ctx.specDir, async () => {
     await mkdirBufferAware(report.folderRoot);
 
@@ -303,14 +319,36 @@ export async function applyReviewMigration(
     // Replace the monolithic reviews file with a fresh lean projection.
     // Same path as the index (`project.reviews.yaml`), so this write is
     // sufficient — no separate delete step needed.
-    const indexEntries: Record<string, unknown>[] = report.entries.map((e) => e.indexEntry);
+    //
+    // The rebuilt index is the union of migrated entries and any
+    // pre-existing lean entries the migration did not touch. This keeps
+    // folder-backed reviews discoverable after a force-through-partial
+    // layout migration; without it the index rewrite drops them and the
+    // detail folder is orphaned.
+    const migratedUlids = new Set(report.entries.map((e) => e.ulid));
+    const finalIndexEntries: Record<string, unknown>[] = [];
+    for (const lean of report.preservedLeanEntries) {
+      const id = lean._ulid;
+      if (typeof id === "string" && !migratedUlids.has(id)) {
+        finalIndexEntries.push(lean);
+      }
+    }
+    for (const entry of report.entries) {
+      finalIndexEntries.push(entry.indexEntry);
+    }
     const shape = {
-      entries: indexEntries,
+      entries: finalIndexEntries,
       useWrapper: true,
       wrapperObj: { kynetic_reviews: "1.0" },
     };
-    await writeIndexEntries(report.indexPath, indexEntries, shape, REVIEW_LAYOUT.indexWrapperKey);
+    await writeIndexEntries(
+      report.indexPath,
+      finalIndexEntries,
+      shape,
+      REVIEW_LAYOUT.indexWrapperKey,
+    );
+    indexEntriesWritten = finalIndexEntries.length;
   });
 
-  return { written, indexEntries: report.entries.length };
+  return { written, indexEntries: indexEntriesWritten };
 }

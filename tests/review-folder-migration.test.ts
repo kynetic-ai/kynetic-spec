@@ -329,4 +329,90 @@ describe("review folder migration", () => {
     const applied = await applyReviewMigration(ctx, forcedReport, { force: true });
     expect(applied.written).toBe(1);
   });
+
+  // Regression guard for the review fix-cycle: when --force is used to push
+  // through a partial layout, the rebuilt index MUST include both the
+  // migrated monolithic entries and the pre-existing lean entries already
+  // present in `project.reviews.yaml`. Otherwise the existing folder-backed
+  // review disappears from list/get even though the folder still exists.
+  //
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-executes-folder-migration
+  it("preserves pre-existing lean index entries when force-migrating a partial layout", async () => {
+    const ctx = await buildCtx(tempDir);
+    const existingFolderUlid = testUlid("RVEX");
+    const monolithicUlid = testUlid("RVML");
+
+    // Existing folder-backed review on disk.
+    const existingDir = path.join(ctx.specDir, "reviews", existingFolderUlid);
+    await fs.mkdir(existingDir, { recursive: true });
+    await fs.writeFile(
+      path.join(existingDir, REVIEW_DETAIL_FILENAME),
+      toYaml(buildValidReview({ _ulid: existingFolderUlid, title: "Existing Folder Review" })),
+      "utf-8",
+    );
+    await fs.writeFile(
+      path.join(existingDir, REVIEW_RESOURCES_MANIFEST_FILENAME),
+      toYaml({ resources: [] }),
+      "utf-8",
+    );
+
+    // Mixed index — lean entry for the existing folder plus a monolithic
+    // entry the migration needs to move into a folder.
+    await writeMonolithicReviews(ctx, [
+      {
+        _ulid: existingFolderUlid,
+        slugs: [],
+        title: "Existing Folder Review",
+        lifecycle_state: "open",
+        subject: {
+          type: "task",
+          ref: "@task-ref",
+          shadow_commit: "shadow-commit-sha",
+          content_hash: "content-hash",
+        },
+        author: "reviewer",
+        related_refs: [],
+        disposition: "pending",
+        thread_count: 0,
+        unresolved_blocker_count: 0,
+        check_count: 0,
+        verdict_count: 0,
+        created_at: "2026-05-22T10:00:00Z",
+      },
+      buildValidReview({
+        _ulid: monolithicUlid,
+        title: "Monolithic Review",
+        threads: [
+          {
+            _ulid: testUlid("THR4"),
+            kind: "blocker",
+            entries: [
+              {
+                _ulid: testUlid("ENT4"),
+                author: "reviewer",
+                body: "x",
+                created_at: "2026-05-22T10:00:00Z",
+              },
+            ],
+          },
+        ],
+      }),
+    ]);
+
+    const report = await computeReviewMigrationReport(ctx);
+    expect(report.partialLayout).toBe(true);
+    expect(report.preservedLeanEntries.length).toBe(1);
+
+    const applied = await applyReviewMigration(ctx, report, { force: true });
+    expect(applied.written).toBe(1);
+    expect(applied.indexEntries).toBe(2);
+
+    const indexRaw = await readTestOutput(path.join(ctx.specDir, "project.reviews.yaml"));
+    const index = yamlParse(indexRaw) as { reviews: Array<{ _ulid: string }> };
+    const ulids = new Set(index.reviews.map((r) => r._ulid));
+    expect(ulids.has(existingFolderUlid)).toBe(true);
+    expect(ulids.has(monolithicUlid)).toBe(true);
+    expect(index.reviews.length).toBe(2);
+  });
 });

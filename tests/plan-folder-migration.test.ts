@@ -412,4 +412,80 @@ describe("plan folder migration", () => {
     const applied = await applyPlanMigration(ctx, forcedReport, { force: true });
     expect(applied.written).toBe(1);
   });
+
+  // Regression guard for the review fix-cycle: when --force is used to push
+  // through a partial layout, the rebuilt index MUST include both the
+  // migrated monolithic entries and the pre-existing lean entries already
+  // present in `project.plans.yaml`. Otherwise the existing folder-backed
+  // plan disappears from list/get even though the folder still exists.
+  //
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-executes-folder-migration
+  it("preserves pre-existing lean index entries when force-migrating a partial layout", async () => {
+    const ctx = await buildCtx(tempDir);
+    const existingFolderUlid = testUlid("PLNEX");
+    const monolithicUlid = testUlid("PLNML");
+
+    // Existing folder-backed plan on disk.
+    const existingDir = path.join(ctx.specDir, "plans", existingFolderUlid);
+    await fs.mkdir(existingDir, { recursive: true });
+    await fs.writeFile(
+      path.join(existingDir, PLAN_CORE_FILENAME),
+      toYaml({
+        _ulid: existingFolderUlid,
+        slugs: ["existing"],
+        title: "Existing Folder Plan",
+        status: "draft",
+        derived_tasks: [],
+        derived_specs: [],
+        created_at: "2026-05-22T10:00:00Z",
+      }),
+      "utf-8",
+    );
+    await fs.writeFile(path.join(existingDir, PLAN_DOCUMENT_FILENAME), "Body", "utf-8");
+
+    // Mixed index — one lean entry for the existing folder, one monolithic
+    // entry that the migration must move into a folder.
+    await writeMonolithicPlans(ctx, [
+      {
+        _ulid: existingFolderUlid,
+        slugs: ["existing"],
+        title: "Existing Folder Plan",
+        status: "draft",
+        derived_tasks: [],
+        derived_specs: [],
+        created_at: "2026-05-22T10:00:00Z",
+        notes_count: 0,
+      },
+      {
+        _ulid: monolithicUlid,
+        slugs: ["mono"],
+        title: "Monolithic Plan",
+        content: "# Mono\nBody",
+        status: "draft",
+        derived_tasks: [],
+        derived_specs: [],
+        created_at: "2026-05-22T11:00:00Z",
+        notes: [],
+      },
+    ]);
+
+    const report = await computePlanMigrationReport(ctx);
+    expect(report.partialLayout).toBe(true);
+    expect(report.preservedLeanEntries.length).toBe(1);
+
+    const applied = await applyPlanMigration(ctx, report, { force: true });
+    // The monolithic record is the only one written; the existing folder
+    // is left untouched on disk.
+    expect(applied.written).toBe(1);
+    // But the rebuilt index must describe BOTH plans.
+    expect(applied.indexEntries).toBe(2);
+
+    const indexRaw = await readTestOutput(path.join(ctx.specDir, "project.plans.yaml"));
+    const index = yamlParse(indexRaw) as { plans: Array<{ _ulid: string }> };
+    const ulids = new Set(index.plans.map((p) => p._ulid));
+    expect(ulids.has(existingFolderUlid)).toBe(true);
+    expect(ulids.has(monolithicUlid)).toBe(true);
+    expect(index.plans.length).toBe(2);
+  });
 });

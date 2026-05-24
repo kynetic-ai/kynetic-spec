@@ -114,6 +114,14 @@ export interface PlanMigrationReport {
   readonly folderRoot: string;
   /** Resolved index file path written by the executing run. */
   readonly indexPath: string;
+  /**
+   * Lean index entries already present in `project.plans.yaml` that do
+   * not belong to monolithic records (i.e. they describe existing
+   * folder-backed plans). The executing run preserves these in the
+   * rewritten index so a force-through-partial-layout migration does
+   * not silently drop pre-existing folder plans from discovery.
+   */
+  readonly preservedLeanEntries: Record<string, unknown>[];
 }
 
 const PLAN_SCHEMA_KEYS = new Set(Object.keys(PlanSchema.shape));
@@ -267,6 +275,13 @@ export async function computePlanMigrationReport(
   const { raw } = await readMonolithicPlans(monolithicPath);
   const folderUlids = new Set(await listEntityDirs(ctx, PLAN_LAYOUT));
   const monolithicRecords = raw.filter(isMonolithicEntry);
+  // Pre-existing lean index entries describe folder-backed plans already
+  // recorded in `project.plans.yaml`. We capture them now so the apply
+  // step can rebuild the index as the union of migrated entries + these
+  // preserved entries — otherwise a force-through-partial-layout migration
+  // overwrites the index with monolithic-only data and the folder-backed
+  // plans disappear from list/get even though their folders survive.
+  const preservedLeanEntries = raw.filter((entry) => !isMonolithicEntry(entry));
 
   const warnings: string[] = [];
   const entries: PlanMigrationEntry[] = monolithicRecords.map((record) =>
@@ -288,6 +303,7 @@ export async function computePlanMigrationReport(
     monolithicPath,
     folderRoot,
     indexPath,
+    preservedLeanEntries,
   };
 }
 
@@ -335,6 +351,7 @@ export async function applyPlanMigration(
   }
 
   let written = 0;
+  let indexEntriesWritten = 0;
   await runWithBuffer(ctx.specDir, async () => {
     await mkdirBufferAware(report.folderRoot);
 
@@ -365,10 +382,38 @@ export async function applyPlanMigration(
     // projection. The write overwrites the inline-record body, so no
     // separate delete step is needed — the previous content is gone the
     // moment the new file lands.
-    const indexEntries: Record<string, unknown>[] = report.entries.map((e) => e.indexEntry);
-    const shape = { entries: indexEntries, useWrapper: true, wrapperObj: { kynetic_plans: "1.0" } };
-    await writeIndexEntries(report.indexPath, indexEntries, shape, PLAN_LAYOUT.indexWrapperKey);
+    //
+    // Migrated monolithic records win over any pre-existing lean entry
+    // for the same ULID; pre-existing folder-backed plans (lean entries
+    // for ULIDs the migration did not touch) are carried forward so the
+    // index rewrite never drops them. Both branches of the partial-layout
+    // contract are honoured: without force the executing run already
+    // threw above; with force the index still describes every plan
+    // discoverable on disk.
+    const migratedUlids = new Set(report.entries.map((e) => e.ulid));
+    const finalIndexEntries: Record<string, unknown>[] = [];
+    for (const lean of report.preservedLeanEntries) {
+      const id = lean._ulid;
+      if (typeof id === "string" && !migratedUlids.has(id)) {
+        finalIndexEntries.push(lean);
+      }
+    }
+    for (const entry of report.entries) {
+      finalIndexEntries.push(entry.indexEntry);
+    }
+    const shape = {
+      entries: finalIndexEntries,
+      useWrapper: true,
+      wrapperObj: { kynetic_plans: "1.0" },
+    };
+    await writeIndexEntries(
+      report.indexPath,
+      finalIndexEntries,
+      shape,
+      PLAN_LAYOUT.indexWrapperKey,
+    );
+    indexEntriesWritten = finalIndexEntries.length;
   });
 
-  return { written, indexEntries: report.entries.length };
+  return { written, indexEntries: indexEntriesWritten };
 }

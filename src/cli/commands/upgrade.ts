@@ -397,9 +397,10 @@ export async function runUpgradePipeline(
   // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-dry-run-previews-layout
   // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-executes-folder-migration
   // AC: @entity-folder-migration-and-compatibility-1 ac-migration-preserves-record-identity-and-unknown-fields
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
   let planMigrationStatus: "done" | "skipped" | "failed" = "skipped";
   try {
-    const planResult = await runPlanFolderMigrationStep(ctx, projectDir, dryRun);
+    const planResult = await runPlanFolderMigrationStep(ctx, projectDir, dryRun, force);
     steps.push(planResult);
     planMigrationStatus = planResult.status;
     if (planResult.status === "done") {
@@ -421,9 +422,10 @@ export async function runUpgradePipeline(
   // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-dry-run-previews-layout
   // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-executes-folder-migration
   // AC: @entity-folder-migration-and-compatibility-1 ac-migration-preserves-record-identity-and-unknown-fields
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
   let reviewMigrationStatus: "done" | "skipped" | "failed" = "skipped";
   try {
-    const reviewResult = await runReviewFolderMigrationStep(ctx, projectDir, dryRun);
+    const reviewResult = await runReviewFolderMigrationStep(ctx, projectDir, dryRun, force);
     steps.push(reviewResult);
     reviewMigrationStatus = reviewResult.status;
     if (reviewResult.status === "done") {
@@ -678,6 +680,7 @@ async function runPlanFolderMigrationStep(
         shadow: import("../../parser/shadow.js").ShadowConfig | null },
   projectDir: string,
   dryRun: boolean,
+  force: boolean,
 ): Promise<UpgradeStepResult> {
   const { computePlanMigrationReport, applyPlanMigration } = await import(
     "../../parser/plan-folder-migration.js"
@@ -728,10 +731,16 @@ async function runPlanFolderMigrationStep(
   // Live-path tripwire — refuse to mutate protected repositories.
   assertSafeMigrationTarget(projectDir, ctx.specDir);
 
+  // Partial-layout guard is honoured by the apply call: without the
+  // upgrade `--force` flag, `applyPlanMigration` throws
+  // `partial_entity_storage_layout` and the step surfaces as failed.
+  // The previous implementation hardcoded `{ force: true }`, which let a
+  // normal `kspec upgrade` silently rewrite a partial layout — that path
+  // was the blocker that triggered this fix.
   const applied = await applyPlanMigration(
     ctx as Parameters<typeof applyPlanMigration>[0],
     report,
-    { force: true },
+    { force },
   );
   // Single shadow commit owned by this step. The wider pipeline commits
   // the version marker separately when every step finished cleanly.
@@ -769,6 +778,7 @@ async function runReviewFolderMigrationStep(
         shadow: import("../../parser/shadow.js").ShadowConfig | null },
   projectDir: string,
   dryRun: boolean,
+  force: boolean,
 ): Promise<UpgradeStepResult> {
   const { computeReviewMigrationReport, applyReviewMigration } = await import(
     "../../parser/review-folder-migration.js"
@@ -817,10 +827,16 @@ async function runReviewFolderMigrationStep(
 
   assertSafeMigrationTarget(projectDir, ctx.specDir);
 
+  // Partial-layout guard is honoured by the apply call: without the
+  // upgrade `--force` flag, `applyReviewMigration` throws
+  // `partial_entity_storage_layout` and the step surfaces as failed.
+  // The previous hardcoded `{ force: true }` bypassed this guard from
+  // the CLI surface even on a normal `kspec upgrade`; that path was the
+  // blocker that triggered this fix.
   const applied = await applyReviewMigration(
     ctx as Parameters<typeof applyReviewMigration>[0],
     report,
-    { force: true },
+    { force },
   );
   await commitIfShadow(
     ctx.shadow,

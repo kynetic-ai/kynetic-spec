@@ -403,4 +403,423 @@ describe("kspec upgrade — folder storage migration", () => {
     expect(Array.isArray(planStep?.details?.warnings)).toBe(true);
     expect((planStep!.details!.warnings as string[]).length).toBeGreaterThan(0);
   });
+
+  // Regression: a normal `kspec upgrade` against a partial PLAN layout must
+  // fail the plan migration step, leave the manifest at 1.1, and NOT rewrite
+  // the index. Prior to the fix the upgrade integration hardcoded
+  // `applyPlanMigration(..., { force: true })`, which silently bypassed the
+  // partial-layout guard and could drop pre-existing folder plans from the
+  // rewritten index.
+  //
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  it("upgrade without --force fails when plan layout is partial", async () => {
+    const { specDir, manifestPath } = await initProject(tempDir);
+    const existingFolderUlid = testUlid("EXPLN");
+    const monolithicUlid = testUlid("MOPLN");
+
+    // Pre-existing folder + matching lean index entry, plus a separate
+    // monolithic record — the classic partial-layout shape.
+    const existingDir = path.join(specDir, "plans", existingFolderUlid);
+    await fs.mkdir(existingDir, { recursive: true });
+    const yamlMod = await import("yaml");
+    await fs.writeFile(
+      path.join(existingDir, "plan.yaml"),
+      yamlMod.stringify({
+        _ulid: existingFolderUlid,
+        slugs: ["existing"],
+        title: "Existing Folder Plan",
+        status: "draft",
+        derived_tasks: [],
+        derived_specs: [],
+        created_at: "2026-05-22T10:00:00Z",
+      }),
+      "utf-8",
+    );
+    await fs.writeFile(path.join(existingDir, "plan.md"), "Body", "utf-8");
+    await fs.writeFile(
+      path.join(existingDir, "resources.yaml"),
+      yamlMod.stringify({ resources: [] }),
+      "utf-8",
+    );
+
+    await writeMonolithicPlans(specDir, [
+      {
+        _ulid: existingFolderUlid,
+        slugs: ["existing"],
+        title: "Existing Folder Plan",
+        status: "draft",
+        derived_tasks: [],
+        derived_specs: [],
+        created_at: "2026-05-22T10:00:00Z",
+        notes_count: 0,
+      },
+      {
+        _ulid: monolithicUlid,
+        slugs: ["mono"],
+        title: "Monolithic Plan",
+        content: "# Mono\nBody",
+        status: "draft",
+        derived_tasks: [],
+        derived_specs: [],
+        created_at: "2026-05-22T11:00:00Z",
+        notes: [],
+      },
+    ]);
+
+    const cliResult = kspec("upgrade --json", tempDir, { expectFail: true });
+    expect(cliResult.exitCode).not.toBe(0);
+    const result = JSON.parse(cliResult.stdout) as UpgradeResultShape;
+    expect(result.success).toBe(false);
+
+    const planStep = result.steps.find((s) => s.name === "Plan storage folder migration");
+    expect(planStep?.status).toBe("failed");
+    expect(planStep?.message).toMatch(/partial/i);
+
+    // Manifest stays at 1.1 — no half-promotion.
+    const manifest = yamlParse(await readTestOutput(manifestPath)) as Record<string, unknown>;
+    expect(manifest.kynetic).toBe("1.1");
+    expect(manifest.plan_storage).toBeUndefined();
+
+    // Pre-existing folder is still on disk AND the lean index entry is still
+    // present — the failed step did not rewrite the index.
+    const indexAfter = yamlParse(
+      await readTestOutput(path.join(specDir, "project.plans.yaml")),
+    ) as { plans: Array<{ _ulid: string }> };
+    const ulidsAfter = new Set(indexAfter.plans.map((p) => p._ulid));
+    expect(ulidsAfter.has(existingFolderUlid)).toBe(true);
+  });
+
+  // Regression: a normal `kspec upgrade` against a partial REVIEW layout must
+  // also fail (same bypass existed for the review migration step). The
+  // structured error must include the partial-layout code so callers can
+  // recognise it.
+  //
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  it("upgrade without --force fails when review layout is partial", async () => {
+    const { specDir, manifestPath } = await initProject(tempDir);
+    const existingFolderUlid = testUlid("EXRV");
+    const monolithicUlid = testUlid("MORV");
+    const threadUlid2 = testUlid("THR5");
+    const entryUlid2 = testUlid("ENT5");
+
+    const existingDir = path.join(specDir, "reviews", existingFolderUlid);
+    await fs.mkdir(existingDir, { recursive: true });
+    const yamlMod = await import("yaml");
+    const validReview = {
+      _ulid: existingFolderUlid,
+      slugs: [],
+      title: "Existing Folder Review",
+      lifecycle_state: "open",
+      subject: {
+        type: "task",
+        ref: "@task-ref",
+        shadow_commit: "sha",
+        content_hash: "h",
+      },
+      author: "reviewer",
+      related_refs: [],
+      threads: [],
+      checks: [],
+      verdicts: [],
+      events: [],
+      notes: [],
+      external_links: [],
+      examined_commit: null,
+      created_at: "2026-05-22T10:00:00Z",
+    };
+    await fs.writeFile(
+      path.join(existingDir, "review.yaml"),
+      yamlMod.stringify(validReview),
+      "utf-8",
+    );
+    await fs.writeFile(
+      path.join(existingDir, "resources.yaml"),
+      yamlMod.stringify({ resources: [] }),
+      "utf-8",
+    );
+
+    await writeMonolithicReviews(specDir, [
+      {
+        _ulid: existingFolderUlid,
+        slugs: [],
+        title: "Existing Folder Review",
+        lifecycle_state: "open",
+        subject: {
+          type: "task",
+          ref: "@task-ref",
+          shadow_commit: "sha",
+          content_hash: "h",
+        },
+        author: "reviewer",
+        related_refs: [],
+        disposition: "pending",
+        thread_count: 0,
+        unresolved_blocker_count: 0,
+        check_count: 0,
+        verdict_count: 0,
+        created_at: "2026-05-22T10:00:00Z",
+      },
+      {
+        _ulid: monolithicUlid,
+        slugs: [],
+        title: "Monolithic Review",
+        lifecycle_state: "open",
+        subject: {
+          type: "task",
+          ref: "@some-task",
+          shadow_commit: "abc",
+          content_hash: "h",
+        },
+        author: "reviewer",
+        related_refs: [],
+        threads: [
+          {
+            _ulid: threadUlid2,
+            kind: "blocker",
+            entries: [
+              {
+                _ulid: entryUlid2,
+                author: "reviewer",
+                body: "blocker",
+                created_at: "2026-05-22T10:00:00Z",
+              },
+            ],
+          },
+        ],
+        checks: [],
+        verdicts: [],
+        events: [],
+        notes: [],
+        external_links: [],
+        examined_commit: null,
+        created_at: "2026-05-22T11:00:00Z",
+      },
+    ]);
+
+    const cliResult = kspec("upgrade --json", tempDir, { expectFail: true });
+    expect(cliResult.exitCode).not.toBe(0);
+    const result = JSON.parse(cliResult.stdout) as UpgradeResultShape;
+    expect(result.success).toBe(false);
+
+    const reviewStep = result.steps.find((s) => s.name === "Review storage folder migration");
+    expect(reviewStep?.status).toBe("failed");
+    expect(reviewStep?.message).toMatch(/partial/i);
+
+    const manifest = yamlParse(await readTestOutput(manifestPath)) as Record<string, unknown>;
+    expect(manifest.kynetic).toBe("1.1");
+    expect(manifest.review_storage).toBeUndefined();
+  });
+
+  // Regression: `kspec upgrade --force` against a partial PLAN layout must
+  // succeed AND preserve any pre-existing lean index entries. The bug being
+  // guarded against rewrote the index using only the migrated monolithic
+  // entry, silently dropping folder-backed plans from list/get even though
+  // the folders remained on disk.
+  //
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-executes-folder-migration
+  it("upgrade --force migrates partial plan layout while preserving existing folder plans", async () => {
+    const { specDir, manifestPath } = await initProject(tempDir);
+    const existingFolderUlid = testUlid("FRPLN");
+    const monolithicUlid = testUlid("FRMOL");
+
+    const existingDir = path.join(specDir, "plans", existingFolderUlid);
+    await fs.mkdir(existingDir, { recursive: true });
+    const yamlMod = await import("yaml");
+    await fs.writeFile(
+      path.join(existingDir, "plan.yaml"),
+      yamlMod.stringify({
+        _ulid: existingFolderUlid,
+        slugs: ["existing"],
+        title: "Existing Folder Plan",
+        status: "draft",
+        derived_tasks: [],
+        derived_specs: [],
+        created_at: "2026-05-22T10:00:00Z",
+      }),
+      "utf-8",
+    );
+    await fs.writeFile(path.join(existingDir, "plan.md"), "Body", "utf-8");
+    await fs.writeFile(
+      path.join(existingDir, "resources.yaml"),
+      yamlMod.stringify({ resources: [] }),
+      "utf-8",
+    );
+
+    await writeMonolithicPlans(specDir, [
+      {
+        _ulid: existingFolderUlid,
+        slugs: ["existing"],
+        title: "Existing Folder Plan",
+        status: "draft",
+        derived_tasks: [],
+        derived_specs: [],
+        created_at: "2026-05-22T10:00:00Z",
+        notes_count: 0,
+      },
+      {
+        _ulid: monolithicUlid,
+        slugs: ["mono"],
+        title: "Monolithic Plan",
+        content: "# Mono\nBody",
+        status: "draft",
+        derived_tasks: [],
+        derived_specs: [],
+        created_at: "2026-05-22T11:00:00Z",
+        notes: [],
+      },
+    ]);
+
+    const result = kspecJson<UpgradeResultShape>("upgrade --force", tempDir);
+    expect(result.success).toBe(true);
+
+    const planStep = result.steps.find((s) => s.name === "Plan storage folder migration");
+    expect(planStep?.status).toBe("done");
+    expect(planStep?.details?.migrated).toBe(1);
+    expect(planStep?.details?.index_entries).toBe(2);
+
+    const manifest = yamlParse(await readTestOutput(manifestPath)) as Record<string, unknown>;
+    expect(manifest.kynetic).toBe("1.2");
+
+    const index = yamlParse(
+      await readTestOutput(path.join(specDir, "project.plans.yaml")),
+    ) as { plans: Array<{ _ulid: string }> };
+    const ulids = new Set(index.plans.map((p) => p._ulid));
+    expect(ulids.has(existingFolderUlid)).toBe(true);
+    expect(ulids.has(monolithicUlid)).toBe(true);
+    expect(index.plans.length).toBe(2);
+
+    // Existing folder contents untouched.
+    const existingPlan = yamlParse(
+      await readTestOutput(path.join(existingDir, "plan.yaml")),
+    ) as Record<string, unknown>;
+    expect(existingPlan.title).toBe("Existing Folder Plan");
+  });
+
+  // Regression: same shape as the plan test but for the review migration —
+  // proves the review upgrade integration honours --force AND preserves
+  // pre-existing lean index entries.
+  //
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-executes-folder-migration
+  it("upgrade --force migrates partial review layout while preserving existing folder reviews", async () => {
+    const { specDir, manifestPath } = await initProject(tempDir);
+    const existingFolderUlid = testUlid("FRRV");
+    const monolithicUlid = testUlid("FMORV");
+    const threadUlid3 = testUlid("THR6");
+    const entryUlid3 = testUlid("ENT6");
+
+    const existingDir = path.join(specDir, "reviews", existingFolderUlid);
+    await fs.mkdir(existingDir, { recursive: true });
+    const yamlMod = await import("yaml");
+    const validReview = {
+      _ulid: existingFolderUlid,
+      slugs: [],
+      title: "Existing Folder Review",
+      lifecycle_state: "open",
+      subject: {
+        type: "task",
+        ref: "@task-ref",
+        shadow_commit: "sha",
+        content_hash: "h",
+      },
+      author: "reviewer",
+      related_refs: [],
+      threads: [],
+      checks: [],
+      verdicts: [],
+      events: [],
+      notes: [],
+      external_links: [],
+      examined_commit: null,
+      created_at: "2026-05-22T10:00:00Z",
+    };
+    await fs.writeFile(
+      path.join(existingDir, "review.yaml"),
+      yamlMod.stringify(validReview),
+      "utf-8",
+    );
+    await fs.writeFile(
+      path.join(existingDir, "resources.yaml"),
+      yamlMod.stringify({ resources: [] }),
+      "utf-8",
+    );
+
+    await writeMonolithicReviews(specDir, [
+      {
+        _ulid: existingFolderUlid,
+        slugs: [],
+        title: "Existing Folder Review",
+        lifecycle_state: "open",
+        subject: {
+          type: "task",
+          ref: "@task-ref",
+          shadow_commit: "sha",
+          content_hash: "h",
+        },
+        author: "reviewer",
+        related_refs: [],
+        disposition: "pending",
+        thread_count: 0,
+        unresolved_blocker_count: 0,
+        check_count: 0,
+        verdict_count: 0,
+        created_at: "2026-05-22T10:00:00Z",
+      },
+      {
+        _ulid: monolithicUlid,
+        slugs: [],
+        title: "Monolithic Review",
+        lifecycle_state: "open",
+        subject: {
+          type: "task",
+          ref: "@some-task",
+          shadow_commit: "abc",
+          content_hash: "h",
+        },
+        author: "reviewer",
+        related_refs: [],
+        threads: [
+          {
+            _ulid: threadUlid3,
+            kind: "blocker",
+            entries: [
+              {
+                _ulid: entryUlid3,
+                author: "reviewer",
+                body: "blocker",
+                created_at: "2026-05-22T10:00:00Z",
+              },
+            ],
+          },
+        ],
+        checks: [],
+        verdicts: [],
+        events: [],
+        notes: [],
+        external_links: [],
+        examined_commit: null,
+        created_at: "2026-05-22T11:00:00Z",
+      },
+    ]);
+
+    const result = kspecJson<UpgradeResultShape>("upgrade --force", tempDir);
+    expect(result.success).toBe(true);
+
+    const reviewStep = result.steps.find((s) => s.name === "Review storage folder migration");
+    expect(reviewStep?.status).toBe("done");
+    expect(reviewStep?.details?.migrated).toBe(1);
+    expect(reviewStep?.details?.index_entries).toBe(2);
+
+    const manifest = yamlParse(await readTestOutput(manifestPath)) as Record<string, unknown>;
+    expect(manifest.kynetic).toBe("1.2");
+
+    const index = yamlParse(
+      await readTestOutput(path.join(specDir, "project.reviews.yaml")),
+    ) as { reviews: Array<{ _ulid: string }> };
+    const ulids = new Set(index.reviews.map((r) => r._ulid));
+    expect(ulids.has(existingFolderUlid)).toBe(true);
+    expect(ulids.has(monolithicUlid)).toBe(true);
+    expect(index.reviews.length).toBe(2);
+  });
 });
