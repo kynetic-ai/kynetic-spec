@@ -69,3 +69,41 @@ notes:
     supersedes: null
     author: Hermes
     created_at: 2026-05-24T20:23:17.450Z
+  - _ulid: 01KSDV9BMHCSTXTWFY1MD00J8F
+    content: >-
+      Fix cycle 1: addressed both upgrade-integration blockers in commit 0b0265444b.
+
+
+      Root cause: src/cli/commands/upgrade.ts hardcoded { force: true } when calling
+      applyPlanMigration and applyReviewMigration, bypassing the partial-layout guard from the CLI
+      surface even on a normal kspec upgrade. A partial layout could be promoted to manifest 1.2 and
+      the rewritten index dropped pre-existing folder-backed entries.
+
+
+      Fix:
+
+      - runPlanFolderMigrationStep and runReviewFolderMigrationStep now accept the upgrade --force
+      flag and forward it to the apply call.
+
+      - Migration reports capture preservedLeanEntries (existing folder-backed entries in the lean
+      index that do not belong to monolithic records). Apply step rebuilds the index as the union of
+      migrated + preserved entries, keyed by ULID so migrated entries win.
+
+
+      Tests added:
+
+      - Upgrade-level: 'upgrade without --force fails when plan/review layout is partial' (manifest
+      stays at 1.1, step failed) and 'upgrade --force migrates partial plan/review layout while
+      preserving existing folder entries' (manifest 1.2, index union has both ULIDs).
+
+      - Module-level: regression test in plan-folder-migration.test.ts and
+      review-folder-migration.test.ts proving applied.indexEntries reflects the union and the
+      rebuilt index file contains both ULIDs.
+
+
+      Verification: re-read every AC on @entity-folder-migration-and-compatibility-1. Partial-layout
+      blocking AC and migration-preserves-record-identity AC are both honoured by the union write.
+      Full test suite: 9584 passed, 5 pre-existing skipped (2519 suites).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-24T20:37:08.370Z
