@@ -696,6 +696,194 @@ describe("kspec upgrade — folder storage migration", () => {
     expect(existingPlan.title).toBe("Existing Folder Plan");
   });
 
+  // Regression: storage migration must be atomic across plan + review +
+  // manifest steps. Reproduces the reviewer's scenario from fix cycle 2:
+  // one valid monolithic plan plus a partial review layout (a pre-existing
+  // review folder alongside a monolithic review record) — the plan migration
+  // would succeed and the review migration would fail without --force.
+  // The earlier non-atomic implementation committed the plan rewrite to the
+  // shadow before review migration ran, leaving the project with a lean
+  // project.plans.yaml + new .kspec/plans/<ulid>/ on disk while the manifest
+  // stayed at kynetic 1.1 with no plan_storage. Atomic execution must roll
+  // back ALL writes when any later step fails.
+  //
+  // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-executes-folder-migration
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  it("upgrade rolls back plan migration when review migration fails (atomic)", async () => {
+    const { specDir, manifestPath } = await initProject(tempDir);
+    const monolithicPlanUlid = testUlid("ATPLN");
+    const existingReviewFolderUlid = testUlid("ATERV");
+    const monolithicReviewUlid = testUlid("ATMRV");
+    const threadUlidA = testUlid("THRA");
+    const entryUlidA = testUlid("ENTA");
+
+    // Capture the contents of project.plans.yaml BEFORE the upgrade so we
+    // can prove the file is byte-identical after a failed run.
+    const yamlMod = await import("yaml");
+    await writeMonolithicPlans(specDir, [
+      {
+        _ulid: monolithicPlanUlid,
+        slugs: ["atomic-plan"],
+        title: "Atomic Plan",
+        content: "# Plan\nBody",
+        status: "draft",
+        derived_tasks: [],
+        derived_specs: [],
+        created_at: "2026-05-22T10:00:00Z",
+        notes: [],
+      },
+    ]);
+    const planFileBefore = await readTestOutput(path.join(specDir, "project.plans.yaml"));
+
+    // Partial review layout: pre-existing folder + monolithic record. This
+    // forces the review migration step to fail without --force.
+    const existingReviewDir = path.join(specDir, "reviews", existingReviewFolderUlid);
+    await fs.mkdir(existingReviewDir, { recursive: true });
+    const existingReview = {
+      _ulid: existingReviewFolderUlid,
+      slugs: [],
+      title: "Existing Review",
+      lifecycle_state: "open",
+      subject: {
+        type: "task",
+        ref: "@task-ref",
+        shadow_commit: "sha",
+        content_hash: "h",
+      },
+      author: "reviewer",
+      related_refs: [],
+      threads: [],
+      checks: [],
+      verdicts: [],
+      events: [],
+      notes: [],
+      external_links: [],
+      examined_commit: null,
+      created_at: "2026-05-22T10:00:00Z",
+    };
+    await fs.writeFile(
+      path.join(existingReviewDir, "review.yaml"),
+      yamlMod.stringify(existingReview),
+      "utf-8",
+    );
+    await fs.writeFile(
+      path.join(existingReviewDir, "resources.yaml"),
+      yamlMod.stringify({ resources: [] }),
+      "utf-8",
+    );
+
+    await writeMonolithicReviews(specDir, [
+      {
+        _ulid: existingReviewFolderUlid,
+        slugs: [],
+        title: "Existing Review",
+        lifecycle_state: "open",
+        subject: {
+          type: "task",
+          ref: "@task-ref",
+          shadow_commit: "sha",
+          content_hash: "h",
+        },
+        author: "reviewer",
+        related_refs: [],
+        disposition: "pending",
+        thread_count: 0,
+        unresolved_blocker_count: 0,
+        check_count: 0,
+        verdict_count: 0,
+        created_at: "2026-05-22T10:00:00Z",
+      },
+      {
+        _ulid: monolithicReviewUlid,
+        slugs: [],
+        title: "Monolithic Review",
+        lifecycle_state: "open",
+        subject: {
+          type: "task",
+          ref: "@some-task",
+          shadow_commit: "abc",
+          content_hash: "h",
+        },
+        author: "reviewer",
+        related_refs: [],
+        threads: [
+          {
+            _ulid: threadUlidA,
+            kind: "blocker",
+            entries: [
+              {
+                _ulid: entryUlidA,
+                author: "reviewer",
+                body: "blocker",
+                created_at: "2026-05-22T10:00:00Z",
+              },
+            ],
+          },
+        ],
+        checks: [],
+        verdicts: [],
+        events: [],
+        notes: [],
+        external_links: [],
+        examined_commit: null,
+        created_at: "2026-05-22T11:00:00Z",
+      },
+    ]);
+    const reviewFileBefore = await readTestOutput(path.join(specDir, "project.reviews.yaml"));
+
+    // Run upgrade WITHOUT --force. Plan migration would succeed in
+    // isolation; review migration must fail because the layout is partial.
+    const cliResult = kspec("upgrade --json", tempDir, { expectFail: true });
+    expect(cliResult.exitCode).not.toBe(0);
+    const result = JSON.parse(cliResult.stdout) as UpgradeResultShape;
+    expect(result.success).toBe(false);
+
+    const planStep = result.steps.find((s) => s.name === "Plan storage folder migration");
+    const reviewStep = result.steps.find((s) => s.name === "Review storage folder migration");
+    const manifestStep = result.steps.find((s) => s.name === "Storage manifest (kynetic 1.2)");
+
+    // Plan migration appears successful in isolation; review fails;
+    // manifest is skipped or rolled back. Critically: every disk
+    // effect of the "done" plan step MUST be rolled back when the
+    // overall transaction aborts.
+    expect(reviewStep?.status).toBe("failed");
+    expect(reviewStep?.message).toMatch(/partial/i);
+    expect(manifestStep?.status).not.toBe("done");
+
+    // Manifest stays at 1.1 with no plan_storage declaration.
+    const manifest = yamlParse(await readTestOutput(manifestPath)) as Record<string, unknown>;
+    expect(manifest.kynetic).toBe("1.1");
+    expect(manifest.plan_storage).toBeUndefined();
+    expect(manifest.review_storage).toBeUndefined();
+
+    // project.plans.yaml must be byte-identical to before the run —
+    // the lean index rewrite the plan migration would have done was
+    // rolled back with the rest of the buffered mutation.
+    const planFileAfter = await readTestOutput(path.join(specDir, "project.plans.yaml"));
+    expect(planFileAfter).toBe(planFileBefore);
+
+    // project.reviews.yaml must also be byte-identical — the review
+    // step threw before it wrote anything, so nothing changed there.
+    const reviewFileAfter = await readTestOutput(path.join(specDir, "project.reviews.yaml"));
+    expect(reviewFileAfter).toBe(reviewFileBefore);
+
+    // No new plan folder was created for the monolithic plan.
+    await expect(
+      fs.access(path.join(specDir, "plans", monolithicPlanUlid)),
+    ).rejects.toThrow();
+
+    // The pre-existing review folder is still on disk untouched.
+    const existingPersisted = yamlParse(
+      await readTestOutput(path.join(existingReviewDir, "review.yaml")),
+    ) as Record<string, unknown>;
+    expect(existingPersisted._ulid).toBe(existingReviewFolderUlid);
+
+    // Capture planStep for clarity in failure output (read but not
+    // strictly asserted — atomicity is the contract, not the
+    // intermediate step status).
+    expect(planStep).toBeDefined();
+  });
+
   // Regression: same shape as the plan test but for the review migration —
   // proves the review upgrade integration honours --force AND preserves
   // pre-existing lean index entries.
