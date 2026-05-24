@@ -52748,9 +52748,21 @@ runs:
     completed_at: 2026-05-24T03:58:59.605Z
   - _ulid: 01KSDF9B3GRN23YZZQHRB8462R
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-24T17:07:24.913Z
+        completed_at: 2026-05-24T17:07:56.764Z
+        notes: "What worked well: reading the diff before worker notes helped isolate integration-level
+          behavior; running a local TypeScript CLI repro in an isolated /tmp project verified the
+          partial-layout bug beyond unit-level reasoning; recording anchored kspec review threads
+          gave the fix-cycle worker precise locations."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-24T17:07:56.764Z
+        completed_at: 2026-05-24T17:07:56.764Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-24T17:07:24.913Z
