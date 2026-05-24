@@ -52931,7 +52931,7 @@ runs:
     started_at: 2026-05-24T20:37:50.801Z
     completed_at: 2026-05-24T20:40:30.502Z
   - _ulid: 01KSDWAJWKCM8B74HSJA9PSCSF
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -52985,10 +52985,13 @@ runs:
           issue is already captured as an unresolved blocker on review
           @01KSDVHY/@01KSDVHYYVCD44MDYAWZTDTERD; the fixture-helper idea is speculative and should
           wait for recurrence or concrete demand."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-24T20:56:57.481Z
-        completed_at: 2026-05-24T20:56:57.481Z
+        completed_at: 2026-05-24T20:57:09.474Z
+        notes: No capture performed. Atomicity is already tracked by the active review blocker and task
+          needs_work state; no additional inbox item, task, or observation would add useful signal.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-24T20:55:17.139Z
+    completed_at: 2026-05-24T20:57:09.474Z
