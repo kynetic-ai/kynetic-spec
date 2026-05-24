@@ -227938,6 +227938,12 @@ reviews:
           kind: blocker
           thread_ulid: 01KSDEQN5PEQNP4SPA5XJ4FSXV
         timestamp: 2026-05-24T16:57:47.528Z
+      - _ulid: 01KSDES7CTCMW58T9PY9E3TDBD
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSDEQFSVDJWD1D52ZGJA8V8X
+        timestamp: 2026-05-24T16:58:36.826Z
     examined_commit: 81cb3f62245f285760d9c25023bef1a1742ce396
     external_links: []
     lifecycle_state: open
@@ -228087,6 +228093,18 @@ reviews:
               option, add an upgrade-level partial-layout regression test, and preserve/rebuild
               existing folder entries when force is intentionally used.
             created_at: 2026-05-24T16:57:39.899Z
+          - _ulid: 01KSDES5TS56DGA0VTKT8X52AG
+            author: Jacob Chapel
+            body: 'Correction/clarification for the blocker above: the issue is the literal call
+              `applyPlanMigration(..., { force: true })`. A normal `kspec upgrade` must not bypass
+              `partial_entity_storage_layout`. Repro evidence from the local TypeScript CLI in an
+              isolated `/tmp/kspec-upgrade-partial-*` project: with an existing
+              `.kspec/plans/<ulid>/` folder plus a separate monolithic plan, upgrade returned
+              `success: true`, reported the plan migration as `done`, promoted the manifest to
+              `kynetic: "1.2"`, and rewrote `project.plans.yaml` with only the migrated monolithic
+              entry. The existing folder-backed plan remained on disk but was dropped from the
+              index.'
+            created_at: 2026-05-24T16:58:35.224Z
         kind: blocker
       - _ulid: 01KSDEQN5PEQNP4SPA5XJ4FSXV
         anchor:
@@ -228229,5 +228247,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-24T16:52:34.109Z
-    updated_at: 2026-05-24T16:57:45.399Z
+    updated_at: 2026-05-24T16:58:35.224Z
     notes: []
