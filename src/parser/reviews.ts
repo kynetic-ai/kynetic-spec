@@ -24,6 +24,29 @@ import {
   assertReviewStorageCompatible,
   assertReviewStorageWritable,
 } from "./entity-storage-compatibility.js";
+import {
+  deleteReviewFromFolder,
+  findReviewByRefInFolders,
+  loadReviewRecordsFromFolders,
+  mutateReviewInFolder,
+  saveReviewRecordToFolder,
+} from "./review-storage-manager.js";
+
+/**
+ * Detect whether the project's manifest declares folder-backed review
+ * storage. When this returns true, every review-storage entry point
+ * routes through the folder-backed manager; otherwise it falls through
+ * to the legacy monolithic implementation. The lenient compatibility
+ * gate still fires on the monolithic path, so partial or incompatible
+ * manifests raise the deterministic error codes rather than dual-reading
+ * or silently migrating.
+ *
+ * AC: @folder-backed-review-storage-1 ac-review-detail-file-is-cohesive
+ * AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+ */
+function usesFolderStorage(ctx: KspecContext): boolean {
+  return ctx.manifest?.review_storage?.format === "folder";
+}
 
 /**
  * Loaded review record with runtime metadata.
@@ -174,6 +197,9 @@ function stripReviewMetadata(review: ReviewRecord | LoadedReviewRecord): ReviewR
  * AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
  */
 export async function loadReviewRecords(ctx: KspecContext): Promise<LoadedReviewRecord[]> {
+  if (usesFolderStorage(ctx)) {
+    return loadReviewRecordsFromFolders(ctx);
+  }
   await assertReviewStorageCompatible(ctx);
   const { getEntityCacheContext } = await import("./yaml.js");
   const cacheContext = getEntityCacheContext();
@@ -271,6 +297,9 @@ export async function saveReviewRecord(
   ctx: KspecContext,
   review: LoadedReviewRecord,
 ): Promise<void> {
+  if (usesFolderStorage(ctx)) {
+    return saveReviewRecordToFolder(ctx, review);
+  }
   await assertReviewStorageWritable(ctx);
   const reviewsPath = getReviewsFilePath(ctx);
 
@@ -316,6 +345,9 @@ export async function mutateReviewAtomically(
     latestReview: LoadedReviewRecord,
   ) => ReviewRecord | LoadedReviewRecord | Promise<ReviewRecord | LoadedReviewRecord>,
 ): Promise<LoadedReviewRecord> {
+  if (usesFolderStorage(ctx)) {
+    return mutateReviewInFolder(ctx, review, mutate);
+  }
   // Mutate-only operations update an existing review in place and require
   // that review to already exist in the monolithic file; they cannot
   // introduce a partial folder layout the way `saveReviewRecord`
@@ -385,6 +417,9 @@ export async function mutateReviewAtomically(
  * Delete a review record by ULID.
  */
 export async function deleteReviewRecord(ctx: KspecContext, reviewUlid: string): Promise<boolean> {
+  if (usesFolderStorage(ctx)) {
+    return deleteReviewFromFolder(ctx, reviewUlid);
+  }
   await assertReviewStorageWritable(ctx);
   const reviewsPath = getReviewsFilePath(ctx);
 

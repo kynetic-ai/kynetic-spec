@@ -428,40 +428,52 @@ describe("Review storage manager — partial-layout rejection", () => {
     expectPartialLayoutError(captured, "reviews");
   });
 
-  // ── Blocker 3 (fix cycle 2): clean folder-declared projects ───────────
-  // Same write-side rejection as the plan domain — a fresh folder-declared
-  // project must not allow the monolithic review storage manager to create
-  // a project.reviews.yaml beneath the folder manifest. As with the plan
-  // domain, `mutateReviewAtomically` is excluded because update-only
-  // mutation cannot introduce drift.
+  // ── Clean folder-declared projects route through the folder manager ───
+  // A fresh kynetic 1.2 project that declares `review_storage.format: folder`
+  // routes saveReviewRecord / mutateReviewAtomically / deleteReviewRecord
+  // through the folder storage manager. The dispatcher in
+  // src/parser/reviews.ts switches on the manifest declaration; the folder
+  // manager writes per-review `review.yaml` sidecars under
+  // `.kspec/reviews/<ulid>/` and never creates a monolithic
+  // `.kspec/project.reviews.yaml` record. These behavioural tests pin that
+  // contract so a regression that bypasses the dispatcher and falls back
+  // to the monolithic writer fails the build.
 
   // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
-  it("saveReviewRecord rejects on a clean folder-declared project so it cannot create a monolithic reviews file beneath a folder manifest", async () => {
+  // AC: @folder-backed-review-storage-1 ac-review-detail-file-is-cohesive
+  it("saveReviewRecord on a clean folder-declared project writes per-review sidecars and never creates a monolithic reviews file", async () => {
     const ctx = makeContext(specDir, folderDeclaredManifest());
+    const newUlid = testUlid("NEW");
     const newReview: LoadedReviewRecord = {
       ...createReviewRecord({
-        _ulid: testUlid("NEW"),
+        _ulid: newUlid,
         title: "Net-new review",
         author: "x@y",
         subject: { type: "code", base_commit: "a", head_commit: "b" },
       }),
     };
-    await expect(saveReviewRecord(ctx, newReview)).rejects.toMatchObject({
-      code: PARTIAL_ENTITY_STORAGE_LAYOUT_CODE,
-      domain: "reviews",
-    });
-    await expect(fs.access(path.join(specDir, "project.reviews.yaml"))).rejects.toThrow(/ENOENT/);
+
+    await saveReviewRecord(ctx, newReview);
+
+    // Per-review cohesive detail sidecar exists.
+    await fs.access(path.join(specDir, "reviews", newUlid, "review.yaml"));
+    // The lean index is created under the folder layout. It must carry the
+    // ULID and bounded fields, but never the full thread/check/verdict/note
+    // arrays (the cohesive detail file is authoritative for those).
+    const indexBody = await fs.readFile(
+      path.join(specDir, "project.reviews.yaml"),
+      "utf-8",
+    );
+    expect(indexBody).toContain(newUlid);
+    expect(indexBody).not.toContain("threads:");
+    expect(indexBody).not.toContain("checks:");
+    expect(indexBody).not.toContain("verdicts:");
   });
 
   // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
-  // mutateReviewAtomically requires an existing entry to update — it cannot
-  // introduce a partial layout the way saveReviewRecord (which can create
-  // new entries) or deleteReviewRecord (which leaves orphan folders) can.
-  // The compatibility gate therefore lets the call through on a clean
-  // folder-declared project, and the call fails at the on-disk lookup
-  // step instead. The behavioural contract this test pins: even though the
-  // call fails, the monolithic file is NOT created beneath the folder
-  // manifest, and the mutation callback never runs.
+  // mutateReviewAtomically requires an existing entry to update. The folder
+  // manager fails at lookup when the review folder is missing, without
+  // ever creating a monolithic file.
   it("mutateReviewAtomically on a clean folder-declared project fails at lookup without creating a monolithic file", async () => {
     const ctx = makeContext(specDir, folderDeclaredManifest());
     const targetReview: LoadedReviewRecord = {
@@ -478,18 +490,16 @@ describe("Review storage manager — partial-layout rejection", () => {
         mutationCallbackInvoked = true;
         return latest;
       }),
-    ).rejects.toThrow(/Reviews file not found|ENOENT/);
+    ).rejects.toThrow(/Review not found/);
     expect(mutationCallbackInvoked).toBe(false);
     await expect(fs.access(path.join(specDir, "project.reviews.yaml"))).rejects.toThrow(/ENOENT/);
   });
 
   // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
-  it("deleteReviewRecord rejects on a clean folder-declared project (no monolithic file is created or touched by the delete path)", async () => {
+  it("deleteReviewRecord on a clean folder-declared project returns false and creates no monolithic file", async () => {
     const ctx = makeContext(specDir, folderDeclaredManifest());
-    await expect(deleteReviewRecord(ctx, testUlid("REV"))).rejects.toMatchObject({
-      code: PARTIAL_ENTITY_STORAGE_LAYOUT_CODE,
-      domain: "reviews",
-    });
+    const result = await deleteReviewRecord(ctx, testUlid("REV"));
+    expect(result).toBe(false);
     await expect(fs.access(path.join(specDir, "project.reviews.yaml"))).rejects.toThrow(/ENOENT/);
   });
 });
