@@ -52932,7 +52932,7 @@ runs:
     completed_at: 2026-05-24T20:40:30.502Z
   - _ulid: 01KSDWAJWKCM8B74HSJA9PSCSF
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -52969,7 +52969,18 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-24T20:56:32.981Z
-        completed_at: 2026-05-24T20:56:32.981Z
+        completed_at: 2026-05-24T20:56:44.350Z
+        notes: "Proposed improvements: No new tracking for upgrade atomicity because the current needs_work
+          review blocker is the right actionable record and is anchored to the exact code path.
+          Possible future improvement, lower confidence: add a reusable upgrade-migration failure
+          fixture/helper that builds isolated temp projects with mixed plan/review layouts and
+          asserts no protected live path; scope medium. I am not capturing it now because the
+          current fix should probably add the concrete regression test in-place, and a generalized
+          helper may be premature until this pattern recurs."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-24T20:56:44.350Z
+        completed_at: 2026-05-24T20:56:44.350Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-24T20:55:17.139Z
