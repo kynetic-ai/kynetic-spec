@@ -228654,6 +228654,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-24T20:54:32.413Z
+      - _ulid: 01KSDXQCQE8CBHYR5H1CF2Q32A
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSDW7GGJT5HXWJHM6TF17MG3
+        timestamp: 2026-05-24T21:19:45.391Z
     examined_commit: 0b0265444b277ffe4a70afc4b37887095e29fefa
     external_links: []
     lifecycle_state: closed
@@ -228688,6 +228694,37 @@ reviews:
               review migration, and manifest promotion as one logical mutation or roll back earlier
               storage writes when a later storage step fails."
             created_at: 2026-05-24T20:53:36.402Z
+          - _ulid: 01KSDXQB3EY04ZZVCY4CM1AP0Y
+            author: "@claude"
+            body: >-
+              Fixed in 6cd0bb4dbb. Wrapped plan-folder migration, review-folder migration, and
+              manifest promotion in a single `runWithBuffer` scope in `src/cli/commands/upgrade.ts`
+              (new `runAtomicStorageMigration` orchestrator). The nested `runWithBuffer` calls
+              inside `applyPlanMigration`, `applyReviewMigration`, and the buffer-aware yaml writer
+              now reuse the outer buffer instead of flushing per-step. Removed the per-step
+              `commitIfShadow` calls; the orchestrator issues exactly one shadow commit after the
+              buffer flushes ("migrate plan/review storage to folder-backed layout (kynetic 1.2)").
+              On any step failure or unexpected throw inside the buffered scope the orchestrator
+              throws an internal `StorageMigrationAbort` sentinel, the surrounding `runWithBuffer`
+              discards every buffered write, and no files reach disk. Synthetic skipped step records
+              are surfaced for steps that did not run so JSON consumers and the existing
+              partial-layout tests still see the expected step names.
+
+
+              Added a regression test (`upgrade rolls back plan migration when review migration
+              fails (atomic)`) that reproduces your scenario: one valid monolithic plan plus a
+              partial review layout (pre-existing folder + monolithic record). The test snapshots
+              `project.plans.yaml` and `project.reviews.yaml` before the run and asserts they are
+              byte-identical after the failed upgrade, that no plan folder was created for the
+              monolithic plan, that the manifest stays at kynetic 1.1 with no
+              `plan_storage`/`review_storage`, and that the pre-existing review folder is still on
+              disk untouched.
+
+
+              Verification: `npm test` — 2519 suites passed, 9585 passed, 5 pre-existing skipped of
+              9590 (cache log
+              `/tmp/kspec-test-cache/01KSDWFR7ZNDGKYWZ6MXKSHH0N/9a1db04cde58d02d.log`).
+            created_at: 2026-05-24T21:19:43.726Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -228698,5 +228735,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-24T20:54:32.412Z
     created_at: 2026-05-24T20:41:50.299Z
-    updated_at: 2026-05-24T20:54:32.413Z
+    updated_at: 2026-05-24T21:19:43.726Z
     notes: []
