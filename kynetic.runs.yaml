@@ -53077,7 +53077,7 @@ runs:
     completed_at: 2026-05-24T21:50:39.278Z
   - _ulid: 01KSE3WJS5T01JQKZ0BZF3N41X
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -53093,7 +53093,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-24T23:07:48.104Z
-        completed_at: 2026-05-24T23:07:48.104Z
+        completed_at: 2026-05-24T23:07:57.351Z
+        notes: "Friction points: (1) The review workflow required manual temp-project repro scripts for
+          cross-step upgrade failure states. Existing tests covered happy path and storage-step
+          atomicity but not pipeline precondition failures before the storage block. (2) Migration
+          report helpers use independent plan/review partial-layout heuristics; reviewers had to
+          reason through stale lean indexes manually. A reusable pre-promotion consistency check for
+          folder-backed storage would reduce duplicated edge-case reasoning. (3) The task-specific
+          live-path safety requirement was implemented as product code, suggesting the task
+          instructions were easy to misread as a shipped runtime gate rather than a worker/test
+          preflight."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-24T23:07:57.351Z
+        completed_at: 2026-05-24T23:07:57.351Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-24T23:07:26.885Z
