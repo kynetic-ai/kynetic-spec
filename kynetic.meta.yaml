@@ -19302,6 +19302,31 @@ observations:
     resolved: false
     workflow_ref: "@01KSBH7H"
     created_at: 2026-05-23T23:07:34.721Z
+  - _ulid: 01KSDEBQ8MHPFD9JDRE2J85ZJC
+    type: friction
+    content: "Upgrade pipeline steps had no test coverage exercising a kynetic 1.2 manifest. This let a
+      latent bug in the task-storage step (which always wrote kynetic=1.1, even when the project was
+      already at 1.2) survive multiple kspec releases. Fixed during folder-migration work on
+      2026-05-24 by gating the kynetic field write on manifest!==1.2. Broader lesson: when
+      introducing a new manifest version, add upgrade pipeline tests against the new version to
+      catch downgrade regressions in older steps."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-24T16:51:14.325Z
+  - _ulid: 01KSDEBQHN4ZS2Q29E0KH840Y3
+    type: friction
+    content: Folder-backed migrations write to the same file path that monolithic storage uses
+      (project.plans.yaml and project.reviews.yaml serve as both the lean index AND the legacy
+      monolithic record file). Initial implementation attempted to write the lean index then delete
+      the monolithic file, which silently deleted the file just written. The migration is a
+      transform-in-place — there is no separate monolithic file to delete. Future folder-storage
+      migrations should treat the index file rewrite as the only write needed; do not call a
+      separate delete step on the same path.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-24T16:51:14.613Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
