@@ -52687,7 +52687,7 @@ runs:
     started_at: 2026-05-24T03:35:12.389Z
     completed_at: 2026-05-24T03:38:44.849Z
   - _ulid: 01KSC21GN7PP531YDVWPV4KKRZ
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -52736,10 +52736,13 @@ runs:
         completed_at: 2026-05-24T03:58:51.720Z
         notes: "Skipped discussion: no untracked improvements were proposed, so there is nothing to ask the
           user to approve."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-24T03:58:51.720Z
-        completed_at: 2026-05-24T03:58:51.720Z
+        completed_at: 2026-05-24T03:58:59.605Z
+        notes: No captures created. Existing tracking covers the meaningful friction and success patterns;
+          no approved untracked items remained.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-24T03:56:42.535Z
+    completed_at: 2026-05-24T03:58:59.605Z
