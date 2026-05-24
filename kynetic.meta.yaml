@@ -19363,6 +19363,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-24T17:27:51.014Z
+  - _ulid: 01KSDVF8BWJ8VKWQ39Z1HB707H
+    type: friction
+    content: "Parallel domain handlers (plan/review/task each have parallel storage manager + migration
+      logic) make copy-paste bugs likely to duplicate across paths. In this fix cycle, both MUST-FIX
+      blockers on @01KS8XAYZTG0MN48Z78D45PBV6 were the same bug shape — hardcoded { force: true } —
+      duplicated in runPlanFolderMigrationStep and runReviewFolderMigrationStep at
+      src/cli/commands/upgrade.ts. Reviewers should explicitly check the parallel paths together
+      when one path has an issue, and authors implementing a second parallel handler should diff
+      against the first instead of copying."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-24T20:40:21.629Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
