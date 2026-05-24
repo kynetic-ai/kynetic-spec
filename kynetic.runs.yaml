@@ -52932,7 +52932,7 @@ runs:
     completed_at: 2026-05-24T20:40:30.502Z
   - _ulid: 01KSDWAJWKCM8B74HSJA9PSCSF
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -52947,7 +52947,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-24T20:55:38.498Z
-        completed_at: 2026-05-24T20:55:38.498Z
+        completed_at: 2026-05-24T20:55:51.086Z
+        notes: "Friction points: The upgrade pipeline has several separate storage steps that each own
+          writes and commits, so reviewers must reason about cross-step failure atomicity manually.
+          The review needed a hand-built temp-project reproduction script because there is not a
+          direct helper or test fixture for exercising multi-step upgrade failure
+          rollback/atomicity. Long full-suite runs provide strong evidence but leave a delay before
+          final verdict recording."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-24T20:55:51.086Z
+        completed_at: 2026-05-24T20:55:51.086Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-24T20:55:17.139Z
