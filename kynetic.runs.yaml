@@ -52688,7 +52688,7 @@ runs:
     completed_at: 2026-05-24T03:38:44.849Z
   - _ulid: 01KSC21GN7PP531YDVWPV4KKRZ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -52702,7 +52702,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-24T03:58:10.024Z
-        completed_at: 2026-05-24T03:58:10.024Z
+        completed_at: 2026-05-24T03:58:20.840Z
+        notes: >-
+          Friction: the detached-reviewer merge helper failed when the integration target branch was
+          not checked out in any worktree, requiring manual creation of a separate target worktree
+          before retry. Minor one-off: direct installed  did not include the unmerged command, so
+          verification needed 
+
+          > @kynetic-ai/spec@0.14.0 dev
+
+          > tsx src/cli/index.ts review rebuild-index --json; this is already covered by project
+          guidance for uncommitted CLI changes.
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-24T03:58:20.840Z
+        completed_at: 2026-05-24T03:58:20.840Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-24T03:56:42.535Z
