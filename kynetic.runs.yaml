@@ -52748,7 +52748,7 @@ runs:
     completed_at: 2026-05-24T03:58:59.605Z
   - _ulid: 01KSDF9B3GRN23YZZQHRB8462R
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -52762,7 +52762,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-24T17:07:56.764Z
-        completed_at: 2026-05-24T17:07:56.764Z
+        completed_at: 2026-05-24T17:08:04.987Z
+        notes: "Friction points: kspec review comment/reply bodies containing backticks and hBcstyle text
+          are easy to corrupt through shell interpolation; my initial blocker comments were polluted
+          and needed corrective replies. The second friction point was test coverage shape:
+          lower-level apply*Migration partial-layout tests passed while the actual upgrade
+          integration bypassed the guard, so upgrade-level regression coverage was the necessary
+          signal."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-24T17:08:04.987Z
+        completed_at: 2026-05-24T17:08:04.987Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-24T17:07:24.913Z
