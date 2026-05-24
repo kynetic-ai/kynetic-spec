@@ -13,3 +13,23 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-24T16:14:14.227Z
+  - _ulid: 01KSDE8A3C9SSWX6D5SP2WPPD4
+    content: "Implementation summary: added two migration modules (src/parser/plan-folder-migration.ts,
+      src/parser/review-folder-migration.ts) that compute dry-run reports and apply executing
+      migrations atomically via runWithBuffer. Both preserve unknown record fields verbatim, mint
+      ULIDs for invalid records with warnings, and refuse partial layouts without --force. Added
+      src/parser/migration-safety.ts with PROTECTED_LIVE_PROJECT_PATHS tripwire that refuses to
+      mutate the kynetic-spec or kynetic-spec-dispatch live paths (executing migrations only —
+      dry-runs still work). Integrated into src/cli/commands/upgrade.ts as three new steps: Plan
+      storage folder migration, Review storage folder migration, and Storage manifest (kynetic 1.2)
+      which promotes manifest to kynetic=1.2 with plan_storage/review_storage/resource_storage
+      declarations. Captures previous shadow HEAD commit and surfaces it in result as
+      previous_shadow_commit for rollback guidance. Fixed pre-existing bug in task storage step that
+      would downgrade kynetic 1.2 manifests to 1.1. Tests in tests/plan-folder-migration.test.ts
+      (9), tests/review-folder-migration.test.ts (6), tests/upgrade-folder-storage.test.ts (5),
+      tests/migration-safety.test.ts (5). All tests use createTempDir/OS tmpdir prefix isolation and
+      explicitly assert tempDir is not under any protected live path. Full test suite: 9578/9583
+      passing (5 pre-existing skipped)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-24T16:49:22.540Z
