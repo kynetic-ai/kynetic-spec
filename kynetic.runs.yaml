@@ -53034,9 +53034,20 @@ runs:
     completed_at: 2026-05-24T21:31:09.122Z
   - _ulid: 01KSDZC6F0TSBE1B85QZRVE57J
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-24T21:48:35.680Z
+        completed_at: 2026-05-24T21:50:01.862Z
+        notes: "Baseline gathered per loop workflow: ran kspec meta observations list, kspec inbox list,
+          kspec tasks list, plus keyword searches for dry-run/reporting/resource-dir issues.
+          Observed no existing tracking for the reflection-loop baseline output volume itself."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-24T21:50:01.862Z
+        completed_at: 2026-05-24T21:50:01.862Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-24T21:48:35.680Z
