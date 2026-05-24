@@ -11921,18 +11921,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-plan-review-folder-storage-migration-1/01ks8xay
-    canonical_branch_head: 1a6e365048c8cce438d0644aff4edfafe7925fbe
+    canonical_branch_head: 27cdba765eb04262bdf35f28dac0b22c2e639360
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-24T23:10:05.292Z
+      updated_at: 2026-05-24T23:35:55.727Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-24T23:10:32.815Z
+      updated_at: 2026-05-24T23:35:55.727Z
     integration:
       status: pending
       detail: null
@@ -11940,7 +11940,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
       target_commit: b588e89919cb699a8e1134993f5061c00f1f4f5a
-      updated_at: 2026-05-24T23:10:05.292Z
+      updated_at: 2026-05-24T23:35:55.727Z
     lifecycle_state: active
     resolved_base_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
     task_ref: "@01KS8XAYZTG0MN48Z78D45PBV6"
@@ -11948,9 +11948,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-24T23:10:32.815Z
-      last_reconciled_at: 2026-05-24T23:10:32.815Z
+      last_reconciled_at: 2026-05-24T23:35:55.727Z
       created_at: 2026-05-24T16:10:04.439Z
-      updated_at: 2026-05-24T23:10:32.815Z
+      updated_at: 2026-05-24T23:35:55.727Z
     workspace_id: dispatch-workspace-01KS8XAYZTG0MN48Z78D45PBV6
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
