@@ -227924,6 +227924,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-24T16:52:52.006Z
+      - _ulid: 01KSDEQHQ49QGXWJ7HEGPJ00MX
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSDEQFSVDJWD1D52ZGJA8V8X
+        timestamp: 2026-05-24T16:57:41.860Z
     examined_commit: 81cb3f62245f285760d9c25023bef1a1742ce396
     external_links: []
     lifecycle_state: open
@@ -227933,8 +227940,148 @@ reviews:
       content_hash: ""
       ref: "@01KS8XAYZTG0MN48Z78D45PBV6"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KSDEQFSVDJWD1D52ZGJA8V8X
+        anchor:
+          type: code
+          commit: 81cb3f62245f285760d9c25023bef1a1742ce396
+          line_end: 734
+          line_start: 731
+          path: src/cli/commands/upgrade.ts
+          side: head
+        entries:
+          - _ulid: 01KSDEQFSV36JJT99D275B05FB
+            author: Jacob Chapel
+            body: >-
+              MUST-FIX: The upgrade integration always calls applyPlanMigration(..., { force: true
+              }), so a normal Source: 0.13.0 (exact)
+
+              Target: 0.14.0
+
+
+              ✓ Task storage migration
+                no monolithic tasks to migrate; manifest already in split format
+              ✓ Backfill core skills
+                13 core skill(s) installed
+              ○ Re-render skills
+                all 64 skill(s) already up to date
+              ○ Regenerate agent instructions
+                already up to date
+              ○ Restore gitignore entries
+                all entries present
+              ○ Scaffold project config
+                kspec.config.yaml already exists
+              ○ Scaffold default agents and conventions
+                defaults already seeded; present: task-worker, pr-reviewer, primary-dev, plan-reviewer, commits, architecture, testing
+              ○ Scaffold reflection hook
+                already exists
+              ○ Scaffold default module
+                default module already exists
+              ✓ Record version
+                recorded version 0.14.0
+
+              Manual follow-ups:
+                • Core skills: 13 missing skill(s) restored — review .kspec/skills/ for changes
+
+              Release notes:
+
+
+              ## v0.14.0
+
+
+              Stability release focused on daemon endpoint coherence, dispatch workspace
+
+              cleanup safety, task-storage compatibility responses, docs/search/release-notes
+
+              rendering, AC annotation validation, and CI/publish reliability.
+
+
+              ### New or changed configuration
+
+
+              - `daemon.host` now defaults to numeric IPv4 loopback `127.0.0.1` instead of
+                `localhost` to avoid `/etc/hosts` and DNS resolution drift.
+              - `daemon.connect_host` — optional host advertised to local clients when the
+                daemon binds a wildcard address such as `0.0.0.0` or `::`. It can also be set
+                with `KSPEC_DAEMON_CONNECT_HOST`.
+
+              ### Breaking changes
+
+
+              - None.
+
+
+              ### Features & Additions
+
+
+              - **Daemon endpoint resolution** — shared endpoint metadata and resolution now
+                flow through daemon startup, CLI lifecycle metadata, auto-start, clients, and
+                web UI daemon access. Endpoint validation rejects unreachable bind/connect
+                combinations while preserving loopback aliases and wildcard-bind use cases.
+              - **Docs and release-note surfaces** — added Pagefind-backed docs search,
+                docs navigation integration, release-notes rendering in the web UI, and
+                canonical `RELEASE_NOTES.md` wiring tests.
+              - **Task-storage compatibility API responses** — daemon routes now return
+                structured `task_storage_incompatible` responses for legacy task-storage
+                projects, with shared route helpers and coverage across affected surfaces.
+              - **Detached reviewer merge helper** — merge/reviewer skills gained detached
+                review helper support plus portable supporting-file references.
+              - **AC annotation validation** — acceptance-criteria annotations now enforce
+                the `ac-*` identifier format, normalize catalog IDs, and report malformed
+                annotation and stale-mapping cases more precisely.
+
+              ### Bug Fixes
+
+
+              - Recursive daemon command proxying is suppressed, including inside agent
+                invocations, so daemon-handled commands do not call back into the same proxy
+                path.
+              - Dispatch cleanup preserves active/in-flight task workspaces across branches,
+                reviewer snapshots, corrupt metadata, unknown worktree roots, and bootstrap
+                race windows while surfacing labeled diagnostics for skipped artifacts.
+              - Dispatch reconciliation no longer overlaps active cycles; event-bus lineage
+                and source-ordering state is bounded so aged correlated chains are released.
+              - Entity-cache diagnostics suppress repeated known task-storage incompatibility
+                reports while preserving degraded-cache behavior.
+              - Daemon/web UI startup asset resolution, runtime readiness, configured host
+                validation, and CLI serve lifecycle metadata were hardened.
+              - Publish workflow now installs Bun before running the full suite, and package
+                repository/discussion URLs now point at `lepahc/kynetic-spec`, unblocking npm
+                provenance publication.
+
+              ### Documentation
+
+
+              - README was trimmed into a concise landing page with docs cross-links.
+
+              - Added and refreshed Getting Started, Concepts, Guides, and Troubleshooting
+                pages, including corrected CLI guidance and recovery procedures.
+              - Updated merge/reviewer guidance, dispatch-compatible branch guidance, and
+                rendered skill outputs.
+
+              ### Other Changes
+
+
+              - Expanded the daemon-cleanup lint rule and test fixtures to catch unscoped
+                daemon ownership, alias/wrapper edge cases, lifecycle hooks, and startup
+                failure cleanup leaks.
+              - Serialized dynamic test-daemon port startup with filesystem locks and held
+                Playwright fixture locks across restart windows to remove parallel bind races.
+              - Applied final `oxfmt`, lint, typecheck, and full-test stability sweeps across
+                the dev merge delta.
+
+
+              Upgrade complete. bypasses the partial-layout guard. I reproduced this in an isolated
+              temp project with an existing  folder plus a separate monolithic plan: the local
+              TypeScript CLI returned success, promoted the manifest to kynetic 1.2, and rewrote  to
+              only the migrated monolithic entry, dropping the pre-existing folder-backed plan from
+              the index. This violates the partial-layout blocking contract and can lose
+              discoverability of existing plans during upgrade. Pass the actual upgrade force
+              option, add an upgrade-level partial-layout regression test, and preserve/rebuild
+              existing folder entries when force is intentionally used.
+            created_at: 2026-05-24T16:57:39.899Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-24T16:52:34.109Z
-    updated_at: 2026-05-24T16:52:50.447Z
+    updated_at: 2026-05-24T16:57:39.899Z
     notes: []
