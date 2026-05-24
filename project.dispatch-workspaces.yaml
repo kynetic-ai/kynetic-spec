@@ -11427,7 +11427,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-24T03:55:52.165Z
+      updated_at: 2026-05-24T03:59:21.560Z
     integration:
       status: merged
       detail: integration:merged
@@ -11443,18 +11443,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-24T03:39:56.300Z
-      last_reconciled_at: 2026-05-24T03:59:19.741Z
+      last_reconciled_at: 2026-05-24T03:59:21.560Z
       created_at: 2026-05-23T21:19:06.228Z
-      updated_at: 2026-05-24T03:59:19.741Z
+      updated_at: 2026-05-24T03:59:21.560Z
     workspace_id: dispatch-workspace-01KS8XAYMQSFXPMHEG9FZZ3C36
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 330df7431d9befcdc36277f1e975c61b7fab0c76
-        last_seen_at: 2026-05-24T03:39:11.188Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-folder-backed-review-storage-manager-1-01ks8xay-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-folder-backed-review-storage-manager-1/01ks8xay
