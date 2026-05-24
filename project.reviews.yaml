@@ -227909,7 +227909,18 @@ reviews:
     slugs: []
     title: Review task-plan-review-folder-storage-migration-1
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Exit 6: schema/references OK, validation produced pre-existing warnings (deprecated refs,
+          orphaned specs, missing AC coverage outside this task)."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-05-24T17:05:45.943Z
+        completed_at: 2026-05-24T17:05:45.943Z
     events:
       - _ulid: 01KSDEE55XAZQ8SN49Z6SSE61P
         actor: Jacob Chapel
@@ -227950,6 +227961,13 @@ reviews:
         payload:
           thread_ulid: 01KSDEQN5PEQNP4SPA5XJ4FSXV
         timestamp: 2026-05-24T16:58:41.402Z
+      - _ulid: 01KSDF6C308G3H92DFE0AJXMDN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-05-24T17:05:47.616Z
     examined_commit: 81cb3f62245f285760d9c25023bef1a1742ce396
     external_links: []
     lifecycle_state: open
@@ -228263,5 +228281,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-24T16:52:34.109Z
-    updated_at: 2026-05-24T16:58:39.729Z
+    updated_at: 2026-05-24T17:05:45.943Z
     notes: []
