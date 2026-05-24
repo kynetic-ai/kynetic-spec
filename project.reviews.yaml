@@ -228638,9 +228638,25 @@ reviews:
           status: fail
           name: atomicity reproduction
         timestamp: 2026-05-24T20:54:22.545Z
+      - _ulid: 01KSDW976W47V8R98NMPNNPQDN
+        actor: codex-reviewer
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-24T20:54:32.413Z
+      - _ulid: 01KSDW976XV5GB6HX2MYG5XC4C
+        actor: codex-reviewer
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-24T20:54:32.413Z
     examined_commit: 0b0265444b277ffe4a70afc4b37887095e29fefa
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -228673,7 +228689,14 @@ reviews:
               storage writes when a later storage step fails."
             created_at: 2026-05-24T20:53:36.402Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex-reviewer
+        role: reviewer
+        created_at: 2026-05-24T20:54:32.412Z
     created_at: 2026-05-24T20:41:50.299Z
-    updated_at: 2026-05-24T20:54:21.068Z
+    updated_at: 2026-05-24T20:54:32.413Z
     notes: []
