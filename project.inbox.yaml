@@ -3665,3 +3665,19 @@ inbox:
       - merge
     added_by: Jacob Chapel
     created_at: 2026-05-23T04:37:56.393Z
+  - _ulid: 01KSDHJ7C03Y2AZRTCHZPYS6P4
+    text: "Update web UI files:updates invalidation for folder-backed plan/review sidecar paths.
+      packages/web-ui/src/lib/query/ws-invalidation.ts currently maps project.plans.yaml and
+      project.reviews.yaml but not plans/<ulid>/... or reviews/<ulid>/... direct file watcher refs.
+      Consider matching the daemon folder-backed classifier: plan paths should invalidate plans
+      queries; review paths should invalidate reviews and tasks queries; add tests in
+      tests/web-ui/ws-cache-invalidation.test.ts for plan.md, plan.yaml, notes.yaml, resources.yaml,
+      resources/<file>, review.yaml, review resources, and non-ULID/look-alike negative paths."
+    tags:
+      - reflection
+      - web-ui
+      - cache
+      - plans
+      - reviews
+    added_by: Jacob Chapel
+    created_at: 2026-05-24T17:47:13.152Z
