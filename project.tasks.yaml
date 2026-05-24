@@ -29711,8 +29711,11 @@
   type: task
   spec_ref: "@entity-folder-migration-and-compatibility-1"
   plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
-  status: needs_work
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - 'Agent task-worker failed 3 consecutive times: Internal error: Failed to authenticate. API
+      Error: 401 {"type":"error","error":{"type":"authentication_error","message":"Invalid
+      authentication credentials"},"request_id":"req_011CbMvoWbW4K2J4WPtQAJBs"}'
   depends_on:
     - "@task-folder-backed-plan-storage-manager-1"
     - "@task-folder-backed-review-storage-manager-1"
