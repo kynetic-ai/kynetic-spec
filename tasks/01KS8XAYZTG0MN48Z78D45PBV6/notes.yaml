@@ -45,3 +45,10 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-24T19:14:28.623Z
+  - _ulid: 01KSDPJGZHF06S46PKBAJADW6C
+    content: '[AGENT-FAIL] Invocation failed: Internal error: Failed to authenticate. API Error: 401
+      {"type":"error","error":{"type":"authentication_error","message":"Invalid authentication
+      credentials"},"request_id":"req_011CbMvnGn2D9jtTwQRTuzGh"}'
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-05-24T19:14:45.874Z
