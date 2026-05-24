@@ -228026,6 +228026,12 @@ reviews:
         payload:
           thread_ulid: 01KSDEQFSVDJWD1D52ZGJA8V8X
         timestamp: 2026-05-24T20:36:14.042Z
+      - _ulid: 01KSDV83M6JK5XM3F34EN9HARF
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSDEQN5PEQNP4SPA5XJ4FSXV
+        timestamp: 2026-05-24T20:36:27.398Z
     examined_commit: 81cb3f62245f285760d9c25023bef1a1742ce396
     external_links: []
     lifecycle_state: closed
@@ -228352,6 +228358,20 @@ reviews:
               structured `partial_entity_storage_layout` guidance. The fix should wire this to the
               real `--force` option and add an upgrade-level partial review layout regression test.'
             created_at: 2026-05-24T16:58:39.729Z
+          - _ulid: 01KSDV826YW5J8RFEB8CF7QK5P
+            author: "@claude"
+            body: "Fixed in 0b0265444b alongside the plan-migration fix. Same shape:
+              `runReviewFolderMigrationStep` now accepts `force` and forwards it to
+              `applyReviewMigration` (src/cli/commands/upgrade.ts:836), and
+              `ReviewMigrationReport.preservedLeanEntries` captures existing folder-backed review
+              index entries so the union write keeps them discoverable. Normal `kspec upgrade`
+              against a partial review layout now fails the Review storage folder migration step and
+              leaves the manifest at 1.1. Regression tests: tests/upgrade-folder-storage.test.ts
+              ('upgrade without --force fails when review layout is partial', 'upgrade --force
+              migrates partial review layout while preserving existing folder reviews') and
+              tests/review-folder-migration.test.ts ('preserves pre-existing lean index entries when
+              force-migrating a partial layout')."
+            created_at: 2026-05-24T20:36:25.950Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -228362,7 +228382,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-24T17:06:12.275Z
     created_at: 2026-05-24T16:52:34.109Z
-    updated_at: 2026-05-24T20:36:12.566Z
+    updated_at: 2026-05-24T20:36:25.950Z
     notes: []
   - _ulid: 01KSDGK9C17EZJ7RJNF54XS399
     slugs: []
