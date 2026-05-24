@@ -52810,7 +52810,7 @@ runs:
     completed_at: 2026-05-24T17:09:15.856Z
   - _ulid: 01KSDHDN4WJF77ZHHY286FQSZ8
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -52826,7 +52826,22 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-24T17:44:59.569Z
-        completed_at: 2026-05-24T17:44:59.569Z
+        completed_at: 2026-05-24T17:45:15.562Z
+        notes: "Friction points: The detached reviewer merge helper initially failed because the integration
+          target branch was not checked out in any worktree, despite an existing detached
+          integration worktree at the exact target commit. Recovery required manual inspection with
+          git worktree list, verifying the detached integration worktree was clean and at the target
+          branch ref, switching that worktree onto the branch, then rerunning the helper. This is
+          likely repeatable dispatch friction because the bootstrap produced an integration worktree
+          in a shape the supported merge helper does not accept. Secondary note: the worker
+          identified that web UI files:updates invalidation still only recognizes monolithic
+          project.plans.yaml/project.reviews.yaml paths; domain_ready covers the daemon reload path,
+          so this was not a blocker for this task but may deserve separate tracking if not already
+          covered."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-24T17:45:15.562Z
+        completed_at: 2026-05-24T17:45:15.562Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-24T17:44:43.420Z
