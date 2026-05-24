@@ -52539,7 +52539,7 @@ runs:
     started_at: 2026-05-23T23:04:20.306Z
     completed_at: 2026-05-23T23:07:31.882Z
   - _ulid: 01KSBZHB6DYPQ4KFY87PP1SF40
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -52588,10 +52588,14 @@ runs:
         completed_at: 2026-05-24T03:15:25.506Z
         notes: "Skipped discussion: no untracked improvement remained after search; the only concrete
           friction is already covered by inbox @01KRYQJJ."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-24T03:15:25.506Z
-        completed_at: 2026-05-24T03:15:25.506Z
+        completed_at: 2026-05-24T03:15:38.203Z
+        notes: No new capture performed. Existing inbox @01KRYQJJ already tracks the reviewer helper needed
+          for Covers/AC verification; duplicating it would add noise. Session success/failure
+          evidence remains recorded in review @01KSBYJY.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-24T03:12:55.502Z
+    completed_at: 2026-05-24T03:15:38.203Z
