@@ -1,1 +1,15 @@
-notes: []
+notes:
+  - _ulid: 01KSDEKYR4H5KEPKAW7JBDJDDP
+    content: "Approach: extend fileToDomain() in src/daemon/entity-cache.ts to recognize
+      plans/<ULID>/... and reviews/<ULID>/... paths and push 'plans' / 'reviews' domains
+      accordingly. Match using existing Crockford-base32 ULID regex (26 chars) at the segment after
+      'plans/' or 'reviews/' so 'plans-archive/' and 'plansreport.yaml' don't collide. This fires
+      BEFORE the existing catch-all that maps stray .yaml to items+meta, so
+      resources.yaml/notes.yaml under a plan/review folder route correctly. Re-uses existing
+      per-domain debounce/reload path — no new watcher. Tests: add fileToDomain unit cases plus an
+      end-to-end handleFileChange test asserting only the targeted domain reloads, dedup across
+      multiple events still coalesces, and parent index files (project.plans.yaml /
+      project.reviews.yaml) keep working."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-24T16:55:44.133Z
