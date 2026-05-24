@@ -228778,6 +228778,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSDYPET3R9DZE2YXARDDGXJJ
         timestamp: 2026-05-24T21:36:45.558Z
+      - _ulid: 01KSDYPYYYAEXA8E53VHD4JJH8
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSDYPWV44SSP0GDPJD9BA6QH
+        timestamp: 2026-05-24T21:36:59.870Z
     examined_commit: 6cd0bb4dbb5898ea85b231905bb7380bf7d5480c
     external_links: []
     lifecycle_state: open
@@ -228826,7 +228833,27 @@ reviews:
               folder shape."
             created_at: 2026-05-24T21:36:43.331Z
         kind: blocker
+      - _ulid: 01KSDYPWV44SSP0GDPJD9BA6QH
+        anchor:
+          type: code
+          commit: 6cd0bb4dbb5898ea85b231905bb7380bf7d5480c
+          line_end: 717
+          line_start: 705
+          path: src/cli/commands/upgrade.ts
+          side: head
+        entries:
+          - _ulid: 01KSDYPWV4N418BVN2P6QEHYK0
+            author: Jacob Chapel
+            body: "MUST-FIX: an atomic abort can still return an earlier storage step as status=done even though
+              its buffered writes were discarded. In the reproduced shape from the prior review,
+              plan migration is collected as done, review migration fails, runWithBuffer rolls back
+              the plan files, then the caller still sees a done plan step and adds the 'Plan
+              storage: N plan(s) migrated' follow-up. That is incorrect reporting for a failed
+              migration and violates the clear partial-layout reporting/rollback guidance
+              requirement."
+            created_at: 2026-05-24T21:36:57.700Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-24T21:32:38.293Z
-    updated_at: 2026-05-24T21:36:43.331Z
+    updated_at: 2026-05-24T21:36:57.700Z
     notes: []
