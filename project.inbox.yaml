@@ -3694,3 +3694,16 @@ inbox:
       - atomicity
     added_by: "@claude"
     created_at: 2026-05-24T21:30:35.165Z
+  - _ulid: 01KSDZFNRGP6GWPTCYRESAQWDM
+    text: Reflection-loop baseline commands are too noisy for large projects. The session-reflect-loop
+      workflow currently requires unbounded 'kspec meta observations list', 'kspec inbox list', and
+      'kspec tasks list'; in a real review session these produced thousands of lines and truncated
+      output, making duplicate checking expensive. Improve the workflow or CLI with
+      concise/recent/scoped list modes for reflection baseline checks, or change the workflow to use
+      targeted kspec search plus bounded summaries.
+    tags:
+      - reflection
+      - workflow
+      - dx
+    added_by: Jacob Chapel
+    created_at: 2026-05-24T21:50:29.649Z
