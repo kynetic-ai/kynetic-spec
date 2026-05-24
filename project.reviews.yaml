@@ -228773,6 +228773,17 @@ reviews:
         runner: npm
         created_at: 2026-05-24T21:46:39.315Z
         completed_at: 2026-05-24T21:46:39.315Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate exited 6 with warnings only: schema OK, references OK, validation passed;
+          pre-existing reference/alignment/completeness warnings remain."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-05-24T21:46:51.207Z
+        completed_at: 2026-05-24T21:46:51.207Z
     events:
       - _ulid: 01KSDYEZGNV6DF2KGSQ5N1GSBE
         actor: Jacob Chapel
@@ -228836,6 +228847,13 @@ reviews:
           status: pass
           name: targeted migration tests
         timestamp: 2026-05-24T21:46:40.967Z
+      - _ulid: 01KSDZ926Y183K0WPSNX89C3B7
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-05-24T21:46:53.022Z
     examined_commit: 6cd0bb4dbb5898ea85b231905bb7380bf7d5480c
     external_links: []
     lifecycle_state: open
@@ -228941,5 +228959,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-24T21:32:38.293Z
-    updated_at: 2026-05-24T21:46:39.315Z
+    updated_at: 2026-05-24T21:46:51.207Z
     notes: []
