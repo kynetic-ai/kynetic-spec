@@ -11422,12 +11422,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-24T03:38:58.316Z
+      updated_at: 2026-05-24T03:39:11.188Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-24T03:38:58.316Z
+      updated_at: 2026-05-24T03:39:11.188Z
     integration:
       status: pending
       detail: null
@@ -11435,24 +11435,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
       target_commit: 44fa00bca19764eb8af3e57983f8a0d01f861e68
-      updated_at: 2026-05-24T03:38:58.316Z
-    lifecycle_state: ready
+      updated_at: 2026-05-24T03:39:11.188Z
+    lifecycle_state: integrating
     resolved_base_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
     task_ref: "@01KS8XAYMQSFXPMHEG9FZZ3C36"
     task_slug: task-folder-backed-review-storage-manager-1
     timestamps:
       closed_at: null
       last_active_at: 2026-05-24T03:16:40.007Z
-      last_reconciled_at: 2026-05-24T03:38:58.316Z
+      last_reconciled_at: 2026-05-24T03:39:11.188Z
       created_at: 2026-05-23T21:19:06.228Z
-      updated_at: 2026-05-24T03:38:58.316Z
+      updated_at: 2026-05-24T03:39:11.188Z
     workspace_id: dispatch-workspace-01KS8XAYMQSFXPMHEG9FZZ3C36
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 330df7431d9befcdc36277f1e975c61b7fab0c76
+        last_seen_at: 2026-05-24T03:39:11.188Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-folder-backed-review-storage-manager-1-01ks8xay-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-folder-backed-review-storage-manager-1/01ks8xay
-        head: 48a17f7b79eded7b9ac8beef5a3317030ec10ea0
-        last_seen_at: 2026-05-24T03:16:10.280Z
+        head: 330df7431d9befcdc36277f1e975c61b7fab0c76
+        last_seen_at: 2026-05-24T03:39:11.188Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-folder-backed-review-storage-manager-1-01ks8xay
