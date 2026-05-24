@@ -227496,7 +227496,52 @@ reviews:
     slugs: []
     title: Review folder-backed review storage fix cycle
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "2507 test suites passed; 9525 tests passed, 5 skipped. Full log:
+          /tmp/kspec-test-cache/01KSBYHRF7AGVKD7VXS49YQP54/d3f2b47b9bd52c59.log"
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-05-24T03:11:46.770Z
+        completed_at: 2026-05-24T03:11:46.770Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: tsc --noEmit completed successfully.
+        name: npm run typecheck
+        required: true
+        runner: tsc
+        created_at: 2026-05-24T03:11:51.360Z
+        completed_at: 2026-05-24T03:11:51.360Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Command exited 6 with repository warnings. Schema and references were OK; warnings were
+          broad existing validation/completeness/alignment warnings, not the task-specific blocker
+          recorded here.
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-05-24T03:11:55.586Z
+        completed_at: 2026-05-24T03:11:55.586Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "rg -n 'AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui'
+          tests packages src returned no matches. rg for the AC text only found the deferral comment
+          in tests/parser-reviews-folder.test.ts:10-15."
+        name: AC annotation scan
+        required: true
+        runner: rg
+        created_at: 2026-05-24T03:11:59.771Z
+        completed_at: 2026-05-24T03:11:59.771Z
     events:
       - _ulid: 01KSBYJYR7RCJCGNN6R8C57YV1
         actor: Jacob Chapel
@@ -227511,17 +227556,123 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-24T02:56:37.244Z
+      - _ulid: 01KSBZF16A5FANKBFGYDDWKKVQ
+        actor: codex
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSBZEZM095EBPSCW516WC6FH
+        timestamp: 2026-05-24T03:11:39.722Z
+      - _ulid: 01KSBZF5CMBCCA1CGQS36K159K
+        actor: codex
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KSBZF3PZCWAGSR6QPAGX6SAQ
+        timestamp: 2026-05-24T03:11:44.020Z
+      - _ulid: 01KSBZF9XCHSAHMJD1X7HAW5BP
+        actor: codex
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-05-24T03:11:48.653Z
+      - _ulid: 01KSBZFE4D6S3A8Y6VSGBC2EXC
+        actor: codex
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm run typecheck
+        timestamp: 2026-05-24T03:11:52.973Z
+      - _ulid: 01KSBZFJ8B9SYQ9E9XMBJ2QNQG
+        actor: codex
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-05-24T03:11:57.195Z
+      - _ulid: 01KSBZFPCKK9CGPT5REZBR1QF1
+        actor: codex
+        event_type: check_added
+        payload:
+          status: fail
+          name: AC annotation scan
+        timestamp: 2026-05-24T03:12:01.427Z
+      - _ulid: 01KSBZFTFQGKY4RKCJBF3RYPX3
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-24T03:12:05.623Z
+      - _ulid: 01KSBZFTFQSZ96HNPEBZ8NQWEW
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-24T03:12:05.623Z
     examined_commit: 48a17f7b79eded7b9ac8beef5a3317030ec10ea0
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
       content_hash: ""
       ref: "@01KS8XAYMQSFXPMHEG9FZZ3C36"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KSBZEZM095EBPSCW516WC6FH
+        anchor:
+          type: code
+          commit: 48a17f7b79eded7b9ac8beef5a3317030ec10ea0
+          line_end: 15
+          line_start: 10
+          path: tests/parser-reviews-folder.test.ts
+          side: head
+        entries:
+          - _ulid: 01KSBZEZM5P20YA47C505KZHF5
+            author: codex
+            body: "MUST-FIX: This task still covers @folder-backed-review-storage-1
+              ac-review-screenshot-resource-loads-in-ui, but this snapshot does not implement or
+              behaviorally test that AC. The AC says a declared screenshot must load when the review
+              is opened in the web UI or exported to the static UI snapshot. The only
+              screenshot-related test here is parser-layer resolveResourceReference coverage, and
+              this comment explicitly defers the required API/UI/static-export work to
+              @task-review-screenshot-resource-ui. That task is still pending, so this task cannot
+              be approved with one of its own covered ACs unimplemented and untested."
+            created_at: 2026-05-24T03:11:38.117Z
+        kind: blocker
+      - _ulid: 01KSBZF3PZCWAGSR6QPAGX6SAQ
+        entries:
+          - _ulid: 01KSBZF3PZXR8R8NMSC4QM7A17
+            author: codex
+            body: "Evidence log: Files read: kspec-agents.md, task/spec details, prior review
+              @01KSBEGR4KVK5M4YQ1WDC1JKAE, src/parser/review-storage-manager.ts,
+              src/parser/reviews.ts, src/cli/commands/review.ts,
+              tests/parser-reviews-folder.test.ts, tests/review-rebuild-index.test.ts,
+              tests/daemon-api/helpers.ts, tests/entity-storage-partial-layout-manager.test.ts,
+              src/parser/entity-local-resources.ts, src/parser/entity-storage-compatibility.ts,
+              src/parser/folder-backed-entity.ts. Commands run: kspec task get, kspec item get for
+              spec/traits, kspec review get/add/open, kspec validate, AC annotation rg scans, npm
+              test, npm run typecheck, git diff/status/diff --check. Claims verified: fix-cycle
+              removed the false UI AC annotation; @task-review-screenshot-resource-ui is pending; no
+              AC annotation exists for ac-review-screenshot-resource-loads-in-ui in
+              src/packages/tests. Categories searched: correctness, AC/spec alignment, test quality,
+              resource edge cases, rebuild-index behavior, storage compatibility, source-scanning
+              tests, formatting."
+            created_at: 2026-05-24T03:11:42.303Z
+        kind: nit
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-24T03:12:05.623Z
     created_at: 2026-05-24T02:56:19.721Z
-    updated_at: 2026-05-24T02:56:35.577Z
+    updated_at: 2026-05-24T03:12:05.623Z
     notes: []

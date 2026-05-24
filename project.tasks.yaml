@@ -29686,7 +29686,7 @@
   type: task
   spec_ref: "@folder-backed-review-storage-1"
   plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-entity-storage-version-compatibility-gates-1"
@@ -29696,7 +29696,7 @@
     - parser
     - migration
   review_ref: "@01KSBYJYR9ST596G2GYA3J1K30"
-  notes_count: 4
+  notes_count: 5
   todos_count: 0
   created_at: 2026-05-22T22:36:45.591Z
   started_at: 2026-05-23T23:02:07.728Z
