@@ -228342,3 +228342,29 @@ reviews:
     created_at: 2026-05-24T16:52:34.109Z
     updated_at: 2026-05-24T17:06:12.275Z
     notes: []
+  - _ulid: 01KSDGK9C17EZJ7RJNF54XS399
+    slugs: []
+    title: Review folder-backed plan/review cache invalidation
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KSDGK9C18DDCGRNYPND4EV34
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-24T17:30:19.393Z
+    examined_commit: e681162bbb00c3663c1235414a9c8b2c1001c476
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KS8XAZBR1ZS1KKEHZ2PSZ4S5"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-24T17:30:19.393Z
+    updated_at: null
+    notes: []

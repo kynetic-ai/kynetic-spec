@@ -87,6 +87,7 @@ tags:
   - plans
   - reviews
 vcs_refs: []
+review_ref: "@01KSDGK9C17EZJ7RJNF54XS399"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-folder-backed-plan-review-cache-invalidation-1/01ks8xaz
@@ -290,6 +291,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-05-24T17:22:12.909Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KSDGK9C17EZJ7RJNF54XS399"
+        previous: null
+    command: review-link
+    timestamp: 2026-05-24T17:30:23.401Z
 created_at: 2026-05-22T22:36:46.328Z
 started_at: 2026-05-24T16:53:15.254Z
 submitted_at: 2026-05-24T17:22:12.908Z
