@@ -19410,6 +19410,19 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-05-24T23:09:03.723Z
+  - _ulid: 01KSE62MDWC1V6YCWQRGZNVAP9
+    type: friction
+    content: "kspec task note <ref> <message> only accepts the body as a positional argument. Fix-cycle
+      resubmission notes are routinely 30-80 lines (per project convention: 'Before resubmitting
+      after a fix cycle, add a note summarizing what changed and why'), so workers fall back to bash
+      heredocs or $(cat file) substitutions to inject multi-line bodies. That collides with
+      kspec-agents.md guidance to use file-based payloads or quoted heredocs when payloads include
+      $/</>/multi-line content — the safer 'pass a file' path does not exist for task note. A --file
+      <path> option (mirroring kspec batch --file) would close the gap."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-24T23:45:42.332Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
