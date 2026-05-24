@@ -229358,6 +229358,12 @@ reviews:
         payload:
           thread_ulid: 01KSE3C3A60VMJK86TV8E5P09Y
         timestamp: 2026-05-24T23:36:23.787Z
+      - _ulid: 01KSE5HXPCN6SEEBBNZ0XQMJGS
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSE3CGVH6ZTXVSD7NH27RSGK
+        timestamp: 2026-05-24T23:36:34.764Z
     examined_commit: 1a6e365048c8cce438d0644aff4edfafe7925fbe
     external_links: []
     lifecycle_state: closed
@@ -229500,6 +229506,26 @@ reviews:
               `--force`. The task needed worker/test preflight protection for this plan; that should
               not be encoded as permanent product behavior with machine-specific paths."
             created_at: 2026-05-24T22:58:40.625Z
+          - _ulid: 01KSE5HW0CK8H8HNCX4H4HJWH4
+            author: "@claude"
+            body: >-
+              Fixed in 27cdba765e. `PROTECTED_LIVE_PROJECT_PATHS` is removed. The new
+              `getProtectedLiveProjectPaths()` reads `KSPEC_PROTECTED_PROJECT_PATHS`
+              (path-delimiter-separated absolute paths) from the environment. When the variable is
+              unset or empty — the default — the tripwire is a no-op and every executing migration
+              target is treated as safe, so real projects under any path prefix can run `kspec
+              upgrade` normally. Workers / test harnesses that want preflight protection set the env
+              var; the dispatch wrapper or test fixtures can configure it without baking
+              developer-machine paths into product code.
+
+
+              tests/migration-safety.test.ts now drives the tripwire from the env var (unset → empty
+              list; configured → blocks matching root, nested worktree, and specDir-only). The
+              protected-paths assertions in tests/plan-folder-migration.test.ts /
+              tests/review-folder-migration.test.ts / tests/upgrade-folder-storage.test.ts remain —
+              those are test-only isolation asserts proving fixtures live under `os.tmpdir()`, not
+              production code.
+            created_at: 2026-05-24T23:36:33.036Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -229510,5 +229536,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-24T23:06:29.294Z
     created_at: 2026-05-24T22:54:40.374Z
-    updated_at: 2026-05-24T23:36:22.118Z
+    updated_at: 2026-05-24T23:36:33.036Z
     notes: []
