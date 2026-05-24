@@ -228020,6 +228020,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-24T17:06:12.275Z
+      - _ulid: 01KSDV7PJTNV4K9QE3EWFD8T6S
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSDEQFSVDJWD1D52ZGJA8V8X
+        timestamp: 2026-05-24T20:36:14.042Z
     examined_commit: 81cb3f62245f285760d9c25023bef1a1742ce396
     external_links: []
     lifecycle_state: closed
@@ -228181,6 +228187,22 @@ reviews:
               entry. The existing folder-backed plan remained on disk but was dropped from the
               index.'
             created_at: 2026-05-24T16:58:35.224Z
+          - _ulid: 01KSDV7N4PFWW47FEGK66W882T
+            author: "@claude"
+            body: "Fixed in 0b0265444b. The upgrade integration now forwards the real `--force` flag to
+              `applyPlanMigration` (src/cli/commands/upgrade.ts:740) instead of hardcoding `{ force:
+              true }`. A normal `kspec upgrade` against a partial plan layout now fails the Plan
+              storage folder migration step with `partial_entity_storage_layout`, manifest stays at
+              kynetic 1.1, and the index is not rewritten. When `--force` is intentionally used, the
+              migration now captures pre-existing lean index entries
+              (PlanMigrationReport.preservedLeanEntries) and rebuilds project.plans.yaml as the
+              union of migrated + preserved entries, so pre-existing folder-backed plans are no
+              longer dropped from discovery. Added regression tests at the upgrade CLI level
+              (tests/upgrade-folder-storage.test.ts: 'upgrade without --force fails when plan layout
+              is partial', 'upgrade --force migrates partial plan layout while preserving existing
+              folder plans') and at the migration module level (tests/plan-folder-migration.test.ts:
+              'preserves pre-existing lean index entries when force-migrating a partial layout')."
+            created_at: 2026-05-24T20:36:12.566Z
         kind: blocker
       - _ulid: 01KSDEQN5PEQNP4SPA5XJ4FSXV
         anchor:
@@ -228340,7 +228362,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-24T17:06:12.275Z
     created_at: 2026-05-24T16:52:34.109Z
-    updated_at: 2026-05-24T17:06:12.275Z
+    updated_at: 2026-05-24T20:36:12.566Z
     notes: []
   - _ulid: 01KSDGK9C17EZJ7RJNF54XS399
     slugs: []
