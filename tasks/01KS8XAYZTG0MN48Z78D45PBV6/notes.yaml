@@ -156,3 +156,73 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-24T21:47:46.920Z
+  - _ulid: 01KSE1J3AZ9J7BQ1QAFT13T1E8
+    content: >-
+      Fix cycle 3: addressed all 5 review blockers from @01KSDYEZGNB0GZB8Z5V1DG71JP in commit
+      1a6e365048.
+
+
+      Root causes:
+
+      1. & 2. Plan and review apply skipped the empty resources/ subdirectory because
+      mkdirBufferAware was a no-op under an active buffer (the buffer only tracked file writes, not
+      empty-directory creation). A successful migration therefore produced a folder shape missing
+      resources/, breaking the layout contract.
+
+      3. Orchestrator collected step status before knowing whether the surrounding buffer would
+      commit or discard. When a later step threw StorageMigrationAbort the writes from earlier
+      'done' steps were rolled back but their step result still read status=done, so JSON consumers
+      and the follow-up generator advertised discarded plan migrations as completed work.
+
+      4. & 5. Dry-run details only surfaced folder_root/index_path/monolithic_path. The AC requires
+      previewing every sidecar target (plan.md, plan.yaml, optional notes.yaml, resources.yaml,
+      resources/ for plans; review.yaml, resources.yaml, resources/ for reviews) plus the resource
+      manifest changes the executing run would make.
+
+
+      Fixes:
+
+      - WriteBuffer.pendingDirCreations: new symmetric mechanism to pendingDirRemovals.
+      mkdirBufferAware records the directory when a buffer is active; flush materialises it after
+      the rename phase, before removals; discard drops it; the overlay treats it as an inferred
+      directory. Paired create+remove resolves to 'removed' (matches existing delete-wins
+      precedence).
+
+      - Apply step mkdir(entry.resourcesDir) inside the buffered transaction for both plans and
+      reviews. The empty resources/ folder now ships with every migration and participates in the
+      buffer's atomicity contract.
+
+      - runAtomicStorageMigration walks the collected step list when StorageMigrationAbort fires and
+      relabels every previously-'done' step as status='rolled_back' with a clear message.
+      UpgradeStepResult.status gained a 'rolled_back' variant; console renderer prints 'rolled back'
+      with a chalk.yellow icon; allSuccess detection unchanged (still pivots on 'failed', which the
+      abort-triggering step always sets).
+
+      - Plan/review dry-run details now expose per-entry sidecar paths (plan_dir/review_dir +
+      sidecars sub-object naming every target file plus resources_dir) AND a
+      resource_manifest_changes aggregate (new_empty_manifests count, manifest_filename, paths[]).
+      The notesPath/notes_yaml field is computed at report time and is null for entries with empty
+      notes so the preview accurately signals which folders will skip the optional sidecar.
+
+
+      Tests added/updated:
+
+      - tests/batch-write-buffer.test.ts: three new unit tests for pendingDirCreations (flush
+      materialises, discard does not, paired create+remove resolves to removed).
+
+      - tests/plan-folder-migration.test.ts and tests/review-folder-migration.test.ts:
+      executing-migration tests now assert the resources/ directory exists and is empty.
+
+      - tests/upgrade-folder-storage.test.ts: end-to-end migration test asserts both resources/ dirs
+      exist; atomic rollback test asserts planStep.status === 'rolled_back' and no plan follow-up;
+      two new dry-run tests cover plan sidecar disclosure (with/without notes) and review sidecar
+      disclosure.
+
+
+      Re-verified every AC on @entity-folder-migration-and-compatibility-1.
+
+
+      Verification: full test suite 9590 passed, 5 pre-existing skipped of 9595 (2519 suites).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-24T22:26:46.239Z
