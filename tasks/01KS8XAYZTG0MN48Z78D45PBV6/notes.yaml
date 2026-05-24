@@ -59,3 +59,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-24T19:15:02.612Z
+  - _ulid: 01KSDTG069HJEKWKWSBSNQVH4R
+    content: "Unblocking per Jacob after dispatch/worker credential recovery: the current block is
+      operational authentication failure (three 401 invalid-credentials worker starts), not a
+      task-scope or review blocker. Resume the existing fix cycle for review
+      @01KSDEE55XXE1V8SHCXBG6310Y. The task worktree already contains uncommitted fix-cycle edits
+      from the prior worker attempt; inspect and preserve that work, verify the reviewer blockers
+      are addressed, then commit/resubmit normally."
+    supersedes: null
+    author: Hermes
+    created_at: 2026-05-24T20:23:17.450Z

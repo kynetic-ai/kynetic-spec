@@ -98,11 +98,8 @@ description: >
 spec_ref: "@entity-folder-migration-and-compatibility-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: blocked
-blocked_by:
-  - 'Agent task-worker failed 3 consecutive times: Internal error: Failed to authenticate. API
-    Error: 401 {"type":"error","error":{"type":"authentication_error","message":"Invalid
-    authentication credentials"},"request_id":"req_011CbMvoWbW4K2J4WPtQAJBs"}'
+status: needs_work
+blocked_by: []
 depends_on:
   - "@task-folder-backed-plan-storage-manager-1"
   - "@task-folder-backed-review-storage-manager-1"
@@ -404,7 +401,23 @@ history:
         previous: null
     command: task-block
     timestamp: 2026-05-24T19:15:06.100Z
-prior_status: needs_work
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: blocked
+      blocked_by:
+        new: []
+        previous:
+          - 'Agent task-worker failed 3 consecutive times: Internal error: Failed to authenticate.
+            API Error: 401 {"type":"error","error":{"type":"authentication_error","message":"Invalid
+            authentication credentials"},"request_id":"req_011CbMvoWbW4K2J4WPtQAJBs"}'
+      prior_status:
+        new: null
+        previous: needs_work
+    command: task-unblock
+    timestamp: 2026-05-24T20:23:18.245Z
+prior_status: null
 created_at: 2026-05-22T22:36:45.946Z
 started_at: 2026-05-24T16:11:23.228Z
 submitted_at: 2026-05-24T16:49:45.693Z
