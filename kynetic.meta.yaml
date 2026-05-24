@@ -19337,6 +19337,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-24T17:08:55.683Z
+  - _ulid: 01KSDFCC4BNVRYXE2TYDAASBBH
+    type: success
+    content: During review, an isolated /tmp project plus the local TypeScript CLI entrypoint reproduced
+      an upgrade integration bug that lower-level migration tests missed. Keep using end-to-end
+      temp-project repros for upgrade/storage migrations, especially when unit tests cover helpers
+      but not the CLI wiring.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-05-24T17:09:04.267Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
