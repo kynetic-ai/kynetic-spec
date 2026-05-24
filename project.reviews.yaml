@@ -228960,6 +228960,36 @@ reviews:
         payload:
           thread_ulid: 01KSDYQV55MGB0NGQTGKS8FKEF
         timestamp: 2026-05-24T22:25:22.415Z
+      - _ulid: 01KSE1FXYQF0QKJ7Y5NDYCYQJN
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSDYP1Z4T6XYA65SF1V8CJQK
+        timestamp: 2026-05-24T22:25:35.191Z
+      - _ulid: 01KSE1G296K1QM9N6V6MDKT5D7
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSDYPET3R9DZE2YXARDDGXJJ
+        timestamp: 2026-05-24T22:25:39.623Z
+      - _ulid: 01KSE1G6G75BG799ADYQTPPEAH
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSDYPWV44SSP0GDPJD9BA6QH
+        timestamp: 2026-05-24T22:25:43.943Z
+      - _ulid: 01KSE1GANRADY1PNYT2648CAZ3
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSDYQ9X3EK8XRZGPVKNBANWV
+        timestamp: 2026-05-24T22:25:48.216Z
+      - _ulid: 01KSE1GF4XZA1TKWA6821XTC54
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSDYQV55MGB0NGQTGKS8FKEF
+        timestamp: 2026-05-24T22:25:52.797Z
     examined_commit: 6cd0bb4dbb5898ea85b231905bb7380bf7d5480c
     external_links: []
     lifecycle_state: closed
@@ -229000,6 +229030,8 @@ reviews:
               the CLI."
             created_at: 2026-05-24T22:24:44.242Z
         kind: blocker
+        resolved_at: 2026-05-24T22:25:33.425Z
+        resolved_by: "@claude"
       - _ulid: 01KSDYPET3R9DZE2YXARDDGXJJ
         anchor:
           type: code
@@ -229026,6 +229058,8 @@ reviews:
               assert the resources/ dir exists and is empty after migration."
             created_at: 2026-05-24T22:24:51.748Z
         kind: blocker
+        resolved_at: 2026-05-24T22:25:37.875Z
+        resolved_by: "@claude"
       - _ulid: 01KSDYPWV44SSP0GDPJD9BA6QH
         anchor:
           type: code
@@ -229057,6 +229091,8 @@ reviews:
               and that no 'Plan storage: N plan(s) migrated' follow-up is emitted."
             created_at: 2026-05-24T22:25:06.012Z
         kind: blocker
+        resolved_at: 2026-05-24T22:25:42.213Z
+        resolved_by: "@claude"
       - _ulid: 01KSDYQ9X3EK8XRZGPVKNBANWV
         anchor:
           type: code
@@ -229085,6 +229121,8 @@ reviews:
               record with notes AND one without to verify both branches."
             created_at: 2026-05-24T22:25:13.241Z
         kind: blocker
+        resolved_at: 2026-05-24T22:25:46.587Z
+        resolved_by: "@claude"
       - _ulid: 01KSDYQV55MGB0NGQTGKS8FKEF
         anchor:
           type: code
@@ -229110,6 +229148,8 @@ reviews:
               per-entry sidecar paths and the resource_manifest_changes aggregate."
             created_at: 2026-05-24T22:25:20.647Z
         kind: blocker
+        resolved_at: 2026-05-24T22:25:50.999Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -229119,5 +229159,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-24T21:47:44.304Z
     created_at: 2026-05-24T21:32:38.293Z
-    updated_at: 2026-05-24T22:25:20.647Z
+    updated_at: 2026-05-24T22:25:50.999Z
     notes: []
