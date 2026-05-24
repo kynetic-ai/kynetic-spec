@@ -228552,6 +228552,19 @@ reviews:
         runner: kspec
         created_at: 2026-05-24T20:53:47.350Z
         completed_at: 2026-05-24T20:53:47.350Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Searched AC annotations for @entity-folder-migration-and-compatibility-1 and trait
+          annotations in tests/src; changed tests include behavioral upgrade and migration coverage.
+          Reviewed new test files for source-scanning patterns; reads are fixture/output reads via
+          fs/readTestOutput, not source assertions.
+        name: AC annotation scan
+        required: false
+        runner: rg
+        created_at: 2026-05-24T20:53:58.660Z
+        completed_at: 2026-05-24T20:53:58.660Z
     events:
       - _ulid: 01KSDVHYYV4ZVCJYVM87VPVTZ1
         actor: Jacob Chapel
@@ -228580,6 +228593,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-05-24T20:53:48.930Z
+      - _ulid: 01KSDW87MJVDHDYT2X3VQQ9WTJ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC annotation scan
+        timestamp: 2026-05-24T20:54:00.082Z
     examined_commit: 0b0265444b277ffe4a70afc4b37887095e29fefa
     external_links: []
     lifecycle_state: open
@@ -228617,5 +228637,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-24T20:41:50.299Z
-    updated_at: 2026-05-24T20:53:47.350Z
+    updated_at: 2026-05-24T20:53:58.660Z
     notes: []
