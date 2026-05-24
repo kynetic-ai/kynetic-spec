@@ -10951,7 +10951,7 @@ workspaces:
         head: 984af0c7589a8044eedb252a02bd2cde4992f69d
         last_seen_at: 2026-05-23T22:46:01.043Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-folder-backed-plan-storage-manager-1-01ks8xay
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 44fa00bca19764eb8af3e57983f8a0d01f861e68
     bootstrap:
       status: succeeded
@@ -11443,9 +11443,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-24T03:39:56.300Z
-      last_reconciled_at: 2026-05-24T03:55:52.165Z
+      last_reconciled_at: 2026-05-24T03:59:19.741Z
       created_at: 2026-05-23T21:19:06.228Z
-      updated_at: 2026-05-24T03:55:52.165Z
+      updated_at: 2026-05-24T03:59:19.741Z
     workspace_id: dispatch-workspace-01KS8XAYMQSFXPMHEG9FZZ3C36
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
