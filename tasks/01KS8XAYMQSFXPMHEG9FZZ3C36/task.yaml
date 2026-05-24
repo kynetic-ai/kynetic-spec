@@ -80,8 +80,12 @@ description: >-
 spec_ref: "@folder-backed-review-storage-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw at
+  b588e89919cb699a8e1134993f5061c00f1f4f5a after approved review @01KSC14C40TQR37JBT3RD7DTM7.
+  Implemented folder-backed review storage with cohesive review.yaml detail files, lean review index
+  projection, resource metadata support, delete cleanup, and review rebuild-index coverage.
 depends_on:
   - "@task-entity-storage-version-compatibility-gates-1"
 context: []
@@ -570,8 +574,26 @@ history:
         previous: "@01KSBYJYR9ST596G2GYA3J1K30"
     command: review-link
     timestamp: 2026-05-24T03:40:51.993Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw at
+          b588e89919cb699a8e1134993f5061c00f1f4f5a after approved review
+          @01KSC14C40TQR37JBT3RD7DTM7. Implemented folder-backed review storage with cohesive
+          review.yaml detail files, lean review index projection, resource metadata support, delete
+          cleanup, and review rebuild-index coverage.
+        previous: null
+      completed_at:
+        new: 2026-05-24T03:55:41.346Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-24T03:55:41.356Z
 created_at: 2026-05-22T22:36:45.591Z
 started_at: 2026-05-24T03:34:19.795Z
 submitted_at: 2026-05-24T03:34:26.288Z
+completed_at: 2026-05-24T03:55:41.346Z
 todos: []
 automation: eligible
