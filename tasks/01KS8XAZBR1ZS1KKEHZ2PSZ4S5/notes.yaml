@@ -13,3 +13,60 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-24T16:55:44.133Z
+  - _ulid: 01KSDG3GR5Y15E3HPJPSQJ30CH
+    content: >-
+      Implementation complete.
+
+
+      Changes:
+
+      - src/daemon/entity-cache.ts: fileToDomain() now routes paths under plans/<ulid>/... to the
+      plans domain and reviews/<ulid>/... to the reviews domain, using a Crockford-base32 ULID-shape
+      segment guard so look-alike paths (plans-archive/foo.yaml, plansreport.yaml,
+      plans/not-a-ulid/...) do not collide. Existing project.plans.yaml / project.reviews.yaml
+      routing is preserved.
+
+      - packages/daemon/src/watcher.ts: KspecWatcher now delivers non-YAML files inside
+      folder-backed entity directories (plan.md, resources/<file>) in addition to *.yaml files. The
+      new isWatchedPath() / isFolderBackedEntityChildPath() helpers apply the same ULID-shape guard
+      as the cache classifier. Non-YAML files skip readFile/parseYaml — the cache receives an empty
+      content payload and reloads the affected domain from disk.
+
+
+      Tests added:
+
+      - tests/daemon-entity-cache.test.ts: fileToDomain unit tests for plans/<ulid>/{plan.md,
+      plan.yaml, notes.yaml, resources.yaml, resources/<file>} and reviews/<ulid>/{review.yaml,
+      resources.yaml, resources/<file>}, including negative cases (plans-archive/foo.yaml,
+      plansreport.yaml, plans/notes.yaml, etc.). Adds a new
+      ac-folder-backed-entity-directory-invalidation describe block exercising handleFileChange()
+      end-to-end: per-path domain routing, multi-file coalescing into a single per-domain reload,
+      and a regression test for the legacy parent-index paths.
+
+      - tests/daemon-watcher-chokidar.test.ts: asserts the watcher forwards plan.md and
+      resources/<binary> paths under valid folder-backed roots with empty content, and ignores stray
+      .md/.png paths outside folder-backed entity roots and non-ULID look-alikes.
+
+
+      Verification:
+
+      - Targeted: npm test -- --run tests/daemon-entity-cache.test.ts
+      tests/daemon-watcher-chokidar.test.ts → 165 passed.
+
+      - All daemon-watcher: 23 passed across 3 suites.
+
+      - Full suite: 9563 passed, 5 skipped, 0 failed.
+
+      - kspec validate --warnings-ok: pre-existing warnings only; no new ones introduced.
+
+
+      Scope note for reviewer (not in this task): packages/web-ui/src/lib/query/ws-invalidation.ts's
+      files:updates handler still only recognizes monolithic paths (project.plans.yaml /
+      project.reviews.yaml), so the UI's TanStack cache will not invalidate on a folder-backed
+      sidecar change through the files:updates path. The cache:status / domain_ready broadcast still
+      triggers UI invalidation after the daemon reload (which now fires correctly), so the
+      user-visible failure mode is limited to a small reload lag rather than stale data. Worth a
+      follow-up task to tighten the UI side.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-24T17:21:42.661Z
