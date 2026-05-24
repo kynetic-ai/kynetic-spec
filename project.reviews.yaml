@@ -229324,9 +229324,25 @@ reviews:
           status: pass
           name: review evidence log
         timestamp: 2026-05-24T23:06:17.951Z
+      - _ulid: 01KSE3TTHE14XJZBAVH4P7FRWM
+        actor: codex-reviewer
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-24T23:06:29.294Z
+      - _ulid: 01KSE3TTHE379KD2Q645E2DKJC
+        actor: codex-reviewer
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-24T23:06:29.295Z
     examined_commit: 1a6e365048c8cce438d0644aff4edfafe7925fbe
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -229418,7 +229434,14 @@ reviews:
               not be encoded as permanent product behavior with machine-specific paths."
             created_at: 2026-05-24T22:58:40.625Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex-reviewer
+        role: reviewer
+        created_at: 2026-05-24T23:06:29.294Z
     created_at: 2026-05-24T22:54:40.374Z
-    updated_at: 2026-05-24T23:06:16.466Z
+    updated_at: 2026-05-24T23:06:29.294Z
     notes: []
