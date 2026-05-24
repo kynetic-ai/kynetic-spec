@@ -52810,7 +52810,7 @@ runs:
     completed_at: 2026-05-24T17:09:15.856Z
   - _ulid: 01KSDHDN4WJF77ZHHY286FQSZ8
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -52841,7 +52841,21 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-24T17:45:15.562Z
-        completed_at: 2026-05-24T17:45:15.562Z
+        completed_at: 2026-05-24T17:46:21.831Z
+        notes: "Coverage check: Merge-helper missing/incorrect integration-target worktree setup is already
+          tracked by inbox @01KS9J09, which covers teaching the helper to create/reuse a
+          deterministic target worktree or having dispatch/bootstrap prepare it. Related but
+          different conflict-output improvement is @01KRD2RV. Searches used: detached reviewer merge
+          integration target worktree; merge helper target branch checked out worktree; detached
+          reviewer merge. UI folder-backed files:updates invalidation appears untracked. Searches
+          used: files updates folder backed plans reviews invalidation; web ui folder backed plan
+          review invalidation; folder-backed files updates; plan review sidecar UI invalidation;
+          files:updates; domain_ready. domain_ready work is tracked/completed, but direct
+          files:updates mapping for folder-backed plan/review sidecar paths was not found."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-24T17:46:21.831Z
+        completed_at: 2026-05-24T17:46:21.831Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-24T17:44:43.420Z
