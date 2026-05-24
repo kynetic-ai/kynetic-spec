@@ -228761,6 +228761,18 @@ reviews:
         runner: npm
         created_at: 2026-05-24T21:46:27.342Z
         completed_at: 2026-05-24T21:46:27.342Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --run tests/plan-folder-migration.test.ts
+          tests/review-folder-migration.test.ts tests/upgrade-folder-storage.test.ts
+          tests/migration-safety.test.ts passed: 8 suites, 32 tests."
+        name: targeted migration tests
+        required: false
+        runner: npm
+        created_at: 2026-05-24T21:46:39.315Z
+        completed_at: 2026-05-24T21:46:39.315Z
     events:
       - _ulid: 01KSDYEZGNV6DF2KGSQ5N1GSBE
         actor: Jacob Chapel
@@ -228817,6 +228829,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-05-24T21:46:29.156Z
+      - _ulid: 01KSDZ8PE7X6FQH7VNM79JK4CB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted migration tests
+        timestamp: 2026-05-24T21:46:40.967Z
     examined_commit: 6cd0bb4dbb5898ea85b231905bb7380bf7d5480c
     external_links: []
     lifecycle_state: open
@@ -228922,5 +228941,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-24T21:32:38.293Z
-    updated_at: 2026-05-24T21:46:27.342Z
+    updated_at: 2026-05-24T21:46:39.315Z
     notes: []
