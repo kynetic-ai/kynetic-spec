@@ -227932,6 +227932,17 @@ reviews:
         runner: rg
         created_at: 2026-05-24T17:05:50.696Z
         completed_at: 2026-05-24T17:05:50.696Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 2519 suites passed; 9578 passed, 5 skipped of 9583; full log
+          /tmp/kspec-test-cache/01KSDED70JTZ0Z8WJ6K0HE801H/e5b5f00fa41b09bb.log
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-05-24T17:05:55.663Z
+        completed_at: 2026-05-24T17:05:55.663Z
     events:
       - _ulid: 01KSDEE55XAZQ8SN49Z6SSE61P
         actor: Jacob Chapel
@@ -227986,6 +227997,13 @@ reviews:
           status: pass
           name: AC annotation scan
         timestamp: 2026-05-24T17:05:52.495Z
+      - _ulid: 01KSDF6NNJFB4S855NEAAKT4HS
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-05-24T17:05:57.426Z
     examined_commit: 81cb3f62245f285760d9c25023bef1a1742ce396
     external_links: []
     lifecycle_state: open
@@ -228299,5 +228317,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-24T16:52:34.109Z
-    updated_at: 2026-05-24T17:05:50.696Z
+    updated_at: 2026-05-24T17:05:55.663Z
     notes: []
