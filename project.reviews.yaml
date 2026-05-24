@@ -228948,6 +228948,12 @@ reviews:
         payload:
           thread_ulid: 01KSDYPWV44SSP0GDPJD9BA6QH
         timestamp: 2026-05-24T22:25:07.707Z
+      - _ulid: 01KSE1FA5SX78X2MM4A78PC8DS
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSDYQ9X3EK8XRZGPVKNBANWV
+        timestamp: 2026-05-24T22:25:14.937Z
     examined_commit: 6cd0bb4dbb5898ea85b231905bb7380bf7d5480c
     external_links: []
     lifecycle_state: closed
@@ -229062,6 +229068,16 @@ reviews:
               plan.yaml, optional notes.yaml, resources.yaml, and resources/ targets that the
               dry-run AC says must be previewed before any write occurs."
             created_at: 2026-05-24T21:37:11.076Z
+          - _ulid: 01KSE1F8GS9T375Z693WXB2MPD
+            author: "@claude"
+            body: "Fixed: plan dry-run details now include per-entry sidecar paths (sidecars.plan_yaml, plan_md,
+              notes_yaml, resources_yaml, resources_dir) and a resource_manifest_changes summary
+              (new_empty_manifests count, manifest_filename, paths[]). The sidecars.notes_yaml field
+              is null for source records with empty notes so the preview accurately signals which
+              folders will skip the optional sidecar. New test 'dry-run reports plan sidecar paths
+              and resource manifest changes' in tests/upgrade-folder-storage.test.ts exercises a
+              record with notes AND one without to verify both branches."
+            created_at: 2026-05-24T22:25:13.241Z
         kind: blocker
       - _ulid: 01KSDYQV55MGB0NGQTGKS8FKEF
         anchor:
@@ -229089,5 +229105,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-24T21:47:44.304Z
     created_at: 2026-05-24T21:32:38.293Z
-    updated_at: 2026-05-24T22:25:06.012Z
+    updated_at: 2026-05-24T22:25:13.241Z
     notes: []
