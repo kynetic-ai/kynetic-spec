@@ -229180,6 +229180,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-24T22:54:55.937Z
+      - _ulid: 01KSE3B8SEAFYCM7WC8GSNC8AS
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSE3B6RWSSPW4344DF3BNZQ5
+        timestamp: 2026-05-24T22:57:59.598Z
     examined_commit: 1a6e365048c8cce438d0644aff4edfafe7925fbe
     external_links: []
     lifecycle_state: open
@@ -229189,8 +229196,31 @@ reviews:
       content_hash: ""
       ref: "@01KS8XAYZTG0MN48Z78D45PBV6"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KSE3B6RWSSPW4344DF3BNZQ5
+        anchor:
+          type: code
+          commit: 1a6e365048c8cce438d0644aff4edfafe7925fbe
+          line_end: 419
+          line_start: 419
+          path: src/cli/commands/upgrade.ts
+          side: head
+        entries:
+          - _ulid: 01KSE3B6RW3DGCJK6RWJSKATWC
+            author: Jacob Chapel
+            body: 'MUST-FIX: `runUpgradePipeline` runs the plan/review/manifest storage migration block even
+              after `runTaskStorageMigrationStep` has recorded a failed task migration. Because
+              `runStorageManifestPromotionStep` only gates on the plan/review results, a failed task
+              migration can still write `kynetic: "1.2"` and `task_storage.format: split` to the
+              manifest. I reproduced this in a temp project by making `.kspec/tasks` a regular file
+              so `task migrate --force` fails with ENOTDIR; `kspec upgrade --json` exited 3 but
+              still returned `Storage manifest (kynetic 1.2)` as `done`, and the manifest on disk
+              was promoted to 1.2. That violates the task requirement to update the 1.2 manifest
+              only after successful migration and leaves a rerun in a misleading
+              split/folder-declared state.'
+            created_at: 2026-05-24T22:57:57.532Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-24T22:54:40.374Z
-    updated_at: 2026-05-24T22:54:54.179Z
+    updated_at: 2026-05-24T22:57:57.532Z
     notes: []
