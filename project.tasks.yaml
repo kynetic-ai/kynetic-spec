@@ -29736,7 +29736,7 @@
   type: task
   spec_ref: "@daemon-entity-cache"
   plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-folder-backed-plan-storage-manager-1"
@@ -29751,6 +29751,7 @@
   todos_count: 0
   created_at: 2026-05-22T22:36:46.328Z
   started_at: 2026-05-24T16:53:15.254Z
+  submitted_at: 2026-05-24T17:22:12.908Z
   automation: eligible
 - _ulid: 01KS8XAZQ5478RV2AVKG8MNB0S
   slugs:

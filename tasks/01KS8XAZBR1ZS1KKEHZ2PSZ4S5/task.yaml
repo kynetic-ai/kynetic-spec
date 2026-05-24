@@ -74,7 +74,7 @@ description: >
 spec_ref: "@daemon-entity-cache"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-folder-backed-plan-storage-manager-1"
@@ -87,6 +87,14 @@ tags:
   - plans
   - reviews
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-folder-backed-plan-review-cache-invalidation-1/01ks8xaz
+  captured_at: 2026-05-24T17:22:12.902Z
+  commit: e681162bbb00c3663c1235414a9c8b2c1001c476
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KSDEE354D2HWDBBK7D8BYYGB
 history:
   - author: Jacob Chapel
@@ -262,7 +270,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-24T16:53:15.255Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-folder-backed-plan-review-cache-invalidation-1/01ks8xaz
+          captured_at: 2026-05-24T17:22:12.902Z
+          commit: e681162bbb00c3663c1235414a9c8b2c1001c476
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-24T17:22:12.908Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-24T17:22:12.909Z
 created_at: 2026-05-22T22:36:46.328Z
 started_at: 2026-05-24T16:53:15.254Z
+submitted_at: 2026-05-24T17:22:12.908Z
 todos: []
 automation: eligible
