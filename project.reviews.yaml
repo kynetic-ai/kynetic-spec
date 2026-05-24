@@ -229340,6 +229340,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-24T23:06:29.295Z
+      - _ulid: 01KSE5GY8ZTSB5TPZAH9A05DTR
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSE3B6RWSSPW4344DF3BNZQ5
+        timestamp: 2026-05-24T23:36:02.591Z
     examined_commit: 1a6e365048c8cce438d0644aff4edfafe7925fbe
     external_links: []
     lifecycle_state: closed
@@ -229372,6 +229378,23 @@ reviews:
               only after successful migration and leaves a rerun in a misleading
               split/folder-declared state.'
             created_at: 2026-05-24T22:57:57.532Z
+          - _ulid: 01KSE5GWK71YFWR1CENA4XZMCV
+            author: "@claude"
+            body: >-
+              Fixed in 27cdba765e. `runUpgradePipeline` now captures the task migration step's
+              status as `taskMigrationOk` and forwards it to `runAtomicStorageMigration`. When the
+              task step fails, the orchestrator returns synthetic `skipped` step records for Plan
+              storage folder migration, Review storage folder migration, and Storage manifest
+              (kynetic 1.2) — the manifest writer is never called, so kynetic stays at 1.1 /
+              task_storage.format unchanged. The dry-run path applies the same gate to `priorOk` so
+              previews do not advertise a 1.2 promotion the executing run would refuse.
+
+
+              Regression: tests/upgrade-folder-storage.test.ts "upgrade leaves manifest at 1.1 when
+              task storage migration fails" reproduces the reviewer's scenario (seeded monolithic
+              task + `.kspec/tasks` replaced with a regular file → `task migrate --force` ENOTDIR)
+              and asserts the manifest stays at 1.1 with no plan/review/resource declarations.
+            created_at: 2026-05-24T23:36:00.871Z
         kind: blocker
       - _ulid: 01KSE3BNKXNN4MAP808D0KGTTT
         anchor:
@@ -229443,5 +229466,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-24T23:06:29.294Z
     created_at: 2026-05-24T22:54:40.374Z
-    updated_at: 2026-05-24T23:06:29.294Z
+    updated_at: 2026-05-24T23:36:00.871Z
     notes: []
