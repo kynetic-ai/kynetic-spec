@@ -382,9 +382,13 @@ export async function runUpgradePipeline(
 
   // ─── Step 1: Task storage migration ─────────────────────────────────
   // AC: @single-command-version-upgrade ac-runs-task-storage-migration
+  let taskMigrationOk = true;
   try {
     const migrationResult = await runTaskStorageMigrationStep(ctx, dryRun);
     steps.push(migrationResult);
+    if (migrationResult.status === "failed") {
+      taskMigrationOk = false;
+    }
     if (migrationResult.status === "done") {
       const count = (migrationResult.details?.migrated as number) || 0;
       if (count > 0) {
@@ -392,6 +396,7 @@ export async function runUpgradePipeline(
       }
     }
   } catch (err) {
+    taskMigrationOk = false;
     steps.push({
       name: "Task storage migration",
       status: "failed",
@@ -411,12 +416,24 @@ export async function runUpgradePipeline(
   // failed upgrade cannot leave behind a half-migrated project where the
   // plan folders exist but the manifest still says kynetic 1.1.
   //
+  // `taskMigrationOk` gates the manifest promotion: a failed task
+  // migration step must NOT allow `kynetic: "1.2"` /
+  // `task_storage.format: split` to land on disk. The atomic block runs
+  // the plan/review steps for diagnostic output, but the manifest step
+  // skips with a clear message when the task migration above failed.
+  //
   // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-dry-run-previews-layout
   // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-executes-folder-migration
   // AC: @entity-folder-migration-and-compatibility-1 ac-migration-preserves-record-identity-and-unknown-fields
   // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
   // AC: @entity-folder-migration-and-compatibility-1 ac-new-projects-declare-folder-storage
-  const storageSteps = await runAtomicStorageMigration(ctx, projectDir, dryRun, force);
+  const storageSteps = await runAtomicStorageMigration(
+    ctx,
+    projectDir,
+    dryRun,
+    force,
+    taskMigrationOk,
+  );
   for (const storageStep of storageSteps) {
     steps.push(storageStep);
     if (storageStep.status === "done") {
@@ -669,6 +686,7 @@ async function runAtomicStorageMigration(
   projectDir: string,
   dryRun: boolean,
   force: boolean,
+  taskMigrationOk: boolean,
 ): Promise<UpgradeStepResult[]> {
   const planStepName = "Plan storage folder migration";
   const reviewStepName = "Review storage folder migration";
@@ -696,11 +714,34 @@ async function runAtomicStorageMigration(
     const reviewResult = await tryRun(reviewStepName, () =>
       runReviewFolderMigrationStep(ctx, projectDir, true, force),
     );
-    const priorOk = planResult.status !== "failed" && reviewResult.status !== "failed";
+    // Manifest promotion previews 1.2 only when every storage migration —
+    // tasks included — succeeded. A failed task migration must not
+    // advertise that the manifest will move to kynetic 1.2, otherwise the
+    // dry-run misleads an operator into believing a rerun is safe.
+    const priorOk =
+      taskMigrationOk &&
+      planResult.status !== "failed" &&
+      reviewResult.status !== "failed";
     const manifestResult = await tryRun(manifestStepName, () =>
       runStorageManifestPromotionStep(ctx, true, priorOk),
     );
     return [planResult, reviewResult, manifestResult];
+  }
+
+  // Executing run: if the task storage migration failed above, the atomic
+  // block must skip every dependent step. Running plan/review migrations
+  // and promoting the manifest while task storage is still broken would
+  // promote `kynetic: "1.2"` / `task_storage.format: split` on top of a
+  // failed task layout — the same misleading state the reviewer reproduced.
+  if (!taskMigrationOk) {
+    const message =
+      "skipped — task storage migration failed; folder-storage migration and " +
+      "manifest promotion left at current version";
+    return [
+      { name: planStepName, status: "skipped", message },
+      { name: reviewStepName, status: "skipped", message },
+      { name: manifestStepName, status: "skipped", message },
+    ];
   }
 
   const { runWithBuffer } = await import("../batch-write-buffer.js");
@@ -803,10 +844,10 @@ async function runAtomicStorageMigration(
  * surrounding `runAtomicStorageMigration` owns the shadow commit so the
  * plan / review / manifest steps land as one logical mutation.
  *
- * Live-path tripwire: the executing run refuses to mutate protected live
- * project paths (the kynetic-spec / kynetic-spec-dispatch repositories
- * that own this plan's implementation). Dry-runs continue to work against
- * any directory so operators can inspect what would change.
+ * Live-path tripwire: when an operator sets `KSPEC_PROTECTED_PROJECT_PATHS`
+ * the executing run refuses to mutate any project root listed there
+ * (worker/test preflight). Unset is the default and disables the tripwire
+ * entirely. Dry-runs always work against any directory.
  *
  * AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-dry-run-previews-layout
  * AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-executes-folder-migration
@@ -864,13 +905,22 @@ async function runPlanFolderMigrationStep(
       },
     }));
     const newResourceManifests = report.entries.filter((e) => !e.preexistingFolder).length;
+    const orphanCount = report.orphanedLeanEntries.length;
+    let message: string;
+    if (report.partialLayout && orphanCount > 0 && report.migrated === 0) {
+      message =
+        `partial layout: ${orphanCount} stale lean index entr` +
+        `${orphanCount === 1 ? "y" : "ies"} reference missing plan folder` +
+        `${orphanCount === 1 ? "" : "s"} — --force required for real run`;
+    } else if (report.partialLayout && report.migrated > 0) {
+      message = `would migrate ${report.migrated} plan(s) (partial layout — --force required for real run)`;
+    } else {
+      message = `would migrate ${report.migrated} plan(s) into ${report.folderRoot}`;
+    }
     return {
       name: "Plan storage folder migration",
       status: "done",
-      message:
-        report.partialLayout && report.migrated > 0
-          ? `would migrate ${report.migrated} plan(s) (partial layout — --force required for real run)`
-          : `would migrate ${report.migrated} plan(s) into ${report.folderRoot}`,
+      message,
       details: {
         migrated: report.migrated,
         partial_layout: report.partialLayout,
@@ -879,6 +929,13 @@ async function runPlanFolderMigrationStep(
         folder_root: report.folderRoot,
         index_path: report.indexPath,
         monolithic_path: report.monolithicPath,
+        // Stale lean index entries that point at missing plan folders.
+        // Surfaced so dry-run consumers can show the same partial-layout
+        // diagnosis the executing run would refuse on.
+        orphaned_lean_entries: report.orphanedLeanEntries.map((entry) => ({
+          ulid: typeof entry._ulid === "string" ? entry._ulid : null,
+          title: typeof entry.title === "string" ? entry.title : "",
+        })),
         // Resource manifest changes the executing run would make — one
         // empty `{ resources: [] }` sidecar per newly-migrated plan.
         // Surfaced separately from `entries` so dashboards/test
@@ -985,13 +1042,22 @@ async function runReviewFolderMigrationStep(
       },
     }));
     const newResourceManifests = report.entries.filter((e) => !e.preexistingFolder).length;
+    const orphanCount = report.orphanedLeanEntries.length;
+    let message: string;
+    if (report.partialLayout && orphanCount > 0 && report.migrated === 0) {
+      message =
+        `partial layout: ${orphanCount} stale lean index entr` +
+        `${orphanCount === 1 ? "y" : "ies"} reference missing review folder` +
+        `${orphanCount === 1 ? "" : "s"} — --force required for real run`;
+    } else if (report.partialLayout && report.migrated > 0) {
+      message = `would migrate ${report.migrated} review(s) (partial layout — --force required for real run)`;
+    } else {
+      message = `would migrate ${report.migrated} review(s) into ${report.folderRoot}`;
+    }
     return {
       name: "Review storage folder migration",
       status: "done",
-      message:
-        report.partialLayout && report.migrated > 0
-          ? `would migrate ${report.migrated} review(s) (partial layout — --force required for real run)`
-          : `would migrate ${report.migrated} review(s) into ${report.folderRoot}`,
+      message,
       details: {
         migrated: report.migrated,
         partial_layout: report.partialLayout,
@@ -1000,6 +1066,11 @@ async function runReviewFolderMigrationStep(
         folder_root: report.folderRoot,
         index_path: report.indexPath,
         monolithic_path: report.monolithicPath,
+        // Stale lean index entries that point at missing review folders.
+        orphaned_lean_entries: report.orphanedLeanEntries.map((entry) => ({
+          ulid: typeof entry._ulid === "string" ? entry._ulid : null,
+          title: typeof entry.title === "string" ? entry.title : "",
+        })),
         // Resource manifest changes the executing run would make — one
         // empty `{ resources: [] }` sidecar per newly-migrated review.
         resource_manifest_changes: {

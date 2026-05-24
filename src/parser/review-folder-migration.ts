@@ -90,6 +90,15 @@ export interface ReviewMigrationReport {
    * pre-existing folder-backed reviews.
    */
   readonly preservedLeanEntries: Record<string, unknown>[];
+  /**
+   * Lean index entries whose `_ulid` does not correspond to any review
+   * folder on disk. Symmetric with the plan migration: a stale lean
+   * entry points at a missing `.kspec/reviews/<ulid>/review.yaml`. The
+   * compute step counts these toward `partialLayout` and clears
+   * `alreadyMigrated`. The apply step drops them from the rewritten
+   * index when force is set (after detecting the partial layout).
+   */
+  readonly orphanedLeanEntries: Record<string, unknown>[];
 }
 
 async function readMonolithicReviews(
@@ -248,13 +257,23 @@ export async function computeReviewMigrationReport(
   const { raw } = await readMonolithicReviews(monolithicPath);
   const folderUlids = new Set(await listEntityDirs(ctx, REVIEW_LAYOUT));
   const monolithicRecords = raw.filter(isMonolithicEntry);
-  // Pre-existing lean index entries are kept aside so the apply step can
-  // rebuild the index as the union of migrated entries + preserved
-  // entries. Without preservation, a force-through-partial-layout
-  // migration overwrites the index with monolithic-only data and the
-  // folder-backed reviews disappear from list/get despite their folders
-  // remaining on disk.
-  const preservedLeanEntries = raw.filter((entry) => !isMonolithicEntry(entry));
+  // Split non-monolithic lean entries into preserved (folder exists on
+  // disk) and orphaned (folder missing) buckets. Symmetric with the plan
+  // migration: orphans signal a partial layout that must be detected up
+  // front, otherwise the upgrade promotes the manifest on top of stale
+  // index entries and `kspec review list` fails with
+  // `partial_entity_storage_layout` on the next call.
+  const preservedLeanEntries: Record<string, unknown>[] = [];
+  const orphanedLeanEntries: Record<string, unknown>[] = [];
+  for (const entry of raw) {
+    if (isMonolithicEntry(entry)) continue;
+    const id = entry._ulid;
+    if (typeof id === "string" && folderUlids.has(id)) {
+      preservedLeanEntries.push(entry);
+    } else {
+      orphanedLeanEntries.push(entry);
+    }
+  }
 
   const warnings: string[] = [];
   const entries: ReviewMigrationEntry[] = monolithicRecords.map((record) =>
@@ -262,21 +281,26 @@ export async function computeReviewMigrationReport(
   );
 
   const partialLayout =
-    folderUlids.size > 0 &&
-    entries.some((entry) => !folderUlids.has(entry.ulid)) &&
-    entries.length > 0;
+    (folderUlids.size > 0 &&
+      entries.some((entry) => !folderUlids.has(entry.ulid)) &&
+      entries.length > 0) ||
+    orphanedLeanEntries.length > 0;
+
+  const alreadyMigrated =
+    monolithicRecords.length === 0 && orphanedLeanEntries.length === 0;
 
   return {
     migrated: entries.filter((e) => !e.preexistingFolder).length,
     reconciled: folderUlids.size,
     entries,
-    alreadyMigrated: monolithicRecords.length === 0,
+    alreadyMigrated,
     partialLayout,
     warnings,
     monolithicPath,
     folderRoot,
     indexPath,
     preservedLeanEntries,
+    orphanedLeanEntries,
   };
 }
 
@@ -296,13 +320,20 @@ export async function applyReviewMigration(
   report: ReviewMigrationReport,
   options: ReviewMigrationOptions = {},
 ): Promise<{ written: number; indexEntries: number }> {
-  if (report.entries.length === 0) {
+  // True no-op: nothing to migrate AND no partial-layout remediation.
+  if (report.entries.length === 0 && !report.partialLayout) {
     return { written: 0, indexEntries: 0 };
   }
   if (report.partialLayout && !options.force) {
+    const reason =
+      report.orphanedLeanEntries.length > 0
+        ? `lean index entries describe review folders that do not exist on disk ` +
+          `(${report.orphanedLeanEntries.length} stale entr` +
+          `${report.orphanedLeanEntries.length === 1 ? "y" : "ies"})`
+        : `folders exist alongside monolithic records`;
     const err = new Error(
-      `Review storage layout is partial: folders exist alongside monolithic records. ` +
-        `Re-run with --force to migrate the monolithic remnants in place, or run ` +
+      `Review storage layout is partial: ${reason}. ` +
+        `Re-run with --force to remediate, or run ` +
         `'kspec review rebuild-index' after manual cleanup.`,
     );
     (err as NodeJS.ErrnoException).code = "partial_entity_storage_layout";

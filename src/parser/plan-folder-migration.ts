@@ -138,6 +138,19 @@ export interface PlanMigrationReport {
    * not silently drop pre-existing folder plans from discovery.
    */
   readonly preservedLeanEntries: Record<string, unknown>[];
+  /**
+   * Lean index entries whose `_ulid` does not correspond to any plan
+   * folder on disk. These are stale — the lean entry exists but the
+   * `.kspec/plans/<ulid>/` folder it points to does not. A migration
+   * that ignores them would promote the manifest to folder-storage
+   * while the project remains in a partial layout that
+   * `kspec plan list` later fails on with `partial_entity_storage_layout`.
+   *
+   * The compute step counts these toward `partialLayout` and clears
+   * `alreadyMigrated`. The apply step drops them from the rewritten
+   * index when force is set (after detecting the partial layout).
+   */
+  readonly orphanedLeanEntries: Record<string, unknown>[];
 }
 
 const PLAN_SCHEMA_KEYS = new Set(Object.keys(PlanSchema.shape));
@@ -297,35 +310,66 @@ export async function computePlanMigrationReport(
   const { raw } = await readMonolithicPlans(monolithicPath);
   const folderUlids = new Set(await listEntityDirs(ctx, PLAN_LAYOUT));
   const monolithicRecords = raw.filter(isMonolithicEntry);
-  // Pre-existing lean index entries describe folder-backed plans already
-  // recorded in `project.plans.yaml`. We capture them now so the apply
-  // step can rebuild the index as the union of migrated entries + these
-  // preserved entries — otherwise a force-through-partial-layout migration
-  // overwrites the index with monolithic-only data and the folder-backed
-  // plans disappear from list/get even though their folders survive.
-  const preservedLeanEntries = raw.filter((entry) => !isMonolithicEntry(entry));
+  // Split the non-monolithic (lean) index entries into two buckets:
+  // - preservedLeanEntries: lean entries whose `.kspec/plans/<ulid>/`
+  //   folder exists on disk. The apply step keeps them in the rewritten
+  //   index so folder-backed plans stay discoverable across a partial
+  //   migration.
+  // - orphanedLeanEntries: lean entries with no matching folder. They
+  //   describe a partial layout the upgrade must refuse without --force,
+  //   otherwise the manifest promotion lands while
+  //   `kspec plan list` would later fail on the missing folder. The
+  //   apply step drops orphans when force is set.
+  const preservedLeanEntries: Record<string, unknown>[] = [];
+  const orphanedLeanEntries: Record<string, unknown>[] = [];
+  for (const entry of raw) {
+    if (isMonolithicEntry(entry)) continue;
+    const id = entry._ulid;
+    if (typeof id === "string" && folderUlids.has(id)) {
+      preservedLeanEntries.push(entry);
+    } else {
+      orphanedLeanEntries.push(entry);
+    }
+  }
 
   const warnings: string[] = [];
   const entries: PlanMigrationEntry[] = monolithicRecords.map((record) =>
     buildMigrationEntry(ctx, record, folderUlids, warnings),
   );
 
+  // Partial layout covers two distinct broken states:
+  //   1. Folders + monolithic records present (folders for some ULIDs,
+  //      monolithic body for others) — historical case.
+  //   2. Lean index entries that point to folders which do not exist
+  //      on disk — the reviewer's reproduction. Without detecting case
+  //      2, the migration short-circuits as "alreadyMigrated" and the
+  //      manifest is promoted on top of a layout that will fail on the
+  //      very next list call.
   const partialLayout =
-    folderUlids.size > 0 &&
-    entries.some((entry) => !folderUlids.has(entry.ulid)) &&
-    entries.length > 0;
+    (folderUlids.size > 0 &&
+      entries.some((entry) => !folderUlids.has(entry.ulid)) &&
+      entries.length > 0) ||
+    orphanedLeanEntries.length > 0;
+
+  // `alreadyMigrated` must also account for orphaned lean entries — a
+  // project with stale index entries pointing at missing folders is NOT
+  // already migrated. Keeping it true would let the manifest promotion
+  // run and skip the chance to detect the partial layout.
+  const alreadyMigrated =
+    monolithicRecords.length === 0 && orphanedLeanEntries.length === 0;
 
   return {
     migrated: entries.filter((e) => !e.preexistingFolder).length,
     reconciled: folderUlids.size,
     entries,
-    alreadyMigrated: monolithicRecords.length === 0,
+    alreadyMigrated,
     partialLayout,
     warnings,
     monolithicPath,
     folderRoot,
     indexPath,
     preservedLeanEntries,
+    orphanedLeanEntries,
   };
 }
 
@@ -359,13 +403,25 @@ export async function applyPlanMigration(
   report: PlanMigrationReport,
   options: PlanMigrationOptions = {},
 ): Promise<{ written: number; indexEntries: number }> {
-  if (report.entries.length === 0) {
+  // True no-op: no monolithic records to migrate AND no partial-layout
+  // remediation to perform. Skip the buffered transaction entirely.
+  if (report.entries.length === 0 && !report.partialLayout) {
     return { written: 0, indexEntries: 0 };
   }
+  // Partial-layout guard fires for either flavour of broken state — folders
+  // + monolithic records, OR lean entries pointing at missing folders.
+  // Without --force the executing run refuses both so the manifest never
+  // promotes on top of ambiguous data.
   if (report.partialLayout && !options.force) {
+    const reason =
+      report.orphanedLeanEntries.length > 0
+        ? `lean index entries describe plan folders that do not exist on disk ` +
+          `(${report.orphanedLeanEntries.length} stale entr` +
+          `${report.orphanedLeanEntries.length === 1 ? "y" : "ies"})`
+        : `folders exist alongside monolithic records`;
     const err = new Error(
-      `Plan storage layout is partial: folders exist alongside monolithic records. ` +
-        `Re-run with --force to migrate the monolithic remnants in place, or run ` +
+      `Plan storage layout is partial: ${reason}. ` +
+        `Re-run with --force to remediate, or run ` +
         `'kspec plan rebuild-index' after manual cleanup.`,
     );
     (err as NodeJS.ErrnoException).code = "partial_entity_storage_layout";

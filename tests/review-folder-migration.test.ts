@@ -422,4 +422,60 @@ describe("review folder migration", () => {
     expect(ulids.has(monolithicUlid)).toBe(true);
     expect(index.reviews.length).toBe(2);
   });
+
+  // Regression for fix cycle 4 blocker 3: a lean review index entry whose
+  // `_ulid` does not have a matching `.kspec/reviews/<ulid>/` folder is a
+  // partial layout. Symmetric with the plan migration fix — without this
+  // detection, upgrade short-circuits as alreadyMigrated and promotes the
+  // manifest while subsequent `kspec review list` fails on the broken
+  // layout.
+  //
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  it("detects stale lean entries with no matching folder as partial layout", async () => {
+    const ctx = await buildCtx(tempDir);
+    const orphanUlid = testUlid("ORREV");
+
+    await writeMonolithicReviews(ctx, [
+      {
+        _ulid: orphanUlid,
+        slugs: [],
+        title: "Orphan Review",
+        lifecycle_state: "open",
+        subject: {
+          type: "task",
+          ref: "@task-ref",
+          shadow_commit: "shadow-commit-sha",
+          content_hash: "content-hash",
+        },
+        author: "reviewer",
+        related_refs: [],
+        disposition: "pending",
+        thread_count: 0,
+        unresolved_blocker_count: 0,
+        check_count: 0,
+        verdict_count: 0,
+        created_at: "2026-05-22T10:00:00Z",
+      },
+    ]);
+
+    const report = await computeReviewMigrationReport(ctx);
+    expect(report.partialLayout).toBe(true);
+    expect(report.alreadyMigrated).toBe(false);
+    expect(report.orphanedLeanEntries).toHaveLength(1);
+    expect((report.orphanedLeanEntries[0] as { _ulid: string })._ulid).toBe(orphanUlid);
+    expect(report.entries).toHaveLength(0);
+
+    await expect(applyReviewMigration(ctx, report)).rejects.toThrow(/partial/i);
+    await expect(applyReviewMigration(ctx, report)).rejects.toMatchObject({
+      code: "partial_entity_storage_layout",
+    });
+
+    const applied = await applyReviewMigration(ctx, report, { force: true });
+    expect(applied.written).toBe(0);
+    expect(applied.indexEntries).toBe(0);
+    const index = yamlParse(
+      await readTestOutput(path.join(ctx.specDir, "project.reviews.yaml")),
+    ) as { reviews: Array<{ _ulid: string }> };
+    expect(index.reviews).toEqual([]);
+  });
 });

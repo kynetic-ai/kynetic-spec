@@ -422,6 +422,54 @@ describe("plan folder migration", () => {
     expect(applied.written).toBe(1);
   });
 
+  // Regression for fix cycle 4 blocker 2: a lean plan index entry whose
+  // `_ulid` does not have a matching `.kspec/plans/<ulid>/` folder is a
+  // partial layout. The previous compute step set `alreadyMigrated: true`
+  // and `partialLayout: false` for this shape, which let the upgrade
+  // promote the manifest on top of an incoherent layout that subsequent
+  // `kspec plan list` calls then failed on.
+  //
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  it("detects stale lean entries with no matching folder as partial layout", async () => {
+    const ctx = await buildCtx(tempDir);
+    const orphanUlid = testUlid("ORPHN");
+
+    await writeMonolithicPlans(ctx, [
+      {
+        _ulid: orphanUlid,
+        slugs: ["orphan"],
+        title: "Orphan Plan",
+        status: "draft",
+        derived_tasks: [],
+        derived_specs: [],
+        created_at: "2026-05-22T10:00:00Z",
+        notes_count: 0,
+      },
+    ]);
+
+    const report = await computePlanMigrationReport(ctx);
+    expect(report.partialLayout).toBe(true);
+    expect(report.alreadyMigrated).toBe(false);
+    expect(report.orphanedLeanEntries).toHaveLength(1);
+    expect((report.orphanedLeanEntries[0] as { _ulid: string })._ulid).toBe(orphanUlid);
+    expect(report.entries).toHaveLength(0);
+
+    // Apply without force must throw the partial-layout error.
+    await expect(applyPlanMigration(ctx, report)).rejects.toThrow(/partial/i);
+    await expect(applyPlanMigration(ctx, report)).rejects.toMatchObject({
+      code: "partial_entity_storage_layout",
+    });
+
+    // Apply with force drops the orphan from the rewritten index.
+    const applied = await applyPlanMigration(ctx, report, { force: true });
+    expect(applied.written).toBe(0);
+    expect(applied.indexEntries).toBe(0);
+    const index = yamlParse(
+      await readTestOutput(path.join(ctx.specDir, "project.plans.yaml")),
+    ) as { plans: Array<{ _ulid: string }> };
+    expect(index.plans).toEqual([]);
+  });
+
   // Regression guard for the review fix-cycle: when --force is used to push
   // through a partial layout, the rebuilt index MUST include both the
   // migrated monolithic entries and the pre-existing lean entries already

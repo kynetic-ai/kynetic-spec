@@ -1268,4 +1268,228 @@ describe("kspec upgrade — folder storage migration", () => {
     expect(ulids.has(monolithicUlid)).toBe(true);
     expect(index.reviews.length).toBe(2);
   });
+
+  // Regression for fix cycle 4 blocker 2: a stale lean plan index entry that
+  // points at a missing `.kspec/plans/<ulid>/` folder is a partial layout —
+  // upgrade without --force MUST fail the plan migration step and leave the
+  // manifest at 1.1, otherwise `kspec plan list` will fail with
+  // `partial_entity_storage_layout` immediately after upgrade returns
+  // success.
+  //
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  it("upgrade fails on stale lean plan index entry with no matching folder", async () => {
+    const { specDir, manifestPath } = await initProject(tempDir);
+    const orphanUlid = testUlid("ORPLN");
+
+    // Lean entry exists in the index but `.kspec/plans/<ulid>/` does not.
+    // Notes_count is the marker that flips isMonolithicEntry to false,
+    // so the compute step classifies this as "non-monolithic" — exactly
+    // the path that previously short-circuited as alreadyMigrated.
+    await writeMonolithicPlans(specDir, [
+      {
+        _ulid: orphanUlid,
+        slugs: ["orphan"],
+        title: "Orphan Plan",
+        status: "draft",
+        derived_tasks: [],
+        derived_specs: [],
+        created_at: "2026-05-22T10:00:00Z",
+        notes_count: 0,
+      },
+    ]);
+
+    const cliResult = kspec("upgrade --json", tempDir, { expectFail: true });
+    expect(cliResult.exitCode).not.toBe(0);
+    const result = JSON.parse(cliResult.stdout) as UpgradeResultShape;
+    expect(result.success).toBe(false);
+
+    const planStep = result.steps.find((s) => s.name === "Plan storage folder migration");
+    expect(planStep?.status).toBe("failed");
+    expect(planStep?.message).toMatch(/partial/i);
+
+    // Manifest must stay at 1.1 — failing detection means the upgrade did
+    // not promote folder-storage on top of an incoherent layout.
+    const manifest = yamlParse(await readTestOutput(manifestPath)) as Record<string, unknown>;
+    expect(manifest.kynetic).toBe("1.1");
+    expect(manifest.plan_storage).toBeUndefined();
+  });
+
+  // Regression for fix cycle 4 blocker 3: symmetric to the plan case — a
+  // stale lean review index entry that points at a missing
+  // `.kspec/reviews/<ulid>/` folder must also fail upgrade without --force
+  // and leave the manifest unchanged.
+  //
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  it("upgrade fails on stale lean review index entry with no matching folder", async () => {
+    const { specDir, manifestPath } = await initProject(tempDir);
+    const orphanUlid = testUlid("ORREV");
+
+    await writeMonolithicReviews(specDir, [
+      {
+        _ulid: orphanUlid,
+        slugs: ["orphan"],
+        title: "Orphan Review",
+        lifecycle_state: "open",
+        subject: {
+          type: "task",
+          ref: "@some-task",
+          shadow_commit: "abc",
+          content_hash: "h",
+        },
+        author: "reviewer",
+        related_refs: [],
+        disposition: "pending",
+        thread_count: 0,
+        unresolved_blocker_count: 0,
+        check_count: 0,
+        verdict_count: 0,
+        created_at: "2026-05-22T10:00:00Z",
+      },
+    ]);
+
+    const cliResult = kspec("upgrade --json", tempDir, { expectFail: true });
+    expect(cliResult.exitCode).not.toBe(0);
+    const result = JSON.parse(cliResult.stdout) as UpgradeResultShape;
+    expect(result.success).toBe(false);
+
+    const reviewStep = result.steps.find((s) => s.name === "Review storage folder migration");
+    expect(reviewStep?.status).toBe("failed");
+    expect(reviewStep?.message).toMatch(/partial/i);
+
+    const manifest = yamlParse(await readTestOutput(manifestPath)) as Record<string, unknown>;
+    expect(manifest.kynetic).toBe("1.1");
+    expect(manifest.review_storage).toBeUndefined();
+  });
+
+  // Regression for fix cycle 4 blocker 1: a failed task storage migration
+  // step must NOT permit the storage manifest promotion to land. Without
+  // this gate the manifest moved to kynetic 1.2 / task_storage.format=split
+  // even when the task migration above failed — a misleading state that
+  // suppresses re-run of the broken step.
+  //
+  // The repro seeds the project with a monolithic task record so the task
+  // migration step actually runs `task migrate --force` (it short-circuits
+  // when there are no monolithic tasks), then replaces `.kspec/tasks` with
+  // a regular file so the migration fails with ENOTDIR. We then assert the
+  // manifest is left at 1.1 and the manifest promotion step is skipped.
+  //
+  // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-executes-folder-migration
+  it("upgrade leaves manifest at 1.1 when task storage migration fails", async () => {
+    const { specDir, manifestPath } = await initProject(tempDir);
+
+    // Step 1: replace .kspec/project.tasks.yaml with a monolithic record so
+    // the task migration step has work to do. Without a monolithic record
+    // the step short-circuits as "no monolithic tasks to migrate" and never
+    // exercises the failure path.
+    const monolithicTaskUlid = testUlid("BADTK");
+    const yamlMod = await import("yaml");
+    await fs.writeFile(
+      path.join(specDir, "project.tasks.yaml"),
+      yamlMod.stringify({
+        kynetic_tasks: "1.0",
+        tasks: [
+          {
+            _ulid: monolithicTaskUlid,
+            slugs: ["bad-task"],
+            title: "Bad Task",
+            type: "task",
+            status: "pending",
+            priority: 4,
+            created_at: "2026-05-22T10:00:00Z",
+            description: "Forces task migrate to run",
+            notes: [],
+          },
+        ],
+      }),
+      "utf-8",
+    );
+
+    // Step 2: replace the .kspec/tasks/ directory with a regular file so
+    // `kspec task migrate --force` fails when it tries to write the new
+    // per-task subdirectory.
+    const tasksDir = path.join(specDir, "tasks");
+    await fs.rm(tasksDir, { recursive: true, force: true });
+    await fs.writeFile(tasksDir, "not a directory\n", "utf-8");
+
+    // Step 3: seed monolithic plan + review records so the plan/review
+    // steps would otherwise succeed and the manifest promotion would
+    // otherwise fire (proving the gate is what holds them back).
+    await writeMonolithicPlans(specDir, [
+      {
+        _ulid: planUlid,
+        slugs: ["plan-after-task-fail"],
+        title: "Plan",
+        content: "Body",
+        status: "draft",
+        derived_tasks: [],
+        derived_specs: [],
+        created_at: "2026-05-22T10:00:00Z",
+        notes: [],
+      },
+    ]);
+    await writeMonolithicReviews(specDir, [
+      {
+        _ulid: reviewUlid,
+        slugs: [],
+        title: "Review",
+        lifecycle_state: "open",
+        subject: {
+          type: "task",
+          ref: "@some-task",
+          shadow_commit: "abc",
+          content_hash: "h",
+        },
+        author: "reviewer",
+        related_refs: [],
+        threads: [
+          {
+            _ulid: threadUlid,
+            kind: "blocker",
+            entries: [
+              {
+                _ulid: entryUlid,
+                author: "reviewer",
+                body: "x",
+                created_at: "2026-05-22T10:00:00Z",
+              },
+            ],
+          },
+        ],
+        checks: [],
+        verdicts: [],
+        events: [],
+        notes: [],
+        external_links: [],
+        examined_commit: null,
+        created_at: "2026-05-22T10:00:00Z",
+      },
+    ]);
+
+    const cliResult = kspec("upgrade --json", tempDir, { expectFail: true });
+    expect(cliResult.exitCode).not.toBe(0);
+    const result = JSON.parse(cliResult.stdout) as UpgradeResultShape;
+    expect(result.success).toBe(false);
+
+    const taskStep = result.steps.find((s) => s.name === "Task storage migration");
+    expect(taskStep?.status).toBe("failed");
+
+    // Plan/review/manifest steps must be skipped — they cannot safely run
+    // on top of a broken task layout. The manifest promotion in particular
+    // must NOT advertise kynetic 1.2 / task_storage.format=split.
+    const planStep = result.steps.find((s) => s.name === "Plan storage folder migration");
+    const reviewStep = result.steps.find((s) => s.name === "Review storage folder migration");
+    const manifestStep = result.steps.find((s) => s.name === "Storage manifest (kynetic 1.2)");
+    expect(planStep?.status).toBe("skipped");
+    expect(reviewStep?.status).toBe("skipped");
+    expect(manifestStep?.status).toBe("skipped");
+    expect(manifestStep?.message).toMatch(/task storage/i);
+
+    // Manifest on disk must be unchanged — still kynetic 1.1 with no
+    // storage declarations the upgrade would have added.
+    const manifest = yamlParse(await readTestOutput(manifestPath)) as Record<string, unknown>;
+    expect(manifest.kynetic).toBe("1.1");
+    expect(manifest.plan_storage).toBeUndefined();
+    expect(manifest.review_storage).toBeUndefined();
+    expect(manifest.resource_storage).toBeUndefined();
+  });
 });
