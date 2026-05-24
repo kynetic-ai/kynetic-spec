@@ -228576,6 +228576,19 @@ reviews:
         runner: npm
         created_at: 2026-05-24T20:54:09.643Z
         completed_at: 2026-05-24T20:54:09.643Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Isolated /tmp/kspec-review-atomicity-* repro: one monolithic plan plus partial review
+          layout made kspec upgrade --json exit 3 with Review storage folder migration failed;
+          manifest remained kynetic 1.1/no plan_storage while project.plans.yaml was already
+          rewritten to a lean index and .kspec/plans/<ulid>/ existed."
+        name: atomicity reproduction
+        required: false
+        runner: manual
+        created_at: 2026-05-24T20:54:21.068Z
+        completed_at: 2026-05-24T20:54:21.068Z
     events:
       - _ulid: 01KSDVHYYV4ZVCJYVM87VPVTZ1
         actor: Jacob Chapel
@@ -228618,6 +228631,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-05-24T20:54:11.132Z
+      - _ulid: 01KSDW8XJH3VW9QFB6MMK33YT0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: atomicity reproduction
+        timestamp: 2026-05-24T20:54:22.545Z
     examined_commit: 0b0265444b277ffe4a70afc4b37887095e29fefa
     external_links: []
     lifecycle_state: open
@@ -228655,5 +228675,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-24T20:41:50.299Z
-    updated_at: 2026-05-24T20:54:09.643Z
+    updated_at: 2026-05-24T20:54:21.068Z
     notes: []
