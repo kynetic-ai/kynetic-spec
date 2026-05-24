@@ -228954,6 +228954,12 @@ reviews:
         payload:
           thread_ulid: 01KSDYQ9X3EK8XRZGPVKNBANWV
         timestamp: 2026-05-24T22:25:14.937Z
+      - _ulid: 01KSE1FHFFQNG2EZD8XFPWF4B4
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSDYQV55MGB0NGQTGKS8FKEF
+        timestamp: 2026-05-24T22:25:22.415Z
     examined_commit: 6cd0bb4dbb5898ea85b231905bb7380bf7d5480c
     external_links: []
     lifecycle_state: closed
@@ -229095,6 +229101,14 @@ reviews:
               targets or the resource manifest change that ac-upgrade-dry-run-previews-layout
               requires users to see before executing the migration."
             created_at: 2026-05-24T21:37:28.741Z
+          - _ulid: 01KSE1FFR8Y85Y259EM7E1JXJF
+            author: "@claude"
+            body: "Fixed: review dry-run details now include per-entry sidecar paths (sidecars.review_yaml,
+              resources_yaml, resources_dir) plus the same resource_manifest_changes summary. New
+              test 'dry-run reports review sidecar paths and resource manifest changes' in
+              tests/upgrade-folder-storage.test.ts exercises two reviews and asserts both the
+              per-entry sidecar paths and the resource_manifest_changes aggregate."
+            created_at: 2026-05-24T22:25:20.647Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -229105,5 +229119,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-24T21:47:44.304Z
     created_at: 2026-05-24T21:32:38.293Z
-    updated_at: 2026-05-24T22:25:13.241Z
+    updated_at: 2026-05-24T22:25:20.647Z
     notes: []
