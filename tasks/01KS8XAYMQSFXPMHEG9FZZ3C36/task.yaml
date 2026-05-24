@@ -4,7 +4,7 @@ slugs:
   - task-folder-backed-review-storage-manager
 title: Convert review persistence to folder-backed storage with resource support
 type: task
-description: >
+description: >-
   What:
 
   - Introduce a review storage manager/backing layout using
@@ -66,10 +66,17 @@ description: >
 
 
   Covers: @folder-backed-review-storage-1 ac-review-detail-file-is-cohesive,
-  ac-review-index-has-bounded-projection, ac-review-screenshot-resource-loads-in-ui,
-  ac-review-delete-removes-owned-folder, @trait-folder-backed-entity-1 ac-entity-has-ulid-directory,
-  ac-index-excludes-heavy-detail-bytes, ac-unknown-files-preserved, ac-index-rebuilds-from-folders,
-  @trait-entity-scoped-local-resources-1 ac-resource-delete-follows-owner-delete
+  ac-review-index-has-bounded-projection, ac-review-delete-removes-owned-folder,
+  @trait-folder-backed-entity-1 ac-entity-has-ulid-directory, ac-index-excludes-heavy-detail-bytes,
+  ac-unknown-files-preserved, ac-index-rebuilds-from-folders, @trait-entity-scoped-local-resources-1
+  ac-resource-delete-follows-owner-delete
+
+
+  Note on `ac-review-screenshot-resource-loads-in-ui`: deferred to sibling
+  @task-review-screenshot-resource-ui, which owns the daemon
+  `/api/reviews/:ref/resources/:resourceId/bytes` route, web UI render, and static-export copying
+  required by that AC. This task delivers the parser-layer folder storage and resource metadata
+  exposure that the sibling task builds on.
 spec_ref: "@folder-backed-review-storage-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
@@ -364,6 +371,158 @@ history:
         previous: 01KSBG8FJ1Y1850CCW02S5J0EX
     command: review-verdict-needs-work
     timestamp: 2026-05-24T03:12:08.146Z
+  - author: "@claude"
+    changes:
+      description:
+        new: >-
+          What:
+
+          - Introduce a review storage manager/backing layout using
+          `.kspec/reviews/<review-ulid>/review.yaml`, `resources.yaml`, and `resources/`.
+
+          - Store the full cohesive ReviewRecord shape in `review.yaml`; do not split threads,
+          checks, verdicts, notes, or events into separate files in this plan.
+
+          - Keep `loadReviewRecords`, `findReviewByRef`, `saveReviewRecord`,
+          `mutateReviewAtomically`, and delete semantics stable for existing callers.
+
+          - Keep `.kspec/project.reviews.yaml` as a lean index with ULID, lifecycle, subject
+          summary, related refs, disposition, timestamps, and bounded resource summaries.
+
+          - Add exactly `kspec review rebuild-index` with `--dry-run`, `--repair`, `--force`, and
+          `--json` flags. Default/no flag validates drift and exits nonzero if drift exists without
+          writing. `--dry-run` prints the same drift summary and never writes. `--repair` rewrites
+          `.kspec/project.reviews.yaml` from review folders. `--force` is accepted only with
+          `--repair` and permits dropping stale index entries whose entity folders are missing;
+          without `--force`, missing folders are a conflict and no files are written.
+
+          - Define `kspec review rebuild-index --json` output as `{ "domain": "reviews", "status":
+          "clean"|"drift"|"repaired"|"blocked", "dry_run": boolean, "repair": boolean, "force":
+          boolean, "summary": { "folders": number, "index_entries": number, "added": number,
+          "updated": number, "removed_stale": number, "conflicts": number }, "changes": [{ "kind":
+          "add"|"update"|"remove_stale", "ref": string, "path": string }], "conflicts": [{ "code":
+          string, "ref": string|null, "path": string|null, "message": string }] }`. JSON exit codes
+          are 0 for `clean` or successful `repaired`, 1 for `drift` when not repaired, and 2 for
+          `blocked` conflicts.
+
+          - When the manager sees old/missing/partial storage markers, raise the shared
+          entity-storage incompatibility errors from
+          @task-entity-storage-version-compatibility-gates-1 instead of dual-reading or silently
+          migrating.
+
+
+          Why:
+
+          - Reviews are the best non-plan candidate for folder storage because
+          screenshots/logs/evidence should be review-local, while the review's structured
+          discussion/check/verdict/note data should remain cohesive until there is a measured reason
+          to split it.
+
+
+          How:
+
+          - Use the shared folder-backed entity trait for index/detail separation and the shared
+          resource trait for evidence files.
+
+          - Delete owned resources with the review directory.
+
+
+          Testing:
+
+          - Review storage unit tests for create/list/detail/mutations against the cohesive review
+          detail file, screenshot resource metadata, owned resource cleanup on review delete,
+          unknown file preservation, index rebuild drift detection, `--repair`, `--force`
+          stale-entry handling, and incompatibility errors for old or partial layouts.
+
+          - Existing review CLI/API tests should pass unchanged except where they assert monolithic
+          storage internals.
+
+
+          Covers: @folder-backed-review-storage-1 ac-review-detail-file-is-cohesive,
+          ac-review-index-has-bounded-projection, ac-review-delete-removes-owned-folder,
+          @trait-folder-backed-entity-1 ac-entity-has-ulid-directory,
+          ac-index-excludes-heavy-detail-bytes, ac-unknown-files-preserved,
+          ac-index-rebuilds-from-folders, @trait-entity-scoped-local-resources-1
+          ac-resource-delete-follows-owner-delete
+
+
+          Note on `ac-review-screenshot-resource-loads-in-ui`: deferred to sibling
+          @task-review-screenshot-resource-ui, which owns the daemon
+          `/api/reviews/:ref/resources/:resourceId/bytes` route, web UI render, and static-export
+          copying required by that AC. This task delivers the parser-layer folder storage and
+          resource metadata exposure that the sibling task builds on.
+        previous: >
+          What:
+
+          - Introduce a review storage manager/backing layout using
+          `.kspec/reviews/<review-ulid>/review.yaml`, `resources.yaml`, and `resources/`.
+
+          - Store the full cohesive ReviewRecord shape in `review.yaml`; do not split threads,
+          checks, verdicts, notes, or events into separate files in this plan.
+
+          - Keep `loadReviewRecords`, `findReviewByRef`, `saveReviewRecord`,
+          `mutateReviewAtomically`, and delete semantics stable for existing callers.
+
+          - Keep `.kspec/project.reviews.yaml` as a lean index with ULID, lifecycle, subject
+          summary, related refs, disposition, timestamps, and bounded resource summaries.
+
+          - Add exactly `kspec review rebuild-index` with `--dry-run`, `--repair`, `--force`, and
+          `--json` flags. Default/no flag validates drift and exits nonzero if drift exists without
+          writing. `--dry-run` prints the same drift summary and never writes. `--repair` rewrites
+          `.kspec/project.reviews.yaml` from review folders. `--force` is accepted only with
+          `--repair` and permits dropping stale index entries whose entity folders are missing;
+          without `--force`, missing folders are a conflict and no files are written.
+
+          - Define `kspec review rebuild-index --json` output as `{ "domain": "reviews", "status":
+          "clean"|"drift"|"repaired"|"blocked", "dry_run": boolean, "repair": boolean, "force":
+          boolean, "summary": { "folders": number, "index_entries": number, "added": number,
+          "updated": number, "removed_stale": number, "conflicts": number }, "changes": [{ "kind":
+          "add"|"update"|"remove_stale", "ref": string, "path": string }], "conflicts": [{ "code":
+          string, "ref": string|null, "path": string|null, "message": string }] }`. JSON exit codes
+          are 0 for `clean` or successful `repaired`, 1 for `drift` when not repaired, and 2 for
+          `blocked` conflicts.
+
+          - When the manager sees old/missing/partial storage markers, raise the shared
+          entity-storage incompatibility errors from
+          @task-entity-storage-version-compatibility-gates-1 instead of dual-reading or silently
+          migrating.
+
+
+          Why:
+
+          - Reviews are the best non-plan candidate for folder storage because
+          screenshots/logs/evidence should be review-local, while the review's structured
+          discussion/check/verdict/note data should remain cohesive until there is a measured reason
+          to split it.
+
+
+          How:
+
+          - Use the shared folder-backed entity trait for index/detail separation and the shared
+          resource trait for evidence files.
+
+          - Delete owned resources with the review directory.
+
+
+          Testing:
+
+          - Review storage unit tests for create/list/detail/mutations against the cohesive review
+          detail file, screenshot resource metadata, owned resource cleanup on review delete,
+          unknown file preservation, index rebuild drift detection, `--repair`, `--force`
+          stale-entry handling, and incompatibility errors for old or partial layouts.
+
+          - Existing review CLI/API tests should pass unchanged except where they assert monolithic
+          storage internals.
+
+
+          Covers: @folder-backed-review-storage-1 ac-review-detail-file-is-cohesive,
+          ac-review-index-has-bounded-projection, ac-review-screenshot-resource-loads-in-ui,
+          ac-review-delete-removes-owned-folder, @trait-folder-backed-entity-1
+          ac-entity-has-ulid-directory, ac-index-excludes-heavy-detail-bytes,
+          ac-unknown-files-preserved, ac-index-rebuilds-from-folders,
+          @trait-entity-scoped-local-resources-1 ac-resource-delete-follows-owner-delete
+    command: task-set
+    timestamp: 2026-05-24T03:20:22.155Z
 created_at: 2026-05-22T22:36:45.591Z
 started_at: 2026-05-23T23:02:07.728Z
 submitted_at: 2026-05-23T23:02:11.408Z
