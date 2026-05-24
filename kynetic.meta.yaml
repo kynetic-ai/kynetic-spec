@@ -19399,6 +19399,17 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-05-24T23:08:55.016Z
+  - _ulid: 01KSE3ZHBB4GNVW1WE67YBQWWV
+    type: friction
+    content: Upgrade storage migration review needed manual reasoning across task, plan, review, and
+      manifest migration states. A shared pre-promotion consistency check for folder-backed storage
+      would reduce duplicated edge-case analysis and make stale lean-index or missing-folder states
+      explicit before manifest promotion.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-24T23:09:03.723Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
