@@ -61,3 +61,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-24T03:12:08.145Z
+  - _ulid: 01KSC0QYJA12VNF40CYKPNTRXA
+    content: "Fix cycle 2: addressed reviewer blocker by updating the task description to remove the
+      over-claimed `ac-review-screenshot-resource-loads-in-ui` from the \"Covers:\" list and adding
+      an explicit deferral note pointing at sibling @task-review-screenshot-resource-ui. The AC
+      requires daemon API route + web UI render + static-export copying which are wholly out of
+      scope for this storage-manager task. No production-code changes were needed beyond a rebase
+      onto plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw (resolved one conflict
+      in tests/daemon-api/helpers.ts where the sibling plan-storage-manager landing on the
+      integration target overlapped with the review materialiser — kept both branches' folder
+      shells)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-24T03:34:00.522Z
