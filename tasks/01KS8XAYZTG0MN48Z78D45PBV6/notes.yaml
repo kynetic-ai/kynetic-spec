@@ -112,3 +112,42 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-24T20:54:34.621Z
+  - _ulid: 01KSDXRREAE3FR6KV7BZB16ZP6
+    content: >-
+      Fix cycle 2: addressed the atomicity blocker in commit 6cd0bb4dbb.
+
+
+      Root cause: each of the three storage migration steps in src/cli/commands/upgrade.ts
+      (runPlanFolderMigrationStep, runReviewFolderMigrationStep, runStorageManifestPromotionStep)
+      called commitIfShadow on success, so the plan migration committed to the shadow branch before
+      review migration ran. A partial review layout (or any later failure) left the project with a
+      lean project.plans.yaml + .kspec/plans/<ulid>/ on disk while the manifest stayed at kynetic
+      1.1 with no plan_storage field — exactly the mixed state the reviewer reproduced.
+
+
+      Fix: introduced runAtomicStorageMigration which wraps all three steps in a single
+      runWithBuffer scope. The nested runWithBuffer calls inside applyPlanMigration /
+      applyReviewMigration and the buffer-aware writeYamlFilePreserveFormat now reuse the outer
+      buffer instead of flushing per-step. Removed the per-step commitIfShadow calls. On success the
+      orchestrator issues exactly one shadow commit. On any step failure or unexpected throw inside
+      the buffered scope the orchestrator throws a StorageMigrationAbort sentinel, the surrounding
+      runWithBuffer discards every buffered write, and no files reach disk. Synthetic skipped step
+      records are surfaced for steps that did not run so the existing partial-layout tests and JSON
+      consumers still see the expected step names.
+
+
+      Regression test added: 'upgrade rolls back plan migration when review migration fails
+      (atomic)' in tests/upgrade-folder-storage.test.ts. Snapshots project.plans.yaml and
+      project.reviews.yaml before the run, asserts byte-identical after the failed upgrade, and
+      confirms no plan folder is created and the manifest stays at kynetic 1.1.
+
+
+      Re-verified all ACs on @entity-folder-migration-and-compatibility-1 — the atomic mutation
+      contract now satisfies ac-upgrade-executes-folder-migration's 'all changes are committed as
+      one logical shadow mutation' requirement.
+
+
+      Full test suite: 2519 suites passed, 9585 passed, 5 pre-existing skipped of 9590.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-24T21:20:30.154Z
