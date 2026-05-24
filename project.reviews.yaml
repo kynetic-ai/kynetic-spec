@@ -229222,6 +229222,24 @@ reviews:
         runner: node
         created_at: 2026-05-24T23:06:03.524Z
         completed_at: 2026-05-24T23:06:03.524Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/cli/commands/upgrade.ts, src/parser/plan-folder-migration.ts,
+          src/parser/review-folder-migration.ts, src/parser/migration-safety.ts,
+          src/cli/batch-write-buffer.ts, plan/review storage managers, folder-backed-entity, changed
+          migration tests. Commands run: kspec task get, kspec item get, kspec review
+          for-task/get/add/open/comment/check, kspec validate, npm test, git
+          diff/name/stat/check/log, rg AC scans, two node temp-project repros. Claims verified:
+          prior resources/ and dry-run sidecar fixes exist; atomic plan rollback test exists;
+          reproduced uncovered task-failure and stale-lean-index paths. Categories searched:
+          correctness, edge cases, error handling, test quality, integration, code hygiene."
+        name: review evidence log
+        required: false
+        runner: reviewer
+        created_at: 2026-05-24T23:06:16.466Z
+        completed_at: 2026-05-24T23:06:16.466Z
     events:
       - _ulid: 01KSE3567NDQP2P6FNQN8D718P
         actor: Jacob Chapel
@@ -229299,6 +229317,13 @@ reviews:
           status: pass
           name: edge-case repros
         timestamp: 2026-05-24T23:06:05.024Z
+      - _ulid: 01KSE3TFEZHXTN2K6941S071XQ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-24T23:06:17.951Z
     examined_commit: 1a6e365048c8cce438d0644aff4edfafe7925fbe
     external_links: []
     lifecycle_state: open
@@ -229395,5 +229420,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-24T22:54:40.374Z
-    updated_at: 2026-05-24T23:06:03.524Z
+    updated_at: 2026-05-24T23:06:16.466Z
     notes: []
