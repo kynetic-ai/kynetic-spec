@@ -52997,7 +52997,7 @@ runs:
     completed_at: 2026-05-24T20:57:09.474Z
   - _ulid: 01KSDY76G0S7V187ZVR995QAK4
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -53010,7 +53010,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-24T21:30:43.544Z
-        completed_at: 2026-05-24T21:30:43.544Z
+        completed_at: 2026-05-24T21:30:53.883Z
+        notes: "Coverage check done: searched for 'commitIfShadow', 'per-step commit', 'atomic migration
+          commit', 'one logical mutation', 'buffered mutation' — no existing tracking for the
+          per-step commit-pattern audit. Existing 01KFKMF9 covers the inverse (missing commits), not
+          the over-eager-commit pattern."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-24T21:30:53.883Z
+        completed_at: 2026-05-24T21:30:53.883Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-24T21:28:23.296Z
