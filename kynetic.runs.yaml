@@ -52688,7 +52688,7 @@ runs:
     completed_at: 2026-05-24T03:38:44.849Z
   - _ulid: 01KSC21GN7PP531YDVWPV4KKRZ
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -52716,7 +52716,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-24T03:58:20.840Z
-        completed_at: 2026-05-24T03:58:20.840Z
+        completed_at: 2026-05-24T03:58:34.995Z
+        notes: 'Coverage checked with kspec search: "not checked out in any worktree" found existing
+          friction observation @01KSA47K for the detached merge-helper target-worktree issue;
+          "review/fix-cycle evidence" found existing success observation @01KSA47M; searches for
+          "npm run dev uncommitted code", "installed kspec command", and "CLI change npm run dev"
+          found no dedicated item, but kspec-agents.md already instructs using npm run dev -- when
+          testing uncommitted CLI changes. No duplicate capture needed for existing coverage.'
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-24T03:58:34.995Z
+        completed_at: 2026-05-24T03:58:34.995Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-24T03:56:42.535Z
