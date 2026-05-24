@@ -1,1 +1,15 @@
-notes: []
+notes:
+  - _ulid: 01KSDC7Z6K5B4AQ2R60V4DPRQB
+    content: "Approach plan: Create src/parser/plan-folder-migration.ts and
+      src/parser/review-folder-migration.ts owning the dry-run/apply migration logic that returns a
+      deterministic report. Integrate as new steps (Plan storage migration, Review storage
+      migration) into src/cli/commands/upgrade.ts pipeline before manifest bump. Manifest bump moves
+      to kynetic 1.2 and adds plan_storage/review_storage/resource_storage fields. Safety: capture
+      previous shadow HEAD before mutation and surface in result for rollback guidance. Add
+      live-path tripwire (refuse to migrate if project root resolves to a protected live project
+      path). Tests: tests/plan-folder-migration.test.ts, tests/review-folder-migration.test.ts,
+      tests/upgrade-folder-storage.test.ts. Each test must assert tempDir is under the OS tempdir
+      prefix to satisfy the isolation requirement."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-24T16:14:14.227Z
