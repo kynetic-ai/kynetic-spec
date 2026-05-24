@@ -228792,6 +228792,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSDYQ9X3EK8XRZGPVKNBANWV
         timestamp: 2026-05-24T21:37:13.141Z
+      - _ulid: 01KSDYQX6D4DYXEET47PKB1GSQ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSDYQV55MGB0NGQTGKS8FKEF
+        timestamp: 2026-05-24T21:37:30.829Z
     examined_commit: 6cd0bb4dbb5898ea85b231905bb7380bf7d5480c
     external_links: []
     lifecycle_state: open
@@ -228878,7 +228885,24 @@ reviews:
               dry-run AC says must be previewed before any write occurs."
             created_at: 2026-05-24T21:37:11.076Z
         kind: blocker
+      - _ulid: 01KSDYQV55MGB0NGQTGKS8FKEF
+        anchor:
+          type: code
+          commit: 6cd0bb4dbb5898ea85b231905bb7380bf7d5480c
+          line_end: 931
+          line_start: 917
+          path: src/cli/commands/upgrade.ts
+          side: head
+        entries:
+          - _ulid: 01KSDYQV550QGMZSA7F7H3NYW4
+            author: Jacob Chapel
+            body: "MUST-FIX: the review dry-run details have the same AC gap. The preview names the folder root
+              and index path, but it does not report the review.yaml, resources.yaml, and resources/
+              targets or the resource manifest change that ac-upgrade-dry-run-previews-layout
+              requires users to see before executing the migration."
+            created_at: 2026-05-24T21:37:28.741Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-24T21:32:38.293Z
-    updated_at: 2026-05-24T21:37:11.076Z
+    updated_at: 2026-05-24T21:37:28.741Z
     notes: []
