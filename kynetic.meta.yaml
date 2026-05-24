@@ -19347,6 +19347,22 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-24T17:09:04.267Z
+  - _ulid: 01KSDGERF6B4GF1DKB9G8XA2NN
+    type: friction
+    content: "Daemon file-change pipeline has two independent path classifiers that must stay in sync:
+      KspecWatcher.isWatchedPath() in packages/daemon/src/watcher.ts decides which paths are
+      delivered to onFileChange, and ProjectEntityCache.fileToDomain() in src/daemon/entity-cache.ts
+      maps delivered paths to cache domains. The watcher layer used to filter strictly to .yaml;
+      folder-backed entity work added non-YAML files (plan.md, resources/<binary>) that needed both
+      layers updated. A reviewer looking only at the cache classifier would not catch the missing
+      watcher coverage, and tests targeting fileToDomain pass even when the watcher silently drops
+      the event. Future folder-backed entity additions risk repeating this — recommend either inline
+      cross-reference comments on each classifier pointing at the other, or a unified shared helper
+      for 'is this path relevant to a folder-backed entity?' used by both layers."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-24T17:27:51.014Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
