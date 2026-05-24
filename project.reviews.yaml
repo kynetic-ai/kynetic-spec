@@ -228808,6 +228808,21 @@ reviews:
         runner: git
         created_at: 2026-05-24T21:47:19.759Z
         completed_at: 2026-05-24T21:47:19.759Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec-agents.md, task/spec context, prior reviews,
+          src/cli/commands/upgrade.ts, src/parser/plan-folder-migration.ts,
+          src/parser/review-folder-migration.ts, src/parser/migration-safety.ts,
+          batch-write-buffer/yaml/folder-backed managers, changed migration tests. Claims verified:
+          force bypass fix, atomic rollback fix, AC coverage/test integrity. Categories searched:
+          correctness, edge cases, error handling, test quality, integration, reporting."
+        name: review evidence log
+        required: false
+        runner: reviewer
+        created_at: 2026-05-24T21:47:32.326Z
+        completed_at: 2026-05-24T21:47:32.326Z
     events:
       - _ulid: 01KSDYEZGNV6DF2KGSQ5N1GSBE
         actor: Jacob Chapel
@@ -228892,6 +228907,13 @@ reviews:
           status: pass
           name: diff whitespace
         timestamp: 2026-05-24T21:47:21.434Z
+      - _ulid: 01KSDZAA94TSQMXS1D2S0BS63W
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-24T21:47:34.052Z
     examined_commit: 6cd0bb4dbb5898ea85b231905bb7380bf7d5480c
     external_links: []
     lifecycle_state: open
@@ -228997,5 +229019,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-24T21:32:38.293Z
-    updated_at: 2026-05-24T21:47:19.759Z
+    updated_at: 2026-05-24T21:47:32.326Z
     notes: []
