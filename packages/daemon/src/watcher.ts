@@ -14,6 +14,18 @@ import { parse as parseYaml } from "yaml";
 import { watch as chokidarWatch, type FSWatcher as ChokidarWatcher } from "chokidar";
 import { relative } from "path";
 
+/** Crockford-base32 ULID shape used to validate folder-backed entity roots. */
+const ENTITY_ULID_SEGMENT = /^[0-9A-HJKMNP-TV-Z]{26}$/i;
+
+/**
+ * Folder-backed entity storage roots whose per-entity directories
+ * (<root>/<ULID>/...) carry non-YAML files (plan.md, resources/<file>)
+ * that must still drive cache invalidation when they change.
+ *
+ * AC: @daemon-entity-cache ac-folder-backed-entity-directory-invalidation
+ */
+const FOLDER_BACKED_ENTITY_ROOTS = ["plans", "reviews"] as const;
+
 export interface WatcherOptions {
   kspecDir: string;
   onFileChange: (file: string, content: string) => void;
@@ -71,17 +83,17 @@ export class KspecWatcher {
     // AC: @daemon-entity-cache ac-watcher-invalidation — listen for add/change/unlink
     // so that new, modified, and deleted files all trigger cache invalidation.
     this.watcher.on("change", (path: string) => {
-      if (this.isWatchedYamlPath(path)) {
+      if (this.isWatchedPath(path)) {
         this.handleFileChange(path);
       }
     });
     this.watcher.on("add", (path: string) => {
-      if (this.isWatchedYamlPath(path)) {
+      if (this.isWatchedPath(path)) {
         this.handleFileChange(path);
       }
     });
     this.watcher.on("unlink", (path: string) => {
-      if (this.isWatchedYamlPath(path)) {
+      if (this.isWatchedPath(path)) {
         this.handleFileRemoved(path);
       }
     });
@@ -96,8 +108,24 @@ export class KspecWatcher {
     });
   }
 
-  private isWatchedYamlPath(filePath: string): boolean {
-    return filePath.endsWith(".yaml") && !this.isNestedKspecPath(filePath);
+  private isWatchedPath(filePath: string): boolean {
+    if (this.isNestedKspecPath(filePath)) return false;
+    if (filePath.endsWith(".yaml")) return true;
+    // AC: @daemon-entity-cache ac-folder-backed-entity-directory-invalidation —
+    // also deliver non-YAML files inside folder-backed entity directories
+    // (plan.md, resources/<file>) so the cache invalidates the right domain.
+    return this.isFolderBackedEntityChildPath(filePath);
+  }
+
+  private isFolderBackedEntityChildPath(filePath: string): boolean {
+    const relPath = relative(this.options.kspecDir, filePath);
+    if (!relPath || relPath.startsWith("..")) return false;
+    const segments = relPath.split(/[\\/]+/);
+    if (segments.length < 3) return false;
+    if (!FOLDER_BACKED_ENTITY_ROOTS.includes(segments[0] as (typeof FOLDER_BACKED_ENTITY_ROOTS)[number])) {
+      return false;
+    }
+    return ENTITY_ULID_SEGMENT.test(segments[1]);
   }
 
   /**
@@ -150,6 +178,16 @@ export class KspecWatcher {
       // Skip symlinks to prevent ELOOP errors
       const stat = await lstat(filePath);
       if (stat.isSymbolicLink()) return;
+
+      // AC: @daemon-entity-cache ac-folder-backed-entity-directory-invalidation —
+      // Non-YAML files inside folder-backed entity directories (plan.md,
+      // resources/<binary>) drive cache invalidation but must not be parsed
+      // as YAML and must not be slurped into memory as utf-8 strings.
+      if (!filePath.endsWith(".yaml")) {
+        this.options.onFileChange(filePath, "");
+        this.retryCount = 0;
+        return;
+      }
 
       const content = await readFile(filePath, "utf-8");
 

@@ -165,6 +165,46 @@ describe("ProjectEntityCache", () => {
       expect(fileToDomain("project.reviews.yaml")).toEqual(["reviews"]);
     });
 
+    // AC: @daemon-entity-cache ac-folder-backed-entity-directory-invalidation
+    // AC: @daemon-entity-cache ac-granular-reload
+    it("should map folder-backed plan files (plans/<ulid>/...) to plans domain only", () => {
+      const ulid = "01PNXA00000000000000000000";
+      // Core sidecars
+      expect(fileToDomain(`plans/${ulid}/plan.md`)).toEqual(["plans"]);
+      expect(fileToDomain(`plans/${ulid}/plan.yaml`)).toEqual(["plans"]);
+      expect(fileToDomain(`plans/${ulid}/notes.yaml`)).toEqual(["plans"]);
+      expect(fileToDomain(`plans/${ulid}/resources.yaml`)).toEqual(["plans"]);
+      // Local resources subtree (binary and nested paths)
+      expect(fileToDomain(`plans/${ulid}/resources/ux.png`)).toEqual(["plans"]);
+      expect(fileToDomain(`plans/${ulid}/resources/diagrams/flow.svg`)).toEqual(["plans"]);
+    });
+
+    // AC: @daemon-entity-cache ac-folder-backed-entity-directory-invalidation
+    // AC: @daemon-entity-cache ac-granular-reload
+    it("should map folder-backed review files (reviews/<ulid>/...) to reviews domain only", () => {
+      const ulid = "01REVA00000000000000000000";
+      expect(fileToDomain(`reviews/${ulid}/review.yaml`)).toEqual(["reviews"]);
+      expect(fileToDomain(`reviews/${ulid}/resources.yaml`)).toEqual(["reviews"]);
+      expect(fileToDomain(`reviews/${ulid}/resources/screenshot.png`)).toEqual(["reviews"]);
+      expect(fileToDomain(`reviews/${ulid}/resources/logs/run.log`)).toEqual(["reviews"]);
+    });
+
+    // Guards that the folder match requires a valid ULID segment, not just any
+    // path starting with the word "plans" or "reviews". Without this, the
+    // fall-through catch-all that maps *.yaml to items+meta would still cover
+    // them, but ad-hoc filenames like "plans-archive/foo.yaml" must NOT be
+    // claimed as a folder-backed plan/review change.
+    it("should NOT map paths that share the prefix but are not folder-backed roots", () => {
+      // No ULID after plans/ — falls through to the .yaml catch-all
+      expect(fileToDomain("plans/notes.yaml")).toEqual(["items", "meta"]);
+      // Look-alike sibling directories must not be matched as plans/reviews
+      expect(fileToDomain("plans-archive/foo.yaml")).toEqual(["items", "meta"]);
+      expect(fileToDomain("reviews-archive/foo.yaml")).toEqual(["items", "meta"]);
+      // Filename containing the word but at the top level is not a folder root
+      expect(fileToDomain("plansreport.yaml")).toEqual(["items", "meta"]);
+      expect(fileToDomain("reviewsreport.yaml")).toEqual(["items", "meta"]);
+    });
+
     it("should map triage file to triage domain", () => {
       expect(fileToDomain("project.triage.yaml")).toEqual(["triage"]);
     });
@@ -2394,6 +2434,191 @@ describe("ProjectEntityCache", () => {
       await Promise.all(promises);
 
       expect(cache.getDomainState("tasks")).toBe("ready");
+    });
+  });
+
+  // ─── AC: ac-folder-backed-entity-directory-invalidation ────────────────
+  //
+  // Folder-backed plans (`.kspec/plans/<ulid>/...`) and reviews
+  // (`.kspec/reviews/<ulid>/...`) must route through the same
+  // domain-level debounce/reload path as the legacy index files
+  // `project.plans.yaml` / `project.reviews.yaml`. These tests exercise
+  // handleFileChange end-to-end (path classification + domain
+  // invalidation + dedup) so we don't get stale plan/review detail
+  // after a sidecar or resource file change.
+
+  // AC: @daemon-entity-cache ac-folder-backed-entity-directory-invalidation
+  // AC: @daemon-entity-cache ac-watcher-invalidation
+  describe("ac-folder-backed-entity-directory-invalidation: plan/review folder changes invalidate the right domain", () => {
+    const PLAN_ULID = "01PNXA00000000000000000000";
+    const REVIEW_ULID = "01REVA00000000000000000000";
+
+    function expectOnlyDomainsInvoked(
+      spy: ReturnType<typeof vi.spyOn>,
+      expectedDomains: CacheDomain[],
+    ): void {
+      const invokedDomains = spy.mock.calls.map((call) => call[0] as CacheDomain);
+      expect(new Set(invokedDomains)).toEqual(new Set(expectedDomains));
+    }
+
+    // AC: @daemon-entity-cache ac-folder-backed-entity-directory-invalidation
+    // AC: @daemon-entity-cache ac-granular-reload
+    it("routes plans/<ulid>/plan.md, plan.yaml, notes.yaml, resources.yaml, and resources/<file> to plans only", async () => {
+      vi.useFakeTimers();
+      try {
+        const cache = new ProjectEntityCache(projectA);
+        (cache as any).domainDebounceMs = 50;
+        const processChangesSpy = vi
+          .spyOn(cache as any, "processDomainChanges")
+          .mockResolvedValue(undefined);
+
+        const kspecDir = join(projectA, ".kspec");
+        const planDir = join(kspecDir, "plans", PLAN_ULID);
+        const paths = [
+          join(planDir, "plan.md"),
+          join(planDir, "plan.yaml"),
+          join(planDir, "notes.yaml"),
+          join(planDir, "resources.yaml"),
+          join(planDir, "resources", "ux.png"),
+          join(planDir, "resources", "nested", "diagram.svg"),
+        ];
+
+        // Each path fires its own debounce window so we can check
+        // domain classification per-path. Coalescing is covered separately.
+        for (const p of paths) {
+          const invalidation = cache.handleFileChange(kspecDir, p);
+          await vi.advanceTimersByTimeAsync(50);
+          await invalidation;
+        }
+
+        expectOnlyDomainsInvoked(processChangesSpy, ["plans"]);
+        expect(processChangesSpy).toHaveBeenCalledTimes(paths.length);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    // AC: @daemon-entity-cache ac-folder-backed-entity-directory-invalidation
+    // AC: @daemon-entity-cache ac-granular-reload
+    it("routes reviews/<ulid>/review.yaml, resources.yaml, and resources/<file> to reviews only", async () => {
+      vi.useFakeTimers();
+      try {
+        const cache = new ProjectEntityCache(projectA);
+        (cache as any).domainDebounceMs = 50;
+        const processChangesSpy = vi
+          .spyOn(cache as any, "processDomainChanges")
+          .mockResolvedValue(undefined);
+
+        const kspecDir = join(projectA, ".kspec");
+        const reviewDir = join(kspecDir, "reviews", REVIEW_ULID);
+        const paths = [
+          join(reviewDir, "review.yaml"),
+          join(reviewDir, "resources.yaml"),
+          join(reviewDir, "resources", "screenshot.png"),
+          join(reviewDir, "resources", "logs", "run.log"),
+        ];
+
+        for (const p of paths) {
+          const invalidation = cache.handleFileChange(kspecDir, p);
+          await vi.advanceTimersByTimeAsync(50);
+          await invalidation;
+        }
+
+        expectOnlyDomainsInvoked(processChangesSpy, ["reviews"]);
+        expect(processChangesSpy).toHaveBeenCalledTimes(paths.length);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    // AC: @daemon-entity-cache ac-reload-dedup
+    it("coalesces multiple plan-folder file events into a single plans reload", async () => {
+      vi.useFakeTimers();
+      try {
+        const cache = new ProjectEntityCache(projectA);
+        (cache as any).domainDebounceMs = 50;
+        const processChangesSpy = vi
+          .spyOn(cache as any, "processDomainChanges")
+          .mockResolvedValue(undefined);
+
+        const kspecDir = join(projectA, ".kspec");
+        const planDir = join(kspecDir, "plans", PLAN_ULID);
+        const planMd = join(planDir, "plan.md");
+        const planYaml = join(planDir, "plan.yaml");
+        const planResource = join(planDir, "resources", "ux.png");
+
+        const a = cache.handleFileChange(kspecDir, planMd, "# updated body");
+        const b = cache.handleFileChange(kspecDir, planYaml, "title: New title");
+        const c = cache.handleFileChange(kspecDir, planResource);
+
+        await vi.advanceTimersByTimeAsync(50);
+        await Promise.all([a, b, c]);
+
+        expect(processChangesSpy).toHaveBeenCalledTimes(1);
+        expect(processChangesSpy).toHaveBeenCalledWith("plans", expect.any(Array), expect.anything());
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    // AC: @daemon-entity-cache ac-reload-dedup
+    it("coalesces multiple review-folder file events into a single reviews reload", async () => {
+      vi.useFakeTimers();
+      try {
+        const cache = new ProjectEntityCache(projectA);
+        (cache as any).domainDebounceMs = 50;
+        const processChangesSpy = vi
+          .spyOn(cache as any, "processDomainChanges")
+          .mockResolvedValue(undefined);
+
+        const kspecDir = join(projectA, ".kspec");
+        const reviewDir = join(kspecDir, "reviews", REVIEW_ULID);
+        const reviewYaml = join(reviewDir, "review.yaml");
+        const reviewResources = join(reviewDir, "resources.yaml");
+        const reviewScreenshot = join(reviewDir, "resources", "screenshot.png");
+
+        const a = cache.handleFileChange(kspecDir, reviewYaml, "lifecycle_state: open");
+        const b = cache.handleFileChange(kspecDir, reviewResources, "resources: []");
+        const c = cache.handleFileChange(kspecDir, reviewScreenshot);
+
+        await vi.advanceTimersByTimeAsync(50);
+        await Promise.all([a, b, c]);
+
+        expect(processChangesSpy).toHaveBeenCalledTimes(1);
+        expect(processChangesSpy).toHaveBeenCalledWith("reviews", expect.any(Array), expect.anything());
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    // Regression: parent-index files still drive their respective domains so
+    // legacy index-only writes and migration writes continue to work.
+    // AC: @daemon-entity-cache ac-watcher-invalidation
+    it("still invalidates plans on project.plans.yaml and reviews on project.reviews.yaml", async () => {
+      vi.useFakeTimers();
+      try {
+        const cache = new ProjectEntityCache(projectA);
+        (cache as any).domainDebounceMs = 50;
+        const processChangesSpy = vi
+          .spyOn(cache as any, "processDomainChanges")
+          .mockResolvedValue(undefined);
+
+        const kspecDir = join(projectA, ".kspec");
+        const plansIndex = join(kspecDir, "project.plans.yaml");
+        const reviewsIndex = join(kspecDir, "project.reviews.yaml");
+
+        const a = cache.handleFileChange(kspecDir, plansIndex);
+        await vi.advanceTimersByTimeAsync(50);
+        await a;
+
+        const b = cache.handleFileChange(kspecDir, reviewsIndex);
+        await vi.advanceTimersByTimeAsync(50);
+        await b;
+
+        expectOnlyDomainsInvoked(processChangesSpy, ["plans", "reviews"]);
+      } finally {
+        vi.useRealTimers();
+      }
     });
   });
 

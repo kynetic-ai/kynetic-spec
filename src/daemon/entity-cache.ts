@@ -476,6 +476,25 @@ interface TaskDomainStore extends DomainStore<TaskSummary[], CachedTaskDetail> {
 
 // ─── File → Domain Mapping ───────────────────────────────────────────────────
 
+/** Crockford-base32 ULID shape used to validate folder-backed entity roots. */
+const ENTITY_ULID_SEGMENT = /^[0-9A-HJKMNP-TV-Z]{26}$/i;
+
+/**
+ * Whether `relativePath` (relative to `.kspec/`) is a file inside a
+ * folder-backed entity directory of the given storage root, i.e.
+ * `<storageRoot>/<ULID>/<...>`. Requires the second segment to be a
+ * Crockford-base32 ULID so look-alike prefixes like `plans-archive/...`
+ * or top-level filenames like `plansreport.yaml` are not claimed.
+ */
+function isFolderBackedEntityChild(storageRoot: string, relativePath: string): boolean {
+  const segments = relativePath.split("/");
+  return (
+    segments.length >= 3 &&
+    segments[0] === storageRoot &&
+    ENTITY_ULID_SEGMENT.test(segments[1])
+  );
+}
+
 /**
  * Map a changed file path (relative to .kspec/) to its data domain(s).
  * Returns an array of affected domains, or null if the file doesn't
@@ -520,13 +539,27 @@ export function fileToDomain(
     domains.push("inbox");
   }
 
-  // Plans
+  // Plans — both the lean parent index (project.plans.yaml) and folder-backed
+  // per-plan directories (plans/<ulid>/plan.md, plan.yaml, notes.yaml,
+  // resources.yaml, resources/<file>). The folder match requires a valid
+  // ULID-shaped segment after `plans/` so sibling paths like
+  // `plans-archive/foo.yaml` or top-level `plansreport.yaml` do not collide.
+  // AC: @daemon-entity-cache ac-folder-backed-entity-directory-invalidation
   if (relativePath === "project.plans.yaml") {
     domains.push("plans");
   }
+  if (isFolderBackedEntityChild("plans", relativePath)) {
+    domains.push("plans");
+  }
 
-  // Reviews
+  // Reviews — both the lean parent index (project.reviews.yaml) and
+  // folder-backed per-review directories (reviews/<ulid>/review.yaml,
+  // resources.yaml, resources/<file>). Same ULID-segment guard as plans.
+  // AC: @daemon-entity-cache ac-folder-backed-entity-directory-invalidation
   if (relativePath === "project.reviews.yaml") {
+    domains.push("reviews");
+  }
+  if (isFolderBackedEntityChild("reviews", relativePath)) {
     domains.push("reviews");
   }
 
