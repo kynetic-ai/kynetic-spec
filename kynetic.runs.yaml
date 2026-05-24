@@ -52889,7 +52889,7 @@ runs:
     completed_at: 2026-05-24T17:47:23.995Z
   - _ulid: 01KSDVAN2GZFNSEY0MATNABEGH
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -52902,7 +52902,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-24T20:39:53.264Z
-        completed_at: 2026-05-24T20:39:53.264Z
+        completed_at: 2026-05-24T20:40:03.215Z
+        notes: "Identified candidates: (1) Friction — both MUST-FIX blockers were identical in shape
+          (hardcoded force:true) across plan and review migration steps. Parallel domain handlers
+          (plan/review/task each have parallel storage manager + migration logic) make copy-paste
+          bugs likely to duplicate across paths. Systemic, concrete, repeatable. (2) Success —
+          dispatch worker successfully resumed from prior worker's uncommitted edits after
+          auth-failure mid-task by inspecting git diff first; one-off scenario, not systemic. (3)
+          Friction — needs_work → submit requires in_progress transition first; by design per
+          task-work skill, not actually friction."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-24T20:40:03.215Z
+        completed_at: 2026-05-24T20:40:03.215Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-24T20:37:50.801Z
