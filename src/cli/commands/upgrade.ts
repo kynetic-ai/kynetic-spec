@@ -380,6 +380,67 @@ export async function runUpgradePipeline(
     };
   }
 
+  // ─── Pipeline-wide safety preflight ──────────────────────────────────
+  // The protected-project tripwire (KSPEC_PROTECTED_PROJECT_PATHS) must
+  // gate EVERY executing upgrade step, not just the plan/review/manifest
+  // storage block. A failure inside `runAtomicStorageMigration` previously
+  // returned a `failed` "Storage migration safety preflight" step but the
+  // pipeline still fell through to `runBackfillCoreSkillsStep` and the
+  // downstream skill / agents / gitignore / scaffold / version-record
+  // steps. Those steps write to `.kspec/`, `.agents/`, the project
+  // gitignore, and the shadow branch — exactly the mutations the tripwire
+  // exists to refuse. Hoisting the check here closes that bypass: when an
+  // operator points the env variable at a protected root, no executing
+  // upgrade step touches disk.
+  //
+  // Dry-runs are intentionally exempt — the tripwire only refuses writes
+  // so operators can still preview what a migration would do against a
+  // protected target.
+  //
+  // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-executes-folder-migration
+  if (!dryRun) {
+    try {
+      const { assertSafeMigrationTarget } = await import(
+        "../../parser/migration-safety.js"
+      );
+      assertSafeMigrationTarget(projectDir, ctx.specDir);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      const skipMessage =
+        "skipped — protected project tripwire refused executing upgrade";
+      // Synthesise step records for every named pipeline step so JSON
+      // consumers and the rendered console output see the same shape they
+      // would on a normal upgrade — just with every mutation explicitly
+      // accounted for as `skipped`. The order matches the executing-run
+      // pipeline order below.
+      const skippedPipelineSteps: UpgradeStepResult[] = [
+        { name: "Storage migration safety preflight", status: "failed", message },
+        { name: "Task storage migration", status: "skipped", message: skipMessage },
+        { name: "Plan storage folder migration", status: "skipped", message: skipMessage },
+        { name: "Review storage folder migration", status: "skipped", message: skipMessage },
+        { name: "Storage manifest (kynetic 1.2)", status: "skipped", message: skipMessage },
+        { name: "Backfill core skills", status: "skipped", message: skipMessage },
+        { name: "Re-render skills", status: "skipped", message: skipMessage },
+        { name: "Regenerate agent instructions", status: "skipped", message: skipMessage },
+        { name: "Restore gitignore entries", status: "skipped", message: skipMessage },
+        { name: "Scaffold missing files", status: "skipped", message: skipMessage },
+        { name: "Record version", status: "skipped", message: skipMessage },
+      ];
+      return {
+        success: false,
+        sourceVersion: source.version,
+        targetVersion,
+        confidence: source.confidence,
+        isRefresh,
+        noop: false,
+        steps: skippedPipelineSteps,
+        followUps: [],
+        releaseNotes: [],
+        previousShadowCommit,
+      };
+    }
+  }
+
   // ─── Step 1: Task storage migration ─────────────────────────────────
   // AC: @single-command-version-upgrade ac-runs-task-storage-migration
   let taskMigrationOk = true;

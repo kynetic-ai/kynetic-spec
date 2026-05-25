@@ -1640,4 +1640,109 @@ describe("kspec upgrade — folder storage migration", () => {
     await expect(fs.access(path.join(specDir, "plans", planUlid))).rejects.toThrow();
     await expect(fs.access(path.join(specDir, "reviews", reviewUlid))).rejects.toThrow();
   });
+
+  // Regression for fix cycle 6 blocker: the protected-project tripwire must
+  // halt the ENTIRE upgrade pipeline, not just the plan/review/manifest
+  // storage sub-block. The reviewer reproduced this with
+  // KSPEC_PROTECTED_PROJECT_PATHS set to the project root and observed
+  // `Storage migration safety preflight=failed` plus `Backfill core
+  // skills=done` in the same JSON result. Backfilling core skills,
+  // re-rendering skills, regenerating the agents file, repairing
+  // gitignore, scaffolding files, and recording the version all WRITE
+  // to the protected project — exactly the mutations the tripwire is
+  // supposed to refuse. The fix hoists the preflight to the pipeline
+  // entrypoint so a failed preflight skips every downstream step.
+  //
+  // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-executes-folder-migration
+  it("upgrade refuses every pipeline step when KSPEC_PROTECTED_PROJECT_PATHS guards the target", async () => {
+    const { specDir, manifestPath } = await initProject(tempDir);
+
+    // Empty plan/review files — no monolithic records — and a downgraded
+    // manifest so the pipeline would otherwise have real work to do
+    // across multiple steps (manifest promotion, skills backfill, skills
+    // render, agents regen, gitignore repair, scaffold, version record).
+    await writeMonolithicPlans(specDir, []);
+    await writeMonolithicReviews(specDir, []);
+
+    // Snapshot every artifact the downstream steps would mutate so we
+    // can prove they remained untouched.
+    const manifestBefore = await readTestOutput(manifestPath);
+    const setupStatePath = path.join(specDir, ".setup-state.json");
+    const setupStateBefore = await readTestOutput(setupStatePath);
+    const gitignorePath = path.join(tempDir, ".gitignore");
+    const gitignoreBefore = await fs
+      .readFile(gitignorePath, "utf-8")
+      .catch(() => "<missing>");
+    const skillsDir = path.join(specDir, "skills");
+    const skillsBefore = await fs
+      .readdir(skillsDir)
+      .then((entries) => entries.sort())
+      .catch(() => [] as string[]);
+
+    const cliResult = kspec("upgrade --json", tempDir, {
+      expectFail: true,
+      env: { KSPEC_PROTECTED_PROJECT_PATHS: tempDir },
+    });
+    expect(cliResult.exitCode).not.toBe(0);
+    const result = JSON.parse(cliResult.stdout) as UpgradeResultShape;
+    expect(result.success).toBe(false);
+
+    const safetyStep = result.steps.find(
+      (s) => s.name === "Storage migration safety preflight",
+    );
+    expect(safetyStep?.status).toBe("failed");
+    expect(safetyStep?.message).toMatch(/protected/i);
+    expect(safetyStep?.message).toMatch(/KSPEC_PROTECTED_PROJECT_PATHS/);
+
+    // Every downstream pipeline step must be reported as `skipped`.
+    // None of them are allowed to run on a protected target — they all
+    // mutate disk in some way (task storage layout, plan/review folders,
+    // manifest, .kspec/skills/, .agents/, .gitignore, scaffolded files,
+    // setup state). A `done` here means the tripwire failed to halt the
+    // pipeline and the protected project was mutated.
+    const pipelineStepNames = [
+      "Task storage migration",
+      "Plan storage folder migration",
+      "Review storage folder migration",
+      "Storage manifest (kynetic 1.2)",
+      "Backfill core skills",
+      "Re-render skills",
+      "Regenerate agent instructions",
+      "Restore gitignore entries",
+      "Scaffold missing files",
+      "Record version",
+    ];
+    for (const stepName of pipelineStepNames) {
+      const step = result.steps.find((s) => s.name === stepName);
+      expect(step, `expected ${stepName} step present`).toBeDefined();
+      expect(step?.status, `${stepName} must be skipped under tripwire`).toBe(
+        "skipped",
+      );
+    }
+
+    // The result must NOT report any step as `done` — that would prove
+    // the tripwire failed to halt the pipeline and the protected
+    // project was mutated.
+    const doneSteps = result.steps.filter((s) => s.status === "done");
+    expect(
+      doneSteps,
+      `no step may run after the tripwire fires; got: ${doneSteps.map((s) => s.name).join(", ")}`,
+    ).toEqual([]);
+
+    // Every mutation-target artifact must be byte-identical to before.
+    expect(await readTestOutput(manifestPath)).toBe(manifestBefore);
+    expect(await readTestOutput(setupStatePath)).toBe(setupStateBefore);
+    expect(await fs.readFile(gitignorePath, "utf-8").catch(() => "<missing>")).toBe(
+      gitignoreBefore,
+    );
+    const skillsAfter = await fs
+      .readdir(skillsDir)
+      .then((entries) => entries.sort())
+      .catch(() => [] as string[]);
+    expect(skillsAfter).toEqual(skillsBefore);
+
+    // No plan/review folders were created.
+    await expect(fs.access(path.join(specDir, "plans"))).rejects.toThrow();
+    await expect(fs.access(path.join(specDir, "reviews"))).rejects.toThrow();
+  });
 });
