@@ -148,6 +148,47 @@ const EXTENSION_TO_CONTENT_TYPE: ReadonlyMap<string, string> = new Map(
  */
 export type ResourceValidationResult<T> = { ok: true; value: T } | { ok: false; error: string };
 
+/**
+ * Categorized failure kinds produced by {@link resolveResourcePath}. Lets
+ * callers map resolver outcomes onto their own structured error codes
+ * (e.g. CLI/HTTP layers) without pattern-matching on error message text.
+ *
+ * The categories are deliberately resolver-shaped, not surface-shaped:
+ * surfaces decide how to render them (CLI exit codes, HTTP status). The
+ * key contract is that `symlink_escape` and `not_a_regular_file` describe
+ * path-safety rejections that must NOT be reported as "missing" — the
+ * declared path exists but is not a safe resolution.
+ *
+ * AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner
+ */
+export type ResourceResolutionErrorKind =
+  /** Textual path validation rejected the input (traversal, absolute, backslash, etc.). */
+  | "path_invalid"
+  /** Path not declared in the supplied manifest. */
+  | "not_declared"
+  /** Owner resources directory or candidate file does not exist on disk. */
+  | "missing"
+  /**
+   * Symlink at the owner root, an intermediate directory, the destination
+   * leaf, or a realpath-containment violation after resolution. Path-safety
+   * rejection — distinct from `missing` so callers can map to 400-level
+   * "invalid path" responses rather than 404 "not found".
+   */
+  | "symlink_escape"
+  /** Destination resolves to a non-file (directory, socket, FIFO, etc.). */
+  | "not_a_regular_file";
+
+/**
+ * Result variant for {@link resolveResourcePath} that carries a categorized
+ * `kind` discriminator on the failure branch. Assignable to
+ * {@link ResourceValidationResult} via structural width subtyping — callers
+ * that only need the error string can ignore `kind`.
+ */
+export type ResourceResolutionResult<T> =
+  | { ok: true; value: T }
+  | { ok: false; error: string; kind: ResourceResolutionErrorKind };
+
 // ── Path Helpers ─────────────────────────────────────────────────────────────
 
 /**
@@ -402,15 +443,18 @@ export async function resolveResourcePath(options: {
   ownerResourcesDir: string;
   relativePath: string;
   manifest: ResourceManifest;
-}): Promise<ResourceValidationResult<ResolvedResourceLocation>> {
+}): Promise<ResourceResolutionResult<ResolvedResourceLocation>> {
   const pathValidation = validateResourceRelativePath(options.relativePath);
-  if (!pathValidation.ok) return pathValidation;
+  if (!pathValidation.ok) {
+    return { ok: false, error: pathValidation.error, kind: "path_invalid" };
+  }
   const relativePath = pathValidation.value;
 
   const declared = options.manifest.resources.some((r) => r.path === relativePath);
   if (!declared) {
     return {
       ok: false,
+      kind: "not_declared",
       error: `Resource path "${relativePath}" is not declared in the owning entity's resources.yaml manifest. Add an entry with this path or use an existing declared path.`,
     };
   }
@@ -421,18 +465,21 @@ export async function resolveResourcePath(options: {
   } catch {
     return {
       ok: false,
+      kind: "missing",
       error: `Owning entity has no resources directory yet; declare resources via resources.yaml before resolving "${relativePath}".`,
     };
   }
   if (ownerStat.isSymbolicLink()) {
     return {
       ok: false,
+      kind: "symlink_escape",
       error: `Resource path "${relativePath}" cannot be resolved: the owning entity's resources/ directory is itself a symlink, which is rejected so all resolution stays inside the entity tree.`,
     };
   }
   if (!ownerStat.isDirectory()) {
     return {
       ok: false,
+      kind: "missing",
       error: `Resource path "${relativePath}" cannot be resolved: the owning entity's resources/ path is not a directory.`,
     };
   }
@@ -443,6 +490,7 @@ export async function resolveResourcePath(options: {
   } catch {
     return {
       ok: false,
+      kind: "missing",
       error: `Owning entity has no resources directory yet; declare resources via resources.yaml before resolving "${relativePath}".`,
     };
   }
@@ -454,6 +502,7 @@ export async function resolveResourcePath(options: {
   } catch {
     return {
       ok: false,
+      kind: "missing",
       error: `Resource file "${relativePath}" does not exist under the owning entity's resources/ directory.`,
     };
   }
@@ -466,6 +515,7 @@ export async function resolveResourcePath(options: {
   ) {
     return {
       ok: false,
+      kind: "symlink_escape",
       error: `Resource path "${relativePath}" resolves through a symlink that escapes the owning entity's resources/ tree; symlink escapes are rejected.`,
     };
   }
@@ -480,12 +530,14 @@ export async function resolveResourcePath(options: {
   } catch {
     return {
       ok: false,
+      kind: "missing",
       error: `Resource file "${relativePath}" does not exist under the owning entity's resources/ directory.`,
     };
   }
   if (!candidateStat.isFile()) {
     return {
       ok: false,
+      kind: "not_a_regular_file",
       error: `Resource path "${relativePath}" does not point to a regular file under the owning entity's resources/ directory; resources must be files, not directories or other non-regular entries.`,
     };
   }
@@ -633,7 +685,7 @@ export async function resolveResourceReference(options: {
   ctx: KspecContext;
   ownerEntityDir: string;
   relativePath: string;
-}): Promise<ResourceValidationResult<ResolvedResourceLocation>> {
+}): Promise<ResourceResolutionResult<ResolvedResourceLocation>> {
   await requireResourceFolderStorage(options.ctx);
   const manifest = await loadResourceManifest(options.ownerEntityDir);
   return resolveResourcePath({
@@ -1357,7 +1409,9 @@ export async function copyResourceForStaticExport(options: {
     relativePath: options.relativePath,
     manifest: options.manifest,
   });
-  if (!resolution.ok) return resolution;
+  if (!resolution.ok) {
+    return { ok: false, error: resolution.error };
+  }
 
   const exportedPath = path.posix.join(
     STATIC_EXPORT_RESOURCES_PREFIX,

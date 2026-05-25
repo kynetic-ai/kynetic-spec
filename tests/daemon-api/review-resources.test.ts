@@ -7,6 +7,9 @@
 // Coverage: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
 // Coverage: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
 
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
+
 import type { Elysia } from "elysia";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
@@ -350,6 +353,46 @@ describe("GET /api/reviews/:ref/resources/:resourceId/bytes", () => {
     expect(response.status).toBe(400);
     const body = await response.json();
     expect(body.code).toBe("invalid_resource_id");
+  });
+
+  // Coverage: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+  it("returns 400 invalid_resource_path when the declared resource resolves through a symlink escape", async () => {
+    // The bytes resolver previously mapped every resolveResourcePath failure
+    // to resource_not_found, which would report a path-safety rejection as
+    // 404 "the file is missing" — masking the real reason and matching the
+    // status the legitimate "missing on disk" case uses. The task contract
+    // says invalid/forbidden paths return 400 invalid_resource_path; this
+    // test pins that behavior end-to-end through the daemon route.
+    const reviewDir = path.join(tempDir, ".kspec", "reviews", REVIEW_ULID);
+    const resourcesDir = path.join(reviewDir, "resources");
+    await fs.mkdir(resourcesDir, { recursive: true });
+    const outside = path.join(tempDir, "daemon-bytes-escape.png");
+    await fs.writeFile(outside, "outside-bytes");
+    try {
+      await fs.symlink(outside, path.join(resourcesDir, "shot.png"));
+    } catch (err) {
+      const errno = (err as NodeJS.ErrnoException).code;
+      if (errno === "EPERM" || errno === "ENOSYS") return;
+      throw err;
+    }
+    // Hand-write the manifest so getReviewResource succeeds and the
+    // resolver path is the one under test.
+    await fs.writeFile(
+      path.join(reviewDir, "resources.yaml"),
+      `resources:\n  - id: shot\n    label: null\n    path: shot.png\n    content_type: image/png\n    bytes: 13\n    sha256: "0000000000000000000000000000000000000000000000000000000000000000"\n    git_commit: null\n    git_path: null\n    description: null\n`,
+    );
+
+    const response = await request(`/api/reviews/${REVIEW_ULID}/resources/shot/bytes`);
+    expect(response.status).toBe(400);
+    const body = await response.json();
+    expect(body.code).toBe("invalid_resource_path");
+    expect(body.message).toMatch(/symlink/i);
+    expect(body.resource_id).toBe("shot");
+    expect(body.path).toBe("shot.png");
+
+    // Outside file must remain untouched — the rejection must not have
+    // accidentally read or written through the symlink.
+    expect(await fs.readFile(outside, "utf-8")).toBe("outside-bytes");
   });
 });
 

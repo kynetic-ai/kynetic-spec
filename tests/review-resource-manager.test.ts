@@ -712,4 +712,128 @@ describe("review-resource-manager", () => {
     expect(result.error.code).toBe("invalid_resource_id");
     expect(result.error.resource_id).toBe("Bad ID");
   });
+
+  // ── resolveReviewResourceFile error mapping ────────────────────────────────
+  //
+  // The shared resolveResourcePath helper rejects multiple failure shapes
+  // through one string error, but the review-resource API/CLI contract
+  // distinguishes between "truly missing" (resource_not_found → 404) and
+  // "declared path is forbidden" (invalid_resource_path → 400). These
+  // tests pin the mapping so a regression in resolveReviewResourceFile
+  // can't quietly downgrade a symlink-escape rejection to "not found"
+  // — which would imply the file is missing rather than that the declared
+  // path is structurally unsafe.
+
+  // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+  it("resolveReviewResourceFile returns invalid_resource_path when the declared path resolves through a symlink escape", async () => {
+    // Plant the exact attack the bytes resolver must reject: the manifest
+    // declares shot.png, but resources/shot.png is a symlink pointing
+    // *outside* the review's resources/ tree. The resolver's realpath
+    // containment check rejects this as a symlink escape; the mapping
+    // must surface invalid_resource_path (path-safety rejection), not
+    // resource_not_found (which would imply the file is merely missing).
+    const review = await seededReview("resolve-symlink-escape");
+    const reviewDir = getReviewDir(ctx as any, review._ulid);
+    const resourcesDir = path.join(reviewDir, "resources");
+    await fs.mkdir(resourcesDir, { recursive: true });
+    const outside = path.join(tempDir, "resolve-escape-target.png");
+    await fs.writeFile(outside, "outside-bytes");
+    try {
+      await fs.symlink(outside, path.join(resourcesDir, "shot.png"));
+    } catch (err) {
+      const errno = (err as NodeJS.ErrnoException).code;
+      if (errno === "EPERM" || errno === "ENOSYS") return;
+      throw err;
+    }
+    // Hand-write a manifest declaring shot.png so getReviewResource
+    // succeeds and the resolver path is the one under test.
+    await fs.writeFile(
+      path.join(reviewDir, "resources.yaml"),
+      `resources:\n  - id: shot\n    label: null\n    path: shot.png\n    content_type: image/png\n    bytes: 13\n    sha256: "0000000000000000000000000000000000000000000000000000000000000000"\n    git_commit: null\n    git_path: null\n    description: null\n`,
+    );
+
+    const result = await resolveReviewResourceFile(ctx as any, `@${review._ulid}`, "shot");
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.error.code).toBe("invalid_resource_path");
+    expect(result.error.message).toMatch(/symlink/i);
+    expect(result.error.resource_id).toBe("shot");
+    expect(result.error.path).toBe("shot.png");
+    // Outside file untouched.
+    expect(await fs.readFile(outside, "utf-8")).toBe("outside-bytes");
+  });
+
+  // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+  it("resolveReviewResourceFile returns invalid_resource_path when the resources/ root is itself a symlink", async () => {
+    // Second symlink-escape variant: the entire resources/ directory is a
+    // symlink to an outside tree. The resolver's owner-lstat check rejects
+    // this BEFORE realpath containment, but the mapping must still produce
+    // invalid_resource_path (not resource_not_found).
+    const review = await seededReview("resolve-symlink-root");
+    const reviewDir = getReviewDir(ctx as any, review._ulid);
+    await fs.mkdir(reviewDir, { recursive: true });
+    const outside = path.join(tempDir, "resolve-root-target");
+    await fs.mkdir(outside, { recursive: true });
+    await fs.writeFile(path.join(outside, "shot.png"), "outside-bytes");
+    try {
+      await fs.symlink(outside, path.join(reviewDir, "resources"));
+    } catch (err) {
+      const errno = (err as NodeJS.ErrnoException).code;
+      if (errno === "EPERM" || errno === "ENOSYS") return;
+      throw err;
+    }
+    await fs.writeFile(
+      path.join(reviewDir, "resources.yaml"),
+      `resources:\n  - id: shot\n    label: null\n    path: shot.png\n    content_type: image/png\n    bytes: 13\n    sha256: "0000000000000000000000000000000000000000000000000000000000000000"\n    git_commit: null\n    git_path: null\n    description: null\n`,
+    );
+
+    const result = await resolveReviewResourceFile(ctx as any, `@${review._ulid}`, "shot");
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.error.code).toBe("invalid_resource_path");
+    expect(result.error.message).toMatch(/symlink/i);
+  });
+
+  // AC: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner
+  it("resolveReviewResourceFile preserves resource_not_found when the declared file is truly missing on disk", async () => {
+    // Anchor for the inverse case: a declared manifest entry whose file
+    // doesn't exist on disk must STILL surface as resource_not_found, not
+    // get caught up in the new invalid_resource_path mapping.
+    const review = await seededReview("resolve-missing");
+    const reviewDir = getReviewDir(ctx as any, review._ulid);
+    await fs.mkdir(path.join(reviewDir, "resources"), { recursive: true });
+    await fs.writeFile(
+      path.join(reviewDir, "resources.yaml"),
+      `resources:\n  - id: ghost\n    label: null\n    path: ghost.png\n    content_type: image/png\n    bytes: 0\n    sha256: "0000000000000000000000000000000000000000000000000000000000000000"\n    git_commit: null\n    git_path: null\n    description: null\n`,
+    );
+
+    const result = await resolveReviewResourceFile(ctx as any, `@${review._ulid}`, "ghost");
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.error.code).toBe("resource_not_found");
+    expect(result.error.resource_id).toBe("ghost");
+    expect(result.error.path).toBe("ghost.png");
+  });
+
+  // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+  it("resolveReviewResourceFile returns invalid_resource_path when the declared path points at a directory", async () => {
+    // not_a_regular_file maps to invalid_resource_path: the declared path
+    // is structurally invalid as a resource target (resources must be
+    // files), so 400 invalid_resource_path is the right answer — not 404
+    // resource_not_found, which would imply the file is missing.
+    const review = await seededReview("resolve-not-file");
+    const reviewDir = getReviewDir(ctx as any, review._ulid);
+    const resourcesDir = path.join(reviewDir, "resources");
+    await fs.mkdir(path.join(resourcesDir, "shot.png"), { recursive: true });
+    await fs.writeFile(
+      path.join(reviewDir, "resources.yaml"),
+      `resources:\n  - id: shot\n    label: null\n    path: shot.png\n    content_type: image/png\n    bytes: 0\n    sha256: "0000000000000000000000000000000000000000000000000000000000000000"\n    git_commit: null\n    git_path: null\n    description: null\n`,
+    );
+
+    const result = await resolveReviewResourceFile(ctx as any, `@${review._ulid}`, "shot");
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.error.code).toBe("invalid_resource_path");
+    expect(result.error.message).toMatch(/regular file|directory|non-regular/i);
+  });
 });

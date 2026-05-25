@@ -172,6 +172,26 @@ export async function getReviewResource(
  * surface gets the same `resource_not_found` rejection for undeclared
  * ids regardless of which file happens to live on disk.
  *
+ * Resolver failures are mapped onto the documented review-resource codes
+ * by the resolver's `kind` discriminator, not by error message text:
+ *   - `missing` (file or owner resources/ dir doesn't exist) →
+ *     `resource_not_found` so truly missing files surface as 404.
+ *   - `symlink_escape` (owner is a symlink, an intermediate is a symlink,
+ *     the leaf is a symlink, or the realpath escapes the owner tree) →
+ *     `invalid_resource_path` so path-safety rejections surface as 400.
+ *     The declared resource path is forbidden under the task contract;
+ *     reporting "not found" would imply the file is merely missing.
+ *   - `not_a_regular_file` (destination resolves to a directory, socket,
+ *     FIFO, etc.) → `invalid_resource_path`. Same rationale — the path
+ *     is structurally invalid as a resource target.
+ *   - `path_invalid` (textual validation failure on a stored manifest
+ *     path) → `invalid_resource_path`. Should be unreachable since
+ *     `addReviewResource` validates the path on write, but mapped
+ *     defensively.
+ *   - `not_declared` is unreachable here because `getReviewResource`
+ *     already gates on manifest presence; mapping to `resource_not_found`
+ *     is the conservative default if a future code path bypasses that.
+ *
  * AC: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner
  * AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
  */
@@ -198,8 +218,14 @@ export async function resolveReviewResourceFile(
     manifest,
   });
   if (!resolution.ok) {
+    const code: ReviewResourceErrorCode =
+      resolution.kind === "symlink_escape" ||
+      resolution.kind === "not_a_regular_file" ||
+      resolution.kind === "path_invalid"
+        ? "invalid_resource_path"
+        : "resource_not_found";
     return err({
-      code: "resource_not_found",
+      code,
       message: resolution.error,
       resource_id: resourceId,
       path: fetched.value.resource.path,
