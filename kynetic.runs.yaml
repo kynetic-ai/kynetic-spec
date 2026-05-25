@@ -54355,7 +54355,7 @@ runs:
     started_at: 2026-05-25T16:47:52.008Z
     completed_at: 2026-05-25T16:50:55.839Z
   - _ulid: 01KSG1R6P39T2VT4194AKZ7E0K
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -54409,7 +54409,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-25T17:11:09.713Z
-        completed_at: 2026-05-25T17:11:09.713Z
+        completed_at: 2026-05-25T17:11:19.078Z
+        notes: "Capture: no new inbox items, tasks, or observations created. Existing coverage: @01KSEQ7V
+          (behavioral review reproductions) and @01KSF28Y (audit adjacent resource path/id mutation
+          surfaces). Current task defects remain tracked as unresolved blocker threads on review
+          @01KSG0WN."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-25T17:08:35.139Z
+    completed_at: 2026-05-25T17:11:19.078Z
