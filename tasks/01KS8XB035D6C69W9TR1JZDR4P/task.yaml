@@ -101,7 +101,7 @@ tags:
   - daemon
   - web-ui
 vcs_refs: []
-review_ref: "@01KSFXBC3Q58SQD59VZAY0RT02"
+review_ref: "@01KSG0WNA25PCE5QC05YHK6226"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-plan-resource-api-ui-static/01ks8xb0
@@ -394,6 +394,13 @@ history:
         previous: 2026-05-25T15:45:37.279Z
     command: task-submit
     timestamp: 2026-05-25T16:47:09.336Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KSG0WNA25PCE5QC05YHK6226"
+        previous: "@01KSFXBC3Q58SQD59VZAY0RT02"
+    command: review-link
+    timestamp: 2026-05-25T16:53:39.033Z
 created_at: 2026-05-22T22:36:47.077Z
 started_at: 2026-05-25T16:47:08.501Z
 submitted_at: 2026-05-25T16:47:09.336Z
