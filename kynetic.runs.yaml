@@ -53983,9 +53983,22 @@ runs:
     completed_at: 2026-05-25T08:50:14.502Z
   - _ulid: 01KSF5EHXS6XYS3E0MDVAXTGAK
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-25T08:53:58.841Z
+        completed_at: 2026-05-25T08:55:24.739Z
+        notes: "Step 1 (What Worked Well, loop-mode high-confidence only): Reviewer cited file:line
+          precisely (task-resource-resolver.ts:149); reading just that line surfaced the
+          slug-vs-ULID mismatch immediately. Extending the existing happy-path test with a resolver
+          assertion blocks the same gap from re-hiding. Surgical 2-line fix that preserved the
+          cross-task ownership boundary."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-25T08:55:24.739Z
+        completed_at: 2026-05-25T08:55:24.739Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-25T08:53:58.841Z
