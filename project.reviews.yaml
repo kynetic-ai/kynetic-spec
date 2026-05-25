@@ -229611,6 +229611,20 @@ reviews:
         runner: rg
         created_at: 2026-05-25T00:00:21.373Z
         completed_at: 2026-05-25T00:00:21.373Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Disposable temp project, downgraded manifest to kynetic 1.1 with no monolithic plan/review
+          records, then ran runUpgradePipeline with KSPEC_PROTECTED_PROJECT_PATHS set to that
+          project root. Expected ProtectedLiveProjectError/no mutation; observed success=true,
+          plan/review skipped, Storage manifest done, manifest promoted to kynetic 1.2 with
+          folder/resource declarations.
+        name: protected-tripwire repro
+        required: false
+        runner: manual temp project
+        created_at: 2026-05-25T00:00:33.509Z
+        completed_at: 2026-05-25T00:00:33.509Z
     events:
       - _ulid: 01KSE65A8Z29PHA2DDYVEZ6WGP
         actor: Jacob Chapel
@@ -229653,6 +229667,13 @@ reviews:
           status: pass
           name: AC annotation scan
         timestamp: 2026-05-25T00:00:23.013Z
+      - _ulid: 01KSE6XWBRVYZVS17JVF310WDM
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: protected-tripwire repro
+        timestamp: 2026-05-25T00:00:35.192Z
     examined_commit: 27cdba765eb04262bdf35f28dac0b22c2e639360
     external_links: []
     lifecycle_state: open
@@ -229690,5 +229711,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-24T23:47:10.239Z
-    updated_at: 2026-05-25T00:00:21.373Z
+    updated_at: 2026-05-25T00:00:33.509Z
     notes: []
