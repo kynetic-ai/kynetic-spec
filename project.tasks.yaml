@@ -29788,7 +29788,7 @@
   type: task
   spec_ref: "@folder-backed-plan-storage-1"
   plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-plan-resource-import-and-derive-1"
@@ -29804,6 +29804,7 @@
   created_at: 2026-05-22T22:36:47.077Z
   started_at: 2026-05-25T17:37:04.734Z
   submitted_at: 2026-05-25T17:37:08.277Z
+  completed_at: 2026-05-25T18:35:39.151Z
   automation: eligible
 - _ulid: 01KS8XB0EKNTMZS4XJMC4ED4SK
   slugs:

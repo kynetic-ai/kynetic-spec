@@ -89,8 +89,12 @@ description: >
 spec_ref: "@folder-backed-plan-storage-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw at
+  806290ad0bb3d95ea5174b553ce58e0b1d0df6ff after approved cycle 3 review. Verified plan resource
+  daemon API, cache list projection, web UI resource link rewriting, and static export resource
+  copy/error handling; full npm test passed (2548 suites, 9716 tests).
 depends_on:
   - "@task-plan-resource-import-and-derive-1"
   - "@task-folder-backed-plan-review-cache-invalidation-1"
@@ -458,8 +462,25 @@ history:
         previous: "@01KSG0WNA25PCE5QC05YHK6226"
     command: review-link
     timestamp: 2026-05-25T18:19:24.949Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw at
+          806290ad0bb3d95ea5174b553ce58e0b1d0df6ff after approved cycle 3 review. Verified plan
+          resource daemon API, cache list projection, web UI resource link rewriting, and static
+          export resource copy/error handling; full npm test passed (2548 suites, 9716 tests).
+        previous: null
+      completed_at:
+        new: 2026-05-25T18:35:39.151Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-25T18:35:39.161Z
 created_at: 2026-05-22T22:36:47.077Z
 started_at: 2026-05-25T17:37:04.734Z
 submitted_at: 2026-05-25T17:37:08.277Z
+completed_at: 2026-05-25T18:35:39.151Z
 todos: []
 automation: eligible
