@@ -45,3 +45,105 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-25T03:31:19.399Z
+  - _ulid: 01KSENY7Z2H6WQM41174WQQJTZ
+    content: >-
+      Implementation complete.
+
+
+      Delivered:
+
+      - src/schema/resources.ts: added PlanResourceImportEntry/ManifestSchema,
+      TaskResourceRefSchema, ResourceOwnerTypeSchema.
+
+      - src/schema/task.ts: added optional resource_refs to TaskSchema/TaskInputSchema.
+
+      - src/parser/plan-document.ts: added optional resource_refs to PlanTaskSchema.
+
+      - src/parser/entity-local-resources.ts: added extractMarkdownResourceLinks helper for
+      ./resources/<rel> link discovery (image, inline, reference-style).
+
+      - src/parser/plan-resource-import.ts (new): sibling resources.yaml validation + persistence +
+      plan-existing-resources link validation for set/--into paths. PlanImportResourceError carries
+      structured code for each failure mode.
+
+      - src/parser/task-resource-resolver.ts (new): resolves task resource_refs against current
+      owning entity manifests; computes present/drift/missing/unresolved status for CLI/agent/API
+      surfaces.
+
+      - src/parser/index.ts: re-exports the new resolver module.
+
+      - src/cli/commands/plan-resource.ts (new): plan resource add/list/get/remove with the exact
+      JSON success/failure envelopes, --replace path-id semantics, interactive-cancel exit code 2,
+      content_type inference + explicit-override storage, and entity-storage incompatibility mapping
+      to exit 3.
+
+      - src/cli/commands/plan.ts: wires registerPlanResourceCommands; adds --content-file to plan
+      set with link validation; adds --materialize-resources to plan derive; validates resource_refs
+      against plan manifest; records TaskResourceRef entries on derived tasks; copies bytes + writes
+      task resources.yaml when materialized.
+
+      - src/cli/commands/plan-import.ts: validates sibling resources.yaml before save, copies
+      declared files into the new plan directory after save, validates --into re-import links
+      against existing plan manifest.
+
+      - src/cli/commands/task.ts + src/cli/output.ts: resolve resource_refs via the new helper; add
+      formatted Resources section with OK/DRIFT/MISSING/UNRESOLVED labels; include
+      resolved_resources in JSON.
+
+      - src/agent-runtime/dispatch.ts: orientation block surfaces drift status to dispatched
+      workers.
+
+
+      Tests:
+
+      - tests/cli-plan-resource.test.ts (23 tests): add/list/get/remove happy paths, all CLI failure
+      envelopes, exit code contract (0/1/2/3), --replace + path-id conflicts.
+
+      - tests/cli-plan-import-resources.test.ts (9 tests): sibling manifest enforcement
+      (present/missing/undeclared/unsafe path), import --into validation against existing plan
+      resources, plan set --content-file validation.
+
+      - tests/cli-plan-derive-resources.test.ts (6 tests): default mode records plan-owned refs
+      without copying bytes, unresolved refs reject derive, --materialize-resources copies into
+      plan/<plan-ulid>/<rel> with plan-<id>, drift surfaces in task get JSON + text when bytes
+      change, missing surfaces when the resource is removed.
+
+      - tests/plan-document-resource-refs.test.ts (8 tests): PlanTaskSchema resource_refs parsing +
+      markdown link extraction.
+
+
+      Validation:
+
+      - Full test suite: 2536 suites passing, 9658 tests passing, 5 skipped (same baseline as
+      before; 46 new tests).
+
+      - npx tsc --noEmit clean.
+
+      - oxlint clean on all changed/new files (0 errors, 0 warnings on the new
+      plan-resource/plan-resource-import/task-resource-resolver modules).
+
+      - kspec validate --completeness reports zero missing-AC warnings for
+      @plan-resource-derivation-semantics-1.
+
+
+      Coverage of the 5 spec ACs:
+
+      - ac-plan-task-resource-refs-are-structured: PlanTask schema accepts resource_refs; derive
+      validates them; plan-document + import + derive + plan-resource tests exercise the contract.
+
+      - ac-derived-task-keeps-plan-resource-reference: derive records owner_type='plan' refs with no
+      bytes copied (verified by absence of task resources/ dir in test).
+
+      - ac-derived-task-records-resource-version: TaskResourceRef carries
+      id/path/sha256/git_commit/git_path/recorded_at; verified in CLI tests.
+
+      - ac-resource-drift-is-visible: task-resource-resolver compares recorded vs current hash; CLI
+      text + JSON + dispatch context surface DRIFT/MISSING/UNRESOLVED; verified by
+      drift/missing/no-drift CLI tests.
+
+      - ac-explicit-copy-mode-creates-task-owned-resource: --materialize-resources copies bytes to
+      .kspec/tasks/<task-ulid>/resources/plan/<plan-ulid>/<rel>, rewrites manifest id to plan-<id>,
+      and updates resource_refs to owner_type='task'.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-25T04:22:55.715Z
