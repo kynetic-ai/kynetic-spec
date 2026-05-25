@@ -233757,6 +233757,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-25T16:53:57.587Z
+      - _ulid: 01KSG1565NBHR5SWREKZHES49W
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSG153SB7EB18PJ6KT9HD9MM
+        timestamp: 2026-05-25T16:58:12.022Z
     examined_commit: 58df2d14fb652674f714e9bbd14bea9318431ccb
     external_links: []
     lifecycle_state: open
@@ -233766,8 +233773,28 @@ reviews:
       content_hash: ""
       ref: "@01KS8XB035D6C69W9TR1JZDR4P"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KSG153SB7EB18PJ6KT9HD9MM
+        anchor:
+          type: code
+          commit: 58df2d14fb652674f714e9bbd14bea9318431ccb
+          line_end: 157
+          line_start: 157
+          path: packages/daemon/src/routes/plan-resources.ts
+          side: head
+        entries:
+          - _ulid: 01KSG153SCBWEMWX0Q416XK4E5
+            author: Jacob Chapel
+            body: 'MUST-FIX: Plan resource routes only call requirePlanFolderStorage(), so a kynetic 1.2 project
+              with folder-backed plans but no resource_storage.format: entity_scoped is accepted.
+              The resource API is part of the entity-scoped local resource contract and should
+              surface the shared entity_storage_incompatible 409 envelope for incompatible resource
+              storage. Evidence: I reproduced GET /api/plans/@test-plan/resources against a
+              folder-backed project missing resource_storage and it returned HTTP 200
+              {"resources":[]} instead of a 409 resource-storage incompatibility.'
+            created_at: 2026-05-25T16:58:09.580Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-25T16:53:32.610Z
-    updated_at: 2026-05-25T16:53:55.149Z
+    updated_at: 2026-05-25T16:58:09.580Z
     notes: []
