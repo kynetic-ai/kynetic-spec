@@ -54222,7 +54222,7 @@ runs:
     completed_at: 2026-05-25T16:09:07.384Z
   - _ulid: 01KSFYK5RNBJVB0CFVHM4CSTSY
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -54236,7 +54236,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-25T16:15:06.648Z
-        completed_at: 2026-05-25T16:15:06.648Z
+        completed_at: 2026-05-25T16:15:44.886Z
+        notes: "Identified candidates: (1) FRICTION — single-string error in ResourceValidationResult<T>
+          made callers do lossy taxonomy mapping (drove the fix-cycle-5 blocker). Scope is narrow:
+          one resolver, one caller, one fix. Not systemic. (2) FRICTION — 5 fix cycles for one
+          multi-surface task suggests under-tested initial pass, but each cycle found distinct
+          issues; pattern is uncertain and may just reflect task complexity. (3) SUCCESS — manager +
+          daemon dual-layer testing of error mapping caught the bug definitively. Worth noting but
+          not systemic-enough to record."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-25T16:15:44.886Z
+        completed_at: 2026-05-25T16:15:44.886Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-25T16:13:24.630Z
