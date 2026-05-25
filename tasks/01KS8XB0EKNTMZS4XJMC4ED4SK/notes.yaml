@@ -398,3 +398,65 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-25T21:21:51.398Z
+  - _ulid: 01KSGJJZACGBR8GX6BB5JHZBAZ
+    content: >-
+      Fix cycle 9 (merge integration): the prior review @01KSGF89 verdict was approve, but the
+      detached merge helper could not advance the integration branch because src/export/json.ts had
+      a content conflict against 806290ad0b (plan-resource static export added on the target side).
+
+
+      Resolution: merged origin/plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
+      into the canonical worker branch and resolved src/export/json.ts to integrate BOTH paths
+      verbatim — none of the approved review-resource behavior is dropped, and none of the target's
+      plan-resource behavior is dropped. Merge commit addb7d63ba.
+
+
+      Detailed resolution:
+
+      - Imports: deduplicated. The HEAD-side block already pulls copyResourceForStaticExport /
+      getResourcesDir / loadResourceManifest / STATIC_EXPORT_RESOURCES_PREFIX through
+      ../parser/index.js (which re-exports entity-local-resources), so the integration-side direct
+      import block was dropped. Added getPlanDir from plan-storage-manager.js.
+
+      - Type imports: combined ExportedPlan + ExportedPlanResource (target) with ExportedReview +
+      ExportedReviewResource (HEAD) into one block.
+
+      - Plan resource export: kept the target's PLAN_EXPORT_ENTITY_TYPE constant,
+      rewritePlanContentForStaticExport, PlanResourceExportError, exportPlanResources, and the new
+      async expandPlans(ctx, plans, tasks, assetsOutputDir) signature.
+
+      - Review resource export: kept the HEAD's expandReview, expandReviews, defensive try/catch
+      around loadReviewRecords, copyReviewResourceAssets, and the reviewCount/reviewResourceCount
+      fields in calculateExportStats.
+
+      - generateJsonSnapshot: kept the new options: { assetsOutputDir?: string | null } parameter
+      (needed by plan resources) AND added 'reviews: await expandReviews(ctx, reviews)' to the
+      snapshot object.
+
+      - src/cli/commands/export.ts: auto-merged cleanly — it already invokes generateJsonSnapshot
+      with assetsOutputDir for plan resources AND calls copyReviewResourceAssets(snapshot,
+      exportRoot) after writing the JSON file.
+
+
+      Verification on the merged worker branch:
+
+      - tsc --noEmit: clean.
+
+      - changed-file oxlint vs integration target (23 files): 0 errors, 12 pre-existing vi.fn
+      warnings (unchanged from cycle 8).
+
+      - kspec validate --warnings-ok: exits 0 (pre-existing project-wide warnings unrelated to this
+      task).
+
+      - npm test: 2575 suites passed, 9832 tests passed (5 skipped, 0 failed); duration 2586.9s.
+      Test count grew from 9784 in cycle 8 because the merge brings in the target's plan-resource
+      tests (plan-resources.test.ts, plan-resource-links.test.ts,
+      daemon-api/plan-resources.test.ts).
+
+
+      Pushed addb7d63ba to origin. The reviewer should now be able to merge the canonical head
+      (addb7d63ba) into plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw without
+      conflicts, since the merge is already done on the worker branch.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-25T22:02:49.549Z
