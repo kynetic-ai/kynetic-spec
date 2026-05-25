@@ -230693,6 +230693,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSETA09F9NY3GPP4TX9JT3QF
         timestamp: 2026-05-25T05:39:17.693Z
+      - _ulid: 01KSETAQMW3KXEZ626EJPG3CEN
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSETAKJTCHZ5Z5WR0320K4ZM
+        timestamp: 2026-05-25T05:39:39.292Z
     examined_commit: 8ec78b1068c3811f36051e6234aa7fd5d8865b85
     external_links: []
     lifecycle_state: open
@@ -230721,9 +230728,28 @@ reviews:
               symlink-safe destination check/open pattern before writing and add coverage."
             created_at: 2026-05-25T05:39:15.375Z
         kind: blocker
+      - _ulid: 01KSETAKJTCHZ5Z5WR0320K4ZM
+        anchor:
+          type: code
+          commit: 8ec78b1068c3811f36051e6234aa7fd5d8865b85
+          line_end: 1378
+          line_start: 1376
+          path: packages/web-ui/src/lib/api.ts
+          side: head
+        entries:
+          - _ulid: 01KSETAKJTQS3VEJNSSN17M8VS
+            author: Jacob Chapel
+            body: "MUST-FIX: static exports now include review resource metadata and copied assets, but the web
+              UI still cannot open review detail in static mode because fetchReview throws here, and
+              fetchReviews returns an empty list. The review detail page depends on fetchReview, so
+              exported screenshot resources are not discoverable or loadable from the static UI
+              snapshot. Add static review list/detail lookup from the snapshot and cover resource
+              rendering in static mode."
+            created_at: 2026-05-25T05:39:35.130Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-25T05:31:05.010Z
-    updated_at: 2026-05-25T05:39:15.375Z
+    updated_at: 2026-05-25T05:39:35.130Z
     notes: []
   - _ulid: 01KSESZY8TXWF47R5G8HF6C6D7
     slugs:
