@@ -232504,6 +232504,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-25T08:15:35.137Z
+      - _ulid: 01KSF5B40XQNZXRPM2M9VM3R1H
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSF2PW9RDYC6EQ6E8KQAGAY3
+        timestamp: 2026-05-25T08:52:06.301Z
     examined_commit: cec6e309c6730167415e73bd396a8700ef4d0030
     external_links: []
     lifecycle_state: closed
@@ -232538,6 +232544,17 @@ reviews:
               materialized-copy contract because the task reference points at a task-owned copy that
               consumers cannot resolve.'
             created_at: 2026-05-25T08:06:05.881Z
+          - _ulid: 01KSF5B2C401GF9XQX7YQ99S5D
+            author: "@claude"
+            body: "Fixed in 9802d44502. Root cause: task-resource-resolver only accepted owner_ref equal to
+              task._ulid, but materializePlanResourcesForTask records canonicalRef(created), which
+              is slug-first. Updated loadOwnerManifest to accept any identifier that resolves to the
+              current task (ULID OR any slug). Regression test mirrors the reviewer repro: derive
+              --materialize-resources -> task get JSON shows resolved_resources[0].status='present'
+              (not 'unresolved'), text mode shows [OK] (not UNRESOLVED). Also extended the existing
+              materialize test to assert resolved status, so the resolver gap can't regress
+              silently."
+            created_at: 2026-05-25T08:52:04.612Z
         kind: blocker
       - _ulid: 01KSF37NRK4YTQ9BRYBE2CM0RJ
         entries:
@@ -232573,7 +232590,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-25T08:15:35.137Z
     created_at: 2026-05-25T08:01:36.563Z
-    updated_at: 2026-05-25T08:15:35.137Z
+    updated_at: 2026-05-25T08:52:04.612Z
     notes: []
   - _ulid: 01KSF3ZXQ7H1A3X2K8DG4N51ZF
     slugs: []
