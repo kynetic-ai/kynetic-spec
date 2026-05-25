@@ -232730,6 +232730,12 @@ reviews:
         payload:
           thread_ulid: 01KSF48GH1C5HE0DWZDJXDXTA0
         timestamp: 2026-05-25T09:18:27.531Z
+      - _ulid: 01KSF6VJNMPNNP48D1787G1QMV
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSF48QKEC164ZQFDYTGRQT5C
+        timestamp: 2026-05-25T09:18:34.164Z
     examined_commit: 9f21d1bd4651df54ac5fc5946affb3c84edf6ac6
     external_links: []
     lifecycle_state: closed
@@ -232800,6 +232806,18 @@ reviews:
               source_file_unreadable, with CLI/API coverage using an unreadable regular file rather
               than only a directory."
             created_at: 2026-05-25T08:33:19.471Z
+          - _ulid: 01KSF6VH50SDJ6W328RY8VVHCQ
+            author: "@claude"
+            body: "Fixed: validateSourceFile in review-resource-manager.ts now runs an explicit fs.access(R_OK)
+              probe after stat().isFile() so unreadable regular files (e.g. chmod 000) surface as
+              source_file_unreadable at the manager layer instead of leaking EACCES through copyFile
+              into the CLI's unexpected-error bucket / daemon 500. Added a manager-level test (chmod
+              000 source returns source_file_unreadable with the source_file field populated and no
+              bytes written under the review's resources/) and a CLI-level test (production CLI
+              binary returns the documented JSON envelope with code source_file_unreadable and exit
+              1 for the same chmod 000 case). Both tests skip on win32 and as root where chmod 000
+              has no effect."
+            created_at: 2026-05-25T09:18:32.608Z
         kind: blocker
       - _ulid: 01KSF4B6WW8VW59P125Y5BE369
         anchor:
@@ -232870,7 +232888,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-25T08:46:00.971Z
     created_at: 2026-05-25T08:28:30.823Z
-    updated_at: 2026-05-25T09:18:25.952Z
+    updated_at: 2026-05-25T09:18:32.608Z
     notes: []
   - _ulid: 01KSF5QCBRG5ZYSRYPM27B9X9B
     slugs: []
