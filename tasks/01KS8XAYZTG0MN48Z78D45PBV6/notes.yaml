@@ -306,3 +306,53 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-25T00:01:03.020Z
+  - _ulid: 01KSE8AHJABK6VBXM2REQNG4W2
+    content: >-
+      Fix cycle 5: addressed the tripwire bypass blocker from @01KSE65A8ZH4A6GDWJP90T9NMG in commit
+      8547337160.
+
+
+      Root cause: assertSafeMigrationTarget was only called inside runPlanFolderMigrationStep and
+      runReviewFolderMigrationStep, AFTER the report.alreadyMigrated early return. When neither plan
+      nor review had monolithic records to migrate, both steps short-circuited before the tripwire
+      ran, but runStorageManifestPromotionStep still ran and mutated the protected project —
+      promoting kynetic 1.2 with folder/resource storage declarations on top of a project the
+      operator had explicitly listed in KSPEC_PROTECTED_PROJECT_PATHS.
+
+
+      Fix: hoisted assertSafeMigrationTarget to runAtomicStorageMigration immediately after the
+      !taskMigrationOk gate, before the runWithBuffer block opens. The check fires once for every
+      executing folder-storage upgrade path — no monolithic records, partial layouts, full
+      migrations — so the manifest promotion can no longer run on a protected target. On tripwire
+      failure the orchestrator returns four step records: a synthetic Storage migration safety
+      preflight failed step (carrying the ProtectedLiveProjectError message including the matched
+      path and the KSPEC_PROTECTED_PROJECT_PATHS env-var hint) plus skipped records for
+      plan/review/manifest so JSON consumers and the rendered console output explain why every
+      storage step was held back.
+
+
+      The per-step assertions inside runPlanFolderMigrationStep / runReviewFolderMigrationStep are
+      kept as defense-in-depth — they remain effective if a future caller invokes those step
+      functions outside the orchestrator.
+
+
+      Regression tests added in tests/upgrade-folder-storage.test.ts:
+
+      - upgrade refuses to mutate when KSPEC_PROTECTED_PROJECT_PATHS guards the target (no
+      monolithic records) — exactly mirrors the reviewer evidence: downgraded manifest, no
+      monolithic plan/review records, tripwire env set to tempDir. Asserts safety preflight=failed,
+      plan/review/manifest=skipped, manifest file byte-identical, and no plans/ or reviews/
+      directories created.
+
+      - upgrade refuses to mutate when KSPEC_PROTECTED_PROJECT_PATHS guards the target (with
+      monolithic records) — companion test with real plan/review work. Asserts the same protection
+      holds when plan/review steps would otherwise migrate records.
+
+
+      Re-verified every AC on @entity-folder-migration-and-compatibility-1.
+
+
+      Full test suite: 2519 suites passed, 9599 tests passed, 5 pre-existing skipped of 9604.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-25T00:24:58.698Z
