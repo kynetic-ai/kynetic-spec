@@ -234635,6 +234635,12 @@ reviews:
         payload:
           thread_ulid: 01KSGBFZ30M18PNN52R403G1E6
         timestamp: 2026-05-25T20:14:00.492Z
+      - _ulid: 01KSGCC1PH9M8HP2VJ71GFJSRK
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSGBFZ30M18PNN52R403G1E6
+        timestamp: 2026-05-25T20:14:11.154Z
     examined_commit: 7650c9f1b4f6a0a74911ebf8f80489f53e3443f8
     external_links: []
     lifecycle_state: closed
@@ -234729,6 +234735,8 @@ reviews:
               changed-file oxlint now exits 0.
             created_at: 2026-05-25T20:13:58.410Z
         kind: nit
+        resolved_at: 2026-05-25T20:14:09.431Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -234738,5 +234746,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-25T19:59:03.789Z
     created_at: 2026-05-25T19:46:22.778Z
-    updated_at: 2026-05-25T20:13:58.410Z
+    updated_at: 2026-05-25T20:14:09.431Z
     notes: []
