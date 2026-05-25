@@ -129,4 +129,96 @@ describe("kspec export --format json --output <file>", () => {
     const bytes = await fs.readFile(assetPath);
     expect(bytes.toString("utf-8")).toBe("fake-png-bytes-for-export");
   });
+
+  // AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+  // AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
+  //
+  // The resource path validator only rejects absolute paths, traversal,
+  // backslashes, empty/dot segments, and trailing slashes — URL-reserved
+  // characters such as `#` and `?` are legitimate filename characters and
+  // can land in a valid exported_path. This test exercises the full
+  // static-export round-trip for a `#`/`?` resource path: file copy
+  // succeeds, snapshot's exported_path carries the raw POSIX path, and
+  // the URL the web UI would construct (base + encoded exported_path)
+  // resolves with the `#` / `?` escaped so the browser does not parse
+  // them as a fragment or query string.
+  it("round-trips a resource path containing # and ? through static export", async () => {
+    const uploadsDir = path.join(projectDir, "uploads");
+    await fs.mkdir(uploadsDir, { recursive: true });
+    const evidenceSource = path.join(uploadsDir, "evidence.png");
+    await fs.writeFile(evidenceSource, "fake-png-bytes-for-fragment-export");
+
+    const slug = "frag-export-test";
+    kspecOk(
+      `review add --title 'Fragment Export Review' --base abc123 --head def456 --slug ${slug}`,
+      projectDir,
+    );
+    // Single-quote both the source path and the destination resource path so
+    // the shell does not interpret `#` as a comment delimiter or `?` as a
+    // glob. The destination path is the on-disk file name inside the
+    // review's resources/ tree and exactly mirrors what the schema allows.
+    const fragmentPath = "screenshots/login#bug?ref.png";
+    kspecOk(
+      `review resource add @${slug} '${evidenceSource}' --id evidence --path '${fragmentPath}' --label Evidence`,
+      projectDir,
+    );
+
+    const getResult = kspecRun(`review get @${slug} --json`, projectDir);
+    const reviewUlid = (JSON.parse(getResult.stdout) as { _ulid: string })._ulid;
+
+    const exportDir = path.join(projectDir, "build");
+    await fs.mkdir(exportDir, { recursive: true });
+    const outputFile = path.join(exportDir, "snapshot.json");
+
+    const result = kspecRun(`export --format json --output ${outputFile}`, projectDir);
+    expect(result.exitCode).toBe(0);
+
+    // The snapshot's exported_path stays a raw POSIX path because the
+    // export pipeline serves both as a file pointer and as input to the
+    // client-side URL encoder; encoding at export time would break the
+    // on-disk asset lookup the static host performs.
+    const snapshot = JSON.parse(await fs.readFile(outputFile, "utf-8")) as {
+      reviews?: Array<{
+        _ulid: string;
+        resources: Array<{ id: string; path: string; exported_path: string }>;
+      }>;
+    };
+    const exported = snapshot.reviews!.find((r) => r._ulid === reviewUlid)!;
+    expect(exported.resources).toHaveLength(1);
+    expect(exported.resources[0]).toMatchObject({
+      id: "evidence",
+      path: fragmentPath,
+      exported_path: `assets/resources/review/${reviewUlid}/${fragmentPath}`,
+    });
+
+    // The asset file actually lands at the documented on-disk path,
+    // including the `#` and `?` in the filename.
+    const assetPath = path.join(
+      exportDir,
+      "assets",
+      "resources",
+      "review",
+      reviewUlid,
+      "screenshots",
+      "login#bug?ref.png",
+    );
+    const bytes = await fs.readFile(assetPath);
+    expect(bytes.toString("utf-8")).toBe("fake-png-bytes-for-fragment-export");
+
+    // The URL the web UI builds from this snapshot must encode the path
+    // so the browser does not interpret `#` as a fragment or `?` as a
+    // query string. Build the URL the same way the Svelte page does
+    // (base + per-segment-encoded exported_path) and verify it parses
+    // cleanly.
+    const encoded = exported.resources[0].exported_path
+      .split("/")
+      .map(encodeURIComponent)
+      .join("/");
+    const url = new URL(`https://example.com/site/${encoded}`);
+    expect(url.pathname).toBe(
+      `/site/assets/resources/review/${reviewUlid}/screenshots/login%23bug%3Fref.png`,
+    );
+    expect(url.hash).toBe("");
+    expect(url.search).toBe("");
+  });
 });

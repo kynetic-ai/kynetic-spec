@@ -1429,6 +1429,27 @@ export function reviewResourceBytesUrl(reviewRef: string, resourceId: string): s
 }
 
 /**
+ * Encode a snapshot-relative `exported_path` (e.g.
+ * `assets/resources/review/<ulid>/screenshots/login#bug.png`) for use as
+ * a URL. Resource paths are POSIX paths and the schema only rejects
+ * absolute paths, parent traversal, backslashes, empty segments, and
+ * trailing slashes — URL-reserved characters such as `#` and `?` are
+ * legitimate filename characters and reach here unencoded. Without
+ * per-segment encoding a raw `<a href={exported_path}>` would have
+ * `#suffix` treated as a fragment and `?suffix` treated as a query
+ * string by the browser, so any such resource would 404 or load the
+ * wrong bytes from the static export. Each `/`-separated segment is
+ * encoded individually so the path separators stay intact while
+ * `#` becomes `%23`, `?` becomes `%3F`, spaces become `%20`, etc.
+ *
+ * AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+ * AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
+ */
+export function encodeStaticAssetPath(exportedPath: string): string {
+  return exportedPath.split("/").map(encodeURIComponent).join("/");
+}
+
+/**
  * List declared resources for a review. Always available against a live
  * daemon; static mode reads `review.resources` straight off the snapshot
  * instead of calling this helper.

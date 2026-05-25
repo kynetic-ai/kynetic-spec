@@ -47,6 +47,7 @@ vi.mock("$lib/api-static", () => ({}));
 vi.mock("../../packages/web-ui/src/lib/api-static", () => ({}));
 
 import {
+  encodeStaticAssetPath,
   fetchReviewResources,
   reviewResourceBytesUrl,
 } from "../../packages/web-ui/src/lib/api";
@@ -96,6 +97,78 @@ describe("reviewResourceBytesUrl", () => {
     expect(reviewResourceBytesUrl("@review-1", "shot")).toBe(
       "http://localhost:3456/api/reviews/%40review-1/resources/shot/bytes",
     );
+  });
+});
+
+describe("encodeStaticAssetPath", () => {
+  // The schema for a resource `path` only rejects absolute paths,
+  // traversal, backslashes, empty/dot segments, and trailing slashes.
+  // URL-reserved characters such as `#` and `?` (and spaces) are
+  // legitimate filename characters and can therefore land in a valid
+  // exported_path. The browser interprets `#suffix` as a fragment and
+  // `?suffix` as a query string when those characters appear raw in an
+  // `<a href>` or `<img src>`, so the URL builder must encode each
+  // segment individually while keeping the `/` path separators intact.
+  //
+  // AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+  it("encodes `#` so it is not parsed as a URL fragment", () => {
+    const encoded = encodeStaticAssetPath(
+      "assets/resources/review/01REV/screenshots/login#bug.png",
+    );
+    expect(encoded).toBe(
+      "assets/resources/review/01REV/screenshots/login%23bug.png",
+    );
+    const parsed = new URL(`https://example.com/base/${encoded}`);
+    expect(parsed.pathname).toBe(
+      "/base/assets/resources/review/01REV/screenshots/login%23bug.png",
+    );
+    expect(parsed.hash).toBe("");
+  });
+
+  // AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+  it("encodes `?` so it is not parsed as a query string", () => {
+    const encoded = encodeStaticAssetPath(
+      "assets/resources/review/01REV/screenshots/login?ref.png",
+    );
+    expect(encoded).toBe(
+      "assets/resources/review/01REV/screenshots/login%3Fref.png",
+    );
+    const parsed = new URL(`https://example.com/base/${encoded}`);
+    expect(parsed.pathname).toBe(
+      "/base/assets/resources/review/01REV/screenshots/login%3Fref.png",
+    );
+    expect(parsed.search).toBe("");
+  });
+
+  // AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+  it("encodes spaces and other reserved characters per segment", () => {
+    expect(
+      encodeStaticAssetPath(
+        "assets/resources/review/01REV/notes/draft & final.png",
+      ),
+    ).toBe(
+      "assets/resources/review/01REV/notes/draft%20%26%20final.png",
+    );
+  });
+
+  // AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+  it("preserves `/` segment separators (does not collapse the path)", () => {
+    const encoded = encodeStaticAssetPath(
+      "assets/resources/review/01REV/sub/dir/file.png",
+    );
+    expect(encoded).toBe(
+      "assets/resources/review/01REV/sub/dir/file.png",
+    );
+    expect(encoded.split("/")).toHaveLength(7);
+  });
+
+  // AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+  it("is a no-op for paths with no URL-reserved characters", () => {
+    expect(
+      encodeStaticAssetPath(
+        "assets/resources/review/01REV/screenshots/login.png",
+      ),
+    ).toBe("assets/resources/review/01REV/screenshots/login.png");
   });
 });
 

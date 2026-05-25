@@ -36,6 +36,7 @@
 		resolveReviewThread,
 		reopenReviewThread,
 		reviewResourceBytesUrl,
+		encodeStaticAssetPath,
 		submitReviewVerdict,
 	} from '$lib/api';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
@@ -445,12 +446,15 @@
 
 	/**
 	 * Pick the right URL for a resource depending on mode:
-	 *   - static export: use the snapshot's pre-baked `exported_path`
+	 *   - static export: use the snapshot's pre-baked `exported_path`,
+	 *     URL-encoded per segment so resource paths containing `#`, `?`,
+	 *     spaces, or other URL-reserved characters are not interpreted
+	 *     by the browser as fragments / query strings.
 	 *   - live daemon : use the bytes endpoint
 	 */
 	function resolveResourceUrl(resource: ReviewResource): string {
 		if (isStaticMode() && resource.exported_path) {
-			return `${base}/${resource.exported_path}`;
+			return `${base}/${encodeStaticAssetPath(resource.exported_path)}`;
 		}
 		return reviewResourceBytesUrl(reviewId, resource.id);
 	}
