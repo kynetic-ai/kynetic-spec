@@ -19683,6 +19683,25 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-25T18:38:42.196Z
+  - _ulid: 01KSG7ASKCX3CWAXYWHJ5KNREG
+    type: friction
+    content: "Result-returning safety helpers can be silently neutered by discarded return values. Fix
+      cycle 7 of @task-review-screenshot-resource-ui-01ks8xb0 was caused by addReviewResource
+      calling removeResourceFromOwnerResources during a replace-with-path-move and ignoring the
+      Result. The helper correctly refused to unlink a symlinked old path, but the manager swallowed
+      the rejection, rewrote the manifest, and reported success. Distinct shape from @01KSF75Y /
+      @01KSF0VTE (which warned about helper coverage gaps): here the helper existed, was called, and
+      its safety guarantee was canceled by a missing .ok branch. Pattern to enforce in review-gates:
+      at any safety-helper call site (symlink-safe write/remove, validators, storage-compatibility
+      gates), an unhandled Result is a MUST-FIX. Tools that could help: a small lint that flags
+      'await fn()' where fn returns ResourceValidationResult/ReviewResourceResult/etc. and the call
+      expression is discarded; or a code-review checklist for trait foundations covering 'every call
+      to a Result-returning helper checks .ok before mutating downstream state'."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-05-25T18:46:07.212Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
