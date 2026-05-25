@@ -54491,7 +54491,7 @@ runs:
     completed_at: 2026-05-25T17:35:25.755Z
   - _ulid: 01KSG6SBPP6VBGFKQTSVXWMZ9K
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -54524,7 +54524,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-25T18:38:19.584Z
-        completed_at: 2026-05-25T18:38:19.584Z
+        completed_at: 2026-05-25T18:38:26.928Z
+        notes: "Proposed improvement: enhance detached-reviewer-merge.sh to detect a clean detached worktree
+          already at the integration target commit and either safely attach/switch it to the target
+          branch before merging or print the exact recovery command. Benefit: reduces reviewer merge
+          friction while preserving the helper's dirty-target and conflict safety. Rough scope:
+          small to medium shell-script improvement plus fixture coverage."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-25T18:38:26.928Z
+        completed_at: 2026-05-25T18:38:26.928Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-25T18:36:35.926Z
