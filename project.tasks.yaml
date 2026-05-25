@@ -29812,7 +29812,7 @@
   type: task
   spec_ref: "@folder-backed-review-storage-1"
   plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-plan-review-folder-storage-migration-1"
@@ -29827,7 +29827,7 @@
   todos_count: 0
   created_at: 2026-05-22T22:36:47.443Z
   started_at: 2026-05-25T16:52:43.721Z
-  submitted_at: 2026-05-25T16:13:00.036Z
+  submitted_at: 2026-05-25T17:14:36.204Z
   automation: eligible
 - _ulid: 01KS8XB0SSRJ871MAMN8V25GW0
   slugs:
