@@ -233273,6 +233273,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSFY3N27J10NKNK7GHK5HFH7
         timestamp: 2026-05-25T16:04:57.600Z
+      - _ulid: 01KSFY44WZHEPYTJT787MEQH1Y
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSFY439AQ6HRQRT55RKPPX1F
+        timestamp: 2026-05-25T16:05:12.224Z
     examined_commit: 0aa596716c847ea0e4bbff89e42039aad8d2322c
     external_links: []
     lifecycle_state: open
@@ -233304,7 +233311,28 @@ reviews:
               metadata object, such as a sibling/base URL field."
             created_at: 2026-05-25T16:04:56.007Z
         kind: blocker
+      - _ulid: 01KSFY439AQ6HRQRT55RKPPX1F
+        anchor:
+          type: code
+          commit: 0aa596716c847ea0e4bbff89e42039aad8d2322c
+          line_end: 228
+          line_start: 221
+          path: packages/daemon/src/routes/plans.ts
+          side: head
+        entries:
+          - _ulid: 01KSFY439AFJF92773TKX72K0T
+            author: Jacob Chapel
+            body: "MUST-FIX: The cache-ready /api/plans path drops all resource summary information. When the
+              plans cache domain is ready, canLoadResources is false and every plan is returned with
+              resources: [] even if the plan index contains resource_summary. The task specifically
+              required the list route to stay fast by using index/resource summaries, but the
+              production cache-hit path neither preserves resource_summary in PlanIndexSummary nor
+              returns it. This makes resource-bearing plans look resource-free on the normal cached
+              list endpoint. Add the bounded resource summary to the cache/index API projection and
+              cover the cache-ready route in tests."
+            created_at: 2026-05-25T16:05:10.570Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-25T15:51:40.407Z
-    updated_at: 2026-05-25T16:04:56.007Z
+    updated_at: 2026-05-25T16:05:10.570Z
     notes: []
