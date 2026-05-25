@@ -109,3 +109,54 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-25T17:07:45.969Z
+  - _ulid: 01KSG3BWVJ7C4HTRCF3X99CCQ9
+    content: >-
+      Fix cycle 2: addressed all three review blockers.
+
+
+      1) Resource storage gate (plan-resources.ts:157): added requireResourceFolderStorage(ctx) call
+      in resolvePlanForResources. A folder-backed plan project that omits resource_storage.format:
+      entity_scoped now returns 409 entity_storage_incompatible with domain=resources and
+      field=resource_storage.format on every plan-resource endpoint (list/get/bytes/POST/DELETE).
+      New 'missing resource_storage declaration' describe block covers all five endpoints.
+
+
+      2) Static export error propagation (src/export/json.ts:138): replaced silent 'continue' on
+      copyResourceForStaticExport failure with throw new PlanResourceExportError(planUlid,
+      resourcePath, reason). Error class is exported from src/export/index.ts via the existing
+      wildcard re-export. The export now fails fast with an actionable message naming the offending
+      plan, resource path, and resolver reason. New tests reproduce the symlink-escape scenario and
+      assert: rejection with PlanResourceExportError, no bytes written to the would-be exported
+      path, and the error fields/message contain actionable guidance.
+
+
+      3) POST upload safety (plan-resources.ts:430): moved assertSafeResourceMutationPath BEFORE any
+      mkdir/writeFile, and changed temp staging from path.join(resourcesDir, name) to
+      path.join(planDir, name). The safety check (which lstat-walks the resources root +
+      intermediate segments rejecting pre-existing symlinks) now runs first; the temp write lands in
+      the kspec-owned plan directory rather than possibly traversing a symlinked resources/ root.
+      New 'POST symlink safety' test creates a symlinked resources/ pointing at an outside
+      directory, POSTs an upload, asserts 400 invalid_resource_path with a symlink message, AND
+      asserts the outside directory remains empty — proving no bytes leaked.
+
+
+      Re-verified ACs against the implementation:
+
+      - ac-plan-document-sidecar-is-authoritative, ac-plan-index-has-bounded-projection (unchanged
+      from cycle 1)
+
+      - ac-resource-reference-resolves-within-owner (resolver still gated by manifest + symlink
+      containment)
+
+      - ac-resource-metadata-exposes-safe-preview-fields (strict 9-field shape unchanged)
+
+      - ac-path-escape-rejected (now strictly enforced on POST and static export — the two missed
+      paths)
+
+      - ac-static-export-copies-resource-assets (success path unchanged; error path now fails fast)
+
+
+      Build: clean. Full suite: 9716 passed, 5 skipped, 2548 suites passed.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-25T17:36:49.010Z
