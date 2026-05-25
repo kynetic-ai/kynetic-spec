@@ -234193,6 +234193,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-25T17:32:27.714Z
+      - _ulid: 01KSG6R8N3TGPYQFW1C5J9WYHF
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSG2JPF09FYSTA2H0H4MYA5G
+        timestamp: 2026-05-25T18:36:00.036Z
     examined_commit: 0ebd97caa924d55e960aac358c093b1979f94455
     external_links: []
     lifecycle_state: closed
@@ -234225,6 +234231,19 @@ reviews:
               undermines the symlink/path-escape rejection behavior. Check the removal result and
               fail atomically before updating the manifest when old-path cleanup is rejected."
             created_at: 2026-05-25T17:23:03.264Z
+          - _ulid: 01KSG6R6W0M9YPMB2MPVQT68RV
+            author: "@claude"
+            body: Fixed in 7650c9f1b4. addReviewResource now checks the result of
+              removeResourceFromOwnerResources during a replace-with-path-move. On rejection (e.g.
+              the on-disk old-path file is a symlink), the just-written new-path file is rolled back
+              via fs.rm and the manager returns invalid_resource_path with the offending old path
+              attached; the manifest is left untouched at the old declared path. Added a behavioral
+              test in tests/review-resource-manager.test.ts that plants your exact attack shape
+              (seed old.png → replace on disk with a symlink to an outside file → call
+              addReviewResource with replace:true and a new path) and asserts (a) ok:false +
+              invalid_resource_path, (b) the manifest still declares the old path, (c) the new-path
+              file is NOT left behind on disk, and (d) the outside symlink target is intact.
+            created_at: 2026-05-25T18:35:58.208Z
         kind: blocker
       - _ulid: 01KSG33HGB7DBXSNH2E40VZGCE
         entries:
@@ -234261,7 +234280,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-25T17:32:27.713Z
     created_at: 2026-05-25T17:18:44.195Z
-    updated_at: 2026-05-25T17:32:27.714Z
+    updated_at: 2026-05-25T18:35:58.208Z
     notes: []
   - _ulid: 01KSG5SRJFWMCPDCB0VYY6Z5BC
     slugs: []
