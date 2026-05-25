@@ -58,10 +58,12 @@ import { registerPlanResourceCommands } from "./plan-resource.js";
 import { getLinkedPlanSummaryTasks, isCountedInPlanSummary } from "../../lib/plan-summary.js";
 import { resolveDispatchWorkspaceConfig } from "../../agent-runtime/workspace.js";
 import {
+  assertSafeResourceMutationPath,
   computeResourceMetadata,
   getResourcesDir,
   loadResourceManifest,
   parseResourceReference,
+  validateResourceId,
   writeResourceManifest,
 } from "../../parser/entity-local-resources.js";
 import { getPlanDir } from "../../parser/plan-storage-manager.js";
@@ -519,6 +521,82 @@ async function materializePlanSpecs(
 }
 
 /**
+ * Compute the task-owned resource id that materialization will produce for a
+ * given plan resource. Centralized so the pre-flight validation and the
+ * runtime materialize loop cannot drift apart.
+ *
+ * AC: @plan-resource-derivation-semantics-1 ac-explicit-copy-mode-creates-task-owned-resource
+ */
+function buildMaterializedResourceId(planResourceId: string): string {
+  return `plan-${planResourceId}`;
+}
+
+/**
+ * Pre-flight validation for `--materialize-resources`. Verifies, BEFORE any
+ * task is created on disk, that every materialization is safe to perform:
+ *
+ *   1. The resulting task resource id (`plan-<original-id>`) must satisfy the
+ *      resource id contract. Without this, a plan resource id close to the
+ *      128-character ceiling would produce a 133+ character task id and
+ *      `computeResourceMetadata` would reject it AFTER `createTask` already
+ *      wrote the derived task — leaving partial state on disk.
+ *
+ *   2. Each source path under the plan's `resources/` directory must walk a
+ *      symlink-free chain. `fs.copyFile` follows symlinks, so a pre-existing
+ *      symlink at the plan resource leaf or an intermediate directory would
+ *      let materialization import bytes from outside the plan tree.
+ *
+ * Failing fast here keeps the derive transactional: either every
+ * materialization will succeed or no task is created. The runtime materialize
+ * function re-applies the same guards as defense in depth.
+ *
+ * AC: @plan-resource-derivation-semantics-1 ac-explicit-copy-mode-creates-task-owned-resource
+ * AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+ */
+async function preflightMaterializationSafety(
+  ctx: Awaited<ReturnType<typeof initContext>>,
+  planUlid: string,
+  taskPlans: PendingTaskPlan[],
+): Promise<void> {
+  const planResourcesDir = getResourcesDir(getPlanDir(ctx, planUlid));
+  for (const taskPlan of taskPlans) {
+    for (const planResource of taskPlan.planResources) {
+      const materializedId = buildMaterializedResourceId(planResource.id);
+      const idValidation = validateResourceId(materializedId);
+      if (!idValidation.ok) {
+        exitDeriveWithGuidance(
+          `Plan resource "${planResource.id}" cannot be materialized: ${idValidation.error}`,
+          EXIT_CODES.USAGE_ERROR,
+          'Rename the plan resource to fit within 123 characters before the "plan-" prefix is added, then re-run derive with --materialize-resources.',
+          {
+            plan_resource_id: planResource.id,
+            materialized_id: materializedId,
+            task_ref: taskPlan.ref,
+          },
+        );
+      }
+
+      const safeSource = await assertSafeResourceMutationPath({
+        ownerResourcesDir: planResourcesDir,
+        relativePath: planResource.path,
+      });
+      if (!safeSource.ok) {
+        exitDeriveWithGuidance(
+          `Plan resource "${planResource.id}" cannot be materialized: ${safeSource.error}`,
+          EXIT_CODES.USAGE_ERROR,
+          "Replace the symlinked plan resource file with a regular file before re-running derive with --materialize-resources.",
+          {
+            plan_resource_id: planResource.id,
+            path: planResource.path,
+            task_ref: taskPlan.ref,
+          },
+        );
+      }
+    }
+  }
+}
+
+/**
  * Copy plan-owned resource files into a derived task's resources tree at
  * `.kspec/tasks/<task-ulid>/resources/plan/<plan-ulid>/<original-relative-path>`,
  * rewrite the task's manifest entries with id `plan-<original-id>`, and
@@ -528,8 +606,14 @@ async function materializePlanSpecs(
  * behavior keeps the reference plan-owned and never copies bytes
  * (`ac-derived-task-keeps-plan-resource-reference`).
  *
+ * Pre-flight safety (id length + source symlink containment) is enforced by
+ * `preflightMaterializationSafety` BEFORE any task is created. This function
+ * re-applies the same guards as defense in depth — a failure here would
+ * indicate a TOCTOU race between preflight and copy.
+ *
  * AC: @plan-resource-derivation-semantics-1 ac-explicit-copy-mode-creates-task-owned-resource
  * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+ * AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
  */
 async function materializePlanResourcesForTask(options: {
   ctx: Awaited<ReturnType<typeof initContext>>;
@@ -550,14 +634,38 @@ async function materializePlanResourcesForTask(options: {
   const taskResourceRefs: TaskResourceRef[] = [];
 
   for (const planResource of options.planResources) {
-    const sourceAbs = path.join(planResourcesDir, planResource.path);
+    // Defense in depth: assertSafeResourceMutationPath was already called by
+    // preflightMaterializationSafety before any task was created. Re-applying
+    // it here closes the TOCTOU window between preflight and copy — without
+    // this, an attacker replacing the plan resource with a symlink between
+    // preflight and the copy would still escape.
+    const safeSource = await assertSafeResourceMutationPath({
+      ownerResourcesDir: planResourcesDir,
+      relativePath: planResource.path,
+    });
+    if (!safeSource.ok) {
+      throw new Error(
+        `Refusing to materialize plan resource ${planResource.id}: ${safeSource.error}`,
+      );
+    }
     const destinationRelative = path.posix.join(taskSubPrefix, planResource.path);
-    const destinationAbs = path.join(taskResourcesDir, destinationRelative);
+    const safeDestination = await assertSafeResourceMutationPath({
+      ownerResourcesDir: taskResourcesDir,
+      relativePath: destinationRelative,
+    });
+    if (!safeDestination.ok) {
+      throw new Error(
+        `Refusing to materialize plan resource ${planResource.id}: ${safeDestination.error}`,
+      );
+    }
+
+    const sourceAbs = safeSource.value.absolutePath;
+    const destinationAbs = safeDestination.value.absolutePath;
     await fs.mkdir(path.dirname(destinationAbs), { recursive: true });
     await fs.copyFile(sourceAbs, destinationAbs);
 
     const computed = await computeResourceMetadata({
-      id: `plan-${planResource.id}`,
+      id: buildMaterializedResourceId(planResource.id),
       relativePath: destinationRelative,
       absolutePath: destinationAbs,
       contentType: planResource.content_type,
@@ -1821,6 +1929,18 @@ Examples:
         const createdTaskRefs = taskPlans.map((taskPlan) => taskPlan.ref);
 
         if (!options.dryRun) {
+          // Pre-flight: validate every materialization is safe BEFORE any
+          // task is created. Without this, a failure during materialization
+          // (long id, symlinked source) would leave partial derived tasks on
+          // disk because createTask already wrote them. The runtime
+          // materialize function re-applies the same guards as defense in
+          // depth.
+          // AC: @plan-resource-derivation-semantics-1 ac-explicit-copy-mode-creates-task-owned-resource
+          // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+          if (options.materializeResources) {
+            await preflightMaterializationSafety(ctx, foundPlan._ulid, taskPlans);
+          }
+
           for (const taskPlan of taskPlans) {
             const created = await resolveTaskDataManager(ctx).createTask(ctx, taskPlan.input);
             // Materialize task-owned copies when explicitly requested. The

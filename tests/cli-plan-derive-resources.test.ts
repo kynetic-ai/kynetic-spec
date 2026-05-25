@@ -239,6 +239,136 @@ describe.runIf(canRunInit)("Integration: plan derive resource_refs", () => {
     );
     expect(existsSync(materialized)).toBe(true);
   });
+
+  // Regression — symlinked plan resource leaf (review @01KSEZSCAYY7HHFE619H6KN1TH
+  // blocker on src/cli/commands/plan.ts:552). Before the preflight fix,
+  // `fs.copyFile(sourceAbs, destinationAbs)` followed the symlink and
+  // materialized bytes from outside the plan tree. The fix verifies the
+  // source chain with `assertSafeResourceMutationPath` before any
+  // `createTask` runs, so derive must fail fast with usage_error AND leave
+  // no derived task on disk.
+  // AC: @plan-resource-derivation-semantics-1 ac-explicit-copy-mode-creates-task-owned-resource
+  // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+  it("--materialize-resources rejects a symlinked plan resource leaf and creates no task", async () => {
+    const { planRef, planUlid } = await buildPlanWithResource(tempDir, {
+      planSlug: "matsym-plan",
+      sourceFileContents: "INNER",
+      resourceId: "doc",
+      resourcePath: "doc.bin",
+      moduleSlug: "matsym-mod",
+      additionalTasks: `- title: Implement Doc
+  slug: implement-doc-matsym
+  resource_refs:
+    - ./resources/doc.bin`,
+    });
+
+    // Plant a symlinked plan resource leaf pointing at an outside secret.
+    const outsideSecret = path.join(tempDir, "outside-secret.bin");
+    await fs.writeFile(outsideSecret, "OUTSIDE_SECRET", "utf-8");
+    const planResourceFile = path.join(
+      tempDir,
+      ".kspec",
+      "plans",
+      planUlid,
+      "resources",
+      "doc.bin",
+    );
+    await fs.rm(planResourceFile);
+    await fs.symlink(outsideSecret, planResourceFile);
+
+    const derive = kspecRun(
+      `plan derive ${planRef} --module @matsym-mod --materialize-resources`,
+      tempDir,
+      { expectFail: true },
+    );
+    expect(derive.exitCode).toBe(2);
+    expect(derive.stderr).toContain("symlink");
+
+    // No derived task should have been written to disk.
+    const taskLookup = kspecRun("task get @implement-doc-matsym", tempDir, {
+      expectFail: true,
+    });
+    expect(taskLookup.exitCode).not.toBe(0);
+  });
+
+  // Regression — symlinked intermediate directory inside the plan resources
+  // tree. Even with a non-symlinked leaf, an intermediate `sub/ → /outside`
+  // symlink would let materialization pull bytes from outside the plan
+  // directory. The preflight walks the chain segment-by-segment with
+  // `assertSafeResourceMutationPath`, so this must also reject.
+  // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+  it("--materialize-resources rejects a symlinked intermediate directory in the plan resources tree", async () => {
+    // Build the plan with a path inside a sub/ directory so we can replace
+    // sub/ with a symlink without touching the leaf.
+    const { planRef, planUlid } = await buildPlanWithResource(tempDir, {
+      planSlug: "matsymdir-plan",
+      sourceFileContents: "INNER",
+      resourceId: "doc",
+      resourcePath: "sub/doc.bin",
+      moduleSlug: "matsymdir-mod",
+      additionalTasks: `- title: Implement Doc
+  slug: implement-doc-matsymdir
+  resource_refs:
+    - ./resources/sub/doc.bin`,
+    });
+
+    const outsideDir = path.join(tempDir, "outside-sub");
+    await fs.mkdir(outsideDir, { recursive: true });
+    await fs.writeFile(path.join(outsideDir, "doc.bin"), "OUTSIDE_SECRET", "utf-8");
+    const planSubDir = path.join(tempDir, ".kspec", "plans", planUlid, "resources", "sub");
+    await fs.rm(planSubDir, { recursive: true, force: true });
+    await fs.symlink(outsideDir, planSubDir);
+
+    const derive = kspecRun(
+      `plan derive ${planRef} --module @matsymdir-mod --materialize-resources`,
+      tempDir,
+      { expectFail: true },
+    );
+    expect(derive.exitCode).toBe(2);
+    expect(derive.stderr).toContain("symlink");
+
+    const taskLookup = kspecRun("task get @implement-doc-matsymdir", tempDir, {
+      expectFail: true,
+    });
+    expect(taskLookup.exitCode).not.toBe(0);
+  });
+
+  // Regression — prefixed resource id overflow (review @01KSEZSCAYY7HHFE619H6KN1TH
+  // blocker on src/cli/commands/plan.ts:559). A 128-character plan resource
+  // id (valid input) yields a 133-character `plan-…` id after prefixing,
+  // which `computeResourceMetadata` rejects. Before the preflight fix this
+  // failure surfaced AFTER `createTask` already wrote the derived task,
+  // leaving partial state behind. The fix pre-validates every
+  // materialization id before any task is created.
+  // AC: @plan-resource-derivation-semantics-1 ac-explicit-copy-mode-creates-task-owned-resource
+  it("--materialize-resources rejects when the prefixed id would exceed the resource id contract and creates no task", async () => {
+    const longId = "a".repeat(128);
+    const { planRef } = await buildPlanWithResource(tempDir, {
+      planSlug: "matlong-plan",
+      sourceFileContents: "INNER",
+      resourceId: longId,
+      resourcePath: "doc.bin",
+      moduleSlug: "matlong-mod",
+      additionalTasks: `- title: Implement Doc
+  slug: implement-doc-matlong
+  resource_refs:
+    - ./resources/doc.bin`,
+    });
+
+    const derive = kspecRun(
+      `plan derive ${planRef} --module @matlong-mod --materialize-resources`,
+      tempDir,
+      { expectFail: true },
+    );
+    expect(derive.exitCode).toBe(2);
+    expect(derive.stderr).toMatch(/cannot be materialized/);
+
+    // No derived task should have been written to disk.
+    const taskLookup = kspecRun("task get @implement-doc-matlong", tempDir, {
+      expectFail: true,
+    });
+    expect(taskLookup.exitCode).not.toBe(0);
+  });
 });
 
 describe.runIf(canRunInit)("Integration: task get drift visibility", () => {
