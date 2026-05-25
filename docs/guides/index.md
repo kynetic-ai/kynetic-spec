@@ -7,5 +7,6 @@ The Guides section covers common kspec workflows as step-by-step procedures fram
 - [Importing and Approving a Plan](./importing-and-approving-a-plan.md) — create a plan document, import it, and derive tasks
 - [Authoring and Completing a Task](./authoring-and-completing-a-task.md) — work a task through the full lifecycle with AC coverage
 - [Reviewing an Agent's Work](./reviewing-an-agents-work.md) — evaluate submitted work against acceptance criteria
+- [Working With Local Resources](./working-with-local-resources.md) — attach files to plans and reviews, reference them from markdown and tasks, and serve them through the daemon API and static export
 - [Upgrading kspec to a New Version](./upgrading-kspec.md) — install a new release and update your project
 - [Recovering From Shadow Branch Issues](./recovering-from-shadow-branch-issues.md) — diagnose and fix shadow branch problems

@@ -107,6 +107,14 @@ Preview what will be created before committing:
 kspec plan derive @plan-my-feature --dry-run
 ```
 
+If the plan owns local resources (screenshots, research PDFs, evidence files) and any derived task declares `resource_refs`, derivation records versioned references back to the plan's resources by default. Pass `--materialize-resources` when a task needs an immutable snapshot of the plan resource bytes copied into its own directory:
+
+```bash
+kspec plan derive @plan-my-feature --materialize-resources
+```
+
+See [Working With Local Resources](./working-with-local-resources.md) for the full resource workflow, including how to import a plan with sibling resources, attach files to an existing plan, and the difference between referenced and materialized resources.
+
 After derivation, tasks appear in the ready queue:
 
 ```bash

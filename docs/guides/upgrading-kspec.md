@@ -43,7 +43,7 @@ kspec --version
 
 ### 4. Run the upgrade
 
-The `kspec upgrade` command performs all project migration work in one step — task storage migration, skill re-rendering, agent instruction regeneration, gitignore repair, and release-note surfacing:
+The `kspec upgrade` command performs all project migration work in one step — task storage migration, plan and review folder-backed storage migration (1.2+), skill re-rendering, agent instruction regeneration, gitignore repair, and release-note surfacing:
 
 ```bash
 kspec upgrade
@@ -55,7 +55,50 @@ Review the output carefully. It lists each migration step, what changed, and any
 kspec upgrade --dry-run
 ```
 
+`--dry-run` reports every step that would run, the previous shadow commit (so you have a rollback reference before any writes happen), and any warnings — without writing to the shadow branch. Run it first on any project where you want to know exactly what the upgrade will do before committing to it.
+
 For all upgrade options, run `kspec upgrade --help`.
+
+#### What `kynetic: "1.2"` Changes
+
+Version 1.2 moves plans and reviews from monolithic project-wide files into folder-backed entities and introduces entity-scoped local resources. After a successful upgrade, your project's `kynetic.yaml` (or `project.kynetic.yaml`) declares:
+
+```yaml
+kynetic: "1.2"
+task_storage:
+  format: split
+plan_storage:
+  format: folder
+review_storage:
+  format: folder
+resource_storage:
+  format: entity_scoped
+```
+
+On disk, plans live in `.kspec/plans/<plan-ulid>/` with `plan.md`, `plan.yaml`, optional `notes.yaml`, `resources.yaml`, and `resources/`. Reviews live in `.kspec/reviews/<review-ulid>/` with a cohesive `review.yaml`, `resources.yaml`, and `resources/`. The project-wide `.kspec/project.plans.yaml` and `.kspec/project.reviews.yaml` files remain as lean indexes that no longer inline full markdown, notes, review threads, or resource file bytes.
+
+See [Local Resources for Plans and Reviews](../concepts/local-resources.md) for the full layout, schema, and resource model.
+
+#### Rolling Back If Something Goes Wrong
+
+The upgrade output reports the previous shadow commit — the commit on the shadow branch immediately before the upgrade's first write. Look for a line like:
+
+```
+Shadow HEAD (pre-upgrade rollback ref): a1b2c3d
+```
+
+That short SHA is your rollback target. If you need to undo the upgrade, reset the shadow branch back to that commit from your project root:
+
+```bash
+cd .kspec
+git reset --hard <previous-shadow-commit>
+cd ..
+kspec shadow status
+```
+
+`kspec shadow status` should report a healthy worktree on the pre-upgrade commit. Verify your plan and review data is intact, then either retry the upgrade (after addressing whatever motivated the rollback) or pin to the previous kspec version.
+
+The pre-upgrade commit is the rollback ref by design — kspec does not create parallel backup files, because the shadow branch's git history is the backup.
 
 ### 5. Check project health
 
@@ -65,7 +108,7 @@ Run the health check to verify nothing broke:
 kspec doctor
 ```
 
-All checks should pass. If any fail, follow the suggested fixes in the output.
+All checks should pass. If any fail, follow the suggested fixes in the output. Common upgrade-time failures and their recovery procedures are documented in [Troubleshooting](../troubleshooting/index.md) — in particular [`entity_storage_incompatible`: project storage format mismatch](../troubleshooting/entity-storage-incompatible.md) when a plan, review, or resource command reports the project is not on folder-backed storage.
 
 ### 6. Verify shadow branch integrity
 

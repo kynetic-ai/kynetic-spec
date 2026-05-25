@@ -30,6 +30,8 @@ A plan coordinates **a group of specs and tasks that need to ship together**. Wh
 
 Plans have their own lifecycle: draft, approved, active, completed, and rejected. You approve a plan before deriving work from it, which prevents wasted effort on designs that haven't been agreed on. A plan that doesn't survive review ends up rejected — a terminal state that keeps the decision visible rather than silently deleting the proposal.
 
+A plan can own supporting files — screenshots, research PDFs, UX mockups — as [local resources](./local-resources.md) stored beside its markdown document. Derived tasks receive versioned references back to those plan resources, so a task knows which file informed it and can detect when the plan has changed the file since derivation.
+
 ### Inbox
 
 The inbox captures **ideas and observations that aren't yet scoped**. An inbox item is just text, a timestamp, and optional tags. It has no acceptance criteria, no lifecycle states, and no review process.
