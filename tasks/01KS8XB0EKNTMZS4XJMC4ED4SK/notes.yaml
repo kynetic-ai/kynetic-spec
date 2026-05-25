@@ -349,3 +349,30 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-25T19:59:06.301Z
+  - _ulid: 01KSGCS7WDR5Z3J4KAJRF9NHFK
+    content: >-
+      Fix cycle 9: addressed both blockers from review @01KSGAS4 (cycle 8) plus one related
+      changed-file oxlint error the named blockers were a subset of.
+
+
+      1. tests/review-resource-manager.test.ts (no-source-scanning): replaced 5 raw
+      fs.readFile(resources.yaml) reads with listReviewResources(ctx, ref) calls so the assertions
+      exercise the same public loader the CLI/daemon use. Removed the now-unused yaml import.
+
+
+      2. tests/daemon-api/review-resources.test.ts (jest/no-standalone-expect): extracted a
+      seedReviewResource() helper that throws on non-201 with the response status+body. beforeEach
+      now calls the helper instead of using expect() at setup time.
+
+
+      3. tests/daemon-api/helpers.ts:288 (no-source-scanning): legitimate fixture-bootstrap read of
+      a temp-dir YAML the rule cannot statically resolve to a safe root. Added a targeted
+      oxlint-disable-next-line with a reason, matching the rule's documented escape hatch.
+
+
+      Verification: changed-file oxlint exits 0 (12 pre-existing vi.fn warnings remain). typecheck
+      pass. kspec validate --warnings-ok pass. npm test: 2563 suites passed; 9784 tests passed, 5
+      skipped; duration 2522s.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-25T20:21:23.469Z
