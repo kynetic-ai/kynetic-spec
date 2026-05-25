@@ -54312,9 +54312,20 @@ runs:
     completed_at: 2026-05-25T16:35:28.120Z
   - _ulid: 01KSG0J8P87XQX2701EB7WN6PG
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-25T16:47:52.008Z
+        completed_at: 2026-05-25T16:49:41.327Z
+        notes: "Worked well: review threads pinpointed exact files/lines (packages/shared/src/api.ts:361,
+          packages/daemon/src/routes/plans.ts:221) which made the fix surgical. Atomic batch with
+          reply+resolve+note+start+submit kept the resubmit clean."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-25T16:49:41.327Z
+        completed_at: 2026-05-25T16:49:41.327Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-25T16:47:52.008Z
