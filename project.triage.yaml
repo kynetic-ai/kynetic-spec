@@ -2883,7 +2883,7 @@ triage:
     updated_at: 2026-04-02T22:57:33.781Z
     acted_at: 2026-04-02T22:57:33.727Z
   - _ulid: 01KSETWJ67ERYHJTNJYGQY6EQB
-    status: triaged
+    status: acted_on
     action: duplicate
     decided_by: Jacob Chapel
     evidence_refs:
@@ -2896,4 +2896,5 @@ triage:
     reasoning: Duplicate of existing reflection item @01KSEQ8M, which already proposes a reusable
       scratch-project CLI reproduction helper for reviewers.
     created_at: 2026-05-25T05:49:23.527Z
-    updated_at: 2026-05-25T05:49:23.557Z
+    updated_at: 2026-05-25T05:49:30.660Z
+    acted_at: 2026-05-25T05:49:30.637Z
