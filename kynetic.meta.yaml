@@ -19589,6 +19589,21 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-25T07:58:29.374Z
+  - _ulid: 01KSF3V8W12KKA137RS05XCHFE
+    type: friction
+    content: "Recurrence evidence extending @01KSEYYEZ2P55FBYHW5YDN0Q5D: in fix cycle 3 of
+      @01KS8XB0EKNTMZS4XJMC4ED4SK, two additional items literally enumerated in the task Testing
+      section ('unreadable source files', 'interactive remove cancellation') were still missed
+      despite cycle 2 specifically addressing two other bullets from the same list (409
+      incompatibility, cache/WebSocket invalidation). Cycle 2 fixed the surface but not the systemic
+      gap. The Testing checklist therefore needs to be enforced at submission time (e.g. a kspec
+      helper that diffs task Testing bullets against changed test files), not just relied upon as
+      manual cross-check by the worker. Domain: review, testing, automation."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-05-25T08:25:58.402Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
