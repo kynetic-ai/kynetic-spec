@@ -230342,6 +230342,18 @@ reviews:
         runner: git
         created_at: 2026-05-25T02:53:43.172Z
         completed_at: 2026-05-25T02:53:43.172Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --run tests/upgrade-folder-storage.test.ts --fresh: 18 passed; migration
+          module focused run: 64 passed across plan/review/migration-safety/batch-write-buffer
+          tests"
+        name: focused migration tests
+        required: false
+        runner: npm
+        created_at: 2026-05-25T02:53:48.100Z
+        completed_at: 2026-05-25T02:53:48.100Z
     events:
       - _ulid: 01KSEFSX3958JY23XW1V6VMZ1W
         actor: Jacob Chapel
@@ -230377,6 +230389,13 @@ reviews:
           status: pass
           name: diff hygiene
         timestamp: 2026-05-25T02:53:44.938Z
+      - _ulid: 01KSEGV3CCBGJJ6JJS6YJM4WD0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused migration tests
+        timestamp: 2026-05-25T02:53:49.836Z
     examined_commit: 03c37aed2c2b13d94f58569df364e5c5dce6f821
     external_links: []
     lifecycle_state: open
@@ -230389,5 +230408,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-25T02:35:42.057Z
-    updated_at: 2026-05-25T02:53:43.172Z
+    updated_at: 2026-05-25T02:53:48.100Z
     notes: []
