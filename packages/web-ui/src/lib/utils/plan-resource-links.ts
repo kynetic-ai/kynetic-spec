@@ -22,12 +22,28 @@ const PLAN_RESOURCE_LINK_PATTERN =
 const AUTHORING_PREFIX = "./resources/";
 
 /**
+ * Build the safe per-resource fetch URL clients render in place of an
+ * author-style `./resources/<path>` reference. The base URL — `PlanDetail`'s
+ * `resources_base_url` — comes from the daemon (`/api/plans/:ulid/resources`)
+ * so this helper does not encode the daemon URL layout itself.
+ */
+function buildResourceFetchUrl(base: string, resource: PlanResourceMetadata): string {
+  const trimmed = base.endsWith("/") ? base.slice(0, -1) : base;
+  return `${trimmed}/${encodeURIComponent(resource.id)}/bytes`;
+}
+
+/**
  * Rewrite `./resources/<path>` markdown link/image targets in a plan
  * document to safe URLs scoped to the owning plan. References whose relative
  * path matches a declared resource are rewritten to that resource's
- * `bytes_url`; unresolved references are left untouched so authors see the
- * raw link with visible guidance instead of a silent rewrite to a broken
- * destination.
+ * safe fetch URL (built from the plan-scoped `resourcesBaseUrl`); unresolved
+ * references are left untouched so authors see the raw link with visible
+ * guidance instead of a silent rewrite to a broken destination.
+ *
+ * `PlanResourceMetadata` is intentionally the strict 9-field shape — the
+ * fetch URL lives outside the metadata object so all resource consumers
+ * (API, CLI, static export, agent contexts) see an identical resource
+ * record.
  *
  * Pure function — no DOM access — so it is safe to run during SSR, in
  * vitest, and in the static export pipeline.
@@ -38,8 +54,9 @@ const AUTHORING_PREFIX = "./resources/";
 export function rewritePlanResourceLinks(
   markdown: string,
   resources: PlanResourceMetadata[] | undefined,
+  resourcesBaseUrl: string | undefined,
 ): string {
-  if (!markdown || !resources || resources.length === 0) return markdown;
+  if (!markdown || !resources || resources.length === 0 || !resourcesBaseUrl) return markdown;
 
   const byPath = new Map<string, PlanResourceMetadata>();
   for (const resource of resources) {
@@ -59,9 +76,10 @@ export function rewritePlanResourceLinks(
     const relative = target.slice(AUTHORING_PREFIX.length);
     const resource = byPath.get(relative);
     if (!resource) return match;
+    const url = buildResourceFetchUrl(resourcesBaseUrl, resource);
     if (refDefPrefix !== undefined && refDefTarget !== undefined) {
-      return `${refDefPrefix}${resource.bytes_url}`;
+      return `${refDefPrefix}${url}`;
     }
-    return `${inlinePrefix ?? ""}${resource.bytes_url}${inlineSuffix ?? ""}`;
+    return `${inlinePrefix ?? ""}${url}${inlineSuffix ?? ""}`;
   });
 }

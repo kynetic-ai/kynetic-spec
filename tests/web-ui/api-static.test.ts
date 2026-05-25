@@ -284,9 +284,10 @@ describe("static API snapshot adapters", () => {
 
   // AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
   // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
-  it("translates plan resources from the exported_path snapshot shape to the bytes_url UI shape", () => {
+  it("projects exported plan resources into the strict 9-field PlanResourceMetadata shape with a sibling resources_base_url", () => {
     const snapshot = createSnapshot();
-    const exportedPath = `assets/resources/plan/${snapshot.plans![0]._ulid}/screenshots/login.png`;
+    const planUlid = snapshot.plans![0]._ulid;
+    const exportedPath = `assets/resources/plan/${planUlid}/screenshots/login.png`;
     (snapshot.plans![0] as unknown as Record<string, unknown>).resources = [
       {
         id: "login-shot",
@@ -305,15 +306,36 @@ describe("static API snapshot adapters", () => {
 
     const detail = fetchPlanContentStatic("@plan-one");
     expect(detail.data.resources).toHaveLength(1);
-    expect(detail.data.resources[0]).toMatchObject({
+    // PlanResourceMetadata stays exact 9 fields — no bytes_url, no
+    // exported_path. Static content has its `./resources/<path>` references
+    // pre-rewritten at export time, so consumers do not need a per-resource
+    // URL on the metadata object.
+    expect(detail.data.resources[0]).toEqual({
       id: "login-shot",
+      label: null,
       path: "screenshots/login.png",
-      bytes_url: exportedPath,
+      content_type: "image/png",
+      bytes: 8,
+      sha256: "a".repeat(64),
+      git_commit: null,
+      git_path: null,
+      description: null,
     });
+    expect(detail.data.resources[0]).not.toHaveProperty("bytes_url");
+    expect(detail.data.resources[0]).not.toHaveProperty("exported_path");
+    // Safe fetch URL prefix lives outside the metadata array (mirrors the
+    // daemon's PlanDetail.resources_base_url contract).
+    expect(detail.data.resources_base_url).toBe(`assets/resources/plan/${planUlid}`);
+    // Bounded summary is computed from the snapshot resources so static
+    // dashboards stay aligned with the daemon's list projection.
+    expect(detail.data.resource_summary).toEqual({ count: 1, total_bytes: 8 });
 
+    // List responses surface the bounded summary, never the per-resource
+    // metadata array — matches the daemon's cache-ready list contract.
     const list = fetchPlansStatic();
-    expect(list.data[0].resources).toHaveLength(1);
-    expect(list.data[0].resources![0].bytes_url).toBe(exportedPath);
+    expect(list.data[0].resource_summary).toEqual({ count: 1, total_bytes: 8 });
+    expect(list.data[0]).not.toHaveProperty("resources");
+    expect(list.data[0]).not.toHaveProperty("resources_base_url");
   });
 
   // AC: @gh-pages-export ac-23

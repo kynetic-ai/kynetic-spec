@@ -130,7 +130,7 @@ describe("Plan Resource API", () => {
   });
 
   // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
-  it("GET /api/plans/:ref/resources returns the declared metadata with bytes_url pointers", async () => {
+  it("GET /api/plans/:ref/resources returns the strict 9-field ResourceMetadata shape (no embedded URLs)", async () => {
     const buf = Buffer.from("hello world");
     writePlanFolderWithResources({
       resources: [{ id: "hello-txt", path: "hello.txt", bytes: buf, contentType: "text/plain" }],
@@ -139,21 +139,26 @@ describe("Plan Resource API", () => {
     expect(response.status).toBe(200);
     const body = await response.json();
     expect(body.resources).toHaveLength(1);
-    expect(body.resources[0]).toMatchObject({
+    expect(body.resources[0]).toEqual({
       id: "hello-txt",
       label: null,
       path: "hello.txt",
       content_type: "text/plain",
       bytes: buf.length,
+      sha256: expect.stringMatching(/^[0-9a-f]{64}$/),
+      git_commit: null,
+      git_path: null,
       description: null,
-      bytes_url: `/api/plans/${PLAN_ULID}/resources/hello-txt/bytes`,
     });
-    expect(typeof body.resources[0].sha256).toBe("string");
-    expect(body.resources[0].sha256).toMatch(/^[0-9a-f]{64}$/);
+    // Resource metadata is the exact 9-field contract — bytes_url, base_url,
+    // or any other URL pointer must not leak into individual resource entries.
+    expect(body.resources[0]).not.toHaveProperty("bytes_url");
+    expect(body.resources[0]).not.toHaveProperty("base_url");
+    expect(body.resources[0]).not.toHaveProperty("url");
   });
 
   // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
-  it("GET /api/plans/:ref/resources/:resourceId returns one resource", async () => {
+  it("GET /api/plans/:ref/resources/:resourceId returns the strict 9-field shape", async () => {
     writePlanFolderWithResources({
       resources: [
         { id: "shot", path: "screenshots/login.png", bytes: Buffer.from([1, 2, 3]), contentType: "image/png" },
@@ -162,11 +167,18 @@ describe("Plan Resource API", () => {
     const response = await request(`/api/plans/${PLAN_REF}/resources/shot`);
     expect(response.status).toBe(200);
     const body = await response.json();
-    expect(body.resource.id).toBe("shot");
-    expect(body.resource.path).toBe("screenshots/login.png");
-    expect(body.resource.content_type).toBe("image/png");
-    expect(body.resource.bytes).toBe(3);
-    expect(body.resource.bytes_url).toBe(`/api/plans/${PLAN_ULID}/resources/shot/bytes`);
+    expect(body.resource).toEqual({
+      id: "shot",
+      label: null,
+      path: "screenshots/login.png",
+      content_type: "image/png",
+      bytes: 3,
+      sha256: expect.stringMatching(/^[0-9a-f]{64}$/),
+      git_commit: null,
+      git_path: null,
+      description: null,
+    });
+    expect(body.resource).not.toHaveProperty("bytes_url");
   });
 
   // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
@@ -253,9 +265,11 @@ describe("Plan Resource API", () => {
     expect(body.resource.path).toBe("screenshots/login.png");
     expect(body.resource.bytes).toBe(4);
     expect(body.resource.content_type).toBe("image/png");
-    expect(body.resource.bytes_url).toBe(`/api/plans/${PLAN_ULID}/resources/shot/bytes`);
+    expect(body.resource).not.toHaveProperty("bytes_url");
 
-    // Verify the file landed on disk
+    // Verify the file landed on disk via the documented bytes endpoint —
+    // clients construct this URL from `PlanDetail.resources_base_url`, not
+    // from a field embedded in the metadata.
     const verify = await request(`/api/plans/${PLAN_REF}/resources/shot/bytes`);
     expect(verify.status).toBe(200);
     expect(Buffer.from(await verify.arrayBuffer()).equals(Buffer.from([1, 2, 3, 4]))).toBe(true);
@@ -432,7 +446,8 @@ describe("Plan Resource API", () => {
 
   // AC: @folder-backed-plan-storage-1 ac-plan-document-sidecar-is-authoritative
   // AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
-  it("GET /api/plans/:ref returns resource summaries on the detail response", async () => {
+  // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+  it("GET /api/plans/:ref returns resources and the safe resources_base_url on the detail response", async () => {
     writePlanFolderWithResources({
       resources: [
         { id: "shot", path: "shot.png", bytes: Buffer.from([1, 2, 3]), contentType: "image/png" },
@@ -444,11 +459,17 @@ describe("Plan Resource API", () => {
     expect(body.data.content).toContain("# Active Plan");
     expect(body.data.resources).toHaveLength(1);
     expect(body.data.resources[0].id).toBe("shot");
-    expect(body.data.resources[0].bytes_url).toBe(`/api/plans/${PLAN_ULID}/resources/shot/bytes`);
+    // PlanResourceMetadata stays strict — URL pointers live as a sibling on
+    // PlanDetail, not inside the resource entries.
+    expect(body.data.resources[0]).not.toHaveProperty("bytes_url");
+    expect(body.data.resources_base_url).toBe(`/api/plans/${PLAN_ULID}/resources`);
+    // Detail also surfaces the bounded resource summary so dashboard widgets
+    // and the list route share an identical projection.
+    expect(body.data.resource_summary).toEqual({ count: 1, total_bytes: 3 });
   });
 
   // AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
-  it("GET /api/plans returns resource summaries on each plan in the list", async () => {
+  it("GET /api/plans returns the bounded resource_summary on each plan in the list (disk-fallback path)", async () => {
     writePlanFolderWithResources({
       resources: [
         { id: "shot", path: "shot.png", bytes: Buffer.from([1, 2]), contentType: "image/png" },
@@ -459,8 +480,182 @@ describe("Plan Resource API", () => {
     const body = await response.json();
     const plan = body.data.find((p: { _ulid: string }) => p._ulid === PLAN_ULID);
     expect(plan).toBeDefined();
-    expect(plan.resources).toHaveLength(1);
-    expect(plan.resources[0].id).toBe("shot");
+    // List responses surface only the bounded summary — never the full
+    // metadata array (which is served by the dedicated resource endpoints
+    // and the per-plan detail route).
+    expect(plan.resource_summary).toEqual({ count: 1, total_bytes: 2 });
+    expect(plan.resources).toBeUndefined();
+  });
+});
+
+// ── Cache-ready list path projects resource_summary ──────────────────────────
+
+describe("Plan list — cache-ready resource_summary projection", () => {
+  beforeEach(async () => {
+    tempDir = await createTempDir("kspec-daemon-api-plan-resources-cache-");
+    initGitRepo(tempDir);
+    setupFixtures(tempDir);
+    execSync(`rm -rf ${path.join(tempDir, ".kspec", "plans")}`);
+    writeFileSync(
+      path.join(tempDir, ".kspec", "project.plans.yaml"),
+      `kynetic_plans: "1.0"\nplans:\n  - _ulid: ${PLAN_ULID}\n    slugs:\n      - ${PLAN_SLUG}\n    title: Active Plan\n    status: active\n    derived_tasks: []\n    derived_specs: []\n    source_path: null\n    created_at: "2026-01-15T10:00:00Z"\n    approved_at: "2026-01-16T12:00:00Z"\n    completed_at: null\n`,
+    );
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
+  //     — the cache-hit fast path must surface the bounded resource_summary
+  //     carried by PlanIndexSummary; without this projection, resource-bearing
+  //     plans would look resource-free on the normal cached list endpoint.
+  it("projects PlanIndexSummary.resource_summary on the cache-ready list response", async () => {
+    writePlanFolderWithResources({
+      resources: [
+        { id: "shot", path: "shot.png", bytes: Buffer.from([1, 2, 3]), contentType: "image/png" },
+        { id: "hero", path: "hero.png", bytes: Buffer.from([1, 2, 3, 4, 5]), contentType: "image/png" },
+      ],
+    });
+
+    // Cache-ready fake: returns a PlanIndexSummary carrying the bounded
+    // resource_summary (count + total_bytes) the route should project. The
+    // fake reports plans/tasks as "ready" so the route hits the cache fast
+    // path without falling back to disk-based loadPlans/loadAllTasks.
+    const cacheStub = {
+      getDomainState: (domain: string) =>
+        domain === "plans" || domain === "tasks" ? "ready" : "unloaded",
+      getPlansIndex: () => [
+        {
+          _ulid: PLAN_ULID,
+          slugs: [PLAN_SLUG],
+          title: "Active Plan",
+          status: "active",
+          created_at: "2026-01-15T10:00:00Z",
+          approved_at: "2026-01-16T12:00:00Z",
+          completed_at: null,
+          source_path: null,
+          module_ref: null,
+          derived_tasks: [],
+          derived_specs: [],
+          resource_summary: { count: 2, total_bytes: 8 },
+        },
+      ],
+      getTaskIndex: () => [],
+      // Stubs for unused methods on this code path.
+      getTaskDetail: () => null,
+      getTaskHistory: () => null,
+      setTaskDetail: () => {},
+      getAllTaskDetails: () => null,
+      getItemIndex: () => null,
+      getItemDetail: () => null,
+      setItemDetail: () => {},
+      getAllItemDetails: () => null,
+      getSessionIndex: () => null,
+      getSessionLiveEventCount: () => undefined,
+      getSessionDetail: () => null,
+      setSessionDetail: () => {},
+      getPlanDetail: () => null,
+      setPlanDetail: () => {},
+      getInboxIndex: () => null,
+      getTriageIndex: () => null,
+      getTriageDetail: () => null,
+      setTriageDetail: () => {},
+      getReviewsIndex: () => null,
+      getReviewDetail: () => null,
+      setReviewDetail: () => {},
+      getMetaIndex: () => null,
+      getMetaDetail: () => null,
+      setMetaDetail: () => {},
+      getShadowInfo: () => null,
+      getProjectConfig: () => null,
+      getSessionContext: () => null,
+      writeThrough: async () => {},
+      markWriteThrough: () => {},
+      getCacheDiagnostics: () => ({}) as never,
+    };
+
+    ({ app } = createTestApp({
+      getEntityCache: () => cacheStub as never,
+    }));
+
+    const response = await request("/api/plans");
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body.meta.cache_status).toBe("ready");
+    const plan = body.data.find((p: { _ulid: string }) => p._ulid === PLAN_ULID);
+    expect(plan).toBeDefined();
+    expect(plan.resource_summary).toEqual({ count: 2, total_bytes: 8 });
+    // List responses still surface no per-resource metadata array — that
+    // lives on the detail route and the dedicated /resources endpoints.
+    expect(plan.resources).toBeUndefined();
+  });
+
+  // AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
+  it("projects {count:0,total_bytes:0} on the cache-ready list response for resource-less plans", async () => {
+    writePlanFolderWithResources({});
+
+    const cacheStub = {
+      getDomainState: (domain: string) =>
+        domain === "plans" || domain === "tasks" ? "ready" : "unloaded",
+      getPlansIndex: () => [
+        {
+          _ulid: PLAN_ULID,
+          slugs: [PLAN_SLUG],
+          title: "Active Plan",
+          status: "active",
+          created_at: "2026-01-15T10:00:00Z",
+          approved_at: "2026-01-16T12:00:00Z",
+          completed_at: null,
+          source_path: null,
+          module_ref: null,
+          derived_tasks: [],
+          derived_specs: [],
+        },
+      ],
+      getTaskIndex: () => [],
+      getTaskDetail: () => null,
+      getTaskHistory: () => null,
+      setTaskDetail: () => {},
+      getAllTaskDetails: () => null,
+      getItemIndex: () => null,
+      getItemDetail: () => null,
+      setItemDetail: () => {},
+      getAllItemDetails: () => null,
+      getSessionIndex: () => null,
+      getSessionLiveEventCount: () => undefined,
+      getSessionDetail: () => null,
+      setSessionDetail: () => {},
+      getPlanDetail: () => null,
+      setPlanDetail: () => {},
+      getInboxIndex: () => null,
+      getTriageIndex: () => null,
+      getTriageDetail: () => null,
+      setTriageDetail: () => {},
+      getReviewsIndex: () => null,
+      getReviewDetail: () => null,
+      setReviewDetail: () => {},
+      getMetaIndex: () => null,
+      getMetaDetail: () => null,
+      setMetaDetail: () => {},
+      getShadowInfo: () => null,
+      getProjectConfig: () => null,
+      getSessionContext: () => null,
+      writeThrough: async () => {},
+      markWriteThrough: () => {},
+      getCacheDiagnostics: () => ({}) as never,
+    };
+
+    ({ app } = createTestApp({
+      getEntityCache: () => cacheStub as never,
+    }));
+
+    const response = await request("/api/plans");
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body.meta.cache_status).toBe("ready");
+    const plan = body.data.find((p: { _ulid: string }) => p._ulid === PLAN_ULID);
+    expect(plan.resource_summary).toEqual({ count: 0, total_bytes: 0 });
   });
 });
 

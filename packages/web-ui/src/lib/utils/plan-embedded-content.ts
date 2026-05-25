@@ -288,10 +288,16 @@ export function buildPlanContentBlocks(
 
   // AC: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner
   //     — pre-process the markdown so `./resources/<path>` image/link targets
-  //     point at the safe plan-scoped fetch URL the daemon exposes. Unresolved
-  //     references are left untouched so authors still see the raw text and
-  //     can decide whether to add a manifest entry.
-  const resolvedContent = rewritePlanResourceLinks(plan.content, plan.resources);
+  //     point at the safe plan-scoped fetch URL the daemon exposes. The base
+  //     URL travels on `PlanDetail.resources_base_url` (sibling field) so the
+  //     resource metadata shape stays strict. Unresolved references are left
+  //     untouched so authors still see the raw text and can decide whether to
+  //     add a manifest entry.
+  const resolvedContent = rewritePlanResourceLinks(
+    plan.content,
+    plan.resources,
+    plan.resources_base_url,
+  );
   const planForParsing: PlanDetail = { ...plan, content: resolvedContent };
 
   const batchLookup = createBatchLookup(options.batchItems ?? []);

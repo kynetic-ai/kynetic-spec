@@ -598,7 +598,7 @@ export function createTestApp(options: CreateTestAppOptions = {}): {
     .use(createItemsRoutes())
     .use(createReviewsRoutes({ pubsub, getEntityCache }))
     .use(createTriageRoutes({ pubsub }))
-    .use(createPlansRoutes())
+    .use(createPlansRoutes({ getEntityCache }))
     .use(createPlanResourcesRoutes({ getEntityCache }))
     .use(createSessionRoutes())
     .use(createValidationRoutes())

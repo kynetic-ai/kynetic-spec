@@ -123,10 +123,12 @@ function normalizeRef(ref: string | null | undefined): string | null {
 }
 
 /**
- * Convert an exported plan-resource entry (with `exported_path`) into the
- * `PlanResourceMetadata` shape the web UI consumes. The static UI loads
- * resources from the exported asset layout, so `bytes_url` is the
- * `exported_path` from the snapshot — no daemon hop required.
+ * Convert an exported plan-resource entry into the strict `PlanResourceMetadata`
+ * shape the web UI consumes. The exported_path field carried by the snapshot
+ * is intentionally NOT projected onto `PlanResourceMetadata` (which must
+ * remain the exact 9-field shape mirrored from the daemon API); static
+ * content has its `./resources/<path>` references pre-rewritten at export
+ * time, so the UI never needs a per-resource URL in static mode.
  *
  * AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
  * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
@@ -134,10 +136,9 @@ function normalizeRef(ref: string | null | undefined): string | null {
 function toStaticPlanResource(raw: unknown): PlanResourceMetadata | null {
   if (!raw || typeof raw !== "object") return null;
   const obj = raw as Record<string, unknown>;
-  const exportedPath = obj.exported_path;
   const id = obj.id;
   const path = obj.path;
-  if (typeof id !== "string" || typeof path !== "string" || typeof exportedPath !== "string") {
+  if (typeof id !== "string" || typeof path !== "string") {
     return null;
   }
   return {
@@ -150,14 +151,62 @@ function toStaticPlanResource(raw: unknown): PlanResourceMetadata | null {
     git_commit: typeof obj.git_commit === "string" ? obj.git_commit : null,
     git_path: typeof obj.git_path === "string" ? obj.git_path : null,
     description: typeof obj.description === "string" ? obj.description : null,
-    bytes_url: exportedPath,
   };
 }
 
 /**
+ * Static-mode base URL for plan resources. Mirrors the daemon's
+ * `resources_base_url` shape so the consumer's URL-construction logic
+ * (`${base}/${encodeURIComponent(id)}/bytes`) does not need to branch on
+ * mode. The static export pre-rewrites markdown `./resources/<path>`
+ * references to absolute asset paths so consumers rarely need to build a
+ * URL from this base, but exposing it keeps the `PlanDetail` shape
+ * consistent across modes.
+ *
+ * AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+ */
+function buildStaticResourcesBaseUrl(planUlid: string): string {
+  return `assets/resources/plan/${planUlid}`;
+}
+
+/**
+ * Build a resource_summary from raw exported resources when the snapshot
+ * does not carry a pre-computed `resource_summary`. The summary mirrors the
+ * daemon's bounded projection — counts only, never resource bytes.
+ *
+ * AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+ */
+function computeStaticResourceSummary(raw: unknown): { count: number; total_bytes: number } {
+  if (!raw || typeof raw !== "object") return { count: 0, total_bytes: 0 };
+  const obj = raw as Record<string, unknown>;
+  const existing = obj.resource_summary;
+  if (existing && typeof existing === "object") {
+    const summary = existing as Record<string, unknown>;
+    if (typeof summary.count === "number" && typeof summary.total_bytes === "number") {
+      return { count: summary.count, total_bytes: summary.total_bytes };
+    }
+  }
+  const rawResources = Array.isArray(obj.resources) ? obj.resources : [];
+  let total = 0;
+  for (const entry of rawResources) {
+    if (entry && typeof entry === "object") {
+      const bytes = (entry as Record<string, unknown>).bytes;
+      if (typeof bytes === "number" && Number.isFinite(bytes) && bytes >= 0) {
+        total += bytes;
+      }
+    }
+  }
+  return { count: rawResources.length, total_bytes: total };
+}
+
+/**
  * Project a snapshot plan record (which carries `ExportedPlanResource[]`) into
- * a web-UI `PlanDetail` whose `resources` field uses the `PlanResourceMetadata`
- * shape consumed by `rewritePlanResourceLinks` and the rendered UI.
+ * a web-UI `PlanDetail` whose `resources` field uses the strict
+ * `PlanResourceMetadata` shape consumed by `rewritePlanResourceLinks` and
+ * the rendered UI, alongside the sibling `resources_base_url` carrying the
+ * safe fetch-URL prefix.
  *
  * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
  */
@@ -168,9 +217,12 @@ function toStaticPlanDetail(raw: unknown): PlanDetail | null {
   const resources = rawResources
     .map((entry) => toStaticPlanResource(entry))
     .filter((entry): entry is PlanResourceMetadata => entry !== null);
+  const planUlid = typeof obj._ulid === "string" ? obj._ulid : "";
   return {
     ...(obj as unknown as PlanDetail),
     resources,
+    resources_base_url: buildStaticResourcesBaseUrl(planUlid),
+    resource_summary: computeStaticResourceSummary(raw),
   };
 }
 
@@ -662,7 +714,14 @@ export function fetchPlansStatic(_params?: { status?: string }): ApiResponse<Pla
     // fall back to the raw projection so existing fixtures without
     // resources keep rendering.
     if (!projected) return rest as PlanSummary;
-    const { content: _c, ...summary } = projected;
+    // List responses surface only the bounded resource summary, never the
+    // full resource metadata array — that lives on detail responses.
+    const {
+      content: _c,
+      resources: _resources,
+      resources_base_url: _baseUrl,
+      ...summary
+    } = projected;
     return summary as PlanSummary;
   });
   return wrapEnvelope(summaries, { total: summaries.length });

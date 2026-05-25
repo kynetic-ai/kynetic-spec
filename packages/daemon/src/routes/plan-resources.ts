@@ -80,19 +80,23 @@ function errorBody(
   return { error: code, code, message, resource_id: resourceId, path: resourcePath };
 }
 
-function buildBytesUrl(planUlid: string, resourceId: string): string {
-  return `/api/plans/${planUlid}/resources/${encodeURIComponent(resourceId)}/bytes`;
+/**
+ * Build the safe, project-scoped base URL clients use to fetch per-resource
+ * bytes via `${base}/${encodeURIComponent(id)}/bytes`. Exposed on
+ * `PlanDetail.resources_base_url` so the resource metadata shape stays
+ * strict (9 fields, no embedded URLs).
+ */
+export function buildResourcesBaseUrl(planUlid: string): string {
+  return `/api/plans/${planUlid}/resources`;
 }
 
 /**
- * Project a stored `ResourceMetadata` plus its owning plan ULID into the
- * public `PlanResourceMetadata` API shape. Adds a safe `bytes_url` so clients
- * never construct `./resources/<path>` URLs themselves.
+ * Project a stored `ResourceMetadata` into the strict `PlanResourceMetadata`
+ * API shape. Mirrors `ResourceMetadata` exactly — clients build bytes URLs
+ * from `PlanDetail.resources_base_url`, not from a field embedded in each
+ * metadata entry.
  */
-export function toPlanResourceMetadata(
-  planUlid: string,
-  metadata: ResourceMetadata,
-): PlanResourceMetadata {
+export function toPlanResourceMetadata(metadata: ResourceMetadata): PlanResourceMetadata {
   return {
     id: metadata.id,
     label: metadata.label,
@@ -103,7 +107,6 @@ export function toPlanResourceMetadata(
     git_commit: metadata.git_commit,
     git_path: metadata.git_path,
     description: metadata.description,
-    bytes_url: buildBytesUrl(planUlid, metadata.id),
   };
 }
 
@@ -206,7 +209,7 @@ export function createPlanResourcesRoutes(options: PlanResourcesRouteOptions = {
         }
         const manifest = await loadResourceManifest(getPlanDir(resolved.ctx, resolved.plan.ulid));
         return {
-          resources: manifest.resources.map((r) => toPlanResourceMetadata(resolved.plan.ulid, r)),
+          resources: manifest.resources.map((r) => toPlanResourceMetadata(r)),
         };
       })
       // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
@@ -232,7 +235,7 @@ export function createPlanResourcesRoutes(options: PlanResourcesRouteOptions = {
             params.resourceId,
           );
         }
-        return { resource: toPlanResourceMetadata(resolved.plan.ulid, match) };
+        return { resource: toPlanResourceMetadata(match) };
       })
       // AC: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner
       // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
@@ -540,7 +543,7 @@ export function createPlanResourcesRoutes(options: PlanResourcesRouteOptions = {
 
         set.status = replaced ? 200 : 201;
         return {
-          resource: toPlanResourceMetadata(resolved.plan.ulid, metadata),
+          resource: toPlanResourceMetadata(metadata),
           replaced,
         };
       })
