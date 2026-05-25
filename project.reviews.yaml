@@ -232406,6 +232406,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-25T08:15:12.976Z
+      - _ulid: 01KSF37QNEVEWW8B1R5C70BS92
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KSF37NRK4YTQ9BRYBE2CM0RJ
+        timestamp: 2026-05-25T08:15:18.190Z
     examined_commit: cec6e309c6730167415e73bd396a8700ef4d0030
     external_links: []
     lifecycle_state: open
@@ -232441,7 +232448,32 @@ reviews:
               consumers cannot resolve.'
             created_at: 2026-05-25T08:06:05.881Z
         kind: blocker
+      - _ulid: 01KSF37NRK4YTQ9BRYBE2CM0RJ
+        entries:
+          - _ulid: 01KSF37NRK7914AQ8V4GVWJJX2
+            author: Jacob Chapel
+            body: "Evidence log: Files read: kspec-agents.md; .agents/skills/kspec-review/SKILL.md;
+              .agents/skills/kspec-merge/SKILL.md; .agents/skills/review-gates/SKILL.md;
+              .agents/skills/work-gates/SKILL.md; src/schema/resources.ts; src/schema/task.ts;
+              src/parser/plan-document.ts; src/parser/entity-local-resources.ts;
+              src/parser/plan-resource-import.ts; src/parser/task-resource-resolver.ts;
+              src/cli/commands/plan-import.ts; src/cli/commands/plan-resource.ts;
+              src/cli/commands/plan.ts; src/cli/commands/task.ts; src/cli/output.ts;
+              src/agent-runtime/dispatch.ts; tests/cli-plan-derive-resources.test.ts;
+              tests/cli-plan-import-resources.test.ts; tests/cli-plan-resource.test.ts;
+              tests/plan-document-resource-refs.test.ts. Commands run: git status/log/diff; kspec
+              task get; kspec review for-task/add/open; kspec item get; kspec validate; AC
+              annotation rg scans; npm test; npm run typecheck; npx oxlint on changed files; manual
+              CLI reproduction for materialized task-owned resource resolution. Claims verified:
+              worker test claim verified by full npm test; typecheck verified; AC coverage
+              annotations verified for all five task ACs; materialized resource resolver behavior
+              disproved by CLI repro. Categories searched: correctness, edge cases around
+              symlink/partial mutation fixes, error handling/exit envelopes, test
+              quality/source-scanning, AC coverage, integration with task get and dispatch
+              orientation."
+            created_at: 2026-05-25T08:15:16.243Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-25T08:01:36.563Z
-    updated_at: 2026-05-25T08:15:11.222Z
+    updated_at: 2026-05-25T08:15:16.243Z
     notes: []
