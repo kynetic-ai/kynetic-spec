@@ -54548,10 +54548,12 @@ runs:
     started_at: 2026-05-25T18:36:35.926Z
     completed_at: 2026-05-25T18:38:48.892Z
   - _ulid: 01KSG762YPP6HN7RTA820DQRCH
-    status: active
+    status: completed
     current_step: 0
     initiated_by: "@claude"
+    result: success
     step_results: []
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-25T18:43:32.950Z
+    completed_at: 2026-05-25T18:46:27.802Z
