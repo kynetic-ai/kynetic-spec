@@ -54177,7 +54177,7 @@ runs:
     completed_at: 2026-05-25T15:49:39.155Z
   - _ulid: 01KSFY7JYNH4DAGTEN8BMM7CHY
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -54192,7 +54192,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-25T16:08:05.656Z
-        completed_at: 2026-05-25T16:08:05.656Z
+        completed_at: 2026-05-25T16:08:51.892Z
+        notes: "High-confidence items identified: (1) npm --fresh forwarding friction recurred in full-suite
+          form; existing observation @01KR4TYY already tracks the same root cause and desired
+          guidance. (2) session-reflect-loop baseline commands produced thousands of lines/truncated
+          output; existing inbox item @01KSDZFN already tracks concise/scoped baseline modes.
+          Success pattern: diff-first review plus explicit review evidence checks again caught
+          contract drift despite passing tests; similar success patterns are already present in
+          recent observations, so no new capture needed."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-25T16:08:51.892Z
+        completed_at: 2026-05-25T16:08:51.892Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-25T16:07:04.917Z
