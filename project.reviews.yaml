@@ -231689,6 +231689,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-25T07:16:00.954Z
+      - _ulid: 01KSF0JKFV4D569DCYXB53CRBJ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSF0JHR72KEYV2ZXH0XP0Z96
+        timestamp: 2026-05-25T07:28:48.635Z
     examined_commit: 7e8ff3aeec93b5586c92a90e58c70db9c4e3b4cc
     external_links: []
     lifecycle_state: open
@@ -231698,8 +231705,32 @@ reviews:
       content_hash: ""
       ref: "@01KS8XAZQ5478RV2AVKG8MNB0S"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KSF0JHR72KEYV2ZXH0XP0Z96
+        anchor:
+          type: code
+          commit: 7e8ff3aeec93b5586c92a90e58c70db9c4e3b4cc
+          line_end: 557
+          line_start: 552
+          path: src/cli/commands/plan.ts
+          side: head
+        entries:
+          - _ulid: 01KSF0JHR7A9HNCF3X8KKCDJYE
+            author: Jacob Chapel
+            body: "MUST-FIX: `--materialize-resources` copies plan resource bytes through unchecked filesystem
+              paths. This loop builds `sourceAbs` with `path.join(planResourcesDir,
+              planResource.path)` and passes it directly to `fs.copyFile`, so a pre-existing symlink
+              at the plan resource leaf or an intermediate directory is followed. I reproduced this
+              in a temp project by replacing `.kspec/plans/<plan>/resources/doc.txt` with a symlink
+              to an outside file, then running `kspec plan derive @mat-plan --module @mod
+              --materialize-resources`; the command exited 0 and the derived task resource contained
+              `OUTSIDE_SECRET`. That violates the shared resource contract that symlink escapes are
+              forbidden and lets materialization import bytes from outside the plan tree. Use the
+              same symlink-safe resolver/mutation guard pattern here before copying, and add a
+              regression test for materialization."
+            created_at: 2026-05-25T07:28:46.855Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-25T07:15:02.110Z
-    updated_at: 2026-05-25T07:15:58.598Z
+    updated_at: 2026-05-25T07:28:46.855Z
     notes: []
