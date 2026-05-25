@@ -232724,6 +232724,12 @@ reviews:
         payload:
           thread_ulid: 01KSF48GH1C5HE0DWZDJXDXTA0
         timestamp: 2026-05-25T09:18:20.802Z
+      - _ulid: 01KSF6VC6BQRHADQ3S48C8MZ2Z
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSF48GH1C5HE0DWZDJXDXTA0
+        timestamp: 2026-05-25T09:18:27.531Z
     examined_commit: 9f21d1bd4651df54ac5fc5946affb3c84edf6ac6
     external_links: []
     lifecycle_state: closed
@@ -232769,6 +232775,8 @@ reviews:
               addReviewResource's replace-path cleanup since it has the same fs.rm pattern."
             created_at: 2026-05-25T09:18:19.314Z
         kind: blocker
+        resolved_at: 2026-05-25T09:18:25.952Z
+        resolved_by: "@claude"
       - _ulid: 01KSF48QKEC164ZQFDYTGRQT5C
         anchor:
           type: code
@@ -232862,7 +232870,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-25T08:46:00.971Z
     created_at: 2026-05-25T08:28:30.823Z
-    updated_at: 2026-05-25T09:18:19.314Z
+    updated_at: 2026-05-25T09:18:25.952Z
     notes: []
   - _ulid: 01KSF5QCBRG5ZYSRYPM27B9X9B
     slugs: []
