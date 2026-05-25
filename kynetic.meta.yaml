@@ -19508,6 +19508,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-25T05:23:34.459Z
+  - _ulid: 01KSEWFZAV1JM3J8PZQR69KHQR
+    type: friction
+    content: Resource mutation paths need a shared symlink-safe containment helper. In review @01KSEV8T,
+      the import path had bespoke lstat/realpath protection, but plan resource add/remove still used
+      direct path.join + fs.copyFile/fs.rm and could write/delete through an existing resources/
+      symlink. A shared write/delete-safe resolver would keep add, replace, materialize, and remove
+      paths under the same entity-local resource contract.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-25T06:17:28.155Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
