@@ -32,8 +32,12 @@ description: |
 spec_ref: "@folder-backed-review-storage-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Merged dispatch/task/task-review-screenshot-resource-ui/01ks8xb0 into
+  plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw via detached-reviewer merge
+  helper. New integration head: 7464682baa5823005b6fbec56cabdc9906c87929. Review @01KSGJS0 approved
+  with passing checks."
 depends_on:
   - "@task-plan-review-folder-storage-migration-1"
   - "@task-folder-backed-plan-review-cache-invalidation-1"
@@ -672,8 +676,25 @@ history:
         previous: "@01KSGF89Z0G7KKRN7DJV1SG04M"
     command: review-link
     timestamp: 2026-05-25T22:06:12.085Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Merged dispatch/task/task-review-screenshot-resource-ui/01ks8xb0 into
+          plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw via detached-reviewer
+          merge helper. New integration head: 7464682baa5823005b6fbec56cabdc9906c87929. Review
+          @01KSGJS0 approved with passing checks."
+        previous: null
+      completed_at:
+        new: 2026-05-25T22:20:16.263Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-25T22:20:16.291Z
 created_at: 2026-05-22T22:36:47.443Z
 started_at: 2026-05-25T22:03:01.499Z
 submitted_at: 2026-05-25T22:03:05.333Z
+completed_at: 2026-05-25T22:20:16.263Z
 todos: []
 automation: eligible
