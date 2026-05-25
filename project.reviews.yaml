@@ -231202,9 +231202,25 @@ reviews:
           kind: nit
           thread_ulid: 01KSEW943T80G87YV62KM1C5E3
         timestamp: 2026-05-25T06:13:45.464Z
+      - _ulid: 01KSEW9GFS1H0WW0X6F1D3Y1DG
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-25T06:13:56.345Z
+      - _ulid: 01KSEW9GFS0T1NG6R9BRKNBS1V
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-25T06:13:56.346Z
     examined_commit: d31b3df0546b893caf3746c64c4aa91a4661e3e9
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -231285,7 +231301,14 @@ reviews:
               drift surfaces.
             created_at: 2026-05-25T06:13:43.674Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-25T06:13:56.345Z
     created_at: 2026-05-25T05:56:04.967Z
-    updated_at: 2026-05-25T06:13:43.674Z
+    updated_at: 2026-05-25T06:13:56.345Z
     notes: []

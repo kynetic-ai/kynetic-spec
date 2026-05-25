@@ -35,7 +35,7 @@ description: |
 spec_ref: "@plan-resource-derivation-semantics-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-plan-review-folder-storage-migration-1"
@@ -55,7 +55,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-plan-resource-import-and-derive-1/01ks8xaz
-session_id: 01KSESNQJA26SN4CCHAAQGJNMM
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -232,6 +232,16 @@ history:
         previous: "@01KSEP3Y172ATPQAZ636H7TE7K"
     command: review-link
     timestamp: 2026-05-25T05:56:09.428Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KSESNQJA26SN4CCHAAQGJNMM
+    command: review-verdict-needs-work
+    timestamp: 2026-05-25T06:13:59.169Z
 created_at: 2026-05-22T22:36:46.693Z
 started_at: 2026-05-25T05:51:51.008Z
 submitted_at: 2026-05-25T05:51:54.631Z
