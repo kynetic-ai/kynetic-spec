@@ -233778,6 +233778,17 @@ reviews:
         required: false
         created_at: 2026-05-25T17:07:19.334Z
         completed_at: 2026-05-25T17:07:19.334Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Schema and references OK; command exited 6 due existing warnings (reference, alignment,
+          completeness/annotation warnings). No new task-specific validation error observed.
+        name: kspec validate
+        required: false
+        runner: kspec validate
+        created_at: 2026-05-25T17:07:26.684Z
+        completed_at: 2026-05-25T17:07:26.684Z
     events:
       - _ulid: 01KSG0WNA25E954PEJE07FPZ8B
         actor: Jacob Chapel
@@ -233827,6 +233838,13 @@ reviews:
           status: pass
           name: review evidence log
         timestamp: 2026-05-25T17:07:22.005Z
+      - _ulid: 01KSG1P6F45PW5NTJRPGTAQ8XJ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-25T17:07:29.380Z
     examined_commit: 58df2d14fb652674f714e9bbd14bea9318431ccb
     external_links: []
     lifecycle_state: open
@@ -233902,5 +233920,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-25T16:53:32.610Z
-    updated_at: 2026-05-25T17:07:19.334Z
+    updated_at: 2026-05-25T17:07:26.684Z
     notes: []
