@@ -230707,6 +230707,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSETB54J1C8RCH6VBJMCC8FS
         timestamp: 2026-05-25T05:39:55.586Z
+      - _ulid: 01KSETBRXV10H40KZVVY1PQ8XB
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSETBPP363HJBNDJ82251QTS
+        timestamp: 2026-05-25T05:40:13.371Z
     examined_commit: 8ec78b1068c3811f36051e6234aa7fd5d8865b85
     external_links: []
     lifecycle_state: open
@@ -230773,9 +230780,27 @@ reviews:
               CLI/API coverage for invalid content_type."
             created_at: 2026-05-25T05:39:53.107Z
         kind: blocker
+      - _ulid: 01KSETBPP363HJBNDJ82251QTS
+        anchor:
+          type: code
+          commit: 8ec78b1068c3811f36051e6234aa7fd5d8865b85
+          line_end: 140
+          line_start: 130
+          path: src/parser/review-resource-manager.ts
+          side: head
+        entries:
+          - _ulid: 01KSETBPP3MFRF5QXEGZTXF7C5
+            author: Jacob Chapel
+            body: "MUST-FIX: getReviewResource does not validate resourceId before lookup. Malformed IDs used by
+              CLI get/remove or API GET/DELETE therefore fall through to resource_not_found instead
+              of the documented invalid_resource_id response for IDs outside the shared resource-id
+              contract. Validate IDs on read/delete paths and add coverage for malformed resource
+              IDs on each surface."
+            created_at: 2026-05-25T05:40:11.075Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-25T05:31:05.010Z
-    updated_at: 2026-05-25T05:39:53.107Z
+    updated_at: 2026-05-25T05:40:11.075Z
     notes: []
   - _ulid: 01KSESZY8TXWF47R5G8HF6C6D7
     slugs:
