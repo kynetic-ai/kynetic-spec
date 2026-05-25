@@ -232029,6 +232029,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSF1C0WA77VP6V8R7X7JPHSS
         timestamp: 2026-05-25T07:42:43.733Z
+      - _ulid: 01KSF1C92P78DYQM70XG0CTZC7
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSF1C6W5CDN635SS6HK55HRR
+        timestamp: 2026-05-25T07:42:49.942Z
     examined_commit: 0d819300236cfb26935914cbd51ceb2c20343546
     external_links: []
     lifecycle_state: open
@@ -232060,7 +232067,26 @@ reviews:
               should prove screenshot preview/open works for a selected non-default project."
             created_at: 2026-05-25T07:42:41.546Z
         kind: blocker
+      - _ulid: 01KSF1C6W5CDN635SS6HK55HRR
+        anchor:
+          type: code
+          commit: 0d819300236cfb26935914cbd51ceb2c20343546
+          line_end: 305
+          line_start: 292
+          path: tests/review-resource-cli.test.ts
+          side: head
+        entries:
+          - _ulid: 01KSF1C6W5MFCXY5TXESVZ72GV
+            author: Jacob Chapel
+            body: "MUST-FIX: The task's CLI testing contract explicitly calls for interactive remove
+              cancellation, but the remove tests stop at --force success, non-interactive
+              confirmation_required, and malformed id. There is no test that simulates an
+              interactive prompt, answers no, and asserts operation_cancelled with exit code 2, so
+              that documented CLI path can regress unnoticed. Add that behavioral CLI test; it
+              should also prove the resource remains after cancellation."
+            created_at: 2026-05-25T07:42:47.685Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-25T07:37:01.797Z
-    updated_at: 2026-05-25T07:42:41.546Z
+    updated_at: 2026-05-25T07:42:47.685Z
     notes: []
