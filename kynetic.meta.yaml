@@ -19604,6 +19604,27 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-05-25T08:25:58.402Z
+  - _ulid: 01KSF5KGBAX5NSAV2Q3NGP35JT
+    type: success
+    content: "Producer-consumer contract coverage via existing happy-path test extension. When a fix
+      cycle reveals that a producer module silently disagrees with a consumer module (here: plan
+      derive --materialize-resources recorded owner_ref as canonicalRef(task) [slug-first] but
+      task-resource-resolver only matched task._ulid, so every materialized resource resolved as
+      'unresolved'), extend the EXISTING happy-path test to assert consumer-side state — not just
+      the producer-side artifact. The materialize test had checked 'bytes copied to disk?' and
+      stopped there; adding a single resolved_resources[0].status === 'present' assertion to the
+      same test would have failed at submit time instead of waiting for reviewer CLI repro. Recipe:
+      (1) identify the contract between producer (writes refs/data) and consumer (resolves/reads
+      them); (2) find the existing happy-path test on the producer; (3) extend it with one assertion
+      that exercises the consumer on the produced artifact; (4) add a focused regression test that
+      mirrors the reviewer's CLI repro. Cheaper than discovering the gap in a 4th fix cycle.
+      Demonstrated on @task-plan-resource-import-and-derive-1 cycle 4 (review
+      @01KSF2EN9KP6B0BNZQMBQMDX1Q): the bug was a 2-line resolver fix but had survived 3 prior
+      cycles because the happy-path test only verified the producer."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-25T08:56:41.066Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
