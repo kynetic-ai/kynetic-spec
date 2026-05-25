@@ -234094,9 +234094,25 @@ reviews:
           kind: nit
           thread_ulid: 01KSG33HGB7DBXSNH2E40VZGCE
         timestamp: 2026-05-25T17:32:16.944Z
+      - _ulid: 01KSG33XP2FYEJSX9H5EF74QYJ
+        actor: codex-reviewer
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-25T17:32:27.714Z
+      - _ulid: 01KSG33XP2E8JQEZDVKBQWDM53
+        actor: codex-reviewer
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-25T17:32:27.714Z
     examined_commit: 0ebd97caa924d55e960aac358c093b1979f94455
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -234153,7 +234169,14 @@ reviews:
               export integration, daemon cache/broadcast integration."
             created_at: 2026-05-25T17:32:15.243Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex-reviewer
+        role: reviewer
+        created_at: 2026-05-25T17:32:27.713Z
     created_at: 2026-05-25T17:18:44.195Z
-    updated_at: 2026-05-25T17:32:15.243Z
+    updated_at: 2026-05-25T17:32:27.714Z
     notes: []
