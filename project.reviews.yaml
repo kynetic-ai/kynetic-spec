@@ -233506,6 +233506,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-25T16:18:19.879Z
+      - _ulid: 01KSFZ46NXATSGNGH8KH5C2TNH
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSFZ44XAAB31QPCECQRCFZRM
+        timestamp: 2026-05-25T16:22:42.621Z
     examined_commit: c3d0ed1125a79f9b2849f4fb20e1dba5b10d9e42
     external_links: []
     lifecycle_state: open
@@ -233515,8 +233522,34 @@ reviews:
       content_hash: ""
       ref: "@01KS8XB0EKNTMZS4XJMC4ED4SK"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KSFZ44XAAB31QPCECQRCFZRM
+        anchor:
+          type: code
+          commit: c3d0ed1125a79f9b2849f4fb20e1dba5b10d9e42
+          line_end: 453
+          line_start: 453
+          path: packages/web-ui/src/routes/reviews/[id]/+page.svelte
+          side: head
+        entries:
+          - _ulid: 01KSFZ44XA5HBGPV72FNKKB3B1
+            author: Jacob Chapel
+            body: "MUST-FIX: Static review resource URLs use the raw exported_path as an href/src. Resource
+              paths are allowed to be POSIX relative paths and the schema only rejects absolute
+              paths, traversal, backslashes, empty/dot segments, and trailing slash, so valid
+              resource paths can contain URL-reserved characters such as # or ?. For an exported
+              asset path like assets/resources/review/<review-ulid>/screenshots/login#bug.png, the
+              browser requests /assets/resources/review/<review-ulid>/screenshots/login and treats
+              #bug.png as a fragment; ? has the same problem as query string. That means valid
+              exported screenshot/evidence resources cannot be loaded from the static review page.
+              Encode the exported path for URL use (preferably segment-by-segment so slashes remain
+              path separators) or otherwise ensure exported_path is a URL-safe asset URL, and add
+              behavioral static/UI coverage for a resource path containing # or ?. Evidence: Node
+              URL parsing of /base/assets/resources/review/01REV/screenshots/login#bug.png yields
+              pathname /base/assets/resources/review/01REV/screenshots/login and hash #bug.png."
+            created_at: 2026-05-25T16:22:40.810Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-25T16:17:55.236Z
-    updated_at: 2026-05-25T16:18:18.264Z
+    updated_at: 2026-05-25T16:22:40.810Z
     notes: []
