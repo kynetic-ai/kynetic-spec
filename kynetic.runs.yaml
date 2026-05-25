@@ -54029,7 +54029,7 @@ runs:
     started_at: 2026-05-25T08:53:58.841Z
     completed_at: 2026-05-25T08:56:48.020Z
   - _ulid: 01KSF6P9XZZWJPYV2AKB5N4CFS
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -54075,7 +54075,10 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-25T09:18:09.109Z
-        completed_at: 2026-05-25T09:18:09.109Z
+        completed_at: 2026-05-25T09:18:16.876Z
+        notes: No new items captured. Existing coverage already tracks the concrete friction and success
+          patterns surfaced by this session; duplicate inbox or observation records would add noise.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-25T09:15:41.376Z
+    completed_at: 2026-05-25T09:18:16.876Z
