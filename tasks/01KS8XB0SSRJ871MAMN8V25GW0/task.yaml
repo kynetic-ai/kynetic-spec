@@ -58,8 +58,16 @@ description: >
 spec_ref: "@folder-backed-resource-documentation-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Approved in review @01KSGQ0D and merged
+  dispatch/task/task-folder-backed-resources-docs/01ks8xb0 into
+  plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw at
+  b65a22279c7621aa7a6f04e8618a445952a86676. Documentation covers folder-backed plan/review resource
+  layouts, ResourceMetadata/resources.yaml fields, resource references, materialize-resources
+  behavior, static/API routes, upgrade compatibility, and troubleshooting. Verification: npm test
+  passed (2578 suites, 9848 tests, 5 skipped); kspec validate --warnings-ok passed with baseline
+  warnings."
 depends_on:
   - "@task-plan-resource-api-ui-static"
   - "@task-review-screenshot-resource-ui"
@@ -238,8 +246,29 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-25T23:20:09.640Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Approved in review @01KSGQ0D and merged
+          dispatch/task/task-folder-backed-resources-docs/01ks8xb0 into
+          plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw at
+          b65a22279c7621aa7a6f04e8618a445952a86676. Documentation covers folder-backed plan/review
+          resource layouts, ResourceMetadata/resources.yaml fields, resource references,
+          materialize-resources behavior, static/API routes, upgrade compatibility, and
+          troubleshooting. Verification: npm test passed (2578 suites, 9848 tests, 5 skipped); kspec
+          validate --warnings-ok passed with baseline warnings."
+        previous: null
+      completed_at:
+        new: 2026-05-25T23:34:41.843Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-25T23:34:41.851Z
 created_at: 2026-05-22T22:36:47.801Z
 started_at: 2026-05-25T22:46:33.414Z
 submitted_at: 2026-05-25T23:16:54.709Z
+completed_at: 2026-05-25T23:34:41.843Z
 todos: []
 automation: eligible
