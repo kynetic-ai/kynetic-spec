@@ -194,3 +194,53 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-25T15:02:03.133Z
+  - _ulid: 01KSFYJ0J5C4KB1KJ2ZPRV6FP2
+    content: >-
+      Fix cycle 5: addressed the single blocker from review @01KSFSWMWBXCVDATZG0NDQMEBW.
+
+
+      Reviewer flagged that resolveReviewResourceFile (src/parser/review-resource-manager.ts:200)
+      mapped every resolveResourcePath failure to resource_not_found (404). A declared resource
+      whose path resolves through a symlink escape is a forbidden invalid path per the API contract
+      — it must surface as invalid_resource_path (400), not "the file is missing" (which both
+      implies wrong cause AND matches the legit missing-file status).
+
+
+      Root-cause fix is at the resolver, not pattern-matching on message text:
+
+
+      1. Added ResourceResolutionErrorKind discriminator to entity-local-resources.ts: path_invalid
+      (textual validation), not_declared (manifest gap), missing (file/owner ENOENT), symlink_escape
+      (owner/intermediate/leaf symlink OR realpath containment violation), not_a_regular_file
+      (directory/socket/FIFO destination). resolveResourcePath now returns
+      ResourceResolutionResult<T> carrying the kind on the failure branch. Structural-width-subtype
+      assignable to ResourceValidationResult<T> so callers that only need .error keep working;
+      copyResourceForStaticExport explicitly strips kind in its failure return to stay typed against
+      the value's return alias.
+
+
+      2. resolveReviewResourceFile now maps kind → review-resource code: symlink_escape |
+      not_a_regular_file | path_invalid → invalid_resource_path; missing | not_declared →
+      resource_not_found.
+
+
+      3. Tests (+5 new tests):
+
+      - review-resource-manager.test.ts: 4 new tests in a dedicated "resolveReviewResourceFile error
+      mapping" block — symlink-escape leaf, symlinked resources/ root, directory destination
+      (not_a_regular_file), and the inverse missing-file case (must STILL be resource_not_found).
+      Each asserts the outside file/manifest stays intact.
+
+      - daemon-api/review-resources.test.ts: 1 new test in the GET bytes describe block that plants
+      the exact attack shape (resources/shot.png → symlink → outside), declares it in
+      resources.yaml, hits the bytes route, and asserts response.status === 400, body.code ===
+      "invalid_resource_path", body.message matches /symlink/i, body.resource_id === "shot",
+      body.path === "shot.png". Outside file remains untouched.
+
+
+      Re-verified all task-description ACs and the trait ACs against the implementation — no spec
+      changes required. tsc --noEmit clean. Full test suite: 9777 passed, 5 skipped, 0 failed. Both
+      review threads replied and resolved.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-25T16:12:46.533Z
