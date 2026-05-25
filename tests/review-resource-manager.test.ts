@@ -155,7 +155,14 @@ describe("review-resource-manager", () => {
     expect(result.error.resource_id).toBe("Login-Bug!");
   });
 
-  it("rejects an explicit content_type that is not a valid MIME token", async () => {
+  // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+  it("rejects an explicit content_type that is not a valid MIME token via the documented invalid_resource_path code", async () => {
+    // The CLI/API contract for review resources enumerates a closed set of
+    // failure codes; invalid_content_type is NOT in that set. content_type
+    // is path-derived metadata (inferred from path extension when omitted),
+    // so a malformed explicit value surfaces under invalid_resource_path
+    // with the offending relative path attached. See
+    // ReviewResourceErrorCode docs in review-resource-manager.ts.
     const review = await seededReview("badtype");
     const result = await addReviewResource(ctx as any, `@${review._ulid}`, {
       id: "shot",
@@ -166,7 +173,10 @@ describe("review-resource-manager", () => {
     });
     expect(result.ok).toBe(false);
     if (result.ok) return;
-    expect(result.error.code).toBe("invalid_content_type");
+    expect(result.error.code).toBe("invalid_resource_path");
+    expect(result.error.path).toBe("shot.png");
+    expect(result.error.resource_id).toBe("shot");
+    expect(result.error.message).toContain("content_type");
   });
 
   it("returns source_file_missing when the source file does not exist", async () => {
@@ -401,5 +411,112 @@ describe("review-resource-manager", () => {
     expect(result.ok).toBe(false);
     if (result.ok) return;
     expect(result.error.code).toBe("resource_not_found");
+  });
+
+  // ── symlink-safe writes ────────────────────────────────────────────────────
+
+  // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+  it("addReviewResource rejects writes that would follow a symlinked resources/ root", async () => {
+    const review = await seededReview("symlinked-root");
+    const reviewDir = getReviewDir(ctx as any, review._ulid);
+    const outside = path.join(tempDir, "escape-target");
+    await fs.mkdir(outside, { recursive: true });
+    await fs.mkdir(reviewDir, { recursive: true });
+    // Plant a symlink at <reviewDir>/resources pointing OUTSIDE the review.
+    await fs.symlink(outside, path.join(reviewDir, "resources"));
+
+    const result = await addReviewResource(ctx as any, `@${review._ulid}`, {
+      id: "evil",
+      relativePath: "screenshot.png",
+      sourceFile: pngSource,
+      captureGit: false,
+    });
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.error.code).toBe("invalid_resource_path");
+    expect(result.error.message).toMatch(/symlink/i);
+    // And no file should have been written to the escape target.
+    await expect(fs.stat(path.join(outside, "screenshot.png"))).rejects.toThrow();
+  });
+
+  // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+  it("addReviewResource rejects writes that would follow a symlinked intermediate directory", async () => {
+    const review = await seededReview("symlinked-dir");
+    const reviewDir = getReviewDir(ctx as any, review._ulid);
+    const resourcesDir = path.join(reviewDir, "resources");
+    await fs.mkdir(resourcesDir, { recursive: true });
+    const outside = path.join(tempDir, "evil-target");
+    await fs.mkdir(outside, { recursive: true });
+    // Plant a symlink at <reviewDir>/resources/screenshots pointing OUTSIDE.
+    await fs.symlink(outside, path.join(resourcesDir, "screenshots"));
+
+    const result = await addReviewResource(ctx as any, `@${review._ulid}`, {
+      id: "evil",
+      relativePath: "screenshots/login.png",
+      sourceFile: pngSource,
+      captureGit: false,
+    });
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.error.code).toBe("invalid_resource_path");
+    expect(result.error.message).toMatch(/symlink/i);
+    await expect(fs.stat(path.join(outside, "login.png"))).rejects.toThrow();
+  });
+
+  // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+  it("addReviewResource rejects overwriting an existing symlink at the destination", async () => {
+    const review = await seededReview("symlinked-dest");
+    const reviewDir = getReviewDir(ctx as any, review._ulid);
+    const resourcesDir = path.join(reviewDir, "resources");
+    await fs.mkdir(resourcesDir, { recursive: true });
+    const outside = path.join(tempDir, "evil-target.png");
+    await fs.writeFile(outside, "outside-bytes");
+    // Plant a symlink at <reviewDir>/resources/shot.png pointing OUTSIDE.
+    await fs.symlink(outside, path.join(resourcesDir, "shot.png"));
+
+    const result = await addReviewResource(ctx as any, `@${review._ulid}`, {
+      id: "shot",
+      relativePath: "shot.png",
+      sourceFile: pngSource,
+      captureGit: false,
+    });
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.error.code).toBe("invalid_resource_path");
+    expect(result.error.message).toMatch(/symlink/i);
+    // The outside file content must be unchanged.
+    expect(await fs.readFile(outside, "utf-8")).toBe("outside-bytes");
+  });
+
+  // ── resource id validation on read/delete paths ────────────────────────────
+
+  // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+  it("getReviewResource returns invalid_resource_id for malformed ids (not resource_not_found)", async () => {
+    const review = await seededReview("getbadid");
+    const result = await getReviewResource(ctx as any, `@${review._ulid}`, "BadID!");
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.error.code).toBe("invalid_resource_id");
+    expect(result.error.resource_id).toBe("BadID!");
+  });
+
+  // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+  it("resolveReviewResourceFile returns invalid_resource_id for malformed ids", async () => {
+    const review = await seededReview("resolvebadid");
+    const result = await resolveReviewResourceFile(ctx as any, `@${review._ulid}`, "Bad/ID");
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.error.code).toBe("invalid_resource_id");
+    expect(result.error.resource_id).toBe("Bad/ID");
+  });
+
+  // AC: @trait-entity-scoped-local-resources-1 ac-resource-delete-follows-owner-delete
+  it("removeReviewResource returns invalid_resource_id for malformed ids (not resource_not_found)", async () => {
+    const review = await seededReview("rmbadid");
+    const result = await removeReviewResource(ctx as any, `@${review._ulid}`, "Bad ID");
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.error.code).toBe("invalid_resource_id");
+    expect(result.error.resource_id).toBe("Bad ID");
   });
 });

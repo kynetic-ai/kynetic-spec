@@ -59,6 +59,8 @@ import {
   fetchTriageRecordsStatic,
   fetchPlansStatic,
   fetchPlanContentStatic,
+  fetchReviewsStatic,
+  fetchReviewStatic,
   fetchValidationStatic,
   fetchAlignmentStatic,
   fetchWorkflowsStatic,
@@ -1341,8 +1343,10 @@ export async function fetchReviews(params?: {
   limit?: number;
   offset?: number;
 }): Promise<PaginatedResponse<ReviewSummary>> {
+  // AC: @folder-backed-review-storage-1 ac-review-index-has-bounded-projection
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    return { items: [], total: 0, offset: 0, limit: 0 };
+    return unwrapPaginatedEnvelope(fetchReviewsStatic(params));
   }
 
   const url = new URL(`${API_BASE}/api/reviews`);
@@ -1371,11 +1375,24 @@ export async function fetchReviews(params?: {
 
 /**
  * Fetch a single review by ID (ULID or slug).
+ *
+ * In static mode the bounded snapshot projection is unwrapped — threads,
+ * checks, verdicts, events, and notes are empty by design (the snapshot
+ * never carried them), but the subject, disposition, resources, and
+ * external links survive so the detail page renders cleanly and exported
+ * screenshot resources stay discoverable.
+ *
  * AC: @review-records-web-ui ac-2
+ * AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
  */
 export async function fetchReview(id: string): Promise<ReviewDetail> {
+  // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
-    throw new Error("Review detail not available in static mode");
+    const envelope = fetchReviewStatic(id);
+    if (!envelope) {
+      throw new Error(`Review not found: ${id}`);
+    }
+    return unwrapEnvelope(envelope);
   }
 
   const response = await fetch(`${API_BASE}/api/reviews/${encodeURIComponent(id)}`, {
@@ -1434,10 +1451,8 @@ export async function fetchReviewSiblings(params: {
   subject_ref?: string;
   head_branch?: string;
 }): Promise<ReviewSummary[]> {
-  if (isStaticMode()) {
-    return [];
-  }
-
+  // fetchReviews handles static mode internally via fetchReviewsStatic,
+  // so the same filters work against the snapshot.
   const data = await fetchReviews({
     status: ["draft", "open", "closed", "archived"],
     sort: "created_at",

@@ -1018,6 +1018,159 @@ export async function getResourcePreview(
   }
 }
 
+// ── Symlink-Safe Write ──────────────────────────────────────────────────────
+
+/**
+ * Copy a source file into an owning entity's resources tree at
+ * `<ownerResourcesDir>/<relativePath>`, refusing to follow any symlink along
+ * the destination path. Companion to the read-side {@link resolveResourcePath}
+ * — both close the same symlink-escape gap, but on the write path.
+ *
+ * The plain `fs.copyFile(path.join(ownerResourcesDir, relativePath), ...)`
+ * pattern is unsafe: if any ancestor of the destination (the owner
+ * resources directory itself, or any intermediate folder) is a symlink,
+ * `copyFile` follows it and writes outside the owning entity tree —
+ * violating @trait-entity-scoped-local-resources-1 ac-path-escape-rejected.
+ *
+ * This helper instead:
+ *   1. Verifies the owner resources directory either does not exist yet or
+ *      is a real (non-symlink) directory.
+ *   2. Walks every intermediate path segment beneath the owner and rejects
+ *      any that exists as a symlink or non-directory.
+ *   3. Rejects a pre-existing symlink at the destination itself.
+ *   4. Creates the intermediate directories and copies the source bytes.
+ *   5. Defense in depth: resolves the realpath of what was just written and
+ *      verifies it is still contained inside the owner realpath. On failure
+ *      the partial write is cleaned up so the caller never observes
+ *      half-written escape state.
+ *
+ * Returns an `ok: false` result with an actionable error string on any
+ * symlink rejection — callers (review-resource-manager etc.) map this onto
+ * their structured error codes.
+ *
+ * AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner
+ */
+export async function copySourceIntoOwnerResources(options: {
+  ownerResourcesDir: string;
+  relativePath: string;
+  sourceAbsolutePath: string;
+}): Promise<ResourceValidationResult<{ destAbsolute: string }>> {
+  const { ownerResourcesDir, relativePath, sourceAbsolutePath } = options;
+
+  // 1. Owner resources dir: must be either nonexistent or a real directory.
+  try {
+    const ownerStat = await fs.lstat(ownerResourcesDir);
+    if (ownerStat.isSymbolicLink()) {
+      return {
+        ok: false,
+        error: `Resource path "${relativePath}" cannot be written: the owning entity's resources/ directory is itself a symlink; symlink escapes are rejected.`,
+      };
+    }
+    if (!ownerStat.isDirectory()) {
+      return {
+        ok: false,
+        error: `Resource path "${relativePath}" cannot be written: the owning entity's resources/ path exists but is not a directory.`,
+      };
+    }
+  } catch (e) {
+    const errno = (e as NodeJS.ErrnoException).code;
+    if (errno !== "ENOENT") {
+      return {
+        ok: false,
+        error: `Could not inspect resources directory "${ownerResourcesDir}": ${e instanceof Error ? e.message : String(e)}.`,
+      };
+    }
+    // Nonexistent is fine — mkdir below creates the tree.
+  }
+
+  // 2. Walk every intermediate directory under the owner and reject any
+  //    symlink or non-directory along the way.
+  const segments = relativePath.split("/").filter((segment) => segment.length > 0);
+  let current = ownerResourcesDir;
+  for (let i = 0; i < segments.length - 1; i++) {
+    current = path.join(current, segments[i]);
+    let segmentStat;
+    try {
+      segmentStat = await fs.lstat(current);
+    } catch (e) {
+      const errno = (e as NodeJS.ErrnoException).code;
+      if (errno === "ENOENT") continue;
+      return {
+        ok: false,
+        error: `Could not inspect intermediate path "${current}" while writing resource "${relativePath}": ${e instanceof Error ? e.message : String(e)}.`,
+      };
+    }
+    if (segmentStat.isSymbolicLink()) {
+      return {
+        ok: false,
+        error: `Resource path "${relativePath}" cannot be written: an intermediate directory ("${segments[i]}") is a symlink; symlink escapes are rejected.`,
+      };
+    }
+    if (!segmentStat.isDirectory()) {
+      return {
+        ok: false,
+        error: `Resource path "${relativePath}" cannot be written: intermediate path component "${segments[i]}" exists but is not a directory.`,
+      };
+    }
+  }
+
+  // 3. Destination itself: must not be a pre-existing symlink.
+  const destAbsolute = path.join(ownerResourcesDir, relativePath);
+  try {
+    const destStat = await fs.lstat(destAbsolute);
+    if (destStat.isSymbolicLink()) {
+      return {
+        ok: false,
+        error: `Resource path "${relativePath}" cannot be written: the destination is an existing symlink; symlink escapes are rejected.`,
+      };
+    }
+    if (!destStat.isFile()) {
+      return {
+        ok: false,
+        error: `Resource path "${relativePath}" cannot be written: the destination exists but is not a regular file.`,
+      };
+    }
+  } catch (e) {
+    const errno = (e as NodeJS.ErrnoException).code;
+    if (errno !== "ENOENT") {
+      return {
+        ok: false,
+        error: `Could not inspect destination "${destAbsolute}": ${e instanceof Error ? e.message : String(e)}.`,
+      };
+    }
+  }
+
+  // 4. Safe to create intermediate directories and copy the source bytes.
+  await fs.mkdir(path.dirname(destAbsolute), { recursive: true });
+  await fs.copyFile(sourceAbsolutePath, destAbsolute);
+
+  // 5. Defense in depth: the realpath of what we just wrote must still be
+  //    inside the owner's realpath. If a race or unanticipated symlink
+  //    redirected the write, clean up so no escape-state file is left
+  //    behind.
+  const realOwner = await fs.realpath(ownerResourcesDir);
+  let realDest: string;
+  try {
+    realDest = await fs.realpath(destAbsolute);
+  } catch (e) {
+    return {
+      ok: false,
+      error: `Could not verify the realpath of written resource "${relativePath}": ${e instanceof Error ? e.message : String(e)}.`,
+    };
+  }
+  const containment = path.relative(realOwner, realDest);
+  if (containment === "" || containment.startsWith("..") || path.isAbsolute(containment)) {
+    await fs.rm(destAbsolute, { force: true }).catch(() => {});
+    return {
+      ok: false,
+      error: `Resource path "${relativePath}" resolves outside the owning entity's resources/ tree after write; symlink escapes are rejected and the partial write was cleaned up.`,
+    };
+  }
+
+  return { ok: true, value: { destAbsolute } };
+}
+
 // ── Static Export ────────────────────────────────────────────────────────────
 
 export interface StaticExportResult {

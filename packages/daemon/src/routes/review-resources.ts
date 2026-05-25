@@ -58,13 +58,17 @@ interface ApiErrorBody {
 /**
  * Map a {@link ReviewResourceError} code onto its documented HTTP status
  * per the task contract:
- *   - invalid_resource_id / invalid_resource_path / invalid_content_type → 400
+ *   - invalid_resource_id / invalid_resource_path → 400
  *   - source_file_missing / source_file_unreadable → 400 (multipart bodies
  *     only ever surface as the dedicated `missing_resource_file` 400 below,
  *     so these codes generally won't escape from manager calls at the
  *     daemon boundary; we map defensively all the same)
  *   - review_not_found / resource_not_found → 404
  *   - resource_conflict → 409
+ *
+ * Note: explicit-but-invalid content_type values surface as
+ * `invalid_resource_path` (the documented code) since content type is
+ * path-derived metadata — see ReviewResourceErrorCode docs.
  */
 function statusForCode(code: ReviewResourceError["code"]): number {
   switch (code) {
@@ -75,7 +79,6 @@ function statusForCode(code: ReviewResourceError["code"]): number {
       return 409;
     case "invalid_resource_id":
     case "invalid_resource_path":
-    case "invalid_content_type":
     case "source_file_missing":
     case "source_file_unreadable":
     default:

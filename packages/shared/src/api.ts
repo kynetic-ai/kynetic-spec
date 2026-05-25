@@ -874,6 +874,32 @@ export interface RefIndexResponse {
 }
 
 /**
+ * Bounded review projection included in the static export. Mirrors the
+ * lean index entry the daemon stores (subject summary, related refs,
+ * disposition, timestamps) plus the per-review resources array with
+ * `exported_path` pointers so the static UI can render evidence without
+ * a live daemon.
+ *
+ * AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+ * AC: @folder-backed-review-storage-1 ac-review-index-has-bounded-projection
+ */
+export interface ExportedReview {
+  _ulid: string;
+  slugs: string[];
+  title: string;
+  lifecycle_state: ReviewSummary["lifecycle_state"];
+  author: string;
+  subject: ReviewSubject;
+  related_refs: string[];
+  external_links: ReviewDetail["external_links"];
+  created_at: string;
+  updated_at: string | null;
+  examined_commit: string | null;
+  disposition: string;
+  resources: ReviewResource[];
+}
+
+/**
  * Full kspec snapshot structure
  */
 export interface KspecSnapshot {
@@ -884,6 +910,14 @@ export interface KspecSnapshot {
   items: ExportedItem[];
   inbox: InboxItem[];
   plans?: PlanDetail[];
+  /**
+   * Reviews exported as a bounded projection with linked resource metadata
+   * pointing at copied asset paths.
+   *
+   * AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+   * AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
+   */
+  reviews?: ExportedReview[];
   triage?: TriageRecord[];
   session: SessionContext | null;
   observations: Observation[];

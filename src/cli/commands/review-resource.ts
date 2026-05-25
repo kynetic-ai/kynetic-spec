@@ -163,8 +163,13 @@ export function registerReviewResourceCommands(review: Command): void {
     resource
       .command("add <review-ref> <source-file>")
       .description("Attach a local resource file to a review")
-      .requiredOption("--id <resource-id>", "Stable resource identifier")
-      .requiredOption("--path <relative-path>", "Relative POSIX path under the review's resources/")
+      // `option`, not `requiredOption`: Commander's requiredOption fails
+      // BEFORE the action runs, so --json callers receive Commander's plain
+      // "error: required option ..." text on stderr instead of the
+      // documented JSON failure envelope. We validate inside the action
+      // below and emit the contract-shaped envelope on missing inputs.
+      .option("--id <resource-id>", "Stable resource identifier")
+      .option("--path <relative-path>", "Relative POSIX path under the review's resources/")
       .option("--label <label>", "Optional human-readable label")
       .option("--description <text>", "Optional free-form description")
       .option(
@@ -174,6 +179,36 @@ export function registerReviewResourceCommands(review: Command): void {
       .option("--replace", "Replace an existing resource id (allows updating bytes and metadata)")
       .action(async (reviewRef: string, sourceFile: string, options) => {
         try {
+          // Handle missing required options inside the action so the JSON
+          // envelope contract holds even when --id or --path is absent.
+          // Commander's requiredOption short-circuits before the action,
+          // so its plain-text error would bypass the documented envelope.
+          if (typeof options.id !== "string" || options.id.length === 0) {
+            exitWithResourceError(
+              {
+                code: "invalid_resource_id",
+                message:
+                  "Missing required option --id. Pass a stable resource identifier (matches [a-z0-9][a-z0-9._-]{0,127}).",
+                resource_id: null,
+                path: typeof options.path === "string" ? options.path : null,
+                source_file: sourceFile,
+              },
+              EXIT_VALIDATION,
+            );
+          }
+          if (typeof options.path !== "string" || options.path.length === 0) {
+            exitWithResourceError(
+              {
+                code: "invalid_resource_path",
+                message:
+                  "Missing required option --path. Pass a POSIX-relative path under the review's resources/ tree.",
+                resource_id: typeof options.id === "string" ? options.id : null,
+                path: null,
+                source_file: sourceFile,
+              },
+              EXIT_VALIDATION,
+            );
+          }
           const ctx = await initContext();
           const result = await addReviewResource(ctx, reviewRef, {
             id: options.id,

@@ -20,6 +20,8 @@ import type {
   InboxItem,
   PlanDetail,
   PlanSummary,
+  ReviewSummary,
+  ReviewDetail,
   SessionContext,
   Observation,
   TriageRecord,
@@ -31,7 +33,12 @@ import type {
   ApiResponseMeta,
 } from "@kynetic-ai/shared";
 import type { ValidationResponse } from "$lib/api";
-import type { KspecSnapshot, ExportedTask, ExportedItem } from "$lib/types/snapshot";
+import type {
+  KspecSnapshot,
+  ExportedTask,
+  ExportedItem,
+  ExportedReview,
+} from "$lib/types/snapshot";
 import { getSnapshot, ReadOnlyModeError } from "$lib/stores/mode.svelte";
 
 /**
@@ -660,6 +667,149 @@ export function fetchAlignmentStatic(): ApiResponse<AlignmentResponse> {
     warnings: [],
   };
   return wrapEnvelope(alignment);
+}
+
+// ============================================================
+// Reviews Static Functions
+// ============================================================
+
+function findReviewByRef(snapshot: KspecSnapshot, ref: string): ExportedReview | null {
+  const normalizedRef = normalizeRef(ref);
+  if (!normalizedRef) return null;
+  const reviews = snapshot.reviews ?? [];
+  const bySlug = reviews.find((r) => r.slugs?.includes(normalizedRef));
+  if (bySlug) return bySlug;
+  const byUlid = reviews.find((r) =>
+    r._ulid.toUpperCase().startsWith(normalizedRef.toUpperCase()),
+  );
+  return byUlid ?? null;
+}
+
+function toReviewSummary(review: ExportedReview): ReviewSummary {
+  const subjectRef =
+    review.subject.type === "task" ||
+    review.subject.type === "spec" ||
+    review.subject.type === "plan"
+      ? review.subject.ref
+      : undefined;
+  const headBranch = review.subject.type === "code" ? review.subject.head_branch : undefined;
+
+  return {
+    _ulid: review._ulid,
+    slugs: review.slugs,
+    title: review.title,
+    lifecycle_state: review.lifecycle_state,
+    disposition: review.disposition,
+    subject_type: review.subject.type,
+    subject_ref: subjectRef,
+    head_branch: headBranch,
+    author: review.author,
+    related_refs: review.related_refs,
+    thread_count: 0,
+    unresolved_blocker_count: 0,
+    check_count: 0,
+    verdict_count: 0,
+    created_at: review.created_at,
+    updated_at: review.updated_at ?? undefined,
+  };
+}
+
+/**
+ * Build a ReviewDetail from a bounded snapshot entry. The snapshot
+ * projection is intentionally bounded — threads, checks, verdicts, events,
+ * and notes are not exported. The static view exposes the same envelope
+ * shape with those arrays empty so the review detail page renders cleanly
+ * (resource gallery, subject info, disposition) without requiring a live
+ * daemon.
+ *
+ * AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+ * AC: @folder-backed-review-storage-1 ac-review-index-has-bounded-projection
+ */
+function toReviewDetail(review: ExportedReview): ReviewDetail {
+  return {
+    _ulid: review._ulid,
+    slugs: review.slugs,
+    title: review.title,
+    lifecycle_state: review.lifecycle_state,
+    disposition: review.disposition,
+    subject: review.subject,
+    author: review.author,
+    related_refs: review.related_refs,
+    threads: [],
+    checks: [],
+    verdicts: [],
+    events: [],
+    notes: [],
+    external_links: review.external_links,
+    examined_commit: review.examined_commit,
+    created_at: review.created_at,
+    updated_at: review.updated_at,
+    resources: review.resources.map((resource) => ({ ...resource })),
+  };
+}
+
+/**
+ * Fetch reviews from the static snapshot. Returns the bounded-projection
+ * summaries needed by the reviews list page. Counts that the snapshot does
+ * not carry (thread/check/verdict totals) surface as 0 — static export
+ * trades fidelity for a bounded, daemon-independent payload.
+ *
+ * AC: @folder-backed-review-storage-1 ac-review-index-has-bounded-projection
+ * AC: @api-contract ac-envelope
+ */
+export function fetchReviewsStatic(params?: {
+  status?: string | string[];
+  disposition?: string;
+  subject_type?: string;
+  subject_ref?: string;
+  head_branch?: string;
+  limit?: number;
+  offset?: number;
+}): ApiResponse<ReviewSummary[]> {
+  const snapshot = getSnapshot();
+  if (!snapshot) {
+    return wrapEnvelope([] as ReviewSummary[], { total: 0, offset: 0, limit: 50 });
+  }
+  let items = snapshot.reviews ?? [];
+  if (params?.status) {
+    const statuses = Array.isArray(params.status) ? params.status : [params.status];
+    items = items.filter((r) => statuses.includes(r.lifecycle_state));
+  }
+  if (params?.disposition) {
+    items = items.filter((r) => r.disposition === params.disposition);
+  }
+  if (params?.subject_type) {
+    items = items.filter((r) => r.subject.type === params.subject_type);
+  }
+  if (params?.subject_ref) {
+    const target = normalizeRef(params.subject_ref);
+    items = items.filter((r) => {
+      if (!("ref" in r.subject)) return false;
+      return normalizeRef(r.subject.ref) === target;
+    });
+  }
+  if (params?.head_branch) {
+    items = items.filter(
+      (r) => r.subject.type === "code" && r.subject.head_branch === params.head_branch,
+    );
+  }
+  const summaries = items.map(toReviewSummary);
+  const envelope = paginateEnvelope(summaries, params);
+  return envelope;
+}
+
+/**
+ * Fetch a single review by ULID or slug from the static snapshot.
+ *
+ * AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+ * AC: @api-contract ac-envelope
+ */
+export function fetchReviewStatic(ref: string): ApiResponse<ReviewDetail> | null {
+  const snapshot = getSnapshot();
+  if (!snapshot) return null;
+  const review = findReviewByRef(snapshot, ref);
+  if (!review) return null;
+  return wrapEnvelope(toReviewDetail(review));
 }
 
 // ============================================================

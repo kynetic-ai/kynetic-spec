@@ -122,6 +122,58 @@ describe("Integration: review resource add", () => {
     expect(envelope.code).toBe("review_not_found");
   });
 
+  // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+  it("returns invalid_resource_id + the documented JSON envelope when --id is missing", () => {
+    // Commander's requiredOption would normally fail before the action runs
+    // and bypass the JSON contract; the CLI must validate --id inside the
+    // action so --json callers always receive the documented envelope.
+    const result = kspecRun(
+      `review resource add @${reviewSlug} ${pngSource} --path shot.png --json`,
+      projectDir,
+      { expectFail: true },
+    );
+    expect(result.exitCode).toBe(1);
+    const envelope = JSON.parse(result.stderr.trim());
+    expect(envelope.code).toBe("invalid_resource_id");
+    expect(envelope).toHaveProperty("message");
+    expect(envelope).toHaveProperty("resource_id", null);
+    expect(envelope).toHaveProperty("path", "shot.png");
+    expect(envelope).toHaveProperty("source_file");
+  });
+
+  // AC: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner
+  it("returns invalid_resource_path + the documented JSON envelope when --path is missing", () => {
+    const result = kspecRun(
+      `review resource add @${reviewSlug} ${pngSource} --id shot --json`,
+      projectDir,
+      { expectFail: true },
+    );
+    expect(result.exitCode).toBe(1);
+    const envelope = JSON.parse(result.stderr.trim());
+    expect(envelope.code).toBe("invalid_resource_path");
+    expect(envelope).toHaveProperty("resource_id", "shot");
+    expect(envelope).toHaveProperty("path", null);
+    expect(envelope).toHaveProperty("source_file");
+  });
+
+  // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+  it("returns invalid_resource_path + exit code 1 when --content-type is malformed", () => {
+    // The documented CLI failure codes do NOT include invalid_content_type.
+    // Malformed explicit content_type maps to invalid_resource_path (the
+    // documented path-shaped code) with the relative path attached.
+    const result = kspecRun(
+      `review resource add @${reviewSlug} ${pngSource} --id shot --path shot.png --content-type 'not a mime' --json`,
+      projectDir,
+      { expectFail: true },
+    );
+    expect(result.exitCode).toBe(1);
+    const envelope = JSON.parse(result.stderr.trim());
+    expect(envelope.code).toBe("invalid_resource_path");
+    expect(envelope.path).toBe("shot.png");
+    expect(envelope.resource_id).toBe("shot");
+    expect(envelope.message).toMatch(/content_type/);
+  });
+
   it("returns source_file_missing + exit code 1 when the source file is missing", () => {
     const result = kspecRun(
       `review resource add @${reviewSlug} ${pngSource}.missing --id shot --path shot.png --json`,
@@ -201,6 +253,20 @@ describe("Integration: review resource list/get", () => {
     const envelope = JSON.parse(result.stderr.trim());
     expect(envelope.code).toBe("resource_not_found");
   });
+
+  // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+  it("returns invalid_resource_id + exit code 1 for malformed resource ids on get", () => {
+    // Malformed IDs must surface as invalid_resource_id rather than
+    // resource_not_found so consumers can distinguish "this id is illegal"
+    // from "this id was never declared".
+    const result = kspecRun(`review resource get @${reviewSlug} BadID! --json`, projectDir, {
+      expectFail: true,
+    });
+    expect(result.exitCode).toBe(1);
+    const envelope = JSON.parse(result.stderr.trim());
+    expect(envelope.code).toBe("invalid_resource_id");
+    expect(envelope.resource_id).toBe("BadID!");
+  });
 });
 
 // AC: @trait-entity-scoped-local-resources-1 ac-resource-delete-follows-owner-delete
@@ -236,5 +302,18 @@ describe("Integration: review resource remove", () => {
     expect(result.exitCode).toBe(1);
     const envelope = JSON.parse(result.stderr.trim());
     expect(envelope.code).toBe("confirmation_required");
+  });
+
+  // AC: @trait-entity-scoped-local-resources-1 ac-resource-delete-follows-owner-delete
+  it("returns invalid_resource_id + exit code 1 for malformed resource ids on remove", () => {
+    const result = kspecRun(
+      `review resource remove @${reviewSlug} Bad-ID! --force --json`,
+      projectDir,
+      { expectFail: true },
+    );
+    expect(result.exitCode).toBe(1);
+    const envelope = JSON.parse(result.stderr.trim());
+    expect(envelope.code).toBe("invalid_resource_id");
+    expect(envelope.resource_id).toBe("Bad-ID!");
   });
 });

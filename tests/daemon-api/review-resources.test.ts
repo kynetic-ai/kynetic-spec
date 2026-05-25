@@ -182,6 +182,24 @@ describe("POST /api/reviews/:ref/resources (multipart)", () => {
     const body = await conflict.json();
     expect(body.code).toBe("resource_conflict");
   });
+
+  // Coverage: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+  it("returns 400 invalid_resource_path for an explicit but malformed content_type", async () => {
+    // The documented API error codes do NOT include invalid_content_type.
+    // The route maps a malformed explicit content_type onto the documented
+    // invalid_resource_path code (path-shaped) so the contract stays
+    // closed.
+    const response = await multipart(
+      REVIEW_ULID,
+      { id: "shot", path: "shot.png", content_type: "not a mime" },
+      { name: "shot.png", type: "image/png", bytes: PNG_BYTES },
+    );
+    expect(response.status).toBe(400);
+    const body = await response.json();
+    expect(body.code).toBe("invalid_resource_path");
+    expect(body.message).toMatch(/content_type/);
+    expect(body.path).toBe("shot.png");
+  });
 });
 
 describe("GET /api/reviews/:ref/resources", () => {
@@ -228,6 +246,20 @@ describe("GET /api/reviews/:ref/resources/:resourceId", () => {
     const body = await response.json();
     expect(body.code).toBe("resource_not_found");
   });
+
+  // Coverage: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+  it("returns 400 invalid_resource_id for malformed ids on GET (not 404)", async () => {
+    // Malformed IDs (outside the shared resource-id contract) must
+    // surface as invalid_resource_id (400) so consumers can distinguish
+    // illegal inputs from missing resources.
+    const response = await request(
+      `/api/reviews/${REVIEW_ULID}/resources/${encodeURIComponent("Bad-ID!")}`,
+    );
+    expect(response.status).toBe(400);
+    const body = await response.json();
+    expect(body.code).toBe("invalid_resource_id");
+    expect(body.resource_id).toBe("Bad-ID!");
+  });
 });
 
 describe("GET /api/reviews/:ref/resources/:resourceId/bytes", () => {
@@ -251,6 +283,16 @@ describe("GET /api/reviews/:ref/resources/:resourceId/bytes", () => {
     expect(response.status).toBe(404);
     const body = await response.json();
     expect(body.code).toBe("resource_not_found");
+  });
+
+  // Coverage: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+  it("returns 400 invalid_resource_id for malformed ids on the bytes endpoint", async () => {
+    const response = await request(
+      `/api/reviews/${REVIEW_ULID}/resources/${encodeURIComponent("Bad ID")}/bytes`,
+    );
+    expect(response.status).toBe(400);
+    const body = await response.json();
+    expect(body.code).toBe("invalid_resource_id");
   });
 });
 
@@ -289,5 +331,16 @@ describe("DELETE /api/reviews/:ref/resources/:resourceId", () => {
     expect(response.status).toBe(404);
     const body = await response.json();
     expect(body.code).toBe("review_not_found");
+  });
+
+  // Coverage: @trait-entity-scoped-local-resources-1 ac-resource-delete-follows-owner-delete
+  it("returns 400 invalid_resource_id for malformed ids on DELETE (not 404)", async () => {
+    const response = await request(
+      `/api/reviews/${REVIEW_ULID}/resources/${encodeURIComponent("Bad ID")}`,
+      { method: "DELETE" },
+    );
+    expect(response.status).toBe(400);
+    const body = await response.json();
+    expect(body.code).toBe("invalid_resource_id");
   });
 });

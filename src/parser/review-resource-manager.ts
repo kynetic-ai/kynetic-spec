@@ -24,6 +24,7 @@ import * as path from "node:path";
 
 import {
   computeResourceMetadata,
+  copySourceIntoOwnerResources,
   getResourcesDir,
   loadResourceManifest,
   type ResourceManifest,
@@ -46,12 +47,18 @@ import type { KspecContext } from "./yaml.js";
 /**
  * Structured error codes shared by every review-resource surface.
  *
+ * The set matches the task contract's documented CLI/API code list exactly —
+ * no extra codes (e.g. no `invalid_content_type`). When explicit
+ * `content_type` is malformed the manager surfaces `invalid_resource_path`
+ * with the offending relative path, because content type is derived from
+ * the path extension when omitted and the failure belongs to the same
+ * path-shaped input.
+ *
  * AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
  */
 export type ReviewResourceErrorCode =
   | "invalid_resource_id"
   | "invalid_resource_path"
-  | "invalid_content_type"
   | "source_file_missing"
   | "source_file_unreadable"
   | "resource_conflict"
@@ -123,15 +130,28 @@ export async function listReviewResources(
 
 /**
  * Fetch a single review resource by id. Returns `resource_not_found` when
- * the id is undeclared.
+ * the id is undeclared. Malformed ids (outside the shared
+ * `RESOURCE_ID_PATTERN`) short-circuit with `invalid_resource_id` so every
+ * read surface — CLI `get`/`remove`, daemon `GET/DELETE` — produces the
+ * documented response instead of masquerading a malformed id as
+ * `resource_not_found`.
  *
  * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner
  */
 export async function getReviewResource(
   ctx: KspecContext,
   ref: string,
   resourceId: string,
 ): Promise<ReviewResourceResult<{ review: LoadedReviewRecord; resource: ResourceMetadata }>> {
+  const idValidation = validateResourceId(resourceId);
+  if (!idValidation.ok) {
+    return err({
+      code: "invalid_resource_id",
+      message: idValidation.error,
+      resource_id: resourceId,
+    });
+  }
   const listing = await listReviewResources(ctx, ref);
   if (!listing.ok) return listing;
   const resource = listing.value.resources.find((r) => r.id === resourceId);
@@ -318,9 +338,15 @@ export async function addReviewResource(
   if (options.contentType !== undefined && options.contentType !== null) {
     const contentTypeResolved = resolveContentType(options.contentType, options.relativePath);
     if (!contentTypeResolved.ok) {
+      // The documented CLI/API error codes do not include a dedicated
+      // "invalid_content_type" entry. content_type is path-derived metadata
+      // (inferred from the resource's path extension when omitted), so a
+      // malformed explicit value surfaces under the path-shaped error code
+      // with the offending relative path attached for context. See the
+      // ReviewResourceErrorCode docs for the full rationale.
       return err({
-        code: "invalid_content_type",
-        message: contentTypeResolved.error,
+        code: "invalid_resource_path",
+        message: `Explicit content_type rejected: ${contentTypeResolved.error}`,
         resource_id: options.id,
         path: options.relativePath,
       });
@@ -368,12 +394,31 @@ export async function addReviewResource(
     });
   }
 
-  // Copy source bytes into the owning review's resources tree. Path traversal
-  // and symlink escape are already rejected by validateResourceRelativePath
-  // (and by the schema at manifest write time), so a plain join is safe.
-  const destAbsolute = path.join(resourcesDir, options.relativePath);
-  await fs.mkdir(path.dirname(destAbsolute), { recursive: true });
-  await fs.copyFile(sourceValidation.value.absolutePath, destAbsolute);
+  // Copy source bytes into the owning review's resources tree via the
+  // symlink-safe writer. validateResourceRelativePath rejects textual
+  // traversal ("../") and absolute paths, but a malicious or buggy filesystem
+  // state could plant a symlink at the owner's resources/ root or any
+  // intermediate directory — copySourceIntoOwnerResources walks each path
+  // segment, rejects symlinks at any level, and post-write verifies the
+  // realpath of the written file is still inside the owner tree so the
+  // forbidden symlink-escape contract is enforced even when the manifest
+  // and textual path look fine.
+  // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+  const copyResult = await copySourceIntoOwnerResources({
+    ownerResourcesDir: resourcesDir,
+    relativePath: options.relativePath,
+    sourceAbsolutePath: sourceValidation.value.absolutePath,
+  });
+  if (!copyResult.ok) {
+    return err({
+      code: "invalid_resource_path",
+      message: copyResult.error,
+      resource_id: options.id,
+      path: options.relativePath,
+      source_file: options.sourceFile,
+    });
+  }
+  const destAbsolute = copyResult.value.destAbsolute;
 
   // If we're replacing and the path moved, remove the old file so the
   // resources/ tree only contains files declared by the current manifest.
