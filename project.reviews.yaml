@@ -234004,6 +234004,16 @@ reviews:
         runner: npm
         created_at: 2026-05-25T17:31:40.135Z
         completed_at: 2026-05-25T17:31:40.135Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: tsc --noEmit completed with exit 0.
+        name: npm run typecheck
+        required: true
+        runner: tsc
+        created_at: 2026-05-25T17:31:44.973Z
+        completed_at: 2026-05-25T17:31:44.973Z
     events:
       - _ulid: 01KSG2ASF3HKX393QXZ2QYG8J7
         actor: Jacob Chapel
@@ -234032,6 +234042,13 @@ reviews:
           status: pass
           name: npm test -- --fresh
         timestamp: 2026-05-25T17:31:41.843Z
+      - _ulid: 01KSG32NS2HCQGM7EBW4ABAYE9
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm run typecheck
+        timestamp: 2026-05-25T17:31:46.850Z
     examined_commit: 0ebd97caa924d55e960aac358c093b1979f94455
     external_links: []
     lifecycle_state: open
@@ -234067,5 +234084,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-25T17:18:44.195Z
-    updated_at: 2026-05-25T17:31:40.135Z
+    updated_at: 2026-05-25T17:31:44.973Z
     notes: []
