@@ -231524,9 +231524,25 @@ reviews:
           kind: nit
           thread_ulid: 01KSEYQ1KN4E6TQBVDX2XNSJT0
         timestamp: 2026-05-25T06:56:18.937Z
+      - _ulid: 01KSEYQG0F5D6Y99VBQFC7VQ5X
+        actor: codex-reviewer
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-25T06:56:31.759Z
+      - _ulid: 01KSEYQG0FKFNT7WCABDEWECGR
+        actor: codex-reviewer
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-25T06:56:31.759Z
     examined_commit: 024a319eac4c9631e57e0703e300f41a0a20f03a
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -231589,7 +231605,14 @@ reviews:
               cache/broadcast side effects."
             created_at: 2026-05-25T06:56:17.014Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex-reviewer
+        role: reviewer
+        created_at: 2026-05-25T06:56:31.758Z
     created_at: 2026-05-25T06:40:43.746Z
-    updated_at: 2026-05-25T06:56:17.014Z
+    updated_at: 2026-05-25T06:56:31.759Z
     notes: []
