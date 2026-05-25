@@ -12921,11 +12921,11 @@ workspaces:
     canonical_branch: dispatch/task/task-review-screenshot-resource-ui/01ks8xb0
     canonical_branch_head: addb7d63ba048919b16ee2c6cf46dc3cf15e7d2c
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-05-25T22:20:56.479Z
+      updated_at: 2026-05-25T22:24:59.498Z
     health:
       status: healthy
       issues: []
@@ -12939,16 +12939,16 @@ workspaces:
       target_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
       target_commit: 25e55fa9067eba15e70dd1659669a8e34465407c
       updated_at: 2026-05-25T22:20:56.479Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
     task_ref: "@01KS8XB0EKNTMZS4XJMC4ED4SK"
     task_slug: task-review-screenshot-resource-ui
     timestamps:
-      closed_at: null
+      closed_at: 2026-05-25T22:24:59.498Z
       last_active_at: 2026-05-25T22:05:33.291Z
       last_reconciled_at: 2026-05-25T22:24:43.522Z
       created_at: 2026-05-25T04:25:24.024Z
-      updated_at: 2026-05-25T22:24:43.522Z
+      updated_at: 2026-05-25T22:24:59.498Z
     workspace_id: dispatch-workspace-01KS8XB0EKNTMZS4XJMC4ED4SK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
