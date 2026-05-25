@@ -98,8 +98,14 @@ description: >
 spec_ref: "@entity-folder-migration-and-compatibility-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved in review @01KSEFSX and merged
+  dispatch/task/task-plan-review-folder-storage-migration-1/01ks8xay into
+  plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw at
+  25e55fa9067eba15e70dd1659669a8e34465407c. Implemented folder-backed plan/review migration
+  integration for upgrade, including dry-run reporting, atomic plan/review/manifest storage block,
+  partial-layout guards, protected-target tripwire, rollback guidance, and regression coverage.
 depends_on:
   - "@task-folder-backed-plan-storage-manager-1"
   - "@task-folder-backed-review-storage-manager-1"
@@ -806,9 +812,29 @@ history:
         previous: "@01KSEDG9BECKBF9YNFXPRRCGD8"
     command: review-link
     timestamp: 2026-05-25T02:35:47.021Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved in review @01KSEFSX and merged
+          dispatch/task/task-plan-review-folder-storage-migration-1/01ks8xay into
+          plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw at
+          25e55fa9067eba15e70dd1659669a8e34465407c. Implemented folder-backed plan/review migration
+          integration for upgrade, including dry-run reporting, atomic plan/review/manifest storage
+          block, partial-layout guards, protected-target tripwire, rollback guidance, and regression
+          coverage.
+        previous: null
+      completed_at:
+        new: 2026-05-25T02:55:18.468Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-25T02:55:18.496Z
 prior_status: null
 created_at: 2026-05-22T22:36:45.946Z
 started_at: 2026-05-25T02:32:35.519Z
 submitted_at: 2026-05-25T02:32:37.467Z
+completed_at: 2026-05-25T02:55:18.468Z
 todos: []
 automation: eligible
