@@ -231101,6 +231101,18 @@ reviews:
         runner: oxlint
         created_at: 2026-05-25T06:13:10.798Z
         completed_at: 2026-05-25T06:13:10.798Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Node repro against dist CLI: existing .kspec/plans/<plan>/resources/sub symlink to an
+          outside temp dir; plan resource add --path sub/leak.txt exited 0 and created
+          outside/leak.txt; plan resource remove --force exited 0 and deleted that outside file."
+        name: symlink escape repro
+        required: false
+        runner: manual
+        created_at: 2026-05-25T06:13:19.604Z
+        completed_at: 2026-05-25T06:13:19.604Z
     events:
       - _ulid: 01KSEV8T77NE8W3BJX8W48KXYG
         actor: Jacob Chapel
@@ -231157,6 +231169,13 @@ reviews:
           status: pass
           name: changed-file oxlint
         timestamp: 2026-05-25T06:13:12.642Z
+      - _ulid: 01KSEW8E9V26BGR26Q9H584HN8
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: symlink escape repro
+        timestamp: 2026-05-25T06:13:21.340Z
     examined_commit: d31b3df0546b893caf3746c64c4aa91a4661e3e9
     external_links: []
     lifecycle_state: open
@@ -231211,5 +231230,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-25T05:56:04.967Z
-    updated_at: 2026-05-25T06:13:10.798Z
+    updated_at: 2026-05-25T06:13:19.604Z
     notes: []
