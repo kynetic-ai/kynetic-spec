@@ -54651,7 +54651,7 @@ runs:
     completed_at: 2026-05-25T21:25:01.296Z
   - _ulid: 01KSGKNEHM8WCKV6B7GM445RM5
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -54668,7 +54668,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-25T22:23:09.329Z
-        completed_at: 2026-05-25T22:23:09.329Z
+        completed_at: 2026-05-25T22:23:23.493Z
+        notes: "Friction points: (1) Detached merge helper stopped when the integration target branch was
+          not checked out, even though a clean detached worktree already existed at the target head;
+          recovery required manually checking out the branch in that worktree before rerunning
+          helper. (2) Whole-repo npm run lint remains noisy with pre-existing errors, so review
+          evidence required manually narrowing to changed-file oxlint. (3) workflow show requires
+          the run ref; the immediate workflow start output did not make show-with-ref obvious enough
+          to avoid one failed command."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-25T22:23:23.493Z
+        completed_at: 2026-05-25T22:23:23.493Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-25T22:21:39.252Z
