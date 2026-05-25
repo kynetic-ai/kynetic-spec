@@ -54491,7 +54491,7 @@ runs:
     completed_at: 2026-05-25T17:35:25.755Z
   - _ulid: 01KSG6SBPP6VBGFKQTSVXWMZ9K
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -54506,7 +54506,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-25T18:38:03.618Z
-        completed_at: 2026-05-25T18:38:03.618Z
+        completed_at: 2026-05-25T18:38:10.902Z
+        notes: "Friction point: the detached reviewer merge helper failed because the integration target
+          branch was not checked out in any worktree, even though an existing merge-target worktree
+          was clean and detached at the target commit. I had to inspect worktrees, identify the
+          detached target worktree, switch it to the integration branch, and rerun the helper."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-25T18:38:10.902Z
+        completed_at: 2026-05-25T18:38:10.902Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-25T18:36:35.926Z
