@@ -54312,7 +54312,7 @@ runs:
     completed_at: 2026-05-25T16:35:28.120Z
   - _ulid: 01KSG0J8P87XQX2701EB7WN6PG
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -54325,7 +54325,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-25T16:49:41.327Z
-        completed_at: 2026-05-25T16:49:41.327Z
+        completed_at: 2026-05-25T16:50:02.278Z
+        notes: "Friction: tests/daemon-api/helpers.ts createTestApp did not pass getEntityCache to
+          createPlansRoutes — production wiring (packages/daemon/src/server.ts:772) does. Any test
+          exercising the cache-ready plans route silently hit the disk-fallback path. Fixed inline.
+          Worth a meta observation that test-helper route wiring should mirror production
+          constructors to keep cache-aware tests honest."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-25T16:50:02.278Z
+        completed_at: 2026-05-25T16:50:02.278Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-25T16:47:52.008Z
