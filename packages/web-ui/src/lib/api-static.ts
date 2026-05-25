@@ -19,6 +19,7 @@ import type {
   BatchTaskSummary,
   InboxItem,
   PlanDetail,
+  PlanResourceMetadata,
   PlanSummary,
   SessionContext,
   Observation,
@@ -121,17 +122,69 @@ function normalizeRef(ref: string | null | undefined): string | null {
   return ref.startsWith("@") ? ref.slice(1) : ref;
 }
 
+/**
+ * Convert an exported plan-resource entry (with `exported_path`) into the
+ * `PlanResourceMetadata` shape the web UI consumes. The static UI loads
+ * resources from the exported asset layout, so `bytes_url` is the
+ * `exported_path` from the snapshot — no daemon hop required.
+ *
+ * AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+ */
+function toStaticPlanResource(raw: unknown): PlanResourceMetadata | null {
+  if (!raw || typeof raw !== "object") return null;
+  const obj = raw as Record<string, unknown>;
+  const exportedPath = obj.exported_path;
+  const id = obj.id;
+  const path = obj.path;
+  if (typeof id !== "string" || typeof path !== "string" || typeof exportedPath !== "string") {
+    return null;
+  }
+  return {
+    id,
+    label: typeof obj.label === "string" ? obj.label : null,
+    path,
+    content_type: typeof obj.content_type === "string" ? obj.content_type : "application/octet-stream",
+    bytes: typeof obj.bytes === "number" ? obj.bytes : 0,
+    sha256: typeof obj.sha256 === "string" ? obj.sha256 : "",
+    git_commit: typeof obj.git_commit === "string" ? obj.git_commit : null,
+    git_path: typeof obj.git_path === "string" ? obj.git_path : null,
+    description: typeof obj.description === "string" ? obj.description : null,
+    bytes_url: exportedPath,
+  };
+}
+
+/**
+ * Project a snapshot plan record (which carries `ExportedPlanResource[]`) into
+ * a web-UI `PlanDetail` whose `resources` field uses the `PlanResourceMetadata`
+ * shape consumed by `rewritePlanResourceLinks` and the rendered UI.
+ *
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+ */
+function toStaticPlanDetail(raw: unknown): PlanDetail | null {
+  if (!raw || typeof raw !== "object") return null;
+  const obj = raw as Record<string, unknown>;
+  const rawResources = Array.isArray(obj.resources) ? obj.resources : [];
+  const resources = rawResources
+    .map((entry) => toStaticPlanResource(entry))
+    .filter((entry): entry is PlanResourceMetadata => entry !== null);
+  return {
+    ...(obj as unknown as PlanDetail),
+    resources,
+  };
+}
+
 function findPlanByRef(snapshot: KspecSnapshot, ref: string): PlanDetail | null {
   const normalizedRef = normalizeRef(ref);
   if (!normalizedRef) return null;
 
-  return (
-    snapshot.plans?.find(
-      (plan) =>
-        plan.slugs.includes(normalizedRef) ||
-        plan._ulid.toUpperCase().startsWith(normalizedRef.toUpperCase()),
-    ) ?? null
+  const match = snapshot.plans?.find(
+    (plan) =>
+      plan.slugs.includes(normalizedRef) ||
+      plan._ulid.toUpperCase().startsWith(normalizedRef.toUpperCase()),
   );
+  if (!match) return null;
+  return toStaticPlanDetail(match);
 }
 
 /**
@@ -602,7 +655,16 @@ export function fetchPlansStatic(_params?: { status?: string }): ApiResponse<Pla
     items = items.filter((plan) => plan.status === _params.status);
   }
 
-  const summaries = items.map(({ content: _content, ...plan }) => plan);
+  const summaries = items.map((plan) => {
+    const { content: _content, ...rest } = plan;
+    const projected = toStaticPlanDetail(rest);
+    // toStaticPlanDetail returns null only for malformed snapshot entries;
+    // fall back to the raw projection so existing fixtures without
+    // resources keep rendering.
+    if (!projected) return rest as PlanSummary;
+    const { content: _c, ...summary } = projected;
+    return summary as PlanSummary;
+  });
   return wrapEnvelope(summaries, { total: summaries.length });
 }
 

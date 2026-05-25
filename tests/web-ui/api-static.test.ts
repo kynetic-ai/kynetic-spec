@@ -282,6 +282,40 @@ describe("static API snapshot adapters", () => {
     expect(detail.data.content).toContain("Plan One");
   });
 
+  // AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
+  // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+  it("translates plan resources from the exported_path snapshot shape to the bytes_url UI shape", () => {
+    const snapshot = createSnapshot();
+    const exportedPath = `assets/resources/plan/${snapshot.plans![0]._ulid}/screenshots/login.png`;
+    (snapshot.plans![0] as unknown as Record<string, unknown>).resources = [
+      {
+        id: "login-shot",
+        label: null,
+        path: "screenshots/login.png",
+        content_type: "image/png",
+        bytes: 8,
+        sha256: "a".repeat(64),
+        git_commit: null,
+        git_path: null,
+        description: null,
+        exported_path: exportedPath,
+      },
+    ];
+    modeState.snapshot = snapshot;
+
+    const detail = fetchPlanContentStatic("@plan-one");
+    expect(detail.data.resources).toHaveLength(1);
+    expect(detail.data.resources[0]).toMatchObject({
+      id: "login-shot",
+      path: "screenshots/login.png",
+      bytes_url: exportedPath,
+    });
+
+    const list = fetchPlansStatic();
+    expect(list.data[0].resources).toHaveLength(1);
+    expect(list.data[0].resources![0].bytes_url).toBe(exportedPath);
+  });
+
   // AC: @gh-pages-export ac-23
   it("returns static triage records with filters", () => {
     const triaged = fetchTriageRecordsStatic({ status: "triaged" });

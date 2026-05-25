@@ -6,6 +6,7 @@ import type {
   PlanDetail,
   PlanSummary,
 } from "@kynetic-ai/shared";
+import { rewritePlanResourceLinks } from "./plan-resource-links";
 
 type PlanLike = Pick<PlanSummary, "derived_specs" | "derived_tasks">;
 
@@ -285,8 +286,16 @@ export function buildPlanContentBlocks(
 ): PlanContentBlock[] {
   if (!plan.content) return [];
 
+  // AC: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner
+  //     — pre-process the markdown so `./resources/<path>` image/link targets
+  //     point at the safe plan-scoped fetch URL the daemon exposes. Unresolved
+  //     references are left untouched so authors still see the raw text and
+  //     can decide whether to add a manifest entry.
+  const resolvedContent = rewritePlanResourceLinks(plan.content, plan.resources);
+  const planForParsing: PlanDetail = { ...plan, content: resolvedContent };
+
   const batchLookup = createBatchLookup(options.batchItems ?? []);
-  const candidates = parsePlanContentCandidates(plan.content, plan);
+  const candidates = parsePlanContentCandidates(planForParsing.content, planForParsing);
   const blocks: PlanContentBlock[] = [];
 
   for (const block of candidates) {

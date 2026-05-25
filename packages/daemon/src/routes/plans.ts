@@ -19,13 +19,15 @@ import {
   type LoadedPlan,
 } from "../../parser/index.js";
 import { requirePlanFolderStorage } from "../../parser/entity-storage-compatibility.js";
+import { loadResourceManifest } from "../../parser/entity-local-resources.js";
+import { getPlanDir } from "../../parser/plan-storage-manager.js";
 import { PlanStatusSchema } from "../../schema/plan.js";
 import {
   countPlanTaskProgress,
   getLinkedPlanSummaryTasks,
   isCountedInPlanSummary,
 } from "../../lib/plan-summary.js";
-import type { PlanSummary, PlanDetail } from "@kynetic-ai/shared";
+import type { PlanSummary, PlanDetail, PlanResourceMetadata } from "@kynetic-ai/shared";
 import type { PlanSummaryTask } from "../../lib/plan-summary.js";
 import type { PlanIndexSummary } from "../../daemon/entity-cache.js";
 import { enumArrayUnion } from "./enum-utils.js";
@@ -33,6 +35,7 @@ import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import { wrapResponse } from "./response-envelope.js";
 import { taskStorageIncompatibilityResponse } from "./task-storage-error.js";
 import { entityStorageIncompatibilityResponse } from "./entity-storage-error.js";
+import { toPlanResourceMetadata } from "./plan-resources.js";
 
 interface PlansRouteOptions {
   getEntityCache?: EntityCacheAccessor;
@@ -42,8 +45,19 @@ interface PlansRouteOptions {
  * Map a plan (full or summary) to a PlanSummary for the API response.
  * Accepts LoadedPlan or PlanIndexSummary — both have the required fields.
  * Accepts LoadedTask[] or TaskSummary[] — both satisfy PlanSummaryTask.
+ *
+ * `resources` (when supplied) carries the API-shaped resource metadata. The
+ * caller resolves the manifest because list responses load summaries from
+ * the lean index and add resources from the per-plan `resources.yaml`
+ * sidecar; the index does not embed resource bytes.
+ *
+ * AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
  */
-function toPlanSummary(plan: LoadedPlan | PlanIndexSummary, tasks: PlanSummaryTask[]): PlanSummary {
+function toPlanSummary(
+  plan: LoadedPlan | PlanIndexSummary,
+  tasks: PlanSummaryTask[],
+  resources?: PlanResourceMetadata[],
+): PlanSummary {
   const linkedTasks = getLinkedPlanSummaryTasks(plan, tasks);
 
   return {
@@ -59,7 +73,28 @@ function toPlanSummary(plan: LoadedPlan | PlanIndexSummary, tasks: PlanSummaryTa
     spec_count: plan.derived_specs.length,
     task_count: linkedTasks.filter((task) => isCountedInPlanSummary(task)).length,
     task_progress: countPlanTaskProgress(linkedTasks),
+    resources: resources ?? [],
   };
+}
+
+/**
+ * Load the API-shaped resource metadata for one plan from its sidecar
+ * manifest. Returns an empty array when the manifest is absent or
+ * unreadable so list/detail routes degrade gracefully.
+ *
+ * AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+ */
+async function loadPlanResourcesForApi(
+  ctx: Awaited<ReturnType<typeof initContext>>,
+  ulid: string,
+): Promise<PlanResourceMetadata[]> {
+  try {
+    const manifest = await loadResourceManifest(getPlanDir(ctx, ulid));
+    return manifest.resources.map((r) => toPlanResourceMetadata(ulid, r));
+  } catch {
+    return [];
+  }
 }
 
 export function createPlansRoutes(_options: PlansRouteOptions = {}) {
@@ -174,7 +209,25 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
           );
 
           // AC: @ui-plans-view ac-1 - Compute progress for each plan
-          const items: PlanSummary[] = sorted.map((plan) => toPlanSummary(plan, tasks));
+          // AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
+          // AC: @daemon-read-path ac-no-per-request-sync
+          //     — list responses are intentionally fast: the lean index never
+          //     embeds resource bytes and the cache-hit path must not call
+          //     initContext to read sidecar manifests. Resource metadata is
+          //     loaded from each plan's sidecar only on cache-miss paths
+          //     (where the route is already calling initContext anyway).
+          //     Clients fetch full resource metadata via the per-plan resource
+          //     endpoints (`GET /api/plans/:ref/resources[/:id[/bytes]]`).
+          const canLoadResources = !cache || plansDomainState !== "ready";
+          const ctxForResources = canLoadResources ? await getCtx() : null;
+          const items: PlanSummary[] = await Promise.all(
+            sorted.map(async (plan) => {
+              const resources = ctxForResources
+                ? await loadPlanResourcesForApi(ctxForResources, plan._ulid)
+                : [];
+              return toPlanSummary(plan, tasks, resources);
+            }),
+          );
 
           return wrapResponse(items, { total: items.length, cacheDomainState: plansDomainState });
         },
@@ -286,9 +339,15 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
           }
         }
 
+        // AC: @folder-backed-plan-storage-1 ac-plan-document-sidecar-is-authoritative
+        // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+        //     — detail responses surface the authoritative markdown body and
+        //     the API-shaped resource summaries from the sidecar manifest.
+        const resources = await loadPlanResourcesForApi(await getCtx(), plan._ulid);
         const detail: PlanDetail = {
-          ...toPlanSummary(plan, tasks),
+          ...toPlanSummary(plan, tasks, resources),
           content: plan.content,
+          resources,
         };
 
         return wrapResponse(detail, { cacheDomainState: plansDomainState });

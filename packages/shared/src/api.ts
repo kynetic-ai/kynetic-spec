@@ -338,6 +338,30 @@ export interface Observation {
 }
 
 /**
+ * Plan-owned resource metadata returned by the daemon API.
+ *
+ * Mirrors `ResourceMetadata` from `src/schema/resources.ts` plus a
+ * `bytes_url` pointer to the safe, project-scoped fetch URL the daemon
+ * exposes. Web UI and static clients use `bytes_url` instead of building
+ * `./resources/<path>` URLs themselves so consumers never reach outside
+ * the declared manifest.
+ *
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+ */
+export interface PlanResourceMetadata {
+  id: string;
+  label: string | null;
+  path: string;
+  content_type: string;
+  bytes: number;
+  sha256: string;
+  git_commit: string | null;
+  git_path: string | null;
+  description: string | null;
+  bytes_url: string;
+}
+
+/**
  * Plan summary for list endpoints
  * AC: @ui-plans-view ac-1
  */
@@ -360,6 +384,15 @@ export interface PlanSummary {
     pending: number;
     blocked: number;
   };
+  /**
+   * Declared plan-owned local resources. Populated on detail responses and
+   * also surfaced on summaries so list/dashboard views can show resource
+   * counts without an extra fetch.
+   *
+   * AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
+   * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+   */
+  resources?: PlanResourceMetadata[];
 }
 
 /**
@@ -368,6 +401,8 @@ export interface PlanSummary {
  */
 export interface PlanDetail extends PlanSummary {
   content: string;
+  /** Always populated for detail responses. */
+  resources: PlanResourceMetadata[];
 }
 
 /**
