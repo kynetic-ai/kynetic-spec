@@ -468,7 +468,24 @@ export function buildOrientationContext(
     | DispatchWorkspaceMetadata,
   metadataOrRole?: DispatchWorkspaceMetadata | DispatchWorkspaceRole,
   explicitRole?: DispatchWorkspaceRole,
-  options?: { fixCycleDiffSummary?: string | null },
+  options?: {
+    fixCycleDiffSummary?: string | null;
+    /**
+     * Resolved task resource references — pre-computed by the caller so the
+     * orientation block surfaces drift status to the agent. Pass `undefined`
+     * (or omit) when the task has no resource_refs.
+     *
+     * AC: @plan-resource-derivation-semantics-1 ac-resource-drift-is-visible
+     */
+    resolvedResources?: Array<{
+      owner_type: "plan" | "task";
+      owner_ref: string;
+      id: string;
+      path: string;
+      status: "present" | "drift" | "missing" | "unresolved";
+      message: string;
+    }>;
+  },
 ): string {
   const usingProvisionedWorkspace =
     typeof workspaceOrTask === "object" &&
@@ -585,6 +602,30 @@ export function buildOrientationContext(
     lines.push(
       `Cycle context: Fix cycle after review. You are resuming ${metadata?.canonicalBranch ?? "(unavailable)"}; publication still targets ${metadata?.integrationTargetBranch ?? metadata?.mergeTargetBranch ?? "(unavailable)"}.`,
     );
+  }
+
+  // Plan/task resource references with drift status. Surfaced so workers
+  // see immediately when a referenced resource has changed since derivation.
+  // AC: @plan-resource-derivation-semantics-1 ac-derived-task-keeps-plan-resource-reference
+  // AC: @plan-resource-derivation-semantics-1 ac-resource-drift-is-visible
+  if (options?.resolvedResources && options.resolvedResources.length > 0) {
+    lines.push("", "Resources:");
+    for (const entry of options.resolvedResources) {
+      const tag =
+        entry.status === "drift"
+          ? "[DRIFT]"
+          : entry.status === "missing"
+            ? "[MISSING]"
+            : entry.status === "unresolved"
+              ? "[UNRESOLVED]"
+              : "[OK]";
+      lines.push(
+        `- ${tag} ${entry.id} (${entry.owner_type} ${entry.owner_ref}, ${entry.path})`,
+      );
+      if (entry.status !== "present") {
+        lines.push(`    ${entry.message}`);
+      }
+    }
   }
 
   const publicationGuidance =
@@ -2317,6 +2358,29 @@ export class DispatchEngine {
       );
     }
 
+    // Resolve task resource_refs against owning entities so the orientation
+    // block surfaces drift to the agent. Best-effort — failures are caught
+    // here so the dispatch can still spin up if the resolver hits an edge.
+    // AC: @plan-resource-derivation-semantics-1 ac-resource-drift-is-visible
+    let resolvedResources: Awaited<
+      ReturnType<
+        typeof import("../parser/task-resource-resolver.js").projectResolvedTaskResources
+      >
+    > = [];
+    if (change.task?.resource_refs && change.task.resource_refs.length > 0) {
+      try {
+        const { initContext } = await import("../parser/yaml.js");
+        const { resolveTaskResources, projectResolvedTaskResources } = await import(
+          "../parser/task-resource-resolver.js"
+        );
+        const ctx = await initContext(this.projectDir);
+        const resolved = await resolveTaskResources(ctx, change.task);
+        resolvedResources = projectResolvedTaskResources(resolved);
+      } catch {
+        // Drift visibility is advisory — never block dispatch on it.
+      }
+    }
+
     const orientation = buildOrientationContext(
       taskRef,
       trigger,
@@ -2324,7 +2388,7 @@ export class DispatchEngine {
       change.task,
       undefined,
       undefined,
-      { fixCycleDiffSummary },
+      { fixCycleDiffSummary, resolvedResources },
     );
     const roleEntry = await buildRoleEntryContext(
       this.projectDir,

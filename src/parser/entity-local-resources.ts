@@ -280,6 +280,80 @@ export function formatResourceReference(relativePath: string): string {
   return `${RESOURCE_AUTHORING_PREFIX}${relativePath}`;
 }
 
+// ── Markdown Link Extraction ─────────────────────────────────────────────────
+
+/**
+ * A single `./resources/<relative-path>` reference discovered in a markdown
+ * document. Captures the validated relative path plus the byte offset where
+ * the link appeared so error messages can point users at the right line.
+ */
+export interface MarkdownResourceLink {
+  /** Original raw link target (e.g. `./resources/screenshots/login.png`). */
+  rawTarget: string;
+  /** Validated POSIX-relative path under the entity's resources/ directory. */
+  relativePath: string;
+  /** Byte index where the link target starts in the source markdown. */
+  offset: number;
+  /** 1-based line number where the link was found. */
+  line: number;
+}
+
+/**
+ * Regex matching markdown links/images and reference-style link definitions
+ * whose target begins with `./resources/`. Three branches:
+ *
+ *   1. `![alt](./resources/x)` — image
+ *   2. `[label](./resources/x)` — inline link
+ *   3. `[label]: ./resources/x` — reference definition (line-start)
+ *
+ * The trailing capture stops at whitespace, `)`, `"`, or `'` so titles and
+ * trailing punctuation do not poison the path.
+ */
+const MARKDOWN_RESOURCE_LINK_REGEX =
+  /!?\[[^\]]*\]\((\.\/resources\/[^\s)"']+)\)|^\s*\[[^\]]+\]:\s+(\.\/resources\/[^\s"']+)/gm;
+
+/**
+ * Extract every `./resources/<relative-path>` reference from a markdown
+ * document. Returns parsed entries with byte offset and line for each link.
+ * Invalid paths (absolute, traversal, undeclared) are still surfaced so the
+ * caller can produce a single batched error envelope instead of stopping
+ * at the first bad link.
+ *
+ * AC: @plan-resource-derivation-semantics-1 ac-plan-task-resource-refs-are-structured
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner
+ */
+export function extractMarkdownResourceLinks(content: string): MarkdownResourceLink[] {
+  const links: MarkdownResourceLink[] = [];
+  if (typeof content !== "string" || content.length === 0) return links;
+  const newlineOffsets: number[] = [];
+  for (let i = 0; i < content.length; i++) {
+    if (content[i] === "\n") newlineOffsets.push(i);
+  }
+  const lineForOffset = (offset: number): number => {
+    // Binary-search-free is fine here — markdown documents are short.
+    let line = 1;
+    for (const nlOffset of newlineOffsets) {
+      if (nlOffset >= offset) break;
+      line += 1;
+    }
+    return line;
+  };
+
+  for (const match of content.matchAll(MARKDOWN_RESOURCE_LINK_REGEX)) {
+    const rawTarget = match[1] ?? match[2];
+    if (!rawTarget) continue;
+    const offset = (match.index ?? 0) + match[0].indexOf(rawTarget);
+    const relativePath = rawTarget.slice(RESOURCE_AUTHORING_PREFIX.length);
+    links.push({
+      rawTarget,
+      relativePath,
+      offset,
+      line: lineForOffset(offset),
+    });
+  }
+  return links;
+}
+
 // ── Symlink-Safe Resolver ────────────────────────────────────────────────────
 
 /**
@@ -417,6 +491,116 @@ export async function resolveResourcePath(options: {
   }
 
   return { ok: true, value: { absolutePath: realCandidate, relativePath } };
+}
+
+/**
+ * Validate that a resource mutation (write or delete) against
+ * `<ownerResourcesDir>/<relativePath>` stays inside the owning entity's
+ * resources tree even when intermediate directories or the destination
+ * leaf already exist as symlinks.
+ *
+ * The textual `validateResourceRelativePath` check stops authoring-time
+ * traversal (`../escape`, absolute paths, backslashes) but does not catch
+ * a *pre-existing* symlink on disk: if the user — or a hostile manifest —
+ * created `<ownerResourcesDir>/sub` as a symlink to an outside tree, a
+ * plain `path.join(ownerResourcesDir, "sub/leak.txt")` followed by
+ * `fs.copyFile` / `fs.rm` will silently escape the entity tree. This
+ * helper walks the textual chain segment-by-segment with `lstat` and
+ * rejects the request the moment any existing component is a symlink:
+ *
+ *   1. The resources directory itself, if it exists, must not be a
+ *      symlink (rejecting symlinked roots that would re-route every
+ *      declared path at once).
+ *   2. Each intermediate directory along the relative chain, if it
+ *      exists, must not be a symlink (rejecting partial-tree symlinks
+ *      like `resources/sub → /outside`).
+ *   3. The destination leaf, if it exists, must not be a symlink and
+ *      must be a regular file (rejecting symlinked manifest entries that
+ *      would delete arbitrary files under `fs.rm`).
+ *
+ * Missing components are tolerated — the caller will create them with
+ * `fs.mkdir`, which is safe under the existing-symlink-free chain that
+ * this helper has just verified. The textual path validation is
+ * re-applied so callers may pass either the raw user input or a
+ * previously-validated path.
+ *
+ * AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+ */
+export async function assertSafeResourceMutationPath(options: {
+  ownerResourcesDir: string;
+  relativePath: string;
+}): Promise<ResourceValidationResult<{ absolutePath: string }>> {
+  const pathValidation = validateResourceRelativePath(options.relativePath);
+  if (!pathValidation.ok) return pathValidation;
+  const relativePath = pathValidation.value;
+
+  try {
+    const rootStat = await fs.lstat(options.ownerResourcesDir);
+    if (rootStat.isSymbolicLink()) {
+      return {
+        ok: false,
+        error: `Resource path "${relativePath}" cannot be mutated: the owning entity's resources/ directory is itself a symlink, which is rejected so all writes stay inside the entity tree.`,
+      };
+    }
+    if (!rootStat.isDirectory()) {
+      return {
+        ok: false,
+        error: `Resource path "${relativePath}" cannot be mutated: the owning entity's resources/ path exists but is not a directory.`,
+      };
+    }
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code !== "ENOENT") {
+      return {
+        ok: false,
+        error: `Resource path "${relativePath}" cannot be mutated: failed to inspect the owning entity's resources/ directory: ${err instanceof Error ? err.message : String(err)}.`,
+      };
+    }
+    // ENOENT is fine — the caller will mkdir the root and the rest of
+    // the chain. There can be no symlinked intermediates beneath a
+    // not-yet-created root.
+  }
+
+  const segments = relativePath.split("/").filter((seg) => seg.length > 0);
+  let probe = options.ownerResourcesDir;
+  for (let i = 0; i < segments.length; i++) {
+    probe = path.join(probe, segments[i]);
+    const isLast = i === segments.length - 1;
+    let segStat;
+    try {
+      segStat = await fs.lstat(probe);
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+        // Remaining chain does not exist yet. Anything mkdir creates
+        // here is a fresh non-symlink directory, so containment is
+        // guaranteed for the rest of the walk.
+        break;
+      }
+      return {
+        ok: false,
+        error: `Resource path "${relativePath}" cannot be mutated: failed to inspect intermediate "${segments.slice(0, i + 1).join("/")}": ${err instanceof Error ? err.message : String(err)}.`,
+      };
+    }
+    if (segStat.isSymbolicLink()) {
+      return {
+        ok: false,
+        error: `Resource path "${relativePath}" resolves through a symlink at "${segments.slice(0, i + 1).join("/")}"; symlink escapes are rejected so all mutations stay inside the entity tree.`,
+      };
+    }
+    if (!isLast && !segStat.isDirectory()) {
+      return {
+        ok: false,
+        error: `Resource path "${relativePath}" cannot be mutated: intermediate "${segments.slice(0, i + 1).join("/")}" exists but is not a directory.`,
+      };
+    }
+    if (isLast && !segStat.isFile()) {
+      return {
+        ok: false,
+        error: `Resource path "${relativePath}" cannot be mutated: destination exists but is not a regular file.`,
+      };
+    }
+  }
+
+  return { ok: true, value: { absolutePath: path.join(options.ownerResourcesDir, relativePath) } };
 }
 
 /**

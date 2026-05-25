@@ -54,8 +54,21 @@ import { error, info, isJsonMode, output, success, warn } from "../output.js";
 import { validateEnumOption } from "../validators.js";
 import { ulid } from "ulid";
 import { registerPlanImportCommand } from "./plan-import.js";
+import { registerPlanResourceCommands } from "./plan-resource.js";
 import { getLinkedPlanSummaryTasks, isCountedInPlanSummary } from "../../lib/plan-summary.js";
 import { resolveDispatchWorkspaceConfig } from "../../agent-runtime/workspace.js";
+import {
+  assertSafeResourceMutationPath,
+  computeResourceMetadata,
+  getResourcesDir,
+  loadResourceManifest,
+  parseResourceReference,
+  validateResourceId,
+  writeResourceManifest,
+} from "../../parser/entity-local-resources.js";
+import { getPlanDir } from "../../parser/plan-storage-manager.js";
+import { getTaskDir } from "../../parser/split-backend.js";
+import type { ResourceMetadata, TaskResourceRef } from "../../schema/resources.js";
 
 /**
  * Format relative time for display
@@ -180,6 +193,12 @@ interface DeriveOptions {
   module?: string;
   tasks?: boolean;
   dryRun?: boolean;
+  /**
+   * Copy plan-owned resources into each derived task's resources/ tree
+   * instead of recording plan-owned references. See
+   * @plan-resource-derivation-semantics-1 ac-explicit-copy-mode-creates-task-owned-resource.
+   */
+  materializeResources?: boolean;
 }
 
 interface DeriveWarning {
@@ -218,6 +237,16 @@ interface PendingTaskPlan {
   localKey: string;
   ref: string;
   input: TaskInput;
+  /**
+   * Plan-manifest entries the task references via its `resource_refs`. Kept
+   * separate from `input.resource_refs` so the post-creation materialization
+   * step can copy bytes from the plan directory into the new task directory
+   * without re-resolving the references.
+   *
+   * AC: @plan-resource-derivation-semantics-1 ac-derived-task-keeps-plan-resource-reference
+   * AC: @plan-resource-derivation-semantics-1 ac-explicit-copy-mode-creates-task-owned-resource
+   */
+  planResources: ResourceMetadata[];
 }
 
 function exitDeriveWithGuidance(
@@ -491,6 +520,193 @@ async function materializePlanSpecs(
   return materialized;
 }
 
+/**
+ * Compute the task-owned resource id that materialization will produce for a
+ * given plan resource. Centralized so the pre-flight validation and the
+ * runtime materialize loop cannot drift apart.
+ *
+ * AC: @plan-resource-derivation-semantics-1 ac-explicit-copy-mode-creates-task-owned-resource
+ */
+function buildMaterializedResourceId(planResourceId: string): string {
+  return `plan-${planResourceId}`;
+}
+
+/**
+ * Pre-flight validation for `--materialize-resources`. Verifies, BEFORE any
+ * task is created on disk, that every materialization is safe to perform:
+ *
+ *   1. The resulting task resource id (`plan-<original-id>`) must satisfy the
+ *      resource id contract. Without this, a plan resource id close to the
+ *      128-character ceiling would produce a 133+ character task id and
+ *      `computeResourceMetadata` would reject it AFTER `createTask` already
+ *      wrote the derived task — leaving partial state on disk.
+ *
+ *   2. Each source path under the plan's `resources/` directory must walk a
+ *      symlink-free chain. `fs.copyFile` follows symlinks, so a pre-existing
+ *      symlink at the plan resource leaf or an intermediate directory would
+ *      let materialization import bytes from outside the plan tree.
+ *
+ * Failing fast here keeps the derive transactional: either every
+ * materialization will succeed or no task is created. The runtime materialize
+ * function re-applies the same guards as defense in depth.
+ *
+ * AC: @plan-resource-derivation-semantics-1 ac-explicit-copy-mode-creates-task-owned-resource
+ * AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+ */
+async function preflightMaterializationSafety(
+  ctx: Awaited<ReturnType<typeof initContext>>,
+  planUlid: string,
+  taskPlans: PendingTaskPlan[],
+): Promise<void> {
+  const planResourcesDir = getResourcesDir(getPlanDir(ctx, planUlid));
+  for (const taskPlan of taskPlans) {
+    for (const planResource of taskPlan.planResources) {
+      const materializedId = buildMaterializedResourceId(planResource.id);
+      const idValidation = validateResourceId(materializedId);
+      if (!idValidation.ok) {
+        exitDeriveWithGuidance(
+          `Plan resource "${planResource.id}" cannot be materialized: ${idValidation.error}`,
+          EXIT_CODES.USAGE_ERROR,
+          'Rename the plan resource to fit within 123 characters before the "plan-" prefix is added, then re-run derive with --materialize-resources.',
+          {
+            plan_resource_id: planResource.id,
+            materialized_id: materializedId,
+            task_ref: taskPlan.ref,
+          },
+        );
+      }
+
+      const safeSource = await assertSafeResourceMutationPath({
+        ownerResourcesDir: planResourcesDir,
+        relativePath: planResource.path,
+      });
+      if (!safeSource.ok) {
+        exitDeriveWithGuidance(
+          `Plan resource "${planResource.id}" cannot be materialized: ${safeSource.error}`,
+          EXIT_CODES.USAGE_ERROR,
+          "Replace the symlinked plan resource file with a regular file before re-running derive with --materialize-resources.",
+          {
+            plan_resource_id: planResource.id,
+            path: planResource.path,
+            task_ref: taskPlan.ref,
+          },
+        );
+      }
+    }
+  }
+}
+
+/**
+ * Copy plan-owned resource files into a derived task's resources tree at
+ * `.kspec/tasks/<task-ulid>/resources/plan/<plan-ulid>/<original-relative-path>`,
+ * rewrite the task's manifest entries with id `plan-<original-id>`, and
+ * update the task's `resource_refs` so they point at the task-owned copy.
+ *
+ * Materialization is opt-in via `--materialize-resources`. The default
+ * behavior keeps the reference plan-owned and never copies bytes
+ * (`ac-derived-task-keeps-plan-resource-reference`).
+ *
+ * Pre-flight safety (id length + source symlink containment) is enforced by
+ * `preflightMaterializationSafety` BEFORE any task is created. This function
+ * re-applies the same guards as defense in depth — a failure here would
+ * indicate a TOCTOU race between preflight and copy.
+ *
+ * AC: @plan-resource-derivation-semantics-1 ac-explicit-copy-mode-creates-task-owned-resource
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+ * AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+ */
+async function materializePlanResourcesForTask(options: {
+  ctx: Awaited<ReturnType<typeof initContext>>;
+  planUlid: string;
+  taskUlid: string;
+  taskCanonicalRef: string;
+  planResources: ResourceMetadata[];
+  recordedAt: string;
+}): Promise<void> {
+  if (options.planResources.length === 0) return;
+  const fs = await import("node:fs/promises");
+  const path = await import("node:path");
+  const planResourcesDir = getResourcesDir(getPlanDir(options.ctx, options.planUlid));
+  const taskResourcesDir = getResourcesDir(getTaskDir(options.ctx, options.taskUlid));
+  const taskSubPrefix = path.posix.join("plan", options.planUlid);
+
+  const taskMetadata: ResourceMetadata[] = [];
+  const taskResourceRefs: TaskResourceRef[] = [];
+
+  for (const planResource of options.planResources) {
+    // Defense in depth: assertSafeResourceMutationPath was already called by
+    // preflightMaterializationSafety before any task was created. Re-applying
+    // it here closes the TOCTOU window between preflight and copy — without
+    // this, an attacker replacing the plan resource with a symlink between
+    // preflight and the copy would still escape.
+    const safeSource = await assertSafeResourceMutationPath({
+      ownerResourcesDir: planResourcesDir,
+      relativePath: planResource.path,
+    });
+    if (!safeSource.ok) {
+      throw new Error(
+        `Refusing to materialize plan resource ${planResource.id}: ${safeSource.error}`,
+      );
+    }
+    const destinationRelative = path.posix.join(taskSubPrefix, planResource.path);
+    const safeDestination = await assertSafeResourceMutationPath({
+      ownerResourcesDir: taskResourcesDir,
+      relativePath: destinationRelative,
+    });
+    if (!safeDestination.ok) {
+      throw new Error(
+        `Refusing to materialize plan resource ${planResource.id}: ${safeDestination.error}`,
+      );
+    }
+
+    const sourceAbs = safeSource.value.absolutePath;
+    const destinationAbs = safeDestination.value.absolutePath;
+    await fs.mkdir(path.dirname(destinationAbs), { recursive: true });
+    await fs.copyFile(sourceAbs, destinationAbs);
+
+    const computed = await computeResourceMetadata({
+      id: buildMaterializedResourceId(planResource.id),
+      relativePath: destinationRelative,
+      absolutePath: destinationAbs,
+      contentType: planResource.content_type,
+      label: planResource.label,
+      description: planResource.description,
+    });
+    if (!computed.ok) {
+      throw new Error(
+        `Failed to compute task resource metadata for ${destinationRelative}: ${computed.error}`,
+      );
+    }
+    taskMetadata.push(computed.value);
+    taskResourceRefs.push({
+      owner_type: "task",
+      owner_ref: options.taskCanonicalRef,
+      id: computed.value.id,
+      path: computed.value.path,
+      sha256: computed.value.sha256,
+      git_commit: computed.value.git_commit,
+      git_path: computed.value.git_path,
+      recorded_at: options.recordedAt,
+    });
+  }
+
+  await writeResourceManifest(getTaskDir(options.ctx, options.taskUlid), {
+    resources: taskMetadata,
+  });
+
+  // Patch the task's `resource_refs` to point at task-owned copies. The
+  // task data manager takes a ref string and resolves it; ULID is a stable
+  // canonical ref so we pass it through directly.
+  await resolveTaskDataManager(options.ctx).mutateTask(
+    options.ctx,
+    `@${options.taskUlid}`,
+    (latest) => ({
+      ...latest,
+      resource_refs: taskResourceRefs,
+    }),
+  );
+}
+
 function buildTaskPlans(
   planRef: string,
   specItems: MaterializedSpec[],
@@ -501,6 +717,8 @@ function buildTaskPlans(
   reservedSlugs: Set<string>,
   author: string | undefined,
   warnings: DeriveWarning[],
+  planResourceManifest: ResourceMetadata[],
+  recordedAt: string,
 ): PendingTaskPlan[] {
   const taskPlans: PendingTaskPlan[] = [];
   const specTaskRefByLocalSlug = new Map<string, string>();
@@ -551,6 +769,7 @@ function buildTaskPlans(
           origin: "derived",
           derivation: "auto",
         },
+        planResources: [],
       });
     }
   }
@@ -605,6 +824,47 @@ function buildTaskPlans(
       return normalized;
     });
 
+    // Validate resource_refs against the plan's resource manifest. Each
+    // reference must use the ./resources/<rel> form and resolve to a declared
+    // entry. Unresolved refs are a fatal derive error — the alternative
+    // (skip + warn) would silently drop the link the author wrote.
+    // AC: @plan-resource-derivation-semantics-1 ac-plan-task-resource-refs-are-structured
+    // AC: @plan-resource-derivation-semantics-1 ac-derived-task-keeps-plan-resource-reference
+    // AC: @plan-resource-derivation-semantics-1 ac-derived-task-records-resource-version
+    const planResources: ResourceMetadata[] = [];
+    const taskResourceRefs: TaskResourceRef[] = [];
+    for (const rawRef of task.resource_refs || []) {
+      const parsed = parseResourceReference(rawRef);
+      if (!parsed.ok) {
+        exitDeriveWithGuidance(
+          `Task "${task.slug || task.title}" declares an invalid resource_refs entry "${rawRef}": ${parsed.error}`,
+          EXIT_CODES.USAGE_ERROR,
+          'Use the form "./resources/<relative-path>" where the path is declared on the plan.',
+          { task: task.slug || task.title, resource_ref: rawRef },
+        );
+      }
+      const declared = planResourceManifest.find((r) => r.path === parsed.value.relativePath);
+      if (!declared) {
+        exitDeriveWithGuidance(
+          `Task "${task.slug || task.title}" references plan resource "${rawRef}" which is not declared on the plan.`,
+          EXIT_CODES.USAGE_ERROR,
+          'Attach the resource first with "kspec plan resource add" or remove the resource_refs entry.',
+          { task: task.slug || task.title, resource_ref: rawRef },
+        );
+      }
+      planResources.push(declared);
+      taskResourceRefs.push({
+        owner_type: "plan",
+        owner_ref: planRef,
+        id: declared.id,
+        path: declared.path,
+        sha256: declared.sha256,
+        git_commit: declared.git_commit,
+        git_path: declared.git_path,
+        recorded_at: recordedAt,
+      });
+    }
+
     taskPlans.push({
       localKey,
       ref: taskRef,
@@ -620,7 +880,9 @@ function buildTaskPlans(
         depends_on: dependsOn,
         notes: [],
         origin: "derived",
+        resource_refs: taskResourceRefs.length > 0 ? taskResourceRefs : undefined,
       },
+      planResources,
     });
   }
 
@@ -646,6 +908,10 @@ export function registerPlanCommands(program: Command): void {
 
   // Register plan import subcommand
   registerPlanImportCommand(plan);
+
+  // Register plan resource attachment subcommands
+  // AC: @plan-resource-derivation-semantics-1 ac-plan-task-resource-refs-are-structured
+  registerPlanResourceCommands(plan);
 
   // kspec plan rebuild-index
   // AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
@@ -1006,12 +1272,17 @@ Examples:
 
   // kspec plan set <ref>
   // AC: @plan-crud ac-3, ac-4
+  // AC: @plan-resource-derivation-semantics-1 ac-plan-task-resource-refs-are-structured (--content-file)
   markMutating(plan.command("set <ref>"))
     .description("Update plan fields")
     .option("--title <title>", "Update title")
     .option("--status <status>", "Update status")
     .option("--slug <slug>", "Add a slug")
     .option("--branch <name>", "Set or clear the plan branch (use null or empty string to clear)")
+    .option(
+      "--content-file <path>",
+      "Replace plan markdown content from a file (validates ./resources/<rel> links against the plan's attached resources)",
+    )
     .action(async (ref: string, options) => {
       try {
         const ctx = await initContext();
@@ -1033,9 +1304,66 @@ Examples:
           }
         }
 
-        if (!options.title && !options.status && !options.slug && options.branch === undefined) {
+        if (
+          !options.title &&
+          !options.status &&
+          !options.slug &&
+          options.branch === undefined &&
+          !options.contentFile
+        ) {
           info("No changes specified");
           return;
+        }
+
+        // Read and validate --content-file before mutating. The content
+        // becomes the new plan.md body and every ./resources/<rel> link must
+        // already resolve against the plan's attached resources.yaml.
+        // AC: @plan-resource-derivation-semantics-1 ac-plan-task-resource-refs-are-structured
+        let newContent: string | undefined;
+        if (options.contentFile) {
+          const contentPath = path.resolve(process.cwd(), options.contentFile);
+          try {
+            newContent = await fs.readFile(contentPath, "utf-8");
+          } catch (err) {
+            error(`Failed to read content file: ${options.contentFile}`, err);
+            process.exit(EXIT_CODES.USAGE_ERROR);
+          }
+          try {
+            const {
+              assertMarkdownLinksResolveAgainstPlan,
+              PlanImportResourceError,
+            } = await import("../../parser/plan-resource-import.js");
+            const { getPlanDir } = await import("../../parser/plan-storage-manager.js");
+            await assertMarkdownLinksResolveAgainstPlan(
+              getPlanDir(ctx, foundPlan._ulid),
+              newContent,
+              contentPath,
+            );
+            void PlanImportResourceError; // type-only side import
+          } catch (err) {
+            if (err instanceof Error && err.name === "PlanImportResourceError") {
+              const planResourceError = err as Error & {
+                code?: string;
+                resourceId?: string | null;
+                path?: string | null;
+                sourceFile?: string | null;
+                line?: number | null;
+              };
+              if (isJsonMode()) {
+                error(planResourceError.message, {
+                  code: planResourceError.code ?? null,
+                  resource_id: planResourceError.resourceId ?? null,
+                  path: planResourceError.path ?? null,
+                  source_file: planResourceError.sourceFile ?? null,
+                  line: planResourceError.line ?? null,
+                });
+              } else {
+                error(planResourceError.message);
+              }
+              process.exit(EXIT_CODES.USAGE_ERROR);
+            }
+            throw err;
+          }
         }
 
         let statusValue: LoadedPlan["status"] | undefined;
@@ -1101,6 +1429,11 @@ Examples:
                   `branch: ${latestPlan.branch ?? "null"} → ${normalizedBranch ?? "null"}`,
                 );
               }
+            }
+
+            if (newContent !== undefined && newContent !== latestPlan.content) {
+              nextPlan.content = newContent;
+              changes.push("content");
             }
 
             return nextPlan;
@@ -1434,13 +1767,18 @@ Examples:
     )
     .option("--no-tasks", "Skip task derivation")
     .option("--dry-run", "Preview derived specs/tasks without saving changes")
+    .option(
+      "--materialize-resources",
+      "Copy plan-owned resources into each derived task's resources/ tree instead of recording plan-owned references",
+    )
     .addHelpText(
       "after",
       `
 Examples:
   $ kspec plan derive @plan-ref --module @core
   $ kspec plan derive @plan-ref
-  $ kspec plan derive @plan-ref --module @core --no-tasks --dry-run`,
+  $ kspec plan derive @plan-ref --module @core --no-tasks --dry-run
+  $ kspec plan derive @plan-ref --materialize-resources`,
     )
     .action(async (ref: string, options: DeriveOptions) => {
       try {
@@ -1563,6 +1901,14 @@ Examples:
 
         const createdSpecRefs = materializedSpecs.map((item) => item.ref);
 
+        // Load the plan's resource manifest once; passed into task plan
+        // building so manual task resource_refs can be validated and
+        // recorded with their hash+git version metadata.
+        // AC: @plan-resource-derivation-semantics-1 ac-derived-task-records-resource-version
+        const planResourceManifest = (await loadResourceManifest(getPlanDir(ctx, foundPlan._ulid)))
+          .resources;
+        const recordedAt = new Date().toISOString();
+
         let taskPlans: PendingTaskPlan[] = [];
         if (deriveTasks) {
           taskPlans = buildTaskPlans(
@@ -1575,14 +1921,43 @@ Examples:
             reservedSlugs,
             author,
             warnings,
+            planResourceManifest,
+            recordedAt,
           );
         }
 
         const createdTaskRefs = taskPlans.map((taskPlan) => taskPlan.ref);
 
         if (!options.dryRun) {
+          // Pre-flight: validate every materialization is safe BEFORE any
+          // task is created. Without this, a failure during materialization
+          // (long id, symlinked source) would leave partial derived tasks on
+          // disk because createTask already wrote them. The runtime
+          // materialize function re-applies the same guards as defense in
+          // depth.
+          // AC: @plan-resource-derivation-semantics-1 ac-explicit-copy-mode-creates-task-owned-resource
+          // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+          if (options.materializeResources) {
+            await preflightMaterializationSafety(ctx, foundPlan._ulid, taskPlans);
+          }
+
           for (const taskPlan of taskPlans) {
-            await resolveTaskDataManager(ctx).createTask(ctx, taskPlan.input);
+            const created = await resolveTaskDataManager(ctx).createTask(ctx, taskPlan.input);
+            // Materialize task-owned copies when explicitly requested. The
+            // default mode keeps the reference pointing at the plan-owned
+            // resource (no bytes copied) — see ac-derived-task-keeps-plan-
+            // resource-reference.
+            // AC: @plan-resource-derivation-semantics-1 ac-explicit-copy-mode-creates-task-owned-resource
+            if (options.materializeResources && taskPlan.planResources.length > 0) {
+              await materializePlanResourcesForTask({
+                ctx,
+                planUlid: foundPlan._ulid,
+                taskUlid: created._ulid,
+                taskCanonicalRef: canonicalRef(created),
+                planResources: taskPlan.planResources,
+                recordedAt,
+              });
+            }
           }
 
           const updatedPlan = await mutatePlanAtomically(ctx, foundPlan, (latestPlan) => {

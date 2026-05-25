@@ -9,6 +9,7 @@ import {
   UlidSchema,
   VcsRefSchema,
 } from "./common.js";
+import { TaskResourceRefSchema } from "./resources.js";
 
 /**
  * Automation eligibility status for tasks
@@ -141,6 +142,12 @@ export const TaskSchema = z.object({
   // Automation eligibility (AC: @task-automation-eligibility ac-1, ac-2)
   // Optional - absent means unassessed
   automation: AutomationStatusSchema.optional(),
+
+  // Plan-derived or task-materialized resource references
+  // AC: @plan-resource-derivation-semantics-1 ac-derived-task-keeps-plan-resource-reference
+  // AC: @plan-resource-derivation-semantics-1 ac-derived-task-records-resource-version
+  // AC: @plan-resource-derivation-semantics-1 ac-explicit-copy-mode-creates-task-owned-resource
+  resource_refs: z.array(TaskResourceRefSchema).optional(),
 });
 
 /**
@@ -215,6 +222,10 @@ export const TaskInputSchema = z.object({
 
   // Automation eligibility (AC: @task-automation-eligibility ac-1, ac-2, ac-13)
   automation: AutomationStatusSchema.optional(),
+
+  // Plan-derived or task-materialized resource references
+  // AC: @plan-resource-derivation-semantics-1 ac-derived-task-keeps-plan-resource-reference
+  resource_refs: z.array(TaskResourceRefSchema).optional(),
 });
 
 /**

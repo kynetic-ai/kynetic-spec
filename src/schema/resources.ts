@@ -160,3 +160,69 @@ export type ResourceManifest = z.infer<typeof ResourceManifestSchema>;
 export const RESOURCE_MANIFEST_SCHEMA_KEYS: ReadonlySet<string> = new Set(
   Object.keys(ResourceManifestSchema.shape),
 );
+
+/**
+ * Import-side `resources.yaml` sibling for `kspec plan import`. The plan
+ * markdown file imports declared resource files from a sibling `resources/`
+ * directory; this schema is what authors write by hand, with only the
+ * required identifiers (id + path) and optional descriptive metadata. The
+ * import command computes `bytes`, `sha256`, and git version identity from
+ * the resolved source file before persisting the full `ResourceMetadata`.
+ *
+ * AC: @plan-resource-derivation-semantics-1 ac-plan-task-resource-refs-are-structured
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner
+ */
+export const PlanResourceImportEntrySchema = z.object({
+  id: ResourceIdSchema,
+  path: ResourcePathSchema,
+  label: z.string().nullable().optional(),
+  description: z.string().nullable().optional(),
+  content_type: ContentTypeSchema.optional(),
+});
+
+export type PlanResourceImportEntry = z.infer<typeof PlanResourceImportEntrySchema>;
+
+export const PlanResourceImportManifestSchema = z.object({
+  resources: z.array(PlanResourceImportEntrySchema).default([]),
+});
+
+export type PlanResourceImportManifest = z.infer<typeof PlanResourceImportManifestSchema>;
+
+/**
+ * Owner kinds for `TaskResourceRef`. Plan-owned references point at the
+ * source plan's manifest; task-owned references point at a copy under the
+ * task's own `resources/` tree.
+ */
+export const ResourceOwnerTypeSchema = z.enum(["plan", "task"]);
+export type ResourceOwnerType = z.infer<typeof ResourceOwnerTypeSchema>;
+
+/**
+ * Per-task resource reference. Recorded by `kspec plan derive` for each
+ * `resource_refs` entry in a plan task definition. Stores enough identity
+ * (owner type, owner ref, resource id, relative path) to resolve through
+ * the owning entity, plus the content hash and git version identity
+ * captured at derivation time so consumers can detect drift when the
+ * underlying resource changes after derivation.
+ *
+ * AC: @plan-resource-derivation-semantics-1 ac-derived-task-keeps-plan-resource-reference
+ * AC: @plan-resource-derivation-semantics-1 ac-derived-task-records-resource-version
+ * AC: @plan-resource-derivation-semantics-1 ac-resource-drift-is-visible
+ */
+export const TaskResourceRefSchema = z.object({
+  owner_type: ResourceOwnerTypeSchema,
+  owner_ref: z.string().min(1),
+  id: ResourceIdSchema,
+  path: ResourcePathSchema,
+  sha256: Sha256Schema,
+  git_commit: GitCommitSchema.nullable(),
+  git_path: z.string().nullable(),
+  recorded_at: z.string().datetime(),
+});
+
+export type TaskResourceRef = z.infer<typeof TaskResourceRefSchema>;
+
+/**
+ * Stable CLI/API authoring prefix for plan resource references on plan
+ * task definitions and markdown links.
+ */
+export const PLAN_RESOURCE_AUTHORING_PREFIX = "./resources/";
