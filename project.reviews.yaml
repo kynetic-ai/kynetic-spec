@@ -234958,6 +234958,17 @@ reviews:
         runner: tsc
         created_at: 2026-05-25T22:18:51.993Z
         completed_at: 2026-05-25T22:18:51.993Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npx oxlint on changed files exited 0 errors, 12 warnings. Whole-repo npm run lint still
+          has pre-existing errors outside this review surface.
+        name: changed-file oxlint
+        required: true
+        runner: oxlint
+        created_at: 2026-05-25T22:18:59.242Z
+        completed_at: 2026-05-25T22:18:59.242Z
     events:
       - _ulid: 01KSGJS0RJW7SRCJ4FTTN7GDKJ
         actor: Jacob Chapel
@@ -234993,6 +235004,13 @@ reviews:
           status: pass
           name: typecheck
         timestamp: 2026-05-25T22:18:53.730Z
+      - _ulid: 01KSGKGKZP3A071XFEXHASG8P4
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: changed-file oxlint
+        timestamp: 2026-05-25T22:19:00.982Z
     examined_commit: addb7d63ba048919b16ee2c6cf46dc3cf15e7d2c
     external_links: []
     lifecycle_state: open
@@ -235005,5 +235023,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-25T22:06:07.634Z
-    updated_at: 2026-05-25T22:18:51.993Z
+    updated_at: 2026-05-25T22:18:59.242Z
     notes: []
