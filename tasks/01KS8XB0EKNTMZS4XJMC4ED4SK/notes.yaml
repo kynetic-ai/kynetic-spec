@@ -25,3 +25,35 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-25T05:45:41.545Z
+  - _ulid: 01KSEX6P2XPBAF6S288Y80ZE5F
+    content: >-
+      Fix cycle 1: addressed all 5 review blockers from review @01KSESV1DJQPBDX776T5RSJXPW.
+
+
+      Changes:
+
+      - Symlink-safe write: copySourceIntoOwnerResources helper in entity-local-resources.ts is now
+      called by addReviewResource. Rejects symlinks at owner root, intermediate dirs, and
+      destination; post-write realpath-verifies containment and cleans up partial writes.
+
+      - Static-mode review fetching: fetchReviewsStatic / fetchReviewStatic added in api-static.ts;
+      fetchReviews / fetchReview now resolve against snapshot.reviews when isStaticMode().
+      ExportedReview added to shared/api.ts, snapshot.reviews now typed.
+
+      - Removed undocumented invalid_content_type code from CLI/API contract; malformed explicit
+      content_type now maps to invalid_resource_path (the documented path-shaped code).
+
+      - getReviewResource validates resourceId before lookup so CLI get/remove and daemon GET single
+      / GET bytes / DELETE surface invalid_resource_id for malformed ids instead of
+      resource_not_found.
+
+      - review resource add: --id and --path validated inside the action (no more Commander
+      requiredOption pre-action bypass) so --json callers always get the documented envelope.
+
+
+      Re-verified all task-description ACs against implementation. No spec changes required. Full
+      test suite passes (9690 tests, 5 skipped). kspec validate exits 6 due to pre-existing
+      project-wide warnings unrelated to this task.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-25T06:29:52.350Z
