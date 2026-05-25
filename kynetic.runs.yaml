@@ -53715,7 +53715,7 @@ runs:
     completed_at: 2026-05-25T07:34:56.182Z
   - _ulid: 01KSF1Z39KMVDX3Q75R5RP5939
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -53731,7 +53731,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-25T07:54:16.071Z
-        completed_at: 2026-05-25T07:54:16.071Z
+        completed_at: 2026-05-25T07:54:28.076Z
+        notes: "Friction points: (1) workflow help/examples still imply kspec workflow show can infer the
+          current run, but the CLI required the run ref; this is already tracked in existing
+          inbox/tasks/observations. (2) Review evidence logs remain manually assembled from commands
+          and files read; search shows this is already tracked as an observation. (3)
+          Review-resource selected-project raw-byte loading surfaced as a concrete task blocker
+          rather than a separate process gap. (4) The task-specific testing contract is broad enough
+          that manually comparing every bullet against test coverage is tedious, but this session
+          produced specific review blockers rather than a new general tooling proposal."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-25T07:54:28.076Z
+        completed_at: 2026-05-25T07:54:28.076Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-25T07:53:06.612Z
