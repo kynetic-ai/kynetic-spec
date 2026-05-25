@@ -232178,6 +232178,42 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-25T07:50:50.161Z
+      - _ulid: 01KSF3JEQYKKHSB1ZVAY7SC24W
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSF1C0WA77VP6V8R7X7JPHSS
+        timestamp: 2026-05-25T08:21:09.502Z
+      - _ulid: 01KSF3JJZQD12X7463TTRWNZRN
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSF1C0WA77VP6V8R7X7JPHSS
+        timestamp: 2026-05-25T08:21:13.847Z
+      - _ulid: 01KSF3JQ7M5G8K6E5AT8MVN4QQ
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSF1C6W5CDN635SS6HK55HRR
+        timestamp: 2026-05-25T08:21:18.196Z
+      - _ulid: 01KSF3JVEXS9KCRVF5DK6SEA0V
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSF1C6W5CDN635SS6HK55HRR
+        timestamp: 2026-05-25T08:21:22.525Z
+      - _ulid: 01KSF3JZMA2XAW3P6W3T3DZ3D1
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSF1CCTN8GYDKZ9N9RYET47H
+        timestamp: 2026-05-25T08:21:26.794Z
+      - _ulid: 01KSF3K3XPSDD1BY26ZNAS3GMK
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSF1CCTN8GYDKZ9N9RYET47H
+        timestamp: 2026-05-25T08:21:31.190Z
     examined_commit: 0d819300236cfb26935914cbd51ceb2c20343546
     external_links: []
     lifecycle_state: closed
@@ -232208,7 +232244,24 @@ reviews:
               The UI needs a resource loading path that preserves project context, and coverage
               should prove screenshot preview/open works for a selected non-default project."
             created_at: 2026-05-25T07:42:41.546Z
+          - _ulid: 01KSF3JD1QXXQS8WFYBCWZCPNB
+            author: "@claude"
+            body: "Fixed: Added kspec_dir query-parameter fallback to the project-context middleware so
+              browser-issued <img>/<a> requests (which cannot set X-Kspec-Dir) can still carry
+              project context in the URL. The header still wins when both are present so first-class
+              fetch() callers remain authoritative. reviewResourceBytesUrl() now reads
+              getSelectedProjectPath() and appends ?kspec_dir=<encoded path> whenever a project is
+              selected; no svelte changes were needed since the helper signature stayed the same.
+              Coverage: tests/web-ui/review-resources-api.test.ts gained 3 cases (selected
+              non-default, special-character encoding, omitted when null) and
+              tests/daemon-api/review-resources.test.ts gained a 4-case multi-project block that
+              seeds two projects with the same review ULID but distinct bytes per project, then
+              proves bytes routing via header baseline, query-param fallback (no header), both
+              directions (projectA and projectB), and header-wins precedence."
+            created_at: 2026-05-25T08:21:07.767Z
         kind: blocker
+        resolved_at: 2026-05-25T08:21:12.178Z
+        resolved_by: "@claude"
       - _ulid: 01KSF1C6W5CDN635SS6HK55HRR
         anchor:
           type: code
@@ -232227,7 +232280,18 @@ reviews:
               that documented CLI path can regress unnoticed. Add that behavioral CLI test; it
               should also prove the resource remains after cancellation."
             created_at: 2026-05-25T07:42:47.685Z
+          - _ulid: 01KSF3JNK86TK0QBRFG4ZJG1ZY
+            author: "@claude"
+            body: "Fixed: Added a behavioral CLI test in tests/review-resource-cli.test.ts that exercises the
+              documented interactive-cancellation path end-to-end. It seeds a resource, then invokes
+              `kspec review resource remove` with KSPEC_TEST_TTY=true (the CLI's interactive-mode
+              override since spawnSync's piped stdin always has isTTY=false) and pipes 'n' to stdin.
+              Asserts exit code 2, the cancellation message on stderr, and finally re-lists
+              resources to prove the resource is still present (no leaked deletion side effect)."
+            created_at: 2026-05-25T08:21:16.520Z
         kind: blocker
+        resolved_at: 2026-05-25T08:21:20.801Z
+        resolved_by: "@claude"
       - _ulid: 01KSF1CCTN8GYDKZ9N9RYET47H
         anchor:
           type: code
@@ -232246,7 +232310,18 @@ reviews:
               CLI-level test that invokes review resource add with a directory or otherwise
               unreadable source and asserts source_file_unreadable plus exit code 1."
             created_at: 2026-05-25T07:42:53.781Z
+          - _ulid: 01KSF3JY0ZJ86DSG2F5ZFRY966
+            author: "@claude"
+            body: "Fixed: Added a CLI-level test in tests/review-resource-cli.test.ts that calls `review
+              resource add` with a directory as the source-file argument (the manager rejects any
+              non-regular file with source_file_unreadable). Asserts exit code 1,
+              code=source_file_unreadable, source_file=<dir-path>, and message matches /not a
+              regular file/i so any regression in CLI error-envelope mapping for non-regular sources
+              is caught."
+            created_at: 2026-05-25T08:21:25.151Z
         kind: blocker
+        resolved_at: 2026-05-25T08:21:29.450Z
+        resolved_by: "@claude"
       - _ulid: 01KSF1T808N8B503QJ622FR8K1
         entries:
           - _ulid: 01KSF1T808EE6NPF2XFG4JW7FY
@@ -232287,7 +232362,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-25T07:50:50.160Z
     created_at: 2026-05-25T07:37:01.797Z
-    updated_at: 2026-05-25T07:50:50.161Z
+    updated_at: 2026-05-25T08:21:29.450Z
     notes: []
   - _ulid: 01KSF2EN9KP6B0BNZQMBQMDX1Q
     slugs: []
