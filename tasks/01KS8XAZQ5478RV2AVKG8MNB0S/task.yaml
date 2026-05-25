@@ -35,7 +35,7 @@ description: |
 spec_ref: "@plan-resource-derivation-semantics-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-plan-review-folder-storage-migration-1"
@@ -50,8 +50,8 @@ review_ref: "@01KSF2EN9KP6B0BNZQMBQMDX1Q"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-plan-resource-import-and-derive-1/01ks8xaz
-  captured_at: 2026-05-25T07:56:00.673Z
-  commit: cec6e309c6730167415e73bd396a8700ef4d0030
+  captured_at: 2026-05-25T08:53:30.066Z
+  commit: 9802d445026c042d9c37a58e942107d4e8a57a79
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-plan-resource-import-and-derive-1/01ks8xaz
@@ -369,8 +369,35 @@ history:
         previous: 2026-05-25T07:55:57.227Z
     command: task-start
     timestamp: 2026-05-25T08:53:26.304Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-plan-resource-import-and-derive-1/01ks8xaz
+          captured_at: 2026-05-25T08:53:30.066Z
+          commit: 9802d445026c042d9c37a58e942107d4e8a57a79
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-plan-resource-import-and-derive-1/01ks8xaz
+        previous:
+          review_url: null
+          branch: dispatch/task/task-plan-resource-import-and-derive-1/01ks8xaz
+          captured_at: 2026-05-25T07:56:00.673Z
+          commit: cec6e309c6730167415e73bd396a8700ef4d0030
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-plan-resource-import-and-derive-1/01ks8xaz
+      submitted_at:
+        new: 2026-05-25T08:53:30.073Z
+        previous: 2026-05-25T07:56:00.679Z
+    command: task-submit
+    timestamp: 2026-05-25T08:53:30.073Z
 created_at: 2026-05-22T22:36:46.693Z
 started_at: 2026-05-25T08:53:26.304Z
-submitted_at: 2026-05-25T07:56:00.679Z
+submitted_at: 2026-05-25T08:53:30.073Z
 todos: []
 automation: eligible
