@@ -233934,6 +233934,12 @@ reviews:
         payload:
           thread_ulid: 01KSG16YWFDTBRV3BN988YFV1W
         timestamp: 2026-05-25T17:35:47.810Z
+      - _ulid: 01KSG3AD1A07Y64KFNS7KZQZJ5
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSG16YWFDTBRV3BN988YFV1W
+        timestamp: 2026-05-25T17:36:00.042Z
     examined_commit: 58df2d14fb652674f714e9bbd14bea9318431ccb
     external_links: []
     lifecycle_state: closed
@@ -234052,6 +234058,8 @@ reviews:
               safety gate fired.'
             created_at: 2026-05-25T17:35:46.039Z
         kind: blocker
+        resolved_at: 2026-05-25T17:35:58.310Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -234061,7 +234069,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-25T17:07:42.838Z
     created_at: 2026-05-25T16:53:32.610Z
-    updated_at: 2026-05-25T17:35:46.039Z
+    updated_at: 2026-05-25T17:35:58.310Z
     notes: []
   - _ulid: 01KSG2ASF3D9NF57BZNME2END0
     slugs: []
