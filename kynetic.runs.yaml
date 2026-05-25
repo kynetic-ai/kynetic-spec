@@ -53349,7 +53349,7 @@ runs:
     completed_at: 2026-05-25T02:58:34.623Z
   - _ulid: 01KSEQ49GVFV6ZCYKE17F85NC8
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -53364,7 +53364,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-25T04:44:40.514Z
-        completed_at: 2026-05-25T04:44:40.514Z
+        completed_at: 2026-05-25T04:44:48.617Z
+        notes: "Friction points: full npm run lint is currently noisy as a review gate because
+          repository-wide pre-existing lint errors require manual changed-file triage; CLI edge-case
+          reproduction required ad hoc temp-project setup scripts during review; kspec workflow show
+          requires a run ref and did not surface the active run by default when I first checked
+          reflection state."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-25T04:44:48.617Z
+        completed_at: 2026-05-25T04:44:48.617Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-25T04:43:42.491Z
