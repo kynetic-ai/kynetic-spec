@@ -35,7 +35,7 @@ description: |
 spec_ref: "@plan-resource-derivation-semantics-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-plan-review-folder-storage-migration-1"
@@ -46,6 +46,7 @@ tags:
   - resources
   - cli
 vcs_refs: []
+session_id: 01KSEJK7Y2D2Y5Z063V0J8CMKB
 history:
   - author: Jacob Chapel
     changes:
@@ -125,6 +126,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-05-22T22:52:42.253Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KSEJK7Y2D2Y5Z063V0J8CMKB
+        previous: null
+      started_at:
+        new: 2026-05-25T03:25:57.253Z
+        previous: null
+    command: task-start
+    timestamp: 2026-05-25T03:25:57.253Z
 created_at: 2026-05-22T22:36:46.693Z
+started_at: 2026-05-25T03:25:57.253Z
 todos: []
 automation: eligible
