@@ -231820,9 +231820,25 @@ reviews:
           status: fail
           name: materialize long-id partial repro
         timestamp: 2026-05-25T07:30:06.304Z
+      - _ulid: 01KSF0NAF35M6TX2XEAJEHFQEG
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-25T07:30:17.699Z
+      - _ulid: 01KSF0NAF3MFDRYHCYB9TMN6Z5
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-25T07:30:17.699Z
     examined_commit: 7e8ff3aeec93b5586c92a90e58c70db9c4e3b4cc
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -231913,7 +231929,14 @@ reviews:
               with task get/dispatch drift surfaces.
             created_at: 2026-05-25T07:29:01.649Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-25T07:30:17.699Z
     created_at: 2026-05-25T07:15:02.110Z
-    updated_at: 2026-05-25T07:30:04.366Z
+    updated_at: 2026-05-25T07:30:17.699Z
     notes: []
