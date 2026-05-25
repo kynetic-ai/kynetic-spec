@@ -12926,12 +12926,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-25T07:12:55.752Z
+      updated_at: 2026-05-25T07:13:35.507Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-25T07:12:55.752Z
+      updated_at: 2026-05-25T07:13:35.507Z
     integration:
       status: pending
       detail: null
@@ -12939,26 +12939,31 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
       target_commit: 25e55fa9067eba15e70dd1659669a8e34465407c
-      updated_at: 2026-05-25T07:12:55.752Z
-    lifecycle_state: ready
+      updated_at: 2026-05-25T07:13:35.507Z
+    lifecycle_state: integrating
     resolved_base_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
     task_ref: "@01KS8XAZQ5478RV2AVKG8MNB0S"
     task_slug: task-plan-resource-import-and-derive-1
     timestamps:
       closed_at: null
       last_active_at: 2026-05-25T06:37:12.470Z
-      last_reconciled_at: 2026-05-25T07:12:55.752Z
+      last_reconciled_at: 2026-05-25T07:13:35.507Z
       created_at: 2026-05-25T03:23:53.034Z
-      updated_at: 2026-05-25T07:12:55.752Z
+      updated_at: 2026-05-25T07:13:35.507Z
     workspace_id: dispatch-workspace-01KS8XAZQ5478RV2AVKG8MNB0S
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 7e8ff3aeec93b5586c92a90e58c70db9c4e3b4cc
+        last_seen_at: 2026-05-25T07:13:35.507Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-resource-import-and-derive-1-01ks8xaz-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-plan-resource-import-and-derive-1/01ks8xaz
-        head: d31b3df0546b893caf3746c64c4aa91a4661e3e9
-        last_seen_at: 2026-05-25T06:36:44.320Z
+        head: 7e8ff3aeec93b5586c92a90e58c70db9c4e3b4cc
+        last_seen_at: 2026-05-25T07:13:35.507Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-resource-import-and-derive-1-01ks8xaz
   - active_role: worker
     base_branch_point: 25e55fa9067eba15e70dd1659669a8e34465407c
