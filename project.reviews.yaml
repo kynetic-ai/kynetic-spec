@@ -229837,6 +229837,27 @@ reviews:
         runner: git
         created_at: 2026-05-25T00:48:26.403Z
         completed_at: 2026-05-25T00:48:26.403Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: AGENTS.md, kspec-agents.md, src/cli/commands/upgrade.ts,
+          src/parser/migration-safety.ts, src/parser/plan-folder-migration.ts,
+          src/parser/review-folder-migration.ts, src/cli/batch-write-buffer.ts,
+          tests/upgrade-folder-storage.test.ts, tests/migration-safety.test.ts, plus AC annotations
+          in touched tests. Commands run: kspec task get, kspec review
+          for-task/get/add/open/comment/reply/check, kspec item get
+          @entity-folder-migration-and-compatibility-1, rg AC/source-read scan, git diff
+          stat/name-status/log/check, focused npm test, full npm test, kspec validate,
+          protected-tripwire reproduction scripts. Claims verified: cycle 5 tripwire fix prevents
+          plan/review/manifest storage writes in the covered cases, but storage preflight failure
+          does not stop later upgrade steps. Categories searched: correctness, edge cases,
+          protected-path safety, atomicity/rollback, test quality, AC coverage, integration."
+        name: review evidence log
+        required: false
+        runner: codex-reviewer
+        created_at: 2026-05-25T00:48:43.860Z
+        completed_at: 2026-05-25T00:48:43.860Z
     events:
       - _ulid: 01KSE8K5XX4GBTG0PGEGG70B8Y
         actor: Jacob Chapel
@@ -229892,6 +229913,13 @@ reviews:
           status: pass
           name: diff hygiene
         timestamp: 2026-05-25T00:48:28.068Z
+      - _ulid: 01KSE9P2ZF45PT04RNE22H9KWC
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-25T00:48:45.551Z
     examined_commit: 85473371603f27ae5a7990c2c73bea5879539e76
     external_links: []
     lifecycle_state: open
@@ -229944,5 +229972,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-25T00:29:41.694Z
-    updated_at: 2026-05-25T00:48:26.403Z
+    updated_at: 2026-05-25T00:48:43.860Z
     notes: []
