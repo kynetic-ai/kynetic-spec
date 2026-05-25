@@ -53496,7 +53496,7 @@ runs:
     completed_at: 2026-05-25T05:48:43.108Z
   - _ulid: 01KSEWB8SETBQ1R0C5C1S4QK11
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -53535,7 +53535,18 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-25T06:16:49.213Z
-        completed_at: 2026-05-25T06:16:49.213Z
+        completed_at: 2026-05-25T06:17:02.112Z
+        notes: "Proposed improvement: add or extend a shared entity-local resource mutation helper that
+          resolves destination/delete paths with the same symlink-safe containment guarantees as
+          read resolution. It should cover add/copy, replace, path move cleanup, materialization
+          copy, and remove/delete operations so command implementations do not hand-roll path.join +
+          fs mutations. Benefit: one tested contract for resource path containment across
+          plan/review/task-owned resources. Scope: medium, because it touches shared parser helpers
+          and several call sites but has a focused behavior surface."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-25T06:17:02.112Z
+        completed_at: 2026-05-25T06:17:02.112Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-25T06:14:53.999Z
