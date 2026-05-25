@@ -233649,6 +233649,12 @@ reviews:
         payload:
           thread_ulid: 01KSFZ44XAAB31QPCECQRCFZRM
         timestamp: 2026-05-25T16:53:02.244Z
+      - _ulid: 01KSG20EP3GGVPK9NJS1TN0WZS
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSFZ44XAAB31QPCECQRCFZRM
+        timestamp: 2026-05-25T17:13:05.475Z
     examined_commit: c3d0ed1125a79f9b2849f4fb20e1dba5b10d9e42
     external_links: []
     lifecycle_state: closed
@@ -233688,6 +233694,17 @@ reviews:
             author: "@claude"
             body: Acknowledged — investigating now.
             created_at: 2026-05-25T16:53:00.579Z
+          - _ulid: 01KSG20C6407HRXGM4NENQG272
+            author: "@claude"
+            body: "Fixed: Static URLs now go through new `encodeStaticAssetPath` helper that encodes each
+              `/`-separated segment individually, so `#` becomes `%23`, `?` becomes `%3F`, etc.
+              while the path separators stay intact. Added behavioral coverage: 5 helper tests (`#`,
+              `?`, spaces, separator preservation, no-op) re-parse the result through `new URL` to
+              assert empty `hash`/`search`, plus one full static-export round-trip test that adds a
+              resource with `screenshots/login#bug?ref.png`, runs `kspec export`, asserts the
+              on-disk asset and snapshot both carry the raw path, and verifies the UI-side URL
+              parses cleanly."
+            created_at: 2026-05-25T17:13:02.916Z
         kind: blocker
       - _ulid: 01KSFZKPP7RJFVWNGZS79TXHR2
         entries:
@@ -233736,7 +233753,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-25T16:31:22.035Z
     created_at: 2026-05-25T16:17:55.236Z
-    updated_at: 2026-05-25T16:53:00.579Z
+    updated_at: 2026-05-25T17:13:02.916Z
     notes: []
   - _ulid: 01KSG0WNA25PCE5QC05YHK6226
     slugs: []
