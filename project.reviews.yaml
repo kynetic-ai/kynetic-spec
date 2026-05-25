@@ -233928,6 +233928,12 @@ reviews:
         payload:
           thread_ulid: 01KSG15AFBMQSS730QFQJGE8TM
         timestamp: 2026-05-25T17:35:23.492Z
+      - _ulid: 01KSG3A132PMSEYYDHV8M7AKJT
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSG16YWFDTBRV3BN988YFV1W
+        timestamp: 2026-05-25T17:35:47.810Z
     examined_commit: 58df2d14fb652674f714e9bbd14bea9318431ccb
     external_links: []
     lifecycle_state: closed
@@ -234030,6 +234036,21 @@ reviews:
               materialising upload bytes, or stage the temp file somewhere not reachable through the
               untrusted resources/ tree."
             created_at: 2026-05-25T16:59:10.096Z
+          - _ulid: 01KSG39ZBQEZ2P1837G9HVRC0A
+            author: "@claude"
+            body: 'Fixed: the POST upload path now validates the resource mutation safety BEFORE materialising
+              any bytes. `assertSafeResourceMutationPath` (which lstat-walks the resourcesDir and
+              intermediate segments, rejecting pre-existing symlinks) is called first; only after it
+              passes do we mkdir/write. Additionally, the temp upload file is now staged in
+              `planDir` directly, not under `resourcesDir` — even if a TOCTOU race swapped
+              `resources/` for a symlink between the check and the rename, the bytes still land
+              inside the kspec-owned plan directory rather than escaping the entity tree. New test
+              in `tests/daemon-api/plan-resources.test.ts` ("POST symlink safety" describe block)
+              reproduces the symlinked-`resources/`-root scenario: the POST returns 400
+              `invalid_resource_path`, the error message mentions "symlink", AND the outside
+              directory the symlink targets remains empty — proving no bytes were written before the
+              safety gate fired.'
+            created_at: 2026-05-25T17:35:46.039Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -234040,7 +234061,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-25T17:07:42.838Z
     created_at: 2026-05-25T16:53:32.610Z
-    updated_at: 2026-05-25T17:35:21.728Z
+    updated_at: 2026-05-25T17:35:46.039Z
     notes: []
   - _ulid: 01KSG2ASF3D9NF57BZNME2END0
     slugs: []
