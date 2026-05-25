@@ -233275,6 +233275,17 @@ reviews:
         runner: npm test
         created_at: 2026-05-25T16:05:30.759Z
         completed_at: 2026-05-25T16:05:30.759Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Schema and references OK; command exited 6 due to existing warnings (deprecated refs,
+          orphaned specs, missing AC coverage unrelated to this task).
+        name: kspec validate
+        required: false
+        runner: kspec validate
+        created_at: 2026-05-25T16:05:37.923Z
+        completed_at: 2026-05-25T16:05:37.923Z
     events:
       - _ulid: 01KSFXBC3QJ2JR30SDKV42QKYQ
         actor: Jacob Chapel
@@ -233317,6 +233328,13 @@ reviews:
           status: pass
           name: full test suite
         timestamp: 2026-05-25T16:05:32.599Z
+      - _ulid: 01KSFY4ZT63K0ZRAB9HE0AT9CP
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-25T16:05:39.783Z
     examined_commit: 0aa596716c847ea0e4bbff89e42039aad8d2322c
     external_links: []
     lifecycle_state: open
@@ -233371,5 +233389,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-25T15:51:40.407Z
-    updated_at: 2026-05-25T16:05:30.759Z
+    updated_at: 2026-05-25T16:05:37.923Z
     notes: []
