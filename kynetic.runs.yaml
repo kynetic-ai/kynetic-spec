@@ -54559,7 +54559,7 @@ runs:
     completed_at: 2026-05-25T18:46:27.802Z
   - _ulid: 01KSGBJ370A4QGHEG47CJ1FNZE
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -54573,7 +54573,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-25T20:01:13.429Z
-        completed_at: 2026-05-25T20:01:13.429Z
+        completed_at: 2026-05-25T20:01:33.879Z
+        notes: "High-confidence items identified: (1) success pattern: full npm test plus changed-file
+          oxlint gave review evidence without misclassifying pre-existing full lint debt; already
+          covered by inbox @01KSEQ8E and observation @01KSF0VTP, so no new capture. (2) friction
+          recurrence: kspec workflow show still requires an explicit run ref even when the active
+          run is known from start output; already covered by observation @01KSEQ88, so no duplicate.
+          No other high-confidence systemic issue surfaced."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-25T20:01:33.879Z
+        completed_at: 2026-05-25T20:01:33.879Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-25T20:00:00.736Z
