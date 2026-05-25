@@ -234509,6 +234509,16 @@ reviews:
         runner: oxlint
         created_at: 2026-05-25T19:58:14.483Z
         completed_at: 2026-05-25T19:58:14.483Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test exited 0: 2563 suites passed; 9784 tests passed, 5 skipped; duration 2513.0s"
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-05-25T19:58:30.869Z
+        completed_at: 2026-05-25T19:58:30.869Z
     events:
       - _ulid: 01KSGAS4DTPYPZQ2XSZCDX0A9K
         actor: Jacob Chapel
@@ -234565,6 +234575,20 @@ reviews:
           status: fail
           name: changed-file oxlint
         timestamp: 2026-05-25T19:58:16.133Z
+      - _ulid: 01KSGBFD3D84V863ZPW335F8BP
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-05-25T19:58:32.557Z
+      - _ulid: 01KSGBG0PKH25QYBBM16DZCHNW
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KSGBFZ30M18PNN52R403G1E6
+        timestamp: 2026-05-25T19:58:52.627Z
     examined_commit: 7650c9f1b4f6a0a74911ebf8f80489f53e3443f8
     external_links: []
     lifecycle_state: open
@@ -234612,7 +234636,25 @@ reviews:
               lint-clean.
             created_at: 2026-05-25T19:57:31.301Z
         kind: blocker
+      - _ulid: 01KSGBFZ30M18PNN52R403G1E6
+        entries:
+          - _ulid: 01KSGBFZ30Z42X1M1P9D0S8W6Q
+            author: Jacob Chapel
+            body: "Evidence log: Files read included src/parser/review-resource-manager.ts,
+              src/parser/entity-local-resources.ts, packages/daemon/src/routes/review-resources.ts,
+              packages/daemon/src/routes/reviews.ts, packages/web-ui/src/lib/api.ts,
+              packages/web-ui/src/lib/api-static.ts,
+              packages/web-ui/src/routes/reviews/[id]/+page.svelte, src/export/json.ts,
+              src/export/types.ts, and the related review-resource tests. Commands run included
+              kspec task/item/review lookups, git diff review, git diff --check, kspec validate,
+              kspec validate --warnings-ok, npm run typecheck -- --noEmit, npm test, npm run lint,
+              and changed-file oxlint. Claims verified: latest cleanup rollback fix was inspected in
+              code/tests; npm test passes; changed-file oxlint fails on introduced test lint
+              blockers. Categories searched: correctness, edge cases, error handling,
+              security/resource paths, test quality, and integration/export/static UI behavior."
+            created_at: 2026-05-25T19:58:50.976Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-25T19:46:22.778Z
-    updated_at: 2026-05-25T19:58:14.483Z
+    updated_at: 2026-05-25T19:58:50.976Z
     notes: []
