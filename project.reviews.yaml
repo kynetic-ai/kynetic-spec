@@ -233754,6 +233754,30 @@ reviews:
         runner: npm test
         created_at: 2026-05-25T17:07:11.956Z
         completed_at: 2026-05-25T17:07:11.956Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: packages/daemon/src/routes/plan-resources.ts,
+          packages/daemon/src/routes/plans.ts, packages/shared/src/api.ts,
+          src/daemon/entity-cache.ts, src/parser/plan-storage-manager.ts, src/export/json.ts,
+          src/export/types.ts, src/parser/entity-local-resources.ts,
+          src/parser/entity-storage-compatibility.ts, packages/web-ui/src/lib/api-static.ts,
+          packages/web-ui/src/lib/utils/plan-resource-links.ts,
+          packages/web-ui/src/lib/utils/plan-embedded-content.ts,
+          tests/daemon-api/plan-resources.test.ts, tests/export/plan-resources.test.ts,
+          tests/web-ui/api-static.test.ts, tests/web-ui/plan-resource-links.test.ts. Commands run:
+          kspec task get, kspec item get, kspec review get/for-task/add/open/comment, git diff/show,
+          rg AC annotations, kspec validate, npm test, two ad hoc Node reproductions for
+          resource-storage gate and static symlink export. Claims verified: prior
+          bytes_url/cache-list blockers were addressed; resource API still misses resource_storage
+          gate; static export silently drops symlink-escaping resources. Categories searched:
+          correctness, edge cases, error handling, security/path escape, test quality,
+          integration/cache/static."
+        name: review evidence log
+        required: false
+        created_at: 2026-05-25T17:07:19.334Z
+        completed_at: 2026-05-25T17:07:19.334Z
     events:
       - _ulid: 01KSG0WNA25E954PEJE07FPZ8B
         actor: Jacob Chapel
@@ -233796,6 +233820,13 @@ reviews:
           status: pass
           name: full test suite
         timestamp: 2026-05-25T17:07:14.608Z
+      - _ulid: 01KSG1NZ8NR1S86M644014HYCY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-25T17:07:22.005Z
     examined_commit: 58df2d14fb652674f714e9bbd14bea9318431ccb
     external_links: []
     lifecycle_state: open
@@ -233871,5 +233902,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-25T16:53:32.610Z
-    updated_at: 2026-05-25T17:07:11.956Z
+    updated_at: 2026-05-25T17:07:19.334Z
     notes: []
