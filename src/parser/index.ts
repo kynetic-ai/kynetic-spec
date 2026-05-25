@@ -23,6 +23,7 @@ export * from "./shadow.js";
 export * from "./skill-render.js";
 export * from "./split-backend.js";
 export * from "./task-data-manager.js";
+export * from "./task-resource-resolver.js";
 export * from "./traits.js";
 export * from "./validate.js";
 export * from "./yaml.js";

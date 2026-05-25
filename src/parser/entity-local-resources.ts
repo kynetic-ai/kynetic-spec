@@ -280,6 +280,80 @@ export function formatResourceReference(relativePath: string): string {
   return `${RESOURCE_AUTHORING_PREFIX}${relativePath}`;
 }
 
+// ── Markdown Link Extraction ─────────────────────────────────────────────────
+
+/**
+ * A single `./resources/<relative-path>` reference discovered in a markdown
+ * document. Captures the validated relative path plus the byte offset where
+ * the link appeared so error messages can point users at the right line.
+ */
+export interface MarkdownResourceLink {
+  /** Original raw link target (e.g. `./resources/screenshots/login.png`). */
+  rawTarget: string;
+  /** Validated POSIX-relative path under the entity's resources/ directory. */
+  relativePath: string;
+  /** Byte index where the link target starts in the source markdown. */
+  offset: number;
+  /** 1-based line number where the link was found. */
+  line: number;
+}
+
+/**
+ * Regex matching markdown links/images and reference-style link definitions
+ * whose target begins with `./resources/`. Three branches:
+ *
+ *   1. `![alt](./resources/x)` — image
+ *   2. `[label](./resources/x)` — inline link
+ *   3. `[label]: ./resources/x` — reference definition (line-start)
+ *
+ * The trailing capture stops at whitespace, `)`, `"`, or `'` so titles and
+ * trailing punctuation do not poison the path.
+ */
+const MARKDOWN_RESOURCE_LINK_REGEX =
+  /!?\[[^\]]*\]\((\.\/resources\/[^\s)"']+)\)|^\s*\[[^\]]+\]:\s+(\.\/resources\/[^\s"']+)/gm;
+
+/**
+ * Extract every `./resources/<relative-path>` reference from a markdown
+ * document. Returns parsed entries with byte offset and line for each link.
+ * Invalid paths (absolute, traversal, undeclared) are still surfaced so the
+ * caller can produce a single batched error envelope instead of stopping
+ * at the first bad link.
+ *
+ * AC: @plan-resource-derivation-semantics-1 ac-plan-task-resource-refs-are-structured
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner
+ */
+export function extractMarkdownResourceLinks(content: string): MarkdownResourceLink[] {
+  const links: MarkdownResourceLink[] = [];
+  if (typeof content !== "string" || content.length === 0) return links;
+  const newlineOffsets: number[] = [];
+  for (let i = 0; i < content.length; i++) {
+    if (content[i] === "\n") newlineOffsets.push(i);
+  }
+  const lineForOffset = (offset: number): number => {
+    // Binary-search-free is fine here — markdown documents are short.
+    let line = 1;
+    for (const nlOffset of newlineOffsets) {
+      if (nlOffset >= offset) break;
+      line += 1;
+    }
+    return line;
+  };
+
+  for (const match of content.matchAll(MARKDOWN_RESOURCE_LINK_REGEX)) {
+    const rawTarget = match[1] ?? match[2];
+    if (!rawTarget) continue;
+    const offset = (match.index ?? 0) + match[0].indexOf(rawTarget);
+    const relativePath = rawTarget.slice(RESOURCE_AUTHORING_PREFIX.length);
+    links.push({
+      rawTarget,
+      relativePath,
+      offset,
+      line: lineForOffset(offset),
+    });
+  }
+  return links;
+}
+
 // ── Symlink-Safe Resolver ────────────────────────────────────────────────────
 
 /**

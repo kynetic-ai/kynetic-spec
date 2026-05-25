@@ -33,7 +33,14 @@ export const PlanSpecSchema = z.object({
 export type PlanSpec = z.infer<typeof PlanSpecSchema>;
 
 /**
- * Manual task definition from plan document
+ * Manual task definition from plan document.
+ *
+ * `resource_refs` lets a manual task declare which plan-owned resources it
+ * needs. Authoring uses the shared `./resources/<relative-path>` prefix and
+ * must resolve against the source plan's `resources.yaml` manifest at
+ * derive time.
+ *
+ * AC: @plan-resource-derivation-semantics-1 ac-plan-task-resource-refs-are-structured
  */
 export const PlanTaskSchema = z.object({
   title: z.string(),
@@ -43,6 +50,7 @@ export const PlanTaskSchema = z.object({
   tags: z.array(z.string()).optional(),
   spec_ref: z.string().optional(),
   depends_on: z.array(z.string()).optional(),
+  resource_refs: z.array(z.string()).optional(),
 });
 
 export type PlanTask = z.infer<typeof PlanTaskSchema>;
