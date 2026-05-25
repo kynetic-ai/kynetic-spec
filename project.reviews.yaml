@@ -231899,6 +231899,42 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-25T07:30:17.699Z
+      - _ulid: 01KSF222QXZR8DT0CZCV3SWWY9
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSF0JHR72KEYV2ZXH0XP0Z96
+        timestamp: 2026-05-25T07:54:44.350Z
+      - _ulid: 01KSF2276XV6RAHV8JXDW0TSR5
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSF0JRZ0RFTS4ZGSF9J66T2C
+        timestamp: 2026-05-25T07:54:48.925Z
+      - _ulid: 01KSF22BRYRQ6V4EXBMR7NQT3P
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSF0K06HV0EA80Q2TQSH9VYQ
+        timestamp: 2026-05-25T07:54:53.598Z
+      - _ulid: 01KSF22G9G2WKJ4DZKCND8BFKT
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSF0JHR72KEYV2ZXH0XP0Z96
+        timestamp: 2026-05-25T07:54:58.224Z
+      - _ulid: 01KSF22MTFS7Y5GE23VA2TXHBN
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSF0JRZ0RFTS4ZGSF9J66T2C
+        timestamp: 2026-05-25T07:55:02.863Z
+      - _ulid: 01KSF22S1JPC7XJQEY7V9DC6B1
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSF0K06HV0EA80Q2TQSH9VYQ
+        timestamp: 2026-05-25T07:55:07.186Z
     examined_commit: 7e8ff3aeec93b5586c92a90e58c70db9c4e3b4cc
     external_links: []
     lifecycle_state: closed
@@ -231932,7 +231968,22 @@ reviews:
               same symlink-safe resolver/mutation guard pattern here before copying, and add a
               regression test for materialization."
             created_at: 2026-05-25T07:28:46.855Z
+          - _ulid: 01KSF2210TW9GXBBKR1RJ79Z2Z
+            author: "@claude"
+            body: "Fixed in cec6e309c6. Added preflightMaterializationSafety(ctx, planUlid, taskPlans) that
+              walks every materialization source path through assertSafeResourceMutationPath BEFORE
+              any createTask runs. A symlinked plan resource leaf (or intermediate directory) now
+              rejects the entire derive with usage_error (exit code 2) and no task is written to
+              disk. The materialize loop itself re-applies the same guard on both source and
+              destination as defense in depth against TOCTOU between preflight and copy. Two
+              regression tests added: (a) plant a symlink at the plan resource leaf pointing at an
+              outside file, derive --materialize-resources, assert exit 2 + stderr mentions
+              'symlink' + task lookup fails (no partial task on disk); (b) replace plan
+              resources/sub/ with a symlink to an outside directory and verify the same behavior."
+            created_at: 2026-05-25T07:54:42.586Z
         kind: blocker
+        resolved_at: 2026-05-25T07:54:56.474Z
+        resolved_by: "@claude"
       - _ulid: 01KSF0JRZ0RFTS4ZGSF9J66T2C
         anchor:
           type: code
@@ -231956,7 +232007,23 @@ reviews:
               derived tasks behind, and materialization needs a deterministic strategy for ids that
               would overflow after adding `plan-`."
             created_at: 2026-05-25T07:28:54.240Z
+          - _ulid: 01KSF225DZ7CQE8Q7WJ1JJBR2X
+            author: "@claude"
+            body: "Fixed in cec6e309c6. The same preflightMaterializationSafety pass now validates the computed
+              task id (plan-<original-id>) against validateResourceId BEFORE any createTask runs. A
+              valid 128-char plan resource id that would produce a 133-char task id now fails fast
+              with usage_error (exit code 2) and leaves no partial derived task on disk.
+              Deterministic strategy: reject with a clear message telling the user the plan resource
+              id must fit within 123 chars before the 'plan-' prefix is added so derive
+              --materialize-resources can succeed. Centralized the prefix in
+              buildMaterializedResourceId(planResourceId) so the preflight and the materialize loop
+              cannot drift apart. Regression test plants a 128-char id, runs derive
+              --materialize-resources, asserts exit 2 + stderr matches /cannot be materialized/ +
+              task lookup fails."
+            created_at: 2026-05-25T07:54:47.103Z
         kind: blocker
+        resolved_at: 2026-05-25T07:55:01.027Z
+        resolved_by: "@claude"
       - _ulid: 01KSF0K06HV0EA80Q2TQSH9VYQ
         entries:
           - _ulid: 01KSF0K06HMHY7V42KWBRRC9D1
@@ -231991,7 +232058,15 @@ reviews:
               handling/partial mutation, AC coverage, source-scanning test integrity, integration
               with task get/dispatch drift surfaces.
             created_at: 2026-05-25T07:29:01.649Z
+          - _ulid: 01KSF22A0X5C77JMDXWM2P90T0
+            author: "@claude"
+            body: Acknowledged — thanks for the detailed evidence log. Both blockers addressed in cec6e309c6
+              with three new regression tests covering symlinked leaf, symlinked intermediate
+              directory, and prefixed-id overflow scenarios.
+            created_at: 2026-05-25T07:54:51.805Z
         kind: nit
+        resolved_at: 2026-05-25T07:55:05.546Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -232001,7 +232076,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-25T07:30:17.699Z
     created_at: 2026-05-25T07:15:02.110Z
-    updated_at: 2026-05-25T07:30:17.699Z
+    updated_at: 2026-05-25T07:55:05.546Z
     notes: []
   - _ulid: 01KSF11N35ZFCRKDW37KGQ9G90
     slugs: []
