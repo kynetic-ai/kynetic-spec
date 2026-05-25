@@ -157,3 +157,41 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-25T04:42:26.713Z
+  - _ulid: 01KSEV0PV3SMQJQZ2B40X9NE2X
+    content: >-
+      Fix cycle 1: addressed both reviewer blockers.
+
+
+      Blocker 1 (plan-resource.ts:370 — --replace partial mutation): Restructured runPlanResourceAdd
+      so computeResourceMetadata runs against the source file BEFORE fs.copyFile touches the
+      destination. This makes content-type/path/hash validation fail fast without mutating the
+      existing on-disk file or manifest. Git version identity is captured separately from the
+      destination after the copy so the recorded git_commit/git_path still reflects the
+      shadow-worktree path, not the user's working directory. Regression test added that captures
+      the exact reviewer scenario (existing doc.bin → invalid --content-type --replace) and asserts
+      both on-disk bytes and manifest yaml are byte-identical after the rejection.
+
+
+      Blocker 2 (plan-resource-import.ts:230 — symlink escape during sibling import): Replaced
+      fs.stat with an lstat+realpath containment pipeline. The sibling resources/ directory itself
+      is lstat'd and rejected if it is a symlink. Each declared entry is then lstat'd (rejects
+      symlinked leaf), and the realpath of the candidate is verified to live inside the realpath of
+      the sibling resources/ root (rejects intermediate-directory symlinks that lstat would not
+      catch). Added a new error code unsafe_sibling_source_file so the failure is distinguishable
+      from missing/unreadable variants. Two regression tests added: the exact reviewer reproduction
+      (linked.txt → outside file) plus a defence-in-depth case (resources/sub/ as a symlink to an
+      outside directory).
+
+
+      Re-verified all five spec ACs against the updated implementation.
+      ac-plan-task-resource-refs-are-structured still satisfied by parser+import+derive paths;
+      ac-derived-task-keeps-plan-resource-reference, ac-derived-task-records-resource-version,
+      ac-resource-drift-is-visible, and ac-explicit-copy-mode-creates-task-owned-resource unchanged
+      by these fixes.
+
+
+      Validation: full test suite 9661 passed / 5 skipped (3 new regression tests added — total goes
+      from 9658 → 9661), typecheck clean, oxlint clean on all changed files.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-25T05:51:39.363Z
