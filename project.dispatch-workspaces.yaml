@@ -11456,7 +11456,7 @@ workspaces:
         head: 330df7431d9befcdc36277f1e975c61b7fab0c76
         last_seen_at: 2026-05-24T03:39:11.188Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-folder-backed-review-storage-manager-1-01ks8xay
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: b588e89919cb699a8e1134993f5061c00f1f4f5a
     bootstrap:
       status: succeeded
@@ -11932,7 +11932,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-25T00:28:19.439Z
+      updated_at: 2026-05-25T00:28:48.767Z
     integration:
       status: pending
       detail: null
@@ -11947,10 +11947,10 @@ workspaces:
     task_slug: task-plan-review-folder-storage-migration-1
     timestamps:
       closed_at: null
-      last_active_at: 2026-05-25T00:05:02.978Z
-      last_reconciled_at: 2026-05-25T00:28:19.439Z
+      last_active_at: 2026-05-25T00:28:48.767Z
+      last_reconciled_at: 2026-05-25T00:28:48.767Z
       created_at: 2026-05-24T16:10:04.439Z
-      updated_at: 2026-05-25T00:28:45.805Z
+      updated_at: 2026-05-25T00:28:48.767Z
     workspace_id: dispatch-workspace-01KS8XAYZTG0MN48Z78D45PBV6
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
