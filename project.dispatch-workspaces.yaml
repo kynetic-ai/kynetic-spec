@@ -12948,7 +12948,7 @@ workspaces:
         head: 06b5e1d8823bc8e5bad531c5cbe57228f8da4c98
         last_seen_at: 2026-05-25T18:18:14.788Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-resource-api-ui-static-01ks8xb0
-  - active_role: worker
+  - active_role: null
     base_branch_point: 7464682baa5823005b6fbec56cabdc9906c87929
     bootstrap:
       status: succeeded
@@ -13273,12 +13273,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-25T23:16:29.093Z
+      updated_at: 2026-05-25T23:18:55.413Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-25T23:16:29.093Z
+      updated_at: 2026-05-25T23:18:55.413Z
     integration:
       status: pending
       detail: null
@@ -13286,17 +13286,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
       target_commit: 7464682baa5823005b6fbec56cabdc9906c87929
-      updated_at: 2026-05-25T23:16:29.093Z
-    lifecycle_state: active
+      updated_at: 2026-05-25T23:18:55.413Z
+    lifecycle_state: ready
     resolved_base_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
     task_ref: "@01KS8XB0SSRJ871MAMN8V25GW0"
     task_slug: task-folder-backed-resources-docs
     timestamps:
       closed_at: null
       last_active_at: 2026-05-25T22:45:24.113Z
-      last_reconciled_at: 2026-05-25T23:16:29.093Z
+      last_reconciled_at: 2026-05-25T23:18:55.413Z
       created_at: 2026-05-25T22:44:55.529Z
-      updated_at: 2026-05-25T23:16:29.093Z
+      updated_at: 2026-05-25T23:18:55.413Z
     workspace_id: dispatch-workspace-01KS8XB0SSRJ871MAMN8V25GW0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
