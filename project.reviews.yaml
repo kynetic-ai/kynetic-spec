@@ -232036,6 +232036,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSF1C6W5CDN635SS6HK55HRR
         timestamp: 2026-05-25T07:42:49.942Z
+      - _ulid: 01KSF1CEYHKWS4B4C5VMRV3820
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSF1CCTN8GYDKZ9N9RYET47H
+        timestamp: 2026-05-25T07:42:55.953Z
     examined_commit: 0d819300236cfb26935914cbd51ceb2c20343546
     external_links: []
     lifecycle_state: open
@@ -232086,7 +232093,26 @@ reviews:
               should also prove the resource remains after cancellation."
             created_at: 2026-05-25T07:42:47.685Z
         kind: blocker
+      - _ulid: 01KSF1CCTN8GYDKZ9N9RYET47H
+        anchor:
+          type: code
+          commit: 0d819300236cfb26935914cbd51ceb2c20343546
+          line_end: 187
+          line_start: 177
+          path: tests/review-resource-cli.test.ts
+          side: head
+        entries:
+          - _ulid: 01KSF1CCTNQVFR7M42M4AWT6HW
+            author: Jacob Chapel
+            body: "MUST-FIX: The task's CLI testing contract explicitly includes unreadable source files, but
+              the CLI integration coverage only checks source_file_missing here.
+              source_file_unreadable is covered only at the manager layer, so a regression in CLI
+              error envelope/exit-code mapping for a non-regular source file would pass. Add a
+              CLI-level test that invokes review resource add with a directory or otherwise
+              unreadable source and asserts source_file_unreadable plus exit code 1."
+            created_at: 2026-05-25T07:42:53.781Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-25T07:37:01.797Z
-    updated_at: 2026-05-25T07:42:47.685Z
+    updated_at: 2026-05-25T07:42:53.781Z
     notes: []
