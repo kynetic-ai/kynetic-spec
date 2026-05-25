@@ -234454,7 +234454,17 @@ reviews:
     slugs: []
     title: Review task-review-screenshot-resource-ui (cycle 8)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: git diff --check 25e55fa9067eba15e70dd1659669a8e34465407c..HEAD exited 0
+        name: git diff --check
+        required: true
+        runner: git
+        created_at: 2026-05-25T19:57:43.049Z
+        completed_at: 2026-05-25T19:57:43.049Z
     events:
       - _ulid: 01KSGAS4DTPYPZQ2XSZCDX0A9K
         actor: Jacob Chapel
@@ -234483,6 +234493,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSGBDH95XE7D2WZCS36DQGHV
         timestamp: 2026-05-25T19:57:33.075Z
+      - _ulid: 01KSGBDYDKWVXA0BRFGFR60QN0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: git diff --check
+        timestamp: 2026-05-25T19:57:44.755Z
     examined_commit: 7650c9f1b4f6a0a74911ebf8f80489f53e3443f8
     external_links: []
     lifecycle_state: open
@@ -234532,5 +234549,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-25T19:46:22.778Z
-    updated_at: 2026-05-25T19:57:31.301Z
+    updated_at: 2026-05-25T19:57:43.049Z
     notes: []
