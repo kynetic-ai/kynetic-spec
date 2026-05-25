@@ -234027,6 +234027,17 @@ reviews:
         runner: node
         created_at: 2026-05-25T17:31:50.113Z
         completed_at: 2026-05-25T17:31:50.113Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation passed with pre-existing project-wide warnings; --warnings-ok exited 0. Plain
+          kspec validate exits 6 because of existing reference/alignment/completeness warnings.
+        name: kspec validate --warnings-ok
+        required: true
+        runner: kspec
+        created_at: 2026-05-25T17:31:55.104Z
+        completed_at: 2026-05-25T17:31:55.104Z
     events:
       - _ulid: 01KSG2ASF3HKX393QXZ2QYG8J7
         actor: Jacob Chapel
@@ -234069,6 +234080,13 @@ reviews:
           status: fail
           name: replace-path symlink cleanup probe
         timestamp: 2026-05-25T17:31:51.975Z
+      - _ulid: 01KSG32ZK08DBSNSN7EPKJ6PSR
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --warnings-ok
+        timestamp: 2026-05-25T17:31:56.896Z
     examined_commit: 0ebd97caa924d55e960aac358c093b1979f94455
     external_links: []
     lifecycle_state: open
@@ -234104,5 +234122,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-25T17:18:44.195Z
-    updated_at: 2026-05-25T17:31:50.113Z
+    updated_at: 2026-05-25T17:31:55.104Z
     notes: []
