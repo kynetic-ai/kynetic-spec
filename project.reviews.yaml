@@ -232007,7 +232007,19 @@ reviews:
     slugs: []
     title: Review task-review-screenshot-resource-ui (cycle 3)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate passed schema/reference checks and exited 6 due to pre-existing
+          project-wide warnings: 7 reference warnings, 37 alignment warnings, 266 completeness
+          warnings, 32 invalid AC annotations."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-05-25T07:50:22.522Z
+        completed_at: 2026-05-25T07:50:22.522Z
     events:
       - _ulid: 01KSF11N357HHJWPHY7CFAW9QT
         actor: Jacob Chapel
@@ -232043,6 +232055,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSF1CCTN8GYDKZ9N9RYET47H
         timestamp: 2026-05-25T07:42:55.953Z
+      - _ulid: 01KSF1T4RMJ4TJEEYNF66BZGDK
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-25T07:50:24.276Z
     examined_commit: 0d819300236cfb26935914cbd51ceb2c20343546
     external_links: []
     lifecycle_state: open
@@ -232114,5 +232133,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-25T07:37:01.797Z
-    updated_at: 2026-05-25T07:42:53.781Z
+    updated_at: 2026-05-25T07:50:22.522Z
     notes: []
