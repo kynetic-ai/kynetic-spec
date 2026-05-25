@@ -231071,6 +231071,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-25T05:56:26.141Z
+      - _ulid: 01KSEW714X8HAJB204396ZQN2E
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSEW6ZD4SK7P8DP1T1XJN5W8
+        timestamp: 2026-05-25T06:12:35.101Z
     examined_commit: d31b3df0546b893caf3746c64c4aa91a4661e3e9
     external_links: []
     lifecycle_state: open
@@ -231080,8 +231087,30 @@ reviews:
       content_hash: ""
       ref: "@01KS8XAZQ5478RV2AVKG8MNB0S"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KSEW6ZD4SK7P8DP1T1XJN5W8
+        anchor:
+          type: code
+          commit: d31b3df0546b893caf3746c64c4aa91a4661e3e9
+          line_end: 405
+          line_start: 399
+          path: src/cli/commands/plan-resource.ts
+          side: head
+        entries:
+          - _ulid: 01KSEW6ZD46NDN4FZMZTF42JGT
+            author: Jacob Chapel
+            body: "MUST-FIX: `plan resource add` writes through symlinked directories already present under the
+              plan resources tree. I reproduced this by creating `.kspec/plans/<plan>/resources/sub`
+              as a symlink to an outside temp directory, then running `plan resource add
+              @plan-resource-plan <source> --id leak --path sub/leak.txt --json`; the command exited
+              0 and created `outside/leak.txt`. This violates the shared resource contract that
+              symlink escapes are forbidden and lets a manifest path that appears plan-owned write
+              bytes outside `.kspec/plans/<plan>/resources/`. Validate the destination path with
+              symlink-safe containment before copying, including existing intermediate directories
+              and the resources root."
+            created_at: 2026-05-25T06:12:33.316Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-25T05:56:04.967Z
-    updated_at: 2026-05-25T05:56:24.345Z
+    updated_at: 2026-05-25T06:12:33.316Z
     notes: []
