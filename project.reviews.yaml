@@ -231708,6 +231708,17 @@ reviews:
         runner: kspec
         created_at: 2026-05-25T07:29:42.468Z
         completed_at: 2026-05-25T07:29:42.468Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: ./node_modules/.bin/oxlint on the 16 changed/new source and test files exited 0 with 0
+          errors (warnings only, including pre-existing neighboring no-shadow warnings).
+        name: changed-file oxlint
+        required: false
+        runner: oxlint
+        created_at: 2026-05-25T07:29:49.580Z
+        completed_at: 2026-05-25T07:29:49.580Z
     events:
       - _ulid: 01KSEZSCAYAP00CAFSQASA6BVK
         actor: Jacob Chapel
@@ -231764,6 +231775,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-05-25T07:29:44.342Z
+      - _ulid: 01KSF0MGQQTBP1ZKC8HMEW0PCZ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: changed-file oxlint
+        timestamp: 2026-05-25T07:29:51.351Z
     examined_commit: 7e8ff3aeec93b5586c92a90e58c70db9c4e3b4cc
     external_links: []
     lifecycle_state: open
@@ -231859,5 +231877,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-05-25T07:15:02.110Z
-    updated_at: 2026-05-25T07:29:42.468Z
+    updated_at: 2026-05-25T07:29:49.580Z
     notes: []
