@@ -19516,8 +19516,19 @@ observations:
       symlink. A shared write/delete-safe resolver would keep add, replace, materialize, and remove
       paths under the same entity-local resource contract.
     author: Jacob Chapel
-    resolution: null
-    resolved: false
+    resolution: Implemented in 7e8ff3aeec on
+      dispatch/task/task-plan-resource-import-and-derive-1/01ks8xaz. Added shared
+      assertSafeResourceMutationPath helper in src/parser/entity-local-resources.ts (walks the
+      textual chain segment-by-segment with lstat, rejects symlinked root / intermediate / leaf).
+      Now used by both runPlanResourceAdd (new destination AND previous --replace path) and
+      runPlanResourceRemove (manifest entry path, gated BEFORE the confirmation prompt). Rejection
+      surfaces as invalid_resource_path so the existing CLI error contract is preserved. Three
+      regression tests cover the reviewer reproductions plus a defence-in-depth case where
+      resources/ itself is a symlink. When future entity-scoped resource commands (task resource
+      add/remove, materialize, etc.) land, they should call the same helper before any mutation.
+    resolved: true
+    resolved_at: 2026-05-25T07:12:41.093Z
+    resolved_by: Jacob Chapel
     workflow_ref: "@session-reflect"
     created_at: 2026-05-25T06:17:28.155Z
   - _ulid: 01KSEYYEZ2P55FBYHW5YDN0Q5D
