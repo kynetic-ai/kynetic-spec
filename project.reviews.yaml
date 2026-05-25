@@ -230063,6 +230063,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-25T01:55:53.083Z
+      - _ulid: 01KSEDR3RZQBNECN6CFMHFSNM1
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSEDR1ZC1V6ZJC6DJ6FYGCWA
+        timestamp: 2026-05-25T01:59:46.207Z
     examined_commit: 7987f2ca737ed1849de6c500bb2ad3fafcaeea3e
     external_links: []
     lifecycle_state: open
@@ -230072,8 +230079,29 @@ reviews:
       content_hash: ""
       ref: "@01KS8XAYZTG0MN48Z78D45PBV6"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KSEDR1ZC1V6ZJC6DJ6FYGCWA
+        anchor:
+          type: code
+          commit: 7987f2ca737ed1849de6c500bb2ad3fafcaeea3e
+          line_end: 352
+          line_start: 348
+          path: src/parser/plan-folder-migration.ts
+          side: head
+        entries:
+          - _ulid: 01KSEDR1ZCFWVH1BPK7CERJ2RW
+            author: Jacob Chapel
+            body: "MUST-FIX: same-ULID plan folders are not treated as a partial layout. The detector only sets
+              partialLayout when at least one monolithic entry does not already have a folder, so a
+              project with .kspec/plans/<ulid>/ plus a remaining full monolithic plan record for the
+              same ULID proceeds without --force. I reproduced this in a temp project:
+              computePlanMigrationReport returned partialLayout=false, applyPlanMigration did not
+              throw, and the existing plan.md/plan.yaml were overwritten by the monolithic record.
+              That loses the existing folder-backed plan state instead of blocking ambiguous mixed
+              storage as required by ac-partial-folder-layouts-are-blocked."
+            created_at: 2026-05-25T01:59:44.364Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-25T01:55:29.774Z
-    updated_at: 2026-05-25T01:55:51.480Z
+    updated_at: 2026-05-25T01:59:44.364Z
     notes: []
