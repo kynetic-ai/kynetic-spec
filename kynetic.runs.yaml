@@ -53983,7 +53983,7 @@ runs:
     completed_at: 2026-05-25T08:50:14.502Z
   - _ulid: 01KSF5EHXS6XYS3E0MDVAXTGAK
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -53998,7 +53998,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-25T08:55:24.739Z
-        completed_at: 2026-05-25T08:55:24.739Z
+        completed_at: 2026-05-25T08:56:19.065Z
+        notes: "Baseline searched: @01KRDDDW (wrapper-coverage gap recipe) is the closest related
+          observation but covers helper-vs-wrapper coverage, not writer-vs-reader contract coverage.
+          @01KSE3Z8 covers disposable e2e for migration. No duplicate. High-confidence success
+          identified: when fix-cycle reveals a producer module (here:
+          materializePlanResourcesForTask records owner_ref as slug) silently disagrees with a
+          consumer module (here: resolver matches only ULID), extend the EXISTING happy-path test to
+          assert the consumer-side state — not just the producer-side artifact — so the next
+          refactor that breaks the contract trips on the existing test rather than waiting for
+          review repro. This was demonstrated by extending the materialize 'bytes copied' test with
+          resolved_resources['present'] assertion."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-25T08:56:19.065Z
+        completed_at: 2026-05-25T08:56:19.065Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-25T08:53:58.841Z
