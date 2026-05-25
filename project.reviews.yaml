@@ -230757,6 +230757,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-25T05:45:08.284Z
+      - _ulid: 01KSETNBB4HZS0WKWB3S63H65M
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KSETN9JSNSWS51ZZ3NDX3JT6
+        timestamp: 2026-05-25T05:45:27.140Z
     examined_commit: 8ec78b1068c3811f36051e6234aa7fd5d8865b85
     external_links: []
     lifecycle_state: open
@@ -230860,9 +230867,28 @@ reviews:
               add tests for both missing options."
             created_at: 2026-05-25T05:40:25.235Z
         kind: blocker
+      - _ulid: 01KSETN9JSNSWS51ZZ3NDX3JT6
+        entries:
+          - _ulid: 01KSETN9JT4QFKBKCPHNPAQDTK
+            author: Jacob Chapel
+            body: "Evidence log: Files read: kspec-agents.md; src/parser/review-resource-manager.ts;
+              src/parser/entity-local-resources.ts; src/parser/review-storage-manager.ts;
+              src/cli/commands/review-resource.ts; packages/daemon/src/routes/review-resources.ts;
+              packages/web-ui/src/lib/api.ts; packages/web-ui/src/routes/reviews/[id]/+page.svelte;
+              src/export/json.ts; src/export/types.ts; tests/review-resource-manager.test.ts;
+              tests/review-resource-cli.test.ts; tests/daemon-api/review-resources.test.ts;
+              tests/review-resource-static-export.test.ts;
+              tests/web-ui/review-resources-api.test.ts. Commands run: kspec task get, kspec item
+              get for spec and trait, kspec validate, rg AC annotations, git diff/stat/name-only,
+              npm test. Claims verified: resource APIs/CLI/tests exist, static export
+              metadata/assets exist, full test suite passes. Categories searched: correctness,
+              symlink/path escape, exact CLI/API error contracts, static export integration, test
+              quality, cache/WebSocket integration."
+            created_at: 2026-05-25T05:45:25.338Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-25T05:31:05.010Z
-    updated_at: 2026-05-25T05:45:06.481Z
+    updated_at: 2026-05-25T05:45:25.338Z
     notes: []
   - _ulid: 01KSESZY8TXWF47R5G8HF6C6D7
     slugs:
