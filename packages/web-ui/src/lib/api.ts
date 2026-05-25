@@ -29,6 +29,7 @@ import type {
   PlanDetail,
   ReviewSummary,
   ReviewDetail,
+  ReviewResource,
   ReviewThread,
   ErrorResponse,
   SearchResponse,
@@ -1385,6 +1386,41 @@ export async function fetchReview(id: string): Promise<ReviewDetail> {
   }
 
   return unwrapEnvelope(await response.json());
+}
+
+/**
+ * Build the URL the daemon serves a single review-resource's raw bytes at.
+ * Same shape as the static-export asset path, but rooted at the live
+ * daemon's API base so the UI can render images / download links without
+ * a snapshot.
+ *
+ * AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+ */
+export function reviewResourceBytesUrl(reviewRef: string, resourceId: string): string {
+  return `${API_BASE}/api/reviews/${encodeURIComponent(reviewRef)}/resources/${encodeURIComponent(resourceId)}/bytes`;
+}
+
+/**
+ * List declared resources for a review. Always available against a live
+ * daemon; static mode reads `review.resources` straight off the snapshot
+ * instead of calling this helper.
+ *
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+ */
+export async function fetchReviewResources(
+  reviewRef: string,
+): Promise<{ resources: ReviewResource[] }> {
+  if (isStaticMode()) {
+    throw new Error("Review resources are read from the snapshot in static mode");
+  }
+  const response = await fetch(
+    `${API_BASE}/api/reviews/${encodeURIComponent(reviewRef)}/resources`,
+    { headers: getProjectHeaders() },
+  );
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
+  return (await response.json()) as { resources: ReviewResource[] };
 }
 
 /**

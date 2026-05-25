@@ -499,6 +499,35 @@ export type ReviewSubject =
   | { type: "external"; url: string; external_id?: string; provider?: string };
 
 /**
+ * Metadata for one declared review resource. Mirrors the on-disk
+ * `ResourceMetadata` shape so the same envelope can be returned by every
+ * surface (CLI JSON, daemon JSON, static export).
+ *
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+ */
+export interface ReviewResource {
+  id: string;
+  label: string | null;
+  path: string;
+  content_type: string;
+  bytes: number;
+  sha256: string;
+  git_commit: string | null;
+  git_path: string | null;
+  description: string | null;
+  /**
+   * Snapshot-relative path used by static exports
+   * (`assets/resources/review/<ulid>/<relative-path>`). Present only on
+   * responses that come from the static export; absent on live daemon
+   * responses since the daemon serves resource bytes via the
+   * `/api/reviews/:ref/resources/:id/bytes` endpoint.
+   *
+   * AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
+   */
+  exported_path?: string;
+}
+
+/**
  * Full review detail for the detail endpoint
  * AC: @review-records-daemon-api ac-2
  * AC: @review-records-web-ui ac-2
@@ -536,6 +565,16 @@ export interface ReviewDetail {
   examined_commit: string | null;
   created_at: string;
   updated_at?: string | null;
+  /**
+   * Declared local resources for this review. Always present on responses
+   * returned by the daemon and static export. The order matches the
+   * on-disk `resources.yaml` manifest order so consumers can render a
+   * stable list without re-sorting.
+   *
+   * AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+   * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+   */
+  resources?: ReviewResource[];
 }
 
 export interface BatchSpecItemSummary {

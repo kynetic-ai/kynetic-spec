@@ -13,18 +13,28 @@ import {
   AlignmentIndex,
   buildIndexes,
   computeACCoverage,
+  copyResourceForStaticExport,
+  getResourcesDir,
   initContext,
   loadAllItems,
   loadInboxItems,
   loadMetaContext,
   loadPlans,
+  loadResourceManifest,
+  loadReviewRecords,
   loadTriageRecords,
   scanTestCoverage,
+  STATIC_EXPORT_RESOURCES_PREFIX,
   type LoadedSpecItem,
   type LoadedTask,
   ReferenceIndex,
   validate,
 } from "../parser/index.js";
+import { computeDisposition } from "../parser/review-operations.js";
+import {
+  getReviewDir,
+  type LoadedReviewRecord,
+} from "../parser/review-storage-manager.js";
 import { resolveTaskDataManager } from "../parser/task-data-manager.js";
 import { loadSessionContext } from "../parser/meta.js";
 import { TraitIndex } from "../parser/traits.js";
@@ -35,6 +45,8 @@ import {
 } from "../lib/plan-summary.js";
 import type {
   ExportedItem,
+  ExportedReview,
+  ExportedReviewResource,
   ExportedTask,
   ExportedValidation,
   ExportStats,
@@ -181,6 +193,64 @@ function convertValidationResult(result: Awaited<ReturnType<typeof validate>>): 
   };
 }
 
+/**
+ * Project a single loaded review record onto the bounded {@link ExportedReview}
+ * shape. Resource metadata is read from the review's `resources.yaml` and
+ * each entry receives the snapshot-relative `exported_path` consumers use
+ * to load resource bytes from the static asset tree.
+ *
+ * The function never reads resource file bytes — only the manifest is
+ * consulted. Asset bytes are copied by {@link copyReviewResourceAssets}
+ * during the export write phase.
+ *
+ * AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+ * AC: @folder-backed-review-storage-1 ac-review-index-has-bounded-projection
+ * AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
+ */
+async function expandReview(
+  ctx: Awaited<ReturnType<typeof initContext>>,
+  review: LoadedReviewRecord,
+): Promise<ExportedReview> {
+  const reviewDir = getReviewDir(ctx, review._ulid);
+  const manifest = await loadResourceManifest(reviewDir);
+  const resources: ExportedReviewResource[] = manifest.resources.map((resource) => ({
+    ...resource,
+    exported_path: path.posix.join(
+      STATIC_EXPORT_RESOURCES_PREFIX,
+      "review",
+      review._ulid,
+      resource.path,
+    ),
+  }));
+
+  return {
+    _ulid: review._ulid,
+    slugs: review.slugs,
+    title: review.title,
+    lifecycle_state: review.lifecycle_state,
+    author: review.author,
+    subject: review.subject,
+    related_refs: review.related_refs,
+    external_links: review.external_links,
+    created_at: review.created_at,
+    updated_at: review.updated_at ?? null,
+    examined_commit: review.examined_commit ?? null,
+    disposition: computeDisposition(review),
+    resources,
+  };
+}
+
+async function expandReviews(
+  ctx: Awaited<ReturnType<typeof initContext>>,
+  reviews: LoadedReviewRecord[],
+): Promise<ExportedReview[]> {
+  const expanded: ExportedReview[] = [];
+  for (const review of reviews) {
+    expanded.push(await expandReview(ctx, review));
+  }
+  return expanded;
+}
+
 function expandPlans(plans: Awaited<ReturnType<typeof loadPlans>>, tasks: LoadedTask[]) {
   return plans.map((plan) => {
     const linkedTasks = getLinkedPlanSummaryTasks(plan, tasks);
@@ -255,6 +325,16 @@ export async function generateJsonSnapshot(includeValidation = false): Promise<K
   const inboxItems = await loadInboxItems(ctx);
   const metaContext = await loadMetaContext(ctx);
   const plans = await loadPlans(ctx);
+  // Review export is best-effort — legacy (pre-folder) projects either return
+  // empty arrays or surface their compatibility error before this point, but
+  // either way an export that crashes the moment a project has no reviews
+  // would be a regression for downstream consumers. Wrap defensively.
+  let reviews: LoadedReviewRecord[] = [];
+  try {
+    reviews = await loadReviewRecords(ctx);
+  } catch {
+    reviews = [];
+  }
   const sessionContext = await loadSessionContext(ctx);
   const triageRecords = await loadTriageRecords(ctx);
 
@@ -286,6 +366,7 @@ export async function generateJsonSnapshot(includeValidation = false): Promise<K
     items: exportedItems,
     inbox: inboxItems,
     plans: expandPlans(plans, tasks),
+    reviews: await expandReviews(ctx, reviews),
     triage: triageRecords,
     session: sessionContext,
     observations: metaContext.observations,
@@ -317,12 +398,18 @@ export async function generateJsonSnapshot(includeValidation = false): Promise<K
  */
 export function calculateExportStats(snapshot: KspecSnapshot): ExportStats {
   const jsonString = JSON.stringify(snapshot);
+  const reviewResourceCount = (snapshot.reviews ?? []).reduce(
+    (acc, r) => acc + r.resources.length,
+    0,
+  );
 
   return {
     taskCount: snapshot.tasks.length,
     itemCount: snapshot.items.length,
     inboxCount: snapshot.inbox.length,
     planCount: snapshot.plans?.length ?? 0,
+    reviewCount: snapshot.reviews?.length ?? 0,
+    reviewResourceCount,
     triageCount: snapshot.triage?.length ?? 0,
     observationCount: snapshot.observations.length,
     agentCount: snapshot.agents.length,
@@ -330,6 +417,65 @@ export function calculateExportStats(snapshot: KspecSnapshot): ExportStats {
     conventionCount: snapshot.conventions.length,
     estimatedSizeBytes: Buffer.byteLength(jsonString, "utf-8"),
   };
+}
+
+/**
+ * Copy every declared review resource into the static export's asset tree
+ * at the documented `assets/resources/review/<review-ulid>/<relative-path>`
+ * layout. The snapshot's per-resource `exported_path` already names this
+ * location so consumers do not need to re-derive it.
+ *
+ * Resource copies go through `copyResourceForStaticExport` (the trait
+ * foundation's symlink-safe copier), so a malicious manifest pointing at
+ * a symlinked file outside the review's resources/ tree is rejected with
+ * the same actionable error the daemon would surface.
+ *
+ * The helper is a no-op when the snapshot carries no `reviews` array, no
+ * reviews, or no resources — callers can safely invoke it for every
+ * export without checking upfront.
+ *
+ * AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+ * AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
+ * AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+ */
+export async function copyReviewResourceAssets(
+  snapshot: KspecSnapshot,
+  exportRoot: string,
+): Promise<Array<{ review_ulid: string; resource_id: string; exported_path: string }>> {
+  if (!snapshot.reviews || snapshot.reviews.length === 0) return [];
+  const ctx = await initContext();
+  const copied: Array<{ review_ulid: string; resource_id: string; exported_path: string }> = [];
+  for (const review of snapshot.reviews) {
+    if (review.resources.length === 0) continue;
+    const reviewDir = getReviewDir(ctx, review._ulid);
+    const ownerResourcesDir = getResourcesDir(reviewDir);
+    const manifest = { resources: review.resources.map(({ exported_path: _e, ...r }) => r) };
+    for (const resource of review.resources) {
+      const result = await copyResourceForStaticExport({
+        ownerResourcesDir,
+        relativePath: resource.path,
+        exportRoot,
+        entityType: "review",
+        entityUlid: review._ulid,
+        manifest,
+      });
+      if (!result.ok) {
+        // Surface a clean error so the export command can decide whether to
+        // abort the whole export or skip this one resource — for now we
+        // throw so the user sees the failure rather than silently shipping
+        // an export with missing files.
+        throw new Error(
+          `Failed to copy review resource ${resource.id} (${resource.path}) for review ${review._ulid}: ${result.error}`,
+        );
+      }
+      copied.push({
+        review_ulid: review._ulid,
+        resource_id: resource.id,
+        exported_path: result.value.exportedPath,
+      });
+    }
+  }
+  return copied;
 }
 
 /**

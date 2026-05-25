@@ -24,7 +24,7 @@
 	import { base } from '$app/paths';
 	import { goto } from '$app/navigation';
 	import { onMount, onDestroy } from 'svelte';
-	import type { ReviewDetail, ReviewSummary, ReviewThread, BroadcastEvent } from '@kynetic-ai/shared';
+	import type { ReviewDetail, ReviewResource, ReviewSummary, ReviewThread, BroadcastEvent } from '@kynetic-ai/shared';
 	import { createMutation, useQueryClient } from '@tanstack/svelte-query';
 	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import { Badge } from '$lib/components/ui/badge';
@@ -35,6 +35,7 @@
 		replyToReviewThread,
 		resolveReviewThread,
 		reopenReviewThread,
+		reviewResourceBytesUrl,
 		submitReviewVerdict,
 	} from '$lib/api';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
@@ -437,6 +438,32 @@
 		review != null &&
 		(review.subject.type === 'plan' || review.subject.type === 'spec' || review.subject.type === 'task')
 	);
+
+	// AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+	// AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+	let reviewResources = $derived<ReviewResource[]>(review?.resources ?? []);
+
+	/**
+	 * Pick the right URL for a resource depending on mode:
+	 *   - static export: use the snapshot's pre-baked `exported_path`
+	 *   - live daemon : use the bytes endpoint
+	 */
+	function resolveResourceUrl(resource: ReviewResource): string {
+		if (isStaticMode() && resource.exported_path) {
+			return `${base}/${resource.exported_path}`;
+		}
+		return reviewResourceBytesUrl(reviewId, resource.id);
+	}
+
+	function isImageResource(resource: ReviewResource): boolean {
+		return resource.content_type.startsWith('image/');
+	}
+
+	function formatResourceBytes(bytes: number): string {
+		if (bytes < 1024) return `${bytes} B`;
+		if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+		return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+	}
 
 	// AC: @review-code-diff-viewer ac-1 — Detect code review subject for diff viewer
 	let isCodeReview = $derived(review?.subject.type === 'code');
@@ -1007,6 +1034,71 @@
 							</div>
 						{/each}
 					</div>
+				</div>
+			{/if}
+		</section>
+
+		<!--
+			Resources Section
+			AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+			AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+			AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
+		-->
+		<section data-testid="resources-section">
+			<h2 class="text-lg font-semibold mb-3">
+				Resources
+				{#if reviewResources.length > 0}
+					<span class="text-sm font-normal text-muted-foreground ml-1">
+						({reviewResources.length})
+					</span>
+				{/if}
+			</h2>
+
+			{#if reviewResources.length === 0}
+				<div class="border rounded-lg p-8 text-center text-muted-foreground" data-testid="resources-empty">
+					<p>No attached resources</p>
+					<p class="text-sm mt-1">Screenshots and other evidence attached to this review will appear here.</p>
+				</div>
+			{:else}
+				<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-testid="resources-grid">
+					{#each reviewResources as resource (resource.id)}
+						{@const url = resolveResourceUrl(resource)}
+						<a
+							href={url}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="border rounded-lg overflow-hidden hover:border-primary transition-colors flex flex-col"
+							data-testid="resource-item"
+							data-resource-id={resource.id}
+							data-resource-content-type={resource.content_type}
+							data-resource-path={resource.path}
+						>
+							{#if isImageResource(resource)}
+								<img
+									src={url}
+									alt={resource.label ?? resource.id}
+									class="w-full aspect-video object-cover bg-muted"
+									data-testid="resource-image-preview"
+									loading="lazy"
+								/>
+							{:else}
+								<div class="w-full aspect-video flex items-center justify-center bg-muted text-muted-foreground text-xs font-mono p-4 text-center" data-testid="resource-binary-placeholder">
+									{resource.content_type}
+								</div>
+							{/if}
+							<div class="px-3 py-2 border-t flex flex-col gap-0.5">
+								<span class="text-sm font-medium truncate" data-testid="resource-label">
+									{resource.label ?? resource.id}
+								</span>
+								<span class="text-xs text-muted-foreground truncate font-mono" data-testid="resource-path">
+									{resource.path}
+								</span>
+								<span class="text-xs text-muted-foreground" data-testid="resource-bytes">
+									{formatResourceBytes(resource.bytes)} · {resource.content_type}
+								</span>
+							</div>
+						</a>
+					{/each}
 				</div>
 			{/if}
 		</section>

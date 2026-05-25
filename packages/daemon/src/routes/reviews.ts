@@ -80,6 +80,8 @@ import { wrapResponse } from "./response-envelope.js";
 import { taskStorageIncompatibilityResponse } from "./task-storage-error.js";
 import { entityStorageIncompatibilityResponse } from "./entity-storage-error.js";
 import { requireReviewFolderStorage } from "../../parser/entity-storage-compatibility.js";
+import { loadResourceManifest as loadReviewResourceManifest } from "../../parser/entity-local-resources.js";
+import { getReviewDir as getReviewDirForResources } from "../../parser/review-storage-manager.js";
 
 interface ReviewsRouteOptions {
   pubsub: PubSubManager;
@@ -501,8 +503,26 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
             });
           }
 
+          // AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+          //     — surface the review's declared resource metadata so the web
+          //     UI detail page can render previews / download links without
+          //     a separate fetch (and so static snapshots round-trip through
+          //     the same ReviewDetail shape).
+          const ctxForResources = await initContext(projectContext.path, { syncMode: "skip" });
+          const reviewDir = getReviewDirForResources(ctxForResources, review._ulid);
+          let resourceManifest: { resources: Array<Record<string, unknown>> } = { resources: [] };
+          try {
+            resourceManifest = await loadReviewResourceManifest(reviewDir);
+          } catch {
+            resourceManifest = { resources: [] };
+          }
+
           return wrapResponse(
-            { ...review, disposition: computeDisposition(review) },
+            {
+              ...review,
+              disposition: computeDisposition(review),
+              resources: resourceManifest.resources,
+            },
             { cacheDomainState: reviewsDomainState },
           );
         },

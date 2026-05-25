@@ -63,6 +63,7 @@ import { projectContextMiddleware } from "../../dist/daemon/middleware/project-c
 import { createTasksRoutes } from "../../dist/daemon/routes/tasks.js";
 import { createItemsRoutes } from "../../dist/daemon/routes/items.js";
 import { createReviewsRoutes } from "../../dist/daemon/routes/reviews.js";
+import { createReviewResourcesRoutes } from "../../dist/daemon/routes/review-resources.js";
 import { createTriageRoutes } from "../../dist/daemon/routes/triage.js";
 import { createPlansRoutes } from "../../dist/daemon/routes/plans.js";
 import { createSessionRoutes } from "../../dist/daemon/routes/sessions.js";
@@ -596,6 +597,7 @@ export function createTestApp(options: CreateTestAppOptions = {}): {
     .use(createTasksRoutes({ pubsub, getEntityCache }))
     .use(createItemsRoutes())
     .use(createReviewsRoutes({ pubsub, getEntityCache }))
+    .use(createReviewResourcesRoutes({ pubsub, getEntityCache }))
     .use(createTriageRoutes({ pubsub }))
     .use(createPlansRoutes())
     .use(createSessionRoutes())
