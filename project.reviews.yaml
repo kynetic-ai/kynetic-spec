@@ -230070,6 +230070,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSEDR1ZC1V6ZJC6DJ6FYGCWA
         timestamp: 2026-05-25T01:59:46.207Z
+      - _ulid: 01KSEDR9JT97SGTM8M6CXWK9N5
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSEDR7S9ZS6ZS61GSTY3CNZP
+        timestamp: 2026-05-25T01:59:52.154Z
     examined_commit: 7987f2ca737ed1849de6c500bb2ad3fafcaeea3e
     external_links: []
     lifecycle_state: open
@@ -230101,7 +230108,28 @@ reviews:
               storage as required by ac-partial-folder-layouts-are-blocked."
             created_at: 2026-05-25T01:59:44.364Z
         kind: blocker
+      - _ulid: 01KSEDR7S9ZS6ZS61GSTY3CNZP
+        anchor:
+          type: code
+          commit: 7987f2ca737ed1849de6c500bb2ad3fafcaeea3e
+          line_end: 287
+          line_start: 283
+          path: src/parser/review-folder-migration.ts
+          side: head
+        entries:
+          - _ulid: 01KSEDR7S9W9X0V0QWVG2RR00W
+            author: Jacob Chapel
+            body: "MUST-FIX: same-ULID review folders are not treated as a partial layout. The detector only
+              sets partialLayout when a monolithic entry lacks a matching folder, so a project with
+              .kspec/reviews/<ulid>/ plus a remaining full monolithic review record for the same
+              ULID proceeds without --force. I reproduced this in a temp project:
+              computeReviewMigrationReport returned partialLayout=false, applyReviewMigration did
+              not throw, and review.yaml was overwritten by the monolithic record. That can replace
+              existing folder-backed review state instead of failing with
+              partial_entity_storage_layout for an ambiguous mixed layout."
+            created_at: 2026-05-25T01:59:50.313Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-25T01:55:29.774Z
-    updated_at: 2026-05-25T01:59:44.364Z
+    updated_at: 2026-05-25T01:59:50.313Z
     notes: []
