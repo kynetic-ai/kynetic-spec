@@ -238,6 +238,66 @@ describe.runIf(canRunInit)("Integration: plan derive resource_refs", () => {
       "shot.png",
     );
     expect(existsSync(materialized)).toBe(true);
+
+    // The materialized task-owned reference must be resolvable. Before the
+    // fix to task-resource-resolver, the resolver only accepted owner_ref
+    // matching task._ulid, but `materializePlanResourcesForTask` records
+    // owner_ref as the task's canonical ref (slug-first), so the resolver
+    // returned `unresolved` for the very task that owned the copy.
+    expect(task.resolved_resources).toHaveLength(1);
+    expect(task.resolved_resources![0].status).toBe("present");
+    expect(task.resolved_resources![0].current_sha256).toBe(
+      task.resolved_resources![0].recorded_sha256,
+    );
+  });
+
+  // Regression — review @01KSF2EN9KP6B0BNZQMBQMDX1Q blocker on
+  // src/parser/task-resource-resolver.ts:149. Materialized task-owned
+  // resources are recorded with `owner_ref = canonicalRef(task)` which is
+  // the task's first slug, but the resolver only accepted owner_ref equal
+  // to `task._ulid`, so `task get` reported every materialized resource as
+  // `unresolved`. This test asserts text-mode `task get` shows OK (not
+  // UNRESOLVED) for a materialized task-owned resource — exercising the
+  // formatted detail path the reviewer reproduced from.
+  // AC: @plan-resource-derivation-semantics-1 ac-explicit-copy-mode-creates-task-owned-resource
+  // AC: @plan-resource-derivation-semantics-1 ac-resource-drift-is-visible
+  it("task get resolves a materialized task-owned resource as present, not unresolved", async () => {
+    const { planRef } = await buildPlanWithResource(tempDir, {
+      planSlug: "matresolve-plan",
+      sourceFileContents: "PNG_BYTES",
+      resourceId: "shot",
+      resourcePath: "shot.png",
+      moduleSlug: "matresolve-mod",
+      additionalTasks: `- title: Implement shot view
+  slug: implement-shot-view-matresolve
+  resource_refs:
+    - ./resources/shot.png`,
+    });
+    const derive = kspecRun(
+      `plan derive ${planRef} --module @matresolve-mod --materialize-resources`,
+      tempDir,
+    );
+    expect(derive.exitCode).toBe(0);
+
+    // The canonical ref recorded by derive is the task slug, not the ULID.
+    const task = kspecJson<TaskJson>(
+      "task get @implement-shot-view-matresolve",
+      tempDir,
+    );
+    const ref = task.resource_refs![0];
+    expect(ref.owner_type).toBe("task");
+    expect(ref.owner_ref).toBe("@implement-shot-view-matresolve");
+    expect(task.resolved_resources![0].status).toBe("present");
+
+    // Text mode must not show the UNRESOLVED label for a freshly
+    // materialized resource — that was the consumer-visible breakage.
+    const textResult = kspecRun(
+      "task get @implement-shot-view-matresolve",
+      tempDir,
+    );
+    expect(textResult.exitCode).toBe(0);
+    expect(textResult.stdout).not.toContain("UNRESOLVED");
+    expect(textResult.stdout).toContain("[OK]");
   });
 
   // Regression — symlinked plan resource leaf (review @01KSEZSCAYY7HHFE619H6KN1TH

@@ -145,14 +145,16 @@ async function loadOwnerManifest(
       if (!plan) return null;
       return (await loadResourceManifest(getPlanDir(ctx, plan._ulid))).resources;
     }
-    // owner_type === "task"
-    const taskUlid = stripRefPrefix(reference.owner_ref) === task._ulid ? task._ulid : null;
-    if (!taskUlid) {
-      // The task only owns its own resources tree; cross-task ownership is
-      // out of scope for this resolver.
+    // owner_type === "task". The reference may carry either the task's ULID
+    // or any of its slugs as `owner_ref` because `plan derive
+    // --materialize-resources` records the task's canonical ref (slug-first,
+    // ULID fallback). Accept any identifier that resolves to the current
+    // task; cross-task ownership is out of scope for this resolver.
+    const candidate = stripRefPrefix(reference.owner_ref);
+    if (candidate !== task._ulid && !task.slugs.includes(candidate)) {
       return null;
     }
-    return (await loadResourceManifest(getTaskDir(ctx, taskUlid))).resources;
+    return (await loadResourceManifest(getTaskDir(ctx, task._ulid))).resources;
   } catch {
     return null;
   }
