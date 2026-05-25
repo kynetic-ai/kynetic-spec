@@ -210,6 +210,53 @@ describe("POST /api/reviews/:ref/resources (multipart)", () => {
     expect(body.message).toMatch(/content_type/);
     expect(body.path).toBe("shot.png");
   });
+
+  // Coverage: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+  it("returns 400 invalid_resource_path when content_type is explicitly empty (must not silently infer from path)", async () => {
+    // The task contract says explicit content_type values must be
+    // non-empty type/subtype tokens; only an omitted value is inferred.
+    // The previous multipart parser treated an explicit empty string the
+    // same as "field absent" — readTextField returned undefined for ""
+    // and the route then passed null to the manager, which silently
+    // inferred image/png from the path extension. The contract violation
+    // (explicit non-empty-token rule) escaped detection.
+    //
+    // This test sends content_type="" explicitly and asserts the route
+    // surfaces the documented 400 invalid_resource_path envelope instead
+    // of a 201 with inferred content_type.
+    const response = await multipart(
+      REVIEW_ULID,
+      { id: "shot", path: "shot.png", content_type: "" },
+      { name: "shot.png", type: "image/png", bytes: PNG_BYTES },
+    );
+    expect(response.status).toBe(400);
+    const body = await response.json();
+    expect(body.code).toBe("invalid_resource_path");
+    expect(body.message).toMatch(/content_type/);
+    expect(body.path).toBe("shot.png");
+    expect(body.resource_id).toBe("shot");
+  });
+
+  it("still infers content_type from the path extension when content_type is omitted (absent field, not empty)", async () => {
+    // Companion to the empty-content_type test above: the parser must
+    // distinguish "absent" (omit → infer) from "explicitly empty"
+    // (reject). Without this baseline, a fix to the empty-string case
+    // could over-correct and reject perfectly valid uploads that simply
+    // do not include the field. Use a .log extension so the inferred
+    // content_type is unambiguous (text/plain).
+    const response = await multipart(
+      REVIEW_ULID,
+      { id: "log", path: "build.log" },
+      {
+        name: "build.log",
+        type: "text/plain",
+        bytes: Buffer.from("build started\n"),
+      },
+    );
+    expect(response.status).toBe(201);
+    const body = await response.json();
+    expect(body.resource.content_type).toBe("text/plain");
+  });
 });
 
 describe("GET /api/reviews/:ref/resources", () => {

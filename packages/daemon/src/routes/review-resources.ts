@@ -122,6 +122,29 @@ function readTextField(value: unknown): string | undefined {
   return value;
 }
 
+/**
+ * Pull a text field that distinguishes "absent" from "explicitly empty".
+ * Used for `content_type` (and any other field where an empty value is
+ * a contract violation that must surface as a validation error rather
+ * than silently falling back to the omitted-field default).
+ *
+ * Returns:
+ *   - `undefined` when the multipart field is absent or non-string,
+ *   - the original string (including `""`) when present, so downstream
+ *     validation can reject empty / malformed values with the documented
+ *     error envelope instead of inferring from the path extension.
+ *
+ * The task contract for `content_type` is explicit: an explicitly
+ * provided value must be a non-empty `type/subtype` token; only an
+ * omitted value is inferred. Treating `""` as omitted would silently
+ * relax that rule. See ReviewResourceErrorCode docs in
+ * review-resource-manager.ts for the path-shaped error code mapping.
+ */
+function readPresentField(value: unknown): string | undefined {
+  if (typeof value !== "string") return undefined;
+  return value;
+}
+
 export function createReviewResourcesRoutes(options: ReviewResourcesRouteOptions = {}) {
   const { pubsub, getEntityCache } = options;
 
@@ -245,7 +268,13 @@ export function createReviewResourcesRoutes(options: ReviewResourcesRouteOptions
           const relativePath = readTextField(form.get("path"));
           const label = readTextField(form.get("label")) ?? null;
           const description = readTextField(form.get("description")) ?? null;
-          const contentType = readTextField(form.get("content_type")) ?? null;
+          // content_type uses readPresentField — an explicitly supplied
+          // empty string must reach the manager so it surfaces as the
+          // documented invalid_resource_path 400, not silently fall back
+          // to extension inference (task contract: explicit values must
+          // be non-empty type/subtype tokens).
+          const contentTypeField = readPresentField(form.get("content_type"));
+          const contentType = contentTypeField === undefined ? null : contentTypeField;
           const replaceParsed = parseReplaceField(form.get("replace") as unknown);
           if (!replaceParsed.ok) {
             return errorResponse(400, {

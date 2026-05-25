@@ -413,6 +413,199 @@ describe("review-resource-manager", () => {
     expect(result.error.code).toBe("resource_not_found");
   });
 
+  // ── symlink-safe remove ────────────────────────────────────────────────────
+
+  // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+  // AC: @trait-entity-scoped-local-resources-1 ac-resource-delete-follows-owner-delete
+  it("removeReviewResource rejects deletion through a symlinked intermediate directory and leaves the outside file intact", async () => {
+    // The previous implementation called fs.rm(path.join(resourcesDir,
+    // resource.path)) without symlink-safe path machinery. If
+    // resources/<dir> was a symlink, Node would follow the intermediate
+    // symlink and remove the outside target — violating the shared
+    // local-resource contract that symlink escapes are rejected and no
+    // file outside the owning entity tree is touched.
+    //
+    // This test sets up the exact attack shape the reviewer reproduced:
+    //   <reviewDir>/resources/        — real dir
+    //   <reviewDir>/resources/screenshots → symlink → <tempDir>/escape-target/
+    //   <tempDir>/escape-target/victim.txt    — outside file
+    // Manifest declares a resource at relative path screenshots/victim.txt.
+    // Calling removeReviewResource must reject (not delete the outside file).
+    const review = await seededReview("rm-symlink-dir");
+    const reviewDir = getReviewDir(ctx as any, review._ulid);
+    const resourcesDir = path.join(reviewDir, "resources");
+    await fs.mkdir(resourcesDir, { recursive: true });
+
+    const escapeTarget = path.join(tempDir, "rm-escape-target");
+    await fs.mkdir(escapeTarget, { recursive: true });
+    const victimPath = path.join(escapeTarget, "victim.txt");
+    await fs.writeFile(victimPath, "outside-evidence");
+
+    // Plant the malicious intermediate symlink AFTER seeding the manifest,
+    // since the entity-local-resources copySourceIntoOwnerResources writer
+    // would otherwise reject the plant. We hand-write the manifest entry
+    // and an inert local file so the get-resource lookup succeeds and the
+    // delete path is the one under test.
+    const innerFile = path.join(escapeTarget, "evidence.png");
+    await fs.writeFile(innerFile, "inert");
+    await fs.symlink(escapeTarget, path.join(resourcesDir, "screenshots"));
+    // Write the manifest declaring screenshots/evidence.png so getReviewResource
+    // succeeds and removeReviewResource proceeds into the deletion path.
+    const manifest = {
+      resources: [
+        {
+          id: "evil",
+          label: null,
+          path: "screenshots/evidence.png",
+          content_type: "image/png",
+          bytes: 5,
+          sha256:
+            "0000000000000000000000000000000000000000000000000000000000000000",
+          git_commit: null,
+          git_path: null,
+          description: null,
+        },
+      ],
+    };
+    await fs.writeFile(
+      path.join(reviewDir, "resources.yaml"),
+      `resources:\n  - id: evil\n    label: null\n    path: screenshots/evidence.png\n    content_type: image/png\n    bytes: 5\n    sha256: "0000000000000000000000000000000000000000000000000000000000000000"\n    git_commit: null\n    git_path: null\n    description: null\n`,
+    );
+
+    const result = await removeReviewResource(ctx as any, `@${review._ulid}`, "evil");
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.error.code).toBe("invalid_resource_path");
+    expect(result.error.message).toMatch(/symlink/i);
+
+    // Crucially: the outside victim files are untouched.
+    await fs.stat(victimPath);
+    expect(await fs.readFile(victimPath, "utf-8")).toBe("outside-evidence");
+    await fs.stat(innerFile);
+
+    // Manifest is also untouched — failed remove must not silently drop
+    // the manifest entry, otherwise the user observes a "deleted" resource
+    // and never notices that the symlink escape attempt was rejected.
+    const remainingRaw = await fs.readFile(path.join(reviewDir, "resources.yaml"), "utf-8");
+    const remaining = yamlParse(remainingRaw);
+    expect(remaining.resources).toHaveLength(1);
+    expect(remaining.resources[0].id).toBe("evil");
+
+    // Silence the unused-manifest lint; we built it to document the expected
+    // shape but assert against the on-disk text above.
+    void manifest;
+  });
+
+  // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+  it("removeReviewResource rejects deletion when resources/ itself is a symlink", async () => {
+    const review = await seededReview("rm-symlink-root");
+    const reviewDir = getReviewDir(ctx as any, review._ulid);
+    await fs.mkdir(reviewDir, { recursive: true });
+    const outside = path.join(tempDir, "rm-symlink-root-target");
+    await fs.mkdir(outside, { recursive: true });
+    await fs.writeFile(path.join(outside, "shot.png"), "outside-bytes");
+    // Plant the symlink at <reviewDir>/resources pointing OUTSIDE.
+    await fs.symlink(outside, path.join(reviewDir, "resources"));
+    // Manifest declares the resource so getReviewResource succeeds and the
+    // removeReviewResource path is exercised.
+    await fs.writeFile(
+      path.join(reviewDir, "resources.yaml"),
+      `resources:\n  - id: shot\n    label: null\n    path: shot.png\n    content_type: image/png\n    bytes: 13\n    sha256: "0000000000000000000000000000000000000000000000000000000000000000"\n    git_commit: null\n    git_path: null\n    description: null\n`,
+    );
+
+    const result = await removeReviewResource(ctx as any, `@${review._ulid}`, "shot");
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.error.code).toBe("invalid_resource_path");
+    expect(result.error.message).toMatch(/symlink/i);
+
+    // Outside file is untouched.
+    expect(await fs.readFile(path.join(outside, "shot.png"), "utf-8")).toBe(
+      "outside-bytes",
+    );
+  });
+
+  // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+  it("removeReviewResource rejects deletion of a destination that is itself a symlink", async () => {
+    // A symlink at the final-segment destination (resources/shot.png →
+    // outside.png) is the third escape variant: the intermediates are
+    // fine, but the file we'd unlink is a symlink. Even though fs.unlink
+    // does not follow the final symlink (it removes the link itself, not
+    // its target), the contract is that ANY symlink in the path implies
+    // a tainted state and we should refuse rather than silently mutate
+    // unexpected filesystem structure.
+    const review = await seededReview("rm-symlink-dest");
+    const reviewDir = getReviewDir(ctx as any, review._ulid);
+    const resourcesDir = path.join(reviewDir, "resources");
+    await fs.mkdir(resourcesDir, { recursive: true });
+    const outside = path.join(tempDir, "rm-symlink-dest-target.png");
+    await fs.writeFile(outside, "outside-bytes");
+    await fs.symlink(outside, path.join(resourcesDir, "shot.png"));
+    await fs.writeFile(
+      path.join(reviewDir, "resources.yaml"),
+      `resources:\n  - id: shot\n    label: null\n    path: shot.png\n    content_type: image/png\n    bytes: 13\n    sha256: "0000000000000000000000000000000000000000000000000000000000000000"\n    git_commit: null\n    git_path: null\n    description: null\n`,
+    );
+
+    const result = await removeReviewResource(ctx as any, `@${review._ulid}`, "shot");
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.error.code).toBe("invalid_resource_path");
+    expect(result.error.message).toMatch(/symlink/i);
+
+    // Outside file (the symlink target) must be intact.
+    await fs.stat(outside);
+    expect(await fs.readFile(outside, "utf-8")).toBe("outside-bytes");
+  });
+
+  // ── source-file readability (chmod 000 regular files) ──────────────────────
+
+  // AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+  it("addReviewResource returns source_file_unreadable for a regular file the process cannot read", async () => {
+    // The previous implementation only used stat().isFile() to gate
+    // source-file validity. A regular file with no read permissions
+    // (chmod 000) passes isFile() and then fs.copyFile inside
+    // copySourceIntoOwnerResources throws EACCES. That EACCES escapes
+    // the manager and is mapped to entity_storage_incompatible / exit 3
+    // by the CLI — masking the documented source_file_unreadable code.
+    //
+    // This test reproduces the reviewer's chmod-000 scenario and asserts
+    // the documented code surfaces from the manager layer (CLI/API are
+    // thin wrappers on top of this Result, so once the manager produces
+    // source_file_unreadable the downstream layers map it correctly).
+    if (process.platform === "win32" || process.getuid?.() === 0) {
+      // chmod 000 has no effect for root or on platforms without POSIX
+      // permission semantics; skip rather than produce a flaky test.
+      return;
+    }
+    const review = await seededReview("rd000");
+    const unreadable = path.join(sourceDir, "unreadable.png");
+    await fs.writeFile(unreadable, "private-bytes");
+    await fs.chmod(unreadable, 0o000);
+    try {
+      const result = await addReviewResource(ctx as any, `@${review._ulid}`, {
+        id: "shot",
+        relativePath: "shot.png",
+        sourceFile: unreadable,
+        captureGit: false,
+      });
+      expect(result.ok).toBe(false);
+      if (result.ok) return;
+      expect(result.error.code).toBe("source_file_unreadable");
+      expect(result.error.source_file).toBe(unreadable);
+
+      // And no resource file should have been written into the review's
+      // resources tree — the validation must run BEFORE any bytes are
+      // copied in.
+      const reviewDir = getReviewDir(ctx as any, review._ulid);
+      await expect(
+        fs.stat(path.join(reviewDir, "resources", "shot.png")),
+      ).rejects.toThrow();
+    } finally {
+      // Restore permissions so the temp dir can be cleaned up.
+      await fs.chmod(unreadable, 0o600).catch(() => {});
+    }
+  });
+
   // ── symlink-safe writes ────────────────────────────────────────────────────
 
   // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected

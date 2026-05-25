@@ -27,6 +27,7 @@ import {
   copySourceIntoOwnerResources,
   getResourcesDir,
   loadResourceManifest,
+  removeResourceFromOwnerResources,
   type ResourceManifest,
   type ResourceMetadata,
   resolveContentType,
@@ -288,6 +289,21 @@ async function validateSourceFile(
       source_file: sourceFile,
     });
   }
+  // stat() does not guarantee the current process can read the file (e.g.
+  // chmod 000 regular files pass isFile() but fail fs.copyFile/hash with
+  // EACCES). Run an explicit readability probe so the documented
+  // source_file_unreadable code surfaces here instead of leaking an
+  // EACCES through the copy/hash path into the CLI's unexpected-error
+  // bucket (exit 3 entity_storage_incompatible) or the daemon's 500.
+  try {
+    await fs.access(absolutePath, fs.constants.R_OK);
+  } catch (e) {
+    return err({
+      code: "source_file_unreadable",
+      message: `Source file "${sourceFile}" is not readable: ${e instanceof Error ? e.message : String(e)}.`,
+      source_file: sourceFile,
+    });
+  }
   return { ok: true, value: { absolutePath } };
 }
 
@@ -422,9 +438,19 @@ export async function addReviewResource(
 
   // If we're replacing and the path moved, remove the old file so the
   // resources/ tree only contains files declared by the current manifest.
+  // The cleanup runs through the symlink-safe remove helper for the same
+  // reason removeReviewResource does: a plain fs.rm follows any symlink
+  // along the destination path and could delete a file outside the
+  // owning review. Best-effort — the new file is already in place and
+  // the manifest has been updated to the new path, so a leftover orphan
+  // under the old path is acceptable; a symlinked outside-target unlink
+  // is not.
+  // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
   if (existingById && existingById.path !== options.relativePath) {
-    const oldAbsolute = path.join(resourcesDir, existingById.path);
-    await fs.rm(oldAbsolute, { force: true }).catch(() => {});
+    await removeResourceFromOwnerResources({
+      ownerResourcesDir: resourcesDir,
+      relativePath: existingById.path,
+    });
   }
 
   const metadata = await computeResourceMetadata({
@@ -472,7 +498,23 @@ export async function addReviewResource(
  * owned file are deleted in a single mutation; the review record is then
  * re-saved so the lean index resource_summary refreshes.
  *
+ * The file deletion runs through the symlink-safe
+ * {@link removeResourceFromOwnerResources} helper. A naive
+ * `fs.rm(path.join(resourcesDir, resource.path))` follows any symlink
+ * along the destination path and would happily delete a file *outside*
+ * the owning review's resources tree if e.g. `resources/<dir>` were a
+ * symlink. The helper walks each path segment, rejects symlinks at any
+ * level, lstat-rejects a symlink at the destination itself, and uses
+ * `fs.unlink` (which does not follow the final-segment symlink) so the
+ * deletion is constrained to the owning review.
+ *
+ * The manifest is updated only after the file deletion succeeds. If a
+ * symlink is detected the manifest is left intact so the user can fix
+ * the underlying filesystem state and retry without observing a
+ * declared-but-orphaned manifest entry.
+ *
  * AC: @trait-entity-scoped-local-resources-1 ac-resource-delete-follows-owner-delete
+ * AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
  */
 export async function removeReviewResource(
   ctx: KspecContext,
@@ -487,9 +529,21 @@ export async function removeReviewResource(
   const resourcesDir = getResourcesDir(reviewDir);
   const manifest = await loadResourceManifest(reviewDir);
 
+  const removal = await removeResourceFromOwnerResources({
+    ownerResourcesDir: resourcesDir,
+    relativePath: resource.path,
+  });
+  if (!removal.ok) {
+    return err({
+      code: "invalid_resource_path",
+      message: removal.error,
+      resource_id: resourceId,
+      path: resource.path,
+    });
+  }
+
   const updated = manifest.resources.filter((r) => r.id !== resourceId);
   await writeResourceManifest(reviewDir, { resources: updated });
-  await fs.rm(path.join(resourcesDir, resource.path), { force: true }).catch(() => {});
 
   await saveReviewRecordToFolder(ctx, review);
 

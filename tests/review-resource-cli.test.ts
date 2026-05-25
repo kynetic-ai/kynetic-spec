@@ -186,6 +186,44 @@ describe("Integration: review resource add", () => {
     expect(envelope.source_file).toContain(".missing");
   });
 
+  // AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+  it("returns source_file_unreadable + exit code 1 for a regular file with no read permissions (chmod 000)", async () => {
+    // The original implementation only used stat().isFile() to gate source
+    // validity. A chmod 000 regular file passed that check; fs.copyFile
+    // inside the manager then threw EACCES, which the CLI mapped through
+    // its unexpected-error handler to exit code 3 with
+    // entity_storage_incompatible — masking the documented
+    // source_file_unreadable code and validation exit code 1.
+    //
+    // This is the second documented source_file_unreadable variant
+    // alongside "not a regular file" (directory). Both must surface
+    // through the same envelope + exit code so the CLI contract is
+    // closed.
+    if (process.platform === "win32" || process.getuid?.() === 0) {
+      // chmod 000 has no effect for root or on platforms without POSIX
+      // permission semantics; skip rather than produce a flaky test.
+      return;
+    }
+    const unreadable = path.join(projectDir, "uploads", "unreadable.png");
+    await fs.writeFile(unreadable, "private-bytes");
+    await fs.chmod(unreadable, 0o000);
+    try {
+      const result = kspecRun(
+        `review resource add @${reviewSlug} ${unreadable} --id shot --path shot.png --json`,
+        projectDir,
+        { expectFail: true },
+      );
+      expect(result.exitCode).toBe(1);
+      const envelope = JSON.parse(result.stderr.trim());
+      expect(envelope.code).toBe("source_file_unreadable");
+      expect(envelope.source_file).toBe(unreadable);
+      expect(envelope.message).toMatch(/readable|permission/i);
+    } finally {
+      // Restore permissions so the temp dir can be cleaned up.
+      await fs.chmod(unreadable, 0o600).catch(() => {});
+    }
+  });
+
   // AC: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner
   // AC: @trait-entity-scoped-local-resources-1 ac-binary-resources-are-not-inlined-into-yaml
   it("returns source_file_unreadable + exit code 1 when the source path is a directory", async () => {

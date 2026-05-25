@@ -1171,6 +1171,150 @@ export async function copySourceIntoOwnerResources(options: {
   return { ok: true, value: { destAbsolute } };
 }
 
+// ── Symlink-Safe Remove ─────────────────────────────────────────────────────
+
+/**
+ * Remove a single resource file from an owning entity's resources tree at
+ * `<ownerResourcesDir>/<relativePath>`, refusing to follow any symlink along
+ * the destination path. Companion to {@link copySourceIntoOwnerResources} —
+ * both close the same symlink-escape gap on the delete path.
+ *
+ * The plain `fs.rm(path.join(ownerResourcesDir, relativePath))` pattern is
+ * unsafe: if any ancestor of the destination (the owner resources directory
+ * itself, or any intermediate folder) is a symlink, `fs.rm` follows it and
+ * removes a file *outside* the owning entity tree — violating
+ * @trait-entity-scoped-local-resources-1 ac-path-escape-rejected.
+ *
+ * This helper instead:
+ *   1. Validates the relative path textually (rejects traversal, absolute,
+ *      and other forbidden shapes — same gate as the read/write paths).
+ *   2. Verifies the owner resources directory is a real (non-symlink)
+ *      directory. A missing directory is treated as "nothing to remove."
+ *   3. Walks every intermediate path segment beneath the owner and rejects
+ *      any that exists as a symlink or non-directory.
+ *   4. Rejects a pre-existing symlink at the destination itself, so a
+ *      symlinked file inside the resources tree cannot be used to unlink
+ *      its outside target.
+ *   5. Calls `fs.unlink` (which does NOT follow symlinks for the final
+ *      path component) on the destination. Missing files are tolerated.
+ *
+ * Returns `{ ok: true, value: { removed } }` on success (`removed: false`
+ * if the file was already absent, `true` if a real file was unlinked) or
+ * `{ ok: false, error }` with an actionable message on any symlink
+ * rejection.
+ *
+ * AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-delete-follows-owner-delete
+ */
+export async function removeResourceFromOwnerResources(options: {
+  ownerResourcesDir: string;
+  relativePath: string;
+}): Promise<ResourceValidationResult<{ removed: boolean }>> {
+  const { ownerResourcesDir, relativePath } = options;
+
+  const pathValidation = validateResourceRelativePath(relativePath);
+  if (!pathValidation.ok) return pathValidation;
+
+  // 1. Owner resources dir: missing → nothing to remove; symlink → reject;
+  //    non-directory → reject.
+  try {
+    const ownerStat = await fs.lstat(ownerResourcesDir);
+    if (ownerStat.isSymbolicLink()) {
+      return {
+        ok: false,
+        error: `Resource path "${relativePath}" cannot be removed: the owning entity's resources/ directory is itself a symlink; symlink escapes are rejected.`,
+      };
+    }
+    if (!ownerStat.isDirectory()) {
+      return {
+        ok: false,
+        error: `Resource path "${relativePath}" cannot be removed: the owning entity's resources/ path exists but is not a directory.`,
+      };
+    }
+  } catch (e) {
+    const errno = (e as NodeJS.ErrnoException).code;
+    if (errno === "ENOENT") return { ok: true, value: { removed: false } };
+    return {
+      ok: false,
+      error: `Could not inspect resources directory "${ownerResourcesDir}": ${e instanceof Error ? e.message : String(e)}.`,
+    };
+  }
+
+  // 2. Walk intermediate directories. Any symlink or non-directory is a
+  //    rejection; a missing intermediate means the file is already gone.
+  const segments = relativePath.split("/").filter((segment) => segment.length > 0);
+  let current = ownerResourcesDir;
+  for (let i = 0; i < segments.length - 1; i++) {
+    current = path.join(current, segments[i]);
+    let segmentStat;
+    try {
+      segmentStat = await fs.lstat(current);
+    } catch (e) {
+      const errno = (e as NodeJS.ErrnoException).code;
+      if (errno === "ENOENT") return { ok: true, value: { removed: false } };
+      return {
+        ok: false,
+        error: `Could not inspect intermediate path "${current}" while removing resource "${relativePath}": ${e instanceof Error ? e.message : String(e)}.`,
+      };
+    }
+    if (segmentStat.isSymbolicLink()) {
+      return {
+        ok: false,
+        error: `Resource path "${relativePath}" cannot be removed: an intermediate directory ("${segments[i]}") is a symlink; symlink escapes are rejected.`,
+      };
+    }
+    if (!segmentStat.isDirectory()) {
+      return {
+        ok: false,
+        error: `Resource path "${relativePath}" cannot be removed: intermediate path component "${segments[i]}" exists but is not a directory.`,
+      };
+    }
+  }
+
+  // 3. Destination: lstat (does not follow symlinks). A pre-existing
+  //    symlink at the destination is rejected so we never delete the
+  //    symlink's outside target. A missing destination is tolerated.
+  const destAbsolute = path.join(ownerResourcesDir, relativePath);
+  let destStat;
+  try {
+    destStat = await fs.lstat(destAbsolute);
+  } catch (e) {
+    const errno = (e as NodeJS.ErrnoException).code;
+    if (errno === "ENOENT") return { ok: true, value: { removed: false } };
+    return {
+      ok: false,
+      error: `Could not inspect destination "${destAbsolute}": ${e instanceof Error ? e.message : String(e)}.`,
+    };
+  }
+  if (destStat.isSymbolicLink()) {
+    return {
+      ok: false,
+      error: `Resource path "${relativePath}" cannot be removed: the destination is a symlink; symlink escapes are rejected.`,
+    };
+  }
+  if (!destStat.isFile()) {
+    return {
+      ok: false,
+      error: `Resource path "${relativePath}" cannot be removed: the destination exists but is not a regular file.`,
+    };
+  }
+
+  // 4. fs.unlink does not follow the final-path-segment symlink; combined
+  //    with the lstat rejection above, the deletion is constrained to the
+  //    owning entity's resources tree.
+  try {
+    await fs.unlink(destAbsolute);
+  } catch (e) {
+    const errno = (e as NodeJS.ErrnoException).code;
+    if (errno === "ENOENT") return { ok: true, value: { removed: false } };
+    return {
+      ok: false,
+      error: `Could not remove resource file "${destAbsolute}": ${e instanceof Error ? e.message : String(e)}.`,
+    };
+  }
+  return { ok: true, value: { removed: true } };
+}
+
 // ── Static Export ────────────────────────────────────────────────────────────
 
 export interface StaticExportResult {
