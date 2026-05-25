@@ -233286,6 +233286,27 @@ reviews:
         runner: kspec validate
         created_at: 2026-05-25T16:05:37.923Z
         completed_at: 2026-05-25T16:05:37.923Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec-agents.md; packages/daemon/src/routes/plan-resources.ts, plans.ts,
+          server.ts; packages/shared/src/api.ts; packages/web-ui/src/lib/api-static.ts,
+          plan-embedded-content.ts, plan-resource-links.ts; src/export/json.ts, types.ts;
+          src/cli/commands/export.ts; tests/daemon-api/plan-resources.test.ts;
+          tests/export/plan-resources.test.ts; tests/web-ui/api-static.test.ts;
+          tests/web-ui/plan-resource-links.test.ts; src/daemon/entity-cache.ts;
+          src/parser/plan-storage-manager.ts. Commands run: kspec task get, kspec item get, kspec
+          validate, rg AC annotations, git diff/stat, focused npm test, full npm test. Claims
+          verified: worker's focused test coverage and full-suite pass were executed;
+          cache-fast-list and exact ResourceMetadata contracts checked against code. Categories
+          searched: correctness, API contract, cache behavior, error handling, static export, UI
+          rewrite, test quality."
+        name: review evidence log
+        required: false
+        runner: manual review
+        created_at: 2026-05-25T16:05:55.086Z
+        completed_at: 2026-05-25T16:05:55.086Z
     events:
       - _ulid: 01KSFXBC3QJ2JR30SDKV42QKYQ
         actor: Jacob Chapel
@@ -233335,6 +233356,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-25T16:05:39.783Z
+      - _ulid: 01KSFY5G89N8FRSG4MCM51ZXQ3
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-25T16:05:56.618Z
     examined_commit: 0aa596716c847ea0e4bbff89e42039aad8d2322c
     external_links: []
     lifecycle_state: open
@@ -233389,5 +233417,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-25T15:51:40.407Z
-    updated_at: 2026-05-25T16:05:37.923Z
+    updated_at: 2026-05-25T16:05:55.086Z
     notes: []
