@@ -234302,6 +234302,29 @@ reviews:
         runner: git diff --check
         created_at: 2026-05-25T18:34:04.677Z
         completed_at: 2026-05-25T18:34:04.677Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: packages/daemon/src/routes/plan-resources.ts,
+          packages/daemon/src/routes/plans.ts, packages/daemon/src/server.ts,
+          packages/shared/src/api.ts, packages/web-ui/src/lib/api-static.ts,
+          packages/web-ui/src/lib/utils/plan-resource-links.ts,
+          packages/web-ui/src/lib/utils/plan-embedded-content.ts, src/export/json.ts,
+          src/export/types.ts, src/parser/plan-storage-manager.ts, src/daemon/entity-cache.ts,
+          tests/daemon-api/plan-resources.test.ts, tests/export/plan-resources.test.ts,
+          tests/web-ui/plan-resource-links.test.ts, tests/web-ui/api-static.test.ts. Commands run:
+          kspec task get, kspec item get, kspec review for-task/get/add/open, rg AC annotations, git
+          diff/name-status/stat/check, kspec validate --warnings-ok, npm test -- --fresh. Claims
+          verified: cycle 2 blockers fixed by storage resource gate, PlanResourceExportError
+          propagation, and POST symlink safety tests/code; strict 9-field metadata preserved;
+          cache-ready list projects resource_summary. Categories searched: correctness, edge cases,
+          error handling, security/path escape, test quality, integration/cache/static export."
+        name: review evidence log
+        required: false
+        runner: codex review
+        created_at: 2026-05-25T18:34:23.112Z
+        completed_at: 2026-05-25T18:34:23.112Z
     events:
       - _ulid: 01KSG5SRJF18Z1PZCMZTXG6RY0
         actor: Jacob Chapel
@@ -234337,6 +234360,13 @@ reviews:
           status: pass
           name: diff whitespace
         timestamp: 2026-05-25T18:34:06.387Z
+      - _ulid: 01KSG6NBP8Z06QW75KGCZGTZDA
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-25T18:34:24.840Z
     examined_commit: 06b5e1d8823bc8e5bad531c5cbe57228f8da4c98
     external_links: []
     lifecycle_state: open
@@ -234349,5 +234379,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-25T18:19:20.527Z
-    updated_at: 2026-05-25T18:34:04.677Z
+    updated_at: 2026-05-25T18:34:23.112Z
     notes: []
