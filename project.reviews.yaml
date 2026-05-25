@@ -231078,6 +231078,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSEW6ZD4SK7P8DP1T1XJN5W8
         timestamp: 2026-05-25T06:12:35.101Z
+      - _ulid: 01KSEW76AHF456YMHTH39J3H2V
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSEW74GDZAC9E0Q17D8FVBKR
+        timestamp: 2026-05-25T06:12:40.401Z
     examined_commit: d31b3df0546b893caf3746c64c4aa91a4661e3e9
     external_links: []
     lifecycle_state: open
@@ -231110,7 +231117,27 @@ reviews:
               and the resources root."
             created_at: 2026-05-25T06:12:33.316Z
         kind: blocker
+      - _ulid: 01KSEW74GDZAC9E0Q17D8FVBKR
+        anchor:
+          type: code
+          commit: d31b3df0546b893caf3746c64c4aa91a4661e3e9
+          line_end: 600
+          line_start: 598
+          path: src/cli/commands/plan-resource.ts
+          side: head
+        entries:
+          - _ulid: 01KSEW74GDK591KCTVYTWD8X8H
+            author: Jacob Chapel
+            body: "MUST-FIX: `plan resource remove` deletes through the same unchecked joined path. With the
+              escaped resource above in the manifest, `plan resource remove @plan-resource-plan leak
+              --force --json` exited 0 and removed the outside file behind the `resources/sub`
+              symlink. `remove` must resolve the declared resource path through the same
+              symlink-safe containment rules before deleting, otherwise a task-owned manifest entry
+              can delete arbitrary local files reachable through an existing symlink under
+              `resources/`."
+            created_at: 2026-05-25T06:12:38.541Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-25T05:56:04.967Z
-    updated_at: 2026-05-25T06:12:33.316Z
+    updated_at: 2026-05-25T06:12:38.541Z
     notes: []
