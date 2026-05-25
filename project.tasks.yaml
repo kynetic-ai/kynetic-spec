@@ -29764,7 +29764,7 @@
   type: task
   spec_ref: "@plan-resource-derivation-semantics-1"
   plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-plan-review-folder-storage-migration-1"
@@ -29778,7 +29778,7 @@
   todos_count: 0
   created_at: 2026-05-22T22:36:46.693Z
   started_at: 2026-05-25T07:55:57.227Z
-  submitted_at: 2026-05-25T07:10:25.594Z
+  submitted_at: 2026-05-25T07:56:00.679Z
   automation: eligible
 - _ulid: 01KS8XB035D6C69W9TR1JZDR4P
   slugs:
