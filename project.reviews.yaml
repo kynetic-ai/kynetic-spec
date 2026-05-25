@@ -231090,6 +231090,17 @@ reviews:
         runner: npm
         created_at: 2026-05-25T06:13:05.706Z
         completed_at: 2026-05-25T06:13:05.706Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "./node_modules/.bin/oxlint --quiet on the 15 changed source/test files: 0 errors (28
+          warnings). Full npm run lint hit 7 unrelated existing errors outside this task diff."
+        name: changed-file oxlint
+        required: false
+        runner: oxlint
+        created_at: 2026-05-25T06:13:10.798Z
+        completed_at: 2026-05-25T06:13:10.798Z
     events:
       - _ulid: 01KSEV8T77NE8W3BJX8W48KXYG
         actor: Jacob Chapel
@@ -231139,6 +231150,13 @@ reviews:
           status: pass
           name: focused resource tests
         timestamp: 2026-05-25T06:13:07.580Z
+      - _ulid: 01KSEW85T29VX3RRQXB58Z1NPC
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: changed-file oxlint
+        timestamp: 2026-05-25T06:13:12.642Z
     examined_commit: d31b3df0546b893caf3746c64c4aa91a4661e3e9
     external_links: []
     lifecycle_state: open
@@ -231193,5 +231211,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-25T05:56:04.967Z
-    updated_at: 2026-05-25T06:13:05.706Z
+    updated_at: 2026-05-25T06:13:10.798Z
     notes: []
