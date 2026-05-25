@@ -13465,7 +13465,7 @@ workspaces:
         head: 0ebd97caa924d55e960aac358c093b1979f94455
         last_seen_at: 2026-05-25T18:17:42.025Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-screenshot-resource-ui-01ks8xb0
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 33b8f7cf76b2021af7edc0745abd4b7a45239c74
     bootstrap:
       status: succeeded
@@ -13936,7 +13936,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-25T18:18:14.788Z
+      updated_at: 2026-05-25T18:18:44.878Z
     integration:
       status: pending
       detail: null
@@ -13951,10 +13951,10 @@ workspaces:
     task_slug: task-plan-resource-api-ui-static
     timestamps:
       closed_at: null
-      last_active_at: 2026-05-25T17:17:19.241Z
-      last_reconciled_at: 2026-05-25T18:18:14.788Z
+      last_active_at: 2026-05-25T18:18:44.878Z
+      last_reconciled_at: 2026-05-25T18:18:44.878Z
       created_at: 2026-05-25T14:50:43.712Z
-      updated_at: 2026-05-25T18:18:41.699Z
+      updated_at: 2026-05-25T18:18:44.878Z
     workspace_id: dispatch-workspace-01KS8XB035D6C69W9TR1JZDR4P
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
