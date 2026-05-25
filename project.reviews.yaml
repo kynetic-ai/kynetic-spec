@@ -231052,3 +231052,29 @@ reviews:
     created_at: 2026-05-25T05:33:45.626Z
     updated_at: null
     notes: []
+  - _ulid: 01KSEV8T771QWSB7TKKDR9JBQA
+    slugs: []
+    title: Review task-plan-resource-import-and-derive-1 (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KSEV8T77NE8W3BJX8W48KXYG
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-25T05:56:04.967Z
+    examined_commit: d31b3df0546b893caf3746c64c4aa91a4661e3e9
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KS8XAZQ5478RV2AVKG8MNB0S"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-25T05:56:04.967Z
+    updated_at: null
+    notes: []

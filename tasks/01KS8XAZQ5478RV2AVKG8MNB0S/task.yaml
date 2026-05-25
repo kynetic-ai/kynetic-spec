@@ -46,7 +46,7 @@ tags:
   - resources
   - cli
 vcs_refs: []
-review_ref: "@01KSEP3Y172ATPQAZ636H7TE7K"
+review_ref: "@01KSEV8T771QWSB7TKKDR9JBQA"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-plan-resource-import-and-derive-1/01ks8xaz
@@ -225,6 +225,13 @@ history:
         previous: 2026-05-25T04:23:04.105Z
     command: task-submit
     timestamp: 2026-05-25T05:51:54.632Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KSEV8T771QWSB7TKKDR9JBQA"
+        previous: "@01KSEP3Y172ATPQAZ636H7TE7K"
+    command: review-link
+    timestamp: 2026-05-25T05:56:09.428Z
 created_at: 2026-05-22T22:36:46.693Z
 started_at: 2026-05-25T05:51:51.008Z
 submitted_at: 2026-05-25T05:51:54.631Z
