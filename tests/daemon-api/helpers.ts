@@ -63,6 +63,7 @@ import { projectContextMiddleware } from "../../dist/daemon/middleware/project-c
 import { createTasksRoutes } from "../../dist/daemon/routes/tasks.js";
 import { createItemsRoutes } from "../../dist/daemon/routes/items.js";
 import { createReviewsRoutes } from "../../dist/daemon/routes/reviews.js";
+import { createReviewResourcesRoutes } from "../../dist/daemon/routes/review-resources.js";
 import { createTriageRoutes } from "../../dist/daemon/routes/triage.js";
 import { createPlansRoutes } from "../../dist/daemon/routes/plans.js";
 import { createPlanResourcesRoutes } from "../../dist/daemon/routes/plan-resources.js";
@@ -285,6 +286,11 @@ function materializeFolderShellsFor(
   const monolithicPath = path.join(specDir, `project.${arrayKey}.yaml`);
   let raw: string;
   try {
+    // Reads test-fixture YAML the caller just wrote into a temp specDir so
+    // we can materialise per-entity folder shells the new folder-backed
+    // managers expect. Not source scanning — the only consumer is fixture
+    // bootstrap for daemon tests.
+    // oxlint-disable-next-line no-source-scanning/no-source-file-reads
     raw = readFileSync(monolithicPath, "utf8");
   } catch {
     return;
@@ -597,6 +603,7 @@ export function createTestApp(options: CreateTestAppOptions = {}): {
     .use(createTasksRoutes({ pubsub, getEntityCache }))
     .use(createItemsRoutes())
     .use(createReviewsRoutes({ pubsub, getEntityCache }))
+    .use(createReviewResourcesRoutes({ pubsub, getEntityCache }))
     .use(createTriageRoutes({ pubsub }))
     .use(createPlansRoutes({ getEntityCache }))
     .use(createPlanResourcesRoutes({ getEntityCache }))

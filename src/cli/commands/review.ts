@@ -57,6 +57,7 @@ import { describeEnumValues } from "../enum-help.js";
 import { error, info, isJsonMode, output, success, warn } from "../output.js";
 import { formatRelativeTime as formatRelativeTimeUtil } from "../../utils/time.js";
 import { validateEnumOption } from "../validators.js";
+import { registerReviewResourceCommands } from "./review-resource.js";
 
 // --- Helpers ---
 
@@ -461,6 +462,11 @@ export function registerReviewCommands(program: Command): void {
   // AC: @folder-backed-review-storage-1 ac-review-index-has-bounded-projection
   // AC: @trait-folder-backed-entity-1 ac-index-rebuilds-from-folders
   registerReviewRebuildIndexCommand(review);
+
+  // kspec review resource add|list|get|remove
+  // AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+  // AC: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner
+  registerReviewResourceCommands(review);
 
   // --- review add ---
   // AC: @review-cli-creation-and-query ac-1, ac-2, ac-5

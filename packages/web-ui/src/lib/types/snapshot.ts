@@ -9,6 +9,7 @@ export type {
   Convention,
   ExportedTask,
   ExportedItem,
+  ExportedReview,
   ExportedValidation,
   KspecSnapshot,
   InheritedAC,

@@ -52,6 +52,7 @@ import { createAggregationRoutes } from "./routes/aggregation.js";
 import { createRefsRoutes } from "./routes/refs.js";
 import { createDiffRoutes } from "./routes/diff.js";
 import { createReviewsRoutes } from "./routes/reviews.js";
+import { createReviewResourcesRoutes } from "./routes/review-resources.js";
 import { SessionSyncScheduler } from "./session-sync.js";
 import { WatcherHealthMonitor } from "./watcher-health-monitor.js";
 import {
@@ -790,6 +791,17 @@ export async function createServer(options: ServerOptions) {
     // AC: @daemon-entity-cache ac-serve-from-memory, ac-write-through — pass cache accessor
     .use(
       createReviewsRoutes({
+        pubsub: pubsubManager,
+        getEntityCache: entityCacheModule.getEntityCache,
+      }),
+    )
+
+    // AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+    // AC: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner
+    // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+    // AC: @trait-entity-scoped-local-resources-1 ac-resource-delete-follows-owner-delete
+    .use(
+      createReviewResourcesRoutes({
         pubsub: pubsubManager,
         getEntityCache: entityCacheModule.getEntityCache,
       }),
