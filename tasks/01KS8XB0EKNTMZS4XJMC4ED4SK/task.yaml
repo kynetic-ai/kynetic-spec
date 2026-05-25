@@ -32,7 +32,7 @@ description: |
 spec_ref: "@folder-backed-review-storage-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-plan-review-folder-storage-migration-1"
@@ -44,6 +44,7 @@ tags:
   - daemon
   - web-ui
 vcs_refs: []
+session_id: 01KSEP3MHMCHR9KNGFS2CFZWCT
 history:
   - author: Jacob Chapel
     changes:
@@ -109,6 +110,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-05-22T22:52:44.846Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KSEP3MHMCHR9KNGFS2CFZWCT
+        previous: null
+      started_at:
+        new: 2026-05-25T04:26:47.616Z
+        previous: null
+    command: task-start
+    timestamp: 2026-05-25T04:26:47.617Z
 created_at: 2026-05-22T22:36:47.443Z
+started_at: 2026-05-25T04:26:47.616Z
 todos: []
 automation: eligible
