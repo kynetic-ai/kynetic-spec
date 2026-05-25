@@ -58,7 +58,7 @@ description: >
 spec_ref: "@folder-backed-resource-documentation-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-plan-resource-api-ui-static"
@@ -69,6 +69,14 @@ tags:
   - docs
   - resources
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-folder-backed-resources-docs/01ks8xb0
+  captured_at: 2026-05-25T23:16:54.706Z
+  commit: 3bc2a809cf80c6bbe33a71597b2f4ffe14350b16
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KSGN0X6SXAKE7HWE9G2X1T9E
 history:
   - author: Jacob Chapel
@@ -202,7 +210,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-25T22:46:33.414Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-folder-backed-resources-docs/01ks8xb0
+          captured_at: 2026-05-25T23:16:54.706Z
+          commit: 3bc2a809cf80c6bbe33a71597b2f4ffe14350b16
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-25T23:16:54.709Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-25T23:16:54.709Z
 created_at: 2026-05-22T22:36:47.801Z
 started_at: 2026-05-25T22:46:33.414Z
+submitted_at: 2026-05-25T23:16:54.709Z
 todos: []
 automation: eligible
