@@ -54713,7 +54713,7 @@ runs:
     completed_at: 2026-05-25T22:24:27.937Z
   - _ulid: 01KSGQWK43P9JE8EGGDYAQCAEN
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -54727,7 +54727,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-25T23:36:05.924Z
-        completed_at: 2026-05-25T23:36:05.924Z
+        completed_at: 2026-05-25T23:36:31.249Z
+        notes: "High-confidence friction identified: (1) detached reviewer merge helper refused when
+          integration target branch was not checked out; already tracked by inbox @01KSGGDD and
+          @01KSEH38, so no duplicate capture. (2) reflection-loop baseline commands are too noisy on
+          this large project; reproduced with unbounded observations/inbox/tasks list output and
+          already tracked by inbox @01KSDZFN. Success: branch-local CLI help via npm run dev cleanly
+          verified documented command surfaces after global kspec on PATH lacked branch changes;
+          this follows existing development guidance, so no new tracking."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-25T23:36:31.249Z
+        completed_at: 2026-05-25T23:36:31.249Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-25T23:35:27.619Z
