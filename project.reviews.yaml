@@ -232742,6 +232742,12 @@ reviews:
         payload:
           thread_ulid: 01KSF48QKEC164ZQFDYTGRQT5C
         timestamp: 2026-05-25T09:18:40.798Z
+      - _ulid: 01KSF6VZYQY89FANDPZR94DBHN
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSF4B6WW8VW59P125Y5BE369
+        timestamp: 2026-05-25T09:18:47.767Z
     examined_commit: 9f21d1bd4651df54ac5fc5946affb3c84edf6ac6
     external_links: []
     lifecycle_state: closed
@@ -232848,6 +232854,21 @@ reviews:
               invalid_resource_path/error envelope, and add API coverage for an empty content_type
               field.'
             created_at: 2026-05-25T08:34:40.668Z
+          - _ulid: 01KSF6VYCQ0YFR2GPANQJ8W1E9
+            author: "@claude"
+            body: "Fixed: the daemon multipart parser now distinguishes 'absent' from 'explicitly empty' for the
+              content_type field. Added a readPresentField helper that preserves empty strings
+              (alongside the existing readTextField which collapses them to undefined for
+              id/path/label/description). The POST handler routes only content_type through
+              readPresentField, so an explicit content_type='' is passed through to
+              addReviewResource which surfaces it as 400 invalid_resource_path with the documented
+              envelope (matches the explicit non-empty-token rule from the task contract). Other
+              fields still treat empty as absent. Added two tests in
+              tests/daemon-api/review-resources.test.ts: (a) explicit content_type='' returns 400
+              invalid_resource_path and (b) omitted content_type still infers from the path
+              extension — the second is a baseline so the fix doesn't over-correct by rejecting
+              valid uploads that simply omit the field."
+            created_at: 2026-05-25T09:18:46.166Z
         kind: blocker
       - _ulid: 01KSF4ZGT3HTERQZSQASPBY5T6
         entries:
@@ -232896,7 +232917,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-25T08:46:00.971Z
     created_at: 2026-05-25T08:28:30.823Z
-    updated_at: 2026-05-25T09:18:39.264Z
+    updated_at: 2026-05-25T09:18:46.166Z
     notes: []
   - _ulid: 01KSF5QCBRG5ZYSRYPM27B9X9B
     slugs: []
