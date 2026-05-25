@@ -233424,6 +233424,30 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-25T16:06:08.039Z
+      - _ulid: 01KSG0GGBEAXQR2D4PKC88X88T
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSFY3N27J10NKNK7GHK5HFH7
+        timestamp: 2026-05-25T16:46:54.319Z
+      - _ulid: 01KSG0GM714FAQ8QRQMT0GPRAR
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSFY3N27J10NKNK7GHK5HFH7
+        timestamp: 2026-05-25T16:46:58.273Z
+      - _ulid: 01KSG0GR286C17FCMDMCW57S8M
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSFY439AQ6HRQRT55RKPPX1F
+        timestamp: 2026-05-25T16:47:02.216Z
+      - _ulid: 01KSG0GVYZJ5BP4H8BWSVJWWT4
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSFY439AQ6HRQRT55RKPPX1F
+        timestamp: 2026-05-25T16:47:06.207Z
     examined_commit: 0aa596716c847ea0e4bbff89e42039aad8d2322c
     external_links: []
     lifecycle_state: closed
@@ -233454,7 +233478,20 @@ reviews:
               the task requested. Keep ResourceMetadata exact and expose safe fetch URLs outside the
               metadata object, such as a sibling/base URL field."
             created_at: 2026-05-25T16:04:56.007Z
+          - _ulid: 01KSG0GEVEHNNFCZ3FMW5BMHC1
+            author: "@claude"
+            body: "Fixed: PlanResourceMetadata is now the strict 9-field shape mirrored from ResourceMetadata —
+              bytes_url no longer leaks into individual resource entries. Safe fetch URLs live
+              outside the metadata object on PlanDetail.resources_base_url (sibling), the new daemon
+              helper buildResourcesBaseUrl(planUlid). All four surfaces (daemon API, CLI, static
+              export, agent context) now see an identical resource record. Tests assert resources do
+              not carry bytes_url / base_url / url / exported_path properties, and the UI link
+              rewriter accepts resources_base_url as an explicit parameter so consumers construct
+              `${base}/${encodeURIComponent(id)}/bytes` themselves."
+            created_at: 2026-05-25T16:46:52.781Z
         kind: blocker
+        resolved_at: 2026-05-25T16:46:56.724Z
+        resolved_by: "@claude"
       - _ulid: 01KSFY439AQ6HRQRT55RKPPX1F
         anchor:
           type: code
@@ -233475,7 +233512,21 @@ reviews:
               list endpoint. Add the bounded resource summary to the cache/index API projection and
               cover the cache-ready route in tests."
             created_at: 2026-05-25T16:05:10.570Z
+          - _ulid: 01KSG0GPKHDENNGYN43K1NSF7P
+            author: "@claude"
+            body: "Fixed: the bounded resource_summary {count, total_bytes} is now plumbed through the cache
+              index. PlanIndexSummary carries resource_summary; loadPlanFromDir reads the
+              resources.yaml sidecar and attaches the summary to LoadedPlan; toPlanIndexSummary
+              projects it through. The list route now always returns PlanSummary.resource_summary
+              (cache-ready and disk-fallback paths) and never returns the full resources array on
+              /api/plans — full metadata stays on the detail route and the dedicated /resources
+              endpoints. Two new daemon tests cover the cache-ready path: one asserts the route
+              projects {count:2, total_bytes:8} when the PlanIndexSummary carries resource_summary,
+              and one asserts {count:0, total_bytes:0} when the summary is absent."
+            created_at: 2026-05-25T16:47:00.721Z
         kind: blocker
+        resolved_at: 2026-05-25T16:47:04.606Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -233485,7 +233536,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-25T16:06:08.038Z
     created_at: 2026-05-25T15:51:40.407Z
-    updated_at: 2026-05-25T16:06:08.039Z
+    updated_at: 2026-05-25T16:47:04.606Z
     notes: []
   - _ulid: 01KSFYVE14VVQWA31FMDH074R1
     slugs: []

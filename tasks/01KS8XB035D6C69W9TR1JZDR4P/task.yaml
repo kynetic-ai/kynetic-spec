@@ -89,7 +89,7 @@ description: >
 spec_ref: "@folder-backed-plan-storage-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: needs_work
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-plan-resource-import-and-derive-1"
@@ -105,12 +105,12 @@ review_ref: "@01KSFXBC3Q58SQD59VZAY0RT02"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-plan-resource-api-ui-static/01ks8xb0
-  captured_at: 2026-05-25T15:45:37.276Z
-  commit: 0aa596716c847ea0e4bbff89e42039aad8d2322c
-  remote: null
-  remote_url: null
-  upstream_ref: dev
-session_id: null
+  captured_at: 2026-05-25T16:47:09.333Z
+  commit: 58df2d14fb652674f714e9bbd14bea9318431ccb
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-plan-resource-api-ui-static/01ks8xb0
+session_id: 01KSFYS9GYNXWEBPJ4P3D9638H
 history:
   - author: Jacob Chapel
     changes:
@@ -354,8 +354,48 @@ history:
         previous: 01KSFSWG4PJQJXX4JXNQRMRGF3
     command: review-verdict-needs-work
     timestamp: 2026-05-25T16:06:10.370Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KSFYS9GYNXWEBPJ4P3D9638H
+        previous: null
+      started_at:
+        new: 2026-05-25T16:47:08.501Z
+        previous: 2026-05-25T14:52:08.133Z
+    command: task-start
+    timestamp: 2026-05-25T16:47:08.501Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-plan-resource-api-ui-static/01ks8xb0
+          captured_at: 2026-05-25T16:47:09.333Z
+          commit: 58df2d14fb652674f714e9bbd14bea9318431ccb
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-plan-resource-api-ui-static/01ks8xb0
+        previous:
+          review_url: null
+          branch: dispatch/task/task-plan-resource-api-ui-static/01ks8xb0
+          captured_at: 2026-05-25T15:45:37.276Z
+          commit: 0aa596716c847ea0e4bbff89e42039aad8d2322c
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-05-25T16:47:09.336Z
+        previous: 2026-05-25T15:45:37.279Z
+    command: task-submit
+    timestamp: 2026-05-25T16:47:09.336Z
 created_at: 2026-05-22T22:36:47.077Z
-started_at: 2026-05-25T14:52:08.133Z
-submitted_at: 2026-05-25T15:45:37.279Z
+started_at: 2026-05-25T16:47:08.501Z
+submitted_at: 2026-05-25T16:47:09.336Z
 todos: []
 automation: eligible

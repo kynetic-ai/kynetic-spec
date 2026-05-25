@@ -75,3 +75,32 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-25T16:06:10.370Z
+  - _ulid: 01KSG0GXD53DMFP1K10T13BZVR
+    content: >-
+      Fix cycle 1: addressed both review blockers.
+
+
+      1) PlanResourceMetadata strict shape: dropped bytes_url from the resource metadata object.
+      Exact 9 fields (id, label, path, content_type, bytes, sha256, git_commit, git_path,
+      description) on all four surfaces. Safe fetch URLs now live on PlanDetail.resources_base_url
+      (sibling). UI link rewriter takes resources_base_url and builds URLs as
+      ${base}/${encodeURIComponent(id)}/bytes. Static UI mirrors the same shape and exposes
+      resources_base_url for assets/resources/plan/<ulid>.
+
+
+      2) Cache-ready resource_summary: PlanIndexSummary now carries resource_summary;
+      loadPlanFromDir reads resources.yaml and attaches summary to LoadedPlan; toPlanIndexSummary
+      projects through. Plans list route projects resource_summary on both cache-ready and
+      disk-fallback paths. New daemon tests cover the cache-ready route with a fake cache stub.
+
+
+      Also re-verified ACs against the implementation: ac-plan-document-sidecar-is-authoritative,
+      ac-plan-index-has-bounded-projection, ac-resource-reference-resolves-within-owner,
+      ac-resource-metadata-exposes-safe-preview-fields, ac-path-escape-rejected,
+      ac-static-export-copies-resource-assets.
+
+
+      Full suite: 2546 suites passed, 9711 tests passed, 5 skipped, ~37min.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-25T16:47:07.685Z
