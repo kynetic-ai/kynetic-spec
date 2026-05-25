@@ -323,6 +323,97 @@ describe("review-resource-manager", () => {
     expect(result.error.code).toBe("resource_not_found");
   });
 
+  // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+  // AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+  it("addReviewResource replace-path fails atomically when old-path cleanup is rejected and rolls back the new write", async () => {
+    // The previous implementation called removeResourceFromOwnerResources
+    // for the old path during a replace-with-path-move and discarded the
+    // result. If the file at the old path had been replaced with a
+    // symlink (a hostile or accidental between-call state), the helper
+    // correctly refused to unlink, but the manager ignored the rejection,
+    // rewrote the manifest to the new path, and returned success — leaving
+    // the symlink (and its outside target) intact in the resources tree
+    // and silently committing a manifest mutation that violates the
+    // symlink-escape rejection contract.
+    //
+    // This test plants that exact attack shape (reproducing the reviewer's
+    // behavioral probe) and asserts the manager now (a) returns ok:false
+    // with invalid_resource_path, (b) leaves the manifest pointing at the
+    // old path, (c) does NOT leave the new-path file behind on disk, and
+    // (d) leaves the outside target intact.
+    const review = await seededReview("replace-symlink-cleanup");
+    const initial = await addReviewResource(ctx as any, `@${review._ulid}`, {
+      id: "shot",
+      relativePath: "old.png",
+      sourceFile: pngSource,
+      captureGit: false,
+    });
+    expect(initial.ok).toBe(true);
+
+    const reviewDir = getReviewDir(ctx as any, review._ulid);
+    const resourcesDir = path.join(reviewDir, "resources");
+    const oldFile = path.join(resourcesDir, "old.png");
+
+    // Replace the on-disk old.png with a symlink that targets an outside
+    // file. The manifest still declares old.png, but the file is no
+    // longer safe to unlink — the symlink-safe remove helper must reject
+    // it, and the manager must surface the rejection rather than swallow
+    // it.
+    const outside = path.join(tempDir, "replace-cleanup-target.png");
+    await fs.writeFile(outside, "outside-evidence");
+    await fs.unlink(oldFile);
+    try {
+      await fs.symlink(outside, oldFile);
+    } catch (err) {
+      const errno = (err as NodeJS.ErrnoException).code;
+      if (errno === "EPERM" || errno === "ENOSYS") return;
+      throw err;
+    }
+
+    // Stage a distinct source for the would-be new path so a partial
+    // write would be detectable by its bytes on disk.
+    const newSource = path.join(sourceDir, "replace-new-source.png");
+    await fs.writeFile(newSource, "replacement-bytes-for-new-path");
+
+    const result = await addReviewResource(ctx as any, `@${review._ulid}`, {
+      id: "shot",
+      relativePath: "new.png",
+      sourceFile: newSource,
+      replace: true,
+      captureGit: false,
+    });
+
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.error.code).toBe("invalid_resource_path");
+    expect(result.error.message).toMatch(/symlink/i);
+    expect(result.error.resource_id).toBe("shot");
+    expect(result.error.path).toBe("old.png");
+
+    // Manifest still declares the old path — the failed cleanup must
+    // NOT silently commit the new path.
+    const manifestRaw = await fs.readFile(
+      path.join(reviewDir, "resources.yaml"),
+      "utf-8",
+    );
+    const manifest = yamlParse(manifestRaw);
+    expect(manifest.resources).toHaveLength(1);
+    expect(manifest.resources[0].id).toBe("shot");
+    expect(manifest.resources[0].path).toBe("old.png");
+
+    // The new-path file must not be left behind on disk — the partial
+    // write is rolled back so the resources/ tree matches the manifest.
+    await expect(
+      fs.stat(path.join(resourcesDir, "new.png")),
+    ).rejects.toThrow();
+
+    // The outside target must be untouched: same bytes, still a regular
+    // file (not unlinked through the symlink).
+    expect(await fs.readFile(outside, "utf-8")).toBe("outside-evidence");
+    const outsideStat = await fs.stat(outside);
+    expect(outsideStat.isFile()).toBe(true);
+  });
+
   // ── list / get / resolve ───────────────────────────────────────────────────
 
   // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields

@@ -467,16 +467,41 @@ export async function addReviewResource(
   // The cleanup runs through the symlink-safe remove helper for the same
   // reason removeReviewResource does: a plain fs.rm follows any symlink
   // along the destination path and could delete a file outside the
-  // owning review. Best-effort — the new file is already in place and
-  // the manifest has been updated to the new path, so a leftover orphan
-  // under the old path is acceptable; a symlinked outside-target unlink
-  // is not.
+  // owning review.
+  //
+  // The helper's result MUST be checked. A previous version of this
+  // code discarded it and proceeded to rewrite the manifest, which meant
+  // that if the on-disk old-path file had been replaced with a symlink
+  // (e.g. by another process between original attach and replace), the
+  // helper correctly refused the unlink but the manager silently
+  // committed a manifest mutation while leaving the symlink/outside
+  // target in place — violating ac-path-escape-rejected and the
+  // replacement contract that the old file is removed when the path
+  // moves. On rejection we now fail atomically: the new file we just
+  // wrote is rolled back so observers see no half-applied state, the
+  // manifest is left at the old declared path, and the caller receives
+  // the documented invalid_resource_path error.
   // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
   if (existingById && existingById.path !== options.relativePath) {
-    await removeResourceFromOwnerResources({
+    const cleanup = await removeResourceFromOwnerResources({
       ownerResourcesDir: resourcesDir,
       relativePath: existingById.path,
     });
+    if (!cleanup.ok) {
+      // Roll back the newly written destination so the resources/ tree
+      // continues to match the (unchanged) manifest. fs.rm with force:true
+      // mirrors the rollback pattern copySourceIntoOwnerResources uses for
+      // its own escape-detection cleanup; the file we just wrote is a real
+      // file under non-symlink intermediates (both verified by the writer
+      // moments ago), so following intermediates here is safe.
+      await fs.rm(destAbsolute, { force: true }).catch(() => {});
+      return err({
+        code: "invalid_resource_path",
+        message: `Cannot replace resource "${options.id}": cleanup of previous file at "${existingById.path}" was rejected (${cleanup.error}). The new write was rolled back; resolve the unsafe old path before retrying.`,
+        resource_id: options.id,
+        path: existingById.path,
+      });
+    }
   }
 
   const metadata = await computeResourceMetadata({
