@@ -232338,6 +232338,18 @@ reviews:
         runner: npm
         created_at: 2026-05-25T08:14:50.803Z
         completed_at: 2026-05-25T08:14:50.803Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate returned warning-only exit 6: schema/references OK, with pre-existing
+          global reference/alignment/completeness warnings. The reviewed spec ACs were loaded and
+          annotated tests were found for all five task ACs."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-05-25T08:15:11.222Z
+        completed_at: 2026-05-25T08:15:11.222Z
     events:
       - _ulid: 01KSF2EN9K0G867S0PH6A1KF2J
         actor: Jacob Chapel
@@ -232387,6 +232399,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-05-25T08:14:52.654Z
+      - _ulid: 01KSF37JJGCYR74Q1CK8Z29FXB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-25T08:15:12.976Z
     examined_commit: cec6e309c6730167415e73bd396a8700ef4d0030
     external_links: []
     lifecycle_state: open
@@ -232424,5 +232443,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-25T08:01:36.563Z
-    updated_at: 2026-05-25T08:14:50.803Z
+    updated_at: 2026-05-25T08:15:11.222Z
     notes: []
