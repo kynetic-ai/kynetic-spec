@@ -381,3 +381,20 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-25T21:02:50.291Z
+  - _ulid: 01KSGG7YS6SG0A8MKCPJ8DJZ3J
+    content: "[FIX_CYCLE: 9] Review findings: Detached merge helper could not merge approved snapshot
+      0a3bfa159d4615c2a8345316f5a5a5f0e6722b84 into
+      plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw because the integration
+      target has advanced to 806290ad0bb3d95ea5174b553ce58e0b1d0df6ff and produced a content
+      conflict in src/export/json.ts. Task side adds review export support: loads review
+      records/resources, adds ExportedReview resources with exported_path, adds
+      review/reviewResource stats, and copies review assets via copyReviewResourceAssets. Target
+      side adds plan resource static export support in the same file: imports entity-local resource
+      helpers, rewrites plan markdown resource links, exports plan resources while copying assets
+      via generateJsonSnapshot(..., { assetsOutputDir }), and expands plan stats/types. The helper
+      restored the target worktree/ref and did not advance the integration branch. Worker should
+      rebase/merge against the current target and integrate both plan-resource and review-resource
+      export paths without dropping either behavior."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-05-25T21:21:51.398Z

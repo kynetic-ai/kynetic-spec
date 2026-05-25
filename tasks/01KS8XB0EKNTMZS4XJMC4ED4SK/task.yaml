@@ -32,7 +32,7 @@ description: |
 spec_ref: "@folder-backed-review-storage-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-plan-review-folder-storage-migration-1"
@@ -53,7 +53,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-review-screenshot-resource-ui/01ks8xb0
-session_id: 01KSGBQ53XY02CPX10R5RSN2J4
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -615,6 +615,16 @@ history:
         previous: "@01KSGAS4DT08F94FPFME5PN47T"
     command: review-link
     timestamp: 2026-05-25T21:04:38.618Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KSGBQ53XY02CPX10R5RSN2J4
+    command: task-needs-work
+    timestamp: 2026-05-25T21:21:51.399Z
 created_at: 2026-05-22T22:36:47.443Z
 started_at: 2026-05-25T20:03:27.461Z
 submitted_at: 2026-05-25T20:21:29.852Z
