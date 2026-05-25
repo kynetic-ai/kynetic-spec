@@ -229813,6 +229813,12 @@ reviews:
           kind: blocker
           thread_ulid: 01KSE8YCAT8AWZWNGF0T9T127B
         timestamp: 2026-05-25T00:35:50.490Z
+      - _ulid: 01KSE8ZCYDNC0K91AYRX2VZ1PM
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSE8YCAT8AWZWNGF0T9T127B
+        timestamp: 2026-05-25T00:36:22.093Z
     examined_commit: 85473371603f27ae5a7990c2c73bea5879539e76
     external_links: []
     lifecycle_state: open
@@ -229849,8 +229855,21 @@ reviews:
               later upgrade steps still touch /agent artifacts or commit shadow state on the same
               protected project.
             created_at: 2026-05-25T00:35:48.698Z
+          - _ulid: 01KSE8ZB9BTY0H4H3HJKM4RVRK
+            author: Jacob Chapel
+            body: "Corrected finding text: MUST-FIX: a protected-project storage preflight failure does not stop
+              the rest of kspec upgrade. runAtomicStorageMigration can return a failed Storage
+              migration safety preflight, but runUpgradePipeline still falls through into
+              runBackfillCoreSkillsStep and later upgrade steps. I reproduced this against a temp
+              project with KSPEC_PROTECTED_PROJECT_PATHS set to the project root: the JSON result
+              had Storage migration safety preflight=failed but still reported Backfill core
+              skills=done. A protected target must abort without any further upgrade mutations once
+              the tripwire fires; otherwise the guard can prevent plan/review/manifest writes while
+              later upgrade steps still touch .kspec/agent artifacts or commit shadow state on the
+              same protected project."
+            created_at: 2026-05-25T00:36:20.395Z
         kind: blocker
     verdicts: []
     created_at: 2026-05-25T00:29:41.694Z
-    updated_at: 2026-05-25T00:35:48.698Z
+    updated_at: 2026-05-25T00:36:20.395Z
     notes: []
