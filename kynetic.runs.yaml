@@ -54030,7 +54030,7 @@ runs:
     completed_at: 2026-05-25T08:56:48.020Z
   - _ulid: 01KSF6P9XZZWJPYV2AKB5N4CFS
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -54043,7 +54043,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-25T09:17:35.674Z
-        completed_at: 2026-05-25T09:17:35.674Z
+        completed_at: 2026-05-25T09:17:45.199Z
+        notes: "Friction: the merge helper initially refused because the integration branch was not checked
+          out in any worktree, even though a prepared detached target worktree existed at the
+          correct commit. Recovery required inspecting worktrees and attaching the branch manually
+          before rerunning the helper."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-25T09:17:45.199Z
+        completed_at: 2026-05-25T09:17:45.199Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-25T09:15:41.376Z
