@@ -1,1 +1,47 @@
-notes: []
+notes:
+  - _ulid: 01KSEJZR77YR5C528J366MVF91
+    content: >-
+      Approach:
+
+
+      1) Schema additions:
+         - PlanResourceImportEntrySchema for sibling resources.yaml at import time (declared paths with ids, optional label/description/content_type)
+         - TaskResourceRefSchema: { owner_type: 'plan'|'task', owner_ref, id, path, sha256, git_commit?, git_path?, recorded_at }
+         - PlanTaskSchema.resource_refs: optional string array of ./resources/<rel> entries
+         - TaskSchema.resource_refs: optional array of TaskResourceRefSchema
+
+      2) Plan resource CLI (src/cli/commands/plan-resource.ts):
+         - add/list/get/remove subcommands under 'kspec plan resource'
+         - exact JSON contract from task description; exit codes 0/1/2/3 per @trait-semantic-exit-codes
+         - error codes: invalid_resource_id, invalid_resource_path, source_file_missing, source_file_unreadable, resource_conflict, resource_not_found, plan_not_found, confirmation_required, operation_cancelled, entity_storage_incompatible
+         - reuses computeResourceMetadata + writeResourceManifest from entity-local-resources; resolves <plan-ulid>/resources/ via getPlanDir
+
+      3) Plan import sibling manifest:
+         - When markdown has ./resources/<rel> links, require sibling resources.yaml next to plan-md file
+         - Parse sibling manifest with declared entries (id + path required, others optional)
+         - Each linked path must appear in declared list; reject extras/undeclareds
+         - After save, copy each declared file from sibling resources/ dir into .kspec/plans/<ulid>/resources/ and write plan resources.yaml with computed metadata
+         - 'plan import --into' validates ./resources/<rel> links resolve against existing plan manifest (no sibling required)
+         - 'plan set --content-file <path>' (NEW option) does the same as --into
+
+      4) Plan derive + resource_refs:
+         - PlanTaskSchema accepts resource_refs as ./resources/<rel> entries
+         - At derive, validate each ref resolves against source plan's resources.yaml
+         - Default mode: record TaskResourceRef with owner_type='plan', owner_ref=plan canonical, path/sha256/git_commit/git_path from plan manifest; no file bytes copied to task
+         - --materialize-resources flag: copy bytes to .kspec/tasks/<task-ulid>/resources/plan/<plan-ulid>/<rel>, write task resources.yaml with id 'plan-<resource-id>', task ref points at task-owned copy (owner_type='task', owner_ref=task canonical)
+         - Persist resource_refs on TaskInput
+
+      5) Drift visibility:
+         - formatTaskDetails: new 'Resources' section listing each task resource_refs entry; for plan-owned refs, re-resolve current plan manifest and compare sha256, mark 'DRIFT' if mismatched
+         - dispatch.ts task-context block: append resource refs (with drift flag) so worker prompts surface drift
+         - API resource resolver: owned by sibling task; we just expose enough metadata on task records (already done via schema)
+
+      Tests:
+         - tests/cli-plan-resource.test.ts: add/list/get/remove happy + error envelopes, exit codes
+         - tests/cli-plan-import-resources.test.ts: sibling manifest enforcement, undeclared rejection, missing manifest rejection
+         - tests/cli-plan-set-resources.test.ts: --content-file resource ref validation
+         - tests/cli-plan-derive-resources.test.ts: default refs + --materialize-resources + drift in task get + drift in dispatch context
+         - tests/plan-document-resource-refs.test.ts: parser unit tests
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-25T03:31:19.399Z
