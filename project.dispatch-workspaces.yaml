@@ -11932,7 +11932,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-25T02:55:57.158Z
+      updated_at: 2026-05-25T02:58:58.486Z
     integration:
       status: merged
       detail: integration:merged
@@ -11948,18 +11948,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-25T02:35:01.631Z
-      last_reconciled_at: 2026-05-25T02:58:56.764Z
+      last_reconciled_at: 2026-05-25T02:58:58.486Z
       created_at: 2026-05-24T16:10:04.439Z
-      updated_at: 2026-05-25T02:58:56.764Z
+      updated_at: 2026-05-25T02:58:58.486Z
     workspace_id: dispatch-workspace-01KS8XAYZTG0MN48Z78D45PBV6
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 03c37aed2c2b13d94f58569df364e5c5dce6f821
-        last_seen_at: 2026-05-25T02:34:31.561Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-review-folder-storage-migration-1-01ks8xay-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-plan-review-folder-storage-migration-1/01ks8xay
