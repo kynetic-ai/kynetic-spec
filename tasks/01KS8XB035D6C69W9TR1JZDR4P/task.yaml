@@ -89,7 +89,7 @@ description: >
 spec_ref: "@folder-backed-plan-storage-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-plan-resource-import-and-derive-1"
@@ -101,6 +101,14 @@ tags:
   - daemon
   - web-ui
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-plan-resource-api-ui-static/01ks8xb0
+  captured_at: 2026-05-25T15:45:37.276Z
+  commit: 0aa596716c847ea0e4bbff89e42039aad8d2322c
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KSFSWG4PJQJXX4JXNQRMRGF3
 history:
   - author: Jacob Chapel
@@ -308,7 +316,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-25T14:52:08.134Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-plan-resource-api-ui-static/01ks8xb0
+          captured_at: 2026-05-25T15:45:37.276Z
+          commit: 0aa596716c847ea0e4bbff89e42039aad8d2322c
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-25T15:45:37.279Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-25T15:45:37.280Z
 created_at: 2026-05-22T22:36:47.077Z
 started_at: 2026-05-25T14:52:08.133Z
+submitted_at: 2026-05-25T15:45:37.279Z
 todos: []
 automation: eligible
