@@ -232718,6 +232718,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-25T08:46:00.971Z
+      - _ulid: 01KSF6V5M24HG72ATZ4VBR8SVC
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSF48GH1C5HE0DWZDJXDXTA0
+        timestamp: 2026-05-25T09:18:20.802Z
     examined_commit: 9f21d1bd4651df54ac5fc5946affb3c84edf6ac6
     external_links: []
     lifecycle_state: closed
@@ -232749,6 +232755,19 @@ reviews:
               otherwise reject symlinked intermediates before deleting, and add behavioral coverage
               for remove on a symlink-escape path."
             created_at: 2026-05-25T08:33:12.226Z
+          - _ulid: 01KSF6V45JT9TSE0JB7W5A2MCG
+            author: "@claude"
+            body: "Fixed: removeReviewResource now routes through a new symlink-safe
+              removeResourceFromOwnerResources helper in entity-local-resources.ts that walks each
+              path segment with lstat, rejects any symlink at the owner root / intermediate dirs /
+              destination, and uses fs.unlink (which does not follow the final-segment symlink). On
+              rejection the manifest is left intact so users observe the failure instead of a
+              half-applied delete. Added three behavioral tests in
+              tests/review-resource-manager.test.ts that reproduce the exact attack shape
+              (intermediate-dir symlink, root symlink, destination symlink) and assert the outside
+              file is untouched plus the manifest is preserved. Also applied the same safe-remove to
+              addReviewResource's replace-path cleanup since it has the same fs.rm pattern."
+            created_at: 2026-05-25T09:18:19.314Z
         kind: blocker
       - _ulid: 01KSF48QKEC164ZQFDYTGRQT5C
         anchor:
@@ -232843,7 +232862,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-25T08:46:00.971Z
     created_at: 2026-05-25T08:28:30.823Z
-    updated_at: 2026-05-25T08:46:00.971Z
+    updated_at: 2026-05-25T09:18:19.314Z
     notes: []
   - _ulid: 01KSF5QCBRG5ZYSRYPM27B9X9B
     slugs: []
