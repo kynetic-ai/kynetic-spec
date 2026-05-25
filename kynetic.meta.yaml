@@ -19443,6 +19443,21 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-05-25T02:14:07.300Z
+  - _ulid: 01KSEFPXNEVKKR2YBATVX3PHGF
+    type: friction
+    content: "Safety-critical detection rules (e.g., partial-layout refusal, force-required guards)
+      accumulated edge-case bugs across fix cycles 1-7 of
+      @task-plan-review-folder-storage-migration-1 because the predicate was repeatedly narrowed to
+      handle specific cases (folders-with-matching-monolithic-records, orphan lean entries,
+      same-ULID overlap). Each narrowing missed an adjacent case the next reviewer found. The
+      eventual cycle-7 fix collapsed the predicate to a single broad invariant: any monolithic
+      record + any entity folder = partial. Pattern: when guarding destructive operations, default
+      to refusing on ambiguity rather than enumerating known-bad shapes. Each enumerated exception
+      is a future blocker waiting to be reproduced."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-25T02:34:04.334Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
