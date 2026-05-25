@@ -89,7 +89,7 @@ description: >
 spec_ref: "@folder-backed-plan-storage-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-plan-resource-import-and-derive-1"
@@ -101,6 +101,7 @@ tags:
   - daemon
   - web-ui
 vcs_refs: []
+session_id: 01KSFSWG4PJQJXX4JXNQRMRGF3
 history:
   - author: Jacob Chapel
     changes:
@@ -294,6 +295,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-05-22T22:52:44.328Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KSFSWG4PJQJXX4JXNQRMRGF3
+        previous: null
+      started_at:
+        new: 2026-05-25T14:52:08.133Z
+        previous: null
+    command: task-start
+    timestamp: 2026-05-25T14:52:08.134Z
 created_at: 2026-05-22T22:36:47.077Z
+started_at: 2026-05-25T14:52:08.133Z
 todos: []
 automation: eligible
