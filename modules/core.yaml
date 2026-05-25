@@ -3085,6 +3085,9 @@ modules:
           behavior, and troubleshooting guidance. Documentation follows the
           implementation contracts from the storage/resource specs; it does not
           create separate storage behavior.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
