@@ -54419,7 +54419,7 @@ runs:
     started_at: 2026-05-25T17:08:35.139Z
     completed_at: 2026-05-25T17:11:19.078Z
   - _ulid: 01KSG35S9T2EZPAD1RFAHC01JC
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -54478,10 +54478,14 @@ runs:
         notes: "Skipped discussion: no new durable improvements proposed for user approval. Existing
           coverage handles systemic friction, and the concrete task-local issue is already captured
           in the review record."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-25T17:35:15.672Z
-        completed_at: 2026-05-25T17:35:15.672Z
+        completed_at: 2026-05-25T17:35:25.754Z
+        notes: No capture performed. Existing tracking covers the systemic friction found; the only new
+          issue is already captured as review blocker @01KSG2AS on the active task, so adding an
+          inbox item or observation would duplicate the review record.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-25T17:33:28.762Z
+    completed_at: 2026-05-25T17:35:25.755Z
