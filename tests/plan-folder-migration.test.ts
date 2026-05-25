@@ -545,4 +545,73 @@ describe("plan folder migration", () => {
     expect(ulids.has(monolithicUlid)).toBe(true);
     expect(index.plans.length).toBe(2);
   });
+
+  // Regression for fix cycle 7 blocker: a monolithic plan record whose ULID
+  // already has a `.kspec/plans/<ulid>/` folder on disk is an ambiguous mixed
+  // layout. The previous compute step required at least one monolithic entry
+  // WITHOUT a matching folder to flag partialLayout, so a same-ULID overlap
+  // proceeded without --force and silently overwrote the existing folder's
+  // plan.md/plan.yaml.
+  //
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  it("detects same-ULID folder + monolithic record as partial layout", async () => {
+    const ctx = await buildCtx(tempDir);
+    const sharedUlid = testUlid("PLNDP");
+
+    // Pre-existing folder for the same ULID with distinguishable content.
+    const existingDir = path.join(ctx.specDir, "plans", sharedUlid);
+    await fs.mkdir(existingDir, { recursive: true });
+    await fs.writeFile(
+      path.join(existingDir, PLAN_CORE_FILENAME),
+      toYaml({
+        _ulid: sharedUlid,
+        slugs: ["folder-version"],
+        title: "Folder Version Title",
+        status: "draft",
+        derived_tasks: [],
+        derived_specs: [],
+        created_at: "2026-05-22T10:00:00Z",
+      }),
+      "utf-8",
+    );
+    await fs.writeFile(
+      path.join(existingDir, PLAN_DOCUMENT_FILENAME),
+      "# Folder Version Body",
+      "utf-8",
+    );
+
+    // Monolithic record with the same ULID but DIFFERENT content. Without
+    // partial-layout detection this body would overwrite the folder above.
+    await writeMonolithicPlans(ctx, [
+      {
+        _ulid: sharedUlid,
+        slugs: ["mono-version"],
+        title: "Mono Version Title",
+        content: "# Mono Version Body",
+        status: "draft",
+        derived_tasks: [],
+        derived_specs: [],
+        created_at: "2026-05-22T11:00:00Z",
+        notes: [],
+      },
+    ]);
+
+    const report = await computePlanMigrationReport(ctx);
+    expect(report.partialLayout).toBe(true);
+    expect(report.alreadyMigrated).toBe(false);
+    expect(report.entries).toHaveLength(1);
+    expect(report.entries[0]?.preexistingFolder).toBe(true);
+
+    await expect(applyPlanMigration(ctx, report)).rejects.toThrow(/partial/i);
+    await expect(applyPlanMigration(ctx, report)).rejects.toMatchObject({
+      code: "partial_entity_storage_layout",
+    });
+
+    // The existing folder content must be untouched after the refused apply.
+    const coreRaw = await readTestOutput(path.join(existingDir, PLAN_CORE_FILENAME));
+    const core = yamlParse(coreRaw) as { title: string };
+    expect(core.title).toBe("Folder Version Title");
+    const bodyRaw = await readTestOutput(path.join(existingDir, PLAN_DOCUMENT_FILENAME));
+    expect(bodyRaw).toBe("# Folder Version Body");
+  });
 });

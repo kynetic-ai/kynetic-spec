@@ -337,18 +337,24 @@ export async function computePlanMigrationReport(
     buildMigrationEntry(ctx, record, folderUlids, warnings),
   );
 
-  // Partial layout covers two distinct broken states:
-  //   1. Folders + monolithic records present (folders for some ULIDs,
-  //      monolithic body for others) — historical case.
-  //   2. Lean index entries that point to folders which do not exist
-  //      on disk — the reviewer's reproduction. Without detecting case
-  //      2, the migration short-circuits as "alreadyMigrated" and the
-  //      manifest is promoted on top of a layout that will fail on the
-  //      very next list call.
+  // Partial layout covers three distinct broken states:
+  //   1. Folders + monolithic records present for distinct ULIDs
+  //      (folders for some ULIDs, monolithic body for others) —
+  //      historical mixed case.
+  //   2. Folders + monolithic records present for the SAME ULID —
+  //      ambiguous storage where the monolithic record would overwrite
+  //      pre-existing folder state during apply. Without flagging this
+  //      the executing run silently replaces plan.md/plan.yaml.
+  //   3. Lean index entries that point to folders which do not exist
+  //      on disk. Without detecting this, the migration short-circuits
+  //      as "alreadyMigrated" and the manifest is promoted on top of a
+  //      layout that will fail on the very next list call.
+  //
+  // Cases 1 and 2 collapse to a single rule: if any monolithic record
+  // coexists with any plan folder on disk, the layout is partial and
+  // requires --force to remediate.
   const partialLayout =
-    (folderUlids.size > 0 &&
-      entries.some((entry) => !folderUlids.has(entry.ulid)) &&
-      entries.length > 0) ||
+    (folderUlids.size > 0 && entries.length > 0) ||
     orphanedLeanEntries.length > 0;
 
   // `alreadyMigrated` must also account for orphaned lean entries — a

@@ -280,10 +280,21 @@ export async function computeReviewMigrationReport(
     buildMigrationEntry(ctx, record, folderUlids, warnings),
   );
 
+  // Partial layout covers three distinct broken states:
+  //   1. Folders + monolithic records present for distinct ULIDs —
+  //      historical mixed case.
+  //   2. Folders + monolithic records present for the SAME ULID —
+  //      ambiguous storage where the monolithic record would overwrite
+  //      pre-existing folder state during apply. Without flagging this
+  //      the executing run silently replaces review.yaml.
+  //   3. Lean index entries pointing at folders that do not exist on
+  //      disk — stale entries leave the project in an incoherent state
+  //      after manifest promotion.
+  //
+  // Cases 1 and 2 collapse to a single rule: any monolithic record
+  // alongside any review folder = partial layout.
   const partialLayout =
-    (folderUlids.size > 0 &&
-      entries.some((entry) => !folderUlids.has(entry.ulid)) &&
-      entries.length > 0) ||
+    (folderUlids.size > 0 && entries.length > 0) ||
     orphanedLeanEntries.length > 0;
 
   const alreadyMigrated =
