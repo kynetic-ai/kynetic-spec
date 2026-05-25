@@ -230700,6 +230700,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSETAKJTCHZ5Z5WR0320K4ZM
         timestamp: 2026-05-25T05:39:39.292Z
+      - _ulid: 01KSETB7J23605CNAGS32T9ABY
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSETB54J1C8RCH6VBJMCC8FS
+        timestamp: 2026-05-25T05:39:55.586Z
     examined_commit: 8ec78b1068c3811f36051e6234aa7fd5d8865b85
     external_links: []
     lifecycle_state: open
@@ -230747,9 +230754,28 @@ reviews:
               rendering in static mode."
             created_at: 2026-05-25T05:39:35.130Z
         kind: blocker
+      - _ulid: 01KSETB54J1C8RCH6VBJMCC8FS
+        anchor:
+          type: code
+          commit: 8ec78b1068c3811f36051e6234aa7fd5d8865b85
+          line_end: 323
+          line_start: 318
+          path: src/parser/review-resource-manager.ts
+          side: head
+        entries:
+          - _ulid: 01KSETB54KWA08GF4V189D47XZ
+            author: Jacob Chapel
+            body: "MUST-FIX: explicit invalid content_type currently returns the undocumented code
+              invalid_content_type. The task's exact CLI JSON failure code set does not include that
+              code, and the API status/error mapping only defines invalid id/path, missing file,
+              invalid replace, not found, conflict, and storage incompatibility cases. Enforce the
+              content-type rule while mapping failures to the documented envelope/code, and add
+              CLI/API coverage for invalid content_type."
+            created_at: 2026-05-25T05:39:53.107Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-25T05:31:05.010Z
-    updated_at: 2026-05-25T05:39:35.130Z
+    updated_at: 2026-05-25T05:39:53.107Z
     notes: []
   - _ulid: 01KSESZY8TXWF47R5G8HF6C6D7
     slugs:
