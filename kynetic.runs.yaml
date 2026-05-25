@@ -54083,10 +54083,60 @@ runs:
     started_at: 2026-05-25T09:15:41.376Z
     completed_at: 2026-05-25T09:18:16.876Z
   - _ulid: 01KSFTJ2S364RPCAY1QY8PVTNK
-    status: active
-    current_step: 0
+    status: completed
+    current_step: 5
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-25T15:02:54.499Z
+        completed_at: 2026-05-25T15:04:19.131Z
+        notes: "Worked well: diff-first review kept the assessment grounded in the submitted code; reviewing
+          prior fix-cycle threads made it easy to verify the worker claims; AC annotation search
+          plus focused file reads gave good coverage across CLI, daemon, UI, static export, and
+          resource-manager paths; a direct resolver probe was effective for validating the symlink
+          escape error-mapping candidate before recording a finding."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-25T15:04:19.131Z
+        completed_at: 2026-05-25T15:04:20.277Z
+        notes: "Friction points: the shared resource resolver returns plain validation strings, so
+          downstream managers must manually classify whether a failure is not-found vs invalid-path;
+          that boundary made a subtle 404-vs-400 contract mismatch easy to miss across several fix
+          cycles. The fresh full test suite is necessarily slow for review gates, but the runner
+          output and cache behavior were clear."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-25T15:04:20.277Z
+        completed_at: 2026-05-25T15:04:21.418Z
+        notes: 'Coverage search performed before capture: `kspec search "review resource symlink
+          invalid_resource_path"`, `kspec search "review resource error mapping"`, `kspec search
+          "resource resolver error"`, and `kspec search "invalid_resource_path symlink"` found no
+          existing tracking. `kspec search "review evidence log"` found existing observation
+          @01KR2JD1, so no duplicate evidence-log item is needed. The symlink error-mapping issue is
+          already captured as blocker thread on review @01KSFSWMWBXCVDATZG0NDQMEBW.'
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-25T15:04:21.418Z
+        completed_at: 2026-05-25T15:04:22.530Z
+        notes: "Proposed improvements: no separate new item. The concrete fix belongs in the active task as
+          the recorded blocker: preserve resource_not_found for truly undeclared/missing resources,
+          but map symlink/path-safety resolver failures to invalid_resource_path and cover it
+          behaviorally. Existing evidence-log tracking covers the only broader process issue
+          noticed."
+      - status: skipped
+        step_index: 4
+        started_at: 2026-05-25T15:04:22.530Z
+        completed_at: 2026-05-25T15:04:23.671Z
+        notes: "Discussion skipped: no new untracked improvement requires user approval; actionable work is
+          already in the review record."
+      - status: skipped
+        step_index: 5
+        started_at: 2026-05-25T15:04:23.671Z
+        completed_at: 2026-05-25T15:04:24.765Z
+        notes: "Capture skipped: no new inbox items or observations created to avoid duplicating the current
+          review blocker or existing evidence-log observation."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-25T15:02:54.499Z
+    completed_at: 2026-05-25T15:04:24.765Z
