@@ -52,9 +52,21 @@ export function registerExportCommand(program: Command): void {
           info("Generating snapshot...");
         }
 
-        // Generate the snapshot
+        // Generate the snapshot.
+        //
         // AC: @gh-pages-export ac-1, ac-2, ac-3, ac-4, ac-5
-        const snapshot = await generateJsonSnapshot(options.includeValidation);
+        // AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
+        //     — when the JSON output is being written to a file, also copy
+        //     plan-owned resource files into a sibling
+        //     `assets/resources/plan/<ulid>/...` tree so the static UI can
+        //     resolve `./resources/<path>` references offline. JSON-to-stdout
+        //     and dry-run exports skip the copy and emit `exported_path`
+        //     pointers only.
+        const writesJsonFile = options.format === "json" && !!options.output && !options.dryRun;
+        const assetsOutputDir = writesJsonFile ? path.dirname(path.resolve(options.output!)) : null;
+        const snapshot = await generateJsonSnapshot(options.includeValidation, {
+          assetsOutputDir,
+        });
 
         // AC: @trait-dry-run ac-1, ac-2, ac-3 - Show preview without writing
         if (options.dryRun) {

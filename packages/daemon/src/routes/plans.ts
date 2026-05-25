@@ -19,13 +19,20 @@ import {
   type LoadedPlan,
 } from "../../parser/index.js";
 import { requirePlanFolderStorage } from "../../parser/entity-storage-compatibility.js";
+import { loadResourceManifest } from "../../parser/entity-local-resources.js";
+import { getPlanDir } from "../../parser/plan-storage-manager.js";
 import { PlanStatusSchema } from "../../schema/plan.js";
 import {
   countPlanTaskProgress,
   getLinkedPlanSummaryTasks,
   isCountedInPlanSummary,
 } from "../../lib/plan-summary.js";
-import type { PlanSummary, PlanDetail } from "@kynetic-ai/shared";
+import type {
+  PlanSummary,
+  PlanDetail,
+  PlanResourceMetadata,
+  PlanResourceSummary,
+} from "@kynetic-ai/shared";
 import type { PlanSummaryTask } from "../../lib/plan-summary.js";
 import type { PlanIndexSummary } from "../../daemon/entity-cache.js";
 import { enumArrayUnion } from "./enum-utils.js";
@@ -33,17 +40,47 @@ import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import { wrapResponse } from "./response-envelope.js";
 import { taskStorageIncompatibilityResponse } from "./task-storage-error.js";
 import { entityStorageIncompatibilityResponse } from "./entity-storage-error.js";
+import { buildResourcesBaseUrl, toPlanResourceMetadata } from "./plan-resources.js";
 
 interface PlansRouteOptions {
   getEntityCache?: EntityCacheAccessor;
 }
 
 /**
+ * Pull the bounded resource summary off a plan record. Both `LoadedPlan`
+ * (when populated by the folder-backed loader) and `PlanIndexSummary` may
+ * carry an explicit `resource_summary`. Falls back to `{ count: 0,
+ * total_bytes: 0 }` so list responses always surface the shape even when
+ * the underlying plan declares no resources.
+ *
+ * AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
+ */
+function extractResourceSummary(
+  plan: LoadedPlan | PlanIndexSummary,
+): PlanResourceSummary {
+  const summary = (plan as { resource_summary?: PlanResourceSummary }).resource_summary;
+  if (summary && typeof summary.count === "number" && typeof summary.total_bytes === "number") {
+    return { count: summary.count, total_bytes: summary.total_bytes };
+  }
+  return { count: 0, total_bytes: 0 };
+}
+
+/**
  * Map a plan (full or summary) to a PlanSummary for the API response.
  * Accepts LoadedPlan or PlanIndexSummary — both have the required fields.
  * Accepts LoadedTask[] or TaskSummary[] — both satisfy PlanSummaryTask.
+ *
+ * List responses always surface the bounded `resource_summary` projected
+ * from the plan index, never the full resource metadata array (which lives
+ * on the detail response and is loaded from the per-plan `resources.yaml`
+ * sidecar on demand).
+ *
+ * AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
  */
-function toPlanSummary(plan: LoadedPlan | PlanIndexSummary, tasks: PlanSummaryTask[]): PlanSummary {
+function toPlanSummary(
+  plan: LoadedPlan | PlanIndexSummary,
+  tasks: PlanSummaryTask[],
+): PlanSummary {
   const linkedTasks = getLinkedPlanSummaryTasks(plan, tasks);
 
   return {
@@ -59,7 +96,28 @@ function toPlanSummary(plan: LoadedPlan | PlanIndexSummary, tasks: PlanSummaryTa
     spec_count: plan.derived_specs.length,
     task_count: linkedTasks.filter((task) => isCountedInPlanSummary(task)).length,
     task_progress: countPlanTaskProgress(linkedTasks),
+    resource_summary: extractResourceSummary(plan),
   };
+}
+
+/**
+ * Load the API-shaped resource metadata for one plan from its sidecar
+ * manifest. Returns an empty array when the manifest is absent or
+ * unreadable so list/detail routes degrade gracefully.
+ *
+ * AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+ */
+async function loadPlanResourcesForApi(
+  ctx: Awaited<ReturnType<typeof initContext>>,
+  ulid: string,
+): Promise<PlanResourceMetadata[]> {
+  try {
+    const manifest = await loadResourceManifest(getPlanDir(ctx, ulid));
+    return manifest.resources.map((r) => toPlanResourceMetadata(r));
+  } catch {
+    return [];
+  }
 }
 
 export function createPlansRoutes(_options: PlansRouteOptions = {}) {
@@ -174,6 +232,15 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
           );
 
           // AC: @ui-plans-view ac-1 - Compute progress for each plan
+          // AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
+          // AC: @daemon-read-path ac-no-per-request-sync
+          //     — list responses are intentionally fast: the lean index never
+          //     embeds resource bytes. Both the cache-ready and disk-fallback
+          //     paths project the bounded `resource_summary` (count +
+          //     total_bytes) carried by `PlanIndexSummary`/`LoadedPlan`. No
+          //     per-plan sidecar reads happen here. Full resource metadata is
+          //     served on demand by the dedicated resource endpoints
+          //     (`GET /api/plans/:ref/resources[/:id[/bytes]]`).
           const items: PlanSummary[] = sorted.map((plan) => toPlanSummary(plan, tasks));
 
           return wrapResponse(items, { total: items.length, cacheDomainState: plansDomainState });
@@ -286,9 +353,21 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
           }
         }
 
+        // AC: @folder-backed-plan-storage-1 ac-plan-document-sidecar-is-authoritative
+        // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+        //     — detail responses surface the authoritative markdown body, the
+        //     full resource metadata array loaded from the sidecar manifest,
+        //     and the safe `resources_base_url` clients use to construct
+        //     per-resource bytes URLs (`${base}/${encodeURIComponent(id)}/bytes`).
+        //     `PlanResourceMetadata` stays the strict 9-field shape; URLs live
+        //     outside the metadata object so all consumers (API, CLI, static
+        //     export, agent contexts) see an identical resource shape.
+        const resources = await loadPlanResourcesForApi(await getCtx(), plan._ulid);
         const detail: PlanDetail = {
           ...toPlanSummary(plan, tasks),
           content: plan.content,
+          resources,
+          resources_base_url: buildResourcesBaseUrl(plan._ulid),
         };
 
         return wrapResponse(detail, { cacheDomainState: plansDomainState });

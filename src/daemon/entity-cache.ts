@@ -162,6 +162,20 @@ function sortSessionSummaries(summaries: SessionLogSummary[]): void {
   });
 }
 
+/**
+ * Bounded resource summary mirrored from the plan index — counts only,
+ * never resource bytes. Keeping the shape inside `PlanIndexSummary` lets
+ * cache-ready list responses surface resource presence without loading any
+ * per-plan sidecar manifests.
+ *
+ * AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+ */
+export interface PlanIndexResourceSummary {
+  count: number;
+  total_bytes: number;
+}
+
 /** Summary type for plans (index tier — excludes content and notes). */
 export interface PlanIndexSummary {
   _ulid: string;
@@ -175,11 +189,19 @@ export interface PlanIndexSummary {
   module_ref: string | null;
   derived_tasks: string[];
   derived_specs: string[];
+  /**
+   * Bounded resource summary carried through the cache index. `undefined`
+   * when the plan has no `resources.yaml` sidecar; route consumers project
+   * `{ count: 0, total_bytes: 0 }` in that case.
+   *
+   * AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
+   */
+  resource_summary?: PlanIndexResourceSummary;
 }
 
 /** Project a LoadedPlan to its index-tier summary (strip content and notes). */
 function toPlanIndexSummary(plan: LoadedPlan): PlanIndexSummary {
-  return {
+  const summary: PlanIndexSummary = {
     _ulid: plan._ulid,
     slugs: plan.slugs,
     title: plan.title,
@@ -192,6 +214,15 @@ function toPlanIndexSummary(plan: LoadedPlan): PlanIndexSummary {
     derived_tasks: plan.derived_tasks,
     derived_specs: plan.derived_specs,
   };
+  // `LoadedPlan` may carry an attached `resource_summary` populated by the
+  // folder-backed loader (read from the plan's `resources.yaml` sidecar at
+  // load time). When present, project it through so the cache-ready list
+  // path can surface bounded counts without a sidecar re-read.
+  const attached = (plan as { resource_summary?: PlanIndexResourceSummary }).resource_summary;
+  if (attached && typeof attached.count === "number" && typeof attached.total_bytes === "number") {
+    summary.resource_summary = { count: attached.count, total_bytes: attached.total_bytes };
+  }
+  return summary;
 }
 
 /** Summary type for review records (index tier — excludes threads, checks, verdicts, events, notes). */
