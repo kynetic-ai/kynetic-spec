@@ -229625,6 +229625,24 @@ reviews:
         runner: manual temp project
         created_at: 2026-05-25T00:00:33.509Z
         completed_at: 2026-05-25T00:00:33.509Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/cli/commands/upgrade.ts, src/parser/plan-folder-migration.ts,
+          src/parser/review-folder-migration.ts, src/parser/migration-safety.ts,
+          src/cli/batch-write-buffer.ts, folder-backed/yaml helpers, migration tests. Commands run:
+          kspec task get, kspec item get, kspec review get/for-task/add/open/comment/check, kspec
+          validate, rg AC scan/source-scan checks, git diff/log/status/diff --check, npm test,
+          disposable protected-tripwire repro. Claims verified: cycle-4 fixes for task gate, orphan
+          lean entries, hardcoded production path removal, resources dir/rollback preview behavior;
+          found remaining tripwire bypass. Categories searched: correctness, edge cases, error
+          handling, test quality, integration, work-gate hardcoded paths."
+        name: review evidence log
+        required: false
+        runner: reviewer
+        created_at: 2026-05-25T00:00:47.405Z
+        completed_at: 2026-05-25T00:00:47.405Z
     events:
       - _ulid: 01KSE65A8Z29PHA2DDYVEZ6WGP
         actor: Jacob Chapel
@@ -229674,6 +229692,13 @@ reviews:
           status: fail
           name: protected-tripwire repro
         timestamp: 2026-05-25T00:00:35.192Z
+      - _ulid: 01KSE6Y9Z31RVYHM6BCB34MVER
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-25T00:00:49.123Z
     examined_commit: 27cdba765eb04262bdf35f28dac0b22c2e639360
     external_links: []
     lifecycle_state: open
@@ -229711,5 +229736,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-24T23:47:10.239Z
-    updated_at: 2026-05-25T00:00:33.509Z
+    updated_at: 2026-05-25T00:00:47.405Z
     notes: []
