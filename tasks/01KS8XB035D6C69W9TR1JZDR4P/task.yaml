@@ -89,7 +89,7 @@ description: >
 spec_ref: "@folder-backed-plan-storage-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-plan-resource-import-and-derive-1"
@@ -105,8 +105,8 @@ review_ref: "@01KSG0WNA25PCE5QC05YHK6226"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-plan-resource-api-ui-static/01ks8xb0
-  captured_at: 2026-05-25T16:47:09.333Z
-  commit: 58df2d14fb652674f714e9bbd14bea9318431ccb
+  captured_at: 2026-05-25T17:37:08.272Z
+  commit: 06b5e1d8823bc8e5bad531c5cbe57228f8da4c98
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-plan-resource-api-ui-static/01ks8xb0
@@ -424,8 +424,35 @@ history:
         previous: 2026-05-25T16:47:08.501Z
     command: task-start
     timestamp: 2026-05-25T17:37:04.734Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-plan-resource-api-ui-static/01ks8xb0
+          captured_at: 2026-05-25T17:37:08.272Z
+          commit: 06b5e1d8823bc8e5bad531c5cbe57228f8da4c98
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-plan-resource-api-ui-static/01ks8xb0
+        previous:
+          review_url: null
+          branch: dispatch/task/task-plan-resource-api-ui-static/01ks8xb0
+          captured_at: 2026-05-25T16:47:09.333Z
+          commit: 58df2d14fb652674f714e9bbd14bea9318431ccb
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-plan-resource-api-ui-static/01ks8xb0
+      submitted_at:
+        new: 2026-05-25T17:37:08.277Z
+        previous: 2026-05-25T16:47:09.336Z
+    command: task-submit
+    timestamp: 2026-05-25T17:37:08.277Z
 created_at: 2026-05-22T22:36:47.077Z
 started_at: 2026-05-25T17:37:04.734Z
-submitted_at: 2026-05-25T16:47:09.336Z
+submitted_at: 2026-05-25T17:37:08.277Z
 todos: []
 automation: eligible
