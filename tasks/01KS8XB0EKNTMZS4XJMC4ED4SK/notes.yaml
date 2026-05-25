@@ -62,3 +62,46 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-25T06:56:34.641Z
+  - _ulid: 01KSF0RTJ0CKKS9J3MYC5R8MRK
+    content: >-
+      Fix cycle 2: addressed the single blocker from review @01KSEXTJ728FJZFZTR23BQBS07.
+
+
+      Reviewer flagged that tests/daemon-api/review-resources.test.ts covered basic CRUD but never
+      asserted the two task-contract requirements about route side effects: (a) 409
+      entity_storage_incompatible on incompatible storage and (b) cache.writeThrough('reviews') +
+      resource_changed broadcast on POST/DELETE.
+
+
+      Added three describe blocks (10 new behavioral tests, no source scanning):
+
+
+      1. Entity storage incompatibility coverage — five tests exercise every review-resource route
+      (GET list, GET single, GET bytes, POST multipart, DELETE) against a legacy 1.1 manifest with
+      no review_storage declaration. Each asserts the shared 409 envelope (error:
+      entity_storage_incompatible, code: legacy_review_storage_removed, domain/cache_domain:
+      reviews, suggestion mentioning kspec upgrade).
+
+
+      2. Cache write-through coverage — uses createTestApp({ getEntityCache }) with a mock
+      RouteEntityCache (same createMockCache pattern as daemon-triage-write-through.test.ts) that
+      records writeThrough(domain, hint) calls into an array. POST add, POST replace, and DELETE all
+      assert writeThroughEntries contains a 'reviews' entry. Two negative tests (POST validation
+      failure, DELETE for missing resource) assert writeThroughEntries stays empty.
+
+
+      3. WebSocket broadcast coverage — uses captureBroadcasts(pubsub) on the same setup. Each
+      success case asserts pubsub.broadcast was called with ('reviews:updates', 'resource_changed',
+      { review_ulid, resource_id, action }, projectPath) where action is exactly 'added',
+      'replaced', or 'removed'. Negative cases assert the spy was not called.
+
+
+      Re-verified all task-description ACs against the implementation — no spec or production-code
+      changes were required; the production routes already wrote through cache and broadcast
+      resource_changed, the gap was strictly in the test coverage.
+
+
+      Full test suite: 9700 passed, 5 skipped, 0 failed (was 9690 — added 10 new tests).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-25T07:32:12.480Z

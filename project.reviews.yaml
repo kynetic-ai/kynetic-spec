@@ -231594,6 +231594,30 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-25T06:56:31.759Z
+      - _ulid: 01KSF0RBZGHTMD4VNQ05P11MA4
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSEYNNPWQY270MNXDGX6X4DW
+        timestamp: 2026-05-25T07:31:57.552Z
+      - _ulid: 01KSF0RG9S8357GBGT7XSAXQK5
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSEYNNPWQY270MNXDGX6X4DW
+        timestamp: 2026-05-25T07:32:01.977Z
+      - _ulid: 01KSF0RMJ3N0F9SYKRXZBGJYS4
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSEYQ1KN4E6TQBVDX2XNSJT0
+        timestamp: 2026-05-25T07:32:06.339Z
+      - _ulid: 01KSF0RRV8TXMZMX3P7TM1RB47
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSEYQ1KN4E6TQBVDX2XNSJT0
+        timestamp: 2026-05-25T07:32:10.728Z
     examined_commit: 024a319eac4c9631e57e0703e300f41a0a20f03a
     external_links: []
     lifecycle_state: closed
@@ -231624,7 +231648,40 @@ reviews:
               written, regressions in the evidence refresh path or storage incompatibility envelope
               would pass the suite."
             created_at: 2026-05-25T06:55:32.061Z
+          - _ulid: 01KSF0RA7TXWGW9Y1CGDK5F1SG
+            author: "@claude"
+            body: >-
+              Fixed: added three new describe blocks to tests/daemon-api/review-resources.test.ts
+              covering exactly the gaps you called out.
+
+
+              1. Entity storage incompatibility — five tests exercise GET list, GET single, GET
+              bytes, POST, and DELETE on the review-resource routes against a project with a legacy
+              1.1 manifest that does not declare folder-backed review storage. Each asserts the
+              shared 409 envelope (entity_storage_incompatible) with code
+              legacy_review_storage_removed, domain reviews, cache_domain reviews, and the kspec
+              upgrade suggestion. This closes the regression path where the onError mapping or
+              requireReviewFolderStorage propagation could have escaped as 404 or 500.
+
+
+              2. Cache write-through — three tests use createTestApp({ getEntityCache }) with a mock
+              RouteEntityCache (capturing writeThrough calls in an array, same pattern as
+              daemon-triage-write-through.test.ts). POST add, POST replace, and DELETE each assert
+              that writeThroughEntries contains a reviews-domain entry. Negative cases (validation
+              failure on POST, missing resource on DELETE) assert the writeThrough array is empty.
+
+
+              3. WebSocket broadcasts — the same three success tests also use
+              captureBroadcasts(pubsub) and assert pubsub.broadcast("reviews:updates",
+              "resource_changed", { review_ulid, resource_id, action }) is called with action: added
+              | replaced | removed. The negative cases also assert broadcastSpy was not called.
+
+
+              Full test suite: 9700 passed (10 new tests), 5 skipped, 0 failed.
+            created_at: 2026-05-25T07:31:55.770Z
         kind: blocker
+        resolved_at: 2026-05-25T07:32:00.282Z
+        resolved_by: "@claude"
       - _ulid: 01KSEYQ1KN4E6TQBVDX2XNSJT0
         entries:
           - _ulid: 01KSEYQ1KPTFBCVTTYGF86WAKS
@@ -231658,7 +231715,13 @@ reviews:
               behavioral coverage for review-resource 409 incompatibility and mutation
               cache/broadcast side effects."
             created_at: 2026-05-25T06:56:17.014Z
+          - _ulid: 01KSF0RJX7J5TV7FGPACKF3WZ7
+            author: "@claude"
+            body: Acknowledged — evidence log noted. No code change needed for this nit.
+            created_at: 2026-05-25T07:32:04.647Z
         kind: nit
+        resolved_at: 2026-05-25T07:32:08.988Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -231668,7 +231731,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-25T06:56:31.758Z
     created_at: 2026-05-25T06:40:43.746Z
-    updated_at: 2026-05-25T06:56:31.759Z
+    updated_at: 2026-05-25T07:32:08.988Z
     notes: []
   - _ulid: 01KSEZSCAYY7HHFE619H6KN1TH
     slugs: []
