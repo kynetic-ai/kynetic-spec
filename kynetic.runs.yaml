@@ -53835,7 +53835,7 @@ runs:
     started_at: 2026-05-25T07:53:06.612Z
     completed_at: 2026-05-25T07:55:50.798Z
   - _ulid: 01KSF39Y6PVF03833HPA2R67SM
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -53925,10 +53925,16 @@ runs:
         notes: No user discussion needed because no new improvements are proposed for capture. Existing
           tracking covers the systemic friction, and the concrete defect remains in the review
           record for the worker fix cycle.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-25T08:18:41.571Z
-        completed_at: 2026-05-25T08:18:41.571Z
+        completed_at: 2026-05-25T08:18:52.782Z
+        notes: "No captures created. Rationale: repo-wide validate noise is already tracked by observation
+          @01KNTPX4T; review evidence-log structure is already tracked by observation @01KR2JD1; the
+          materialized task-owned resource resolution bug is already captured as blocker in review
+          @01KSF2EN; targeted lint invocation friction was low-confidence/low-volume and not worth
+          adding as noise."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-25T08:16:30.422Z
+    completed_at: 2026-05-25T08:18:52.782Z
