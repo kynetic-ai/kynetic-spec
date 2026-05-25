@@ -304,6 +304,45 @@ describe.runIf(canRunInit)("Integration: plan resource CLI", () => {
       const newPath = path.join(planDir, "resources", "screenshots", "login-v2.png");
       expect(existsSync(newPath)).toBe(true);
     });
+
+    // AC: @plan-resource-derivation-semantics-1 ac-derived-task-records-resource-version
+    // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+    // Regression: --replace must not mutate the on-disk file or manifest when
+    // post-copy validation rejects the request. A rejected validation that
+    // already moved bytes leaves the manifest and disk out of sync.
+    it("--replace leaves the existing file and manifest untouched when validation rejects the request", async () => {
+      kspecJson<AddResourceJson>(
+        `plan resource add ${planRef} "${sourcePath}" --id login-shot --path doc.bin`,
+        tempDir,
+      );
+      const planUlid = kspecJson<{ _ulid: string }>(`plan get ${planRef}`, tempDir)._ulid;
+      const planDir = path.join(tempDir, ".kspec", "plans", planUlid);
+      const onDisk = path.join(planDir, "resources", "doc.bin");
+      const originalBytes = await fs.readFile(onDisk, "utf-8");
+      const originalManifest = await fs.readFile(
+        path.join(planDir, "resources.yaml"),
+        "utf-8",
+      );
+
+      const replacement = path.join(tempDir, "replacement.bin");
+      await fs.writeFile(replacement, "TWO");
+      const result = kspecRun(
+        `plan resource add ${planRef} "${replacement}" --id login-shot --path doc.bin --replace --content-type not-a-mime --json`,
+        tempDir,
+        { expectFail: true },
+      );
+      expect(result.exitCode).toBe(1);
+      const env = JSON.parse(result.stderr) as PlanResourceErrorJson;
+      expect(env.code).toBe("invalid_resource_path");
+
+      const bytesAfter = await fs.readFile(onDisk, "utf-8");
+      expect(bytesAfter).toBe(originalBytes);
+      const manifestAfter = await fs.readFile(
+        path.join(planDir, "resources.yaml"),
+        "utf-8",
+      );
+      expect(manifestAfter).toBe(originalManifest);
+    });
   });
 
   describe("plan resource list", () => {

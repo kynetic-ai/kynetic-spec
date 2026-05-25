@@ -207,6 +207,91 @@ derive_from_specs: true
     expect(result.exitCode).toBe(2);
     expect(result.stderr).toContain("missing_sibling_source_file");
   });
+
+  // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+  // Regression: a symlinked sibling resource that points outside the sibling
+  // resources/ tree must be rejected before any bytes are copied into the
+  // plan directory. fs.stat would silently follow the link and let an
+  // arbitrary outside file masquerade as a declared sibling resource.
+  it("rejects an import whose sibling resource is a symlink to a file outside the sibling tree", async () => {
+    await writePlan(`# Plan
+
+![shot](./resources/linked.txt)
+
+## Specs
+
+\`\`\`yaml
+- title: Stub
+  slug: stub
+  type: feature
+\`\`\`
+`);
+    await writeSiblingManifest(
+      `resources:
+  - id: linked
+    path: linked.txt
+`,
+    );
+    const outside = path.join(tempDir, "outside.txt");
+    await fs.writeFile(outside, "OUTSIDE_SECRET", "utf-8");
+    const siblingResourcesDir = path.join(path.dirname(planMdPath), "resources");
+    await fs.mkdir(siblingResourcesDir, { recursive: true });
+    await fs.symlink(outside, path.join(siblingResourcesDir, "linked.txt"));
+
+    const result = kspecRun(`plan import "${planMdPath}" --json`, tempDir, { expectFail: true });
+    expect(result.exitCode).toBe(2);
+    expect(result.stderr).toContain("unsafe_sibling_source_file");
+
+    // Validation rejected the import before save, so no plan directory may
+    // exist under .kspec/plans/ holding the outside bytes.
+    const plansRoot = path.join(tempDir, ".kspec", "plans");
+    let planDirs: string[] = [];
+    try {
+      planDirs = await fs.readdir(plansRoot);
+    } catch {
+      planDirs = [];
+    }
+    for (const planUlid of planDirs) {
+      const copied = path.join(plansRoot, planUlid, "resources", "linked.txt");
+      expect(existsSync(copied)).toBe(false);
+    }
+  });
+
+  // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+  // Defence in depth: an intermediate symlinked directory under resources/
+  // would let the per-entry fs.lstat see a regular file (because lstat
+  // follows intermediate symlinks). The realpath containment check rejects
+  // it because the resolved path escapes the sibling resources realpath.
+  it("rejects an import whose sibling resources/ contains a symlinked subdirectory pointing outside the tree", async () => {
+    await writePlan(`# Plan
+
+![shot](./resources/sub/linked.txt)
+
+## Specs
+
+\`\`\`yaml
+- title: Stub
+  slug: stub
+  type: feature
+\`\`\`
+`);
+    await writeSiblingManifest(
+      `resources:
+  - id: nested
+    path: sub/linked.txt
+`,
+    );
+    const outsideDir = path.join(tempDir, "elsewhere");
+    await fs.mkdir(outsideDir, { recursive: true });
+    await fs.writeFile(path.join(outsideDir, "linked.txt"), "ESCAPED", "utf-8");
+    const siblingResourcesDir = path.join(path.dirname(planMdPath), "resources");
+    await fs.mkdir(siblingResourcesDir, { recursive: true });
+    await fs.symlink(outsideDir, path.join(siblingResourcesDir, "sub"));
+
+    const result = kspecRun(`plan import "${planMdPath}" --json`, tempDir, { expectFail: true });
+    expect(result.exitCode).toBe(2);
+    expect(result.stderr).toContain("unsafe_sibling_source_file");
+  });
 });
 
 describe.runIf(canRunInit)("Integration: plan import --into resource validation", () => {

@@ -24,6 +24,7 @@ import * as path from "node:path";
 import type { Command } from "commander";
 import { markMutating } from "../command-annotations.js";
 import {
+  captureResourceGitVersion,
   computeResourceMetadata,
   getResourcesDir,
   loadResourceManifest,
@@ -363,6 +364,39 @@ async function runPlanResourceAdd(
     );
   }
 
+  // Compute and validate the full metadata payload from the SOURCE file
+  // before touching the destination. Without this ordering, a rejected
+  // validation (e.g. malformed --content-type) would still leave the
+  // already-copied bytes on disk while the manifest stays on the old
+  // metadata — an inconsistent half-applied state. Hashing the source
+  // produces the same bytes/sha256 the copy would land at because
+  // fs.copyFile preserves content; git_commit/git_path is captured from
+  // the destination after the copy so the recorded identity reflects the
+  // shadow-worktree path, not the user's working directory.
+  let metadata: ResourceMetadata;
+  try {
+    const metadataResult = await computeResourceMetadata({
+      id: options.id,
+      relativePath: pathValidation.value,
+      absolutePath: sourceAbsolute,
+      contentType: options.contentType,
+      label: options.label ?? null,
+      description: options.description ?? null,
+      captureGit: false,
+    });
+    if (!metadataResult.ok) {
+      failPlanResource(EXIT_VALIDATION, "invalid_resource_path", metadataResult.error, {
+        resourceId: options.id,
+        path: pathValidation.value,
+        sourceFile,
+      });
+    }
+    metadata = metadataResult.value;
+  } catch (err) {
+    failFromUnexpected(err);
+  }
+
+  // All validation passed — safe to mutate the destination.
   await fs.mkdir(resourcesDir, { recursive: true });
   const destination = path.join(resourcesDir, pathValidation.value);
   await fs.mkdir(path.dirname(destination), { recursive: true });
@@ -391,27 +425,12 @@ async function runPlanResourceAdd(
     }
   }
 
-  let metadata: ResourceMetadata;
-  try {
-    const metadataResult = await computeResourceMetadata({
-      id: options.id,
-      relativePath: pathValidation.value,
-      absolutePath: destination,
-      contentType: options.contentType,
-      label: options.label ?? null,
-      description: options.description ?? null,
-    });
-    if (!metadataResult.ok) {
-      failPlanResource(EXIT_VALIDATION, "invalid_resource_path", metadataResult.error, {
-        resourceId: options.id,
-        path: pathValidation.value,
-        sourceFile,
-      });
-    }
-    metadata = metadataResult.value;
-  } catch (err) {
-    failFromUnexpected(err);
-  }
+  // Capture git version identity from the destination now that the file
+  // lives in the plan directory. For a freshly written file this is
+  // typically null (no HEAD blob matches yet); a non-null result means the
+  // exact bytes already appear at that path in HEAD.
+  const gitVersion = captureResourceGitVersion(destination);
+  metadata = { ...metadata, git_commit: gitVersion.git_commit, git_path: gitVersion.git_path };
 
   const replaced = Boolean(existingById);
   const nextResources = replaced

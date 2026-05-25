@@ -59,6 +59,7 @@ export class PlanImportResourceError extends Error {
     | "undeclared_markdown_link"
     | "missing_sibling_source_file"
     | "unreadable_sibling_source_file"
+    | "unsafe_sibling_source_file"
     | "invalid_resource_id"
     | "invalid_resource_path";
   readonly resourceId?: string;
@@ -230,16 +231,84 @@ export async function validatePlanImportResources(
   // Every declared file must exist as a readable regular file under the
   // sibling resources/ directory. Validate up-front so we never copy a
   // partial batch into the plan directory.
+  //
+  // Containment is enforced by resolving the realpath of each declared
+  // file and rejecting any path whose real location is not inside the
+  // sibling resources tree. fs.stat alone would silently follow symlinks
+  // and let `imports/resources/linked.txt → /outside/secret` be copied
+  // into the plan directory, violating the trait's "symlink escapes are
+  // forbidden" contract. We also reject the sibling resources directory
+  // itself being a symlink so a maliciously prepared bundle cannot
+  // re-root the whole tree.
   const resolvedSources = new Map<string, string>();
+  let realSiblingResourcesDir: string | null = null;
+  try {
+    const siblingDirStat = await fs.lstat(siblingResourcesDir);
+    if (siblingDirStat.isSymbolicLink()) {
+      throw new PlanImportResourceError(
+        "unsafe_sibling_source_file",
+        `Sibling resources directory ${siblingResourcesDir} is a symlink; symlinked sibling resources/ trees are rejected to keep all resolution inside the import bundle.`,
+        { sourceFile: siblingResourcesDir },
+      );
+    }
+    realSiblingResourcesDir = await fs.realpath(siblingResourcesDir);
+  } catch (err) {
+    if (err instanceof PlanImportResourceError) throw err;
+    // ENOENT or any other lstat/realpath failure for the directory falls
+    // through to the per-entry check below, which surfaces the same
+    // missing_sibling_source_file diagnostic the existing tests rely on.
+  }
+
   for (const entry of manifest.resources) {
     const sourceFile = path.join(siblingResourcesDir, entry.path);
-    let stat;
+    let leafLstat;
     try {
-      stat = await fs.stat(sourceFile);
+      leafLstat = await fs.lstat(sourceFile);
     } catch {
       throw new PlanImportResourceError(
         "missing_sibling_source_file",
         `Declared resource "${entry.id}" → ${entry.path} has no source file at ${sourceFile}. Place the file under ${SIBLING_RESOURCES_DIR_NAME}/ next to the plan markdown.`,
+        { resourceId: entry.id, path: entry.path, sourceFile },
+      );
+    }
+    if (leafLstat.isSymbolicLink()) {
+      throw new PlanImportResourceError(
+        "unsafe_sibling_source_file",
+        `Declared resource "${entry.id}" → ${entry.path} is a symlink at ${sourceFile}; symlinked sibling resources are rejected because they may resolve outside the import bundle.`,
+        { resourceId: entry.id, path: entry.path, sourceFile },
+      );
+    }
+    let realSource: string;
+    try {
+      realSource = await fs.realpath(sourceFile);
+    } catch {
+      throw new PlanImportResourceError(
+        "missing_sibling_source_file",
+        `Declared resource "${entry.id}" → ${entry.path} could not be resolved at ${sourceFile}.`,
+        { resourceId: entry.id, path: entry.path, sourceFile },
+      );
+    }
+    if (realSiblingResourcesDir !== null) {
+      const relativeToReal = path.relative(realSiblingResourcesDir, realSource);
+      if (
+        relativeToReal === "" ||
+        relativeToReal.startsWith("..") ||
+        path.isAbsolute(relativeToReal)
+      ) {
+        throw new PlanImportResourceError(
+          "unsafe_sibling_source_file",
+          `Declared resource "${entry.id}" → ${entry.path} resolves outside the sibling ${SIBLING_RESOURCES_DIR_NAME}/ tree at ${sourceFile}; symlink escapes are rejected.`,
+          { resourceId: entry.id, path: entry.path, sourceFile },
+        );
+      }
+    }
+    let stat;
+    try {
+      stat = await fs.stat(realSource);
+    } catch {
+      throw new PlanImportResourceError(
+        "missing_sibling_source_file",
+        `Declared resource "${entry.id}" → ${entry.path} could not be read at ${sourceFile}.`,
         { resourceId: entry.id, path: entry.path, sourceFile },
       );
     }
