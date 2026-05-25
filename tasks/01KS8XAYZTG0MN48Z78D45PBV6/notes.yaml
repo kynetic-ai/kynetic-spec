@@ -361,3 +361,43 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-25T00:49:00.324Z
+  - _ulid: 01KSEB289RBK36JW21CS8D85HD
+    content: >-
+      Fix cycle 6: addressed the pipeline-bypass blocker from @01KSE8K5XYQQA8J8SZVD9J1E9X in commit
+      7987f2ca73.
+
+
+      Root cause: assertSafeMigrationTarget was scoped to runAtomicStorageMigration. When the
+      tripwire fired, plan/review/manifest writes were correctly refused but runUpgradePipeline
+      still fell through to runBackfillCoreSkillsStep, runRerenderSkillsStep,
+      runRegenerateAgentsStep, runGitignoreRepairStep, runScaffoldMissingStep, and the
+      version-record step. Those steps write to .kspec/skills/, .agents/, .gitignore, and the shadow
+      branch — exactly the mutations the tripwire exists to refuse. Reviewer reproduced: JSON result
+      showed Storage migration safety preflight=failed alongside Backfill core skills=done.
+
+
+      Fix: hoisted assertSafeMigrationTarget to runUpgradePipeline right after the isCurrent
+      short-circuit and before any pipeline step runs. On failure the pipeline returns a single
+      failed 'Storage migration safety preflight' step plus skipped synthetic entries for every
+      named downstream step so JSON consumers see a consistent shape. Dry-runs remain exempt. The
+      defense-in-depth checks inside runAtomicStorageMigration and
+      runPlanFolderMigrationStep/runReviewFolderMigrationStep are kept (dead code from the pipeline
+      path but still protect future direct callers).
+
+
+      Regression test added: 'upgrade refuses every pipeline step when KSPEC_PROTECTED_PROJECT_PATHS
+      guards the target' in tests/upgrade-folder-storage.test.ts. Asserts every downstream pipeline
+      step is skipped, no step is done, and the manifest, setup state, .gitignore, and
+      .kspec/skills/ listing are byte/listing identical to before the run.
+
+
+      Re-verified every AC on @entity-folder-migration-and-compatibility-1. The pipeline-wide
+      preflight now upholds the executing-folder-migration atomic-mutation contract on protected
+      targets across the entire upgrade pipeline, not just the storage sub-block.
+
+
+      Full test suite: 2519 suites passed, 9600 tests passed (was 9599), 5 pre-existing skipped of
+      9605.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-25T01:12:52.792Z

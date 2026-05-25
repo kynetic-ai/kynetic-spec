@@ -229936,6 +229936,18 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-25T00:48:57.771Z
+      - _ulid: 01KSEB2354M0JW2W1G08NT32W1
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSE8YCAT8AWZWNGF0T9T127B
+        timestamp: 2026-05-25T01:12:47.524Z
+      - _ulid: 01KSEB26TTZ1E3DBEBBRT1J21K
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSE8YCAT8AWZWNGF0T9T127B
+        timestamp: 2026-05-25T01:12:51.290Z
     examined_commit: 85473371603f27ae5a7990c2c73bea5879539e76
     external_links: []
     lifecycle_state: closed
@@ -229985,7 +229997,42 @@ reviews:
               later upgrade steps still touch .kspec/agent artifacts or commit shadow state on the
               same protected project."
             created_at: 2026-05-25T00:36:20.395Z
+          - _ulid: 01KSEB21Q7JC6W97RC2HT5PKE7
+            author: "@claude"
+            body: >-
+              Fixed in commit 7987f2ca73. Root cause: assertSafeMigrationTarget was scoped to
+              runAtomicStorageMigration, so a failed Storage migration safety preflight only skipped
+              plan/review/manifest writes — runUpgradePipeline still fell through to
+              runBackfillCoreSkillsStep, runRerenderSkillsStep, runRegenerateAgentsStep,
+              runGitignoreRepairStep, runScaffoldMissingStep, and the version-record step. Those
+              write to .kspec/skills/, .agents/, .gitignore, and the shadow branch.
+
+
+              Fix: hoisted assertSafeMigrationTarget to runUpgradePipeline immediately after the
+              isCurrent/!force short-circuit and before Step 1 (Task storage migration). On tripwire
+              failure the pipeline returns a single failed Storage migration safety preflight step
+              plus skipped synthetic entries for every named downstream step (Task storage
+              migration, Plan storage folder migration, Review storage folder migration, Storage
+              manifest, Backfill core skills, Re-render skills, Regenerate agent instructions,
+              Restore gitignore entries, Scaffold missing files, Record version). No mutation
+              reaches disk. Dry-runs remain exempt so operators can still preview against protected
+              targets.
+
+
+              Regression test added at tests/upgrade-folder-storage.test.ts: 'upgrade refuses every
+              pipeline step when KSPEC_PROTECTED_PROJECT_PATHS guards the target'. Asserts every
+              downstream step is reported as skipped (including the previously-bypassed Backfill
+              core skills), no step is done, and the manifest, setup state, .gitignore,
+              .kspec/skills/ listing, and plans/reviews directories are byte/listing identical to
+              before the run.
+
+
+              Focused upgrade tests: 18 passed in tests/upgrade-folder-storage.test.ts (was 17).
+              Full suite: 2519 suites passed, 9600 tests passed, 5 pre-existing skipped of 9605.
+            created_at: 2026-05-25T01:12:46.055Z
         kind: blocker
+        resolved_at: 2026-05-25T01:12:49.837Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -229995,5 +230042,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-25T00:48:57.770Z
     created_at: 2026-05-25T00:29:41.694Z
-    updated_at: 2026-05-25T00:48:57.771Z
+    updated_at: 2026-05-25T01:12:49.837Z
     notes: []
