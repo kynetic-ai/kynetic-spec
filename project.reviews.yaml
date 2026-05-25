@@ -232594,6 +232594,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-25T08:28:46.328Z
+      - _ulid: 01KSF48K3786H97KWBZBMN5023
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSF48GH1C5HE0DWZDJXDXTA0
+        timestamp: 2026-05-25T08:33:14.855Z
     examined_commit: 9f21d1bd4651df54ac5fc5946affb3c84edf6ac6
     external_links: []
     lifecycle_state: open
@@ -232603,8 +232610,30 @@ reviews:
       content_hash: ""
       ref: "@01KS8XB0EKNTMZS4XJMC4ED4SK"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KSF48GH1C5HE0DWZDJXDXTA0
+        anchor:
+          type: code
+          commit: 9f21d1bd4651df54ac5fc5946affb3c84edf6ac6
+          line_end: 492
+          line_start: 492
+          path: src/parser/review-resource-manager.ts
+          side: head
+        entries:
+          - _ulid: 01KSF48GH2546ZHR125P05YCBF
+            author: Jacob Chapel
+            body: "MUST-FIX: removeReviewResource deletes the resource file with fs.rm(path.join(resourcesDir,
+              resource.path)) without using the symlink-safe resolver. If resources/<dir> is a
+              symlink, Node follows that intermediate symlink and removes the outside target; I
+              verified this with a direct fs.rm(resources/link/victim.txt) reproduction where the
+              outside file was deleted. This violates the shared local-resource contract that
+              symlink escapes are rejected and no file outside the owning resources tree is touched.
+              Resolve the declared resource through the same symlink-safe path machinery, or
+              otherwise reject symlinked intermediates before deleting, and add behavioral coverage
+              for remove on a symlink-escape path."
+            created_at: 2026-05-25T08:33:12.226Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-25T08:28:30.823Z
-    updated_at: 2026-05-25T08:28:44.513Z
+    updated_at: 2026-05-25T08:33:12.226Z
     notes: []
