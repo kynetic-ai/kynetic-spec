@@ -305,6 +305,63 @@ describe.runIf(canRunInit)("Integration: plan resource CLI", () => {
       expect(existsSync(newPath)).toBe(true);
     });
 
+    // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+    // Regression for review cycle 2 blocker #1: `plan resource add` must not
+    // follow a pre-existing symlink under `<plan>/resources/<intermediate>`
+    // and write the source bytes to an outside tree. The textual
+    // `validateResourceRelativePath` check stops authoring-time traversal
+    // but does not see disk-level symlinks; the mutation gate must lstat
+    // each chain segment before any copy.
+    it("rejects plan resource add when an intermediate directory under resources/ is a symlink to an outside tree", async () => {
+      kspecJson<AddResourceJson>(
+        `plan resource add ${planRef} "${sourcePath}" --id baseline --path baseline.png`,
+        tempDir,
+      );
+      const planUlid = kspecJson<{ _ulid: string }>(`plan get ${planRef}`, tempDir)._ulid;
+      const resourcesDir = path.join(tempDir, ".kspec", "plans", planUlid, "resources");
+      const outsideDir = path.join(tempDir, "outside-of-plan");
+      await fs.mkdir(outsideDir, { recursive: true });
+      const symlinkSub = path.join(resourcesDir, "sub");
+      await fs.symlink(outsideDir, symlinkSub, "dir");
+
+      const result = kspecRun(
+        `plan resource add ${planRef} "${sourcePath}" --id leak --path sub/leak.txt --json`,
+        tempDir,
+        { expectFail: true },
+      );
+      expect(result.exitCode).toBe(1);
+      const env = JSON.parse(result.stderr) as PlanResourceErrorJson;
+      expect(env.code).toBe("invalid_resource_path");
+      expect(env.message).toMatch(/symlink/i);
+      expect(existsSync(path.join(outsideDir, "leak.txt"))).toBe(false);
+      expect(existsSync(path.join(resourcesDir, "sub", "leak.txt"))).toBe(false);
+    });
+
+    // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+    // Defence-in-depth: even when the resources/ root itself is a symlink
+    // (e.g. someone migrated state by symlinking the dir), add must refuse
+    // every write — not silently redirect every declared path into the
+    // outside tree.
+    it("rejects plan resource add when resources/ itself is a symlink", async () => {
+      const planUlid = kspecJson<{ _ulid: string }>(`plan get ${planRef}`, tempDir)._ulid;
+      const planDir = path.join(tempDir, ".kspec", "plans", planUlid);
+      const resourcesDir = path.join(planDir, "resources");
+      const outsideDir = path.join(tempDir, "outside-of-plan-root");
+      await fs.mkdir(outsideDir, { recursive: true });
+      await fs.symlink(outsideDir, resourcesDir, "dir");
+
+      const result = kspecRun(
+        `plan resource add ${planRef} "${sourcePath}" --id leak --path leak.png --json`,
+        tempDir,
+        { expectFail: true },
+      );
+      expect(result.exitCode).toBe(1);
+      const env = JSON.parse(result.stderr) as PlanResourceErrorJson;
+      expect(env.code).toBe("invalid_resource_path");
+      expect(env.message).toMatch(/symlink/i);
+      expect(existsSync(path.join(outsideDir, "leak.png"))).toBe(false);
+    });
+
     // AC: @plan-resource-derivation-semantics-1 ac-derived-task-records-resource-version
     // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
     // Regression: --replace must not mutate the on-disk file or manifest when
@@ -455,6 +512,56 @@ describe.runIf(canRunInit)("Integration: plan resource CLI", () => {
       expect(result.exitCode).toBe(1);
       const env = JSON.parse(result.stderr) as PlanResourceErrorJson;
       expect(env.code).toBe("resource_not_found");
+    });
+
+    // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+    // Regression for review cycle 2 blocker #2: `plan resource remove` must
+    // not follow a pre-existing symlink under `<plan>/resources/<intermediate>`
+    // and delete an arbitrary outside file. Even though the manifest entry
+    // is plan-owned text, the on-disk path may be poisoned by a symlinked
+    // intermediate directory; the destructive `fs.rm` must refuse the
+    // request before it touches disk.
+    it("rejects plan resource remove when an intermediate directory under resources/ is a symlink to an outside tree", async () => {
+      // Establish the resources/ root by adding a legitimate baseline file
+      // first (this avoids hand-creating .kspec state and keeps the test
+      // grounded in the real CLI flow).
+      kspecJson<AddResourceJson>(
+        `plan resource add ${planRef} "${sourcePath}" --id baseline --path baseline.png`,
+        tempDir,
+      );
+      const planUlid = kspecJson<{ _ulid: string }>(`plan get ${planRef}`, tempDir)._ulid;
+      const planDir = path.join(tempDir, ".kspec", "plans", planUlid);
+      const resourcesDir = path.join(planDir, "resources");
+      const outsideDir = path.join(tempDir, "outside-of-plan-remove");
+      await fs.mkdir(outsideDir, { recursive: true });
+      const outsideFile = path.join(outsideDir, "leak.txt");
+      await fs.writeFile(outsideFile, "OUTSIDE_SECRET", "utf-8");
+
+      // Plant the pre-existing symlink and a manifest entry that points
+      // through it. The fixed `add` flow refuses to write such an entry,
+      // so we install it by editing the manifest directly — matching the
+      // reviewer's repro where the manifest already contains the bad path.
+      const symlinkSub = path.join(resourcesDir, "sub");
+      await fs.symlink(outsideDir, symlinkSub, "dir");
+      const manifestPath = path.join(planDir, "resources.yaml");
+      const manifestText = await fs.readFile(manifestPath, "utf-8");
+      // sha256 is quoted to keep YAML from coercing a digits-only value
+      // into a number; the helper only validates the on-disk symlink
+      // chain, so the actual hash is unimportant for the regression.
+      const poisonedManifest = `${manifestText.trimEnd()}\n  - id: leak\n    label: null\n    path: sub/leak.txt\n    content_type: text/plain\n    bytes: 14\n    sha256: "0000000000000000000000000000000000000000000000000000000000000000"\n    git_commit: null\n    git_path: null\n    description: null\n`;
+      await fs.writeFile(manifestPath, poisonedManifest, "utf-8");
+
+      const result = kspecRun(
+        `plan resource remove ${planRef} leak --force --json`,
+        tempDir,
+        { expectFail: true },
+      );
+      expect(result.exitCode).toBe(1);
+      const env = JSON.parse(result.stderr) as PlanResourceErrorJson;
+      expect(env.code).toBe("invalid_resource_path");
+      expect(env.message).toMatch(/symlink/i);
+      expect(existsSync(outsideFile)).toBe(true);
+      expect(await fs.readFile(outsideFile, "utf-8")).toBe("OUTSIDE_SECRET");
     });
   });
 });

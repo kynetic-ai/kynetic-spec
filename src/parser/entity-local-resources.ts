@@ -494,6 +494,116 @@ export async function resolveResourcePath(options: {
 }
 
 /**
+ * Validate that a resource mutation (write or delete) against
+ * `<ownerResourcesDir>/<relativePath>` stays inside the owning entity's
+ * resources tree even when intermediate directories or the destination
+ * leaf already exist as symlinks.
+ *
+ * The textual `validateResourceRelativePath` check stops authoring-time
+ * traversal (`../escape`, absolute paths, backslashes) but does not catch
+ * a *pre-existing* symlink on disk: if the user — or a hostile manifest —
+ * created `<ownerResourcesDir>/sub` as a symlink to an outside tree, a
+ * plain `path.join(ownerResourcesDir, "sub/leak.txt")` followed by
+ * `fs.copyFile` / `fs.rm` will silently escape the entity tree. This
+ * helper walks the textual chain segment-by-segment with `lstat` and
+ * rejects the request the moment any existing component is a symlink:
+ *
+ *   1. The resources directory itself, if it exists, must not be a
+ *      symlink (rejecting symlinked roots that would re-route every
+ *      declared path at once).
+ *   2. Each intermediate directory along the relative chain, if it
+ *      exists, must not be a symlink (rejecting partial-tree symlinks
+ *      like `resources/sub → /outside`).
+ *   3. The destination leaf, if it exists, must not be a symlink and
+ *      must be a regular file (rejecting symlinked manifest entries that
+ *      would delete arbitrary files under `fs.rm`).
+ *
+ * Missing components are tolerated — the caller will create them with
+ * `fs.mkdir`, which is safe under the existing-symlink-free chain that
+ * this helper has just verified. The textual path validation is
+ * re-applied so callers may pass either the raw user input or a
+ * previously-validated path.
+ *
+ * AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+ */
+export async function assertSafeResourceMutationPath(options: {
+  ownerResourcesDir: string;
+  relativePath: string;
+}): Promise<ResourceValidationResult<{ absolutePath: string }>> {
+  const pathValidation = validateResourceRelativePath(options.relativePath);
+  if (!pathValidation.ok) return pathValidation;
+  const relativePath = pathValidation.value;
+
+  try {
+    const rootStat = await fs.lstat(options.ownerResourcesDir);
+    if (rootStat.isSymbolicLink()) {
+      return {
+        ok: false,
+        error: `Resource path "${relativePath}" cannot be mutated: the owning entity's resources/ directory is itself a symlink, which is rejected so all writes stay inside the entity tree.`,
+      };
+    }
+    if (!rootStat.isDirectory()) {
+      return {
+        ok: false,
+        error: `Resource path "${relativePath}" cannot be mutated: the owning entity's resources/ path exists but is not a directory.`,
+      };
+    }
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code !== "ENOENT") {
+      return {
+        ok: false,
+        error: `Resource path "${relativePath}" cannot be mutated: failed to inspect the owning entity's resources/ directory: ${err instanceof Error ? err.message : String(err)}.`,
+      };
+    }
+    // ENOENT is fine — the caller will mkdir the root and the rest of
+    // the chain. There can be no symlinked intermediates beneath a
+    // not-yet-created root.
+  }
+
+  const segments = relativePath.split("/").filter((seg) => seg.length > 0);
+  let probe = options.ownerResourcesDir;
+  for (let i = 0; i < segments.length; i++) {
+    probe = path.join(probe, segments[i]);
+    const isLast = i === segments.length - 1;
+    let segStat;
+    try {
+      segStat = await fs.lstat(probe);
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+        // Remaining chain does not exist yet. Anything mkdir creates
+        // here is a fresh non-symlink directory, so containment is
+        // guaranteed for the rest of the walk.
+        break;
+      }
+      return {
+        ok: false,
+        error: `Resource path "${relativePath}" cannot be mutated: failed to inspect intermediate "${segments.slice(0, i + 1).join("/")}": ${err instanceof Error ? err.message : String(err)}.`,
+      };
+    }
+    if (segStat.isSymbolicLink()) {
+      return {
+        ok: false,
+        error: `Resource path "${relativePath}" resolves through a symlink at "${segments.slice(0, i + 1).join("/")}"; symlink escapes are rejected so all mutations stay inside the entity tree.`,
+      };
+    }
+    if (!isLast && !segStat.isDirectory()) {
+      return {
+        ok: false,
+        error: `Resource path "${relativePath}" cannot be mutated: intermediate "${segments.slice(0, i + 1).join("/")}" exists but is not a directory.`,
+      };
+    }
+    if (isLast && !segStat.isFile()) {
+      return {
+        ok: false,
+        error: `Resource path "${relativePath}" cannot be mutated: destination exists but is not a regular file.`,
+      };
+    }
+  }
+
+  return { ok: true, value: { absolutePath: path.join(options.ownerResourcesDir, relativePath) } };
+}
+
+/**
  * Resolve a `./resources/<relative-path>` reference against an owning
  * entity directory by first loading the entity's `resources.yaml`
  * manifest from disk, then delegating to `resolveResourcePath`.

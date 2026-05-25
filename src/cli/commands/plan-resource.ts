@@ -24,6 +24,7 @@ import * as path from "node:path";
 import type { Command } from "commander";
 import { markMutating } from "../command-annotations.js";
 import {
+  assertSafeResourceMutationPath,
   captureResourceGitVersion,
   computeResourceMetadata,
   getResourcesDir,
@@ -396,9 +397,41 @@ async function runPlanResourceAdd(
     failFromUnexpected(err);
   }
 
+  // Defend against pre-existing symlinks on the destination chain before
+  // touching disk. Without this, an existing `<resourcesDir>/sub` symlink
+  // to an outside tree would let `fs.copyFile(..., path.join(resourcesDir,
+  // "sub/leak.txt"))` write the bytes outside the plan directory entirely.
+  // The textual `validateResourceRelativePath` above only catches
+  // authoring-time traversal; it cannot see disk-level symlinks. If the
+  // previous resource lived at a different relative path, validate that
+  // chain too so the post-copy cleanup `fs.rm` cannot delete an outside
+  // file through a symlinked predecessor.
+  const safeDestination = await assertSafeResourceMutationPath({
+    ownerResourcesDir: resourcesDir,
+    relativePath: pathValidation.value,
+  });
+  if (!safeDestination.ok) {
+    failPlanResource(EXIT_VALIDATION, "invalid_resource_path", safeDestination.error, {
+      resourceId: options.id,
+      path: pathValidation.value,
+    });
+  }
+  if (existingById && existingById.path !== pathValidation.value) {
+    const safePrevious = await assertSafeResourceMutationPath({
+      ownerResourcesDir: resourcesDir,
+      relativePath: existingById.path,
+    });
+    if (!safePrevious.ok) {
+      failPlanResource(EXIT_VALIDATION, "invalid_resource_path", safePrevious.error, {
+        resourceId: options.id,
+        path: existingById.path,
+      });
+    }
+  }
+
   // All validation passed — safe to mutate the destination.
   await fs.mkdir(resourcesDir, { recursive: true });
-  const destination = path.join(resourcesDir, pathValidation.value);
+  const destination = safeDestination.value.absolutePath;
   await fs.mkdir(path.dirname(destination), { recursive: true });
 
   try {
@@ -415,7 +448,8 @@ async function runPlanResourceAdd(
   // If replacing and the path moved, drop the previous file under the old
   // path so the on-disk tree matches the declared manifest exactly. We
   // intentionally remove only the previous file — not the entire previous
-  // directory — to avoid clobbering unrelated siblings.
+  // directory — to avoid clobbering unrelated siblings. The previous path
+  // was symlink-checked above.
   if (existingById && existingById.path !== pathValidation.value) {
     const previousAbsolute = path.join(resourcesDir, existingById.path);
     try {
@@ -568,6 +602,26 @@ function registerPlanResourceRemoveCommand(resource: Command): void {
           );
         }
 
+        // Defend against pre-existing symlinks on the file chain before
+        // any destructive action — including the confirmation prompt.
+        // The manifest entry is trusted text but the on-disk path may
+        // have been hand-edited or seeded by a hostile bundle. Without
+        // this gate, a `<resourcesDir>/sub` symlink to an outside tree
+        // would let `fs.rm(path.join(resourcesDir, "sub/leak.txt"))`
+        // delete arbitrary files reachable through that symlink. Doing
+        // the gate before the prompt avoids a "yes, delete" answer that
+        // would otherwise become an unintended outside-file deletion.
+        const safeFile = await assertSafeResourceMutationPath({
+          ownerResourcesDir: resourcesDir,
+          relativePath: match.path,
+        });
+        if (!safeFile.ok) {
+          failPlanResource(EXIT_VALIDATION, "invalid_resource_path", safeFile.error, {
+            resourceId,
+            path: match.path,
+          });
+        }
+
         if (!options.force) {
           // Spec contract:
           //   non-interactive without --force → confirmation_required (exit 1)
@@ -595,9 +649,8 @@ function registerPlanResourceRemoveCommand(resource: Command): void {
           }
         }
 
-        const fileAbsolute = path.join(resourcesDir, match.path);
         try {
-          await fs.rm(fileAbsolute, { force: true });
+          await fs.rm(safeFile.value.absolutePath, { force: true });
         } catch (err) {
           failFromUnexpected(err);
         }
