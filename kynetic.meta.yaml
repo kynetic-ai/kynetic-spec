@@ -19423,6 +19423,26 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-24T23:45:42.332Z
+  - _ulid: 01KSEEJCDC573AV79M7AVXY62Q
+    type: friction
+    content: Reflection gate/docs should count closed review records, review verdicts, and task review
+      transitions as meaningful session activity. Review-only sessions can produce durable findings
+      and task status changes even when the code worktree is clean and no task is completed.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-25T02:14:07.021Z
+  - _ulid: 01KSEEJCP4E37MF7G6DSGFQPBC
+    type: success
+    content: During migration/compatibility reviews, a small temp-project scratch repro after reading
+      the diff can catch edge cases missed by existing focused and full test suites. In this review,
+      tsx repros exposed same-ULID folder+monolithic overwrites despite all tests passing.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-25T02:14:07.300Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
