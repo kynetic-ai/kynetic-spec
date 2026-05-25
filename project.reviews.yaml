@@ -233771,6 +233771,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSG15AFBMQSS730QFQJGE8TM
         timestamp: 2026-05-25T16:58:18.902Z
+      - _ulid: 01KSG1714E7BP5T40Y3D0NKK5R
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSG16YWFDTBRV3BN988YFV1W
+        timestamp: 2026-05-25T16:59:12.398Z
     examined_commit: 58df2d14fb652674f714e9bbd14bea9318431ccb
     external_links: []
     lifecycle_state: open
@@ -233822,7 +233829,29 @@ reviews:
               unchanged markdown instead of failing."
             created_at: 2026-05-25T16:58:16.427Z
         kind: blocker
+      - _ulid: 01KSG16YWFDTBRV3BN988YFV1W
+        anchor:
+          type: code
+          commit: 58df2d14fb652674f714e9bbd14bea9318431ccb
+          line_end: 435
+          line_start: 430
+          path: packages/daemon/src/routes/plan-resources.ts
+          side: head
+        entries:
+          - _ulid: 01KSG16YWGEE1T96RNESN0J70Z
+            author: Jacob Chapel
+            body: "MUST-FIX: the POST upload path writes the temporary upload file under resourcesDir before
+              calling assertSafeResourceMutationPath(). If the owning plan resources/ directory is
+              already a symlink to an outside directory, fs.mkdir(..., {recursive:true}) accepts it
+              and fs.writeFile(tempPath, buffer) writes uploaded bytes outside the owning entity
+              tree before the later safety check rejects the destination and tries to clean up. This
+              violates ac-path-escape-rejected, which requires no file outside the owning resource
+              tree to be written. Validate the resources root/final mutation path before
+              materialising upload bytes, or stage the temp file somewhere not reachable through the
+              untrusted resources/ tree."
+            created_at: 2026-05-25T16:59:10.096Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-25T16:53:32.610Z
-    updated_at: 2026-05-25T16:58:16.427Z
+    updated_at: 2026-05-25T16:59:10.096Z
     notes: []
