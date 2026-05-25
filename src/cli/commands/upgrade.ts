@@ -35,7 +35,13 @@ export interface SourceVersionResult {
  */
 export interface UpgradeStepResult {
   name: string;
-  status: "done" | "skipped" | "failed";
+  /**
+   * `rolled_back` is reported only by atomic step groups: when one step
+   * in the group fails and the buffered writes from earlier steps are
+   * discarded, those earlier steps are marked `rolled_back` so callers
+   * and follow-up generators do not treat them as completed work.
+   */
+  status: "done" | "skipped" | "failed" | "rolled_back";
   message: string;
   details?: Record<string, unknown>;
 }
@@ -63,6 +69,15 @@ export interface UpgradeResult {
    * AC: @release-notes-accessible ac-upgrade-surfaces-notes
    */
   releaseNotes: Array<{ version: string; heading: string; markdown: string }>;
+  /**
+   * Short shadow-branch commit SHA captured BEFORE any mutation. Surfaced
+   * so an operator can `git reset --hard <sha>` on the shadow worktree if
+   * the upgrade needs to be rolled back. `null` when no shadow worktree
+   * is configured for the project.
+   *
+   * AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-dry-run-previews-layout
+   */
+  previousShadowCommit: string | null;
 }
 
 // ─── Setup State ──────────────────────────────────────────────────────────────
@@ -336,6 +351,14 @@ export async function runUpgradePipeline(
 
   const source = await detectSourceVersion(ctx.specDir, projectDir);
 
+  // Capture the shadow HEAD commit BEFORE any mutation so an operator can
+  // roll back via `git reset --hard <sha>` if the upgrade leaves the project
+  // in an unexpected state. Surfaced in the result regardless of whether
+  // the upgrade applies changes.
+  //
+  // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-dry-run-previews-layout
+  const previousShadowCommit = await readShadowHeadCommit(ctx.shadow);
+
   // AC: @single-command-version-upgrade ac-idempotent-when-current
   const isCurrent = source.version === targetVersion && source.confidence === "exact";
   const isRefresh = source.version === targetVersion && source.confidence === "approximate";
@@ -353,14 +376,80 @@ export async function runUpgradePipeline(
       // Already current — no intervening release notes to surface.
       // AC: @release-notes-accessible ac-upgrade-surfaces-notes
       releaseNotes: [],
+      previousShadowCommit,
     };
+  }
+
+  // ─── Pipeline-wide safety preflight ──────────────────────────────────
+  // The protected-project tripwire (KSPEC_PROTECTED_PROJECT_PATHS) must
+  // gate EVERY executing upgrade step, not just the plan/review/manifest
+  // storage block. A failure inside `runAtomicStorageMigration` previously
+  // returned a `failed` "Storage migration safety preflight" step but the
+  // pipeline still fell through to `runBackfillCoreSkillsStep` and the
+  // downstream skill / agents / gitignore / scaffold / version-record
+  // steps. Those steps write to `.kspec/`, `.agents/`, the project
+  // gitignore, and the shadow branch — exactly the mutations the tripwire
+  // exists to refuse. Hoisting the check here closes that bypass: when an
+  // operator points the env variable at a protected root, no executing
+  // upgrade step touches disk.
+  //
+  // Dry-runs are intentionally exempt — the tripwire only refuses writes
+  // so operators can still preview what a migration would do against a
+  // protected target.
+  //
+  // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-executes-folder-migration
+  if (!dryRun) {
+    try {
+      const { assertSafeMigrationTarget } = await import(
+        "../../parser/migration-safety.js"
+      );
+      assertSafeMigrationTarget(projectDir, ctx.specDir);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      const skipMessage =
+        "skipped — protected project tripwire refused executing upgrade";
+      // Synthesise step records for every named pipeline step so JSON
+      // consumers and the rendered console output see the same shape they
+      // would on a normal upgrade — just with every mutation explicitly
+      // accounted for as `skipped`. The order matches the executing-run
+      // pipeline order below.
+      const skippedPipelineSteps: UpgradeStepResult[] = [
+        { name: "Storage migration safety preflight", status: "failed", message },
+        { name: "Task storage migration", status: "skipped", message: skipMessage },
+        { name: "Plan storage folder migration", status: "skipped", message: skipMessage },
+        { name: "Review storage folder migration", status: "skipped", message: skipMessage },
+        { name: "Storage manifest (kynetic 1.2)", status: "skipped", message: skipMessage },
+        { name: "Backfill core skills", status: "skipped", message: skipMessage },
+        { name: "Re-render skills", status: "skipped", message: skipMessage },
+        { name: "Regenerate agent instructions", status: "skipped", message: skipMessage },
+        { name: "Restore gitignore entries", status: "skipped", message: skipMessage },
+        { name: "Scaffold missing files", status: "skipped", message: skipMessage },
+        { name: "Record version", status: "skipped", message: skipMessage },
+      ];
+      return {
+        success: false,
+        sourceVersion: source.version,
+        targetVersion,
+        confidence: source.confidence,
+        isRefresh,
+        noop: false,
+        steps: skippedPipelineSteps,
+        followUps: [],
+        releaseNotes: [],
+        previousShadowCommit,
+      };
+    }
   }
 
   // ─── Step 1: Task storage migration ─────────────────────────────────
   // AC: @single-command-version-upgrade ac-runs-task-storage-migration
+  let taskMigrationOk = true;
   try {
     const migrationResult = await runTaskStorageMigrationStep(ctx, dryRun);
     steps.push(migrationResult);
+    if (migrationResult.status === "failed") {
+      taskMigrationOk = false;
+    }
     if (migrationResult.status === "done") {
       const count = (migrationResult.details?.migrated as number) || 0;
       if (count > 0) {
@@ -368,11 +457,59 @@ export async function runUpgradePipeline(
       }
     }
   } catch (err) {
+    taskMigrationOk = false;
     steps.push({
       name: "Task storage migration",
       status: "failed",
       message: err instanceof Error ? err.message : String(err),
     });
+  }
+
+  // ─── Atomic storage migration block (plan + review + manifest) ──────
+  // Plan-folder, review-folder, and manifest promotion are buffered into
+  // a single logical mutation: the writes are isolated via `runWithBuffer`
+  // (nested calls inside `applyPlanMigration` / `applyReviewMigration` /
+  // the manifest writer reuse the outer buffer instead of flushing their
+  // own), and the shadow commit happens once after the buffer flushes.
+  //
+  // If any step fails (partial-layout guard, validation, etc.), the
+  // buffer discards everything that was written by earlier steps, so a
+  // failed upgrade cannot leave behind a half-migrated project where the
+  // plan folders exist but the manifest still says kynetic 1.1.
+  //
+  // `taskMigrationOk` gates the manifest promotion: a failed task
+  // migration step must NOT allow `kynetic: "1.2"` /
+  // `task_storage.format: split` to land on disk. The atomic block runs
+  // the plan/review steps for diagnostic output, but the manifest step
+  // skips with a clear message when the task migration above failed.
+  //
+  // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-dry-run-previews-layout
+  // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-executes-folder-migration
+  // AC: @entity-folder-migration-and-compatibility-1 ac-migration-preserves-record-identity-and-unknown-fields
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  // AC: @entity-folder-migration-and-compatibility-1 ac-new-projects-declare-folder-storage
+  const storageSteps = await runAtomicStorageMigration(
+    ctx,
+    projectDir,
+    dryRun,
+    force,
+    taskMigrationOk,
+  );
+  for (const storageStep of storageSteps) {
+    steps.push(storageStep);
+    if (storageStep.status === "done") {
+      if (storageStep.name === "Plan storage folder migration") {
+        const migrated = (storageStep.details?.migrated as number) || 0;
+        if (migrated > 0) {
+          followUps.push(`Plan storage: ${migrated} plan(s) migrated to folder-backed layout`);
+        }
+      } else if (storageStep.name === "Review storage folder migration") {
+        const migrated = (storageStep.details?.migrated as number) || 0;
+        if (migrated > 0) {
+          followUps.push(`Review storage: ${migrated} review(s) migrated to folder-backed layout`);
+        }
+      }
+    }
   }
 
   // ─── Step 2: Backfill missing core skills ────────────────────────────
@@ -533,6 +670,649 @@ export async function runUpgradePipeline(
     steps,
     followUps,
     releaseNotes,
+    previousShadowCommit,
+  };
+}
+
+// ─── Shadow HEAD Capture ──────────────────────────────────────────────────────
+
+/**
+ * Read the current shadow worktree HEAD commit. Surfaced in upgrade output
+ * so an operator can roll back the shadow branch via `git reset --hard
+ * <sha>` after a problematic upgrade. Returns `null` when no shadow
+ * worktree is configured for the project or the call fails (a missing
+ * shadow worktree is not itself a failure — the upgrade still runs, the
+ * rollback hint is just absent).
+ *
+ * AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-dry-run-previews-layout
+ */
+async function readShadowHeadCommit(
+  shadow: { enabled: boolean; worktreeDir: string } | null,
+): Promise<string | null> {
+  if (!shadow?.enabled || !shadow.worktreeDir) return null;
+  try {
+    const { spawnSync } = await import("node:child_process");
+    const result = spawnSync("git", ["rev-parse", "HEAD"], {
+      cwd: shadow.worktreeDir,
+      encoding: "utf-8",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    if (result.status !== 0) return null;
+    const sha = (result.stdout || "").trim();
+    return sha.length > 0 ? sha : null;
+  } catch {
+    return null;
+  }
+}
+
+// ─── Atomic storage migration orchestration ───────────────────────────────────
+
+/**
+ * Internal sentinel thrown to short-circuit the atomic storage migration
+ * buffer when one of the three steps reports a failed status. The sentinel
+ * is caught by the outer driver so the per-step UpgradeStepResult values
+ * still surface, but the surrounding `runWithBuffer` discards every write
+ * that was made before the failure.
+ */
+class StorageMigrationAbort extends Error {
+  constructor() {
+    super("storage_migration_abort");
+    this.name = "StorageMigrationAbort";
+  }
+}
+
+/**
+ * Run plan-folder, review-folder, and manifest-promotion migration as a
+ * single buffered mutation. The three step functions are buffer-aware:
+ * their nested `runWithBuffer` calls reuse the outer buffer instead of
+ * flushing on their own, and the manifest write goes through the same
+ * buffer via the buffer-aware yaml writer.
+ *
+ * - On success: the buffer flushes once and the orchestrator issues a
+ *   single shadow commit describing the whole mutation.
+ * - On failure of ANY step (or any exception inside the buffer scope):
+ *   the buffer discards, no files are written, and no commit is made.
+ *   The earlier "plan migrated, manifest still 1.1, review missing"
+ *   half-state is no longer reachable from a failed `kspec upgrade`.
+ *
+ * Dry-run skips the buffer/commit entirely — no writes happen and step
+ * results are surfaced as-is.
+ *
+ * AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-executes-folder-migration
+ * AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+ */
+async function runAtomicStorageMigration(
+  ctx: { manifestPath: string | null; specDir: string; manifest: Record<string, unknown> | null;
+        shadow: import("../../parser/shadow.js").ShadowConfig | null },
+  projectDir: string,
+  dryRun: boolean,
+  force: boolean,
+  taskMigrationOk: boolean,
+): Promise<UpgradeStepResult[]> {
+  const planStepName = "Plan storage folder migration";
+  const reviewStepName = "Review storage folder migration";
+  const manifestStepName = "Storage manifest (kynetic 1.2)";
+  const safetyStepName = "Storage migration safety preflight";
+
+  const tryRun = async (
+    name: string,
+    run: () => Promise<UpgradeStepResult>,
+  ): Promise<UpgradeStepResult> => {
+    try {
+      return await run();
+    } catch (err) {
+      return {
+        name,
+        status: "failed",
+        message: err instanceof Error ? err.message : String(err),
+      };
+    }
+  };
+
+  if (dryRun) {
+    const planResult = await tryRun(planStepName, () =>
+      runPlanFolderMigrationStep(ctx, projectDir, true, force),
+    );
+    const reviewResult = await tryRun(reviewStepName, () =>
+      runReviewFolderMigrationStep(ctx, projectDir, true, force),
+    );
+    // Manifest promotion previews 1.2 only when every storage migration —
+    // tasks included — succeeded. A failed task migration must not
+    // advertise that the manifest will move to kynetic 1.2, otherwise the
+    // dry-run misleads an operator into believing a rerun is safe.
+    const priorOk =
+      taskMigrationOk &&
+      planResult.status !== "failed" &&
+      reviewResult.status !== "failed";
+    const manifestResult = await tryRun(manifestStepName, () =>
+      runStorageManifestPromotionStep(ctx, true, priorOk),
+    );
+    return [planResult, reviewResult, manifestResult];
+  }
+
+  // Executing run: if the task storage migration failed above, the atomic
+  // block must skip every dependent step. Running plan/review migrations
+  // and promoting the manifest while task storage is still broken would
+  // promote `kynetic: "1.2"` / `task_storage.format: split` on top of a
+  // failed task layout — the same misleading state the reviewer reproduced.
+  if (!taskMigrationOk) {
+    const message =
+      "skipped — task storage migration failed; folder-storage migration and " +
+      "manifest promotion left at current version";
+    return [
+      { name: planStepName, status: "skipped", message },
+      { name: reviewStepName, status: "skipped", message },
+      { name: manifestStepName, status: "skipped", message },
+    ];
+  }
+
+  // Live-path tripwire: enforce ONCE before any executing storage mutation
+  // so it fires for every path through the atomic block, not just the
+  // plan/review apply calls. The per-step assertions inside
+  // `runPlanFolderMigrationStep` / `runReviewFolderMigrationStep` run AFTER
+  // the `report.alreadyMigrated` short-circuit and never get a chance to
+  // refuse when both steps are no-ops — but the manifest promotion below
+  // would still mutate a protected project. Hoisting the check here closes
+  // that bypass: a no-op plan + no-op review + manifest promotion is still
+  // "an executing folder-storage upgrade" and must respect the tripwire.
+  //
+  // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-executes-folder-migration
+  try {
+    const { assertSafeMigrationTarget } = await import("../../parser/migration-safety.js");
+    assertSafeMigrationTarget(projectDir, ctx.specDir);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    const skipMessage = "skipped — protected project tripwire refused executing migration";
+    return [
+      { name: safetyStepName, status: "failed", message },
+      { name: planStepName, status: "skipped", message: skipMessage },
+      { name: reviewStepName, status: "skipped", message: skipMessage },
+      { name: manifestStepName, status: "skipped", message: skipMessage },
+    ];
+  }
+
+  const { runWithBuffer } = await import("../batch-write-buffer.js");
+  const { commitIfShadow } = await import("../../parser/shadow.js");
+
+  const collected: UpgradeStepResult[] = [];
+
+  try {
+    await runWithBuffer(ctx.specDir, async () => {
+      const planResult = await tryRun(planStepName, () =>
+        runPlanFolderMigrationStep(ctx, projectDir, false, force),
+      );
+      collected.push(planResult);
+      if (planResult.status === "failed") throw new StorageMigrationAbort();
+
+      const reviewResult = await tryRun(reviewStepName, () =>
+        runReviewFolderMigrationStep(ctx, projectDir, false, force),
+      );
+      collected.push(reviewResult);
+      if (reviewResult.status === "failed") throw new StorageMigrationAbort();
+
+      // At this point both prior steps either did real work or skipped
+      // cleanly. The manifest step can safely promote to kynetic 1.2.
+      const manifestResult = await tryRun(manifestStepName, () =>
+        runStorageManifestPromotionStep(ctx, false, true),
+      );
+      collected.push(manifestResult);
+      if (manifestResult.status === "failed") throw new StorageMigrationAbort();
+    });
+  } catch (err) {
+    if (!(err instanceof StorageMigrationAbort)) {
+      // Unexpected error path — the buffer has already discarded by the
+      // time we land here. Surface as a synthetic failed step so the
+      // user sees what broke without losing the partial step results.
+      collected.push({
+        name: "Atomic storage migration",
+        status: "failed",
+        message: err instanceof Error ? err.message : String(err),
+      });
+    }
+    // The surrounding `runWithBuffer` discarded every write made before
+    // the failure, so any step that came back from `tryRun` as `done`
+    // never actually landed on disk. Re-label those entries as
+    // `rolled_back` so the upgrade result reports the truth: the work
+    // was rehearsed and then thrown away. Without this rewrite the
+    // outer driver would still add follow-ups like "Plan storage: N
+    // plan(s) migrated" for files that no longer exist.
+    for (let i = 0; i < collected.length; i += 1) {
+      const step = collected[i];
+      if (step.status !== "done") continue;
+      collected[i] = {
+        ...step,
+        status: "rolled_back",
+        message:
+          "rolled back — a later atomic storage migration step failed and " +
+          "the buffered writes for this step were discarded",
+      };
+    }
+    // Ensure the orchestrator returns step records for every named step
+    // even if the buffer aborted before some steps ran. Without these,
+    // a partial-layout failure on the plan step would leave the upgrade
+    // result missing the review/manifest entries that downstream JSON
+    // consumers (and the existing test suite) expect.
+    if (!collected.some((s) => s.name === reviewStepName)) {
+      collected.push({
+        name: reviewStepName,
+        status: "skipped",
+        message: "skipped — earlier storage migration step failed; rolled back",
+      });
+    }
+    if (!collected.some((s) => s.name === manifestStepName)) {
+      collected.push({
+        name: manifestStepName,
+        status: "skipped",
+        message: "skipped — earlier storage migration step failed; rolled back",
+      });
+    }
+    return collected;
+  }
+
+  // Buffer flushed successfully. Issue exactly one shadow commit that
+  // covers every file the three steps wrote.
+  if (collected.some((s) => s.status === "done")) {
+    await commitIfShadow(
+      ctx.shadow,
+      "upgrade",
+      undefined,
+      "migrate plan/review storage to folder-backed layout (kynetic 1.2)",
+    );
+  }
+  return collected;
+}
+
+// ─── Plan storage folder migration step ───────────────────────────────────────
+
+/**
+ * Plan-folder migration step for `kspec upgrade`. Computes the migration
+ * report, surfaces it (dry-run) or applies it (executing run). The step
+ * writes through the active write buffer when one is active — the
+ * surrounding `runAtomicStorageMigration` owns the shadow commit so the
+ * plan / review / manifest steps land as one logical mutation.
+ *
+ * Live-path tripwire: when an operator sets `KSPEC_PROTECTED_PROJECT_PATHS`
+ * the executing run refuses to mutate any project root listed there
+ * (worker/test preflight). Unset is the default and disables the tripwire
+ * entirely. Dry-runs always work against any directory.
+ *
+ * AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-dry-run-previews-layout
+ * AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-executes-folder-migration
+ */
+async function runPlanFolderMigrationStep(
+  ctx: { manifestPath: string | null; specDir: string; manifest: Record<string, unknown> | null;
+        shadow: import("../../parser/shadow.js").ShadowConfig | null },
+  projectDir: string,
+  dryRun: boolean,
+  force: boolean,
+): Promise<UpgradeStepResult> {
+  const { computePlanMigrationReport, applyPlanMigration } = await import(
+    "../../parser/plan-folder-migration.js"
+  );
+  const { PLAN_RESOURCES_MANIFEST_FILENAME } = await import(
+    "../../parser/plan-storage-manager.js"
+  );
+  const { assertSafeMigrationTarget } = await import("../../parser/migration-safety.js");
+
+  const report = await computePlanMigrationReport(ctx as Parameters<typeof computePlanMigrationReport>[0]);
+
+  // Already-migrated short-circuit: no monolithic records left, the
+  // manifest may or may not already declare folder storage. Either way
+  // there is nothing for the migration to do here.
+  if (report.alreadyMigrated) {
+    return {
+      name: "Plan storage folder migration",
+      status: "skipped",
+      message: "no monolithic plans to migrate",
+      details: { migrated: 0, reconciled: report.reconciled },
+    };
+  }
+
+  if (dryRun) {
+    // Per-entry dry-run preview must surface every sidecar target the
+    // executing migration would write (plan.md, plan.yaml, optional
+    // notes.yaml, resources.yaml) plus the empty resources/ directory
+    // the layout contract requires. Users see the full folder shape
+    // before any write happens.
+    //
+    // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-dry-run-previews-layout
+    const entries = report.entries.map((e) => ({
+      ulid: e.ulid,
+      title: e.title,
+      had_generated_ulid: e.hadGeneratedUlid,
+      preexisting_folder: e.preexistingFolder,
+      has_warning: !!e.validationWarning,
+      plan_dir: e.planDir,
+      sidecars: {
+        plan_yaml: e.corePath,
+        plan_md: e.documentPath,
+        notes_yaml: e.notesPath,
+        resources_yaml: e.resourceManifestPath,
+        resources_dir: e.resourcesDir,
+      },
+    }));
+    const newResourceManifests = report.entries.filter((e) => !e.preexistingFolder).length;
+    const orphanCount = report.orphanedLeanEntries.length;
+    let message: string;
+    if (report.partialLayout && orphanCount > 0 && report.migrated === 0) {
+      message =
+        `partial layout: ${orphanCount} stale lean index entr` +
+        `${orphanCount === 1 ? "y" : "ies"} reference missing plan folder` +
+        `${orphanCount === 1 ? "" : "s"} — --force required for real run`;
+    } else if (report.partialLayout && report.migrated > 0) {
+      message = `would migrate ${report.migrated} plan(s) (partial layout — --force required for real run)`;
+    } else {
+      message = `would migrate ${report.migrated} plan(s) into ${report.folderRoot}`;
+    }
+    return {
+      name: "Plan storage folder migration",
+      status: "done",
+      message,
+      details: {
+        migrated: report.migrated,
+        partial_layout: report.partialLayout,
+        warnings: report.warnings,
+        entries,
+        folder_root: report.folderRoot,
+        index_path: report.indexPath,
+        monolithic_path: report.monolithicPath,
+        // Stale lean index entries that point at missing plan folders.
+        // Surfaced so dry-run consumers can show the same partial-layout
+        // diagnosis the executing run would refuse on.
+        orphaned_lean_entries: report.orphanedLeanEntries.map((entry) => ({
+          ulid: typeof entry._ulid === "string" ? entry._ulid : null,
+          title: typeof entry.title === "string" ? entry.title : "",
+        })),
+        // Resource manifest changes the executing run would make — one
+        // empty `{ resources: [] }` sidecar per newly-migrated plan.
+        // Surfaced separately from `entries` so dashboards/test
+        // harnesses can summarize the resource-manifest impact without
+        // walking every entry.
+        resource_manifest_changes: {
+          new_empty_manifests: newResourceManifests,
+          manifest_filename: PLAN_RESOURCES_MANIFEST_FILENAME,
+          paths: report.entries
+            .filter((e) => !e.preexistingFolder)
+            .map((e) => e.resourceManifestPath),
+        },
+      },
+    };
+  }
+
+  // Live-path tripwire — refuse to mutate protected repositories.
+  assertSafeMigrationTarget(projectDir, ctx.specDir);
+
+  // Partial-layout guard is honoured by the apply call: without the
+  // upgrade `--force` flag, `applyPlanMigration` throws
+  // `partial_entity_storage_layout` and the step surfaces as failed.
+  // The previous implementation hardcoded `{ force: true }`, which let a
+  // normal `kspec upgrade` silently rewrite a partial layout — that path
+  // was the blocker that triggered this fix.
+  //
+  // The apply call writes through the active batch buffer — when nested
+  // under `runAtomicStorageMigration` the writes are held in memory and
+  // either flushed (on overall success) or discarded (if a later step
+  // fails). No commit is issued here; the orchestrator owns it.
+  const applied = await applyPlanMigration(
+    ctx as Parameters<typeof applyPlanMigration>[0],
+    report,
+    { force },
+  );
+
+  return {
+    name: "Plan storage folder migration",
+    status: "done",
+    message: `migrated ${applied.written} plan(s) to folder-backed storage`,
+    details: {
+      migrated: applied.written,
+      index_entries: applied.indexEntries,
+      warnings: report.warnings,
+    },
+  };
+}
+
+// ─── Review storage folder migration step ─────────────────────────────────────
+
+/**
+ * Review-folder migration step for `kspec upgrade`. Mirrors the plan
+ * migration step — compute the report, surface it (dry-run) or apply it
+ * (executing run), commit the result to the shadow branch.
+ *
+ * AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-dry-run-previews-layout
+ * AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-executes-folder-migration
+ */
+async function runReviewFolderMigrationStep(
+  ctx: { manifestPath: string | null; specDir: string; manifest: Record<string, unknown> | null;
+        shadow: import("../../parser/shadow.js").ShadowConfig | null },
+  projectDir: string,
+  dryRun: boolean,
+  force: boolean,
+): Promise<UpgradeStepResult> {
+  const { computeReviewMigrationReport, applyReviewMigration } = await import(
+    "../../parser/review-folder-migration.js"
+  );
+  const { REVIEW_RESOURCES_MANIFEST_FILENAME } = await import(
+    "../../parser/review-storage-manager.js"
+  );
+  const { assertSafeMigrationTarget } = await import("../../parser/migration-safety.js");
+
+  const report = await computeReviewMigrationReport(
+    ctx as Parameters<typeof computeReviewMigrationReport>[0],
+  );
+
+  if (report.alreadyMigrated) {
+    return {
+      name: "Review storage folder migration",
+      status: "skipped",
+      message: "no monolithic reviews to migrate",
+      details: { migrated: 0, reconciled: report.reconciled },
+    };
+  }
+
+  if (dryRun) {
+    // Per-entry dry-run preview must surface every sidecar target the
+    // executing migration would write (review.yaml, resources.yaml)
+    // plus the empty resources/ directory the layout contract requires.
+    //
+    // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-dry-run-previews-layout
+    const entries = report.entries.map((e) => ({
+      ulid: e.ulid,
+      title: e.title,
+      had_generated_ulid: e.hadGeneratedUlid,
+      preexisting_folder: e.preexistingFolder,
+      has_warning: !!e.validationWarning,
+      review_dir: e.reviewDir,
+      sidecars: {
+        review_yaml: e.detailPath,
+        resources_yaml: e.resourceManifestPath,
+        resources_dir: e.resourcesDir,
+      },
+    }));
+    const newResourceManifests = report.entries.filter((e) => !e.preexistingFolder).length;
+    const orphanCount = report.orphanedLeanEntries.length;
+    let message: string;
+    if (report.partialLayout && orphanCount > 0 && report.migrated === 0) {
+      message =
+        `partial layout: ${orphanCount} stale lean index entr` +
+        `${orphanCount === 1 ? "y" : "ies"} reference missing review folder` +
+        `${orphanCount === 1 ? "" : "s"} — --force required for real run`;
+    } else if (report.partialLayout && report.migrated > 0) {
+      message = `would migrate ${report.migrated} review(s) (partial layout — --force required for real run)`;
+    } else {
+      message = `would migrate ${report.migrated} review(s) into ${report.folderRoot}`;
+    }
+    return {
+      name: "Review storage folder migration",
+      status: "done",
+      message,
+      details: {
+        migrated: report.migrated,
+        partial_layout: report.partialLayout,
+        warnings: report.warnings,
+        entries,
+        folder_root: report.folderRoot,
+        index_path: report.indexPath,
+        monolithic_path: report.monolithicPath,
+        // Stale lean index entries that point at missing review folders.
+        orphaned_lean_entries: report.orphanedLeanEntries.map((entry) => ({
+          ulid: typeof entry._ulid === "string" ? entry._ulid : null,
+          title: typeof entry.title === "string" ? entry.title : "",
+        })),
+        // Resource manifest changes the executing run would make — one
+        // empty `{ resources: [] }` sidecar per newly-migrated review.
+        resource_manifest_changes: {
+          new_empty_manifests: newResourceManifests,
+          manifest_filename: REVIEW_RESOURCES_MANIFEST_FILENAME,
+          paths: report.entries
+            .filter((e) => !e.preexistingFolder)
+            .map((e) => e.resourceManifestPath),
+        },
+      },
+    };
+  }
+
+  assertSafeMigrationTarget(projectDir, ctx.specDir);
+
+  // Partial-layout guard is honoured by the apply call: without the
+  // upgrade `--force` flag, `applyReviewMigration` throws
+  // `partial_entity_storage_layout` and the step surfaces as failed.
+  // The previous hardcoded `{ force: true }` bypassed this guard from
+  // the CLI surface even on a normal `kspec upgrade`; that path was the
+  // blocker that triggered this fix.
+  // Writes through the active batch buffer; the orchestrator
+  // `runAtomicStorageMigration` owns the surrounding shadow commit so
+  // plan + review + manifest land as one logical mutation.
+  const applied = await applyReviewMigration(
+    ctx as Parameters<typeof applyReviewMigration>[0],
+    report,
+    { force },
+  );
+
+  return {
+    name: "Review storage folder migration",
+    status: "done",
+    message: `migrated ${applied.written} review(s) to folder-backed storage`,
+    details: {
+      migrated: applied.written,
+      index_entries: applied.indexEntries,
+      warnings: report.warnings,
+    },
+  };
+}
+
+// ─── Storage manifest promotion step ─────────────────────────────────────────
+
+/**
+ * Promote the manifest to `kynetic: 1.2` with the folder-backed storage
+ * declarations. Only fires when every prior migration step succeeded —
+ * a failed plan or review migration leaves the manifest at 1.1 so the
+ * project remains in a re-runnable state instead of declaring folder
+ * storage it does not actually have.
+ *
+ * AC: @entity-folder-migration-and-compatibility-1 ac-new-projects-declare-folder-storage
+ * AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-executes-folder-migration
+ */
+async function runStorageManifestPromotionStep(
+  ctx: { manifestPath: string | null; specDir: string;
+        shadow: import("../../parser/shadow.js").ShadowConfig | null },
+  dryRun: boolean,
+  priorMigrationsSucceeded: boolean,
+): Promise<UpgradeStepResult> {
+  if (!ctx.manifestPath) {
+    return {
+      name: "Storage manifest (kynetic 1.2)",
+      status: "skipped",
+      message: "no manifest found",
+    };
+  }
+  if (!priorMigrationsSucceeded) {
+    return {
+      name: "Storage manifest (kynetic 1.2)",
+      status: "skipped",
+      message: "prior storage migration step(s) failed — manifest left at current version",
+    };
+  }
+
+  const { readYamlFile, writeYamlFilePreserveFormat } = await import("../../parser/yaml.js");
+
+  const manifest = await readYamlFile<Record<string, unknown>>(ctx.manifestPath);
+  if (!manifest) {
+    return {
+      name: "Storage manifest (kynetic 1.2)",
+      status: "failed",
+      message: `manifest at ${ctx.manifestPath} could not be parsed`,
+    };
+  }
+
+  const targetFields: Record<string, unknown> = {
+    kynetic: "1.2",
+    task_storage: { format: "split" },
+    plan_storage: { format: "folder" },
+    review_storage: { format: "folder" },
+    resource_storage: { format: "entity_scoped" },
+  };
+
+  // Detect whether any field is already at the target value.
+  const currentTaskFormat =
+    typeof manifest.task_storage === "object" && manifest.task_storage !== null
+      ? (manifest.task_storage as Record<string, unknown>).format
+      : undefined;
+  const currentPlanFormat =
+    typeof manifest.plan_storage === "object" && manifest.plan_storage !== null
+      ? (manifest.plan_storage as Record<string, unknown>).format
+      : undefined;
+  const currentReviewFormat =
+    typeof manifest.review_storage === "object" && manifest.review_storage !== null
+      ? (manifest.review_storage as Record<string, unknown>).format
+      : undefined;
+  const currentResourceFormat =
+    typeof manifest.resource_storage === "object" && manifest.resource_storage !== null
+      ? (manifest.resource_storage as Record<string, unknown>).format
+      : undefined;
+
+  const isUpToDate =
+    manifest.kynetic === "1.2" &&
+    currentTaskFormat === "split" &&
+    currentPlanFormat === "folder" &&
+    currentReviewFormat === "folder" &&
+    currentResourceFormat === "entity_scoped";
+
+  if (isUpToDate) {
+    return {
+      name: "Storage manifest (kynetic 1.2)",
+      status: "skipped",
+      message: "manifest already declares folder-backed storage at kynetic 1.2",
+    };
+  }
+
+  if (dryRun) {
+    return {
+      name: "Storage manifest (kynetic 1.2)",
+      status: "done",
+      message: "would set kynetic=1.2 with plan_storage/review_storage/resource_storage declarations",
+      details: { target: targetFields },
+    };
+  }
+
+  manifest.kynetic = "1.2";
+  manifest.task_storage = { ...(manifest.task_storage as object | undefined), format: "split" };
+  manifest.plan_storage = { ...(manifest.plan_storage as object | undefined), format: "folder" };
+  manifest.review_storage = {
+    ...(manifest.review_storage as object | undefined),
+    format: "folder",
+  };
+  manifest.resource_storage = {
+    ...(manifest.resource_storage as object | undefined),
+    format: "entity_scoped",
+  };
+  // Writes through the active batch buffer when one is active; the
+  // orchestrator `runAtomicStorageMigration` owns the shadow commit.
+  await writeYamlFilePreserveFormat(ctx.manifestPath, manifest);
+
+  return {
+    name: "Storage manifest (kynetic 1.2)",
+    status: "done",
+    message: "set kynetic=1.2 with folder-backed plan/review/resource storage",
   };
 }
 
@@ -605,15 +1385,21 @@ async function runTaskStorageMigrationStep(
 
   if (rawTaskCount === 0) {
     // Still upgrade the manifest to mark format as split
-    // Check whether the manifest already has the split format marker
+    // Check whether the manifest already has the split format marker. Either
+    // kynetic 1.1 (split task storage was introduced) or 1.2+ (split is the
+    // continued baseline) is acceptable — we must not downgrade a 1.2
+    // manifest back to 1.1 just because the task-storage check predates the
+    // 1.2 era.
     let manifestAlreadySplit = false;
     if (ctx.manifestPath) {
       try {
         const yaml = await import("yaml");
         const raw = await fs.readFile(ctx.manifestPath, "utf-8");
         const manifestData = yaml.parse(raw);
-        manifestAlreadySplit =
-          manifestData?.task_storage?.format === "split" && manifestData?.kynetic === "1.1";
+        const formatIsSplit = manifestData?.task_storage?.format === "split";
+        const kyneticAccepts =
+          manifestData?.kynetic === "1.1" || manifestData?.kynetic === "1.2";
+        manifestAlreadySplit = formatIsSplit && kyneticAccepts;
       } catch {
         // Can't read — assume not split
       }
@@ -634,7 +1420,12 @@ async function runTaskStorageMigrationStep(
         const { readYamlFile } = await import("../../parser/yaml.js");
         const manifest = await readYamlFile<Record<string, unknown>>(ctx.manifestPath);
         if (manifest) {
-          manifest.kynetic = "1.1";
+          // Only set kynetic to 1.1 when it is currently older than 1.1 —
+          // do not downgrade newer manifests (1.2+) just to record the split
+          // marker.
+          if (manifest.kynetic !== "1.2") {
+            manifest.kynetic = "1.1";
+          }
           if (!manifest.task_storage || typeof manifest.task_storage !== "object") {
             manifest.task_storage = { format: "split" };
           } else {
@@ -1504,6 +2295,8 @@ export function registerUpgradeCommand(program: Command): void {
           follow_ups: result.followUps,
           // AC: @release-notes-accessible ac-upgrade-surfaces-notes
           release_notes: result.releaseNotes,
+          // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-dry-run-previews-layout
+          previous_shadow_commit: result.previousShadowCommit,
           ...(dryRun ? { dry_run: true } : {}),
         };
 
@@ -1523,6 +2316,12 @@ export function registerUpgradeCommand(program: Command): void {
             : `unknown`;
           console.log(`${chalk.gray("Source:")} ${sourceLabel}`);
           console.log(`${chalk.gray("Target:")} ${result.targetVersion}`);
+          // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-dry-run-previews-layout
+          if (result.previousShadowCommit) {
+            console.log(
+              `${chalk.gray("Shadow HEAD (pre-upgrade rollback ref):")} ${result.previousShadowCommit}`,
+            );
+          }
           console.log();
 
           // AC: @single-command-version-upgrade ac-idempotent-when-current
@@ -1543,13 +2342,22 @@ export function registerUpgradeCommand(program: Command): void {
 
           // Step results
           for (const step of result.steps) {
-            const icon =
-              step.status === "done"
-                ? chalk.green("✓")
-                : step.status === "skipped"
-                  ? chalk.gray("○")
-                  : chalk.red("✗");
-            const statusText = step.status === "failed" ? chalk.red(" (failed)") : "";
+            let icon: string;
+            if (step.status === "done") {
+              icon = chalk.green("✓");
+            } else if (step.status === "skipped") {
+              icon = chalk.gray("○");
+            } else if (step.status === "rolled_back") {
+              icon = chalk.yellow("↶");
+            } else {
+              icon = chalk.red("✗");
+            }
+            let statusText = "";
+            if (step.status === "failed") {
+              statusText = chalk.red(" (failed)");
+            } else if (step.status === "rolled_back") {
+              statusText = chalk.yellow(" (rolled back)");
+            }
 
             console.log(`${icon} ${step.name}${statusText}`);
             if (step.message) {
