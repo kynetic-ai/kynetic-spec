@@ -411,3 +411,19 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-25T02:10:28.402Z
+  - _ulid: 01KSEFM7X9ZV1SN0RQG6111P62
+    content: "Fix cycle 7: addressed both partial-layout blockers from @01KSEDG9BECKBF9YNFXPRRCGD8 in
+      commit 03c37aed2c. Root cause: the partialLayout detector in computePlanMigrationReport (and
+      the symmetric review version) only flagged a partial layout when at least one monolithic entry
+      lacked a matching folder. A project with both a monolithic record AND a same-ULID
+      `.kspec/plans/<ulid>/` folder slipped through — the apply step then silently overwrote
+      plan.md/plan.yaml (or review.yaml) with the monolithic body. Fix: collapse the detector to
+      any-folder + any-monolithic = partial layout, which catches both the same-ULID overlap and the
+      original distinct-ULID mixed case. Orphaned-lean-entry detection preserved. Added regression
+      tests in tests/plan-folder-migration.test.ts and tests/review-folder-migration.test.ts that
+      reproduce the reviewer scenario (same ULID for folder + monolithic) and assert the existing
+      folder content is untouched after the refused apply. Full suite: 2519 suites passed; 9602
+      tests passed; 5 skipped; 2379s."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-25T02:32:36.521Z
