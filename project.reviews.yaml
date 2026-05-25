@@ -229806,6 +229806,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-25T00:30:07.707Z
+      - _ulid: 01KSE8YE2R05NW5FQA0NM1DFMR
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSE8YCAT8AWZWNGF0T9T127B
+        timestamp: 2026-05-25T00:35:50.490Z
     examined_commit: 85473371603f27ae5a7990c2c73bea5879539e76
     external_links: []
     lifecycle_state: open
@@ -229815,8 +229822,35 @@ reviews:
       content_hash: ""
       ref: "@01KS8XAYZTG0MN48Z78D45PBV6"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KSE8YCAT8AWZWNGF0T9T127B
+        anchor:
+          type: code
+          commit: 85473371603f27ae5a7990c2c73bea5879539e76
+          line_end: 461
+          line_start: 459
+          path: src/cli/commands/upgrade.ts
+          side: head
+        entries:
+          - _ulid: 01KSE8YCATEDWX91WGD4QXVQT8
+            author: Jacob Chapel
+            body: >-
+              MUST-FIX: a protected-project storage preflight failure does not stop the rest of
+              Source: 0.14.0 (exact)
+
+              Target: 0.14.0
+
+
+              ✓ Project is already at the current version. No changes necessary..  can return a
+              failed , but  still falls through into  and later upgrade steps. I reproduced this
+              against a temp project with  set to the project root: the JSON result had  but still
+              reported . A protected target must abort without any further upgrade mutations once
+              the tripwire fires; otherwise the guard can prevent plan/review/manifest writes while
+              later upgrade steps still touch /agent artifacts or commit shadow state on the same
+              protected project.
+            created_at: 2026-05-25T00:35:48.698Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-25T00:29:41.694Z
-    updated_at: 2026-05-25T00:30:06.023Z
+    updated_at: 2026-05-25T00:35:48.698Z
     notes: []
