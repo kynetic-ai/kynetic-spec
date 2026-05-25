@@ -230460,7 +230460,51 @@ reviews:
     slugs: []
     title: Review task-plan-resource-import-and-derive-1
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "2536 suites passed; 9658 tests passed; 5 skipped. Full log:
+          /tmp/kspec-test-cache/01KSEP2N6X685JZKD48MYGHQJH/9d49b39ef5546ff8.log"
+        name: npm test
+        required: true
+        runner: npm test
+        created_at: 2026-05-25T04:42:06.411Z
+        completed_at: 2026-05-25T04:42:06.411Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: tsc --noEmit completed successfully.
+        name: typecheck
+        required: true
+        runner: npm run typecheck
+        created_at: 2026-05-25T04:42:10.557Z
+        completed_at: 2026-05-25T04:42:10.557Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Schema and references OK; command exited 6 due existing warning-only validation debt
+          (deprecated refs, orphaned specs, missing historical AC coverage), not new schema errors
+          for this task.
+        name: kspec validate
+        required: false
+        runner: kspec validate
+        created_at: 2026-05-25T04:42:14.559Z
+        completed_at: 2026-05-25T04:42:14.559Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Changed-file oxlint completed with 0 errors (warnings only). Full npm run lint has
+          pre-existing global failures outside this task.
+        name: changed-file oxlint
+        required: false
+        runner: npx oxlint <changed files>
+        created_at: 2026-05-25T04:42:18.735Z
+        completed_at: 2026-05-25T04:42:18.735Z
     events:
       - _ulid: 01KSEP3Y16G42KGTT0SD8MKEG5
         actor: Jacob Chapel
@@ -230475,17 +230519,151 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-25T04:26:25.523Z
+      - _ulid: 01KSEQ119JK8YA0GJPF1D1A4T7
+        actor: codex
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSEQ0ZQZTFVQDFR1WKF29JG9
+        timestamp: 2026-05-25T04:41:55.762Z
+      - _ulid: 01KSEQ157MJ34K81D2ZQF5RFDA
+        actor: codex
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSEQ13PVKXNWEAJQ0VHNXZJB
+        timestamp: 2026-05-25T04:41:59.797Z
+      - _ulid: 01KSEQ19A6XNWBP3JPQ050E0XT
+        actor: codex
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KSEQ17P6CVHH2C7XYP18284J
+        timestamp: 2026-05-25T04:42:03.974Z
+      - _ulid: 01KSEQ1D7GJDX73B0EPR7CMZSY
+        actor: codex
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-05-25T04:42:07.984Z
+      - _ulid: 01KSEQ1H8EEEBZFJ51W9Z7J5K4
+        actor: codex
+        event_type: check_added
+        payload:
+          status: pass
+          name: typecheck
+        timestamp: 2026-05-25T04:42:12.110Z
+      - _ulid: 01KSEQ1N7HE2DB7WNA8JTVJYJF
+        actor: codex
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-25T04:42:16.178Z
+      - _ulid: 01KSEQ1S77T6AXN116GWN2JWNP
+        actor: codex
+        event_type: check_added
+        payload:
+          status: pass
+          name: changed-file oxlint
+        timestamp: 2026-05-25T04:42:20.263Z
+      - _ulid: 01KSEQ1X8EHWK3NRYRC5QYS5DH
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-25T04:42:24.398Z
+      - _ulid: 01KSEQ1X8EHTX467V3BNZWN3NH
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-25T04:42:24.398Z
     examined_commit: 7d02e79c32ba3f6a9d943866c2445ae6bb6a9ba9
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
       content_hash: ""
       ref: "@01KS8XAZQ5478RV2AVKG8MNB0S"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KSEQ0ZQZTFVQDFR1WKF29JG9
+        anchor:
+          type: code
+          commit: 7d02e79c32ba3f6a9d943866c2445ae6bb6a9ba9
+          line_end: 412
+          line_start: 370
+          path: src/cli/commands/plan-resource.ts
+          side: head
+        entries:
+          - _ulid: 01KSEQ0ZQZ74MC5ZM7KQXZR6MQ
+            author: codex
+            body: "MUST-FIX: `plan resource add --replace` copies the new bytes before validating the computed
+              metadata/content type. I reproduced this with an existing `doc.bin` containing `ONE`,
+              then ran `plan resource add ... --replace --content-type not-a-mime`; the command
+              exited 1 with `invalid_resource_path`, but the resource file changed to `TWO` while
+              the manifest stayed on the old metadata. A rejected validation path must not mutate
+              existing resource bytes or leave manifest/file state inconsistent."
+            created_at: 2026-05-25T04:41:54.175Z
+        kind: blocker
+      - _ulid: 01KSEQ13PVKXNWEAJQ0VHNXZJB
+        anchor:
+          type: code
+          commit: 7d02e79c32ba3f6a9d943866c2445ae6bb6a9ba9
+          line_end: 253
+          line_start: 230
+          path: src/parser/plan-resource-import.ts
+          side: head
+        entries:
+          - _ulid: 01KSEQ13PWG0VJJYA8V4EZ7K79
+            author: codex
+            body: "MUST-FIX: sibling plan imports accept symlinked files under `resources/` because validation
+              uses `fs.stat`, which follows symlinks, and then `copyFile` copies the symlink target.
+              I reproduced an import where `imports/resources/linked.txt` was a symlink to a file
+              outside the sibling resources tree; `plan import` exited 0 and copied the outside file
+              bytes into the plan. The task contract explicitly lists symlink escapes as forbidden,
+              so import validation needs lstat/realpath containment checks before copying."
+            created_at: 2026-05-25T04:41:58.236Z
+        kind: blocker
+      - _ulid: 01KSEQ17P6CVHH2C7XYP18284J
+        entries:
+          - _ulid: 01KSEQ17P6DCWRVSE4VK30JS9F
+            author: codex
+            body: >-
+              Review evidence log:
+
+              Files read: src/cli/commands/plan-resource.ts, src/parser/plan-resource-import.ts,
+              src/cli/commands/plan.ts, src/parser/entity-local-resources.ts,
+              src/parser/task-resource-resolver.ts, src/cli/commands/task.ts, src/cli/output.ts,
+              src/agent-runtime/dispatch.ts, src/schema/resources.ts, src/schema/task.ts, and the
+              four new resource test files.
+
+              Commands run: kspec task get, kspec item get, kspec validate, AC annotation search,
+              git diff/diff --check, npm test, npm run typecheck, npm run lint, changed-file oxlint,
+              and two behavioral reproductions for invalid content-type mutation and symlink import.
+
+              Claims verified: full test suite passes; typecheck passes; own AC annotations exist
+              and behavioral tests cover the happy paths.
+
+              Categories searched: correctness, path/symlink safety, error handling, partial
+              mutation behavior, drift visibility, AC coverage, and test quality.
+            created_at: 2026-05-25T04:42:02.310Z
+        kind: nit
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-25T04:42:24.398Z
     created_at: 2026-05-25T04:26:02.151Z
-    updated_at: 2026-05-25T04:26:23.075Z
+    updated_at: 2026-05-25T04:42:24.398Z
     notes: []

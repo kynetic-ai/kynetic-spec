@@ -35,7 +35,7 @@ description: |
 spec_ref: "@plan-resource-derivation-semantics-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-plan-review-folder-storage-migration-1"
@@ -55,7 +55,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: 01KSEJK7Y2D2Y5Z063V0J8CMKB
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -175,6 +175,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-25T04:26:06.717Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KSEJK7Y2D2Y5Z063V0J8CMKB
+    command: review-verdict-needs-work
+    timestamp: 2026-05-25T04:42:26.713Z
 created_at: 2026-05-22T22:36:46.693Z
 started_at: 2026-05-25T03:25:57.253Z
 submitted_at: 2026-05-25T04:23:04.105Z
