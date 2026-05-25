@@ -235144,6 +235144,18 @@ reviews:
         runner: codex
         created_at: 2026-05-25T23:33:21.754Z
         completed_at: 2026-05-25T23:33:21.754Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate --warnings-ok passed: schema OK, references OK, skills OK. Baseline
+          project warnings remain (deprecated refs, orphan/status/completeness warnings), not
+          introduced by this docs task."
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-05-25T23:33:26.945Z
+        completed_at: 2026-05-25T23:33:26.945Z
     events:
       - _ulid: 01KSGQ0DZWFEAQNPQ0HY5Z0Z04
         actor: Jacob Chapel
@@ -235172,6 +235184,13 @@ reviews:
           status: pass
           name: manual review
         timestamp: 2026-05-25T23:33:23.663Z
+      - _ulid: 01KSGQRZ23XFREX2YZDXH7DN80
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-25T23:33:28.771Z
     examined_commit: 3bc2a809cf80c6bbe33a71597b2f4ffe14350b16
     external_links: []
     lifecycle_state: open
@@ -235184,5 +235203,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-25T23:20:04.863Z
-    updated_at: 2026-05-25T23:33:21.754Z
+    updated_at: 2026-05-25T23:33:26.945Z
     notes: []
