@@ -230686,6 +230686,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-25T05:31:24.030Z
+      - _ulid: 01KSETA2HXG8TAXMPRYEV7SWW9
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSETA09F9NY3GPP4TX9JT3QF
+        timestamp: 2026-05-25T05:39:17.693Z
     examined_commit: 8ec78b1068c3811f36051e6234aa7fd5d8865b85
     external_links: []
     lifecycle_state: open
@@ -230695,10 +230702,28 @@ reviews:
       content_hash: ""
       ref: "@01KS8XB0EKNTMZS4XJMC4ED4SK"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KSETA09F9NY3GPP4TX9JT3QF
+        anchor:
+          type: code
+          commit: 8ec78b1068c3811f36051e6234aa7fd5d8865b85
+          line_end: 376
+          line_start: 374
+          path: src/parser/review-resource-manager.ts
+          side: head
+        entries:
+          - _ulid: 01KSETA09FDHAA860TPVPWH9XJ
+            author: Jacob Chapel
+            body: "MUST-FIX: review resource add writes with path.join plus fs.copyFile and never resolves the
+              destination against the review resource tree. If <reviewDir>/resources/<path> or an
+              ancestor is a symlink, copyFile follows it and can write outside the owning review
+              directory, violating the task's forbidden symlink-escape requirement. Use a
+              symlink-safe destination check/open pattern before writing and add coverage."
+            created_at: 2026-05-25T05:39:15.375Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-25T05:31:05.010Z
-    updated_at: 2026-05-25T05:31:22.265Z
+    updated_at: 2026-05-25T05:39:15.375Z
     notes: []
   - _ulid: 01KSESZY8TXWF47R5G8HF6C6D7
     slugs:
