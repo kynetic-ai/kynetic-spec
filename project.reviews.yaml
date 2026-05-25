@@ -231474,6 +231474,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-25T06:41:00.382Z
+      - _ulid: 01KSEYNQJS664TZ12SPN9J9THM
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSEYNNPWQY270MNXDGX6X4DW
+        timestamp: 2026-05-25T06:55:33.978Z
     examined_commit: 024a319eac4c9631e57e0703e300f41a0a20f03a
     external_links: []
     lifecycle_state: open
@@ -231483,8 +231490,29 @@ reviews:
       content_hash: ""
       ref: "@01KS8XB0EKNTMZS4XJMC4ED4SK"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KSEYNNPWQY270MNXDGX6X4DW
+        anchor:
+          type: code
+          commit: 024a319eac4c9631e57e0703e300f41a0a20f03a
+          line_end: 75
+          line_start: 75
+          path: tests/daemon-api/review-resources.test.ts
+          side: head
+        entries:
+          - _ulid: 01KSEYNNPX4NGP0B8FXPV52VQA
+            author: Jacob Chapel
+            body: "MUST-FIX: The task's testing contract explicitly calls for review-resource route coverage of
+              shared-envelope 409 entity_storage_incompatible responses and cache/WebSocket
+              invalidation. This file covers basic CRUD and several error envelopes, but it never
+              exercises an incompatible manifest against the /api/reviews/:ref/resources routes, and
+              it never uses createTestApp({ getEntityCache }) or captureBroadcasts to prove
+              POST/DELETE call cache.writeThrough('reviews') and broadcast resource_changed. As
+              written, regressions in the evidence refresh path or storage incompatibility envelope
+              would pass the suite."
+            created_at: 2026-05-25T06:55:32.061Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-25T06:40:43.746Z
-    updated_at: 2026-05-25T06:40:58.539Z
+    updated_at: 2026-05-25T06:55:32.061Z
     notes: []
