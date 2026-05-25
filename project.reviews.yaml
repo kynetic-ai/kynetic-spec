@@ -234937,6 +234937,17 @@ reviews:
         runner: git
         created_at: 2026-05-25T22:18:38.209Z
         completed_at: 2026-05-25T22:18:38.209Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate --warnings-ok exited 0; schema and refs OK; project-wide warnings are
+          pre-existing.
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-05-25T22:18:45.064Z
+        completed_at: 2026-05-25T22:18:45.064Z
     events:
       - _ulid: 01KSGJS0RJW7SRCJ4FTTN7GDKJ
         actor: Jacob Chapel
@@ -234958,6 +234969,13 @@ reviews:
           status: pass
           name: git diff --check
         timestamp: 2026-05-25T22:18:39.909Z
+      - _ulid: 01KSGKG65GW7B2R9TNDJ2MF04P
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-25T22:18:46.832Z
     examined_commit: addb7d63ba048919b16ee2c6cf46dc3cf15e7d2c
     external_links: []
     lifecycle_state: open
@@ -234970,5 +234988,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-25T22:06:07.634Z
-    updated_at: 2026-05-25T22:18:38.209Z
+    updated_at: 2026-05-25T22:18:45.064Z
     notes: []
