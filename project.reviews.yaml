@@ -233992,7 +233992,18 @@ reviews:
     slugs: []
     title: Review task-review-screenshot-resource-ui (cycle 7)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full fresh test suite passed: 2563 suites passed; 9783 tests passed, 5 skipped. Duration
+          2603.4s. Log: /tmp/kspec-test-cache/01KSG29ET46G8H7YDD42YTEFBD/fc6b10468c3741be.log"
+        name: npm test -- --fresh
+        required: true
+        runner: npm
+        created_at: 2026-05-25T17:31:40.135Z
+        completed_at: 2026-05-25T17:31:40.135Z
     events:
       - _ulid: 01KSG2ASF3HKX393QXZ2QYG8J7
         actor: Jacob Chapel
@@ -234014,6 +234025,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSG2JPF09FYSTA2H0H4MYA5G
         timestamp: 2026-05-25T17:23:05.299Z
+      - _ulid: 01KSG32GWJAVS8349M6652ZTDE
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test -- --fresh
+        timestamp: 2026-05-25T17:31:41.843Z
     examined_commit: 0ebd97caa924d55e960aac358c093b1979f94455
     external_links: []
     lifecycle_state: open
@@ -234049,5 +234067,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-25T17:18:44.195Z
-    updated_at: 2026-05-25T17:23:03.264Z
+    updated_at: 2026-05-25T17:31:40.135Z
     notes: []
