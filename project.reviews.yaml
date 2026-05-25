@@ -232062,6 +232062,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-25T07:50:24.276Z
+      - _ulid: 01KSF1T9QWDCTBC8MBZ5E7XZSZ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KSF1T808N8B503QJ622FR8K1
+        timestamp: 2026-05-25T07:50:29.372Z
     examined_commit: 0d819300236cfb26935914cbd51ceb2c20343546
     external_links: []
     lifecycle_state: open
@@ -232131,7 +232138,38 @@ reviews:
               unreadable source and asserts source_file_unreadable plus exit code 1."
             created_at: 2026-05-25T07:42:53.781Z
         kind: blocker
+      - _ulid: 01KSF1T808N8B503QJ622FR8K1
+        entries:
+          - _ulid: 01KSF1T808EE6NPF2XFG4JW7FY
+            author: Jacob Chapel
+            body: "Review evidence log:\\n\\nFiles read: kspec-agents.md; .agents/skills/kspec-review/SKILL.md;
+              .agents/skills/kspec-merge/SKILL.md; .agents/skills/review-gates/SKILL.md;
+              .agents/skills/work-gates/SKILL.md; src/parser/review-resource-manager.ts;
+              src/parser/entity-local-resources.ts; src/cli/commands/review-resource.ts;
+              src/export/json.ts; src/export/types.ts;
+              packages/daemon/src/routes/review-resources.ts; packages/daemon/src/routes/reviews.ts;
+              packages/daemon/src/server.ts; packages/daemon/src/middleware/project-context.ts;
+              packages/shared/src/api.ts; packages/web-ui/src/lib/api.ts;
+              packages/web-ui/src/lib/api-static.ts;
+              packages/web-ui/src/lib/stores/project.svelte.ts;
+              packages/web-ui/src/routes/reviews/[id]/+page.svelte;
+              tests/daemon-api/review-resources.test.ts; tests/review-resource-cli.test.ts;
+              tests/review-resource-manager.test.ts; tests/review-resource-static-export.test.ts;
+              tests/web-ui/review-resources-api.test.ts; tests/web-ui/review-static-mode.test.ts;
+              tests/daemon-api/helpers.ts.\\n\\nCommands run: kspec task get
+              @01KS8XB0EKNTMZS4XJMC4ED4SK; kspec review for-task/get/add/open/comment/check; kspec
+              item get @folder-backed-review-storage-1; git status/log/diff; rg AC and error-code
+              coverage searches; kspec validate; npm test.\\n\\nClaims verified: cycle-2
+              cache/broadcast/409 tests were added and are behavioral; full test suite passes at
+              9700 tests; kspec validate has no schema/reference errors. Prior blocker is addressed,
+              but this pass found new blockers in live UI selected-project resource loading and
+              remaining CLI error-path coverage.\\n\\nCategories searched: correctness, edge cases,
+              error handling, security/path traversal, test quality, daemon route integration,
+              static export, live/static UI integration, multi-project context handling,
+              cache/WebSocket invalidation."
+            created_at: 2026-05-25T07:50:27.592Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-25T07:37:01.797Z
-    updated_at: 2026-05-25T07:50:22.522Z
+    updated_at: 2026-05-25T07:50:27.592Z
     notes: []
