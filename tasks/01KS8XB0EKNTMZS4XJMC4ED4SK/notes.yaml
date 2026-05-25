@@ -110,3 +110,33 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-25T07:50:52.870Z
+  - _ulid: 01KSF3M17JTM5G511BCVMHS33X
+    content: >-
+      Fix cycle 3: addressed all 3 review blockers from review @01KSF11N35ZFCRKDW37KGQ9G90.
+
+
+      Blocker 1 (UI selected-project resource context): Live <img>/<a> previews used
+      reviewResourceBytesUrl() without X-Kspec-Dir, so the daemon middleware fell back to the
+      default project for non-default selections (wrong bytes or 404). Fixed by (a) middleware now
+      also honors a kspec_dir query parameter as a fallback (header still wins when both are
+      present); (b) reviewResourceBytesUrl reads getSelectedProjectPath() and appends
+      ?kspec_dir=<encoded path> whenever a project is selected. Svelte page needed no change.
+
+
+      Blocker 2 (Interactive remove cancellation): Added a behavioral CLI test that sets
+      KSPEC_TEST_TTY=true, pipes 'n' to stdin, asserts exit code 2, the cancellation message, and
+      proves the resource still lists.
+
+
+      Blocker 3 (CLI source_file_unreadable): Added a CLI-level test that points add at a directory
+      and asserts source_file_unreadable + exit code 1 + matching envelope fields.
+
+
+      Test impact: +9 new tests (3 in tests/web-ui/review-resources-api.test.ts, 4 in a new
+      multi-project block in tests/daemon-api/review-resources.test.ts, 2 in
+      tests/review-resource-cli.test.ts). Full suite: 9709 passed, 5 skipped, 0 failed (was 9700 —
+      added 9 new tests, math checks). No production behavior changes outside the documented
+      project-context contract.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-25T08:22:01.202Z
