@@ -53836,7 +53836,7 @@ runs:
     completed_at: 2026-05-25T07:55:50.798Z
   - _ulid: 01KSF39Y6PVF03833HPA2R67SM
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -53851,7 +53851,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-25T08:17:26.710Z
-        completed_at: 2026-05-25T08:17:26.710Z
+        completed_at: 2026-05-25T08:17:41.088Z
+        notes: "Friction points: kspec validate is useful but emits broad repo-wide pre-existing warnings
+          during focused review, making it harder to separate task-specific AC coverage from
+          background noise. Search found existing observation @01KNTPX4T for repo-wide validate
+          warning noise, so no duplicate capture is needed. Running npm run lint with file arguments
+          still invoked the repo-wide lint script because the package script includes
+          src/tests/packages before appended args; direct npx oxlint was needed for a changed-file
+          check. This was minor and did not justify capture in this session. The submitted
+          materialized-resource tests asserted the written resource_refs but not the
+          resolved_resources status for task-owned copies; that gap is already captured as blocker
+          thread in review @01KSF2EN."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-25T08:17:41.088Z
+        completed_at: 2026-05-25T08:17:41.088Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-25T08:16:30.422Z
