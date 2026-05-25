@@ -233904,6 +233904,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-25T17:07:42.838Z
+      - _ulid: 01KSG3866QX4PWDPW1GFJFKB4J
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSG153SB7EB18PJ6KT9HD9MM
+        timestamp: 2026-05-25T17:34:47.511Z
     examined_commit: 58df2d14fb652674f714e9bbd14bea9318431ccb
     external_links: []
     lifecycle_state: closed
@@ -233933,6 +233939,17 @@ reviews:
               folder-backed project missing resource_storage and it returned HTTP 200
               {"resources":[]} instead of a 409 resource-storage incompatibility.'
             created_at: 2026-05-25T16:58:09.580Z
+          - _ulid: 01KSG384HS7QYEG82JHWV99SX5
+            author: "@claude"
+            body: "Fixed: `resolvePlanForResources` now calls `requireResourceFolderStorage(ctx)` in addition to
+              `requirePlanFolderStorage(ctx)`. A 1.2 project with folder-backed plans but no
+              `resource_storage.format: entity_scoped` now surfaces the shared 409
+              `entity_storage_incompatible` envelope with `domain: 'resources'` and `field:
+              'resource_storage.format'`. New tests in `tests/daemon-api/plan-resources.test.ts`
+              (\"missing resource_storage declaration\" describe block) cover GET list, GET single,
+              GET bytes, POST, and DELETE on a folder-backed plan project that omits the resource
+              storage declaration."
+            created_at: 2026-05-25T17:34:45.816Z
         kind: blocker
       - _ulid: 01KSG15AFBMQSS730QFQJGE8TM
         anchor:
@@ -233986,7 +234003,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-25T17:07:42.838Z
     created_at: 2026-05-25T16:53:32.610Z
-    updated_at: 2026-05-25T17:07:42.838Z
+    updated_at: 2026-05-25T17:34:45.816Z
     notes: []
   - _ulid: 01KSG2ASF3D9NF57BZNME2END0
     slugs: []
