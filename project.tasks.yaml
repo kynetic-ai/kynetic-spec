@@ -29788,7 +29788,7 @@
   type: task
   spec_ref: "@folder-backed-plan-storage-1"
   plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-plan-resource-import-and-derive-1"
@@ -29799,7 +29799,7 @@
     - daemon
     - web-ui
   review_ref: "@01KSG0WNA25PCE5QC05YHK6226"
-  notes_count: 3
+  notes_count: 4
   todos_count: 0
   created_at: 2026-05-22T22:36:47.077Z
   started_at: 2026-05-25T16:47:08.501Z
