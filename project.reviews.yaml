@@ -230308,7 +230308,18 @@ reviews:
     slugs: []
     title: Review task-plan-review-folder-storage-migration-1 cycle 8
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh: 2519 suites passed; 9602 tests passed; 5 skipped; log
+          /tmp/kspec-test-cache/01KSEFRN639ME7KNRG259ZDD4G/d6691aeaf45f761f.log"
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-05-25T02:53:33.479Z
+        completed_at: 2026-05-25T02:53:33.479Z
     events:
       - _ulid: 01KSEFSX3958JY23XW1V6VMZ1W
         actor: Jacob Chapel
@@ -230323,6 +230334,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-25T02:36:06.553Z
+      - _ulid: 01KSEGTN3BWWBSTRV396VVQXB9
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-05-25T02:53:35.211Z
     examined_commit: 03c37aed2c2b13d94f58569df364e5c5dce6f821
     external_links: []
     lifecycle_state: open
@@ -230335,5 +230353,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-25T02:35:42.057Z
-    updated_at: 2026-05-25T02:36:04.820Z
+    updated_at: 2026-05-25T02:53:33.479Z
     notes: []
