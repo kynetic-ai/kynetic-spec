@@ -233742,7 +233742,18 @@ reviews:
     slugs: []
     title: Review task-plan-resource-api-ui-static cycle 2
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "2546 suites passed, 9711 tests passed, 5 skipped. Full log:
+          /tmp/kspec-test-cache/01KSG0TTYSC4Y7D6631BY8RHG3/2b0d727adf3229e6.log"
+        name: full test suite
+        required: true
+        runner: npm test
+        created_at: 2026-05-25T17:07:11.956Z
+        completed_at: 2026-05-25T17:07:11.956Z
     events:
       - _ulid: 01KSG0WNA25E954PEJE07FPZ8B
         actor: Jacob Chapel
@@ -233778,6 +233789,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSG16YWFDTBRV3BN988YFV1W
         timestamp: 2026-05-25T16:59:12.398Z
+      - _ulid: 01KSG1NR1GAH4Q7KX0DW177FQX
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: full test suite
+        timestamp: 2026-05-25T17:07:14.608Z
     examined_commit: 58df2d14fb652674f714e9bbd14bea9318431ccb
     external_links: []
     lifecycle_state: open
@@ -233853,5 +233871,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-25T16:53:32.610Z
-    updated_at: 2026-05-25T16:59:10.096Z
+    updated_at: 2026-05-25T17:07:11.956Z
     notes: []
