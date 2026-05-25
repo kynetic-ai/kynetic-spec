@@ -229803,6 +229803,18 @@ reviews:
         runner: npm
         created_at: 2026-05-25T00:47:46.501Z
         completed_at: 2026-05-25T00:47:46.501Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- tests/upgrade-folder-storage.test.ts --fresh: 17 tests passed in
+          tests/upgrade-folder-storage.test.ts; runner summary 2 suites passed, 17 tests passed,
+          duration 23.5s."
+        name: focused upgrade tests
+        required: false
+        runner: npm
+        created_at: 2026-05-25T00:47:58.023Z
+        completed_at: 2026-05-25T00:47:58.023Z
     events:
       - _ulid: 01KSE8K5XX4GBTG0PGEGG70B8Y
         actor: Jacob Chapel
@@ -229837,6 +229849,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-05-25T00:47:48.195Z
+      - _ulid: 01KSE9MP9TQT100MPK09CKB7SJ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused upgrade tests
+        timestamp: 2026-05-25T00:47:59.803Z
     examined_commit: 85473371603f27ae5a7990c2c73bea5879539e76
     external_links: []
     lifecycle_state: open
@@ -229889,5 +229908,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-25T00:29:41.694Z
-    updated_at: 2026-05-25T00:47:46.501Z
+    updated_at: 2026-05-25T00:47:58.023Z
     notes: []
