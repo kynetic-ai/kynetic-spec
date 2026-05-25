@@ -231703,6 +231703,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSF0JRZ0RFTS4ZGSF9J66T2C
         timestamp: 2026-05-25T07:28:56.068Z
+      - _ulid: 01KSF0K1XEEYDSY8MHGXCEBYN8
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KSF0K06HV0EA80Q2TQSH9VYQ
+        timestamp: 2026-05-25T07:29:03.406Z
     examined_commit: 7e8ff3aeec93b5586c92a90e58c70db9c4e3b4cc
     external_links: []
     lifecycle_state: open
@@ -231761,7 +231768,42 @@ reviews:
               would overflow after adding `plan-`."
             created_at: 2026-05-25T07:28:54.240Z
         kind: blocker
+      - _ulid: 01KSF0K06HV0EA80Q2TQSH9VYQ
+        entries:
+          - _ulid: 01KSF0K06HMHY7V42KWBRRC9D1
+            author: Jacob Chapel
+            body: >-
+              Review evidence log:
+
+              Files read: kspec-agents.md; .agents/skills/review-gates/SKILL.md;
+              .agents/skills/work-gates/SKILL.md; src/cli/commands/plan-resource.ts;
+              src/parser/entity-local-resources.ts; src/cli/commands/plan.ts;
+              src/parser/plan-resource-import.ts; src/cli/commands/plan-import.ts;
+              src/parser/task-resource-resolver.ts; src/cli/commands/task.ts; src/cli/output.ts;
+              src/agent-runtime/dispatch.ts; src/schema/resources.ts; src/schema/task.ts;
+              src/parser/plan-document.ts; tests/cli-plan-resource.test.ts;
+              tests/cli-plan-import-resources.test.ts; tests/cli-plan-derive-resources.test.ts;
+              tests/plan-document-resource-refs.test.ts.
+
+              Commands run: git diff/stat/name-status against 25e55fa; kspec task get
+              @01KS8XAZQ5478RV2AVKG8MNB0S; kspec item get @plan-resource-derivation-semantics-1;
+              kspec review for-task/get prior reviews; kspec validate; AC annotation searches with
+              rg; source-scanning test search; npm test -- --fresh; npm run typecheck; npm run lint
+              (full lint, failed on existing repo lint errors); ./node_modules/.bin/oxlint on
+              changed files (0 errors); git diff --check; two temp-project CLI repros for
+              materialization symlink escape and long-id partial derivation.
+
+              Claims verified: prior add/remove symlink fixes are covered by new tests and the
+              add/remove code now uses `assertSafeResourceMutationPath`; worker's full-test claim
+              verified by fresh `npm test`; worker's materialization claim disproved by the symlink
+              and long-id repros.
+
+              Categories searched: correctness, symlink/path security, edge cases, error
+              handling/partial mutation, AC coverage, source-scanning test integrity, integration
+              with task get/dispatch drift surfaces.
+            created_at: 2026-05-25T07:29:01.649Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-25T07:15:02.110Z
-    updated_at: 2026-05-25T07:28:54.240Z
+    updated_at: 2026-05-25T07:29:01.649Z
     notes: []
