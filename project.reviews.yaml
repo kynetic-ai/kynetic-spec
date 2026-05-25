@@ -234007,6 +234007,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-25T17:19:15.426Z
+      - _ulid: 01KSG2JREK6QERX0JRS6BRERY9
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSG2JPF09FYSTA2H0H4MYA5G
+        timestamp: 2026-05-25T17:23:05.299Z
     examined_commit: 0ebd97caa924d55e960aac358c093b1979f94455
     external_links: []
     lifecycle_state: open
@@ -234016,8 +234023,31 @@ reviews:
       content_hash: ""
       ref: "@01KS8XB0EKNTMZS4XJMC4ED4SK"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KSG2JPF09FYSTA2H0H4MYA5G
+        anchor:
+          type: code
+          commit: 0ebd97caa924d55e960aac358c093b1979f94455
+          line_end: 479
+          line_start: 476
+          path: src/parser/review-resource-manager.ts
+          side: head
+        entries:
+          - _ulid: 01KSG2JPF02WKDB7H8YHMZQX5Y
+            author: Jacob Chapel
+            body: "MUST-FIX: replace-path cleanup ignores removeResourceFromOwnerResources failures. When
+              replacing an existing resource with a new path, this call can return ok:false for a
+              symlinked old path, but the result is discarded and addReviewResource still reports
+              success, rewrites resources.yaml to the new path, and leaves the unsafe old resource
+              path behind. I reproduced this by seeding old.png, replacing old.png with a symlink,
+              then calling addReviewResource(... relativePath: 'new.png', replace: true): it
+              returned ok:true, manifestPaths ['new.png'], and oldIsSymlink true. This violates the
+              task contract that replacement removes the old file when the path changes and
+              undermines the symlink/path-escape rejection behavior. Check the removal result and
+              fail atomically before updating the manifest when old-path cleanup is rejected."
+            created_at: 2026-05-25T17:23:03.264Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-25T17:18:44.195Z
-    updated_at: 2026-05-25T17:19:13.179Z
+    updated_at: 2026-05-25T17:23:03.264Z
     notes: []
