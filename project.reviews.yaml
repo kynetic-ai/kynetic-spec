@@ -232608,6 +232608,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSF48QKEC164ZQFDYTGRQT5C
         timestamp: 2026-05-25T08:33:22.173Z
+      - _ulid: 01KSF4B9JJRGFV79KV85S2C1VF
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSF4B6WW8VW59P125Y5BE369
+        timestamp: 2026-05-25T08:34:43.410Z
     examined_commit: 9f21d1bd4651df54ac5fc5946affb3c84edf6ac6
     external_links: []
     lifecycle_state: open
@@ -232664,7 +232671,29 @@ reviews:
               than only a directory."
             created_at: 2026-05-25T08:33:19.471Z
         kind: blocker
+      - _ulid: 01KSF4B6WW8VW59P125Y5BE369
+        anchor:
+          type: code
+          commit: 9f21d1bd4651df54ac5fc5946affb3c84edf6ac6
+          line_end: 122
+          line_start: 119
+          path: packages/daemon/src/routes/review-resources.ts
+          side: head
+        entries:
+          - _ulid: 01KSF4B6WWHBNR6SGS6QRDDXH8
+            author: Jacob Chapel
+            body: 'MUST-FIX: the daemon multipart parser treats an explicitly provided empty content_type field
+              as omitted. readTextField returns undefined for empty strings, and the POST handler
+              then passes null to addReviewResource, so an upload with content_type="" silently
+              infers from the path instead of rejecting the explicit non-empty-token violation. The
+              task contract says explicit content_type values must be non-empty type/subtype tokens;
+              only omitted values are inferred. Preserve empty strings for content_type (or
+              special-case it before readTextField) so POST returns the documented 400
+              invalid_resource_path/error envelope, and add API coverage for an empty content_type
+              field.'
+            created_at: 2026-05-25T08:34:40.668Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-25T08:28:30.823Z
-    updated_at: 2026-05-25T08:33:19.471Z
+    updated_at: 2026-05-25T08:34:40.668Z
     notes: []
