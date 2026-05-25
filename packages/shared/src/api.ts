@@ -338,6 +338,44 @@ export interface Observation {
 }
 
 /**
+ * Plan-owned resource metadata returned by the daemon API.
+ *
+ * Exact mirror of `ResourceMetadata` from `src/schema/resources.ts` — strict
+ * 9-field shape with no embedded URLs. Safe fetch URLs are exposed outside
+ * the metadata object via `PlanDetail.resources_base_url` (consumers
+ * construct `${base}/${encodeURIComponent(id)}/bytes`), keeping the
+ * resource metadata shape identical across CLI, API, and static export
+ * surfaces.
+ *
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+ */
+export interface PlanResourceMetadata {
+  id: string;
+  label: string | null;
+  path: string;
+  content_type: string;
+  bytes: number;
+  sha256: string;
+  git_commit: string | null;
+  git_path: string | null;
+  description: string | null;
+}
+
+/**
+ * Bounded resource summary projected through the plan index — counts only,
+ * never resource bytes. Surfaced on list responses (including the cache-ready
+ * fast path) so resource-bearing plans are visible without loading the full
+ * per-plan resource manifest.
+ *
+ * AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+ */
+export interface PlanResourceSummary {
+  count: number;
+  total_bytes: number;
+}
+
+/**
  * Plan summary for list endpoints
  * AC: @ui-plans-view ac-1
  */
@@ -360,6 +398,16 @@ export interface PlanSummary {
     pending: number;
     blocked: number;
   };
+  /**
+   * Bounded resource summary from the plan index. Always populated on list
+   * responses — `{ count: 0, total_bytes: 0 }` when the plan has no
+   * declared resources — so list/dashboard views can show resource presence
+   * without loading the per-plan manifest.
+   *
+   * AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
+   * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+   */
+  resource_summary?: PlanResourceSummary;
 }
 
 /**
@@ -368,6 +416,18 @@ export interface PlanSummary {
  */
 export interface PlanDetail extends PlanSummary {
   content: string;
+  /** Declared plan-owned resources. Always populated for detail responses. */
+  resources: PlanResourceMetadata[];
+  /**
+   * Base URL prefix for per-resource fetches. Clients construct
+   * `${resources_base_url}/${encodeURIComponent(id)}/bytes` to retrieve a
+   * specific resource. Always populated for detail responses; static
+   * exports populate it with the asset-prefix equivalent so consumers can
+   * keep building URLs uniformly.
+   *
+   * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+   */
+  resources_base_url: string;
 }
 
 /**

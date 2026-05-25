@@ -65,6 +65,7 @@ import { createItemsRoutes } from "../../dist/daemon/routes/items.js";
 import { createReviewsRoutes } from "../../dist/daemon/routes/reviews.js";
 import { createTriageRoutes } from "../../dist/daemon/routes/triage.js";
 import { createPlansRoutes } from "../../dist/daemon/routes/plans.js";
+import { createPlanResourcesRoutes } from "../../dist/daemon/routes/plan-resources.js";
 import { createSessionRoutes } from "../../dist/daemon/routes/sessions.js";
 import { createValidationRoutes } from "../../dist/daemon/routes/validation.js";
 import { createMetaRoutes } from "../../dist/daemon/routes/meta.js";
@@ -597,7 +598,8 @@ export function createTestApp(options: CreateTestAppOptions = {}): {
     .use(createItemsRoutes())
     .use(createReviewsRoutes({ pubsub, getEntityCache }))
     .use(createTriageRoutes({ pubsub }))
-    .use(createPlansRoutes())
+    .use(createPlansRoutes({ getEntityCache }))
+    .use(createPlanResourcesRoutes({ getEntityCache }))
     .use(createSessionRoutes())
     .use(createValidationRoutes())
     .use(createMetaRoutes())
@@ -619,13 +621,19 @@ export function makeRequest(
   urlPath: string,
   init: RequestInit = {},
 ): Promise<Response> {
+  // For FormData bodies, omit the explicit Content-Type so the Request
+  // constructor derives `multipart/form-data; boundary=…` automatically.
+  // Explicit `application/json` would prevent the multipart body from
+  // being parsed by `request.formData()` on the route side.
+  const isFormDataBody = typeof FormData !== "undefined" && init.body instanceof FormData;
+  const autoContentType = init.body && !isFormDataBody ? { "Content-Type": "application/json" } : {};
   return app.handle(
     new Request(`http://localhost${urlPath}`, {
       method: init.method ?? "GET",
       headers: {
         Host: "localhost",
         "X-Kspec-Dir": tempDir,
-        ...(init.body ? { "Content-Type": "application/json" } : {}),
+        ...autoContentType,
         ...(init.headers as Record<string, string>),
       },
       body: init.body,

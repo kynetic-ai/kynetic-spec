@@ -78,6 +78,27 @@ export interface ExportedProject {
 }
 
 /**
+ * Plan-owned resource as it appears in a static export. Mirrors
+ * `ResourceMetadata` plus an `exported_path` pointer to the copied file
+ * location under the export root, using the standard layout
+ * `assets/resources/plan/<plan-ulid>/<relative-path>`.
+ *
+ * AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
+ */
+export interface ExportedPlanResource {
+  id: string;
+  label: string | null;
+  path: string;
+  content_type: string;
+  bytes: number;
+  sha256: string;
+  git_commit: string | null;
+  git_path: string | null;
+  description: string | null;
+  exported_path: string;
+}
+
+/**
  * Exported plan with computed progress for static display.
  * AC: @gh-pages-export ac-23
  */
@@ -101,6 +122,14 @@ export interface ExportedPlan {
     blocked: number;
   };
   content: string;
+  /**
+   * Declared plan-owned resources with exported file paths. Empty when the
+   * plan has no resources or when its manifest is absent.
+   *
+   * AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
+   * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+   */
+  resources: ExportedPlanResource[];
 }
 
 /**

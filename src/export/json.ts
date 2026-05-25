@@ -33,14 +33,161 @@ import {
   getLinkedPlanSummaryTasks,
   isCountedInPlanSummary,
 } from "../lib/plan-summary.js";
+import {
+  copyResourceForStaticExport,
+  getResourcesDir,
+  loadResourceManifest,
+  STATIC_EXPORT_RESOURCES_PREFIX,
+} from "../parser/entity-local-resources.js";
+import { getPlanDir } from "../parser/plan-storage-manager.js";
 import type {
   ExportedItem,
+  ExportedPlan,
+  ExportedPlanResource,
   ExportedTask,
   ExportedValidation,
   ExportStats,
   InheritedAC,
   KspecSnapshot,
 } from "./types.js";
+
+/** Entity-type tag used in the static export resource layout for plans. */
+const PLAN_EXPORT_ENTITY_TYPE = "plan";
+
+/**
+ * Rewrite plan markdown so `./resources/<path>` link/image targets point at
+ * the exported file location. Mirrors the daemon-side rewrite contract but
+ * uses the static-export path layout (`assets/resources/plan/<ulid>/<path>`).
+ *
+ * Unresolved references are intentionally left untouched so the rendered
+ * static UI surfaces the raw author guidance instead of silently substituting
+ * a broken URL.
+ *
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner
+ * AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
+ */
+export function rewritePlanContentForStaticExport(
+  markdown: string,
+  resources: ExportedPlanResource[],
+): string {
+  if (!markdown || resources.length === 0) return markdown;
+  const byPath = new Map<string, ExportedPlanResource>();
+  for (const r of resources) byPath.set(r.path, r);
+  const pattern =
+    /(!?\[[^\]]*\]\()(\.\/resources\/[^\s)"']+)(\))|(^\s*\[[^\]]+\]:\s+)(\.\/resources\/[^\s"']+)/gm;
+  return markdown.replace(pattern, (
+    match,
+    inlinePrefix?: string,
+    inlineTarget?: string,
+    inlineSuffix?: string,
+    refDefPrefix?: string,
+    refDefTarget?: string,
+  ) => {
+    const target = inlineTarget ?? refDefTarget;
+    if (!target) return match;
+    const relative = target.slice("./resources/".length);
+    const resource = byPath.get(relative);
+    if (!resource) return match;
+    if (refDefPrefix !== undefined && refDefTarget !== undefined) {
+      return `${refDefPrefix}${resource.exported_path}`;
+    }
+    return `${inlinePrefix ?? ""}${resource.exported_path}${inlineSuffix ?? ""}`;
+  });
+}
+
+/**
+ * Error thrown by {@link exportPlanResources} when one of a plan's declared
+ * resources fails the symlink-safe copy step. The export pipeline surfaces
+ * this as an actionable failure so the snapshot never silently omits the
+ * resource (which would also leave the markdown's `./resources/<path>` link
+ * unresolved). Carries the plan ULID, the failing relative path, and the
+ * resolver's actionable error message so the author can fix the offending
+ * manifest entry.
+ *
+ * AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+ */
+export class PlanResourceExportError extends Error {
+  readonly planUlid: string;
+  readonly resourcePath: string;
+  readonly reason: string;
+
+  constructor(planUlid: string, resourcePath: string, reason: string) {
+    super(
+      `Failed to export plan resource "${resourcePath}" for plan ${planUlid}: ${reason}. ` +
+        `Fix the manifest entry or owning resources/ layout (no symlinks, no path traversal) and re-run the export.`,
+    );
+    this.name = "PlanResourceExportError";
+    this.planUlid = planUlid;
+    this.resourcePath = resourcePath;
+    this.reason = reason;
+  }
+}
+
+/**
+ * Load a plan's resource manifest and project the entries to
+ * `ExportedPlanResource`. When `assetsOutputDir` is supplied the resource
+ * file bytes are copied under
+ * `<assetsOutputDir>/assets/resources/plan/<plan-ulid>/<relative-path>` —
+ * symlink-safe via `copyResourceForStaticExport`. The recorded
+ * `exported_path` is the POSIX-relative path the static UI uses regardless
+ * of whether the bytes were physically copied (the snapshot stays
+ * internally consistent for purely-stdout exports too).
+ *
+ * Copy failures (symlinked resources/ root, intermediate symlink escapes,
+ * undeclared paths, missing files) surface as {@link PlanResourceExportError}
+ * so the export aborts with actionable guidance instead of producing a
+ * snapshot whose `resources` array silently drops the entry while the
+ * rewritten markdown still points at the would-be exported path.
+ *
+ * AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
+ * AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+ * AC: @trait-entity-scoped-local-resources-1 ac-binary-resources-are-not-inlined-into-yaml
+ */
+async function exportPlanResources(
+  ctx: Awaited<ReturnType<typeof initContext>>,
+  ulid: string,
+  assetsOutputDir: string | null,
+): Promise<ExportedPlanResource[]> {
+  const planDir = getPlanDir(ctx, ulid);
+  let manifest;
+  try {
+    manifest = await loadResourceManifest(planDir);
+  } catch {
+    return [];
+  }
+  const ownerResourcesDir = getResourcesDir(planDir);
+  const exported: ExportedPlanResource[] = [];
+  for (const entry of manifest.resources) {
+    const exported_path = [STATIC_EXPORT_RESOURCES_PREFIX, PLAN_EXPORT_ENTITY_TYPE, ulid, entry.path]
+      .join("/");
+    if (assetsOutputDir) {
+      const result = await copyResourceForStaticExport({
+        ownerResourcesDir,
+        relativePath: entry.path,
+        exportRoot: assetsOutputDir,
+        entityType: PLAN_EXPORT_ENTITY_TYPE,
+        entityUlid: ulid,
+        manifest,
+      });
+      if (!result.ok) {
+        throw new PlanResourceExportError(ulid, entry.path, result.error);
+      }
+    }
+    exported.push({
+      id: entry.id,
+      label: entry.label,
+      path: entry.path,
+      content_type: entry.content_type,
+      bytes: entry.bytes,
+      sha256: entry.sha256,
+      git_commit: entry.git_commit,
+      git_path: entry.git_path,
+      description: entry.description,
+      exported_path,
+    });
+  }
+  return exported;
+}
 
 /**
  * Get the kspec version from package.json
@@ -181,12 +328,21 @@ function convertValidationResult(result: Awaited<ReturnType<typeof validate>>): 
   };
 }
 
-function expandPlans(plans: Awaited<ReturnType<typeof loadPlans>>, tasks: LoadedTask[]) {
-  return plans.map((plan) => {
+async function expandPlans(
+  ctx: Awaited<ReturnType<typeof initContext>>,
+  plans: Awaited<ReturnType<typeof loadPlans>>,
+  tasks: LoadedTask[],
+  assetsOutputDir: string | null,
+): Promise<ExportedPlan[]> {
+  const out: ExportedPlan[] = [];
+  for (const plan of plans) {
     const linkedTasks = getLinkedPlanSummaryTasks(plan, tasks);
     const countedTasks = linkedTasks.filter((task) => isCountedInPlanSummary(task));
 
-    return {
+    const resources = await exportPlanResources(ctx, plan._ulid, assetsOutputDir);
+    const content = rewritePlanContentForStaticExport(plan.content, resources);
+
+    out.push({
       _ulid: plan._ulid,
       slugs: plan.slugs,
       title: plan.title,
@@ -199,11 +355,17 @@ function expandPlans(plans: Awaited<ReturnType<typeof loadPlans>>, tasks: Loaded
       spec_count: plan.derived_specs.length,
       task_count: countedTasks.length,
       task_progress: countPlanTaskProgress(linkedTasks),
-      content: plan.content,
-      module_ref: plan.module_ref ?? null,
-      source_path: plan.source_path ?? null,
-    };
-  });
+      content,
+      resources,
+      // Forward-compatible: keep emitting module_ref/source_path so existing
+      // consumers continue to see the same fields.
+      ...({ module_ref: plan.module_ref ?? null, source_path: plan.source_path ?? null } as Record<
+        string,
+        unknown
+      >),
+    } as ExportedPlan);
+  }
+  return out;
 }
 
 function buildAlignmentResponse(
@@ -244,10 +406,23 @@ function buildAlignmentResponse(
 
 /**
  * Generate a JSON snapshot of all kspec data.
+ *
+ * When `assetsOutputDir` is supplied, plan-owned local resource files are
+ * copied under `<assetsOutputDir>/assets/resources/plan/<plan-ulid>/<path>`
+ * so the static UI can resolve `./resources/<path>` references through the
+ * exported asset layout. The snapshot's plan content markdown is rewritten
+ * to point at those exported paths whether or not bytes are copied, so the
+ * JSON stays internally consistent.
+ *
  * AC: @gh-pages-export ac-1, ac-2, ac-3, ac-4, ac-5
+ * AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
  */
-export async function generateJsonSnapshot(includeValidation = false): Promise<KspecSnapshot> {
+export async function generateJsonSnapshot(
+  includeValidation = false,
+  options: { assetsOutputDir?: string | null } = {},
+): Promise<KspecSnapshot> {
   const ctx = await initContext();
+  const assetsOutputDir = options.assetsOutputDir ?? null;
 
   // Load all data
   const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
@@ -285,7 +460,7 @@ export async function generateJsonSnapshot(includeValidation = false): Promise<K
     tasks: exportedTasks,
     items: exportedItems,
     inbox: inboxItems,
-    plans: expandPlans(plans, tasks),
+    plans: await expandPlans(ctx, plans, tasks, assetsOutputDir),
     triage: triageRecords,
     session: sessionContext,
     observations: metaContext.observations,

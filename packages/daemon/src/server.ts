@@ -47,6 +47,7 @@ import { createAutomationRoutes } from "./routes/automation.js";
 import { createDebugRoutes } from "./routes/debug.js";
 import { createSessionRoutes } from "./routes/sessions.js";
 import { createPlansRoutes } from "./routes/plans.js";
+import { createPlanResourcesRoutes } from "./routes/plan-resources.js";
 import { createAggregationRoutes } from "./routes/aggregation.js";
 import { createRefsRoutes } from "./routes/refs.js";
 import { createDiffRoutes } from "./routes/diff.js";
@@ -769,6 +770,10 @@ export async function createServer(options: ServerOptions) {
     // AC: @ui-plans-view ac-1 - Plans data endpoints
     // AC: @daemon-entity-cache ac-serve-from-memory — pass cache accessor
     .use(createPlansRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
+    // AC: @folder-backed-plan-storage-1 ac-plan-document-sidecar-is-authoritative
+    // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+    //     — plan resource API (list/metadata/bytes/upload/delete)
+    .use(createPlanResourcesRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @ui-api-aggregation ac-1, ac-2, ac-3 - Aggregation endpoints
     // AC: @daemon-read-path ac-no-per-request-sync, ac-index-from-cache — pass cache accessor

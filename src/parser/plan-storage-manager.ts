@@ -384,8 +384,14 @@ async function readRawCore(
  * Implements the document-sidecar authority rule: when core metadata and
  * `plan.md` disagree on the markdown body, `plan.md` wins.
  *
+ * Attaches the bounded `resource_summary` (count + total_bytes) read from
+ * the per-plan `resources.yaml` sidecar so cache projections and the
+ * cache-ready list route can surface resource presence without re-reading
+ * sidecars on hot paths.
+ *
  * AC: @folder-backed-plan-storage-1 ac-plan-document-sidecar-is-authoritative
  * AC: @folder-backed-plan-storage-1 ac-plan-metadata-sidecar-is-authoritative
+ * AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
  * AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
  */
 async function loadPlanFromDir(
@@ -408,7 +414,18 @@ async function loadPlanFromDir(
   if (!parsed.success) {
     return undefined;
   }
-  return { ...parsed.data, _sourceFile: getPlanCoreFilePath(ctx, ulid) };
+  const resourceSummary = await readResourceSummary(ctx, ulid);
+  const loaded: LoadedPlan = {
+    ...parsed.data,
+    _sourceFile: getPlanCoreFilePath(ctx, ulid),
+  };
+  if (resourceSummary) {
+    (loaded as LoadedPlan & { resource_summary: PlanResourceSummary }).resource_summary = {
+      count: resourceSummary.count,
+      total_bytes: resourceSummary.total_bytes,
+    };
+  }
+  return loaded;
 }
 
 /** Write `plan.yaml`, preserving unknown extension fields. */
