@@ -3768,3 +3768,18 @@ inbox:
       - web-ui
     added_by: "@claude"
     created_at: 2026-05-25T17:16:24.576Z
+  - _ulid: 01KSGGDDKH5JRDBYV1YAPWAT1F
+    text: "Detached reviewer merge helper gap: when the integration target branch is not checked out in
+      any worktree, the helper fails before attempting the merge and requires the reviewer to
+      create/check out a target worktree manually. Existing @detached-reviewer-merge-helper ACs
+      cover only the precondition where the target branch is already checked out. Consider either
+      having dispatch prepare the target worktree, having the helper create/manage a clean temporary
+      target worktree when absent, or updating reviewer guidance with the supported recovery path."
+    tags:
+      - reflection
+      - dispatch
+      - merge
+      - review
+      - dx
+    added_by: Jacob Chapel
+    created_at: 2026-05-25T21:24:50.417Z
