@@ -3753,3 +3753,18 @@ inbox:
       - dx
     added_by: "@claude"
     created_at: 2026-05-25T05:53:34.040Z
+  - _ulid: 01KSG26H40QHBJJTFEV17R5PPP
+    text: "When implementing plan-resource static-mode URL building in
+      @task-plan-resource-api-ui-static, route the static href/src through the shared
+      encodeStaticAssetPath helper (packages/web-ui/src/lib/api.ts) and add a behavioral test
+      covering a resource path with # / ?. The plan-resource schema shares RESOURCE_PATH_PATTERN
+      with reviews and allows URL-reserved characters; raw ${base}/${exported_path} interpolation
+      lets the browser strip #suffix as a fragment and ?suffix as a query, breaking valid resource
+      paths. Fix landed for reviews in cycle 6 of @task-review-screenshot-resource-ui."
+    tags:
+      - reflection
+      - reviews
+      - plans
+      - web-ui
+    added_by: "@claude"
+    created_at: 2026-05-25T17:16:24.576Z
