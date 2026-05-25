@@ -1492,4 +1492,152 @@ describe("kspec upgrade — folder storage migration", () => {
     expect(manifest.review_storage).toBeUndefined();
     expect(manifest.resource_storage).toBeUndefined();
   });
+
+  // Regression for fix cycle 5 blocker: the protected-project tripwire must
+  // fire for EVERY executing folder-storage upgrade path, not just the apply
+  // calls inside plan/review migration steps. The reviewer's repro: a project
+  // with no monolithic plan/review records (plan + review both short-circuit
+  // as `alreadyMigrated` before their per-step `assertSafeMigrationTarget`
+  // runs) but a manifest still at kynetic 1.1. The manifest promotion step
+  // would silently mutate the protected project despite the env-configured
+  // tripwire pointing at its root. The fix hoists the safety check to the
+  // orchestrator entrypoint so it always runs before any executing mutation.
+  //
+  // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-executes-folder-migration
+  it("upgrade refuses to mutate when KSPEC_PROTECTED_PROJECT_PATHS guards the target (no monolithic records)", async () => {
+    const { specDir, manifestPath } = await initProject(tempDir);
+
+    // No monolithic plan/review records — both migration steps would
+    // short-circuit as alreadyMigrated. Manifest stays at 1.1 from
+    // initProject() so the manifest promotion step has real work to do.
+    await writeMonolithicPlans(specDir, []);
+    await writeMonolithicReviews(specDir, []);
+
+    const manifestBefore = await readTestOutput(manifestPath);
+
+    const cliResult = kspec("upgrade --json", tempDir, {
+      expectFail: true,
+      env: { KSPEC_PROTECTED_PROJECT_PATHS: tempDir },
+    });
+    expect(cliResult.exitCode).not.toBe(0);
+    const result = JSON.parse(cliResult.stdout) as UpgradeResultShape;
+    expect(result.success).toBe(false);
+
+    // Safety preflight must be present as a failed step. Plan, review, and
+    // manifest steps must all be skipped — the tripwire short-circuited
+    // every storage mutation.
+    const safetyStep = result.steps.find(
+      (s) => s.name === "Storage migration safety preflight",
+    );
+    expect(safetyStep?.status).toBe("failed");
+    expect(safetyStep?.message).toMatch(/protected/i);
+    expect(safetyStep?.message).toMatch(/KSPEC_PROTECTED_PROJECT_PATHS/);
+
+    const planStep = result.steps.find((s) => s.name === "Plan storage folder migration");
+    const reviewStep = result.steps.find((s) => s.name === "Review storage folder migration");
+    const manifestStep = result.steps.find((s) => s.name === "Storage manifest (kynetic 1.2)");
+    expect(planStep?.status).toBe("skipped");
+    expect(reviewStep?.status).toBe("skipped");
+    expect(manifestStep?.status).toBe("skipped");
+
+    // Manifest on disk must be byte-identical to before the run — no
+    // promotion to kynetic 1.2, no storage declarations written.
+    const manifestAfter = await readTestOutput(manifestPath);
+    expect(manifestAfter).toBe(manifestBefore);
+    const manifest = yamlParse(manifestAfter) as Record<string, unknown>;
+    expect(manifest.kynetic).toBe("1.1");
+    expect(manifest.plan_storage).toBeUndefined();
+    expect(manifest.review_storage).toBeUndefined();
+    expect(manifest.resource_storage).toBeUndefined();
+
+    // No plan/review folder directories were created.
+    await expect(fs.access(path.join(specDir, "plans"))).rejects.toThrow();
+    await expect(fs.access(path.join(specDir, "reviews"))).rejects.toThrow();
+  });
+
+  // Companion regression: the tripwire must also fire when there IS real
+  // plan/review work to migrate. Asserting both paths in this test file
+  // guarantees future refactors do not regress one path while keeping the
+  // other.
+  //
+  // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-executes-folder-migration
+  it("upgrade refuses to mutate when KSPEC_PROTECTED_PROJECT_PATHS guards the target (with monolithic records)", async () => {
+    const { specDir, manifestPath } = await initProject(tempDir);
+
+    await writeMonolithicPlans(specDir, [
+      {
+        _ulid: planUlid,
+        slugs: ["guarded"],
+        title: "Guarded Plan",
+        content: "# Plan\nBody",
+        status: "draft",
+        derived_tasks: [],
+        derived_specs: [],
+        created_at: "2026-05-22T10:00:00Z",
+        notes: [],
+      },
+    ]);
+    await writeMonolithicReviews(specDir, [
+      {
+        _ulid: reviewUlid,
+        slugs: ["guarded"],
+        title: "Guarded Review",
+        author: "reviewer",
+        subject: {
+          type: "task",
+          ref: "@some-task",
+          shadow_commit: "abc",
+          content_hash: "h",
+        },
+        lifecycle_state: "open",
+        related_refs: [],
+        threads: [],
+        checks: [],
+        verdicts: [],
+        events: [],
+        notes: [],
+        external_links: [],
+        examined_commit: null,
+        created_at: "2026-05-22T10:00:00Z",
+      },
+    ]);
+
+    const planFileBefore = await readTestOutput(path.join(specDir, "project.plans.yaml"));
+    const reviewFileBefore = await readTestOutput(path.join(specDir, "project.reviews.yaml"));
+    const manifestBefore = await readTestOutput(manifestPath);
+
+    const cliResult = kspec("upgrade --json", tempDir, {
+      expectFail: true,
+      env: { KSPEC_PROTECTED_PROJECT_PATHS: tempDir },
+    });
+    expect(cliResult.exitCode).not.toBe(0);
+    const result = JSON.parse(cliResult.stdout) as UpgradeResultShape;
+    expect(result.success).toBe(false);
+
+    const safetyStep = result.steps.find(
+      (s) => s.name === "Storage migration safety preflight",
+    );
+    expect(safetyStep?.status).toBe("failed");
+
+    const planStep = result.steps.find((s) => s.name === "Plan storage folder migration");
+    const reviewStep = result.steps.find((s) => s.name === "Review storage folder migration");
+    const manifestStep = result.steps.find((s) => s.name === "Storage manifest (kynetic 1.2)");
+    expect(planStep?.status).toBe("skipped");
+    expect(reviewStep?.status).toBe("skipped");
+    expect(manifestStep?.status).toBe("skipped");
+
+    // All three input files must be byte-identical to before — no
+    // buffered write landed because the preflight aborted before the
+    // buffer opened.
+    expect(await readTestOutput(path.join(specDir, "project.plans.yaml"))).toBe(planFileBefore);
+    expect(await readTestOutput(path.join(specDir, "project.reviews.yaml"))).toBe(
+      reviewFileBefore,
+    );
+    expect(await readTestOutput(manifestPath)).toBe(manifestBefore);
+
+    // No plan/review folder directories were created for the would-be
+    // migrated ULIDs.
+    await expect(fs.access(path.join(specDir, "plans", planUlid))).rejects.toThrow();
+    await expect(fs.access(path.join(specDir, "reviews", reviewUlid))).rejects.toThrow();
+  });
 });

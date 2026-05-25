@@ -691,6 +691,7 @@ async function runAtomicStorageMigration(
   const planStepName = "Plan storage folder migration";
   const reviewStepName = "Review storage folder migration";
   const manifestStepName = "Storage manifest (kynetic 1.2)";
+  const safetyStepName = "Storage migration safety preflight";
 
   const tryRun = async (
     name: string,
@@ -741,6 +742,31 @@ async function runAtomicStorageMigration(
       { name: planStepName, status: "skipped", message },
       { name: reviewStepName, status: "skipped", message },
       { name: manifestStepName, status: "skipped", message },
+    ];
+  }
+
+  // Live-path tripwire: enforce ONCE before any executing storage mutation
+  // so it fires for every path through the atomic block, not just the
+  // plan/review apply calls. The per-step assertions inside
+  // `runPlanFolderMigrationStep` / `runReviewFolderMigrationStep` run AFTER
+  // the `report.alreadyMigrated` short-circuit and never get a chance to
+  // refuse when both steps are no-ops — but the manifest promotion below
+  // would still mutate a protected project. Hoisting the check here closes
+  // that bypass: a no-op plan + no-op review + manifest promotion is still
+  // "an executing folder-storage upgrade" and must respect the tripwire.
+  //
+  // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-executes-folder-migration
+  try {
+    const { assertSafeMigrationTarget } = await import("../../parser/migration-safety.js");
+    assertSafeMigrationTarget(projectDir, ctx.specDir);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    const skipMessage = "skipped — protected project tripwire refused executing migration";
+    return [
+      { name: safetyStepName, status: "failed", message },
+      { name: planStepName, status: "skipped", message: skipMessage },
+      { name: reviewStepName, status: "skipped", message: skipMessage },
+      { name: manifestStepName, status: "skipped", message: skipMessage },
     ];
   }
 
