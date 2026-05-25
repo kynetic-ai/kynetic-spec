@@ -6549,6 +6549,9 @@ features:
               `resource_refs` list containing `./resources/<relative-path>` entries.
               Derived tasks keep versioned references to those plan resources by default;
               task-owned copies are only created by an explicit materialize/copy option.
+            status:
+              maturity: draft
+              implementation: in_progress
             depends_on: []
             implements: []
             relates_to: []
