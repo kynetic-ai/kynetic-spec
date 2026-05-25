@@ -233764,6 +233764,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSG153SB7EB18PJ6KT9HD9MM
         timestamp: 2026-05-25T16:58:12.022Z
+      - _ulid: 01KSG15CWPSR1AQN1VB1A5YN8R
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSG15AFBMQSS730QFQJGE8TM
+        timestamp: 2026-05-25T16:58:18.902Z
     examined_commit: 58df2d14fb652674f714e9bbd14bea9318431ccb
     external_links: []
     lifecycle_state: open
@@ -233794,7 +233801,28 @@ reviews:
               {"resources":[]} instead of a 409 resource-storage incompatibility.'
             created_at: 2026-05-25T16:58:09.580Z
         kind: blocker
+      - _ulid: 01KSG15AFBMQSS730QFQJGE8TM
+        anchor:
+          type: code
+          commit: 58df2d14fb652674f714e9bbd14bea9318431ccb
+          line_end: 142
+          line_start: 138
+          path: src/export/json.ts
+          side: head
+        entries:
+          - _ulid: 01KSG15AFBVP9JG5B57MA9824V
+            author: Jacob Chapel
+            body: "MUST-FIX: exportPlanResources swallows copyResourceForStaticExport failures and silently
+              omits the resource. That violates ac-path-escape-rejected for static export: symlink
+              escapes must reject the operation with actionable guidance, not produce a successful
+              snapshot with the resource missing and the original ./resources link left unresolved.
+              Evidence: I generated a static snapshot for a plan whose declared resource path
+              traversed a symlinked resources/screenshots directory to an outside folder;
+              generateJsonSnapshot(..., { assetsOutputDir }) returned ok with resources: [] and
+              unchanged markdown instead of failing."
+            created_at: 2026-05-25T16:58:16.427Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-25T16:53:32.610Z
-    updated_at: 2026-05-25T16:58:09.580Z
+    updated_at: 2026-05-25T16:58:16.427Z
     notes: []
