@@ -145,3 +145,47 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-25T08:46:03.682Z
+  - _ulid: 01KSF6Y2N87WT0XC825ZX6EZ8G
+    content: >-
+      Fix cycle 4: addressed all 3 review blockers from review @01KSF3ZXQ7H1A3X2K8DG4N51ZF.
+
+
+      Blocker 1 (symlink-safe remove): removeReviewResource called fs.rm(path.join(resourcesDir,
+      resource.path)) directly. If resources/<dir> was a symlink, Node followed the intermediate
+      symlink and removed the outside target. Fixed by adding a new removeResourceFromOwnerResources
+      helper in entity-local-resources.ts that walks each path segment, lstat-rejects symlinks at
+      the owner root / intermediate dirs / destination, then uses fs.unlink (which does not follow
+      the final-segment symlink). The manager routes both removeReviewResource and
+      addReviewResource's replace-path cleanup through the helper, and leaves the manifest intact on
+      rejection.
+
+
+      Blocker 2 (source_file_unreadable for chmod 000): validateSourceFile only checked
+      stat().isFile(), so a chmod 000 regular file passed validation and then fs.copyFile inside
+      copySourceIntoOwnerResources threw EACCES — masking the documented code by routing to
+      entity_storage_incompatible / exit 3 in the CLI. Added an explicit fs.access(R_OK) probe
+      inside validateSourceFile so the documented source_file_unreadable code surfaces at the
+      manager boundary.
+
+
+      Blocker 3 (empty multipart content_type): readTextField collapsed empty strings to undefined,
+      so an explicit content_type='' was treated as absent and the manager silently inferred from
+      the path extension. Added a readPresentField helper that preserves empty strings, used only
+      for content_type. The POST handler now passes empty content_type through to the manager which
+      surfaces it as 400 invalid_resource_path. Other fields (id/path/label/description) still treat
+      empty as absent.
+
+
+      Tests added (+7): 3 in tests/review-resource-manager.test.ts for the three symlink-remove
+      variants (intermediate dir, root, destination); 1 in tests/review-resource-manager.test.ts for
+      chmod 000 at the manager layer; 1 in tests/review-resource-cli.test.ts for chmod 000 through
+      the production CLI; 2 in tests/daemon-api/review-resources.test.ts (explicit empty
+      content_type rejection + baseline inferred content_type when omitted).
+
+
+      Full test suite: 9716 passed, 5 skipped, 0 failed (was 9709 — +7 new tests, math checks). All
+      review threads replied/resolved. Re-verified all task-description ACs against the
+      implementation — no spec changes required.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-25T09:19:56.072Z
