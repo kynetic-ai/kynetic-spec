@@ -249,3 +249,49 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-25T16:31:24.326Z
+  - _ulid: 01KSG22YNSVVH4FMKYX1XTQFVB
+    content: >-
+      Fix cycle 6: addressed the single blocker from review @01KSFYVE14VVQWA31FMDH074R1.
+
+
+      Reviewer flagged that the static review-detail page's resolveResourceUrl used the raw
+      exported_path as an <a href> / <img src>. Resource paths are POSIX paths and the schema only
+      rejects absolute paths, traversal, backslashes, empty/dot segments, and trailing slashes —
+      URL-reserved characters like # and ? are legitimate filename characters. A valid exported path
+      like assets/resources/review/<ulid>/screenshots/login#bug.png had the browser interpret
+      #bug.png as a fragment, so any review resource path containing # or ? would 404 or load the
+      wrong bytes in static mode. Live mode was fine because reviewResourceBytesUrl already runs the
+      resource ID (and only the ID — not the path) through encodeURIComponent.
+
+
+      Fix (packages/web-ui/src/lib/api.ts, packages/web-ui/src/routes/reviews/[id]/+page.svelte):
+
+      1. Added encodeStaticAssetPath(exportedPath) helper that splits on '/' and encodeURIComponents
+      each segment, then rejoins with '/'. The slash separators stay intact while # -> %23, ? ->
+      %3F, space -> %20, etc.
+
+      2. resolveResourceUrl in the Svelte page now wraps the static-mode branch in
+      encodeStaticAssetPath. Live-mode branch is unchanged (reviewResourceBytesUrl already encodes
+      safely and the resource id schema only allows [a-z0-9._-]).
+
+
+      Tests added (+6):
+
+      - tests/web-ui/review-resources-api.test.ts: 5 new behavioral helper tests covering # / ? /
+      spaces / & / separator preservation / no-op-safe-paths. Each # / ? / space test re-parses the
+      encoded result through new URL(...) and asserts pathname is the full encoded path with empty
+      hash and empty search — proving the browser would not strip the suffix.
+
+      - tests/review-resource-static-export.test.ts: 1 new end-to-end static-export round-trip test
+      that adds a real resource with path 'screenshots/login#bug?ref.png' via the production CLI,
+      runs kspec export --format json --output, asserts the asset file lands on disk at the raw
+      'login#bug?ref.png' name, the snapshot's exported_path carries the raw POSIX path, and the
+      UI-side URL (base + per-segment-encoded exported_path) parses with empty hash and search.
+
+
+      Full test suite: 9783 passed, 5 skipped, 0 failed (was 9777 — +6 new tests, math checks). tsc
+      --noEmit clean. Re-verified all task-description ACs and inherited trait ACs against the
+      implementation — no spec changes required. Both review threads replied and resolved.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-25T17:14:27.385Z
