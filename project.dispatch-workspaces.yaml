@@ -12923,18 +12923,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-plan-resource-import-and-derive-1/01ks8xaz
-    canonical_branch_head: cec6e309c6730167415e73bd396a8700ef4d0030
+    canonical_branch_head: 9802d445026c042d9c37a58e942107d4e8a57a79
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-25T08:26:25.923Z
+      updated_at: 2026-05-25T08:52:50.737Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-25T08:26:53.520Z
+      updated_at: 2026-05-25T08:52:50.737Z
     integration:
       status: pending
       detail: null
@@ -12942,7 +12942,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
       target_commit: 25e55fa9067eba15e70dd1659669a8e34465407c
-      updated_at: 2026-05-25T08:26:25.923Z
+      updated_at: 2026-05-25T08:52:50.737Z
     lifecycle_state: active
     resolved_base_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
     task_ref: "@01KS8XAZQ5478RV2AVKG8MNB0S"
@@ -12950,9 +12950,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-25T08:26:53.520Z
-      last_reconciled_at: 2026-05-25T08:26:53.520Z
+      last_reconciled_at: 2026-05-25T08:52:50.737Z
       created_at: 2026-05-25T03:23:53.034Z
-      updated_at: 2026-05-25T08:26:53.520Z
+      updated_at: 2026-05-25T08:52:50.737Z
     workspace_id: dispatch-workspace-01KS8XAZQ5478RV2AVKG8MNB0S
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
