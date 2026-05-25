@@ -19573,6 +19573,22 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-25T07:33:50.928Z
+  - _ulid: 01KSF28YFX8XDN3K4PFA8YY0TV
+    type: friction
+    content: "When fixing a path/id safety issue on one resource mutation surface, audit ALL adjacent
+      surfaces with the same mutation pattern before submitting.
+      @task-plan-resource-import-and-derive-1 went through three consecutive review cycles, each
+      catching the SAME class of bug on a different surface: cycle 1 (sibling import symlink), cycle
+      2 (plan resource add/remove pre-existing symlinks), cycle 3 (materialize symlink escape +
+      long-id partial derive). Each cycle the worker fixed only the surface the reviewer flagged and
+      missed adjacent surfaces with identical mutation patterns. Reviewers reliably re-probe with
+      the same attack on neighboring surfaces — workers should run the same audit pre-submit. The
+      cycle-2 fix introduced assertSafeResourceMutationPath but only applied it to add/remove; it
+      should have also been applied to materialize and import in the same change."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-25T07:58:29.374Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
