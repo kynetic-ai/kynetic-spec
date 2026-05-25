@@ -234211,6 +234211,12 @@ reviews:
         payload:
           thread_ulid: 01KSG33HGB7DBXSNH2E40VZGCE
         timestamp: 2026-05-25T18:36:19.577Z
+      - _ulid: 01KSG6S2JKAW4GW8QFWWQDT7ZF
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSG33HGB7DBXSNH2E40VZGCE
+        timestamp: 2026-05-25T18:36:26.580Z
     examined_commit: 0ebd97caa924d55e960aac358c093b1979f94455
     external_links: []
     lifecycle_state: closed
@@ -234290,6 +234296,8 @@ reviews:
               replace-path cleanup gap. Resolving as a non-blocking nit.
             created_at: 2026-05-25T18:36:17.866Z
         kind: nit
+        resolved_at: 2026-05-25T18:36:24.823Z
+        resolved_by: "@claude"
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -234299,7 +234307,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-25T17:32:27.713Z
     created_at: 2026-05-25T17:18:44.195Z
-    updated_at: 2026-05-25T18:36:17.866Z
+    updated_at: 2026-05-25T18:36:24.823Z
     notes: []
   - _ulid: 01KSG5SRJFWMCPDCB0VYY6Z5BC
     slugs: []
