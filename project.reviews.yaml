@@ -230714,6 +230714,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSETBPP363HJBNDJ82251QTS
         timestamp: 2026-05-25T05:40:13.371Z
+      - _ulid: 01KSETC6T3YDVQSFTS1RDSXQQA
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSETC4GKT565DEVP88GHX4M4
+        timestamp: 2026-05-25T05:40:27.587Z
     examined_commit: 8ec78b1068c3811f36051e6234aa7fd5d8865b85
     external_links: []
     lifecycle_state: open
@@ -230798,9 +230805,28 @@ reviews:
               IDs on each surface."
             created_at: 2026-05-25T05:40:11.075Z
         kind: blocker
+      - _ulid: 01KSETC4GKT565DEVP88GHX4M4
+        anchor:
+          type: code
+          commit: 8ec78b1068c3811f36051e6234aa7fd5d8865b85
+          line_end: 167
+          line_start: 166
+          path: src/cli/commands/review-resource.ts
+          side: head
+        entries:
+          - _ulid: 01KSETC4GKJMWZ03R6DX6XD44E
+            author: Jacob Chapel
+            body: "MUST-FIX: review resource add uses Commander requiredOption for --id and --path. Missing
+              required option errors happen before the action runs, so --json callers get Commander
+              text instead of the task's required JSON failure envelope with code, message,
+              resource_id, path, and source_file fields. Handle missing --id/--path inside the
+              command action or otherwise route parse errors through the documented envelope, and
+              add tests for both missing options."
+            created_at: 2026-05-25T05:40:25.235Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-25T05:31:05.010Z
-    updated_at: 2026-05-25T05:40:11.075Z
+    updated_at: 2026-05-25T05:40:25.235Z
     notes: []
   - _ulid: 01KSESZY8TXWF47R5G8HF6C6D7
     slugs:
