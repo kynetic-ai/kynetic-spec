@@ -233503,6 +233503,18 @@ reviews:
         runner: npm
         created_at: 2026-05-25T16:30:44.080Z
         completed_at: 2026-05-25T16:30:44.080Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Node URL parsing confirmed raw static asset paths with # or ? are interpreted as
+          fragment/query: /base/assets/resources/review/01REV/screenshots/login#bug.png has pathname
+          /base/assets/resources/review/01REV/screenshots/login and hash #bug.png."
+        name: static resource URL parsing probe
+        required: false
+        runner: node
+        created_at: 2026-05-25T16:30:48.425Z
+        completed_at: 2026-05-25T16:30:48.425Z
     events:
       - _ulid: 01KSFYVE146B8YMZXXPS0FH7E0
         actor: Jacob Chapel
@@ -233531,6 +233543,13 @@ reviews:
           status: pass
           name: npm test -- --fresh
         timestamp: 2026-05-25T16:30:45.679Z
+      - _ulid: 01KSFZK2NZRYJ826SHNKYQ4A7W
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: static resource URL parsing probe
+        timestamp: 2026-05-25T16:30:50.047Z
     examined_commit: c3d0ed1125a79f9b2849f4fb20e1dba5b10d9e42
     external_links: []
     lifecycle_state: open
@@ -233569,5 +233588,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-25T16:17:55.236Z
-    updated_at: 2026-05-25T16:30:44.080Z
+    updated_at: 2026-05-25T16:30:48.425Z
     notes: []
