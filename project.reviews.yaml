@@ -232871,6 +232871,17 @@ reviews:
         runner: oxlint
         created_at: 2026-05-25T09:12:54.667Z
         completed_at: 2026-05-25T09:12:54.667Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate --warnings-ok passed; remaining warnings are existing project-wide
+          reference/alignment/completeness warnings.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-05-25T09:12:59.857Z
+        completed_at: 2026-05-25T09:12:59.857Z
     events:
       - _ulid: 01KSF5QCBR7GEGTPCY037496P3
         actor: Jacob Chapel
@@ -232899,6 +232910,13 @@ reviews:
           status: pass
           name: changed-file oxlint
         timestamp: 2026-05-25T09:12:56.540Z
+      - _ulid: 01KSF6HE2GQDT0S7AGTSHGR1WW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-25T09:13:01.776Z
     examined_commit: 9802d445026c042d9c37a58e942107d4e8a57a79
     external_links: []
     lifecycle_state: open
@@ -232911,5 +232929,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-25T08:58:48.056Z
-    updated_at: 2026-05-25T09:12:54.667Z
+    updated_at: 2026-05-25T09:12:59.857Z
     notes: []
