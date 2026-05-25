@@ -233569,6 +233569,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-25T16:30:54.401Z
+      - _ulid: 01KSFZKR6HEXXS1SR6DQR9E00M
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KSFZKPP7RJFVWNGZS79TXHR2
+        timestamp: 2026-05-25T16:31:12.081Z
     examined_commit: c3d0ed1125a79f9b2849f4fb20e1dba5b10d9e42
     external_links: []
     lifecycle_state: open
@@ -233605,7 +233612,45 @@ reviews:
               pathname /base/assets/resources/review/01REV/screenshots/login and hash #bug.png."
             created_at: 2026-05-25T16:22:40.810Z
         kind: blocker
+      - _ulid: 01KSFZKPP7RJFVWNGZS79TXHR2
+        entries:
+          - _ulid: 01KSFZKPP7B8C7CXS3QP9WBKBV
+            author: Jacob Chapel
+            body: >-
+              Review evidence log:
+
+
+              Files read: kspec-agents.md; src/schema/resources.ts;
+              src/parser/entity-local-resources.ts; src/parser/review-resource-manager.ts;
+              src/cli/commands/review-resource.ts; src/cli/commands/review.ts;
+              src/cli/commands/export.ts; src/export/json.ts; src/export/types.ts;
+              packages/daemon/src/routes/review-resources.ts; packages/daemon/src/routes/reviews.ts;
+              packages/daemon/src/server.ts; packages/daemon/src/middleware/project-context.ts;
+              packages/shared/src/api.ts; packages/web-ui/src/lib/api.ts;
+              packages/web-ui/src/lib/api-static.ts;
+              packages/web-ui/src/routes/reviews/[id]/+page.svelte;
+              tests/review-resource-manager.test.ts; tests/daemon-api/review-resources.test.ts;
+              tests/review-resource-cli.test.ts; tests/review-resource-static-export.test.ts;
+              tests/web-ui/review-resources-api.test.ts; tests/web-ui/review-static-mode.test.ts.
+
+
+              Commands run: kspec task get @01KS8XB0EKNTMZS4XJMC4ED4SK; kspec item get
+              @folder-backed-review-storage-1; kspec review for-task @01KS8XB0EKNTMZS4XJMC4ED4SK;
+              kspec review get @01KSFSWM; git log; git diff/stat/name-only against merge base; rg AC
+              annotations; node URL parsing probe; kspec validate; npm test -- --fresh.
+
+
+              Claims verified: cycle-5 symlink resolver fix verified in code/tests and daemon bytes
+              route; full suite claim verified by fresh npm test; validation claim verified with
+              kspec validate warnings-only exit 6.
+
+
+              Categories searched: correctness, edge cases, path/security handling, static export,
+              UI resource URL behavior, CLI/API error mapping, cache/broadcast integration, test
+              quality/source-scanning. Finding recorded for static URL encoding.
+            created_at: 2026-05-25T16:31:10.535Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-25T16:17:55.236Z
-    updated_at: 2026-05-25T16:30:52.870Z
+    updated_at: 2026-05-25T16:31:10.535Z
     notes: []
