@@ -53291,7 +53291,7 @@ runs:
     started_at: 2026-05-25T02:11:09.313Z
     completed_at: 2026-05-25T02:14:15.181Z
   - _ulid: 01KSEH1BDB8Q10CMKPE82T5B5G
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -53338,7 +53338,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-25T02:58:02.643Z
-        completed_at: 2026-05-25T02:58:02.643Z
+        completed_at: 2026-05-25T02:58:34.623Z
+        notes: Captured inbox item @01KSEH38 for merge-helper worktree auto-provisioning/reuse. Captured
+          success observation @01KSEH3F for the review-gate plus detached-merge evidence path. No
+          capture for validate-warning noise because the evidence was not specific enough after
+          search.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-25T02:57:14.668Z
+    completed_at: 2026-05-25T02:58:34.623Z
