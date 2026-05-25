@@ -285,6 +285,11 @@ function materializeFolderShellsFor(
   const monolithicPath = path.join(specDir, `project.${arrayKey}.yaml`);
   let raw: string;
   try {
+    // Reads test-fixture YAML the caller just wrote into a temp specDir so
+    // we can materialise per-entity folder shells the new folder-backed
+    // managers expect. Not source scanning — the only consumer is fixture
+    // bootstrap for daemon tests.
+    // oxlint-disable-next-line no-source-scanning/no-source-file-reads
     raw = readFileSync(monolithicPath, "utf8");
   } catch {
     return;

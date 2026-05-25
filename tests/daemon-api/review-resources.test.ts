@@ -831,6 +831,28 @@ describe("GET /api/reviews/:ref/resources/:resourceId/bytes — selected non-def
     );
   }
 
+  // Seed helper that throws on non-201 instead of using expect() in
+  // beforeEach. Keeping the setup assertion as an explicit throw lets the
+  // jest/no-standalone-expect rule pass on this file while still failing
+  // the suite immediately if the daemon refuses the upload.
+  async function seedReviewResource(
+    targetTempDir: string,
+    bytes: Buffer,
+  ): Promise<void> {
+    const response = await uploadFor(
+      targetTempDir,
+      REVIEW_ULID,
+      { id: "shot", path: "shot.png" },
+      { name: "shot.png", type: "image/png", bytes },
+    );
+    if (response.status !== 201) {
+      const body = await response.text();
+      throw new Error(
+        `Failed to seed review resource for ${targetTempDir}: expected 201, got ${response.status}. Body: ${body}`,
+      );
+    }
+  }
+
   beforeEach(async () => {
     projectA = await createTempDir("kspec-daemon-api-review-resources-multi-a-");
     projectB = await createTempDir("kspec-daemon-api-review-resources-multi-b-");
@@ -840,20 +862,8 @@ describe("GET /api/reviews/:ref/resources/:resourceId/bytes — selected non-def
     setupFixtures(projectB);
     ({ app: multiApp } = createTestApp());
 
-    const seedA = await uploadFor(
-      projectA,
-      REVIEW_ULID,
-      { id: "shot", path: "shot.png" },
-      { name: "shot.png", type: "image/png", bytes: ALPHA_BYTES },
-    );
-    expect(seedA.status).toBe(201);
-    const seedB = await uploadFor(
-      projectB,
-      REVIEW_ULID,
-      { id: "shot", path: "shot.png" },
-      { name: "shot.png", type: "image/png", bytes: BETA_BYTES },
-    );
-    expect(seedB.status).toBe(201);
+    await seedReviewResource(projectA, ALPHA_BYTES);
+    await seedReviewResource(projectB, BETA_BYTES);
   });
 
   afterEach(async () => {

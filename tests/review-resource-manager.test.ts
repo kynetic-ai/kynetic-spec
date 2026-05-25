@@ -12,7 +12,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { parse as yamlParse } from "yaml";
 
 import {
   addReviewResource,
@@ -118,11 +117,12 @@ describe("review-resource-manager", () => {
     const reviewDir = getReviewDir(ctx as any, review._ulid);
     const onDisk = await fs.stat(path.join(reviewDir, "resources", "screenshots", "login.png"));
     expect(onDisk.isFile()).toBe(true);
-    // Manifest reflects the new entry.
-    const manifestRaw = await fs.readFile(path.join(reviewDir, "resources.yaml"), "utf-8");
-    const manifest = yamlParse(manifestRaw);
-    expect(manifest.resources).toHaveLength(1);
-    expect(manifest.resources[0].id).toBe("login-bug");
+    // Manifest (via the public list API) reflects the new entry.
+    const listing = await listReviewResources(ctx as any, `@${review._ulid}`);
+    expect(listing.ok).toBe(true);
+    if (!listing.ok) return;
+    expect(listing.value.resources).toHaveLength(1);
+    expect(listing.value.resources[0].id).toBe("login-bug");
   });
 
   // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
@@ -303,10 +303,12 @@ describe("review-resource-manager", () => {
     const reviewDir = getReviewDir(ctx as any, review._ulid);
     await expect(fs.stat(path.join(reviewDir, "resources", "old.png"))).rejects.toThrow();
     await fs.stat(path.join(reviewDir, "resources", "new.png"));
-    // Manifest should still have exactly one entry.
-    const manifestRaw = await fs.readFile(path.join(reviewDir, "resources.yaml"), "utf-8");
-    const manifest = yamlParse(manifestRaw);
-    expect(manifest.resources).toHaveLength(1);
+    // Manifest should still have exactly one entry (via public list API).
+    const listing = await listReviewResources(ctx as any, `@${review._ulid}`);
+    expect(listing.ok).toBe(true);
+    if (!listing.ok) return;
+    expect(listing.value.resources).toHaveLength(1);
+    expect(listing.value.resources[0].path).toBe("new.png");
   });
 
   it("rejects --replace when the id does not exist", async () => {
@@ -391,15 +393,14 @@ describe("review-resource-manager", () => {
     expect(result.error.path).toBe("old.png");
 
     // Manifest still declares the old path — the failed cleanup must
-    // NOT silently commit the new path.
-    const manifestRaw = await fs.readFile(
-      path.join(reviewDir, "resources.yaml"),
-      "utf-8",
-    );
-    const manifest = yamlParse(manifestRaw);
-    expect(manifest.resources).toHaveLength(1);
-    expect(manifest.resources[0].id).toBe("shot");
-    expect(manifest.resources[0].path).toBe("old.png");
+    // NOT silently commit the new path. Probe via the public list API so
+    // we exercise the same view callers see, not the on-disk YAML directly.
+    const remaining = await listReviewResources(ctx as any, `@${review._ulid}`);
+    expect(remaining.ok).toBe(true);
+    if (!remaining.ok) return;
+    expect(remaining.value.resources).toHaveLength(1);
+    expect(remaining.value.resources[0].id).toBe("shot");
+    expect(remaining.value.resources[0].path).toBe("old.png");
 
     // The new-path file must not be left behind on disk — the partial
     // write is rolled back so the resources/ tree matches the manifest.
@@ -491,9 +492,10 @@ describe("review-resource-manager", () => {
     if (!result.ok) return;
     expect(result.value.removed).toEqual({ id: "shot", path: "shot.png" });
     await expect(fs.stat(path.join(reviewDir, "resources", "shot.png"))).rejects.toThrow();
-    const manifestRaw = await fs.readFile(path.join(reviewDir, "resources.yaml"), "utf-8");
-    const manifest = yamlParse(manifestRaw);
-    expect(manifest.resources).toEqual([]);
+    const listing = await listReviewResources(ctx as any, `@${review._ulid}`);
+    expect(listing.ok).toBe(true);
+    if (!listing.ok) return;
+    expect(listing.value.resources).toEqual([]);
   });
 
   it("removeReviewResource returns resource_not_found for unknown ids", async () => {
@@ -577,13 +579,16 @@ describe("review-resource-manager", () => {
     // Manifest is also untouched — failed remove must not silently drop
     // the manifest entry, otherwise the user observes a "deleted" resource
     // and never notices that the symlink escape attempt was rejected.
-    const remainingRaw = await fs.readFile(path.join(reviewDir, "resources.yaml"), "utf-8");
-    const remaining = yamlParse(remainingRaw);
-    expect(remaining.resources).toHaveLength(1);
-    expect(remaining.resources[0].id).toBe("evil");
+    // Use the public list API rather than re-reading resources.yaml so the
+    // assertion exercises the same loader callers see.
+    const listing = await listReviewResources(ctx as any, `@${review._ulid}`);
+    expect(listing.ok).toBe(true);
+    if (!listing.ok) return;
+    expect(listing.value.resources).toHaveLength(1);
+    expect(listing.value.resources[0].id).toBe("evil");
 
     // Silence the unused-manifest lint; we built it to document the expected
-    // shape but assert against the on-disk text above.
+    // shape but assert against the live view above.
     void manifest;
   });
 
