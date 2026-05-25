@@ -231195,6 +231195,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-05-25T06:13:26.279Z
+      - _ulid: 01KSEW95VR6Z67FQNNTYG5FS94
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KSEW943T80G87YV62KM1C5E3
+        timestamp: 2026-05-25T06:13:45.464Z
     examined_commit: d31b3df0546b893caf3746c64c4aa91a4661e3e9
     external_links: []
     lifecycle_state: open
@@ -231247,7 +231254,38 @@ reviews:
               `resources/`."
             created_at: 2026-05-25T06:12:38.541Z
         kind: blocker
+      - _ulid: 01KSEW943T80G87YV62KM1C5E3
+        entries:
+          - _ulid: 01KSEW943T5TZRG52BK15NP83V
+            author: Jacob Chapel
+            body: >-
+              Review evidence log:
+
+              Files read: kspec-agents.md; src/cli/commands/plan-resource.ts;
+              src/parser/plan-resource-import.ts; src/parser/entity-local-resources.ts;
+              src/parser/task-resource-resolver.ts; src/schema/resources.ts; src/schema/task.ts;
+              src/parser/plan-document.ts; src/cli/commands/plan.ts;
+              src/cli/commands/plan-import.ts; src/cli/commands/task.ts; src/cli/output.ts;
+              src/agent-runtime/dispatch.ts; tests/cli-plan-resource.test.ts;
+              tests/cli-plan-import-resources.test.ts; tests/cli-plan-derive-resources.test.ts;
+              tests/plan-document-resource-refs.test.ts.
+
+              Commands run: git status/diff/log; kspec task get; kspec item get; kspec review
+              get/for-task; kspec validate; AC annotation rg; focused resource test run; npm test --
+              --fresh; npm run typecheck; npm run lint; changed-file oxlint; two manual Node
+              reproductions for add/remove symlink escapes.
+
+              Claims verified: prior replace atomicity fix was implemented by source-side metadata
+              validation before copy; prior sibling import symlink blocker was fixed for import via
+              lstat/realpath containment and regression tests; current resource add/remove mutation
+              paths still allow existing resources/ symlink escape.
+
+              Categories searched: correctness, symlink/path security, error handling, AC coverage,
+              test quality, prior blocker regression coverage, integration with task get/dispatch
+              drift surfaces.
+            created_at: 2026-05-25T06:13:43.674Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-25T05:56:04.967Z
-    updated_at: 2026-05-25T06:13:24.480Z
+    updated_at: 2026-05-25T06:13:43.674Z
     notes: []
