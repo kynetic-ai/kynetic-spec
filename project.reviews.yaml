@@ -231517,6 +231517,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-25T06:55:55.596Z
+      - _ulid: 01KSEYQ3FR0E48XH9K1RYR61DR
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KSEYQ1KN4E6TQBVDX2XNSJT0
+        timestamp: 2026-05-25T06:56:18.937Z
     examined_commit: 024a319eac4c9631e57e0703e300f41a0a20f03a
     external_links: []
     lifecycle_state: open
@@ -231548,7 +231555,41 @@ reviews:
               would pass the suite."
             created_at: 2026-05-25T06:55:32.061Z
         kind: blocker
+      - _ulid: 01KSEYQ1KN4E6TQBVDX2XNSJT0
+        entries:
+          - _ulid: 01KSEYQ1KPTFBCVTTYGF86WAKS
+            author: Jacob Chapel
+            body: "Review evidence log:\\n\\nFiles read: kspec-agents.md; .agents/skills/kspec-review/SKILL.md;
+              .agents/skills/kspec-merge/SKILL.md; .agents/skills/review-gates/SKILL.md;
+              .agents/skills/work-gates/SKILL.md; src/parser/review-resource-manager.ts;
+              src/parser/entity-local-resources.ts; src/cli/commands/review-resource.ts;
+              src/export/json.ts; src/export/types.ts;
+              packages/daemon/src/routes/review-resources.ts; packages/daemon/src/routes/reviews.ts;
+              packages/daemon/src/server.ts; packages/shared/src/api.ts;
+              packages/web-ui/src/lib/api.ts; packages/web-ui/src/lib/api-static.ts;
+              packages/web-ui/src/routes/reviews/[id]/+page.svelte;
+              tests/review-resource-manager.test.ts; tests/review-resource-cli.test.ts;
+              tests/daemon-api/review-resources.test.ts;
+              tests/review-resource-static-export.test.ts; tests/web-ui/review-static-mode.test.ts;
+              tests/web-ui/review-resources-api.test.ts; tests/daemon-api/helpers.ts;
+              tests/daemon-api/entity-storage-incompatibility-routes.test.ts;
+              tests/daemon-review-websocket.test.ts.\\n\\nCommands run: git
+              status/rev-parse/merge-base/diff; kspec task get @01KS8XB0EKNTMZS4XJMC4ED4SK; kspec
+              review for-task/get/add/open; kspec item get @folder-backed-review-storage-1 and
+              @trait-entity-scoped-local-resources-1; kspec validate; npm test -- --fresh; rg
+              searches for AC annotations, source-scanning tests, entity_storage_incompatible,
+              resource_changed, captureBroadcasts, writeThrough.\\n\\nClaims verified: prior-cycle
+              blockers were fixed for symlink-safe resource copies, static snapshot review
+              resources, invalid content_type mapping, malformed resource ID validation, and JSON
+              CLI missing-option envelopes. No implementation source-scanning tests were found in
+              the new tests.\\n\\nCategories searched: correctness, edge cases, error handling,
+              security/path traversal, test quality, static export, live/static UI integration,
+              daemon route integration, and cache/WebSocket invalidation. Finding recorded: missing
+              behavioral coverage for review-resource 409 incompatibility and mutation
+              cache/broadcast side effects."
+            created_at: 2026-05-25T06:56:17.014Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-25T06:40:43.746Z
-    updated_at: 2026-05-25T06:55:53.591Z
+    updated_at: 2026-05-25T06:56:17.014Z
     notes: []
