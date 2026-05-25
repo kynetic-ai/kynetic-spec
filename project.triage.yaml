@@ -2882,3 +2882,18 @@ triage:
     created_at: 2026-04-02T22:57:26.173Z
     updated_at: 2026-04-02T22:57:33.781Z
     acted_at: 2026-04-02T22:57:33.727Z
+  - _ulid: 01KSETWJ67ERYHJTNJYGQY6EQB
+    status: triaged
+    action: duplicate
+    decided_by: Jacob Chapel
+    evidence_refs:
+      - "@01KSEQ8M"
+    inbox_ref: 01KSETTZ2P84R5YM8E81BAZWHZ
+    item_snapshot: "Reviewer/dev ergonomics: provide a documented helper or command pattern for
+      exercising the current checkout's CLI against a temp project during review, so reviewers do
+      not accidentally run a globally linked or installed kspec binary when validating branch-local
+      CLI changes."
+    reasoning: Duplicate of existing reflection item @01KSEQ8M, which already proposes a reusable
+      scratch-project CLI reproduction helper for reviewers.
+    created_at: 2026-05-25T05:49:23.527Z
+    updated_at: 2026-05-25T05:49:23.557Z
