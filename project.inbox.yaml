@@ -3739,3 +3739,17 @@ inbox:
       - cli-tests
     added_by: Jacob Chapel
     created_at: 2026-05-25T04:46:04.961Z
+  - _ulid: 01KSEV46TQNSWGYAMHN1FG86TQ
+    text: kspec review get text output should surface thread ULIDs alongside each thread header.
+      Currently the text mode shows '[blocker] src/foo.ts:N (M entries)' but omits the thread ULID,
+      so replying with 'kspec review reply --thread <ulid>' forces a detour through 'kspec review
+      get --json | jq ...'. Hit during the fix cycle on @01KS8XAZQ5478RV2AVKG8MNB0S — I tried entry
+      ULIDs from the JSON entries[] array first and got 'Thread not found' before realising entries
+      and threads have separate ULIDs. Either include the thread ULID in the text header, or accept
+      entry ULIDs in 'review reply --thread'.
+    tags:
+      - review
+      - cli
+      - dx
+    added_by: "@claude"
+    created_at: 2026-05-25T05:53:34.040Z
