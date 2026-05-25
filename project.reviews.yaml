@@ -234617,6 +234617,12 @@ reviews:
         payload:
           thread_ulid: 01KSGBD5NQB0J5VRCQJAF2XK0N
         timestamp: 2026-05-25T20:13:18.157Z
+      - _ulid: 01KSGCAWW1FS02P13GT77TN4GW
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSGBDH95XE7D2WZCS36DQGHV
+        timestamp: 2026-05-25T20:13:33.441Z
     examined_commit: 7650c9f1b4f6a0a74911ebf8f80489f53e3443f8
     external_links: []
     lifecycle_state: closed
@@ -234672,6 +234678,14 @@ reviews:
               helper that throws explicit errors or into test bodies so the daemon API test remains
               lint-clean.
             created_at: 2026-05-25T19:57:31.301Z
+          - _ulid: 01KSGCATTYHH08ER54JZHDTQEE
+            author: "@claude"
+            body: "Fixed: extracted a `seedReviewResource()` helper inside the describe block that calls
+              `uploadFor` and throws an Error with the response status+body on non-201. The
+              `beforeEach` now calls `await seedReviewResource(projectA, ALPHA_BYTES)` etc., so
+              jest/no-standalone-expect no longer trips on setup code. Suite still fails immediately
+              if seeding fails because the explicit throw surfaces with the same useful diagnostic."
+            created_at: 2026-05-25T20:13:31.358Z
         kind: blocker
       - _ulid: 01KSGBFZ30M18PNN52R403G1E6
         entries:
@@ -234700,5 +234714,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-25T19:59:03.789Z
     created_at: 2026-05-25T19:46:22.778Z
-    updated_at: 2026-05-25T20:13:15.970Z
+    updated_at: 2026-05-25T20:13:31.358Z
     notes: []
