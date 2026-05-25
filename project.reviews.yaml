@@ -235028,6 +235028,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-05-25T22:19:08.039Z
+      - _ulid: 01KSGKH1N2FESFBWTXNW5FJ9W7
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KSGKGZX7KJM7EYPCRRKD0VK7
+        timestamp: 2026-05-25T22:19:14.978Z
     examined_commit: addb7d63ba048919b16ee2c6cf46dc3cf15e7d2c
     external_links: []
     lifecycle_state: open
@@ -235037,8 +235044,42 @@ reviews:
       content_hash: ""
       ref: "@01KS8XB0EKNTMZS4XJMC4ED4SK"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KSGKGZX7KJM7EYPCRRKD0VK7
+        entries:
+          - _ulid: 01KSGKGZX76R0XX8J9KAY733QS
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+              Files read: kspec-agents.md; task/spec/review records;
+              src/parser/review-resource-manager.ts; src/parser/entity-local-resources.ts;
+              src/cli/commands/review-resource.ts; src/cli/commands/export.ts; src/export/json.ts;
+              src/export/types.ts; packages/daemon/src/routes/review-resources.ts;
+              packages/daemon/src/routes/reviews.ts;
+              packages/daemon/src/middleware/project-context.ts; packages/daemon/src/server.ts;
+              packages/shared/src/api.ts; packages/web-ui/src/lib/api.ts;
+              packages/web-ui/src/lib/api-static.ts;
+              packages/web-ui/src/routes/reviews/[id]/+page.svelte; review resource
+              CLI/manager/daemon/static/UI tests.
+
+              Commands run: kspec item get @folder-backed-review-storage-1; kspec validate
+              --warnings-ok; rg AC annotations; git diff/stat/check against
+              plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw...HEAD; npm run
+              typecheck; npx oxlint on changed files; npm test.
+
+              Claims verified: worker claimed the merge conflict in src/export/json.ts preserved
+              both plan-resource and review-resource export behavior; verified by reading the merge
+              diff and static export implementation/tests. Worker claimed full test suite passed;
+              independently ran npm test (2575 suites, 9832 passed, 5 skipped).
+
+              Categories searched: correctness, merge-conflict integration, path/symlink safety,
+              CLI/API error mapping, cache write-through/WebSocket broadcasts, static export asset
+              paths, selected-project binary routing, UI/static mode resource URLs, AC coverage, and
+              test quality/source-scanning. No blocking issues found.
+            created_at: 2026-05-25T22:19:13.191Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-25T22:06:07.634Z
-    updated_at: 2026-05-25T22:19:06.309Z
+    updated_at: 2026-05-25T22:19:13.191Z
     notes: []
