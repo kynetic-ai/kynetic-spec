@@ -285,3 +285,42 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-25T08:15:37.783Z
+  - _ulid: 01KSF5D1Y26WEBMADSV65EHZXD
+    content: >-
+      Fix cycle 4: addressed the materialized task-owned resource resolver blocker in 9802d44502.
+
+
+      Root cause: src/parser/task-resource-resolver.ts:149 only matched owner_ref against
+      task._ulid, but plan derive --materialize-resources records canonicalRef(created), which is
+      slug-first (@<slug>). The resolver therefore returned 'unresolved' for the exact task that
+      owned the materialized copy — exactly the reviewer repro.
+
+
+      Fix: loadOwnerManifest now accepts any owner_ref that resolves to the current task (ULID OR
+      any slug). The single-task ownership boundary is preserved (cross-task ownership still returns
+      null). Used task.slugs.includes for the slug check so future slug additions on the same task
+      remain valid.
+
+
+      Regression tests (cli-plan-derive-resources.test.ts):
+
+      - New 'task get resolves a materialized task-owned resource as present, not unresolved'
+      mirrors the reviewer CLI repro: derives with --materialize-resources, asserts JSON
+      resolved_resources[0].status='present', asserts text mode contains [OK] and not UNRESOLVED.
+
+      - Extended the existing 'copies plan resource bytes' test to assert
+      resolved_resources[0].status='present' and current_sha256==recorded_sha256 so the resolver gap
+      can't regress silently behind the bytes-copied happy path.
+
+
+      Re-verified all five spec ACs against the updated implementation. Only
+      ac-explicit-copy-mode-creates-task-owned-resource and ac-resource-drift-is-visible touch this
+      code path and both remain satisfied (resolved state now correctly reflects the task-owned
+      copy). The other three ACs are unaffected.
+
+
+      Validation: full test suite 9668 passed / 5 skipped (1 new regression test added), typecheck
+      clean, oxlint clean on changed files.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-25T08:53:09.698Z
