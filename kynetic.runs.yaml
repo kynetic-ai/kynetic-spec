@@ -54356,7 +54356,7 @@ runs:
     completed_at: 2026-05-25T16:50:55.839Z
   - _ulid: 01KSG1R6P39T2VT4194AKZ7E0K
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -54371,7 +54371,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-25T17:09:57.181Z
-        completed_at: 2026-05-25T17:09:57.181Z
+        completed_at: 2026-05-25T17:10:08.847Z
+        notes: "Friction points: resource-bearing route reviews need explicit compatibility-gate checks
+          across both owning entity storage and resource_storage; current task tests covered legacy
+          plan storage but not the narrower folder-plan/missing-resource-storage case. Static-export
+          path-escape review required an ad hoc symlink fixture because the submitted tests only
+          covered happy-path copying and metadata, not resolver rejection behavior. Full npm test
+          remains long (~46 minutes), but the existing runner cache/log workflow handled it without
+          process changes."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-25T17:10:08.847Z
+        completed_at: 2026-05-25T17:10:08.847Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-25T17:08:35.139Z
