@@ -54602,7 +54602,7 @@ runs:
     completed_at: 2026-05-25T20:01:52.805Z
   - _ulid: 01KSGG9XXWG3DKVRWAD57S373T
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -54616,7 +54616,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-25T21:24:00.367Z
-        completed_at: 2026-05-25T21:24:00.367Z
+        completed_at: 2026-05-25T21:24:26.102Z
+        notes: "High-confidence items: (1) Friction: detached reviewer merge helper requires the integration
+          target branch to already be checked out in a worktree. In this session the target existed
+          only in detached worktrees, so the helper failed before it could attempt the merge; I had
+          to create a dedicated target worktree, then rerun the helper. Existing coverage is
+          partial: @detached-reviewer-merge-helper specifies behavior only when the target branch is
+          already checked out. (2) Success: recording a changed-file oxlint check separately from
+          full npm run lint let the review gate distinguish task-introduced lint errors from
+          existing repository-wide lint debt."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-25T21:24:26.102Z
+        completed_at: 2026-05-25T21:24:26.102Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-25T21:22:56.060Z
