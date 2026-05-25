@@ -53438,7 +53438,7 @@ runs:
     started_at: 2026-05-25T05:20:36.599Z
   - _ulid: 01KSETQDEC64GP4Z6TC3198NCW
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -53461,7 +53461,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-25T05:47:19.504Z
-        completed_at: 2026-05-25T05:47:19.504Z
+        completed_at: 2026-05-25T05:47:51.942Z
+        notes: "Coverage search: searched for 'run current source CLI npm run dev installed kspec', 'CLI
+          error envelope exact codes', 'review current branch CLI', and 'validation warnings known
+          project-wide'. No existing matches found. I will only propose one new capture: reviewer
+          ergonomics for running the current branch CLI, because it is reusable and not just this
+          task's bug. The exact error-code drift is already captured as a blocker on this task, so
+          no separate item."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-25T05:47:51.942Z
+        completed_at: 2026-05-25T05:47:51.942Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-25T05:46:34.828Z
