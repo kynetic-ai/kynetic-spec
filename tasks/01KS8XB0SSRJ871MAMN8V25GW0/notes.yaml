@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KSGNDC1N1ZDJW9Q6HV59KXAQ
+    content: "Approach: Add a concepts/local-resources.md (folder layouts, resources.yaml fields,
+      ResourceMetadata, authoring refs, copy-vs-reference) and a
+      guides/working-with-local-resources.md (plan/review resource CLI, API routes, derive
+      --materialize-resources). Update upgrading-kspec.md with 1.2 manifest fields and
+      previous-shadow-commit rollback. Add two troubleshooting docs: entity-storage-incompatible
+      (covers each domain code) and plan-or-review-index-drift (rebuild-index). Update release notes
+      for 1.2. Cross-link from shadow-branch, specs-tasks-plans-inbox, reviews, and section indexes.
+      Docs-only task — no behavior changes."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-25T22:52:11.701Z
