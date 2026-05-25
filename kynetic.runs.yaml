@@ -53228,7 +53228,7 @@ runs:
     completed_at: 2026-05-25T00:53:23.294Z
   - _ulid: 01KSEECYW1328ZBHGR9EPM6Y4V
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -53242,7 +53242,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-25T02:11:47.022Z
-        completed_at: 2026-05-25T02:11:47.022Z
+        completed_at: 2026-05-25T02:12:16.194Z
+        notes: "Friction points: (1) review-only sessions are meaningful for reflection, but the reflect
+          skill's gate only mentions completed tasks, code changes, and commits; this session had no
+          tree changes yet produced a closed review and task transition. (2) workflow next shorthand
+          failed because many active runs exist, requiring the explicit run ref despite the
+          quick-start example omitting it. (3) existing migration tests covered different-ULID
+          partial layouts and stale lean entries but missed same-ULID folder+monolithic ambiguity,
+          so edge-case review needed manual scratch repro."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-25T02:12:16.194Z
+        completed_at: 2026-05-25T02:12:16.194Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-25T02:11:09.313Z
