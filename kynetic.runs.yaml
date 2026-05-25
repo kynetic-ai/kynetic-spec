@@ -53438,7 +53438,7 @@ runs:
     started_at: 2026-05-25T05:20:36.599Z
   - _ulid: 01KSETQDEC64GP4Z6TC3198NCW
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -53452,7 +53452,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-25T05:47:06.512Z
-        completed_at: 2026-05-25T05:47:06.512Z
+        completed_at: 2026-05-25T05:47:19.504Z
+        notes: "Friction points: validating CLI behavior against the current branch was easy to get wrong
+          because bare kspec used the installed build, not the detached snapshot source. The
+          review-resource task also exposed a common contract drift risk: implementation added
+          invalid_content_type even though the exact failure-code contract omitted it. Full npm test
+          was long but expected for reviewer gates, not a new issue by itself."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-25T05:47:19.504Z
+        completed_at: 2026-05-25T05:47:19.504Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-25T05:46:34.828Z
