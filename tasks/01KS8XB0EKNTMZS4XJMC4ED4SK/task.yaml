@@ -32,7 +32,7 @@ description: |
 spec_ref: "@folder-backed-review-storage-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-plan-review-folder-storage-migration-1"
@@ -48,8 +48,8 @@ review_ref: "@01KSF11N35ZFCRKDW37KGQ9G90"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-review-screenshot-resource-ui/01ks8xb0
-  captured_at: 2026-05-25T07:32:14.325Z
-  commit: 0d819300236cfb26935914cbd51ceb2c20343546
+  captured_at: 2026-05-25T08:22:23.790Z
+  commit: 9f21d1bd4651df54ac5fc5946affb3c84edf6ac6
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-review-screenshot-resource-ui/01ks8xb0
@@ -296,8 +296,35 @@ history:
         previous: 2026-05-25T07:32:13.393Z
     command: task-start
     timestamp: 2026-05-25T08:22:20.226Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-review-screenshot-resource-ui/01ks8xb0
+          captured_at: 2026-05-25T08:22:23.790Z
+          commit: 9f21d1bd4651df54ac5fc5946affb3c84edf6ac6
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-review-screenshot-resource-ui/01ks8xb0
+        previous:
+          review_url: null
+          branch: dispatch/task/task-review-screenshot-resource-ui/01ks8xb0
+          captured_at: 2026-05-25T07:32:14.325Z
+          commit: 0d819300236cfb26935914cbd51ceb2c20343546
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-review-screenshot-resource-ui/01ks8xb0
+      submitted_at:
+        new: 2026-05-25T08:22:23.796Z
+        previous: 2026-05-25T07:32:14.328Z
+    command: task-submit
+    timestamp: 2026-05-25T08:22:23.797Z
 created_at: 2026-05-22T22:36:47.443Z
 started_at: 2026-05-25T08:22:20.225Z
-submitted_at: 2026-05-25T07:32:14.328Z
+submitted_at: 2026-05-25T08:22:23.796Z
 todos: []
 automation: eligible
