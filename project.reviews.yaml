@@ -232849,7 +232849,17 @@ reviews:
     slugs: []
     title: Review task-plan-resource-import-and-derive-1 (cycle 5)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh: 2536 suites passed, 9668 tests passed, 5 skipped."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-05-25T09:12:49.641Z
+        completed_at: 2026-05-25T09:12:49.641Z
     events:
       - _ulid: 01KSF5QCBR7GEGTPCY037496P3
         actor: Jacob Chapel
@@ -232864,6 +232874,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-25T08:59:15.326Z
+      - _ulid: 01KSF6H3ZVFTKFESV7FWN96868
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-05-25T09:12:51.451Z
     examined_commit: 9802d445026c042d9c37a58e942107d4e8a57a79
     external_links: []
     lifecycle_state: open
@@ -232876,5 +232893,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-25T08:58:48.056Z
-    updated_at: 2026-05-25T08:59:13.440Z
+    updated_at: 2026-05-25T09:12:49.641Z
     notes: []
