@@ -19671,6 +19671,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-25T16:50:47.096Z
+  - _ulid: 01KSG6X70MGSHYZ9MWTDM23ERB
+    type: friction
+    content: "Detached reviewer merge helper friction: during review of @01KS8XB035D6C69W9TR1JZDR4P, the
+      helper refused to merge because the integration target branch was not checked out in any
+      worktree, even though a clean merge-target worktree existed detached at the target commit. The
+      reviewer had to inspect worktrees, switch that worktree to the integration branch, and rerun
+      the helper. Consider detecting this state and either safely attaching the clean worktree or
+      printing the exact recovery command."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-05-25T18:38:42.196Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
