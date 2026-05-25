@@ -1,1 +1,72 @@
-notes: []
+notes:
+  - _ulid: 01KSFTEN1KHZRKNCM60E1HAWZ6
+    content: >-
+      Approach:
+
+      1) Add resource_summary array of {id, label, path, content_type, bytes, sha256, git_commit,
+      git_path, description} (the exact ResourceMetadata shape) to PlanSummary and PlanDetail
+      (shared types). PlanDetail also gets resources_base_url so the UI can build safe URLs without
+      hardcoding ./api/plans/<ref>/resources/<id>/bytes.
+
+      2) Add new daemon route group under /api/plans/:ref/resources with: GET / -> {resources}, GET
+      /:resourceId -> {resource}, GET /:resourceId/bytes -> raw bytes + Content-Type +
+      X-Kspec-Resource-Sha256, POST / -> multipart upload {file, id, path, label?, description?,
+      content_type?, replace?}, DELETE /:resourceId. All use the shared resolver in
+      entity-local-resources.ts.
+
+      3) Markdown rewrite (web UI): pre-process plan.content before marked parse — replace
+      ./resources/<path> in markdown links/images with the safe
+      /api/plans/<ulid>/resources/<id>/bytes URL when the resource is declared, leaving unresolved
+      links untouched for visible guidance.
+
+      4) Static export: extend ExportedPlan to include resources: ResourceMetadata[] with
+      exported_path; copy resource files into assets/resources/plan/<ulid>/<relative-path>; rewrite
+      plan content markdown ./resources/<path> -> base-prefixed assets/resources/... path.
+
+
+      Key reuses:
+
+      - src/parser/entity-local-resources.ts (resolveResourcePath, computeResourceMetadata,
+      hashResourceFile, loadResourceManifest, writeResourceManifest, assertSafeResourceMutationPath,
+      resolveContentType, copyResourceForStaticExport)
+
+      - src/cli/commands/plan-resource.ts logic patterns
+
+      - src/parser/plan-storage-manager.ts (getPlanDir, getPlansFolderRoot)
+
+      - packages/daemon/src/routes/entity-storage-error.ts (entityStorageIncompatibilityResponse)
+
+
+      Edge cases covered in tests:
+
+      - list/detail with no resources; list/detail with multiple
+
+      - GET bytes returns Content-Type + X-Kspec-Resource-Sha256 header
+
+      - POST create returns 201 {resource, replaced:false}; POST replace returns 200 {resource,
+      replaced:true}
+
+      - POST without file: 400 missing_resource_file
+
+      - POST with invalid id/path: 400 invalid_resource_id/invalid_resource_path
+
+      - POST replace='true'/'1'/'false'/'0'/omitted handled; bogus value -> 400
+      invalid_replace_value
+
+      - POST id collision without replace: 409 resource_conflict; path collision: 409
+      resource_conflict
+
+      - DELETE 200 {removed:{id,path}}; DELETE missing resource -> 404 resource_not_found
+
+      - GET /api/plans/<missing>/resources -> 404 plan_not_found
+
+      - 409 entity_storage_incompatible envelope when project is monolithic (legacy 1.0)
+
+      - Web UI: plan markdown image src '![alt](./resources/foo.png)' rewrites to API URL when
+      declared
+
+      - Static export: copy file to assets/resources/plan/<ulid>/<path>; markdown link rewrites to
+      base+exported path
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-25T15:01:02.131Z
