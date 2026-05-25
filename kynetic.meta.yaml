@@ -19646,6 +19646,31 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-25T09:24:13.841Z
+  - _ulid: 01KSG0QKBNEB6WABM0VWQPJWGH
+    type: friction
+    content: tests/daemon-api/helpers.ts createTestApp() registered createPlansRoutes() without the
+      getEntityCache accessor that the production server (packages/daemon/src/server.ts) passes.
+      Cache-aware route tests for plans silently hit the disk-fallback path, so a regression that
+      drops cache projections — like the resource_summary blocker on @01KS8XB035D6C69W9TR1JZDR4P —
+      would not have been caught by tests against the test helper. Fixed inline in this fix cycle,
+      but the test helper should systematically mirror production route constructor signatures (or
+      fail loudly when a constructor option is omitted) to keep cache-aware tests honest.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-25T16:50:46.773Z
+  - _ulid: 01KSG0QKNR7BCHDK0EDKWM7ZVN
+    type: success
+    content: "Code-anchored review threads (packages/shared/src/api.ts:361 and
+      packages/daemon/src/routes/plans.ts:221) on @01KSFXBC3Q58SQD59VZAY0RT02 made the fix cycle
+      surgical — each blocker pointed at the exact file and line, the worker re-read both ACs
+      against the implementation, and the resubmit completed in one atomic batch (review reply +
+      resolve + task note + start + submit). Pattern worth replicating: reviewers should always
+      anchor MUST-FIX blockers to a specific file:line, not just describe the symptom."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-25T16:50:47.096Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
