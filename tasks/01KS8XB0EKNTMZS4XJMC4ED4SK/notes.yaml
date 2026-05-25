@@ -344,3 +344,8 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-25T18:37:02.551Z
+  - _ulid: 01KSGBGE1XNTGM2PK0J8R4KSTH
+    content: "[FIX_CYCLE: 8] Review verdict: changes_requested by codex-reviewer"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-05-25T19:59:06.301Z

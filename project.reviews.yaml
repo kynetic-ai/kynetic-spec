@@ -234589,9 +234589,25 @@ reviews:
           kind: nit
           thread_ulid: 01KSGBFZ30M18PNN52R403G1E6
         timestamp: 2026-05-25T19:58:52.627Z
+      - _ulid: 01KSGBGBKDF61C8F6Y16DAR8C4
+        actor: codex-reviewer
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-25T19:59:03.789Z
+      - _ulid: 01KSGBGBKDM9TA210VSAF1SYEA
+        actor: codex-reviewer
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-25T19:59:03.789Z
     examined_commit: 7650c9f1b4f6a0a74911ebf8f80489f53e3443f8
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -234654,7 +234670,14 @@ reviews:
               security/resource paths, test quality, and integration/export/static UI behavior."
             created_at: 2026-05-25T19:58:50.976Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex-reviewer
+        role: reviewer
+        created_at: 2026-05-25T19:59:03.789Z
     created_at: 2026-05-25T19:46:22.778Z
-    updated_at: 2026-05-25T19:58:50.976Z
+    updated_at: 2026-05-25T19:59:03.789Z
     notes: []
