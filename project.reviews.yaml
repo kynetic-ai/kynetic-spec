@@ -231696,6 +231696,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSF0JHR72KEYV2ZXH0XP0Z96
         timestamp: 2026-05-25T07:28:48.635Z
+      - _ulid: 01KSF0JTR478SQ8XNGMWDZA36J
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSF0JRZ0RFTS4ZGSF9J66T2C
+        timestamp: 2026-05-25T07:28:56.068Z
     examined_commit: 7e8ff3aeec93b5586c92a90e58c70db9c4e3b4cc
     external_links: []
     lifecycle_state: open
@@ -231730,7 +231737,31 @@ reviews:
               regression test for materialization."
             created_at: 2026-05-25T07:28:46.855Z
         kind: blocker
+      - _ulid: 01KSF0JRZ0RFTS4ZGSF9J66T2C
+        anchor:
+          type: code
+          commit: 7e8ff3aeec93b5586c92a90e58c70db9c4e3b4cc
+          line_end: 567
+          line_start: 559
+          path: src/cli/commands/plan.ts
+          side: head
+        entries:
+          - _ulid: 01KSF0JRZ0BQS6K53QYPAH2MCD
+            author: Jacob Chapel
+            body: "MUST-FIX: Materialized resource ids are derived as `plan-${planResource.id}` without
+              validating that the prefixed id still satisfies the resource id contract before any
+              task is created. `plan resource add` accepts ids up to 128 characters, but prefixing a
+              valid 128-character id creates a 133-character task resource id;
+              `computeResourceMetadata` then fails after `createTask` has already written the
+              derived task. I reproduced this with a 128-character `a...a` plan resource id: `plan
+              derive --materialize-resources` exited 1 with the id validation error, but `task get
+              @implement-doc --json` succeeded and showed the partially-created task still present
+              with the original plan-owned `resource_refs`. Valid input should not leave partial
+              derived tasks behind, and materialization needs a deterministic strategy for ids that
+              would overflow after adding `plan-`."
+            created_at: 2026-05-25T07:28:54.240Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-25T07:15:02.110Z
-    updated_at: 2026-05-25T07:28:46.855Z
+    updated_at: 2026-05-25T07:28:54.240Z
     notes: []
