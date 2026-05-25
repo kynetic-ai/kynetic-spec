@@ -54420,7 +54420,7 @@ runs:
     completed_at: 2026-05-25T17:11:19.078Z
   - _ulid: 01KSG35S9T2EZPAD1RFAHC01JC
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -54436,7 +54436,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-25T17:33:53.407Z
-        completed_at: 2026-05-25T17:33:53.407Z
+        completed_at: 2026-05-25T17:34:09.096Z
+        notes: "Friction points: (1) AC coverage search is noisy when run across src/packages/tests because
+          implementation comments and test comments are mixed; reviewers need a more targeted way to
+          see behavioral test annotations only. (2) kspec validate exits 6 because of broad
+          project-wide warnings, so reviewers must run both plain validate for visibility and
+          --warnings-ok for a passing gate; this is repeatable friction in review records. (3) Full
+          fresh npm test is high confidence but very slow in review snapshots, so a failing targeted
+          behavioral probe may be discovered long before the required full-suite result is
+          available. (4) The review-resource replacement contract has several subtle
+          atomicity/path-safety edge cases; existing tests covered successful old-path cleanup and
+          remove symlink rejection separately but not their combination."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-25T17:34:09.096Z
+        completed_at: 2026-05-25T17:34:09.096Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-25T17:33:28.762Z
