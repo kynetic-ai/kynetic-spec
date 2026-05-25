@@ -3707,3 +3707,17 @@ inbox:
       - dx
     added_by: Jacob Chapel
     created_at: 2026-05-24T21:50:29.649Z
+  - _ulid: 01KSEH382RHS3BPFZ5NTDG4KWY
+    text: "Improve the detached reviewer merge helper so it can auto-provision or reuse a dedicated
+      integration-target worktree when the target branch is not checked out. During review of
+      @01KS8XAYZTG0MN48Z78D45PBV6 the supported helper refused with that condition, and recovery
+      required manually creating
+      /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/merge-target-plan-folder-storage\
+      -01ks8mmw before rerunning the helper. Scope: kspec-merge helper worktree management and
+      tests/docs."
+    tags:
+      - reflection
+      - merge-helper
+      - dispatch
+    added_by: Jacob Chapel
+    created_at: 2026-05-25T02:58:16.792Z
