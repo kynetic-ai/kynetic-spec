@@ -44,7 +44,7 @@ tags:
   - daemon
   - web-ui
 vcs_refs: []
-review_ref: "@01KSGAS4DT08F94FPFME5PN47T"
+review_ref: "@01KSGF89Z0G7KKRN7DJV1SG04M"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-review-screenshot-resource-ui/01ks8xb0
@@ -608,6 +608,13 @@ history:
         previous: 2026-05-25T18:37:16.596Z
     command: task-submit
     timestamp: 2026-05-25T20:21:29.852Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KSGF89Z0G7KKRN7DJV1SG04M"
+        previous: "@01KSGAS4DT08F94FPFME5PN47T"
+    command: review-link
+    timestamp: 2026-05-25T21:04:38.618Z
 created_at: 2026-05-22T22:36:47.443Z
 started_at: 2026-05-25T20:03:27.461Z
 submitted_at: 2026-05-25T20:21:29.852Z
