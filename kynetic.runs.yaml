@@ -54030,9 +54030,20 @@ runs:
     completed_at: 2026-05-25T08:56:48.020Z
   - _ulid: 01KSF6P9XZZWJPYV2AKB5N4CFS
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-25T09:15:41.376Z
+        completed_at: 2026-05-25T09:17:35.674Z
+        notes: "Worked well: the review flow produced a durable approval record with explicit checks, an
+          evidence log, and a clean disposition before merge. The detached reviewer merge helper
+          completed the integration safely after the target worktree branch was attached."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-25T09:17:35.674Z
+        completed_at: 2026-05-25T09:17:35.674Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-25T09:15:41.376Z
