@@ -19545,6 +19545,34 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-05-25T07:00:20.066Z
+  - _ulid: 01KSF0VT43HRY84KT6TQ6P2J08
+    type: success
+    content: Review cycle was effective when prior kspec review records, diff-first reading, and
+      temp-project CLI repros were combined; this produced actionable blocker threads with concrete
+      reproduction evidence instead of relying only on code inspection.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-05-25T07:33:50.340Z
+  - _ulid: 01KSF0VTEJ33320HWXACZZEQH5
+    type: friction
+    content: "Entity-local resource safety is still easy to apply per call site instead of centrally:
+      add/remove/import were hardened for symlink containment, but materialized plan-resource
+      copying missed the same guard. Future resource byte copy/mutation paths should go through a
+      shared symlink-safe helper."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-05-25T07:33:50.674Z
+  - _ulid: 01KSF0VTPG7GMYH7CZKQPWDSGR
+    type: friction
+    content: "Reviewer changed-file linting is noisy: npm run lint -- <files> still invokes the broad
+      repo lint script and reports unrelated existing issues, so reviewers must remember to call
+      oxlint directly for changed-file signal."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-05-25T07:33:50.928Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
