@@ -19497,6 +19497,17 @@ observations:
     resolved: false
     workflow_ref: "@01KSEQ49"
     created_at: 2026-05-25T04:45:52.272Z
+  - _ulid: 01KSESD9DVYRHTKAC90K69HCN7
+    type: friction
+    content: "tests/daemon-api/helpers.ts makeRequest forces Content-Type: application/json whenever a
+      body is present, which breaks multipart/form-data tests. Worked around in
+      tests/daemon-api/review-resources.test.ts by calling app.handle directly with a FormData body.
+      Future multipart route tests will hit the same issue — helpers.ts could detect FormData bodies
+      and skip the JSON Content-Type header."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-25T05:23:34.459Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
