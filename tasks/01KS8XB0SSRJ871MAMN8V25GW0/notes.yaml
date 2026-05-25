@@ -11,3 +11,47 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-25T22:52:11.701Z
+  - _ulid: 01KSGPTDD2M8J3PSXEZDFPSP5K
+    content: >-
+      Added documentation for folder-backed plans/reviews and entity-scoped local resources:
+
+
+      Concepts:
+
+      - docs/concepts/local-resources.md (new) — folder layouts, resources.yaml schema,
+      ResourceMetadata fields, ./resources/<rel> authoring, copy-vs-reference, static export paths
+
+      - docs/concepts/{the-shadow-branch,specs-tasks-plans-inbox,reviews}.md — cross-linked
+
+
+      Guides:
+
+      - docs/guides/working-with-local-resources.md (new) — plan/review resource CLI, API routes,
+      multipart shape, derive --materialize-resources
+
+      - docs/guides/upgrading-kspec.md — 1.2 manifest fields + Shadow HEAD rollback procedure
+
+      - docs/guides/importing-and-approving-a-plan.md — --materialize-resources mention
+
+
+      Troubleshooting:
+
+      - entity-storage-incompatible.md (new) — every domain code + recovery
+
+      - plan-or-review-index-drift.md (new) — rebuild-index flows + resource hash drift
+
+
+      Index updates: concepts/guides/troubleshooting/release-notes indexes link the new pages.
+
+      Release notes: populated Unreleased section in RELEASE_NOTES.md for 1.2.
+
+
+      Test: tests/folder-backed-resource-docs.test.ts asserts both ACs against rendered docs (16
+      tests, all pass).
+
+
+      Full suite: 2578 suites / 9848 tests pass. kspec validate no longer flags
+      @folder-backed-resource-documentation-1 as uncovered.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-25T23:16:47.651Z
