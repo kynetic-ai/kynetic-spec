@@ -53670,9 +53670,24 @@ runs:
     completed_at: 2026-05-25T07:33:59.068Z
   - _ulid: 01KSF0T5YGF8ZN9FT2F27Q4WKH
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-25T07:32:56.913Z
+        completed_at: 2026-05-25T07:34:21.686Z
+        notes: "Step 1 (high-confidence learnings): Reviewer's blocker was precise — listed exact missing
+          assertions (entity_storage_incompatible 409 + cache.writeThrough('reviews') +
+          resource_changed broadcast on POST/DELETE). Reading review threads JSON before coding kept
+          the fix-cycle tight: read review → identify gap → match existing patterns
+          (daemon-triage-write-through for cache mock, daemon-review-websocket for
+          captureBroadcasts) → add behavioral tests → verify → resubmit. No source-scanning tests
+          added. Production code needed zero changes; gap was strictly in test coverage."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-25T07:34:21.686Z
+        completed_at: 2026-05-25T07:34:21.686Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-25T07:32:56.913Z
