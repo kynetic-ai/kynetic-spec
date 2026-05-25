@@ -54651,7 +54651,7 @@ runs:
     completed_at: 2026-05-25T21:25:01.296Z
   - _ulid: 01KSGKNEHM8WCKV6B7GM445RM5
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -54689,7 +54689,15 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-25T22:23:37.798Z
-        completed_at: 2026-05-25T22:23:37.798Z
+        completed_at: 2026-05-25T22:23:56.434Z
+        notes: "No new improvement proposals captured. The only high-confidence friction items were already
+          tracked: merge-helper target worktree recovery (@01KSGGDD/@01KSEH38), changed-file lint
+          noise (existing observations), workflow show run-ref ergonomics (@01KSEQ88), and review
+          evidence-log placement (@01KR2JD1). Duplicate capture would add noise."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-25T22:23:56.434Z
+        completed_at: 2026-05-25T22:23:56.434Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-25T22:21:39.252Z
