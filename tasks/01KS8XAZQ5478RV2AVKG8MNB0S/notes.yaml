@@ -200,3 +200,40 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-25T06:13:59.169Z
+  - _ulid: 01KSEZGXBJVZ8NY7VH2WKZW2TW
+    content: >-
+      Fix cycle 2: addressed both reviewer blockers in 7e8ff3aeec.
+
+
+      Blocker 1 (plan-resource.ts:399 — add symlink escape): Added shared
+      assertSafeResourceMutationPath helper in src/parser/entity-local-resources.ts. The helper
+      walks the textual chain under <resourcesDir> segment-by-segment with lstat and rejects (a)
+      symlinked resources/ root, (b) symlinked intermediate directory, (c) symlinked or non-regular
+      destination leaf. runPlanResourceAdd validates BOTH the new destination AND (when --replace)
+      the previous path before any fs.copyFile / fs.rm runs. Surfaces as invalid_resource_path so
+      the existing CLI contract is preserved — no new error code leaks. Two regression tests: exact
+      reviewer repro (pre-existing sub symlink → outside) and defence-in-depth (resources/ root
+      itself a symlink).
+
+
+      Blocker 2 (plan-resource.ts:598 — remove symlink escape): runPlanResourceRemove now calls the
+      same helper on the manifest entry's path BEFORE the confirmation prompt and fs.rm. Doing the
+      gate before the prompt avoids a confirmed 'yes' answer becoming an outside-file deletion.
+      Regression test plants the symlink + hand-edits the manifest with a poisoned 'leak' entry (the
+      add fix now prevents producing such an entry through the CLI), runs remove --force --json,
+      asserts exit 1 with invalid_resource_path and confirms the outside file bytes are untouched.
+
+
+      Re-verified all five spec ACs against the updated implementation.
+      ac-plan-task-resource-refs-are-structured, ac-derived-task-keeps-plan-resource-reference,
+      ac-derived-task-records-resource-version, ac-resource-drift-is-visible, and
+      ac-explicit-copy-mode-creates-task-owned-resource are unaffected by these path-safety fixes —
+      the symlink containment is a pre-mutation gate, not a behavior change.
+
+
+      Validation: full test suite 2536 suites / 9664 passed / 5 skipped (3 new regression tests
+      added — total goes from 9661 → 9664), typecheck clean, oxlint clean on changed files (the
+      pre-existing preserve-caught-error warning in loadResourceManifest is untouched by this fix).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-25T07:10:24.626Z

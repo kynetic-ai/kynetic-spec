@@ -231361,6 +231361,30 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-25T06:13:56.346Z
+      - _ulid: 01KSEZG7CGFNRQYZ4H9DGY34T9
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSEW6ZD4SK7P8DP1T1XJN5W8
+        timestamp: 2026-05-25T07:10:02.128Z
+      - _ulid: 01KSEZGGXDGFSGHZJH9Z0NYTPC
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSEW6ZD4SK7P8DP1T1XJN5W8
+        timestamp: 2026-05-25T07:10:11.886Z
+      - _ulid: 01KSEZGNX91X058D1ADSVWS4VZ
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSEW74GDZAC9E0Q17D8FVBKR
+        timestamp: 2026-05-25T07:10:17.001Z
+      - _ulid: 01KSEZGTHHP4BG486RFET0320J
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSEW74GDZAC9E0Q17D8FVBKR
+        timestamp: 2026-05-25T07:10:21.745Z
     examined_commit: d31b3df0546b893caf3746c64c4aa91a4661e3e9
     external_links: []
     lifecycle_state: closed
@@ -231392,7 +231416,22 @@ reviews:
               symlink-safe containment before copying, including existing intermediate directories
               and the resources root."
             created_at: 2026-05-25T06:12:33.316Z
+          - _ulid: 01KSEZG5JV0DYP4TZMQEPA5YYA
+            author: "@claude"
+            body: "Fixed in 7e8ff3aeec. Added shared assertSafeResourceMutationPath helper in
+              src/parser/entity-local-resources.ts that walks the textual chain segment-by-segment
+              with lstat before any disk mutation. runPlanResourceAdd now calls it on both the new
+              destination AND the previous --replace path before fs.copyFile/fs.rm touches disk. The
+              helper rejects: (a) a symlinked resources/ root, (b) any symlinked intermediate
+              directory along the path, and (c) a symlinked or non-regular destination leaf.
+              Rejection surfaces as invalid_resource_path so the existing CLI error contract is
+              preserved. Two regression tests cover this: the exact reviewer reproduction (sub →
+              outside, baseline.png pre-seeded) plus a defence-in-depth case where the resources/
+              root itself is a symlink. Both verify the outside file is never written."
+            created_at: 2026-05-25T07:10:00.283Z
         kind: blocker
+        resolved_at: 2026-05-25T07:10:09.914Z
+        resolved_by: "@claude"
       - _ulid: 01KSEW74GDZAC9E0Q17D8FVBKR
         anchor:
           type: code
@@ -231412,7 +231451,22 @@ reviews:
               can delete arbitrary local files reachable through an existing symlink under
               `resources/`."
             created_at: 2026-05-25T06:12:38.541Z
+          - _ulid: 01KSEZGKW2Y27KCYXXC48VK8AR
+            author: "@claude"
+            body: "Fixed in 7e8ff3aeec. runPlanResourceRemove now calls the same assertSafeResourceMutationPath
+              helper on the manifest entry's path BEFORE either the confirmation prompt or fs.rm
+              runs. Doing the symlink gate before the prompt avoids a 'yes, delete' answer becoming
+              an outside-file deletion. Rejection surfaces as invalid_resource_path. Regression test
+              reproduces the reviewer scenario by editing the manifest directly (since the add fix
+              now refuses to create such an entry through the CLI): create plan, add a baseline
+              file, plant a sub symlink to an outside dir containing leak.txt, append a poisoned
+              'leak' entry pointing at sub/leak.txt, then run plan resource remove --force --json.
+              Test asserts exit 1 with invalid_resource_path and verifies the outside leak.txt bytes
+              are untouched."
+            created_at: 2026-05-25T07:10:14.914Z
         kind: blocker
+        resolved_at: 2026-05-25T07:10:19.913Z
+        resolved_by: "@claude"
       - _ulid: 01KSEW943T80G87YV62KM1C5E3
         entries:
           - _ulid: 01KSEW943T5TZRG52BK15NP83V
@@ -231453,7 +231507,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-25T06:13:56.345Z
     created_at: 2026-05-25T05:56:04.967Z
-    updated_at: 2026-05-25T06:13:56.345Z
+    updated_at: 2026-05-25T07:10:19.913Z
     notes: []
   - _ulid: 01KSEXTJ728FJZFZTR23BQBS07
     slugs: []

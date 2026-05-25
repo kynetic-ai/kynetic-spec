@@ -35,7 +35,7 @@ description: |
 spec_ref: "@plan-resource-derivation-semantics-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: needs_work
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-plan-review-folder-storage-migration-1"
@@ -50,12 +50,12 @@ review_ref: "@01KSEV8T771QWSB7TKKDR9JBQA"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-plan-resource-import-and-derive-1/01ks8xaz
-  captured_at: 2026-05-25T05:51:54.627Z
-  commit: d31b3df0546b893caf3746c64c4aa91a4661e3e9
+  captured_at: 2026-05-25T07:10:25.591Z
+  commit: 7e8ff3aeec93b5586c92a90e58c70db9c4e3b4cc
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-plan-resource-import-and-derive-1/01ks8xaz
-session_id: null
+session_id: 01KSEXM3RM0ASZ4CYNM28NW87K
 history:
   - author: Jacob Chapel
     changes:
@@ -242,8 +242,48 @@ history:
         previous: 01KSESNQJA26SN4CCHAAQGJNMM
     command: review-verdict-needs-work
     timestamp: 2026-05-25T06:13:59.169Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KSEXM3RM0ASZ4CYNM28NW87K
+        previous: null
+      started_at:
+        new: 2026-05-25T07:10:23.608Z
+        previous: 2026-05-25T05:51:51.008Z
+    command: task-start
+    timestamp: 2026-05-25T07:10:23.608Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-plan-resource-import-and-derive-1/01ks8xaz
+          captured_at: 2026-05-25T07:10:25.591Z
+          commit: 7e8ff3aeec93b5586c92a90e58c70db9c4e3b4cc
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-plan-resource-import-and-derive-1/01ks8xaz
+        previous:
+          review_url: null
+          branch: dispatch/task/task-plan-resource-import-and-derive-1/01ks8xaz
+          captured_at: 2026-05-25T05:51:54.627Z
+          commit: d31b3df0546b893caf3746c64c4aa91a4661e3e9
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-plan-resource-import-and-derive-1/01ks8xaz
+      submitted_at:
+        new: 2026-05-25T07:10:25.594Z
+        previous: 2026-05-25T05:51:54.631Z
+    command: task-submit
+    timestamp: 2026-05-25T07:10:25.594Z
 created_at: 2026-05-22T22:36:46.693Z
-started_at: 2026-05-25T05:51:51.008Z
-submitted_at: 2026-05-25T05:51:54.631Z
+started_at: 2026-05-25T07:10:23.608Z
+submitted_at: 2026-05-25T07:10:25.594Z
 todos: []
 automation: eligible
