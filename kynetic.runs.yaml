@@ -53609,7 +53609,7 @@ runs:
     completed_at: 2026-05-25T07:01:00.197Z
   - _ulid: 01KSF0QVWNH65V2VSEKQKPDS5G
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -53623,7 +53623,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-25T07:32:12.472Z
-        completed_at: 2026-05-25T07:32:12.472Z
+        completed_at: 2026-05-25T07:32:16.076Z
+        notes: "Friction points: resource path-safety fixes were applied to plan resource add/remove/import
+          but not the separate materialization copy path, suggesting the safety contract is still
+          enforced per-call-site instead of through one mandatory resource-copy helper. Another
+          friction point: npm run lint with explicit file arguments still runs the broad lint script
+          and produced thousands of unrelated findings; direct oxlint on changed files was needed
+          for a useful reviewer signal."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-25T07:32:16.076Z
+        completed_at: 2026-05-25T07:32:16.076Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-25T07:31:41.077Z
