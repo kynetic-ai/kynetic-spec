@@ -232003,3 +232003,29 @@ reviews:
     created_at: 2026-05-25T07:15:02.110Z
     updated_at: 2026-05-25T07:30:17.699Z
     notes: []
+  - _ulid: 01KSF11N35ZFCRKDW37KGQ9G90
+    slugs: []
+    title: Review task-review-screenshot-resource-ui (cycle 3)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KSF11N357HHJWPHY7CFAW9QT
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-25T07:37:01.797Z
+    examined_commit: 0d819300236cfb26935914cbd51ceb2c20343546
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KS8XB0EKNTMZS4XJMC4ED4SK"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-25T07:37:01.797Z
+    updated_at: null
+    notes: []
