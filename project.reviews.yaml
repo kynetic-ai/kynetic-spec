@@ -233363,9 +233363,25 @@ reviews:
           status: pass
           name: review evidence log
         timestamp: 2026-05-25T16:05:56.618Z
+      - _ulid: 01KSFY5VD65Y2V6VM40NV48YNS
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-25T16:06:08.039Z
+      - _ulid: 01KSFY5VD7X7H8Y82QJPQENAPE
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-25T16:06:08.039Z
     examined_commit: 0aa596716c847ea0e4bbff89e42039aad8d2322c
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -233415,7 +233431,14 @@ reviews:
               cover the cache-ready route in tests."
             created_at: 2026-05-25T16:05:10.570Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-25T16:06:08.038Z
     created_at: 2026-05-25T15:51:40.407Z
-    updated_at: 2026-05-25T16:05:55.086Z
+    updated_at: 2026-05-25T16:06:08.039Z
     notes: []
