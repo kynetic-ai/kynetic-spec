@@ -53227,7 +53227,7 @@ runs:
     started_at: 2026-05-25T00:50:03.364Z
     completed_at: 2026-05-25T00:53:23.294Z
   - _ulid: 01KSEECYW1328ZBHGR9EPM6Y4V
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -53282,7 +53282,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-25T02:13:06.235Z
-        completed_at: 2026-05-25T02:13:06.235Z
+        completed_at: 2026-05-25T02:14:15.181Z
+        notes: "Captured two observations: friction on review-only reflection gate; success on targeted
+          scratch repros during migration reviews. No tasks created; same-ULID implementation bug
+          remains in review blockers for the worker."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-25T02:11:09.313Z
+    completed_at: 2026-05-25T02:14:15.181Z
