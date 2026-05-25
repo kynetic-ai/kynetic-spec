@@ -232601,6 +232601,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSF48GH1C5HE0DWZDJXDXTA0
         timestamp: 2026-05-25T08:33:14.855Z
+      - _ulid: 01KSF48T7XHP3ZRHXNZYKY6TCY
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSF48QKEC164ZQFDYTGRQT5C
+        timestamp: 2026-05-25T08:33:22.173Z
     examined_commit: 9f21d1bd4651df54ac5fc5946affb3c84edf6ac6
     external_links: []
     lifecycle_state: open
@@ -232633,7 +232640,31 @@ reviews:
               for remove on a symlink-escape path."
             created_at: 2026-05-25T08:33:12.226Z
         kind: blocker
+      - _ulid: 01KSF48QKEC164ZQFDYTGRQT5C
+        anchor:
+          type: code
+          commit: 9f21d1bd4651df54ac5fc5946affb3c84edf6ac6
+          line_end: 356
+          line_start: 355
+          path: src/parser/review-resource-manager.ts
+          side: head
+        entries:
+          - _ulid: 01KSF48QKEBZ68N8SXPAQ15S0J
+            author: Jacob Chapel
+            body: "MUST-FIX: source-file readability is only checked with stat().isFile(), so a regular file
+              without read permission passes validation and then fs.copyFile throws EACCES from
+              copySourceIntoOwnerResources. I exercised addReviewResource directly with a chmod 000
+              source file and it threw EACCES instead of returning the documented
+              source_file_unreadable result; the CLI would map that through its unexpected-error
+              path as entity_storage_incompatible/exit 3, and the daemon would not return the
+              required source_file_unreadable envelope. The task explicitly requires unreadable
+              <source-file> to return source_file_unreadable with validation exit/status behavior.
+              Add an access/readability check or catch copy/hash EACCES and map it to
+              source_file_unreadable, with CLI/API coverage using an unreadable regular file rather
+              than only a directory."
+            created_at: 2026-05-25T08:33:19.471Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-25T08:28:30.823Z
-    updated_at: 2026-05-25T08:33:12.226Z
+    updated_at: 2026-05-25T08:33:19.471Z
     notes: []
