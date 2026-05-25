@@ -53292,7 +53292,7 @@ runs:
     completed_at: 2026-05-25T02:14:15.181Z
   - _ulid: 01KSEH1BDB8Q10CMKPE82T5B5G
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -53306,7 +53306,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-25T02:57:29.674Z
-        completed_at: 2026-05-25T02:57:29.674Z
+        completed_at: 2026-05-25T02:57:38.445Z
+        notes: "Friction points: the detached reviewer merge helper refused because the integration target
+          branch was not checked out in any worktree, so the session needed a manual dedicated
+          worktree creation before retrying the supported helper; kspec validate produced
+          warning-only output that reviewers still have to triage manually, but no concrete capture
+          was made without stronger evidence of repeated cost."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-25T02:57:38.445Z
+        completed_at: 2026-05-25T02:57:38.445Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-25T02:57:14.668Z
