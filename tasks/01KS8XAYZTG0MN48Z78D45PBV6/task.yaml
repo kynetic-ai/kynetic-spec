@@ -98,7 +98,7 @@ description: >
 spec_ref: "@entity-folder-migration-and-compatibility-1"
 plan_ref: "@plan-folder-backed-plans-reviews-and-local-resources"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-folder-backed-plan-storage-manager-1"
@@ -119,7 +119,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-plan-review-folder-storage-migration-1/01ks8xay
-session_id: 01KSEA08VCZD8GP1ENZVE7GS77
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -749,6 +749,16 @@ history:
         previous: "@01KSE8K5XYQQA8J8SZVD9J1E9X"
     command: review-link
     timestamp: 2026-05-25T01:55:33.898Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KSEA08VCZD8GP1ENZVE7GS77
+    command: review-verdict-needs-work
+    timestamp: 2026-05-25T02:10:28.402Z
 prior_status: null
 created_at: 2026-05-22T22:36:45.946Z
 started_at: 2026-05-25T01:12:53.670Z
