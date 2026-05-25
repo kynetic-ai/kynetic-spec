@@ -12933,7 +12933,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-25T04:46:33.484Z
+      updated_at: 2026-05-25T04:46:34.997Z
     integration:
       status: pending
       detail: null
@@ -12942,25 +12942,20 @@ workspaces:
       target_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
       target_commit: 25e55fa9067eba15e70dd1659669a8e34465407c
       updated_at: 2026-05-25T04:46:33.484Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
     task_ref: "@01KS8XAZQ5478RV2AVKG8MNB0S"
     task_slug: task-plan-resource-import-and-derive-1
     timestamps:
       closed_at: null
       last_active_at: 2026-05-25T04:25:20.964Z
-      last_reconciled_at: 2026-05-25T04:46:33.484Z
+      last_reconciled_at: 2026-05-25T04:46:34.997Z
       created_at: 2026-05-25T03:23:53.034Z
-      updated_at: 2026-05-25T04:46:33.484Z
+      updated_at: 2026-05-25T04:46:34.997Z
     workspace_id: dispatch-workspace-01KS8XAZQ5478RV2AVKG8MNB0S
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 7d02e79c32ba3f6a9d943866c2445ae6bb6a9ba9
-        last_seen_at: 2026-05-25T04:24:50.192Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-resource-import-and-derive-1-01ks8xaz-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-plan-resource-import-and-derive-1/01ks8xaz
