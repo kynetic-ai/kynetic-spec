@@ -686,3 +686,156 @@ describe("Review-resource route cache + broadcast side effects", () => {
     expect(broadcastSpy).not.toHaveBeenCalled();
   });
 });
+
+// AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+// AC: @multi-directory-daemon ac-26 — selected non-default project context
+//
+// Browser-issued <img src> / <a href> requests cannot include the
+// X-Kspec-Dir header that the rest of the UI uses to route the request
+// to a non-default selected project. Without a URL-bound fallback, the
+// daemon would route the bytes request to the default project, returning
+// 404 for resources that exist only in the selected non-default project
+// or — worse — returning the wrong project's bytes if both happen to
+// declare the same resource id.
+//
+// The middleware accepts a `kspec_dir` query parameter as a fallback to
+// the header so the URL itself can carry the project context for these
+// asset-style requests. The header still wins when both are present so
+// first-class fetch() callers remain authoritative.
+describe("GET /api/reviews/:ref/resources/:resourceId/bytes — selected non-default project context", () => {
+  // Two independent projects, each registered separately, each with the
+  // SAME review ULID but DIFFERENT bytes for the same resource id. This
+  // is the failure shape that ships the wrong screenshot to a user who
+  // selected a non-default project in the UI: an unscoped GET against
+  // the bytes endpoint would route to whichever project owned the
+  // default, not the project the user selected.
+  let projectA: string;
+  let projectB: string;
+  let multiApp: Elysia;
+  const ALPHA_BYTES = Buffer.from("alpha-project-screenshot-bytes");
+  const BETA_BYTES = Buffer.from("beta-project-screenshot-bytes");
+
+  async function uploadFor(
+    targetTempDir: string,
+    reviewRef: string,
+    fields: Record<string, string>,
+    file: { name: string; type: string; bytes: Buffer },
+  ) {
+    const form = new FormData();
+    form.append("file", new Blob([file.bytes], { type: file.type }), file.name);
+    for (const [key, value] of Object.entries(fields)) {
+      form.append(key, value);
+    }
+    return multiApp.handle(
+      new Request(
+        `http://localhost/api/reviews/${encodeURIComponent(reviewRef)}/resources`,
+        {
+          method: "POST",
+          headers: {
+            Host: "localhost",
+            "X-Kspec-Dir": targetTempDir,
+          },
+          body: form,
+        },
+      ),
+    );
+  }
+
+  beforeEach(async () => {
+    projectA = await createTempDir("kspec-daemon-api-review-resources-multi-a-");
+    projectB = await createTempDir("kspec-daemon-api-review-resources-multi-b-");
+    initGitRepo(projectA);
+    initGitRepo(projectB);
+    setupFixtures(projectA);
+    setupFixtures(projectB);
+    ({ app: multiApp } = createTestApp());
+
+    const seedA = await uploadFor(
+      projectA,
+      REVIEW_ULID,
+      { id: "shot", path: "shot.png" },
+      { name: "shot.png", type: "image/png", bytes: ALPHA_BYTES },
+    );
+    expect(seedA.status).toBe(201);
+    const seedB = await uploadFor(
+      projectB,
+      REVIEW_ULID,
+      { id: "shot", path: "shot.png" },
+      { name: "shot.png", type: "image/png", bytes: BETA_BYTES },
+    );
+    expect(seedB.status).toBe(201);
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(projectA);
+    await cleanupTempDir(projectB);
+  });
+
+  it("routes via the X-Kspec-Dir header when present (baseline)", async () => {
+    const response = await multiApp.handle(
+      new Request(
+        `http://localhost/api/reviews/${REVIEW_ULID}/resources/shot/bytes`,
+        {
+          method: "GET",
+          headers: { Host: "localhost", "X-Kspec-Dir": projectB },
+        },
+      ),
+    );
+    expect(response.status).toBe(200);
+    const body = Buffer.from(await response.arrayBuffer());
+    expect(body.equals(BETA_BYTES)).toBe(true);
+  });
+
+  it("routes via the kspec_dir query parameter when no X-Kspec-Dir header is present", async () => {
+    // This is the browser <img src> / <a href> case: no custom header is
+    // possible, so the project context MUST travel in the URL itself.
+    const response = await multiApp.handle(
+      new Request(
+        `http://localhost/api/reviews/${REVIEW_ULID}/resources/shot/bytes?kspec_dir=${encodeURIComponent(projectB)}`,
+        {
+          method: "GET",
+          headers: { Host: "localhost" },
+        },
+      ),
+    );
+    expect(response.status).toBe(200);
+    const body = Buffer.from(await response.arrayBuffer());
+    expect(body.equals(BETA_BYTES)).toBe(true);
+    // And NOT the other project's bytes — proves we actually routed by
+    // the query param instead of silently falling back to the default.
+    expect(body.equals(ALPHA_BYTES)).toBe(false);
+  });
+
+  it("routes to projectA when kspec_dir=projectA (proves both directions work)", async () => {
+    const response = await multiApp.handle(
+      new Request(
+        `http://localhost/api/reviews/${REVIEW_ULID}/resources/shot/bytes?kspec_dir=${encodeURIComponent(projectA)}`,
+        {
+          method: "GET",
+          headers: { Host: "localhost" },
+        },
+      ),
+    );
+    expect(response.status).toBe(200);
+    const body = Buffer.from(await response.arrayBuffer());
+    expect(body.equals(ALPHA_BYTES)).toBe(true);
+    expect(body.equals(BETA_BYTES)).toBe(false);
+  });
+
+  it("X-Kspec-Dir header wins over the kspec_dir query param when both are present", async () => {
+    // Header is the canonical, first-class signal — it must not be
+    // overridden by a query parameter that happens to point elsewhere.
+    const response = await multiApp.handle(
+      new Request(
+        `http://localhost/api/reviews/${REVIEW_ULID}/resources/shot/bytes?kspec_dir=${encodeURIComponent(projectA)}`,
+        {
+          method: "GET",
+          headers: { Host: "localhost", "X-Kspec-Dir": projectB },
+        },
+      ),
+    );
+    expect(response.status).toBe(200);
+    const body = Buffer.from(await response.arrayBuffer());
+    expect(body.equals(BETA_BYTES)).toBe(true);
+  });
+});

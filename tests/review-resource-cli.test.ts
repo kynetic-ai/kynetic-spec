@@ -186,6 +186,28 @@ describe("Integration: review resource add", () => {
     expect(envelope.source_file).toContain(".missing");
   });
 
+  // AC: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner
+  // AC: @trait-entity-scoped-local-resources-1 ac-binary-resources-are-not-inlined-into-yaml
+  it("returns source_file_unreadable + exit code 1 when the source path is a directory", async () => {
+    // The manager rejects non-regular files (directories, devices, etc.)
+    // with the documented source_file_unreadable code. Coverage at the
+    // manager layer alone would miss a regression in CLI error mapping
+    // for this case, so this test invokes the CLI end-to-end against a
+    // directory source and asserts the full envelope + exit code.
+    const dirSource = path.join(projectDir, "uploads", "not-a-file");
+    await fs.mkdir(dirSource, { recursive: true });
+    const result = kspecRun(
+      `review resource add @${reviewSlug} ${dirSource} --id shot --path shot.png --json`,
+      projectDir,
+      { expectFail: true },
+    );
+    expect(result.exitCode).toBe(1);
+    const envelope = JSON.parse(result.stderr.trim());
+    expect(envelope.code).toBe("source_file_unreadable");
+    expect(envelope.source_file).toBe(dirSource);
+    expect(envelope.message).toMatch(/not a regular file/i);
+  });
+
   it("returns resource_conflict for duplicate ids without --replace", () => {
     kspecOk(
       `review resource add @${reviewSlug} ${pngSource} --id shot --path shot.png`,
@@ -315,5 +337,45 @@ describe("Integration: review resource remove", () => {
     const envelope = JSON.parse(result.stderr.trim());
     expect(envelope.code).toBe("invalid_resource_id");
     expect(envelope.resource_id).toBe("Bad-ID!");
+  });
+
+  // AC: @trait-entity-scoped-local-resources-1 ac-resource-delete-follows-owner-delete
+  it("returns operation_cancelled + exit code 2 when the interactive prompt is answered 'no' and leaves the resource intact", () => {
+    // Interactive cancellation is the third leg of the documented remove
+    // contract (alongside --force success and non-interactive
+    // confirmation_required). Coverage at the manager layer cannot catch
+    // a regression here because the prompt/cancel/exit-code wiring is
+    // CLI-only: it lives entirely in src/cli/commands/review-resource.ts
+    // remove action's readline branch.
+    //
+    // The CLI detects interactive mode via KSPEC_TEST_TTY=true OR
+    // process.stdin.isTTY. spawnSync's piped stdin always has isTTY=false,
+    // so the env var is the way to assert this code path under test.
+    kspecOk(
+      `review resource add @${reviewSlug} ${pngSource} --id shot --path shot.png`,
+      projectDir,
+    );
+
+    const cancel = kspecRun(
+      `review resource remove @${reviewSlug} shot`,
+      projectDir,
+      {
+        stdin: "n",
+        env: { KSPEC_TEST_TTY: "true" },
+        expectFail: true,
+      },
+    );
+    expect(cancel.exitCode).toBe(2);
+    expect(cancel.stderr).toMatch(/cancel/i);
+    expect(cancel.stderr).toMatch(/shot/);
+
+    // The resource must still be present — cancellation must not leak any
+    // deletion side effect.
+    const list = kspecJson<{ resources: Array<{ id: string }> }>(
+      `review resource list @${reviewSlug}`,
+      projectDir,
+    );
+    expect(list.resources).toHaveLength(1);
+    expect(list.resources[0].id).toBe("shot");
   });
 });

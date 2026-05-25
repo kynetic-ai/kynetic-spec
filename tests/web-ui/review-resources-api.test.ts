@@ -15,6 +15,10 @@ const modeState = vi.hoisted(() => ({
   staticMode: false,
 }));
 
+const projectState = vi.hoisted(() => ({
+  selectedPath: null as string | null,
+}));
+
 const modeMock = vi.hoisted(() => () => ({
   getSnapshot: () => null,
   isStaticMode: () => modeState.staticMode,
@@ -23,7 +27,7 @@ const modeMock = vi.hoisted(() => () => ({
 }));
 
 const projectMock = vi.hoisted(() => () => ({
-  getSelectedProjectPath: () => null,
+  getSelectedProjectPath: () => projectState.selectedPath,
   clearInvalidSelection: () => {},
   isInvalidProjectError: () => false,
 }));
@@ -49,6 +53,7 @@ import {
 
 beforeEach(() => {
   modeState.staticMode = false;
+  projectState.selectedPath = null;
 });
 
 afterEach(() => {
@@ -65,6 +70,31 @@ describe("reviewResourceBytesUrl", () => {
   it("URL-encodes both the review ref and the resource id", () => {
     expect(reviewResourceBytesUrl("review with spaces", "id/with/slash")).toBe(
       "http://localhost:3456/api/reviews/review%20with%20spaces/resources/id%2Fwith%2Fslash/bytes",
+    );
+  });
+
+  // AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+  // AC: @multi-directory-daemon ac-26 — selected non-default project context
+  // must travel with the URL (browser <img>/<a> requests cannot set the
+  // X-Kspec-Dir header, so the project path must be in the URL itself).
+  it("includes the selected project path as a kspec_dir query param when a non-default project is selected", () => {
+    projectState.selectedPath = "/home/me/other-project";
+    expect(reviewResourceBytesUrl("@review-1", "shot")).toBe(
+      "http://localhost:3456/api/reviews/%40review-1/resources/shot/bytes?kspec_dir=%2Fhome%2Fme%2Fother-project",
+    );
+  });
+
+  it("URL-encodes special characters in the selected project path", () => {
+    projectState.selectedPath = "/path with spaces/proj";
+    expect(reviewResourceBytesUrl("@review-1", "shot")).toBe(
+      "http://localhost:3456/api/reviews/%40review-1/resources/shot/bytes?kspec_dir=%2Fpath%20with%20spaces%2Fproj",
+    );
+  });
+
+  it("omits the kspec_dir query param when no project is selected", () => {
+    projectState.selectedPath = null;
+    expect(reviewResourceBytesUrl("@review-1", "shot")).toBe(
+      "http://localhost:3456/api/reviews/%40review-1/resources/shot/bytes",
     );
   });
 });

@@ -1411,10 +1411,21 @@ export async function fetchReview(id: string): Promise<ReviewDetail> {
  * daemon's API base so the UI can render images / download links without
  * a snapshot.
  *
+ * When a project is selected, the path is appended as a `kspec_dir` query
+ * parameter so the daemon middleware can route the request to the right
+ * project. Browser-issued requests for binary URLs from `<img src>` or
+ * `<a href>` cannot include the `X-Kspec-Dir` header the rest of the API
+ * relies on, so the URL itself must carry the project context — otherwise
+ * the daemon falls back to the default project and screenshots for any
+ * non-default selected project would 404 or load the wrong project's bytes.
+ *
  * AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+ * AC: @multi-directory-daemon ac-26 — preserves selected-project context
  */
 export function reviewResourceBytesUrl(reviewRef: string, resourceId: string): string {
-  return `${API_BASE}/api/reviews/${encodeURIComponent(reviewRef)}/resources/${encodeURIComponent(resourceId)}/bytes`;
+  const base = `${API_BASE}/api/reviews/${encodeURIComponent(reviewRef)}/resources/${encodeURIComponent(resourceId)}/bytes`;
+  const projectPath = getSelectedProjectPath();
+  return projectPath ? `${base}?kspec_dir=${encodeURIComponent(projectPath)}` : base;
 }
 
 /**
