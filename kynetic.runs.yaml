@@ -54650,7 +54650,7 @@ runs:
     started_at: 2026-05-25T21:22:56.060Z
     completed_at: 2026-05-25T21:25:01.296Z
   - _ulid: 01KSGKNEHM8WCKV6B7GM445RM5
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -54703,7 +54703,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-25T22:24:12.471Z
-        completed_at: 2026-05-25T22:24:12.471Z
+        completed_at: 2026-05-25T22:24:27.937Z
+        notes: "Capture: no new records created. All candidate friction/success patterns were already
+          covered by existing items: @01KSGGDD, @01KSEH38, @01KSEQ82/@01KSF0VT, @01KSEQ88, and
+          @01KR2JD1. Reflection closed with no duplicate capture."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-25T22:21:39.252Z
+    completed_at: 2026-05-25T22:24:27.937Z
