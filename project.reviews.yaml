@@ -231731,6 +231731,18 @@ reviews:
         runner: cli-repro
         created_at: 2026-05-25T07:29:56.831Z
         completed_at: 2026-05-25T07:29:56.831Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Temp project: valid 128-character plan resource id; kspec plan derive
+          --materialize-resources exited 1 after creating @implement-doc, leaving a partial task
+          with plan-owned resource_refs."
+        name: materialize long-id partial repro
+        required: false
+        runner: cli-repro
+        created_at: 2026-05-25T07:30:04.366Z
+        completed_at: 2026-05-25T07:30:04.366Z
     events:
       - _ulid: 01KSEZSCAYAP00CAFSQASA6BVK
         actor: Jacob Chapel
@@ -231801,6 +231813,13 @@ reviews:
           status: fail
           name: materialize symlink escape repro
         timestamp: 2026-05-25T07:29:58.796Z
+      - _ulid: 01KSF0MZB0R1PGY4GG61SFMW39
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: materialize long-id partial repro
+        timestamp: 2026-05-25T07:30:06.304Z
     examined_commit: 7e8ff3aeec93b5586c92a90e58c70db9c4e3b4cc
     external_links: []
     lifecycle_state: open
@@ -231896,5 +231915,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-05-25T07:15:02.110Z
-    updated_at: 2026-05-25T07:29:56.831Z
+    updated_at: 2026-05-25T07:30:04.366Z
     notes: []
