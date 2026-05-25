@@ -234623,6 +234623,12 @@ reviews:
         payload:
           thread_ulid: 01KSGBDH95XE7D2WZCS36DQGHV
         timestamp: 2026-05-25T20:13:33.441Z
+      - _ulid: 01KSGCB8DF1AGWDAS5KRNSFAQM
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSGBDH95XE7D2WZCS36DQGHV
+        timestamp: 2026-05-25T20:13:45.264Z
     examined_commit: 7650c9f1b4f6a0a74911ebf8f80489f53e3443f8
     external_links: []
     lifecycle_state: closed
@@ -234687,6 +234693,8 @@ reviews:
               if seeding fails because the explicit throw surfaces with the same useful diagnostic."
             created_at: 2026-05-25T20:13:31.358Z
         kind: blocker
+        resolved_at: 2026-05-25T20:13:43.166Z
+        resolved_by: "@claude"
       - _ulid: 01KSGBFZ30M18PNN52R403G1E6
         entries:
           - _ulid: 01KSGBFZ30Z42X1M1P9D0S8W6Q
@@ -234714,5 +234722,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-25T19:59:03.789Z
     created_at: 2026-05-25T19:46:22.778Z
-    updated_at: 2026-05-25T20:13:31.358Z
+    updated_at: 2026-05-25T20:13:43.166Z
     notes: []
