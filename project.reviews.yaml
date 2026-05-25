@@ -231078,6 +231078,18 @@ reviews:
         runner: npm
         created_at: 2026-05-25T06:12:49.286Z
         completed_at: 2026-05-25T06:12:49.286Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/cli-plan-resource.test.ts
+          tests/cli-plan-import-resources.test.ts tests/cli-plan-derive-resources.test.ts
+          tests/plan-document-resource-refs.test.ts: 16 suites passed, 49 tests passed."
+        name: focused resource tests
+        required: false
+        runner: npm
+        created_at: 2026-05-25T06:13:05.706Z
+        completed_at: 2026-05-25T06:13:05.706Z
     events:
       - _ulid: 01KSEV8T77NE8W3BJX8W48KXYG
         actor: Jacob Chapel
@@ -231120,6 +231132,13 @@ reviews:
           status: pass
           name: typecheck
         timestamp: 2026-05-25T06:12:51.182Z
+      - _ulid: 01KSEW80VWMK0MWMKE9BFXC54K
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused resource tests
+        timestamp: 2026-05-25T06:13:07.580Z
     examined_commit: d31b3df0546b893caf3746c64c4aa91a4661e3e9
     external_links: []
     lifecycle_state: open
@@ -231174,5 +231193,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-25T05:56:04.967Z
-    updated_at: 2026-05-25T06:12:49.286Z
+    updated_at: 2026-05-25T06:13:05.706Z
     notes: []
