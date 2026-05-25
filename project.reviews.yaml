@@ -230354,6 +230354,22 @@ reviews:
         runner: npm
         created_at: 2026-05-25T02:53:48.100Z
         completed_at: 2026-05-25T02:53:48.100Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/cli/commands/upgrade.ts, src/parser/plan-folder-migration.ts,
+          src/parser/review-folder-migration.ts, src/parser/migration-safety.ts,
+          src/cli/batch-write-buffer.ts, changed migration tests. Claims verified: same-ULID
+          folder+monolithic overlap now sets partialLayout and refused apply leaves existing folder
+          content untouched; protected tripwire gates executing pipeline; empty resources
+          directories materialize via WriteBuffer. Categories: correctness, edge cases, error
+          handling, test quality, integration, diff hygiene."
+        name: review evidence log
+        required: false
+        runner: codex-reviewer
+        created_at: 2026-05-25T02:54:04.294Z
+        completed_at: 2026-05-25T02:54:04.294Z
     events:
       - _ulid: 01KSEFSX3958JY23XW1V6VMZ1W
         actor: Jacob Chapel
@@ -230396,6 +230412,13 @@ reviews:
           status: pass
           name: focused migration tests
         timestamp: 2026-05-25T02:53:49.836Z
+      - _ulid: 01KSEGVK56Q5RY9SKR2F3FHRC7
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-25T02:54:05.990Z
     examined_commit: 03c37aed2c2b13d94f58569df364e5c5dce6f821
     external_links: []
     lifecycle_state: open
@@ -230408,5 +230431,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-25T02:35:42.057Z
-    updated_at: 2026-05-25T02:53:48.100Z
+    updated_at: 2026-05-25T02:54:04.294Z
     notes: []
