@@ -234087,6 +234087,13 @@ reviews:
           status: pass
           name: kspec validate --warnings-ok
         timestamp: 2026-05-25T17:31:56.896Z
+      - _ulid: 01KSG33K5GWW1E1ECVSKX0C8Z0
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KSG33HGB7DBXSNH2E40VZGCE
+        timestamp: 2026-05-25T17:32:16.944Z
     examined_commit: 0ebd97caa924d55e960aac358c093b1979f94455
     external_links: []
     lifecycle_state: open
@@ -234120,7 +234127,33 @@ reviews:
               fail atomically before updating the manifest when old-path cleanup is rejected."
             created_at: 2026-05-25T17:23:03.264Z
         kind: blocker
+      - _ulid: 01KSG33HGB7DBXSNH2E40VZGCE
+        entries:
+          - _ulid: 01KSG33HGBMKVG3AP0Y7THVT2G
+            author: Jacob Chapel
+            body: "Review evidence log:\\n\\nFiles read: kspec-agents.md; task/spec context via kspec task get
+              and kspec item get; prior review @01KSFYVE; src/parser/review-resource-manager.ts;
+              src/parser/entity-local-resources.ts; src/schema/resources.ts;
+              src/cli/commands/review-resource.ts; packages/daemon/src/routes/review-resources.ts;
+              packages/daemon/src/middleware/project-context.ts; packages/web-ui/src/lib/api.ts;
+              packages/web-ui/src/lib/api-static.ts;
+              packages/web-ui/src/routes/reviews/[id]/+page.svelte; src/export/json.ts;
+              src/export/types.ts; packages/shared/src/api.ts;
+              tests/review-resource-manager.test.ts; tests/review-resource-cli.test.ts;
+              tests/daemon-api/review-resources.test.ts; tests/web-ui/review-resources-api.test.ts;
+              tests/review-resource-static-export.test.ts.\\n\\nCommands run: git diff
+              --stat/name-only 25e55fa...HEAD; git log 25e55fa...HEAD; kspec validate; kspec
+              validate --warnings-ok; npm run typecheck; npm test -- --fresh; rg AC annotations;
+              node --import tsx behavioral probe for replace-path symlink cleanup.\\n\\nClaims
+              verified: cycle 6 static exported-path URL fix encodes # and ? per segment;
+              selected-project bytes URL uses kspec_dir query context; review-resource API/CLI
+              routes share manager validation; replacement cleanup probe disproved the claimed
+              symlink-safe replace cleanup.\\n\\nCategories searched: correctness, edge cases, error
+              handling, security/path traversal, test quality, AC annotation coverage, UI/static
+              export integration, daemon cache/broadcast integration."
+            created_at: 2026-05-25T17:32:15.243Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-25T17:18:44.195Z
-    updated_at: 2026-05-25T17:31:55.104Z
+    updated_at: 2026-05-25T17:32:15.243Z
     notes: []
