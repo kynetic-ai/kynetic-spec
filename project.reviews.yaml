@@ -234014,6 +234014,19 @@ reviews:
         runner: tsc
         created_at: 2026-05-25T17:31:44.973Z
         completed_at: 2026-05-25T17:31:44.973Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Behavioral probe: seeded review resource old.png, replaced old.png on disk with a
+          symlink, then called addReviewResource with relativePath new.png and replace:true.
+          Observed replaceOk:true, manifestPaths:[new.png], oldIsSymlink:true. Expected rejection or
+          atomic cleanup per replacement contract."
+        name: replace-path symlink cleanup probe
+        required: true
+        runner: node
+        created_at: 2026-05-25T17:31:50.113Z
+        completed_at: 2026-05-25T17:31:50.113Z
     events:
       - _ulid: 01KSG2ASF3HKX393QXZ2QYG8J7
         actor: Jacob Chapel
@@ -234049,6 +234062,13 @@ reviews:
           status: pass
           name: npm run typecheck
         timestamp: 2026-05-25T17:31:46.850Z
+      - _ulid: 01KSG32TS7J15Y3DSC9MRAPK3D
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: replace-path symlink cleanup probe
+        timestamp: 2026-05-25T17:31:51.975Z
     examined_commit: 0ebd97caa924d55e960aac358c093b1979f94455
     external_links: []
     lifecycle_state: open
@@ -234084,5 +234104,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-25T17:18:44.195Z
-    updated_at: 2026-05-25T17:31:44.973Z
+    updated_at: 2026-05-25T17:31:50.113Z
     notes: []
