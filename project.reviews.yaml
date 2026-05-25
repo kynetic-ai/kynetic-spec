@@ -230602,6 +230602,12 @@ reviews:
         payload:
           thread_ulid: 01KSEQ0ZQZTFVQDFR1WKF29JG9
         timestamp: 2026-05-25T05:50:43.446Z
+      - _ulid: 01KSETZ7JV7ZPRDBPDKP7HNAQB
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSEQ13PVKXNWEAJQ0VHNXZJB
+        timestamp: 2026-05-25T05:50:50.972Z
     examined_commit: 7d02e79c32ba3f6a9d943866c2445ae6bb6a9ba9
     external_links: []
     lifecycle_state: closed
@@ -230737,6 +230743,8 @@ reviews:
               to outside; asserts the realpath containment check catches it.
             created_at: 2026-05-25T05:50:30.584Z
         kind: blocker
+        resolved_at: 2026-05-25T05:50:49.207Z
+        resolved_by: "@claude"
       - _ulid: 01KSEQ17P6CVHH2C7XYP18284J
         entries:
           - _ulid: 01KSEQ17P6DCWRVSE4VK30JS9F
@@ -230770,7 +230778,7 @@ reviews:
         role: reviewer
         created_at: 2026-05-25T04:42:24.398Z
     created_at: 2026-05-25T04:26:02.151Z
-    updated_at: 2026-05-25T05:50:41.662Z
+    updated_at: 2026-05-25T05:50:49.207Z
     notes: []
   - _ulid: 01KSESV1DJQPBDX776T5RSJXPW
     slugs: []
