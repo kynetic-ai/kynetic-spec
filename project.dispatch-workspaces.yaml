@@ -12965,7 +12965,7 @@ workspaces:
         head: 9802d445026c042d9c37a58e942107d4e8a57a79
         last_seen_at: 2026-05-25T08:57:41.006Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-resource-import-and-derive-1-01ks8xaz
-  - active_role: worker
+  - active_role: null
     base_branch_point: 25e55fa9067eba15e70dd1659669a8e34465407c
     bootstrap:
       status: succeeded
@@ -13434,12 +13434,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-25T20:15:22.699Z
+      updated_at: 2026-05-25T21:02:52.758Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-25T20:15:22.699Z
+      updated_at: 2026-05-25T21:02:52.758Z
     integration:
       status: pending
       detail: null
@@ -13447,17 +13447,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
       target_commit: 25e55fa9067eba15e70dd1659669a8e34465407c
-      updated_at: 2026-05-25T20:15:22.699Z
-    lifecycle_state: active
+      updated_at: 2026-05-25T21:02:52.758Z
+    lifecycle_state: ready
     resolved_base_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
     task_ref: "@01KS8XB0EKNTMZS4XJMC4ED4SK"
     task_slug: task-review-screenshot-resource-ui
     timestamps:
       closed_at: null
       last_active_at: 2026-05-25T20:02:46.653Z
-      last_reconciled_at: 2026-05-25T20:15:22.699Z
+      last_reconciled_at: 2026-05-25T21:02:52.758Z
       created_at: 2026-05-25T04:25:24.024Z
-      updated_at: 2026-05-25T20:15:22.699Z
+      updated_at: 2026-05-25T21:02:52.758Z
     workspace_id: dispatch-workspace-01KS8XB0EKNTMZS4XJMC4ED4SK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
