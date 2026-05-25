@@ -96,6 +96,34 @@ export function rewritePlanContentForStaticExport(
 }
 
 /**
+ * Error thrown by {@link exportPlanResources} when one of a plan's declared
+ * resources fails the symlink-safe copy step. The export pipeline surfaces
+ * this as an actionable failure so the snapshot never silently omits the
+ * resource (which would also leave the markdown's `./resources/<path>` link
+ * unresolved). Carries the plan ULID, the failing relative path, and the
+ * resolver's actionable error message so the author can fix the offending
+ * manifest entry.
+ *
+ * AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+ */
+export class PlanResourceExportError extends Error {
+  readonly planUlid: string;
+  readonly resourcePath: string;
+  readonly reason: string;
+
+  constructor(planUlid: string, resourcePath: string, reason: string) {
+    super(
+      `Failed to export plan resource "${resourcePath}" for plan ${planUlid}: ${reason}. ` +
+        `Fix the manifest entry or owning resources/ layout (no symlinks, no path traversal) and re-run the export.`,
+    );
+    this.name = "PlanResourceExportError";
+    this.planUlid = planUlid;
+    this.resourcePath = resourcePath;
+    this.reason = reason;
+  }
+}
+
+/**
  * Load a plan's resource manifest and project the entries to
  * `ExportedPlanResource`. When `assetsOutputDir` is supplied the resource
  * file bytes are copied under
@@ -104,6 +132,12 @@ export function rewritePlanContentForStaticExport(
  * `exported_path` is the POSIX-relative path the static UI uses regardless
  * of whether the bytes were physically copied (the snapshot stays
  * internally consistent for purely-stdout exports too).
+ *
+ * Copy failures (symlinked resources/ root, intermediate symlink escapes,
+ * undeclared paths, missing files) surface as {@link PlanResourceExportError}
+ * so the export aborts with actionable guidance instead of producing a
+ * snapshot whose `resources` array silently drops the entry while the
+ * rewritten markdown still points at the would-be exported path.
  *
  * AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
  * AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
@@ -136,10 +170,7 @@ async function exportPlanResources(
         manifest,
       });
       if (!result.ok) {
-        // Skip the resource on copy failure rather than aborting the whole
-        // export — the rest of the plan data is still useful. The author can
-        // re-export after fixing the manifest entry the resolver rejected.
-        continue;
+        throw new PlanResourceExportError(ulid, entry.path, result.error);
       }
     }
     exported.push({

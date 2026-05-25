@@ -21,6 +21,7 @@ import { stringify as yamlStringify } from "yaml";
 
 import {
   generateJsonSnapshot,
+  PlanResourceExportError,
   rewritePlanContentForStaticExport,
   type ExportedPlanResource,
 } from "../../src/export/index.js";
@@ -227,6 +228,93 @@ describe("static export — plan resources", () => {
     // The resource bytes start with PNG magic bytes — none of those bytes
     // should appear in the JSON serialisation (only the sha256 hash).
     expect(serialized).not.toContain("PNG");
+  });
+
+  // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+  // AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
+  it("rejects the export with actionable guidance when a resource escapes via a symlinked resources/ subdir", async () => {
+    const { planUlid } = await setupFolderBackedProject();
+    process.chdir(tempDir);
+
+    // Swap the plan's `resources/screenshots` directory for a symlink that
+    // points outside the plan tree. The declared manifest entry still has
+    // path `screenshots/login.png`, but the resolver must reject the copy
+    // because the chain resolves through a symlink escape.
+    const planDir = path.join(tempDir, "plans", planUlid);
+    const screenshotsDir = path.join(planDir, "resources", "screenshots");
+    const outside = path.join(tempDir, "outside-screenshots");
+    await fs.mkdir(outside, { recursive: true });
+    // Move the real file out into the outside tree, then replace the
+    // original screenshots dir with a symlink that points to it.
+    await fs.rename(path.join(screenshotsDir, "login.png"), path.join(outside, "login.png"));
+    await fs.rm(screenshotsDir, { recursive: true, force: true });
+    const fsSync = await import("node:fs");
+    fsSync.symlinkSync(outside, screenshotsDir);
+
+    const exportDir = await fs.mkdtemp(path.join(os.tmpdir(), "kspec-export-fail-"));
+    try {
+      await expect(
+        generateJsonSnapshot(false, { assetsOutputDir: exportDir }),
+      ).rejects.toBeInstanceOf(PlanResourceExportError);
+
+      // No silent success: the assets output dir must not contain the
+      // symlinked-through file under the expected exported path. (The
+      // resolver rejects before any copy happens.)
+      const exportedFile = path.join(
+        exportDir,
+        "assets",
+        "resources",
+        "plan",
+        planUlid,
+        "screenshots",
+        "login.png",
+      );
+      let copied = false;
+      try {
+        await fs.stat(exportedFile);
+        copied = true;
+      } catch {
+        copied = false;
+      }
+      expect(copied).toBe(false);
+    } finally {
+      await fs.rm(exportDir, { recursive: true, force: true });
+    }
+  });
+
+  // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+  it("PlanResourceExportError carries the plan ulid, resource path, and resolver reason", async () => {
+    const { planUlid } = await setupFolderBackedProject();
+    process.chdir(tempDir);
+
+    // Same setup as above — swap a resources subdir for an escaping symlink.
+    const planDir = path.join(tempDir, "plans", planUlid);
+    const screenshotsDir = path.join(planDir, "resources", "screenshots");
+    const outside = path.join(tempDir, "outside-screenshots-2");
+    await fs.mkdir(outside, { recursive: true });
+    await fs.rename(path.join(screenshotsDir, "login.png"), path.join(outside, "login.png"));
+    await fs.rm(screenshotsDir, { recursive: true, force: true });
+    const fsSync = await import("node:fs");
+    fsSync.symlinkSync(outside, screenshotsDir);
+
+    const exportDir = await fs.mkdtemp(path.join(os.tmpdir(), "kspec-export-fail2-"));
+    try {
+      try {
+        await generateJsonSnapshot(false, { assetsOutputDir: exportDir });
+        throw new Error("expected PlanResourceExportError");
+      } catch (err) {
+        expect(err).toBeInstanceOf(PlanResourceExportError);
+        const e = err as PlanResourceExportError;
+        expect(e.planUlid).toBe(planUlid);
+        expect(e.resourcePath).toBe("screenshots/login.png");
+        expect(e.reason).toMatch(/symlink/i);
+        // Actionable guidance is part of the message so CLI users get a
+        // single, structured failure surface.
+        expect(e.message).toMatch(/Fix the manifest entry|re-run the export/);
+      }
+    } finally {
+      await fs.rm(exportDir, { recursive: true, force: true });
+    }
   });
 });
 

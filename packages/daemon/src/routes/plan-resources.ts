@@ -29,7 +29,10 @@ import {
   findPlanByRef,
   type LoadedPlan,
 } from "../../parser/index.js";
-import { requirePlanFolderStorage } from "../../parser/entity-storage-compatibility.js";
+import {
+  requirePlanFolderStorage,
+  requireResourceFolderStorage,
+} from "../../parser/entity-storage-compatibility.js";
 import {
   assertSafeResourceMutationPath,
   captureResourceGitVersion,
@@ -155,6 +158,20 @@ async function resolvePlanForResources(
 
   try {
     await requirePlanFolderStorage(ctx);
+  } catch (err) {
+    const conflict = entityStorageIncompatibilityResponse(err, { cache });
+    if (conflict) return { ok: false, status: conflict.status, body: conflict.body };
+    throw err;
+  }
+
+  // Plan resource routes also require entity-scoped local resource storage
+  // (`resource_storage.format: entity_scoped`) — folder-backed plans alone
+  // are not sufficient. Surface the shared structured 409 envelope when the
+  // manifest is missing or declares a different format, so the resource API
+  // never silently accepts requests against a project whose resource storage
+  // contract has not been migrated.
+  try {
+    await requireResourceFolderStorage(ctx);
   } catch (err) {
     const conflict = entityStorageIncompatibilityResponse(err, { cache });
     if (conflict) return { ok: false, status: conflict.status, body: conflict.body };
@@ -422,14 +439,50 @@ export function createPlanResourcesRoutes(options: PlanResourcesRouteOptions = {
           );
         }
 
-        // Materialise the uploaded bytes to a temp file inside the plan
-        // directory so the destination copy uses the same atomic semantics
-        // as the CLI add path. Writing to a sibling temp file first lets the
-        // safety gate run against the final destination path before the
-        // upload bytes ever land at the declared path.
-        await fs.mkdir(resourcesDir, { recursive: true });
+        // Validate the destination path safety BEFORE writing any bytes.
+        // `assertSafeResourceMutationPath` walks the chain with `lstat` and
+        // rejects pre-existing symlinks at the resources root, intermediate
+        // segments, or the destination leaf. Running it first means a
+        // hostile or stale `resources/` symlink cannot trick a later
+        // `fs.mkdir(resourcesDir, { recursive: true })` plus `fs.writeFile`
+        // into materialising uploaded bytes outside the owning entity tree.
+        const safeDestination = await assertSafeResourceMutationPath({
+          ownerResourcesDir: resourcesDir,
+          relativePath: pathValidation.value,
+        });
+        if (!safeDestination.ok) {
+          set.status = 400;
+          return errorBody(
+            "invalid_resource_path",
+            safeDestination.error,
+            id,
+            pathValidation.value,
+          );
+        }
+        if (existingById && existingById.path !== pathValidation.value) {
+          const safePrevious = await assertSafeResourceMutationPath({
+            ownerResourcesDir: resourcesDir,
+            relativePath: existingById.path,
+          });
+          if (!safePrevious.ok) {
+            set.status = 400;
+            return errorBody(
+              "invalid_resource_path",
+              safePrevious.error,
+              id,
+              existingById.path,
+            );
+          }
+        }
+
+        // Stage uploaded bytes inside the plan directory itself rather than
+        // under `resourcesDir`. The plan directory is created and managed by
+        // the folder-backed plan storage manager (kspec-owned), so even if a
+        // hostile actor swapped `resources/` for a symlink between the safety
+        // check above and this write, the temp file still lands in a
+        // kspec-controlled directory instead of escaping the entity tree.
         const tempName = `.upload-${id}-${Date.now()}-${process.pid}`;
-        const tempPath = path.join(resourcesDir, tempName);
+        const tempPath = path.join(planDir, tempName);
         try {
           const buffer = Buffer.from(await file.arrayBuffer());
           await fs.writeFile(tempPath, buffer);
@@ -469,37 +522,6 @@ export function createPlanResourcesRoutes(options: PlanResourcesRouteOptions = {
         } catch (err) {
           await fs.rm(tempPath, { force: true });
           throw err;
-        }
-
-        const safeDestination = await assertSafeResourceMutationPath({
-          ownerResourcesDir: resourcesDir,
-          relativePath: pathValidation.value,
-        });
-        if (!safeDestination.ok) {
-          await fs.rm(tempPath, { force: true });
-          set.status = 400;
-          return errorBody(
-            "invalid_resource_path",
-            safeDestination.error,
-            id,
-            pathValidation.value,
-          );
-        }
-        if (existingById && existingById.path !== pathValidation.value) {
-          const safePrevious = await assertSafeResourceMutationPath({
-            ownerResourcesDir: resourcesDir,
-            relativePath: existingById.path,
-          });
-          if (!safePrevious.ok) {
-            await fs.rm(tempPath, { force: true });
-            set.status = 400;
-            return errorBody(
-              "invalid_resource_path",
-              safePrevious.error,
-              id,
-              existingById.path,
-            );
-          }
         }
 
         const destination = safeDestination.value.absolutePath;

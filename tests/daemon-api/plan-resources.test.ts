@@ -697,3 +697,151 @@ tasks_file: project.tasks.yaml
     expect(body.domain).toBe("plans");
   });
 });
+
+// ── Resource-storage gate: folder-backed plans alone are not sufficient ──────
+
+describe("Plan Resource API — missing resource_storage declaration", () => {
+  beforeEach(async () => {
+    tempDir = await createTempDir("kspec-daemon-api-plan-resources-no-rs-");
+    initGitRepo(tempDir);
+    // Project declares folder-backed plan storage but does NOT declare
+    // `resource_storage.format: entity_scoped`. The resource API contract
+    // covers the entity-scoped local resource trait, so this state must
+    // surface the structured 409 envelope instead of returning HTTP 200
+    // with an empty resources list.
+    setupInlineFixtures(tempDir, {
+      manifest: `kynetic: "1.2"
+task_storage:
+  format: split
+plan_storage:
+  format: folder
+review_storage:
+  format: folder
+project:
+  name: Missing Resource Storage
+  version: "0.1.0"
+  status: draft
+includes:
+  - modules/test.yaml
+`,
+      plans: `kynetic_plans: "1.0"\nplans:\n  - _ulid: ${PLAN_ULID}\n    slugs:\n      - ${PLAN_SLUG}\n    title: Active Plan\n    status: active\n    derived_tasks: []\n    derived_specs: []\n    source_path: null\n    created_at: "2026-01-15T10:00:00Z"\n    approved_at: "2026-01-16T12:00:00Z"\n    completed_at: null\n`,
+    });
+    ({ app } = createTestApp());
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+  // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+  it("GET /api/plans/:ref/resources surfaces 409 entity_storage_incompatible with domain=resources", async () => {
+    const response = await request(`/api/plans/${PLAN_REF}/resources`);
+    expect(response.status).toBe(409);
+    const body = await response.json();
+    expect(body.error).toBe("entity_storage_incompatible");
+    expect(typeof body.message).toBe("string");
+    // The failing gate is the resource-storage gate, so the structured
+    // envelope must point at resource_storage.format and the resources
+    // domain — not the plans domain — so the client can surface a
+    // resource-specific fix-up suggestion.
+    expect(body.field).toBe("resource_storage.format");
+    expect(body.domain).toBe("resources");
+  });
+
+  // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+  it("GET /api/plans/:ref/resources/:id, POST, and DELETE also surface 409 entity_storage_incompatible", async () => {
+    const getOne = await request(`/api/plans/${PLAN_REF}/resources/shot`);
+    expect(getOne.status).toBe(409);
+    expect((await getOne.json()).error).toBe("entity_storage_incompatible");
+
+    const getBytes = await request(`/api/plans/${PLAN_REF}/resources/shot/bytes`);
+    expect(getBytes.status).toBe(409);
+    expect((await getBytes.json()).error).toBe("entity_storage_incompatible");
+
+    const form = new FormData();
+    form.append("file", new Blob([new Uint8Array([1])], { type: "image/png" }), "x.png");
+    form.append("id", "shot");
+    form.append("path", "shot.png");
+    const post = await request(`/api/plans/${PLAN_REF}/resources`, { method: "POST", body: form });
+    expect(post.status).toBe(409);
+    expect((await post.json()).error).toBe("entity_storage_incompatible");
+
+    const del = await request(`/api/plans/${PLAN_REF}/resources/shot`, { method: "DELETE" });
+    expect(del.status).toBe(409);
+    expect((await del.json()).error).toBe("entity_storage_incompatible");
+  });
+});
+
+// ── Upload safety: pre-existing symlinked resources/ root ────────────────────
+
+describe("Plan Resource API — POST symlink safety", () => {
+  beforeEach(async () => {
+    tempDir = await createTempDir("kspec-daemon-api-plan-resources-symlink-");
+    initGitRepo(tempDir);
+    setupFixtures(tempDir);
+    execSync(`rm -rf ${path.join(tempDir, ".kspec", "plans")}`);
+    writeFileSync(
+      path.join(tempDir, ".kspec", "project.plans.yaml"),
+      `kynetic_plans: "1.0"\nplans:\n  - _ulid: ${PLAN_ULID}\n    slugs:\n      - ${PLAN_SLUG}\n    title: Active Plan\n    status: active\n    derived_tasks: []\n    derived_specs: []\n    source_path: null\n    created_at: "2026-01-15T10:00:00Z"\n    approved_at: "2026-01-16T12:00:00Z"\n    completed_at: null\n`,
+    );
+    ({ app } = createTestApp());
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+  it("POST rejects uploads when the plan's resources/ directory is a symlink, without writing bytes outside the entity tree", async () => {
+    // Seed the plan folder with metadata + plan.md (no real resources/ dir).
+    const planDir = path.join(tempDir, ".kspec", "plans", PLAN_ULID);
+    mkdirSync(planDir, { recursive: true });
+    writeFileSync(
+      path.join(planDir, "plan.yaml"),
+      yamlStringify({
+        _ulid: PLAN_ULID,
+        slugs: [PLAN_SLUG],
+        title: "Active Plan",
+        status: "active",
+        derived_tasks: [],
+        derived_specs: [],
+        source_path: null,
+        created_at: "2026-01-15T10:00:00Z",
+        approved_at: "2026-01-16T12:00:00Z",
+        completed_at: null,
+      }),
+    );
+    writeFileSync(path.join(planDir, "plan.md"), "# Active Plan\n");
+
+    // Create an outside directory and point `<planDir>/resources` at it via
+    // a symlink. This is the hostile state the route must catch BEFORE
+    // materialising any bytes — otherwise fs.mkdir(..., {recursive:true})
+    // would silently accept the symlink and fs.writeFile would land the
+    // upload outside the entity tree.
+    const outside = path.join(tempDir, "outside-target");
+    mkdirSync(outside, { recursive: true });
+    const fsSync = require("node:fs") as typeof import("node:fs");
+    fsSync.symlinkSync(outside, path.join(planDir, "resources"));
+
+    const blob = new Blob([new Uint8Array([7, 7, 7, 7])], { type: "image/png" });
+    const form = new FormData();
+    form.append("file", blob, "shot.png");
+    form.append("id", "shot");
+    form.append("path", "shot.png");
+    const response = await request(`/api/plans/${PLAN_REF}/resources`, {
+      method: "POST",
+      body: form,
+    });
+    expect(response.status).toBe(400);
+    const body = await response.json();
+    expect(body.error).toBe("invalid_resource_path");
+    expect(body.message).toMatch(/symlink/i);
+
+    // Critical: no upload bytes were written under the symlinked target.
+    // The directory must remain empty — proving the path safety check fired
+    // before fs.writeFile ran against the symlinked tree.
+    const outsideEntries = fsSync.readdirSync(outside);
+    expect(outsideEntries).toEqual([]);
+  });
+});
