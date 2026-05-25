@@ -3721,3 +3721,12 @@ inbox:
       - dispatch
     added_by: Jacob Chapel
     created_at: 2026-05-25T02:58:16.792Z
+  - _ulid: 01KSEQ8EB7JE7KWZZ16HDJF3VB
+    text: Add a reviewer-oriented changed-file lint gate or script that compares against the review base
+      and records clean evidence when full npm run lint has pre-existing failures.
+    tags:
+      - reflection
+      - review-gate
+      - lint
+    added_by: Jacob Chapel
+    created_at: 2026-05-25T04:45:58.503Z
