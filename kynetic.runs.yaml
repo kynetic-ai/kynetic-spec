@@ -54490,7 +54490,7 @@ runs:
     started_at: 2026-05-25T17:33:28.762Z
     completed_at: 2026-05-25T17:35:25.755Z
   - _ulid: 01KSG6SBPP6VBGFKQTSVXWMZ9K
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -54539,7 +54539,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-25T18:38:33.911Z
-        completed_at: 2026-05-25T18:38:33.911Z
+        completed_at: 2026-05-25T18:38:48.892Z
+        notes: Captured friction observation @01KSG6X7 for detached reviewer merge helper behavior when a
+          suitable clean target worktree exists only as detached HEAD. No success observation
+          captured to keep reflection volume low.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-25T18:36:35.926Z
+    completed_at: 2026-05-25T18:38:48.892Z
