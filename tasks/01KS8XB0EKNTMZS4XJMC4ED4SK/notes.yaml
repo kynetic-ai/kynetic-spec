@@ -1,1 +1,22 @@
-notes: []
+notes:
+  - _ulid: 01KSEPMJTGX82G546PTKWV3CKE
+    content: "Approach: mirror plan-resource patterns onto reviews. (1) Add
+      src/parser/review-resource-manager.ts wrapping entity-local-resources helpers
+      (add/list/get/remove + resolveReviewResource). (2) Extend src/cli/commands/review.ts with
+      'resource add/list/get/remove' subcommands using exact contract from task description:
+      --id/--path required, --replace for collisions, --force/non-interactive remove rules, error
+      codes (review_not_found, source_file_missing, etc), exit codes per trait-semantic-exit-codes.
+      (3) Add review resource routes to packages/daemon/src/routes/reviews.ts: GET list, GET single,
+      GET bytes (X-Kspec-Resource-Sha256 header), POST multipart create/replace, DELETE; exact
+      201/200/400/404/409 mapping. (4) Extend src/export/json.ts: add 'reviews' field to
+      KspecSnapshot, exporting bounded review metadata + resource metadata with exported_path; when
+      output is a file, copy resource files to <output-dir>/assets/resources/review/<ulid>/... using
+      copyResourceForStaticExport. (5) Add Resources section to
+      packages/web-ui/src/routes/reviews/[id]/+page.svelte with image preview / text preview /
+      download per content-type, using new fetchReviewResource(s) helpers in api.ts and
+      api-static.ts (static mode reads exported_path from snapshot). All operations reuse
+      src/parser/entity-local-resources.ts helpers (no reimplementation of hashing, content-type,
+      path-safety, etc)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-25T04:35:07.728Z
