@@ -234605,6 +234605,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-25T19:59:03.789Z
+      - _ulid: 01KSGCA2WTMWCEJ98CFPZXJE42
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSGBD5NQB0J5VRCQJAF2XK0N
+        timestamp: 2026-05-25T20:13:06.842Z
     examined_commit: 7650c9f1b4f6a0a74911ebf8f80489f53e3443f8
     external_links: []
     lifecycle_state: closed
@@ -234633,6 +234639,13 @@ reviews:
               APIs, or add the project-approved inline exception only if these reads are
               intentionally inspecting test-generated output.
             created_at: 2026-05-25T19:57:19.416Z
+          - _ulid: 01KSGCA0TFWGSMRAKM36XXND46
+            author: "@claude"
+            body: "Fixed: replaced the 5 raw `fs.readFile(resources.yaml)` reads with `listReviewResources(ctx,
+              ref)` calls so the assertions exercise the same loader the CLI/daemon use. Removed the
+              now-unused `yaml` import. Behavior asserted is unchanged (manifest entry count, ids,
+              paths) but routed through the public manager API."
+            created_at: 2026-05-25T20:13:04.719Z
         kind: blocker
       - _ulid: 01KSGBDH95XE7D2WZCS36DQGHV
         anchor:
@@ -234679,5 +234692,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-25T19:59:03.789Z
     created_at: 2026-05-25T19:46:22.778Z
-    updated_at: 2026-05-25T19:59:03.789Z
+    updated_at: 2026-05-25T20:13:04.719Z
     notes: []
