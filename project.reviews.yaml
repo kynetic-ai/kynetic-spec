@@ -232308,6 +232308,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-25T08:01:53.336Z
+      - _ulid: 01KSF2PYD82NAKYRBVXT7N289X
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSF2PW9RDYC6EQ6E8KQAGAY3
+        timestamp: 2026-05-25T08:06:08.040Z
     examined_commit: cec6e309c6730167415e73bd396a8700ef4d0030
     external_links: []
     lifecycle_state: open
@@ -232317,8 +232324,33 @@ reviews:
       content_hash: ""
       ref: "@01KS8XAZQ5478RV2AVKG8MNB0S"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KSF2PW9RDYC6EQ6E8KQAGAY3
+        anchor:
+          type: code
+          commit: cec6e309c6730167415e73bd396a8700ef4d0030
+          line_end: 150
+          line_start: 149
+          path: src/parser/task-resource-resolver.ts
+          side: head
+        entries:
+          - _ulid: 01KSF2PW9S8RQZVK4CKARJCQ5W
+            author: Jacob Chapel
+            body: 'MUST-FIX: materialized task-owned resources are recorded with the task slug ref, but the
+              task-owned resolver only accepts owner_ref equal to task._ulid. `plan derive
+              --materialize-resources` calls `materializePlanResourcesForTask` with
+              `taskCanonicalRef: canonicalRef(created)`, which is usually the derived task slug. The
+              resolver then returns null at this line for that same task, so `task get --json`
+              reports the copied task-owned resource as `unresolved` instead of `present`. I
+              reproduced this via the CLI: derive a task with `--materialize-resources`, then `task
+              get @implement-shot-view-mat --json` produced `resource_refs[0].owner_ref =
+              "@implement-shot-view-mat"` and `resolved_resources[0].status = "unresolved"` with
+              message `Owning task @implement-shot-view-mat could not be located`. This breaks the
+              materialized-copy contract because the task reference points at a task-owned copy that
+              consumers cannot resolve.'
+            created_at: 2026-05-25T08:06:05.881Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-25T08:01:36.563Z
-    updated_at: 2026-05-25T08:01:51.584Z
+    updated_at: 2026-05-25T08:06:05.881Z
     notes: []
