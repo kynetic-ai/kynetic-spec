@@ -53496,7 +53496,7 @@ runs:
     completed_at: 2026-05-25T05:48:43.108Z
   - _ulid: 01KSEWB8SETBQ1R0C5C1S4QK11
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -53512,7 +53512,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-25T06:16:11.928Z
-        completed_at: 2026-05-25T06:16:11.928Z
+        completed_at: 2026-05-25T06:16:33.367Z
+        notes: "Friction points: the resource safety contract has a read resolver and the plan import path
+          now has bespoke lstat/realpath containment, but plan resource add/remove still used direct
+          path.join plus fs.copyFile/fs.rm. That forced manual adversarial reproduction across
+          write/delete paths to find a class of bug that a shared write/delete-safe resource path
+          helper could prevent. Secondary friction: npm run lint with path arguments still scanned
+          broader repo defaults and produced unrelated pre-existing errors; this is already tracked
+          by observation @01KQ133T6, so no duplicate capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-25T06:16:33.367Z
+        completed_at: 2026-05-25T06:16:33.367Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-25T06:14:53.999Z
