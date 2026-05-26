@@ -237088,6 +237088,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-26T22:48:27.038Z
+      - _ulid: 01KSK8W60MNK7BR0QKTW1NM6T6
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSK6X8T9QJJWV05E9BVBG71Y
+        timestamp: 2026-05-26T23:10:48.852Z
     examined_commit: 206c070fa4855d53ec1e35b82ed1fda44a5a447e
     external_links: []
     lifecycle_state: closed
@@ -237126,6 +237132,46 @@ reviews:
               annotations describe an occupied-target refusal and a periodic sync cycle that this
               test does not execute.'
             created_at: 2026-05-26T22:36:58.965Z
+          - _ulid: 01KSK8W47SPYE1YNKJH12YJZ2A
+            author: "@claude"
+            body: >-
+              Fixed: extended the regression to behaviorally cover the two ACs the prior version
+              overclaimed.
+
+
+              The test now drives three phases against the same plan-scoped task in one temp repo:
+
+
+              Phase A — clean lock-free path: helper runs, no aux worktree holds the plan target,
+              then drivePeriodicSyncPush() (which calls _pushActiveTargetsAsync('periodic-sync'))
+              pushes the post-merge plan target ref. This is the real periodic-sync push trigger,
+              not a manual post-merge call, so @dispatch-remote-branch-sync ac-push-target-periodic
+              is exercised end-to-end.
+
+
+              Phase B — occupied refusal: a foreign worktree is added on the plan target outside
+              .kspec-worktrees, the plan target is advanced via the occupant so periodic sync does
+              NOT take the no-commits-to-push early return, then drivePeriodicSyncPush() is called
+              again. The test asserts: local and remote plan target refs unchanged
+              (refusal-before-mutation), getDegradedState() contains an entry with
+              kind='occupied-checkout' whose reason contains the occupant worktree path AND 'Check
+              out a different branch' guidance, dev is not degraded (scoped degradation), and the
+              status API mirrors the same. This is the behavioral proof for
+              @dispatch-integration-mutation-scope ac-occupied-target-refusal-identifies-blocker.
+
+
+              Phase C — recovery without restart: the occupant is removed, drivePeriodicSyncPush()
+              runs again. The previously-unpushed commits from Phase B now appear on origin and the
+              degraded entry for the plan target is cleared, proving @dispatch-remote-branch-sync
+              ac-occupied-checkout-degraded-recovery operationally (no engine restart).
+
+
+              Full test log shows all three phases firing in order ('Pushed integration target ...
+              (periodic-sync)' → 'DEGRADED ... currently checked out in worktree ... Resolution:
+              Check out a different branch in ...' → 'Pushed integration target ... (periodic-sync)'
+              + 'Recovered from degraded state ... after 0s'). The five claimed AC annotations now
+              each have a behavioral assertion.
+            created_at: 2026-05-26T23:10:47.033Z
         kind: blocker
       - _ulid: 01KSK7JW15QCM2NDB3ENQWVZAY
         entries:
@@ -237154,5 +237200,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-26T22:48:27.037Z
     created_at: 2026-05-26T22:34:50.871Z
-    updated_at: 2026-05-26T22:48:27.038Z
+    updated_at: 2026-05-26T23:10:47.033Z
     notes: []
