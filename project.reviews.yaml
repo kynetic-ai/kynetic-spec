@@ -235279,6 +235279,18 @@ reviews:
         runner: manual
         created_at: 2026-05-26T16:55:51.846Z
         completed_at: 2026-05-26T16:55:51.846Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Task order is spec update, then red tests, then implementation, then migration/idempotence
+          coverage, then final gates. Migration/smoke tests are constrained to temp projects,
+          fixtures, or disposable clones and forbid live self-hosting repos.
+        name: Dependency ordering and safety
+        required: true
+        runner: manual
+        created_at: 2026-05-26T16:56:03.227Z
+        completed_at: 2026-05-26T16:56:03.227Z
     events:
       - _ulid: 01KSJKAX130SCB5XSA58RTPPJM
         actor: Jacob Chapel
@@ -235327,6 +235339,13 @@ reviews:
           status: fail
           name: Mutating path coverage
         timestamp: 2026-05-26T16:55:53.799Z
+      - _ulid: 01KSJKE17HAGDJ9EXRHAFWRQYH
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Dependency ordering and safety
+        timestamp: 2026-05-26T16:56:05.105Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -235368,5 +235387,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-26T16:54:22.500Z
-    updated_at: 2026-05-26T16:55:51.846Z
+    updated_at: 2026-05-26T16:56:03.227Z
     notes: []
