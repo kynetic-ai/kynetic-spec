@@ -236987,6 +236987,12 @@ reviews:
           kind: blocker
           thread_ulid: 01KSK6X8T9QJJWV05E9BVBG71Y
         timestamp: 2026-05-26T22:36:29.599Z
+      - _ulid: 01KSK6Y9QPE40XN0W7R1R2XM1B
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSK6X8T9QJJWV05E9BVBG71Y
+        timestamp: 2026-05-26T22:37:01.046Z
     examined_commit: 206c070fa4855d53ec1e35b82ed1fda44a5a447e
     external_links: []
     lifecycle_state: open
@@ -237015,8 +237021,18 @@ reviews:
               by this test. Either extend the regression to exercise those scenarios or change the
               annotations to ACs actually covered by this clean manual_merge push path."
             created_at: 2026-05-26T22:36:27.337Z
+          - _ulid: 01KSK6Y7PNPGQG03GV79XPJ6YB
+            author: Jacob Chapel
+            body: 'Clarification: the omitted identifiers in the previous entry are
+              _pushIntegrationTargetAsync(planTarget, "post-merge"),
+              @dispatch-integration-mutation-scope ac-occupied-target-refusal-identifies-blocker,
+              and @dispatch-remote-branch-sync ac-push-target-periodic. The finding is that the
+              regression proves the clean lock-free manual_merge push path, but those two
+              annotations describe an occupied-target refusal and a periodic sync cycle that this
+              test does not execute.'
+            created_at: 2026-05-26T22:36:58.965Z
         kind: blocker
     verdicts: []
     created_at: 2026-05-26T22:34:50.871Z
-    updated_at: 2026-05-26T22:36:27.337Z
+    updated_at: 2026-05-26T22:36:58.965Z
     notes: []
