@@ -8465,7 +8465,7 @@ workspaces:
         head: 32d374363549d45f4edb1d067c9d97307e9b7f2d
         last_seen_at: 2026-05-26T18:19:49.999Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-align-merge-helper-branch-lock-specs-01ksjnvp
-  - active_role: null
+  - active_role: worker
     base_branch_point: 32d374363549d45f4edb1d067c9d97307e9b7f2d
     bootstrap:
       status: succeeded
@@ -8792,7 +8792,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-26T18:35:12.619Z
+      updated_at: 2026-05-26T18:35:40.860Z
     integration:
       status: pending
       detail: null
@@ -8801,16 +8801,16 @@ workspaces:
       target_branch: dev
       target_commit: 32d374363549d45f4edb1d067c9d97307e9b7f2d
       updated_at: 2026-05-26T18:35:12.619Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KSJNVPDXB0PGNGQKXC5CXF4K"
     task_slug: task-rework-detached-reviewer-merge-helper-ephemeral-target
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-05-26T18:35:12.619Z
+      last_active_at: 2026-05-26T18:35:40.860Z
+      last_reconciled_at: 2026-05-26T18:35:40.860Z
       created_at: 2026-05-26T18:35:12.619Z
-      updated_at: 2026-05-26T18:35:39.917Z
+      updated_at: 2026-05-26T18:35:40.860Z
     workspace_id: dispatch-workspace-01KSJNVPDXB0PGNGQKXC5CXF4K
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
