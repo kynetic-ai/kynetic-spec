@@ -54818,9 +54818,21 @@ runs:
     completed_at: 2026-05-26T18:36:38.619Z
   - _ulid: 01KSJXK6Y8MDZJC31HZ8KMQ72V
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-26T19:53:40.552Z
+        completed_at: 2026-05-26T19:55:23.858Z
+        notes: "Worked well: the kspec review record gave a clean gate for approval, with required checks
+          and an evidence log tied to the reviewed snapshot. Running the actual detached merge
+          helper after approval provided production-path validation of the new occupied-target
+          refusal behavior in addition to the behavioral tests."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-26T19:55:23.858Z
+        completed_at: 2026-05-26T19:55:23.858Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-26T19:53:40.552Z
