@@ -51562,8 +51562,8 @@ plans:
         spec_ref: "@detached-reviewer-merge-helper"
         description: |
           What:
-          - Update the existing @detached-reviewer-merge-helper contract so the supported manual_merge helper no longer requires a persistent worktree to have the integration target branch checked out before the helper runs.
-          - Replace or supersede @detached-reviewer-merge-helper ac-occupied-target-clean-refresh with the following final behavior:
+          - Update the existing @detached-reviewer-merge-helper description so it says the helper keeps the integration branch authoritative by using helper-owned temporary merge state, not by refreshing a persistent occupied target worktree.
+          - Replace @detached-reviewer-merge-helper ac-occupied-target-clean-refresh with the following final behavior; do not keep the old refresh semantics under a different ID:
 
             AC id: ac-helper-uses-ephemeral-target-worktree
             Given: A reviewer runs the supported detached merge helper and the integration target branch is not checked out in any non-helper worktree.
@@ -51578,10 +51578,17 @@ plans:
             AC id: ac-helper-occupied-target-refuses-with-free-branch-guidance
             Given: The integration target branch is already checked out in a non-helper worktree before the detached merge helper runs.
             When: The helper cannot safely take exclusive ownership of the target branch for its temporary merge worktree.
-            Then: The helper refuses before moving refs and reports guidance to free or detach that existing checkout; it does not instruct the reviewer to check out the integration target in another auxiliary worktree.
+            Then: The helper refuses before moving refs, identifies the blocking worktree, and reports guidance to free or detach that existing checkout without instructing the reviewer to check out the integration target in another auxiliary worktree.
 
-          - Keep @detached-reviewer-merge-helper ac-helper-no-op-merge, ac-helper-refuses-dirty-target, and ac-helper-safe-conflict-exit semantics, but reword them if needed so they apply to the helper-owned temporary worktree and to pre-existing occupied-target refusal.
-          - Add this AC to @dispatch-integration-mutation-scope:
+          - Rewrite @detached-reviewer-merge-helper ac-helper-refuses-dirty-target so it applies to dirty or staged drift in a pre-existing occupied target checkout and preserves the same refusal-before-ref-move behavior.
+          - Rewrite @detached-reviewer-merge-helper ac-helper-safe-conflict-exit so conflict cleanup is defined in terms of aborting/removing the helper-owned temporary target worktree, not leaving an occupied integration worktree refreshed.
+          - Keep @detached-reviewer-merge-helper ac-helper-no-op-merge semantics, explicitly noting that no persistent target worktree is created or dirtied on the no-op path.
+          - Add these ACs to @dispatch-integration-mutation-scope:
+
+            AC id: ac-occupied-target-refusal-identifies-blocker
+            Given: Dispatch is running from a checkout that does not itself have the integration target branch checked out, and another worktree has that target branch checked out.
+            When: Dispatch attempts an integration-target sync or push for that branch.
+            Then: Dispatch refuses before moving refs and reports the blocking worktree path with guidance to free or detach that checkout.
 
             AC id: ac-auxiliary-worktrees-do-not-hold-target-locks
             Given: Dispatch uses worker, reviewer, helper, or plan-scoped auxiliary worktrees while the dispatch root is not checked out on a specific integration target branch.
@@ -51599,7 +51606,8 @@ plans:
           The existing spec already says reviewer guidance must not tell reviewers to check out the integration branch manually, but the helper script itself emits recovery text that requires exactly that. The spec also assumes an occupied target worktree can be refreshed, which conflicts with the dispatch root's safety guard for plan integration targets. These AC updates make exclusive branch-lock ownership explicit.
 
           How:
-          - Use `kspec item ac add` for the new ACs and `kspec item ac set`/equivalent item edit path for any replacement wording needed on the existing helper AC.
+          - Use `kspec item ac add` for the new ACs and `kspec item ac set`/equivalent item edit path for replacement wording on the existing helper ACs.
+          - Ensure no final helper AC still promises to refresh a persistent occupied target worktree after the target ref moves.
           - Set the touched specs to implementation `in_progress` with `--no-cascade` unless the implementation and regression task lands in the same change.
           - Verify `kspec item get @detached-reviewer-merge-helper`, `kspec item get @dispatch-integration-mutation-scope`, and `kspec item get @dispatch-remote-branch-sync` show the intended ACs exactly once.
 
@@ -51609,7 +51617,7 @@ plans:
           - kspec item get @dispatch-remote-branch-sync
           - kspec validate --refs --warnings-ok
 
-          Covers: @detached-reviewer-merge-helper ac-helper-uses-ephemeral-target-worktree, ac-helper-leaves-no-target-branch-lock, ac-helper-occupied-target-refuses-with-free-branch-guidance; @dispatch-integration-mutation-scope ac-auxiliary-worktrees-do-not-hold-target-locks; @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery
+          Covers: @detached-reviewer-merge-helper ac-helper-uses-ephemeral-target-worktree, ac-helper-leaves-no-target-branch-lock, ac-helper-occupied-target-refuses-with-free-branch-guidance; @dispatch-integration-mutation-scope ac-occupied-target-refusal-identifies-blocker, ac-auxiliary-worktrees-do-not-hold-target-locks; @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery
 
       - title: Rework detached reviewer merge helper to use an ephemeral target worktree
         slug: task-rework-detached-reviewer-merge-helper-ephemeral-target
@@ -51703,7 +51711,7 @@ plans:
           - npm run typecheck
           - kspec validate --refs --warnings-ok
 
-          Covers: @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery; @dispatch-integration-mutation-scope ac-4
+          Covers: @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery; @dispatch-integration-mutation-scope ac-occupied-target-refusal-identifies-blocker, ac-4
 
       - title: Add end-to-end plan-target lock regression for manual_merge dispatch
         slug: task-add-plan-target-lock-e2e-regression
@@ -51734,7 +51742,7 @@ plans:
           - kspec validate --alignment --warnings-ok
           - kspec validate --completeness --warnings-ok
 
-          Covers: @dispatch-integration-mutation-scope ac-auxiliary-worktrees-do-not-hold-target-locks; @dispatch-remote-branch-sync ac-push-target-periodic, ac-occupied-checkout-degraded-recovery; @detached-reviewer-merge-helper ac-helper-leaves-no-target-branch-lock
+          Covers: @dispatch-integration-mutation-scope ac-occupied-target-refusal-identifies-blocker, ac-auxiliary-worktrees-do-not-hold-target-locks; @dispatch-remote-branch-sync ac-push-target-periodic, ac-occupied-checkout-degraded-recovery; @detached-reviewer-merge-helper ac-helper-leaves-no-target-branch-lock
       ```
 
 
@@ -51755,21 +51763,29 @@ plans:
       - The helper should be conservative around pre-existing occupied target checkouts. A clean
       occupied checkout owned by a human or previous agent should not be silently detached or
       overwritten unless a later explicit product decision scopes that behavior. The safe first fix
-      is to refuse and say how to free the branch.
+      is to refuse, identify the blocking worktree, and say how to free the branch.
+
+      - No new @plan-branch-dispatch-target AC is needed for this plan: plan-branch target selection
+      already exists; this plan hardens the shared integration-target mutation and remote-sync
+      contracts that operate after a workspace has resolved its target branch.
 
       - Do all merge-helper and dispatch-regression testing in temp repos/fixtures. Do not run
       migration or destructive cleanup tests against `~/Projects/kynetic-spec` or
       `~/Projects/kynetic-spec-dispatch`.
     status: draft
     approved_at: null
-    branch: null
     derived_specs: []
     derived_tasks: []
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec-dispatch/plans/dispatch-merge-helper-target-lock-hardening.md
     created_at: 2026-05-23T22:15:42.585Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KSJM4NXR4XR4WB9YMEPP49A0
+        content: "Address pre-review audit: make occupied-target spec edits exact and add blocker-path
+          mutation-scope AC"
+        author: Jacob Chapel
+        created_at: 2026-05-26T17:08:27.192Z
   - _ulid: 01KSJK3N6GQMF1PF8BG5EJGCGR
     slugs:
       - plan-folder-backed-index-consistency-hardening
