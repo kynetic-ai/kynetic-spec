@@ -10429,18 +10429,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-add-plan-target-lock-e2e-regression/01ksjnvq
-    canonical_branch_head: 206c070fa4855d53ec1e35b82ed1fda44a5a447e
+    canonical_branch_head: 030317d1fa3d8fa0f11ef35a75c35a411a19c188
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-26T22:51:14.536Z
+      updated_at: 2026-05-26T23:12:10.322Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-26T22:51:42.538Z
+      updated_at: 2026-05-26T23:12:10.322Z
     integration:
       status: pending
       detail: null
@@ -10448,7 +10448,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 7dfb69d214bdce1440a22509b6c922a2c7c89690
-      updated_at: 2026-05-26T22:51:14.536Z
+      updated_at: 2026-05-26T23:12:10.322Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KSJNVQJ5NNXEJSFSFR5SRK6N"
@@ -10456,9 +10456,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-26T22:51:42.538Z
-      last_reconciled_at: 2026-05-26T22:51:42.538Z
+      last_reconciled_at: 2026-05-26T23:12:10.322Z
       created_at: 2026-05-26T22:05:21.779Z
-      updated_at: 2026-05-26T22:51:42.538Z
+      updated_at: 2026-05-26T23:12:10.322Z
     workspace_id: dispatch-workspace-01KSJNVQJ5NNXEJSFSFR5SRK6N
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
