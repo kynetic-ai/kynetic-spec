@@ -9229,7 +9229,7 @@ features:
                   refreshing a persistent occupied integration target worktree.
                 status:
                   maturity: draft
-                  implementation: in_progress
+                  implementation: implemented
                 depends_on: []
                 implements: []
                 relates_to: []
