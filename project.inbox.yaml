@@ -3794,3 +3794,17 @@ inbox:
       - review
     added_by: "@claude"
     created_at: 2026-05-25T23:18:41.378Z
+  - _ulid: 01KSJXQZ0AY8SAJ83QPAX5FWTF
+    text: "Update manual_merge detached reviewer role guidance: the prompt observed during
+      @task-rework-detached-reviewer-merge-helper-ephemeral-target still said the merge helper
+      handles occupied-worktree refresh automatically, but the new helper contract refuses occupied
+      integration-target checkouts and tells reviewers to free/detach the blocking checkout before
+      rerunning. Align the generated role guidance with the current helper behavior and add a
+      regression assertion for this wording."
+    tags:
+      - reflection
+      - dispatch
+      - merge-helper
+      - guidance
+    added_by: Jacob Chapel
+    created_at: 2026-05-26T19:56:16.267Z
