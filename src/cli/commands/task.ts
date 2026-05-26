@@ -787,15 +787,32 @@ export function registerTaskCommands(program: Command): void {
           // Activity is best-effort — don't fail task get if activity assembly fails
         }
 
+        // Resolve task resource_refs against owning entities so drift is
+        // visible on every consumer surface (CLI text, --json, agent
+        // context). The resolver is best-effort and returns an empty list
+        // when the task has no resource_refs.
+        // AC: @plan-resource-derivation-semantics-1 ac-resource-drift-is-visible
+        let projectedResources: ReturnType<
+          typeof import("../../parser/task-resource-resolver.js").projectResolvedTaskResources
+        > = [];
+        if (foundTask.resource_refs && foundTask.resource_refs.length > 0) {
+          const { resolveTaskResources, projectResolvedTaskResources } =
+            await import("../../parser/task-resource-resolver.js");
+          const resolved = await resolveTaskResources(ctx, foundTask);
+          projectedResources = projectResolvedTaskResources(resolved);
+        }
+
         // Build JSON output with inherited traits (AC: @trait-display ac-2)
         // Always include all notes in JSON output with superseded computed field
         // AC: @review-cli-task-linkage ac-1 — include resolved review summary in JSON
         // AC: @task-activity-timeline ac-4 — include activity in JSON output
+        // AC: @plan-resource-derivation-semantics-1 ac-resource-drift-is-visible — include resolved resources
         const jsonOutput = {
           ...foundTask,
           notes: annotateNotesWithSuperseded(foundTask.notes),
           ...(activeReview && { active_review: activeReview }),
           ...(activity.length > 0 && { activity }),
+          ...(projectedResources.length > 0 && { resolved_resources: projectedResources }),
           ...(inheritedTraits.length > 0 && {
             inherited_traits: inheritedTraits.map(({ trait, acs }) => ({
               ref: `@${trait.slug}`,
@@ -811,6 +828,7 @@ export function registerTaskCommands(program: Command): void {
             activeReview,
             activity,
             showFullActivity: options.activity,
+            resourceRefs: projectedResources,
           });
 
           // AC: @trait-display ac-3, ac-4, ac-5 - Show inherited AC per trait in labeled sections

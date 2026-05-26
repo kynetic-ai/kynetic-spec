@@ -12,11 +12,94 @@ release workflow before tagging.
 
 ### New or changed configuration
 
-- No new configuration keys.
+- **`kynetic: "1.2"` storage format.** Project manifests now declare
+  `kynetic: "1.2"`, `task_storage.format: split`, `plan_storage.format: folder`,
+  `review_storage.format: folder`, and `resource_storage.format: entity_scoped`.
+  `kspec init` writes these fields on new projects; `kspec upgrade` migrates
+  existing projects.
 
 ### Breaking changes
 
-- None.
+- **Folder-backed plan and review storage.** Plans now live in
+  `.kspec/plans/<plan-ulid>/` directories with `plan.md`, `plan.yaml`, optional
+  `notes.yaml`, `resources.yaml`, and `resources/`. Reviews live in
+  `.kspec/reviews/<review-ulid>/` directories with cohesive `review.yaml`,
+  `resources.yaml`, and `resources/`. The project-wide
+  `.kspec/project.plans.yaml` and `.kspec/project.reviews.yaml` files remain as
+  lean indexes (identity, lifecycle, summary fields, resource summaries) but no
+  longer inline plan markdown, review records, or resource bytes. Existing
+  projects must run `kspec upgrade` to migrate; commands and daemon routes that
+  need folder-backed plan, review, or resource data on an unmigrated project
+  fail with `entity_storage_incompatible`. See
+  [Upgrading kspec to a New Version](docs/guides/upgrading-kspec.md) and
+  [`entity_storage_incompatible` troubleshooting](docs/troubleshooting/entity-storage-incompatible.md).
+
+### Features & Additions
+
+- **Entity-scoped local resources.** Plans and reviews can own local files —
+  screenshots, PDFs, evidence logs — declared in a per-entity `resources.yaml`
+  with the fixed `ResourceMetadata` shape (`id`, `label`, `path`,
+  `content_type`, `bytes`, `sha256`, `git_commit`, `git_path`, `description`).
+  Authoring references use the `./resources/<relative-path>` form. Resource ids
+  match `[a-z0-9][a-z0-9._-]{0,127}`; paths must be POSIX-relative under the
+  entity's `resources/` directory.
+- **Plan resource CLI** — `kspec plan resource add/list/get/remove` attach,
+  inspect, and remove plan-owned local resources. `add` requires `--id` and
+  `--path`; replacement is opt-in via `--replace`. `remove` requires `--force`
+  in non-interactive contexts.
+- **Review resource CLI** — `kspec review resource add/list/get/remove` mirror
+  the plan resource commands for review-owned evidence files.
+- **Plan import with resources** — `kspec plan import` copies declared
+  resources from a sibling `resources.yaml` and `resources/` directory into the
+  plan's folder, and validates that `./resources/<rel>` markdown links resolve.
+  `kspec plan set --content-file` enforces the same resolution against the
+  existing plan's manifest.
+- **Plan derive resource references** — derived tasks receive versioned
+  `TaskResourceRef` entries pointing back at plan-owned resources by default,
+  carrying the content hash and git commit captured at derivation time. Use
+  `kspec plan derive --materialize-resources` to copy plan resource bytes into
+  each derived task's `.kspec/tasks/<task-ulid>/resources/plan/<plan-ulid>/`
+  tree with the id `plan-<resource-id>`.
+- **Daemon resource API** — `GET/POST/DELETE /api/plans/:ref/resources[/:id[/bytes]]`
+  and `GET/POST/DELETE /api/reviews/:ref/resources[/:id[/bytes]]` serve
+  resource metadata and bytes. `POST` accepts `multipart/form-data` with
+  `file`, `id`, `path`, optional `label`/`description`/`content_type`, and an
+  optional `replace` field accepting `"true"`/`"1"` or `"false"`/`"0"`. The
+  `/bytes` route sets `Content-Type`, `Content-Length`, and the resource's
+  `sha256` via an `X-Kspec-Resource-Sha256` response header.
+- **Static export resource layout** — exported plans and reviews copy resource
+  files to `assets/resources/plan/<plan-ulid>/<relative-path>` and
+  `assets/resources/review/<review-ulid>/<relative-path>`. Plan markdown links
+  are rewritten to point at the exported asset path so the offline UI works
+  without the daemon.
+- **Plan and review index rebuild** — `kspec plan rebuild-index` and
+  `kspec review rebuild-index` validate or repair the project-wide index
+  against the on-disk entity folders. `--dry-run` previews drift; `--repair`
+  rewrites the index from folders; `--repair --force` drops stale index
+  entries whose folders are missing. Exit codes are 0 (clean/repaired), 1
+  (drift detected), 2 (blocked by conflicts).
+- **`entity_storage_incompatible` daemon responses** — plan, review, and
+  resource routes return HTTP 409 with a structured envelope (top-level
+  `entity_storage_incompatible` discriminator plus domain-specific codes:
+  `legacy_plan_storage_removed`, `legacy_review_storage_removed`,
+  `missing_plan_folder_storage`, `missing_review_folder_storage`,
+  `partial_entity_storage_layout`) when the project is not on folder-backed
+  storage. The response body includes a `suggestion`, `domain`, and
+  `cache_domain` so clients can surface targeted recovery guidance.
+- **Upgrade rollback reference** — `kspec upgrade` and `kspec upgrade --dry-run`
+  now report the previous shadow commit (short SHA captured before any
+  mutation) so operators have a deterministic rollback point.
+
+### Documentation
+
+- New concept page: [Local Resources for Plans and Reviews](docs/concepts/local-resources.md).
+- New guide: [Working With Local Resources](docs/guides/working-with-local-resources.md).
+- New troubleshooting pages: [`entity_storage_incompatible`](docs/troubleshooting/entity-storage-incompatible.md)
+  and [Plan or Review Index Has Drifted](docs/troubleshooting/plan-or-review-index-drift.md).
+- Updated [Upgrading kspec to a New Version](docs/guides/upgrading-kspec.md)
+  with the 1.2 manifest fields, folder layout, and rollback procedure.
+- Updated [Importing and Approving a Plan](docs/guides/importing-and-approving-a-plan.md)
+  with `--materialize-resources` derivation guidance.
 
 ## v0.14.0
 

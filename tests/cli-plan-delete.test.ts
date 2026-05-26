@@ -13,6 +13,7 @@ import {
   setupTempFixtures,
   cleanupTempDir,
   createTempDir,
+  downgradeManifestToLegacyStorage,
   initGitRepo,
   kspec as kspecRun,
   kspecOutput as kspec,
@@ -603,7 +604,7 @@ const canRunShadowTests = (() => {
   }
 })();
 
-function setupShadowProject(projectDir: string): void {
+async function setupShadowProject(projectDir: string): Promise<void> {
   initGitRepo(projectDir);
   execSync('git commit --allow-empty -m "initial"', {
     cwd: projectDir,
@@ -615,6 +616,11 @@ function setupShadowProject(projectDir: string): void {
   if (result.exitCode !== 0) {
     throw new Error(`kspec init failed: ${result.stderr}`);
   }
+  // kspec init writes kynetic 1.2 with folder-backed plan/review/resource
+  // storage declared. The folder-backed storage managers that make those
+  // declarations functional are implemented by sibling tasks under the same
+  // plan; until they land, plan/review CRUD only works on a legacy manifest.
+  await downgradeManifestToLegacyStorage(projectDir);
 }
 
 function getShadowHeadSubject(projectDir: string): string {
@@ -630,7 +636,7 @@ describe("Integration: plan delete — shadow commit", () => {
 
   beforeEach(async () => {
     tempDir = await createTempDir("kspec-plan-delete-shadow-");
-    setupShadowProject(tempDir);
+    await setupShadowProject(tempDir);
   });
 
   afterEach(async () => {

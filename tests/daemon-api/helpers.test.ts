@@ -76,7 +76,73 @@ describe("setupInlineFixtures (traditional inline mode)", () => {
     expect(body.data).toHaveLength(0);
   });
 
-  it("accepts a legacy (kynetic 1.0) manifest with tasksFile for non-task routes", async () => {
+  // AC: @entity-folder-migration-and-compatibility-1 ac-new-projects-declare-folder-storage
+  // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
+  //   Folder-backed positive contract: setupInlineFixtures auto-materialises
+  //   `.kspec/reviews/<ulid>/review.yaml` shells when the manifest declares
+  //   `review_storage.format: folder`, so the partial-layout detector
+  //   accepts the layout and `/api/reviews/:id` serves the review data.
+  it("auto-materialises review folder shells when the manifest declares folder-backed review storage", async () => {
+    const reviewUlid = testUlid("RVFB", 1);
+
+    setupInlineFixtures(inlineDir, {
+      manifest: `kynetic: "1.2"
+task_storage:
+  format: split
+plan_storage:
+  format: folder
+review_storage:
+  format: folder
+resource_storage:
+  format: entity_scoped
+project:
+  name: Folder-Backed Test
+  version: "0.1.0"
+  status: draft
+includes:
+  - modules/test.yaml
+`,
+      reviews: `kynetic_reviews: "1.0"
+reviews:
+  - _ulid: "${reviewUlid}"
+    slugs:
+      - folder-backed-review
+    title: "Folder-backed review"
+    lifecycle_state: open
+    author: "@test"
+    subject:
+      type: plan
+      ref: "@plan-test"
+      shadow_commit: "abc123"
+      content_hash: "h"
+    verdicts: []
+    checks: []
+    threads: []
+    events: []
+    related_refs: []
+    created_at: "2026-01-01T00:00:00Z"
+    updated_at: "2026-01-01T00:00:00Z"
+`,
+    });
+
+    const { app: inlineApp } = createTestApp();
+    const response = await makeRequest(inlineApp, inlineDir, `/api/reviews/${reviewUlid}`);
+
+    expect(response.status).toBe(200);
+    const body = (await response.json()) as { data: { _ulid: string; title: string } };
+    expect(body.data._ulid).toBe(reviewUlid);
+    expect(body.data.title).toBe("Folder-backed review");
+  });
+
+  // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+  // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+  //   Negative contract: a legacy manifest (kynetic 1.0, no review_storage
+  //   declaration) is now refused at the daemon route entry with a
+  //   structured 409 carrying `legacy_review_storage_removed`. This replaces
+  //   the previous "legacy manifests still serve review data" assertion;
+  //   the manifest is still accepted by setupInlineFixtures (so the test
+  //   helper does not block its inputs), but the daemon route refuses it.
+  it("rejects a legacy (kynetic 1.0) manifest with a structured 409 on review routes", async () => {
     const reviewUlid = testUlid("RVLG", 1);
 
     setupInlineFixtures(inlineDir, {
@@ -116,10 +182,17 @@ reviews:
     const { app: inlineApp } = createTestApp();
     const response = await makeRequest(inlineApp, inlineDir, `/api/reviews/${reviewUlid}`);
 
-    expect(response.status).toBe(200);
-    const body = (await response.json()) as { data: { _ulid: string; title: string } };
-    expect(body.data._ulid).toBe(reviewUlid);
-    expect(body.data.title).toBe("Legacy review");
+    expect(response.status).toBe(409);
+    const body = (await response.json()) as {
+      error: string;
+      code: string;
+      domain: string;
+      suggestion?: string;
+    };
+    expect(body.error).toBe("entity_storage_incompatible");
+    expect(body.code).toBe("legacy_review_storage_removed");
+    expect(body.domain).toBe("reviews");
+    expect(body.suggestion).toContain("kspec upgrade");
   });
 
   it("seeds split-format tasks via splitTasks and exposes them through GET /api/tasks", async () => {

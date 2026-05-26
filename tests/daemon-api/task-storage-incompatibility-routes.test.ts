@@ -172,11 +172,18 @@ describe("Task storage incompatibility — non-tasks.ts routes", () => {
   });
 
   // AC: @api-contract ac-task-storage-incompatibility-conflict-status
-  it("GET /api/plans returns 409 with structured guidance", async () => {
+  // AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+  // /api/plans now installs the plan-storage gate at the route entry, so a
+  // legacy project surfaces `entity_storage_incompatible` (the plan-storage
+  // contract) BEFORE the handler attempts to load task data for progress
+  // computation. The 409 + structured-guidance contract is still satisfied,
+  // just under the plan-storage discriminator instead of task-storage.
+  it("GET /api/plans returns 409 with structured guidance (entity_storage discriminator)", async () => {
     const response = await request("/api/plans");
     expect(response.status).toBe(409);
-    const body = await response.json();
-    assertIsTaskStorageConflict(body);
+    const body = (await response.json()) as { error: string; suggestion?: string };
+    expect(body.error).toBe("entity_storage_incompatible");
+    expect(body.suggestion).toMatch(/kspec upgrade/i);
   });
 
   // AC: @api-contract ac-task-storage-incompatibility-conflict-status

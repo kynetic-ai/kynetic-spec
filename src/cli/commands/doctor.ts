@@ -134,6 +134,16 @@ function formatDoctorReport(report: DoctorReport): void {
       console.log();
     }
 
+    // Entity (plan/review/resource) storage section
+    // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+    if (report.entityStorage.checks.length > 0) {
+      console.log(chalk.bold.blue("Entity Storage"));
+      for (const check of report.entityStorage.checks) {
+        formatCheck(check);
+      }
+      console.log();
+    }
+
     // Daemon section
     // AC: @doctor-command ac-daemon-running, ac-daemon-not-running, ac-daemon-unreachable
     console.log(chalk.bold.blue("Daemon"));

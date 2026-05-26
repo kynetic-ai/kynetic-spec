@@ -91,6 +91,20 @@ export interface TaskStorageSection {
   kyneticVersion?: string;
 }
 
+/**
+ * Entity storage section of doctor report. Covers folder-backed plan, review,
+ * and entity-scoped local resource storage (kynetic 1.2+).
+ *
+ * AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+ */
+export interface EntityStorageSection {
+  checks: CheckResult[];
+  kyneticVersion?: string;
+  planFormat?: string;
+  reviewFormat?: string;
+  resourceFormat?: string;
+}
+
 export interface DoctorReport {
   /** Timestamp of report generation (ISO 8601) */
   generatedAt: string;
@@ -100,6 +114,8 @@ export interface DoctorReport {
   setup: SetupSection;
   /** Task storage status */
   taskStorage: TaskStorageSection;
+  /** Entity (plan/review/resource) storage status */
+  entityStorage: EntityStorageSection;
   /** Daemon status */
   daemon: DaemonSection;
   /** Overall health verdict */
@@ -144,6 +160,7 @@ export async function getDoctorReport(
     shadow: { initialized: false, checks: [] },
     setup: { checks: [] },
     taskStorage: { checks: [] },
+    entityStorage: { checks: [] },
     daemon: { checks: [] },
     overall: { healthy: false, errorCount: 0, warningCount: 0 },
   };
@@ -244,6 +261,10 @@ export async function getDoctorReport(
 
   // Build task storage section — check if project needs migration
   await buildTaskStorageSection(report.taskStorage, projectRoot);
+
+  // Build entity (plan/review/resource) storage section
+  // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+  await buildEntityStorageSection(report.entityStorage, projectRoot);
 
   // Build daemon section
   // AC: @doctor-command ac-daemon-running, ac-daemon-not-running, ac-daemon-unreachable
@@ -733,6 +754,78 @@ async function buildTaskStorageSection(
 }
 
 /**
+ * Build entity (plan/review/resource) storage section by reading the
+ * manifest and inspecting folder-storage declarations.
+ *
+ * AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+ */
+async function buildEntityStorageSection(
+  section: EntityStorageSection,
+  projectRoot: string,
+): Promise<void> {
+  const specDir = path.join(projectRoot, ".kspec");
+  const manifestPath = await findManifestInDir(specDir);
+  if (!manifestPath) return;
+
+  let manifest: Manifest | null = null;
+  try {
+    manifest = await readYamlFile<Manifest>(manifestPath);
+  } catch {
+    return;
+  }
+  if (!manifest) return;
+
+  const { buildManifestStorageReport } = await import("./entity-storage-compatibility.js");
+  const report = buildManifestStorageReport(manifest);
+
+  section.kyneticVersion = report.kynetic;
+  section.planFormat = report.planFormat;
+  section.reviewFormat = report.reviewFormat;
+  section.resourceFormat = report.resourceFormat;
+
+  const recordDomain = (
+    name: string,
+    format: string | undefined,
+    folderFormat: string,
+    strictErr: ReturnType<typeof buildManifestStorageReport>["strictPlanIncompatibility"],
+  ) => {
+    if (format === folderFormat) {
+      section.checks.push({
+        name,
+        severity: "ok",
+        message: `${name}: ${folderFormat}`,
+      });
+    } else if (strictErr) {
+      section.checks.push({
+        name,
+        severity: "warning",
+        message: strictErr.message,
+        guidance: strictErr.suggestion,
+      });
+    }
+  };
+
+  recordDomain(
+    "plan-storage-format",
+    report.planFormat,
+    "folder",
+    report.strictPlanIncompatibility,
+  );
+  recordDomain(
+    "review-storage-format",
+    report.reviewFormat,
+    "folder",
+    report.strictReviewIncompatibility,
+  );
+  recordDomain(
+    "resource-storage-format",
+    report.resourceFormat,
+    "entity_scoped",
+    report.strictResourceIncompatibility,
+  );
+}
+
+/**
  * Count errors across all sections
  */
 function countErrors(report: DoctorReport): number {
@@ -744,6 +837,9 @@ function countErrors(report: DoctorReport): number {
     if (check.severity === "error") count++;
   }
   for (const check of report.taskStorage.checks) {
+    if (check.severity === "error") count++;
+  }
+  for (const check of report.entityStorage.checks) {
     if (check.severity === "error") count++;
   }
   for (const check of report.daemon.checks) {
@@ -764,6 +860,9 @@ function countWarnings(report: DoctorReport): number {
     if (check.severity === "warning") count++;
   }
   for (const check of report.taskStorage.checks) {
+    if (check.severity === "warning") count++;
+  }
+  for (const check of report.entityStorage.checks) {
     if (check.severity === "warning") count++;
   }
   for (const check of report.daemon.checks) {

@@ -6,10 +6,12 @@
  */
 
 import * as fs from "node:fs/promises";
+import * as path from "node:path";
 import chalk from "chalk";
 import type { Command } from "commander";
 import {
   calculateExportStats,
+  copyReviewResourceAssets,
   formatBytes,
   generateHtmlExport,
   generateJsonSnapshot,
@@ -50,9 +52,21 @@ export function registerExportCommand(program: Command): void {
           info("Generating snapshot...");
         }
 
-        // Generate the snapshot
+        // Generate the snapshot.
+        //
         // AC: @gh-pages-export ac-1, ac-2, ac-3, ac-4, ac-5
-        const snapshot = await generateJsonSnapshot(options.includeValidation);
+        // AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
+        //     — when the JSON output is being written to a file, also copy
+        //     plan-owned resource files into a sibling
+        //     `assets/resources/plan/<ulid>/...` tree so the static UI can
+        //     resolve `./resources/<path>` references offline. JSON-to-stdout
+        //     and dry-run exports skip the copy and emit `exported_path`
+        //     pointers only.
+        const writesJsonFile = options.format === "json" && !!options.output && !options.dryRun;
+        const assetsOutputDir = writesJsonFile ? path.dirname(path.resolve(options.output!)) : null;
+        const snapshot = await generateJsonSnapshot(options.includeValidation, {
+          assetsOutputDir,
+        });
 
         // AC: @trait-dry-run ac-1, ac-2, ac-3 - Show preview without writing
         if (options.dryRun) {
@@ -136,7 +150,20 @@ export function registerExportCommand(program: Command): void {
         // Write or output
         if (options.output) {
           await fs.writeFile(options.output, content, "utf-8");
-          success(`Exported to ${options.output}`);
+          // AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+          // AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
+          //     — when writing to a file, copy review resource bytes to the
+          //     sibling asset tree so consumers loading the snapshot from disk
+          //     can resolve `exported_path` entries without a live daemon.
+          const exportRoot = path.dirname(path.resolve(options.output));
+          const copiedAssets = await copyReviewResourceAssets(snapshot, exportRoot);
+          if (copiedAssets.length > 0) {
+            success(
+              `Exported to ${options.output} (with ${copiedAssets.length} review resource asset${copiedAssets.length === 1 ? "" : "s"})`,
+            );
+          } else {
+            success(`Exported to ${options.output}`);
+          }
         } else {
           // JSON to stdout (no success message to keep output clean)
           console.log(content);

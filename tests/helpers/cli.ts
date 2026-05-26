@@ -427,6 +427,85 @@ export async function setupMultiDirFixtures(): Promise<string> {
 }
 
 /**
+ * Downgrade a `kspec init`-generated manifest so the monolithic plan/review
+ * storage manager remains functional for the duration of a test.
+ *
+ * `kspec init` writes `kynetic: "1.2"` with `plan_storage.format: folder`,
+ * `review_storage.format: folder`, and `resource_storage.format: entity_scoped`
+ * — declarations that block the monolithic plan/review managers via the
+ * `entity_storage_incompatible` gate. The folder-backed storage managers that
+ * make those declarations functional are implemented by sibling tasks under
+ * the same plan; until they land, integration tests that exercise
+ * plan/review CRUD must run against a legacy-format manifest.
+ *
+ * This helper rewrites the manifest in place to kynetic 1.1 and strips the
+ * folder/entity_scoped storage declarations, leaving the rest of the project
+ * setup (default module, includes, shadow worktree, etc.) untouched.
+ */
+export async function downgradeManifestToLegacyStorage(projectDir: string): Promise<void> {
+  const specDir = path.join(projectDir, ".kspec");
+  const manifestPath = await findManifestFileInDir(specDir);
+  if (!manifestPath) {
+    throw new Error(`downgradeManifestToLegacyStorage: no kspec manifest found under ${specDir}`);
+  }
+  const raw = await fs.readFile(manifestPath, "utf-8");
+  const data = yamlParse(raw) as Record<string, unknown> | null;
+  if (!data || typeof data !== "object") {
+    throw new Error(
+      `downgradeManifestToLegacyStorage: manifest at ${manifestPath} did not parse as an object`,
+    );
+  }
+  data.kynetic = "1.1";
+  delete data.plan_storage;
+  delete data.review_storage;
+  delete data.resource_storage;
+  await fs.writeFile(manifestPath, yamlStringify(data), "utf-8");
+}
+
+/**
+ * Locate the kspec manifest file inside a project's spec directory. Mirrors
+ * the priority + kynetic-field discovery used by the production parser
+ * (src/parser/yaml.ts) so the test helper finds either `kynetic.yaml`,
+ * `kynetic.spec.yaml`, or any `<slug>.yaml` that carries a `kynetic` field.
+ */
+async function findManifestFileInDir(specDir: string): Promise<string | null> {
+  for (const candidate of ["kynetic.yaml", "kynetic.spec.yaml"]) {
+    const filePath = path.join(specDir, candidate);
+    try {
+      await fs.access(filePath);
+      return filePath;
+    } catch {
+      // Not present, try next.
+    }
+  }
+  let entries: string[];
+  try {
+    entries = await fs.readdir(specDir);
+  } catch {
+    return null;
+  }
+  for (const entry of entries.toSorted()) {
+    if (!entry.endsWith(".yaml")) continue;
+    if (entry.endsWith(".tasks.yaml")) continue;
+    if (entry.endsWith(".inbox.yaml")) continue;
+    if (entry.endsWith(".plans.yaml")) continue;
+    if (entry.endsWith(".reviews.yaml")) continue;
+    if (entry.endsWith(".triage.yaml")) continue;
+    const filePath = path.join(specDir, entry);
+    try {
+      const raw = await fs.readFile(filePath, "utf-8");
+      const parsed = yamlParse(raw);
+      if (parsed && typeof parsed === "object" && "kynetic" in parsed) {
+        return filePath;
+      }
+    } catch {
+      // Skip unreadable / non-YAML candidates.
+    }
+  }
+  return null;
+}
+
+/**
  * Clean up a temp directory
  *
  * @param dir - Directory to remove

@@ -44,9 +44,21 @@ const TASK_ULID = testUlid("TASK", 6);
 let tempDir: string;
 let app: Elysia;
 
-const SPLIT_MANIFEST = `kynetic: "1.1"
+// AC: @entity-folder-migration-and-compatibility-1 ac-new-projects-declare-folder-storage
+// AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
+//   — kynetic 1.2 fixture with folder-backed plan/review/resource storage so
+//   the daemon's requireReviewFolderStorage gate passes. setupInlineFixtures
+//   auto-materialises matching `<dir>/reviews/<ulid>/review.yaml` shells so
+//   the partial-layout detector treats the layout as consistent.
+const SPLIT_MANIFEST = `kynetic: "1.2"
 task_storage:
   format: split
+plan_storage:
+  format: folder
+review_storage:
+  format: folder
+resource_storage:
+  format: entity_scoped
 project:
   name: Test Project
   version: "0.1.0"
@@ -753,10 +765,18 @@ describe("Review Verdict Task Consistency", () => {
 
   function setupConsistencyFixtures() {
     const consistSpecUlid = testUlid("CVSP", 1);
+    // AC: @entity-folder-migration-and-compatibility-1 ac-new-projects-declare-folder-storage
+    //   — folder-backed manifest so the daemon review route gate passes.
     setupInlineFixtures(tempDir, {
-      manifest: `kynetic: "1.1"
+      manifest: `kynetic: "1.2"
 task_storage:
   format: split
+plan_storage:
+  format: folder
+review_storage:
+  format: folder
+resource_storage:
+  format: entity_scoped
 project:
   name: Consistency Test
   version: "0.1.0"

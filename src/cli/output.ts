@@ -569,6 +569,23 @@ export interface FormatTaskDetailsOptions {
   activity?: ActivityEntry[];
   /** Show full activity timeline (default: last 10 entries) */
   showFullActivity?: boolean;
+  /**
+   * Resolved task resource references with drift status for the Resources
+   * section. Caller supplies them so the formatter never reaches into the
+   * filesystem to load owning manifests.
+   *
+   * AC: @plan-resource-derivation-semantics-1 ac-resource-drift-is-visible
+   */
+  resourceRefs?: Array<{
+    owner_type: "plan" | "task";
+    owner_ref: string;
+    id: string;
+    path: string;
+    status: "present" | "drift" | "missing" | "unresolved";
+    recorded_sha256: string;
+    current_sha256: string | null;
+    message: string;
+  }>;
 }
 
 /**
@@ -715,6 +732,30 @@ export function formatTaskDetails(
   }
   if (task.completed_at) {
     console.log(`${fieldLabels.completed} ${task.completed_at}`);
+  }
+
+  // Resources section — drift status comes from the resolved refs the caller
+  // computed against each owning entity's current manifest.
+  // AC: @plan-resource-derivation-semantics-1 ac-derived-task-keeps-plan-resource-reference
+  // AC: @plan-resource-derivation-semantics-1 ac-resource-drift-is-visible
+  if (options.resourceRefs && options.resourceRefs.length > 0) {
+    console.log(`\n${chalk.bold("─── Resources ───")}`);
+    for (const entry of options.resourceRefs) {
+      const statusLabel =
+        entry.status === "present"
+          ? chalk.green("OK")
+          : entry.status === "drift"
+            ? chalk.yellow("DRIFT")
+            : entry.status === "missing"
+              ? chalk.red("MISSING")
+              : chalk.red("UNRESOLVED");
+      console.log(
+        `  [${statusLabel}] ${entry.id}  (${entry.owner_type} ${entry.owner_ref}, ${entry.path})`,
+      );
+      if (entry.status !== "present") {
+        console.log(chalk.gray(`    ${entry.message}`));
+      }
+    }
   }
 
   // Show resolved spec information

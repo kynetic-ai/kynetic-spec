@@ -348,6 +348,41 @@ describe("WriteBuffer.flush()", () => {
 
     await expect(readTestOutput(filePath)).rejects.toThrow();
   });
+
+  // pendingDirCreations: empty directories must materialize on flush so
+  // callers like the plan/review migration can ship the
+  // `<entityDir>/resources/` shape even before any resource file exists.
+  it("flush() materializes empty directories recorded via createDirectory()", async () => {
+    const buf = new WriteBuffer(tempDir);
+    const emptyDir = path.join(tempDir, "plans", "PLNX", "resources");
+    buf.createDirectory(emptyDir);
+    await buf.flush();
+    const stat = await fs.stat(emptyDir);
+    expect(stat.isDirectory()).toBe(true);
+    expect(await fs.readdir(emptyDir)).toEqual([]);
+  });
+
+  // pendingDirCreations participates in the buffer's atomicity contract:
+  // a discarded buffer must NOT create the requested directory.
+  it("discard() does not create directories recorded via createDirectory()", async () => {
+    const buf = new WriteBuffer(tempDir);
+    const emptyDir = path.join(tempDir, "reviews", "RVNX", "resources");
+    buf.createDirectory(emptyDir);
+    buf.discard();
+    await expect(fs.stat(emptyDir)).rejects.toThrow();
+  });
+
+  // Paired create+remove of the same directory resolves to "removed" so
+  // the overlay precedence (delete wins) matches the flush behavior.
+  it("flush() does NOT create a directory that is also marked for removal", async () => {
+    const buf = new WriteBuffer(tempDir);
+    const dir = path.join(tempDir, "doomed");
+    await fs.mkdir(dir, { recursive: true });
+    buf.createDirectory(dir);
+    buf.deleteDirectory(dir);
+    await buf.flush();
+    await expect(fs.stat(dir)).rejects.toThrow();
+  });
 });
 
 // ── Buffer Scoping Tests ─────────────────────────────────────────────

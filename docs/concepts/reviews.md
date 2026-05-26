@@ -20,6 +20,8 @@ Within a review record, there are three main structures:
 
 **Checks** record the results of automated verification — test suites, linters, build steps. Like verdicts, checks are version-aware. A passing test suite from an old commit doesn't satisfy the gate for the current commit.
 
+A review can also own supporting files — screenshots demonstrating a bug, log captures from a failed run, evidence files a reviewer wants to attach to the record. These live alongside the review as [local resources](./local-resources.md), declared in the review's `resources.yaml` and resolvable through stable review-scoped URLs in the web UI and static export.
+
 ## How Review Gating Works
 
 The review's **disposition** — approved, changes requested, or pending — is computed from the combination of verdicts, checks, and threads:

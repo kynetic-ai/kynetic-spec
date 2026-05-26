@@ -122,6 +122,14 @@ export interface ErrorResponse {
    * envelope `meta.cache_status`, which only exposes "ready" | "loading".
    */
   cache_domain_state?: string;
+  /**
+   * Logical entity domain for storage-incompatibility responses
+   * ("plans" | "reviews" | "resources"). Set on entity-storage 409
+   * responses so clients can present domain-specific recovery UI.
+   *
+   * AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
+   */
+  domain?: string;
 }
 
 /**
@@ -330,6 +338,44 @@ export interface Observation {
 }
 
 /**
+ * Plan-owned resource metadata returned by the daemon API.
+ *
+ * Exact mirror of `ResourceMetadata` from `src/schema/resources.ts` — strict
+ * 9-field shape with no embedded URLs. Safe fetch URLs are exposed outside
+ * the metadata object via `PlanDetail.resources_base_url` (consumers
+ * construct `${base}/${encodeURIComponent(id)}/bytes`), keeping the
+ * resource metadata shape identical across CLI, API, and static export
+ * surfaces.
+ *
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+ */
+export interface PlanResourceMetadata {
+  id: string;
+  label: string | null;
+  path: string;
+  content_type: string;
+  bytes: number;
+  sha256: string;
+  git_commit: string | null;
+  git_path: string | null;
+  description: string | null;
+}
+
+/**
+ * Bounded resource summary projected through the plan index — counts only,
+ * never resource bytes. Surfaced on list responses (including the cache-ready
+ * fast path) so resource-bearing plans are visible without loading the full
+ * per-plan resource manifest.
+ *
+ * AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+ */
+export interface PlanResourceSummary {
+  count: number;
+  total_bytes: number;
+}
+
+/**
  * Plan summary for list endpoints
  * AC: @ui-plans-view ac-1
  */
@@ -352,6 +398,16 @@ export interface PlanSummary {
     pending: number;
     blocked: number;
   };
+  /**
+   * Bounded resource summary from the plan index. Always populated on list
+   * responses — `{ count: 0, total_bytes: 0 }` when the plan has no
+   * declared resources — so list/dashboard views can show resource presence
+   * without loading the per-plan manifest.
+   *
+   * AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
+   * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+   */
+  resource_summary?: PlanResourceSummary;
 }
 
 /**
@@ -360,6 +416,18 @@ export interface PlanSummary {
  */
 export interface PlanDetail extends PlanSummary {
   content: string;
+  /** Declared plan-owned resources. Always populated for detail responses. */
+  resources: PlanResourceMetadata[];
+  /**
+   * Base URL prefix for per-resource fetches. Clients construct
+   * `${resources_base_url}/${encodeURIComponent(id)}/bytes` to retrieve a
+   * specific resource. Always populated for detail responses; static
+   * exports populate it with the asset-prefix equivalent so consumers can
+   * keep building URLs uniformly.
+   *
+   * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+   */
+  resources_base_url: string;
 }
 
 /**
@@ -491,6 +559,35 @@ export type ReviewSubject =
   | { type: "external"; url: string; external_id?: string; provider?: string };
 
 /**
+ * Metadata for one declared review resource. Mirrors the on-disk
+ * `ResourceMetadata` shape so the same envelope can be returned by every
+ * surface (CLI JSON, daemon JSON, static export).
+ *
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+ */
+export interface ReviewResource {
+  id: string;
+  label: string | null;
+  path: string;
+  content_type: string;
+  bytes: number;
+  sha256: string;
+  git_commit: string | null;
+  git_path: string | null;
+  description: string | null;
+  /**
+   * Snapshot-relative path used by static exports
+   * (`assets/resources/review/<ulid>/<relative-path>`). Present only on
+   * responses that come from the static export; absent on live daemon
+   * responses since the daemon serves resource bytes via the
+   * `/api/reviews/:ref/resources/:id/bytes` endpoint.
+   *
+   * AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
+   */
+  exported_path?: string;
+}
+
+/**
  * Full review detail for the detail endpoint
  * AC: @review-records-daemon-api ac-2
  * AC: @review-records-web-ui ac-2
@@ -528,6 +625,16 @@ export interface ReviewDetail {
   examined_commit: string | null;
   created_at: string;
   updated_at?: string | null;
+  /**
+   * Declared local resources for this review. Always present on responses
+   * returned by the daemon and static export. The order matches the
+   * on-disk `resources.yaml` manifest order so consumers can render a
+   * stable list without re-sorting.
+   *
+   * AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+   * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+   */
+  resources?: ReviewResource[];
 }
 
 export interface BatchSpecItemSummary {
@@ -827,6 +934,32 @@ export interface RefIndexResponse {
 }
 
 /**
+ * Bounded review projection included in the static export. Mirrors the
+ * lean index entry the daemon stores (subject summary, related refs,
+ * disposition, timestamps) plus the per-review resources array with
+ * `exported_path` pointers so the static UI can render evidence without
+ * a live daemon.
+ *
+ * AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+ * AC: @folder-backed-review-storage-1 ac-review-index-has-bounded-projection
+ */
+export interface ExportedReview {
+  _ulid: string;
+  slugs: string[];
+  title: string;
+  lifecycle_state: ReviewSummary["lifecycle_state"];
+  author: string;
+  subject: ReviewSubject;
+  related_refs: string[];
+  external_links: ReviewDetail["external_links"];
+  created_at: string;
+  updated_at: string | null;
+  examined_commit: string | null;
+  disposition: string;
+  resources: ReviewResource[];
+}
+
+/**
  * Full kspec snapshot structure
  */
 export interface KspecSnapshot {
@@ -837,6 +970,14 @@ export interface KspecSnapshot {
   items: ExportedItem[];
   inbox: InboxItem[];
   plans?: PlanDetail[];
+  /**
+   * Reviews exported as a bounded projection with linked resource metadata
+   * pointing at copied asset paths.
+   *
+   * AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
+   * AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
+   */
+  reviews?: ExportedReview[];
   triage?: TriageRecord[];
   session: SessionContext | null;
   observations: Observation[];
