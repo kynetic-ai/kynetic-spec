@@ -236145,6 +236145,22 @@ reviews:
         runner: npm
         created_at: 2026-05-26T18:33:38.885Z
         completed_at: 2026-05-26T18:33:38.885Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec-agents.md; task/spec output for @01KSJNVP0KASQ9XYQJKHMSC3WC,
+          @detached-reviewer-merge-helper, @dispatch-integration-mutation-scope,
+          @dispatch-remote-branch-sync. Commands: git status/log/diff, kspec task get, kspec review
+          for-task/add/open, kspec item get x3, kspec search, rg AC annotations, kspec validate
+          --refs --warnings-ok, npm test -- --fresh. Claims verified: atomic spec update and no old
+          helper refresh AC remained. Categories: spec correctness, duplication, stale wording,
+          validation, regression tests."
+        name: review evidence log
+        required: false
+        runner: codex
+        created_at: 2026-05-26T18:33:43.833Z
+        completed_at: 2026-05-26T18:33:43.833Z
     events:
       - _ulid: 01KSJR9NQBDFHBM6YH0X2NEK1T
         actor: Jacob Chapel
@@ -236180,6 +236196,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-05-26T18:33:40.667Z
+      - _ulid: 01KSJS0WCYRQ3Q2EGX9Q6T9GNT
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-26T18:33:45.630Z
     examined_commit: 32d374363549d45f4edb1d067c9d97307e9b7f2d
     external_links: []
     lifecycle_state: open
@@ -236192,5 +236215,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-26T18:21:05.131Z
-    updated_at: 2026-05-26T18:33:38.885Z
+    updated_at: 2026-05-26T18:33:43.833Z
     notes: []
