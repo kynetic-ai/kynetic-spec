@@ -54818,7 +54818,7 @@ runs:
     completed_at: 2026-05-26T18:36:38.619Z
   - _ulid: 01KSJXK6Y8MDZJC31HZ8KMQ72V
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -54841,7 +54841,22 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-26T19:55:33.551Z
-        completed_at: 2026-05-26T19:55:33.551Z
+        completed_at: 2026-05-26T19:55:43.071Z
+        notes: "Coverage checked with kspec search: 'occupied worktree refresh', 'occupied checkout', 'free
+          target branch', 'branch lock', 'detach existing checkout', 'merge helper occupied',
+          'occupied-target', 'occupied-worktree refresh automatically', 'helper handles no-op
+          detection', 'reviewer merge guidance', and 'manual_merge reviewer guidance'. Existing
+          tasks cover the branch-lock/degraded-state incident:
+          @task-clear-occupied-checkout-degraded-state-on-retry and
+          @task-add-plan-target-lock-e2e-regression. Existing
+          @task-add-detached-merge-helper-branch-lock-regressions covers helper/prompt regression
+          coverage broadly. No item specifically covers stale dispatch role wording that says
+          occupied-worktree refresh is automatic after the helper contract changed to
+          refusal/free-branch guidance."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-26T19:55:43.071Z
+        completed_at: 2026-05-26T19:55:43.071Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-26T19:53:40.552Z
