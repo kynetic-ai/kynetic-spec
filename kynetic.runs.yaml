@@ -54925,7 +54925,7 @@ runs:
     started_at: 2026-05-26T20:28:41.544Z
     completed_at: 2026-05-26T20:30:46.560Z
   - _ulid: 01KSK1PPVCQJ4CKP0P2Y1FDTMT
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -54975,10 +54975,14 @@ runs:
         notes: Skipped discussion because there are no new untracked improvement proposals. Existing tracked
           items already cover the session's friction points, so there is nothing new to ask the user
           to approve.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-26T21:07:26.415Z
-        completed_at: 2026-05-26T21:07:26.415Z
+        completed_at: 2026-05-26T21:07:34.442Z
+        notes: "Capture skipped: no approved new items and no untracked high-confidence observations.
+          Existing tracked refs cover the reflection outcomes: @01KR2YBHW, @01KQ1272, @01KPVTM6,
+          @01KKBD52, @01KRYTG7, and @01KSEQ88."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-26T21:05:29.452Z
+    completed_at: 2026-05-26T21:07:34.442Z
