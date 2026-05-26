@@ -114,5 +114,14 @@ tags:
   - merge-helper
   - worktree
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-05-26T17:39:55.518Z
 created_at: 2026-05-26T17:38:29.523Z
 todos: []
+automation: eligible
