@@ -54758,7 +54758,7 @@ runs:
     completed_at: 2026-05-25T23:36:53.519Z
   - _ulid: 01KSJS3P6EWQHQA8THT9HCXTMB
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -54773,7 +54773,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-26T18:35:46.953Z
-        completed_at: 2026-05-26T18:35:46.953Z
+        completed_at: 2026-05-26T18:35:55.148Z
+        notes: "Friction: in this detached reviewer snapshot, attempting direct shadow-state inspection with
+          git -C .kspec failed because no .kspec directory exists in the reviewer worktree. The
+          kspec CLI can still resolve task/spec/review state correctly, but the project instructions
+          describe .kspec as present and reviewers may waste time trying direct shadow git commands
+          before falling back to CLI. This is systemic for detached review snapshots if they
+          intentionally omit the shadow worktree."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-26T18:35:55.148Z
+        completed_at: 2026-05-26T18:35:55.148Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-26T18:35:17.582Z
