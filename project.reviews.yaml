@@ -236589,6 +236589,17 @@ reviews:
         runner: kspec
         created_at: 2026-05-26T21:02:41.484Z
         completed_at: 2026-05-26T21:02:41.484Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/detached-reviewer-merge.test.ts: 13 passed. npm test -- --fresh
+          tests/agent-dispatch-engine.test.ts -t 'manual merge': 1 passed, 134 skipped."
+        name: focused helper tests
+        required: true
+        runner: npm
+        created_at: 2026-05-26T21:02:52.527Z
+        completed_at: 2026-05-26T21:02:52.527Z
     events:
       - _ulid: 01KSK0QS8PK7323QC6N0N7J98W
         actor: Jacob Chapel
@@ -236610,6 +236621,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-26T21:02:43.281Z
+      - _ulid: 01KSK1HZ9JCA77CNXJTTCJ5N2W
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: focused helper tests
+        timestamp: 2026-05-26T21:02:54.259Z
     examined_commit: 4c77a68199db361e194cf02d88b77e331bd472d8
     external_links: []
     lifecycle_state: open
@@ -236622,5 +236640,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-26T20:48:36.118Z
-    updated_at: 2026-05-26T21:02:41.484Z
+    updated_at: 2026-05-26T21:02:52.527Z
     notes: []
