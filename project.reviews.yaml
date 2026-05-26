@@ -236106,3 +236106,29 @@ reviews:
     created_at: 2026-05-26T17:19:56.033Z
     updated_at: 2026-05-26T17:21:26.939Z
     notes: []
+  - _ulid: 01KSJR9NQBW005BCGV9GX2V3N7
+    slugs: []
+    title: Review branch-lock spec alignment
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KSJR9NQBDFHBM6YH0X2NEK1T
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-26T18:21:05.131Z
+    examined_commit: 32d374363549d45f4edb1d067c9d97307e9b7f2d
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KSJNVP0KASQ9XYQJKHMSC3WC"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-26T18:21:05.131Z
+    updated_at: null
+    notes: []
