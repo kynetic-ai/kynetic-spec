@@ -54818,7 +54818,7 @@ runs:
     completed_at: 2026-05-26T18:36:38.619Z
   - _ulid: 01KSJXK6Y8MDZJC31HZ8KMQ72V
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -54856,7 +54856,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-26T19:55:43.071Z
-        completed_at: 2026-05-26T19:55:43.071Z
+        completed_at: 2026-05-26T19:55:51.426Z
+        notes: "Proposal: capture one inbox item to update generated/manual_merge reviewer role guidance so
+          it describes the current helper behavior: no-op detection, conflict abort/removal,
+          dirty/occupied target refusal, and guidance to free/detach the existing checkout. Benefit:
+          reviewers will not expect occupied-worktree refresh when the helper correctly refuses an
+          occupied target. Scope: small to medium; likely prompt/template text plus a regression
+          assertion."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-26T19:55:51.426Z
+        completed_at: 2026-05-26T19:55:51.426Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-26T19:53:40.552Z
