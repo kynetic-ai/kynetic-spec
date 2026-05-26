@@ -1,1 +1,68 @@
-notes: []
+notes:
+  - _ulid: 01KSJR3E8MRV0V02TPHEMBNT83
+    content: >-
+      Spec updates landed via atomic batch (12 ops):
+
+
+      @detached-reviewer-merge-helper
+
+      - Rewrote description: helper now keeps target authoritative via helper-owned temporary merge
+      state (created/removed by the helper), not by refreshing a persistent occupied target
+      worktree.
+
+      - Removed ac-occupied-target-clean-refresh outright (no carry-over under a different ID).
+
+      - Added ac-helper-uses-ephemeral-target-worktree (free target -> internal temp worktree merge
+      + advance ref + remove temp).
+
+      - Added ac-helper-leaves-no-target-branch-lock (success, no-op, or conflict/error path -> no
+      helper/auxiliary worktree left checked out on target).
+
+      - Added ac-helper-occupied-target-refuses-with-free-branch-guidance (occupied target -> refuse
+      before refs move, name blocking worktree, guide to free/detach, no instruction to check out
+      target elsewhere).
+
+      - Rewrote ac-helper-refuses-dirty-target to scope it to dirty/staged drift in a pre-existing
+      occupied target checkout, preserving refusal-before-ref-move.
+
+      - Rewrote ac-helper-safe-conflict-exit to define conflict cleanup as abort + remove
+      helper-owned temp target worktree (no occupied integration worktree refreshed).
+
+      - Updated ac-helper-no-op-merge wording to explicitly forbid creating persistent target
+      worktree or dirtying any existing worktree on the no-op path.
+
+
+      @dispatch-integration-mutation-scope (set implementation in_progress with --no-cascade)
+
+      - Added ac-occupied-target-refusal-identifies-blocker.
+
+      - Added ac-auxiliary-worktrees-do-not-hold-target-locks.
+
+
+      @dispatch-remote-branch-sync
+
+      - Added ac-occupied-checkout-degraded-recovery.
+
+
+      Verification:
+
+      - kspec item get @detached-reviewer-merge-helper -> 7 ACs, no duplicates, no leftover
+      ac-occupied-target-clean-refresh, description rewritten.
+
+      - kspec item get @dispatch-integration-mutation-scope -> ac-1..ac-4 plus the two new ACs, no
+      duplicates.
+
+      - kspec item get @dispatch-remote-branch-sync -> ac-occupied-checkout-degraded-recovery
+      present.
+
+      - kspec validate --refs --warnings-ok -> passes (only unrelated pre-existing deprecated-spec
+      warnings).
+
+
+      Note on auto-cascade: kspec task start auto-synced @detached-reviewer-merge-helper from
+      implemented to in_progress before the batch ran. The batch then set
+      @dispatch-integration-mutation-scope to in_progress with --no-cascade.
+      @dispatch-remote-branch-sync was already in_progress.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-26T18:17:40.884Z
