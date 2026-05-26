@@ -9965,7 +9965,7 @@ workspaces:
         head: 4c77a68199db361e194cf02d88b77e331bd472d8
         last_seen_at: 2026-05-26T20:47:18.140Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-detached-merge-helper-branch-lock-regressions-01ksjnvp
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 7dfb69d214bdce1440a22509b6c922a2c7c89690
     bootstrap:
       status: succeeded
@@ -10438,7 +10438,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-26T22:32:57.651Z
+      updated_at: 2026-05-26T22:33:27.488Z
     integration:
       status: pending
       detail: null
@@ -10453,10 +10453,10 @@ workspaces:
     task_slug: task-add-plan-target-lock-e2e-regression
     timestamps:
       closed_at: null
-      last_active_at: 2026-05-26T22:05:51.454Z
-      last_reconciled_at: 2026-05-26T22:32:57.651Z
+      last_active_at: 2026-05-26T22:33:27.488Z
+      last_reconciled_at: 2026-05-26T22:33:27.488Z
       created_at: 2026-05-26T22:05:21.779Z
-      updated_at: 2026-05-26T22:33:24.051Z
+      updated_at: 2026-05-26T22:33:27.488Z
     workspace_id: dispatch-workspace-01KSJNVQJ5NNXEJSFSFR5SRK6N
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
