@@ -55140,7 +55140,7 @@ runs:
     completed_at: 2026-05-26T22:50:41.574Z
   - _ulid: 01KSK90ZVY7G21K8KDG8WWJPVJ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -55154,7 +55154,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-26T23:13:58.274Z
-        completed_at: 2026-05-26T23:13:58.274Z
+        completed_at: 2026-05-26T23:15:04.353Z
+        notes: "Identified candidates: (1) AC annotation overclaim — already covered by work-gates rule
+          'Tests that claim AC coverage at the wrong abstraction layer'; no new tracking needed. (2)
+          _pushIntegrationTargetAsync early-return when nothing to push — already documented in
+          dispatch.ts:1494-1506 comments; not a systemic friction. (3) kspec task note --message
+          rejection — one-off mistake, help text is clear. No high-confidence durable patterns to
+          capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-26T23:15:04.353Z
+        completed_at: 2026-05-26T23:15:04.353Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-26T23:13:26.399Z
