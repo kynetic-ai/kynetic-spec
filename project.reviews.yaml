@@ -235232,7 +235232,21 @@ reviews:
     slugs: []
     title: "Plan review: Folder-Backed Index Consistency Hardening"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Verified @trait-folder-backed-entity-1, @task-directory-storage, @task-index-file,
+          @task-atomic-writes, @folder-backed-plan-storage-1, @folder-backed-review-storage-1,
+          @trait-entity-scoped-local-resources-1, @single-command-version-upgrade, and
+          @task-data-manager. Existing Covers AC IDs resolve; proposed trait AC IDs are explicitly
+          added by the first task.
+        name: Existing refs and AC IDs
+        required: true
+        runner: kspec
+        created_at: 2026-05-26T16:54:46.733Z
+        completed_at: 2026-05-26T16:54:46.733Z
     events:
       - _ulid: 01KSJKAX130SCB5XSA58RTPPJM
         actor: Jacob Chapel
@@ -235240,6 +235254,13 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-05-26T16:54:22.500Z
+      - _ulid: 01KSJKBPQM5A12BQEKBYK90QZQ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Existing refs and AC IDs
+        timestamp: 2026-05-26T16:54:48.820Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -235252,5 +235273,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-26T16:54:22.500Z
-    updated_at: null
+    updated_at: 2026-05-26T16:54:46.733Z
     notes: []
