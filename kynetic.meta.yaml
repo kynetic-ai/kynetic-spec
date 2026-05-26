@@ -19702,6 +19702,17 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-05-25T18:46:07.212Z
+  - _ulid: 01KSJS5V3RBNG1N4VRARV8DG2T
+    type: friction
+    content: Detached reviewer snapshots may not expose a physical .kspec directory even though kspec
+      CLI state lookups work. Review guidance should make this explicit so agents avoid direct git
+      -C .kspec inspection and use kspec task/item/review commands for shadow state in detached
+      snapshots.
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KSJS3P"
+    created_at: 2026-05-26T18:36:28.152Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
