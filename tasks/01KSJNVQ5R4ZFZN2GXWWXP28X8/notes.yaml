@@ -44,3 +44,30 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-26T20:27:27.303Z
+  - _ulid: 01KSK1Q3ZCXCRA9G4XHQ27B5T9
+    content: >-
+      Fix cycle 1: addressed blocker on _enterDegradedState refusing to update existing entries. The
+      previous implementation early-returned if a branch was already degraded, so an
+      occupied-checkout entry kept its kind even when a later retry detected divergence — letting
+      the push path's 'kind === occupied-checkout => clear' escape hatch fire on a no-op push and
+      mask a hard failure.
+
+
+      Fix (src/agent-runtime/dispatch.ts): allow occupied-checkout entries to upgrade to a stricter
+      kind (divergence or other). Downgrades are refused (divergence/other stays put even if a later
+      mutation-scope refusal reports occupied-checkout). enteredAt is preserved across upgrades for
+      accurate recovery-duration tracking. A console.warn logs the kind transition.
+
+
+      Tests (tests/dispatch-degraded-state.test.ts): added two behavioral guards that reproduce the
+      reviewer probe and lock in the no-downgrade rule.
+
+
+      Also re-verified the prior occupied-checkout recovery ACs and the
+      divergence-degraded-stays-degraded conservative case — all 21 cases in
+      dispatch-degraded-state.test.ts pass. Full suite: 2580 suites / 9856 tests pass (5 skipped).
+      npm run typecheck clean. kspec validate --refs --warnings-ok exits 0 (only pre-existing
+      deprecated-reference warnings).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-26T21:05:42.892Z
