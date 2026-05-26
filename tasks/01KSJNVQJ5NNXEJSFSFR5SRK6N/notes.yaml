@@ -26,3 +26,24 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-26T22:48:29.619Z
+  - _ulid: 01KSK8Z3H1TCCYEK96E81NZ0HH
+    content: "Fix cycle 1: addressed the blocker on overclaimed AC annotations. Restructured the
+      regression into three explicit phases that each drive _pushActiveTargetsAsync('periodic-sync')
+      against the plan target. Phase A: helper merges, periodic sync pushes plan target ref (covers
+      ac-push-target-periodic clean path and ac-helper-leaves-no-target-branch-lock). Phase B:
+      manufactures a foreign worktree on the plan target, advances the target ref via that occupant
+      so the periodic-sync push path does not take the early-return, drives periodic sync, asserts
+      refusal-before-mutation on both local and remote plan target refs, asserts degraded state
+      entry with kind='occupied-checkout' whose reason contains the occupant worktree path and
+      'Check out a different branch' guidance, and asserts dev remains undegraded (covers
+      ac-occupied-target-refusal-identifies-blocker behaviorally). Phase C: removes occupant, drives
+      periodic sync again, asserts unpushed occupied-state commits land on origin and the degraded
+      entry is cleared without dispatch restart (covers ac-occupied-checkout-degraded-recovery
+      operationally). Also replaced the now-redundant manual
+      _pushIntegrationTargetAsync('post-merge') call with the periodic-sync driver. Verified: npm
+      test --fresh (9857 passed / 5 skipped / 0 failed, ~38min), npm run typecheck clean, kspec
+      validate --alignment/--completeness --warnings-ok shows only pre-existing warnings unrelated
+      to this file. Replied to and resolved both review threads with what changed and why."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-26T23:12:24.609Z
