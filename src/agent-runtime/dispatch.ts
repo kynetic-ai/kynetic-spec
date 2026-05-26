@@ -737,10 +737,25 @@ export type TargetSyncResult =
   | "diverged"
   | "unsafe_target";
 
+/**
+ * Classification of why an integration target is degraded.
+ * - `occupied-checkout`: Another worktree has the target branch checked out, blocking
+ *   the dispatch root from safely mutating the target. Recovers automatically once
+ *   the blocking worktree is removed and a subsequent sync or push succeeds (or no-ops).
+ * - `divergence`: Local and remote histories diverged; requires operator intervention.
+ *   Only a successful fast-forward sync proves recovery.
+ * - `other`: Other unsafe mutation states (missing ref, dirty checkout, ambiguous
+ *   surface). Recovery requires the next sync to fully succeed.
+ *
+ * AC: @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery
+ */
+export type DegradedTargetKind = "occupied-checkout" | "divergence" | "other";
+
 export interface DegradedTargetState {
   branch: string;
   reason: string;
   enteredAt: Date;
+  kind: DegradedTargetKind;
 }
 
 /**
@@ -952,7 +967,10 @@ export class DispatchEngine {
   // AC: @dispatch-remote-branch-sync ac-divergence-enters-degraded through ac-degraded-auto-recover
 
   /** Branch-scoped degraded targets. */
-  private _degradedTargets = new Map<string, { reason: string; enteredAt: Date }>();
+  private _degradedTargets = new Map<
+    string,
+    { reason: string; enteredAt: Date; kind: DegradedTargetKind }
+  >();
 
   constructor(options: DispatchEngineOptions) {
     this.projectDir = options.projectDir;
@@ -1463,6 +1481,7 @@ export class DispatchEngine {
    * AC: @dispatch-remote-branch-sync ac-push-target-periodic
    * AC: @dispatch-remote-branch-sync ac-target-push-serialization
    * AC: @dispatch-remote-branch-sync ac-push-non-fatal
+   * AC: @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery
    */
   private async _pushIntegrationTargetAsync(
     branch: string | undefined,
@@ -1472,8 +1491,15 @@ export class DispatchEngine {
     if (!targetBranch) {
       return;
     }
+    // Always re-evaluate occupied-checkout-degraded targets so the periodic sync
+    // can clear stale degraded state once the blocking worktree is released, even
+    // when no commits are waiting to push.
+    // AC: @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery
+    const existingDegraded = this._degradedTargets.get(targetBranch);
+    const isOccupiedCheckoutDegraded = existingDegraded?.kind === "occupied-checkout";
     if (
       trigger === "periodic-sync" &&
+      !isOccupiedCheckoutDegraded &&
       !(await integrationTargetNeedsPush(this.projectDir, targetBranch))
     ) {
       return;
@@ -1487,8 +1513,8 @@ export class DispatchEngine {
       try {
         await resolveDispatchIntegrationMutationScope(this.projectDir, targetBranch);
       } catch (err) {
-        const reason = this._formatUnsafeMutationScopeReason(err, targetBranch);
-        this._enterDegradedState(targetBranch, reason);
+        const { reason, kind } = this._classifyMutationScopeError(err, targetBranch);
+        this._enterDegradedState(targetBranch, reason, kind);
         console.warn(
           `[dispatch] Integration target push skipped for "${targetBranch}" (${trigger}): ${reason}`,
         );
@@ -1504,8 +1530,18 @@ export class DispatchEngine {
         console.warn(
           `[dispatch] Integration target push failed for "${targetBranch}" (${trigger}): ${result.error}`,
         );
-      } else if (result.pushed) {
+        return;
+      }
+      if (result.pushed) {
         console.log(`[dispatch] Pushed integration target "${targetBranch}" (${trigger})`);
+      }
+      // A successful push or a clean no-op (skipped=true) proves the occupied
+      // checkout that previously degraded this target has been released. Other
+      // degraded kinds (divergence, dirty checkout, missing ref) still require
+      // a successful sync to clear so we don't mask genuine hard failures.
+      // AC: @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery
+      if (this._degradedTargets.get(targetBranch)?.kind === "occupied-checkout") {
+        this._exitDegradedState(targetBranch);
       }
     } catch (err) {
       // AC: @dispatch-remote-branch-sync ac-push-non-fatal
@@ -3283,8 +3319,8 @@ export class DispatchEngine {
       try {
         mutationScope = await resolveDispatchIntegrationMutationScope(this.projectDir, baseBranch);
       } catch (err) {
-        const reason = this._formatUnsafeMutationScopeReason(err, baseBranch);
-        this._enterDegradedState(baseBranch, reason);
+        const { reason, kind } = this._classifyMutationScopeError(err, baseBranch);
+        this._enterDegradedState(baseBranch, reason, kind);
         return "unsafe_target";
       }
 
@@ -3344,7 +3380,7 @@ export class DispatchEngine {
         // AC: @dispatch-remote-branch-sync ac-divergence-enters-degraded
         // AC: @dispatch-remote-branch-sync ac-divergence-log-classification
         const reason = await this._classifyDivergence(stderr || stdout, baseBranch);
-        this._enterDegradedState(baseBranch, reason);
+        this._enterDegradedState(baseBranch, reason, "divergence");
         return "diverged";
       }
 
@@ -3373,7 +3409,18 @@ export class DispatchEngine {
   private async _syncAllActiveTargets(options: { staleOnly?: boolean } = {}): Promise<void> {
     const reviewerTargets = await this._activeReviewerTargets();
     for (const branch of this._resolveActiveTargets()) {
-      if (options.staleOnly && !this._isTargetSyncStale(branch)) {
+      // Always re-evaluate occupied-checkout-degraded targets so the periodic
+      // sync can clear stale degraded state once the blocking worktree is
+      // released. The staleness gate would otherwise pin the engine in degraded
+      // state until sync_interval elapsed.
+      // AC: @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery
+      const isOccupiedCheckoutDegraded =
+        this._degradedTargets.get(branch)?.kind === "occupied-checkout";
+      if (
+        options.staleOnly &&
+        !isOccupiedCheckoutDegraded &&
+        !this._isTargetSyncStale(branch)
+      ) {
         continue;
       }
       if (reviewerTargets.has(branch)) {
@@ -3483,18 +3530,44 @@ export class DispatchEngine {
   }
 
   /**
-   * Enter degraded state with a descriptive reason.
+   * Enter degraded state with a descriptive reason and classification.
    * AC: @dispatch-remote-branch-sync ac-divergence-enters-degraded
    * AC: @dispatch-remote-branch-sync ac-divergence-log-target
    * AC: @dispatch-remote-branch-sync ac-divergence-log-classification
    * AC: @dispatch-remote-branch-sync ac-divergence-log-resolution
    * AC: @dispatch-remote-branch-sync ac-degraded-status-broadcast
+   * AC: @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery
    */
-  private _enterDegradedState(branch: string, reason: string): void {
-    if (this._degradedTargets.has(branch)) return;
+  private _enterDegradedState(
+    branch: string,
+    reason: string,
+    kind: DegradedTargetKind = "other",
+  ): void {
+    const existing = this._degradedTargets.get(branch);
+    if (existing) {
+      // An occupied-checkout entry has the weakest exit condition: it can be
+      // cleared by a no-op push once the blocking worktree is released. If a
+      // later retry reveals a stricter failure (divergence or other unsafe
+      // state), upgrade the kind and reason so the no-op-push clear path can
+      // no longer fire against a stale classification. Other kinds keep their
+      // existing entry; we never downgrade strictness, and we preserve
+      // enteredAt so recovery duration tracking stays accurate.
+      // AC: @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery
+      if (existing.kind === "occupied-checkout" && kind !== "occupied-checkout") {
+        this._degradedTargets.set(branch, {
+          reason,
+          enteredAt: existing.enteredAt,
+          kind,
+        });
+        console.warn(
+          `[dispatch] DEGRADED ${branch} kind upgraded ${existing.kind} → ${kind}: ${reason}`,
+        );
+      }
+      return;
+    }
 
     const enteredAt = new Date();
-    this._degradedTargets.set(branch, { reason, enteredAt });
+    this._degradedTargets.set(branch, { reason, enteredAt, kind });
 
     console.warn(`[dispatch] DEGRADED ${branch}: ${reason}`);
 
@@ -3624,12 +3697,28 @@ export class DispatchEngine {
     }
   }
 
-  private _formatUnsafeMutationScopeReason(err: unknown, branch: string): string {
+  /**
+   * Classify a mutation-scope failure into a degraded reason and kind.
+   * Occupied-checkout failures are auto-recoverable once the blocking worktree
+   * is released; other unsafe states require a real sync/push to clear.
+   *
+   * AC: @dispatch-integration-mutation-scope ac-occupied-target-refusal-identifies-blocker
+   * AC: @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery
+   */
+  private _classifyMutationScopeError(
+    err: unknown,
+    branch: string,
+  ): { reason: string; kind: DegradedTargetKind } {
     if (err instanceof DispatchWorkspaceError) {
-      return `${err.message} Resolution: ${err.suggestion}`;
+      const reason = `${err.message} Resolution: ${err.suggestion}`;
+      const kind: DegradedTargetKind = err.code === "occupied-checkout" ? "occupied-checkout" : "other";
+      return { reason, kind };
     }
     const detail = err instanceof Error ? err.message : String(err);
-    return `Dispatch cannot determine a safe mutation surface for integration target "${branch}". Resolution: ${detail}`;
+    return {
+      reason: `Dispatch cannot determine a safe mutation surface for integration target "${branch}". Resolution: ${detail}`,
+      kind: "other",
+    };
   }
 
   /**
@@ -3656,6 +3745,7 @@ export class DispatchEngine {
       branch: string;
       reason: string;
       enteredAt: string;
+      kind: DegradedTargetKind;
     }>;
   } {
     const degraded = this._getDegradedSnapshot();
@@ -3681,6 +3771,7 @@ export class DispatchEngine {
         branch,
         reason: state.reason,
         enteredAt: state.enteredAt.toISOString(),
+        kind: state.kind,
       })),
     };
   }
@@ -3694,6 +3785,7 @@ export class DispatchEngine {
       branch,
       reason: state.reason,
       enteredAt: state.enteredAt,
+      kind: state.kind,
     }));
   }
 
