@@ -55080,7 +55080,7 @@ runs:
     completed_at: 2026-05-26T22:32:39.106Z
   - _ulid: 01KSK7MNX2FFZTC284N8WQ8S62
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -55095,7 +55095,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-26T22:49:56.592Z
-        completed_at: 2026-05-26T22:49:56.592Z
+        completed_at: 2026-05-26T22:50:04.689Z
+        notes: "Friction points: Review-comment and review-reply bodies are still fragile when entered
+          inline through the shell; one blocker body lost code identifiers because shell command
+          substitution ran before kspec received the text. The workaround was an extra clarification
+          reply. Secondary friction: full-suite review verification took about 2553 seconds, but
+          this is expected under current review gates and existing test-runner conventions rather
+          than a new issue from this session."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-26T22:50:04.689Z
+        completed_at: 2026-05-26T22:50:04.689Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-26T22:49:14.402Z
