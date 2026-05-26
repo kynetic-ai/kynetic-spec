@@ -54926,7 +54926,7 @@ runs:
     completed_at: 2026-05-26T20:30:46.560Z
   - _ulid: 01KSK1PPVCQJ4CKP0P2Y1FDTMT
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -54942,7 +54942,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-26T21:05:44.614Z
-        completed_at: 2026-05-26T21:05:44.614Z
+        completed_at: 2026-05-26T21:05:54.729Z
+        notes: "Friction points: The review evidence workflow required several separate kspec review check
+          commands for related evidence, which is repetitive and easy to make inconsistent. kspec
+          workflow show without a run ref returned an error rather than listing or pointing to
+          active runs, so orienting within a just-started workflow required remembering the run ID.
+          kspec validate still exits non-zero for repository-wide warnings, so reviewers need the
+          --warnings-ok pattern to record a pass while preserving warning context."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-26T21:05:54.729Z
+        completed_at: 2026-05-26T21:05:54.729Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-26T21:05:29.452Z
