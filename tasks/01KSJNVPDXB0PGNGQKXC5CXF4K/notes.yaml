@@ -1,1 +1,19 @@
-notes: []
+notes:
+  - _ulid: 01KSJV5QQH4B2R2VTE88TTSJ53
+    content: "Reworked detached-reviewer-merge.sh to create a helper-owned ephemeral target worktree
+      (via mktemp -d) instead of requiring a pre-existing checkout of the integration target. New
+      behavior: detect no-op first (no worktree work); if target branch is occupied in another
+      worktree, refuse with dirty- or free-branch guidance before moving any refs; otherwise mktemp
+      a scratch dir, git worktree add the target into a subpath, run the merge there (pinned to
+      KSPEC_DISPATCH_CANONICAL_HEAD), and remove the temp worktree via EXIT trap (with git worktree
+      prune fallback) on success, conflict, or error. Conflict path aborts the merge in the temp
+      worktree, leaves the target ref unchanged, and exits with the needs_work guidance. Updated
+      tests to cover ac-helper-uses-ephemeral-target-worktree,
+      ac-helper-leaves-no-target-branch-lock (success/no-op/conflict/error paths),
+      ac-helper-occupied-target-refuses-with-free-branch-guidance (with both empty and
+      untracked-only occupied worktrees), and refreshed dirty-target and conflict tests against the
+      new model. Synced the rendered helper script to .agents/skills/kspec-merge/scripts/ and
+      .factory/skills/kspec-merge/scripts/ (plugin/ copy is gitignored)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-26T19:11:21.842Z
