@@ -1329,10 +1329,8 @@ Examples:
             process.exit(EXIT_CODES.USAGE_ERROR);
           }
           try {
-            const {
-              assertMarkdownLinksResolveAgainstPlan,
-              PlanImportResourceError,
-            } = await import("../../parser/plan-resource-import.js");
+            const { assertMarkdownLinksResolveAgainstPlan, PlanImportResourceError } =
+              await import("../../parser/plan-resource-import.js");
             const { getPlanDir } = await import("../../parser/plan-storage-manager.js");
             await assertMarkdownLinksResolveAgainstPlan(
               getPlanDir(ctx, foundPlan._ulid),
@@ -2048,10 +2046,7 @@ function registerPlanRebuildIndexCommand(plan: Command): void {
   markMutating(plan.command("rebuild-index"))
     .description("Rebuild the plan index from .kspec/plans/<ulid>/ folders")
     .option("--repair", "Rewrite .kspec/project.plans.yaml from plan folders")
-    .option(
-      "--force",
-      "With --repair, drop stale index entries whose folders are missing",
-    )
+    .option("--force", "With --repair, drop stale index entries whose folders are missing")
     .option("--dry-run", "Report drift without writing — same as default")
     .addHelpText(
       "after",
@@ -2079,11 +2074,8 @@ Examples:
           process.exit(EXIT_CODES.USAGE_ERROR);
         }
 
-        const {
-          computePlanIndexDrift,
-          rebuildPlanIndex,
-          getPlanIndexFilePath,
-        } = await import("../../parser/plan-storage-manager.js");
+        const { computePlanIndexDrift, rebuildPlanIndex, getPlanIndexFilePath } =
+          await import("../../parser/plan-storage-manager.js");
 
         const report = await computePlanIndexDrift(ctx, { force: isForce });
         const driftCount = report.changes.length;
@@ -2117,19 +2109,16 @@ Examples:
 
         // Blocked: conflicts that cannot be cleared by the current flag set.
         if (conflictCount > 0) {
-          output(
-            { ...baseEnvelope, status: "blocked" },
-            () => {
-              warn(
-                `${conflictCount} conflict(s) prevent index rebuild. ` +
-                  `Use --force with --repair where applicable.`,
-              );
-              for (const conflict of report.conflicts) {
-                const refSuffix = conflict.ref ? ` (ref: ${conflict.ref})` : "";
-                console.error(`  ${conflict.code}: ${conflict.message}${refSuffix}`);
-              }
-            },
-          );
+          output({ ...baseEnvelope, status: "blocked" }, () => {
+            warn(
+              `${conflictCount} conflict(s) prevent index rebuild. ` +
+                `Use --force with --repair where applicable.`,
+            );
+            for (const conflict of report.conflicts) {
+              const refSuffix = conflict.ref ? ` (ref: ${conflict.ref})` : "";
+              console.error(`  ${conflict.code}: ${conflict.message}${refSuffix}`);
+            }
+          });
           process.exit(2);
         }
 

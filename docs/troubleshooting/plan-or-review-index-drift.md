@@ -59,11 +59,11 @@ kspec review rebuild-index --repair --force
 
 ### Exit Code Summary
 
-| Exit code | Meaning                                                        |
-| --------- | -------------------------------------------------------------- |
-| 0         | Clean, or successful repair                                    |
-| 1         | Drift detected and not repaired                                |
-| 2         | Blocked by conflicts (e.g. missing folder without `--force`)   |
+| Exit code | Meaning                                                      |
+| --------- | ------------------------------------------------------------ |
+| 0         | Clean, or successful repair                                  |
+| 1         | Drift detected and not repaired                              |
+| 2         | Blocked by conflicts (e.g. missing folder without `--force`) |
 
 ## When Resources Look Wrong
 

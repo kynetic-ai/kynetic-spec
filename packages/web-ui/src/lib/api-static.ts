@@ -152,7 +152,8 @@ function toStaticPlanResource(raw: unknown): PlanResourceMetadata | null {
     id,
     label: typeof obj.label === "string" ? obj.label : null,
     path,
-    content_type: typeof obj.content_type === "string" ? obj.content_type : "application/octet-stream",
+    content_type:
+      typeof obj.content_type === "string" ? obj.content_type : "application/octet-stream",
     bytes: typeof obj.bytes === "number" ? obj.bytes : 0,
     sha256: typeof obj.sha256 === "string" ? obj.sha256 : "",
     git_commit: typeof obj.git_commit === "string" ? obj.git_commit : null,
@@ -800,9 +801,7 @@ function findReviewByRef(snapshot: KspecSnapshot, ref: string): ExportedReview |
   const reviews = snapshot.reviews ?? [];
   const bySlug = reviews.find((r) => r.slugs?.includes(normalizedRef));
   if (bySlug) return bySlug;
-  const byUlid = reviews.find((r) =>
-    r._ulid.toUpperCase().startsWith(normalizedRef.toUpperCase()),
-  );
+  const byUlid = reviews.find((r) => r._ulid.toUpperCase().startsWith(normalizedRef.toUpperCase()));
   return byUlid ?? null;
 }
 

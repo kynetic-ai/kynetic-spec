@@ -109,9 +109,7 @@ describe("review-resource-manager", () => {
     expect(result.value.resource.id).toBe("login-bug");
     expect(result.value.resource.path).toBe("screenshots/login.png");
     expect(result.value.resource.content_type).toBe("image/png");
-    expect(result.value.resource.bytes).toBe(
-      Buffer.byteLength("fake-png-bytes-for-testing"),
-    );
+    expect(result.value.resource.bytes).toBe(Buffer.byteLength("fake-png-bytes-for-testing"));
     expect(result.value.resource.sha256).toMatch(/^[0-9a-f]{64}$/);
     // The file actually exists under the review's resources/ tree.
     const reviewDir = getReviewDir(ctx as any, review._ulid);
@@ -404,9 +402,7 @@ describe("review-resource-manager", () => {
 
     // The new-path file must not be left behind on disk — the partial
     // write is rolled back so the resources/ tree matches the manifest.
-    await expect(
-      fs.stat(path.join(resourcesDir, "new.png")),
-    ).rejects.toThrow();
+    await expect(fs.stat(path.join(resourcesDir, "new.png"))).rejects.toThrow();
 
     // The outside target must be untouched: same bytes, still a regular
     // file (not unlinked through the symlink).
@@ -552,8 +548,7 @@ describe("review-resource-manager", () => {
           path: "screenshots/evidence.png",
           content_type: "image/png",
           bytes: 5,
-          sha256:
-            "0000000000000000000000000000000000000000000000000000000000000000",
+          sha256: "0000000000000000000000000000000000000000000000000000000000000000",
           git_commit: null,
           git_path: null,
           description: null,
@@ -616,9 +611,7 @@ describe("review-resource-manager", () => {
     expect(result.error.message).toMatch(/symlink/i);
 
     // Outside file is untouched.
-    expect(await fs.readFile(path.join(outside, "shot.png"), "utf-8")).toBe(
-      "outside-bytes",
-    );
+    expect(await fs.readFile(path.join(outside, "shot.png"), "utf-8")).toBe("outside-bytes");
   });
 
   // AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
@@ -693,9 +686,7 @@ describe("review-resource-manager", () => {
       // resources tree — the validation must run BEFORE any bytes are
       // copied in.
       const reviewDir = getReviewDir(ctx as any, review._ulid);
-      await expect(
-        fs.stat(path.join(reviewDir, "resources", "shot.png")),
-      ).rejects.toThrow();
+      await expect(fs.stat(path.join(reviewDir, "resources", "shot.png"))).rejects.toThrow();
     } finally {
       // Restore permissions so the temp dir can be cleaned up.
       await fs.chmod(unreadable, 0o600).catch(() => {});

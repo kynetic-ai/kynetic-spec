@@ -153,8 +153,6 @@ export interface PlanMigrationReport {
   readonly orphanedLeanEntries: Record<string, unknown>[];
 }
 
-const PLAN_SCHEMA_KEYS = new Set(Object.keys(PlanSchema.shape));
-
 /**
  * Read raw plan records from `<specDir>/project.plans.yaml`. Returns the
  * entries plus the wrapper object so the index can be rewritten under the
@@ -263,8 +261,7 @@ function buildMigrationEntry(
       status: typeof raw.status === "string" ? raw.status : "draft",
       derived_tasks: Array.isArray(raw.derived_tasks) ? raw.derived_tasks : [],
       derived_specs: Array.isArray(raw.derived_specs) ? raw.derived_specs : [],
-      created_at:
-        typeof raw.created_at === "string" ? raw.created_at : new Date().toISOString(),
+      created_at: typeof raw.created_at === "string" ? raw.created_at : new Date().toISOString(),
       notes_count: notes.length,
     };
     for (const field of ["source_path", "module_ref", "branch", "approved_at", "completed_at"]) {
@@ -300,9 +297,7 @@ function buildMigrationEntry(
  * projection — never writes. Surfaces the entry list and the partial-layout
  * flag so callers can decide whether to proceed.
  */
-export async function computePlanMigrationReport(
-  ctx: KspecContext,
-): Promise<PlanMigrationReport> {
+export async function computePlanMigrationReport(ctx: KspecContext): Promise<PlanMigrationReport> {
   const monolithicPath = getMonolithicPlansFilePath(ctx);
   const folderRoot = path.join(ctx.specDir, PLAN_LAYOUT.storageRoot);
   const indexPath = path.join(ctx.specDir, PLAN_LAYOUT.indexFile);
@@ -354,15 +349,13 @@ export async function computePlanMigrationReport(
   // coexists with any plan folder on disk, the layout is partial and
   // requires --force to remediate.
   const partialLayout =
-    (folderUlids.size > 0 && entries.length > 0) ||
-    orphanedLeanEntries.length > 0;
+    (folderUlids.size > 0 && entries.length > 0) || orphanedLeanEntries.length > 0;
 
   // `alreadyMigrated` must also account for orphaned lean entries — a
   // project with stale index entries pointing at missing folders is NOT
   // already migrated. Keeping it true would let the manifest promotion
   // run and skip the chance to detect the partial layout.
-  const alreadyMigrated =
-    monolithicRecords.length === 0 && orphanedLeanEntries.length === 0;
+  const alreadyMigrated = monolithicRecords.length === 0 && orphanedLeanEntries.length === 0;
 
   return {
     migrated: entries.filter((e) => !e.preexistingFolder).length,

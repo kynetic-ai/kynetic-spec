@@ -2555,7 +2555,11 @@ describe("ProjectEntityCache", () => {
         await Promise.all([a, b, c]);
 
         expect(processChangesSpy).toHaveBeenCalledTimes(1);
-        expect(processChangesSpy).toHaveBeenCalledWith("plans", expect.any(Array), expect.anything());
+        expect(processChangesSpy).toHaveBeenCalledWith(
+          "plans",
+          expect.any(Array),
+          expect.anything(),
+        );
       } finally {
         vi.useRealTimers();
       }
@@ -2585,7 +2589,11 @@ describe("ProjectEntityCache", () => {
         await Promise.all([a, b, c]);
 
         expect(processChangesSpy).toHaveBeenCalledTimes(1);
-        expect(processChangesSpy).toHaveBeenCalledWith("reviews", expect.any(Array), expect.anything());
+        expect(processChangesSpy).toHaveBeenCalledWith(
+          "reviews",
+          expect.any(Array),
+          expect.anything(),
+        );
       } finally {
         vi.useRealTimers();
       }

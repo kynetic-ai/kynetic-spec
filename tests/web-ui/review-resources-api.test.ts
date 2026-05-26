@@ -115,13 +115,9 @@ describe("encodeStaticAssetPath", () => {
     const encoded = encodeStaticAssetPath(
       "assets/resources/review/01REV/screenshots/login#bug.png",
     );
-    expect(encoded).toBe(
-      "assets/resources/review/01REV/screenshots/login%23bug.png",
-    );
+    expect(encoded).toBe("assets/resources/review/01REV/screenshots/login%23bug.png");
     const parsed = new URL(`https://example.com/base/${encoded}`);
-    expect(parsed.pathname).toBe(
-      "/base/assets/resources/review/01REV/screenshots/login%23bug.png",
-    );
+    expect(parsed.pathname).toBe("/base/assets/resources/review/01REV/screenshots/login%23bug.png");
     expect(parsed.hash).toBe("");
   });
 
@@ -130,45 +126,31 @@ describe("encodeStaticAssetPath", () => {
     const encoded = encodeStaticAssetPath(
       "assets/resources/review/01REV/screenshots/login?ref.png",
     );
-    expect(encoded).toBe(
-      "assets/resources/review/01REV/screenshots/login%3Fref.png",
-    );
+    expect(encoded).toBe("assets/resources/review/01REV/screenshots/login%3Fref.png");
     const parsed = new URL(`https://example.com/base/${encoded}`);
-    expect(parsed.pathname).toBe(
-      "/base/assets/resources/review/01REV/screenshots/login%3Fref.png",
-    );
+    expect(parsed.pathname).toBe("/base/assets/resources/review/01REV/screenshots/login%3Fref.png");
     expect(parsed.search).toBe("");
   });
 
   // AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
   it("encodes spaces and other reserved characters per segment", () => {
-    expect(
-      encodeStaticAssetPath(
-        "assets/resources/review/01REV/notes/draft & final.png",
-      ),
-    ).toBe(
+    expect(encodeStaticAssetPath("assets/resources/review/01REV/notes/draft & final.png")).toBe(
       "assets/resources/review/01REV/notes/draft%20%26%20final.png",
     );
   });
 
   // AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
   it("preserves `/` segment separators (does not collapse the path)", () => {
-    const encoded = encodeStaticAssetPath(
-      "assets/resources/review/01REV/sub/dir/file.png",
-    );
-    expect(encoded).toBe(
-      "assets/resources/review/01REV/sub/dir/file.png",
-    );
+    const encoded = encodeStaticAssetPath("assets/resources/review/01REV/sub/dir/file.png");
+    expect(encoded).toBe("assets/resources/review/01REV/sub/dir/file.png");
     expect(encoded.split("/")).toHaveLength(7);
   });
 
   // AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
   it("is a no-op for paths with no URL-reserved characters", () => {
-    expect(
-      encodeStaticAssetPath(
-        "assets/resources/review/01REV/screenshots/login.png",
-      ),
-    ).toBe("assets/resources/review/01REV/screenshots/login.png");
+    expect(encodeStaticAssetPath("assets/resources/review/01REV/screenshots/login.png")).toBe(
+      "assets/resources/review/01REV/screenshots/login.png",
+    );
   });
 });
 

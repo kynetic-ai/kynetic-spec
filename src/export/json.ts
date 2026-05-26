@@ -31,10 +31,7 @@ import {
   validate,
 } from "../parser/index.js";
 import { computeDisposition } from "../parser/review-operations.js";
-import {
-  getReviewDir,
-  type LoadedReviewRecord,
-} from "../parser/review-storage-manager.js";
+import { getReviewDir, type LoadedReviewRecord } from "../parser/review-storage-manager.js";
 import { resolveTaskDataManager } from "../parser/task-data-manager.js";
 import { loadSessionContext } from "../parser/meta.js";
 import { TraitIndex } from "../parser/traits.js";
@@ -81,24 +78,27 @@ export function rewritePlanContentForStaticExport(
   for (const r of resources) byPath.set(r.path, r);
   const pattern =
     /(!?\[[^\]]*\]\()(\.\/resources\/[^\s)"']+)(\))|(^\s*\[[^\]]+\]:\s+)(\.\/resources\/[^\s"']+)/gm;
-  return markdown.replace(pattern, (
-    match,
-    inlinePrefix?: string,
-    inlineTarget?: string,
-    inlineSuffix?: string,
-    refDefPrefix?: string,
-    refDefTarget?: string,
-  ) => {
-    const target = inlineTarget ?? refDefTarget;
-    if (!target) return match;
-    const relative = target.slice("./resources/".length);
-    const resource = byPath.get(relative);
-    if (!resource) return match;
-    if (refDefPrefix !== undefined && refDefTarget !== undefined) {
-      return `${refDefPrefix}${resource.exported_path}`;
-    }
-    return `${inlinePrefix ?? ""}${resource.exported_path}${inlineSuffix ?? ""}`;
-  });
+  return markdown.replace(
+    pattern,
+    (
+      match,
+      inlinePrefix?: string,
+      inlineTarget?: string,
+      inlineSuffix?: string,
+      refDefPrefix?: string,
+      refDefTarget?: string,
+    ) => {
+      const target = inlineTarget ?? refDefTarget;
+      if (!target) return match;
+      const relative = target.slice("./resources/".length);
+      const resource = byPath.get(relative);
+      if (!resource) return match;
+      if (refDefPrefix !== undefined && refDefTarget !== undefined) {
+        return `${refDefPrefix}${resource.exported_path}`;
+      }
+      return `${inlinePrefix ?? ""}${resource.exported_path}${inlineSuffix ?? ""}`;
+    },
+  );
 }
 
 /**
@@ -164,8 +164,12 @@ async function exportPlanResources(
   const ownerResourcesDir = getResourcesDir(planDir);
   const exported: ExportedPlanResource[] = [];
   for (const entry of manifest.resources) {
-    const exported_path = [STATIC_EXPORT_RESOURCES_PREFIX, PLAN_EXPORT_ENTITY_TYPE, ulid, entry.path]
-      .join("/");
+    const exported_path = [
+      STATIC_EXPORT_RESOURCES_PREFIX,
+      PLAN_EXPORT_ENTITY_TYPE,
+      ulid,
+      entry.path,
+    ].join("/");
     if (assetsOutputDir) {
       const result = await copyResourceForStaticExport({
         ownerResourcesDir,

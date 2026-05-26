@@ -520,9 +520,7 @@ const ENTITY_ULID_SEGMENT = /^[0-9A-HJKMNP-TV-Z]{26}$/i;
 function isFolderBackedEntityChild(storageRoot: string, relativePath: string): boolean {
   const segments = relativePath.split("/");
   return (
-    segments.length >= 3 &&
-    segments[0] === storageRoot &&
-    ENTITY_ULID_SEGMENT.test(segments[1])
+    segments.length >= 3 && segments[0] === storageRoot && ENTITY_ULID_SEGMENT.test(segments[1])
   );
 }
 

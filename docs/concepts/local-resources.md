@@ -82,17 +82,17 @@ resources:
 
 Every resource — whether returned by the CLI, the daemon API, or a static export — uses the same fixed shape:
 
-| Field          | Type             | Meaning                                                              |
-| -------------- | ---------------- | -------------------------------------------------------------------- |
-| `id`           | `string`         | Stable identifier. Matches `[a-z0-9][a-z0-9._-]{0,127}`              |
-| `label`        | `string \| null` | Optional human-friendly label                                        |
-| `path`         | `string`         | POSIX-relative path under the entity's `resources/` directory        |
+| Field          | Type             | Meaning                                                                          |
+| -------------- | ---------------- | -------------------------------------------------------------------------------- |
+| `id`           | `string`         | Stable identifier. Matches `[a-z0-9][a-z0-9._-]{0,127}`                          |
+| `label`        | `string \| null` | Optional human-friendly label                                                    |
+| `path`         | `string`         | POSIX-relative path under the entity's `resources/` directory                    |
 | `content_type` | `string`         | `type/subtype` MIME token (never null; falls back to `application/octet-stream`) |
-| `bytes`        | `number`         | File size in bytes                                                   |
-| `sha256`       | `string`         | 64-character lowercase hex content hash                              |
-| `git_commit`   | `string \| null` | 40-character commit SHA captured when bytes were last written        |
-| `git_path`     | `string \| null` | Repository-relative path captured alongside `git_commit`             |
-| `description`  | `string \| null` | Optional free-form description                                       |
+| `bytes`        | `number`         | File size in bytes                                                               |
+| `sha256`       | `string`         | 64-character lowercase hex content hash                                          |
+| `git_commit`   | `string \| null` | 40-character commit SHA captured when bytes were last written                    |
+| `git_path`     | `string \| null` | Repository-relative path captured alongside `git_commit`                         |
+| `description`  | `string \| null` | Optional free-form description                                                   |
 
 The exact shape is fixed so plans, reviews, and any future folder-backed entity that adopts the trait read and write the same fields.
 
@@ -149,16 +149,16 @@ The prefix is stable: it means "a resource owned by this entity, declared in thi
 
 When `kspec plan derive` creates a task from a plan task definition that has `resource_refs`, it does **not** copy the resource files by default. It records a `TaskResourceRef` for each referenced resource:
 
-| Field         | Meaning                                                                |
-| ------------- | ---------------------------------------------------------------------- |
-| `owner_type`  | `"plan"` or `"task"` — where the bytes actually live                   |
-| `owner_ref`   | Plan ref (for plan-owned) or task ref (for task-owned copies)          |
-| `id`          | Resource id inside the owner's manifest                                |
-| `path`        | Relative path inside the owner's `resources/` tree                     |
-| `sha256`      | Content hash captured at derivation time                               |
-| `git_commit`  | Git commit captured at derivation time (or `null` if unavailable)      |
-| `git_path`    | Repository-relative path captured alongside `git_commit`               |
-| `recorded_at` | ISO 8601 datetime the reference was recorded                           |
+| Field         | Meaning                                                           |
+| ------------- | ----------------------------------------------------------------- |
+| `owner_type`  | `"plan"` or `"task"` — where the bytes actually live              |
+| `owner_ref`   | Plan ref (for plan-owned) or task ref (for task-owned copies)     |
+| `id`          | Resource id inside the owner's manifest                           |
+| `path`        | Relative path inside the owner's `resources/` tree                |
+| `sha256`      | Content hash captured at derivation time                          |
+| `git_commit`  | Git commit captured at derivation time (or `null` if unavailable) |
+| `git_path`    | Repository-relative path captured alongside `git_commit`          |
+| `recorded_at` | ISO 8601 datetime the reference was recorded                      |
 
 If the plan resource's current content hash later disagrees with the task's recorded `sha256`, consumers (task detail, agent context, API resource resolver) surface drift instead of silently substituting the new bytes for the old.
 

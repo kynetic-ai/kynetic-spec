@@ -26,7 +26,6 @@ import {
 } from "./entity-storage-compatibility.js";
 import {
   deleteReviewFromFolder,
-  findReviewByRefInFolders,
   loadReviewRecordsFromFolders,
   mutateReviewInFolder,
   saveReviewRecordToFolder,

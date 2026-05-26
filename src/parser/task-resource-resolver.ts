@@ -17,10 +17,7 @@
  * Spec: @plan-resource-derivation-semantics-1 ac-resource-drift-is-visible
  */
 
-import {
-  loadResourceManifest,
-  type ResourceMetadata,
-} from "./entity-local-resources.js";
+import { loadResourceManifest, type ResourceMetadata } from "./entity-local-resources.js";
 import { findPlanByRef } from "./plans.js";
 import { getPlanDir } from "./plan-storage-manager.js";
 import { getTaskDir } from "./split-backend.js";
@@ -174,9 +171,7 @@ function shortHash(sha256: string): string {
  *
  * AC: @plan-resource-derivation-semantics-1 ac-resource-drift-is-visible
  */
-export function projectResolvedTaskResources(
-  resolved: ResolvedTaskResource[],
-): Array<{
+export function projectResolvedTaskResources(resolved: ResolvedTaskResource[]): Array<{
   owner_type: TaskResourceRef["owner_type"];
   owner_ref: string;
   id: string;

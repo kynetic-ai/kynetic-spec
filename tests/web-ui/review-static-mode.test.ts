@@ -52,15 +52,8 @@ vi.mock("../../packages/web-ui/src/lib/stores/project.svelte", projectMock);
 vi.mock("$lib/constants", constantsMock);
 vi.mock("../../packages/web-ui/src/lib/constants", constantsMock);
 
-import {
-  fetchReview,
-  fetchReviews,
-  fetchReviewSiblings,
-} from "../../packages/web-ui/src/lib/api";
-import {
-  fetchReviewStatic,
-  fetchReviewsStatic,
-} from "../../packages/web-ui/src/lib/api-static";
+import { fetchReview, fetchReviews, fetchReviewSiblings } from "../../packages/web-ui/src/lib/api";
+import { fetchReviewStatic, fetchReviewsStatic } from "../../packages/web-ui/src/lib/api-static";
 
 function makeExportedReview(overrides: Partial<ExportedReview> = {}): ExportedReview {
   return {
@@ -155,9 +148,10 @@ describe("fetchReviewsStatic", () => {
     expect(fetchReviewsStatic({ disposition: "approved" }).data.map((r) => r.slugs[0])).toEqual([
       "closed-approved",
     ]);
-    expect(
-      fetchReviewsStatic({ status: ["open", "closed"] }).data.map((r) => r.slugs[0]),
-    ).toEqual(["open-pending", "closed-approved"]);
+    expect(fetchReviewsStatic({ status: ["open", "closed"] }).data.map((r) => r.slugs[0])).toEqual([
+      "open-pending",
+      "closed-approved",
+    ]);
   });
 
   it("filters by subject_ref and head_branch", () => {
@@ -183,12 +177,12 @@ describe("fetchReviewsStatic", () => {
         },
       }),
     ]);
-    expect(
-      fetchReviewsStatic({ subject_ref: "@task-alpha" }).data.map((r) => r.slugs[0]),
-    ).toEqual(["task-review"]);
-    expect(
-      fetchReviewsStatic({ head_branch: "feat/x" }).data.map((r) => r.slugs[0]),
-    ).toEqual(["code-review"]);
+    expect(fetchReviewsStatic({ subject_ref: "@task-alpha" }).data.map((r) => r.slugs[0])).toEqual([
+      "task-review",
+    ]);
+    expect(fetchReviewsStatic({ head_branch: "feat/x" }).data.map((r) => r.slugs[0])).toEqual([
+      "code-review",
+    ]);
   });
 
   it("returns an empty envelope when no snapshot is loaded", () => {
@@ -217,7 +211,8 @@ describe("fetchReviewStatic", () => {
             git_commit: null,
             git_path: null,
             description: null,
-            exported_path: "assets/resources/review/01REVDETAILS0000000000000R1/screenshots/login.png",
+            exported_path:
+              "assets/resources/review/01REVDETAILS0000000000000R1/screenshots/login.png",
           },
         ],
       }),
@@ -229,8 +224,7 @@ describe("fetchReviewStatic", () => {
     expect(result!.data.resources![0]).toMatchObject({
       id: "login-bug",
       content_type: "image/png",
-      exported_path:
-        "assets/resources/review/01REVDETAILS0000000000000R1/screenshots/login.png",
+      exported_path: "assets/resources/review/01REVDETAILS0000000000000R1/screenshots/login.png",
     });
     // Bounded projection: arrays the snapshot does not carry surface as empty.
     expect(result!.data.threads).toEqual([]);

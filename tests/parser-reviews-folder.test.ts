@@ -34,12 +34,7 @@ import {
   getReviewIndexFilePath,
   rebuildReviewIndex,
 } from "../src/parser/review-storage-manager.js";
-import {
-  cleanupTempDir,
-  createTempDir,
-  initGitRepo,
-  readTestOutput,
-} from "./helpers/cli.js";
+import { cleanupTempDir, createTempDir, initGitRepo, readTestOutput } from "./helpers/cli.js";
 import { resolveResourceReference } from "../src/parser/entity-local-resources.js";
 
 interface FolderCtx {
@@ -196,12 +191,14 @@ describe("Folder-backed review storage manager", () => {
     expect(await pathExists(detailPath)).toBe(true);
 
     const detail = await readDetail(detailPath);
+    expect(detail).toBeDefined();
+    if (!detail) throw new Error("Expected review detail to be written");
     expect(detail?._ulid).toBe(review._ulid);
     expect(detail?.title).toBe("Cohesive Review");
     expect(Array.isArray(detail?.threads)).toBe(true);
-    expect((detail?.threads as unknown[]).length).toBe(1);
+    expect((detail.threads as unknown[]).length).toBe(1);
     expect(Array.isArray(detail?.checks)).toBe(true);
-    expect((detail?.checks as unknown[]).length).toBe(1);
+    expect((detail.checks as unknown[]).length).toBe(1);
     expect(Array.isArray(detail?.verdicts)).toBe(true);
     expect(Array.isArray(detail?.notes)).toBe(true);
     expect(Array.isArray(detail?.external_links)).toBe(true);
@@ -313,12 +310,16 @@ describe("Folder-backed review storage manager", () => {
     const review = makeReview({ title: "Initial Title" });
     await saveReviewRecord(ctx as any, { ...review, _sourceFile: undefined });
 
-    const updated = await mutateReviewAtomically(ctx as any, { ...review, _sourceFile: undefined }, (latest) => ({
-      ...latest,
-      title: "Updated Title",
-      lifecycle_state: "open" as const,
-      updated_at: "2026-05-23T12:00:00Z",
-    }));
+    const updated = await mutateReviewAtomically(
+      ctx as any,
+      { ...review, _sourceFile: undefined },
+      (latest) => ({
+        ...latest,
+        title: "Updated Title",
+        lifecycle_state: "open" as const,
+        updated_at: "2026-05-23T12:00:00Z",
+      }),
+    );
 
     expect(updated.title).toBe("Updated Title");
     expect(updated.lifecycle_state).toBe("open");
@@ -618,9 +619,8 @@ describe("Folder-backed review storage manager", () => {
       ...brokenCtx,
       manifest: { ...brokenCtx.manifest, review_storage: { format: "monolithic" as any } },
     };
-    const { loadReviewRecordsFromFolders } = await import(
-      "../src/parser/review-storage-manager.js"
-    );
+    const { loadReviewRecordsFromFolders } =
+      await import("../src/parser/review-storage-manager.js");
     await expect(loadReviewRecordsFromFolders(wrongFormatCtx as any)).rejects.toMatchObject({
       code: "missing_review_folder_storage",
       domain: "reviews",

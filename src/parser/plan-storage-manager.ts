@@ -252,11 +252,14 @@ export function toIndexEntry(
  *
  * AC: @trait-folder-backed-entity-1 ac-index-excludes-heavy-detail-bytes
  */
-export function indexEntriesEqual(
-  a: Record<string, unknown>,
-  b: Record<string, unknown>,
-): boolean {
-  if (!indexEntriesEqualForFields(a, b, INDEXED_FIELDS.filter((f) => f !== "resource_summary"))) {
+export function indexEntriesEqual(a: Record<string, unknown>, b: Record<string, unknown>): boolean {
+  if (
+    !indexEntriesEqualForFields(
+      a,
+      b,
+      INDEXED_FIELDS.filter((f) => f !== "resource_summary"),
+    )
+  ) {
     return false;
   }
   // resource_summary is a nested object; compare structurally.
@@ -291,10 +294,7 @@ function toCoreData(plan: LoadedPlan): Record<string, unknown> {
  *
  * AC: @folder-backed-plan-storage-1 ac-plan-document-sidecar-is-authoritative
  */
-async function readPlanDocument(
-  ctx: KspecContext,
-  ulid: string,
-): Promise<string | undefined> {
+async function readPlanDocument(ctx: KspecContext, ulid: string): Promise<string | undefined> {
   const docPath = getPlanDocumentFilePath(ctx, ulid);
   try {
     return await fs.readFile(docPath, "utf-8");
@@ -394,10 +394,7 @@ async function readRawCore(
  * AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
  * AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
  */
-async function loadPlanFromDir(
-  ctx: KspecContext,
-  ulid: string,
-): Promise<LoadedPlan | undefined> {
+async function loadPlanFromDir(ctx: KspecContext, ulid: string): Promise<LoadedPlan | undefined> {
   const rawCore = await readRawCore(ctx, ulid);
   if (!rawCore) {
     return undefined;
@@ -434,9 +431,7 @@ async function writeCoreFile(
   core: Record<string, unknown>,
   rawCore: Record<string, unknown> | null,
 ): Promise<void> {
-  const merged = rawCore
-    ? mergePreservingRawShape(rawCore, core, PLAN_SCHEMA_KEYS)
-    : core;
+  const merged = rawCore ? mergePreservingRawShape(rawCore, core, PLAN_SCHEMA_KEYS) : core;
   await writeFileBufferAware(filePath, toYaml(merged));
 }
 
@@ -697,10 +692,7 @@ export async function deletePlanFromFolder(ctx: KspecContext, ulid: string): Pro
  *
  * AC: @trait-folder-backed-entity-1 ac-unknown-files-preserved
  */
-async function upsertIndexEntry(
-  indexPath: string,
-  entry: Record<string, unknown>,
-): Promise<void> {
+async function upsertIndexEntry(indexPath: string, entry: Record<string, unknown>): Promise<void> {
   const shape = await readIndexEntries(indexPath, PLAN_LAYOUT.indexWrapperKey);
   const updated = [...shape.entries];
   const existing = updated.findIndex(
@@ -947,10 +939,7 @@ export async function rebuildPlanIndex(
  * --force rebuild because `rebuildEntityIndex` only supports synchronous
  * projection callbacks.
  */
-async function foldResourceSummariesIntoIndex(
-  ctx: KspecContext,
-  indexPath: string,
-): Promise<void> {
+async function foldResourceSummariesIntoIndex(ctx: KspecContext, indexPath: string): Promise<void> {
   const shape = await readIndexEntries(indexPath, PLAN_LAYOUT.indexWrapperKey);
   const updated: Record<string, unknown>[] = [];
   for (const raw of shape.entries) {

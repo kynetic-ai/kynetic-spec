@@ -446,9 +446,7 @@ export async function downgradeManifestToLegacyStorage(projectDir: string): Prom
   const specDir = path.join(projectDir, ".kspec");
   const manifestPath = await findManifestFileInDir(specDir);
   if (!manifestPath) {
-    throw new Error(
-      `downgradeManifestToLegacyStorage: no kspec manifest found under ${specDir}`,
-    );
+    throw new Error(`downgradeManifestToLegacyStorage: no kspec manifest found under ${specDir}`);
   }
   const raw = await fs.readFile(manifestPath, "utf-8");
   const data = yamlParse(raw) as Record<string, unknown> | null;

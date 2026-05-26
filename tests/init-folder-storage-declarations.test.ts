@@ -62,9 +62,7 @@ describe("kspec init — folder-backed entity storage declarations", () => {
       // In non-shadow mode the manifest is written to spec/<slug>.yaml
       const specDir = path.join(nonGitDir, "spec");
       const entries = await fs.readdir(specDir);
-      const manifestFile = entries.find(
-        (e) => e.endsWith(".yaml") && !e.endsWith(".tasks.yaml"),
-      );
+      const manifestFile = entries.find((e) => e.endsWith(".yaml") && !e.endsWith(".tasks.yaml"));
       expect(manifestFile).toBeDefined();
 
       const raw = await fs.readFile(path.join(specDir, manifestFile!), "utf-8");

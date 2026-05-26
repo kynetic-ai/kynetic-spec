@@ -1603,10 +1603,7 @@ function registerReviewRebuildIndexCommand(review: Command): void {
   markMutating(review.command("rebuild-index"))
     .description("Rebuild the review index from .kspec/reviews/<ulid>/ folders")
     .option("--repair", "Rewrite .kspec/project.reviews.yaml from review folders")
-    .option(
-      "--force",
-      "With --repair, drop stale index entries whose folders are missing",
-    )
+    .option("--force", "With --repair, drop stale index entries whose folders are missing")
     .option("--dry-run", "Report drift without writing — same as default")
     .addHelpText(
       "after",
@@ -1634,11 +1631,8 @@ Examples:
           process.exit(EXIT_CODES.USAGE_ERROR);
         }
 
-        const {
-          computeReviewIndexDrift,
-          rebuildReviewIndex,
-          getReviewIndexFilePath,
-        } = await import("../../parser/review-storage-manager.js");
+        const { computeReviewIndexDrift, rebuildReviewIndex, getReviewIndexFilePath } =
+          await import("../../parser/review-storage-manager.js");
 
         const report = await computeReviewIndexDrift(ctx, { force: isForce });
         const driftCount = report.changes.length;

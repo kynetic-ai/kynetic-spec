@@ -1772,11 +1772,7 @@ describe("entity-scoped local-resources trait foundation", () => {
     // AC: @trait-entity-scoped-local-resources-1 ac-resource-delete-follows-owner-delete
     it("removes the resources/ subtree and resources.yaml manifest in one mutation", async () => {
       const widget = await createWidget(specDir);
-      const filePath = await writeResourceFile(
-        widget.resourcesDir,
-        "diagrams/flow.svg",
-        "<svg/>",
-      );
+      const filePath = await writeResourceFile(widget.resourcesDir, "diagrams/flow.svg", "<svg/>");
       const nestedDir = path.join(widget.resourcesDir, "logs", "2026");
       await fs.mkdir(nestedDir, { recursive: true });
       const nestedFile = path.join(nestedDir, "run.log");

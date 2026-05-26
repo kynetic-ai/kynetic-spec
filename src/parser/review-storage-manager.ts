@@ -249,10 +249,7 @@ export function toIndexEntry(
  *
  * AC: @trait-folder-backed-entity-1 ac-index-excludes-heavy-detail-bytes
  */
-export function indexEntriesEqual(
-  a: Record<string, unknown>,
-  b: Record<string, unknown>,
-): boolean {
+export function indexEntriesEqual(a: Record<string, unknown>, b: Record<string, unknown>): boolean {
   const scalarFields = INDEXED_FIELDS.filter(
     (f) => f !== "resource_summary" && f !== "subject" && f !== "external_links",
   );
@@ -510,10 +507,7 @@ export async function mutateReviewInFolder(
  * AC: @folder-backed-review-storage-1 ac-review-delete-removes-owned-folder
  * AC: @trait-entity-scoped-local-resources-1 ac-resource-delete-follows-owner-delete
  */
-export async function deleteReviewFromFolder(
-  ctx: KspecContext,
-  ulid: string,
-): Promise<boolean> {
+export async function deleteReviewFromFolder(ctx: KspecContext, ulid: string): Promise<boolean> {
   await requireReviewFolderStorage(ctx);
 
   const reviewDir = getReviewDir(ctx, ulid);
@@ -548,10 +542,7 @@ export async function deleteReviewFromFolder(
  *
  * AC: @trait-folder-backed-entity-1 ac-unknown-files-preserved
  */
-async function upsertIndexEntry(
-  indexPath: string,
-  entry: Record<string, unknown>,
-): Promise<void> {
+async function upsertIndexEntry(indexPath: string, entry: Record<string, unknown>): Promise<void> {
   const shape = await readIndexEntries(indexPath, REVIEW_LAYOUT.indexWrapperKey);
   const updated = [...shape.entries];
   const existing = updated.findIndex(
@@ -752,7 +743,7 @@ export async function rebuildReviewIndex(
 
     if (options.force) {
       // Drop stale entries whose folders no longer exist.
-      for (const ulid of [...indexByUlid.keys()]) {
+      for (const ulid of indexByUlid.keys()) {
         if (!folderSet.has(ulid)) {
           indexByUlid.delete(ulid);
         }

@@ -400,14 +400,11 @@ export async function runUpgradePipeline(
   // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-executes-folder-migration
   if (!dryRun) {
     try {
-      const { assertSafeMigrationTarget } = await import(
-        "../../parser/migration-safety.js"
-      );
+      const { assertSafeMigrationTarget } = await import("../../parser/migration-safety.js");
       assertSafeMigrationTarget(projectDir, ctx.specDir);
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
-      const skipMessage =
-        "skipped — protected project tripwire refused executing upgrade";
+      const skipMessage = "skipped — protected project tripwire refused executing upgrade";
       // Synthesise step records for every named pipeline step so JSON
       // consumers and the rendered console output see the same shape they
       // would on a normal upgrade — just with every mutation explicitly
@@ -742,8 +739,12 @@ class StorageMigrationAbort extends Error {
  * AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
  */
 async function runAtomicStorageMigration(
-  ctx: { manifestPath: string | null; specDir: string; manifest: Record<string, unknown> | null;
-        shadow: import("../../parser/shadow.js").ShadowConfig | null },
+  ctx: {
+    manifestPath: string | null;
+    specDir: string;
+    manifest: Record<string, unknown> | null;
+    shadow: import("../../parser/shadow.js").ShadowConfig | null;
+  },
   projectDir: string,
   dryRun: boolean,
   force: boolean,
@@ -781,9 +782,7 @@ async function runAtomicStorageMigration(
     // advertise that the manifest will move to kynetic 1.2, otherwise the
     // dry-run misleads an operator into believing a rerun is safe.
     const priorOk =
-      taskMigrationOk &&
-      planResult.status !== "failed" &&
-      reviewResult.status !== "failed";
+      taskMigrationOk && planResult.status !== "failed" && reviewResult.status !== "failed";
     const manifestResult = await tryRun(manifestStepName, () =>
       runStorageManifestPromotionStep(ctx, true, priorOk),
     );
@@ -940,21 +939,24 @@ async function runAtomicStorageMigration(
  * AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-executes-folder-migration
  */
 async function runPlanFolderMigrationStep(
-  ctx: { manifestPath: string | null; specDir: string; manifest: Record<string, unknown> | null;
-        shadow: import("../../parser/shadow.js").ShadowConfig | null },
+  ctx: {
+    manifestPath: string | null;
+    specDir: string;
+    manifest: Record<string, unknown> | null;
+    shadow: import("../../parser/shadow.js").ShadowConfig | null;
+  },
   projectDir: string,
   dryRun: boolean,
   force: boolean,
 ): Promise<UpgradeStepResult> {
-  const { computePlanMigrationReport, applyPlanMigration } = await import(
-    "../../parser/plan-folder-migration.js"
-  );
-  const { PLAN_RESOURCES_MANIFEST_FILENAME } = await import(
-    "../../parser/plan-storage-manager.js"
-  );
+  const { computePlanMigrationReport, applyPlanMigration } =
+    await import("../../parser/plan-folder-migration.js");
+  const { PLAN_RESOURCES_MANIFEST_FILENAME } = await import("../../parser/plan-storage-manager.js");
   const { assertSafeMigrationTarget } = await import("../../parser/migration-safety.js");
 
-  const report = await computePlanMigrationReport(ctx as Parameters<typeof computePlanMigrationReport>[0]);
+  const report = await computePlanMigrationReport(
+    ctx as Parameters<typeof computePlanMigrationReport>[0],
+  );
 
   // Already-migrated short-circuit: no monolithic records left, the
   // manifest may or may not already declare folder storage. Either way
@@ -1082,18 +1084,20 @@ async function runPlanFolderMigrationStep(
  * AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-executes-folder-migration
  */
 async function runReviewFolderMigrationStep(
-  ctx: { manifestPath: string | null; specDir: string; manifest: Record<string, unknown> | null;
-        shadow: import("../../parser/shadow.js").ShadowConfig | null },
+  ctx: {
+    manifestPath: string | null;
+    specDir: string;
+    manifest: Record<string, unknown> | null;
+    shadow: import("../../parser/shadow.js").ShadowConfig | null;
+  },
   projectDir: string,
   dryRun: boolean,
   force: boolean,
 ): Promise<UpgradeStepResult> {
-  const { computeReviewMigrationReport, applyReviewMigration } = await import(
-    "../../parser/review-folder-migration.js"
-  );
-  const { REVIEW_RESOURCES_MANIFEST_FILENAME } = await import(
-    "../../parser/review-storage-manager.js"
-  );
+  const { computeReviewMigrationReport, applyReviewMigration } =
+    await import("../../parser/review-folder-migration.js");
+  const { REVIEW_RESOURCES_MANIFEST_FILENAME } =
+    await import("../../parser/review-storage-manager.js");
   const { assertSafeMigrationTarget } = await import("../../parser/migration-safety.js");
 
   const report = await computeReviewMigrationReport(
@@ -1213,8 +1217,11 @@ async function runReviewFolderMigrationStep(
  * AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-executes-folder-migration
  */
 async function runStorageManifestPromotionStep(
-  ctx: { manifestPath: string | null; specDir: string;
-        shadow: import("../../parser/shadow.js").ShadowConfig | null },
+  ctx: {
+    manifestPath: string | null;
+    specDir: string;
+    shadow: import("../../parser/shadow.js").ShadowConfig | null;
+  },
   dryRun: boolean,
   priorMigrationsSucceeded: boolean,
 ): Promise<UpgradeStepResult> {
@@ -1289,7 +1296,8 @@ async function runStorageManifestPromotionStep(
     return {
       name: "Storage manifest (kynetic 1.2)",
       status: "done",
-      message: "would set kynetic=1.2 with plan_storage/review_storage/resource_storage declarations",
+      message:
+        "would set kynetic=1.2 with plan_storage/review_storage/resource_storage declarations",
       details: { target: targetFields },
     };
   }
@@ -1397,8 +1405,7 @@ async function runTaskStorageMigrationStep(
         const raw = await fs.readFile(ctx.manifestPath, "utf-8");
         const manifestData = yaml.parse(raw);
         const formatIsSplit = manifestData?.task_storage?.format === "split";
-        const kyneticAccepts =
-          manifestData?.kynetic === "1.1" || manifestData?.kynetic === "1.2";
+        const kyneticAccepts = manifestData?.kynetic === "1.1" || manifestData?.kynetic === "1.2";
         manifestAlreadySplit = formatIsSplit && kyneticAccepts;
       } catch {
         // Can't read — assume not split

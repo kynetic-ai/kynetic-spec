@@ -85,10 +85,7 @@ async function setupFolderProject(projectDir: string): Promise<string> {
   if (result.exitCode !== 0) {
     throw new Error(`kspec init --no-prompt failed: ${result.stderr}`);
   }
-  const addResult = kspecRun(
-    'plan add --title "Resource Plan" --content "Body"',
-    projectDir,
-  );
+  const addResult = kspecRun('plan add --title "Resource Plan" --content "Body"', projectDir);
   if (addResult.exitCode !== 0) {
     throw new Error(`plan add failed: ${addResult.stderr}`);
   }
@@ -376,10 +373,7 @@ describe.runIf(canRunInit)("Integration: plan resource CLI", () => {
       const planDir = path.join(tempDir, ".kspec", "plans", planUlid);
       const onDisk = path.join(planDir, "resources", "doc.bin");
       const originalBytes = await fs.readFile(onDisk, "utf-8");
-      const originalManifest = await fs.readFile(
-        path.join(planDir, "resources.yaml"),
-        "utf-8",
-      );
+      const originalManifest = await fs.readFile(path.join(planDir, "resources.yaml"), "utf-8");
 
       const replacement = path.join(tempDir, "replacement.bin");
       await fs.writeFile(replacement, "TWO");
@@ -394,10 +388,7 @@ describe.runIf(canRunInit)("Integration: plan resource CLI", () => {
 
       const bytesAfter = await fs.readFile(onDisk, "utf-8");
       expect(bytesAfter).toBe(originalBytes);
-      const manifestAfter = await fs.readFile(
-        path.join(planDir, "resources.yaml"),
-        "utf-8",
-      );
+      const manifestAfter = await fs.readFile(path.join(planDir, "resources.yaml"), "utf-8");
       expect(manifestAfter).toBe(originalManifest);
     });
   });
@@ -504,11 +495,9 @@ describe.runIf(canRunInit)("Integration: plan resource CLI", () => {
     });
 
     it("fails with resource_not_found when the id is absent", () => {
-      const result = kspecRun(
-        `plan resource remove ${planRef} ghost --force --json`,
-        tempDir,
-        { expectFail: true },
-      );
+      const result = kspecRun(`plan resource remove ${planRef} ghost --force --json`, tempDir, {
+        expectFail: true,
+      });
       expect(result.exitCode).toBe(1);
       const env = JSON.parse(result.stderr) as PlanResourceErrorJson;
       expect(env.code).toBe("resource_not_found");
@@ -551,11 +540,9 @@ describe.runIf(canRunInit)("Integration: plan resource CLI", () => {
       const poisonedManifest = `${manifestText.trimEnd()}\n  - id: leak\n    label: null\n    path: sub/leak.txt\n    content_type: text/plain\n    bytes: 14\n    sha256: "0000000000000000000000000000000000000000000000000000000000000000"\n    git_commit: null\n    git_path: null\n    description: null\n`;
       await fs.writeFile(manifestPath, poisonedManifest, "utf-8");
 
-      const result = kspecRun(
-        `plan resource remove ${planRef} leak --force --json`,
-        tempDir,
-        { expectFail: true },
-      );
+      const result = kspecRun(`plan resource remove ${planRef} leak --force --json`, tempDir, {
+        expectFail: true,
+      });
       expect(result.exitCode).toBe(1);
       const env = JSON.parse(result.stderr) as PlanResourceErrorJson;
       expect(env.code).toBe("invalid_resource_path");

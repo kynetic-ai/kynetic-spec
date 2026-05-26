@@ -619,9 +619,7 @@ export function buildOrientationContext(
             : entry.status === "unresolved"
               ? "[UNRESOLVED]"
               : "[OK]";
-      lines.push(
-        `- ${tag} ${entry.id} (${entry.owner_type} ${entry.owner_ref}, ${entry.path})`,
-      );
+      lines.push(`- ${tag} ${entry.id} (${entry.owner_type} ${entry.owner_ref}, ${entry.path})`);
       if (entry.status !== "present") {
         lines.push(`    ${entry.message}`);
       }
@@ -2363,16 +2361,13 @@ export class DispatchEngine {
     // here so the dispatch can still spin up if the resolver hits an edge.
     // AC: @plan-resource-derivation-semantics-1 ac-resource-drift-is-visible
     let resolvedResources: Awaited<
-      ReturnType<
-        typeof import("../parser/task-resource-resolver.js").projectResolvedTaskResources
-      >
+      ReturnType<typeof import("../parser/task-resource-resolver.js").projectResolvedTaskResources>
     > = [];
     if (change.task?.resource_refs && change.task.resource_refs.length > 0) {
       try {
         const { initContext } = await import("../parser/yaml.js");
-        const { resolveTaskResources, projectResolvedTaskResources } = await import(
-          "../parser/task-resource-resolver.js"
-        );
+        const { resolveTaskResources, projectResolvedTaskResources } =
+          await import("../parser/task-resource-resolver.js");
         const ctx = await initContext(this.projectDir);
         const resolved = await resolveTaskResources(ctx, change.task);
         resolvedResources = projectResolvedTaskResources(resolved);

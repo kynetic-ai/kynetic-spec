@@ -216,9 +216,7 @@ describe("plan folder migration", () => {
     expect(resourcesDirStat.isDirectory()).toBe(true);
     expect(await fs.readdir(path.join(planDir, "resources"))).toEqual([]);
 
-    const index = yamlParse(
-      await readTestOutput(path.join(ctx.specDir, "project.plans.yaml")),
-    );
+    const index = yamlParse(await readTestOutput(path.join(ctx.specDir, "project.plans.yaml")));
     expect(index.kynetic_plans).toBe("1.0");
     expect(Array.isArray(index.plans)).toBe(true);
     expect(index.plans).toHaveLength(1);
@@ -273,9 +271,7 @@ describe("plan folder migration", () => {
     expect(notes.notes).toHaveLength(1);
     expect(notes.notes[0].text).toBe("Original note");
 
-    const index = yamlParse(
-      await readTestOutput(path.join(ctx.specDir, "project.plans.yaml")),
-    );
+    const index = yamlParse(await readTestOutput(path.join(ctx.specDir, "project.plans.yaml")));
     expect(index.plans[0].notes_count).toBe(1);
   });
 
@@ -361,9 +357,7 @@ describe("plan folder migration", () => {
     const report = await computePlanMigrationReport(ctx);
     await applyPlanMigration(ctx, report);
 
-    const indexContents = await readTestOutput(
-      path.join(ctx.specDir, "project.plans.yaml"),
-    );
+    const indexContents = await readTestOutput(path.join(ctx.specDir, "project.plans.yaml"));
     expect(indexContents).not.toContain("A".repeat(5000));
     const index = yamlParse(indexContents);
     expect(index.plans[0]._ulid).toBe(ulid);
@@ -464,9 +458,9 @@ describe("plan folder migration", () => {
     const applied = await applyPlanMigration(ctx, report, { force: true });
     expect(applied.written).toBe(0);
     expect(applied.indexEntries).toBe(0);
-    const index = yamlParse(
-      await readTestOutput(path.join(ctx.specDir, "project.plans.yaml")),
-    ) as { plans: Array<{ _ulid: string }> };
+    const index = yamlParse(await readTestOutput(path.join(ctx.specDir, "project.plans.yaml"))) as {
+      plans: Array<{ _ulid: string }>;
+    };
     expect(index.plans).toEqual([]);
   });
 

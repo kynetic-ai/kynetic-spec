@@ -55,9 +55,7 @@ interface PlansRouteOptions {
  *
  * AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
  */
-function extractResourceSummary(
-  plan: LoadedPlan | PlanIndexSummary,
-): PlanResourceSummary {
+function extractResourceSummary(plan: LoadedPlan | PlanIndexSummary): PlanResourceSummary {
   const summary = (plan as { resource_summary?: PlanResourceSummary }).resource_summary;
   if (summary && typeof summary.count === "number" && typeof summary.total_bytes === "number") {
     return { count: summary.count, total_bytes: summary.total_bytes };
@@ -77,10 +75,7 @@ function extractResourceSummary(
  *
  * AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
  */
-function toPlanSummary(
-  plan: LoadedPlan | PlanIndexSummary,
-  tasks: PlanSummaryTask[],
-): PlanSummary {
+function toPlanSummary(plan: LoadedPlan | PlanIndexSummary, tasks: PlanSummaryTask[]): PlanSummary {
   const linkedTasks = getLinkedPlanSummaryTasks(plan, tasks);
 
   return {

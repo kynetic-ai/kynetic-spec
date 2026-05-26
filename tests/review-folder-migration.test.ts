@@ -197,9 +197,7 @@ describe("review folder migration", () => {
     expect(applied.written).toBe(1);
 
     const reviewDir = path.join(ctx.specDir, "reviews", ulid);
-    const detail = yamlParse(
-      await readTestOutput(path.join(reviewDir, REVIEW_DETAIL_FILENAME)),
-    );
+    const detail = yamlParse(await readTestOutput(path.join(reviewDir, REVIEW_DETAIL_FILENAME)));
     expect(detail._ulid).toBe(ulid);
     expect(detail.title).toBe("Exec Review");
     expect(detail.examined_commit).toBe("abc123");
@@ -219,9 +217,7 @@ describe("review folder migration", () => {
     expect(resourcesDirStat.isDirectory()).toBe(true);
     expect(await fs.readdir(path.join(reviewDir, "resources"))).toEqual([]);
 
-    const index = yamlParse(
-      await readTestOutput(path.join(ctx.specDir, "project.reviews.yaml")),
-    );
+    const index = yamlParse(await readTestOutput(path.join(ctx.specDir, "project.reviews.yaml")));
     expect(index.kynetic_reviews).toBe("1.0");
     expect(index.reviews).toHaveLength(1);
     const entry = index.reviews[0];
@@ -254,9 +250,7 @@ describe("review folder migration", () => {
     await applyReviewMigration(ctx, report);
 
     const detail = yamlParse(
-      await readTestOutput(
-        path.join(ctx.specDir, "reviews", ulid, REVIEW_DETAIL_FILENAME),
-      ),
+      await readTestOutput(path.join(ctx.specDir, "reviews", ulid, REVIEW_DETAIL_FILENAME)),
     );
     expect(detail.custom_review_metadata).toEqual({ source: "ci" });
   });
@@ -285,9 +279,7 @@ describe("review folder migration", () => {
 
     await applyReviewMigration(ctx, report);
     const detail = yamlParse(
-      await readTestOutput(
-        path.join(ctx.specDir, "reviews", ulid, REVIEW_DETAIL_FILENAME),
-      ),
+      await readTestOutput(path.join(ctx.specDir, "reviews", ulid, REVIEW_DETAIL_FILENAME)),
     );
     expect(detail._ulid).toBe(ulid);
     expect(detail.slugs).toEqual(["broken-review"]);

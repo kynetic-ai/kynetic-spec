@@ -32,7 +32,10 @@ async function bootstrapFolderProject(): Promise<{ root: string; specDir: string
   await fs.mkdir(path.join(specDir, "modules"), { recursive: true });
   await fs.writeFile(
     path.join(specDir, "modules", "core.yaml"),
-    yamlStringify({ kynetic_module: "1.0", module: { _ulid: "01MDAAAAAAAAAAAAAAAAAAAAAA", slug: "core", title: "Core" } }),
+    yamlStringify({
+      kynetic_module: "1.0",
+      module: { _ulid: "01MDAAAAAAAAAAAAAAAAAAAAAA", slug: "core", title: "Core" },
+    }),
     "utf-8",
   );
   await setupShadowDetection(root);
@@ -62,10 +65,7 @@ async function writePlanFolder(
   await fs.writeFile(path.join(planDir, "plan.md"), fields.body ?? "Body", "utf-8");
 }
 
-async function writeIndex(
-  specDir: string,
-  entries: Array<Record<string, unknown>>,
-): Promise<void> {
+async function writeIndex(specDir: string, entries: Array<Record<string, unknown>>): Promise<void> {
   await fs.writeFile(
     path.join(specDir, "project.plans.yaml"),
     yamlStringify({ kynetic_plans: "1.0", plans: entries }),

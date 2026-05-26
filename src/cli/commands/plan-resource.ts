@@ -274,10 +274,18 @@ async function runPlanResourceAdd(
   options: PlanResourceAddOptions,
 ): Promise<void> {
   if (!options.id) {
-    failPlanResource(EXIT_VALIDATION, "invalid_resource_id", "--id is required for plan resource add");
+    failPlanResource(
+      EXIT_VALIDATION,
+      "invalid_resource_id",
+      "--id is required for plan resource add",
+    );
   }
   if (!options.path) {
-    failPlanResource(EXIT_VALIDATION, "invalid_resource_path", "--path is required for plan resource add");
+    failPlanResource(
+      EXIT_VALIDATION,
+      "invalid_resource_path",
+      "--path is required for plan resource add",
+    );
   }
 
   const idValidation = validateResourceId(options.id);

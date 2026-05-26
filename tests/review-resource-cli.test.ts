@@ -354,11 +354,9 @@ describe("Integration: review resource remove", () => {
       `review resource add @${reviewSlug} ${pngSource} --id shot --path shot.png`,
       projectDir,
     );
-    const result = kspecRun(
-      `review resource remove @${reviewSlug} shot --json`,
-      projectDir,
-      { expectFail: true },
-    );
+    const result = kspecRun(`review resource remove @${reviewSlug} shot --json`, projectDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).toBe(1);
     const envelope = JSON.parse(result.stderr.trim());
     expect(envelope.code).toBe("confirmation_required");
@@ -394,15 +392,11 @@ describe("Integration: review resource remove", () => {
       projectDir,
     );
 
-    const cancel = kspecRun(
-      `review resource remove @${reviewSlug} shot`,
-      projectDir,
-      {
-        stdin: "n",
-        env: { KSPEC_TEST_TTY: "true" },
-        expectFail: true,
-      },
-    );
+    const cancel = kspecRun(`review resource remove @${reviewSlug} shot`, projectDir, {
+      stdin: "n",
+      env: { KSPEC_TEST_TTY: "true" },
+      expectFail: true,
+    });
     expect(cancel.exitCode).toBe(2);
     expect(cancel.stderr).toMatch(/cancel/i);
     expect(cancel.stderr).toMatch(/shot/);

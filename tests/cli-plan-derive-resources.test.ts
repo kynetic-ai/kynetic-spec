@@ -87,10 +87,7 @@ ${options.additionalTasks}
 `;
   const planMdPath = path.join(tempDir, `${options.planSlug}-content.md`);
   await fs.writeFile(planMdPath, planMd, "utf-8");
-  const setResult = kspecRun(
-    `plan set ${planRef} --content-file "${planMdPath}"`,
-    tempDir,
-  );
+  const setResult = kspecRun(`plan set ${planRef} --content-file "${planMdPath}"`, tempDir);
   if (setResult.exitCode !== 0) throw new Error(`plan set failed: ${setResult.stderr}`);
 
   const approve = kspecRun(`plan set ${planRef} --status approved`, tempDir);
@@ -280,10 +277,7 @@ describe.runIf(canRunInit)("Integration: plan derive resource_refs", () => {
     expect(derive.exitCode).toBe(0);
 
     // The canonical ref recorded by derive is the task slug, not the ULID.
-    const task = kspecJson<TaskJson>(
-      "task get @implement-shot-view-matresolve",
-      tempDir,
-    );
+    const task = kspecJson<TaskJson>("task get @implement-shot-view-matresolve", tempDir);
     const ref = task.resource_refs![0];
     expect(ref.owner_type).toBe("task");
     expect(ref.owner_ref).toBe("@implement-shot-view-matresolve");
@@ -291,10 +285,7 @@ describe.runIf(canRunInit)("Integration: plan derive resource_refs", () => {
 
     // Text mode must not show the UNRESOLVED label for a freshly
     // materialized resource — that was the consumer-visible breakage.
-    const textResult = kspecRun(
-      "task get @implement-shot-view-matresolve",
-      tempDir,
-    );
+    const textResult = kspecRun("task get @implement-shot-view-matresolve", tempDir);
     expect(textResult.exitCode).toBe(0);
     expect(textResult.stdout).not.toContain("UNRESOLVED");
     expect(textResult.stdout).toContain("[OK]");

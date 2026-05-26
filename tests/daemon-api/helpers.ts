@@ -369,10 +369,7 @@ export function materializeFolderBackedPlanShells(specDir: string): void {
  * to auto-materialise folder shells when the caller passes monolithic
  * reviews/plans alongside a folder-backed manifest.
  */
-function manifestDeclaresFolderFormat(
-  manifestText: string,
-  domain: "plans" | "reviews",
-): boolean {
+function manifestDeclaresFolderFormat(manifestText: string, domain: "plans" | "reviews"): boolean {
   let parsed: unknown;
   try {
     parsed = yamlParse(manifestText);
@@ -633,7 +630,8 @@ export function makeRequest(
   // Explicit `application/json` would prevent the multipart body from
   // being parsed by `request.formData()` on the route side.
   const isFormDataBody = typeof FormData !== "undefined" && init.body instanceof FormData;
-  const autoContentType = init.body && !isFormDataBody ? { "Content-Type": "application/json" } : {};
+  const autoContentType =
+    init.body && !isFormDataBody ? { "Content-Type": "application/json" } : {};
   return app.handle(
     new Request(`http://localhost${urlPath}`, {
       method: init.method ?? "GET",

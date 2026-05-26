@@ -63,10 +63,7 @@ resource_storage:
   await fs.writeFile(path.join(tempDir, "project.tasks.yaml"), "");
   await fs.mkdir(path.join(tempDir, "modules"), { recursive: true });
   await fs.writeFile(path.join(tempDir, "modules", "core.yaml"), "features: []\n");
-  await fs.writeFile(
-    path.join(tempDir, "project.inbox.yaml"),
-    "kynetic_inbox: \"1.0\"\nitems: []\n",
-  );
+  await fs.writeFile(path.join(tempDir, "project.inbox.yaml"), 'kynetic_inbox: "1.0"\nitems: []\n');
 
   const planUlid = "01HZZZZZZZZZZZZZZZZZZZZZZZ";
   const planDir = path.join(tempDir, "plans", planUlid);

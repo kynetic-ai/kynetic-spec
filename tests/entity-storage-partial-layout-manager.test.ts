@@ -274,10 +274,7 @@ describe("Plan storage manager — partial-layout rejection", () => {
     // The lean index is created (under the folder layout it is the
     // authoritative bounded projection, not a monolithic record). It must
     // not carry the full plan body.
-    const indexBody = await fs.readFile(
-      path.join(specDir, "project.plans.yaml"),
-      "utf-8",
-    );
+    const indexBody = await fs.readFile(path.join(specDir, "project.plans.yaml"), "utf-8");
     expect(indexBody).toContain(newUlid);
     expect(indexBody).not.toContain("content:");
   });
@@ -460,10 +457,7 @@ describe("Review storage manager — partial-layout rejection", () => {
     // The lean index is created under the folder layout. It must carry the
     // ULID and bounded fields, but never the full thread/check/verdict/note
     // arrays (the cohesive detail file is authoritative for those).
-    const indexBody = await fs.readFile(
-      path.join(specDir, "project.reviews.yaml"),
-      "utf-8",
-    );
+    const indexBody = await fs.readFile(path.join(specDir, "project.reviews.yaml"), "utf-8");
     expect(indexBody).toContain(newUlid);
     expect(indexBody).not.toContain("threads:");
     expect(indexBody).not.toContain("checks:");

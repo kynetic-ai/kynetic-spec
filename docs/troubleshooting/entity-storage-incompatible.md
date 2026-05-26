@@ -8,13 +8,13 @@ Starting with `kynetic: "1.2"`, plans and reviews are stored as folder-backed en
 
 The top-level `entity_storage_incompatible` discriminator is shared across plan, review, and resource domains. The `code` field tells you exactly which boundary failed:
 
-| Code                              | Meaning                                                                                                                |
-| --------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `legacy_plan_storage_removed`     | Project manifest is below `kynetic: "1.2"` and stores plans in the legacy `.kspec/project.plans.yaml` monolithic file. |
-| `legacy_review_storage_removed`   | Project manifest is below `kynetic: "1.2"` and stores reviews in the legacy `.kspec/project.reviews.yaml` monolithic file. |
-| `missing_plan_folder_storage`     | Manifest is `1.2`+ but `plan_storage.format` is not `folder`.                                                          |
-| `missing_review_folder_storage`   | Manifest is `1.2`+ but `review_storage.format` is not `folder`.                                                        |
-| `partial_entity_storage_layout`   | Manifest declares folder-backed storage but the on-disk layout is partial — for example, monolithic records still exist beside the declared folder layout. |
+| Code                            | Meaning                                                                                                                                                    |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `legacy_plan_storage_removed`   | Project manifest is below `kynetic: "1.2"` and stores plans in the legacy `.kspec/project.plans.yaml` monolithic file.                                     |
+| `legacy_review_storage_removed` | Project manifest is below `kynetic: "1.2"` and stores reviews in the legacy `.kspec/project.reviews.yaml` monolithic file.                                 |
+| `missing_plan_folder_storage`   | Manifest is `1.2`+ but `plan_storage.format` is not `folder`.                                                                                              |
+| `missing_review_folder_storage` | Manifest is `1.2`+ but `review_storage.format` is not `folder`.                                                                                            |
+| `partial_entity_storage_layout` | Manifest declares folder-backed storage but the on-disk layout is partial — for example, monolithic records still exist beside the declared folder layout. |
 
 The daemon response body includes the same fields plus a `suggestion` ("Run `kspec upgrade` to migrate the project, or use a kspec version compatible with the current manifest if upgrade is not desired"), a `domain` (`plans`, `reviews`, or `resources`), and a `cache_domain` (the cache key that was attempted), so client code can surface targeted recovery guidance.
 

@@ -24,11 +24,7 @@ import { createReadStream } from "node:fs";
 import * as path from "node:path";
 import { Elysia } from "elysia";
 
-import {
-  initContext,
-  findPlanByRef,
-  type LoadedPlan,
-} from "../../parser/index.js";
+import { initContext, findPlanByRef, type LoadedPlan } from "../../parser/index.js";
 import {
   requirePlanFolderStorage,
   requireResourceFolderStorage,
@@ -118,10 +114,12 @@ export function toPlanResourceMetadata(metadata: ResourceMetadata): PlanResource
  * true only when the field value is exactly `true` or `1`, false when exactly
  * `false` or `0`, and any other value fails with `invalid_replace_value`.
  */
-function parseReplaceField(value: FormDataEntryValue | null): {
-  ok: true;
-  value: boolean;
-} | { ok: false } {
+function parseReplaceField(value: FormDataEntryValue | null):
+  | {
+      ok: true;
+      value: boolean;
+    }
+  | { ok: false } {
   if (value === null || value === undefined) return { ok: true, value: false };
   if (typeof value !== "string") return { ok: false };
   if (value === "true" || value === "1") return { ok: true, value: true };
@@ -287,12 +285,7 @@ export function createPlanResourcesRoutes(options: PlanResourcesRouteOptions = {
         });
         if (!resolution.ok) {
           set.status = 404;
-          return errorBody(
-            "resource_not_found",
-            resolution.error,
-            params.resourceId,
-            match.path,
-          );
+          return errorBody("resource_not_found", resolution.error, params.resourceId, match.path);
         }
 
         let fileStat;
@@ -466,12 +459,7 @@ export function createPlanResourcesRoutes(options: PlanResourcesRouteOptions = {
           });
           if (!safePrevious.ok) {
             set.status = 400;
-            return errorBody(
-              "invalid_resource_path",
-              safePrevious.error,
-              id,
-              existingById.path,
-            );
+            return errorBody("invalid_resource_path", safePrevious.error, id, existingById.path);
           }
         }
 

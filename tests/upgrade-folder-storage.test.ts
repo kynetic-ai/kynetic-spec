@@ -327,9 +327,7 @@ describe("kspec upgrade — folder storage migration", () => {
       await readTestOutput(path.join(specDir, "plans", planUlid, "resources.yaml")),
     ) as { resources: unknown[] };
     expect(planResourcesManifest.resources).toEqual([]);
-    const planResourcesDirStat = await fs.stat(
-      path.join(specDir, "plans", planUlid, "resources"),
-    );
+    const planResourcesDirStat = await fs.stat(path.join(specDir, "plans", planUlid, "resources"));
     expect(planResourcesDirStat.isDirectory()).toBe(true);
 
     const reviewResourcesManifest = yamlParse(
@@ -342,14 +340,10 @@ describe("kspec upgrade — folder storage migration", () => {
     expect(reviewResourcesDirStat.isDirectory()).toBe(true);
 
     // Lean indexes exist.
-    const planIndex = yamlParse(
-      await readTestOutput(path.join(specDir, "project.plans.yaml")),
-    );
+    const planIndex = yamlParse(await readTestOutput(path.join(specDir, "project.plans.yaml")));
     expect(planIndex.plans[0]._ulid).toBe(planUlid);
     expect(planIndex.plans[0].content).toBeUndefined();
-    const reviewIndex = yamlParse(
-      await readTestOutput(path.join(specDir, "project.reviews.yaml")),
-    );
+    const reviewIndex = yamlParse(await readTestOutput(path.join(specDir, "project.reviews.yaml")));
     expect(reviewIndex.reviews[0]._ulid).toBe(reviewUlid);
     expect(reviewIndex.reviews[0].threads).toBeUndefined();
 
@@ -358,9 +352,7 @@ describe("kspec upgrade — folder storage migration", () => {
     expect(manifest.kynetic).toBe("1.2");
     expect((manifest.plan_storage as Record<string, unknown>).format).toBe("folder");
     expect((manifest.review_storage as Record<string, unknown>).format).toBe("folder");
-    expect((manifest.resource_storage as Record<string, unknown>).format).toBe(
-      "entity_scoped",
-    );
+    expect((manifest.resource_storage as Record<string, unknown>).format).toBe("entity_scoped");
     expect((manifest.task_storage as Record<string, unknown>).format).toBe("split");
   });
 
@@ -368,9 +360,9 @@ describe("kspec upgrade — folder storage migration", () => {
   it("reports previous_shadow_commit when shadow worktree is configured", async () => {
     await initProject(tempDir);
     const result = kspecJson<UpgradeResultShape>("upgrade --dry-run", tempDir);
-    expect(typeof result.previous_shadow_commit === "string" || result.previous_shadow_commit === null).toBe(
-      true,
-    );
+    expect(
+      typeof result.previous_shadow_commit === "string" || result.previous_shadow_commit === null,
+    ).toBe(true);
     // After kspec init the shadow branch is created, so we should have a commit.
     expect(result.previous_shadow_commit).toMatch(/^[0-9a-f]{7,}$/);
   });
@@ -399,9 +391,7 @@ describe("kspec upgrade — folder storage migration", () => {
     expect(manifest.kynetic).toBe("1.2");
     expect((manifest.plan_storage as Record<string, unknown>).format).toBe("folder");
     expect((manifest.review_storage as Record<string, unknown>).format).toBe("folder");
-    expect((manifest.resource_storage as Record<string, unknown>).format).toBe(
-      "entity_scoped",
-    );
+    expect((manifest.resource_storage as Record<string, unknown>).format).toBe("entity_scoped");
   });
 
   // Regression: dry-run details must include every sidecar file the
@@ -609,15 +599,11 @@ describe("kspec upgrade — folder storage migration", () => {
     expect(entries).toHaveLength(2);
 
     const e1 = entries.find((e) => e.ulid === reviewUlid1)!;
-    expect(e1.sidecars.review_yaml).toBe(
-      path.join(specDir, "reviews", reviewUlid1, "review.yaml"),
-    );
+    expect(e1.sidecars.review_yaml).toBe(path.join(specDir, "reviews", reviewUlid1, "review.yaml"));
     expect(e1.sidecars.resources_yaml).toBe(
       path.join(specDir, "reviews", reviewUlid1, "resources.yaml"),
     );
-    expect(e1.sidecars.resources_dir).toBe(
-      path.join(specDir, "reviews", reviewUlid1, "resources"),
-    );
+    expect(e1.sidecars.resources_dir).toBe(path.join(specDir, "reviews", reviewUlid1, "resources"));
 
     const manifestChanges = reviewStep!.details!.resource_manifest_changes as {
       new_empty_manifests: number;
@@ -934,9 +920,9 @@ describe("kspec upgrade — folder storage migration", () => {
     const manifest = yamlParse(await readTestOutput(manifestPath)) as Record<string, unknown>;
     expect(manifest.kynetic).toBe("1.2");
 
-    const index = yamlParse(
-      await readTestOutput(path.join(specDir, "project.plans.yaml")),
-    ) as { plans: Array<{ _ulid: string }> };
+    const index = yamlParse(await readTestOutput(path.join(specDir, "project.plans.yaml"))) as {
+      plans: Array<{ _ulid: string }>;
+    };
     const ulids = new Set(index.plans.map((p) => p._ulid));
     expect(ulids.has(existingFolderUlid)).toBe(true);
     expect(ulids.has(monolithicUlid)).toBe(true);
@@ -1109,9 +1095,7 @@ describe("kspec upgrade — folder storage migration", () => {
     expect(manifestStep?.status).not.toBe("done");
 
     // Follow-ups must not advertise rolled-back work as completed.
-    expect(
-      result.follow_ups.some((f) => /plan storage:.*migrated/i.test(f)),
-    ).toBe(false);
+    expect(result.follow_ups.some((f) => /plan storage:.*migrated/i.test(f))).toBe(false);
 
     // Manifest stays at 1.1 with no plan_storage declaration.
     const manifest = yamlParse(await readTestOutput(manifestPath)) as Record<string, unknown>;
@@ -1131,9 +1115,7 @@ describe("kspec upgrade — folder storage migration", () => {
     expect(reviewFileAfter).toBe(reviewFileBefore);
 
     // No new plan folder was created for the monolithic plan.
-    await expect(
-      fs.access(path.join(specDir, "plans", monolithicPlanUlid)),
-    ).rejects.toThrow();
+    await expect(fs.access(path.join(specDir, "plans", monolithicPlanUlid))).rejects.toThrow();
 
     // The pre-existing review folder is still on disk untouched.
     const existingPersisted = yamlParse(
@@ -1260,9 +1242,9 @@ describe("kspec upgrade — folder storage migration", () => {
     const manifest = yamlParse(await readTestOutput(manifestPath)) as Record<string, unknown>;
     expect(manifest.kynetic).toBe("1.2");
 
-    const index = yamlParse(
-      await readTestOutput(path.join(specDir, "project.reviews.yaml")),
-    ) as { reviews: Array<{ _ulid: string }> };
+    const index = yamlParse(await readTestOutput(path.join(specDir, "project.reviews.yaml"))) as {
+      reviews: Array<{ _ulid: string }>;
+    };
     const ulids = new Set(index.reviews.map((r) => r._ulid));
     expect(ulids.has(existingFolderUlid)).toBe(true);
     expect(ulids.has(monolithicUlid)).toBe(true);
@@ -1526,9 +1508,7 @@ describe("kspec upgrade — folder storage migration", () => {
     // Safety preflight must be present as a failed step. Plan, review, and
     // manifest steps must all be skipped — the tripwire short-circuited
     // every storage mutation.
-    const safetyStep = result.steps.find(
-      (s) => s.name === "Storage migration safety preflight",
-    );
+    const safetyStep = result.steps.find((s) => s.name === "Storage migration safety preflight");
     expect(safetyStep?.status).toBe("failed");
     expect(safetyStep?.message).toMatch(/protected/i);
     expect(safetyStep?.message).toMatch(/KSPEC_PROTECTED_PROJECT_PATHS/);
@@ -1614,9 +1594,7 @@ describe("kspec upgrade — folder storage migration", () => {
     const result = JSON.parse(cliResult.stdout) as UpgradeResultShape;
     expect(result.success).toBe(false);
 
-    const safetyStep = result.steps.find(
-      (s) => s.name === "Storage migration safety preflight",
-    );
+    const safetyStep = result.steps.find((s) => s.name === "Storage migration safety preflight");
     expect(safetyStep?.status).toBe("failed");
 
     const planStep = result.steps.find((s) => s.name === "Plan storage folder migration");
@@ -1630,9 +1608,7 @@ describe("kspec upgrade — folder storage migration", () => {
     // buffered write landed because the preflight aborted before the
     // buffer opened.
     expect(await readTestOutput(path.join(specDir, "project.plans.yaml"))).toBe(planFileBefore);
-    expect(await readTestOutput(path.join(specDir, "project.reviews.yaml"))).toBe(
-      reviewFileBefore,
-    );
+    expect(await readTestOutput(path.join(specDir, "project.reviews.yaml"))).toBe(reviewFileBefore);
     expect(await readTestOutput(manifestPath)).toBe(manifestBefore);
 
     // No plan/review folder directories were created for the would-be
@@ -1670,9 +1646,7 @@ describe("kspec upgrade — folder storage migration", () => {
     const setupStatePath = path.join(specDir, ".setup-state.json");
     const setupStateBefore = await readTestOutput(setupStatePath);
     const gitignorePath = path.join(tempDir, ".gitignore");
-    const gitignoreBefore = await fs
-      .readFile(gitignorePath, "utf-8")
-      .catch(() => "<missing>");
+    const gitignoreBefore = await fs.readFile(gitignorePath, "utf-8").catch(() => "<missing>");
     const skillsDir = path.join(specDir, "skills");
     const skillsBefore = await fs
       .readdir(skillsDir)
@@ -1687,9 +1661,7 @@ describe("kspec upgrade — folder storage migration", () => {
     const result = JSON.parse(cliResult.stdout) as UpgradeResultShape;
     expect(result.success).toBe(false);
 
-    const safetyStep = result.steps.find(
-      (s) => s.name === "Storage migration safety preflight",
-    );
+    const safetyStep = result.steps.find((s) => s.name === "Storage migration safety preflight");
     expect(safetyStep?.status).toBe("failed");
     expect(safetyStep?.message).toMatch(/protected/i);
     expect(safetyStep?.message).toMatch(/KSPEC_PROTECTED_PROJECT_PATHS/);
@@ -1715,9 +1687,7 @@ describe("kspec upgrade — folder storage migration", () => {
     for (const stepName of pipelineStepNames) {
       const step = result.steps.find((s) => s.name === stepName);
       expect(step, `expected ${stepName} step present`).toBeDefined();
-      expect(step?.status, `${stepName} must be skipped under tripwire`).toBe(
-        "skipped",
-      );
+      expect(step?.status, `${stepName} must be skipped under tripwire`).toBe("skipped");
     }
 
     // The result must NOT report any step as `done` — that would prove

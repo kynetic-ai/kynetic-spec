@@ -168,8 +168,14 @@ describe("KspecWatcher Chokidar-only monitoring", () => {
     await mkdir(join(kspecDir, "reviews", reviewUlid, "resources"), { recursive: true });
     await writeFile(planMdPath, "# Plan body — not YAML\n");
     // Binary-ish content that would fail YAML parsing if mis-handled.
-    await writeFile(planResourcePath, Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
-    await writeFile(reviewScreenshotPath, Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
+    await writeFile(
+      planResourcePath,
+      Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+    );
+    await writeFile(
+      reviewScreenshotPath,
+      Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+    );
 
     mockState.latestWatcher?.emitChange(planMdPath);
     mockState.latestWatcher?.emitChange(planResourcePath);

@@ -14,8 +14,7 @@ import { join, dirname, resolve } from "node:path";
 import { readTestOutputSync } from "./helpers/cli";
 
 const projectRoot = resolve(dirname(__dirname));
-const docs = (...segments: string[]) =>
-  readTestOutputSync(join(projectRoot, "docs", ...segments));
+const docs = (...segments: string[]) => readTestOutputSync(join(projectRoot, "docs", ...segments));
 
 describe("@folder-backed-resource-documentation-1 ac-resource-docs-name-exact-interfaces", () => {
   // AC: @folder-backed-resource-documentation-1 ac-resource-docs-name-exact-interfaces
@@ -39,9 +38,7 @@ describe("@folder-backed-resource-documentation-1 ac-resource-docs-name-exact-in
   it("documents `kspec plan derive --materialize-resources` behavior with the exact destination layout and id prefix", () => {
     const guide = docs("guides", "working-with-local-resources.md");
     expect(guide).toContain("kspec plan derive @plan-my-feature --materialize-resources");
-    expect(guide).toContain(
-      ".kspec/tasks/<task-ulid>/resources/plan/<plan-ulid>/<relative-path>",
-    );
+    expect(guide).toContain(".kspec/tasks/<task-ulid>/resources/plan/<plan-ulid>/<relative-path>");
     expect(guide).toContain("plan-<original-resource-id>");
 
     const concept = docs("concepts", "local-resources.md");

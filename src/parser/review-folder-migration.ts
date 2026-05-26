@@ -138,13 +138,7 @@ function isMonolithicEntry(entry: Record<string, unknown>): boolean {
   const hasFullVerdicts = Array.isArray(entry.verdicts) && entry.verdicts.length > 0;
   const hasFullEvents = Array.isArray(entry.events) && entry.events.length > 0;
   const hasFullNotes = Array.isArray(entry.notes) && entry.notes.length > 0;
-  if (
-    hasFullThreads ||
-    hasFullChecks ||
-    hasFullVerdicts ||
-    hasFullEvents ||
-    hasFullNotes
-  ) {
+  if (hasFullThreads || hasFullChecks || hasFullVerdicts || hasFullEvents || hasFullNotes) {
     return true;
   }
   // Records without all the lean count fields are also monolithic — they
@@ -157,10 +151,7 @@ function isMonolithicEntry(entry: Record<string, unknown>): boolean {
  * fails. Mirrors the shape `toReviewIndexEntry` produces so the lean
  * index keeps its bounded contract.
  */
-function buildRawIndexEntry(
-  ulid: string,
-  raw: Record<string, unknown>,
-): Record<string, unknown> {
+function buildRawIndexEntry(ulid: string, raw: Record<string, unknown>): Record<string, unknown> {
   const threads = Array.isArray(raw.threads) ? raw.threads : [];
   const checks = Array.isArray(raw.checks) ? raw.checks : [];
   const verdicts = Array.isArray(raw.verdicts) ? raw.verdicts : [];
@@ -175,8 +166,7 @@ function buildRawIndexEntry(
         ? (raw.subject as Record<string, unknown>)
         : {},
     related_refs: Array.isArray(raw.related_refs) ? raw.related_refs : [],
-    created_at:
-      typeof raw.created_at === "string" ? raw.created_at : new Date().toISOString(),
+    created_at: typeof raw.created_at === "string" ? raw.created_at : new Date().toISOString(),
     disposition: "pending",
     thread_count: threads.length,
     unresolved_blocker_count: 0,
@@ -294,11 +284,9 @@ export async function computeReviewMigrationReport(
   // Cases 1 and 2 collapse to a single rule: any monolithic record
   // alongside any review folder = partial layout.
   const partialLayout =
-    (folderUlids.size > 0 && entries.length > 0) ||
-    orphanedLeanEntries.length > 0;
+    (folderUlids.size > 0 && entries.length > 0) || orphanedLeanEntries.length > 0;
 
-  const alreadyMigrated =
-    monolithicRecords.length === 0 && orphanedLeanEntries.length === 0;
+  const alreadyMigrated = monolithicRecords.length === 0 && orphanedLeanEntries.length === 0;
 
   return {
     migrated: entries.filter((e) => !e.preexistingFolder).length,

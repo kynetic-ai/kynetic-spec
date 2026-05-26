@@ -71,17 +71,14 @@ async function multipart(
   // body is present, which breaks multipart parsing. Let the Request infer
   // the boundary-bearing multipart Content-Type from FormData directly.
   return app.handle(
-    new Request(
-      `http://localhost/api/reviews/${encodeURIComponent(reviewRef)}/resources`,
-      {
-        method: "POST",
-        headers: {
-          Host: "localhost",
-          "X-Kspec-Dir": tempDir,
-        },
-        body: form,
+    new Request(`http://localhost/api/reviews/${encodeURIComponent(reviewRef)}/resources`, {
+      method: "POST",
+      headers: {
+        Host: "localhost",
+        "X-Kspec-Dir": tempDir,
       },
-    ),
+      body: form,
+    }),
   );
 }
 
@@ -124,11 +121,7 @@ describe("POST /api/reviews/:ref/resources (multipart)", () => {
   });
 
   it("returns 400 missing_resource_file when the multipart body has no 'file' field", async () => {
-    const response = await multipart(
-      REVIEW_ULID,
-      { id: "shot", path: "shot.png" },
-      null,
-    );
+    const response = await multipart(REVIEW_ULID, { id: "shot", path: "shot.png" }, null);
     expect(response.status).toBe(400);
     const body = await response.json();
     expect(body.code).toBe("missing_resource_file");
@@ -498,17 +491,14 @@ includes:
       form.append(key, value);
     }
     return incompatApp.handle(
-      new Request(
-        `http://localhost/api/reviews/${encodeURIComponent(reviewRef)}/resources`,
-        {
-          method: "POST",
-          headers: {
-            Host: "localhost",
-            "X-Kspec-Dir": incompatTempDir,
-          },
-          body: form,
+      new Request(`http://localhost/api/reviews/${encodeURIComponent(reviewRef)}/resources`, {
+        method: "POST",
+        headers: {
+          Host: "localhost",
+          "X-Kspec-Dir": incompatTempDir,
         },
-      ),
+        body: form,
+      }),
     );
   }
 
@@ -653,17 +643,14 @@ describe("Review-resource route cache + broadcast side effects", () => {
       form.append(key, value);
     }
     return sideApp.handle(
-      new Request(
-        `http://localhost/api/reviews/${encodeURIComponent(reviewRef)}/resources`,
-        {
-          method: "POST",
-          headers: {
-            Host: "localhost",
-            "X-Kspec-Dir": sideTempDir,
-          },
-          body: form,
+      new Request(`http://localhost/api/reviews/${encodeURIComponent(reviewRef)}/resources`, {
+        method: "POST",
+        headers: {
+          Host: "localhost",
+          "X-Kspec-Dir": sideTempDir,
         },
-      ),
+        body: form,
+      }),
     );
   }
 
@@ -817,17 +804,14 @@ describe("GET /api/reviews/:ref/resources/:resourceId/bytes — selected non-def
       form.append(key, value);
     }
     return multiApp.handle(
-      new Request(
-        `http://localhost/api/reviews/${encodeURIComponent(reviewRef)}/resources`,
-        {
-          method: "POST",
-          headers: {
-            Host: "localhost",
-            "X-Kspec-Dir": targetTempDir,
-          },
-          body: form,
+      new Request(`http://localhost/api/reviews/${encodeURIComponent(reviewRef)}/resources`, {
+        method: "POST",
+        headers: {
+          Host: "localhost",
+          "X-Kspec-Dir": targetTempDir,
         },
-      ),
+        body: form,
+      }),
     );
   }
 
@@ -835,10 +819,7 @@ describe("GET /api/reviews/:ref/resources/:resourceId/bytes — selected non-def
   // beforeEach. Keeping the setup assertion as an explicit throw lets the
   // jest/no-standalone-expect rule pass on this file while still failing
   // the suite immediately if the daemon refuses the upload.
-  async function seedReviewResource(
-    targetTempDir: string,
-    bytes: Buffer,
-  ): Promise<void> {
+  async function seedReviewResource(targetTempDir: string, bytes: Buffer): Promise<void> {
     const response = await uploadFor(
       targetTempDir,
       REVIEW_ULID,
@@ -873,13 +854,10 @@ describe("GET /api/reviews/:ref/resources/:resourceId/bytes — selected non-def
 
   it("routes via the X-Kspec-Dir header when present (baseline)", async () => {
     const response = await multiApp.handle(
-      new Request(
-        `http://localhost/api/reviews/${REVIEW_ULID}/resources/shot/bytes`,
-        {
-          method: "GET",
-          headers: { Host: "localhost", "X-Kspec-Dir": projectB },
-        },
-      ),
+      new Request(`http://localhost/api/reviews/${REVIEW_ULID}/resources/shot/bytes`, {
+        method: "GET",
+        headers: { Host: "localhost", "X-Kspec-Dir": projectB },
+      }),
     );
     expect(response.status).toBe(200);
     const body = Buffer.from(await response.arrayBuffer());

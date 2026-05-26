@@ -571,7 +571,9 @@ export async function removeReviewResource(
   ctx: KspecContext,
   ref: string,
   resourceId: string,
-): Promise<ReviewResourceResult<{ review: LoadedReviewRecord; removed: { id: string; path: string } }>> {
+): Promise<
+  ReviewResourceResult<{ review: LoadedReviewRecord; removed: { id: string; path: string } }>
+> {
   const fetched = await getReviewResource(ctx, ref, resourceId);
   if (!fetched.ok) return fetched;
   const review = fetched.value.review;

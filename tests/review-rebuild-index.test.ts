@@ -84,10 +84,7 @@ async function writeReviewFolder(
   );
 }
 
-async function writeIndex(
-  specDir: string,
-  entries: Array<Record<string, unknown>>,
-): Promise<void> {
+async function writeIndex(specDir: string, entries: Array<Record<string, unknown>>): Promise<void> {
   await fs.writeFile(
     path.join(specDir, "project.reviews.yaml"),
     yamlStringify({ kynetic_reviews: "1.0", reviews: entries }),

@@ -73,9 +73,7 @@ describe("migration safety tripwire", () => {
     const report = resolveMigrationTargets(guarded, specDir);
     expect(report.protected).toBe(true);
     expect(report.matchedPath).toBe(path.resolve(guarded));
-    expect(() => assertSafeMigrationTarget(guarded, specDir)).toThrow(
-      ProtectedLiveProjectError,
-    );
+    expect(() => assertSafeMigrationTarget(guarded, specDir)).toThrow(ProtectedLiveProjectError);
   });
 
   // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-executes-folder-migration
@@ -84,9 +82,7 @@ describe("migration safety tripwire", () => {
     process.env[PROTECTED_PROJECT_PATHS_ENV] = guarded;
     const worktree = path.join(guarded, ".kspec-worktrees", "task-fake-1-1");
     const specDir = path.join(worktree, ".kspec");
-    expect(() => assertSafeMigrationTarget(worktree, specDir)).toThrow(
-      ProtectedLiveProjectError,
-    );
+    expect(() => assertSafeMigrationTarget(worktree, specDir)).toThrow(ProtectedLiveProjectError);
   });
 
   // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-executes-folder-migration

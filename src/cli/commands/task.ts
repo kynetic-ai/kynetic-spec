@@ -796,9 +796,8 @@ export function registerTaskCommands(program: Command): void {
           typeof import("../../parser/task-resource-resolver.js").projectResolvedTaskResources
         > = [];
         if (foundTask.resource_refs && foundTask.resource_refs.length > 0) {
-          const { resolveTaskResources, projectResolvedTaskResources } = await import(
-            "../../parser/task-resource-resolver.js"
-          );
+          const { resolveTaskResources, projectResolvedTaskResources } =
+            await import("../../parser/task-resource-resolver.js");
           const resolved = await resolveTaskResources(ctx, foundTask);
           projectedResources = projectResolvedTaskResources(resolved);
         }

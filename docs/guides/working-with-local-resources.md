@@ -155,50 +155,50 @@ When the daemon is running (`kspec serve start`), every plan and review exposes 
 
 ### Plan Resources
 
-| Method   | Path                                              | Returns                                                                 |
-| -------- | ------------------------------------------------- | ----------------------------------------------------------------------- |
-| `GET`    | `/api/plans/:ref/resources`                       | `{ "resources": ResourceMetadata[] }`                                   |
-| `GET`    | `/api/plans/:ref/resources/:resourceId`           | `{ "resource": ResourceMetadata }`                                      |
-| `GET`    | `/api/plans/:ref/resources/:resourceId/bytes`     | Raw bytes with `Content-Type` and `X-Kspec-Resource-Sha256` headers     |
-| `POST`   | `/api/plans/:ref/resources`                       | `201 { "resource": ResourceMetadata, "replaced": false }` (create)      |
-|          |                                                   | `200 { "resource": ResourceMetadata, "replaced": true }` (replace)      |
-| `DELETE` | `/api/plans/:ref/resources/:resourceId`           | `200 { "removed": { "id": string, "path": string } }`                   |
+| Method   | Path                                          | Returns                                                             |
+| -------- | --------------------------------------------- | ------------------------------------------------------------------- |
+| `GET`    | `/api/plans/:ref/resources`                   | `{ "resources": ResourceMetadata[] }`                               |
+| `GET`    | `/api/plans/:ref/resources/:resourceId`       | `{ "resource": ResourceMetadata }`                                  |
+| `GET`    | `/api/plans/:ref/resources/:resourceId/bytes` | Raw bytes with `Content-Type` and `X-Kspec-Resource-Sha256` headers |
+| `POST`   | `/api/plans/:ref/resources`                   | `201 { "resource": ResourceMetadata, "replaced": false }` (create)  |
+|          |                                               | `200 { "resource": ResourceMetadata, "replaced": true }` (replace)  |
+| `DELETE` | `/api/plans/:ref/resources/:resourceId`       | `200 { "removed": { "id": string, "path": string } }`               |
 
 ### Review Resources
 
-| Method   | Path                                                | Returns                                                                 |
-| -------- | --------------------------------------------------- | ----------------------------------------------------------------------- |
-| `GET`    | `/api/reviews/:ref/resources`                       | `{ "resources": ResourceMetadata[] }`                                   |
-| `GET`    | `/api/reviews/:ref/resources/:resourceId`           | `{ "resource": ResourceMetadata }`                                      |
-| `GET`    | `/api/reviews/:ref/resources/:resourceId/bytes`     | Raw bytes with `Content-Type` and `X-Kspec-Resource-Sha256` headers     |
-| `POST`   | `/api/reviews/:ref/resources`                       | `201 { "resource": ResourceMetadata, "replaced": false }` (create)      |
-|          |                                                     | `200 { "resource": ResourceMetadata, "replaced": true }` (replace)      |
-| `DELETE` | `/api/reviews/:ref/resources/:resourceId`           | `200 { "removed": { "id": string, "path": string } }`                   |
+| Method   | Path                                            | Returns                                                             |
+| -------- | ----------------------------------------------- | ------------------------------------------------------------------- |
+| `GET`    | `/api/reviews/:ref/resources`                   | `{ "resources": ResourceMetadata[] }`                               |
+| `GET`    | `/api/reviews/:ref/resources/:resourceId`       | `{ "resource": ResourceMetadata }`                                  |
+| `GET`    | `/api/reviews/:ref/resources/:resourceId/bytes` | Raw bytes with `Content-Type` and `X-Kspec-Resource-Sha256` headers |
+| `POST`   | `/api/reviews/:ref/resources`                   | `201 { "resource": ResourceMetadata, "replaced": false }` (create)  |
+|          |                                                 | `200 { "resource": ResourceMetadata, "replaced": true }` (replace)  |
+| `DELETE` | `/api/reviews/:ref/resources/:resourceId`       | `200 { "removed": { "id": string, "path": string } }`               |
 
 ### POST Upload Shape
 
 Both POST routes accept `multipart/form-data` with the following fields:
 
-| Field          | Required | Notes                                                                          |
-| -------------- | -------- | ------------------------------------------------------------------------------ |
-| `file`         | Yes      | The resource file. Missing → `400 missing_resource_file`.                      |
-| `id`           | Yes      | Resource id. Must match `[a-z0-9][a-z0-9._-]{0,127}`.                          |
-| `path`         | Yes      | POSIX-relative path under the entity's `resources/`.                           |
-| `label`        | No       | Optional human-friendly label.                                                 |
-| `description`  | No       | Optional free-form description.                                                |
-| `content_type` | No       | Explicit MIME type. Inferred from `path` extension when omitted.               |
+| Field          | Required | Notes                                                                                                                    |
+| -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `file`         | Yes      | The resource file. Missing → `400 missing_resource_file`.                                                                |
+| `id`           | Yes      | Resource id. Must match `[a-z0-9][a-z0-9._-]{0,127}`.                                                                    |
+| `path`         | Yes      | POSIX-relative path under the entity's `resources/`.                                                                     |
+| `label`        | No       | Optional human-friendly label.                                                                                           |
+| `description`  | No       | Optional free-form description.                                                                                          |
+| `content_type` | No       | Explicit MIME type. Inferred from `path` extension when omitted.                                                         |
 | `replace`      | No       | Accepts `"true"`/`"1"` (true) or `"false"`/`"0"` (false). Other values → `400 invalid_replace_value`. Omitted → `false`. |
 
 ### Status and Error Mapping
 
-| Status | When                                                                                          | Body shape                                                                                                                                  |
-| ------ | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `200`  | Successful GET, replace POST, or DELETE                                                       | See route table above                                                                                                                       |
-| `201`  | Successful create POST                                                                        | `{ "resource": ResourceMetadata, "replaced": false }`                                                                                       |
-| `400`  | `invalid_resource_id`, `invalid_resource_path`, `missing_resource_file`, `invalid_replace_value` | `{ "error": code, "code": code, "message": string, "resource_id": string\|null, "path": string\|null }`                                  |
-| `404`  | `plan_not_found`, `review_not_found`, `resource_not_found`                                    | Same shape as 400                                                                                                                           |
-| `409`  | `resource_conflict` (id or path collision without `replace`)                                  | Same shape as 400                                                                                                                           |
-| `409`  | `entity_storage_incompatible` (project not on folder-backed storage)                          | `{ "error": "entity_storage_incompatible", "code": <domain-code>, "message": string, "suggestion": string, "domain": string, "cache_domain": string }` |
+| Status | When                                                                                             | Body shape                                                                                                                                             |
+| ------ | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `200`  | Successful GET, replace POST, or DELETE                                                          | See route table above                                                                                                                                  |
+| `201`  | Successful create POST                                                                           | `{ "resource": ResourceMetadata, "replaced": false }`                                                                                                  |
+| `400`  | `invalid_resource_id`, `invalid_resource_path`, `missing_resource_file`, `invalid_replace_value` | `{ "error": code, "code": code, "message": string, "resource_id": string\|null, "path": string\|null }`                                                |
+| `404`  | `plan_not_found`, `review_not_found`, `resource_not_found`                                       | Same shape as 400                                                                                                                                      |
+| `409`  | `resource_conflict` (id or path collision without `replace`)                                     | Same shape as 400                                                                                                                                      |
+| `409`  | `entity_storage_incompatible` (project not on folder-backed storage)                             | `{ "error": "entity_storage_incompatible", "code": <domain-code>, "message": string, "suggestion": string, "domain": string, "cache_domain": string }` |
 
 The `entity_storage_incompatible` envelope is shared across all routes that need folder-backed plan, review, or resource data. See [`entity_storage_incompatible`: project storage format mismatch](../troubleshooting/entity-storage-incompatible.md) for the recovery procedure.
 

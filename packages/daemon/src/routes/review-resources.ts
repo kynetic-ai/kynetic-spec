@@ -329,10 +329,7 @@ export function createReviewResourcesRoutes(options: ReviewResourcesRouteOptions
             });
 
             if (!result.ok) {
-              return errorResponse(
-                statusForCode(result.error.code),
-                toApiErrorBody(result.error),
-              );
+              return errorResponse(statusForCode(result.error.code), toApiErrorBody(result.error));
             }
 
             await commitIfShadow(

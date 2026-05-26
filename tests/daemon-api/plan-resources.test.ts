@@ -161,7 +161,12 @@ describe("Plan Resource API", () => {
   it("GET /api/plans/:ref/resources/:resourceId returns the strict 9-field shape", async () => {
     writePlanFolderWithResources({
       resources: [
-        { id: "shot", path: "screenshots/login.png", bytes: Buffer.from([1, 2, 3]), contentType: "image/png" },
+        {
+          id: "shot",
+          path: "screenshots/login.png",
+          bytes: Buffer.from([1, 2, 3]),
+          contentType: "image/png",
+        },
       ],
     });
     const response = await request(`/api/plans/${PLAN_REF}/resources/shot`);
@@ -207,7 +212,9 @@ describe("Plan Resource API", () => {
   it("GET /api/plans/:ref/resources/:resourceId/bytes streams the file with content-type and sha256 headers", async () => {
     const payload = Buffer.from("hello world\n");
     writePlanFolderWithResources({
-      resources: [{ id: "greeting", path: "greeting.txt", bytes: payload, contentType: "text/plain" }],
+      resources: [
+        { id: "greeting", path: "greeting.txt", bytes: payload, contentType: "text/plain" },
+      ],
     });
     const response = await request(`/api/plans/${PLAN_REF}/resources/greeting/bytes`);
     expect(response.status).toBe(200);
@@ -278,7 +285,9 @@ describe("Plan Resource API", () => {
   // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
   it("POST with replace=true overwrites an existing resource and returns 200", async () => {
     writePlanFolderWithResources({
-      resources: [{ id: "shot", path: "shot.png", bytes: Buffer.from([1]), contentType: "image/png" }],
+      resources: [
+        { id: "shot", path: "shot.png", bytes: Buffer.from([1]), contentType: "image/png" },
+      ],
     });
     const newBytes = Buffer.from([9, 9, 9]);
     const blob = new Blob([newBytes], { type: "image/png" });
@@ -346,7 +355,9 @@ describe("Plan Resource API", () => {
   // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
   it("POST replace=1 is treated as true; replace=0 as false; replace=garbage as 400", async () => {
     writePlanFolderWithResources({
-      resources: [{ id: "shot", path: "shot.png", bytes: Buffer.from([1]), contentType: "image/png" }],
+      resources: [
+        { id: "shot", path: "shot.png", bytes: Buffer.from([1]), contentType: "image/png" },
+      ],
     });
 
     // replace=1 — should succeed with 200 (replaced)
@@ -357,13 +368,23 @@ describe("Plan Resource API", () => {
 
     // replace=0 — should refuse with 409 (id already present)
     const blobZero = new Blob([new Uint8Array([3])], { type: "image/png" });
-    const resZero = await postUpload({ file: blobZero, id: "shot", path: "shot.png", replace: "0" });
+    const resZero = await postUpload({
+      file: blobZero,
+      id: "shot",
+      path: "shot.png",
+      replace: "0",
+    });
     expect(resZero.status).toBe(409);
     expect((await resZero.json()).error).toBe("resource_conflict");
 
     // replace=garbage — 400 invalid_replace_value
     const blobBad = new Blob([new Uint8Array([4])], { type: "image/png" });
-    const resBad = await postUpload({ file: blobBad, id: "other", path: "other.png", replace: "yes" });
+    const resBad = await postUpload({
+      file: blobBad,
+      id: "other",
+      path: "other.png",
+      replace: "yes",
+    });
     expect(resBad.status).toBe(400);
     expect((await resBad.json()).error).toBe("invalid_replace_value");
   });
@@ -371,7 +392,9 @@ describe("Plan Resource API", () => {
   // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
   it("POST without replace on an existing id returns 409 resource_conflict", async () => {
     writePlanFolderWithResources({
-      resources: [{ id: "shot", path: "shot.png", bytes: Buffer.from([1]), contentType: "image/png" }],
+      resources: [
+        { id: "shot", path: "shot.png", bytes: Buffer.from([1]), contentType: "image/png" },
+      ],
     });
     const blob = new Blob([new Uint8Array([5])], { type: "image/png" });
     const response = await postUpload({ file: blob, id: "shot", path: "shot.png" });
@@ -422,7 +445,9 @@ describe("Plan Resource API", () => {
   // AC: @trait-entity-scoped-local-resources-1 ac-resource-delete-follows-owner-delete
   it("DELETE /api/plans/:ref/resources/:resourceId removes the resource and file", async () => {
     writePlanFolderWithResources({
-      resources: [{ id: "shot", path: "shot.png", bytes: Buffer.from([1]), contentType: "image/png" }],
+      resources: [
+        { id: "shot", path: "shot.png", bytes: Buffer.from([1]), contentType: "image/png" },
+      ],
     });
     const response = await request(`/api/plans/${PLAN_REF}/resources/shot`, { method: "DELETE" });
     expect(response.status).toBe(200);
@@ -514,7 +539,12 @@ describe("Plan list — cache-ready resource_summary projection", () => {
     writePlanFolderWithResources({
       resources: [
         { id: "shot", path: "shot.png", bytes: Buffer.from([1, 2, 3]), contentType: "image/png" },
-        { id: "hero", path: "hero.png", bytes: Buffer.from([1, 2, 3, 4, 5]), contentType: "image/png" },
+        {
+          id: "hero",
+          path: "hero.png",
+          bytes: Buffer.from([1, 2, 3, 4, 5]),
+          contentType: "image/png",
+        },
       ],
     });
 

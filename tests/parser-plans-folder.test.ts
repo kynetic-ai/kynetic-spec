@@ -19,12 +19,7 @@ import {
   getPlanNotesFilePath,
   rebuildPlanIndex,
 } from "../src/parser/plan-storage-manager.js";
-import {
-  cleanupTempDir,
-  createTempDir,
-  initGitRepo,
-  readTestOutput,
-} from "./helpers/cli.js";
+import { cleanupTempDir, createTempDir, initGitRepo, readTestOutput } from "./helpers/cli.js";
 
 interface FolderCtx {
   specDir: string;
@@ -304,9 +299,7 @@ describe("Folder-backed plan storage manager", () => {
     }));
 
     expect(await pathExists(unknownPath)).toBe(true);
-    expect(await readTestOutput(unknownPath)).toBe(
-      "hand-edited notes that must survive",
-    );
+    expect(await readTestOutput(unknownPath)).toBe("hand-edited notes that must survive");
   });
 
   // AC: @trait-folder-backed-entity-1 ac-unknown-files-preserved
@@ -392,9 +385,11 @@ describe("Folder-backed plan storage manager", () => {
     const indexPath = getPlanIndexFilePath(ctx as any);
     const tampered = await readIndexFile(indexPath);
     tampered!.plans![0].title = "WRONG";
-    await fs.writeFile(indexPath, `kynetic_plans: "1.0"\nplans:\n  - ${
-      JSON.stringify(tampered!.plans![0])
-    }\n`, "utf-8");
+    await fs.writeFile(
+      indexPath,
+      `kynetic_plans: "1.0"\nplans:\n  - ${JSON.stringify(tampered!.plans![0])}\n`,
+      "utf-8",
+    );
 
     const result = await rebuildPlanIndex(ctx as any);
     expect(result.count).toBe(1);

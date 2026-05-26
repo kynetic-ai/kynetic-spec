@@ -302,10 +302,7 @@ describe.runIf(canRunInit)("Integration: plan import --into resource validation"
   beforeEach(async () => {
     tempDir = await createTempDir();
     await setupFolderProject(tempDir);
-    const addResult = kspecRun(
-      'plan add --title "Existing Plan" --content "stub"',
-      tempDir,
-    );
+    const addResult = kspecRun('plan add --title "Existing Plan" --content "stub"', tempDir);
     if (addResult.exitCode !== 0) throw new Error(addResult.stderr);
     planRef = "@plan-existing-plan";
     editPath = path.join(tempDir, "edit.md");
@@ -380,10 +377,7 @@ describe.runIf(canRunInit)("Integration: plan set --content-file resource valida
   beforeEach(async () => {
     tempDir = await createTempDir();
     await setupFolderProject(tempDir);
-    const addResult = kspecRun(
-      'plan add --title "Set Plan" --content "stub"',
-      tempDir,
-    );
+    const addResult = kspecRun('plan add --title "Set Plan" --content "stub"', tempDir);
     if (addResult.exitCode !== 0) throw new Error(addResult.stderr);
     planRef = "@plan-set-plan";
     const sourceFile = path.join(tempDir, "shot.png");
@@ -426,11 +420,9 @@ describe.runIf(canRunInit)("Integration: plan set --content-file resource valida
 `,
       "utf-8",
     );
-    const result = kspecRun(
-      `plan set ${planRef} --content-file "${contentFile}" --json`,
-      tempDir,
-      { expectFail: true },
-    );
+    const result = kspecRun(`plan set ${planRef} --content-file "${contentFile}" --json`, tempDir, {
+      expectFail: true,
+    });
     expect(result.exitCode).toBe(2);
     expect(result.stderr).toContain("undeclared_markdown_link");
   });

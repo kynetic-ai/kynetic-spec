@@ -63,23 +63,26 @@ export function rewritePlanResourceLinks(
     byPath.set(resource.path, resource);
   }
 
-  return markdown.replace(PLAN_RESOURCE_LINK_PATTERN, (
-    match,
-    inlinePrefix?: string,
-    inlineTarget?: string,
-    inlineSuffix?: string,
-    refDefPrefix?: string,
-    refDefTarget?: string,
-  ) => {
-    const target = inlineTarget ?? refDefTarget;
-    if (!target) return match;
-    const relative = target.slice(AUTHORING_PREFIX.length);
-    const resource = byPath.get(relative);
-    if (!resource) return match;
-    const url = buildResourceFetchUrl(resourcesBaseUrl, resource);
-    if (refDefPrefix !== undefined && refDefTarget !== undefined) {
-      return `${refDefPrefix}${url}`;
-    }
-    return `${inlinePrefix ?? ""}${url}${inlineSuffix ?? ""}`;
-  });
+  return markdown.replace(
+    PLAN_RESOURCE_LINK_PATTERN,
+    (
+      match,
+      inlinePrefix?: string,
+      inlineTarget?: string,
+      inlineSuffix?: string,
+      refDefPrefix?: string,
+      refDefTarget?: string,
+    ) => {
+      const target = inlineTarget ?? refDefTarget;
+      if (!target) return match;
+      const relative = target.slice(AUTHORING_PREFIX.length);
+      const resource = byPath.get(relative);
+      if (!resource) return match;
+      const url = buildResourceFetchUrl(resourcesBaseUrl, resource);
+      if (refDefPrefix !== undefined && refDefTarget !== undefined) {
+        return `${refDefPrefix}${url}`;
+      }
+      return `${inlinePrefix ?? ""}${url}${inlineSuffix ?? ""}`;
+    },
+  );
 }

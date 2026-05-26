@@ -349,10 +349,7 @@ reviews:
       path.join(specDir, "project.plans.yaml"),
       "plans:\n  - _ulid: 01ABCDEFGHJKMNPQRSTUVWXYZ\n    title: Anything\n",
     );
-    const ctx = makeContext(
-      specDir,
-      makeManifest({ kynetic: "1.1", plan_storage: undefined }),
-    );
+    const ctx = makeContext(specDir, makeManifest({ kynetic: "1.1", plan_storage: undefined }));
     expect(await detectPartialLayoutForDomain(ctx, "plans")).toBeNull();
   });
 
@@ -521,10 +518,7 @@ describe("assertPlanStorageCompatible / assertReviewStorageCompatible / assertRe
 
   // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
   it("lenient assertPlanStorageCompatible passes on legacy projects without plan_storage", async () => {
-    const ctx = makeContext(
-      specDir,
-      makeManifest({ kynetic: "1.0", plan_storage: undefined }),
-    );
+    const ctx = makeContext(specDir, makeManifest({ kynetic: "1.0", plan_storage: undefined }));
     await expect(assertPlanStorageCompatible(ctx)).resolves.toBeUndefined();
   });
 
@@ -589,18 +583,12 @@ reviews:
   });
 
   it("assertReviewStorageCompatible passes on legacy projects without review_storage", async () => {
-    const ctx = makeContext(
-      specDir,
-      makeManifest({ kynetic: "1.1", review_storage: undefined }),
-    );
+    const ctx = makeContext(specDir, makeManifest({ kynetic: "1.1", review_storage: undefined }));
     await expect(assertReviewStorageCompatible(ctx)).resolves.toBeUndefined();
   });
 
   it("assertResourceStorageCompatible passes on legacy projects without resource_storage", async () => {
-    const ctx = makeContext(
-      specDir,
-      makeManifest({ kynetic: "1.0", resource_storage: undefined }),
-    );
+    const ctx = makeContext(specDir, makeManifest({ kynetic: "1.0", resource_storage: undefined }));
     await expect(assertResourceStorageCompatible(ctx)).resolves.toBeUndefined();
   });
 
@@ -659,19 +647,13 @@ describe("assertPlanStorageWritable / assertReviewStorageWritable — folder-dec
 
   // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
   it("assertPlanStorageWritable still passes on legacy projects (CLI commands on unmigrated projects continue to work through the storage manager)", async () => {
-    const ctx = makeContext(
-      specDir,
-      makeManifest({ kynetic: "1.1", plan_storage: undefined }),
-    );
+    const ctx = makeContext(specDir, makeManifest({ kynetic: "1.1", plan_storage: undefined }));
     await expect(assertPlanStorageWritable(ctx)).resolves.toBeUndefined();
   });
 
   // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
   it("assertReviewStorageWritable still passes on legacy projects", async () => {
-    const ctx = makeContext(
-      specDir,
-      makeManifest({ kynetic: "1.1", review_storage: undefined }),
-    );
+    const ctx = makeContext(specDir, makeManifest({ kynetic: "1.1", review_storage: undefined }));
     await expect(assertReviewStorageWritable(ctx)).resolves.toBeUndefined();
   });
 
@@ -714,10 +696,7 @@ describe("requirePlanFolderStorage / requireReviewFolderStorage / requireResourc
 
   // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
   it("strict gate rejects legacy plan projects with legacy_plan_storage_removed", async () => {
-    const ctx = makeContext(
-      specDir,
-      makeManifest({ kynetic: "1.0", plan_storage: undefined }),
-    );
+    const ctx = makeContext(specDir, makeManifest({ kynetic: "1.0", plan_storage: undefined }));
     await expect(requirePlanFolderStorage(ctx)).rejects.toMatchObject({
       code: LEGACY_PLAN_STORAGE_REMOVED_CODE,
       domain: "plans",
@@ -733,10 +712,7 @@ describe("requirePlanFolderStorage / requireReviewFolderStorage / requireResourc
   });
 
   it("strict gate rejects legacy review projects with legacy_review_storage_removed", async () => {
-    const ctx = makeContext(
-      specDir,
-      makeManifest({ kynetic: "1.1", review_storage: undefined }),
-    );
+    const ctx = makeContext(specDir, makeManifest({ kynetic: "1.1", review_storage: undefined }));
     await expect(requireReviewFolderStorage(ctx)).rejects.toMatchObject({
       code: LEGACY_REVIEW_STORAGE_REMOVED_CODE,
       domain: "reviews",
@@ -752,10 +728,7 @@ describe("requirePlanFolderStorage / requireReviewFolderStorage / requireResourc
   });
 
   it("strict gate rejects legacy resource projects with legacy_plan_storage_removed code (canonical set)", async () => {
-    const ctx = makeContext(
-      specDir,
-      makeManifest({ kynetic: "1.0", resource_storage: undefined }),
-    );
+    const ctx = makeContext(specDir, makeManifest({ kynetic: "1.0", resource_storage: undefined }));
     await expect(requireResourceFolderStorage(ctx)).rejects.toMatchObject({
       code: LEGACY_PLAN_STORAGE_REMOVED_CODE,
       domain: "resources",

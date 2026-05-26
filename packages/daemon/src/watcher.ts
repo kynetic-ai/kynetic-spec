@@ -122,7 +122,11 @@ export class KspecWatcher {
     if (!relPath || relPath.startsWith("..")) return false;
     const segments = relPath.split(/[\\/]+/);
     if (segments.length < 3) return false;
-    if (!FOLDER_BACKED_ENTITY_ROOTS.includes(segments[0] as (typeof FOLDER_BACKED_ENTITY_ROOTS)[number])) {
+    if (
+      !FOLDER_BACKED_ENTITY_ROOTS.includes(
+        segments[0] as (typeof FOLDER_BACKED_ENTITY_ROOTS)[number],
+      )
+    ) {
       return false;
     }
     return ENTITY_ULID_SEGMENT.test(segments[1]);

@@ -805,7 +805,12 @@ async function buildEntityStorageSection(
     }
   };
 
-  recordDomain("plan-storage-format", report.planFormat, "folder", report.strictPlanIncompatibility);
+  recordDomain(
+    "plan-storage-format",
+    report.planFormat,
+    "folder",
+    report.strictPlanIncompatibility,
+  );
   recordDomain(
     "review-storage-format",
     report.reviewFormat,
