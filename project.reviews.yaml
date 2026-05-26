@@ -235889,3 +235889,29 @@ reviews:
     created_at: 2026-05-26T17:11:17.964Z
     updated_at: 2026-05-26T17:13:43.296Z
     notes: []
+  - _ulid: 01KSJMSPM15603HV4AFTFTAAED
+    slugs: []
+    title: "Plan review: Dispatch Merge Helper Target Lock Hardening (cycle 2)"
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KSJMSPM0C3B2VC5NHNC0TF59
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-26T17:19:56.032Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-dispatch-merge-helper-target-lock-hardening"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-26T17:19:56.033Z
+    updated_at: null
+    notes: []
