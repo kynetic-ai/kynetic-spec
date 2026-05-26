@@ -313,8 +313,8 @@ function buildPublicationInstructions(
       lines.push(
         `You are reviewing from a detached snapshot — you are NOT on the integration branch.`,
         `If review is clean, run the supported merge helper to integrate: \`bash {supporting:scripts/detached-reviewer-merge.sh}\``,
-        `Do NOT check out \`${metadata.mergeTargetBranch}\` or run manual git merge commands inside this snapshot.`,
-        `The helper handles no-op detection, dirty-target refusal, conflict abort, and occupied-worktree refresh automatically.`,
+        `Do NOT check out \`${metadata.mergeTargetBranch}\` anywhere or run manual git merge commands inside this snapshot. The helper performs all target-branch checkouts in its own temporary worktree.`,
+        `The helper handles no-op detection, dirty-target refusal, conflict abort, and temporary-worktree cleanup automatically; it never creates a persistent worktree on the integration target.`,
         `If the helper reports a conflict, move the task to \`needs_work\` with a note describing the conflict. Do not attempt manual conflict resolution in the detached snapshot.`,
       );
     } else {
