@@ -9970,3 +9970,79 @@ workspaces:
         head: 4c77a68199db361e194cf02d88b77e331bd472d8
         last_seen_at: 2026-05-26T20:47:18.140Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-detached-merge-helper-branch-lock-regressions-01ksjnvp
+  - active_role: null
+    base_branch_point: 7dfb69d214bdce1440a22509b6c922a2c7c89690
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-add-plan-target-lock-e2e-regression/01ksjnvq
+    canonical_branch_head: 7dfb69d214bdce1440a22509b6c922a2c7c89690
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-05-26T22:05:21.779Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-05-26T22:05:21.779Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 7dfb69d214bdce1440a22509b6c922a2c7c89690
+      updated_at: 2026-05-26T22:05:21.779Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KSJNVQJ5NNXEJSFSFR5SRK6N"
+    task_slug: task-add-plan-target-lock-e2e-regression
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-05-26T22:05:21.779Z
+      created_at: 2026-05-26T22:05:21.779Z
+      updated_at: 2026-05-26T22:05:21.779Z
+    workspace_id: dispatch-workspace-01KSJNVQJ5NNXEJSFSFR5SRK6N
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-add-plan-target-lock-e2e-regression/01ksjnvq
+        head: 7dfb69d214bdce1440a22509b6c922a2c7c89690
+        last_seen_at: 2026-05-26T22:05:21.779Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-plan-target-lock-e2e-regression-01ksjnvq
