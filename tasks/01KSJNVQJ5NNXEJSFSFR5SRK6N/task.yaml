@@ -61,7 +61,7 @@ description: >
 spec_ref: "@dispatch-integration-mutation-scope"
 plan_ref: "@plan-dispatch-merge-helper-target-lock-hardening"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-rework-detached-reviewer-merge-helper-ephemeral-target"
@@ -74,6 +74,14 @@ tags:
   - plan-branch
   - merge-helper
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-add-plan-target-lock-e2e-regression/01ksjnvq
+  captured_at: 2026-05-26T22:30:59.119Z
+  commit: 206c070fa4855d53ec1e35b82ed1fda44a5a447e
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KSK557R9WPKDYH9Z3VA7ZMA8
 history:
   - author: Jacob Chapel
@@ -96,7 +104,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-26T22:06:19.539Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-add-plan-target-lock-e2e-regression/01ksjnvq
+          captured_at: 2026-05-26T22:30:59.119Z
+          commit: 206c070fa4855d53ec1e35b82ed1fda44a5a447e
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-26T22:30:59.122Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-26T22:30:59.122Z
 created_at: 2026-05-26T17:38:31.109Z
 started_at: 2026-05-26T22:06:19.538Z
+submitted_at: 2026-05-26T22:30:59.122Z
 todos: []
 automation: eligible
