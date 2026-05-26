@@ -8919,11 +8919,11 @@ workspaces:
     canonical_branch: dispatch/task/task-rework-detached-reviewer-merge-helper-ephemeral-target/01ksjnvp
     canonical_branch_head: 742b4c6ca35ffb0c669eb6fc9eac267e8c863995
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-05-26T19:53:04.256Z
+      updated_at: 2026-05-26T19:57:10.374Z
     health:
       status: healthy
       issues: []
@@ -8937,16 +8937,16 @@ workspaces:
       target_branch: dev
       target_commit: 32d374363549d45f4edb1d067c9d97307e9b7f2d
       updated_at: 2026-05-26T19:53:04.256Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KSJNVPDXB0PGNGQKXC5CXF4K"
     task_slug: task-rework-detached-reviewer-merge-helper-ephemeral-target
     timestamps:
-      closed_at: null
+      closed_at: 2026-05-26T19:57:10.374Z
       last_active_at: 2026-05-26T19:36:22.540Z
       last_reconciled_at: 2026-05-26T19:56:49.167Z
       created_at: 2026-05-26T18:35:12.619Z
-      updated_at: 2026-05-26T19:56:49.167Z
+      updated_at: 2026-05-26T19:57:10.374Z
     workspace_id: dispatch-workspace-01KSJNVPDXB0PGNGQKXC5CXF4K
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
