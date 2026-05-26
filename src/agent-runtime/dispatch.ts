@@ -3543,7 +3543,28 @@ export class DispatchEngine {
     reason: string,
     kind: DegradedTargetKind = "other",
   ): void {
-    if (this._degradedTargets.has(branch)) return;
+    const existing = this._degradedTargets.get(branch);
+    if (existing) {
+      // An occupied-checkout entry has the weakest exit condition: it can be
+      // cleared by a no-op push once the blocking worktree is released. If a
+      // later retry reveals a stricter failure (divergence or other unsafe
+      // state), upgrade the kind and reason so the no-op-push clear path can
+      // no longer fire against a stale classification. Other kinds keep their
+      // existing entry; we never downgrade strictness, and we preserve
+      // enteredAt so recovery duration tracking stays accurate.
+      // AC: @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery
+      if (existing.kind === "occupied-checkout" && kind !== "occupied-checkout") {
+        this._degradedTargets.set(branch, {
+          reason,
+          enteredAt: existing.enteredAt,
+          kind,
+        });
+        console.warn(
+          `[dispatch] DEGRADED ${branch} kind upgraded ${existing.kind} → ${kind}: ${reason}`,
+        );
+      }
+      return;
+    }
 
     const enteredAt = new Date();
     this._degradedTargets.set(branch, { reason, enteredAt, kind });
