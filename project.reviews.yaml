@@ -235301,6 +235301,12 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-26T16:55:30.788Z
+      - _ulid: 01KSJKDB6JPGZW4DS1BBMWEQ8P
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSJKBMYFA30KDJQNGQAWX55A
+        timestamp: 2026-05-26T16:55:42.546Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -235330,8 +235336,17 @@ reviews:
               with declared sibling resources, then immediately runs  and asserts zero
               drift/resource_summary is current without repair."
             created_at: 2026-05-26T16:54:46.991Z
+          - _ulid: 01KSJKD9CQ4JGEC75KA0DR6WK3
+            author: Jacob Chapel
+            body: "Corrected evidence for the blocker: the distinct path is persistPlanResourcesFromSibling in
+              src/parser/plan-resource-import.ts, called after savePlan from
+              src/cli/commands/plan-import.ts. It writes resources.yaml during plan import without
+              going through plan resource add. The red test should import a plan with sibling
+              resources.yaml plus resources/ files, then run kspec plan rebuild-index --dry-run and
+              prove no resource_summary drift before any repair."
+            created_at: 2026-05-26T16:55:40.695Z
         kind: blocker
     verdicts: []
     created_at: 2026-05-26T16:54:22.500Z
-    updated_at: 2026-05-26T16:55:28.804Z
+    updated_at: 2026-05-26T16:55:40.695Z
     notes: []
