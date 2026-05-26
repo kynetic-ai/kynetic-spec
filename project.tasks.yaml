@@ -29961,7 +29961,7 @@
   type: task
   spec_ref: "@dispatch-integration-mutation-scope"
   plan_ref: "@plan-dispatch-merge-helper-target-lock-hardening"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-rework-detached-reviewer-merge-helper-ephemeral-target"
@@ -29977,5 +29977,5 @@
   todos_count: 0
   created_at: 2026-05-26T17:38:31.109Z
   started_at: 2026-05-26T23:12:37.522Z
-  submitted_at: 2026-05-26T22:30:59.122Z
+  submitted_at: 2026-05-26T23:12:41.089Z
   automation: eligible

@@ -61,7 +61,7 @@ description: >
 spec_ref: "@dispatch-integration-mutation-scope"
 plan_ref: "@plan-dispatch-merge-helper-target-lock-hardening"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-rework-detached-reviewer-merge-helper-ephemeral-target"
@@ -78,11 +78,11 @@ review_ref: "@01KSK6TAKQD49RDXPGN3TRF61X"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-add-plan-target-lock-e2e-regression/01ksjnvq
-  captured_at: 2026-05-26T22:30:59.119Z
-  commit: 206c070fa4855d53ec1e35b82ed1fda44a5a447e
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-05-26T23:12:41.085Z
+  commit: 030317d1fa3d8fa0f11ef35a75c35a411a19c188
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-add-plan-target-lock-e2e-regression/01ksjnvq
 session_id: 01KSK7S6F1CH0ZC2V42WKFEQZ1
 history:
   - author: Jacob Chapel
@@ -155,8 +155,35 @@ history:
         previous: 2026-05-26T22:06:19.538Z
     command: task-start
     timestamp: 2026-05-26T23:12:37.523Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-add-plan-target-lock-e2e-regression/01ksjnvq
+          captured_at: 2026-05-26T23:12:41.085Z
+          commit: 030317d1fa3d8fa0f11ef35a75c35a411a19c188
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-add-plan-target-lock-e2e-regression/01ksjnvq
+        previous:
+          review_url: null
+          branch: dispatch/task/task-add-plan-target-lock-e2e-regression/01ksjnvq
+          captured_at: 2026-05-26T22:30:59.119Z
+          commit: 206c070fa4855d53ec1e35b82ed1fda44a5a447e
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-05-26T23:12:41.089Z
+        previous: 2026-05-26T22:30:59.122Z
+    command: task-submit
+    timestamp: 2026-05-26T23:12:41.089Z
 created_at: 2026-05-26T17:38:31.109Z
 started_at: 2026-05-26T23:12:37.522Z
-submitted_at: 2026-05-26T22:30:59.122Z
+submitted_at: 2026-05-26T23:12:41.089Z
 todos: []
 automation: eligible
