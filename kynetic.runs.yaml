@@ -54757,7 +54757,7 @@ runs:
     started_at: 2026-05-25T23:35:27.619Z
     completed_at: 2026-05-25T23:36:53.519Z
   - _ulid: 01KSJS3P6EWQHQA8THT9HCXTMB
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -54806,7 +54806,13 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-26T18:36:29.415Z
-        completed_at: 2026-05-26T18:36:29.415Z
+        completed_at: 2026-05-26T18:36:38.619Z
+        notes: "Captured observation @01KSJS5V as friction: detached reviewer snapshots may not expose a
+          physical .kspec directory even though kspec CLI state lookups work; guidance should steer
+          agents to kspec task/item/review commands for shadow state in detached snapshots. No
+          duplicate capture for review evidence logs because existing observation 01KR2JD1 already
+          covers that area."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-26T18:35:17.582Z
+    completed_at: 2026-05-26T18:36:38.619Z
