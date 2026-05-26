@@ -29916,6 +29916,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-26T17:38:30.326Z
+  automation: eligible
 - _ulid: 01KSJNVQ5R4ZFZN2GXWWXP28X8
   slugs:
     - task-clear-occupied-checkout-degraded-state-on-retry
