@@ -19726,6 +19726,63 @@ observations:
     resolved: false
     workflow_ref: "@01KSJZKA"
     created_at: 2026-05-26T20:30:45.539Z
+  - _ulid: 01KSK0KQD88QSXZ64C8Q5G7D7Y
+    type: friction
+    content: kspec skill render emits rendered helper scripts (.agents/skills/<id>/scripts/*.sh and
+      .factory/skills/<id>/scripts/*.sh) without the executable bit. Hit this on the merge skill —
+      templates/skills/merge/scripts/detached-reviewer-merge.sh is 100755 but the rendered copies
+      came back 100644 after render, requiring a manual chmod +x and a follow-up commit. Reviewer
+      guidance documents `bash {supporting:scripts/detached-reviewer-merge.sh}` so the bash
+      invocation still works, but any direct execution (or future workflow that relies on the +x
+      bit) silently breaks.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-26T20:46:23.144Z
+  - _ulid: 01KSK0KQQGBF7JHDV4B49CKZS2
+    type: friction
+    content: "Shadow .kspec/skills/<id>/ source can drift from templates/skills/<id>/ across kspec
+      package upgrades. Hit this on the merge skill: the previous task
+      (task-rework-detached-reviewer-merge-helper-ephemeral-target) updated
+      templates/skills/merge/scripts/detached-reviewer-merge.sh AND the .agents/.factory rendered
+      copies, but did not update .kspec/skills/merge/scripts/detached-reviewer-merge.sh (the shadow
+      source kspec skill render reads from). A subsequent kspec skill render would have regressed
+      the rendered output back to the old script. kspec skill update is version-gated and
+      install-core would overwrite local forks — there's no obvious 'reconcile shadow with current
+      package templates for a single skill' command. Had to KSPEC_SHADOW_COMMIT=1 git commit the
+      shadow manually."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-26T20:46:23.472Z
+  - _ulid: 01KSK0KQYSNP8FXWCPXJGB92H5
+    type: friction
+    content: No kspec CLI surface for updating an existing skill's SKILL.md content. kspec skill set
+      only updates metadata, kspec skill import rejects existing IDs, kspec skill update is
+      version-gated, kspec skill install-core --force overwrites everything. The only path to edit a
+      skill's body (e.g. to reword reviewer guidance after a behavior change) is to write
+      .kspec/skills/<id>/SKILL.md directly and KSPEC_SHADOW_COMMIT=1 git commit by hand — which
+      violates the 'never manually edit .kspec/' convention. Either kspec skill import should accept
+      --force/--update, or there should be a kspec skill edit / kspec skill set --content @file.md
+      path.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-26T20:46:23.705Z
+  - _ulid: 01KSK0KR5MXKMCFGWX614RDJGW
+    type: friction
+    content: Task wording asked for 'prompt/skill rendering assertions' on skill content, but the
+      no-source-scanning lint rule (tools/eslint-rules/no-source-scanning.js) correctly blocks
+      fs.readFile on templates/skills/, .agents/skills/, and .factory/skills/ paths (none are in
+      SAFE_PATH_SEGMENTS, which only allows fixtures/, fixture/, /tmp/, .kspec/). The clean
+      behavioral alternative — run kspec skill render in a temp fixture and read from there with
+      readTestOutput — requires significant fixture setup. Worth considering whether rendered skill
+      outputs deserve a sanctioned read pattern (e.g. allowlist .agents/skills/ as 'distributed
+      artifact' or expose a kspec skill body/content read API for tests).
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-26T20:46:23.924Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
