@@ -9457,7 +9457,7 @@ workspaces:
         head: 4c2c84f1a6f3d331bca70640b617ad74e7b83a13
         last_seen_at: 2026-05-26T20:12:15.219Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-clear-occupied-checkout-degraded-state-on-retry-01ksjnvq
-  - active_role: worker
+  - active_role: null
     base_branch_point: 5770002baaee8a3f9ce6accaa8791228774d9ef6
     bootstrap:
       status: succeeded
@@ -9782,12 +9782,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-26T20:43:03.494Z
+      updated_at: 2026-05-26T20:46:40.083Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-26T20:43:03.494Z
+      updated_at: 2026-05-26T20:46:40.083Z
     integration:
       status: pending
       detail: null
@@ -9795,17 +9795,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 5770002baaee8a3f9ce6accaa8791228774d9ef6
-      updated_at: 2026-05-26T20:43:03.494Z
-    lifecycle_state: active
+      updated_at: 2026-05-26T20:46:40.083Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KSJNVPSP1E8CZ9KS35Z8643M"
     task_slug: task-add-detached-merge-helper-branch-lock-regressions
     timestamps:
       closed_at: null
       last_active_at: 2026-05-26T20:13:17.622Z
-      last_reconciled_at: 2026-05-26T20:43:03.494Z
+      last_reconciled_at: 2026-05-26T20:46:40.083Z
       created_at: 2026-05-26T20:12:48.824Z
-      updated_at: 2026-05-26T20:43:03.494Z
+      updated_at: 2026-05-26T20:46:40.083Z
     workspace_id: dispatch-workspace-01KSJNVPSP1E8CZ9KS35Z8643M
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
