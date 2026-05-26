@@ -235266,6 +235266,19 @@ reviews:
         runner: kspec
         created_at: 2026-05-26T16:54:51.836Z
         completed_at: 2026-05-26T16:54:51.836Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: The plan names most plan/review normal mutators, resource add/replace/delete, equality
+          normalization, and repair convergence. It misses an explicit red-test case for plan import
+          with sibling resources.yaml/resources files, which is a separate resource_summary mutation
+          path from plan resource add/replace/delete.
+        name: Mutating path coverage
+        required: true
+        runner: manual
+        created_at: 2026-05-26T16:55:51.846Z
+        completed_at: 2026-05-26T16:55:51.846Z
     events:
       - _ulid: 01KSJKAX130SCB5XSA58RTPPJM
         actor: Jacob Chapel
@@ -235307,6 +235320,13 @@ reviews:
         payload:
           thread_ulid: 01KSJKBMYFA30KDJQNGQAWX55A
         timestamp: 2026-05-26T16:55:42.546Z
+      - _ulid: 01KSJKDP66FXC4JGAE3XMCKDP2
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: Mutating path coverage
+        timestamp: 2026-05-26T16:55:53.799Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -235348,5 +235368,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-26T16:54:22.500Z
-    updated_at: 2026-05-26T16:55:40.695Z
+    updated_at: 2026-05-26T16:55:51.846Z
     notes: []
