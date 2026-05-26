@@ -54758,7 +54758,7 @@ runs:
     completed_at: 2026-05-25T23:36:53.519Z
   - _ulid: 01KSJS3P6EWQHQA8THT9HCXTMB
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -54791,7 +54791,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-26T18:36:03.116Z
-        completed_at: 2026-05-26T18:36:03.116Z
+        completed_at: 2026-05-26T18:36:13.500Z
+        notes: "Proposed improvement: clarify detached-reviewer guidance so agents know detached review
+          snapshots may not expose a physical .kspec directory, and should use kspec CLI commands
+          for task/spec/review state instead of direct git -C .kspec inspection. Scope: small
+          documentation/guidance update. Benefit: avoids misleading filesystem assumptions and
+          failed exploratory commands during review."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-26T18:36:13.500Z
+        completed_at: 2026-05-26T18:36:13.500Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-26T18:35:17.582Z
