@@ -236961,3 +236961,29 @@ reviews:
     created_at: 2026-05-26T21:48:39.129Z
     updated_at: 2026-05-26T22:04:21.495Z
     notes: []
+  - _ulid: 01KSK6TAKQD49RDXPGN3TRF61X
+    slugs: []
+    title: Review task-add-plan-target-lock-e2e-regression
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KSK6TAKQEFJYG6HBT7GEX3GJ
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-26T22:34:50.871Z
+    examined_commit: 206c070fa4855d53ec1e35b82ed1fda44a5a447e
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KSJNVQJ5NNXEJSFSFR5SRK6N"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-26T22:34:50.871Z
+    updated_at: null
+    notes: []
