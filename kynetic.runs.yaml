@@ -54926,9 +54926,23 @@ runs:
     completed_at: 2026-05-26T20:30:46.560Z
   - _ulid: 01KSK1PPVCQJ4CKP0P2Y1FDTMT
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-26T21:05:29.452Z
+        completed_at: 2026-05-26T21:05:44.614Z
+        notes: "What worked well: The detached reviewer flow was clear end-to-end: create a fresh review,
+          record checks, approve only after evidence, run the supported helper, then complete the
+          task. The helper contract was effective: it merged from the detached snapshot without
+          checking out dev in this workspace, and its success output made the final task completion
+          reason precise. Review records worked well as an evidence ledger: required checks plus an
+          optional evidence log made the approval auditable."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-26T21:05:44.614Z
+        completed_at: 2026-05-26T21:05:44.614Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-26T21:05:29.452Z
