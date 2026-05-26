@@ -236390,3 +236390,29 @@ reviews:
     created_at: 2026-05-26T19:36:51.045Z
     updated_at: 2026-05-26T19:51:05.979Z
     notes: []
+  - _ulid: 01KSJYR84A0DYT42X3TAF87D0S
+    slugs: []
+    title: Review clear occupied-checkout degraded state
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KSJYR84AZ7R8K9D703TC521K
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-26T20:13:54.186Z
+    examined_commit: 4c2c84f1a6f3d331bca70640b617ad74e7b83a13
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KSJNVQ5R4ZFZN2GXWWXP28X8"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-26T20:13:54.186Z
+    updated_at: null
+    notes: []
