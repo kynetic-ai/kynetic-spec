@@ -236110,7 +236110,19 @@ reviews:
     slugs: []
     title: Review branch-lock spec alignment
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Read @detached-reviewer-merge-helper, @dispatch-integration-mutation-scope, and
+          @dispatch-remote-branch-sync. Verified requested ACs appear once in item output; old
+          occupied target clean refresh wording is absent via kspec search.
+        name: spec verification
+        required: true
+        runner: kspec
+        created_at: 2026-05-26T18:33:29.150Z
+        completed_at: 2026-05-26T18:33:29.150Z
     events:
       - _ulid: 01KSJR9NQBDFHBM6YH0X2NEK1T
         actor: Jacob Chapel
@@ -236125,6 +236137,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-26T18:21:26.194Z
+      - _ulid: 01KSJS0DZ2GBPWH7SWEK5PNRYW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: spec verification
+        timestamp: 2026-05-26T18:33:30.850Z
     examined_commit: 32d374363549d45f4edb1d067c9d97307e9b7f2d
     external_links: []
     lifecycle_state: open
@@ -236137,5 +236156,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-26T18:21:05.131Z
-    updated_at: 2026-05-26T18:21:24.323Z
+    updated_at: 2026-05-26T18:33:29.150Z
     notes: []
