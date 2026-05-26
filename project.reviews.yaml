@@ -236980,6 +236980,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-26T22:35:10.266Z
+      - _ulid: 01KSK6XB0ZS2ZEQ2D2D463FNJ4
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSK6X8T9QJJWV05E9BVBG71Y
+        timestamp: 2026-05-26T22:36:29.599Z
     examined_commit: 206c070fa4855d53ec1e35b82ed1fda44a5a447e
     external_links: []
     lifecycle_state: open
@@ -236989,8 +236996,27 @@ reviews:
       content_hash: ""
       ref: "@01KSJNVQJ5NNXEJSFSFR5SRK6N"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KSK6X8T9QJJWV05E9BVBG71Y
+        anchor:
+          type: code
+          commit: 206c070fa4855d53ec1e35b82ed1fda44a5a447e
+          line_end: 286
+          line_start: 282
+          path: tests/dispatch-plan-target-lock-e2e.test.ts
+          side: head
+        entries:
+          - _ulid: 01KSK6X8T9H9T9188PCPN9F797
+            author: Jacob Chapel
+            body: "MUST-FIX: these AC annotations overclaim what the regression proves. The test keeps asserting
+              that no worktree has the plan target checked out, then runs ; it never creates an
+              occupied target checkout, verifies dispatch refusal, checks blocking-worktree
+              guidance, or runs a periodic sync cycle. That means  and  are not behaviorally proven
+              by this test. Either extend the regression to exercise those scenarios or change the
+              annotations to ACs actually covered by this clean manual_merge push path."
+            created_at: 2026-05-26T22:36:27.337Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-26T22:34:50.871Z
-    updated_at: 2026-05-26T22:35:08.603Z
+    updated_at: 2026-05-26T22:36:27.337Z
     notes: []
