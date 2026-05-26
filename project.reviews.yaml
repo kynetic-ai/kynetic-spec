@@ -235247,6 +235247,25 @@ reviews:
         runner: kspec
         created_at: 2026-05-26T16:54:46.733Z
         completed_at: 2026-05-26T16:54:46.733Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: |-
+          Dry run - no changes made
+
+          Plan: @plan-folder-backed-index-consistency-hardening-1
+          Title: Folder-Backed Index Consistency Hardening
+          Status: draft
+          Source: /home/chapel/Projects/kynetic-spec-dispatch/plans/folder-backed-index-consistency-hardening.md
+          Content stored: full document
+          Derived specs: 0
+          Derived tasks: 0 parsed the draft: 0 specs, 0 derived tasks, full document stored; no state changes.
+        name: Plan import parse
+        required: true
+        runner: kspec
+        created_at: 2026-05-26T16:54:51.836Z
+        completed_at: 2026-05-26T16:54:51.836Z
     events:
       - _ulid: 01KSJKAX130SCB5XSA58RTPPJM
         actor: Jacob Chapel
@@ -235268,6 +235287,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSJKBMYFA30KDJQNGQAWX55A
         timestamp: 2026-05-26T16:54:51.988Z
+      - _ulid: 01KSJKBX5BKZ66BEYD67B5M4GB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Plan import parse
+        timestamp: 2026-05-26T16:54:55.403Z
     examined_commit: null
     external_links: []
     lifecycle_state: draft
@@ -235300,5 +235326,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-26T16:54:22.500Z
-    updated_at: 2026-05-26T16:54:46.991Z
+    updated_at: 2026-05-26T16:54:51.836Z
     notes: []
