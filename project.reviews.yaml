@@ -236244,7 +236244,18 @@ reviews:
     slugs: []
     title: Review detached reviewer merge helper ephemeral target worktree
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation passed for 1536 files / 624 items / 1528 tasks; warnings were existing
+          deprecated-reference warnings and allowed by --warnings-ok.
+        name: kspec validate --refs --warnings-ok
+        required: true
+        runner: kspec
+        created_at: 2026-05-26T19:49:42.151Z
+        completed_at: 2026-05-26T19:49:42.151Z
     events:
       - _ulid: 01KSJWMD354QEE7JS93DFXT9PT
         actor: Jacob Chapel
@@ -236259,6 +236270,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-26T19:37:19.267Z
+      - _ulid: 01KSJXBZP4HJ8E7XNJCYA0AQWM
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --refs --warnings-ok
+        timestamp: 2026-05-26T19:49:43.748Z
     examined_commit: 742b4c6ca35ffb0c669eb6fc9eac267e8c863995
     external_links: []
     lifecycle_state: open
@@ -236271,5 +236289,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-26T19:36:51.045Z
-    updated_at: 2026-05-26T19:37:17.696Z
+    updated_at: 2026-05-26T19:49:42.151Z
     notes: []
