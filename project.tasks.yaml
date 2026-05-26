@@ -29931,7 +29931,7 @@
   type: task
   spec_ref: "@dispatch-remote-branch-sync"
   plan_ref: "@plan-dispatch-merge-helper-target-lock-hardening"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-align-merge-helper-branch-lock-specs"
@@ -29944,6 +29944,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-26T17:38:30.712Z
+  started_at: 2026-05-26T19:37:22.779Z
   automation: eligible
 - _ulid: 01KSJNVQJ5NNXEJSFSFR5SRK6N
   slugs:
