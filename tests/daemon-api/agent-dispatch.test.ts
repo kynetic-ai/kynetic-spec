@@ -112,6 +112,7 @@ describe("GET /api/agent/status", () => {
         branch: "plan/alpha",
         reason: 'integration target "plan/alpha" diverged',
         enteredAt: expect.any(String),
+        kind: "other",
       },
     ]);
   });
@@ -286,6 +287,7 @@ describe("GET /api/agent/dispatch/status (internal)", () => {
         branch: "plan/alpha",
         reason: 'integration target "plan/alpha" diverged',
         enteredAt: expect.any(String),
+        kind: "other",
       },
     ]);
   });

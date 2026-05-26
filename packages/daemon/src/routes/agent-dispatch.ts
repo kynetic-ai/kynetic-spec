@@ -118,16 +118,18 @@ function serializeDegradedTargets(engine: DispatchEngine): Array<{
   branch: string;
   reason: string;
   enteredAt: string;
+  kind: string;
 }> {
   return engine.getDegradedState().map((target) => ({
     branch: target.branch,
     reason: target.reason,
     enteredAt: target.enteredAt.toISOString(),
+    kind: target.kind,
   }));
 }
 
 function serializeDegradedSummary(
-  degradedTargets: Array<{ branch: string; reason: string; enteredAt: string }>,
+  degradedTargets: Array<{ branch: string; reason: string; enteredAt: string; kind: string }>,
 ): {
   active: boolean;
   reason: string;

@@ -307,13 +307,21 @@ export interface ValidateDispatchWorkspaceForInvocationResult {
   repaired: boolean;
 }
 
+export type DispatchWorkspaceErrorCode = "occupied-checkout";
+
 export class DispatchWorkspaceError extends Error {
   suggestion: string;
+  code: DispatchWorkspaceErrorCode | null;
 
-  constructor(message: string, suggestion: string) {
+  constructor(
+    message: string,
+    suggestion: string,
+    code: DispatchWorkspaceErrorCode | null = null,
+  ) {
     super(message);
     this.name = "DispatchWorkspaceError";
     this.suggestion = suggestion;
+    this.code = code;
   }
 }
 
@@ -2298,6 +2306,7 @@ export async function resolveDispatchIntegrationMutationScope(
       throw new DispatchWorkspaceError(
         `Dispatch cannot safely mutate integration target "${integrationBranch}" from ${projectDir} because that branch is currently checked out in worktree "${checkedOutWorktree}".`,
         `Check out a different branch in "${checkedOutWorktree}" or run the integration-target operation from that worktree before retrying.`,
+        "occupied-checkout",
       );
     }
   }

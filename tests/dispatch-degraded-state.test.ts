@@ -816,4 +816,188 @@ describe("dispatch engine degraded state", () => {
 
     await engine.stop();
   });
+
+  // AC: @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery
+  // AC: @dispatch-integration-mutation-scope ac-occupied-target-refusal-identifies-blocker
+  // AC: @dispatch-integration-mutation-scope ac-4
+  // AC: @trait-error-guidance ac-4
+  it("clears occupied-checkout degraded state when the blocking worktree is removed and sync re-runs", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    // Dispatch root is NOT on the target branch — a foreign worktree owns it.
+    git(projectDir, "checkout -b human-feature");
+
+    const occupiedWorktreeDir = `${projectDir}-integration-occupant-sync`;
+    execSync(`git worktree add "${occupiedWorktreeDir}" dev`, {
+      cwd: projectDir,
+      stdio: "pipe",
+      env: workspaceModule.buildDispatchGitEnv(),
+    });
+
+    const syncEvents: SyncStateEvent[] = [];
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+      onSyncStateEvent: (event) => syncEvents.push(event),
+    });
+
+    try {
+      await engine.start();
+
+      // The blocking worktree should cause dev to enter degraded state with
+      // a reason that identifies the blocking worktree path. The dispatch
+      // status object surfaces the same information without a restart.
+      const degradedAfterStart = engine.getDegradedState();
+      expect(degradedAfterStart).toHaveLength(1);
+      expect(degradedAfterStart[0].branch).toBe("dev");
+      expect(degradedAfterStart[0].kind).toBe("occupied-checkout");
+      expect(degradedAfterStart[0].reason).toContain("currently checked out");
+      expect(degradedAfterStart[0].reason).toContain(occupiedWorktreeDir);
+
+      const statusAfterStart = engine.getTargetSyncStatus();
+      expect(statusAfterStart.degraded.active).toBe(true);
+      expect(statusAfterStart.degradedTargets).toHaveLength(1);
+      expect(statusAfterStart.degradedTargets[0].kind).toBe("occupied-checkout");
+
+      // Release the lock by removing the blocking worktree (the recommended
+      // operator recovery action).
+      execSync(`git worktree remove --force "${occupiedWorktreeDir}"`, {
+        cwd: projectDir,
+        stdio: "pipe",
+        env: workspaceModule.buildDispatchGitEnv(),
+      });
+
+      // The next sync evaluation must clear degraded state without a restart.
+      const result = await engine._syncTarget("dev");
+      expect(["up_to_date", "synced"]).toContain(result);
+      expect(engine.getDegradedState()).toEqual([]);
+
+      const statusAfterRecovery = engine.getTargetSyncStatus();
+      expect(statusAfterRecovery.degraded.active).toBe(false);
+      expect(statusAfterRecovery.degradedTargets).toEqual([]);
+
+      // A sync_state recovery event must broadcast so subscribers learn the
+      // engine is healthy again.
+      const enteredEvents = syncEvents.filter((e) => e.degraded);
+      const recoveredEvents = syncEvents.filter((e) => !e.degraded);
+      expect(enteredEvents).toHaveLength(1);
+      expect(enteredEvents[0].branch).toBe("dev");
+      expect(recoveredEvents).toHaveLength(1);
+      expect(recoveredEvents[0].branch).toBe("dev");
+      expect(recoveredEvents[0].recoveredAfterMs).toBeGreaterThanOrEqual(0);
+    } finally {
+      await engine.stop();
+      try {
+        execSync(`git worktree remove --force "${occupiedWorktreeDir}"`, {
+          cwd: projectDir,
+          stdio: "pipe",
+          env: workspaceModule.buildDispatchGitEnv(),
+        });
+      } catch {
+        // already removed
+      }
+    }
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery
+  it("clears occupied-checkout degraded state via the periodic-sync push path", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout -b human-feature");
+
+    const occupiedWorktreeDir = `${projectDir}-integration-occupant-push`;
+    execSync(`git worktree add "${occupiedWorktreeDir}" dev`, {
+      cwd: projectDir,
+      stdio: "pipe",
+      env: workspaceModule.buildDispatchGitEnv(),
+    });
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+
+    try {
+      await engine.start();
+
+      // Engine entered degraded via the start-time sync path (blocking worktree).
+      expect(engine.getDegradedState()).toHaveLength(1);
+      expect(engine.getDegradedState()[0].kind).toBe("occupied-checkout");
+
+      // Release the lock.
+      execSync(`git worktree remove --force "${occupiedWorktreeDir}"`, {
+        cwd: projectDir,
+        stdio: "pipe",
+        env: workspaceModule.buildDispatchGitEnv(),
+      });
+
+      // Without any commits waiting to push, the periodic-sync push path must
+      // still re-evaluate the degraded target (instead of returning early on
+      // !integrationTargetNeedsPush) and clear degraded state once the lock is
+      // gone. This proves operators don't need a restart to recover.
+      await (engine as any)._pushIntegrationTargetAsync("dev", "periodic-sync");
+
+      expect(engine.getDegradedState()).toEqual([]);
+      expect(engine.getTargetSyncStatus().degraded.active).toBe(false);
+    } finally {
+      await engine.stop();
+      try {
+        execSync(`git worktree remove --force "${occupiedWorktreeDir}"`, {
+          cwd: projectDir,
+          stdio: "pipe",
+          env: workspaceModule.buildDispatchGitEnv(),
+        });
+      } catch {
+        // already removed
+      }
+    }
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery
+  // Conservative side: divergence-degraded targets must NOT auto-clear via a
+  // successful no-op push (keeping hard failures intact for divergent history).
+  it("does not clear divergence-degraded state on a successful push", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout dev");
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    // Force a divergence-degraded entry and verify its classification.
+    await createDivergence(projectDir, remoteDir);
+    await engine._syncTarget();
+    const degradedAfter = engine.getDegradedState();
+    expect(degradedAfter).toHaveLength(1);
+    expect(degradedAfter[0].kind).toBe("divergence");
+
+    // Simulate a push that would succeed (e.g. operator manually fixed
+    // upstream) — the divergence kind must remain degraded until a real sync
+    // proves recovery so we never mask divergent histories.
+    vi.spyOn(workspaceModule, "resolveDispatchIntegrationMutationScope").mockResolvedValue({
+      projectDir,
+      integrationBranch: "dev",
+      currentBranch: "dev",
+      targetBranchCheckedOut: true,
+    } as any);
+    vi.spyOn(workspaceModule, "pushIntegrationTarget").mockResolvedValue({
+      pushed: true,
+      skipped: false,
+      error: null,
+    });
+    (engine as any).dispatchRemote = "origin";
+
+    await (engine as any)._pushIntegrationTargetAsync("dev", "post-merge");
+
+    expect(engine.getDegradedState()).toHaveLength(1);
+    expect(engine.getDegradedState()[0].kind).toBe("divergence");
+
+    await engine.stop();
+  });
 });
