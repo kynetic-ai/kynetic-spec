@@ -235294,9 +235294,16 @@ reviews:
           status: pass
           name: Plan import parse
         timestamp: 2026-05-26T16:54:55.403Z
+      - _ulid: 01KSJKCZQ44DJVQEXWJ03DFXSF
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-05-26T16:55:30.788Z
     examined_commit: null
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: open
     related_refs: []
     subject:
       type: plan
@@ -235326,5 +235333,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-26T16:54:22.500Z
-    updated_at: 2026-05-26T16:54:51.836Z
+    updated_at: 2026-05-26T16:55:28.804Z
     notes: []
