@@ -29886,7 +29886,7 @@
   type: task
   spec_ref: "@detached-reviewer-merge-helper"
   plan_ref: "@plan-dispatch-merge-helper-target-lock-hardening"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-align-merge-helper-branch-lock-specs"
@@ -29902,6 +29902,7 @@
   created_at: 2026-05-26T17:38:29.949Z
   started_at: 2026-05-26T18:36:15.642Z
   submitted_at: 2026-05-26T19:11:49.298Z
+  completed_at: 2026-05-26T19:52:23.930Z
   automation: eligible
 - _ulid: 01KSJNVPSP1E8CZ9KS35Z8643M
   slugs:
