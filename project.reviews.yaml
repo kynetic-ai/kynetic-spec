@@ -236771,7 +236771,75 @@ reviews:
     slugs: []
     title: Review clear occupied-checkout degraded state fix cycle
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Found behavioral AC annotations for @dispatch-remote-branch-sync
+          ac-occupied-checkout-degraded-recovery, @dispatch-integration-mutation-scope
+          ac-occupied-target-refusal-identifies-blocker/ac-4, and affected detached-reviewer-merge
+          helper ACs in tests. Changed tests exercise behavior via temp repos/worktrees, not source
+          scanning.
+        name: AC annotation scan
+        required: false
+        runner: rg
+        created_at: 2026-05-26T22:03:48.734Z
+        completed_at: 2026-05-26T22:03:48.734Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation passed for 1536 files, 624 items, 1528 tasks. Only existing
+          deprecated-reference warnings; --warnings-ok exited 0.
+        name: kspec validate --refs --warnings-ok
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-26T22:03:53.201Z
+        completed_at: 2026-05-26T22:03:53.201Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm run typecheck completed with exit 0.
+        name: npm run typecheck
+        required: true
+        runner: tsc --noEmit
+        created_at: 2026-05-26T22:03:57.521Z
+        completed_at: 2026-05-26T22:03:57.521Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/dispatch-degraded-state.test.ts
+          tests/detached-reviewer-merge.test.ts tests/daemon-api/agent-dispatch.test.ts
+          tests/dispatch-target-sync.test.ts passed: 21 suites, 93 tests."
+        name: targeted affected suites
+        required: true
+        runner: scripts/test.cjs --fresh
+        created_at: 2026-05-26T22:04:02.030Z
+        completed_at: 2026-05-26T22:04:02.030Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite passed: 2580 suites, 9856 tests passed, 5 skipped. Full log:
+          /tmp/kspec-test-cache/01KSK44KC96JKJYHHAG5BDADE9/014470cd7f3995af.log."
+        name: npm test -- --fresh
+        required: true
+        runner: scripts/test.cjs --fresh
+        created_at: 2026-05-26T22:04:06.446Z
+        completed_at: 2026-05-26T22:04:06.446Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: git diff --check against integration base produced no whitespace errors.
+        name: git diff --check
+        required: false
+        runner: git diff --check
+        created_at: 2026-05-26T22:04:11.009Z
+        completed_at: 2026-05-26T22:04:11.009Z
     events:
       - _ulid: 01KSK45QTR4X3AH4F0YP1C0V66
         actor: Jacob Chapel
@@ -236786,17 +236854,110 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-26T21:49:01.834Z
+      - _ulid: 01KSK51HTSG8KDAR2A9P88JWQA
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC annotation scan
+        timestamp: 2026-05-26T22:03:50.489Z
+      - _ulid: 01KSK51P3VX128KQD0WGN8S8ET
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --refs --warnings-ok
+        timestamp: 2026-05-26T22:03:54.875Z
+      - _ulid: 01KSK51TFMXM84K768FN6728PR
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm run typecheck
+        timestamp: 2026-05-26T22:03:59.348Z
+      - _ulid: 01KSK51YRY3C9T887SWHDNCSCC
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted affected suites
+        timestamp: 2026-05-26T22:04:03.742Z
+      - _ulid: 01KSK5236BT3F9WKS623V1BV1B
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test -- --fresh
+        timestamp: 2026-05-26T22:04:08.268Z
+      - _ulid: 01KSK527JNXX9X1283QGBJ2NRZ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: git diff --check
+        timestamp: 2026-05-26T22:04:12.757Z
+      - _ulid: 01KSK52BTJC61T0BYAX9QG9QTN
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KSK52A6VQ68X37Q3NA7J43CT
+        timestamp: 2026-05-26T22:04:17.106Z
+      - _ulid: 01KSK52G3QBSVSM6H94C4WF714
+        actor: codex-reviewer
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-05-26T22:04:21.495Z
+      - _ulid: 01KSK52G3QKJ2RPNFH7T843T9G
+        actor: codex-reviewer
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-26T22:04:21.495Z
     examined_commit: 5e834f76678fd66b4ab9501dc8aa089912054efc
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
       content_hash: ""
       ref: "@01KSJNVQ5R4ZFZN2GXWWXP28X8"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KSK52A6VQ68X37Q3NA7J43CT
+        entries:
+          - _ulid: 01KSK52A6V85NGFBGSGXZAAD8A
+            author: Jacob Chapel
+            body: "Review evidence log: Files read: src/agent-runtime/dispatch.ts,
+              src/agent-runtime/workspace.ts, packages/daemon/src/routes/agent-dispatch.ts,
+              tests/dispatch-degraded-state.test.ts, tests/detached-reviewer-merge.test.ts,
+              tests/daemon-api/agent-dispatch.test.ts, templates/.agents/.factory merge helper
+              scripts, prior review @01KSJYR84A0DYT42X3TAF87D0S. Commands run: kspec task get, kspec
+              item get for @dispatch-integration-mutation-scope and @detached-reviewer-merge-helper,
+              kspec review get/for-task, rg AC scans, git diff/log/diff --check, kspec validate
+              --refs --warnings-ok, npm run typecheck, targeted npm test, full npm test -- --fresh.
+              Claims verified: prior blocker is fixed by upgrading occupied-checkout degraded state
+              to stricter divergence/other on retry and by tests reproducing the stale-kind
+              transition; occupied-checkout recovery still clears after released worktree via sync
+              or push/no-op; generated merge helper scripts match the template. Categories searched:
+              correctness, edge cases around degraded-kind transitions and no-downgrade, error
+              handling/guidance, test quality/source-scanning, status API shape, merge-helper
+              integration. No blocking findings."
+            created_at: 2026-05-26T22:04:15.451Z
+        kind: nit
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex-reviewer
+        role: reviewer
+        created_at: 2026-05-26T22:04:21.495Z
     created_at: 2026-05-26T21:48:39.129Z
-    updated_at: 2026-05-26T21:48:59.771Z
+    updated_at: 2026-05-26T22:04:21.495Z
     notes: []
