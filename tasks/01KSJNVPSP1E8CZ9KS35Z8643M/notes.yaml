@@ -1,1 +1,60 @@
-notes: []
+notes:
+  - _ulid: 01KSK0F2TQ9CKDN6NMYARQKDS2
+    content: >-
+      Implementation summary:
+
+
+      The helper test scaffold from task-rework-detached-reviewer-merge-helper-ephemeral-target
+      already covered the success / no-op / occupied / dirty / conflict / env-contract paths. This
+      task hardened the regression assertions and aligned reviewer guidance with the new helper
+      behavior.
+
+
+      Test changes (behavioral, not source-scanning to satisfy the no-source-scanning lint rule):
+
+      - tests/detached-reviewer-merge.test.ts occupied-target refusal: reject the literal old
+      recovery phrase "check out '\$MERGE_TARGET' in a worktree", any "check out X in
+      a/another/some/an auxiliary/another auxiliary worktree" wording, and "git worktree add
+      <target>" guidance.
+
+      - tests/detached-reviewer-merge.test.ts conflict exit: also reject "occupied worktree
+      refreshed" / "occupied-worktree refresh" leaks in the conflict guidance, and assert the
+      helper's mktemp scratch dir is not still registered as a worktree on the project's target ref
+      after the conflict path.
+
+      - tests/agent-dispatch-engine.test.ts manual_merge reviewer prompt: reject "occupied-worktree
+      refresh" / "occupied worktree refreshed" wording and the "check out X in a/another/auxiliary
+      worktree" pattern so the prompt cannot regress to telling reviewers to recreate the branch
+      lock.
+
+
+      Reviewer-guidance updates so the regression assertions have a clean target:
+
+      - src/agent-runtime/dispatch.ts: reviewer prompt now describes the helper's temporary-worktree
+      cleanup contract instead of the obsolete "occupied-worktree refresh".
+
+      - templates/skills/merge/SKILL.md (and rendered .agents/.factory copies, and shadow
+      .kspec/skills/merge/SKILL.md): describe the helper-owned temporary worktree lifecycle, split
+      helper-outcomes into Occupied target / Dirty target rows, and explicitly tell reviewers not to
+      create an auxiliary checkout to "free" the target.
+
+      - Synced the shadow .kspec/skills/merge/scripts/detached-reviewer-merge.sh with templates
+      source (it was behind from the prior task) so kspec skill render emits the current helper.
+
+      - Restored +x on the rendered helper scripts after kspec skill render dropped the executable
+      bit.
+
+
+      Tried adding static SKILL.md content assertions inside detached-reviewer-merge.test.ts as the
+      task wording suggested, but the no-source-scanning lint rule
+      (tools/eslint-rules/no-source-scanning.js) correctly flagged direct fs.readFile of
+      templates/.agents/.factory paths. Coverage shifted to behavioral assertions on the live helper
+      output and the live dispatch reviewer prompt instead.
+
+
+      Verification: npm test --fresh tests/detached-reviewer-merge.test.ts (13 passed), npm test
+      --fresh tests/agent-dispatch-engine.test.ts -t \"manual merge\" (1 passed), npm run typecheck
+      (clean), npm test (9851 passed / 5 skipped, 0 failures).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-26T20:43:51.000Z
