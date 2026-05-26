@@ -9925,11 +9925,11 @@ workspaces:
     canonical_branch: dispatch/task/task-add-detached-merge-helper-branch-lock-regressions/01ksjnvp
     canonical_branch_head: 4c77a68199db361e194cf02d88b77e331bd472d8
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-05-26T21:05:05.783Z
+      updated_at: 2026-05-26T21:08:12.561Z
     health:
       status: healthy
       issues: []
@@ -9943,16 +9943,16 @@ workspaces:
       target_branch: dev
       target_commit: 5770002baaee8a3f9ce6accaa8791228774d9ef6
       updated_at: 2026-05-26T21:05:05.783Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KSJNVPSP1E8CZ9KS35Z8643M"
     task_slug: task-add-detached-merge-helper-branch-lock-regressions
     timestamps:
-      closed_at: null
+      closed_at: 2026-05-26T21:08:12.561Z
       last_active_at: 2026-05-26T20:47:48.582Z
       last_reconciled_at: 2026-05-26T21:07:55.204Z
       created_at: 2026-05-26T20:12:48.824Z
-      updated_at: 2026-05-26T21:07:55.204Z
+      updated_at: 2026-05-26T21:08:12.561Z
     workspace_id: dispatch-workspace-01KSJNVPSP1E8CZ9KS35Z8643M
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
