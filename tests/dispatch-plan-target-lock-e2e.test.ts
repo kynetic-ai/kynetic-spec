@@ -13,15 +13,27 @@
  * This test provisions a real plan-scoped task whose integration target
  * branch is distinct from the dispatch root's branch, runs the real
  * `templates/skills/merge/scripts/detached-reviewer-merge.sh` against the
- * canonical reviewer snapshot, and then drives the dispatch engine through
- * its post-merge push path. It asserts that:
+ * canonical reviewer snapshot, then drives the dispatch engine through the
+ * full periodic-sync push path. The test exercises three distinct phases
+ * that together prove the incident's full surface area:
  *
- *   1. No worktree — auxiliary, helper-owned, or otherwise — holds the
- *      plan target branch after the helper exits.
- *   2. The dispatch root checkout can push the post-merge plan target ref
- *      to the remote.
- *   3. The dispatch engine never enters degraded state for the plan target
- *      at any point in the flow.
+ *   Phase A (clean lock-free path):
+ *     - Helper exits with no aux/helper worktree holding the plan target.
+ *     - Periodic-sync push from the dispatch root pushes the post-merge
+ *       plan target ref to the remote without entering degraded state.
+ *
+ *   Phase B (occupied-target refusal):
+ *     - A simulated foreign worktree takes ownership of the plan target
+ *       branch (the structural failure mode the incident exposed).
+ *     - Periodic-sync push detects the occupant via the mutation-scope
+ *       resolver, refuses BEFORE moving refs, and records the blocking
+ *       worktree path in degraded state with operator-actionable guidance.
+ *     - Other active targets remain unaffected (scoped degradation).
+ *
+ *   Phase C (recovery without restart):
+ *     - The blocking worktree is removed (operator recovery action).
+ *     - The next periodic-sync push succeeds and clears the degraded
+ *       entry for the plan target without requiring a dispatch restart.
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
@@ -285,7 +297,7 @@ describe("dispatch plan-target lock E2E regression (manual_merge)", () => {
   // AC: @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery
   // AC: @detached-reviewer-merge-helper ac-helper-leaves-no-target-branch-lock
   it(
-    "merges a plan-scoped manual_merge task and leaves the plan target lock-free for dispatch-root sync/push",
+    "drives the plan-target merge → periodic push → occupied refusal → recovery cycle without operator restart",
     async () => {
       ({ projectDir, remoteDir } = await setupProjectWithRemote());
       await setupProjectFiles(projectDir);
@@ -377,6 +389,14 @@ describe("dispatch plan-target lock E2E regression (manual_merge)", () => {
         reconcileIntervalMs: 0,
         coalesceWindowMs: 0,
       });
+      // Helper to drive the periodic-sync push path the same way the
+      // dispatch engine's reconcile loop does. Keeps the typed cast in one
+      // place so each phase reads as a "trigger periodic sync" statement.
+      const drivePeriodicSyncPush = (): Promise<void> =>
+        (engine as never as {
+          _pushActiveTargetsAsync: (trigger: string) => Promise<void>;
+        })._pushActiveTargetsAsync("periodic-sync");
+      let occupantWorktree: string | undefined;
       try {
         await engine.start();
 
@@ -427,7 +447,11 @@ describe("dispatch plan-target lock E2E regression (manual_merge)", () => {
         expect(reviewerListing?.detached).toBe(true);
 
         const planHeadBefore = git(projectDir, `rev-parse refs/heads/${planTarget}`);
+        const planRemoteBefore = git(projectDir, `rev-parse refs/remotes/origin/${planTarget}`);
+        expect(planRemoteBefore).toBe(planHeadBefore);
 
+        // ───── PHASE A: clean lock-free helper + periodic-sync push ─────
+        //
         // Run the REAL detached-reviewer-merge.sh helper against the plan
         // target. This is the supported manual_merge reviewer path; using
         // the real script (not a mock) is what makes this an incident-shape
@@ -446,7 +470,9 @@ describe("dispatch plan-target lock E2E regression (manual_merge)", () => {
         expect(helperResult.stdout).toContain(canonicalBranch);
         expect(helperResult.stdout).toContain(planTarget);
 
-        // The plan target ref advanced and now contains the reviewed change.
+        // The plan target ref advanced locally and now contains the
+        // reviewed change. The remote ref is still at its pre-helper tip —
+        // pushing it is dispatch's job, not the helper's.
         const planHeadAfter = git(projectDir, `rev-parse refs/heads/${planTarget}`);
         expect(planHeadAfter).not.toBe(planHeadBefore);
         const featureInPlanTarget = execSync(
@@ -454,10 +480,16 @@ describe("dispatch plan-target lock E2E regression (manual_merge)", () => {
           { cwd: projectDir, encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] },
         );
         expect(featureInPlanTarget).toBe("feature content\n");
+        git(projectDir, "fetch origin");
+        expect(git(projectDir, `rev-parse refs/remotes/origin/${planTarget}`)).toBe(
+          planHeadBefore,
+        );
 
-        // The primary regression assertion: NO worktree — auxiliary,
-        // helper-owned, or otherwise — holds the plan target branch after
-        // the helper exits. This is the incident's structural invariant.
+        // Helper-lock invariant: NO worktree — auxiliary, helper-owned, or
+        // otherwise — holds the plan target branch after the helper exits.
+        // This is the incident's primary structural invariant and what
+        // ac-helper-leaves-no-target-branch-lock /
+        // ac-auxiliary-worktrees-do-not-hold-target-locks demand.
         expect(worktreesOnBranch(projectDir, planTarget)).toEqual([]);
 
         const auxWorktrees = parseWorktreeList(projectDir).filter(
@@ -474,31 +506,160 @@ describe("dispatch plan-target lock E2E regression (manual_merge)", () => {
         // did not move the root's HEAD or check out the plan target there.
         expect(git(projectDir, "branch --show-current")).toBe("dev");
 
-        // With the lock free, the dispatch root must be able to push the
-        // post-merge plan target ref. This exercises
-        // _pushIntegrationTargetAsync → resolveDispatchIntegrationMutationScope
-        // → pushIntegrationTarget on a plan-scoped target.
-        await (engine as never as {
-          _pushIntegrationTargetAsync: (
-            branch: string,
-            trigger: string,
-          ) => Promise<void>;
-        })._pushIntegrationTargetAsync(planTarget, "post-merge");
+        // Drive the periodic-sync push path. With unpushed commits on the
+        // plan target and no occupant, this must push the post-merge ref to
+        // origin without entering degraded state.
+        // AC: @dispatch-remote-branch-sync ac-push-target-periodic
+        await drivePeriodicSyncPush();
 
         git(projectDir, "fetch origin");
-        const remotePlanTip = git(projectDir, `rev-parse origin/${planTarget}`);
-        expect(remotePlanTip).toBe(planHeadAfter);
-
-        // Final invariant: no degraded state — neither divergence nor
-        // occupied-checkout — has been recorded for the plan target at any
-        // point in this flow. The incident's symptom was a stuck degraded
-        // map that required restarting dispatch to clear.
+        expect(git(projectDir, `rev-parse refs/remotes/origin/${planTarget}`)).toBe(
+          planHeadAfter,
+        );
         expect(engine.getDegradedState()).toEqual([]);
-        const finalStatus = engine.getTargetSyncStatus();
-        expect(finalStatus.degraded.active).toBe(false);
-        expect(finalStatus.degradedTargets).toEqual([]);
-        expect(finalStatus.targetSyncTimestamps[planTarget]).toBeGreaterThan(0);
+        const phaseAStatus = engine.getTargetSyncStatus();
+        expect(phaseAStatus.degraded.active).toBe(false);
+        expect(phaseAStatus.degradedTargets).toEqual([]);
+
+        // ───── PHASE B: occupied-target refusal via periodic-sync push ─────
+        //
+        // Manufacture a foreign worktree that holds the plan target branch.
+        // This is the structural failure mode the incident produced — an
+        // unexpected checkout of the integration target blocking dispatch
+        // sync/push. Placed OUTSIDE .kspec-worktrees to model a foreign
+        // operator checkout rather than a dispatch-owned aux worktree, and
+        // to keep helper-lock invariants in earlier assertions unambiguous.
+        occupantWorktree = `${projectDir}-plan-target-occupant`;
+        execSync(
+          `git worktree add "${occupantWorktree}" "${planTarget}"`,
+          {
+            cwd: projectDir,
+            stdio: "pipe",
+            env: workspaceModule.buildDispatchGitEnv(),
+          },
+        );
+
+        // Advance the plan target locally so the periodic-sync push path
+        // does NOT take the no-commits-to-push early return. The occupant
+        // owns the checkout, so we publish the new commit via the occupant
+        // worktree itself (which is the only place HEAD points at the plan
+        // target).
+        await fs.writeFile(
+          path.join(occupantWorktree, "post-merge-touch.txt"),
+          "post-merge change while occupied\n",
+          "utf-8",
+        );
+        git(occupantWorktree, "add post-merge-touch.txt");
+        git(occupantWorktree, 'commit -m "chore: advance plan target while occupied"');
+        const planHeadOccupied = git(projectDir, `rev-parse refs/heads/${planTarget}`);
+        expect(planHeadOccupied).not.toBe(planHeadAfter);
+        const planRemoteBeforeRefusal = git(
+          projectDir,
+          `rev-parse refs/remotes/origin/${planTarget}`,
+        );
+        expect(planRemoteBeforeRefusal).toBe(planHeadAfter);
+
+        // Drive the periodic-sync push path with the occupant in place.
+        // The mutation-scope resolver must refuse before moving any refs,
+        // identify the blocking worktree path, and surface operator-
+        // actionable recovery guidance via degraded state.
+        // AC: @dispatch-integration-mutation-scope ac-occupied-target-refusal-identifies-blocker
+        // AC: @dispatch-remote-branch-sync ac-push-target-periodic
+        await drivePeriodicSyncPush();
+
+        // Refusal-before-mutation: neither the local ref nor the remote ref
+        // moved as a side effect of the refused push.
+        expect(git(projectDir, `rev-parse refs/heads/${planTarget}`)).toBe(planHeadOccupied);
+        git(projectDir, "fetch origin");
+        expect(git(projectDir, `rev-parse refs/remotes/origin/${planTarget}`)).toBe(
+          planRemoteBeforeRefusal,
+        );
+
+        // Degraded state must identify the blocking worktree path so an
+        // operator can resolve the lock without reading dispatch source.
+        const degradedDuringRefusal = engine.getDegradedState();
+        const planDegraded = degradedDuringRefusal.find((entry) => entry.branch === planTarget);
+        expect(
+          planDegraded,
+          `expected plan target "${planTarget}" to be in degraded state but got: ${JSON.stringify(degradedDuringRefusal)}`,
+        ).toBeTruthy();
+        expect(planDegraded?.kind).toBe("occupied-checkout");
+        expect(planDegraded?.reason).toContain(occupantWorktree);
+        expect(planDegraded?.reason).toContain(planTarget);
+        // The resolver's suggestion text must call out a concrete operator
+        // action ("Check out a different branch in <worktree>") rather than
+        // a generic failure message.
+        expect(planDegraded?.reason).toMatch(/Check out a different branch/i);
+
+        // Scoped degradation: the configured base branch is not degraded.
+        // Other targets must continue normal sync operations even when the
+        // plan target is blocked.
+        expect(
+          degradedDuringRefusal.find((entry) => entry.branch === "dev"),
+          "dev must not be degraded by an occupant on the plan target",
+        ).toBeUndefined();
+
+        // Status API mirrors the degraded map.
+        const refusalStatus = engine.getTargetSyncStatus();
+        expect(refusalStatus.degraded.active).toBe(true);
+        expect(refusalStatus.degradedTargets.map((d) => d.branch)).toContain(planTarget);
+        const refusalDegradedTarget = refusalStatus.degradedTargets.find(
+          (d) => d.branch === planTarget,
+        );
+        expect(refusalDegradedTarget?.kind).toBe("occupied-checkout");
+        expect(refusalDegradedTarget?.reason).toContain(occupantWorktree);
+
+        // ───── PHASE C: recovery without operator restart ─────
+        //
+        // Release the lock — this is the operator action the refusal
+        // guidance directs to. The next periodic-sync push must clear the
+        // degraded entry AND push the still-unpushed plan target commits.
+        // AC: @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery
+        // AC: @dispatch-remote-branch-sync ac-push-target-periodic
+        execSync(`git worktree remove --force "${occupantWorktree}"`, {
+          cwd: projectDir,
+          stdio: "pipe",
+          env: workspaceModule.buildDispatchGitEnv(),
+        });
+        occupantWorktree = undefined;
+
+        await drivePeriodicSyncPush();
+
+        // Recovery push succeeded: the unpushed local commits made in the
+        // occupied-state phase are now on origin.
+        git(projectDir, "fetch origin");
+        expect(git(projectDir, `rev-parse refs/remotes/origin/${planTarget}`)).toBe(
+          planHeadOccupied,
+        );
+
+        // Degraded state cleared without dispatch restart — the incident's
+        // operational symptom was the engine staying degraded until restart.
+        expect(
+          engine.getDegradedState().find((entry) => entry.branch === planTarget),
+          `plan target should have recovered but degraded state still contains it: ${JSON.stringify(engine.getDegradedState())}`,
+        ).toBeUndefined();
+        const recoveryStatus = engine.getTargetSyncStatus();
+        expect(recoveryStatus.degraded.active).toBe(false);
+        expect(recoveryStatus.degradedTargets).toEqual([]);
+        expect(recoveryStatus.targetSyncTimestamps[planTarget]).toBeGreaterThan(0);
+
+        // Dispatch root never moved off its base branch through any phase.
+        expect(git(projectDir, "branch --show-current")).toBe("dev");
+
+        // The helper-lock invariant still holds after the full cycle.
+        expect(worktreesOnBranch(projectDir, planTarget)).toEqual([]);
       } finally {
+        if (occupantWorktree !== undefined) {
+          try {
+            execSync(`git worktree remove --force "${occupantWorktree}"`, {
+              cwd: projectDir,
+              stdio: "pipe",
+              env: workspaceModule.buildDispatchGitEnv(),
+            });
+          } catch {
+            // Already removed or never created.
+          }
+        }
         await engine.stop();
       }
     },
