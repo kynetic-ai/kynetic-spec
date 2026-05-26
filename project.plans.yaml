@@ -51177,7 +51177,7 @@ plans:
 
       - Static export must copy resource files to deterministic exported asset paths so the static
       UI can load images/PDFs offline.
-    status: active
+    status: completed
     approved_at: 2026-05-22T22:35:13.184Z
     branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
     derived_specs:
@@ -51504,6 +51504,15 @@ plans:
           static UI can load images/PDFs offline.
         author: Jacob Chapel
         created_at: 2026-05-22T22:36:48.221Z
+      - _ulid: 01KSJ4BCRRW409T0VM6Q7TF5ZK
+        content: "Closure: merged plan branch
+          plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw into dev at
+          32d374363549d45f4edb1d067c9d97307e9b7f2d after lint/format cleanup commit d5c0ddf177.
+          Verification passed: format:check, npm run lint (0 errors), typecheck, build, kspec
+          validate --warnings-ok, and full npm test -- --fresh (2578 suites, 9848 passed, 5
+          skipped). All 12 derived tasks are completed with reviews."
+        author: Jacob Chapel
+        created_at: 2026-05-26T12:32:29.976Z
   - _ulid: 01KSBEH47SBEAVSFY5HEPFMQBY
     slugs:
       - plan-dispatch-merge-helper-target-lock-hardening
