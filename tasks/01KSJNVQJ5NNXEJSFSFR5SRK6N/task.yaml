@@ -1,0 +1,78 @@
+_ulid: 01KSJNVQJ5NNXEJSFSFR5SRK6N
+slugs:
+  - task-add-plan-target-lock-e2e-regression
+title: Add end-to-end plan-target lock regression for manual_merge dispatch
+type: task
+description: >
+  What:
+
+  - Add an integration-style regression proving a plan-scoped manual_merge review can merge into a
+  plan integration target without leaving that plan target branch checked out in `.kspec-worktrees`
+  or any helper-created auxiliary worktree.
+
+  - The test should provision a plan-scoped task whose integration target differs from the dispatch
+  root branch, run the reviewer merge helper path, and then run/trigger target push or periodic sync
+  from the dispatch root.
+
+  - Assert the root dispatch checkout can push/sync the plan target branch, `git worktree list
+  --porcelain` has no lingering `branch refs/heads/<plan-target>` in auxiliary worktrees, and the
+  engine does not enter or remain in degraded state for that target.
+
+
+  Why:
+
+  Unit tests around the helper and degraded map are necessary but not sufficient. The incident was
+  the cross-product of plan-scoped target branches, manual_merge reviewer flow, helper guidance, and
+  dispatch remote sync.
+
+
+  How:
+
+  - Reuse existing dispatch engine test helpers for workspace provisioning and manual_merge mode
+  where possible.
+
+  - Keep the test in a temp repo; do not use the live self-hosting checkout or active
+  `.kspec-worktrees`.
+
+  - This task must preserve a true integration-style regression for the combined incident path:
+  plan-scoped target branch + manual_merge reviewer helper + no lingering auxiliary target checkout
+  + dispatch-root target sync/push. If full orchestration proves infeasible in the existing harness,
+  stop and report the harness limitation for a product/test-scope decision instead of substituting
+  narrower helper-only or sync-only tests while claiming E2E coverage.
+
+
+  Testing:
+
+  - npm test -- --fresh tests/agent-dispatch-engine.test.ts
+
+  - npm test -- --fresh tests/detached-reviewer-merge.test.ts
+
+  - npm run typecheck
+
+  - kspec validate --alignment --warnings-ok
+
+  - kspec validate --completeness --warnings-ok
+
+
+  Covers: @dispatch-integration-mutation-scope ac-occupied-target-refusal-identifies-blocker,
+  ac-auxiliary-worktrees-do-not-hold-target-locks; @dispatch-remote-branch-sync
+  ac-push-target-periodic, ac-occupied-checkout-degraded-recovery; @detached-reviewer-merge-helper
+  ac-helper-leaves-no-target-branch-lock
+spec_ref: "@dispatch-integration-mutation-scope"
+plan_ref: "@plan-dispatch-merge-helper-target-lock-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-rework-detached-reviewer-merge-helper-ephemeral-target"
+  - "@task-clear-occupied-checkout-degraded-state-on-retry"
+context: []
+priority: 2
+tags:
+  - tests
+  - dispatch
+  - plan-branch
+  - merge-helper
+vcs_refs: []
+created_at: 2026-05-26T17:38:31.109Z
+todos: []

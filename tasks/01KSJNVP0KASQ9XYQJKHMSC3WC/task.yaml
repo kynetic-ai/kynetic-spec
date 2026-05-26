@@ -1,0 +1,118 @@
+_ulid: 01KSJNVP0KASQ9XYQJKHMSC3WC
+slugs:
+  - task-align-merge-helper-branch-lock-specs
+title: Align merge-helper and integration-target specs around branch-lock ownership
+type: task
+description: >
+  What:
+
+  - Update the existing @detached-reviewer-merge-helper description so it says the helper keeps the
+  integration branch authoritative by using helper-owned temporary merge state, not by refreshing a
+  persistent occupied target worktree.
+
+  - Replace @detached-reviewer-merge-helper ac-occupied-target-clean-refresh with the following
+  final behavior; do not keep the old refresh semantics under a different ID:
+
+    AC id: ac-helper-uses-ephemeral-target-worktree
+    Given: A reviewer runs the supported detached merge helper and the integration target branch is not checked out in any non-helper worktree.
+    When: The reviewed canonical head needs to be merged into the integration target.
+    Then: The helper creates an internal temporary target worktree, performs the merge there, advances the integration target ref on success, and removes the temporary worktree before exiting.
+
+    AC id: ac-helper-leaves-no-target-branch-lock
+    Given: The supported detached merge helper exits after a successful merge, no-op merge, or conflict/error path.
+    When: Git worktrees are listed for the repository.
+    Then: No helper-created or dispatch auxiliary worktree remains checked out on the integration target branch.
+
+    AC id: ac-helper-occupied-target-refuses-with-free-branch-guidance
+    Given: The integration target branch is already checked out in a non-helper worktree before the detached merge helper runs.
+    When: The helper cannot safely take exclusive ownership of the target branch for its temporary merge worktree.
+    Then: The helper refuses before moving refs, identifies the blocking worktree, and reports guidance to free or detach that existing checkout without instructing the reviewer to check out the integration target in another auxiliary worktree.
+
+  - Rewrite @detached-reviewer-merge-helper ac-helper-refuses-dirty-target so it applies to dirty or
+  staged drift in a pre-existing occupied target checkout and preserves the same
+  refusal-before-ref-move behavior.
+
+  - Rewrite @detached-reviewer-merge-helper ac-helper-safe-conflict-exit so conflict cleanup is
+  defined in terms of aborting/removing the helper-owned temporary target worktree, not leaving an
+  occupied integration worktree refreshed.
+
+  - Keep @detached-reviewer-merge-helper ac-helper-no-op-merge semantics, explicitly noting that no
+  persistent target worktree is created or dirtied on the no-op path.
+
+  - Add these ACs to @dispatch-integration-mutation-scope:
+
+    AC id: ac-occupied-target-refusal-identifies-blocker
+    Given: Dispatch is running from a checkout that does not itself have the integration target branch checked out, and another worktree has that target branch checked out.
+    When: Dispatch attempts an integration-target sync or push for that branch.
+    Then: Dispatch refuses before moving refs and reports the blocking worktree path with guidance to free or detach that checkout.
+
+    AC id: ac-auxiliary-worktrees-do-not-hold-target-locks
+    Given: Dispatch uses worker, reviewer, helper, or plan-scoped auxiliary worktrees while the dispatch root is not checked out on a specific integration target branch.
+    When: The auxiliary operation completes, fails, or is cleaned up.
+    Then: Those auxiliary worktrees do not keep that integration target branch checked out in a way that prevents the dispatch root from syncing or pushing the target branch.
+
+  - Add this AC to @dispatch-remote-branch-sync:
+
+    AC id: ac-occupied-checkout-degraded-recovery
+    Given: An integration target entered degraded state because the target branch was checked out in another worktree.
+    When: A later sync or push evaluation finds that no other worktree has the target branch checked out and the target operation succeeds or is a no-op.
+    Then: The degraded state for that target is cleared and queued work for that target becomes eligible without requiring a dispatch-engine restart.
+
+  Why:
+
+  The existing spec already says reviewer guidance must not tell reviewers to check out the
+  integration branch manually, but the helper script itself emits recovery text that requires
+  exactly that. The spec also assumes an occupied target worktree can be refreshed, which conflicts
+  with the dispatch root's safety guard for plan integration targets. These AC updates make
+  exclusive branch-lock ownership explicit.
+
+
+  How:
+
+  - Use `kspec item ac add` for the new ACs and `kspec item ac set`/equivalent item edit path for
+  replacement wording on the existing helper ACs.
+
+  - Ensure no final helper AC still promises to refresh a persistent occupied target worktree after
+  the target ref moves.
+
+  - Set the touched specs to implementation `in_progress` with `--no-cascade` unless the
+  implementation and regression task lands in the same change.
+
+  - Verify `kspec item get @detached-reviewer-merge-helper`, `kspec item get
+  @dispatch-integration-mutation-scope`, and `kspec item get @dispatch-remote-branch-sync` show the
+  intended ACs exactly once.
+
+
+  Testing:
+
+  - kspec item get @detached-reviewer-merge-helper
+
+  - kspec item get @dispatch-integration-mutation-scope
+
+  - kspec item get @dispatch-remote-branch-sync
+
+  - kspec validate --refs --warnings-ok
+
+
+  Covers: @detached-reviewer-merge-helper ac-helper-uses-ephemeral-target-worktree,
+  ac-helper-leaves-no-target-branch-lock,
+  ac-helper-occupied-target-refuses-with-free-branch-guidance, ac-helper-no-op-merge,
+  ac-helper-refuses-dirty-target, ac-helper-safe-conflict-exit; @dispatch-integration-mutation-scope
+  ac-occupied-target-refusal-identifies-blocker, ac-auxiliary-worktrees-do-not-hold-target-locks;
+  @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery
+spec_ref: "@detached-reviewer-merge-helper"
+plan_ref: "@plan-dispatch-merge-helper-target-lock-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - spec-update
+  - dispatch
+  - merge-helper
+  - worktree
+vcs_refs: []
+created_at: 2026-05-26T17:38:29.523Z
+todos: []

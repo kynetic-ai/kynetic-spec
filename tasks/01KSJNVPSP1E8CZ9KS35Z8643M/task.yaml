@@ -1,0 +1,77 @@
+_ulid: 01KSJNVPSP1E8CZ9KS35Z8643M
+slugs:
+  - task-add-detached-merge-helper-branch-lock-regressions
+title: Add regression coverage for helper branch-lock release
+type: task
+description: >
+  What:
+
+  - Update `tests/detached-reviewer-merge.test.ts` so the primary success path has no pre-existing
+  integration-target worktree. The helper should create its own temporary target worktree, merge,
+  remove the worktree, and leave `git worktree list --porcelain` with no `branch
+  refs/heads/<target>` entry outside expected root state.
+
+  - Add a conflict-path regression proving the temporary target worktree is removed and the target
+  ref remains unchanged after a merge conflict.
+
+  - Add an occupied-target regression where the target branch is already checked out in another
+  worktree. Assert the helper exits non-zero before moving refs, names the blocking worktree, and
+  does not instruct the reviewer to check out the target branch somewhere else.
+
+  - Preserve tests for pinned canonical head, no-op already-integrated commits, missing environment
+  variables, and dirty/staged occupied-target refusal if that case remains distinct from general
+  occupied-target refusal.
+
+  - Add or update prompt/skill rendering assertions so reviewer guidance points only to the
+  supported helper and does not contain the helper's old recovery phrase `check out '$MERGE_TARGET'
+  in a worktree` or equivalent manual checkout wording.
+
+
+  Why:
+
+  The previous tests encoded the bad invariant by always provisioning an occupied integration target
+  worktree before invoking the helper. Regression coverage must model the desired dispatch-safe
+  state: reviewer snapshots can merge without creating a persistent branch lock.
+
+
+  How:
+
+  - Split the test fixture into variants: one with no target worktree, one with a deliberately
+  occupied target worktree, and one with a temporary conflict setup.
+
+  - Assert both ref state and worktree occupancy, not just stdout.
+
+  - Use deterministic temp repositories and always clean helper temp worktrees in `afterEach` to
+  avoid test pollution.
+
+
+  Testing:
+
+  - npm test -- --fresh tests/detached-reviewer-merge.test.ts
+
+  - npm test -- --fresh tests/agent-dispatch-engine.test.ts -t "manual merge"
+
+  - npm run typecheck
+
+
+  Covers: @detached-reviewer-merge-helper ac-helper-uses-ephemeral-target-worktree,
+  ac-helper-leaves-no-target-branch-lock,
+  ac-helper-occupied-target-refuses-with-free-branch-guidance, ac-helper-no-op-merge,
+  ac-helper-refuses-dirty-target, ac-helper-safe-conflict-exit
+spec_ref: "@detached-reviewer-merge-helper"
+plan_ref: "@plan-dispatch-merge-helper-target-lock-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-rework-detached-reviewer-merge-helper-ephemeral-target"
+context: []
+priority: 1
+tags:
+  - tests
+  - dispatch
+  - merge-helper
+  - worktree
+vcs_refs: []
+created_at: 2026-05-26T17:38:30.326Z
+todos: []
