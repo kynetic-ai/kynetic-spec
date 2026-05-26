@@ -236987,6 +236987,17 @@ reviews:
         runner: tsc
         created_at: 2026-05-26T22:47:46.332Z
         completed_at: 2026-05-26T22:47:46.332Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Focused regression passed: 1 test passed; log
+          /tmp/kspec-test-cache/01KSK6QRP7FDRJJ1Y42NB3FRND/6e114d1cd9ccca9c.log"
+        name: npm test -- --fresh tests/dispatch-plan-target-lock-e2e.test.ts
+        required: true
+        runner: npm
+        created_at: 2026-05-26T22:47:51.289Z
+        completed_at: 2026-05-26T22:47:51.289Z
     events:
       - _ulid: 01KSK6TAKQEFJYG6HBT7GEX3GJ
         actor: Jacob Chapel
@@ -237028,6 +237039,13 @@ reviews:
           status: pass
           name: npm run typecheck
         timestamp: 2026-05-26T22:47:48.117Z
+      - _ulid: 01KSK7J6H1NHJGFKA61BJCH379
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test -- --fresh tests/dispatch-plan-target-lock-e2e.test.ts
+        timestamp: 2026-05-26T22:47:53.122Z
     examined_commit: 206c070fa4855d53ec1e35b82ed1fda44a5a447e
     external_links: []
     lifecycle_state: open
@@ -237069,5 +237087,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-05-26T22:34:50.871Z
-    updated_at: 2026-05-26T22:47:46.332Z
+    updated_at: 2026-05-26T22:47:51.289Z
     notes: []
