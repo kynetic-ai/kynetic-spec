@@ -29911,7 +29911,7 @@
   type: task
   spec_ref: "@detached-reviewer-merge-helper"
   plan_ref: "@plan-dispatch-merge-helper-target-lock-hardening"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-rework-detached-reviewer-merge-helper-ephemeral-target"
@@ -29925,6 +29925,7 @@
   todos_count: 0
   created_at: 2026-05-26T17:38:30.326Z
   started_at: 2026-05-26T20:13:38.340Z
+  submitted_at: 2026-05-26T20:43:59.177Z
   automation: eligible
 - _ulid: 01KSJNVQ5R4ZFZN2GXWWXP28X8
   slugs:

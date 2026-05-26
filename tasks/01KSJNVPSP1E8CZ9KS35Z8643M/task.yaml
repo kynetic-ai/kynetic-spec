@@ -61,7 +61,7 @@ description: >
 spec_ref: "@detached-reviewer-merge-helper"
 plan_ref: "@plan-dispatch-merge-helper-target-lock-hardening"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-rework-detached-reviewer-merge-helper-ephemeral-target"
@@ -73,6 +73,14 @@ tags:
   - merge-helper
   - worktree
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-add-detached-merge-helper-branch-lock-regressions/01ksjnvp
+  captured_at: 2026-05-26T20:43:59.175Z
+  commit: 4c77a68199db361e194cf02d88b77e331bd472d8
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KSJYQ45ZGKNJY3JZWM3ENXXB
 history:
   - author: Jacob Chapel
@@ -95,7 +103,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-26T20:13:38.340Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-add-detached-merge-helper-branch-lock-regressions/01ksjnvp
+          captured_at: 2026-05-26T20:43:59.175Z
+          commit: 4c77a68199db361e194cf02d88b77e331bd472d8
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-26T20:43:59.177Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-26T20:43:59.178Z
 created_at: 2026-05-26T17:38:30.326Z
 started_at: 2026-05-26T20:13:38.340Z
+submitted_at: 2026-05-26T20:43:59.177Z
 todos: []
 automation: eligible
