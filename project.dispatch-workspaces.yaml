@@ -9425,11 +9425,11 @@ workspaces:
     canonical_branch: dispatch/task/task-clear-occupied-checkout-degraded-state-on-retry/01ksjnvq
     canonical_branch_head: 5e834f76678fd66b4ab9501dc8aa089912054efc
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-05-26T22:05:10.665Z
+      updated_at: 2026-05-26T22:08:12.869Z
     health:
       status: healthy
       issues: []
@@ -9443,16 +9443,16 @@ workspaces:
       target_branch: dev
       target_commit: 32d374363549d45f4edb1d067c9d97307e9b7f2d
       updated_at: 2026-05-26T22:05:10.665Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KSJNVQ5R4ZFZN2GXWWXP28X8"
     task_slug: task-clear-occupied-checkout-degraded-state-on-retry
     timestamps:
-      closed_at: null
+      closed_at: 2026-05-26T22:08:12.869Z
       last_active_at: 2026-05-26T21:48:02.482Z
       last_reconciled_at: 2026-05-26T22:07:51.895Z
       created_at: 2026-05-26T19:36:25.186Z
-      updated_at: 2026-05-26T22:07:51.895Z
+      updated_at: 2026-05-26T22:08:12.869Z
     workspace_id: dispatch-workspace-01KSJNVQ5R4ZFZN2GXWWXP28X8
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
