@@ -7963,7 +7963,7 @@ workspaces:
         head: 3bc2a809cf80c6bbe33a71597b2f4ffe14350b16
         last_seen_at: 2026-05-25T23:19:02.025Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-folder-backed-resources-docs-01ks8xb0
-  - active_role: null
+  - active_role: worker
     base_branch_point: 32d374363549d45f4edb1d067c9d97307e9b7f2d
     bootstrap:
       status: succeeded
@@ -8290,7 +8290,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-26T18:12:33.084Z
+      updated_at: 2026-05-26T18:13:01.713Z
     integration:
       status: pending
       detail: null
@@ -8299,16 +8299,16 @@ workspaces:
       target_branch: dev
       target_commit: 32d374363549d45f4edb1d067c9d97307e9b7f2d
       updated_at: 2026-05-26T18:12:33.084Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KSJNVP0KASQ9XYQJKHMSC3WC"
     task_slug: task-align-merge-helper-branch-lock-specs
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-05-26T18:12:33.084Z
+      last_active_at: 2026-05-26T18:13:01.713Z
+      last_reconciled_at: 2026-05-26T18:13:01.713Z
       created_at: 2026-05-26T18:12:33.084Z
-      updated_at: 2026-05-26T18:13:00.254Z
+      updated_at: 2026-05-26T18:13:01.713Z
     workspace_id: dispatch-workspace-01KSJNVP0KASQ9XYQJKHMSC3WC
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
