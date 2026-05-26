@@ -235228,3 +235228,29 @@ reviews:
     created_at: 2026-05-25T23:20:04.863Z
     updated_at: 2026-05-25T23:33:41.485Z
     notes: []
+  - _ulid: 01KSJKAX14MGRKNGVZGTZPA0FY
+    slugs: []
+    title: "Plan review: Folder-Backed Index Consistency Hardening"
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KSJKAX130SCB5XSA58RTPPJM
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-26T16:54:22.500Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-folder-backed-index-consistency-hardening"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-26T16:54:22.500Z
+    updated_at: null
+    notes: []
