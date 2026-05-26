@@ -2,8 +2,10 @@
  * Tests for the detached reviewer merge helper script.
  *
  * Simulates the dispatch reviewer environment: a detached HEAD worktree
- * (reviewer snapshot) that runs the merge helper to integrate the canonical
- * branch into the occupied integration target.
+ * (reviewer snapshot) that runs the merge helper. The helper performs the
+ * merge in a helper-owned temporary target worktree it creates and removes
+ * itself; it does not require the integration target branch to be checked
+ * out anywhere ahead of time.
  */
 
 import { execSync, spawnSync } from "node:child_process";
@@ -15,7 +17,6 @@ import {
   cleanupTempDir,
   createTempDir,
   initGitRepo,
-  readTestOutput,
 } from "./helpers/cli.js";
 
 const SCRIPT_PATH = path.resolve(
@@ -31,43 +32,51 @@ const SCRIPT_PATH = path.resolve(
 const cleanupDirs: string[] = [];
 
 interface MergeTestEnv {
-  /** Main repo (bare-like project root where branches live) */
+  /** Main repo root where branches live. */
   projectDir: string;
-  /** Worktree that has the integration target branch checked out (simulates worker/main worktree) */
-  integrationWorktreeDir: string;
-  /** Detached HEAD worktree simulating the reviewer snapshot */
+  /**
+   * Pre-existing non-helper worktree that has the integration target branch
+   * checked out. Only created when `setupMergeTestEnv({ checkoutTarget: true })`.
+   */
+  integrationWorktreeDir: string | null;
+  /** Detached HEAD worktree simulating the reviewer snapshot. */
   reviewerWorktreeDir: string;
-  /** The canonical (task) branch name */
+  /** The canonical (task) branch name. */
   canonicalBranch: string;
-  /** The pinned canonical head commit SHA (reviewed snapshot) */
+  /** The pinned canonical head commit SHA (reviewed snapshot). */
   canonicalHead: string;
-  /** The integration target branch name */
+  /** The integration target branch name. */
   mergeTarget: string;
+  /** Shared scratch dir for additional worktrees. */
+  worktreeBase: string;
 }
 
 /**
  * Set up a test environment that mimics dispatch reviewer context:
  *
  * 1. A main git repo with an initial commit on "main"
- * 2. A "dev" branch (integration target) checked out in a separate worktree
+ * 2. A "dev" branch (integration target) — by default NOT checked out anywhere
  * 3. A canonical task branch with a diverging commit
  * 4. A detached HEAD worktree at the canonical branch tip (reviewer snapshot)
+ *
+ * Pass `checkoutTarget: true` to additionally check out the integration
+ * target branch in a separate worktree (simulating a pre-existing
+ * non-helper checkout that the helper must refuse to disturb).
  */
-async function setupMergeTestEnv(): Promise<MergeTestEnv> {
+async function setupMergeTestEnv(
+  options: { checkoutTarget?: boolean } = {},
+): Promise<MergeTestEnv> {
   const projectDir = await createTempDir("kspec-merge-helper-");
   cleanupDirs.push(projectDir);
 
-  // Initialize the main repo
   initGitRepo(projectDir);
   execSync('git commit --allow-empty -m "initial commit"', {
     cwd: projectDir,
     stdio: "pipe",
   });
 
-  // Create the integration target branch "dev" from main
   execSync("git branch dev", { cwd: projectDir, stdio: "pipe" });
 
-  // Create the canonical task branch with a diverging commit
   const canonicalBranch = "dispatch/task/test-task/01ABC123";
   execSync(`git checkout -b "${canonicalBranch}"`, {
     cwd: projectDir,
@@ -80,27 +89,26 @@ async function setupMergeTestEnv(): Promise<MergeTestEnv> {
     stdio: "pipe",
   });
 
-  // Capture the canonical head (the reviewed commit) before switching branches
   const canonicalHead = execSync(`git rev-parse HEAD`, {
     cwd: projectDir,
     encoding: "utf-8",
     stdio: ["pipe", "pipe", "pipe"],
   }).trim();
 
-  // Switch back to main so worktrees can be created
   execSync("git checkout main", { cwd: projectDir, stdio: "pipe" });
 
-  // Create integration target worktree (simulates the occupied dev worktree)
   const worktreeBase = await createTempDir("kspec-merge-wt-");
   cleanupDirs.push(worktreeBase);
 
-  const integrationWorktreeDir = path.join(worktreeBase, "dev-wt");
-  execSync(`git worktree add "${integrationWorktreeDir}" dev`, {
-    cwd: projectDir,
-    stdio: "pipe",
-  });
+  let integrationWorktreeDir: string | null = null;
+  if (options.checkoutTarget) {
+    integrationWorktreeDir = path.join(worktreeBase, "dev-wt");
+    execSync(`git worktree add "${integrationWorktreeDir}" dev`, {
+      cwd: projectDir,
+      stdio: "pipe",
+    });
+  }
 
-  // Create detached reviewer worktree at the canonical branch tip
   const reviewerWorktreeDir = path.join(worktreeBase, "reviewer-wt");
   execSync(`git worktree add --detach "${reviewerWorktreeDir}" "${canonicalBranch}"`, {
     cwd: projectDir,
@@ -114,7 +122,34 @@ async function setupMergeTestEnv(): Promise<MergeTestEnv> {
     canonicalBranch,
     canonicalHead,
     mergeTarget: "dev",
+    worktreeBase,
   };
+}
+
+/**
+ * Run a callback inside a temporary worktree checked out on the given branch,
+ * then remove the worktree before returning. Used by tests to advance the
+ * target branch (no-op pre-merge or conflict setup) without leaving the
+ * target branch checked out anywhere.
+ */
+async function withTempBranchWorktree(
+  env: MergeTestEnv,
+  branch: string,
+  cb: (worktreeDir: string) => Promise<void> | void,
+): Promise<void> {
+  const tempWorktreeDir = path.join(env.worktreeBase, `tmp-${Date.now()}-${Math.random()}`);
+  execSync(`git worktree add "${tempWorktreeDir}" "${branch}"`, {
+    cwd: env.projectDir,
+    stdio: "pipe",
+  });
+  try {
+    await cb(tempWorktreeDir);
+  } finally {
+    execSync(`git worktree remove --force "${tempWorktreeDir}"`, {
+      cwd: env.projectDir,
+      stdio: "pipe",
+    });
+  }
 }
 
 /**
@@ -123,7 +158,6 @@ async function setupMergeTestEnv(): Promise<MergeTestEnv> {
  */
 function buildMergeHelperEnv(overrides: Record<string, string>): NodeJS.ProcessEnv {
   const base = buildTestSubprocessEnv(overrides);
-  // Strip all dispatch env vars so tests that omit a var don't inherit the parent's
   for (const key of Object.keys(base)) {
     if (key.startsWith("KSPEC_DISPATCH_") && !(key in overrides)) {
       delete base[key];
@@ -132,9 +166,6 @@ function buildMergeHelperEnv(overrides: Record<string, string>): NodeJS.ProcessE
   return base;
 }
 
-/**
- * Run the merge helper script from a given working directory with dispatch env vars.
- */
 function runMergeHelper(
   cwd: string,
   env: Record<string, string>,
@@ -152,11 +183,47 @@ function runMergeHelper(
   };
 }
 
+function listTargetWorktrees(env: MergeTestEnv): string[] {
+  const output = execSync("git worktree list --porcelain", {
+    cwd: env.projectDir,
+    encoding: "utf-8",
+    stdio: ["pipe", "pipe", "pipe"],
+  });
+  const targetRef = `refs/heads/${env.mergeTarget}`;
+  const results: string[] = [];
+  let currentPath = "";
+  let currentBranch = "";
+  for (const rawLine of output.split("\n")) {
+    if (rawLine.startsWith("worktree ")) {
+      currentPath = rawLine.slice("worktree ".length);
+      currentBranch = "";
+    } else if (rawLine.startsWith("branch ")) {
+      currentBranch = rawLine.slice("branch ".length);
+    } else if (rawLine === "") {
+      if (currentBranch === targetRef && currentPath !== "") {
+        results.push(currentPath);
+      }
+      currentPath = "";
+      currentBranch = "";
+    }
+  }
+  if (currentBranch === targetRef && currentPath !== "") {
+    results.push(currentPath);
+  }
+  return results;
+}
+
+function revParse(repoCwd: string, ref: string): string {
+  return execSync(`git rev-parse "${ref}"`, {
+    cwd: repoCwd,
+    encoding: "utf-8",
+    stdio: ["pipe", "pipe", "pipe"],
+  }).trim();
+}
+
 afterEach(async () => {
-  // Remove worktrees before cleaning up temp dirs
   for (const dir of [...cleanupDirs].reverse()) {
     try {
-      // Try to remove all worktrees first
       const output = execSync("git worktree list --porcelain", {
         cwd: dir,
         encoding: "utf-8",
@@ -191,19 +258,17 @@ afterEach(async () => {
 });
 
 describe("detached-reviewer-merge helper", () => {
-  // AC: @detached-reviewer-merge-helper ac-occupied-target-clean-refresh
-  describe("occupied target clean refresh", () => {
-    it("merges canonical branch into integration target and refreshes the occupied worktree", async () => {
+  describe("ephemeral target worktree merge", () => {
+    // AC: @detached-reviewer-merge-helper ac-helper-uses-ephemeral-target-worktree
+    // AC: @detached-reviewer-merge-helper ac-helper-leaves-no-target-branch-lock
+    it("creates a temporary target worktree, advances the target ref, and removes the worktree on success", async () => {
       const env = await setupMergeTestEnv();
 
-      // Verify the feature file does not exist in the integration worktree before merge
-      const beforeExists = await fs
-        .access(path.join(env.integrationWorktreeDir, "feature.txt"))
-        .then(() => true)
-        .catch(() => false);
-      expect(beforeExists).toBe(false);
+      const targetWorktreesBefore = listTargetWorktrees(env);
+      expect(targetWorktreesBefore).toEqual([]);
 
-      // Run the merge helper from the reviewer worktree
+      const targetHeadBefore = revParse(env.projectDir, `refs/heads/${env.mergeTarget}`);
+
       const result = runMergeHelper(env.reviewerWorktreeDir, {
         KSPEC_DISPATCH_CANONICAL_BRANCH: env.canonicalBranch,
         KSPEC_DISPATCH_CANONICAL_HEAD: env.canonicalHead,
@@ -214,52 +279,37 @@ describe("detached-reviewer-merge helper", () => {
       expect(result.stdout).toContain("success: merged");
       expect(result.stdout).toContain(env.canonicalBranch);
       expect(result.stdout).toContain(env.mergeTarget);
-      expect(result.stdout).toContain("occupied worktree refreshed");
 
-      // Verify the integration target ref advanced
-      const newTargetHead = execSync("git rev-parse HEAD", {
-        cwd: env.integrationWorktreeDir,
-        encoding: "utf-8",
-        stdio: ["pipe", "pipe", "pipe"],
-      }).trim();
+      // Target ref advanced.
+      const targetHeadAfter = revParse(env.projectDir, `refs/heads/${env.mergeTarget}`);
+      expect(targetHeadAfter).not.toBe(targetHeadBefore);
 
-      const canonicalHead = execSync(`git rev-parse "refs/heads/${env.canonicalBranch}"`, {
-        cwd: env.projectDir,
-        encoding: "utf-8",
-        stdio: ["pipe", "pipe", "pipe"],
-      }).trim();
-
-      // The canonical head should be an ancestor of the new target
+      // Canonical commit is reachable from the new target tip.
       const isAncestor = execSync(
-        `git merge-base --is-ancestor "${canonicalHead}" "${newTargetHead}" && echo yes || echo no`,
-        {
-          cwd: env.projectDir,
-          encoding: "utf-8",
-          stdio: ["pipe", "pipe", "pipe"],
-        },
+        `git merge-base --is-ancestor "${env.canonicalHead}" "${targetHeadAfter}" && echo yes || echo no`,
+        { cwd: env.projectDir, encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] },
       ).trim();
       expect(isAncestor).toBe("yes");
 
-      // Verify the feature file exists in the occupied integration worktree
-      const content = await readTestOutput(path.join(env.integrationWorktreeDir, "feature.txt"));
-      expect(content).toBe("feature content\n");
+      // The reviewed feature file lives in the target branch tree.
+      const featureInTarget = execSync(
+        `git show "refs/heads/${env.mergeTarget}:feature.txt"`,
+        { cwd: env.projectDir, encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] },
+      );
+      expect(featureInTarget).toBe("feature content\n");
 
-      // Verify the occupied worktree index is clean
-      const status = execSync("git status --porcelain", {
-        cwd: env.integrationWorktreeDir,
-        encoding: "utf-8",
-        stdio: ["pipe", "pipe", "pipe"],
-      }).trim();
-      expect(status).toBe("");
+      // No worktree remains checked out on the target branch.
+      const targetWorktreesAfter = listTargetWorktrees(env);
+      expect(targetWorktreesAfter).toEqual([]);
     });
   });
 
-  // AC: @detached-reviewer-merge-helper ac-occupied-target-clean-refresh
   describe("canonical head pinning", () => {
+    // AC: @detached-reviewer-merge-helper ac-helper-uses-ephemeral-target-worktree
     it("merges the pinned reviewed commit, not the advanced branch tip", async () => {
       const env = await setupMergeTestEnv();
 
-      // Advance the canonical branch PAST the reviewed commit
+      // Advance the canonical branch past the reviewed commit.
       execSync(`git checkout "${env.canonicalBranch}"`, {
         cwd: env.projectDir,
         stdio: "pipe",
@@ -272,7 +322,6 @@ describe("detached-reviewer-merge helper", () => {
       });
       execSync("git checkout main", { cwd: env.projectDir, stdio: "pipe" });
 
-      // Run the merge helper with the original pinned canonical head
       const result = runMergeHelper(env.reviewerWorktreeDir, {
         KSPEC_DISPATCH_CANONICAL_BRANCH: env.canonicalBranch,
         KSPEC_DISPATCH_CANONICAL_HEAD: env.canonicalHead,
@@ -281,41 +330,45 @@ describe("detached-reviewer-merge helper", () => {
 
       expect(result.exitCode).toBe(0);
       expect(result.stdout).toContain("success: merged");
-
-      // The reviewed feature file should be present
-      const content = await readTestOutput(path.join(env.integrationWorktreeDir, "feature.txt"));
-      expect(content).toBe("feature content\n");
-
-      // The unreviewed file should NOT be present — we merged the pinned commit, not the tip
-      const unreviewedExists = await fs
-        .access(path.join(env.integrationWorktreeDir, "unreviewed.txt"))
-        .then(() => true)
-        .catch(() => false);
-      expect(unreviewedExists).toBe(false);
-
-      // The warning about drift should appear on stderr
       expect(result.stderr).toContain("advanced past the reviewed commit");
+
+      // Reviewed feature file is in the target branch.
+      const featureInTarget = execSync(
+        `git show "refs/heads/${env.mergeTarget}:feature.txt"`,
+        { cwd: env.projectDir, encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] },
+      );
+      expect(featureInTarget).toBe("feature content\n");
+
+      // Unreviewed change is NOT in the target branch — we merged the pinned commit.
+      const showUnreviewed = spawnSync(
+        "git",
+        ["show", `refs/heads/${env.mergeTarget}:unreviewed.txt`],
+        { cwd: env.projectDir, encoding: "utf-8" },
+      );
+      expect(showUnreviewed.status).not.toBe(0);
     });
   });
 
   // AC: @detached-reviewer-merge-helper ac-helper-no-op-merge
+  // AC: @detached-reviewer-merge-helper ac-helper-leaves-no-target-branch-lock
   describe("no-op merge", () => {
-    it("reports no-op when canonical head is already integrated", async () => {
+    it("reports no-op when canonical head is already integrated and does not create any target worktree", async () => {
       const env = await setupMergeTestEnv();
 
-      // First, merge so the canonical branch is integrated
-      execSync(
-        `git -C "${env.integrationWorktreeDir}" merge --no-ff "${env.canonicalBranch}" -m "pre-merge"`,
-        { stdio: "pipe" },
-      );
+      // Pre-integrate the canonical branch into the target via a temporary
+      // worktree that is removed before invoking the helper.
+      await withTempBranchWorktree(env, env.mergeTarget, (worktreeDir) => {
+        execSync(`git merge --no-ff "${env.canonicalBranch}" -m "pre-merge"`, {
+          cwd: worktreeDir,
+          stdio: "pipe",
+        });
+      });
 
-      const targetHeadBefore = execSync("git rev-parse HEAD", {
-        cwd: env.integrationWorktreeDir,
-        encoding: "utf-8",
-        stdio: ["pipe", "pipe", "pipe"],
-      }).trim();
+      const targetWorktreesBefore = listTargetWorktrees(env);
+      expect(targetWorktreesBefore).toEqual([]);
 
-      // Now run the helper — should be a no-op
+      const targetHeadBefore = revParse(env.projectDir, `refs/heads/${env.mergeTarget}`);
+
       const result = runMergeHelper(env.reviewerWorktreeDir, {
         KSPEC_DISPATCH_CANONICAL_BRANCH: env.canonicalBranch,
         KSPEC_DISPATCH_CANONICAL_HEAD: env.canonicalHead,
@@ -326,113 +379,39 @@ describe("detached-reviewer-merge helper", () => {
       expect(result.stdout).toContain("no-op");
       expect(result.stdout).toContain("already integrated");
 
-      // Verify the target ref did NOT move
-      const targetHeadAfter = execSync("git rev-parse HEAD", {
-        cwd: env.integrationWorktreeDir,
-        encoding: "utf-8",
-        stdio: ["pipe", "pipe", "pipe"],
-      }).trim();
+      // Target ref did not move.
+      const targetHeadAfter = revParse(env.projectDir, `refs/heads/${env.mergeTarget}`);
       expect(targetHeadAfter).toBe(targetHeadBefore);
 
-      // Verify the occupied worktree is still clean
-      const status = execSync("git status --porcelain", {
-        cwd: env.integrationWorktreeDir,
-        encoding: "utf-8",
-        stdio: ["pipe", "pipe", "pipe"],
-      }).trim();
-      expect(status).toBe("");
+      // No persistent target worktree was created.
+      const targetWorktreesAfter = listTargetWorktrees(env);
+      expect(targetWorktreesAfter).toEqual([]);
     });
-  });
 
-  // AC: @detached-reviewer-merge-helper ac-helper-refuses-dirty-target
-  describe("dirty target refusal", () => {
-    it("refuses to merge when occupied integration worktree has tracked modifications", async () => {
-      const env = await setupMergeTestEnv();
+    // AC: @detached-reviewer-merge-helper ac-helper-no-op-merge
+    it("reports no-op without dirtying a pre-existing occupied target checkout", async () => {
+      const env = await setupMergeTestEnv({ checkoutTarget: true });
+      expect(env.integrationWorktreeDir).not.toBeNull();
+      const occupied = env.integrationWorktreeDir!;
 
-      // Create an initial file and commit it in the integration worktree so we can modify it
-      await fs.writeFile(path.join(env.integrationWorktreeDir, "existing.txt"), "original\n");
-      execSync("git add existing.txt", {
-        cwd: env.integrationWorktreeDir,
-        stdio: "pipe",
-      });
-      execSync('git commit -m "add existing file"', {
-        cwd: env.integrationWorktreeDir,
+      // Pre-integrate the canonical branch into the target in the occupied checkout.
+      execSync(`git merge --no-ff "${env.canonicalBranch}" -m "pre-merge"`, {
+        cwd: occupied,
         stdio: "pipe",
       });
 
-      // Now make it dirty with a tracked modification
-      await fs.writeFile(path.join(env.integrationWorktreeDir, "existing.txt"), "modified\n");
+      // Create a harmless untracked file in the occupied checkout so we can
+      // verify the helper leaves the worktree untouched.
+      await fs.writeFile(path.join(occupied, "untracked.scratch"), "scratch\n");
 
-      const targetHeadBefore = execSync("git rev-parse HEAD", {
-        cwd: env.integrationWorktreeDir,
+      const occupiedStatusBefore = execSync("git status --porcelain", {
+        cwd: occupied,
         encoding: "utf-8",
         stdio: ["pipe", "pipe", "pipe"],
-      }).trim();
-
-      const result = runMergeHelper(env.reviewerWorktreeDir, {
-        KSPEC_DISPATCH_CANONICAL_BRANCH: env.canonicalBranch,
-        KSPEC_DISPATCH_CANONICAL_HEAD: env.canonicalHead,
-        KSPEC_DISPATCH_MERGE_TARGET: env.mergeTarget,
       });
 
-      expect(result.exitCode).toBe(1);
-      expect(result.stderr).toContain("uncommitted changes");
-      expect(result.stderr).toContain("Recovery");
+      const targetHeadBefore = revParse(env.projectDir, `refs/heads/${env.mergeTarget}`);
 
-      // Verify the target ref did NOT move
-      const targetHeadAfter = execSync("git rev-parse HEAD", {
-        cwd: env.integrationWorktreeDir,
-        encoding: "utf-8",
-        stdio: ["pipe", "pipe", "pipe"],
-      }).trim();
-      expect(targetHeadAfter).toBe(targetHeadBefore);
-    });
-
-    it("refuses to merge when occupied integration worktree has staged drift", async () => {
-      const env = await setupMergeTestEnv();
-
-      // Stage a new file without committing
-      await fs.writeFile(path.join(env.integrationWorktreeDir, "staged.txt"), "staged content\n");
-      execSync("git add staged.txt", {
-        cwd: env.integrationWorktreeDir,
-        stdio: "pipe",
-      });
-
-      const targetHeadBefore = execSync("git rev-parse HEAD", {
-        cwd: env.integrationWorktreeDir,
-        encoding: "utf-8",
-        stdio: ["pipe", "pipe", "pipe"],
-      }).trim();
-
-      const result = runMergeHelper(env.reviewerWorktreeDir, {
-        KSPEC_DISPATCH_CANONICAL_BRANCH: env.canonicalBranch,
-        KSPEC_DISPATCH_CANONICAL_HEAD: env.canonicalHead,
-        KSPEC_DISPATCH_MERGE_TARGET: env.mergeTarget,
-      });
-
-      expect(result.exitCode).toBe(1);
-      expect(result.stderr).toContain("uncommitted changes");
-
-      // Verify the target ref did NOT move
-      const targetHeadAfter = execSync("git rev-parse HEAD", {
-        cwd: env.integrationWorktreeDir,
-        encoding: "utf-8",
-        stdio: ["pipe", "pipe", "pipe"],
-      }).trim();
-      expect(targetHeadAfter).toBe(targetHeadBefore);
-    });
-
-    // AC: @detached-reviewer-merge-helper ac-helper-refuses-dirty-target
-    it("allows merge when occupied integration worktree has only untracked files", async () => {
-      const env = await setupMergeTestEnv();
-
-      // Create an untracked file in the integration worktree (no git add)
-      await fs.writeFile(
-        path.join(env.integrationWorktreeDir, "scratch.tmp"),
-        "untracked scratch file\n",
-      );
-
-      // The merge should succeed — untracked files are not tracked modifications or staged drift
       const result = runMergeHelper(env.reviewerWorktreeDir, {
         KSPEC_DISPATCH_CANONICAL_BRANCH: env.canonicalBranch,
         KSPEC_DISPATCH_CANONICAL_HEAD: env.canonicalHead,
@@ -440,38 +419,167 @@ describe("detached-reviewer-merge helper", () => {
       });
 
       expect(result.exitCode).toBe(0);
-      expect(result.stdout).toContain("success: merged");
+      expect(result.stdout).toContain("no-op");
 
-      // The feature file should be present after merge
-      const content = await readTestOutput(path.join(env.integrationWorktreeDir, "feature.txt"));
-      expect(content).toBe("feature content\n");
+      const targetHeadAfter = revParse(env.projectDir, `refs/heads/${env.mergeTarget}`);
+      expect(targetHeadAfter).toBe(targetHeadBefore);
+
+      // Occupied checkout state is unchanged.
+      const occupiedStatusAfter = execSync("git status --porcelain", {
+        cwd: occupied,
+        encoding: "utf-8",
+        stdio: ["pipe", "pipe", "pipe"],
+      });
+      expect(occupiedStatusAfter).toBe(occupiedStatusBefore);
+    });
+  });
+
+  // AC: @detached-reviewer-merge-helper ac-helper-occupied-target-refuses-with-free-branch-guidance
+  // AC: @detached-reviewer-merge-helper ac-helper-leaves-no-target-branch-lock
+  describe("occupied target refusal (clean)", () => {
+    it("refuses before moving refs and identifies the blocking worktree with free-branch guidance", async () => {
+      const env = await setupMergeTestEnv({ checkoutTarget: true });
+      expect(env.integrationWorktreeDir).not.toBeNull();
+      const occupied = env.integrationWorktreeDir!;
+
+      const targetHeadBefore = revParse(env.projectDir, `refs/heads/${env.mergeTarget}`);
+      const targetWorktreesBefore = listTargetWorktrees(env);
+      expect(targetWorktreesBefore).toEqual([occupied]);
+
+      const result = runMergeHelper(env.reviewerWorktreeDir, {
+        KSPEC_DISPATCH_CANONICAL_BRANCH: env.canonicalBranch,
+        KSPEC_DISPATCH_CANONICAL_HEAD: env.canonicalHead,
+        KSPEC_DISPATCH_MERGE_TARGET: env.mergeTarget,
+      });
+
+      expect(result.exitCode).toBe(1);
+      // Identifies the blocking worktree by path.
+      expect(result.stderr).toContain(occupied);
+      // Refuses before moving refs.
+      expect(result.stderr).toContain("NOT been moved");
+      // Guidance to free or detach the existing checkout.
+      expect(result.stderr.toLowerCase()).toMatch(/detach|remove/);
+      // Does NOT instruct the reviewer to check out the target branch in another worktree.
+      expect(result.stderr.toLowerCase()).not.toMatch(/check out .*(in|to)/);
+
+      const targetHeadAfter = revParse(env.projectDir, `refs/heads/${env.mergeTarget}`);
+      expect(targetHeadAfter).toBe(targetHeadBefore);
+
+      // No new auxiliary worktree was added on the target branch.
+      const targetWorktreesAfter = listTargetWorktrees(env);
+      expect(targetWorktreesAfter).toEqual([occupied]);
+    });
+
+    // AC: @detached-reviewer-merge-helper ac-helper-occupied-target-refuses-with-free-branch-guidance
+    it("refuses when the occupied target worktree contains only untracked files", async () => {
+      const env = await setupMergeTestEnv({ checkoutTarget: true });
+      const occupied = env.integrationWorktreeDir!;
+
+      await fs.writeFile(
+        path.join(occupied, "scratch.tmp"),
+        "untracked scratch file\n",
+      );
+
+      const result = runMergeHelper(env.reviewerWorktreeDir, {
+        KSPEC_DISPATCH_CANONICAL_BRANCH: env.canonicalBranch,
+        KSPEC_DISPATCH_CANONICAL_HEAD: env.canonicalHead,
+        KSPEC_DISPATCH_MERGE_TARGET: env.mergeTarget,
+      });
+
+      expect(result.exitCode).toBe(1);
+      expect(result.stderr).toContain(occupied);
+      expect(result.stderr).toContain("NOT been moved");
+      // Untracked files are not tracked modifications: the refusal should
+      // be the generic occupied-target refusal, not the dirty-checkout one.
+      expect(result.stderr).not.toContain("uncommitted changes");
+    });
+  });
+
+  // AC: @detached-reviewer-merge-helper ac-helper-refuses-dirty-target
+  // AC: @detached-reviewer-merge-helper ac-helper-leaves-no-target-branch-lock
+  describe("dirty target refusal", () => {
+    it("refuses when occupied integration worktree has tracked modifications", async () => {
+      const env = await setupMergeTestEnv({ checkoutTarget: true });
+      const occupied = env.integrationWorktreeDir!;
+
+      // Add and commit a file so we can modify it (tracked modification).
+      await fs.writeFile(path.join(occupied, "existing.txt"), "original\n");
+      execSync("git add existing.txt", { cwd: occupied, stdio: "pipe" });
+      execSync('git commit -m "add existing file"', { cwd: occupied, stdio: "pipe" });
+
+      await fs.writeFile(path.join(occupied, "existing.txt"), "modified\n");
+
+      const targetHeadBefore = revParse(env.projectDir, `refs/heads/${env.mergeTarget}`);
+
+      const result = runMergeHelper(env.reviewerWorktreeDir, {
+        KSPEC_DISPATCH_CANONICAL_BRANCH: env.canonicalBranch,
+        KSPEC_DISPATCH_CANONICAL_HEAD: env.canonicalHead,
+        KSPEC_DISPATCH_MERGE_TARGET: env.mergeTarget,
+      });
+
+      expect(result.exitCode).toBe(1);
+      // Identifies the dirty pre-existing checkout.
+      expect(result.stderr).toContain("uncommitted changes");
+      expect(result.stderr).toContain(occupied);
+      expect(result.stderr).toContain("Recovery");
+      expect(result.stderr).toContain("NOT been moved");
+
+      // Target ref unchanged.
+      const targetHeadAfter = revParse(env.projectDir, `refs/heads/${env.mergeTarget}`);
+      expect(targetHeadAfter).toBe(targetHeadBefore);
+
+      // The pre-existing dirty checkout was not overwritten.
+      const occupiedContent = await fs.readFile(
+        path.join(occupied, "existing.txt"),
+        "utf-8",
+      );
+      expect(occupiedContent).toBe("modified\n");
+    });
+
+    it("refuses when occupied integration worktree has staged drift", async () => {
+      const env = await setupMergeTestEnv({ checkoutTarget: true });
+      const occupied = env.integrationWorktreeDir!;
+
+      await fs.writeFile(path.join(occupied, "staged.txt"), "staged content\n");
+      execSync("git add staged.txt", { cwd: occupied, stdio: "pipe" });
+
+      const targetHeadBefore = revParse(env.projectDir, `refs/heads/${env.mergeTarget}`);
+
+      const result = runMergeHelper(env.reviewerWorktreeDir, {
+        KSPEC_DISPATCH_CANONICAL_BRANCH: env.canonicalBranch,
+        KSPEC_DISPATCH_CANONICAL_HEAD: env.canonicalHead,
+        KSPEC_DISPATCH_MERGE_TARGET: env.mergeTarget,
+      });
+
+      expect(result.exitCode).toBe(1);
+      expect(result.stderr).toContain("uncommitted changes");
+      expect(result.stderr).toContain(occupied);
+
+      const targetHeadAfter = revParse(env.projectDir, `refs/heads/${env.mergeTarget}`);
+      expect(targetHeadAfter).toBe(targetHeadBefore);
     });
   });
 
   // AC: @detached-reviewer-merge-helper ac-helper-safe-conflict-exit
+  // AC: @detached-reviewer-merge-helper ac-helper-leaves-no-target-branch-lock
   describe("conflict exit", () => {
-    it("stops on conflict without advancing target ref and provides guidance", async () => {
+    it("aborts the merge in the helper-owned worktree, removes it, and leaves the target ref unchanged", async () => {
       const env = await setupMergeTestEnv();
 
-      // Create a conflicting file on the integration branch
-      await fs.writeFile(
-        path.join(env.integrationWorktreeDir, "feature.txt"),
-        "conflicting content on dev\n",
-      );
-      execSync("git add feature.txt", {
-        cwd: env.integrationWorktreeDir,
-        stdio: "pipe",
-      });
-      execSync('git commit -m "add conflicting feature on dev"', {
-        cwd: env.integrationWorktreeDir,
-        stdio: "pipe",
+      // Create a conflicting commit on the target branch via a temporary
+      // worktree that is removed before invoking the helper.
+      await withTempBranchWorktree(env, env.mergeTarget, async (worktreeDir) => {
+        await fs.writeFile(path.join(worktreeDir, "feature.txt"), "conflicting content on dev\n");
+        execSync("git add feature.txt", { cwd: worktreeDir, stdio: "pipe" });
+        execSync('git commit -m "add conflicting feature on dev"', {
+          cwd: worktreeDir,
+          stdio: "pipe",
+        });
       });
 
-      const targetHeadBefore = execSync("git rev-parse HEAD", {
-        cwd: env.integrationWorktreeDir,
-        encoding: "utf-8",
-        stdio: ["pipe", "pipe", "pipe"],
-      }).trim();
+      const targetHeadBefore = revParse(env.projectDir, `refs/heads/${env.mergeTarget}`);
+      const targetWorktreesBefore = listTargetWorktrees(env);
+      expect(targetWorktreesBefore).toEqual([]);
 
       const result = runMergeHelper(env.reviewerWorktreeDir, {
         KSPEC_DISPATCH_CANONICAL_BRANCH: env.canonicalBranch,
@@ -481,32 +589,42 @@ describe("detached-reviewer-merge helper", () => {
 
       expect(result.exitCode).toBe(1);
       expect(result.stderr).toContain("merge conflict");
-      // AC: target ref was not advanced
       expect(result.stderr).toContain("NOT been advanced");
-      // AC: occupied worktree was restored
-      expect(result.stderr).toContain("restored to its pre-merge state");
-      // AC: instructs returning the task via needs_work
+      // References cleanup of the helper-owned temporary worktree, not a
+      // refresh of any occupied integration worktree.
+      expect(result.stderr).toContain("temporary target worktree");
       expect(result.stderr).toContain("needs_work");
-      // AC: does NOT instruct inline/simple/textual conflict resolution
       expect(result.stderr).not.toContain("resolve inline");
       expect(result.stderr).not.toContain("simple/textual");
-      expect(result.stderr).not.toContain("re-run");
 
-      // Verify the target ref did NOT move
-      const targetHeadAfter = execSync("git rev-parse HEAD", {
-        cwd: env.integrationWorktreeDir,
-        encoding: "utf-8",
-        stdio: ["pipe", "pipe", "pipe"],
-      }).trim();
+      // Target ref unchanged.
+      const targetHeadAfter = revParse(env.projectDir, `refs/heads/${env.mergeTarget}`);
       expect(targetHeadAfter).toBe(targetHeadBefore);
 
-      // Verify the occupied worktree is clean (merge was aborted)
-      const status = execSync("git status --porcelain", {
-        cwd: env.integrationWorktreeDir,
-        encoding: "utf-8",
-        stdio: ["pipe", "pipe", "pipe"],
-      }).trim();
-      expect(status).toBe("");
+      // No helper-owned worktree remains on the target branch.
+      const targetWorktreesAfter = listTargetWorktrees(env);
+      expect(targetWorktreesAfter).toEqual([]);
+    });
+  });
+
+  // AC: @detached-reviewer-merge-helper ac-helper-leaves-no-target-branch-lock
+  describe("post-error worktree state", () => {
+    it("leaves no auxiliary worktree on the target branch after a missing-canonical error", async () => {
+      const env = await setupMergeTestEnv();
+
+      const targetWorktreesBefore = listTargetWorktrees(env);
+      expect(targetWorktreesBefore).toEqual([]);
+
+      const result = runMergeHelper(env.reviewerWorktreeDir, {
+        KSPEC_DISPATCH_CANONICAL_BRANCH: env.canonicalBranch,
+        KSPEC_DISPATCH_CANONICAL_HEAD: "0000000000000000000000000000000000000000",
+        KSPEC_DISPATCH_MERGE_TARGET: env.mergeTarget,
+      });
+
+      expect(result.exitCode).toBe(1);
+
+      const targetWorktreesAfter = listTargetWorktrees(env);
+      expect(targetWorktreesAfter).toEqual([]);
     });
   });
 
