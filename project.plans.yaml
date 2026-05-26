@@ -51773,8 +51773,8 @@ plans:
       - Do all merge-helper and dispatch-regression testing in temp repos/fixtures. Do not run
       migration or destructive cleanup tests against `~/Projects/kynetic-spec` or
       `~/Projects/kynetic-spec-dispatch`.
-    status: draft
-    approved_at: null
+    status: approved
+    approved_at: 2026-05-26T17:37:45.668Z
     derived_specs: []
     derived_tasks: []
     module_ref: null
