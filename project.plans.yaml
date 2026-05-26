@@ -51617,7 +51617,7 @@ plans:
           - kspec item get @dispatch-remote-branch-sync
           - kspec validate --refs --warnings-ok
 
-          Covers: @detached-reviewer-merge-helper ac-helper-uses-ephemeral-target-worktree, ac-helper-leaves-no-target-branch-lock, ac-helper-occupied-target-refuses-with-free-branch-guidance; @dispatch-integration-mutation-scope ac-occupied-target-refusal-identifies-blocker, ac-auxiliary-worktrees-do-not-hold-target-locks; @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery
+          Covers: @detached-reviewer-merge-helper ac-helper-uses-ephemeral-target-worktree, ac-helper-leaves-no-target-branch-lock, ac-helper-occupied-target-refuses-with-free-branch-guidance, ac-helper-no-op-merge, ac-helper-refuses-dirty-target, ac-helper-safe-conflict-exit; @dispatch-integration-mutation-scope ac-occupied-target-refusal-identifies-blocker, ac-auxiliary-worktrees-do-not-hold-target-locks; @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery
 
       - title: Rework detached reviewer merge helper to use an ephemeral target worktree
         slug: task-rework-detached-reviewer-merge-helper-ephemeral-target
@@ -51634,7 +51634,7 @@ plans:
           - On no-op, report success without creating persistent worktree state or moving refs.
           - On conflict, abort the merge in the temporary worktree, remove the temporary worktree, leave the integration target ref unchanged, and keep the existing needs_work/conflict guidance.
           - If `git worktree add` fails because the target branch is already checked out elsewhere, fail before moving refs with guidance to detach/free the existing checkout; do not say to check out the target branch somewhere else.
-          - Update the rendered/installed skill copy path as needed so generated `.agents/skills/kspec-merge/scripts/detached-reviewer-merge.sh` receives the same behavior after `kspec agents generate`.
+          - Edit the source skill script in `templates/skills/merge/scripts/detached-reviewer-merge.sh`, then run `kspec skill render` so generated `.agents/skills/kspec-merge/scripts/detached-reviewer-merge.sh` receives the same behavior. Only run `kspec agents generate` if agent instruction text also changes.
 
           Why:
           Reviewers are running from detached snapshots. Requiring a separate persistent target checkout creates a branch lock that blocks dispatch's safe integration-target mutation guard and stalls queued plan tasks.
@@ -51651,7 +51651,7 @@ plans:
           - npm run typecheck
           - kspec validate --refs --warnings-ok
 
-          Covers: @detached-reviewer-merge-helper ac-helper-uses-ephemeral-target-worktree, ac-helper-leaves-no-target-branch-lock, ac-helper-occupied-target-refuses-with-free-branch-guidance, ac-helper-no-op-merge, ac-helper-safe-conflict-exit
+          Covers: @detached-reviewer-merge-helper ac-helper-uses-ephemeral-target-worktree, ac-helper-leaves-no-target-branch-lock, ac-helper-occupied-target-refuses-with-free-branch-guidance, ac-helper-no-op-merge, ac-helper-refuses-dirty-target, ac-helper-safe-conflict-exit
 
       - title: Add regression coverage for helper branch-lock release
         slug: task-add-detached-merge-helper-branch-lock-regressions
@@ -51681,7 +51681,7 @@ plans:
           - npm test -- --fresh tests/agent-dispatch-engine.test.ts -t "manual merge"
           - npm run typecheck
 
-          Covers: @detached-reviewer-merge-helper ac-helper-uses-ephemeral-target-worktree, ac-helper-leaves-no-target-branch-lock, ac-helper-occupied-target-refuses-with-free-branch-guidance
+          Covers: @detached-reviewer-merge-helper ac-helper-uses-ephemeral-target-worktree, ac-helper-leaves-no-target-branch-lock, ac-helper-occupied-target-refuses-with-free-branch-guidance, ac-helper-no-op-merge, ac-helper-refuses-dirty-target, ac-helper-safe-conflict-exit
 
       - title: Clear occupied-checkout degraded state when target locks are released
         slug: task-clear-occupied-checkout-degraded-state-on-retry
@@ -51707,7 +51707,8 @@ plans:
 
           Testing:
           - npm test -- --fresh tests/agent-dispatch-engine.test.ts -t "degraded"
-          - npm test -- --fresh tests/dispatch-remote-branch-sync.test.ts
+          - npm test -- --fresh tests/dispatch-target-sync.test.ts
+          - npm test -- --fresh tests/dispatch-degraded-state.test.ts
           - npm run typecheck
           - kspec validate --refs --warnings-ok
 
@@ -51733,7 +51734,7 @@ plans:
           How:
           - Reuse existing dispatch engine test helpers for workspace provisioning and manual_merge mode where possible.
           - Keep the test in a temp repo; do not use the live self-hosting checkout or active `.kspec-worktrees`.
-          - If full engine orchestration is too heavy for one test, split into a helper-level test plus a dispatch-sync test, but keep assertions tied to the same plan target branch shape.
+          - This task must preserve a true integration-style regression for the combined incident path: plan-scoped target branch + manual_merge reviewer helper + no lingering auxiliary target checkout + dispatch-root target sync/push. If full orchestration proves infeasible in the existing harness, stop and report the harness limitation for a product/test-scope decision instead of substituting narrower helper-only or sync-only tests while claiming E2E coverage.
 
           Testing:
           - npm test -- --fresh tests/agent-dispatch-engine.test.ts
@@ -51786,6 +51787,11 @@ plans:
           mutation-scope AC"
         author: Jacob Chapel
         created_at: 2026-05-26T17:08:27.192Z
+      - _ulid: 01KSJMJWJW70W4QPY7GW1Z3VCX
+        content: "Address review 01KSJM9W blockers: real test paths, skill render command, full Covers
+          mapping, mandatory E2E scope"
+        author: Jacob Chapel
+        created_at: 2026-05-26T17:16:12.765Z
   - _ulid: 01KSJK3N6GQMF1PF8BG5EJGCGR
     slugs:
       - plan-folder-backed-index-consistency-hardening
