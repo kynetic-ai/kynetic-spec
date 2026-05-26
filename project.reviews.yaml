@@ -236621,6 +236621,28 @@ reviews:
         runner: npm
         created_at: 2026-05-26T21:03:16.626Z
         completed_at: 2026-05-26T21:03:16.626Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: kspec-agents.md, .agents/skills/kspec-review/SKILL.md,
+          .agents/skills/review-gates/SKILL.md, .agents/skills/kspec-merge/SKILL.md,
+          src/agent-runtime/dispatch.ts, templates/skills/merge/SKILL.md,
+          .agents/skills/kspec-merge/SKILL.md, .factory/skills/kspec-merge/SKILL.md,
+          templates/skills/merge/scripts/detached-reviewer-merge.sh,
+          tests/detached-reviewer-merge.test.ts, tests/agent-dispatch-engine.test.ts, corresponding
+          dev versions for regression comparison. Commands run: kspec task get, kspec item get,
+          kspec review for-task, git diff, rg AC annotations, kspec validate, kspec validate
+          --warnings-ok, focused npm tests, npm run typecheck, git diff --check, npm test. Claims
+          verified: new tests exercise helper output/prompt behavior rather than source scanning;
+          success/no-op/occupied/dirty/conflict ACs have annotated behavioral coverage; rendered
+          guidance no longer says occupied-worktree refresh. Categories searched: correctness, edge
+          cases, error handling, test quality, integration, regression coverage."
+        name: review evidence log
+        required: false
+        runner: reviewer
+        created_at: 2026-05-26T21:03:36.123Z
+        completed_at: 2026-05-26T21:03:36.123Z
     events:
       - _ulid: 01KSK0QS8PK7323QC6N0N7J98W
         actor: Jacob Chapel
@@ -236663,6 +236685,13 @@ reviews:
           status: pass
           name: full test suite
         timestamp: 2026-05-26T21:03:18.424Z
+      - _ulid: 01KSK1K9VT5MK05FJ8ZTBVWPZ2
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-26T21:03:37.851Z
     examined_commit: 4c77a68199db361e194cf02d88b77e331bd472d8
     external_links: []
     lifecycle_state: open
@@ -236675,5 +236704,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-26T20:48:36.118Z
-    updated_at: 2026-05-26T21:03:16.626Z
+    updated_at: 2026-05-26T21:03:36.123Z
     notes: []
