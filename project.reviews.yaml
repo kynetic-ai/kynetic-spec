@@ -236123,6 +236123,17 @@ reviews:
         runner: kspec
         created_at: 2026-05-26T18:33:29.150Z
         completed_at: 2026-05-26T18:33:29.150Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate --refs --warnings-ok passed: schema OK, references OK; only unrelated
+          deprecated-reference warnings."
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-05-26T18:33:33.964Z
+        completed_at: 2026-05-26T18:33:33.964Z
     events:
       - _ulid: 01KSJR9NQBDFHBM6YH0X2NEK1T
         actor: Jacob Chapel
@@ -236144,6 +236155,13 @@ reviews:
           status: pass
           name: spec verification
         timestamp: 2026-05-26T18:33:30.850Z
+      - _ulid: 01KSJS0JPQE9ZGBAYJHB8CJQEY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-26T18:33:35.704Z
     examined_commit: 32d374363549d45f4edb1d067c9d97307e9b7f2d
     external_links: []
     lifecycle_state: open
@@ -236156,5 +236174,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-26T18:21:05.131Z
-    updated_at: 2026-05-26T18:33:29.150Z
+    updated_at: 2026-05-26T18:33:33.964Z
     notes: []
