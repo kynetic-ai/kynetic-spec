@@ -55182,7 +55182,7 @@ runs:
     completed_at: 2026-05-26T23:15:22.839Z
   - _ulid: 01KSKA59R3R12P94KXVS1NW79B
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -55246,7 +55246,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-26T23:33:52.382Z
-        completed_at: 2026-05-26T23:33:52.382Z
+        completed_at: 2026-05-26T23:33:59.276Z
+        notes: "Friction points: The reflection skill documents kspec workflow show without a run ref, but
+          the current CLI rejected that with missing required argument run-ref; the usable form was
+          kspec workflow show @01KSKA59. That is a repeatable documentation/CLI ergonomics mismatch
+          for anyone following the skill literally. Secondary friction: review evidence/check
+          recording required manually building a fairly large kspec batch payload; useful, but not
+          clearly worth new tracking without more repetition."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-26T23:33:59.276Z
+        completed_at: 2026-05-26T23:33:59.276Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-26T23:33:16.163Z
