@@ -55182,7 +55182,7 @@ runs:
     completed_at: 2026-05-26T23:15:22.839Z
   - _ulid: 01KSKA59R3R12P94KXVS1NW79B
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -55256,7 +55256,18 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-26T23:33:59.276Z
-        completed_at: 2026-05-26T23:33:59.276Z
+        completed_at: 2026-05-26T23:34:31.808Z
+        notes: "Coverage search: searched workflow show run-ref, workflow show missing required argument
+          run-ref, review evidence log batch check, and shell command substitution notes. No
+          existing matches found. Proposed improvement: update the reflection workflow/skill
+          guidance so workflow show examples include the required run ref, or make workflow show
+          default to the active run when only one active run exists. Scope small. I am not proposing
+          capture for review evidence batching because it may be incidental and not yet a repeated
+          enough pain point."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-26T23:34:31.808Z
+        completed_at: 2026-05-26T23:34:31.808Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-26T23:33:16.163Z
