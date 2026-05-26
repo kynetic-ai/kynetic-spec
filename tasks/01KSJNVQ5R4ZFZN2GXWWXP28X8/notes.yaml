@@ -1,1 +1,41 @@
-notes: []
+notes:
+  - _ulid: 01KSJY2VATMR7J67SBYGN9BG6T
+    content: |-
+      Implemented occupied-checkout degraded-state auto-recovery.
+
+      Changes:
+      - Added optional `code` field on DispatchWorkspaceError; set to "occupied-checkout"
+        when resolveDispatchIntegrationMutationScope refuses because another worktree
+        has the target branch checked out (workspace.ts).
+      - Added DegradedTargetKind classification ("occupied-checkout" | "divergence" |
+        "other") to the dispatch engine's _degradedTargets map and exposed kind via
+        getDegradedState()/getTargetSyncStatus() + the daemon agent-dispatch
+        status API (dispatch.ts, agent-dispatch.ts).
+      - Introduced _classifyMutationScopeError() and threaded kind through both the
+        push (_pushIntegrationTargetAsync) and sync (_syncTarget) entry points.
+      - _syncAllActiveTargets bypasses the staleness gate for occupied-checkout
+        degraded targets so periodic reconciliation retries immediately rather than
+        waiting sync_interval seconds.
+      - _pushIntegrationTargetAsync now also bypasses the !integrationTargetNeedsPush
+        early return for occupied-checkout degraded targets, then clears degraded
+        state on a successful push or clean no-op. Divergence and other unsafe
+        states are NOT cleared by a push — they still require a successful
+        fast-forward sync, preserving hard failures.
+
+      Tests added in tests/dispatch-degraded-state.test.ts:
+      - Occupied-checkout cleared via _syncTarget retry after foreign worktree
+        removal, including the broadcast sync_state recovery event and getTargetSyncStatus
+        reporting no degraded target.
+      - Occupied-checkout cleared via the periodic-sync push path when no commits
+        are pending push.
+      - Divergence-degraded state stays put across a successful push (regression
+        guard for the "preserve hard failures" requirement).
+
+      Updated existing daemon-api expectations to include kind on the degraded-target
+      shape.
+
+      Tests run: full suite (2578 suites, 9851 tests) green; npm run typecheck clean;
+      kspec validate --refs --warnings-ok clean (only pre-existing deprecation warnings).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-26T20:02:12.954Z
