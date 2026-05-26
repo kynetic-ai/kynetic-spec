@@ -235464,6 +235464,25 @@ reviews:
         runner: manual
         created_at: 2026-05-26T16:59:47.521Z
         completed_at: 2026-05-26T16:59:47.521Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Verified existing Covers refs with kspec item get: @task-index-file ac-2/ac-5/ac-7,
+          @task-atomic-writes ac-1/ac-3/ac-4, @folder-backed-plan-storage-1
+          ac-plan-index-has-bounded-projection/ac-plan-delete-removes-owned-folder,
+          @folder-backed-review-storage-1
+          ac-review-index-has-bounded-projection/ac-review-delete-removes-owned-folder,
+          @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields,
+          @single-command-version-upgrade
+          ac-runs-task-storage-migration/ac-idempotent-when-current/ac-dry-run-no-writes, and
+          @task-data-manager ac-4. New trait AC IDs are explicitly added by the first task before
+          downstream tasks cover them."
+        name: Existing refs and AC coverage targets
+        required: true
+        runner: kspec
+        created_at: 2026-05-26T17:00:01.107Z
+        completed_at: 2026-05-26T17:00:01.107Z
     events:
       - _ulid: 01KSJKKH1G7WNBDAGC6VFTE8ZX
         actor: Jacob Chapel
@@ -235492,6 +235511,13 @@ reviews:
           status: pass
           name: Sibling import test executability
         timestamp: 2026-05-26T16:59:49.414Z
+      - _ulid: 01KSJKN9FJ0A2JQ400X4HMJQ8G
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Existing refs and AC coverage targets
+        timestamp: 2026-05-26T17:00:02.930Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -235504,5 +235530,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-26T16:59:05.136Z
-    updated_at: 2026-05-26T16:59:47.521Z
+    updated_at: 2026-05-26T17:00:01.107Z
     notes: []
