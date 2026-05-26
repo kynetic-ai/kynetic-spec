@@ -237065,6 +237065,13 @@ reviews:
           status: pass
           name: kspec validate --alignment/--completeness --warnings-ok
         timestamp: 2026-05-26T22:47:58.100Z
+      - _ulid: 01KSK7JXPS8XW3CHK67Y4D4TZW
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KSK7JW15QCM2NDB3ENQWVZAY
+        timestamp: 2026-05-26T22:48:16.857Z
     examined_commit: 206c070fa4855d53ec1e35b82ed1fda44a5a447e
     external_links: []
     lifecycle_state: open
@@ -237104,7 +237111,25 @@ reviews:
               test does not execute.'
             created_at: 2026-05-26T22:36:58.965Z
         kind: blocker
+      - _ulid: 01KSK7JW15QCM2NDB3ENQWVZAY
+        entries:
+          - _ulid: 01KSK7JW16RNGC6YR00QYRNMAQ
+            author: Jacob Chapel
+            body: "Evidence log: Files read: tests/dispatch-plan-target-lock-e2e.test.ts,
+              tests/dispatch-target-sync.test.ts, tests/dispatch-degraded-state.test.ts,
+              tests/detached-reviewer-merge.test.ts, tests/dispatch-branch-push-lifecycle.test.ts,
+              tests/helpers/cli.ts, src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts,
+              templates/skills/merge/scripts/detached-reviewer-merge.sh. Commands run: kspec task
+              get, kspec item get for linked specs, kspec validate, kspec validate --alignment
+              --warnings-ok, kspec validate --completeness --warnings-ok, npm test -- --fresh
+              tests/dispatch-plan-target-lock-e2e.test.ts, npm run typecheck, npm test -- --fresh.
+              Claims verified: the new test uses real temp repo/worktrees/helper and passes, but the
+              occupied-refusal and periodic-sync AC annotations do not match the exercised scenario.
+              Categories searched: correctness, edge cases, error handling/degraded state, test
+              quality, integration."
+            created_at: 2026-05-26T22:48:15.142Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-26T22:34:50.871Z
-    updated_at: 2026-05-26T22:47:56.344Z
+    updated_at: 2026-05-26T22:48:15.142Z
     notes: []
