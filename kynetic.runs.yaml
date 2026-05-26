@@ -54817,7 +54817,7 @@ runs:
     started_at: 2026-05-26T18:35:17.582Z
     completed_at: 2026-05-26T18:36:38.619Z
   - _ulid: 01KSJXK6Y8MDZJC31HZ8KMQ72V
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -54873,7 +54873,13 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-26T19:56:03.763Z
-        completed_at: 2026-05-26T19:56:03.763Z
+        completed_at: 2026-05-26T19:56:28.103Z
+        notes: "Captured inbox item @01KSJXQZ for stale manual_merge detached reviewer role guidance:
+          observed prompt said occupied-worktree refresh is automatic, while the current helper
+          refuses occupied target checkouts and instructs freeing/detaching the blocking checkout.
+          No separate success observation captured; the successful review/merge pattern was recorded
+          in the workflow notes."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-26T19:53:40.552Z
+    completed_at: 2026-05-26T19:56:28.103Z
