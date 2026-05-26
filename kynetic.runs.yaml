@@ -54818,7 +54818,7 @@ runs:
     completed_at: 2026-05-26T18:36:38.619Z
   - _ulid: 01KSJXK6Y8MDZJC31HZ8KMQ72V
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -54832,7 +54832,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-26T19:55:23.858Z
-        completed_at: 2026-05-26T19:55:23.858Z
+        completed_at: 2026-05-26T19:55:33.551Z
+        notes: "Friction: the dispatch role prompt for this reviewer run still said the helper handles
+          occupied-worktree refresh automatically. The newly approved helper contract intentionally
+          refuses occupied target branches and requires freeing/detaching the blocking checkout
+          first, so the prompt made the first merge-helper refusal feel contradictory even though
+          the helper was behaving correctly."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-26T19:55:33.551Z
+        completed_at: 2026-05-26T19:55:33.551Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-26T19:53:40.552Z
