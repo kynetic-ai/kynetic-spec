@@ -61,8 +61,11 @@ description: >
 spec_ref: "@dispatch-integration-mutation-scope"
 plan_ref: "@plan-dispatch-merge-helper-target-lock-hardening"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev via detached reviewer merge helper. Added plan-target manual_merge E2E
+  regression covering helper lock release, periodic target push, occupied-checkout refusal, and
+  recovery without dispatch restart.
 depends_on:
   - "@task-rework-detached-reviewer-merge-helper-ephemeral-target"
   - "@task-clear-occupied-checkout-degraded-state-on-retry"
@@ -189,8 +192,24 @@ history:
         previous: "@01KSK6TAKQD49RDXPGN3TRF61X"
     command: review-link
     timestamp: 2026-05-26T23:16:54.214Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev via detached reviewer merge helper. Added plan-target manual_merge E2E regression
+          covering helper lock release, periodic target push, occupied-checkout refusal, and
+          recovery without dispatch restart.
+        previous: null
+      completed_at:
+        new: 2026-05-26T23:32:31.655Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-26T23:32:31.663Z
 created_at: 2026-05-26T17:38:31.109Z
 started_at: 2026-05-26T23:12:37.522Z
 submitted_at: 2026-05-26T23:12:41.089Z
+completed_at: 2026-05-26T23:32:31.655Z
 todos: []
 automation: eligible
