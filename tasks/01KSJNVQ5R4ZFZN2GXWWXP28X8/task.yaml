@@ -58,7 +58,7 @@ description: >
 spec_ref: "@dispatch-remote-branch-sync"
 plan_ref: "@plan-dispatch-merge-helper-target-lock-hardening"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-align-merge-helper-branch-lock-specs"
@@ -70,6 +70,14 @@ tags:
   - degraded-state
   - worktree
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-clear-occupied-checkout-degraded-state-on-retry/01ksjnvq
+  captured_at: 2026-05-26T20:02:19.650Z
+  commit: 4c2c84f1a6f3d331bca70640b617ad74e7b83a13
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KSJWMBK7NCZCHZF1QER021X9
 history:
   - author: Jacob Chapel
@@ -92,7 +100,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-26T19:37:22.779Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-clear-occupied-checkout-degraded-state-on-retry/01ksjnvq
+          captured_at: 2026-05-26T20:02:19.650Z
+          commit: 4c2c84f1a6f3d331bca70640b617ad74e7b83a13
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-26T20:02:19.653Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-26T20:02:19.653Z
 created_at: 2026-05-26T17:38:30.712Z
 started_at: 2026-05-26T19:37:22.779Z
+submitted_at: 2026-05-26T20:02:19.653Z
 todos: []
 automation: eligible
