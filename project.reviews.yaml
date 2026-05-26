@@ -235436,7 +235436,21 @@ reviews:
     slugs: []
     title: "Plan re-review: Folder-Backed Index Consistency Hardening"
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Stored draft now explicitly requires importing a plan document with sibling resources.yaml
+          metadata plus resources/ files, then immediately running kspec plan rebuild-index
+          --dry-run and asserting resource_summary has no drift before any repair. This directly
+          covers the @01KSJKAX blocker for persistPlanResourcesFromSibling in
+          src/parser/plan-resource-import.ts called from src/cli/commands/plan-import.ts.
+        name: Prior blocker resolution
+        required: true
+        runner: manual
+        created_at: 2026-05-26T16:59:36.023Z
+        completed_at: 2026-05-26T16:59:36.023Z
     events:
       - _ulid: 01KSJKKH1G7WNBDAGC6VFTE8ZX
         actor: Jacob Chapel
@@ -235451,6 +235465,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-26T16:59:25.381Z
+      - _ulid: 01KSJKMH33XCWAASTQARD9PQ3N
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Prior blocker resolution
+        timestamp: 2026-05-26T16:59:37.955Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -235463,5 +235484,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-26T16:59:05.136Z
-    updated_at: 2026-05-26T16:59:23.473Z
+    updated_at: 2026-05-26T16:59:36.023Z
     notes: []
