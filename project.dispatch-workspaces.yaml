@@ -9421,18 +9421,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-clear-occupied-checkout-degraded-state-on-retry/01ksjnvq
-    canonical_branch_head: 54cd77cc9528c29539e97dba718c86b395047c3f
+    canonical_branch_head: 5e834f76678fd66b4ab9501dc8aa089912054efc
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-26T20:48:06.154Z
+      updated_at: 2026-05-26T21:04:08.790Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-26T20:48:06.154Z
+      updated_at: 2026-05-26T21:04:08.790Z
     integration:
       status: pending
       detail: null
@@ -9440,7 +9440,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 32d374363549d45f4edb1d067c9d97307e9b7f2d
-      updated_at: 2026-05-26T20:48:06.154Z
+      updated_at: 2026-05-26T21:04:08.790Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KSJNVQ5R4ZFZN2GXWWXP28X8"
@@ -9448,9 +9448,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-26T20:47:14.444Z
-      last_reconciled_at: 2026-05-26T20:48:06.154Z
+      last_reconciled_at: 2026-05-26T21:04:08.790Z
       created_at: 2026-05-26T19:36:25.186Z
-      updated_at: 2026-05-26T20:48:06.154Z
+      updated_at: 2026-05-26T21:04:08.790Z
     workspace_id: dispatch-workspace-01KSJNVQ5R4ZFZN2GXWWXP28X8
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
