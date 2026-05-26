@@ -74,7 +74,7 @@ tags:
   - plan-branch
   - merge-helper
 vcs_refs: []
-review_ref: "@01KSK6TAKQD49RDXPGN3TRF61X"
+review_ref: "@01KSK976N84ZB2KT6N891W74Q1"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-add-plan-target-lock-e2e-regression/01ksjnvq
@@ -182,6 +182,13 @@ history:
         previous: 2026-05-26T22:30:59.122Z
     command: task-submit
     timestamp: 2026-05-26T23:12:41.089Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KSK976N84ZB2KT6N891W74Q1"
+        previous: "@01KSK6TAKQD49RDXPGN3TRF61X"
+    command: review-link
+    timestamp: 2026-05-26T23:16:54.214Z
 created_at: 2026-05-26T17:38:31.109Z
 started_at: 2026-05-26T23:12:37.522Z
 submitted_at: 2026-05-26T23:12:41.089Z
