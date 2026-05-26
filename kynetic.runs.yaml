@@ -55182,7 +55182,7 @@ runs:
     completed_at: 2026-05-26T23:15:22.839Z
   - _ulid: 01KSKA59R3R12P94KXVS1NW79B
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -55198,7 +55198,55 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-26T23:33:38.604Z
-        completed_at: 2026-05-26T23:33:38.604Z
+        completed_at: 2026-05-26T23:33:52.382Z
+        notes: "Friction points: The reflection skill documents  without a run ref, but the current CLI
+          rejected that with 'missing required argument run-ref'; the usable form was Workflow Run
+          Details
+
+          ──────────────────────────────────────────────────
+
+          ID:           01KSKA59
+
+          Workflow:     session-reflect (@01KFKS5NT2T98M70QQ4FZB2VTW)
+
+          Status:       active
+
+          Progress:     2/6
+
+          Started:      5/26/2026, 4:33:16 PM
+
+          Initiated by: Jacob Chapel
+
+
+          Step Results:
+
+          \e[90m┌────────\e[39m\e[90m┬────────────\e[39m\e[90m┬────────────────────\e[39m\e[90m┬───\
+          ─────────────────┐\e[39m
+
+          \e[90m│\e[39m\e[31m Step   \e[39m\e[90m│\e[39m\e[31m Status     \e[39m\e[90m│\e[39m\e[31m
+          Started            \e[39m\e[90m│\e[39m\e[31m Completed          \e[39m\e[90m│\e[39m
+
+          \e[90m├────────\e[39m\e[90m┼────────────\e[39m\e[90m┼────────────────────\e[39m\e[90m┼───\
+          ─────────────────┤\e[39m
+
+          \e[90m│\e[39m 1      \e[90m│\e[39m completed  \e[90m│\e[39m 5/26/2026, 4:33:1…
+          \e[90m│\e[39m 5/26/2026, 4:33:3… \e[90m│\e[39m
+
+          \e[90m├────────\e[39m\e[90m┼────────────\e[39m\e[90m┼────────────────────\e[39m\e[90m┼───\
+          ─────────────────┤\e[39m
+
+          \e[90m│\e[39m 2      \e[90m│\e[39m completed  \e[90m│\e[39m 5/26/2026, 4:33:3…
+          \e[90m│\e[39m 5/26/2026, 4:33:3… \e[90m│\e[39m
+
+          \e[90m└────────\e[39m\e[90m┴────────────\e[39m\e[90m┴────────────────────\e[39m\e[90m┴───\
+          ─────────────────┘\e[39m. That is a repeatable documentation/CLI ergonomics mismatch for
+          anyone following the skill literally. Secondary friction: review evidence/check recording
+          required manually building a fairly large  payload; useful, but not clearly worth new
+          tracking without more repetition."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-26T23:33:52.382Z
+        completed_at: 2026-05-26T23:33:52.382Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-26T23:33:16.163Z
