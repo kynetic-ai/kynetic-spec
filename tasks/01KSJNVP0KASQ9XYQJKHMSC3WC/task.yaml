@@ -103,7 +103,7 @@ description: >
 spec_ref: "@detached-reviewer-merge-helper"
 plan_ref: "@plan-dispatch-merge-helper-target-lock-hardening"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -114,6 +114,14 @@ tags:
   - merge-helper
   - worktree
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-align-merge-helper-branch-lock-specs/01ksjnvp
+  captured_at: 2026-05-26T18:17:47.535Z
+  commit: 32d374363549d45f4edb1d067c9d97307e9b7f2d
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KSJQTX3E9B8BC1WTJ4GCMQTV
 history:
   - author: Jacob Chapel
@@ -136,7 +144,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-26T18:13:48.415Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-align-merge-helper-branch-lock-specs/01ksjnvp
+          captured_at: 2026-05-26T18:17:47.535Z
+          commit: 32d374363549d45f4edb1d067c9d97307e9b7f2d
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-26T18:17:47.538Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-26T18:17:47.538Z
 created_at: 2026-05-26T17:38:29.523Z
 started_at: 2026-05-26T18:13:48.415Z
+submitted_at: 2026-05-26T18:17:47.538Z
 todos: []
 automation: eligible
