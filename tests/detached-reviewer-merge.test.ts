@@ -461,6 +461,16 @@ describe("detached-reviewer-merge helper", () => {
       expect(result.stderr.toLowerCase()).toMatch(/detach|remove/);
       // Does NOT instruct the reviewer to check out the target branch in another worktree.
       expect(result.stderr.toLowerCase()).not.toMatch(/check out .*(in|to)/);
+      // Regression: the old helper recovery hint told reviewers to
+      // `check out '$MERGE_TARGET' in a worktree`. Reject the literal phrase
+      // and any equivalent wording that would recreate a persistent target
+      // checkout to satisfy the helper.
+      expect(result.stderr).not.toContain(`check out '${env.mergeTarget}' in a worktree`);
+      expect(result.stderr).not.toContain(`check out "${env.mergeTarget}" in a worktree`);
+      expect(result.stderr.toLowerCase()).not.toMatch(
+        /check out .*in (a|another|some|an auxiliary|another auxiliary) worktree/,
+      );
+      expect(result.stderr.toLowerCase()).not.toMatch(/git worktree add .*dev\b/);
 
       const targetHeadAfter = revParse(env.projectDir, `refs/heads/${env.mergeTarget}`);
       expect(targetHeadAfter).toBe(targetHeadBefore);
@@ -596,14 +606,48 @@ describe("detached-reviewer-merge helper", () => {
       expect(result.stderr).toContain("needs_work");
       expect(result.stderr).not.toContain("resolve inline");
       expect(result.stderr).not.toContain("simple/textual");
+      // Regression: conflict guidance must not steer the reviewer back to
+      // checking out the integration target manually or refreshing a
+      // persistent occupied worktree.
+      expect(result.stderr).not.toContain(`check out '${env.mergeTarget}' in a worktree`);
+      expect(result.stderr.toLowerCase()).not.toContain("occupied worktree refreshed");
+      expect(result.stderr.toLowerCase()).not.toContain("occupied-worktree refresh");
 
       // Target ref unchanged.
       const targetHeadAfter = revParse(env.projectDir, `refs/heads/${env.mergeTarget}`);
       expect(targetHeadAfter).toBe(targetHeadBefore);
 
-      // No helper-owned worktree remains on the target branch.
+      // No helper-owned worktree remains on the target branch in git's view.
       const targetWorktreesAfter = listTargetWorktrees(env);
       expect(targetWorktreesAfter).toEqual([]);
+
+      // Regression: the helper's scratch dir (mktemp under TMPDIR with
+      // kspec-merge-helper. prefix) must be removed from disk on the
+      // conflict path. A leftover scratch dir means the temporary target
+      // worktree was not cleaned up.
+      const tmpRoot = process.env.TMPDIR || "/tmp";
+      const tmpEntries = await fs.readdir(tmpRoot).catch(() => [] as string[]);
+      const leftoverHelperScratch = tmpEntries.filter((name) =>
+        name.startsWith("kspec-merge-helper."),
+      );
+      // Other concurrent tests may legitimately use kspec-merge-helper. dirs,
+      // so we cannot assert global absence. Instead, assert that every
+      // candidate scratch dir either no longer has a target subpath or has
+      // been pruned from `git worktree list`.
+      for (const name of leftoverHelperScratch) {
+        const candidate = path.join(tmpRoot, name, "target");
+        const exists = await fs
+          .stat(candidate)
+          .then(() => true)
+          .catch(() => false);
+        if (exists) {
+          // The candidate scratch must NOT still be registered as a worktree
+          // on the target ref of OUR test project. Other test projects'
+          // helper scratches are not our concern.
+          const wtList = listTargetWorktrees(env);
+          expect(wtList, `helper scratch ${candidate} should not hold our target ref`).toEqual([]);
+        }
+      }
     });
   });
 

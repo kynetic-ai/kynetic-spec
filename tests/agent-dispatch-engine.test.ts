@@ -3274,6 +3274,19 @@ describe("Dispatch role workflow entrypoints", () => {
       // Must NOT instruct reviewer to checkout integration branch manually
       expect(invocation.prompt).not.toContain("git checkout");
       expect(invocation.prompt).toContain("detached snapshot");
+      // Regression: the reviewer prompt previously claimed the helper would
+      // perform an "occupied-worktree refresh" — that described the
+      // pre-rework helper. The current helper uses an ephemeral helper-owned
+      // worktree, never refreshes a persistent occupied target checkout.
+      expect(invocation.prompt).not.toContain("occupied-worktree refresh");
+      expect(invocation.prompt).not.toContain("occupied worktree refreshed");
+      // Regression: the old helper recovery hint told reviewers to "check
+      // out '$MERGE_TARGET' in a worktree" to satisfy the helper. Reviewer
+      // guidance must never carry that wording or any equivalent telling
+      // the reviewer to create an auxiliary target checkout.
+      expect(invocation.prompt.toLowerCase()).not.toMatch(
+        /check out .*in (a|another|some|an auxiliary|another auxiliary) worktree/,
+      );
       expect(invocation.env?.KSPEC_DISPATCH_PUBLICATION_MODE).toBe("manual_merge");
     } finally {
       await engine.stop();
