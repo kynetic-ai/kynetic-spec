@@ -235366,9 +235366,25 @@ reviews:
           status: pass
           name: Spec update shape
         timestamp: 2026-05-26T16:56:16.346Z
+      - _ulid: 01KSJKEPECF4CRKTKVDMX3DHVF
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-26T16:56:26.828Z
+      - _ulid: 01KSJKEPEC9SVPRA0JDBKNGSPJ
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-26T16:56:26.828Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -235405,7 +235421,14 @@ reviews:
               prove no resource_summary drift before any repair."
             created_at: 2026-05-26T16:55:40.695Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-05-26T16:56:26.828Z
     created_at: 2026-05-26T16:54:22.500Z
-    updated_at: 2026-05-26T16:56:14.523Z
+    updated_at: 2026-05-26T16:56:26.828Z
     notes: []
