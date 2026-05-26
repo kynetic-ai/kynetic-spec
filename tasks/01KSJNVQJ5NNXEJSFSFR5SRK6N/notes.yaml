@@ -1,1 +1,23 @@
-notes: []
+notes:
+  - _ulid: 01KSK6K1NYBYFHERPRG8R09MGE
+    content: "Added tests/dispatch-plan-target-lock-e2e.test.ts — single integration-style regression
+      that drives the full incident path in a temp repo: creates a plan record with an explicit plan
+      target branch, derives a plan-scoped task with --plan-ref, provisions a real worker workspace
+      via provisionDispatchWorkspace (which writes the workspace registry entry and the
+      .kspec-worktrees worker checkout), commits + pushes the worker branch, starts a
+      DispatchEngine, provisions a real detached reviewer worktree via
+      provisionDispatchWorkspace({role:'reviewer'}), then runs the real
+      templates/skills/merge/scripts/detached-reviewer-merge.sh with KSPEC_DISPATCH_MERGE_TARGET =
+      plan target. After the helper exits the test parses git worktree list --porcelain and asserts
+      no worktree (auxiliary, helper-owned, or otherwise) holds refs/heads/<plan-target>, the plan
+      target ref advanced and contains the reviewed file, dispatch root is still on dev, then drives
+      _pushIntegrationTargetAsync('plan/lock-regression','post-merge') to prove the dispatch root
+      can push the plan target. Final assertions: engine.getDegradedState() empty,
+      getTargetSyncStatus().degraded.active false, targetSyncTimestamps[planTarget] > 0. Wired to
+      the four target ACs listed in the task description plus a trait-error-guidance N/A block.
+      Verified: full npm test (9857 passed / 5 skipped, exit 0), npm run typecheck clean, kspec
+      validate --alignment/--completeness --warnings-ok shows only pre-existing warnings with no new
+      flags for this file."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-26T22:30:52.350Z
