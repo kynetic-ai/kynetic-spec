@@ -236394,7 +236394,51 @@ reviews:
     slugs: []
     title: Review clear occupied-checkout degraded state
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation passed for 1536 files, 624 items, 1528 tasks. Only deprecated-reference
+          warnings; --warnings-ok exited 0.
+        name: kspec validate --refs --warnings-ok
+        required: true
+        runner: kspec validate
+        created_at: 2026-05-26T20:27:05.901Z
+        completed_at: 2026-05-26T20:27:05.901Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm run typecheck completed with exit 0.
+        name: npm run typecheck
+        required: true
+        runner: tsc --noEmit
+        created_at: 2026-05-26T20:27:10.275Z
+        completed_at: 2026-05-26T20:27:10.275Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 2578 suites passed; 9851 tests passed, 5 skipped; duration 2518.5s; full log
+          /tmp/kspec-test-cache/01KSJYP43HXD0FYYY630W8PK69/f0a862261679f0a8.log.
+        name: npm test -- --fresh
+        required: true
+        runner: scripts/test.cjs --fresh
+        created_at: 2026-05-26T20:27:14.617Z
+        completed_at: 2026-05-26T20:27:14.617Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Temp-repo probe reproduced stale occupied-checkout kind after _syncTarget('dev') returned
+          diverged; subsequent _pushIntegrationTargetAsync('dev', 'periodic-sync') cleared degraded
+          state.
+        name: ad hoc degraded-kind transition probe
+        required: false
+        runner: node --import tsx
+        created_at: 2026-05-26T20:27:18.854Z
+        completed_at: 2026-05-26T20:27:18.854Z
     events:
       - _ulid: 01KSJYR84AZ7R8K9D703TC521K
         actor: Jacob Chapel
@@ -236409,17 +236453,122 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-26T20:14:19.737Z
+      - _ulid: 01KSJZG6D7KV2PQKGKYWDWHM1V
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSJZG4PV2XCHAX1PSGMF55JG
+        timestamp: 2026-05-26T20:26:58.855Z
+      - _ulid: 01KSJZGANVNF7W3TSBYVSP8J8G
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KSJZG8ZZNHR9TWQ0NT36B565
+        timestamp: 2026-05-26T20:27:03.227Z
+      - _ulid: 01KSJZGEYEG00EV726F7MNJCR0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate --refs --warnings-ok
+        timestamp: 2026-05-26T20:27:07.598Z
+      - _ulid: 01KSJZGK7RFKC64WPPYSFQE3TF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm run typecheck
+        timestamp: 2026-05-26T20:27:11.992Z
+      - _ulid: 01KSJZGQCB5A943RWS4TDMAG2R
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test -- --fresh
+        timestamp: 2026-05-26T20:27:16.235Z
+      - _ulid: 01KSJZGVMW9E9ZJQ3AY915M4T0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: ad hoc degraded-kind transition probe
+        timestamp: 2026-05-26T20:27:20.605Z
+      - _ulid: 01KSJZGZV6PHPZ2HPTKGQ6TMJB
+        actor: codex-reviewer
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-05-26T20:27:24.902Z
+      - _ulid: 01KSJZGZV62DD8V8HW72CQH2TC
+        actor: codex-reviewer
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-05-26T20:27:24.902Z
     examined_commit: 4c2c84f1a6f3d331bca70640b617ad74e7b83a13
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
       content_hash: ""
       ref: "@01KSJNVQ5R4ZFZN2GXWWXP28X8"
       shadow_commit: ""
-    threads: []
-    verdicts: []
+    threads:
+      - _ulid: 01KSJZG4PV2XCHAX1PSGMF55JG
+        anchor:
+          type: code
+          commit: 4c2c84f1a6f3d331bca70640b617ad74e7b83a13
+          line_end: 3546
+          line_start: 3546
+          path: src/agent-runtime/dispatch.ts
+          side: head
+        entries:
+          - _ulid: 01KSJZG4PVAKT0XXWCZMB0070Z
+            author: Jacob Chapel
+            body: "MUST-FIX: _enterDegradedState refuses to update an existing degraded entry, so an
+              occupied-checkout entry keeps kind occupied-checkout even when a later retry detects
+              divergence. Impact: the push path at lines 1538-1544 can then clear a hard-failure
+              state after a successful/no-op push, despite the task/spec requirement that divergence
+              and other unsafe states require successful sync recovery. Evidence: in an ad hoc
+              temp-repo probe, after releasing the occupied worktree I made dev locally ahead of
+              origin; _syncTarget('dev') returned diverged but getDegradedState() still reported
+              kind occupied-checkout, and _pushIntegrationTargetAsync('dev', 'periodic-sync') then
+              pushed and cleared degraded state."
+            created_at: 2026-05-26T20:26:57.115Z
+        kind: blocker
+      - _ulid: 01KSJZG8ZZNHR9TWQ0NT36B565
+        entries:
+          - _ulid: 01KSJZG8ZZZ9SDXNA5ANZFAGMA
+            author: Jacob Chapel
+            body: "Review evidence log: Files read: packages/daemon/src/routes/agent-dispatch.ts,
+              src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts,
+              tests/daemon-api/agent-dispatch.test.ts, tests/dispatch-degraded-state.test.ts,
+              relevant workspace push/sync helpers. Commands run: git diff/stat/log, kspec task get,
+              kspec item get for @dispatch-remote-branch-sync / @dispatch-integration-mutation-scope
+              / @trait-error-guidance, rg AC annotation scans, kspec validate --refs --warnings-ok,
+              npm run typecheck, npm test -- --fresh, and an ad hoc node --import tsx temp-repo
+              reproduction. Claims verified: occupied-checkout recovery tests are behavioral and
+              pass; worker's full-suite/typecheck/validate claims verified; preserve-hard-failures
+              claim disproved by the reproduced stale-kind transition. Categories searched:
+              correctness, edge cases across degraded-kind transitions, error handling/guidance,
+              test quality, integration/API shape."
+            created_at: 2026-05-26T20:27:01.503Z
+        kind: nit
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex-reviewer
+        role: reviewer
+        created_at: 2026-05-26T20:27:24.902Z
     created_at: 2026-05-26T20:13:54.186Z
-    updated_at: 2026-05-26T20:14:17.822Z
+    updated_at: 2026-05-26T20:27:24.902Z
     notes: []
