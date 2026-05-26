@@ -55037,9 +55037,17 @@ runs:
     completed_at: 2026-05-26T22:07:32.474Z
   - _ulid: 01KSK6M8C5PY560BHMGGA4K85X
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-26T22:31:31.973Z
+        completed_at: 2026-05-26T22:31:45.655Z
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-26T22:31:45.655Z
+        completed_at: 2026-05-26T22:31:45.655Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-26T22:31:31.973Z
