@@ -235451,6 +235451,19 @@ reviews:
         runner: manual
         created_at: 2026-05-26T16:59:36.023Z
         completed_at: 2026-05-26T16:59:36.023Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "The red-test task is standalone: it names the temp folder-backed project setup, target
+          suites, sibling resources.yaml/resources fixture shape, exact dry-run command, zero-drift
+          assertion, and no-repair precondition. A worker has enough context to implement the
+          regression without prior chat history."
+        name: Sibling import test executability
+        required: true
+        runner: manual
+        created_at: 2026-05-26T16:59:47.521Z
+        completed_at: 2026-05-26T16:59:47.521Z
     events:
       - _ulid: 01KSJKKH1G7WNBDAGC6VFTE8ZX
         actor: Jacob Chapel
@@ -235472,6 +235485,13 @@ reviews:
           status: pass
           name: Prior blocker resolution
         timestamp: 2026-05-26T16:59:37.955Z
+      - _ulid: 01KSJKMW95GQB88N9HBTNBR514
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: Sibling import test executability
+        timestamp: 2026-05-26T16:59:49.414Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -235484,5 +235504,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-26T16:59:05.136Z
-    updated_at: 2026-05-26T16:59:36.023Z
+    updated_at: 2026-05-26T16:59:47.521Z
     notes: []
