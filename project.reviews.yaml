@@ -236240,3 +236240,29 @@ reviews:
     created_at: 2026-05-26T18:21:05.131Z
     updated_at: 2026-05-26T18:33:58.369Z
     notes: []
+  - _ulid: 01KSJWMD35KTMC8HFKCWA92V5Z
+    slugs: []
+    title: Review detached reviewer merge helper ephemeral target worktree
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KSJWMD354QEE7JS93DFXT9PT
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-26T19:36:51.045Z
+    examined_commit: 742b4c6ca35ffb0c669eb6fc9eac267e8c863995
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KSJNVPDXB0PGNGQKXC5CXF4K"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-26T19:36:51.045Z
+    updated_at: null
+    notes: []

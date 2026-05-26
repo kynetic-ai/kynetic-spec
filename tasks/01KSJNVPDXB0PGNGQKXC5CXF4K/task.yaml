@@ -83,6 +83,7 @@ tags:
   - git
   - worktree
 vcs_refs: []
+review_ref: "@01KSJWMD35KTMC8HFKCWA92V5Z"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-rework-detached-reviewer-merge-helper-ephemeral-target/01ksjnvp
@@ -133,6 +134,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-05-26T19:11:49.298Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KSJWMD35KTMC8HFKCWA92V5Z"
+        previous: null
+    command: review-link
+    timestamp: 2026-05-26T19:36:55.033Z
 created_at: 2026-05-26T17:38:29.949Z
 started_at: 2026-05-26T18:36:15.642Z
 submitted_at: 2026-05-26T19:11:49.298Z
