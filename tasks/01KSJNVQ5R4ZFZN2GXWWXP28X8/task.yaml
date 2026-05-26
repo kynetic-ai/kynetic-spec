@@ -70,5 +70,14 @@ tags:
   - degraded-state
   - worktree
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-05-26T17:39:58.616Z
 created_at: 2026-05-26T17:38:30.712Z
 todos: []
+automation: eligible

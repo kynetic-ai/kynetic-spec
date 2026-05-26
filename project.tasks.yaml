@@ -29937,6 +29937,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-26T17:38:30.712Z
+  automation: eligible
 - _ulid: 01KSJNVQJ5NNXEJSFSFR5SRK6N
   slugs:
     - task-add-plan-target-lock-e2e-regression
