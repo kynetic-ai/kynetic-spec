@@ -8957,7 +8957,7 @@ workspaces:
         head: 742b4c6ca35ffb0c669eb6fc9eac267e8c863995
         last_seen_at: 2026-05-26T19:35:56.093Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-rework-detached-reviewer-merge-helper-ephemeral-target-01ksjnvp
-  - active_role: worker
+  - active_role: null
     base_branch_point: 32d374363549d45f4edb1d067c9d97307e9b7f2d
     bootstrap:
       status: succeeded
@@ -9427,12 +9427,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-26T21:04:08.790Z
+      updated_at: 2026-05-26T21:47:20.574Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-26T21:04:08.790Z
+      updated_at: 2026-05-26T21:47:20.574Z
     integration:
       status: pending
       detail: null
@@ -9440,17 +9440,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 32d374363549d45f4edb1d067c9d97307e9b7f2d
-      updated_at: 2026-05-26T21:04:08.790Z
-    lifecycle_state: active
+      updated_at: 2026-05-26T21:47:20.574Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KSJNVQ5R4ZFZN2GXWWXP28X8"
     task_slug: task-clear-occupied-checkout-degraded-state-on-retry
     timestamps:
       closed_at: null
       last_active_at: 2026-05-26T20:47:14.444Z
-      last_reconciled_at: 2026-05-26T21:04:08.790Z
+      last_reconciled_at: 2026-05-26T21:47:20.574Z
       created_at: 2026-05-26T19:36:25.186Z
-      updated_at: 2026-05-26T21:04:08.790Z
+      updated_at: 2026-05-26T21:47:20.574Z
     workspace_id: dispatch-workspace-01KSJNVQ5R4ZFZN2GXWWXP28X8
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
