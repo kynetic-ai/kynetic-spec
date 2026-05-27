@@ -237896,6 +237896,13 @@ reviews:
           status: fail
           name: focused regression suites
         timestamp: 2026-05-27T05:19:01.046Z
+      - _ulid: 01KSKXZD22R4F8KPQ01NANYP4T
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSKXZBA4CKCJDX57PYY9W0KC
+        timestamp: 2026-05-27T05:19:34.466Z
     examined_commit: b5a0fd826978a483b616d687db5059fdf61b57bd
     external_links: []
     lifecycle_state: open
@@ -237905,8 +237912,27 @@ reviews:
       content_hash: ""
       ref: "@01KSKQXJ0Y6N159MWY81JE852J"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KSKXZBA4CKCJDX57PYY9W0KC
+        anchor:
+          type: code
+          commit: b5a0fd826978a483b616d687db5059fdf61b57bd
+          line_end: 681
+          line_start: 681
+          path: tests/parser-plans-folder.test.ts
+          side: head
+        entries:
+          - _ulid: 01KSKXZBA4AY1EDYQJE5VJTG6V
+            author: Jacob Chapel
+            body: "MUST-FIX: this submitted snapshot leaves active failing tests in the merge candidate. The
+              focused run and full npm test both fail here after persistPlanResourcesFromSibling
+              writes resources: expected zero drift, got an update. Because this test is newly added
+              on this branch and runs in the normal suite, merging would make dev's test gate fail.
+              Include the implementation that makes this pass before review approval, or keep
+              intentionally red coverage out of the gating suite."
+            created_at: 2026-05-27T05:19:32.676Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-27T05:05:02.811Z
-    updated_at: 2026-05-27T05:18:59.129Z
+    updated_at: 2026-05-27T05:19:32.676Z
     notes: []
