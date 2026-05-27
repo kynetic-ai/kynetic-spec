@@ -237574,6 +237574,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-27T04:07:50.038Z
+      - _ulid: 01KSKT801E0XGHQ7Z4D278M0DN
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSKSVJ3D7ZS678AD65EVRF69
+        timestamp: 2026-05-27T04:14:21.742Z
     examined_commit: 14e353c2e7351e94d145b6132aec06cc14f6c3b7
     external_links: []
     lifecycle_state: closed
@@ -237606,6 +237612,22 @@ reviews:
               consistency, or mark this trait in_progress alongside the other affected folder-backed
               contracts."
             created_at: 2026-05-27T04:07:34.254Z
+          - _ulid: 01KSKT7XFG5W6RN5F0B3E93DW3
+            author: "@claude"
+            body: "Fixed: set implementation status of @trait-entity-scoped-local-resources-1 to in_progress
+              with --no-cascade. This trait inherits the four newly added
+              @trait-folder-backed-entity-1 index-consistency ACs
+              (ac-index-entry-created-with-folder, ac-indexed-mutation-updates-index,
+              ac-index-repair-converges, ac-semantic-defaults-do-not-drift) which are intentionally
+              unproven by this task, so its implementation status must match the other four affected
+              folder-backed contracts (task-directory-storage, task-index-file,
+              folder-backed-plan-storage-1, folder-backed-review-storage-1) rather than claiming
+              'implemented'. Verified via kspec item get @trait-entity-scoped-local-resources-1
+              --json (status.implementation=in_progress) and kspec validate --warnings-ok now lists
+              Entity-Scoped Local Resources Trait alongside the other four status-mismatch warnings
+              produced by this task. Trait inheritance retained — local resources ARE folder-backed
+              entities, so they correctly inherit index consistency."
+            created_at: 2026-05-27T04:14:19.112Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -237616,5 +237638,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-27T04:07:50.037Z
     created_at: 2026-05-27T03:46:51.622Z
-    updated_at: 2026-05-27T04:07:50.038Z
+    updated_at: 2026-05-27T04:14:19.112Z
     notes: []
