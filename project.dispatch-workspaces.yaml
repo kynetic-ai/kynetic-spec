@@ -12942,7 +12942,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-27T08:59:16.648Z
+      updated_at: 2026-05-27T09:03:41.951Z
     integration:
       status: merged
       detail: integration:merged
@@ -12958,18 +12958,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-27T08:41:27.740Z
-      last_reconciled_at: 2026-05-27T09:03:40.438Z
+      last_reconciled_at: 2026-05-27T09:03:41.951Z
       created_at: 2026-05-27T08:28:27.230Z
-      updated_at: 2026-05-27T09:03:40.438Z
+      updated_at: 2026-05-27T09:03:41.951Z
     workspace_id: dispatch-workspace-01KSKQXKH6JMDJP8G67ESNB4D0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 5c2307763523de8901f2b373e3602318268446ef
-        last_seen_at: 2026-05-27T08:41:01.818Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-validate-folder-index-consistency-hardening-01kskqxk-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-validate-folder-index-consistency-hardening/01kskqxk
