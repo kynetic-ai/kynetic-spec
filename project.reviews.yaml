@@ -238626,3 +238626,29 @@ reviews:
     created_at: 2026-05-27T08:13:40.824Z
     updated_at: 2026-05-27T08:27:36.006Z
     notes: []
+  - _ulid: 01KSM9JDTS2G9E6EXHWRZB8DZT
+    slugs: []
+    title: Review task-validate-folder-index-consistency-hardening
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KSM9JDTRKBGX7A72XWF94JR4
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-27T08:42:12.184Z
+    examined_commit: 5c2307763523de8901f2b373e3602318268446ef
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KSKQXKH6JMDJP8G67ESNB4D0"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-27T08:42:12.185Z
+    updated_at: null
+    notes: []
