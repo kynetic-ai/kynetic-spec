@@ -55776,7 +55776,7 @@ runs:
     started_at: 2026-05-27T08:28:48.119Z
     completed_at: 2026-05-27T08:31:09.467Z
   - _ulid: 01KSMAJMXWPC2MV4EQKQQZX4PE
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -55835,7 +55835,14 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-27T09:02:58.069Z
-        completed_at: 2026-05-27T09:02:58.069Z
+        completed_at: 2026-05-27T09:03:14.427Z
+        notes: "Captured one success observation: @01KSMARQ for detached reviewer merge helper no-op
+          detection working correctly in a detached review snapshot. No new friction
+          observations/tasks were created because evidence-log friction is already tracked by
+          @01KR2JD1, validation warning/status mismatch friction has existing validation
+          baseline/status-mismatch coverage, and full-suite duration is already supported by
+          cache/shard conventions."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-27T08:59:48.028Z
+    completed_at: 2026-05-27T09:03:14.427Z
