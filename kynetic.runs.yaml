@@ -55709,7 +55709,7 @@ runs:
     completed_at: 2026-05-27T07:31:19.436Z
   - _ulid: 01KSM8SWKQAA5BRXM3X0AQTHRC
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -55757,10 +55757,16 @@ runs:
           review check. Benefit: keeps 'reviewer owns the merge' rigor while avoiding 30+ minute
           detached-reviewer sessions after targeted tests are already clean. Scope: medium, because
           it touches review policy and test-runner/check evidence semantics."
-      - status: completed
+      - status: skipped
         step_index: 4
         started_at: 2026-05-27T08:30:38.135Z
-        completed_at: 2026-05-27T08:30:38.135Z
+        completed_at: 2026-05-27T08:31:00.424Z
+        notes: Discussion/capture approval not available inside the CLI workflow run. Candidate improvement
+          will be reported to the user instead of being captured automatically.
+      - status: completed
+        step_index: 5
+        started_at: 2026-05-27T08:31:00.424Z
+        completed_at: 2026-05-27T08:31:00.424Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-27T08:28:48.119Z
