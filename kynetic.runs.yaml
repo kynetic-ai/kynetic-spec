@@ -55777,7 +55777,7 @@ runs:
     completed_at: 2026-05-27T08:31:09.467Z
   - _ulid: 01KSMAJMXWPC2MV4EQKQQZX4PE
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -55806,7 +55806,20 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-27T09:00:47.566Z
-        completed_at: 2026-05-27T09:00:47.566Z
+        completed_at: 2026-05-27T09:02:30.343Z
+        notes: "Coverage check: Review evidence logging friction is already tracked by observation @01KR2JD1
+          ('Review evidence logs currently have no first-class place...'), so do not duplicate.
+          Validation warning/status-mismatch friction is partially covered by existing
+          validation/status mismatch work, including @task-stabilize-kspec-validate-baseline,
+          @task-reconcile-validate-alignment-warning-baseline, and validation trust tasks; no new
+          item from this session. Long fresh-suite cost is covered by existing test runner
+          cache/shard conventions and @task-stabilize-fresh-shard-test-runs; no new item. Untracked
+          success pattern found after search: detached reviewer merge helper no-op detection handled
+          an already-integrated canonical branch cleanly in a detached snapshot."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-27T09:02:30.343Z
+        completed_at: 2026-05-27T09:02:30.343Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-27T08:59:48.028Z
