@@ -12474,7 +12474,7 @@ workspaces:
         head: 820ee7551c8caa56a83974a5d9c51b97586a9437
         last_seen_at: 2026-05-27T08:12:39.058Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-harden-folder-index-upgrade-idempotence-coverage-01kskqxk
-  - active_role: null
+  - active_role: worker
     base_branch_point: 5c2307763523de8901f2b373e3602318268446ef
     bootstrap:
       status: succeeded
@@ -12804,7 +12804,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-27T08:28:27.230Z
+      updated_at: 2026-05-27T08:28:51.492Z
     integration:
       status: pending
       detail: null
@@ -12813,16 +12813,16 @@ workspaces:
       target_branch: dev
       target_commit: 5c2307763523de8901f2b373e3602318268446ef
       updated_at: 2026-05-27T08:28:27.230Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KSKQXKH6JMDJP8G67ESNB4D0"
     task_slug: task-validate-folder-index-consistency-hardening
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-05-27T08:28:27.230Z
+      last_active_at: 2026-05-27T08:28:51.492Z
+      last_reconciled_at: 2026-05-27T08:28:51.492Z
       created_at: 2026-05-27T08:28:27.230Z
-      updated_at: 2026-05-27T08:28:50.611Z
+      updated_at: 2026-05-27T08:28:51.492Z
     workspace_id: dispatch-workspace-01KSKQXKH6JMDJP8G67ESNB4D0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
