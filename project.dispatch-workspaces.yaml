@@ -11297,12 +11297,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-27T05:03:34.713Z
+      updated_at: 2026-05-27T05:03:42.165Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-27T05:03:34.713Z
+      updated_at: 2026-05-27T05:03:42.165Z
     integration:
       status: pending
       detail: null
@@ -11310,24 +11310,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 14e353c2e7351e94d145b6132aec06cc14f6c3b7
-      updated_at: 2026-05-27T05:03:34.713Z
-    lifecycle_state: ready
+      updated_at: 2026-05-27T05:03:42.165Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KSKQXJ0Y6N159MWY81JE852J"
     task_slug: task-add-folder-index-consistency-regressions
     timestamps:
       closed_at: null
       last_active_at: 2026-05-27T04:31:51.468Z
-      last_reconciled_at: 2026-05-27T05:03:34.713Z
+      last_reconciled_at: 2026-05-27T05:03:42.165Z
       created_at: 2026-05-27T04:31:23.589Z
-      updated_at: 2026-05-27T05:03:34.713Z
+      updated_at: 2026-05-27T05:03:42.165Z
     workspace_id: dispatch-workspace-01KSKQXJ0Y6N159MWY81JE852J
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: b5a0fd826978a483b616d687db5059fdf61b57bd
+        last_seen_at: 2026-05-27T05:03:42.165Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-folder-index-consistency-regressions-01kskqxj-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-add-folder-index-consistency-regressions/01kskqxj
-        head: 14e353c2e7351e94d145b6132aec06cc14f6c3b7
-        last_seen_at: 2026-05-27T04:31:23.589Z
+        head: b5a0fd826978a483b616d687db5059fdf61b57bd
+        last_seen_at: 2026-05-27T05:03:42.165Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-folder-index-consistency-regressions-01kskqxj
