@@ -55315,7 +55315,7 @@ runs:
     completed_at: 2026-05-27T04:11:29.995Z
   - _ulid: 01KSKV781A6G1FY9MHCNM790KY
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -55329,7 +55329,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-27T04:32:20.281Z
-        completed_at: 2026-05-27T04:32:20.281Z
+        completed_at: 2026-05-27T04:32:41.967Z
+        notes: "Friction: initial git diff checks showed no code diff because the detached snapshot,
+          canonical branch, and dev were already the same commit while the meaningful work lived in
+          kspec shadow state. The review required manual reconstruction through task notes, prior
+          review records, and repeated kspec item get/json calls. Full npm test -- --fresh also took
+          about 43 minutes, but that is an intentional review gate and cache/shard tooling already
+          exists."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-27T04:32:41.967Z
+        completed_at: 2026-05-27T04:32:41.967Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-27T04:31:25.739Z
