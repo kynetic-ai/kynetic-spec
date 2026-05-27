@@ -19853,6 +19853,20 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-27T05:02:59.791Z
+  - _ulid: 01KSKY73SFWGMKSW4GZA8W80F4
+    type: friction
+    content: "Red-test-only task shape conflicts with merge gates: this review task intentionally added
+      failing-before-fix regression tests and correctly proved the future behavior, but the same
+      active red tests made the required focused and full npm test gates fail, forcing
+      request_changes. For dispatch tasks that are meant to establish red coverage before
+      implementation, the workflow needs an explicit pattern such as pairing the red tests with the
+      implementation task before merge, marking the tests non-gating until the fix lands, or using a
+      plan-level validation step instead of submitting an unmergeable branch for dev integration."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KSKY2S"
+    created_at: 2026-05-27T05:23:47.119Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
