@@ -238347,6 +238347,27 @@ reviews:
         runner: kspec
         created_at: 2026-05-27T07:27:04.395Z
         completed_at: 2026-05-27T07:27:04.395Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/cli/commands/plan-import.ts, src/cli/commands/plan-resource.ts,
+          src/parser/folder-backed-entity.ts, src/parser/plan-resource-import.ts,
+          src/parser/plan-storage-manager.ts, src/parser/review-storage-manager.ts,
+          src/parser/review-resource-manager.ts, src/parser/plans.ts, src/parser/reviews.ts,
+          src/parser/entity-local-resources.ts, src/cli/batch-write-buffer.ts, src/parser/yaml.ts,
+          changed regression tests. Commands run: kspec task/item/review lookups, git diff/log/diff
+          --check, rg AC/fails scans, kspec validate, focused npm test --fresh, npm run typecheck,
+          npm test. Claims verified: plan resource add/replace/remove and plan import sibling
+          resources now refresh plan index; review external_links []/omitted equality converges;
+          existing review resource mutators route through saveReviewRecordToFolder. Categories
+          searched: correctness, edge cases/default equality, error handling paths, test quality,
+          integration/merge readiness."
+        name: review evidence log
+        required: false
+        runner: reviewer
+        created_at: 2026-05-27T07:27:18.328Z
+        completed_at: 2026-05-27T07:27:18.328Z
     events:
       - _ulid: 01KSM4EK34VFQZ8MSZ1C649X29
         actor: Jacob Chapel
@@ -238389,6 +238410,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-27T07:27:06.009Z
+      - _ulid: 01KSM59B021688FNBS1863ZJFK
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-27T07:27:20.067Z
     examined_commit: ba68f4e3120b24fcdcb7d2fb780a13ad5c6a0431
     external_links: []
     lifecycle_state: open
@@ -238401,5 +238429,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-27T07:12:43.620Z
-    updated_at: 2026-05-27T07:27:04.395Z
+    updated_at: 2026-05-27T07:27:18.328Z
     notes: []
