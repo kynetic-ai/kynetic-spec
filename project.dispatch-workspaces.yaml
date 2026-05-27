@@ -11788,18 +11788,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-implement-folder-index-consistency-mutators/01kskqxj
-    canonical_branch_head: 085575d579d66ae41e03feb2e5a74107f9417168
+    canonical_branch_head: ba68f4e3120b24fcdcb7d2fb780a13ad5c6a0431
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-27T06:41:24.280Z
+      updated_at: 2026-05-27T07:10:14.579Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-27T06:41:49.822Z
+      updated_at: 2026-05-27T07:10:14.579Z
     integration:
       status: pending
       detail: null
@@ -11807,7 +11807,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 085575d579d66ae41e03feb2e5a74107f9417168
-      updated_at: 2026-05-27T06:41:24.280Z
+      updated_at: 2026-05-27T07:10:14.579Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KSKQXJGJQ2R0NBJ426JQ0039"
@@ -11815,9 +11815,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-27T06:41:49.822Z
-      last_reconciled_at: 2026-05-27T06:41:49.822Z
+      last_reconciled_at: 2026-05-27T07:10:14.579Z
       created_at: 2026-05-27T06:41:24.280Z
-      updated_at: 2026-05-27T06:41:49.822Z
+      updated_at: 2026-05-27T07:10:14.579Z
     workspace_id: dispatch-workspace-01KSKQXJGJQ2R0NBJ426JQ0039
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
