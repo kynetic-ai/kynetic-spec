@@ -19808,6 +19808,22 @@ observations:
     resolved: false
     workflow_ref: "@01KFRPSF"
     created_at: 2026-05-27T04:11:18.155Z
+  - _ulid: 01KSKTBB3MBXECQB7JHH074MBQ
+    type: friction
+    content: "When a task adds new acceptance criteria to an existing trait, all pre-existing inheritors
+      of that trait silently inherit those (unproven) ACs. Inheritors still at
+      implementation=implemented become out-of-compliance unless the task explicitly lists them.
+      Detection: 'kspec validate --completeness' shows missing trait AC coverage for every
+      inheritor, not only the enumerated ones. Today @trait-entity-scoped-local-resources-1 was the
+      missed inheritor when promoting @trait-folder-backed-entity-1 ACs — the task description
+      listed 4 explicit inheritors but missed this one because it was added separately. Mitigation
+      idea: before applying batches that add ACs to a trait, enumerate all current inheritors and
+      explicitly decide implementation status for each, rather than relying solely on the task's
+      enumerated list."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-27T04:16:11.380Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
