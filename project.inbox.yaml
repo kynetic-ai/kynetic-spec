@@ -3822,3 +3822,16 @@ inbox:
       - specs
     added_by: "@claude"
     created_at: 2026-05-27T03:44:44.881Z
+  - _ulid: 01KSKX11A2J2A7MJGVYP57AGX9
+    text: "Add `kspec plan note remove <plan-ref> <note-ulid>` CLI command, symmetric to `plan note
+      <ref> <text>`. Routes through mutatePlanAtomically so the index notes_count stays in sync.
+      Discovered while writing folder-index-consistency red tests: parser-level tests can clear
+      notes via savePlan({notes:[]}) but there is no CLI path, which forces tests/users to go
+      through the storage manager API for the symmetric operation."
+    tags:
+      - cli
+      - plans
+      - dx
+      - reflection
+    added_by: "@claude"
+    created_at: 2026-05-27T05:02:59.394Z
