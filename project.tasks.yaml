@@ -30045,6 +30045,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-27T03:33:43.058Z
+  automation: eligible
 - _ulid: 01KSKQXK3M631HWMVT0E61MQ3Q
   slugs:
     - task-harden-folder-index-upgrade-idempotence-coverage
