@@ -237947,6 +237947,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-05-27T05:20:20.181Z
+      - _ulid: 01KSKZQZT8M9P913RYGBE65F28
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSKXZBA4CKCJDX57PYY9W0KC
+        timestamp: 2026-05-27T05:50:28.680Z
     examined_commit: b5a0fd826978a483b616d687db5059fdf61b57bd
     external_links: []
     lifecycle_state: closed
@@ -237975,6 +237981,14 @@ reviews:
               Include the implementation that makes this pass before review approval, or keep
               intentionally red coverage out of the gating suite."
             created_at: 2026-05-27T05:19:32.676Z
+          - _ulid: 01KSKZQY9E8KTGKBZVVRA87XC9
+            author: "@claude"
+            body: "Fixed in bd82303404: converted persistPlanResourcesFromSibling regression at
+              tests/parser-plans-folder.test.ts to it.fails. Test still fails (red contract pin
+              intact) but vitest treats the expected failure as a pass, so the gating suite is no
+              longer broken. When the implementation task lands the mutator fix, it.fails will flip
+              to a hard failure and prompt conversion back to regular it()."
+            created_at: 2026-05-27T05:50:27.118Z
         kind: blocker
       - _ulid: 01KSKXZG4BJ2CS76SRHH4QH6AW
         anchor:
@@ -238055,5 +238069,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-27T05:20:20.181Z
     created_at: 2026-05-27T05:05:02.811Z
-    updated_at: 2026-05-27T05:20:20.181Z
+    updated_at: 2026-05-27T05:50:27.118Z
     notes: []
