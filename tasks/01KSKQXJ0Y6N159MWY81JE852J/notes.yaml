@@ -55,3 +55,42 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-27T05:20:22.741Z
+  - _ulid: 01KSKZTMP1HSDZZJQ6WFFBPCNR
+    content: >-
+      Fix cycle 1: addressed all 4 review blockers by converting the 6 red regression tests from
+      it() to it.fails(). The tests still fail (red contract pin intact for the implementation task)
+      but vitest now treats the expected failure as a pass, so the gating suite is no longer broken
+      by this branch.
+
+
+      Files touched (all test-only):
+
+      - tests/parser-plans-folder.test.ts (1 test: persistPlanResourcesFromSibling)
+
+      - tests/parser-reviews-folder.test.ts (1 test: external_links: [] semantic-default)
+
+      - tests/plan-rebuild-index.test.ts (1 test: plan import with sibling resources)
+
+      - tests/cli-plan-resource.test.ts (3 tests: plan resource add / add --replace / remove)
+
+
+      Each conversion includes an inline comment explaining the it.fails contract: when the
+      implementation task lands the mutator fix and any of these tests unexpectedly passes, it.fails
+      flips to a hard failure and prompts the implementer to convert it back to a regular it(). This
+      preserves the failing-before-fix coverage guarantee in the task description while keeping the
+      merge gate green.
+
+
+      Verification:
+
+      - Focused suites (npm test -- --fresh tests/plan-rebuild-index.test.ts
+      tests/review-rebuild-index.test.ts tests/parser-plans-folder.test.ts
+      tests/parser-reviews-folder.test.ts tests/task-data-manager.test.ts
+      tests/cli-plan-resource.test.ts tests/review-resource-cli.test.ts): 198/198 passing.
+
+      - Full npm test -- --fresh: 9891/9896 passing (5 skipped, 0 failed), 2587/2587 suites passing.
+
+      - All 4 review blocker threads replied and resolved; the nit (evidence log) acknowledged.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-27T05:51:55.585Z
