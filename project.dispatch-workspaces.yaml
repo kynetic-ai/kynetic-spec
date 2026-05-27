@@ -11969,7 +11969,7 @@ workspaces:
         head: ba68f4e3120b24fcdcb7d2fb780a13ad5c6a0431
         last_seen_at: 2026-05-27T07:11:40.252Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-folder-index-consistency-mutators-01kskqxj
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: e6133efe15ff35955e7e8c96015dceec12f33909
     bootstrap:
       status: succeeded
@@ -12431,34 +12431,34 @@ workspaces:
     canonical_branch: dispatch/task/task-harden-folder-index-upgrade-idempotence-coverage/01kskqxk
     canonical_branch_head: 820ee7551c8caa56a83974a5d9c51b97586a9437
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-05-27T08:12:39.058Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-05-27T08:28:12.544Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-27T08:13:04.757Z
+      updated_at: 2026-05-27T08:28:12.544Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: dev
       target_commit: e6133efe15ff35955e7e8c96015dceec12f33909
-      updated_at: 2026-05-27T08:12:39.058Z
-    lifecycle_state: integrating
+      updated_at: 2026-05-27T08:28:12.544Z
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KSKQXK3M631HWMVT0E61MQ3Q"
     task_slug: task-harden-folder-index-upgrade-idempotence-coverage
     timestamps:
       closed_at: null
       last_active_at: 2026-05-27T08:13:04.757Z
-      last_reconciled_at: 2026-05-27T08:13:04.757Z
+      last_reconciled_at: 2026-05-27T08:28:12.544Z
       created_at: 2026-05-27T07:28:24.979Z
-      updated_at: 2026-05-27T08:13:04.757Z
+      updated_at: 2026-05-27T08:28:12.544Z
     workspace_id: dispatch-workspace-01KSKQXK3M631HWMVT0E61MQ3Q
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
