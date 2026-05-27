@@ -30039,7 +30039,7 @@
   type: task
   spec_ref: "@trait-folder-backed-entity-1"
   plan_ref: "@plan-folder-backed-index-consistency-hardening"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-add-folder-index-consistency-regressions"
@@ -30054,6 +30054,7 @@
   todos_count: 0
   created_at: 2026-05-27T03:33:43.058Z
   started_at: 2026-05-27T06:42:24.246Z
+  submitted_at: 2026-05-27T07:09:50.343Z
   automation: eligible
 - _ulid: 01KSKQXK3M631HWMVT0E61MQ3Q
   slugs:
