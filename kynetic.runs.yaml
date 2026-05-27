@@ -55373,7 +55373,7 @@ runs:
     completed_at: 2026-05-27T04:33:39.717Z
   - _ulid: 01KSKWTWW71984GTA5ZW50W791
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -55482,7 +55482,46 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-27T05:01:56.195Z
-        completed_at: 2026-05-27T05:01:56.195Z
+        completed_at: 2026-05-27T05:02:16.585Z
+        notes: >-
+          Proposed improvements for untracked friction:
+
+
+          1. (inbox) plan note remove CLI command — symmetric to 'plan note <ref> <text>' for add.
+          Would accept a note ULID and remove it from the plan's notes array, going through
+          mutatePlanAtomically so the index notes_count stays in sync. Scope: small. Helps: CLI
+          parity with the storage manager API, lets red-test suites exercise the full add-then-clear
+          cycle through the public CLI surface.
+
+
+          2. (friction observation) Fixture skew when projection schema expands: every time
+          toIndexEntry adds a new field (e.g., blocked_by default),
+          tests/fixtures/project.tasks.yaml silently drifts. Drift-checking tests on unmodified
+          fixtures hit false positives. Mitigation options: (a) regenerate fixtures whenever the
+          projection grows; (b) add a vitest sanity check that fixtures match toIndexEntry output;
+          (c) document the syncIndexBaseline pattern. Scope: small-medium. Helps: prevents the next
+          worker from rediscovering syncIndexBaseline.
+
+
+          3. (success observation) Red-test polarity discipline: 'red tests assert the corrected
+          behavior and fail until fixed, never assert the bug.' This bit me once in this session — I
+          had to flip half the parser-plans-folder tests after re-reading the task contract.
+          Capturing this as a project convention or task-work skill addition would make it explicit
+          for the next worker.
+
+
+          Not proposing as separate items:
+
+          - JSON.stringify equality for nested fields: pinned by the new red test + spec AC; the
+          implementation task @task-implement-folder-index-consistency-mutators owns the fix. No
+          additional capture needed.
+
+          - Static-analysis check for hand-written ULIDs in test files: too speculative; the
+          existing convention is the right level for now.
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-27T05:02:16.585Z
+        completed_at: 2026-05-27T05:02:16.585Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-27T04:59:38.249Z
