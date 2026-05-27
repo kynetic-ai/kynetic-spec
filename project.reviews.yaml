@@ -237847,6 +237847,20 @@ reviews:
         runner: npm
         created_at: 2026-05-27T05:18:53.808Z
         completed_at: 2026-05-27T05:18:53.808Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh tests/plan-rebuild-index.test.ts tests/review-rebuild-index.test.ts
+          tests/parser-plans-folder.test.ts tests/parser-reviews-folder.test.ts
+          tests/task-data-manager.test.ts tests/cli-plan-resource.test.ts
+          tests/review-resource-cli.test.ts: 6 failed, 192 passed. Failures are the new red
+          plan/review index consistency cases."
+        name: focused regression suites
+        required: true
+        runner: npm
+        created_at: 2026-05-27T05:18:59.129Z
+        completed_at: 2026-05-27T05:18:59.129Z
     events:
       - _ulid: 01KSKX4STTZ54XV8MM2Y1GR4PW
         actor: Jacob Chapel
@@ -237875,6 +237889,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-05-27T05:18:55.710Z
+      - _ulid: 01KSKXYCDPHBDK43K4GZQ4AZ3J
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: focused regression suites
+        timestamp: 2026-05-27T05:19:01.046Z
     examined_commit: b5a0fd826978a483b616d687db5059fdf61b57bd
     external_links: []
     lifecycle_state: open
@@ -237887,5 +237908,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-27T05:05:02.811Z
-    updated_at: 2026-05-27T05:18:53.808Z
+    updated_at: 2026-05-27T05:18:59.129Z
     notes: []
