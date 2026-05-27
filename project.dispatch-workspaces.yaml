@@ -10470,7 +10470,7 @@ workspaces:
         head: 030317d1fa3d8fa0f11ef35a75c35a411a19c188
         last_seen_at: 2026-05-26T23:15:44.923Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-plan-target-lock-e2e-regression-01ksjnvq
-  - active_role: worker
+  - active_role: null
     base_branch_point: 14e353c2e7351e94d145b6132aec06cc14f6c3b7
     bootstrap:
       status: succeeded
@@ -10795,12 +10795,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-27T03:36:20.599Z
+      updated_at: 2026-05-27T03:45:01.431Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-27T03:36:48.024Z
+      updated_at: 2026-05-27T03:45:01.431Z
     integration:
       status: pending
       detail: null
@@ -10808,17 +10808,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 14e353c2e7351e94d145b6132aec06cc14f6c3b7
-      updated_at: 2026-05-27T03:36:20.599Z
-    lifecycle_state: active
+      updated_at: 2026-05-27T03:45:01.431Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KSKQXHM9FS7HX58MWZ8NECNW"
     task_slug: task-promote-folder-backed-index-consistency-trait
     timestamps:
       closed_at: null
       last_active_at: 2026-05-27T03:36:48.024Z
-      last_reconciled_at: 2026-05-27T03:36:48.024Z
+      last_reconciled_at: 2026-05-27T03:45:01.431Z
       created_at: 2026-05-27T03:36:20.599Z
-      updated_at: 2026-05-27T03:36:48.024Z
+      updated_at: 2026-05-27T03:45:01.431Z
     workspace_id: dispatch-workspace-01KSKQXHM9FS7HX58MWZ8NECNW
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
