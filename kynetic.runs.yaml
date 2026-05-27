@@ -55709,9 +55709,23 @@ runs:
     completed_at: 2026-05-27T07:31:19.436Z
   - _ulid: 01KSM8SWKQAA5BRXM3X0AQTHRC
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-27T08:28:48.119Z
+        completed_at: 2026-05-27T08:30:07.346Z
+        notes: "What worked well: the detached-reviewer merge helper made the approved-review merge path
+          deterministic in a detached snapshot and avoided manual target-branch checkout. Rebuilding
+          before tests made the CLI smoke tests trustworthy because the helpers execute
+          dist/cli/index.js. Recording checks directly on the review produced a clear merge gate:
+          build, targeted tests, full tests, validate, lint/format, and evidence log all visible in
+          kspec review get."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-27T08:30:07.346Z
+        completed_at: 2026-05-27T08:30:07.346Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-27T08:28:48.119Z
