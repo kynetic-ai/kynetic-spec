@@ -12794,12 +12794,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-27T08:40:56.291Z
+      updated_at: 2026-05-27T08:41:01.818Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-27T08:40:56.291Z
+      updated_at: 2026-05-27T08:41:01.818Z
     integration:
       status: pending
       detail: null
@@ -12807,24 +12807,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 5c2307763523de8901f2b373e3602318268446ef
-      updated_at: 2026-05-27T08:40:56.291Z
-    lifecycle_state: ready
+      updated_at: 2026-05-27T08:41:01.818Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KSKQXKH6JMDJP8G67ESNB4D0"
     task_slug: task-validate-folder-index-consistency-hardening
     timestamps:
       closed_at: null
       last_active_at: 2026-05-27T08:28:51.492Z
-      last_reconciled_at: 2026-05-27T08:40:56.291Z
+      last_reconciled_at: 2026-05-27T08:41:01.818Z
       created_at: 2026-05-27T08:28:27.230Z
-      updated_at: 2026-05-27T08:40:56.291Z
+      updated_at: 2026-05-27T08:41:01.818Z
     workspace_id: dispatch-workspace-01KSKQXKH6JMDJP8G67ESNB4D0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 5c2307763523de8901f2b373e3602318268446ef
+        last_seen_at: 2026-05-27T08:41:01.818Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-validate-folder-index-consistency-hardening-01kskqxk-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-validate-folder-index-consistency-hardening/01kskqxk
         head: 5c2307763523de8901f2b373e3602318268446ef
-        last_seen_at: 2026-05-27T08:28:27.230Z
+        last_seen_at: 2026-05-27T08:41:01.818Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-validate-folder-index-consistency-hardening-01kskqxk
