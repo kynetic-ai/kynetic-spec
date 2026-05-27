@@ -10795,12 +10795,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-27T03:45:01.431Z
+      updated_at: 2026-05-27T03:45:11.136Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-27T03:45:01.431Z
+      updated_at: 2026-05-27T03:45:11.136Z
     integration:
       status: pending
       detail: null
@@ -10808,24 +10808,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 14e353c2e7351e94d145b6132aec06cc14f6c3b7
-      updated_at: 2026-05-27T03:45:01.431Z
-    lifecycle_state: ready
+      updated_at: 2026-05-27T03:45:11.136Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KSKQXHM9FS7HX58MWZ8NECNW"
     task_slug: task-promote-folder-backed-index-consistency-trait
     timestamps:
       closed_at: null
       last_active_at: 2026-05-27T03:36:48.024Z
-      last_reconciled_at: 2026-05-27T03:45:01.431Z
+      last_reconciled_at: 2026-05-27T03:45:11.136Z
       created_at: 2026-05-27T03:36:20.599Z
-      updated_at: 2026-05-27T03:45:01.431Z
+      updated_at: 2026-05-27T03:45:11.136Z
     workspace_id: dispatch-workspace-01KSKQXHM9FS7HX58MWZ8NECNW
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 14e353c2e7351e94d145b6132aec06cc14f6c3b7
+        last_seen_at: 2026-05-27T03:45:11.136Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-promote-folder-backed-index-consistency-trait-01kskqxh-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-promote-folder-backed-index-consistency-trait/01kskqxh
         head: 14e353c2e7351e94d145b6132aec06cc14f6c3b7
-        last_seen_at: 2026-05-27T03:36:20.599Z
+        last_seen_at: 2026-05-27T03:45:11.136Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-promote-folder-backed-index-consistency-trait-01kskqxh
