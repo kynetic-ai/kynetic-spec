@@ -411,3 +411,65 @@ describe("Integration: review resource remove", () => {
     expect(list.resources[0].id).toBe("shot");
   });
 });
+
+// ── Post-Mutation Index Consistency ──────────────────────────────────────────
+//
+// Every review resource mutation that changes the bounded resource_summary
+// projection (count, total_bytes) must update the lean index in the same
+// logical mutation. Rebuild-index is a recovery tool, not the expected
+// follow-up after normal commands.
+//
+// AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+// AC: @folder-backed-review-storage-1 ac-review-index-has-bounded-projection
+
+describe("Integration: review resource post-mutation index consistency", () => {
+  // The module-level beforeEach/afterEach already set up the temp project,
+  // pngSource, and reviewSlug — no per-describe setup is needed.
+
+  function expectCleanReviewRebuildDryRun(label: string): void {
+    const result = kspecRun("review rebuild-index --dry-run --json", projectDir);
+    expect(result.exitCode, `${label}: ${result.stderr || result.stdout}`).toBe(0);
+    const envelope = JSON.parse(result.stdout);
+    expect(envelope.status, `${label}: status`).toBe("clean");
+    expect(envelope.changes, `${label}: changes`).toEqual([]);
+    expect(envelope.conflicts, `${label}: conflicts`).toEqual([]);
+  }
+
+  // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+  it("review resource add: resource_summary is recorded in the same mutation", () => {
+    kspecOk(
+      `review resource add @${reviewSlug} ${pngSource} --id shot --path shot.png`,
+      projectDir,
+    );
+    expectCleanReviewRebuildDryRun("after review resource add");
+  });
+
+  // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+  it("review resource add --replace: total_bytes change is recorded in the same mutation", async () => {
+    kspecOk(
+      `review resource add @${reviewSlug} ${pngSource} --id shot --path shot.png`,
+      projectDir,
+    );
+    const next = path.join(projectDir, "next.png");
+    await fs.writeFile(next, "PNG_BYTES_REPLACED_LONGER");
+    kspecOk(
+      `review resource add @${reviewSlug} ${next} --id shot --path shot.png --replace`,
+      projectDir,
+    );
+    expectCleanReviewRebuildDryRun("after review resource add --replace");
+  });
+
+  // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+  it("review resource remove: resource_summary drops in the same mutation", () => {
+    kspecOk(
+      `review resource add @${reviewSlug} ${pngSource} --id shot --path shot.png`,
+      projectDir,
+    );
+    const remove = kspecRun(
+      `review resource remove @${reviewSlug} shot --force --json`,
+      projectDir,
+    );
+    expect(remove.exitCode).toBe(0);
+    expectCleanReviewRebuildDryRun("after review resource remove");
+  });
+});

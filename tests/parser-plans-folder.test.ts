@@ -548,4 +548,164 @@ describe("Folder-backed plan storage manager", () => {
     expect(byUlid.get(b._ulid)?.content).toBe("Body B");
     expect(byUlid.get(c._ulid)?.content).toBe("Body C");
   });
+
+  // ── Index Consistency After Normal Mutations ─────────────────────────────
+  //
+  // Every normal mutator path is expected to leave the bounded index in sync
+  // with the per-plan folder. Rebuild-index is a recovery tool, not the
+  // expected follow-up after normal commands. These tests pin that invariant
+  // by running computePlanIndexDrift() immediately after a mutation and
+  // asserting zero drift without first running repair.
+  //
+  // AC: @trait-folder-backed-entity-1 ac-index-entry-created-with-folder
+  // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+  // AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
+
+  // AC: @trait-folder-backed-entity-1 ac-index-entry-created-with-folder
+  it("savePlan leaves the index in sync with the new plan folder (no drift)", async () => {
+    const plan = createPlan({
+      title: "Fresh Plan",
+      content: "Body",
+      slugs: ["fresh-plan"],
+    });
+    await savePlan(ctx as any, plan);
+
+    const drift = await computePlanIndexDrift(ctx as any);
+    expect(drift.changes).toEqual([]);
+    expect(drift.conflicts).toEqual([]);
+    expect(drift.folders).toBe(1);
+    expect(drift.indexEntries).toBe(1);
+  });
+
+  // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+  it("mutatePlanAtomically updates status and approved_at without leaving the index stale", async () => {
+    const plan = createPlan({ title: "Status Mutation", content: "Body" });
+    await savePlan(ctx as any, plan);
+
+    await mutatePlanAtomically(ctx as any, plan, (latest) => ({
+      ...latest,
+      status: "approved",
+      approved_at: "2026-05-23T12:00:00Z",
+    }));
+
+    const drift = await computePlanIndexDrift(ctx as any);
+    expect(drift.changes).toEqual([]);
+    expect(drift.conflicts).toEqual([]);
+  });
+
+  // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+  // AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
+  it("mutatePlanAtomically updates derived refs, branch, and module without leaving the index stale", async () => {
+    const plan = createPlan({ title: "Derived Mutation", content: "Body" });
+    await savePlan(ctx as any, plan);
+
+    await mutatePlanAtomically(ctx as any, plan, (latest) => ({
+      ...latest,
+      derived_tasks: ["@task-a", "@task-b"],
+      derived_specs: ["@spec-a"],
+      branch: "feat/folder-index-consistency",
+      module_ref: "@module-storage",
+    }));
+
+    const drift = await computePlanIndexDrift(ctx as any);
+    expect(drift.changes).toEqual([]);
+    expect(drift.conflicts).toEqual([]);
+  });
+
+  // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+  it("savePlan adding then clearing notes leaves the index in sync (notes_count flips back to 0)", async () => {
+    const plan = createPlan({
+      title: "Notes Reflected",
+      content: "Body",
+      notes: [
+        {
+          _ulid: "01NOTEPLNCONSIST0000000001",
+          created_at: "2026-05-23T11:00:00Z",
+          author: "@claude",
+          content: "First note",
+        },
+      ],
+    });
+    await savePlan(ctx as any, plan);
+
+    const afterAdd = await computePlanIndexDrift(ctx as any);
+    expect(afterAdd.changes).toEqual([]);
+
+    // Clear notes via savePlan — the index entry must drop to notes_count: 0.
+    await savePlan(ctx as any, { ...plan, notes: [] });
+    const afterClear = await computePlanIndexDrift(ctx as any);
+    expect(afterClear.changes).toEqual([]);
+    expect(afterClear.conflicts).toEqual([]);
+  });
+
+  // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+  // AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
+  // RED: persistPlanResourcesFromSibling is the public API the plan-import
+  // CLI uses to copy declared sibling resources into the plan folder and
+  // write resources.yaml. The current implementation writes resources.yaml
+  // directly without refreshing the owning plan's index entry, so
+  // resource_summary in project.plans.yaml stays absent while the folder
+  // now has owned bytes. The trait says every mutation that changes
+  // indexed data updates the index in the same logical atomic mutation —
+  // this test pins that contract.
+  it("persistPlanResourcesFromSibling keeps the lean index in sync with the new resource_summary", async () => {
+    const { persistPlanResourcesFromSibling } =
+      await import("../src/parser/plan-resource-import.js");
+
+    const plan = createPlan({ title: "Sibling Resource Persist", content: "Body" });
+    await savePlan(ctx as any, plan);
+
+    const baseline = await computePlanIndexDrift(ctx as any);
+    expect(baseline.changes).toEqual([]);
+
+    // Stage a sibling source file outside the plan directory — mirrors
+    // how plan-import resolves declared sibling resources before copying
+    // them into the plan's resources/ tree.
+    const importStagingDir = path.join(tempDir, "import-staging");
+    await fs.mkdir(importStagingDir, { recursive: true });
+    const sourceFile = path.join(importStagingDir, "shot.png");
+    await fs.writeFile(sourceFile, "PNG_BYTES", "utf-8");
+
+    const planDir = getPlanDir(ctx as any, plan._ulid);
+    await persistPlanResourcesFromSibling(planDir, {
+      manifest: {
+        resources: [{ id: "shot", path: "shot.png", label: "Screenshot", description: null }],
+      },
+      resolvedSources: new Map([["shot", sourceFile]]),
+      links: [],
+    });
+
+    // After the mutation, an immediate dry-run rebuild must report no drift.
+    const drift = await computePlanIndexDrift(ctx as any);
+    expect(drift.conflicts).toEqual([]);
+    expect(drift.changes).toEqual([]);
+  });
+
+  // AC: @trait-folder-backed-entity-1 ac-index-repair-converges
+  // After repair has rewritten the index, a subsequent dry-run rebuild must
+  // report no changes. This proves the projection used at write time is the
+  // same as the projection used at drift time — no spurious update churn.
+  it("rebuild-index converges: after repair, a subsequent dry-run reports no changes", async () => {
+    const plan = createPlan({ title: "Converge", content: "Body" });
+    await savePlan(ctx as any, plan);
+
+    // Introduce drift by tampering with the index entry.
+    const indexPath = getPlanIndexFilePath(ctx as any);
+    const indexFile = await readIndexFile(indexPath);
+    indexFile!.plans![0].title = "WRONG";
+    await fs.writeFile(
+      indexPath,
+      `kynetic_plans: "1.0"\nplans:\n  - ${JSON.stringify(indexFile!.plans![0])}\n`,
+      "utf-8",
+    );
+
+    const before = await computePlanIndexDrift(ctx as any);
+    expect(before.changes.some((c) => c.kind === "update")).toBe(true);
+
+    await rebuildPlanIndex(ctx as any);
+
+    const after = await computePlanIndexDrift(ctx as any);
+    expect(after.changes).toEqual([]);
+    expect(after.conflicts).toEqual([]);
+  });
 });

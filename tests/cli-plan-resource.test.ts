@@ -551,4 +551,69 @@ describe.runIf(canRunInit)("Integration: plan resource CLI", () => {
       expect(await fs.readFile(outsideFile, "utf-8")).toBe("OUTSIDE_SECRET");
     });
   });
+
+  // ── Post-Mutation Index Consistency ──────────────────────────────────────
+  //
+  // Every plan resource mutation that changes the bounded resource_summary
+  // projection (count, total_bytes) must update the lean index in the same
+  // logical mutation. Rebuild-index is a recovery tool, not the expected
+  // follow-up after normal commands.
+  //
+  // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+  // AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
+
+  function expectCleanPlanRebuildDryRun(label: string): void {
+    const result = kspecRun("plan rebuild-index --dry-run --json", tempDir);
+    expect(result.exitCode, `${label}: ${result.stderr || result.stdout}`).toBe(0);
+    const envelope = JSON.parse(result.stdout);
+    expect(envelope.status, `${label}: status`).toBe("clean");
+    expect(envelope.changes, `${label}: changes`).toEqual([]);
+    expect(envelope.conflicts, `${label}: conflicts`).toEqual([]);
+  }
+
+  describe("post-mutation index consistency", () => {
+    // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+    // RED: plan resource add writes resources.yaml directly without
+    // refreshing the owning plan's index entry, so resource_summary in
+    // project.plans.yaml does not reflect the new resource until a manual
+    // rebuild-index runs.
+    it("plan resource add: resource_summary is recorded in the same mutation", () => {
+      kspecJson<AddResourceJson>(
+        `plan resource add ${planRef} "${sourcePath}" --id login-shot --path screenshots/login.png`,
+        tempDir,
+      );
+      expectCleanPlanRebuildDryRun("after plan resource add");
+    });
+
+    // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+    // RED: plan resource add --replace can change total_bytes (different
+    // source file) without refreshing the index summary.
+    it("plan resource add --replace: total_bytes change is recorded in the same mutation", async () => {
+      kspecJson<AddResourceJson>(
+        `plan resource add ${planRef} "${sourcePath}" --id login-shot --path screenshots/login.png`,
+        tempDir,
+      );
+      const next = path.join(tempDir, "next.png");
+      await fs.writeFile(next, "PNG_BYTES_REPLACED_LONGER");
+      kspecJson<AddResourceJson>(
+        `plan resource add ${planRef} "${next}" --id login-shot --path screenshots/login.png --replace`,
+        tempDir,
+      );
+      expectCleanPlanRebuildDryRun("after plan resource add --replace");
+    });
+
+    // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+    // RED: plan resource remove drops a manifest entry (and the file) but
+    // does not refresh the owning plan's index entry, so the index entry
+    // continues to claim the resource is still present.
+    it("plan resource remove: resource_summary drops in the same mutation", () => {
+      kspecJson<AddResourceJson>(
+        `plan resource add ${planRef} "${sourcePath}" --id login-shot --path screenshots/login.png`,
+        tempDir,
+      );
+      const remove = kspecRun(`plan resource remove ${planRef} login-shot --force --json`, tempDir);
+      expect(remove.exitCode).toBe(0);
+      expectCleanPlanRebuildDryRun("after plan resource remove");
+    });
+  });
 });

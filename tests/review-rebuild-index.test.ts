@@ -6,11 +6,22 @@
  * and @trait-folder-backed-entity-1 ac-index-rebuilds-from-folders.
  */
 
+import { execSync } from "node:child_process";
+import { existsSync } from "node:fs";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { parse as yamlParse, stringify as yamlStringify } from "yaml";
-import { cleanupTempDir, createTempDir, kspec, setupShadowDetection } from "./helpers/cli.js";
+import {
+  cleanupTempDir,
+  createTempDir,
+  initGitRepo,
+  kspec,
+  setupShadowDetection,
+} from "./helpers/cli.js";
+
+const projectCli = path.resolve(__dirname, "..", "dist", "cli", "index.js");
+const canRunInit = existsSync(projectCli);
 
 interface ProjectPaths {
   root: string;
@@ -245,5 +256,95 @@ describe("kspec review rebuild-index", () => {
     const result = kspec("review rebuild-index --force", root, { expectFail: true });
     expect(result.exitCode).not.toBe(0);
     expect(result.stderr).toMatch(/--force can only be used with --repair/);
+  });
+});
+
+// ── Post-Mutation Index Consistency via CLI ──────────────────────────────────
+//
+// These tests exercise the public CLI surface end-to-end: after a normal
+// mutating command (review add, comment, check, verdict, close, reopen),
+// an immediate `kspec review rebuild-index --dry-run` must report
+// status=clean without any repair step. Rebuild-index is a recovery tool;
+// normal mutators own keeping the bounded index consistent.
+//
+// AC: @trait-folder-backed-entity-1 ac-index-entry-created-with-folder
+// AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+// AC: @folder-backed-review-storage-1 ac-review-index-has-bounded-projection
+
+async function setupFolderInitProject(projectDir: string): Promise<void> {
+  initGitRepo(projectDir);
+  await fs.writeFile(path.join(projectDir, "README.md"), "# Test", "utf-8");
+  execSync('git add README.md && git commit -m "initial"', {
+    cwd: projectDir,
+    stdio: "pipe",
+  });
+  const result = kspec("init --no-prompt", projectDir, {
+    env: { KSPEC_AUTHOR: "@test" },
+  });
+  if (result.exitCode !== 0) {
+    throw new Error(`kspec init --no-prompt failed: ${result.stderr}`);
+  }
+}
+
+describe.runIf(canRunInit)("Integration: review rebuild-index post-mutation consistency", () => {
+  let projectDir: string;
+  const reviewSlug = "consistency-review";
+  const reviewRef = `@${reviewSlug}`;
+
+  beforeEach(async () => {
+    projectDir = await createTempDir();
+    await setupFolderInitProject(projectDir);
+    const add = kspec(
+      `review add --title "Consistency Review" --slug ${reviewSlug} --subject-type code --base abc123 --head def456`,
+      projectDir,
+    );
+    if (add.exitCode !== 0) {
+      throw new Error(`review add failed: ${add.stderr || add.stdout}`);
+    }
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(projectDir);
+  });
+
+  function expectCleanDryRun(label: string): void {
+    const result = kspec("review rebuild-index --dry-run --json", projectDir);
+    expect(result.exitCode, `${label}: ${result.stderr || result.stdout}`).toBe(0);
+    const envelope = JSON.parse(result.stdout);
+    expect(envelope.status, `${label}: status`).toBe("clean");
+    expect(envelope.changes, `${label}: changes`).toEqual([]);
+    expect(envelope.conflicts, `${label}: conflicts`).toEqual([]);
+  }
+
+  // AC: @trait-folder-backed-entity-1 ac-index-entry-created-with-folder
+  it("review add: a new review is indexed in the same mutation as the folder creation", () => {
+    expectCleanDryRun("after review add");
+  });
+
+  // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+  it("review comment: adding a thread refreshes thread_count and disposition without leaving the index stale", () => {
+    const result = kspec(
+      `review comment ${reviewRef} --body "Initial blocker" --kind blocker`,
+      projectDir,
+    );
+    expect(result.exitCode).toBe(0);
+    expectCleanDryRun("after review comment");
+  });
+
+  // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+  it("review check: adding a check refreshes check_count without leaving the index stale", () => {
+    const result = kspec(`review check ${reviewRef} --name lint --status pass`, projectDir);
+    expect(result.exitCode).toBe(0);
+    expectCleanDryRun("after review check");
+  });
+
+  // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+  it("review verdict: setting a verdict refreshes verdict_count/disposition/lifecycle_state without leaving the index stale", () => {
+    const result = kspec(
+      `review verdict ${reviewRef} --decision approve --reviewer @reviewer`,
+      projectDir,
+    );
+    expect(result.exitCode).toBe(0);
+    expectCleanDryRun("after review verdict");
   });
 });

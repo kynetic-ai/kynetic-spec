@@ -1,8 +1,20 @@
+import { execSync } from "node:child_process";
+import { existsSync } from "node:fs";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { parse as yamlParse, stringify as yamlStringify } from "yaml";
-import { cleanupTempDir, createTempDir, kspec, setupShadowDetection } from "./helpers/cli.js";
+import {
+  cleanupTempDir,
+  createTempDir,
+  initGitRepo,
+  kspec,
+  kspecJson,
+  setupShadowDetection,
+} from "./helpers/cli.js";
+
+const projectCli = path.resolve(__dirname, "..", "dist", "cli", "index.js");
+const canRunInit = existsSync(projectCli);
 
 /**
  * Bootstrap a project directory with a folder-backed plan storage manifest
@@ -248,5 +260,144 @@ describe("kspec plan rebuild-index", () => {
     const result = kspec("plan rebuild-index --force", root, { expectFail: true });
     expect(result.exitCode).not.toBe(0);
     expect(result.stderr).toMatch(/--force can only be used with --repair/);
+  });
+});
+
+// ── Post-Mutation Index Consistency via CLI ──────────────────────────────────
+//
+// These tests exercise the public CLI surface end-to-end: after a normal
+// mutating command (plan add, plan import with sibling resources), an
+// immediate `kspec plan rebuild-index --dry-run` must report status=clean
+// without any repair step. Rebuild-index is a recovery tool; normal mutators
+// own keeping the bounded index consistent.
+//
+// AC: @trait-folder-backed-entity-1 ac-index-entry-created-with-folder
+// AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+// AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
+
+async function setupFolderInitProject(projectDir: string): Promise<void> {
+  initGitRepo(projectDir);
+  await fs.writeFile(path.join(projectDir, "README.md"), "# Test", "utf-8");
+  execSync('git add README.md && git commit -m "initial"', {
+    cwd: projectDir,
+    stdio: "pipe",
+  });
+  const result = kspec("init --no-prompt", projectDir, {
+    env: { KSPEC_AUTHOR: "@test" },
+  });
+  if (result.exitCode !== 0) {
+    throw new Error(`kspec init --no-prompt failed: ${result.stderr}`);
+  }
+}
+
+describe.runIf(canRunInit)("Integration: plan rebuild-index post-mutation consistency", () => {
+  let projectDir: string;
+
+  beforeEach(async () => {
+    projectDir = await createTempDir();
+    await setupFolderInitProject(projectDir);
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(projectDir);
+  });
+
+  function expectCleanDryRun(label: string): void {
+    const result = kspec("plan rebuild-index --dry-run --json", projectDir);
+    expect(result.exitCode, `${label}: ${result.stderr || result.stdout}`).toBe(0);
+    const envelope = JSON.parse(result.stdout);
+    expect(envelope.status, `${label}: status`).toBe("clean");
+    expect(envelope.changes, `${label}: changes`).toEqual([]);
+    expect(envelope.conflicts, `${label}: conflicts`).toEqual([]);
+  }
+
+  // AC: @trait-folder-backed-entity-1 ac-index-entry-created-with-folder
+  it("plan add: a new plan is indexed in the same mutation as the folder creation", () => {
+    const add = kspec('plan add --title "Index Consistency Plan" --content "Body"', projectDir);
+    expect(add.exitCode).toBe(0);
+    expectCleanDryRun("after plan add");
+  });
+
+  // AC: @trait-folder-backed-entity-1 ac-index-entry-created-with-folder
+  // AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
+  // RED: plan import with sibling resources writes plan.yaml/plan.md
+  // (savePlan) THEN copies resources into the plan folder via
+  // persistPlanResourcesFromSibling. The second step writes resources.yaml
+  // directly without refreshing the index entry, so resource_summary in
+  // project.plans.yaml stays absent while the folder has owned bytes.
+  it("plan import with sibling resources: resource_summary is recorded in the same mutation", async () => {
+    const importDir = path.join(projectDir, "imports");
+    await fs.mkdir(importDir, { recursive: true });
+    const planMdPath = path.join(importDir, "plan.md");
+    await fs.writeFile(
+      planMdPath,
+      [
+        "# Resource Index Plan",
+        "",
+        "See ![shot](./resources/screenshots/login.png) for the login flow.",
+        "",
+        "## Specs",
+        "",
+        "```yaml",
+        "- title: Stub",
+        "  slug: stub",
+        "  type: feature",
+        "```",
+        "",
+        "## Tasks",
+        "",
+        "derive_from_specs: true",
+        "",
+      ].join("\n"),
+      "utf-8",
+    );
+    await fs.writeFile(
+      path.join(importDir, "resources.yaml"),
+      [
+        "resources:",
+        "  - id: login-shot",
+        "    path: screenshots/login.png",
+        "    label: Login shot",
+        "",
+      ].join("\n"),
+      "utf-8",
+    );
+    const siblingRes = path.join(importDir, "resources", "screenshots");
+    await fs.mkdir(siblingRes, { recursive: true });
+    await fs.writeFile(path.join(siblingRes, "login.png"), "PNG_BYTES", "utf-8");
+
+    const imp = kspec(`plan import "${planMdPath}"`, projectDir);
+    expect(imp.exitCode).toBe(0);
+
+    // The mutation completed successfully — the lean index MUST already
+    // reflect the resource_summary contributed by the copied sibling files.
+    expectCleanDryRun("after plan import with sibling resources");
+  });
+
+  // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+  it("plan set --status approved keeps the index in sync without a repair", () => {
+    kspec('plan add --title "Status Mutation Plan" --content "Body"', projectDir);
+    const setResult = kspec("plan set @plan-status-mutation-plan --status approved", projectDir);
+    expect(setResult.exitCode).toBe(0);
+    expectCleanDryRun("after plan set --status approved");
+  });
+
+  // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+  it("plan note add keeps the index in sync (notes_count reflected)", () => {
+    kspec('plan add --title "Note Mutation Plan" --content "Body"', projectDir);
+
+    const addNote = kspec('plan note @plan-note-mutation-plan "First note"', projectDir);
+    expect(addNote.exitCode).toBe(0);
+
+    // After adding the note, the lean index entry's notes_count must be 1
+    // and dry-run rebuild must remain clean. The parser-folder test covers
+    // the symmetric clear-notes path through the storage manager (no CLI
+    // command currently clears notes on plans).
+    const planJson = kspecJson<{ notes: Array<{ _ulid: string }> }>(
+      "plan get @plan-note-mutation-plan",
+      projectDir,
+    );
+    expect(planJson.notes).toHaveLength(1);
+    expectCleanDryRun("after plan note add");
   });
 });
