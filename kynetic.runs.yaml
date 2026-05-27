@@ -55601,7 +55601,7 @@ runs:
     completed_at: 2026-05-27T05:23:56.050Z
   - _ulid: 01KSM2P5R3T11W7HHH8R3PRJ99
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -55617,7 +55617,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-27T06:42:33.488Z
-        completed_at: 2026-05-27T06:42:33.488Z
+        completed_at: 2026-05-27T06:42:41.601Z
+        notes: "Friction points: The detached reviewer merge helper refused because the integration target
+          branch dev was checked out in the main worktree, even though that checkout was clean. The
+          helper printed correct recovery instructions, but the reviewer still had to inspect the
+          external worktree, detach it manually, and retry. This is repeatable dispatch friction
+          when a clean persistent checkout occupies the merge target."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-27T06:42:41.601Z
+        completed_at: 2026-05-27T06:42:41.601Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-27T06:41:54.947Z
