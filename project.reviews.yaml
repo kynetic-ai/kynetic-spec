@@ -237648,3 +237648,29 @@ reviews:
     created_at: 2026-05-27T03:46:51.622Z
     updated_at: 2026-05-27T04:14:31.786Z
     notes: []
+  - _ulid: 01KSKTDT3GSVR1SV7NGPZQ38CR
+    slugs: []
+    title: Review folder-backed index consistency trait (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KSKTDT3GBAYYNXZR1XX9SRC8
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-27T04:17:32.272Z
+    examined_commit: 14e353c2e7351e94d145b6132aec06cc14f6c3b7
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KSKQXHM9FS7HX58MWZ8NECNW"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-27T04:17:32.272Z
+    updated_at: null
+    notes: []
