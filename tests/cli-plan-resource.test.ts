@@ -572,19 +572,12 @@ describe.runIf(canRunInit)("Integration: plan resource CLI", () => {
   }
 
   describe("post-mutation index consistency", () => {
-    // The three tests below use `it.fails`: they are intentionally-red
-    // regressions pinning known gaps in the CLI plan resource mutators.
-    // Vitest treats the expected failure as a pass so the gating suite
-    // stays green; when the implementation task lands and a test
-    // unexpectedly passes, `it.fails` flips to a hard failure, prompting
-    // the implementer to convert it back to a regular `it()`.
-
     // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
-    // RED: plan resource add writes resources.yaml directly without
-    // refreshing the owning plan's index entry, so resource_summary in
-    // project.plans.yaml does not reflect the new resource until a manual
-    // rebuild-index runs.
-    it.fails("plan resource add: resource_summary is recorded in the same mutation", () => {
+    // plan resource add writes resources.yaml AND refreshes the owning
+    // plan's index entry so resource_summary in project.plans.yaml
+    // reflects the new resource in the same logical mutation, with no
+    // manual rebuild-index required.
+    it("plan resource add: resource_summary is recorded in the same mutation", () => {
       kspecJson<AddResourceJson>(
         `plan resource add ${planRef} "${sourcePath}" --id login-shot --path screenshots/login.png`,
         tempDir,
@@ -593,9 +586,10 @@ describe.runIf(canRunInit)("Integration: plan resource CLI", () => {
     });
 
     // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
-    // RED: plan resource add --replace can change total_bytes (different
-    // source file) without refreshing the index summary.
-    it.fails("plan resource add --replace: total_bytes change is recorded in the same mutation", async () => {
+    // plan resource add --replace can change total_bytes (different source
+    // file); the index summary must reflect the new bytes in the same
+    // mutation.
+    it("plan resource add --replace: total_bytes change is recorded in the same mutation", async () => {
       kspecJson<AddResourceJson>(
         `plan resource add ${planRef} "${sourcePath}" --id login-shot --path screenshots/login.png`,
         tempDir,
@@ -610,10 +604,10 @@ describe.runIf(canRunInit)("Integration: plan resource CLI", () => {
     });
 
     // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
-    // RED: plan resource remove drops a manifest entry (and the file) but
-    // does not refresh the owning plan's index entry, so the index entry
-    // continues to claim the resource is still present.
-    it.fails("plan resource remove: resource_summary drops in the same mutation", () => {
+    // plan resource remove drops a manifest entry (and the file) and
+    // refreshes the owning plan's index entry so resource_summary
+    // matches the on-disk state.
+    it("plan resource remove: resource_summary drops in the same mutation", () => {
       kspecJson<AddResourceJson>(
         `plan resource add ${planRef} "${sourcePath}" --id login-shot --path screenshots/login.png`,
         tempDir,

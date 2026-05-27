@@ -640,21 +640,13 @@ describe("Folder-backed plan storage manager", () => {
 
   // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
   // AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
-  // RED: persistPlanResourcesFromSibling is the public API the plan-import
-  // CLI uses to copy declared sibling resources into the plan folder and
-  // write resources.yaml. The current implementation writes resources.yaml
-  // directly without refreshing the owning plan's index entry, so
-  // resource_summary in project.plans.yaml stays absent while the folder
-  // now has owned bytes. The trait says every mutation that changes
-  // indexed data updates the index in the same logical atomic mutation —
-  // this test pins that contract.
-  //
-  // Uses `it.fails`: this is an intentionally-red regression pinning a
-  // known gap. Vitest treats the expected failure as a pass so the gating
-  // suite stays green; when the implementation task lands and this test
-  // unexpectedly passes, `it.fails` will flip to a hard failure, prompting
-  // the implementer to convert this back to a regular `it()`.
-  it.fails("persistPlanResourcesFromSibling keeps the lean index in sync with the new resource_summary", async () => {
+  // persistPlanResourcesFromSibling is the public API the plan-import CLI
+  // uses to copy declared sibling resources into the plan folder and write
+  // resources.yaml. It must also refresh the owning plan's index entry so
+  // resource_summary in project.plans.yaml reflects the new bytes in the
+  // same logical atomic mutation — without it, the index would lag until
+  // a manual rebuild-index runs.
+  it("persistPlanResourcesFromSibling keeps the lean index in sync with the new resource_summary", async () => {
     const { persistPlanResourcesFromSibling } =
       await import("../src/parser/plan-resource-import.js");
 
@@ -672,8 +664,7 @@ describe("Folder-backed plan storage manager", () => {
     const sourceFile = path.join(importStagingDir, "shot.png");
     await fs.writeFile(sourceFile, "PNG_BYTES", "utf-8");
 
-    const planDir = getPlanDir(ctx as any, plan._ulid);
-    await persistPlanResourcesFromSibling(planDir, {
+    await persistPlanResourcesFromSibling(ctx as any, plan._ulid, {
       manifest: {
         resources: [{ id: "shot", path: "shot.png", label: "Screenshot", description: null }],
       },
