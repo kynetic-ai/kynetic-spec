@@ -1336,7 +1336,7 @@ features:
       schema types visible to consumers are unchanged.
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
@@ -1397,7 +1397,7 @@ features:
           authoritative source for full task data.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
@@ -1461,7 +1461,15 @@ features:
               A rebuild is requested
         tags: []
         created: 2026-03-21T00:59:16.515Z
-        notes: []
+        notes:
+          - _ulid: 01KSM9868C611T1DPQE6E8G1BX
+            content: Validated. Task index is updated atomically with each indexed mutation and converges;
+              tests/task-data-manager.test.ts plus built-CLI smoke (kspec task add / task start
+              followed by kspec task rebuild-index --dry-run) confirm no drift without explicit
+              repair.
+            supersedes: null
+            author: "@claude"
+            created_at: 2026-05-27T08:36:36.748Z
       - _ulid: 01KM6YEM5PPPR3HE895W2747CB
         slugs:
           - task-core-data-file
@@ -1605,7 +1613,15 @@ features:
         created: 2026-03-21T00:59:16.714Z
         notes: []
     created: 2026-03-21T00:59:16.485Z
-    notes: []
+    notes:
+      - _ulid: 01KSM984XH85B6F54Q0Z5HWPBS
+        content: Validated against the strengthened folder-backed-entity trait. Task index converges after
+          every mutator without repair; tests/task-data-manager.test.ts (71 tests) and built-CLI
+          temp-project smoke both confirm a dry-run task rebuild-index reports no drift after normal
+          creates and state transitions.
+        supersedes: null
+        author: "@claude"
+        created_at: 2026-05-27T08:36:35.377Z
   - _ulid: 01KM6YEM6ZPTWJX3GKSE5YDBZJ
     slugs:
       - task-data-manager

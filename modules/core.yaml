@@ -27,7 +27,7 @@ traits:
       folder-backed entities.
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
@@ -89,7 +89,23 @@ traits:
         when: Index drift is computed or an index repair is verified
     tags: []
     created: 2026-05-22T22:36:41.832Z
-    notes: []
+    notes:
+      - _ulid: 01KSM983K7KSXMZB7WGNBWJNPA
+        content: "Folder-backed index consistency hardening validated. Evidence: npm run format /
+          format:check / lint / typecheck / build green; focused storage suites pass
+          (tests/task-data-manager.test.ts, tests/plan-rebuild-index.test.ts,
+          tests/review-rebuild-index.test.ts, tests/parser-plans-folder.test.ts,
+          tests/parser-reviews-folder.test.ts, tests/plan-folder-migration.test.ts,
+          tests/review-folder-migration.test.ts, tests/upgrade-folder-storage.test.ts — 199 tests);
+          CLI resource suites pass (tests/cli-plan-resource.test.ts,
+          tests/review-resource-cli.test.ts — 52 tests); built-CLI smoke in a temp project confirms
+          task add / task start / plan add+set / review add+verdict+comment leave the index
+          converged (kspec task|plan|review rebuild-index --dry-run reports no changes after each
+          normal mutator). Normal mutators keep indexes clean without repair across tasks, plans,
+          and reviews."
+        supersedes: null
+        author: "@claude"
+        created_at: 2026-05-27T08:36:34.023Z
   - _ulid: 01KS8XAV0DHA0V3WD5T98D4RMA
     slugs:
       - trait-entity-scoped-local-resources-1
@@ -1925,7 +1941,7 @@ features:
               threads, checks, verdicts, notes, or events into separate sidecars.
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: implemented
             depends_on: []
             implements: []
             relates_to: []
@@ -1971,7 +1987,16 @@ features:
                   The deletion is persisted
             tags: []
             created: 2026-05-22T22:36:42.150Z
-            notes: []
+            notes:
+              - _ulid: 01KSM9894XG21WMVZ0ERXW3DRW
+                content: Validated. Review folder mutators keep the bounded index projection in sync without repair;
+                  tests/review-rebuild-index.test.ts, tests/parser-reviews-folder.test.ts,
+                  tests/review-folder-migration.test.ts, tests/review-resource-cli.test.ts pass and
+                  built-CLI smoke confirms kspec review add / verdict / comment followed by kspec
+                  review rebuild-index --dry-run reports no drift.
+                supersedes: null
+                author: "@claude"
+                created_at: 2026-05-27T08:36:39.709Z
         created: 2026-03-14T08:45:51.685Z
         notes: []
       - _ulid: 01KKNRBY6VD6FQ19B4NA8TAG7Y

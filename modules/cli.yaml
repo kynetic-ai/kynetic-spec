@@ -5748,7 +5748,7 @@ features:
               derived-ref semantics.
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: implemented
             depends_on: []
             implements: []
             relates_to: []
@@ -5793,7 +5793,16 @@ features:
                   The plan is removed
             tags: []
             created: 2026-05-22T22:36:41.901Z
-            notes: []
+            notes:
+              - _ulid: 01KSM987MWG0F3SVJ94029EAP9
+                content: Validated. Plan folder mutators keep the bounded index projection in sync without repair;
+                  tests/plan-rebuild-index.test.ts, tests/parser-plans-folder.test.ts,
+                  tests/plan-folder-migration.test.ts, tests/cli-plan-resource.test.ts pass and
+                  built-CLI smoke confirms kspec plan add / plan set followed by kspec plan
+                  rebuild-index --dry-run reports no drift.
+                supersedes: null
+                author: "@claude"
+                created_at: 2026-05-27T08:36:38.172Z
         created: 2026-02-04T08:58:57.716Z
         notes: []
       - _ulid: 01KGKY0S2M184ZC2AMBWDHPCSV
