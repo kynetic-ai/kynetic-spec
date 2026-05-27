@@ -55373,7 +55373,7 @@ runs:
     completed_at: 2026-05-27T04:33:39.717Z
   - _ulid: 01KSKWTWW71984GTA5ZW50W791
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -55521,7 +55521,30 @@ runs:
       - status: completed
         step_index: 4
         started_at: 2026-05-27T05:02:16.585Z
-        completed_at: 2026-05-27T05:02:16.585Z
+        completed_at: 2026-05-27T05:03:14.076Z
+        notes: >-
+          Captured 3 items via atomic batch:
+
+          1. Inbox: kspec plan note remove CLI command (tags: cli, plans, dx, reflection)
+
+          2. Friction observation: Test fixture skew when toIndexEntry projection grows; documented
+          syncIndexBaseline workaround
+
+          3. Success observation: Red-test polarity discipline (assert corrected behavior, fail
+          until fixed)
+
+
+          Sources already covering related concerns and intentionally NOT re-captured:
+
+          - ULID Crockford footgun: covered by @convention/testing in kspec-agents.md
+
+          - JSON.stringify equality for nested index fields: covered by
+          @trait-folder-backed-entity-1 ac-semantic-defaults-do-not-drift and pinned by the new red
+          test; @task-implement-folder-index-consistency-mutators owns the fix.
+      - status: completed
+        step_index: 5
+        started_at: 2026-05-27T05:03:14.076Z
+        completed_at: 2026-05-27T05:03:14.076Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-27T04:59:38.249Z
