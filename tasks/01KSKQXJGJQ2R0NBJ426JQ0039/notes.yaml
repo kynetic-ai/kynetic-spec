@@ -1,1 +1,33 @@
-notes: []
+notes:
+  - _ulid: 01KSM48GVZAGVGXYN9TJ248TK3
+    content: >-
+      Implemented atomic index updates for the three remaining plan/review folder mutator gaps:
+
+
+      1. Plan resource CLI (add / add --replace / remove) now calls refreshPlanIndexEntry after
+      writing resources.yaml, so project.plans.yaml.resource_summary lands in the same logical
+      mutation as the manifest write.
+
+      2. persistPlanResourcesFromSibling signature changed to (ctx, planUlid, validation) and
+      refreshes the lean index after copying sibling resources. plan-import.ts caller updated.
+
+      3. Review storage indexEntriesEqual now uses arraysSemanticallyEqual for external_links,
+      treating undefined/null/[] as equal — fixes spurious drift when the index entry persists
+      external_links: [] while the projection omits it.
+
+
+      Added refreshPlanIndexEntry as the exported owner-index-refresh helper recommended by the task
+      description: lock + buffered transaction, reads latest plan + resource_summary from disk and
+      upserts the lean index entry. Added arraysSemanticallyEqual to folder-backed-entity.ts as a
+      reusable trait-level equality helper.
+
+
+      Un-marked all six it.fails red regressions and updated the one test that called the old
+      persistPlanResourcesFromSibling(planDir, validation) signature.
+
+
+      Test results: focused task-listed suites pass (114 tests, 0 failures); full suite passes (2587
+      suites, 9891 tests). Typecheck clean.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-27T07:09:24.735Z
