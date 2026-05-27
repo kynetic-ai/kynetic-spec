@@ -11931,11 +11931,11 @@ workspaces:
     canonical_branch: dispatch/task/task-implement-folder-index-consistency-mutators/01kskqxj
     canonical_branch_head: ba68f4e3120b24fcdcb7d2fb780a13ad5c6a0431
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-05-27T07:28:14.754Z
+      updated_at: 2026-05-27T07:32:23.170Z
     health:
       status: healthy
       issues: []
@@ -11949,16 +11949,16 @@ workspaces:
       target_branch: dev
       target_commit: 085575d579d66ae41e03feb2e5a74107f9417168
       updated_at: 2026-05-27T07:28:14.754Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KSKQXJGJQ2R0NBJ426JQ0039"
     task_slug: task-implement-folder-index-consistency-mutators
     timestamps:
-      closed_at: null
+      closed_at: 2026-05-27T07:32:23.170Z
       last_active_at: 2026-05-27T07:12:08.098Z
       last_reconciled_at: 2026-05-27T07:31:42.789Z
       created_at: 2026-05-27T06:41:24.280Z
-      updated_at: 2026-05-27T07:31:42.789Z
+      updated_at: 2026-05-27T07:32:23.170Z
     workspace_id: dispatch-workspace-01KSKQXJGJQ2R0NBJ426JQ0039
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
