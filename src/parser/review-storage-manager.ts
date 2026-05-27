@@ -45,6 +45,7 @@ import {
 import { withFileLock } from "./file-lock.js";
 import {
   type FolderBackedEntityLayout,
+  arraysSemanticallyEqual,
   getEntityDir,
   getEntityFilePath,
   getEntityIndexPath,
@@ -258,9 +259,12 @@ export function indexEntriesEqual(a: Record<string, unknown>, b: Record<string, 
   }
   // subject and external_links are nested objects/arrays — JSON-compare so
   // any field change in the subject discriminator or external links triggers
-  // an index rewrite.
+  // an index rewrite. external_links uses arraysSemanticallyEqual so that
+  // an omitted entry and an explicit `[]` round-trip without surfacing
+  // spurious drift.
+  // AC: @trait-folder-backed-entity-1 ac-semantic-defaults-do-not-drift
   if (JSON.stringify(a.subject) !== JSON.stringify(b.subject)) return false;
-  if (JSON.stringify(a.external_links ?? null) !== JSON.stringify(b.external_links ?? null)) {
+  if (!arraysSemanticallyEqual(a.external_links, b.external_links)) {
     return false;
   }
   const ra = a.resource_summary as ReviewResourceSummary | undefined;

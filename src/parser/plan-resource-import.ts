@@ -26,11 +26,13 @@ import {
   writeResourceManifest,
   type MarkdownResourceLink,
 } from "./entity-local-resources.js";
+import { getPlanDir, refreshPlanIndexEntry } from "./plan-storage-manager.js";
 import {
   PlanResourceImportManifestSchema,
   type PlanResourceImportManifest,
   type ResourceMetadata,
 } from "../schema/resources.js";
+import type { KspecContext } from "./yaml.js";
 
 /**
  * Filename of the sibling manifest that authors place next to a plan markdown
@@ -332,19 +334,25 @@ export async function validatePlanImportResources(
  * git_path, description) computed from the destination files.
  *
  * Must be called after the plan record has been saved so the plan directory
- * exists at `.kspec/plans/<plan-ulid>/`.
+ * exists at `.kspec/plans/<plan-ulid>/`. After persisting the manifest,
+ * the owning plan's bounded index entry is refreshed in the same logical
+ * mutation so `project.plans.yaml.resource_summary` reflects the new
+ * resources without needing a follow-up `rebuild-index` run.
  *
  * AC: @plan-resource-derivation-semantics-1 ac-plan-task-resource-refs-are-structured
  * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
  * AC: @trait-entity-scoped-local-resources-1 ac-binary-resources-are-not-inlined-into-yaml
  * AC: @trait-entity-scoped-local-resources-1 ac-versioning-uses-git-backed-identity
+ * AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
  */
 export async function persistPlanResourcesFromSibling(
-  planDir: string,
+  ctx: KspecContext,
+  planUlid: string,
   validation: PlanImportResourceValidation,
 ): Promise<ResourceMetadata[]> {
   if (validation.manifest.resources.length === 0) return [];
 
+  const planDir = getPlanDir(ctx, planUlid);
   const resourcesDir = getResourcesDir(planDir);
   await fs.mkdir(resourcesDir, { recursive: true });
 
@@ -382,6 +390,10 @@ export async function persistPlanResourcesFromSibling(
   }
 
   await writeResourceManifest(planDir, { resources: metadataEntries });
+  // The lean index now has a stale resource_summary — refresh it inside the
+  // same atomic mutation so list/dashboard/API consumers see the new bytes
+  // without a manual rebuild-index. See refreshPlanIndexEntry for locking.
+  await refreshPlanIndexEntry(ctx, planUlid);
   return metadataEntries;
 }
 

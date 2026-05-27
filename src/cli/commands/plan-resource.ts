@@ -39,7 +39,7 @@ import {
   requirePlanFolderStorage,
 } from "../../parser/entity-storage-compatibility.js";
 import { findPlanByRef, initContext } from "../../parser/index.js";
-import { getPlanDir } from "../../parser/plan-storage-manager.js";
+import { getPlanDir, refreshPlanIndexEntry } from "../../parser/plan-storage-manager.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import type { ResourceMetadata } from "../../schema/resources.js";
 import { isJsonMode } from "../output.js";
@@ -485,6 +485,17 @@ async function runPlanResourceAdd(
     failFromUnexpected(err);
   }
 
+  // Refresh the lean index entry so project.plans.yaml.resource_summary
+  // reflects the manifest mutation in the same logical action — without
+  // this, list/dashboard/API consumers see stale resource counts until a
+  // manual `plan rebuild-index --repair` runs.
+  // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+  try {
+    await refreshPlanIndexEntry(ctx, plan.ulid);
+  } catch (err) {
+    failFromUnexpected(err);
+  }
+
   await commitIfShadow(
     ctx.shadow,
     "plan-resource-add",
@@ -666,6 +677,15 @@ function registerPlanResourceRemoveCommand(resource: Command): void {
         const nextResources = manifest.resources.filter((r) => r.id !== resourceId);
         try {
           await writeResourceManifest(planDir, { resources: nextResources });
+        } catch (err) {
+          failFromUnexpected(err);
+        }
+
+        // Refresh the lean index entry so project.plans.yaml.resource_summary
+        // drops the removed resource in the same logical mutation.
+        // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+        try {
+          await refreshPlanIndexEntry(ctx, plan.ulid);
         } catch (err) {
           failFromUnexpected(err);
         }

@@ -829,18 +829,12 @@ describe("Folder-backed review storage manager", () => {
 
   // AC: @trait-folder-backed-entity-1 ac-semantic-defaults-do-not-drift
   // AC: @trait-folder-backed-entity-1 ac-index-repair-converges
-  // RED: the equivalent inverse case — an index entry persisted with
-  // external_links: [] and a detail file whose default is also [] —
-  // currently produces drift because the JSON-stringified comparison
-  // treats [] and undefined differently. After repair, dry-run must
-  // converge (zero changes) and stay clean.
-  //
-  // Uses `it.fails`: this is an intentionally-red regression pinning a
-  // known gap. Vitest treats the expected failure as a pass so the gating
-  // suite stays green; when the implementation task lands and this test
-  // unexpectedly passes, `it.fails` will flip to a hard failure, prompting
-  // the implementer to convert this back to a regular `it()`.
-  it.fails("repair converges when the index entry persists external_links: [] alongside an empty detail array", async () => {
+  // An index entry persisted with external_links: [] and a detail file
+  // whose default is also [] must not surface drift — the projection
+  // omits empty arrays but the stored entry may carry an explicit `[]`
+  // (older serializer or a hand edit) and the two forms are semantically
+  // equivalent. After repair, dry-run must continue to read as clean.
+  it("repair converges when the index entry persists external_links: [] alongside an empty detail array", async () => {
     const review = makeReview({ title: "Defaults Explicit" });
     await saveReviewRecord(ctx as any, { ...review, _sourceFile: undefined });
 

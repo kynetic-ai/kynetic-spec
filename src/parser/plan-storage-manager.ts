@@ -648,6 +648,40 @@ export async function mutatePlanInFolder(
 }
 
 /**
+ * Refresh a plan's bounded index entry from authoritative folder state.
+ *
+ * Reads the latest plan sidecar files (plan.yaml / plan.md / notes.yaml)
+ * and resource manifest, projects to the bounded index entry, and upserts
+ * it under the same file lock + buffered transaction the rest of the
+ * manager uses. Callers that mutate the on-disk plan folder outside the
+ * `savePlanToFolder` / `mutatePlanInFolder` paths (e.g. resource manifest
+ * writers in CLI handlers and sibling-resource import) MUST call this
+ * helper after the folder write so the lean index is updated as part of
+ * the same logical atomic mutation. Without it, `project.plans.yaml`
+ * lags behind the folder until a manual `rebuild-index` runs.
+ *
+ * Returns silently when the plan folder is missing or unloadable —
+ * matching the rebuild-index contract that drops unrecoverable folders
+ * from the index rather than throwing.
+ *
+ * AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+ * AC: @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection
+ */
+export async function refreshPlanIndexEntry(ctx: KspecContext, ulid: string): Promise<void> {
+  await requirePlanFolderStorage(ctx);
+  const indexPath = getPlanIndexFilePath(ctx);
+  await withFileLock(indexPath, async () => {
+    await runWithBuffer(ctx.specDir, async () => {
+      const plan = await loadPlanFromDir(ctx, ulid);
+      if (!plan) return;
+      const summary = await readResourceSummary(ctx, ulid);
+      const entry = toIndexEntry(plan, summary);
+      await upsertIndexEntry(indexPath, entry);
+    });
+  });
+}
+
+/**
  * Remove a plan: delete its directory (and everything underneath it,
  * including owned resource files) and its index entry in one logical
  * shadow mutation.

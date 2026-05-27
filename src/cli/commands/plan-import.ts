@@ -273,9 +273,12 @@ async function saveImportedPlan(
   if (resourceValidation && resourceValidation.manifest.resources.length > 0) {
     try {
       // Plan directory now exists at .kspec/plans/<plan-ulid>/ — copy the
-      // declared sibling files into resources/ and write the manifest.
+      // declared sibling files into resources/, write the manifest, and
+      // refresh the lean index so resource_summary lands in the same
+      // logical mutation as the resource files.
       // AC: @plan-resource-derivation-semantics-1 ac-plan-task-resource-refs-are-structured
-      await persistPlanResourcesFromSibling(getPlanDir(ctx, plan._ulid), resourceValidation);
+      // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+      await persistPlanResourcesFromSibling(ctx, plan._ulid, resourceValidation);
     } catch (err) {
       exitOnPlanImportResourceError(err);
     }

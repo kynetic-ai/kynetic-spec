@@ -237,6 +237,24 @@ export function indexEntriesEqualForFields(
 }
 
 /**
+ * Compare two indexed array-shaped values for semantic equality, treating
+ * `undefined`, `null`, and `[]` as the same empty value. Projections that
+ * omit an optional array when empty (the canonical bounded-projection
+ * shape) and stored entries that persist an explicit `[]` (e.g. from an
+ * older serializer or a hand edit) describe the same state and must not
+ * register as drift.
+ *
+ * AC: @trait-folder-backed-entity-1 ac-semantic-defaults-do-not-drift
+ */
+export function arraysSemanticallyEqual(a: unknown, b: unknown): boolean {
+  const aEmpty = a === undefined || a === null || (Array.isArray(a) && a.length === 0);
+  const bEmpty = b === undefined || b === null || (Array.isArray(b) && b.length === 0);
+  if (aEmpty && bEmpty) return true;
+  if (aEmpty || bEmpty) return false;
+  return JSON.stringify(a) === JSON.stringify(b);
+}
+
+/**
  * Shape of a parsed index file: either a bare array of entries, or a
  * wrapper object with the entry array under a named key (e.g. `{ tasks: [...] }`).
  */
