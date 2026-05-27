@@ -643,4 +643,270 @@ describe("Folder-backed review storage manager", () => {
     expect(titlesByUlid.get(b._ulid)).toBe("Review B");
     expect(titlesByUlid.get(c._ulid)).toBe("Review C");
   });
+
+  // ── Index Consistency After Normal Mutations ─────────────────────────────
+  //
+  // Every normal mutator path is expected to leave the bounded index in sync
+  // with the per-review folder. Rebuild-index is a recovery tool, not the
+  // expected follow-up after normal commands. These tests pin that invariant
+  // by running computeReviewIndexDrift() immediately after a mutation and
+  // asserting zero drift without first running repair.
+  //
+  // AC: @trait-folder-backed-entity-1 ac-index-entry-created-with-folder
+  // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+  // AC: @folder-backed-review-storage-1 ac-review-index-has-bounded-projection
+
+  // AC: @trait-folder-backed-entity-1 ac-index-entry-created-with-folder
+  it("saveReviewRecord leaves the index in sync with the new review folder (no drift)", async () => {
+    const review = makeReview({ title: "Fresh Review", slugs: ["fresh-review"] });
+    await saveReviewRecord(ctx as any, { ...review, _sourceFile: undefined });
+
+    const drift = await computeReviewIndexDrift(ctx as any);
+    expect(drift.changes).toEqual([]);
+    expect(drift.conflicts).toEqual([]);
+    expect(drift.folders).toBe(1);
+    expect(drift.indexEntries).toBe(1);
+  });
+
+  // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+  it("mutateReviewAtomically adding a thread refreshes thread_count without leaving the index stale", async () => {
+    const review = makeReview({ title: "Add Thread" });
+    await saveReviewRecord(ctx as any, { ...review, _sourceFile: undefined });
+
+    await mutateReviewAtomically(ctx as any, { ...review, _sourceFile: undefined }, (latest) => ({
+      ...latest,
+      threads: [
+        ...latest.threads,
+        {
+          // 26-char Crockford base32 (no I, L, O, U).
+          _ulid: "01THRDCNSST000000000000AAA",
+          kind: "blocker" as const,
+          entries: [
+            {
+              _ulid: "01THRDCNSSTENTRY000000AAAA",
+              created_at: "2026-05-23T11:00:00Z",
+              author: "@reviewer",
+              body: "Blocker thread",
+            },
+          ],
+        },
+      ],
+    }));
+
+    const drift = await computeReviewIndexDrift(ctx as any);
+    expect(drift.changes).toEqual([]);
+    expect(drift.conflicts).toEqual([]);
+  });
+
+  // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+  it("mutateReviewAtomically adding a check refreshes check_count without leaving the index stale", async () => {
+    const review = makeReview({ title: "Add Check" });
+    await saveReviewRecord(ctx as any, { ...review, _sourceFile: undefined });
+
+    await mutateReviewAtomically(ctx as any, { ...review, _sourceFile: undefined }, (latest) => ({
+      ...latest,
+      checks: [
+        ...latest.checks,
+        {
+          name: "lint",
+          status: "pass" as const,
+          required: true,
+          applies_to_version: {
+            type: "code_compare" as const,
+            base_commit: "aaaa1111",
+            head_commit: "bbbb2222",
+          },
+          created_at: "2026-05-23T11:00:00Z",
+        },
+      ],
+    }));
+
+    const drift = await computeReviewIndexDrift(ctx as any);
+    expect(drift.changes).toEqual([]);
+    expect(drift.conflicts).toEqual([]);
+  });
+
+  // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+  it("mutateReviewAtomically adding a verdict refreshes verdict_count and disposition without leaving the index stale", async () => {
+    const review = makeReview({ title: "Add Verdict" });
+    await saveReviewRecord(ctx as any, { ...review, _sourceFile: undefined });
+
+    await mutateReviewAtomically(ctx as any, { ...review, _sourceFile: undefined }, (latest) => ({
+      ...latest,
+      verdicts: [
+        ...latest.verdicts,
+        {
+          reviewer: "@reviewer",
+          role: "reviewer",
+          decision: "approve" as const,
+          applies_to_version: {
+            type: "code_compare" as const,
+            base_commit: "aaaa1111",
+            head_commit: "bbbb2222",
+          },
+          created_at: "2026-05-23T11:00:00Z",
+        },
+      ],
+    }));
+
+    const drift = await computeReviewIndexDrift(ctx as any);
+    expect(drift.changes).toEqual([]);
+    expect(drift.conflicts).toEqual([]);
+  });
+
+  // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+  it("mutateReviewAtomically transitioning lifecycle_state (close) keeps the index in sync", async () => {
+    const review = makeReview({ title: "Close Review" });
+    await saveReviewRecord(ctx as any, { ...review, _sourceFile: undefined });
+
+    await mutateReviewAtomically(ctx as any, { ...review, _sourceFile: undefined }, (latest) => ({
+      ...latest,
+      lifecycle_state: "closed" as const,
+      updated_at: "2026-05-23T12:00:00Z",
+    }));
+
+    const drift = await computeReviewIndexDrift(ctx as any);
+    expect(drift.changes).toEqual([]);
+    expect(drift.conflicts).toEqual([]);
+  });
+
+  // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+  // AC: @folder-backed-review-storage-1 ac-review-index-has-bounded-projection
+  // The review resource manager (addReviewResource) writes resources.yaml
+  // and routes back through saveReviewRecordToFolder so the lean index's
+  // resource_summary updates in the same logical mutation. End-to-end
+  // resource add/replace/remove invariants are exercised by the
+  // review-resource-cli integration suite which drives the public CLI.
+  it("addReviewResource keeps the lean index in sync with the new resource_summary", async () => {
+    const resourceCtx = makeCtx(kspecDir, true);
+    const review = makeReview({ title: "Resource API" });
+    await saveReviewRecord(resourceCtx as any, { ...review, _sourceFile: undefined });
+
+    const baseline = await computeReviewIndexDrift(resourceCtx as any);
+    expect(baseline.changes).toEqual([]);
+
+    // Stage a source file outside the review folder — addReviewResource
+    // copies bytes into the review's resources/ tree.
+    const stagingDir = path.join(tempDir, "review-resource-staging");
+    await fs.mkdir(stagingDir, { recursive: true });
+    const sourceFile = path.join(stagingDir, "shot.png");
+    await fs.writeFile(sourceFile, "PNG_BYTES", "utf-8");
+
+    const { addReviewResource } = await import("../src/parser/review-resource-manager.js");
+    const result = await addReviewResource(resourceCtx as any, review._ulid, {
+      id: "shot",
+      relativePath: "shot.png",
+      sourceFile,
+      label: "Screenshot",
+      captureGit: false,
+    });
+    expect(result.ok).toBe(true);
+
+    // After the mutation, the lean index resource_summary must already
+    // reflect the new resource — no rebuild-index repair needed.
+    const drift = await computeReviewIndexDrift(resourceCtx as any);
+    expect(drift.conflicts).toEqual([]);
+    expect(drift.changes).toEqual([]);
+  });
+
+  // AC: @trait-folder-backed-entity-1 ac-semantic-defaults-do-not-drift
+  // AC: @trait-folder-backed-entity-1 ac-index-repair-converges
+  // The detail file's external_links: [] and an index entry that omits the
+  // external_links field are semantically equivalent — both mean "no
+  // external links." Drift detection must treat them as equal so a clean
+  // post-repair state stays clean across a second dry-run rebuild.
+  it("no drift when the detail file has external_links: [] and the index omits external_links", async () => {
+    const review = makeReview({ title: "Defaults Omitted" });
+    // Default external_links is [], so saveReviewRecord writes the
+    // detail file with external_links: [] and omits the field from the
+    // index entry. The drift detector must treat that pair as equal.
+    await saveReviewRecord(ctx as any, { ...review, _sourceFile: undefined });
+
+    const drift = await computeReviewIndexDrift(ctx as any);
+    expect(drift.changes).toEqual([]);
+    expect(drift.conflicts).toEqual([]);
+  });
+
+  // AC: @trait-folder-backed-entity-1 ac-semantic-defaults-do-not-drift
+  // AC: @trait-folder-backed-entity-1 ac-index-repair-converges
+  // RED: the equivalent inverse case — an index entry persisted with
+  // external_links: [] and a detail file whose default is also [] —
+  // currently produces drift because the JSON-stringified comparison
+  // treats [] and undefined differently. After repair, dry-run must
+  // converge (zero changes) and stay clean.
+  //
+  // Uses `it.fails`: this is an intentionally-red regression pinning a
+  // known gap. Vitest treats the expected failure as a pass so the gating
+  // suite stays green; when the implementation task lands and this test
+  // unexpectedly passes, `it.fails` will flip to a hard failure, prompting
+  // the implementer to convert this back to a regular `it()`.
+  it.fails("repair converges when the index entry persists external_links: [] alongside an empty detail array", async () => {
+    const review = makeReview({ title: "Defaults Explicit" });
+    await saveReviewRecord(ctx as any, { ...review, _sourceFile: undefined });
+
+    // Manually rewrite the index entry to include external_links: [].
+    // Older serializers (or hand edits) may have done so even though the
+    // detail file's empty array is the canonical representation.
+    const indexPath = getReviewIndexFilePath(ctx as any);
+    const indexFile = await readIndexFile(indexPath);
+    expect(indexFile?.reviews).toHaveLength(1);
+    indexFile!.reviews![0].external_links = [];
+    await fs.writeFile(
+      indexPath,
+      [
+        'kynetic_reviews: "1.0"',
+        "reviews:",
+        `  - ${JSON.stringify(indexFile!.reviews![0])}`,
+        "",
+      ].join("\n"),
+      "utf-8",
+    );
+
+    const before = await computeReviewIndexDrift(ctx as any);
+    // Semantic-defaults: external_links: [] in the index entry and []
+    // (or omitted) in the detail file mean the same thing; drift must
+    // not surface this as an update.
+    expect(before.changes).toEqual([]);
+    expect(before.conflicts).toEqual([]);
+
+    // Even if repair runs, the post-repair index must continue to read
+    // as clean on a follow-up dry-run rebuild.
+    await rebuildReviewIndex(ctx as any);
+    const after = await computeReviewIndexDrift(ctx as any);
+    expect(after.changes).toEqual([]);
+    expect(after.conflicts).toEqual([]);
+  });
+
+  // AC: @trait-folder-backed-entity-1 ac-index-repair-converges
+  // After repair has rewritten the index, a subsequent dry-run rebuild must
+  // report no changes. This proves the projection used at write time is the
+  // same as the projection used at drift time — no spurious update churn.
+  it("rebuild-index converges: after repair, a subsequent dry-run reports no changes", async () => {
+    const review = makeReview({ title: "Converge Review" });
+    await saveReviewRecord(ctx as any, { ...review, _sourceFile: undefined });
+
+    // Introduce drift by tampering with the index entry.
+    const indexPath = getReviewIndexFilePath(ctx as any);
+    const indexFile = await readIndexFile(indexPath);
+    indexFile!.reviews![0].title = "WRONG";
+    await fs.writeFile(
+      indexPath,
+      [
+        'kynetic_reviews: "1.0"',
+        "reviews:",
+        `  - ${JSON.stringify(indexFile!.reviews![0])}`,
+        "",
+      ].join("\n"),
+      "utf-8",
+    );
+
+    const before = await computeReviewIndexDrift(ctx as any);
+    expect(before.changes.some((c) => c.kind === "update")).toBe(true);
+
+    await rebuildReviewIndex(ctx as any);
+
+    const after = await computeReviewIndexDrift(ctx as any);
+    expect(after.changes).toEqual([]);
+    expect(after.conflicts).toEqual([]);
+  });
 });
