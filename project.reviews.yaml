@@ -237971,6 +237971,12 @@ reviews:
         payload:
           thread_ulid: 01KSKXZT1H2EXRMTPXFKJW6TWR
         timestamp: 2026-05-27T05:50:49.126Z
+      - _ulid: 01KSKZRXEBZ4008R6W9DXD3MM1
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KSKXZBA4CKCJDX57PYY9W0KC
+        timestamp: 2026-05-27T05:50:59.019Z
     examined_commit: b5a0fd826978a483b616d687db5059fdf61b57bd
     external_links: []
     lifecycle_state: closed
@@ -238008,6 +238014,8 @@ reviews:
               to a hard failure and prompt conversion back to regular it()."
             created_at: 2026-05-27T05:50:27.118Z
         kind: blocker
+        resolved_at: 2026-05-27T05:50:57.469Z
+        resolved_by: "@claude"
       - _ulid: 01KSKXZG4BJ2CS76SRHH4QH6AW
         anchor:
           type: code
@@ -238112,5 +238120,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-27T05:20:20.181Z
     created_at: 2026-05-27T05:05:02.811Z
-    updated_at: 2026-05-27T05:50:47.570Z
+    updated_at: 2026-05-27T05:50:57.469Z
     notes: []
