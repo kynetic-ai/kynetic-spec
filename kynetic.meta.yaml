@@ -19867,6 +19867,28 @@ observations:
     resolved: false
     workflow_ref: "@01KSKY2S"
     created_at: 2026-05-27T05:23:47.119Z
+  - _ulid: 01KSM2S6RE9YV4HA454P9XC7TX
+    type: success
+    content: "Session reflection: Review-only dispatch flowed well when the reviewer created a fresh
+      per-cycle review, recorded explicit evidence checks, and used it.fails for intentionally-red
+      regression tests. This preserved the known-failure contract for the follow-up implementation
+      task while keeping required npm test gates green."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-27T06:43:34.286Z
+  - _ulid: 01KSM2S71RPGZHGGTZQMP9YFQ2
+    type: friction
+    content: "Session reflection: The detached reviewer merge helper refused because dev was checked out
+      in a clean persistent worktree. The recovery instructions were correct, but the reviewer still
+      had to inspect and manually detach the target checkout before retrying. Consider automating
+      clean expected-target detach or tracking this as a merge-helper improvement."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-27T06:43:34.584Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
