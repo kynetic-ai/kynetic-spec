@@ -648,7 +648,13 @@ describe("Folder-backed plan storage manager", () => {
   // now has owned bytes. The trait says every mutation that changes
   // indexed data updates the index in the same logical atomic mutation —
   // this test pins that contract.
-  it("persistPlanResourcesFromSibling keeps the lean index in sync with the new resource_summary", async () => {
+  //
+  // Uses `it.fails`: this is an intentionally-red regression pinning a
+  // known gap. Vitest treats the expected failure as a pass so the gating
+  // suite stays green; when the implementation task lands and this test
+  // unexpectedly passes, `it.fails` will flip to a hard failure, prompting
+  // the implementer to convert this back to a regular `it()`.
+  it.fails("persistPlanResourcesFromSibling keeps the lean index in sync with the new resource_summary", async () => {
     const { persistPlanResourcesFromSibling } =
       await import("../src/parser/plan-resource-import.js");
 

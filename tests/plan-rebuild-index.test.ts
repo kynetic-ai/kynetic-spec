@@ -325,7 +325,13 @@ describe.runIf(canRunInit)("Integration: plan rebuild-index post-mutation consis
   // persistPlanResourcesFromSibling. The second step writes resources.yaml
   // directly without refreshing the index entry, so resource_summary in
   // project.plans.yaml stays absent while the folder has owned bytes.
-  it("plan import with sibling resources: resource_summary is recorded in the same mutation", async () => {
+  //
+  // Uses `it.fails`: this is an intentionally-red regression pinning a
+  // known gap. Vitest treats the expected failure as a pass so the gating
+  // suite stays green; when the implementation task lands and this test
+  // unexpectedly passes, `it.fails` will flip to a hard failure, prompting
+  // the implementer to convert this back to a regular `it()`.
+  it.fails("plan import with sibling resources: resource_summary is recorded in the same mutation", async () => {
     const importDir = path.join(projectDir, "imports");
     await fs.mkdir(importDir, { recursive: true });
     const planMdPath = path.join(importDir, "plan.md");

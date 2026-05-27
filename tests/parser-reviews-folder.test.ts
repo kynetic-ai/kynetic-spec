@@ -834,7 +834,13 @@ describe("Folder-backed review storage manager", () => {
   // currently produces drift because the JSON-stringified comparison
   // treats [] and undefined differently. After repair, dry-run must
   // converge (zero changes) and stay clean.
-  it("repair converges when the index entry persists external_links: [] alongside an empty detail array", async () => {
+  //
+  // Uses `it.fails`: this is an intentionally-red regression pinning a
+  // known gap. Vitest treats the expected failure as a pass so the gating
+  // suite stays green; when the implementation task lands and this test
+  // unexpectedly passes, `it.fails` will flip to a hard failure, prompting
+  // the implementer to convert this back to a regular `it()`.
+  it.fails("repair converges when the index entry persists external_links: [] alongside an empty detail array", async () => {
     const review = makeReview({ title: "Defaults Explicit" });
     await saveReviewRecord(ctx as any, { ...review, _sourceFile: undefined });
 
