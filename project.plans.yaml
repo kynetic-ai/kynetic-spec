@@ -52322,3 +52322,12 @@ plans:
           migration in a future instruction.
         author: Jacob Chapel
         created_at: 2026-05-27T03:33:44.555Z
+      - _ulid: 01KSNBC73A5P8G6N4MGZKQ1DTN
+        content: "Closure validation complete: all derived tasks are completed; root dev and kspec-meta were
+          clean; kspec validate --warnings-ok, typecheck, format:check, lint, build, focused
+          folder/resource/index suites, and full npm test -- --fresh all passed. Rebuild-index
+          probes against the live kynetic-spec-dispatch checkout are intentionally excluded because
+          this checkout is not itself migrated to folder-backed plan/review storage; disposable
+          upgraded projects provide rebuild-index evidence."
+        author: Jacob Chapel
+        created_at: 2026-05-27T18:33:00.266Z
