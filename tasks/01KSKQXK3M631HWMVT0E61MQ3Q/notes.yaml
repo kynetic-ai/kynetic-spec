@@ -1,1 +1,17 @@
-notes: []
+notes:
+  - _ulid: 01KSM5NY4PK1JTFTG28W18PRMP
+    content: "Approach: extend three test files. (1) tests/upgrade-folder-storage.test.ts: add a new
+      describe block 'idempotence + repair convergence after upgrade' covering legacy plan+review
+      migration → immediate plan/review/task rebuild-index --dry-run reports clean (exit 0), plus
+      repair → dry-run convergence. (2) Add a CLI-level operator workflow smoke test that mirrors
+      the real ops sequence: upgrade --force --dry-run, upgrade --force, plan/review/task
+      rebuild-index --dry-run, representative mutations (plan add, review add, plan/review resource
+      add, task add+note), final dry-run rebuilds. (3) tests/plan-rebuild-index.test.ts and
+      tests/review-rebuild-index.test.ts: add absent-optional-field / empty-default-collection
+      no-drift tests (review external_links omitted vs []; plan optional projection fields). All
+      tests use temp dirs under os.tmpdir() with the same isolation tripwire used elsewhere in
+      upgrade-folder-storage.test.ts. KSPEC_NO_DAEMON=1 already set by default in
+      tests/helpers/cli.ts kspec() helper."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-27T07:34:12.886Z
