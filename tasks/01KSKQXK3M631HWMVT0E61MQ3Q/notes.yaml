@@ -15,3 +15,63 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-27T07:34:12.886Z
+  - _ulid: 01KSM7EMQ4XAR6J3ET9NA1B87Y
+    content: >-
+      Implementation summary:
+
+
+      Tests added:
+
+      - tests/upgrade-folder-storage.test.ts: two new describe blocks.
+        - 'post-migration rebuild-index idempotence' — legacy plan + review + task migration via 'kspec upgrade' followed immediately by 'plan/review/task rebuild-index --dry-run' reports clean (exit 0). Adds repair convergence proof for plan and review (--repair then --dry-run is clean). Adds an empty-external_links + empty-resource_summary semantic-defaults regression for review migration.
+        - 'kspec operator workflow — CLI smoke' — end-to-end operator sequence: upgrade --force --dry-run (no writes) → upgrade --force → plan/review dry-run clean → representative mutations (plan add, review add, task add, plan/review resource add, task note, review comment, review check, plan note) → final plan/review/task dry-run clean (exit 0). Plus a fresh-kspec-init project variant (kynetic 1.2 from init, no downgrade) proving the post-mutation cleanliness contract.
+      - tests/plan-rebuild-index.test.ts: repair-then-dry-run convergence + two semantic-defaults
+      cases (resource_summary omitted vs {count:0, total_bytes:0}).
+
+      - tests/review-rebuild-index.test.ts: repair-then-dry-run convergence + three
+      semantic-defaults cases (external_links omitted vs []; resource_summary omitted vs {count:0,
+      total_bytes:0}; subject key order independence).
+
+
+      Implementation gaps closed (in scope for ac-semantic-defaults-do-not-drift):
+
+      - src/parser/folder-backed-entity.ts: added objectsStructurallyEqual(a, b) —
+      key-order-independent deep equality via canonical JSON sort. arraysSemanticallyEqual now
+      canonicalizes object array elements (was JSON.stringify, order-sensitive).
+
+      - src/parser/plan-storage-manager.ts: indexEntriesEqual now treats undefined resource_summary
+      and {count:0, total_bytes:0} as semantically equal. This was the migration→rebuild drift: the
+      migration emits the omitted form, the rebuild emits the zero-summary form, both describe the
+      same empty state.
+
+      - src/parser/review-storage-manager.ts: same resource_summary fix + switched subject
+      comparison from JSON.stringify (order-sensitive) to objectsStructurallyEqual. Without this, a
+      migrated review index entry with subject keys in legacy order and a rebuilt entry with subject
+      keys in schema order surfaced as spurious drift.
+
+
+      Test isolation:
+
+      - Every test uses createTempDir() with a unique prefix; existing assertTempDirIsolation
+      tripwire kept intact. KSPEC_NO_DAEMON=1 is already injected by the kspec() helper
+      (tests/helpers/cli.ts).
+
+      - Protected-project tripwire tests unchanged and still passing.
+
+
+      Test commands:
+
+      - npm test -- --fresh tests/upgrade-folder-storage.test.ts tests/plan-rebuild-index.test.ts
+      tests/review-rebuild-index.test.ts tests/task-data-manager.test.ts → 125/125 pass.
+
+      - npm test -- --fresh tests/plan-folder-migration.test.ts
+      tests/review-folder-migration.test.ts tests/parser-plans-folder.test.ts
+      tests/parser-reviews-folder.test.ts tests/cli-plan-resource.test.ts
+      tests/review-resource-cli.test.ts → 126/126 pass.
+
+      - Full npm test → 9905 passed / 5 skipped, no failures.
+
+      - npm run build, npm run typecheck, npm run lint, npm run format:check — all clean.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-27T08:05:11.012Z
