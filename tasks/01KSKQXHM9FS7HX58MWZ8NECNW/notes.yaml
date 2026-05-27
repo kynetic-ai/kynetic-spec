@@ -19,3 +19,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-27T04:07:54.059Z
+  - _ulid: 01KSKT8WFZE3933QJ8EE97ZWG0
+    content: "Fix cycle 1: addressed reviewer blocker on @trait-entity-scoped-local-resources-1. Set its
+      implementation status from 'implemented' to 'in_progress' (--no-cascade) so it matches the
+      other four folder-backed specs whose inherited index-consistency ACs are intentionally
+      unproven by this task. The trait correctly inherits @trait-folder-backed-entity-1 (local
+      resources ARE folder-backed entities), so we kept the inheritance and only corrected the
+      status drift. kspec validate --warnings-ok now lists Entity-Scoped Local Resources Trait with
+      the other status-mismatch warnings produced by this task. No source changes; .kspec/ batch
+      auto-commit on shadow branch."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-27T04:14:50.879Z
