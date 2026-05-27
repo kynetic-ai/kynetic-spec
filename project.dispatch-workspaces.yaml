@@ -12933,11 +12933,11 @@ workspaces:
     canonical_branch: dispatch/task/task-validate-folder-index-consistency-hardening/01kskqxk
     canonical_branch_head: 5c2307763523de8901f2b373e3602318268446ef
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-05-27T08:59:16.648Z
+      updated_at: 2026-05-27T09:04:23.383Z
     health:
       status: healthy
       issues: []
@@ -12951,16 +12951,16 @@ workspaces:
       target_branch: dev
       target_commit: 5c2307763523de8901f2b373e3602318268446ef
       updated_at: 2026-05-27T08:59:16.648Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KSKQXKH6JMDJP8G67ESNB4D0"
     task_slug: task-validate-folder-index-consistency-hardening
     timestamps:
-      closed_at: null
+      closed_at: 2026-05-27T09:04:23.383Z
       last_active_at: 2026-05-27T08:41:27.740Z
       last_reconciled_at: 2026-05-27T09:03:41.951Z
       created_at: 2026-05-27T08:28:27.230Z
-      updated_at: 2026-05-27T09:03:41.951Z
+      updated_at: 2026-05-27T09:04:23.383Z
     workspace_id: dispatch-workspace-01KSKQXKH6JMDJP8G67ESNB4D0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
