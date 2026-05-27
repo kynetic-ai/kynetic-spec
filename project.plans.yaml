@@ -52271,7 +52271,7 @@ plans:
       `~/Projects/kynetic-spec-dispatch` unless Jacob explicitly scopes that live
 
       migration in a future instruction.
-    status: active
+    status: completed
     approved_at: 2026-05-27T03:33:18.610Z
     derived_specs: []
     derived_tasks:
