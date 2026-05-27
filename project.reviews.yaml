@@ -238212,6 +238212,13 @@ reviews:
           status: pass
           name: kspec validate
         timestamp: 2026-05-27T06:39:47.316Z
+      - _ulid: 01KSM2JDYH9KSXEKD860KZQXGR
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KSM2JC5DPR62H98FT0WZ6FKA
+        timestamp: 2026-05-27T06:39:52.273Z
     examined_commit: bd82303404f00f26519bfc2eeb19c3953f3d9afe
     external_links: []
     lifecycle_state: open
@@ -238221,8 +238228,28 @@ reviews:
       content_hash: ""
       ref: "@01KSKQXJ0Y6N159MWY81JE852J"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KSM2JC5DPR62H98FT0WZ6FKA
+        entries:
+          - _ulid: 01KSM2JC5D61ASACH4D0XHMDTN
+            author: Jacob Chapel
+            body: "Evidence log: Files read: kspec-agents.md; prior review @01KSKX4STV0VY6YRWKDZT571EJ; task
+              @01KSKQXJ0Y6N159MWY81JE852J; specs @trait-folder-backed-entity-1,
+              @folder-backed-plan-storage-1, @folder-backed-review-storage-1; diffs for
+              tests/cli-plan-resource.test.ts, tests/parser-plans-folder.test.ts,
+              tests/parser-reviews-folder.test.ts, tests/plan-rebuild-index.test.ts,
+              tests/review-rebuild-index.test.ts, tests/review-resource-cli.test.ts,
+              tests/task-data-manager.test.ts; surrounding review-storage-manager context for
+              external_links projection. Commands run: git diff/stat/name-only; kspec task get;
+              kspec review for-task/get/add/open; kspec item get; rg AC annotations; rg source-read
+              patterns; kspec validate; focused npm test; full npm test. Claims verified: prior red
+              tests are now encoded as it.fails and the changed focused suites pass; full suite
+              passes. Categories searched: correctness, test quality, AC annotation coverage,
+              source-scanning risk, integration with CLI/storage-manager paths, and regression
+              gates."
+            created_at: 2026-05-27T06:39:50.445Z
+        kind: nit
     verdicts: []
     created_at: 2026-05-27T06:26:32.287Z
-    updated_at: 2026-05-27T06:39:45.517Z
+    updated_at: 2026-05-27T06:39:50.445Z
     notes: []
