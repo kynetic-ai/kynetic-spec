@@ -30091,7 +30091,7 @@
   type: task
   spec_ref: "@trait-folder-backed-entity-1"
   plan_ref: "@plan-folder-backed-index-consistency-hardening"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-harden-folder-index-upgrade-idempotence-coverage"
@@ -30105,4 +30105,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-27T03:33:44.102Z
+  started_at: 2026-05-27T08:29:36.301Z
   automation: eligible
