@@ -30001,6 +30001,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-27T03:33:42.153Z
+  automation: eligible
 - _ulid: 01KSKQXJ0Y6N159MWY81JE852J
   slugs:
     - task-add-folder-index-consistency-regressions
