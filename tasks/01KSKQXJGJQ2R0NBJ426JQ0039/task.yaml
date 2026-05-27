@@ -86,8 +86,12 @@ description: >
 spec_ref: "@trait-folder-backed-entity-1"
 plan_ref: "@plan-folder-backed-index-consistency-hardening"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Merged to dev at e6133efe15ff35955e7e8c96015dceec12f33909. Reviewed atomic
+  plan/review folder index consistency fixes: plan resource CLI and sibling import now refresh plan
+  index resource_summary, review external_links empty/default equality converges, and focused/full
+  tests plus typecheck passed."
 depends_on:
   - "@task-add-folder-index-consistency-regressions"
 context: []
@@ -157,8 +161,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-27T07:12:48.352Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Merged to dev at e6133efe15ff35955e7e8c96015dceec12f33909. Reviewed atomic plan/review folder
+          index consistency fixes: plan resource CLI and sibling import now refresh plan index
+          resource_summary, review external_links empty/default equality converges, and focused/full
+          tests plus typecheck passed."
+        previous: null
+      completed_at:
+        new: 2026-05-27T07:27:58.523Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-27T07:27:58.530Z
 created_at: 2026-05-27T03:33:43.058Z
 started_at: 2026-05-27T06:42:24.246Z
 submitted_at: 2026-05-27T07:09:50.343Z
+completed_at: 2026-05-27T07:27:58.523Z
 todos: []
 automation: eligible
