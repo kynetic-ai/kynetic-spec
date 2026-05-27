@@ -30067,6 +30067,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-27T03:33:43.668Z
+  automation: eligible
 - _ulid: 01KSKQXKH6JMDJP8G67ESNB4D0
   slugs:
     - task-validate-folder-index-consistency-hardening
