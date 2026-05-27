@@ -222,7 +222,7 @@ function revParse(repoCwd: string, ref: string): string {
 }
 
 afterEach(async () => {
-  for (const dir of [...cleanupDirs].reverse()) {
+  for (const dir of cleanupDirs.toReversed()) {
     try {
       const output = execSync("git worktree list --porcelain", {
         cwd: dir,
@@ -292,10 +292,11 @@ describe("detached-reviewer-merge helper", () => {
       expect(isAncestor).toBe("yes");
 
       // The reviewed feature file lives in the target branch tree.
-      const featureInTarget = execSync(
-        `git show "refs/heads/${env.mergeTarget}:feature.txt"`,
-        { cwd: env.projectDir, encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] },
-      );
+      const featureInTarget = execSync(`git show "refs/heads/${env.mergeTarget}:feature.txt"`, {
+        cwd: env.projectDir,
+        encoding: "utf-8",
+        stdio: ["pipe", "pipe", "pipe"],
+      });
       expect(featureInTarget).toBe("feature content\n");
 
       // No worktree remains checked out on the target branch.
@@ -333,10 +334,11 @@ describe("detached-reviewer-merge helper", () => {
       expect(result.stderr).toContain("advanced past the reviewed commit");
 
       // Reviewed feature file is in the target branch.
-      const featureInTarget = execSync(
-        `git show "refs/heads/${env.mergeTarget}:feature.txt"`,
-        { cwd: env.projectDir, encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] },
-      );
+      const featureInTarget = execSync(`git show "refs/heads/${env.mergeTarget}:feature.txt"`, {
+        cwd: env.projectDir,
+        encoding: "utf-8",
+        stdio: ["pipe", "pipe", "pipe"],
+      });
       expect(featureInTarget).toBe("feature content\n");
 
       // Unreviewed change is NOT in the target branch — we merged the pinned commit.
@@ -485,10 +487,7 @@ describe("detached-reviewer-merge helper", () => {
       const env = await setupMergeTestEnv({ checkoutTarget: true });
       const occupied = env.integrationWorktreeDir!;
 
-      await fs.writeFile(
-        path.join(occupied, "scratch.tmp"),
-        "untracked scratch file\n",
-      );
+      await fs.writeFile(path.join(occupied, "scratch.tmp"), "untracked scratch file\n");
 
       const result = runMergeHelper(env.reviewerWorktreeDir, {
         KSPEC_DISPATCH_CANONICAL_BRANCH: env.canonicalBranch,
@@ -538,12 +537,13 @@ describe("detached-reviewer-merge helper", () => {
       const targetHeadAfter = revParse(env.projectDir, `refs/heads/${env.mergeTarget}`);
       expect(targetHeadAfter).toBe(targetHeadBefore);
 
-      // The pre-existing dirty checkout was not overwritten.
-      const occupiedContent = await fs.readFile(
-        path.join(occupied, "existing.txt"),
-        "utf-8",
-      );
-      expect(occupiedContent).toBe("modified\n");
+      // The pre-existing dirty checkout remains dirty and was not overwritten.
+      const occupiedStatus = execSync("git status --short -- existing.txt", {
+        cwd: occupied,
+        encoding: "utf-8",
+        stdio: ["pipe", "pipe", "pipe"],
+      });
+      expect(occupiedStatus).toBe(" M existing.txt\n");
     });
 
     it("refuses when occupied integration worktree has staged drift", async () => {

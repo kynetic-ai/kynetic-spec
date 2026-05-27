@@ -2401,7 +2401,6 @@ export class DispatchEngine {
     > = [];
     if (change.task?.resource_refs && change.task.resource_refs.length > 0) {
       try {
-        const { initContext } = await import("../parser/yaml.js");
         const { resolveTaskResources, projectResolvedTaskResources } =
           await import("../parser/task-resource-resolver.js");
         const ctx = await initContext(this.projectDir);
@@ -3416,11 +3415,7 @@ export class DispatchEngine {
       // AC: @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery
       const isOccupiedCheckoutDegraded =
         this._degradedTargets.get(branch)?.kind === "occupied-checkout";
-      if (
-        options.staleOnly &&
-        !isOccupiedCheckoutDegraded &&
-        !this._isTargetSyncStale(branch)
-      ) {
+      if (options.staleOnly && !isOccupiedCheckoutDegraded && !this._isTargetSyncStale(branch)) {
         continue;
       }
       if (reviewerTargets.has(branch)) {
@@ -3711,7 +3706,8 @@ export class DispatchEngine {
   ): { reason: string; kind: DegradedTargetKind } {
     if (err instanceof DispatchWorkspaceError) {
       const reason = `${err.message} Resolution: ${err.suggestion}`;
-      const kind: DegradedTargetKind = err.code === "occupied-checkout" ? "occupied-checkout" : "other";
+      const kind: DegradedTargetKind =
+        err.code === "occupied-checkout" ? "occupied-checkout" : "other";
       return { reason, kind };
     }
     const detail = err instanceof Error ? err.message : String(err);
