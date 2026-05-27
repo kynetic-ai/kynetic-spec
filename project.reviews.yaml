@@ -237910,6 +237910,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSKXZG4BJ2CS76SRHH4QH6AW
         timestamp: 2026-05-27T05:19:39.526Z
+      - _ulid: 01KSKXZPY1SEB3PHE5V6JTRMC7
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSKXZN68PSJD9KRQ6750VMHK
+        timestamp: 2026-05-27T05:19:44.577Z
     examined_commit: b5a0fd826978a483b616d687db5059fdf61b57bd
     external_links: []
     lifecycle_state: open
@@ -237956,7 +237963,24 @@ reviews:
               introduced by this branch, so the merge gate is failing."
             created_at: 2026-05-27T05:19:37.612Z
         kind: blocker
+      - _ulid: 01KSKXZN68PSJD9KRQ6750VMHK
+        anchor:
+          type: code
+          commit: b5a0fd826978a483b616d687db5059fdf61b57bd
+          line_end: 374
+          line_start: 374
+          path: tests/plan-rebuild-index.test.ts
+          side: head
+        entries:
+          - _ulid: 01KSKXZN68P0BDVBV7GD61PGEJ
+            author: Jacob Chapel
+            body: "MUST-FIX: the new plan import sibling-resource regression is an active failing test. Full npm
+              test fails at this assertion because plan rebuild-index --dry-run is not clean
+              immediately after import. Since this branch adds the failing assertion, it is an
+              introduced regression against the required test gate."
+            created_at: 2026-05-27T05:19:42.792Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-27T05:05:02.811Z
-    updated_at: 2026-05-27T05:19:37.612Z
+    updated_at: 2026-05-27T05:19:42.792Z
     notes: []
