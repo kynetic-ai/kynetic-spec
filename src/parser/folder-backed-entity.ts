@@ -251,7 +251,40 @@ export function arraysSemanticallyEqual(a: unknown, b: unknown): boolean {
   const bEmpty = b === undefined || b === null || (Array.isArray(b) && b.length === 0);
   if (aEmpty && bEmpty) return true;
   if (aEmpty || bEmpty) return false;
-  return JSON.stringify(a) === JSON.stringify(b);
+  // canonicalize so object elements with different key orders compare equal —
+  // YAML round-trip and Zod schema parsing can both reorder object keys
+  // without changing semantic content.
+  return canonicalize(a) === canonicalize(b);
+}
+
+/**
+ * Key-order-independent deep equality for nested index-projection values.
+ *
+ * Index entries are persisted as YAML and reloaded via a parser that does
+ * not commit to a canonical key order. A reviewer-supplied legacy record
+ * with `{type, content_hash, ref, shadow_commit}` and a fresh
+ * schema-emitted record with `{type, ref, shadow_commit, content_hash}`
+ * describe identical state — comparing them with `JSON.stringify` would
+ * spuriously report drift because stringify is order-sensitive. This
+ * helper canonicalises object key order before structural comparison so
+ * the migrated index entry and the rebuilt index entry agree.
+ *
+ * AC: @trait-folder-backed-entity-1 ac-semantic-defaults-do-not-drift
+ */
+export function objectsStructurallyEqual(a: unknown, b: unknown): boolean {
+  return canonicalize(a) === canonicalize(b);
+}
+
+function canonicalize(value: unknown): string {
+  if (value === null || typeof value !== "object") {
+    return JSON.stringify(value);
+  }
+  if (Array.isArray(value)) {
+    return `[${value.map((v) => canonicalize(v)).join(",")}]`;
+  }
+  const obj = value as Record<string, unknown>;
+  const keys = Object.keys(obj).toSorted();
+  return `{${keys.map((k) => `${JSON.stringify(k)}:${canonicalize(obj[k])}`).join(",")}}`;
 }
 
 /**

@@ -1716,3 +1716,689 @@ describe("kspec upgrade — folder storage migration", () => {
     await expect(fs.access(path.join(specDir, "reviews"))).rejects.toThrow();
   });
 });
+
+// ── Idempotence + Repair Convergence Across All Entity Types ─────────────────
+//
+// After a migration or repair, an immediate dry-run rebuild for the same
+// domain MUST report no drift. This pins the convergence contract from
+// @trait-folder-backed-entity-1 ac-index-rebuilds-from-folders,
+// ac-index-repair-converges, and ac-semantic-defaults-do-not-drift across
+// tasks, plans, and reviews together. Prior coverage proved migrations
+// could write the folder layout, but not that the rebuilt index agreed with
+// the folders on the very next dry-run — exactly the loop operators rely on
+// to distinguish real damage from false drift.
+
+interface RebuildIndexEnvelope {
+  domain: string;
+  status: "clean" | "drift" | "blocked" | "repaired";
+  dry_run?: boolean;
+  repair?: boolean;
+  force?: boolean;
+  summary: {
+    folders: number;
+    index_entries: number;
+    added: number;
+    updated: number;
+    removed_stale: number;
+    conflicts: number;
+  };
+  changes: unknown[];
+  conflicts: unknown[];
+}
+
+describe("kspec upgrade — post-migration rebuild-index idempotence", () => {
+  let tempDir: string;
+  let planUlid: string;
+  let reviewUlid: string;
+  let threadUlid: string;
+  let entryUlid: string;
+
+  beforeEach(async () => {
+    tempDir = await createTempDir("kspec-upgrade-idempotence-");
+    assertTempDirIsolation(tempDir);
+    planUlid = testUlid("CVPLN");
+    reviewUlid = testUlid("CVREV");
+    threadUlid = testUlid("CVTHR");
+    entryUlid = testUlid("CVENT");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  function expectCleanDryRun(
+    domain: "plan" | "review" | "task",
+    cwd: string,
+    label: string,
+  ): RebuildIndexEnvelope {
+    // task rebuild-index does not emit the structured envelope —
+    // assert exit code + "up to date" text. Plan/review rebuilds emit
+    // JSON; assert exit 0 + status=clean + zero changes/conflicts.
+    if (domain === "task") {
+      const result = kspec("task rebuild-index --dry-run", cwd);
+      expect(result.exitCode, `${label}: ${result.stderr || result.stdout}`).toBe(0);
+      const combined = `${result.stdout} ${result.stderr}`;
+      expect(combined, `${label}: must report up to date`).toMatch(/up to date/i);
+      return {
+        domain: "tasks",
+        status: "clean",
+        dry_run: true,
+        summary: {
+          folders: 0,
+          index_entries: 0,
+          added: 0,
+          updated: 0,
+          removed_stale: 0,
+          conflicts: 0,
+        },
+        changes: [],
+        conflicts: [],
+      };
+    }
+    const result = kspec(`${domain} rebuild-index --dry-run --json`, cwd);
+    expect(result.exitCode, `${label}: ${result.stderr || result.stdout}`).toBe(0);
+    const envelope = JSON.parse(result.stdout) as RebuildIndexEnvelope;
+    expect(envelope.status, `${label}: status`).toBe("clean");
+    expect(envelope.changes, `${label}: changes`).toEqual([]);
+    expect(envelope.conflicts, `${label}: conflicts`).toEqual([]);
+    return envelope;
+  }
+
+  // AC: @trait-folder-backed-entity-1 ac-index-rebuilds-from-folders
+  // AC: @trait-folder-backed-entity-1 ac-index-repair-converges
+  // AC: @single-command-version-upgrade ac-runs-task-storage-migration
+  it("upgrade then immediate plan + review + task dry-run rebuilds report clean", async () => {
+    const { specDir } = await initProject(tempDir);
+
+    // Seed a monolithic task too so the post-upgrade task layout exists
+    // (`task rebuild-index` errors on an empty tasks/ dir by design — its
+    // purpose is to repair an existing split layout, not bootstrap one).
+    const taskUlidSeed = testUlid("CVTSK");
+    await fs.writeFile(
+      path.join(specDir, "project.tasks.yaml"),
+      (await import("yaml")).stringify({
+        kynetic_tasks: "1.0",
+        tasks: [
+          {
+            _ulid: taskUlidSeed,
+            slugs: ["task-converge-seed"],
+            title: "Converge Task",
+            type: "task",
+            status: "pending",
+            priority: 3,
+            created_at: "2026-05-22T10:00:00Z",
+            description: "Seed task for convergence smoke test",
+            notes: [],
+            todos: [],
+            depends_on: [],
+            blocked_by: [],
+          },
+        ],
+      }),
+      "utf-8",
+    );
+
+    await writeMonolithicPlans(specDir, [
+      {
+        _ulid: planUlid,
+        slugs: ["converge-plan"],
+        title: "Converge Plan",
+        content: "# Converge\nBody",
+        status: "draft",
+        derived_tasks: [],
+        derived_specs: [],
+        created_at: "2026-05-22T10:00:00Z",
+        notes: [],
+      },
+    ]);
+    await writeMonolithicReviews(specDir, [
+      {
+        _ulid: reviewUlid,
+        slugs: ["converge-review"],
+        title: "Converge Review",
+        author: "reviewer",
+        subject: {
+          type: "task",
+          ref: "@some-task",
+          shadow_commit: "abc",
+          content_hash: "h",
+        },
+        lifecycle_state: "open",
+        related_refs: [],
+        threads: [
+          {
+            _ulid: threadUlid,
+            kind: "blocker",
+            entries: [
+              {
+                _ulid: entryUlid,
+                author: "reviewer",
+                body: "x",
+                created_at: "2026-05-22T10:00:00Z",
+              },
+            ],
+          },
+        ],
+        checks: [],
+        verdicts: [],
+        events: [],
+        notes: [],
+        external_links: [],
+        examined_commit: null,
+        created_at: "2026-05-22T10:00:00Z",
+      },
+    ]);
+
+    const upgradeResult = kspecJson<UpgradeResultShape>("upgrade", tempDir);
+    expect(upgradeResult.success).toBe(true);
+
+    // Immediate dry-run rebuilds across all three domains MUST be clean.
+    // No repair step in between — this is the convergence contract for
+    // migration: the moment migration completes, the bounded index must
+    // agree with the folder sidecars on disk.
+    expectCleanDryRun("plan", tempDir, "plan dry-run immediately after upgrade");
+    expectCleanDryRun("review", tempDir, "review dry-run immediately after upgrade");
+    expectCleanDryRun("task", tempDir, "task dry-run immediately after upgrade");
+
+    // Sanity: the folders the upgrade just wrote must still be on disk.
+    await fs.access(path.join(specDir, "plans", planUlid));
+    await fs.access(path.join(specDir, "reviews", reviewUlid));
+  });
+
+  // AC: @trait-folder-backed-entity-1 ac-index-repair-converges
+  it("plan rebuild-index --repair after upgrade is followed by a clean dry-run", async () => {
+    const { specDir } = await initProject(tempDir);
+
+    await writeMonolithicPlans(specDir, [
+      {
+        _ulid: planUlid,
+        slugs: ["repair-converge"],
+        title: "Repair Converge",
+        content: "Body",
+        status: "draft",
+        derived_tasks: [],
+        derived_specs: [],
+        created_at: "2026-05-22T10:00:00Z",
+        notes: [],
+      },
+    ]);
+    await writeMonolithicReviews(specDir, []);
+
+    const upgradeResult = kspecJson<UpgradeResultShape>("upgrade", tempDir);
+    expect(upgradeResult.success).toBe(true);
+
+    // Corrupt the lean index by hand-rewriting it so repair has real work
+    // to do. We mutate a projected field (title) so the repair pass must
+    // overwrite the index entry from the authoritative plan.yaml content.
+    const indexPath = path.join(specDir, "project.plans.yaml");
+    const indexData = yamlParse(await readTestOutput(indexPath)) as {
+      plans: Array<Record<string, unknown>>;
+    };
+    indexData.plans[0].title = "Drifted Title";
+    const yamlMod = await import("yaml");
+    await fs.writeFile(indexPath, yamlMod.stringify(indexData), "utf-8");
+
+    // Dry-run sees drift, exits 1, no writes.
+    const driftResult = kspec("plan rebuild-index --dry-run --json", tempDir, {
+      expectFail: true,
+    });
+    expect(driftResult.exitCode).toBe(1);
+    const driftEnv = JSON.parse(driftResult.stdout) as RebuildIndexEnvelope;
+    expect(driftEnv.status).toBe("drift");
+
+    // Repair rewrites the index from folder authority.
+    const repairResult = kspec("plan rebuild-index --repair --json", tempDir);
+    expect(repairResult.exitCode).toBe(0);
+    const repairEnv = JSON.parse(repairResult.stdout) as RebuildIndexEnvelope;
+    expect(repairEnv.status).toBe("repaired");
+
+    // The immediate follow-up dry-run with no intervening mutation must be
+    // clean. This is the convergence guarantee: a successful repair leaves
+    // the index in agreement with the folders.
+    expectCleanDryRun("plan", tempDir, "plan dry-run after repair");
+  });
+
+  // AC: @trait-folder-backed-entity-1 ac-index-repair-converges
+  it("review rebuild-index --repair after upgrade is followed by a clean dry-run", async () => {
+    const { specDir } = await initProject(tempDir);
+
+    await writeMonolithicPlans(specDir, []);
+    await writeMonolithicReviews(specDir, [
+      {
+        _ulid: reviewUlid,
+        slugs: ["repair-converge-review"],
+        title: "Repair Converge Review",
+        author: "reviewer",
+        subject: {
+          type: "task",
+          ref: "@some-task",
+          shadow_commit: "abc",
+          content_hash: "h",
+        },
+        lifecycle_state: "open",
+        related_refs: [],
+        threads: [],
+        checks: [],
+        verdicts: [],
+        events: [],
+        notes: [],
+        external_links: [],
+        examined_commit: null,
+        created_at: "2026-05-22T10:00:00Z",
+      },
+    ]);
+
+    const upgradeResult = kspecJson<UpgradeResultShape>("upgrade", tempDir);
+    expect(upgradeResult.success).toBe(true);
+
+    // Hand-corrupt an indexed field to give repair real work.
+    const indexPath = path.join(specDir, "project.reviews.yaml");
+    const indexData = yamlParse(await readTestOutput(indexPath)) as {
+      reviews: Array<Record<string, unknown>>;
+    };
+    indexData.reviews[0].title = "Drifted Review Title";
+    const yamlMod = await import("yaml");
+    await fs.writeFile(indexPath, yamlMod.stringify(indexData), "utf-8");
+
+    const driftResult = kspec("review rebuild-index --dry-run --json", tempDir, {
+      expectFail: true,
+    });
+    expect(driftResult.exitCode).toBe(1);
+    const driftEnv = JSON.parse(driftResult.stdout) as RebuildIndexEnvelope;
+    expect(driftEnv.status).toBe("drift");
+
+    const repairResult = kspec("review rebuild-index --repair --json", tempDir);
+    expect(repairResult.exitCode).toBe(0);
+    const repairEnv = JSON.parse(repairResult.stdout) as RebuildIndexEnvelope;
+    expect(repairEnv.status).toBe("repaired");
+
+    expectCleanDryRun("review", tempDir, "review dry-run after repair");
+  });
+
+  // AC: @trait-folder-backed-entity-1 ac-semantic-defaults-do-not-drift
+  // AC: @single-command-version-upgrade ac-idempotent-when-current
+  it("legacy reviews migrated with empty external_links produce no repeated drift", async () => {
+    const { specDir } = await initProject(tempDir);
+
+    await writeMonolithicPlans(specDir, []);
+    // Two legacy review records:
+    //  - one with an explicit `external_links: []`
+    //  - one with `external_links` populated
+    // After migration, the lean index entry omits `external_links` when
+    // empty (per the bounded projection). A follow-up dry-run rebuild must
+    // not flag the omitted-vs-`[]` divergence as drift.
+    const reviewWithEmpty = testUlid("SDEMP");
+    const reviewWithLinks = testUlid("SDFUL");
+    await writeMonolithicReviews(specDir, [
+      {
+        _ulid: reviewWithEmpty,
+        slugs: ["empty-links"],
+        title: "Empty Links Review",
+        author: "reviewer",
+        subject: {
+          type: "task",
+          ref: "@some-task",
+          shadow_commit: "abc",
+          content_hash: "h",
+        },
+        lifecycle_state: "open",
+        related_refs: [],
+        threads: [],
+        checks: [],
+        verdicts: [],
+        events: [],
+        notes: [],
+        external_links: [],
+        examined_commit: null,
+        created_at: "2026-05-22T10:00:00Z",
+      },
+      {
+        _ulid: reviewWithLinks,
+        slugs: ["with-links"],
+        title: "With Links Review",
+        author: "reviewer",
+        subject: {
+          type: "task",
+          ref: "@other-task",
+          shadow_commit: "abc",
+          content_hash: "h",
+        },
+        lifecycle_state: "open",
+        related_refs: [],
+        threads: [],
+        checks: [],
+        verdicts: [],
+        events: [],
+        notes: [],
+        external_links: [{ url: "https://example.com/pr/1", label: "PR" }],
+        examined_commit: null,
+        created_at: "2026-05-22T10:00:00Z",
+      },
+    ]);
+
+    const upgradeResult = kspecJson<UpgradeResultShape>("upgrade", tempDir);
+    expect(upgradeResult.success).toBe(true);
+
+    // First dry-run must be clean — no spurious updates from empty-vs-omitted
+    // external_links round-trip OR from the order in which YAML and the
+    // Zod schema project subject/external_links object fields.
+    expectCleanDryRun("review", tempDir, "review dry-run after migration with empty links");
+
+    // Repair is a no-op when there is no drift: the CLI short-circuits to
+    // `status=clean` before invoking the rebuild writer, exit 0. This
+    // proves the semantic-equality treatment of empty defaults survives a
+    // repair invocation without rewriting the index.
+    const repairResult = kspec("review rebuild-index --repair --json", tempDir);
+    expect(repairResult.exitCode).toBe(0);
+    const repairEnv = JSON.parse(repairResult.stdout) as RebuildIndexEnvelope;
+    expect(repairEnv.status).toBe("clean");
+    expect(repairEnv.summary.added).toBe(0);
+    expect(repairEnv.summary.updated).toBe(0);
+
+    // And a follow-up dry-run after the repair-invocation must STILL be
+    // clean — the index file remained untouched, so semantic-equality
+    // treatment survived the round trip.
+    expectCleanDryRun("review", tempDir, "review dry-run after no-op repair");
+  });
+});
+
+// ── Operator Workflow CLI Smoke Test ────────────────────────────────────────
+//
+// Mirrors the real operator sequence end-to-end against a temp project so
+// dispatch agents and humans can rely on the documented commands:
+//
+//   1. kspec upgrade --force --dry-run    (preview the upgrade)
+//   2. kspec upgrade --force              (run the upgrade)
+//   3. plan/review/task rebuild-index --dry-run   (post-upgrade convergence)
+//   4. representative plan/review/task mutations
+//   5. plan/review/task rebuild-index --dry-run   (post-mutation convergence)
+//
+// Every dry-run must exit 0 (clean) with no drift. The smoke test never
+// touches live self-hosting repos: it asserts tempdir isolation, runs the
+// CLI via dist/cli/index.js with KSPEC_NO_DAEMON=1 already set by the helper.
+
+describe("kspec operator workflow — CLI smoke", () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await createTempDir("kspec-operator-smoke-");
+    assertTempDirIsolation(tempDir);
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  function dryRunIsClean(
+    domain: "plan" | "review",
+    cwd: string,
+    label: string,
+  ): RebuildIndexEnvelope {
+    const result = kspec(`${domain} rebuild-index --dry-run --json`, cwd);
+    expect(result.exitCode, `${label}: exit code (${result.stderr || result.stdout})`).toBe(0);
+    const envelope = JSON.parse(result.stdout) as RebuildIndexEnvelope;
+    expect(envelope.status, `${label}: status`).toBe("clean");
+    expect(envelope.changes, `${label}: changes`).toEqual([]);
+    expect(envelope.conflicts, `${label}: conflicts`).toEqual([]);
+    return envelope;
+  }
+
+  function taskDryRunIsClean(cwd: string, label: string): void {
+    const result = kspec("task rebuild-index --dry-run", cwd);
+    expect(result.exitCode, `${label}: exit code (${result.stderr || result.stdout})`).toBe(0);
+    const combined = `${result.stdout} ${result.stderr}`;
+    expect(combined, `${label}: must report up to date`).toMatch(/up to date/i);
+  }
+
+  // AC: @trait-folder-backed-entity-1 ac-index-rebuilds-from-folders
+  // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+  // AC: @trait-folder-backed-entity-1 ac-semantic-defaults-do-not-drift
+  // AC: @single-command-version-upgrade ac-runs-task-storage-migration
+  // AC: @single-command-version-upgrade ac-idempotent-when-current
+  // AC: @single-command-version-upgrade ac-dry-run-no-writes
+  it("upgrade → rebuild dry-runs → mutations → final dry-runs are all clean (exit 0)", async () => {
+    const { specDir, manifestPath } = await initProject(tempDir);
+    const seedPlanUlid = testUlid("OPSDP");
+    const seedReviewUlid = testUlid("OPSDR");
+
+    // Seed legacy monolithic plan + review records so upgrade has real
+    // migration work to do (not just a manifest bump).
+    await writeMonolithicPlans(specDir, [
+      {
+        _ulid: seedPlanUlid,
+        slugs: ["operator-seed-plan"],
+        title: "Operator Seed Plan",
+        content: "# Plan\nBody",
+        status: "draft",
+        derived_tasks: [],
+        derived_specs: [],
+        created_at: "2026-05-22T10:00:00Z",
+        notes: [],
+      },
+    ]);
+    await writeMonolithicReviews(specDir, [
+      {
+        _ulid: seedReviewUlid,
+        slugs: ["operator-seed-review"],
+        title: "Operator Seed Review",
+        author: "reviewer",
+        subject: {
+          type: "task",
+          ref: "@some-task",
+          shadow_commit: "abc",
+          content_hash: "h",
+        },
+        lifecycle_state: "open",
+        related_refs: [],
+        threads: [],
+        checks: [],
+        verdicts: [],
+        events: [],
+        notes: [],
+        external_links: [],
+        examined_commit: null,
+        created_at: "2026-05-22T10:00:00Z",
+      },
+    ]);
+
+    // Snapshot key artifacts so the dry-run preview must not write.
+    const manifestBeforeDryRun = await readTestOutput(manifestPath);
+    const plansFileBeforeDryRun = await readTestOutput(path.join(specDir, "project.plans.yaml"));
+    const reviewsFileBeforeDryRun = await readTestOutput(
+      path.join(specDir, "project.reviews.yaml"),
+    );
+
+    // Step 1: `kspec upgrade --force --dry-run` — must not write anything.
+    // AC: @single-command-version-upgrade ac-dry-run-no-writes
+    const dryUpgrade = kspecJson<UpgradeResultShape>("upgrade --force --dry-run", tempDir);
+    expect(dryUpgrade.dry_run).toBe(true);
+    expect(dryUpgrade.success).toBe(true);
+    expect(await readTestOutput(manifestPath)).toBe(manifestBeforeDryRun);
+    expect(await readTestOutput(path.join(specDir, "project.plans.yaml"))).toBe(
+      plansFileBeforeDryRun,
+    );
+    expect(await readTestOutput(path.join(specDir, "project.reviews.yaml"))).toBe(
+      reviewsFileBeforeDryRun,
+    );
+    await expect(fs.access(path.join(specDir, "plans", seedPlanUlid))).rejects.toThrow();
+    await expect(fs.access(path.join(specDir, "reviews", seedReviewUlid))).rejects.toThrow();
+
+    // Step 2: `kspec upgrade --force` — applies the migration.
+    // AC: @single-command-version-upgrade ac-runs-task-storage-migration
+    const upgrade = kspecJson<UpgradeResultShape>("upgrade --force", tempDir);
+    expect(upgrade.success).toBe(true);
+    const manifestAfterUpgrade = yamlParse(await readTestOutput(manifestPath)) as Record<
+      string,
+      unknown
+    >;
+    expect(manifestAfterUpgrade.kynetic).toBe("1.2");
+    expect((manifestAfterUpgrade.plan_storage as Record<string, unknown>).format).toBe("folder");
+    expect((manifestAfterUpgrade.review_storage as Record<string, unknown>).format).toBe("folder");
+
+    // Step 3: immediate dry-run rebuilds across plan + review — must report
+    // clean. (Task rebuild-index is intentionally not exercised here: the
+    // upgrade did not migrate any task records into the split layout, so
+    // .kspec/tasks/ does not exist yet and the recovery tool refuses to
+    // bootstrap. The post-mutation assertion below covers task rebuild
+    // once a real task has been written through the normal CLI path.)
+    dryRunIsClean("plan", tempDir, "plan dry-run immediately after upgrade --force");
+    dryRunIsClean("review", tempDir, "review dry-run immediately after upgrade --force");
+
+    // Step 4: representative mutations — exercise the normal CLI surface.
+    const planAdd = kspec(
+      'plan add --title "Operator Plan" --content "# Plan\\nBody" --slug operator-cli-plan',
+      tempDir,
+    );
+    expect(planAdd.exitCode, `plan add: ${planAdd.stderr || planAdd.stdout}`).toBe(0);
+
+    const reviewAdd = kspec(
+      'review add --title "Operator Review" --slug operator-cli-review --subject-type code --base aaa111 --head bbb222',
+      tempDir,
+    );
+    expect(reviewAdd.exitCode, `review add: ${reviewAdd.stderr || reviewAdd.stdout}`).toBe(0);
+
+    const taskAdd = kspec(
+      'task add --title "Operator Task" --slug task-operator-cli --priority 3',
+      tempDir,
+    );
+    expect(taskAdd.exitCode, `task add: ${taskAdd.stderr || taskAdd.stdout}`).toBe(0);
+
+    // Add a note + a resource to exercise resource_summary and notes_count
+    // index updates without leaving the index stale.
+    const taskNote = kspec('task note @task-operator-cli "Initial note from smoke test"', tempDir);
+    expect(taskNote.exitCode, `task note: ${taskNote.stderr || taskNote.stdout}`).toBe(0);
+
+    const sampleResource = path.join(tempDir, "sample.png");
+    await fs.writeFile(sampleResource, "FAKE_PNG_BYTES", "utf-8");
+    const planResource = kspec(
+      `plan resource add @operator-cli-plan ${sampleResource} --id smoke-res --path attached.png`,
+      tempDir,
+    );
+    expect(
+      planResource.exitCode,
+      `plan resource add: ${planResource.stderr || planResource.stdout}`,
+    ).toBe(0);
+
+    const reviewResource = kspec(
+      `review resource add @operator-cli-review ${sampleResource} --id review-res --path attached.png`,
+      tempDir,
+    );
+    expect(
+      reviewResource.exitCode,
+      `review resource add: ${reviewResource.stderr || reviewResource.stdout}`,
+    ).toBe(0);
+
+    // Step 5: final dry-run rebuilds across all three domains — all clean.
+    // Every mutator above is supposed to keep the bounded index synchronized
+    // with the folder sidecars in the same atomic write. If any path bypasses
+    // that contract this assertion fails with status=drift.
+    dryRunIsClean("plan", tempDir, "plan dry-run after mutations");
+    dryRunIsClean("review", tempDir, "review dry-run after mutations");
+    taskDryRunIsClean(tempDir, "task dry-run after mutations");
+  });
+
+  // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
+  // AC: @trait-folder-backed-entity-1 ac-semantic-defaults-do-not-drift
+  // AC: @single-command-version-upgrade ac-idempotent-when-current
+  it("a fresh kspec init project (kynetic 1.2, folder storage) stays clean after representative mutations", async () => {
+    // Fresh project: NO downgrade. `kspec init --no-prompt` already writes
+    // kynetic 1.2 with folder plan/review storage and split task storage.
+    // Operators getting a brand-new project should never see a non-zero
+    // dry-run rebuild — even after writing real entities.
+    initGitRepo(tempDir);
+    await fs.writeFile(path.join(tempDir, "README.md"), "# Test\n", "utf-8");
+    execSync('git add . && git commit -m "initial"', { cwd: tempDir, stdio: "pipe" });
+    const initResult = kspec("init --no-prompt", tempDir);
+    expect(initResult.exitCode, `kspec init: ${initResult.stderr || initResult.stdout}`).toBe(0);
+
+    const specDir = path.join(tempDir, ".kspec");
+    const specFiles = await fs.readdir(specDir);
+    const manifestName = specFiles.find(
+      (f) =>
+        f.endsWith(".yaml") &&
+        !f.endsWith(".tasks.yaml") &&
+        !f.endsWith(".inbox.yaml") &&
+        !f.endsWith(".meta.yaml") &&
+        !f.startsWith("."),
+    );
+    if (!manifestName) throw new Error("manifest not found after kspec init");
+    const manifest = yamlParse(await readTestOutput(path.join(specDir, manifestName))) as Record<
+      string,
+      unknown
+    >;
+    expect(manifest.kynetic).toBe("1.2");
+    expect((manifest.plan_storage as Record<string, unknown>).format).toBe("folder");
+    expect((manifest.review_storage as Record<string, unknown>).format).toBe("folder");
+
+    // Baseline cleanliness — empty plan and review folder layouts must
+    // already report clean. (task rebuild-index errors on an empty tasks/
+    // dir by design — it expects at least one per-task directory before
+    // the rebuild has anything to project. The post-mutation assertion
+    // below covers the populated case.)
+    dryRunIsClean("plan", tempDir, "fresh init plan dry-run (empty)");
+    dryRunIsClean("review", tempDir, "fresh init review dry-run (empty)");
+
+    // Representative mutations across all three entity types.
+    const planAdd = kspec(
+      'plan add --title "Fresh Plan" --content "# Fresh\\nBody" --slug fresh-cli-plan',
+      tempDir,
+    );
+    expect(planAdd.exitCode, `plan add: ${planAdd.stderr || planAdd.stdout}`).toBe(0);
+
+    const reviewAdd = kspec(
+      'review add --title "Fresh Review" --slug fresh-cli-review --subject-type code --base aaa111 --head bbb222',
+      tempDir,
+    );
+    expect(reviewAdd.exitCode, `review add: ${reviewAdd.stderr || reviewAdd.stdout}`).toBe(0);
+
+    const taskAdd = kspec(
+      'task add --title "Fresh Task" --slug task-fresh-cli --priority 3',
+      tempDir,
+    );
+    expect(taskAdd.exitCode, `task add: ${taskAdd.stderr || taskAdd.stdout}`).toBe(0);
+
+    const reviewComment = kspec(
+      'review comment @fresh-cli-review --body "Initial blocker" --kind blocker',
+      tempDir,
+    );
+    expect(
+      reviewComment.exitCode,
+      `review comment: ${reviewComment.stderr || reviewComment.stdout}`,
+    ).toBe(0);
+
+    const reviewCheck = kspec("review check @fresh-cli-review --name lint --status pass", tempDir);
+    expect(reviewCheck.exitCode, `review check: ${reviewCheck.stderr || reviewCheck.stdout}`).toBe(
+      0,
+    );
+
+    const planNote = kspec('plan note @fresh-cli-plan "First note"', tempDir);
+    expect(planNote.exitCode, `plan note: ${planNote.stderr || planNote.stdout}`).toBe(0);
+
+    // Resource paths — exercise the index resource_summary projection.
+    const sampleResource = path.join(tempDir, "sample.bin");
+    await fs.writeFile(sampleResource, "SAMPLE_BYTES", "utf-8");
+    const planResource = kspec(
+      `plan resource add @fresh-cli-plan ${sampleResource} --id fresh-res --path attached.bin`,
+      tempDir,
+    );
+    expect(
+      planResource.exitCode,
+      `plan resource add: ${planResource.stderr || planResource.stdout}`,
+    ).toBe(0);
+    const reviewResource = kspec(
+      `review resource add @fresh-cli-review ${sampleResource} --id fresh-res --path attached.bin`,
+      tempDir,
+    );
+    expect(
+      reviewResource.exitCode,
+      `review resource add: ${reviewResource.stderr || reviewResource.stdout}`,
+    ).toBe(0);
+
+    // Final dry-run rebuilds — every mutation above is expected to keep its
+    // bounded index entry in sync atomically. If any path leaves stale
+    // projection state the dry-run reports drift and this fails.
+    dryRunIsClean("plan", tempDir, "fresh init plan dry-run after mutations");
+    dryRunIsClean("review", tempDir, "fresh init review dry-run after mutations");
+    taskDryRunIsClean(tempDir, "fresh init task dry-run after mutations");
+  });
+});

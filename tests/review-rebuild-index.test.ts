@@ -257,6 +257,120 @@ describe("kspec review rebuild-index", () => {
     expect(result.exitCode).not.toBe(0);
     expect(result.stderr).toMatch(/--force can only be used with --repair/);
   });
+
+  // ── Repair Convergence ─────────────────────────────────────────────────────
+  //
+  // After `--repair` rewrites the index from authoritative folder content,
+  // the immediate follow-up dry-run with no intervening mutation MUST
+  // report no changes.
+
+  // AC: @trait-folder-backed-entity-1 ac-index-repair-converges
+  it("repair followed by dry-run reports clean and exits 0", async () => {
+    const ulid = "01CVAAAAAAAAAAAAAAAAAAAAAA";
+    await writeReviewFolder(specDir, ulid, { title: "Converge" });
+    const driftedEntry = makeIndexEntry(ulid, "Drifted Title");
+    await writeIndex(specDir, [driftedEntry]);
+
+    const repair = kspec("review rebuild-index --repair --json", root);
+    expect(repair.exitCode).toBe(0);
+    const repairEnvelope = JSON.parse(repair.stdout);
+    expect(repairEnvelope.status).toBe("repaired");
+    expect(repairEnvelope.summary.updated).toBe(1);
+
+    const dryRun = kspec("review rebuild-index --dry-run --json", root);
+    expect(dryRun.exitCode, `${dryRun.stderr || dryRun.stdout}`).toBe(0);
+    const dryEnvelope = JSON.parse(dryRun.stdout);
+    expect(dryEnvelope.status).toBe("clean");
+    expect(dryEnvelope.changes).toEqual([]);
+    expect(dryEnvelope.conflicts).toEqual([]);
+  });
+
+  // ── Semantic Defaults Do Not Drift ────────────────────────────────────────
+  //
+  // Reviews carry several optional collections (`external_links`,
+  // `resource_summary`) that have an omitted-form vs explicit-empty-form
+  // duality. The rebuild path MUST treat both forms as equal so the same
+  // entry does not surface as drift on every dry-run.
+
+  // AC: @trait-folder-backed-entity-1 ac-semantic-defaults-do-not-drift
+  it("an index entry that omits external_links equals a folder with external_links: []", async () => {
+    const ulid = "01EKAAAAAAAAAAAAAAAAAAAAAA";
+    await writeReviewFolder(specDir, ulid, { title: "Empty Links Review" });
+    // writeReviewFolder writes `external_links: []` in review.yaml.
+    // makeIndexEntry omits external_links — these are the two canonical
+    // empty forms and must compare equal.
+    await writeIndex(specDir, [makeIndexEntry(ulid, "Empty Links Review")]);
+
+    const result = kspec("review rebuild-index --dry-run --json", root);
+    expect(result.exitCode, `${result.stderr || result.stdout}`).toBe(0);
+    const envelope = JSON.parse(result.stdout);
+    expect(envelope.status).toBe("clean");
+    expect(envelope.changes).toEqual([]);
+    expect(envelope.summary.updated).toBe(0);
+  });
+
+  // AC: @trait-folder-backed-entity-1 ac-semantic-defaults-do-not-drift
+  it("an index entry without resource_summary equals a folder with empty resources.yaml", async () => {
+    const ulid = "01RSAAAAAAAAAAAAAAAAAAAAAA";
+    await writeReviewFolder(specDir, ulid, { title: "Empty Resources Review" });
+    // Empty resources manifest — rebuild will compute `{count:0, total_bytes:0}`.
+    await fs.writeFile(
+      path.join(specDir, "reviews", ulid, "resources.yaml"),
+      yamlStringify({ resources: [] }),
+      "utf-8",
+    );
+    // Index omits resource_summary entirely — the canonical bounded form
+    // for a resourceless review. Drift detection must treat these as equal.
+    await writeIndex(specDir, [makeIndexEntry(ulid, "Empty Resources Review")]);
+
+    const result = kspec("review rebuild-index --dry-run --json", root);
+    expect(result.exitCode, `${result.stderr || result.stdout}`).toBe(0);
+    const envelope = JSON.parse(result.stdout);
+    expect(envelope.status).toBe("clean");
+    expect(envelope.changes).toEqual([]);
+    expect(envelope.summary.updated).toBe(0);
+  });
+
+  // AC: @trait-folder-backed-entity-1 ac-semantic-defaults-do-not-drift
+  it("an index entry with resource_summary {count:0,total_bytes:0} equals an entry with the field omitted", async () => {
+    const ulid = "01ZSAAAAAAAAAAAAAAAAAAAAAA";
+    await writeReviewFolder(specDir, ulid, { title: "Zero Summary Review" });
+    await fs.writeFile(
+      path.join(specDir, "reviews", ulid, "resources.yaml"),
+      yamlStringify({ resources: [] }),
+      "utf-8",
+    );
+    const entry = { ...makeIndexEntry(ulid, "Zero Summary Review") };
+    entry.resource_summary = { count: 0, total_bytes: 0 };
+    await writeIndex(specDir, [entry]);
+
+    const result = kspec("review rebuild-index --dry-run --json", root);
+    expect(result.exitCode, `${result.stderr || result.stdout}`).toBe(0);
+    const envelope = JSON.parse(result.stdout);
+    expect(envelope.status).toBe("clean");
+    expect(envelope.changes).toEqual([]);
+    expect(envelope.summary.updated).toBe(0);
+  });
+
+  // AC: @trait-folder-backed-entity-1 ac-semantic-defaults-do-not-drift
+  it("subject key order does not surface as drift", async () => {
+    const ulid = "01SBAAAAAAAAAAAAAAAAAAAAAA";
+    await writeReviewFolder(specDir, ulid, { title: "Subject Order Review" });
+    // makeIndexEntry uses { type, base_commit, head_commit } subject order.
+    // Write the same logical subject in a different key order — the
+    // canonical-order equality check must treat both as equal so
+    // legacy-shaped index entries do not flag as drift after a YAML round
+    // trip or schema-parse reshuffle.
+    const entry = makeIndexEntry(ulid, "Subject Order Review");
+    entry.subject = { head_commit: "bbbb2222", type: "code", base_commit: "aaaa1111" };
+    await writeIndex(specDir, [entry]);
+
+    const result = kspec("review rebuild-index --dry-run --json", root);
+    expect(result.exitCode, `${result.stderr || result.stdout}`).toBe(0);
+    const envelope = JSON.parse(result.stdout);
+    expect(envelope.status).toBe("clean");
+    expect(envelope.changes).toEqual([]);
+  });
 });
 
 // ── Post-Mutation Index Consistency via CLI ──────────────────────────────────

@@ -251,6 +251,7 @@ export function toIndexEntry(
  * Compare two index entries for equality on the bounded indexed-field set.
  *
  * AC: @trait-folder-backed-entity-1 ac-index-excludes-heavy-detail-bytes
+ * AC: @trait-folder-backed-entity-1 ac-semantic-defaults-do-not-drift
  */
 export function indexEntriesEqual(a: Record<string, unknown>, b: Record<string, unknown>): boolean {
   if (
@@ -262,12 +263,28 @@ export function indexEntriesEqual(a: Record<string, unknown>, b: Record<string, 
   ) {
     return false;
   }
-  // resource_summary is a nested object; compare structurally.
-  const ra = a.resource_summary as PlanResourceSummary | undefined;
-  const rb = b.resource_summary as PlanResourceSummary | undefined;
-  if (ra === undefined && rb === undefined) return true;
-  if (ra === undefined || rb === undefined) return false;
-  return ra.count === rb.count && ra.total_bytes === rb.total_bytes;
+  // resource_summary is a nested object; compare structurally. An omitted
+  // summary and an explicit `{count:0, total_bytes:0}` summary describe the
+  // same empty state — treat them as semantically equal so a freshly
+  // migrated index entry (no summary) and a rebuilt entry (zero-resource
+  // summary computed from an empty `resources.yaml`) do not flap as drift.
+  return resourceSummariesEqual(
+    a.resource_summary as PlanResourceSummary | undefined,
+    b.resource_summary as PlanResourceSummary | undefined,
+  );
+}
+
+function isEmptyResourceSummary(s: PlanResourceSummary | undefined): boolean {
+  return s === undefined || (s.count === 0 && s.total_bytes === 0);
+}
+
+function resourceSummariesEqual(
+  a: PlanResourceSummary | undefined,
+  b: PlanResourceSummary | undefined,
+): boolean {
+  if (isEmptyResourceSummary(a) && isEmptyResourceSummary(b)) return true;
+  if (a === undefined || b === undefined) return false;
+  return a.count === b.count && a.total_bytes === b.total_bytes;
 }
 
 // ── Core / Notes / Document File Helpers ────────────────────────────────────
