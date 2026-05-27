@@ -10972,7 +10972,7 @@ workspaces:
         head: 14e353c2e7351e94d145b6132aec06cc14f6c3b7
         last_seen_at: 2026-05-27T04:16:31.708Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-promote-folder-backed-index-consistency-trait-01kskqxh
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 14e353c2e7351e94d145b6132aec06cc14f6c3b7
     bootstrap:
       status: succeeded
@@ -11438,12 +11438,12 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-05-27T06:41:09.961Z
+      updated_at: 2026-05-27T06:41:14.504Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-27T06:41:09.961Z
+      updated_at: 2026-05-27T06:41:14.504Z
     integration:
       status: merged
       detail: integration:merged
@@ -11451,7 +11451,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 14e353c2e7351e94d145b6132aec06cc14f6c3b7
-      updated_at: 2026-05-27T06:41:09.961Z
+      updated_at: 2026-05-27T06:41:14.504Z
     lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KSKQXJ0Y6N159MWY81JE852J"
@@ -11459,9 +11459,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-27T06:25:36.378Z
-      last_reconciled_at: 2026-05-27T06:41:09.961Z
+      last_reconciled_at: 2026-05-27T06:41:14.504Z
       created_at: 2026-05-27T04:31:23.589Z
-      updated_at: 2026-05-27T06:41:09.961Z
+      updated_at: 2026-05-27T06:41:14.504Z
     workspace_id: dispatch-workspace-01KSKQXJ0Y6N159MWY81JE852J
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
