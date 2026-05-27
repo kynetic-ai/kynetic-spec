@@ -261,6 +261,123 @@ describe("kspec plan rebuild-index", () => {
     expect(result.exitCode).not.toBe(0);
     expect(result.stderr).toMatch(/--force can only be used with --repair/);
   });
+
+  // ── Repair Convergence ─────────────────────────────────────────────────────
+  //
+  // After `--repair` rewrites the index from authoritative folder content,
+  // the immediate follow-up dry-run with no intervening mutation MUST
+  // report no changes. Without this contract, operators cannot tell apart
+  // a genuinely-broken layout from spurious projection churn.
+
+  // AC: @trait-folder-backed-entity-1 ac-index-repair-converges
+  it("repair followed by dry-run reports clean and exits 0", async () => {
+    const ulid = "01CVAAAAAAAAAAAAAAAAAAAAAA";
+    await writePlanFolder(specDir, ulid, { title: "Converge" });
+    // Seed the index with a drifted title so repair has real work to do.
+    await writeIndex(specDir, [
+      {
+        _ulid: ulid,
+        slugs: [],
+        title: "Drifted Title",
+        status: "draft",
+        derived_tasks: [],
+        derived_specs: [],
+        created_at: "2026-05-23T10:00:00Z",
+        notes_count: 0,
+      },
+    ]);
+
+    const repair = kspec("plan rebuild-index --repair --json", root);
+    expect(repair.exitCode).toBe(0);
+    const repairEnvelope = JSON.parse(repair.stdout);
+    expect(repairEnvelope.status).toBe("repaired");
+    expect(repairEnvelope.summary.updated).toBe(1);
+
+    // Immediate follow-up dry-run with no intervening mutation. Convergence
+    // means the rewritten index agrees with the folder authority.
+    const dryRun = kspec("plan rebuild-index --dry-run --json", root);
+    expect(dryRun.exitCode, `${dryRun.stderr || dryRun.stdout}`).toBe(0);
+    const dryEnvelope = JSON.parse(dryRun.stdout);
+    expect(dryEnvelope.status).toBe("clean");
+    expect(dryEnvelope.changes).toEqual([]);
+    expect(dryEnvelope.conflicts).toEqual([]);
+  });
+
+  // ── Semantic Defaults Do Not Drift ────────────────────────────────────────
+  //
+  // An indexed optional field has multiple equivalent persisted forms — an
+  // omitted entry and an explicit empty default. Drift detection MUST
+  // treat these forms as equal so the same entry does not flag as
+  // "updated" on every dry-run rebuild.
+
+  // AC: @trait-folder-backed-entity-1 ac-semantic-defaults-do-not-drift
+  it("an index entry without resource_summary equals a folder with empty resources.yaml", async () => {
+    const ulid = "01SDAAAAAAAAAAAAAAAAAAAAAA";
+    await writePlanFolder(specDir, ulid, { title: "Empty Resources Plan" });
+    // Write an explicit empty resources.yaml — this is what migration and
+    // upgrade produce. The lean index entry below OMITS resource_summary
+    // (the canonical bounded-projection form for a resourceless plan).
+    await fs.writeFile(
+      path.join(specDir, "plans", ulid, "resources.yaml"),
+      yamlStringify({ resources: [] }),
+      "utf-8",
+    );
+    await writeIndex(specDir, [
+      {
+        _ulid: ulid,
+        slugs: [],
+        title: "Empty Resources Plan",
+        status: "draft",
+        derived_tasks: [],
+        derived_specs: [],
+        created_at: "2026-05-23T10:00:00Z",
+        notes_count: 0,
+        // resource_summary omitted on purpose — the rebuild path will
+        // compute `{count:0, total_bytes:0}` from the empty manifest,
+        // which is semantically equal to the omitted form.
+      },
+    ]);
+
+    const result = kspec("plan rebuild-index --dry-run --json", root);
+    expect(result.exitCode, `${result.stderr || result.stdout}`).toBe(0);
+    const envelope = JSON.parse(result.stdout);
+    expect(envelope.status).toBe("clean");
+    expect(envelope.changes).toEqual([]);
+    expect(envelope.summary.updated).toBe(0);
+  });
+
+  // AC: @trait-folder-backed-entity-1 ac-semantic-defaults-do-not-drift
+  it("an index entry with resource_summary {count:0,total_bytes:0} equals an entry with the field omitted", async () => {
+    const ulid = "01SCAAAAAAAAAAAAAAAAAAAAAA";
+    await writePlanFolder(specDir, ulid, { title: "Zero Summary Plan" });
+    await fs.writeFile(
+      path.join(specDir, "plans", ulid, "resources.yaml"),
+      yamlStringify({ resources: [] }),
+      "utf-8",
+    );
+    // Persist the explicit zero summary form — this is what a fresh
+    // rebuild would emit.
+    await writeIndex(specDir, [
+      {
+        _ulid: ulid,
+        slugs: [],
+        title: "Zero Summary Plan",
+        status: "draft",
+        derived_tasks: [],
+        derived_specs: [],
+        created_at: "2026-05-23T10:00:00Z",
+        notes_count: 0,
+        resource_summary: { count: 0, total_bytes: 0 },
+      },
+    ]);
+
+    const result = kspec("plan rebuild-index --dry-run --json", root);
+    expect(result.exitCode, `${result.stderr || result.stdout}`).toBe(0);
+    const envelope = JSON.parse(result.stdout);
+    expect(envelope.status).toBe("clean");
+    expect(envelope.changes).toEqual([]);
+    expect(envelope.summary.updated).toBe(0);
+  });
 });
 
 // ── Post-Mutation Index Consistency via CLI ──────────────────────────────────

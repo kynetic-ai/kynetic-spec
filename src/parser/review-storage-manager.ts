@@ -46,6 +46,7 @@ import { withFileLock } from "./file-lock.js";
 import {
   type FolderBackedEntityLayout,
   arraysSemanticallyEqual,
+  objectsStructurallyEqual,
   getEntityDir,
   getEntityFilePath,
   getEntityIndexPath,
@@ -249,6 +250,7 @@ export function toIndexEntry(
  * Compare two index entries for equality on the bounded indexed-field set.
  *
  * AC: @trait-folder-backed-entity-1 ac-index-excludes-heavy-detail-bytes
+ * AC: @trait-folder-backed-entity-1 ac-semantic-defaults-do-not-drift
  */
 export function indexEntriesEqual(a: Record<string, unknown>, b: Record<string, unknown>): boolean {
   const scalarFields = INDEXED_FIELDS.filter(
@@ -263,15 +265,38 @@ export function indexEntriesEqual(a: Record<string, unknown>, b: Record<string, 
   // an omitted entry and an explicit `[]` round-trip without surfacing
   // spurious drift.
   // AC: @trait-folder-backed-entity-1 ac-semantic-defaults-do-not-drift
-  if (JSON.stringify(a.subject) !== JSON.stringify(b.subject)) return false;
+  // subject is a discriminated-union object — compare structurally with
+  // canonical key ordering so a migrated index entry (key order from the
+  // legacy monolithic source) and a rebuilt entry (key order from the
+  // schema-shaped projection) compare equal when they describe the same
+  // state.
+  // AC: @trait-folder-backed-entity-1 ac-semantic-defaults-do-not-drift
+  if (!objectsStructurallyEqual(a.subject, b.subject)) return false;
   if (!arraysSemanticallyEqual(a.external_links, b.external_links)) {
     return false;
   }
-  const ra = a.resource_summary as ReviewResourceSummary | undefined;
-  const rb = b.resource_summary as ReviewResourceSummary | undefined;
-  if (ra === undefined && rb === undefined) return true;
-  if (ra === undefined || rb === undefined) return false;
-  return ra.count === rb.count && ra.total_bytes === rb.total_bytes;
+  // resource_summary uses semantic-default equality so an omitted summary
+  // (the canonical bounded-projection shape for a resourceless review) and
+  // an explicit `{count:0, total_bytes:0}` describe the same empty state.
+  // Migration emits the omitted form; rebuild emits the zero-summary form;
+  // both round-trip without spurious drift.
+  return resourceSummariesEqual(
+    a.resource_summary as ReviewResourceSummary | undefined,
+    b.resource_summary as ReviewResourceSummary | undefined,
+  );
+}
+
+function isEmptyResourceSummary(s: ReviewResourceSummary | undefined): boolean {
+  return s === undefined || (s.count === 0 && s.total_bytes === 0);
+}
+
+function resourceSummariesEqual(
+  a: ReviewResourceSummary | undefined,
+  b: ReviewResourceSummary | undefined,
+): boolean {
+  if (isEmptyResourceSummary(a) && isEmptyResourceSummary(b)) return true;
+  if (a === undefined || b === undefined) return false;
+  return a.count === b.count && a.total_bytes === b.total_bytes;
 }
 
 // ── Detail File Helpers ─────────────────────────────────────────────────────
