@@ -1,0 +1,123 @@
+_ulid: 01KSKQXHM9FS7HX58MWZ8NECNW
+slugs:
+  - task-promote-folder-backed-index-consistency-trait
+title: Promote folder-backed index consistency into the shared trait contract
+type: task
+description: >
+  What:
+
+  - Update the existing shared trait `@trait-folder-backed-entity-1`, not a
+    new duplicate trait, so the task, plan, review, and future folder-backed
+    storage contracts inherit one common index-consistency rule.
+  - Add these acceptance criteria to `@trait-folder-backed-entity-1` with the
+    exact ids and wording below:
+
+    `ac-index-entry-created-with-folder`
+    Given: A folder-backed entity is created
+    When: The creation is persisted
+    Then: The entity directory, authoritative sidecar files, and bounded index
+    entry are written in the same logical atomic mutation
+
+    `ac-indexed-mutation-updates-index`
+    Given: A persisted folder-backed entity changes any field, count, derived
+    summary, relationship, lifecycle value, or resource metadata that belongs
+    in that entity type's bounded index projection
+    When: The mutation is persisted
+    Then: The authoritative sidecar update and the corresponding index entry
+    update are committed as one logical atomic mutation
+
+    `ac-index-repair-converges`
+    Given: A folder-backed entity index has drifted from authoritative entity
+    folders
+    When: an index repair successfully rewrites the index and no later entity
+    mutation occurs
+    Then: A subsequent dry-run rebuild reports no index changes
+
+    `ac-semantic-defaults-do-not-drift`
+    Given: An indexed optional field has equivalent persisted forms such as an
+    omitted value and an empty default collection
+    When: Index drift is computed or an index repair is verified
+    Then: The semantically equivalent forms are treated as equal and do not
+    produce repeated update drift
+
+  - Add `@trait-folder-backed-entity-1` directly to the traits list for:
+    `@task-directory-storage`, `@task-index-file`,
+    `@folder-backed-plan-storage-1`, and `@folder-backed-review-storage-1`.
+    Preserve any existing traits on those specs.
+  - Keep the current task-specific task storage ACs intact, especially
+    `@task-index-file ac-2`, `@task-index-file ac-5`,
+    `@task-atomic-writes ac-1`, `@task-atomic-writes ac-3`, and
+    `@task-atomic-writes ac-4`; those are the concrete task behavior that the
+    shared trait is generalizing.
+  - Set implementation status to `in_progress` with `--no-cascade` for
+    `@trait-folder-backed-entity-1`, `@task-directory-storage`,
+    `@task-index-file`, `@folder-backed-plan-storage-1`, and
+    `@folder-backed-review-storage-1` because this task adds stricter
+    requirements that are not yet proven by implementation evidence.
+  - Use one atomic `kspec batch` payload for the spec/trait/status changes.
+
+
+  Why:
+
+  Task storage already specifies that indexed task changes update
+
+  `project.tasks.yaml` in the same atomic action as the per-task directory
+
+  update. Plans and reviews now use the same folder/index pattern, so their
+
+  contracts should inherit the same invariant instead of relying on
+
+  rebuild-index as normal maintenance.
+
+
+  How:
+
+  - Inspect the current specs first with:
+    `KSPEC_NO_DAEMON=1 kspec item get @trait-folder-backed-entity-1`
+    `KSPEC_NO_DAEMON=1 kspec item get @task-index-file`
+    `KSPEC_NO_DAEMON=1 kspec item get @task-atomic-writes`
+    `KSPEC_NO_DAEMON=1 kspec item get @folder-backed-plan-storage-1`
+    `KSPEC_NO_DAEMON=1 kspec item get @folder-backed-review-storage-1`
+  - Create `/tmp/folder-backed-index-consistency-spec-updates.json` containing
+    the `item ac add` and `item set --add-trait` / `item set --status`
+    operations, then run:
+    `KSPEC_NO_DAEMON=1 kspec batch --dry-run --file /tmp/folder-backed-index-consistency-spec-updates.json`
+    `KSPEC_NO_DAEMON=1 kspec batch --file /tmp/folder-backed-index-consistency-spec-updates.json`
+  - If any of the AC ids already exist, use `kspec item ac set` in the same
+    batch payload to make the final text exactly match this task instead of
+    creating duplicate ACs.
+
+  Testing:
+
+  - Verify every added AC appears under `@trait-folder-backed-entity-1` with
+    the exact id and final text.
+  - Verify each target spec includes `@trait-folder-backed-entity-1` exactly
+    once in its trait list.
+  - Run `KSPEC_NO_DAEMON=1 kspec validate --warnings-ok` and treat a zero exit
+    code as success even if unrelated warnings are printed.
+
+  Covers: @trait-folder-backed-entity-1 ac-index-entry-created-with-folder,
+
+  ac-indexed-mutation-updates-index, ac-index-repair-converges,
+
+  ac-semantic-defaults-do-not-drift; @task-index-file ac-2, ac-5;
+
+  @task-atomic-writes ac-1, ac-3, ac-4
+spec_ref: "@trait-folder-backed-entity-1"
+plan_ref: "@plan-folder-backed-index-consistency-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - specs
+  - storage
+  - folder-backed
+  - tasks
+  - plans
+  - reviews
+vcs_refs: []
+created_at: 2026-05-27T03:33:42.153Z
+todos: []

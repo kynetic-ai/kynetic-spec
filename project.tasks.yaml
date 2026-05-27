@@ -29980,3 +29980,108 @@
   submitted_at: 2026-05-26T23:12:41.089Z
   completed_at: 2026-05-26T23:32:31.655Z
   automation: eligible
+- _ulid: 01KSKQXHM9FS7HX58MWZ8NECNW
+  slugs:
+    - task-promote-folder-backed-index-consistency-trait
+  title: Promote folder-backed index consistency into the shared trait contract
+  type: task
+  spec_ref: "@trait-folder-backed-entity-1"
+  plan_ref: "@plan-folder-backed-index-consistency-hardening"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - specs
+    - storage
+    - folder-backed
+    - tasks
+    - plans
+    - reviews
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-27T03:33:42.153Z
+- _ulid: 01KSKQXJ0Y6N159MWY81JE852J
+  slugs:
+    - task-add-folder-index-consistency-regressions
+  title: Add red tests for plan and review index consistency after every folder mutation
+  type: task
+  spec_ref: "@trait-folder-backed-entity-1"
+  plan_ref: "@plan-folder-backed-index-consistency-hardening"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-promote-folder-backed-index-consistency-trait"
+  priority: 1
+  tags:
+    - testing
+    - storage
+    - folder-backed
+    - plans
+    - reviews
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-27T03:33:42.558Z
+- _ulid: 01KSKQXJGJQ2R0NBJ426JQ0039
+  slugs:
+    - task-implement-folder-index-consistency-mutators
+  title: Make plan and review folder mutators update indexes atomically
+  type: task
+  spec_ref: "@trait-folder-backed-entity-1"
+  plan_ref: "@plan-folder-backed-index-consistency-hardening"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-add-folder-index-consistency-regressions"
+  priority: 1
+  tags:
+    - storage
+    - folder-backed
+    - plans
+    - reviews
+    - atomicity
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-27T03:33:43.058Z
+- _ulid: 01KSKQXK3M631HWMVT0E61MQ3Q
+  slugs:
+    - task-harden-folder-index-upgrade-idempotence-coverage
+  title: Harden upgrade and rebuild-index idempotence coverage across tasks plans and reviews
+  type: task
+  spec_ref: "@trait-folder-backed-entity-1"
+  plan_ref: "@plan-folder-backed-index-consistency-hardening"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-implement-folder-index-consistency-mutators"
+  priority: 2
+  tags:
+    - testing
+    - upgrade
+    - migration
+    - storage
+    - clean-room
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-27T03:33:43.668Z
+- _ulid: 01KSKQXKH6JMDJP8G67ESNB4D0
+  slugs:
+    - task-validate-folder-index-consistency-hardening
+  title: Run final quality gates and reconcile spec implementation evidence
+  type: task
+  spec_ref: "@trait-folder-backed-entity-1"
+  plan_ref: "@plan-folder-backed-index-consistency-hardening"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-harden-folder-index-upgrade-idempotence-coverage"
+  priority: 3
+  tags:
+    - validation
+    - lint
+    - format
+    - build
+    - storage
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-27T03:33:44.102Z

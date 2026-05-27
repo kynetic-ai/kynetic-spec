@@ -1,0 +1,86 @@
+_ulid: 01KSKQXK3M631HWMVT0E61MQ3Q
+slugs:
+  - task-harden-folder-index-upgrade-idempotence-coverage
+title: Harden upgrade and rebuild-index idempotence coverage across tasks plans and reviews
+type: task
+description: >
+  What:
+
+  - Extend `tests/upgrade-folder-storage.test.ts` and the plan/review
+    rebuild-index suites so migration and repair paths prove convergence for
+    tasks, plans, and reviews together.
+  - Add or strengthen tests for these cases:
+    - legacy monolithic plan and review records migrate to folder storage;
+    - immediate `plan rebuild-index --dry-run` and
+      `review rebuild-index --dry-run` after migration report no drift;
+    - `plan rebuild-index --repair` followed by dry-run is clean;
+    - `review rebuild-index --repair` followed by dry-run is clean;
+    - a fresh `kspec init --setup` project using `kynetic: "1.2"` and folder
+      storage remains clean after representative task, plan, review, and
+      resource mutations;
+    - absent optional fields and empty default collections do not cause
+      repeated drift reports.
+  - Add one CLI-level temp-project smoke test that mirrors the real operator
+    workflow without touching live repos:
+    `kspec upgrade --force --dry-run`, `kspec upgrade --force`,
+    `kspec plan rebuild-index --dry-run`,
+    `kspec review rebuild-index --dry-run`,
+    representative plan/review mutations, and final dry-run rebuilds.
+  - Ensure every migration/rebuild test uses temp directories, fixtures, or
+    disposable clones. The tests must never mutate active self-hosting repos
+    such as `~/Projects/kynetic-spec` or `~/Projects/kynetic-spec-dispatch`.
+
+  Why:
+
+  The earlier migration slice proved that folder indexes can be rebuilt, but
+
+  did not prove repair convergence or post-mutation cleanliness across all
+
+  entity types. This task turns the clean-room failure mode into durable
+
+  regression evidence.
+
+
+  How:
+
+  - Reuse existing upgrade helpers rather than shelling out when a direct CLI
+    helper already exists in `tests/upgrade-folder-storage.test.ts`.
+  - For command-level smoke, set `KSPEC_NO_DAEMON=1` in the spawned process
+    environment so daemon state cannot mask filesystem results.
+  - Assert exit codes, not just stdout text. A clean dry-run rebuild must exit
+    zero and report no pending changes.
+  - Keep protected-project tripwire assertions from the existing migration
+    tests intact.
+
+  Testing:
+
+  - Run:
+    `npm test -- --fresh tests/upgrade-folder-storage.test.ts tests/plan-rebuild-index.test.ts tests/review-rebuild-index.test.ts tests/task-data-manager.test.ts`
+  - Run `npm run build` if CLI smoke tests execute built `dist/cli/index.js`.
+
+
+  Covers: @trait-folder-backed-entity-1 ac-index-rebuilds-from-folders,
+
+  ac-index-repair-converges, ac-semantic-defaults-do-not-drift;
+
+  @single-command-version-upgrade ac-runs-task-storage-migration,
+
+  ac-idempotent-when-current, ac-dry-run-no-writes
+spec_ref: "@trait-folder-backed-entity-1"
+plan_ref: "@plan-folder-backed-index-consistency-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-implement-folder-index-consistency-mutators"
+context: []
+priority: 2
+tags:
+  - testing
+  - upgrade
+  - migration
+  - storage
+  - clean-room
+vcs_refs: []
+created_at: 2026-05-27T03:33:43.668Z
+todos: []

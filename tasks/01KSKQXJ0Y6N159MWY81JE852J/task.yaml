@@ -1,0 +1,106 @@
+_ulid: 01KSKQXJ0Y6N159MWY81JE852J
+slugs:
+  - task-add-folder-index-consistency-regressions
+title: Add red tests for plan and review index consistency after every folder mutation
+type: task
+description: >
+  What:
+
+  - Add failing-before-fix regression coverage for plan and review folder
+    mutations that currently can leave `project.plans.yaml` or
+    `project.reviews.yaml` out of sync until a rebuild is run.
+  - Extend the existing focused suites instead of creating a hidden one-off
+    harness:
+    - `tests/plan-rebuild-index.test.ts`
+    - `tests/review-rebuild-index.test.ts`
+    - `tests/parser-plans-folder.test.ts`
+    - `tests/parser-reviews-folder.test.ts`
+    - CLI suites only where a behavior is exposed only through CLI commands,
+      such as `tests/cli-plan-resource.test.ts` and
+      `tests/review-resource-cli.test.ts`.
+  - Cover these plan operations in a temp project configured for folder-backed
+    storage:
+    - create/import a plan and immediately dry-run rebuild the plan index;
+    - import a plan document with sibling `resources.yaml` metadata plus
+      `resources/` files, then immediately run
+      `kspec plan rebuild-index --dry-run` and assert `resource_summary` has
+      no drift before any repair;
+    - mutate indexed metadata such as status, derived refs, branch, or module;
+    - add and clear notes so `notes_count` is reflected or removed;
+    - add, replace, and delete a plan local resource so `resource_summary`
+      stays current.
+  - Cover these review operations in a temp project configured for
+    folder-backed storage:
+    - create a review and immediately dry-run rebuild the review index;
+    - add a thread/comment, add a check, add a verdict, close or reopen when
+      the command/API supports it, and verify the index counts/disposition;
+    - add, replace, and delete a review local resource so `resource_summary`
+      stays current;
+    - include a review whose detail file has `external_links: []` while the
+      index omits `external_links`, then prove repair converges.
+  - Add a small task baseline assertion showing the existing task data manager
+    already satisfies the same trait after `task add`, `task set`, task note,
+    and task delete flows. Put it in `tests/task-data-manager.test.ts` unless
+    an existing task CLI regression suite is a narrower fit.
+  - Each new assertion must run `rebuild-index --dry-run` after the mutating
+    operation and assert zero drift without first running repair.
+
+  Why:
+
+  These tests pin the user-facing invariant before implementation work: every
+
+  normal mutator must keep the bounded index current in the same action that
+
+  updates the folder sidecar. Rebuild-index remains a recovery tool, not the
+
+  expected follow-up after normal commands.
+
+
+  How:
+
+  - Reuse existing temp-project helpers and fixture ULID helpers from the
+    listed test files.
+  - Prefer public CLI commands for command-surface guarantees and direct
+    storage-manager calls for low-level mutation invariants.
+  - Mark new test snippets with `// AC:` comments for the exact trait ACs and
+    the concrete plan/review storage ACs they prove.
+  - Do not run these tests against `~/Projects/kynetic-spec` or
+    `~/Projects/kynetic-spec-dispatch` as live migration targets. Use temp
+    directories or disposable fixture projects only.
+
+  Testing:
+
+  - First run the new focused tests and confirm at least one plan/review case
+    fails against the current implementation.
+  - After the implementation task, run:
+    `npm test -- --fresh tests/plan-rebuild-index.test.ts tests/review-rebuild-index.test.ts tests/parser-plans-folder.test.ts tests/parser-reviews-folder.test.ts tests/task-data-manager.test.ts`
+  - If CLI resource coverage was added, also run:
+    `npm test -- --fresh tests/cli-plan-resource.test.ts tests/review-resource-cli.test.ts`
+
+  Covers: @trait-folder-backed-entity-1 ac-index-entry-created-with-folder,
+
+  ac-indexed-mutation-updates-index, ac-index-repair-converges,
+
+  ac-semantic-defaults-do-not-drift; @folder-backed-plan-storage-1
+
+  ac-plan-index-has-bounded-projection; @folder-backed-review-storage-1
+
+  ac-review-index-has-bounded-projection; @task-index-file ac-2, ac-5
+spec_ref: "@trait-folder-backed-entity-1"
+plan_ref: "@plan-folder-backed-index-consistency-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-promote-folder-backed-index-consistency-trait"
+context: []
+priority: 1
+tags:
+  - testing
+  - storage
+  - folder-backed
+  - plans
+  - reviews
+vcs_refs: []
+created_at: 2026-05-27T03:33:42.558Z
+todos: []

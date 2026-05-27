@@ -1,0 +1,84 @@
+_ulid: 01KSKQXKH6JMDJP8G67ESNB4D0
+slugs:
+  - task-validate-folder-index-consistency-hardening
+title: Run final quality gates and reconcile spec implementation evidence
+type: task
+description: >
+  What:
+
+  - Run the complete quality and formatting gates for the folder-backed index
+    consistency hardening work.
+  - Verify the updated specs, code comments, and tests carry accurate `// AC:`
+    annotations for the trait and concrete plan/review/task ACs.
+  - Re-run focused CLI temp-project smoke after the full build to ensure the
+    built CLI has the same clean index behavior as the TypeScript test path.
+  - Once all tests and smoke checks pass, set implementation status back to
+    `implemented` with `--no-cascade` for these specs:
+    `@trait-folder-backed-entity-1`, `@task-directory-storage`,
+    `@task-index-file`, `@folder-backed-plan-storage-1`, and
+    `@folder-backed-review-storage-1`.
+  - Add concise spec notes to the same refs summarizing the evidence commands
+    and the fact that normal mutators keep indexes clean without repair.
+
+  Why:
+
+  The plan tightens an already-implemented storage contract. Status should
+
+  not return to implemented until the code, tests, and built CLI all prove the
+
+  stronger trait applies consistently across tasks, plans, and reviews.
+
+
+  How:
+
+  - Run formatting before format check:
+    `npm run format`
+    `npm run format:check`
+  - Run quality gates:
+    `npm run lint`
+    `npm run typecheck`
+    `npm run build`
+  - Run focused storage tests:
+    `npm test -- --fresh tests/task-data-manager.test.ts tests/plan-rebuild-index.test.ts tests/review-rebuild-index.test.ts tests/parser-plans-folder.test.ts tests/parser-reviews-folder.test.ts tests/plan-folder-migration.test.ts tests/review-folder-migration.test.ts tests/upgrade-folder-storage.test.ts`
+  - Run any CLI resource suites touched by the implementation:
+    `npm test -- --fresh tests/cli-plan-resource.test.ts tests/review-resource-cli.test.ts`
+  - Use an atomic `kspec batch` for final spec status/note updates after all
+    evidence is green.
+
+  Testing:
+
+  - The listed commands are the required evidence for this task.
+
+  - If any command fails, leave the relevant specs `in_progress`, document the
+    failing command and first failing assertion in a task note, and do not
+    claim the strengthened trait is implemented.
+
+  Covers: @trait-folder-backed-entity-1 ac-index-entry-created-with-folder,
+
+  ac-indexed-mutation-updates-index, ac-index-repair-converges,
+
+  ac-semantic-defaults-do-not-drift; @task-data-manager ac-4;
+
+  @task-index-file ac-2, ac-5, ac-7; @folder-backed-plan-storage-1
+
+  ac-plan-index-has-bounded-projection; @folder-backed-review-storage-1
+
+  ac-review-index-has-bounded-projection
+spec_ref: "@trait-folder-backed-entity-1"
+plan_ref: "@plan-folder-backed-index-consistency-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-harden-folder-index-upgrade-idempotence-coverage"
+context: []
+priority: 3
+tags:
+  - validation
+  - lint
+  - format
+  - build
+  - storage
+vcs_refs: []
+created_at: 2026-05-27T03:33:44.102Z
+todos: []

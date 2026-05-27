@@ -1,0 +1,103 @@
+_ulid: 01KSKQXJGJQ2R0NBJ426JQ0039
+slugs:
+  - task-implement-folder-index-consistency-mutators
+title: Make plan and review folder mutators update indexes atomically
+type: task
+description: >
+  What:
+
+  - Update plan and review storage so every operation that writes an
+    authoritative folder sidecar also updates the bounded index entry within
+    the same logical buffered mutation when indexed data changes.
+  - Audit and fix every public mutating path that can write plan/review folder
+    data, including:
+    - plan import/create, plan set/status changes, plan note changes, plan
+      derive output, plan branch metadata, plan delete;
+    - plan resource add/replace/delete, import-time sibling resource
+      persistence through `persistPlanResourcesFromSibling(...)`, and any
+      API/static helper that mutates `resources.yaml`;
+    - review add/create, review comment/thread changes, review check changes,
+      review verdict changes, review lifecycle changes, review delete;
+    - review resource add/replace/delete and any API/static helper that
+      mutates `resources.yaml`.
+  - Normalize index equality for semantically equivalent optional/default
+    values. At minimum, `external_links` omitted from an index entry and
+    `external_links: []` in a review detail file must compare equal so
+    `review rebuild-index --repair` converges.
+  - Ensure resource-summary updates are not missed. If a resource manager
+    writes `resources.yaml` directly, route that write through the owning
+    plan/review storage manager or add an owner-specific index refresh inside
+    the same write buffer.
+  - Keep rebuild-index as a recovery/repair path. Do not make normal CLI/API
+    mutators call rebuild-index after the fact as their consistency strategy.
+  - Preserve existing wrapper keys and unknown sibling data in
+    `project.plans.yaml`, `project.reviews.yaml`, and entity detail sidecars.
+
+  Why:
+
+  The folder sidecar and bounded index are one logical storage record. If a
+
+  mutator updates only the folder, list/dashboard/API consumers can see stale
+
+  state until a manual rebuild runs; if repair repeatedly reports the same
+
+  drift, operators cannot distinguish real damage from false drift.
+
+
+  How:
+
+  - Use `src/parser/task-data-manager.ts` and the split backend as the model:
+    callers submit mutations; the storage layer coordinates all affected
+    files and the shadow commit.
+  - Update `src/parser/folder-backed-entity.ts` only for reusable equality,
+    projection, or write-buffer helpers that are genuinely shared by plan and
+    review storage. Keep plan/review-specific projection field lists in their
+    existing managers.
+  - Update `src/parser/plan-storage-manager.ts` and
+    `src/parser/review-storage-manager.ts` so `save*`, `mutate*`, delete, and
+    resource-summary refresh paths cannot bypass index updates.
+  - If plan/review resource managers currently bypass these storage managers,
+    change those managers to accept an owner index-refresh callback or call a
+    small exported `refreshPlanIndexEntry` / `refreshReviewIndexEntry` helper
+    that runs inside the same active write buffer.
+  - Keep locks scoped so concurrent mutations for the same index cannot
+    interleave partial writes.
+
+  Testing:
+
+  - Run the tests added by `@task-add-folder-index-consistency-regressions`
+    and confirm the red cases now pass.
+  - Run existing related suites:
+    `npm test -- --fresh tests/plan-rebuild-index.test.ts tests/review-rebuild-index.test.ts tests/parser-plans-folder.test.ts tests/parser-reviews-folder.test.ts tests/plan-folder-migration.test.ts tests/review-folder-migration.test.ts tests/upgrade-folder-storage.test.ts`
+  - Run `npm run typecheck`.
+
+
+  Covers: @trait-folder-backed-entity-1 ac-index-entry-created-with-folder,
+
+  ac-indexed-mutation-updates-index, ac-semantic-defaults-do-not-drift;
+
+  @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection,
+
+  ac-plan-delete-removes-owned-folder; @folder-backed-review-storage-1
+
+  ac-review-index-has-bounded-projection, ac-review-delete-removes-owned-folder;
+
+  @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+spec_ref: "@trait-folder-backed-entity-1"
+plan_ref: "@plan-folder-backed-index-consistency-hardening"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-add-folder-index-consistency-regressions"
+context: []
+priority: 1
+tags:
+  - storage
+  - folder-backed
+  - plans
+  - reviews
+  - atomicity
+vcs_refs: []
+created_at: 2026-05-27T03:33:43.058Z
+todos: []
