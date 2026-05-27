@@ -55708,7 +55708,7 @@ runs:
     started_at: 2026-05-27T07:29:03.535Z
     completed_at: 2026-05-27T07:31:19.436Z
   - _ulid: 01KSM8SWKQAA5BRXM3X0AQTHRC
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -55763,10 +55763,15 @@ runs:
         completed_at: 2026-05-27T08:31:00.424Z
         notes: Discussion/capture approval not available inside the CLI workflow run. Candidate improvement
           will be reported to the user instead of being captured automatically.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-27T08:31:00.424Z
-        completed_at: 2026-05-27T08:31:00.424Z
+        completed_at: 2026-05-27T08:31:09.466Z
+        notes: No items captured. Existing coverage already tracks validate warning noise, oxlint warning
+          accumulation, detached merge helper behavior, and missing first-class review evidence
+          logs. The only untracked candidate, full fresh suite latency in review gates, needs user
+          approval before capture.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-27T08:28:48.119Z
+    completed_at: 2026-05-27T08:31:09.467Z
