@@ -55314,7 +55314,7 @@ runs:
     started_at: 2026-05-27T04:08:53.907Z
     completed_at: 2026-05-27T04:11:29.995Z
   - _ulid: 01KSKV781A6G1FY9MHCNM790KY
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -55360,10 +55360,14 @@ runs:
         completed_at: 2026-05-27T04:33:32.238Z
         notes: Skipped discussion because there are no untracked improvement proposals to ask about.
           Existing tracked items already cover the actionable friction.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-27T04:33:32.238Z
-        completed_at: 2026-05-27T04:33:32.238Z
+        completed_at: 2026-05-27T04:33:39.717Z
+        notes: No captures created. Search showed the meaningful friction/success patterns from this session
+          already have existing observations or inbox follow-ups, so adding new entries would be
+          duplicate noise.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-27T04:31:25.739Z
+    completed_at: 2026-05-27T04:33:39.717Z
