@@ -30023,6 +30023,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-27T03:33:42.558Z
+  automation: eligible
 - _ulid: 01KSKQXJGJQ2R0NBJ426JQ0039
   slugs:
     - task-implement-folder-index-consistency-mutators
