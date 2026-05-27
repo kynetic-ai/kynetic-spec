@@ -89,7 +89,7 @@ description: >
 spec_ref: "@trait-folder-backed-entity-1"
 plan_ref: "@plan-folder-backed-index-consistency-hardening"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-promote-folder-backed-index-consistency-trait"
@@ -111,7 +111,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: null
+session_id: 01KSKY947TZYMTMXNN6RZV824G
 history:
   - author: Jacob Chapel
     changes:
@@ -170,8 +170,21 @@ history:
         previous: 01KSKV813G34HVR7A62EHV9MQW
     command: review-verdict-needs-work
     timestamp: 2026-05-27T05:20:22.741Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KSKY947TZYMTMXNN6RZV824G
+        previous: null
+      started_at:
+        new: 2026-05-27T05:52:06.326Z
+        previous: 2026-05-27T04:32:31.067Z
+    command: task-start
+    timestamp: 2026-05-27T05:52:06.326Z
 created_at: 2026-05-27T03:33:42.558Z
-started_at: 2026-05-27T04:32:31.067Z
+started_at: 2026-05-27T05:52:06.326Z
 submitted_at: 2026-05-27T04:58:59.433Z
 todos: []
 automation: eligible
