@@ -11974,7 +11974,7 @@ workspaces:
         head: ba68f4e3120b24fcdcb7d2fb780a13ad5c6a0431
         last_seen_at: 2026-05-27T07:11:40.252Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-folder-index-consistency-mutators-01kskqxj
-  - active_role: null
+  - active_role: worker
     base_branch_point: e6133efe15ff35955e7e8c96015dceec12f33909
     bootstrap:
       status: succeeded
@@ -12301,7 +12301,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-27T07:28:24.979Z
+      updated_at: 2026-05-27T07:28:51.054Z
     integration:
       status: pending
       detail: null
@@ -12310,16 +12310,16 @@ workspaces:
       target_branch: dev
       target_commit: e6133efe15ff35955e7e8c96015dceec12f33909
       updated_at: 2026-05-27T07:28:24.979Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KSKQXK3M631HWMVT0E61MQ3Q"
     task_slug: task-harden-folder-index-upgrade-idempotence-coverage
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-05-27T07:28:24.979Z
+      last_active_at: 2026-05-27T07:28:51.054Z
+      last_reconciled_at: 2026-05-27T07:28:51.054Z
       created_at: 2026-05-27T07:28:24.979Z
-      updated_at: 2026-05-27T07:28:50.294Z
+      updated_at: 2026-05-27T07:28:51.054Z
     workspace_id: dispatch-workspace-01KSKQXK3M631HWMVT0E61MQ3Q
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
