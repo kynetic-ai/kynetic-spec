@@ -237551,6 +237551,13 @@ reviews:
           status: pass
           name: review evidence log
         timestamp: 2026-05-27T04:07:16.925Z
+      - _ulid: 01KSKSVMJN7FE5Z93GFQS87YYC
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSKSVJ3D7ZS678AD65EVRF69
+        timestamp: 2026-05-27T04:07:36.789Z
     examined_commit: 14e353c2e7351e94d145b6132aec06cc14f6c3b7
     external_links: []
     lifecycle_state: open
@@ -237560,8 +237567,31 @@ reviews:
       content_hash: ""
       ref: "@01KSKQXHM9FS7HX58MWZ8NECNW"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KSKSVJ3D7ZS678AD65EVRF69
+        anchor:
+          type: structured
+          field: implementation
+          ref: "@trait-entity-scoped-local-resources-1"
+          section: status
+        entries:
+          - _ulid: 01KSKSVJ3E9JM915CADW50PYYG
+            author: Jacob Chapel
+            body: "MUST-FIX: @trait-entity-scoped-local-resources-1 still has implementation status
+              'implemented' while it now inherits the four newly added @trait-folder-backed-entity-1
+              index-consistency ACs. Impact: the spec status now claims the local-resource trait is
+              implemented even though the newly inherited atomic index creation/update, repair
+              convergence, and semantic-default drift requirements are intentionally unproven in
+              this task. Evidence: 'kspec item get @trait-entity-scoped-local-resources-1 --json'
+              shows traits: ['@trait-folder-backed-entity-1'] and status.implementation:
+              'implemented'; 'kspec validate --completeness --warnings-ok' reports missing trait AC
+              coverage for @trait-entity-scoped-local-resources-1 on all four new AC ids. Either
+              remove the folder-backed trait from this trait if it should not inherit index
+              consistency, or mark this trait in_progress alongside the other affected folder-backed
+              contracts."
+            created_at: 2026-05-27T04:07:34.254Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-27T03:46:51.622Z
-    updated_at: 2026-05-27T04:07:14.376Z
+    updated_at: 2026-05-27T04:07:34.254Z
     notes: []
