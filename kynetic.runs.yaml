@@ -55709,7 +55709,7 @@ runs:
     completed_at: 2026-05-27T07:31:19.436Z
   - _ulid: 01KSM8SWKQAA5BRXM3X0AQTHRC
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -55749,7 +55749,18 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-27T08:30:29.175Z
-        completed_at: 2026-05-27T08:30:29.175Z
+        completed_at: 2026-05-27T08:30:38.135Z
+        notes: "Proposal: add a review-gate/test-runner improvement for long full-suite review runs. It
+          would let reviewers preserve merge confidence while reducing wall-clock blocking, likely
+          by formalizing when sharded fresh runs can satisfy the full-suite gate, or by recording
+          content-hash cache evidence from prior equivalent full runs as a first-class required
+          review check. Benefit: keeps 'reviewer owns the merge' rigor while avoiding 30+ minute
+          detached-reviewer sessions after targeted tests are already clean. Scope: medium, because
+          it touches review policy and test-runner/check evidence semantics."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-27T08:30:38.135Z
+        completed_at: 2026-05-27T08:30:38.135Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-27T08:28:48.119Z
