@@ -237965,6 +237965,12 @@ reviews:
         payload:
           thread_ulid: 01KSKXZN68PSJD9KRQ6750VMHK
         timestamp: 2026-05-27T05:50:42.047Z
+      - _ulid: 01KSKZRKS6FGGBAB8DZZ1QJ647
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KSKXZT1H2EXRMTPXFKJW6TWR
+        timestamp: 2026-05-27T05:50:49.126Z
     examined_commit: b5a0fd826978a483b616d687db5059fdf61b57bd
     external_links: []
     lifecycle_state: closed
@@ -238070,6 +238076,14 @@ reviews:
               merged until the implementation makes the added test pass or the red case is moved out
               of the gating suite."
             created_at: 2026-05-27T05:19:47.762Z
+          - _ulid: 01KSKZRJ8KJK0TQE46Y0P2BX7X
+            author: "@claude"
+            body: "Fixed in bd82303404: converted the external_links semantic-default regression at
+              tests/parser-reviews-folder.test.ts to it.fails. Test still fails (red contract pin
+              intact) but vitest treats the expected failure as a pass, so the gating suite is no
+              longer broken. When the implementation task lands the drift-detector semantic-defaults
+              fix, it.fails will flip to a hard failure and prompt conversion back to regular it()."
+            created_at: 2026-05-27T05:50:47.570Z
         kind: blocker
       - _ulid: 01KSKY0BPA2YN4JFCN3P6KH9SV
         entries:
@@ -238098,5 +238112,5 @@ reviews:
         role: reviewer
         created_at: 2026-05-27T05:20:20.181Z
     created_at: 2026-05-27T05:05:02.811Z
-    updated_at: 2026-05-27T05:50:40.399Z
+    updated_at: 2026-05-27T05:50:47.570Z
     notes: []
