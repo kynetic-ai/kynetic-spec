@@ -1336,12 +1336,13 @@ features:
       schema types visible to consumers are unchanged.
     status:
       maturity: draft
-      implementation: implemented
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
     tests: []
-    traits: []
+    traits:
+      - "@trait-folder-backed-entity-1"
     acceptance_criteria:
       - given: |
           A task exists in the system
@@ -1396,12 +1397,13 @@ features:
           authoritative source for full task data.
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        traits: []
+        traits:
+          - "@trait-folder-backed-entity-1"
         acceptance_criteria:
           - given: |
               Tasks exist in the system

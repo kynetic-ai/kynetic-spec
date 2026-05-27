@@ -65,6 +65,28 @@ traits:
           The index can be regenerated from entity folders and sidecar metadata
         when: |
           An index rebuild is requested
+      - given: A folder-backed entity is created
+        id: ac-index-entry-created-with-folder
+        then: The entity directory, authoritative sidecar files, and bounded index entry are written in the
+          same logical atomic mutation
+        when: The creation is persisted
+      - given: A persisted folder-backed entity changes any field, count, derived summary, relationship,
+          lifecycle value, or resource metadata that belongs in that entity type's bounded index
+          projection
+        id: ac-indexed-mutation-updates-index
+        then: The authoritative sidecar update and the corresponding index entry update are committed as one
+          logical atomic mutation
+        when: The mutation is persisted
+      - given: A folder-backed entity index has drifted from authoritative entity folders
+        id: ac-index-repair-converges
+        then: A subsequent dry-run rebuild reports no index changes
+        when: an index repair successfully rewrites the index and no later entity mutation occurs
+      - given: An indexed optional field has equivalent persisted forms such as an omitted value and an
+          empty default collection
+        id: ac-semantic-defaults-do-not-drift
+        then: The semantically equivalent forms are treated as equal and do not produce repeated update
+          drift
+        when: Index drift is computed or an index repair is verified
     tags: []
     created: 2026-05-22T22:36:41.832Z
     notes: []
@@ -1903,13 +1925,14 @@ features:
               threads, checks, verdicts, notes, or events into separate sidecars.
             status:
               maturity: draft
-              implementation: implemented
+              implementation: in_progress
             depends_on: []
             implements: []
             relates_to: []
             tests: []
             traits:
               - "@trait-entity-scoped-local-resources-1"
+              - "@trait-folder-backed-entity-1"
             acceptance_criteria:
               - given: |
                   A folder-backed review is loaded or mutated

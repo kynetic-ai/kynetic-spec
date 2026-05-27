@@ -5748,13 +5748,14 @@ features:
               derived-ref semantics.
             status:
               maturity: draft
-              implementation: implemented
+              implementation: in_progress
             depends_on: []
             implements: []
             relates_to: []
             tests: []
             traits:
               - "@trait-entity-scoped-local-resources-1"
+              - "@trait-folder-backed-entity-1"
             acceptance_criteria:
               - given: |
                   A folder-backed plan is loaded for detail or derivation
