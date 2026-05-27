@@ -238515,6 +238515,24 @@ reviews:
         runner: npm
         created_at: 2026-05-27T08:27:07.353Z
         completed_at: 2026-05-27T08:27:07.353Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/parser/folder-backed-entity.ts, src/parser/plan-storage-manager.ts,
+          src/parser/review-storage-manager.ts, tests/upgrade-folder-storage.test.ts,
+          tests/plan-rebuild-index.test.ts, tests/review-rebuild-index.test.ts,
+          tests/helpers/cli.ts. Commands run: kspec item get for task/specs, kspec validate, npm run
+          build, targeted npm test, full npm test, npm run lint, npm run format:check. Claims
+          verified: rebuilt CLI before smoke tests; targeted and full suites passed;
+          semantic-default AC annotations present; tests use temp dirs and behavioral CLI calls.
+          Categories searched: correctness, edge cases, error handling, test quality, integration;
+          no blockers found."
+        name: review evidence log
+        required: true
+        runner: reviewer
+        created_at: 2026-05-27T08:27:23.536Z
+        completed_at: 2026-05-27T08:27:23.536Z
     events:
       - _ulid: 01KSM7Y6JQKEJ2F95Y4RCNV5RD
         actor: Jacob Chapel
@@ -238564,6 +238582,13 @@ reviews:
           status: pass
           name: lint and format
         timestamp: 2026-05-27T08:27:08.868Z
+      - _ulid: 01KSM8QBHK6JNWYX88SBTFTW1T
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence log
+        timestamp: 2026-05-27T08:27:25.107Z
     examined_commit: 820ee7551c8caa56a83974a5d9c51b97586a9437
     external_links: []
     lifecycle_state: open
@@ -238576,5 +238601,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-27T08:13:40.824Z
-    updated_at: 2026-05-27T08:27:07.353Z
+    updated_at: 2026-05-27T08:27:23.536Z
     notes: []
