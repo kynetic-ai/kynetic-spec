@@ -12285,18 +12285,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-harden-folder-index-upgrade-idempotence-coverage/01kskqxk
-    canonical_branch_head: e6133efe15ff35955e7e8c96015dceec12f33909
+    canonical_branch_head: 820ee7551c8caa56a83974a5d9c51b97586a9437
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-27T07:28:24.979Z
+      updated_at: 2026-05-27T08:06:17.696Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-27T07:28:51.054Z
+      updated_at: 2026-05-27T08:06:17.696Z
     integration:
       status: pending
       detail: null
@@ -12304,7 +12304,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: e6133efe15ff35955e7e8c96015dceec12f33909
-      updated_at: 2026-05-27T07:28:24.979Z
+      updated_at: 2026-05-27T08:06:17.696Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KSKQXK3M631HWMVT0E61MQ3Q"
@@ -12312,9 +12312,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-27T07:28:51.054Z
-      last_reconciled_at: 2026-05-27T07:28:51.054Z
+      last_reconciled_at: 2026-05-27T08:06:17.696Z
       created_at: 2026-05-27T07:28:24.979Z
-      updated_at: 2026-05-27T07:28:51.054Z
+      updated_at: 2026-05-27T08:06:17.696Z
     workspace_id: dispatch-workspace-01KSKQXK3M631HWMVT0E61MQ3Q
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
