@@ -237652,7 +237652,19 @@ reviews:
     slugs: []
     title: Review folder-backed index consistency trait (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate --warnings-ok exited 0. Warnings include expected uncovered new
+          @trait-folder-backed-entity-1 ACs and in_progress status mismatches caused by this
+          stricter spec contract.
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-05-27T04:19:41.903Z
+        completed_at: 2026-05-27T04:19:41.903Z
     events:
       - _ulid: 01KSKTDT3GBAYYNXZR1XX9SRC8
         actor: Jacob Chapel
@@ -237667,6 +237679,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-27T04:18:10.975Z
+      - _ulid: 01KSKTHTXKQKBVPQP63M1N1JAC
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-05-27T04:19:44.180Z
     examined_commit: 14e353c2e7351e94d145b6132aec06cc14f6c3b7
     external_links: []
     lifecycle_state: open
@@ -237679,5 +237698,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-27T04:17:32.272Z
-    updated_at: 2026-05-27T04:18:08.960Z
+    updated_at: 2026-05-27T04:19:41.903Z
     notes: []
