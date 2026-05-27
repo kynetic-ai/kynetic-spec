@@ -102,6 +102,7 @@ tags:
   - plans
   - reviews
 vcs_refs: []
+review_ref: "@01KSKX4STV0VY6YRWKDZT571EJ"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-add-folder-index-consistency-regressions/01kskqxj
@@ -152,6 +153,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-05-27T04:58:59.433Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KSKX4STV0VY6YRWKDZT571EJ"
+        previous: null
+    command: review-link
+    timestamp: 2026-05-27T05:05:07.371Z
 created_at: 2026-05-27T03:33:42.558Z
 started_at: 2026-05-27T04:32:31.067Z
 submitted_at: 2026-05-27T04:58:59.433Z
