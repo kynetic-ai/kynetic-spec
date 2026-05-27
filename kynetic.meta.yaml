@@ -19902,6 +19902,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-27T08:40:41.029Z
+  - _ulid: 01KSMARQE2BYY470SHTTNX80FV
+    type: success
+    content: "Detached reviewer merge helper no-op detection worked cleanly during review of
+      @01KSKQXKH6JMDJP8G67ESNB4D0: the helper detected canonical branch
+      dispatch/task/task-validate-folder-index-consistency-hardening/01kskqxk at
+      5c2307763523de8901f2b373e3602318268446ef was already integrated at dev, avoided manual
+      checkout/merge in the detached snapshot, and let the reviewer complete the task after
+      approval."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KSMAJM"
+    created_at: 2026-05-27T09:03:07.202Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
