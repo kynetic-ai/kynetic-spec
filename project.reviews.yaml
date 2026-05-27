@@ -237903,6 +237903,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KSKXZBA4CKCJDX57PYY9W0KC
         timestamp: 2026-05-27T05:19:34.466Z
+      - _ulid: 01KSKXZJ06H5R9J4256M9YH8YB
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KSKXZG4BJ2CS76SRHH4QH6AW
+        timestamp: 2026-05-27T05:19:39.526Z
     examined_commit: b5a0fd826978a483b616d687db5059fdf61b57bd
     external_links: []
     lifecycle_state: open
@@ -237932,7 +237939,24 @@ reviews:
               intentionally red coverage out of the gating suite."
             created_at: 2026-05-27T05:19:32.676Z
         kind: blocker
+      - _ulid: 01KSKXZG4BJ2CS76SRHH4QH6AW
+        anchor:
+          type: code
+          commit: b5a0fd826978a483b616d687db5059fdf61b57bd
+          line_end: 585
+          line_start: 585
+          path: tests/cli-plan-resource.test.ts
+          side: head
+        entries:
+          - _ulid: 01KSKXZG4CKEP45EGQ7FPN6XPH
+            author: Jacob Chapel
+            body: "MUST-FIX: the new plan resource CLI post-mutation tests are active red tests. The focused and
+              full runs fail for plan resource add, add --replace, and remove because immediate plan
+              rebuild-index --dry-run reports drift instead of status=clean. These failures are
+              introduced by this branch, so the merge gate is failing."
+            created_at: 2026-05-27T05:19:37.612Z
+        kind: blocker
     verdicts: []
     created_at: 2026-05-27T05:05:02.811Z
-    updated_at: 2026-05-27T05:19:32.676Z
+    updated_at: 2026-05-27T05:19:37.612Z
     notes: []
