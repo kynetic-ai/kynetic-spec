@@ -238160,7 +238160,18 @@ reviews:
     slugs: []
     title: Review folder index consistency regressions (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test -- --fresh passed: 2587/2587 suites, 9891/9896 tests passed, 5 skipped. Full
+          log: /tmp/kspec-test-cache/01KSM1R9GKFMMXGSMQ671FGVNM/f84ac7c25a6048ad.log"
+        name: npm test
+        required: true
+        runner: npm test
+        created_at: 2026-05-27T06:39:40.805Z
+        completed_at: 2026-05-27T06:39:40.805Z
     events:
       - _ulid: 01KSM1T0PZZBAG0JMSGJSE46SV
         actor: Jacob Chapel
@@ -238175,6 +238186,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-05-27T06:26:54.048Z
+      - _ulid: 01KSM2J4C6HM17VPVWGVJYVRX9
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-05-27T06:39:42.470Z
     examined_commit: bd82303404f00f26519bfc2eeb19c3953f3d9afe
     external_links: []
     lifecycle_state: open
@@ -238187,5 +238205,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-05-27T06:26:32.287Z
-    updated_at: 2026-05-27T06:26:52.359Z
+    updated_at: 2026-05-27T06:39:40.805Z
     notes: []
