@@ -55601,7 +55601,7 @@ runs:
     completed_at: 2026-05-27T05:23:56.050Z
   - _ulid: 01KSM2P5R3T11W7HHH8R3PRJ99
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -55626,7 +55626,16 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-27T06:42:41.601Z
-        completed_at: 2026-05-27T06:42:41.601Z
+        completed_at: 2026-05-27T06:42:50.585Z
+        notes: "Existing coverage search: Ran kspec search for 'occupied target merge helper detach
+          checkout', 'it.fails red regression expected failure', and 'kspec validate warnings review
+          gate'. All returned no matches. The merge-helper clean-checkout friction appears
+          untracked. The it.fails red-regression pattern also appears untracked as a success/process
+          pattern rather than a task need."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-27T06:42:50.585Z
+        completed_at: 2026-05-27T06:42:50.585Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-27T06:41:54.947Z
