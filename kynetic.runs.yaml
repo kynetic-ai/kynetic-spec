@@ -55600,7 +55600,7 @@ runs:
     started_at: 2026-05-27T05:21:25.308Z
     completed_at: 2026-05-27T05:23:56.050Z
   - _ulid: 01KSM2P5R3T11W7HHH8R3PRJ99
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -55654,7 +55654,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-27T06:43:17.457Z
-        completed_at: 2026-05-27T06:43:17.457Z
+        completed_at: 2026-05-27T06:43:45.659Z
+        notes: "Captured two observations via kspec batch: one success observation for the per-cycle review
+          + it.fails red-regression handoff pattern, and one friction observation for the detached
+          reviewer merge helper requiring manual detach of a clean occupied target checkout. No
+          tasks were created during reflection."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-27T06:41:54.947Z
+    completed_at: 2026-05-27T06:43:45.659Z
