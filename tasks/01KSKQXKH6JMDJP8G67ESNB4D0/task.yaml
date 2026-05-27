@@ -67,7 +67,7 @@ description: >
 spec_ref: "@trait-folder-backed-entity-1"
 plan_ref: "@plan-folder-backed-index-consistency-hardening"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-harden-folder-index-upgrade-idempotence-coverage"
@@ -80,6 +80,14 @@ tags:
   - build
   - storage
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-validate-folder-index-consistency-hardening/01kskqxk
+  captured_at: 2026-05-27T08:37:36.115Z
+  commit: 5c2307763523de8901f2b373e3602318268446ef
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KSM8SZV1Y2JZZXWKHND81QS1
 history:
   - author: Jacob Chapel
@@ -102,7 +110,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-27T08:29:36.301Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-validate-folder-index-consistency-hardening/01kskqxk
+          captured_at: 2026-05-27T08:37:36.115Z
+          commit: 5c2307763523de8901f2b373e3602318268446ef
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-27T08:37:36.117Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-27T08:37:36.117Z
 created_at: 2026-05-27T03:33:44.102Z
 started_at: 2026-05-27T08:29:36.301Z
+submitted_at: 2026-05-27T08:37:36.117Z
 todos: []
 automation: eligible
