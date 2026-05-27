@@ -1,1 +1,52 @@
-notes: []
+notes:
+  - _ulid: 01KSKWREWNEGX7FB6CRBFVG8D5
+    content: >-
+      Added red tests for plan and review folder-index consistency after every folder mutation. Six
+      new regression cases fail against current code (5 plan, 1 review):
+
+
+      - tests/parser-plans-folder.test.ts: persistPlanResourcesFromSibling does not refresh the lean
+      index after sibling resources are copied into the plan folder.
+
+      - tests/plan-rebuild-index.test.ts: kspec plan import with sibling resources leaves
+      resource_summary stale in project.plans.yaml.
+
+      - tests/cli-plan-resource.test.ts: kspec plan resource add / add --replace / remove all write
+      resources.yaml directly without refreshing the owning plan's index entry.
+
+      - tests/parser-reviews-folder.test.ts: ac-semantic-defaults-do-not-drift — an index entry with
+      external_links: [] and a detail file's empty default array currently produce drift via the
+      JSON-stringified comparison.
+
+
+      Green baseline coverage was also added so the implementation task has a stable regression net
+      for the already-correct mutator paths:
+
+      - parser-plans-folder: savePlan create, mutatePlanAtomically
+      status/notes/derived-refs/branch/module, repair-converges.
+
+      - parser-reviews-folder: saveReviewRecord create, mutateReviewAtomically
+      thread/check/verdict/lifecycle, addReviewResource, external_links: [] omitted equivalence,
+      repair-converges.
+
+      - plan-rebuild-index (CLI): plan add and plan note keep the index clean.
+
+      - review-rebuild-index (CLI): review add / comment / check / verdict keep the index clean.
+
+      - review-resource-cli: review resource add / add --replace / remove all keep the index clean
+      (existing review-resource-manager already routes through saveReviewRecordToFolder).
+
+      - task-data-manager: createTask / mutateTask / addNote / deleteTask / rebuild-converge
+      baseline anchored to splitBackend.rebuildIndex for a stable starting point.
+
+
+      Test outcomes: 6 failed (expected red), 192 passed (baseline). Each new assertion runs the
+      storage-manager drift compute (or kspec <domain> rebuild-index --dry-run for CLI suites)
+      immediately after the mutation and asserts zero drift without first running repair, exactly as
+      the task contract requires. All new test snippets carry // AC: annotations for the trait ACs
+      (ac-index-entry-created-with-folder, ac-indexed-mutation-updates-index,
+      ac-index-repair-converges, ac-semantic-defaults-do-not-drift) and the concrete plan/review
+      storage ACs they prove.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-27T04:58:18.389Z
