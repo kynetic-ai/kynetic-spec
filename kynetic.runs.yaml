@@ -55777,7 +55777,7 @@ runs:
     completed_at: 2026-05-27T08:31:09.467Z
   - _ulid: 01KSMAJMXWPC2MV4EQKQQZX4PE
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -55794,7 +55794,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-27T09:00:34.052Z
-        completed_at: 2026-05-27T09:00:34.052Z
+        completed_at: 2026-05-27T09:00:47.566Z
+        notes: "Friction points: (1) The required review evidence log was recorded as a nit thread because
+          there is no obvious dedicated review evidence/log field; the resulting approved review
+          still shows one unresolved thread, which is harmless for gates but visually noisy. (2)
+          kspec validate exits 6 for warnings even when schema/references are OK, and one warning
+          class is expected while the reviewed task remains pending_review; review agents need to
+          know to use --warnings-ok and explain the status mismatch. (3) Full npm test -- --fresh
+          took 2227.4s; this is appropriate for final review, but it makes focused evidence reruns
+          and exact log paths important."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-27T09:00:47.566Z
+        completed_at: 2026-05-27T09:00:47.566Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-27T08:59:48.028Z
