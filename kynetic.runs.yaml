@@ -55709,7 +55709,7 @@ runs:
     completed_at: 2026-05-27T07:31:19.436Z
   - _ulid: 01KSM8SWKQAA5BRXM3X0AQTHRC
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -55725,7 +55725,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-27T08:30:07.346Z
-        completed_at: 2026-05-27T08:30:07.346Z
+        completed_at: 2026-05-27T08:30:16.426Z
+        notes: "Friction points: full npm test -- --fresh took 2228.7s during review. That is appropriate
+          for ownership of the merge, but it makes detached review cycles expensive and blocks the
+          reviewer session for a long tail after targeted evidence is already clean. Other observed
+          frictions are already tracked: repo-wide kspec validate warnings create review signal
+          noise; oxlint warnings accumulate while lint exits 0; review evidence logs lack a
+          first-class home."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-27T08:30:16.426Z
+        completed_at: 2026-05-27T08:30:16.426Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-27T08:28:48.119Z
