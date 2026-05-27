@@ -3808,3 +3808,17 @@ inbox:
       - guidance
     added_by: Jacob Chapel
     created_at: 2026-05-26T19:56:16.267Z
+  - _ulid: 01KSKRHRTH2NFA3BNTB01CMF06
+    text: "kspec validate alignment flags intentional status regressions (implemented → in_progress) as
+      mismatches when a spec is deliberately tightened with new ACs not yet proven by implementation
+      evidence. The @plan-folder-backed-index-consistency-hardening flow will trigger this
+      repeatedly. Consider: a way to mark a status downgrade as intentional pending contract work
+      (e.g., a `pending_evidence` substate, a per-AC implementation marker, or a validate
+      ignore-pattern), or document the expected-warning pattern."
+    tags:
+      - validate
+      - alignment
+      - reflection
+      - specs
+    added_by: "@claude"
+    created_at: 2026-05-27T03:44:44.881Z
