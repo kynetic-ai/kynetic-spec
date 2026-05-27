@@ -1,1 +1,18 @@
-notes: []
+notes:
+  - _ulid: 01KSM99RZMV17EDSGT62NV0DJ8
+    content: "Validation complete. Quality gates: npm run format / format:check / lint (0 errors) /
+      typecheck / build all green. Storage tests: 199 passed (tests/task-data-manager +
+      plan-rebuild-index + review-rebuild-index + parser-plans-folder + parser-reviews-folder +
+      plan-folder-migration + review-folder-migration + upgrade-folder-storage). CLI resource tests:
+      52 passed (tests/cli-plan-resource + review-resource-cli). AC annotations verified across the
+      4 new trait ACs and the cited concrete ACs (@task-data-manager ac-4, @task-index-file
+      ac-2/5/7, @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection,
+      @folder-backed-review-storage-1 ac-review-index-has-bounded-projection). Built-CLI
+      temp-project smoke: task add+start, plan add+set, review add+verdict+comment each followed by
+      the corresponding rebuild-index --dry-run reported no drift, proving normal mutators keep
+      indexes clean without repair. Batch-applied implementation=implemented (--no-cascade) and
+      evidence notes to @trait-folder-backed-entity-1, @task-directory-storage, @task-index-file,
+      @folder-backed-plan-storage-1, and @folder-backed-review-storage-1."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-27T08:37:28.692Z
