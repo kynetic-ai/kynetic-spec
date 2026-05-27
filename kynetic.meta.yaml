@@ -19793,6 +19793,21 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-27T03:44:45.036Z
+  - _ulid: 01KSKT2CRAW8V2Q1W8RS2WJ8TK
+    type: friction
+    content: "Status-alignment friction: inherited trait AC coverage can make a trait's implementation
+      status stale without item status reporting misalignment. In review @01KSKRNM,
+      @trait-entity-scoped-local-resources-1 inherited four new @trait-folder-backed-entity-1
+      index-consistency ACs and validate --completeness reported those inherited ACs uncovered, but
+      kspec item status still reported the trait as implemented/aligned. Reviewers had to reconcile
+      completeness warnings and status output manually. Consider teaching alignment/status summaries
+      to account for uncovered inherited trait ACs, or to surface a warning when implemented items
+      inherit unproven trait criteria."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KFRPSF"
+    created_at: 2026-05-27T04:11:18.155Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
