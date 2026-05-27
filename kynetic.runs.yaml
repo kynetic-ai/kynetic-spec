@@ -55373,9 +55373,35 @@ runs:
     completed_at: 2026-05-27T04:33:39.717Z
   - _ulid: 01KSKWTWW71984GTA5ZW50W791
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-27T04:59:38.249Z
+        completed_at: 2026-05-27T05:00:04.617Z
+        notes: >-
+          What worked well:
+
+          - spec-first reading: kspec plan get + kspec task get gave me the complete acceptance
+          criteria upfront so I could plan the test additions before touching code.
+
+          - Running each suite individually after writing it caught two systemic errors quickly:
+          invalid Crockford ULIDs (I/O letters) and fixture skew where the project.tasks.yaml
+          predated newer projection fields.
+
+          - The 'flip the polarity' realization midway through was important — I had originally
+          written direct-fs-write tests asserting drift IS detected (testing the bug). Realizing the
+          task wants 'zero drift after mutation' (assert correctness, fail until fixed) led me to
+          use persistPlanResourcesFromSibling instead, which is a real public API path that has the
+          bug.
+
+          - Distinguishing baseline-green from red tests on the same trait gave the implementation
+          task a stable regression net rather than just red bait.
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-27T05:00:04.617Z
+        completed_at: 2026-05-27T05:00:04.617Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-27T04:59:38.249Z
