@@ -238156,3 +238156,29 @@ reviews:
     created_at: 2026-05-27T05:05:02.811Z
     updated_at: 2026-05-27T05:51:29.229Z
     notes: []
+  - _ulid: 01KSM1T0PZ88HN9RGC0SM3GSQQ
+    slugs: []
+    title: Review folder index consistency regressions (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KSM1T0PZZBAG0JMSGJSE46SV
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-05-27T06:26:32.287Z
+    examined_commit: bd82303404f00f26519bfc2eeb19c3953f3d9afe
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KSKQXJ0Y6N159MWY81JE852J"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-05-27T06:26:32.287Z
+    updated_at: null
+    notes: []
