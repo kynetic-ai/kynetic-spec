@@ -11472,7 +11472,7 @@ workspaces:
         head: bd82303404f00f26519bfc2eeb19c3953f3d9afe
         last_seen_at: 2026-05-27T06:25:08.028Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-folder-index-consistency-regressions-01kskqxj
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 085575d579d66ae41e03feb2e5a74107f9417168
     bootstrap:
       status: succeeded
@@ -11940,7 +11940,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-27T07:11:40.252Z
+      updated_at: 2026-05-27T07:12:08.098Z
     integration:
       status: pending
       detail: null
@@ -11955,10 +11955,10 @@ workspaces:
     task_slug: task-implement-folder-index-consistency-mutators
     timestamps:
       closed_at: null
-      last_active_at: 2026-05-27T06:41:49.822Z
-      last_reconciled_at: 2026-05-27T07:11:40.252Z
+      last_active_at: 2026-05-27T07:12:08.098Z
+      last_reconciled_at: 2026-05-27T07:12:08.098Z
       created_at: 2026-05-27T06:41:24.280Z
-      updated_at: 2026-05-27T07:12:05.056Z
+      updated_at: 2026-05-27T07:12:08.098Z
     workspace_id: dispatch-workspace-01KSKQXJGJQ2R0NBJ426JQ0039
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
