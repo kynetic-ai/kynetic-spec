@@ -55372,7 +55372,7 @@ runs:
     started_at: 2026-05-27T04:31:25.739Z
     completed_at: 2026-05-27T04:33:39.717Z
   - _ulid: 01KSKWTWW71984GTA5ZW50W791
-    status: active
+    status: completed
     current_step: 5
     initiated_by: "@claude"
     step_results:
@@ -55544,7 +55544,9 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-27T05:03:14.076Z
-        completed_at: 2026-05-27T05:03:14.076Z
+        completed_at: 2026-05-27T05:03:21.367Z
+        notes: All three items captured via atomic batch in the previous step. Workflow complete.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-27T04:59:38.249Z
+    completed_at: 2026-05-27T05:03:21.367Z
