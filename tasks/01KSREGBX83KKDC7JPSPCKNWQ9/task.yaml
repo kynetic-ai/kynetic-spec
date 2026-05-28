@@ -1,0 +1,194 @@
+_ulid: 01KSREGBX83KKDC7JPSPCKNWQ9
+slugs:
+  - task-merge-helper-clean-occupied-target-checkout
+title: Implement branch-coherent merges and sync/push for clean occupied integration targets
+type: task
+description: >
+  What:
+
+  - Implement the already-approved spec behavior that treats an eligible clean existing checkout of
+  the integration target branch as a valid branch-coherent merge/sync/push surface.
+
+  - Update `templates/skills/merge/scripts/detached-reviewer-merge.sh` so it:
+    - detects whether `KSPEC_DISPATCH_MERGE_TARGET` is checked out in an existing worktree;
+    - if the target is checked out in exactly one eligible clean non-auxiliary project/user worktree, runs the merge of `KSPEC_DISPATCH_CANONICAL_HEAD` in that checkout;
+    - if the target is not checked out anywhere, keeps the current helper-owned temporary worktree path;
+    - if the target checkout is auxiliary, dirty, staged, in an in-progress Git operation, or would have untracked/ignored files overwritten by the merge, refuses before moving refs and prints recovery guidance naming the blocking path;
+    - on merge conflict, aborts the merge in the selected merge surface, removes any helper-owned temporary worktree, and leaves the target ref unchanged;
+    - never uses `git update-ref` or equivalent ref-only movement to advance a branch that is checked out in any worktree;
+    - never requires or instructs the reviewer to check out the integration target inside the detached reviewer snapshot.
+  - Run `kspec skill render` after editing the template script so rendered merge-skill copies
+  receive the same behavior.
+
+  - Update dispatch mutation-scope implementation in `src/agent-runtime/workspace.ts` and dispatch
+  sync/push callers in `src/agent-runtime/dispatch.ts` so startup sync, periodic sync,
+  before-provision sync, and post-merge push can operate through an eligible clean occupied target
+  checkout instead of degrading solely due to occupancy.
+
+  - Keep existing refusal/degraded behavior for unsafe states: auxiliary target checkouts, dirty or
+  staged occupied target checkout, in-progress Git operations, untracked/ignored overwrite hazards,
+  ambiguous/multiple target checkout surfaces, divergence, missing refs, merge conflicts, and remote
+  failures.
+
+
+  Why:
+
+  The previous target-lock hardening fixed a real class of leaked helper-created target worktrees,
+  but it overcorrected by treating every occupied target checkout as unsafe. Normal projects often
+  keep `main` or a plan target branch checked out in the root worktree. The intended safety
+  invariant is not exclusive branch occupancy; it is branch-coherent mutation plus no newly leaked
+  helper-created target locks.
+
+
+  How:
+
+  - In the helper script, split target occupancy into exactly these paths:
+    1. target free: current temporary target worktree merge, with cleanup on all exits;
+    2. exactly one eligible clean non-auxiliary target checkout: checkout-aware merge in that worktree;
+    3. auxiliary target checkout: refusal before ref movement with cleanup/blocker guidance;
+    4. dirty/staged target checkout, in-progress Git operation, or untracked/ignored overwrite hazard: refusal before ref movement;
+    5. ambiguous/multiple occupied target checkouts if observable: refusal before ref movement with blocker guidance.
+  - Preserve pinned-head semantics by merging `KSPEC_DISPATCH_CANONICAL_HEAD`, not an advanced
+  canonical branch tip.
+
+  - Preserve no-op behavior before creating or mutating any worktree state.
+
+  - Ensure selected existing target checkout is clean using tracked/staged checks,
+  in-progress-operation checks, and merge/sync overwrite-safety checks. Do not reject harmless
+  untracked/ignored files that Git would not overwrite.
+
+  - For dispatch sync/push, have mutation-scope resolution return enough information for callers to
+  operate from the selected coherent surface when the branch is checked out in an eligible
+  non-auxiliary checkout, and keep existing ref-only/free-branch behavior only when the target
+  branch is not checked out.
+
+  - Do not run destructive tests against live `~/Projects/kynetic-spec` or
+  `~/Projects/kynetic-spec-dispatch`; use temp repos/fixtures.
+
+  - Do not change kspec spec descriptions or acceptance criteria in this task; those edits are
+  applied separately before the task is created.
+
+
+  Testing:
+
+  - Update `tests/detached-reviewer-merge.test.ts` coverage for:
+    - clean eligible occupied target checkout merges successfully and remains coherent with the target tip;
+    - occupied target checkout with tracked modifications refuses before moving refs;
+    - occupied target checkout with staged drift refuses before moving refs;
+    - occupied target checkout with an in-progress merge/rebase/cherry-pick refuses before moving refs;
+    - occupied target checkout with an untracked/ignored overwrite hazard refuses before moving refs, while harmless untracked/ignored files do not block;
+    - auxiliary/detached-reviewer target checkout refuses before moving refs and is not used as the merge surface;
+    - conflict through occupied checkout aborts and restores target checkout coherence;
+    - free target still uses and removes a helper-owned temporary worktree;
+    - no-op path does not dirty any existing worktree and does not create persistent target checkout state;
+    - helper output does not instruct the reviewer to manually check out the target branch in the detached reviewer snapshot.
+  - Add/update dispatch tests for:
+    - clean eligible occupied target checkout does not enter degraded state during startup sync;
+    - clean eligible occupied target checkout does not enter degraded state during periodic sync;
+    - clean eligible occupied target checkout does not enter degraded state during before-provision sync;
+    - clean eligible occupied target checkout does not enter degraded state during post-merge target push;
+    - dirty/staged/in-progress/overwrite-hazard occupied target checkout still refuses/degrades with blocker guidance;
+    - auxiliary target checkout still refuses/degrades with cleanup/blocker guidance and is not selected as a mutation surface;
+    - clearing the dirty/unsafe condition lets later sync/push recover without restart;
+    - worker/reviewer/helper/plan-scoped/detached-reviewer worktrees are not selected as mutation surfaces even if they are the only occupied target checkout.
+  - Run:
+    - `npm test -- --fresh tests/detached-reviewer-merge.test.ts`
+    - `npm test -- --fresh tests/dispatch-plan-target-lock-e2e.test.ts`
+    - `npm test -- --fresh tests/dispatch-target-sync.test.ts tests/dispatch-degraded-state.test.ts`
+    - `npm run typecheck`
+    - `kspec validate --refs --alignment --completeness --warnings-ok`
+
+  In scope:
+
+  - Merge helper behavior for clean/free/dirty/unsafe/auxiliary/ambiguous occupied target states.
+
+  - Dispatch sync/push mutation-surface selection for eligible clean occupied target checkouts.
+
+  - Tests and rendered merge-skill artifacts needed to prove the approved specs.
+
+
+  Out of scope:
+
+  - Editing specs, acceptance criteria, or task metadata beyond source annotations needed for
+  implementation coverage.
+
+  - Changing plan target selection semantics.
+
+  - Auto-merging remote divergence or changing ff-only sync policy.
+
+  - Treating dirty/staged target checkouts as safe.
+
+  - Treating auxiliary target checkouts as valid mutation surfaces.
+
+  - Running tests or cleanup against live main/dispatch worktrees.
+
+
+  Covers:
+
+  - @detached-reviewer-merge-helper ac-helper-path-in-reviewer-guidance
+
+  - @detached-reviewer-merge-helper ac-helper-no-op-merge
+
+  - @detached-reviewer-merge-helper ac-helper-refuses-dirty-target
+
+  - @detached-reviewer-merge-helper ac-helper-refuses-auxiliary-target-lock
+
+  - @detached-reviewer-merge-helper ac-helper-safe-conflict-exit
+
+  - @detached-reviewer-merge-helper ac-helper-merges-in-clean-occupied-target-checkout
+
+  - @detached-reviewer-merge-helper ac-helper-does-not-break-checked-out-target
+
+  - @detached-reviewer-merge-helper ac-helper-uses-ephemeral-target-worktree-when-target-free
+
+  - @detached-reviewer-merge-helper ac-helper-leaves-no-new-target-branch-lock
+
+  - @dispatch-integration-mutation-scope ac-1
+
+  - @dispatch-integration-mutation-scope ac-2
+
+  - @dispatch-integration-mutation-scope ac-3
+
+  - @dispatch-integration-mutation-scope ac-4
+
+  - @dispatch-integration-mutation-scope ac-clean-occupied-target-checkout-is-valid-mutation-surface
+
+  - @dispatch-integration-mutation-scope ac-dirty-occupied-target-refusal-identifies-blocker
+
+  - @dispatch-integration-mutation-scope ac-auxiliary-target-checkout-refusal-identifies-blocker
+
+  - @dispatch-integration-mutation-scope ac-helper-created-target-locks-are-released
+
+  - @dispatch-remote-branch-sync ac-push-target-after-merge
+
+  - @dispatch-remote-branch-sync ac-push-target-periodic
+
+  - @dispatch-remote-branch-sync ac-pull-target-on-start
+
+  - @dispatch-remote-branch-sync ac-pull-target-on-start-before-bootstrap
+
+  - @dispatch-remote-branch-sync ac-pull-target-periodic
+
+  - @dispatch-remote-branch-sync ac-pull-target-before-provision
+
+  - @dispatch-remote-branch-sync ac-pull-ff-only
+
+  - @dispatch-remote-branch-sync ac-clean-occupied-target-sync-and-push
+
+  - @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
+spec_ref: "@detached-reviewer-merge-helper"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - dispatch
+  - merge-helper
+  - git
+  - worktree
+vcs_refs: []
+created_at: 2026-05-28T23:25:25.288Z
+todos: []
