@@ -9890,7 +9890,14 @@ features:
                 when: The auxiliary operation completes, fails, or is cleaned up.
             tags: []
             created: 2026-03-19T21:22:11.124Z
-            notes: []
+            notes:
+              - _ulid: 01KSREBBCTY62JR97C8N18YK28
+                content: Approved direct spec tightening for branch-coherent occupied target mutation surfaces;
+                  reopened to in_progress until task-merge-helper-clean-occupied-target-checkout
+                  lands evidence.
+                supersedes: null
+                author: Jacob Chapel
+                created_at: 2026-05-28T23:22:40.922Z
           - _ulid: 01KM3ZMD56R95XQT7G2T4QGR28
             slugs:
               - dispatch-shared-checkout-safety
