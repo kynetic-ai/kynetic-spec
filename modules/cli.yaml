@@ -9822,11 +9822,14 @@ features:
               - dispatch-integration-mutation-scope
             title: Dispatch Integration Mutation Scope Contract
             type: requirement
-            description: |
-              Integration-branch operations mutate only the shared checkout state
-              that dispatch owns for the configured integration branch. They do
-              not spill into unrelated repository state, and they fail safely when
-              the intended mutation surface is ambiguous.
+            description: Integration-branch operations mutate only an eligible branch-coherent mutation surface
+              for the configured integration branch. An eligible occupied mutation surface is a
+              pre-existing non-auxiliary project/user checkout of the integration target branch, not
+              a worker, reviewer, helper, plan-scoped, detached review, or other dispatch-created
+              auxiliary worktree. Dispatch does not spill into unrelated repository state, does not
+              mutate worker or reviewer task worktrees as side effects, does not move checked-out
+              integration target refs behind their worktrees, and fails safely when the intended
+              mutation surface is ambiguous, auxiliary, or unsafe.
             status:
               maturity: draft
               implementation: implemented
