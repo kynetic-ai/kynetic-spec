@@ -9308,7 +9308,14 @@ features:
                       worktree.
                 tags: []
                 created: 2026-04-22T21:41:47.251Z
-                notes: []
+                notes:
+                  - _ulid: 01KSRE6VTE41VB06XGHGXNG4GJ
+                    content: Approved direct spec tightening for clean occupied integration target checkouts; reopened
+                      to in_progress until task-merge-helper-clean-occupied-target-checkout lands
+                      evidence.
+                    supersedes: null
+                    author: Jacob Chapel
+                    created_at: 2026-05-28T23:20:13.902Z
             created: 2026-03-12T02:33:44.096Z
             notes: []
           - _ulid: 01KKJYD3SRSC971JQPVSG48VQ0
