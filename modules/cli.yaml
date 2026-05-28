@@ -9854,16 +9854,11 @@ features:
                   operation
                 when: |
                   An integration-branch operation executes
-              - given: |
-                  Dispatch performs the same integration-branch operation against
-                  the same repository state at different times during one daemon
-                  run
+              - given: Dispatch performs the same integration-branch operation against the same repository
+                  checkout/occupancy state at different times during one daemon run.
                 id: ac-3
-                then: |
-                  The operation applies to the same shared checkout mutation
-                  surface each time
-                when: |
-                  Each operation completes successfully
+                then: Dispatch selects the same branch-coherent mutation surface each time.
+                when: Each operation completes successfully.
               - given: |
                   Dispatch cannot determine a safe mutation surface for the
                   configured integration branch
