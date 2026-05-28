@@ -46,11 +46,19 @@ Before rendering any verdict, complete both deterministic and analytical checks:
 
 ```bash
 kspec item get @spec-ref                    # Own ACs + inherited trait ACs
-kspec validate                              # Trait coverage warnings
-# Run the project's test suite
+kspec validate --refs --warnings-ok         # Reference/schema sanity
+kspec validate --alignment --warnings-ok    # Spec/task alignment baseline
+kspec validate --completeness --warnings-ok # AC coverage baseline
+npm run format:check                        # Hard gate: formatting drift blocks approval
+npm run lint -- --quiet                     # Hard gate: lint errors block approval
+npx oxlint <changed-ts-or-test-files>       # Inspect changed-file warnings too
+npm run typecheck                           # Hard gate for code changes
+# Run task-specific tests, and full suite/shards for broad or closure-risk changes
 grep -rn "AC: @spec-ref" tests/             # Own AC annotations (adapt path/syntax)
 grep -rn "AC: @trait-" tests/               # Trait AC annotations
 ```
+
+Formatting, lint, and typecheck failures are review blockers. Request changes rather than approving when these gates are red or missing without a documented reason. If repo-wide lint has a warning baseline, changed-file lint warnings are still review findings unless you verify they are pre-existing outside the submitted diff.
 
 **Analytical checks** (require reading and judgment):
 
@@ -415,10 +423,10 @@ Every finding must include:
 2. **Create review** — `kspec review add --subject-type task --subject-ref @ref` (creates a new record each cycle)
 3. **Open review** — `kspec review open @review-ref`
 4. **Investigate** — deterministic checks, then analytical checks
-5. **Record ALL findings** — `kspec review comment` for each finding with appropriate kind. **Always use anchors:**
+5. **Record required checks** — `kspec review check` for format/lint/typecheck/test/validation results. A clean approval needs passing evidence for `npm run format:check`, `npm run lint -- --quiet`, focused changed-file lint when TS/test files changed, `npm run typecheck` for code changes, relevant tests, and kspec validation, or an explicit explanation for any skipped check.
+6. **Record ALL findings** — `kspec review comment` for each finding with appropriate kind. **Always use anchors:**
    - Code reviews: `--path`, `--line-start`, `--line-end`, `--commit` to pin findings to exact source locations
    - Plan/spec reviews: `--section`, `--field`, `--anchor-ref` to pin findings to specific ACs or fields
-6. **Record checks** — `kspec review check` for test/lint results
 7. **Verify completeness** — Before submitting a verdict, confirm you have searched all categories, recorded every finding, and verified each finding with evidence. A review with one blocker and an immediate verdict is almost always incomplete. Each fix cycle costs time — find everything in one pass. Equally, do not invent findings — every issue must be backed by evidence you ran or read, not just suspicion.
 8. **Submit verdict** — `kspec review verdict` (approve or request_changes — auto-closes the review)
 

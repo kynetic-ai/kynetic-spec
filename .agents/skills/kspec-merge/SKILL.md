@@ -69,12 +69,12 @@ The helper reads the dispatch environment variables (`KSPEC_DISPATCH_CANONICAL_B
 
 ### Helper Outcomes
 
-| Outcome             | What happens                                                                                                       | What to do next                                                                                    |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
-| **Success**         | Helper creates a temporary target worktree, advances the integration target ref, and removes the temporary worktree | `kspec task complete @ref`, `kspec review close @review-ref`                                       |
-| **No-op**           | Canonical branch already integrated at target tip — no ref move, no helper worktree created                        | Report no-op, complete the task                                                                    |
-| **Occupied target** | Target branch is checked out in another non-helper worktree — helper refuses before moving any refs                | Follow the recovery guidance the helper prints to free or detach the blocking checkout, then retry |
-| **Dirty target**    | The blocking non-helper worktree has uncommitted changes                                                           | Follow the recovery guidance the helper prints, then retry                                         |
+| Outcome             | What happens                                                                                                                        | What to do next                                                                                    |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| **Success**         | Helper creates a temporary target worktree, advances the integration target ref, and removes the temporary worktree                 | `kspec task complete @ref`, `kspec review close @review-ref`                                       |
+| **No-op**           | Canonical branch already integrated at target tip — no ref move, no helper worktree created                                         | Report no-op, complete the task                                                                    |
+| **Occupied target** | Target branch is checked out in another non-helper worktree — helper refuses before moving any refs                                 | Follow the recovery guidance the helper prints to free or detach the blocking checkout, then retry |
+| **Dirty target**    | The blocking non-helper worktree has uncommitted changes                                                                            | Follow the recovery guidance the helper prints, then retry                                         |
 | **Conflict**        | Merge conflicts in the helper-owned temporary worktree — helper aborts, removes the temporary worktree, leaves target ref unchanged | Move task to `needs_work` with conflict details — do not attempt manual resolution in the snapshot |
 
 ### What NOT to Do in a Detached Snapshot

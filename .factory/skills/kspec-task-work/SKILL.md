@@ -264,13 +264,25 @@ Before submitting, verify:
 
 - **Own AC coverage** — Each spec AC has an annotated test
 - **Trait AC coverage** — Each inherited trait AC has an annotated test (or N/A annotation)
-- **Tests pass** — Full test suite, not just new tests
+- **Formatting gate** — `npm run format:check` passes. If it fails, run `npm run format`, commit the formatting changes, and rerun the check.
+- **Lint gate** — `npm run lint -- --quiet` passes with 0 errors. Do not submit while lint is red, even for "simple" or formatting-only issues.
+- **Focused changed-file lint** — For changed TypeScript/test files, run `npx oxlint <changed files>` and inspect warnings as well as errors. Repo-wide lint may have a warning baseline; new warnings in your changed files are your responsibility.
+- **Typecheck gate** — `npm run typecheck` passes for code changes.
+- **Tests pass** — Task-specific tests pass; run the full suite or shards for broad/closure-risk changes, not just new tests.
 - **Code quality** — Matches existing patterns, no duplicated utilities
 - **No regressions** — Existing tests still pass
 
 ```bash
-kspec validate  # Reports uncovered trait ACs as warnings
+npm run format:check
+npm run lint -- --quiet
+npx oxlint <changed-ts-or-test-files>
+npm run typecheck
+kspec validate --refs --warnings-ok
+kspec validate --alignment --warnings-ok
+kspec validate --completeness --warnings-ok
 ```
+
+Treat any red formatting/lint/typecheck gate as in-scope task work. Fix it before `kspec task submit @ref`; do not leave hygiene cleanup for plan closure.
 
 ### 10. Submit
 

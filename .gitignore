@@ -47,3 +47,13 @@ plans/
 bun.lock
 .claude/plugins/
 .claude/scheduled_tasks.lock
+
+# >>> kspec managed
+.kspec/
+.kspec-sessions/
+plans/
+.kspec-worktrees/
+.kspec-dispatch-workspace.json
+.kspec-dispatch-shadow-mutation
+.kspec-dispatch-shadow-mutation.lock/
+# <<< kspec managed
