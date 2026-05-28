@@ -9984,7 +9984,14 @@ features:
             created: 2026-03-19T21:22:11.238Z
             notes: []
         created: 2026-03-18T07:07:43.998Z
-        notes: []
+        notes:
+          - _ulid: 01KSREEG3Q6NVTZNGT98KG12HX
+            content: Approved direct spec tightening for clean occupied target sync/push surfaces and unsafe
+              occupied checkout recovery semantics; implementation remains in_progress pending
+              task-merge-helper-clean-occupied-target-checkout evidence.
+            supersedes: null
+            author: Jacob Chapel
+            created_at: 2026-05-28T23:24:24.055Z
     requirements:
       - _ulid: 01KJVPSXJDA0X7QW622DDD00R3
         slugs:
