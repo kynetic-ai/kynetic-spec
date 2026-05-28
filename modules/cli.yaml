@@ -9876,12 +9876,13 @@ features:
                   moving the target ref behind that checkout or degrading the target solely because
                   it is checked out.
                 when: Dispatch performs an integration-target sync or push for that branch.
-              - given: Dispatch uses worker, reviewer, helper, or plan-scoped auxiliary worktrees while the dispatch
-                  root is not checked out on a specific integration target branch.
-                id: ac-auxiliary-worktrees-do-not-hold-target-locks
-                then: Those auxiliary worktrees do not keep that integration target branch checked out in a way that
-                  prevents the dispatch root from syncing or pushing the target branch.
-                when: The auxiliary operation completes, fails, or is cleaned up.
+              - given: Dispatch uses worker, reviewer, helper, or plan-scoped auxiliary worktrees while processing
+                  integration-target work.
+                id: ac-helper-created-target-locks-are-released
+                then: That auxiliary operation restores or removes the temporary target checkout before completion,
+                  failure, or cleanup so it does not create a new persistent target-branch lock.
+                when: An auxiliary operation temporarily checks out an integration target branch that was not
+                  already checked out by that worktree at operation start.
               - given: Dispatch is running from a checkout that does not itself have the integration target branch
                   checked out, and another otherwise eligible worktree has that target branch
                   checked out with tracked modifications, staged drift, an in-progress Git
