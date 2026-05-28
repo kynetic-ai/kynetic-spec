@@ -9766,13 +9766,14 @@ features:
             id: ac-degraded-recovery-logged-duration
             then: The log includes the duration that target was degraded
             when: The recovery is logged
-          - given: An integration target entered degraded state because the target branch was checked out in
-              another worktree.
-            id: ac-occupied-checkout-degraded-recovery
-            then: The degraded state for that target is cleared and queued work for that target becomes eligible
+          - given: An integration target entered degraded state because its checked-out target worktree was
+              dirty, staged, auxiliary, ambiguous, in an in-progress Git operation, or otherwise
+              unsafe to mutate.
+            id: ac-unsafe-occupied-checkout-degraded-recovery
+            then: the degraded state for that target is cleared and queued work for that target becomes eligible
               without requiring a dispatch-engine restart.
-            when: A later sync or push evaluation finds that no other worktree has the target branch checked out
-              and the target operation succeeds or is a no-op.
+            when: a later sync or push evaluation finds a safe branch-coherent mutation surface and the target
+              operation succeeds or is a no-op.
           - given: An active integration target branch is already checked out in exactly one eligible clean
               non-auxiliary existing worktree.
             id: ac-clean-occupied-target-sync-and-push
