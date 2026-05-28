@@ -9839,15 +9839,12 @@ features:
             tests: []
             traits: []
             acceptance_criteria:
-              - given: |
-                  Dispatch performs integration-branch sync, publish, health, or
-                  repair work in a shared checkout
+              - given: Dispatch performs integration-branch sync, publish, health, or repair work for a configured
+                  integration target.
                 id: ac-1
-                then: |
-                  The resulting branch ref, index, and working tree changes are
-                  limited to the shared checkout running dispatch
-                when: |
-                  The operation completes
+                then: The resulting branch ref, index, and working tree changes are limited to the selected
+                  branch-coherent mutation surface for that integration target.
+                when: The operation completes successfully.
               - given: |
                   Worker and reviewer task worktrees exist for active task work
                 id: ac-2
