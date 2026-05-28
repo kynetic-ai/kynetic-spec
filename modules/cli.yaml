@@ -9286,11 +9286,11 @@ features:
                       the target branch.
                     when: The helper stops on conflict.
                   - given: A reviewer runs the supported detached merge helper and the integration target branch is not
-                      checked out in any non-helper worktree.
-                    id: ac-helper-uses-ephemeral-target-worktree
-                    then: The helper creates an internal temporary target worktree, performs the merge there, advances
-                      the integration target ref on success, and removes the temporary worktree
-                      before exiting.
+                      checked out in any worktree.
+                    id: ac-helper-uses-ephemeral-target-worktree-when-target-free
+                    then: The helper creates a helper-owned temporary target worktree, performs the merge there,
+                      advances the integration target ref on success, and removes the temporary
+                      worktree before exiting.
                     when: The reviewed canonical head needs to be merged into the integration target.
                   - given: The supported detached merge helper exits after a successful merge, no-op merge, or
                       conflict/error path.
