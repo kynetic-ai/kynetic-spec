@@ -9310,6 +9310,13 @@ features:
                       does not mutate the detached reviewer snapshot.
                     when: The reviewer runs the supported merge helper and the reviewed canonical head needs to be
                       merged into that target.
+                  - given: The integration target branch is checked out in any existing worktree before the detached
+                      merge helper runs.
+                    id: ac-helper-does-not-break-checked-out-target
+                    then: The helper does not move the target ref through plumbing or a separate worktree behind the
+                      checked-out worktree, and the checked-out worktree remains coherent with the
+                      target branch tip after the helper exits.
+                    when: The helper advances the integration target.
                 tags: []
                 created: 2026-04-22T21:41:47.251Z
                 notes:
