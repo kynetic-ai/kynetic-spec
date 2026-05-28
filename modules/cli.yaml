@@ -9282,13 +9282,13 @@ features:
                       make that checkout safe before retrying, without overwriting that checkout
                       state.
                     when: The reviewer runs the supported merge helper.
-                  - given: The supported merge helper encounters merge conflicts in its helper-owned temporary target
-                      worktree while preparing the reviewed change for integration.
+                  - given: The supported merge helper encounters merge conflicts while preparing the reviewed change for
+                      integration.
                     id: ac-helper-safe-conflict-exit
-                    then: The helper aborts the merge and removes the helper-owned temporary target worktree, leaves the
-                      integration target ref unchanged, and returns explicit conflict-handling
-                      guidance to the reviewer without leaving any auxiliary worktree checked out on
-                      the target branch.
+                    then: The helper aborts the merge in the selected merge surface, leaves the integration target ref
+                      unchanged, leaves any pre-existing target checkout coherent with its pre-merge
+                      target tip, removes any helper-owned temporary target worktree, and returns
+                      explicit conflict-handling guidance to the reviewer.
                     when: The helper stops on conflict.
                   - given: A reviewer runs the supported detached merge helper and the integration target branch is not
                       checked out in any worktree.
