@@ -9270,12 +9270,17 @@ features:
                       creating a persistent target worktree, and without dirtying any existing
                       worktree.
                     when: The reviewer runs the supported merge helper.
-                  - given: A pre-existing non-helper worktree has the integration target branch checked out with tracked
-                      modifications or staged drift before the detached merge helper runs.
+                  - given: The integration target branch is checked out in an otherwise eligible existing worktree, but
+                      that checkout has tracked modifications, staged drift, an in-progress Git
+                      operation such as merge/rebase/cherry-pick, or untracked/ignored files that
+                      Git reports would be overwritten by the required merge before the detached
+                      merge helper runs.
                     id: ac-helper-refuses-dirty-target
                     then: The helper refuses before moving the integration target ref and returns explicit recovery
-                      guidance that calls out the dirty pre-existing checkout, without overwriting
-                      that occupied worktree state.
+                      guidance that identifies the unsafe checkout and tells the operator to commit,
+                      stash, clean, finish/abort the in-progress Git operation, detach, or otherwise
+                      make that checkout safe before retrying, without overwriting that checkout
+                      state.
                     when: The reviewer runs the supported merge helper.
                   - given: The supported merge helper encounters merge conflicts in its helper-owned temporary target
                       worktree while preparing the reviewed change for integration.
