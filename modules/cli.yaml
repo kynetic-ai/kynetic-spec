@@ -9225,7 +9225,7 @@ features:
                   - detached-reviewer-merge-helper
                 title: Detached Reviewer Merge Helper
                 type: feature
-                description: >
+                description: >-
                   In manual_merge publication mode, reviewers working from detached review snapshots
                   have one supported merge helper path for completing review after approval. The
                   helper is distributed with the merge skill, is invokable from the detached review
@@ -9233,10 +9233,19 @@ features:
                   reviewer to rediscover ad hoc git workarounds.
 
 
-                  The helper keeps the integration branch authoritative by using helper-owned
-                  temporary merge state — performing the merge in an internal temporary target
-                  worktree that is created and removed by the helper itself — rather than by
-                  refreshing a persistent occupied integration target worktree.
+                  The helper keeps the integration branch authoritative by selecting a
+                  branch-coherent merge surface for the resolved integration target. When the target
+                  branch is not checked out in any worktree, the helper may create and remove a
+                  helper-owned temporary target worktree. When the target branch is already checked
+                  out in exactly one eligible clean existing worktree, the helper performs the merge
+                  through that checkout so Git advances the branch, index, and working tree
+                  together. An eligible existing worktree is a pre-existing non-auxiliary
+                  project/user checkout, not a detached reviewer snapshot and not a worker,
+                  reviewer, helper, plan-scoped, or other dispatch-created auxiliary worktree. The
+                  helper must not move a checked-out target ref behind that checkout, must not
+                  require the detached reviewer snapshot to check out the target branch manually,
+                  must not use leaked auxiliary target checkouts as merge surfaces, and must not
+                  leave helper-created target checkout state behind.
                 status:
                   maturity: draft
                   implementation: implemented
