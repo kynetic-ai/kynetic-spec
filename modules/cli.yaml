@@ -9298,14 +9298,18 @@ features:
                     then: No helper-created or dispatch auxiliary worktree remains checked out on the integration target
                       branch.
                     when: Git worktrees are listed for the repository.
-                  - given: The integration target branch is already checked out in a non-helper worktree before the
-                      detached merge helper runs.
-                    id: ac-helper-occupied-target-refuses-with-free-branch-guidance
-                    then: The helper refuses before moving refs, identifies the blocking worktree, and reports guidance
-                      to free or detach that existing checkout without instructing the reviewer to
-                      check out the integration target in another auxiliary worktree.
-                    when: The helper cannot safely take exclusive ownership of the target branch for its temporary merge
-                      worktree.
+                  - given: The integration target branch is already checked out in exactly one eligible clean existing
+                      worktree before the detached merge helper runs, where eligible means a
+                      pre-existing non-auxiliary project/user checkout rather than a detached
+                      reviewer snapshot or dispatch-created worker, reviewer, helper, plan-scoped,
+                      or other auxiliary worktree.
+                    id: ac-helper-merges-in-clean-occupied-target-checkout
+                    then: The helper performs the merge through the existing target checkout, advances the target branch
+                      using Git's checkout-aware merge mechanics, leaves that checkout on the target
+                      branch with its index and working tree coherent with the new target tip, and
+                      does not mutate the detached reviewer snapshot.
+                    when: The reviewer runs the supported merge helper and the reviewed canonical head needs to be
+                      merged into that target.
                 tags: []
                 created: 2026-04-22T21:41:47.251Z
                 notes:
