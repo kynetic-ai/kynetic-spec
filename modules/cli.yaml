@@ -9869,11 +9869,13 @@ features:
                 when: |
                   A sync or push operation is attempted
               - given: Dispatch is running from a checkout that does not itself have the integration target branch
-                  checked out, and another worktree has that target branch checked out.
-                id: ac-occupied-target-refusal-identifies-blocker
-                then: Dispatch refuses before moving refs and reports the blocking worktree path with guidance to
-                  free or detach that checkout.
-                when: Dispatch attempts an integration-target sync or push for that branch.
+                  checked out, and exactly one other eligible clean non-auxiliary worktree has that
+                  target branch checked out.
+                id: ac-clean-occupied-target-checkout-is-valid-mutation-surface
+                then: Dispatch uses the existing target checkout as the branch-coherent mutation surface instead of
+                  moving the target ref behind that checkout or degrading the target solely because
+                  it is checked out.
+                when: Dispatch performs an integration-target sync or push for that branch.
               - given: Dispatch uses worker, reviewer, helper, or plan-scoped auxiliary worktrees while the dispatch
                   root is not checked out on a specific integration target branch.
                 id: ac-auxiliary-worktrees-do-not-hold-target-locks
