@@ -9317,6 +9317,14 @@ features:
                       checked-out worktree, and the checked-out worktree remains coherent with the
                       target branch tip after the helper exits.
                     when: The helper advances the integration target.
+                  - given: The integration target branch is already checked out in a detached reviewer snapshot or a
+                      dispatch-created worker, reviewer, helper, plan-scoped, or other auxiliary
+                      worktree before the detached merge helper runs.
+                    id: ac-helper-refuses-auxiliary-target-lock
+                    then: The helper refuses before moving refs, identifies the auxiliary target checkout path, and
+                      reports guidance to remove, clean up, or detach that auxiliary checkout
+                      instead of using it as the merge surface.
+                    when: The reviewer runs the supported merge helper.
                 tags: []
                 created: 2026-04-22T21:41:47.251Z
                 notes:
