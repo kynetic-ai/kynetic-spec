@@ -9892,6 +9892,14 @@ features:
                   guidance to clean, commit, stash, finish/abort the in-progress Git operation,
                   detach, or remove that checkout.
                 when: Dispatch attempts an integration-target sync or push for that branch.
+              - given: Dispatch is running from a checkout that does not itself have the integration target branch
+                  checked out, and the target branch is checked out in a worker, reviewer, helper,
+                  plan-scoped, detached review, or other dispatch-created auxiliary worktree.
+                id: ac-auxiliary-target-checkout-refusal-identifies-blocker
+                then: Dispatch refuses before moving refs, reports the auxiliary checkout path as a blocker or
+                  cleanup candidate, and does not use that auxiliary worktree as the mutation
+                  surface.
+                when: Dispatch attempts an integration-target sync or push for that branch.
             tags: []
             created: 2026-03-19T21:22:11.124Z
             notes:
