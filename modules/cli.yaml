@@ -9773,6 +9773,13 @@ features:
               without requiring a dispatch-engine restart.
             when: A later sync or push evaluation finds that no other worktree has the target branch checked out
               and the target operation succeeds or is a no-op.
+          - given: An active integration target branch is already checked out in exactly one eligible clean
+              non-auxiliary existing worktree.
+            id: ac-clean-occupied-target-sync-and-push
+            then: dispatch performs the sync or push through a branch-coherent mutation surface and does not
+              enter degraded state solely because the target branch is checked out.
+            when: dispatch startup sync, periodic sync, before-provision sync, or post-merge target push
+              evaluates that target.
         tags: []
         decisions:
           - _ulid: 01KM3ZMCXZ5DTWYDPSP8GBKNTD
