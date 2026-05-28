@@ -9294,9 +9294,11 @@ features:
                     when: The reviewed canonical head needs to be merged into the integration target.
                   - given: The supported detached merge helper exits after a successful merge, no-op merge, or
                       conflict/error path.
-                    id: ac-helper-leaves-no-target-branch-lock
-                    then: No helper-created or dispatch auxiliary worktree remains checked out on the integration target
-                      branch.
+                    id: ac-helper-leaves-no-new-target-branch-lock
+                    then: No helper-created or dispatch auxiliary worktree remains newly checked out on the integration
+                      target branch; any pre-existing auxiliary checkout of the integration target
+                      is reported as a blocker or cleanup candidate rather than treated as a valid
+                      merge surface.
                     when: Git worktrees are listed for the repository.
                   - given: The integration target branch is already checked out in exactly one eligible clean existing
                       worktree before the detached merge helper runs, where eligible means a
