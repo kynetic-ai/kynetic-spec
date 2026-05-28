@@ -1,0 +1,155 @@
+_ulid: 01KKZ30JMRB16ZTFPAGJM73CY0
+slugs: []
+title: Review task-review-detail-page (cycle 1)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 5790 passed, 1 failed (pre-existing review-cli.test.ts failure unrelated to this task), 3
+      skipped
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-17T23:51:41.010Z
+    completed_at: 2026-03-17T23:51:41.010Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: packages/shared tsc build succeeded, packages/web-ui vite build succeeded with
+      adapter-static output
+    name: build
+    required: true
+    runner: tsc+vite
+    created_at: 2026-03-17T23:51:43.525Z
+    completed_at: 2026-03-17T23:51:43.525Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 5 assigned ACs (ac-2, ac-8, ac-9, ac-10, ac-11) have both implementation annotations
+      in +page.svelte and test annotations across reviews-detail.spec.ts and
+      review-detail-page.spec.ts
+    name: ac-coverage
+    required: true
+    runner: grep
+    created_at: 2026-03-17T23:51:46.077Z
+    completed_at: 2026-03-17T23:51:46.077Z
+events:
+  - _ulid: 01KKZ30JMQFQZ634JMBJZ4C51K
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-17T23:45:03.640Z
+  - _ulid: 01KKZ30V2HWHHAN1ZQ5DCZC71S
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-17T23:45:12.274Z
+  - _ulid: 01KKZ3C6WGMQA8H2QKG5TFYB90
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKZ3C6SP931SEN1AXYGGTFJ1
+    timestamp: 2026-03-17T23:51:24.817Z
+  - _ulid: 01KKZ3CF0B9WMVCWHPCPREZMZ0
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKZ3CEXSPRHWE86QYZ9PDEJQ
+    timestamp: 2026-03-17T23:51:33.131Z
+  - _ulid: 01KKZ3CPS2733QSB5YWPP6NBFT
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-17T23:51:41.090Z
+  - _ulid: 01KKZ3CS87EJ5116NN4N1PJ86Y
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: build
+    timestamp: 2026-03-17T23:51:43.623Z
+  - _ulid: 01KKZ3CVQH82DW3V02YRDF9ZHX
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-17T23:51:46.161Z
+  - _ulid: 01KKZ3D1W8A1N58ZE2021KW8VQ
+    actor: pr-reviewer@dispatch
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-17T23:51:52.456Z
+  - _ulid: 01KKZ3D1W8Q2P97P4Z9FYQGHXJ
+    actor: pr-reviewer@dispatch
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-17T23:51:52.456Z
+examined_commit: 3b251d677f21cfc35c6db12a6bfb759c2889c7f5
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-review-detail-page"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KKZ3C6SP931SEN1AXYGGTFJ1
+    anchor:
+      type: code
+      commit: 3b251d677f21
+      line_end: 427
+      line_start: 423
+      path: packages/shared/src/api.ts
+      side: head
+    entries:
+      - _ulid: 01KKZ3C6SPKM9P290PHHEK1N1D
+        author: "@claude"
+        body: ReviewDetail.notes field uses 'body' but the NoteSchema uses 'content'. The daemon spreads the
+          raw ReviewRecord which has 'content', so any future consumer accessing note.body will get
+          undefined. Not a blocker because the detail page doesn't render notes and notes rendering
+          isn't part of the assigned ACs.
+        created_at: 2026-03-17T23:51:24.726Z
+    kind: nit
+  - _ulid: 01KKZ3CEXSPRHWE86QYZ9PDEJQ
+    anchor:
+      type: code
+      commit: 3b251d677f21
+      line_end: 950
+      line_start: 947
+      path: packages/web-ui/src/lib/api.ts
+      side: head
+    entries:
+      - _ulid: 01KKZ3CEXSSQMW7D6BWF6ND2AD
+        author: "@claude"
+        body: JSDoc says 'filtered client-side by subject_ref or head_branch' but the implementation
+          actually passes these as server-side query params (subject_ref/head_branch were added to
+          the daemon list endpoint). The comment is misleading — the filtering is server-side.
+        created_at: 2026-03-17T23:51:33.049Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer@dispatch
+    role: reviewer
+    created_at: 2026-03-17T23:51:52.373Z
+created_at: 2026-03-17T23:45:03.640Z
+updated_at: 2026-03-17T23:51:52.373Z
+notes: []

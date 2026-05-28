@@ -1,0 +1,48 @@
+notes:
+  - _ulid: 01KN7P0J3YRAQ4FKC4Y7HC0PNJ
+    content: Remove MODIFY spec entries — existing spec updates belong in tasks, not plan spec declarations
+    author: "@claude"
+    created_at: 2026-04-02T18:06:43.327Z
+  - _ulid: 01KN7PD3ZCPZHA2WJHCY3KVV4M
+    content: "Address review findings: fix ac-4 implementation leakage, reorder spec-updates before
+      implementation (spec-first), clarify ac-6/ac-8 coverage ownership"
+    author: "@claude"
+    created_at: 2026-04-02T18:13:34.828Z
+  - _ulid: 01KN7PQXZNSZNR5SSHG9CTNVGM
+    content: "Fix review round 2: remove 'single proven monitoring backend' from ac-8 replacement
+      (implementation leakage), add ac-6 and ac-8 to test task Covers mapping"
+    author: "@claude"
+    created_at: 2026-04-02T18:19:29.141Z
+  - _ulid: 01KN7Q6CAK9SSMZYKWEGZGRRN2
+    content: |-
+      This plan addresses two confirmed bugs found via daemon process
+      inspection:
+
+      1. Bun's fs.watch({recursive: true}) opens an FD for every file in
+         the watched tree (not just directories). On a project with 180k+
+         session blob files, this causes 191k+ leaked FDs within minutes of
+         daemon startup. Closing the watcher makes the FD count increase
+         rather than decrease.
+
+      2. When a secondary project registers with a daemon that already has
+         190k+ FDs from the primary project's watcher, the secondary project's
+         KspecWatcher silently fails — watcherActive reports true but no
+         filesystem events are delivered. The SessionWatcher for the same
+         project works, suggesting the failure is triggered by resource
+         pressure at initialization time.
+
+      The fix has two independent levers:
+      - Standardize on Chokidar (eliminates the Bun FD leak bug)
+      - Exclude blob directories from monitoring (eliminates the root cause
+        of excessive resource consumption regardless of backend)
+
+      Both are needed. Chokidar alone still opens 185k FDs when watching
+      a directory with 180k files. The exclusion filter brings this to ~7k.
+      The health monitor is the regression safety net — it catches any future
+      variant of "watcher looks alive but isn't delivering events."
+
+      Validated empirically: Chokidar with blob exclusion uses 7,281 FDs,
+      detects session.yaml modifications, and detects new session directory
+      creation. Without exclusion, both Bun and Chokidar use 185k+ FDs.
+    author: "@claude"
+    created_at: 2026-04-02T18:27:22.579Z

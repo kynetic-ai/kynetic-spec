@@ -1,0 +1,205 @@
+_ulid: 01KQ0TT8MJ0SSEMGKK2CD9WVFE
+slugs: []
+title: Review task-validation-task-data-manager-read-path
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: rg found standalone annotations for @validation-task-data-source
+      ac-all-persisted-tasks-included, ac-task-references-checked, and ac-task-load-errors-reported
+      in tests/validate-task-data-source.test.ts. No trait ACs are inherited by this spec.
+    name: AC annotation search
+    required: false
+    runner: rg
+    created_at: 2026-04-24T22:52:52.614Z
+    completed_at: 2026-04-24T22:52:52.614Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/parser/validate.ts, src/parser/task-data-manager.ts,
+      src/parser/split-backend.ts, src/parser/refs.ts, tests/validate-task-data-source.test.ts,
+      tests/automation-eligibility.test.ts, tests/helpers/cli.ts. Claims verified: validation now
+      loads tasks through TaskDataManager for split projects; malformed per-task files are covered
+      by a separate schema pass; broad catch still falls back after split TDM errors. Categories
+      searched: correctness, task-storage edge cases, schema-error handling, reference validation,
+      test quality, source-scanning tests, integration with TaskDataManager."
+    name: review evidence
+    required: false
+    runner: manual
+    created_at: 2026-04-24T22:52:56.338Z
+    completed_at: 2026-04-24T22:52:56.338Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran kspec validate. It failed on pre-existing catalog/meta issues outside this branch:
+      .kspec/modules/meta.yaml modules[0].traits.0 expected string/object mismatch; one orphaned
+      skill directory warning; existing alignment/completeness warnings. Changed files are
+      src/parser/validate.ts, tests/automation-eligibility.test.ts,
+      tests/validate-task-data-source.test.ts."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-24T22:53:00.224Z
+    completed_at: 2026-04-24T22:53:00.224Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test completed with exit code 0. Summary: Test Suites: 2274 passed of 2274; Tests: 5
+      skipped, 8371 passed of 8376; Duration: 1940.3s; [test-runner] Tests passed. Full log:
+      /tmp/kspec-test-cache/01KQ0TRSFEKP6CF84H3M357GF5/27ab1112d7085fc6.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-24T22:58:29.463Z
+    completed_at: 2026-04-24T22:58:29.463Z
+events:
+  - _ulid: 01KQ0TT8MJ9PRXYV0DP3AMARGN
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-24T22:47:22.514Z
+  - _ulid: 01KQ0TV4Z2ZE3XDNBC14NTETTN
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-24T22:47:51.522Z
+  - _ulid: 01KQ0V2NNJEG28DRB1KRHY0091
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQ0V2MK5AWE4DJNJQPW30MYG
+    timestamp: 2026-04-24T22:51:58.002Z
+  - _ulid: 01KQ0V4C780PH1MS1QFXRCHET2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC annotation search
+    timestamp: 2026-04-24T22:52:53.864Z
+  - _ulid: 01KQ0V4FYYYZT445ZX8G8ZQS7V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence
+    timestamp: 2026-04-24T22:52:57.694Z
+  - _ulid: 01KQ0V4KQ0DTKF04MYDMW3X311
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-24T22:53:01.536Z
+  - _ulid: 01KQ0VEN0G4S5EPMY0XAAZSM0F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-24T22:58:30.544Z
+  - _ulid: 01KQ0VF0H669JBXXQEQRF17WCT
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-24T22:58:42.342Z
+  - _ulid: 01KQ0VF0H6KZ7P6Z12MQPWTV2M
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-24T22:58:42.343Z
+  - _ulid: 01KQ0WKPXTAFKHR278CJ1T36HQ
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQ0V2MK5AWE4DJNJQPW30MYG
+    timestamp: 2026-04-24T23:18:44.922Z
+  - _ulid: 01KQ0WM2DCJ7Q9M2HFKGSQKJPT
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQ0V2MK5AWE4DJNJQPW30MYG
+    timestamp: 2026-04-24T23:18:56.685Z
+examined_commit: 87c41864b7e745a0f83189eefe2d53b95c2af5ec
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQ0JDJQQY4HTX1P4JD4K11PA"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQ0V2MK5AWE4DJNJQPW30MYG
+    anchor:
+      type: code
+      commit: 87c41864b7e745a0f83189eefe2d53b95c2af5ec
+      line_end: 2314
+      line_start: 2312
+      path: src/parser/validate.ts
+      side: head
+    entries:
+      - _ulid: 01KQ0V2MK6GF9AD94Y9G43AVWZ
+        author: Jacob Chapel
+        body: "MUST-FIX: The canonical read failure is swallowed for split projects. I reproduced a kynetic
+          1.1 project with task_storage.format: split and an unmigrated full task record in
+          project.tasks.yaml but no per-task directory.
+          resolveTaskDataManager(ctx).loadAllTasks(ctx) correctly throws: 'Storage format is set to
+          split but 1 task(s) in project.tasks.yaml have not been migrated to per-task directories.'
+          validate() catches that error here, falls back to the legacy scanner, and reports
+          tasksChecked: 1 with no task-data schema/reference error. That means validation can still
+          diverge from normal consumers exactly when the canonical task data source rejects
+          corrupted/unmigrated storage. The fallback needs to be limited to the intended legacy
+          kynetic <1.1 path, or the TaskDataManager error needs to be reported as a validation
+          finding for split projects instead of silently using findTaskFiles()."
+        created_at: 2026-04-24T22:51:56.902Z
+      - _ulid: 01KQ0WKNW3G606H4RQVGXT26YY
+        author: "@claude"
+        body: >-
+          Fixed. Separated resolveTaskDataManager() and loadAllTasks() into independent try/catch
+          blocks:
+
+
+          1. resolveTaskDataManager() failure → legacy project, fall through to findTaskFiles()
+          (unchanged)
+
+          2. loadAllTasks() failure after successful TDM resolution → split project with data
+          integrity issue. Now surfaces the error as a SchemaValidationError with the
+          project.tasks.yaml path and sets usedCanonicalPath=true to prevent legacy fallback.
+
+
+          Added regression test that sets up a split-format project with an unmigrated full task
+          record in project.tasks.yaml (no per-task directory). Verifies the error is surfaced as a
+          schema error containing "migrated" and that tasksChecked is 0 (no silent legacy fallback).
+
+
+          All 8372 tests pass.
+        created_at: 2026-04-24T23:18:43.842Z
+    kind: blocker
+    resolved_at: 2026-04-24T23:18:55.634Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-24T22:58:42.342Z
+created_at: 2026-04-24T22:47:22.514Z
+updated_at: 2026-04-24T23:18:55.634Z
+notes: []

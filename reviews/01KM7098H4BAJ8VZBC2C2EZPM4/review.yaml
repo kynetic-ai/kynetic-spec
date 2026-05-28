@@ -1,0 +1,141 @@
+_ulid: 01KM7098H4BAJ8VZBC2C2EZPM4
+slugs: []
+title: Review task-impl-data-manager
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation exited 6 with repo-wide pre-existing warnings only; no schema or reference
+      errors for this task snapshot.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-03-21T01:33:29.154Z
+    completed_at: 2026-03-21T01:33:29.154Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran npm test -- tests/file-lock.test.ts after the interrupted full suite; 1 file and 10
+      tests passed.
+    name: tests/file-lock.test.ts
+    required: false
+    runner: npm
+    created_at: 2026-03-21T01:33:37.850Z
+    completed_at: 2026-03-21T01:33:37.850Z
+events:
+  - _ulid: 01KM7098H4MG62VGCWPFHA8WJX
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T01:31:17.924Z
+  - _ulid: 01KM709VG34ANBYD3GZ0W3NBFP
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T01:31:37.347Z
+  - _ulid: 01KM70CNMA45VS1J8Z2Z40RZBW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM70CN6CWYCBFDB6PNH59PQM
+    timestamp: 2026-03-21T01:33:09.643Z
+  - _ulid: 01KM70CZDW9H1VQD9QBZHKNPF1
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM70CZ0CXP8XVAZP3DHJA6EK
+    timestamp: 2026-03-21T01:33:19.676Z
+  - _ulid: 01KM70D93BW1T5BJ94XZKQRDX6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-21T01:33:29.580Z
+  - _ulid: 01KM70DHMRS5FXZQWB8G8Q3V20
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: tests/file-lock.test.ts
+    timestamp: 2026-03-21T01:33:38.328Z
+  - _ulid: 01KM70F1F7VW2HREMB7BPGNVJT
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-21T01:34:27.303Z
+  - _ulid: 01KM70F1F71YDP3MZWGA8ASY8J
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-21T01:34:27.303Z
+examined_commit: 3e6d901fcc248a5e455c477b826578d8000f90af
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YENV3CBFAGSRHVHR7QPJN"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM70CN6CWYCBFDB6PNH59PQM
+    anchor:
+      type: code
+      commit: 3e6d901fcc248a5e455c477b826578d8000f90af
+      line_end: 109
+      line_start: 105
+      path: src/parser/task-data-manager.ts
+      side: head
+    entries:
+      - _ulid: 01KM70CN6C7HS576G3K8V5168S
+        author: Jacob Chapel
+        body: ac-2 is being marked as covered even though the implementation and the test both defer the
+          required behavior. listTasks just delegates to loadAllTasks(ctx), and the test comment
+          says the index-only optimization will come later. This task is therefore claiming coverage
+          for only index data is read without implementing or proving it, which is a MUST-FIX
+          coverage gap for a linked spec AC.
+        created_at: 2026-03-21T01:33:09.196Z
+    kind: blocker
+  - _ulid: 01KM70CZ0CXP8XVAZP3DHJA6EK
+    anchor:
+      type: code
+      commit: 3e6d901fcc248a5e455c477b826578d8000f90af
+      line_end: 394
+      line_start: 391
+      path: tests/task-data-manager.test.ts
+      side: head
+    entries:
+      - _ulid: 01KM70CZ0DEMSJSM13JC2WVBKH
+        author: Jacob Chapel
+        body: ac-8 is acknowledged here as future work, but this task is submitted directly against
+          task-data-manager and the manager has no split-backend activation path yet. Shipping the
+          review in this state would approve a known-unimplemented spec AC and a missing AC test
+          rather than a completed task.
+        created_at: 2026-03-21T01:33:19.245Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-21T01:34:27.303Z
+created_at: 2026-03-21T01:31:17.924Z
+updated_at: 2026-03-21T01:34:27.303Z
+notes: []

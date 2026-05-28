@@ -1,0 +1,180 @@
+_ulid: 01KN0JR8WSDJXP0Q23E4PZB4JW
+slugs: []
+title: Review task-fix-stale-selectors
+author: Test User
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite failed in this snapshot. Deterministic failure:
+      tests/daemon-api/reviews-list.test.ts:261, raw task ULID filter now returns linked reviews.
+      Additional full-suite timeout: tests/daemon-api/items.test.ts:327 timed out once; isolated
+      rerun passed, so the suite is still not green as submitted."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-30T23:56:11.574Z
+    completed_at: 2026-03-30T23:56:11.574Z
+events:
+  - _ulid: 01KN0JR8WS5TPMJSVQREWNTDTK
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-30T23:55:04.985Z
+  - _ulid: 01KN0JSBN733SW0D28V0SYVFQX
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN0JSB1KD3BC3ZW7A2F1SMK2
+    timestamp: 2026-03-30T23:55:40.583Z
+  - _ulid: 01KN0JSDFGBD0GGKHJJ01J7HGN
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-30T23:55:42.449Z
+  - _ulid: 01KN0JSFBVSEDH9PNSS9474XY4
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN0JSEQQZC09PNYS6VEW50C9
+    timestamp: 2026-03-30T23:55:44.379Z
+  - _ulid: 01KN0JT8QSX6J6PBEBSSNNV8QA
+    actor: Test User
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN0JSB1KD3BC3ZW7A2F1SMK2
+    timestamp: 2026-03-30T23:56:10.361Z
+  - _ulid: 01KN0JTAGMK8MX1E5XVGN5VX1E
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-30T23:56:12.180Z
+  - _ulid: 01KN0JTCARZZK2YY8SXNE06JGY
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-30T23:56:14.040Z
+  - _ulid: 01KN0JTCAR8S7EQWFVVWXXFAB8
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-30T23:56:14.040Z
+  - _ulid: 01KN0KJMJJ4KWE8TNJ4AJ9KG6P
+    actor: Test User
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN0JSEQQZC09PNYS6VEW50C9
+    timestamp: 2026-03-31T00:09:28.914Z
+  - _ulid: 01KN0KJPK4TXRYJVE3PCEMBEGA
+    actor: Test User
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN0JSB1KD3BC3ZW7A2F1SMK2
+    timestamp: 2026-03-31T00:09:30.980Z
+  - _ulid: 01KN0KK5GNJFCMQQHWYG3KPNYH
+    actor: Test User
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN0JSEQQZC09PNYS6VEW50C9
+    timestamp: 2026-03-31T00:09:46.261Z
+  - _ulid: 01KN0KK7CRZ1TBNMACRZYEMQHV
+    actor: Test User
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN0JSB1KD3BC3ZW7A2F1SMK2
+    timestamp: 2026-03-31T00:09:48.185Z
+examined_commit: d752fb33fe963e0fca963315bcc5c95881ba076c
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMZ1BVBBDPGQMSK3C8GDK3HP"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN0JSB1KD3BC3ZW7A2F1SMK2
+    anchor:
+      type: code
+      commit: d752fb33fe963e0fca963315bcc5c95881ba076c
+      line_end: 303
+      line_start: 276
+      path: packages/daemon/src/routes/reviews.ts
+      side: head
+    entries:
+      - _ulid: 01KN0JSB1MW8ABPSVBNJWGB84W
+        author: Test User
+        body: >-
+          The new task-filter resolution changes GET /api/reviews?task= semantics and leaves the
+          required suite red. 
+
+          > @kynetic-ai/spec@0.12.0 test
+
+          > node scripts/test.cjs now fails in  because querying with a raw task ULID returns linked
+          reviews instead of the previously empty result, so this snapshot is not mergeable as
+          submitted.
+        created_at: 2026-03-30T23:55:39.956Z
+      - _ulid: 01KN0JT84XH9EV02Y9X9SFR2P5
+        author: Test User
+        body: "Clarification: the failing assertion is tests/daemon-api/reviews-list.test.ts:261. In the
+          submitted snapshot, querying GET /api/reviews with task=<raw task ULID> now returns two
+          linked reviews instead of an empty list."
+        created_at: 2026-03-30T23:56:09.757Z
+      - _ulid: 01KN0KJNVV2TDNDCAM4GNK7RMF
+        author: Test User
+        body: "Fixed in 6af239cd6 by restoring GET /api/reviews?task to the current dev semantics.
+          Verification: npm test -- tests/daemon-api/reviews-list.test.ts passes again, including
+          the raw task ULID case remaining empty as expected."
+        created_at: 2026-03-31T00:09:30.235Z
+    kind: blocker
+    resolved_at: 2026-03-31T00:09:47.543Z
+    resolved_by: Test User
+  - _ulid: 01KN0JSEQQZC09PNYS6VEW50C9
+    anchor:
+      type: code
+      commit: d752fb33fe963e0fca963315bcc5c95881ba076c
+      line_end: 163
+      line_start: 162
+      path: tests/e2e/api-triage.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KN0JSEQQWQBHK3XMPFKQ4JZZ
+        author: Test User
+        body: This change disables the entire triage API behavioral suite instead of replacing it. That
+          drops coverage for @triage-daemon-api ac-1 through ac-6 and the triage WebSocket broadcast
+          assertions, which is a coverage regression unrelated to stale-selector fixes.
+        created_at: 2026-03-30T23:55:43.735Z
+      - _ulid: 01KN0KJKWC45J613MYZWEKS8RD
+        author: Test User
+        body: Addressed by removing the unrelated drift from this branch. Current diff vs origin/dev is
+          empty for tests/e2e/api-triage.spec.ts, so the selector task no longer carries the
+          behavioral-suite skip that triggered this blocker.
+        created_at: 2026-03-31T00:09:28.204Z
+    kind: blocker
+    resolved_at: 2026-03-31T00:09:45.669Z
+    resolved_by: Test User
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-30T23:56:14.039Z
+created_at: 2026-03-30T23:55:04.985Z
+updated_at: 2026-03-31T00:09:47.543Z
+notes: []

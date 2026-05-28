@@ -1,0 +1,135 @@
+_ulid: 01KM0C3RK3289P50VSDJPK7JJQ
+slugs: []
+title: Review task-schedule-schema (cycle 1)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 275/276 test files pass (6245 tests). 1 pre-existing failure in review-cli.test.ts
+      unrelated to this change (not modified in this commit).
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T11:43:45.782Z
+    completed_at: 2026-03-18T11:43:45.782Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate reports no schedule-related errors or warnings. No trait AC coverage gaps
+      for @dispatch-schedule-schema.
+    name: kspec-validate
+    required: true
+    runner: kspec
+    created_at: 2026-03-18T11:43:48.726Z
+    completed_at: 2026-03-18T11:43:48.726Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 4 ACs (@dispatch-schedule-schema ac-1 through ac-4) have annotated tests in
+      tests/schedule-schema.test.ts. No traits on spec. ac-1: lines 26-145 (valid cron acceptance,
+      invalid cron rejection with examples). ac-2: lines 148-187 (6-field rejection with specific
+      error). ac-3: lines 492-562 (integration tests with kspec validate CLI). ac-4: lines 408-476
+      (empty default, manifest with schedules, coexistence with hooks)."
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-18T11:43:51.415Z
+    completed_at: 2026-03-18T11:43:51.415Z
+events:
+  - _ulid: 01KM0C3RK37SZAW53ZZFYQ75AF
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T11:43:19.651Z
+  - _ulid: 01KM0C3ZZNW2N9JV44R45039EQ
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T11:43:27.221Z
+  - _ulid: 01KM0C4A76VYHQVYQ6WPG81EJ4
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM0C4A3EJZNGNP84VMK4KKNE
+    timestamp: 2026-03-18T11:43:37.702Z
+  - _ulid: 01KM0C4J7MTQH6D4VNY1N5H4D8
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T11:43:45.908Z
+  - _ulid: 01KM0C4N3M48GNMG5M39078GVH
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-18T11:43:48.852Z
+  - _ulid: 01KM0C4QQDPJKJEEPCHGC5XGRV
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-18T11:43:51.533Z
+  - _ulid: 01KM0C4YA6TJB4EX5JT4A1J3J5
+    actor: agent@kspec-dispatch
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-18T11:43:58.279Z
+  - _ulid: 01KM0C4YA7Y89R2ZNQB0K5J25H
+    actor: agent@kspec-dispatch
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T11:43:58.279Z
+examined_commit: 4099ad8b9432a3a482229d2d9dca435206ed06c2
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKZPVTFW73DTR2RC1NQZEF13"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM0C4A3EJZNGNP84VMK4KKNE
+    anchor:
+      type: code
+      commit: 4099ad8b9432a3a482229d2d9dca435206ed06c2
+      line_end: 47
+      line_start: 47
+      path: src/schema/schedules.ts
+      side: head
+    entries:
+      - _ulid: 01KM0C4A3E3642GM1GDE8W2W65
+        author: "@claude"
+        body: In validateCronExpression (src/schema/schedules.ts:47), the comment says "Also validate it
+          actually produces a next run" but job.nextRun() return value is never checked. This means
+          expressions like "0 0 30 2 *" (Feb 30) pass validation despite never firing. Not a spec
+          violation (syntactically valid 5-field cron), but the comment is misleading. Consider
+          either checking the return value or updating the comment.
+        created_at: 2026-03-18T11:43:37.582Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: agent@kspec-dispatch
+    role: reviewer
+    created_at: 2026-03-18T11:43:58.149Z
+created_at: 2026-03-18T11:43:19.651Z
+updated_at: 2026-03-18T11:43:58.149Z
+notes: []

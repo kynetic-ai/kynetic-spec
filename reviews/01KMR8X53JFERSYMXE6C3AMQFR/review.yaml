@@ -1,0 +1,221 @@
+_ulid: 01KMR8X53JFERSYMXE6C3AMQFR
+slugs: []
+title: Review task-narrow-shadow-lazy-read-sync
+author: "@claude"
+checks:
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 6 on existing repository warnings only. Schema and references were OK; warnings
+      included orphaned skill dir, existing orphaned specs/status mismatches, and known invalid
+      AC-annotation fixture cases.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-27T18:34:08.261Z
+    completed_at: 2026-03-27T18:34:08.261Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 1942 suites passed; 6945 tests passed, 5 skipped. Duration 4096.3s. Test runner rebuilt
+      dist first because dist/cli/index.js was missing, then completed cleanly.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-27T18:34:11.661Z
+    completed_at: 2026-03-27T18:34:11.661Z
+events:
+  - _ulid: 01KMR8X53GSAB3R2VP0HD9E1E9
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T18:29:03.730Z
+  - _ulid: 01KMR8XY0E9H9WM4R57G20146S
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T18:29:29.231Z
+  - _ulid: 01KMR96C6FXW6WDXYDXMF7YNV2
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMR96B4VBDGXAX31K41DG559
+    timestamp: 2026-03-27T18:34:05.903Z
+  - _ulid: 01KMR96FGK260BYGT6XPYRZ3X7
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-03-27T18:34:09.299Z
+  - _ulid: 01KMR96JT5GJC89JWJVZDRCEGT
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-27T18:34:12.677Z
+  - _ulid: 01KMR96PAQ4RMZWT8EVQY4BVTB
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMR96N74BCAK7D5AZVJ11PK8
+    timestamp: 2026-03-27T18:34:16.279Z
+  - _ulid: 01KMR96SPAC4NS69VE9DF5PJJX
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMR96RK7CC9V69Y3BSC33RJM
+    timestamp: 2026-03-27T18:34:19.722Z
+  - _ulid: 01KMR9768JD0443CPRD6DXXZGN
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-27T18:34:32.594Z
+  - _ulid: 01KMR9768JE2ZNC5RRYQYV68BJ
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T18:34:32.594Z
+  - _ulid: 01KMRCZ8KZX2KPFX31C50H5MPW
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMR96B4VBDGXAX31K41DG559
+    timestamp: 2026-03-27T19:40:07.167Z
+  - _ulid: 01KMRCZK28WW55D2XVKFXYJGSB
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMR96B4VBDGXAX31K41DG559
+    timestamp: 2026-03-27T19:40:17.864Z
+  - _ulid: 01KMRD02HVAMA6JNR1SV4EM2BR
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMR96N74BCAK7D5AZVJ11PK8
+    timestamp: 2026-03-27T19:40:33.723Z
+  - _ulid: 01KMRD0FB4HSVPD147RG50EXPY
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMR96N74BCAK7D5AZVJ11PK8
+    timestamp: 2026-03-27T19:40:46.820Z
+  - _ulid: 01KMRD0SERHPPXVTC0MMXNRHBX
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMR96RK7CC9V69Y3BSC33RJM
+    timestamp: 2026-03-27T19:40:57.177Z
+examined_commit: 3f1360f1d80cf5aa5986399e9b6eb5de055ece6c
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMMB3WBKZKVE32R64GD0YVH8"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMR96B4VBDGXAX31K41DG559
+    anchor:
+      type: code
+      commit: 3f1360f1d80cf5aa5986399e9b6eb5de055ece6c
+      line_end: 88
+      line_start: 84
+      path: packages/daemon/src/routes/tasks.ts
+      side: head
+    entries:
+      - _ulid: 01KMR96B4VD4KYB1ETCHCF7FXJ
+        author: "@claude"
+        body: The new @shadow-lazy-read-sync ac-daemon-bypass says daemon-served reads do not perform
+          per-request drift-check, but this route still falls back to
+          initContext(projectContext.path) on cache miss/degraded reads. initContext() consumes the
+          default sync mode and runs shadowNeedsSync()/shadowPull() unless KSPEC_NO_SYNC is set, so
+          daemon reads are still capable of triggering the drift-check path on a request. That means
+          the new AC is broader than the current implementation instead of merely documenting it.
+        created_at: 2026-03-27T18:34:04.827Z
+      - _ulid: 01KMRCZ850ANN0AKE90AK8ACRC
+        author: "@claude"
+        body: 'Fixed: Added optional syncMode parameter to initContext() and updated all daemon GET route
+          initContext calls to pass { syncMode: "skip" }. On cache-miss/degraded fallback paths,
+          daemon reads now explicitly skip the drift-check. The syncMode override takes precedence
+          over the module-level consumeSyncMode() state, so even if stale CLI sync state existed,
+          daemon reads would still skip sync. POST/mutation routes are unchanged — they still use
+          default initContext for shadow commits.'
+        created_at: 2026-03-27T19:40:06.688Z
+    kind: blocker
+    resolved_at: 2026-03-27T19:40:17.376Z
+    resolved_by: "@claude"
+  - _ulid: 01KMR96N74BCAK7D5AZVJ11PK8
+    anchor:
+      type: code
+      commit: 3f1360f1d80cf5aa5986399e9b6eb5de055ece6c
+      line_end: 9
+      line_start: 8
+      path: tests/daemon-cache-route-coverage.test.ts
+      side: head
+    entries:
+      - _ulid: 01KMR96N74YD86R0DT9XTT0T83
+        author: "@claude"
+        body: This AC annotation does not prove ac-daemon-bypass. Every test in this file exercises
+          warm-cache session endpoints only; none cover the daemon task list read path added to the
+          spec, and none exercise the cache-miss/degraded path where initContext() is invoked. Per
+          the review gates, AC coverage has to be behavioral and has to prove the claimed contract,
+          not just share the same high-level area.
+        created_at: 2026-03-27T18:34:15.141Z
+      - _ulid: 01KMRD022NQ9386GJEX9WSF09Z
+        author: "@claude"
+        body: 'Fixed: Added two layers of behavioral tests. (1) In shadow-drift-check.test.ts: two new tests
+          verify that initContext with explicit { syncMode: "skip" } parameter skips both
+          shadowNeedsSync and shadowPull — proving the mechanism works, including when module-level
+          setSyncMode("always") is set. (2) In daemon-cache-route-coverage.test.ts: two new tests
+          exercise daemon task routes WITHOUT entity cache (cache-miss path), verifying that
+          initContext is called with { syncMode: "skip" } — proving the route integration is
+          correct. Removed the incorrect file-level AC annotation that claimed coverage from
+          warm-cache-only tests.'
+        created_at: 2026-03-27T19:40:33.236Z
+    kind: blocker
+    resolved_at: 2026-03-27T19:40:46.312Z
+    resolved_by: "@claude"
+  - _ulid: 01KMR96RK7CC9V69Y3BSC33RJM
+    entries:
+      - _ulid: 01KMR96RK7QV5FWSZVMGAKBM4F
+        author: "@claude"
+        body: "Evidence log: Files read: AGENTS.md, kspec-agents.md, packages/daemon/src/routes/tasks.ts,
+          tests/daemon-cache-route-coverage.test.ts, src/parser/yaml.ts,
+          packages/daemon/src/server.ts. Commands run: git diff/stat, kspec task get, kspec review
+          for-task, grep/rg for AC annotations and initContext/shadowNeedsSync, kspec validate, npm
+          test. Claims verified: daemon task route defers initContext only on warm-cache hits;
+          initContext still performs drift-check by default; daemon starts a background shadow sync
+          scheduler. Categories searched: correctness, test quality, integration, edge cases around
+          cache miss/degraded reads."
+        created_at: 2026-03-27T18:34:18.599Z
+    kind: nit
+    resolved_at: 2026-03-27T19:40:56.659Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-27T18:34:32.594Z
+created_at: 2026-03-27T18:29:03.730Z
+updated_at: 2026-03-27T19:40:56.659Z
+notes: []

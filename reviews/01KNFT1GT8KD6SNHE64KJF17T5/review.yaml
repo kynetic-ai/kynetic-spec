@@ -1,0 +1,114 @@
+_ulid: 01KNFT1GT8KD6SNHE64KJF17T5
+slugs: []
+title: Review @01KNFSGK6K184ZDPM7Y1J8MSZK
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit code 6 with pre-existing project warnings only; no new validation errors introduced
+      by this task.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-04-05T21:54:58.411Z
+    completed_at: 2026-04-05T21:54:58.411Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2071 suites passed, 7520 tests passed, 5 skipped.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-05T21:55:03.263Z
+    completed_at: 2026-04-05T21:55:03.263Z
+events:
+  - _ulid: 01KNFT1GT7VCX9ZAJBWWETKMD8
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-05T21:51:04.520Z
+  - _ulid: 01KNFT2Q2BR7GR59DDKZCPK9MJ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-05T21:51:43.691Z
+  - _ulid: 01KNFT8KJ5G8RBVG5XEDZJT3JV
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNFT8JGG3ZAWW2BFRWEQ89JB
+    timestamp: 2026-04-05T21:54:56.709Z
+  - _ulid: 01KNFT8P5WCVCNZV3Y7PQE3EA9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-05T21:54:59.388Z
+  - _ulid: 01KNFT8TQ6PMVSVSRX2GK54WRZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-05T21:55:04.038Z
+  - _ulid: 01KNFT8Z4W769M4S7BXG0T9RJ0
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-05T21:55:08.572Z
+  - _ulid: 01KNFT8Z4WTYYHGJZK9P90QQ75
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-05T21:55:08.572Z
+examined_commit: 5b9d657237383d5e14a231b6a67a95bf113e5ebc
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNFSGK6K184ZDPM7Y1J8MSZK"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNFT8JGG3ZAWW2BFRWEQ89JB
+    entries:
+      - _ulid: 01KNFT8JGG7KBYM0ZXPWM5AXM3
+        author: Jacob Chapel
+        body: "Evidence log: Files read: tests/helpers/cli.ts, tests/helpers-cli-cleanup.test.ts,
+          tests/cli-daemon-proxy.test.ts. Commands run: git diff
+          5528165fcdb8749b84b5e254b4160f29ca4a9675...HEAD; kspec task get
+          @01KNFSGK6K184ZDPM7Y1J8MSZK --json; kspec validate; npm test; rg -n
+          'cleanupTempDir\\(|createTempDir\\(' tests src; rg -n 'AC:'
+          tests/helpers-cli-cleanup.test.ts tests/cli-daemon-proxy.test.ts tests/helpers/cli.ts.
+          Claims verified: shared cleanup retries handle transient ENOTEMPTY-style failures while
+          preserving persistent errors, and full aggregate npm test passes on this snapshot.
+          Categories searched: correctness, edge cases, error handling, test quality, integration;
+          no findings."
+        created_at: 2026-04-05T21:54:55.632Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-05T21:55:08.572Z
+created_at: 2026-04-05T21:51:04.520Z
+updated_at: 2026-04-05T21:55:08.572Z
+notes: []

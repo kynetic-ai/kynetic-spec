@@ -1,0 +1,274 @@
+_ulid: 01KNA8P6Q76JRPWG07DW5BNH5Y
+slugs: []
+title: Review task-impl-degraded-state (cycle 4)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: packages/daemon/src/routes/agent-dispatch.ts, src/agent-runtime/dispatch.ts,
+      tests/daemon-api/agent-dispatch.test.ts, tests/dispatch-degraded-state.test.ts,
+      tests/dispatch-target-sync.test.ts. Commands run: kspec task get @01KN8T1APSFZ9NRNP7TKT957GD;
+      kspec item get @dispatch-remote-branch-sync; git diff --stat/base diff; rg AC annotation
+      searches; npm test. Claims verified: full suite passed in this snapshot (2068 suites, 7503
+      passed, 5 skipped). Categories searched: correctness, edge cases, error handling, test
+      quality, integration."
+    name: npm-test
+    required: true
+    runner: npm
+    created_at: 2026-04-03T18:16:24.140Z
+    completed_at: 2026-04-03T18:16:24.140Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Attempted manual merge into plan/plan-workspace-scoped-integration-target-sync/01kn8bx4
+      with git checkout -B review-merge-check
+      plan/plan-workspace-scoped-integration-target-sync/01kn8bx4 && git merge --no-ff --no-commit
+      a1a65a28c894724d0ec94cb72ffefec6c5f32dfd. Git reported content conflicts in
+      src/agent-runtime/dispatch.ts and tests/dispatch-target-sync.test.ts. Merge was aborted
+      immediately with git merge --abort.
+    name: manual-merge
+    required: true
+    runner: git
+    created_at: 2026-04-03T18:16:26.256Z
+    completed_at: 2026-04-03T18:16:26.256Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exited with warnings only. Warnings are repo-wide/pre-existing (orphaned
+      skill directory, orphaned specs, broad AC annotation noise in unrelated tests) and did not
+      identify a branch-specific schema/reference failure for this task.
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-03T18:16:28.465Z
+    completed_at: 2026-04-03T18:16:28.465Z
+events:
+  - _ulid: 01KNA8P6Q702NFKQ50EN9C1BFF
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-03T18:11:35.783Z
+  - _ulid: 01KNA8PRN3MZ910NCHKFJNWETZ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-03T18:11:54.147Z
+  - _ulid: 01KNA8YTE312HWH4D1829VFZSG
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNA8YSR2ZD8JCHKF8MCB87AC
+    timestamp: 2026-04-03T18:16:18.115Z
+  - _ulid: 01KNA8YWNMXYD1T8BE7MGJ676N
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNA8YVXN04CG4AFJQ92YMPT3
+    timestamp: 2026-04-03T18:16:20.404Z
+  - _ulid: 01KNA8YYVZ6CG390JYB1RE1KMF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNA8YY3JN69JYMD3YR4DREVH
+    timestamp: 2026-04-03T18:16:22.655Z
+  - _ulid: 01KNA8Z11ANDAFM7Y2WKYHW1TE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm-test
+    timestamp: 2026-04-03T18:16:24.874Z
+  - _ulid: 01KNA8Z33YTPFJB6BW2KDMB17K
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: manual-merge
+    timestamp: 2026-04-03T18:16:27.007Z
+  - _ulid: 01KNA8Z5BQSVEXF6PWQCYT5JPX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-04-03T18:16:29.304Z
+  - _ulid: 01KNA8ZFQWSBM4HS25ZGR8P5WK
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-03T18:16:39.932Z
+  - _ulid: 01KNA8ZFQWDYNS1BCTGX8HPKKS
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-03T18:16:39.932Z
+  - _ulid: 01KNA9GHMSP3WREYD4TGD7GPPN
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNA8YY3JN69JYMD3YR4DREVH
+    timestamp: 2026-04-03T18:25:58.937Z
+  - _ulid: 01KNA9GKT7R4W2RQDS4XTTMMEF
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNA8YSR2ZD8JCHKF8MCB87AC
+    timestamp: 2026-04-03T18:26:01.159Z
+  - _ulid: 01KNA9GP0SRWA0CE95HS71EGDW
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNA8YVXN04CG4AFJQ92YMPT3
+    timestamp: 2026-04-03T18:26:03.417Z
+  - _ulid: 01KNA9H2R7MG1VGS3G9K4N7W1R
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNA8YSR2ZD8JCHKF8MCB87AC
+    timestamp: 2026-04-03T18:26:16.455Z
+  - _ulid: 01KNA9H4X5D983A61VXSTQ8G95
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNA8YVXN04CG4AFJQ92YMPT3
+    timestamp: 2026-04-03T18:26:18.662Z
+  - _ulid: 01KNA9H72VYDW9JAYZWA6RZ4P8
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNA8YY3JN69JYMD3YR4DREVH
+    timestamp: 2026-04-03T18:26:20.891Z
+examined_commit: a1a65a28c894724d0ec94cb72ffefec6c5f32dfd
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN8T1APSFZ9NRNP7TKT957GD"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNA8YSR2ZD8JCHKF8MCB87AC
+    anchor:
+      type: code
+      commit: a1a65a28c894724d0ec94cb72ffefec6c5f32dfd
+      line_end: 462
+      line_start: 195
+      path: tests/dispatch-degraded-state.test.ts
+      side: head
+    entries:
+      - _ulid: 01KNA8YSR2ATR2547134EFVZ8S
+        author: Jacob Chapel
+        body: Several acceptance criteria this task claims to cover still are not represented by their own
+          AC annotations in the degraded-state tests. The tests at lines 196, 221, 282, 389, and 462
+          exercise the underlying behavior, but they are only annotated for
+          ac-divergence-log-classification, ac-degraded-no-provision, ac-degraded-status-broadcast,
+          and ac-degraded-recovery-logged. There are no matching annotations for
+          ac-divergence-log-target, ac-divergence-log-resolution, ac-degraded-task-queued,
+          ac-degraded-healthy-unblocked, ac-degraded-status-broadcast-target, or
+          ac-degraded-recovery-logged-duration, and I could not find any dedicated test at all for
+          ac-degraded-inflight-continues. That means the branch does not satisfy the project rule
+          that every claimed AC must have explicit, behavior-proving coverage.
+        created_at: 2026-04-03T18:16:17.410Z
+      - _ulid: 01KNA9GK29PJJ6VBP500W75F01
+        author: Jacob Chapel
+        body: Fixed in 16d33b868. Added explicit AC annotations for ac-divergence-log-target,
+          ac-divergence-log-resolution, ac-degraded-task-queued, ac-degraded-healthy-unblocked,
+          ac-degraded-status-broadcast-target, and ac-degraded-recovery-logged-duration, plus a new
+          behavioral test for ac-degraded-inflight-continues that keeps a real invocation running
+          while the target enters degraded state.
+        created_at: 2026-04-03T18:26:00.393Z
+    kind: blocker
+    resolved_at: 2026-04-03T18:26:15.722Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KNA8YVXN04CG4AFJQ92YMPT3
+    anchor:
+      type: code
+      commit: a1a65a28c894724d0ec94cb72ffefec6c5f32dfd
+      line_end: 1342
+      line_start: 1291
+      path: tests/dispatch-target-sync.test.ts
+      side: head
+    entries:
+      - _ulid: 01KNA8YVXNH8C25SD6D8129Y68
+        author: Jacob Chapel
+        body: This test is the behavioral proof that degradation remains scoped to the failed target while
+          another target continues syncing, but it is only annotated for
+          ac-partial-sync-scoped-degradation. The spec/task also claims coverage for
+          ac-divergence-scoped-to-target, and there is no AC annotation for that criterion anywhere
+          in the changed tests. Without the explicit annotation, the coverage tooling cannot tell
+          that this branch is intended to prove branch-scoped degradation behavior.
+        created_at: 2026-04-03T18:16:19.637Z
+      - _ulid: 01KNA9GN8QQZ7ACGJ9798AY1GA
+        author: Jacob Chapel
+        body: Fixed in 16d33b868. The scoped-degradation sync test now carries an explicit
+          ac-divergence-scoped-to-target annotation so the claimed branch-scoped behavior is
+          machine-visible to coverage tooling.
+        created_at: 2026-04-03T18:26:02.646Z
+    kind: blocker
+    resolved_at: 2026-04-03T18:26:17.901Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KNA8YY3JN69JYMD3YR4DREVH
+    anchor:
+      type: code
+      commit: a1a65a28c894724d0ec94cb72ffefec6c5f32dfd
+      line_end: 3305
+      line_start: 3143
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KNA8YY3J73NNZ8K5W2HHSM33
+        author: Jacob Chapel
+        body: >-
+          This snapshot still does not merge cleanly into the current integration target. I
+          reproduced the manual merge exactly as required with Auto-merging
+          src/agent-runtime/dispatch.ts
+
+          CONFLICT (content): Merge conflict in src/agent-runtime/dispatch.ts
+
+          Auto-merging tests/dispatch-target-sync.test.ts
+
+          CONFLICT (content): Merge conflict in tests/dispatch-target-sync.test.ts
+
+          Automatic merge failed; fix conflicts and then commit the result., and git reported
+          content conflicts in this file and in tests/dispatch-target-sync.test.ts. Because
+          publication mode is manual_merge, the task cannot advance until the branch is rebased or
+          otherwise reconciled against the live integration target.
+        created_at: 2026-04-03T18:16:21.874Z
+      - _ulid: 01KNA9GGXFW1QN7A6D3EPWKZ2Z
+        author: Jacob Chapel
+        body: Re-verified on the live integration target after the fix-cycle test updates. The branch is
+          already rebased on origin/plan/plan-workspace-scoped-integration-target-sync/01kn8bx4, and
+          a fresh no-commit merge simulation from that target into this task branch completed
+          cleanly with no conflicts before aborting.
+        created_at: 2026-04-03T18:25:58.190Z
+    kind: blocker
+    resolved_at: 2026-04-03T18:26:20.078Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-03T18:16:39.932Z
+created_at: 2026-04-03T18:11:35.783Z
+updated_at: 2026-04-03T18:26:20.078Z
+notes: []

@@ -1,0 +1,272 @@
+_ulid: 01KQYMKJ08560P1MVSFK43G37E
+slugs: []
+title: Review shared daemon endpoint resolver (cycle 6)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2359/2359 test suites passed; 8642 tests passed, 5 skipped; full log
+      /tmp/kspec-test-cache/01KQYMJ7BCNQ79PSG0NPF4802Y/8907a1dcc31527f6.log
+    name: npm test -- --fresh
+    required: true
+    runner: npm
+    created_at: 2026-05-06T12:45:55.207Z
+    completed_at: 2026-05-06T12:45:55.207Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit completed with exit 0
+    name: npm run typecheck
+    required: true
+    runner: npm
+    created_at: 2026-05-06T12:46:05.593Z
+    completed_at: 2026-05-06T12:46:05.593Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: scripts/build-daemon.cjs completed with exit 0 and emitted dist/daemon/endpoint.js plus
+      daemon files
+    name: npm run build:daemon
+    required: false
+    runner: npm
+    created_at: 2026-05-06T12:46:16.687Z
+    completed_at: 2026-05-06T12:46:16.687Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Schema/references/skills passed. Command exited 6 because repo-wide pre-existing warnings
+      remain: reference, alignment, completeness, and invalid annotation warnings; no task-specific
+      validation error found."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-06T12:46:26.509Z
+    completed_at: 2026-05-06T12:46:26.509Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check 85b4465b79f63cfe59cbac09a0a58cc054c22d36..HEAD produced no whitespace
+      errors; diff is 25 files, +2955/-566.
+    name: diff hygiene
+    required: false
+    runner: git
+    created_at: 2026-05-06T12:46:36.430Z
+    completed_at: 2026-05-06T12:46:36.430Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md; task/spec output for @01KQWZZH7R9W7WKATZXFB61MPC,
+      @daemon-network-endpoint-contract, @config-daemon, @trait-localhost-security, @daemon-server;
+      changed implementation files including src/daemon-shared/endpoint.ts,
+      packages/daemon/src/server.ts/index.ts/pid.ts, src/cli/daemon-proxy.ts/index.ts/pid-utils.ts,
+      src/cli/commands/{serve,agent,event,schedule,task}.ts, src/parser/{config,daemon-status}.ts,
+      packages/web-ui constants/vite config, scripts/build-daemon.cjs; changed tests for endpoint,
+      proxy, serve, no-daemon, parser config, web UI dev endpoint, daemon pid. Commands run: kspec
+      validate; npm test -- --fresh; npm run typecheck; npm run build:daemon; git diff/stat/check;
+      AC annotation rg; middleware and bind reachability probes. Claims verified: metadata
+      precedence, legacy fallback annotations, rebase-on-dev diff base, full fresh tests, daemon
+      build, and connect_host reachability. Categories searched: correctness, edge cases, error
+      handling, security, test quality, integration."
+    name: review evidence log
+    required: false
+    runner: codex
+    created_at: 2026-05-06T12:46:52.729Z
+    completed_at: 2026-05-06T12:46:52.729Z
+events:
+  - _ulid: 01KQYMKJ0805YFWBVRK46JQAD6
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-06T12:36:04.232Z
+  - _ulid: 01KQYMM5VHZ895E2PPS2V1FBSA
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-06T12:36:24.561Z
+  - _ulid: 01KQYN5MAX020TMKRRDMZJFFAB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-05-06T12:45:56.445Z
+  - _ulid: 01KQYN5YJ4Y1B5YA2TJPVWG6NG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run typecheck
+    timestamp: 2026-05-06T12:46:06.916Z
+  - _ulid: 01KQYN699Y476MWGNV1XSXN3D8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run build:daemon
+    timestamp: 2026-05-06T12:46:17.918Z
+  - _ulid: 01KQYN6JXEVZA5M9GD8480MJCQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-06T12:46:27.758Z
+  - _ulid: 01KQYN6WMQ2R1XNJ34ZXEM9B2T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff hygiene
+    timestamp: 2026-05-06T12:46:37.719Z
+  - _ulid: 01KQYN7CG82C53Z5V6NKSPHM9N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-06T12:46:53.960Z
+  - _ulid: 01KQYN7Z19W1YPFXXFS52F29G3
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQYN7XT9EMSBHP5K1VGQHX2X
+    timestamp: 2026-05-06T12:47:12.937Z
+  - _ulid: 01KQYN88TEKWKNSAAJYTSJWQDQ
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-06T12:47:22.958Z
+  - _ulid: 01KQYN88TEX99T8WNY4EKSCMKS
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-06T12:47:22.958Z
+  - _ulid: 01KQYQ4KVAJ2XD22HK27AGF7RA
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQYN7XT9EMSBHP5K1VGQHX2X
+    timestamp: 2026-05-06T13:20:20.330Z
+  - _ulid: 01KQYQ4PX9HYPD7V46KPM791S3
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQYN7XT9EMSBHP5K1VGQHX2X
+    timestamp: 2026-05-06T13:20:23.465Z
+examined_commit: 39de9f92f702d1e369143656c861fedd9099411b
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQWZZH7R9W7WKATZXFB61MPC"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQYN7XT9EMSBHP5K1VGQHX2X
+    anchor:
+      type: code
+      commit: 39de9f92f702d1e369143656c861fedd9099411b
+      line_end: 194
+      line_start: 192
+      path: src/daemon-shared/endpoint.ts
+      side: head
+    entries:
+      - _ulid: 01KQYN7XT9CJN92RAA9ZXSW91F
+        author: Jacob Chapel
+        body: "MUST-FIX: explicit connect_host can be advertised even when that URL is not actually
+          reachable or accepted by the daemon. resolveDaemonConnectHost returns any non-empty
+          explicitConnectHost before considering the bind host, so the branch can write metadata
+          such as bind_host=127.0.0.1 and api_url=http://127.0.0.2:<port>; a server bound to
+          127.0.0.1 is not reachable at 127.0.0.2 (verified with a local HTTP probe: 127.0.0.1 ->
+          200, 127.0.0.2 -> TypeError). For wildcard/external binds, the built daemon middleware
+          still rejects non-default advertised hosts too: importing dist/daemon/server.js and
+          running localhostOnly() returned 403 for Host 127.0.0.2:3456 and 192.0.2.10:3456. This
+          breaks @config-daemon ac-connect-host-config and @daemon-network-endpoint-contract
+          ac-clients-use-metadata because clients now honor metadata but the advertised endpoint may
+          fail before any daemon API call succeeds. Constrain explicit connect_host to hosts
+          reachable for the bind host, or make request validation accept the resolved advertised
+          connect host in external-binding mode, and add a behavioral test that starts/calls through
+          a non-default connect_host instead of only asserting metadata."
+        created_at: 2026-05-06T12:47:11.689Z
+      - _ulid: 01KQYQ4JM13E8M9DBW84VH26K4
+        author: "@claude"
+        body: >-
+          Fixed. Two-part fix.
+
+
+          (1) Reachability validation in resolveDaemonConnectHost
+          (src/daemon-shared/endpoint.ts:188-227). When bind_host is a specific (non-wildcard)
+          address and explicit connect_host doesn't match it, the resolver now throws with a clear
+          message — bind=127.0.0.1, connect=127.0.0.2 / connect=192.168.1.10 / connect=::2 /
+          different non-loopback addresses are all rejected at resolve time so unreachable metadata
+          is never written. Wildcard binds (0.0.0.0 / ::) accept any explicit connect_host, and
+          connect=bind is accepted (covers loopback-bind with loopback-connect, and external-bind
+          with same-address connect).
+
+
+          (2) Middleware now accepts the advertised connect_host
+          (packages/daemon/src/server.ts:265-339, 449-462). localhostOnly() takes an optional
+          additionalAllowedHosts list. createServer extends the default localhost set with the
+          resolved endpoint.bindHost / endpoint.connectHost so requests addressed to the
+          metadata-advertised URL are not 403'd. Wildcard addresses are filtered from the additional
+          list (they're bind targets, not real Host header values). Default behavior with no options
+          is unchanged — loopback-default mode stays loopback-only.
+
+
+          Behavioral tests:
+
+          - tests/cli-serve.test.ts: new e2e starts the daemon with bind=0.0.0.0 +
+          connect_host=127.0.0.2, fetches the advertised http://127.0.0.2:port/api/health and
+          asserts 200 OK plus body { status: 'ok' } (skips on platforms without 127.0.0.0/8 loopback
+          alias). Before this fix the same URL returned 403 even though metadata pointed clients
+          there.
+
+          - tests/daemon-server.test.ts: middleware unit tests for additionalAllowedHosts (accepts
+          non-default hosts, still rejects unlisted, filters wildcards, accepts bracketed IPv6,
+          ignores empty entries, default-options preserves localhost-only). Test file now imports
+          the production middleware from dist/daemon/server.js instead of duplicating the logic so
+          drift is structurally prevented.
+
+          - tests/daemon-endpoint.test.ts: explicit rejection cases (127.0.0.1+192.168.1.10,
+          127.0.0.1+127.0.0.2, ::1+::2, 10.0.0.1+10.0.0.2) and acceptance cases (connect=bind, empty
+          connect with specific bind falling back to bind).
+
+          - tests/cli-no-daemon.test.ts: pre-existing forward-flags test updated to bind=0.0.0.0 so
+          it satisfies the (now enforced) reachability rule.
+
+
+          Full suite: npm test -- --fresh — 2360/2360 suites, 8651 tests passed, 5 pre-existing
+          skips, 0 failures (~32 minutes). npm run typecheck clean. npm run build:daemon clean.
+        created_at: 2026-05-06T13:20:19.073Z
+    kind: blocker
+    resolved_at: 2026-05-06T13:20:22.264Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-06T12:47:22.958Z
+created_at: 2026-05-06T12:36:04.232Z
+updated_at: 2026-05-06T13:20:22.264Z
+notes: []

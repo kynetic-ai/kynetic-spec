@@ -1,0 +1,126 @@
+_ulid: 01KPP8WFKG7DHQV57RRK8P6DCK
+slugs: []
+title: "Plan re-review: User Documentation Foundation (cycle 5)"
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec plan import plans/user-documentation-foundation.md --dry-run succeeded on
+      2026-04-20; full document parsed and stored with no import errors.
+    name: Plan import dry-run
+    required: true
+    created_at: 2026-04-20T20:21:56.299Z
+    completed_at: 2026-04-20T20:21:56.299Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Cycle 4 blockers resolved in stored plan: @task-docs-authoring-conventions now covers
+      @docs-authoring-conventions ac-1 through ac-3, making the reviewer-side docs-coverage check
+      executable from one task."
+    name: AC coverage by tasks
+    required: true
+    created_at: 2026-04-20T20:22:01.795Z
+    completed_at: 2026-04-20T20:22:01.795Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@task-docs-search now depends on @task-docs-release-notes-rendering and
+      @task-docs-authoring-conventions in addition to the other page-producing prerequisites, so
+      search indexing cannot complete before the docs corpus is in place."
+    name: Dependency ordering
+    required: true
+    created_at: 2026-04-20T20:22:07.220Z
+    completed_at: 2026-04-20T20:22:07.220Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec search for related documentation keywords returned no existing overlapping docs
+      plan/spec neighborhood that conflicts with this plan's structure.
+    name: Spec neighborhood
+    required: true
+    created_at: 2026-04-20T20:22:12.818Z
+    completed_at: 2026-04-20T20:22:12.818Z
+events:
+  - _ulid: 01KPP8WFKGKWC2W0YHK0R6T4KV
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-20T20:21:36.496Z
+  - _ulid: 01KPP8WYV3N2WEWS5XE5KKT744
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-20T20:21:52.099Z
+  - _ulid: 01KPP8X3YXYXZT6SYM9ETQAJD9
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan import dry-run
+    timestamp: 2026-04-20T20:21:57.341Z
+  - _ulid: 01KPP8X9BT0C7ZV3XA48NNDAJH
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage by tasks
+    timestamp: 2026-04-20T20:22:02.874Z
+  - _ulid: 01KPP8XEN9E4RBYJ07M0B8HW9Q
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-04-20T20:22:08.297Z
+  - _ulid: 01KPP8XM4M6XKGGFVX6PRN6VM7
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec neighborhood
+    timestamp: 2026-04-20T20:22:13.908Z
+  - _ulid: 01KPP8XSFF3X3M4449XP4MFGW2
+    actor: codex@local
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-20T20:22:19.375Z
+  - _ulid: 01KPP8XSFFYH11K54G8DNP8PW4
+    actor: codex@local
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-20T20:22:19.375Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-user-documentation-foundation"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@local
+    role: reviewer
+    created_at: 2026-04-20T20:22:19.374Z
+created_at: 2026-04-20T20:21:36.496Z
+updated_at: 2026-04-20T20:22:19.375Z
+notes: []

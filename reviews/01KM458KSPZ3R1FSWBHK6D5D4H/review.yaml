@@ -1,0 +1,120 @@
+_ulid: 01KM458KSPZ3R1FSWBHK6D5D4H
+slugs: []
+title: Review task-implement-cancelled-task-dependency-cleanup
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: AGENTS.md, kspec-agents.md, src/cli/commands/task.ts, src/parser/yaml.ts,
+      src/cli/batch.ts, src/parser/file-lock.ts, tests/task-cancel-dependency-cleanup.test.ts,
+      tests/task-clear-deps.test.ts, tests/task-reset.test.ts. Commands run: kspec task get, kspec
+      item get, kspec validate, rg on AC annotations and dependency code paths, git diff/stat/log,
+      npm test. Claims verified: cancellation now removes downstream deps and adds notes in
+      single-file tests; helper is non-atomic across multi-file task layouts by code inspection.
+      Categories searched: correctness, edge cases, test quality, integration, error handling."
+    name: review evidence
+    required: false
+    runner: reviewer
+    created_at: 2026-03-19T23:01:22.392Z
+    completed_at: 2026-03-19T23:01:22.392Z
+events:
+  - _ulid: 01KM458KSPS7TKDWRN9T2YEM3C
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-19T23:00:36.278Z
+  - _ulid: 01KM459D0QCPSQPKY0ZK3M9E7R
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-19T23:01:02.103Z
+  - _ulid: 01KM45A2Q0PKDEXA35KDEVX0DP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM45A29SEP6DM93N6BXBCH35
+    timestamp: 2026-03-19T23:01:24.320Z
+  - _ulid: 01KM45AE0W9R28V4E6NVBYP16G
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-19T23:01:35.900Z
+  - _ulid: 01KM45AE0WBQ4Q2BC6TA009ERN
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-19T23:01:35.900Z
+  - _ulid: 01KM4664VS6VQ2C87CRCNQZ9WM
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM45A29SEP6DM93N6BXBCH35
+    timestamp: 2026-03-19T23:16:44.025Z
+  - _ulid: 01KM4665NFBZ5JDF6J28MKC9G4
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KM45A29SEP6DM93N6BXBCH35
+    timestamp: 2026-03-19T23:16:44.847Z
+examined_commit: 78900aef21e89648268c95ed253d28ce277ab87d
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM43VYQXEFJMMYK2184MR7FH"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM45A29SEP6DM93N6BXBCH35
+    anchor:
+      type: code
+      commit: 78900aef21e89648268c95ed253d28ce277ab87d
+      line_end: 1223
+      line_start: 1211
+      path: src/parser/yaml.ts
+      side: head
+    entries:
+      - _ulid: 01KM45A29S2S9EN1Q9ZNV1T975
+        author: Jacob Chapel
+        body: " is not actually atomic when the affected tasks live in different task files.  explicitly
+          supports loading tasks from multiple YAML files, but this helper writes each touched file
+          sequentially and has no rollback path if a later  fails. In that case the cancelled task
+          and some downstream cleanup notes are already persisted while later downstream files
+          remain unchanged, which violates AC 's requirement that operators never observe a
+          partially applied cancellation."
+        created_at: 2026-03-19T23:01:23.897Z
+      - _ulid: 01KM4664KSP3VC907DMTSCW020
+        author: Jacob Chapel
+        body: Fixed in commit b167ae34f. mutateTasksAtomically now stages multi-file task writes through the
+          batch write buffer and flushes once after all touched task files are prepared, so
+          cancellation cleanup is no longer persisted one file at a time. Added a regression test
+          that moves the downstream task into a separate shadow task file and verifies task cancel
+          still updates both files in one cancellation commit.
+        created_at: 2026-03-19T23:16:43.768Z
+    kind: blocker
+    resolved_at: 2026-03-19T23:16:44.575Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-19T23:01:35.899Z
+created_at: 2026-03-19T23:00:36.278Z
+updated_at: 2026-03-19T23:16:44.575Z
+notes: []

@@ -1,0 +1,286 @@
+_ulid: 01KR731KHH56WM9VRSTAMTWM88
+slugs: []
+title: Review task-fix-guardrail-binding-wrapper-analysis cycle 3
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test: 2418 suites passed; 8987 passed, 5 skipped; duration 2053.1s"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-09T19:35:42.805Z
+    completed_at: 2026-05-09T19:35:42.805Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts: 23 suites passed, 233 tests passed, duration 57.0s"
+    name: focused lint guardrail tests
+    required: true
+    runner: npm
+    created_at: 2026-05-09T19:35:46.618Z
+    completed_at: 2026-05-09T19:35:46.618Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- kspec validate --refs --warnings-ok: validation passed; references OK; 6
+      pre-existing reference warnings allowed by --warnings-ok"
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-05-09T19:35:50.526Z
+    completed_at: 2026-05-09T19:35:50.526Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- kspec validate --completeness --warnings-ok: validation passed; 251
+      pre-existing completeness/annotation warnings allowed by --warnings-ok"
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-05-09T19:35:54.450Z
+    completed_at: 2026-05-09T19:35:54.450Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md; task/spec/review records;
+      tools/eslint-rules/no-leaky-test-daemon.js; tests/lint-daemon-test-guardrails.test.ts; diff
+      from dev..HEAD. Commands run: kspec task get; kspec item get; kspec review
+      for-task/get/add/open/comment/check; git diff/log; rg AC annotations; focused npm test
+      --fresh; full npm test; kspec validate refs/completeness; custom oxlint probes. Claims
+      verified: member-expression ownership regression tests exist and focused suite passes; prior
+      cycle blocker addressed for holder/state/member receivers. Categories searched: correctness,
+      safe-case false positives, edge cases around local callback bindings and TS wrappers, test
+      quality/AC annotations, integration with full suite."
+    name: review evidence log
+    required: false
+    runner: reviewer
+    created_at: 2026-05-09T19:36:11.144Z
+    completed_at: 2026-05-09T19:36:11.144Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Custom oxlint probes against tools/eslint-rules/no-leaky-test-daemon.js found: (1) false
+      negative: runKspec serve start --detach + onTestFinished(() => { const pid = 12345;
+      process.kill(pid, SIGTERM); }) + expect exited 0 with no diagnostic; (2) false positive: safe
+      captured pid with process.kill(pid as number, SIGTERM) exited 1 with cleanupClosureUnbound for
+      <unverifiable kill target>."
+    name: reviewer ownership probes
+    required: true
+    runner: oxlint
+    created_at: 2026-05-09T19:36:14.973Z
+    completed_at: 2026-05-09T19:36:14.973Z
+events:
+  - _ulid: 01KR731KHHS95E5HB5FEWNW61N
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-09T19:22:20.081Z
+  - _ulid: 01KR732ZGFSF0E0QN23G4R0GMR
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-09T19:23:05.104Z
+  - _ulid: 01KR736W14ER132V2RHSY8AGW4
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR736TP4HKEARHNQBYQCEB04
+    timestamp: 2026-05-09T19:25:12.612Z
+  - _ulid: 01KR736ZX2BZTHHZTNRXAWPJ7Q
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR736YG7ZNC1AZZVK78K1TT2
+    timestamp: 2026-05-09T19:25:16.578Z
+  - _ulid: 01KR73T4SC88T0KFE0XZMS5ECJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-09T19:35:44.172Z
+  - _ulid: 01KR73T8FYQPK7VM9D5SD3BH9Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused lint guardrail tests
+    timestamp: 2026-05-09T19:35:47.967Z
+  - _ulid: 01KR73TC9G2AAY7850G028HMJ2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-05-09T19:35:51.856Z
+  - _ulid: 01KR73TG64FVJVJD4NZYXK360Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-05-09T19:35:55.845Z
+  - _ulid: 01KR73V0EGZ3PKARS5CGZDTCE8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-09T19:36:12.496Z
+  - _ulid: 01KR73V457W28J3CFRKBRFRR7B
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: reviewer ownership probes
+    timestamp: 2026-05-09T19:36:16.295Z
+  - _ulid: 01KR73VFVDCMJXSTX1AF9XFH23
+    actor: reviewer-agent
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-09T19:36:28.270Z
+  - _ulid: 01KR73VFVEW6MYZANVRCRQNRB1
+    actor: reviewer-agent
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-09T19:36:28.270Z
+  - _ulid: 01KR75477QC7XDEMAW9HVM65C4
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR736TP4HKEARHNQBYQCEB04
+    timestamp: 2026-05-09T19:58:42.936Z
+  - _ulid: 01KR754AFXK99ABYQ8EJZGENDQ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR736TP4HKEARHNQBYQCEB04
+    timestamp: 2026-05-09T19:58:46.269Z
+  - _ulid: 01KR754DQQ5M13JJRE01PSA3EH
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR736YG7ZNC1AZZVK78K1TT2
+    timestamp: 2026-05-09T19:58:49.591Z
+  - _ulid: 01KR754HXKVZH8P2J65MEE4QPZ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR736YG7ZNC1AZZVK78K1TT2
+    timestamp: 2026-05-09T19:58:53.875Z
+examined_commit: 875a81d78c4b0c702a3d24d08789482c973d1584
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR6M77JA0S1EEVZX8KKRPY1V"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR736TP4HKEARHNQBYQCEB04
+    anchor:
+      type: code
+      commit: 875a81d78c4b0c702a3d24d08789482c973d1584
+      line_end: 1318
+      line_start: 1318
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KR736TP4PZ2M8QA6D0Y7DCD6
+        author: Jacob Chapel
+        body: 'MUST-FIX: cleanupCallbackBindingStatus skips any kill target that is declared inside the
+          cleanup callback, so an unsafe callback-local value counts as scoped cleanup. I verified
+          with a probe where a test does runKspec("serve start --detach --port 3456"), registers
+          onTestFinished(() => { const pid = 12345; process.kill(pid, "SIGTERM"); }), then calls
+          expect(true).toBe(true); oxlint exited 0 with no no-leaky-test-daemon diagnostic. That
+          cleanup can only kill a stale literal, not the just-started daemon, so the detached start
+          still violates ac-detached-cleanup-bound-before-observation. Callback-local cleanup
+          targets need ownership validation too, or non-owned local values must not satisfy
+          cleanup.'
+        created_at: 2026-05-09T19:25:11.236Z
+      - _ulid: 01KR7545Y4ZA9RF5Q77MJDPTNH
+        author: "@claude"
+        body: "Fixed: tightened callbackLocalKillTargetIsDynamic. The cleanup-binding analysis no longer
+          skips callback-local kill targets unconditionally — it walks every VariableDeclarator and
+          AssignmentExpression in the callback body that targets `name`, applies the new
+          `isStaticLiteralExpression` classifier (which unwraps transparent wrappers), and rejects
+          the binding when every value source is literal-only. Parameters of the callback are also
+          rejected because the cleanup framework passes no useful arguments. The cycle-3 reviewer
+          probe (`onTestFinished(() => { const pid = 12345; process.kill(pid, ...); })`) now
+          produces `cleanupClosureUnbound`. Three regression tests lock this in: callback-local
+          const literal, callback-local let + literal assign, and callback-local TS-asserted
+          literal. The legitimate runtime-read shape (`const pid = readPidFromFile()` inside the
+          callback) is preserved and covered by an allowed-narrow test."
+        created_at: 2026-05-09T19:58:41.604Z
+    kind: blocker
+    resolved_at: 2026-05-09T19:58:44.997Z
+    resolved_by: "@claude"
+  - _ulid: 01KR736YG7ZNC1AZZVK78K1TT2
+    anchor:
+      type: code
+      commit: 875a81d78c4b0c702a3d24d08789482c973d1584
+      line_end: 847
+      line_start: 837
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KR736YG7XNBWYRTWAC7ACHJQ
+        author: Jacob Chapel
+        body: 'MUST-FIX: extractRootCaptureIdentifierName treats transparent TypeScript wrappers as
+          unverifiable kill targets. A safe pattern that captures the pid before cleanup, then uses
+          a type assertion in the callback, is currently rejected: runKspec("serve start --detach
+          --port 3456"); const pid = readPidFromFile() as number; onTestFinished(() =>
+          process.kill(pid as number, "SIGTERM")); expect(true).toBe(true). I ran that oxlint probe
+          and it exited 1 with cleanupClosureUnbound for <unverifiable kill target>. This violates
+          the requirement to preserve safe cleanup cases; TSAsExpression/TSNonNullExpression and
+          similar transparent wrappers should be unwrapped before falling back to
+          UNVERIFIABLE_KILL_TARGET.'
+        created_at: 2026-05-09T19:25:15.143Z
+      - _ulid: 01KR754CG8F9E80M2K40ZA8B4N
+        author: "@claude"
+        body: 'Fixed: extracted `unwrapTransparentExpression` and threaded it through
+          `extractRootCaptureIdentifierName`. The fixed-point loop now strips ChainExpression,
+          ParenthesizedExpression, TSAsExpression, TSSatisfiesExpression, TSNonNullExpression,
+          TSTypeAssertion, and TSInstantiationExpression at every step of the descent — both before
+          and between MemberExpression unwraps. The cycle-3 reviewer probe (`onTestFinished(() =>
+          process.kill(pid as number, "SIGTERM"))` with `const pid = readPidFromFile() as number`
+          after the start) now passes oxlint clean. Five regression tests cover: TS as-cast, TS
+          non-null assertion, stacked `((pid as number)!)`, the safe shape kept, and TS-cast on a
+          member-expression target rooted in a pre-start binding (still rejected via the recovered
+          root identifier).'
+        created_at: 2026-05-09T19:58:48.328Z
+    kind: blocker
+    resolved_at: 2026-05-09T19:58:52.602Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: reviewer-agent
+    role: reviewer
+    created_at: 2026-05-09T19:36:28.269Z
+created_at: 2026-05-09T19:22:20.081Z
+updated_at: 2026-05-09T19:58:52.602Z
+notes: []

@@ -1,0 +1,138 @@
+_ulid: 01KNBQ2P6HYBPY5NXQAKDZ3HBN
+slugs: []
+title: Review task-refactor-session-watcher-active-scoped (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2068/2068 suites, 7514 passed, 5 skipped, 0 failed."
+    name: npm test
+    required: true
+    runner: test.cjs
+    created_at: 2026-04-04T07:47:29.084Z
+    completed_at: 2026-04-04T07:47:29.084Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation produced only pre-existing repository warnings (orphaned skill dir,
+      alignment/completeness warning debt); no errors.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-04T07:47:31.573Z
+    completed_at: 2026-04-04T07:47:31.573Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- tests/session-watcher.test.ts passed: 2/2 suites, 10/10 tests."
+    name: session watcher tests
+    required: false
+    runner: test.cjs
+    created_at: 2026-04-04T07:47:36.760Z
+    completed_at: 2026-04-04T07:47:36.760Z
+events:
+  - _ulid: 01KNBQ2P6HQRZQ1KX3E6ZN3M4C
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-04T07:42:19.345Z
+  - _ulid: 01KNBQ364ME4SFYSGNDH3B2KAJ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-04T07:42:35.668Z
+  - _ulid: 01KNBQC5FV5DDJ1C4RG4WMSAGY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-04T07:47:29.915Z
+  - _ulid: 01KNBQC7ZAHAB2Y5PJ0BQQW062
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-04T07:47:32.458Z
+  - _ulid: 01KNBQCAF2K8M4ZV79HRF1HMX0
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNBQC9KPS6YZNA9GPH7NB7MM
+    timestamp: 2026-04-04T07:47:35.010Z
+  - _ulid: 01KNBQCD1RC24K5AE5PJ3Z2BRB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: session watcher tests
+    timestamp: 2026-04-04T07:47:37.656Z
+  - _ulid: 01KNBQCQNSR4Q1WRNZMPG9FE4T
+    actor: codex@gpt-5
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-04T07:47:48.537Z
+  - _ulid: 01KNBQCQNS2M4RAYDXME5CN5NA
+    actor: codex@gpt-5
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-04T07:47:48.537Z
+examined_commit: 6dc8783a76490a9789559ee248aea3d643145f14
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNBK4TTCRCB0XH1VR4YJ3EV0"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNBQC9KPS6YZNA9GPH7NB7MM
+    entries:
+      - _ulid: 01KNBQC9KP5C64N71EG9Z8VP1N
+        author: Jacob Chapel
+        body: >-
+          Evidence log
+
+          Files read: packages/daemon/src/session-watcher.ts,
+          packages/daemon/src/project-context.ts, packages/daemon/src/watcher.ts,
+          tests/session-watcher.test.ts
+
+          Commands run: git diff --stat, git diff on changed files, kspec task get, kspec item get
+          @daemon-file-monitoring, kspec review get previous/current, rg AC annotation scan, kspec
+          validate, npm test -- tests/session-watcher.test.ts, npm test
+
+          Claims verified: delayed session metadata attach fix verified by reading retry logic in
+          SessionWatcher and by passing behavioral test run; active-only watcher behavior verified
+          in changed tests and code paths; no regression claim verified by full npm test pass
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration;
+          no blocking findings found
+        created_at: 2026-04-04T07:47:34.134Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@gpt-5
+    role: reviewer
+    created_at: 2026-04-04T07:47:48.537Z
+created_at: 2026-04-04T07:42:19.345Z
+updated_at: 2026-04-04T07:47:48.537Z
+notes: []

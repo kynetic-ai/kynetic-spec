@@ -1,0 +1,178 @@
+_ulid: 01KM01CSZJVYS0F0M9G4ETP64Y
+slugs: []
+title: Review task-action-model
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 5913 passed, 1 failed (pre-existing review-cli.test.ts failure unrelated to this change —
+      git diff confirms zero changes to that file), 3 skipped. All 49 action-model tests pass.
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T08:36:45.162Z
+    completed_at: 2026-03-18T08:36:45.162Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npx tsc --noEmit completed with zero errors
+    name: typescript
+    required: true
+    runner: tsc
+    created_at: 2026-03-18T08:36:50.236Z
+    completed_at: 2026-03-18T08:36:50.236Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No warnings or errors for @dispatch-action-model spec. Pre-existing validation issues
+      (orphaned specs, missing AC coverage for other specs) unrelated to this change.
+    name: kspec-validate
+    required: true
+    runner: kspec
+    created_at: 2026-03-18T08:36:56.991Z
+    completed_at: 2026-03-18T08:36:56.991Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 9 own ACs (ac-1 through ac-9) have annotated tests in tests/action-model.test.ts. All
+      6 trait ACs (@trait-error-guidance ac-1 through ac-6) annotated as N/A with valid
+      justifications — ActionExecutor is a library component, not a CLI command; error formatting is
+      the responsibility of CLI consumers.
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-18T08:37:05.680Z
+    completed_at: 2026-03-18T08:37:05.680Z
+events:
+  - _ulid: 01KM01CSZHVA6K4YP5H9F05S95
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T08:36:01.649Z
+  - _ulid: 01KM01D961RBF4VWTWEY4AKW02
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T08:36:17.218Z
+  - _ulid: 01KM01DMEX3T24C300GQRJ5G9C
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM01DMB873PY8BXP28E0PV32
+    timestamp: 2026-03-18T08:36:28.765Z
+  - _ulid: 01KM01DW9BSNJQ6JJYVVRRQHR1
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM01DW5V129XEY6TKB7HRMNF
+    timestamp: 2026-03-18T08:36:36.779Z
+  - _ulid: 01KM01E4JGHNV2W3YQDWQZ4BVA
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T08:36:45.264Z
+  - _ulid: 01KM01E9H5AG1M9563DH7GFA8H
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: typescript
+    timestamp: 2026-03-18T08:36:50.341Z
+  - _ulid: 01KM01EG4ETA531YTT799B43WG
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-18T08:36:57.102Z
+  - _ulid: 01KM01ERMYY7XHWP6P6RQH2GC8
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-18T08:37:05.823Z
+  - _ulid: 01KM01F02XMCKN8GB58QVD37HK
+    actor: agent@kspec-dispatch
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-18T08:37:13.437Z
+  - _ulid: 01KM01F02XKXXWHW3TAGA9K6Z1
+    actor: agent@kspec-dispatch
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T08:37:13.437Z
+examined_commit: e33ebbbffa0bf82e7955605e1a0669a3004c1f31
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-action-model"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM01DMB873PY8BXP28E0PV32
+    anchor:
+      type: code
+      commit: e33ebbbff
+      line_end: 544
+      line_start: 476
+      path: src/agent-runtime/action-executor.ts
+      side: head
+    entries:
+      - _ulid: 01KM01DMB8STBJ1Y7AD0HSWDDQ
+        author: "@claude"
+        body: "Potential double action.failed event emission: Both the 'error' and 'close' event handlers on
+          the child process emit action.failed events independently. When a process fails to spawn
+          (e.g., ENOENT), Node.js fires both events. The promise resolve is idempotent (second call
+          is a no-op), so the return value is correct, but onActionRunEvent fires twice with
+          action.failed for the same action_run_id. Event consumers counting or logging failures
+          would see duplicates. Same pattern exists in executeKspec. Fix: add a 'settled' boolean
+          guard to prevent duplicate event emission after the first terminal event."
+        created_at: 2026-03-18T08:36:28.648Z
+    kind: nit
+  - _ulid: 01KM01DW5V129XEY6TKB7HRMNF
+    anchor:
+      type: code
+      commit: e33ebbbff
+      line_end: 559
+      line_start: 559
+      path: src/agent-runtime/action-executor.ts
+      side: head
+    entries:
+      - _ulid: 01KM01DW5V6SPJ4SGNAZQC7QQ9
+        author: "@claude"
+        body: kspec command splitting uses simple whitespace split (resolvedCommand.split(/\s+/)) which
+          doesn't handle quoted arguments. For example, 'task note @ref --message "hello world"'
+          would split incorrectly. This is acceptable for the typical simple kspec commands shown in
+          the spec examples, but worth noting for future consumers. Not a spec violation since the
+          schema defines command as a single string.
+        created_at: 2026-03-18T08:36:36.667Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: agent@kspec-dispatch
+    role: reviewer
+    created_at: 2026-03-18T08:37:13.327Z
+created_at: 2026-03-18T08:36:01.650Z
+updated_at: 2026-03-18T08:37:13.327Z
+notes: []

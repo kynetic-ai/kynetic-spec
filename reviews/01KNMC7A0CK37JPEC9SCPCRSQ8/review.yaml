@@ -1,0 +1,130 @@
+_ulid: 01KNMC7A0CK37JPEC9SCPCRSQ8
+slugs: []
+title: Review task-update-command-api-spec
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran full `npm test` on the reviewed snapshot. Two suites failed due to pre-existing dist
+      import mismatches unrelated to this task: tests/daemon-read-path.test.ts and
+      tests/daemon-triage-write-through.test.ts import `.ts` paths under `dist/` while the emitted
+      files are `.js`. Verified the task branch and integration target both resolve to
+      343472d01808d514accacb66d1bb86db4519b37f, so the failures are not regressions from this
+      spec-only task. Follow-up captured in a new task."
+    name: npm-test
+    required: true
+    runner: npm
+    created_at: 2026-04-07T16:31:43.583Z
+    completed_at: 2026-04-07T16:31:43.583Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "`kspec validate` passed schema/reference validation. Output contained only existing
+      project warnings (orphaned skill dir, alignment debt, longstanding completeness warnings),
+      with no new errors attributable to @01KNMBPBQ8T1NQABEB0JAGRCPY."
+    name: kspec-validate
+    required: true
+    runner: kspec
+    created_at: 2026-04-07T16:31:52.729Z
+    completed_at: 2026-04-07T16:31:52.729Z
+events:
+  - _ulid: 01KNMC7A0C37HV8BC90VJQZMH3
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-07T16:25:46.252Z
+  - _ulid: 01KNMC8171N5ZS8YHSBDC4CK8S
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-07T16:26:10.017Z
+  - _ulid: 01KNMCJ8CXF506MQZ04SG2EXDQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm-test
+    timestamp: 2026-04-07T16:31:45.053Z
+  - _ulid: 01KNMCJCW3TVDQK8KWXGH8XY9T
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNMCJBBKXZPR9SYAJ0R9N54Y
+    timestamp: 2026-04-07T16:31:49.635Z
+  - _ulid: 01KNMCJHFCGD3GZM638RHGCQJB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-04-07T16:31:54.348Z
+  - _ulid: 01KNMCK4R40MPNXQJA4YW717XH
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-07T16:32:14.084Z
+  - _ulid: 01KNMCK4R436WCP3GF187Y6TXV
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-07T16:32:14.084Z
+examined_commit: 343472d01808d514accacb66d1bb86db4519b37f
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNMBPBQ8T1NQABEB0JAGRCPY"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNMCJBBKXZPR9SYAJ0R9N54Y
+    entries:
+      - _ulid: 01KNMCJBBK68ZHGFD36PPJH4S6
+        author: Jacob Chapel
+        body: >-
+          Evidence log
+
+
+          Files read: @daemon-command-api, @daemon-concurrent-reads,
+          @plan-cache-aware-command-execution, tests/daemon-read-path.test.ts,
+          tests/daemon-triage-write-through.test.ts.
+
+          Commands run: `kspec task get @01KNMBPBQ8T1NQABEB0JAGRCPY`, `kspec review for-task
+          @01KNMBPBQ8T1NQABEB0JAGRCPY`, `kspec item get @daemon-command-api`, `kspec item get
+          @daemon-concurrent-reads`, `kspec plan get @plan-cache-aware-command-execution`, `kspec
+          validate`, `npm test`, branch/commit resolution and dist file checks.
+
+          Claims verified: the three new ACs are present on @daemon-command-api; the plan text
+          matches the added ACs; the reviewed task branch and integration target both resolve to
+          commit 343472d01808d514accacb66d1bb86db4519b37f; full-suite failures are unrelated
+          pre-existing test import issues captured in a follow-up task.
+
+          Categories searched: correctness, spec ownership, overlap with concurrency behavior,
+          validation health, regression risk from unrelated tests. No task-scoped blockers found.
+        created_at: 2026-04-07T16:31:48.084Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-07T16:32:14.084Z
+created_at: 2026-04-07T16:25:46.252Z
+updated_at: 2026-04-07T16:32:14.084Z
+notes: []

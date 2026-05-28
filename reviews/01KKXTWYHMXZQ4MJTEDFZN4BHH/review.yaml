@@ -1,0 +1,157 @@
+_ulid: 01KKXTWYHMXZQ4MJTEDFZN4BHH
+slugs: []
+title: Review task-fix-dead-submission-linkage-case (cycle 1)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "5729 tests passed, 3 skipped. 1 failure in review-cli.test.ts is pre-existing on dev
+      (verified: zero changes to that file on task branch)"
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-17T12:04:46.585Z
+    completed_at: 2026-03-17T12:04:46.585Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All new tests annotated with AC: @task-activity-git-query ac-4. 5 new parseDiffChanges
+      tests + 1 normalizeTaskActivity integration test for submitted entry."
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-17T12:04:49.873Z
+    completed_at: 2026-03-17T12:04:49.873Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: ac-4 requires field changes translated to typed activity entries. Fix correctly produces
+      'submitted' entries for submission_linkage map changes instead of leaking child fields as
+      spurious field_updated.
+    name: spec-alignment
+    required: true
+    runner: manual
+    created_at: 2026-03-17T12:04:53.268Z
+    completed_at: 2026-03-17T12:04:53.268Z
+events:
+  - _ulid: 01KKXTWYHMB74YP1ZQZDNEQ19A
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-17T12:04:01.716Z
+  - _ulid: 01KKXTX6Y30KP8X1Q3X7G35TK1
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-17T12:04:10.307Z
+  - _ulid: 01KKXTXHP9094GJSJ9R8DET0PP
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKXTXHM4Y8MBFB88J9GH6417
+    timestamp: 2026-03-17T12:04:21.321Z
+  - _ulid: 01KKXTXMTET190CQV5W5814V55
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKXTXMQS2MZ09W9DD6WHTTX2
+    timestamp: 2026-03-17T12:04:24.526Z
+  - _ulid: 01KKXTYAG40YDXJMFNZP2GWFGM
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-17T12:04:46.724Z
+  - _ulid: 01KKXTYDPG39VQQ0PD39Q6BF5W
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-17T12:04:50.000Z
+  - _ulid: 01KKXTYH0JF4FXV2K1YMDRFG34
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: spec-alignment
+    timestamp: 2026-03-17T12:04:53.394Z
+  - _ulid: 01KKXTYRMJX3ZXB6C84DYZ40C5
+    actor: agent:pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-17T12:05:01.202Z
+  - _ulid: 01KKXTYRMJP0Z4C1R3H0NT49WD
+    actor: agent:pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-17T12:05:01.202Z
+examined_commit: c5efe894e4239535bfece91f2c452bf1dc2e44f7
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-fix-dead-submission-linkage-case"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KKXTXHM4Y8MBFB88J9GH6417
+    anchor:
+      type: code
+      commit: c5efe894e423
+      line_end: 432
+      line_start: 428
+      path: src/utils/activity.ts
+      side: head
+    entries:
+      - _ulid: 01KKXTXHM456ZB87VREF8NSBMV
+        author: "@claude"
+        body: Context lines between a map header and its children reset currentAddedMap/currentRemovedMap,
+          causing child fields to leak as top-level changes. In practice, kspec auto-commits produce
+          contiguous diff blocks so this path is not exercised, but it is a latent fragility if
+          diffs are ever produced by manual edits or rebases.
+        created_at: 2026-03-17T12:04:21.252Z
+    kind: nit
+  - _ulid: 01KKXTXMQS2MZ09W9DD6WHTTX2
+    anchor:
+      type: code
+      commit: c5efe894e423
+      line_end: 329
+      line_start: 329
+      path: src/utils/activity.ts
+      side: head
+    entries:
+      - _ulid: 01KKXTXMQS7QQG0685HZXD4PB7
+        author: "@claude"
+        body: addedMapChildFields and removedMapChildFields share a single mapChildFields set. A field name
+          appearing as a child of a removed map will suppress a legitimately added top-level scalar
+          field with the same name. review_url exists both in SubmissionLinkageSchema and as a
+          top-level task field, making this collision possible in theory. Consider separating into
+          addedMapChildFields and removedMapChildFields in a future hardening pass.
+        created_at: 2026-03-17T12:04:24.441Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: agent:pr-reviewer
+    role: reviewer
+    created_at: 2026-03-17T12:05:01.079Z
+created_at: 2026-03-17T12:04:01.716Z
+updated_at: 2026-03-17T12:05:01.079Z
+notes: []

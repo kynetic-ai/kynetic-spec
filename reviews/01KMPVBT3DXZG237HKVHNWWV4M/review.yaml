@@ -1,0 +1,585 @@
+_ulid: 01KMPVBT3DXZG237HKVHNWWV4M
+slugs: []
+title: Review task-entity-cache-impl (cycle 16)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran kspec validate. Schema/references passed; only repo-wide pre-existing warnings were
+      reported (exit 6), with no task-local validation errors.
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-27T05:22:00.949Z
+    completed_at: 2026-03-27T05:22:00.949Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran kspec validate. It exited 6 because of repository-wide pre-existing warnings (orphaned
+      specs, broad AC coverage gaps, invalid annotation fixture cases), but no task-local schema or
+      reference error was introduced by this snapshot.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-27T05:24:09.252Z
+    completed_at: 2026-03-27T05:24:09.252Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Started npm test from this worktree. One direct run terminated with exit 143 while the
+      test harness was still active; a subsequent harness invocation completed but only surfaced the
+      harness's trivial summary-check cache artifacts, so I do not have a trustworthy full-suite
+      pass/fail result to use as a gate for this cycle.
+    name: npm test
+    required: false
+    runner: npm
+    created_at: 2026-03-27T05:24:11.172Z
+    completed_at: 2026-03-27T05:24:11.172Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/daemon/entity-cache.ts; packages/daemon/src/project-context.ts;
+      packages/daemon/src/server.ts; packages/daemon/src/watcher.ts;
+      packages/daemon/src/session-watcher.ts; src/parser/yaml.ts; src/parser/meta.ts;
+      src/parser/task-data-manager.ts;
+      packages/daemon/src/routes/{tasks,items,refs,plans,reviews,meta,sessions,session-related,inbo\
+      x,triage}.ts; tests/daemon-entity-cache.test.ts. Commands run: kspec task get, kspec item get,
+      kspec review for-task, git diff, rg, sed, kspec validate, npm test, ps. Claims verified:
+      watcher invalidation wiring exists in project-context/server, fileToDomain drives cache
+      invalidation, loaders for tasks/items/meta accept broader file sets than fileToDomain handles.
+      Categories searched: correctness (found 3 blockers), edge cases (found add/delete watcher hole
+      and alternate manifest/include holes), integration (verified cache callbacks and route
+      wiring), test quality (targeted entity-cache tests exist but miss the discovered invalidation
+      cases), error handling (reviewed watcher ENOENT path)."
+    name: evidence-log
+    required: false
+    runner: reviewer
+    created_at: 2026-03-27T05:24:13.048Z
+    completed_at: 2026-03-27T05:24:13.048Z
+events:
+  - _ulid: 01KMPVBT3DAZ94A36N43FJ1576
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T05:13:09.485Z
+  - _ulid: 01KMPVCA1WM2WQPQXW1QCSYD1Q
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T05:13:25.821Z
+  - _ulid: 01KMPVH9SPC0Y6F2287Q3RHVA5
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMPVH7NA6MR523GMEYP3156J
+    timestamp: 2026-03-27T05:16:09.398Z
+  - _ulid: 01KMPVJFJZQZKGCQ167ED6N1QZ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMPVJE0PS8621THX8HG2YZS2
+    timestamp: 2026-03-27T05:16:48.095Z
+  - _ulid: 01KMPVJMACABPXWWT53X1XY2JA
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMPVJKA4KSF6BYTR7CF2060K
+    timestamp: 2026-03-27T05:16:52.940Z
+  - _ulid: 01KMPVJT3MA0GG4W75WV45YAHR
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMPVJS08W97XKCG88GTPC91M
+    timestamp: 2026-03-27T05:16:58.868Z
+  - _ulid: 01KMPVK2MKE78XJB6EPCN84309
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMPVK1C1ZFBGSJB9TF89XZ67
+    timestamp: 2026-03-27T05:17:07.603Z
+  - _ulid: 01KMPVKA2A0GXFRZ3SMR8MXZJK
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMPVK8ECN58DY3BFYNY36FYJ
+    timestamp: 2026-03-27T05:17:15.210Z
+  - _ulid: 01KMPVQQSPB2E6Y9TX803NDEFT
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPVK8ECN58DY3BFYNY36FYJ
+    timestamp: 2026-03-27T05:19:40.342Z
+  - _ulid: 01KMPVQWGWMP7WK4HGEG8RFS9X
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPVH7NA6MR523GMEYP3156J
+    timestamp: 2026-03-27T05:19:45.181Z
+  - _ulid: 01KMPVR0MTF8B4D5TZQ90EMJ4Z
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPVJE0PS8621THX8HG2YZS2
+    timestamp: 2026-03-27T05:19:49.402Z
+  - _ulid: 01KMPVSV0JD5F95C4GYXYTJVX7
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMPVSSXTAMQNEGRHWSDJ8XZM
+    timestamp: 2026-03-27T05:20:49.170Z
+  - _ulid: 01KMPVSY9HQ3VTNBD1FQ2TKVDA
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMPVSXA5X03J6RHEAZ4WNCXH
+    timestamp: 2026-03-27T05:20:52.529Z
+  - _ulid: 01KMPVT1NPC8J2M8Q57GPT4CYA
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMPVT0M1HD5189NG6EN7202J
+    timestamp: 2026-03-27T05:20:55.990Z
+  - _ulid: 01KMPVT4ZGYB1A5C0GRE8YZT72
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMPVT3XS235Y2MSN1JPDEGWD
+    timestamp: 2026-03-27T05:20:59.376Z
+  - _ulid: 01KMPVW29W7DJSPEYBZR9KCJY5
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-27T05:22:02.173Z
+  - _ulid: 01KMPVWWKZB367X34RXDFT0ZZS
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMPVWVBM2JPE3GHZ9TEWRBYF
+    timestamp: 2026-03-27T05:22:29.119Z
+  - _ulid: 01KMPVXCDWB1MSW9S7GPRJX1ZN
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-27T05:22:45.308Z
+  - _ulid: 01KMPVXCDWSP7D79ZPKYTRWFPP
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T05:22:45.309Z
+  - _ulid: 01KMPVZYZZM2BM4TQJHRXJR6RY
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-27T05:24:09.855Z
+  - _ulid: 01KMPW00VF82Z0V1AF4WKDN8ZP
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: skipped
+      name: npm test
+    timestamp: 2026-03-27T05:24:11.760Z
+  - _ulid: 01KMPW02NM1REQTZA5H7NGDE4P
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: evidence-log
+    timestamp: 2026-03-27T05:24:13.620Z
+  - _ulid: 01KMPX8AF8EM3AMYGSNQZF5XM6
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMPVJKA4KSF6BYTR7CF2060K
+    timestamp: 2026-03-27T05:46:12.328Z
+  - _ulid: 01KMPX8BZ59665X0PW02DT7S6Y
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPVJKA4KSF6BYTR7CF2060K
+    timestamp: 2026-03-27T05:46:13.861Z
+  - _ulid: 01KMPX8DDVGCV3GB7JD9DC6CTW
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMPVJS08W97XKCG88GTPC91M
+    timestamp: 2026-03-27T05:46:15.355Z
+  - _ulid: 01KMPX8EWN7ZCH5GMMY8EK00D2
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPVJS08W97XKCG88GTPC91M
+    timestamp: 2026-03-27T05:46:16.853Z
+  - _ulid: 01KMPX8GBWJ4YKAQ2XNQ6VT1ET
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMPVK1C1ZFBGSJB9TF89XZ67
+    timestamp: 2026-03-27T05:46:18.364Z
+  - _ulid: 01KMPX8HSY0BGEW022GXCR7918
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPVK1C1ZFBGSJB9TF89XZ67
+    timestamp: 2026-03-27T05:46:19.838Z
+  - _ulid: 01KMPX8K8H5G22KBZVQ756BXEZ
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMPVSSXTAMQNEGRHWSDJ8XZM
+    timestamp: 2026-03-27T05:46:21.329Z
+  - _ulid: 01KMPX8MPJ87CYFQSHVKGE95ND
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPVSSXTAMQNEGRHWSDJ8XZM
+    timestamp: 2026-03-27T05:46:22.802Z
+  - _ulid: 01KMPX8P5S5SZ25T13GG5X1VCM
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMPVSXA5X03J6RHEAZ4WNCXH
+    timestamp: 2026-03-27T05:46:24.313Z
+  - _ulid: 01KMPX8QM59RE7FKREMGHPE85Y
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPVSXA5X03J6RHEAZ4WNCXH
+    timestamp: 2026-03-27T05:46:25.797Z
+  - _ulid: 01KMPX8S37AERPFTER0F700VR9
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMPVT0M1HD5189NG6EN7202J
+    timestamp: 2026-03-27T05:46:27.303Z
+  - _ulid: 01KMPX8THRPZ0VX17XC292RYR8
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPVT0M1HD5189NG6EN7202J
+    timestamp: 2026-03-27T05:46:28.792Z
+  - _ulid: 01KMPX8W0859HGJMF81WYA7KCV
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMPVT3XS235Y2MSN1JPDEGWD
+    timestamp: 2026-03-27T05:46:30.280Z
+  - _ulid: 01KMPX8XF8X7VD7YZ78FZMN2CJ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPVT3XS235Y2MSN1JPDEGWD
+    timestamp: 2026-03-27T05:46:31.784Z
+examined_commit: 8dfaea2199385d9aa733f052db868d92c22580e0
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMMB3T2K3T6A1CJR884EPKJF"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMPVH7NA6MR523GMEYP3156J
+    anchor:
+      type: code
+      commit: 8dfaea2199385d9aa733f052db868d92c22580e0
+      line_end: 316
+      line_start: 303
+      path: src/daemon/entity-cache.ts
+      side: head
+    entries:
+      - _ulid: 01KMPVH7NB3H0MVF6TAS5GNZ4N
+        author: "@claude"
+        body: " only invalidates  for / and  for , , or , but the loaders are broader than that.  accepts
+          any  manifest with a  header,  follows arbitrary , and  follows arbitrary  from
+          whatever  file was discovered. A valid project that keeps specs or meta includes outside
+          these hard-coded paths will serve stale cache data forever after edits because the watcher
+          never maps those changed files back to  or ."
+        created_at: 2026-03-27T05:16:07.211Z
+    kind: blocker
+    resolved_at: 2026-03-27T05:19:43.554Z
+    resolved_by: "@claude"
+  - _ulid: 01KMPVJE0PS8621THX8HG2YZS2
+    anchor:
+      type: code
+      commit: 8dfaea2199385d9aa733f052db868d92c22580e0
+      line_end: 155
+      line_start: 86
+      path: packages/daemon/src/watcher.ts
+      side: head
+    entries:
+      - _ulid: 01KMPVJE0PAC6PWY2N48F0KWQP
+        author: "@claude"
+        body: The  watcher only forwards successful read-and-parse  events. In the Chokidar path it
+          subscribes to  only, so file adds/deletes never reach the cache at all. In the Bun path
+          any rename/delete is funneled through , which calls  and treats  as a watcher error
+          instead of an invalidation signal. That means creating, removing, or renaming a YAML file
+          in a cached domain can leave the index stale indefinitely, which breaks watcher-driven
+          invalidation for task/spec/meta/review/etc. file set changes.
+        created_at: 2026-03-27T05:16:46.486Z
+    kind: blocker
+    resolved_at: 2026-03-27T05:19:48.278Z
+    resolved_by: "@claude"
+  - _ulid: 01KMPVJKA4KSF6BYTR7CF2060K
+    anchor:
+      type: code
+      commit: 8dfaea2199385d9aa733f052db868d92c22580e0
+      line_end: 155
+      line_start: 86
+      path: packages/daemon/src/watcher.ts
+      side: head
+    entries:
+      - _ulid: 01KMPVJKA4XFF0TNS8NSQQCPTT
+        author: "@claude"
+        body: The .kspec watcher only forwards successful read-and-parse change events. In the Chokidar path
+          it subscribes to change only, so file adds/deletes never reach the cache at all. In the
+          Bun path any rename/delete is funneled through processFileChange(), which calls readFile()
+          and treats ENOENT as a watcher error instead of an invalidation signal. That means
+          creating, removing, or renaming a YAML file in a cached domain can leave the index stale
+          indefinitely, which breaks watcher-driven invalidation for task/spec/meta/review/etc. file
+          set changes.
+        created_at: 2026-03-27T05:16:51.908Z
+      - _ulid: 01KMPX89WX09GF0PCG22Y5MX7V
+        author: "@claude"
+        body: "Fixed: Watcher now listens for add/unlink events (Chokidar) and treats ENOENT in
+          processFileChange as a file removal signal rather than a watcher error. New onFileRemoved
+          callback on WatcherOptions is wired in project-context.ts to trigger cache invalidation on
+          file create/delete/rename."
+        created_at: 2026-03-27T05:46:11.741Z
+    kind: blocker
+    resolved_at: 2026-03-27T05:46:13.269Z
+    resolved_by: "@claude"
+  - _ulid: 01KMPVJS08W97XKCG88GTPC91M
+    anchor:
+      type: code
+      commit: 8dfaea2199385d9aa733f052db868d92c22580e0
+      line_end: 316
+      line_start: 303
+      path: src/daemon/entity-cache.ts
+      side: head
+    entries:
+      - _ulid: 01KMPVJS08N1690ABYH59PW48F
+        author: "@claude"
+        body: "fileToDomain() only invalidates meta for kynetic.yaml/*.meta.yaml and items for modules/**,
+          *.spec.yaml, or kynetic.yaml, but the loaders are broader than that. findManifest()
+          accepts any *.yaml manifest with a kynetic: header, loadAllItems() follows arbitrary
+          manifest.includes, and loadMetaContext() follows arbitrary meta.includes from whatever
+          *.meta.yaml file was discovered. A valid project that keeps specs or meta includes outside
+          these hard-coded paths will serve stale cache data forever after edits because the watcher
+          never maps those changed files back to items or meta."
+        created_at: 2026-03-27T05:16:57.737Z
+      - _ulid: 01KMPX8CVGY2WQWBFRCBSR9T3G
+        author: "@claude"
+        body: "Fixed: fileToDomain() now has a catch-all — any .yaml file not matched by the explicit domain
+          patterns conservatively invalidates both items and meta domains. This covers arbitrary
+          manifest.includes and meta.includes paths that the loaders follow. Also added tasks.yaml
+          (bare filename) to the task domain mapping."
+        created_at: 2026-03-27T05:46:14.768Z
+    kind: blocker
+    resolved_at: 2026-03-27T05:46:16.262Z
+    resolved_by: "@claude"
+  - _ulid: 01KMPVK1C1ZFBGSJB9TF89XZ67
+    anchor:
+      type: code
+      commit: 8dfaea2199385d9aa733f052db868d92c22580e0
+      line_end: 281
+      line_start: 274
+      path: src/daemon/entity-cache.ts
+      side: head
+    entries:
+      - _ulid: 01KMPVK1C1HPJWGK7HEQS0TXFD
+        author: "@claude"
+        body: The task-domain mapping still misses tasks.yaml. TaskDataManager.listTasks() explicitly loads
+          tasks.yaml alongside project.tasks.yaml, kynetic.tasks.yaml, backlog.tasks.yaml, and
+          active.tasks.yaml, but fileToDomain() only matches *.tasks.yaml or tasks/. If a project
+          uses the supported standalone tasks.yaml file, watcher updates never invalidate the tasks
+          cache, so list/detail reads can stay stale until some unrelated task file changes.
+        created_at: 2026-03-27T05:17:06.305Z
+      - _ulid: 01KMPX8FS7PJKQA3C1S506VZTN
+        author: "@claude"
+        body: 'Fixed: fileToDomain() now matches tasks.yaml (bare filename) in addition to *.tasks.yaml. The
+          condition is: relativePath.endsWith(".tasks.yaml") || relativePath ===
+          "project.tasks.yaml" || relativePath === "tasks.yaml"'
+        created_at: 2026-03-27T05:46:17.767Z
+    kind: blocker
+    resolved_at: 2026-03-27T05:46:19.260Z
+    resolved_by: "@claude"
+  - _ulid: 01KMPVK8ECN58DY3BFYNY36FYJ
+    anchor:
+      type: code
+      commit: 8dfaea2199385d9aa733f052db868d92c22580e0
+      line_end: 281
+      line_start: 274
+      path: src/daemon/entity-cache.ts
+      side: head
+    entries:
+      - _ulid: 01KMPVK8ECABFGKWCTQ2HH63N5
+        author: "@claude"
+        body: The task-domain mapping still misses .  explicitly loads  alongside , , , and , but  only
+          matches  or . If a project uses the supported standalone  file, watcher updates never
+          invalidate the tasks cache, so list/detail reads can stay stale until some unrelated task
+          file changes.
+        created_at: 2026-03-27T05:17:13.548Z
+    kind: blocker
+    resolved_at: 2026-03-27T05:19:38.645Z
+    resolved_by: "@claude"
+  - _ulid: 01KMPVSSXTAMQNEGRHWSDJ8XZM
+    anchor:
+      type: code
+      commit: 8dfaea2199385d9aa733f052db868d92c22580e0
+      line_end: 266
+      line_start: 250
+      path: packages/daemon/src/routes/tasks.ts
+      side: head
+    entries:
+      - _ulid: 01KMPVSSXT59QPEVQ4XV7GKNNW
+        author: "@claude"
+        body: Task detail only special-cases the "ready" state. If the tasks domain is still "loading", the
+          route skips the cache branch and immediately falls through to
+          resolveTaskDataManager(ctx).getTask(...), which reintroduces disk/git work during warmup
+          instead of returning {_cache_status:"loading"}. That leaves ac-warming-availability broken
+          for /api/tasks/:ref.
+        created_at: 2026-03-27T05:20:48.058Z
+      - _ulid: 01KMPX8JP763X8APSX2EV9KMYT
+        author: "@claude"
+        body: 'Fixed: Task detail route now checks for loading state first and returns {_cache_status:
+          "loading"} during warmup, consistent with the list route pattern.'
+        created_at: 2026-03-27T05:46:20.743Z
+    kind: blocker
+    resolved_at: 2026-03-27T05:46:22.209Z
+    resolved_by: "@claude"
+  - _ulid: 01KMPVSXA5X03J6RHEAZ4WNCXH
+    anchor:
+      type: code
+      commit: 8dfaea2199385d9aa733f052db868d92c22580e0
+      line_end: 463
+      line_start: 405
+      path: packages/daemon/src/routes/items.ts
+      side: head
+    entries:
+      - _ulid: 01KMPVSXA682ZWENZKJBHM3MYQ
+        author: "@claude"
+        body: 'Item detail has the same warmup hole: it only treats the items domain as cacheable when state
+          === "ready". While the cache is still loading, the handler bypasses the cache path and
+          drops straight to loadAllItems()/loadAllTasks(), so /api/items/:ref serves from disk
+          instead of returning a loading indicator. That violates ac-warming-availability for item
+          detail.'
+        created_at: 2026-03-27T05:20:51.526Z
+      - _ulid: 01KMPX8NJP4EZZHCBA12S64XRD
+        author: "@claude"
+        body: 'Fixed: Item detail route now checks for loading state first and returns {_cache_status:
+          "loading"} during warmup, consistent with the list route pattern.'
+        created_at: 2026-03-27T05:46:23.702Z
+    kind: blocker
+    resolved_at: 2026-03-27T05:46:25.214Z
+    resolved_by: "@claude"
+  - _ulid: 01KMPVT0M1HD5189NG6EN7202J
+    anchor:
+      type: code
+      commit: 8dfaea2199385d9aa733f052db868d92c22580e0
+      line_end: 366
+      line_start: 365
+      path: packages/daemon/src/routes/sessions.ts
+      side: head
+    entries:
+      - _ulid: 01KMPVT0M1NQXPWVHX0APZTMQ8
+        author: "@claude"
+        body: The hot /api/sessions list path still unconditionally calls countLegacySessions((await
+          getCtx()).specDir) after building the response from cached summaries. Because getCtx()
+          runs initContext(), every cache hit still pays parser/shadow setup and an on-disk
+          legacy-session scan, so this endpoint does not actually satisfy ac-serve-from-memory even
+          when the sessions/tasks/items domains are ready.
+        created_at: 2026-03-27T05:20:54.913Z
+      - _ulid: 01KMPX8RGTJT5B6C7SMAH5N82N
+        author: "@claude"
+        body: "Fixed: Session list route now only calls countLegacySessions when _ctx has already been
+          initialized (disk fallback path). When serving entirely from cache, the legacy count is
+          skipped, avoiding initContext() and disk I/O on the hot path."
+        created_at: 2026-03-27T05:46:26.714Z
+    kind: blocker
+    resolved_at: 2026-03-27T05:46:28.196Z
+    resolved_by: "@claude"
+  - _ulid: 01KMPVT3XS235Y2MSN1JPDEGWD
+    anchor:
+      type: code
+      commit: 8dfaea2199385d9aa733f052db868d92c22580e0
+      line_end: 495
+      line_start: 457
+      path: packages/daemon/src/routes/sessions.ts
+      side: head
+    entries:
+      - _ulid: 01KMPVT3XSVJ6K61CY9PFP08EQ
+        author: "@claude"
+        body: Session detail eagerly runs initContext() before it even checks the cache state, and when the
+          sessions domain is still loading it falls straight through to the standalone session
+          cache. So /api/sessions/:id still performs context setup and disk reads during warmup
+          instead of returning a loading response, which is inconsistent with the fixed plan/review
+          detail routes and still violates ac-warming-availability.
+        created_at: 2026-03-27T05:20:58.297Z
+      - _ulid: 01KMPX8VD985RK28GPXA37S85W
+        author: "@claude"
+        body: 'Fixed: Session detail route now defers initContext() via lazy getCtx() pattern. sessionsDir
+          is derived directly from projectContext.path (join(path, ".kspec-sessions")). Added warmup
+          loading check at the top. Uses cached tasks/items for ref resolution when domains are
+          ready. Legacy count only checked when _ctx was initialized.'
+        created_at: 2026-03-27T05:46:29.673Z
+    kind: blocker
+    resolved_at: 2026-03-27T05:46:31.196Z
+    resolved_by: "@claude"
+  - _ulid: 01KMPVWVBM2JPE3GHZ9TEWRBYF
+    entries:
+      - _ulid: 01KMPVWVBMPF1N6515AKD96QQ9
+        author: "@claude"
+        body: "Review evidence log: Files read: src/daemon/entity-cache.ts; packages/daemon/src/server.ts;
+          packages/daemon/src/project-context.ts;
+          packages/daemon/src/routes/{tasks,items,sessions,session-related,plans,reviews,meta,refs,\
+          triage,inbox}.ts; scripts/test.cjs; tests/daemon-entity-cache.test.ts;
+          tests/test-runner.test.ts. Commands run: git diff/stat on the full snapshot, kspec task
+          get, kspec item get, kspec review for-task, kspec validate, rg for AC annotations, npm
+          test (single rerun still in progress while blockers were confirmed), targeted nl/sed/rg
+          reads. Claims verified: route handlers do use cache on many happy paths, but /api/sessions
+          hot reads still hit disk and several detail routes still bypass warmup. Categories
+          searched: correctness, warmup behavior, invalidation coverage, write-through wiring, test
+          quality, integration."
+        created_at: 2026-03-27T05:22:27.828Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-27T05:22:45.308Z
+created_at: 2026-03-27T05:13:09.485Z
+updated_at: 2026-03-27T05:46:31.196Z
+notes: []

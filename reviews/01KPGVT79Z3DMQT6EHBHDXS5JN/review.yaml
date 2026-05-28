@@ -1,0 +1,210 @@
+_ulid: 01KPGVT79Z3DMQT6EHBHDXS5JN
+slugs: []
+title: Review task-plan-delete-command
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repo-wide pre-existing validation failure unrelated to this branch:
+      .kspec/modules/meta.yaml expected trait string, received object; plus existing
+      completeness/alignment warnings."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-18T18:07:20.918Z
+    completed_at: 2026-04-18T18:07:20.918Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Test Suites: 2193 passed of 2193; Tests: 8047 passed, 5 skipped of 8052; Duration:
+      1828.3s. PASS includes tests/cli-plan-delete.test.ts (29 tests)."
+    name: npm test
+    required: true
+    runner: test-runner
+    created_at: 2026-04-18T18:07:26.613Z
+    completed_at: 2026-04-18T18:07:26.613Z
+events:
+  - _ulid: 01KPGVT79Z52RF3X1B0WBEZMN5
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-18T17:56:58.815Z
+  - _ulid: 01KPGVV5P233KXMNFC8JTRGVZF
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-18T17:57:29.922Z
+  - _ulid: 01KPGWD4ZC5QCZ1R0MR2QH6F86
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPGWD42CQPQ18E3QHYC38KES
+    timestamp: 2026-04-18T18:07:19.020Z
+  - _ulid: 01KPGWD7VHSX4VA89VY68FN4DF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-18T18:07:21.969Z
+  - _ulid: 01KPGWDAMF82DD418EX7FC1S91
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPGWD9MY7HFZM6VF92G0NBXQ
+    timestamp: 2026-04-18T18:07:24.815Z
+  - _ulid: 01KPGWDDCN7E318DDJF7CBBZJS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-18T18:07:27.638Z
+  - _ulid: 01KPGWDX8RKRF2CZQADY4FJ2F4
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KPGWDWBRSJ4P7KTQXANRVBG9
+    timestamp: 2026-04-18T18:07:43.896Z
+  - _ulid: 01KPGWE064PMNJM9M8F557V5T5
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-18T18:07:46.884Z
+  - _ulid: 01KPGWE064QMW5HPDVC11XA8V3
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-18T18:07:46.884Z
+  - _ulid: 01KPGXF665A25S6W79NZ9G4ASN
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPGWD42CQPQ18E3QHYC38KES
+    timestamp: 2026-04-18T18:25:54.373Z
+  - _ulid: 01KPGXFB2SK9TCEQ96GQGKV74N
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPGWD9MY7HFZM6VF92G0NBXQ
+    timestamp: 2026-04-18T18:25:59.386Z
+  - _ulid: 01KPGXFM7RNRNBZCMN06X7EBWW
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPGWD42CQPQ18E3QHYC38KES
+    timestamp: 2026-04-18T18:26:08.760Z
+  - _ulid: 01KPGXFS0VZTD29RW6YCGPFSYB
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPGWD9MY7HFZM6VF92G0NBXQ
+    timestamp: 2026-04-18T18:26:13.659Z
+examined_commit: 731e81b05e2a02f29e8a18f0bda06632a69ed8da
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KPEMEVNDE289TVASZC0V6CB0"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPGWD42CQPQ18E3QHYC38KES
+    anchor:
+      type: code
+      commit: 731e81b05e2a02f29e8a18f0bda06632a69ed8da
+      line_end: 493
+      line_start: 480
+      path: tests/cli-plan-delete.test.ts
+      side: head
+    entries:
+      - _ulid: 01KPGWD42D1R2A4EP8HWPEHMGE
+        author: Jacob Chapel
+        body: The ac-49 test does not verify that the git branch survives plan deletion. It only proves that
+          the branch field existed on the plan before deletion and that the plan record is gone
+          afterward. Because setupTempFixtures() just copies fixture files and never creates a real
+          git ref, this test would still pass even if plan deletion started deleting the underlying
+          branch, so the branch-preservation guarantee remains unproven.
+        created_at: 2026-04-18T18:07:18.093Z
+      - _ulid: 01KPGXF56DVAZEQTPK6EH0QG51
+        author: "@claude"
+        body: "Fixed: The ac-49 test now creates a real git branch via git branch feat/plan-branch-test,
+          deletes the plan, and verifies the branch still exists via git branch --list. This proves
+          the branch-preservation guarantee behaviorally — if plan deletion ever starts deleting git
+          refs, this test will catch it."
+        created_at: 2026-04-18T18:25:53.357Z
+    kind: blocker
+    resolved_at: 2026-04-18T18:26:07.773Z
+    resolved_by: "@claude"
+  - _ulid: 01KPGWD9MY7HFZM6VF92G0NBXQ
+    anchor:
+      type: code
+      commit: 731e81b05e2a02f29e8a18f0bda06632a69ed8da
+      line_end: 582
+      line_start: 531
+      path: tests/cli-plan-delete.test.ts
+      side: head
+    entries:
+      - _ulid: 01KPGWD9MY04GY5RK2VTKGZKN8
+        author: Jacob Chapel
+        body: The ac-48 coverage here is not behavioral. The test only re-checks that  returns not-found
+          after deletion, which is already covered by earlier happy-path tests, and the trailing
+          comment replaces the requested failure-path coverage with prose. Since setupTempFixtures()
+          does not provision a real shadow worktree, this file never inspects shadow history or
+          commit metadata, so the shadow-commit guarantee for  is still unverified.
+        created_at: 2026-04-18T18:07:23.806Z
+      - _ulid: 01KPGXFA3K5VHS21VPBEKW5AP0
+        author: "@claude"
+        body: "Fixed: Replaced the non-behavioral test with a dedicated describe block that uses a real
+          shadow worktree (createTempDir + initGitRepo + kspec init). The test now performs a plan
+          deletion and inspects git log in the shadow worktree to verify the commit subject contains
+          Delete Plan and the plan slug. Also added the missing plan-delete case to the shadow
+          commit message mapping in shadow.ts so it produces Delete Plan: @slug instead of the raw
+          fallback."
+        created_at: 2026-04-18T18:25:58.387Z
+    kind: blocker
+    resolved_at: 2026-04-18T18:26:12.688Z
+    resolved_by: "@claude"
+  - _ulid: 01KPGWDWBRSJ4P7KTQXANRVBG9
+    entries:
+      - _ulid: 01KPGWDWBRZ5TP4RWYPGCJCQ7Q
+        author: Jacob Chapel
+        body: "Evidence log: Files read: src/cli/commands/plan.ts, src/parser/plans.ts,
+          src/strings/errors.ts, tests/cli-plan-delete.test.ts, tests/parser-plans.test.ts,
+          tests/yaml-round-trip-stability.test.ts, tests/helpers/cli.ts, src/parser/refs.ts,
+          src/parser/yaml.ts. Commands run: git diff/stat/name-only, kspec task get, kspec item get
+          @plan-crud, kspec review for-task, kspec validate, rg AC annotations, node
+          dist/cli/index.js plan --help, node dist/cli/index.js help plan, node dist/cli/index.js
+          plan delete @nonexistent-plan --force --json, npm test. Claims verified: the new delete
+          command is registered in the built CLI and returns structured not-found JSON; full test
+          suite passes; repo validation failures are pre-existing/unrelated. Categories searched:
+          correctness, edge cases, error handling, test quality, integration."
+        created_at: 2026-04-18T18:07:42.968Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-18T18:07:46.884Z
+created_at: 2026-04-18T17:56:58.815Z
+updated_at: 2026-04-18T18:26:12.688Z
+notes: []

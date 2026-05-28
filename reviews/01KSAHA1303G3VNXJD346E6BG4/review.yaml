@@ -1,0 +1,279 @@
+_ulid: 01KSAHA1303G3VNXJD346E6BG4
+slugs: []
+title: Review entity storage version and incompatibility gates
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Build completed successfully. Svelte emitted existing warnings only.
+    name: npm run build
+    required: true
+    runner: npm
+    created_at: 2026-05-23T14:00:17.023Z
+    completed_at: 2026-05-23T14:00:17.023Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/entity-storage-compatibility.test.ts --fresh: 36 tests passed."
+    name: entity storage focused tests
+    required: true
+    runner: npm
+    created_at: 2026-05-23T14:00:21.323Z
+    completed_at: 2026-05-23T14:00:21.323Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with --warnings-ok; warnings are existing
+      reference/alignment/completeness warnings.
+    name: kspec validate --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-23T14:00:25.642Z
+    completed_at: 2026-05-23T14:00:25.642Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "After concurrent build/test overlap caused review-cli and triage-cli failures in the full
+      run, npm test -- --run tests/review-cli.test.ts tests/triage-cli.test.ts --fresh passed: 125
+      tests passed."
+    name: failed-suite retry
+    required: false
+    runner: npm
+    created_at: 2026-05-23T14:00:29.977Z
+    completed_at: 2026-05-23T14:00:29.977Z
+events:
+  - _ulid: 01KSAHA12WVA1CKTW3B50W154K
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-23T13:45:01.276Z
+  - _ulid: 01KSAHB1FGYM2ACRB6Y7Q5SJRH
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-23T13:45:34.448Z
+  - _ulid: 01KSAJ5053HK3929VVNPPEYY61
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSAJ4YQ20SPP3MCAMB9HZP47
+    timestamp: 2026-05-23T13:59:45.059Z
+  - _ulid: 01KSAJ5D8QQNWFC93VJHE0QQWW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSAJ5BTTAP78A3GF18NM75DR
+    timestamp: 2026-05-23T13:59:58.487Z
+  - _ulid: 01KSAJ60V3VKWT0TEZZPETHC7E
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run build
+    timestamp: 2026-05-23T14:00:18.532Z
+  - _ulid: 01KSAJ651B9B9R4M5J9B1JXTRW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: entity storage focused tests
+    timestamp: 2026-05-23T14:00:22.827Z
+  - _ulid: 01KSAJ697TDHGY8HN9M6YRZSB7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --warnings-ok
+    timestamp: 2026-05-23T14:00:27.130Z
+  - _ulid: 01KSAJ6DGGE60N7Y12XKZFMV4H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: failed-suite retry
+    timestamp: 2026-05-23T14:00:31.504Z
+  - _ulid: 01KSAJ71EKC6ESRBHQDVRH1KG3
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSAJ6ZY3YYH1HFYMR23T36AX
+    timestamp: 2026-05-23T14:00:51.923Z
+  - _ulid: 01KSAJ7CAASXVSYE209YSRVFNY
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-23T14:01:03.050Z
+  - _ulid: 01KSAJ7CAAZC2XZJWPAY7NAG0C
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-23T14:01:03.051Z
+  - _ulid: 01KSANCH7PHMHZRC7JHR9GPTNJ
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSAJ4YQ20SPP3MCAMB9HZP47
+    timestamp: 2026-05-23T14:56:17.654Z
+  - _ulid: 01KSANCY3AAYKYV16P7FTRACPJ
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSAJ5BTTAP78A3GF18NM75DR
+    timestamp: 2026-05-23T14:56:30.826Z
+  - _ulid: 01KSAND4ZFB0QPQ9FSG785B66H
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSAJ6ZY3YYH1HFYMR23T36AX
+    timestamp: 2026-05-23T14:56:37.871Z
+  - _ulid: 01KSANDG0DBKCMEMZKPWYNJ3Q8
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSAJ4YQ20SPP3MCAMB9HZP47
+    timestamp: 2026-05-23T14:56:49.166Z
+  - _ulid: 01KSANDPJ2QDFSKHG8VTQ1BF0W
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSAJ5BTTAP78A3GF18NM75DR
+    timestamp: 2026-05-23T14:56:55.874Z
+  - _ulid: 01KSANDXC5EFHDE1P83QDV95KN
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSAJ6ZY3YYH1HFYMR23T36AX
+    timestamp: 2026-05-23T14:57:02.853Z
+examined_commit: 2ca12c313383daac0e564ed02b6a77be06c61bf8
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XAWNAQ1AA9SJS8BYH9056"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSAJ4YQ20SPP3MCAMB9HZP47
+    anchor:
+      type: code
+      commit: 2ca12c313383daac0e564ed02b6a77be06c61bf8
+      line_end: 184
+      line_start: 184
+      path: src/parser/plans.ts
+      side: head
+    entries:
+      - _ulid: 01KSAJ4YQ2Z42Q8TN45MMVV4BC
+        author: Jacob Chapel
+        body: "MUST-FIX: loadPlans and the plan write paths call assertPlanStorageCompatible, but that gate
+          intentionally skips partial-layout detection. AC ac-partial-folder-layouts-are-blocked
+          requires the relevant entity storage manager to fail with partial_entity_storage_layout
+          instead of partially reading or rewriting ambiguous data. Evidence:
+          src/parser/entity-storage-compatibility.ts lines 459-463 say partial detection is not part
+          of the lenient gate, and tests/entity-storage-compatibility.test.ts lines 390-399
+          currently assert that a folder-declared project with monolithic plan records resolves
+          successfully."
+        created_at: 2026-05-23T13:59:43.586Z
+      - _ulid: 01KSANCFM6F8RMDAC1ZGNH377X
+        author: "@claude"
+        body: 'Fixed. assertPlanStorageCompatible now calls detectPartialLayoutForDomain(ctx, "plans") after
+          the lenient manifest check, so loadPlans/savePlan/mutatePlanAtomically/deletePlan all fail
+          with partial_entity_storage_layout when project.plans.yaml still contains monolithic
+          records on a project that has declared plan_storage.format: folder. The strict
+          require*FolderStorage gates remain available for callers that need folder behavior
+          regardless of legacy declarations. Updated tests/entity-storage-compatibility.test.ts to
+          assert the new rejection (previously this case was asserted to resolve), and added
+          tests/entity-storage-partial-layout-manager.test.ts (14 behavioral tests) to pin the
+          storage manager paths themselves — load/save/mutate/delete — to the AC-required behavior
+          so a regression to a manifest-only check fails the build.'
+        created_at: 2026-05-23T14:56:16.002Z
+    kind: blocker
+    resolved_at: 2026-05-23T14:56:47.590Z
+    resolved_by: "@claude"
+  - _ulid: 01KSAJ5BTTAP78A3GF18NM75DR
+    anchor:
+      type: code
+      commit: 2ca12c313383daac0e564ed02b6a77be06c61bf8
+      line_end: 174
+      line_start: 174
+      path: src/parser/reviews.ts
+      side: head
+    entries:
+      - _ulid: 01KSAJ5BTTET83PC6EPW1GWC0D
+        author: Jacob Chapel
+        body: "MUST-FIX: loadReviewRecords and the review write paths have the same gap: they call
+          assertReviewStorageCompatible, which only checks manifest declarations and never calls
+          detectPartialLayoutForDomain. A project can declare review_storage.format: folder while
+          project.reviews.yaml still contains records, and the review storage manager will continue
+          reading/writing monolithic data instead of failing with partial_entity_storage_layout as
+          required by ac-partial-folder-layouts-are-blocked. Evidence: requireReviewFolderStorage
+          performs the partial check, but rg shows it is only referenced by tests, not by the review
+          storage manager."
+        created_at: 2026-05-23T13:59:57.018Z
+      - _ulid: 01KSANCWFB7TW56AY7RM5JTXM4
+        author: "@claude"
+        body: 'Fixed. assertReviewStorageCompatible now calls detectPartialLayoutForDomain(ctx, "reviews")
+          after the lenient manifest check, so
+          loadReviewRecords/saveReviewRecord/mutateReviewAtomically/deleteReviewRecord all fail with
+          partial_entity_storage_layout when project.reviews.yaml still contains monolithic records
+          on a project that has declared review_storage.format: folder.
+          tests/entity-storage-partial-layout-manager.test.ts has matching behavioral tests for the
+          review storage manager.'
+        created_at: 2026-05-23T14:56:29.155Z
+    kind: blocker
+    resolved_at: 2026-05-23T14:56:54.245Z
+    resolved_by: "@claude"
+  - _ulid: 01KSAJ6ZY3YYH1HFYMR23T36AX
+    entries:
+      - _ulid: 01KSAJ6ZY4PJ4YBMZE2GG66DFB
+        author: Jacob Chapel
+        body: "Evidence log: Files read: src/parser/entity-storage-compatibility.ts, src/parser/plans.ts,
+          src/parser/reviews.ts, src/schema/spec.ts, src/parser/doctor.ts, src/cli/commands/init.ts,
+          src/cli/commands/upgrade.ts,
+          packages/daemon/src/routes/{entity-storage-error,plans,reviews,items,tasks,refs,aggregati\
+          on}.ts, packages/shared/src/api.ts, tests/entity-storage-compatibility.test.ts,
+          tests/daemon-api/entity-storage-incompatibility-*.test.ts,
+          tests/init-folder-storage-declarations.test.ts. Commands run: git
+          diff/stat/name-status/log vs fa4574a6, kspec task get, kspec item get, kspec validate,
+          kspec validate --warnings-ok, rg AC/source/gate searches, npm test focused entity-storage,
+          npm test full attempt, npm run build, npm test retry for failed suites. Claims verified:
+          new init manifests declare 1.2 fields via tests; protected live projects still show
+          kynetic 1.1 with no plan/review folder dirs; daemon 409 helper covered by route/helper
+          tests. Categories searched: correctness, AC alignment, partial-layout edge cases, daemon
+          error handling, test quality, protected-path safety, build/test gates."
+        created_at: 2026-05-23T14:00:50.372Z
+      - _ulid: 01KSAND3B5JD2K11P6TFP91P9Q
+        author: "@claude"
+        body: Acknowledged — thanks for the evidence log.
+        created_at: 2026-05-23T14:56:36.197Z
+    kind: nit
+    resolved_at: 2026-05-23T14:57:01.172Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-23T14:01:03.050Z
+created_at: 2026-05-23T13:45:01.280Z
+updated_at: 2026-05-23T14:57:01.172Z
+notes: []

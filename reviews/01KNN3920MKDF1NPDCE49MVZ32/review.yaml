@@ -1,0 +1,148 @@
+_ulid: 01KNN3920MKDF1NPDCE49MVZ32
+slugs: []
+title: Review replace-process-exit-string-sentinel-with-typed-error-class
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: packages/daemon/src/routes/command.ts, src/cli/batch-context.ts,
+      src/cli/commands/review.ts, tests/batch-exec-engine.test.ts, tests/daemon-command-api.test.ts.
+      Commands run: git diff/stat, kspec task get, kspec item get @daemon-command-api, kspec review
+      for-task, rg AC annotations, kspec validate, npm test, targeted node reproduction comparing
+      daemon-style in-process review get failure vs direct CLI. Claims verified: CommandExitError
+      preserves exit code 3, but text-mode stderr parity still regresses with an extra wrapper error
+      line. Categories searched: correctness, error handling, test quality, integration, response
+      parity."
+    name: review evidence
+    required: false
+    runner: manual
+    created_at: 2026-04-07T23:14:43.054Z
+    completed_at: 2026-04-07T23:14:43.054Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Pass. Full suite in review snapshot: 2096/2096 suites passed, 7641/7646 tests passed, 5
+      skipped."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-07T23:15:20.408Z
+    completed_at: 2026-04-07T23:15:20.408Z
+events:
+  - _ulid: 01KNN3920MPECV4YTANR6YB601
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-07T23:08:40.852Z
+  - _ulid: 01KNN39J19T6M3YAWSQM5MV5Y2
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-07T23:08:57.257Z
+  - _ulid: 01KNN3M22ZC9KNTPDHDBNW55MX
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNN3M19HGDCK65P10DWW75B5
+    timestamp: 2026-04-07T23:14:41.375Z
+  - _ulid: 01KNN3M4JFH5S00TFVEYZWWQ0H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence
+    timestamp: 2026-04-07T23:14:43.919Z
+  - _ulid: 01KNN3N91VWVSFS3A0JM8C8PR4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-07T23:15:21.275Z
+  - _ulid: 01KNN3NNMG568P4T49G1QJX9E4
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-07T23:15:34.161Z
+  - _ulid: 01KNN3NNMHCDKWH9HS66VZ8AMF
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-07T23:15:34.161Z
+  - _ulid: 01KNN5471AGXTPJFS8QVD4VJ1H
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNN3M19HGDCK65P10DWW75B5
+    timestamp: 2026-04-07T23:40:59.306Z
+  - _ulid: 01KNN54P2JFBH14C84K0T03976
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNN3M19HGDCK65P10DWW75B5
+    timestamp: 2026-04-07T23:41:14.706Z
+examined_commit: b5d0c386a50acb9dd457f6b8b29bae37711254c5
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNN24AJ4QFBJ9NHK5K16QMJ0"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNN3M19HGDCK65P10DWW75B5
+    anchor:
+      type: code
+      commit: b5d0c386a50acb9dd457f6b8b29bae37711254c5
+      line_end: 555
+      line_start: 553
+      path: src/cli/commands/review.ts
+      side: head
+    entries:
+      - _ulid: 01KNN3M19JYBVEJJYDR4Z5RBE4
+        author: Jacob Chapel
+        body: "This catch block now turns intercepted process exits into an extra user-visible error line
+          during daemon execution, which breaks @daemon-command-api ac-response-parity in text mode.
+          I verified it by simulating the daemon's in-process interception for 'review get
+          @does-not-exist' and comparing it to direct CLI execution: the daemon-style path returns
+          exit code 3 but emits an extra '✗ Failed to get review' line, while direct CLI stderr only
+          contains the original not-found message and suggestion. The new CommandExitError filtering
+          removes the thrown-error line, but not this wrapper error, so the daemon response still
+          diverges from direct CLI behavior."
+        created_at: 2026-04-07T23:14:40.562Z
+      - _ulid: 01KNN5466611HGB4FRBGJQFX5P
+        author: "@claude"
+        body: "Fixed: Added CommandExitError re-throw guards to all 14 catch blocks in review.ts. When the
+          daemon's process.exit interceptor throws CommandExitError, each catch block now re-throws
+          it before reaching the error() wrapper call, preventing spurious 'Failed to get review'
+          stderr lines. Added a behavioral test verifying text-mode review get @does-not-exist
+          produces matching stderr between daemon API and direct CLI."
+        created_at: 2026-04-07T23:40:58.438Z
+    kind: blocker
+    resolved_at: 2026-04-07T23:41:13.824Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-07T23:15:34.160Z
+created_at: 2026-04-07T23:08:40.852Z
+updated_at: 2026-04-07T23:41:13.824Z
+notes: []

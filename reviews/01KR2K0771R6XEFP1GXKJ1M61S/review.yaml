@@ -1,0 +1,168 @@
+_ulid: 01KR2K0771R6XEFP1GXKJ1M61S
+slugs: []
+title: Review migrate Playwright daemon fixture
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test passed: 2382 suites passed; 8728 passed, 5 skipped of 8733; duration 1910.5s.
+      Full log /tmp/kspec-test-cache/01KR2JYWVZH61K8R33ZF55XX2Y/9575fedef73f2829.log."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-08T01:37:06.573Z
+    completed_at: 2026-05-08T01:37:06.573Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check 2b4dc4dfd1d3667d9100be4b8e6996b0f2ca1840..HEAD --
+      tests/e2e/fixtures/test-base.ts tests/helpers/cli.ts produced no output.
+    name: diff whitespace
+    required: false
+    runner: git
+    created_at: 2026-05-08T01:37:10.301Z
+    completed_at: 2026-05-08T01:37:10.301Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run test:e2e -- tests/e2e/api-websocket.spec.ts tests/e2e/connection.spec.ts passed:
+      11 passed in 33.2s after build:e2e. Covers daemon-backed browser load, external API mutation,
+      disconnection, and daemon restart/reconnect."
+    name: focused e2e websocket
+    required: true
+    runner: playwright
+    created_at: 2026-05-08T01:37:13.840Z
+    completed_at: 2026-05-08T01:37:13.840Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exits 6 for existing repo-wide warnings only; kspec validate --warnings-ok
+      exits 0. No schema/reference errors; warnings are broad pre-existing
+      reference/alignment/coverage warnings, not introduced by this two-file task.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-08T01:37:17.477Z
+    completed_at: 2026-05-08T01:37:17.477Z
+events:
+  - _ulid: 01KR2K07707E9PGPXNWZH5F2ZH
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-08T01:24:59.745Z
+  - _ulid: 01KR2K0W0P30TZ9K99NH0PNY3Q
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-08T01:25:21.047Z
+  - _ulid: 01KR2KNVXTWSAFDXSBB1FBYW9C
+    actor: codex-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KR2KNTN7QFQM15WRBYZS014X
+    timestamp: 2026-05-08T01:36:49.082Z
+  - _ulid: 01KR2KPE918J6W1CWHMDWRDVXX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-08T01:37:07.873Z
+  - _ulid: 01KR2KPHV4Q1TR3P0F8YYKDCGN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff whitespace
+    timestamp: 2026-05-08T01:37:11.524Z
+  - _ulid: 01KR2KPNB2PGX92K706TKRFKTZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused e2e websocket
+    timestamp: 2026-05-08T01:37:15.106Z
+  - _ulid: 01KR2KPRX6ZQCHXJ9W8QYJ4NDW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-08T01:37:18.758Z
+  - _ulid: 01KR2KQ39EFRGTEWQ6KP65MSBW
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-08T01:37:29.390Z
+  - _ulid: 01KR2KQ39E0YDE4H9DZQYB4ZYA
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-08T01:37:29.391Z
+examined_commit: c753d124422282c19fc01bf891a34656a5feb29d
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR22GKACR7PZYFXZS9KEYVMQ"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR2KNTN7QFQM15WRBYZS014X
+    entries:
+      - _ulid: 01KR2KNTN748FQVVZVB0RHSQK5
+        author: codex-reviewer
+        body: >-
+          Review evidence log:
+
+          Files read: kspec-agents.md; .agents/skills/e2e/SKILL.md; tests/e2e/fixtures/test-base.ts;
+          tests/helpers/cli.ts; tests/helpers/daemon.ts; tests/helpers/daemon.test.ts;
+          tests/e2e/api-websocket.spec.ts; tests/e2e/api-watcher.spec.ts;
+          tests/e2e/api-triage.spec.ts; playwright.config.ts; package.json;
+          src/daemon-shared/endpoint.ts; base version of tests/e2e/fixtures/test-base.ts.
+
+          Commands run: kspec task get @01KR22GKACR7PZYFXZS9KEYVMQ; kspec item get
+          @e2e-test-daemon-isolation; kspec item get @daemon-backed-test-fixture-contract; kspec
+          item get @daemon-test-endpoint-consistency; kspec item get @daemon-test-runtime-selection;
+          git diff/stat/name-only; rg AC annotations; kspec validate; kspec validate --warnings-ok;
+          npm test; npm run test:e2e -- tests/e2e/api-websocket.spec.ts
+          tests/e2e/connection.spec.ts; git diff --check.
+
+          Claims verified: Playwright startup/cleanup now goes through tests/helpers/daemon.ts via
+          createTestDaemonProject/startTestDaemon/started.stop; endpoint propagation uses
+          started.apiUrl and 127.0.0.1-derived shared endpoint; restart behavior keeps a
+          preallocated port and focused browser/WebSocket tests passed; helper ESM __dirname
+          fallback is present for Playwright-loaded TS.
+
+          Categories searched: correctness, endpoint consistency, daemon lifecycle cleanup, restart
+          edge case, environment isolation, AC annotation coverage, test quality, integration with
+          existing E2E callers. No blockers found.
+        created_at: 2026-05-08T01:36:47.783Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-08T01:37:29.390Z
+created_at: 2026-05-08T01:24:59.745Z
+updated_at: 2026-05-08T01:37:29.390Z
+notes: []

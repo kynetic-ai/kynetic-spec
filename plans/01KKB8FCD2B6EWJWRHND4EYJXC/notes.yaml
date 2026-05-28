@@ -1,0 +1,38 @@
+notes:
+  - _ulid: 01KKB8FCD3NCZPCENV5S6XCF2C
+    content: >-
+      Implementation notes:
+
+
+      This is a large reconciliation effort. The tasks should be worked in this order:
+
+
+      1. **Spec completeness policy** (code change) — Update validate to exempt modules from AC
+      warnings. This immediately drops ~7 false positives and sets the right policy going forward.
+
+
+      2. **AC backfill tasks** (spec work, no code) — Each module's backfill is independent and can
+      be parallelized. The work is: read the existing spec item, understand what it describes, write
+      given/when/then ACs that capture the implemented behavior. Use `kspec item ac add` or `kspec
+      batch`.
+
+
+      3. **Test annotation sweep** (code annotation, no behavior change) — After ACs exist, scan
+      test files for tests that exercise each AC and add `// AC: @spec ac-N` comments. No code logic
+      changes.
+
+
+      4. **Description backfill** — Quick task, can be done anytime.
+
+
+      Priority order for AC backfill: @core (foundational) → @schema → @tasks → @cli →
+      @meta/@shadow-branch. Each is scoped to one module so agents can work them independently.
+    author: "@claude"
+    created_at: 2026-03-10T06:55:43.011Z
+  - _ulid: 01KKB963S0G5994EMVQ7VWJFK6
+    content: "Review fixes applied. Out-of-scope items handled by separate tasks:
+      automation-eligible-no-spec warnings (@01KKB8A2), @observations slug ambiguity (@01KKB8BJ),
+      status mismatches (@01KKB8CF). Meta+shadow backfill split into two independent tasks. All
+      backfill tasks depend on @implement-spec-completeness-policy; sweep depends on all backfills."
+    author: "@claude"
+    created_at: 2026-03-10T07:08:07.840Z

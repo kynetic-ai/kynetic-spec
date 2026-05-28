@@ -1,0 +1,27 @@
+_ulid: 01KJ6KKPE07SEYTT76JAKJ8T9T
+slugs:
+  - plan-session-scoping-for-kspec
+title: Session Scoping for Kspec
+status: completed
+approved_at: null
+derived_specs:
+  - "@session-creation-and-env-injection"
+  - "@session-scoped-task-claiming"
+  - "@task-budget-enforcement"
+  - "@session-end-loop-signal"
+  - "@native-guard-commands"
+  - "@ralph-session-budget-integration"
+derived_tasks:
+  - "@extend-session-schema-with-task-budget"
+  - "@add-session-id-to-task-schema"
+  - "@implement-session-create-command"
+  - "@add-budget-enforcement-to-task-start"
+  - "@add-session-indicator-to-tasks-ready"
+  - "@migrate-end-loop-to-session-state"
+  - "@implement-native-worktree-guard"
+  - "@update-setup-with-migration-cleanup"
+  - "@simplify-ralph-with-session-budget"
+  - "@add-multi-harness-env-injection"
+source_path: /home/chapel/.claude/plans/bright-seeking-marble.md
+created_at: 2026-02-24T01:18:24.704Z
+completed_at: 2026-02-24T21:40:11.396Z

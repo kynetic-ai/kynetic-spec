@@ -1,0 +1,151 @@
+_ulid: 01KM6HP687CW7PPQ3WBTFB2V2E
+slugs: []
+title: Review @01KM6BGYMGZ518JENMCRACJPX3 (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation completed with the repository's existing warnings baseline only (exit 6
+      without --warnings-ok): orphaned specs, uncovered AC annotations in tests, and one orphaned
+      skill directory. No new schema or reference errors were introduced by this change."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-20T21:18:59.495Z
+    completed_at: 2026-03-20T21:18:59.495Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: packages/daemon/src/server.ts, packages/web-ui/src/lib/stores/mode.svelte.ts,
+      packages/web-ui/src/routes/automation/+page.svelte,
+      packages/web-ui/src/lib/components/automation/CompositionsSection.svelte,
+      packages/web-ui/src/lib/components/automation/SchedulesSection.svelte,
+      packages/web-ui/src/lib/api.ts, packages/web-ui/src/lib/stores/project.svelte.ts. Commands
+      run: git diff dev...HEAD, npm test. Claims verified: health check path now targets
+      /api/health; /automation was added to SPA fallback routes. Categories searched: correctness,
+      static-mode edge cases, test coverage, integration."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-20T21:19:00.305Z
+    completed_at: 2026-03-20T21:19:00.305Z
+events:
+  - _ulid: 01KM6HP6869XV4E6583E7606WN
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-20T21:16:12.934Z
+  - _ulid: 01KM6HTKGYHR1F4WJDN886JHV9
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM6HTK8YSA7RP0TRHGPEGH4X
+    timestamp: 2026-03-20T21:18:37.598Z
+  - _ulid: 01KM6HTM9WGJMEYNHWZHNQSF00
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM6HTM2G96HVQCYD5YDREEVB
+    timestamp: 2026-03-20T21:18:38.397Z
+  - _ulid: 01KM6HV8C3DNBTW2WE9JDANH71
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-20T21:18:58.947Z
+  - _ulid: 01KM6HV94WHPQQECZ7GCSEX09N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-20T21:18:59.740Z
+  - _ulid: 01KM6HV9Y075D9Z8QZR51SPVEW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-20T21:19:00.544Z
+  - _ulid: 01KM6HVMMT8RNB2ZQA6HSG2SAE
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-20T21:19:11.514Z
+  - _ulid: 01KM6HVMMVJ0K6098KA6MY7QHH
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-20T21:19:11.515Z
+examined_commit: faf60b38d295340053d86214b6e13d69e0ced421
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6BGYMGZ518JENMCRACJPX3"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM6HTK8YSA7RP0TRHGPEGH4X
+    anchor:
+      type: code
+      commit: faf60b38d295340053d86214b6e13d69e0ced421
+      line_end: 24
+      line_start: 24
+      path: packages/web-ui/src/lib/components/automation/CompositionsSection.svelte
+      side: head
+    entries:
+      - _ulid: 01KM6HTK8YYX5JJ6MSH619C5K4
+        author: Jacob Chapel
+        body: This reintroduces daemon-only fetching in static exports. initializeForStaticMode() sets the
+          project store to initialized, so this query now runs during a static render even though
+          fetchCompositionConfigs() has no isStaticMode() fallback and always calls
+          /api/compositions. The result is a failing network request and an error state on the
+          read-only automation page. Keep the !isStaticMode() gate here or add a real static-data
+          path before enabling the query.
+        created_at: 2026-03-20T21:18:37.342Z
+    kind: blocker
+  - _ulid: 01KM6HTM2G96HVQCYD5YDREEVB
+    anchor:
+      type: code
+      commit: faf60b38d295340053d86214b6e13d69e0ced421
+      line_end: 40
+      line_start: 40
+      path: packages/web-ui/src/lib/components/automation/SchedulesSection.svelte
+      side: head
+    entries:
+      - _ulid: 01KM6HTM2HSGKA0DVGCGNGCK4T
+        author: Jacob Chapel
+        body: This query has the same static-mode regression as the one fixed in the previous review. In
+          static mode initializeForStaticMode() makes isProjectInitialized() true, so expanding a
+          schedule now issues fetchScheduleStatus() against /api/schedules/:id/status. That API
+          helper has no static fallback, so the read-only export starts making daemon requests
+          again. The !isStaticMode() guard still needs to be part of the enabled condition for
+          daemon-only status fetching.
+        created_at: 2026-03-20T21:18:38.161Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-20T21:19:11.514Z
+created_at: 2026-03-20T21:16:12.935Z
+updated_at: 2026-03-20T21:19:11.515Z
+notes: []

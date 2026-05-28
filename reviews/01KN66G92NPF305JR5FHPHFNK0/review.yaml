@@ -1,0 +1,189 @@
+_ulid: 01KN66G92NPF305JR5FHPHFNK0
+slugs: []
+title: Review task-dispatch-plan-branch-resolution
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test passed in this snapshot: 7454 passed, 5 skipped."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-02T04:23:48.874Z
+    completed_at: 2026-04-02T04:23:48.874Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exited with warnings only (existing project-wide warning debt; no
+      task-specific validation errors).
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-02T04:23:52.885Z
+    completed_at: 2026-04-02T04:23:52.885Z
+events:
+  - _ulid: 01KN66G92N760Y33EJ8WEF0W5W
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-02T04:16:26.709Z
+  - _ulid: 01KN66GHJT768JG4F70JSMECCQ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-02T04:16:35.418Z
+  - _ulid: 01KN66XH7G1KDS1RTJPX85CDH6
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN66XFZXR5CDNH9RPXPTD5F7
+    timestamp: 2026-04-02T04:23:41.040Z
+  - _ulid: 01KN66XMYNNVZAN3XCYZBAD4JS
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN66XKQ1T8C1GB47YV0TE654
+    timestamp: 2026-04-02T04:23:44.853Z
+  - _ulid: 01KN66XT3VDG22JC6FR7C32MSB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-02T04:23:50.141Z
+  - _ulid: 01KN66XY1TXWEJRXEHMSV2C4G5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-02T04:23:54.170Z
+  - _ulid: 01KN66Y5Z0G2SSH7E39WG9Z0WX
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-02T04:24:02.272Z
+  - _ulid: 01KN66Y5Z0DWY144KH1A3CW0PC
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-02T04:24:02.272Z
+  - _ulid: 01KN681E4Y0NRNTYPZG6RDM0EC
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN66XKQ1T8C1GB47YV0TE654
+    timestamp: 2026-04-02T04:43:17.534Z
+  - _ulid: 01KN681G66SJ1P4RZEY15W0XZF
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN66XKQ1T8C1GB47YV0TE654
+    timestamp: 2026-04-02T04:43:19.622Z
+  - _ulid: 01KN6821CG4AKNM3ME5J6HKY9D
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN66XFZXR5CDNH9RPXPTD5F7
+    timestamp: 2026-04-02T04:43:37.232Z
+  - _ulid: 01KN6823CHX5WKRG8F2N3A5BT0
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN66XFZXR5CDNH9RPXPTD5F7
+    timestamp: 2026-04-02T04:43:39.285Z
+examined_commit: 41800715e1029b33695a14d9d6dff509bd4a6622
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN5XW04JM5261ZFYV1HCQVJK"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN66XFZXR5CDNH9RPXPTD5F7
+    entries:
+      - _ulid: 01KN66XFZX81Z2XWGB0A72HB8D
+        author: Jacob Chapel
+        body: 'Evidence log: Files read: src/agent-runtime/workspace.ts, src/agent-runtime/dispatch.ts,
+          src/parser/plans.ts, src/parser/task-data-manager.ts,
+          tests/dispatch-workspace-config.test.ts. Commands run: kspec task get
+          @01KN5XW04JM5261ZFYV1HCQVJK, kspec item get @plan-branch-dispatch-target, kspec validate,
+          grep -Rni "AC: @plan-branch-dispatch-target" tests, grep -Rni "AC: @trait-" tests, git
+          diff 03bf2acf6537bedb38f04c61c6cc010c747bbd9b..41800715e1029b33695a14d9d6dff509bd4a6622,
+          npm test, and a direct node repro against dist/agent-runtime/workspace.js to confirm stale
+          base_branch_point after retargeting. Claims verified: full test suite passes; spec AC
+          annotations exist; plan-branch retargeting updates target_branch/target_commit but leaves
+          base_branch_point stale. Categories searched: correctness (found stale registry state on
+          retarget), edge cases (missing plan/branch handling reviewed), error handling
+          (plan-specific DispatchWorkspaceError paths reviewed), test quality (new tests cover happy
+          path and missing branch, but not the stale base_branch_point regression), integration
+          (other resolveDispatchWorkspaceConfig call sites inspected).'
+        created_at: 2026-04-02T04:23:39.773Z
+      - _ulid: 01KN6820PWZWP06XMMW7D5HWHF
+        author: Jacob Chapel
+        body: Reviewed. The blocker repro is now covered by the expanded stale-plan retarget assertions,
+          which verify base_branch_point and integration.target_commit move with the new plan
+          branch. No separate code change was needed beyond the blocker fix.
+        created_at: 2026-04-02T04:43:36.539Z
+    kind: nit
+    resolved_at: 2026-04-02T04:43:38.603Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KN66XKQ1T8C1GB47YV0TE654
+    anchor:
+      type: code
+      commit: 41800715e1029b33695a14d9d6dff509bd4a6622
+      line_end: 2211
+      line_start: 2210
+      path: src/agent-runtime/workspace.ts
+      side: head
+    entries:
+      - _ulid: 01KN66XKQ1VGF630W1CDHHDYNQ
+        author: Jacob Chapel
+        body: "When a workspace is retargeted from one integration branch to another, this helper still
+          returns the old persisted base_branch_point unconditionally. In the current code path,
+          provisioning can then persist resolved_base_branch=dev and integration.target_commit=<dev
+          tip> while base_branch_point remains the old main commit. I reproduced that with a temp
+          repo by provisioning once against main, updating the linked plan to branch=dev, and
+          reprovisioning: target_branch/dev tip changed but base_branch_point stayed on the original
+          main SHA. That leaves the registry internally inconsistent and later recovery code still
+          trusts metadata.baseBranchPoint when reconstructing records."
+        created_at: 2026-04-02T04:23:43.585Z
+      - _ulid: 01KN681DF3B9H625F2XDJ6BX3R
+        author: Jacob Chapel
+        body: "Fixed: resolveBaseBranchPoint now reuses the persisted base_branch_point only when the
+          workspace stays on the same resolved_base_branch. When reprovisioning retargets the
+          workspace to a different plan/config branch, it recomputes the fork point from the new
+          base so base_branch_point, resolved_base_branch, and integration.target_commit stay
+          aligned. Added regression assertions in tests/dispatch-workspace-config.test.ts for the
+          plan-retarget scenario."
+        created_at: 2026-04-02T04:43:16.835Z
+    kind: blocker
+    resolved_at: 2026-04-02T04:43:18.937Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-04-02T04:24:02.272Z
+created_at: 2026-04-02T04:16:26.709Z
+updated_at: 2026-04-02T04:43:38.603Z
+notes: []

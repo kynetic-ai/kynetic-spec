@@ -1,0 +1,178 @@
+_ulid: 01KMYZ9YJ6JJA2885K48QQ698W
+slugs: []
+title: "Plan review: e2e test suite audit and restructure 2"
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Plan contains no specs and sets derive_from_specs: false; content is task-only in format."
+    name: Task-only structure
+    required: true
+    created_at: 2026-03-30T08:57:03.706Z
+    completed_at: 2026-03-30T08:57:03.706Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Task set includes product bug-fix/perf work and net-new coverage expansion tasks, so the
+      plan does not stay scoped to e2e cleanup/restructure.
+    name: Scope alignment
+    required: true
+    created_at: 2026-03-30T08:57:03.727Z
+    completed_at: 2026-03-30T08:57:03.727Z
+events:
+  - _ulid: 01KMYZ9YJ5W4T531GH48VWGK1N
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-30T08:55:58.277Z
+  - _ulid: 01KMYZANQHXSGR84JM40Q70TQ0
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-30T08:56:22.001Z
+  - _ulid: 01KMYZBA1Z73BRM9TH16CYX3PV
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMYZB9EA1CMF73J35Q7KYPES
+    timestamp: 2026-03-30T08:56:42.815Z
+  - _ulid: 01KMYZBB1J388SQ30WJZ03P7SJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMYZB9GHTPN5KNMJJTPK98NR
+    timestamp: 2026-03-30T08:56:43.826Z
+  - _ulid: 01KMYZBC0YXX2DQVR1225NH200
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMYZB9HBRZ9QG1M2M2DMCYPS
+    timestamp: 2026-03-30T08:56:44.830Z
+  - _ulid: 01KMYZBD01GNPN1SDXAKB4JK9P
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KMYZB9JANCTTRKKYW07GCYCX
+    timestamp: 2026-03-30T08:56:45.825Z
+  - _ulid: 01KMYZBZ2Y07K8ZXZ4C8GZNRG5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Task-only structure
+    timestamp: 2026-03-30T08:57:04.350Z
+  - _ulid: 01KMYZC02NVBRRCWX5X34WBMAB
+    actor: Jacob Chapel
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-30T08:57:05.366Z
+  - _ulid: 01KMYZC02PY98FXVQKJZRCXVAH
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-30T08:57:05.366Z
+  - _ulid: 01KMYZC12CR4X92D97YNSNWQCC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Scope alignment
+    timestamp: 2026-03-30T08:57:06.380Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-e2e-test-suite-audit-and-restructure-2"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMYZB9EA1CMF73J35Q7KYPES
+    anchor:
+      type: structured
+      ref: "@task-fix-query-loading-state"
+      section: tasks
+    entries:
+      - _ulid: 01KMYZB9EB2ZHRPE7ACSXFAKYE
+        author: Jacob Chapel
+        body: This plan is framed as e2e test-suite cleanup, but this task is a product bug investigation
+          and implementation task in TanStack Query/web UI runtime code rather than test cleanup.
+          Deriving it from this plan will mix app-behavior repair with test maintenance, making
+          scope, ownership, and completion criteria ambiguous. Split this into a separate bug-fix
+          plan/task, and keep this plan focused on test cleanup work that starts after the
+          underlying UI bug is already fixed or explicitly accepted as a prerequisite outside the
+          plan.
+        created_at: 2026-03-30T08:56:42.187Z
+    kind: blocker
+  - _ulid: 01KMYZB9GHTPN5KNMJJTPK98NR
+    anchor:
+      type: structured
+      ref: "@task-rewrite-websocket-e2e"
+      section: tasks
+    entries:
+      - _ulid: 01KMYZB9GJPS5PDHYTT7PNECNW
+        author: Jacob Chapel
+        body: "This goes beyond cleanup into net-new behavioral coverage design. Rewriting protocol-level
+          coverage into new UI behavioral tests is a legitimate follow-on effort, but it is not
+          cleanup of the existing failing suite. Keeping expansion work in the same plan obscures
+          the real exit condition for the cleanup effort. Split cleanup from coverage expansion:
+          this plan should stop at restoring and restructuring the current suite, while new
+          behavioral coverage should live in a later plan."
+        created_at: 2026-03-30T08:56:42.258Z
+    kind: blocker
+  - _ulid: 01KMYZB9HBRZ9QG1M2M2DMCYPS
+    anchor:
+      type: structured
+      ref: "@task-add-filewatcher-e2e"
+      section: tasks
+    entries:
+      - _ulid: 01KMYZB9HBZVA595723CKCYGBA
+        author: Jacob Chapel
+        body: This is also net-new coverage, not cleanup. Adding missing file-watcher UI tests enlarges the
+          scope from 'make the existing e2e suite healthy' to 'design new e2e coverage areas'. That
+          should be proposed after the cleanup effort is complete, not mixed into the same
+          derivation set.
+        created_at: 2026-03-30T08:56:42.283Z
+    kind: blocker
+  - _ulid: 01KMYZB9JANCTTRKKYW07GCYCX
+    anchor:
+      type: structured
+      ref: "@task-ci-full-e2e"
+      section: tasks
+    entries:
+      - _ulid: 01KMYZB9JA9A88DDCKDGZ1Z8RM
+        author: Jacob Chapel
+        body: "The CI-gate expansion task is downstream operational rollout rather than cleanup of the suite
+          itself. If you keep it, make the dependency and success criteria explicit: it should only
+          derive after the cleanup tasks establish a stable passing set and a measured runtime
+          budget. Otherwise consider moving CI rollout into a separate follow-up plan."
+        created_at: 2026-03-30T08:56:42.314Z
+    kind: question
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: Jacob Chapel
+    role: reviewer
+    created_at: 2026-03-30T08:57:05.363Z
+created_at: 2026-03-30T08:55:58.278Z
+updated_at: 2026-03-30T08:57:03.727Z
+notes: []

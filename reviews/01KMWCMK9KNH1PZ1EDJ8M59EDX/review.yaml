@@ -1,0 +1,246 @@
+_ulid: 01KMWCMK9KNH1PZ1EDJ8M59EDX
+slugs: []
+title: Review add domain ready event AC to entity cache spec
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed locally in review snapshot: 1967/1967 suites, 7092 passed, 5 skipped, 0 failed."
+    name: npm-test
+    required: true
+    runner: npm
+    created_at: 2026-03-29T08:55:33.102Z
+    completed_at: 2026-03-29T08:55:33.102Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      ✓ Validation passed
+
+      ────────────────────────────────────────
+
+      Files checked: 10
+
+      Items checked: 567
+
+      Tasks checked: 0
+
+      Meta: 10 agents, 11 workflows, 10 conventions
+
+
+      Schema: OK
+
+      References: OK
+
+
+      Reference warnings: 1
+        ⚠ @skills
+          Orphaned skill directory 'skills' has no corresponding meta entry
+          in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+      Alignment warnings: 31
+        Orphaned specs (no tasks): 30
+          ○ Test Trait
+          ○ Filterable List Commands
+          ○ Dry Run Preview Mode
+          ... and 27 more
+        Status mismatches: 1
+          ! Task Set Batch Support
+            Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+
+      Alignment stats: 404/567 specs have tasks, 403 aligned
+
+
+      Completeness warnings: 483
+        Missing acceptance criteria: 1
+          ○ @01KJN1WT - Test Trait
+        Missing own AC coverage: 228
+          ! @spec-item - Spec Item
+            Uncovered: ac-item-1, ac-item-2
+          ! @ulid-system - ULID Identifier System
+            Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+          ! @slug-system - Slug Alias System
+            Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+          ... and 225 more
+        Invalid AC annotations: 254
+          ! AC annotation references '@slug' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-spec-update-entity-cache-01kmw68j-review/tests/ac-annotation-validation.test.ts:6
+          ! AC annotation references '@my-spec' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-spec-update-entity-cache-01kmw68j-review/tests/ac-annotation-validation.test.ts:84
+          ! AC annotation references '@my-spec' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-spec-update-entity-cache-01kmw68j-review/tests/ac-annotation-validation.test.ts:87
+          ! AC annotation references '@spec-a' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-spec-update-entity-cache-01kmw68j-review/tests/ac-annotation-validation.test.ts:114
+          ! AC annotation references '@spec-b' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-spec-update-entity-cache-01kmw68j-review/tests/ac-annotation-validation.test.ts:118
+          ... and 249 more
+      Skills: OK (10 files checked) exits 6 with existing repository-wide warnings (orphaned skill
+      dir, orphaned specs, baseline AC annotation/completeness warnings). No new task-specific
+      validation error was surfaced.
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-29T08:55:42.500Z
+    completed_at: 2026-03-29T08:55:42.500Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exits 6 with existing repository-wide warnings (orphaned skill dir,
+      orphaned specs, baseline AC annotation/completeness warnings). No new task-specific validation
+      error was surfaced.
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-29T08:55:58.999Z
+    completed_at: 2026-03-29T08:55:58.999Z
+events:
+  - _ulid: 01KMWCMK9KWY9P3N5MZ4S1NBY9
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-29T08:51:15.379Z
+  - _ulid: 01KMWCN1Z2W4FY1RG3V46D9GQG
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-29T08:51:30.402Z
+  - _ulid: 01KMWCWCRM9084H1XM75BS9DA7
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMWCWBRX3XPE4RNQN28G0SN0
+    timestamp: 2026-03-29T08:55:30.837Z
+  - _ulid: 01KMWCWG0HEJYQK2988DHFPZ10
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm-test
+    timestamp: 2026-03-29T08:55:34.162Z
+  - _ulid: 01KMWCWS4GFN7QF5Q38AWSF0PQ
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec-validate
+    timestamp: 2026-03-29T08:55:43.504Z
+  - _ulid: 01KMWCX6DE6BPDMJC9CRJ3EQQV
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMWCX5GT5H5M4K9Z8Q30NK9C
+    timestamp: 2026-03-29T08:55:57.102Z
+  - _ulid: 01KMWCX8XCGTSW5EJJCTGKBV66
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec-validate
+    timestamp: 2026-03-29T08:55:59.660Z
+  - _ulid: 01KMWCXJBX0415K0X41V3VP2TG
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-29T08:56:09.341Z
+  - _ulid: 01KMWCXJBXEGXW66442E14TRAA
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-29T08:56:09.341Z
+  - _ulid: 01KMWDJVMY7D5528489XA42CSB
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMWCWBRX3XPE4RNQN28G0SN0
+    timestamp: 2026-03-29T09:07:46.974Z
+  - _ulid: 01KMWDK2SZYZ21EK380CD89P6Q
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMWCWBRX3XPE4RNQN28G0SN0
+    timestamp: 2026-03-29T09:07:54.303Z
+  - _ulid: 01KMWDKAY35KC6RGQE1XYWPXZZ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMWCX5GT5H5M4K9Z8Q30NK9C
+    timestamp: 2026-03-29T09:08:02.627Z
+examined_commit: d362c71d16d2916574e317b78a38a94f5f062b94
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMW68JT108S4RS3G1GNYH5A9"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMWCWBRX3XPE4RNQN28G0SN0
+    anchor:
+      type: code
+      commit: d362c71d16d2916574e317b78a38a94f5f062b94
+      line_end: 892
+      line_start: 891
+      path: src/daemon/entity-cache.ts
+      side: head
+    entries:
+      - _ulid: 01KMWCWBRXEY59NWED7JWPDFDC
+        author: Test User
+        body: "This does not satisfy  yet. The cache now invokes an optional callback here, but nothing in
+          production code registers that callback or turns it into a WebSocket/pubsub broadcast to
+          connected clients. I verified this by searching  for , , and : the new hook is only
+          referenced inside  and the new tests. As shipped, clients still receive no real-time event
+          when a domain becomes ready, so the AC remains unmet."
+        created_at: 2026-03-29T08:55:29.821Z
+      - _ulid: 01KMWDJV2RHC7QWG10VPJB6EFR
+        author: "@claude"
+        body: "Fixed: wired the onDomainReady callback to pubsubManager.broadcast() in server.ts
+          onProjectRegistered. The callback is now passed as the third argument to
+          registerEntityCache(), broadcasting on topic 'cache:status' with event 'domain_ready' and
+          payload {domain, previousState, timestamp}. Also added an integration test verifying the
+          callback flows through registerEntityCache to the cache instance. Full suite passes
+          (7128/7133, 5 skipped)."
+        created_at: 2026-03-29T09:07:46.391Z
+    kind: blocker
+    resolved_at: 2026-03-29T09:07:53.572Z
+    resolved_by: "@claude"
+  - _ulid: 01KMWCX5GT5H5M4K9Z8Q30NK9C
+    entries:
+      - _ulid: 01KMWCX5GTZWXWFR7040MY4B08
+        author: Test User
+        body: "Evidence log: Files read: src/daemon/entity-cache.ts, tests/daemon-entity-cache.test.ts,
+          prior review @01KMWABZ, task/spec context via kspec task get. Commands run: git diff
+          6943dad..d362c71, git show --stat d362c71, kspec validate, grep for AC annotations under
+          tests/, rg for ac-domain-ready-event and broadcast wiring under src/tests, npm test.
+          Categories checked: correctness/spec alignment, test quality, integration wiring,
+          regression coverage."
+        created_at: 2026-03-29T08:55:56.186Z
+    kind: nit
+    resolved_at: 2026-03-29T09:08:01.972Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-29T08:56:09.341Z
+created_at: 2026-03-29T08:51:15.379Z
+updated_at: 2026-03-29T09:08:01.972Z
+notes: []

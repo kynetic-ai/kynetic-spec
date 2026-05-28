@@ -1,0 +1,244 @@
+_ulid: 01KN45CVJ6P5K615X8QBKDTH4M
+slugs: []
+title: Review task-stabilize-full-gate-e2e-flakes
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed node scripts/test.cjs --fresh tests/daemon-api/sessions-pagination.test.ts
+      tests/session-context.test.ts (20 suites, 41 tests) and targeted Playwright run for
+      navigation/session-context (5 passed).
+    name: targeted-regression
+    required: true
+    runner: playwright+test-runner
+    created_at: 2026-04-01T09:28:40.958Z
+    completed_at: 2026-04-01T09:28:40.958Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh failed in unrelated existing suites:
+      tests/agent-dispatch-engine.test.ts, tests/cli-serve.test.ts,
+      tests/dispatch-workspace-config.test.ts. No failures in changed files or targeted regression
+      surfaces."
+    name: full-npm-test
+    required: false
+    runner: scripts/test.cjs
+    created_at: 2026-04-01T09:28:43.192Z
+    completed_at: 2026-04-01T09:28:43.192Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: packages/daemon/src/routes/session-related.ts,
+      packages/daemon/src/routes/sessions.ts, tests/e2e/navigation.spec.ts,
+      tests/e2e/session-context.spec.ts, tests/daemon-api/sessions-pagination.test.ts,
+      tests/session-context.test.ts, tests/e2e/fixtures/test-base.ts. Commands run: git diff/stat,
+      kspec task get, kspec validate, rg AC annotations, node scripts/test.cjs --fresh
+      tests/daemon-api/sessions-pagination.test.ts tests/session-context.test.ts, npm run build:e2e,
+      targeted Playwright run, npm test -- --fresh. Claims verified: related-session/session-list
+      fallback behaves under regression tests; browser forward/back test now passes; task/item
+      session-context tests pass. Categories searched: correctness, edge cases, error handling, test
+      quality, integration."
+    name: review-evidence
+    required: false
+    runner: reviewer
+    created_at: 2026-04-01T09:28:45.457Z
+    completed_at: 2026-04-01T09:28:45.457Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with repo-wide pre-existing warnings only (exit 6); no task-specific errors.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-01T09:32:00.639Z
+    completed_at: 2026-04-01T09:32:00.639Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: node scripts/test.cjs --fresh tests/daemon-api/sessions-pagination.test.ts
+      tests/session-context.test.ts => 20 suites passed, 41 tests passed.
+    name: targeted daemon tests
+    required: true
+    runner: vitest
+    created_at: 2026-04-01T09:32:04.706Z
+    completed_at: 2026-04-01T09:32:04.706Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npx playwright test tests/e2e/navigation.spec.ts tests/e2e/session-context.spec.ts with
+      task-specific grep => 5 passed.
+    name: targeted e2e
+    required: true
+    runner: playwright
+    created_at: 2026-04-01T09:32:08.838Z
+    completed_at: 2026-04-01T09:32:08.838Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test -- --fresh reported failures in tests/cli-serve.test.ts,
+      tests/dispatch-workspace-config.test.ts, tests/native-guard-setup.test.ts. Control run on base
+      dd1b3eb and isolated rerun on HEAD both passed for those suites, indicating unrelated
+      nondeterministic gate noise outside this diff.
+    name: full npm test
+    required: false
+    runner: test.cjs
+    created_at: 2026-04-01T09:32:13.179Z
+    completed_at: 2026-04-01T09:32:13.179Z
+events:
+  - _ulid: 01KN45CVJ6TB17JHDEZ6XWR70E
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-01T09:18:37.126Z
+  - _ulid: 01KN45DGJ5KS330DN90ZV6A9BG
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-01T09:18:58.629Z
+  - _ulid: 01KN45Z9YC03BMTYM6TNVVVNKN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted-regression
+    timestamp: 2026-04-01T09:28:41.676Z
+  - _ulid: 01KN45ZC5TCNVZJ43JDH8FXJD2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: full-npm-test
+    timestamp: 2026-04-01T09:28:43.962Z
+  - _ulid: 01KN45ZEDHZ7NV7KZV5T6Y70KV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-04-01T09:28:46.257Z
+  - _ulid: 01KN45ZNGY4PNWHK5HN0XGDT8M
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-01T09:28:53.534Z
+  - _ulid: 01KN45ZNGYNWX5E0NWNXWQP18N
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-01T09:28:53.534Z
+  - _ulid: 01KN465A1WVP35SJZPKMFPV1J3
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-01T09:31:58.396Z
+  - _ulid: 01KN465CVWCWCVSRQHCQG0TP8Z
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-01T09:32:01.277Z
+  - _ulid: 01KN465EVN26WQ2Y8FSMHE5ME4
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN465E5EA6WXJXCH091N6135
+    timestamp: 2026-04-01T09:32:03.317Z
+  - _ulid: 01KN465GVAK7A0D2YDHZNSX94C
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted daemon tests
+    timestamp: 2026-04-01T09:32:05.354Z
+  - _ulid: 01KN465MXYYAYXZT48M4PQQ31P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted e2e
+    timestamp: 2026-04-01T09:32:09.534Z
+  - _ulid: 01KN465S3434FMD6NBXHM38QF4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: full npm test
+    timestamp: 2026-04-01T09:32:13.796Z
+examined_commit: d60e51a41636746468122c111be5de0af4ee2a13
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN3Q0EXX6N1PC5FHD1GZYWGS"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN465E5EA6WXJXCH091N6135
+    entries:
+      - _ulid: 01KN465E5EKHTF3ZQ6J2WA7ZNB
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          Files read: packages/daemon/src/routes/session-related.ts,
+          packages/daemon/src/routes/sessions.ts, tests/e2e/navigation.spec.ts,
+          tests/e2e/session-context.spec.ts, tests/daemon-api/sessions-pagination.test.ts,
+          tests/session-context.test.ts.
+
+          Commands run: git diff/stat against dev base, kspec validate, node scripts/test.cjs
+          --fresh tests/daemon-api/sessions-pagination.test.ts tests/session-context.test.ts, npx
+          playwright test tests/e2e/navigation.spec.ts tests/e2e/session-context.spec.ts --grep
+          "...", npm test -- --fresh, base-commit control run for tests/cli-serve.test.ts
+          tests/dispatch-workspace-config.test.ts tests/native-guard-setup.test.ts, isolated rerun
+          of those same suites on HEAD.
+
+          Claims verified: navigation/session-context flake fixes pass targeted checks; session
+          route fallback does not break existing task/spec filter tests; full-gate failures observed
+          are outside the diff and not deterministic regressions from this snapshot.
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration.
+          No task-scoped blocking findings.
+        created_at: 2026-04-01T09:32:02.606Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-01T09:28:53.533Z
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-01T09:31:58.396Z
+created_at: 2026-04-01T09:18:37.126Z
+updated_at: 2026-04-01T09:32:13.179Z
+notes: []

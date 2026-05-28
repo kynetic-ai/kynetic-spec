@@ -1,0 +1,268 @@
+_ulid: 01KRCP66HBEKVZ2N0XTBJFB3XW
+slugs: []
+title: "Plan review: Daemon Test Cleanup Contract Hardening"
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec plan import plans/daemon-test-cleanup-contract-hardening.md --dry-run succeeded and
+      stored the full document.
+    name: Plan import parse
+    required: true
+    runner: kspec
+    created_at: 2026-05-11T23:34:00.074Z
+    completed_at: 2026-05-11T23:34:00.074Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed; existing reference warnings are pre-existing
+      deprecated refs unrelated to this draft plan.
+    name: Reference validation
+    required: true
+    runner: kspec
+    created_at: 2026-05-11T23:34:09.722Z
+    completed_at: 2026-05-11T23:34:09.722Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Every new guardrail AC and every new @daemon-test-teardown-boundedness AC is claimed by
+      spec/update, regression, implementation, or final validation tasks.
+    name: Coverage mapping
+    required: true
+    runner: manual-plan-review
+    created_at: 2026-05-11T23:34:18.886Z
+    completed_at: 2026-05-11T23:34:18.886Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Spec update task precedes guardrail regressions; regression tasks precede implementation
+      tasks; final validation depends on implementation tasks; no circular or missing task
+      dependencies found.
+    name: Dependency ordering
+    required: true
+    runner: manual-plan-review
+    created_at: 2026-05-11T23:34:29.423Z
+    completed_at: 2026-05-11T23:34:29.423Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan covers non-terminating signals, liveness probes, helper-origin trust,
+      process-lifecycle-only cleanup, implicit CLI auto-start ownership, post-escalation
+      observation, hanging requests, setup-failure cleanup, bounded probes, and primary-error
+      preservation while keeping production endpoint/CLI redesign out of scope.
+    name: Scope and adversarial gap coverage
+    required: true
+    runner: manual-plan-review
+    created_at: 2026-05-11T23:34:39.018Z
+    completed_at: 2026-05-11T23:34:39.018Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@daemon-test-teardown-boundedness ac-uncooperative-process-stop-is-bounded has a compound
+      Then clause: escalation plus bounded terminal outcome."
+    name: Spec language quality
+    required: true
+    runner: manual-plan-review
+    created_at: 2026-05-11T23:34:49.970Z
+    completed_at: 2026-05-11T23:34:49.970Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Three task testing sections require a representative Playwright daemon fixture slice
+      without naming the command, so fresh-session workers do not have exact verification
+      instructions.
+    name: Task standalone executability
+    required: true
+    runner: manual-plan-review
+    created_at: 2026-05-11T23:35:01.129Z
+    completed_at: 2026-05-11T23:35:01.129Z
+events:
+  - _ulid: 01KRCP66H55GDK0NHFR30JQ9KJ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-11T23:33:05.701Z
+  - _ulid: 01KRCP6TMCX950RGV1GP1VWED4
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRCP6S9B87Z6C41Y636VMNT5
+    timestamp: 2026-05-11T23:33:26.284Z
+  - _ulid: 01KRCP6WS6RP3W52HSXCRHTW3R
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRCP6SABJM7MX35VVYV9STCZ
+    timestamp: 2026-05-11T23:33:28.486Z
+  - _ulid: 01KRCP6YWNFE3WEDAWD8RF4P9Q
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRCP6SAPQ5SF9H2VTC878B72
+    timestamp: 2026-05-11T23:33:30.645Z
+  - _ulid: 01KRCP7GTB8DG3H7BZ5S0H72C3
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRCP7FENTXE7DMMB44MZTY7F
+    timestamp: 2026-05-11T23:33:49.003Z
+  - _ulid: 01KRCP7WZPF7EX0VKDTWM8YK1T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan import parse
+    timestamp: 2026-05-11T23:34:01.462Z
+  - _ulid: 01KRCP86FAYBD4V5SERSR8B0AH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Reference validation
+    timestamp: 2026-05-11T23:34:11.178Z
+  - _ulid: 01KRCP8FAV7S7SVRM54NTC05Y6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Coverage mapping
+    timestamp: 2026-05-11T23:34:20.251Z
+  - _ulid: 01KRCP8SMGB8X3WPBM224HMCJ8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-05-11T23:34:30.800Z
+  - _ulid: 01KRCP930Q808R7PGN7ZZN41SF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Scope and adversarial gap coverage
+    timestamp: 2026-05-11T23:34:40.407Z
+  - _ulid: 01KRCP9DP9M9AEW84D8PQ1GY3R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Spec language quality
+    timestamp: 2026-05-11T23:34:51.337Z
+  - _ulid: 01KRCP9RJJTQ6877QFCBAWN99P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Task standalone executability
+    timestamp: 2026-05-11T23:35:02.482Z
+  - _ulid: 01KRCPA1DKEX4YC3G3NHJE0MQY
+    actor: Jacob Chapel
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-11T23:35:11.540Z
+  - _ulid: 01KRCPA1DMQWJBEAZWBXPRW0Z8
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: closed
+    timestamp: 2026-05-11T23:35:11.540Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-daemon-test-cleanup-contract-hardening"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRCP6S9B87Z6C41Y636VMNT5
+    anchor:
+      type: structured
+      field: Testing
+      ref: "@task-fix-setup-failure-cleanup-error-preservation"
+      section: tasks
+    entries:
+      - _ulid: 01KRCP6S9B6PNTHSAZFSSEKY6N
+        author: Jacob Chapel
+        body: "Testing is not standalone/exact: it refers to the representative Playwright daemon fixture
+          slice used by prior hardening validation without naming the command. A worker in a fresh
+          session should not have to inspect the prior plan to discover required verification;
+          include the exact command or remove this as a required test."
+        created_at: 2026-05-11T23:33:24.907Z
+    kind: blocker
+  - _ulid: 01KRCP6SABJM7MX35VVYV9STCZ
+    anchor:
+      type: structured
+      field: ac-uncooperative-process-stop-is-bounded
+      ref: "@daemon-test-teardown-boundedness"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KRCP6SACWPSR6WQXP5PFNJ7P
+        author: Jacob Chapel
+        body: "AC then-clause contains two independently testable outcomes: cleanup escalates, and cleanup
+          reaches a bounded terminal outcome. The review objective requires no compound Then
+          clauses. Split escalation into its own AC or move it to implementation guidance, and leave
+          this AC with one observable outcome."
+        created_at: 2026-05-11T23:33:24.940Z
+    kind: blocker
+  - _ulid: 01KRCP6SAPQ5SF9H2VTC878B72
+    anchor:
+      type: structured
+      field: Testing
+      ref: "@task-fix-active-request-teardown-and-observation-bounds"
+      section: tasks
+    entries:
+      - _ulid: 01KRCP6SAPZ58JBW2E0NC5FVJH
+        author: Jacob Chapel
+        body: "Testing is not standalone/exact: it says to run a representative Playwright daemon fixture
+          cleanup test or document why unavailable, but does not name the command or test file. The
+          task must include the exact Playwright slice command, or explicitly state that no
+          Playwright command is required for this task."
+        created_at: 2026-05-11T23:33:24.950Z
+    kind: blocker
+  - _ulid: 01KRCP7FENTXE7DMMB44MZTY7F
+    anchor:
+      type: structured
+      field: Required commands
+      ref: "@task-validate-daemon-cleanup-contract-hardening"
+      section: tasks
+    entries:
+      - _ulid: 01KRCP7FENW04F83QCR68TKKY5
+        author: Jacob Chapel
+        body: "Final validation is not fully standalone/exact: the required commands include 'Run the
+          representative Playwright daemon fixture slice used by the prior daemon fixture hardening
+          validation' without naming the command. Since this is the end-to-end gate, the plan needs
+          the exact command or an explicit statement that the gate is manual/documentation-only with
+          acceptance criteria for when it can be skipped."
+        created_at: 2026-05-11T23:33:47.605Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: Jacob Chapel
+    role: reviewer
+    created_at: 2026-05-11T23:35:11.539Z
+created_at: 2026-05-11T23:33:05.707Z
+updated_at: 2026-05-11T23:35:11.540Z
+notes: []

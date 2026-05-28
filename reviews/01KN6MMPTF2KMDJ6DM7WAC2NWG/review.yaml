@@ -1,0 +1,207 @@
+_ulid: 01KN6MMPTF2KMDJ6DM7WAC2NWG
+slugs: []
+title: Review pre-invocation workspace executability validation
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate exited 6 with existing repository warning backlog only: schema and
+      references OK, no new task-specific validation failure."
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-02T08:24:59.638Z
+    completed_at: 2026-04-02T08:24:59.638Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test passed: 2065 suites, 7478 tests passed, 5 skipped."
+    name: npm-test
+    required: true
+    runner: npm-test
+    created_at: 2026-04-02T08:25:02.096Z
+    completed_at: 2026-04-02T08:25:02.096Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/dispatch-runtime-bootstrap-contract.test.ts passed: 2 suites, 16
+      tests."
+    name: dispatch-bootstrap-contract
+    required: true
+    runner: npm-test
+    created_at: 2026-04-02T08:25:04.594Z
+    completed_at: 2026-04-02T08:25:04.594Z
+events:
+  - _ulid: 01KN6MMPTE4MQX1BJ79CYRQG3S
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-02T08:23:31.918Z
+  - _ulid: 01KN6MPCC3CNEZD1Y1H1JDZG6G
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-02T08:24:26.755Z
+  - _ulid: 01KN6MPG4BN1JTSS0088Y1B149
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN6MPEWKAYX7DD6K96P1WHQ5
+    timestamp: 2026-04-02T08:24:30.603Z
+  - _ulid: 01KN6MQARV7P0CD3HN5FXHCPET
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN6MQ9THTQT9FQCZ41S3DSNE
+    timestamp: 2026-04-02T08:24:57.883Z
+  - _ulid: 01KN6MQD9K95AXDD9XZNVRJ21D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-04-02T08:25:00.468Z
+  - _ulid: 01KN6MQFNDFHKFYGYK8MC21VKB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm-test
+    timestamp: 2026-04-02T08:25:02.893Z
+  - _ulid: 01KN6MQJ3HAXKZF4CX9PEDJD5J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: dispatch-bootstrap-contract
+    timestamp: 2026-04-02T08:25:05.393Z
+  - _ulid: 01KN6MQX5XMFZVHDCDZ6TT6X4J
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-02T08:25:16.733Z
+  - _ulid: 01KN6MQX5XV7N9KZVRS31YXFYK
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-02T08:25:16.733Z
+  - _ulid: 01KN6P6HJC1X1692H99ZRD1NDE
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN6MQ9THTQT9FQCZ41S3DSNE
+    timestamp: 2026-04-02T08:50:44.940Z
+  - _ulid: 01KN6P6N251143GTAQS0VKDF5W
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN6MPEWKAYX7DD6K96P1WHQ5
+    timestamp: 2026-04-02T08:50:48.517Z
+  - _ulid: 01KN6P7GJQSG0THZME0G2G9443
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN6MQ9THTQT9FQCZ41S3DSNE
+    timestamp: 2026-04-02T08:51:16.695Z
+  - _ulid: 01KN6P7JK9PZ148J6CJ8ABX1Y3
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN6MPEWKAYX7DD6K96P1WHQ5
+    timestamp: 2026-04-02T08:51:18.762Z
+examined_commit: 9723239855abc52d12a71705ec232f73606cc264
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN6J53YQST2TF8BMFJ7GZC7T"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN6MPEWKAYX7DD6K96P1WHQ5
+    entries:
+      - _ulid: 01KN6MPEWKKSZ5C16V7PXB64DD
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          Files read: src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts,
+          tests/dispatch-runtime-bootstrap-contract.test.ts
+
+          Commands run: kspec task get @01KN6J53YQST2TF8BMFJ7GZC7T; kspec item get
+          @dispatch-runtime-bootstrap-contract; kspec review for-task @01KN6J53YQST2TF8BMFJ7GZC7T;
+          git diff
+          97615415a87f8458a20728d4acfb8e8b635015bd..9723239855abc52d12a71705ec232f73606cc264; grep
+          -Rni "AC: @dispatch-runtime-bootstrap-contract\|AC: @trait-error-guidance" tests; kspec
+          validate; npm test -- --run tests/dispatch-runtime-bootstrap-contract.test.ts; npm test
+
+          Claims verified: the new validation and recovery paths compile and pass both the focused
+          bootstrap-contract suite and the full repository suite; inherited trait coverage for this
+          spec is still incomplete.
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration.
+        created_at: 2026-04-02T08:24:29.331Z
+      - _ulid: 01KN6P6MCV50BYR9SE62P8TTRR
+        author: Jacob Chapel
+        body: "Acknowledged. Current verification after the fix-cycle patch: npm test -- --run
+          tests/dispatch-runtime-bootstrap-contract.test.ts passed (16 tests), npm test -- --run
+          tests/cli-serve.test.ts passed when rechecking the unrelated serve failure, npm test --
+          --fresh passed for the full repository, and kspec validate still exits 6 only because of
+          the pre-existing repository warning backlog."
+        created_at: 2026-04-02T08:50:47.835Z
+    kind: nit
+    resolved_at: 2026-04-02T08:51:18.089Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KN6MQ9THTQT9FQCZ41S3DSNE
+    anchor:
+      type: code
+      commit: 9723239855abc52d12a71705ec232f73606cc264
+      line_end: 835
+      line_start: 834
+      path: tests/dispatch-runtime-bootstrap-contract.test.ts
+      side: head
+    entries:
+      - _ulid: 01KN6MQ9THVF2QTEA48XS5E5QH
+        author: Jacob Chapel
+        body: This spec inherits @trait-error-guidance, but this file still only annotates ac-1 and ac-2.
+          There are no tests or N/A annotations anywhere for inherited ac-3 through ac-6, so the
+          task is missing required trait AC coverage and should not advance yet.
+        created_at: 2026-04-02T08:24:56.913Z
+      - _ulid: 01KN6P6GWSC4YM6B33EM03JPTG
+        author: Jacob Chapel
+        body: "Fixed in fix cycle 1: added explicit standalone N/A annotations for @trait-error-guidance
+          ac-3 through ac-6 in tests/dispatch-runtime-bootstrap-contract.test.ts because this
+          runtime helper does not resolve refs, report invalid state transitions, perform schema
+          validation, or expose JSON-mode errors. Re-verified focused bootstrap-contract coverage
+          and reran the full suite successfully."
+        created_at: 2026-04-02T08:50:44.249Z
+    kind: blocker
+    resolved_at: 2026-04-02T08:51:15.982Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-04-02T08:25:16.733Z
+created_at: 2026-04-02T08:23:31.919Z
+updated_at: 2026-04-02T08:51:18.089Z
+notes: []

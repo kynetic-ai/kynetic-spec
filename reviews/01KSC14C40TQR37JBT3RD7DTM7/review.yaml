@@ -1,0 +1,176 @@
+_ulid: 01KSC14C40TQR37JBT3RD7DTM7
+slugs: []
+title: Review folder-backed review storage fix cycle 2
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "2511 test suites passed; 9553 tests passed, 5 skipped. Full log:
+      /tmp/kspec-test-cache/01KSC12QR34GBPZ625RATSRG9T/c60a903c780a2154.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-24T03:54:15.800Z
+    completed_at: 2026-05-24T03:54:15.800Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit completed successfully.
+    name: npm run typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-24T03:54:19.997Z
+    completed_at: 2026-05-24T03:54:19.997Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Schema and references OK. Raw kspec validate exits 6 due broad pre-existing repository
+      warnings; --warnings-ok exited 0. No task-specific validation error found.
+    name: kspec validate --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-24T03:54:24.176Z
+    completed_at: 2026-05-24T03:54:24.176Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Storage-task ACs and relevant trait ACs have behavioral annotations in
+      tests/parser-reviews-folder.test.ts, tests/review-rebuild-index.test.ts, and existing shared
+      trait suites. ac-review-screenshot-resource-loads-in-ui has no AC annotation and is only
+      mentioned in the deferral comment, matching this task's narrowed coverage.
+    name: AC annotation scan
+    required: true
+    runner: rg
+    created_at: 2026-05-24T03:54:28.825Z
+    completed_at: 2026-05-24T03:54:28.825Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No whitespace errors in diff against
+      plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw.
+    name: git diff --check
+    required: true
+    runner: git
+    created_at: 2026-05-24T03:54:35.700Z
+    completed_at: 2026-05-24T03:54:35.700Z
+events:
+  - _ulid: 01KSC14C40ZJKZYZ2GCTJM9M6J
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-24T03:40:47.616Z
+  - _ulid: 01KSC151TNWV7QXTA6MK571Q7F
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-24T03:41:09.845Z
+  - _ulid: 01KSC1X2YXPEPG9BV1FGQKSJFX
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-24T03:54:17.437Z
+  - _ulid: 01KSC1X72V5E281NFGX0PPAEJK
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run typecheck
+    timestamp: 2026-05-24T03:54:21.659Z
+  - _ulid: 01KSC1XBA343RR97ZAQ9CHQ1DM
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --warnings-ok
+    timestamp: 2026-05-24T03:54:25.987Z
+  - _ulid: 01KSC1XGZ00RKM5V5N03GWWN30
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC annotation scan
+    timestamp: 2026-05-24T03:54:31.776Z
+  - _ulid: 01KSC1XPFNBJ5WTK97Y9P35D9P
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: git diff --check
+    timestamp: 2026-05-24T03:54:37.429Z
+  - _ulid: 01KSC1XTTYHT50KKKPGVPDPC1W
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSC1XS4ZW697P4Y01W09CMW9
+    timestamp: 2026-05-24T03:54:41.886Z
+  - _ulid: 01KSC1XZ3E0Z9DR22RBAB7SQD2
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-24T03:54:46.254Z
+  - _ulid: 01KSC1XZ3FDZYWEB04GXFJ18XF
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-24T03:54:46.255Z
+examined_commit: 330df7431d9befcdc36277f1e975c61b7fab0c76
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XAYMQSFXPMHEG9FZZ3C36"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSC1XS4ZW697P4Y01W09CMW9
+    entries:
+      - _ulid: 01KSC1XS4Z6TR4PD9QDK1X18H1
+        author: codex
+        body: "Evidence log: Files read: kspec-agents.md, task/spec details, prior reviews
+          @01KSBEGR4KVK5M4YQ1WDC1JKAE and @01KSBYJYR9ST596G2GYA3J1K30,
+          src/parser/review-storage-manager.ts, src/parser/reviews.ts, src/cli/commands/review.ts,
+          src/parser/entity-storage-compatibility.ts, src/parser/folder-backed-entity.ts,
+          src/parser/plan-storage-manager.ts, tests/parser-reviews-folder.test.ts,
+          tests/review-rebuild-index.test.ts, tests/daemon-api/helpers.ts,
+          tests/entity-storage-partial-layout-manager.test.ts. Commands run: kspec task get, kspec
+          item get, kspec review for-task/get/add/open, git diff/log/status/diff --check, rg AC and
+          source-read scans, kspec validate, kspec validate --warnings-ok, npm test, npm run
+          typecheck, npm run dev -- review rebuild-index --json. Claims verified: prior false UI AC
+          claim was removed from task coverage and annotations; folder manager writes cohesive
+          review.yaml and lean index entries; rebuild-index JSON/exit behavior is covered by CLI
+          tests; delete removes review directory/resources. Categories searched: correctness,
+          AC/spec alignment, edge cases, error handling, test quality, resource safety,
+          compatibility gates, source-scanning tests, integration with review CLI and daemon
+          fixtures. No blocking findings."
+        created_at: 2026-05-24T03:54:40.159Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-24T03:54:46.254Z
+created_at: 2026-05-24T03:40:47.616Z
+updated_at: 2026-05-24T03:54:46.254Z
+notes: []

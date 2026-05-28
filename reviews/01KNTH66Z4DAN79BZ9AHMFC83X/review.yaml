@@ -1,0 +1,135 @@
+_ulid: 01KNTH66Z4DAN79BZ9AHMFC83X
+slugs: []
+title: Review task-cli-serve-test-daemon-cleanup
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate returned warnings only (exit 6): existing repo-wide orphaned
+      skill/alignment/completeness warnings, no task-specific validation errors."
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-10T01:56:22.653Z
+    completed_at: 2026-04-10T01:56:22.653Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test: 2113 suites passed, 7723 passed / 5 skipped, duration 1597.1s."
+    name: full-test-suite
+    required: true
+    runner: npm
+    created_at: 2026-04-10T01:56:25.223Z
+    completed_at: 2026-04-10T01:56:25.223Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- tests/cli-serve.test.ts: 5 suites passed, 32/32 tests passed, duration 28.6s.
+      Leak probe after focused run found no kspec-test daemon processes."
+    name: cli-serve
+    required: true
+    runner: npm
+    created_at: 2026-04-10T01:56:27.950Z
+    completed_at: 2026-04-10T01:56:27.950Z
+events:
+  - _ulid: 01KNTH66Z4SCSQB6J5ME54DZQ1
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-10T01:47:59.844Z
+  - _ulid: 01KNTH6KBF5M9XYWVFN6QZHB1E
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-10T01:48:12.527Z
+  - _ulid: 01KNTHNJTF65H3J92ZXECC313W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-04-10T01:56:23.504Z
+  - _ulid: 01KNTHNNCDQPMT83CF6F1PG57C
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full-test-suite
+    timestamp: 2026-04-10T01:56:26.125Z
+  - _ulid: 01KNTHNQZEB5KJHH25FG6TRERS
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNTHNQ3TX2AFZ2PJ3Y8C2SZ8
+    timestamp: 2026-04-10T01:56:28.782Z
+  - _ulid: 01KNTHNSCPFNBEV7FKYTNKRSNT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: cli-serve
+    timestamp: 2026-04-10T01:56:30.230Z
+  - _ulid: 01KNTHP98NN9XYR0BHQA4K15QD
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-10T01:56:46.485Z
+  - _ulid: 01KNTHP98N0HYJ0XJEGJJ7G2N1
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-10T01:56:46.485Z
+examined_commit: 57bb82ad5bbec60e2718054d5f350febed206225
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNTACN5YJKW4NE46WWDP95KY"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNTHNQ3TX2AFZ2PJ3Y8C2SZ8
+    entries:
+      - _ulid: 01KNTHNQ3TBV04S9XTRBR982RS
+        author: Jacob Chapel
+        body: >-
+          Files read: AGENTS.md, kspec-agents.md, tests/cli-serve.test.ts, git diff vs dev.
+
+          Commands run: kspec task get, kspec item get @daemon-sensitive-cli-test-determinism, kspec
+          validate, rg AC annotations, npm test -- tests/cli-serve.test.ts, npm test, ps leak
+          checks.
+
+          Claims verified: every daemon-spawning test in tests/cli-serve.test.ts now registers
+          onTestFinished cleanup before later assertions; task remains test-only; focused suite and
+          full suite both pass.
+
+          Categories searched: correctness, edge cases, cleanup-on-failure paths, test quality,
+          integration; no task-specific findings.
+        created_at: 2026-04-10T01:56:27.898Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-04-10T01:56:46.485Z
+created_at: 2026-04-10T01:47:59.844Z
+updated_at: 2026-04-10T01:56:46.485Z
+notes: []

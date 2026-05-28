@@ -1,0 +1,172 @@
+_ulid: 01KR4HSW4RBR9R7JJQ6ERGC740
+slugs: []
+title: Review task-fix-mock-daemon-cleanup-env-hygiene cycle 2
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full fresh test suite passed: 2409 suites passed; 8819 tests passed, 5 skipped; duration
+      2082.0s; log /tmp/kspec-test-cache/01KR4HQEE714WCP5KH3JVNK32B/04aae6d98a78ab7e.log"
+    name: npm test -- --fresh
+    required: true
+    runner: npm
+    created_at: 2026-05-08T19:54:01.578Z
+    completed_at: 2026-05-08T19:54:01.578Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/helpers/mock-daemon.test.ts tests/cli-daemon-proxy.test.ts
+      tests/cli-daemon-endpoint-regression.test.ts tests/cli-task-event-endpoint.test.ts passed: 14
+      suites, 72 tests, duration 16.0s; log
+      /tmp/kspec-test-cache/01KR4HQEE714WCP5KH3JVNK32B/33620db7e9c46df1.log"
+    name: targeted daemon/mock suite
+    required: true
+    runner: npm
+    created_at: 2026-05-08T19:54:14.569Z
+    completed_at: 2026-05-08T19:54:14.569Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation schema/references passed; command exited 0 with --warnings-ok. Raw kspec
+      validate exits 6 due existing global warnings unrelated to this task.
+    name: kspec validate --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-08T19:54:24.516Z
+    completed_at: 2026-05-08T19:54:24.516Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "./node_modules/.bin/oxlint tests/helpers/mock-daemon.ts
+      tests/helpers/mock-daemon.test.ts: 0 warnings, 0 errors. Note: npm run lint -- <files> invokes
+      the repo-wide lint script and currently fails on unrelated existing files outside this diff."
+    name: changed-file oxlint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-08T19:54:35.010Z
+    completed_at: 2026-05-08T19:54:35.010Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check 1148fad7662616a925c27654f1c01cb24f4544e3..HEAD reported no whitespace errors.
+    name: git diff --check
+    required: true
+    runner: git
+    created_at: 2026-05-08T19:54:44.930Z
+    completed_at: 2026-05-08T19:54:44.930Z
+events:
+  - _ulid: 01KR4HSW4E176XJFY993QC8P0F
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-08T19:42:32.078Z
+  - _ulid: 01KR4HTC6DDYMPR9FMP67TF5F6
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-08T19:42:48.525Z
+  - _ulid: 01KR4JEM31SDK4MJAMG3TEVW1H
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KR4JEJTJ2B2J26H2H6XV5G0F
+    timestamp: 2026-05-08T19:53:51.969Z
+  - _ulid: 01KR4JEYR1SF84FXNQKSY55G53
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-05-08T19:54:02.881Z
+  - _ulid: 01KR4JFBE7AH5EQHN97DAWZMMF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted daemon/mock suite
+    timestamp: 2026-05-08T19:54:15.879Z
+  - _ulid: 01KR4JFN65KA70YGCP7A714X91
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --warnings-ok
+    timestamp: 2026-05-08T19:54:25.861Z
+  - _ulid: 01KR4JFZD27EN4HGXRPQS26GQR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file oxlint
+    timestamp: 2026-05-08T19:54:36.323Z
+  - _ulid: 01KR4JG93EHJ7CHKJX1V5T37P6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: git diff --check
+    timestamp: 2026-05-08T19:54:46.254Z
+  - _ulid: 01KR4JGJ75KAPBJ31BXWJ9WVA3
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-08T19:54:55.589Z
+  - _ulid: 01KR4JGJ754AXX9V2TYC9X3B62
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-08T19:54:55.589Z
+examined_commit: 16da0ce3d2b3e81217986e95b59d9c9051996698
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR3W7RTYPWDJVCQFZD2042P2"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR4JEJTJ2B2J26H2H6XV5G0F
+    entries:
+      - _ulid: 01KR4JEJTJB6R710KZGD9PX255
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md, tests/helpers/mock-daemon.ts,
+          tests/helpers/mock-daemon.test.ts, tests/helpers/cli.ts, tests/helpers/daemon.ts,
+          tests/helpers/mock-daemon.cjs, prior review @01KR4F56, task/spec context. Commands run:
+          git diff/stat/name-status/log/show/diff --check, kspec task get, kspec item get, kspec
+          review for-task/get/add/open, rg AC annotations, kspec validate, kspec validate
+          --warnings-ok, npm test -- --fresh targeted suite, npm test -- --fresh full suite, npm run
+          lint -- changed files (repo-wide script; unrelated existing failures), direct oxlint
+          changed files. Claims verified: prior return-boundary blocker fixed by tests that sample
+          process liveness immediately after startMockDaemon returns; env sanitizer strips ambient
+          daemon/session vars while preserving explicit overrides. Categories searched: correctness,
+          edge cases, error handling, env hygiene, test quality, integration. No blockers found."
+        created_at: 2026-05-08T19:53:50.674Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-08T19:54:55.589Z
+created_at: 2026-05-08T19:42:32.088Z
+updated_at: 2026-05-08T19:54:55.589Z
+notes: []

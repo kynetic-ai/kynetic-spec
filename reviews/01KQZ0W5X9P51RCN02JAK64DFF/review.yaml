@@ -1,0 +1,188 @@
+_ulid: 01KQZ0W5X9P51RCN02JAK64DFF
+slugs: []
+title: Review centralize CLI daemon client connection logic
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck passed (tsc --noEmit)
+    name: typecheck
+    required: true
+    runner: npm
+    created_at: 2026-05-06T16:21:43.006Z
+    completed_at: 2026-05-06T16:21:43.006Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2362 test suites passed; 8664 tests passed, 5 skipped; log
+      /tmp/kspec-test-cache/01KQZ0T84PKXBBE0GYF41ZNFNF/1e250244945b791a.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-06T16:21:46.484Z
+    completed_at: 2026-05-06T16:21:46.484Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/cli-daemon-client.test.ts tests/cli-daemon-proxy.test.ts
+      tests/cli-serve.test.ts passed: 14 suites, 84 tests"
+    name: targeted daemon client/proxy/serve tests
+    required: true
+    runner: npm
+    created_at: 2026-05-06T16:21:50.030Z
+    completed_at: 2026-05-06T16:21:50.030Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run build passed; Svelte emitted pre-existing warnings only
+    name: build
+    required: true
+    runner: npm
+    created_at: 2026-05-06T16:21:53.544Z
+    completed_at: 2026-05-06T16:21:53.544Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran kspec validate: schema/references OK; exited 6 due project-wide pre-existing warnings
+      (deprecated refs, orphaned specs, unrelated AC coverage/annotation warnings), no task-specific
+      validation error observed."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-06T16:22:16.190Z
+    completed_at: 2026-05-06T16:22:16.190Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check
+      63d56f0330190650f9e916202640256064df38a4...e42ab0f5270510fb69a6bb1fbf5e036166b207d5 passed
+    name: diff check
+    required: true
+    runner: git
+    created_at: 2026-05-06T16:22:19.660Z
+    completed_at: 2026-05-06T16:22:19.660Z
+events:
+  - _ulid: 01KQZ0W5X9JFEJ4794GQBEFQM0
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-06T16:10:29.673Z
+  - _ulid: 01KQZ0WQTJJYXV7AN0WK03AT14
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-06T16:10:48.018Z
+  - _ulid: 01KQZ1GRQ7ZQJP2HYT53XWSAWK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-06T16:21:44.295Z
+  - _ulid: 01KQZ1GW27129Z8RZDVHQ7GZP6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-06T16:21:47.720Z
+  - _ulid: 01KQZ1GZFYPJJP2W80P7TPF33B
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted daemon client/proxy/serve tests
+    timestamp: 2026-05-06T16:21:51.231Z
+  - _ulid: 01KQZ1H2Y9S6EA5P0J186JJ4FW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: build
+    timestamp: 2026-05-06T16:21:54.761Z
+  - _ulid: 01KQZ1HS42XND01W2M15KG5G22
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-05-06T16:22:17.474Z
+  - _ulid: 01KQZ1HWETHYCS7WFWYTBFHRBM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff check
+    timestamp: 2026-05-06T16:22:20.890Z
+  - _ulid: 01KQZ1HZX7ZZ4YJC40J4C5TV0Z
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KQZ1HYQQX8NMQDY3VQZG9EGZ
+    timestamp: 2026-05-06T16:22:24.424Z
+  - _ulid: 01KQZ1JAJG4VPSB09VQJ7K470P
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-06T16:22:35.344Z
+  - _ulid: 01KQZ1JAJGR0JYHKDD2HAMKWJS
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-06T16:22:35.344Z
+examined_commit: e42ab0f5270510fb69a6bb1fbf5e036166b207d5
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQWZZHTBFAA5NBV00W1WVJNN"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQZ1HYQQX8NMQDY3VQZG9EGZ
+    entries:
+      - _ulid: 01KQZ1HYQQH8GKWP98BCD3CZTE
+        author: Jacob Chapel
+        body: "Evidence log: Files read: src/cli/daemon-client.ts, src/cli/daemon-proxy.ts,
+          src/cli/index.ts, src/parser/daemon-status.ts,
+          src/cli/commands/{agent,event,schedule,serve,task}.ts, tests/cli-daemon-client.test.ts,
+          tests/cli-daemon-proxy.test.ts, tests/cli-serve.test.ts, src/daemon-shared/endpoint.ts.
+          Commands run: kspec task get, kspec item get for
+          @daemon-network-endpoint-contract/@trait-daemon-endpoint-consumer/@cli-daemon-proxy/@daem\
+          on-proxy-detection/@cli-serve-commands, rg AC coverage searches, kspec validate, targeted
+          npm test, full npm test, npm run typecheck, npm run build, git diff --check. Claims
+          verified: shared helper honors metadata/legacy/KSPEC_NO_DAEMON; proxyCommand uses
+          endpoint.apiUrl verbatim; serve status reports bind_host/connect_host/runtime; full tests
+          and build pass. Categories searched: correctness, endpoint edge cases
+          (IPv4/IPv6/wildcard), error handling/fallback, test quality, integration."
+        created_at: 2026-05-06T16:22:23.223Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-06T16:22:35.344Z
+created_at: 2026-05-06T16:10:29.673Z
+updated_at: 2026-05-06T16:22:35.344Z
+notes: []

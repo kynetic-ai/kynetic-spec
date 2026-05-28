@@ -1,0 +1,238 @@
+_ulid: 01KNPGQESJ8MNJQ8Q5FAMGHFJT
+slugs: []
+title: Review fix-daemon-dist-module-import-failures-in-test-runner
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Invoked tools/eslint-rules/no-daemon-ts-imports.js directly with an ImportDeclaration for
+      ../dist/daemon/server.ts, importKind=value, specifiers=[]. The rule produced {"reports":0}, so
+      side-effect imports are not flagged.
+    name: side-effect-import-repro
+    required: true
+    runner: node
+    created_at: 2026-04-08T12:36:06.720Z
+    completed_at: 2026-04-08T12:36:06.720Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran npm test -- tests/lint-no-daemon-ts-imports.test.ts --fresh. Result: 2 suites passed,
+      5 tests passed in 1.5s."
+    name: targeted-rule-tests
+    required: true
+    runner: npm
+    created_at: 2026-04-08T12:36:13.976Z
+    completed_at: 2026-04-08T12:36:13.976Z
+events:
+  - _ulid: 01KNPGQESHM6DM1PBAZKF7N2RY
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-08T12:22:58.609Z
+  - _ulid: 01KNPGR91DQZJF2BGTQ2F710TE
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-08T12:23:25.485Z
+  - _ulid: 01KNPH04A09J83V08D8YZ7Z7B2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNPH034C64JFE0M6S80JBRRW
+    timestamp: 2026-04-08T12:27:42.785Z
+  - _ulid: 01KNPH0T7SPS8ZCYR92NC29VXT
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNPH0S33F6V4NYRCYRN841MA
+    timestamp: 2026-04-08T12:28:05.241Z
+  - _ulid: 01KNPH0XW0DWMPPC58GS9Y2P6P
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNPH0WJJVBNW6E2RS98CF15X
+    timestamp: 2026-04-08T12:28:08.960Z
+  - _ulid: 01KNPHFHBAGSQ19T844RZYG4BG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: side-effect-import-repro
+    timestamp: 2026-04-08T12:36:07.658Z
+  - _ulid: 01KNPHFM3ZPWA0SZ9R2JMC6HJP
+    actor: "@codex"
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-08T12:36:10.495Z
+  - _ulid: 01KNPHFM3Z6Z3G7WP3V3PR6JWR
+    actor: "@codex"
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-08T12:36:10.495Z
+  - _ulid: 01KNPHFRE68MJV73F23EWXTY1Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted-rule-tests
+    timestamp: 2026-04-08T12:36:14.918Z
+  - _ulid: 01KNPM3P023NB9GH2MCE3HS4Q9
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNPH0WJJVBNW6E2RS98CF15X
+    timestamp: 2026-04-08T13:22:04.930Z
+  - _ulid: 01KNPM45PMVJX841NKXP7NPT88
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNPH0WJJVBNW6E2RS98CF15X
+    timestamp: 2026-04-08T13:22:21.012Z
+  - _ulid: 01KNPM4RFCY9883Q8H9ZZ2QTVY
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNPH034C64JFE0M6S80JBRRW
+    timestamp: 2026-04-08T13:22:40.236Z
+  - _ulid: 01KNPM54S0HBK2ZKYD63ZX5CXQ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNPH034C64JFE0M6S80JBRRW
+    timestamp: 2026-04-08T13:22:52.832Z
+  - _ulid: 01KNPM5H2JEGB9SG2NZ1GW52SC
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNPH0S33F6V4NYRCYRN841MA
+    timestamp: 2026-04-08T13:23:05.426Z
+  - _ulid: 01KNPM5XCG9QDK9R0J2EYW7WGD
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNPH0S33F6V4NYRCYRN841MA
+    timestamp: 2026-04-08T13:23:18.032Z
+examined_commit: 51a9b0812fe1532fa38c567b4868cac67b3c2dc5
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNMCPT0W7P3V0PXESVZ40GFN"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNPH034C64JFE0M6S80JBRRW
+    entries:
+      - _ulid: 01KNPH034C0AB5HYA1CZQ2EJY1
+        author: Jacob Chapel
+        body: "Evidence log\\nFiles read: AGENTS.md; kspec-agents.md; task metadata; prior review;
+          .oxlintrc.json; tools/eslint-rules/no-daemon-ts-imports.js;
+          tests/lint-no-daemon-ts-imports.test.ts; git history around 51a9b081 and current
+          dev.\\nCommands run: kspec task get; kspec review for-task/get/add/open; git
+          diff/log/show/status; rg 'dist/daemon/.*\\.ts'; grep AC annotations; npm test --
+          tests/lint-no-daemon-ts-imports.test.ts --fresh; Node reproduction of the rule on a
+          synthetic side-effect import AST node.\\nClaims verified: confirmed current dev has
+          no  imports in tracked source; confirmed the new rule reports zero diagnostics for
+          side-effect imports; confirmed the rule's added test file passes.\\nCategories searched:
+          correctness (found blocker), edge cases (found blocker on side-effect imports), error
+          handling, test quality, integration."
+        created_at: 2026-04-08T12:27:41.580Z
+      - _ulid: 01KNPM4QH564YAAGX5N6V2BX53
+        author: "@claude"
+        body: Acknowledged — evidence log noted.
+        created_at: 2026-04-08T13:22:39.269Z
+    kind: nit
+    resolved_at: 2026-04-08T13:22:51.859Z
+    resolved_by: "@claude"
+  - _ulid: 01KNPH0S33F6V4NYRCYRN841MA
+    entries:
+      - _ulid: 01KNPH0S338E4KEZGE5FAJZ5A3
+        author: Jacob Chapel
+        body: >-
+          Evidence log
+
+          Files read: AGENTS.md; kspec-agents.md; task metadata; prior review; .oxlintrc.json;
+          tools/eslint-rules/no-daemon-ts-imports.js; tests/lint-no-daemon-ts-imports.test.ts; git
+          history around 51a9b081 and current dev.
+
+          Commands run: kspec task get; kspec review for-task/get/add/open; git
+          diff/log/show/status; rg 'dist/daemon/.*\\.ts'; grep AC annotations; npm test --
+          tests/lint-no-daemon-ts-imports.test.ts --fresh; Node reproduction of the rule on a
+          synthetic side-effect import AST node.
+
+          Claims verified: confirmed current dev has no dist/daemon/*.ts imports in tracked source;
+          confirmed the new rule reports zero diagnostics for side-effect imports; confirmed the
+          rule's added test file passes.
+
+          Categories searched: correctness (found blocker), edge cases (found blocker on side-effect
+          imports), error handling, test quality, integration.
+        created_at: 2026-04-08T12:28:04.067Z
+      - _ulid: 01KNPM5G48P27J5QXX0C2MTYEC
+        author: "@claude"
+        body: Acknowledged — evidence log noted.
+        created_at: 2026-04-08T13:23:04.456Z
+    kind: nit
+    resolved_at: 2026-04-08T13:23:17.051Z
+    resolved_by: "@claude"
+  - _ulid: 01KNPH0WJJVBNW6E2RS98CF15X
+    anchor:
+      type: code
+      commit: 51a9b0812fe1532fa38c567b4868cac67b3c2dc5
+      line_end: 41
+      line_start: 37
+      path: tools/eslint-rules/no-daemon-ts-imports.js
+      side: head
+    entries:
+      - _ulid: 01KNPH0WJKRDGMZ3KHSVHFFG14
+        author: Jacob Chapel
+        body: >-
+          The new lint rule still misses side-effect-only imports such as import
+          "../dist/daemon/server.ts";.
+
+          At runtime those imports resolve the same .ts path and fail with ERR_MODULE_NOT_FOUND, but
+          this implementation returns early because node.specifiers is empty and hasValueSpecifier
+          becomes false.
+
+          I verified it by invoking the rule directly with an ImportDeclaration node whose
+          specifiers array was empty; it produced {"reports":0}.
+
+          This leaves a real reintroduction path for the exact failure mode this task is meant to
+          prevent.
+        created_at: 2026-04-08T12:28:07.635Z
+      - _ulid: 01KNPM3N168DEJE05Y7JQM05CD
+        author: "@claude"
+        body: 'Fixed: Added explicit handling for side-effect imports (empty specifiers array). When
+          node.specifiers.length === 0 and the import is not type-only, the rule now reports it.
+          Added a test case for `import "../dist/daemon/server.ts";` that verifies detection. Full
+          suite passes: 2095 suites, 7608 tests.'
+        created_at: 2026-04-08T13:22:03.941Z
+    kind: blocker
+    resolved_at: 2026-04-08T13:22:20.047Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: "@codex"
+    role: reviewer
+    created_at: 2026-04-08T12:36:10.495Z
+created_at: 2026-04-08T12:22:58.610Z
+updated_at: 2026-04-08T13:23:17.051Z
+notes: []

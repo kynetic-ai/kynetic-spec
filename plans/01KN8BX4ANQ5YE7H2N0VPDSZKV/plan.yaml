@@ -1,0 +1,23 @@
+_ulid: 01KN8BX4ANQ5YE7H2N0VPDSZKV
+slugs:
+  - plan-workspace-scoped-integration-target-sync
+title: Workspace-Scoped Integration Target Sync
+status: completed
+approved_at: 2026-04-03T04:34:43.757Z
+branch: plan/plan-workspace-scoped-integration-target-sync/01kn8bx4
+derived_specs: []
+derived_tasks:
+  - "@task-sync-description-rewrite"
+  - "@task-sync-active-target-acs"
+  - "@task-sync-push-ac-updates"
+  - "@task-sync-pull-ac-updates"
+  - "@task-sync-degraded-ac-updates"
+  - "@task-impl-active-target-set"
+  - "@task-impl-push-path"
+  - "@task-impl-pull-path"
+  - "@task-impl-degraded-state"
+  - "@task-impl-sync-integration-tests"
+module_ref: null
+source_path: /home/chapel/Projects/kynetic-spec/plans/workspace-target-sync.md
+created_at: 2026-04-03T00:29:19.573Z
+completed_at: null

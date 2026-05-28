@@ -1,0 +1,122 @@
+_ulid: 01KM0XDVXAGYN37B7YKGR73W29
+slugs: []
+title: Review task-remediate-review-versions
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: none
+    evidence: 6510/6511 tests pass. 1 pre-existing failure unrelated to migration.
+    name: vitest
+    required: false
+    runner: vitest
+    created_at: 2026-03-18T16:53:26.627Z
+    completed_at: 2026-03-18T16:53:26.627Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: none
+    evidence: Pre-existing warnings only. No new issues from migration.
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-18T16:53:34.216Z
+    completed_at: 2026-03-18T16:53:34.216Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: none
+    evidence: 365 code_compare entries converted to entity_version on non-code subjects. 14 code_compare
+      preserved on 4 code-subject reviews. Dispositions improved from ~4 to 86 approved.
+    name: data-integrity
+    required: true
+    runner: manual
+    created_at: 2026-03-18T16:53:37.915Z
+    completed_at: 2026-03-18T16:53:37.915Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: none
+    evidence: No migration/remediation script files remain in codebase.
+    name: script-cleanup
+    required: false
+    runner: manual
+    created_at: 2026-03-18T16:53:53.082Z
+    completed_at: 2026-03-18T16:53:53.082Z
+events:
+  - _ulid: 01KM0XDVX913WRJBVM5DBC887M
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T16:45:56.521Z
+  - _ulid: 01KM0XE34V46V7FSDYBK36F7X8
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T16:46:03.931Z
+  - _ulid: 01KM0XVKRQMACXVTC19ZG5DZAG
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T16:53:26.935Z
+  - _ulid: 01KM0XVV60FWY7BV3F7TR3R9BA
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-18T16:53:34.529Z
+  - _ulid: 01KM0XVYRTB38DQ9C4PXYPPKNZ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: data-integrity
+    timestamp: 2026-03-18T16:53:38.202Z
+  - _ulid: 01KM0XWDJQ5Y6P5VK7BXQJBJRE
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: script-cleanup
+    timestamp: 2026-03-18T16:53:53.367Z
+  - _ulid: 01KM0XWN29N9MXQF8284S85ZND
+    actor: pr-reviewer@kspec.local
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-18T16:54:01.033Z
+  - _ulid: 01KM0XWN2976PP2098T61W524Z
+    actor: pr-reviewer@kspec.local
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T16:54:01.033Z
+examined_commit: e5df80e26f4b1c62b427f72f4cb94bb2feaa23ff
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-remediate-review-versions"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: none
+    decision: approve
+    reviewer: pr-reviewer@kspec.local
+    role: reviewer
+    created_at: 2026-03-18T16:54:00.727Z
+created_at: 2026-03-18T16:45:56.522Z
+updated_at: 2026-03-18T16:54:00.727Z
+notes: []

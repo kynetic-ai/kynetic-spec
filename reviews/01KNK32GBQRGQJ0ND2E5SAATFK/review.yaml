@@ -1,0 +1,139 @@
+_ulid: 01KNK32GBQRGQJ0ND2E5SAATFK
+slugs: []
+title: Review stabilize parser integration test in detached review worktrees
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/parser.test.ts passed: 17/17 suites, 66/66 tests.
+      Detached-worktree parser case passed."
+    name: npm test (targeted parser)
+    required: false
+    runner: npm
+    created_at: 2026-04-07T04:34:55.572Z
+    completed_at: 2026-04-07T04:34:55.572Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Two fresh full-suite runs passed: 2082/2082 suites, 7556 passed, 5 skipped, 0 failed."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-07T04:35:11.285Z
+    completed_at: 2026-04-07T04:35:11.285Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exited 6 with existing repo-wide warnings only; no task-specific validation
+      errors.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-07T04:35:18.226Z
+    completed_at: 2026-04-07T04:35:18.226Z
+events:
+  - _ulid: 01KNK32GBQ9AFC0FMTV87J9E54
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-07T04:26:37.303Z
+  - _ulid: 01KNK33314S41XN2JSKADGGK3B
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-07T04:26:56.420Z
+  - _ulid: 01KNK3HREMZQR0PJNG1683VR9N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test (targeted parser)
+    timestamp: 2026-04-07T04:34:57.108Z
+  - _ulid: 01KNK3HWS1NW2JNB8JDHW58EGH
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-07T04:35:01.537Z
+  - _ulid: 01KNK3HWS1VJY8K2HWJESGR8J1
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-07T04:35:01.537Z
+  - _ulid: 01KNK3J7T376NQHQ68CS7Z1SCA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-07T04:35:12.835Z
+  - _ulid: 01KNK3JEGQVM2FQGK28NDENQ13
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-04-07T04:35:19.703Z
+  - _ulid: 01KNK3K44APRNESAHDDZB63QBB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNK3K2G04XR5FZJ73H8K3Q19
+    timestamp: 2026-04-07T04:35:41.834Z
+examined_commit: 3c32e6485e3a0987fc61bf791be2f73f557882ac
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNJYFFPJMPGA00JD1GAE1T1K"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNK3K2G04XR5FZJ73H8K3Q19
+    entries:
+      - _ulid: 01KNK3K2G0VR6CR3RD7690GGQ6
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+
+          Files read: tests/parser.test.ts, src/parser/yaml.ts, src/parser/shadow.ts,
+          tests/worktree-context.test.ts, tests/shadow.test.ts
+
+          Commands run: git diff 3c32e6485^1 3c32e6485 -- tests/parser.test.ts; git show 6d5dc4019;
+          kspec task get @01KNJYFFPJMPGA00JD1GAE1T1K --json; kspec validate; npm test -- --fresh
+          tests/parser.test.ts; npm test -- --fresh; npm test -- --fresh .
+
+          Claims verified: the detached review-worktree parser probe now skips only detached-HEAD
+          shadow-health failures, and the detached-worktree regression test passes; fresh full-suite
+          runs pass in this snapshot.
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration.
+          No blocking issues found.
+        created_at: 2026-04-07T04:35:40.160Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-07T04:35:01.537Z
+created_at: 2026-04-07T04:26:37.303Z
+updated_at: 2026-04-07T04:35:40.160Z
+notes: []

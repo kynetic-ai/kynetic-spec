@@ -1,0 +1,160 @@
+_ulid: 01KMWBVQDKDDQM9YV99QWSQXEY
+slugs: []
+title: Review task-migrate-route-handlers-envelope
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 1973/1973 suites, 7123 passed, 5 skipped. Duration 3362.1s. Full log:
+      /tmp/kspec-test-cache/01KMWBTG3S7QXHMYCPZMBESAR9/d4589062aa6b8f56.log"
+    name: npm test
+    required: true
+    runner: test-runner
+    created_at: 2026-03-29T08:42:06.550Z
+    completed_at: 2026-03-29T08:42:06.550Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 6 with repo-wide warnings unrelated to this diff (orphaned skills dir, existing
+      alignment/completeness warnings). No task-specific validation error surfaced.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-29T08:42:08.327Z
+    completed_at: 2026-03-29T08:42:08.327Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: 11 changed daemon route files, 3 changed tests, response-envelope.ts.
+      Commands run: git diff/stat, kspec task get, kspec item get, kspec review for-task, kspec
+      validate, rg AC annotations, npm test, npm test -- --run
+      tests/daemon-api-input-validation.test.ts, targeted source reads with sed/nl/rg. Claims
+      verified: full suite passes; q is optional on /api/search; missing-q branch still returns
+      legacy payload. Categories searched: correctness, cache-loading behavior, envelope
+      consistency, tests, error handling, integration."
+    name: review-evidence
+    required: false
+    runner: codex
+    created_at: 2026-03-29T08:42:10.176Z
+    completed_at: 2026-03-29T08:42:10.176Z
+events:
+  - _ulid: 01KMWBVQDJ8C4G1Z241VFDS9YC
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-29T08:37:40.403Z
+  - _ulid: 01KMWBW1SHGSZ70DX6BQQWWH26
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-29T08:37:51.026Z
+  - _ulid: 01KMWC3VW29WF2MR7DD9EMAFZP
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-29T08:42:07.106Z
+  - _ulid: 01KMWC3XP1HYY2SBQPTMST922V
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-03-29T08:42:08.961Z
+  - _ulid: 01KMWC3ZG65NR88CRT5DXKEYP8
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-03-29T08:42:10.822Z
+  - _ulid: 01KMWC419Z9TARD37DTHFWF6KH
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMWC40PWP8ZAEK8A6QBDHMKH
+    timestamp: 2026-03-29T08:42:12.671Z
+  - _ulid: 01KMWC43805HCVV9S051AP3PW6
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-29T08:42:14.656Z
+  - _ulid: 01KMWC4381TFE7FFDMEQH52BG4
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-29T08:42:14.657Z
+  - _ulid: 01KMWCZPSGKRFMDAT7Q52W3Y6V
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMWC40PWP8ZAEK8A6QBDHMKH
+    timestamp: 2026-03-29T08:57:19.408Z
+  - _ulid: 01KMWCZXJR1HPC1EPCNYB49FKA
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMWC40PWP8ZAEK8A6QBDHMKH
+    timestamp: 2026-03-29T08:57:26.360Z
+examined_commit: 8114e0c341800e1bde5f7083318783c1e4cbf345
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMW68KM0EXKESA30EMPW63VY"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMWC40PWP8ZAEK8A6QBDHMKH
+    anchor:
+      type: code
+      commit: 8114e0c341800e1bde5f7083318783c1e4cbf345
+      line_end: 97
+      line_start: 92
+      path: packages/daemon/src/routes/validation.ts
+      side: head
+    entries:
+      - _ulid: 01KMWC40PWSYHJ07RN94CKZXVA
+        author: Test User
+        body: GET /api/search still has a reachable legacy response branch when q is omitted. The route
+          schema makes q optional, and lines 92-97 return {results,total} directly instead of the
+          unified {data,meta} envelope used by the loading and success paths. That breaks the
+          contract this task is supposed to make universal for cache-backed read handlers and gives
+          clients an inconsistent shape depending on whether the query string is present.
+        created_at: 2026-03-29T08:42:12.060Z
+      - _ulid: 01KMWCZP7ZPZ6WDSTTQ7GEEWX4
+        author: "@claude"
+        body: "Fixed: Wrapped the empty-q early return in wrapResponse() to match the envelope contract. The
+          branch now returns {data: {results: [], total: 0, showing: 0}, meta: {cache_status:
+          'ready'}} consistent with the loading and success paths."
+        created_at: 2026-03-29T08:57:18.847Z
+    kind: blocker
+    resolved_at: 2026-03-29T08:57:25.830Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-29T08:42:14.656Z
+created_at: 2026-03-29T08:37:40.403Z
+updated_at: 2026-03-29T08:57:25.830Z
+notes: []

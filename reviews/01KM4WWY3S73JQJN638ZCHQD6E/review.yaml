@@ -1,0 +1,179 @@
+_ulid: 01KM4WWY3S73JQJN638ZCHQD6E
+slugs: []
+title: Review @01KM4KPPDWB2PQ1YQNYQDK3SJH
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test exited 1 after 214.60s: 1 failed test file
+      (tests/agent-dispatch-engine.test.ts), 288 passed; 1 failed test, 6643 passed, 3 skipped. The
+      touched files in this task do not overlap that failing suite, but the snapshot was not fully
+      green."
+    name: npm test
+    required: false
+    runner: npm
+    created_at: 2026-03-20T05:59:52.820Z
+    completed_at: 2026-03-20T05:59:52.820Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tests/batch-schema.test.ts:357 annotates @item-ac ac-item-ac-id-arg-consistency and the
+      added assertions verify id is accepted while legacy acId is rejected with suggestion=id.
+    name: AC coverage
+    required: false
+    runner: grep
+    created_at: 2026-03-20T05:59:54.151Z
+    completed_at: 2026-03-20T05:59:54.151Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation is red in this snapshot due to repo-wide reference/completeness issues,
+      including 3 missing relates_to refs in .kspec/modules/meta.yaml. No additional
+      @item-ac-specific coverage failure surfaced during this review.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-20T05:59:55.722Z
+    completed_at: 2026-03-20T05:59:55.722Z
+events:
+  - _ulid: 01KM4WWY3R5PWPVH0PAZ2M8CSM
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-20T05:53:39.449Z
+  - _ulid: 01KM4WXJSCJVX1EDMXM1GTNAT1
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-20T05:54:00.621Z
+  - _ulid: 01KM4X8A998S3SCWMV2YW48HVX
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM4X8A0QMJYP3T3AQYKGHH0M
+    timestamp: 2026-03-20T05:59:52.362Z
+  - _ulid: 01KM4X8AY4Y3D5QVSB05A62ZK1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-20T05:59:53.028Z
+  - _ulid: 01KM4X8C8JP5QDE524F6BX9B6V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage
+    timestamp: 2026-03-20T05:59:54.386Z
+  - _ulid: 01KM4X8D1TX1GNPEF5ASNC176T
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM4X8CTD5SKNZKNJJM1X0PG5
+    timestamp: 2026-03-20T05:59:55.194Z
+  - _ulid: 01KM4X8DSFCWMFB9XTXKPXVXCQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-03-20T05:59:55.952Z
+  - _ulid: 01KM4X8RB4YERFJTJYWZA19QH8
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-20T06:00:06.757Z
+  - _ulid: 01KM4X8RB57665QE4NNKW6WQWT
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-20T06:00:06.757Z
+  - _ulid: 01KM4ZCCFP0P1AGTB0GM1WNMGY
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM4X8A0QMJYP3T3AQYKGHH0M
+    timestamp: 2026-03-20T06:37:02.838Z
+  - _ulid: 01KM4ZCD9HX6PRXRTN5X8JYX0F
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KM4X8A0QMJYP3T3AQYKGHH0M
+    timestamp: 2026-03-20T06:37:03.665Z
+examined_commit: dd5d3ee05e0e9b18dd64fba50fcf2ad200e6e1f0
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM4KPPDWB2PQ1YQNYQDK3SJH"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM4X8A0QMJYP3T3AQYKGHH0M
+    anchor:
+      type: code
+      commit: dd5d3ee05e0e9b18dd64fba50fcf2ad200e6e1f0
+      line_end: 324
+      line_start: 324
+      path: .agents/skills/kspec-writing-specs/SKILL.md
+      side: head
+    entries:
+      - _ulid: 01KM4X8A0QR3F5ZWC3HD7MMFQ9
+        author: Jacob Chapel
+        body: "The rendered kspec-writing-specs skill is stale here: it still documents 'kspec item ac
+          remove <ref> <ac-id> [--force]' even though this task changed the CLI/template contract to
+          '<id>'. Project conventions require regenerating .agents/skills output whenever
+          templates/skills sources change, so the snapshot leaves agent-facing docs inconsistent
+          with the command metadata it just updated."
+        created_at: 2026-03-20T05:59:52.087Z
+      - _ulid: 01KM4ZCC88NGXMX5ZE1MYQPVYT
+        author: Jacob Chapel
+        body: Fixed in commit 50ebf0b9c. The tracked .agents/skills/kspec-writing-specs/SKILL.md snapshot
+          now documents item ac remove <ref> <id> to match the CLI/template contract. Full npm test
+          also passes on the updated branch.
+        created_at: 2026-03-20T06:37:02.599Z
+    kind: blocker
+    resolved_at: 2026-03-20T06:37:03.397Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KM4X8CTD5SKNZKNJJM1X0PG5
+    entries:
+      - _ulid: 01KM4X8CTDEJX4SPHW7GV9GGBK
+        author: Jacob Chapel
+        body: "Evidence log:\\nFiles read: src/cli/commands/item.ts, tests/batch-schema.test.ts,
+          templates/skills/writing-specs/SKILL.md, .agents/skills/kspec-writing-specs/SKILL.md,
+          AGENTS.md, kspec-agents.md\\nCommands run: git diff --stat/name-only/full diff, kspec task
+          get @01KM4KPPDWB2PQ1YQNYQDK3SJH, kspec item get @item-ac, grep/rg for AC coverage and
+          acId/id usage, kspec validate, npm test\\nClaims verified: item ac remove now exposes
+          positional metadata as id in Commander; batch validation accepts id and suggests id for
+          legacy acId; rendered skill output was not regenerated\\nCategories searched: correctness,
+          test quality, documentation/rendered-output integrity, integration, review gates"
+        created_at: 2026-03-20T05:59:54.957Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-20T06:00:06.756Z
+created_at: 2026-03-20T05:53:39.449Z
+updated_at: 2026-03-20T06:37:03.397Z
+notes: []

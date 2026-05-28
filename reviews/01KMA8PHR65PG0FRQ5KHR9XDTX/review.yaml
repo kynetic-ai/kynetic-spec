@@ -1,0 +1,119 @@
+_ulid: 01KMA8PHR65PG0FRQ5KHR9XDTX
+slugs: []
+title: Review task-update-existing-specs
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed on rerun: 306 files, 7000 tests, 3 skipped. Initial run had one
+      non-reproducing timeout-path failure in tests/agent-invocation-lifecycle.test.ts; isolated
+      rerun passed."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-22T08:02:44.822Z
+    completed_at: 2026-03-22T08:02:44.822Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Schema and references passed. Command exited with warnings only (existing baseline:
+      orphaned skill dir, orphaned specs, AC coverage warnings unrelated to this spec-only task). No
+      task-specific validation regression found."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-22T08:02:45.878Z
+    completed_at: 2026-03-22T08:02:45.878Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 'Files read: AGENTS.md, kspec-agents.md, plan @plan-multi-turn-session-lifecycle, items
+      @agent-invocation-lifecycle, @dispatch-event-taxonomy, @dispatch-action-model,
+      tests/agent-invocation-lifecycle.test.ts. Commands run: kspec task get, kspec review for-task,
+      kspec review add/open, kspec plan get, kspec item get (3), kspec validate, npm test, npm test
+      -- tests/agent-invocation-lifecycle.test.ts -t "should close session as timed_out when timeout
+      is reached", git branch/log/rev-list checks. Claims verified: all four requested spec updates
+      are present; no code changes were required for this task; task branch is already an ancestor
+      of current dev. Categories searched: correctness, spec alignment, integration consistency,
+      test gate status, stale wording search.'
+    name: review evidence
+    required: false
+    runner: reviewer
+    created_at: 2026-03-22T08:02:46.899Z
+    completed_at: 2026-03-22T08:02:46.899Z
+events:
+  - _ulid: 01KMA8PHR5NBP15MQH6QZH5YQX
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-22T07:56:05.253Z
+  - _ulid: 01KMA8Q87ZE9Q5QBCR5KQC7CSZ
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-22T07:56:28.287Z
+  - _ulid: 01KMA92R8MCFHC8554AAHP27KQ
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-22T08:02:45.140Z
+  - _ulid: 01KMA92S9SC0CWH6JEZK1Y8TYT
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-22T08:02:46.201Z
+  - _ulid: 01KMA92T9YSR89PVW8FET9KR88
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence
+    timestamp: 2026-03-22T08:02:47.231Z
+  - _ulid: 01KMA935D0F9XQVEYMNAEBDRSM
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-22T08:02:58.592Z
+  - _ulid: 01KMA935D00HBJ63XVN7G742MG
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-22T08:02:58.592Z
+examined_commit: 463db210d316c43a70446ac83bc179c6de5a1616
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMA74F2C4MBREFDB7N2KZ45V"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-22T08:02:58.592Z
+created_at: 2026-03-22T07:56:05.254Z
+updated_at: 2026-03-22T08:02:58.592Z
+notes: []

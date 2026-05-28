@@ -1,0 +1,209 @@
+_ulid: 01KM0FDVZGKT1MYX77VA0VDRNH
+slugs: []
+title: Review task-schedule-engine (cycle 1)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 278/279 test files pass (6306 tests), 1 pre-existing failure in review-cli.test.ts
+      (examined_commit null assertion — unrelated to schedule engine, no changes to that file)
+    name: npm test
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T12:42:29.172Z
+    completed_at: 2026-03-18T12:42:29.172Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Clean TypeScript compilation, no errors
+    name: tsc --noEmit
+    required: true
+    runner: tsc
+    created_at: 2026-03-18T12:42:37.443Z
+    completed_at: 2026-03-18T12:42:37.443Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No validation issues for @dispatch-schedule-entities or @dispatch-schedule-runtime specs.
+      Pre-existing validation errors (3 stale references, orphaned specs) are unrelated.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-03-18T12:42:46.009Z
+    completed_at: 2026-03-18T12:42:46.009Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 11 own ACs annotated and tested (6 entities + 5 runtime). All 6 trait-error-guidance
+      ACs annotated as N/A with valid reasoning (internal runtime engine, not CLI). No coverage
+      gaps.
+    name: AC coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-18T12:42:57.112Z
+    completed_at: 2026-03-18T12:42:57.112Z
+events:
+  - _ulid: 01KM0FDVZF9G2JX9JH0J0N3K78
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T12:41:16.527Z
+  - _ulid: 01KM0FEWA4JFV58JE08KSKJ77Q
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T12:41:49.636Z
+  - _ulid: 01KM0FF8H1GS1YB1DFE1VRVQ79
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM0FF89PRR375WX2265GDG6N
+    timestamp: 2026-03-18T12:42:02.146Z
+  - _ulid: 01KM0FFRG0251FMC9EQQYYRCYM
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM0FFRAAT4KEG0NFFZJQE9YJ
+    timestamp: 2026-03-18T12:42:18.496Z
+  - _ulid: 01KM0FG3217W0Q3782Z57WYWSC
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-18T12:42:29.313Z
+  - _ulid: 01KM0FGB4RJXQYX5JF88QHDCMM
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: tsc --noEmit
+    timestamp: 2026-03-18T12:42:37.592Z
+  - _ulid: 01KM0FGKG6GHSQC5VCR3FX1926
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-18T12:42:46.150Z
+  - _ulid: 01KM0FGYBMX6BWEKF2KBK13EZC
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage
+    timestamp: 2026-03-18T12:42:57.268Z
+  - _ulid: 01KM0FHZQT1PNAXCNWQXRAM3A2
+    actor: pr-reviewer@kspec
+    event_type: verdict_submitted
+    payload:
+      decision: request_changes
+    timestamp: 2026-03-18T12:43:31.450Z
+  - _ulid: 01KM0FHZQTS09F73D5R5EJXXSQ
+    actor: pr-reviewer@kspec
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T12:43:31.450Z
+  - _ulid: 01KM0H3BC6ZA4BPWW1VWA58MC3
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM0FF89PRR375WX2265GDG6N
+    timestamp: 2026-03-18T13:10:28.998Z
+  - _ulid: 01KM0H3DZYYJSEHGF2WCXS3437
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM0FFRAAT4KEG0NFFZJQE9YJ
+    timestamp: 2026-03-18T13:10:31.678Z
+examined_commit: 36102927dc6f09beee40fb944f562d6452dfa0bb
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-schedule-engine"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM0FF89PRR375WX2265GDG6N
+    entries:
+      - _ulid: 01KM0FF89Q5V8EHAZAJN1XT67Y
+        author: "@claude"
+        body: >-
+          AC-4 test (disabled schedules) doesn't exercise the evaluation loop. The test creates a
+          disabled schedule with evaluationIntervalMs: 100_000 and backfill: false, then checks no
+          events fired after start(). Since the evaluation loop never fires in this test (100s
+          interval), it only proves start() doesn't backfill disabled schedules — not that
+          _evaluate() skips them. The test would pass even if the 'if (!record.schedule.enabled)
+          continue;' check in _evaluate() were removed.
+
+
+          Fix: Use triggerSchedule() on the disabled schedule to verify it's rejected, or use a
+          short evaluation interval and wait for one cycle. The implementation at line 294 is
+          correct; the test just doesn't exercise that path.
+
+
+          Path: tests/schedule-engine.test.ts, lines 340-357
+        created_at: 2026-03-18T12:42:01.911Z
+      - _ulid: 01KM0H3B7QK0T9JJ2C4ZPGM01S
+        author: "@claude"
+        body: "Fixed in 3f77adc28. AC-4 test now uses evaluationIntervalMs: 50 so the evaluation loop fires
+          and exercises the enabled check in _evaluate(). Verified the test fails if the enabled
+          check is removed."
+        created_at: 2026-03-18T13:10:28.855Z
+    kind: blocker
+  - _ulid: 01KM0FFRAAT4KEG0NFFZJQE9YJ
+    entries:
+      - _ulid: 01KM0FFRAB783K6SNYRNFDXWFW
+        author: "@claude"
+        body: >-
+          AC-6 tests (config reload) use stop/start cycles instead of exercising hot-reload during
+          evaluation. The spec says "When: The next evaluation cycle runs" — meaning changes should
+          be detected without restarting the engine. The implementation correctly calls
+          _reloadConfig() inside _evaluate(), but neither test exercises this path.
+
+
+          Both "should detect added schedules after config reload" and "should remove schedules that
+          are no longer in config" call engine.stop() then engine.start() to pick up changes. These
+          tests would pass even if _reloadConfig() were only called in start() and not in
+          _evaluate().
+
+
+          Fix: After changing currentSchedules, trigger an evaluation cycle (e.g., by calling
+          triggerSchedule on the new schedule, or waiting for a short evaluation interval) without
+          restarting the engine. Verify that getStatus() reflects the config change.
+
+
+          Path: tests/schedule-engine.test.ts, lines 388-457
+        created_at: 2026-03-18T12:42:18.315Z
+      - _ulid: 01KM0H3DVJNQA6P11SGCAQAM75
+        author: "@claude"
+        body: "Fixed in 3f77adc28. Both AC-6 tests now use evaluationIntervalMs: 50 and wait for the
+          evaluation loop to hot-reload config without stop/start. Added schedules are detected and
+          removed schedules are cleaned up during _evaluate()'s _reloadConfig() call."
+        created_at: 2026-03-18T13:10:31.538Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer@kspec
+    role: reviewer
+    created_at: 2026-03-18T12:43:31.319Z
+created_at: 2026-03-18T12:41:16.528Z
+updated_at: 2026-03-18T13:10:31.538Z
+notes: []

@@ -1,0 +1,330 @@
+_ulid: 01KN06EX8M9BKVP47YV9BD9SBK
+slugs: []
+title: Review task-fix-timing-races
+author: Test User
+checks:
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exited with warnings only (exit 6): repo-wide pre-existing alignment/completeness
+      warnings, no schema/reference errors triggered by this snapshot."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-30T20:29:14.602Z
+    completed_at: 2026-03-30T20:29:14.602Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Failed in review snapshot: 32 suites, 61 tests failing across the repo; notable failures
+      in agent-dispatch-engine timing assertions and cli-serve daemon startup. Full log:
+      /tmp/kspec-test-cache/01KN06DQHD0WA7FXR0NBDDQ4AE/16e8b13585b6febf.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-30T20:29:16.534Z
+    completed_at: 2026-03-30T20:29:16.534Z
+events:
+  - _ulid: 01KN06EX8KQJTSQ837J4Z95SBR
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-30T20:20:15.251Z
+  - _ulid: 01KN06GWMX0PW8BYF04DF0CBF8
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-30T20:21:20.157Z
+  - _ulid: 01KN06MQJ0GGVMQKR4AJWGCAWG
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN06MP2NX3B2RWW1HG52BYAD
+    timestamp: 2026-03-30T20:23:26.016Z
+  - _ulid: 01KN06MWEFZ4B2WMA80JG4CGW2
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN06MV52W7DYXQHQG9R5JBQ2
+    timestamp: 2026-03-30T20:23:31.023Z
+  - _ulid: 01KN06NMSQ76VA6JKNWQK9SBCJ
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN06NJP5BG9FH61WQVT85SV1
+    timestamp: 2026-03-30T20:23:55.960Z
+  - _ulid: 01KN06NSMTMZD89M48VAJKKCAX
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN06NR1MKR9MYRA3BMJ4149H
+    timestamp: 2026-03-30T20:24:00.922Z
+  - _ulid: 01KN06ZASRN08YEKA897D29JP6
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN06ZA6ZFBQGRRFQ7EMK782R
+    timestamp: 2026-03-30T20:29:13.400Z
+  - _ulid: 01KN06ZCKZVRVEB8W3T1MREFR4
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-03-30T20:29:15.263Z
+  - _ulid: 01KN06ZEE3AJQE979B2932M6EB
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-30T20:29:17.124Z
+  - _ulid: 01KN06ZVMJXZ8TVNGZB8RX3NHG
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-30T20:29:30.642Z
+  - _ulid: 01KN06ZVMJC8J7QP638GMYZEVM
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-30T20:29:30.642Z
+  - _ulid: 01KN0CD2Y87Q1F0S2E8K3AJXTJ
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN06MP2NX3B2RWW1HG52BYAD
+    timestamp: 2026-03-30T22:04:06.984Z
+  - _ulid: 01KN0CDBCDC9FYD1Z7XS6SARA1
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN06MP2NX3B2RWW1HG52BYAD
+    timestamp: 2026-03-30T22:04:15.630Z
+  - _ulid: 01KN0CDQ6Q1CD2A4785ZF9CHSJ
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN06MV52W7DYXQHQG9R5JBQ2
+    timestamp: 2026-03-30T22:04:27.735Z
+  - _ulid: 01KN0CE06PQBDEHQAH4Z327JGB
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN06MV52W7DYXQHQG9R5JBQ2
+    timestamp: 2026-03-30T22:04:36.950Z
+  - _ulid: 01KN0CEAZAQMJESCYS9X7A5DJ4
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN06NJP5BG9FH61WQVT85SV1
+    timestamp: 2026-03-30T22:04:47.978Z
+  - _ulid: 01KN0CEFKC6KMQXFRF5HKE4N7X
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN06NR1MKR9MYRA3BMJ4149H
+    timestamp: 2026-03-30T22:04:52.716Z
+  - _ulid: 01KN0CESBKDHX5K7BT1ESX4YY2
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN06NJP5BG9FH61WQVT85SV1
+    timestamp: 2026-03-30T22:05:02.707Z
+  - _ulid: 01KN0CEXH8HT7MATJWEE6EJBEA
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN06NR1MKR9MYRA3BMJ4149H
+    timestamp: 2026-03-30T22:05:06.985Z
+  - _ulid: 01KN0CF6F14CKNK3KE54MGXYAA
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN06ZA6ZFBQGRRFQ7EMK782R
+    timestamp: 2026-03-30T22:05:16.129Z
+examined_commit: 77629f2658f65d7f26b1e18b79819b6e8c20f747
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMZ1BVK6C9F7QKYK9DZD4TFQ"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN06MP2NX3B2RWW1HG52BYAD
+    anchor:
+      type: code
+      commit: 77629f2658f65d7f26b1e18b79819b6e8c20f747
+      line_end: 231
+      line_start: 61
+      path: tests/e2e/search.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KN06MP2PVR268EVH49GPSFN3
+        author: Test User
+        body: This rewrite drops behavioral coverage for AC-24 and AC-25. The debounce/loading tests only
+          assert the input value plus  being attached, but  is always rendered in the component
+          ([packages/web-ui/src/lib/components/CommandPalette.svelte] lines 120-145), so those
+          assertions still pass if the 300ms debounce, loading state, or search request never
+          happen. The no-results/grouping/navigation cases are also guarded by  / , which means they
+          silently pass when search returns nothing. That turns these E2Es into structure checks
+          instead of proof that search groups results and clicking one navigates.
+        created_at: 2026-03-30T20:23:24.502Z
+      - _ulid: 01KN0CD2AHTNBRZZAERSTXXZ2H
+        author: "@claude"
+        body: "Fixed: The root cause was a binding bug in CommandPalette.svelte — bind:value={query} on
+          Command.Dialog was binding to cmdk's selected-item value, not the search input text. The
+          $effect watching query never fired, so the search API was never called. Fixed by
+          introducing a separate searchText state bound to Command.Input's value and disabling
+          cmdk's client-side filtering (shouldFilter={false}). All search tests now exercise real
+          API calls — debounce verified via page.route interception with timing assertions, loading
+          state verified with delayed API response, no-results asserted unconditionally, grouping
+          asserted with both task and item groups visible."
+        created_at: 2026-03-30T22:04:06.352Z
+    kind: blocker
+    resolved_at: 2026-03-30T22:04:14.995Z
+    resolved_by: "@claude"
+  - _ulid: 01KN06MV52W7DYXQHQG9R5JBQ2
+    anchor:
+      type: code
+      commit: 77629f2658f65d7f26b1e18b79819b6e8c20f747
+      line_end: 169
+      line_start: 129
+      path: tests/e2e/connection.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KN06MV52QZ46XSHE6ZBDCJ12
+        author: Test User
+        body: These rewritten AC-30/31/32 tests no longer exercise the behaviors they claim to cover.  never
+          injects a duplicate ; it just compares the task count before/after 500ms, so it would pass
+          even if deduplication in  were removed.  only checks that the initially loaded task row is
+          still visible after reconnect, which does not verify the reset/re-subscribe logic in
+          [packages/web-ui/src/lib/websocket/manager.ts] lines 323-334 because no post-reconnect
+          event is observed. This is a coverage regression on the reconnect guarantees this task is
+          supposed to stabilize.
+        created_at: 2026-03-30T20:23:29.698Z
+      - _ulid: 01KN0CDPKGHK9FAVTKEPTQNDXA
+        author: "@claude"
+        body: "Fixed: AC-30 test now uses routeWebSocket to inject a duplicate BroadcastEvent (seq=1, which
+          is <= lastSeqProcessed) and verifies the task list count stays unchanged — proving
+          deduplication actively rejects the duplicate. AC-31/32 test uses routeWebSocket to: (1)
+          count connections (verifies reconnect happened), (2) track subscribe commands sent after
+          reconnect (proves AC-32 re-subscription), (3) inject a post-reconnect event with seq=0 to
+          verify it's processed (proving AC-31 lastSeqProcessed was reset to -1, since seq 0 > -1)."
+        created_at: 2026-03-30T22:04:27.119Z
+    kind: blocker
+    resolved_at: 2026-03-30T22:04:36.298Z
+    resolved_by: "@claude"
+  - _ulid: 01KN06NJP5BG9FH61WQVT85SV1
+    anchor:
+      type: code
+      commit: 77629f2658f65d7f26b1e18b79819b6e8c20f747
+      line_end: 231
+      line_start: 61
+      path: tests/e2e/search.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KN06NJP56936AEEPSK64FKB9
+        author: Test User
+        body: This rewrite drops behavioral coverage for AC-24 and AC-25. The debounce/loading tests only
+          assert the input value plus command-palette-results being attached, but Command.List is
+          always rendered in the component (packages/web-ui/src/lib/components/CommandPalette.svelte
+          lines 120-145), so those assertions still pass if the 300ms debounce, loading state, or
+          search request never happen. The no-results/grouping/navigation cases are also guarded by
+          if (resultCount > 0) / if (count > 0), which means they silently pass when search returns
+          nothing. That turns these E2Es into structure checks instead of proof that search groups
+          results and clicking one navigates.
+        created_at: 2026-03-30T20:23:53.797Z
+      - _ulid: 01KN0CEAAT024NKA6XQ3QCA6RM
+        author: "@claude"
+        body: Duplicate of thread 01KN06MP — addressed in that reply.
+        created_at: 2026-03-30T22:04:47.322Z
+    kind: blocker
+    resolved_at: 2026-03-30T22:05:02.069Z
+    resolved_by: "@claude"
+  - _ulid: 01KN06NR1MKR9MYRA3BMJ4149H
+    anchor:
+      type: code
+      commit: 77629f2658f65d7f26b1e18b79819b6e8c20f747
+      line_end: 169
+      line_start: 129
+      path: tests/e2e/connection.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KN06NR1MT14VSFJJW5DH6HNA
+        author: Test User
+        body: These rewritten AC-30/31/32 tests no longer exercise the behaviors they claim to cover. skips
+          duplicate events by sequence number never injects a duplicate seq <= lastSeqProcessed; it
+          just compares the task count before/after 500ms, so it would pass even if deduplication in
+          WebSocketManager.handleMessage() were removed. resets sequence and re-subscribes on
+          reconnect only checks that the initially loaded task row is still visible after reconnect,
+          which does not verify the reset/re-subscribe logic in
+          packages/web-ui/src/lib/websocket/manager.ts lines 323-334 because no post-reconnect event
+          is observed. This is a coverage regression on the reconnect guarantees this task is
+          supposed to stabilize.
+        created_at: 2026-03-30T20:23:59.284Z
+      - _ulid: 01KN0CEEZDZ8YJKYMPGGHKWWCC
+        author: "@claude"
+        body: Duplicate of thread 01KN06MV — addressed in that reply.
+        created_at: 2026-03-30T22:04:52.077Z
+    kind: blocker
+    resolved_at: 2026-03-30T22:05:06.350Z
+    resolved_by: "@claude"
+  - _ulid: 01KN06ZA6ZFBQGRRFQ7EMK782R
+    entries:
+      - _ulid: 01KN06ZA70NCZA36QTRZR9REH3
+        author: Test User
+        body: >-
+          Files read: tests/e2e/search.spec.ts; tests/e2e/connection.spec.ts;
+          tests/e2e/cache-warming-views.spec.ts;
+          packages/web-ui/src/lib/components/CommandPalette.svelte;
+          packages/web-ui/src/lib/websocket/manager.ts.
+
+          Commands run: kspec task get @01KMZ1BVK6C9F7QKYK9DZD4TFQ; kspec item get @web-dashboard;
+          kspec review for-task @01KMZ1BVK6C9F7QKYK9DZD4TFQ; git show --stat
+          77629f2658f65d7f26b1e18b79819b6e8c20f747; git diff
+          76a99bcf51ef31640b1724d9abb272f16311a624...77629f2658f65d7f26b1e18b79819b6e8c20f747 --
+          tests/e2e/search.spec.ts tests/e2e/connection.spec.ts
+          tests/e2e/cache-warming-views.spec.ts; grep for AC annotations; kspec validate; npm test.
+
+          Claims verified: checked the worker claim that the touched E2E files are now stable by
+          reading the rewritten assertions against the actual component/manager behavior and by
+          running npm test on the snapshot.
+
+          Categories searched: correctness (found coverage regressions in search and reconnect
+          tests), edge cases (looked at no-results and reconnect paths), error handling (checked
+          connection lost / retry coverage), test quality (found tests that now pass without proving
+          the AC), integration (reviewed component and websocket manager interactions).
+        created_at: 2026-03-30T20:29:12.800Z
+    kind: nit
+    resolved_at: 2026-03-30T22:05:15.472Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-30T20:29:30.642Z
+created_at: 2026-03-30T20:20:15.252Z
+updated_at: 2026-03-30T22:05:15.472Z
+notes: []

@@ -1,0 +1,107 @@
+notes:
+  - _ulid: 01KHHQD5E9XVG8Q4379RJNQKN8
+    content: >-
+      Implementation notes:
+
+
+      This plan extends kspec's skill management to support multi-platform rendering aligned with
+      the Agent Skills open standard (agentskills.io). The architecture uses a dual-layer model:
+      source SKILL.md files are body-only content (no frontmatter), all metadata lives in meta.yaml,
+      and platform-specific renderers produce the final output with appropriate frontmatter and
+      sidecar files.
+
+
+      ### Task Dependency Order (CRITICAL)
+
+
+      Tasks MUST be completed in this order due to dependencies:
+
+
+      1. **@consolidate-skill-render** — PREREQUISITE for everything. Merges duplicate render code.
+
+      2. **@extended-skill-schema** — Schema changes needed by all renderers.
+
+      3. **@supporting-files-convention** — Directory handling used by renderers.
+
+      4. **@platform-renderer-trait** — Trait defines contract (spec-only, no code, but specs
+      reference it).
+
+      5. **@claude-code-renderer-extended** — Refactors existing renderer to PlatformRenderer
+      interface.
+
+      6. **@codex-renderer** — New renderer using same interface.
+
+      7. **@multi-platform-render-cli** — CLI dispatch using renderer registry.
+
+      8. **@import-frontmatter-strip** — Import changes (can parallel with #7).
+
+      9. **@skill-platform-config-cli** — CLI for managing platform_config (can parallel with #7-8).
+
+
+      Set `depends_on` between derived tasks after import.
+
+
+      ### Key Patterns
+
+
+      - PlatformRenderer TypeScript interface defines the contract; @platform-renderer-trait spec
+      defines the ACs
+
+      - Renderer registry maps platform names to implementations
+
+      - Per-platform hash files enable independent drift detection
+
+      - Platform config is a nested object in meta.yaml with strict validation per known platform
+      and passthrough for unknown platforms
+
+      - Claude Code frontmatter uses kebab-case keys (matching their convention); meta.yaml uses
+      snake_case (matching kspec convention)
+
+      - Codex uses minimal frontmatter (name + description) with sidecar agents/openai.yaml for
+      platform config
+
+
+      ### Critical Files
+
+
+      | File | Changes |
+
+      |------|---------|
+
+      | `src/parser/skill-render.ts` | Consolidated render logic, PlatformRenderer interface, Claude
+      Code + Codex renderers, registry, hash/drift functions |
+
+      | `src/schema/meta.ts` | SkillSchema extension with portable fields + platform config |
+
+      | `src/parser/meta.ts` | Supporting file loading (references/, scripts/, assets/) |
+
+      | `src/cli/commands/skill.ts` | Multi-platform dispatch, import changes, platform config CLI.
+      NOTE: after consolidation, this file delegates to skill-render.ts for render logic |
+
+      | `src/cli/commands/setup.ts` | Must remain compatible — verify after consolidation |
+
+      | `tests/skill-schema.test.ts` | Schema tests for new fields |
+
+      | `tests/skill-rendering.test.ts` | Multi-platform render tests, Codex tests, hash migration
+      tests |
+
+
+      ### Verification
+
+
+      Run `npm test -- tests/ --run` after each task to verify no regressions.
+
+      Key end-to-end verification after all tasks:
+
+      1. Import a skill with full Agent Skills frontmatter → verify body-only source + correct
+      meta.yaml
+
+      2. Set platform_config via CLI → verify in meta.yaml
+
+      3. Render for both platforms → verify .claude/skills/ and .agents/skills/ output
+
+      4. Modify rendered output → verify drift detected per-platform
+
+      5. Round-trip: import → render → compare original frontmatter with rendered output
+    author: "@claude"
+    created_at: 2026-02-15T22:40:41.929Z

@@ -1,0 +1,233 @@
+_ulid: 01KR5Q3Y9XZFCGWMQMBEQW7FFV
+slugs: []
+title: Review task-fix-detached-cleanup-timing-analysis
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate exited 6 with warnings only: schema/references OK; global pre-existing
+      reference/alignment/completeness warnings remain. No linked-spec coverage gap found for
+      @daemon-test-guardrail-precision annotations."
+    name: kspec validate
+    required: false
+    runner: kspec validate
+    created_at: 2026-05-09T06:38:02.126Z
+    completed_at: 2026-05-09T06:38:02.126Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts: 19 suites passed, 182 tests passed in 41.9s."
+    name: targeted guardrail tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-09T06:38:06.676Z
+    completed_at: 2026-05-09T06:38:06.676Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Synthetic test with runKspec('serve start --detach'), then onTestFinished(() =>
+      stopUnrelatedFixture()), then expect(...) produced: Found 0 warnings and 0 errors. This
+      confirms the recorded blocker."
+    name: manual unrelated cleanup probe
+    required: false
+    runner: npx oxlint
+    created_at: 2026-05-09T06:38:11.401Z
+    completed_at: 2026-05-09T06:38:11.401Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh: 2413 suites passed; 8935 passed, 5 skipped out of 8940 tests;
+      duration 2015.3s. Full log
+      /tmp/kspec-test-cache/01KR5Q2RM0WT012RQCV7XH9QV1/2e45993651330c20.log."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-05-09T06:47:12.257Z
+    completed_at: 2026-05-09T06:47:12.257Z
+events:
+  - _ulid: 01KR5Q3Y9W692JWB0FH5K3098K
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-09T06:34:39.293Z
+  - _ulid: 01KR5Q4DR52EW0F2N56RKS781T
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-09T06:34:55.110Z
+  - _ulid: 01KR5Q9GM21CCVCWDK39WFJBAP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR5Q9F5XY88T4GM2N657XD7M
+    timestamp: 2026-05-09T06:37:41.890Z
+  - _ulid: 01KR5QA5X97MD1CW4VXYWMWZV4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-05-09T06:38:03.689Z
+  - _ulid: 01KR5QAAG9Y44JA4682SE9VETC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted guardrail tests
+    timestamp: 2026-05-09T06:38:08.394Z
+  - _ulid: 01KR5QAEWDR52E5GGJ22WZY6ET
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: manual unrelated cleanup probe
+    timestamp: 2026-05-09T06:38:12.877Z
+  - _ulid: 01KR5QTYX43QJQ8S7SZGW19S2P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-09T06:47:13.572Z
+  - _ulid: 01KR5QVCHZPDJ3DT9HCW5RK7BR
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KR5QVB9HXX8MRHYSZY0CQS7Q
+    timestamp: 2026-05-09T06:47:27.551Z
+  - _ulid: 01KR5QVRD0X4JVDREAFD8AJKR5
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-09T06:47:39.680Z
+  - _ulid: 01KR5QVRD0HB6S0N4ZBAYVHJP9
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-09T06:47:39.680Z
+  - _ulid: 01KR5S0ZVDCANJ7R5CRN1SEFC4
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR5Q9F5XY88T4GM2N657XD7M
+    timestamp: 2026-05-09T07:07:59.726Z
+  - _ulid: 01KR5S17MZF8PM8AWFJ2SJ5FS7
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR5Q9F5XY88T4GM2N657XD7M
+    timestamp: 2026-05-09T07:08:07.711Z
+  - _ulid: 01KR5S1J3EESJN3ATMKR9ZDGK6
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR5QVB9HXX8MRHYSZY0CQS7Q
+    timestamp: 2026-05-09T07:08:18.414Z
+  - _ulid: 01KR5S1QR5VSNGFD8EYAAJ9CMQ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR5QVB9HXX8MRHYSZY0CQS7Q
+    timestamp: 2026-05-09T07:08:24.197Z
+examined_commit: ba3231821d9a05b7dbe546f10d7bb1fa6242dcbc
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR3W7QAH8VZCH3A60NSB3HBN"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR5Q9F5XY88T4GM2N657XD7M
+    anchor:
+      type: code
+      commit: ba3231821d9a05b7dbe546f10d7bb1fa6242dcbc
+      line_end: 321
+      line_start: 318
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KR5Q9F5XH3BJ4GKYT3Y8JK4B
+        author: Jacob Chapel
+        body: 'MUST-FIX: the cleanup timing check still treats any statement containing `onTestFinished` as
+          valid cleanup, even when the callback does not clean up the detached daemon that was just
+          started. I verified with a synthetic test containing `runKspec("serve start --detach
+          --port 3456"); onTestFinished(() => stopUnrelatedFixture()); expect(true).toBe(true);` and
+          oxlint reported 0 errors. That violates @daemon-test-guardrail-precision
+          ac-detached-cleanup-before-observation / the task requirement that cleanup be scoped to
+          the started daemon before later observations. Tighten this predicate so in-flow cleanup
+          requires an actual daemon-kill/stop pattern associated with the started process, and add a
+          behavioral regression for an unrelated `onTestFinished` callback.'
+        created_at: 2026-05-09T06:37:40.413Z
+      - _ulid: 01KR5S0YJTYAY6H4BC4N5BGGZB
+        author: "@claude"
+        body: "Fixed: statementContainsCleanup now defers to hasDaemonCleanupPattern (same set as the
+          try/finally finalizer check), so an in-flow registration only counts as cleanup when its
+          statement carries a daemon-specific kill/stop pattern (process.kill,
+          SIGTERM/SIGKILL/SIGINT, killPid, stopDaemon, stopMockDaemon, serve stop). Bare
+          onTestFinished whose callback runs an unrelated teardown no longer satisfies the
+          predicate. I re-ran the reviewer's exact synthetic probe (runKspec(\"serve start
+          --detach\"); onTestFinished(() => stopUnrelatedFixture()); expect(true).toBe(true)) and
+          oxlint now reports the missingCleanup error. Two behavioral regressions are added in
+          tests/lint-no-leaky-test-daemon.test.ts: the unrelated-fixture case from the review, plus
+          a network-blocker variant where the callback only calls blocker.close()."
+        created_at: 2026-05-09T07:07:58.426Z
+    kind: blocker
+    resolved_at: 2026-05-09T07:08:06.405Z
+    resolved_by: "@claude"
+  - _ulid: 01KR5QVB9HXX8MRHYSZY0CQS7Q
+    entries:
+      - _ulid: 01KR5QVB9JZH9STYFBC9MG3TK7
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: tools/eslint-rules/no-leaky-test-daemon.js;
+          tests/lint-daemon-test-guardrails.test.ts; tests/lint-no-leaky-test-daemon.test.ts;
+          tests/cli-serve.test.ts; kspec-agents.md. Commands run: kspec task get
+          @01KR3W7QAH8VZCH3A60NSB3HBN; kspec item get @daemon-test-guardrail-precision; kspec item
+          get @daemon-test-harness-guardrails; git diff/stat/name-only against dev; rg AC
+          annotations and cli-serve detach usages; kspec validate; targeted npm test; full npm test;
+          manual npx oxlint synthetic unrelated-cleanup probe. Claims verified: worker removed
+          ancestor-afterEach cleanup exemption and targeted guardrail tests pass; cli-serve detach
+          usages register local cleanup before awaits/expectations or use local documented
+          suppressions. Categories searched: correctness, edge cases, error handling, test quality,
+          AC coverage, integration. Finding: one blocker false negative for unrelated onTestFinished
+          cleanup."
+        created_at: 2026-05-09T06:47:26.258Z
+      - _ulid: 01KR5S1GT5BJ0WXT99YWQ3WKMN
+        author: "@claude"
+        body: Acknowledged — the manual unrelated-cleanup probe is now backed by two behavioral regressions
+          in tests/lint-no-leaky-test-daemon.test.ts (in-flow onTestFinished with
+          stopUnrelatedFixture, and the blocker.close() variant), so this gap stays under regression
+          coverage going forward.
+        created_at: 2026-05-09T07:08:17.093Z
+    kind: nit
+    resolved_at: 2026-05-09T07:08:22.874Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-09T06:47:39.680Z
+created_at: 2026-05-09T06:34:39.293Z
+updated_at: 2026-05-09T07:08:22.874Z
+notes: []

@@ -1,0 +1,238 @@
+_ulid: 01KP8JJFAHJQ86FK4ZQTG7RGJK
+slugs: []
+title: Review task-upgrade-command
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation fails in this snapshot due to pre-existing .kspec/modules/meta.yaml schema
+      error: modules[0].traits.0 expected string, received object. The reviewed diff does not touch
+      .kspec/."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-15T12:51:41.670Z
+    completed_at: 2026-04-15T12:51:41.670Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tests/upgrade-command.test.ts contains annotations for the requirement and referenced
+      traits, but coverage quality was then verified manually against behavior.
+    name: AC annotation scan
+    required: false
+    runner: grep
+    created_at: 2026-04-15T12:51:44.437Z
+    completed_at: 2026-04-15T12:51:44.437Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "7932 passed, 5 skipped, 0 failed in 2171/2171 suites. Log:
+      /tmp/kspec-test-cache/01KP8JHBZEYTXEP86Q09DK4DFY/c8d2106a79c19ccb.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-15T12:51:47.226Z
+    completed_at: 2026-04-15T12:51:47.226Z
+events:
+  - _ulid: 01KP8JJFAGH2DYEET225TXVZPS
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-15T12:41:32.240Z
+  - _ulid: 01KP8JJYEWWFV3TXGKM8FXTY51
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-15T12:41:47.741Z
+  - _ulid: 01KP8K4FP7W68CZYZDVTBNXFKG
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP8K4ER0SQQ1EDQ39GNS1KR3
+    timestamp: 2026-04-15T12:51:22.439Z
+  - _ulid: 01KP8K4JBNTZHHK8SKYXDPJ528
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP8K4HE0PEMFKHYD1J0VR9GR
+    timestamp: 2026-04-15T12:51:25.173Z
+  - _ulid: 01KP8K4N3ER69SRXD3HRJZZ25R
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KP8K4M49PWJDQMFVAT3MH1R0
+    timestamp: 2026-04-15T12:51:27.982Z
+  - _ulid: 01KP8K53CCYM26PDRMM9PP5WNH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-15T12:51:42.605Z
+  - _ulid: 01KP8K563QHQJFEVN8GQKK8JY6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC annotation scan
+    timestamp: 2026-04-15T12:51:45.400Z
+  - _ulid: 01KP8K58XPYRT1CZT3E2MCDRS8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-15T12:51:48.278Z
+  - _ulid: 01KP8K5REJNHPE3AVDWW0GBZQQ
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-15T12:52:04.178Z
+  - _ulid: 01KP8K5REJ41MKCBWVZ850YSEK
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-15T12:52:04.178Z
+  - _ulid: 01KP8M57YY607B0Y9MQ1M110RD
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP8K4ER0SQQ1EDQ39GNS1KR3
+    timestamp: 2026-04-15T13:09:15.870Z
+  - _ulid: 01KP8M5HVH254JNQ7C9BNDZ7XC
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP8K4ER0SQQ1EDQ39GNS1KR3
+    timestamp: 2026-04-15T13:09:26.001Z
+  - _ulid: 01KP8M5PSASBGZDWFBHWW71DCF
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP8K4HE0PEMFKHYD1J0VR9GR
+    timestamp: 2026-04-15T13:09:31.050Z
+  - _ulid: 01KP8M5ZRYYEEE6K3EX1C11MRF
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP8K4HE0PEMFKHYD1J0VR9GR
+    timestamp: 2026-04-15T13:09:40.255Z
+  - _ulid: 01KP8M64XBHA6NKAWV107FBZY3
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP8K4M49PWJDQMFVAT3MH1R0
+    timestamp: 2026-04-15T13:09:45.515Z
+examined_commit: 96b4318368a237137685b91bf85214d3e68cc139
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNXYJ5JCR99F76N8N7265E0B"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KP8K4ER0SQQ1EDQ39GNS1KR3
+    anchor:
+      type: code
+      commit: 96b4318368a237137685b91bf85214d3e68cc139
+      line_end: 641
+      line_start: 568
+      path: src/cli/commands/upgrade.ts
+      side: head
+    entries:
+      - _ulid: 01KP8K4ER0GQJQZCQK5TKK3CSE
+        author: Jacob Chapel
+        body: " requires obsolete rendered skills to be removed, but this step only re-renders currently
+          defined skills and never runs orphan cleanup. I reproduced it by creating a temp project,
+          adding a managed orphan at .agents/skills/kspec-obsolete-skill/SKILL.md, running 'node
+          dist/cli/index.js upgrade --json', and confirming the orphan still existed afterward while
+          the step reported 'all 39 skill(s) already up to date'."
+        created_at: 2026-04-15T12:51:21.472Z
+      - _ulid: 01KP8M573BNQK88ZHHBT07N9BA
+        author: "@claude"
+        body: "Fixed: Added orphan skill cleanup to runRerenderSkillsStep. After re-rendering, the step now
+          scans each platform's output directory, identifies managed skill directories that don't
+          correspond to any currently defined skill, and removes them. Uses the same
+          isKspecManagedSkill marker check as kspec skill render --clean. Added 3 new tests: orphan
+          removal, non-managed skill preservation, and dry-run behavior."
+        created_at: 2026-04-15T13:09:14.987Z
+    kind: blocker
+    resolved_at: 2026-04-15T13:09:25.051Z
+    resolved_by: "@claude"
+  - _ulid: 01KP8K4HE0PEMFKHYD1J0VR9GR
+    anchor:
+      type: code
+      commit: 96b4318368a237137685b91bf85214d3e68cc139
+      line_end: 1027
+      line_start: 1008
+      path: src/cli/commands/upgrade.ts
+      side: head
+    entries:
+      - _ulid: 01KP8K4HE0DVXMTKHT19TS43R8
+        author: Jacob Chapel
+        body: Step 5 is required to scaffold missing init-time files, including the default module, but this
+          branch only emits a skipped message telling the user to run 'kspec init'. I reproduced it
+          by deleting module YAML files from a temp project, running 'node dist/cli/index.js upgrade
+          --json', and confirming there were still no module files afterward and the command
+          returned 'Scaffold default module' as skipped.
+        created_at: 2026-04-15T12:51:24.225Z
+      - _ulid: 01KP8M5NXNRS3YXH89KGAGVNBZ
+        author: "@claude"
+        body: "Fixed: Step 5d now actually scaffolds the default module when missing. Creates
+          modules/main.yaml with proper _ulid, slug, type, status, and description. Updates the
+          manifest with default_module ULID and includes entry. Commits to shadow branch via
+          shadowAutoCommit. Dry-run mode reports what would be created without writing. Added 3 new
+          tests: module creation, skip-when-exists, and dry-run behavior."
+        created_at: 2026-04-15T13:09:30.165Z
+    kind: blocker
+    resolved_at: 2026-04-15T13:09:39.218Z
+    resolved_by: "@claude"
+  - _ulid: 01KP8K4M49PWJDQMFVAT3MH1R0
+    entries:
+      - _ulid: 01KP8K4M49Y1HAYN158T94TNG2
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: src/cli/commands/upgrade.ts, src/cli/index.ts,
+          src/cli/commands/index.ts, src/cli/commands/setup.ts, src/cli/commands/setup-defaults.ts,
+          src/parser/config.ts, src/parser/gitignore.ts, src/parser/skill-render.ts,
+          src/cli/commands/skill-diff.ts, tests/upgrade-command.test.ts. Commands run: kspec task
+          get @01KNXYJ5JCR99F76N8N7265E0B; kspec item get @single-command-version-upgrade; kspec
+          review for-task @01KNXYJ5JCR99F76N8N7265E0B; kspec validate; grep -rn for AC annotations
+          in tests/upgrade-command.test.ts; git diff against 0501051eb49e...; npm test; temp-project
+          repro for orphan skill cleanup; temp-project repro for missing default module. Claims
+          verified: worker claim that full test suite passes was confirmed by npm test; upgrade
+          behavior for orphan skill removal and default-module scaffolding was checked by direct
+          command execution. Categories searched: correctness, edge cases, error handling, test
+          quality, integration."
+        created_at: 2026-04-15T12:51:26.985Z
+    kind: nit
+    resolved_at: 2026-04-15T13:09:44.551Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-15T12:52:04.178Z
+created_at: 2026-04-15T12:41:32.241Z
+updated_at: 2026-04-15T13:09:44.551Z
+notes: []

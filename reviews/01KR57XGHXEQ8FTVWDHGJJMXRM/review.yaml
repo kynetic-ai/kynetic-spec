@@ -1,0 +1,712 @@
+_ulid: 01KR57XGHXEQ8FTVWDHGJJMXRM
+slugs: []
+title: Review fix guardrail daemon command classification (cycle 8)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts: 19 suites passed, 134 tests passed, duration 38.3s."
+    name: targeted guardrail tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-09T02:20:04.349Z
+    completed_at: 2026-05-09T02:20:04.349Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh: 2413 suites passed; 8887 tests passed, 5 skipped; duration 2004.3s.
+      Full log: /tmp/kspec-test-cache/01KR57VHJR4BB5ZEQNEWWSCHX7/6ad2f448dbddc794.log."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-05-09T02:20:16.952Z
+    completed_at: 2026-05-09T02:20:16.952Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate --warnings-ok exited 0. Schema and references OK. Existing repository
+      warnings remain: deprecated refs, alignment warnings, and broad AC coverage warnings unrelated
+      to this task."
+    name: kspec validate
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-09T02:20:26.545Z
+    completed_at: 2026-05-09T02:20:26.545Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Probe proved node --use-openssl-ca probe.js runs the script, but oxlint reported 0
+      diagnostics for exec("node --use-openssl-ca dist/daemon/index.js --port 0"). This confirms the
+      direct-daemon false negative recorded in the blocker.
+    name: manual classifier probe
+    required: true
+    runner: node + oxlint probe
+    created_at: 2026-05-09T02:20:36.949Z
+    completed_at: 2026-05-09T02:20:36.949Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run lint exits 1 with the known repository baseline: 13 errors and 721 warnings. A
+      direct oxlint pass over the changed lint-rule/test files also reports pre-existing lint
+      issues, including META_RULE_NAME unused in the rule file; this was not used as the blocking
+      finding."
+    name: lint baseline
+    required: false
+    runner: npm run lint
+    created_at: 2026-05-09T02:20:46.789Z
+    completed_at: 2026-05-09T02:20:46.789Z
+events:
+  - _ulid: 01KR57XGHWACQV9JZ9DXZGH4FN
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-09T02:08:59.964Z
+  - _ulid: 01KR57YDY520R897VX2K9APM26
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-09T02:09:30.053Z
+  - _ulid: 01KR58GAP9T515T2YP472R50BM
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR58G9D5R3B830WJ5F91HF0E
+    timestamp: 2026-05-09T02:19:16.553Z
+  - _ulid: 01KR58HDB7JJDTWEWXNXQ2PPQF
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR58G9D5R3B830WJ5F91HF0E
+    timestamp: 2026-05-09T02:19:52.039Z
+  - _ulid: 01KR58HTJ4RRFX2EW9RP5RGSB8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted guardrail tests
+    timestamp: 2026-05-09T02:20:05.572Z
+  - _ulid: 01KR58J6ZWSPHN8F4K0KFEHPEV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-09T02:20:18.300Z
+  - _ulid: 01KR58JGAF8VTVP5XAW38EHGV7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-09T02:20:27.855Z
+  - _ulid: 01KR58JTFJ0VXRW4G9MD7TF7A0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: manual classifier probe
+    timestamp: 2026-05-09T02:20:38.258Z
+  - _ulid: 01KR58K43DPPMMF3R8NTP9NSCX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: lint baseline
+    timestamp: 2026-05-09T02:20:48.109Z
+  - _ulid: 01KR58KJHREJCRRP2DB1TBH4Q9
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KR58KH98NVMQ13XV4AFBBHKS
+    timestamp: 2026-05-09T02:21:02.904Z
+  - _ulid: 01KR58KYNSG25BEKXKTSJFMK64
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-09T02:21:15.321Z
+  - _ulid: 01KR58KYNS3Q7XRBVSQ3PM3E06
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-09T02:21:15.321Z
+  - _ulid: 01KR59TVE0CVABH3SGYRT3KBVN
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR58G9D5R3B830WJ5F91HF0E
+    timestamp: 2026-05-09T02:42:29.952Z
+  - _ulid: 01KR59V451JGCQ0DJRC2PBAV06
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR58G9D5R3B830WJ5F91HF0E
+    timestamp: 2026-05-09T02:42:38.882Z
+examined_commit: 8c8228706ad1b4fecdf0a33e3ab51814af6c4e74
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR3W7PPVDFR8F03VQ6J54M3K"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR58G9D5R3B830WJ5F91HF0E
+    anchor:
+      type: code
+      commit: 8c8228706ad1b4fecdf0a33e3ab51814af6c4e74
+      line_end: 691
+      line_start: 691
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KR58G9D5HBRE25YHAVP5ZPBX
+        author: Jacob Chapel
+        body: >-
+          MUST-FIX:  is listed as a value-consuming runtime flag, so the shell walker skips the
+          following daemon entry token and misses a real direct daemon launch. Evidence: local
+          Usage: node [options] [ script.js ] [arguments]
+                 node inspect [options] [ script.js | host:port ] [arguments]
+
+          Options:
+            -                           script read from stdin (default if no
+                                        file name is provided, interactive mode
+                                        if a tty)
+            --                          indicate the end of node options
+            --abort-on-uncaught-exception
+                                        aborting instead of exiting causes a
+                                        core file to be generated for analysis
+            --allow-addons              allow use of addons when any
+                                        permissions are set
+            --allow-child-process       allow use of child process when any
+                                        permissions are set
+            --allow-fs-read=...         allow permissions to read the
+                                        filesystem
+            --allow-fs-write=...        allow permissions to write in the
+                                        filesystem
+            --allow-inspector           allow use of inspector when any
+                                        permissions are set
+            --allow-wasi                allow wasi when any permissions are set
+            --allow-worker              allow worker threads when any
+                                        permissions are set
+            --build-snapshot            Generate a snapshot blob when the
+                                        process exits.
+            --build-snapshot-config=... Generate a snapshot blob when the
+                                        process exits using aJSON configuration
+                                        in the specified path.
+            -c, --check                 syntax check script without executing
+            --completion-bash           print source-able bash completion
+                                        script
+            -C, --conditions=...        additional user conditions for
+                                        conditional exports and imports
+            --cpu-prof                  Start the V8 CPU profiler on start up,
+                                        and write the CPU profile to disk
+                                        before exit. If --cpu-prof-dir is not
+                                        specified, write the profile to the
+                                        current working directory.
+            --cpu-prof-dir=...          Directory where the V8 profiles
+                                        generated by --cpu-prof will be placed.
+                                        Does not affect --prof.
+            --cpu-prof-interval=...     specified sampling interval in
+                                        microseconds for the V8 CPU profile
+                                        generated with --cpu-prof. (default:
+                                        1000)
+            --cpu-prof-name=...         specified file name of the V8 CPU
+                                        profile generated with --cpu-prof
+            --diagnostic-dir=...        set dir for all output files (default:
+                                        current working directory)
+            --disable-proto=...         disable Object.prototype.__proto__
+            --disable-sigusr1           Disable inspector thread to be
+                                        listening for SIGUSR1 signal
+            --disable-warning=...       silence specific process warnings
+            --disable-wasm-trap-handler Disable trap-handler-based WebAssembly
+                                        bound checks. V8 will insert inline
+                                        bound checks when compiling WebAssembly
+                                        which may slow down performance.
+            --disallow-code-generation-from-strings
+                                        disallow eval and friends
+            --dns-result-order=...      set default value of verbatim in
+                                        dns.lookup. Options are 'ipv4first'
+                                        (IPv4 addresses are placed before IPv6
+                                        addresses) 'ipv6first' (IPv6 addresses
+                                        are placed before IPv4 addresses)
+                                        'verbatim' (addresses are in the order
+                                        the DNS resolver returned)
+            --enable-etw-stack-walking  provides heap data to ETW Windows
+                                        native tracing
+            --enable-fips               enable FIPS crypto at startup
+            --enable-source-maps        Source Map V3 support for stack traces
+            --entry-url                 Treat the entrypoint as a URL
+            --env-file=...              set environment variables from supplied
+                                        file
+            --env-file-if-exists=...    set environment variables from supplied
+                                        file
+            -e, --eval=...              evaluate script
+            --experimental-addon-modules
+                                        experimental import support for addons
+            --experimental-config-file=...
+                                        set config file from supplied file
+            --experimental-default-config-file
+                                        set config file from default config
+                                        file
+            --experimental-eventsource  experimental EventSource API
+            --experimental-import-meta-resolve
+                                        experimental ES Module
+                                        import.meta.resolve() parentURL support
+            --experimental-inspector-network-resource
+                                        experimental load network resources via
+                                        the inspector
+            --loader, --experimental-loader=...
+                                        use the specified module as a custom
+                                        loader
+            --experimental-network-inspection
+                                        experimental network inspection support
+            --experimental-print-required-tla
+                                        Print pending top-level await. If
+                                        --experimental-require-module is true,
+                                        evaluate asynchronous graphs loaded by
+                                        `require()` but do not run the
+                                        microtasks, in order to to find and
+                                        print top-level await in the graph
+            --experimental-sea-config=...
+                                        Generate a blob that can be embedded
+                                        into the single executable application
+            --experimental-test-coverage
+                                        enable code coverage in the test runner
+            --experimental-test-module-mocks
+                                        enable module mocking in the test
+                                        runner
+            --experimental-transform-types
+                                        enable transformation of
+                                        TypeScript-onlysyntax into JavaScript
+                                        code
+            --experimental-vm-modules   experimental ES Module support in vm
+                                        module
+            --experimental-webstorage   experimental Web Storage API
+            --experimental-worker-inspection
+                                        experimental worker inspection support
+            --expose-gc                 expose gc extension
+            --force-context-aware       disable loading non-context-aware
+                                        addons
+            --force-fips                force FIPS crypto (cannot be disabled)
+            --force-node-api-uncaught-exceptions-policy
+                                        enforces 'uncaughtException' event on
+                                        Node API asynchronous callbacks
+            --frozen-intrinsics         experimental frozen intrinsics support
+            --heap-prof                 Start the V8 heap profiler on start up,
+                                        and write the heap profile to disk
+                                        before exit. If --heap-prof-dir is not
+                                        specified, write the profile to the
+                                        current working directory.
+            --heap-prof-dir=...         Directory where the V8 heap profiles
+                                        generated by --heap-prof will be
+                                        placed.
+            --heap-prof-interval=...    specified sampling interval in bytes
+                                        for the V8 heap profile generated with
+                                        --heap-prof. (default: 512 * 1024)
+            --heap-prof-name=...        specified file name of the V8 heap
+                                        profile generated with --heap-prof
+            --heapsnapshot-near-heap-limit=...
+                                        Generate heap snapshots whenever V8 is
+                                        approaching the heap limit. No more
+                                        than the specified number of heap
+                                        snapshots will be generated.
+            --heapsnapshot-signal=...   Generate heap snapshot on specified
+                                        signal
+            -h, --help                  print node command line options
+                                        (currently set)
+            --icu-data-dir=...          set ICU data load path to dir
+                                        (overrides NODE_ICU_DATA) (note:
+                                        linked-in ICU data is present)
+            --import=...                ES module to preload (option can be
+                                        repeated)
+            --input-type=...            set module type for string input
+            --insecure-http-parser      use an insecure HTTP parser that
+                                        accepts invalid HTTP headers
+            --inspect[=[host:]port]     activate inspector on host:port
+                                        (default: 127.0.0.1:9229)
+            --inspect-brk[=[host:]port] activate inspector on host:port and
+                                        break at start of user script
+            --debug-port, --inspect-port=[host:]port
+                                        set host:port for inspector
+            --inspect-publish-uid=...   comma separated list of destinations
+                                        for inspector uid(default: stderr,http)
+            --inspect-wait[=[host:]port]
+                                        activate inspector on host:port and
+                                        wait for debugger to be attached
+            -i, --interactive           always enter the REPL even if stdin
+                                        does not appear to be a terminal
+            --interpreted-frames-native-stack
+                                        help system profilers to translate
+                                        JavaScript interpreted frames
+            --jitless                   disable runtime allocation of
+                                        executable memory
+            --localstorage-file=...     file used to persist localStorage data
+            --max-http-header-size=...  set the maximum size of HTTP headers
+                                        (default: 16384 (16KB))
+            --max-old-space-size-percentage=...
+                                        set V8's max old space size as a
+                                        percentage of available memory (e.g.,
+                                        '50%'). Takes precedence over
+                                        --max-old-space-size.
+            --network-family-autoselection-attempt-timeout=...
+                                        Sets the default value for the network
+                                        family autoselection attempt timeout.
+            --no-addons                 disable loading native addons
+            --no-async-context-frame    Improve AsyncLocalStorage performance
+                                        with AsyncContextFrame
+            --no-deprecation            silence deprecation warnings
+            --no-experimental-detect-module
+                                        when ambiguous modules fail to evaluate
+                                        because they contain ES module syntax,
+                                        try again to evaluate them as ES
+                                        modules
+            --no-experimental-global-navigator
+                                        expose experimental Navigator API on
+                                        the global scope
+            --no-experimental-repl-await
+                                        experimental await keyword support in
+                                        REPL
+            --no-experimental-require-module
+                                        Allow loading synchronous ES Modules in
+                                        require().
+            --no-experimental-sqlite    experimental node:sqlite module
+            --no-experimental-websocket experimental WebSocket API
+            --no-extra-info-on-fatal-exception
+                                        hide extra information on fatal
+                                        exception that causes exit
+            --no-force-async-hooks-checks
+                                        disable checks for async_hooks
+            --no-global-search-paths    disable global module search paths
+            --enable-network-family-autoselection, --no-network-family-autoselection
+                                        Disable network address family
+                                        autodetection algorithm
+            --experimental-strip-types, --no-strip-types
+                                        Type-stripping for TypeScript files.
+            --no-warnings               silence all process warnings
+            --node-memory-debug         Run with extra debug checks for memory
+                                        leaks in Node.js itself
+            --openssl-config=...        load OpenSSL configuration from the
+                                        specified file (overrides OPENSSL_CONF)
+            --openssl-legacy-provider   enable OpenSSL 3.0 legacy provider
+            --openssl-shared-config     enable OpenSSL shared configuration
+            --pending-deprecation       emit pending deprecation warnings
+            --permission                enable the permission system
+            --preserve-symlinks         preserve symbolic links when resolving
+            --preserve-symlinks-main    preserve symbolic links when resolving
+                                        the main module
+            -p, --print [...]           evaluate script and print result
+            --prof                      Generate V8 profiler output.
+            --prof-process              process V8 profiler output generated
+                                        using --prof
+            --redirect-warnings=...     write warnings to file instead of
+                                        stderr
+            --report-compact            output compact single-line JSON
+            --report-directory, --report-dir=...
+                                        define custom report pathname.
+                                        (default: current working directory)
+            --report-exclude-env        Exclude environment variables when
+                                        generating report (default: false)
+            --report-exclude-network    exclude network interface diagnostics.
+                                        (default: false)
+            --report-filename=...       define custom report file name.
+                                        (default:
+                                        YYYYMMDD.HHMMSS.PID.SEQUENCE#.txt)
+            --report-on-fatalerror      generate diagnostic report on fatal
+                                        (internal) errors
+            --report-on-signal          generate diagnostic report upon
+                                        receiving signals
+            --report-signal=...         causes diagnostic report to be produced
+                                        on provided signal, unsupported in
+                                        Windows. (default: SIGUSR2)
+            --report-uncaught-exception generate diagnostic report on uncaught
+                                        exceptions
+            -r, --require=...           CommonJS module to preload (option can
+                                        be repeated)
+            --run=...                   Run a script specified in package.json
+            --secure-heap=...           total size of the OpenSSL secure heap
+            --secure-heap-min=...       minimum allocation size from the
+                                        OpenSSL secure heap
+            --snapshot-blob=...         Path to the snapshot blob that's either
+                                        the result of snapshotbuilding, or the
+                                        blob that is used to restore the
+                                        application state
+            --test                      launch test runner on startup
+            --test-concurrency=...      specify test runner concurrency
+            --test-coverage-branches=...
+                                        the branch coverage minimum threshold
+            --test-coverage-exclude=... exclude files from coverage report that
+                                        match this glob pattern
+            --test-coverage-functions=...
+                                        the function coverage minimum threshold
+            --test-coverage-include=... include files in coverage report that
+                                        match this glob pattern
+            --test-coverage-lines=...   the line coverage minimum threshold
+            --test-force-exit           force test runner to exit upon
+                                        completion
+            --test-global-setup=...     specifies the path to the global setup
+                                        file
+            --experimental-test-isolation, --test-isolation=...
+                                        configures the type of test isolation
+                                        used in the test runner
+            --test-name-pattern=...     run tests whose name matches this
+                                        regular expression
+            --test-only                 run tests with 'only' option set
+            --test-reporter=...         report test output using the given
+                                        reporter
+            --test-reporter-destination=...
+                                        report given reporter to the given
+                                        destination
+            --test-rerun-failures=...   specifies the path to the rerun state
+                                        file
+            --test-shard=...            run test at specific shard
+            --test-skip-pattern=...     run tests whose name do not match this
+                                        regular expression
+            --test-timeout=...          specify test runner timeout
+            --test-update-snapshots     regenerate test snapshots
+            --throw-deprecation         throw an exception on deprecations
+            --title=...                 the process title to use on startup
+            --tls-cipher-list=...       use an alternative default TLS cipher
+                                        list
+            --tls-keylog=...            log TLS decryption keys to named file
+                                        for traffic analysis
+            --tls-max-v1.2              set default TLS maximum to TLSv1.2
+                                        (default: TLSv1.3)
+            --tls-max-v1.3              set default TLS maximum to TLSv1.3
+                                        (default: TLSv1.3)
+            --tls-min-v1.0              set default TLS minimum to TLSv1.0
+                                        (default: TLSv1.2)
+            --tls-min-v1.1              set default TLS minimum to TLSv1.1
+                                        (default: TLSv1.2)
+            --tls-min-v1.2              set default TLS minimum to TLSv1.2
+                                        (default: TLSv1.2)
+            --tls-min-v1.3              set default TLS minimum to TLSv1.3
+                                        (default: TLSv1.2)
+            --trace-deprecation         show stack traces on deprecations
+            --trace-env                 Print accesses to the environment
+                                        variables
+            --trace-env-js-stack        Print accesses to the environment
+                                        variables and the JavaScript stack
+                                        trace
+            --trace-env-native-stack    Print accesses to the environment
+                                        variables and the native stack trace
+            --trace-event-categories=...
+                                        comma separated list of trace event
+                                        categories to record
+            --trace-event-file-pattern=...
+                                        Template string specifying the filepath
+                                        for the trace-events data, it supports
+                                        ${rotation} and ${pid}.
+            --trace-exit                show stack trace when an environment
+                                        exits
+            --trace-promises            show stack traces on promise
+                                        initialization and resolution
+            --trace-require-module=...  Print access to require(esm). Options
+                                        are 'all' (print all usage) and
+                                        'no-node-modules' (excluding usage from
+                                        the node_modules folder)
+            --trace-sigint              enable printing JavaScript stacktrace
+                                        on SIGINT
+            --trace-sync-io             show stack trace when use of sync IO is
+                                        detected after the first tick
+            --trace-tls                 prints TLS packet trace information to
+                                        stderr
+            --trace-uncaught            show stack traces for the `throw`
+                                        behind uncaught exceptions
+            --trace-warnings            show stack traces on process warnings
+            --track-heap-objects        track heap object allocations for heap
+                                        snapshots
+            --unhandled-rejections=...  define unhandled rejections behavior.
+                                        Options are 'strict' (always raise an
+                                        error), 'throw' (raise an error unless
+                                        'unhandledRejection' hook is set),
+                                        'warn' (log a warning), 'none' (silence
+                                        warnings), 'warn-with-error-code' (log
+                                        a warning and set exit code 1 unless
+                                        'unhandledRejection' hook is set).
+                                        (default: throw)
+            --use-bundled-ca            use bundled CA store (default)
+            --use-env-proxy             parse proxy settings from
+                                        HTTP_PROXY/HTTPS_PROXY/NO_PROXYenvironment
+                                        variables and apply the setting in
+                                        global HTTP/HTTPS clients
+            --use-largepages=...        Map the Node.js static code to large
+                                        pages. Options are 'off' (the default
+                                        value, meaning do not map), 'on' (map
+                                        and ignore failure, reporting it to
+                                        stderr), or 'silent' (map and silently
+                                        ignore failure)
+            --use-openssl-ca            use OpenSSL's default CA store
+            --use-system-ca             use system's CA store
+            --v8-options                print V8 command line options
+            --v8-pool-size=...          set V8's thread pool size
+            -v, --version               print Node.js version
+            --watch                     run in watch mode
+            --watch-kill-signal=...     kill signal to send to the process on
+                                        watch mode restarts(default: SIGTERM)
+            --watch-path=...            path to watch
+            --watch-preserve-output     preserve outputs on watch mode restart
+            --zero-fill-buffers         automatically zero-fill all newly
+                                        allocated Buffer and SlowBuffer
+                                        instances
+
+          Environment variables:
+
+          FORCE_COLOR                 when set to 'true', 1, 2, 3, or an
+                                      empty string causes NO_COLOR and
+                                      NODE_DISABLE_COLORS to be ignored.
+          NO_COLOR                    Alias for NODE_DISABLE_COLORS
+
+          NODE_DEBUG                  ','-separated list of core modules that
+                                      should print debug information
+          NODE_DEBUG_NATIVE           ','-separated list of C++ core debug
+                                      categories that should print debug
+                                      output
+          NODE_DISABLE_COLORS         set to 1 to disable colors in the REPL
+
+          NODE_EXTRA_CA_CERTS         path to additional CA certificates
+                                      file. Only read once during process
+                                      startup.
+          NODE_NO_WARNINGS            set to 1 to silence process warnings
+
+          NODE_PATH                   ':'-separated list of directories
+                                      prefixed to the module search path
+          NODE_PENDING_DEPRECATION    set to 1 to emit pending deprecation
+                                      warnings
+          NODE_PENDING_PIPE_INSTANCES set the number of pending pipe instance
+                                      handles on Windows
+          NODE_PRESERVE_SYMLINKS      set to 1 to preserve symbolic links
+                                      when resolving and caching modules
+          NODE_REDIRECT_WARNINGS      write warnings to path instead of
+                                      stderr
+          NODE_REPL_EXTERNAL_MODULE   path to a Node.js module which will be
+                                      loaded in place of the built-in REPL
+          NODE_REPL_HISTORY           path to the persistent REPL history
+                                      file
+          NODE_SKIP_PLATFORM_CHECK    set to 1 to skip the check for a
+                                      supported platform during Node.js
+                                      startup
+          NODE_TLS_REJECT_UNAUTHORIZED
+                                      set to 0 to disable TLS certificate
+                                      validation
+          NODE_V8_COVERAGE            directory to output v8 coverage JSON to
+
+          TZ                          specify the timezone configuration
+
+          UV_THREADPOOL_SIZE          sets the number of threads used in
+                                      libuv's threadpool
+
+          Documentation can be found at https://nodejs.org/ lists  without a value, and a probe
+          running  printed , proving the next token is still the script path. The same probe through
+          this rule, , returned oxlint status 0 with . That violates
+          @daemon-test-guardrail-precision ac-direct-daemon-entry-invocations-flagged. Move
+          standalone runtime flags out of the value-consuming set and add a regression for at least
+          this shape.
+        created_at: 2026-05-09T02:19:15.237Z
+      - _ulid: 01KR58HC1MEBWDC0RN4T1369PX
+        author: Jacob Chapel
+        body: 'Corrected evidence for the blocker, after shell quoting mangled the initial entry: MUST-FIX:
+          the value-consuming flag table includes --use-openssl-ca, but Node treats that as a
+          standalone option. I verified with a temp script that node --use-openssl-ca probe.js
+          prints script-ran, so the next token is still the script path. A matching oxlint probe
+          containing exec("node --use-openssl-ca dist/daemon/index.js --port 0") returned status 0
+          with Found 0 warnings and 0 errors. This is a false negative for a direct daemon entry
+          launch and violates @daemon-test-guardrail-precision
+          ac-direct-daemon-entry-invocations-flagged. Please remove standalone flags such as
+          --use-openssl-ca from the value-consuming set and add a regression for this shape.'
+        created_at: 2026-05-09T02:19:50.707Z
+      - _ulid: 01KR59TT4EGP2R1P46X0RHTB9X
+        author: "@claude"
+        body: >-
+          Fixed in 7d4c4dd9a. Audited the value-consuming flag set against `node --help` (Node v24)
+          and bare-then-value probes; removed six entries that were not actually
+          whitespace-value-consuming:
+
+
+          - `--use-openssl-ca` (standalone, the specific blocker — verified `node --use-openssl-ca
+          probe.js` runs the script)
+
+          - `--tls-min-v1.0` (standalone)
+
+          - `--stack-trace-limit` (only `=N` form works; bare-then-value errors with 'bad option')
+
+          - `--policy-integrity`, `--experimental-policy`, `--experimental-specifier-resolution`
+          (removed from Node)
+
+
+          Tightened the inclusion rule in the predicate's docstring: an option must (a) appear in
+          the current Node/Bun CLI docs and (b) accept a whitespace-separated value, not just the
+          bundled `=` form. Listed the common standalone-flag mistakes (CA-store selectors, TLS
+          min/max version booleans, FIPS flags) so future edits don't reintroduce the same class of
+          bug.
+
+
+          Added 4 regression tests under ac-direct-daemon-entry-invocations-flagged covering
+          `--use-openssl-ca`, `--tls-min-v1.0`, `--use-bundled-ca` (sibling), and
+          `--stack-trace-limit=N` (the only form Node accepts).
+
+
+          Verified targeted suite: 138 tests pass (was 134 — 4 new). Full suite: 8890 passed (one
+          unrelated bun parity flake on websocket-protocol cold-start, passes on rerun). Lint
+          baseline unchanged at 13 errors / 721 warnings.
+        created_at: 2026-05-09T02:42:28.622Z
+    kind: blocker
+    resolved_at: 2026-05-09T02:42:37.495Z
+    resolved_by: "@claude"
+  - _ulid: 01KR58KH98NVMQ13XV4AFBBHKS
+    entries:
+      - _ulid: 01KR58KH98P755TCQM1VMYZTKM
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: kspec-agents.md; task/spec details for @01KR3W7PPVDFR8F03VQ6J54M3K,
+          @daemon-test-guardrail-precision, and @daemon-test-harness-guardrails; prior cycle review
+          @01KR528J; latest commit diff for tools/eslint-rules/no-leaky-test-daemon.js and
+          tests/lint-daemon-test-guardrails.test.ts; test helper runOxlint setup.
+
+          Commands run: git status/rev-parse/diff/log/show; kspec task get; kspec item get; kspec
+          review for-task/get/add/open/comment/reply/check; kspec validate and kspec validate
+          --warnings-ok; rg AC annotations and source-scan terms; node --help option checks; node
+          plus oxlint classifier probe; npm test -- --fresh targeted guardrail tests; npm test --
+          --fresh full suite; npm run lint; npx oxlint changed files.
+
+          Claims verified: Worker claim that targeted and full tests pass was verified directly.
+          Worker claim that value-consuming and eval-mode regressions were covered was partially
+          verified; added probes found a remaining false negative for standalone runtime option
+          --use-openssl-ca.
+
+          Categories searched: correctness, edge cases around runtime option parsing, false
+          positives and false negatives, AC coverage annotations, source-scanning test risk,
+          validation, lint/test integration.
+        created_at: 2026-05-09T02:21:01.608Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-09T02:21:15.321Z
+created_at: 2026-05-09T02:08:59.965Z
+updated_at: 2026-05-09T02:42:37.495Z
+notes: []

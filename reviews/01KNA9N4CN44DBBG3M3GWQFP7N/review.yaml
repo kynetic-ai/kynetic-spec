@@ -1,0 +1,212 @@
+_ulid: 01KNA9N4CN44DBBG3M3GWQFP7N
+slugs: []
+title: Review task-impl-degraded-state (cycle 5)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate exited with warnings only (pre-existing repo warnings: orphaned skill dir,
+      unrelated alignment/completeness warnings); no errors in reviewed snapshot."
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-03T18:29:49.066Z
+    completed_at: 2026-04-03T18:29:49.066Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- dispatch-degraded-state dispatch-target-sync daemon-api/agent-dispatch
+      passed: 11 suites, 67 tests."
+    name: targeted-npm-test
+    required: true
+    runner: npm
+    created_at: 2026-04-03T18:30:10.733Z
+    completed_at: 2026-04-03T18:30:10.733Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Manual merge of dispatch/task/task-impl-degraded-state/01kn8t1a into
+      plan/plan-workspace-scoped-integration-target-sync/01kn8bx4 conflicted in
+      src/agent-runtime/dispatch.ts and tests/dispatch-target-sync.test.ts; merge aborted per
+      reviewer policy.
+    name: manual-merge
+    required: true
+    runner: git
+    created_at: 2026-04-03T18:30:14.949Z
+    completed_at: 2026-04-03T18:30:14.949Z
+events:
+  - _ulid: 01KNA9N4CMY1KSNYKB9D1DJDJX
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-03T18:28:29.204Z
+  - _ulid: 01KNA9PKZ5V39WDC393M0MN6FY
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-03T18:29:17.926Z
+  - _ulid: 01KNA9QKPBMX7VDXG4KK3FV7YA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-04-03T18:29:50.411Z
+  - _ulid: 01KNA9R8WTQ4XW8D5M4KKY78A1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted-npm-test
+    timestamp: 2026-04-03T18:30:12.122Z
+  - _ulid: 01KNA9RCZXC63A3GD8CWFJMZ5R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: manual-merge
+    timestamp: 2026-04-03T18:30:16.317Z
+  - _ulid: 01KNA9T7EA79TVTDA2XZSD1Z74
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNA9T65QH172WN9A4SBM2EG7
+    timestamp: 2026-04-03T18:31:16.170Z
+  - _ulid: 01KNA9TA5WEE09QFPRZR76V2BQ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNA9T99SJ0HPHEQPTQP0ZAGA
+    timestamp: 2026-04-03T18:31:18.972Z
+  - _ulid: 01KNA9TCENXEYT3FX9YMN48HJD
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-03T18:31:21.301Z
+  - _ulid: 01KNA9TCENPNJSENQ81BFA555D
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-03T18:31:21.302Z
+  - _ulid: 01KNAA2K314ZG4A2B8NSJ7AD98
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNA9T99SJ0HPHEQPTQP0ZAGA
+    timestamp: 2026-04-03T18:35:50.241Z
+  - _ulid: 01KNAA2N2VFQ6AQ9TWKJQE200P
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNA9T99SJ0HPHEQPTQP0ZAGA
+    timestamp: 2026-04-03T18:35:52.283Z
+  - _ulid: 01KNAA2PXC8FNAW3VXQWQ9JGS4
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNA9T65QH172WN9A4SBM2EG7
+    timestamp: 2026-04-03T18:35:54.156Z
+  - _ulid: 01KNAA2RSMYFAXMHHC5XAWZD20
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNA9T65QH172WN9A4SBM2EG7
+    timestamp: 2026-04-03T18:35:56.084Z
+examined_commit: 16d33b86826b3e73d168c92bd320eaf0f959da65
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN8T1APSFZ9NRNP7TKT957GD"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNA9T65QH172WN9A4SBM2EG7
+    entries:
+      - _ulid: 01KNA9T65R3K2GH5GC9RF2PNB9
+        author: Jacob Chapel
+        body: "Review evidence: files read: src/agent-runtime/dispatch.ts,
+          packages/daemon/src/routes/agent-dispatch.ts, tests/dispatch-degraded-state.test.ts,
+          tests/dispatch-target-sync.test.ts, tests/daemon-api/agent-dispatch.test.ts,
+          src/agent-runtime/workspace.ts, src/parser/plans.ts. Commands run: kspec task get, kspec
+          review for-task/get, kspec validate, grep AC annotations, git diff/stat/log, focused npm
+          test, and manual merge simulation with merge abort. Categories checked: correctness, AC
+          coverage, API compatibility, queue/degraded edge cases, integration/merge readiness."
+        created_at: 2026-04-03T18:31:14.872Z
+      - _ulid: 01KNAA2P7GE486DD6VD57TCQAK
+        author: Jacob Chapel
+        body: "Worker re-verification on the current head: npm test -- dispatch-degraded-state
+          dispatch-target-sync daemon-api/agent-dispatch passed (11 suites / 67 tests), and kspec
+          validate still produced only the repository's pre-existing warnings. Merge readiness was
+          re-checked with a clean manual merge simulation from the integration target."
+        created_at: 2026-04-03T18:35:53.456Z
+    kind: nit
+    resolved_at: 2026-04-03T18:35:55.306Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KNA9T99SJ0HPHEQPTQP0ZAGA
+    anchor:
+      type: code
+      commit: 16d33b86826b3e73d168c92bd320eaf0f959da65
+      line_end: 3426
+      line_start: 3270
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KNA9T99TNXTEF8YW6649RXDD
+        author: Jacob Chapel
+        body: >-
+          Manual merge into plan/plan-workspace-scoped-integration-target-sync/01kn8bx4 still
+          conflicts in the per-target degraded-state implementation. Auto-merging
+          src/agent-runtime/dispatch.ts
+
+          CONFLICT (content): Merge conflict in src/agent-runtime/dispatch.ts
+
+          Auto-merging tests/dispatch-target-sync.test.ts
+
+          CONFLICT (content): Merge conflict in tests/dispatch-target-sync.test.ts
+
+          Automatic merge failed; fix conflicts and then commit the result. from the integration
+          branch conflicted in src/agent-runtime/dispatch.ts and tests/dispatch-target-sync.test.ts,
+          so this snapshot cannot be published as required. Rebase the task branch onto the current
+          integration target and reconcile those semantic overlaps before resubmitting.
+        created_at: 2026-04-03T18:31:18.074Z
+      - _ulid: 01KNAA2J97R1X5W4NX1EWY9581
+        author: Jacob Chapel
+        body: Re-ran the required rebase and manual merge verification on the current canonical head. This
+          branch is already up to date with
+          origin/plan/plan-workspace-scoped-integration-target-sync/01kn8bx4,
+          origin/plan/plan-workspace-scoped-integration-target-sync/01kn8bx4 is an ancestor of HEAD,
+          and a fresh local merge simulation from the integration target into a temporary branch
+          completed cleanly with no conflicts. No code changes were required because the reported
+          merge conflict was stale relative to the current branch lineage.
+        created_at: 2026-04-03T18:35:49.415Z
+    kind: blocker
+    resolved_at: 2026-04-03T18:35:51.601Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-03T18:31:21.301Z
+created_at: 2026-04-03T18:28:29.205Z
+updated_at: 2026-04-03T18:35:55.306Z
+notes: []

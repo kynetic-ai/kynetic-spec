@@ -1,0 +1,180 @@
+_ulid: 01KM26MSAFXRYDGYZ26T9T1YER
+slugs: []
+title: Review fix-default-kspec-cli-path-pointing-to-nonexistent-bin-kspec-cjs
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "env -u KSPEC_DISPATCH_CANONICAL_HEAD npm test --
+      tests/agent-invocation-lifecycle.test.ts: 49/49 passed"
+    name: agent-invocation-lifecycle
+    required: true
+    runner: npm
+    created_at: 2026-03-19T04:50:01.554Z
+    completed_at: 2026-03-19T04:50:01.554Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation reports pre-existing repo-wide reference/completeness errors unrelated to this
+      diff, including missing meta relates_to refs in .kspec/modules/meta.yaml and existing coverage
+      warnings
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-19T04:50:02.800Z
+    completed_at: 2026-03-19T04:50:02.800Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: dist/cli/index.js exists and bin/kspec.cjs does not; DEFAULT_KSPEC_CLI_PATH now resolves
+      to dist/cli/index.js
+    name: resolver-path-verification
+    required: true
+    runner: node
+    created_at: 2026-03-19T04:50:04.143Z
+    completed_at: 2026-03-19T04:50:04.143Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Full npm test under dispatch env fails in tests/review-cli.test.ts because
+      KSPEC_DISPATCH_CANONICAL_HEAD is set; env -u KSPEC_DISPATCH_CANONICAL_HEAD npm test --
+      tests/review-cli.test.ts passes 64/64
+    name: review-cli-env-leak
+    required: false
+    runner: npm
+    created_at: 2026-03-19T04:50:05.559Z
+    completed_at: 2026-03-19T04:50:05.559Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "env -u KSPEC_DISPATCH_CANONICAL_HEAD npm test -- tests/agent-dispatch-engine.test.ts:
+      117/117 passed; full-suite failure appears to be suite interaction, not this diff"
+    name: agent-dispatch-engine
+    required: false
+    runner: npm
+    created_at: 2026-03-19T04:51:23.610Z
+    completed_at: 2026-03-19T04:51:23.610Z
+events:
+  - _ulid: 01KM26MSAEKSSCYA3YMQPPY09K
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-19T04:46:14.863Z
+  - _ulid: 01KM26NJP6HVXRK7GXDW8WAW8B
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-19T04:46:40.838Z
+  - _ulid: 01KM26VQ0BYC88ZZXP4E85C2XD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: agent-invocation-lifecycle
+    timestamp: 2026-03-19T04:50:01.867Z
+  - _ulid: 01KM26VRASYBCC9NW1YCSWPHXF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec-validate
+    timestamp: 2026-03-19T04:50:03.226Z
+  - _ulid: 01KM26VSKMJAN3GKHM7RSGH3QP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: resolver-path-verification
+    timestamp: 2026-03-19T04:50:04.532Z
+  - _ulid: 01KM26VTY73RE7DSA3AWP6S7ZZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-cli-env-leak
+    timestamp: 2026-03-19T04:50:05.896Z
+  - _ulid: 01KM26WM6F1V3E5RN28R1S22FR
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM26WKSWX8H9AN8950Q619ZM
+    timestamp: 2026-03-19T04:50:31.759Z
+  - _ulid: 01KM26Y70CCXSAAJMQ78116J9G
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: agent-dispatch-engine
+    timestamp: 2026-03-19T04:51:23.788Z
+  - _ulid: 01KM26Y7HN3VPJ172WAV1FQ0MH
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-19T04:51:24.342Z
+  - _ulid: 01KM26Y7HPVGZMQCV728ZMZ5A3
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-19T04:51:24.342Z
+examined_commit: 0a4f8ab9550dfed4eec1c249f3cdd926b13ee0c2
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM24PWVNKNRR0P0BDKB643ZT"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM26WKSWX8H9AN8950Q619ZM
+    entries:
+      - _ulid: 01KM26WKSW5ASR52ZN1ARAE1CF
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          Files read: src/agent-runtime/invocation.ts, tests/agent-invocation-lifecycle.test.ts
+
+          Commands run: git diff --stat, git diff, kspec task get, kspec item get
+          @agent-invocation-lifecycle, rg AC annotations, kspec validate, npm test, env -u
+          KSPEC_DISPATCH_CANONICAL_HEAD npm test -- tests/review-cli.test.ts, env -u
+          KSPEC_DISPATCH_CANONICAL_HEAD npm test -- tests/agent-invocation-lifecycle.test.ts, node
+          path existence check
+
+          Claims verified: old default path targets nonexistent bin/kspec.cjs while
+          dist/cli/index.js exists; env-scrubbed review-cli passes, so the full-suite review-cli
+          failure is dispatch-env noise; focused invocation lifecycle tests pass with the new
+          resolver
+
+          Categories searched: correctness (no issues), edge cases (source vs dist module URLs
+          covered), error handling (no regressions found), test quality (new tests prove resolved
+          path behavior), integration (path now matches built CLI layout)
+        created_at: 2026-03-19T04:50:31.356Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-19T04:51:24.341Z
+created_at: 2026-03-19T04:46:14.863Z
+updated_at: 2026-03-19T04:51:24.342Z
+notes: []

@@ -1,0 +1,97 @@
+notes:
+  - _ulid: 01KN8C7THJMHGQJHSDZXVW1TSP
+    content: "Fix review findings: add ac-pull-target-periodic-deferred rewrite, add
+      ac-divergence-log-guidance rewrite, remove implementation-detail ac-unified-target-resolution
+      (moved to description design decisions), renumber phases"
+    author: "@claude"
+    created_at: 2026-04-03T00:35:10.002Z
+  - _ulid: 01KN8CDTANH0ZHG3BSAYV0CM3K
+    content: "Fix review round 2: add ac-pull-target-periodic-deferred to pull impl task (What +
+      Covers), add ac-divergence-log-guidance to degraded state impl task (What + Covers), add both
+      to integration test Covers"
+    author: "@claude"
+    created_at: 2026-04-03T00:38:26.389Z
+  - _ulid: 01KN8S0S7HHYZRH9KZSFJFPK8Z
+    content: "Fix user feedback: replace integrationTargetBranch with behavioral language in active
+      target ACs, remove parenthetical aside from ac-push-target-after-merge, split compound ACs
+      (ac-target-push-serialization split into serialization + cross-branch-concurrency,
+      ac-concurrent-merge-same-target split into failure + fix-cycle)"
+    author: "@claude"
+    created_at: 2026-04-03T04:18:30.770Z
+  - _ulid: 01KN8S5NR2WSF3X6889J16AKGD
+    content: "Split all compound ACs into single-assertion ACs. Added: ac-push-target-periodic-retry,
+      ac-pull-target-on-start-before-bootstrap, ac-per-target-staleness-isolation,
+      ac-partial-sync-scoped-degradation, ac-divergence-scoped-to-target, ac-divergence-log-target,
+      ac-divergence-log-resolution, ac-degraded-healthy-unblocked, ac-degraded-inflight-continues,
+      ac-degraded-recovery-requeues. Renamed ac-divergence-log-guidance to
+      ac-divergence-log-classification"
+    author: "@claude"
+    created_at: 2026-04-03T04:21:11.042Z
+  - _ulid: 01KN8SK993QMGFZ3N3TVKQ678Z
+    content: "Round 4 fixes: split remaining 6 compound ACs (ac-active-target-removed-on-cleanup,
+      ac-pull-ff-only, ac-degraded-no-provision, ac-degraded-status-api,
+      ac-degraded-status-broadcast, ac-degraded-recovery-logged). Added 7 new ACs. Fixed stale
+      summary counts in task What lines."
+    author: "@claude"
+    created_at: 2026-04-03T04:28:37.028Z
+  - _ulid: 01KN8T1B8RWEQF3APQ5PGJQN3F
+    content: |-
+      This plan updates @dispatch-remote-branch-sync to support
+      workspace-scoped integration targets and implements the changes.
+      No new specs are created — the existing spec's description and ACs
+      are rewritten to replace the single-global-target assumption with
+      per-workspace-target semantics, then code is updated to match.
+
+      Background: @plan-branch-dispatch-target (implemented in
+      @plan-plan-scoped-branch-targeting) correctly resolves plan branches
+      as per-workspace integration targets during provisioning. The
+      reviewer agent correctly merges into the workspace's integration
+      target via KSPEC_DISPATCH_INTEGRATION_TARGET. However, the dispatch
+      engine's remote sync system was never updated to handle multiple
+      distinct integration targets. It pushes, pulls, and tracks degraded
+      state for a single global branch (dispatch.base_branch), ignoring
+      the per-workspace target stored in workspace metadata. This means
+      plan branches that receive merged work are never pushed to remote,
+      never pulled before provisioning, and never checked for divergence.
+
+      The core terminology shift is from "the integration target branch"
+      (singular, global) to "the workspace's integration target branch"
+      (per-workspace, resolved from plan branch or config). The "active
+      integration target set" is the union of distinct targets across
+      non-closed workspaces plus the configured base branch.
+
+      Key design decisions:
+      1. The active target set is rebuilt from the workspace registry on
+         engine start, not maintained incrementally. Incremental maintenance
+         has TOCTOU races between workspace cleanup and new task queueing.
+      2. Degraded state is per-target-branch. A diverged plan branch blocks
+         only tasks targeting that branch, not all dispatch work.
+      3. Push serialization is per-target-branch. Pushes to different
+         targets may proceed concurrently; pushes to the same target are
+         serialized.
+      4. Staleness tracking is per-target-branch. Syncing the base branch
+         does not make a plan branch appear fresh.
+      5. Concurrent merge to the same target is handled by git ref-level
+         serialization. One merge succeeds, the other fails non-ff. The
+         failing task follows the normal fix cycle. This is documented as
+         expected behavior, not built as new serialization logic.
+      6. The configured base branch is always in the active set, even when
+         no workspace currently targets it. This preserves the existing
+         behavior where the base branch is kept in sync for future use.
+      7. The push and pull paths must share a single source of truth for
+         active targets. The current codebase has two parallel state groups
+         (this.integrationTargetBranch for push, this._syncBaseBranch for
+         pull) initialized independently from the same config. Unifying
+         them into one active target set eliminates a divergence hazard.
+
+      Scope explicitly excluded from this plan:
+      - Plan branch push on creation — existing design decision says empty
+        branches are noise; push happens after first invocation completion
+      - Plan branch deletion/cleanup on remote — plan lifecycle is separate
+        from workspace lifecycle
+      - Changes to @plan-branch-dispatch-target — that spec covers
+        provisioning, which is already correct
+      - Changes to @dispatch-sync-configuration — the config surface does
+        not change; sync_interval and remote_sync apply to all targets
+    author: "@claude"
+    created_at: 2026-04-03T04:36:17.816Z

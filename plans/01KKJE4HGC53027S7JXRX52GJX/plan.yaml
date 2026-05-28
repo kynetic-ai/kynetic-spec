@@ -1,0 +1,32 @@
+_ulid: 01KKJE4HGC53027S7JXRX52GJX
+slugs:
+  - plan-droid-platform-support
+title: Droid Platform Support
+status: completed
+approved_at: 2026-03-13T03:25:04.088Z
+derived_specs:
+  - "@droid-platform-config"
+  - "@droid-agent-detection"
+  - "@droid-acp-adapter"
+  - "@droid-renderer"
+  - "@droid-setup-integration"
+  - "@core-skills-droid-platform"
+  - "@portable-skill-references"
+  - "@droid-core-skill-install"
+  - "@droid-setup-status"
+  - "@droid-skill-import"
+derived_tasks:
+  - "@implement-droid-platform-config-schema"
+  - "@implement-droid-agent-detection"
+  - "@implement-droid-acp-adapter"
+  - "@implement-droid-skill-renderer"
+  - "@implement-droid-setup-integration"
+  - "@implement-core-skills-droid-platform-registration"
+  - "@implement-portable-skill-reference-resolution"
+  - "@implement-droid-core-skill-install-support"
+  - "@implement-droid-setup-status-reporting"
+  - "@implement-droid-skill-import-support"
+module_ref: "@agent-integration"
+source_path: /home/chapel/Projects/kynetic-spec/droid-platform-plan.md
+created_at: 2026-03-13T01:49:20.268Z
+completed_at: null

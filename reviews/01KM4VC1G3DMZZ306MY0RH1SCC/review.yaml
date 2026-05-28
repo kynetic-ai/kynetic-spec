@@ -1,0 +1,224 @@
+_ulid: 01KM4VC1G3DMZZ306MY0RH1SCC
+slugs: []
+title: Review task-fix-sessions-live-freshness
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 'Full suite run in review snapshot failed with one unrelated baseline failure:
+      tests/cli-plan.test.ts > Integration: plan commands > plan list > excludes cancelled tasks
+      while preserving plan_ref-linked plan list counts (Reference "@01KM4VFS" is not a plan).'
+    name: npm test
+    required: false
+    runner: npm
+    created_at: 2026-03-20T05:31:25.768Z
+    completed_at: 2026-03-20T05:31:25.768Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck passed in the review snapshot.
+    name: typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-03-20T05:31:26.445Z
+    completed_at: 2026-03-20T05:31:26.445Z
+events:
+  - _ulid: 01KM4VC1G367FKN23M259Q9047
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-20T05:26:57.283Z
+  - _ulid: 01KM4VCHB7875WDKENX5FYKCQF
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-20T05:27:13.511Z
+  - _ulid: 01KM4VM77754AT56ZBKNMJM8R1
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM4VM700831251JW21V0GQZE
+    timestamp: 2026-03-20T05:31:25.287Z
+  - _ulid: 01KM4VM7WYW6AJBXWKZ3PH2G23
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-20T05:31:25.982Z
+  - _ulid: 01KM4VM8HNE8P7B8PQKGY0V6V2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-03-20T05:31:26.645Z
+  - _ulid: 01KM4VM96R5A33BD9CR6FB5Y2H
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM4VM908ZR5D6144W8GSWT8N
+    timestamp: 2026-03-20T05:31:27.320Z
+  - _ulid: 01KM4VM9Y60PCPBH8WT7HMBBWD
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM4VM9QTSG6CWBMCXBJPBSFH
+    timestamp: 2026-03-20T05:31:28.070Z
+  - _ulid: 01KM4VMQGEJC6RWH4VY6R88942
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-20T05:31:41.966Z
+  - _ulid: 01KM4VMQGE61MXB2WJH06QP4BR
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-20T05:31:41.966Z
+  - _ulid: 01KM4W95ZYCAWEMZQDCBS55ZNC
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM4VM908ZR5D6144W8GSWT8N
+    timestamp: 2026-03-20T05:42:52.158Z
+  - _ulid: 01KM4W96SEKJPQRV81MRFBS6HP
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM4VM700831251JW21V0GQZE
+    timestamp: 2026-03-20T05:42:52.974Z
+  - _ulid: 01KM4W97HHRGY6X73EG3Z4NJ1B
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM4VM9QTSG6CWBMCXBJPBSFH
+    timestamp: 2026-03-20T05:42:53.745Z
+  - _ulid: 01KM4W999GZPVSX6D85EJ6GE5Y
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KM4VM908ZR5D6144W8GSWT8N
+    timestamp: 2026-03-20T05:42:55.536Z
+  - _ulid: 01KM4W9AKMEV4Z4KYMN3MM5N7W
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KM4VM700831251JW21V0GQZE
+    timestamp: 2026-03-20T05:42:56.884Z
+examined_commit: 148c2d03728085839fd9a47a6ad7cc129ef789a4
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM4QGVTQR64KQPQ0S24AHV0S"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM4VM700831251JW21V0GQZE
+    anchor:
+      type: code
+      commit: 148c2d03728085839fd9a47a6ad7cc129ef789a4
+      line_end: 1206
+      line_start: 955
+      path: packages/web-ui/tests/e2e/sessions.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KM4VM700YK08XW253PQ5MA2G
+        author: Jacob Chapel
+        body: "The new source-agnostic AC still lacks an annotated page-level test. Every live-update E2E in
+          this block injects only `topic: 'agents'`, while the separate watcher test only proves the
+          daemon emits `session_changed`. Nothing verifies that a `sessions` broadcast drives the
+          /sessions page refresh/indicator path, so `ac-live-update-source-agnostic` is not actually
+          covered."
+        created_at: 2026-03-20T05:31:25.056Z
+      - _ulid: 01KM4W96GR3HQ4GH7K1R2BKRAY
+        author: Jacob Chapel
+        body: Fixed in commit 818b53f420eda826592758a52a7691fd0b055d75. Added an annotated page-level
+          /sessions E2E for @session-list-infinite-scroll ac-live-update-source-agnostic that
+          injects a sessions-topic broadcast, asserts the page subscribes to both agents and
+          sessions topics, and verifies the list/count refresh from the sessions-topic path.
+        created_at: 2026-03-20T05:42:52.696Z
+    kind: blocker
+    resolved_at: 2026-03-20T05:42:56.480Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KM4VM908ZR5D6144W8GSWT8N
+    anchor:
+      type: code
+      commit: 148c2d03728085839fd9a47a6ad7cc129ef789a4
+      line_end: 285
+      line_start: 251
+      path: packages/web-ui/src/routes/sessions/+page.svelte
+      side: head
+    entries:
+      - _ulid: 01KM4VM908RCKQFKYRHQQMTEB6
+        author: Jacob Chapel
+        body: Scrolled-state freshness only treats the list as changed when the total count or first row id
+          changes. A matching session can update in-place without affecting either value (for
+          example, a visible row changing status while still matching the current filter/sort), so
+          `processLiveRefresh()` returns early and never freezes the list or shows the indicator.
+          That violates the scrolled-update behavior required for non-top viewers.
+        created_at: 2026-03-20T05:31:27.112Z
+      - _ulid: 01KM4W95Q9X1AYX2VYFVKXTWN5
+        author: Jacob Chapel
+        body: Fixed in commit 818b53f420eda826592758a52a7691fd0b055d75. The scrolled freshness path now
+          fingerprints the loaded session rows (ids plus status/timing/counters) and search results
+          instead of only comparing total and first-row id, so in-place status/order changes still
+          freeze the visible list and surface the non-blocking indicator.
+        created_at: 2026-03-20T05:42:51.881Z
+    kind: blocker
+    resolved_at: 2026-03-20T05:42:55.145Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KM4VM9QTSG6CWBMCXBJPBSFH
+    entries:
+      - _ulid: 01KM4VM9QTT4YPSVENYD23CD2V
+        author: Jacob Chapel
+        body: "Evidence log\\nFiles read: packages/daemon/src/project-context.ts,
+          packages/daemon/src/session-watcher.ts, packages/web-ui/src/lib/query/ws-invalidation.ts,
+          packages/web-ui/src/lib/stores/connection.svelte.ts,
+          packages/web-ui/src/routes/sessions/+page.svelte,
+          packages/web-ui/tests/e2e/sessions.spec.ts, packages/web-ui/tests/e2e/api-watcher.spec.ts,
+          tests/session-watcher.test.ts, tests/web-ui-tanstack-query.test.ts,
+          packages/daemon/src/routes/sessions.ts.\\nCommands run: git diff --stat, git diff
+          base..head, kspec task get, kspec validate, rg AC annotations, npm run typecheck, npm
+          test.\\nClaims verified: worker claim that typecheck passes (confirmed); worker claim that
+          full npm test still has an unrelated baseline failure (confirmed, now a single failing
+          cli-plan test in this snapshot).\\nCategories searched: correctness (found blocker), edge
+          cases (checked scrolled/not-at-top path), test quality/AC coverage (found blocker),
+          integration (checked watcher -> WS invalidation -> page path), error handling (reviewed
+          watcher recovery/error events)."
+        created_at: 2026-03-20T05:31:27.866Z
+      - _ulid: 01KM4W9792PECE3Z4TQSADMPNX
+        author: Jacob Chapel
+        body: "Verification on the fix-cycle head: npm run typecheck passed; npm test --
+          tests/web-ui-tanstack-query.test.ts tests/session-watcher.test.ts passed (162 tests).
+          Targeted Playwright for sessions.spec.ts remains blocked in dispatch because the shared
+          fixture attempts to start its own daemon, which is prohibited under KSPEC_SESSION_ID."
+        created_at: 2026-03-20T05:42:53.474Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-20T05:31:41.966Z
+created_at: 2026-03-20T05:26:57.283Z
+updated_at: 2026-03-20T05:42:56.480Z
+notes: []

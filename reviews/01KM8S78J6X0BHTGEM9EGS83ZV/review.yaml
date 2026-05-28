@@ -1,0 +1,142 @@
+_ulid: 01KM8S78J6X0BHTGEM9EGS83ZV
+slugs: []
+title: Review @01KM6YETR12GG1EZ5G68KSNTBK
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No validation errors. Command exited 6 because of pre-existing repo warnings (orphaned
+      skill dir, orphaned specs, existing AC coverage warnings).
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-21T18:10:40.158Z
+    completed_at: 2026-03-21T18:10:40.158Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Full suite was run, but the result is invalid for merge gating because a concurrent
+      reviewer-side kspec mutation attempt contended on the shared dispatch shadow lock and caused
+      an unrelated timeout in tests/agent-invocation-lifecycle.test.ts. The new activity-in-file and
+      activity-display coverage passed within that run.
+    name: npm test
+    required: false
+    runner: npm
+    created_at: 2026-03-21T18:10:43.236Z
+    completed_at: 2026-03-21T18:10:43.236Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md, src/cli/commands/task.ts, src/utils/activity.ts,
+      src/parser/task-data-manager.ts, src/parser/split-backend.ts, src/cli/output.ts,
+      tests/activity-in-file.test.ts, tests/activity-display.test.ts, tests/per-task-files.test.ts.
+      Commands run: git diff 87331ee1e9d640686caa51de93719322fb0c1a82...HEAD, kspec task get
+      @01KM6YETR12GG1EZ5G68KSNTBK, npm test, kspec validate, rg/nl/sed lookups. Claims verified:
+      activity now assembles from history plus notes; per-directory fallback parses note commits as
+      note_added; validate has warnings only. Categories searched: correctness, edge cases, test
+      quality, integration, error handling."
+    name: review-evidence
+    required: false
+    created_at: 2026-03-21T18:10:46.118Z
+    completed_at: 2026-03-21T18:10:46.118Z
+events:
+  - _ulid: 01KM8S78J6GEF7QE79DKV3WNZM
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T18:06:21.254Z
+  - _ulid: 01KM8SF002WFP1QWCR0BWK46G4
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T18:10:34.626Z
+  - _ulid: 01KM8SF2VJ8VW8CR4VH53770C4
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM8SF2GRC6TK8C31YNV6QDYH
+    timestamp: 2026-03-21T18:10:37.554Z
+  - _ulid: 01KM8SF5PZN3F7QXZTYKCNVC9W
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-21T18:10:40.480Z
+  - _ulid: 01KM8SF8PSHW6Y2C9JK7QG4S9B
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: skipped
+      name: npm test
+    timestamp: 2026-03-21T18:10:43.545Z
+  - _ulid: 01KM8SFBK6EJ2SRJ3GDDZ98ZH9
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-03-21T18:10:46.502Z
+  - _ulid: 01KM8SFEHJHF4B80TCQDK6JZDK
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-21T18:10:49.522Z
+  - _ulid: 01KM8SFEHJBMCPBQ8GPNWN93V3
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-21T18:10:49.522Z
+examined_commit: f68480a8d01aadbdce406f6aca86f353cc32e282
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YETR12GG1EZ5G68KSNTBK"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM8SF2GRC6TK8C31YNV6QDYH
+    anchor:
+      type: code
+      commit: f68480a8d01aadbdce406f6aca86f353cc32e282
+      line_end: 915
+      line_start: 910
+      path: src/cli/commands/task.ts
+      side: head
+    entries:
+      - _ulid: 01KM8SF2GRA63XBB0DDVWABP7C
+        author: Test User
+        body: When a migrated task has notes but no stored history yet, this fallback appends the full
+          per-directory git log after  has already emitted  entries from .  walks the
+          whole  directory, and its parser classifies  commits as , so every persisted note is
+          duplicated in the activity timeline for exactly the partial-migration case this branch
+          handles. That breaks the timeline instead of recovering only the missing field history.
+        created_at: 2026-03-21T18:10:37.208Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-21T18:10:49.522Z
+created_at: 2026-03-21T18:06:21.254Z
+updated_at: 2026-03-21T18:10:49.522Z
+notes: []

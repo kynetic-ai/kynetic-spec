@@ -1,0 +1,51 @@
+notes:
+  - _ulid: 01KHFBSYF0KTH59CZ7H49MS5S1
+    content: |-
+      Implementation notes:
+
+      This plan builds portable agent integration infrastructure for kspec. The 5 phases
+      are independently deliverable:
+
+      Phase 1 (skill-meta-type): Schema + parser + validation. Foundation everything else builds on.
+      Phase 2 (skill-cli): CLI commands including import for migration.
+      Phase 3 (skill-rendering): Shadow branch to main branch rendering pipeline.
+      Phase 4 (agent-instruction-gen): Template + data assembly for kspec-agents.md.
+      Phase 5 (enhanced-setup): Orchestration + npm distribution.
+
+      Task dependencies to set post-import (derive does not infer from spec hierarchy):
+      - All Phase 2 tasks depend on Phase 1 tasks
+      - Phase 3 tasks depend on Phase 1 and Phase 2
+      - Phase 4 tasks depend on Phase 1
+      - Phase 5 tasks depend on Phase 3 and Phase 4
+
+      Key architecture decisions:
+      - Skill metadata in meta YAML, content in .kspec/skills/<id>/ files (avoids YAML escaping)
+      - Dedicated kspec skill namespace (not under kspec meta)
+      - Template-based AGENTS.md generation (not convention-to-prose derivation)
+      - Cross-branch rendering: reads shadow branch, writes main branch, no auto-commit
+      - Drift detection via SHA-256 hash stored in .kspec/skills/<id>/.render-hash
+      - Discriminator uses origin field (unique to skills among meta types)
+      - Clean flag only removes kspec-managed dirs (tracked via render-hash presence)
+
+      New files to create:
+      - src/cli/commands/skill.ts (dedicated skill commands)
+      - src/cli/commands/agents.ts (agents generate/status)
+      - src/renderer/skills.ts (rendering pipeline)
+      - src/renderer/agents-md.ts (agent instruction generator)
+      - src/renderer/index.ts (re-exports)
+      - templates/ directory tree (skills, agents-sections, hooks)
+
+      Existing files to modify:
+      - src/schema/meta.ts (SkillSchema, MetaManifestSchema, discriminator)
+      - src/parser/meta.ts (LoadedSkill, MetaContext, CRUD, refs)
+      - src/parser/validate.ts (skill validation loops)
+      - src/cli/commands/meta.ts (ref resolution, list, show, get)
+      - src/cli/commands/setup.ts (orchestration)
+      - src/cli/commands/init.ts (--setup flag)
+      - src/cli/index.ts (register skill and agents commands)
+      - package.json (add templates to files array)
+
+      Out of scope (future work): Claude Code plugin, MCP server, cross-platform renderers,
+      permission bootstrapping, version pinning.
+    author: "@claude"
+    created_at: 2026-02-15T00:39:28.992Z

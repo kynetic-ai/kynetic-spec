@@ -1,0 +1,139 @@
+_ulid: 01KNHWJRH0C3AM0W3QC4TP2RPH
+slugs: []
+title: Review task-debounce-path-accumulation
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate reported no schema/reference errors; only existing repo-level warnings
+      (orphaned skill dir, alignment/completeness debt unrelated to this task).
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-06T17:16:55.593Z
+    completed_at: 2026-04-06T17:16:55.593Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test aborted before running vitest because scripts/test.cjs/dependency-health.cjs
+      reported root direct dependencies as missing even immediately after a successful npm ci. This
+      predates the reviewed diff (no package manifest changes in the task branch vs base) and is
+      tracked separately in @01KNHWPV.
+    name: npm-test
+    required: false
+    runner: npm
+    created_at: 2026-04-06T17:17:04.220Z
+    completed_at: 2026-04-06T17:17:04.220Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: grep confirmed @daemon-incremental-cache coverage in tests/daemon-entity-cache.test.ts for
+      ac-watcher-content-passthrough, ac-batch-coalescing, ac-file-path-preserved, and
+      ac-fallback-full-reload.
+    name: spec-annotations
+    required: false
+    runner: grep
+    created_at: 2026-04-06T17:17:06.549Z
+    completed_at: 2026-04-06T17:17:06.549Z
+events:
+  - _ulid: 01KNHWJRH0NC2H7DJNBJHPXYMC
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-06T17:13:55.488Z
+  - _ulid: 01KNHWMQCBXVZ9QQHW3D31D983
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-06T17:14:59.851Z
+  - _ulid: 01KNHWR975ZSGJ6X0QVG592CY5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-04-06T17:16:56.421Z
+  - _ulid: 01KNHWRBGTJFQ414RJVEB7FBBH
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-06T17:16:58.779Z
+  - _ulid: 01KNHWRBGVZJTH4BX7E34E5W6D
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-06T17:16:58.779Z
+  - _ulid: 01KNHWREV2S0X5NJ600GFEP7SB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNHWRE1QBQV07MTPTNKHRCJP
+    timestamp: 2026-04-06T17:17:02.178Z
+  - _ulid: 01KNHWRHMZ1NMEFB2FAE7BVGSW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: npm-test
+    timestamp: 2026-04-06T17:17:05.056Z
+  - _ulid: 01KNHWRKY63Y8TSMYVYW27BT4P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: spec-annotations
+    timestamp: 2026-04-06T17:17:07.399Z
+examined_commit: e30bbe0675040848ac4e3c9dee41aade876f1021
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNDDJ2W7RD7D0PTZJ7WXTZ53"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNHWRE1QBQV07MTPTNKHRCJP
+    entries:
+      - _ulid: 01KNHWRE1QGNQ7ST9ZBAPAHTYJ
+        author: Jacob Chapel
+        body: "Evidence log:\\nFiles read: src/daemon/entity-cache.ts, tests/daemon-entity-cache.test.ts,
+          scripts/test.cjs, scripts/dependency-health.cjs.\\nCommands run: git diff
+          --stat/name-only/unified against plan/plan-granular-cache-invalidation/01kndbmk; kspec
+          task get @01KNDDJ2W7RD7D0PTZJ7WXTZ53; kspec item get @daemon-incremental-cache; kspec
+          validate; grep -RIn 'AC: @daemon-incremental-cache|AC: @trait-' tests; npm test; npm ci;
+          npm test -- tests/daemon-entity-cache.test.ts; git merge --no-ff
+          dispatch/task/task-debounce-path-accumulation/01knddj2.\\nClaims verified: the debounce
+          window now accumulates per-domain file changes and drains them in one pass; duplicate file
+          changes keep the latest content; invalidation without file context drains an empty batch
+          for fallback full reload.\\nCategories searched: correctness, edge cases, error handling,
+          test quality, integration. No task-specific defects found.\\nNote: npm test could not
+          reach vitest because the repo test runner's dependency-health bootstrap falsely reported
+          missing direct dependencies even after npm ci; tracked separately in @01KNHWPV."
+        created_at: 2026-04-06T17:17:01.367Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-06T17:16:58.778Z
+created_at: 2026-04-06T17:13:55.488Z
+updated_at: 2026-04-06T17:17:06.549Z
+notes: []

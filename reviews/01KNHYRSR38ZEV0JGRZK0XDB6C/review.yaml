@@ -1,0 +1,152 @@
+_ulid: 01KNHYRSR38ZEV0JGRZK0XDB6C
+slugs: []
+title: Review fix-test-runner dependency-health false negative (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "SKIP_BUILD=1 npm test -- --fresh tests/test-runner.test.ts
+      tests/dispatch-runtime-bootstrap-contract.test.ts passed: 9 suites, 44 tests."
+    name: focused-tests
+    required: true
+    runner: npm
+    created_at: 2026-04-06T17:59:40.342Z
+    completed_at: 2026-04-06T17:59:40.342Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: SKIP_BUILD=1 node scripts/test.cjs --dry-run reported Environment check passed in this
+      detached review worktree.
+    name: dry-run
+    required: true
+    runner: node
+    created_at: 2026-04-06T17:59:44.792Z
+    completed_at: 2026-04-06T17:59:44.792Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: KSPEC_NO_DAEMON=1 kspec validate exited 6 with repo-wide warnings only
+      (alignment/completeness/orphan-skill), no blocking validation errors for this task.
+    name: validation
+    required: false
+    runner: kspec
+    created_at: 2026-04-06T17:59:49.446Z
+    completed_at: 2026-04-06T17:59:49.446Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "SKIP_BUILD=1 npm test -- --fresh failed twice after this fix, but failures were unstable
+      and unrelated to the changed files. Base branch b3b91d18cde400739d327720cea3e960f58f3a34 still
+      fails earlier at dependency health before Vitest. Follow-up task: @01KNHZ5F."
+    name: full-suite
+    required: false
+    runner: npm
+    created_at: 2026-04-06T17:59:54.084Z
+    completed_at: 2026-04-06T17:59:54.084Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: scripts/dependency-health.cjs, src/agent-runtime/bootstrap.ts,
+      tests/test-runner.test.ts, tests/dispatch-runtime-bootstrap-contract.test.ts, prior review
+      @01KNHXKF, task @01KNHWPVHMH0WRNHDJJBAX0N4X. Commands run: git diff/stat, dry-run, validate,
+      focused npm test, full npm test twice, base-branch comparison worktree. Claims verified:
+      snapshot clears dependency-health in review worktree; focused regressions pass; base branch
+      still fails before Vitest on missing direct deps. Categories searched: correctness, edge
+      cases, error handling, test quality, integration. Follow-up task: @01KNHZ5F."
+    name: review-evidence
+    required: false
+    runner: reviewer
+    created_at: 2026-04-06T18:00:06.124Z
+    completed_at: 2026-04-06T18:00:06.124Z
+events:
+  - _ulid: 01KNHYRSR26R4NMTV73RBRHBQR
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-06T17:52:10.498Z
+  - _ulid: 01KNHYSE0KRY9QM5DWQB152TQS
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-06T17:52:31.251Z
+  - _ulid: 01KNHZ6HVSGCQMHE9HZ7J36V41
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-tests
+    timestamp: 2026-04-06T17:59:41.177Z
+  - _ulid: 01KNHZ6P64H39YG1Q3Z0EV60RP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: dry-run
+    timestamp: 2026-04-06T17:59:45.604Z
+  - _ulid: 01KNHZ6TR4Y33V0MZJP6V720M8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: validation
+    timestamp: 2026-04-06T17:59:50.276Z
+  - _ulid: 01KNHZ6Z8Z3ZSEM84215XZDJ8T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: full-suite
+    timestamp: 2026-04-06T17:59:54.911Z
+  - _ulid: 01KNHZ7B00JGNAQCHXF2QFDJ6N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-04-06T18:00:06.913Z
+  - _ulid: 01KNHZ7N4PX3ZRJJQWPNVTFEAZ
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-06T18:00:17.302Z
+  - _ulid: 01KNHZ7N4P7JQCSB4TDAAHGWDY
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-06T18:00:17.302Z
+examined_commit: 3b383315d4fab7aef22c104af375c6ca426a200a
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNHWPVHMH0WRNHDJJBAX0N4X"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-04-06T18:00:17.302Z
+created_at: 2026-04-06T17:52:10.499Z
+updated_at: 2026-04-06T18:00:17.302Z
+notes: []

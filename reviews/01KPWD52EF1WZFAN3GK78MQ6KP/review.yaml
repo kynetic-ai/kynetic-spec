@@ -1,0 +1,124 @@
+_ulid: 01KPWD52EF1WZFAN3GK78MQ6KP
+slugs: []
+title: Review task-align-detached-reviewer-conflict-guidance
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 8362 passed, 5 skipped, 0 failed."
+    name: npm test
+    required: true
+    runner: test.cjs
+    created_at: 2026-04-23T05:42:29.604Z
+    completed_at: 2026-04-23T05:42:29.604Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tests/detached-reviewer-merge.test.ts, tests/agent-dispatch-engine.test.ts, and
+      tests/supporting-file-references.test.ts all passed (174/174).
+    name: targeted detached-reviewer coverage
+    required: false
+    runner: test.cjs
+    created_at: 2026-04-23T05:42:40.332Z
+    completed_at: 2026-04-23T05:42:40.332Z
+events:
+  - _ulid: 01KPWD52EEYY3C676D9GDTM1FX
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-23T05:31:38.831Z
+  - _ulid: 01KPWD5N428WX4YCW1W1YAQ3K8
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-23T05:31:57.954Z
+  - _ulid: 01KPWDRZ4KQMBFEFMEW7MMNQZX
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KPWDRXZ3HBJFGR6YE9RW2RV1
+    timestamp: 2026-04-23T05:42:30.803Z
+  - _ulid: 01KPWDS0ZZY5DV2VGNH9GHQ6SY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-23T05:42:32.703Z
+  - _ulid: 01KPWDS4HVCAWBGQ5MFGXPTCGJ
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-23T05:42:36.348Z
+  - _ulid: 01KPWDS4HW7GSJKYAQ0PTR3JAQ
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-23T05:42:36.348Z
+  - _ulid: 01KPWDS9M87A3PPD5TKFW0ZP9E
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted detached-reviewer coverage
+    timestamp: 2026-04-23T05:42:41.544Z
+examined_commit: 778a628e40b17f04ed7a044538c2c4200f5403fe
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KPWBHMSFK1XB6CZ1Z90FMB0H"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPWDRXZ3HBJFGR6YE9RW2RV1
+    entries:
+      - _ulid: 01KPWDRXZ3X7DHKVM8RSGSH2DB
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          Files read: templates/skills/merge/scripts/detached-reviewer-merge.sh,
+          .agents/skills/kspec-merge/scripts/detached-reviewer-merge.sh,
+          .factory/skills/kspec-merge/scripts/detached-reviewer-merge.sh,
+          tests/detached-reviewer-merge.test.ts, tests/agent-dispatch-engine.test.ts,
+          tests/supporting-file-references.test.ts.
+
+          Commands run: git diff --stat, git diff, kspec task get, kspec item get, kspec validate,
+          rg for AC annotations, npm test -- --run tests/detached-reviewer-merge.test.ts
+          tests/agent-dispatch-engine.test.ts tests/supporting-file-references.test.ts, npm test.
+
+          Claims verified: conflict stderr now directs detached reviewers to return via needs_work
+          and removes inline-resolution guidance; dispatch prompt and rendered merge skill still
+          direct reviewers to the supported helper path and avoid manual checkout guidance; helper
+          mechanics for unchanged target/worktree restore remain covered by behavior tests.
+
+          Categories searched: correctness, AC coverage, regression risk, error handling,
+          integration. No task-specific findings.
+        created_at: 2026-04-23T05:42:29.603Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-23T05:42:36.347Z
+created_at: 2026-04-23T05:31:38.831Z
+updated_at: 2026-04-23T05:42:40.332Z
+notes: []

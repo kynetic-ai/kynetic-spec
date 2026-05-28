@@ -1,0 +1,187 @@
+_ulid: 01KKZ6FM1S0V4R5QYXD5B59133
+slugs: []
+title: Review detect-stale-integration-target (cycle 1)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 18 tests in dispatch-workspace-config.test.ts passed (5 new stale target tests + 13
+      existing)
+    name: vitest (task-specific)
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T00:46:42.893Z
+    completed_at: 2026-03-18T00:46:42.893Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 5802 passed, 3 skipped, 1 failed (pre-existing failure in review-cli.test.ts unrelated to
+      this task — tests/review-cli.test.ts was not modified)
+    name: vitest (full suite)
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T00:46:45.482Z
+    completed_at: 2026-03-18T00:46:45.482Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "ac-6: 4 annotated tests (auto-update, active conflict, error guidance,
+      config-matches-no-op). ac-7: 2 annotated tests (describe-level + prompt reflection test).
+      trait-error-guidance ac-1/ac-2: covered by error guidance test. ac-3 through ac-6 N/A
+      (pre-existing gap in file, noted as nit)."
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-18T00:46:48.216Z
+    completed_at: 2026-03-18T00:46:48.216Z
+events:
+  - _ulid: 01KKZ6FM1S374WFNXNMPZNTRZM
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T00:45:42.329Z
+  - _ulid: 01KKZ6FWSF9TWNGAF9W295CPBJ
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T00:45:51.280Z
+  - _ulid: 01KKZ6G7Q1N4VMS2B6MY3BX0WF
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKZ6G7MCKFV07962KEEH3QRQ
+    timestamp: 2026-03-18T00:46:02.465Z
+  - _ulid: 01KKZ6GFX88ESCP6MWZDSZ3P2C
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKZ6GFSFF1P9TQWS3KEKFA10
+    timestamp: 2026-03-18T00:46:10.856Z
+  - _ulid: 01KKZ6GSR2Y382S01C8662QSJM
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKZ6GSMPFCDW2WZ19Z1JM4EV
+    timestamp: 2026-03-18T00:46:20.930Z
+  - _ulid: 01KKZ6HF95Q46G7G8TZZQ5YE7F
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest (task-specific)
+    timestamp: 2026-03-18T00:46:42.981Z
+  - _ulid: 01KKZ6HHT3V4JR75NHHKKYJQN5
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest (full suite)
+    timestamp: 2026-03-18T00:46:45.571Z
+  - _ulid: 01KKZ6HMG5WD0KN06FH5C89R7A
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-18T00:46:48.325Z
+  - _ulid: 01KKZ6HWTDC5PPTHQPANN68TW5
+    actor: pr-reviewer@dispatch
+    event_type: verdict_submitted
+    payload:
+      decision: request_changes
+    timestamp: 2026-03-18T00:46:56.845Z
+  - _ulid: 01KKZ6HWTDMDCZHCYHTGGJP4HS
+    actor: pr-reviewer@dispatch
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T00:46:56.845Z
+examined_commit: 0856c70e3db6aa88fb57b661fab8bba626e3e153
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKXEKWMZN0E7E6V7458E0BV8"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KKZ6G7MCKFV07962KEEH3QRQ
+    anchor:
+      type: code
+      commit: 0856c70e3db6
+      line_end: 696
+      line_start: 696
+      path: src/agent-runtime/workspace.ts
+      side: head
+    entries:
+      - _ulid: 01KKZ6G7MDFRAFXP7WBKR83JMD
+        author: "@claude"
+        body: "resolveIntegrationRecord at line 696 always prefers existingRecord.integration.target_commit
+          over the targetCommit parameter: `target_commit: existingRecord?.integration.target_commit
+          ?? targetCommit`. When the integration target branch is updated (e.g. main→dev), the
+          caller computes a fresh baseBranchPoint and passes it as targetCommit (lines 2137-2139),
+          but resolveIntegrationRecord ignores it because existingRecord.integration.target_commit
+          is always defined for existing records. Result: target_branch updates correctly but
+          target_commit remains stale, pointing to the old branch's commit. This stale commit
+          propagates through toMetadata (line 940) into the dispatch prompt context."
+        created_at: 2026-03-18T00:46:02.381Z
+    kind: blocker
+  - _ulid: 01KKZ6GFSFF1P9TQWS3KEKFA10
+    anchor:
+      type: code
+      commit: 0856c70e3db6
+      line_end: 494
+      line_start: 493
+      path: tests/dispatch-workspace-config.test.ts
+      side: head
+    entries:
+      - _ulid: 01KKZ6GFSFGTKXE6VBVNYP9HPD
+        author: "@claude"
+        body: No test verifies that target_commit is updated when the integration target branch changes. The
+          auto-update test (line 465) checks target_branch and resolved_base_branch but not
+          target_commit. A test asserting secondRecord.integration.target_commit points to the dev
+          branch tip (not the original main branch tip) would catch the bug in the previous finding.
+        created_at: 2026-03-18T00:46:10.735Z
+    kind: blocker
+  - _ulid: 01KKZ6GSMPFCDW2WZ19Z1JM4EV
+    anchor:
+      type: code
+      commit: 0856c70e3db6
+      line_end: 451
+      line_start: 449
+      path: tests/dispatch-workspace-config.test.ts
+      side: head
+    entries:
+      - _ulid: 01KKZ6GSMPH0MVR9B2G9V6BM0K
+        author: "@claude"
+        body: "The stale integration target detection describe block is missing N/A annotations for
+          @trait-error-guidance ac-3 through ac-6. All other dispatch-workspace test files include
+          these file-level N/A annotations (e.g. dispatch-workspace-cleanup.test.ts lines 390-393,
+          dispatch-workspace-branch-provenance.test.ts lines 29-32). Note: the existing describe
+          blocks in this file also lack them, so this is a pre-existing gap — but the new describe
+          block should follow the established pattern."
+        created_at: 2026-03-18T00:46:20.822Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer@dispatch
+    role: reviewer
+    created_at: 2026-03-18T00:46:56.654Z
+created_at: 2026-03-18T00:45:42.329Z
+updated_at: 2026-03-18T00:46:56.654Z
+notes: []

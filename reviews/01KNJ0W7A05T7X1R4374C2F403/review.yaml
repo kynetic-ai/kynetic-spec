@@ -1,0 +1,203 @@
+_ulid: 01KNJ0W7A05T7X1R4374C2F403
+slugs: []
+title: Review incremental item updates
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "NODE_ENV=development npm test passed: 2070/2070 suites, 7528/7533 tests, 5 skipped.
+      Background run duration 3498.3s."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-06T18:33:56.033Z
+    completed_at: 2026-04-06T18:33:56.033Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: KSPEC_NO_DAEMON=1 kspec validate exited 6 with repository-wide warnings only (orphaned
+      skills/specs and annotation fixtures); no new task-specific validation error was introduced in
+      this snapshot.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-06T18:34:00.635Z
+    completed_at: 2026-04-06T18:34:00.635Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "NODE_ENV=development npm test -- --run tests/daemon-entity-cache.test.ts passed: 31/31
+      suites, 110/110 tests."
+    name: daemon-entity-cache focused
+    required: false
+    runner: npm
+    created_at: 2026-04-06T18:34:05.330Z
+    completed_at: 2026-04-06T18:34:05.330Z
+events:
+  - _ulid: 01KNJ0W7A0BQJSD0FS7X8J9G4N
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-06T18:28:59.840Z
+  - _ulid: 01KNJ0WMNQ441YZJVPVZ9HC4A1
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-06T18:29:13.527Z
+  - _ulid: 01KNJ155P0DFB6911QY2854ZV4
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNJ15482CDT5AW9786T28W67
+    timestamp: 2026-04-06T18:33:53.088Z
+  - _ulid: 01KNJ15A2K1RGQ1Y14CE5T5CAA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-06T18:33:57.587Z
+  - _ulid: 01KNJ15EMSDCAZY0W35EBNB1ED
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-04-06T18:34:02.265Z
+  - _ulid: 01KNJ15K5G8BGADN4KY7QH21R2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: daemon-entity-cache focused
+    timestamp: 2026-04-06T18:34:06.896Z
+  - _ulid: 01KNJ15ZGP86MH86V0MJSCWXTJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNJ15Y1DDD0VFH0Y283F9NG9
+    timestamp: 2026-04-06T18:34:19.543Z
+  - _ulid: 01KNJ166DTGPQ6NQJ6ZVHVEDAN
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-06T18:34:26.618Z
+  - _ulid: 01KNJ166DTF2ZZHDZPP721GX1N
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-06T18:34:26.618Z
+  - _ulid: 01KNJ2GWRJK5Q0122E9147E6NS
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNJ15482CDT5AW9786T28W67
+    timestamp: 2026-04-06T18:57:45.747Z
+  - _ulid: 01KNJ2H0CQ7682PTR0PMNWVAR1
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNJ15Y1DDD0VFH0Y283F9NG9
+    timestamp: 2026-04-06T18:57:49.463Z
+  - _ulid: 01KNJ2H2WEMQFZ66GAW0C1S520
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNJ15482CDT5AW9786T28W67
+    timestamp: 2026-04-06T18:57:52.014Z
+  - _ulid: 01KNJ2H60V7SPCTFS7F8MWHRB7
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNJ15Y1DDD0VFH0Y283F9NG9
+    timestamp: 2026-04-06T18:57:55.228Z
+examined_commit: a76e028682e2d5456ba6c58f7237e288d23b466e
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNDDJ3RK4K2HWH7TVY6F1V66"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNJ15482CDT5AW9786T28W67
+    anchor:
+      type: code
+      commit: a76e028682e2d5456ba6c58f7237e288d23b466e
+      line_end: 1578
+      line_start: 1573
+      path: src/daemon/entity-cache.ts
+      side: head
+    entries:
+      - _ulid: 01KNJ154828PPZFZMWFKSSE7JG
+        author: Jacob Chapel
+        body: "When two module files are invalidated in the same debounce window, this insertion-offset
+          logic reorders later changed files behind untouched files. I reproduced it against the
+          snapshot with a throwaway project containing modules a/b/c: after changing a.yaml and
+          b.yaml together, cache.getItemIndex() became a:A2,c:C1,b:B2 instead of preserving the
+          original a,b,c file order. That violates the index consistency/full-reload equivalence
+          expected for batched item updates and is not covered by the new tests, which only exercise
+          single-file invalidations."
+        created_at: 2026-04-06T18:33:51.618Z
+      - _ulid: 01KNJ2GW0BC3F8D2SVX0NS8E72
+        author: Jacob Chapel
+        body: Fixed in commit 89a854716. Incremental item patching now rebuilds the item index by manifest
+          include order instead of reinserting changed-file slices with offset math, so batched
+          changes to multiple module files preserve the same file ordering as a full reload. Added a
+          regression test that updates alpha.yaml and beta.yaml in one debounce window and verifies
+          the resulting index order remains alpha, beta, gamma.
+        created_at: 2026-04-06T18:57:44.971Z
+    kind: blocker
+    resolved_at: 2026-04-06T18:57:51.085Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KNJ15Y1DDD0VFH0Y283F9NG9
+    entries:
+      - _ulid: 01KNJ15Y1DM8YNSGN8X8B0G6MD
+        author: Jacob Chapel
+        body: 'Review evidence log: Files read: src/daemon/entity-cache.ts, src/parser/yaml.ts,
+          tests/daemon-entity-cache.test.ts, tests/daemon-context-manager.test.ts,
+          tests/helpers/cli.ts. Commands run: git diff --stat/diff vs f79e50a...a76e028, kspec task
+          get, kspec item get @daemon-incremental-cache, grep -Rni "AC: @daemon-incremental-cache"
+          tests, KSPEC_NO_DAEMON=1 kspec validate, NODE_ENV=development npm test -- --run
+          tests/daemon-entity-cache.test.ts, NODE_ENV=development npm test, and an npx tsx repro for
+          batched module changes. Claims verified: incremental item invalidation updates changed
+          files without full reload for single-file cases; full suite passed on this snapshot;
+          multi-file batched invalidation reorders index entries incorrectly. Categories searched:
+          correctness, edge cases, test quality, integration, error handling.'
+        created_at: 2026-04-06T18:34:18.029Z
+      - _ulid: 01KNJ2GZF5YDPRX0C82Z7ZTNN3
+        author: Jacob Chapel
+        body: Reverified the full fix-cycle scope against the prior evidence log. Focused daemon cache tests
+          now pass with the new batched-order regression, repository validation still reports only
+          the existing warning set, and the full npm test run passed on this branch.
+        created_at: 2026-04-06T18:57:48.517Z
+    kind: nit
+    resolved_at: 2026-04-06T18:57:54.379Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-06T18:34:26.617Z
+created_at: 2026-04-06T18:28:59.840Z
+updated_at: 2026-04-06T18:57:54.379Z
+notes: []

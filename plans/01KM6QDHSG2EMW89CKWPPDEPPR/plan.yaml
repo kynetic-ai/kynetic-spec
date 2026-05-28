@@ -1,0 +1,40 @@
+_ulid: 01KM6QDHSG2EMW89CKWPPDEPPR
+slugs:
+  - plan-task-storage-split-per-task-directory-architecture
+title: "Task Storage Split: Per-Task Directory Architecture"
+status: completed
+approved_at: 2026-03-21T00:59:06.230Z
+derived_specs:
+  - "@task-directory-storage"
+  - "@task-index-file"
+  - "@task-core-data-file"
+  - "@task-notes-file"
+  - "@task-data-manager"
+  - "@task-atomic-writes"
+  - "@task-listing-performance"
+  - "@task-detail-loading"
+  - "@task-activity-in-file"
+  - "@task-storage-activation"
+  - "@task-storage-migration"
+  - "@task-index-rebuild"
+derived_tasks:
+  - "@task-deprecate-old-storage-specs"
+  - "@task-update-activity-timeline-spec"
+  - "@task-impl-data-manager"
+  - "@task-migrate-cli"
+  - "@task-migrate-daemon"
+  - "@task-migrate-supporting"
+  - "@task-impl-split-storage"
+  - "@task-impl-index"
+  - "@task-impl-per-task-files"
+  - "@task-impl-activity"
+  - "@task-extend-write-buffer"
+  - "@task-build-index-rebuild"
+  - "@task-build-migration"
+  - "@task-activate-split-storage"
+  - "@task-remove-monolithic"
+  - "@task-purge-old-storage-refs"
+module_ref: "@tasks"
+source_path: /home/chapel/Projects/kynetic-spec/plans/task-storage-split.md
+created_at: 2026-03-20T22:56:21.296Z
+completed_at: null

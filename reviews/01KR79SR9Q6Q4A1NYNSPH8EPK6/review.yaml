@@ -1,0 +1,254 @@
+_ulid: 01KR79SR9Q6Q4A1NYNSPH8EPK6
+slugs: []
+title: Review task-fix-guardrail-binding-wrapper-analysis cycle 5
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts: 23 suites passed, 244 tests passed, duration 57.8s."
+    name: focused lint guardrail tests
+    required: true
+    runner: npm
+    created_at: 2026-05-09T21:33:28.011Z
+    completed_at: 2026-05-09T21:33:28.011Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- kspec validate --refs --warnings-ok: exited 0. Validation passed with 6
+      pre-existing reference warnings allowed by --warnings-ok."
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-05-09T21:33:39.180Z
+    completed_at: 2026-05-09T21:33:39.180Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- kspec validate --completeness --warnings-ok: exited 0. Validation passed
+      with 251 pre-existing completeness warnings allowed by --warnings-ok."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-05-09T21:33:49.468Z
+    completed_at: 2026-05-09T21:33:49.468Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh: 2418 suites passed; 8998 tests passed; 5 skipped;
+      duration 2109.2s. Full log:
+      /tmp/kspec-test-cache/01KR79RK5ENGN46CVGYPRJS9QN/ee584ae8150d094b.log"
+    name: full npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-09T21:33:59.947Z
+    completed_at: 2026-05-09T21:33:59.947Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Synthetic test with runKspec serve start --detach, const pid = undefined as number |
+      undefined, onTestFinished closure killing pid, then expect true produced OX_STATUS=0 and Found
+      0 warnings and 0 errors. Null as-cast variant also produced OX_STATUS=0. This violates
+      ac-detached-cleanup-bound-before-observation because the captured binding has no concrete pid
+      or child handle at registration time.
+    name: manual oxlint AC probe
+    required: true
+    runner: oxlint
+    created_at: 2026-05-09T21:34:11.439Z
+    completed_at: 2026-05-09T21:34:11.439Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md; tools/eslint-rules/no-leaky-test-daemon.js;
+      tests/lint-daemon-test-guardrails.test.ts; tests/lint-no-leaky-test-daemon.test.ts;
+      tests/cli-serve.test.ts; prior review @01KR75E7. Commands run: git status/log/diff; kspec task
+      get; kspec item get; kspec review for-task/get/add/open/comment/reply/check; rg AC
+      annotations; focused lint tests; kspec validate refs/completeness; full npm test; manual
+      oxlint probes. Claims verified: cycle-4 callback-local read probe now rejects; focused/full
+      tests pass; TS-wrapped null/undefined initializer probe still falsely passes. Categories
+      searched: correctness, AC alignment, edge cases around callback ownership and TS wrappers,
+      test quality, integration, validation."
+    name: review evidence log
+    required: false
+    runner: reviewer
+    created_at: 2026-05-09T21:34:24.318Z
+    completed_at: 2026-05-09T21:34:24.318Z
+events:
+  - _ulid: 01KR79SR9Q1JAWWKNFVDZDSXFW
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-09T21:20:22.839Z
+  - _ulid: 01KR79T956JXCE9ECJ559FFHMQ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-09T21:20:40.102Z
+  - _ulid: 01KR79YRA115P5MYS6XBY8KGNQ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR79YPTWMSM89JQPJASSHYK1
+    timestamp: 2026-05-09T21:23:06.689Z
+  - _ulid: 01KR79ZFB8FHQDTC0QGZ4AN2DS
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR79YPTWMSM89JQPJASSHYK1
+    timestamp: 2026-05-09T21:23:30.281Z
+  - _ulid: 01KR7AHRCTFEZFEFYX45ZJPYPB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused lint guardrail tests
+    timestamp: 2026-05-09T21:33:29.370Z
+  - _ulid: 01KR7AJ3B00N3SFGAGH9R2XBED
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-05-09T21:33:40.576Z
+  - _ulid: 01KR7AJDA13W0G4WXWDEC3W53F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-05-09T21:33:50.785Z
+  - _ulid: 01KR7AJQJM24W179NKH07V5DM4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full npm test
+    timestamp: 2026-05-09T21:34:01.300Z
+  - _ulid: 01KR7AK2SRG2QM6EB7R438CMCC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: manual oxlint AC probe
+    timestamp: 2026-05-09T21:34:12.792Z
+  - _ulid: 01KR7AKFAK9TE92VTH7PP1JBGG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-09T21:34:25.619Z
+  - _ulid: 01KR7AKSKC8PAAAFEAMDA9F0X3
+    actor: reviewer-agent
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-09T21:34:36.140Z
+  - _ulid: 01KR7AKSKCZFD27EG2YWS0PEQ5
+    actor: reviewer-agent
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-09T21:34:36.141Z
+  - _ulid: 01KR7C1PFXM8XACA757K4556M0
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR79YPTWMSM89JQPJASSHYK1
+    timestamp: 2026-05-09T21:59:40.285Z
+  - _ulid: 01KR7C1Z8551FKXSSZAQQWWAMT
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR79YPTWMSM89JQPJASSHYK1
+    timestamp: 2026-05-09T21:59:49.253Z
+examined_commit: ce61a5635365f9e09bff5a3d3c59e9d937465605
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR6M77JA0S1EEVZX8KKRPY1V"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR79YPTWMSM89JQPJASSHYK1
+    anchor:
+      type: code
+      commit: ce61a5635365f9e09bff5a3d3c59e9d937465605
+      line_end: 673
+      line_start: 666
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KR79YPTWFMKXTQE5AWQQVHM0
+        author: Jacob Chapel
+        body: "MUST-FIX: wrapped null/undefined initializers are treated as concrete bindings, so cleanup
+          can still be accepted without a usable pid at registration time.  only checks bare , bare
+          , and , but it does not unwrap transparent TypeScript wrappers. I verified with an oxlint
+          probe against this snapshot:  exited 0 with 'Found 0 warnings and 0 errors'. That violates
+          : the closure captures a binding whose runtime value is still undefined at registration,
+          so an intervening assertion can leave the detached daemon without scoped cleanup. The
+          null/undefined classifier should use the same transparent unwrap discipline as kill-target
+          analysis, and tests should cover TS-wrapped / initializers."
+        created_at: 2026-05-09T21:23:05.180Z
+      - _ulid: 01KR79ZDQP8VTQ4MNR62NZ4Q3Y
+        author: Jacob Chapel
+        body: 'Clarification for shell-mangled snippets in the opening comment: the affected helper is
+          isNullOrUndefinedInitializer at lines 666-673. It only recognizes bare Literal null, bare
+          Identifier undefined, and UnaryExpression void. It does not unwrap TSAsExpression or other
+          transparent TypeScript wrappers. Manual probe source: runKspec("serve start --detach
+          --port 3456"); const pid = undefined as number | undefined; onTestFinished(() => { if (pid
+          !== undefined) process.kill(pid, "SIGTERM"); }); expect(true).toBe(true); oxlint returned
+          exit 0 with Found 0 warnings and 0 errors. That violates
+          ac-detached-cleanup-bound-before-observation because pid is still undefined at cleanup
+          registration time.'
+        created_at: 2026-05-09T21:23:28.630Z
+      - _ulid: 01KR7C1N4DTRRCH34Y9G8GW74J
+        author: "@claude"
+        body: "Fixed in 08328dee7: isNullOrUndefinedInitializer now calls unwrapTransparentExpression (the
+          same fixed-point unwrap the kill-target analysis uses) before the structural check, so
+          TSAsExpression / TSSatisfiesExpression / TSNonNullExpression / TSTypeAssertion /
+          TSInstantiationExpression / ParenthesizedExpression / ChainExpression around literal null,
+          Identifier undefined, or void <expr> all classify as placeholder initializers. The unwrap
+          is shared between the declarator-init leg and the assignment-RHS leg of
+          findConcreteBindingInStatements / inspectStatementsForBinding, so wrapped placeholders are
+          caught regardless of whether the binding is initialised at declaration or reassigned
+          later. Manual oxlint AC probes for the cycle-5 scenarios now exit 1 with
+          cleanupClosureUnbound: const pid = undefined as number | undefined and const pid = null as
+          any both rejected; the safe shape (const pid = readPidFromFile() as number) is still
+          accepted (exit 0) because the unwrapped CallExpression remains a concrete value-producer.
+          Added five regression tests in tests/lint-daemon-test-guardrails.test.ts: TSAsExpression
+          undefined initializer, TSAsExpression null initializer, stacked (undefined)! as number
+          wrappers, post-start assignment with TS-wrapped undefined RHS, and a positive control
+          wrapping a concrete read."
+        created_at: 2026-05-09T21:59:38.893Z
+    kind: blocker
+    resolved_at: 2026-05-09T21:59:47.885Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: reviewer-agent
+    role: reviewer
+    created_at: 2026-05-09T21:34:36.140Z
+created_at: 2026-05-09T21:20:22.839Z
+updated_at: 2026-05-09T21:59:47.885Z
+notes: []

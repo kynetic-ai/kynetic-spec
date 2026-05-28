@@ -1,0 +1,212 @@
+_ulid: 01KN5K47D46ZM3KC03SFFJHMAZ
+slugs: []
+title: Review task-consolidate-session-cache
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Test Suites: 2061 passed of 2061. Tests: 7438 passed, 5 skipped. Duration: 5023.1s."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-01T22:44:15.461Z
+    completed_at: 2026-04-01T22:44:15.461Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: packages/daemon/src/project-context.ts,
+      packages/daemon/src/routes/session-related.ts, packages/daemon/src/routes/sessions.ts,
+      packages/daemon/src/server.ts, src/agent-runtime/dispatch.ts, src/agent-runtime/invocation.ts,
+      src/daemon/entity-cache.ts, src/sessions/store.ts, src/sessions/types.ts,
+      tests/daemon-cache-route-coverage.test.ts, tests/daemon-entity-cache.test.ts. Commands run:
+      kspec task get, kspec review for-task, git diff/stat, kspec validate, npm test, grep/rg AC
+      search, targeted tsx reproduction of GET /api/sessions fallback. Claims verified: live counter
+      updates are wired into entity cache; filtered session fallback returns event_count 0 for
+      active sessions under non-ready sessions cache. Categories searched: correctness, edge cases,
+      error handling, integration, test quality."
+    name: review-evidence
+    required: false
+    runner: manual
+    created_at: 2026-04-01T22:44:17.558Z
+    completed_at: 2026-04-01T22:44:17.558Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 6 with repository-wide warnings only (1 orphaned skill directory, orphaned
+      specs/status mismatches, existing completeness warnings). No task-specific validation errors.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-01T22:44:19.675Z
+    completed_at: 2026-04-01T22:44:19.675Z
+events:
+  - _ulid: 01KN5K47D3X0PWC97XPGVYJ9Y3
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-01T22:37:48.836Z
+  - _ulid: 01KN5K4Y1PCZ0DG3RZD5P97RT5
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-01T22:38:12.022Z
+  - _ulid: 01KN5KEV4420Z1MEVD1ATWZGP0
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN5KETFJRWGX7100F3CRVT9Q
+    timestamp: 2026-04-01T22:43:36.708Z
+  - _ulid: 01KN5KF5DKPE77FKXZ4DX3JCDD
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN5KF4R0H6G0H4Q7FSEYB5DK
+    timestamp: 2026-04-01T22:43:47.252Z
+  - _ulid: 01KN5KG1KDN4BBYJ9Z7183DT8P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-01T22:44:16.109Z
+  - _ulid: 01KN5KG3PWEKE4MAG91BS9EZA0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-04-01T22:44:18.268Z
+  - _ulid: 01KN5KG5QXZ0CNHJYSDS5DBG7B
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-04-01T22:44:20.349Z
+  - _ulid: 01KN5KGGE276WX6CX0FZHNZS47
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-01T22:44:31.299Z
+  - _ulid: 01KN5KGGE3PAQ71QSRTNCF9E0V
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-01T22:44:31.299Z
+  - _ulid: 01KN5KHBDZQ5KSA9FDMPSCJ27F
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN5KETFJRWGX7100F3CRVT9Q
+    timestamp: 2026-04-01T22:44:58.943Z
+  - _ulid: 01KN5KHDEK6A1CPW24NNN51JN8
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN5KETFJRWGX7100F3CRVT9Q
+    timestamp: 2026-04-01T22:45:01.011Z
+  - _ulid: 01KN5M9BPDHRN5ZNBW3PACYQQT
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN5KF4R0H6G0H4Q7FSEYB5DK
+    timestamp: 2026-04-01T22:58:05.645Z
+  - _ulid: 01KN5M9FWDW74Y5AZPYKAYGZ8P
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN5KF4R0H6G0H4Q7FSEYB5DK
+    timestamp: 2026-04-01T22:58:09.933Z
+examined_commit: 6ed10e58b1effad92713b88cbbcc68a86c4bc9c7
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN5J2ETHQMPQGA334D827YWG"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN5KETFJRWGX7100F3CRVT9Q
+    anchor:
+      type: code
+      commit: 6ed10e58b1effad92713b88cbbcc68a86c4bc9c7
+      line_end: 104
+      line_start: 101
+      path: packages/daemon/src/routes/sessions.ts
+      side: head
+    entries:
+      - _ulid: 01KN5KETFJA92YBCTGRANDM219
+        author: Jacob Chapel
+        body: "The new disk fallback drops live event counts for active sessions.  reads only  via , so when
+          the sessions domain is warming or degraded the filtered list routes return  for active
+          sessions until close-time stats are persisted. I reproduced this against the current route
+          code with an active session that had three appended events:  returned  under a non-ready
+          sessions cache. This regresses  AC  / ; the fallback path needs a live counter source or a
+          direct event-count read for active sessions."
+        created_at: 2026-04-01T22:43:36.050Z
+      - _ulid: 01KN5KHASC1HDT66V0JSC3KS8S
+        author: Jacob Chapel
+        body: Duplicate of thread 01KN5KF4R0H6G0H4Q7FSEYB5DK created while recording the finding; ignore
+          this malformed copy.
+        created_at: 2026-04-01T22:44:58.283Z
+    kind: blocker
+    resolved_at: 2026-04-01T22:45:00.352Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KN5KF4R0H6G0H4Q7FSEYB5DK
+    anchor:
+      type: code
+      commit: 6ed10e58b1effad92713b88cbbcc68a86c4bc9c7
+      line_end: 104
+      line_start: 101
+      path: packages/daemon/src/routes/sessions.ts
+      side: head
+    entries:
+      - _ulid: 01KN5KF4R0GWC4T2F02DAHYP7P
+        author: Jacob Chapel
+        body: "The new disk fallback drops live event counts for active sessions.
+          listSessionSummariesFromDisk() reads only session.yaml via getSessionMetadataOnly(), so
+          when the sessions domain is warming or degraded the filtered list routes return
+          event_count 0 for active sessions until close-time stats are persisted. I reproduced this
+          against the current route code with an active session that had three appended events: GET
+          /api/sessions?task_id=@cache-test-task returned event_count 0 under a non-ready sessions
+          cache. This regresses @daemon-entity-cache AC ac-session-live-counter and
+          ac-session-event-tracking; the fallback path needs a live counter source or a direct
+          event-count read for active sessions."
+        created_at: 2026-04-01T22:43:46.560Z
+      - _ulid: 01KN5M9B0SJHFHJ9KWT73319Y8
+        author: Jacob Chapel
+        body: "Fixed in 613afcce6: the disk-backed session-summary fallback now overlays live event counts
+          from ProjectEntityCache instead of trusting session.yaml alone. Added a regression test
+          covering GET /api/sessions?task_id=@cache-test-task with a degraded sessions cache and an
+          active session carrying a live counter."
+        created_at: 2026-04-01T22:58:04.953Z
+    kind: blocker
+    resolved_at: 2026-04-01T22:58:09.252Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-01T22:44:31.298Z
+created_at: 2026-04-01T22:37:48.836Z
+updated_at: 2026-04-01T22:58:09.252Z
+notes: []

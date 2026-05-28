@@ -1,0 +1,153 @@
+_ulid: 01KQXCFW83YG6XTEGEEHBEXGX7
+slugs: []
+title: Review fix codex-acp adapter package resolution test
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/session-create.test.ts --fresh: 13 suites passed;
+      tests/session-create.test.ts 70/70 passed; full log
+      /tmp/kspec-test-cache/01KQXCEACGYTYSDTDZ06E3PW8E/c1ccc63119ce5605.log"
+    name: targeted session-create
+    required: true
+    runner: npm
+    created_at: 2026-05-06T01:05:20.404Z
+    completed_at: 2026-05-06T01:05:20.404Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh: 2332 suites passed; 8545 passed, 5 skipped; duration 1933.7s; full
+      log /tmp/kspec-test-cache/01KQXCEACGYTYSDTDZ06E3PW8E/b2bf9b695f2d9c3e.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-06T01:05:32.037Z
+    completed_at: 2026-05-06T01:05:32.037Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exits 6 due to existing project warnings; kspec validate --warnings-ok
+      exits 0 with schema/references OK. Warnings are broad pre-existing
+      coverage/alignment/reference warnings unrelated to this one-file test change.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-06T01:05:41.791Z
+    completed_at: 2026-05-06T01:05:41.791Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: rg found @codex-acp-adapter-registration annotations in tests/session-create.test.ts for
+      ac-1 at line 912, ac-2 at line 953, and ac-3 at lines 975/1001/1024. The changed ac-1 test
+      calls resolveAdapter("codex-acp") behaviorally and does not scan source text.
+    name: AC annotation coverage
+    required: true
+    runner: rg
+    created_at: 2026-05-06T01:05:53.098Z
+    completed_at: 2026-05-06T01:05:53.098Z
+events:
+  - _ulid: 01KQXCFW8240Z1C59J58PJYGQA
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-06T00:55:00.611Z
+  - _ulid: 01KQXCG7GYB4VAK2YMGYCYJKPN
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-06T00:55:12.158Z
+  - _ulid: 01KQXD2TQ5XH63CVN37BJ9H1A8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted session-create
+    timestamp: 2026-05-06T01:05:21.637Z
+  - _ulid: 01KQXD3620197AGRGM32FNNRAP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-06T01:05:33.249Z
+  - _ulid: 01KQXD3FMY0ZSN65XE5QQ6XFRE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-06T01:05:43.071Z
+  - _ulid: 01KQXD3TMB1YCR1WRYABX29D7A
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC annotation coverage
+    timestamp: 2026-05-06T01:05:54.315Z
+  - _ulid: 01KQXD49R0SYACFQGY9T4HMYHY
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KQXD48JD873FPCF8R8C3RQ0R
+    timestamp: 2026-05-06T01:06:09.793Z
+  - _ulid: 01KQXD4J85GEW09CXXAM8VM89R
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-06T01:06:18.502Z
+  - _ulid: 01KQXD4J86604PB4M6AWN1RQR3
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-06T01:06:18.502Z
+examined_commit: 91354aec65fbdf3f7469d28308f0743c9cb78c61
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQXBKWE6Y8C7EVR7EKACEPBK"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQXD48JD873FPCF8R8C3RQ0R
+    entries:
+      - _ulid: 01KQXD48JDJVV2MPGCHRTCCM5Q
+        author: Jacob Chapel
+        body: "Evidence log: Files read: tests/session-create.test.ts, src/agents/adapters.ts, base versions
+          of both files, kspec-agents.md. Commands run: kspec task get, kspec item get, kspec review
+          for-task, git diff/log/show, rg AC annotations, kspec validate, kspec validate
+          --warnings-ok, npm test -- --run tests/session-create.test.ts --fresh, npm test --
+          --fresh. Claims verified: the old test expected an exact bare package arg while the
+          registered codex-acp adapter is version-pinned; the new regex distinguishes registered
+          pinned args from ad-hoc bare-id fallback. Categories searched: correctness, edge cases for
+          version bumps, error handling/env injection coverage, test quality/source-scanning,
+          integration/full suite."
+        created_at: 2026-05-06T01:06:08.589Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-06T01:06:18.501Z
+created_at: 2026-05-06T00:55:00.611Z
+updated_at: 2026-05-06T01:06:18.502Z
+notes: []

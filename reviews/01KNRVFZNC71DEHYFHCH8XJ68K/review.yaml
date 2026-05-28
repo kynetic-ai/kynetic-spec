@@ -1,0 +1,263 @@
+_ulid: 01KNRVFZNC71DEHYFHCH8XJ68K
+slugs: []
+title: Review task-e2e-fixture-decoupled-assertions (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      Ran ✓ Validation passed
+
+      ────────────────────────────────────────
+
+      Files checked: 10
+
+      Items checked: 578
+
+      Tasks checked: 0
+
+      Meta: 11 agents, 11 workflows, 10 conventions
+
+
+      Schema: OK
+
+      References: OK
+
+
+      Reference warnings: 1
+        ⚠ @skills
+          Orphaned skill directory 'skills' has no corresponding meta entry
+          in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+      Alignment warnings: 32
+        Orphaned specs (no tasks): 30
+          ○ Test Trait
+          ○ Filterable List Commands
+          ○ Dry Run Preview Mode
+          ... and 27 more
+        Status mismatches: 2
+          ! Task Set Batch Support
+            Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+          ! Concurrent Read Command Execution
+            Spec "Concurrent Read Command Execution" status is "implemented" but should be "in_progress" based on task progress
+
+      Alignment stats: 415/578 specs have tasks, 413 aligned
+
+
+      Completeness warnings: 474
+        Missing acceptance criteria: 1
+          ○ @01KJN1WT - Test Trait
+        Missing own AC coverage: 234
+          ! @spec-item - Spec Item
+            Uncovered: ac-item-1, ac-item-2
+          ! @ulid-system - ULID Identifier System
+            Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+          ! @slug-system - Slug Alias System
+            Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+          ... and 231 more
+        Invalid AC annotations: 239
+          ! AC annotation references '@01KJE3T7' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-e2e-fixture-decoupled-assertions-01knrnp1-review/tests/agent-detection.test.ts:43
+          ! AC annotation references '@01KJE3T7' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-e2e-fixture-decoupled-assertions-01knrnp1-review/tests/agent-detection.test.ts:61
+          ! AC annotation references '@01KJE3T7' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-e2e-fixture-decoupled-assertions-01knrnp1-review/tests/agent-detection.test.ts:75
+          ! AC annotation references '@01KJE3T7' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-e2e-fixture-decoupled-assertions-01knrnp1-review/tests/agent-detection.test.ts:88
+          ! AC annotation references '@ui-agent-dispatch ac-8' but @ui-agent-dispatch has no acceptance criterion 'ac-8'
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-e2e-fixture-decoupled-assertions-01knrnp1-review/tests/agent-dispatch-engine.test.ts:4965
+          ... and 234 more
+      Skills: OK (10 files checked). Result: schema/reference validation passed with repo-wide
+      pre-existing warnings only (exit 6); no new task-specific errors surfaced.
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-09T10:10:16.415Z
+    completed_at: 2026-04-09T10:10:16.415Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      Attempted both 
+
+      > @kynetic-ai/spec@0.12.0 test
+
+      > node scripts/test.cjs --fresh tests/e2e/tasks.spec.ts tests/e2e/dashboard.spec.ts
+      tests/e2e/file-watcher.spec.ts and 
+
+      > @kynetic-ai/spec@0.12.0 test
+
+      > node scripts/test.cjs --fresh. In both cases the test runner exited before executing tests
+      because dependency readiness failed:  after an automatic 
+
+      added 123 packages, and audited 128 packages in 2s
+
+
+      25 packages are looking for funding
+        run `npm fund` for details
+
+      7 vulnerabilities (6 moderate, 1 high)
+
+
+      To address all issues, run:
+        npm audit fix
+
+      Run `npm audit` for details. attempt.
+    name: npm-test
+    required: false
+    runner: npm
+    created_at: 2026-04-09T10:10:18.941Z
+    completed_at: 2026-04-09T10:10:18.941Z
+events:
+  - _ulid: 01KNRVFZNC8MND3V2ATC9REEWG
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-09T10:09:36.940Z
+  - _ulid: 01KNRVH1X3PTT0PQWQGHNZNAHB
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-09T10:10:12.004Z
+  - _ulid: 01KNRVH4JJVKSXWR29MF132RVW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNRVH3MQNXSCJPA80C6RCDQP
+    timestamp: 2026-04-09T10:10:14.738Z
+  - _ulid: 01KNRVH739CWYTT4XT8C7SZ9HN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-04-09T10:10:17.322Z
+  - _ulid: 01KNRVH9HYFYEVGPFJB54YD84R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: npm-test
+    timestamp: 2026-04-09T10:10:19.838Z
+  - _ulid: 01KNRVHXKH54CWV9ZGGQ0Y7S5M
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNRVHWRM25TH4YE9BAHMMK20
+    timestamp: 2026-04-09T10:10:40.370Z
+  - _ulid: 01KNRVJE8DBXKA5RJY70C2TCWT
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-09T10:10:57.421Z
+  - _ulid: 01KNRVJE8DAT812GAT7NWA442Y
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-09T10:10:57.421Z
+  - _ulid: 01KNRVKQ7BB36YEK2C12EV4EV7
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNRVH3MQNXSCJPA80C6RCDQP
+    timestamp: 2026-04-09T10:11:39.371Z
+  - _ulid: 01KNRWXT1VS0JQYE4P0YC2NN89
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNRVHWRM25TH4YE9BAHMMK20
+    timestamp: 2026-04-09T10:34:38.523Z
+  - _ulid: 01KNRWY9JY0V04HHYW5WVCM60T
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNRVHWRM25TH4YE9BAHMMK20
+    timestamp: 2026-04-09T10:34:54.430Z
+examined_commit: 3d85f61f03d5eab3efb3c9c22cfc3d284b8ae965
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNRNP11FC3RCW2M08RM1842A"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNRVH3MQNXSCJPA80C6RCDQP
+    anchor:
+      type: code
+      commit: 3d85f61f03d5eab3efb3c9c22cfc3d284b8ae965
+      line_end: 246
+      line_start: 223
+      path: tests/e2e/tasks.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KNRVH3MQSTXR3Q3S4CDS9374
+        author: Jacob Chapel
+        body: This fix cycle still doesn’t prove the UI-side behavior required by the task. The test now
+          verifies that the filtered  response only contains  records, but the only assertion
+          against the rendered list is . A UI bug that rendered the wrong rows, stale rows, or any
+          other two tasks would still pass as long as the backend response stayed correct. The
+          task’s done condition explicitly requires asserting that every visible task is eligible
+          (or that no visible task is manual/needs_review), so the test still needs a
+          per-rendered-row automation assertion instead of a count-only proxy.
+        created_at: 2026-04-09T10:10:13.783Z
+    kind: blocker
+    resolved_at: 2026-04-09T10:11:38.467Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KNRVHWRM25TH4YE9BAHMMK20
+    anchor:
+      type: code
+      commit: 3d85f61f03d5eab3efb3c9c22cfc3d284b8ae965
+      line_end: 246
+      line_start: 223
+      path: tests/e2e/tasks.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KNRVHWRNPHPYP40M9R2JS14K
+        author: Jacob Chapel
+        body: This fix cycle still doesn't prove the UI-side behavior required by the task. The test now
+          verifies that the filtered /api/tasks response only contains automation=eligible records,
+          but the only assertion against the rendered list is taskItems.count() ===
+          body.data.length. A UI bug that rendered the wrong rows, stale rows, or any other two
+          tasks would still pass as long as the backend response stayed correct. The task's done
+          condition explicitly requires asserting that every visible task is eligible or that no
+          visible task is manual_only/needs_review, so the test still needs a per-rendered-row
+          automation assertion instead of a count-only proxy.
+        created_at: 2026-04-09T10:10:39.509Z
+      - _ulid: 01KNRWXS6XXVXD3MEWXRXQESJD
+        author: "@claude"
+        body: "Fixed: Replaced count-only proxy with per-row identity verification. Each rendered row's
+          data-task-ref is now cross-checked against the set of eligible task refs from the API
+          response. Additionally, the first row is clicked to verify the detail panel shows the
+          eligible badge. This catches UI bugs that render wrong/stale rows even when the backend is
+          correct."
+        created_at: 2026-04-09T10:34:37.661Z
+    kind: blocker
+    resolved_at: 2026-04-09T10:34:53.546Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-09T10:10:57.420Z
+created_at: 2026-04-09T10:09:36.940Z
+updated_at: 2026-04-09T10:34:53.546Z
+notes: []

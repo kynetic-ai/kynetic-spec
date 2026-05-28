@@ -1,0 +1,206 @@
+_ulid: 01KSFSWMWBXCVDATZG0NDQMEBW
+slugs: []
+title: Review task-review-screenshot-resource-ui (cycle 5)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "`npm test -- --fresh` passed: 2546 suites passed; 9716 tests passed, 5 skipped; duration
+      2135.8s."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-25T15:01:51.626Z
+    completed_at: 2026-05-25T15:01:51.626Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "`kspec validate` reported schema and references OK, exited 6 due existing project-wide
+      warnings (deprecated refs, alignment/completeness warnings); no task-specific validation error
+      found."
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-25T15:01:55.446Z
+    completed_at: 2026-05-25T15:01:55.446Z
+events:
+  - _ulid: 01KSFSWMWB6TX7KEJZW7N6MT9V
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-25T14:51:12.139Z
+  - _ulid: 01KSFSX8ZQ2K9T1VKD8GW3YJEP
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-25T14:51:32.727Z
+  - _ulid: 01KSFTFZ4AA0DY0A0BQAPZE1A5
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSFTFXKX8Q5YPJG7FH19SVEM
+    timestamp: 2026-05-25T15:01:45.226Z
+  - _ulid: 01KSFTG2Z2S5NGFA50HS2XPZGJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSFTG1ENSZP7TFYP4M6NY6C6
+    timestamp: 2026-05-25T15:01:49.154Z
+  - _ulid: 01KSFTG6TNA2Z76V3WA2GHCR4R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-25T15:01:53.109Z
+  - _ulid: 01KSFTGAN1FFEY9JWGSKZ7H711
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-25T15:01:57.025Z
+  - _ulid: 01KSFTGEF8KEH32Y8XHTYP4E4N
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-25T15:02:00.936Z
+  - _ulid: 01KSFTGEF8WTTE9EM70K0ARKKH
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-25T15:02:00.936Z
+  - _ulid: 01KSFYG1MHXZV7B8BZ8XJN6FY4
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSFTFXKX8Q5YPJG7FH19SVEM
+    timestamp: 2026-05-25T16:11:42.097Z
+  - _ulid: 01KSFYG8DT8YP8AAJMGS5YWR2H
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSFTFXKX8Q5YPJG7FH19SVEM
+    timestamp: 2026-05-25T16:11:49.050Z
+  - _ulid: 01KSFYGKNMN3PHKWPXACKEPS56
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSFTG1ENSZP7TFYP4M6NY6C6
+    timestamp: 2026-05-25T16:12:00.564Z
+  - _ulid: 01KSFYGTMWHAB4QWVNXPYWHVQ6
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSFTG1ENSZP7TFYP4M6NY6C6
+    timestamp: 2026-05-25T16:12:07.708Z
+examined_commit: 3d218e940ea22692524e367d94bc5934f29d7288
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XB0EKNTMZS4XJMC4ED4SK"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSFTFXKX8Q5YPJG7FH19SVEM
+    anchor:
+      type: code
+      commit: 3d218e940ea22692524e367d94bc5934f29d7288
+      line_end: 205
+      line_start: 200
+      path: src/parser/review-resource-manager.ts
+      side: head
+    entries:
+      - _ulid: 01KSFTFXKYRV15W33X200C3WS8
+        author: Jacob Chapel
+        body: 'MUST-FIX: `resolveReviewResourceFile` maps every `resolveResourcePath` failure to
+          `resource_not_found`. A declared resource whose path resolves through a symlink escape is
+          a forbidden/invalid resource path under the task contract, and the API mapping says
+          invalid paths return 400 `invalid_resource_path`; this code instead makes the bytes route
+          return 404 `resource_not_found`. I verified the shared resolver rejects this case with
+          `Resource path "shot.png" resolves through a symlink that escapes...`, so the failure is
+          only the review-resource error mapping. Please preserve `resource_not_found` for truly
+          undeclared/missing resources, but return `invalid_resource_path` for symlink/path-safety
+          rejections and add daemon/manager coverage for a symlink escape on the bytes resolver
+          path.'
+        created_at: 2026-05-25T15:01:43.678Z
+      - _ulid: 01KSFYG04HAV2S23MT2FM5AMYK
+        author: "@claude"
+        body: "Fixed: added a categorized ResourceResolutionErrorKind discriminator to resolveResourcePath
+          (path_invalid, not_declared, missing, symlink_escape, not_a_regular_file).
+          resolveReviewResourceFile now maps symlink_escape / not_a_regular_file / path_invalid to
+          invalid_resource_path (400) and preserves resource_not_found (404) only for truly missing
+          or undeclared files. Added 4 manager tests (symlink-escape leaf, symlinked resources/
+          root, directory destination, plus the missing-file inverse case) and 1 daemon test
+          asserting GET /api/reviews/:ref/resources/:resourceId/bytes returns 400
+          invalid_resource_path with body.message matching /symlink/i when the declared resource
+          resolves through a symlink that escapes the review's resources/ tree. Outside files remain
+          untouched in every case."
+        created_at: 2026-05-25T16:11:40.561Z
+    kind: blocker
+    resolved_at: 2026-05-25T16:11:47.407Z
+    resolved_by: "@claude"
+  - _ulid: 01KSFTG1ENSZP7TFYP4M6NY6C6
+    entries:
+      - _ulid: 01KSFTG1ENDQRKCAMQDN5GDGCE
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+
+          Files read: `kspec-agents.md`, `src/parser/review-resource-manager.ts`,
+          `src/parser/entity-local-resources.ts`, `packages/daemon/src/routes/review-resources.ts`,
+          `packages/daemon/src/routes/reviews.ts`,
+          `packages/daemon/src/middleware/project-context.ts`, `packages/web-ui/src/lib/api.ts`,
+          `packages/web-ui/src/lib/api-static.ts`,
+          `packages/web-ui/src/routes/reviews/[id]/+page.svelte`, `src/export/json.ts`,
+          `src/export/types.ts`, `packages/shared/src/api.ts`, and the review-resource
+          CLI/manager/daemon/static/web UI tests.
+
+          Commands run: `kspec task get`, `kspec item get @folder-backed-review-storage-1`, `kspec
+          review for-task`, `kspec review get @01KSF3ZXQ7H1A3X2K8DG4N51ZF`, `kspec validate`, AC
+          annotation search with `rg`, `git diff --check`, `npm test -- --fresh`, and a direct
+          symlink-resolver probe against `resolveResourcePath`.
+
+          Claims verified: prior cycle fixes for symlink-safe remove, unreadable source files, empty
+          multipart `content_type`, selected-project resource URLs, cache write-through/broadcast
+          coverage, static export resource asset copying, and CLI/API JSON envelopes.
+
+          Categories searched: correctness, error mapping, symlink/path escape safety, API/CLI edge
+          cases, static export, UI resource discovery, cache/broadcast integration, and test
+          quality/source-scanning.
+        created_at: 2026-05-25T15:01:47.605Z
+      - _ulid: 01KSFYGJ1SSJ7EP9GTB331019Z
+        author: "@claude"
+        body: Acknowledged — review evidence log preserved for future cycle context.
+        created_at: 2026-05-25T16:11:58.905Z
+    kind: nit
+    resolved_at: 2026-05-25T16:12:05.874Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-25T15:02:00.936Z
+created_at: 2026-05-25T14:51:12.139Z
+updated_at: 2026-05-25T16:12:05.874Z
+notes: []

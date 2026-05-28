@@ -1,0 +1,336 @@
+_ulid: 01KSKX4STV0VY6YRWKDZT571EJ
+slugs: []
+title: Review folder index consistency regressions
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate: schema OK and references OK; exited 6 with existing project-wide warnings
+      (reference/alignment/completeness). No schema/reference errors in reviewed changes."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-27T05:18:48.935Z
+    completed_at: 2026-05-27T05:18:48.935Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh: 6 failed, 5 skipped, 9885 passed of 9896. Full log
+      /tmp/kspec-test-cache/01KSKX371CK9PA4GCJC62VNKKH/c68dbfc27a5e1a42.log. Same new plan/review
+      index consistency failures as focused run."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-27T05:18:53.808Z
+    completed_at: 2026-05-27T05:18:53.808Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/plan-rebuild-index.test.ts tests/review-rebuild-index.test.ts
+      tests/parser-plans-folder.test.ts tests/parser-reviews-folder.test.ts
+      tests/task-data-manager.test.ts tests/cli-plan-resource.test.ts
+      tests/review-resource-cli.test.ts: 6 failed, 192 passed. Failures are the new red plan/review
+      index consistency cases."
+    name: focused regression suites
+    required: true
+    runner: npm
+    created_at: 2026-05-27T05:18:59.129Z
+    completed_at: 2026-05-27T05:18:59.129Z
+events:
+  - _ulid: 01KSKX4STTZ54XV8MM2Y1GR4PW
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-27T05:05:02.811Z
+  - _ulid: 01KSKX6B8TYZZ9A2NMHH1DFWTW
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-27T05:05:53.434Z
+  - _ulid: 01KSKXY28PBGVRTE8CYFPFKYF1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-27T05:18:50.646Z
+  - _ulid: 01KSKXY76X8CMAT7JR1MP87JPN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-05-27T05:18:55.710Z
+  - _ulid: 01KSKXYCDPHBDK43K4GZQ4AZ3J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: focused regression suites
+    timestamp: 2026-05-27T05:19:01.046Z
+  - _ulid: 01KSKXZD22R4F8KPQ01NANYP4T
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSKXZBA4CKCJDX57PYY9W0KC
+    timestamp: 2026-05-27T05:19:34.466Z
+  - _ulid: 01KSKXZJ06H5R9J4256M9YH8YB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSKXZG4BJ2CS76SRHH4QH6AW
+    timestamp: 2026-05-27T05:19:39.526Z
+  - _ulid: 01KSKXZPY1SEB3PHE5V6JTRMC7
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSKXZN68PSJD9KRQ6750VMHK
+    timestamp: 2026-05-27T05:19:44.577Z
+  - _ulid: 01KSKXZVSS5Z7XZ80DANRB6ADK
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSKXZT1H2EXRMTPXFKJW6TWR
+    timestamp: 2026-05-27T05:19:49.561Z
+  - _ulid: 01KSKY0DBJJY41HQZDBX28VZDF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSKY0BPA2YN4JFCN3P6KH9SV
+    timestamp: 2026-05-27T05:20:07.538Z
+  - _ulid: 01KSKY0SPN18CENC8BBYHVK18R
+    actor: "@codex"
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-27T05:20:20.181Z
+  - _ulid: 01KSKY0SPN973NQHJZDD4P7EJN
+    actor: "@codex"
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-27T05:20:20.181Z
+  - _ulid: 01KSKZQZT8M9P913RYGBE65F28
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSKXZBA4CKCJDX57PYY9W0KC
+    timestamp: 2026-05-27T05:50:28.680Z
+  - _ulid: 01KSKZR6C10R90MPDMTHD16YQA
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSKXZG4BJ2CS76SRHH4QH6AW
+    timestamp: 2026-05-27T05:50:35.393Z
+  - _ulid: 01KSKZRCVZ3F3TZ401PYVQ38GN
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSKXZN68PSJD9KRQ6750VMHK
+    timestamp: 2026-05-27T05:50:42.047Z
+  - _ulid: 01KSKZRKS6FGGBAB8DZZ1QJ647
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSKXZT1H2EXRMTPXFKJW6TWR
+    timestamp: 2026-05-27T05:50:49.126Z
+  - _ulid: 01KSKZRXEBZ4008R6W9DXD3MM1
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSKXZBA4CKCJDX57PYY9W0KC
+    timestamp: 2026-05-27T05:50:59.019Z
+  - _ulid: 01KSKZS48SB0MAFVWP7DTX7M2Y
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSKXZG4BJ2CS76SRHH4QH6AW
+    timestamp: 2026-05-27T05:51:06.010Z
+  - _ulid: 01KSKZSB3J0Z7MYJE7VVKFEGWM
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSKXZN68PSJD9KRQ6750VMHK
+    timestamp: 2026-05-27T05:51:13.010Z
+  - _ulid: 01KSKZSJ1C19RS6EXTDFCSBNWM
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSKXZT1H2EXRMTPXFKJW6TWR
+    timestamp: 2026-05-27T05:51:20.108Z
+  - _ulid: 01KSKZSWFVP14NA7AH493GSQ3D
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSKY0BPA2YN4JFCN3P6KH9SV
+    timestamp: 2026-05-27T05:51:30.811Z
+examined_commit: b5a0fd826978a483b616d687db5059fdf61b57bd
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KSKQXJ0Y6N159MWY81JE852J"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSKXZBA4CKCJDX57PYY9W0KC
+    anchor:
+      type: code
+      commit: b5a0fd826978a483b616d687db5059fdf61b57bd
+      line_end: 681
+      line_start: 681
+      path: tests/parser-plans-folder.test.ts
+      side: head
+    entries:
+      - _ulid: 01KSKXZBA4AY1EDYQJE5VJTG6V
+        author: Jacob Chapel
+        body: "MUST-FIX: this submitted snapshot leaves active failing tests in the merge candidate. The
+          focused run and full npm test both fail here after persistPlanResourcesFromSibling writes
+          resources: expected zero drift, got an update. Because this test is newly added on this
+          branch and runs in the normal suite, merging would make dev's test gate fail. Include the
+          implementation that makes this pass before review approval, or keep intentionally red
+          coverage out of the gating suite."
+        created_at: 2026-05-27T05:19:32.676Z
+      - _ulid: 01KSKZQY9E8KTGKBZVVRA87XC9
+        author: "@claude"
+        body: "Fixed in bd82303404: converted persistPlanResourcesFromSibling regression at
+          tests/parser-plans-folder.test.ts to it.fails. Test still fails (red contract pin intact)
+          but vitest treats the expected failure as a pass, so the gating suite is no longer broken.
+          When the implementation task lands the mutator fix, it.fails will flip to a hard failure
+          and prompt conversion back to regular it()."
+        created_at: 2026-05-27T05:50:27.118Z
+    kind: blocker
+    resolved_at: 2026-05-27T05:50:57.469Z
+    resolved_by: "@claude"
+  - _ulid: 01KSKXZG4BJ2CS76SRHH4QH6AW
+    anchor:
+      type: code
+      commit: b5a0fd826978a483b616d687db5059fdf61b57bd
+      line_end: 585
+      line_start: 585
+      path: tests/cli-plan-resource.test.ts
+      side: head
+    entries:
+      - _ulid: 01KSKXZG4CKEP45EGQ7FPN6XPH
+        author: Jacob Chapel
+        body: "MUST-FIX: the new plan resource CLI post-mutation tests are active red tests. The focused and
+          full runs fail for plan resource add, add --replace, and remove because immediate plan
+          rebuild-index --dry-run reports drift instead of status=clean. These failures are
+          introduced by this branch, so the merge gate is failing."
+        created_at: 2026-05-27T05:19:37.612Z
+      - _ulid: 01KSKZR4S1VNCP7790ND9ESZ64
+        author: "@claude"
+        body: "Fixed in bd82303404: converted the three plan resource CLI post-mutation regressions (add,
+          add --replace, remove) at tests/cli-plan-resource.test.ts to it.fails. Tests still fail
+          (red contract pin intact) but vitest treats the expected failures as passes, so the gating
+          suite is no longer broken. When the implementation task lands the mutator fix, any
+          unexpectedly-passing case will flip it.fails to a hard failure and prompt conversion back
+          to regular it()."
+        created_at: 2026-05-27T05:50:33.761Z
+    kind: blocker
+    resolved_at: 2026-05-27T05:51:04.333Z
+    resolved_by: "@claude"
+  - _ulid: 01KSKXZN68PSJD9KRQ6750VMHK
+    anchor:
+      type: code
+      commit: b5a0fd826978a483b616d687db5059fdf61b57bd
+      line_end: 374
+      line_start: 374
+      path: tests/plan-rebuild-index.test.ts
+      side: head
+    entries:
+      - _ulid: 01KSKXZN68P0BDVBV7GD61PGEJ
+        author: Jacob Chapel
+        body: "MUST-FIX: the new plan import sibling-resource regression is an active failing test. Full npm
+          test fails at this assertion because plan rebuild-index --dry-run is not clean immediately
+          after import. Since this branch adds the failing assertion, it is an introduced regression
+          against the required test gate."
+        created_at: 2026-05-27T05:19:42.792Z
+      - _ulid: 01KSKZRB8FPGKXRKF8Y6XHBWC0
+        author: "@claude"
+        body: "Fixed in bd82303404: converted the plan import sibling-resource regression at
+          tests/plan-rebuild-index.test.ts to it.fails. Test still fails (red contract pin intact)
+          but vitest treats the expected failure as a pass, so the gating suite is no longer broken.
+          When the implementation task lands the import-path mutator fix, it.fails will flip to a
+          hard failure and prompt conversion back to regular it()."
+        created_at: 2026-05-27T05:50:40.399Z
+    kind: blocker
+    resolved_at: 2026-05-27T05:51:11.419Z
+    resolved_by: "@claude"
+  - _ulid: 01KSKXZT1H2EXRMTPXFKJW6TWR
+    anchor:
+      type: code
+      commit: b5a0fd826978a483b616d687db5059fdf61b57bd
+      line_end: 863
+      line_start: 863
+      path: tests/parser-reviews-folder.test.ts
+      side: head
+    entries:
+      - _ulid: 01KSKXZT1JWC7WTQAY5ZZJCFPQ
+        author: Jacob Chapel
+        body: "MUST-FIX: the new external_links semantic-default regression is an active failing test. Both
+          focused and full runs fail because computeReviewIndexDrift reports an update for
+          external_links: [] instead of treating it as clean. This branch therefore cannot be merged
+          until the implementation makes the added test pass or the red case is moved out of the
+          gating suite."
+        created_at: 2026-05-27T05:19:47.762Z
+      - _ulid: 01KSKZRJ8KJK0TQE46Y0P2BX7X
+        author: "@claude"
+        body: "Fixed in bd82303404: converted the external_links semantic-default regression at
+          tests/parser-reviews-folder.test.ts to it.fails. Test still fails (red contract pin
+          intact) but vitest treats the expected failure as a pass, so the gating suite is no longer
+          broken. When the implementation task lands the drift-detector semantic-defaults fix,
+          it.fails will flip to a hard failure and prompt conversion back to regular it()."
+        created_at: 2026-05-27T05:50:47.570Z
+    kind: blocker
+    resolved_at: 2026-05-27T05:51:18.362Z
+    resolved_by: "@claude"
+  - _ulid: 01KSKY0BPA2YN4JFCN3P6KH9SV
+    entries:
+      - _ulid: 01KSKY0BPA3BHXATY9HDF0E0SN
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; diffs and line context for
+          tests/cli-plan-resource.test.ts, tests/parser-plans-folder.test.ts,
+          tests/parser-reviews-folder.test.ts, tests/plan-rebuild-index.test.ts,
+          tests/review-rebuild-index.test.ts, tests/review-resource-cli.test.ts,
+          tests/task-data-manager.test.ts. Commands run: kspec task get @01KSKQXJ0Y6N159MWY81JE852J;
+          kspec item get @trait-folder-backed-entity-1, @folder-backed-plan-storage-1,
+          @folder-backed-review-storage-1, @task-index-file; rg AC annotations; kspec validate;
+          focused npm test -- --fresh for the changed suites; full npm test -- --fresh. Claims
+          verified: worker claim of 6 expected red failures verified in focused and full runs.
+          Categories searched: correctness/test quality/integration/AC coverage/error gate behavior;
+          blocker is failing gating tests introduced by this branch."
+        created_at: 2026-05-27T05:20:05.834Z
+      - _ulid: 01KSKZSTYEEPJN7D7E7NCMBNM1
+        author: "@claude"
+        body: Acknowledged — thanks for the thorough evidence log.
+        created_at: 2026-05-27T05:51:29.229Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: "@codex"
+    role: reviewer
+    created_at: 2026-05-27T05:20:20.181Z
+created_at: 2026-05-27T05:05:02.811Z
+updated_at: 2026-05-27T05:51:29.229Z
+notes: []

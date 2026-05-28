@@ -1,0 +1,267 @@
+_ulid: 01KSK6TAKQD49RDXPGN3TRF61X
+slugs: []
+title: Review task-add-plan-target-lock-e2e-regression
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2582 test suites passed; 9857 tests passed, 5 skipped; duration
+      2553.4s. Log: /tmp/kspec-test-cache/01KSK6QRP7FDRJJ1Y42NB3FRND/dc0a4822c0e9019f.log"
+    name: npm test -- --fresh
+    required: true
+    runner: npm
+    created_at: 2026-05-26T22:47:41.417Z
+    completed_at: 2026-05-26T22:47:41.417Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit completed with exit 0
+    name: npm run typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-26T22:47:46.332Z
+    completed_at: 2026-05-26T22:47:46.332Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Focused regression passed: 1 test passed; log
+      /tmp/kspec-test-cache/01KSK6QRP7FDRJJ1Y42NB3FRND/6e114d1cd9ccca9c.log"
+    name: npm test -- --fresh tests/dispatch-plan-target-lock-e2e.test.ts
+    required: true
+    runner: npm
+    created_at: 2026-05-26T22:47:51.289Z
+    completed_at: 2026-05-26T22:47:51.289Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Both alignment and completeness validation completed with --warnings-ok. Warnings are
+      pre-existing; no invalid annotation warning was reported for
+      tests/dispatch-plan-target-lock-e2e.test.ts.
+    name: kspec validate --alignment/--completeness --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-26T22:47:56.344Z
+    completed_at: 2026-05-26T22:47:56.344Z
+events:
+  - _ulid: 01KSK6TAKQEFJYG6HBT7GEX3GJ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-26T22:34:50.871Z
+  - _ulid: 01KSK6TXHT44V3DVJ184KC9ANR
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-26T22:35:10.266Z
+  - _ulid: 01KSK6XB0ZS2ZEQ2D2D463FNJ4
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSK6X8T9QJJWV05E9BVBG71Y
+    timestamp: 2026-05-26T22:36:29.599Z
+  - _ulid: 01KSK6Y9QPE40XN0W7R1R2XM1B
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSK6X8T9QJJWV05E9BVBG71Y
+    timestamp: 2026-05-26T22:37:01.046Z
+  - _ulid: 01KSK7HWSSA4X4K7JQ7J9TH5B9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-05-26T22:47:43.161Z
+  - _ulid: 01KSK7J1MN0J11N14M3HDEEWBM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run typecheck
+    timestamp: 2026-05-26T22:47:48.117Z
+  - _ulid: 01KSK7J6H1NHJGFKA61BJCH379
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh tests/dispatch-plan-target-lock-e2e.test.ts
+    timestamp: 2026-05-26T22:47:53.122Z
+  - _ulid: 01KSK7JBCMHG62C751P2N80QEB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --alignment/--completeness --warnings-ok
+    timestamp: 2026-05-26T22:47:58.100Z
+  - _ulid: 01KSK7JXPS8XW3CHK67Y4D4TZW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSK7JW15QCM2NDB3ENQWVZAY
+    timestamp: 2026-05-26T22:48:16.857Z
+  - _ulid: 01KSK7K7MXX9JXSFJVWV0FG3D0
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-26T22:48:27.038Z
+  - _ulid: 01KSK7K7MYEY8RT4H07DKPPMAN
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-26T22:48:27.038Z
+  - _ulid: 01KSK8W60MNK7BR0QKTW1NM6T6
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSK6X8T9QJJWV05E9BVBG71Y
+    timestamp: 2026-05-26T23:10:48.852Z
+  - _ulid: 01KSK8WKVEKKZC1ZASJN4DRRNQ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSK6X8T9QJJWV05E9BVBG71Y
+    timestamp: 2026-05-26T23:11:03.022Z
+  - _ulid: 01KSK8WTW89FEVRHP3ASDVA3ZP
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSK7JW15QCM2NDB3ENQWVZAY
+    timestamp: 2026-05-26T23:11:10.217Z
+  - _ulid: 01KSK8X20B71R77HC6KXK4DRD1
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSK7JW15QCM2NDB3ENQWVZAY
+    timestamp: 2026-05-26T23:11:17.515Z
+examined_commit: 206c070fa4855d53ec1e35b82ed1fda44a5a447e
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KSJNVQJ5NNXEJSFSFR5SRK6N"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSK6X8T9QJJWV05E9BVBG71Y
+    anchor:
+      type: code
+      commit: 206c070fa4855d53ec1e35b82ed1fda44a5a447e
+      line_end: 286
+      line_start: 282
+      path: tests/dispatch-plan-target-lock-e2e.test.ts
+      side: head
+    entries:
+      - _ulid: 01KSK6X8T9H9T9188PCPN9F797
+        author: Jacob Chapel
+        body: "MUST-FIX: these AC annotations overclaim what the regression proves. The test keeps asserting
+          that no worktree has the plan target checked out, then runs ; it never creates an occupied
+          target checkout, verifies dispatch refusal, checks blocking-worktree guidance, or runs a
+          periodic sync cycle. That means  and  are not behaviorally proven by this test. Either
+          extend the regression to exercise those scenarios or change the annotations to ACs
+          actually covered by this clean manual_merge push path."
+        created_at: 2026-05-26T22:36:27.337Z
+      - _ulid: 01KSK6Y7PNPGQG03GV79XPJ6YB
+        author: Jacob Chapel
+        body: 'Clarification: the omitted identifiers in the previous entry are
+          _pushIntegrationTargetAsync(planTarget, "post-merge"),
+          @dispatch-integration-mutation-scope ac-occupied-target-refusal-identifies-blocker, and
+          @dispatch-remote-branch-sync ac-push-target-periodic. The finding is that the regression
+          proves the clean lock-free manual_merge push path, but those two annotations describe an
+          occupied-target refusal and a periodic sync cycle that this test does not execute.'
+        created_at: 2026-05-26T22:36:58.965Z
+      - _ulid: 01KSK8W47SPYE1YNKJH12YJZ2A
+        author: "@claude"
+        body: >-
+          Fixed: extended the regression to behaviorally cover the two ACs the prior version
+          overclaimed.
+
+
+          The test now drives three phases against the same plan-scoped task in one temp repo:
+
+
+          Phase A — clean lock-free path: helper runs, no aux worktree holds the plan target, then
+          drivePeriodicSyncPush() (which calls _pushActiveTargetsAsync('periodic-sync')) pushes the
+          post-merge plan target ref. This is the real periodic-sync push trigger, not a manual
+          post-merge call, so @dispatch-remote-branch-sync ac-push-target-periodic is exercised
+          end-to-end.
+
+
+          Phase B — occupied refusal: a foreign worktree is added on the plan target outside
+          .kspec-worktrees, the plan target is advanced via the occupant so periodic sync does NOT
+          take the no-commits-to-push early return, then drivePeriodicSyncPush() is called again.
+          The test asserts: local and remote plan target refs unchanged (refusal-before-mutation),
+          getDegradedState() contains an entry with kind='occupied-checkout' whose reason contains
+          the occupant worktree path AND 'Check out a different branch' guidance, dev is not
+          degraded (scoped degradation), and the status API mirrors the same. This is the behavioral
+          proof for @dispatch-integration-mutation-scope
+          ac-occupied-target-refusal-identifies-blocker.
+
+
+          Phase C — recovery without restart: the occupant is removed, drivePeriodicSyncPush() runs
+          again. The previously-unpushed commits from Phase B now appear on origin and the degraded
+          entry for the plan target is cleared, proving @dispatch-remote-branch-sync
+          ac-occupied-checkout-degraded-recovery operationally (no engine restart).
+
+
+          Full test log shows all three phases firing in order ('Pushed integration target ...
+          (periodic-sync)' → 'DEGRADED ... currently checked out in worktree ... Resolution: Check
+          out a different branch in ...' → 'Pushed integration target ... (periodic-sync)' +
+          'Recovered from degraded state ... after 0s'). The five claimed AC annotations now each
+          have a behavioral assertion.
+        created_at: 2026-05-26T23:10:47.033Z
+    kind: blocker
+    resolved_at: 2026-05-26T23:11:01.295Z
+    resolved_by: "@claude"
+  - _ulid: 01KSK7JW15QCM2NDB3ENQWVZAY
+    entries:
+      - _ulid: 01KSK7JW16RNGC6YR00QYRNMAQ
+        author: Jacob Chapel
+        body: "Evidence log: Files read: tests/dispatch-plan-target-lock-e2e.test.ts,
+          tests/dispatch-target-sync.test.ts, tests/dispatch-degraded-state.test.ts,
+          tests/detached-reviewer-merge.test.ts, tests/dispatch-branch-push-lifecycle.test.ts,
+          tests/helpers/cli.ts, src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts,
+          templates/skills/merge/scripts/detached-reviewer-merge.sh. Commands run: kspec task get,
+          kspec item get for linked specs, kspec validate, kspec validate --alignment --warnings-ok,
+          kspec validate --completeness --warnings-ok, npm test -- --fresh
+          tests/dispatch-plan-target-lock-e2e.test.ts, npm run typecheck, npm test -- --fresh.
+          Claims verified: the new test uses real temp repo/worktrees/helper and passes, but the
+          occupied-refusal and periodic-sync AC annotations do not match the exercised scenario.
+          Categories searched: correctness, edge cases, error handling/degraded state, test quality,
+          integration."
+        created_at: 2026-05-26T22:48:15.142Z
+      - _ulid: 01KSK8WS533XJ49X5V5NRTT0EM
+        author: "@claude"
+        body: Acknowledged — evidence log is informational. No code change needed for this nit; the blocker
+          fix incorporates the additional behavioral coverage the evidence pointed to.
+        created_at: 2026-05-26T23:11:08.451Z
+    kind: nit
+    resolved_at: 2026-05-26T23:11:15.735Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-26T22:48:27.037Z
+created_at: 2026-05-26T22:34:50.871Z
+updated_at: 2026-05-26T23:11:15.735Z
+notes: []

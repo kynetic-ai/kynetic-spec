@@ -1,0 +1,233 @@
+_ulid: 01KP9RCCSSVZ0F4QPASZDXHDVF
+slugs: []
+title: Review single-command version upgrade (cycle 11)
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repository baseline failure: 1 schema error in .kspec/modules/meta.yaml
+      (modules[0].traits[0] expected string), plus existing alignment/completeness warnings
+      unrelated to upgrade."
+    name: kspec validate
+    required: false
+    created_at: 2026-04-15T23:55:40.024Z
+    completed_at: 2026-04-15T23:55:40.024Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Failed twice with the same cached result: 5 EACCES mkdir '/tmp/.kspec-sessions/*'
+      failures in tests/cli-agent-commands.test.ts. Reproduced on base commit
+      0501051eb49ee8db8faccedc035f1cb95cef85fc, so not introduced by this branch."
+    name: npm test
+    required: false
+    created_at: 2026-04-15T23:55:42.953Z
+    completed_at: 2026-04-15T23:55:42.953Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Reproduced two upgrade-specific failures on head 35e8acf2da1b: (1) overwriting
+      kspec-agents.md with corrupted regular-file content and running 'kspec upgrade --force --json'
+      leaves step 3 skipped and the file unchanged; (2) with an old manifest but no monolithic
+      tasks, 'kspec upgrade --dry-run --json' reports 'manifest updated to split format' even though
+      dry-run skips the write path."
+    name: manual upgrade repro
+    required: false
+    created_at: 2026-04-15T23:55:45.926Z
+    completed_at: 2026-04-15T23:55:45.926Z
+events:
+  - _ulid: 01KP9RCCSRH9F421XGVZC1MHBA
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-15T23:42:18.937Z
+  - _ulid: 01KP9RCYKVVTNEFGHDM45F6W97
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-15T23:42:37.179Z
+  - _ulid: 01KP9S1GJGXRQTWP2N8V7HZ31W
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP9S1FM4Y9K2MN7M72874F0B
+    timestamp: 2026-04-15T23:53:50.928Z
+  - _ulid: 01KP9S1KB27EENK23TVBTB94Q4
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KP9S1JBT68T86WT344KQBHHZ
+    timestamp: 2026-04-15T23:53:53.762Z
+  - _ulid: 01KP9S1P7THDSSWGZH38VA01CT
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP9S1N87H8R06ZX5RFP1RN4P
+    timestamp: 2026-04-15T23:53:56.730Z
+  - _ulid: 01KP9S4W282BQAMMHZH1W0S490
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-15T23:55:41.000Z
+  - _ulid: 01KP9S4Z12T5YZHNQETHK1M2M9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-04-15T23:55:44.034Z
+  - _ulid: 01KP9S51V6AFMSSY91D360RXSC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: manual upgrade repro
+    timestamp: 2026-04-15T23:55:46.918Z
+  - _ulid: 01KP9S5TSBP9P3R436E13R90HF
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-15T23:56:12.459Z
+  - _ulid: 01KP9S5TSB3RRBENRSAG7WJA03
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-15T23:56:12.459Z
+  - _ulid: 01KP9TYMDQVYWE28QVWEYM3NSG
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP9S1FM4Y9K2MN7M72874F0B
+    timestamp: 2026-04-16T00:27:13.719Z
+  - _ulid: 01KP9TYSH5XPDRQ3MPYRF3YAAN
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP9S1N87H8R06ZX5RFP1RN4P
+    timestamp: 2026-04-16T00:27:18.949Z
+  - _ulid: 01KP9TZ43ZM6WHDNBR09RTJT11
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP9S1FM4Y9K2MN7M72874F0B
+    timestamp: 2026-04-16T00:27:29.791Z
+  - _ulid: 01KP9TZ8YWNAK0KPYQHKMFX2AR
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP9S1N87H8R06ZX5RFP1RN4P
+    timestamp: 2026-04-16T00:27:34.748Z
+examined_commit: 35e8acf2da1bea09aec4e82a607e00493b3ca4ac
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNXYJ5JCR99F76N8N7265E0B"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KP9S1FM4Y9K2MN7M72874F0B
+    anchor:
+      type: code
+      commit: 35e8acf2da1bea09aec4e82a607e00493b3ca4ac
+      line_end: 904
+      line_start: 898
+      path: src/cli/commands/upgrade.ts
+      side: head
+    entries:
+      - _ulid: 01KP9S1FM48WKJS8405QFX3HDK
+        author: Jacob Chapel
+        body: "Regular-file corruption of kspec-agents.md is still treated as up to date here. The fast path
+          only checks that the path is a file and that the stored meta hash matches, so a manually
+          corrupted or stale regular file is skipped instead of being regenerated. Reproduction:
+          initialize a project, set .kspec/.setup-state.json lastKnownVersion to the current
+          version, overwrite kspec-agents.md with 'corrupted', then run 'kspec upgrade --force
+          --json'. Step 3 reports 'already up to date' and the file stays corrupted. That violates
+          ac-regenerates-agents-file because upgrade no longer guarantees the rendered instructions
+          match the current templates."
+        created_at: 2026-04-15T23:53:49.956Z
+      - _ulid: 01KP9TYKFQ1VMNMX6PJRJW7BDY
+        author: "@claude"
+        body: "Fixed: Added content verification to the regeneration skip logic. When the meta hash matches
+          and the file exists, we now read the file content and compare it (excluding the timestamp
+          comment line) against what would be generated. A corrupted regular file no longer passes
+          the skip check — it gets regenerated. Added a dedicated test that overwrites
+          kspec-agents.md with 'corrupted' text and confirms upgrade --force regenerates it."
+        created_at: 2026-04-16T00:27:12.759Z
+    kind: blocker
+    resolved_at: 2026-04-16T00:27:28.840Z
+    resolved_by: "@claude"
+  - _ulid: 01KP9S1JBT68T86WT344KQBHHZ
+    entries:
+      - _ulid: 01KP9S1JBT47SM3AFCATHE8CY6
+        author: Jacob Chapel
+        body: "Review evidence log:\\nFiles read: src/cli/index.ts, src/cli/commands/index.ts,
+          src/cli/commands/upgrade.ts, src/parser/gitignore.ts, src/cli/commands/setup-defaults.ts,
+          src/parser/meta.ts, src/parser/shadow.ts, tests/upgrade-command.test.ts.\\nCommands run:
+          kspec task get @01KNXYJ5JCR99F76N8N7265E0B; kspec item get
+          @single-command-version-upgrade; kspec review for-task @01KNXYJ5JCR99F76N8N7265E0B; kspec
+          validate; rg for AC annotations; full npm test twice; targeted manual upgrade repros for
+          corrupted kspec-agents.md and dry-run task-migration messaging.\\nClaims verified: prior
+          blocker at src/cli/commands/upgrade.ts:536 is fixed; upgrade still fails to regenerate a
+          corrupted regular-file kspec-agents.md; dry-run messaging still misreports a manifest
+          write in the no-monolithic-tasks branch.\\nCategories searched: correctness, dry-run
+          parity, error handling, test quality, integration."
+        created_at: 2026-04-15T23:53:52.762Z
+    kind: nit
+  - _ulid: 01KP9S1N87H8R06ZX5RFP1RN4P
+    anchor:
+      type: code
+      commit: 35e8acf2da1bea09aec4e82a607e00493b3ca4ac
+      line_end: 569
+      line_start: 547
+      path: src/cli/commands/upgrade.ts
+      side: head
+    entries:
+      - _ulid: 01KP9S1N87W988JWBQESD91WDY
+        author: Jacob Chapel
+        body: "This dry-run branch still reports a completed manifest update even when it does not write
+          anything. With an old manifest but no monolithic tasks, 'kspec upgrade --dry-run --json'
+          returns the step message 'manifest updated to split format' although lines 549-563 are
+          skipped. That is a direct mismatch with ac-dry-run-reports and @trait-dry-run ac-1: the
+          preview is supposed to describe what would change, not claim the change already happened."
+        created_at: 2026-04-15T23:53:55.719Z
+      - _ulid: 01KP9TYRJJT3JKVWBPQ13NJCB4
+        author: "@claude"
+        body: "Fixed: The dry-run branch for the no-monolithic-tasks path now checks whether the manifest
+          already has split format before reporting. If the manifest needs updating, dry-run says
+          'would update manifest to split format' instead of 'manifest updated to split format'.
+          Added a test that downgrades the manifest, runs --dry-run, and asserts the message
+          contains 'would update' and that the manifest was not modified."
+        created_at: 2026-04-16T00:27:17.970Z
+    kind: blocker
+    resolved_at: 2026-04-16T00:27:33.795Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-15T23:56:12.459Z
+created_at: 2026-04-15T23:42:18.937Z
+updated_at: 2026-04-16T00:27:33.795Z
+notes: []

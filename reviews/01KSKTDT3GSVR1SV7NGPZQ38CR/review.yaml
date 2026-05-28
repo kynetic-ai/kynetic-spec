@@ -1,0 +1,171 @@
+_ulid: 01KSKTDT3GSVR1SV7NGPZQ38CR
+slugs: []
+title: Review folder-backed index consistency trait (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --warnings-ok exited 0. Warnings include expected uncovered new
+      @trait-folder-backed-entity-1 ACs and in_progress status mismatches caused by this stricter
+      spec contract.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-27T04:19:41.903Z
+    completed_at: 2026-05-27T04:19:41.903Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files/specs read: kspec-agents.md; @trait-folder-backed-entity-1;
+      @trait-entity-scoped-local-resources-1; @task-directory-storage; @task-index-file;
+      @task-atomic-writes; @folder-backed-plan-storage-1; @folder-backed-review-storage-1; prior
+      review @01KSKRNMK67DG3GTCY9AH69X61. Commands run: git status/diff/log/ref checks; kspec task
+      get; kspec review add/open/get/for-task; kspec item get/json; kspec validate --warnings-ok; rg
+      AC annotations; npm test -- --fresh. Claims verified: four new trait ACs exact ids/text;
+      target specs have @trait-folder-backed-entity-1 exactly once with existing local-resource
+      trait preserved; five requested specs plus local-resource trait are in_progress;
+      task-index-file and task-atomic-writes ACs preserved; prior blocker fixed. Categories
+      searched: spec correctness, trait inheritance, status alignment, AC preservation, coverage
+      warnings/test quality, integration/no-op branch state."
+    name: review evidence log
+    required: false
+    runner: codex
+    created_at: 2026-05-27T04:20:12.241Z
+    completed_at: 2026-05-27T04:20:12.241Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run format:check exited 0: all matched files use the correct format (956 files)."
+    name: format
+    required: true
+    runner: oxfmt
+    created_at: 2026-05-27T04:20:49.192Z
+    completed_at: 2026-05-27T04:20:49.192Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck exited 0 (tsc --noEmit).
+    name: typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-27T04:20:55.254Z
+    completed_at: 2026-05-27T04:20:55.254Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run lint exited 0. oxlint reported 743 existing warnings and 0 errors.
+    name: lint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-27T04:21:01.979Z
+    completed_at: 2026-05-27T04:21:01.979Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh passed: 2582/2582 suites, 9857/9862 tests passed, 5 skipped. Full
+      log: /tmp/kspec-test-cache/01KSKTC24850TYX4R0V35G9F9X/3032dc9c150a8b07.log"
+    name: tests
+    required: true
+    runner: npm
+    created_at: 2026-05-27T04:30:19.233Z
+    completed_at: 2026-05-27T04:30:19.233Z
+events:
+  - _ulid: 01KSKTDT3GBAYYNXZR1XX9SRC8
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-27T04:17:32.272Z
+  - _ulid: 01KSKTEZWZCYKXNZVQ1BP3MXA4
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-27T04:18:10.975Z
+  - _ulid: 01KSKTHTXKQKBVPQP63M1N1JAC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-27T04:19:44.180Z
+  - _ulid: 01KSKTJRE8M3TV48BSJ4RQ1ZCE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-27T04:20:14.408Z
+  - _ulid: 01KSKTKWF805G0FTMV59E9VZ9X
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-05-27T04:20:51.304Z
+  - _ulid: 01KSKTM2F3AKK8CEKC505J4SDR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-27T04:20:57.444Z
+  - _ulid: 01KSKTM90M679WJH82K219H1XP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-05-27T04:21:04.148Z
+  - _ulid: 01KSKV58RNV8BFCK1TFN3090FT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: tests
+    timestamp: 2026-05-27T04:30:20.949Z
+  - _ulid: 01KSKV5KJ5DNMGJ4YN80K0JYVB
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-27T04:30:32.005Z
+  - _ulid: 01KSKV5KJ5KVFV33V3ZTM5HB1H
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-27T04:30:32.005Z
+examined_commit: 14e353c2e7351e94d145b6132aec06cc14f6c3b7
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KSKQXHM9FS7HX58MWZ8NECNW"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-27T04:30:32.005Z
+created_at: 2026-05-27T04:17:32.272Z
+updated_at: 2026-05-27T04:30:32.005Z
+notes: []

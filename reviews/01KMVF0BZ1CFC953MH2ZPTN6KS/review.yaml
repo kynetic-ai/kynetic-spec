@@ -1,0 +1,248 @@
+_ulid: 01KMVF0BZ1CFC953MH2ZPTN6KS
+slugs: []
+title: Review fix-dispatch-shadow-mutation-lock-contention-and-leak-between-daemon-and-agents
+author: Test User
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Failed: 12 tests in tests/daemon-command-api.test.ts, 2 suites failed total, 7060 passed
+      / 12 failed / 5 skipped of 7077. Examples: writeThrough after successful mutating command,
+      batch atomics, websocket broadcast, and YAML mode leakage assertions returned 500s. Full log:
+      /tmp/kspec-test-cache/01KMVEXCA9HD4EHENEPVCWADKX/108332add5d5d879.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-29T00:16:25.916Z
+    completed_at: 2026-03-29T00:16:25.916Z
+events:
+  - _ulid: 01KMVF0BZ0HJDZRFEYNRVYM0CG
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-29T00:13:23.808Z
+  - _ulid: 01KMVF19E08TV6ZYE1SJRC1R9W
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-29T00:13:53.984Z
+  - _ulid: 01KMVF1EYNRK7PR39YJNYJAA2X
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMVF1DZKXH2KRA03CAK5TKSN
+    timestamp: 2026-03-29T00:13:59.637Z
+  - _ulid: 01KMVF1M0Y7A4NHSAY5MMVRYCY
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMVF1K3JGT025XY76PJ5HHM4
+    timestamp: 2026-03-29T00:14:04.830Z
+  - _ulid: 01KMVF1SC9RVPP79MBWJVSVS82
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMVF1RDP5AKAQ1K4J3412149
+    timestamp: 2026-03-29T00:14:10.313Z
+  - _ulid: 01KMVF3HGNNCEE0GH2TEVR3M6H
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMVF3GY3ZKGQNK6T34PJBQZY
+    timestamp: 2026-03-29T00:15:07.797Z
+  - _ulid: 01KMVF4R7Y5TQCKQCZSA0KHF2E
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-29T00:15:47.454Z
+  - _ulid: 01KMVF4R7YNAMJFCD45MVDMQ1C
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-29T00:15:47.454Z
+  - _ulid: 01KMVF5YB5QSH14SBZACGRK4JF
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-29T00:16:26.470Z
+  - _ulid: 01KMVJ20M4Q7XG7STMB0N7BRY4
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMVF1DZKXH2KRA03CAK5TKSN
+    timestamp: 2026-03-29T01:06:43.460Z
+  - _ulid: 01KMVJ30MK1EPGBXQTY3GMVMRA
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMVF1DZKXH2KRA03CAK5TKSN
+    timestamp: 2026-03-29T01:07:16.243Z
+  - _ulid: 01KMVJ34X0VYFHV299V1SPCYRK
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMVF1K3JGT025XY76PJ5HHM4
+    timestamp: 2026-03-29T01:07:20.608Z
+  - _ulid: 01KMVJ3DEWD01G1X6G1M74W0ZZ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMVF1K3JGT025XY76PJ5HHM4
+    timestamp: 2026-03-29T01:07:29.372Z
+  - _ulid: 01KMVJ3MZQRQAZXK8FX7TY8E4E
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMVF1RDP5AKAQ1K4J3412149
+    timestamp: 2026-03-29T01:07:37.079Z
+  - _ulid: 01KMVJ3VTQQY09V3EJYV91H460
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMVF1RDP5AKAQ1K4J3412149
+    timestamp: 2026-03-29T01:07:44.088Z
+examined_commit: 6c58d673bad68d70fee52aa770d4792602926229
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMVCF95W6HCCPP6H5SSA7HBG"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMVF1DZKXH2KRA03CAK5TKSN
+    anchor:
+      type: code
+      commit: 6c58d673bad68d70fee52aa770d4792602926229
+      line_end: 1471
+      line_start: 1464
+      path: src/agent-runtime/workspace.ts
+      side: head
+    entries:
+      - _ulid: 01KMVF1DZK0DZJ4Q9Y15VP5Z5N
+        author: Test User
+        body: >-
+          The force-reclaim cleanup does not actually clear staged index state.  only restores the
+          worktree; it leaves staged additions/modifications in the index, so a new holder can still
+          inherit and commit the previous holder's partial shadow changes after a duration-based
+          reclaim. I verified this with a local git reproduction (, , Not currently on any branch.
+
+          nothing to commit, working tree clean) which still showed the file staged. That violates
+          ac-11's guarantee that uncommitted dirty state is rolled back before the new mutation
+          proceeds.
+        created_at: 2026-03-29T00:13:58.643Z
+      - _ulid: 01KMVJ2040QF0B8J53ZZGNE9KY
+        author: "@claude"
+        body: "Fixed: Added `git reset HEAD` as Phase 1 before `git checkout -- .` in
+          rollbackDirtyShadowWorktree. The previous implementation only ran checkout which restores
+          the working tree but leaves staged additions/modifications in the index. Now the sequence
+          is: (1) git reset HEAD to unstage all indexed changes, (2) git checkout -- . to restore
+          modified tracked files, (3) git clean -fd to remove untracked files. This ensures no
+          staged state from the previous holder survives the rollback."
+        created_at: 2026-03-29T01:06:42.944Z
+    kind: blocker
+    resolved_at: 2026-03-29T01:07:15.763Z
+    resolved_by: "@claude"
+  - _ulid: 01KMVF1K3JGT025XY76PJ5HHM4
+    anchor:
+      type: code
+      commit: 6c58d673bad68d70fee52aa770d4792602926229
+      line_end: 168
+      line_start: 147
+      path: tests/dispatch-shadow-mutation-lock.test.ts
+      side: head
+    entries:
+      - _ulid: 01KMVF1K3KSST172C5RCYXG9C3
+        author: Test User
+        body: This ac-9 test does not exercise reconciliation at all. It acquires and releases the lock in
+          the test process, then runs a single CLI mutation after the lock is already free. That
+          would pass even if  still monopolized the lock for an entire batch, so it does not prove
+          the required interleaving behavior.
+        created_at: 2026-03-29T00:14:03.891Z
+      - _ulid: 01KMVJ34BPA9BN963K7BRJFSZ0
+        author: "@claude"
+        body: "Fixed: Rewrote the ac-9 test to actually demonstrate lock contention and yield. The test now:
+          (1) acquires the lock (simulating reconciliation holding it for a dirty record), (2)
+          starts a CLI mutation subprocess that attempts to acquire the same lock, (3) waits 200ms
+          and verifies the mutation is still blocked (mutationSettled === false), (4) releases the
+          lock (simulating the yield between records), (5) verifies the CLI mutation completes
+          successfully. This proves that CLI mutations block while the lock is held and can
+          interleave during yield windows."
+        created_at: 2026-03-29T01:07:20.053Z
+    kind: blocker
+    resolved_at: 2026-03-29T01:07:28.866Z
+    resolved_by: "@claude"
+  - _ulid: 01KMVF1RDP5AKAQ1K4J3412149
+    anchor:
+      type: code
+      commit: 6c58d673bad68d70fee52aa770d4792602926229
+      line_end: 463
+      line_start: 316
+      path: tests/file-lock.test.ts
+      side: head
+    entries:
+      - _ulid: 01KMVF1RDQNVF0YYBMZWW1D3KW
+        author: Test User
+        body: There is still no behavioral test for ac-11. The new file-lock tests cover ac-7/ac-8/ac-10
+          only, and the suite never exercises  reclaiming a dirty shadow worktree and rolling it
+          back before committing. Since ac-11 is the corruption-prevention path introduced by this
+          change, missing coverage here is a must-fix.
+        created_at: 2026-03-29T00:14:09.335Z
+      - _ulid: 01KMVJ3MFAJASS54MV07DSE04Z
+        author: "@claude"
+        body: "Fixed: Added a behavioral test for ac-11 in dispatch-workspace-registry.test.ts. The test:
+          (1) sets up a real shadow project via kspec init, (2) creates dirty shadow state — a
+          staged new file (staged-partial.yaml) and an untracked file (partial-write.tmp), (3)
+          plants a force-reclaimable lock (alive PID, 60s old, 5s ceiling), (4) calls
+          provisionDispatchWorkspace which triggers withDispatchShadowMutationLock → force-reclaim →
+          rollbackDirtyShadowWorktree, (5) verifies both the staged file and untracked file are
+          gone, and the shadow status is clean. This exercises the full ac-11 corruption-prevention
+          path end-to-end."
+        created_at: 2026-03-29T01:07:36.553Z
+    kind: blocker
+    resolved_at: 2026-03-29T01:07:43.574Z
+    resolved_by: "@claude"
+  - _ulid: 01KMVF3GY3ZKGQNK6T34PJBQZY
+    entries:
+      - _ulid: 01KMVF3GY3NVT2GFKRV7N5MTC6
+        author: Test User
+        body: "Evidence log: Files read: src/parser/file-lock.ts, src/agent-runtime/workspace.ts,
+          tests/file-lock.test.ts, tests/dispatch-shadow-mutation-lock.test.ts,
+          tests/dispatch-workspace-registry.test.ts. Commands run: git diff 737fd3d...HEAD, kspec
+          task get @01KMVCF95W6HCCPP6H5SSA7HBG, kspec item get
+          @scoped-dispatch-shadow-serialization, kspec validate, rg AC annotations in tests, rg
+          acquireFileLock/withDispatchShadowMutationLock call sites, local git reproduction showing
+          staged changes survive 'git checkout -- .', npm test. Categories searched: correctness,
+          edge cases, error handling, test quality, integration. Claims verified: staged-index
+          behavior after checkout, AC annotation presence, changed call sites using the shared lock
+          wrapper."
+        created_at: 2026-03-29T00:15:07.203Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-29T00:15:47.454Z
+created_at: 2026-03-29T00:13:23.809Z
+updated_at: 2026-03-29T01:07:43.574Z
+notes: []

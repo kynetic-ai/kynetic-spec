@@ -1,0 +1,283 @@
+_ulid: 01KSF11N35ZFCRKDW37KGQ9G90
+slugs: []
+title: Review task-review-screenshot-resource-ui (cycle 3)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate passed schema/reference checks and exited 6 due to pre-existing
+      project-wide warnings: 7 reference warnings, 37 alignment warnings, 266 completeness warnings,
+      32 invalid AC annotations."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-25T07:50:22.522Z
+    completed_at: 2026-05-25T07:50:22.522Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test passed: 2545 suites passed, 9700 tests passed, 5 skipped; duration 2537.0s. Full
+      log: /tmp/kspec-test-cache/01KSF10BX3VYGP9HQV4R4QEZ5R/0827db2aa290d197.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-25T07:50:32.603Z
+    completed_at: 2026-05-25T07:50:32.603Z
+events:
+  - _ulid: 01KSF11N357HHJWPHY7CFAW9QT
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-25T07:37:01.797Z
+  - _ulid: 01KSF12SPR6C92713CWV23J9A0
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-25T07:37:39.288Z
+  - _ulid: 01KSF1C30NQPMWQBWG0BTEPHZ0
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSF1C0WA77VP6V8R7X7JPHSS
+    timestamp: 2026-05-25T07:42:43.733Z
+  - _ulid: 01KSF1C92P78DYQM70XG0CTZC7
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSF1C6W5CDN635SS6HK55HRR
+    timestamp: 2026-05-25T07:42:49.942Z
+  - _ulid: 01KSF1CEYHKWS4B4C5VMRV3820
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSF1CCTN8GYDKZ9N9RYET47H
+    timestamp: 2026-05-25T07:42:55.953Z
+  - _ulid: 01KSF1T4RMJ4TJEEYNF66BZGDK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-25T07:50:24.276Z
+  - _ulid: 01KSF1T9QWDCTBC8MBZ5E7XZSZ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSF1T808N8B503QJ622FR8K1
+    timestamp: 2026-05-25T07:50:29.372Z
+  - _ulid: 01KSF1TER1CBVEYF1CZR0G909V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-25T07:50:34.498Z
+  - _ulid: 01KSF1TY1G80JX1268AWPTHJA2
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-25T07:50:50.160Z
+  - _ulid: 01KSF1TY1HS9YPAS644Q0EPEQH
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-25T07:50:50.161Z
+  - _ulid: 01KSF3JEQYKKHSB1ZVAY7SC24W
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSF1C0WA77VP6V8R7X7JPHSS
+    timestamp: 2026-05-25T08:21:09.502Z
+  - _ulid: 01KSF3JJZQD12X7463TTRWNZRN
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSF1C0WA77VP6V8R7X7JPHSS
+    timestamp: 2026-05-25T08:21:13.847Z
+  - _ulid: 01KSF3JQ7M5G8K6E5AT8MVN4QQ
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSF1C6W5CDN635SS6HK55HRR
+    timestamp: 2026-05-25T08:21:18.196Z
+  - _ulid: 01KSF3JVEXS9KCRVF5DK6SEA0V
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSF1C6W5CDN635SS6HK55HRR
+    timestamp: 2026-05-25T08:21:22.525Z
+  - _ulid: 01KSF3JZMA2XAW3P6W3T3DZ3D1
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSF1CCTN8GYDKZ9N9RYET47H
+    timestamp: 2026-05-25T08:21:26.794Z
+  - _ulid: 01KSF3K3XPSDD1BY26ZNAS3GMK
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSF1CCTN8GYDKZ9N9RYET47H
+    timestamp: 2026-05-25T08:21:31.190Z
+examined_commit: 0d819300236cfb26935914cbd51ceb2c20343546
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XB0EKNTMZS4XJMC4ED4SK"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSF1C0WA77VP6V8R7X7JPHSS
+    anchor:
+      type: code
+      commit: 0d819300236cfb26935914cbd51ceb2c20343546
+      line_end: 455
+      line_start: 455
+      path: packages/web-ui/src/routes/reviews/[id]/+page.svelte
+      side: head
+    entries:
+      - _ulid: 01KSF1C0WAA6BMMTNPJNV0BP2V
+        author: Jacob Chapel
+        body: "MUST-FIX: Live review resource previews/open links use a plain <img>/<a> URL from
+          reviewResourceBytesUrl(), but browser image/link requests cannot include the X-Kspec-Dir
+          header used by the rest of the web UI for selected projects. The daemon middleware falls
+          back to the default project when that header is absent, so attached screenshots for a
+          non-default selected project will 404 or load the wrong project's resource even though the
+          review detail fetch itself used the selected-project header. The UI needs a resource
+          loading path that preserves project context, and coverage should prove screenshot
+          preview/open works for a selected non-default project."
+        created_at: 2026-05-25T07:42:41.546Z
+      - _ulid: 01KSF3JD1QXXQS8WFYBCWZCPNB
+        author: "@claude"
+        body: "Fixed: Added kspec_dir query-parameter fallback to the project-context middleware so
+          browser-issued <img>/<a> requests (which cannot set X-Kspec-Dir) can still carry project
+          context in the URL. The header still wins when both are present so first-class fetch()
+          callers remain authoritative. reviewResourceBytesUrl() now reads getSelectedProjectPath()
+          and appends ?kspec_dir=<encoded path> whenever a project is selected; no svelte changes
+          were needed since the helper signature stayed the same. Coverage:
+          tests/web-ui/review-resources-api.test.ts gained 3 cases (selected non-default,
+          special-character encoding, omitted when null) and
+          tests/daemon-api/review-resources.test.ts gained a 4-case multi-project block that seeds
+          two projects with the same review ULID but distinct bytes per project, then proves bytes
+          routing via header baseline, query-param fallback (no header), both directions (projectA
+          and projectB), and header-wins precedence."
+        created_at: 2026-05-25T08:21:07.767Z
+    kind: blocker
+    resolved_at: 2026-05-25T08:21:12.178Z
+    resolved_by: "@claude"
+  - _ulid: 01KSF1C6W5CDN635SS6HK55HRR
+    anchor:
+      type: code
+      commit: 0d819300236cfb26935914cbd51ceb2c20343546
+      line_end: 305
+      line_start: 292
+      path: tests/review-resource-cli.test.ts
+      side: head
+    entries:
+      - _ulid: 01KSF1C6W5MFCXY5TXESVZ72GV
+        author: Jacob Chapel
+        body: "MUST-FIX: The task's CLI testing contract explicitly calls for interactive remove
+          cancellation, but the remove tests stop at --force success, non-interactive
+          confirmation_required, and malformed id. There is no test that simulates an interactive
+          prompt, answers no, and asserts operation_cancelled with exit code 2, so that documented
+          CLI path can regress unnoticed. Add that behavioral CLI test; it should also prove the
+          resource remains after cancellation."
+        created_at: 2026-05-25T07:42:47.685Z
+      - _ulid: 01KSF3JNK86TK0QBRFG4ZJG1ZY
+        author: "@claude"
+        body: "Fixed: Added a behavioral CLI test in tests/review-resource-cli.test.ts that exercises the
+          documented interactive-cancellation path end-to-end. It seeds a resource, then invokes
+          `kspec review resource remove` with KSPEC_TEST_TTY=true (the CLI's interactive-mode
+          override since spawnSync's piped stdin always has isTTY=false) and pipes 'n' to stdin.
+          Asserts exit code 2, the cancellation message on stderr, and finally re-lists resources to
+          prove the resource is still present (no leaked deletion side effect)."
+        created_at: 2026-05-25T08:21:16.520Z
+    kind: blocker
+    resolved_at: 2026-05-25T08:21:20.801Z
+    resolved_by: "@claude"
+  - _ulid: 01KSF1CCTN8GYDKZ9N9RYET47H
+    anchor:
+      type: code
+      commit: 0d819300236cfb26935914cbd51ceb2c20343546
+      line_end: 187
+      line_start: 177
+      path: tests/review-resource-cli.test.ts
+      side: head
+    entries:
+      - _ulid: 01KSF1CCTNQVFR7M42M4AWT6HW
+        author: Jacob Chapel
+        body: "MUST-FIX: The task's CLI testing contract explicitly includes unreadable source files, but
+          the CLI integration coverage only checks source_file_missing here. source_file_unreadable
+          is covered only at the manager layer, so a regression in CLI error envelope/exit-code
+          mapping for a non-regular source file would pass. Add a CLI-level test that invokes review
+          resource add with a directory or otherwise unreadable source and asserts
+          source_file_unreadable plus exit code 1."
+        created_at: 2026-05-25T07:42:53.781Z
+      - _ulid: 01KSF3JY0ZJ86DSG2F5ZFRY966
+        author: "@claude"
+        body: "Fixed: Added a CLI-level test in tests/review-resource-cli.test.ts that calls `review
+          resource add` with a directory as the source-file argument (the manager rejects any
+          non-regular file with source_file_unreadable). Asserts exit code 1,
+          code=source_file_unreadable, source_file=<dir-path>, and message matches /not a regular
+          file/i so any regression in CLI error-envelope mapping for non-regular sources is caught."
+        created_at: 2026-05-25T08:21:25.151Z
+    kind: blocker
+    resolved_at: 2026-05-25T08:21:29.450Z
+    resolved_by: "@claude"
+  - _ulid: 01KSF1T808N8B503QJ622FR8K1
+    entries:
+      - _ulid: 01KSF1T808EE6NPF2XFG4JW7FY
+        author: Jacob Chapel
+        body: "Review evidence log:\\n\\nFiles read: kspec-agents.md; .agents/skills/kspec-review/SKILL.md;
+          .agents/skills/kspec-merge/SKILL.md; .agents/skills/review-gates/SKILL.md;
+          .agents/skills/work-gates/SKILL.md; src/parser/review-resource-manager.ts;
+          src/parser/entity-local-resources.ts; src/cli/commands/review-resource.ts;
+          src/export/json.ts; src/export/types.ts; packages/daemon/src/routes/review-resources.ts;
+          packages/daemon/src/routes/reviews.ts; packages/daemon/src/server.ts;
+          packages/daemon/src/middleware/project-context.ts; packages/shared/src/api.ts;
+          packages/web-ui/src/lib/api.ts; packages/web-ui/src/lib/api-static.ts;
+          packages/web-ui/src/lib/stores/project.svelte.ts;
+          packages/web-ui/src/routes/reviews/[id]/+page.svelte;
+          tests/daemon-api/review-resources.test.ts; tests/review-resource-cli.test.ts;
+          tests/review-resource-manager.test.ts; tests/review-resource-static-export.test.ts;
+          tests/web-ui/review-resources-api.test.ts; tests/web-ui/review-static-mode.test.ts;
+          tests/daemon-api/helpers.ts.\\n\\nCommands run: kspec task get
+          @01KS8XB0EKNTMZS4XJMC4ED4SK; kspec review for-task/get/add/open/comment/check; kspec item
+          get @folder-backed-review-storage-1; git status/log/diff; rg AC and error-code coverage
+          searches; kspec validate; npm test.\\n\\nClaims verified: cycle-2 cache/broadcast/409
+          tests were added and are behavioral; full test suite passes at 9700 tests; kspec validate
+          has no schema/reference errors. Prior blocker is addressed, but this pass found new
+          blockers in live UI selected-project resource loading and remaining CLI error-path
+          coverage.\\n\\nCategories searched: correctness, edge cases, error handling, security/path
+          traversal, test quality, daemon route integration, static export, live/static UI
+          integration, multi-project context handling, cache/WebSocket invalidation."
+        created_at: 2026-05-25T07:50:27.592Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-25T07:50:50.160Z
+created_at: 2026-05-25T07:37:01.797Z
+updated_at: 2026-05-25T08:21:29.450Z
+notes: []

@@ -1,0 +1,210 @@
+_ulid: 01KQ0WQZ9MQ29JBH3HDQVCW397
+slugs: []
+title: Review task-validation-task-data-manager-read-path cycle 2
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2274 suites passed; 8372 passed, 5 skipped of 8377 tests; exit 0. Log:
+      /tmp/kspec-test-cache/01KQ0WPV188KARGJ3MZ0F39S0V/6508ecd8d165fd8e.log"
+    name: npm test
+    required: true
+    runner: npm test
+    created_at: 2026-04-24T23:33:35.897Z
+    completed_at: 2026-04-24T23:33:35.897Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run dev -- task list --json returned TaskDataManagerError: No storage backend
+      registered for format split; npm run dev -- validate --refs --json exited successfully with
+      stats.tasksChecked=0 and no refErrors, showing the resolver catch silently abandoned the
+      canonical path."
+    name: source CLI canonical validation probe
+    required: true
+    runner: npm run dev
+    created_at: 2026-04-24T23:33:45.349Z
+    completed_at: 2026-04-24T23:33:45.349Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Installed kspec v0.13.0 validation failed on existing catalog state:
+      .kspec/modules/meta.yaml modules[0].traits.0 expected string, plus known
+      alignment/completeness warnings from baseline. This check is informational for this review."
+    name: kspec validate
+    required: false
+    runner: kspec validate
+    created_at: 2026-04-24T23:34:10.708Z
+    completed_at: 2026-04-24T23:34:10.708Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: rg found annotated behavioral tests for @validation-task-data-source covering
+      ac-all-persisted-tasks-included, ac-task-references-checked, and ac-task-load-errors-reported
+      in tests/validate-task-data-source.test.ts. No source-scanning tests found in changed tests.
+    name: AC annotation search
+    required: false
+    runner: rg
+    created_at: 2026-04-24T23:34:20.503Z
+    completed_at: 2026-04-24T23:34:20.503Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/parser/validate.ts, src/parser/task-data-manager.ts,
+      src/parser/split-backend.ts, src/parser/refs.ts, src/cli/commands/validate.ts,
+      tests/validate-task-data-source.test.ts, tests/automation-eligibility.test.ts,
+      tests/helpers/cli.ts. Commands run: kspec task get, kspec item get, prior review get, git
+      diff, rg AC search, kspec validate, npm run dev validate/task probes, npm test. Claims
+      verified: prior fallback blocker fixed for loadAllTasks failure, but resolver errors still
+      silently fall back. Categories searched: correctness, edge cases, error handling, test
+      quality, integration."
+    name: review evidence
+    required: false
+    runner: codex review
+    created_at: 2026-04-24T23:34:32.711Z
+    completed_at: 2026-04-24T23:34:32.711Z
+events:
+  - _ulid: 01KQ0WQZ9MSQ82RZHA3010YHZV
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-24T23:21:04.564Z
+  - _ulid: 01KQ0WRA70WEVCFZ62KG422102
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-24T23:21:15.744Z
+  - _ulid: 01KQ0XEEBZVFR8C8YBJ8YGB6XQ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQ0XEDARS6FZP17J1PE9G9EJ
+    timestamp: 2026-04-24T23:33:20.895Z
+  - _ulid: 01KQ0XEY5H11995JRR230VVGGM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-24T23:33:37.073Z
+  - _ulid: 01KQ0XF7B1CEYZ67S5BGQFVXSJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: source CLI canonical validation probe
+    timestamp: 2026-04-24T23:33:46.465Z
+  - _ulid: 01KQ0XG031T1SQ84SX5H7S1A3E
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-24T23:34:11.809Z
+  - _ulid: 01KQ0XG9MH4CQRVEJ7Z0WRVMME
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC annotation search
+    timestamp: 2026-04-24T23:34:21.585Z
+  - _ulid: 01KQ0XGNJEWA42EEPX9D8MJNZM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence
+    timestamp: 2026-04-24T23:34:33.806Z
+  - _ulid: 01KQ0XH0EHAZY9H566PXKJ8Q1T
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-24T23:34:44.945Z
+  - _ulid: 01KQ0XH0EHH9037HPBVZ74EN1N
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-24T23:34:44.945Z
+  - _ulid: 01KQ0YPNEAXTJ6T4NYVNFTWRA6
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQ0XEDARS6FZP17J1PE9G9EJ
+    timestamp: 2026-04-24T23:55:18.859Z
+  - _ulid: 01KQ0YPXJ3BQ9WRY9T7N365BBP
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQ0XEDARS6FZP17J1PE9G9EJ
+    timestamp: 2026-04-24T23:55:27.171Z
+examined_commit: 2525fa93d58103ccf02f77efbcd4140c542d491a
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQ0JDJQQY4HTX1P4JD4K11PA"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQ0XEDARS6FZP17J1PE9G9EJ
+    anchor:
+      type: code
+      commit: 2525fa93d58103ccf02f77efbcd4140c542d491a
+      line_end: 2310
+      line_start: 2305
+      path: src/parser/validate.ts
+      side: head
+    entries:
+      - _ulid: 01KQ0XEDARYV25SJXYB34S6VP9
+        author: Jacob Chapel
+        body: "MUST-FIX: The resolver failure path catches every error from resolveTaskDataManager(), not
+          just the intended legacy kynetic<1.1 migration case. That means validation can silently
+          abandon the canonical task data source when the task data manager is broken. I reproduced
+          this in the source CLI: npm run dev -- task list --json reports TaskDataManagerError: No
+          storage backend registered for format split, but npm run dev -- validate --refs --json
+          exits successfully with tasksChecked: 0 and no ref errors. This violates
+          @validation-task-data-source because validation is no longer using the same task model as
+          normal consumers and can recreate the hidden-task baseline failure. Narrow the fallback to
+          the known legacy-project condition and surface other TaskDataManager errors as validation
+          findings."
+        created_at: 2026-04-24T23:33:19.833Z
+      - _ulid: 01KQ0YPMBT3Z0SZH5897AEQWX6
+        author: "@claude"
+        body: "Fixed: replaced the error-based fallback with an explicit manifest condition check. The
+          legacy fallback now only activates when the manifest declares kynetic < 1.1 without split
+          storage (the same condition resolveTaskDataManager() checks internally). All other errors
+          — including backend registration failures and loadAllTasks() errors — are surfaced as
+          validation findings. Added a regression test that reproduces the exact reviewer scenario:
+          a split-format project with unmigrated data in project.tasks.yaml triggers an error
+          through --refs validation instead of silently reporting 0 tasks."
+        created_at: 2026-04-24T23:55:17.754Z
+    kind: blocker
+    resolved_at: 2026-04-24T23:55:26.079Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-24T23:34:44.945Z
+created_at: 2026-04-24T23:21:04.564Z
+updated_at: 2026-04-24T23:55:26.079Z
+notes: []

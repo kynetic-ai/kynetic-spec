@@ -1,0 +1,170 @@
+_ulid: 01KRH2MSQMKE52C1V6HZC54NCV
+slugs: []
+title: "Plan review: Dispatch Workspace Cleanup Classification Hardening"
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan has no new structured specs (Specs YAML is []), derive_from_specs is false, and both
+      tasks update existing @dispatch-workspace-cleanup-policy / @dispatch-workspace-registry
+      behavior.
+    name: Plan scope
+    required: true
+    created_at: 2026-05-13T16:28:30.332Z
+    completed_at: 2026-05-13T16:28:30.332Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed; referenced target specs resolve. Existing
+      repository warnings are deprecated-reference warnings outside this plan.
+    name: Reference validation
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-13T16:28:34.307Z
+    completed_at: 2026-05-13T16:28:34.307Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@task-add-cleanup-classification-regression-coverage claims @dispatch-workspace-registry
+      ac-task-state-drives-recovery-after-untrusted-artifact-cleanup but does not describe a later
+      reconciliation/scheduling recovery test."
+    name: Coverage mapping
+    required: true
+    created_at: 2026-05-13T16:28:38.192Z
+    completed_at: 2026-05-13T16:28:38.192Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The regression/evidence task depends on the spec-update task; no circular or
+      priority-inverted dependency found.
+    name: Dependency order
+    required: true
+    created_at: 2026-05-13T16:28:42.085Z
+    completed_at: 2026-05-13T16:28:42.085Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan status is draft and its Approval boundary explicitly says not to derive tasks, mark
+      automation-eligible, or start implementation until approval after review.
+    name: Draft boundary
+    required: true
+    created_at: 2026-05-13T16:28:46.049Z
+    completed_at: 2026-05-13T16:28:46.049Z
+events:
+  - _ulid: 01KRH2MSQKKJA0XFMM3CW08EZQ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-13T16:27:44.755Z
+  - _ulid: 01KRH2NZZDPPDFNM1H1BA9DKB8
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-13T16:28:23.917Z
+  - _ulid: 01KRH2P3X3F5QGTHJDYJTBCFCJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRH2P2BMBG229AWX2B6KCEAZ
+    timestamp: 2026-05-13T16:28:27.939Z
+  - _ulid: 01KRH2P7Q83A44Z72H0B6YCRQB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan scope
+    timestamp: 2026-05-13T16:28:31.848Z
+  - _ulid: 01KRH2PBJPZKF1FF5XP7Y6S3ND
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Reference validation
+    timestamp: 2026-05-13T16:28:35.799Z
+  - _ulid: 01KRH2PFCJWH10XK84M1G3SQ74
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Coverage mapping
+    timestamp: 2026-05-13T16:28:39.698Z
+  - _ulid: 01KRH2PK6CM15BBCMSQ87FS650
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency order
+    timestamp: 2026-05-13T16:28:43.596Z
+  - _ulid: 01KRH2PQ41SHK539AJ9PMKK3A1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Draft boundary
+    timestamp: 2026-05-13T16:28:47.617Z
+  - _ulid: 01KRH2PTWKT9E1AT5V50J7NAC4
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-13T16:28:51.475Z
+  - _ulid: 01KRH2PTWKTNQ8F8SSJAF3A8KK
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-13T16:28:51.475Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-dispatch-workspace-cleanup-classification-hardenin"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRH2P2BMBG229AWX2B6KCEAZ
+    anchor:
+      type: structured
+      field: Covers
+      ref: "@task-add-cleanup-classification-regression-coverage"
+      section: tasks
+    entries:
+      - _ulid: 01KRH2P2BMEF5KK4RMN8252G38
+        author: Jacob Chapel
+        body: "The task claims coverage for @dispatch-workspace-registry
+          ac-task-state-drives-recovery-after-untrusted-artifact-cleanup, but its What/How/Testing
+          steps only exercise cleanup classification/removal and unknown root entry deletion. The
+          claimed registry AC is about a later reconciliation or scheduling cycle for a non-terminal
+          task after artifact cleanup, and the task does not specify a scenario, file, or assertion
+          for requeue/reprovision/stale-with-actionable-detail behavior. Impact: this AC can be
+          derived with no executable regression evidence. Add concrete behavioral test steps for the
+          later recovery path, or remove/split this AC claim until a separate task covers it."
+        created_at: 2026-05-13T16:28:26.356Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-13T16:28:51.475Z
+created_at: 2026-05-13T16:27:44.756Z
+updated_at: 2026-05-13T16:28:51.475Z
+notes: []

@@ -1,0 +1,151 @@
+_ulid: 01KRDG9HWNFSCS0P7MZD0DPARX
+slugs: []
+title: Review setup-failure cleanup regressions (cycle 3)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts
+      tests/e2e-fixture-daemon-cleanup.test.ts: 16 suites passed, 27 tests passed"
+    name: focused regression tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-12T07:22:25.066Z
+    completed_at: 2026-05-12T07:22:25.066Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh: 2425 suites passed, 9072 tests passed, 5 skipped"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-05-12T07:22:29.519Z
+    completed_at: 2026-05-12T07:22:29.519Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check c5394be4eaafbc71a42b97d28bc581e6d1edc2e2...HEAD produced no whitespace errors
+    name: git diff --check
+    required: true
+    runner: git
+    created_at: 2026-05-12T07:22:33.975Z
+    completed_at: 2026-05-12T07:22:33.975Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate: schema/references OK; exited 6 for repository-wide pre-existing warnings
+      (deprecated refs, orphaned specs, missing legacy AC coverage, invalid legacy annotations), no
+      new task-specific validation error identified"
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-12T07:22:38.634Z
+    completed_at: 2026-05-12T07:22:38.634Z
+events:
+  - _ulid: 01KRDG9HWMSJB1HWK6W71Q3FGV
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-12T07:09:18.612Z
+  - _ulid: 01KRDGADKYFVZCP73WAE4G3P9H
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-12T07:09:47.006Z
+  - _ulid: 01KRDH1KEG3EN4FX1KEA96CWHB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused regression tests
+    timestamp: 2026-05-12T07:22:26.640Z
+  - _ulid: 01KRDH1QS9905409J20FVYHJ1B
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-12T07:22:31.082Z
+  - _ulid: 01KRDH1W63H7AET5T75XK1JXKS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: git diff --check
+    timestamp: 2026-05-12T07:22:35.587Z
+  - _ulid: 01KRDH20PSHSGCYT6TDYEAXF8G
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-05-12T07:22:40.217Z
+  - _ulid: 01KRDH2M8EGMCDVE3JKYX6SYA6
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KRDH2JPS30RERAAAMWGV42N2
+    timestamp: 2026-05-12T07:23:00.238Z
+  - _ulid: 01KRDH35DDGVD54THTPPDR1GGP
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-12T07:23:17.805Z
+  - _ulid: 01KRDH35DEKWA0NY36KTRY7S0B
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-12T07:23:17.806Z
+examined_commit: ab1d59a2942c2e18b8373c2bd89fd50ef992c151
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRCRJSCGAWTVGWM82DNSWWCN"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRDH2JPS30RERAAAMWGV42N2
+    entries:
+      - _ulid: 01KRDH2JPSPPA035WWK9B7S5PA
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; task/spec context for @01KRCRJSCGAWTVGWM82DNSWWCN,
+          @daemon-test-teardown-boundedness, @daemon-test-startup-failure-hygiene; prior reviews
+          @01KRDA6Q and @01KRDDMF; diffs and surrounding code in tests/helpers/daemon.ts,
+          tests/helpers/daemon.test.ts, tests/e2e/fixtures/daemon-fixture.ts,
+          tests/e2e/fixtures/test-base.ts, tests/e2e-fixture-daemon-cleanup.test.ts. Commands run:
+          git diff/stat/name-only, AC annotation rg, git diff --check, kspec validate, focused npm
+          test, full npm test. Claims verified: prior cycle-2 blocker is fixed by
+          runPlaywrightFixtureBody placing startDaemon inside lifecycle use so startup failure runs
+          teardown; focused and full suites pass. Categories searched: correctness, startup/setup
+          cleanup edge cases, primary-error preservation staging, test quality/source scanning, AC
+          annotations, integration with Playwright wrapper."
+        created_at: 2026-05-12T07:22:58.649Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-12T07:23:17.805Z
+created_at: 2026-05-12T07:09:18.613Z
+updated_at: 2026-05-12T07:23:17.806Z
+notes: []

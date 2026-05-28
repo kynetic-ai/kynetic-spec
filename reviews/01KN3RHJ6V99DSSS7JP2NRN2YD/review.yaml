@@ -1,0 +1,387 @@
+_ulid: 01KN3RHJ6V99DSSS7JP2NRN2YD
+slugs: []
+title: Review task-fix-review-interaction-e2e-full-gate
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Command: npx playwright test tests/e2e/review-interaction.spec.ts. Result: 9 failed, 9
+      passed in 30.5s. Failures are AC-3/AC-4 interaction tests timing out while clicking visible
+      add-comment and reply controls."
+    name: playwright review-interaction
+    required: true
+    runner: playwright
+    created_at: 2026-04-01T05:42:51.532Z
+    completed_at: 2026-04-01T05:42:51.532Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exited 6 with repo-wide pre-existing warnings (orphaned specs, annotation
+      fixtures, skill meta warning) and no schema/reference errors. No task-specific signal for this
+      review.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-01T05:42:54.479Z
+    completed_at: 2026-04-01T05:42:54.479Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Command: npm test -- --fresh. Result: 2082/2082 suites passed; 7520 passed, 5 skipped;
+      duration 5403.9s."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-01T05:51:11.011Z
+    completed_at: 2026-04-01T05:51:11.011Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Command: npx playwright test tests/e2e/review-interaction.spec.ts. Result: 18 passed, 0
+      failed in 10.7s from the review workspace."
+    name: playwright review-interaction rerun
+    required: true
+    runner: playwright
+    created_at: 2026-04-01T05:51:13.750Z
+    completed_at: 2026-04-01T05:51:13.750Z
+events:
+  - _ulid: 01KN3RHJ6T28YGET7SK8CVXJVJ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-01T05:33:59.899Z
+  - _ulid: 01KN3RJ5GCG2537F4SSTB9MTVW
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-01T05:34:19.660Z
+  - _ulid: 01KN3S1PX8VEZ2KA54GAT86GJX
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN3S1NSYG145FN5ZPXY7YD53
+    timestamp: 2026-04-01T05:42:49.000Z
+  - _ulid: 01KN3S1TBEP2Q1EYM4PY55NJDH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: playwright review-interaction
+    timestamp: 2026-04-01T05:42:52.526Z
+  - _ulid: 01KN3S1X68JEF5RAA3W34X1XWC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-04-01T05:42:55.432Z
+  - _ulid: 01KN3S23JH2Y6NGDA0QJW5WDW6
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN3S22MCYY4VD93HV9Q5F82K
+    timestamp: 2026-04-01T05:43:01.969Z
+  - _ulid: 01KN3S26GX0Z1JG7F8NRZG640N
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN3S25JEZCQT48JAF2ZHC60Y
+    timestamp: 2026-04-01T05:43:04.989Z
+  - _ulid: 01KN3S2ETGWAZBY36M38Q0QMK1
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN3S2DY1JVR4W42YXB6RGZMX
+    timestamp: 2026-04-01T05:43:13.488Z
+  - _ulid: 01KN3S3067NGPFWE17X9MAZANF
+    actor: agent:pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-01T05:43:31.271Z
+  - _ulid: 01KN3S3067T8S0X327BA0Y0TG9
+    actor: agent:pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-01T05:43:31.271Z
+  - _ulid: 01KN3S5ZVN25MTMARGAZCGMC1K
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN3S1NSYG145FN5ZPXY7YD53
+    timestamp: 2026-04-01T05:45:09.237Z
+  - _ulid: 01KN3S6517TF6P88S5K5N2SG22
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN3S22MCYY4VD93HV9Q5F82K
+    timestamp: 2026-04-01T05:45:14.536Z
+  - _ulid: 01KN3S6A9XZ3N8SA5N0RZFNG5Y
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN3S2DY1JVR4W42YXB6RGZMX
+    timestamp: 2026-04-01T05:45:19.933Z
+  - _ulid: 01KN3SH2206YWK72EK19S158HB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-01T05:51:11.937Z
+  - _ulid: 01KN3SH4NWS6RPFRVC9V1TCB2D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: playwright review-interaction rerun
+    timestamp: 2026-04-01T05:51:14.621Z
+  - _ulid: 01KN3TNMJYWG2CMS0J5SVFSG29
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN3S25JEZCQT48JAF2ZHC60Y
+    timestamp: 2026-04-01T06:11:10.558Z
+  - _ulid: 01KN3TNRS9Z12417AWBE2XFM8J
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN3S25JEZCQT48JAF2ZHC60Y
+    timestamp: 2026-04-01T06:11:14.857Z
+examined_commit: 244194ef5451c0f34b5bb94623f5688842ae0588
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN3Q0AXQNHZDB7TVCW288G7V"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN3S1NSYG145FN5ZPXY7YD53
+    anchor:
+      type: code
+      commit: 244194ef5451c0f34b5bb94623f5688842ae0588
+      line_end: 247
+      line_start: 226
+      path: tests/e2e/review-interaction.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KN3S1NSYQ6EZYP2VERDB0Y45
+        author: Jacob Chapel
+        body: The rewritten reopen assertion no longer proves the behavior required by
+          @review-records-web-ui ac-5. The spec says clicking Reopen must toggle resolution state
+          and update the UI immediately, but this test now calls  before checking the state. That
+          can pass even if the in-page mutation/invalidation path is broken and only a full refresh
+          reflects the change, so this is a coverage regression rather than a valid fix for the
+          interactive failure.
+        created_at: 2026-04-01T05:42:47.870Z
+    kind: blocker
+    resolved_at: 2026-04-01T05:45:07.090Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KN3S22MCYY4VD93HV9Q5F82K
+    anchor:
+      type: code
+      commit: 244194ef5451c0f34b5bb94623f5688842ae0588
+      line_end: 174
+      line_start: 26
+      path: tests/e2e/review-interaction.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KN3S22MDRT79KMGR6K08K5JW
+        author: Jacob Chapel
+        body: "Focused Playwright coverage for AC-3/AC-4 is still red in this snapshot. Running\ 
+
+          Running 18 tests using 10 workers
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          \e[1A\e[2K[1/18] [chromium] › tests/e2e/review-interaction.spec.ts:26:5 › Review
+          Interaction Controls › Add Comment (AC-3) › shows Add Comment button and opens form
+
+          \e[1A\e[2K[2/18] [chromium] › tests/e2e/review-interaction.spec.ts:90:5 › Review
+          Interaction Controls › Add Comment (AC-3) › can add a comment to a review with no existing
+          threads
+
+
+
+          \e[1A\e[2K[3/18] [chromium] › tests/e2e/review-interaction.spec.ts:67:5 › Review
+          Interaction Controls › Add Comment (AC-3) › cancel button closes the form without
+          submitting
+
+          \e[1A\e[2K[4/18] [chromium] › tests/e2e/review-interaction.spec.ts:79:5 › Review
+          Interaction Controls › Add Comment (AC-3) › submit button is disabled when body is empty
+
+          \e[1A\e[2K[5/18] [chromium] › tests/e2e/review-interaction.spec.ts:40:5 › Review
+          Interaction Controls › Add Comment (AC-3) › creates a new thread with body and kind
+          selection
+
+          \e[1A\e[2K[6/18] [chromium] › tests/e2e/review-interaction.spec.ts:181:5 › Review
+          Interaction Controls › Resolve/Reopen Thread (AC-5) › shows Resolve button on open
+          blocker/question threads
+
+          \e[1A\e[2K[7/18] [chromium] › tests/e2e/review-interaction.spec.ts:116:5 › Review
+          Interaction Controls › Reply to Thread (AC-4) › shows Reply button on threads and opens
+          inline reply form
+
+          \e[1A\e[2K[8/18] [chromium] › tests/e2e/review-interaction.spec.ts:157:5 › Review
+          Interaction Controls › Reply to Thread (AC-4) › cancel button closes reply form
+
+          \e[1A\e[2K[9/18] [chromium] › tests/e2e/review-interaction.spec.ts:170:5 › Review
+          Interaction Controls › Reply to Thread (AC-4) › reply submit is disabled when body is
+          empty
+
+          \e[1A\e[2K[10/18] [chromium] › tests/e2e/review-interaction.spec.ts:132:5 › Review
+          Interaction Controls › Reply to Thread (AC-4) › adds a reply to a thread
+
+          \e[1A\e[2K[11/18] [chromium] › tests/e2e/review-interaction.spec.ts:192:5 › Review
+          Interaction Controls › Resolve/Reopen Thread (AC-5) › resolves an open blocker thread and
+          moves it to resolved section
+
+          \e[1A\e[2K[12/18] [chromium] › tests/e2e/review-interaction.spec.ts:209:5 › Review
+          Interaction Controls › Resolve/Reopen Thread (AC-5) › shows Reopen button on resolved
+          blocker/question threads
+
+          \e[1A\e[2K[13/18] [chromium] › tests/e2e/review-interaction.spec.ts:226:5 › Review
+          Interaction Controls › Resolve/Reopen Thread (AC-5) › reopens a resolved thread
+
+          \e[1A\e[2K[14/18] [chromium] › tests/e2e/review-interaction.spec.ts:253:5 › Review
+          Interaction Controls › Verdict Submission (AC-6) › shows verdict submission panel on
+          interactive review
+
+          \e[1A\e[2K[15/18] [chromium] › tests/e2e/review-interaction.spec.ts:265:5 › Review
+          Interaction Controls › Verdict Submission (AC-6) › submit button is disabled when reviewer
+          is empty
+
+          \e[1A\e[2K[16/18] [chromium] › tests/e2e/review-interaction.spec.ts:274:5 › Review
+          Interaction Controls › Verdict Submission (AC-6) › submits a verdict and updates
+          disposition
+
+          \e[1A\e[2K[17/18] [chromium] › tests/e2e/review-interaction.spec.ts:293:5 › Review
+          Interaction Controls › Verdict Submission (AC-6) › submitting approve verdict updates
+          disposition badge
+
+          \e[1A\e[2K[18/18] [chromium] › tests/e2e/review-interaction.spec.ts:312:5 › Review
+          Interaction Controls › Verdict Submission (AC-6) › verdict decision options include all
+          three types
+
+          \e[1A\e[2K  18 passed (12.0s) from the review workspace fails 9/18 tests, including every
+          Add Comment and Reply interaction, with click timeouts on visible / locators. This task’s
+          acceptance criteria require those interactive flows to be guarded by passing E2E coverage,
+          so the task cannot advance while the targeted spec still fails."
+        created_at: 2026-04-01T05:43:01.005Z
+    kind: blocker
+    resolved_at: 2026-04-01T05:45:12.652Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KN3S25JEZCQT48JAF2ZHC60Y
+    anchor:
+      type: code
+      commit: 244194ef5451c0f34b5bb94623f5688842ae0588
+      line_end: 247
+      line_start: 226
+      path: tests/e2e/review-interaction.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KN3S25JE9XCWNPZ4WF5JEW4F
+        author: Jacob Chapel
+        body: The rewritten reopen assertion no longer proves the behavior required by
+          @review-records-web-ui ac-5. The spec says clicking Reopen must toggle resolution state
+          and update the UI immediately, but this test now calls page.reload() before checking the
+          state. That can pass even if the in-page mutation or invalidation path is broken and only
+          a full refresh reflects the change, so this is a coverage regression rather than a valid
+          fix for the interactive failure.
+        created_at: 2026-04-01T05:43:04.014Z
+      - _ulid: 01KN3TNQY29H5GQQWRD3TQRC5Y
+        author: Jacob Chapel
+        body: Fixed in 38587b6ed. The AC-5 reopen case now asserts the live page state after clicking Reopen
+          instead of reloading, so it proves the in-page mutation/invalidation path updates from
+          resolved to open immediately.
+        created_at: 2026-04-01T06:11:13.986Z
+    kind: blocker
+    resolved_at: 2026-04-01T06:11:09.639Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KN3S2DY1JVR4W42YXB6RGZMX
+    anchor:
+      type: code
+      commit: 244194ef5451c0f34b5bb94623f5688842ae0588
+      line_end: 174
+      line_start: 26
+      path: tests/e2e/review-interaction.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KN3S2DY1E8E73CKWKYK9J4YF
+        author: Jacob Chapel
+        body: Focused Playwright coverage for AC-3 and AC-4 is still red in this snapshot. Running npx
+          playwright test tests/e2e/review-interaction.spec.ts from the review workspace fails 9 of
+          18 tests, including every Add Comment and Reply interaction, with click timeouts on
+          visible add-comment-button and thread-reply-button locators. This task exists to restore
+          those interactive review checks, so it cannot advance while the targeted spec still fails.
+        created_at: 2026-04-01T05:43:12.577Z
+    kind: blocker
+    resolved_at: 2026-04-01T05:45:18.332Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: agent:pr-reviewer
+    role: reviewer
+    created_at: 2026-04-01T05:43:31.271Z
+created_at: 2026-04-01T05:33:59.899Z
+updated_at: 2026-04-01T06:11:13.986Z
+notes: []

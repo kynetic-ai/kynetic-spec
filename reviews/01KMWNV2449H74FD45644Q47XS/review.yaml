@@ -1,0 +1,297 @@
+_ulid: 01KMWNV2449H74FD45644Q47XS
+slugs: []
+title: Review task-ui-unwrap-envelope
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      7128 passed, 5 skipped (1974/1974 suites). Verified in this workspace via 
+
+      > @kynetic-ai/spec@0.12.0 test
+
+      > node scripts/test.cjs. Files read: packages/web-ui/src/lib/api.ts,
+      packages/web-ui/src/lib/api-static.ts, packages/web-ui/tests/api-static.test.ts,
+      packages/shared/src/api.ts. Categories searched: correctness, edge cases, error-handling, test
+      quality, integration.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-29T11:33:09.633Z
+    completed_at: 2026-03-29T11:33:09.633Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      ✓ Validation passed
+
+      ────────────────────────────────────────
+
+      Files checked: 10
+
+      Items checked: 567
+
+      Tasks checked: 0
+
+      Meta: 10 agents, 11 workflows, 10 conventions
+
+
+      Schema: OK
+
+      References: OK
+
+
+      Reference warnings: 1
+        ⚠ @skills
+          Orphaned skill directory 'skills' has no corresponding meta entry
+          in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+      Alignment warnings: 31
+        Orphaned specs (no tasks): 30
+          ○ Test Trait
+          ○ Filterable List Commands
+          ○ Dry Run Preview Mode
+          ... and 27 more
+        Status mismatches: 1
+          ! Task Set Batch Support
+            Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+
+      Alignment stats: 404/567 specs have tasks, 403 aligned
+
+
+      Completeness warnings: 482
+        Missing acceptance criteria: 1
+          ○ @01KJN1WT - Test Trait
+        Missing own AC coverage: 227
+          ! @spec-item - Spec Item
+            Uncovered: ac-item-1, ac-item-2
+          ! @ulid-system - ULID Identifier System
+            Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+          ! @slug-system - Slug Alias System
+            Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+          ... and 224 more
+        Invalid AC annotations: 254
+          ! AC annotation references '@slug' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ui-unwrap-envelope-01kmw68m-review/tests/ac-annotation-validation.test.ts:6
+          ! AC annotation references '@my-spec' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ui-unwrap-envelope-01kmw68m-review/tests/ac-annotation-validation.test.ts:84
+          ! AC annotation references '@my-spec' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ui-unwrap-envelope-01kmw68m-review/tests/ac-annotation-validation.test.ts:87
+          ! AC annotation references '@spec-a' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ui-unwrap-envelope-01kmw68m-review/tests/ac-annotation-validation.test.ts:114
+          ! AC annotation references '@spec-b' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ui-unwrap-envelope-01kmw68m-review/tests/ac-annotation-validation.test.ts:118
+          ... and 249 more
+      Skills: OK (10 files checked) exited 6 with warnings only: no schema/reference errors, but
+      pre-existing orphan/alignment/completeness warnings remain in repo state outside this diff.
+      Claim verified independently: the snapshot still passes structural validation even though
+      warnings are present.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-29T11:33:11.508Z
+    completed_at: 2026-03-29T11:33:11.508Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "7128 passed, 5 skipped (1974/1974 suites). Verified in this workspace via npm test. Files
+      read: packages/web-ui/src/lib/api.ts, packages/web-ui/src/lib/api-static.ts,
+      packages/web-ui/tests/api-static.test.ts, packages/shared/src/api.ts. Categories searched:
+      correctness, edge cases, error handling, test quality, integration."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-29T11:33:26.972Z
+    completed_at: 2026-03-29T11:33:26.972Z
+events:
+  - _ulid: 01KMWNV243B861E5NVJRERYFF9
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-29T11:32:04.356Z
+  - _ulid: 01KMWNVGVS7ZG54SWN8V8FHGJE
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-29T11:32:19.449Z
+  - _ulid: 01KMWNWYQPKFBNTMV0VSKV2SN7
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMWNWY5H6CFY7TT49BHVSQSW
+    timestamp: 2026-03-29T11:33:06.422Z
+  - _ulid: 01KMWNX0NYB6EQKJ8T3PKQX8BC
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMWNWZZYXR3YKD783W0QQPN0
+    timestamp: 2026-03-29T11:33:08.414Z
+  - _ulid: 01KMWNX2EFW76N7GT76RPJ4MDG
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-29T11:33:10.223Z
+  - _ulid: 01KMWNX4850ZV9JCZQDG5FJ2CW
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-29T11:33:12.069Z
+  - _ulid: 01KMWNXKB5SJ2NRBR1CR5ZNTMG
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-29T11:33:27.525Z
+  - _ulid: 01KMWNXZHCD6Z6CAC2GFHTFMCD
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-29T11:33:40.012Z
+  - _ulid: 01KMWNXZHCDJVHRZSWMQQ5MM6N
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-29T11:33:40.012Z
+  - _ulid: 01KMWPKCADCSYZJ7ZVB8A2SZB6
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMWNWY5H6CFY7TT49BHVSQSW
+    timestamp: 2026-03-29T11:45:21.229Z
+  - _ulid: 01KMWPKDXYR1PMQCXFKT4E7RRA
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMWNWY5H6CFY7TT49BHVSQSW
+    timestamp: 2026-03-29T11:45:22.878Z
+  - _ulid: 01KMWPKFDESJR8T4SXHY0RDPP8
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMWNWZZYXR3YKD783W0QQPN0
+    timestamp: 2026-03-29T11:45:24.398Z
+  - _ulid: 01KMWPKH1J19TH3EW4FQYQAZBP
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMWNWZZYXR3YKD783W0QQPN0
+    timestamp: 2026-03-29T11:45:26.066Z
+examined_commit: cd80c3aca1b13a308b92ccc43fcd539a84e62692
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMW68M6EEC48D7WFTP623BHG"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMWNWY5H6CFY7TT49BHVSQSW
+    anchor:
+      type: code
+      commit: cd80c3aca1b13a308b92ccc43fcd539a84e62692
+      line_end: 142
+      line_start: 73
+      path: packages/web-ui/src/lib/api.ts
+      side: head
+    entries:
+      - _ulid: 01KMWNWY5H6KE90829SRSVC2HT
+        author: Test User
+        body: >-
+          The new unwrap helpers discard response metadata immediately, so callers can no longer
+          observe  once a live fetch resolves. This breaks the task requirement that cache readiness
+          remain inspectable before data reaches TanStack Query: a  response is normalized to the
+          same legacy shape as a real empty result. Evidence: every migrated live list/detail fetch
+          in this file now returns , and packages/web-ui/src/lib/api.ts:79: * Maps { data: T[],
+          meta: { total, offset, limit, cache_status } } → { items: T[], total, offset, limit }.
+
+          packages/web-ui/src/lib/api-static.ts:38: * Wrap data in a unified API response envelope
+          with cache_status: "ready".
+
+          packages/web-ui/src/lib/api-static.ts:46:    meta: { cache_status: "ready", ...meta },
+          finds no runtime consumer beyond comments.
+        created_at: 2026-03-29T11:33:05.841Z
+      - _ulid: 01KMWPKBPBY23KT7GWKRNYVY2S
+        author: "@claude"
+        body: 'Fixed: Added CacheWarmingError class and checkCacheStatus() guard. All unwrap helpers
+          (unwrapEnvelope, unwrapPaginatedEnvelope, unwrapListEnvelope, unwrapSessionListEnvelope,
+          unwrapSimpleSessionListEnvelope) now call checkCacheStatus(envelope.meta) before
+          extracting data. When cache_status is "loading", CacheWarmingError is thrown immediately —
+          preventing empty/default data from reaching TanStack Query cache. CacheWarmingError is
+          exported for downstream consumers.'
+        created_at: 2026-03-29T11:45:20.587Z
+    kind: blocker
+    resolved_at: 2026-03-29T11:45:22.270Z
+    resolved_by: "@claude"
+  - _ulid: 01KMWNWZZYXR3YKD783W0QQPN0
+    anchor:
+      type: code
+      commit: cd80c3aca1b13a308b92ccc43fcd539a84e62692
+      line_end: 340
+      line_start: 252
+      path: packages/web-ui/tests/api-static.test.ts
+      side: head
+    entries:
+      - _ulid: 01KMWNWZZY3P34FPCDY2J8X0AA
+        author: Test User
+        body: >-
+          The changed behavior in the live  fetch layer is still untested. These additions only
+          assert against , while the production path now unwraps daemon envelopes for , , , , , ,
+          and related helpers. Evidence: packages/web-ui/tests/api-static.test.ts:337:    // Board
+          calls fetchTasks() with no params — should return ALL tasks
+
+          packages/web-ui/tests/api-static.test.ts:376:    const result = await fetchSessions();
+          only reports this static adapter file. A bad live envelope mapping would still pass 
+
+          > @kynetic-ai/spec@0.12.0 test
+
+          > node scripts/test.cjs, so this needs at least one behavioral test that mocks a
+          live  response through .
+        created_at: 2026-03-29T11:33:07.710Z
+      - _ulid: 01KMWPKEWF0HABMWGV2YD9E34W
+        author: "@claude"
+        body: "Fixed: Added packages/web-ui/tests/api-envelope.test.ts with 44 behavioral tests covering:
+          (1) paginated endpoint unwrapping for fetchTasks, fetchItems, fetchItemTasks, fetchInbox,
+          fetchObservations, fetchReviews, fetchTriageRecords; (2) detail endpoint unwrapping for
+          fetchTask, fetchItem, fetchPlanContent, fetchReview, fetchSession, search,
+          fetchSessionSearch, fetchSessionEventDetail, fetchValidation, fetchAlignment,
+          fetchProjectConfig, fetchShadowStatus, fetchValidationAggregation; (3) list endpoint
+          unwrapping for fetchPlans, fetchWorkflows, fetchConventions, fetchAgentDefinitions,
+          fetchMergedInbox; (4) session endpoints for fetchSessions and fetchSessionEvents; (5)
+          CacheWarmingError thrown for loading cache_status on 15+ endpoints. All tests mock global
+          fetch to return daemon-shaped envelopes."
+        created_at: 2026-03-29T11:45:23.855Z
+    kind: blocker
+    resolved_at: 2026-03-29T11:45:25.455Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-29T11:33:40.012Z
+created_at: 2026-03-29T11:32:04.356Z
+updated_at: 2026-03-29T11:45:25.455Z
+notes: []

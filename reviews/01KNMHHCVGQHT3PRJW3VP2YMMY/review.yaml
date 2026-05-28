@@ -1,0 +1,182 @@
+_ulid: 01KNMHHCVGQHT3PRJW3VP2YMMY
+slugs: []
+title: Review task-cache-aware-task-loading
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck passed
+    name: typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-04-07T18:00:20.578Z
+    completed_at: 2026-04-07T18:00:20.578Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/task-data-manager.test.ts passed: 19 suites, 57 tests"
+    name: task-data-manager targeted tests
+    required: true
+    runner: npm
+    created_at: 2026-04-07T18:00:23.112Z
+    completed_at: 2026-04-07T18:00:23.112Z
+events:
+  - _ulid: 01KNMHHCVG1JTSC6DAH4NAG8WK
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-07T17:58:39.728Z
+  - _ulid: 01KNMHJ02BHAD1QMBE6XKZ5183
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-07T17:58:59.403Z
+  - _ulid: 01KNMHKWR78X8M0HGQ1XA7T3QF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNMHKVXEFJV21C7RJBVWBDXS
+    timestamp: 2026-04-07T18:00:01.543Z
+  - _ulid: 01KNMHM672ZD8NBHD3N8NB4X5X
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNMHM5BWPTEESDP2CWFNTWZX
+    timestamp: 2026-04-07T18:00:11.234Z
+  - _ulid: 01KNMHMG4XGD0GSPGW71THX075
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-04-07T18:00:21.405Z
+  - _ulid: 01KNMHMJS5AKXTQYY1W6HGF9JE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: task-data-manager targeted tests
+    timestamp: 2026-04-07T18:00:24.101Z
+  - _ulid: 01KNMHP5V23RP107R8QFYT6GJD
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-07T18:01:16.386Z
+  - _ulid: 01KNMHP5V2BWEXWHYBP5SSH419
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-07T18:01:16.387Z
+  - _ulid: 01KNMJT1VXD6K35KVJ4YE8AR52
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNMHM5BWPTEESDP2CWFNTWZX
+    timestamp: 2026-04-07T18:20:51.965Z
+  - _ulid: 01KNMJT4H9NE2MYCV8HE1YMJ39
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNMHKVXEFJV21C7RJBVWBDXS
+    timestamp: 2026-04-07T18:20:54.697Z
+  - _ulid: 01KNMJTHX70J14HV5FS2SEQP6N
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNMHKVXEFJV21C7RJBVWBDXS
+    timestamp: 2026-04-07T18:21:08.391Z
+  - _ulid: 01KNMJTMKMXMWY9TZ8MK7A3GD0
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNMHM5BWPTEESDP2CWFNTWZX
+    timestamp: 2026-04-07T18:21:11.157Z
+examined_commit: 9eb7d18c54e9943217facfd01734ab79bad8865e
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNMBPCVJ0GEZR7FSE927QKNW"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNMHKVXEFJV21C7RJBVWBDXS
+    anchor:
+      type: code
+      commit: 9eb7d18c54e9943217facfd01734ab79bad8865e
+      line_end: 515
+      line_start: 491
+      path: tests/task-data-manager.test.ts
+      side: head
+    entries:
+      - _ulid: 01KNMHKVXFJ03Z00RH8YC3TXB0
+        author: Jacob Chapel
+        body: The new cache-read coverage never exercises the case where an entity-cache context exists but
+          the tasks domain is not ready.  only falls back to disk when , but the added tests cover
+          only ready-state hits and the no-context path. That means a regression that uses the cache
+          whenever AsyncLocalStorage is present would still pass this suite, so the task requirement
+          to fall through on non-ready cache state is not actually verified.
+        created_at: 2026-04-07T18:00:00.687Z
+      - _ulid: 01KNMJT3KTEY8WVZPAB68VN5GQ
+        author: Jacob Chapel
+        body: "Fixed in b53db5948: added behavioral coverage for the missing AsyncLocalStorage fallback
+          case. The new test executes listTasks, loadAllTasks, and getTask with an entity-cache
+          context whose tasks domain state is 'loading' and verifies each method falls through to
+          backend disk reads instead of using cached task data."
+        created_at: 2026-04-07T18:20:53.753Z
+    kind: blocker
+    resolved_at: 2026-04-07T18:21:07.497Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KNMHM5BWPTEESDP2CWFNTWZX
+    anchor:
+      type: code
+      commit: 9eb7d18c54e9943217facfd01734ab79bad8865e
+      line_end: 515
+      line_start: 491
+      path: tests/task-data-manager.test.ts
+      side: head
+    entries:
+      - _ulid: 01KNMHM5BWY62J59SXMYSS2FA6
+        author: Jacob Chapel
+        body: The new cache-read coverage never exercises the case where an entity-cache context exists but
+          the tasks domain is not ready. getReadyTaskCache() only falls back to disk when the tasks
+          domain state is ready-check false, but the added tests cover only ready-state hits and the
+          no-context path. A regression that used the cache whenever AsyncLocalStorage is present
+          would still pass this suite, so the required non-ready fallback is not actually verified.
+        created_at: 2026-04-07T18:00:10.364Z
+      - _ulid: 01KNMJT105J5YEZP99ZNNPAX4S
+        author: Jacob Chapel
+        body: "Fixed in b53db5948: added behavioral coverage for the missing AsyncLocalStorage fallback
+          case. The new test executes listTasks, loadAllTasks, and getTask with an entity-cache
+          context whose tasks domain state is 'loading' and verifies each method falls through to
+          backend disk reads instead of using cached task data."
+        created_at: 2026-04-07T18:20:51.077Z
+    kind: blocker
+    resolved_at: 2026-04-07T18:21:10.209Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-07T18:01:16.386Z
+created_at: 2026-04-07T17:58:39.728Z
+updated_at: 2026-04-07T18:21:10.209Z
+notes: []

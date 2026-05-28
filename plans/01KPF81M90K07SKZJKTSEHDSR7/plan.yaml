@@ -1,0 +1,33 @@
+_ulid: 01KPF81M90K07SKZJKTSEHDSR7
+slugs:
+  - plan-user-documentation-foundation
+title: User Documentation Foundation
+status: completed
+approved_at: 2026-04-20T23:54:44.732Z
+derived_specs:
+  - "@user-documentation"
+  - "@docs-section-taxonomy"
+  - "@docs-reachability"
+  - "@docs-navigation-shape"
+  - "@docs-getting-started-section"
+  - "@docs-concepts-section"
+  - "@docs-guides-section"
+  - "@docs-troubleshooting-section"
+  - "@docs-release-notes-availability"
+  - "@docs-search"
+  - "@readme-landing-page"
+derived_tasks:
+  - "@task-docs-rendering"
+  - "@task-docs-section-scaffolding"
+  - "@task-docs-nav-integration"
+  - "@task-docs-getting-started-content"
+  - "@task-docs-concepts-content"
+  - "@task-docs-guides-content"
+  - "@task-docs-troubleshooting-content"
+  - "@task-docs-release-notes-rendering"
+  - "@task-docs-search"
+  - "@task-docs-readme-trim"
+module_ref: null
+source_path: /home/chapel/Projects/kynetic-spec/plans/user-documentation-foundation.md
+created_at: 2026-04-18T02:52:15.520Z
+completed_at: null

@@ -1,0 +1,161 @@
+_ulid: 01KNEDH0CMPCMNVFDBNFMFMJ9E
+slugs: []
+title: Review task-daemon-spawn-runtime
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/cli/commands/serve.ts, src/cli/index.ts, tests/cli-serve.test.ts,
+      tests/cli-no-daemon.test.ts, tests/helpers/cli.ts. Commands run: git diff/stat, kspec task
+      get, kspec item get, kspec review for-task, kspec validate, rg AC annotations, targeted npm
+      test, full npm test. Claims verified: serve start honors configured runtime and full suite
+      remains green; searched correctness, AC coverage, test quality, integration, error handling."
+    name: review evidence
+    required: false
+    runner: codex
+    created_at: 2026-04-05T08:59:35.120Z
+    completed_at: 2026-04-05T08:59:35.120Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test passed: 2077 suites, 7534 tests, 5 skipped."
+    name: full npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-05T08:59:37.664Z
+    completed_at: 2026-04-05T08:59:37.664Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- tests/cli-serve.test.ts tests/cli-no-daemon.test.ts
+      tests/parser/daemon-config.test.ts passed: 17 suites, 62 tests."
+    name: targeted npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-05T08:59:40.188Z
+    completed_at: 2026-04-05T08:59:40.188Z
+events:
+  - _ulid: 01KNEDH0CMEWJAVS7VFP4830QH
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-05T08:53:06.068Z
+  - _ulid: 01KNEDHNP7WRJ4XFCTYZT7KB8H
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-05T08:53:27.879Z
+  - _ulid: 01KNEDWTTMSZEC54M586NYX3XV
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNEDWT2DBPVM3E819NJBM7E5
+    timestamp: 2026-04-05T08:59:33.588Z
+  - _ulid: 01KNEDWX6S6ECRNVAVCKP8JEF4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence
+    timestamp: 2026-04-05T08:59:36.025Z
+  - _ulid: 01KNEDWZM30A04S2127GNDMDZ3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full npm test
+    timestamp: 2026-04-05T08:59:38.499Z
+  - _ulid: 01KNEDX25MNB66AA8824JFKBDP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted npm test
+    timestamp: 2026-04-05T08:59:41.108Z
+  - _ulid: 01KNEDXECK80XPYZTV15J2D4JZ
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-05T08:59:53.619Z
+  - _ulid: 01KNEDXECKVB1XZW6ACX5PMCHC
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-05T08:59:53.619Z
+  - _ulid: 01KNEEF06DFH4B0TRC4MBAFS7K
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNEDWT2DBPVM3E819NJBM7E5
+    timestamp: 2026-04-05T09:09:28.909Z
+  - _ulid: 01KNEEF2HV8040XN53DFARG8C0
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNEDWT2DBPVM3E819NJBM7E5
+    timestamp: 2026-04-05T09:09:31.323Z
+examined_commit: 3a2a1fa44fccbb2fff87d33daa35c3154f94e598
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNE1NKXMCW3FZTNYK2QK5WFT"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNEDWT2DBPVM3E819NJBM7E5
+    anchor:
+      type: code
+      commit: 3a2a1fa44fccbb2fff87d33daa35c3154f94e598
+      line_end: 93
+      line_start: 83
+      path: tests/cli-no-daemon.test.ts
+      side: head
+    entries:
+      - _ulid: 01KNEDWT2DNCC8K5WHPXV5F46B
+        author: Jacob Chapel
+        body: This test is annotated for @daemon-runtime-adapter ac-auto-start-runtime, but it never
+          exercises auto-start behavior. It only asserts that getDaemonRuntimeCommand() returns its
+          input after mutating process.execPath. If maybeAutoStartDaemon() regressed to spawning
+          process.execPath again in src/cli/index.ts, this test would still pass, so the AC remains
+          unproven. Replace it with a behavioral test that triggers a non-serve CLI command, lets
+          auto-start run, and verifies the spawned daemon process/runtime comes from daemon.runtime
+          config.
+        created_at: 2026-04-05T08:59:32.813Z
+      - _ulid: 01KNEEEZF4G9P3CF1SCAMVC4QW
+        author: Jacob Chapel
+        body: "Fixed: replaced the helper-level assertion with a behavioral auto-start test. The test now
+          runs the CLI under bun, configures daemon.runtime=node, strips leaked
+          KSPEC_NO_DAEMON/session env, triggers a non-serve command so maybeAutoStartDaemon
+          executes, waits for the daemon pid file, and verifies the spawned process command contains
+          node and dist/daemon/index.js."
+        created_at: 2026-04-05T09:09:28.164Z
+    kind: blocker
+    resolved_at: 2026-04-05T09:09:30.494Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-05T08:59:53.619Z
+created_at: 2026-04-05T08:53:06.068Z
+updated_at: 2026-04-05T09:09:30.494Z
+notes: []

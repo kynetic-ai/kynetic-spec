@@ -1,0 +1,192 @@
+_ulid: 01KPPP0XPJ7AS5R0K9ASXC4C9D
+slugs: []
+title: Review extend daemon background shadow sync to all registered projects (cycle 6)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran npm test -- --fresh twice. Both full runs passed: 2202/2202 suites, 8066 passed, 5
+      skipped, 0 failed. Targeted daemon tests also passed (45/45). Logs:
+      /tmp/kspec-test-cache/01KPPNZQMW7A3DW07HQQ9G2KB6/c46d1f9a7ff28214.log and
+      /tmp/kspec-test-cache/01KPPNZQMW7A3DW07HQQ9G2KB6/822cb23ab9be20db.log."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-21T00:32:47.674Z
+    completed_at: 2026-04-21T00:32:47.674Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate fails on pre-existing repo metadata issues (meta.yaml schema error plus
+      unrelated repo-wide warnings). This task does not modify .kspec state; git diff against base
+      shows no .kspec changes.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-21T00:32:50.521Z
+    completed_at: 2026-04-21T00:32:50.521Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: node scripts/build-daemon.cjs completed successfully.
+    name: build:daemon
+    required: true
+    runner: node
+    created_at: 2026-04-21T00:32:53.460Z
+    completed_at: 2026-04-21T00:32:53.460Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: AGENTS.md, kspec-agents.md, .agents/skills/review-gates/SKILL.md,
+      packages/daemon/src/server.ts, packages/daemon/src/shadow-sync-manager.ts,
+      src/daemon/shadow-sync-manager.ts, packages/daemon/src/websocket/project-resolution.ts,
+      packages/daemon/src/middleware/project-context.ts, packages/daemon/src/routes/projects.ts,
+      scripts/build-daemon.cjs, tests/daemon-shadow-sync-multi-project.test.ts,
+      tests/daemon-read-path.test.ts, src/parser/shadow-sync-scheduler.ts. Commands run: kspec task
+      get, kspec item get, kspec review for-task/get/add/open, git diff/stat/name-only, rg AC scans,
+      kspec validate, targeted npm test, daemon build, two fresh full npm test runs, source lookups
+      with sed/nl/rg. Claims verified: build succeeds; full suite passes twice; targeted daemon
+      tests pass; task adds no .kspec changes; prior race fix covers re-register-after-cancel;
+      shutdown path still only drains current scheduler map. Categories searched: correctness (1
+      blocker: shutdown/in-flight-start race), edge cases (shutdown race checked), error handling
+      (no new issue), test quality (shutdown test misses in-flight start case), integration (server
+      registration/unregister wiring reviewed)."
+    name: evidence log
+    required: false
+    created_at: 2026-04-21T00:32:56.326Z
+    completed_at: 2026-04-21T00:32:56.326Z
+events:
+  - _ulid: 01KPPP0XPJMB1ZT14WBH1SK3CG
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-21T00:11:13.490Z
+  - _ulid: 01KPPP1HETEXDV9A961VJ9BQEE
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-21T00:11:33.723Z
+  - _ulid: 01KPPQ8EHAA849N5TPKG2B1HFF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-21T00:32:48.682Z
+  - _ulid: 01KPPQ8HBKF1YGJRBR0GVP261E
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-21T00:32:51.571Z
+  - _ulid: 01KPPQ8M6FZYMSWYKN2BD38FYG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: build:daemon
+    timestamp: 2026-04-21T00:32:54.479Z
+  - _ulid: 01KPPQ8PZ26HCE0CZRE3P1ZACM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: evidence log
+    timestamp: 2026-04-21T00:32:57.314Z
+  - _ulid: 01KPPQ8SWXAGV99M9CV72G8YT7
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPPQ8RX3S4YX4M3NQWSZNWK5
+    timestamp: 2026-04-21T00:33:00.317Z
+  - _ulid: 01KPPQ97VS6TAJJFQ342GE8F35
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-21T00:33:14.618Z
+  - _ulid: 01KPPQ97VT1G2NF812077J216V
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-21T00:33:14.618Z
+  - _ulid: 01KPPR99ME33TXKFHZQWQNBGJ3
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPPQ8RX3S4YX4M3NQWSZNWK5
+    timestamp: 2026-04-21T00:50:45.006Z
+  - _ulid: 01KPPR9HDSV5J95N98XMKP46CN
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPPQ8RX3S4YX4M3NQWSZNWK5
+    timestamp: 2026-04-21T00:50:52.985Z
+examined_commit: e01fb1bf515ef05a575334191653ee8f7449ed18
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KPP7XFJ7Z1MG2NQAXMWZTA6W"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPPQ8RX3S4YX4M3NQWSZNWK5
+    anchor:
+      type: code
+      commit: e01fb1bf515ef05a575334191653ee8f7449ed18
+      line_end: 825
+      line_start: 821
+      path: packages/daemon/src/server.ts
+      side: head
+    entries:
+      - _ulid: 01KPPQ8RX38RS0SFM15ZP52XE5
+        author: Jacob Chapel
+        body: Shutdown still misses in-flight shadow-sync starts. In server shutdown we only stop schedulers
+          already present in `shadowSyncSchedulers`, but `startShadowSyncForProject()` can still be
+          suspended in `loadProjectConfig()` with no map entry yet. Because shutdown never marks
+          those in-flight starts cancelled, that promise can resume after SIGTERM and run
+          `scheduler.start()`/`shadowSyncSchedulers.set()`, recreating background pulls after the
+          shutdown pass. This violates @config-shadow ac-17 under a register-while-shutting-down
+          race. The new shutdown test only exercises iterating the current map, so this path is
+          still uncovered.
+        created_at: 2026-04-21T00:32:59.299Z
+      - _ulid: 01KPPR98MTVMFTYWKE3QTWE5TE
+        author: "@claude"
+        body: "Fixed: Extracted stopAllShadowSync() that cancels all in-flight starts (adds their keys to
+          cancelledStarts) before stopping installed schedulers and clearing the map. server.ts
+          shutdown now calls stopAllShadowSync() instead of the manual loop+clear, so in-flight
+          starts suspended in loadProjectConfig() see the cancellation and bail out when they
+          resume. Added a behavioral test that reproduces the exact race: start without awaiting →
+          stopAllShadowSync → release config gate → verify no scheduler installed."
+        created_at: 2026-04-21T00:50:43.993Z
+    kind: blocker
+    resolved_at: 2026-04-21T00:50:51.988Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-21T00:33:14.617Z
+created_at: 2026-04-21T00:11:13.490Z
+updated_at: 2026-04-21T00:50:51.988Z
+notes: []

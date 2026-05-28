@@ -1,0 +1,423 @@
+_ulid: 01KKTRT7VWQ9YDQQAK2FT3RV3Z
+slugs: []
+title: "Review: Review Records Web UI plan"
+author: "@claude"
+checks: []
+events:
+  - _ulid: 01KKTRT7VVSCS7WJCCYAA7G9WE
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-16T07:29:52.508Z
+  - _ulid: 01KKTRTJRAJPJMGSY2MW069F89
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-16T07:30:03.658Z
+  - _ulid: 01KKTRXVRMD2PVYTB7WR4PSG7S
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKTRXVREZJCZNSQQYFH2SRRF
+    timestamp: 2026-03-16T07:31:51.188Z
+  - _ulid: 01KKTRYD8NKWRXKFNSC1X1GCVT
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KKTRYD8BJHH5T4G5ERCZ47MA
+    timestamp: 2026-03-16T07:32:09.109Z
+  - _ulid: 01KKTRYREY9799QC9H7FJZ061E
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKTRYREP0EXD2RZPBFG8ZMNK
+    timestamp: 2026-03-16T07:32:20.574Z
+  - _ulid: 01KKTRZ3D29Z2FBA10F2CETZ9G
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKTRZ3CR3CQ6HXQ9TM4HXBYA
+    timestamp: 2026-03-16T07:32:31.778Z
+  - _ulid: 01KKTRZFD8R0XE1SG0RY1YAHAH
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKTRZFCZRX92RJQ86ZDAK5KT
+    timestamp: 2026-03-16T07:32:44.072Z
+  - _ulid: 01KKTRZVA80PHCE1VZQ5B52VJT
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KKTRZVA0TRKDG7W4VH48PXJF
+    timestamp: 2026-03-16T07:32:56.264Z
+  - _ulid: 01KKTS06Y6X531GC3CMZW4FSRS
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKTS06XV59ZTCERGD6WVBM0T
+    timestamp: 2026-03-16T07:33:08.166Z
+  - _ulid: 01KKTS0GQ05RS359S0T5PNRA2J
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKTS0GPPH0KPX50K1NZ4H7FF
+    timestamp: 2026-03-16T07:33:18.176Z
+  - _ulid: 01KKTS0T354X8Z978TQ1MCJG9R
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKTS0T2XHES1CMW4P2EY03T7
+    timestamp: 2026-03-16T07:33:27.782Z
+  - _ulid: 01KKTS13R003VB2MRZ4JARGYVT
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKTS13QRQAEMX333KZ60E118
+    timestamp: 2026-03-16T07:33:37.664Z
+  - _ulid: 01KKTS1D6AP1EM444N5E07H8Y1
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KKTS1D5Y39TZ6HMTWZ426TDZ
+    timestamp: 2026-03-16T07:33:47.338Z
+  - _ulid: 01KKTS2BW5CZFSF0VBXB9N4Z38
+    actor: plan-review-agent
+    event_type: verdict_submitted
+    payload:
+      decision: request_changes
+    timestamp: 2026-03-16T07:34:18.757Z
+  - _ulid: 01KKTS7F8F44Q7K2RPSM847SX1
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-16T07:37:06.063Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-review-records-web-ui"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KKTRXVREZJCZNSQQYFH2SRRF
+    entries:
+      - _ulid: 01KKTRXVRFMAAJP8XFDZT088JB
+        author: "@claude"
+        body: >-
+          **API spec ac-3 is too broad — should be split into individual mutation endpoints.**
+
+
+          ac-3 lumps five distinct mutation operations (POST comment, POST verdict, POST check,
+          PATCH resolve thread, PATCH lifecycle transition) into a single acceptance criterion. Each
+          of these is a different endpoint with different request shapes, different validation
+          rules, and different side effects (e.g., verdict submission may trigger task state
+          transitions via handleVerdictTaskTransition). A single AC cannot meaningfully be tested —
+          when would you mark it as satisfied?
+
+
+          Recommendation: Split ac-3 into separate ACs for each mutation endpoint:
+
+          - ac-3a: POST /api/reviews/:id/threads (create thread/comment)
+
+          - ac-3b: POST /api/reviews/:id/threads/:threadId/replies (reply to thread)
+
+          - ac-3c: POST /api/reviews/:id/verdicts (submit verdict)
+
+          - ac-3d: POST /api/reviews/:id/checks (record check)
+
+          - ac-3e: PATCH /api/reviews/:id/threads/:threadId/resolve (resolve thread)
+
+          - ac-3f: PATCH /api/reviews/:id/threads/:threadId/reopen (reopen thread)
+
+          - ac-3g: POST /api/reviews/:id/lifecycle (lifecycle transitions: open, close, archive)
+
+
+          The existing review library already has distinct functions for each (addThreadAtomic,
+          addReplyAtomic, resolveThreadAtomic, reopenThreadAtomic, submitVerdict,
+          transitionLifecycle) — the API spec should mirror this granularity.
+        created_at: 2026-03-16T07:31:51.183Z
+    kind: blocker
+  - _ulid: 01KKTRYD8BJHH5T4G5ERCZ47MA
+    entries:
+      - _ulid: 01KKTRYD8BB9KXFBGRYPKGH6Q6
+        author: "@claude"
+        body: >-
+          **Missing: shared types for review API responses.**
+
+
+          The plans route imports from @kynetic-ai/shared (PlanSummary, PlanDetail). The tasks route
+          similarly structures its responses. But there are no review types in the shared package
+          yet. The plan's implementation notes say "follow existing daemon API patterns" but don't
+          mention the need to define shared types for ReviewSummary, ReviewDetail, etc. in the
+          shared package.
+
+
+          This isn't a spec gap per se (it's an implementation detail), but without it being called
+          out, the implementer will either skip it (causing type drift between daemon and web UI) or
+          discover it mid-implementation and have to context-switch to the shared package first.
+
+
+          Recommendation: Add a note in the implementation section about defining shared types in
+          @kynetic-ai/shared for the review API response shapes (ReviewListItem, ReviewDetail,
+          ReviewThreadView, etc.).
+        created_at: 2026-03-16T07:32:09.099Z
+    kind: question
+  - _ulid: 01KKTRYREP0EXD2RZPBFG8ZMNK
+    entries:
+      - _ulid: 01KKTRYREPNA70KP6P7Y8PXR6M
+        author: "@claude"
+        body: >-
+          **Missing API spec: no AC for error cases and validation.**
+
+
+          The existing review library has review-validation.ts and review-record-validation spec
+          (@review-record-validation). The API spec has no ACs for:
+
+          - Invalid review ID returns 404
+
+          - Invalid mutation payloads return 400 with validation errors
+
+          - State-invalid transitions (e.g., submitting verdict on a closed review) return
+          appropriate errors
+
+
+          The daemon's error handling patterns matter for the web UI — it needs to know what error
+          shapes to expect. The existing specs for tasks route handle this via
+          @trait-error-guidance, but the plan doesn't reference any traits.
+
+
+          Recommendation: Either add explicit error ACs or reference @trait-error-guidance and
+          @trait-json-output as traits on the review-records-daemon-api spec.
+        created_at: 2026-03-16T07:32:20.566Z
+    kind: blocker
+  - _ulid: 01KKTRZ3CR3CQ6HXQ9TM4HXBYA
+    entries:
+      - _ulid: 01KKTRZ3CSNH1S3ZMB9XQEC6PP
+        author: "@claude"
+        body: >-
+          **Web UI spec ac-3 conflates multiple distinct interactions into one AC.**
+
+
+          ac-3 covers: adding comments (new threads), replying to existing threads,
+          resolving/reopening threads, and submitting verdicts. These are fundamentally different UI
+          components with different interaction patterns:
+
+          - Thread creation needs a form with kind selection (blocker/question/nit) and optional
+          anchor
+
+          - Reply needs inline text input within a thread
+
+          - Resolve/reopen is a button toggle on a thread
+
+          - Verdict submission is a separate form with decision dropdown and summary
+
+
+          Each deserves its own AC so they can be independently tested and verified. As written,
+          "they can participate" is vague — participate how? What constitutes success?
+
+
+          Recommendation: Split into at least 4 ACs covering each interaction type separately, with
+          specific testable outcomes.
+        created_at: 2026-03-16T07:32:31.769Z
+    kind: blocker
+  - _ulid: 01KKTRZFCZRX92RJQ86ZDAK5KT
+    entries:
+      - _ulid: 01KKTRZFCZWJ3WQZNXKEWJFR5H
+        author: "@claude"
+        body: >-
+          **Missing spec: review list filtering by task ref needs API support.**
+
+
+          Web UI ac-1 says "with filtering and sorting" but the API spec ac-1 lists specific filters
+          (status, disposition, subject-type, reviewer, linked task). The "linked task" filter is
+          important but underspecified — does it filter by subject.ref when subject_type is "task",
+          or by related_refs, or both? The review-task-lifecycle-integration spec shows reviews can
+          link to tasks via subject binding OR via related_refs. The filter semantics need to be
+          explicit.
+
+
+          Also, the API spec mentions no sorting parameter. The web UI spec mentions sorting but the
+          API doesn't expose a sort query parameter. Without server-side sorting, the client would
+          need to fetch all reviews and sort locally — violating the "API list endpoints must use
+          pagination; clients must not fetch unbounded entity lists for derived data" convention.
+
+
+          Recommendation: Add explicit sort parameter to API ac-1, and clarify what "linked task"
+          filtering means (subject ref, related_refs, or both).
+        created_at: 2026-03-16T07:32:44.063Z
+    kind: blocker
+  - _ulid: 01KKTRZVA0TRKDG7W4VH48PXJF
+    entries:
+      - _ulid: 01KKTRZVA0T1YDHJSMM1W499D8
+        author: "@claude"
+        body: >-
+          **Missing spec: no AC for task-to-review navigation from task detail page.**
+
+
+          Web UI ac-4 says reviews are "shown inline or linked from the task view." This is good,
+          but the API needs to support this. There's no AC on the API spec for resolving reviews by
+          task ref (e.g., GET /api/reviews?task=@task-slug or a dedicated GET
+          /api/tasks/:ref/reviews endpoint). The web UI task detail page would need to fetch reviews
+          linked to a task, but there's no explicit API surface for this.
+
+
+          The review-task-lifecycle-integration spec (@review-task-lifecycle-integration ac-1) says
+          tasks can have a review_ref field, but there could be multiple reviews per task over its
+          lifecycle. The API needs to support "all reviews for this task" not just "the current
+          review_ref."
+
+
+          Recommendation: Add an AC to the API spec for querying reviews by task ref, or clarify
+          that the list endpoint's "linked task" filter serves this purpose.
+        created_at: 2026-03-16T07:32:56.256Z
+    kind: question
+  - _ulid: 01KKTS06XV59ZTCERGD6WVBM0T
+    entries:
+      - _ulid: 01KKTS06XWV17DJQQN818Z8MS1
+        author: "@claude"
+        body: >-
+          **Missing spec: no AC for WebSocket topic naming.**
+
+
+          API ac-4 says "a real-time update event is broadcast" but doesn't specify the topic name
+          or event types. Looking at existing patterns: tasks use 'tasks:updates' with
+          'task_updated', inbox uses 'inbox:updates' with 'inbox_item_created'/'inbox_item_deleted',
+          triage uses 'triage:updates' with specific event subtypes.
+
+
+          The review domain has many distinct mutation types (thread added, reply added, thread
+          resolved, verdict submitted, check added, lifecycle changed). The event naming and topic
+          structure should be specified so the web UI knows what to subscribe to and what event
+          shapes to expect.
+
+
+          Recommendation: Add explicit topic/event naming to ac-4, e.g., topic 'reviews:updates'
+          with events like 'review_thread_added', 'review_verdict_submitted',
+          'review_lifecycle_changed', etc. Or consolidate to a single 'review_updated' event if the
+          client just refetches the whole record.
+        created_at: 2026-03-16T07:33:08.156Z
+    kind: nit
+  - _ulid: 01KKTS0GPPH0KPX50K1NZ4H7FF
+    entries:
+      - _ulid: 01KKTS0GPPM0X9TYRJ7GSK8W0V
+        author: "@claude"
+        body: >-
+          **Missing: no traits referenced on either spec.**
+
+
+          The daemon-server parent spec inherits from @trait-json-output, @trait-error-guidance,
+          @trait-shadow-commit, @trait-localhost-security, and @trait-websocket-protocol. The plan's
+          specs don't reference any traits. At minimum, the API spec should inherit:
+
+          - @trait-json-output (all API responses should be valid JSON)
+
+          - @trait-error-guidance (error responses should include suggested actions)
+
+
+          And the web UI spec likely has UI-related traits that should apply (e.g., URL state
+          management patterns mentioned in conventions).
+
+
+          Without traits, the implementer has to guess which cross-cutting concerns apply. The plan
+          should explicitly declare trait refs.
+
+
+          Recommendation: Add traits field to both specs in the plan. At minimum @trait-json-output
+          and @trait-error-guidance for the API spec.
+        created_at: 2026-03-16T07:33:18.166Z
+    kind: blocker
+  - _ulid: 01KKTS0T2XHES1CMW4P2EY03T7
+    entries:
+      - _ulid: 01KKTS0T2XF5XAHKK45DHC8VR8
+        author: "@claude"
+        body: >-
+          **Task ordering is correct but missing a shared-types dependency step.**
+
+
+          The two tasks have the right dependency: web UI depends on daemon API. However, if shared
+          types (ReviewSummary, ReviewDetail, etc.) need to be defined in @kynetic-ai/shared before
+          either can be fully implemented, there's an implicit third piece of work that should be
+          either: (a) called out as part of the daemon API task, or (b) a separate prerequisite
+          task.
+
+
+          The existing plans route imports PlanSummary and PlanDetail from the shared package. The
+          review routes will need analogous types. This is a minor scope item but should be
+          explicit.
+
+
+          Recommendation: Add a note or expand the daemon API task scope to include shared type
+          definitions.
+        created_at: 2026-03-16T07:33:27.774Z
+    kind: nit
+  - _ulid: 01KKTS13QRQAEMX333KZ60E118
+    entries:
+      - _ulid: 01KKTS13QRHPBRST93K9Z6DC63
+        author: "@claude"
+        body: >-
+          **Positive: good parent refs and spec structure.**
+
+
+          Both specs have correct parent refs (@daemon-server for API, @web-ui for UI). The type is
+          'requirement' which is appropriate — these are concrete requirements under existing
+          module/feature parents. The separation of API and UI into distinct specs with a clear
+          dependency is the right architecture.
+
+
+          The description text on both specs clearly communicates intent. The implementation notes
+          correctly identify the existing review library functions to delegate to and the
+          SvelteKit/TanStack Query patterns to follow.
+        created_at: 2026-03-16T07:33:37.656Z
+    kind: nit
+  - _ulid: 01KKTS1D5Y39TZ6HMTWZ426TDZ
+    entries:
+      - _ulid: 01KKTS1D5YVPHCZ4BWZPQ503H7
+        author: "@claude"
+        body: >-
+          **Missing: no AC for review detail page URL routing pattern.**
+
+
+          The web UI spec doesn't specify what the URL structure looks like. Existing patterns:
+          /tasks, /tasks/board, /plans, /inbox, /sessions, /sessions/[id]. The review pages would
+          presumably be /reviews (list) and /reviews/[id] (detail), but this isn't stated.
+
+
+          More importantly, the plan doesn't specify how deep-linking to specific threads works. If
+          a user clicks a thread notification or link, they should land on the review detail page
+          scrolled to that thread. This is a common pattern that's easy to miss and hard to
+          retrofit.
+
+
+          Recommendation: Add an AC for URL structure and deep-linking to threads (e.g.,
+          /reviews/:id?thread=:threadId or /reviews/:id#thread-:threadId).
+        created_at: 2026-03-16T07:33:47.326Z
+    kind: question
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: draft-no-hash
+    decision: request_changes
+    reviewer: plan-review-agent
+    role: reviewer
+    created_at: 2026-03-16T07:34:18.746Z
+created_at: 2026-03-16T07:29:52.508Z
+updated_at: 2026-03-16T07:37:06.052Z
+notes: []

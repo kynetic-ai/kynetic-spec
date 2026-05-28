@@ -1,0 +1,100 @@
+_ulid: 01KM4Y3NET6V4RD2EWVBX7W68G
+slugs: []
+title: Review ignore transient plans directory during plan sessions
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: .gitignore, src/parser/shadow.ts, src/cli/commands/setup.ts,
+      src/cli/commands/session/checkpoint.ts, tests/cli/session-checkpoint.test.ts,
+      tests/enhanced-setup.test.ts, tests/init-setup-sessions-dir.test.ts. Commands run: git
+      diff/stat/log, kspec task get, kspec validate, targeted npm test for changed suites, full npm
+      test. Claims verified: init/setup now backfill plans/ into root .gitignore and checkpoint
+      stays clean for transient plans files because git status ignores them once the entry exists.
+      Categories searched: correctness, regression risk, edge cases, test quality, integration. Full
+      suite result: 289 files passed, 6652 tests passed, 3 skipped."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-20T06:19:50.998Z
+    completed_at: 2026-03-20T06:19:50.998Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation fails in the current snapshot for pre-existing repo-wide
+      spec/reference/completeness issues unrelated to this task: 3 missing relates_to refs in
+      .kspec/modules/meta.yaml plus existing completeness/alignment warnings. No new task-specific
+      validation regression observed in the reviewed diff."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-20T06:19:52.918Z
+    completed_at: 2026-03-20T06:19:52.918Z
+events:
+  - _ulid: 01KM4Y3NETVBFQTYGT8T3KX64F
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-20T06:14:48.538Z
+  - _ulid: 01KM4Y4AGH8SN3WR3EREFMJSP6
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-20T06:15:10.097Z
+  - _ulid: 01KM4YCX1KG447H1HKANK0NZZB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-20T06:19:51.219Z
+  - _ulid: 01KM4YCXPN38F6FNMY6743J46Z
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-20T06:19:51.893Z
+  - _ulid: 01KM4YCXPNRF00SX5C9TXD8XMC
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-20T06:19:51.893Z
+  - _ulid: 01KM4YCYX1W0P3T07XN1YN02VT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-03-20T06:19:53.121Z
+examined_commit: 7846cea81ec4fe369c73b3afe876b13407fbb609
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM4MSHAM7WJS8J9S05XPYA7D"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-20T06:19:51.893Z
+created_at: 2026-03-20T06:14:48.538Z
+updated_at: 2026-03-20T06:19:52.918Z
+notes: []

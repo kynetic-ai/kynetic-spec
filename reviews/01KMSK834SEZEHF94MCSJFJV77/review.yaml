@@ -1,0 +1,136 @@
+_ulid: 01KMSK834SEZEHF94MCSJFJV77
+slugs: []
+title: Review task-fix-ws-watcher-registration (cycle 2)
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate passed with only repository-wide warnings (no new errors for this task).
+    name: validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-28T06:57:20.130Z
+    completed_at: 2026-03-28T06:57:20.130Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test -- tests/daemon-session-sync-multi-project.test.ts => 6 suites passed, 23/23
+      tests passed.
+    name: daemon-session-sync-multi-project
+    required: true
+    runner: npm-test
+    created_at: 2026-03-28T06:57:24.286Z
+    completed_at: 2026-03-28T06:57:24.286Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test in snapshot failed only in unchanged tests/daemon-command-api.test.ts (12
+      failures). Verified independently by running npm test -- tests/daemon-command-api.test.ts at
+      base commit b89e7561869cc09edff3591d3db7461dcc17ccc4 and reproducing the same 12 failures.
+    name: npm-test-full
+    required: false
+    runner: npm-test
+    created_at: 2026-03-28T06:57:28.653Z
+    completed_at: 2026-03-28T06:57:28.653Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: packages/daemon/src/server.ts,
+      packages/daemon/src/websocket/project-resolution.ts, packages/daemon/src/project-context.ts,
+      packages/daemon/src/middleware/project-context.ts, packages/daemon/src/routes/projects.ts,
+      tests/daemon-session-sync-multi-project.test.ts. Commands run: kspec task get, kspec review
+      get/for-task, git diff/stat, kspec validate, rg AC annotations, npm test, npm test --
+      tests/daemon-session-sync-multi-project.test.ts, base-commit reproduction for
+      daemon-command-api. Claims verified: watcher startup is awaited before WebSocket project
+      binding resolves; watcher startup failures reject resolution; full-suite daemon-command-api
+      failures are pre-existing on base dev. Categories searched: correctness, edge cases, error
+      handling, integration, test quality."
+    name: review-evidence
+    required: false
+    runner: manual
+    created_at: 2026-03-28T06:57:33.133Z
+    completed_at: 2026-03-28T06:57:33.133Z
+events:
+  - _ulid: 01KMSK834R6G7CNMB61HS0K72R
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-28T06:49:02.361Z
+  - _ulid: 01KMSK9WHVSFBTHWF7FZQQK9QT
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-28T06:50:01.147Z
+  - _ulid: 01KMSKQ9W9NZR7EGSPZA8J270D
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: validate
+    timestamp: 2026-03-28T06:57:20.778Z
+  - _ulid: 01KMSKQDYS8QSA8RQKYCHPS1JM
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: daemon-session-sync-multi-project
+    timestamp: 2026-03-28T06:57:24.953Z
+  - _ulid: 01KMSKQJ6ERQGRW7H36P019A0R
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm-test-full
+    timestamp: 2026-03-28T06:57:29.294Z
+  - _ulid: 01KMSKQPK4XVR140ZWG1JBS1PQ
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-03-28T06:57:33.796Z
+  - _ulid: 01KMSKS583QNR0JQNPYVS0ECVQ
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-28T06:58:21.571Z
+  - _ulid: 01KMSKS583W8ASP71ARV36ZB8E
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-28T06:58:21.571Z
+examined_commit: f8c4c2ab4017040dedf5b60dcda210f4e9f3b3cc
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMSFMG5AJNYD4PWW8MNPVH5C"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-28T06:58:21.571Z
+created_at: 2026-03-28T06:49:02.361Z
+updated_at: 2026-03-28T06:58:21.571Z
+notes: []

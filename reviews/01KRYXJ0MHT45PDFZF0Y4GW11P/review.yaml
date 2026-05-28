@@ -1,0 +1,158 @@
+_ulid: 01KRYXJ0MHT45PDFZF0Y4GW11P
+slugs: []
+title: Review prevent overlapping periodic dispatch reconciliation (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/agent-dispatch-engine.test.ts: 135/135 tests passed; log
+      /tmp/kspec-test-cache/01KRYXFYPJ0YEQP1FPSCYZRG0H/0c3fcaba8d78c0ba.log"
+    name: focused dispatch tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-19T01:42:23.284Z
+    completed_at: 2026-05-19T01:42:23.284Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test: 2448/2448 suites passed; 9280/9285 tests passed with 5 skipped; log
+      /tmp/kspec-test-cache/01KRYXFYPJ0YEQP1FPSCYZRG0H/f920aa95bc4722a2.log"
+    name: full npm test
+    required: true
+    runner: npm test
+    created_at: 2026-05-19T01:42:35.177Z
+    completed_at: 2026-05-19T01:42:35.177Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate reported schema/reference OK with warnings only (exit 6); kspec validate
+      --warnings-ok exited 0. Warnings are existing project-wide backlog, not introduced by this
+      task.
+    name: kspec validate
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-19T01:42:45.531Z
+    completed_at: 2026-05-19T01:42:45.531Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check f688b032ae42aaaac1941fb340c8d5edfe5765e0..HEAD produced no whitespace errors
+    name: diff hygiene
+    required: false
+    runner: git diff --check
+    created_at: 2026-05-19T01:42:55.731Z
+    completed_at: 2026-05-19T01:42:55.731Z
+events:
+  - _ulid: 01KRYXJ0MGJ43NAYSWGWZEY1M8
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-19T01:28:12.688Z
+  - _ulid: 01KRYXJDJEBY4W4DRD1DCBERHP
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-19T01:28:25.934Z
+  - _ulid: 01KRYYC0RHXY0969BJZBPFWDMC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused dispatch tests
+    timestamp: 2026-05-19T01:42:24.786Z
+  - _ulid: 01KRYYCCBW2V9SG90VBH225G34
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full npm test
+    timestamp: 2026-05-19T01:42:36.668Z
+  - _ulid: 01KRYYCPFMKCX35FAZMJ3PW6KJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-19T01:42:47.028Z
+  - _ulid: 01KRYYD0E710CAAEXGPD8JZCY8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff hygiene
+    timestamp: 2026-05-19T01:42:57.223Z
+  - _ulid: 01KRYYDQVGX2S086R8BJ8TGDSN
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KRYYDPF9CT7SGT1477E1KFJF
+    timestamp: 2026-05-19T01:43:21.200Z
+  - _ulid: 01KRYYE8PH1FW6ADZZDHMYMD39
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-19T01:43:38.450Z
+  - _ulid: 01KRYYE8PJ1VDXSP3S3QRTXKHG
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-19T01:43:38.450Z
+examined_commit: b83adf6c8cb6b7217238f3fc11157be38e34afb1
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRYMPBC8YM4X3KZC6SPBV6R2"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRYYDPF9CT7SGT1477E1KFJF
+    entries:
+      - _ulid: 01KRYYDPF98PHGKZ024MP1ACWZ
+        author: codex
+        body: >-
+          Evidence log (reviewer note, no findings):
+
+          Files read: src/agent-runtime/dispatch.ts, tests/agent-dispatch-engine.test.ts,
+          tests/cli-no-daemon.test.ts, kspec-agents.md, task/spec/review records.
+
+          Commands run: kspec task get, kspec item get @agent-dispatch-engine, kspec review
+          for-task/get, kspec validate, kspec validate --warnings-ok, rg AC annotations, git
+          diff/stat/log/show/diff --check, npm test -- --run tests/agent-dispatch-engine.test.ts,
+          npm test.
+
+          Claims verified: prior blocker is fixed by a behavioral stop() test at
+          tests/agent-dispatch-engine.test.ts:6134; non-overlap is covered at
+          tests/agent-dispatch-engine.test.ts:6096.
+
+          Categories searched: correctness, stop/shutdown race behavior, timer overlap edge case,
+          test quality/source-scanning, validation, full-suite regression, diff hygiene.
+        created_at: 2026-05-19T01:43:19.785Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-19T01:43:38.449Z
+created_at: 2026-05-19T01:28:12.689Z
+updated_at: 2026-05-19T01:43:38.450Z
+notes: []

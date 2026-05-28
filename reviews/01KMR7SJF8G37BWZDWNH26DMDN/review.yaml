@@ -1,0 +1,429 @@
+_ulid: 01KMR7SJF8G37BWZDWNH26DMDN
+slugs: []
+title: Review task-migrate-read-routes (cycle 5)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: |-
+      Ran 
+      > @kynetic-ai/spec@0.12.0 test
+      > node scripts/test.cjs: 1947/1947 suites passed, 6969/6974 tests passed, 5 skipped.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-27T18:16:03.376Z
+    completed_at: 2026-03-27T18:16:03.376Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      Ran ✓ Validation passed
+
+      ────────────────────────────────────────
+
+      Files checked: 10
+
+      Items checked: 567
+
+      Tasks checked: 0
+
+      Meta: 10 agents, 11 workflows, 10 conventions
+
+
+      Schema: OK
+
+      References: OK
+
+
+      Reference warnings: 1
+        ⚠ @skills
+          Orphaned skill directory 'skills' has no corresponding meta entry
+          in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+      Alignment warnings: 34
+        Orphaned specs (no tasks): 30
+          ○ Test Trait
+          ○ Filterable List Commands
+          ○ Dry Run Preview Mode
+          ... and 27 more
+        Status mismatches: 4
+          ! Task Set Batch Support
+            Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+          ! Lazy Shadow Sync on Reads
+            Spec "Lazy Shadow Sync on Reads" status is "implemented" but should be "in_progress" based on task progress
+          ! Session Summary Cache
+            Spec "Session Summary Cache" status is "implemented" but should be "in_progress" based on task progress
+          ! Multi-Directory Daemon Architecture
+            Spec "Multi-Directory Daemon Architecture" status is "implemented" but should be "in_progress" based on task progress
+
+      Alignment stats: 404/567 specs have tasks, 400 aligned
+
+
+      Completeness warnings: 485
+        Missing acceptance criteria: 1
+          ○ @01KJN1WT - Test Trait
+        Missing own AC coverage: 230
+          ! @spec-item - Spec Item
+            Uncovered: ac-item-1, ac-item-2
+          ! @ulid-system - ULID Identifier System
+            Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+          ! @slug-system - Slug Alias System
+            Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+          ... and 227 more
+        Invalid AC annotations: 254
+          ! AC annotation references '@slug' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-read-routes-01kmmb3t-review/tests/ac-annotation-validation.test.ts:6
+          ! AC annotation references '@my-spec' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-read-routes-01kmmb3t-review/tests/ac-annotation-validation.test.ts:84
+          ! AC annotation references '@my-spec' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-read-routes-01kmmb3t-review/tests/ac-annotation-validation.test.ts:87
+          ! AC annotation references '@spec-a' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-read-routes-01kmmb3t-review/tests/ac-annotation-validation.test.ts:114
+          ! AC annotation references '@spec-b' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-read-routes-01kmmb3t-review/tests/ac-annotation-validation.test.ts:118
+          ... and 249 more
+      Skills: OK (10 files checked). It exited 6 with the repo's existing warnings only (1 orphaned
+      skill dir, 34 alignment warnings, 485 completeness warnings); schema and reference validation
+      both remained OK with no new task-specific errors.
+    name: kspec validate
+    required: false
+    created_at: 2026-03-27T18:16:06.657Z
+    completed_at: 2026-03-27T18:16:06.657Z
+events:
+  - _ulid: 01KMR7SJF8Y3PNQACGBY8YTTB7
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T18:09:37.768Z
+  - _ulid: 01KMR7T02X0AH6BBAE96M0MKAK
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T18:09:51.709Z
+  - _ulid: 01KMR859YHQRZS81PW3KWQ4KB3
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMR859DKVCAHCHFJ1ZP8XRXC
+    timestamp: 2026-03-27T18:16:02.258Z
+  - _ulid: 01KMR85BHZ9RJ7VENN1RCKXR3H
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-27T18:16:03.904Z
+  - _ulid: 01KMR85D4Q0FFZN8MNZ8VKVBY4
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMR85CN0FQRNZSC2H713CZZX
+    timestamp: 2026-03-27T18:16:05.527Z
+  - _ulid: 01KMR85ERPEYHJ9PQ9X2YGSVJY
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-27T18:16:07.190Z
+  - _ulid: 01KMR85J0C08DHNVNQ1STYNZ8A
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMR85HF6FHSB5BV7632N6GJC
+    timestamp: 2026-03-27T18:16:10.509Z
+  - _ulid: 01KMR85KMP0N31G4XWFYHVQ9AE
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMR85K3NHR1SREH5FMVKXEYP
+    timestamp: 2026-03-27T18:16:12.182Z
+  - _ulid: 01KMR86DEZ9PTVBWSV5SCSZ235
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMR859DKVCAHCHFJ1ZP8XRXC
+    timestamp: 2026-03-27T18:16:38.623Z
+  - _ulid: 01KMR86F1Y5GJXQEWW2XTC03MY
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMR85HF6FHSB5BV7632N6GJC
+    timestamp: 2026-03-27T18:16:40.254Z
+  - _ulid: 01KMR86GPSQ6PQPH8C54XAA798
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMR85CN0FQRNZSC2H713CZZX
+    timestamp: 2026-03-27T18:16:41.945Z
+  - _ulid: 01KMR86JB2B3MRBNEK4GQWY473
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMR85K3NHR1SREH5FMVKXEYP
+    timestamp: 2026-03-27T18:16:43.618Z
+  - _ulid: 01KMR873SREZBQ96KG4QWBY9XX
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMR8739XWFM5WP9EZGXPNH5M
+    timestamp: 2026-03-27T18:17:01.496Z
+  - _ulid: 01KMR875C0KWH8RD8XYMEMGXYN
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-27T18:17:03.104Z
+  - _ulid: 01KMR875C0766693JKR38AEPYK
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T18:17:03.104Z
+  - _ulid: 01KMR9CF0AMSGSD613XFA43AMF
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMR859DKVCAHCHFJ1ZP8XRXC
+    timestamp: 2026-03-27T18:37:25.386Z
+  - _ulid: 01KMR9CJZC434CVFTK8M77DDRF
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMR85CN0FQRNZSC2H713CZZX
+    timestamp: 2026-03-27T18:37:29.452Z
+  - _ulid: 01KMR9CPTT33R0TWYR0XRY4GFY
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMR85HF6FHSB5BV7632N6GJC
+    timestamp: 2026-03-27T18:37:33.402Z
+  - _ulid: 01KMR9CTS4JDDMHFT9ARRVEQ3Q
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMR85K3NHR1SREH5FMVKXEYP
+    timestamp: 2026-03-27T18:37:37.444Z
+  - _ulid: 01KMR9D4PM612A86N0EB76B3J5
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMR859DKVCAHCHFJ1ZP8XRXC
+    timestamp: 2026-03-27T18:37:47.605Z
+  - _ulid: 01KMR9D8KA12B04FJ9HAHPGT04
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMR85CN0FQRNZSC2H713CZZX
+    timestamp: 2026-03-27T18:37:51.594Z
+  - _ulid: 01KMR9DCBWCA188XX3Y99N5FW7
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMR85HF6FHSB5BV7632N6GJC
+    timestamp: 2026-03-27T18:37:55.452Z
+  - _ulid: 01KMR9DG0H062AN3QH5X6VPPW7
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMR85K3NHR1SREH5FMVKXEYP
+    timestamp: 2026-03-27T18:37:59.185Z
+examined_commit: 01190340e042aca9fafa2e7e552744dcb7cc9db1
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMMB3TNHWVQT4HHB9XC1DE0X"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMR859DKVCAHCHFJ1ZP8XRXC
+    anchor:
+      type: code
+      commit: 01190340e042aca9fafa2e7e552744dcb7cc9db1
+      line_end: 316
+      line_start: 273
+      path: packages/daemon/src/routes/meta.ts
+      side: head
+    entries:
+      - _ulid: 01KMR859DKEZQHEVZSW3XDJK66
+        author: "@claude"
+        body: "Blocking:  and  still bypass the cache during warmup. This branch only special-cases ; when
+          the meta domain is , both routes fall through to  and the shadow helpers instead of
+          returning a loading response like the other meta read routes do. Because  marks
+          domains  up front specifically to avoid disk/git reads during warmup, an early request to
+          either endpoint still performs per-request context/git work, which violates ."
+        created_at: 2026-03-27T18:16:01.715Z
+      - _ulid: 01KMR86CYQM4M441GK51Q0134B
+        author: "@claude"
+        body: "Clarification: api/meta/config and api/meta/shadow still bypass the cache during warmup. This
+          branch only special-cases metaDomainState == ready; when the meta domain is loading, both
+          routes fall through to initContext() and the shadow helpers instead of returning a loading
+          response like the other meta read routes do. Because loadAll() marks domains loading up
+          front specifically to avoid disk and git reads during warmup, an early request to either
+          endpoint still performs per-request context and git work, which violates @daemon-read-path
+          ac-no-per-request-sync."
+        created_at: 2026-03-27T18:16:38.103Z
+      - _ulid: 01KMR9CEEX2BBZ5EQJBJDVBP35
+        author: "@claude"
+        body: "Fixed: /api/meta/config and /api/meta/shadow now check for metaDomainState === 'loading' and
+          return a _cache_status: 'loading' response with nulled-out fields, matching the pattern
+          used by other meta routes. No initContext() or git helpers are called during warmup."
+        created_at: 2026-03-27T18:37:24.829Z
+    kind: blocker
+    resolved_at: 2026-03-27T18:37:47.120Z
+    resolved_by: "@claude"
+  - _ulid: 01KMR85CN0FQRNZSC2H713CZZX
+    anchor:
+      type: code
+      commit: 01190340e042aca9fafa2e7e552744dcb7cc9db1
+      line_end: 126
+      line_start: 101
+      path: packages/daemon/src/routes/aggregation.ts
+      side: head
+    entries:
+      - _ulid: 01KMR85CN1XHDKCGSF4EWAWBD5
+        author: "@claude"
+        body: "Blocking:  still falls back to  +  /  whenever the task or item cache is warming. The route
+          comment says the alignment/reference indexes are built from cached data, but that is only
+          true after the domains reach ; during the initial warmup window the handler bypasses the
+          cache entirely. That violates  and reintroduces the per-request disk work this migration
+          is supposed to eliminate."
+        created_at: 2026-03-27T18:16:05.025Z
+      - _ulid: 01KMR86G64W6ZS60ZV98WV7G5P
+        author: "@claude"
+        body: "Clarification: api/aggregation/validation still falls back to initContext() plus
+          loadAllTasks() and loadAllItems() whenever the task or item cache is warming. The route
+          comment says the alignment and reference indexes are built from cached data, but that is
+          only true after the domains reach ready; during the initial warmup window the handler
+          bypasses the cache entirely. That violates @daemon-read-path ac-index-from-cache and
+          reintroduces the per-request disk work this migration is supposed to eliminate."
+        created_at: 2026-03-27T18:16:41.412Z
+      - _ulid: 01KMR9CJDJD8ZN1V0K2SFEWKVQ
+        author: "@claude"
+        body: "Fixed: /api/aggregation/validation now checks if tasks or items domain is 'loading' and
+          returns a _cache_status: 'loading' response with zeroed stats. No initContext() or loadAll
+          calls during warmup."
+        created_at: 2026-03-27T18:37:28.882Z
+    kind: blocker
+    resolved_at: 2026-03-27T18:37:51.036Z
+    resolved_by: "@claude"
+  - _ulid: 01KMR85HF6FHSB5BV7632N6GJC
+    anchor:
+      type: code
+      commit: 01190340e042aca9fafa2e7e552744dcb7cc9db1
+      line_end: 283
+      line_start: 258
+      path: packages/daemon/src/routes/validation.ts
+      side: head
+    entries:
+      - _ulid: 01KMR85HF620CANJFD8532KWKM
+        author: "@claude"
+        body: "Blocking:  has the same warmup fallback bug. When the  or  cache domain is , this code
+          rebuilds the alignment inputs from  and  instead of waiting for the cache or returning .
+          That means an early alignment request still does the exact filesystem work this task is
+          supposed to remove, and the index is no longer guaranteed to come from cached entity data
+          as required by ."
+        created_at: 2026-03-27T18:16:09.959Z
+      - _ulid: 01KMR86EHGVNX6YCJPDGFTZRX9
+        author: "@claude"
+        body: "Clarification: api/alignment has the same warmup fallback bug. When the tasks or items cache
+          domain is loading, this code rebuilds the alignment inputs from initContext() and
+          loadAll*() instead of waiting for the cache or returning _cache_status: loading. That
+          means an early alignment request still does the exact filesystem work this task is
+          supposed to remove, and the index is no longer guaranteed to come from cached entity data
+          as required by @daemon-read-path ac-index-from-cache."
+        created_at: 2026-03-27T18:16:39.728Z
+      - _ulid: 01KMR9CPAD2ZCD4Y2JC5S90XZ5
+        author: "@claude"
+        body: "Fixed: /api/alignment now checks if tasks or items domain is 'loading' and returns a
+          _cache_status: 'loading' response with empty stats/warnings. No initContext() calls during
+          warmup."
+        created_at: 2026-03-27T18:37:32.877Z
+    kind: blocker
+    resolved_at: 2026-03-27T18:37:54.898Z
+    resolved_by: "@claude"
+  - _ulid: 01KMR85K3NHR1SREH5FMVKXEYP
+    anchor:
+      type: code
+      commit: 01190340e042aca9fafa2e7e552744dcb7cc9db1
+      line_end: 72
+      line_start: 40
+      path: packages/daemon/src/routes/validation.ts
+      side: head
+    entries:
+      - _ulid: 01KMR85K3NJRM5GF5EB2YYDRGB
+        author: "@claude"
+        body: "Blocking:  still reintroduces per-request reads during cache warmup. The handler only uses
+          the cache when the / domains are ; if either domain is , it falls straight back
+          to  plus  / . That breaks the  contract used by the other cache-backed routes and
+          violates  for search requests that arrive before warmup finishes."
+        created_at: 2026-03-27T18:16:11.637Z
+      - _ulid: 01KMR86HT73N4HE4HPZVFG31NB
+        author: "@claude"
+        body: "Clarification: api/search still reintroduces per-request reads during cache warmup. The
+          handler only uses the cache when the tasks and items domains are ready; if either domain
+          is loading, it falls straight back to initContext() plus loadAllTasks() and
+          loadAllItems(). That breaks the loadAll() -> loading response contract used by the other
+          cache-backed routes and violates @daemon-read-path ac-no-per-request-sync for search
+          requests that arrive before warmup finishes."
+        created_at: 2026-03-27T18:16:43.079Z
+      - _ulid: 01KMR9CT9XGSF8QGQXXFJDWE44
+        author: "@claude"
+        body: "Fixed: /api/search now checks if tasks or items domain is 'loading' and returns a
+          _cache_status: 'loading' response immediately. Also guarded inbox and meta domain lookups
+          within search so they skip (returning empty results for those sections) instead of falling
+          through to disk during warmup."
+        created_at: 2026-03-27T18:37:36.957Z
+    kind: blocker
+    resolved_at: 2026-03-27T18:37:58.626Z
+    resolved_by: "@claude"
+  - _ulid: 01KMR8739XWFM5WP9EZGXPNH5M
+    entries:
+      - _ulid: 01KMR8739YW0X4QP1ZSE4H4AVE
+        author: "@claude"
+        body: "Evidence log\\nFiles read: kspec-agents.md; packages/daemon/src/routes/meta.ts;
+          packages/daemon/src/routes/validation.ts; packages/daemon/src/routes/aggregation.ts;
+          packages/daemon/src/routes/sessions.ts; packages/daemon/src/server.ts;
+          src/daemon/entity-cache.ts; src/parser/shadow-sync-scheduler.ts;
+          tests/daemon-read-path.test.ts; tests/daemon-entity-cache.test.ts;
+          tests/daemon-cache-route-coverage.test.ts.\\nCommands run: kspec task get
+          @01KMMB3TNHWVQT4HHB9XC1DE0X; kspec item get @daemon-read-path; kspec review for-task
+          @01KMMB3TNHWVQT4HHB9XC1DE0X; git diff
+          1001be210b4251982b7386b475a48b0cc68188e4..01190340e042aca9fafa2e7e552744dcb7cc9db1;
+          rg/nl/sed on changed files; kspec validate; npm test.\\nClaims verified: prior blockers on
+          api/meta/session and api/sessions/:id spec_context are fixed in the current snapshot; full
+          suite still passes; cache warmup fallbacks remain in meta/config, meta/shadow, search,
+          alignment, and aggregation/validation.\\nCategories searched: correctness, cache warmup
+          edge cases, error handling, test coverage, integration with background sync and
+          entity-cache loading."
+        created_at: 2026-03-27T18:17:00.990Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-27T18:17:03.104Z
+created_at: 2026-03-27T18:09:37.768Z
+updated_at: 2026-03-27T18:37:58.626Z
+notes: []

@@ -1,0 +1,134 @@
+_ulid: 01KNA7HWQXX8H0Y0SNWRY7ZPPT
+slugs: []
+title: Review @01KN8T1A51JFRMW4F8W31KJ907
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exited 6 with the repository's existing warnings only (orphaned
+      skills/alignment/completeness warnings), no new errors for this task.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-03T17:57:26.615Z
+    completed_at: 2026-04-03T17:57:26.615Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: timeout 120s npm test produced no failing output before timeout; worker notes describe a
+      known teardown hang, and targeted suites covering the changed dispatch paths passed.
+    name: full npm test
+    required: false
+    runner: npm
+    created_at: 2026-04-03T17:57:32.882Z
+    completed_at: 2026-04-03T17:57:32.882Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- tests/dispatch-target-sync.test.ts
+      tests/dispatch-branch-push-lifecycle.test.ts tests/dispatch-degraded-state.test.ts passed: 12
+      suites, 69 tests."
+    name: targeted npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-03T17:57:44.954Z
+    completed_at: 2026-04-03T17:57:44.954Z
+events:
+  - _ulid: 01KNA7HWQWJM7Q5GJ1HDWNDM5Q
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-03T17:51:45.917Z
+  - _ulid: 01KNA7JFR0H0E71JAX794MRD1C
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-03T17:52:05.376Z
+  - _ulid: 01KNA7WATXPY6Y8D792X8X62WR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-03T17:57:28.030Z
+  - _ulid: 01KNA7WGXEQ5DXEM9YP2ZQSG1P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: full npm test
+    timestamp: 2026-04-03T17:57:34.254Z
+  - _ulid: 01KNA7WN3Z7R8W1KTHVMJR7D6E
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNA7WKQBFW76FXQNWDY204F5
+    timestamp: 2026-04-03T17:57:38.559Z
+  - _ulid: 01KNA7WWSG2GMRPWY71QN1HEG4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted npm test
+    timestamp: 2026-04-03T17:57:46.417Z
+  - _ulid: 01KNA7X88NEXE0NXP709EJ0RM8
+    actor: codex@gpt-5
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-03T17:57:58.166Z
+  - _ulid: 01KNA7X88P3B1V9VDD7X503G1H
+    actor: codex@gpt-5
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-03T17:57:58.166Z
+examined_commit: e54dfdb82cbd4c4d80d3c1826555d2f75d26a764
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN8T1A51JFRMW4F8W31KJ907"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNA7WKQBFW76FXQNWDY204F5
+    entries:
+      - _ulid: 01KNA7WKQCZ5GEGTYHB3BNQG8X
+        author: Jacob Chapel
+        body: "Files read: src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts,
+          tests/dispatch-target-sync.test.ts. Commands run: git diff/stat/log, kspec task get, kspec
+          item get @dispatch-remote-branch-sync, kspec validate, rg AC annotation search, npm test
+          -- tests/dispatch-target-sync.test.ts tests/dispatch-branch-push-lifecycle.test.ts
+          tests/dispatch-degraded-state.test.ts, timeout 120s npm test, git merge-base
+          --is-ancestor. Claims verified: reviewer post-merge push now uses
+          workspace.metadata.integrationTargetBranch; periodic push iterates active targets and
+          skips clean targets before mutation-scope resolution; same-branch pushes serialize while
+          different branches proceed concurrently. Categories searched: correctness, edge cases,
+          error handling, test quality, integration; no defects found in the submitted delta."
+        created_at: 2026-04-03T17:57:37.132Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@gpt-5
+    role: reviewer
+    created_at: 2026-04-03T17:57:58.165Z
+created_at: 2026-04-03T17:51:45.917Z
+updated_at: 2026-04-03T17:57:58.166Z
+notes: []

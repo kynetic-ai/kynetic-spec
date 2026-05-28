@@ -1,0 +1,284 @@
+_ulid: 01KN8SCRH9RYNK1TPD4R3SY4JR
+slugs: []
+title: "Plan re-review: Workspace-Scoped Integration Target Sync (round 4)"
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Verified 33 proposed ACs in the plan. Every AC is claimed by at least one spec-update task
+      and at least one implementation task, and the ac-divergence-log-classification rename
+      propagated through spec-update, implementation, and integration-test Covers lines.
+    name: AC coverage mapping
+    required: true
+    created_at: 2026-04-03T04:26:31.706Z
+    completed_at: 2026-04-03T04:26:31.706Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Round-4 split is incomplete: ac-active-target-removed-on-cleanup, ac-pull-ff-only,
+      ac-degraded-no-provision, ac-degraded-status-api, ac-degraded-status-broadcast, and
+      ac-degraded-recovery-logged still combine multiple independently testable assertions in a
+      single Then clause."
+    name: Spec AC quality
+    required: true
+    created_at: 2026-04-03T04:26:31.733Z
+    completed_at: 2026-04-03T04:26:31.733Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "The dependency graph remains coherent after the AC split: foundation feeds spec-update
+      tasks, active-target infrastructure precedes push/pull implementation, degraded-state
+      implementation correctly depends on pull-path work, and integration tests remain downstream of
+      all implementation tasks."
+    name: Dependency ordering
+    required: true
+    created_at: 2026-04-03T04:26:31.744Z
+    completed_at: 2026-04-03T04:26:31.744Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Each task still gives enough what/why/how detail to execute in a fresh session. I noted
+      stale summary counts after the AC split, but the explicit AC lists, dependency links, and
+      Covers sections remain concrete enough to act on.
+    name: Task standalone-ness
+    required: true
+    created_at: 2026-04-03T04:26:31.709Z
+    completed_at: 2026-04-03T04:26:31.709Z
+events:
+  - _ulid: 01KN8SCRH996G8E64CWEKQV0Y8
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-03T04:25:03.273Z
+  - _ulid: 01KN8SDJRMNWS0820VXH5SXBDQ
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-03T04:25:30.132Z
+  - _ulid: 01KN8SDTYF7MENTD3VWPWK8YZF
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN8SDT7K708MT5CK0EG27V33
+    timestamp: 2026-04-03T04:25:38.511Z
+  - _ulid: 01KN8SDZPFHX2NRVM338RDMFVF
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN8SDYZ8BC2ZWZ6B269SGRF3
+    timestamp: 2026-04-03T04:25:43.375Z
+  - _ulid: 01KN8SE4W59Y7VMVWR2GCG0E2H
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN8SE45105H340BAT6PG8VSK
+    timestamp: 2026-04-03T04:25:48.677Z
+  - _ulid: 01KN8SEB315PP77E8ZK954PMY8
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN8SEAC0EHC9CF8V6SG482ZR
+    timestamp: 2026-04-03T04:25:55.041Z
+  - _ulid: 01KN8SEFPCBNJMJE9MPZ10JPAP
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN8SEEZW3JPS58J5B4ZYFFBT
+    timestamp: 2026-04-03T04:25:59.756Z
+  - _ulid: 01KN8SEP4M9QM913YZ8YCBEWCJ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN8SENE127QJ8JAAVMJVV7KS
+    timestamp: 2026-04-03T04:26:06.356Z
+  - _ulid: 01KN8SEY25589QPD6QYFQNW6RY
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KN8SEXANA3W6WDG0CSTTHWDE
+    timestamp: 2026-04-03T04:26:14.469Z
+  - _ulid: 01KN8SFFKW9NWVV2NQSXG0APG0
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage mapping
+    timestamp: 2026-04-03T04:26:32.444Z
+  - _ulid: 01KN8SFGQCF5AC32AZ1JMVQRV4
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Spec AC quality
+    timestamp: 2026-04-03T04:26:33.580Z
+  - _ulid: 01KN8SFHTMRXC9XB3XQ4TE5SEA
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-04-03T04:26:34.708Z
+  - _ulid: 01KN8SFJZTFZXTRE2V61WVY3VP
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Task standalone-ness
+    timestamp: 2026-04-03T04:26:35.898Z
+  - _ulid: 01KN8SFRZHR700GBH09EY1EG3A
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-03T04:26:42.033Z
+  - _ulid: 01KN8SFRZHQV0YFEN1XXMHF66A
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-03T04:26:42.033Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-workspace-scoped-integration-target-sync"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN8SDT7K708MT5CK0EG27V33
+    anchor:
+      type: structured
+      field: ac-pull-ff-only
+      ref: "@dispatch-remote-branch-sync"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KN8SDT7K0JWFPSQDBVPK3974
+        author: "@claude"
+        body: "ac-pull-ff-only still combines two independently testable assertions in one Then clause: the
+          sync only fast-forwards when remote is a strict superset, and the sync never creates a
+          merge commit. Round 4 was supposed to split compound Then clauses into single assertions,
+          so this AC still fails that rule and should be split before approval."
+        created_at: 2026-04-03T04:25:37.779Z
+    kind: blocker
+  - _ulid: 01KN8SDYZ8BC2ZWZ6B269SGRF3
+    anchor:
+      type: structured
+      field: ac-degraded-no-provision
+      ref: "@dispatch-remote-branch-sync"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KN8SDYZ86XS0NA6R20589RP4
+        author: "@claude"
+        body: "ac-degraded-no-provision still asserts two outcomes in one Then clause: the task is not
+          provisioned, and it remains in the queue. Those are separable behaviors with distinct
+          verification surfaces, so this AC has not been fully converted to the round-4
+          single-assertion style."
+        created_at: 2026-04-03T04:25:42.632Z
+    kind: blocker
+  - _ulid: 01KN8SE45105H340BAT6PG8VSK
+    anchor:
+      type: structured
+      field: ac-degraded-status-api
+      ref: "@dispatch-remote-branch-sync"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KN8SE452X6NQE26RZRXRKBY5
+        author: "@claude"
+        body: ac-degraded-status-api still bundles multiple assertions into one Then clause by requiring the
+          response to include each degraded target's branch name, failure reason, and
+          degraded-entered timestamp together. Those payload fields can fail independently, so they
+          should be split into separate ACs if this round is enforcing one assertion per Then
+          clause.
+        created_at: 2026-04-03T04:25:47.938Z
+    kind: blocker
+  - _ulid: 01KN8SEAC0EHC9CF8V6SG482ZR
+    anchor:
+      type: structured
+      field: ac-degraded-status-broadcast
+      ref: "@dispatch-remote-branch-sync"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KN8SEAC0MS4QC91990WMPEY5
+        author: "@claude"
+        body: "ac-degraded-status-broadcast still has a compound Then clause: it requires both that a
+          sync-state event is broadcast and that the payload identifies the target branch and new
+          state. Broadcast occurrence and payload contents are independently testable and should not
+          stay fused if the plan is moving to atomic ACs."
+        created_at: 2026-04-03T04:25:54.304Z
+    kind: blocker
+  - _ulid: 01KN8SEEZW3JPS58J5B4ZYFFBT
+    anchor:
+      type: structured
+      field: ac-degraded-recovery-logged
+      ref: "@dispatch-remote-branch-sync"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KN8SEEZXD09NZZD286K9FRJ6
+        author: "@claude"
+        body: ac-degraded-recovery-logged still combines two assertions in one Then clause by requiring the
+          recovery log to include both the target branch name and the degraded duration. Those
+          fields can be verified independently, so this AC remains compound after the round-4 split.
+        created_at: 2026-04-03T04:25:59.037Z
+    kind: blocker
+  - _ulid: 01KN8SENE127QJ8JAAVMJVV7KS
+    anchor:
+      type: structured
+      field: ac-active-target-removed-on-cleanup
+      ref: "@dispatch-remote-branch-sync"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KN8SENE1QM42B5AP5YE8HXGH
+        author: "@claude"
+        body: "ac-active-target-removed-on-cleanup still places multiple outcomes in one Then clause:
+          removing the branch from the active set, excluding it from periodic sync, and excluding it
+          from push operations. If the review goal is one assertion per Then clause, this lifecycle
+          AC still needs to be decomposed."
+        created_at: 2026-04-03T04:26:05.633Z
+    kind: blocker
+  - _ulid: 01KN8SEXANA3W6WDG0CSTTHWDE
+    anchor:
+      type: structured
+      ref: "@task-sync-push-ac-updates"
+      section: description
+    entries:
+      - _ulid: 01KN8SEXAPM6F3RYHY1C9S9MF2
+        author: "@claude"
+        body: The round-4 AC split updated the explicit AC lists and Covers lines, but the summary count in
+          this task still says 'add three new ACs' even though the task now lists four new ACs. The
+          same stale-count problem also appears in @task-sync-pull-ac-updates and
+          @task-sync-degraded-ac-updates. The concrete lists are usable, so this is not blocking,
+          but the narration should be brought back into sync for fresh-session readability.
+        created_at: 2026-04-03T04:26:13.718Z
+    kind: question
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-04-03T04:26:42.033Z
+created_at: 2026-04-03T04:25:03.273Z
+updated_at: 2026-04-03T04:26:42.033Z
+notes: []

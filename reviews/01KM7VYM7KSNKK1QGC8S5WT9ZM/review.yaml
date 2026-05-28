@@ -1,0 +1,121 @@
+_ulid: 01KM7VYM7KSNKK1QGC8S5WT9ZM
+slugs: []
+title: Review task-impl-index (cycle 5)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed on snapshot acb192f9f232e7dc8ef6a5fbc8eec7b090eb1e5d: 6819 passed, 3 skipped."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-21T09:39:43.227Z
+    completed_at: 2026-03-21T09:39:43.227Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No task-specific validation errors. Command exited 6 due existing repository-wide warnings
+      (orphaned skills/spec coverage baseline), not this change.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-21T09:39:48.736Z
+    completed_at: 2026-03-21T09:39:48.736Z
+events:
+  - _ulid: 01KM7VYM7KGN7Q62SQ1Z9QPQX1
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T09:34:49.587Z
+  - _ulid: 01KM7W63H20X38KJGJDQTC49SZ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T09:38:54.626Z
+  - _ulid: 01KM7W658EXFHBQGJ0546QNB6M
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM7W64RBJQ3SM9Z0T13XGE1W
+    timestamp: 2026-03-21T09:38:56.398Z
+  - _ulid: 01KM7W7K8ZMFPB7JD1NASM4E65
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-21T09:39:43.520Z
+  - _ulid: 01KM7W7RNJA8R0EDJS8NNRMPQX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-21T09:39:49.042Z
+  - _ulid: 01KM7W7Z771AZEH813TPCAYTZ1
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-21T09:39:55.751Z
+  - _ulid: 01KM7W7Z77FCEW0VC7AXGANHMQ
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-21T09:39:55.751Z
+examined_commit: acb192f9f232e7dc8ef6a5fbc8eec7b090eb1e5d
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YESAF92YTNXT3DF06AC0N"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM7W64RBJQ3SM9Z0T13XGE1W
+    entries:
+      - _ulid: 01KM7W64RB6DZZ9XYCKZ1XS0BJ
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+
+          Files read: src/parser/split-backend.ts, src/parser/task-data-manager.ts,
+          tests/split-backend.test.ts, tests/task-data-manager.test.ts
+
+          Commands run: git diff --stat dev...HEAD; git diff dev...HEAD -- src tests; kspec task get
+          @01KM6YESAF92YTNXT3DF06AC0N; kspec item get @task-index-file; kspec review get
+          @01KM7T4NYRDWM8K9PEECACX0D5; rg -n "AC: @task-index-file" tests; kspec validate; npm test
+
+          Claims verified: plan_ref/review_ref now flow through TaskSummary/rawToSummary;
+          rebuildIndex is exposed through TaskStorageBackend and TaskDataManager; full suite passes
+          on this snapshot
+
+          Categories searched: correctness, AC coverage, edge cases, error handling, integration,
+          test quality — no remaining blocking issues found.
+        created_at: 2026-03-21T09:38:55.883Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-21T09:39:55.751Z
+created_at: 2026-03-21T09:34:49.587Z
+updated_at: 2026-03-21T09:39:55.751Z
+notes: []

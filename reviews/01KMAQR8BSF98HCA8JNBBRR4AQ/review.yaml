@@ -1,0 +1,106 @@
+_ulid: 01KMAQR8BSF98HCA8JNBBRR4AQ
+slugs: []
+title: Review @01KMA74DY7WGG4KA6P07BTMJFD
+author: Test User
+checks: []
+events:
+  - _ulid: 01KMAQR8BS2RMSGP52P1DVKRN5
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-22T12:19:09.817Z
+  - _ulid: 01KMAQSCKAMSH5C4XJRX69FXXQ
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-22T12:19:46.922Z
+  - _ulid: 01KMAQWMCMJNJ7PX7FF83T7QZ7
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-22T12:21:33.204Z
+  - _ulid: 01KMAQWMCMD5RH3X9XNTMPYYP6
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-22T12:21:33.204Z
+  - _ulid: 01KMAQWPM5AA2EW3SKSE4VW4WA
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMAQWP8GFBA8X7PDVBBAT1W8
+    timestamp: 2026-03-22T12:21:35.493Z
+  - _ulid: 01KMAQWQV2D25RG2XG9PNA4VE1
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMAQWQEW08246VQPNEFEMCFR
+    timestamp: 2026-03-22T12:21:36.738Z
+examined_commit: e27c0be8ccfbc83214619b5a8e86987ba8fb8331
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMA74DY7WGG4KA6P07BTMJFD"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMAQWP8GFBA8X7PDVBBAT1W8
+    anchor:
+      type: code
+      commit: e27c0be8ccfbc83214619b5a8e86987ba8fb8331
+      line_end: 2495
+      line_start: 2493
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KMAQWP8GXHZSHNVSP5WSCY8W
+        author: Test User
+        body: The dispatch engine still opts every invocation into the 100ms idle grace period by
+          unconditionally passing DEFAULT_IDLE_GRACE_MS. That means sessions linger after the first
+          turn even when there are no session.idle consumers and no interactive mode, which is
+          exactly the backward-compat case ac-11 says must have no observable behavior change from
+          single-turn dispatch. The new tests only cover the opt-in path where idleGracePeriodMs is
+          set explicitly, so this regression is not exercised.
+        created_at: 2026-03-22T12:21:35.120Z
+    kind: blocker
+  - _ulid: 01KMAQWQEW08246VQPNEFEMCFR
+    entries:
+      - _ulid: 01KMAQWQEWWG091R7Z6JW13AK8
+        author: Test User
+        body: "Evidence log: Files read: src/agent-runtime/invocation.ts, src/agent-runtime/dispatch.ts,
+          src/agent-runtime/action-executor.ts, src/agent-runtime/session-registry.ts,
+          src/schema/event-payloads.ts, src/schema/event-registry.ts, src/sessions/types.ts,
+          packages/shared/src/schemas.ts, tests/multi-turn-invocation.test.ts,
+          tests/event-payloads.test.ts, tests/event-registry.test.ts,
+          tests/session-lifecycle-events.test.ts. Commands run: kspec task get
+          @01KMA74DY7WGG4KA6P07BTMJFD; kspec item get @multi-turn-session-lifecycle; git diff
+          against dev; kspec validate; npm test; AC annotation grep. Claims verified: the grace
+          period is caller-controlled in runInvocation() and dispatch still passes
+          DEFAULT_IDLE_GRACE_MS unconditionally. Categories searched: correctness, edge cases, error
+          handling, integration, test quality."
+        created_at: 2026-03-22T12:21:36.348Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-22T12:21:33.203Z
+created_at: 2026-03-22T12:19:09.817Z
+updated_at: 2026-03-22T12:21:36.348Z
+notes: []

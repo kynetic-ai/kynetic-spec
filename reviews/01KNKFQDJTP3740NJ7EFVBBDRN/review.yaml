@@ -1,0 +1,176 @@
+_ulid: 01KNKFQDJTP3740NJ7EFVBBDRN
+slugs: []
+title: "Plan review: Cache-Aware Command Execution"
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The revised @daemon-concurrent-reads ACs are now framed in observable outcomes (commands
+      complete without waiting, mutations serialize, disk fallback serializes) rather than internal
+      mutex or lock mechanics.
+    name: Behavioral purity
+    required: true
+    created_at: 2026-04-07T08:08:48.407Z
+    completed_at: 2026-04-07T08:08:48.407Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@task-read-command-concurrency allows  but does not depend on @task-cache-task-history,
+      even though  still reads history through getTaskHistory()."
+    name: Dependency ordering
+    required: true
+    created_at: 2026-04-07T08:08:48.315Z
+    completed_at: 2026-04-07T08:08:48.315Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "The prior duplicate-ownership findings are addressed: cache-serving behavior now extends
+      @daemon-command-api, task history extends @daemon-entity-cache, and the only remaining new
+      spec is the concurrent-read contract."
+    name: Coverage mapping
+    required: true
+    created_at: 2026-04-07T08:09:03.188Z
+    completed_at: 2026-04-07T08:09:03.188Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The concurrency task still leaves the readiness rule mis-specified relative to the spec by
+      requiring all cache domains to be ready instead of the specific domains each allowlisted
+      command touches.
+    name: Task executability
+    required: true
+    created_at: 2026-04-07T08:09:08.582Z
+    completed_at: 2026-04-07T08:09:08.582Z
+events:
+  - _ulid: 01KNKFQDJTD2D15JPPSZJXZXQN
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-07T08:07:45.498Z
+  - _ulid: 01KNKFR3GGQ47VDG1SYJ6S3QJ2
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-07T08:08:07.952Z
+  - _ulid: 01KNKFSBNRRKCK9756J81WYZB7
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNKFSAVVF4AQTARBD735A6GT
+    timestamp: 2026-04-07T08:08:49.080Z
+  - _ulid: 01KNKFSCZ03FNNS32P4K0PTMSN
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Behavioral purity
+    timestamp: 2026-04-07T08:08:50.400Z
+  - _ulid: 01KNKFSECDXEK36RYM8W1ZN8YN
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Dependency ordering
+    timestamp: 2026-04-07T08:08:51.853Z
+  - _ulid: 01KNKFSFSX3GXWYRRRA4HDDTJC
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNKFSAWYAAVW0BGVM0X24R14
+    timestamp: 2026-04-07T08:08:53.309Z
+  - _ulid: 01KNKFST7RB72HYX09A8RZYB3M
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Coverage mapping
+    timestamp: 2026-04-07T08:09:03.992Z
+  - _ulid: 01KNKFSZH29WSA7N0F1SA6WP06
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Task executability
+    timestamp: 2026-04-07T08:09:09.410Z
+  - _ulid: 01KNKFT409ZNTXV0MRZNRRAP0K
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-07T08:09:13.994Z
+  - _ulid: 01KNKFT40AFWJSWZYNWRGBN3JJ
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-07T08:09:13.994Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-cache-aware-command-execution"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNKFSAVVF4AQTARBD735A6GT
+    anchor:
+      type: structured
+      ref: "@task-read-command-concurrency"
+      section: dependencies
+    entries:
+      - _ulid: 01KNKFSAVV9W2WPFTJXYGXWKB1
+        author: "@claude"
+        body: This task's dependency set is still incomplete for the allowlist it proposes. The allowlist
+          includes , but  calls  when rendering that command, and the only task in this plan that
+          makes that loader cache-backed is @task-cache-task-history. As written, Phase 6 can be
+          executed after the listed prerequisites and still let an allowlisted read command fall
+          back to disk for history reads, which breaks the cache-backed concurrency assumption.
+          Either remove  from the initial allowlist or add @task-cache-task-history as an explicit
+          dependency and prerequisite in the task description.
+        created_at: 2026-04-07T08:08:48.251Z
+    kind: blocker
+  - _ulid: 01KNKFSAWYAAVW0BGVM0X24R14
+    anchor:
+      type: structured
+      ref: "@task-read-command-concurrency"
+      section: description
+    entries:
+      - _ulid: 01KNKFSAWZC52H8Z1DA8X95Q0X
+        author: "@claude"
+        body: This task still drifts from the new spec contract. @daemon-concurrent-reads
+          ac-concurrent-cache-reads says concurrent execution is allowed when a command's required
+          cache domains are ready, but the What/How text here tells the implementer to require that
+          all cache domains are ready before skipping the mutex. That would keep unrelated cold
+          domains (for example inbox while running review get) from ever allowing concurrency, so
+          the plan would implement a stricter behavior than the spec it claims to cover. Tighten the
+          task to compute readiness per allowlisted command based on the domains that command
+          actually touches.
+        created_at: 2026-04-07T08:08:48.287Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-07T08:09:13.993Z
+created_at: 2026-04-07T08:07:45.498Z
+updated_at: 2026-04-07T08:09:13.994Z
+notes: []

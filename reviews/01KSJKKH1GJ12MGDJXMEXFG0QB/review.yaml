@@ -1,0 +1,181 @@
+_ulid: 01KSJKKH1GJ12MGDJXMEXFG0QB
+slugs: []
+title: "Plan re-review: Folder-Backed Index Consistency Hardening"
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Stored draft now explicitly requires importing a plan document with sibling resources.yaml
+      metadata plus resources/ files, then immediately running kspec plan rebuild-index --dry-run
+      and asserting resource_summary has no drift before any repair. This directly covers the
+      @01KSJKAX blocker for persistPlanResourcesFromSibling in src/parser/plan-resource-import.ts
+      called from src/cli/commands/plan-import.ts.
+    name: Prior blocker resolution
+    required: true
+    runner: manual
+    created_at: 2026-05-26T16:59:36.023Z
+    completed_at: 2026-05-26T16:59:36.023Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "The red-test task is standalone: it names the temp folder-backed project setup, target
+      suites, sibling resources.yaml/resources fixture shape, exact dry-run command, zero-drift
+      assertion, and no-repair precondition. A worker has enough context to implement the regression
+      without prior chat history."
+    name: Sibling import test executability
+    required: true
+    runner: manual
+    created_at: 2026-05-26T16:59:47.521Z
+    completed_at: 2026-05-26T16:59:47.521Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified existing Covers refs with kspec item get: @task-index-file ac-2/ac-5/ac-7,
+      @task-atomic-writes ac-1/ac-3/ac-4, @folder-backed-plan-storage-1
+      ac-plan-index-has-bounded-projection/ac-plan-delete-removes-owned-folder,
+      @folder-backed-review-storage-1
+      ac-review-index-has-bounded-projection/ac-review-delete-removes-owned-folder,
+      @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields,
+      @single-command-version-upgrade
+      ac-runs-task-storage-migration/ac-idempotent-when-current/ac-dry-run-no-writes, and
+      @task-data-manager ac-4. New trait AC IDs are explicitly added by the first task before
+      downstream tasks cover them."
+    name: Existing refs and AC coverage targets
+    required: true
+    runner: kspec
+    created_at: 2026-05-26T17:00:01.107Z
+    completed_at: 2026-05-26T17:00:01.107Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Task graph remains ordered as spec contract update -> red regression tests ->
+      implementation -> migration/idempotence coverage -> final gates. Safety language still
+      confines migration/smoke tests to temp projects, fixtures, or disposable clones and forbids
+      live self-hosting repos.
+    name: Dependency ordering and safety
+    required: true
+    runner: manual
+    created_at: 2026-05-26T17:00:16.867Z
+    completed_at: 2026-05-26T17:00:16.867Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec plan export followed by kspec plan import --dry-run parsed the stored draft as 0
+      specs, derive_from_specs false, and 0 derived tasks with no state changes. kspec plan get
+      shows status remains draft.
+    name: Plan parse and draft status
+    required: true
+    runner: kspec
+    created_at: 2026-05-26T17:00:27.921Z
+    completed_at: 2026-05-26T17:00:27.921Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --warnings-ok passed. The remaining warnings are pre-existing
+      repository-wide reference/alignment/completeness warnings, not new broken refs or AC targets
+      introduced by this stored draft.
+    name: Repository validation
+    required: true
+    runner: kspec
+    created_at: 2026-05-26T17:00:40.058Z
+    completed_at: 2026-05-26T17:00:40.058Z
+events:
+  - _ulid: 01KSJKKH1G7WNBDAGC6VFTE8ZX
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-26T16:59:05.136Z
+  - _ulid: 01KSJKM4T307MQ1Q6G5SQCH3ZE
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-26T16:59:25.381Z
+  - _ulid: 01KSJKMH33XCWAASTQARD9PQ3N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Prior blocker resolution
+    timestamp: 2026-05-26T16:59:37.955Z
+  - _ulid: 01KSJKMW95GQB88N9HBTNBR514
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Sibling import test executability
+    timestamp: 2026-05-26T16:59:49.414Z
+  - _ulid: 01KSJKN9FJ0A2JQ400X4HMJQ8G
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Existing refs and AC coverage targets
+    timestamp: 2026-05-26T17:00:02.930Z
+  - _ulid: 01KSJKNRXCXJQTPVWETWPM2G9C
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering and safety
+    timestamp: 2026-05-26T17:00:18.732Z
+  - _ulid: 01KSJKP3RDHV5A7HR6DH8S9788
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan parse and draft status
+    timestamp: 2026-05-26T17:00:29.837Z
+  - _ulid: 01KSJKPFGT26TSKAPJ1PMSWF6H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Repository validation
+    timestamp: 2026-05-26T17:00:41.882Z
+  - _ulid: 01KSJKPSQWE08P999FCPXAZA23
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-26T17:00:52.348Z
+  - _ulid: 01KSJKPSQWC31E9BJ2WXND7NGC
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-26T17:00:52.348Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-folder-backed-index-consistency-hardening"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-26T17:00:52.347Z
+created_at: 2026-05-26T16:59:05.136Z
+updated_at: 2026-05-26T17:00:52.348Z
+notes: []

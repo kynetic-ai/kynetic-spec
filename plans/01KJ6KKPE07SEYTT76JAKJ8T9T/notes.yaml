@@ -1,0 +1,98 @@
+notes:
+  - _ulid: 01KJ6KKPE1TNFTSZ1BVJPB0A2E
+    content: >-
+      Implementation notes:
+
+
+      ### Key Files
+
+      - `src/sessions/types.ts` — Extend with TaskBudgetSchema
+
+      - `src/sessions/store.ts` — Add budget CRUD functions (local filesystem, not shadow)
+
+      - `src/schema/task.ts` — Add optional session_id
+
+      - `src/cli/commands/task.ts` — Budget enforcement in task start, session_id stamping
+
+      - `src/cli/commands/tasks.ts` — Session indicator in tasks ready display
+
+      - `src/cli/commands/session.ts` — New create command, session context display
+
+      - `src/cli/commands/ralph.ts` — Major simplification (~150+ lines removed)
+
+      - `src/cli/commands/guard.ts` — New native guard commands
+
+      - `src/cli/commands/setup.ts` — Update hook installation with migration cleanup
+
+
+      ### What Gets Removed
+
+      - `.claude/hooks/ralph-task-limit-guard.sh` — Replaced by budget enforcement in kspec task
+      start
+
+      - `.claude/hooks/kspec-worktree-guard.sh` — Replaced by kspec guard worktree
+
+      - `TaskLimitMarker` type and all marker file functions in ralph.ts
+
+      - `detectTaskCompleteCommand()` in ralph.ts
+
+      - ACP prompt injection for task limits (ralph.ts lines 1542-1549)
+
+      - End-loop marker file functions in ralph.ts
+
+      - Stale marker cleanup logic in ralph iteration loop
+
+      - Marker-related signal handler cleanup
+
+
+      ### Architecture: Budget State Location
+
+      Budget state lives in `.kspec/sessions/{id}/budget.json` on the local filesystem, NOT on the
+      shadow branch. This avoids git contention between ralph (which writes session events) and
+      spawned agents (which run kspec commands that commit to kspec-meta). The single-writer
+      guarantee ensures correctness: ralph resets budget only between iterations when the agent is
+      not running.
+
+
+      ### Backward Compatibility
+
+      - All schema changes are additive (optional fields)
+
+      - Sessions without KSPEC_SESSION_ID work exactly as today
+
+      - Sessions without budget.json skip enforcement
+
+      - Existing tasks without session_id pass validation
+
+      - Invalid KSPEC_SESSION_ID produces clear error with recovery instructions
+
+
+      ### Testing Strategy
+
+      - Unit tests for budget schema validation and CRUD (atomic writes)
+
+      - CLI integration tests for task start with budget enforcement (setupTempFixtures + kspec
+      helper)
+
+      - CLI integration tests for session create command
+
+      - CLI integration tests for invalid/stale session ID handling
+
+      - Port existing guard test patterns to native command tests
+
+      - Ralph loop tests verifying marker file code is gone and budget integration works
+
+      - E2E test for full budget round-trip: ralph creates session → agent starts task → completes →
+      tries second start → blocked
+
+      - Migration test: existing settings.json with old hooks → kspec setup → hooks replaced
+
+
+      ### Risk: Node.js Startup for Guard Hook
+
+      The native `kspec guard worktree` command runs on every Bash tool call. Node.js startup adds
+      ~100-200ms latency vs ~10ms for the bash script. If this is problematic, we could keep a thin
+      bash wrapper that does the fast-path check (is the command even git-related?) and only invokes
+      kspec for the actual guard logic. Monitor after implementation.
+    author: "@claude"
+    created_at: 2026-02-24T01:18:24.705Z

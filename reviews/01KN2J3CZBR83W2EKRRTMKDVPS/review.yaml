@@ -1,0 +1,174 @@
+_ulid: 01KN2J3CZBR83W2EKRRTMKDVPS
+slugs: []
+title: Review stale-selector e2e failures
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run test:e2e -- tests/e2e/search.spec.ts tests/e2e/tasks.spec.ts
+      tests/e2e/task-board.spec.ts tests/e2e/items.spec.ts tests/e2e/reviews-detail.spec.ts
+      tests/e2e/validate.spec.ts => 122 passed, 1 skipped.
+    name: selector e2e
+    required: false
+    runner: playwright
+    created_at: 2026-03-31T18:32:59.941Z
+    completed_at: 2026-03-31T18:32:59.941Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 6 with repository-wide pre-existing warnings only; no new validation errors
+      attributable to this snapshot.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-31T18:33:01.839Z
+    completed_at: 2026-03-31T18:33:01.839Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh full-suite rerun still fails on tests/dispatch-workspace-registry.test.ts: dispatch
+      workspace registry shadow durability > reconciliation acquires the lock per dirty record, not
+      once for the entire batch (timeout 15000ms). Summary: 2 failed suites, 1 failed test, 2080
+      passed, 5 skipped."
+    name: npm test --fresh
+    required: true
+    runner: npm
+    created_at: 2026-03-31T18:33:03.709Z
+    completed_at: 2026-03-31T18:33:03.709Z
+events:
+  - _ulid: 01KN2J3CZA73M11J1JDGW17M0P
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-31T18:22:09.898Z
+  - _ulid: 01KN2J3TS0D13B9ZVEFP9EYQGK
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-31T18:22:24.032Z
+  - _ulid: 01KN2JQ6JYP01Z2KZ77JHHY58C
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN2JQ60YWQ3G9BJ1SY3GEVP8
+    timestamp: 2026-03-31T18:32:58.718Z
+  - _ulid: 01KN2JQ8CXNAZWP54D04E9T5QP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: selector e2e
+    timestamp: 2026-03-31T18:33:00.573Z
+  - _ulid: 01KN2JQA7AR3QPAD5MVRH0KXCJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-31T18:33:02.442Z
+  - _ulid: 01KN2JQC2FS9W8T6VTEBFZ10CN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test --fresh
+    timestamp: 2026-03-31T18:33:04.335Z
+  - _ulid: 01KN2JQK1VBKHDJGZRRA3ZG1KM
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-31T18:33:11.483Z
+  - _ulid: 01KN2JQK1VX6FK0Q3D4FK6ZMAG
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-31T18:33:11.483Z
+  - _ulid: 01KN2K2VT9WT63FQYC2T0ZWKP3
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN2JQ60YWQ3G9BJ1SY3GEVP8
+    timestamp: 2026-03-31T18:39:20.905Z
+  - _ulid: 01KN2K2WWJ5TR90GFXVYJY5BGA
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN2JQ60YWQ3G9BJ1SY3GEVP8
+    timestamp: 2026-03-31T18:39:22.002Z
+examined_commit: 602c1f7779fd52717fb79d8cc3c66595f4d66a1d
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMZ1BVBBDPGQMSK3C8GDK3HP"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN2JQ60YWQ3G9BJ1SY3GEVP8
+    entries:
+      - _ulid: 01KN2JQ60YK655QGKFH71WXSP6
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+          Files read: packages/web-ui/src/lib/components/CommandPalette.svelte;
+          packages/web-ui/src/lib/components/board/TaskDetailContent.svelte;
+          packages/web-ui/src/lib/components/ui/command/command-dialog.svelte;
+          packages/web-ui/src/lib/utils/markdown.ts; packages/web-ui/src/routes/tasks/+page.svelte;
+          packages/web-ui/src/routes/tasks/board/+page.svelte; tests/e2e/fixtures/test-base.ts;
+          tests/e2e/items.spec.ts; tests/e2e/reviews-detail.spec.ts; tests/e2e/search.spec.ts;
+          tests/e2e/task-board.spec.ts; tests/e2e/tasks.spec.ts; tests/e2e/validate.spec.ts;
+          tests/daemon-web-ui-bundle.test.ts; packages/daemon/src/routes/reviews.ts;
+          packages/web-ui/src/lib/api.ts.
+
+          Commands run: git diff --stat origin/dev...HEAD; git diff origin/dev...HEAD; kspec task
+          get --json; kspec review get prior/current; kspec validate; npm test; npm run test:e2e --
+          tests/e2e/search.spec.ts tests/e2e/tasks.spec.ts tests/e2e/task-board.spec.ts
+          tests/e2e/items.spec.ts tests/e2e/reviews-detail.spec.ts tests/e2e/validate.spec.ts; npm
+          test -- tests/daemon-web-ui-bundle.test.ts tests/task-unblock-prior-status.test.ts
+          tests/agent-dispatch-engine.test.ts tests/dispatch-workspace-registry.test.ts; npm test --
+          --fresh.
+
+          Claims verified: selector-focused E2E changes pass on this snapshot (122 passed, 1
+          skipped); targeted rerun of initially failing full-suite tests passes once dist/web-ui
+          exists; fresh full-suite still fails in dispatch-workspace-registry.
+
+          Categories searched: correctness, integration, test quality, error handling, regression
+          risk.
+        created_at: 2026-03-31T18:32:58.142Z
+      - _ulid: 01KN2K2V7S40N8NSGE4GW6B1C7
+        author: Jacob Chapel
+        body: "Fresh verification on commit 602c1f7779fd52717fb79d8cc3c66595f4d66a1d is now green. Re-ran
+          npm test -- --fresh in this workspace and it passed: 2082/2082 suites, 7520 passed, 5
+          skipped. The earlier request_changes gate was stale rather than a remaining regression in
+          this task diff."
+        created_at: 2026-03-31T18:39:20.313Z
+    kind: nit
+    resolved_at: 2026-03-31T18:39:20.304Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-31T18:33:11.482Z
+created_at: 2026-03-31T18:22:09.899Z
+updated_at: 2026-03-31T18:39:20.313Z
+notes: []

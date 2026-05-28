@@ -1,0 +1,128 @@
+_ulid: 01KKZ8557VAZWQEH6ES260S5B7
+slugs: []
+title: Review detect-stale-integration-target (cycle 2)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 18 tests pass in dispatch-workspace-config.test.ts including 5 new stale integration
+      target tests
+    name: vitest (task-specific)
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T01:22:23.941Z
+    completed_at: 2026-03-18T01:22:23.941Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 5802 pass, 1 fail (pre-existing review-cli.test.ts environment issue in detached worktree
+      — not related to task changes), 3 skipped
+    name: vitest (full suite)
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T01:22:30.214Z
+    completed_at: 2026-03-18T01:22:30.214Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Own ACs: ac-6 has 4 test annotations + 2 source annotations, ac-7 has 1 test annotation.
+      Trait ACs: @trait-error-guidance ac-1 and ac-2 annotated on tests, ac-3 through ac-6 annotated
+      as N/A with reasons."
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-18T01:22:37.409Z
+    completed_at: 2026-03-18T01:22:37.409Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "BLOCKER 1: resolveIntegrationRecord line 696 now only preserves existing target_commit
+      when target_branch unchanged; caller at line 2141 resolves commit from new base branch.
+      BLOCKER 2: Test at lines 513-515 verifies target_commit updates to devHead after retargeting.
+      NIT: N/A annotations added at lines 452-455."
+    name: cycle-1-fixes
+    required: true
+    runner: manual
+    created_at: 2026-03-18T01:22:45.621Z
+    completed_at: 2026-03-18T01:22:45.621Z
+events:
+  - _ulid: 01KKZ8557VRK0T0V9FAZEW8C42
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T01:14:56.635Z
+  - _ulid: 01KKZ85DMJPDWFSRXMPXFRV23G
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T01:15:05.234Z
+  - _ulid: 01KKZ8JT4RBSYJ2SF4N3J7ZZM1
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest (task-specific)
+    timestamp: 2026-03-18T01:22:24.025Z
+  - _ulid: 01KKZ8K0A895W734CF92GB0BXS
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest (full suite)
+    timestamp: 2026-03-18T01:22:30.344Z
+  - _ulid: 01KKZ8K7B3MJ8AMTTJJKMZ6H4F
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-18T01:22:37.539Z
+  - _ulid: 01KKZ8KFAM45B1YQM586NQ413C
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: cycle-1-fixes
+    timestamp: 2026-03-18T01:22:45.716Z
+  - _ulid: 01KKZ8KNTSS2CWPP0H3JBPZE8F
+    actor: pr-reviewer@dispatch
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-18T01:22:52.378Z
+  - _ulid: 01KKZ8KNTTKBS4JV910X4H7G3J
+    actor: pr-reviewer@dispatch
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T01:22:52.378Z
+examined_commit: dd1a83cf431c45c1b19f24260b313b16ed42e96d
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKXEKWMZN0E7E6V7458E0BV8"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer@dispatch
+    role: reviewer
+    created_at: 2026-03-18T01:22:52.288Z
+created_at: 2026-03-18T01:14:56.635Z
+updated_at: 2026-03-18T01:22:52.288Z
+notes: []

@@ -1,0 +1,164 @@
+_ulid: 01KN0QT12HHW2FCY0FYBGJVT2Q
+slugs: []
+title: Review task-e2e-triage-export cycle 2
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run test:e2e -- triage.spec.ts passed: 23 passed, 37 skipped. Included the new
+      /triage export Markdown and JSON UI flows plus existing triage/API smoke coverage."
+    name: triage-e2e
+    required: true
+    runner: playwright
+    created_at: 2026-03-31T01:28:22.735Z
+    completed_at: 2026-03-31T01:28:22.735Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git merge-tree against dev produced a clean merge for the 4 task files with no textual
+      conflicts.
+    name: mergeability
+    required: true
+    runner: git
+    created_at: 2026-03-31T01:28:24.631Z
+    completed_at: 2026-03-31T01:28:24.631Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate produced only the repository's existing warning set (exit 6), with schema
+      and references OK and no task-specific validation errors.
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-31T01:28:28.705Z
+    completed_at: 2026-03-31T01:28:28.705Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test reported 8 failed suites / 3 failed tests outside this branch delta. The touched
+      files for this task are limited to packages/web-ui/src/lib/api.ts,
+      packages/web-ui/src/routes/triage/+page.svelte, tests/e2e/fixtures/project.triage.yaml, and
+      tests/e2e/triage.spec.ts; the failing files (for example src/cli/commands/skill.ts,
+      scripts/test.cjs, tests/test-runner.test.ts) are unchanged from dev.
+    name: npm-test-full
+    required: false
+    runner: npm
+    created_at: 2026-03-31T01:28:30.896Z
+    completed_at: 2026-03-31T01:28:30.896Z
+events:
+  - _ulid: 01KN0QT12H1S9A0WRGG9ENVB2A
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-31T01:23:25.393Z
+  - _ulid: 01KN0QTDBHC1G6WM3P5KK8VCE1
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-31T01:23:37.969Z
+  - _ulid: 01KN0R341HBSZD9A5F7J714P3P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: triage-e2e
+    timestamp: 2026-03-31T01:28:23.345Z
+  - _ulid: 01KN0R360EWRFXDWXDBS585QNK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: mergeability
+    timestamp: 2026-03-31T01:28:25.358Z
+  - _ulid: 01KN0R37ZJBGGFPF9XN416MHXB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN0R37BMJQHBZ3J0Z2XJYRH2
+    timestamp: 2026-03-31T01:28:27.378Z
+  - _ulid: 01KN0R39Z0NVSN1QYBQKS5Y3RC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-31T01:28:29.408Z
+  - _ulid: 01KN0R3C3MC8MRH0JP53PCPH35
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm-test-full
+    timestamp: 2026-03-31T01:28:31.605Z
+  - _ulid: 01KN0R3VMSWZK0KPJK3FEC4Q2R
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-31T01:28:47.513Z
+  - _ulid: 01KN0R3VMS9Q0W483HHGJJT3NX
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-31T01:28:47.513Z
+examined_commit: 14c3400e81417539ab56a73a984b6f22afb5e8a0
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMZ1BX5RN093G0MZASASRJ43"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN0R37BMJQHBZ3J0Z2XJYRH2
+    entries:
+      - _ulid: 01KN0R37BNYSCFRZP0J2M5VYWV
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          Files read: packages/web-ui/src/lib/api.ts,
+          packages/web-ui/src/routes/triage/+page.svelte, packages/daemon/src/routes/triage.ts,
+          tests/e2e/triage.spec.ts, tests/e2e/api-triage.spec.ts,
+          tests/e2e/fixtures/project.triage.yaml, src/cli/commands/skill.ts,
+          src/cli/commands/skill-install.ts, scripts/test.cjs, tests/test-runner.test.ts.
+
+          Commands run: git diff --stat/name-only, git diff on changed files, kspec item get
+          @triage-daemon-api, kspec validate, grep AC annotations, npm test, npm run test:e2e --
+          triage.spec.ts, git merge-tree against dev.
+
+          Claims verified: the branch now contains only task-scoped triage export changes; /triage
+          exposes Markdown and JSON export controls backed by /api/triage/export; the new Playwright
+          coverage passes behaviorally; full-suite failures are outside this branch delta and occur
+          in files unchanged from dev.
+
+          Categories searched: correctness, edge cases/static mode, error handling, test quality,
+          integration, mergeability. No task-scoped blockers found.
+        created_at: 2026-03-31T01:28:26.741Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-31T01:28:47.512Z
+created_at: 2026-03-31T01:23:25.393Z
+updated_at: 2026-03-31T01:28:47.513Z
+notes: []

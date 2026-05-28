@@ -1,0 +1,161 @@
+_ulid: 01KMH1SFWY8FMPJ44MKXPGVJX0
+slugs: []
+title: Review task-readtestoutput-medium-batch-1 (cycle 1)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 300/301 test files pass, 6827/6828 tests pass. Single failure is pre-existing timeout in
+      tests/agent-invocation-lifecycle.test.ts (not in diff).
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-24T23:11:18.086Z
+    completed_at: 2026-03-24T23:11:18.086Z
+events:
+  - _ulid: 01KMH1SFWXYVVVQAS3RCHYYTRN
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-24T23:10:02.654Z
+  - _ulid: 01KMH1STNVP3K2GK2M3BD1Z5XM
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-24T23:10:13.692Z
+  - _ulid: 01KMH1T628TXKQWVVXXAB7TWNR
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMH1T5NW11WEA37ZVRH4J4E1
+    timestamp: 2026-03-24T23:10:25.352Z
+  - _ulid: 01KMH1VBFCT0VHDJ8B7KGQ459K
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMH1VB3R60PFP4ESX8CDWYZ1
+    timestamp: 2026-03-24T23:11:03.660Z
+  - _ulid: 01KMH1VSYSZBWGJWGWMGYT4X6Z
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-24T23:11:18.489Z
+  - _ulid: 01KMH1W25NHVBTQZTMD0EDYDJ8
+    actor: agent@kspec-dispatch
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-24T23:11:26.901Z
+  - _ulid: 01KMH1W25NNNJR5R1PWSV1YMQM
+    actor: agent@kspec-dispatch
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-24T23:11:26.901Z
+  - _ulid: 01KMH461ZNAFSS129CM9XK4DD7
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMH1T5NW11WEA37ZVRH4J4E1
+    timestamp: 2026-03-24T23:51:51.541Z
+  - _ulid: 01KMH465FMZBNZCP1H6MWPHS3V
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMH1VB3R60PFP4ESX8CDWYZ1
+    timestamp: 2026-03-24T23:51:55.124Z
+  - _ulid: 01KMH46CX3BTKZKPM3EW7YG103
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMH1T5NW11WEA37ZVRH4J4E1
+    timestamp: 2026-03-24T23:52:02.723Z
+  - _ulid: 01KMH46GDPZCV2FWTYK31TNY1E
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMH1VB3R60PFP4ESX8CDWYZ1
+    timestamp: 2026-03-24T23:52:06.326Z
+examined_commit: 35d3b6f1a176412e832773ee8055c90bed2b3f8b
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-readtestoutput-medium-batch-1"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMH1T5NW11WEA37ZVRH4J4E1
+    anchor:
+      type: code
+      commit: 35d3b6f1a176
+      line_end: 13
+      line_start: 1
+      path: tests/task-rebuild-index.test.ts
+      side: head
+    entries:
+      - _ulid: 01KMH1T5NW9FYHM27P7YZY777K
+        author: "@claude"
+        body: "Regression: task-rebuild-index.test.ts was already converted to readTestOutput on dev (commit
+          f8471212e). This commit reverts all 10 readTestOutput calls back to fs.readFile and
+          removes the readTestOutput import. This file is NOT in the task's 10-file list — it should
+          not have been touched, and the changes go the wrong direction. Fix: revert all changes to
+          tests/task-rebuild-index.test.ts so it stays as-is on dev (already using readTestOutput)."
+        created_at: 2026-03-24T23:10:24.956Z
+      - _ulid: 01KMH461KT22S698A89ECC5ENA
+        author: "@claude"
+        body: "Fixed: rebased on dev which resolved this automatically — task-rebuild-index.test.ts now has
+          zero diff against dev and retains its readTestOutput calls from commit f8471212e."
+        created_at: 2026-03-24T23:51:51.161Z
+    kind: blocker
+    resolved_at: 2026-03-24T23:52:02.326Z
+    resolved_by: "@claude"
+  - _ulid: 01KMH1VB3R60PFP4ESX8CDWYZ1
+    anchor:
+      type: code
+      commit: 35d3b6f1a176
+      line_end: 497
+      line_start: 497
+      path: tests/setup-pipeline-unification.test.ts
+      side: head
+    entries:
+      - _ulid: 01KMH1VB3RQK3Q4M0F1ZERHM7C
+        author: "@claude"
+        body: 'Minor out-of-scope change: 3 fs.writeFile calls had their encoding argument removed (e.g.
+          fs.writeFile(path, content, "utf-8") → fs.writeFile(path, content)). These are writes, not
+          reads, and are not part of the task scope. Functionally harmless since Node defaults to
+          utf-8 for string data, but the change is unnecessary.'
+        created_at: 2026-03-24T23:11:03.288Z
+      - _ulid: 01KMH4652E9D28WKHPBVPEPCWP
+        author: "@claude"
+        body: "Fixed: restored the 'utf-8' encoding argument on all 3 fs.writeFile calls. These are write
+          calls (out of scope) and should not have been modified."
+        created_at: 2026-03-24T23:51:54.702Z
+    kind: nit
+    resolved_at: 2026-03-24T23:52:05.931Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: agent@kspec-dispatch
+    role: reviewer
+    created_at: 2026-03-24T23:11:26.900Z
+created_at: 2026-03-24T23:10:02.654Z
+updated_at: 2026-03-24T23:52:05.931Z
+notes: []

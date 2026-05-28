@@ -1,0 +1,139 @@
+_ulid: 01KM655PQKXERC3W6XQA9MF3N4
+slugs: []
+title: Review @01KM5Z4JVEFXG9SJ8P7RANZDNV
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tests/cli-mutation-input-validation.test.ts annotates @cli-input-type-safety
+      ac-1/ac-3/ac-4 and inherited @trait-type-safe-input, @trait-error-guidance, and
+      @trait-semantic-exit-codes coverage for the changed mutation commands.
+    name: AC coverage
+    required: true
+    runner: rg
+    created_at: 2026-03-20T17:41:20.174Z
+    completed_at: 2026-03-20T17:41:20.174Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full test suite passed: 294 files, 6678 tests passed, 3 skipped."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-20T17:41:48.475Z
+    completed_at: 2026-03-20T17:41:48.475Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Pre-existing repo baseline failures unrelated to this diff: missing refs in
+      .kspec/modules/meta.yaml, orphaned skill directory warning, and existing
+      completeness/alignment warnings."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-20T17:41:53.974Z
+    completed_at: 2026-03-20T17:41:53.974Z
+events:
+  - _ulid: 01KM655PQKHWSW753NX5X2GSHS
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-20T17:37:29.843Z
+  - _ulid: 01KM6567A41CSS6SQ84E8TS51N
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-20T17:37:46.820Z
+  - _ulid: 01KM65CQWM8ZXBR6K1ZM3Z37E0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage
+    timestamp: 2026-03-20T17:41:20.404Z
+  - _ulid: 01KM65DDVJQH7GY8GHAVN24GWF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM65DDKQDRKAY68SHDVB07P8
+    timestamp: 2026-03-20T17:41:42.898Z
+  - _ulid: 01KM65DKH9A3K9NWNSB0FV9AJS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-20T17:41:48.713Z
+  - _ulid: 01KM65DRXJ091E3TGZQPS51W5H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-03-20T17:41:54.226Z
+  - _ulid: 01KM65DXC9A6GKGENMZCZY5VHC
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-20T17:41:58.794Z
+  - _ulid: 01KM65DXCAG5YGFGQE4BAD8NHY
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-20T17:41:58.794Z
+examined_commit: 309c8b97751cd0c81c183ee7c48db2673e10e999
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM5Z4JVEFXG9SJ8P7RANZDNV"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM65DDKQDRKAY68SHDVB07P8
+    entries:
+      - _ulid: 01KM65DDKQFSJB5G9SNAVR8NDZ
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          Files read: src/cli/commands/task.ts, src/cli/commands/inbox.ts, src/cli/commands/item.ts,
+          src/cli/commands/plan.ts, src/cli/commands/review.ts,
+          tests/cli-mutation-input-validation.test.ts, src/cli/validators.ts.
+
+          Commands run: git diff dev...HEAD, kspec task get @01KM5Z4JVEFXG9SJ8P7RANZDNV, kspec
+          validate, rg for AC annotations, npm test.
+
+          Claims verified: invalid enum inputs now fail before persistence across
+          task/item/inbox/plan/review mutations; valid/default enum values still execute normally.
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration.
+          No blocking issues found.
+        created_at: 2026-03-20T17:41:42.647Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-20T17:41:58.793Z
+created_at: 2026-03-20T17:37:29.843Z
+updated_at: 2026-03-20T17:41:58.794Z
+notes: []

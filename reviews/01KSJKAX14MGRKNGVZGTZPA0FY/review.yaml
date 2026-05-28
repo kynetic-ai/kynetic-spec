@@ -1,0 +1,213 @@
+_ulid: 01KSJKAX14MGRKNGVZGTZPA0FY
+slugs: []
+title: "Plan review: Folder-Backed Index Consistency Hardening"
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Verified @trait-folder-backed-entity-1, @task-directory-storage, @task-index-file,
+      @task-atomic-writes, @folder-backed-plan-storage-1, @folder-backed-review-storage-1,
+      @trait-entity-scoped-local-resources-1, @single-command-version-upgrade, and
+      @task-data-manager. Existing Covers AC IDs resolve; proposed trait AC IDs are explicitly added
+      by the first task.
+    name: Existing refs and AC IDs
+    required: true
+    runner: kspec
+    created_at: 2026-05-26T16:54:46.733Z
+    completed_at: 2026-05-26T16:54:46.733Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      Dry run - no changes made
+
+
+      Plan: @plan-folder-backed-index-consistency-hardening-1
+
+      Title: Folder-Backed Index Consistency Hardening
+
+      Status: draft
+
+      Source:
+      /home/chapel/Projects/kynetic-spec-dispatch/plans/folder-backed-index-consistency-hardening.md
+
+      Content stored: full document
+
+      Derived specs: 0
+
+      Derived tasks: 0 parsed the draft: 0 specs, 0 derived tasks, full document stored; no state
+      changes.
+    name: Plan import parse
+    required: true
+    runner: kspec
+    created_at: 2026-05-26T16:54:51.836Z
+    completed_at: 2026-05-26T16:54:51.836Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The plan names most plan/review normal mutators, resource add/replace/delete, equality
+      normalization, and repair convergence. It misses an explicit red-test case for plan import
+      with sibling resources.yaml/resources files, which is a separate resource_summary mutation
+      path from plan resource add/replace/delete.
+    name: Mutating path coverage
+    required: true
+    runner: manual
+    created_at: 2026-05-26T16:55:51.846Z
+    completed_at: 2026-05-26T16:55:51.846Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Task order is spec update, then red tests, then implementation, then migration/idempotence
+      coverage, then final gates. Migration/smoke tests are constrained to temp projects, fixtures,
+      or disposable clones and forbid live self-hosting repos.
+    name: Dependency ordering and safety
+    required: true
+    runner: manual
+    created_at: 2026-05-26T16:56:03.227Z
+    completed_at: 2026-05-26T16:56:03.227Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The plan creates no duplicate sibling specs. It updates @trait-folder-backed-entity-1 and
+      attaches that existing trait to @task-directory-storage, @task-index-file,
+      @folder-backed-plan-storage-1, and @folder-backed-review-storage-1 while preserving existing
+      task-specific ACs.
+    name: Spec update shape
+    required: true
+    runner: manual
+    created_at: 2026-05-26T16:56:14.523Z
+    completed_at: 2026-05-26T16:56:14.523Z
+events:
+  - _ulid: 01KSJKAX130SCB5XSA58RTPPJM
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-26T16:54:22.500Z
+  - _ulid: 01KSJKBPQM5A12BQEKBYK90QZQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Existing refs and AC IDs
+    timestamp: 2026-05-26T16:54:48.820Z
+  - _ulid: 01KSJKBSTMTHSS3PXQQEMX2S1Q
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSJKBMYFA30KDJQNGQAWX55A
+    timestamp: 2026-05-26T16:54:51.988Z
+  - _ulid: 01KSJKBX5BKZ66BEYD67B5M4GB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan import parse
+    timestamp: 2026-05-26T16:54:55.403Z
+  - _ulid: 01KSJKCZQ44DJVQEXWJ03DFXSF
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-26T16:55:30.788Z
+  - _ulid: 01KSJKDB6JPGZW4DS1BBMWEQ8P
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSJKBMYFA30KDJQNGQAWX55A
+    timestamp: 2026-05-26T16:55:42.546Z
+  - _ulid: 01KSJKDP66FXC4JGAE3XMCKDP2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Mutating path coverage
+    timestamp: 2026-05-26T16:55:53.799Z
+  - _ulid: 01KSJKE17HAGDJ9EXRHAFWRQYH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering and safety
+    timestamp: 2026-05-26T16:56:05.105Z
+  - _ulid: 01KSJKEC6TE73Y4H96SMTVF0TA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec update shape
+    timestamp: 2026-05-26T16:56:16.346Z
+  - _ulid: 01KSJKEPECF4CRKTKVDMX3DHVF
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-26T16:56:26.828Z
+  - _ulid: 01KSJKEPEC9SVPRA0JDBKNGSPJ
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-26T16:56:26.828Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-folder-backed-index-consistency-hardening"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSJKBMYFA30KDJQNGQAWX55A
+    anchor:
+      type: structured
+      field: description
+      ref: "@task-add-folder-index-consistency-regressions"
+      section: tasks
+    entries:
+      - _ulid: 01KSJKBMYFQX8SNS1BM9M7QTBA
+        author: Jacob Chapel
+        body: "The red-test task covers plan creation/import generally and plan resource add/replace/delete,
+          but it does not explicitly cover import-time plan resources from a sibling resources.yaml
+          / resources/ tree. That is a distinct current mutation path ( in , called after  from )
+          and can update  without going through . Without an explicit test case,
+          @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index and
+          @folder-backed-plan-storage-1 ac-plan-index-has-bounded-projection are not fully covered
+          for resource_summary drift. Fix: add a red test that imports a plan document with declared
+          sibling resources, then immediately runs  and asserts zero drift/resource_summary is
+          current without repair."
+        created_at: 2026-05-26T16:54:46.991Z
+      - _ulid: 01KSJKD9CQ4JGEC75KA0DR6WK3
+        author: Jacob Chapel
+        body: "Corrected evidence for the blocker: the distinct path is persistPlanResourcesFromSibling in
+          src/parser/plan-resource-import.ts, called after savePlan from
+          src/cli/commands/plan-import.ts. It writes resources.yaml during plan import without going
+          through plan resource add. The red test should import a plan with sibling resources.yaml
+          plus resources/ files, then run kspec plan rebuild-index --dry-run and prove no
+          resource_summary drift before any repair."
+        created_at: 2026-05-26T16:55:40.695Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-26T16:56:26.828Z
+created_at: 2026-05-26T16:54:22.500Z
+updated_at: 2026-05-26T16:56:26.828Z
+notes: []

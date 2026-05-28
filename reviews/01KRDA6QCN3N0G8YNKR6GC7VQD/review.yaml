@@ -1,0 +1,259 @@
+_ulid: 01KRDA6QCN3N0G8YNKR6GC7VQD
+slugs: []
+title: Review setup-failure cleanup regressions
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/helpers/daemon.test.ts
+      tests/e2e-fixture-daemon-cleanup.test.ts: 14 suites passed; 19 tests passed; duration 3.1s"
+    name: focused regression tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-12T05:35:16.690Z
+    completed_at: 2026-05-12T05:35:16.690Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh: 2423 suites passed; 9064 tests passed; 5 skipped; duration 2074.0s"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-05-12T05:35:24.815Z
+    completed_at: 2026-05-12T05:35:24.815Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate: schema OK, references OK; exited 6 due existing repo-wide warnings
+      (reference/alignment/completeness warnings), no task-specific validation error observed"
+    name: kspec validate
+    required: false
+    runner: kspec validate
+    created_at: 2026-05-12T05:35:45.814Z
+    completed_at: 2026-05-12T05:35:45.814Z
+events:
+  - _ulid: 01KRDA6QCMPVWTKCS6ZPEA8FXY
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-12T05:22:54.484Z
+  - _ulid: 01KRDA8J8JAPGHZABNT4ETAPBZ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-12T05:23:54.770Z
+  - _ulid: 01KRDAX9TFGHE8XVWM0FZA60KB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRDAX8FJY110R76FC3AYC8JM
+    timestamp: 2026-05-12T05:35:14.255Z
+  - _ulid: 01KRDAXDJYT7Y70825HPBW6P6J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused regression tests
+    timestamp: 2026-05-12T05:35:18.110Z
+  - _ulid: 01KRDAXHK87CMJMYRP11EEEC51
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRDAXG9P5K136WG3TJQDAAPP
+    timestamp: 2026-05-12T05:35:22.216Z
+  - _ulid: 01KRDAXNGHBDXFXNY695ZP9M77
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-12T05:35:26.225Z
+  - _ulid: 01KRDAY9XZYA7RYN5B26S8GAXN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-12T05:35:47.135Z
+  - _ulid: 01KRDAYDQKK9JYY5WMGQDD72RN
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KRDAYCAQ19Y0J7QBEACS2HQH
+    timestamp: 2026-05-12T05:35:51.027Z
+  - _ulid: 01KRDAYSP99YYES2XW2ZYMXJZD
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-12T05:36:03.273Z
+  - _ulid: 01KRDAYSP9XC64XSD30JA2GCAT
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-12T05:36:03.273Z
+  - _ulid: 01KRDD4T1W6V9YVRXRCA37KAFK
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRDAX8FJY110R76FC3AYC8JM
+    timestamp: 2026-05-12T06:14:17.404Z
+  - _ulid: 01KRDD503KR16W4R98S9T6DDBS
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRDAXG9P5K136WG3TJQDAAPP
+    timestamp: 2026-05-12T06:14:23.603Z
+  - _ulid: 01KRDD5694R1C34RJK4ZNCZHDM
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRDAYCAQ19Y0J7QBEACS2HQH
+    timestamp: 2026-05-12T06:14:29.924Z
+  - _ulid: 01KRDD5HJS8NV8GE4KD59PY8G4
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KRDAX8FJY110R76FC3AYC8JM
+    timestamp: 2026-05-12T06:14:41.497Z
+  - _ulid: 01KRDD5QDM02AQXXP31RT3TBCR
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KRDAXG9P5K136WG3TJQDAAPP
+    timestamp: 2026-05-12T06:14:47.476Z
+  - _ulid: 01KRDD5XD4ERY10CRHZ5Z2JCZC
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KRDAYCAQ19Y0J7QBEACS2HQH
+    timestamp: 2026-05-12T06:14:53.604Z
+examined_commit: 69024560de4a34a772c9944f034e9a9021056675
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRCRJSCGAWTVGWM82DNSWWCN"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRDAX8FJY110R76FC3AYC8JM
+    anchor:
+      type: code
+      commit: 69024560de4a34a772c9944f034e9a9021056675
+      line_end: 196
+      line_start: 168
+      path: tests/e2e/fixtures/test-base.ts
+      side: head
+    entries:
+      - _ulid: 01KRDAX8FJM5TJSBHRJ52NYW04
+        author: Jacob Chapel
+        body: "MUST-FIX: the task explicitly calls for Playwright daemon fixture setup-path regressions
+          where project/home/config setup or port allocation fails before normal teardown
+          registration, but no added test exercises this wrapper window. In the real wrapper,
+          createTestDaemonProject() and allocateTestDaemonPort() still run before the try/finally
+          starts, so a regression in this path would not be caught by the new
+          createTestDaemonProject-only tests or by runDaemonFixtureLifecycle. Add fixture-unit
+          coverage that simulates failures in the Playwright wrapper setup path after resources are
+          owned and asserts cleanup/primary-error preservation for that wrapper behavior."
+        created_at: 2026-05-12T05:35:12.882Z
+      - _ulid: 01KRDD4RS1CES2ZFTTQFGTMC7V
+        author: "@claude"
+        body: "Fixed: extracted the wrapper's pre-try/finally setup into `acquirePlaywrightFixtureResources`
+          (tests/e2e/fixtures/daemon-fixture.ts) and refactored test-base.ts:176 to delegate to it.
+          Added 5 staged regressions in tests/e2e-fixture-daemon-cleanup.test.ts
+          \"acquirePlaywrightFixtureResources — wrapper setup-failure cleanup\" that exercise the
+          actual wrapper code path: 1 positive contract (returns resources + emits stages in
+          declared order) plus 4 `it.fails` covering each post-create stage failure
+          (after-copy-project-tests, after-write-config, after-allocate-port) and a dedicated
+          allocateTestDaemonPort-rejects regression. Verified by stripping `it.fails`: all 4 new
+          staged regressions fail with \"project tempDir … must be removed after wrapper setup
+          failure at <stage>\" pre-fix, confirming they exercise the leak. Smoke E2E passes (`npx
+          playwright test tests/e2e/smoke.spec.ts`)."
+        created_at: 2026-05-12T06:14:16.095Z
+    kind: blocker
+    resolved_at: 2026-05-12T06:14:40.124Z
+    resolved_by: "@claude"
+  - _ulid: 01KRDAXG9P5K136WG3TJQDAAPP
+    anchor:
+      type: code
+      commit: 69024560de4a34a772c9944f034e9a9021056675
+      line_end: 326
+      line_start: 308
+      path: tests/e2e-fixture-daemon-cleanup.test.ts
+      side: head
+    entries:
+      - _ulid: 01KRDAXG9PWT5SBXJPB1AWNWP5
+        author: Jacob Chapel
+        body: "MUST-FIX: this staged primary-error regression exercises the newly added
+          runDaemonFixtureLifecycle helper, but test-base.ts does not call that helper in this
+          snapshot. As a result, the test can pass/fail independently of the actual Playwright
+          wrapper, and it would not catch the wrapper continuing to replace a test-body/use error
+          with a cleanup error. The task asks for tests proving the Playwright wrapper behavior, so
+          either wire the wrapper through the helper in this change or add a fixture-unit test that
+          exercises the wrapper lifecycle seam itself."
+        created_at: 2026-05-12T05:35:20.886Z
+      - _ulid: 01KRDD4YTQ75GGP01C8C58QQQV
+        author: "@claude"
+        body: "Fixed: wired the Playwright wrapper at tests/e2e/fixtures/test-base.ts through
+          `runDaemonFixtureLifecycle` (test-base.ts:296). The use phase now runs inside the
+          lifecycle helper's setup→use→teardown contract, so the existing \"preserves the use-phase
+          primary error when teardown also fails\" `it.fails` regression at
+          e2e-fixture-daemon-cleanup.test.ts:308 now exercises the same lifecycle the wrapper
+          executes. Verified by stripping `it.fails`: that regression fails with \"expected
+          'teardown failure sentinel' to contain 'use-phase primary error sentinel'\" pre-fix. Smoke
+          E2E (`npx playwright test tests/e2e/smoke.spec.ts`) and the full suite (2424 suites / 9069
+          tests) both pass."
+        created_at: 2026-05-12T06:14:22.294Z
+    kind: blocker
+    resolved_at: 2026-05-12T06:14:46.133Z
+    resolved_by: "@claude"
+  - _ulid: 01KRDAYCAQ19Y0J7QBEACS2HQH
+    entries:
+      - _ulid: 01KRDAYCAQHPMEH0GCXE93SXPH
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md, task/spec/plan context, tests/helpers/daemon.ts,
+          tests/helpers/daemon.test.ts, tests/e2e/fixtures/daemon-fixture.ts,
+          tests/e2e/fixtures/test-base.ts, tests/e2e-fixture-daemon-cleanup.test.ts,
+          tests/helpers/cli.ts. Commands run: git diff/stat/log/show, kspec task get, kspec item get
+          for @daemon-test-teardown-boundedness and @daemon-test-startup-failure-hygiene, kspec plan
+          get @plan-daemon-test-cleanup-contract-hardening, kspec validate, AC annotation rg,
+          focused npm test, full npm test. Claims verified: focused staged regressions pass under
+          it.fails; full suite passes; AC annotations exist for the new target ACs. Categories
+          searched: correctness/spec alignment, setup/error edge cases, cleanup error handling, test
+          quality, integration with Playwright wrapper."
+        created_at: 2026-05-12T05:35:49.591Z
+      - _ulid: 01KRDD54X09JA2YSEQCJD6N7V3
+        author: "@claude"
+        body: Acknowledged. No action needed for this nit — it was the reviewer's evidence log.
+        created_at: 2026-05-12T06:14:28.512Z
+    kind: nit
+    resolved_at: 2026-05-12T06:14:52.200Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-12T05:36:03.273Z
+created_at: 2026-05-12T05:22:54.485Z
+updated_at: 2026-05-12T06:14:52.200Z
+notes: []

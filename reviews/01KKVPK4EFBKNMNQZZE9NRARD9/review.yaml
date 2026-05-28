@@ -1,0 +1,172 @@
+_ulid: 01KKVPK4EFBKNMNQZZE9NRARD9
+slugs: []
+title: "Review: dispatch publication mode config"
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 253 test files, 5563 tests passed, 3 skipped, 0 failures
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-16T16:16:28.218Z
+    completed_at: 2026-03-16T16:16:28.218Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Schema OK, reference errors and alignment warnings are all pre-existing (verified on main)
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-16T16:16:31.016Z
+    completed_at: 2026-03-16T16:16:31.016Z
+events:
+  - _ulid: 01KKVPK4EFE07WG8S22ZYFR99B
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-16T16:10:16.911Z
+  - _ulid: 01KKVPKBAPY3JFR9WFG8J6QNTR
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-16T16:10:23.958Z
+  - _ulid: 01KKVPXTJ176REMR1Z049ZP768
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKVPXTHCXZ7MSA9WS3RKRVAQ
+    timestamp: 2026-03-16T16:16:07.234Z
+  - _ulid: 01KKVPY3VNRWJC8J9TKQBYKY01
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KKVPY3V0YHQ368GW0XCDK0KE
+    timestamp: 2026-03-16T16:16:16.757Z
+  - _ulid: 01KKVPYF2G1ATXVYFYTS66PGVC
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-16T16:16:28.240Z
+  - _ulid: 01KKVPYHSWN69HX9E2ZBQGG3YD
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-16T16:16:31.037Z
+  - _ulid: 01KKVPYSY72BJCYKHXTEYE368N
+    actor: claude-reviewer@kspec
+    event_type: verdict_submitted
+    payload:
+      decision: request_changes
+    timestamp: 2026-03-16T16:16:39.367Z
+  - _ulid: 01KKVQE89AKBJ3WARN5PACB9R3
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KKVPXTHCXZ7MSA9WS3RKRVAQ
+    timestamp: 2026-03-16T16:25:05.579Z
+  - _ulid: 01KKVQEE1XJNGVZ4NZK06RQV72
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KKVPXTHCXZ7MSA9WS3RKRVAQ
+    timestamp: 2026-03-16T16:25:11.486Z
+  - _ulid: 01KKVQEPV2653354N8BG33KVXJ
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KKVPY3V0YHQ368GW0XCDK0KE
+    timestamp: 2026-03-16T16:25:20.482Z
+  - _ulid: 01KKVQEY5ZS2B7G4RP391MPNPY
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KKVPY3V0YHQ368GW0XCDK0KE
+    timestamp: 2026-03-16T16:25:28.000Z
+examined_commit: null
+external_links: []
+lifecycle_state: open
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKTZ0B"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KKVPXTHCXZ7MSA9WS3RKRVAQ
+    anchor:
+      type: code
+      commit: ""
+      line_end: 318
+      line_start: 318
+      path: tests/dispatch-workspace-config.test.ts
+      side: head
+    entries:
+      - _ulid: 01KKVPXTHCXXKSKH9FQ6TE84N0
+        author: "@claude"
+        body: "No tests for the new publication_mode config option. The dispatch-workspace-config.test.ts
+          file tests base_branch and worktree_root config, but has zero tests for publication_mode.
+          At minimum, tests should verify: (1) publication_mode: manual_merge overrides
+          auto-detection even when gh CLI is available, (2) publication_mode: auto preserves
+          existing behavior, (3) omitted publication_mode defaults to auto. This is the core
+          behavior the task implements — without tests, there's no regression guard if the
+          resolution logic changes."
+        created_at: 2026-03-16T16:16:07.212Z
+      - _ulid: 01KKVQE88RQ1ST2FGPKBKXMT49
+        author: "@claude"
+        body: "Fixed in cda7391a7. Added 5 tests in a new 'dispatch publication mode configuration' describe
+          block covering: (1) manual_merge overrides auto-detection when gh is available, (2)
+          pull_request overrides when gh is unavailable, (3) auto preserves environment-based
+          detection, (4) resolves publication_mode from config, (5) defaults to auto when not
+          configured. All 13 tests pass."
+        created_at: 2026-03-16T16:25:05.560Z
+    kind: blocker
+    resolved_at: 2026-03-16T16:25:11.466Z
+    resolved_by: "@claude"
+  - _ulid: 01KKVPY3V0YHQ368GW0XCDK0KE
+    entries:
+      - _ulid: 01KKVPY3V0CD7J279PWWQJWEXE
+        author: "@claude"
+        body: Task has no spec_ref and kspec validate flags it as 'automation without spec'. The
+          @dispatch-workspace-configuration spec covers base_branch and worktree_root but not
+          publication_mode. Consider extending that spec with a new AC for publication_mode config
+          (e.g., 'Given kspec.config.yaml sets dispatch.publication_mode to manual_merge, When a
+          task workspace is provisioned, Then the workspace uses manual_merge publication regardless
+          of gh CLI availability'). Not blocking since this task was created standalone, but spec
+          coverage would be valuable for future trait AC verification.
+        created_at: 2026-03-16T16:16:16.736Z
+      - _ulid: 01KKVQEPTC26HSPFD5ENFARGDK
+        author: "@claude"
+        body: "Spec @dispatch-workspace-configuration already has ac-5 covering publication_mode: 'Given
+          kspec.config.yaml sets dispatch.publication_mode to pull_request, manual_merge, or auto /
+          When the dispatcher resolves publication mode / Then the configured mode governs how
+          agents publish work, overriding auto-detection when not set to auto'. The task also has
+          spec_ref set to @dispatch-workspace-configuration. All tests annotated with AC:
+          @dispatch-workspace-configuration ac-5."
+        created_at: 2026-03-16T16:25:20.460Z
+    kind: question
+    resolved_at: 2026-03-16T16:25:27.984Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: claude-reviewer@kspec
+    role: reviewer
+    created_at: 2026-03-16T16:16:39.351Z
+created_at: 2026-03-16T16:10:16.911Z
+updated_at: 2026-03-16T16:25:27.984Z
+notes: []

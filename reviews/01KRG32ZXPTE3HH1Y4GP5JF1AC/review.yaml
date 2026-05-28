@@ -1,0 +1,157 @@
+_ulid: 01KRG32ZXPTE3HH1Y4GP5JF1AC
+slugs: []
+title: Review cleanup-boundary classification cycle 2
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts
+      tests/lint-daemon-test-guardrails.test.ts: 23 suites passed, 394 tests passed."
+    name: targeted lint tests
+    required: true
+    runner: npm
+    created_at: 2026-05-13T07:30:25.010Z
+    completed_at: 2026-05-13T07:30:25.010Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate: Schema OK and References OK. Command exited 6 due to existing
+      repository-wide warnings (reference, alignment, completeness); no new warnings tied to the
+      changed lint rule/test files."
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-13T07:30:42.023Z
+    completed_at: 2026-05-13T07:30:42.023Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh: 2433 suites passed; 9199 tests passed, 5 skipped of
+      9204. Full log /tmp/kspec-test-cache/01KRG31VJVWH0YXX345FQPXSAP/22627dac846c2c96.log."
+    name: full npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-13T07:30:54.380Z
+    completed_at: 2026-05-13T07:30:54.380Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "git diff --check
+      ce6326ae4982ab4883a2924834e87e4c7eeff39d...e8b400acd9f2909ef1b7ff7670153a9458d6f909: no
+      whitespace errors."
+    name: diff hygiene
+    required: false
+    runner: git
+    created_at: 2026-05-13T07:31:07.156Z
+    completed_at: 2026-05-13T07:31:07.156Z
+events:
+  - _ulid: 01KRG32ZXPCBYHK1XY0ZS86HXP
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-13T07:16:15.414Z
+  - _ulid: 01KRG33F3WP3DK7HHEJH20E6HD
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-13T07:16:30.972Z
+  - _ulid: 01KRG3WZ0VAM0YBJTDTHCBN9VF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted lint tests
+    timestamp: 2026-05-13T07:30:26.459Z
+  - _ulid: 01KRG3XFMABWNEVNH6DY5HZZHQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-13T07:30:43.466Z
+  - _ulid: 01KRG3XVSG1VBFC5YH5CJ8QD30
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full npm test
+    timestamp: 2026-05-13T07:30:55.921Z
+  - _ulid: 01KRG3Y85AZARDGWRHFH8256TG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff hygiene
+    timestamp: 2026-05-13T07:31:08.586Z
+  - _ulid: 01KRG3YTAS69FBR712W31VMC6S
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KRG3YRWZRW10NF2G6XWKKEM1
+    timestamp: 2026-05-13T07:31:27.193Z
+  - _ulid: 01KRG3Z8AW5B2NZ855XVB8XWC9
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-13T07:31:41.532Z
+  - _ulid: 01KRG3Z8AXJ1KFZPR7C778535Q
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-13T07:31:41.533Z
+examined_commit: e8b400acd9f2909ef1b7ff7670153a9458d6f909
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRCRJQ8CM6D08AHASH84VRDM"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRG3YRWZRW10NF2G6XWKKEM1
+    entries:
+      - _ulid: 01KRG3YRWZV08676B464VXJF4E
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; tools/eslint-rules/no-leaky-test-daemon.js around
+          cleanup registration, cleanup traversal, and detached-start detection;
+          tests/lint-no-leaky-test-daemon.test.ts around the boundary regressions and harness.
+          Commands run: kspec task get @01KRCRJQ8CM6D08AHASH84VRDM; kspec item get
+          @daemon-test-guardrail-precision; kspec review get @01KRFZ91D1FG251GVT1QGQ94TS; git
+          diff/stat/name-only; rg AC annotations; kspec validate; git diff --check; targeted fresh
+          npm tests; full fresh npm test. Claims verified: cycle-2 fix changed the child-handle
+          probe from direct daemon entrypoint spawn to kspec serve start --detach, so the
+          direct-entry guardrail no longer masks the cleanup-boundary classifier; current tests
+          exercise process.on/process.once process-lifecycle cleanup as non-credit-bearing and mixed
+          onTestFinished + process.on as allowed. Categories searched: correctness, edge cases
+          (process.on, process.once, SIGTERM/beforeExit/message, child handle), error handling/test
+          harness failures via expectOxlintRanCleanly, test quality, integration with full suite. No
+          blocking findings."
+        created_at: 2026-05-13T07:31:25.727Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-13T07:31:41.532Z
+created_at: 2026-05-13T07:16:15.414Z
+updated_at: 2026-05-13T07:31:41.533Z
+notes: []

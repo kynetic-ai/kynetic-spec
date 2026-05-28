@@ -1,0 +1,177 @@
+_ulid: 01KM7G5KMJZ6H7654DE2V22VSM
+slugs: []
+title: Review task-migrate-supporting modules to task data manager (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 6756 passed, 3 skipped
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-21T06:10:24.704Z
+    completed_at: 2026-03-21T06:10:24.704Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Warnings only (exit 6), no validation errors
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-21T06:10:26.444Z
+    completed_at: 2026-03-21T06:10:26.444Z
+events:
+  - _ulid: 01KM7G5KMJMZCB32XSJNH8CYCS
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T06:08:55.442Z
+  - _ulid: 01KM7G5ZJMFR81R5HP4AD096SA
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T06:09:07.669Z
+  - _ulid: 01KM7G7XA8RP3Q7W8S2XWG65MK
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM7G7WSQWPNVEV0SF5EQSB38
+    timestamp: 2026-03-21T06:10:10.888Z
+  - _ulid: 01KM7G7Z0XSQP0QKWKA4RGPVA3
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM7G7YGGHDVJVQ9PZ5N87YYF
+    timestamp: 2026-03-21T06:10:12.637Z
+  - _ulid: 01KM7G80MNP05B96BWQ8DT436T
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM7G805AS1540SJSVMX8R8VC
+    timestamp: 2026-03-21T06:10:14.293Z
+  - _ulid: 01KM7G8BAAFEWFFSHJ28ZBEVT3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-21T06:10:25.227Z
+  - _ulid: 01KM7G8D296ECTR8J9C652H1RV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-21T06:10:27.017Z
+  - _ulid: 01KM7GBM9S29XXKYAXKFACJ5TZ
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-21T06:12:12.729Z
+  - _ulid: 01KM7GBM9S9XMXZFQS0MDPNNAR
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-21T06:12:12.729Z
+examined_commit: 028e4ab3766f79012521057d9d4be114c06f2cf2
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YEQYJGQ4JF2ECR67DANZQ"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM7G7WSQWPNVEV0SF5EQSB38
+    anchor:
+      type: code
+      commit: 028e4ab3766f79012521057d9d4be114c06f2cf2
+      line_end: 942
+      line_start: 941
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KM7G7WSR3BYG3GY3NJ3P2WXE
+        author: Jacob Chapel
+        body: "MUST-FIX: dispatch still bypasses the task data manager and calls `loadAllTasks()` directly
+          here and at the other bootstrap/reconciliation/filter-evaluation sites in this file. The
+          task description explicitly included dispatch in the migration scope, and these direct
+          reads still couple the dispatcher to the current storage layout instead of the manager
+          abstraction required by `@task-data-manager` AC-1."
+        created_at: 2026-03-21T06:10:10.360Z
+    kind: blocker
+  - _ulid: 01KM7G7YGGHDVJVQ9PZ5N87YYF
+    anchor:
+      type: code
+      commit: 028e4ab3766f79012521057d9d4be114c06f2cf2
+      line_end: 945
+      line_start: 944
+      path: src/cli/commands/validate.ts
+      side: head
+    entries:
+      - _ulid: 01KM7G7YGGRW2DSERZVB73PMRS
+        author: Jacob Chapel
+        body: "MUST-FIX: `validate` still reads task storage directly via `loadAllTasks()` for both
+          alignment and staleness checks. This task's scope explicitly called out validation as a
+          remaining consumer to migrate, and `@task-data-manager` AC-1 requires task readers to go
+          through the manager instead of touching storage helpers directly. Leaving these call sites
+          in place means validation still depends on the monolithic task loader, so the
+          storage-format abstraction is not complete."
+        created_at: 2026-03-21T06:10:12.112Z
+    kind: blocker
+  - _ulid: 01KM7G805AS1540SJSVMX8R8VC
+    entries:
+      - _ulid: 01KM7G805BNSZR8DW4WNENR8QV
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: src/cli/commands/{derive,inbox,item,meta,plan,tasks,validate}.ts,
+          src/parser/review-task-integration.ts, src/triage/actions.ts,
+          src/agent-runtime/dispatch.ts, src/parser/task-data-manager.ts, src/parser/shadow.ts,
+          src/parser/yaml.ts, tests/{integration,meta,tasks-assess-automation}.test.ts,
+          .agents/skills/{kspec-review,kspec-merge,review-gates,work-gates}/SKILL.md,
+          kspec-agents.md.
+
+          Commands run: git diff/stat vs dev, kspec task get, kspec item get @task-data-manager,
+          kspec review for-task/get, kspec validate, grep for AC annotations, rg for remaining
+          direct task I/O, npm test.
+
+          Claims verified: worker claim "All 6756 tests pass" verified by local npm test (6756
+          passed, 3 skipped); inbox promote ordering fix verified by comparing the submitted
+          implementation against both the prior broken commit and the pre-migration base.
+
+          Categories searched: correctness (found incomplete migration in validate/dispatch), edge
+          cases (checked inbox promote failure ordering), error handling (checked manager
+          validation/not-found paths), test quality (confirmed full suite passes; no targeted
+          regression coverage added for the unfinished scope), integration (checked commit/atomicity
+          semantics at each migrated write site).
+        created_at: 2026-03-21T06:10:13.803Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-21T06:12:12.728Z
+created_at: 2026-03-21T06:08:55.442Z
+updated_at: 2026-03-21T06:12:12.729Z
+notes: []

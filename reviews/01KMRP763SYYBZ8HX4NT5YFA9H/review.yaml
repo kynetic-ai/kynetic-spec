@@ -1,0 +1,118 @@
+_ulid: 01KMRP763SYYBZ8HX4NT5YFA9H
+slugs: []
+title: Review task-cli-proxy-routing (cycle 3)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation passed with existing repo-wide warnings only (exit 6): no task-specific
+      schema/reference blockers for this snapshot."
+    name: kspec validate
+    required: false
+    created_at: 2026-03-27T22:26:31.128Z
+    completed_at: 2026-03-27T22:26:31.128Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 1957/1957 suites passed, 7030/7035 tests passed, 5 skipped. Test wrapper repaired missing
+      dist/cli/index.js before execution, then suite completed successfully in about 53m.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-27T22:26:35.162Z
+    completed_at: 2026-03-27T22:26:35.162Z
+events:
+  - _ulid: 01KMRP763SQZ1XX4BWC5ZFNYJZ
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T22:21:43.929Z
+  - _ulid: 01KMRP7HVQXRQV29T8T068JKZA
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T22:21:55.959Z
+  - _ulid: 01KMRPFZ38FRABW7V8V03QZJ8Z
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-27T22:26:31.656Z
+  - _ulid: 01KMRPG0K7MCTWTDZ0W421N9W9
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-27T22:26:33.191Z
+  - _ulid: 01KMRPG0K70M5V00D5F02RCXZ1
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T22:26:33.191Z
+  - _ulid: 01KMRPG305HVJ0CDCQVWAP04XV
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-27T22:26:35.654Z
+  - _ulid: 01KMRPG4J6FFHJM3BCFBX53D74
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMRPG4210MKHW7A5BKKN3Z9W
+    timestamp: 2026-03-27T22:26:37.254Z
+examined_commit: 5382d348655b47f7748625f776c6c9ac252e6b80
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMMB3VRRVWNQFKPPP4WR0TK6"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMRPG4210MKHW7A5BKKN3Z9W
+    entries:
+      - _ulid: 01KMRPG421DCK4SBHVR4CDEN37
+        author: "@claude"
+        body: "Evidence log. Files read: src/cli/daemon-proxy.ts, src/cli/index.ts,
+          src/cli/commands/serve.ts, src/parser/doctor.ts, tests/cli-daemon-proxy.test.ts,
+          tests/cli-serve.test.ts, tests/helpers/mock-daemon.cjs,
+          packages/web-ui/tests/fixtures/test-base.ts, tests/daemon-command-api.test.ts,
+          tests/daemon-path-validation-middleware.test.ts. Commands run: kspec task get
+          @01KMMB3VRRVWNQFKPPP4WR0TK6, kspec item get @cli-daemon-proxy, kspec item get
+          @daemon-proxy-detection, kspec validate, rg AC annotations for
+          @cli-daemon-proxy/@daemon-proxy-detection/@trait-error-guidance, git diff/stat against dev
+          base, npm test, targeted local CLI checks via node dist/cli/index.js with and without
+          --daemon positioning. Claims verified: full suite passes; --daemon flag enforces
+          daemon-required failure from the local built CLI; daemon command payload matches existing
+          /api/command contract and X-Kspec-Dir auto-registration path. Categories searched:
+          correctness, edge cases, error handling, test quality, integration. No remaining blockers
+          found."
+        created_at: 2026-03-27T22:26:36.737Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-27T22:26:33.190Z
+created_at: 2026-03-27T22:21:43.929Z
+updated_at: 2026-03-27T22:26:36.737Z
+notes: []

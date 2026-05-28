@@ -1,0 +1,150 @@
+_ulid: 01KSJWMD35KTMC8HFKCWA92V5Z
+slugs: []
+title: Review detached reviewer merge helper ephemeral target worktree
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed for 1536 files / 624 items / 1528 tasks; warnings were existing
+      deprecated-reference warnings and allowed by --warnings-ok.
+    name: kspec validate --refs --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-26T19:49:42.151Z
+    completed_at: 2026-05-26T19:49:42.151Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/detached-reviewer-merge.test.ts: 13 passed; npm test -- --fresh
+      tests/supporting-file-references.test.ts tests/setup-builtin-agents.test.ts: 66 passed."
+    name: targeted merge-helper tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-26T19:50:08.609Z
+    completed_at: 2026-05-26T19:50:08.609Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck completed successfully (tsc --noEmit).
+    name: typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-26T19:50:19.074Z
+    completed_at: 2026-05-26T19:50:19.074Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh passed: 2580 suites passed; 9851 tests passed, 5 skipped; duration
+      2280.8s; log /tmp/kspec-test-cache/01KSJWKGTE08NVGJBY5MG25HJM/99933f2c6254b734.log."
+    name: full npm test
+    required: true
+    runner: npm test
+    created_at: 2026-05-26T19:50:33.438Z
+    completed_at: 2026-05-26T19:50:33.438Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md; templates/skills/merge/scripts/detached-reviewer-merge.sh;
+      tests/detached-reviewer-merge.test.ts; tests/supporting-file-references.test.ts;
+      tests/setup-builtin-agents.test.ts; tests/agent-dispatch-engine.test.ts. Claims verified:
+      pinned canonical head is merged via CANONICAL_HEAD; no-op exits before occupancy/temp
+      worktree; occupied target refuses before ref movement; conflict path aborts/removes temp
+      worktree and leaves target ref unchanged; rendered copies match source. Categories searched:
+      correctness, edge cases, error handling, test quality, integration."
+    name: review evidence log
+    required: false
+    runner: reviewer
+    created_at: 2026-05-26T19:50:51.154Z
+    completed_at: 2026-05-26T19:50:51.154Z
+events:
+  - _ulid: 01KSJWMD354QEE7JS93DFXT9PT
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-26T19:36:51.045Z
+  - _ulid: 01KSJWN8N220NGH0A5WVM67D4X
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-26T19:37:19.267Z
+  - _ulid: 01KSJXBZP4HJ8E7XNJCYA0AQWM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --refs --warnings-ok
+    timestamp: 2026-05-26T19:49:43.748Z
+  - _ulid: 01KSJXCSEY4BFE39XRB0QJSRE1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted merge-helper tests
+    timestamp: 2026-05-26T19:50:10.143Z
+  - _ulid: 01KSJXD3NRVNQST15D9CYXQKK3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-26T19:50:20.600Z
+  - _ulid: 01KSJXDHQTVC5GSR2MFNHT8RHR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full npm test
+    timestamp: 2026-05-26T19:50:35.002Z
+  - _ulid: 01KSJXE38M0F1Y40XB2G84K60Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-26T19:50:52.948Z
+  - _ulid: 01KSJXEFZVZ8C3GN67BPF4R6BF
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-26T19:51:05.979Z
+  - _ulid: 01KSJXEFZV252QX6NJW01YKXHK
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-26T19:51:05.979Z
+examined_commit: 742b4c6ca35ffb0c669eb6fc9eac267e8c863995
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KSJNVPDXB0PGNGQKXC5CXF4K"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-26T19:51:05.979Z
+created_at: 2026-05-26T19:36:51.045Z
+updated_at: 2026-05-26T19:51:05.979Z
+notes: []

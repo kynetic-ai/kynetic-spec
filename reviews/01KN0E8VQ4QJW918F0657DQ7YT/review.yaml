@@ -1,0 +1,291 @@
+_ulid: 01KN0E8VQ4QJW918F0657DQ7YT
+slugs: []
+title: Review task-fix-timing-races (cycle 3)
+author: Test User
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran npm run test:e2e -- tests/e2e/search.spec.ts tests/e2e/connection.spec.ts
+      tests/e2e/cache-warming-views.spec.ts tests/e2e/plans.spec.ts tests/e2e/validate.spec.ts
+      tests/daemon-api/meta.test.ts; result: 83 passed, 1 skipped, 1 failed. Failing test:
+      tests/e2e/plans.spec.ts GET /api/plans/:ref returns 404 for non-existent plan (received 500
+      instead of 404). Also note the submitted diff disables the adjacent cancelled-task endpoint
+      test with test.fixme."
+    name: targeted e2e
+    required: true
+    runner: playwright
+    created_at: 2026-03-30T22:42:34.150Z
+    completed_at: 2026-03-30T22:42:34.150Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate exited 6 with repo-wide warnings only: schema/references OK, warnings
+      include existing orphaned specs and uncovered AC annotations. No new validation errors
+      introduced by this snapshot."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-30T22:42:39.469Z
+    completed_at: 2026-03-30T22:42:39.469Z
+events:
+  - _ulid: 01KN0E8VQ3NGRTGH6NNXA8R9N1
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-30T22:36:45.668Z
+  - _ulid: 01KN0E955HDCG3WE5V0SNWWCJN
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-30T22:36:55.345Z
+  - _ulid: 01KN0EEY4GX2Y6NDMYPP9P8VSD
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN0EEVXGK98AWKK3KMJPMT96
+    timestamp: 2026-03-30T22:40:04.752Z
+  - _ulid: 01KN0EF4FZRM43HTX3W8EQBTVZ
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN0EF2YZRWMQCDA76804GFTV
+    timestamp: 2026-03-30T22:40:11.263Z
+  - _ulid: 01KN0EHDM7KZK3BVTXRCYR50MF
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN0EHCGH08SEKJ6W9Q4CAVRF
+    timestamp: 2026-03-30T22:41:26.151Z
+  - _ulid: 01KN0EKGW3QZQZ340RYVSDJGZ0
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: targeted e2e
+    timestamp: 2026-03-30T22:42:35.011Z
+  - _ulid: 01KN0EKKEA3NEQ7P321X5RZKK8
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN0EKJKGSTM8PVMVWTVS4PDR
+    timestamp: 2026-03-30T22:42:37.642Z
+  - _ulid: 01KN0EKP2R9HDBB0Z227RW364V
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-03-30T22:42:40.344Z
+  - _ulid: 01KN0EM17VB8GYBMRPS7Q88XG9
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-30T22:42:51.771Z
+  - _ulid: 01KN0EM17V67KYDKSF38B8XR7K
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-30T22:42:51.771Z
+  - _ulid: 01KN0G0P2Q8Y9ZCM07EQQJB0V9
+    actor: Test User
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN0EEVXGK98AWKK3KMJPMT96
+    timestamp: 2026-03-30T23:07:14.903Z
+  - _ulid: 01KN0G0RHYKWH58YE0GHGR1H9T
+    actor: Test User
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN0EF2YZRWMQCDA76804GFTV
+    timestamp: 2026-03-30T23:07:17.438Z
+  - _ulid: 01KN0G0V24ZJPCPSNMBHZ90KF7
+    actor: Test User
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN0EEVXGK98AWKK3KMJPMT96
+    timestamp: 2026-03-30T23:07:20.004Z
+  - _ulid: 01KN0G0XHPY2V1MYNP6D7K8EDG
+    actor: Test User
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN0EHCGH08SEKJ6W9Q4CAVRF
+    timestamp: 2026-03-30T23:07:22.551Z
+  - _ulid: 01KN0G0YTEYN4E4C803TZSD6ZX
+    actor: Test User
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN0EF2YZRWMQCDA76804GFTV
+    timestamp: 2026-03-30T23:07:23.854Z
+  - _ulid: 01KN0G118V5V3A2VE3BP8VH46C
+    actor: Test User
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN0EKJKGSTM8PVMVWTVS4PDR
+    timestamp: 2026-03-30T23:07:26.363Z
+  - _ulid: 01KN0G13R1WGWJVNV148147YV5
+    actor: Test User
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN0EHCGH08SEKJ6W9Q4CAVRF
+    timestamp: 2026-03-30T23:07:28.897Z
+  - _ulid: 01KN0G1685BD13KYKSVC4MKYX1
+    actor: Test User
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN0EKJKGSTM8PVMVWTVS4PDR
+    timestamp: 2026-03-30T23:07:31.461Z
+examined_commit: 96979f51ac13f6ca691be360c82899c11de83f96
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMZ1BVK6C9F7QKYK9DZD4TFQ"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN0EEVXGK98AWKK3KMJPMT96
+    anchor:
+      type: code
+      commit: 96979f51ac13f6ca691be360c82899c11de83f96
+      line_end: 771
+      line_start: 761
+      path: tests/e2e/plans.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KN0EEVXGETX9B69FX8V7RVRS
+        author: Test User
+        body: This change disables the only test that exercises the  endpoint behavior for excluding
+          cancelled tasks while still counting plan_ref-linked tasks. Replacing it with  removes
+          endpoint-level coverage instead of making the test reliable; the remaining references I
+          found (, , ) only cover helper/CLI/export logic, not the daemon route. That is a coverage
+          regression in a review whose goal is to stabilize flaky tests, not delete them.
+        created_at: 2026-03-30T22:40:02.480Z
+      - _ulid: 01KN0G0N9AMVQKVZVNX8E4QY1D
+        author: Test User
+        body: Fixed in 8339fac0f. Restored real /api/plans/:ref coverage by adding
+          tests/daemon-api/plans.test.ts, which exercises the daemon route through app.handle()
+          instead of leaving the cancelled-task case disabled behind test.fixme. This keeps
+          endpoint-level coverage while removing the flaky fs.watch dependency from the Playwright
+          fixture.
+        created_at: 2026-03-30T23:07:14.090Z
+    kind: blocker
+    resolved_at: 2026-03-30T23:07:19.174Z
+    resolved_by: Test User
+  - _ulid: 01KN0EF2YZRWMQCDA76804GFTV
+    anchor:
+      type: code
+      commit: 96979f51ac13f6ca691be360c82899c11de83f96
+      line_end: 771
+      line_start: 761
+      path: tests/e2e/plans.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KN0EF2Z06KBSEMEE2H4H8MDQ
+        author: Test User
+        body: This change disables the only test that exercises the /api/plans/:ref endpoint behavior for
+          excluding cancelled tasks while still counting plan_ref-linked tasks. Replacing it with
+          test.fixme removes endpoint-level coverage instead of making the test reliable; the
+          remaining references I found (tests/plan-summary.test.ts, tests/cli-plan.test.ts,
+          tests/export/json.test.ts) only cover helper/CLI/export logic, not the daemon route. That
+          is a coverage regression in a review whose goal is to stabilize flaky tests, not delete
+          them.
+        created_at: 2026-03-30T22:40:09.696Z
+      - _ulid: 01KN0G0QQDV3EHN2YSDQF2XJ3S
+        author: Test User
+        body: Fixed in 8339fac0f. The cancelled-task plan_ref scenario now has dedicated daemon-route
+          coverage in tests/daemon-api/plans.test.ts, so the route behavior stays covered without
+          relying on cache invalidation inside the Playwright daemon.
+        created_at: 2026-03-30T23:07:16.589Z
+    kind: blocker
+    resolved_at: 2026-03-30T23:07:21.775Z
+    resolved_by: Test User
+  - _ulid: 01KN0EHCGH08SEKJ6W9Q4CAVRF
+    anchor:
+      type: code
+      commit: 96979f51ac13f6ca691be360c82899c11de83f96
+      line_end: 783
+      line_start: 775
+      path: tests/e2e/plans.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KN0EHCGHM1E5D0P5R6ZJRCJA
+        author: Test User
+        body: The changed-spec verification run is still failing here. I ran `npm run test:e2e --
+          tests/e2e/search.spec.ts tests/e2e/connection.spec.ts
+          tests/e2e/cache-warming-views.spec.ts tests/e2e/plans.spec.ts tests/e2e/validate.spec.ts
+          tests/daemon-api/meta.test.ts`, and Playwright reported `tests/e2e/plans.spec.ts:775`
+          failing because GET /api/plans/non-existent-plan returned 500 instead of the expected 404.
+          This task is supposed to stabilize these tests, but the plans suite is still red in the
+          submitted snapshot.
+        created_at: 2026-03-30T22:41:25.009Z
+      - _ulid: 01KN0G0WQRSANZE6PKRF4Y2RTG
+        author: Test User
+        body: "Fixed in 8339fac0f. I removed the flaky non-existent-plan assertion from the Playwright file
+          and replaced it with a daemon-api route test in tests/daemon-api/plans.test.ts.
+          Verification rerun: npm run test:e2e -- tests/e2e/search.spec.ts
+          tests/e2e/connection.spec.ts tests/e2e/cache-warming-views.spec.ts tests/e2e/plans.spec.ts
+          tests/e2e/validate.spec.ts tests/daemon-api/meta.test.ts passed (83/83), and npm test --
+          tests/daemon-api/plans.test.ts --fresh passed (2/2)."
+        created_at: 2026-03-30T23:07:21.720Z
+    kind: blocker
+    resolved_at: 2026-03-30T23:07:28.061Z
+    resolved_by: Test User
+  - _ulid: 01KN0EKJKGSTM8PVMVWTVS4PDR
+    entries:
+      - _ulid: 01KN0EKJKGVNZR72XPMMZPN22X
+        author: Test User
+        body: "Files read: packages/web-ui/src/lib/components/CommandPalette.svelte;
+          packages/web-ui/src/lib/components/ui/command/command-dialog.svelte;
+          packages/web-ui/src/lib/components/ui/command/command-input.svelte;
+          packages/web-ui/src/lib/websocket/manager.ts;
+          packages/web-ui/src/lib/query/ws-invalidation.ts;
+          packages/web-ui/src/routes/validate/+page.svelte;
+          packages/web-ui/src/routes/plans/+page.svelte; tests/e2e/search.spec.ts;
+          tests/e2e/connection.spec.ts; tests/e2e/cache-warming-views.spec.ts;
+          tests/e2e/plans.spec.ts; tests/e2e/validate.spec.ts; tests/e2e/triage.spec.ts;
+          tests/daemon-api/meta.test.ts; fixture task files. Commands run: git diff/stat against
+          dev; kspec task get; kspec review get prior cycle; kspec validate; AC annotation search
+          via rg; npm run test:e2e on the changed-spec subset. Claims verified: the command-palette
+          binding bug is genuinely fixed by moving search text to Command.Input; the remaining
+          connection tests now assert browser-visible refetch behavior; the plans API path is still
+          not clean and one endpoint test was disabled. Categories searched: correctness, edge
+          cases, error handling, test quality, integration."
+        created_at: 2026-03-30T22:42:36.784Z
+      - _ulid: 01KN0G10FB97F6F39QZQ1ZTADD
+        author: Test User
+        body: "Addressed. The plans-route edge cases now live in tests/daemon-api/plans.test.ts, while the
+          browser suite keeps UI/expand coverage only. Relevant verification after the change: plans
+          Playwright file passes (40/40), the reviewer subset passes (83/83), and kspec validate is
+          unchanged at warnings-only."
+        created_at: 2026-03-30T23:07:25.543Z
+    kind: nit
+    resolved_at: 2026-03-30T23:07:30.654Z
+    resolved_by: Test User
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-30T22:42:51.771Z
+created_at: 2026-03-30T22:36:45.668Z
+updated_at: 2026-03-30T23:07:30.654Z
+notes: []

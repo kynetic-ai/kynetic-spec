@@ -1,0 +1,249 @@
+_ulid: 01KR6XZD0NANBASJNR590XBHQ0
+slugs: []
+title: Review task-fix-guardrail-binding-wrapper-analysis
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- kspec validate --completeness --warnings-ok: validation passed; completeness
+      warnings are pre-existing and allowed by --warnings-ok."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-09T17:55:35.696Z
+    completed_at: 2026-05-09T17:55:35.696Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts: 23 suites passed, 225 tests passed."
+    name: focused lint guardrail tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-09T17:55:47.165Z
+    completed_at: 2026-05-09T17:55:47.165Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- kspec validate --refs --warnings-ok: validation passed; references OK; 6
+      pre-existing deprecated-reference warnings allowed by --warnings-ok."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-09T17:55:47.184Z
+    completed_at: 2026-05-09T17:55:47.184Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh: 2417 suites passed; 8978 tests passed; 5 skipped;
+      duration 2277.7s."
+    name: npm test
+    required: true
+    runner: npm test
+    created_at: 2026-05-09T18:06:02.336Z
+    completed_at: 2026-05-09T18:06:02.336Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md, task/spec via kspec,
+      tools/eslint-rules/no-leaky-test-daemon.js, tests/lint-daemon-test-guardrails.test.ts,
+      tests/lint-no-leaky-test-daemon.test.ts. Commands run: git diff/stat, kspec item/task/review
+      lookups, rg AC/source-scan checks, focused npm test, full npm test, kspec validate
+      refs/completeness, one-off oxlint probe. Claims verified: focused lint suites pass; unbound
+      cleanup regressions now report; ownership of just-started daemon is still not enforced.
+      Categories searched: correctness/spec alignment, edge cases, test quality, false positives,
+      integration."
+    name: review evidence log
+    required: false
+    runner: reviewer
+    created_at: 2026-05-09T18:06:06.333Z
+    completed_at: 2026-05-09T18:06:06.333Z
+events:
+  - _ulid: 01KR6XZD0NBVF586X5GV0NNJZS
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-09T17:53:44.981Z
+  - _ulid: 01KR6Y1X68DKD5Z545JST0X8XR
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-09T17:55:07.081Z
+  - _ulid: 01KR6Y2TNNA518P9554XJMQ86Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-05-09T17:55:37.269Z
+  - _ulid: 01KR6Y2YZ1NY1Z34NJM7PKS5YJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR6Y2XHAGPR7QN6YQAP5MZ7R
+    timestamp: 2026-05-09T17:55:41.665Z
+  - _ulid: 01KR6Y35XJRPDNWSGCV34SFF2R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused lint guardrail tests
+    timestamp: 2026-05-09T17:55:48.786Z
+  - _ulid: 01KR6Y38BNG1VDK563150BBG31
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-05-09T17:55:51.285Z
+  - _ulid: 01KR6Y6K4DTD6GRCV9SX05XEEC
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR6Y2XHAGPR7QN6YQAP5MZ7R
+    timestamp: 2026-05-09T17:57:40.621Z
+  - _ulid: 01KR6YNYDNQ8JATJ75HA8ZCWS6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-09T18:06:03.701Z
+  - _ulid: 01KR6YP2AWXXC0Z4MNVSEJW4ZN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-09T18:06:07.709Z
+  - _ulid: 01KR6YPDV2XWJFENWK6Q7F9BCA
+    actor: reviewer-agent
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-09T18:06:19.490Z
+  - _ulid: 01KR6YPDV2B2QRCKB42023Z83M
+    actor: reviewer-agent
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-09T18:06:19.490Z
+  - _ulid: 01KR70ANK0KD8FQRH98M8HN44E
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR6Y2XHAGPR7QN6YQAP5MZ7R
+    timestamp: 2026-05-09T18:34:51.360Z
+  - _ulid: 01KR70ASVNJ6Z8GXJZBDV4BG93
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR6Y2XHAGPR7QN6YQAP5MZ7R
+    timestamp: 2026-05-09T18:34:55.734Z
+examined_commit: b9857b36c2ea8f9b2a93420865545743d74b58de
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR6M77JA0S1EEVZX8KKRPY1V"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR6Y2XHAGPR7QN6YQAP5MZ7R
+    anchor:
+      type: code
+      commit: b9857b36c2ea8f9b2a93420865545743d74b58de
+      line_end: 953
+      line_start: 950
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KR6Y2XHA5225G66XZHRP14B5
+        author: Jacob Chapel
+        body: "MUST-FIX: the cleanup-binding check treats any non-null initializer as a valid daemon cleanup
+          target. That proves the closure has some value, but not that it owns the pid/child/stop
+          handle for the detached daemon that was just started. I verified this with an oxlint
+          probe: a test containing  exits 0 with no no-leaky-test-daemon report. That violates
+          @daemon-test-guardrail-precision ac-detached-cleanup-bound-before-observation and the task
+          requirement that cleanup be associated with the just-started daemon, because this cleanup
+          can kill an unrelated process while the new detached daemon leaks."
+        created_at: 2026-05-09T17:55:40.202Z
+      - _ulid: 01KR6Y6H8NHY33X1PSDKV49HRK
+        author: Jacob Chapel
+        body: 'Probe sample details omitted by shell quoting in the initial body: const pid = 12345;
+          runKspec("serve start --detach --port 3456"); onTestFinished(() => process.kill(pid,
+          "SIGTERM")); expect(true).toBe(true); The one-off oxlint run for that sample returned
+          exit=0 / Found 0 warnings and 0 errors.'
+        created_at: 2026-05-09T17:57:38.708Z
+      - _ulid: 01KR70AM8V0904D6QKBGJPSNN8
+        author: "@claude"
+        body: >-
+          Fixed by adding an ownership leg to cleanupCallbackBindingStatus. The previous
+          concretely-bound check accepted any non-null/non-undefined initializer; the new check
+          additionally requires the captured identifier's most recent concrete value-producing
+          binding to end at or after the detached-start position. Parameters, class declarations,
+          function declarations, and undeclared/global identifiers are treated as not owned (they
+          cannot represent the daemon this test just started).
+
+
+          The reviewer's probe `const pid = 12345; runKspec("serve start --detach --port 3456");
+          onTestFinished(() => process.kill(pid, "SIGTERM")); expect(true).toBe(true);` now flags
+          via cleanupClosureUnbound, identifying `pid` as the offender. Verified through a one-off
+          oxlint run on a temp project (exit 1, message reproduced verbatim).
+
+
+          The canonical safe shapes still pass:
+
+          - `runKspec(...); const pid = readPidFromFile(); onTestFinished(() => process.kill(pid,
+          ...))` (declarator ends after the detached start).
+
+          - `const child = spawn("kspec", ["serve", "start", "--detach"]); onTestFinished(() =>
+          child.kill("SIGTERM"))` (declarator's range encompasses the spawn — the binding's
+          initializer IS the detached start).
+
+          - `let pid; runKspec(...); pid = readPidFromFile(); onTestFinished(() => process.kill(pid,
+          ...))` (assignment after the detached start re-binds).
+
+
+          Three new regression tests were added in tests/lint-daemon-test-guardrails.test.ts to lock
+          the fix in place: literal-pid-bound-before-start,
+          unrelated-spawn-child-handle-bound-before-start, and imported-pid (pre-existing module
+          binding cannot represent the just-started daemon). detachedStartNode is threaded through
+          subtreeContainsDaemonCleanupCall, statementContainsCleanup, hasCleanupAfter,
+          isInTryWithFinallyCleanup, findUnboundCleanupClosure, and scanForUnboundCleanupCallback so
+          the ownership comparison runs at every existing binding-check call site.
+
+
+          Validation: focused lint suites pass (225 → 228 tests with the 3 new regressions). Full
+          npm test passes (8982 passed, 5 pre-existing skipped, 1996.7s). kspec validate --refs
+          --warnings-ok and --completeness --warnings-ok both pass.
+        created_at: 2026-05-09T18:34:50.011Z
+    kind: blocker
+    resolved_at: 2026-05-09T18:34:54.425Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: reviewer-agent
+    role: reviewer
+    created_at: 2026-05-09T18:06:19.490Z
+created_at: 2026-05-09T17:53:44.981Z
+updated_at: 2026-05-09T18:34:54.425Z
+notes: []

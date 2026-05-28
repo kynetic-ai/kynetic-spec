@@ -1,0 +1,116 @@
+_ulid: 01KM78QCF5K56XFH25FMKKSTPP
+slugs: []
+title: Review task-impl-data-manager (cycle 9)
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Full suite failed twice on tests/action-model.test.ts:387 with expected 3 to be 2; 297
+      files passed, 1 failed.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-21T04:02:25.894Z
+    completed_at: 2026-03-21T04:02:25.894Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test -- tests/action-model.test.ts -t "handles command failure with non-zero exit
+      code" passed in isolation (1 passed, 48 skipped).
+    name: isolated failing test
+    required: false
+    runner: npm
+    created_at: 2026-03-21T04:02:27.287Z
+    completed_at: 2026-03-21T04:02:27.287Z
+events:
+  - _ulid: 01KM78QCF4SXVHYAPK74C3ST7Q
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T03:58:49.316Z
+  - _ulid: 01KM78XHSS35KNPTD26RA3MHW4
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T04:02:11.385Z
+  - _ulid: 01KM78Y09EM8G242E3S2W5PW69
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-21T04:02:26.222Z
+  - _ulid: 01KM78Y1SEECN298X10KTKAJDH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: isolated failing test
+    timestamp: 2026-03-21T04:02:27.759Z
+  - _ulid: 01KM790AYM05RVWHT000E7CKEP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM790APMCB6VCFKM8FDQCCEN
+    timestamp: 2026-03-21T04:03:42.676Z
+  - _ulid: 01KM790BS3H24XD3STAQCQHWKH
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-21T04:03:43.523Z
+  - _ulid: 01KM790BS3YE92V91NA9CAVPR8
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-21T04:03:43.523Z
+examined_commit: 2c8fbbdcbae2e51ff010b4c6e6fa51479d5581fc
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YENV3CBFAGSRHVHR7QPJN"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM790APMCB6VCFKM8FDQCCEN
+    anchor:
+      type: code
+      commit: 2c8fbbdcbae2e51ff010b4c6e6fa51479d5581fc
+      line_end: 387
+      line_start: 387
+      path: tests/action-model.test.ts
+      side: head
+    entries:
+      - _ulid: 01KM790APMC4HYZKV7Y741NFWA
+        author: Jacob Chapel
+        body: Full-suite npm test fails twice on this snapshot at this assertion (events.length is 3 instead
+          of 2), so the branch is not mergeable yet. The same test passes in isolation, which points
+          to suite-level interference or leaked global state that still needs to be understood
+          before this task can advance.
+        created_at: 2026-03-21T04:03:42.420Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-21T04:03:43.522Z
+created_at: 2026-03-21T03:58:49.317Z
+updated_at: 2026-03-21T04:03:43.523Z
+notes: []

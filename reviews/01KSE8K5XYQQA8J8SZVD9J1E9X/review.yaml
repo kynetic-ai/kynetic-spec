@@ -1,0 +1,253 @@
+_ulid: 01KSE8K5XYQQA8J8SZVD9J1E9X
+slugs: []
+title: Review task-plan-review-folder-storage-migration-1 cycle 6
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh: 2519 suites passed; 9599 tests passed; 5 skipped; duration 2435.5s.
+      Full log /tmp/kspec-test-cache/01KSE8HHSRDDP0BJ1J3VC5MQ72/49186e3b6509f3c6.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-25T00:47:46.501Z
+    completed_at: 2026-05-25T00:47:46.501Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- tests/upgrade-folder-storage.test.ts --fresh: 17 tests passed in
+      tests/upgrade-folder-storage.test.ts; runner summary 2 suites passed, 17 tests passed,
+      duration 23.5s."
+    name: focused upgrade tests
+    required: false
+    runner: npm
+    created_at: 2026-05-25T00:47:58.023Z
+    completed_at: 2026-05-25T00:47:58.023Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate exited 6 with warnings only: schema/references OK, 7 reference warnings,
+      37 alignment warnings, 266 completeness warnings. No validation errors."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-25T00:48:13.842Z
+    completed_at: 2026-05-25T00:48:13.842Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check b588e89919cb699a8e1134993f5061c00f1f4f5a...HEAD completed with no
+      whitespace errors.
+    name: diff hygiene
+    required: false
+    runner: git
+    created_at: 2026-05-25T00:48:26.403Z
+    completed_at: 2026-05-25T00:48:26.403Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: AGENTS.md, kspec-agents.md, src/cli/commands/upgrade.ts,
+      src/parser/migration-safety.ts, src/parser/plan-folder-migration.ts,
+      src/parser/review-folder-migration.ts, src/cli/batch-write-buffer.ts,
+      tests/upgrade-folder-storage.test.ts, tests/migration-safety.test.ts, plus AC annotations in
+      touched tests. Commands run: kspec task get, kspec review
+      for-task/get/add/open/comment/reply/check, kspec item get
+      @entity-folder-migration-and-compatibility-1, rg AC/source-read scan, git diff
+      stat/name-status/log/check, focused npm test, full npm test, kspec validate,
+      protected-tripwire reproduction scripts. Claims verified: cycle 5 tripwire fix prevents
+      plan/review/manifest storage writes in the covered cases, but storage preflight failure does
+      not stop later upgrade steps. Categories searched: correctness, edge cases, protected-path
+      safety, atomicity/rollback, test quality, AC coverage, integration."
+    name: review evidence log
+    required: false
+    runner: codex-reviewer
+    created_at: 2026-05-25T00:48:43.860Z
+    completed_at: 2026-05-25T00:48:43.860Z
+events:
+  - _ulid: 01KSE8K5XX4GBTG0PGEGG70B8Y
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-25T00:29:41.693Z
+  - _ulid: 01KSE8KZAV7SBXW3TNSW2GMAJY
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-25T00:30:07.707Z
+  - _ulid: 01KSE8YE2R05NW5FQA0NM1DFMR
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSE8YCAT8AWZWNGF0T9T127B
+    timestamp: 2026-05-25T00:35:50.490Z
+  - _ulid: 01KSE8ZCYDNC0K91AYRX2VZ1PM
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSE8YCAT8AWZWNGF0T9T127B
+    timestamp: 2026-05-25T00:36:22.093Z
+  - _ulid: 01KSE9MAZ3P0AWNCJXW6J12WDA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-25T00:47:48.195Z
+  - _ulid: 01KSE9MP9TQT100MPK09CKB7SJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused upgrade tests
+    timestamp: 2026-05-25T00:47:59.803Z
+  - _ulid: 01KSE9N5N791PVRK2HJ9GEM4HD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-05-25T00:48:15.527Z
+  - _ulid: 01KSE9NHX4670NEBDBTMEAKF76
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff hygiene
+    timestamp: 2026-05-25T00:48:28.068Z
+  - _ulid: 01KSE9P2ZF45PT04RNE22H9KWC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-25T00:48:45.551Z
+  - _ulid: 01KSE9PEXATV0SBWGJN87VWA29
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-25T00:48:57.770Z
+  - _ulid: 01KSE9PEXBQE7ZSY67N8E33E42
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-25T00:48:57.771Z
+  - _ulid: 01KSEB2354M0JW2W1G08NT32W1
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSE8YCAT8AWZWNGF0T9T127B
+    timestamp: 2026-05-25T01:12:47.524Z
+  - _ulid: 01KSEB26TTZ1E3DBEBBRT1J21K
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSE8YCAT8AWZWNGF0T9T127B
+    timestamp: 2026-05-25T01:12:51.290Z
+examined_commit: 85473371603f27ae5a7990c2c73bea5879539e76
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XAYZTG0MN48Z78D45PBV6"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSE8YCAT8AWZWNGF0T9T127B
+    anchor:
+      type: code
+      commit: 85473371603f27ae5a7990c2c73bea5879539e76
+      line_end: 461
+      line_start: 459
+      path: src/cli/commands/upgrade.ts
+      side: head
+    entries:
+      - _ulid: 01KSE8YCATEDWX91WGD4QXVQT8
+        author: Jacob Chapel
+        body: >-
+          MUST-FIX: a protected-project storage preflight failure does not stop the rest of Source:
+          0.14.0 (exact)
+
+          Target: 0.14.0
+
+
+          ✓ Project is already at the current version. No changes necessary..  can return a failed ,
+          but  still falls through into  and later upgrade steps. I reproduced this against a temp
+          project with  set to the project root: the JSON result had  but still reported . A
+          protected target must abort without any further upgrade mutations once the tripwire fires;
+          otherwise the guard can prevent plan/review/manifest writes while later upgrade steps
+          still touch /agent artifacts or commit shadow state on the same protected project.
+        created_at: 2026-05-25T00:35:48.698Z
+      - _ulid: 01KSE8ZB9BTY0H4H3HJKM4RVRK
+        author: Jacob Chapel
+        body: "Corrected finding text: MUST-FIX: a protected-project storage preflight failure does not stop
+          the rest of kspec upgrade. runAtomicStorageMigration can return a failed Storage migration
+          safety preflight, but runUpgradePipeline still falls through into
+          runBackfillCoreSkillsStep and later upgrade steps. I reproduced this against a temp
+          project with KSPEC_PROTECTED_PROJECT_PATHS set to the project root: the JSON result had
+          Storage migration safety preflight=failed but still reported Backfill core skills=done. A
+          protected target must abort without any further upgrade mutations once the tripwire fires;
+          otherwise the guard can prevent plan/review/manifest writes while later upgrade steps
+          still touch .kspec/agent artifacts or commit shadow state on the same protected project."
+        created_at: 2026-05-25T00:36:20.395Z
+      - _ulid: 01KSEB21Q7JC6W97RC2HT5PKE7
+        author: "@claude"
+        body: >-
+          Fixed in commit 7987f2ca73. Root cause: assertSafeMigrationTarget was scoped to
+          runAtomicStorageMigration, so a failed Storage migration safety preflight only skipped
+          plan/review/manifest writes — runUpgradePipeline still fell through to
+          runBackfillCoreSkillsStep, runRerenderSkillsStep, runRegenerateAgentsStep,
+          runGitignoreRepairStep, runScaffoldMissingStep, and the version-record step. Those write
+          to .kspec/skills/, .agents/, .gitignore, and the shadow branch.
+
+
+          Fix: hoisted assertSafeMigrationTarget to runUpgradePipeline immediately after the
+          isCurrent/!force short-circuit and before Step 1 (Task storage migration). On tripwire
+          failure the pipeline returns a single failed Storage migration safety preflight step plus
+          skipped synthetic entries for every named downstream step (Task storage migration, Plan
+          storage folder migration, Review storage folder migration, Storage manifest, Backfill core
+          skills, Re-render skills, Regenerate agent instructions, Restore gitignore entries,
+          Scaffold missing files, Record version). No mutation reaches disk. Dry-runs remain exempt
+          so operators can still preview against protected targets.
+
+
+          Regression test added at tests/upgrade-folder-storage.test.ts: 'upgrade refuses every
+          pipeline step when KSPEC_PROTECTED_PROJECT_PATHS guards the target'. Asserts every
+          downstream step is reported as skipped (including the previously-bypassed Backfill core
+          skills), no step is done, and the manifest, setup state, .gitignore, .kspec/skills/
+          listing, and plans/reviews directories are byte/listing identical to before the run.
+
+
+          Focused upgrade tests: 18 passed in tests/upgrade-folder-storage.test.ts (was 17). Full
+          suite: 2519 suites passed, 9600 tests passed, 5 pre-existing skipped of 9605.
+        created_at: 2026-05-25T01:12:46.055Z
+    kind: blocker
+    resolved_at: 2026-05-25T01:12:49.837Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-25T00:48:57.770Z
+created_at: 2026-05-25T00:29:41.694Z
+updated_at: 2026-05-25T01:12:49.837Z
+notes: []

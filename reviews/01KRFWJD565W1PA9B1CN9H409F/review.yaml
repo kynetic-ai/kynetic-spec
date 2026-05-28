@@ -1,0 +1,175 @@
+_ulid: 01KRFWJD565W1PA9B1CN9H409F
+slugs: []
+title: Review task-test-dispatch-inflight-bootstrap-race-regression
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: tests/agent-dispatch-engine.test.ts; src/agent-runtime/dispatch.ts;
+      src/agent-runtime/workspace.ts; kspec-agents.md. Commands run: git diff --stat/name-only/full
+      diff, kspec task get, kspec item get @dispatch-workspace-cleanup-policy, rg AC annotations,
+      git diff --check, kspec validate, kspec validate --warnings-ok, targeted npm test, full npm
+      test. Claims verified: worker claim that the regression exercises real
+      provisioning/reconciliation with a bootstrap barrier and sentinel survival was verified by
+      reading the test and by targeted/full tests. Categories searched: correctness, edge
+      cases/concurrency pre-active window, error handling/cleanup ENOENT path, test quality/no
+      source-scanning, integration with artifact reconciliation. Findings: none."
+    name: evidence-log
+    required: true
+    runner: codex-review
+    created_at: 2026-05-13T05:35:30.183Z
+    completed_at: 2026-05-13T05:35:30.183Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Task covers @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup and
+      @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved.
+      Annotated behavioral test at tests/agent-dispatch-engine.test.ts:7617-7619 exercises in-flight
+      pre-active cleanup protection with real provisionDispatchWorkspace and real
+      reconcileDispatchWorkspaceArtifacts.
+    name: ac-coverage
+    required: true
+    runner: manual-inspection
+    created_at: 2026-05-13T05:35:33.895Z
+    completed_at: 2026-05-13T05:35:33.895Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Schema and references OK. Plain kspec validate exits 6 because of existing project-wide
+      warnings; kspec validate --warnings-ok exits 0. No new invalid annotation is introduced by
+      this task.
+    name: kspec-validate
+    required: true
+    runner: kspec validate --warnings-ok
+    created_at: 2026-05-13T05:35:37.657Z
+    completed_at: 2026-05-13T05:35:37.657Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "41 suites passed; 152 tests passed; duration 40.8s. Full log:
+      /tmp/kspec-test-cache/01KRFWGC2E8YK39YP1Q53EEJDF/3bfc4a79f4d11d86.log"
+    name: targeted-tests
+    required: true
+    runner: npm test -- --run tests/agent-dispatch-engine.test.ts
+      tests/dispatch-runtime-bootstrap-contract.test.ts
+    created_at: 2026-05-13T05:35:41.377Z
+    completed_at: 2026-05-13T05:35:41.377Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "2433 suites passed; 9192 tests passed, 5 skipped; duration 2144.9s. Full log:
+      /tmp/kspec-test-cache/01KRFWGC2E8YK39YP1Q53EEJDF/52fd172941b91415.log"
+    name: full-npm-test
+    required: true
+    runner: npm test
+    created_at: 2026-05-13T05:35:44.958Z
+    completed_at: 2026-05-13T05:35:44.958Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check 68bef6d6da0445b4a09b8758b3270f2a8a59e38b...HEAD completed with exit 0.
+    name: diff-check
+    required: true
+    runner: git diff --check
+    created_at: 2026-05-13T05:35:48.559Z
+    completed_at: 2026-05-13T05:35:48.559Z
+events:
+  - _ulid: 01KRFWJD56HD55BRFR2ZS05C83
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-13T05:22:20.454Z
+  - _ulid: 01KRFWK1WMWBQPEHPKSK0R2WHR
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-13T05:22:41.684Z
+  - _ulid: 01KRFXAHQWCACADWDYSJEWFZY4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: evidence-log
+    timestamp: 2026-05-13T05:35:31.580Z
+  - _ulid: 01KRFXANF7JX85KDSKTVEHPKN7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-05-13T05:35:35.399Z
+  - _ulid: 01KRFXAS0HB42FMX45MQEQHRA9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-05-13T05:35:39.025Z
+  - _ulid: 01KRFXAWN14JTDDXANNEQ0MMT6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted-tests
+    timestamp: 2026-05-13T05:35:42.753Z
+  - _ulid: 01KRFXB06ZX4KVKFB751AMEKY2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full-npm-test
+    timestamp: 2026-05-13T05:35:46.400Z
+  - _ulid: 01KRFXB3Q4GA19H2PH6FRTDHJ4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff-check
+    timestamp: 2026-05-13T05:35:49.988Z
+  - _ulid: 01KRFXB7MCWJ441AJXZY05FGVK
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-13T05:35:53.996Z
+  - _ulid: 01KRFXB7MCFST5JANKZEB8ER53
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-13T05:35:53.996Z
+examined_commit: 56258aa7bd91a61a4c908f3f5b6942b05f72844d
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRF37ZZ4E2KKX66YP217WW69"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-13T05:35:53.996Z
+created_at: 2026-05-13T05:22:20.454Z
+updated_at: 2026-05-13T05:35:53.996Z
+notes: []

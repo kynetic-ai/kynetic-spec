@@ -1,0 +1,25 @@
+_ulid: 01KM9YYR1T8XS7KTH7WARPG2P6
+slugs:
+  - plan-multi-turn-session-lifecycle
+title: Multi-Turn Session Lifecycle
+status: completed
+approved_at: 2026-03-22T07:28:10.192Z
+derived_specs:
+  - "@multi-turn-session-lifecycle"
+  - "@session-idle-event"
+  - "@session-prompt-action"
+  - "@session-prompt-action-schema"
+  - "@active-session-registry"
+derived_tasks:
+  - "@task-session-registry"
+  - "@task-multi-turn-invocation"
+  - "@task-session-idle-event"
+  - "@task-session-prompt-action"
+  - "@task-idle-grace-period"
+  - "@task-dispatch-multi-turn-integration"
+  - "@task-update-existing-specs"
+  - "@task-ui-session-idle"
+module_ref: "@agent-integration"
+source_path: /home/chapel/Projects/kynetic-spec/plans/multi-turn-session-lifecycle.md
+created_at: 2026-03-22T05:05:48.090Z
+completed_at: null

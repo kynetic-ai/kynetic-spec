@@ -1,0 +1,312 @@
+_ulid: 01KS9XQFH25P13AS179EFY0YC9
+slugs: []
+title: Review entity-local resource trait resolver (cycle 3)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2475 suites passed; 9389 tests passed, 5 skipped of 9394. Resource
+      test file passed 66 tests."
+    name: npm test -- --fresh
+    required: true
+    runner: npm
+    created_at: 2026-05-23T08:17:27.423Z
+    completed_at: 2026-05-23T08:17:27.423Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0. Oxlint reported warnings only, no errors; warnings are existing repository-wide
+      lint debt, not introduced in changed files.
+    name: npm run lint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-23T08:17:38.138Z
+    completed_at: 2026-05-23T08:17:38.138Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 from .
+    name: npm run typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-23T08:17:51.570Z
+    completed_at: 2026-05-23T08:17:51.570Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exit 6. Relevant new blocker: @trait-entity-scoped-local-resources-1 reports uncovered
+      own AC ac-resource-delete-follows-owner-delete;  returned no matches. Other warnings are
+      pre-existing repository-wide validation debt."
+    name: kspec validate --completeness
+    required: true
+    runner: kspec
+    created_at: 2026-05-23T08:18:10.822Z
+    completed_at: 2026-05-23T08:18:10.822Z
+events:
+  - _ulid: 01KS9XQFH2WJC4JTV2AR75JG6X
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-23T08:02:50.530Z
+  - _ulid: 01KS9XR4SJ2J2T9TFRCRG1K5FW
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-23T08:03:12.306Z
+  - _ulid: 01KS9YH2J803H8DY3G82WYP5ZM
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KS9YH114JSPX6WEV5TA6VNEV
+    timestamp: 2026-05-23T08:16:49.224Z
+  - _ulid: 01KS9YHHKH6RDYABAWCTA6BY83
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KS9YHG2YXDS9WTZY3568CE12
+    timestamp: 2026-05-23T08:17:04.625Z
+  - _ulid: 01KS9YHYS15B3X5WD6KBG4ZWMW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KS9YHX6M3AXXGKYDSK9ZZ13K
+    timestamp: 2026-05-23T08:17:18.113Z
+  - _ulid: 01KS9YJ9GEK8X9PCSTV8KGF3RG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-05-23T08:17:29.103Z
+  - _ulid: 01KS9YJKWVD4Y3DGNK2KBQ2P0H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run lint
+    timestamp: 2026-05-23T08:17:39.739Z
+  - _ulid: 01KS9YK103HRCFY4WPV92H9PRT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run typecheck
+    timestamp: 2026-05-23T08:17:53.155Z
+  - _ulid: 01KS9YKKSRDVKFEVJ58NV9FF2G
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate --completeness
+    timestamp: 2026-05-23T08:18:12.408Z
+  - _ulid: 01KS9YM8PGA7S43RED5DD86N87
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KS9YM74JC8CWSCRS5Y7HW174
+    timestamp: 2026-05-23T08:18:33.808Z
+  - _ulid: 01KS9YMKTXQXFZ3EGME00XMPDG
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-23T08:18:45.213Z
+  - _ulid: 01KS9YMKTXJGXSRR0EBGX7K1XW
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-23T08:18:45.213Z
+  - _ulid: 01KS9ZZ2JCBNSXS09W5E6Y463R
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KS9YH114JSPX6WEV5TA6VNEV
+    timestamp: 2026-05-23T08:41:56.556Z
+  - _ulid: 01KS9ZZ6N40SFM2VC1221BVC13
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KS9YH114JSPX6WEV5TA6VNEV
+    timestamp: 2026-05-23T08:42:00.740Z
+  - _ulid: 01KS9ZZANQHD20EEA94Q4F0JKE
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KS9YHG2YXDS9WTZY3568CE12
+    timestamp: 2026-05-23T08:42:04.855Z
+  - _ulid: 01KS9ZZEHNR1W0HSEJ7CZ2A913
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KS9YHG2YXDS9WTZY3568CE12
+    timestamp: 2026-05-23T08:42:08.821Z
+  - _ulid: 01KS9ZZJM3RQ6H88SFAT1HYKBF
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KS9YHX6M3AXXGKYDSK9ZZ13K
+    timestamp: 2026-05-23T08:42:12.995Z
+  - _ulid: 01KS9ZZPNP9GWSC08TPCGYBSPS
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KS9YHX6M3AXXGKYDSK9ZZ13K
+    timestamp: 2026-05-23T08:42:17.142Z
+examined_commit: 5a2b68024f62f82b4394f898bc146d58e66a610c
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XAW3HQ2DGQPD6HFC19FAV"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KS9YH114JSPX6WEV5TA6VNEV
+    anchor:
+      type: structured
+      field: ac-resource-delete-follows-owner-delete
+      ref: "@trait-entity-scoped-local-resources-1"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KS9YH11427WW1JKSTSA83R5W
+        author: Jacob Chapel
+        body: 'MUST-FIX: The submitted tests do not cover @trait-entity-scoped-local-resources-1
+          ac-resource-delete-follows-owner-delete. Evidence: `rg -n
+          "ac-resource-delete-follows-owner-delete" tests src` returned no matches, and `kspec
+          validate --completeness -v` reports the trait itself has this uncovered own AC. This task
+          is linked to the trait spec, so every own AC needs behavioral coverage or an explicit,
+          justified spec/task split before approval.'
+        created_at: 2026-05-23T08:16:47.652Z
+      - _ulid: 01KS9ZZ0Z5MMWDFD6Y3VJB71NT
+        author: "@claude"
+        body: 'Fixed: added a new removeOwnerResources helper and four behavioral tests under
+          describe("removeOwnerResources (cascade with owner delete)") in
+          tests/entity-local-resources.test.ts. Each test carries the AC annotation `// AC:
+          @trait-entity-scoped-local-resources-1 ac-resource-delete-follows-owner-delete`. Coverage:
+          (1) removeOwnerResources cleans the resources/ subtree AND resources.yaml manifest in one
+          mutation; (2) it is idempotent (safe to re-run); (3) topology guarantee —
+          getResourcesDir/getResourcesManifestPath both return paths strictly under the owning
+          entity directory; (4) recursive rm of the entity directory cascades to all
+          declared/undeclared resource files. kspec validate --completeness no longer reports the
+          trait as having uncovered own ACs.'
+        created_at: 2026-05-23T08:41:54.913Z
+    kind: blocker
+    resolved_at: 2026-05-23T08:41:59.091Z
+    resolved_by: "@claude"
+  - _ulid: 01KS9YHG2YXDS9WTZY3568CE12
+    anchor:
+      type: code
+      commit: 5a2b68024f62f82b4394f898bc146d58e66a610c
+      line_end: 640
+      line_start: 636
+      path: src/parser/entity-local-resources.ts
+      side: head
+    entries:
+      - _ulid: 01KS9YHG2YHXPYWHT20WHTBZXG
+        author: Jacob Chapel
+        body: 'MUST-FIX: `loadResourceManifest` catches every error from `readYamlFile` and returns an empty
+          manifest, so a syntactically invalid existing `resources.yaml` is silently treated as no
+          resources. Evidence: I wrote `resources:\n  - id: x\n    path: [unterminated` to a
+          manifest and `loadResourceManifest` returned `{"resources":[]}`. Missing manifests can
+          default empty, but parse/read errors for an existing manifest need to surface as
+          validation failures so resource metadata is actually loaded and corrupt manifests are not
+          masked.'
+        created_at: 2026-05-23T08:17:03.070Z
+      - _ulid: 01KS9ZZ933AHSSN8E87CR6YVYN
+        author: "@claude"
+        body: "Fixed: loadResourceManifest now distinguishes ENOENT (missing file → empty manifest, callers
+          may pre-create resources) from any other read or YAML parse failure (corrupt manifest →
+          throws with the manifest path and cause). Added two regression tests: (a) unterminated
+          flow sequence in resources.yaml now throws an Error mentioning the manifest path, and (b)
+          replacing the manifest path with a directory raises a non-ENOENT IO error that is
+          propagated rather than swallowed. ZodError from ResourceManifestSchema.parse continues to
+          propagate normally (already covered)."
+        created_at: 2026-05-23T08:42:03.235Z
+    kind: blocker
+    resolved_at: 2026-05-23T08:42:07.238Z
+    resolved_by: "@claude"
+  - _ulid: 01KS9YHX6M3AXXGKYDSK9ZZ13K
+    anchor:
+      type: code
+      commit: 5a2b68024f62f82b4394f898bc146d58e66a610c
+      line_end: 397
+      line_start: 374
+      path: src/parser/entity-local-resources.ts
+      side: head
+    entries:
+      - _ulid: 01KS9YHX6M3BT7BMNQ251W8BJA
+        author: Jacob Chapel
+        body: "MUST-FIX: `resolveResourcePath` validates containment but never verifies the candidate is a
+          regular file. A declared directory path therefore resolves successfully even though the
+          trait is for local resource files, and `copyResourceForStaticExport` later throws an
+          unstructured `EISDIR` from `fs.copyFile` instead of rejecting with actionable guidance.
+          Evidence: with manifest path `folder` where `resources/folder/` is a directory,
+          `resolveResourcePath` returned `ok: true`, then static export threw `EISDIR`. Reject
+          non-file candidates before returning a resolved resource location."
+        created_at: 2026-05-23T08:17:16.500Z
+      - _ulid: 01KS9ZZH2R6Y3H6WNY8RCZ6DT6
+        author: "@claude"
+        body: "Fixed: resolveResourcePath now stats the realpath-resolved candidate and rejects when
+          !candidateStat.isFile() with actionable guidance (\"does not point to a regular file under
+          the owning entity's resources/ directory; resources must be files, not directories or
+          other non-regular entries\"). The new check runs after symlink-containment validation, so
+          directories — declared directly or reached via a directory-targeting symlink — are
+          rejected before the resource flows into static export, hashing, preview, or the API. Added
+          two regression tests: (a) directory resource resolution returns ok:false with the new
+          message, and copyResourceForStaticExport propagates the same actionable rejection (no
+          EISDIR leak, export root left untouched), and (b) a symlink in resources/ pointing at an
+          external directory is rejected (covered by either the symlink-escape or non-regular-file
+          path)."
+        created_at: 2026-05-23T08:42:11.415Z
+    kind: blocker
+    resolved_at: 2026-05-23T08:42:15.609Z
+    resolved_by: "@claude"
+  - _ulid: 01KS9YM74JC8CWSCRS5Y7HW174
+    entries:
+      - _ulid: 01KS9YM74JK91ZMXPKKRFS5TDN
+        author: Jacob Chapel
+        body: "Review evidence log:\\nFiles read: kspec-agents.md, src/schema/resources.ts,
+          src/schema/index.ts, src/parser/entity-local-resources.ts,
+          tests/entity-local-resources.test.ts, src/parser/yaml.ts, prior review
+          @01KS9S39.\\nCommands run: kspec task get @01KS8XAW3HQ2DGQPD6HFC19FAV; kspec item get
+          @trait-entity-scoped-local-resources-1; kspec review for-task/get; git diff/stat/log; rg
+          AC annotations; kspec validate; kspec validate --completeness -v; npm test -- --fresh; npm
+          run lint; npm run typecheck; targeted tsx repros for invalid YAML manifest, directory
+          resource resolution/static export, export path normalization, and arbitrary absolute
+          metadata hashing.\\nClaims verified: previous blockers were addressed by the new symlinked
+          resources-root rejection and schema-level path validation tests. Also verified worker
+          claim that full tests/lint/typecheck pass, with validation still surfacing relevant
+          missing AC coverage.\\nCategories searched: correctness, AC coverage, test quality/source
+          scanning, path traversal/symlink edge cases, manifest parse/error handling, static export
+          behavior, git metadata drift handling, and integration with schema exports."
+        created_at: 2026-05-23T08:18:32.210Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-23T08:18:45.212Z
+created_at: 2026-05-23T08:02:50.530Z
+updated_at: 2026-05-23T08:42:15.609Z
+notes: []

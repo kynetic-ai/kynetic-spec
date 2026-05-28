@@ -1,0 +1,212 @@
+_ulid: 01KMWEDVGFD10XV88HV8CMPP7V
+slugs: []
+title: Review task-migrate-route-handlers-envelope (cycle 3)
+author: Test User
+checks:
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation passed with warnings only (exit 6): 1 reference warning, 31 alignment
+      warnings, 483 completeness warnings. No new schema/reference errors introduced by this task."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-29T09:30:37.886Z
+    completed_at: 2026-03-29T09:30:37.886Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: daemon route diffs for
+      aggregation/inbox/items/meta/plans/refs/reviews/sessions/tasks/triage/validation;
+      response-envelope helper; web-ui API client and session E2E tests. Commands run: git
+      diff/stat/name-only, git log, kspec task get, kspec item get @api-contract, kspec review
+      get/for-task, kspec validate, rg AC annotations, rg route patterns, npm test. Claims verified:
+      prior validate blocker fixed; search/validate/alignment migrated; remaining legacy session GET
+      handlers still unwrapped; full test gate still red. Categories searched: correctness, edge
+      cases, error handling, test quality, integration."
+    name: review-evidence
+    required: false
+    runner: reviewer
+    created_at: 2026-03-29T09:30:41.770Z
+    completed_at: 2026-03-29T09:30:41.770Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Failed in this snapshot: 11 suites / 9 tests failing, 1962 suites passing, duration
+      5113.8s. Failures reported in agent-dispatch-engine.test.ts,
+      canonical-task-workspace-contract.test.ts, dispatch-runtime-bootstrap-contract.test.ts,
+      dispatch-workspace-cleanup.test.ts, and setup-pipeline-unification.test.ts. Full log:
+      /tmp/kspec-test-cache/01KMWECQJWQBYQ8GSJXYGD5RF9/91ec59515e0ade0e.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-29T09:30:43.604Z
+    completed_at: 2026-03-29T09:30:43.604Z
+events:
+  - _ulid: 01KMWEDVGEAHA7YVTNPDT5X6M7
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-29T09:22:31.566Z
+  - _ulid: 01KMWEEH4CQB3CJ33F23XAX1R8
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-29T09:22:53.709Z
+  - _ulid: 01KMWEWJ5CX5SJAR3KFKTGG5TG
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMWEWHHX69DEQ23PZHC079Z6
+    timestamp: 2026-03-29T09:30:33.516Z
+  - _ulid: 01KMWEWM0CY6GF5V0VTJ86SD58
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMWEWKC3CZYX8HCY1JYFQGFW
+    timestamp: 2026-03-29T09:30:35.404Z
+  - _ulid: 01KMWEWQ1FYR86KE64RMK5528B
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-03-29T09:30:38.512Z
+  - _ulid: 01KMWEWTTHYNVBHXADW9R65QRP
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-03-29T09:30:42.385Z
+  - _ulid: 01KMWEWWKYEBG7ND8B9GKBH9H3
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-29T09:30:44.223Z
+  - _ulid: 01KMWEX8BPE2VJXVCA322T9MRQ
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-29T09:30:56.246Z
+  - _ulid: 01KMWEX8BPC28GYEPB3V3Q9FS1
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-29T09:30:56.246Z
+  - _ulid: 01KMWFMSTPNHN5QW7D4QQGF4J7
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMWEWHHX69DEQ23PZHC079Z6
+    timestamp: 2026-03-29T09:43:47.798Z
+  - _ulid: 01KMWFMY0A17HZN8JHAJ0XX4GK
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMWEWKC3CZYX8HCY1JYFQGFW
+    timestamp: 2026-03-29T09:43:52.075Z
+  - _ulid: 01KMWFN5YW8Y5HBS50YRW2BJX4
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMWEWHHX69DEQ23PZHC079Z6
+    timestamp: 2026-03-29T09:44:00.220Z
+  - _ulid: 01KMWFNA2R8TY15TCE5279E7J0
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMWEWKC3CZYX8HCY1JYFQGFW
+    timestamp: 2026-03-29T09:44:04.440Z
+examined_commit: 30b11d43a7c751c7b0f377892a3ad24a91974979
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMW68KM0EXKESA30EMPW63VY"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMWEWHHX69DEQ23PZHC079Z6
+    anchor:
+      type: code
+      commit: 30b11d43a7c751c7b0f377892a3ad24a91974979
+      line_end: 449
+      line_start: 414
+      path: packages/daemon/src/routes/sessions.ts
+      side: head
+    entries:
+      - _ulid: 01KMWEWHHX5W39XQCFPX4064KR
+        author: Test User
+        body: GET /api/sessions/search still returns the legacy top-level object instead of the unified
+          {data, meta} envelope. This leaves one of the remaining read/query endpoints on the old
+          contract, so the web UI still has to special-case it ( and  both consume/assert the raw
+          shape). The task brief says every daemon route handler serving entity data should migrate
+          to wrapResponse(), and session search is not in the excluded mutation/health/debug set.
+        created_at: 2026-03-29T09:30:32.893Z
+      - _ulid: 01KMWFMS7SWRBWEWWTWJ1DRN8Q
+        author: "@claude"
+        body: "Fixed: Wrapped GET /api/sessions/search in wrapResponse() for both the empty-query early
+          return and the normal search result path. Updated the web UI fetchSessionSearch() client
+          function to unwrap envelope.data. Updated E2E mock in mockSearchRoute() and
+          api-sessions-search.spec.ts assertions to expect {data, meta} envelope shape."
+        created_at: 2026-03-29T09:43:47.193Z
+    kind: blocker
+    resolved_at: 2026-03-29T09:43:59.545Z
+    resolved_by: "@claude"
+  - _ulid: 01KMWEWKC3CZYX8HCY1JYFQGFW
+    anchor:
+      type: code
+      commit: 30b11d43a7c751c7b0f377892a3ad24a91974979
+      line_end: 778
+      line_start: 663
+      path: packages/daemon/src/routes/sessions.ts
+      side: head
+    entries:
+      - _ulid: 01KMWEWKC4P9KEVPRTMMBRXEJC
+        author: Test User
+        body: GET /api/sessions/:id/events and GET /api/sessions/:id/events/:seq still return raw event
+          payloads instead of wrapResponse(...). Those are read/detail endpoints in the daemon
+          routes directory, so they keep the session API on a mixed contract and preserve more
+          UI/test special cases ( expects raw events and  still asserts top-level fields). Until
+          these endpoints also emit {data, meta}, the unified envelope is not actually universal for
+          daemon reads.
+        created_at: 2026-03-29T09:30:34.756Z
+      - _ulid: 01KMWFMXEZHZR8DSWSSV4JN72F
+        author: "@claude"
+        body: "Fixed: Wrapped GET /api/sessions/:id/events in wrapResponse() with total in meta, and GET
+          /api/sessions/:id/events/:seq in wrapResponse(). Updated the web UI fetchSessionEvents()
+          and fetchSessionEventDetail() client functions to unwrap envelope.data. Updated E2E mock
+          for events endpoint to return {data, meta} shape."
+        created_at: 2026-03-29T09:43:51.519Z
+    kind: blocker
+    resolved_at: 2026-03-29T09:44:03.825Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-29T09:30:56.246Z
+created_at: 2026-03-29T09:22:31.567Z
+updated_at: 2026-03-29T09:44:03.825Z
+notes: []

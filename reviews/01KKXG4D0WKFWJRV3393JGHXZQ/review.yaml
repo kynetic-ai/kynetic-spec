@@ -1,0 +1,214 @@
+_ulid: 01KKXG4D0WKFWJRV3393JGHXZQ
+slugs: []
+title: Review diff content API (cycle 1)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      5683 tests passed, 2 failed, 3 skipped. Both failures are pre-existing and unrelated to this
+      change:
+
+      1. agent-dispatch-engine.test.ts: "should include orientation context in dispatched prompt" —
+      flaky test, not modified
+
+      2. review-cli.test.ts: "should leave examined_commit null when not provided" — pre-existing
+      environment issue, not modified by this commit
+
+      Neither test file was changed in this commit (only 5 files changed: diff.ts, server.ts,
+      git-diff-parser.ts, utils/index.ts, daemon-diff-api.test.ts).
+    name: npm test
+    required: true
+    runner: vitest
+    created_at: 2026-03-17T08:56:47.649Z
+    completed_at: 2026-03-17T08:56:47.649Z
+events:
+  - _ulid: 01KKXG4D0W60975D97N1KY8ZDR
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-17T08:55:51.580Z
+  - _ulid: 01KKXG4K88QBC4WNRYDVY83QGT
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-17T08:55:57.961Z
+  - _ulid: 01KKXG51J8F88EXGKAMZPSJ4BP
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKXG51H3D0MJME4T5BC9EY9E
+    timestamp: 2026-03-17T08:56:12.616Z
+  - _ulid: 01KKXG5CXD4GPD3Q1GNRCYWTAX
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKXG5CW9QT64HQGAS2QVNN9W
+    timestamp: 2026-03-17T08:56:24.237Z
+  - _ulid: 01KKXG5SNFK93QSZZV9X1GH9W4
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KKXG5SM9GH2KJP1MBMRVS09W
+    timestamp: 2026-03-17T08:56:37.295Z
+  - _ulid: 01KKXG63T50S3D4M79ADKR0N6Z
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-17T08:56:47.686Z
+  - _ulid: 01KKXG69BXCYW83RKMVZ01V94M
+    actor: agent@kspec-reviewer
+    event_type: verdict_submitted
+    payload:
+      decision: request_changes
+    timestamp: 2026-03-17T08:56:53.373Z
+  - _ulid: 01KKXG69BXK77Y32KAWFE2F1WR
+    actor: agent@kspec-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-17T08:56:53.374Z
+examined_commit: bb450d49091846ff30ea2a935f49c0bc0bb70cfa
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKTW6J1F8NHGA7G7SJJ1ZFFS"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KKXG51H3D0MJME4T5BC9EY9E
+    anchor:
+      type: code
+      commit: bb450d490918
+      line_end: 43
+      line_start: 34
+      path: packages/daemon/src/routes/diff.ts
+      side: head
+    entries:
+      - _ulid: 01KKXG51H31X4NH7XS4MCNCQTG
+        author: "@claude"
+        body: >-
+          **MUST-FIX: Command injection in git helper functions**
+
+
+          All three git helper functions (`runGitDiff`, `getFileAtCommit`, `isValidGitRef`)
+          construct shell commands by string-interpolating user-supplied HTTP query parameters
+          directly into `execSync` calls:
+
+
+          - Line 36: `git diff ${base}..${head}${pathArg}` — `base` and `head` from query params
+
+          - Line 50: `git show ${commit}:${filePath}` — both from query params  
+
+          - Line 66: `git rev-parse --verify ${ref}` — from query params
+
+
+          A request like `GET /api/diff?base=abc&head=def;id` would execute `git diff abc..def;id` —
+          running the `id` command. Since `isValidGitRef` is also vulnerable, the injection happens
+          during validation itself.
+
+
+          **Fix:** Use `execFileSync` (array form, no shell) instead of `execSync` (string form,
+          shell), e.g.:
+
+          ```ts
+
+          execFileSync('git', ['diff', `${base}..${head}`], { cwd, ... })
+
+          ```
+
+
+          While the daemon is localhost-only (limiting attack surface), this is still a command
+          injection vulnerability per OWASP top 10. Any local process can exploit it.
+        created_at: 2026-03-17T08:56:12.580Z
+    kind: blocker
+  - _ulid: 01KKXG5CW9QT64HQGAS2QVNN9W
+    anchor:
+      type: code
+      commit: bb450d490918
+      line_end: 463
+      line_start: 441
+      path: tests/daemon-diff-api.test.ts
+      side: head
+    entries:
+      - _ulid: 01KKXG5CW9S7VNK4S0N72A5DA2
+        author: "@claude"
+        body: >-
+          **MUST-FIX: No test coverage for ac-4 (GET /api/reviews/:id/content)**
+
+
+          The review content endpoint (lines 297-533) handles 5 subject types (plan, spec, code,
+          task, external) with ~230 lines of logic including entity loading, reference resolution,
+          and structured content assembly. It has zero test coverage — no test annotations for ac-4
+          exist in the test file.
+
+
+          This is the most complex handler in the submission and the one most likely to have bugs
+          (it loads review records, resolves references, constructs structured section arrays,
+          handles optional fields like notes/traits/ACs). Unit tests should cover at minimum:
+
+
+          1. Plan subject → returns sections with content, derived_specs, derived_tasks, notes
+
+          2. Spec subject → returns description, acceptance_criteria, traits, metadata
+
+          3. Task subject → returns description and notes
+
+          4. Code subject → returns diff_params redirect
+
+          5. Not-found cases for each subject type
+
+          6. Review not found → 404
+        created_at: 2026-03-17T08:56:24.201Z
+    kind: blocker
+  - _ulid: 01KKXG5SM9GH2KJP1MBMRVS09W
+    anchor:
+      type: code
+      commit: bb450d490918
+      line_end: 423
+      line_start: 381
+      path: tests/daemon-diff-api.test.ts
+      side: head
+    entries:
+      - _ulid: 01KKXG5SM9HMXRM0QSAV6PA1Q9
+        author: "@claude"
+        body: >-
+          **SHOULD-FIX: ac-2 context expansion tests don't test the endpoint**
+
+
+          The two tests annotated with `// AC: @review-content-diff-api ac-2` (lines 381-423) verify
+          the underlying `git show` + array slicing logic directly, but they don't test the
+          `/api/diff/context` route handler at all. The route handler contains parameter validation
+          (start/end must be positive integers with start <= end), error responses for invalid refs
+          and missing files, and clamping logic — none of which is exercised.
+
+
+          This is better than no coverage but the tests would pass even if the route handler had
+          bugs in validation, clamping, or error handling. Consider adding at least a unit test that
+          exercises the route's validation and clamping logic.
+        created_at: 2026-03-17T08:56:37.257Z
+    kind: question
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: agent@kspec-reviewer
+    role: reviewer
+    created_at: 2026-03-17T08:56:53.314Z
+created_at: 2026-03-17T08:55:51.580Z
+updated_at: 2026-03-17T08:56:53.314Z
+notes: []

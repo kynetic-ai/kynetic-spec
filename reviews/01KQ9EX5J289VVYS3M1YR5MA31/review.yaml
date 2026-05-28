@@ -1,0 +1,141 @@
+_ulid: 01KQ9EX5J289VVYS3M1YR5MA31
+slugs: []
+title: Review fix meta catalog schema error in traits field (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exited 0. Output: Validation passed; Files checked 1435; Items checked 608; Tasks checked
+      1424; Schema OK; References OK; one reference warning allowed by --warnings-ok."
+    name: kspec validate --schema --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-04-28T07:25:23.800Z
+    completed_at: 2026-04-28T07:25:23.800Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "NODE_ENV=development npm_config_omit= npm test passed after installing dev dependencies:
+      2292/2292 suites passed; 8423 passed, 5 skipped of 8428; duration 1943.0s. Log:
+      /tmp/kspec-test-cache/01KQ9ETTQ0N09AYHKHK74KDSHS/6506be4c1f942060.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-28T07:25:34.415Z
+    completed_at: 2026-04-28T07:25:34.415Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec trait list shows @trait-idempotent-file-scaffold as project-level trait (19 traits
+      total). kspec item get @trait-idempotent-file-scaffold shows 4 ACs. kspec item list --limit
+      1000 --json found two consumers retaining the trait: @complete-auto-gitignore and
+      @scaffolded-project-config; kspec item get for both shows inherited ACs from
+      @trait-idempotent-file-scaffold."
+    name: trait relocation verification
+    required: false
+    runner: kspec
+    created_at: 2026-04-28T07:25:47.114Z
+    completed_at: 2026-04-28T07:25:47.114Z
+events:
+  - _ulid: 01KQ9EX5J20AY0V7YRF61R64W5
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-28T07:12:24.642Z
+  - _ulid: 01KQ9EXHFP3P9EBQATJ9ZS0MEY
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-28T07:12:36.854Z
+  - _ulid: 01KQ9FMZHKVC52MPFXJDKTA1N9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --schema --warnings-ok
+    timestamp: 2026-04-28T07:25:24.915Z
+  - _ulid: 01KQ9FN9Z53MVP9HRSAT7F4YHH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-28T07:25:35.589Z
+  - _ulid: 01KQ9FNPB3TC2CN5HQQQD0XV7C
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: trait relocation verification
+    timestamp: 2026-04-28T07:25:48.259Z
+  - _ulid: 01KQ9FP2Z5ZHY8RY6XND0VB1WW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KQ9FP1WHJ0C9YW9185CS33HJ
+    timestamp: 2026-04-28T07:26:01.189Z
+  - _ulid: 01KQ9FPB47G0RPTJT85HTKG5GJ
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-28T07:26:09.543Z
+  - _ulid: 01KQ9FPB47Z02TWG5BYKHXXNBK
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-28T07:26:09.543Z
+examined_commit: f60d02714d3f2c5968fd6410f35a091341bde765
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQ99Z7HJ34SMZNGBBE1BTXRD"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQ9FP1WHJ0C9YW9185CS33HJ
+    entries:
+      - _ulid: 01KQ9FP1WH6H684YP9FGMZVQ3J
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md, task metadata, prior review @01KQ9CKT,
+          src/schema/spec.ts, src/parser/validate.ts, src/parser/yaml.ts, src/parser/gitignore.ts,
+          src/cli/commands/setup.ts, tests/gitignore-managed-block.test.ts,
+          tests/scaffold-project-config.test.ts. Commands run: git diff/status/log checks; kspec
+          task get; kspec review get/for-task; kspec validate --schema --warnings-ok; kspec
+          validate; kspec trait list; kspec item get
+          @trait-idempotent-file-scaffold/@agent-integration/@complete-auto-gitignore/@scaffolded-p\
+          roject-config; kspec item list --limit 1000 --json filtered for
+          @trait-idempotent-file-scaffold; rg AC annotations; npm ci with NODE_ENV=development; npm
+          test with NODE_ENV=development. Claims verified: required validation now exits 0;
+          relocated trait exists as a project-level trait with 4 ACs; both claimed consumers retain
+          the trait and inherit its ACs; full test suite passes. Categories searched: correctness,
+          schema/data alignment, trait reference integrity, test quality/behavioral coverage,
+          integration/regression."
+        created_at: 2026-04-28T07:26:00.081Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-28T07:26:09.543Z
+created_at: 2026-04-28T07:12:24.642Z
+updated_at: 2026-04-28T07:26:09.543Z
+notes: []

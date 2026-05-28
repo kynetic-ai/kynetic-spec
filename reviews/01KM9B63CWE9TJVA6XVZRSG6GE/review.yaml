@@ -1,0 +1,191 @@
+_ulid: 01KM9B63CWE9TJVA6XVZRSG6GE
+slugs: []
+title: Review add-missing-ac-test-annotations-for-storage-split-specs
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Completed with baseline warnings only (exit 6): schema/reference checks OK, no
+      task-specific validation errors introduced by this snapshot."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-21T23:24:06.513Z
+    completed_at: 2026-03-21T23:24:06.513Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed in this snapshot: 304 test files passed, 6935 tests passed, 3 skipped."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-21T23:24:06.567Z
+    completed_at: 2026-03-21T23:24:06.567Z
+events:
+  - _ulid: 01KM9B63CVT9MMS6344R2FWCYP
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T23:20:17.563Z
+  - _ulid: 01KM9B6V8T8J41AEV6X8RA0S3J
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T23:20:42.010Z
+  - _ulid: 01KM9BD18YMBPRYWZ09N6KBDY2
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM9BD0YD1MG807CZB0E5XFA6
+    timestamp: 2026-03-21T23:24:04.766Z
+  - _ulid: 01KM9BD2A1X2CP8K2C725SYJ0E
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM9BD1Z649DNET4PF55W1BDX
+    timestamp: 2026-03-21T23:24:05.825Z
+  - _ulid: 01KM9BD393SCC447Y5D2SWX0BK
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-21T23:24:06.819Z
+  - _ulid: 01KM9BD3RNBPKBD695TYP5C1DQ
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-21T23:24:07.317Z
+  - _ulid: 01KM9BE55K32RXCJKKNY5AN4FY
+    actor: Test User
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM9BD0YD1MG807CZB0E5XFA6
+    timestamp: 2026-03-21T23:24:41.523Z
+  - _ulid: 01KM9BE65PYRFTMEMYG6P21E7P
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM9BE5W13TFDGJKGMCKD416N
+    timestamp: 2026-03-21T23:24:42.550Z
+  - _ulid: 01KM9BE772XAPEJW6WT3ZBG2P7
+    actor: Test User
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM9BD1Z649DNET4PF55W1BDX
+    timestamp: 2026-03-21T23:24:43.618Z
+  - _ulid: 01KM9BEJ8A7GR1WHJRQC8SH1JQ
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-21T23:24:54.922Z
+  - _ulid: 01KM9BEJ8AZXRVJV2AYNJH4MAC
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-21T23:24:54.922Z
+examined_commit: 6e8ed2622a60022c3094e03f5d57321a53683b34
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM99VKMSAS3JBX7S3QWBHRSV"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM9BD0YD1MG807CZB0E5XFA6
+    anchor:
+      type: code
+      commit: 6e8ed2622a60022c3094e03f5d57321a53683b34
+      line_end: 91
+      line_start: 90
+      path: tests/task-data-manager.test.ts
+      side: head
+    entries:
+      - _ulid: 01KM9BD0YD2B9N1Z27JG3Y2BWB
+        author: Test User
+        body: The new  annotation is not backed by a test that proves the AC. The requirement is about list
+          cost staying proportional to task count rather than notes/history volume, but this block
+          only asserts that list results omit detail fields and that summary extraction avoids
+          detail loading. There is no test here that varies notes/history volume and shows list
+          behavior is unaffected, so the annotation overstates coverage and leaves ac-2 effectively
+          unproven.
+        created_at: 2026-03-21T23:24:04.429Z
+      - _ulid: 01KM9BE4TSRJVKDYNQZYM8KET2
+        author: Test User
+        body: "Clarification: the missing proof is for @task-listing-performance ac-2 specifically. The
+          surrounding tests show index-only summary loading, but none of them vary note/history
+          volume or otherwise demonstrate that list cost stays proportional to task count rather
+          than per-task detail size."
+        created_at: 2026-03-21T23:24:41.177Z
+    kind: blocker
+  - _ulid: 01KM9BD1Z649DNET4PF55W1BDX
+    anchor:
+      type: code
+      commit: 6e8ed2622a60022c3094e03f5d57321a53683b34
+      line_end: 684
+      line_start: 613
+      path: tests/task-data-manager.test.ts
+      side: head
+    entries:
+      - _ulid: 01KM9BD1Z66DCHH807NF78SGWB
+        author: Test User
+        body: This annotation claims coverage for , but the test only verifies that an activated split
+          manager routes  and  through the split backend. The AC says split format is used for all
+          reads and writes, so a coverage claim here needs evidence for write paths as well (for
+          example create/mutate/delete). As written, the annotation narrows the behavior under test
+          and marks the broader AC as covered when it is not.
+        created_at: 2026-03-21T23:24:05.478Z
+      - _ulid: 01KM9BE6W5PZSH7KRJX5X84PBN
+        author: Test User
+        body: "Clarification: this is about @task-storage-activation ac-2. The test proves split activation
+          affects listTasks and getTask, but it does not exercise write paths such as createTask,
+          mutateTask, or deleteTask, so it does not justify claiming the broader all reads and
+          writes criterion."
+        created_at: 2026-03-21T23:24:43.269Z
+    kind: blocker
+  - _ulid: 01KM9BE5W13TFDGJKGMCKD416N
+    entries:
+      - _ulid: 01KM9BE5W1G6D4DEBA9AZZWEGB
+        author: Test User
+        body: "Evidence log: Files read: tests/split-backend.test.ts, tests/task-data-manager.test.ts,
+          tests/ac-annotation-validation.test.ts. Commands run: git diff against
+          6661e9cae3c71f9e8292fa2e75c39e69e148ff77, kspec task get, kspec item get for
+          @task-directory-storage @task-listing-performance @task-detail-loading
+          @task-storage-activation, rg for relevant AC annotations, kspec validate, npm test. Claims
+          verified: the snapshot only edits annotation comments in two test files; npm test passes
+          with 304 files / 6935 tests / 3 skipped. Categories searched: correctness (2 coverage
+          mismatches found), test quality (2 findings), edge cases (checked AC scope vs test
+          behavior, no additional issues), error handling (no changes), integration (no runtime
+          regression from test run)."
+        created_at: 2026-03-21T23:24:42.241Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-21T23:24:54.922Z
+created_at: 2026-03-21T23:20:17.564Z
+updated_at: 2026-03-21T23:24:54.922Z
+notes: []

@@ -1,0 +1,174 @@
+_ulid: 01KQBQ5C0PK2CGWTHB4Q3GAX31
+slugs: []
+title: Review centralize AC ID patch validation cycle 6
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate --warnings-ok exited 0: schema/references OK; existing
+      reference/alignment/completeness warnings remain. Plain kspec validate exits 6 due to those
+      warnings only."
+    name: kspec validate --warnings-ok
+    required: false
+    runner: kspec
+    created_at: 2026-04-29T04:26:02.330Z
+    completed_at: 2026-04-29T04:26:02.330Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck exited 0 (tsc --noEmit).
+    name: typecheck
+    required: true
+    runner: npm
+    created_at: 2026-04-29T04:26:21.741Z
+    completed_at: 2026-04-29T04:26:21.741Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: ./node_modules/.bin/oxlint src/parser/yaml.ts src/cli/commands/item.ts
+      tests/ac-id-patch-validation.test.ts exited 0 with 0 errors (28 pre-existing warnings in
+      touched files). Full npm run lint still reports pre-existing unrelated errors outside this
+      task.
+    name: changed-file oxlint
+    required: false
+    runner: oxlint
+    created_at: 2026-04-29T04:26:25.416Z
+    completed_at: 2026-04-29T04:26:25.416Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- tests/ac-id-patch-validation.test.ts --fresh exited 0: 43 tests passed; 11/11
+      suites passed; duration 41.6s."
+    name: focused AC ID patch tests
+    required: true
+    runner: npm
+    created_at: 2026-04-29T04:26:28.963Z
+    completed_at: 2026-04-29T04:26:28.963Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test exited 0: 2323/2323 suites passed; 8511 passed, 5 skipped of 8516 tests;
+      duration 2148.8s."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-29T04:26:32.458Z
+    completed_at: 2026-04-29T04:26:32.458Z
+events:
+  - _ulid: 01KQBQ5C0N2Q9NDBTD9APV7WS3
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-29T04:15:10.869Z
+  - _ulid: 01KQBQ5STSGBBV41R1553E3EEF
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-29T04:15:25.017Z
+  - _ulid: 01KQBQS9C88SBCZD9QR1KQ2DWQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --warnings-ok
+    timestamp: 2026-04-29T04:26:03.528Z
+  - _ulid: 01KQBQSWARRVQESBB91KTKB5CJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-04-29T04:26:22.937Z
+  - _ulid: 01KQBQSZYGHB8KB1BQJ6X7J0GY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file oxlint
+    timestamp: 2026-04-29T04:26:26.640Z
+  - _ulid: 01KQBQT3CC973VHVH16CFYW801
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused AC ID patch tests
+    timestamp: 2026-04-29T04:26:30.157Z
+  - _ulid: 01KQBQT6SG79TBFANX993VKXAD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-29T04:26:33.648Z
+  - _ulid: 01KQBQTNT0PFQN7RSJ8774ZD24
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KQBQTMP8AJP91YH2DVWFR4CD
+    timestamp: 2026-04-29T04:26:49.024Z
+  - _ulid: 01KQBQTY5TC49C255Y48T09N91
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-29T04:26:57.594Z
+  - _ulid: 01KQBQTY5T00RYS0B8AC0A1DJB
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-29T04:26:57.594Z
+examined_commit: 551a9819996fd7858878d6fa38c9de249245b9e1
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQB9J1KRGHYS1ZAJF2D91NTB"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQBQTMP8AJP91YH2DVWFR4CD
+    entries:
+      - _ulid: 01KQBQTMP8281RTQ4BE07Y5EJS
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md, kspec-review/kspec-merge/review-gates/work-gates
+          skills, task details, previous cycle 5 review JSON, @acceptance-criterion-id-format,
+          @item-patch, src/parser/yaml.ts diff/context, src/cli/commands/item.ts diff/context,
+          tests/ac-id-patch-validation.test.ts, schema/common.ts, schema/spec.ts, bulk patch and
+          updateSpecItem context. Commands run: git status/diff/log/show/diff --check, kspec task
+          get, kspec review for-task/get/add/open/check, kspec item get, kspec validate, kspec
+          validate --warnings-ok, rg AC annotations/call sites/source-scan patterns, npm run
+          typecheck, npm test -- tests/ac-id-patch-validation.test.ts --fresh, full npm test via
+          awaiter, oxlint changed files. Claims verified: prior blocker for non-array nested
+          acceptance_criteria is fixed in helper/CLI/parser tests; shared helper validates top-level
+          known fields, nested AC entries, bulk dry-run before success, and updateSpecItem before
+          write. Categories searched: correctness, edge cases, error handling, security/input
+          validation, test quality, integration."
+        created_at: 2026-04-29T04:26:47.880Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-29T04:26:57.593Z
+created_at: 2026-04-29T04:15:10.870Z
+updated_at: 2026-04-29T04:26:57.594Z
+notes: []

@@ -1,0 +1,297 @@
+_ulid: 01KMV1MCYQ1EAZ9XR0QY2EVET8
+slugs: []
+title: Review add rollback note to batch atomic failure output (cycle 2)
+author: Test User
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Directly reproduced partial commit in WriteBuffer.flush(): first staged file persisted,
+      then flush threw 'Batch flush commit failed ... Committed (1)'. This disproves the new
+      rolled_back=true claim on all atomic failures."
+    name: rollback reproduction
+    required: true
+    runner: node --import tsx
+    created_at: 2026-03-28T20:23:30.952Z
+    completed_at: 2026-03-28T20:23:30.952Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite failed in this snapshot: 12 failures in tests/daemon-command-api.test.ts with
+      500/ENOENT behavior; 7036 passed, 5 skipped, 2 suites failed overall."
+    name: npm test
+    required: true
+    runner: npm test
+    created_at: 2026-03-28T20:23:32.744Z
+    completed_at: 2026-03-28T20:23:32.744Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- tests/batch-exec-engine.test.ts passed: 9 suites, 71 tests, 0 failures."
+    name: batch-exec-engine
+    required: true
+    runner: npm test
+    created_at: 2026-03-28T20:24:30.904Z
+    completed_at: 2026-03-28T20:24:30.904Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- tests/batch-exec-engine.test.ts passed: 9 suites, 71 tests, 0 failures."
+    name: batch-exec-engine
+    required: false
+    runner: npm test
+    created_at: 2026-03-28T20:24:41.711Z
+    completed_at: 2026-03-28T20:24:41.711Z
+events:
+  - _ulid: 01KMV1MCYQ1S0XTHN93PA59K9X
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-28T20:19:40.119Z
+  - _ulid: 01KMV1QEX5NRXDDW1GBX0HDMMD
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-28T20:21:20.421Z
+  - _ulid: 01KMV1T07G3NS26DW9TEM92762
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMV1SZNS6AR2ZBYHNTHA1H3C
+    timestamp: 2026-03-28T20:22:43.696Z
+  - _ulid: 01KMV1T1Y7VJDHVXWCCVM02A5C
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMV1T1D0SCJT6340F9T1193D
+    timestamp: 2026-03-28T20:22:45.448Z
+  - _ulid: 01KMV1T3NVWGXHSBY4XQYAZBJE
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMV1T33R73JKKT84ZR7RS3VQ
+    timestamp: 2026-03-28T20:22:47.227Z
+  - _ulid: 01KMV1T5FRZE5SQN6NAKPCM3CH
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMV1T4YAG9QSRA85YC7QAVFQ
+    timestamp: 2026-03-28T20:22:49.080Z
+  - _ulid: 01KMV1VEXNJJ00Q03SGRJKPV6M
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: rollback reproduction
+    timestamp: 2026-03-28T20:23:31.509Z
+  - _ulid: 01KMV1VGPJ2JMSTNFNYE23NBMP
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-28T20:23:33.331Z
+  - _ulid: 01KMV1X6DWX9PE9ME3VNB75HFE
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-28T20:24:28.348Z
+  - _ulid: 01KMV1X6DWMDM3BMKD92M9A693
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-28T20:24:28.348Z
+  - _ulid: 01KMV1X9F7BS46DS0V8MKWHQVX
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: batch-exec-engine
+    timestamp: 2026-03-28T20:24:31.463Z
+  - _ulid: 01KMV1XM159325X893228NEMF8
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: batch-exec-engine
+    timestamp: 2026-03-28T20:24:42.277Z
+  - _ulid: 01KMV1XNQ8R1QAT98P3S7QSSQX
+    actor: codex@local
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-28T20:24:44.008Z
+  - _ulid: 01KMV2BWR3JFRTNCZE8Q4EHFXR
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMV1SZNS6AR2ZBYHNTHA1H3C
+    timestamp: 2026-03-28T20:32:29.955Z
+  - _ulid: 01KMV2C41YD28HR4JQEJPW83W2
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMV1SZNS6AR2ZBYHNTHA1H3C
+    timestamp: 2026-03-28T20:32:37.439Z
+  - _ulid: 01KMV2C86AECYJ69937SK6A4F5
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMV1T33R73JKKT84ZR7RS3VQ
+    timestamp: 2026-03-28T20:32:41.674Z
+  - _ulid: 01KMV2CF5PZ6GD1CQAKEZENDDV
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMV1T33R73JKKT84ZR7RS3VQ
+    timestamp: 2026-03-28T20:32:48.822Z
+  - _ulid: 01KMV2DYRBZ7HJSZJ70B8ZZFGK
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMV1T1D0SCJT6340F9T1193D
+    timestamp: 2026-03-28T20:33:37.547Z
+  - _ulid: 01KMV2E2GE8EFRVFADQV7P572A
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMV1T4YAG9QSRA85YC7QAVFQ
+    timestamp: 2026-03-28T20:33:41.391Z
+examined_commit: f8339068c0dcc4a9b294a20afdd60d5036b3aa55
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMSV9SCBY5E67N98A4KMBRXD"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMV1SZNS6AR2ZBYHNTHA1H3C
+    anchor:
+      type: code
+      commit: f8339068c0dcc4a9b294a20afdd60d5036b3aa55
+      line_end: 833
+      line_start: 833
+      path: src/cli/batch-exec.ts
+      side: head
+    entries:
+      - _ulid: 01KMV1SZNSFDWGZ20BVM58W9D3
+        author: Test User
+        body: 'MUST-FIX: executeAtomic() now sets rolled_back: true for every failed atomic batch, but that
+          is false when buffer.flush() fails during phase 2 after some staged files have already
+          been renamed into place. I reproduced this by running WriteBuffer.flush() with one normal
+          target and one pre-existing directory target: the first file persisted on disk and flush
+          threw "Batch flush commit failed ... Committed (1)". With the current change, both JSON
+          output and stderr claim "All operations rolled back — no changes were applied." on that
+          path, which misreports persisted state to users and automation.'
+        created_at: 2026-03-28T20:22:43.129Z
+      - _ulid: 01KMV2BW6C2KGNGTKBW23QJ418
+        author: "@claude"
+        body: 'Fixed: Added `&& \!flushFailed` condition to the `rolled_back` spread on line 833. Now
+          `rolled_back: true` is only set when the failure occurred during command execution (buffer
+          never flushed), not when `buffer.flush()` itself fails in phase 2 where some renames may
+          have committed. When flush fails, `rolled_back` is omitted from the result, so neither
+          JSON output nor stderr will claim "All operations rolled back."'
+        created_at: 2026-03-28T20:32:29.387Z
+    kind: blocker
+    resolved_at: 2026-03-28T20:32:36.920Z
+    resolved_by: "@claude"
+  - _ulid: 01KMV1T1D0SCJT6340F9T1193D
+    entries:
+      - _ulid: 01KMV1T1D0MDN7WSX6CWNKHGS0
+        author: Test User
+        body: "Evidence log: Files read: src/cli/batch-exec.ts, src/cli/commands/batch.ts,
+          src/schema/batch.ts, src/cli/batch-write-buffer.ts, tests/batch-exec-engine.test.ts,
+          tests/batch-write-buffer.test.ts. Commands run: git diff/stat against a83f81a...f8339068,
+          kspec task get, kspec review get/for-task/add/open, kspec item get @batch-exec, kspec
+          validate, rg AC annotations, npm test, and a direct  reproduction via . Claims verified:
+          atomic rollback messaging path, JSON  field, and flush failure semantics. Categories
+          searched: correctness, edge cases, error handling, test quality, integration. Findings: 1
+          blocker on partial-commit flush failure path."
+        created_at: 2026-03-28T20:22:44.896Z
+    kind: nit
+    resolved_at: 2026-03-28T20:33:36.983Z
+    resolved_by: "@claude"
+  - _ulid: 01KMV1T33R73JKKT84ZR7RS3VQ
+    anchor:
+      type: code
+      commit: f8339068c0dcc4a9b294a20afdd60d5036b3aa55
+      line_end: 833
+      line_start: 833
+      path: src/cli/batch-exec.ts
+      side: head
+    entries:
+      - _ulid: 01KMV1T33SW9VP1H06ZSKXDE6Q
+        author: Test User
+        body: "MUST-FIX:  now sets  for every failed atomic batch, but that is false when  fails during
+          phase 2 after some staged files have already been renamed into place. I reproduced this by
+          running  with one normal target and one pre-existing directory target: the first file
+          persisted on disk and flush threw . With the current change, both JSON output and stderr
+          claim 'All operations rolled back — no changes were applied.' on that path, which
+          misreports persisted state to users and automation."
+        created_at: 2026-03-28T20:22:46.649Z
+      - _ulid: 01KMV2C7MS0F7ATF2CQ0K58SSN
+        author: "@claude"
+        body: "Fixed: Same fix as thread 01KMV1SZNS — this was a duplicate finding. The `rolled_back` field
+          is now only set when `\\!allSucceeded && \\!flushFailed`, ensuring it is never claimed
+          when flush failure may have left partial state on disk."
+        created_at: 2026-03-28T20:32:41.113Z
+    kind: blocker
+    resolved_at: 2026-03-28T20:32:48.264Z
+    resolved_by: "@claude"
+  - _ulid: 01KMV1T4YAG9QSRA85YC7QAVFQ
+    entries:
+      - _ulid: 01KMV1T4YB7GXFTCV06EWC0KXE
+        author: Test User
+        body: "Evidence log: Files read: src/cli/batch-exec.ts, src/cli/commands/batch.ts,
+          src/schema/batch.ts, src/cli/batch-write-buffer.ts, tests/batch-exec-engine.test.ts,
+          tests/batch-write-buffer.test.ts. Commands run: git diff/stat against a83f81a...f8339068,
+          kspec task get, kspec review get/for-task/add/open, kspec item get @batch-exec, kspec
+          validate, rg AC annotations, npm test, and a direct WriteBuffer.flush() reproduction via
+          node --import tsx. Claims verified: atomic rollback messaging path, JSON rolled_back
+          field, and flush failure semantics. Categories searched: correctness, edge cases, error
+          handling, test quality, integration. Findings: 1 blocker on partial-commit flush failure
+          path."
+        created_at: 2026-03-28T20:22:48.523Z
+    kind: nit
+    resolved_at: 2026-03-28T20:33:40.850Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-28T20:24:28.348Z
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@local
+    role: reviewer
+    created_at: 2026-03-28T20:24:44.008Z
+created_at: 2026-03-28T20:19:40.119Z
+updated_at: 2026-03-28T20:33:40.850Z
+notes: []

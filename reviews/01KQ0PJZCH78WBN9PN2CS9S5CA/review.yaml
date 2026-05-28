@@ -1,0 +1,275 @@
+_ulid: 01KQ0PJZCH78WBN9PN2CS9S5CA
+slugs: []
+title: Review repair broken task spec references
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exit 4 in current dispatch shadow state. References OK, but schema error exists in
+      .kspec/modules/meta.yaml: modules[0].traits.0 expected string, received object. Also reports
+      known alignment/completeness warnings and Tasks checked: 0."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-24T21:39:42.456Z
+    completed_at: 2026-04-24T21:39:42.456Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exit 0. Output: Validation passed; Files checked: 8; Items checked: 606; Tasks checked:
+      0; Schema OK; References OK."
+    name: kspec validate --refs --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-04-24T21:39:46.279Z
+    completed_at: 2026-04-24T21:39:46.279Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exit 6 warning-only completeness debt: 493 warnings (238 missing own AC coverage, 255
+      invalid AC annotations). References OK; Tasks checked: 0."
+    name: kspec validate --completeness
+    required: false
+    runner: kspec
+    created_at: 2026-04-24T21:39:50.228Z
+    completed_at: 2026-04-24T21:39:50.228Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exit 1. The runner did not execute the suite: it detected missing direct dependency
+      pagefind, attempted dependency repair with npm ci, and still reported pagefind missing from
+      node_modules. I also reran npm ci separately; it exited 0 but node_modules/pagefind remained
+      absent."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-24T21:47:31.255Z
+    completed_at: 2026-04-24T21:47:31.255Z
+events:
+  - _ulid: 01KQ0PJZCGQN5V6CNYMYN5Z49E
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-24T21:33:29.361Z
+  - _ulid: 01KQ0PKH6NAFM1Y0NFBJPG9KD8
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-24T21:33:47.606Z
+  - _ulid: 01KQ0PXFT8M005EEXDQ93KTJE9
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQ0PXE3XCA5X05MY203ZAZAY
+    timestamp: 2026-04-24T21:39:13.864Z
+  - _ulid: 01KQ0PXMKVA1K9G0VPCJN5Y9H4
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQ0PXJY7KY9D31XHS938WHCR
+    timestamp: 2026-04-24T21:39:18.779Z
+  - _ulid: 01KQ0PYD08B1CTY7QD0190C7D2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-24T21:39:43.753Z
+  - _ulid: 01KQ0PYGSBFAT41P3JKEACJ3Q0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --refs --warnings-ok
+    timestamp: 2026-04-24T21:39:47.627Z
+  - _ulid: 01KQ0PYMMWPKWG1099D0MYHRVN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate --completeness
+    timestamp: 2026-04-24T21:39:51.580Z
+  - _ulid: 01KQ0QCPMJ1QP6DVYGBP9YGN7F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-04-24T21:47:32.370Z
+  - _ulid: 01KQ0QDN2YZ77XX2GEYN6N5R6F
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KQ0QDM05X48HY6TK44VF94YT
+    timestamp: 2026-04-24T21:48:03.550Z
+  - _ulid: 01KQ0QE3KVXM6D8VAGT025NSHR
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-24T21:48:18.427Z
+  - _ulid: 01KQ0QE3KVBNR5WHHQ6YKD37M2
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-24T21:48:18.427Z
+  - _ulid: 01KQ0VMMD8B49ZXQJJZ12T47WM
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQ0PXE3XCA5X05MY203ZAZAY
+    timestamp: 2026-04-24T23:01:46.536Z
+  - _ulid: 01KQ0VMWYSKN8M2TNEYBM5SD1G
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQ0PXE3XCA5X05MY203ZAZAY
+    timestamp: 2026-04-24T23:01:55.289Z
+  - _ulid: 01KQ0VN9D52HNADH4FP7ADF21G
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQ0PXJY7KY9D31XHS938WHCR
+    timestamp: 2026-04-24T23:02:08.037Z
+  - _ulid: 01KQ0VNHSX1VFAQTMBZ02K5VAW
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQ0PXJY7KY9D31XHS938WHCR
+    timestamp: 2026-04-24T23:02:16.637Z
+  - _ulid: 01KQ0VNXZPQQW58GXPZ7MKA4HA
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQ0QDM05X48HY6TK44VF94YT
+    timestamp: 2026-04-24T23:02:29.110Z
+  - _ulid: 01KQ0VP6QZNRJ579DMK336K3W6
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQ0QDM05X48HY6TK44VF94YT
+    timestamp: 2026-04-24T23:02:38.080Z
+examined_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQ0JDHZQ4H04WBFWE7WMR6GV"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQ0PXE3XCA5X05MY203ZAZAY
+    anchor:
+      type: structured
+      field: spec_ref
+      ref: "@task-recursive-derive"
+      section: task_records
+    entries:
+      - _ulid: 01KQ0PXE3ZE88ECSTDYYMRZZGK
+        author: Jacob Chapel
+        body: 'MUST-FIX: @task-recursive-derive was left with spec_ref null as "already repaired", but it is
+          a completed implementation task for current derive behavior, not historical/process-only
+          work. Evidence: kspec search shows current derive specs exist but @cmd-derive does not;
+          src/cli/commands/derive.ts still contains @cmd-derive annotations at lines 267 and 296,
+          and tests/integration.test.ts lines 1123-1233 cover recursive derive, --flat, dependency,
+          JSON, and error behavior under @cmd-derive ACs. The task requires retargeting to an
+          adequate current owner or recreating a behavioral spec when current behavior has no
+          adequate owner, not leaving the implementation task unowned.'
+        created_at: 2026-04-24T21:39:12.127Z
+      - _ulid: 01KQ0VMKBE229TJVYH31WQRJ54
+        author: "@claude"
+        body: "Fixed: Retargeted @task-recursive-derive spec_ref from null to @derive-commands. The
+          @derive-commands feature spec is the current owner of derive command behavior (recursive
+          derive, --flat, dependency handling, JSON output, etc.). The original @cmd-derive was
+          renamed/reorganized into @derive-commands and @derive-command."
+        created_at: 2026-04-24T23:01:45.454Z
+    kind: blocker
+    resolved_at: 2026-04-24T23:01:54.175Z
+    resolved_by: "@claude"
+  - _ulid: 01KQ0PXJY7KY9D31XHS938WHCR
+    anchor:
+      type: structured
+      field: spec_ref
+      ref: "@implement-session-branch-worktree-mode"
+      section: task_records
+    entries:
+      - _ulid: 01KQ0PXJY7DSWY1HFAKCREZ0W3
+        author: Jacob Chapel
+        body: 'MUST-FIX: @implement-session-branch-worktree-mode was retargeted to @session-events, but
+          @session-events ac-7 only covers commit-boundary behavior. The completed task implemented
+          broader current behavior: branch worktree initialization, status, repair, sync, and
+          lifecycle commits. Evidence: src/parser/session-branch.ts line 8 and
+          tests/session-branch-worktree.test.ts lines 4 and 53-57 still claim coverage for
+          @session-branch-worktree, and kspec search "session branch" found no current spec other
+          than @session-events plus the old completed task. This should be retargeted to an adequate
+          current spec or paired with a recreated behavioral spec; @session-events ac-7 alone is not
+          an adequate owner for the full task.'
+        created_at: 2026-04-24T21:39:17.063Z
+      - _ulid: 01KQ0VN8ABJST3KXKMREY43DNA
+        author: "@claude"
+        body: "Fixed: Created new behavioral spec @session-branch-worktree under @shadow-branch module with
+          5 ACs covering the full session branch worktree behavior: ac-init (worktree creation),
+          ac-status (health check), ac-repair (recovery), ac-commit-boundaries (lifecycle commits),
+          ac-sync (remote sync). Retargeted @implement-session-branch-worktree-mode spec_ref to
+          @session-branch-worktree. The new spec adequately owns the full scope of the completed
+          task, not just the narrow commit-boundary behavior of @session-events ac-7."
+        created_at: 2026-04-24T23:02:06.923Z
+    kind: blocker
+    resolved_at: 2026-04-24T23:02:15.563Z
+    resolved_by: "@claude"
+  - _ulid: 01KQ0QDM05X48HY6TK44VF94YT
+    entries:
+      - _ulid: 01KQ0QDM06CHK5ZRTWBAJ07Q9P
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: kspec-agents.md, review-gates skill, task records for
+          @task-repair-broken-spec-refs, @task-recursive-derive,
+          @remove-shadowautocommit-from-session-operations, @implement-session-branch-worktree-mode,
+          @01KKBBS7, specs @validation, @ref-validation, @session-events, @derive-command,
+          @task-derivation, @derive-commands, src/parser/session-branch.ts,
+          tests/session-branch-worktree.test.ts, tests/integration.test.ts,
+          src/cli/commands/derive.ts. Commands run: kspec task get, kspec item get, kspec search, rg
+          old refs/AC annotations, kspec validate, kspec validate --refs --warnings-ok, npm test
+          twice after npm ci attempts. Claims verified: reference-only validation passes, but
+          @cmd-derive and @session-branch-worktree still have live AC annotations while no matching
+          specs exist; @session-events ac-7 is narrower than the completed session branch worktree
+          task. Categories searched: correctness, spec alignment, AC coverage/annotation integrity,
+          test gate, task-record decisions."
+        created_at: 2026-04-24T21:48:02.438Z
+      - _ulid: 01KQ0VNWWYT2JSB1T7KGB49X98
+        author: "@claude"
+        body: "Acknowledged. The evidence log was helpful for understanding the review findings. Both
+          blockers have been addressed: @task-recursive-derive retargeted to @derive-commands, and
+          @implement-session-branch-worktree-mode retargeted to newly created
+          @session-branch-worktree spec."
+        created_at: 2026-04-24T23:02:27.998Z
+    kind: nit
+    resolved_at: 2026-04-24T23:02:36.974Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-24T21:48:18.427Z
+created_at: 2026-04-24T21:33:29.361Z
+updated_at: 2026-04-24T23:02:36.974Z
+notes: []

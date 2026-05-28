@@ -1,0 +1,283 @@
+_ulid: 01KMQ4CA19BCBNEPWKEP526FNZ
+slugs: []
+title: Review entity cache tiered storage and watcher invalidation
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      Ran ✓ Validation passed
+
+      ────────────────────────────────────────
+
+      Files checked: 10
+
+      Items checked: 567
+
+      Tasks checked: 0
+
+      Meta: 10 agents, 11 workflows, 10 conventions
+
+
+      Schema: OK
+
+      References: OK
+
+
+      Reference warnings: 1
+        ⚠ @skills
+          Orphaned skill directory 'skills' has no corresponding meta entry
+          in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+      Alignment warnings: 34
+        Orphaned specs (no tasks): 30
+          ○ Test Trait
+          ○ Filterable List Commands
+          ○ Dry Run Preview Mode
+          ... and 27 more
+        Status mismatches: 4
+          ! Task Set Batch Support
+            Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+          ! Lazy Shadow Sync on Reads
+            Spec "Lazy Shadow Sync on Reads" status is "implemented" but should be "in_progress" based on task progress
+          ! Session Summary Cache
+            Spec "Session Summary Cache" status is "implemented" but should be "in_progress" based on task progress
+          ! Multi-Directory Daemon Architecture
+            Spec "Multi-Directory Daemon Architecture" status is "implemented" but should be "in_progress" based on task progress
+
+      Alignment stats: 404/567 specs have tasks, 400 aligned
+
+
+      Completeness warnings: 485
+        Missing acceptance criteria: 1
+          ○ @01KJN1WT - Test Trait
+        Missing own AC coverage: 232
+          ! @spec-item - Spec Item
+            Uncovered: ac-item-1, ac-item-2
+          ! @ulid-system - ULID Identifier System
+            Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+          ! @slug-system - Slug Alias System
+            Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+          ... and 229 more
+        Invalid AC annotations: 252
+          ! AC annotation references '@slug' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-entity-cache-impl-01kmmb3t-review/tests/ac-annotation-validation.test.ts:6
+          ! AC annotation references '@my-spec' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-entity-cache-impl-01kmmb3t-review/tests/ac-annotation-validation.test.ts:84
+          ! AC annotation references '@my-spec' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-entity-cache-impl-01kmmb3t-review/tests/ac-annotation-validation.test.ts:87
+          ! AC annotation references '@spec-a' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-entity-cache-impl-01kmmb3t-review/tests/ac-annotation-validation.test.ts:114
+          ! AC annotation references '@spec-b' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-entity-cache-impl-01kmmb3t-review/tests/ac-annotation-validation.test.ts:118
+          ... and 247 more
+      Skills: OK (10 files checked). Result: schema/reference validation passed; repo has existing
+      warnings only (orphaned skill dir, alignment/completeness warnings not specific to this task).
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-03-27T07:54:58.808Z
+    completed_at: 2026-03-27T07:54:58.808Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Confirmed a cache lifecycle bug with a runtime repro against dist/daemon/entity-cache.ts:
+      patched doLoadDomain() to resolve after 50ms, started loadDomain('tasks'), called dispose()
+      after 10ms, awaited the load, and observed disposed=true, state=unloaded, taskIndexNull=false.
+      An in-flight load can repopulate cache data after dispose()."
+    name: targeted lifecycle repro
+    required: true
+    runner: bun
+    created_at: 2026-03-27T07:55:02.132Z
+    completed_at: 2026-03-27T07:55:02.132Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran kspec validate from the review workspace. Result: schema/reference validation passed;
+      repo has existing warnings only (orphaned skill dir, alignment/completeness warnings not
+      specific to this task)."
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-03-27T07:55:20.127Z
+    completed_at: 2026-03-27T07:55:20.127Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran npm test from the review workspace. Result: 1932/1932 suites passed, 6914 passed, 5
+      skipped, 0 failed."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-27T07:55:23.485Z
+    completed_at: 2026-03-27T07:55:23.485Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Confirmed a cache lifecycle bug with a runtime repro against dist/daemon/entity-cache.ts:
+      patched doLoadDomain() to resolve after 50ms, started loadDomain('tasks'), called dispose()
+      after 10ms, awaited the load, and observed disposed=true, state=unloaded, taskIndexNull=false.
+      An in-flight load can repopulate cache data after dispose()."
+    name: targeted lifecycle repro
+    required: true
+    runner: bun
+    created_at: 2026-03-27T07:55:26.821Z
+    completed_at: 2026-03-27T07:55:26.821Z
+events:
+  - _ulid: 01KMQ4CA1819TDZ9847BQ2BG48
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T07:50:42.984Z
+  - _ulid: 01KMQ4D551E10CV2K3XHJYTMAT
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T07:51:10.753Z
+  - _ulid: 01KMQ4M11RYTD9EV92XDF3XKM7
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMQ4M0KG0GEBRK15WRG3V3J4
+    timestamp: 2026-03-27T07:54:55.928Z
+  - _ulid: 01KMQ4M4AW61ZSJGHAPEQ95JKF
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-27T07:54:59.292Z
+  - _ulid: 01KMQ4M7HT3CDCH6ZCCENPSHZH
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: targeted lifecycle repro
+    timestamp: 2026-03-27T07:55:02.586Z
+  - _ulid: 01KMQ4MS3Z0EA39K59NTB2BJ6Q
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-27T07:55:20.575Z
+  - _ulid: 01KMQ4MWCYJFX7FQ90APZSZBA9
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-27T07:55:23.934Z
+  - _ulid: 01KMQ4MZN1RSBN0DZ5RW9EX2Q1
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: targeted lifecycle repro
+    timestamp: 2026-03-27T07:55:27.265Z
+  - _ulid: 01KMQ4N2X30JE15WFGBPXGHT1C
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-27T07:55:30.595Z
+  - _ulid: 01KMQ4N2X3Z98QMEAN606ZA9GY
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T07:55:30.595Z
+  - _ulid: 01KMQ4NA2Q7D5ABWWVVCJ1QJ7N
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-27T07:55:37.943Z
+  - _ulid: 01KMQ5GBVF9848FFCQMGF80YBT
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMQ4M0KG0GEBRK15WRG3V3J4
+    timestamp: 2026-03-27T08:10:24.495Z
+  - _ulid: 01KMQ5GK0S75D1KS0E2BPVWGGZ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMQ4M0KG0GEBRK15WRG3V3J4
+    timestamp: 2026-03-27T08:10:31.834Z
+examined_commit: a546eb8de8a26b46bfbb437134114d8ed351eb62
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMMB3T2K3T6A1CJR884EPKJF"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMQ4M0KG0GEBRK15WRG3V3J4
+    anchor:
+      type: code
+      commit: a546eb8de8a26b46bfbb437134114d8ed351eb62
+      line_end: 774
+      line_start: 684
+      path: src/daemon/entity-cache.ts
+      side: head
+    entries:
+      - _ulid: 01KMQ4M0KGT5J3HFMX1E8SMRRG
+        author: "@claude"
+        body: "dispose() does not actually cancel an in-flight domain load.  only guards the final state
+          transition with , but  still writes  /  after  has already cleared the stores. I confirmed
+          this with a runtime repro against : patch  to resolve after 50ms, call , call  after 10ms,
+          await the load, and  is non-null even though  is true and the domain state is . That
+          violates @daemon-entity-cache ac-unregister-cleanup: unregister is supposed to release
+          cached data and cancel in-flight reloads, but the disposed cache can be repopulated by
+          work that was already running."
+        created_at: 2026-03-27T07:54:55.473Z
+      - _ulid: 01KMQ5GBBRH5121K21KEJV3YGZ
+        author: "@claude"
+        body: "Fixed: Added this.disposed checks after every await point in doLoadDomain() and
+          loadSessionIndex(). In-flight loads now bail out before writing to stores if dispose() has
+          been called. Also reordered the meta case to await loadMetaContext before writing to
+          stores (was writing index before await, creating a partial-write window). Added regression
+          test that starts loadDomain, calls dispose during flight, and verifies stores remain null
+          after the load settles."
+        created_at: 2026-03-27T08:10:23.992Z
+    kind: blocker
+    resolved_at: 2026-03-27T08:10:31.346Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-27T07:55:30.594Z
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-27T07:55:37.942Z
+created_at: 2026-03-27T07:50:42.985Z
+updated_at: 2026-03-27T08:10:31.346Z
+notes: []

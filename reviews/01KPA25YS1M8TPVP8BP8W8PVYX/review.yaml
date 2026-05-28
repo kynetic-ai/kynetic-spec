@@ -1,0 +1,168 @@
+_ulid: 01KPA25YS1M8TPVP8BP8W8PVYX
+slugs: []
+title: Review @01KNXYJ5JCR99F76N8N7265E0B
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repo-wide validation still fails outside this task: schema error in
+      .kspec/modules/meta.yaml (modules[0].traits[0] expected string), orphaned skill directory
+      warnings, and broader existing completeness/alignment warnings."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-16T02:38:48.689Z
+    completed_at: 2026-04-16T02:38:48.689Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Full suite reproduced the existing 5 failures in tests/cli-agent-commands.test.ts;
+      tests/upgrade-command.test.ts passed (56 tests). No upgrade-specific regression surfaced in
+      the suite.
+    name: npm test --fresh
+    required: false
+    runner: npm
+    created_at: 2026-04-16T02:38:55.711Z
+    completed_at: 2026-04-16T02:38:55.711Z
+events:
+  - _ulid: 01KPA25YS0RANVA4QNVDE138CH
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-16T02:33:33.729Z
+  - _ulid: 01KPA268PSF90Z8BZHSB2HHD0E
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-16T02:33:43.897Z
+  - _ulid: 01KPA2FG7JVHEPMZ1F2TMYT333
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPA2FF60M1ZZJ09A40FSYSCV
+    timestamp: 2026-04-16T02:38:46.514Z
+  - _ulid: 01KPA2FKGXG11H01XHCY0Y43XJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-16T02:38:49.885Z
+  - _ulid: 01KPA2FQ1QHB1S4H2538XMM4SR
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KPA2FNSPPXW84D0BE7A42FKX
+    timestamp: 2026-04-16T02:38:53.495Z
+  - _ulid: 01KPA2FTBZ96AZ946DKQ4ZVRGW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test --fresh
+    timestamp: 2026-04-16T02:38:56.895Z
+  - _ulid: 01KPA2G8F84MER62B9YAPKFDRD
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-16T02:39:11.336Z
+  - _ulid: 01KPA2G8F86BF7BQT2KFT9WNBH
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-16T02:39:11.336Z
+  - _ulid: 01KPA3CTH7TS853E81QPYTZKKT
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPA2FF60M1ZZJ09A40FSYSCV
+    timestamp: 2026-04-16T02:54:47.335Z
+  - _ulid: 01KPA3D1PWG1H0RKHEAQXK88RP
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPA2FF60M1ZZJ09A40FSYSCV
+    timestamp: 2026-04-16T02:54:54.684Z
+examined_commit: c331f529f3ea258f9fd2190d3bfc17869d5d3333
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNXYJ5JCR99F76N8N7265E0B"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPA2FF60M1ZZJ09A40FSYSCV
+    anchor:
+      type: code
+      commit: c331f529f3ea258f9fd2190d3bfc17869d5d3333
+      line_end: 503
+      line_start: 498
+      path: src/cli/commands/upgrade.ts
+      side: head
+    entries:
+      - _ulid: 01KPA2FF61HE3HMZAWRK0DKM3V
+        author: Jacob Chapel
+        body: "A successful upgrade does not durably persist the recorded version because step 7 writes
+          .setup-state.json directly but never commits the shadow worktree. I reproduced this by
+          initializing a temp project, downgrading only the manifest/state markers, running 'upgrade
+          --json', and then checking 'git -C <project>/.kspec status --short': the command completed
+          successfully but left 'M .setup-state.json' behind. That means the exact-version marker is
+          only in an uncommitted worktree file and can be lost on the next clean checkout, so
+          subsequent upgrades may re-run the full pipeline instead of seeing the recorded source
+          version."
+        created_at: 2026-04-16T02:38:45.441Z
+      - _ulid: 01KPA3CSJMNX93VK2AS3YD92MY
+        author: "@claude"
+        body: "Fixed: after writeSetupState() in step 7, added a commitIfShadow() call that commits
+          .setup-state.json to the shadow branch with an 'upgrade v<version>' message. Verified by
+          reproducing the reviewer scenario: 'git -C <project>/.kspec status --short' is now empty
+          after a successful upgrade, and 'git show HEAD:.setup-state.json' contains the new
+          lastKnownVersion. Added a regression test 'commits the recorded version to the shadow
+          branch' that asserts both conditions."
+        created_at: 2026-04-16T02:54:46.356Z
+    kind: blocker
+    resolved_at: 2026-04-16T02:54:53.572Z
+    resolved_by: "@claude"
+  - _ulid: 01KPA2FNSPPXW84D0BE7A42FKX
+    entries:
+      - _ulid: 01KPA2FNSQ58DSS0VXKV186BHG
+        author: Jacob Chapel
+        body: "Files read: src/cli/index.ts; src/cli/commands/index.ts; src/cli/commands/setup.ts;
+          src/cli/commands/upgrade.ts; src/cli/commands/task.ts; src/parser/yaml.ts;
+          src/parser/shadow.ts; tests/upgrade-command.test.ts. Commands run: kspec task get
+          @01KNXYJ5JCR99F76N8N7265E0B; kspec review for-task @01KNXYJ5JCR99F76N8N7265E0B; kspec
+          review get @01KP9Z34BYY1NZQWB655N0A2DF; git diff against 0501051eb49e...; grep AC
+          annotations; kspec validate; npm test; npm test --fresh; targeted temp-project
+          reproduction of upgrade shadow-state persistence. Claims verified: upgrade tests exist and
+          pass; full suite still only shows the known cli-agent-commands failures; successful
+          upgrade leaves dirty shadow state. Categories searched: correctness, edge cases, error
+          handling, test quality, integration, persistence."
+        created_at: 2026-04-16T02:38:52.215Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-16T02:39:11.336Z
+created_at: 2026-04-16T02:33:33.729Z
+updated_at: 2026-04-16T02:54:53.572Z
+notes: []

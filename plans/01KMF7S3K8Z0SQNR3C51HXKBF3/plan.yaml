@@ -1,0 +1,18 @@
+_ulid: 01KMF7S3K8Z0SQNR3C51HXKBF3
+slugs:
+  - plan-migrate-from-biome-to-oxlint-oxfmt
+title: Migrate from Biome to oxlint + oxfmt
+status: completed
+approved_at: 2026-03-24T06:16:18.030Z
+derived_specs: []
+derived_tasks:
+  - "@task-install-oxlint-oxfmt"
+  - "@task-oxlint-vitest-plugin"
+  - "@task-custom-no-source-scanning-rule"
+  - "@task-update-scripts-ci"
+  - "@task-format-and-fix-violations"
+  - "@task-delete-static-analysis-lint-test"
+module_ref: null
+source_path: /home/chapel/Projects/kynetic-spec/plans/migrate-biome-to-oxlint-oxfmt.md
+created_at: 2026-03-24T06:16:12.648Z
+completed_at: null

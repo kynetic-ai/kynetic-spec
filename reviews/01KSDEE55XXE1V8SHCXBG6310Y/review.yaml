@@ -1,0 +1,494 @@
+_ulid: 01KSDEE55XXE1V8SHCXBG6310Y
+slugs: []
+title: Review task-plan-review-folder-storage-migration-1
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exit 6: schema/references OK, validation produced pre-existing warnings (deprecated refs,
+      orphaned specs, missing AC coverage outside this task)."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-24T17:05:45.943Z
+    completed_at: 2026-05-24T17:05:45.943Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: rg found task spec AC annotations across changed migration/upgrade tests and existing
+      compatibility coverage; no source-scanning tests found in the four new test files.
+    name: AC annotation scan
+    required: false
+    runner: rg
+    created_at: 2026-05-24T17:05:50.696Z
+    completed_at: 2026-05-24T17:05:50.696Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2519 suites passed; 9578 passed, 5 skipped of 9583; full log
+      /tmp/kspec-test-cache/01KSDED70JTZ0Z8WJ6K0HE801H/e5b5f00fa41b09bb.log
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-24T17:05:55.663Z
+    completed_at: 2026-05-24T17:05:55.663Z
+events:
+  - _ulid: 01KSDEE55XAZQ8SN49Z6SSE61P
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-24T16:52:34.109Z
+  - _ulid: 01KSDEEPN5EEEZC4TBJ273CK4Z
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-24T16:52:52.006Z
+  - _ulid: 01KSDEQHQ49QGXWJ7HEGPJ00MX
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSDEQFSVDJWD1D52ZGJA8V8X
+    timestamp: 2026-05-24T16:57:41.860Z
+  - _ulid: 01KSDEQQ88E2HK3NEN4XAAJDY9
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSDEQN5PEQNP4SPA5XJ4FSXV
+    timestamp: 2026-05-24T16:57:47.528Z
+  - _ulid: 01KSDES7CTCMW58T9PY9E3TDBD
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSDEQFSVDJWD1D52ZGJA8V8X
+    timestamp: 2026-05-24T16:58:36.826Z
+  - _ulid: 01KSDESBVT6PCF280BK5F7K2MV
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSDEQN5PEQNP4SPA5XJ4FSXV
+    timestamp: 2026-05-24T16:58:41.402Z
+  - _ulid: 01KSDF6C308G3H92DFE0AJXMDN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-05-24T17:05:47.616Z
+  - _ulid: 01KSDF6GVFC40BN5FFRC57NDZQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC annotation scan
+    timestamp: 2026-05-24T17:05:52.495Z
+  - _ulid: 01KSDF6NNJFB4S855NEAAKT4HS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-24T17:05:57.426Z
+  - _ulid: 01KSDF745KHZVJNH35BPP8DRNJ
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-24T17:06:12.275Z
+  - _ulid: 01KSDF745KKNX4CMXYGBF6587F
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-24T17:06:12.275Z
+  - _ulid: 01KSDV7PJTNV4K9QE3EWFD8T6S
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSDEQFSVDJWD1D52ZGJA8V8X
+    timestamp: 2026-05-24T20:36:14.042Z
+  - _ulid: 01KSDV83M6JK5XM3F34EN9HARF
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSDEQN5PEQNP4SPA5XJ4FSXV
+    timestamp: 2026-05-24T20:36:27.398Z
+  - _ulid: 01KSDV8D6K5D039N5B826D9J8T
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSDEQFSVDJWD1D52ZGJA8V8X
+    timestamp: 2026-05-24T20:36:37.203Z
+  - _ulid: 01KSDV8KCJYEG4P9Z5V5CKM89Z
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSDEQN5PEQNP4SPA5XJ4FSXV
+    timestamp: 2026-05-24T20:36:43.538Z
+examined_commit: 81cb3f62245f285760d9c25023bef1a1742ce396
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XAYZTG0MN48Z78D45PBV6"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSDEQFSVDJWD1D52ZGJA8V8X
+    anchor:
+      type: code
+      commit: 81cb3f62245f285760d9c25023bef1a1742ce396
+      line_end: 734
+      line_start: 731
+      path: src/cli/commands/upgrade.ts
+      side: head
+    entries:
+      - _ulid: 01KSDEQFSV36JJT99D275B05FB
+        author: Jacob Chapel
+        body: >-
+          MUST-FIX: The upgrade integration always calls applyPlanMigration(..., { force: true }),
+          so a normal Source: 0.13.0 (exact)
+
+          Target: 0.14.0
+
+
+          ✓ Task storage migration
+            no monolithic tasks to migrate; manifest already in split format
+          ✓ Backfill core skills
+            13 core skill(s) installed
+          ○ Re-render skills
+            all 64 skill(s) already up to date
+          ○ Regenerate agent instructions
+            already up to date
+          ○ Restore gitignore entries
+            all entries present
+          ○ Scaffold project config
+            kspec.config.yaml already exists
+          ○ Scaffold default agents and conventions
+            defaults already seeded; present: task-worker, pr-reviewer, primary-dev, plan-reviewer, commits, architecture, testing
+          ○ Scaffold reflection hook
+            already exists
+          ○ Scaffold default module
+            default module already exists
+          ✓ Record version
+            recorded version 0.14.0
+
+          Manual follow-ups:
+            • Core skills: 13 missing skill(s) restored — review .kspec/skills/ for changes
+
+          Release notes:
+
+
+          ## v0.14.0
+
+
+          Stability release focused on daemon endpoint coherence, dispatch workspace
+
+          cleanup safety, task-storage compatibility responses, docs/search/release-notes
+
+          rendering, AC annotation validation, and CI/publish reliability.
+
+
+          ### New or changed configuration
+
+
+          - `daemon.host` now defaults to numeric IPv4 loopback `127.0.0.1` instead of
+            `localhost` to avoid `/etc/hosts` and DNS resolution drift.
+          - `daemon.connect_host` — optional host advertised to local clients when the
+            daemon binds a wildcard address such as `0.0.0.0` or `::`. It can also be set
+            with `KSPEC_DAEMON_CONNECT_HOST`.
+
+          ### Breaking changes
+
+
+          - None.
+
+
+          ### Features & Additions
+
+
+          - **Daemon endpoint resolution** — shared endpoint metadata and resolution now
+            flow through daemon startup, CLI lifecycle metadata, auto-start, clients, and
+            web UI daemon access. Endpoint validation rejects unreachable bind/connect
+            combinations while preserving loopback aliases and wildcard-bind use cases.
+          - **Docs and release-note surfaces** — added Pagefind-backed docs search,
+            docs navigation integration, release-notes rendering in the web UI, and
+            canonical `RELEASE_NOTES.md` wiring tests.
+          - **Task-storage compatibility API responses** — daemon routes now return
+            structured `task_storage_incompatible` responses for legacy task-storage
+            projects, with shared route helpers and coverage across affected surfaces.
+          - **Detached reviewer merge helper** — merge/reviewer skills gained detached
+            review helper support plus portable supporting-file references.
+          - **AC annotation validation** — acceptance-criteria annotations now enforce
+            the `ac-*` identifier format, normalize catalog IDs, and report malformed
+            annotation and stale-mapping cases more precisely.
+
+          ### Bug Fixes
+
+
+          - Recursive daemon command proxying is suppressed, including inside agent
+            invocations, so daemon-handled commands do not call back into the same proxy
+            path.
+          - Dispatch cleanup preserves active/in-flight task workspaces across branches,
+            reviewer snapshots, corrupt metadata, unknown worktree roots, and bootstrap
+            race windows while surfacing labeled diagnostics for skipped artifacts.
+          - Dispatch reconciliation no longer overlaps active cycles; event-bus lineage
+            and source-ordering state is bounded so aged correlated chains are released.
+          - Entity-cache diagnostics suppress repeated known task-storage incompatibility
+            reports while preserving degraded-cache behavior.
+          - Daemon/web UI startup asset resolution, runtime readiness, configured host
+            validation, and CLI serve lifecycle metadata were hardened.
+          - Publish workflow now installs Bun before running the full suite, and package
+            repository/discussion URLs now point at `lepahc/kynetic-spec`, unblocking npm
+            provenance publication.
+
+          ### Documentation
+
+
+          - README was trimmed into a concise landing page with docs cross-links.
+
+          - Added and refreshed Getting Started, Concepts, Guides, and Troubleshooting
+            pages, including corrected CLI guidance and recovery procedures.
+          - Updated merge/reviewer guidance, dispatch-compatible branch guidance, and
+            rendered skill outputs.
+
+          ### Other Changes
+
+
+          - Expanded the daemon-cleanup lint rule and test fixtures to catch unscoped
+            daemon ownership, alias/wrapper edge cases, lifecycle hooks, and startup
+            failure cleanup leaks.
+          - Serialized dynamic test-daemon port startup with filesystem locks and held
+            Playwright fixture locks across restart windows to remove parallel bind races.
+          - Applied final `oxfmt`, lint, typecheck, and full-test stability sweeps across
+            the dev merge delta.
+
+
+          Upgrade complete. bypasses the partial-layout guard. I reproduced this in an isolated temp
+          project with an existing  folder plus a separate monolithic plan: the local TypeScript CLI
+          returned success, promoted the manifest to kynetic 1.2, and rewrote  to only the migrated
+          monolithic entry, dropping the pre-existing folder-backed plan from the index. This
+          violates the partial-layout blocking contract and can lose discoverability of existing
+          plans during upgrade. Pass the actual upgrade force option, add an upgrade-level
+          partial-layout regression test, and preserve/rebuild existing folder entries when force is
+          intentionally used.
+        created_at: 2026-05-24T16:57:39.899Z
+      - _ulid: 01KSDES5TS56DGA0VTKT8X52AG
+        author: Jacob Chapel
+        body: 'Correction/clarification for the blocker above: the issue is the literal call
+          `applyPlanMigration(..., { force: true })`. A normal `kspec upgrade` must not bypass
+          `partial_entity_storage_layout`. Repro evidence from the local TypeScript CLI in an
+          isolated `/tmp/kspec-upgrade-partial-*` project: with an existing `.kspec/plans/<ulid>/`
+          folder plus a separate monolithic plan, upgrade returned `success: true`, reported the
+          plan migration as `done`, promoted the manifest to `kynetic: "1.2"`, and rewrote
+          `project.plans.yaml` with only the migrated monolithic entry. The existing folder-backed
+          plan remained on disk but was dropped from the index.'
+        created_at: 2026-05-24T16:58:35.224Z
+      - _ulid: 01KSDV7N4PFWW47FEGK66W882T
+        author: "@claude"
+        body: "Fixed in 0b0265444b. The upgrade integration now forwards the real `--force` flag to
+          `applyPlanMigration` (src/cli/commands/upgrade.ts:740) instead of hardcoding `{ force:
+          true }`. A normal `kspec upgrade` against a partial plan layout now fails the Plan storage
+          folder migration step with `partial_entity_storage_layout`, manifest stays at kynetic 1.1,
+          and the index is not rewritten. When `--force` is intentionally used, the migration now
+          captures pre-existing lean index entries (PlanMigrationReport.preservedLeanEntries) and
+          rebuilds project.plans.yaml as the union of migrated + preserved entries, so pre-existing
+          folder-backed plans are no longer dropped from discovery. Added regression tests at the
+          upgrade CLI level (tests/upgrade-folder-storage.test.ts: 'upgrade without --force fails
+          when plan layout is partial', 'upgrade --force migrates partial plan layout while
+          preserving existing folder plans') and at the migration module level
+          (tests/plan-folder-migration.test.ts: 'preserves pre-existing lean index entries when
+          force-migrating a partial layout')."
+        created_at: 2026-05-24T20:36:12.566Z
+    kind: blocker
+    resolved_at: 2026-05-24T20:36:35.708Z
+    resolved_by: "@claude"
+  - _ulid: 01KSDEQN5PEQNP4SPA5XJ4FSXV
+    anchor:
+      type: code
+      commit: 81cb3f62245f285760d9c25023bef1a1742ce396
+      line_end: 823
+      line_start: 820
+      path: src/cli/commands/upgrade.ts
+      side: head
+    entries:
+      - _ulid: 01KSDEQN5QX20PYN701FACDJ0H
+        author: Jacob Chapel
+        body: >-
+          MUST-FIX: The review migration has the same upgrade-level bypass: normal Source: 0.13.0
+          (exact)
+
+          Target: 0.14.0
+
+
+          ✓ Task storage migration
+            no monolithic tasks to migrate; manifest already in split format
+          ✓ Backfill core skills
+            13 core skill(s) installed
+          ○ Re-render skills
+            all 64 skill(s) already up to date
+          ○ Regenerate agent instructions
+            already up to date
+          ○ Restore gitignore entries
+            all entries present
+          ○ Scaffold project config
+            kspec.config.yaml already exists
+          ○ Scaffold default agents and conventions
+            defaults already seeded; present: task-worker, pr-reviewer, primary-dev, plan-reviewer, commits, architecture, testing
+          ○ Scaffold reflection hook
+            already exists
+          ○ Scaffold default module
+            default module already exists
+          ✓ Record version
+            recorded version 0.14.0
+
+          Manual follow-ups:
+            • Core skills: 13 missing skill(s) restored — review .kspec/skills/ for changes
+
+          Release notes:
+
+
+          ## v0.14.0
+
+
+          Stability release focused on daemon endpoint coherence, dispatch workspace
+
+          cleanup safety, task-storage compatibility responses, docs/search/release-notes
+
+          rendering, AC annotation validation, and CI/publish reliability.
+
+
+          ### New or changed configuration
+
+
+          - `daemon.host` now defaults to numeric IPv4 loopback `127.0.0.1` instead of
+            `localhost` to avoid `/etc/hosts` and DNS resolution drift.
+          - `daemon.connect_host` — optional host advertised to local clients when the
+            daemon binds a wildcard address such as `0.0.0.0` or `::`. It can also be set
+            with `KSPEC_DAEMON_CONNECT_HOST`.
+
+          ### Breaking changes
+
+
+          - None.
+
+
+          ### Features & Additions
+
+
+          - **Daemon endpoint resolution** — shared endpoint metadata and resolution now
+            flow through daemon startup, CLI lifecycle metadata, auto-start, clients, and
+            web UI daemon access. Endpoint validation rejects unreachable bind/connect
+            combinations while preserving loopback aliases and wildcard-bind use cases.
+          - **Docs and release-note surfaces** — added Pagefind-backed docs search,
+            docs navigation integration, release-notes rendering in the web UI, and
+            canonical `RELEASE_NOTES.md` wiring tests.
+          - **Task-storage compatibility API responses** — daemon routes now return
+            structured `task_storage_incompatible` responses for legacy task-storage
+            projects, with shared route helpers and coverage across affected surfaces.
+          - **Detached reviewer merge helper** — merge/reviewer skills gained detached
+            review helper support plus portable supporting-file references.
+          - **AC annotation validation** — acceptance-criteria annotations now enforce
+            the `ac-*` identifier format, normalize catalog IDs, and report malformed
+            annotation and stale-mapping cases more precisely.
+
+          ### Bug Fixes
+
+
+          - Recursive daemon command proxying is suppressed, including inside agent
+            invocations, so daemon-handled commands do not call back into the same proxy
+            path.
+          - Dispatch cleanup preserves active/in-flight task workspaces across branches,
+            reviewer snapshots, corrupt metadata, unknown worktree roots, and bootstrap
+            race windows while surfacing labeled diagnostics for skipped artifacts.
+          - Dispatch reconciliation no longer overlaps active cycles; event-bus lineage
+            and source-ordering state is bounded so aged correlated chains are released.
+          - Entity-cache diagnostics suppress repeated known task-storage incompatibility
+            reports while preserving degraded-cache behavior.
+          - Daemon/web UI startup asset resolution, runtime readiness, configured host
+            validation, and CLI serve lifecycle metadata were hardened.
+          - Publish workflow now installs Bun before running the full suite, and package
+            repository/discussion URLs now point at `lepahc/kynetic-spec`, unblocking npm
+            provenance publication.
+
+          ### Documentation
+
+
+          - README was trimmed into a concise landing page with docs cross-links.
+
+          - Added and refreshed Getting Started, Concepts, Guides, and Troubleshooting
+            pages, including corrected CLI guidance and recovery procedures.
+          - Updated merge/reviewer guidance, dispatch-compatible branch guidance, and
+            rendered skill outputs.
+
+          ### Other Changes
+
+
+          - Expanded the daemon-cleanup lint rule and test fixtures to catch unscoped
+            daemon ownership, alias/wrapper edge cases, lifecycle hooks, and startup
+            failure cleanup leaks.
+          - Serialized dynamic test-daemon port startup with filesystem locks and held
+            Playwright fixture locks across restart windows to remove parallel bind races.
+          - Applied final `oxfmt`, lint, typecheck, and full-test stability sweeps across
+            the dev merge delta.
+
+
+          Upgrade complete. calls applyReviewMigration(..., { force: true }) instead of
+          letting  fail the step. The lower-level migration test only proves  refuses without force;
+          it does not cover the actual CLI integration path, which unconditionally supplies force. A
+          partial review layout can therefore be promoted to manifest 1.2 instead of being blocked
+          with structured guidance, and the rewritten review index is built only from the migrated
+          monolithic entries. Wire this to the real  option and add an upgrade-level
+          partial-review-layout test.
+        created_at: 2026-05-24T16:57:45.399Z
+      - _ulid: 01KSDESA7HVS3VV1VYWTK6W5ZS
+        author: Jacob Chapel
+        body: 'Correction/clarification for the blocker above: the issue is the literal call
+          `applyReviewMigration(..., { force: true })`. The lower-level test proves
+          `applyReviewMigration(ctx, report)` rejects partial layouts without force, but the actual
+          upgrade integration always supplies force, so normal `kspec upgrade` can promote a partial
+          review layout to `kynetic: "1.2"` instead of returning the structured
+          `partial_entity_storage_layout` guidance. The fix should wire this to the real `--force`
+          option and add an upgrade-level partial review layout regression test.'
+        created_at: 2026-05-24T16:58:39.729Z
+      - _ulid: 01KSDV826YW5J8RFEB8CF7QK5P
+        author: "@claude"
+        body: "Fixed in 0b0265444b alongside the plan-migration fix. Same shape:
+          `runReviewFolderMigrationStep` now accepts `force` and forwards it to
+          `applyReviewMigration` (src/cli/commands/upgrade.ts:836), and
+          `ReviewMigrationReport.preservedLeanEntries` captures existing folder-backed review index
+          entries so the union write keeps them discoverable. Normal `kspec upgrade` against a
+          partial review layout now fails the Review storage folder migration step and leaves the
+          manifest at 1.1. Regression tests: tests/upgrade-folder-storage.test.ts ('upgrade without
+          --force fails when review layout is partial', 'upgrade --force migrates partial review
+          layout while preserving existing folder reviews') and
+          tests/review-folder-migration.test.ts ('preserves pre-existing lean index entries when
+          force-migrating a partial layout')."
+        created_at: 2026-05-24T20:36:25.950Z
+    kind: blocker
+    resolved_at: 2026-05-24T20:36:42.019Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-24T17:06:12.275Z
+created_at: 2026-05-24T16:52:34.109Z
+updated_at: 2026-05-24T20:36:42.019Z
+notes: []

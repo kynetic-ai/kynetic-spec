@@ -1,0 +1,137 @@
+_ulid: 01KRYGR6GXX6SCWS3HNT6AVA1S
+slugs: []
+title: Review task-daemon-cache-task-storage-incompatibility-suppression
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/daemon-entity-cache.test.ts tests/daemon-debug-routes.test.ts: 34
+      suites passed, 157 tests passed"
+    name: targeted daemon cache/debug tests
+    required: true
+    runner: npm
+    created_at: 2026-05-18T21:59:08.596Z
+    completed_at: 2026-05-18T21:59:08.596Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh: 2441 test suites passed; 9259 tests passed, 5 skipped; full log
+      /tmp/kspec-test-cache/01KRYGP8M8YBRA86TGXS8X1314/a9e275f6c75b18c1.log"
+    name: full npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-18T21:59:19.001Z
+    completed_at: 2026-05-18T21:59:19.001Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate reported Schema OK and References OK with existing warnings; kspec validate
+      --warnings-ok exited 0
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-18T21:59:28.777Z
+    completed_at: 2026-05-18T21:59:28.777Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/daemon/entity-cache.ts, src/parser/task-data-manager.ts,
+      src/parser/split-backend.ts, packages/daemon/src/routes/entity-cache-types.ts,
+      packages/daemon/src/routes/debug.ts, tests/daemon-entity-cache.test.ts,
+      tests/daemon-debug-routes.test.ts, kspec-agents.md. Commands run: git
+      diff/stat/name-status/log, kspec task get, kspec item get @daemon-entity-cache and
+      @daemon-server, rg AC/source-scan searches, targeted npm tests, full npm test -- --fresh,
+      kspec validate, kspec validate --warnings-ok. Claims verified: deterministic task-storage
+      errors carry stable codes; repeated unchanged task loads are suppressed; relevant task
+      storage/manifest changes trigger re-evaluation; debug cache-status surfaces
+      reason/guidance/readiness. Categories searched: correctness, edge cases/concurrency, error
+      handling, diagnostics integration, test quality/source-scanning, spec AC coverage."
+    name: review evidence log
+    required: false
+    runner: reviewer
+    created_at: 2026-05-18T21:59:41.529Z
+    completed_at: 2026-05-18T21:59:41.529Z
+events:
+  - _ulid: 01KRYGR6GWCHRHC1SG2DGP8H4Q
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-18T21:44:23.837Z
+  - _ulid: 01KRYGRZ85RWEZDF93KHDHN89J
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-18T21:44:49.157Z
+  - _ulid: 01KRYHK7XJS215TN6YC78VF7DH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted daemon cache/debug tests
+    timestamp: 2026-05-18T21:59:10.002Z
+  - _ulid: 01KRYHKJ41WYJY43KW968EFWC6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full npm test
+    timestamp: 2026-05-18T21:59:20.449Z
+  - _ulid: 01KRYHKVNQ4KV7Y0X2BBGWVX45
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-18T21:59:30.231Z
+  - _ulid: 01KRYHM84KVJ4WK8A4ZNH7PBB6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-18T21:59:42.995Z
+  - _ulid: 01KRYHMHXEG51F07X6WCVCN50V
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-18T21:59:53.006Z
+  - _ulid: 01KRYHMHXET8H494DW7G14YV0D
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-18T21:59:53.006Z
+examined_commit: 80bff662a46154574f9af2ab346cbc7b2eb21bd3
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRM50BHPZM315CNQSP4ZA48C"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-18T21:59:53.005Z
+created_at: 2026-05-18T21:44:23.837Z
+updated_at: 2026-05-18T21:59:53.006Z
+notes: []

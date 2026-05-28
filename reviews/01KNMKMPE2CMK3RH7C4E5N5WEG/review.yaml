@@ -1,0 +1,240 @@
+_ulid: 01KNMKMPE2CMK3RH7C4E5N5WEG
+slugs: []
+title: Review task-cache-aware-inbox-triage
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/daemon-entity-cache.test.ts --testNamePattern 'should not eagerly
+      preload triage details during index load': verified ready triage cache keeps detail tier
+      empty."
+    name: triage cache contract
+    required: true
+    runner: npm-test
+    created_at: 2026-04-07T18:41:12.639Z
+    completed_at: 2026-04-07T18:41:12.639Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2089/2089 suites passed, 7608 tests passed, 5 skipped, duration 3163.5s.
+    name: npm test
+    required: true
+    runner: npm-test
+    created_at: 2026-04-07T18:41:17.782Z
+    completed_at: 2026-04-07T18:41:17.782Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Completed with warnings only (exit 6): existing orphaned specs/skills and AC annotation
+      debt, no new validation errors from this change."
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-04-07T18:41:20.379Z
+    completed_at: 2026-04-07T18:41:20.379Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/parser/entity-cache-context.test.ts: 4 suites, 10 tests passed."
+    name: parser cache tests
+    required: true
+    runner: npm-test
+    created_at: 2026-04-07T18:41:22.986Z
+    completed_at: 2026-04-07T18:41:22.986Z
+events:
+  - _ulid: 01KNMKMPE2Z15Y0K3J1AYDR5AK
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-07T18:35:24.994Z
+  - _ulid: 01KNMKZ89MJQ2VQGTAPEP71Z5E
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNMKZ7FQK20T7N7D6HH2FV45
+    timestamp: 2026-04-07T18:41:10.964Z
+  - _ulid: 01KNMKZAT6ANQXJGHKJQJ93EN3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: triage cache contract
+    timestamp: 2026-04-07T18:41:13.542Z
+  - _ulid: 01KNMKZDAJRFWY4CJGC85T8NXP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNMKZCEC6E2W1JHHTZ3ZN99V
+    timestamp: 2026-04-07T18:41:16.114Z
+  - _ulid: 01KNMKZFTBPPQFTXYSF7PHH9WH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-07T18:41:18.668Z
+  - _ulid: 01KNMKZJC5VZH0TQSGYG0RK392
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-07T18:41:21.285Z
+  - _ulid: 01KNMKZMYKCFQKBDVDAY9MMXD4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: parser cache tests
+    timestamp: 2026-04-07T18:41:23.924Z
+  - _ulid: 01KNMM028ZS2BC6RQD05XG55X5
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNMM01F1JJ8ERFPCYR7DDX05
+    timestamp: 2026-04-07T18:41:37.567Z
+  - _ulid: 01KNMM0MNXYAS11NWRD05Q6J1V
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-07T18:41:56.413Z
+  - _ulid: 01KNMM0MNX020YXQHDQZN8Q2DR
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: closed
+    timestamp: 2026-04-07T18:41:56.413Z
+  - _ulid: 01KNMMSM671B21HTM7EXBKA9BS
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNMM01F1JJ8ERFPCYR7DDX05
+    timestamp: 2026-04-07T18:55:35.111Z
+  - _ulid: 01KNMMSPYQ4RTQM1RX6438JTSV
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNMKZCEC6E2W1JHHTZ3ZN99V
+    timestamp: 2026-04-07T18:55:37.943Z
+  - _ulid: 01KNMMSSHCBJ1Q40DNMY6QDABV
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNMM01F1JJ8ERFPCYR7DDX05
+    timestamp: 2026-04-07T18:55:40.588Z
+  - _ulid: 01KNMMV8VP4Z99PHEYQHV3TKTC
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNMKZCEC6E2W1JHHTZ3ZN99V
+    timestamp: 2026-04-07T18:56:29.046Z
+examined_commit: 83d5ca14bff1114bc7729d90080a7c424973a446
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNMBPDFJVDHBED491ZCJGFV9"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNMKZ7FQK20T7N7D6HH2FV45
+    entries:
+      - _ulid: 01KNMKZ7FQ0VCV1QZ275RPETZ5
+        author: Jacob Chapel
+        body: 'Evidence log:\nFiles read: AGENTS.md, kspec-agents.md, src/parser/yaml.ts,
+          src/daemon/entity-cache.ts, tests/parser/entity-cache-context.test.ts,
+          tests/daemon-entity-cache.test.ts, tests/daemon-read-path.test.ts.\nCommands run: kspec
+          task get @01KNMBPDFJVDHBED491ZCJGFV9; kspec item get @daemon-command-api; kspec review
+          for-task @01KNMBPDFJVDHBED491ZCJGFV9; git diff 67ebfe91d..83d5ca14b -- src/parser/yaml.ts
+          tests/parser/entity-cache-context.test.ts; kspec validate; npm test -- --run
+          tests/parser/entity-cache-context.test.ts; npm test -- --run
+          tests/daemon-entity-cache.test.ts --testNamePattern "should not eagerly preload triage
+          details during index load"; npm test.\nClaims verified: verified the new inbox/triage
+          loader paths and verified independently that ready triage cache state does not eagerly
+          preload detail records.\nCategories searched: correctness, edge cases, error handling,
+          test quality, integration; blocker found in triage cache/read-path integration.'
+        created_at: 2026-04-07T18:41:10.135Z
+    kind: nit
+  - _ulid: 01KNMKZCEC6E2W1JHHTZ3ZN99V
+    anchor:
+      type: code
+      commit: 83d5ca14bff1114bc7729d90080a7c424973a446
+      line_end: 2608
+      line_start: 2593
+      path: src/parser/yaml.ts
+      side: head
+    entries:
+      - _ulid: 01KNMKZCED31Y2YM97JN29VEAJ
+        author: Jacob Chapel
+        body: The new triage fast path never serves data from cache in the normal "ready" state.  now
+          returns cached records only when every ULID in  also has a populated  entry, but the cache
+          contract explicitly keeps triage details empty after  and loads them on demand. In
+          practice, a ready triage domain still falls through to disk, so this task does not
+          satisfy  for triage and the new test only passes because it mocks a cache state that
+          production does not create.
+        created_at: 2026-04-07T18:41:15.213Z
+      - _ulid: 01KNMMV7ZKY125A6TREAGNAPXK
+        author: Jacob Chapel
+        body: "Fixed: loadTriageRecords() no longer requires pre-populated triage detail entries to hit
+          cache. It now reconstructs cached records from the ready triage summary index plus ready
+          inbox cache snapshots, and only falls back to disk when the cache cannot supply the full
+          record shape."
+        created_at: 2026-04-07T18:56:28.147Z
+    kind: blocker
+    resolved_at: 2026-04-07T18:55:37.010Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KNMM01F1JJ8ERFPCYR7DDX05
+    anchor:
+      type: code
+      commit: 83d5ca14bff1114bc7729d90080a7c424973a446
+      line_end: 2608
+      line_start: 2593
+      path: src/parser/yaml.ts
+      side: head
+    entries:
+      - _ulid: 01KNMM01F2G2QNDZW5GZR5VV6N
+        author: Jacob Chapel
+        body: The new triage fast path never serves data from cache in the normal "ready" state.
+          loadTriageRecords() now returns cached records only when every ULID in getTriageIndex()
+          also has a populated getTriageDetail() entry, but the cache contract explicitly keeps
+          triage details empty after loadDomain("triage") and loads them on demand. In practice, a
+          ready triage domain still falls through to disk, so this task does not satisfy
+          @daemon-command-api ac-read-cache-serving for triage and the new test only passes because
+          it mocks a cache state that production does not create.
+        created_at: 2026-04-07T18:41:36.738Z
+      - _ulid: 01KNMMSKAXJFXDYJ21GYENM5ND
+        author: Jacob Chapel
+        body: 'Fixed: replaced the unrealistic triage cache test with a realistic ready-index-only scenario
+          that matches the cache contract (triage details stay lazy after loadDomain("triage")).
+          Verified with tests/parser/entity-cache-context.test.ts,
+          tests/daemon-entity-cache.test.ts, tests/daemon-read-path.test.ts, and full npm test.'
+        created_at: 2026-04-07T18:55:34.237Z
+    kind: blocker
+    resolved_at: 2026-04-07T18:55:39.666Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-07T18:41:56.413Z
+created_at: 2026-04-07T18:35:24.994Z
+updated_at: 2026-04-07T18:56:28.147Z
+notes: []

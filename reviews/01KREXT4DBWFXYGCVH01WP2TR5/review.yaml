@@ -1,0 +1,330 @@
+_ulid: 01KREXT4DBWFXYGCVH01WP2TR5
+slugs: []
+title: Review fix guardrail cleanup-effect classification (cycle 10)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts
+      tests/lint-daemon-test-guardrails.test.ts: 369 passed across 26 suites."
+    name: targeted daemon lint tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-12T20:29:18.486Z
+    completed_at: 2026-05-12T20:29:18.486Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate reported schema/references OK and validation passed, with pre-existing
+      warnings only; command exited 6 due warnings.
+    name: kspec validate
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-12T20:29:23.393Z
+    completed_at: 2026-05-12T20:29:23.393Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npx oxlint tools/eslint-rules/no-leaky-test-daemon.js
+      tests/lint-no-leaky-test-daemon.test.ts tests/lint-daemon-test-guardrails.test.ts: 0 errors,
+      35 warnings."
+    name: changed-file oxlint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-12T20:29:28.226Z
+    completed_at: 2026-05-12T20:29:28.226Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Three ad hoc oxlint probes returned 0 no-leaky diagnostics: helper kills omitted second
+      parameter target; helper kills target defaulting to stale otherPid; object literal exposes
+      stale otherPid property and kill() terminates it. Each should report missing scoped cleanup."
+    name: ad hoc classifier probes
+    required: true
+    runner: oxlint
+    created_at: 2026-05-12T20:37:26.144Z
+    completed_at: 2026-05-12T20:37:26.144Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test passed: 2431 suites passed; 9149 passed, 5 skipped of 9154; duration 2228.4s.
+      Full log: /tmp/kspec-test-cache/01KREXRHZWJAEVWH867MCNWW12/2bc67cd600df2251.log"
+    name: npm test
+    required: true
+    runner: npm test
+    created_at: 2026-05-12T20:37:30.192Z
+    completed_at: 2026-05-12T20:37:30.192Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run lint failed with 31 errors / 755 warnings. Relevant introduced guardrail
+      failures: npx oxlint --config .oxlintrc.json tests/cli-serve.test.ts reports 18
+      no-leaky-test-daemon errors, including tests/cli-serve.test.ts:514, because killPid delegates
+      to stopPidBounded and is not classified as approved cleanup."
+    name: repository lint
+    required: true
+    runner: npm run lint
+    created_at: 2026-05-12T20:37:34.254Z
+    completed_at: 2026-05-12T20:37:34.254Z
+events:
+  - _ulid: 01KREXT4DBSJCHN1XQFWA4YQBT
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-12T20:24:47.787Z
+  - _ulid: 01KREXTSD11GDAZFP4DRT8M09D
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-12T20:25:09.281Z
+  - _ulid: 01KREY0Q3NWHNQJ2VFFEYPM1EW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KREY0NHJ68M5MX2SP1BHAD86
+    timestamp: 2026-05-12T20:28:23.541Z
+  - _ulid: 01KREY0VPZ3ST05EGXKAKWXBMG
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KREY0T2WGKDH3TARWNQHFEB3
+    timestamp: 2026-05-12T20:28:28.256Z
+  - _ulid: 01KREY2EE4TJ7DB34FCRG7N8T6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted daemon lint tests
+    timestamp: 2026-05-12T20:29:20.196Z
+  - _ulid: 01KREY2K7K62TF44GF56BD1BAZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-12T20:29:25.107Z
+  - _ulid: 01KREY2QX5S2ABWSFBTMGDKJ9Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file oxlint
+    timestamp: 2026-05-12T20:29:29.894Z
+  - _ulid: 01KREYHAD1Y7SYHCBMY2S171WW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: ad hoc classifier probes
+    timestamp: 2026-05-12T20:37:27.586Z
+  - _ulid: 01KREYHEB61XB59YZJ8J8HSS5P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-12T20:37:31.623Z
+  - _ulid: 01KREYHJAADYXMKXCM9HY9QZJJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: repository lint
+    timestamp: 2026-05-12T20:37:35.691Z
+  - _ulid: 01KREYJ2QQHG9KF8S6NVMHV1RT
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KREYJ1ASKQ6PGHATCNA3MMJD
+    timestamp: 2026-05-12T20:37:52.503Z
+  - _ulid: 01KREYJH8PPNDAY4E66ABK7G9H
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-12T20:38:07.382Z
+  - _ulid: 01KREYJH8P51XBR722PPNQV0GD
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-12T20:38:07.382Z
+  - _ulid: 01KRF09PHQXAEEFX02JW3YKNF1
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KREY0NHJ68M5MX2SP1BHAD86
+    timestamp: 2026-05-12T21:08:15.031Z
+  - _ulid: 01KRF0A0S6TKNS9D5Z8THW2KNX
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KREY0T2WGKDH3TARWNQHFEB3
+    timestamp: 2026-05-12T21:08:25.510Z
+  - _ulid: 01KRF0AAK3CPDM25GPHGCP90ZE
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KREY0NHJ68M5MX2SP1BHAD86
+    timestamp: 2026-05-12T21:08:35.556Z
+  - _ulid: 01KRF0AGCCCC8P88NP4Q66XA47
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KREY0T2WGKDH3TARWNQHFEB3
+    timestamp: 2026-05-12T21:08:41.484Z
+examined_commit: 62bffa595961c9d0d4e1c8c1cc8e5ef09486064e
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRCRJPMHMHC410TKRC5Y9HF1"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KREY0NHJ68M5MX2SP1BHAD86
+    anchor:
+      type: code
+      commit: 62bffa595961c9d0d4e1c8c1cc8e5ef09486064e
+      line_end: 1924
+      line_start: 1857
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KREY0NHJE8N678QTYSM6D1X4
+        author: Jacob Chapel
+        body: "MUST-FIX: the strict primitive classifier no longer recognises approved shared helper
+          internals such as stopPidBounded(...). Real code now demonstrates the regression:
+          tests/cli-serve.test.ts defines killPid(pid) as return stopPidBounded(pid, ...), registers
+          onTestFinished(() => killPid(pid)) immediately after reading the pid, and npx oxlint
+          --config .oxlintrc.json tests/cli-serve.test.ts reports 18 no-leaky-test-daemon errors
+          including tests/cli-serve.test.ts:514. Impact: repository lint fails and legitimate
+          bounded cleanup through the shared process-stop primitive is treated as missing cleanup,
+          contrary to the task requirement to preserve approved shared helper internals."
+        created_at: 2026-05-12T20:28:21.938Z
+      - _ulid: 01KRF09N4597DWHY1E6QJ8DG6H
+        author: "@claude"
+        body: "Fixed in cycle 11. The strict primitive classifier now recognises approved shared cleanup
+          primitives — `stopPidBounded` and `stopChildProcessBounded` from `./helpers/process-stop`
+          — as terminating when called inside an inspected helper body. New
+          `isApprovedSharedCleanupPrimitiveCall` requires (1) the callee name to be in
+          `APPROVED_SHARED_CLEANUP_PRIMITIVE_NAMES`, (2) the import to resolve on disk to the
+          canonical `tests/helpers/process-stop.ts`, and (3) the kill-target argument to be tied to
+          the helper's invocation context. Verified: `npx oxlint --config .oxlintrc.json
+          tests/cli-serve.test.ts` now reports 0 no-leaky-test-daemon errors (was 18). Repository
+          lint dropped from 31 errors → 13 errors (no remaining no-leaky-test-daemon diagnostics;
+          remaining errors are pre-existing `no-source-scanning` and unicorn rules unrelated to this
+          fix)."
+        created_at: 2026-05-12T21:08:13.573Z
+    kind: blocker
+    resolved_at: 2026-05-12T21:08:34.033Z
+    resolved_by: "@claude"
+  - _ulid: 01KREY0T2WGKDH3TARWNQHFEB3
+    anchor:
+      type: code
+      commit: 62bffa595961c9d0d4e1c8c1cc8e5ef09486064e
+      line_end: 1827
+      line_start: 1826
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KREY0T2W8PV8NYBY9V1BXN6P
+        author: Jacob Chapel
+        body: "MUST-FIX: the helper-body ownership check accepts any helper parameter or any object-literal
+          property value as a valid kill target without proving that this value is the just-started
+          daemon. I verified three false negatives with ad hoc oxlint probes: (1) function
+          killPid(_pid, target) { process.kill(target!, 'SIGTERM') } called as killPid(pid) produces
+          0 no-leaky diagnostics, even though the helper kills undefined instead of pid; (2)
+          function killPid(_pid, target = otherPid) kills a stale outer pid while killPid(pid) is
+          credited; (3) const handle = { otherPid, kill() { process.kill(otherPid, 'SIGTERM') } } is
+          credited because the literal exposes otherPid as a property, but otherPid was bound before
+          the detached start. Impact: cleanup-shaped code can still satisfy
+          ac-cleanup-operation-terminates-daemon/ac-cleanup-helper-origin-is-trusted while leaving
+          the newly started daemon running."
+        created_at: 2026-05-12T20:28:26.588Z
+      - _ulid: 01KRF09ZD58AZTEJ0HTWMEYGFH
+        author: "@claude"
+        body: >-
+          Fixed in cycle 11. Two complementary tightening changes close all three sub-probes:
+
+
+          1. Helper-function with parameter-bound kill target — `isHelperBodyKillTargetTiedToOwner`
+          now finds the parameter's index in `ownerFn.params` and requires the call site
+          (`useCallNode`) to provide a VERIFIABLE kill-target argument at that index via new
+          `callSiteProvidesVerifiableArgAt`. Omitted args, undefined / void / null literals, and
+          Literal / computed targets at the kill-target parameter position are rejected. This closes
+          probes 1 (omitted second param) and 2 (parameter default to stale outer pid) — both call
+          `killPid(pid)` with no arg at index 1.
+
+
+          2. Object-literal kill method with stale closure capture — `collectDaemonKillCaptureNames`
+          now also surfaces closure-captured kill-target identifiers from a local literal's kill
+          method body (via `collectLiteralKillMethodClosureKillTargets`), regardless of whether the
+          literal exposes the same name as a property. The cycle-9 structural check
+          (literal-carries-property) was insufficient because the literal could expose a stale outer
+          Identifier; the temporal-ownership check at the top level
+          (`isCaptureOwnedByDetachedStart`) now runs against the closure capture and rejects names
+          bound before the detached start. The canonical legitimate shape `{ pid, kill() {
+          process.kill(pid, ...) } }` still passes because `pid` is bound AFTER the start.
+
+
+          Verified all three reviewer probes now produce diagnostics via `npx oxlint`. Added 7
+          positive flag-it regressions covering omitted-parameter, stale-default-parameter,
+          arrow-helper variant, literal-exposes-stale-outer, unimported-approved-name,
+          unapproved-path import, and literal-target argument shapes; 3 accepted-companion
+          regressions for legitimate `stopPidBounded` / `stopChildProcessBounded` / `{ pid, kill()
+          {...} }` shapes.
+        created_at: 2026-05-12T21:08:24.100Z
+    kind: blocker
+    resolved_at: 2026-05-12T21:08:40.092Z
+    resolved_by: "@claude"
+  - _ulid: 01KREYJ1ASKQ6PGHATCNA3MMJD
+    entries:
+      - _ulid: 01KREYJ1AS4AE7F0SG9APWQFJC
+        author: Jacob Chapel
+        body: "Evidence log:\\n\\nFiles read: kspec-agents.md; task details for @01KRCRJPMHMHC410TKRC5Y9HF1;
+          prior review @01KREQRD; @daemon-test-guardrail-precision ACs;
+          tools/eslint-rules/no-leaky-test-daemon.js; tests/lint-no-leaky-test-daemon.test.ts;
+          tests/lint-daemon-test-guardrails.test.ts; tests/cli-serve.test.ts; changed-file diff and
+          git log.\\n\\nCommands run: kspec task get; kspec review
+          for-task/get/add/open/comment/check; kspec item get @daemon-test-guardrail-precision; rg
+          AC annotations; git diff/stat/log/status; kspec validate; git diff --check; three ad hoc
+          oxlint probes; mise exec -- npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts
+          tests/lint-daemon-test-guardrails.test.ts; npm test; npm run lint; npx oxlint changed
+          files; npx oxlint --config .oxlintrc.json tests/cli-serve.test.ts.\\n\\nClaims verified:
+          cycle-9 target-ownership fix rejects the exact prior outer-identifier shape, but does not
+          reject stale/omitted alternate parameter targets or stale object-literal property targets;
+          repository lint still fails on real cli-serve cleanup via stopPidBounded.\\n\\nCategories
+          searched: correctness, cleanup target ownership, helper origin/trusted internals, test
+          quality/AC annotations, regression/lint integration, deterministic test results."
+        created_at: 2026-05-12T20:37:51.065Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-12T20:38:07.381Z
+created_at: 2026-05-12T20:24:47.787Z
+updated_at: 2026-05-12T21:08:40.092Z
+notes: []

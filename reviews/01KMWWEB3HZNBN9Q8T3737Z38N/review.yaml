@@ -1,0 +1,183 @@
+_ulid: 01KMWWEB3HZNBN9Q8T3737Z38N
+slugs: []
+title: Review task-ui-warming-skeletons (cycle 3)
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test -- packages/web-ui/tests/cache-warming-view-states.test.ts
+      packages/web-ui/tests/query-client-retry.test.ts => 12 suites passed, 21 tests passed.
+    name: web-ui targeted tests
+    required: true
+    runner: vitest
+    created_at: 2026-03-29T13:34:28.465Z
+    completed_at: 2026-03-29T13:34:28.465Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: node dist/cli/index.js validate exited 6 with warnings only; no schema/reference errors
+      attributable to this task.
+    name: validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-29T13:34:30.349Z
+    completed_at: 2026-03-29T13:34:30.349Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test exited 1 in this snapshot: failures were in unrelated
+      batch/daemon/registry/workflow suites, not in the cache-warming web UI tests or changed files
+      under review."
+    name: full test suite
+    required: false
+    runner: npm
+    created_at: 2026-03-29T13:34:44.021Z
+    completed_at: 2026-03-29T13:34:44.021Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run test:e2e -- cache-warming-views.spec.ts could not execute under dispatch review
+      because the Playwright fixture tries to run kspec serve start/stop, which is blocked inside
+      agent invocations.
+    name: cache-warming e2e
+    required: false
+    runner: playwright
+    created_at: 2026-03-29T13:34:45.785Z
+    completed_at: 2026-03-29T13:34:45.785Z
+events:
+  - _ulid: 01KMWWEB3GM07MRSRXCAY81V3B
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-29T13:27:27.601Z
+  - _ulid: 01KMWWENTV06NWGR6C6JRC8G98
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-29T13:27:38.587Z
+  - _ulid: 01KMWWV4ZFJV7ZX3FWK0G59AMM
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMWWV4EBHXPP05P54DCMFQ39
+    timestamp: 2026-03-29T13:34:27.311Z
+  - _ulid: 01KMWWV6NRGD5E7Z3W7ES47SCB
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: web-ui targeted tests
+    timestamp: 2026-03-29T13:34:29.048Z
+  - _ulid: 01KMWWV8HDQ1BSSV02A7CCF4B1
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: validate
+    timestamp: 2026-03-29T13:34:30.957Z
+  - _ulid: 01KMWWVNTWCZD8EC7BYV52FTXE
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: full test suite
+    timestamp: 2026-03-29T13:34:44.572Z
+  - _ulid: 01KMWWVQK4HWVQP1C5AAHTSZX1
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: skipped
+      name: cache-warming e2e
+    timestamp: 2026-03-29T13:34:46.373Z
+  - _ulid: 01KMWWW3VC6DGZ6JP4WTFTC9X9
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-29T13:34:58.924Z
+  - _ulid: 01KMWWW3VCNQ7NMXG2GG0ZS5NY
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-29T13:34:58.924Z
+examined_commit: 65b9cc87bfebad12330eaec3b14f345459cc8f92
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMW68MZ5Z281YD9Z87K2G55A"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMWWV4EBHXPP05P54DCMFQ39
+    entries:
+      - _ulid: 01KMWWV4EBVN0ZQMFVMFCZ8F3P
+        author: Test User
+        body: >-
+          Review evidence log
+
+
+          Files read: packages/web-ui/src/lib/components/CacheWarmingBanner.svelte;
+          packages/web-ui/src/routes/inbox/+page.svelte;
+          packages/web-ui/src/routes/plans/+page.svelte;
+          packages/web-ui/src/routes/reviews/+page.svelte;
+          packages/web-ui/src/routes/sessions/+page.svelte;
+          packages/web-ui/src/routes/sessions/[id]/+page.svelte;
+          packages/web-ui/src/routes/specs/+page.svelte;
+          packages/web-ui/src/routes/tasks/+page.svelte;
+          packages/web-ui/src/routes/tasks/board/+page.svelte;
+          packages/web-ui/src/routes/triage/+page.svelte; packages/web-ui/src/lib/api.ts;
+          packages/web-ui/src/lib/query/client.ts; packages/web-ui/src/lib/query/keys.ts;
+          packages/web-ui/tests/cache-warming-view-states.test.ts;
+          packages/web-ui/tests/e2e/cache-warming-views.spec.ts; prior review
+          @01KMWVEC0YNRRH8MQVY735PQQZ; plan @plan-daemon-cache-warming-ux.
+
+
+          Commands run: git diff --stat/name-only against dev; git diff for changed files; git diff
+          against prior reviewed commit; node dist/cli/index.js task get; node dist/cli/index.js
+          review for-task/get/add/open; node dist/cli/index.js validate; rg AC annotations; npm
+          test; npm test -- packages/web-ui/tests/cache-warming-view-states.test.ts
+          packages/web-ui/tests/query-client-retry.test.ts; npm run test:e2e --
+          cache-warming-views.spec.ts.
+
+
+          Claims verified: sessions search-mode regression from cycle 2 is fixed in code and covered
+          by added Playwright spec; cache-warming utility tests pass in the targeted web UI suite.
+
+
+          Categories searched: correctness, edge cases (search mode and dual-query triage retry),
+          error handling, test quality, integration. No blocking findings found in the submitted
+          diff.
+
+
+          Residual test context: npm test still fails in unrelated areas outside this task surface
+          in this snapshot, and Playwright cannot start its isolated daemon under dispatch reviewer
+          restrictions.
+        created_at: 2026-03-29T13:34:26.763Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-29T13:34:58.923Z
+created_at: 2026-03-29T13:27:27.601Z
+updated_at: 2026-03-29T13:34:58.924Z
+notes: []

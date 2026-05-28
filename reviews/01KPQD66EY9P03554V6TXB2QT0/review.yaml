@@ -1,0 +1,172 @@
+_ulid: 01KPQD66EY9P03554V6TXB2QT0
+slugs: []
+title: Review task-docs-section-scaffolding (cycle 4)
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Pre-existing workspace validation failures unrelated to this task: schema error in
+      .kspec/modules/meta.yaml (modules[0].traits.0 expected string, received object), plus existing
+      alignment/completeness warnings."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-21T07:06:07.177Z
+    completed_at: 2026-04-21T07:06:07.177Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: docs/getting-started/index.md, docs/getting-started/tutorial.md,
+      docs/guides/index.md, docs/concepts/index.md, docs/troubleshooting/index.md,
+      docs/release-notes/index.md, packages/web-ui/src/lib/docs.ts,
+      packages/web-ui/src/lib/utils/docs-markdown.ts, packages/web-ui/src/lib/utils/docs-utils.ts,
+      packages/web-ui/src/routes/docs/+page.svelte,
+      packages/web-ui/src/routes/docs/[...slug]/+page.svelte, packages/web-ui/vite-plugin-docs.ts,
+      packages/web-ui/vite.config.ts, tests/web-ui-docs-rendering.test.ts. Commands run: kspec task
+      get, kspec item get, kspec review for-task, git diff/stat/show, grep AC annotations, kspec
+      validate, npm test, node repros for groupDocsSections/filterSectionEntries. Claims verified:
+      landing pages exist with child-link lists; full test suite passes; synthetic changelog
+      classification regresses section grouping. Categories searched: correctness, integration, test
+      quality, spec alignment, regressions."
+    name: review-evidence
+    required: false
+    runner: manual
+    created_at: 2026-04-21T07:06:10.501Z
+    completed_at: 2026-04-21T07:06:10.501Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed locally: 2222/2222 suites, 8148 tests passed, 5 skipped."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-21T07:06:13.747Z
+    completed_at: 2026-04-21T07:06:13.747Z
+events:
+  - _ulid: 01KPQD66EX17WZFYY4E2Y42YAQ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-21T06:56:03.549Z
+  - _ulid: 01KPQD6RDKQVMGKB5XZCBRM1X9
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-21T06:56:21.939Z
+  - _ulid: 01KPQDRJ11VN94FBYX19MDMR3R
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPQDRH1WQ34B51D4VEKW1KZP
+    timestamp: 2026-04-21T07:06:05.218Z
+  - _ulid: 01KPQDRN59YC8KJECTGTFHABXV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-21T07:06:08.426Z
+  - _ulid: 01KPQDRR9N068PVWTQCV8S1CWN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-04-21T07:06:11.637Z
+  - _ulid: 01KPQDRVCJZKMDYGQJ62GAV2E5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-21T07:06:14.802Z
+  - _ulid: 01KPQDS6KWB9EZ7X5WF1S4F52W
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-21T07:06:26.301Z
+  - _ulid: 01KPQDS6KXN6JVZZVMWFMB03DC
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-21T07:06:26.301Z
+  - _ulid: 01KPQF8SWWQ53EJNS2VA79DNCX
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPQDRH1WQ34B51D4VEKW1KZP
+    timestamp: 2026-04-21T07:32:26.140Z
+  - _ulid: 01KPQF9226JD7RYGANKWC6GHBC
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPQDRH1WQ34B51D4VEKW1KZP
+    timestamp: 2026-04-21T07:32:34.502Z
+examined_commit: 1f63c6cdb975401087f3e06c710f57e7993d872d
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KPPN42NCR77J23TWYP63VXDH"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPQDRH1WQ34B51D4VEKW1KZP
+    anchor:
+      type: code
+      commit: 1f63c6cdb975401087f3e06c710f57e7993d872d
+      line_end: 51
+      line_start: 25
+      path: packages/web-ui/src/lib/utils/docs-utils.ts
+      side: head
+    entries:
+      - _ulid: 01KPQDRH1WFMFZ0FC4T6TC5BQD
+        author: Jacob Chapel
+        body: "Section membership is now derived from entry.path, but the synthetic changelog entry still
+          uses path 'RELEASE_NOTES.md'. Reproduced with a node check: groupDocsSections(...)
+          produces a sixth top-level 'Docs' section containing release-notes/changelog, and
+          filterSectionEntries(..., 'release-notes/changelog') omits the changelog page from the
+          Release Notes sidebar entirely. That violates @docs-section-taxonomy ac-1 and regresses
+          sidebar navigation on the changelog page. Please classify this synthetic entry under the
+          release-notes section (for example by using slug-based section detection for non-index
+          entries or by giving the synthetic entry a section-qualified path)."
+        created_at: 2026-04-21T07:06:04.220Z
+      - _ulid: 01KPQF8RTKR434YR9NAT3381WK
+        author: "@claude"
+        body: "Fixed: Changed the synthetic changelog entry path from 'RELEASE_NOTES.md' to
+          'release-notes/RELEASE_NOTES.md' in vite-plugin-docs.ts. This makes sectionKeyOf() return
+          'release-notes' instead of null, so groupDocsSections() correctly classifies it under the
+          Release Notes section. Added two regression tests: one verifying groupDocsSections
+          produces exactly five sections (no sixth 'Docs' section) with the changelog inside
+          release-notes, and one verifying filterSectionEntries includes the changelog when
+          filtering for release-notes/changelog. All 8150 tests pass."
+        created_at: 2026-04-21T07:32:25.043Z
+    kind: blocker
+    resolved_at: 2026-04-21T07:32:33.472Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-21T07:06:26.300Z
+created_at: 2026-04-21T06:56:03.550Z
+updated_at: 2026-04-21T07:32:33.472Z
+notes: []

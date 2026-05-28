@@ -1,0 +1,174 @@
+_ulid: 01KM8FQW4TVWZNP034R0ZFQ5CP
+slugs: []
+title: Review per-task core data and notes files (cycle 18)
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 302/302 test files passed; 6890 tests passed, 3 skipped, 0 failed.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-21T15:28:51.830Z
+    completed_at: 2026-03-21T15:28:51.830Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/parser/split-backend.ts, src/parser/task-data-manager.ts,
+      src/cli/batch-write-buffer.ts, src/cli/commands/task.ts, src/cli/commands/tasks.ts,
+      src/cli/commands/item.ts, src/parser/review-task-integration.ts,
+      packages/daemon/src/routes/tasks.ts, src/parser/yaml.ts, tests/per-task-files.test.ts,
+      tests/split-backend.test.ts, tests/task-atomic-writes.test.ts,
+      tests/task-rebuild-index.test.ts. Commands run: kspec task get, kspec review for-task, kspec
+      item get @task-core-data-file/@task-notes-file, git diff/stat, rg AC annotations, kspec
+      validate, npm test, targeted rg/sed/nl audits. Claims verified: full suite passes; split
+      manager routing is wired through production reads; history metadata is still missing on
+      specific mutation paths. Categories searched: correctness (2 blockers), edge cases
+      (migration/buffer concurrency), error handling, test quality, integration."
+    name: review-evidence
+    required: false
+    runner: codex
+    created_at: 2026-03-21T15:29:36.318Z
+    completed_at: 2026-03-21T15:29:36.318Z
+events:
+  - _ulid: 01KM8FQW4S32PAYMEV2TFVHGSX
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T15:20:39.833Z
+  - _ulid: 01KM8FRG0FMF1Y4MMKQE7QABWA
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T15:21:00.175Z
+  - _ulid: 01KM8G4K9MZFS2YDVNASVEG0F8
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM8G4JX5CPWW6X48572STKBT
+    timestamp: 2026-03-21T15:27:36.756Z
+  - _ulid: 01KM8G56YXTB234MGJHXX95XMG
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM8G56K33R6CHE1MXNPHJ46N
+    timestamp: 2026-03-21T15:27:56.893Z
+  - _ulid: 01KM8G6NTW3TWJRNPJGN8VSTV8
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM8G6NEY29QS7ZS92WRKK2CZ
+    timestamp: 2026-03-21T15:28:44.892Z
+  - _ulid: 01KM8G6X06T1P9FVG689F84YEH
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-21T15:28:52.230Z
+  - _ulid: 01KM8G88E175WCAA4NEF5ESRAF
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-03-21T15:29:36.706Z
+  - _ulid: 01KM8G8GA47H0A61GS195CCQN9
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-21T15:29:44.772Z
+  - _ulid: 01KM8G8GA47K5R3AAF3BAJKKFK
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-21T15:29:44.772Z
+examined_commit: 4241cfba631c31163ad3241461302891839d59f6
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YET1A7XY9D0V3YQ9DRASG"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM8G4JX5CPWW6X48572STKBT
+    anchor:
+      type: code
+      commit: 4241cfba631c31163ad3241461302891839d59f6
+      line_end: 1448
+      line_start: 1418
+      path: src/cli/commands/item.ts
+      side: head
+    entries:
+      - _ulid: 01KM8G4JX69DPG935ZFQ71884K
+        author: Test User
+        body: Dangling-ref cleanup mutates tasks through  without . When this removes , , , or  in split
+          storage, the appended per-task history entry falls back to . These are real field
+          mutations covered by @task-core-data-file ac-1/ac-3, so the audit trail is incomplete
+          for  cleanup edits.
+        created_at: 2026-03-21T15:27:36.358Z
+    kind: blocker
+  - _ulid: 01KM8G56K33R6CHE1MXNPHJ46N
+    anchor:
+      type: code
+      commit: 4241cfba631c31163ad3241461302891839d59f6
+      line_end: 513
+      line_start: 509
+      path: src/cli/commands/tasks.ts
+      side: head
+    entries:
+      - _ulid: 01KM8G56K3SNCSP0CZPC36PQDT
+        author: Test User
+        body: 'The `tasks assess --auto` path mutates `automation` and appends a note without passing
+          `commitOpts` into `mutateTask()`. In split storage, `TaskDataManager` derives history
+          metadata only from `commitOpts`, so this path records field-change history with `command:
+          "unknown"` instead of the triggering CLI operation. That violates @task-core-data-file
+          ac-3 for every automated assessment mutation.'
+        created_at: 2026-03-21T15:27:56.515Z
+    kind: blocker
+  - _ulid: 01KM8G6NEY29QS7ZS92WRKK2CZ
+    anchor:
+      type: code
+      commit: 4241cfba631c31163ad3241461302891839d59f6
+      line_end: 1448
+      line_start: 1418
+      path: src/cli/commands/item.ts
+      side: head
+    entries:
+      - _ulid: 01KM8G6NEY8S78AWCGGNB7SE17
+        author: Test User
+        body: 'Dangling-ref cleanup mutates tasks through `mutateTasks()` without `commitOpts`. When this
+          removes `depends_on`, `context`, `blocked_by`, or `spec_ref` in split storage, the
+          appended per-task history entry falls back to `command: "unknown"`. These are real field
+          mutations covered by @task-core-data-file ac-1/ac-3, so the audit trail is incomplete for
+          `item delete` cleanup edits.'
+        created_at: 2026-03-21T15:28:44.510Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-21T15:29:44.772Z
+created_at: 2026-03-21T15:20:39.834Z
+updated_at: 2026-03-21T15:29:44.772Z
+notes: []

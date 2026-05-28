@@ -1,0 +1,159 @@
+_ulid: 01KN0G80FM1PGDHWW0VCV71RSN
+slugs: []
+title: Review task-fix-timing-races (cycle 4)
+author: Test User
+checks:
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exited 6 with existing repo-wide warnings only; schema and references OK
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-30T23:25:10.212Z
+    completed_at: 2026-03-30T23:25:10.212Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- tests/daemon-api/plans.test.ts --fresh passed: 2/2 tests"
+    name: daemon api plans
+    required: true
+    runner: vitest
+    created_at: 2026-03-30T23:25:12.729Z
+    completed_at: 2026-03-30T23:25:12.729Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test -- --fresh failed in 6 untouched suites (agent-dispatch-engine,
+      canonical-task-workspace-contract, dispatch-runtime-bootstrap-contract,
+      dispatch-workspace-registry, daemon-api/items, daemon-api/reviews-threads); no overlap with
+      files changed in 8339fac0f1f3
+    name: full suite
+    required: false
+    runner: test.cjs
+    created_at: 2026-03-30T23:25:15.283Z
+    completed_at: 2026-03-30T23:25:15.283Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run test:e2e -- tests/e2e/search.spec.ts tests/e2e/connection.spec.ts
+      tests/e2e/cache-warming-views.spec.ts tests/e2e/plans.spec.ts tests/e2e/validate.spec.ts
+      tests/daemon-api/meta.test.ts passed: 83/83 in 38.7s"
+    name: targeted e2e
+    required: true
+    runner: playwright
+    created_at: 2026-03-30T23:25:17.834Z
+    completed_at: 2026-03-30T23:25:17.834Z
+events:
+  - _ulid: 01KN0G80FMTW9ZBH6B83HH5RTV
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-30T23:11:14.932Z
+  - _ulid: 01KN0G8VN5AK2854JCD01KK3TH
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-30T23:11:42.757Z
+  - _ulid: 01KN0H1EJ20W9E6GYJN1MGSY08
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN0H1DQR37W79DZQNTC2H3CS
+    timestamp: 2026-03-30T23:25:08.546Z
+  - _ulid: 01KN0H1GZ4B35AGZ2DA62AYGTZ
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-03-30T23:25:11.012Z
+  - _ulid: 01KN0H1KF5JW10K43RE00Z49NX
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: daemon api plans
+    timestamp: 2026-03-30T23:25:13.573Z
+  - _ulid: 01KN0H1NY7DBSSQ1F3FC5P7VM1
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: full suite
+    timestamp: 2026-03-30T23:25:16.103Z
+  - _ulid: 01KN0H1RET79663289N5A5XG5Q
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted e2e
+    timestamp: 2026-03-30T23:25:18.682Z
+  - _ulid: 01KN0H223JFCR2YXXXNRZ3J9X9
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-30T23:25:28.562Z
+  - _ulid: 01KN0H223JPDCC94QFPG645GPF
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-30T23:25:28.562Z
+examined_commit: 8339fac0f1f334a288a20705073571eeae3d7350
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMZ1BVK6C9F7QKYK9DZD4TFQ"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN0H1DQR37W79DZQNTC2H3CS
+    entries:
+      - _ulid: 01KN0H1DQRAKDY4KMS8B6CA58T
+        author: Test User
+        body: "Files read: packages/web-ui/src/lib/components/CommandPalette.svelte;
+          packages/web-ui/src/lib/components/ui/command/command-dialog.svelte;
+          packages/web-ui/src/lib/components/ui/command/command-input.svelte;
+          packages/daemon/src/routes/plans.ts; src/lib/plan-summary.ts; tests/e2e/search.spec.ts;
+          tests/e2e/connection.spec.ts; tests/e2e/cache-warming-views.spec.ts;
+          tests/e2e/plans.spec.ts; tests/e2e/validate.spec.ts; tests/daemon-api/meta.test.ts;
+          tests/daemon-api/plans.test.ts. Commands run: git diff --stat/base diff; kspec task get;
+          kspec review for-task/get; kspec validate; rg AC annotations; kspec item get
+          @web-dashboard @ui-plans-view @01KM46FW; npm run test:e2e -- tests/e2e/search.spec.ts
+          tests/e2e/connection.spec.ts tests/e2e/cache-warming-views.spec.ts tests/e2e/plans.spec.ts
+          tests/e2e/validate.spec.ts tests/daemon-api/meta.test.ts; npm test --
+          tests/daemon-api/plans.test.ts --fresh; npm test -- --fresh. Claims verified: the moved
+          plan-route coverage still exercises /api/plans/:ref behavior via daemon API tests; the
+          search fix now binds typed input rather than cmdk selected value; the targeted flaky E2E
+          set passes on this snapshot. Categories searched: correctness, edge cases, error handling,
+          test quality, integration. Findings: none in changed files. Residual risk: full-suite
+          failures remain in untouched suites/files outside this diff."
+        created_at: 2026-03-30T23:25:07.704Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-30T23:25:28.562Z
+created_at: 2026-03-30T23:11:14.932Z
+updated_at: 2026-03-30T23:25:28.562Z
+notes: []

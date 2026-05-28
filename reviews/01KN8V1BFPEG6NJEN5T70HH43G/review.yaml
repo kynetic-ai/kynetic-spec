@@ -1,0 +1,124 @@
+_ulid: 01KN8V1BFPEG6NJEN5T70HH43G
+slugs: []
+title: Review task-sync-active-target-acs
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed full suite: 331 test files passed, 7491 tests passed, 5 skipped; duration 229.65s."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-03T05:01:27.925Z
+    completed_at: 2026-04-03T05:01:27.925Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation exit 6 with repository-wide pre-existing warnings only (1 orphaned skill dir,
+      31 alignment warnings, 520 completeness warnings). No new schema/reference errors; spec item
+      includes the three requested ACs.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-03T05:01:33.460Z
+    completed_at: 2026-04-03T05:01:33.460Z
+events:
+  - _ulid: 01KN8V1BFP1MJHG6SM1GJWPZZY
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-03T04:53:46.614Z
+  - _ulid: 01KN8V1Y2MRTPSFT4M915EQS32
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-03T04:54:05.652Z
+  - _ulid: 01KN8VFEVSJ7NTPZMD3ACXN825
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-03T05:01:28.825Z
+  - _ulid: 01KN8VFHJABQC63QP3P1BC1T4W
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN8VFGMFDN9ZTXS22BBX46KR
+    timestamp: 2026-04-03T05:01:31.594Z
+  - _ulid: 01KN8VFMB8FGKB4FYM80PGEXDD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-03T05:01:34.440Z
+  - _ulid: 01KN8VFZC8D9F6NH7QG0VV8N4C
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-03T05:01:45.736Z
+  - _ulid: 01KN8VFZC87Z7MT8ZVG4HXDFG3
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-03T05:01:45.736Z
+examined_commit: fb3342db29d0f52d03646cc5ec095e7d9bd0c310
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN8T18R7K60ZC1GAR8ZAGFZ6"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN8VFGMFDN9ZTXS22BBX46KR
+    anchor:
+      type: structured
+      field: review-evidence
+      ref: "@01KN8T18R7K60ZC1GAR8ZAGFZ6"
+      section: description
+    entries:
+      - _ulid: 01KN8VFGMF8S2SV5NGEV2RH5K4
+        author: codex
+        body: >-
+          Evidence log:
+
+          Files read: AGENTS.md, kspec-agents.md, task record for @01KN8T18R7K60ZC1GAR8ZAGFZ6, spec
+          record for @dispatch-remote-branch-sync, spec history via kspec log.
+
+          Commands run: kspec task get, kspec review for-task, kspec item get, kspec validate, kspec
+          log, rg AC annotations in tests, npm test.
+
+          Claims verified: confirmed the three requested AC ids and exact lifecycle behaviors are
+          present on @dispatch-remote-branch-sync.
+
+          Categories searched: correctness/spec alignment, validation, test quality,
+          integration/history. No blockers found.
+        created_at: 2026-04-03T05:01:30.639Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-03T05:01:45.736Z
+created_at: 2026-04-03T04:53:46.614Z
+updated_at: 2026-04-03T05:01:45.736Z
+notes: []

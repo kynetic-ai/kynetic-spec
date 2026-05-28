@@ -1,0 +1,133 @@
+_ulid: 01KKXQDTRRMZYCPV4W1CTQVDHE
+slugs: []
+title: Review task-review-list-page
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 5724 tests passed, 1 pre-existing failure (review-cli.test.ts:152 — examined_commit null
+      assertion, not modified in this branch), 3 skipped
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-17T11:13:23.591Z
+    completed_at: 2026-03-17T11:13:23.591Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No test files contain AC annotations for @review-records-web-ui ac-1 or ac-10. AC
+      annotations exist only in implementation source files.
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-17T11:13:26.209Z
+    completed_at: 2026-03-17T11:13:26.209Z
+events:
+  - _ulid: 01KKXQDTRRD2YXV67S7Q15985Z
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-17T11:03:20.600Z
+  - _ulid: 01KKXQEAWH1BY8GY1KDPXEN75P
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-17T11:03:37.106Z
+  - _ulid: 01KKXQZHB51M9ZQYJHEJ5KXWCP
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKXQZH98JE29BK24DC8HKQQ7
+    timestamp: 2026-03-17T11:13:00.773Z
+  - _ulid: 01KKXQZWAFGRMKWX35WWYESF01
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKXQZW8M5FNR0YJBQN3B1MWN
+    timestamp: 2026-03-17T11:13:12.015Z
+  - _ulid: 01KKXR07PCVC4J2AR891BZNPB3
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-17T11:13:23.660Z
+  - _ulid: 01KKXR0A7VM81KD0DMPKFTV0S7
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: ac-coverage
+    timestamp: 2026-03-17T11:13:26.268Z
+  - _ulid: 01KKXR0GEKT1MM5W31RFM9RJZ1
+    actor: pr-reviewer@kspec.agent
+    event_type: verdict_submitted
+    payload:
+      decision: request_changes
+    timestamp: 2026-03-17T11:13:32.627Z
+  - _ulid: 01KKXR0GEKPJ517APRYN757Q3E
+    actor: pr-reviewer@kspec.agent
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-17T11:13:32.627Z
+examined_commit: c41c0d7b7e96f9eaada13c57e8f69e0d21735038
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKTW6JPAR1P0W78EAWX5482A"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KKXQZH98JE29BK24DC8HKQQ7
+    entries:
+      - _ulid: 01KKXQZH98BDC9EHHTD26JZZE9
+        author: "@claude"
+        body: "Missing test annotations for covered ACs. The task claims coverage of @review-records-web-ui
+          ac-1 and ac-10, but AC annotations exist only in source files (implementation code), not
+          in any test files. Every AC MUST have at least one annotated test that proves the
+          behavior. Currently: zero test files contain 'AC: @review-records-web-ui' annotations. The
+          new daemon endpoints (GET /api/reviews, GET /api/reviews/:id) also have no tests — neither
+          unit nor E2E."
+        created_at: 2026-03-17T11:13:00.712Z
+    kind: blocker
+  - _ulid: 01KKXQZW8M5FNR0YJBQN3B1MWN
+    anchor:
+      type: code
+      commit: c41c0d7b7e96f9eaada13c57e8f69e0d21735038
+      line_end: 84
+      line_start: 47
+      path: packages/daemon/src/routes/reviews.ts
+      side: head
+    entries:
+      - _ulid: 01KKXQZW8NAKSMWB4KZEDBH4SX
+        author: "@claude"
+        body: Uses manual taskTitleMap instead of ReferenceIndex/resolveRefTitle. The tasks.ts endpoint uses
+          ReferenceIndex and resolveRefTitle for title resolution, which is the established
+          convention. The reviews endpoint manually builds a Map from loadAllTasks, which is
+          functionally equivalent but inconsistent with the codebase pattern. Consider using
+          ReferenceIndex for consistency.
+        created_at: 2026-03-17T11:13:11.957Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer@kspec.agent
+    role: reviewer
+    created_at: 2026-03-17T11:13:32.548Z
+created_at: 2026-03-17T11:03:20.600Z
+updated_at: 2026-03-17T11:13:32.548Z
+notes: []

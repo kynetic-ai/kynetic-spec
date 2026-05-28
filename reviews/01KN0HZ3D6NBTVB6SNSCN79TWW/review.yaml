@@ -1,0 +1,153 @@
+_ulid: 01KN0HZ3D6NBTVB6SNSCN79TWW
+slugs: []
+title: Review task-add-filewatcher-e2e
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed locally in review snapshot: npm run test:e2e -- tests/e2e/file-watcher.spec.ts
+      finished with 10 passed in 12.1s."
+    name: watcher e2e
+    required: true
+    runner: playwright
+    created_at: 2026-03-30T23:46:34.058Z
+    completed_at: 2026-03-30T23:46:34.058Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed locally in review snapshot: 2072/2072 suites, 7489/7494 tests, 5 skipped."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-30T23:46:36.049Z
+    completed_at: 2026-03-30T23:46:36.049Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 6 with existing repo-wide warnings only; no validation errors in this review snapshot.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-30T23:46:37.994Z
+    completed_at: 2026-03-30T23:46:37.994Z
+events:
+  - _ulid: 01KN0HZ3D6XCBRJ492TZV2KJA7
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-30T23:41:20.166Z
+  - _ulid: 01KN0HZN50GSPGNSSG26X438FS
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-30T23:41:38.336Z
+  - _ulid: 01KN0J8MPC7M9F7KY696YZFJ2Y
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN0J8M2CK9E1V58N80GF0FR1
+    timestamp: 2026-03-30T23:46:32.780Z
+  - _ulid: 01KN0J8PHYZXQ9MHGGMH1J456G
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: watcher e2e
+    timestamp: 2026-03-30T23:46:34.687Z
+  - _ulid: 01KN0J8RGGM5YC4JFN3FA3PG4G
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-30T23:46:36.688Z
+  - _ulid: 01KN0J8TDBP2HKAYK9ZJM371XH
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-30T23:46:38.635Z
+  - _ulid: 01KN0J95DCGW6PDSFQH06M4EER
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-30T23:46:49.900Z
+  - _ulid: 01KN0J95DCS7VZE80JBEQ0G448
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-30T23:46:49.900Z
+examined_commit: 92c8540b06de93a5437122aa31c5507387513a7e
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMZ1BWCJNCQ1AWDQE6XMY2EK"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN0J8M2CK9E1V58N80GF0FR1
+    entries:
+      - _ulid: 01KN0J8M2CKGEYWSQH821F592F
+        author: Test User
+        body: >-
+          Review evidence log
+
+
+          Files read: packages/web-ui/src/lib/query/ws-invalidation.ts;
+          tests/e2e/file-watcher.spec.ts; tests/web-ui/ws-cache-invalidation.test.ts;
+          tests/e2e/api-watcher.spec.ts; packages/web-ui/src/routes/tasks/+page.svelte;
+          packages/web-ui/src/lib/query/client.ts; tests/e2e/project-selector.spec.ts;
+          tests/e2e/fixtures/project.tasks.yaml; tests/e2e/fixtures/project.inbox.yaml;
+          tests/e2e/fixtures/modules/core.yaml; tests/e2e/fixtures/test-base.ts
+
+
+          Commands run: kspec task get @01KMZ1BWCJNCQ1AWDQE6XMY2EK; kspec review for-task
+          @01KMZ1BWCJNCQ1AWDQE6XMY2EK; git diff --stat
+          4549f2d161aa008e0832187456202af82c3357ad..92c8540b06de93a5437122aa31c5507387513a7e; git
+          diff 4549f2d161aa008e0832187456202af82c3357ad..92c8540b06de93a5437122aa31c5507387513a7e --
+          packages/web-ui/src/lib/query/ws-invalidation.ts tests/e2e/file-watcher.spec.ts; kspec
+          item get @ui-data-freshness; kspec item get @multi-directory-daemon; grep -Rni "AC:
+          @ui-data-freshness\|AC: @multi-directory-daemon" tests; kspec validate; npm test; npm run
+          test:e2e -- tests/e2e/file-watcher.spec.ts
+
+
+          Claims verified: direct on-disk changes to tasks/inbox/items propagate to the UI without
+          reload; project-scoped watcher events do not disturb the active first-project task view;
+          the broader suite still passes with the new delayed files:updates invalidation path.
+
+
+          Categories searched: correctness (no issues found); edge cases (checked multi-project
+          isolation and debounce/delay interactions, no issues found); error handling (read existing
+          api-watcher coverage for parse-error recovery, no regression in changed paths); test
+          quality (new coverage is behavioral, not source-scanning); integration (validated
+          route/query key wiring and full-suite compatibility).
+        created_at: 2026-03-30T23:46:32.140Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-30T23:46:49.900Z
+created_at: 2026-03-30T23:41:20.166Z
+updated_at: 2026-03-30T23:46:49.900Z
+notes: []

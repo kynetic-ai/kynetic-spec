@@ -1,0 +1,129 @@
+_ulid: 01KM720PZJMKTYKTHST9Q4FC0K
+slugs: []
+title: Review @01KM6YEMDW3WNPT2XM66EH0AKM
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 297 files passed, 6704 tests passed, 3 skipped, 0 failed (about 144s).
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-21T02:06:04.584Z
+    completed_at: 2026-03-21T02:06:04.584Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Schema and references OK. Existing repo-wide warnings remain, including orphaned skill
+      dir, orphaned specs, and uncovered/fixture AC annotations; no task-specific validation
+      failures.
+    name: kspec validate --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-03-21T02:06:09.784Z
+    completed_at: 2026-03-21T02:06:09.784Z
+events:
+  - _ulid: 01KM720PZHVNV9NHTHF5WV2CRC
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T02:01:34.961Z
+  - _ulid: 01KM7288DKXN4CEBWN91QY5TC3
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T02:05:42.195Z
+  - _ulid: 01KM728SWKG2CJMDZ955BNVMFP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM728SMCG2CTC983NPP6C7ZC
+    timestamp: 2026-03-21T02:06:00.083Z
+  - _ulid: 01KM728YHSQ81A6FS2SYRHBEX0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-21T02:06:04.858Z
+  - _ulid: 01KM7293KRGDS6AVS6QGWZSRFD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --warnings-ok
+    timestamp: 2026-03-21T02:06:10.040Z
+  - _ulid: 01KM7299J5EMRFSDY7K1XVQ03R
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-21T02:06:16.134Z
+  - _ulid: 01KM7299J62MKXTCQQWNP6E39B
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-21T02:06:16.134Z
+examined_commit: 31e5453ad3131c598620f2fd6970fa1043353a40
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YEMDW3WNPT2XM66EH0AKM"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM728SMCG2CTC983NPP6C7ZC
+    entries:
+      - _ulid: 01KM728SMDZF98H92A0RN37ZM6
+        author: Jacob Chapel
+        body: >-
+          Files read: kspec-agents.md, tests/cli-serve.test.ts, review record
+          @01KM70QNRVMV8J0X086YD31ASK, spec state for @task-storage, @task-storage-alongside,
+          @task-storage-separate, @task-activity-git-query, @task-directory-storage,
+          @task-activity-in-file.
+
+
+          Commands run: git diff --stat
+          0b83080a89d15bec8d00c46e33d52fc6c2597dd0...31e5453ad3131c598620f2fd6970fa1043353a40; git
+          diff 0b83080a89d15bec8d00c46e33d52fc6c2597dd0...31e5453ad3131c598620f2fd6970fa1043353a40
+          -- tests/cli-serve.test.ts; nl -ba tests/cli-serve.test.ts | sed -n 200,270p; kspec review
+          for-task @01KM6YEMDW3WNPT2XM66EH0AKM; kspec task get @01KM6YEMDW3WNPT2XM66EH0AKM; kspec
+          item get/@... --json for the four deprecated specs and two replacement specs; kspec
+          validate; kspec validate --warnings-ok; npm test.
+
+
+          Claims verified: all four legacy specs are marked maturity=deprecated with correct
+          superseded_by targets; @task-storage-alongside and @task-storage-separate no longer carry
+          stale implements references; the foreground serve SIGINT test now accepts both observed
+          valid shutdown outcomes and full npm test passes on this snapshot.
+
+
+          Categories searched: correctness, regression risk, test quality, integration with existing
+          serve behavior, spec-state consistency. No blocking issues found.
+        created_at: 2026-03-21T02:05:59.821Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-21T02:06:16.133Z
+created_at: 2026-03-21T02:01:34.962Z
+updated_at: 2026-03-21T02:06:16.134Z
+notes: []

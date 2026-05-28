@@ -1,0 +1,69 @@
+notes:
+  - _ulid: 01KK7T2BMFDAGDS0WND25D560H
+    content: >-
+      Implementation notes:
+
+
+      ### Migration strategy
+
+      This is a breaking change in file layout but NOT in CLI interface. All `kspec session`
+      commands work identically — only the underlying storage location changes. The legacy fallback
+      ensures existing sessions remain readable during transition.
+
+
+      ### Ordering (enforced by depends_on)
+
+      1. Schema config (foundation)
+
+      2. Path resolution (depends on schema) + spec updates (parallel)
+
+      3. Remove shadow commits (depends on path resolution)
+
+      4. Init/setup updates (depends on schema)
+
+      5. Legacy fallback (depends on path resolution)
+
+      6. Tests (depends on path resolution + shadow commit removal)
+
+      7. Migration command (depends on legacy fallback)
+
+      8. Branch mode last (post-mvp, depends on path resolution + init/setup)
+
+
+      ### Existing spec updates required
+
+      These specs have ACs that hardcode `.kspec/sessions/` or inherit `@trait-shadow-commit`:
+
+      - `@session-events` — ac-1, ac-7, ac-8 reference old paths/commit behavior
+
+      - `@session-creation-and-env-injection` — ac-create, ac-budget-local, description reference
+      old paths
+
+      - `@session-log-list` — ac-1 references old path in given clause
+
+      - `@session-compact` — inherits `@trait-shadow-commit` (remove binding)
+
+      - `@session-stale-cleanup` — inherits `@trait-shadow-commit` (remove binding)
+
+      - `@cli-ralph` — ac-22 references old tool-output path
+
+
+      ### Specs reviewed, no AC text changes needed
+
+      - `@session-end-loop-signal` — doesn't hardcode paths; implementation uses path resolver
+
+      - `@agent-invocation-lifecycle` — doesn't hardcode paths; in-progress implementation should
+      use new resolver
+
+
+      ### Risk: daemon session routes
+
+      The daemon builds from `dist/` not `src/` — session route changes need a daemon rebuild.
+      Coordinate with existing daemon build pipeline.
+
+
+      ### Budget files
+
+      Already local-only — no changes needed. They naturally move with the session directory.
+    author: "@claude"
+    created_at: 2026-03-08T22:46:12.879Z

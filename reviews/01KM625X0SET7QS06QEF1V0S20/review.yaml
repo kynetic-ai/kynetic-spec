@@ -1,0 +1,153 @@
+_ulid: 01KM625X0SET7QS06QEF1V0S20
+slugs: []
+title: Review task-schema-derived-types (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite did not exit cleanly in review: vitest summary reported 1 failed test file
+      while 288 passed. Targeted rerun of tests/ac-delete-confirmation.test.ts passed in isolation,
+      so the failure appears to be suite-level or flaky, but the required gate still failed."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-20T16:49:58.908Z
+    completed_at: 2026-03-20T16:49:58.908Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation still reports pre-existing repository reference, alignment, and completeness
+      debt unrelated to this task; no new task-specific validation issue was identified.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-20T16:50:00.401Z
+    completed_at: 2026-03-20T16:50:00.401Z
+events:
+  - _ulid: 01KM625X0SV6XYAKPHNWDTJEB5
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-20T16:45:10.553Z
+  - _ulid: 01KM626C9SX6SJN2XJ4578R6YY
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-20T16:45:26.201Z
+  - _ulid: 01KM62EP47QYGJXQHQV9NQ6M6R
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM62ENWVJKT5BTNYVQVVRJPT
+    timestamp: 2026-03-20T16:49:58.407Z
+  - _ulid: 01KM62EPVK4XHHT01MYVTC7MH8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-20T16:49:59.155Z
+  - _ulid: 01KM62EQJB4KQK0MMC4KCG069Q
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM62EQBHM2G6738BBMVKZXFK
+    timestamp: 2026-03-20T16:49:59.883Z
+  - _ulid: 01KM62ER9MD8W154TVSHDZJEJG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-03-20T16:50:00.628Z
+  - _ulid: 01KM62F6QR6JRPQ88FG5TDPBJE
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-20T16:50:15.416Z
+  - _ulid: 01KM62F6QRACYTDNFQQ4YTTK9Z
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-20T16:50:15.416Z
+  - _ulid: 01KM636DRTMW6YMBX82MC9DHAB
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM62ENWVJKT5BTNYVQVVRJPT
+    timestamp: 2026-03-20T17:02:56.282Z
+  - _ulid: 01KM637F9QXWDPP0HT6ECZ7DGQ
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KM62ENWVJKT5BTNYVQVVRJPT
+    timestamp: 2026-03-20T17:03:30.615Z
+examined_commit: cdb70fae4e3fc3481147505e3f19023b1113c5fc
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM5Z4NK56J72PS2YVKP5EJ8G"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM62ENWVJKT5BTNYVQVVRJPT
+    entries:
+      - _ulid: 01KM62ENWVXEEAJT7GSGCX0GVD
+        author: Jacob Chapel
+        body: Full npm test is not reproducible on this snapshot. In my review run, the suite continued to
+          report 1 failing test while 288 files passed, so the merge gate is still red even though
+          the schema-derived-type changes and targeted rerun of tests/ac-delete-confirmation.test.ts
+          passed in isolation. This needs follow-up until npm test exits 0 consistently for the
+          submitted commit.
+        created_at: 2026-03-20T16:49:58.171Z
+      - _ulid: 01KM636DH6B27JY5M5XK4GXKRX
+        author: Jacob Chapel
+        body: Re-ran the full suite twice on commit cdb70fae4e3fc3481147505e3f19023b1113c5fc in this
+          workspace. Both runs exited 0 with 292 test files passed, 6669 tests passed, and 3
+          skipped, so I could not reproduce the earlier red gate.
+        created_at: 2026-03-20T17:02:56.038Z
+    kind: blocker
+    resolved_at: 2026-03-20T17:03:30.383Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KM62EQBHM2G6738BBMVKZXFK
+    entries:
+      - _ulid: 01KM62EQBJ6FPY1RBGX5PP72SB
+        author: Jacob Chapel
+        body: "Review evidence log: Files read included the changed schema files, daemon
+          review/meta/dispatch routes, CLI command surfaces, and the new/updated tests covering
+          schema-derived enums and review API validation. Commands run: git diff vs dev, kspec task
+          get/item get/review get, kspec validate, full npm test, targeted npm test --
+          tests/ac-delete-confirmation.test.ts. Claim verified: the prior review blocker on review
+          API enum validation was fixed by moving transport validation back into handlers while
+          keeping valid option lists schema-derived, confirmed in code and the updated
+          verdict/check/lifecycle API tests. Categories searched: correctness, test quality, input
+          validation, API error handling, dispatch automation semantics, and integration behavior."
+        created_at: 2026-03-20T16:49:59.666Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-20T16:50:15.416Z
+created_at: 2026-03-20T16:45:10.553Z
+updated_at: 2026-03-20T17:03:30.383Z
+notes: []

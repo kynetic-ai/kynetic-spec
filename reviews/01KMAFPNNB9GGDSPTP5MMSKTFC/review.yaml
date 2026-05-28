@@ -1,0 +1,175 @@
+_ulid: 01KMAFPNNB9GGDSPTP5MMSKTFC
+slugs: []
+title: Review task-multi-turn-invocation (cycle 2)
+author: Test User
+checks: []
+events:
+  - _ulid: 01KMAFPNNBHZHZ1NNA3CK4XEX4
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-22T09:58:29.291Z
+  - _ulid: 01KMAFVRVTMV3QYK90TC163P3S
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-22T10:01:16.411Z
+  - _ulid: 01KMAFVRVVRM4Y7SW614BGCK4P
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: closed
+    timestamp: 2026-03-22T10:01:16.411Z
+  - _ulid: 01KMAFY1ZWKY306V0BZ4BSJ1MQ
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMAFY1MF18TWH4FAMJREY3NE
+    timestamp: 2026-03-22T10:02:31.292Z
+  - _ulid: 01KMAFY366N1V03Z872ESH5DHJ
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMAFY2TYX41ZERF4JNDXQQ6P
+    timestamp: 2026-03-22T10:02:32.518Z
+  - _ulid: 01KMAFY53ZCAPY0WRECQVR7XGH
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMAFY4RZJAC2SDD7E8GJJ6D5
+    timestamp: 2026-03-22T10:02:34.495Z
+  - _ulid: 01KMAFY6B66BD5BJPEHDHRSYAG
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: closed
+      to: open
+    timestamp: 2026-03-22T10:02:35.751Z
+  - _ulid: 01KMAFY7E33Z1655FDKYTDEV1W
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMAFY73XGY8115D63GGP4CWN
+    timestamp: 2026-03-22T10:02:36.867Z
+  - _ulid: 01KMAFZ0E1J7X8BJ087CVAJD08
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-22T10:03:02.465Z
+examined_commit: f7bd46ee2c1a4bf8558ff6e67c6faeca544c2626
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMA74DY7WGG4KA6P07BTMJFD"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMAFY1MF18TWH4FAMJREY3NE
+    entries:
+      - _ulid: 01KMAFY1MF842V6SRPYNC0V05Z
+        author: Test User
+        body: 'Evidence log:\nFiles read: src/agent-runtime/invocation.ts, src/agent-runtime/index.ts,
+          src/agent-runtime/session-registry.ts, src/sessions/types.ts,
+          tests/multi-turn-invocation.test.ts, tests/active-session-registry.test.ts.\nCommands run:
+          kspec task get @01KMA74DY7WGG4KA6P07BTMJFD, kspec review for-task
+          @01KMA74DY7WGG4KA6P07BTMJFD, kspec review get @01KMACWKW34XRRZZ5ZE1TKSDEY, git diff
+          463db210d316c43a70446ac83bc179c6de5a1616...f7bd46ee2c1a4bf8558ff6e67c6faeca544c2626, rg -n
+          "AC: @multi-turn-session-lifecycle|AC: @trait-" tests/multi-turn-invocation.test.ts, kspec
+          validate, npm test.\nClaims verified: previous blocker fix verified by reading the new
+          idle grace-period path and the async follow-up test; queue-overflow behavior verified by
+          comparing the SessionHandle promise contract to the synchronous throw path and its
+          matching test.\nCategories searched: correctness (found blocker), edge cases (queue full /
+          closed queue), error handling (found blocker), test quality (reviewed AC annotations and
+          overflow test behavior), integration (registry handle contract).'
+        created_at: 2026-03-22T10:02:30.927Z
+    kind: nit
+  - _ulid: 01KMAFY2TYX41ZERF4JNDXQQ6P
+    entries:
+      - _ulid: 01KMAFY2TYV3EHJKSN0NB9REV0
+        author: Test User
+        body: >-
+          Evidence log:
+
+          Files read: src/agent-runtime/invocation.ts, src/agent-runtime/index.ts,
+          src/agent-runtime/session-registry.ts, src/sessions/types.ts,
+          tests/multi-turn-invocation.test.ts, tests/active-session-registry.test.ts.
+
+          Commands run: kspec task get @01KMA74DY7WGG4KA6P07BTMJFD, kspec review for-task
+          @01KMA74DY7WGG4KA6P07BTMJFD, kspec review get @01KMACWKW34XRRZZ5ZE1TKSDEY, git diff
+          463db210d316c43a70446ac83bc179c6de5a1616...f7bd46ee2c1a4bf8558ff6e67c6faeca544c2626, rg -n
+          "AC: @multi-turn-session-lifecycle|AC: @trait-" tests/multi-turn-invocation.test.ts, kspec
+          validate, npm test.
+
+          Claims verified: previous blocker fix verified by reading the new idle grace-period path
+          and the async follow-up test; queue-overflow behavior verified by comparing the
+          SessionHandle promise contract to the synchronous throw path and its matching test.
+
+          Categories searched: correctness (found blocker), edge cases (queue full / closed queue),
+          error handling (found blocker), test quality (reviewed AC annotations and overflow test
+          behavior), integration (registry handle contract).
+        created_at: 2026-03-22T10:02:32.158Z
+    kind: nit
+  - _ulid: 01KMAFY4RZJAC2SDD7E8GJJ6D5
+    anchor:
+      type: code
+      commit: f7bd46ee2c1a4bf8558ff6e67c6faeca544c2626
+      line_end: 560
+      line_start: 552
+      path: src/agent-runtime/invocation.ts
+      side: head
+    entries:
+      - _ulid: 01KMAFY4RZBRHJ9JSY5AQWN9GQ
+        author: Test User
+        body: "SessionHandle.sendPrompt() is documented and typed as a promise-returning API, but this
+          implementation can throw synchronously when promptQueue.enqueue() hits a closed/full
+          queue. That turns an AC-17 rejection into a fatal exception path for ordinary onIdle
+          callers: an uncaught overflow/closed-queue send now fails the whole invocation instead of
+          just rejecting the extra prompt. The new overflow test only passes because it catches a
+          synchronous throw, which confirms the contract mismatch rather than the intended rejection
+          behavior."
+        created_at: 2026-03-22T10:02:34.144Z
+    kind: blocker
+  - _ulid: 01KMAFY73XGY8115D63GGP4CWN
+    anchor:
+      type: code
+      commit: f7bd46ee2c1a4bf8558ff6e67c6faeca544c2626
+      line_end: 560
+      line_start: 552
+      path: src/agent-runtime/invocation.ts
+      side: head
+    entries:
+      - _ulid: 01KMAFY73X8E2QCY0YPTYJ26T7
+        author: Test User
+        body: " is documented and typed as a promise-returning API, but this implementation can throw
+          synchronously when  hits a closed/full queue. That turns an AC-17 rejection into a fatal
+          exception path for ordinary  callers: an uncaught overflow/closed-queue send now fails the
+          whole invocation instead of just rejecting the extra prompt. The new test at
+          tests/multi-turn-invocation.test.ts:815-818 only passes because it catches a synchronous
+          throw, which confirms the contract mismatch rather than the intended rejection behavior."
+        created_at: 2026-03-22T10:02:36.541Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-22T10:01:16.410Z
+created_at: 2026-03-22T09:58:29.291Z
+updated_at: 2026-03-22T10:03:02.141Z
+notes: []

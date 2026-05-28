@@ -1,0 +1,138 @@
+_ulid: 01KMSTXYAEDKJG68B956MFX767
+slugs: []
+title: Review task-daemon-cache-diagnostic
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exited 6 with repo-wide warnings only; schema and references OK, no
+      task-specific validation errors in this snapshot
+    name: validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-28T09:10:00.250Z
+    completed_at: 2026-03-28T09:10:00.250Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- tests/daemon-debug-routes.test.ts tests/daemon-entity-cache.test.ts: 30
+      suites, 85 tests passed in 40.4s"
+    name: focused daemon tests
+    required: true
+    runner: npm
+    created_at: 2026-03-28T09:10:03.855Z
+    completed_at: 2026-03-28T09:10:03.855Z
+events:
+  - _ulid: 01KMSTXYADRQFKRBGEH12J201W
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-28T09:03:18.349Z
+  - _ulid: 01KMSV6NRNB4YSM7EWWYMHEZSG
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-28T09:08:04.503Z
+  - _ulid: 01KMSVA7Y7ZZ92Y04W52TYW7KN
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: validate
+    timestamp: 2026-03-28T09:10:01.416Z
+  - _ulid: 01KMSVABESP948Y20Y1RMVYQY8
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused daemon tests
+    timestamp: 2026-03-28T09:10:05.018Z
+  - _ulid: 01KMSVAEYT80687VR7BMNQ293Y
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMSVADTF6NCKWP5AVXMX0TYQ
+    timestamp: 2026-03-28T09:10:08.602Z
+  - _ulid: 01KMSVDN95R37KBY49KVSKMWAZ
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-28T09:11:53.382Z
+  - _ulid: 01KMSVDN96BRJ5N4D41FNVADNN
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-28T09:11:53.382Z
+  - _ulid: 01KMSWA4A3BPY3HCJN0J4AHY2D
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMSVADTF6NCKWP5AVXMX0TYQ
+    timestamp: 2026-03-28T09:27:26.275Z
+  - _ulid: 01KMSWADPN35FV4N5QCZ1JYFRT
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMSVADTF6NCKWP5AVXMX0TYQ
+    timestamp: 2026-03-28T09:27:35.893Z
+examined_commit: a206213a837867769df3301331c8054b56b93d2a
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMSRSVWTKRQEHCCT4KXY619W"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMSVADTF6NCKWP5AVXMX0TYQ
+    anchor:
+      type: code
+      commit: a206213a837867769df3301331c8054b56b93d2a
+      line_end: 101
+      line_start: 86
+      path: kspec-agents.md
+      side: head
+    entries:
+      - _ulid: 01KMSVADTGJ6K4ZYX92VRKBD18
+        author: Test User
+        body: The task note explicitly required adding a development convention for the new diagnostic
+          endpoint and regenerating kspec-agents.md once the endpoint existed. This snapshot adds
+          the route in packages/daemon/src/routes/debug.ts but never updates the conventions section
+          in kspec-agents.md, so future agents still have no documented pointer to
+          /api/debug/cache-status for daemon troubleshooting. Please add the convention/meta entry
+          and commit the regenerated instructions alongside the endpoint.
+        created_at: 2026-03-28T09:10:07.440Z
+      - _ulid: 01KMSWA368H29E703GJDF5QB1Z
+        author: "@claude"
+        body: "Fixed: Added development convention rule documenting GET /api/debug/cache-status for daemon
+          cache troubleshooting. Regenerated kspec-agents.md — the new rule appears at line 102 in
+          the development conventions section."
+        created_at: 2026-03-28T09:27:25.128Z
+    kind: blocker
+    resolved_at: 2026-03-28T09:27:34.742Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-28T09:11:53.381Z
+created_at: 2026-03-28T09:03:18.350Z
+updated_at: 2026-03-28T09:27:34.742Z
+notes: []

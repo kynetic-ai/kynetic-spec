@@ -1,0 +1,205 @@
+_ulid: 01KPR1DH4PGER7S63WTN0GC95J
+slugs: []
+title: Review task-docs-troubleshooting-content (cycle 3)
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: node dist/cli/index.js validate fails repo-wide on pre-existing meta/spec issues unrelated
+      to this diff, including .kspec/modules/meta.yaml schema error (modules[0].traits.0 expected
+      string, received object).
+    name: validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-21T13:00:00.737Z
+    completed_at: 2026-04-21T13:00:00.737Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed in this snapshot: Test Suites 2238/2238 passed; Tests 8253 passed, 5
+      skipped; duration 1853.3s."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-21T13:00:03.727Z
+    completed_at: 2026-04-21T13:00:03.727Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: docs/troubleshooting/*.md, docs/troubleshooting/index.md,
+      tests/web-ui-docs-rendering.test.ts, docs/concepts/reviews.md, tests/review-cli.test.ts,
+      tests/review-per-cycle-lifecycle.test.ts, tests/review-verdicts-resolution.test.ts. Commands
+      run: git diff/stat/name-only against dev...fb495534, node dist/cli/index.js task get/review
+      for-task/item get/validate/review get/review refresh, rg AC annotations, npm test. Claims
+      verified: full suite passes; refresh is code-subject-only and rejects task reviews. Categories
+      searched: correctness, test quality, spec alignment, command validity, integration."
+    name: review-evidence
+    required: false
+    created_at: 2026-04-21T13:00:06.996Z
+    completed_at: 2026-04-21T13:00:06.996Z
+events:
+  - _ulid: 01KPR1DH4PX7CN675915MVX7HP
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-21T12:49:35.382Z
+  - _ulid: 01KPR1DVJ1EVAMR89M2FCX6HWR
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-21T12:49:46.049Z
+  - _ulid: 01KPR1ZM771BN57T1FZ9PVC431
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPR1ZK6N0V3P72HJZF1M60WB
+    timestamp: 2026-04-21T12:59:28.359Z
+  - _ulid: 01KPR1ZZPHHN8DANTWEPQS4T2Q
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPR1ZYN63DXXTD1VSFT4E9Y3
+    timestamp: 2026-04-21T12:59:40.113Z
+  - _ulid: 01KPR20MVSWMKPMC77BXZ3YK39
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: validate
+    timestamp: 2026-04-21T13:00:01.785Z
+  - _ulid: 01KPR20QXMPMQNFZW7P3D90EDV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-21T13:00:04.916Z
+  - _ulid: 01KPR20V2BY3H90XA7E86J2KKW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-04-21T13:00:08.140Z
+  - _ulid: 01KPR214KWPXG8XXK55XF2SAJC
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-21T13:00:17.916Z
+  - _ulid: 01KPR214KWQFNZ7ZHJWW61QSHC
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-21T13:00:17.916Z
+  - _ulid: 01KPR227P8PF80QWD66QAEJKAC
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPR1ZK6N0V3P72HJZF1M60WB
+    timestamp: 2026-04-21T13:00:53.832Z
+  - _ulid: 01KPR22G4T5ZDW92RZ9GD2JM01
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPR1ZK6N0V3P72HJZF1M60WB
+    timestamp: 2026-04-21T13:01:02.490Z
+  - _ulid: 01KPR2CSMQ53PX681W8NG5MV45
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPR1ZYN63DXXTD1VSFT4E9Y3
+    timestamp: 2026-04-21T13:06:39.895Z
+  - _ulid: 01KPR2D4A0G0VZWR9DQDTRWZ4Y
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPR1ZYN63DXXTD1VSFT4E9Y3
+    timestamp: 2026-04-21T13:06:50.816Z
+examined_commit: fb495534dd1f4a71b2cb193b97a990c1d9a591a9
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KPPN4435PYT5BK4VFXTPR1F3"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPR1ZK6N0V3P72HJZF1M60WB
+    anchor:
+      type: code
+      commit: fb495534dd1f4a71b2cb193b97a990c1d9a591a9
+      line_end: 40
+      line_start: 34
+      path: docs/troubleshooting/review-blocking-merge.md
+      side: head
+    entries:
+      - _ulid: 01KPR1ZK6NK070RC3FJQEPKAY8
+        author: Jacob Chapel
+        body: "The stale-review recovery step points task readers to , but task reviews do not support
+          refresh. I verified this against this cycle’s task review:  exits with ‘Refresh is only
+          supported for code subjects (current: task)’. Because  tasks are reviewed with
+          task-subject reviews, following this article leaves the reader with another error instead
+          of a workable recovery path."
+        created_at: 2026-04-21T12:59:27.317Z
+      - _ulid: 01KPR226NCMVFTAXCXMQ62HK6P
+        author: Jacob Chapel
+        body: Superseded by duplicate thread 01KPR1ZYN63DXXTD1VSFT4E9Y3 with the full command text
+          preserved.
+        created_at: 2026-04-21T13:00:52.779Z
+    kind: blocker
+    resolved_at: 2026-04-21T13:01:01.428Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KPR1ZYN63DXXTD1VSFT4E9Y3
+    anchor:
+      type: code
+      commit: fb495534dd1f4a71b2cb193b97a990c1d9a591a9
+      line_end: 40
+      line_start: 34
+      path: docs/troubleshooting/review-blocking-merge.md
+      side: head
+    entries:
+      - _ulid: 01KPR1ZYN6JNZ21F82DXKKKTCM
+        author: Jacob Chapel
+        body: "The stale-review recovery step points task readers to review refresh, but task reviews do not
+          support refresh. I verified this against the current task review: node dist/cli/index.js
+          review refresh @01KPR1DH --head deadbeef exits with 'Refresh is only supported for code
+          subjects (current: task)'. Because pending_review tasks are reviewed with task-subject
+          reviews, following this article leaves the reader with another error instead of a working
+          recovery path."
+        created_at: 2026-04-21T12:59:39.046Z
+      - _ulid: 01KPR2CRKXYRF5XVW8H4Q732GR
+        author: "@claude"
+        body: "Fixed: Replaced kspec review refresh (code-subject-only) with kspec task submit, which
+          creates a new review cycle. This is the correct recovery path for task-subject reviews per
+          the per-cycle model documented in the Reviews concept page."
+        created_at: 2026-04-21T13:06:38.845Z
+    kind: blocker
+    resolved_at: 2026-04-21T13:06:49.802Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-21T13:00:17.916Z
+created_at: 2026-04-21T12:49:35.382Z
+updated_at: 2026-04-21T13:06:49.802Z
+notes: []

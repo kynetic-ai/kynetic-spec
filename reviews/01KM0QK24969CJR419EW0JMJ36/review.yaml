@@ -1,0 +1,143 @@
+_ulid: 01KM0QK24969CJR419EW0JMJ36
+slugs: []
+title: Review task-schedule-cli
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 283 test files passed, 6437 tests passed, 3 skipped. 1 pre-existing failure in
+      review-cli.test.ts (examined_commit ambient git state issue, not introduced by this commit).
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T15:05:02.515Z
+    completed_at: 2026-03-18T15:05:02.515Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No new validation warnings or errors introduced by this commit. Pre-existing reference
+      errors (3) and alignment warnings (31) are unrelated to schedule CLI.
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-18T15:05:11.092Z
+    completed_at: 2026-03-18T15:05:11.092Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Own ACs: ac-2 and ac-3 covered. Trait ACs: all annotated EXCEPT @trait-error-guidance
+      ac-4 and @trait-semantic-exit-codes ac-4 which are missing N/A annotations."
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-18T15:05:18.997Z
+    completed_at: 2026-03-18T15:05:18.997Z
+events:
+  - _ulid: 01KM0QK249A470ATYQKC1FKZ53
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T15:03:55.273Z
+  - _ulid: 01KM0QKEKD7MHEAW5Z1ZEBMJ7G
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T15:04:08.045Z
+  - _ulid: 01KM0QKRXAEXA16GHZ178QV170
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM0QKRMM8VX9NC5KMGBGD4Q4
+    timestamp: 2026-03-18T15:04:18.602Z
+  - _ulid: 01KM0QM1WKD85XE76ZW5JZ5G50
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM0QM1M16G46G70JVVFKR7GX
+    timestamp: 2026-03-18T15:04:27.795Z
+  - _ulid: 01KM0QN41ZNHRNWGEVR8YH2KAT
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T15:05:02.783Z
+  - _ulid: 01KM0QNCBR95KP03GK33V7YQQT
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-18T15:05:11.288Z
+  - _ulid: 01KM0QNM1S1VVW8ZZJ86Q8F7DF
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: ac-coverage
+    timestamp: 2026-03-18T15:05:19.162Z
+  - _ulid: 01KM0QNW4ZXG2XQ3QDHX9TP91D
+    actor: pr-reviewer@kspec
+    event_type: verdict_submitted
+    payload:
+      decision: request_changes
+    timestamp: 2026-03-18T15:05:27.455Z
+  - _ulid: 01KM0QNW4Z788PCTDDC8ZE12A7
+    actor: pr-reviewer@kspec
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T15:05:27.455Z
+examined_commit: b8a2609de8d38a948f6d47d4d7fab9b05e941f08
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-schedule-cli"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM0QKRMM8VX9NC5KMGBGD4Q4
+    entries:
+      - _ulid: 01KM0QKRMNAD82MSFAXYM1K330
+        author: "@claude"
+        body: "Missing N/A annotation for @trait-error-guidance ac-4 (invalid state transition). Schedules
+          have no state transitions — enable/disable is a boolean toggle, not a state machine. This
+          AC genuinely does not apply, but the N/A annotation is missing from the test file. Add: //
+          AC: @trait-error-guidance ac-4 — N/A: schedules have no state transitions; enable/disable
+          is a boolean toggle"
+        created_at: 2026-03-18T15:04:18.325Z
+    kind: blocker
+  - _ulid: 01KM0QM1M16G46G70JVVFKR7GX
+    entries:
+      - _ulid: 01KM0QM1M29W8VSCABBP8HSG6E
+        author: "@claude"
+        body: "Missing N/A annotation for @trait-semantic-exit-codes ac-4 (runtime error exit code). The
+          schedule commands do handle runtime errors via catch blocks (using EXIT_CODES.ERROR = 1),
+          which is consistent with other CLI commands. But the annotation is missing from the test
+          file. Add: // AC: @trait-semantic-exit-codes ac-4 — N/A: runtime errors handled by catch
+          blocks with EXIT_CODES.ERROR, consistent with other CLI commands"
+        created_at: 2026-03-18T15:04:27.522Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer@kspec
+    role: reviewer
+    created_at: 2026-03-18T15:05:27.309Z
+created_at: 2026-03-18T15:03:55.273Z
+updated_at: 2026-03-18T15:05:27.309Z
+notes: []

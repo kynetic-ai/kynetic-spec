@@ -1,0 +1,288 @@
+_ulid: 01KRF5CP9BBDXYB4Z2R57YXCJ6
+slugs: []
+title: Review task-fix-guardrail-cleanup-effect-classification
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2432 suites passed; 9163 tests passed, 5 skipped; duration 2728.6s.
+      Log: /tmp/kspec-test-cache/01KRF5B7JJKKT7P7GA4Y5R7G3P/096caf9c4fcb6196.log"
+    name: npm test -- --fresh
+    required: true
+    runner: npm
+    created_at: 2026-05-12T22:52:34.459Z
+    completed_at: 2026-05-12T22:52:34.459Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation had no schema/reference errors, but exited 6 due warnings only: 7 reference
+      warnings, 38 alignment warnings, 252 completeness warnings. Treated as pre-existing project
+      warnings for this review."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-12T22:52:45.415Z
+    completed_at: 2026-05-12T22:52:45.415Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repository lint failed with 13 errors and 721 warnings. Errors appear outside the focused
+      cleanup-effect changes; recorded as optional/non-required evidence consistent with task notes.
+    name: npm run lint
+    required: false
+    runner: oxlint
+    created_at: 2026-05-12T22:52:56.565Z
+    completed_at: 2026-05-12T22:52:56.565Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check
+      0dcbcdd27642e95299a7b77a48da1e5d295df176..251769a1a36ad2fdc02760f60808f71324cfc6ed exited 0
+      with no whitespace/error output.
+    name: git diff --check
+    required: true
+    runner: git
+    created_at: 2026-05-12T22:53:07.985Z
+    completed_at: 2026-05-12T22:53:07.985Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: rg found @daemon-test-guardrail-precision annotations across
+      tests/lint-no-leaky-test-daemon.test.ts and tests/lint-daemon-test-guardrails.test.ts for the
+      linked spec ACs. Review blockers note that some newly added annotations are invalid coverage
+      because they are attached to it.fails/source-scanning tests.
+    name: AC annotation scan
+    required: false
+    runner: rg
+    created_at: 2026-05-12T22:53:19.628Z
+    completed_at: 2026-05-12T22:53:19.628Z
+events:
+  - _ulid: 01KRF5CP9BKSWQH3SRPRMHS0WW
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-12T22:37:15.947Z
+  - _ulid: 01KRF5DD5AVM3JYPD6RTP8RDWE
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-12T22:37:39.370Z
+  - _ulid: 01KRF5K0YZ4S858TPMX64H940H
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRF5JZ992N9VE3E3N8KYNVEA
+    timestamp: 2026-05-12T22:40:43.487Z
+  - _ulid: 01KRF5K5NC7DPE01HK16JCT2WR
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRF5K4020DDJQR86VWM79QAR
+    timestamp: 2026-05-12T22:40:48.300Z
+  - _ulid: 01KRF68RSAMCG0196YGNZD6DXJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-05-12T22:52:36.011Z
+  - _ulid: 01KRF693ERMZA4M469TARPDDYK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-05-12T22:52:46.936Z
+  - _ulid: 01KRF69EAK193BC28K6PENDGQK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm run lint
+    timestamp: 2026-05-12T22:52:58.067Z
+  - _ulid: 01KRF69SGVCH0M47KX47YZVZPQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: git diff --check
+    timestamp: 2026-05-12T22:53:09.531Z
+  - _ulid: 01KRF6A4WKAMHN4X8X64MAZTC5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC annotation scan
+    timestamp: 2026-05-12T22:53:21.172Z
+  - _ulid: 01KRF6AN1QC43YYQMET9T8WSBZ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KRF6AKFHFX5XTG691SSGF5HY
+    timestamp: 2026-05-12T22:53:37.719Z
+  - _ulid: 01KRF6AZV22VRGHPKZX6NHCC5R
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-12T22:53:48.771Z
+  - _ulid: 01KRF6AZV37E8DFR2ZQV6F921S
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-12T22:53:48.771Z
+  - _ulid: 01KRF8VFRTWFBAGMAZDHQMEAFV
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRF5JZ992N9VE3E3N8KYNVEA
+    timestamp: 2026-05-12T23:37:46.522Z
+  - _ulid: 01KRF8W30TP3KDR9SPNZE9DM81
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRF5K4020DDJQR86VWM79QAR
+    timestamp: 2026-05-12T23:38:06.234Z
+  - _ulid: 01KRF8WK3044CCBJ1A86XBCXH9
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KRF5JZ992N9VE3E3N8KYNVEA
+    timestamp: 2026-05-12T23:38:22.688Z
+  - _ulid: 01KRF8WZJ56Z5HG7CV8FDHHG7P
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KRF5K4020DDJQR86VWM79QAR
+    timestamp: 2026-05-12T23:38:35.461Z
+examined_commit: 251769a1a36ad2fdc02760f60808f71324cfc6ed
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRCRJPMHMHC410TKRC5Y9HF1"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRF5JZ992N9VE3E3N8KYNVEA
+    anchor:
+      type: code
+      commit: 251769a1a36ad2fdc02760f60808f71324cfc6ed
+      line_end: 6052
+      line_start: 6050
+      path: tests/lint-daemon-test-guardrails.test.ts
+      side: head
+    entries:
+      - _ulid: 01KRF5JZ99AKNVQZHMBCSDCDE4
+        author: Jacob Chapel
+        body: "MUST-FIX: this is a source-scanning test. The submitted test reads
+          tests/cli-no-daemon.test.ts via readTestOutputSync(), runs a line-based
+          collectUnsafeAutoStartFindings() helper over the file text, and asserts on the resulting
+          findings. The project review gates reject source-scanning/structural tests as AC coverage
+          because they do not exercise user-visible behavior and can pass or fail based on source
+          shape rather than the guardrail behavior. Replace this with behavioral coverage that runs
+          the guardrail (for example via oxlint on focused fixtures) or move this tracking out of
+          the test suite."
+        created_at: 2026-05-12T22:40:41.770Z
+      - _ulid: 01KRF8VC85MHCNV4S9FW4ZEQYJ
+        author: "@claude"
+        body: "Fixed in cycle 13 commit 185cd75f0. Removed the entire `daemon test guardrail precision:
+          implicit CLI auto-start cleanup boundary` describe block, including the source-scanning
+          structural contract test (the it.fails block reading tests/cli-no-daemon.test.ts via
+          readTestOutputSync and walking the source line-by-line) and the
+          `collectUnsafeAutoStartFindings` helper. Also removed the now-unused `readTestOutputSync`
+          import. The implicit-auto-start classifier work belongs to
+          @task-fix-implicit-autostart-cleanup-coverage; behavioral guardrail coverage can be
+          re-added there as passing tests when that task lands."
+        created_at: 2026-05-12T23:37:42.917Z
+    kind: blocker
+    resolved_at: 2026-05-12T23:38:19.239Z
+    resolved_by: "@claude"
+  - _ulid: 01KRF5K4020DDJQR86VWM79QAR
+    anchor:
+      type: code
+      commit: 251769a1a36ad2fdc02760f60808f71324cfc6ed
+      line_end: 5762
+      line_start: 5762
+      path: tests/lint-daemon-test-guardrails.test.ts
+      side: head
+    entries:
+      - _ulid: 01KRF5K402A1Z3HZ9Y8Y1YF4M5
+        author: Jacob Chapel
+        body: "MUST-FIX: these AC-annotated implicit-auto-start cases are staged as it.fails, so the suite
+          passes because the rule does NOT emit the required no-leaky-test-daemon diagnostic. That
+          is not valid acceptance-criterion coverage: it proves the current implementation still
+          misses the behavior. The same pattern appears at the other new it.fails cases in this
+          block (lines 5802, 5897, 5930, 5964, and 6043). Replace them with passing behavioral tests
+          once the implementation exists, or remove the AC-coverage annotations/staged
+          expected-failure tests from this task branch."
+        created_at: 2026-05-12T22:40:46.594Z
+      - _ulid: 01KRF8VZHST5CY69E42Q5YXJC7
+        author: "@claude"
+        body: Fixed in cycle 13 commit 185cd75f0. Removed all six AC-annotated it.fails synthetic-fixture
+          tests (former lines 5762, 5802, 5897, 5930, 5964, and the source-scanning case at 6043)
+          along with the surrounding describe block — they claimed coverage of
+          ac-implicit-autostart-cleanup-before-observation and
+          ac-cleanup-registration-is-test-scoped but only passed because the rule has no
+          implicit-auto-start classifier yet. Those ACs are not in this task's `Covers:` list (this
+          task covers ac-cleanup-operation-terminates-daemon, ac-cleanup-probes-do-not-count,
+          ac-cleanup-helper-origin-is-trusted; plus @daemon-test-harness-guardrails
+          ac-detached-serve-without-cleanup-flagged, ac-exceptions-are-localized). The work belongs
+          to @task-fix-implicit-autostart-cleanup-coverage; the failing-before-fix regression can be
+          re-added there as passing behavioral coverage once the rule's implicit-auto-start
+          classifier ships.
+        created_at: 2026-05-12T23:38:02.681Z
+    kind: blocker
+    resolved_at: 2026-05-12T23:38:31.851Z
+    resolved_by: "@claude"
+  - _ulid: 01KRF6AKFHFX5XTG691SSGF5HY
+    entries:
+      - _ulid: 01KRF6AKFHQVB74T4M6X9F8HWJ
+        author: Jacob Chapel
+        body: "Evidence log:\\n\\nFiles read: kspec-agents.md; .agents/skills/kspec-review/SKILL.md;
+          .agents/skills/kspec-merge/SKILL.md; .agents/skills/review-gates/SKILL.md;
+          .agents/skills/work-gates/SKILL.md; task @01KRCRJPMHMHC410TKRC5Y9HF1; prior review
+          @01KRF0M0; tools/eslint-rules/no-leaky-test-daemon.js;
+          tests/lint-no-leaky-test-daemon.test.ts; tests/lint-daemon-test-guardrails.test.ts;
+          src/parser/file-lock.ts.\\n\\nCommands run: git diff/stat/name-only/log against
+          0dcbcdd..251769a; kspec item get @daemon-test-guardrail-precision; kspec validate; rg AC
+          annotation scans; rg it.fails/source-scanning scans; git diff --check; npm test --
+          --fresh; npm run lint.\\n\\nClaims verified: worker claim that full npm test passes
+          verified directly (2432 suites, 9163 passed, 5 skipped). Worker claim that kspec validate
+          is warnings-only verified directly. Latest primitive-shadow fix is covered by new
+          behavioral oxlint tests in tests/lint-no-leaky-test-daemon.test.ts and included in the
+          passing suite.\\n\\nCategories searched: correctness of helper-origin/local-shadow
+          classifier, test quality/AC coverage, source-scanning guardrails, validation/lint/test
+          health, whitespace, and integration risk from changed helper/lint files. Findings recorded
+          as blocker threads."
+        created_at: 2026-05-12T22:53:36.113Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-12T22:53:48.770Z
+created_at: 2026-05-12T22:37:15.947Z
+updated_at: 2026-05-12T23:38:31.851Z
+notes: []

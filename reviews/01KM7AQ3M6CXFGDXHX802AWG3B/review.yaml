@@ -1,0 +1,121 @@
+_ulid: 01KM7AQ3M6CXFGDXHX802AWG3B
+slugs: []
+title: Review implement task data manager module
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Test Files 298 passed; Tests 6756 passed | 3 skipped; duration 148.78s.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-21T04:39:45.448Z
+    completed_at: 2026-03-21T04:39:45.448Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Schema and references passed. Validation emitted only the repo's existing global warnings
+      profile and no task-specific errors.
+    name: kspec validate --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-03-21T04:39:52.059Z
+    completed_at: 2026-03-21T04:39:52.059Z
+events:
+  - _ulid: 01KM7AQ3M6KWYS42YY2F6YCYQN
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T04:33:37.414Z
+  - _ulid: 01KM7AQP41XP1V39NZZJ72R399
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T04:33:56.353Z
+  - _ulid: 01KM7B2AEDJKS2WB54X5VZTK6R
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM7B2A64GQ891NGDABDHXGZK
+    timestamp: 2026-03-21T04:39:44.845Z
+  - _ulid: 01KM7B2B9S5PG7008TP6BAW0GN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-21T04:39:45.721Z
+  - _ulid: 01KM7B2HRSSY6ZAD86K1ETG2KP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --warnings-ok
+    timestamp: 2026-03-21T04:39:52.346Z
+  - _ulid: 01KM7B3DZN36R33QWQG199KDCS
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-21T04:40:21.237Z
+  - _ulid: 01KM7B3DZPHDXGGVV9CBGSGAAS
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-21T04:40:21.238Z
+examined_commit: 33fedb42b513bbc3a6e5e4bae85f0b20526e2d30
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YENV3CBFAGSRHVHR7QPJN"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM7B2A64GQ891NGDABDHXGZK
+    entries:
+      - _ulid: 01KM7B2A64X6D7NM2GN7P15ZVT
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+
+          Files read: src/parser/task-data-manager.ts, src/parser/yaml.ts, src/parser/index.ts,
+          tests/task-data-manager.test.ts, tests/action-model.test.ts
+
+          Commands run: git diff --stat, git diff, kspec task get @01KM6YENV3CBFAGSRHVHR7QPJN, kspec
+          item get @task-data-manager, kspec review for-task @01KM6YENV3CBFAGSRHVHR7QPJN, rg -n "AC:
+          @(task-data-manager|trait-error-guidance)", kspec validate, npm test
+
+          Claims verified: full suite passes (6756 passed), AC annotations present for
+          task-data-manager and trait-error-guidance, list abstraction no longer exposes
+          _sourceFile, action-model leak fix is awaited
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration;
+          no blocking issues found
+        created_at: 2026-03-21T04:39:44.580Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-21T04:40:21.237Z
+created_at: 2026-03-21T04:33:37.414Z
+updated_at: 2026-03-21T04:40:21.238Z
+notes: []

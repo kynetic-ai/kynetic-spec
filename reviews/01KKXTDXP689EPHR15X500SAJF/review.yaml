@@ -1,0 +1,107 @@
+_ulid: 01KKXTDXP689EPHR15X500SAJF
+slugs: []
+title: Review task-review-list-page (cycle 2)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 5723 tests passed, 2 pre-existing failures (cli-serve.test.ts:232, review-cli.test.ts:152
+      — neither file modified by this branch)
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-17T11:56:06.694Z
+    completed_at: 2026-03-17T11:56:06.694Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No errors in changed files. All 44 errors are in pre-existing code (api-static.test.ts,
+      coverage-test fixture, api.ts pre-existing lines).
+    name: svelte-check
+    required: true
+    runner: svelte-check
+    created_at: 2026-03-17T11:56:13.163Z
+    completed_at: 2026-03-17T11:56:13.163Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "ac-1: 10+ test annotations in E2E tests, annotations in page.svelte and api.ts. ac-10: 2
+      test annotations, empty state implemented in page.svelte. Both scoped ACs fully covered."
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-17T11:56:21.555Z
+    completed_at: 2026-03-17T11:56:21.555Z
+events:
+  - _ulid: 01KKXTDXP6SXDX0KGXRDHF22ED
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-17T11:55:49.318Z
+  - _ulid: 01KKXTE4FHPZNZ3HYT86AFCKNH
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-17T11:55:56.273Z
+  - _ulid: 01KKXTEEQ24Z6QXX08JGX5PKF9
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-17T11:56:06.754Z
+  - _ulid: 01KKXTEN1HEYNX66CHJRV6FTY6
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: svelte-check
+    timestamp: 2026-03-17T11:56:13.233Z
+  - _ulid: 01KKXTEX7P1M5V7PTJZS0R5TVM
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-17T11:56:21.622Z
+  - _ulid: 01KKXTF334C4W3KPQF779YZG9M
+    actor: pr-reviewer@kspec.agent
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-17T11:56:27.620Z
+  - _ulid: 01KKXTF334Z60XDBVVA30CKS5Y
+    actor: pr-reviewer@kspec.agent
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-17T11:56:27.620Z
+examined_commit: 2a0fd3f2fce05613a9249e25603b6f38543d76e5
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKTW6JPAR1P0W78EAWX5482A"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer@kspec.agent
+    role: reviewer
+    created_at: 2026-03-17T11:56:27.554Z
+created_at: 2026-03-17T11:55:49.318Z
+updated_at: 2026-03-17T11:56:27.554Z
+notes: []

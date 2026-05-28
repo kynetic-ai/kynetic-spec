@@ -1,0 +1,140 @@
+_ulid: 01KM8QHXRVQKMZW0VFDNPCVFDB
+slugs: []
+title: Review task-build-migration
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Full suite passed in this snapshot; npm test completed successfully, including
+      tests/task-migrate.test.ts (15/15).
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-21T17:40:33.776Z
+    completed_at: 2026-03-21T17:40:33.776Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exited 6 with the repo's existing warning profile (orphaned skills/orphaned
+      specs/legacy AC annotation warnings); no new validation error attributable to this change.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-21T17:40:45.508Z
+    completed_at: 2026-03-21T17:40:45.508Z
+events:
+  - _ulid: 01KM8QHXRV42Z1EVYK1FVV6EET
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T17:37:13.499Z
+  - _ulid: 01KM8QP63BRA71QNZMW1PRTV0E
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T17:39:33.099Z
+  - _ulid: 01KM8QR1MVHH040JNNYSHQQW9S
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-21T17:40:34.075Z
+  - _ulid: 01KM8QR2PHRRCV4CHKZ17EHRPD
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM8QR29SS0VMR4178WT0CYRE
+    timestamp: 2026-03-21T17:40:35.153Z
+  - _ulid: 01KM8QRD36S18HSYHA7TPAN3BV
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-21T17:40:45.798Z
+  - _ulid: 01KM8QRE0411FMKV2KF7ZZMN8T
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM8QRDQK0K8SKQ8KF59QNPHN
+    timestamp: 2026-03-21T17:40:46.725Z
+  - _ulid: 01KM8QS9Z3QGPYKSXFQV0C66TZ
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-21T17:41:15.363Z
+  - _ulid: 01KM8QS9Z3PNNSA7XWSXRTV3F3
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-21T17:41:15.363Z
+examined_commit: 66ff03762bb3763a0166e96b7fc94c5adaa18729
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YEWY1WSKEXTF5YNP5GG81"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM8QR29SS0VMR4178WT0CYRE
+    anchor:
+      type: code
+      commit: 66ff03762bb3763a0166e96b7fc94c5adaa18729
+      line_end: 3451
+      line_start: 3428
+      path: src/cli/commands/task.ts
+      side: head
+    entries:
+      - _ulid: 01KM8QR29S179TRNYXKYV9Y9A3
+        author: Test User
+        body: Backfill currently rebuilds index rows for tasks that already have per-task directories from
+          the stale monolithic YAML entry, not from the canonical split files. I reproduced this
+          with an existing split task whose task.yaml title was 'Canonical Split Title' and a
+          leftover monolithic row titled 'Stale Monolithic Title'; after 'kspec task migrate
+          --force', project.tasks.yaml kept the stale title. That makes a backfill mutate
+          list/filter output for existing tasks and breaks AC-7's guarantee that existing per-task
+          data is left unaffected.
+        created_at: 2026-03-21T17:40:34.745Z
+    kind: blocker
+  - _ulid: 01KM8QRDQK0K8SKQ8KF59QNPHN
+    entries:
+      - _ulid: 01KM8QRDQKF17W1E8FET2CGX9X
+        author: Test User
+        body: "Evidence log: Files read: src/cli/commands/task.ts, src/parser/split-backend.ts,
+          src/parser/task-data-manager.ts, src/parser/yaml.ts, tests/task-migrate.test.ts,
+          tests/per-task-files.test.ts, tests/helpers/cli.ts. Commands run: git diff --stat, git
+          diff, kspec task get, kspec item get, grep AC annotations, kspec validate, npm test, npm
+          test -- tests/task-migrate.test.ts, and a temp-dir CLI repro of stale-index backfill
+          behavior. Claims verified: full suite passes; migrate tests pass; backfill rewrites
+          existing index rows from stale monolithic data. Categories searched: correctness, tests,
+          error handling, integration, edge cases."
+        created_at: 2026-03-21T17:40:46.451Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-21T17:41:15.363Z
+created_at: 2026-03-21T17:37:13.499Z
+updated_at: 2026-03-21T17:41:15.363Z
+notes: []

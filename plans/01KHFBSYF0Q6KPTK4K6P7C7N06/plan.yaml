@@ -1,0 +1,59 @@
+_ulid: 01KHFBSYF0Q6KPTK4K6P7C7N06
+slugs:
+  - plan-portable-agent-integration-infrastructure
+title: Portable Agent Integration Infrastructure
+status: completed
+approved_at: null
+derived_specs:
+  - "@skill-meta-type"
+  - "@skill-schema"
+  - "@skill-content-model"
+  - "@skill-parser"
+  - "@skill-validation"
+  - "@skill-cli"
+  - "@skill-add"
+  - "@skill-set"
+  - "@skill-import"
+  - "@skill-meta-integration"
+  - "@skill-rendering"
+  - "@skill-render-cli"
+  - "@claude-code-renderer"
+  - "@skill-drift-detection"
+  - "@agent-instruction-gen"
+  - "@agents-cli"
+  - "@agent-templates"
+  - "@agent-data-sections"
+  - "@enhanced-setup"
+  - "@full-hook-install"
+  - "@core-skill-install"
+  - "@core-skill-update"
+  - "@package-distribution"
+  - "@init-setup-integration"
+derived_tasks:
+  - "@implement-skill-meta-type"
+  - "@implement-skill-schema-definition"
+  - "@implement-skill-file-based-content-model"
+  - "@implement-skill-parser-integration"
+  - "@implement-skill-validation"
+  - "@implement-skill-cli-commands"
+  - "@implement-skill-add-command"
+  - "@implement-skill-set-command"
+  - "@implement-skill-import-command"
+  - "@implement-skill-meta-integration"
+  - "@implement-skill-rendering-pipeline"
+  - "@implement-skill-render-cli"
+  - "@implement-claude-code-skill-renderer"
+  - "@implement-skill-drift-detection"
+  - "@implement-agent-instruction-generation"
+  - "@implement-agents-cli-commands"
+  - "@implement-agent-template-system"
+  - "@implement-auto-generated-data-sections"
+  - "@implement-enhanced-setup-command"
+  - "@implement-full-hook-installation"
+  - "@implement-core-skill-installation"
+  - "@implement-core-skill-update"
+  - "@implement-package-distribution"
+  - "@implement-init-setup-integration"
+source_path: /home/chapel/.claude/plans/warm-inventing-crab.md
+created_at: 2026-02-15T00:39:28.991Z
+completed_at: 2026-02-15T08:47:21.035Z

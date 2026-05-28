@@ -1,0 +1,283 @@
+_ulid: 01KREBZ5H6TV3470HT3Z4KQCTE
+slugs: []
+title: Review fix guardrail cleanup-effect classification (cycle 6)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2420 suites, 9096 passed, 5 skipped of 9101. Log:
+      /tmp/kspec-test-cache/01KREBWYFRBT1HAY82ETGKPEB5/e4263671ec799f87.log"
+    name: npm test -- --fresh
+    required: true
+    runner: npm
+    created_at: 2026-05-12T15:28:25.634Z
+    completed_at: 2026-05-12T15:28:25.634Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts
+      tests/lint-daemon-test-guardrails.test.ts passed: 23 suites, 335 tests, duration 78.5s. Log:
+      /tmp/kspec-test-cache/01KREBWYFRBT1HAY82ETGKPEB5/eb2441a2230bbf4e.log"
+    name: targeted daemon lint tests
+    required: true
+    runner: npm
+    created_at: 2026-05-12T15:28:40.301Z
+    completed_at: 2026-05-12T15:28:40.301Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate completed with validation OK and warnings only (exit 6):
+      reference/alignment/completeness warnings were pre-existing project warnings, no
+      schema/reference errors."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-12T15:28:53.222Z
+    completed_at: 2026-05-12T15:28:53.222Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npx oxlint tools/eslint-rules/no-leaky-test-daemon.js
+      tests/lint-no-leaky-test-daemon.test.ts tests/lint-daemon-test-guardrails.test.ts
+      tests/cli-serve.test.ts tests/helpers/mock-daemon.test.ts exited 0 with 35 warnings and 0
+      errors.
+    name: changed-file oxlint
+    required: false
+    runner: oxlint
+    created_at: 2026-05-12T15:29:07.451Z
+    completed_at: 2026-05-12T15:29:07.451Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Expected diagnostics were missing for local no-op helper bindings in for initializer,
+      for-of/for-in left binding, and catch parameter shapes. All probes exited 0 with no
+      no-leaky-test-daemon diagnostic, confirming blocker thread 01KRECGCDB6EYW31BWG0ZQYJ0R.
+    name: ad hoc local binding probes
+    required: true
+    runner: oxlint
+    created_at: 2026-05-12T15:29:25.564Z
+    completed_at: 2026-05-12T15:29:25.564Z
+events:
+  - _ulid: 01KREBZ5H6M58HYKNFTXGWCAF2
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-12T15:12:58.406Z
+  - _ulid: 01KREC03P559DEDWZC2T08NCAD
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-12T15:13:29.286Z
+  - _ulid: 01KRECGDSCKMPZ0D5594GJ7RWP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRECGCDB6EYW31BWG0ZQYJ0R
+    timestamp: 2026-05-12T15:22:23.916Z
+  - _ulid: 01KRECJPJ6WMNPD0Y45Z5NBNAS
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRECGCDB6EYW31BWG0ZQYJ0R
+    timestamp: 2026-05-12T15:23:38.438Z
+  - _ulid: 01KRECVGD8KPM4VVMQTNM2MT6T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-05-12T15:28:27.048Z
+  - _ulid: 01KRECVYQ2S3BN7F6N23JBBS4G
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted daemon lint tests
+    timestamp: 2026-05-12T15:28:41.698Z
+  - _ulid: 01KRECWBCE7T43K42Z92X6EMVW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-12T15:28:54.670Z
+  - _ulid: 01KRECWS6P459B37DRGTHGATXX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file oxlint
+    timestamp: 2026-05-12T15:29:08.822Z
+  - _ulid: 01KRECXAX354DSBA8DF4M6SZ7P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: ad hoc local binding probes
+    timestamp: 2026-05-12T15:29:26.947Z
+  - _ulid: 01KRECY097BS6Q9RAAZHWEE3BX
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KRECXYY5QZPEJAY1F3HJQH78
+    timestamp: 2026-05-12T15:29:48.839Z
+  - _ulid: 01KRECYEVZAN3VDM09XYC9G4PP
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-12T15:30:03.776Z
+  - _ulid: 01KRECYEW0A41ZQX176NZF3KGA
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-12T15:30:03.776Z
+  - _ulid: 01KREF8C9R7NHFACAH1DP7YW5N
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRECGCDB6EYW31BWG0ZQYJ0R
+    timestamp: 2026-05-12T16:10:25.976Z
+  - _ulid: 01KREF8WR7YTYKWWJ7M7HRG036
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KRECGCDB6EYW31BWG0ZQYJ0R
+    timestamp: 2026-05-12T16:10:42.823Z
+  - _ulid: 01KREF9951WTRJC9E7Q454EDW6
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRECXYY5QZPEJAY1F3HJQH78
+    timestamp: 2026-05-12T16:10:55.521Z
+  - _ulid: 01KREF9F943JN5Y4WCRY4HD4VN
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KRECXYY5QZPEJAY1F3HJQH78
+    timestamp: 2026-05-12T16:11:01.796Z
+examined_commit: f2d28b784205871178ae3872f42601a3a15f9fa1
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRCRJPMHMHC410TKRC5Y9HF1"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRECGCDB6EYW31BWG0ZQYJ0R
+    anchor:
+      type: code
+      commit: f2d28b784205871178ae3872f42601a3a15f9fa1
+      line_end: 1194
+      line_start: 1142
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KRECGCDBJ93825G66F98MH0J
+        author: Jacob Chapel
+        body: "MUST-FIX: helper-origin lookup still misses local bindings that are not function params or
+          Block/Program statements.  walks function parameters and then only scans
+          BlockStatement/Program statement lists with /; it never treats  initializers, / left
+          bindings, or  params as local helper bindings. Those helpers then fall through to the
+          free-identifier trust path in , so a no-op local helper still satisfies cleanup by name.
+          Evidence: an ad hoc oxlint probe with  exited 0 with no  diagnostic; the same happened
+          for  and . This violates @daemon-test-guardrail-precision
+          ac-cleanup-helper-origin-is-trusted because the helper is locally bound and not an
+          approved terminating primitive."
+        created_at: 2026-05-12T15:22:22.507Z
+      - _ulid: 01KRECJMZ87QF9ZS9KKQQDHK2K
+        author: Jacob Chapel
+        body: 'Clarifying the mangled shell-expanded text above: findLocalHelperDefinition currently handles
+          function/arrow parameters and BlockStatement/Program statement declarations, but it does
+          not treat ForStatement initializers, ForInStatement/ForOfStatement left bindings, or
+          CatchClause params as local helper bindings. Repro evidence from ad hoc oxlint probes: (1)
+          for-loop initializer: for (const killPid = (_p) => {}; true;) { runKspec("serve start
+          --detach --port 3456"); const pid = readPidFromFile(); onTestFinished(() => killPid(pid));
+          expect(true).toBe(true); break; } exited 0 with no no-leaky-test-daemon diagnostic; (2)
+          for-of binding: for (const killPid of [(_p) => {}]) { ... } also exited 0 with no
+          diagnostic; (3) catch parameter: catch (killPid) { ... onTestFinished(() => killPid(pid))
+          ... } also exited 0 with no diagnostic. These are local, untrusted bindings of a
+          cleanup-helper-like name, so the helper name alone still satisfies cleanup in violation of
+          ac-cleanup-helper-origin-is-trusted.'
+        created_at: 2026-05-12T15:23:36.808Z
+      - _ulid: 01KREF8AZD2Y4VHQCM9P2T8TP2
+        author: "@claude"
+        body: "Fixed in 7c486bc61. findLocalHelperDefinition now recognises three additional binding shapes
+          in the parent walk and classifies each as LOCAL_BINDING_OPAQUE: (1) CatchClause.param via
+          patternBindsName (covers identifier and destructured catch bindings); (2)
+          ForStatement.init via forStatementInitBindsName (VariableDeclaration init declarators);
+          (3) ForOfStatement/ForInStatement.left via forXLeftBindsName (per-iteration left-binding
+          declarators). All three reviewer probes now emit missingCleanup: ad hoc oxlint runs
+          against (a) for (const killPid = (_p) => {}; true;) { runKspec(serve start --detach); ...
+          onTestFinished(() => killPid(pid)); ... break; }, (b) for (const killPid of [(_p) => {}])
+          { ... }, and (c) try { ... } catch (killPid) { ... onTestFinished(() => killPid(pid)) ...
+          } all report no-leaky-test-daemon. Added six positive flag-it regressions (for-init no-op,
+          for-init terminating, for-of left, for-in left, catch param, catch object-destructure) and
+          two negative companions (unrelated for-of binding name, unrelated catch param name) to
+          confirm the approved-import path still resolves when the inserted scope binds a different
+          name. Targeted suites 352/352 pass; full suite 9132 passed, 5 skipped of 9137;
+          changed-file oxlint clean (0 errors)."
+        created_at: 2026-05-12T16:10:24.621Z
+    kind: blocker
+    resolved_at: 2026-05-12T16:10:41.431Z
+    resolved_by: "@claude"
+  - _ulid: 01KRECXYY5QZPEJAY1F3HJQH78
+    entries:
+      - _ulid: 01KRECXYY6EKG9BHN9F92RMET4
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; tools/eslint-rules/no-leaky-test-daemon.js around
+          cleanup classification, helper-origin lookup, binding ownership, cleanup registration, and
+          Program:exit reporting; tests/lint-no-leaky-test-daemon.test.ts cleanup-effect sections;
+          tests/lint-daemon-test-guardrails.test.ts annotations; tests/cli-serve.test.ts and
+          tests/helpers/mock-daemon.test.ts sibling regression additions; prior review @01KRE6AR.
+          Commands run: kspec task get; kspec item get for @daemon-test-guardrail-precision and
+          @daemon-test-harness-guardrails; kspec validate; targeted npm test; full npm test;
+          changed-file oxlint; git diff/stat; ad hoc oxlint probes for late helper,
+          approved/unapproved imports, signal policy, for/catch binding gaps. Claims verified:
+          cycle-5 late const blocker is fixed for ordinary Block/Program variable declarations;
+          targeted and full tests pass; new blocker remains for non-Block/Program local binding
+          forms. Categories searched: correctness, edge cases, error handling/static analysis
+          limits, test quality, AC alignment, integration with sibling daemon guardrail tests."
+        created_at: 2026-05-12T15:29:47.462Z
+      - _ulid: 01KREF97TEFETX3NK5TEYZ6Z9C
+        author: "@claude"
+        body: "Acknowledged. Evidence trail for cycle-7: reviewer's three local-binding probes (for-init
+          no-op, for-of left, catch param) all now emit missingCleanup via ad hoc oxlint runs
+          against the unchanged probe source; new findLocalHelperDefinition branches for
+          CatchClause.param, ForStatement.init, and ForOfStatement/ForInStatement.left return
+          LOCAL_BINDING_OPAQUE and route through the explicit reject path in
+          isTrustedHelperByOrigin. Six positive regressions + two negative companions added to
+          tests/lint-no-leaky-test-daemon.test.ts."
+        created_at: 2026-05-12T16:10:54.158Z
+    kind: nit
+    resolved_at: 2026-05-12T16:11:00.389Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-12T15:30:03.775Z
+created_at: 2026-05-12T15:12:58.406Z
+updated_at: 2026-05-12T16:11:00.389Z
+notes: []

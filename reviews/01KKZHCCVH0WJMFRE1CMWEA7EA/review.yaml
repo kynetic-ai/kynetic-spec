@@ -1,0 +1,145 @@
+_ulid: 01KKZHCCVH0WJMFRE1CMWEA7EA
+slugs: []
+title: Review task-code-diff-viewer (cycle 3)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 5809 passed, 3 skipped, 3 failed (all failures pre-existing in
+      agent-dispatch-engine.test.ts and review-cli.test.ts — task did not modify those files)
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T04:05:00.464Z
+    completed_at: 2026-03-18T04:05:00.464Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All diff component files clean. 57 errors in other pre-existing files — none in
+      task-modified files
+    name: svelte-check
+    required: true
+    runner: svelte-check
+    created_at: 2026-03-18T04:05:03.412Z
+    completed_at: 2026-03-18T04:05:03.412Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 6 ACs annotated in code-diff-viewer.spec.ts and implementation components. 17 E2E tests.
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-18T04:05:06.148Z
+    completed_at: 2026-03-18T04:05:06.148Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Cannot run in dispatch agent env (daemon start blocked). 17 tests structurally verified.
+    name: e2e
+    required: false
+    runner: playwright
+    created_at: 2026-03-18T04:05:08.728Z
+    completed_at: 2026-03-18T04:05:08.728Z
+events:
+  - _ulid: 01KKZHCCVGMAJBBRA17YMA93WX
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T03:56:10.993Z
+  - _ulid: 01KKZHCMT95PW65M80ZVK9756V
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T03:56:19.146Z
+  - _ulid: 01KKZHWJ0GTHWTTQKY84KNRQ2Z
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T04:05:00.560Z
+  - _ulid: 01KKZHWMWK4KK7V18QMHREJEGR
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: svelte-check
+    timestamp: 2026-03-18T04:05:03.507Z
+  - _ulid: 01KKZHWQJ0X41J9ECCX2XZFE4Y
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-18T04:05:06.241Z
+  - _ulid: 01KKZHWT2WDMSY983S87ADD2KS
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: skipped
+      name: e2e
+    timestamp: 2026-03-18T04:05:08.828Z
+  - _ulid: 01KKZHX660AM562FBWNCJGWQX7
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKZHX63370BVGGANA85RRPZD
+    timestamp: 2026-03-18T04:05:21.216Z
+  - _ulid: 01KKZHXDCZZQPFW0NMDXCZF9SP
+    actor: pr-reviewer@kspec
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-18T04:05:28.608Z
+  - _ulid: 01KKZHXDD0Y1QBH66AAARHEB3A
+    actor: pr-reviewer@kspec
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T04:05:28.608Z
+examined_commit: 3f6587548ba602b8300fbd2fddd94ec6c9ea46a6
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-code-diff-viewer"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KKZHX63370BVGGANA85RRPZD
+    anchor:
+      type: code
+      commit: 3f6587548ba602b8300fbd2fddd94ec6c9ea46a6
+      line_end: 69
+      line_start: 66
+      path: packages/web-ui/src/lib/components/diff/CodeDiffViewer.svelte
+      side: head
+    entries:
+      - _ulid: 01KKZHX6334RYR9NMGGR56MQFA
+        author: "@claude"
+        body: getFilePath() helper is duplicated in 3 component files (CodeDiffViewer, DiffFileList,
+          DiffFileView). Consider extracting to a shared utility. Non-blocking.
+        created_at: 2026-03-18T04:05:21.123Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer@kspec
+    role: reviewer
+    created_at: 2026-03-18T04:05:28.506Z
+created_at: 2026-03-18T03:56:10.993Z
+updated_at: 2026-03-18T04:05:28.506Z
+notes: []

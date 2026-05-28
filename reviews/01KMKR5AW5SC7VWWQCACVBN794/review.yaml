@@ -1,0 +1,133 @@
+_ulid: 01KMKR5AW5SC7VWWQCACVBN794
+slugs: []
+title: Review preserve-unknown-fields (cycle 1)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 6816 passed, 11 skipped (pre-existing), 1 flaky timeout in
+      agent-invocation-lifecycle.test.ts (pre-existing, unrelated)
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-26T00:21:03.577Z
+    completed_at: 2026-03-26T00:21:03.577Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Build passes cleanly (tsc + SvelteKit + plugin)
+    name: build
+    required: true
+    runner: tsc
+    created_at: 2026-03-26T00:21:08.692Z
+    completed_at: 2026-03-26T00:21:08.692Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Pre-existing warnings only (uncovered ACs across many specs, test fixture annotations). No
+      new issues from this change.
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-26T00:21:13.747Z
+    completed_at: 2026-03-26T00:21:13.747Z
+events:
+  - _ulid: 01KMKR5AW4N7G627EE5KNDNVAR
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-26T00:19:28.261Z
+  - _ulid: 01KMKR5NCPV894HFCX8E5J2K0C
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-26T00:19:39.030Z
+  - _ulid: 01KMKR88KHAVKH57XHHM05SR91
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-26T00:21:04.241Z
+  - _ulid: 01KMKR8DM2FHHJHZ3YMV46FBER
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: build
+    timestamp: 2026-03-26T00:21:09.378Z
+  - _ulid: 01KMKR8JH979QARPF0NAWZPX9R
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-26T00:21:14.409Z
+  - _ulid: 01KMKR9N4AC01SS0YRMGGSC2D2
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMKR9MQBR8D8NSS1HBVV0Q0P
+    timestamp: 2026-03-26T00:21:49.834Z
+  - _ulid: 01KMKR9W4SW6CZTWW8NXMY4MS4
+    actor: agent@kspec-dispatch
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-26T00:21:57.017Z
+  - _ulid: 01KMKR9W4SA08BAMC11ZP1DSFY
+    actor: agent@kspec-dispatch
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-26T00:21:57.017Z
+examined_commit: 9f1d40dec18f2d9d0be180f9ab49184104f1a629
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMKNT9CHTJ5DXFBARB4F91A5"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMKR9MQBR8D8NSS1HBVV0Q0P
+    anchor:
+      type: code
+      commit: 9f1d40dec
+      line_end: 905
+      line_start: 903
+      path: src/parser/split-backend.ts
+      side: head
+    entries:
+      - _ulid: 01KMKR9MQBG63YWBN28DBRQDNN
+        author: "@claude"
+        body: No test coverage for unknown field preservation through mutateTasks (batch path). The fix at
+          line 904 is mechanically identical to the mutateTask fix at line 782, but there is no test
+          that injects an unknown field and then calls a batch mutation to verify it survives. This
+          is a coverage gap — the code is correct but untested for the batch case.
+        created_at: 2026-03-26T00:21:49.419Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: agent@kspec-dispatch
+    role: reviewer
+    created_at: 2026-03-26T00:21:57.017Z
+created_at: 2026-03-26T00:19:28.261Z
+updated_at: 2026-03-26T00:21:57.017Z
+notes: []

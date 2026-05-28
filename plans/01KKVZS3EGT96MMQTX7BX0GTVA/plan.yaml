@@ -1,0 +1,28 @@
+_ulid: 01KKVZS3EGT96MMQTX7BX0GTVA
+slugs:
+  - plan-task-activity-timeline
+title: Task Activity Timeline
+status: completed
+approved_at: 2026-03-16T20:19:23.671Z
+derived_specs:
+  - "@task-activity-timeline"
+  - "@task-activity-git-query"
+  - "@review-record-per-cycle-lifecycle"
+  - "@review-fix-cycle-diff"
+derived_tasks:
+  - "@task-fix-task-add-commit-ref"
+  - "@task-submission-linkage-dispatch-fallback"
+  - "@task-rewrite-review-lifecycle-ac3"
+  - "@task-auto-close-review-on-verdict"
+  - "@task-new-review-per-cycle"
+  - "@task-review-examined-commit"
+  - "@task-review-diff-orientation"
+  - "@task-implement-activity-git-query"
+  - "@task-implement-activity-display"
+  - "@task-update-review-skill-docs"
+  - "@task-update-task-work-skill-docs"
+  - "@task-update-agents-review-conventions"
+module_ref: "@tasks"
+source_path: /home/chapel/Projects/kynetic-spec/plans/task-activity-timeline.md
+created_at: 2026-03-16T18:50:49.680Z
+completed_at: null

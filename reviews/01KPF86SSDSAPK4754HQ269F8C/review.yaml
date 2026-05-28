@@ -1,0 +1,242 @@
+_ulid: 01KPF86SSDSAPK4754HQ269F8C
+slugs: []
+title: "Plan review: User Documentation Foundation"
+author: "@claude"
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Found non-behavioral description leakage (@user-documentation) and a non-durable AC
+      (@human-docs-site ac-searchable).
+    name: Spec quality
+    required: true
+    created_at: 2026-04-18T02:56:09.877Z
+    completed_at: 2026-04-18T02:56:09.877Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@auto-generated-reference is in scope in the plan but has no task, and @human-docs-site
+      reachability work is not fully assigned. No circular dependency was found in the declared
+      graph."
+    name: Task coverage and ordering
+    required: true
+    created_at: 2026-04-18T02:56:09.929Z
+    completed_at: 2026-04-18T02:56:09.929Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@agent-mediated-mental-model says agent direction is the primary interaction model, which
+      conflicts with the existing @cli module description that the CLI is the primary interface."
+    name: Existing spec alignment
+    required: true
+    created_at: 2026-04-18T02:56:09.937Z
+    completed_at: 2026-04-18T02:56:09.937Z
+events:
+  - _ulid: 01KPF86SSDY9XCH2PVASEEF1V5
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-18T02:55:05.005Z
+  - _ulid: 01KPF8731Z04TBTF7SSY5Z1JG6
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-18T02:55:14.495Z
+  - _ulid: 01KPF87T7MSTRB893NHFMW05MZ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPF87SA3V8Y740TXTRF7DSGQ
+    timestamp: 2026-04-18T02:55:38.229Z
+  - _ulid: 01KPF87VR89C70FQNYC1VY3JR5
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPF87SBGZ6YSW8YC2YSSGXFY
+    timestamp: 2026-04-18T02:55:39.784Z
+  - _ulid: 01KPF87X9CH2MKG01QS94025PH
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPF87SBM6REPGKCH8CSVV1P9
+    timestamp: 2026-04-18T02:55:41.356Z
+  - _ulid: 01KPF88BHKYR5JD7WZ9K5CP5PZ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPF88AJXWQFSC62R8B1EN83M
+    timestamp: 2026-04-18T02:55:55.955Z
+  - _ulid: 01KPF88D1QX151HX0PNZ56KV8B
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPF88AKGH3CDG1FRRD4PX2TJ
+    timestamp: 2026-04-18T02:55:57.495Z
+  - _ulid: 01KPF88EJJ0HYBA7D6GM6HTAV3
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KPF88ANY2W45SVZBBEBWCBBC
+    timestamp: 2026-04-18T02:55:59.058Z
+  - _ulid: 01KPF88T2A74111X1N8B6CSAWV
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Spec quality
+    timestamp: 2026-04-18T02:56:10.826Z
+  - _ulid: 01KPF88VHXZQ4E01RJPGS9Z4NX
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Task coverage and ordering
+    timestamp: 2026-04-18T02:56:12.349Z
+  - _ulid: 01KPF88X17SXMV4G1KW3MBFNZT
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Existing spec alignment
+    timestamp: 2026-04-18T02:56:13.864Z
+  - _ulid: 01KPF894J90QGDK7BNX6FJJFQR
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-18T02:56:21.577Z
+  - _ulid: 01KPF894J928652A9CGDQ9526T
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-18T02:56:21.577Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-user-documentation-foundation"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPF87SA3V8Y740TXTRF7DSGQ
+    anchor:
+      type: structured
+      ref: "@agent-mediated-mental-model"
+      section: description
+    entries:
+      - _ulid: 01KPF87SA40KQP8MJJS4R05JBB
+        author: "@claude"
+        body: This requirement bakes in a new product contract that conflicts with existing spec language.
+          @cli currently says the CLI is the primary interface to kspec, while this description says
+          the primary way users interact is by directing an AI agent. The plan needs to reconcile
+          that distinction explicitly (for example, CLI as system interface vs agent as common user
+          interaction layer) or soften the wording so it does not contradict existing specs.
+        created_at: 2026-04-18T02:55:37.284Z
+    kind: blocker
+  - _ulid: 01KPF87SBGZ6YSW8YC2YSSGXFY
+    anchor:
+      type: structured
+      field: ac-searchable
+      ref: "@human-docs-site"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KPF87SBGDCTW9QPJAWE6P948
+        author: "@claude"
+        body: ac-searchable is not a stable behavioral contract. Requiring any present term to appear within
+          the top three search results depends on ranking heuristics and corpus shape, so a worker
+          cannot prove it durably and maintainers cannot tell whether a later ranking change is a
+          spec regression or normal search behavior. Rewrite this AC around observable
+          discoverability, e.g. exact-term pages are returned or the containing page is findable by
+          search, without hard-coding ranking position.
+        created_at: 2026-04-18T02:55:37.328Z
+    kind: blocker
+  - _ulid: 01KPF87SBM6REPGKCH8CSVV1P9
+    anchor:
+      type: structured
+      ref: "@user-documentation"
+      section: description
+    entries:
+      - _ulid: 01KPF87SBM1RMZWTAYBQ9WJ2TH
+        author: "@claude"
+        body: The module description violates the project's spec-language rules by naming concrete artifacts
+          and relationships instead of staying at the behavioral boundary. It calls out AGENTS.md,
+          kspec-agents.md, skills, and @agent-integration directly. Those are design/ownership notes
+          that belong in plan notes or contributor guidance, not in the spec contract itself.
+          Rewrite the description so it only describes the user-facing documentation behavior and
+          purpose.
+        created_at: 2026-04-18T02:55:37.332Z
+    kind: blocker
+  - _ulid: 01KPF88AJXWQFSC62R8B1EN83M
+    anchor:
+      type: structured
+      ref: "@task-docs-site-bootstrap"
+      section: description
+    entries:
+      - _ulid: 01KPF88AJXTGQTYQYNFWG6TQAR
+        author: "@claude"
+        body: This task is the only work item attached to @human-docs-site, but its scope is limited to
+          infrastructure, search integration, and placeholder pages. @human-docs-site also requires
+          the docs surface to be reachable from public entry points within one click, and the plan
+          only later covers README trimming; npm/public entry-point linkage is unassigned. Split or
+          expand the tasking so every AC on @human-docs-site has an explicit owner.
+        created_at: 2026-04-18T02:55:54.974Z
+    kind: blocker
+  - _ulid: 01KPF88AKGH3CDG1FRRD4PX2TJ
+    anchor:
+      type: structured
+      ref: "@auto-generated-reference"
+    entries:
+      - _ulid: 01KPF88AKG7332DD0EK5CXRBV9
+        author: "@claude"
+        body: "This spec is introduced into the plan even though the implementation notes explicitly declare
+          exhaustive reference out of scope for this plan, and no task claims its acceptance
+          criteria. That leaves the derived plan internally inconsistent: reviewers will see a
+          requirement in scope with no executable work item to satisfy it. Either remove
+          @auto-generated-reference from this plan and leave it for the follow-up plan, or add a
+          concrete task that owns its ACs now."
+        created_at: 2026-04-18T02:55:54.992Z
+    kind: blocker
+  - _ulid: 01KPF88ANY2W45SVZBBEBWCBBC
+    anchor:
+      type: structured
+      ref: "@task-docs-audit-boundary"
+      section: dependencies
+    entries:
+      - _ulid: 01KPF88ANY8S92D63CF9CBAMAX
+        author: "@claude"
+        body: The boundary audit is described as the last pass after content exists, but its dependencies
+          omit @task-docs-troubleshooting. Troubleshooting entries are likely to overlap with
+          AGENTS/runtime guidance around shadow repair and diagnostics, so consider depending on
+          that task as well or narrowing the audit scope explicitly.
+        created_at: 2026-04-18T02:55:55.070Z
+    kind: question
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-18T02:56:21.576Z
+created_at: 2026-04-18T02:55:05.005Z
+updated_at: 2026-04-18T02:56:21.577Z
+notes: []

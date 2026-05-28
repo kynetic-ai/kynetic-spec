@@ -1,0 +1,214 @@
+_ulid: 01KP6KK5YMTAEJCDYWC9KW0PFK
+slugs: []
+title: Review task-default-agents-and-conventions (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Fails in this snapshot with a pre-existing meta schema error in .kspec/modules/meta.yaml
+      (modules[0].traits[0] expected string, received object) plus existing coverage debt; unrelated
+      to this task's code changes.
+    name: kspec validate
+    required: false
+    created_at: 2026-04-14T18:30:08.069Z
+    completed_at: 2026-04-14T18:30:08.069Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Reproduced force-reseed bug in a temp project: after renaming pr-reviewer to my-reviewer
+      and deleting task-worker, running 'kspec setup --no-hooks --skip-skills --force' recreated
+      both task-worker and pr-reviewer. Output included 'created: task-worker, pr-reviewer'."
+    name: scaffold repro
+    required: true
+    runner: manual
+    created_at: 2026-04-14T18:30:15.798Z
+    completed_at: 2026-04-14T18:30:15.798Z
+events:
+  - _ulid: 01KP6KK5YMMDW62JGN74K893MW
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-14T18:20:55.124Z
+  - _ulid: 01KP6KKVQMC7JFHZ5R7Z70P6PM
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-14T18:21:17.429Z
+  - _ulid: 01KP6M3ZK85J13MK82DXEJFMRV
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP6M3YBBQZY441WG556GFQ9D
+    timestamp: 2026-04-14T18:30:05.672Z
+  - _ulid: 01KP6M43B1S04ZBVGMFJ11ZPHH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-14T18:30:09.505Z
+  - _ulid: 01KP6M4704R4CZZ460R848YVWF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP6M45P7K532PFNM3F6CX3Q1
+    timestamp: 2026-04-14T18:30:13.252Z
+  - _ulid: 01KP6M4AS2WMJK60TTV7Y40F12
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: scaffold repro
+    timestamp: 2026-04-14T18:30:17.122Z
+  - _ulid: 01KP6M56Y60YPN2FBJ8EFN3FH2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KP6M55QDYY68CBXZD5SFWKQM
+    timestamp: 2026-04-14T18:30:45.958Z
+  - _ulid: 01KP6M5G2RK3B3C84999DBFG1A
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-14T18:30:55.320Z
+  - _ulid: 01KP6M5G2RW1NTQ42E6ZN97MQP
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-14T18:30:55.320Z
+  - _ulid: 01KP6NKZM9ETZDNB28GJA7QAEC
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP6M3YBBQZY441WG556GFQ9D
+    timestamp: 2026-04-14T18:56:18.569Z
+  - _ulid: 01KP6NM7BDS82CHKVDTYR0RJAX
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP6M3YBBQZY441WG556GFQ9D
+    timestamp: 2026-04-14T18:56:26.477Z
+  - _ulid: 01KP6NMMJWSCFDQXARF2NB6J4Q
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP6M45P7K532PFNM3F6CX3Q1
+    timestamp: 2026-04-14T18:56:40.028Z
+  - _ulid: 01KP6NMX169TTY9X6XJBSW04KW
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP6M45P7K532PFNM3F6CX3Q1
+    timestamp: 2026-04-14T18:56:48.678Z
+examined_commit: 326439565e1a2f14584c3f1028cb186369093f19
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNXYJ4AP5ACVWK4Y93JG7BKH"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KP6M3YBBQZY441WG556GFQ9D
+    anchor:
+      type: code
+      commit: 326439565e1a2f14584c3f1028cb186369093f19
+      line_end: 32
+      line_start: 25
+      path: src/parser/shadow.ts
+      side: head
+    entries:
+      - _ulid: 01KP6M3YBB4GCR65VRTK01ZJN5
+        author: Jacob Chapel
+        body: This branch is no longer isolated to @default-project-agents-and-conventions. Relative to the
+          recorded integration target 7b1b856564b9, the reviewed head brings in 15 extra commits
+          including unrelated shadow/test-runner/lint work (for example 5eee12c46 touching
+          src/parser/shadow.ts and 6a061a6a1 touching scripts/test.cjs). Because publication mode is
+          manual_merge back into plan/plan-init-setup-and-upgrade-rough-edges/01knvahv, approving
+          this snapshot would merge unrelated work from other tasks into that branch.
+        created_at: 2026-04-14T18:30:04.395Z
+      - _ulid: 01KP6NKYR6TJBTZFBAC0RAXTXC
+        author: "@claude"
+        body: "Fixed: Rebased branch onto integration target 7b1b856564b9, carrying only the 3 task-specific
+          commits. git diff 7b1b856..HEAD --stat now shows only setup-defaults.ts, setup.ts, and
+          setup-builtin-agents.test.ts — no unrelated shadow/lint/test-runner commits."
+        created_at: 2026-04-14T18:56:17.669Z
+    kind: blocker
+    resolved_at: 2026-04-14T18:56:25.564Z
+    resolved_by: "@claude"
+  - _ulid: 01KP6M45P7K532PFNM3F6CX3Q1
+    anchor:
+      type: code
+      commit: 326439565e1a2f14584c3f1028cb186369093f19
+      line_end: 315
+      line_start: 266
+      path: src/cli/commands/setup-defaults.ts
+      side: head
+    entries:
+      - _ulid: 01KP6M45P872DS6F53YH901ZKD
+        author: Jacob Chapel
+        body: "Agent rename detection is still ambiguous because any unmatched scaffold-tagged agent is
+          treated as proof that the next missing default was renamed. Repro: initialize a project,
+          rename pr-reviewer to my-reviewer, delete task-worker, then run 'kspec setup --no-hooks
+          --skip-skills --force'. The command recreates both task-worker and pr-reviewer instead of
+          preserving the renamed reviewer and reseeding only the deleted worker. That violates
+          ac-renamed-defaults-preserved and ac-force-reseed for mixed rename+delete cases where the
+          renamed default is not encountered first in DEFAULT_AGENTS order."
+        created_at: 2026-04-14T18:30:11.912Z
+      - _ulid: 01KP6NMKP5JYHHXQ7ABHCTSZ22
+        author: "@claude"
+        body: "Fixed: Replaced greedy consumed-set approach with ULID-based per-item tracking for agent
+          rename detection — the same approach already used for conventions. Each agent's ULID is
+          recorded in the state file at creation time. On subsequent/force runs, a missing agent is
+          looked up by its original ULID in the current meta: if an agent with that ULID exists
+          under a different ID, it's a rename; if no agent has that ULID, it's a deletion. Added
+          test for the exact reproduction case (rename pr-reviewer to my-reviewer, delete
+          task-worker, force reseed) — task-worker is correctly recreated and pr-reviewer is
+          correctly preserved as my-reviewer."
+        created_at: 2026-04-14T18:56:39.109Z
+    kind: blocker
+    resolved_at: 2026-04-14T18:56:47.764Z
+    resolved_by: "@claude"
+  - _ulid: 01KP6M55QDYY68CBXZD5SFWKQM
+    entries:
+      - _ulid: 01KP6M55QDF690X5VSKNF9BRQ5
+        author: Jacob Chapel
+        body: "Evidence log: Files read: src/cli/commands/setup-defaults.ts, src/cli/commands/setup.ts,
+          src/cli/commands/init.ts, tests/setup-builtin-agents.test.ts, src/parser/shadow.ts,
+          scripts/test.cjs. Commands run: kspec task get @01KNXYJ4AP5ACVWK4Y93JG7BKH; kspec item get
+          @default-project-agents-and-conventions; git diff --stat/--name-only
+          7b1b85656...326439565; git log 7b1b85656..326439565; git rev-list --left-right --count
+          7b1b85656...326439565; kspec validate; grep for AC annotations; npm test; temp-project
+          repro for force reseed. Claims verified: prior review fixes for convention rename
+          detection and agents.md test; force-reseed behavior independently reproduced; branch
+          ancestry checked against recorded integration target. Categories searched: correctness,
+          tests, edge cases, integration, merge safety."
+        created_at: 2026-04-14T18:30:44.717Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-14T18:30:55.320Z
+created_at: 2026-04-14T18:20:55.124Z
+updated_at: 2026-04-14T18:56:47.764Z
+notes: []

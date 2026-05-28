@@ -1,0 +1,130 @@
+_ulid: 01KN3WN3RTA63T8K1GEPQRVSSB
+slugs: []
+title: Review task-fix-sessions-detail-filter-e2e-full-gate (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh run passed: 2082/2082 suites, 7520 passed, 5 skipped, 0 failed."
+    name: npm test
+    required: true
+    runner: test.cjs
+    created_at: 2026-04-01T07:02:25.798Z
+    completed_at: 2026-04-01T07:02:25.798Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation returned only existing repository warning debt; no errors.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-01T07:02:28.005Z
+    completed_at: 2026-04-01T07:02:28.005Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Focused run passed for the four task-targeted cases in tests/e2e/sessions.spec.ts.
+    name: focused sessions playwright
+    required: true
+    runner: playwright
+    created_at: 2026-04-01T07:02:30.185Z
+    completed_at: 2026-04-01T07:02:30.185Z
+events:
+  - _ulid: 01KN3WN3RTBWAEGF99G3FEKTCH
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-01T06:45:50.490Z
+  - _ulid: 01KN3WPFX8Q2K2WKZZ75SDHYJ3
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-01T06:46:35.688Z
+  - _ulid: 01KN3XKB1MBNSH9ERW3DAG8H09
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN3XKAB9W4V39Y1WDC0RFMZ4
+    timestamp: 2026-04-01T07:02:20.980Z
+  - _ulid: 01KN3XKD6PV4CS6M7A0DKCVWD0
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-01T07:02:23.190Z
+  - _ulid: 01KN3XKD6PNMAPBXJF8XX880HB
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-01T07:02:23.190Z
+  - _ulid: 01KN3XKGFBRTQ5QKYDYEEZX5HR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-01T07:02:26.542Z
+  - _ulid: 01KN3XKJKGNKZGJ9NR74TE1FXF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-01T07:02:28.720Z
+  - _ulid: 01KN3XKMQVF1K4D7SDHR98AVR2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused sessions playwright
+    timestamp: 2026-04-01T07:02:30.907Z
+examined_commit: 13f962998b7bf1c94d456bbc5b963f7f25b468a9
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN3Q0BXDE56CDNFDZXBFGGF9"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN3XKAB9W4V39Y1WDC0RFMZ4
+    entries:
+      - _ulid: 01KN3XKABAETHB19RAB7KBJXEH
+        author: Jacob Chapel
+        body: "Evidence log: Files read: packages/web-ui/src/lib/components/session/SessionFilters.svelte,
+          packages/web-ui/src/routes/sessions/[id]/+page.svelte, tests/e2e/sessions.spec.ts,
+          tests/agent-dispatch-engine.test.ts, tests/daemon-api/websocket-protocol.test.ts. Commands
+          run: kspec task get @01KN3Q0BXDE56CDNFDZXBFGGF9, kspec review get
+          @01KN3T8DZTKY6MZ4FA3NGH6ENW, kspec validate, grep for AC annotations, npm run
+          test:e2e:full -- --grep for the four targeted sessions cases, npm test -- --fresh. Claims
+          verified: the four blocking sessions cases pass directly in Playwright; the full required
+          suite passes fresh. Categories searched: correctness, test quality, regression risk,
+          static-mode behavior, URL filter sync, integration with full-suite gates. No blockers
+          found in this snapshot."
+        created_at: 2026-04-01T07:02:20.266Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-01T07:02:23.189Z
+created_at: 2026-04-01T06:45:50.490Z
+updated_at: 2026-04-01T07:02:30.185Z
+notes: []

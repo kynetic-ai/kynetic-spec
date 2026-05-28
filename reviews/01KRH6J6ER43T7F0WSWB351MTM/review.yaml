@@ -1,0 +1,256 @@
+_ulid: 01KRH6J6ER43T7F0WSWB351MTM
+slugs: []
+title: Review cleanup classification regression coverage
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh full suite passed: 2440 suites passed; 9248 tests passed; 5 skipped. Full log:
+      /tmp/kspec-test-cache/01KRH6GCBYJ2FXZDRFE5Q3J3YE/dfa540995711e04c.log"
+    name: npm test -- --fresh
+    required: true
+    runner: npm
+    created_at: 2026-05-13T17:49:39.675Z
+    completed_at: 2026-05-13T17:49:39.675Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit completed successfully.
+    name: npm run typecheck
+    required: true
+    runner: npm
+    created_at: 2026-05-13T17:49:52.856Z
+    completed_at: 2026-05-13T17:49:52.856Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --warnings-ok completed with schema/references OK. Raw kspec validate exits
+      6 because the repo currently has warning-only reference/alignment/completeness findings.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-13T17:50:03.382Z
+    completed_at: 2026-05-13T17:50:03.382Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Two added tests annotate ac-active-inflight-provisioning-artifact-preserved while
+      asserting cleanup/removal with no activeTaskRefs or protected ownership:
+      tests/dispatch-workspace-cleanup.test.ts:1147 and :1197."
+    name: AC annotation quality
+    required: true
+    runner: reviewer
+    created_at: 2026-05-13T17:50:14.175Z
+    completed_at: 2026-05-13T17:50:14.175Z
+events:
+  - _ulid: 01KRH6J6EQ1GPMB59HFVEPC42K
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-13T17:36:13.783Z
+  - _ulid: 01KRH6K0DTX0YYCPCHD72MV1JA
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-13T17:36:40.378Z
+  - _ulid: 01KRH6RAJ5D8HX7WBV94MKWJ9H
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRH6R83EZY59EPFMZM8T3V91
+    timestamp: 2026-05-13T17:39:34.598Z
+  - _ulid: 01KRH6RHF9FQME9W1YD9AV3AXM
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRH6RF18YZ7JCJ4HAYAGJ99B
+    timestamp: 2026-05-13T17:39:41.673Z
+  - _ulid: 01KRH7ATXKZKWX7YEYSR8D28XX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-05-13T17:49:41.172Z
+  - _ulid: 01KRH7B7RRVPH0JY4PTMEPJ4VM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run typecheck
+    timestamp: 2026-05-13T17:49:54.328Z
+  - _ulid: 01KRH7BJ10AB6D4E6S9E61V4NR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-13T17:50:04.832Z
+  - _ulid: 01KRH7BWKSK7PQBWWFW8BVHZB3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: AC annotation quality
+    timestamp: 2026-05-13T17:50:15.673Z
+  - _ulid: 01KRH7CER2B0J7V02YPX2NAX9H
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KRH7CDAK3FRC4NK2NZMTGYJM
+    timestamp: 2026-05-13T17:50:34.242Z
+  - _ulid: 01KRH7CT6ZVTWBNX4E8784M6E9
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-13T17:50:45.983Z
+  - _ulid: 01KRH7CT6ZG076N0M2R6JXZTKV
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-13T17:50:45.983Z
+  - _ulid: 01KRH8N52SKDSHBHZQS4JDA81V
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRH6R83EZY59EPFMZM8T3V91
+    timestamp: 2026-05-13T18:12:47.834Z
+  - _ulid: 01KRH8NH1R4A7H8KFM3DR2JH3D
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KRH6R83EZY59EPFMZM8T3V91
+    timestamp: 2026-05-13T18:13:00.088Z
+  - _ulid: 01KRH8NX0EQK9Y6XDD8N1M778R
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRH6RF18YZ7JCJ4HAYAGJ99B
+    timestamp: 2026-05-13T18:13:12.334Z
+  - _ulid: 01KRH8P8ZE8GFC94Z5KHDVRTF0
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KRH6RF18YZ7JCJ4HAYAGJ99B
+    timestamp: 2026-05-13T18:13:24.591Z
+  - _ulid: 01KRH8PN623HZ8BDBK04TKK76N
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KRH7CDAK3FRC4NK2NZMTGYJM
+    timestamp: 2026-05-13T18:13:37.091Z
+examined_commit: 295ed289945e390e76f38c9d34c45f2c9faceaed
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRH3KX6743A3FAAN1HQ3KFC6"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRH6R83EZY59EPFMZM8T3V91
+    anchor:
+      type: code
+      commit: 295ed289945e390e76f38c9d34c45f2c9faceaed
+      line_end: 1147
+      line_start: 1147
+      path: tests/dispatch-workspace-cleanup.test.ts
+      side: head
+    entries:
+      - _ulid: 01KRH6R83E72AT5119W5REC82E
+        author: Jacob Chapel
+        body: "MUST-FIX: This test is annotated as covering
+          ac-active-inflight-provisioning-artifact-preserved, but it sets up no
+          activeTaskRefs/provisioning ownership and then asserts the corrupt workspace is removed.
+          That proves cleanup eligibility, not preservation of active/in-flight/provisioning
+          artifacts. Remove this AC marker or add a separate behavioral assertion where a protected
+          artifact survives."
+        created_at: 2026-05-13T17:39:32.078Z
+      - _ulid: 01KRH8N1WJS29QFMESSR7AB3B9
+        author: "@claude"
+        body: "Fixed: removed the misplaced 'AC: @dispatch-workspace-cleanup-policy
+          ac-active-inflight-provisioning-artifact-preserved' marker from this test. The test
+          asserts cleanup-eligibility (removal) when no protection applies, so its correct AC is
+          ac-corrupt-metadata-cleanup-eligible only. The preservation AC keeps its existing coverage
+          in this file (lines 400, 434, 476, 665, 794, 832, 859, 891, 1003, 1082, 1105, 1126, 1233,
+          1390) and in tests/dispatch-artifact-protection.test.ts."
+        created_at: 2026-05-13T18:12:44.561Z
+    kind: blocker
+    resolved_at: 2026-05-13T18:12:56.633Z
+    resolved_by: "@claude"
+  - _ulid: 01KRH6RF18YZ7JCJ4HAYAGJ99B
+    anchor:
+      type: code
+      commit: 295ed289945e390e76f38c9d34c45f2c9faceaed
+      line_end: 1197
+      line_start: 1197
+      path: tests/dispatch-workspace-cleanup.test.ts
+      side: head
+    entries:
+      - _ulid: 01KRH6RF19RDEFTCD5W2WM28SE
+        author: Jacob Chapel
+        body: "MUST-FIX: This test also claims ac-active-inflight-provisioning-artifact-preserved while
+          deliberately creating unknown root entries with no activeTaskRefs and no protected
+          workspace overlap, then asserting both entries are removed. That is the inverse of the
+          preservation AC. Remove this AC marker or cover the protected case in a separate
+          behavioral test."
+        created_at: 2026-05-13T17:39:39.177Z
+      - _ulid: 01KRH8NSPNHVKJRMKXSRGMT92R
+        author: "@claude"
+        body: "Fixed: removed the misplaced 'AC: @dispatch-workspace-cleanup-policy
+          ac-active-inflight-provisioning-artifact-preserved' marker from this test. The test
+          asserts unknown files and directories are removed when no protected workspace path
+          overlaps, which is ac-dispatch-root-unknown-entries-owned. The preservation AC retains
+          correct coverage elsewhere (see tests/dispatch-artifact-protection.test.ts and many tests
+          above in this file)."
+        created_at: 2026-05-13T18:13:08.949Z
+    kind: blocker
+    resolved_at: 2026-05-13T18:13:21.122Z
+    resolved_by: "@claude"
+  - _ulid: 01KRH7CDAK3FRC4NK2NZMTGYJM
+    entries:
+      - _ulid: 01KRH7CDAK9XVBES0NJAQMM1WZ
+        author: Jacob Chapel
+        body: "Evidence log: Files read: tests/agent-dispatch-engine.test.ts,
+          tests/dispatch-workspace-cleanup.test.ts, src/agent-runtime/workspace.ts,
+          src/agent-runtime/dispatch.ts, kspec-agents.md. Commands run: git diff/stat, kspec task
+          get, kspec item get for @dispatch-workspace-cleanup-policy and
+          @dispatch-workspace-registry, rg AC annotations, kspec validate, kspec validate
+          --warnings-ok, npm run typecheck, npm test -- --fresh. Claims verified: existing
+          implementation has no production diff; new tests behaviorally exercise corrupt metadata
+          cleanup, unknown root cleanup, and task-state reprovisioning. Categories searched:
+          correctness, edge cases, error handling/protection fail-closed behavior, test quality,
+          integration."
+        created_at: 2026-05-13T17:50:32.787Z
+    kind: nit
+    resolved_at: 2026-05-13T18:13:33.787Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-13T17:50:45.983Z
+created_at: 2026-05-13T17:36:13.784Z
+updated_at: 2026-05-13T18:13:33.787Z
+notes: []

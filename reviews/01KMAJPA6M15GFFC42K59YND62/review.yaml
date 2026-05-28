@@ -1,0 +1,190 @@
+_ulid: 01KMAJPA6M15GFFC42K59YND62
+slugs: []
+title: Review task-multi-turn-invocation (cycle 4)
+author: Test User
+checks:
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation had no errors but exited 6 because of repo-wide pre-existing warnings (orphaned
+      skill directory, orphaned specs, uncovered ACs, invalid AC annotations). No
+      changed-file-specific validation error was reported.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-22T10:58:19.973Z
+    completed_at: 2026-03-22T10:58:19.973Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Targeted rerun passed: tests/agent-invocation-lifecycle.test.ts (49 tests) green; the
+      previously failing cleanup test completed in 20616ms."
+    name: npm test -- agent-invocation-lifecycle
+    required: false
+    runner: npm
+    created_at: 2026-03-22T10:58:21.090Z
+    completed_at: 2026-03-22T10:58:21.090Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Observed 1 failing test in full suite: tests/agent-invocation-lifecycle.test.ts > Cleanup
+      on completion or failure > should restore env even when invocation fails timed out at 60000ms.
+      Summary: 7042 passed, 3 skipped, 1 failed. A targeted rerun of npm test --
+      agent-invocation-lifecycle passed, so the timeout appears flaky or load-sensitive rather than
+      a deterministic new failure."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-22T10:58:22.226Z
+    completed_at: 2026-03-22T10:58:22.226Z
+events:
+  - _ulid: 01KMAJPA6KHAA6CY60Q9ZDHK0V
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-22T10:50:43.283Z
+  - _ulid: 01KMAJPH0D6PHBM5S8NRWRT2DH
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-22T10:50:50.253Z
+  - _ulid: 01KMAK3F6E90J6WYN63KPDCQRF
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMAK3EWTZYX583XRQEZB26NB
+    timestamp: 2026-03-22T10:57:54.383Z
+  - _ulid: 01KMAK3G7SEE6P5ETA2R2Q71X8
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMAK3FXWV2ZJPBJGHPFCW1D9
+    timestamp: 2026-03-22T10:57:55.449Z
+  - _ulid: 01KMAK3H8YZN5VNPD6WZG13CZX
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMAK3GZ870XMHZACZ0AP3BYJ
+    timestamp: 2026-03-22T10:57:56.510Z
+  - _ulid: 01KMAK48G761BP87G9P6YW62D4
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-03-22T10:58:20.295Z
+  - _ulid: 01KMAK49MM9KXTRPKQM35P3TC8
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- agent-invocation-lifecycle
+    timestamp: 2026-03-22T10:58:21.460Z
+  - _ulid: 01KMAK4AQ1T8YJHY8DKXCJ2NAG
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-22T10:58:22.562Z
+  - _ulid: 01KMAK4K4N1P2AHQ298R80TQCF
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-22T10:58:31.189Z
+  - _ulid: 01KMAK4K4NZZ9DSHFH8C4CZD2R
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-22T10:58:31.189Z
+examined_commit: d5bf3a6fbc1d57c239e4db860559df2e723d145c
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMA74DY7WGG4KA6P07BTMJFD"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMAK3EWTZYX583XRQEZB26NB
+    entries:
+      - _ulid: 01KMAK3EWTH062FFGG4MK6Q796
+        author: Test User
+        body: "Evidence log:\\nFiles read: src/agent-runtime/invocation.ts, src/agent-runtime/dispatch.ts,
+          src/agent-runtime/session-registry.ts, src/agent-runtime/event-bus.ts,
+          src/agent-runtime/hook-executor.ts, src/schema/event-payloads.ts,
+          src/schema/event-registry.ts, src/sessions/types.ts, tests/multi-turn-invocation.test.ts,
+          tests/event-payloads.test.ts, tests/event-registry.test.ts,
+          tests/session-lifecycle-events.test.ts,
+          tests/agent-invocation-lifecycle.test.ts\\nCommands run: kspec task get
+          @01KMA74DY7WGG4KA6P07BTMJFD; kspec item get @multi-turn-session-lifecycle; git diff
+          --stat/base...head; git diff on changed src/tests files; kspec validate; rg AC annotations
+          in tests; npm test; npm test -- agent-invocation-lifecycle\\nClaims verified: previous
+          blockers for dispatch wiring and session.idle registration are fixed in the reviewed
+          snapshot; full npm test observed one timeout in agent-invocation-lifecycle, but the
+          targeted rerun of that file passed\\nCategories searched: correctness, shutdown/error
+          handling, session cleanup, event propagation, test coverage/integrity, dispatch
+          integration"
+        created_at: 2026-03-22T10:57:54.074Z
+    kind: nit
+  - _ulid: 01KMAK3FXWV2ZJPBJGHPFCW1D9
+    anchor:
+      type: code
+      commit: d5bf3a6fbc1d57c239e4db860559df2e723d145c
+      line_end: 604
+      line_start: 579
+      path: src/agent-runtime/invocation.ts
+      side: head
+    entries:
+      - _ulid: 01KMAK3FXWDX6A9ZEYSNE2QQYX
+        author: Test User
+        body: The session handle is registered before  and before the outer cleanup . If  or the
+          initial  append throws,  never runs, so the dispatch engine retains a dead handle for a
+          session that never became valid. Later / calls then target a detached queue instead of a
+          live ACP session.
+        created_at: 2026-03-22T10:57:55.132Z
+    kind: blocker
+  - _ulid: 01KMAK3GZ870XMHZACZ0AP3BYJ
+    anchor:
+      type: code
+      commit: d5bf3a6fbc1d57c239e4db860559df2e723d145c
+      line_end: 1206
+      line_start: 1201
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KMAK3GZ8TH7R969JMCDJTFE5
+        author: Test User
+        body: Shutdown closes registered sessions before aborting their controllers. For an invocation
+          already waiting in idle,  makes  resolve , so  falls through its normal success path and
+          emits / before the abort signal is observed. Stopping the engine can therefore misreport
+          interrupted multi-turn sessions as successful completions.
+        created_at: 2026-03-22T10:57:56.200Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-22T10:58:31.188Z
+created_at: 2026-03-22T10:50:43.284Z
+updated_at: 2026-03-22T10:58:31.189Z
+notes: []

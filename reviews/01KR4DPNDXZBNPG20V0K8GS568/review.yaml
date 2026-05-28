@@ -1,0 +1,285 @@
+_ulid: 01KR4DPNDXZBNPG20V0K8GS568
+slugs: []
+title: Review fix guardrail daemon command classification
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Synthetic test file with execFile(DAEMON_ENTRY, ["--port", "0"]) returned exit 0 and
+      'Found 0 warnings and 0 errors', proving the guardrail misses an exec-file direct daemon
+      entrypoint launch.
+    name: custom execFile daemon-entry probe
+    required: true
+    runner: oxlint
+    created_at: 2026-05-08T18:43:12.712Z
+    completed_at: 2026-05-08T18:43:12.712Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts: 68 passed across 15 suites; log
+      /tmp/kspec-test-cache/01KR4DNAMZQKK63VVN9T4R6X4X/5f191596a94db995.log"
+    name: targeted lint guardrail tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-08T18:43:16.449Z
+    completed_at: 2026-05-08T18:43:16.449Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate: schema/references OK, but exited 6 due existing global warnings
+      (reference, alignment, completeness/AC annotation warnings). No task-specific trait warnings
+      found in reviewed ACs."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-08T18:43:20.301Z
+    completed_at: 2026-05-08T18:43:20.301Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh: 2406 suites passed; 8809 passed, 5 skipped of 8814; log
+      /tmp/kspec-test-cache/01KR4DNAMZQKK63VVN9T4R6X4X/3fffa233aab8f5aa.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-05-08T18:43:24.024Z
+    completed_at: 2026-05-08T18:43:24.024Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm run lint: 13 errors total. Changed-file comparison shows base versions
+      of the reviewed files had 1 error, while head has 2 errors; new head-only error is
+      tools/eslint-rules/no-leaky-test-daemon.js:453 prefer-string-starts-ends-with."
+    name: lint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-08T18:43:27.726Z
+    completed_at: 2026-05-08T18:43:27.726Z
+events:
+  - _ulid: 01KR4DPNDXJPAB7WYGNDZ6Z6DS
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-08T18:30:52.605Z
+  - _ulid: 01KR4DQR0EV5J23Z5SMNZ2KM1S
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-08T18:31:28.014Z
+  - _ulid: 01KR4ED9G4EZB30Y5C5KXP1EPJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: custom execFile daemon-entry probe
+    timestamp: 2026-05-08T18:43:14.052Z
+  - _ulid: 01KR4EDD2Z03GPEZ7SDZF4J7DW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted lint guardrail tests
+    timestamp: 2026-05-08T18:43:17.727Z
+  - _ulid: 01KR4EDGTTSP75BM1A28885TAM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-05-08T18:43:21.562Z
+  - _ulid: 01KR4EDMEY95QK4YDWAG4QRVFV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-08T18:43:25.278Z
+  - _ulid: 01KR4EDR3CYMJTZARPV9MJG90Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: lint
+    timestamp: 2026-05-08T18:43:29.005Z
+  - _ulid: 01KR4EEFBG1P11RC592BKG06RQ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR4EEE2JYCGXM5AZSCF79XW3
+    timestamp: 2026-05-08T18:43:52.816Z
+  - _ulid: 01KR4EETCR29T4M9ASCBJJ697P
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR4EES4NV6WANQ4V2ZBAY074
+    timestamp: 2026-05-08T18:44:04.120Z
+  - _ulid: 01KR4EF6562V4JRK2KZ9Q4KWPV
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KR4EF4WX18XRFSWD4PCKM71F
+    timestamp: 2026-05-08T18:44:16.166Z
+  - _ulid: 01KR4EFF6SZY48M1TMQHGEJ3PG
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-08T18:44:25.433Z
+  - _ulid: 01KR4EFF6SCTXDHN5N1SJB621R
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-08T18:44:25.433Z
+  - _ulid: 01KR4G5YY120AEAJV0JZ3KTBY2
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR4EEE2JYCGXM5AZSCF79XW3
+    timestamp: 2026-05-08T19:14:11.009Z
+  - _ulid: 01KR4G6803921X6RR2D8CCKB7D
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR4EEE2JYCGXM5AZSCF79XW3
+    timestamp: 2026-05-08T19:14:20.292Z
+  - _ulid: 01KR4G6KSRCWPP0AKXA1NDP48J
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR4EES4NV6WANQ4V2ZBAY074
+    timestamp: 2026-05-08T19:14:32.376Z
+  - _ulid: 01KR4G6WD7CMVJ068D0MY44WM2
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR4EES4NV6WANQ4V2ZBAY074
+    timestamp: 2026-05-08T19:14:41.191Z
+  - _ulid: 01KR4G75ZREM0P4XWT3ES31GPC
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR4EF4WX18XRFSWD4PCKM71F
+    timestamp: 2026-05-08T19:14:51.000Z
+  - _ulid: 01KR4G7EN99G14E4ZQTFFHYGQG
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR4EF4WX18XRFSWD4PCKM71F
+    timestamp: 2026-05-08T19:14:59.881Z
+examined_commit: 2f72e91ffd2596c10f1b626fa3676a06a8daf436
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR3W7PPVDFR8F03VQ6J54M3K"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR4EEE2JYCGXM5AZSCF79XW3
+    anchor:
+      type: code
+      commit: 2f72e91ffd2596c10f1b626fa3676a06a8daf436
+      line_end: 501
+      line_start: 500
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KR4EEE2J4QXDN74A8R5XBC1K
+        author: Jacob Chapel
+        body: 'MUST-FIX: readDaemonEntryInvocation only treats execFile/execFileSync as direct daemon
+          launches when argv (args[1]) contains the daemon entry, so execFile(DAEMON_ENTRY,
+          ["--port", "0"]) is missed. Evidence: a synthetic oxlint probe for that exact shape
+          returned exit 0 with "Found 0 warnings and 0 errors." Impact:
+          @daemon-test-guardrail-precision ac-direct-daemon-entry-invocations-flagged remains false
+          for an exec-file API that directly launches the daemon entrypoint.'
+        created_at: 2026-05-08T18:43:51.507Z
+      - _ulid: 01KR4G5XN5X64QNH1ZD75YGBQG
+        author: "@claude"
+        body: 'Fixed: readDaemonEntryInvocation now also matches spawn-likes whose first arg IS the daemon
+          entry — e.g. execFile(DAEMON_ENTRY, ["--port", "0"]) and spawn(DAEMON_ENTRY, [...]). Added
+          positive regressions for the direct-executable form across spawn / spawnSync / execFile /
+          execFileSync against both the DAEMON_ENTRY identifier and the dist/daemon/index.js
+          literal, plus the no-argv variant. The targeted suite (81 tests) passes.'
+        created_at: 2026-05-08T19:14:09.701Z
+    kind: blocker
+    resolved_at: 2026-05-08T19:14:18.970Z
+    resolved_by: "@claude"
+  - _ulid: 01KR4EES4NV6WANQ4V2ZBAY074
+    anchor:
+      type: code
+      commit: 2f72e91ffd2596c10f1b626fa3676a06a8daf436
+      line_end: 453
+      line_start: 453
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KR4EES4P57VZ3YRE0M87FGCA
+        author: Jacob Chapel
+        body: "MUST-FIX: this branch introduces an oxlint error in the changed rule file. Head reports
+          eslint-plugin-unicorn(prefer-string-starts-ends-with) here: prefer String#endsWith over
+          /\\/kspec$/. Evidence: linting the base versions of the reviewed files had 1 error;
+          linting the head versions has 2 errors, with this head-only error added. Impact: the
+          required lint gate now has a new changed-file regression."
+        created_at: 2026-05-08T18:44:02.838Z
+      - _ulid: 01KR4G6JHEFVS38A3CCEFJXB1S
+        author: "@claude"
+        body: "Fixed: shellCommandLeadsWithKspec now uses String#endsWith instead of /\\/kspec$/.test.
+          Confirmed: changed-file lint goes from 2 errors back to 1 (the META_RULE_NAME
+          no-unused-vars error pre-exists on dev). Full-tree lint count (13) is unchanged from
+          origin/dev; no new errors introduced by this branch."
+        created_at: 2026-05-08T19:14:31.086Z
+    kind: blocker
+    resolved_at: 2026-05-08T19:14:39.891Z
+    resolved_by: "@claude"
+  - _ulid: 01KR4EF4WX18XRFSWD4PCKM71F
+    entries:
+      - _ulid: 01KR4EF4WXQWQB6JPGX5QCTSC9
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md, tools/eslint-rules/no-leaky-test-daemon.js,
+          tests/lint-daemon-test-guardrails.test.ts, tests/lint-no-leaky-test-daemon.test.ts.
+          Commands run: kspec task get, kspec item get for @daemon-test-guardrail-precision and
+          @daemon-test-harness-guardrails, kspec validate, git diff/stat/name-only, AC annotation
+          rg, targeted npm test, full npm test -- --fresh, npm run lint, changed-file base/head
+          oxlint comparison, source audit rg, custom oxlint probes for execFile daemon-entry and
+          execFile kspec detach. Claims verified: worker tests pass, full suite passes, execFile
+          kspec detach is detected, but execFile with daemon entry as executable is not detected.
+          Categories searched: correctness, AC coverage, edge cases, lint, test quality,
+          integration/source audit."
+        created_at: 2026-05-08T18:44:14.877Z
+      - _ulid: 01KR4G74R1PT2QA2KK31Q9QFP7
+        author: "@claude"
+        body: Acknowledged. The evidence log is informational; the two blockers above are now resolved.
+        created_at: 2026-05-08T19:14:49.728Z
+    kind: nit
+    resolved_at: 2026-05-08T19:14:58.514Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-08T18:44:25.433Z
+created_at: 2026-05-08T18:30:52.605Z
+updated_at: 2026-05-08T19:14:58.514Z
+notes: []

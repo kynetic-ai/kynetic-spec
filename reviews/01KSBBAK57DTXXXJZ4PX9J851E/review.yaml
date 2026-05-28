@@ -1,0 +1,254 @@
+_ulid: 01KSBBAK57DTXXXJZ4PX9J851E
+slugs: []
+title: Review folder-backed plan storage manager
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "2507 test suites passed; 9525 tests passed; 5 skipped. Full log:
+      /tmp/kspec-test-cache/01KSBB9BN5YMRNKCZ7QS2RJMKE/36c8ffdde64f193f.log"
+    name: npm test
+    required: true
+    runner: npm test
+    created_at: 2026-05-23T21:31:38.009Z
+    completed_at: 2026-05-23T21:31:38.009Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit completed successfully.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-05-23T21:31:42.401Z
+    completed_at: 2026-05-23T21:31:42.401Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Schema/references passed, but command exited 6 because the repo has pre-existing
+      validation warnings (deprecated refs, orphaned specs, missing AC coverage unrelated to
+      @folder-backed-plan-storage-1).
+    name: kspec validate
+    required: false
+    runner: kspec validate
+    created_at: 2026-05-23T21:32:08.080Z
+    completed_at: 2026-05-23T21:32:08.080Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Full repo lint exits 1 with pre-existing errors/warnings. New plan-storage files passed
+      oxlint; the changed helper reports a pre-existing no-source-file-reads error on a line already
+      present in the integration base.
+    name: lint
+    required: false
+    runner: npm run lint
+    created_at: 2026-05-23T21:32:12.390Z
+    completed_at: 2026-05-23T21:32:12.390Z
+events:
+  - _ulid: 01KSBBAK568R5MMFMSE2HJZHS4
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-23T21:19:42.758Z
+  - _ulid: 01KSBBB0AR7JRABRXBCDEYB8H8
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-23T21:19:56.248Z
+  - _ulid: 01KSBC06WRVATPYN3XT0SN11CW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSBC05DDG31FG0EFQH3VB8H1
+    timestamp: 2026-05-23T21:31:31.096Z
+  - _ulid: 01KSBC0B0AFRE0ME9XMVFC0HJD
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSBC09GT3YN6AC47SNJNYRJW
+    timestamp: 2026-05-23T21:31:35.306Z
+  - _ulid: 01KSBC0F51W1STWTSM40G908YS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-23T21:31:39.553Z
+  - _ulid: 01KSBC0KE25ANMC6DFR76F9T6C
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-23T21:31:43.938Z
+  - _ulid: 01KSBC1CFSSM4ZYKYX9EHWJ26C
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-05-23T21:32:09.593Z
+  - _ulid: 01KSBC1GRG6FPS6MHM6XYVFJ43
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: lint
+    timestamp: 2026-05-23T21:32:13.968Z
+  - _ulid: 01KSBC1MXQ95FWFE8SK94A9MKQ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSBC1KE3FZCX4FGZSQR96ZH6
+    timestamp: 2026-05-23T21:32:18.231Z
+  - _ulid: 01KSBC1YQBA8NE1SC8A61R1C5X
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-23T21:32:28.268Z
+  - _ulid: 01KSBC1YQCKCRD19HQ18XH4T89
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-23T21:32:28.268Z
+  - _ulid: 01KSBG29W6TP1B9X097A8ZBZ5A
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSBC05DDG31FG0EFQH3VB8H1
+    timestamp: 2026-05-23T22:42:33.990Z
+  - _ulid: 01KSBG2R1FQFGVDF0B0PBE78KF
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSBC05DDG31FG0EFQH3VB8H1
+    timestamp: 2026-05-23T22:42:48.496Z
+  - _ulid: 01KSBG2YSW6TCJE4YR0KZCZVWX
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSBC09GT3YN6AC47SNJNYRJW
+    timestamp: 2026-05-23T22:42:55.420Z
+  - _ulid: 01KSBG35PTPABZJQV6AB1666A0
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSBC09GT3YN6AC47SNJNYRJW
+    timestamp: 2026-05-23T22:43:02.490Z
+examined_commit: c81ed98ce2337fdd426aec3da370bb73d29d4b6f
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XAY52P099Y1PQ8PFJ6G0P"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSBC05DDG31FG0EFQH3VB8H1
+    anchor:
+      type: code
+      commit: c81ed98ce2337fdd426aec3da370bb73d29d4b6f
+      line_end: 540
+      line_start: 538
+      path: src/parser/plan-storage-manager.ts
+      side: head
+    entries:
+      - _ulid: 01KSBC05DDSZH6DE65TRWVJM4Y
+        author: Jacob Chapel
+        body: "MUST-FIX: clearing a plan's notes does not clear the authoritative notes sidecar. Both
+          save/update paths only write notes.yaml when the new notes array is non-empty, so an
+          existing notes.yaml survives when the mutation returns notes: []. Evidence: a one-off
+          execution saved a plan with one note, called mutatePlanAtomically(... notes: []), then
+          loadPlans() still returned that stale note. Impact: plan.yaml/index can say notes_count=0
+          while detail reads continue exposing deleted notes, violating
+          ac-plan-metadata-sidecar-is-authoritative and creating index drift."
+        created_at: 2026-05-23T21:31:29.581Z
+      - _ulid: 01KSBG287PHES254KMDA7H42G4
+        author: "@claude"
+        body: "Fixed in 984af0c. Both savePlanToFolder and mutatePlanInFolder now call
+          removeNotesFileIfPresent when the new notes array is empty, so the authoritative notes
+          sidecar is dropped in the same buffered transaction as the rest of the write. Added tests
+          asserting that re-saving with notes: [] (savePlan) and mutating to notes: []
+          (mutatePlanAtomically) both delete notes.yaml and that loadPlans returns notes: []."
+        created_at: 2026-05-23T22:42:32.310Z
+    kind: blocker
+    resolved_at: 2026-05-23T22:42:46.887Z
+    resolved_by: "@claude"
+  - _ulid: 01KSBC09GT3YN6AC47SNJNYRJW
+    anchor:
+      type: code
+      commit: c81ed98ce2337fdd426aec3da370bb73d29d4b6f
+      line_end: 292
+      line_start: 286
+      path: src/parser/plan-storage-manager.ts
+      side: head
+    entries:
+      - _ulid: 01KSBC09GTEB3651SYVF44T96K
+        author: Jacob Chapel
+        body: 'MUST-FIX: a missing plan.md is silently treated as an empty document. The folder layout
+          requires plan.md as the authoritative plan document, and the task requires missing/partial
+          storage markers to raise the shared incompatibility errors instead of silently loading bad
+          state. Evidence: after saving a folder-backed plan and deleting only plan.md, loadPlans()
+          returned the plan with content: "" rather than reporting a partial layout or unloadable
+          folder. Impact: corrupted or partially migrated plans can lose all visible content without
+          any error or rebuild conflict.'
+        created_at: 2026-05-23T21:31:33.786Z
+      - _ulid: 01KSBG2X5PJFXK6Q5Y336K5ES3
+        author: "@claude"
+        body: Fixed in 984af0c. readPlanDocument now returns undefined only on ENOENT (other I/O errors
+          propagate); loadPlanFromDir raises EntityStorageCompatibilityError with code
+          partial_entity_storage_layout and domain plans when plan.yaml exists but plan.md is
+          missing. computePlanIndexDrift catches that error per-folder and surfaces it as a
+          structured conflict so rebuild-index reports it cleanly. Added tests asserting loadPlans
+          rejects with the matching code/domain and that computePlanIndexDrift produces the expected
+          conflict entry.
+        created_at: 2026-05-23T22:42:53.750Z
+    kind: blocker
+    resolved_at: 2026-05-23T22:43:00.795Z
+    resolved_by: "@claude"
+  - _ulid: 01KSBC1KE3FZCX4FGZSQR96ZH6
+    entries:
+      - _ulid: 01KSBC1KE44DXAMV718S8AJ2HN
+        author: Jacob Chapel
+        body: "Evidence log: Files read: src/parser/plan-storage-manager.ts, src/parser/plans.ts,
+          src/cli/commands/plan.ts, src/parser/folder-backed-entity.ts,
+          src/parser/entity-storage-compatibility.ts, tests/parser-plans-folder.test.ts,
+          tests/plan-rebuild-index.test.ts, tests/daemon-api/helpers.ts,
+          tests/daemon-api/plans.test.ts, tests/entity-storage-partial-layout-manager.test.ts.
+          Commands run: kspec task get, kspec item get for spec/traits, rg AC annotations, kspec
+          validate, npm test, npm run typecheck, npm run lint, targeted oxlint on changed files,
+          one-off tsx reproductions for note clearing and missing plan.md. Claims verified: full
+          test suite pass and typecheck pass; rebuild-index tests cover the CLI envelope; plan.md
+          and notes sidecar authority were independently exercised. Categories searched:
+          correctness, partial/corrupt layout handling, note/content mutation edge cases, test
+          quality/source scanning, AC coverage, integration with daemon fixture helpers."
+        created_at: 2026-05-23T21:32:16.708Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-23T21:32:28.267Z
+created_at: 2026-05-23T21:19:42.759Z
+updated_at: 2026-05-23T22:43:00.795Z
+notes: []

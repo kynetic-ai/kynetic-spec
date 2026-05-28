@@ -1,0 +1,185 @@
+_ulid: 01KR2QA27RSV30DYSYPT404RNJ
+slugs: []
+title: Review standardize in-process daemon API fixtures
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh tests/daemon-api/helpers.test.ts
+      tests/daemon-api/server.test.ts tests/daemon-api/tasks.test.ts
+      tests/daemon-review-websocket.test.ts tests/daemon-review-verdicts-api.test.ts
+      tests/daemon-api-input-validation.test.ts: 125/125 tests passed"
+    name: targeted daemon API tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-08T02:51:22.396Z
+    completed_at: 2026-05-08T02:51:22.396Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh: 2390/2390 suites passed; 8742 passed, 5 skipped, 0 failed"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-05-08T02:51:34.212Z
+    completed_at: 2026-05-08T02:51:34.212Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npx tsc --noEmit completed with exit 0
+    name: typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-08T02:51:44.229Z
+    completed_at: 2026-05-08T02:51:44.229Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Schema and references OK. Command exited 6 due to existing repository-wide warnings; no
+      changed-file validation warning identified in reviewed files.
+    name: kspec validate
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-08T02:51:56.379Z
+    completed_at: 2026-05-08T02:51:56.379Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check 51f6c643d15e71ca6beacdfad29738523c310ab7..HEAD completed with exit 0
+    name: diff hygiene
+    required: true
+    runner: git
+    created_at: 2026-05-08T02:52:06.914Z
+    completed_at: 2026-05-08T02:52:06.914Z
+events:
+  - _ulid: 01KR2QA27QK5K93H3D9KBFDSX8
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-08T02:40:16.631Z
+  - _ulid: 01KR2QB3AAFCP82AZNGCC9RMJT
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-08T02:40:50.507Z
+  - _ulid: 01KR2QYDKM912D6P4VQD2E68Z4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted daemon API tests
+    timestamp: 2026-05-08T02:51:23.636Z
+  - _ulid: 01KR2QYS74ZGNAJNRVM89D4PCG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-08T02:51:35.524Z
+  - _ulid: 01KR2QZ311FX5DQGG6Y5R0FZKB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-08T02:51:45.569Z
+  - _ulid: 01KR2QZEWAGZ36X1Z372HJCKT3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-08T02:51:57.707Z
+  - _ulid: 01KR2QZS50GH0P1E2GSX0TASG0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff hygiene
+    timestamp: 2026-05-08T02:52:08.224Z
+  - _ulid: 01KR2R08GM2CZ8JCWWB2YVJYES
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KR2R0795596K7VJN4D9N5YCM
+    timestamp: 2026-05-08T02:52:23.956Z
+  - _ulid: 01KR2R0KCJVMW8DCDFVQZ27PTY
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-08T02:52:35.090Z
+  - _ulid: 01KR2R0KCJ2R3C6TXDJBMYJKDR
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-08T02:52:35.090Z
+examined_commit: 8d20791d210a11231ae0a56cf52ee117a4a5dc8d
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR22GKWXB1G5Y4KFTC5RNE3X"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR2R0795596K7VJN4D9N5YCM
+    entries:
+      - _ulid: 01KR2R079524DQY10DFW4QQJM8
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+
+          Files read: tests/daemon-api/helpers.ts; tests/daemon-api/helpers.test.ts;
+          tests/daemon-api-input-validation.test.ts; tests/daemon-review-verdicts-api.test.ts;
+          tests/daemon-review-websocket.test.ts; kspec-agents.md.
+
+
+          Commands run: git diff --stat/name-only/diff against dev
+          51f6c643d15e71ca6beacdfad29738523c310ab7; kspec task get @01KR22GKWXB1G5Y4KFTC5RNE3X;
+          kspec item get @daemon-test-mode-boundaries; kspec item get
+          @daemon-test-harness-guardrails; rg AC annotations and daemon child-process patterns in
+          changed files; kspec validate; targeted npm test; full npm test; npx tsc --noEmit; git
+          diff --check.
+
+
+          Claims verified: migrated tests remain in-process through createTestApp/app.handle with no
+          direct daemon spawn, app.listen, serve start, or WebSocket network connection in the
+          changed tests; helper fixture behavior has direct tests; migrated route assertions still
+          exercise review/input-validation behavior.
+
+
+          Categories searched: correctness, test coverage/AC annotations,
+          source-scanning/static-test risk, daemon process-boundary regressions, error handling
+          assertions, cache consistency helper propagation, and integration with existing route
+          helpers. No blocking findings.
+        created_at: 2026-05-08T02:52:22.693Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-08T02:52:35.090Z
+created_at: 2026-05-08T02:40:16.632Z
+updated_at: 2026-05-08T02:52:35.090Z
+notes: []

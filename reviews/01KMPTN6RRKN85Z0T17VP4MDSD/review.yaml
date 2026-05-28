@@ -1,0 +1,120 @@
+_ulid: 01KMPTN6RRKN85Z0T17VP4MDSD
+slugs: []
+title: Review wire agent spawner into automation subsystem action executors (cycle 3)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation exited with warnings only (code 6): no new errors for this task; known
+      repository-wide warnings remain."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-27T05:13:42.944Z
+    completed_at: 2026-03-27T05:13:42.944Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: packages/daemon/src/routes/agent-dispatch.ts,
+      src/agent-runtime/action-executor.ts, src/agent-runtime/invocation.ts,
+      tests/automation-action-type-completeness.test.ts,
+      tests/daemon-automation-spawner-wiring.test.ts, tests/agent-action-input.test.ts,
+      tests/agent-dispatch-engine.test.ts. Commands run: git diff --stat/diff/check, kspec task get,
+      kspec item get, kspec review get/for-task, kspec validate, rg for AC annotations, npm test
+      --fresh, targeted npm test runs. Claims verified: automation subsystems now receive
+      agentSpawner, correlation/group propagation reaches runInvocation env, failure payloads
+      include error and failure_reason, duplicate mockMetadata fix no longer breaks
+      agent-dispatch-engine test. Categories searched: correctness, edge cases, error handling, test
+      quality, integration; no remaining issues found."
+    name: review-evidence
+    required: false
+    runner: codex
+    created_at: 2026-03-27T05:13:48.254Z
+    completed_at: 2026-03-27T05:13:48.254Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Uncontended full run passed: 1913/1913 suites, 6863/6868 tests (5 skipped). Also verified
+      touched targeted suites: automation-action-type-completeness,
+      daemon-automation-spawner-wiring, and agent-dispatch-engine."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-27T05:13:50.222Z
+    completed_at: 2026-03-27T05:13:50.222Z
+events:
+  - _ulid: 01KMPTN6RRWK31BTHY31325T4G
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T05:00:48.792Z
+  - _ulid: 01KMPTNQ083MDA06MRK8YH6C9Y
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T05:01:05.417Z
+  - _ulid: 01KMPVCVBDHAN4E34YCZ9CD1GP
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-27T05:13:43.534Z
+  - _ulid: 01KMPVCX5WGJ2X0ZW46CNVC83V
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-27T05:13:45.404Z
+  - _ulid: 01KMPVCX5WHEA3P3Q2QC8HWF0G
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T05:13:45.404Z
+  - _ulid: 01KMPVD0JPA98CCBZ918Z45ZJ4
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-03-27T05:13:48.886Z
+  - _ulid: 01KMPVD2FF235NEXXGNB7VM648
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-27T05:13:50.832Z
+examined_commit: be56513e6e871afe0c3a53698cec263d003557b0
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMPNCSGVJHDM47EDN6MXGZV4"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-27T05:13:45.403Z
+created_at: 2026-03-27T05:00:48.792Z
+updated_at: 2026-03-27T05:13:50.222Z
+notes: []

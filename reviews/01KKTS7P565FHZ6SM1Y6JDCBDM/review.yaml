@@ -1,0 +1,261 @@
+_ulid: 01KKTS7P565FHZ6SM1Y6JDCBDM
+slugs: []
+title: "Review: Review Records Web UI plan (round 2)"
+author: "@claude"
+checks: []
+events:
+  - _ulid: 01KKTS7P56SHW0252D3868VKXS
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-16T07:37:13.126Z
+  - _ulid: 01KKTS7V0R5JT58YSCGE2NXSAX
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-16T07:37:18.104Z
+  - _ulid: 01KKTS9WEHQ16ZCMQ62APWTJH5
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKTS9WE7YHN19XJ7DGFT8HMT
+    timestamp: 2026-03-16T07:38:25.105Z
+  - _ulid: 01KKTS9YZ4467NBZCFC4Z77PRF
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKTS9YYRWSMBJCTGRAHEY4EC
+    timestamp: 2026-03-16T07:38:27.684Z
+  - _ulid: 01KKTSA1A3EWJMKGRK38M8ERZ4
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKTSA19PHGNX2MF1M8FK2SD7
+    timestamp: 2026-03-16T07:38:30.083Z
+  - _ulid: 01KKTSA3GXW62ER2JWWFS0YN5N
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKTSA3GJK4G0A4QTAM62Z4FP
+    timestamp: 2026-03-16T07:38:32.349Z
+  - _ulid: 01KKTSA662T6Q0TWVNRB9ZBZTH
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKTSA65T072TW885F02YHJGV
+    timestamp: 2026-03-16T07:38:35.074Z
+  - _ulid: 01KKTSADNQSKWWM6CG0ECQPSV6
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKTSADNF6TETZBY7A217021X
+    timestamp: 2026-03-16T07:38:42.743Z
+  - _ulid: 01KKTSAFXH5Z267YE0FM40PP5A
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKTSAFX333M71FZ6WJRV0E25
+    timestamp: 2026-03-16T07:38:45.041Z
+  - _ulid: 01KKTSAJFZ44R63QMT70BS1VK4
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKTSAJFHT6XMJWN1ZPP8EKHN
+    timestamp: 2026-03-16T07:38:47.679Z
+  - _ulid: 01KKTSANF0KKMYC1PMC5QA893N
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKTSANERBG5PMMCKWAC6VD6X
+    timestamp: 2026-03-16T07:38:50.721Z
+  - _ulid: 01KKTSAXJ0NX6KCA2ZGYN9P727
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKTSAXHM2RH8V3049VJ1WGSV
+    timestamp: 2026-03-16T07:38:59.008Z
+  - _ulid: 01KKTSB10RQ5242JN15CGTXNNT
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKTSB10CMQR2VHSXDJSM0X0F
+    timestamp: 2026-03-16T07:39:02.552Z
+  - _ulid: 01KKTSB3G7PKYCECQTG20AJZ8N
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKTSB3FWE3BSFTQ3KH4WY3A9
+    timestamp: 2026-03-16T07:39:05.095Z
+  - _ulid: 01KKTSBCAP614R246JMZ1SJBM0
+    actor: plan-review-agent-r2
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-16T07:39:14.134Z
+  - _ulid: 01KKTSM4H3AGS111V7NEHZ0A25
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-16T07:44:01.059Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-review-records-web-ui"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KKTS9WE7YHN19XJ7DGFT8HMT
+    entries:
+      - _ulid: 01KKTS9WE7CC0AFKGT098JH66S
+        author: "@claude"
+        body: "**Blocker 1 (API ac-3 too broad) — RESOLVED.** Original ac-3 that lumped all mutations has
+          been split into ac-3 (create thread), ac-4 (reply), ac-5 (resolve/reopen), ac-6
+          (verdicts), ac-7 (checks), ac-8 (lifecycle). Each endpoint now has its own testable AC
+          with distinct request shape and expected behavior. Good granularity."
+        created_at: 2026-03-16T07:38:25.095Z
+    kind: nit
+  - _ulid: 01KKTS9YYRWSMBJCTGRAHEY4EC
+    entries:
+      - _ulid: 01KKTS9YYST86SA85SBJPC4EFR
+        author: "@claude"
+        body: '**Blocker 3 (no error handling ACs) — RESOLVED.** ac-10 added covering invalid data (missing
+          fields, invalid ref, invalid state transition) returning 400 with actionable error
+          messages. Combined with @trait-error-guidance inheritance from traits, this provides
+          adequate error coverage. The trait ACs cover specifics like "suggests checking ref" and
+          "indicates current state and valid next states."'
+        created_at: 2026-03-16T07:38:27.673Z
+    kind: nit
+  - _ulid: 01KKTSA19PHGNX2MF1M8FK2SD7
+    entries:
+      - _ulid: 01KKTSA19PFWTZKW4F24V96NQC
+        author: "@claude"
+        body: "**Blocker 4 (Web UI ac-3 too broad) — RESOLVED.** Split into ac-3 (create thread with kind
+          selection), ac-4 (reply to thread), ac-5 (resolve/reopen toggle), ac-6 (submit verdict
+          with disposition update). Each interaction is now independently testable."
+        created_at: 2026-03-16T07:38:30.070Z
+    kind: nit
+  - _ulid: 01KKTSA3GJK4G0A4QTAM62Z4FP
+    entries:
+      - _ulid: 01KKTSA3GJ593EGJFF1361WMAK
+        author: "@claude"
+        body: '**Blocker 5 (filtering underspecified) — RESOLVED.** API ac-1 now explicitly says "linked
+          task (via subject-ref or related-refs)" which clarifies the semantics. Sort parameter
+          support is also mentioned. This addresses both the filter ambiguity and the missing sort
+          parameter.'
+        created_at: 2026-03-16T07:38:32.338Z
+    kind: nit
+  - _ulid: 01KKTSA65T072TW885F02YHJGV
+    entries:
+      - _ulid: 01KKTSA65VGT8Q1GV08K3VHGQV
+        author: "@claude"
+        body: "**Blocker 8 (no traits) — RESOLVED.** API spec now references @trait-json-output,
+          @trait-error-guidance, @trait-localhost-security, and @trait-websocket-protocol. This
+          matches the daemon-server parent's traits minus @trait-shadow-commit (correctly excluded
+          since the daemon API delegates to library functions that handle shadow commits
+          internally). The web UI spec has no traits, consistent with the @web-ui parent module
+          having none."
+        created_at: 2026-03-16T07:38:35.067Z
+    kind: nit
+  - _ulid: 01KKTSADNF6TETZBY7A217021X
+    entries:
+      - _ulid: 01KKTSADNF2CQZZAS06JQR5BPS
+        author: "@claude"
+        body: "**Question 6 (task-to-review navigation) — RESOLVED.** Web UI ac-7 added: when a user views a
+          task detail page with linked reviews, reviews are shown with disposition badge and link to
+          review detail. This covers the use case."
+        created_at: 2026-03-16T07:38:42.735Z
+    kind: nit
+  - _ulid: 01KKTSAFX333M71FZ6WJRV0E25
+    entries:
+      - _ulid: 01KKTSAFX4AXDT3X45WBTTV6P1
+        author: "@claude"
+        body: '**Nit 7 (WebSocket topic naming) — RESOLVED.** ac-9 specifies "reviews topic" and
+          implementation notes list specific event types: review_created, review_updated,
+          thread_created, thread_updated, verdict_submitted, check_recorded. This gives implementers
+          clear guidance.'
+        created_at: 2026-03-16T07:38:45.028Z
+    kind: nit
+  - _ulid: 01KKTSAJFHT6XMJWN1ZPP8EKHN
+    entries:
+      - _ulid: 01KKTSAJFHF79S9ERTXWT4DSC4
+        author: "@claude"
+        body: '**Question 11 (URL routing) — RESOLVED.** Description now states "Routes follow existing
+          patterns: /reviews for list, /reviews/[id] for detail." Deep-linking to specific threads
+          was not addressed, but this is an enhancement that can be added later — the core routing
+          is specified.'
+        created_at: 2026-03-16T07:38:47.665Z
+    kind: nit
+  - _ulid: 01KKTSANERBG5PMMCKWAC6VD6X
+    entries:
+      - _ulid: 01KKTSANER0E9YJ1BBN8DZXHMR
+        author: "@claude"
+        body: "**Question 2 (shared types) — ACCEPTABLE.** Implementation notes still don't explicitly
+          mention shared types in @kynetic-ai/shared, but \"follow existing daemon API patterns\" is
+          sufficient guidance. The implementer will see PlanSummary/PlanDetail imports in the plans
+          route and follow the same pattern. Not a gap worth blocking on."
+        created_at: 2026-03-16T07:38:50.712Z
+    kind: nit
+  - _ulid: 01KKTSAXHM2RH8V3049VJ1WGSV
+    entries:
+      - _ulid: 01KKTSAXHNFT209C2HX635P1AZ
+        author: "@claude"
+        body: "**New observation: ac-8 lifecycle PATCH endpoint is well-specified.** The AC includes both
+          the happy path (valid transition applied) and the error path (400 with reason). This is
+          good — it's the only mutation AC that explicitly covers its own error case beyond the
+          general ac-10. Other mutation ACs (ac-3 through ac-7) rely on ac-10 for error coverage,
+          which is fine."
+        created_at: 2026-03-16T07:38:58.997Z
+    kind: nit
+  - _ulid: 01KKTSB10CMQR2VHSXDJSM0X0F
+    entries:
+      - _ulid: 01KKTSB10DA4V6N5CCYED49AER
+        author: "@claude"
+        body: "**Minor gap: Web UI spec has no traits but API spec does.** The web-ui parent module has no
+          traits, so this is consistent. However, if there are UI-specific traits (e.g.,
+          @trait-url-panel-state mentioned in MEMORY.md), those might apply. This is not a blocker —
+          traits can be added during implementation if needed, and the web UI spec's ACs are
+          sufficiently specific without them."
+        created_at: 2026-03-16T07:39:02.541Z
+    kind: nit
+  - _ulid: 01KKTSB3FWE3BSFTQ3KH4WY3A9
+    entries:
+      - _ulid: 01KKTSB3FW7VWJACM7MS70WS6C
+        author: "@claude"
+        body: "**Overall assessment: All 5 previous blockers have been adequately addressed.** The ACs are
+          now individually testable, traits provide cross-cutting coverage, filtering semantics are
+          explicit, and error handling is covered. The plan is well-structured with correct parent
+          refs, appropriate spec types, and a sound task dependency chain. Ready to approve and
+          derive."
+        created_at: 2026-03-16T07:39:05.084Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: draft-r2
+    decision: approve
+    reviewer: plan-review-agent-r2
+    role: reviewer
+    created_at: 2026-03-16T07:39:14.121Z
+created_at: 2026-03-16T07:37:13.126Z
+updated_at: 2026-03-16T07:44:01.048Z
+notes: []

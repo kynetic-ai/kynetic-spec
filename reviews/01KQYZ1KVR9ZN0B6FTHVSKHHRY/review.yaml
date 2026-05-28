@@ -1,0 +1,144 @@
+_ulid: 01KQYZ1KVR9ZN0B6FTHVSKHHRY
+slugs: []
+title: Review task-centralize-web-ui-daemon-endpoints
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full npm test passed on reviewed snapshot 61588c0f057e5a473d1f455147f5cbac71972378: 2367
+      suites passed; 8685 tests passed, 5 skipped; duration 1908.9s. Log:
+      /tmp/kspec-test-cache/01KQYZ08VR9M2ZAXY8S5TTTET7/e361049516a0a7e1.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-06T15:51:30.014Z
+    completed_at: 2026-05-06T15:51:30.014Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate reported schema/references OK and no validation errors; exited 6 due to
+      repository-wide warnings already present in this snapshot (deprecated refs,
+      alignment/completeness/annotation warnings).
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-06T15:51:33.413Z
+    completed_at: 2026-05-06T15:51:33.413Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Changed-area tests passed: npm test -- --run tests/daemon-api/server.test.ts
+      tests/web-ui/dev-server-daemon-endpoint.test.ts
+      tests/web-ui/daemon-endpoint-host-parity.test.ts (54 tests passed); npm test -- --run
+      tests/daemon-api/websocket-protocol.test.ts (11 tests passed). Initial combined target run hit
+      the previously observed close-code websocket flake in beforeEach, then the websocket file and
+      full suite both passed."
+    name: targeted daemon/web-ui tests
+    required: true
+    runner: npm
+    created_at: 2026-05-06T15:51:36.926Z
+    completed_at: 2026-05-06T15:51:36.926Z
+events:
+  - _ulid: 01KQYZ1KVRYX6XTG8AZJCSFHDD
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-06T15:38:30.648Z
+  - _ulid: 01KQYZ2APX9HR6J26RR7R05YNT
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-06T15:38:54.046Z
+  - _ulid: 01KQYZSE5M3Q7CXYYG21CAJ7M7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-06T15:51:31.252Z
+  - _ulid: 01KQYZSHESQVB9W074D1BM2QZK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-06T15:51:34.617Z
+  - _ulid: 01KQYZSMXJXKAWC276M0HNWNMY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted daemon/web-ui tests
+    timestamp: 2026-05-06T15:51:38.162Z
+  - _ulid: 01KQYZT6DE316G9M25T7SZXKKE
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KQYZT56FFWRFATAY8HZAT1DK
+    timestamp: 2026-05-06T15:51:56.078Z
+  - _ulid: 01KQYZTH97PZ9S9YR0ZRGKAWAE
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-06T15:52:07.207Z
+  - _ulid: 01KQYZTH97J2GZHZ55AHJ6DVQS
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-06T15:52:07.207Z
+examined_commit: 61588c0f057e5a473d1f455147f5cbac71972378
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQWZZJ3RF0881VRCVS1H7843"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQYZT56FFWRFATAY8HZAT1DK
+    entries:
+      - _ulid: 01KQYZT56FYEZHYS0P0Y78Z3A1
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: packages/daemon/src/server.ts,
+          packages/web-ui/src/lib/constants.ts, packages/web-ui/src/lib/daemon-endpoint-host.ts,
+          packages/web-ui/vite.config.ts, src/daemon-shared/endpoint.ts,
+          tests/daemon-api/server.test.ts, tests/daemon-api/websocket-protocol.test.ts,
+          tests/web-ui/daemon-endpoint-host-parity.test.ts,
+          tests/web-ui/dev-server-daemon-endpoint.test.ts, scripts/test.cjs. Commands run: kspec
+          task get, kspec review get prior cycle, kspec item get
+          @daemon-network-endpoint-contract/@api-contract/@web-ui, kspec validate, git
+          diff/stat/log/show, AC annotation search, targeted npm test reruns, full npm test. Claims
+          verified: prior localhost daemon-port WebSocket blocker is fixed by loopback daemon-port
+          aliases and behavioral WS regression coverage; dev endpoints prefer daemon metadata, honor
+          host/port env fallback, default to 127.0.0.1, and bracket IPv6; daemon CORS/WS origin
+          lists are derived from endpoint config without wildcard origins. Categories searched:
+          correctness, edge cases, error handling, security/origin checks, test quality,
+          integration. No blockers or should-fix findings found."
+        created_at: 2026-05-06T15:51:54.831Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-06T15:52:07.207Z
+created_at: 2026-05-06T15:38:30.648Z
+updated_at: 2026-05-06T15:52:07.207Z
+notes: []

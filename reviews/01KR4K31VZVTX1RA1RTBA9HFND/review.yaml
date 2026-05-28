@@ -1,0 +1,258 @@
+_ulid: 01KR4K31VZVTX1RA1RTBA9HFND
+slugs: []
+title: Review fix guardrail daemon command classification (cycle 3)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts passed: 90 tests, 0 failed."
+    name: targeted lint guardrail tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-08T20:22:33.609Z
+    completed_at: 2026-05-08T20:22:33.609Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Synthetic test with exec("echo dist/daemon/index.js") exited 1 and emitted
+      directDaemonSpawn. Expected no no-leaky-test-daemon diagnostic because echo only receives the
+      path as an argument and does not launch the daemon.
+    name: custom unrelated shell probe
+    required: true
+    runner: npx oxlint
+    created_at: 2026-05-08T20:22:45.740Z
+    completed_at: 2026-05-08T20:22:45.740Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh ran 8836 tests: 8830 passed, 5 skipped, 1 failed. Failure was
+      tests/daemon-build.test.ts timeout after 180000ms; immediate focused rerun passed 2/2 in
+      911ms, so classified as flaky and noted on existing task @01KR4AWP."
+    name: full test suite
+    required: false
+    runner: npm test
+    created_at: 2026-05-08T20:23:02.762Z
+    completed_at: 2026-05-08T20:23:02.762Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/daemon-build.test.ts passed: 2 tests, 0 failed. This disproved
+      treating the full-suite daemon-build timeout as introduced by this branch."
+    name: daemon-build focused rerun
+    required: false
+    runner: npm test
+    created_at: 2026-05-08T20:23:14.756Z
+    completed_at: 2026-05-08T20:23:14.756Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate exited 6 with existing project warnings: deprecated refs, orphan/status
+      alignment warnings, missing AC coverage, and invalid annotations outside this branch. Schema
+      and references OK."
+    name: kspec validate
+    required: false
+    runner: kspec validate
+    created_at: 2026-05-08T20:23:25.577Z
+    completed_at: 2026-05-08T20:23:25.577Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run lint exited 1 with 13 errors and 724 warnings. The reported errors are existing
+      project-wide lint debt outside the changed files, matching the baseline categories from prior
+      cycles; no new changed-file lint failure observed.
+    name: lint
+    required: false
+    runner: npm run lint
+    created_at: 2026-05-08T20:23:36.018Z
+    completed_at: 2026-05-08T20:23:36.018Z
+events:
+  - _ulid: 01KR4K31VYTF1G9TCCAQ936BF7
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-08T20:05:01.439Z
+  - _ulid: 01KR4K3E2QR1QSVH8BSPDZ653A
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-08T20:05:13.943Z
+  - _ulid: 01KR4M2V2C222W9W88PDJCQ090
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR4M2SK6YJ8QWXKPYWQNZHPG
+    timestamp: 2026-05-08T20:22:23.052Z
+  - _ulid: 01KR4M36RNW3NKWQM7NCA72HHA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted lint guardrail tests
+    timestamp: 2026-05-08T20:22:35.029Z
+  - _ulid: 01KR4M3JNTBFSREWQ2R0S8ZNJW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: custom unrelated shell probe
+    timestamp: 2026-05-08T20:22:47.226Z
+  - _ulid: 01KR4M4393V38R751GCQZY5DF8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: full test suite
+    timestamp: 2026-05-08T20:23:04.228Z
+  - _ulid: 01KR4M4EZMWZMKHHDBAD3A6PM4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: daemon-build focused rerun
+    timestamp: 2026-05-08T20:23:16.212Z
+  - _ulid: 01KR4M4SGFB7EVQ8BFERA8KNJZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-05-08T20:23:26.991Z
+  - _ulid: 01KR4M53N68QY3AKE4KZ5GB53S
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: lint
+    timestamp: 2026-05-08T20:23:37.382Z
+  - _ulid: 01KR4M5N4XE4QNTH5RYEQS4NWH
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KR4M5KW3ESEKFX17V3R7T5XB
+    timestamp: 2026-05-08T20:23:55.293Z
+  - _ulid: 01KR4M60E1GMZV074YSR33T9W2
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-08T20:24:06.849Z
+  - _ulid: 01KR4M60E1ESWGM81JVT727X6X
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-08T20:24:06.849Z
+  - _ulid: 01KR4NNV3ZH5Y1X5XHXQ42MWEF
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR4M2SK6YJ8QWXKPYWQNZHPG
+    timestamp: 2026-05-08T20:50:14.272Z
+  - _ulid: 01KR4NP4N6ZS7D4SHW84JJBJAA
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR4M2SK6YJ8QWXKPYWQNZHPG
+    timestamp: 2026-05-08T20:50:24.038Z
+  - _ulid: 01KR4NPC5GJ6W6BSN0CHND08EF
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR4M5KW3ESEKFX17V3R7T5XB
+    timestamp: 2026-05-08T20:50:31.728Z
+examined_commit: f0d119a1f95ce93bafc5ea58c499ebd02865f260
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR3W7PPVDFR8F03VQ6J54M3K"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR4M2SK6YJ8QWXKPYWQNZHPG
+    anchor:
+      type: code
+      commit: f0d119a1f95ce93bafc5ea58c499ebd02865f260
+      line_end: 610
+      line_start: 588
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KR4M2SK74KA8V61MW9Z7VW2P
+        author: Jacob Chapel
+        body: 'MUST-FIX: exec/execSync direct-entry detection treats any shell token ending in
+          dist/daemon/index.js as a daemon launch, regardless of what the shell command actually
+          executes. That violates the precision requirement: an unrelated subprocess can merely pass
+          the daemon path as an argument and still get the direct-daemon diagnostic. Evidence: a
+          synthetic lint probe with exec("echo dist/daemon/index.js") exited 1 and reported
+          directDaemonSpawn at the echo call, even though echo does not start the daemon. This will
+          create false positives for harmless commands such as echo/cat/grep that mention the path,
+          undermining @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported and
+          the task goal of matching daemon behavior rather than incidental token sequences.'
+        created_at: 2026-05-08T20:22:21.543Z
+      - _ulid: 01KR4NNSRJ525X2RKJAQVHFYET
+        author: "@claude"
+        body: "Fixed: tightened the exec/execSync direct-entry detector to require the daemon entry token in
+          an executable position. Direct-executable form needs the daemon entry as the FIRST shell
+          token; runtime form requires a recognised JS runtime (node/bun, bare or path-suffixed) at
+          token 0 and the daemon entry as the immediate next token. Tokens at any other position are
+          not flagged. Verified the reviewer's exec(\"echo dist/daemon/index.js\") probe now exits 0
+          with no diagnostics, and added behavioral regressions for
+          echo/cat/grep/template-literal-prefix/nodemon shapes plus a substring-of-runtime guard.
+          All positive cases (runtime form, direct-executable form, absolute path, template literal,
+          bun runtime) still flag correctly."
+        created_at: 2026-05-08T20:50:12.881Z
+    kind: blocker
+    resolved_at: 2026-05-08T20:50:22.480Z
+    resolved_by: "@claude"
+  - _ulid: 01KR4M5KW3ESEKFX17V3R7T5XB
+    entries:
+      - _ulid: 01KR4M5KW3Z1H0FK36BZSEXP30
+        author: Jacob Chapel
+        body: 'Evidence log: Files read: kspec-agents.md; task/spec/review records;
+          tools/eslint-rules/no-leaky-test-daemon.js; tests/lint-daemon-test-guardrails.test.ts;
+          test runner log /tmp/kspec-test-cache/01KR4K02B1FTKXJTQH2SJCBC2D/f38f29fddaf6fcaa.log.
+          Commands run: git diff/stat/log/status; kspec task get; kspec item get
+          @daemon-test-guardrail-precision and @daemon-test-harness-guardrails; kspec review
+          get/for-task/add/open/comment/check; rg AC annotations; npm test -- --fresh
+          tests/lint-daemon-test-guardrails.test.ts tests/lint-no-leaky-test-daemon.test.ts; custom
+          npx oxlint probe for exec("echo dist/daemon/index.js"); npm test -- --fresh; kspec
+          validate; npm run lint; npm test -- --fresh tests/daemon-build.test.ts; kspec search;
+          kspec task note @01KR4AWP. Claims verified: prior blockers for direct-executable and
+          exec/execSync shell-string daemon entry detection are covered by code and tests; found
+          remaining false positive for unrelated shell commands that mention the daemon path.
+          Categories searched: correctness, false positives/precision, AC coverage, test quality,
+          lint/validation, flaky test triage, integration with detached-serve classification.'
+        created_at: 2026-05-08T20:23:53.987Z
+    kind: nit
+    resolved_at: 2026-05-08T20:50:30.303Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-08T20:24:06.849Z
+created_at: 2026-05-08T20:05:01.439Z
+updated_at: 2026-05-08T20:50:30.303Z
+notes: []

@@ -1,0 +1,174 @@
+_ulid: 01KMM8YQPWHB0CX5F4KVYQZP2R
+slugs: []
+title: Review smart error message for task set --status rejection (cycle 2)
+author: Test User
+checks:
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 6 with repository-wide warnings only (orphaned skills/spec coverage warnings), no
+      validation errors.
+    name: kspec-validate
+    required: false
+    created_at: 2026-03-26T05:16:57.761Z
+    completed_at: 2026-03-26T05:16:57.761Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test failed in this snapshot. The task-specific area passed, but the full suite failed
+      at tests/agent-invocation-lifecycle.test.ts with 'should close session as timed_out when
+      timeout is reached'.
+    name: npm-test
+    required: true
+    runner: npm
+    created_at: 2026-03-26T05:18:51.255Z
+    completed_at: 2026-03-26T05:18:51.255Z
+events:
+  - _ulid: 01KMM8YQPVETD781Z9XRMDAXRA
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-26T05:12:57.820Z
+  - _ulid: 01KMM92M5X8RV3ES68CN0B7E4M
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-26T05:15:05.277Z
+  - _ulid: 01KMM962RHMDTWWQJT402238X2
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec-validate
+    timestamp: 2026-03-26T05:16:58.513Z
+  - _ulid: 01KMM966K9TAZ3K486C9YPB193
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMM965SWFT6V784PAE8ZN3YG
+    timestamp: 2026-03-26T05:17:02.441Z
+  - _ulid: 01KMM96AMW4CGAND9A8RB4TC5E
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-26T05:17:06.588Z
+  - _ulid: 01KMM96AMWQKN30BFHH57AC4VQ
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-26T05:17:06.588Z
+  - _ulid: 01KMM96QVB02ETN8PXZJXW3D5B
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMM96Q3RAJ38KQA7XWE679NS
+    timestamp: 2026-03-26T05:17:20.107Z
+  - _ulid: 01KMM99FV6XWPEEQWQZK2AHTH5
+    actor: Test User
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMM965SWFT6V784PAE8ZN3YG
+    timestamp: 2026-03-26T05:18:50.214Z
+  - _ulid: 01KMM99H9Q85FRP88Y1010KNFB
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm-test
+    timestamp: 2026-03-26T05:18:51.703Z
+  - _ulid: 01KMM9SR624MKF3VMV85PTYKQT
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMM96Q3RAJ38KQA7XWE679NS
+    timestamp: 2026-03-26T05:27:43.042Z
+  - _ulid: 01KMM9T4GYE89RZQBK5APPZRSE
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMM96Q3RAJ38KQA7XWE679NS
+    timestamp: 2026-03-26T05:27:55.679Z
+examined_commit: e7d37ff438197e4987648ea4f08fa3b83e82d5f6
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMM6PH4EQBRZW72DXWMMNFP3"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMM965SWFT6V784PAE8ZN3YG
+    anchor:
+      type: code
+      commit: e7d37ff438197e4987648ea4f08fa3b83e82d5f6
+      line_end: 28
+      line_start: 22
+      path: src/strings/errors.ts
+      side: head
+    entries:
+      - _ulid: 01KMM965SW4NKFEVESB4S6EKAV
+        author: Test User
+        body: Blocked-state guidance is incorrect.  preserves , and  restores it, so a task blocked
+          from  can return to . The new hard-coded map marks  as invalid and instead suggests /,
+          which violates @task-set ac-1 and @trait-error-guidance ac-4. I reproduced this by
+          creating a task, submitting it, blocking it, then running ; the CLI reported 'Cannot
+          transition from blocked to pending_review' even though the task JSON showed .
+        created_at: 2026-03-26T05:17:01.628Z
+    kind: blocker
+    resolved_at: 2026-03-26T05:18:49.788Z
+    resolved_by: Test User
+  - _ulid: 01KMM96Q3RAJ38KQA7XWE679NS
+    anchor:
+      type: code
+      commit: e7d37ff438197e4987648ea4f08fa3b83e82d5f6
+      line_end: 28
+      line_start: 22
+      path: src/strings/errors.ts
+      side: head
+    entries:
+      - _ulid: 01KMM96Q3RJ7JZC7KSB0EZ59CN
+        author: Test User
+        body: "Blocked-state guidance is incorrect. task block preserves prior_status, and task unblock
+          restores it, so a task blocked from pending_review can return to pending_review. The new
+          hard-coded map marks blocked -> pending_review as invalid and instead suggests task
+          start/pending, which violates @task-set ac-1 and @trait-error-guidance ac-4. I reproduced
+          this by creating a task, submitting it, blocking it, then running task set @blocked-review
+          --status pending_review; the CLI reported 'Cannot transition from blocked to
+          pending_review' even though the task JSON showed prior_status: pending_review."
+        created_at: 2026-03-26T05:17:19.352Z
+      - _ulid: 01KMM9SP42KCRFGSTHRPYTSB3C
+        author: "@claude"
+        body: "Fixed: statusSetRejection now accepts prior_status. When current status is blocked and
+          prior_status is set, the function dynamically extends valid transitions to include the
+          prior_status target and suggests 'kspec task unblock @ref (restores prior status)' instead
+          of incorrectly reporting the transition as invalid. Added two tests covering this scenario
+          in both text and JSON mode."
+        created_at: 2026-03-26T05:27:40.930Z
+    kind: blocker
+    resolved_at: 2026-03-26T05:27:54.128Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-26T05:17:06.587Z
+created_at: 2026-03-26T05:12:57.820Z
+updated_at: 2026-03-26T05:27:54.128Z
+notes: []

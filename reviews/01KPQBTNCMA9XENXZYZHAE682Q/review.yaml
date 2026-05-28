@@ -1,0 +1,173 @@
+_ulid: 01KPQBTNCMA9XENXZYZHAE682Q
+slugs: []
+title: Review make-task-reads-immediately-consistent-after-review-verdict-transitions
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2219/2219 suites passed; 8136/8141 tests passed, 5 skipped, 0 failed. Executed from the
+      detached review snapshot on 2026-04-20/21.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-21T06:43:17.248Z
+    completed_at: 2026-04-21T06:43:17.248Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation currently fails for pre-existing repo issues outside this task: meta.yaml
+      schema error ( expected string, received object), orphaned skill directory warning, and broad
+      existing completeness/alignment warnings. No task-specific validation regression identified in
+      the touched files."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-21T06:43:23.392Z
+    completed_at: 2026-04-21T06:43:23.392Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md, src/parser/task-data-manager.ts, src/daemon/entity-cache.ts,
+      src/cli/commands/review.ts, src/parser/review-task-integration.ts,
+      tests/task-data-manager.test.ts, tests/daemon-entity-cache.test.ts,
+      tests/review-task-integration.test.ts, tests/daemon-review-verdicts-api.test.ts. Commands run:
+      git diff/stat/name-only against base a1fdd98a5197, kspec task get, kspec review for-task,
+      kspec validate, rg AC annotations, rg targeted source/test searches, npm test. Claims
+      verified: the patch updates TaskDataManager mutate/create paths to call applyTaskMutation and
+      ProjectEntityCache mutates index/detail tiers, but no test covers the actual review-verdict
+      immediate-read regression path. Categories searched: correctness, edge cases, test quality,
+      integration."
+    name: manual review
+    required: false
+    runner: reviewer
+    created_at: 2026-04-21T06:43:26.716Z
+    completed_at: 2026-04-21T06:43:26.716Z
+events:
+  - _ulid: 01KPQBTNCMNKD523XM6N93SJWK
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-21T06:32:17.044Z
+  - _ulid: 01KPQBVBB72BDZW3FW9KYZQJHN
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-21T06:32:39.527Z
+  - _ulid: 01KPQCEV4A06A76C11XPPTK37W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-21T06:43:18.283Z
+  - _ulid: 01KPQCEY526QAYK1N4E3CCM0NX
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPQCEX23F5DS61PZ22RST1XT
+    timestamp: 2026-04-21T06:43:21.378Z
+  - _ulid: 01KPQCF17448EY5ZM8QC9FS63P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-21T06:43:24.517Z
+  - _ulid: 01KPQCF4EARC0NANHHMBXAXR70
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: manual review
+    timestamp: 2026-04-21T06:43:27.818Z
+  - _ulid: 01KPQCFEE9RY8AW0TEVKX9YEDS
+    actor: jacob.chapel@gmail.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-21T06:43:38.058Z
+  - _ulid: 01KPQCFEEA260MPT07NGDKY877
+    actor: jacob.chapel@gmail.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-21T06:43:38.058Z
+  - _ulid: 01KPQEA8MJCX1YEX6ZX7H6SAHN
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPQCEX23F5DS61PZ22RST1XT
+    timestamp: 2026-04-21T07:15:45.426Z
+  - _ulid: 01KPQEAHDT3G4VVHZYKR3ZTCAY
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPQCEX23F5DS61PZ22RST1XT
+    timestamp: 2026-04-21T07:15:54.426Z
+examined_commit: 18e0da8abf85d37b2848252fcf45386e96d64941
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KPQ7RDHXBRGDZSDFF0XG13RT"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPQCEX23F5DS61PZ22RST1XT
+    anchor:
+      type: code
+      commit: 18e0da8abf85d37b2848252fcf45386e96d64941
+      line_end: 1008
+      line_start: 843
+      path: tests/task-data-manager.test.ts
+      side: head
+    entries:
+      - _ulid: 01KPQCEX23RNQHS2969P1H8Z6Y
+        author: Jacob Chapel
+        body: The added coverage only verifies that TaskDataManager calls applyTaskMutation() and that
+          ProjectEntityCache mutates its in-memory tiers in isolation; it never executes the actual
+          regression path in src/cli/commands/review.ts where no packages found for verdict
+          transitions the task and a subsequent  must immediately observe the new state. Because
+          these tests stop at a mocked cache callback, they would still pass if the verdict command
+          stopped running under a cache-backed context or if the end-to-end command pair still
+          surfaced stale task reads. This task is specifically about immediate post-verdict
+          consistency, so it needs an integration test that runs the verdict flow and then
+          immediately reads the task through the same cache-backed surface.
+        created_at: 2026-04-21T06:43:20.259Z
+      - _ulid: 01KPQEA7NCGVAJ2V0QE5ZF7ZXF
+        author: "@claude"
+        body: "Fixed: Added an end-to-end integration test in daemon-review-verdicts-api.test.ts that
+          exercises the actual regression path. The test wires both createReviewsRoutes and
+          createTasksRoutes into the same Elysia app with a shared mock RouteEntityCache whose
+          writeThrough reloads tasks from disk (matching real ProjectEntityCache behavior). It
+          submits a request_changes verdict via POST, then immediately reads the task via
+          cache-backed GET and asserts status is needs_work. Also added a control test confirming
+          approve verdicts leave the task in pending_review. All 8138 tests pass."
+        created_at: 2026-04-21T07:15:44.428Z
+    kind: blocker
+    resolved_at: 2026-04-21T07:15:53.341Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: jacob.chapel@gmail.com
+    role: reviewer
+    created_at: 2026-04-21T06:43:38.057Z
+created_at: 2026-04-21T06:32:17.044Z
+updated_at: 2026-04-21T07:15:53.341Z
+notes: []

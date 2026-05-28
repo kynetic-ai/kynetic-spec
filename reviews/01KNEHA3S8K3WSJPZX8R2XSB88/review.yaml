@@ -1,0 +1,132 @@
+_ulid: 01KNEHA3S8K3WSJPZX8R2XSB88
+slugs: []
+title: Review stabilize web UI build prep before npm test
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Cold npm test run built missing artifacts, then passed: 2069 suites passed, 7518 tests
+      passed, 5 skipped. Immediate rerun used cached results and also passed."
+    name: npm-test
+    required: true
+    runner: npm
+    created_at: 2026-04-05T10:03:58.040Z
+    completed_at: 2026-04-05T10:03:58.040Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: After deleting packages/web-ui/.svelte-kit, npm run build --workspace @kynetic-ai/web-ui
+      succeeded with the updated 'svelte-kit sync && vite build' script.
+    name: web-ui-build-clean-state
+    required: false
+    runner: npm
+    created_at: 2026-04-05T10:04:02.526Z
+    completed_at: 2026-04-05T10:04:02.526Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate exited with warnings only: schema/references OK, no task-specific
+      validation errors."
+    name: kspec-validate
+    required: true
+    runner: kspec
+    created_at: 2026-04-05T10:04:06.900Z
+    completed_at: 2026-04-05T10:04:06.900Z
+events:
+  - _ulid: 01KNEHA3S7XNMKD1DTM8NKD8HB
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-05T09:59:14.471Z
+  - _ulid: 01KNEHGGS0WKN6WYG4HBZ62SE0
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-05T10:02:44.384Z
+  - _ulid: 01KNEHJNVPYKYEPQYXCP56RGY3
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNEHJMEKT89RJ82A51RHS4K7
+    timestamp: 2026-04-05T10:03:55.126Z
+  - _ulid: 01KNEHJT4M3AGA3YZMZRQNF925
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm-test
+    timestamp: 2026-04-05T10:03:59.508Z
+  - _ulid: 01KNEHJYHPQNBHGCGD5NKAA48V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: web-ui-build-clean-state
+    timestamp: 2026-04-05T10:04:04.022Z
+  - _ulid: 01KNEHK2R84QAGWMC6XHFXEJKD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-04-05T10:04:08.328Z
+  - _ulid: 01KNEHKE19S5G0WR4NVGWFYHX5
+    actor: codex@gpt-5
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-05T10:04:19.882Z
+  - _ulid: 01KNEHKE1A27347Y9FTYK9BBQW
+    actor: codex@gpt-5
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-05T10:04:19.882Z
+examined_commit: cb909e6edefa9de81d07fd46a6a25c2a5bb1dcd8
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNEFYKWCC21H6618TKB8VE0D"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNEHJMEKT89RJ82A51RHS4K7
+    entries:
+      - _ulid: 01KNEHJMEKCEAJR93FVBBA0D7Y
+        author: Jacob Chapel
+        body: "Evidence log:\\nFiles read: packages/web-ui/package.json, scripts/test.cjs,
+          tests/test-runner.test.ts, plus base versions of packages/web-ui/package.json and
+          scripts/test.cjs.\\nCommands run: git diff/stat/status, kspec task get, kspec review
+          for-task, kspec validate, npm test (cold run), npm test (cached rerun), npm run build
+          --workspace @kynetic-ai/web-ui after removing packages/web-ui/.svelte-kit.\\nClaims
+          verified: the web UI build now self-syncs on a clean .svelte-kit state, and the test
+          runner no longer treats partial web/shared outputs as a healthy build.\\nCategories
+          searched: correctness, test quality, edge cases around partial build state, integration
+          with root npm test bootstrap; no task-specific issues found."
+        created_at: 2026-04-05T10:03:53.683Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@gpt-5
+    role: reviewer
+    created_at: 2026-04-05T10:04:19.881Z
+created_at: 2026-04-05T09:59:14.472Z
+updated_at: 2026-04-05T10:04:19.882Z
+notes: []

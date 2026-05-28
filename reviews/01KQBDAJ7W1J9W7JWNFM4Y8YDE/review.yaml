@@ -1,0 +1,202 @@
+_ulid: 01KQBDAJ7W1J9W7JWNFM4Y8YDE
+slugs: []
+title: Review centralize AC ID patch validation
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh passed: 2323 test suites, 8490 tests passed, 5 skipped. Full log:
+      /tmp/kspec-test-cache/01KQBD9HTKNA2N4BQ771FGP9EX/7dbda8416fb9476d.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-29T01:34:02.782Z
+    completed_at: 2026-04-29T01:34:02.782Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate reported Schema OK and References OK; exited 6 due existing repository-wide
+      warnings (deprecated refs, orphaned specs, missing historical AC coverage), not new validation
+      errors for this change.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-29T01:34:06.238Z
+    completed_at: 2026-04-29T01:34:06.238Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck passed (tsc --noEmit).
+    name: typecheck
+    required: true
+    runner: npm
+    created_at: 2026-04-29T01:34:09.795Z
+    completed_at: 2026-04-29T01:34:09.795Z
+events:
+  - _ulid: 01KQBDAJ7WCNMMX1HWP0AM23YJ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-29T01:23:15.324Z
+  - _ulid: 01KQBDCKF17J0AJ566C7T3C84C
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-29T01:24:22.114Z
+  - _ulid: 01KQBDY8DGTMT4AD1H954DPD3F
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQBDY7A3AN0PAWE1YFT28ZE0
+    timestamp: 2026-04-29T01:34:00.624Z
+  - _ulid: 01KQBDYBQ2PWS5R320VYM53VT9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-29T01:34:04.002Z
+  - _ulid: 01KQBDYF36EWJKDHH4FWKQYEYW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-29T01:34:07.462Z
+  - _ulid: 01KQBDYJGR874BCPSX2SJF1C1Z
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-04-29T01:34:10.968Z
+  - _ulid: 01KQBDZ6F9A7RRB50T313AGXVY
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KQBDZ5C6X492ED11JGM738Z8
+    timestamp: 2026-04-29T01:34:31.401Z
+  - _ulid: 01KQBDZ9R5V2DBKYQC0Y8F5CWN
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-29T01:34:34.757Z
+  - _ulid: 01KQBDZ9R5821H1TYAH4FHV3AN
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-29T01:34:34.757Z
+  - _ulid: 01KQBFE3QN3ZZYAWDCC5X1SANH
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQBDY7A3AN0PAWE1YFT28ZE0
+    timestamp: 2026-04-29T02:00:08.693Z
+  - _ulid: 01KQBFECG17XFG1NMBR8DCPBTZ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQBDY7A3AN0PAWE1YFT28ZE0
+    timestamp: 2026-04-29T02:00:17.665Z
+  - _ulid: 01KQBFEPEY0X4BWXBA4M872K33
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQBDZ5C6X492ED11JGM738Z8
+    timestamp: 2026-04-29T02:00:27.870Z
+  - _ulid: 01KQBFEYYWN7D7MZZ4085CK1H5
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQBDZ5C6X492ED11JGM738Z8
+    timestamp: 2026-04-29T02:00:36.572Z
+examined_commit: 770669fd163946ab2c1f6da1cc7ea8caa83fbe56
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQB9J1KRGHYS1ZAJF2D91NTB"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQBDY7A3AN0PAWE1YFT28ZE0
+    anchor:
+      type: code
+      commit: 770669fd163946ab2c1f6da1cc7ea8caa83fbe56
+      line_end: 407
+      line_start: 393
+      path: tests/ac-id-patch-validation.test.ts
+      side: head
+    entries:
+      - _ulid: 01KQBDY7A3KDQRXGT4G8K7N7SE
+        author: Jacob Chapel
+        body: "MUST-FIX: This test claims to prove direct parser-layer updateSpecItem validation, but it
+          only invokes the CLI single-patch path. The CLI validates the patch in item.ts before
+          reaching updateSpecItem, so this test would still pass if the updateSpecItem guard were
+          removed. The task explicitly requires a parser-layer test proving direct updateSpecItem
+          calls reject invalid acceptance_criteria before writing; add a behavioral parser test that
+          loads a LoadedSpecItem and calls updateSpecItem with an invalid acceptance_criteria id,
+          then verifies it rejects and does not mutate the catalog."
+        created_at: 2026-04-29T01:33:59.491Z
+      - _ulid: 01KQBFE2JX858WFTKKZ49P4ED4
+        author: "@claude"
+        body: "Fixed: Replaced the CLI-proxy test with a direct behavioral test that imports
+          initContext/loadAllItems/updateSpecItem from the parser module. The test now loads a
+          LoadedSpecItem via setupTempFixtures + initContext, calls updateSpecItem directly with an
+          invalid AC ID, asserts it throws with 'ac-prefixed kebab-case', and verifies the catalog
+          file was not mutated by comparing readYamlFile before/after. Also added a positive-path
+          test confirming valid AC IDs succeed through the same direct call."
+        created_at: 2026-04-29T02:00:07.517Z
+    kind: blocker
+    resolved_at: 2026-04-29T02:00:16.508Z
+    resolved_by: "@claude"
+  - _ulid: 01KQBDZ5C6X492ED11JGM738Z8
+    entries:
+      - _ulid: 01KQBDZ5C65XR5BTMPT3GKJCBP
+        author: Jacob Chapel
+        body: "Evidence log: Files read: src/parser/yaml.ts, src/cli/commands/item.ts, src/schema/spec.ts,
+          tests/ac-id-patch-validation.test.ts, tests/spec-item-mutation-serialization.test.ts,
+          task/spec details for @01KQB9J1KRGHYS1ZAJF2D91NTB, @acceptance-criterion-id-format, and
+          @item-patch. Commands run: git diff/stat/log, kspec task get, kspec item get, kspec
+          validate, AC annotation rg scans, source-scanning rg scan, git diff --check, npm run
+          typecheck, npm test -- --fresh. Claims verified: shared helper is wired into single patch,
+          bulk patch, and updateSpecItem; bulk invalid operations fail and tests pass; worker's
+          parser-layer test claim is false because the test exits through CLI validation before
+          updateSpecItem. Categories searched: correctness, edge cases, error handling, test
+          quality, AC coverage, integration."
+        created_at: 2026-04-29T01:34:30.278Z
+      - _ulid: 01KQBFENBVPGHTPYQFZAQAJSN8
+        author: "@claude"
+        body: Acknowledged. The reviewer correctly identified that the CLI-proxy test was false coverage.
+          The fix addresses the root issue.
+        created_at: 2026-04-29T02:00:26.747Z
+    kind: nit
+    resolved_at: 2026-04-29T02:00:35.319Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-29T01:34:34.756Z
+created_at: 2026-04-29T01:23:15.324Z
+updated_at: 2026-04-29T02:00:35.319Z
+notes: []

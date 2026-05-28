@@ -1,0 +1,192 @@
+_ulid: 01KRG45W0H8Q9A3NM36KKW36Q4
+slugs: []
+title: Review validate in-flight cleanup protection
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test -- --run tests/dispatch-workspace-cleanup.test.ts
+      tests/dispatch-workspace-registry.test.ts exited 0; 7 suites passed, 58 tests passed; cleanup
+      29 tests, registry 29 tests.
+    name: targeted cleanup and registry tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-13T07:51:18.925Z
+    completed_at: 2026-05-13T07:51:18.925Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test -- --run tests/agent-dispatch-engine.test.ts
+      tests/dispatch-runtime-bootstrap-contract.test.ts exited 0; 41 suites passed, 152 tests
+      passed; dispatch engine 132 tests, bootstrap contract 20 tests.
+    name: targeted dispatch bootstrap tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-13T07:51:31.069Z
+    completed_at: 2026-05-13T07:51:31.069Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck exited 0; tsc --noEmit completed without diagnostics.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-05-13T07:51:42.895Z
+    completed_at: 2026-05-13T07:51:42.895Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test exited 0; 2435 test suites passed; 9211 tests passed and 5 skipped of 9216;
+      duration 2117.1s; log /tmp/kspec-test-cache/01KRG43ERD3C1AT767PQXJ5AFK/3d2b1e9293b77a3b.log.
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-05-13T07:51:59.554Z
+    completed_at: 2026-05-13T07:51:59.554Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate --warnings-ok exited 0. Validation passed with known baseline warnings: 7
+      reference, 39 alignment, 253 completeness; no errors."
+    name: kspec validate
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-13T07:52:18.120Z
+    completed_at: 2026-05-13T07:52:18.120Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git status --short was empty. kspec shadow status exited 0 and reported branch/worktree
+      linked and healthy.
+    name: workspace cleanliness
+    required: true
+    runner: git status; kspec shadow status
+    created_at: 2026-05-13T07:52:34.239Z
+    completed_at: 2026-05-13T07:52:34.239Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md; tests/dispatch-workspace-cleanup.test.ts;
+      tests/dispatch-workspace-registry.test.ts; tests/dispatch-artifact-protection.test.ts;
+      tests/agent-dispatch-engine.test.ts; src/agent-runtime/dispatch.ts;
+      src/agent-runtime/workspace.ts. Commands run: kspec task get; kspec item get for cleanup
+      policy, dispatch engine, registry; rg AC annotations; npm focused tests; npm run typecheck;
+      npm test; kspec validate --warnings-ok; kspec shadow status; git status/log/diff. Claims
+      verified: submitted validation note matched fresh targeted and full-suite results; AC
+      annotations cover all listed cleanup-protection ACs; implementation passes in-flight refs into
+      cleanup reconciliation. Categories searched: correctness, edge cases, error
+      handling/no-blind-deletion, test quality, integration, workspace cleanliness. No blocking
+      findings."
+    name: review evidence log
+    required: false
+    runner: codex review
+    created_at: 2026-05-13T07:52:55.149Z
+    completed_at: 2026-05-13T07:52:55.149Z
+events:
+  - _ulid: 01KRG45W0HBYVJ2T11GN39FWRX
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-13T07:35:18.289Z
+  - _ulid: 01KRG47E7NT20SG6750R1W6J0T
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-13T07:36:09.718Z
+  - _ulid: 01KRG537HKRJEV51C51JXNJFKY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted cleanup and registry tests
+    timestamp: 2026-05-13T07:51:20.371Z
+  - _ulid: 01KRG53KDJ0C6WS736BCH489YZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted dispatch bootstrap tests
+    timestamp: 2026-05-13T07:51:32.530Z
+  - _ulid: 01KRG53YYYV2TKV4M61DDDWK9W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-13T07:51:44.350Z
+  - _ulid: 01KRG54F86EY7HP80BBFYMY3PV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-13T07:52:01.030Z
+  - _ulid: 01KRG551B84VVM4SX06Z9HYBJA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-13T07:52:19.560Z
+  - _ulid: 01KRG55H37TK98SYPERZMGH71S
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: workspace cleanliness
+    timestamp: 2026-05-13T07:52:35.687Z
+  - _ulid: 01KRG565FJY4NY00DPZDGHSHYV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-13T07:52:56.562Z
+  - _ulid: 01KRG56R408GD84WY421ZB64EH
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-13T07:53:15.648Z
+  - _ulid: 01KRG56R40568589M1G0KXNM23
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-13T07:53:15.648Z
+examined_commit: ffdef6f9dc5d15658685f44df4a3210ba430f4c7
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRF380CNC5AFY7YW4YWSGN2M"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-13T07:53:15.648Z
+created_at: 2026-05-13T07:35:18.289Z
+updated_at: 2026-05-13T07:53:15.648Z
+notes: []

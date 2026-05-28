@@ -1,0 +1,127 @@
+_ulid: 01KN5ACAZAE9FC5RG6D7HXK6H2
+slugs: []
+title: Review task-purge-old-storage-refs
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Targeted suite passed: 4 suites, 12 tests, duration 9.7s after rebuilding dist/cli/index.js"
+    name: npm test task-system-ac-backfill
+    required: true
+    runner: npm
+    created_at: 2026-04-01T20:06:22.385Z
+    completed_at: 2026-04-01T20:06:22.385Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 6 with warnings only; references OK, no errors. Warnings are pre-existing
+      project-level orphan/completeness/alignment items unrelated to this diff.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-01T20:06:26.406Z
+    completed_at: 2026-04-01T20:06:26.406Z
+events:
+  - _ulid: 01KN5ACAZ9TT9SGAR3M4523VGX
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-01T20:04:57.450Z
+  - _ulid: 01KN5ACQGDBZ1V3Q6PCGF1XC1Q
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-01T20:05:10.285Z
+  - _ulid: 01KN5AEYHS06G75PAQ314YPJ6Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test task-system-ac-backfill
+    timestamp: 2026-04-01T20:06:23.033Z
+  - _ulid: 01KN5AF0FNVWF9QD33J0JGNH3H
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN5AEZVEGTSKSWPDJ2RE9BWC
+    timestamp: 2026-04-01T20:06:25.013Z
+  - _ulid: 01KN5AF2FJSCWT5PX1BC06SA3W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-01T20:06:27.058Z
+  - _ulid: 01KN5AFCXVG0MKNZCHSTHM31W3
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-01T20:06:37.755Z
+  - _ulid: 01KN5AFCXV4HJVF6G595CC35XH
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-01T20:06:37.755Z
+examined_commit: b5b74b777d84ad59b520de064b8b74711cebe7bc
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YEZ0E4QE1E37DAA4T1X7F"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN5AEZVEGTSKSWPDJ2RE9BWC
+    entries:
+      - _ulid: 01KN5AEZVFPC4MVMSTFD3KWMW5
+        author: Jacob Chapel
+        body: >-
+          Files read: tests/task-system-ac-backfill.test.ts,
+          tests/fixtures/task-system-ac-backfill.snapshot.json
+
+          Commands run: git diff --unified=80
+          b21970e7807885567bfcfd956798cd3fb979a338...b5b74b777d84ad59b520de064b8b74711cebe7bc --
+          tests/task-system-ac-backfill.test.ts
+          tests/__snapshots__/fixtures/task-system-ac-backfill.snapshot.json; kspec task get
+          @01KM6YEZ0E4QE1E37DAA4T1X7F; kspec item get @task-data-manager; kspec item get
+          @tasks-ac-backfill; rg -n
+          "@task-storage$|@task-storage-alongside$|@task-storage-separate$|@task-storage
+          ac-1|@task-storage-alongside ac-1|@task-storage-separate
+          ac-1|\"@task-storage\"|\"@task-storage-alongside\"|\"@task-storage-separate\"" tests src;
+          npm test task-system-ac-backfill; kspec validate
+
+          Claims verified: worker note that npm test task-system-ac-backfill passes; worker note
+          that exact deprecated refs are removed; worker note that kspec validate returns only
+          pre-existing warnings
+
+          Categories searched: correctness (annotation targets and snapshot alignment), test quality
+          (behavioral coverage still maps to active spec), integration (backfill fixture stays
+          aligned with spec-quality test), edge cases/error handling/security (no new surface in
+          this cleanup)
+        created_at: 2026-04-01T20:06:24.367Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-01T20:06:37.755Z
+created_at: 2026-04-01T20:04:57.450Z
+updated_at: 2026-04-01T20:06:37.755Z
+notes: []

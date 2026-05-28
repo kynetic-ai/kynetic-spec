@@ -1,0 +1,227 @@
+_ulid: 01KSBEGR4KVK5M4YQ1WDC1JKAE
+slugs: []
+title: Review @01KS8XAYMQSFXPMHEG9FZZ3C36
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Schema/references OK; command exited 6 because of pre-existing project-wide warnings
+      (deprecated refs, orphan specs, existing invalid annotations), not new errors for
+      @folder-backed-review-storage-1
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-23T22:29:22.646Z
+    completed_at: 2026-05-23T22:29:22.646Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Found annotations for the review storage ACs and inherited traits in
+      tests/parser-reviews-folder.test.ts and tests/review-rebuild-index.test.ts; one false
+      UI/static AC annotation recorded as blocker thread
+    name: AC annotation scan
+    required: false
+    runner: rg
+    created_at: 2026-05-23T22:29:27.497Z
+    completed_at: 2026-05-23T22:29:27.497Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2507/2507 suites passed; 9525 passed, 5 skipped; duration 2640.8s
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-23T22:29:32.353Z
+    completed_at: 2026-05-23T22:29:32.353Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit completed with exit 0
+    name: npm run typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-23T22:29:37.256Z
+    completed_at: 2026-05-23T22:29:37.256Z
+events:
+  - _ulid: 01KSBEGR4K8JFBMFRWG7A0DZM6
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-23T22:15:30.195Z
+  - _ulid: 01KSBEHMX6GDK11HWDYRSD26SP
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-23T22:15:59.654Z
+  - _ulid: 01KSBEXCS41PE4M4DHYMP39JCQ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSBEXAQGNDXYNDP57709TYF9
+    timestamp: 2026-05-23T22:22:24.548Z
+  - _ulid: 01KSBFA6P61YE48XKC6V9AC8E6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-23T22:29:24.294Z
+  - _ulid: 01KSBFABGCZCBDGCGW17Y8BK0M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC annotation scan
+    timestamp: 2026-05-23T22:29:29.228Z
+  - _ulid: 01KSBFAG7ZR0KWH9WR47GTP6A6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-23T22:29:34.079Z
+  - _ulid: 01KSBFAN2A98HXT7478AEN215J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run typecheck
+    timestamp: 2026-05-23T22:29:39.018Z
+  - _ulid: 01KSBFB0VJ7M93W2VKQ1TNB0JC
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-23T22:29:51.090Z
+  - _ulid: 01KSBFB0VJ1BZZ4PFBWMB416B4
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-23T22:29:51.090Z
+  - _ulid: 01KSBFBNDNZ7M2B2PC5XV5SZSV
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSBFBKRMP12EC9J4CPP1PZ0W
+    timestamp: 2026-05-23T22:30:12.149Z
+  - _ulid: 01KSBH1NNVX20PDXN1FJ0390CX
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSBEXAQGNDXYNDP57709TYF9
+    timestamp: 2026-05-23T22:59:41.883Z
+  - _ulid: 01KSBH290N09JJZQS1DGXSH27B
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSBEXAQGNDXYNDP57709TYF9
+    timestamp: 2026-05-23T23:00:01.685Z
+  - _ulid: 01KSBH2MZ1RSG2QM12PRXXHCPP
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSBFBKRMP12EC9J4CPP1PZ0W
+    timestamp: 2026-05-23T23:00:13.922Z
+  - _ulid: 01KSBH2YTC0S9PNTXH2SM74S5P
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSBFBKRMP12EC9J4CPP1PZ0W
+    timestamp: 2026-05-23T23:00:24.012Z
+examined_commit: a493bb85ac2a2fb06d93713154692f9243c412b6
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XAYMQSFXPMHEG9FZZ3C36"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSBEXAQGNDXYNDP57709TYF9
+    anchor:
+      type: code
+      commit: a493bb85ac2a2fb06d93713154692f9243c412b6
+      line_end: 411
+      line_start: 408
+      path: tests/parser-reviews-folder.test.ts
+      side: head
+    entries:
+      - _ulid: 01KSBEXAQG5C2A49DYMT010074
+        author: Jacob Chapel
+        body: "MUST-FIX: This test is annotated as covering @folder-backed-review-storage-1
+          ac-review-screenshot-resource-loads-in-ui, but it only calls the parser resource resolver
+          and asserts a filesystem path. The AC requires the screenshot to be discoverable and
+          loadable when the review is opened in the web UI or exported to the static UI snapshot, so
+          this is coverage at the wrong abstraction layer and can mark the UI/static behavior
+          covered while no review UI route, resource URL, or static exported asset path is
+          exercised. Replace this with behavioral UI/static coverage for the AC, or remove the false
+          AC annotation from this task and leave that AC to the dedicated review screenshot resource
+          UI task."
+        created_at: 2026-05-23T22:22:22.448Z
+      - _ulid: 01KSBH1KYE10DVTECTZ4SZRX7V
+        author: "@claude"
+        body: "Fixed in 48a17f7b79. Took the second remediation path: removed the over-claimed `// AC:
+          @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui` annotation from
+          tests/parser-reviews-folder.test.ts:408 and updated the file header to make explicit that
+          the UI/static AC is owned by @task-review-screenshot-resource-ui (which covers the daemon
+          GET /api/reviews/:ref/resources/:resourceId/bytes route, web UI preview, and static export
+          copying under assets/resources/review/<review-ulid>/). The screenshot test still validates
+          the parser-layer trait ACs ac-resource-reference-resolves-within-owner and
+          ac-resource-metadata-exposes-safe-preview-fields, which is the correct abstraction layer
+          for this storage-manager task."
+        created_at: 2026-05-23T22:59:40.110Z
+    kind: blocker
+    resolved_at: 2026-05-23T22:59:59.955Z
+    resolved_by: "@claude"
+  - _ulid: 01KSBFBKRMP12EC9J4CPP1PZ0W
+    entries:
+      - _ulid: 01KSBFBKRM5PGK0YEHSHVRTZR2
+        author: Jacob Chapel
+        body: "Evidence log: Files read: src/parser/review-storage-manager.ts, src/parser/reviews.ts,
+          src/cli/commands/review.ts, tests/parser-reviews-folder.test.ts,
+          tests/review-rebuild-index.test.ts, tests/daemon-api/helpers.ts,
+          tests/entity-storage-partial-layout-manager.test.ts,
+          src/parser/entity-storage-compatibility.ts, src/parser/folder-backed-entity.ts,
+          src/daemon/entity-cache.ts, packages/daemon/src/routes/reviews.ts. Commands run: kspec
+          task get, kspec review add/open/comment/check/verdict, kspec item get for spec and traits,
+          kspec validate, rg AC annotations, git diff/stat/name-status/log/status, npm test, npm run
+          typecheck, npm run dev -- review rebuild-index --json. Claims verified: full suite passed;
+          typecheck passed; folder storage code writes cohesive review.yaml and bounded index;
+          rebuild-index tests cover clean/drift/repair/force. Categories searched: correctness, edge
+          cases, error handling, storage compatibility, resource handling, test quality, AC
+          alignment, integration with daemon cache/routes."
+        created_at: 2026-05-23T22:30:10.452Z
+      - _ulid: 01KSBH2KA0B4E62X6N97SG1VHN
+        author: "@claude"
+        body: Acknowledged — evidence log noted. No action needed on the storage-manager scope.
+        created_at: 2026-05-23T23:00:12.224Z
+    kind: nit
+    resolved_at: 2026-05-23T23:00:22.256Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-23T22:29:51.090Z
+created_at: 2026-05-23T22:15:30.195Z
+updated_at: 2026-05-23T23:00:22.256Z
+notes: []

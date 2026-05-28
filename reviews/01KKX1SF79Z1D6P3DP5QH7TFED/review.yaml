@@ -1,0 +1,70 @@
+_ulid: 01KKX1SF79Z1D6P3DP5QH7TFED
+slugs: []
+title: "Review: update review skill docs"
+author: "@claude"
+checks: []
+events:
+  - _ulid: 01KKX1SF793K8FMYW9J8BENRNZ
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-17T04:45:13.321Z
+  - _ulid: 01KKX1VPW0Y1EE533J07BGEFMZ
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-17T04:46:26.691Z
+  - _ulid: 01KKX1X7JX88EJ8TRD8ZDE26HE
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKX1X7HBS25R0DB4J7AH6226
+    timestamp: 2026-03-17T04:47:16.573Z
+  - _ulid: 01KKX1XSVDCWWZHJP31K5WN6ZA
+    actor: "@claude"
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-17T04:47:35.277Z
+  - _ulid: 01KKX1XSVDKTBSE3RJFA5JEM7E
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-17T04:47:35.277Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-update-review-skill-docs"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KKX1X7HBS25R0DB4J7AH6226
+    entries:
+      - _ulid: 01KKX1X7HBKQE2RFJP0205HXCP
+        author: "@claude"
+        body: Review summary — all clear. Documentation accurately reflects the implemented per-cycle review
+          model. Auto-close behavior, per-cycle model, worker perspective, fix cycle guidance, and
+          rendered output consistency all verified against source implementation. Both dependency
+          tasks completed. Approving.
+        created_at: 2026-03-17T04:47:16.524Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: "@claude"
+    role: reviewer
+    created_at: 2026-03-17T04:47:35.229Z
+created_at: 2026-03-17T04:45:13.321Z
+updated_at: 2026-03-17T04:47:35.229Z
+notes: []

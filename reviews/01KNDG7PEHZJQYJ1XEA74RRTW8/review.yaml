@@ -1,0 +1,412 @@
+_ulid: 01KNDG7PEHZJQYJ1XEA74RRTW8
+slugs: []
+title: "Plan review: Configurable Daemon Runtime"
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 10 ACs on daemon-runtime-adapter are claimed by at least one task. Coverage mapping is
+      complete.
+    name: AC coverage
+    required: true
+    created_at: 2026-04-05T00:23:08.428Z
+    completed_at: 2026-04-05T00:23:08.428Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "No circular dependencies. Chain is linear: scope-ac16 -> config -> adapter -> spawn ->
+      health/e2e. task-ws-degradation-node correctly depends on adapter, not spawn. Priority
+      inversion noted (P1 doc-only task) but not structural."
+    name: Dependency ordering
+    required: true
+    created_at: 2026-04-05T00:23:10.428Z
+    completed_at: 2026-04-05T00:23:10.428Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No conflicts with @daemon-server, @daemon-file-monitoring, or @daemon-entity-cache. The
+      heartbeat degradation AC on the new spec is complementary to @trait-websocket-protocol
+      ac-4/ac-5, not contradictory. ac-16 scoping is properly handled by task-scope-ac16-bun-only.
+    name: Spec conflicts with existing specs
+    required: true
+    created_at: 2026-04-05T00:23:12.364Z
+    completed_at: 2026-04-05T00:23:12.364Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan lists 10 Bun-specific items but misses ws.data (per-connection state used in 5 files,
+      ~20 call sites). Also misses ws.publish() verification and pong handler coverage. The
+      Bun-specific surface area list is incomplete.
+    name: Bun-specific surface area completeness
+    required: true
+    created_at: 2026-04-05T00:23:14.331Z
+    completed_at: 2026-04-05T00:23:14.331Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 7 tasks include what/why/how sections and specific file references. Line numbers are
+      accurate (Bun.file at 571, spawn at 322/372, process.execPath at 178, stop at 728, heartbeat
+      ping at 51). Config schema location is hedged but correct on second guess.
+    name: Task standalone executability
+    required: true
+    created_at: 2026-04-05T00:23:16.276Z
+    completed_at: 2026-04-05T00:23:16.276Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified: Bun.file() at server.ts:571, bun spawn at serve.ts:322 and 372,
+      process.execPath at index.ts:178, app.server.stop() at server.ts:728, ws.ping() at
+      heartbeat.ts:51, BUN_ENV at serve.ts:111. All accurate."
+    name: Code location accuracy
+    required: true
+    created_at: 2026-04-05T00:23:18.291Z
+    completed_at: 2026-04-05T00:23:18.291Z
+events:
+  - _ulid: 01KNDG7PEG2HQANCBJZ9FSFJ30
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-05T00:21:12.272Z
+  - _ulid: 01KNDG8R09BN4XAEQP2RMQZW46
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNDG8Q73JEXN4VB269WGEHPQ
+    timestamp: 2026-04-05T00:21:46.634Z
+  - _ulid: 01KNDG8T1D53SE0A1PKXS2CZTA
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNDG8S8XGKSK5N17QWKW3MCJ
+    timestamp: 2026-04-05T00:21:48.717Z
+  - _ulid: 01KNDG8W2W7WH3ZJCRTB2RBE0X
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNDG8VA9MRJ76GJKW5J63S64
+    timestamp: 2026-04-05T00:21:50.812Z
+  - _ulid: 01KNDG9NH1TY43EGABX6M92B9D
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KNDG9MSTNYP2VB0P8WMR6VVB
+    timestamp: 2026-04-05T00:22:16.865Z
+  - _ulid: 01KNDG9QEQ3W0G3SK1FGPEHYC1
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KNDG9PQHYT90XWS86NQCRES6
+    timestamp: 2026-04-05T00:22:18.839Z
+  - _ulid: 01KNDG9SB9JC4PD0C5VKB39NCA
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KNDG9RN00GK5KSSAKREDQX5M
+    timestamp: 2026-04-05T00:22:20.778Z
+  - _ulid: 01KNDG9V8NWKS2ARVCRD5WZ8BE
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KNDG9TG9NZA4BJX7HF6SP8ZD
+    timestamp: 2026-04-05T00:22:22.741Z
+  - _ulid: 01KNDGACP2Q56AERXG3GS99GRY
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNDGABYSQ1AQZ4CYD3G486QS
+    timestamp: 2026-04-05T00:22:40.579Z
+  - _ulid: 01KNDGAEKG086QRC1CTFZ20Z72
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNDGADW3XZ7AN98EJ0FYRNWJ
+    timestamp: 2026-04-05T00:22:42.544Z
+  - _ulid: 01KNDGAGHDN8AMJ6WTRD9HY71W
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNDGAFT6AWHKMVT6AZB0M5PM
+    timestamp: 2026-04-05T00:22:44.525Z
+  - _ulid: 01KNDGAJFQRVG28T7THVRJB7W1
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNDGAHPZG22CBNYT518A4SQQ
+    timestamp: 2026-04-05T00:22:46.519Z
+  - _ulid: 01KNDGB8KN7JD0CRVQHWQGHE6A
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage
+    timestamp: 2026-04-05T00:23:09.173Z
+  - _ulid: 01KNDGBAJGYZ5NKM5QK7T67TKY
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-04-05T00:23:11.184Z
+  - _ulid: 01KNDGBCG1FZNKVYCCQNJ50215
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec conflicts with existing specs
+    timestamp: 2026-04-05T00:23:13.154Z
+  - _ulid: 01KNDGBEC25VKCEM3C6704GJS3
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Bun-specific surface area completeness
+    timestamp: 2026-04-05T00:23:15.075Z
+  - _ulid: 01KNDGBGAX67EBZ454H5TZTQMC
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Task standalone executability
+    timestamp: 2026-04-05T00:23:17.085Z
+  - _ulid: 01KNDGBJ8NF85731B4ESPFRB36
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Code location accuracy
+    timestamp: 2026-04-05T00:23:19.061Z
+  - _ulid: 01KNDGBSZ4S7YV06JJDZHSXZNZ
+    actor: "@claude"
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-05T00:23:26.948Z
+  - _ulid: 01KNDGBSZ47GAJFG5D05C886DA
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: closed
+    timestamp: 2026-04-05T00:23:26.948Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-configurable-daemon-runtime"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNDG8Q73JEXN4VB269WGEHPQ
+    anchor:
+      type: structured
+      ref: "@task-elysia-node-adapter"
+      section: tasks
+    entries:
+      - _ulid: 01KNDG8Q748476DWH774WXQSHS
+        author: "@claude"
+        body: "CRITICAL: ws.data property not supported under crossws. The plan identifies ws.ping() and
+          ws.getBufferedAmount() as Bun-specific APIs, but misses that ws.data is itself a Bun
+          ServerWebSocket feature. Under the Elysia node adapter, WebSockets are crossws Peer
+          instances that do NOT have a mutable .data property. The daemon uses ws.data extensively
+          across 5 files (server.ts, heartbeat.ts, handler.ts, pubsub.ts, lifecycle.ts) to store
+          ConnectionData (sessionId, topics, seq, lastPing, lastPong, projectPath). This is the
+          primary mechanism for per-connection state. Without ws.data, connection tracking,
+          heartbeat, pub/sub, and multi-project routing all break. The plan needs a task to abstract
+          per-connection state — likely using a WeakMap<WebSocket, ConnectionData> or similar
+          pattern that works on both runtimes."
+        created_at: 2026-04-05T00:21:45.828Z
+    kind: blocker
+  - _ulid: 01KNDG8S8XGKSK5N17QWKW3MCJ
+    anchor:
+      type: structured
+      ref: "@task-elysia-node-adapter"
+      section: tasks
+    entries:
+      - _ulid: 01KNDG8S8XV517MFH4HJD1C53C
+        author: "@claude"
+        body: The pong(ws) handler in server.ts:524 is a Bun-specific WebSocket lifecycle hook. Under
+          crossws, pong is not one of the mapped events (only open, message, close, error are). The
+          plan mentions this in the Implementation Notes (item 4 in the Bun-specific surface area
+          list) but no task addresses it. Task task-ws-degradation-node mentions crossws event
+          mapping but only guards ws.ping() — it does not handle the missing pong handler. Without
+          pong reception, heartbeat tracking is fully broken on node, not just degraded. This should
+          be explicitly called out and the heartbeat task should document that on node, both ping
+          sending AND pong receiving are unavailable.
+        created_at: 2026-04-05T00:21:47.933Z
+    kind: blocker
+  - _ulid: 01KNDG8VA9MRJ76GJKW5J63S64
+    anchor:
+      type: structured
+      ref: "@task-elysia-node-adapter"
+      section: tasks
+    entries:
+      - _ulid: 01KNDG8VAAFH45QJNNDBZ2W54E
+        author: "@claude"
+        body: 'tsconfig types and moduleResolution are unaddressed. The daemon tsconfig.json has "types":
+          ["bun-types"] and "moduleResolution": "bundler". When running under node with tsx: (1)
+          bun-types provides global type declarations (Bun.file, ServerWebSocket, etc.) that will
+          type-check but not exist at runtime — this creates false safety; (2) moduleResolution
+          bundler may cause import resolution differences under tsx/node. The plan needs a task to
+          either make the tsconfig conditional, create a separate tsconfig for node builds, or at
+          minimum document these as known type-check-only gaps. The ServerWebSocket type import used
+          in 5+ files will need a runtime-agnostic type alias.'
+        created_at: 2026-04-05T00:21:50.026Z
+    kind: blocker
+  - _ulid: 01KNDG9MSTNYP2VB0P8WMR6VVB
+    anchor:
+      type: structured
+      ref: "@task-daemon-spawn-runtime"
+      section: tasks
+    entries:
+      - _ulid: 01KNDG9MSTZP2QYQ5DQZKJS9GY
+        author: "@claude"
+        body: tsx is a devDependency (package.json line 96). The plan acknowledges this in Implementation
+          Notes ("tsx needs to be a regular dependency or found via npx") and the task says to use
+          npx tsx. However, npx tsx has meaningful overhead on every daemon spawn — it resolves the
+          package, potentially downloads it, then runs it. For auto-start (which happens on every
+          kspec CLI invocation when auto_start is true), this adds latency to every command. Should
+          tsx be promoted to a regular dependency, or should the plan specify building the daemon to
+          JS (eliminating the tsx requirement for node)? The plan mentions this tangentially ("the
+          build pipeline needs to compile to .js — addressed separately if needed") but it should be
+          a deliberate decision, not a deferred one.
+        created_at: 2026-04-05T00:22:16.122Z
+    kind: question
+  - _ulid: 01KNDG9PQHYT90XWS86NQCRES6
+    anchor:
+      type: structured
+      ref: "@daemon-runtime-adapter"
+      section: specs
+    entries:
+      - _ulid: 01KNDG9PQH7F2HVQFJ94A9DME5
+        author: "@claude"
+        body: The spec has no AC for the ws.publish() / topic broadcast mechanism. Under bun,
+          ws.publish(topic, message) is the native pub/sub broadcast. Under crossws,
+          subscribe/unsubscribe are no-ops (the plan notes this), which means ws.publish() also does
+          not work — messages do not reach subscribers because there are no transport-level
+          subscriptions. The pubsub.ts broadcastToTopic() at line 148+ likely iterates connections
+          and calls ws.send() directly, which would work. But if any code path uses ws.publish(), it
+          will silently fail on node. This needs verification and an AC if the behavior differs.
+        created_at: 2026-04-05T00:22:18.097Z
+    kind: question
+  - _ulid: 01KNDG9RN00GK5KSSAKREDQX5M
+    anchor:
+      type: structured
+      ref: "@task-elysia-node-adapter"
+      section: tasks
+    entries:
+      - _ulid: 01KNDG9RN0P6GBX1ACNQE9RNJK
+        author: "@claude"
+        body: No version compatibility verification for @elysiajs/node. The task says "Check version
+          compatibility with the current elysia version (^1.1.31). The node adapter versioning
+          typically tracks the main Elysia version." This is a hope, not a verified fact. The Elysia
+          node adapter (@elysiajs/node) was released later and may have different version
+          constraints. If the adapter requires elysia ^1.2 or ^2.0, the plan needs to account for an
+          Elysia upgrade or pin to a specific adapter version. This should be verified before the
+          plan is approved — check npm for the adapter version range.
+        created_at: 2026-04-05T00:22:20.064Z
+    kind: question
+  - _ulid: 01KNDG9TG9NZA4BJX7HF6SP8ZD
+    anchor:
+      type: structured
+      section: dependencies
+    entries:
+      - _ulid: 01KNDG9TGA06NDP2Y6E7QV013E
+        author: "@claude"
+        body: "Priority inversion: task-scope-ws-heartbeat-acs (P1) is documentation-only and has no
+          dependents. It could be P2 or P3 without affecting any other task. Meanwhile,
+          task-ws-degradation-node (P2) is functionally critical — if the daemon runs on node
+          without the heartbeat guard, ws.ping() will throw and crash the heartbeat interval,
+          killing all connection monitoring. Consider swapping priorities or at least making
+          task-ws-degradation-node P1."
+        created_at: 2026-04-05T00:22:21.962Z
+    kind: question
+  - _ulid: 01KNDGABYSQ1AQZ4CYD3G486QS
+    anchor:
+      type: structured
+      field: description
+      ref: "@daemon-runtime-adapter"
+      section: specs
+    entries:
+      - _ulid: 01KNDGABYTEYYXES94A20SCXSB
+        author: "@claude"
+        body: 'Description mentions "runtime adapter for HTTP and WebSocket handling" — this leaks
+          implementation detail (Elysia adapter pattern). Behavioral alternative: "the server uses
+          runtime-appropriate mechanisms for HTTP and WebSocket handling."'
+        created_at: 2026-04-05T00:22:39.834Z
+    kind: nit
+  - _ulid: 01KNDGADW3XZ7AN98EJ0FYRNWJ
+    anchor:
+      type: structured
+      field: ac-node-http
+      ref: "@daemon-runtime-adapter"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KNDGADW33GNAEC0FDEVYYX62
+        author: "@claude"
+        body: ac-node-http says "All routes serve identical responses as when running on bun" — this is a
+          strong claim that may be violated by subtle differences (e.g., response header ordering,
+          content-type casing). Consider "All routes serve functionally equivalent responses" or be
+          explicit about what identical means (status codes, response bodies, content types).
+        created_at: 2026-04-05T00:22:41.795Z
+    kind: nit
+  - _ulid: 01KNDGAFT6AWHKMVT6AZB0M5PM
+    anchor:
+      type: structured
+      ref: "@task-scope-ac16-bun-only"
+      section: tasks
+    entries:
+      - _ulid: 01KNDGAFT61VJTCX75MRE7R6P1
+        author: "@claude"
+        body: Task description includes the literal kspec command to run. This is good for standalone
+          executability but the given-clause text is duplicated — it appears in the Why section and
+          the What section. Minor; no fix needed.
+        created_at: 2026-04-05T00:22:43.783Z
+    kind: nit
+  - _ulid: 01KNDGAHPZG22CBNYT518A4SQQ
+    anchor:
+      type: structured
+      ref: "@task-daemon-runtime-config"
+      section: tasks
+    entries:
+      - _ulid: 01KNDGAHPZX4MS082HCNAX71KB
+        author: "@claude"
+        body: Task says config schema is in "src/schema/config.ts (or wherever DaemonConfigSchema is defined
+          — check src/parser/config.ts)". It is actually in src/parser/config.ts (line 86). The
+          hedging is fine for robustness but the primary guess is wrong.
+        created_at: 2026-04-05T00:22:45.727Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: "@claude"
+    role: reviewer
+    created_at: 2026-04-05T00:23:26.948Z
+created_at: 2026-04-05T00:21:12.273Z
+updated_at: 2026-04-05T00:23:26.948Z
+notes: []

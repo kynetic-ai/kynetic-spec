@@ -1,0 +1,24 @@
+_ulid: 01KNDBMKVEE6QYFYT40VS6GN55
+slugs:
+  - plan-granular-cache-invalidation
+title: Granular Cache Invalidation
+status: completed
+approved_at: 2026-04-04T23:34:16.951Z
+branch: plan/plan-granular-cache-invalidation/01kndbmk
+derived_specs:
+  - "@daemon-incremental-cache"
+  - "@daemon-meta-subdomain"
+derived_tasks:
+  - "@task-add-ac-context-reuse"
+  - "@task-watcher-content-passthrough"
+  - "@task-debounce-path-accumulation"
+  - "@task-cache-kspec-context"
+  - "@task-incremental-task-updates"
+  - "@task-incremental-item-updates"
+  - "@task-incremental-session-updates"
+  - "@task-meta-subdomain-decomposition"
+  - "@task-writethrough-incremental-alignment"
+module_ref: null
+source_path: /home/chapel/Projects/kynetic-spec/plans/granular-cache-invalidation.md
+created_at: 2026-04-04T23:00:52.717Z
+completed_at: null

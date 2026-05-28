@@ -1,0 +1,229 @@
+_ulid: 01KSM9JDTS2G9E6EXHWRZB8DZT
+slugs: []
+title: Review task-validate-folder-index-consistency-hardening
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 with --warnings-ok. Schema/references OK. Warnings remain
+      repository-wide/pre-existing plus expected Folder-Backed Entity Trait status mismatch while
+      this pending_review task has not yet been completed.
+    name: kspec validate --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-27T08:57:33.627Z
+    completed_at: 2026-05-27T08:57:33.627Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "oxfmt --check . passed: all matched files use correct format, 956 files."
+    name: format:check
+    required: true
+    runner: npm run format:check
+    created_at: 2026-05-27T08:57:37.697Z
+    completed_at: 2026-05-27T08:57:37.697Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exit 0: oxlint found 0 errors and warnings only; warnings are outside the changed
+      storage/index files."
+    name: lint
+    required: true
+    runner: npm run lint
+    created_at: 2026-05-27T08:57:41.559Z
+    completed_at: 2026-05-27T08:57:41.559Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-05-27T08:57:45.507Z
+    completed_at: 2026-05-27T08:57:45.507Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Build passed: tsc, shared, daemon, web-ui, docs-search, and plugin build all completed.
+      Existing Svelte/a11y warnings only."
+    name: build
+    required: true
+    runner: npm run build
+    created_at: 2026-05-27T08:57:49.455Z
+    completed_at: 2026-05-27T08:57:49.455Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "2,589 suites passed of 2,589; 9,905 tests passed of 9,910; 5 skipped. Duration 2227.4s.
+      Log: /tmp/kspec-test-cache/01KSM9H1YBV24WG1HW3P73R1NP/f45f04252240884a.log"
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-05-27T08:57:53.422Z
+    completed_at: 2026-05-27T08:57:53.422Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "38 suites passed; 199 tests passed. Log:
+      /tmp/kspec-test-cache/01KSM9H1YBV24WG1HW3P73R1NP/0b8e7aa619950def.log"
+    name: focused storage tests
+    required: true
+    runner: npm test -- --fresh tests/task-data-manager.test.ts tests/plan-rebuild-index.test.ts
+      tests/review-rebuild-index.test.ts tests/parser-plans-folder.test.ts
+      tests/parser-reviews-folder.test.ts tests/plan-folder-migration.test.ts
+      tests/review-folder-migration.test.ts tests/upgrade-folder-storage.test.ts
+    created_at: 2026-05-27T08:57:57.271Z
+    completed_at: 2026-05-27T08:57:57.271Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "12 suites passed; 52 tests passed. Log:
+      /tmp/kspec-test-cache/01KSM9H1YBV24WG1HW3P73R1NP/ded2adffc5fc03a9.log"
+    name: CLI resource tests
+    required: true
+    runner: npm test -- --fresh tests/cli-plan-resource.test.ts tests/review-resource-cli.test.ts
+    created_at: 2026-05-27T08:58:01.193Z
+    completed_at: 2026-05-27T08:58:01.193Z
+events:
+  - _ulid: 01KSM9JDTRKBGX7A72XWF94JR4
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-27T08:42:12.184Z
+  - _ulid: 01KSM9K76WM822EFH7Q9DFYFTJ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-27T08:42:38.172Z
+  - _ulid: 01KSMAEK76ZA7WCR2NNFCDT2QZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --warnings-ok
+    timestamp: 2026-05-27T08:57:35.206Z
+  - _ulid: 01KSMAEQ3S7WQGVZS4TCQ3Y08Z
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format:check
+    timestamp: 2026-05-27T08:57:39.193Z
+  - _ulid: 01KSMAETZ491PRD57DCG10YKPT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-05-27T08:57:43.140Z
+  - _ulid: 01KSMAEYSMGDRNDTD6GAE0H5YT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-27T08:57:47.060Z
+  - _ulid: 01KSMAF2J34GZPFAY5NT6CBWNS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: build
+    timestamp: 2026-05-27T08:57:50.915Z
+  - _ulid: 01KSMAF6F4KWYBZ51DB84AJCM4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-27T08:57:54.916Z
+  - _ulid: 01KSMAFA8VDF1G84XJ0YDPWQ74
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused storage tests
+    timestamp: 2026-05-27T08:57:58.812Z
+  - _ulid: 01KSMAFE233T4FXMM0K47ZWNHM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: CLI resource tests
+    timestamp: 2026-05-27T08:58:02.691Z
+  - _ulid: 01KSMAFHXF3CXE7JYV65AHQ92T
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSMAFGDVW75ZD96QJQG93PP9
+    timestamp: 2026-05-27T08:58:06.639Z
+  - _ulid: 01KSMAFNPF2XNKKSGTVR1Y9NMZ
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-27T08:58:10.511Z
+  - _ulid: 01KSMAFNPF2X7AX3693WPRE4C7
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-27T08:58:10.511Z
+examined_commit: 5c2307763523de8901f2b373e3602318268446ef
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KSKQXKH6JMDJP8G67ESNB4D0"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSMAFGDVW75ZD96QJQG93PP9
+    entries:
+      - _ulid: 01KSMAFGDVVBDCMDXV01PZ227C
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; task @01KSKQXKH6JMDJP8G67ESNB4D0; specs
+          @trait-folder-backed-entity-1, @task-directory-storage, @task-index-file,
+          @folder-backed-plan-storage-1, @folder-backed-review-storage-1; diff for
+          src/parser/folder-backed-entity.ts, src/parser/plan-storage-manager.ts,
+          src/parser/review-storage-manager.ts, tests/plan-rebuild-index.test.ts,
+          tests/review-rebuild-index.test.ts, tests/upgrade-folder-storage.test.ts. Commands run:
+          git status/log/diff; kspec item get; kspec log; kspec validate and kspec validate
+          --warnings-ok; rg AC annotations and test file reads; npm run format:check; npm run lint;
+          npm run typecheck; npm run build; npm test -- --fresh; focused storage tests; focused CLI
+          resource tests. Claims verified: implementation statuses are back to implemented for the
+          five requested refs; new AC annotations exist for the cited trait/concrete ACs; tests
+          exercise CLI/storage behavior and do not read implementation source as their proof
+          mechanism; full and focused gates pass. Categories searched: correctness, edge cases,
+          error handling, test quality, spec alignment, integration. No blockers found."
+        created_at: 2026-05-27T08:58:05.115Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-27T08:58:10.511Z
+created_at: 2026-05-27T08:42:12.185Z
+updated_at: 2026-05-27T08:58:10.511Z
+notes: []

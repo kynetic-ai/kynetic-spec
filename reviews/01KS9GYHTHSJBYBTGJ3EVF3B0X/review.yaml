@@ -1,0 +1,184 @@
+_ulid: 01KS9GYHTHSJBYBTGJ3EVF3B0X
+slugs: []
+title: Review folder-backed entity trait foundation cycle 2
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2460 suites passed; 9323 tests passed, 5 skipped; log
+      /tmp/kspec-test-cache/01KS9GXJNBY1BEHS0H1M1R5GPX/75f878c3f913eb0d.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-23T04:33:20.465Z
+    completed_at: 2026-05-23T04:33:20.465Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit completed successfully
+    name: npm run typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-23T04:33:24.411Z
+    completed_at: 2026-05-23T04:33:24.411Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 errors; 724 existing warnings
+    name: npm run lint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-23T04:33:28.308Z
+    completed_at: 2026-05-23T04:33:28.308Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All matched files use the correct format
+    name: npm run format:check
+    required: true
+    runner: oxfmt
+    created_at: 2026-05-23T04:33:32.150Z
+    completed_at: 2026-05-23T04:33:32.150Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation exited 0 with known repo warnings under --warnings-ok
+    name: kspec validate --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-23T04:33:36.209Z
+    completed_at: 2026-05-23T04:33:36.209Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No whitespace errors
+    name: git diff --check
+    required: true
+    runner: git
+    created_at: 2026-05-23T04:33:40.064Z
+    completed_at: 2026-05-23T04:33:40.064Z
+events:
+  - _ulid: 01KS9GYHTGWT9SP8QMKRGRPNBG
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-23T04:19:30.768Z
+  - _ulid: 01KS9GZN3T5XRZX84TM8RK709P
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-23T04:20:06.906Z
+  - _ulid: 01KS9HQXJ3354E7MHVJR0VP3ZF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-23T04:33:21.987Z
+  - _ulid: 01KS9HR1CKPEMDDF27G864N9AY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run typecheck
+    timestamp: 2026-05-23T04:33:25.907Z
+  - _ulid: 01KS9HR568GT4YYCTZBMY8DW0E
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run lint
+    timestamp: 2026-05-23T04:33:29.801Z
+  - _ulid: 01KS9HR90CPV0RNYSTV66AFSC6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run format:check
+    timestamp: 2026-05-23T04:33:33.708Z
+  - _ulid: 01KS9HRCWE868QA4BM2QSNMER6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --warnings-ok
+    timestamp: 2026-05-23T04:33:37.679Z
+  - _ulid: 01KS9HRGR3G6XG0G728K673SVX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: git diff --check
+    timestamp: 2026-05-23T04:33:41.635Z
+  - _ulid: 01KS9HRMFP8ENPMZWJ9XJG5XHX
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KS9HRK0QWH0CF7K2G9WSK8X6
+    timestamp: 2026-05-23T04:33:45.462Z
+  - _ulid: 01KS9HRRC6883DYPQPNXTXFZXW
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-23T04:33:49.447Z
+  - _ulid: 01KS9HRRC72K7A6H2PJW917W7N
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-23T04:33:49.447Z
+examined_commit: 5a2a941c7fdb460999b8ad0e127bf5e0b8b31bd9
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XAVRQCA2ATTCEE98CXKW6"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KS9HRK0QWH0CF7K2G9WSK8X6
+    entries:
+      - _ulid: 01KS9HRK0QD0C578SHMBARWZF7
+        author: Jacob Chapel
+        body: "Evidence log: Files read: src/parser/folder-backed-entity.ts, src/parser/split-backend.ts,
+          src/parser/yaml.ts, tests/folder-backed-entity.test.ts, prior review
+          @01KS9E7Y33NGZTC0Z7NY79PCSJ. Commands run: kspec task get @01KS8XAVRQCA2ATTCEE98CXKW6;
+          kspec item get @trait-folder-backed-entity-1; kspec review get
+          @01KS9E7Y33NGZTC0Z7NY79PCSJ; git diff/stat/name-only/check against a5ce476...HEAD; rg for
+          AC annotations and source scanning patterns; npm run format:check; kspec validate
+          --warnings-ok; npm run typecheck; npm run lint; npm test. Claims verified: fix-cycle
+          formatting claim verified by format:check; shared foundation coverage verified by
+          behavioral fixture tests and AC annotations; task split wrapper behavior checked against
+          existing split/task rebuild tests. Categories searched: correctness, edge cases, error
+          handling, test quality, source-scanning tests, integration/regression. No blocking
+          findings."
+        created_at: 2026-05-23T04:33:43.959Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-23T04:33:49.446Z
+created_at: 2026-05-23T04:19:30.769Z
+updated_at: 2026-05-23T04:33:49.447Z
+notes: []

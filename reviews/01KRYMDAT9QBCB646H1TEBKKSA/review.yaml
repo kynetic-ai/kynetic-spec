@@ -1,0 +1,161 @@
+_ulid: 01KRYMDAT9QBCB646H1TEBKKSA
+slugs: []
+title: Review task-daemon-api-task-storage-incompatibility-errors
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck completed clean (tsc --noEmit).
+    name: typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-18T23:01:10.898Z
+    completed_at: 2026-05-18T23:01:10.898Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate --warnings-ok: schema OK, references OK, skills OK; warnings match
+      existing repo-wide warning classes and no new task-storage AC annotation issues were
+      observed."
+    name: kspec validate
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-18T23:01:15.056Z
+    completed_at: 2026-05-18T23:01:15.056Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/daemon-api/task-storage-incompatibility-helper.test.ts
+      tests/daemon-api/task-storage-incompatibility-routes.test.ts: 19 passed across helper/routes;
+      verifies 409 task_storage_incompatible guidance for task list/detail/mutation and
+      representative non-task routes."
+    name: targeted daemon API task-storage tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-18T23:01:19.279Z
+    completed_at: 2026-05-18T23:01:19.279Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Full npm test was run. It reported one failure in tests/cli-no-daemon.test.ts ('ps -p
+      <pid> -o command=' after daemon auto-start) and then hung; I terminated the test process
+      group. The failing file reproduces on this snapshot with --fresh and also on dev with the same
+      error. This branch did not change that test or CLI daemon startup paths. Filed follow-up
+      @01KRYN42 and treated as pre-existing per review-gates.
+    name: full npm test triage
+    required: false
+    runner: npm test
+    created_at: 2026-05-18T23:01:33.205Z
+    completed_at: 2026-05-18T23:01:33.205Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read:
+      packages/daemon/src/routes/{task-storage-error,tasks,items,sessions,aggregation,validation,re\
+      fs,plans,reviews,diff,triage,agent-dispatch}.ts; packages/shared/src/api.ts;
+      tests/daemon-api/task-storage-incompatibility-{helper,routes}.test.ts;
+      src/parser/task-data-manager.ts; src/parser/validate.ts. Commands run: kspec task get, kspec
+      item get @api-contract, kspec validate, rg AC annotations/direct task reads, targeted npm
+      test, npm run typecheck, full npm test with failure triage, dev reproduction of cli-no-daemon
+      failure. Claims verified: stable codes recognized only for deterministic storage
+      incompatibility; task list/detail/mutation and representative non-task routes return 409
+      structured guidance; generic TaskDataManagerError remains non-matching. Categories searched:
+      correctness, route coverage, error handling, cache context, AC/test quality, integration
+      regressions."
+    name: review evidence log
+    required: false
+    runner: manual review
+    created_at: 2026-05-18T23:01:46.818Z
+    completed_at: 2026-05-18T23:01:46.818Z
+events:
+  - _ulid: 01KRYMDAT9ERG78SRJAFMN8FGN
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-18T22:48:22.089Z
+  - _ulid: 01KRYMDT83WVPZTZKEFJ1M3HJD
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-18T22:48:37.891Z
+  - _ulid: 01KRYN4V0Q9FBYHBQNC5G9EVR5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-18T23:01:12.344Z
+  - _ulid: 01KRYN4Z3XHBVVT5GJBCJC59E9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-18T23:01:16.541Z
+  - _ulid: 01KRYN537NZ6VCBVS80NXAG1ZD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted daemon API task-storage tests
+    timestamp: 2026-05-18T23:01:20.757Z
+  - _ulid: 01KRYN5GSMA6PXBK6J4HK39MKJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: full npm test triage
+    timestamp: 2026-05-18T23:01:34.645Z
+  - _ulid: 01KRYN5Y5ATNACWT6R4HFK0G3T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-18T23:01:48.330Z
+  - _ulid: 01KRYN692Z56EYJWJVD2M66WDF
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-18T23:01:59.519Z
+  - _ulid: 01KRYN692ZKN6WQEVZK620RP0E
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-18T23:01:59.519Z
+examined_commit: 6dd38eec3f221a642d9c06febaf0aaa106f40ff3
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRM50CKNEPS7EKBZ8DP5W639"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-18T23:01:59.519Z
+created_at: 2026-05-18T22:48:22.089Z
+updated_at: 2026-05-18T23:01:59.519Z
+notes: []

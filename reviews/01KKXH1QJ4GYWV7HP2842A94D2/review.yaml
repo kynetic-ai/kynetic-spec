@@ -1,0 +1,90 @@
+_ulid: 01KKXH1QJ4GYWV7HP2842A94D2
+slugs: []
+title: "Review: unify tool call event parsing and fix phased input streaming"
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 5710 tests passed, 1 pre-existing failure (review-cli.test.ts examined_commit
+      auto-populates in worktree — unrelated to changes)
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-17T09:12:09.073Z
+    completed_at: 2026-03-17T09:12:09.073Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "ac-tool-input-update: 4 test annotations (accumulator, incrementalBlockUpdate, CLI).
+      ac-unified-event-parsing: 8 test annotations (session-event-fields, session-event-streaming,
+      session-log-stats). All trait ACs pre-existing with coverage."
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-17T09:12:17.033Z
+    completed_at: 2026-03-17T09:12:17.033Z
+events:
+  - _ulid: 01KKXH1QJ45A6SSPPKJ3QEPX4Y
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-17T09:11:52.644Z
+  - _ulid: 01KKXH1Z8JRTV1E4CGSFVNJDEW
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-17T09:12:00.530Z
+  - _ulid: 01KKXH27MR8R22DEDX8ZYNJAEB
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-17T09:12:09.113Z
+  - _ulid: 01KKXH2FDMXFBWFKAQEYRRA0FA
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-17T09:12:17.076Z
+  - _ulid: 01KKXH2PC7EDTT3YT7E74NWCFE
+    actor: pr-reviewer@kspec
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-17T09:12:24.199Z
+  - _ulid: 01KKXH2PC7VJ6AQDJTX88H6H35
+    actor: pr-reviewer@kspec
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-17T09:12:24.199Z
+examined_commit: c1865a388e42e3cb8bb05ba152eb135f06f70a9f
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKXEJ2RQ4HW9N8K0TB6WS2WY"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer@kspec
+    role: reviewer
+    created_at: 2026-03-17T09:12:24.157Z
+created_at: 2026-03-17T09:11:52.644Z
+updated_at: 2026-03-17T09:12:24.157Z
+notes: []

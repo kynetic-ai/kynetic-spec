@@ -1,0 +1,275 @@
+_ulid: 01KS8PXHDS0CAA9W4NPDC9Q25V
+slugs: []
+title: "Plan review: Folder-Backed Plans, Reviews, and Local Resources (cycle 4)"
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "`kspec plan import plans/folder-backed-plans-reviews-and-resources.md --dry-run`
+      succeeded and reported no state changes."
+    name: Plan import dry-run
+    required: true
+    runner: kspec plan import --dry-run
+    created_at: 2026-05-22T20:46:15.594Z
+    completed_at: 2026-05-22T20:46:15.594Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "`kspec validate --warnings-ok` exited 0 with existing project warnings only; schema and
+      references are OK."
+    name: Project validation baseline
+    required: true
+    runner: kspec validate --warnings-ok
+    created_at: 2026-05-22T20:46:19.915Z
+    completed_at: 2026-05-22T20:46:19.915Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Cycle-1 and cycle-2 blockers are largely addressed, and the cycle-3 command/route
+      ownership fixes are present, but the required exact CLI/API error payloads still omit
+      owner-not-found, confirmation failures, missing-file POST, and the shared daemon 409
+      compatibility envelope.
+    name: Prior blocker verification
+    required: true
+    created_at: 2026-05-22T20:46:24.187Z
+    completed_at: 2026-05-22T20:46:24.187Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Spec update, shared traits/resources, and version gates precede storage managers;
+      migration precedes plan/review API, UI, static export, and docs tasks.
+    name: Dependency ordering
+    required: true
+    created_at: 2026-05-22T20:46:28.411Z
+    completed_at: 2026-05-22T20:46:28.411Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Covers lines no longer overclaim docs-only work; concrete plan/review owner tasks claim
+      resource-delete behavior; documentation task now points at
+      @folder-backed-resource-documentation under @user-documentation.
+    name: Coverage and references
+    required: true
+    created_at: 2026-05-22T20:46:32.576Z
+    completed_at: 2026-05-22T20:46:32.576Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Resource commands and routes are named, but the machine-readable error contracts remain
+      incomplete for owner-not-found, confirmation-required/cancelled remove, missing multipart
+      file, and incompatible-storage 409 envelopes.
+    name: Command/API specificity
+    required: true
+    created_at: 2026-05-22T20:46:36.803Z
+    completed_at: 2026-05-22T20:46:36.803Z
+events:
+  - _ulid: 01KS8PXHDKFAY0R4EXEXGHJ9X2
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-22T20:44:34.611Z
+  - _ulid: 01KS8Q016MVEBJBYCANHYH7TH9
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-22T20:45:56.309Z
+  - _ulid: 01KS8Q058BH9305X5RJBY7VQNA
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KS8Q03P0M5Q3DW88R1ET4M5K
+    timestamp: 2026-05-22T20:46:00.459Z
+  - _ulid: 01KS8Q0981MCE2R61BR7WJWWHX
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KS8Q07Q2VWRGYQTEW9MNPCG5
+    timestamp: 2026-05-22T20:46:04.545Z
+  - _ulid: 01KS8Q0DAXSA3ST0VTGTNTXQ3X
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KS8Q0BV6BTEFANB08PVTZCPP
+    timestamp: 2026-05-22T20:46:08.733Z
+  - _ulid: 01KS8Q0HH7R76RTC2ABTB5Z2GY
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KS8Q0FSD5N3RS0N5D2EQPGFZ
+    timestamp: 2026-05-22T20:46:13.031Z
+  - _ulid: 01KS8Q0NKAAHPGEMYG6AS7V1WS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan import dry-run
+    timestamp: 2026-05-22T20:46:17.194Z
+  - _ulid: 01KS8Q0SV5Q972MVS4H2FCTWAQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Project validation baseline
+    timestamp: 2026-05-22T20:46:21.541Z
+  - _ulid: 01KS8Q0Y0VQGQHKEH2SDWT2PBT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Prior blocker verification
+    timestamp: 2026-05-22T20:46:25.819Z
+  - _ulid: 01KS8Q12305RV0BDTQSDRG0FNB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-05-22T20:46:29.984Z
+  - _ulid: 01KS8Q16AEK2VMS92J4FYW35BH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Coverage and references
+    timestamp: 2026-05-22T20:46:34.318Z
+  - _ulid: 01KS8Q1AB6F6NHJ16T9VV63KNJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Command/API specificity
+    timestamp: 2026-05-22T20:46:38.438Z
+  - _ulid: 01KS8Q1EBFHQW3HXJ9D0GNFMQZ
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-22T20:46:42.543Z
+  - _ulid: 01KS8Q1EBFE360R91BFWNZ907G
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-22T20:46:42.544Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KS8Q03P0M5Q3DW88R1ET4M5K
+    anchor:
+      type: structured
+      ref: "@task-plan-resource-import-and-derive"
+      section: tasks
+    entries:
+      - _ulid: 01KS8Q03P00E7FJCAPV2WVEMFM
+        author: Jacob Chapel
+        body: "The plan resource CLI JSON failure contract is still incomplete. The commands take
+          <plan-ref>, and remove can fail when non-interactive without --force or when an
+          interactive prompt is declined, but the declared JSON error-code union only allows
+          invalid_resource_id, invalid_resource_path, resource_conflict, resource_not_found, and
+          entity_storage_incompatible. It omits the plan-not-found case even though the final
+          shared-code note lists plan_not_found, and it defines no JSON code, payload, or exit
+          behavior for confirmation-required/cancelled removal. Impact: independent agents can
+          implement incompatible machine-readable errors for common plan resource failures while
+          still satisfying the written task. Exact fix: define the complete CLI --json error
+          envelope and exit behavior for missing plan refs, missing resources, invalid id/path,
+          collisions, incompatible storage, non-interactive remove without --force, and prompt
+          decline; keep it consistent with the shared resource error-code list."
+        created_at: 2026-05-22T20:45:58.848Z
+    kind: blocker
+  - _ulid: 01KS8Q07Q2VWRGYQTEW9MNPCG5
+    anchor:
+      type: structured
+      ref: "@task-review-screenshot-resource-ui"
+      section: tasks
+    entries:
+      - _ulid: 01KS8Q07Q22D5JZNJVDMEHB0CJ
+        author: Jacob Chapel
+        body: "The review resource CLI JSON failure contract has the same gap. The commands take
+          <review-ref>, and remove can fail when non-interactive without --force or when an
+          interactive prompt is declined, but the declared JSON error-code union omits
+          review_not_found and has no code/payload/exit behavior for confirmation-required or
+          cancelled removal. Impact: review resource CLI behavior can diverge from plan resources
+          and from the docs while still appearing to follow the plan. Exact fix: define the complete
+          review resource CLI --json error envelope and exit behavior for missing review refs,
+          missing resources, invalid id/path, collisions, incompatible storage, non-interactive
+          remove without --force, and prompt decline."
+        created_at: 2026-05-22T20:46:02.978Z
+    kind: blocker
+  - _ulid: 01KS8Q0BV6BTEFANB08PVTZCPP
+    anchor:
+      type: structured
+      ref: "@task-plan-resource-api-ui-static"
+      section: tasks
+    entries:
+      - _ulid: 01KS8Q0BV6TG6MQQ82AEP3Y46R
+        author: Jacob Chapel
+        body: "The plan resource API error contract is still ambiguous for required POST and compatibility
+          failures. POST requires a multipart file field named file, but the error mapping says
+          invalid id/path or missing fields return invalid_resource_id/invalid_resource_path, which
+          gives no exact code for a missing file. The same task also says incompatible storage
+          returns the generic resource error body with code entity_storage_incompatible, while
+          @entity-folder-migration-and-compatibility ac-daemon-returns-structured-conflict requires
+          HTTP 409 with top-level error entity_storage_incompatible, a domain-specific code,
+          migration suggestion, and cache-domain context when available. Impact: daemon/API agents
+          can implement conflicting 409 envelopes and incompatible missing-file errors. Exact fix:
+          define the missing-file POST error code/body, and make plan resource incompatible-storage
+          responses use the shared daemon compatibility envelope with the domain-specific code and
+          guidance fields."
+        created_at: 2026-05-22T20:46:07.206Z
+    kind: blocker
+  - _ulid: 01KS8Q0FSD5N3RS0N5D2EQPGFZ
+    anchor:
+      type: structured
+      ref: "@task-review-screenshot-resource-ui"
+      section: tasks
+    entries:
+      - _ulid: 01KS8Q0FSD5DF7C2DYEF0BZT6J
+        author: Jacob Chapel
+        body: "The review resource API error contract repeats the remaining ambiguity. POST requires a
+          multipart file field named file, but missing file has no exact error code because missing
+          fields are only mapped to invalid_resource_id/invalid_resource_path. Incompatible storage
+          is also specified as the generic resource error body with code
+          entity_storage_incompatible, which conflicts with the migration/compatibility spec
+          requiring a 409 envelope with top-level error, domain-specific code, migration suggestion,
+          and cache-domain context when available. Impact: review resource routes can diverge from
+          the shared daemon compatibility contract. Exact fix: define the missing-file POST error
+          code/body and require review resource incompatible-storage responses to use the shared
+          structured compatibility envelope."
+        created_at: 2026-05-22T20:46:11.245Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-22T20:46:42.543Z
+created_at: 2026-05-22T20:44:34.617Z
+updated_at: 2026-05-22T20:46:42.543Z
+notes: []

@@ -1,0 +1,256 @@
+_ulid: 01KQ0YYZKXDZAF3P9M8CTJ0DKG
+slugs: []
+title: Review task-validation-task-data-manager-read-path cycle 3
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2274 suites passed; 8373 passed, 5 skipped of 8378 tests; exit 0. Log:
+      /tmp/kspec-test-cache/01KQ0YX0E5BN85HHXSKX5EZPVQ/02c9d798896679ae.log"
+    name: npm test
+    required: true
+    runner: npm test
+    created_at: 2026-04-25T00:12:45.495Z
+    completed_at: 2026-04-25T00:12:45.495Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Focused changed-file run passed: tests/validate-task-data-source.test.ts (11 tests) and
+      tests/automation-eligibility.test.ts (28 tests); 15 suites passed, 39 tests passed; log
+      /tmp/kspec-test-cache/01KQ0YX0E5BN85HHXSKX5EZPVQ/df775a2a8f87ce26.log"
+    name: focused validation tests
+    required: false
+    runner: npm test -- --run
+    created_at: 2026-04-25T00:12:56.981Z
+    completed_at: 2026-04-25T00:12:56.981Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Required behavioral probe failed: with split backend registered, a malformed
+      tasks/<ULID>/task.yaml missing required title but containing spec_ref @missing-spec returned
+      valid:true, schemaErrors:[], refErrors:[], tasksChecked:0 for
+      validate(ctx,{schema:false,refs:true}). This is a regression against
+      ac-task-load-errors-reported for task-aware --refs validation."
+    name: malformed split task refs probe
+    required: true
+    runner: node --import tsx
+    created_at: 2026-04-25T00:13:07.909Z
+    completed_at: 2026-04-25T00:13:07.909Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Installed kspec validate exited 4 on known catalog/meta state: .kspec/modules/meta.yaml
+      modules[0].traits.0 expected string, orphaned skill directory warning, and existing
+      alignment/completeness warnings. Changed files are src/parser/validate.ts,
+      tests/automation-eligibility.test.ts, tests/validate-task-data-source.test.ts."
+    name: kspec validate
+    required: false
+    runner: kspec validate
+    created_at: 2026-04-25T00:13:17.652Z
+    completed_at: 2026-04-25T00:13:17.652Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified prior cycle blocker is fixed for resolver failure: npm run dev -- task list
+      --json exits 1 with TaskDataManagerError, and npm run dev -- validate --refs --json now exits
+      4 with schemaErrors containing No storage backend registered for format split instead of
+      silently succeeding with tasksChecked:0."
+    name: source CLI canonical resolver probe
+    required: true
+    runner: npm run dev
+    created_at: 2026-04-25T00:13:27.362Z
+    completed_at: 2026-04-25T00:13:27.362Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: rg found standalone behavioral annotations for @validation-task-data-source
+      ac-all-persisted-tasks-included, ac-task-references-checked, and ac-task-load-errors-reported
+      in tests/validate-task-data-source.test.ts. Changed tests use readTestOutput only for fixture
+      YAML data, not implementation source scanning.
+    name: AC annotation search
+    required: false
+    runner: rg
+    created_at: 2026-04-25T00:13:36.683Z
+    completed_at: 2026-04-25T00:13:36.683Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: AGENTS.md, kspec-agents.md, src/parser/validate.ts,
+      src/parser/task-data-manager.ts, src/parser/split-backend.ts, src/cli/commands/validate.ts,
+      tests/validate-task-data-source.test.ts, tests/automation-eligibility.test.ts,
+      tests/helpers/cli.ts, prior reviews @01KQ0TT8 and @01KQ0WQZ. Commands run: git diff/stat/log,
+      kspec task get, kspec item get, kspec review get/add/open/comment/check, rg AC/source-read
+      search, npm test focused, kspec validate, npm run dev validate/task probes, full npm test, ad
+      hoc malformed split task refs probe. Claims verified: previous resolver/loadAllTasks fallback
+      blockers are fixed; malformed per-task records still vanish in --refs mode. Categories
+      searched: correctness, edge cases, error handling, test quality, source-scanning tests,
+      integration with TaskDataManager and split backend."
+    name: review evidence
+    required: false
+    runner: codex review
+    created_at: 2026-04-25T00:13:48.911Z
+    completed_at: 2026-04-25T00:13:48.911Z
+events:
+  - _ulid: 01KQ0YYZKX14GF6WMHXH4Z103R
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-24T23:59:51.421Z
+  - _ulid: 01KQ0YZGZF5BVFTVCAPJ61NJWZ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-25T00:00:09.200Z
+  - _ulid: 01KQ0ZPAN97GJBW217R2HCE8MA
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQ0ZP9JY8QG1HGAHP4VVQ9V0
+    timestamp: 2026-04-25T00:12:36.393Z
+  - _ulid: 01KQ0ZPMM8K5HS2782EREA57EE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-25T00:12:46.600Z
+  - _ulid: 01KQ0ZPZTG19M7GF9G0H3WHFGT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused validation tests
+    timestamp: 2026-04-25T00:12:58.065Z
+  - _ulid: 01KQ0ZQAG6356ASXYJR70C4X47
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: malformed split task refs probe
+    timestamp: 2026-04-25T00:13:08.999Z
+  - _ulid: 01KQ0ZQM0BA0VSJRX72X8D03K7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-25T00:13:18.732Z
+  - _ulid: 01KQ0ZQXENHH41ETQMPZ95R4T1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: source CLI canonical resolver probe
+    timestamp: 2026-04-25T00:13:28.405Z
+  - _ulid: 01KQ0ZR6KFETBR7H7J698R5E3D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC annotation search
+    timestamp: 2026-04-25T00:13:37.775Z
+  - _ulid: 01KQ0ZRJGQMJAM21RAK8Z0Q8K2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence
+    timestamp: 2026-04-25T00:13:49.975Z
+  - _ulid: 01KQ0ZRTP9RGWWY17ECGY598YC
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-25T00:13:58.345Z
+  - _ulid: 01KQ0ZRTP9PE15QT02J0V7W8EG
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-25T00:13:58.345Z
+  - _ulid: 01KQ112NR4Y8ANW99JW8CT0AYK
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQ0ZP9JY8QG1HGAHP4VVQ9V0
+    timestamp: 2026-04-25T00:36:49.540Z
+  - _ulid: 01KQ112YHE8V6JJY9BEXZ6DVYK
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQ0ZP9JY8QG1HGAHP4VVQ9V0
+    timestamp: 2026-04-25T00:36:58.542Z
+examined_commit: 1f8ec960532cc8192bd6cb3abb34c995f3ec4f77
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQ0JDJQQY4HTX1P4JD4K11PA"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQ0ZP9JY8QG1HGAHP4VVQ9V0
+    anchor:
+      type: code
+      commit: 1f8ec960532cc8192bd6cb3abb34c995f3ec4f77
+      line_end: 2350
+      line_start: 2347
+      path: src/parser/validate.ts
+      side: head
+    entries:
+      - _ulid: 01KQ0ZP9JYQ7FTK7G12ABV9TZT
+        author: Jacob Chapel
+        body: 'MUST-FIX: malformed split per-task records are still silently omitted when task-aware
+          validation runs without schema validation, such as validate --refs. The canonical load
+          path calls TaskDataManager.loadAllTasks(), but the split backend skips per-task
+          load/schema failures; this compensating validatePerTaskFiles() pass only runs behind
+          runSchema. I reproduced a split-format project with one task directory whose task.yaml is
+          missing the required title and contains spec_ref: "@missing-spec". Running validate(ctx, {
+          schema: false, refs: true, orphans: false, completeness: false, strictRefs: true })
+          returned valid: true, schemaErrors: [], refErrors: [], and tasksChecked: 0. That violates
+          @validation-task-data-source ac-task-load-errors-reported because the invalid persisted
+          task record gets no validation finding, and it also prevents its reference field from
+          contributing to task-aware validation findings.'
+        created_at: 2026-04-25T00:12:35.294Z
+      - _ulid: 01KQ112MNC8V7RM6K3B0WBQ010
+        author: "@claude"
+        body: "Fixed: removed the runSchema guard from validatePerTaskFiles() so it always runs on the
+          canonical path. Additionally, for tasks that fail schema validation but were not loaded by
+          loadAllTasks(), partial task records are now extracted with their reference fields
+          (spec_ref, depends_on, etc.) so they participate in ref validation. The slugs array
+          defaults to [] to prevent ReferenceIndex crashes on malformed records. Added regression
+          test covering the exact scenario (validate --refs with malformed split task having
+          spec_ref: @missing-spec) — verifies schema errors reported, tasksChecked >= 1, and ref
+          errors include the dangling reference."
+        created_at: 2026-04-25T00:36:48.428Z
+    kind: blocker
+    resolved_at: 2026-04-25T00:36:57.413Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-25T00:13:58.344Z
+created_at: 2026-04-24T23:59:51.421Z
+updated_at: 2026-04-25T00:36:57.413Z
+notes: []

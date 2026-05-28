@@ -1,0 +1,253 @@
+_ulid: 01KM4WBNDAJSEXSZWACXX74JEM
+slugs: []
+title: Review @01KM4QGVTQR64KQPQ0S24AHV0S
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck exited 0.
+    name: typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-03-20T05:49:30.603Z
+    completed_at: 2026-03-20T05:49:30.603Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 290/290 test files passed, 6645 tests passed, 3 skipped, 0 failures.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-20T05:49:31.397Z
+    completed_at: 2026-03-20T05:49:31.397Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      ✗ Validation failed
+
+      ────────────────────────────────────────
+
+      Files checked: 10
+
+      Items checked: 559
+
+      Tasks checked: 0
+
+      Meta: 10 agents, 11 workflows, 10 conventions
+
+
+      Schema: OK
+
+
+      Reference errors: 3
+        ✗ @01KFM9SNV2QRRGREJ1HMZWXCFT
+          Reference "@01KFM9SNV2QRRGREJ1HMZWXCFT" not found
+          in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/modules/meta.yaml (relates_to)
+        ✗ @01KFM9X3C64AHJAD6J2YJZ3YA6
+          Reference "@01KFM9X3C64AHJAD6J2YJZ3YA6" not found
+          in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/modules/meta.yaml (relates_to)
+        ✗ @01KFM9G3BR4VFNBM2G7BGE5BZY
+          Reference "@01KFM9G3BR4VFNBM2G7BGE5BZY" not found
+          in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/modules/meta.yaml (relates_to)
+
+      Reference warnings: 1
+        ⚠ @skills
+          Orphaned skill directory 'skills' has no corresponding meta entry
+          in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+      Alignment warnings: 30
+        Orphaned specs (no tasks): 29
+          ○ Test Trait
+          ○ Filterable List Commands
+          ○ Dry Run Preview Mode
+          ... and 26 more
+        Status mismatches: 1
+          ! kspec item ac
+            Spec "kspec item ac" status is "implemented" but should be "in_progress" based on task progress
+
+      Alignment stats: 423/559 specs have tasks, 422 aligned
+
+
+      Completeness warnings: 401
+        Missing acceptance criteria: 1
+          ○ @01KJN1WT - Test Trait
+        Missing own AC coverage: 235
+          ! @spec-item - Spec Item
+            Uncovered: ac-item-1, ac-item-2
+          ! @ulid-system - ULID Identifier System
+            Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+          ! @slug-system - Slug Alias System
+            Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+          ... and 232 more
+        Invalid AC annotations: 165
+          ! AC annotation references '@slug' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-sessions-live-freshness-01km4qgv-review/tests/ac-annotation-validation.test.ts:6
+          ! AC annotation references '@my-spec' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-sessions-live-freshness-01km4qgv-review/tests/ac-annotation-validation.test.ts:88
+          ! AC annotation references '@my-spec' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-sessions-live-freshness-01km4qgv-review/tests/ac-annotation-validation.test.ts:91
+          ! AC annotation references '@spec-a' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-sessions-live-freshness-01km4qgv-review/tests/ac-annotation-validation.test.ts:124
+          ! AC annotation references '@spec-b' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-sessions-live-freshness-01km4qgv-review/tests/ac-annotation-validation.test.ts:128
+          ... and 160 more
+      Skills: OK (9 files checked) exited 4 with pre-existing repo-level reference errors in
+      .kspec/modules/meta.yaml plus existing completeness/alignment warnings; not introduced by this
+      diff.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-20T05:49:32.490Z
+    completed_at: 2026-03-20T05:49:32.490Z
+events:
+  - _ulid: 01KM4WBNDA1EZWN0HKY193A8JZ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-20T05:44:13.482Z
+  - _ulid: 01KM4WC9KVDCPZMF4ETGDJR8RF
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-20T05:44:34.171Z
+  - _ulid: 01KM4WNAH9K7BSSWMR35QMC9RY
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM4WNA9SV0EDBFSZEH7YP5EC
+    timestamp: 2026-03-20T05:49:30.025Z
+  - _ulid: 01KM4WNB9Y073V5YVX0J993P4T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-03-20T05:49:30.814Z
+  - _ulid: 01KM4WNC3BXCR91T3HWT98QM3M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-20T05:49:31.628Z
+  - _ulid: 01KM4WND95P7GYWRH280DJ6D5K
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-03-20T05:49:32.837Z
+  - _ulid: 01KM4WP26RTKMG26MZBZ9P38H3
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM4WP1TSJ6YSK75FETVE6D7P
+    timestamp: 2026-03-20T05:49:54.264Z
+  - _ulid: 01KM4WPKZ1S6FJD84DFQS8F680
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-20T05:50:12.449Z
+  - _ulid: 01KM4WPKZ19NN61NY6MWBS7YZW
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-20T05:50:12.449Z
+  - _ulid: 01KM4X718B3171ZHPS1QXGJ60A
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KM4WNA9SV0EDBFSZEH7YP5EC
+    timestamp: 2026-03-20T05:59:10.348Z
+  - _ulid: 01KM4X71ZX3KMACBWET0XZ238K
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM4WNA9SV0EDBFSZEH7YP5EC
+    timestamp: 2026-03-20T05:59:11.101Z
+examined_commit: 818b53f420eda826592758a52a7691fd0b055d75
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM4QGVTQR64KQPQ0S24AHV0S"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM4WNA9SV0EDBFSZEH7YP5EC
+    anchor:
+      type: code
+      commit: 818b53f420eda826592758a52a7691fd0b055d75
+      line_end: 71
+      line_start: 67
+      path: packages/daemon/src/session-watcher.ts
+      side: head
+    entries:
+      - _ulid: 01KM4WNA9SXF66CQ43AZK58X97
+        author: Jacob Chapel
+        body: A single logical session creation now emits multiple  broadcasts because the Chokidar fallback
+          treats both  and  as session changes and debounces per filesystem path. I reproduced this
+          in the review snapshot by creating one new session directory and writing ;  fired twice
+          (once for the directory, once for the file). On , each broadcast runs  and increments , so
+          one new session can show up as multiple 'new sessions' and trigger duplicate refresh work.
+          This breaks the source-agnostic freshness path specifically on the fallback watcher that
+          runs on Linux.
+        created_at: 2026-03-20T05:49:29.785Z
+      - _ulid: 01KM4X71SC3SC1A4D9XSVB1B7Q
+        author: Jacob Chapel
+        body: Fixed in commit 0bcd918c0. SessionWatcher now debounces by logical session root instead of raw
+          file path, so session-dir creation plus session.yaml write collapses to one sessions-topic
+          callback on the Chokidar fallback path. Added tests/session-watcher.test.ts coverage for
+          the reproduced create-directory-plus-session.yaml case.
+        created_at: 2026-03-20T05:59:10.892Z
+    kind: blocker
+    resolved_at: 2026-03-20T05:59:10.127Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KM4WP1TSJ6YSK75FETVE6D7P
+    entries:
+      - _ulid: 01KM4WP1TS2DYFKHABG97BCEMY
+        author: Jacob Chapel
+        body: "Evidence log: Files read: packages/daemon/src/project-context.ts,
+          packages/daemon/src/session-watcher.ts, packages/daemon/src/websocket/pubsub.ts,
+          packages/web-ui/src/lib/query/ws-invalidation.ts,
+          packages/web-ui/src/lib/stores/connection.svelte.ts,
+          packages/web-ui/src/routes/sessions/+page.svelte,
+          packages/web-ui/tests/e2e/api-watcher.spec.ts, packages/web-ui/tests/e2e/sessions.spec.ts,
+          tests/session-watcher.test.ts, tests/web-ui-tanstack-query.test.ts. Commands run: git diff
+          against dev base, kspec task get, kspec validate, rg AC annotation search, npm run
+          typecheck, npm test, npm test -- tests/web-ui-tanstack-query.test.ts
+          tests/session-watcher.test.ts, and a tsx repro that created one session directory plus
+          session.yaml and observed two watcher callbacks. Claims verified: source-agnostic sessions
+          topic wiring exists in daemon and UI; targeted tests and full suite pass; duplicate
+          watcher callbacks are reproducible. Categories searched: correctness, edge cases, test
+          quality, integration, error handling."
+        created_at: 2026-03-20T05:49:53.881Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-20T05:50:12.449Z
+created_at: 2026-03-20T05:44:13.482Z
+updated_at: 2026-03-20T05:59:10.892Z
+notes: []

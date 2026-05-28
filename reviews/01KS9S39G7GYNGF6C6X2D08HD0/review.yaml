@@ -1,0 +1,267 @@
+_ulid: 01KS9S39G7GYNGF6C6X2D08HD0
+slugs: []
+title: Review entity-local resource trait resolver (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh full suite passed: 2475 suites passed; 9385 tests passed, 5 skipped; duration
+      2436.5s. Full log: /tmp/kspec-test-cache/01KS9S23M6CMJZBPGDTJG349R3/66f5e008638529cd.log"
+    name: npm test -- --fresh
+    required: true
+    runner: npm
+    created_at: 2026-05-23T06:57:24.192Z
+    completed_at: 2026-05-23T06:57:24.192Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: oxlint completed with 0 errors; existing repo warnings reported (724 warnings).
+    name: npm run lint
+    required: true
+    runner: npm
+    created_at: 2026-05-23T06:57:34.554Z
+    completed_at: 2026-05-23T06:57:34.554Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit completed successfully.
+    name: npm run typecheck
+    required: true
+    runner: npm
+    created_at: 2026-05-23T06:57:44.421Z
+    completed_at: 2026-05-23T06:57:44.421Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Schema and references OK; command exited 6 because validation produced existing warnings
+      (reference/alignment/completeness warnings, including missing trait AC coverage warnings
+      outside this task scope).
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-23T06:57:55.216Z
+    completed_at: 2026-05-23T06:57:55.216Z
+events:
+  - _ulid: 01KS9S39G78BNVT027B0SRFD65
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-23T06:41:54.695Z
+  - _ulid: 01KS9S3Q0DJM4V1XFFRDY3PC1N
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-23T06:42:08.525Z
+  - _ulid: 01KS9SYYMEBXAT5YHVFE2CRZMW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KS9SYX2T0C6FVR5D9YNTQ1PX
+    timestamp: 2026-05-23T06:57:01.071Z
+  - _ulid: 01KS9SZB7AJ3CJ9JPKZ38AFD86
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KS9SZ9PJY57Y77X5YVKS1NTS
+    timestamp: 2026-05-23T06:57:13.962Z
+  - _ulid: 01KS9SZPXNSAHGZNCWJP3EQ9SC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-05-23T06:57:25.941Z
+  - _ulid: 01KS9T00WD4VJY56P4YQQYNGK0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run lint
+    timestamp: 2026-05-23T06:57:36.142Z
+  - _ulid: 01KS9T0AFH390SEXFZ23KA05BR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run typecheck
+    timestamp: 2026-05-23T06:57:45.969Z
+  - _ulid: 01KS9T0N24SQNFDAT7JFRG0PYS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-23T06:57:56.804Z
+  - _ulid: 01KS9T136JCQPMRPJDGWGFJW0N
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KS9T11MY21V5BHGF61VP4BX7
+    timestamp: 2026-05-23T06:58:11.282Z
+  - _ulid: 01KS9T1CRWCW37C6BW76RQKJXF
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-23T06:58:21.084Z
+  - _ulid: 01KS9T1CRW0WX35S851MYQYC6C
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-23T06:58:21.084Z
+  - _ulid: 01KS9VAD81QQ9N6C0WZ4BB76D7
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KS9SYX2T0C6FVR5D9YNTQ1PX
+    timestamp: 2026-05-23T07:20:45.057Z
+  - _ulid: 01KS9VAPRK6XQH6SPD1YXX2RPQ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KS9SYX2T0C6FVR5D9YNTQ1PX
+    timestamp: 2026-05-23T07:20:54.803Z
+  - _ulid: 01KS9VB5PWYKTN4GD2RDJN6600
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KS9SZ9PJY57Y77X5YVKS1NTS
+    timestamp: 2026-05-23T07:21:10.108Z
+  - _ulid: 01KS9VBF2TSMK7XJGKC6P0SN7Q
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KS9SZ9PJY57Y77X5YVKS1NTS
+    timestamp: 2026-05-23T07:21:19.707Z
+examined_commit: 5f4503684e7447da5fb464255d4b3b7785aafcc5
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XAW3HQ2DGQPD6HFC19FAV"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KS9SYX2T0C6FVR5D9YNTQ1PX
+    anchor:
+      type: code
+      commit: 5f4503684e7447da5fb464255d4b3b7785aafcc5
+      line_end: 392
+      line_start: 381
+      path: src/parser/entity-local-resources.ts
+      side: head
+    entries:
+      - _ulid: 01KS9SYX2T1MQN6EMFWA4ZMEXZ
+        author: Jacob Chapel
+        body: 'MUST-FIX: resolveResourcePath treats the realpath of ownerResourcesDir as the trusted
+          resource root. If <entity>/resources is itself a symlink to an outside directory, every
+          declared file under that outside target is accepted as entity-owned. I confirmed this by
+          running a temp fixture where entity/resources -> /tmp/outside and resolveResourcePath({
+          relativePath: \"secret.txt\", manifest: declared secret.txt }) returned ok:true with
+          absolutePath outside the entity. This violates ac-resource-reference-resolves-within-owner
+          and ac-path-escape-rejected because a declared resource can read files outside the owning
+          entity tree. Reject a symlinked resources root or verify the real candidate remains under
+          the lexical entity resources directory, not just under the symlink target.'
+        created_at: 2026-05-23T06:56:59.482Z
+      - _ulid: 01KS9VABQZE4Y1NMXEDZTMBVJK
+        author: "@claude"
+        body: "Fixed: resolveResourcePath now lstat()s the ownerResourcesDir up-front and rejects when it is
+          a symbolic link (before any realpath-based containment check). A new regression test
+          creates entity/resources -> /tmp/outside, declares a manifest entry there, and asserts
+          both resolveResourcePath and copyResourceForStaticExport reject with actionable guidance
+          while the outside file is untouched. The existing per-file symlink-escape check still
+          handles symlinks at any inner subdirectory level.
+          src/parser/entity-local-resources.ts:342-362."
+        created_at: 2026-05-23T07:20:43.510Z
+    kind: blocker
+    resolved_at: 2026-05-23T07:20:53.247Z
+    resolved_by: "@claude"
+  - _ulid: 01KS9SZ9PJY57Y77X5YVKS1NTS
+    anchor:
+      type: code
+      commit: 5f4503684e7447da5fb464255d4b3b7785aafcc5
+      line_end: 69
+      line_start: 65
+      path: src/schema/resources.ts
+      side: head
+    entries:
+      - _ulid: 01KS9SZ9PKP599PGEJ6ZV6PMFH
+        author: Jacob Chapel
+        body: "MUST-FIX: ResourceMetadataSchema validates path only as a non-empty string, so resources.yaml
+          accepts paths that the trait says must be rejected. I confirmed
+          ResourceMetadataSchema.safeParse succeeds for path values /etc/passwd, ../secret.txt, and
+          a backslash-separated path. Because this schema is the shared resources.yaml contract,
+          invalid paths can be loaded and exposed through list/detail/API/static-export metadata
+          before any resolver call gets a chance to reject them. Reuse the resource relative-path
+          validation in the schema or manifest load path so absolute paths, traversal, and
+          backslashes are rejected at the metadata boundary."
+        created_at: 2026-05-23T06:57:12.403Z
+      - _ulid: 01KS9VB46WM03A7JPJDYRBCT0H
+        author: "@claude"
+        body: "Fixed: hoisted the relative-path predicate (checkResourceRelativePath) into
+          src/schema/resources.ts and applied it via a ResourcePathSchema superRefine on
+          ResourceMetadataSchema.path. The schema now rejects absolute paths, parent traversal,
+          backslashes, empty paths, redundant '.' segments, '//' empty segments, and trailing '/' at
+          the manifest boundary. The runtime validator validateResourceRelativePath delegates to the
+          same predicate so both layers reject identical shapes. Regression tests:
+          ResourceMetadataSchema.safeParse against /etc/passwd, ../secret, a\\\\b\\\\c.png, '',
+          logs/../escape, a/./b, a//b, a/, and loadResourceManifest rejects resources.yaml entries
+          declaring /etc/passwd or ../escape paths. src/schema/resources.ts:37-101, 131-141."
+        created_at: 2026-05-23T07:21:08.572Z
+    kind: blocker
+    resolved_at: 2026-05-23T07:21:18.134Z
+    resolved_by: "@claude"
+  - _ulid: 01KS9T11MY21V5BHGF61VP4BX7
+    entries:
+      - _ulid: 01KS9T11MY2SC6V4F32628ANRQ
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: kspec-agents.md, src/parser/entity-local-resources.ts,
+          src/schema/resources.ts, src/schema/index.ts, tests/entity-local-resources.test.ts,
+          package.json, previous review @01KS9PPTRCHJF2WTMSAKMXVCZG.
+
+          Commands run: kspec task get @01KS8XAW3HQ2DGQPD6HFC19FAV; kspec item get
+          @trait-entity-scoped-local-resources-1; kspec review for-task/get/add/open; git
+          diff/stat/show; rg AC annotations; node --import tsx probes for symlinked resources root
+          and schema path acceptance; kspec validate; npm run lint; npm run typecheck; npm test --
+          --fresh.
+
+          Claims verified: the prior git-version blocker was addressed with HEAD blob and clean-diff
+          checks plus regression tests; the full suite passes; the resolver and schema still miss
+          the two path-safety cases recorded as blockers.
+
+          Categories searched: correctness, path traversal/symlink edge cases, manifest validation,
+          git-version drift, content-type validation/inference, binary preview behavior, static
+          export behavior, test quality, AC annotation coverage, integration checks.
+        created_at: 2026-05-23T06:58:09.695Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-23T06:58:21.084Z
+created_at: 2026-05-23T06:41:54.695Z
+updated_at: 2026-05-23T07:21:18.134Z
+notes: []

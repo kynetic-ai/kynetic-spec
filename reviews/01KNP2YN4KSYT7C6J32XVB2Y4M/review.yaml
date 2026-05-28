@@ -1,0 +1,201 @@
+_ulid: 01KNP2YN4KSYT7C6J32XVB2Y4M
+slugs: []
+title: Review stabilize-unrelated-full-suite-failures-in-review-environment
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Run 1 on d29bbeb0834487440004909576233e6836ae30b8 passed: 2082/2082 suites, 7556 passed,
+      5 skipped, duration 7506.6s. Run 2 on the same commit failed: 7 suites failed, 4 tests failed,
+      duration 11024.6s. Reported failures included tests/activity-display.test.ts
+      (STACK_TRACE_ERROR), tests/agent-dispatch-engine.test.ts (assertion failure), and
+      tests/cli/session-note-limit.test.ts (STACK_TRACE_ERROR)."
+    name: npm test -- --fresh
+    required: true
+    runner: test-runner
+    created_at: 2026-04-08T08:51:46.714Z
+    completed_at: 2026-04-08T08:51:46.714Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 6 with long-standing repository warnings (orphaned skill dir, orphaned specs,
+      missing AC coverage, invalid AC annotations). No task-specific validation error introduced by
+      this snapshot.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-08T08:51:52.068Z
+    completed_at: 2026-04-08T08:51:52.068Z
+events:
+  - _ulid: 01KNP2YN4JBFTG04YRPY3K9PYA
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-08T08:22:14.418Z
+  - _ulid: 01KNP304BC1B0KDKBFJV3SXTS6
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-08T08:23:02.765Z
+  - _ulid: 01KNP4K7NE6JM53BF2J3J6A1QB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNP4K6SSVTTE8PP0W1EERYTZ
+    timestamp: 2026-04-08T08:50:57.326Z
+  - _ulid: 01KNP4MRSF00FNZFKR3E38KGYW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test -- --fresh
+    timestamp: 2026-04-08T08:51:47.632Z
+  - _ulid: 01KNP4MVCG1GV0C4XKZXA1XXXE
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KNP4MTGHHQ66SHD935YQKB2Y
+    timestamp: 2026-04-08T08:51:50.288Z
+  - _ulid: 01KNP4MY1DH8T1FG117HWE44QJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-08T08:51:53.005Z
+  - _ulid: 01KNP4NE2XAHABBJ9Q3H4WMQP2
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-08T08:52:09.437Z
+  - _ulid: 01KNP4NE2XEQMS4EMY6D94B1PD
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-08T08:52:09.438Z
+  - _ulid: 01KNP8CXQ4FFCDG428GTZGNDXR
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNP4K6SSVTTE8PP0W1EERYTZ
+    timestamp: 2026-04-08T09:57:24.836Z
+  - _ulid: 01KNP8DRWRXR5KV0VKYGKS9JD3
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNP4K6SSVTTE8PP0W1EERYTZ
+    timestamp: 2026-04-08T09:57:52.664Z
+  - _ulid: 01KNP8EBB3TWDMCER6FW19B1ZH
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNP4MTGHHQ66SHD935YQKB2Y
+    timestamp: 2026-04-08T09:58:11.555Z
+  - _ulid: 01KNP8ETD1JMHNK45R6MF5G0PE
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNP4MTGHHQ66SHD935YQKB2Y
+    timestamp: 2026-04-08T09:58:26.978Z
+examined_commit: d29bbeb0834487440004909576233e6836ae30b8
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNMJXC8DADJDK9R9CGK6B854"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNP4K6SSVTTE8PP0W1EERYTZ
+    anchor:
+      type: code
+      commit: d29bbeb0834487440004909576233e6836ae30b8
+      line_end: 31
+      line_start: 31
+      path: vitest.config.ts
+      side: head
+    entries:
+      - _ulid: 01KNP4K6STC007GHAEXPFBZ65N
+        author: Jacob Chapel
+        body: "MUST-FIX: the reviewed snapshot still fails repeated uncached full-suite runs, so the
+          stabilization is not complete. I ran 'npm test -- --fresh' twice on commit
+          d29bbeb0834487440004909576233e6836ae30b8 in this review worktree: the first run passed
+          after 7506.6s, but the second run failed after 11024.6s with 7 failed suites / 4 failed
+          tests, including STACK_TRACE_ERROR failures in tests/activity-display.test.ts and
+          tests/cli/session-note-limit.test.ts plus an assertion failure in
+          tests/agent-dispatch-engine.test.ts. Raising the global default timeout from 15s to 45s at
+          this line did not make the full suite reliable in the review environment, which is the
+          task’s stated outcome."
+        created_at: 2026-04-08T08:50:56.442Z
+      - _ulid: 01KNP8CWY3Y3W5VBAV8VD4K25C
+        author: "@claude"
+        body: "Fixed: The timeout bump alone was insufficient because it only addressed the symptom
+          (timeouts) not the root cause (resource exhaustion from unbounded subprocess fan-out). The
+          fix applies two complementary strategies: (1) Cap default pool maxWorkers at min(cpus, 8)
+          so vitest doesn't spawn 32 concurrent workers each triggering dozens of kspec CLI
+          subprocesses. (2) Move the 8 heaviest CLI-subprocess test suites (integration.test.ts,
+          agent-dispatch-engine.test.ts, activity-display.test.ts, session-note-limit.test.ts,
+          session-start-format.test.ts, session-start-notes.test.ts,
+          session-start-activity-timeline.test.ts, meta.test.ts) into the serial pool alongside the
+          existing dispatch-heavy suites. Two consecutive uncached full-suite runs both passed
+          (335/335, ~950s each)."
+        created_at: 2026-04-08T09:57:24.035Z
+    kind: blocker
+    resolved_at: 2026-04-08T09:57:51.859Z
+    resolved_by: "@claude"
+  - _ulid: 01KNP4MTGHHQ66SHD935YQKB2Y
+    entries:
+      - _ulid: 01KNP4MTGHFVMQYC9470QSE3ZG
+        author: Jacob Chapel
+        body: "Evidence log: Files read: vitest.config.ts, tests/cli-serve.test.ts,
+          tests/cli/session-start-activity-timeline.test.ts, tests/integration.test.ts,
+          tests/task-needs-work.test.ts, scripts/test.cjs. Commands run: kspec task get
+          @01KNMJXC8DADJDK9R9CGK6B854; git diff
+          6a8fd6df49537d95cca2f6283be8a4aa82cc30c8...d29bbeb0834487440004909576233e6836ae30b8 --
+          <changed files>; git show --stat --summary d29bbeb0834487440004909576233e6836ae30b8; kspec
+          validate; npm test -- --fresh (twice on reviewed head); base-worktree bootstrap attempts
+          in /tmp/kspec-review-base-01knmjxc. Claims verified: the worker claim that a higher global
+          timeout stabilizes full-suite review runs was checked directly by repeated uncached
+          full-suite execution and disproved by the second failing run. Categories searched:
+          correctness (does the suite stabilize), edge cases (repeatability under load), error
+          handling (runner/bootstrap behavior in detached worktrees), test quality (timeout changes
+          versus real failures), integration (interaction with test-runner dependency/bootstrap
+          logic)."
+        created_at: 2026-04-08T08:51:49.393Z
+      - _ulid: 01KNP8EAHPGTE733FBHQPE87JB
+        author: "@claude"
+        body: "Acknowledged. The reviewer's evidence log correctly identified that the timeout-only approach
+          was insufficient. The root cause was unbounded concurrency: 32 vitest workers each
+          spawning dozens of kspec CLI subprocesses overwhelmed fd/process limits. The new approach
+          caps worker count and isolates heavy suites, verified by two consecutive uncached
+          full-suite passes."
+        created_at: 2026-04-08T09:58:10.741Z
+    kind: question
+    resolved_at: 2026-04-08T09:58:26.139Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-08T08:52:09.437Z
+created_at: 2026-04-08T08:22:14.419Z
+updated_at: 2026-04-08T09:58:26.139Z
+notes: []

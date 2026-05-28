@@ -1,0 +1,100 @@
+_ulid: 01KKZ5X2W0SWH4P2432S4XDVFB
+slugs: []
+title: "Merge conflict: triage record YAML writes"
+author: "@claude"
+checks: []
+events:
+  - _ulid: 01KKZ5X2W0Z3EPJYWY4PWG1HHF
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T00:35:34.912Z
+  - _ulid: 01KKZ5XA08NR2J6BSK0SJRQA5V
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T00:35:42.216Z
+  - _ulid: 01KKZ5XNH3QNSAXV17ZRW4H0YA
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKZ5XNEAVG1N4YT1BWPEJQNS
+    timestamp: 2026-03-18T00:35:54.019Z
+  - _ulid: 01KKZ5XYGGGRDAEQDNQWRSB2K4
+    actor: claude-reviewer@dispatch
+    event_type: verdict_submitted
+    payload:
+      decision: request_changes
+    timestamp: 2026-03-18T00:36:03.217Z
+  - _ulid: 01KKZ5XYGHWWC8GPQ95DDS85BX
+    actor: claude-reviewer@dispatch
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T00:36:03.217Z
+  - _ulid: 01KKZ758Z5BCDHHYRJ25320T4W
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KKZ5XNEAVG1N4YT1BWPEJQNS
+    timestamp: 2026-03-18T00:57:31.877Z
+  - _ulid: 01KKZ75FYVSQ8C0ZDCWFSVAQW2
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KKZ5XNEAVG1N4YT1BWPEJQNS
+    timestamp: 2026-03-18T00:57:39.036Z
+examined_commit: a8319add715b74b46cf30ee1da60a5fb551ee1e8
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKX6CEQFM17JX8AKKRPXQGR7"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KKZ5XNEAVG1N4YT1BWPEJQNS
+    anchor:
+      type: code
+      commit: a8319add715b74b46cf30ee1da60a5fb551ee1e8
+      line_end: 1435
+      line_start: 1150
+      path: tests/yaml-round-trip-stability.test.ts
+      side: head
+    entries:
+      - _ulid: 01KKZ5XNEBQQB0Q8WRJ87FCZKZ
+        author: "@claude"
+        body: "Merge conflict in tests/yaml-round-trip-stability.test.ts when merging into dev (42a4d2777).
+          Both this branch and the dispatch-workspace round-trip task added describe blocks at the
+          same location (after inbox tests ~line 1153). Resolution: merge current dev into the task
+          branch, keeping BOTH the dispatch workspace tests (from dev) and the triage tests. The
+          dispatch workspace describe block and its imports (loadDispatchWorkspaceRegistry,
+          saveDispatchWorkspaceRecord, etc.) stay; the triage describe block follows it. Only the
+          test file and its imports need conflict resolution — src/parser/yaml.ts is clean."
+        created_at: 2026-03-18T00:35:53.931Z
+      - _ulid: 01KKZ758V8X0XBE9619N5DKX6C
+        author: "@claude"
+        body: Merge conflict was already resolved in fix cycle 1 (commit a8319add7 merged origin/dev). The
+          branch is now up to date with dev — git merge-tree confirms clean merge. All 5795 tests
+          pass (1 pre-existing review-cli.test.ts failure unrelated to this task).
+        created_at: 2026-03-18T00:57:31.752Z
+    kind: blocker
+    resolved_at: 2026-03-18T00:57:38.947Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: claude-reviewer@dispatch
+    role: reviewer
+    created_at: 2026-03-18T00:36:03.131Z
+created_at: 2026-03-18T00:35:34.912Z
+updated_at: 2026-03-18T00:57:38.947Z
+notes: []

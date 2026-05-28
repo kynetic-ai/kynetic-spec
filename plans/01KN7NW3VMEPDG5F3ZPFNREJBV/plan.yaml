@@ -1,0 +1,23 @@
+_ulid: 01KN7NW3VMEPDG5F3ZPFNREJBV
+slugs:
+  - plan-daemon-file-monitoring-reliability
+title: Daemon File Monitoring Reliability
+status: completed
+approved_at: 2026-04-02T18:26:48.202Z
+branch: plan/plan-daemon-file-monitoring-reliability/01kn7nw3
+derived_specs:
+  - "@daemon-file-monitoring"
+  - "@daemon-watcher-health"
+derived_tasks:
+  - "@task-update-daemon-server-ac8"
+  - "@task-update-multi-dir-ac19"
+  - "@task-chokidar-standardize"
+  - "@task-session-blob-exclusion"
+  - "@task-watcher-health-check"
+  - "@task-test-chokidar-watcher"
+  - "@task-test-watcher-health"
+  - "@task-cleanup-bun-watcher"
+module_ref: "@web-ui"
+source_path: /home/chapel/Projects/kynetic-spec/plans/daemon-watcher-reliability.md
+created_at: 2026-04-02T18:04:17.651Z
+completed_at: null

@@ -1,0 +1,112 @@
+_ulid: 01KME9P0SM4RT24W116YQ22ZY8
+slugs: []
+title: Review task-agent-list-json-fields (cycle 1)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 7210 tests passed, 3 skipped. No regressions.
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-23T21:30:53.899Z
+    completed_at: 2026-03-23T21:30:53.899Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed. All warnings are pre-existing (orphaned specs, missing AC coverage in
+      other modules). No new warnings from this change.
+    name: kspec-validate
+    required: true
+    runner: kspec
+    created_at: 2026-03-23T21:30:57.280Z
+    completed_at: 2026-03-23T21:30:57.280Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: AC @cli-agent-commands ac-1 annotated in both source (agent.ts:247) and tests
+      (cli-agent-commands.test.ts:358). AC @trait-json-output ac-2 annotated in source
+      (agent.ts:210) and tests (cli-agent-commands.test.ts:359, 603). 12 new tests cover JSON and
+      human-readable output for session, budget, skills, tags, automation fields. Tests verify both
+      presence when set and absence when not set.
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-23T21:31:06.910Z
+    completed_at: 2026-03-23T21:31:06.910Z
+events:
+  - _ulid: 01KME9P0SKDWRHQPS741W1MS10
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-23T21:30:14.195Z
+  - _ulid: 01KME9P9KYJW4257BZ8BBKNBEX
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-23T21:30:23.230Z
+  - _ulid: 01KME9Q7WSWYX0CQ0FJ9NP8DX1
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-23T21:30:54.234Z
+  - _ulid: 01KME9QB78307HT705XAZ3SCMH
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-23T21:30:57.640Z
+  - _ulid: 01KME9QMKZXGEQK2M0A7KE7W8D
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-23T21:31:07.263Z
+  - _ulid: 01KME9QVPMZXHXQQRESG1WV3KE
+    actor: pr-reviewer@kspec-dispatch
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-23T21:31:14.516Z
+  - _ulid: 01KME9QVPM34HPWCXYQ1YQXWBT
+    actor: pr-reviewer@kspec-dispatch
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-23T21:31:14.516Z
+examined_commit: ae4a1eecdbeb1a3cf0d00e0029d82050a04e5644
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-agent-list-json-fields"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer@kspec-dispatch
+    role: reviewer
+    created_at: 2026-03-23T21:31:14.515Z
+created_at: 2026-03-23T21:30:14.196Z
+updated_at: 2026-03-23T21:31:14.516Z
+notes: []

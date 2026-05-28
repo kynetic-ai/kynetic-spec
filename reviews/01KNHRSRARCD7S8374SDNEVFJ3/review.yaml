@@ -1,0 +1,131 @@
+_ulid: 01KNHRSRARCD7S8374SDNEVFJ3
+slugs: []
+title: Review task-skip-heartbeat-manager-on-node-runtime-to-prevent-elysia-ping-crash
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test failed once in unrelated tests/cli-no-daemon.test.ts due daemon pid-file startup
+      timeout after 10000ms; same test passed immediately when rerun in both the submitted branch
+      and a clean origin/dev worktree, indicating an intermittent/flaky failure rather than task
+      regression.
+    name: full-suite
+    required: false
+    runner: npm test
+    created_at: 2026-04-06T16:08:10.292Z
+    completed_at: 2026-04-06T16:08:10.292Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: npm test -- tests/daemon-heartbeat.test.ts tests/daemon-runtime-adapter.test.ts
+      (12 tests, 5 suites)."
+    name: daemon-targeted-tests
+    required: true
+    runner: npm test
+    created_at: 2026-04-06T16:08:10.311Z
+    completed_at: 2026-04-06T16:08:10.311Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation reports existing repository-wide reference/completeness issues unrelated to
+      this task; the task delta does not modify .kspec state.
+    name: kspec-validate
+    required: false
+    runner: kspec validate
+    created_at: 2026-04-06T16:08:10.308Z
+    completed_at: 2026-04-06T16:08:10.308Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed on submitted branch: npm test -- tests/cli-no-daemon.test.ts -t 'auto-starts the
+      daemon with the configured node runtime even when the CLI runs under bun'. Also passed on
+      clean origin/dev worktree."
+    name: cli-no-daemon-rerun
+    required: false
+    runner: npm test
+    created_at: 2026-04-06T16:08:30.465Z
+    completed_at: 2026-04-06T16:08:30.465Z
+events:
+  - _ulid: 01KNHRSRAQXH7A0ZCQP9BM80T6
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-06T16:07:50.359Z
+  - _ulid: 01KNHRTCMSRA75G7CPRZ2PVH32
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: full-suite
+    timestamp: 2026-04-06T16:08:11.161Z
+  - _ulid: 01KNHRTDZX4AV0M5BJ68KKD2DR
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-06T16:08:12.541Z
+  - _ulid: 01KNHRTFBG0PT3YS02VMTW5TCP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: daemon-targeted-tests
+    timestamp: 2026-04-06T16:08:13.936Z
+  - _ulid: 01KNHRTGNXBNYPSJFE8P6Z8FHQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec-validate
+    timestamp: 2026-04-06T16:08:15.294Z
+  - _ulid: 01KNHRV0BQ7A7MMHQ5JH3KWDJG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: cli-no-daemon-rerun
+    timestamp: 2026-04-06T16:08:31.351Z
+  - _ulid: 01KNHRV8VY5A5ZNXTKF3PSMCHS
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-06T16:08:40.062Z
+  - _ulid: 01KNHRV8VYV8MA2J2SD87CS0WN
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-06T16:08:40.063Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNHPYV"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-04-06T16:08:40.062Z
+created_at: 2026-04-06T16:07:50.360Z
+updated_at: 2026-04-06T16:08:40.062Z
+notes: []

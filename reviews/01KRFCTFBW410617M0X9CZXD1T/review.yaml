@@ -1,0 +1,117 @@
+_ulid: 01KRFCTFBW410617M0X9CZXD1T
+slugs: []
+title: Review task-include-inflight-spawn-refs-in-cleanup-inputs
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran kspec validate. Schema/references/skills OK; command exited 6 due existing
+      repository-wide warnings (reference/alignment/completeness/invalid annotation warnings outside
+      this patch). New @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup annotation is
+      present in tests/agent-dispatch-engine.test.ts.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-13T00:58:50.751Z
+    completed_at: 2026-05-13T00:58:50.751Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2433/2433 test suites, 9093/9098 tests passed, 5 skipped. Log:
+      /tmp/kspec-test-cache/01KRFCS92FMXN61K1C9EP5CR4V/992993fee93e56fa.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-13T00:58:54.888Z
+    completed_at: 2026-05-13T00:58:54.888Z
+events:
+  - _ulid: 01KRFCTFBVMJ5Y99M6EDGSXJ32
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-13T00:47:07.643Z
+  - _ulid: 01KRFCV946483MSHBVE2JGXA7X
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-13T00:47:34.022Z
+  - _ulid: 01KRFDFZCP9MSQ2DWJ4WZ39T1H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-13T00:58:52.182Z
+  - _ulid: 01KRFDG3F2238WSEZ8ADTF6119
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-13T00:58:56.354Z
+  - _ulid: 01KRFDG7QJ5EX8YYHGP5SQ7392
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KRFDG646CXJXCS2CM1WM9QGV
+    timestamp: 2026-05-13T00:59:00.722Z
+  - _ulid: 01KRFDGKHTW7DM7RTN1CBWZEE5
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-13T00:59:12.827Z
+  - _ulid: 01KRFDGKHVJ6SQ3CZXG6JBQ6MY
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-13T00:59:12.827Z
+examined_commit: ea847802c28d69abd5dbbb6ae5ce65cf6cc77df0
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRF37YPHJMC4CJ1VH7DDT3K0"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRFDG646CXJXCS2CM1WM9QGV
+    entries:
+      - _ulid: 01KRFDG6465JH5GPENGZ3AM02J
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: src/agent-runtime/dispatch.ts;
+          tests/agent-dispatch-engine.test.ts; kspec-agents.md. Commands run: kspec task get
+          @01KRF37YPHJMC4CJ1VH7DDT3K0; kspec item get @agent-dispatch-engine; git
+          diff/stat/name-only against 0c6506a55...HEAD; rg for cleanup/in-flight/AC annotations;
+          kspec validate; npm test. Claims verified: cleanup call sites in start() and _reconcile()
+          both pass _activeTaskRefs(); _activeTaskRefs() now includes parsed inFlightTaskKeys;
+          _hasActiveInvocationForTask() still checks active records plus parsed in-flight refs;
+          tests cover in-flight-only refs, dedupe, first-colon parsing, malformed keys, and both
+          cleanup call sites. Categories searched: correctness, edge cases, error handling scope,
+          test quality, integration."
+        created_at: 2026-05-13T00:58:59.078Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-13T00:59:12.826Z
+created_at: 2026-05-13T00:47:07.644Z
+updated_at: 2026-05-13T00:59:12.827Z
+notes: []

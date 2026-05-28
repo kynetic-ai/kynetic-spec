@@ -815,10 +815,16 @@ includes:
   - modules/shadow.yaml
   - modules/web-ui.yaml
   - modules/main.yaml
-kynetic: "1.1"
+kynetic: "1.2"
+plan_storage:
+  format: folder
 project:
   status: draft
   name: Kynetic Spec
   version: 0.1.0
+resource_storage:
+  format: entity_scoped
+review_storage:
+  format: folder
 task_storage:
   format: split

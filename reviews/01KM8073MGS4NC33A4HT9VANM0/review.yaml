@@ -1,0 +1,142 @@
+_ulid: 01KM8073MGS4NC33A4HT9VANM0
+slugs: []
+title: Review per-task core data and notes files (cycle 8)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 6 with warnings only; no schema/reference errors. Warnings were existing
+      completeness/alignment noise plus one orphaned skill directory warning.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-21T10:54:02.041Z
+    completed_at: 2026-03-21T10:54:02.041Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 300 test files, 6826 tests, 3 skipped."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-21T10:54:10.521Z
+    completed_at: 2026-03-21T10:54:10.521Z
+events:
+  - _ulid: 01KM8073MF5MDDY5HN723G01D1
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T10:49:21.808Z
+  - _ulid: 01KM807AKQ7XED6KDSV32TNJM1
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T10:49:28.951Z
+  - _ulid: 01KM80FJGQ5FXXA822K2SY1RPS
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM80FJ1DTNA8SC4J9YBQME7D
+    timestamp: 2026-03-21T10:53:59.191Z
+  - _ulid: 01KM80FM44T48FQBMVS34XNN2P
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM80FKMKHXA4WAQ5M5NNE70J
+    timestamp: 2026-03-21T10:54:00.836Z
+  - _ulid: 01KM80FNSKGBCP86HCAMG4P0TF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-21T10:54:02.547Z
+  - _ulid: 01KM80FY1W1ASTA4D7KG9KEGC4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-21T10:54:11.004Z
+  - _ulid: 01KM80K1NYHD82EGXWTDH2XXJ7
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-21T10:55:53.022Z
+  - _ulid: 01KM80K1NYVXPDBA4N96YY125D
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-21T10:55:53.022Z
+examined_commit: eb6cf22b0b84aaa7f2368374bcb5f933c96dc010
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YET1A7XY9D0V3YQ9DRASG"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM80FJ1DTNA8SC4J9YBQME7D
+    entries:
+      - _ulid: 01KM80FJ1DGD96HA49Y31KJVDN
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: src/parser/task-data-manager.ts,
+          src/parser/split-backend.ts, src/cli/commands/task.ts,
+          src/parser/review-task-integration.ts, src/cli/commands/tasks.ts,
+          src/cli/commands/item.ts, src/schema/spec.ts, tests/per-task-files.test.ts. Commands run:
+          kspec task get @01KM6YET1A7XY9D0V3YQ9DRASG; kspec review for-task
+          @01KM6YET1A7XY9D0V3YQ9DRASG; kspec item get @task-core-data-file; kspec item get
+          @task-notes-file; kspec item get @task-storage-activation; git diff against
+          95efd1618ada37f2b635d6526f2e303cb450d6cc; rg AC annotations; kspec validate; npm test.
+          Claims verified: the new per-task history/notes behavior is covered by tests and the full
+          suite passes; split-format routing is incomplete because non-CLI task mutations still call
+          the monolithic singleton. Categories searched: correctness, edge cases, error handling,
+          test quality, integration."
+        created_at: 2026-03-21T10:53:58.701Z
+    kind: nit
+  - _ulid: 01KM80FKMKHXA4WAQ5M5NNE70J
+    anchor:
+      type: code
+      commit: eb6cf22b0b84aaa7f2368374bcb5f933c96dc010
+      line_end: 89
+      line_start: 86
+      path: src/parser/review-task-integration.ts
+      side: head
+    entries:
+      - _ulid: 01KM80FKMM8X3Z7AGG2S2GBPE1
+        author: Jacob Chapel
+        body: Split storage is still not wired through all task write paths.  mutates via the module-level
+          monolithic , and the same file does it again in  at line 166. Once  is enabled, review
+          creation and request-changes handling will update the wrong backend instead of the
+          per-task files, so  linkage and the automatic  transition break. I also found the same
+          singleton bypass in  and , which means the new format is not used for all reads/writes
+          required by @task-storage-activation ac-2.
+        created_at: 2026-03-21T10:54:00.340Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-21T10:55:53.021Z
+created_at: 2026-03-21T10:49:21.808Z
+updated_at: 2026-03-21T10:55:53.022Z
+notes: []

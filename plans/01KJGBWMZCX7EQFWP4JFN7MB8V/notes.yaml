@@ -1,0 +1,26 @@
+notes:
+  - _ulid: 01KJGBWMZCFGG7P1TWE5GP3G5G
+    content: >-
+      Implementation notes:
+
+
+      Use existing session summary and last-event helpers in src/sessions/store.ts to avoid
+      duplicate log scanning.
+
+      Prefer the same time-spec parsing style already used by session log and workflow prune
+      commands.
+    author: Jacob Chapel
+    created_at: 2026-02-27T20:15:53.836Z
+  - _ulid: 01KJGCHPGC1X0RAM6J1QAKH8NP
+    content: "Incorporated review feedback: clarified targeting semantics (<session-id> vs --all, no
+      --refs), added explicit usage-error ACs, restricted criteria flags to relative durations,
+      added corrupt events handling + liveness guard ACs, standardized close_reason format, and
+      added task dependency edges so parent feature task waits on criteria+metadata tasks."
+    author: Jacob Chapel
+    created_at: 2026-02-27T20:27:23.533Z
+  - _ulid: 01KJGCJZHWBB409R2GSCX2BTX3
+    content: "Review refinement: aligned batch semantics with traits by adding --refs support and
+      @trait-multi-ref-batch; targeting contract is now <session-id> OR --refs OR --all (mutually
+      exclusive), with --all --dry-run used for batch preview AC."
+    author: Jacob Chapel
+    created_at: 2026-02-27T20:28:05.564Z

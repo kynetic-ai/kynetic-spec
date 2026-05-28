@@ -1,0 +1,133 @@
+_ulid: 01KQ15SN1AVGRBXHS9KHPKZPHB
+slugs: []
+title: Review task-ac-annotation-repair-wave-one
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exit 6 warnings only. Validation passed; current invalid AC annotations: 38, matching
+      submitted note; no schema/ref errors in completeness-only run."
+    name: kspec validate --completeness -v
+    required: true
+    runner: kspec
+    created_at: 2026-04-25T02:09:24.945Z
+    completed_at: 2026-04-25T02:09:24.945Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exit 0. Test Suites: 2280/2280 passed; Tests: 8388 passed, 5 skipped of 8393; duration
+      1905.2s."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-25T02:09:28.095Z
+    completed_at: 2026-04-25T02:09:28.095Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exit 4 from pre-existing shadow/spec state: .kspec/modules/meta.yaml modules[0].traits.0
+      Expected string, received object. Reviewed code diff changes only tests and no .kspec files."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-25T02:09:31.246Z
+    completed_at: 2026-04-25T02:09:31.246Z
+events:
+  - _ulid: 01KQ15SN1AVH9CT6CQPKSD8DWQ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-25T01:59:16.778Z
+  - _ulid: 01KQ15T040KS00P0GD7Q713T8M
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-25T01:59:28.128Z
+  - _ulid: 01KQ16C822SF0YKYNZC9Z4XFKY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --completeness -v
+    timestamp: 2026-04-25T02:09:26.083Z
+  - _ulid: 01KQ16CB4KVQYRSJ6DV697G1TW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-25T02:09:29.235Z
+  - _ulid: 01KQ16CE75GJC1ANHCXJZGPRZF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-25T02:09:32.390Z
+  - _ulid: 01KQ16CXQTTV546S2WTD6HPMA5
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KQ16CWP9091387R0CA33NJ1J
+    timestamp: 2026-04-25T02:09:48.282Z
+  - _ulid: 01KQ16D7QE0NNPSM8V0N0TVGQB
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-25T02:09:58.510Z
+  - _ulid: 01KQ16D7QEP6X7HYSMQ0DJJ82Z
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-25T02:09:58.510Z
+examined_commit: 1cbcf797c03d807268ed0c06abf948e98c9063d4
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQ0JDKWKVS0QC2QHTQYRYTGP"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQ16CWP9091387R0CA33NJ1J
+    entries:
+      - _ulid: 01KQ16CWP9SGZ3ZZX3VPS824B2
+        author: Jacob Chapel
+        body: "Evidence log: Files read: AGENTS.md, kspec-agents.md, task details/notes, full changed
+          annotation diff across 34 test files, and spec details for @agent-dispatch-engine,
+          @ui-task-board, @cmd-clone-for-testing, @multi-ref-batch, @api-input-type-safety,
+          @trait-markdown-rendering, @skill-meta-type, @config-validation. Commands run: git status;
+          git diff --stat/name-only/full annotation diff against c21bf609; kspec task get; kspec
+          review for-task; kspec validate --completeness -v; kspec validate; npm test. Claims
+          verified: current invalid AC annotations are 38 after repair; npm test passes; changed
+          code diff is test comments only with no .kspec file changes. Categories searched:
+          correctness of retargeted AC refs, test coverage signal/reduced false claims,
+          source-scanning risk, validation output, integration/test regressions."
+        created_at: 2026-04-25T02:09:47.210Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-25T02:09:58.509Z
+created_at: 2026-04-25T01:59:16.778Z
+updated_at: 2026-04-25T02:09:58.510Z
+notes: []

@@ -1,0 +1,272 @@
+_ulid: 01KREPPJP2CAQXRA7072P3KS01
+slugs: []
+title: "Plan review: Dispatch Workspace Provisioning Lease Protection"
+author: Hermes
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "The behavior belongs near existing dispatch workspace/bootstrap/engine specs, but the
+      current structured ## Specs block would derive duplicate specs instead of updating those
+      existing refs."
+    name: Existing spec fit
+    required: true
+    created_at: 2026-05-12T18:22:34.498Z
+    completed_at: 2026-05-12T18:22:34.498Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Phase 1 AC-update tasks depend on “exactly as drafted in this plan” rather than embedding
+      the exact AC payloads in each task.
+    name: Task standalone executability
+    required: true
+    created_at: 2026-05-12T18:22:42.204Z
+    completed_at: 2026-05-12T18:22:42.204Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Owner identity and liveness/abandonment rules are not concrete enough to safely implement
+      cleanup recovery.
+    name: Lease recovery safety
+    required: true
+    created_at: 2026-05-12T18:22:49.752Z
+    completed_at: 2026-05-12T18:22:49.752Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Implementation/test dependency ordering is mostly coherent once the spec-update/derive
+      blocker is fixed.
+    name: Dependency ordering
+    required: true
+    created_at: 2026-05-12T18:22:57.473Z
+    completed_at: 2026-05-12T18:22:57.473Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Every drafted AC is claimed by at least one implementation/test/validation task, subject
+      to fixing the duplicate-spec derivation issue.
+    name: Coverage mapping
+    required: true
+    created_at: 2026-05-12T18:23:05.410Z
+    completed_at: 2026-05-12T18:23:05.410Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan import dry-run and kspec validate --warnings-ok were previously run; validation
+      issues are warning-class/pre-existing, not parse/reference blockers for this draft.
+    name: Import/validation smoke
+    required: true
+    created_at: 2026-05-12T18:23:13.175Z
+    completed_at: 2026-05-12T18:23:13.175Z
+events:
+  - _ulid: 01KREPPJP2JEH49FSD00N3H5JV
+    actor: Hermes
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-12T18:20:31.298Z
+  - _ulid: 01KREPS1W4YSDK5A8VE7FTSQZ5
+    actor: Hermes
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-12T18:21:52.389Z
+  - _ulid: 01KREPS8NV59Z1DHMYBAZFTZ91
+    actor: Hermes
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KREPS6YAF5PVPM7DWWB4F1QJ
+    timestamp: 2026-05-12T18:21:59.355Z
+  - _ulid: 01KREPSFPENGCT6F7BYBF5C601
+    actor: Hermes
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KREPSE0E83Z9058FJP6JX2Y8
+    timestamp: 2026-05-12T18:22:06.542Z
+  - _ulid: 01KREPSPH0VCJJC6R5EJH5XPF7
+    actor: Hermes
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KREPSMXTJCEN5ZFT08ETYW6T
+    timestamp: 2026-05-12T18:22:13.536Z
+  - _ulid: 01KREPSXEYRWT049B7R7KD75TJ
+    actor: Hermes
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KREPSVTHXYMJNQPAJFWFM7HK
+    timestamp: 2026-05-12T18:22:20.638Z
+  - _ulid: 01KREPT55M81Z12RTEMF333J15
+    actor: Hermes
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KREPT3A6HWFV90S25H3KMGF6
+    timestamp: 2026-05-12T18:22:28.532Z
+  - _ulid: 01KREPTCVHH69N1PY024ARZNBT
+    actor: Hermes
+    event_type: check_added
+    payload:
+      status: fail
+      name: Existing spec fit
+    timestamp: 2026-05-12T18:22:36.402Z
+  - _ulid: 01KREPTMBMQZKC4P9XHZK1B3DJ
+    actor: Hermes
+    event_type: check_added
+    payload:
+      status: fail
+      name: Task standalone executability
+    timestamp: 2026-05-12T18:22:44.084Z
+  - _ulid: 01KREPTVRNXFT9SQDEX960GXR0
+    actor: Hermes
+    event_type: check_added
+    payload:
+      status: fail
+      name: Lease recovery safety
+    timestamp: 2026-05-12T18:22:51.669Z
+  - _ulid: 01KREPV38X91HY6QYHNTZ2BV19
+    actor: Hermes
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-05-12T18:22:59.358Z
+  - _ulid: 01KREPVB0AMG5M9GHYXK8ZE07K
+    actor: Hermes
+    event_type: check_added
+    payload:
+      status: pass
+      name: Coverage mapping
+    timestamp: 2026-05-12T18:23:07.274Z
+  - _ulid: 01KREPVJHGEJDV29MXTCNGK644
+    actor: Hermes
+    event_type: check_added
+    payload:
+      status: pass
+      name: Import/validation smoke
+    timestamp: 2026-05-12T18:23:14.992Z
+  - _ulid: 01KREPVSQ485AX2ZVY9BJQQRQ7
+    actor: Hermes
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-12T18:23:22.340Z
+  - _ulid: 01KREPVSQ4G7SWMQ60ZKPJJMJY
+    actor: Hermes
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-12T18:23:22.340Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-dispatch-workspace-provisioning-lease-protection"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KREPS6YAF5PVPM7DWWB4F1QJ
+    anchor:
+      type: structured
+      ref: "@plan-dispatch-workspace-provisioning-lease-protection"
+      section: specs
+    entries:
+      - _ulid: 01KREPS6YAJHNADH9VW13R1FNW
+        author: Hermes
+        body: "The plan puts “Updates to Existing Spec” entries in the structured ## Specs block for
+          @dispatch-workspace-registry, @dispatch-runtime-bootstrap-contract, and
+          @agent-dispatch-engine. Derivation materializes ## Specs entries as new spec items, with
+          collision suffixing, rather than applying AC updates to the existing specs. As written,
+          approving/deriving this plan risks creating duplicate specs and redirecting task spec_refs
+          to derived duplicates. Fix by either removing the structured Specs block and making Phase
+          1 tasks explicitly update the existing refs, or intentionally model these as new child
+          specs instead."
+        created_at: 2026-05-12T18:21:57.578Z
+    kind: blocker
+  - _ulid: 01KREPSE0E83Z9058FJP6JX2Y8
+    anchor:
+      type: structured
+      ref: "@task-add-dispatch-workspace-provisioning-lease-acs"
+      section: tasks
+    entries:
+      - _ulid: 01KREPSE0F3FFV9TTXFQR3E2FN
+        author: Hermes
+        body: The Phase 1 spec-update tasks say to add ACs “exactly as drafted in this plan” but do not
+          embed the full Given/When/Then AC payloads in the task descriptions. If the structured
+          Specs block is removed to avoid duplicate derivation, an agent executing the derived task
+          from kspec task get would not have the exact AC text. Make each spec-update task
+          standalone by including the exact AC payloads or precise batch/CLI payloads.
+        created_at: 2026-05-12T18:22:04.815Z
+    kind: blocker
+  - _ulid: 01KREPSMXTJCEN5ZFT08ETYW6T
+    anchor:
+      type: structured
+      field: ac-expired-provisioning-lease-recovery
+      ref: "@dispatch-workspace-registry"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KREPSMXVNV37612SR81DXJX9
+        author: Hermes
+        body: The lease owner/liveness recovery contract is underspecified. The plan requires an owner
+          process identity and says cleanup should check whether a live dispatcher process still
+          owns an expired lease, but the schema only defines owner:string and does not specify
+          daemon instance identity, pid/start marker, spawn attempt/session id, or exact
+          post-restart liveness rules. This is central to safe cleanup recovery; define the owner
+          identity and abandoned-vs-live recovery rule explicitly.
+        created_at: 2026-05-12T18:22:11.899Z
+    kind: blocker
+  - _ulid: 01KREPSVTHXYMJNQPAJFWFM7HK
+    anchor:
+      type: structured
+      field: ac-provisioning-lease-recorded
+      ref: "@dispatch-workspace-registry"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KREPSVTHY0ABW1BP0VBF1FY2
+        author: Hermes
+        body: This AC bundles many phases, fields, and lifecycle constraints into one criterion. Consider
+          splitting field recording, lifecycle protection, success finalization, failure
+          finalization, and abandoned recovery into smaller testable ACs so implementation and
+          regression tests can map cleanly.
+        created_at: 2026-05-12T18:22:18.961Z
+    kind: question
+  - _ulid: 01KREPT3A6HWFV90S25H3KMGF6
+    anchor:
+      type: structured
+      ref: "@task-add-dispatch-workspace-provisioning-lease-schema"
+      section: tasks
+    entries:
+      - _ulid: 01KREPT3A6TCVDQWY0JFTCYWYE
+        author: Hermes
+        body: The AC says the lease includes workspace id “when known,” but the schema task omits a
+          workspace_id field. If the containing workspace record is intended to provide the id, say
+          that explicitly; otherwise add workspace_id to the lease schema.
+        created_at: 2026-05-12T18:22:26.631Z
+    kind: question
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: Hermes
+    role: reviewer
+    created_at: 2026-05-12T18:23:22.340Z
+created_at: 2026-05-12T18:20:31.298Z
+updated_at: 2026-05-12T18:23:22.340Z
+notes: []

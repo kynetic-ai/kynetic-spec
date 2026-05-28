@@ -1,0 +1,296 @@
+_ulid: 01KSGAS4DT08F94FPFME5PN47T
+slugs: []
+title: Review task-review-screenshot-resource-ui (cycle 8)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check 25e55fa9067eba15e70dd1659669a8e34465407c..HEAD exited 0
+    name: git diff --check
+    required: true
+    runner: git
+    created_at: 2026-05-25T19:57:43.049Z
+    completed_at: 2026-05-25T19:57:43.049Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --warnings-ok exited 0; plain kspec validate exits with existing
+      project-wide warnings only
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-25T19:57:53.168Z
+    completed_at: 2026-05-25T19:57:53.168Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck -- --noEmit exited 0
+    name: typecheck
+    required: true
+    runner: npm
+    created_at: 2026-05-25T19:58:03.198Z
+    completed_at: 2026-05-25T19:58:03.198Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: ./node_modules/.bin/oxlint packages/daemon/src/middleware/project-context.ts
+      packages/daemon/src/routes/review-resources.ts packages/daemon/src/routes/reviews.ts
+      packages/daemon/src/server.ts packages/shared/src/api.ts packages/web-ui/src/lib/api-static.ts
+      packages/web-ui/src/lib/api.ts packages/web-ui/src/lib/types/snapshot.ts
+      packages/web-ui/src/routes/reviews/[id]/+page.svelte src/cli/commands/export.ts
+      src/cli/commands/review-resource.ts src/cli/commands/review.ts src/export/json.ts
+      src/export/types.ts src/parser/entity-local-resources.ts src/parser/index.ts
+      src/parser/review-resource-manager.ts tests/daemon-api/helpers.ts
+      tests/daemon-api/review-resources.test.ts tests/review-resource-cli.test.ts
+      tests/review-resource-manager.test.ts tests/review-resource-static-export.test.ts
+      tests/web-ui/review-resources-api.test.ts tests/web-ui/review-static-mode.test.ts  exited 1
+      with 8 errors, including no-source-scanning in tests/review-resource-manager.test.ts and
+      no-standalone-expect in tests/daemon-api/review-resources.test.ts
+    name: changed-file oxlint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-25T19:58:14.483Z
+    completed_at: 2026-05-25T19:58:14.483Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test exited 0: 2563 suites passed; 9784 tests passed, 5 skipped; duration 2513.0s"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-25T19:58:30.869Z
+    completed_at: 2026-05-25T19:58:30.869Z
+events:
+  - _ulid: 01KSGAS4DTPYPZQ2XSZCDX0A9K
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-25T19:46:22.778Z
+  - _ulid: 01KSGASVP7NNCQHEAQMZSZB3R9
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-25T19:46:46.599Z
+  - _ulid: 01KSGBD7DZ3HGNEJ8M2EZNF5T2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSGBD5NQB0J5VRCQJAF2XK0N
+    timestamp: 2026-05-25T19:57:21.215Z
+  - _ulid: 01KSGBDK0JYKENYK3EHC07N4TF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSGBDH95XE7D2WZCS36DQGHV
+    timestamp: 2026-05-25T19:57:33.075Z
+  - _ulid: 01KSGBDYDKWVXA0BRFGFR60QN0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: git diff --check
+    timestamp: 2026-05-25T19:57:44.755Z
+  - _ulid: 01KSGBE8BM349HMHPJ2RWR01BS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-25T19:57:54.932Z
+  - _ulid: 01KSGBEJ19PY4NZNPZK8JQCCQ0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-25T19:58:04.841Z
+  - _ulid: 01KSGBEX258QBF58DF13CKVGVZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: changed-file oxlint
+    timestamp: 2026-05-25T19:58:16.133Z
+  - _ulid: 01KSGBFD3D84V863ZPW335F8BP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-25T19:58:32.557Z
+  - _ulid: 01KSGBG0PKH25QYBBM16DZCHNW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSGBFZ30M18PNN52R403G1E6
+    timestamp: 2026-05-25T19:58:52.627Z
+  - _ulid: 01KSGBGBKDF61C8F6Y16DAR8C4
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-25T19:59:03.789Z
+  - _ulid: 01KSGBGBKDM9TA210VSAF1SYEA
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-25T19:59:03.789Z
+  - _ulid: 01KSGCA2WTMWCEJ98CFPZXJE42
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSGBD5NQB0J5VRCQJAF2XK0N
+    timestamp: 2026-05-25T20:13:06.842Z
+  - _ulid: 01KSGCADYDW8BDZ9F74PR405XY
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSGBD5NQB0J5VRCQJAF2XK0N
+    timestamp: 2026-05-25T20:13:18.157Z
+  - _ulid: 01KSGCAWW1FS02P13GT77TN4GW
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSGBDH95XE7D2WZCS36DQGHV
+    timestamp: 2026-05-25T20:13:33.441Z
+  - _ulid: 01KSGCB8DF1AGWDAS5KRNSFAQM
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSGBDH95XE7D2WZCS36DQGHV
+    timestamp: 2026-05-25T20:13:45.264Z
+  - _ulid: 01KSGCBQ9CD53BXW95MZA0V18J
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSGBFZ30M18PNN52R403G1E6
+    timestamp: 2026-05-25T20:14:00.492Z
+  - _ulid: 01KSGCC1PH9M8HP2VJ71GFJSRK
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSGBFZ30M18PNN52R403G1E6
+    timestamp: 2026-05-25T20:14:11.154Z
+examined_commit: 7650c9f1b4f6a0a74911ebf8f80489f53e3443f8
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XB0EKNTMZS4XJMC4ED4SK"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSGBD5NQB0J5VRCQJAF2XK0N
+    anchor:
+      type: code
+      commit: 7650c9f1b4f6a0a74911ebf8f80489f53e3443f8
+      line_end: 122
+      line_start: 122
+      path: tests/review-resource-manager.test.ts
+      side: head
+    entries:
+      - _ulid: 01KSGBD5NR4B5337CEQX9NZKHM
+        author: Jacob Chapel
+        body: Changed-file lint fails because this new test file reads the rendered review resources
+          manifest directly at multiple points (for example this read, plus similar reads later in
+          the file). That violates the project no-source-scanning test gate and blocks merge. Please
+          replace these with behavioral assertions through the review resource manager APIs, or add
+          the project-approved inline exception only if these reads are intentionally inspecting
+          test-generated output.
+        created_at: 2026-05-25T19:57:19.416Z
+      - _ulid: 01KSGCA0TFWGSMRAKM36XXND46
+        author: "@claude"
+        body: "Fixed: replaced the 5 raw `fs.readFile(resources.yaml)` reads with `listReviewResources(ctx,
+          ref)` calls so the assertions exercise the same loader the CLI/daemon use. Removed the
+          now-unused `yaml` import. Behavior asserted is unchanged (manifest entry count, ids,
+          paths) but routed through the public manager API."
+        created_at: 2026-05-25T20:13:04.719Z
+    kind: blocker
+    resolved_at: 2026-05-25T20:13:15.970Z
+    resolved_by: "@claude"
+  - _ulid: 01KSGBDH95XE7D2WZCS36DQGHV
+    anchor:
+      type: code
+      commit: 7650c9f1b4f6a0a74911ebf8f80489f53e3443f8
+      line_end: 849
+      line_start: 849
+      path: tests/daemon-api/review-resources.test.ts
+      side: head
+    entries:
+      - _ulid: 01KSGBDH95911W7YHNA12RQEGG
+        author: Jacob Chapel
+        body: Changed-file lint also fails here because expect() is used inside beforeEach while seeding
+          resources. The jest/no-standalone-expect rule treats this as an invalid setup assertion,
+          so the submitted changed file does not pass lint. Move these checks into a helper that
+          throws explicit errors or into test bodies so the daemon API test remains lint-clean.
+        created_at: 2026-05-25T19:57:31.301Z
+      - _ulid: 01KSGCATTYHH08ER54JZHDTQEE
+        author: "@claude"
+        body: "Fixed: extracted a `seedReviewResource()` helper inside the describe block that calls
+          `uploadFor` and throws an Error with the response status+body on non-201. The `beforeEach`
+          now calls `await seedReviewResource(projectA, ALPHA_BYTES)` etc., so
+          jest/no-standalone-expect no longer trips on setup code. Suite still fails immediately if
+          seeding fails because the explicit throw surfaces with the same useful diagnostic."
+        created_at: 2026-05-25T20:13:31.358Z
+    kind: blocker
+    resolved_at: 2026-05-25T20:13:43.166Z
+    resolved_by: "@claude"
+  - _ulid: 01KSGBFZ30M18PNN52R403G1E6
+    entries:
+      - _ulid: 01KSGBFZ30Z42X1M1P9D0S8W6Q
+        author: Jacob Chapel
+        body: "Evidence log: Files read included src/parser/review-resource-manager.ts,
+          src/parser/entity-local-resources.ts, packages/daemon/src/routes/review-resources.ts,
+          packages/daemon/src/routes/reviews.ts, packages/web-ui/src/lib/api.ts,
+          packages/web-ui/src/lib/api-static.ts,
+          packages/web-ui/src/routes/reviews/[id]/+page.svelte, src/export/json.ts,
+          src/export/types.ts, and the related review-resource tests. Commands run included kspec
+          task/item/review lookups, git diff review, git diff --check, kspec validate, kspec
+          validate --warnings-ok, npm run typecheck -- --noEmit, npm test, npm run lint, and
+          changed-file oxlint. Claims verified: latest cleanup rollback fix was inspected in
+          code/tests; npm test passes; changed-file oxlint fails on introduced test lint blockers.
+          Categories searched: correctness, edge cases, error handling, security/resource paths,
+          test quality, and integration/export/static UI behavior."
+        created_at: 2026-05-25T19:58:50.976Z
+      - _ulid: 01KSGCBN8AGXZHKQGZ5Z1RE8R9
+        author: "@claude"
+        body: Acknowledged. Evidence log noted. The two named blockers in this review are addressed by the
+          same fix commit; in addition, the changed-file oxlint run surfaced a third
+          no-source-scanning error in tests/daemon-api/helpers.ts:288 (`monolithicPath` is derived
+          from a parameter the static rule cannot resolve to a temp dir). I added a targeted
+          `oxlint-disable-next-line` with a reason there because it is legitimately a
+          fixture-bootstrap read of test-generated YAML, per the rule's own escape hatch. Full
+          changed-file oxlint now exits 0.
+        created_at: 2026-05-25T20:13:58.410Z
+    kind: nit
+    resolved_at: 2026-05-25T20:14:09.431Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-25T19:59:03.789Z
+created_at: 2026-05-25T19:46:22.778Z
+updated_at: 2026-05-25T20:14:09.431Z
+notes: []

@@ -1,0 +1,130 @@
+_ulid: 01KMW6X167ZKF5SNBZWYJF5AHT
+slugs: []
+title: Review task-spec-update-data-freshness
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 6 due to pre-existing repo-wide warnings (orphaned skill dir,
+      alignment/completeness debt). Schema and references passed; no task-specific validation
+      errors.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-29T07:14:44.037Z
+    completed_at: 2026-03-29T07:14:44.037Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 1966/1966 suites passed, 7088/7093 tests passed, 5 skipped. Duration 3454.2s.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-29T07:14:45.828Z
+    completed_at: 2026-03-29T07:14:45.828Z
+events:
+  - _ulid: 01KMW6X1666C5R6ANT2RCJAJEA
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-29T07:11:00.294Z
+  - _ulid: 01KMW6XMTAC7N1QW30XNRGPEEZ
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-29T07:11:20.394Z
+  - _ulid: 01KMW73TDADEAATFG25J937D25
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMW73SVEX0R9FDY247VKG8DY
+    timestamp: 2026-03-29T07:14:42.730Z
+  - _ulid: 01KMW73W7N5W0MXTKHTKPQJ439
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-29T07:14:44.597Z
+  - _ulid: 01KMW73Y0FVVJQTKN992GF1MT1
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-29T07:14:46.415Z
+  - _ulid: 01KMW746P02DA1PANF3QD4TT19
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-29T07:14:55.297Z
+  - _ulid: 01KMW746P1PSZ5AM9JP6DVFBEK
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-29T07:14:55.297Z
+examined_commit: 6943dad4b8203281f7a00c18ae29804ce34c559a
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMW68K2PP8BX24XEPK4XS9W5"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMW73SVEX0R9FDY247VKG8DY
+    entries:
+      - _ulid: 01KMW73SVEB594WHPFGZSH3GNB
+        author: Test User
+        body: >-
+          Evidence log
+
+
+          Files read: @ui-data-freshness via `kspec task get`, @plan-daemon-cache-warming-ux,
+          cache-warming references in `src/daemon/entity-cache.ts` and
+          `tests/daemon-entity-cache.test.ts`.
+
+
+          Commands run: `git show --stat --summary --decorate=short --oneline HEAD`, `git log
+          --oneline --decorate=short --graph -12`, `git diff --stat
+          dev..dispatch/task/task-spec-update-data-freshness/01kmw68k`, `kspec task get
+          @01KMW68K2PP8BX24XEPK4XS9W5`, `kspec review for-task @01KMW68K2PP8BX24XEPK4XS9W5`, `kspec
+          validate`, `npm test`, `kspec plan get @plan-daemon-cache-warming-ux`, grep for
+          cache-warming references.
+
+
+          Claims verified: confirmed the task work is shadow-branch/spec-only so the code branch
+          diff is empty; confirmed the four new ACs are present on `@ui-data-freshness` and match
+          the approved plan/task text exactly; confirmed existing repo tests still pass.
+
+
+          Categories searched: correctness (AC text and placement), integration (plan alignment and
+          existing daemon warming contract), test/regression risk (`npm test`),
+          validation/schema/reference health (`kspec validate`). No task-specific blockers found.
+        created_at: 2026-03-29T07:14:42.158Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-29T07:14:55.296Z
+created_at: 2026-03-29T07:11:00.295Z
+updated_at: 2026-03-29T07:14:55.297Z
+notes: []

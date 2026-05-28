@@ -1,0 +1,188 @@
+_ulid: 01KRH94EHDCRKBFG97TBZ72XJ6
+slugs: []
+title: Review cleanup classification regression coverage (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "First run hit ENOSPC in /tmp after many suites passed; freed temporary /tmp model
+      artifacts and /tmp/kspec-test-cache, then reran from scratch. Completed rerun: 2440/2440
+      suites passed, 9248 passed, 5 skipped, duration 2711.2s. Full log:
+      /tmp/kspec-test-cache/01KRH92TEAFHA88QR8QVMJKHCN/dea70660dffe0812.log"
+    name: npm test -- --fresh
+    required: true
+    runner: npm test
+    created_at: 2026-05-13T18:47:19.672Z
+    completed_at: 2026-05-13T18:47:19.672Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit completed with exit code 0.
+    name: npm run typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-13T18:47:24.174Z
+    completed_at: 2026-05-13T18:47:24.174Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed; known reference warnings exited 0 due to --warnings-ok.
+    name: kspec validate --refs --warnings-ok
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-13T18:47:28.672Z
+    completed_at: 2026-05-13T18:47:28.672Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed; known alignment warnings exited 0 due to --warnings-ok.
+    name: kspec validate --alignment --warnings-ok
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-13T18:47:33.145Z
+    completed_at: 2026-05-13T18:47:33.145Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed; known completeness warnings exited 0 due to --warnings-ok.
+    name: kspec validate --completeness --warnings-ok
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-13T18:47:37.650Z
+    completed_at: 2026-05-13T18:47:37.650Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Prior blocker fixed: cleanup-eligibility tests no longer claim
+      ac-active-inflight-provisioning-artifact-preserved. New annotations match removal/reprovision
+      behavior; no source-scanning tests added."
+    name: AC annotation quality
+    required: true
+    runner: manual review
+    created_at: 2026-05-13T18:47:42.083Z
+    completed_at: 2026-05-13T18:47:42.083Z
+events:
+  - _ulid: 01KRH94EHCNYNY55TMNFF44RQK
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-13T18:21:09.037Z
+  - _ulid: 01KRH95HC1MT55Z516SXSZG0EG
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-13T18:21:44.706Z
+  - _ulid: 01KRHAME2FB9CG721CFT6Y8B8H
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-05-13T18:47:21.423Z
+  - _ulid: 01KRHAMJH769MQBX5APKM6TKWM
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run typecheck
+    timestamp: 2026-05-13T18:47:25.991Z
+  - _ulid: 01KRHAMPSY6E4D3KJ7Y5PVAXHF
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --refs --warnings-ok
+    timestamp: 2026-05-13T18:47:30.366Z
+  - _ulid: 01KRHAMV9G0G4V704AZ2RMKRTZ
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --alignment --warnings-ok
+    timestamp: 2026-05-13T18:47:34.960Z
+  - _ulid: 01KRHAMZMN1YJCJHBX20AYXZY9
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --completeness --warnings-ok
+    timestamp: 2026-05-13T18:47:39.413Z
+  - _ulid: 01KRHAN3XJT917FJ9GM92P8S2V
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC annotation quality
+    timestamp: 2026-05-13T18:47:43.794Z
+  - _ulid: 01KRHAN8BGQKBSHRW2JXAKSDJC
+    actor: codex-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KRHAN6KGWWZG1HVHTHAAFX93
+    timestamp: 2026-05-13T18:47:48.336Z
+  - _ulid: 01KRHANKTPF3R3VWN4XA4VR52N
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-13T18:48:00.086Z
+  - _ulid: 01KRHANKTPD75VT2SPM9X18H0M
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-13T18:48:00.086Z
+examined_commit: f94ff1aa9a48908647a110de37ec5b45eff1cab4
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRH3KX6743A3FAAN1HQ3KFC6"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRHAN6KGWWZG1HVHTHAAFX93
+    entries:
+      - _ulid: 01KRHAN6KG29B8GNTXBFDS9175
+        author: codex-reviewer
+        body: "Evidence log: Files read: tests/dispatch-workspace-cleanup.test.ts,
+          tests/agent-dispatch-engine.test.ts, src/agent-runtime/workspace.ts,
+          src/agent-runtime/dispatch.ts, prior review @01KRH6J6. Commands run: git
+          diff/stat/log/diff --check, kspec task get, kspec item get for
+          @dispatch-workspace-cleanup-policy and @dispatch-workspace-registry, kspec review get, rg
+          AC annotations/source-scan patterns, npm run typecheck, kspec validate
+          --refs/--alignment/--completeness --warnings-ok, npm test -- --fresh. Claims verified:
+          fix-cycle annotation cleanup verified by rg and line reads; corrupt metadata and
+          unknown-root tests exercise reconcileDispatchWorkspaceArtifacts behaviorally; recovery
+          test removes the corrupt artifact then verifies DispatchEngine reprovisions/invokes from
+          task state. Categories searched: correctness, edge cases, error handling/fail-closed
+          behavior, test quality, integration. No blockers found."
+        created_at: 2026-05-13T18:47:46.544Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-13T18:48:00.086Z
+created_at: 2026-05-13T18:21:09.037Z
+updated_at: 2026-05-13T18:48:00.086Z
+notes: []

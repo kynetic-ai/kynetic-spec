@@ -1,0 +1,119 @@
+_ulid: 01KR4QTX3SCHS6NH0W4S6KGMMN
+slugs: []
+title: Review stabilize flaky daemon startup review tests
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Schema/references OK; warnings only: 7 reference, 39 alignment, 252 completeness warnings
+      from existing repo-wide state."
+    name: kspec validate --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-08T21:40:02.168Z
+    completed_at: 2026-05-08T21:40:02.168Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full fresh suite passed: 2410/2410 suites, 8827/8832 tests passed, 5 skipped; duration
+      2168.0s; log /tmp/kspec-test-cache/01KR4QSFWNMCK5PWAF7BVVJ2Z4/03d240566e4762ef.log. Changed
+      tests/helpers/daemon.test.ts and prior flaky tests/daemon-api/websocket-protocol.test.ts plus
+      tests/daemon-build.test.ts passed in-suite."
+    name: npm test -- --fresh
+    required: true
+    runner: npm
+    created_at: 2026-05-08T21:40:13.831Z
+    completed_at: 2026-05-08T21:40:13.831Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: tests/helpers/daemon.ts, tests/helpers/daemon.test.ts,
+      packages/daemon/src/routes/debug.ts, tests/daemon-debug-routes.test.ts, tests/helpers/cli.ts.
+      Commands run: kspec task get @01KR4AWP6NW25R663BZK5RNWTN; kspec item get
+      @daemon-backed-test-fixture-contract; git diff e026502...HEAD; rg AC annotations/source-scan
+      patterns; kspec validate; kspec validate --warnings-ok; npm test -- --fresh. Claims verified:
+      debug cache-status reports domains=null before cache registration and per-domain states after
+      registration; probe waits for tasks.state=ready; full-suite flake did not reproduce.
+      Categories searched: correctness, edge cases/startup race, error handling/diagnostics, test
+      quality/source scanning, integration."
+    name: review evidence log
+    required: false
+    runner: reviewer
+    created_at: 2026-05-08T21:40:28.621Z
+    completed_at: 2026-05-08T21:40:28.621Z
+events:
+  - _ulid: 01KR4QTX3S39J548B738FC81YS
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-08T21:27:57.305Z
+  - _ulid: 01KR4QVKVN9FN398THT0K710N6
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-08T21:28:20.597Z
+  - _ulid: 01KR4RH2D0K1DVJ13CK884VZX8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --warnings-ok
+    timestamp: 2026-05-08T21:40:03.617Z
+  - _ulid: 01KR4RHDVBBFG1W2W5EMWBXA8W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-05-08T21:40:15.339Z
+  - _ulid: 01KR4RHW9KVM10J205C35253DM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-08T21:40:30.132Z
+  - _ulid: 01KR4RJ7BWTNC2751YH9S9V0PH
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-08T21:40:41.468Z
+  - _ulid: 01KR4RJ7BWP8NTEHBDKYXQRA3T
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-08T21:40:41.468Z
+examined_commit: ac91faa584cbd9e594f72a9b057827721e06c4e9
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR4AWP6NW25R663BZK5RNWTN"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-08T21:40:41.467Z
+created_at: 2026-05-08T21:27:57.305Z
+updated_at: 2026-05-08T21:40:41.468Z
+notes: []

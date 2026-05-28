@@ -1,0 +1,138 @@
+_ulid: 01KM67QHD88G5P8ZHKWJZPKZDG
+slugs: []
+title: Review task-parser-write-validation
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fails due to pre-existing repository meta/completeness debt unrelated to this task: 3
+      missing refs in .kspec/modules/meta.yaml plus longstanding completeness warnings. Parser task
+      code does not modify .kspec state."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-20T18:26:34.133Z
+    completed_at: 2026-03-20T18:26:34.133Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 294 files passed, 6681 tests passed, 3 skipped; scripts/test.cjs rebuilt dist first and
+      exited 0.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-20T18:26:34.899Z
+    completed_at: 2026-03-20T18:26:34.899Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: node --import tsx invocation of createTask({title:'Invalid task', status:'not-a-status'})
+      threw Invalid task input with the invalid status enum details.
+    name: manual parser validation
+    required: true
+    runner: node
+    created_at: 2026-03-20T18:26:35.668Z
+    completed_at: 2026-03-20T18:26:35.668Z
+events:
+  - _ulid: 01KM67QHD7C4AQP4B2HQTTSNRK
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-20T18:22:11.368Z
+  - _ulid: 01KM67QR5RSWHQY0Z9NGXQD8NN
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-20T18:22:18.296Z
+  - _ulid: 01KM67ZJ88KRAY9HBFZEJYDNCW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-03-20T18:26:34.376Z
+  - _ulid: 01KM67ZK08X1GZ2NE868Y9X13J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-20T18:26:35.144Z
+  - _ulid: 01KM67ZKQZZF8R23MBMX7EV0MW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: manual parser validation
+    timestamp: 2026-03-20T18:26:35.904Z
+  - _ulid: 01KM67ZMFTXFY18TMRWMNC6RD5
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM67ZM8Y4TEKGFA6FET7913B
+    timestamp: 2026-03-20T18:26:36.666Z
+  - _ulid: 01KM680HWZVRWT7DZZKWNW5RGQ
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-20T18:27:06.783Z
+  - _ulid: 01KM680HWZH5AX2ZBSX6X5P63F
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-20T18:27:06.783Z
+examined_commit: a0bf72cf5aec046fb671938f44c6982741caacbf
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM5Z4MXMC234763SFZZHK7GH"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM67ZM8Y4TEKGFA6FET7913B
+    entries:
+      - _ulid: 01KM67ZM8Y1ZX22X4EGAK2RVVJ
+        author: Jacob Chapel
+        body: "Review evidence log\\n\\nFiles read: src/parser/yaml.ts, src/parser/plan-document.ts,
+          tests/parser.test.ts, tests/plan-document-parser.test.ts,
+          packages/web-ui/src/routes/plans/+page.svelte, packages/web-ui/tests/e2e/plans.spec.ts,
+          src/schema/task.ts, src/schema/spec.ts.\\n\\nCommands run: git diff --stat, git diff
+          against base/head, git log --oneline, git show on 6b9464bef and a0bf72cf, kspec task get,
+          kspec item get, rg for AC annotations, kspec validate, node --import tsx manual createTask
+          check, npm test.\\n\\nClaims verified: worker claim that invalid programmatic task input
+          now fails before persistence verified by direct createTask invocation; worker claim that
+          parser/spec write paths are covered verified by AC-linked tests for
+          ac-1/ac-2/ac-3.\\n\\nCategories searched: correctness (no issue found), edge cases
+          (invalid enum handling covered), error handling (formatted Zod issues preserved), test
+          quality (AC annotations present and assertions prove behavior), integration
+          (PlanSpecSchema now rejects invalid item types; unrelated web-ui commit already contained
+          in dev)."
+        created_at: 2026-03-20T18:26:36.446Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-20T18:27:06.783Z
+created_at: 2026-03-20T18:22:11.368Z
+updated_at: 2026-03-20T18:27:06.783Z
+notes: []

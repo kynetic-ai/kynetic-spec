@@ -1,0 +1,170 @@
+_ulid: 01KM4687QDVE5QSA4ZBP6FATHJ
+slugs: []
+title: Review task-implement-cancelled-task-dependency-cleanup (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/cli/commands/task.ts, src/parser/yaml.ts, src/agent-runtime/dispatch.ts,
+      src/agent-runtime/workspace.ts, tests/task-cancel-dependency-cleanup.test.ts,
+      tests/dispatch-target-sync.test.ts, tests/agent-dispatch-engine.test.ts. Commands run: kspec
+      task get, kspec item get, kspec validate, rg AC annotations, git diff/stat/log/show, npm test
+      (full and targeted). Claims verified: cancellation cleanup is implemented and covered;
+      cross-file batch buffering regression test passes; branch also contains unrelated dispatch
+      commits. Categories searched: correctness, atomicity, edge cases, test quality, integration,
+      scope/merge safety."
+    name: review-evidence
+    required: false
+    runner: manual
+    created_at: 2026-03-19T23:25:43.521Z
+    completed_at: 2026-03-19T23:25:43.521Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Full suite timed out on tests/activity-display.test.ts and
+      tests/review-per-cycle-lifecycle.test.ts in this snapshot. Isolated rerun of activity-display
+      + review-per-cycle-lifecycle passed, so the failure looks non-local/flaky, but the required
+      full-suite gate was not green in this review run.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-19T23:25:44.360Z
+    completed_at: 2026-03-19T23:25:44.360Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test -- task-cancel-dependency-cleanup dispatch-target-sync agent-dispatch-engine
+      passed. npm test -- activity-display review-per-cycle-lifecycle also passed when rerun in
+      isolation. Verified cancellation cleanup AC coverage is present in
+      tests/task-cancel-dependency-cleanup.test.ts and the new cross-file atomic regression passes.
+    name: targeted regressions
+    required: false
+    runner: npm
+    created_at: 2026-03-19T23:25:45.221Z
+    completed_at: 2026-03-19T23:25:45.221Z
+events:
+  - _ulid: 01KM4687QD2RFBJWXMJRM578YS
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-19T23:17:52.493Z
+  - _ulid: 01KM468RGP8GRGKSWN3RCD2QH6
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-19T23:18:09.686Z
+  - _ulid: 01KM46PK68AWQR6MPER9Z8KRYK
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM46PJY42SWXVW9STKWNN810
+    timestamp: 2026-03-19T23:25:42.984Z
+  - _ulid: 01KM46PKZDN34Y8GEDARNVR7EA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-03-19T23:25:43.789Z
+  - _ulid: 01KM46PMT1H26JEFTTY4Q0BCBD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-19T23:25:44.641Z
+  - _ulid: 01KM46PNM0Y0YXBZ8V9TWX4PE6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted regressions
+    timestamp: 2026-03-19T23:25:45.472Z
+  - _ulid: 01KM46PZS13K30K0HYCQ37XXA9
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-19T23:25:55.873Z
+  - _ulid: 01KM46PZS1C15MWZWFZTHJ9VEG
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-19T23:25:55.873Z
+  - _ulid: 01KM4A052665Z7ZEA3QKC61KZP
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KM46PJY42SWXVW9STKWNN810
+    timestamp: 2026-03-20T00:23:21.926Z
+  - _ulid: 01KM4A05R4WDMG44W921WE1SG4
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM46PJY42SWXVW9STKWNN810
+    timestamp: 2026-03-20T00:23:22.628Z
+examined_commit: b167ae34f9dbeed3ee5ae740d478c06917a1188b
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM43VYQXEFJMMYK2184MR7FH"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM46PJY42SWXVW9STKWNN810
+    anchor:
+      type: code
+      commit: b167ae34f9dbeed3ee5ae740d478c06917a1188b
+      line_end: 57
+      line_start: 36
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KM46PJY4J064W4T5EJA9M373
+        author: Jacob Chapel
+        body: This task snapshot is still branch-conflated with unrelated dispatch work. In addition to the
+          cancellation-cleanup commits for @cancelled-task-dependency-cleanup, the branch also
+          includes 71f834685 (dispatch integration mutation scope) and 6a48f8bc1 (dispatch
+          timing-test stabilization), which is why this file and the matching dispatch tests changed
+          even though the task spec is only about task cancellation. Approving
+          @01KM43VYQXEFJMMYK2184MR7FH would therefore merge unrelated dispatch behavior into dev
+          under the wrong task/spec, which breaks review scope, auditability, and rollback. Please
+          restack or cherry-pick only the cancellation-cleanup commits onto a clean task branch
+          before resubmitting.
+        created_at: 2026-03-19T23:25:42.724Z
+      - _ulid: 01KM4A05H1NCBK30GVB2DDJBW8
+        author: Jacob Chapel
+        body: Rebased and restacked onto origin/dev. The branch now contains only the task-scoped
+          cancellation cleanup diff (src/cli/commands/task.ts, src/parser/yaml.ts,
+          tests/task-cancel-dependency-cleanup.test.ts), so the branch-conflation blocker is
+          addressed.
+        created_at: 2026-03-20T00:23:22.401Z
+    kind: blocker
+    resolved_at: 2026-03-20T00:23:21.709Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-19T23:25:55.872Z
+created_at: 2026-03-19T23:17:52.493Z
+updated_at: 2026-03-20T00:23:22.401Z
+notes: []

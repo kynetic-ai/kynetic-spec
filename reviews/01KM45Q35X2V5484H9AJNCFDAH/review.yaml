@@ -1,0 +1,147 @@
+_ulid: 01KM45Q35X2V5484H9AJNCFDAH
+slugs: []
+title: Review task-route-dispatch-sync-through-targeting-path
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts,
+      tests/dispatch-target-sync.test.ts, tests/dispatch-branch-push-lifecycle.test.ts. Commands
+      run: git diff --stat/name-only/full diff against dev base, kspec task get, kspec item get
+      @dispatch-integration-mutation-scope, kspec validate, rg AC annotation search, npm test.
+      Claims verified: the worker claim that sync/push now route through a shared isolated targeting
+      path was confirmed by the call sites and new push regression test. Categories searched:
+      correctness (found timeout regression), edge cases (wrong-branch shared checkout), error
+      handling (non-fatal transient sync behavior), test quality (AC annotations present for touched
+      behaviors), integration (post-merge push and periodic sync call paths)."
+    name: review-evidence
+    required: false
+    created_at: 2026-03-19T23:12:11.537Z
+    completed_at: 2026-03-19T23:12:11.537Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate reports pre-existing repo-wide reference/completeness failures (for example
+      unresolved relates_to refs in .kspec/modules/meta.yaml and broad existing AC coverage debt);
+      this review did not find a new validation regression in the submitted diff.
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-19T23:12:13.579Z
+    completed_at: 2026-03-19T23:12:13.579Z
+events:
+  - _ulid: 01KM45Q35X3AH176YEVQV0SW9M
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-19T23:08:30.781Z
+  - _ulid: 01KM45QQABN7YN7Q0NFG02AKD3
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-19T23:08:51.404Z
+  - _ulid: 01KM45XSEMXDS2R9ZZWHAAJ9F0
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM45XS1PC6FSYWCSKV7W2EJN
+    timestamp: 2026-03-19T23:12:10.196Z
+  - _ulid: 01KM45XV882MTRAK7KNYWC057N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-03-19T23:12:12.040Z
+  - _ulid: 01KM45XX7HRR5GRZSMD4AFYFAY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec-validate
+    timestamp: 2026-03-19T23:12:14.065Z
+  - _ulid: 01KM45YANN4JQ6PEQCQHW2H514
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-19T23:12:27.830Z
+  - _ulid: 01KM45YANPPVEERZK0SCV21827
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-19T23:12:27.830Z
+  - _ulid: 01KM46PE6A9ZDZQXTRD5086D47
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KM45XS1PC6FSYWCSKV7W2EJN
+    timestamp: 2026-03-19T23:25:37.866Z
+  - _ulid: 01KM46PEZJXVBQ6EKZSP4DAY7M
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM45XS1PC6FSYWCSKV7W2EJN
+    timestamp: 2026-03-19T23:25:38.674Z
+examined_commit: 4f77d10bfc9991aadf35dd05a1c5b67a8804b477
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM3ZMEMA53X21SYPSRWRF6E8"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM45XS1PC6FSYWCSKV7W2EJN
+    anchor:
+      type: code
+      commit: 4f77d10bfc9991aadf35dd05a1c5b67a8804b477
+      line_end: 2905
+      line_start: 2870
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KM45XS1PW3K1TEHEBZP8XESW
+        author: Jacob Chapel
+        body: This refactor routes target sync through the isolated-target helper, but it also drops the
+          explicit 30s fetch timeout and 10s ff-merge timeout that `_syncTargetBranch()` had before.
+          If the remote stalls instead of returning an immediate git error, dispatch now blocks
+          inside `git fetch`/`git merge` rather than reporting a transient sync failure and retrying
+          on the next interval, which regresses the non-fatal sync behavior this task is supposed to
+          preserve. Keep the targeting helper, but preserve the previous timeout semantics (or add
+          equivalent timeout support in the helper).
+        created_at: 2026-03-19T23:12:09.782Z
+      - _ulid: 01KM46PER38TEFKVXBY9JD65YB
+        author: Jacob Chapel
+        body: Fixed in commit fadb999f7. Restored the original 30s fetch timeout and 10s ff-only merge
+          timeout while keeping target sync on runDispatchIntegrationTargetGit(), and added a
+          regression test that asserts those timeout options are still passed through the isolated
+          targeting helper.
+        created_at: 2026-03-19T23:25:38.435Z
+    kind: blocker
+    resolved_at: 2026-03-19T23:25:37.604Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-19T23:12:27.829Z
+created_at: 2026-03-19T23:08:30.781Z
+updated_at: 2026-03-19T23:25:38.435Z
+notes: []

@@ -1,0 +1,345 @@
+_ulid: 01KKW171KY6Y7K2SH8S1HT42FK
+slugs: []
+title: "Review: Task Activity Timeline Plan"
+author: "@claude"
+checks: []
+events:
+  - _ulid: 01KKW171KYQB3C0EZ3CBYPSKTG
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-16T19:15:55.134Z
+  - _ulid: 01KKW17BD4ZBXC64D1XZVZ61HP
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-16T19:16:05.156Z
+  - _ulid: 01KKW17Y80V9CGWZA78BZ4PBZV
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKW17Y77A0KPNRZAV0SHZJDN
+    timestamp: 2026-03-16T19:16:24.448Z
+  - _ulid: 01KKW1856208728QA72TFK8Z3V
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKW18554QK0XEKRVR2KQE08B
+    timestamp: 2026-03-16T19:16:31.554Z
+  - _ulid: 01KKW18M905R3EZ69F01JN4V1N
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KKW18M88VFNKGG1BJEKMBTAC
+    timestamp: 2026-03-16T19:16:47.008Z
+  - _ulid: 01KKW18S99EB2HHBVC8NJ793ME
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KKW18S8F3XJGD95D92HX1G45
+    timestamp: 2026-03-16T19:16:52.137Z
+  - _ulid: 01KKW197TBZPR6KCHCRZXCZYRW
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KKW197SJKXM2XPWYZKQ5W43P
+    timestamp: 2026-03-16T19:17:07.019Z
+  - _ulid: 01KKW19D7MJWBGF50TTVFKECF6
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKW19D6T7CZJP3ERNTJXK5PH
+    timestamp: 2026-03-16T19:17:12.564Z
+  - _ulid: 01KKW19WKAHX59DCXAGQRXJ85T
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKW19WJHGV7J0VBK8CVDSA7C
+    timestamp: 2026-03-16T19:17:28.298Z
+  - _ulid: 01KKW1A1QJH5X2JE2JTQ0NJ7T8
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKW1A1PP53ETST8RGQX4QXM9
+    timestamp: 2026-03-16T19:17:33.555Z
+  - _ulid: 01KKW1AE1W553XMMQQ0EYGG2BJ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKW1AE10MKPQX34J4GTQ0247
+    timestamp: 2026-03-16T19:17:46.172Z
+  - _ulid: 01KKW1B0CA974F61Z2WW7XERAS
+    actor: "@claude"
+    event_type: verdict_submitted
+    payload:
+      decision: request_changes
+    timestamp: 2026-03-16T19:18:04.938Z
+  - _ulid: 01KKW1B4M18T9TSK4T5A53AG1N
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-16T19:18:09.282Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-task-activity-timeline"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KKW17Y77A0KPNRZAV0SHZJDN
+    entries:
+      - _ulid: 01KKW17Y77F84GRMC8VM82S3ZQ
+        author: "@claude"
+        body: >-
+          **@review-record-lifecycle-completion ac-1 conflicts with existing
+          @review-verdicts-and-resolution-lifecycle ac-3 and ac-9**
+
+
+          The plan proposes that verdicts auto-close reviews (ac-1: "review record automatically
+          transitions from open to closed" on verdict). However, the existing implemented spec
+          @review-verdicts-and-resolution-lifecycle ac-3 explicitly states: "The same review record
+          tracks iteration through its event log and compare context updates without losing the
+          audit trail" — i.e., a single review record spans multiple cycles.
+
+
+          The plan's per-cycle model (ac-2: "a new review record is created and linked to the task,
+          replacing the previous review_ref") is a deliberate design reversal of the existing spec.
+          This is not necessarily wrong, but it needs to be acknowledged as a breaking change. The
+          plan should:
+
+
+          1. Explicitly supersede @review-verdicts-and-resolution-lifecycle ac-3 (which says one
+          record tracks iteration)
+
+          2. Update or deprecate the existing spec rather than silently conflicting with it
+
+          3. Consider whether ac-9 ("supports explicit closed or archived terminal handling")
+          already covers the auto-close intent — it may only need behavioral implementation, not a
+          new spec
+
+
+          Without addressing this conflict, importing this plan would create contradictory specs in
+          the system.
+        created_at: 2026-03-16T19:16:24.423Z
+    kind: blocker
+  - _ulid: 01KKW18554QK0XEKRVR2KQE08B
+    entries:
+      - _ulid: 01KKW185559QNKXNA23JK6PYA2
+        author: "@claude"
+        body: >-
+          **@shadow-commit-consistency duplicates @trait-shadow-commit ac-2 and ac-3**
+
+
+          The existing trait @trait-shadow-commit already specifies commit message format
+          requirements:
+
+          - ac-2: "message follows pattern operation-colon-ref-short with optional detail"
+
+          - ac-3: "commit message includes ULID prefix (8 chars) or primary slug"
+
+
+          The plan's @shadow-commit-consistency spec covers the same ground but as a standalone
+          requirement rather than referencing the existing trait. The real issue is narrower than
+          the spec implies: the task-add operation drops the ref from the commit message (line 990
+          of shadow.ts: `Add task: ${detail || ref}` uses detail/title instead of including the
+          ref).
+
+
+          Recommendation: Instead of a new spec, this should be a bug fix task referencing
+          @trait-shadow-commit ac-2/ac-3. The trait already requires refs in commit messages — the
+          implementation just has a gap in the task-add case. Creating a parallel spec for the same
+          concern adds confusion.
+        created_at: 2026-03-16T19:16:31.525Z
+    kind: blocker
+  - _ulid: 01KKW18M88VFNKGG1BJEKMBTAC
+    entries:
+      - _ulid: 01KKW18M88S47Q7SPEHJWK267Y
+        author: "@claude"
+        body: >-
+          **@submission-linkage-merge-target: Is this already covered by
+          @portable-task-submission-linkage?**
+
+
+          The existing @portable-task-submission-linkage ac-1 says submission stores "remote or
+          upstream locator data when available." The current implementation in
+          captureSubmissionLinkage() (src/utils/git.ts:319) already captures upstream_ref from
+          getBranchRemote().
+
+
+          The plan's @submission-linkage-merge-target adds a fallback to dispatch config's
+          base_branch when git upstream tracking is absent. This is a valid enhancement, but:
+
+
+          1. Should this be an AC added to the existing @portable-task-submission-linkage rather
+          than a new spec? It's extending the same function with an additional fallback source.
+
+          2. The existing spec's ac-1 says "when available" — one could argue the dispatch config
+          fallback is already in scope.
+
+
+          Keeping it as a separate spec isn't wrong, but it creates a small spec for what is
+          essentially one if-else branch in captureSubmissionLinkage().
+        created_at: 2026-03-16T19:16:46.984Z
+    kind: question
+  - _ulid: 01KKW18S8F3XJGD95D92HX1G45
+    entries:
+      - _ulid: 01KKW18S8FJNC6FP318254ATZQ
+        author: "@claude"
+        body: >-
+          **@task-activity-timeline ac-5 dependency chain is heavy for a P3 feature**
+
+
+          The diff summaries at submission points (ac-5) depend on: submission linkage merge target,
+          review examined commit, review diff orientation, AND the core activity display. Task
+          @task-activity-diff-summaries lists 4 dependencies. This is the last thing that can be
+          worked on and touches the most surface area.
+
+
+          Is this essential for the initial plan, or should it be deferred to a follow-up plan? The
+          core timeline (ac-1 through ac-4) delivers the primary value without diff summaries.
+          Including ac-5 increases the plan's scope without adding to the MVP experience. Consider
+          splitting it out.
+        created_at: 2026-03-16T19:16:52.112Z
+    kind: question
+  - _ulid: 01KKW197SJKXM2XPWYZKQ5W43P
+    entries:
+      - _ulid: 01KKW197SJNA4AJ74149HQ8S07
+        author: "@claude"
+        body: >-
+          **Relationship to @session-start-activity-timeline — potential overlap**
+
+
+          The existing @session-start-activity-timeline spec (implemented) already merges completed
+          tasks and git commits into a chronological timeline for session start. The new
+          @task-activity-timeline proposes a per-task timeline from shadow branch commits.
+
+
+          These are conceptually different (session-level recent activity vs. single-task history),
+          but the plan should acknowledge the existing timeline infrastructure. Specifically:
+
+
+          1. Can getTaskActivity() reuse any of the session-start timeline merging logic?
+
+          2. Should the plan reference @session-start-activity-timeline to signal awareness of the
+          prior art?
+
+          3. The session timeline uses Task: @slug trailers in main-branch commits. The new timeline
+          uses shadow-branch commit messages. These are complementary but the plan doesn't mention
+          the distinction.
+        created_at: 2026-03-16T19:17:06.994Z
+    kind: question
+  - _ulid: 01KKW19D6T7CZJP3ERNTJXK5PH
+    entries:
+      - _ulid: 01KKW19D6T8D9VPPNG0BSXSAMP
+        author: "@claude"
+        body: >-
+          **@task-activity-git-query ac-2 may be harder than described**
+
+
+          AC-2 says: "only commits referencing that task's ref are included; commits for other tasks
+          in the same file are excluded." Since all tasks live in project.tasks.yaml and git log
+          --grep filters by commit message (not file content diff), this relies entirely on the ref
+          being in the commit message. That's fine after the shadow-commit-consistency fix, but the
+          AC implies per-file filtering which isn't actually needed — the git log --grep="@task-ref"
+          already scopes to the right commits regardless of file.
+
+
+          The AC wording should clarify it's about commit message filtering, not file-level
+          filtering. Current wording could be read as requiring git log to analyze per-file diffs.
+        created_at: 2026-03-16T19:17:12.538Z
+    kind: nit
+  - _ulid: 01KKW19WJHGV7J0VBK8CVDSA7C
+    entries:
+      - _ulid: 01KKW19WJH9RAJPMH2HE30YEHS
+        author: "@claude"
+        body: >-
+          **@review-fix-cycle-diff ac-1 introduces examined_commit but the existing review schema
+          has no such field**
+
+
+          The plan correctly notes this is a schema addition (task @task-review-examined-commit
+          describes adding it). However, the spec itself doesn't mention backward compatibility.
+          Since the field is optional, existing reviews will simply have it as undefined, but the AC
+          should state this explicitly: "existing review records without examined_commit are treated
+          as if the field is null."
+
+
+          Also: the plan uses KSPEC_DISPATCH_CANONICAL_HEAD as the auto-detection env var, but this
+          variable doesn't currently exist in the codebase. The task description should note this is
+          a new convention, not an existing one.
+        created_at: 2026-03-16T19:17:28.273Z
+    kind: nit
+  - _ulid: 01KKW1A1PP53ETST8RGQX4QXM9
+    entries:
+      - _ulid: 01KKW1A1PSM4KN4NAH0600X56C
+        author: "@claude"
+        body: >-
+          **Task @task-new-review-per-cycle is described as "primarily a skill/documentation change"
+          but has code implications**
+
+
+          The task says "This is primarily a skill/documentation change with supporting code for the
+          orientation context." However, it also says "Update the pr-reviewer agent's workflow
+          (review skill) to always create a new review when picking up a pending_review task that
+          already has a closed review_ref."
+
+
+          If the reviewer agent is currently coded to reopen or reuse the existing review, there's
+          actual code to change in the dispatch/agent-runtime layer — not just skill docs. The task
+          description undersells the code work. The spec_ref (@review-record-lifecycle-completion
+          ac-2) requires the task's review_ref to be updated to the new record, which is a CLI/data
+          operation, not just documentation.
+        created_at: 2026-03-16T19:17:33.529Z
+    kind: nit
+  - _ulid: 01KKW1AE10MKPQX34J4GTQ0247
+    entries:
+      - _ulid: 01KKW1AE1016MEHK8RCTZS9TK5
+        author: "@claude"
+        body: >-
+          **Missing task: tests for activity timeline**
+
+
+          The plan has implementation tasks but no dedicated test tasks. Given the convention of
+          behavioral tests over static analysis, the activity timeline (especially the git query
+          parsing and timeline merging) would benefit from explicit test tasks. The
+          session-start-activity-timeline plan had a dedicated test task
+          (@task-session-start-output-tests). Consider adding:
+
+
+          1. A test task for getTaskActivity() git query parsing
+
+          2. A test task for the merged timeline rendering (git + review events)
+
+
+          These could be folded into the implementation tasks' descriptions, but making them
+          explicit ensures they don't get skipped during dispatch.
+        created_at: 2026-03-16T19:17:46.144Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: plan-draft-1
+    decision: request_changes
+    reviewer: "@claude"
+    role: reviewer
+    created_at: 2026-03-16T19:18:04.909Z
+created_at: 2026-03-16T19:15:55.134Z
+updated_at: 2026-03-16T19:18:09.254Z
+notes: []

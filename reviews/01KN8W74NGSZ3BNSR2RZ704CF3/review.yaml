@@ -1,0 +1,114 @@
+_ulid: 01KN8W74NGSZ3BNSR2RZ704CF3
+slugs: []
+title: Review task-sync-pull-ac-updates
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full run passed: 2068 suites passed, 7491 tests passed, 5 skipped, 0 failed. Pre-test
+      environment fix rebuilt missing dist/cli/index.js."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-03T05:21:04.358Z
+    completed_at: 2026-04-03T05:21:04.358Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec item get confirmed the rewritten/new AC set on @dispatch-remote-branch-sync. kspec
+      validate returned only pre-existing repository warnings (orphaned skill dir, broad
+      alignment/completeness warnings) and no task-specific validation errors.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-03T05:21:13.115Z
+    completed_at: 2026-04-03T05:21:13.115Z
+events:
+  - _ulid: 01KN8W74NFW4NR1BHXXMWTQ7AY
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-03T05:14:24.816Z
+  - _ulid: 01KN8W7RCD5YX54XCWD6FRFR4S
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-03T05:14:45.006Z
+  - _ulid: 01KN8WKBQRN4FB5FPXWEMSY4RY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-03T05:21:05.273Z
+  - _ulid: 01KN8WKEFT2D3RAK401H6Q48FR
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN8WKDHGZXSRYQEAQ8F25ZBK
+    timestamp: 2026-04-03T05:21:08.090Z
+  - _ulid: 01KN8WKMAMD8PXSDAX84EFYZAD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-03T05:21:14.068Z
+  - _ulid: 01KN8WKVJHJVJK08GF02PJG7TN
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-03T05:21:21.490Z
+  - _ulid: 01KN8WKVJJQ697D3CJSXXG5YTS
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-03T05:21:21.490Z
+examined_commit: fb3342db29d0f52d03646cc5ec095e7d9bd0c310
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN8T199W5GC75VERHAPEA62B"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN8WKDHGZXSRYQEAQ8F25ZBK
+    entries:
+      - _ulid: 01KN8WKDHH8ZSE7ZVVPA3TKT6K
+        author: Jacob Chapel
+        body: "Evidence log: Files read: .kspec/modules/cli.yaml (current and pre-change slice), plan
+          @plan-workspace-scoped-integration-target-sync, task @01KN8T199W5GC75VERHAPEA62B. Commands
+          run: kspec task get, kspec review for-task, kspec item get, kspec validate, git show/diff
+          on shadow commit 2e535ac79, git rev-parse/log on target and task branches, npm test.
+          Claims verified: the task changed only modules/cli.yaml in shadow state; the AC text
+          matches the approved plan wording; code branch merge is a no-op because target and task
+          branches both point at fb3342db29d0. Categories searched: correctness/spec alignment,
+          scope isolation, validation, regression/test health, merge readiness. No findings."
+        created_at: 2026-04-03T05:21:07.121Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-03T05:21:21.489Z
+created_at: 2026-04-03T05:14:24.816Z
+updated_at: 2026-04-03T05:21:21.490Z
+notes: []

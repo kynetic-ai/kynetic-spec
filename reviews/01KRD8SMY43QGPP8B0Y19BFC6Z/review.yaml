@@ -1,0 +1,305 @@
+_ulid: 01KRD8SMY43QGPP8B0Y19BFC6Z
+slugs: []
+title: Review fix guardrail cleanup-effect classification (cycle 3)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts
+      tests/lint-daemon-test-guardrails.test.ts passed: 302/302 tests."
+    name: targeted daemon lint tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-12T05:11:22.430Z
+    completed_at: 2026-05-12T05:11:22.430Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full npm test -- --fresh ran. It reported 9057 passed, 5 skipped, 1 failure in
+      tests/file-lock.test.ts:202 (expected count: 5, got count: 4). Immediate rerun of npm test --
+      --fresh tests/file-lock.test.ts passed 21/21, so classified as flaky/non-regression and
+      created follow-up task @01KRD9FY."
+    name: npm test -- --fresh
+    required: true
+    runner: npm test
+    created_at: 2026-05-12T05:11:34.840Z
+    completed_at: 2026-05-12T05:11:34.840Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate: schema OK, references OK, validation passed with existing warnings only
+      (exit 6 due warnings)."
+    name: kspec validate
+    required: false
+    runner: kspec validate
+    created_at: 2026-05-12T05:11:45.545Z
+    completed_at: 2026-05-12T05:11:45.545Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npx oxlint tools/eslint-rules/no-leaky-test-daemon.js
+      tests/lint-no-leaky-test-daemon.test.ts completed with 0 errors and existing warnings.
+    name: changed-file oxlint
+    required: false
+    runner: npx oxlint
+    created_at: 2026-05-12T05:11:56.479Z
+    completed_at: 2026-05-12T05:11:56.479Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Two synthetic fixtures were incorrectly accepted with 0 no-leaky-test-daemon diagnostics:
+      local helper default SIGTERM overridden by call-site SIGUSR1, and killPid imported from
+      some-unapproved-package/helpers/daemon. Both should report missing scoped cleanup."
+    name: ad hoc cleanup-effect probes
+    required: true
+    runner: npx oxlint
+    created_at: 2026-05-12T05:12:08.302Z
+    completed_at: 2026-05-12T05:12:08.302Z
+events:
+  - _ulid: 01KRD8SMY30TE7JJ337C3BXE69
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-12T04:58:17.411Z
+  - _ulid: 01KRD8TFH7HFRDXX7VBHW48QM6
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-12T04:58:44.647Z
+  - _ulid: 01KRD9GVB1MXMEHX3RRBDWBDWX
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRD9GSVR7V8YYZSCHYDXG0J7
+    timestamp: 2026-05-12T05:10:57.633Z
+  - _ulid: 01KRD9H9AMMQ61PY87HQ7WHN0C
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRD9H7R3VGV7J6QAQ4X6H7CD
+    timestamp: 2026-05-12T05:11:11.956Z
+  - _ulid: 01KRD9HN2E4H9W8KVP5CGBXJA5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted daemon lint tests
+    timestamp: 2026-05-12T05:11:23.982Z
+  - _ulid: 01KRD9J15GBP0WK5Q26B843Z06
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-05-12T05:11:36.368Z
+  - _ulid: 01KRD9JBN6AR8R9EMDZYMX67N7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-12T05:11:47.110Z
+  - _ulid: 01KRD9JPCC4G6DKS3T1KVZY1PH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file oxlint
+    timestamp: 2026-05-12T05:11:58.092Z
+  - _ulid: 01KRD9K1NVQ15SR4X2ZXN2CG9H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: ad hoc cleanup-effect probes
+    timestamp: 2026-05-12T05:12:09.659Z
+  - _ulid: 01KRD9KJ3FD5BGQR5EZQAX990K
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KRD9KGSZY017BYV0E8XTGFJ2
+    timestamp: 2026-05-12T05:12:26.479Z
+  - _ulid: 01KRD9KW4N62NT2SS9YS6N6YBZ
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-12T05:12:36.757Z
+  - _ulid: 01KRD9KW4NFQ5ABB8YAAJ175X6
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-12T05:12:36.757Z
+  - _ulid: 01KRDBP333SN6KTSJ59Z130CEM
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRD9GSVR7V8YYZSCHYDXG0J7
+    timestamp: 2026-05-12T05:48:46.563Z
+  - _ulid: 01KRDBP6NKTGACM4XFR85WKZWZ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KRD9GSVR7V8YYZSCHYDXG0J7
+    timestamp: 2026-05-12T05:48:50.227Z
+  - _ulid: 01KRDBPA48YNDS8AYGK3MY93K2
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRD9H7R3VGV7J6QAQ4X6H7CD
+    timestamp: 2026-05-12T05:48:53.768Z
+  - _ulid: 01KRDBPDG7RJXAYF26GQ08B3H7
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KRD9H7R3VGV7J6QAQ4X6H7CD
+    timestamp: 2026-05-12T05:48:57.223Z
+  - _ulid: 01KRDBPGR8BMDSNGDK2FWM715Z
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRD9KGSZY017BYV0E8XTGFJ2
+    timestamp: 2026-05-12T05:49:00.552Z
+  - _ulid: 01KRDBPM3B17N6CZVW0MXXXRJH
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KRD9KGSZY017BYV0E8XTGFJ2
+    timestamp: 2026-05-12T05:49:03.979Z
+examined_commit: 40336586e664d485ab1c0a212b94aa7eece9db0d
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRCRJPMHMHC410TKRC5Y9HF1"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRD9GSVR7V8YYZSCHYDXG0J7
+    anchor:
+      type: code
+      commit: 40336586e664d485ab1c0a212b94aa7eece9db0d
+      line_end: 684
+      line_start: 665
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KRD9GSVSFEHB8SVY1TWDR7QV
+        author: Jacob Chapel
+        body: 'MUST-FIX: Local helper body trust ignores the actual helper call arguments.
+          `isTerminatingKillSignalArg(..., ownerFn)` treats `process.kill(pid, signal)` as
+          terminating when `signal` has a default like `"SIGTERM"`, but `isTrustedHelperByOrigin`
+          then trusts every call to that helper without checking whether the cleanup call overrides
+          the signal. I verified this fixture produces 0 no-leaky-test-daemon diagnostics: `function
+          killPid(pid, signal = "SIGTERM") { process.kill(pid, signal); } ... onTestFinished(() =>
+          killPid(pid, "SIGUSR1"))`. That cleanup sends a non-terminating signal and leaves the
+          daemon running, so it violates `ac-cleanup-probes-do-not-count` and
+          `ac-cleanup-operation-terminates-daemon`.'
+        created_at: 2026-05-12T05:10:56.121Z
+      - _ulid: 01KRDBP1QQQBFT7STPHK6NYHX2
+        author: "@claude"
+        body: "Fixed: isTerminatingKillSignalArg now threads the use-site CallExpression through
+          helperBodyContainsTerminatingPrimitive → subtreeContainsTerminatingPrimitive →
+          isTerminatingPrimitiveCall, and through isChildHandleReceiverTrusted(receiver,
+          killCallNode) for the kill-method-body case. When the helper-body inspection accepts an
+          Identifier signal arg via a parameter's terminating default, the predicate now also
+          validates the call-site argument at that parameter's index — accepting only when the call
+          site omits the arg (default applies), passes undefined/void, or passes a terminating
+          literal in TERMINATING_KILL_SIGNALS. The exact reviewer fixture (function killPid(pid,
+          signal = \"SIGTERM\") { process.kill(pid, signal); } called as killPid(pid, \"SIGUSR1\"))
+          now reports missingCleanup, confirmed via npx oxlint. Companion accepted-shape tests cover
+          omitted-arg, terminating-literal-override, and explicit-undefined to prove the validation
+          does not regress legitimate usage (e.g. every killPid(pid) site in
+          tests/cli-serve.test.ts)."
+        created_at: 2026-05-12T05:48:45.175Z
+    kind: blocker
+    resolved_at: 2026-05-12T05:48:48.873Z
+    resolved_by: "@claude"
+  - _ulid: 01KRD9H7R3VGV7J6QAQ4X6H7CD
+    anchor:
+      type: code
+      commit: 40336586e664d485ab1c0a212b94aa7eece9db0d
+      line_end: 202
+      line_start: 201
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KRD9H7R300GEFAP2FED6E57Y
+        author: Jacob Chapel
+        body: 'MUST-FIX: The approved helper import allowlist is path-tail based, so it trusts unapproved
+          modules whose specifier happens to end in `helpers/daemon` or `helpers/mock-daemon`. I
+          verified `import { killPid } from "some-unapproved-package/helpers/daemon"; ...
+          onTestFinished(() => killPid(pid))` produces 0 no-leaky-test-daemon diagnostics. That
+          import is not the approved shared daemon-test fixture path, so this still lets helper
+          names satisfy cleanup without a trusted origin and violates
+          `ac-cleanup-helper-origin-is-trusted`.'
+        created_at: 2026-05-12T05:11:10.339Z
+      - _ulid: 01KRDBP8QSDYSF1SVTTWBFN54W
+        author: "@claude"
+        body: "Fixed: APPROVED_HELPER_IMPORT_PATH_PATTERNS is now anchored to a relative-path prefix:
+          /^(\\.\\.?\\/)+helpers\\/(daemon|mock-daemon)(\\.[jt]s)?$/. Only ./ or ../-prefixed
+          in-repo imports match. Bare specifiers (some-unapproved-package/helpers/daemon,
+          helpers/daemon), scoped packages (@scope/pkg/helpers/mock-daemon), and root-rooted aliases
+          (tests/helpers/daemon) all fail the anchor; the import then falls through
+          isHelperNameImportedFromApprovedPath → isHelperNameImported → reject. Reviewer's exact
+          synthetic fixture (import { killPid } from \"some-unapproved-package/helpers/daemon\"; ...
+          onTestFinished(() => killPid(pid))) now reports missingCleanup, confirmed via npx oxlint.
+          Verified canonical relative-import sites (./helpers/daemon[.js|.ts] and
+          ../helpers/daemon[.js|.ts]) across tests/ still match the anchor."
+        created_at: 2026-05-12T05:48:52.345Z
+    kind: blocker
+    resolved_at: 2026-05-12T05:48:55.833Z
+    resolved_by: "@claude"
+  - _ulid: 01KRD9KGSZY017BYV0E8XTGFJ2
+    entries:
+      - _ulid: 01KRD9KGSZ8YT33BT7Z6SMSNXS
+        author: Jacob Chapel
+        body: "Evidence log: Files read: `kspec-agents.md`, `tools/eslint-rules/no-leaky-test-daemon.js`,
+          `tests/lint-no-leaky-test-daemon.test.ts`, prior reviews @01KRD39Y and @01KRD659,
+          task/spec context for @daemon-test-guardrail-precision. Commands run: `kspec task get
+          @01KRCRJPMHMHC410TKRC5Y9HF1`, `kspec item get @daemon-test-guardrail-precision`, `kspec
+          review for-task @01KRCRJPMHMHC410TKRC5Y9HF1`, `git diff 0dcbcdd...HEAD`, `rg` for
+          AC/source-scan coverage, `kspec validate`, `npm test -- --fresh`, `npm test -- --fresh
+          tests/file-lock.test.ts`, `npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts
+          tests/lint-daemon-test-guardrails.test.ts`, `npx oxlint` on changed files, and three ad
+          hoc oxlint fixtures. Claims verified: prior nested-helper blocker is covered by added
+          tests; targeted suites pass; full-suite failure was flaky after isolated rerun and
+          follow-up task @01KRD9FY. Categories searched: correctness, edge cases, helper origin
+          trust, signal handling, test quality, integration/regression behavior."
+        created_at: 2026-05-12T05:12:25.151Z
+      - _ulid: 01KRDBPFG454SDVW7NBD42N5N0
+        author: "@claude"
+        body: Acknowledged — evidence log captured. No code change required.
+        created_at: 2026-05-12T05:48:59.268Z
+    kind: nit
+    resolved_at: 2026-05-12T05:49:02.653Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-12T05:12:36.756Z
+created_at: 2026-05-12T04:58:17.412Z
+updated_at: 2026-05-12T05:49:02.653Z
+notes: []

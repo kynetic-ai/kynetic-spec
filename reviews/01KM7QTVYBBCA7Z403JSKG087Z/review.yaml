@@ -1,0 +1,186 @@
+_ulid: 01KM7QTVYBBCA7Z403JSKG087Z
+slugs: []
+title: Review task-impl-index (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 299 test files passed; 6814 tests passed, 3 skipped.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-21T08:23:56.389Z
+    completed_at: 2026-03-21T08:23:56.389Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation produced warnings only (exit 6): no schema/reference errors, but repo-wide
+      completeness/alignment warnings remain."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-21T08:24:00.764Z
+    completed_at: 2026-03-21T08:24:00.764Z
+events:
+  - _ulid: 01KM7QTVYAX213Y8VE75JDC044
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T08:22:52.107Z
+  - _ulid: 01KM7QV8TKSS6ZT584BJDJT2NX
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T08:23:05.299Z
+  - _ulid: 01KM7QVMCX64A4XBT3C6JH402B
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM7QVM4C2SSQM5E47DMTAECZ
+    timestamp: 2026-03-21T08:23:17.150Z
+  - _ulid: 01KM7QVN8G3BHT5EV5TF08YJ95
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM7QVN00XNC9RT5GT4BXXKNN
+    timestamp: 2026-03-21T08:23:18.032Z
+  - _ulid: 01KM7QWPHNX08KSJM5VPJKFNAR
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM7QWP9C62QBRSB7H43YRVJG
+    timestamp: 2026-03-21T08:23:52.117Z
+  - _ulid: 01KM7QWTZJNS0RC9107TPX8JHX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-21T08:23:56.658Z
+  - _ulid: 01KM7QWZ8CPXN93859JZ82CV50
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-21T08:24:01.036Z
+  - _ulid: 01KM7QX34Y196VWHE89J0JX17D
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-21T08:24:05.022Z
+  - _ulid: 01KM7QX34YX8P4EABM6A74X6PD
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-21T08:24:05.022Z
+examined_commit: 19eb168e46267d19228636e2b2c1e1d83eba2cac
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YESAF92YTNXT3DF06AC0N"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM7QVM4C2SSQM5E47DMTAECZ
+    anchor:
+      type: code
+      commit: 19eb168e46267d19228636e2b2c1e1d83eba2cac
+      line_end: 1026
+      line_start: 1004
+      path: tests/split-backend.test.ts
+      side: head
+    entries:
+      - _ulid: 01KM7QVM4CV5TCRV8SJC7E4NRX
+        author: Jacob Chapel
+        body: The AC-3 coverage was inverted here. The spec says a notes/history-only mutation must not
+          modify the index, but this test now asserts that adding a note updates project.tasks.yaml
+          as long as the note body itself is absent. That means the review can no longer rely on the
+          AC-3 annotations as evidence of compliance, because the annotated test now proves the
+          opposite behavior. This needs to go back to asserting the actual AC or be re-annotated
+          after a spec change.
+        created_at: 2026-03-21T08:23:16.876Z
+    kind: blocker
+  - _ulid: 01KM7QVN00XNC9RT5GT4BXXKNN
+    anchor:
+      type: code
+      commit: 19eb168e46267d19228636e2b2c1e1d83eba2cac
+      line_end: 300
+      line_start: 289
+      path: src/parser/split-backend.ts
+      side: head
+    entries:
+      - _ulid: 01KM7QVN00WH77AHF1AWRJE3JK
+        author: Jacob Chapel
+        body: This fix changes the contract instead of implementing it. @task-index-file ac-3 and the task
+          description both say note-only mutations must leave project.tasks.yaml untouched, but this
+          change makes notes_count/todos_count writes part of every note mutation. That restores
+          fresh counts for listTasks(), but it does so by violating the submitted spec rather than
+          satisfying it. Either the spec needs to be updated in a separate change, or the
+          implementation needs a different way to keep summary counts fresh without treating note
+          mutations as index writes.
+        created_at: 2026-03-21T08:23:17.760Z
+    kind: blocker
+  - _ulid: 01KM7QWP9C62QBRSB7H43YRVJG
+    entries:
+      - _ulid: 01KM7QWP9CNAHNNX47RF21W6DK
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+
+          Files read: src/parser/split-backend.ts, src/parser/task-data-manager.ts,
+          tests/split-backend.test.ts, prior review @01KM7PH42M0N44GZREQ3T126RP, @task-index-file,
+          @task-data-manager, @plan-task-storage-split-per-task-directory-architecture.
+
+
+          Commands run: git diff --stat dev..HEAD, git diff dev..HEAD -- src/parser/split-backend.ts
+          tests/split-backend.test.ts, git diff 6023a5e3..HEAD -- src/parser/split-backend.ts
+          tests/split-backend.test.ts, kspec task get @01KM6YESAF92YTNXT3DF06AC0N, kspec item get
+          @task-index-file, kspec item get @task-data-manager, kspec plan get
+          @plan-task-storage-split-per-task-directory-architecture, kspec review get
+          @01KM7PH42M0N44GZREQ3T126RP, kspec validate, rg -n "AC: @task-index-file"
+          tests/split-backend.test.ts, npm test.
+
+
+          Claims verified: verified the prior blocker really was stale notes_count/todos_count after
+          note mutations by reading the prior review and the fix-cycle diff; verified the new
+          snapshot makes listTasks() counts fresh by changing INDEX_CHANGE_FIELDS and rewriting the
+          AC-3 test expectation.
+
+
+          Categories searched: correctness (found blocker: implementation now contradicts
+          @task-index-file ac-3), test quality (found blocker: AC-3 annotation now proves the
+          opposite behavior), edge cases (checked rebuild and per-task-authoritative paths, no
+          additional issue found), error handling (no new issue found in changed code), integration
+          (full npm test passed; kspec validate had repo-wide warnings only).
+        created_at: 2026-03-21T08:23:51.852Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-21T08:24:05.021Z
+created_at: 2026-03-21T08:22:52.107Z
+updated_at: 2026-03-21T08:24:05.022Z
+notes: []

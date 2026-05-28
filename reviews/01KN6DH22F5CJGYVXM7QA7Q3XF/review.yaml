@@ -1,0 +1,185 @@
+_ulid: 01KN6DH22F5CJGYVXM7QA7Q3XF
+slugs: []
+title: Review default plan derive to include tasks
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh full-suite run passed after environment bootstrap: 2063 suites passed, 7469 tests
+      passed, 5 skipped."
+    name: npm test -- --fresh
+    required: true
+    runner: npm
+    created_at: 2026-04-02T06:40:10.828Z
+    completed_at: 2026-04-02T06:40:10.828Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation produced the repository's existing warning set only (exit 6 with warnings-ok
+      equivalent context); no task-specific validation errors were introduced by this snapshot.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-02T06:40:13.296Z
+    completed_at: 2026-04-02T06:40:13.296Z
+events:
+  - _ulid: 01KN6DH22FH7KWV3W1PNGZD412
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-02T06:19:12.335Z
+  - _ulid: 01KN6DHMW6Y4H8GR5ARB5WS38C
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-02T06:19:31.590Z
+  - _ulid: 01KN6EQ8NQP3YHRMFKDY95DBHN
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN6EQ7XKH0EMD43MHCAX5TMA
+    timestamp: 2026-04-02T06:40:04.279Z
+  - _ulid: 01KN6EQB3WHVACHTQKGHK3KBXS
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN6EQA8GNYGX9JFAJRX0ZHJF
+    timestamp: 2026-04-02T06:40:06.780Z
+  - _ulid: 01KN6EQFX4TV6D87A44YHV7D4A
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-04-02T06:40:11.684Z
+  - _ulid: 01KN6EQJ8RX8WEQM3DGCA1JY7W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-02T06:40:14.104Z
+  - _ulid: 01KN6EQZFTXY1MY2T6R1ZDMAS7
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-02T06:40:27.642Z
+  - _ulid: 01KN6EQZFT0QJ02RTPXHAVEZX4
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-02T06:40:27.642Z
+  - _ulid: 01KN6FHS8GXA58BFYK881J0E6G
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN6EQ7XKH0EMD43MHCAX5TMA
+    timestamp: 2026-04-02T06:54:33.232Z
+  - _ulid: 01KN6FHW7PPBDMN53F4GYJTB5B
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN6EQA8GNYGX9JFAJRX0ZHJF
+    timestamp: 2026-04-02T06:54:36.278Z
+  - _ulid: 01KN6FJ9A03AN4EC74MRCCWD3K
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN6EQ7XKH0EMD43MHCAX5TMA
+    timestamp: 2026-04-02T06:54:49.665Z
+  - _ulid: 01KN6FJCA9GDW22BPMX0W7YTQG
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN6EQA8GNYGX9JFAJRX0ZHJF
+    timestamp: 2026-04-02T06:54:52.745Z
+examined_commit: 432d716a4805d82b05eaa89afb4764270e331005
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN6CFCMZJRBS1529D0NXJB50"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN6EQ7XKH0EMD43MHCAX5TMA
+    anchor:
+      type: code
+      commit: 432d716a4805d82b05eaa89afb4764270e331005
+      line_end: 255
+      line_start: 253
+      path: src/cli/commands/plan.ts
+      side: head
+    entries:
+      - _ulid: 01KN6EQ7XKVJQXRNFJCFZ1VK5H
+        author: Jacob Chapel
+        body: "Human output now exposes whether derive will include tasks (for example, 'Tasks: included
+          (default)' or 'Tasks: skipped (--no-tasks)'), but the JSON payload emitted from the same
+          code path still has no equivalent field. Repro in a temp fixture: 'plan derive
+          @plan-dry-run-task-mode --dry-run' prints that line, while the same command with '--json'
+          returns only plan_ref/module_ref/plan_branch/created_specs/created_tasks/skipped/errors.
+          Because this command inherits @trait-json-output ac-2, adding new human-readable state
+          without adding it to JSON is a correctness regression for JSON consumers and leaves the
+          new dry-run confirmation unavailable in structured output."
+        created_at: 2026-04-02T06:40:03.507Z
+      - _ulid: 01KN6FHRA2M79H98AVE4PPAM7B
+        author: Jacob Chapel
+        body: "Fixed in 8d178dfefb4fd68c9824de23346c9064214c99aa: added tasks_included to plan derive JSON
+          results so the new task-mode summary is available in structured output as well as human
+          output, and added CLI coverage for both default and --no-tasks dry-run JSON responses."
+        created_at: 2026-04-02T06:54:32.258Z
+    kind: blocker
+    resolved_at: 2026-04-02T06:54:48.692Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KN6EQA8GNYGX9JFAJRX0ZHJF
+    entries:
+      - _ulid: 01KN6EQA8GXH5VTY042135559A
+        author: Jacob Chapel
+        body: "Evidence log:\\nFiles read: src/cli/commands/plan.ts, tests/cli-plan-derive.test.ts,
+          templates/skills/plan/SKILL.md, .agents/skills/kspec-plan/SKILL.md, tests/helpers/cli.ts,
+          tests/cli-serve.test.ts, package.json.\\nCommands run: git diff/stat against base, kspec
+          task get, kspec item get @plan-derive-enhanced, kspec review for-task, kspec validate,
+          grep/rg for AC annotations and --tasks/--no-tasks references, npm run dev -- plan derive
+          --help, direct temp-fixture CLI repro for human vs JSON output, npm test, npm test --
+          tests/cli-serve.test.ts, npm test -- --fresh.\\nClaims verified: help text/default option
+          surface, backward-compatible hidden --tasks flag presence in code, full-suite status after
+          fresh rerun, and human/JSON output mismatch for the new task-mode summary.\\nCategories
+          searched: correctness, test quality, JSON/output parity, error guidance,
+          integration/regression."
+        created_at: 2026-04-02T06:40:05.904Z
+      - _ulid: 01KN6FHV5AGTBW5JKED34Y22PE
+        author: Jacob Chapel
+        body: "Re-verified after the follow-up fix: plan derive integration tests and the full npm test
+          suite passed on commit 8d178dfefb4fd68c9824de23346c9064214c99aa. The only remaining
+          validation issue is unrelated repo metadata drift in .kspec/kynetic.meta.yaml, captured
+          separately as observation @01KN6FGK."
+        created_at: 2026-04-02T06:54:35.178Z
+    kind: nit
+    resolved_at: 2026-04-02T06:54:51.621Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-02T06:40:27.642Z
+created_at: 2026-04-02T06:19:12.335Z
+updated_at: 2026-04-02T06:54:51.621Z
+notes: []

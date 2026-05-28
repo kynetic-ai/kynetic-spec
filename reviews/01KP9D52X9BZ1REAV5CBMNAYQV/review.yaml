@@ -1,0 +1,216 @@
+_ulid: 01KP9D52X9BZ1REAV5CBMNAYQV
+slugs: []
+title: Review task-upgrade-command (cycle 6)
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Initialized a temp project, replaced kspec-agents.md with a directory but kept
+      .kspec/.kspec-agents-hash, then ran node dist/cli/index.js upgrade --json. The command exited
+      0, step 3 reported skipped/already up to date, and the directory remained in place.
+    name: upgrade corrupted agents artifact repro
+    required: true
+    runner: manual
+    created_at: 2026-04-15T20:37:19.383Z
+    completed_at: 2026-04-15T20:37:19.383Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Full suite run in this snapshot reproduced the known unrelated failures in
+      tests/cli-agent-commands.test.ts (5 failed) while tests/upgrade-command.test.ts passed. No
+      evidence that the failures are caused by the upgrade command changes.
+    name: npm test
+    required: false
+    runner: npm
+    created_at: 2026-04-15T20:37:27.801Z
+    completed_at: 2026-04-15T20:37:27.801Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repository-wide pre-existing validation issues remain in this snapshot: schema error in
+      .kspec/modules/meta.yaml plus broad existing alignment/completeness warnings. No task-specific
+      regression tied to upgrade.ts or tests/upgrade-command.test.ts was identified from this
+      output."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-15T20:37:32.043Z
+    completed_at: 2026-04-15T20:37:32.043Z
+events:
+  - _ulid: 01KP9D52X866REBTNQQTC6P1HN
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-15T20:26:05.096Z
+  - _ulid: 01KP9D6MZ9AA7RYSEA7AWCDSND
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-15T20:26:56.361Z
+  - _ulid: 01KP9DSPRCDK0TTG9496TEM835
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: upgrade corrupted agents artifact repro
+    timestamp: 2026-04-15T20:37:20.780Z
+  - _ulid: 01KP9DSTZ8KSFMCYPGC0WCPDDF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP9DSSF4H7YC9V91W6EP0MZP
+    timestamp: 2026-04-15T20:37:25.097Z
+  - _ulid: 01KP9DSZ3BEQ0R02SN3RDNZ8QS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-04-15T20:37:29.324Z
+  - _ulid: 01KP9DT32MJ5Y8845ZCB6G1HH8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-15T20:37:33.396Z
+  - _ulid: 01KP9DT82T2ABAV3PF6R7B0PC8
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KP9DT6QF0C8C9YTK7VQB7DEK
+    timestamp: 2026-04-15T20:37:38.522Z
+  - _ulid: 01KP9DTHS2ZJ234CBSX9T7808B
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-15T20:37:48.450Z
+  - _ulid: 01KP9DTHS2FWHW70HDDHV869R1
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-15T20:37:48.450Z
+  - _ulid: 01KP9ETR11WDY6AGR3TGQ98651
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP9DSSF4H7YC9V91W6EP0MZP
+    timestamp: 2026-04-15T20:55:23.425Z
+  - _ulid: 01KP9EV1SXXQJ1HCE6NF5A6Y7X
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP9DSSF4H7YC9V91W6EP0MZP
+    timestamp: 2026-04-15T20:55:33.437Z
+  - _ulid: 01KP9EVACVGZHJNHYYBH3XK3S5
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP9DT6QF0C8C9YTK7VQB7DEK
+    timestamp: 2026-04-15T20:55:42.235Z
+  - _ulid: 01KP9EVHHHQJ6E1JVZAXJ62Q0C
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP9DT6QF0C8C9YTK7VQB7DEK
+    timestamp: 2026-04-15T20:55:49.553Z
+examined_commit: 4a8adcba1d4b7e6ee073f0cff5e9863e728aa8a2
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNXYJ5JCR99F76N8N7265E0B"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KP9DSSF4H7YC9V91W6EP0MZP
+    anchor:
+      type: code
+      commit: 4a8adcba1d4b7e6ee073f0cff5e9863e728aa8a2
+      line_end: 822
+      line_start: 814
+      path: src/cli/commands/upgrade.ts
+      side: head
+    entries:
+      - _ulid: 01KP9DSSF5TJ2BMC3W60X74XZV
+        author: Jacob Chapel
+        body: >-
+          The regeneration fast-path treats any existing  path as valid output, so a broken
+          directory can suppress step 3 entirely. I reproduced this by initializing a temp project,
+          replacing  with a directory while leaving  intact, and running {
+            "success": true,
+            "source_version": "0.12.0",
+            "target_version": "0.12.0",
+            "confidence": "exact",
+            "is_refresh": false,
+            "noop": true,
+            "steps": [],
+            "follow_ups": []
+          }: the command exited 0, reported "Regenerate agent instructions" as skipped, and left the
+          directory in place. That violates @single-command-version-upgrade
+          ac-regenerates-agents-file because upgrade neither regenerates the auto-generated file nor
+          reports the step as failed when the rendered artifact is invalid.
+        created_at: 2026-04-15T20:37:23.557Z
+      - _ulid: 01KP9ETQ2RKMAJMH6AJBJ84D5T
+        author: "@claude"
+        body: "Fixed: The regeneration fast-path now uses fs.stat() with isFile() instead of fs.access().
+          When kspec-agents.md is not a regular file (e.g., a directory), it is removed and
+          regeneration proceeds regardless of hash match. Added a dedicated test that replaces
+          kspec-agents.md with a directory after a successful run and verifies recovery. Updated
+          existing tests that relied on the EISDIR failure to use the skills directory corruption
+          approach instead."
+        created_at: 2026-04-15T20:55:22.456Z
+    kind: blocker
+    resolved_at: 2026-04-15T20:55:32.522Z
+    resolved_by: "@claude"
+  - _ulid: 01KP9DT6QF0C8C9YTK7VQB7DEK
+    entries:
+      - _ulid: 01KP9DT6QFWN0EW0XSR69Y7BXR
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: src/cli/index.ts, src/cli/commands/index.ts,
+          src/cli/commands/upgrade.ts, src/parser/gitignore.ts, src/parser/skill-render.ts,
+          src/parser/yaml.ts, src/cli/exit-codes.ts, src/cli/commands/setup-defaults.ts,
+          tests/upgrade-command.test.ts, tests/helpers/cli.ts, prior review
+          @01KP9BM5A0MGBMYT8KP8C3YEJ7. Commands run: git show --stat, git diff, git log, kspec task
+          get, kspec item get, kspec review for-task/get/add/open, kspec validate, rg AC scans, npm
+          test, and direct temp-project reproductions for corrupted kspec-agents.md handling. Claims
+          verified: cycle-5 fixes for dry-run shadow HEAD checks, runtime exit code 3 path, and
+          JSON-output N/A annotations are present; step-3 corrupted-artifact handling is still
+          incorrect. Categories searched: correctness, edge cases, error handling, test quality,
+          integration."
+        created_at: 2026-04-15T20:37:37.135Z
+      - _ulid: 01KP9EV9F6YQZTWGG0C2861H4B
+        author: "@claude"
+        body: Acknowledged. The corrupted artifact handling has been fixed as described in the blocker
+          thread resolution.
+        created_at: 2026-04-15T20:55:41.286Z
+    kind: nit
+    resolved_at: 2026-04-15T20:55:48.587Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-15T20:37:48.449Z
+created_at: 2026-04-15T20:26:05.097Z
+updated_at: 2026-04-15T20:55:48.587Z
+notes: []

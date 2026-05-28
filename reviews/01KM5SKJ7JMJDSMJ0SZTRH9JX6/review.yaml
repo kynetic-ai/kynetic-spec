@@ -1,0 +1,159 @@
+_ulid: 01KM5SKJ7JMJDSMJ0SZTRH9JX6
+slugs: []
+title: Review task-implement-kspec-no-daemon
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed locally: 291 files, 6662 tests passed, 3 skipped."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-20T14:16:35.761Z
+    completed_at: 2026-03-20T14:16:35.761Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fails in this snapshot due to pre-existing repo-wide validation issues unrelated to this
+      task: 3 broken meta references plus existing completeness/alignment warnings."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-20T14:16:36.532Z
+    completed_at: 2026-03-20T14:16:36.532Z
+events:
+  - _ulid: 01KM5SKJ7H2212WZZZ6PMP67GW
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-20T14:15:21.074Z
+  - _ulid: 01KM5SKZMYS6CA8ZZTMJT5V77A
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-20T14:15:34.814Z
+  - _ulid: 01KM5SNGEEK7ANWRCESVK26AGE
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM5SNG71KD4H83A7KZJT5R9J
+    timestamp: 2026-03-20T14:16:24.782Z
+  - _ulid: 01KM5SNH66H2N5XY3AYRHQVFKG
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM5SNGZ6DSNG9JEFX928BNPB
+    timestamp: 2026-03-20T14:16:25.542Z
+  - _ulid: 01KM5SNVD3BH6TW29X45AJB4T1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-20T14:16:36.003Z
+  - _ulid: 01KM5SNW6KMGSVEPZV0158CTC4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-03-20T14:16:36.819Z
+  - _ulid: 01KM5SP59EHDGHFEKMKS3PK2BS
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-20T14:16:46.127Z
+  - _ulid: 01KM5SP59FSVRWPPSH1MQS18HT
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-20T14:16:46.127Z
+  - _ulid: 01KM5TM9YJRZXZGS1E7Y46M9CM
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM5SNG71KD4H83A7KZJT5R9J
+    timestamp: 2026-03-20T14:33:13.938Z
+  - _ulid: 01KM5TME71YANEDW5SBC304V43
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KM5SNG71KD4H83A7KZJT5R9J
+    timestamp: 2026-03-20T14:33:18.305Z
+examined_commit: e9c0e7d53b1db9ecdc659db4b0297a5c04e98893
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM289GY9589XH063SSFMBJFQ"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM5SNG71KD4H83A7KZJT5R9J
+    anchor:
+      type: code
+      commit: e9c0e7d53b1db9ecdc659db4b0297a5c04e98893
+      line_end: 135
+      line_start: 134
+      path: src/cli/index.ts
+      side: head
+    entries:
+      - _ulid: 01KM5SNG7113J67V2DZMJSJMVA
+        author: Jacob Chapel
+        body: "This early return suppresses the manifest daemon deprecation warning whenever KSPEC_NO_DAEMON
+          is set. That warning is not incidental daemon communication, and @config-daemon ac-4 still
+          requires the CLI to emit it. Repro: in a temp project with a manifest daemon block,
+          'validate' prints the warning with no env var, but prints nothing on stderr with
+          KSPEC_NO_DAEMON=1."
+        created_at: 2026-03-20T14:16:24.546Z
+      - _ulid: 01KM5TM9PWABHJVQBK9YRQDB68
+        author: Jacob Chapel
+        body: Fixed in commit 7bc399755. maybeAutoStartDaemon() now loads context and emits the manifest
+          daemon deprecation warning before honoring KSPEC_NO_DAEMON, so @config-daemon ac-4 still
+          holds while incidental daemon communication stays suppressed.
+        created_at: 2026-03-20T14:33:13.692Z
+    kind: blocker
+    resolved_at: 2026-03-20T14:33:18.067Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KM5SNGZ6DSNG9JEFX928BNPB
+    entries:
+      - _ulid: 01KM5SNGZ7JGGDTWZ79FWFT51A
+        author: Jacob Chapel
+        body: "Evidence log:\\nFiles read: src/cli/index.ts, src/cli/pid-utils.ts,
+          src/cli/commands/serve.ts, tests/cli-no-daemon.test.ts, tests/setup.ts,
+          tests/agent-dispatch-engine.test.ts, tests/parser/daemon-config.test.ts,
+          packages/web-ui/tests/fixtures/test-base.ts.\\nCommands run: git diff/stat, kspec task
+          get, kspec review for-task, rg/grep for AC annotations and call sites, kspec validate, npm
+          test, temp-project CLI repro for validate with and without KSPEC_NO_DAEMON.\\nClaims
+          verified: explicit serve commands still bypass suppression via ignoreNoDaemon=true; full
+          test suite passes; kspec validate still has unrelated pre-existing repo validation
+          errors.\\nCategories searched: correctness, regression risk, test quality, config/error
+          handling, integration with serve commands and test fixtures."
+        created_at: 2026-03-20T14:16:25.319Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-20T14:16:46.126Z
+created_at: 2026-03-20T14:15:21.074Z
+updated_at: 2026-03-20T14:33:18.067Z
+notes: []

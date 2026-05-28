@@ -1,0 +1,242 @@
+_ulid: 01KSFYVE14VVQWA31FMDH074R1
+slugs: []
+title: Review task-review-screenshot-resource-ui (cycle 6)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh full test suite passed: 2562 suites passed; 9777 tests passed, 5 skipped; duration
+      2209.4s."
+    name: npm test -- --fresh
+    required: true
+    runner: npm
+    created_at: 2026-05-25T16:30:44.080Z
+    completed_at: 2026-05-25T16:30:44.080Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Node URL parsing confirmed raw static asset paths with # or ? are interpreted as
+      fragment/query: /base/assets/resources/review/01REV/screenshots/login#bug.png has pathname
+      /base/assets/resources/review/01REV/screenshots/login and hash #bug.png."
+    name: static resource URL parsing probe
+    required: false
+    runner: node
+    created_at: 2026-05-25T16:30:48.425Z
+    completed_at: 2026-05-25T16:30:48.425Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate reported schema OK and references OK; exited 6 due to existing project-wide
+      warnings (deprecated references, orphan/status/completeness warnings). No task-specific
+      validation error observed.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-25T16:30:52.870Z
+    completed_at: 2026-05-25T16:30:52.870Z
+events:
+  - _ulid: 01KSFYVE146B8YMZXXPS0FH7E0
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-25T16:17:55.236Z
+  - _ulid: 01KSFYW637BGRSDPB66CZ6WDAG
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-25T16:18:19.879Z
+  - _ulid: 01KSFZ46NXATSGNGH8KH5C2TNH
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSFZ44XAAB31QPCECQRCFZRM
+    timestamp: 2026-05-25T16:22:42.621Z
+  - _ulid: 01KSFZJYDERAQR5ZQSAW9FKB9C
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-05-25T16:30:45.679Z
+  - _ulid: 01KSFZK2NZRYJ826SHNKYQ4A7W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: static resource URL parsing probe
+    timestamp: 2026-05-25T16:30:50.047Z
+  - _ulid: 01KSFZK6Y1DPXGRY81PVTCDF7M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-25T16:30:54.401Z
+  - _ulid: 01KSFZKR6HEXXS1SR6DQR9E00M
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSFZKPP7RJFVWNGZS79TXHR2
+    timestamp: 2026-05-25T16:31:12.081Z
+  - _ulid: 01KSFZM1XKTK5SRACGFJQBBH77
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-25T16:31:22.036Z
+  - _ulid: 01KSFZM1XM5N2NQ8QP2M5DP9AM
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-25T16:31:22.036Z
+  - _ulid: 01KSG0VQN4575YKC28AYCDNC8Y
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSFZ44XAAB31QPCECQRCFZRM
+    timestamp: 2026-05-25T16:53:02.244Z
+  - _ulid: 01KSG20EP3GGVPK9NJS1TN0WZS
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSFZ44XAAB31QPCECQRCFZRM
+    timestamp: 2026-05-25T17:13:05.475Z
+  - _ulid: 01KSG20W3M36BDDAMWP1F0F2B7
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSFZ44XAAB31QPCECQRCFZRM
+    timestamp: 2026-05-25T17:13:19.220Z
+  - _ulid: 01KSG21A692AR6ABDGW0TVG014
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSFZKPP7RJFVWNGZS79TXHR2
+    timestamp: 2026-05-25T17:13:33.641Z
+  - _ulid: 01KSG21PM3KFFJ3G3K7DN2ZT22
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSFZKPP7RJFVWNGZS79TXHR2
+    timestamp: 2026-05-25T17:13:46.371Z
+examined_commit: c3d0ed1125a79f9b2849f4fb20e1dba5b10d9e42
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XB0EKNTMZS4XJMC4ED4SK"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSFZ44XAAB31QPCECQRCFZRM
+    anchor:
+      type: code
+      commit: c3d0ed1125a79f9b2849f4fb20e1dba5b10d9e42
+      line_end: 453
+      line_start: 453
+      path: packages/web-ui/src/routes/reviews/[id]/+page.svelte
+      side: head
+    entries:
+      - _ulid: 01KSFZ44XA5HBGPV72FNKKB3B1
+        author: Jacob Chapel
+        body: "MUST-FIX: Static review resource URLs use the raw exported_path as an href/src. Resource
+          paths are allowed to be POSIX relative paths and the schema only rejects absolute paths,
+          traversal, backslashes, empty/dot segments, and trailing slash, so valid resource paths
+          can contain URL-reserved characters such as # or ?. For an exported asset path like
+          assets/resources/review/<review-ulid>/screenshots/login#bug.png, the browser requests
+          /assets/resources/review/<review-ulid>/screenshots/login and treats #bug.png as a
+          fragment; ? has the same problem as query string. That means valid exported
+          screenshot/evidence resources cannot be loaded from the static review page. Encode the
+          exported path for URL use (preferably segment-by-segment so slashes remain path
+          separators) or otherwise ensure exported_path is a URL-safe asset URL, and add behavioral
+          static/UI coverage for a resource path containing # or ?. Evidence: Node URL parsing of
+          /base/assets/resources/review/01REV/screenshots/login#bug.png yields pathname
+          /base/assets/resources/review/01REV/screenshots/login and hash #bug.png."
+        created_at: 2026-05-25T16:22:40.810Z
+      - _ulid: 01KSG0VP14T82HPG56CY2YX9PR
+        author: "@claude"
+        body: Acknowledged — investigating now.
+        created_at: 2026-05-25T16:53:00.579Z
+      - _ulid: 01KSG20C6407HRXGM4NENQG272
+        author: "@claude"
+        body: "Fixed: Static URLs now go through new `encodeStaticAssetPath` helper that encodes each
+          `/`-separated segment individually, so `#` becomes `%23`, `?` becomes `%3F`, etc. while
+          the path separators stay intact. Added behavioral coverage: 5 helper tests (`#`, `?`,
+          spaces, separator preservation, no-op) re-parse the result through `new URL` to assert
+          empty `hash`/`search`, plus one full static-export round-trip test that adds a resource
+          with `screenshots/login#bug?ref.png`, runs `kspec export`, asserts the on-disk asset and
+          snapshot both carry the raw path, and verifies the UI-side URL parses cleanly."
+        created_at: 2026-05-25T17:13:02.916Z
+    kind: blocker
+    resolved_at: 2026-05-25T17:13:16.695Z
+    resolved_by: "@claude"
+  - _ulid: 01KSFZKPP7RJFVWNGZS79TXHR2
+    entries:
+      - _ulid: 01KSFZKPP7B8C7CXS3QP9WBKBV
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+
+          Files read: kspec-agents.md; src/schema/resources.ts;
+          src/parser/entity-local-resources.ts; src/parser/review-resource-manager.ts;
+          src/cli/commands/review-resource.ts; src/cli/commands/review.ts;
+          src/cli/commands/export.ts; src/export/json.ts; src/export/types.ts;
+          packages/daemon/src/routes/review-resources.ts; packages/daemon/src/routes/reviews.ts;
+          packages/daemon/src/server.ts; packages/daemon/src/middleware/project-context.ts;
+          packages/shared/src/api.ts; packages/web-ui/src/lib/api.ts;
+          packages/web-ui/src/lib/api-static.ts;
+          packages/web-ui/src/routes/reviews/[id]/+page.svelte;
+          tests/review-resource-manager.test.ts; tests/daemon-api/review-resources.test.ts;
+          tests/review-resource-cli.test.ts; tests/review-resource-static-export.test.ts;
+          tests/web-ui/review-resources-api.test.ts; tests/web-ui/review-static-mode.test.ts.
+
+
+          Commands run: kspec task get @01KS8XB0EKNTMZS4XJMC4ED4SK; kspec item get
+          @folder-backed-review-storage-1; kspec review for-task @01KS8XB0EKNTMZS4XJMC4ED4SK; kspec
+          review get @01KSFSWM; git log; git diff/stat/name-only against merge base; rg AC
+          annotations; node URL parsing probe; kspec validate; npm test -- --fresh.
+
+
+          Claims verified: cycle-5 symlink resolver fix verified in code/tests and daemon bytes
+          route; full suite claim verified by fresh npm test; validation claim verified with kspec
+          validate warnings-only exit 6.
+
+
+          Categories searched: correctness, edge cases, path/security handling, static export, UI
+          resource URL behavior, CLI/API error mapping, cache/broadcast integration, test
+          quality/source-scanning. Finding recorded for static URL encoding.
+        created_at: 2026-05-25T16:31:10.535Z
+      - _ulid: 01KSG217GEVBXHESGMPXV9Y45C
+        author: "@claude"
+        body: Acknowledged — evidence log noted, no action required (nit).
+        created_at: 2026-05-25T17:13:30.893Z
+    kind: nit
+    resolved_at: 2026-05-25T17:13:43.747Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-25T16:31:22.035Z
+created_at: 2026-05-25T16:17:55.236Z
+updated_at: 2026-05-25T17:13:43.747Z
+notes: []

@@ -1,0 +1,124 @@
+_ulid: 01KNA4DAJ64J60F3RCNVNBD8KQ
+slugs: []
+title: Review task-impl-pull-path (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 7500 passed, 5 skipped.
+    name: npm test
+    required: true
+    runner: test.cjs
+    created_at: 2026-04-03T17:01:13.509Z
+    completed_at: 2026-04-03T17:01:13.509Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 6 with repository-baseline warnings only (orphaned skill directory, existing
+      alignment/completeness warning set); no task-specific validation errors.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-03T17:01:15.801Z
+    completed_at: 2026-04-03T17:01:15.801Z
+events:
+  - _ulid: 01KNA4DAJ6SNFD6NWKXAXV666M
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-03T16:56:50.502Z
+  - _ulid: 01KNA4DM3G73QGVM2JT7G1JAT4
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-03T16:57:00.273Z
+  - _ulid: 01KNA4N9YMTW4QV5Q3BFA5CQJF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNA4N96QEG0PPJ4AFAE9FS8X
+    timestamp: 2026-04-03T17:01:12.020Z
+  - _ulid: 01KNA4NC61S75Z0TNNAGPKC1BN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-03T17:01:14.305Z
+  - _ulid: 01KNA4NEDPN63PZ0V23CT8M44Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-03T17:01:16.599Z
+  - _ulid: 01KNA4NQ5YNV2BAWZ7Z9QQHW6R
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-03T17:01:25.566Z
+  - _ulid: 01KNA4NQ5Y5C0GB12KE08CAZ19
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-03T17:01:25.566Z
+examined_commit: f9100112530419d0fb2ad70f0e86270352b49336
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN8T1ADSR97NA4Z1MXF30MZE"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNA4N96QEG0PPJ4AFAE9FS8X
+    entries:
+      - _ulid: 01KNA4N96R4ZZT8N1J3TRGQAHS
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          Files read: src/agent-runtime/dispatch.ts, tests/dispatch-target-sync.test.ts,
+          tests/dispatch-degraded-state.test.ts
+
+          Commands run: kspec task get @01KN8T1ADSR97NA4Z1MXF30MZE; kspec item get
+          @dispatch-remote-branch-sync; kspec review get @01KNA370YATWK3ZZ7MCJ8WHX3W; git diff
+          --stat e7837c1..f910011; git diff e7837c1..f910011 -- src/agent-runtime/dispatch.ts
+          tests/dispatch-target-sync.test.ts tests/dispatch-degraded-state.test.ts; rg -n "AC:
+          @dispatch-remote-branch-sync|AC: @trait-error-guidance" tests/dispatch-target-sync.test.ts
+          tests/dispatch-degraded-state.test.ts; kspec validate; npm test
+
+          Claims verified: prior blocker about global degraded recovery is fixed by branch-scoped
+          degraded target tracking and recovery; startup/periodic/pre-provision sync now use
+          per-target staleness and branch-specific reviewer deferral; added tests behaviorally cover
+          scoped degradation, partial iteration, and staleness isolation
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration;
+          no new blocking issues found in this snapshot.
+        created_at: 2026-04-03T17:01:11.256Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-03T17:01:25.565Z
+created_at: 2026-04-03T16:56:50.502Z
+updated_at: 2026-04-03T17:01:25.566Z
+notes: []

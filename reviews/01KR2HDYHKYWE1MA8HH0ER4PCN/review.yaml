@@ -1,0 +1,154 @@
+_ulid: 01KR2HDYHKYWE1MA8HH0ER4PCN
+slugs: []
+title: Review @01KR22GK15YB0PRQ1RP3D88J5J
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: mise exec -- npm run build:daemon passed
+    name: build:daemon
+    required: true
+    runner: npm
+    created_at: 2026-05-08T01:09:59.823Z
+    completed_at: 2026-05-08T01:09:59.823Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh tests/daemon-api/websocket-protocol.test.ts: 15 passed;
+      tests/daemon-build.test.ts: 2 passed; tests/cli-serve.test.ts tests/cli-no-daemon.test.ts: 47
+      passed"
+    name: focused migrated tests
+    required: true
+    runner: npm
+    created_at: 2026-05-08T01:10:09.643Z
+    completed_at: 2026-05-08T01:10:09.643Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh passed: 2386 suites passed; 8732 passed, 5 skipped of
+      8737 tests; duration 1894.7s; log
+      /tmp/kspec-test-cache/01KR2HCR8V8273VMSMT6EPBYRR/ef15cbb18aa977ed.log"
+    name: full npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-08T01:10:19.708Z
+    completed_at: 2026-05-08T01:10:19.708Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate: schema/references OK; exited 6 for existing global warnings (deprecated
+      refs, orphan/status alignment, broad AC annotation backlog). No uncovered warnings found for
+      the reviewed daemon fixture/runtime specs."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-08T01:10:31.126Z
+    completed_at: 2026-05-08T01:10:31.126Z
+events:
+  - _ulid: 01KR2HDYHKHZ4G1T49296609HM
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-08T00:57:32.467Z
+  - _ulid: 01KR2HEHX4PMP9NRS2FP6B3R16
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-08T00:57:52.292Z
+  - _ulid: 01KR2J4SKBEA01APRYJJVM2WKF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: build:daemon
+    timestamp: 2026-05-08T01:10:01.068Z
+  - _ulid: 01KR2J5388T3B9AAQ2W8WS11W7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused migrated tests
+    timestamp: 2026-05-08T01:10:10.952Z
+  - _ulid: 01KR2J5CZBF32BBD74W119939H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full npm test
+    timestamp: 2026-05-08T01:10:20.907Z
+  - _ulid: 01KR2J5R5NSSF20H93CN13H0MA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-08T01:10:32.373Z
+  - _ulid: 01KR2J65H3D9GAFFYW20Y2YGGP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KR2J649KPJ3M0ZZ2GBXY02CW
+    timestamp: 2026-05-08T01:10:46.051Z
+  - _ulid: 01KR2J6ETEGA77RPX9HENAB60K
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-08T01:10:55.566Z
+  - _ulid: 01KR2J6ETEBKBMCZMTMM9SFC49
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-08T01:10:55.566Z
+examined_commit: 1d4b63a3593e90e4cb5d47f32591973305344713
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR22GK15YB0PRQ1RP3D88J5J"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR2J649KPJ3M0ZZ2GBXY02CW
+    entries:
+      - _ulid: 01KR2J649KFKAM4YTHTZ4YYXCC
+        author: Jacob Chapel
+        body: "Evidence log: Files read: tests/cli-serve.test.ts,
+          tests/daemon-api/websocket-protocol.test.ts, tests/daemon-build.test.ts,
+          tests/helpers/daemon.ts, tests/helpers/daemon.test.ts, src/cli/commands/serve.ts,
+          dist/daemon/server.js, dist/daemon/index.js. Commands run: kspec item get for linked
+          specs; rg direct daemon spawn/endpoint/AC annotations; kspec validate; mise exec -- npm
+          run build:daemon; focused migrated npm tests; full npm test -- --fresh. Claims verified:
+          direct real daemon process starts in changed files now route through startTestDaemon
+          except CLI lifecycle subjects; websocket defaults to node and uses fixture URLs; runtime
+          parity covers node plus optional bun; cli-no-daemon has no direct daemon spawn. Categories
+          searched: correctness, endpoint/runtime edge cases, cleanup/error handling, test quality,
+          integration."
+        created_at: 2026-05-08T01:10:44.787Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-08T01:10:55.565Z
+created_at: 2026-05-08T00:57:32.467Z
+updated_at: 2026-05-08T01:10:55.566Z
+notes: []

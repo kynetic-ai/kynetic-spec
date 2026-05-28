@@ -1,0 +1,272 @@
+_ulid: 01KPQZKZW4CQBHMVBEVHZAYDBN
+slugs: []
+title: Review task-docs-troubleshooting-content (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: docs/troubleshooting/*.md,
+      docs/concepts/{reviews,agents-and-dispatch,web-ui-and-daemon}.md,
+      tests/web-ui-docs-rendering.test.ts, src/parser/doctor.ts, src/cli/commands/task.ts. Commands
+      run: git diff/stat, item/task/review lookups, rg for AC annotations and command references,
+      help for agent/serve/task/review/upgrade, validate, npm test. Claims verified: prior daemon
+      dispatch blocker fixed; documented commands exist; full test suite passes. Categories
+      searched: correctness, workflow/state-machine accuracy, command validity, AC coverage/tests,
+      integration with review/upgrade flows."
+    name: review-evidence
+    required: false
+    runner: codex
+    created_at: 2026-04-21T12:28:51.113Z
+    completed_at: 2026-04-21T12:28:51.113Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2238/2238 suites passed; 8253 tests passed, 5 skipped, 0 failed.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-21T12:28:57.817Z
+    completed_at: 2026-04-21T12:28:57.817Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      ✗ Validation failed
+
+      ────────────────────────────────────────
+
+      Files checked: 11
+
+      Items checked: 601
+
+      Tasks checked: 0
+
+      Meta: 12 agents, 11 workflows, 11 conventions
+
+
+      Schema errors: 1
+        ✗ /home/chapel/Projects/kynetic-spec-dispatch/.kspec/modules/meta.yaml:modules[0].traits.0
+          Expected string, received object
+      References: OK
+
+
+      Reference warnings: 1
+        ⚠ @skills
+          Orphaned skill directory 'skills' has no corresponding meta entry
+          in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+      Alignment warnings: 36
+        Orphaned specs (no tasks): 34
+          ○ Test Trait
+          ○ Filterable List Commands
+          ○ Dry Run Preview Mode
+          ... and 31 more
+        Status mismatches: 2
+          ! Task Set Batch Support
+            Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+          ! Concurrent Read Command Execution
+            Spec "Concurrent Read Command Execution" status is "implemented" but should be "in_progress" based on task progress
+
+      Alignment stats: 434/601 specs have tasks, 432 aligned
+
+
+      Completeness warnings: 493
+        Missing acceptance criteria: 1
+          ○ @01KJN1WT - Test Trait
+        Missing own AC coverage: 237
+          ! @docs-search - Docs Search
+            Uncovered: ac-1, ac-2, ac-3
+          ! @docs-guides-section - Guides Section
+            Uncovered: ac-1, ac-2, ac-3
+          ! @spec-item - Spec Item
+            Uncovered: ac-item-1, ac-item-2
+          ... and 234 more
+        Invalid AC annotations: 255
+          ! AC annotation references '@01KJE3T7' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-troubleshooting-content-01kppn44-review/tests/agent-detection.test.ts:43
+          ! AC annotation references '@01KJE3T7' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-troubleshooting-content-01kppn44-review/tests/agent-detection.test.ts:61
+          ! AC annotation references '@01KJE3T7' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-troubleshooting-content-01kppn44-review/tests/agent-detection.test.ts:75
+          ! AC annotation references '@01KJE3T7' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-troubleshooting-content-01kppn44-review/tests/agent-detection.test.ts:88
+          ! AC annotation references '@ui-agent-dispatch ac-8' but @ui-agent-dispatch has no acceptance criterion 'ac-8'
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-troubleshooting-content-01kppn44-review/tests/agent-dispatch-engine.test.ts:4965
+          ... and 250 more
+      Skills: OK (10 files checked) exits 4 on pre-existing repo issues unrelated to this diff:
+      schema error in .kspec/modules/meta.yaml plus longstanding completeness/alignment warnings.
+    name: validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-21T12:29:01.054Z
+    completed_at: 2026-04-21T12:29:01.054Z
+events:
+  - _ulid: 01KPQZKZW4P01MHYQKHRX21CYJ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-21T12:18:09.924Z
+  - _ulid: 01KPQZMNDY6PGZY80B7YNEDRFV
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-21T12:18:31.998Z
+  - _ulid: 01KPR07G0AD0S3VT56QVD0WSMG
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPR07EYK99HHB36KMC0QZ62W
+    timestamp: 2026-04-21T12:28:49.034Z
+  - _ulid: 01KPR07K5P9DTQ0BE6N5VJRNXZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-04-21T12:28:52.278Z
+  - _ulid: 01KPR07P7KJZ5746BE45Y87XMF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPR07N4X4Z3EDXV4JWZVT64Z
+    timestamp: 2026-04-21T12:28:55.411Z
+  - _ulid: 01KPR07SR93598GFH0P7GZ1TW2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-21T12:28:59.017Z
+  - _ulid: 01KPR07WZEXN7W69J9WPZCCEHY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: validate
+    timestamp: 2026-04-21T12:29:02.318Z
+  - _ulid: 01KPR088FRWDY1GDMV4379RR97
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-21T12:29:14.104Z
+  - _ulid: 01KPR088FR9D8KHRVC71W6RTPC
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-21T12:29:14.104Z
+  - _ulid: 01KPR171Q2PC5VNRKSER5SWB7M
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPR07EYK99HHB36KMC0QZ62W
+    timestamp: 2026-04-21T12:46:02.978Z
+  - _ulid: 01KPR17DP73QGZRADC285S5W8C
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPR07EYK99HHB36KMC0QZ62W
+    timestamp: 2026-04-21T12:46:15.239Z
+  - _ulid: 01KPR17K9495QY9BZ1HFFZ4HD0
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPR07N4X4Z3EDXV4JWZVT64Z
+    timestamp: 2026-04-21T12:46:20.964Z
+  - _ulid: 01KPR1825FHERT3JAWSZZMWG9V
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPR07N4X4Z3EDXV4JWZVT64Z
+    timestamp: 2026-04-21T12:46:36.207Z
+examined_commit: bf321c0b40c7a606da6c665ae15d89955dd3629d
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KPPN4435PYT5BK4VFXTPR1F3"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPR07EYK99HHB36KMC0QZ62W
+    anchor:
+      type: code
+      commit: bf321c0b40c7a606da6c665ae15d89955dd3629d
+      line_end: 27
+      line_start: 15
+      path: docs/troubleshooting/upgrade-pre-plan-state.md
+      side: head
+    entries:
+      - _ulid: 01KPR07EYKQGVY8P202HZZ9ZT7
+        author: Jacob Chapel
+        body: "This recovery procedure points readers to , but the codebase treats legacy
+          scaffold/version-skew problems as an  flow, with  only as a lower-level fallback. That
+          means a reader following this article can run the wrong command for the documented symptom
+          and still miss the upgrade scaffolding they need. Evidence:  guides missing project
+          config, version skew, and legacy task-storage cases to , and  defines upgrade as the
+          command that brings a project to the installed kspec version."
+        created_at: 2026-04-21T12:28:47.955Z
+      - _ulid: 01KPR170EZXFNKT0AZK2ZT6AKA
+        author: "@claude"
+        body: "Fixed: Replaced kspec setup with kspec upgrade as the primary recovery command. The entry now
+          correctly directs readers to kspec upgrade (the single-command version alignment flow),
+          with kspec upgrade --dry-run for preview. kspec setup --force is mentioned as a
+          lower-level fallback for targeted re-scaffolding. Also fixed the Verification section to
+          say 'After running the upgrade' instead of 'After running setup'."
+        created_at: 2026-04-21T12:46:01.695Z
+    kind: blocker
+    resolved_at: 2026-04-21T12:46:14.170Z
+    resolved_by: "@claude"
+  - _ulid: 01KPR07N4X4Z3EDXV4JWZVT64Z
+    anchor:
+      type: code
+      commit: bf321c0b40c7a606da6c665ae15d89955dd3629d
+      line_end: 40
+      line_start: 34
+      path: docs/troubleshooting/review-blocking-merge.md
+      side: head
+    entries:
+      - _ulid: 01KPR07N4Y321SW2M699GSHWCH
+        author: Jacob Chapel
+        body: This article tells readers to re-run  when a review becomes stale after new commits, but  only
+          works from  and errors for tasks already in . In the stale-review case described here, the
+          task is already under review/merge gating, so this guidance sends users to a command that
+          cannot perform the claimed recovery. The recovery needs to describe a fresh review/refresh
+          path instead of resubmitting from the wrong state.
+        created_at: 2026-04-21T12:28:54.302Z
+      - _ulid: 01KPR17J8DP6NNKXFQ4Y3P8PZ4
+        author: "@claude"
+        body: "Fixed: Replaced kspec task submit (which errors from pending_review state) with kspec review
+          refresh @review-ref --head <new-commit-hash>. This correctly updates the review's subject
+          comparison context after new commits, allowing the reviewer to re-evaluate against the
+          current code and issue a new verdict on the same review record."
+        created_at: 2026-04-21T12:46:19.917Z
+    kind: blocker
+    resolved_at: 2026-04-21T12:46:35.169Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-21T12:29:14.103Z
+created_at: 2026-04-21T12:18:09.924Z
+updated_at: 2026-04-21T12:46:35.169Z
+notes: []

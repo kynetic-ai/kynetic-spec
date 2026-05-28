@@ -1,0 +1,129 @@
+_ulid: 01KN5CHEPPA9JKR2F852B6EJ0A
+slugs: []
+title: Review task-remove-legacy-activity-fallback
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2073/2073 suites passed, 7471/7476 tests passed, 5 skipped.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-01T20:48:59.346Z
+    completed_at: 2026-04-01T20:48:59.346Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No remaining references to removed git activity helpers, git_fallback source, or
+      @task-activity-git-query found via ripgrep.
+    name: legacy reference scan
+    required: true
+    runner: rg
+    created_at: 2026-04-01T20:49:03.399Z
+    completed_at: 2026-04-01T20:49:03.399Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation returned warning-only exit 6 from pre-existing repo-wide alignment/completeness
+      issues; no schema or reference errors related to this task.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-01T20:49:05.413Z
+    completed_at: 2026-04-01T20:49:05.413Z
+events:
+  - _ulid: 01KN5CHEPN825MFHK8SFK9W1HQ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-01T20:42:42.261Z
+  - _ulid: 01KN5CJER44DR6DYNJNW8Q4MK8
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-01T20:43:15.076Z
+  - _ulid: 01KN5CWZJY5P7KY4CK6675FEN1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-01T20:48:59.999Z
+  - _ulid: 01KN5CX1HANRRAZV5A7PYCY1G7
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN5CX0WSA4X1TXM4S0FJ80QP
+    timestamp: 2026-04-01T20:49:01.994Z
+  - _ulid: 01KN5CX3J4XZ5X4TG9NZDNQ5HB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: legacy reference scan
+    timestamp: 2026-04-01T20:49:04.068Z
+  - _ulid: 01KN5CX5HENHFK9SXYE2EJVF14
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-04-01T20:49:06.094Z
+  - _ulid: 01KN5CXP3Q8CCR5DZ73BK128Q7
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-01T20:49:23.064Z
+  - _ulid: 01KN5CXP3RPH5B2YW65H32VJBB
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-01T20:49:23.064Z
+examined_commit: d09d903b4cfa719edbd4f4ba1d049c9c482b0605
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN5ARMWCVEP8XTA6DS515RK8"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN5CX0WSA4X1TXM4S0FJ80QP
+    entries:
+      - _ulid: 01KN5CX0WS5QAFJACFQBY4AWZW
+        author: Jacob Chapel
+        body: |-
+          Evidence log
+
+          Files read: src/utils/activity.ts, src/cli/commands/task.ts, src/utils/index.ts, tests/activity-in-file.test.ts, tests/activity-display.test.ts
+          Commands run: kspec task get @01KN5ARMWCVEP8XTA6DS515RK8; kspec item get @task-activity-in-file; kspec item get @task-activity-timeline; kspec validate; rg -n "getRawTaskCommits|getPreMigrationActivity|normalizeTaskActivity|parseCommitMessage|parseDiffChanges|findTaskBlockLines|parseGitLogLOutput|RawTaskCommit|git_fallback|@task-activity-git-query" .; npm test
+          Claims verified: legacy git activity helpers and exports are fully removed; task get activity now assembles only from persisted history/notes plus review events; AC coverage for @task-activity-in-file remains in tests/activity-in-file.test.ts and task-get activity coverage remains in tests/activity-display.test.ts
+          Categories searched: correctness, edge cases, error handling, test quality, integration; no findings.
+        created_at: 2026-04-01T20:49:01.337Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-04-01T20:49:23.063Z
+created_at: 2026-04-01T20:42:42.262Z
+updated_at: 2026-04-01T20:49:23.064Z
+notes: []

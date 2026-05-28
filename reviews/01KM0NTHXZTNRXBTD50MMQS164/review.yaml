@@ -1,0 +1,156 @@
+_ulid: 01KM0NTHXZTNRXBTD50MMQS164
+slugs: []
+title: Review task-hook-cli (cycle 2)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 6422 tests passed, 1 pre-existing failure in review-cli.test.ts (unrelated to changeset —
+      examined_commit auto-population in worktree)
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T14:33:26.318Z
+    completed_at: 2026-03-18T14:33:26.318Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Pre-existing reference errors only (3 in meta.yaml). No new validation errors introduced
+      by changeset. Schema OK, Skills OK.
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-18T14:33:29.141Z
+    completed_at: 2026-03-18T14:33:29.141Z
+events:
+  - _ulid: 01KM0NTHXZAT7BBVC87ZPWZXP6
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T14:33:03.679Z
+  - _ulid: 01KM0NTY6VPXMTWAXV8J6QSM3S
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T14:33:16.251Z
+  - _ulid: 01KM0NV86GGRFNP587KACNEC70
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T14:33:26.480Z
+  - _ulid: 01KM0NVAYC269YD2XAE2RHF877
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-18T14:33:29.292Z
+  - _ulid: 01KM0NW1YJ0CCB5WS368BDTA6K
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM0NW1QVNF1WK7W08B54VABG
+    timestamp: 2026-03-18T14:33:52.850Z
+  - _ulid: 01KM0NWFNNTRMYXH818RK2YTKE
+    actor: claude-reviewer@kspec
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-18T14:34:06.901Z
+  - _ulid: 01KM0NWFNN9P1KR32T24V0Q57H
+    actor: claude-reviewer@kspec
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T14:34:06.901Z
+examined_commit: 1fc288f90d15d04de5646ec39c46130d715d86f8
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-hook-cli"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM0NW1QVNF1WK7W08B54VABG
+    entries:
+      - _ulid: 01KM0NW1QVD1TX8KVJ6FVC5KMV
+        author: "@claude"
+        body: >-
+          Review Evidence Log:
+
+
+          Files read: src/cli/commands/hook.ts, src/cli/commands/index.ts, src/cli/index.ts,
+          src/parser/meta.ts, tests/hook-cli.test.ts, src/cli/exit-codes.ts, src/parser/index.ts,
+          src/schema/index.ts, src/schema/hooks.ts, src/cli/output.ts, src/parser/shadow.ts
+
+
+          Commands run: npm test, kspec validate, git diff dev..HEAD, git diff 5241398e3..1fc288f90,
+          kspec task get @01KKZPVX, kspec review get @01KM0N6M, kspec review for-task @01KKZPVX
+
+
+          Claims verified:
+
+          - "All tests pass" — Verified: 6422 passed. 1 failure in review-cli.test.ts is
+          pre-existing (not in changeset files, examined_commit auto-population in detached
+          worktree)
+
+          - "50 tests" — Verified: hook-cli.test.ts contains 50 test cases
+
+          - "Fixed N/A annotations" — Verified: diff between commits shows added annotations for
+          trait-json-output ac-4/ac-5, trait-shadow-commit ac-2/ac-3, trait-semantic-exit-codes ac-6
+
+          - "Removed dead writeMetaWithHooks helper" — Verified: removed from diff along with unused
+          fs/path imports
+
+
+          Categories searched:
+
+          - Correctness: Code matches spec behavior for ac-1 (list shows name, event, action type,
+          enabled) and ac-4 (hook persisted via saveHook). All CRUD operations work correctly.
+
+          - Edge cases: Duplicate name check on add and rename. Already-enabled/disabled idempotent
+          handling. ULID prefix resolution with case-insensitive matching. Empty filter clearing
+          with {}.
+
+          - Error handling: All error paths use appropriate exit codes (NOT_FOUND=3,
+          VALIDATION_FAILED=4, CONFLICT=5). JSON parse errors caught with descriptive messages.
+          Schema validation errors surface field-level detail.
+
+          - Security: JSON.parse wrapped in try-catch. All user input validated through Zod schemas
+          before persistence. No injection vectors.
+
+          - Test quality: Tests prove their ACs — e.g., ac-1 test verifies name/event/action/enabled
+          all appear in output, ac-4 test adds hook then verifies it persists across commands. N/A
+          annotations have valid justifications.
+
+          - Integration: saveHook/deleteHook follow established raw-data-preservation pattern
+          (withFileLock, extractRawMetaManifest, mergeMetaItemPreservingRawShape). Imports resolve
+          correctly through parser/index.ts and schema/index.ts.
+
+          - Prior review findings: Both items addressed (missing N/A annotations: fixed; dead code:
+          removed).
+        created_at: 2026-03-18T14:33:52.635Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: claude-reviewer@kspec
+    role: reviewer
+    created_at: 2026-03-18T14:34:06.755Z
+created_at: 2026-03-18T14:33:03.679Z
+updated_at: 2026-03-18T14:34:06.755Z
+notes: []

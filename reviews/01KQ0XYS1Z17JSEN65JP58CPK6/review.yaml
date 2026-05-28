@@ -1,0 +1,171 @@
+_ulid: 01KQ0XYS1Z17JSEN65JP58CPK6
+slugs: []
+title: Review task-ac-annotation-integrity-reporting
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2269/2269 suites, 8362 passed, 5 skipped; exit 0; log
+      /tmp/kspec-test-cache/01KQ0XWVA5HNPR4Q07VS51HBWY/d63c3e2a3c09de55.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-24T23:53:40.948Z
+    completed_at: 2026-04-24T23:53:40.948Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/ac-annotation-validation.test.ts passed: 35/35 tests, 12/12
+      suites; exit 0"
+    name: focused AC annotation tests
+    required: true
+    runner: npm
+    created_at: 2026-04-24T23:53:49.739Z
+    completed_at: 2026-04-24T23:53:49.739Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck (tsc --noEmit) completed with exit 0
+    name: typecheck
+    required: true
+    runner: npm
+    created_at: 2026-04-24T23:53:59.916Z
+    completed_at: 2026-04-24T23:53:59.916Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate --completeness --warnings-ok exit 0: schema OK, references OK; 465 known
+      completeness warnings remain visible"
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-04-24T23:54:10.200Z
+    completed_at: 2026-04-24T23:54:10.200Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run dev -- validate --completeness --warnings-ok exit 0; invalid AC annotations
+      grouped as unresolved_target=143, missing_ac_id=29, blanket_ref=54, non_spec_target=1 with
+      file/line details
+    name: dev validate grouping
+    required: true
+    runner: npm
+    created_at: 2026-04-24T23:54:19.304Z
+    completed_at: 2026-04-24T23:54:19.304Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/parser/validate.ts, src/cli/commands/validate.ts,
+      tests/ac-annotation-validation.test.ts, API/shared validation type consumers. Commands run:
+      git diff/stat/status, kspec task get, kspec item get, kspec review for-task, rg AC
+      annotations, kspec validate --completeness, kspec validate --completeness --warnings-ok, npm
+      run dev -- validate --completeness --warnings-ok, npm test -- --run
+      tests/ac-annotation-validation.test.ts, npm test, npm run typecheck, git diff --check. Claims
+      verified: all 5 ACs have annotated behavioral tests; dev validate groups all invalid
+      annotation subtypes with file/line/target details; full suite and typecheck pass. Categories
+      searched: correctness, edge cases, error handling, test quality, integration/API consumers."
+    name: review evidence log
+    required: false
+    runner: reviewer
+    created_at: 2026-04-24T23:54:33.721Z
+    completed_at: 2026-04-24T23:54:33.721Z
+events:
+  - _ulid: 01KQ0XYS1Z19292T5B32XS0RPG
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-24T23:42:16.127Z
+  - _ulid: 01KQ0XZDGT5NX80CKPVMC11GF1
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-24T23:42:37.082Z
+  - _ulid: 01KQ0YKPVXV2HMNRKPP1HPRVSG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-24T23:53:42.013Z
+  - _ulid: 01KQ0YKZG59Z73TW4WVV5H8AMD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused AC annotation tests
+    timestamp: 2026-04-24T23:53:50.854Z
+  - _ulid: 01KQ0YM9DJ9ZCW0H5QD6WT56R5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-04-24T23:54:01.010Z
+  - _ulid: 01KQ0YMKG4AS573BZTHSBT0FNK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-04-24T23:54:11.332Z
+  - _ulid: 01KQ0YMWBJRH2FS6KRFH7V7YTF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: dev validate grouping
+    timestamp: 2026-04-24T23:54:20.402Z
+  - _ulid: 01KQ0YNADGX1CSW6FVSTWR1VNV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-04-24T23:54:34.800Z
+  - _ulid: 01KQ0YNJSZDPRJF8NZY3DJDYGR
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-24T23:54:43.391Z
+  - _ulid: 01KQ0YNJSZ38FM0YMC6MTX7QSV
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-24T23:54:43.391Z
+examined_commit: 0dd8bca6567e320c7861b5213bf35cfe6f6c0354
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQ0JDK3ATZENMNT3TQADSTQB"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-24T23:54:43.390Z
+created_at: 2026-04-24T23:42:16.127Z
+updated_at: 2026-04-24T23:54:43.391Z
+notes: []

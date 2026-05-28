@@ -1,0 +1,233 @@
+_ulid: 01KRZ0PNMPHFSV0P82H8WRCV4R
+slugs: []
+title: Review gate cleanup preservation diagnostics (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/dispatch-workspace-cleanup.test.ts
+      tests/dispatch-workspace-registry.test.ts: 62/62 tests passed across 7 suites; includes the
+      new diagnostic tests, though manual review found the quiet-path assertion invalid."
+    name: targeted cleanup and registry tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-19T02:39:04.230Z
+    completed_at: 2026-05-19T02:39:04.230Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test: 2448/2448 suites passed; 9285 passed, 5 skipped of 9290 tests; duration
+      2514.6s. Log: /tmp/kspec-test-cache/01KRZ0KYG5GGS2QH1HASB4VWN8/dab690e580d2a2ca.log"
+    name: full npm test
+    required: true
+    runner: npm test
+    created_at: 2026-05-19T02:39:15.718Z
+    completed_at: 2026-05-19T02:39:15.718Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exited 6 with warnings only. Schema and references were OK; warnings are
+      existing project-wide reference/alignment/completeness/annotation warnings, not new errors in
+      this task.
+    name: kspec validate
+    required: false
+    runner: kspec validate
+    created_at: 2026-05-19T02:39:26.325Z
+    completed_at: 2026-05-19T02:39:26.325Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: rg found annotations for ac-preservation-diagnostics-quiet-by-default and
+      ac-preservation-diagnostics-opt-in in tests/dispatch-workspace-cleanup.test.ts. Manual
+      validation found the quiet-by-default test invalid because it reads debugSpy.mock.calls after
+      mockRestore(), which clears call history.
+    name: AC coverage review
+    required: true
+    runner: manual + rg
+    created_at: 2026-05-19T02:39:39.824Z
+    completed_at: 2026-05-19T02:39:39.824Z
+events:
+  - _ulid: 01KRZ0PNMPMFGBR0G8XVC2STYV
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-19T02:23:10.998Z
+  - _ulid: 01KRZ0Q4QEKASRKYKDR3YHZ8MB
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-19T02:23:26.446Z
+  - _ulid: 01KRZ1KE1K7157RCSM5FSW7FK1
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRZ1KCNDT99EHFVXHRT2H67Y
+    timestamp: 2026-05-19T02:38:53.491Z
+  - _ulid: 01KRZ1KSZDNHP0W70AJPC4MGMX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted cleanup and registry tests
+    timestamp: 2026-05-19T02:39:05.709Z
+  - _ulid: 01KRZ1M5A1YJXKZ2REPD4G2KQ8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full npm test
+    timestamp: 2026-05-19T02:39:17.314Z
+  - _ulid: 01KRZ1MFHW04VCSBPQ5FNJSV4N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-05-19T02:39:27.805Z
+  - _ulid: 01KRZ1MWQZ8WK3C45HFYHDSJ01
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: AC coverage review
+    timestamp: 2026-05-19T02:39:41.311Z
+  - _ulid: 01KRZ1NCWTMGRVY864VN29Y23F
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KRZ1NBEMQTD9YRXSG7XZAKDR
+    timestamp: 2026-05-19T02:39:57.850Z
+  - _ulid: 01KRZ1NTHPBFME4FEG080TGB95
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-19T02:40:11.830Z
+  - _ulid: 01KRZ1NTHP2D4ANW01WC084BCT
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-19T02:40:11.830Z
+  - _ulid: 01KRZ28XKFJJS771QKAWENXMYH
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRZ1KCNDT99EHFVXHRT2H67Y
+    timestamp: 2026-05-19T02:50:37.551Z
+  - _ulid: 01KRZ298CQY7KX8FZZZNF5ER5E
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KRZ1KCNDT99EHFVXHRT2H67Y
+    timestamp: 2026-05-19T02:50:48.599Z
+  - _ulid: 01KRZ29KY7STJRFXT9RPCTKMBA
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRZ1NBEMQTD9YRXSG7XZAKDR
+    timestamp: 2026-05-19T02:51:00.423Z
+  - _ulid: 01KRZ29XNQG3CBWAX2PK1G6AYH
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KRZ1NBEMQTD9YRXSG7XZAKDR
+    timestamp: 2026-05-19T02:51:10.391Z
+examined_commit: 8289299e4c1076357728d40c77ab33092adbf8a8
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRYMPCMF46KFWVKKWRDYSJX7"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRZ1KCNDT99EHFVXHRT2H67Y
+    anchor:
+      type: code
+      commit: 8289299e4c1076357728d40c77ab33092adbf8a8
+      line_end: 770
+      line_start: 755
+      path: tests/dispatch-workspace-cleanup.test.ts
+      side: head
+    entries:
+      - _ulid: 01KRZ1KCNDB6G4HMH6EPRE1C62
+        author: Jacob Chapel
+        body: "MUST-FIX: The quiet-by-default AC test still does not actually prove diagnostics stay quiet.
+          The test restores the spy in the finally block before reading debugSpy.mock.calls, and
+          Vitest clears a spy's call history on mockRestore() (verified with a direct vi.spyOn probe
+          returning calls=0 after restore). That means this assertion would pass even if
+          reconcileDispatchWorkspaceArtifacts emitted a [dispatch-cleanup] line, so
+          @dispatch-workspace-cleanup-policy ac-preservation-diagnostics-quiet-by-default still
+          lacks valid behavioral coverage. Capture the diagnostic calls before mockRestore(), or
+          assert before restoring, while still restoring the environment afterward."
+        created_at: 2026-05-19T02:38:52.077Z
+      - _ulid: 01KRZ28VW8M6DNHXTHF2VGY8C4
+        author: "@claude"
+        body: "Fixed: refactored the quiet-by-default test to snapshot debugSpy.mock.calls into a local
+          before calling debugSpy.mockRestore(), then assert against the local. mockRestore() does
+          clear the spy's call history, so reading after restore was always observing an empty
+          array. Mutation-verified the fix's sensitivity: temporarily replacing the env-var early
+          return in logArtifactPreservation with a no-op fall-through now fails this test (1
+          captured [dispatch-cleanup] diagnostic), where previously it silently passed. The
+          environment-restore-after still runs in the finally block."
+        created_at: 2026-05-19T02:50:35.784Z
+    kind: blocker
+    resolved_at: 2026-05-19T02:50:46.798Z
+    resolved_by: "@claude"
+  - _ulid: 01KRZ1NBEMQTD9YRXSG7XZAKDR
+    entries:
+      - _ulid: 01KRZ1NBEMJ3F7CA1ZFCGG9S5J
+        author: Jacob Chapel
+        body: "Review evidence log\\n\\nFiles read: src/agent-runtime/workspace.ts;
+          src/agent-runtime/dispatch.ts; src/agent-runtime/event-bus.ts;
+          tests/dispatch-workspace-cleanup.test.ts; tests/dispatch-workspace-registry.test.ts;
+          tests/agent-dispatch-engine.test.ts; tests/cli-no-daemon.test.ts; tests/event-bus.test.ts;
+          kspec-agents.md; prior review @01KRYT821PKEK2F5NQPVF4AJ4T.\\n\\nCommands run: git status
+          --short --branch; git diff --stat/name-status/full hunks against dev; git diff
+          b789b6449d833f4161631aeef8ed4a4c1ccc3d2a..HEAD; kspec task get @01KRYMPCMF46KFWVKKWRDYSJX7
+          --json; kspec item get @dispatch-workspace-cleanup-policy; kspec review for-task/get; rg
+          AC annotation scans; node vi.spyOn mockRestore probe; kspec validate; npm test -- --run
+          tests/dispatch-workspace-cleanup.test.ts tests/dispatch-workspace-registry.test.ts; npm
+          test.\\n\\nClaims verified: worker claimed dedicated annotated quiet/default and opt-in
+          tests were added; annotations exist, opt-in test is behavioral, quiet-by-default test is
+          not valid because its spy calls are read after mockRestore clears them. Runtime gate wraps
+          logArtifactPreservation only, so preservation behavior is unchanged by the
+          gate.\\n\\nCategories searched: correctness, cleanup safety, opt-in env handling, test
+          quality, prior blocker resolution, regression tests, and integration with the stacked
+          dispatch/event-bus changes."
+        created_at: 2026-05-19T02:39:56.372Z
+      - _ulid: 01KRZ29J5JVNR27NRSRW8T0M6E
+        author: "@claude"
+        body: Acknowledged — review evidence log. No worker action required; leaving the spy-restore probe
+          result intact in the evidence trail.
+        created_at: 2026-05-19T02:50:58.610Z
+    kind: nit
+    resolved_at: 2026-05-19T02:51:08.657Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-19T02:40:11.826Z
+created_at: 2026-05-19T02:23:10.998Z
+updated_at: 2026-05-19T02:51:08.657Z
+notes: []

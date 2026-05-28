@@ -1,0 +1,483 @@
+_ulid: 01KPQN8089MZK4FFRKT52FVAZT
+slugs: []
+title: Review task-docs-concepts-content
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Full suite passed in reviewer snapshot on 2026-04-21.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-21T09:17:46.972Z
+    completed_at: 2026-04-21T09:17:46.972Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation fails in the snapshot due to pre-existing unrelated repository issues,
+      including ; no evidence that this docs-only change introduced the baseline failure.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-21T09:17:59.128Z
+    completed_at: 2026-04-21T09:17:59.128Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Full suite passed in reviewer snapshot on 2026-04-21.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-21T09:18:24.675Z
+    completed_at: 2026-04-21T09:18:24.675Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation fails in the snapshot due to pre-existing unrelated repository issues,
+      including .kspec/modules/meta.yaml:modules[0].traits.0 Expected string, received object; no
+      evidence that this docs-only change introduced the baseline failure.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-21T09:18:35.617Z
+    completed_at: 2026-04-21T09:18:35.617Z
+events:
+  - _ulid: 01KPQN8088H5RAMFKSW6MVEXNR
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-21T09:16:51.336Z
+  - _ulid: 01KPQN8G91ETCNSRVF3BPYNSAN
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-21T09:17:07.746Z
+  - _ulid: 01KPQN9HC28D6E6102AJ29ZAAB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPQN9GAQGKE9886829XXDZ02
+    timestamp: 2026-04-21T09:17:41.634Z
+  - _ulid: 01KPQN9MGMR2TTY3XVPRD2DX33
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPQN9KD6AEJWZZWSFMP4VVM6
+    timestamp: 2026-04-21T09:17:44.852Z
+  - _ulid: 01KPQN9QSHVRGZP2W6A6RGTKBM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-21T09:17:48.209Z
+  - _ulid: 01KPQN9V3VWZAEGKTP22YW7AVY
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPQN9SZ2J9NS67A117GHRZXW
+    timestamp: 2026-04-21T09:17:51.611Z
+  - _ulid: 01KPQN9ZAB7QMYMSA73E774560
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPQN9Y49ECYG82D7GXVNSND6
+    timestamp: 2026-04-21T09:17:55.915Z
+  - _ulid: 01KPQNA3JF1NPKVMS8FBBJVV3M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-21T09:18:00.271Z
+  - _ulid: 01KPQNAS2PB4FAGRP0SNJS7S70
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPQNAQW8WN72HN5CCDRK5T1B
+    timestamp: 2026-04-21T09:18:22.294Z
+  - _ulid: 01KPQNAWMA6ZXT2W8E45NGS26J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-21T09:18:25.931Z
+  - _ulid: 01KPQNB06K7YFH3X7QGDM4V8MF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KPQNAYXCZ5HB35XHXRZN3X8E
+    timestamp: 2026-04-21T09:18:29.587Z
+  - _ulid: 01KPQNB3TT0KV42YJYNT9Z4V1S
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPQNB2JBWZVDMBEJCSYNB5AX
+    timestamp: 2026-04-21T09:18:33.306Z
+  - _ulid: 01KPQNB7B59TFMM8BXAQ7SBVW7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-21T09:18:36.901Z
+  - _ulid: 01KPQNCP7RBEQR165XCWZ5VBNT
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPQN9SZ2J9NS67A117GHRZXW
+    timestamp: 2026-04-21T09:19:24.920Z
+  - _ulid: 01KPQNCSQH65A57W0Q7A1FT0K7
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPQN9GAQGKE9886829XXDZ02
+    timestamp: 2026-04-21T09:19:28.497Z
+  - _ulid: 01KPQNCX9HQQ8JM3EJ451YWYQH
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPQN9KD6AEJWZZWSFMP4VVM6
+    timestamp: 2026-04-21T09:19:32.146Z
+  - _ulid: 01KPQND9GYDVJCGNHNJ3MGCPKS
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPQN9KD6AEJWZZWSFMP4VVM6
+    timestamp: 2026-04-21T09:19:44.670Z
+  - _ulid: 01KPQNDCZB83YRPC23KAFGWKBZ
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPQN9GAQGKE9886829XXDZ02
+    timestamp: 2026-04-21T09:19:48.203Z
+  - _ulid: 01KPQNDGG9GJSES2DX5DQ7A0X1
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPQN9SZ2J9NS67A117GHRZXW
+    timestamp: 2026-04-21T09:19:51.818Z
+  - _ulid: 01KPQNDS4PZJ05KN3Z0S3DFV3W
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-21T09:20:00.662Z
+  - _ulid: 01KPQNDS4P6EW18BEMMRHP9GPT
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-21T09:20:00.662Z
+  - _ulid: 01KPQPQZ9T3EC5SYC1NF4FDR4G
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPQNAQW8WN72HN5CCDRK5T1B
+    timestamp: 2026-04-21T09:43:03.227Z
+  - _ulid: 01KPQPR4QRYDMQF5HM00Z3SW6G
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPQN9Y49ECYG82D7GXVNSND6
+    timestamp: 2026-04-21T09:43:08.792Z
+  - _ulid: 01KPQPRA0T68D1K99V0YKQ6AR2
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPQNB2JBWZVDMBEJCSYNB5AX
+    timestamp: 2026-04-21T09:43:14.202Z
+  - _ulid: 01KPQPRJAY7C98C324AGQF5QW4
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPQNAQW8WN72HN5CCDRK5T1B
+    timestamp: 2026-04-21T09:43:22.718Z
+  - _ulid: 01KPQPRQP7CD3K9BHRT0WDGP76
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPQN9Y49ECYG82D7GXVNSND6
+    timestamp: 2026-04-21T09:43:28.199Z
+  - _ulid: 01KPQPRWZVMJT1BS5KFRV3S44R
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPQNB2JBWZVDMBEJCSYNB5AX
+    timestamp: 2026-04-21T09:43:33.627Z
+  - _ulid: 01KPQPS2AZ3AMHMZWHG97CWMAF
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPQNAYXCZ5HB35XHXRZN3X8E
+    timestamp: 2026-04-21T09:43:39.103Z
+examined_commit: 48ec9274ce6f63470071c763e16b4d2fe3044f7e
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KPPN43G7T5FSMEF1YPWS0CPX"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPQN9GAQGKE9886829XXDZ02
+    anchor:
+      type: code
+      commit: 48ec9274ce6f63470071c763e16b4d2fe3044f7e
+      line_end: 31
+      line_start: 31
+      path: docs/concepts/specs-tasks-plans-inbox.md
+      side: head
+    entries:
+      - _ulid: 01KPQN9GAQZPX8SS3NMHTCYA32
+        author: Jacob Chapel
+        body: The Plans section presents  as the lifecycle, but the current schema and CLI also expose  as a
+          real plan status. Because this page is positioned as the durable mental model for plans,
+          omitting a current terminal state makes the description inaccurate for users trying to
+          understand how plans behave today.
+        created_at: 2026-04-21T09:17:40.567Z
+      - _ulid: 01KPQNCRGEHN9XFZ3T7SNGMWNH
+        author: Jacob Chapel
+        body: Superseded by corrected blocker thread 01KPQNAQW8WN72HN5CCDRK5T1B with the intended wording.
+        created_at: 2026-04-21T09:19:27.246Z
+    kind: blocker
+    resolved_at: 2026-04-21T09:19:46.926Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KPQN9KD6AEJWZZWSFMP4VVM6
+    anchor:
+      type: code
+      commit: 48ec9274ce6f63470071c763e16b4d2fe3044f7e
+      line_end: 20
+      line_start: 20
+      path: docs/concepts/agents-and-dispatch.md
+      side: head
+    entries:
+      - _ulid: 01KPQN9KD6GVFGFTKC4QDZSBR4
+        author: Jacob Chapel
+        body: This page currently tells readers that kspec ships with only two built-in agent definitions,
+          but the default scaffold now creates four (, , , and ). That makes the Concepts section
+          factually wrong for a freshly initialized project and will mislead readers about what   cd
+          /home/chapel/Projects/kynetic-spec-dispatch && kspec setup gives them out of the box.
+        created_at: 2026-04-21T09:17:43.718Z
+      - _ulid: 01KPQNCW0T1NT1PSTR99Y2TCMY
+        author: Jacob Chapel
+        body: Superseded by corrected blocker thread 01KPQN9Y49ECYG82D7GXVNSND6 with the intended wording.
+        created_at: 2026-04-21T09:19:30.842Z
+    kind: blocker
+    resolved_at: 2026-04-21T09:19:43.479Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KPQN9SZ2J9NS67A117GHRZXW
+    anchor:
+      type: code
+      commit: 48ec9274ce6f63470071c763e16b4d2fe3044f7e
+      line_end: 57
+      line_start: 57
+      path: docs/concepts/specs-tasks-plans-inbox.md
+      side: head
+    entries:
+      - _ulid: 01KPQN9SZ2C98WXBYSVC07NG4Q
+        author: Jacob Chapel
+        body: >-
+          This paragraph says 
+
+          === Session Context ===
+
+          Generated: just now
+
+          Tasks: 1 active, 1 awaiting review, 26 ready, 0 blocked, 1315/1394 completed | Inbox: 256
+
+
+          --- Active Work ---
+            [in_progress] P2 @task-docs-guides-content Author the Guides section (started 2 minutes ago)
+              Author the seven guides listed in @docs-guides-section.
+
+          What: Each guide begins with a goal statement, lists
+
+          prerequisites, presents steps in sequence, and ends with a
+
+          verification. Guides name commands and link to kspec
+
+          <command> --help rather than transcribing flag lists.
+
+
+          Covers: @docs-guides-section ac-1 through ac-3.
+
+              Note (1 minute ago by @claude)
+                Approach: Author seven guide pages per the spec's required workflows. Each guide follows the same pattern established by Getting Started: goal statement, prerequisites, sequential steps with kspec com...
+            [needs_work] P2 @task-triage-automation-eligible-missing-spec-ref Triage automation-eligible tasks missing spec_ref (started 3/7/2026)
+              Review the automation-without-spec warning set and classify tasks into: should gain spec_ref, should be manual_only, or valid exception. Execute first batch of metadata corrections and document policy for future tasks.
+              Note (3/7/2026 by Jacob Chapel)
+                [FIX_CYCLE: 1] Review findings: MUST-FIX: PR #695 is stacked on unrelated CI/E2E commits from task @01KJD106N5ZQ3VB9T3EV3BHYZK. Restack or recreate the PR so the review artifact only contains the auto...
+            [needs_work] P3 @task-plan-completeness-warning-debt-reduction Create phased plan for completeness warning debt reduction (started 3/7/2026)
+              Break down completeness warnings into executable waves (missing AC, missing descriptions, own AC coverage, trait AC coverage). Define acceptance gates per wave and identify areas where rule refinement is preferable to content churn.
+              Note (3/7/2026 by Jacob Chapel)
+                [FIX_CYCLE: 1] Review findings: MUST-FIX: PR #696 is conflated with unrelated CI/automation changes from other tasks and remote e2e checks are failing on the current PR head. Split this task onto a cl...
+
+          --- Awaiting Review ---
+            [pending_review] P2 @task-docs-concepts-content Author the Concepts section
+              Note (5 minutes ago by @claude)
+                Completed authoring all 8 concept pages. Each follows the what/why/how-it-surfaces shape per AC-2. The Specs Tasks Plans and Inbox page includes decision rules per kind (AC-3). Landing page updated wi...
+
+          --- Ready to Pick Up ---
+            P2 @task-triage-automation-eligible-missing-spec-ref Triage automation-eligible tasks missing spec_ref #validation #automation #tasks
+            P3 @task-plan-completeness-warning-debt-reduction Create phased plan for completeness warning debt reduction #validation #completeness #quality
+            P1 @task-investigate-npm-test-teardown-hang-after-green-suite-run Investigate npm test teardown hang after green suite run #testing #infra
+            P2 @task-concurrent-mutation-regression-suite Add concurrent mutation regression tests for write operations #testing #concurrency #parser
+            P2 @01KJWJ4J Universalize P-notation priority aliases across all CLI commands #cli #dx
+
+          --- Recent Activity ---
+            ○ 48ec927 docs: author the eight Concepts section pages (5 minutes ago, Jacob Chapel)
+            ✓ @task-docs-getting-started-content Author the Getting Started section (8 minutes ago) - Merged to dev after approved review. Added six Getting Start...
+            ✓ @task-docs-nav-integration Integrate docs into primary web UI navigation (24 minutes ago)
+              └─ 5b98cb5 fix(docs): remove dead links from section landing pages and strengthen tests (35 minutes ago, Jacob Chapel)
+            ○ fc04b8b Merge branch 'dispatch/task/task-docs-nav-integration/01kppn42' into dev (24 minutes ago, Jacob Chapel)
+            ✓ @01KPQ7RD Make task reads immediately consistent after review verdict transitions (1 hour ago)
+              ├─ d73e828 fix: add integration test for verdict-then-immediate-task-read consistency (2 hours ago, Jacob Chapel)
+              └─ cd6316c fix: invalidate cached task history in applyTaskMutation (1 hour ago, Jacob Chapel)
+            ○ 4520787 Merge branch 'dispatch/task/make-task-reads-immediately-consistent-after-review-verdict-transitions/01kpq7rd' into dev (1 hour ago, Jacob Chapel)
+            ✓ @task-docs-section-scaffolding Establish docs section scaffolding at the repo root (1 hour ago)
+              ├─ 9c3fa25 fix(docs): add stub child-page lists to all section landing pages (3 hours ago, Jacob Chapel)
+              ├─ 1f63c6c fix(docs): resolve merge conflicts with dev and fix release-notes slug collision (2 hours ago, Jacob Chapel)
+              └─ 0fa290b fix(docs): classify synthetic changelog entry under release-notes section (1 hour ago, Jacob Chapel)
+
+          --- Inbox (oldest first) ---
+            153 untriaged | 71 deferred | 256 total
+            Use: kspec triage inbox to triage untriaged items
+
+          --- Quick Commands ---
+            kspec task note @task-docs-guides-content "Progress..."  # document work
+            kspec task submit @task-docs-guides-content  # submit for review
+            kspec triage inbox  # triage untriaged inbox items shows , but the current command output only surfaces task and inbox context; it does not list specs or plans. Readers who follow this page will look for UI that is not there, so the Concepts section ends up documenting a workflow surface that does not exist in the product.
+        created_at: 2026-04-21T09:17:50.434Z
+      - _ulid: 01KPQNCMZPD0J9GRAF5ZTDM62Q
+        author: Jacob Chapel
+        body: Superseded by corrected blocker thread 01KPQNB2JBWZVDMBEJCSYNB5AX with the intended wording.
+        created_at: 2026-04-21T09:19:23.638Z
+    kind: blocker
+    resolved_at: 2026-04-21T09:19:50.585Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KPQN9Y49ECYG82D7GXVNSND6
+    anchor:
+      type: code
+      commit: 48ec9274ce6f63470071c763e16b4d2fe3044f7e
+      line_end: 20
+      line_start: 20
+      path: docs/concepts/agents-and-dispatch.md
+      side: head
+    entries:
+      - _ulid: 01KPQN9Y49F6WEAY3MKVQ27K5V
+        author: Jacob Chapel
+        body: This page currently tells readers that kspec ships with only two built-in agent definitions,
+          but the default scaffold now creates four (task-worker, pr-reviewer, primary-dev, and
+          plan-reviewer). That makes the Concepts section factually wrong for a freshly initialized
+          project and will mislead readers about what kspec setup gives them out of the box.
+        created_at: 2026-04-21T09:17:54.697Z
+      - _ulid: 01KPQPR3PYPY8DZK8X6CSVGARM
+        author: "@claude"
+        body: "Fixed: Updated to list all four built-in agent definitions (task-worker, pr-reviewer,
+          primary-dev, plan-reviewer) matching what kspec setup actually scaffolds."
+        created_at: 2026-04-21T09:43:07.742Z
+    kind: blocker
+    resolved_at: 2026-04-21T09:43:27.156Z
+    resolved_by: "@claude"
+  - _ulid: 01KPQNAQW8WN72HN5CCDRK5T1B
+    anchor:
+      type: code
+      commit: 48ec9274ce6f63470071c763e16b4d2fe3044f7e
+      line_end: 31
+      line_start: 31
+      path: docs/concepts/specs-tasks-plans-inbox.md
+      side: head
+    entries:
+      - _ulid: 01KPQNAQW90FHARWV0FZTG7MC8
+        author: Jacob Chapel
+        body: The Plans section presents draft, approved, active, completed as the lifecycle, but the
+          current schema and CLI also expose rejected as a real plan status. Because this page is
+          positioned as the durable mental model for plans, omitting a current terminal state makes
+          the description inaccurate for users trying to understand how plans behave today.
+        created_at: 2026-04-21T09:18:21.065Z
+      - _ulid: 01KPQPQY901FXEMF680C1M2RJ1
+        author: "@claude"
+        body: "Fixed: Added 'rejected' as a terminal status in the Plans lifecycle description, with a
+          sentence explaining its purpose."
+        created_at: 2026-04-21T09:43:02.176Z
+    kind: blocker
+    resolved_at: 2026-04-21T09:43:21.674Z
+    resolved_by: "@claude"
+  - _ulid: 01KPQNAYXCZ5HB35XHXRZN3X8E
+    entries:
+      - _ulid: 01KPQNAYXD4Y2Y3YD87190B30A
+        author: Jacob Chapel
+        body: "Evidence log: Files read: docs/concepts/index.md, docs/concepts/what-kspec-is.md,
+          docs/concepts/specs-tasks-plans-inbox.md, docs/concepts/the-shadow-branch.md,
+          docs/concepts/traits.md, docs/concepts/working-with-an-agent.md,
+          docs/concepts/agents-and-dispatch.md, docs/concepts/web-ui-and-daemon.md,
+          docs/concepts/reviews.md, src/schema/plan.ts, src/cli/commands/session/context.ts,
+          src/cli/commands/session/format.ts, src/cli/commands/agent.ts,
+          src/cli/commands/setup-defaults.ts. Commands run: git diff --stat, git diff, kspec task
+          get, kspec item get, kspec validate, npm test, kspec session start --full, targeted rg
+          lookups, targeted sed/nl reads. Claims verified: agent defaults count, plan lifecycle
+          statuses, session-start surface. Categories searched: correctness, test quality,
+          product/docs alignment, integration with current CLI behavior."
+        created_at: 2026-04-21T09:18:28.269Z
+    kind: nit
+    resolved_at: 2026-04-21T09:43:38.077Z
+    resolved_by: "@claude"
+  - _ulid: 01KPQNB2JBWZVDMBEJCSYNB5AX
+    anchor:
+      type: code
+      commit: 48ec9274ce6f63470071c763e16b4d2fe3044f7e
+      line_end: 57
+      line_start: 57
+      path: docs/concepts/specs-tasks-plans-inbox.md
+      side: head
+    entries:
+      - _ulid: 01KPQNB2JCVWD6C9309Y6CX1YS
+        author: Jacob Chapel
+        body: This paragraph says kspec session start shows active tasks, pending specs, open plans, and
+          inbox items, but the current command output only surfaces task and inbox context; it does
+          not list specs or plans. Readers who follow this page will look for UI that is not there,
+          so the Concepts section ends up documenting a workflow surface that does not exist in the
+          product.
+        created_at: 2026-04-21T09:18:32.012Z
+      - _ulid: 01KPQPR8ZWQGVPTWGS8DJXSBG4
+        author: "@claude"
+        body: "Fixed: Removed the inaccurate claim about showing specs and plans. The sentence now
+          accurately describes what kspec session start actually surfaces: active tasks and inbox
+          items."
+        created_at: 2026-04-21T09:43:13.148Z
+    kind: blocker
+    resolved_at: 2026-04-21T09:43:32.592Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-04-21T09:20:00.662Z
+created_at: 2026-04-21T09:16:51.337Z
+updated_at: 2026-04-21T09:43:38.077Z
+notes: []

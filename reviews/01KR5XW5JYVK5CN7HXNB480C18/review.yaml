@@ -1,0 +1,273 @@
+_ulid: 01KR5XW5JYVK5CN7HXNB480C18
+slugs: []
+title: Review task-fix-detached-cleanup-timing-analysis cycle 4
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate exited 6 with warnings only: schema/references OK; existing reference,
+      alignment, and completeness warnings remain."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-09T08:36:44.798Z
+    completed_at: 2026-05-09T08:36:44.798Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts passed: 19 suites, 191 tests, duration 44.7s."
+    name: targeted guardrail tests
+    required: true
+    runner: npm
+    created_at: 2026-05-09T08:36:51.241Z
+    completed_at: 2026-05-09T08:36:51.241Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 'Synthetic probes: prior unregistered arrow now flagged and valid onTestFinished cleanup
+      remains clean, but if(false) killPid(...), conditional onTestFinished registration, and
+      process.on("message", ...) cleanup all exited 0 with no no-leaky-test-daemon diagnostic.'
+    name: manual cleanup control-flow probes
+    required: true
+    runner: oxlint
+    created_at: 2026-05-09T08:36:58.136Z
+    completed_at: 2026-05-09T08:36:58.136Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test passed: 2413 suites, 8944 tests passed, 5 skipped, duration 2017.9s. Full log
+      /tmp/kspec-test-cache/01KR5XTEF3ZS475V1Z9W5ZYZR5/9776791102b93d48.log."
+    name: full test suite
+    required: true
+    runner: npm
+    created_at: 2026-05-09T08:44:24.777Z
+    completed_at: 2026-05-09T08:44:24.777Z
+events:
+  - _ulid: 01KR5XW5JX0FWE3S486016NQ8X
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-09T08:32:44.638Z
+  - _ulid: 01KR5XWWQBHAR8HSYP1D8PSX2M
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-09T08:33:08.331Z
+  - _ulid: 01KR5Y34AZR8R48NY0NV8NRBSJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR5Y32QP5QRB1KC09K3MNFWX
+    timestamp: 2026-05-09T08:36:32.735Z
+  - _ulid: 01KR5Y3B0FGFPX3RVWZDT1TFN2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR5Y39FTRJ1Z3DVNR2VJ65B4
+    timestamp: 2026-05-09T08:36:39.567Z
+  - _ulid: 01KR5Y3HJFFEK7E2FRQMC0RDMW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-05-09T08:36:46.288Z
+  - _ulid: 01KR5Y3QYPBW2Y06J9MC8288VP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted guardrail tests
+    timestamp: 2026-05-09T08:36:52.822Z
+  - _ulid: 01KR5Y3YQ9NHSMCXVNJ6E4H4QF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: manual cleanup control-flow probes
+    timestamp: 2026-05-09T08:36:59.753Z
+  - _ulid: 01KR5YHJK7J0ZZMRYG7YQRFGRQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-09T08:44:26.087Z
+  - _ulid: 01KR5YHRMZTPK3ANK191R100MX
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KR5YHQBCKGT5SMZPGJN3YYVN
+    timestamp: 2026-05-09T08:44:32.287Z
+  - _ulid: 01KR5YHYG3QC1GQ35Z1GCAR5P5
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-09T08:44:38.275Z
+  - _ulid: 01KR5YHYG3TYATWAQVGMKVCJFM
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-09T08:44:38.275Z
+  - _ulid: 01KR6015SD652ER2CXV7VD9STT
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR5Y32QP5QRB1KC09K3MNFWX
+    timestamp: 2026-05-09T09:10:25.837Z
+  - _ulid: 01KR60264CGJR4RP7FXAHCXPB0
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR5Y39FTRJ1Z3DVNR2VJ65B4
+    timestamp: 2026-05-09T09:10:58.956Z
+  - _ulid: 01KR602F3QTFXKPA2EAA707QY6
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR5Y32QP5QRB1KC09K3MNFWX
+    timestamp: 2026-05-09T09:11:08.151Z
+  - _ulid: 01KR602MVW7FHENMK5XX2HA4FT
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR5Y39FTRJ1Z3DVNR2VJ65B4
+    timestamp: 2026-05-09T09:11:14.044Z
+examined_commit: 3596de394cdc1fe00fc6152af520f6b98624fb61
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR3W7QAH8VZCH3A60NSB3HBN"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR5Y32QP5QRB1KC09K3MNFWX
+    anchor:
+      type: code
+      commit: 3596de394cdc1fe00fc6152af520f6b98624fb61
+      line_end: 257
+      line_start: 252
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KR5Y32QP9FSXTBFX95DXXJ7X
+        author: Jacob Chapel
+        body: 'MUST-FIX: `hasCleanupAfter` treats any later sibling statement containing a cleanup-shaped
+          call as guaranteed cleanup, without checking that the statement unconditionally registers
+          or executes cleanup on the straight-line path before the next observation. I verified two
+          synthetic tests with `npx oxlint`: `runKspec("serve start --detach --port 3456"); if
+          (false) killPid(result.pid); expect(true).toBe(true);` exited 0 with no
+          `no-leaky-test-daemon` diagnostic, and `if (shouldCleanup) onTestFinished(() =>
+          killPid(result.pid)); expect(true).toBe(true);` also exited 0 clean. In both cases the
+          assertion can run without cleanup ever being registered for the detached daemon, which
+          violates @daemon-test-guardrail-precision ac-detached-cleanup-before-observation.'
+        created_at: 2026-05-09T08:36:31.094Z
+      - _ulid: 01KR6014FPQPTC0C53174Z9CGV
+        author: "@claude"
+        body: "Fixed: tightened the cleanup walker to require unconditional registration on the
+          straight-line path. `subtreeContainsDaemonCleanupCall` now prunes descent into
+          IfStatement, ConditionalExpression, LogicalExpression (short-circuit), all loop bodies
+          (While/DoWhile/For/ForIn/ForOf), SwitchStatement cases, and TryStatement.handler when
+          walking outside a registered cleanup callback. Inside a registered callback the framework
+          invokes the body unconditionally, so an inner defensive guard like `onTestFinished(() => {
+          if (pid) killPid(pid); })` is still credited (new flag-tracked descent in the walker).
+          Verified with both reviewer probes via npx oxlint: `if (false) killPid(result.pid);
+          expect(true).toBe(true)` and `if (shouldCleanup) onTestFinished(() =>
+          killPid(result.pid)); expect(true).toBe(true)` both now exit 1 with the missingCleanup
+          diagnostic. Negative controls (unconditional onTestFinished, defensive guard inside the
+          callback, try/finally with unconditional process.kill in finalizer) still exit 0. Added 4
+          behavioral regressions in tests/lint-no-leaky-test-daemon.test.ts: unreachable conditional
+          kill, conditional onTestFinished registration, process.on with non-exit event, kill in
+          for-loop body. tools/eslint-rules/no-leaky-test-daemon.js:631-715."
+        created_at: 2026-05-09T09:10:24.501Z
+    kind: blocker
+    resolved_at: 2026-05-09T09:11:06.796Z
+    resolved_by: "@claude"
+  - _ulid: 01KR5Y39FTRJ1Z3DVNR2VJ65B4
+    anchor:
+      type: code
+      commit: 3596de394cdc1fe00fc6152af520f6b98624fb61
+      line_end: 495
+      line_start: 487
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KR5Y39FTW6RGKYKGESMGCP15
+        author: Jacob Chapel
+        body: 'MUST-FIX: `isProcessOnExitRegistration` accepts any `process.on(...)` callback as cleanup
+          because it only checks that the function node is one of the call arguments; it does not
+          verify that the event is an exit or signal event. I verified a synthetic test with
+          `runKspec("serve start --detach --port 3456"); process.on("message", () =>
+          killPid(result.pid)); expect(true).toBe(true);` and oxlint exited 0 with no
+          `no-leaky-test-daemon` diagnostic. A `message` handler is not cleanup for the current
+          detached daemon before the later assertion, so this still allows a leak while claiming
+          cleanup was registered.'
+        created_at: 2026-05-09T08:36:38.010Z
+      - _ulid: 01KR6024T9BPXSE4YFJC1DQZ2G
+        author: "@claude"
+        body: 'Fixed: `isProcessOnExitRegistration` now constrains the event name to a process exit/signal
+          event before crediting the registration as cleanup. Added `PROCESS_EXIT_EVENT_NAMES` set
+          with `exit`, `beforeExit`, `SIGINT`, `SIGTERM`, `SIGHUP`, `SIGQUIT`, `SIGBREAK`. The first
+          call argument must be a string literal naming one of these events; arbitrary names
+          (`message`, `disconnect`, `warning`, etc.) no longer match because their callbacks fire
+          during normal IPC and are not guaranteed to run before the test ends. Verified with
+          reviewer probe via npx oxlint: `runKspec("serve start --detach --port 3456");
+          process.on("message", () => killPid(result.pid)); expect(true).toBe(true)` now exits 1
+          with the missingCleanup diagnostic. Negative control `process.on("exit", () =>
+          killPid(p))` still exits 0. Added 1 behavioral regression in
+          tests/lint-no-leaky-test-daemon.test.ts plus a positive negative-case test for the valid
+          `process.on("exit", ...)` shape. tools/eslint-rules/no-leaky-test-daemon.js:475-538.'
+        created_at: 2026-05-09T09:10:57.602Z
+    kind: blocker
+    resolved_at: 2026-05-09T09:11:12.705Z
+    resolved_by: "@claude"
+  - _ulid: 01KR5YHQBCKGT5SMZPGJN3YYVN
+    entries:
+      - _ulid: 01KR5YHQBDKGQRHQRCZRY8KE85
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: kspec-agents.md; task @01KR3W7QAH8VZCH3A60NSB3HBN; spec
+          @daemon-test-guardrail-precision; prior review @01KR5VF3;
+          tools/eslint-rules/no-leaky-test-daemon.js; tests/lint-no-leaky-test-daemon.test.ts;
+          tests/lint-daemon-test-guardrails.test.ts. Commands run: git
+          diff/stat/name-status/log/diff --check; kspec task get; kspec item get; kspec review
+          for-task/get/add/open/comment/check/verdict; rg AC annotations; kspec validate; targeted
+          npm test -- --fresh; full npm test; synthetic npx oxlint probes for prior blocker, valid
+          onTestFinished cleanup, conditional cleanup, conditional registration,
+          process.on(\"message\"), and beforeEach-after-start shapes. Claims verified: prior cycle's
+          unregistered-arrow cleanup bug is fixed and covered; targeted and full tests pass; new
+          probes show conditional/non-cleanup registrations still bypass the guardrail. Categories
+          searched: correctness, edge cases/control flow, error handling for suppressions, test
+          quality/AC coverage, and integration/regression risk."
+        created_at: 2026-05-09T08:44:30.957Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-09T08:44:38.274Z
+created_at: 2026-05-09T08:32:44.638Z
+updated_at: 2026-05-09T09:11:12.705Z
+notes: []

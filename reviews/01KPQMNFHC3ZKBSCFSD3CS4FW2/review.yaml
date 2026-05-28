@@ -1,0 +1,138 @@
+_ulid: 01KPQMNFHC3ZKBSCFSD3CS4FW2
+slugs: []
+title: Review task-docs-getting-started-content (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran npm test -- tests/web-ui-docs-rendering.test.ts. Result: 24 suites passed, 101 tests
+      passed, duration 533ms."
+    name: docs rendering tests
+    required: true
+    runner: npm
+    created_at: 2026-04-21T09:07:45.333Z
+    completed_at: 2026-04-21T09:07:45.333Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran full npm test from this review snapshot. Streamed output showed passing suites across
+      the repository, including the updated docs rendering suite. No failing suite or test was
+      observed during the run.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-21T09:07:51.814Z
+    completed_at: 2026-04-21T09:07:51.814Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: docs/getting-started/*.md, docs/guides/index.md, docs/concepts/index.md,
+      tests/web-ui-docs-rendering.test.ts. Commands run: git diff/stat/log, kspec task get, kspec
+      item get, kspec review get, kspec validate on head and base, rg AC annotations, npm test, npm
+      test -- tests/web-ui-docs-rendering.test.ts, kspec --help, kspec task branch --help, kspec
+      doctor --help. Claims verified: previous blocker fixed by replacing git branch creation
+      guidance with kspec task branch in docs/getting-started/your-first-action.md and tutorial.md;
+      command references exist in CLI help; new pages satisfy AC coverage tests. Categories
+      searched: correctness, spec alignment, command accuracy, test quality, integration, edge cases
+      around reading order and next links."
+    name: evidence log
+    required: false
+    runner: reviewer
+    created_at: 2026-04-21T09:07:57.236Z
+    completed_at: 2026-04-21T09:07:57.236Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran kspec validate on head and on base dev commit
+      4520787d7cfd3a7aadaa938f229c65b5f771d646. Both report the same pre-existing meta schema error
+      in .kspec/modules/meta.yaml plus existing coverage warnings, so this task did not introduce a
+      validation regression.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-21T09:08:02.474Z
+    completed_at: 2026-04-21T09:08:02.474Z
+events:
+  - _ulid: 01KPQMNFHCGQ67QCNRZXKB9965
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-21T09:06:44.396Z
+  - _ulid: 01KPQMP0TWP4SKWZVYMGHD92FG
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-21T09:07:02.108Z
+  - _ulid: 01KPQMQCTBZJ7QVCH2AW58VSB3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: docs rendering tests
+    timestamp: 2026-04-21T09:07:47.147Z
+  - _ulid: 01KPQMQK79X7JPVGWGPJCNNPNZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-21T09:07:53.706Z
+  - _ulid: 01KPQMQRE6FHCPFD6QC3YR05Q0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: evidence log
+    timestamp: 2026-04-21T09:07:59.046Z
+  - _ulid: 01KPQMQXHRKGYBMHRJ8X8FKQQZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-04-21T09:08:04.280Z
+  - _ulid: 01KPQMRDCNK65506W03V2FZH4D
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-21T09:08:20.501Z
+  - _ulid: 01KPQMRDCN9FFD7H7V9DRNMNR8
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-21T09:08:20.501Z
+examined_commit: 26a2c1d83d9fe4ed39751239fb63ee8a0ecc20cc
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KPPN437HCT9928K709XV4CEE"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-04-21T09:08:20.500Z
+created_at: 2026-04-21T09:06:44.396Z
+updated_at: 2026-04-21T09:08:20.501Z
+notes: []

@@ -1,0 +1,152 @@
+_ulid: 01KM7SN1M3VZ44H5KQ0FRNPM09
+slugs: []
+title: Review task-impl-per-task-files (cycle 3)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 300 files passed, 6823 tests passed, 3 skipped.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-21T08:55:14.082Z
+    completed_at: 2026-03-21T08:55:14.082Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Command exits 6 on pre-existing repo-wide warnings (orphaned specs / AC coverage warnings
+      unrelated to this task); no validation errors.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-21T08:55:31.083Z
+    completed_at: 2026-03-21T08:55:31.083Z
+events:
+  - _ulid: 01KM7SN1M2WE5YRMNKD69096J2
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T08:54:38.466Z
+  - _ulid: 01KM7SP2XZPKDSVF9KYSSSJH87
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM7SP2P01XYT71GNJ2JRHFYC
+    timestamp: 2026-03-21T08:55:12.575Z
+  - _ulid: 01KM7SP3TG5YSG9JYE1P5TNE88
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T08:55:13.489Z
+  - _ulid: 01KM7SP4N9774HWTEV49Q6BMPT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-21T08:55:14.345Z
+  - _ulid: 01KM7SPHAJMXPXC2B69RHXT9CX
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM7SPH1MCW3VERR3947D83H1
+    timestamp: 2026-03-21T08:55:27.314Z
+  - _ulid: 01KM7SPNAHRKWQ93R4FFKA88DS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-03-21T08:55:31.409Z
+  - _ulid: 01KM7SPS468748R3NN43VWYBW9
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-21T08:55:35.302Z
+  - _ulid: 01KM7SPS46QCAVJHV7Z1B32Z7G
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-21T08:55:35.302Z
+examined_commit: 8b694a8fdfb833abd8d7918097f90b56e916a23d
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YET1A7XY9D0V3YQ9DRASG"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM7SP2P01XYT71GNJ2JRHFYC
+    anchor:
+      type: code
+      commit: 8b694a8fdfb833abd8d7918097f90b56e916a23d
+      line_end: 912
+      line_start: 912
+      path: src/cli/commands/task.ts
+      side: head
+    entries:
+      - _ulid: 01KM7SP2P0JW0JANJD6H6SJ6RX
+        author: Jacob Chapel
+        body: This history merge is wired through the module-level `taskDataManager`, but that singleton is
+          still constructed with `new TaskDataManager()` and therefore uses the default monolithic
+          backend. In monolithic mode `getTaskHistory()` always returns an empty array, so `kspec
+          task get --activity` still cannot surface the per-task `task.yaml` history that this task
+          is supposed to expose. The backend tests pass because they instantiate `new
+          TaskDataManager("split")` directly, but the caller-facing path here remains dead, so
+          @task-core-data-file ac-2 is still not satisfied.
+        created_at: 2026-03-21T08:55:12.320Z
+    kind: blocker
+  - _ulid: 01KM7SPH1MCW3VERR3947D83H1
+    entries:
+      - _ulid: 01KM7SPH1MS04Q7TYF22XZJ4GE
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          Files read: src/cli/commands/task.ts, src/parser/split-backend.ts,
+          src/parser/task-data-manager.ts, tests/per-task-files.test.ts
+
+          Commands run: git diff --stat dev...HEAD; git diff --unified=80 dev...HEAD --
+          src/cli/commands/task.ts src/parser/split-backend.ts src/parser/task-data-manager.ts
+          tests/per-task-files.test.ts; kspec task get @01KM6YET1A7XY9D0V3YQ9DRASG; kspec item get
+          @task-core-data-file; kspec item get @task-notes-file; kspec review get
+          @01KM7QCHPRPB02FMD2TEW84W4G; kspec review get @01KM7RC8NG4KJXV2EEZXPQ26DJ; grep -Rni "AC:
+          @task-core-data-file" tests/; grep -Rni "AC: @task-notes-file" tests/; grep -Rni "AC:
+          @trait-" tests/; kspec validate; npm test
+
+          Claims verified: full suite passes at this snapshot; AC annotations exist for both spec
+          refs; prior blocker about stale notes_count is fixed in split-backend.
+
+          Categories searched: correctness (found blocker: caller path still monolithic),
+          integration (found blocker: CLI path not using split manager), edge cases (checked
+          note-only and todo-only mutations), test quality (coverage present but missing CLI-level
+          assertion for history surfacing), error handling/security (no additional findings).
+        created_at: 2026-03-21T08:55:27.028Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-21T08:55:35.302Z
+created_at: 2026-03-21T08:54:38.467Z
+updated_at: 2026-03-21T08:55:35.302Z
+notes: []

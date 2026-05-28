@@ -1,0 +1,14 @@
+_ulid: 01KQ8Q4DQD3FY5357A6H6EVQMV
+slugs:
+  - plan-default-session-reflection-reliability
+title: Default Session Reflection Reliability
+status: completed
+approved_at: 2026-04-28T00:58:16.868Z
+derived_specs: []
+derived_tasks:
+  - "@task-default-session-reflection-spec-updates"
+  - "@task-default-session-reflection-reliability"
+module_ref: null
+source_path: /home/chapel/Projects/kynetic-spec/plans/default-session-reflection-reliability.md
+created_at: 2026-04-28T00:16:56.548Z
+completed_at: null

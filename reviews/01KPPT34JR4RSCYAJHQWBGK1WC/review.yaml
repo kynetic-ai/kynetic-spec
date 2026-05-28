@@ -1,0 +1,236 @@
+_ulid: 01KPPT34JR4RSCYAJHQWBGK1WC
+slugs: []
+title: Review task-docs-rendering (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Build passed for tsc, shared, daemon, web-ui, and plugin targets. Only non-blocking Svelte
+      accessibility warnings were reported.
+    name: npm run build
+    required: true
+    runner: npm
+    created_at: 2026-04-21T01:43:27.695Z
+    completed_at: 2026-04-21T01:43:27.695Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repository-wide validation still fails on pre-existing meta/schema issues (e.g.
+      .kspec/modules/meta.yaml trait shape) and broad alignment/completeness warnings unrelated to
+      this docs diff; no new docs-specific validation error was isolated from this snapshot.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-21T01:43:31.138Z
+    completed_at: 2026-04-21T01:43:31.138Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh rerun passed: 2205/2205 suites, 8083/8088 tests, 5 skipped. Earlier cached failure
+      in skill-rendering did not reproduce on a real fresh execution."
+    name: npm test (fresh)
+    required: true
+    runner: npm
+    created_at: 2026-04-21T01:46:53.886Z
+    completed_at: 2026-04-21T01:46:53.886Z
+events:
+  - _ulid: 01KPPT34JRTNY9MCFGQYBM4235
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-21T01:22:20.376Z
+  - _ulid: 01KPPT3GSK74DQ03T6WDKZ8H2H
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-21T01:22:32.883Z
+  - _ulid: 01KPPV9H73X9P280VG44M6JQH0
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPPV9G2P89BXTFK3DAF65BT3
+    timestamp: 2026-04-21T01:43:18.500Z
+  - _ulid: 01KPPV9MKKXS010J9B0M63Z5MP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPPV9KC5RBH9VV0387TZE27K
+    timestamp: 2026-04-21T01:43:21.971Z
+  - _ulid: 01KPPV9QZMRGF62YCV9JQWSXVR
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KPPV9PSXQ72T5V344695450P
+    timestamp: 2026-04-21T01:43:25.428Z
+  - _ulid: 01KPPV9VC6EW0YNY8055CQM85M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run build
+    timestamp: 2026-04-21T01:43:28.902Z
+  - _ulid: 01KPPV9YRMBV32KTNPRDPQ0DSB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-21T01:43:32.372Z
+  - _ulid: 01KPPVG4JXAA8BQK8VVQNR5SG6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test (fresh)
+    timestamp: 2026-04-21T01:46:54.942Z
+  - _ulid: 01KPPVGGAGMA4EK2ZA15M431JF
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-21T01:47:06.960Z
+  - _ulid: 01KPPVGGAGXDCVN5SZ16BZ7HZJ
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-21T01:47:06.960Z
+  - _ulid: 01KPPWPES3C8KFZWR105DKQFSJ
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPPV9G2P89BXTFK3DAF65BT3
+    timestamp: 2026-04-21T02:07:50.564Z
+  - _ulid: 01KPPWPKYQWHP1NH5VNREEJAVJ
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPPV9KC5RBH9VV0387TZE27K
+    timestamp: 2026-04-21T02:07:55.863Z
+  - _ulid: 01KPPWPW08H6DEQX9G28GZHVA6
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPPV9G2P89BXTFK3DAF65BT3
+    timestamp: 2026-04-21T02:08:04.105Z
+  - _ulid: 01KPPWQ10B8TZ5T719K03DN69S
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPPV9KC5RBH9VV0387TZE27K
+    timestamp: 2026-04-21T02:08:09.227Z
+examined_commit: 2cfc5b801c74967628413dbf069a6bbf46c8ee26
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KPPN42CDKS6A6951ZATDPKXP"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPPV9G2P89BXTFK3DAF65BT3
+    anchor:
+      type: code
+      commit: 2cfc5b801c74967628413dbf069a6bbf46c8ee26
+      line_end: 105
+      line_start: 102
+      path: packages/web-ui/src/lib/components/Sidebar.svelte
+      side: head
+    entries:
+      - _ulid: 01KPPV9G2PQ68NNZNF4DFWJPZ1
+        author: Jacob Chapel
+        body: The branch now adds a Docs entry to primary navigation in both shell nav components, but there
+          is still no behavioral test coverage for @docs-reachability ac-1.  returns no matches, so
+          this reachability path can regress without any test failing. Add at least one test that
+          exercises the rendered navigation and proves a reader can discover and follow the Docs
+          entry.
+        created_at: 2026-04-21T01:43:17.334Z
+      - _ulid: 01KPPWPDSPR4D8DSGDXWV0MH8F
+        author: "@claude"
+        body: "Fixed: Added E2E tests in tests/e2e/docs.spec.ts that exercise the rendered navigation. Two
+          tests cover ac-1: (1) sidebar test verifies nav-link-docs is visible, clicks it, and
+          confirms navigation to the docs landing page with the Documentation heading; (2) mobile
+          nav test verifies the Docs entry in the mobile bottom nav. Also discovered and fixed a
+          daemon bug — /docs and /docs/* were missing from the SPA routes array, causing 404s for
+          all docs pages."
+        created_at: 2026-04-21T02:07:49.558Z
+    kind: blocker
+    resolved_at: 2026-04-21T02:08:03.089Z
+    resolved_by: "@claude"
+  - _ulid: 01KPPV9KC5RBH9VV0387TZE27K
+    anchor:
+      type: code
+      commit: 2cfc5b801c74967628413dbf069a6bbf46c8ee26
+      line_end: 365
+      line_start: 357
+      path: tests/web-ui-docs-rendering.test.ts
+      side: head
+    entries:
+      - _ulid: 01KPPV9KC5VGSJB3BQYTDAKZH0
+        author: Jacob Chapel
+        body: "The @docs-navigation-shape ac-1 annotation here is attached to a pure  unit test, but the
+          acceptance criterion is about the rendered docs page: the sidebar must show the current
+          section, the current page must be visually indicated, and the page must show a table of
+          contents. This helper test only checks slug filtering, so it would still pass if the
+          Svelte route stopped rendering the sidebar highlight or the TOC entirely. Replace or
+          supplement it with a behavioral test at the route/component level that proves the actual
+          page layout."
+        created_at: 2026-04-21T01:43:20.709Z
+      - _ulid: 01KPPWPJZ2YMDD1FNTZWYXN484
+        author: "@claude"
+        body: "Fixed: Replaced the pure unit test AC annotation with E2E behavioral tests in
+          tests/e2e/docs.spec.ts. The main test navigates to /docs/getting-started and verifies: (1)
+          sidebar nav is visible with section page links, (2) the current page link has the
+          bg-accent active class, (3) the 'On this page' TOC heading is visible with anchor fragment
+          links. A separate test verifies non-current pages do NOT have the active highlight. The
+          filterSectionEntries unit test annotation was downgraded from 'AC:' to 'Supports' since
+          the actual AC coverage is now at the E2E level."
+        created_at: 2026-04-21T02:07:54.850Z
+    kind: blocker
+    resolved_at: 2026-04-21T02:08:08.197Z
+    resolved_by: "@claude"
+  - _ulid: 01KPPV9PSXQ72T5V344695450P
+    entries:
+      - _ulid: 01KPPV9PSXWCXCVW6VPA5MEYF5
+        author: Jacob Chapel
+        body: "Evidence log:\\nFiles read:
+          packages/web-ui/src/lib/components/{Sidebar.svelte,MobileNav.svelte},
+          packages/web-ui/src/lib/{docs.ts,docs-types.ts},
+          packages/web-ui/src/lib/utils/{docs-markdown.ts,docs-utils.ts,sanitize.ts,highlight.ts},
+          packages/web-ui/src/routes/docs/{+page.svelte,[...slug]/+page.svelte},
+          packages/web-ui/vite-plugin-docs.ts, packages/web-ui/vite.config.ts,
+          tests/web-ui-docs-rendering.test.ts, tests/e2e/smoke.spec.ts, package.json.\\nCommands
+          run: kspec task get, kspec item get (@docs-reachability, @docs-navigation-shape), kspec
+          review get, kspec validate, git diff/log/show, rg for AC coverage and route references,
+          npm run build, npm test, npm test -- --fresh.\\nClaims verified: prior blockers around
+          section filtering and relative-link resolution are fixed in code and tests; docs
+          bundle/build path compiles; fresh full suite passes.\\nCategories searched: correctness,
+          tests, edge cases, error handling, integration."
+        created_at: 2026-04-21T01:43:24.221Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-21T01:47:06.960Z
+created_at: 2026-04-21T01:22:20.376Z
+updated_at: 2026-04-21T02:08:08.197Z
+notes: []

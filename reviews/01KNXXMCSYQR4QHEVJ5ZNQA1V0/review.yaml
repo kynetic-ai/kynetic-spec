@@ -1,0 +1,234 @@
+_ulid: 01KNXXMCSYQR4QHEVJ5ZNQA1V0
+slugs: []
+title: "Plan review: Init, Setup, and Upgrade Rough Edges (cycle 3)"
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@default-project-agents-and-conventions now has explicit ACs for task worker, code
+      reviewer, primary dev, and plan reviewer, plus ac-all-defaults-write-authorized to cover
+      unconditional write authorization across all four defaults."
+    name: Default agent roster coverage
+    required: true
+    created_at: 2026-04-11T09:24:06.831Z
+    completed_at: 2026-04-11T09:24:06.831Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@scaffolded-project-config now separates non-force preservation
+      (ac-file-exists-preserved) from force overwrite (ac-file-force-overwrites); the Given/When
+      conditions are distinguished by force-flag state, so the ACs are mutually exclusive."
+    name: Force-path AC separation
+    required: true
+    created_at: 2026-04-11T09:24:06.867Z
+    completed_at: 2026-04-11T09:24:06.867Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "The upgrade task now makes ac-source-version-fallback actionable by specifying concrete
+      probes and a selection rule: task storage shape, scaffolded config presence, rendered
+      review-plan skill presence, and task-format marker are used to infer the newest version
+      consistent with observed state."
+    name: Source version fallback concreteness
+    required: true
+    created_at: 2026-04-11T09:24:06.926Z
+    completed_at: 2026-04-11T09:24:06.926Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@trait-idempotent-scaffold is attached to specs whose force behavior is explicitly
+      non-overwrite (notably @default-project-agents-and-conventions) and to specs with no force
+      path at all, while @derivable-default-module is treated as scaffolded work in the upgrade task
+      but does not implement the trait. The inherited trait ACs therefore do not line up with the
+      per-spec contracts."
+    name: Idempotent scaffold trait fit
+    required: true
+    created_at: 2026-04-11T09:24:06.933Z
+    completed_at: 2026-04-11T09:24:06.933Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Spec and task describe a universal hook with no per-agent lookup, but the implementation
+      notes still say the reflection hook task depends on default agents because it looks up primary
+      agent identifiers (plans/init-setup-upgrade-rough-edges.md:1715-1717).
+    name: Reflection hook consistency
+    required: true
+    created_at: 2026-04-11T09:24:24.813Z
+    completed_at: 2026-04-11T09:24:24.813Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@plan-import-format-guidance cleanly separates behaviors: import stores empty plans with
+      a warning (ac-empty-plan-import-warns) while derive rejects plans with no derivable work
+      (ac-empty-plan-derive-fails), matching existing content-only import and derive specs."
+    name: Plan import/derive split
+    required: true
+    created_at: 2026-04-11T09:24:24.858Z
+    completed_at: 2026-04-11T09:24:24.858Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@release-notes-accessible now defers file-format choice to the release skill, and the
+      task explicitly updates that skill to define the authoring conventions instead of hard-coding
+      them into the spec contract."
+    name: Release notes format deferral
+    required: true
+    created_at: 2026-04-11T09:24:24.858Z
+    completed_at: 2026-04-11T09:24:24.858Z
+events:
+  - _ulid: 01KNXXMCSXBH8Y5KHFPE8QE4KH
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-11T09:23:10.781Z
+  - _ulid: 01KNXXMWERJSHEVJSC2VAJSTZJ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-11T09:23:26.809Z
+  - _ulid: 01KNXXN67PEYMARGQH4SRQE3H3
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNXXN5C4YR0HVQPDTBPY6D1M
+    timestamp: 2026-04-11T09:23:36.822Z
+  - _ulid: 01KNXXNF8EE7XEX8M3MGYM7ZYF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNXXNECR4XJZEPDDJ4AT0722
+    timestamp: 2026-04-11T09:23:46.062Z
+  - _ulid: 01KNXXP4DS3DHPDBVX7G0F4WK7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Default agent roster coverage
+    timestamp: 2026-04-11T09:24:07.737Z
+  - _ulid: 01KNXXP5TPNCX20ND87NV8SJG7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Force-path AC separation
+    timestamp: 2026-04-11T09:24:09.174Z
+  - _ulid: 01KNXXP76VY5G810QRXM9A699Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Source version fallback concreteness
+    timestamp: 2026-04-11T09:24:10.588Z
+  - _ulid: 01KNXXP8M48XR8Q64P2XCGDX17
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Idempotent scaffold trait fit
+    timestamp: 2026-04-11T09:24:12.036Z
+  - _ulid: 01KNXXPNYW11VS4W5XGVV197F8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Reflection hook consistency
+    timestamp: 2026-04-11T09:24:25.692Z
+  - _ulid: 01KNXXPQBJ2AWQR170HZ3T5TPK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan import/derive split
+    timestamp: 2026-04-11T09:24:27.122Z
+  - _ulid: 01KNXXPRR5WNA4F2RDBD10YZFC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Release notes format deferral
+    timestamp: 2026-04-11T09:24:28.549Z
+  - _ulid: 01KNXXQ02D0TXXS4B4CH4QHEQ9
+    actor: codex@local
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-11T09:24:36.045Z
+  - _ulid: 01KNXXQ02DRP0PJKDMEM05SMX3
+    actor: codex@local
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-11T09:24:36.045Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-init-setup-and-upgrade-rough-edges"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNXXN5C4YR0HVQPDTBPY6D1M
+    anchor:
+      type: structured
+      ref: "@default-project-agents-and-conventions"
+      section: traits
+    entries:
+      - _ulid: 01KNXXN5C4H2HPHX7QSZFGVD44
+        author: Jacob Chapel
+        body: "@trait-idempotent-scaffold currently conflicts with this spec's stated force behavior. The
+          inherited trait contract says force replaces existing artifacts after backing them up, but
+          ac-force-reseed says force only recreates missing defaults and leaves existing or renamed
+          items untouched. The same trait is also attached to @default-session-reflection-hook and
+          @complete-auto-gitignore, where the plan likewise avoids overwrite-style force semantics,
+          while @derivable-default-module is treated as a scaffolded item in the upgrade task but
+          does not implement the trait. Tighten the trait's scope or reassign it so inherited ACs
+          match each scaffolded spec's actual force/idempotency model."
+        created_at: 2026-04-11T09:23:35.940Z
+    kind: blocker
+  - _ulid: 01KNXXNECR4XJZEPDDJ4AT0722
+    anchor:
+      type: structured
+      ref: "@default-session-reflection-hook"
+      section: dependencies
+    entries:
+      - _ulid: 01KNXXNECSKCV53RMRKCYWNPDJ
+        author: Jacob Chapel
+        body: The reflection-hook simplification is not carried through consistently. The spec and task now
+          say the hook is universal and no longer needs per-agent identifiers, and the task no
+          longer declares a depends_on edge, but the implementation notes still state that the
+          default reflection hooks task depends on default agents and conventions because it looks
+          up primary agent identifiers. That leaves the plan with two incompatible dependency
+          stories for the same task. Update the dependency notes to match the simplified model so
+          task ordering and rationale are unambiguous.
+        created_at: 2026-04-11T09:23:45.177Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@local
+    role: reviewer
+    created_at: 2026-04-11T09:24:36.045Z
+created_at: 2026-04-11T09:23:10.782Z
+updated_at: 2026-04-11T09:24:36.045Z
+notes: []

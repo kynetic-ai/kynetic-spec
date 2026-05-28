@@ -1,0 +1,153 @@
+_ulid: 01KRFM9QVTZ46C1JAGX0P1ZX8K
+slugs: []
+title: Review centralize dispatch artifact protection decisions cycle 2
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full fresh suite passed: 2435 suites passed; 9107 tests passed, 5 skipped. Full log:
+      /tmp/kspec-test-cache/01KRFM70T1VH1N1AWBG978DBZH/5e427d523398d951.log"
+    name: npm test -- --fresh
+    required: true
+    runner: npm
+    created_at: 2026-05-13T03:08:58.005Z
+    completed_at: 2026-05-13T03:08:58.005Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation schema/references passed; repo has existing warnings (253 completeness, 39
+      alignment, 7 reference) and exited 0 due --warnings-ok.
+    name: kspec validate --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-13T03:09:02.248Z
+    completed_at: 2026-05-13T03:09:02.248Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npx oxlint src/agent-runtime/workspace.ts tests/dispatch-artifact-protection.test.ts
+      tests/dispatch-workspace-cleanup.test.ts: 0 warnings, 0 errors."
+    name: oxlint changed files
+    required: true
+    runner: oxlint
+    created_at: 2026-05-13T03:09:06.505Z
+    completed_at: 2026-05-13T03:09:06.505Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit completed successfully.
+    name: npm run typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-13T03:09:10.746Z
+    completed_at: 2026-05-13T03:09:10.746Z
+events:
+  - _ulid: 01KRFM9QVSD0MHQEWMW1C2XNYF
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-13T02:57:47.897Z
+  - _ulid: 01KRFMAJF11KG2B30DR75KXG01
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-13T02:58:15.138Z
+  - _ulid: 01KRFMY7RB5N0ES9273GZH3VP2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-05-13T03:08:59.531Z
+  - _ulid: 01KRFMYBVXZV7YK9D8JRKKZVJB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --warnings-ok
+    timestamp: 2026-05-13T03:09:03.741Z
+  - _ulid: 01KRFMYG21KM8JTPEM344B8C23
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: oxlint changed files
+    timestamp: 2026-05-13T03:09:08.033Z
+  - _ulid: 01KRFMYM547B6C3WQKYKB4M23V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run typecheck
+    timestamp: 2026-05-13T03:09:12.228Z
+  - _ulid: 01KRFMZ1B754T4AN78YQSGSRXV
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KRFMYZXJ159MXHFNDJCX5KH1
+    timestamp: 2026-05-13T03:09:25.735Z
+  - _ulid: 01KRFMZF3TDBF1RWCSJDK2NCW3
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-13T03:09:39.834Z
+  - _ulid: 01KRFMZF3T5KCPB26Z6BFXZ47F
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-13T03:09:39.834Z
+examined_commit: 3523eee27f80947515557d4720a3ba773eaafe86
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRF37Y941E2T8D1ATFV63JB0"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRFMYZXJ159MXHFNDJCX5KH1
+    entries:
+      - _ulid: 01KRFMYZXJ6K1QTGQVK9DQJYRT
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; src/agent-runtime/workspace.ts;
+          tests/dispatch-artifact-protection.test.ts; tests/dispatch-workspace-cleanup.test.ts;
+          prior review @01KRFHTREDT2JCWMVKPPH50VRW; specs @dispatch-workspace-cleanup-policy and
+          @dispatch-workspace-registry. Commands run: git diff/stat/log; rg AC/export searches;
+          kspec task get; kspec item get; kspec review for-task/get/add/open; kspec validate; kspec
+          validate --warnings-ok; npm test -- --fresh; npm run typecheck; npm run lint (repo-wide
+          pre-existing unrelated lint errors); npx oxlint changed files. Claims verified: previous
+          blocker fixed by active/in-flight short-id derivation protecting canonical dispatch
+          branches and worker/reviewer basename paths before registry write; centralized helper is
+          consulted for metadata-less worktrees, reap, reviewer snapshot pruning, root-directory
+          pruning, and branch deletion. Categories searched: correctness, edge cases, error
+          handling/no-blind-deletion, test quality/AC coverage, integration with registry and
+          cleanup lifecycle."
+        created_at: 2026-05-13T03:09:24.274Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-13T03:09:39.833Z
+created_at: 2026-05-13T02:57:47.898Z
+updated_at: 2026-05-13T03:09:39.834Z
+notes: []

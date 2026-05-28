@@ -1,0 +1,134 @@
+_ulid: 01KRZ1QWZCN4B8YYJAYHDQ278Y
+slugs: []
+title: Review stabilize Bun daemon auto-start runtime test
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2448/2448 suites, 9290 passed, 5 skipped of 9295 tests. Duration
+      2379.3s. Log: /tmp/kspec-test-cache/01KRZ1PSCZAG77QH3YMEKCKR5X/0a330a24e1f6dba7.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-19T02:56:37.811Z
+    completed_at: 2026-05-19T02:56:37.811Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate reported schema/references OK and no validation errors. It exited 6 due to
+      existing repository-wide warnings (deprecated refs, orphaned specs, missing coverage, invalid
+      annotations) not introduced by this no-code task.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-19T02:56:42.085Z
+    completed_at: 2026-05-19T02:56:42.085Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/cli-no-daemon.test.ts --fresh passed: 7/7 tests, 3/3 suites,
+      2.5s. Log: /tmp/kspec-test-cache/01KRZ1PSCZAG77QH3YMEKCKR5X/046b31588b6245a4.log"
+    name: focused cli-no-daemon
+    required: true
+    runner: npm
+    created_at: 2026-05-19T02:56:50.930Z
+    completed_at: 2026-05-19T02:56:50.930Z
+events:
+  - _ulid: 01KRZ1QWZBENPP9JSMYJ086K03
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-19T02:41:19.852Z
+  - _ulid: 01KRZ1RPG0X8934RG0QR8FQS2R
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-19T02:41:45.984Z
+  - _ulid: 01KRZ2KYW9AY80VT17H0NY8VE7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-19T02:56:39.305Z
+  - _ulid: 01KRZ2M34AEVNG6B74B8D7ZGKJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-19T02:56:43.658Z
+  - _ulid: 01KRZ2M7GAV4JCYNF3SBJ5KHRF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KRZ2M608ZMRAZEEPCNJQ3KA8
+    timestamp: 2026-05-19T02:56:48.138Z
+  - _ulid: 01KRZ2MBR6JZMXZG36SQFS5YFK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused cli-no-daemon
+    timestamp: 2026-05-19T02:56:52.487Z
+  - _ulid: 01KRZ2N13KFZ2NWZNXR45TP8D9
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-19T02:57:14.356Z
+  - _ulid: 01KRZ2N13M1RH9G7W7DW9WQF3J
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-19T02:57:14.356Z
+examined_commit: 1174d5b7295a03e960e4082fe40d6deb5b4ce507
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRZ0EWBBYQECH4FR1PWTC1ZN"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRZ2M608ZMRAZEEPCNJQ3KA8
+    entries:
+      - _ulid: 01KRZ2M6081CY1EQ4708J1A91R
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md, tests/cli-no-daemon.test.ts,
+          packages/daemon/src/server.ts, src/cli/index.ts, src/cli/commands/serve.ts. Commands run:
+          kspec task get @01KRZ0EWBBYQECH4FR1PWTC1ZN; kspec item get @daemon-runtime-adapter; kspec
+          validate; rg AC annotations; git log/merge-base/rev-parse checks; npm test -- --run
+          tests/cli-no-daemon.test.ts --fresh; npm test. Claims verified: the old ps-based runtime
+          assertion has been replaced by daemon-owned daemon.connection.json metadata written after
+          awaitListenSuccess; metadata.runtime and metadata.pid are asserted in the focused test;
+          the task branch is already contained by current dev. Categories searched: correctness,
+          edge cases/race window, cleanup/error handling, test quality, AC coverage, integration. No
+          blocking findings."
+        created_at: 2026-05-19T02:56:46.600Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-19T02:57:14.355Z
+created_at: 2026-05-19T02:41:19.852Z
+updated_at: 2026-05-19T02:57:14.356Z
+notes: []

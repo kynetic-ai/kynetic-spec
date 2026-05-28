@@ -1,0 +1,120 @@
+_ulid: 01KM7YNJEB3CZWD7G7YA6C2Z0C
+slugs: []
+title: Review per-task core data and notes files (cycle 7)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation exited 6 with repo-baseline warnings only; no schema or reference errors
+      specific to this change.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-21T10:25:46.486Z
+    completed_at: 2026-03-21T10:25:46.486Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 300 test files passed; 6825 tests passed, 3 skipped.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-21T10:25:47.466Z
+    completed_at: 2026-03-21T10:25:47.466Z
+events:
+  - _ulid: 01KM7YNJEBC39X9KKCMWMHT8CA
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T10:22:18.571Z
+  - _ulid: 01KM7YP69FES1E3210NEYERQRD
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T10:22:38.896Z
+  - _ulid: 01KM7YVWVS5E9QDY1RR1F5637T
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM7YVWK45G7A32E8G023E1VP
+    timestamp: 2026-03-21T10:25:45.849Z
+  - _ulid: 01KM7YVXSR13T12E83E9T6GA88
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-21T10:25:46.808Z
+  - _ulid: 01KM7YVYTD3GCD7JEXENZT3JQC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-21T10:25:47.853Z
+  - _ulid: 01KM7YW8C61FKDG6NJ8KV2QQM6
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-21T10:25:57.639Z
+  - _ulid: 01KM7YW8C7ZCD8R4VEKMQVAMY8
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-21T10:25:57.639Z
+examined_commit: c41a0e2ed26dbe1c71733e469a0ba343465fc9fb
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YET1A7XY9D0V3YQ9DRASG"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM7YVWK45G7A32E8G023E1VP
+    anchor:
+      type: code
+      commit: c41a0e2ed26dbe1c71733e469a0ba343465fc9fb
+      line_end: 949
+      line_start: 947
+      path: src/parser/task-data-manager.ts
+      side: head
+    entries:
+      - _ulid: 01KM7YVWK4M0J3T1R3SX7Z507N
+        author: Jacob Chapel
+        body: 'MUST-FIX: history entries still ignore configured project author identity. This code always
+          passes `author: undefined` into mutation metadata, and
+          [createHistoryEntry](src/parser/split-backend.ts) falls back to `getAuthor()` without
+          `ctx.config?.identity?.author`. In a split-storage project with `identity.author:
+          "@config-author"` and no `KSPEC_AUTHOR`, task notes are authored as `@config-author` but
+          task.yaml history records the git/system user instead. I reproduced that locally in a temp
+          repo: the first history entry for a `task-set` mutation came back as `{"author":"Git
+          User",...}` instead of `@config-author`, so @task-core-data-file ac-3 is still violated
+          for configured-author projects.'
+        created_at: 2026-03-21T10:25:45.572Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-21T10:25:57.638Z
+created_at: 2026-03-21T10:22:18.571Z
+updated_at: 2026-03-21T10:25:57.639Z
+notes: []

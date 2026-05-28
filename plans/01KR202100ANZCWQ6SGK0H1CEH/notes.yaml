@@ -1,0 +1,61 @@
+notes:
+  - _ulid: 01KR20CZC3S0SFMC03EMBHJAGN
+    content: "Address review cycle 1: make guardrail AC behavioral, remove endpoint implementation field
+      names, simplify readiness diagnostics AC"
+    author: Jacob Chapel
+    created_at: 2026-05-07T19:59:54.756Z
+  - _ulid: 01KR20PW76XW4C9BDWDVVENDEG
+    content: "Address review cycle 2: add missing coverage claim for daemon test mode boundary CLI
+      lifecycle AC"
+    author: Jacob Chapel
+    created_at: 2026-05-07T20:05:19.206Z
+  - _ulid: 01KR21YYAPNB5WPW6S7HCRAY9F
+    content: "Address validation concern: add explicit fixture/helper contract tests and validation
+      surfaces"
+    author: Jacob Chapel
+    created_at: 2026-05-07T20:27:12.086Z
+  - _ulid: 01KR22GMRNFPSW8DR2BA7XXHRZ
+    content: |-
+      This plan is a test-infrastructure hardening plan. It intentionally separates
+      fixture categories rather than forcing every daemon-related test into the same
+      runtime mode:
+
+      - Real daemon process tests use the new shared daemon fixture because they
+        exercise child process startup, runtime adapters, lifecycle state, cache
+        readiness, or actual WebSocket network behavior.
+      - Playwright tests wrap the same daemon fixture core because browser URL and
+        daemon endpoint propagation must match Vitest daemon-backed tests.
+      - CLI client routing tests use mock daemons because the CLI is often invoked
+        with spawnSync, which blocks the test runner event loop and requires a child
+        process mock to accept requests.
+      - In-process daemon API tests keep using app.handle because they are fast route
+        tests and should not gain process-lifecycle flakiness.
+
+      The plan validates testing-related specs through three separate evidence types:
+      focused contract tests for the helper APIs, representative consumer tests that
+      prove migrated daemon flows still work, and static source-audit guardrails for
+      repo-wide structural rules that runtime tests cannot prove by themselves. Helper
+      contract tests are required for changed real-daemon, mock-daemon, and in-process
+      helper behavior so a fixture regression fails close to the fixture instead of
+      surfacing only as a broad product-flow failure.
+
+      The first task is intentionally a concrete spec-update task. It rewrites two
+      existing test specs whose scope is too narrow and adds one endpoint-contract AC
+      that makes test endpoint behavior explicit. Agents implementing that task must
+      use kspec CLI commands rather than editing .kspec YAML directly.
+
+      The plan does not require immediate elimination of every ephemeral port probe.
+      The shared helper may initially centralize the current dynamic-port approach if
+      using daemon --port 0 plus metadata readback is too large for this slice. Once
+      centralized, the port allocation strategy can be replaced in one helper without
+      migrating tests again.
+    author: Jacob Chapel
+    created_at: 2026-05-07T20:36:52.117Z
+  - _ulid: 01KR3TJB316T6AY8DY9ZFXYDED
+    content: "Closed after implementation validation: core daemon test fixture standardization landed,
+      all derived tasks completed, validation/review passed. Follow-up hardening is intentionally
+      tracked in a separate plan for guardrail precision, startup-failure cleanup diagnostics,
+      lifecycle endpoint exceptions, mock helper cleanup/env hygiene, and in-process helper boundary
+      clarity."
+    author: Jacob Chapel
+    created_at: 2026-05-08T12:56:28.001Z

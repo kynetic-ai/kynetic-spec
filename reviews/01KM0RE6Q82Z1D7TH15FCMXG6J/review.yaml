@@ -1,0 +1,90 @@
+_ulid: 01KM0RE6Q82Z1D7TH15FCMXG6J
+slugs: []
+title: Review task-event-cli
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 6466 tests passed, 1 pre-existing failure in review-cli.test.ts
+      (KSPEC_DISPATCH_CANONICAL_HEAD env leaking — unrelated to event CLI changes)
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T15:19:15.122Z
+    completed_at: 2026-03-18T15:19:15.122Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "ac-5: 3 test annotations (list, payload fields, domain filter). ac-6: 1 test annotation
+      (validation). All trait ACs covered by tests or annotated N/A with valid reasons.
+      shadow-commit all N/A (read-only commands)."
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-18T15:19:22.831Z
+    completed_at: 2026-03-18T15:19:22.831Z
+events:
+  - _ulid: 01KM0RE6Q8C81P25AMWDJESF06
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T15:18:44.712Z
+  - _ulid: 01KM0REF51S15T6BNQEHW4MP6P
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T15:18:53.345Z
+  - _ulid: 01KM0RF4JCXP063N0WDG9KBP3G
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T15:19:15.276Z
+  - _ulid: 01KM0RFC30C5AVPHS9G44VMDNX
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-18T15:19:22.976Z
+  - _ulid: 01KM0RFK5W76KVEXVFHR6Z3JRY
+    actor: agent:pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-18T15:19:30.236Z
+  - _ulid: 01KM0RFK5WVBFK4Y7KXQXN08DC
+    actor: agent:pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T15:19:30.236Z
+examined_commit: 2b12a78869dce6fc1d0f3f4d90926a3fd620cf54
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-event-cli"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: agent:pr-reviewer
+    role: reviewer
+    created_at: 2026-03-18T15:19:30.077Z
+created_at: 2026-03-18T15:18:44.712Z
+updated_at: 2026-03-18T15:19:30.077Z
+notes: []

@@ -1,0 +1,208 @@
+_ulid: 01KN8WV0HEB7T2PV0NKZZ41JK7
+slugs: []
+title: Review task-sync-degraded-ac-updates
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed in this review snapshot: 2068/2068 suites, 7491 passed, 5 skipped."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-03T05:30:36.083Z
+    completed_at: 2026-04-03T05:30:36.083Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Schema and reference checks passed. Exit 6 came from pre-existing repo-wide warnings
+      (orphaned skill dir, orphaned specs, status mismatch, and broad AC coverage debt), not from
+      this spec update.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-03T05:30:38.341Z
+    completed_at: 2026-04-03T05:30:38.341Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: AGENTS.md; kspec-agents.md; .agents/skills/review-gates/SKILL.md;
+      task/spec/plan output for @01KN8T19J4FBZYJ51306PV3NZA, @dispatch-remote-branch-sync, and
+      @plan-workspace-scoped-integration-target-sync; tests/dispatch-degraded-state.test.ts;
+      src/agent-runtime/dispatch.ts. Commands run: git status/log/show/diff/branch; kspec task get;
+      kspec review for-task/get/open; kspec validate; kspec item ac list/get; kspec plan get; kspec
+      search; grep/rg for AC annotations; npm test. Claims verified: the AC rename from log-guidance
+      to log-classification was checked by searching code/tests for both ids; per-target degraded
+      ACs were compared against the approved plan. Categories searched: correctness/spec alignment,
+      test quality/annotation integrity, edge cases around degraded-state scoping, integration with
+      existing implementation annotations; finding recorded on stale deleted-AC references."
+    name: evidence-log
+    required: false
+    runner: reviewer
+    created_at: 2026-04-03T05:30:38.394Z
+    completed_at: 2026-04-03T05:30:38.394Z
+events:
+  - _ulid: 01KN8WV0HEQC1BS4V3AD7SW8BC
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-03T05:25:15.950Z
+  - _ulid: 01KN8WVTF9GQF5RXJRZ33QR4SK
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-03T05:25:42.506Z
+  - _ulid: 01KN8X4SVKEAM1DPK07D18NP5A
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-03T05:30:36.787Z
+  - _ulid: 01KN8X4W7S5XH3H124RHY7TEEQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-03T05:30:39.226Z
+  - _ulid: 01KN8X4X9KKF3X0KSKZ6XNC0QV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: evidence-log
+    timestamp: 2026-04-03T05:30:40.307Z
+  - _ulid: 01KN8X59DX97B5SMTTG15D9Q10
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN8X58R5HP52NAMX2M6JVN7C
+    timestamp: 2026-04-03T05:30:52.733Z
+  - _ulid: 01KN8X5H07QZJMHV2R9SK1VMV5
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN8X5G8VHND0C4KPEFBX4X8M
+    timestamp: 2026-04-03T05:31:00.487Z
+  - _ulid: 01KN8X5TYTX78GYA68AGYWE4NJ
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-03T05:31:10.682Z
+  - _ulid: 01KN8X5TYTWETC3QD8H96F6ZQA
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-03T05:31:10.682Z
+  - _ulid: 01KN8X6GWZ4GGFKZ416FYBTX33
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN8X58R5HP52NAMX2M6JVN7C
+    timestamp: 2026-04-03T05:31:33.151Z
+  - _ulid: 01KN8X6K2SN14R4B3RMKC1M54W
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN8X58R5HP52NAMX2M6JVN7C
+    timestamp: 2026-04-03T05:31:35.385Z
+  - _ulid: 01KN8Y3J14MRY2VRD9HAK9MDAW
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN8X5G8VHND0C4KPEFBX4X8M
+    timestamp: 2026-04-03T05:47:24.581Z
+  - _ulid: 01KN8Y3Q6M2TK36EE0H1HWXV24
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN8X5G8VHND0C4KPEFBX4X8M
+    timestamp: 2026-04-03T05:47:29.876Z
+examined_commit: fb3342db29d0f52d03646cc5ec095e7d9bd0c310
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN8T19J4FBZYJ51306PV3NZA"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN8X58R5HP52NAMX2M6JVN7C
+    anchor:
+      type: code
+      commit: fb3342db29d0f52d03646cc5ec095e7d9bd0c310
+      line_end: 220
+      line_start: 194
+      path: tests/dispatch-degraded-state.test.ts
+      side: head
+    entries:
+      - _ulid: 01KN8X58R55M2W9V1RH6QHPH6R
+        author: Jacob Chapel
+        body: Renaming the divergence logging AC to  left the existing traceability annotations pointing at
+          the deleted  id. The stale id is still used here, and also in  at lines 3157, 3188, and
+          3244. That makes the coverage linkage for this behavior invalid after the spec rewrite, so
+          the rename is incomplete. Update the affected annotations to the new AC id as part of this
+          spec change.
+        created_at: 2026-04-03T05:30:52.037Z
+      - _ulid: 01KN8X6G60K2R8XK1D82494J02
+        author: Jacob Chapel
+        body: Superseded by thread 01KN8X5G8VHND0C4KPEFBX4X8M. This duplicate was created by a malformed
+          shell-quoted review comment and does not add a separate finding.
+        created_at: 2026-04-03T05:31:32.416Z
+    kind: blocker
+    resolved_at: 2026-04-03T05:31:34.601Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KN8X5G8VHND0C4KPEFBX4X8M
+    anchor:
+      type: code
+      commit: fb3342db29d0f52d03646cc5ec095e7d9bd0c310
+      line_end: 220
+      line_start: 194
+      path: tests/dispatch-degraded-state.test.ts
+      side: head
+    entries:
+      - _ulid: 01KN8X5G8V90Y4QM2Z3B5JFGXZ
+        author: Jacob Chapel
+        body: Renaming the divergence logging AC to ac-divergence-log-classification left the existing
+          traceability annotations pointing at the deleted ac-divergence-log-guidance id. The stale
+          id is still used here, and also in src/agent-runtime/dispatch.ts at lines 3157, 3188, and
+          3244. That makes the coverage linkage for this behavior invalid after the spec rewrite, so
+          the rename is incomplete. Update the affected annotations to the new AC id as part of this
+          spec change.
+        created_at: 2026-04-03T05:30:59.739Z
+      - _ulid: 01KN8Y3NRY4WTV1RFK6P4DJP2Z
+        author: Jacob Chapel
+        body: Updated all stale traceability references from ac-divergence-log-guidance to
+          ac-divergence-log-classification in both the behavioral tests and the dispatch runtime
+          annotations. Verified with rg that only the new AC id remains in the affected files.
+        created_at: 2026-04-03T05:47:28.414Z
+    kind: blocker
+    resolved_at: 2026-04-03T05:47:22.815Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-03T05:31:10.682Z
+created_at: 2026-04-03T05:25:15.950Z
+updated_at: 2026-04-03T05:47:28.414Z
+notes: []

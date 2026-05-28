@@ -1,0 +1,23 @@
+_ulid: 01KQ0EA0MTVQTQV1D2W8EGV9DF
+slugs:
+  - plan-spec-catalog-health-and-validation-trust
+title: Spec Catalog Health and Validation Trust
+status: completed
+approved_at: 2026-04-24T20:18:41.079Z
+derived_specs:
+  - "@validation-task-data-source"
+  - "@ac-annotation-integrity-reporting"
+  - "@coverage-annotation-scope-boundaries"
+derived_tasks:
+  - "@task-catalog-health-baseline"
+  - "@task-repair-broken-spec-refs"
+  - "@task-remove-live-test-trait"
+  - "@task-validation-task-data-manager-read-path"
+  - "@task-ac-annotation-integrity-reporting"
+  - "@task-coverage-annotation-scope-boundaries"
+  - "@task-ac-annotation-repair-wave-one"
+  - "@task-validation-trust-final-gate"
+module_ref: null
+source_path: /home/chapel/Projects/kynetic-spec/plans/spec-catalog-health-validation-trust.md
+created_at: 2026-04-24T19:08:47.130Z
+completed_at: null

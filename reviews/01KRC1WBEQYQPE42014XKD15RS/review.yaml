@@ -1,0 +1,291 @@
+_ulid: 01KRC1WBEQYQPE42014XKD15RS
+slugs: []
+title: Review cleanup registration failure cleanup
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed. Warnings were pre-existing deprecated-ref
+      warnings; exit 0.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-05-11T17:52:16.460Z
+    completed_at: 2026-05-11T17:52:16.460Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test passed: 2418/2418 suites, 8979/8984 tests passed, 5 skipped. Full
+      log: /tmp/kspec-test-cache/01KRC1QVJ399C5527C5D45PP9H/d42db2e5479bb7c0.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-11T17:52:20.273Z
+    completed_at: 2026-05-11T17:52:20.273Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed. Warnings were pre-existing missing
+      coverage / invalid annotation warnings; exit 0.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-05-11T17:52:24.224Z
+    completed_at: 2026-05-11T17:52:24.224Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm run build passed after serializing the prior parallel-build collision.
+      mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts passed: 10/10 tests. mise exec
+      -- npm test -- --fresh tests/e2e-fixture-daemon-cleanup.test.ts passed: 3/3 tests. Initial
+      concurrent focused-test attempts failed before running tests due simultaneous self-build
+      ENOENT in packages/web-ui/.svelte-kit/output/server/manifest-full.js; rerunning serially
+      passed."
+    name: focused daemon fixture tests
+    required: false
+    runner: npm
+    created_at: 2026-05-11T17:52:41.984Z
+    completed_at: 2026-05-11T17:52:41.984Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: tests/helpers/daemon.ts, tests/helpers/daemon.test.ts, kspec-agents.md,
+      .agents/skills/kspec-review/SKILL.md, .agents/skills/review-gates/SKILL.md,
+      .agents/skills/kspec-merge/SKILL.md. Commands run: git diff/stat/log/status; kspec task get;
+      kspec review for-task/get; kspec item get for @daemon-test-startup-failure-hygiene,
+      @daemon-backed-test-fixture-contract, @daemon-test-harness-guardrails,
+      @daemon-sensitive-cli-test-determinism; rg AC annotations and source-scanning patterns; kspec
+      validate refs/completeness; npm ci; npm run build; focused npm tests; full npm test. Claims
+      verified: registerCleanup failure path stops the owned child before rethrowing and the staged
+      regression wrapper was removed; verified by reading implementation/test and by focused/full
+      test runs. Categories searched: correctness, edge cases, error handling, test quality,
+      integration. No blockers found."
+    name: review evidence log
+    required: false
+    runner: reviewer
+    created_at: 2026-05-11T17:53:00.154Z
+    completed_at: 2026-05-11T17:53:00.154Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh tests/e2e-fixture-daemon-cleanup.test.ts: 3/3 tests passed"
+    name: focused e2e cleanup suite
+    required: true
+    runner: npm-test
+    created_at: 2026-05-11T17:53:54.889Z
+    completed_at: 2026-05-11T17:53:54.889Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts: 10/10 tests passed"
+    name: focused daemon helper suite
+    required: true
+    runner: npm-test
+    created_at: 2026-05-11T17:53:59.465Z
+    completed_at: 2026-05-11T17:53:59.465Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- kspec validate --refs --warnings-ok: exit 0 with pre-existing deprecated-ref
+      warnings"
+    name: kspec validate refs
+    required: true
+    runner: kspec-validate
+    created_at: 2026-05-11T17:54:03.431Z
+    completed_at: 2026-05-11T17:54:03.431Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- kspec validate --completeness --warnings-ok: exit 0 with pre-existing
+      completeness/annotation warnings"
+    name: kspec validate completeness
+    required: true
+    runner: kspec-validate
+    created_at: 2026-05-11T17:54:07.749Z
+    completed_at: 2026-05-11T17:54:07.749Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: mise exec -- npm test completed with one flaky non-regression in
+      tests/daemon-api/websocket-protocol.test.ts Bun beforeEach timeout; immediate fresh reruns of
+      that file passed twice; follow-up task @01KRC2R0 created per review-gates
+    name: npm test full suite
+    required: true
+    runner: npm-test
+    created_at: 2026-05-11T17:54:23.199Z
+    completed_at: 2026-05-11T17:54:23.199Z
+events:
+  - _ulid: 01KRC1WBEQYG5F4SCXEPGTXRRW
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-11T17:38:11.543Z
+  - _ulid: 01KRC1WRD4VCP10AWXGE50JT4J
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-11T17:38:24.804Z
+  - _ulid: 01KRC2P5WVKVC5HT87EK4TP697
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-05-11T17:52:17.819Z
+  - _ulid: 01KRC2P9J4J4MKMK4FRHA2A8GE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-11T17:52:21.572Z
+  - _ulid: 01KRC2PDEVHXA4MEND31PHHJHK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-05-11T17:52:25.563Z
+  - _ulid: 01KRC2PYTH8VQV0RVM9M8KQCKN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused daemon fixture tests
+    timestamp: 2026-05-11T17:52:43.345Z
+  - _ulid: 01KRC2QGHJ091QWVMN35Z8CNW2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-11T17:53:01.491Z
+  - _ulid: 01KRC2QWW2FEN0TGF7EA2SY8XD
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-11T17:53:14.114Z
+  - _ulid: 01KRC2QWW28TTBB7AXNYEZYH90
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-11T17:53:14.114Z
+  - _ulid: 01KRC2S6181D84X1KA9VH3M6NF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused e2e cleanup suite
+    timestamp: 2026-05-11T17:53:56.264Z
+  - _ulid: 01KRC2SAGCBYAS5QNGNRB4WT0Z
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused daemon helper suite
+    timestamp: 2026-05-11T17:54:00.844Z
+  - _ulid: 01KRC2SEEGJNYPWA0N5112HK87
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-05-11T17:54:04.880Z
+  - _ulid: 01KRC2SJKM7ZZMNEDEW23DFPZ7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-05-11T17:54:09.141Z
+  - _ulid: 01KRC2T1PQQVASAEH5RK8DEV8R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test full suite
+    timestamp: 2026-05-11T17:54:24.599Z
+  - _ulid: 01KRC2THQ2XT7HFRXJ6HK96BWP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KRC2TGB5TKPZ0Z559DFHPX9C
+    timestamp: 2026-05-11T17:54:40.994Z
+  - _ulid: 01KRC2TVSCCPANC91S9DZJNBRV
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-11T17:54:51.308Z
+examined_commit: 07488494e8a3c2e26cf3ddc945e56b6a90826963
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR6M70T2NV1TR7EEGREDC5WJ"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRC2TGB5TKPZ0Z559DFHPX9C
+    entries:
+      - _ulid: 01KRC2TGB5S1GXKEZ2TSZARK3S
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md, task/spec context for @01KR6M70T2NV1TR7EEGREDC5WJ
+          and @daemon-test-startup-failure-hygiene, git diff for tests/helpers/daemon.ts and
+          tests/helpers/daemon.test.ts, surrounding startTestDaemon cleanup/readiness code,
+          tests/helpers/daemon.test.ts startup-failure/readiness/registerCleanup tests,
+          tests/e2e-fixture-daemon-cleanup.test.ts, tests/daemon-api/websocket-protocol.test.ts
+          failure context. Commands run: git status/rev-parse/diff/show, kspec task get, kspec item
+          get, rg AC annotations and source-read checks, focused daemon helper test, focused e2e
+          cleanup test, kspec validate refs/completeness, full npm test, two fresh
+          websocket-protocol reruns. Claims verified: registerCleanup throw path stops the owned
+          child before surfacing the original registration failure; readiness is not entered after
+          registration failure; AC annotations exist for the linked spec; focused suites pass.
+          Categories searched: correctness, edge cases around registration/stop failures, error
+          preservation, unhandled readiness race, test quality/source scanning, integration with
+          existing readiness and launch-failure behavior. No blocking findings."
+        created_at: 2026-05-11T17:54:39.589Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-11T17:53:14.113Z
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-11T17:54:51.307Z
+created_at: 2026-05-11T17:38:11.543Z
+updated_at: 2026-05-11T17:54:51.307Z
+notes: []

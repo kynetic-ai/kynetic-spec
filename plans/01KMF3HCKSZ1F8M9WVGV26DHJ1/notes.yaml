@@ -1,0 +1,42 @@
+notes:
+  - _ulid: 01KMF3M4AQNA2SDQ25V22Y7XKQ
+    content: Added lint test to deletion list
+    author: "@claude"
+    created_at: 2026-03-24T05:03:35.255Z
+  - _ulid: 01KMFE49JHWT1YSSN4ECFSVJG3
+    content: "The no-source-scanning oxlint rule (tools/eslint-rules/no-source-scanning.js) now enforces
+      the ban on source-scanning tests at lint time. It detects: (1) any readFileSync/readFile call
+      in test files targeting non-temp paths, (2) assertions on variables holding file read results
+      (expect().toContain, .includes, .match). Safe reads through readTestOutput/readTestOutputSync
+      helpers are allowlisted. The rule catches all known offending files from this plan. The old
+      tests/lint/no-static-analysis.test.ts is superseded by this rule and should be deleted as part
+      of task-delete-static-analysis-tests-all."
+    author: "@claude"
+    created_at: 2026-03-24T08:07:10.673Z
+  - _ulid: 01KMGP1S802JRN7NTR8HR1HQMH
+    content: Content updated from file
+    author: "@claude"
+    created_at: 2026-03-24T19:44:51.456Z
+  - _ulid: 01KMGP229FVQCJYBB87VV9AQX9
+    content: "Deletion task completed as part of oxlint migration (PR #905). Removed delete task from
+      plan, updated with completed work summary. Remaining tasks are behavioral replacement coverage
+      for ~30 at-risk ACs. Removed depends_on references since deletion is done."
+    author: "@claude"
+    created_at: 2026-03-24T19:45:00.719Z
+  - _ulid: 01KMHQKBAYYHKBP2XQFCQGCW6A
+    content: "Post-investigation revision: 6 tasks → 1 audit task + 4 spec cleanup items based on
+      coverage gap analysis"
+    author: "@claude"
+    created_at: 2026-03-25T05:31:10.046Z
+  - _ulid: 01KMHS0HTXG2TERBG6T3BGSKRR
+    content: "Final revision: removed audit task (completed inline), added ac-5 dark mode removal. Plan
+      is now 0 tasks + 6 spec cleanup items."
+    author: "@claude"
+    created_at: 2026-03-25T05:55:51.261Z
+  - _ulid: 01KMHS3YK13D7KF4FBA03V3FQ2
+    content: "Spec cleanup complete. Deleted: @ui-design-system, @package-distribution,
+      @prose-typography-setup. Removed: @api-input-type-safety ac-4, @trait-markdown-rendering ac-5.
+      Deferred: @gh-pages-export ac-24 (redesign). Behavioral coverage audit found 10 PASS / 6
+      PARTIAL / 0 FAIL across markdown rendering ACs — no tasks needed."
+    author: "@claude"
+    created_at: 2026-03-25T05:57:42.625Z

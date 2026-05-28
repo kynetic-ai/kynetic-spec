@@ -1,0 +1,110 @@
+_ulid: 01KKXDNWKRPFF3KM6AC2GJP42A
+slugs: []
+title: Review task-review-api-read (cycle 1)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 252 test files passed, 5560 tests passed, 3 skipped. 1 file with 3 pre-existing flaky
+      failures in agent-dispatch-engine.test.ts (ENOTEMPTY race condition) — not introduced by this
+      diff.
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-17T08:13:25.256Z
+    completed_at: 2026-03-17T08:13:25.256Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No validation errors or warnings specific to @review-records-daemon-api. Pre-existing
+      warnings in unrelated specs.
+    name: kspec-validate
+    required: true
+    runner: kspec
+    created_at: 2026-03-17T08:13:31.545Z
+    completed_at: 2026-03-17T08:13:31.545Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "ac-1: 13 tests covering all filter types, pagination, sorting, defaults, empty results.
+      ac-2: 10 tests covering slug/ULID lookup, threads, checks, verdicts, events, subject, notes,
+      external_links, disposition, 404. All trait ACs annotated with N/A reasons or coverage
+      references."
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-17T08:13:39.426Z
+    completed_at: 2026-03-17T08:13:39.426Z
+events:
+  - _ulid: 01KKXDNWKQY94PZVX48QXGD9Z2
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-17T08:12:58.872Z
+  - _ulid: 01KKXDP5GQ26YXJJ7NJ6E5Z1SQ
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-17T08:13:07.991Z
+  - _ulid: 01KKXDPPDYP01VET2094HPBVP3
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-17T08:13:25.310Z
+  - _ulid: 01KKXDPWJA2677XJCTYK1F5FJR
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-17T08:13:31.594Z
+  - _ulid: 01KKXDQ48JZM93DGWH3VXN5MNH
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-17T08:13:39.474Z
+  - _ulid: 01KKXDQBHD6QCED5G8CJ9AFY6A
+    actor: pr-reviewer@kspec
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-17T08:13:46.925Z
+  - _ulid: 01KKXDQBHDVJD7S81MJG8TNR3W
+    actor: pr-reviewer@kspec
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-17T08:13:46.925Z
+examined_commit: 39d1d121096e5d010137498c0d9257cc5bae8752
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-review-api-read"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer@kspec
+    role: reviewer
+    created_at: 2026-03-17T08:13:46.864Z
+created_at: 2026-03-17T08:12:58.872Z
+updated_at: 2026-03-17T08:13:46.864Z
+notes: []

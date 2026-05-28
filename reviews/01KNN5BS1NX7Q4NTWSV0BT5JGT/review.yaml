@@ -1,0 +1,97 @@
+_ulid: 01KNN5BS1NX7Q4NTWSV0BT5JGT
+slugs: []
+title: Review replace-process-exit-string-sentinel-with-typed-error-class (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed locally in reviewer snapshot: Test Suites 2096/2096, Tests 7642 passed, 5 skipped,
+      duration 3323.5s."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-07T23:50:23.166Z
+    completed_at: 2026-04-07T23:50:23.166Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: packages/daemon/src/routes/command.ts, src/cli/batch-context.ts,
+      src/cli/commands/review.ts, src/cli/commands/task.ts, src/cli/output.ts,
+      tests/daemon-command-api.test.ts, tests/batch-exec-engine.test.ts. Commands run: git diff
+      --stat/--name-only/--unified, kspec task get, kspec item get, kspec review get/for-task, kspec
+      validate, rg AC annotations, rg catch/process.exit patterns, npm test. Claims verified:
+      previous review blocker fixed by rethrowing CommandExitError in review.ts catch blocks; daemon
+      command route now returns typed exit codes; full suite passes. Categories searched:
+      correctness, error handling, test quality, integration, edge cases."
+    name: review evidence
+    required: false
+    created_at: 2026-04-07T23:50:25.787Z
+    completed_at: 2026-04-07T23:50:25.787Z
+events:
+  - _ulid: 01KNN5BS1MMRXZZVA29DT2QNGP
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-07T23:45:07.125Z
+  - _ulid: 01KNN5CTDV4WP8MKEATAH4VMZE
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-07T23:45:41.307Z
+  - _ulid: 01KNN5NEJ1QXN4EJW23P4T765S
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-07T23:50:24.065Z
+  - _ulid: 01KNN5NH47HYG8VSADT66XW844
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence
+    timestamp: 2026-04-07T23:50:26.695Z
+  - _ulid: 01KNN5PFNPPR3ZDWT09JG7ZPSS
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-07T23:50:57.974Z
+  - _ulid: 01KNN5PFNPDGDAXM9QEC4GYSTK
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-07T23:50:57.974Z
+examined_commit: 7d9352d758d692bad3547788b23619ada85d8d6a
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNN24AJ4QFBJ9NHK5K16QMJ0"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-07T23:50:57.974Z
+created_at: 2026-04-07T23:45:07.125Z
+updated_at: 2026-04-07T23:50:57.974Z
+notes: []

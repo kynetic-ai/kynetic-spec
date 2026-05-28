@@ -1,0 +1,131 @@
+_ulid: 01KMDZ2X6Z3SXP0PP2QD3KT514
+slugs: []
+title: Review task-session-prompt-skills (cycle 2)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 7175 tests passed (310 test files, 3 skipped). No regressions.
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-23T18:30:41.136Z
+    completed_at: 2026-03-23T18:30:41.136Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate passed. No new warnings related to this change. Pre-existing warnings only
+      (orphaned specs, missing coverage on unrelated specs).
+    name: kspec-validate
+    required: true
+    runner: kspec
+    created_at: 2026-03-23T18:30:48.934Z
+    completed_at: 2026-03-23T18:30:48.934Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All own ACs covered: @session-prompt-action ac-1 through ac-9 (tests),
+      @session-prompt-action-schema ac-1 through ac-5 (tests). All trait ACs covered:
+      @trait-error-guidance ac-1,ac-2 (tests), ac-3 through ac-6 (N/A with reasons)."
+    name: ac-coverage
+    required: true
+    runner: kspec
+    created_at: 2026-03-23T18:31:15.816Z
+    completed_at: 2026-03-23T18:31:15.816Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Prior blocker (01KMDY7A): adapterId remained undefined when agent_id absent from event
+      context. Fix: else clause at action-executor.ts:1038-1041 sets adapterId='claude-agent-acp'.
+      Test updated with assertion: expect(handle.prompts[0]).not.toContain('{skill:task-work}') —
+      verifies rewriting occurs. Confirmed getSkillReferencePlatform('claude-agent-acp') returns
+      'claude-code' (prompts.ts:46)."
+    name: prior-blocker-fix
+    required: true
+    runner: manual
+    created_at: 2026-03-23T18:31:24.641Z
+    completed_at: 2026-03-23T18:31:24.641Z
+events:
+  - _ulid: 01KMDZ2X6Z0MXR7CY7B254CMYP
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-23T18:25:02.175Z
+  - _ulid: 01KMDZ35HKCE3QKYJFAP5G39KH
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-23T18:25:10.707Z
+  - _ulid: 01KMDZD8K4S4YFMTBGBDV3BABY
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-23T18:30:41.508Z
+  - _ulid: 01KMDZDG74EESYGVRNM2BCZ7NG
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-23T18:30:49.316Z
+  - _ulid: 01KMDZEAEAM29TKB86YAD31T3S
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-23T18:31:16.170Z
+  - _ulid: 01KMDZEK2KCR8V5T5DA4X60C6M
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior-blocker-fix
+    timestamp: 2026-03-23T18:31:25.011Z
+  - _ulid: 01KMDZET1QD0EJ5PNGECZDN67X
+    actor: agent@kynetic.dev
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-23T18:31:32.151Z
+  - _ulid: 01KMDZET1QM163CA1J9ZGK28F7
+    actor: agent@kynetic.dev
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-23T18:31:32.151Z
+examined_commit: 3b7c7c8513228a4bd506f9656d0d6b7f8e1b535b
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-session-prompt-skills"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: agent@kynetic.dev
+    role: reviewer
+    created_at: 2026-03-23T18:31:32.151Z
+created_at: 2026-03-23T18:25:02.175Z
+updated_at: 2026-03-23T18:31:32.151Z
+notes: []

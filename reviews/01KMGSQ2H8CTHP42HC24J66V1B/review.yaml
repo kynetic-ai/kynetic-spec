@@ -1,0 +1,99 @@
+_ulid: 01KMGSQ2H8CTHP42HC24J66V1B
+slugs: []
+title: Review fix-flaky-tests (cycle 1)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 6828 tests passed across 301 files (0 failures, 3 skipped). Both previously-flaky
+      tests passed: canonical-task-workspace-contract (6 tests, 30.2s) and agent-dispatch-engine
+      (123 tests, 114s)."
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-24T20:49:29.485Z
+    completed_at: 2026-03-24T20:49:29.485Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Reviewed full diff (2 test files, 8 skill template files). Test changes: (1)
+      agent-dispatch-engine worker guardrails test — added workspace provisioning/bootstrap mocks
+      matching existing reviewer test pattern, replaced 100ms inline polling with waitForMockCall
+      helper (2s timeout). (2) canonical-task-workspace-contract cleanup eligibility test — mocked
+      reconcileDispatchWorkspaceRegistry and reconcileDispatchWorkspaceArtifacts to bypass heavy
+      engine.start() I/O while preserving full exercise of handleStateChange →
+      reconcileDispatchWorkspaceLifecycle → readWorkspaceRecord chain. Skill template files are
+      unchanged from merge base (divergence is visual noise from parallel oxlint commit on dev)."
+    name: code-review
+    required: true
+    runner: manual
+    created_at: 2026-03-24T20:49:41.070Z
+    completed_at: 2026-03-24T20:49:41.070Z
+events:
+  - _ulid: 01KMGSQ2H8SFGJ9CR10X8DC4R9
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-24T20:48:54.824Z
+  - _ulid: 01KMGSQB1S81A6J7NJ0BT6N6EA
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-24T20:49:03.545Z
+  - _ulid: 01KMGSR4RM035Y5KZRBP27BQDM
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-24T20:49:29.876Z
+  - _ulid: 01KMGSRG3JDYJMKT2N3YTJ7SJH
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: code-review
+    timestamp: 2026-03-24T20:49:41.490Z
+  - _ulid: 01KMGSRQ4DC06BDBK1QNM6B4KC
+    actor: agent@dispatch
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-24T20:49:48.685Z
+  - _ulid: 01KMGSRQ4DMCBZ6HXA9109G5GH
+    actor: agent@dispatch
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-24T20:49:48.685Z
+examined_commit: f99e417cb5641fddbfc863130de02dc550f0cc5b
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMGN921HM61YB644E7ZQ2XX9"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: agent@dispatch
+    role: reviewer
+    created_at: 2026-03-24T20:49:48.685Z
+created_at: 2026-03-24T20:48:54.824Z
+updated_at: 2026-03-24T20:49:48.685Z
+notes: []

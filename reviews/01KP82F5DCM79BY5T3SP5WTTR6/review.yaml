@@ -1,0 +1,257 @@
+_ulid: 01KP82F5DCM79BY5T3SP5WTTR6
+slugs: []
+title: Review @01KNXYJ3PYYG1ABH6SMQ2KRE1S (cycle 8)
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation fails in this snapshot with a pre-existing schema error in
+      .kspec/modules/meta.yaml (traits entry expected string, received object) plus repo-wide
+      completeness/alignment warnings unrelated to this task branch.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-15T08:12:10.753Z
+    completed_at: 2026-04-15T08:12:10.753Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran npm test twice in this snapshot. Run 1 passed: 2147/2147 suites, 7824/7829 tests, 5
+      skipped. Run 2 passed via unchanged-content cache with the same passing result."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-15T08:12:13.693Z
+    completed_at: 2026-04-15T08:12:13.693Z
+events:
+  - _ulid: 01KP82F5DCHERYCR8CWW9W7GPT
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-15T08:00:06.572Z
+  - _ulid: 01KP82G7DNCFP17PD19EFEZJK5
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-15T08:00:41.397Z
+  - _ulid: 01KP8359KD3SS873PW21W7NVSK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-15T08:12:11.757Z
+  - _ulid: 01KP835CHN5Z8R3X9N2ZWGZ4ZG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-15T08:12:14.773Z
+  - _ulid: 01KP836HCVGJ4RVW6YVK67MTG6
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP836GF1VTA0SRSEJV9C3ESK
+    timestamp: 2026-04-15T08:12:52.507Z
+  - _ulid: 01KP836M3SZ2554QPYHQWR2VQE
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP836K5G7Q4RX6DQ8QVJ2MWC
+    timestamp: 2026-04-15T08:12:55.289Z
+  - _ulid: 01KP836PXC4NWHX782YXJ8RD2K
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KP836NX8DGSDRDR6QKBWB3Y3
+    timestamp: 2026-04-15T08:12:58.156Z
+  - _ulid: 01KP837RMY11W2A3H7127MG4NC
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP836GF1VTA0SRSEJV9C3ESK
+    timestamp: 2026-04-15T08:13:32.702Z
+  - _ulid: 01KP837VNK7ESPC99SNVKJ64EW
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP836K5G7Q4RX6DQ8QVJ2MWC
+    timestamp: 2026-04-15T08:13:35.795Z
+  - _ulid: 01KP8388JABD5JJTNQA554PJ0G
+    actor: Jacob Chapel
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-15T08:13:49.002Z
+  - _ulid: 01KP8388JA6NG78ADZWW2R0EWN
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-15T08:13:49.002Z
+  - _ulid: 01KP84B0FEYHN6GGAXDQGVYZQ3
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP836GF1VTA0SRSEJV9C3ESK
+    timestamp: 2026-04-15T08:32:47.598Z
+  - _ulid: 01KP84B5J9WYZFZRCQWDGF5FVF
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP836K5G7Q4RX6DQ8QVJ2MWC
+    timestamp: 2026-04-15T08:32:52.810Z
+  - _ulid: 01KP84BJE001K9870QWJGWM3XP
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP836GF1VTA0SRSEJV9C3ESK
+    timestamp: 2026-04-15T08:33:05.985Z
+  - _ulid: 01KP84BQ7YQJQ6VYAKNJ381WQP
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP836K5G7Q4RX6DQ8QVJ2MWC
+    timestamp: 2026-04-15T08:33:10.911Z
+  - _ulid: 01KP84BY5SK4PCXRTPB21CBBZY
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP836NX8DGSDRDR6QKBWB3Y3
+    timestamp: 2026-04-15T08:33:18.010Z
+examined_commit: ceaa0b225705ec805e8d9189d61457f3757557ed
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNXYJ3PYYG1ABH6SMQ2KRE1S"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KP836GF1VTA0SRSEJV9C3ESK
+    anchor:
+      type: code
+      commit: ceaa0b225705ec805e8d9189d61457f3757557ed
+      line_end: 79
+      line_start: 71
+      path: tests/scaffold-project-config.test.ts
+      side: head
+    entries:
+      - _ulid: 01KP836GF1NGH5769KAB89WQ04
+        author: Jacob Chapel
+        body: These tests annotate , but they only prove that  exits 0. They never compare the resolved
+          config against the empty-config case, so they stay green even while the implementation
+          changes /. I confirmed the false green by running this test file successfully and
+          separately observing that the scaffolded config resolves differently from an empty config.
+          The AC needs a behavioral assertion on the resolved config object, not just a generic
+          command-success check.
+        created_at: 2026-04-15T08:12:51.553Z
+      - _ulid: 01KP837QP14NGGDN8DR836P5XR
+        author: Jacob Chapel
+        body: "Clarification: these tests claim coverage for @scaffolded-project-config
+          ac-file-valid-on-load, but they only verify that `kspec shadow status` exits 0. They never
+          compare the resolved config from a scaffolded file against the resolved config with no
+          file present, so they remain green even though the new template changes
+          dispatch.base_branch and dispatch.publication_mode. I verified the false green by running
+          this test file successfully and separately observing the config mismatch with an
+          executable temp-repo check."
+        created_at: 2026-04-15T08:13:31.713Z
+      - _ulid: 01KP84AZGASXX6ADMR7A78GB5B
+        author: "@claude"
+        body: "Fixed: ac-file-valid-on-load tests now import loadProjectConfig() and compare the full
+          resolved config objects between a scaffolded project and an empty-config project. The test
+          loads the scaffolded config, deletes the file, loads again (empty-config defaults), then
+          asserts the two resolved config objects are deeply equal. The integration test (two
+          separate temp projects) also uses loadProjectConfig() comparison instead of shadow status
+          exit code. These tests now fail if the scaffolded template produces different resolved
+          values than the empty-config defaults."
+        created_at: 2026-04-15T08:32:46.602Z
+    kind: blocker
+    resolved_at: 2026-04-15T08:33:05.070Z
+    resolved_by: "@claude"
+  - _ulid: 01KP836K5G7Q4RX6DQ8QVJ2MWC
+    anchor:
+      type: code
+      commit: ceaa0b225705ec805e8d9189d61457f3757557ed
+      line_end: 1319
+      line_start: 1313
+      path: src/cli/commands/setup.ts
+      side: head
+    entries:
+      - _ulid: 01KP836K5HC7NKYMCSA9VB1240
+        author: Jacob Chapel
+        body: "The scaffolded template now hardcodes dispatch settings that do not match the loader's
+          empty-config defaults, so it violates . I verified this with an executable comparison in a
+          temp repo: after   cd /home/chapel/Projects/kynetic-spec-dispatch && kspec
+          setup,  resolves  to \"main\" and  to \"manual_merge\"; deleting  in the same repo
+          resolves those fields to  and \"auto\" respectively. That means scaffolding changes
+          dispatch behavior on first load instead of being behavior-preserving, which is exactly
+          what this AC forbids."
+        created_at: 2026-04-15T08:12:54.321Z
+      - _ulid: 01KP837THWBTSZ88S22KMXFSZM
+        author: Jacob Chapel
+        body: 'Clarification: this violates @scaffolded-project-config ac-file-valid-on-load. In an
+          executable temp-repo check, loading the scaffolded file resolved dispatch.base_branch to
+          "main" and dispatch.publication_mode to "manual_merge"; deleting kspec.config.yaml in the
+          same repo resolved those fields to null and "auto". The scaffold therefore changes
+          dispatch behavior on first load instead of preserving the empty-config behavior the AC
+          requires.'
+        created_at: 2026-04-15T08:13:34.652Z
+      - _ulid: 01KP84B4MZJ6WK201TW7W90S4Q
+        author: "@claude"
+        body: "Fixed: The root cause was the scaffolded template hardcoding values that differ from the
+          config loader defaults. Two changes: (1) publication_mode now scaffolds as 'auto'
+          (matching DEFAULT_CONFIG.dispatch.publication_mode) instead of 'manual_merge'. (2)
+          base_branch is now a commented-out placeholder showing the resolved value (like the
+          coverage section), so it doesn't change the resolved config while still being visible for
+          customization. Loading the scaffolded file now produces identical resolved config to an
+          empty config: base_branch=null, publication_mode='auto'."
+        created_at: 2026-04-15T08:32:51.871Z
+    kind: blocker
+    resolved_at: 2026-04-15T08:33:10.007Z
+    resolved_by: "@claude"
+  - _ulid: 01KP836NX8DGSDRDR6QKBWB3Y3
+    entries:
+      - _ulid: 01KP836NX910BD7KJH52SNNW7N
+        author: Jacob Chapel
+        body: "Evidence log: Files read: src/cli/commands/setup.ts, src/parser/config.ts,
+          src/agent-runtime/workspace.ts, src/cli/commands/init.ts,
+          tests/scaffold-project-config.test.ts, tests/setup.test.ts,
+          tests/setup-from-linked-worktree.test.ts. Commands run: kspec task get
+          @01KNXYJ3PYYG1ABH6SMQ2KRE1S, kspec item get @scaffolded-project-config, kspec review
+          for-task @01KNXYJ3PYYG1ABH6SMQ2KRE1S, kspec validate, git diff against
+          7b1b856564b91f28efc8bbb2d3b8e41034fd9a3f, npm test twice, npm test -- --run
+          tests/scaffold-project-config.test.ts, executable temp-repo config comparison via
+          loadProjectConfig(). Claims verified: scaffolded config validity vs empty-config behavior,
+          test coverage for ac-file-valid-on-load, repo-wide test status. Categories searched:
+          correctness, test quality, edge cases, error handling, integration."
+        created_at: 2026-04-15T08:12:57.129Z
+    kind: nit
+    resolved_at: 2026-04-15T08:33:17.089Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: Jacob Chapel
+    role: reviewer
+    created_at: 2026-04-15T08:13:49.001Z
+created_at: 2026-04-15T08:00:06.572Z
+updated_at: 2026-04-15T08:33:17.089Z
+notes: []

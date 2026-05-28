@@ -1,0 +1,216 @@
+_ulid: 01KR3X39J2RYCEMHH3C23YYW8A
+slugs: []
+title: Review task-add-guardrail-classification-regressions
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts failed: tests/lint-no-leaky-test-daemon.test.ts passed
+      (22 tests); tests/lint-daemon-test-guardrails.test.ts failed with the same 6 new precision
+      tests."
+    name: focused guardrail tests
+    required: true
+    runner: npm
+    created_at: 2026-05-08T13:52:01.351Z
+    completed_at: 2026-05-08T13:52:01.351Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check
+      706fdefb8192e8f2d0fd60bf9658ec79eb4d3e4f..9ff274ab87aa2948893aecf7bebcc9e14827572c produced no
+      whitespace errors.
+    name: git diff --check
+    required: true
+    runner: git
+    created_at: 2026-05-08T13:52:04.822Z
+    completed_at: 2026-05-08T13:52:04.822Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate reported schema/references OK and exited with warnings only: 7 reference
+      warnings, 38 alignment warnings, 255 completeness warnings. No task-specific validation error
+      identified."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-08T13:52:08.497Z
+    completed_at: 2026-05-08T13:52:08.497Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite failed because tests/lint-daemon-test-guardrails.test.ts has 6 failing tests
+      in the newly added daemon guardrail precision block: lines 937, 959, 979, 1000, 1022, and
+      1040. Summary: 4 failed suites, 2398 passed; 6 failed tests, 8797 passed, 5 skipped. Full log:
+      /tmp/kspec-test-cache/01KR3X2008KSRA9P2K8YPF6W95/1018cda58c0357e4.log"
+    name: npm test -- --fresh
+    required: true
+    runner: npm
+    created_at: 2026-05-08T13:52:12.142Z
+    completed_at: 2026-05-08T13:52:12.142Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md, tests/lint-daemon-test-guardrails.test.ts,
+      tools/eslint-rules/no-leaky-test-daemon.js, task/spec/plan context. Commands run: kspec task
+      get, kspec item get @daemon-test-guardrail-precision, kspec item get
+      @daemon-test-harness-guardrails, kspec plan get, git diff/stat/show/log, rg AC annotations,
+      kspec validate, git diff --check, focused npm test, full npm test. Claims verified: worker's
+      intentional-failure claim verified by focused and full test runs. Categories searched:
+      correctness/spec alignment, test quality, source-scanning risk, integration/merge gate,
+      validation warnings."
+    name: review evidence log
+    required: false
+    runner: reviewer
+    created_at: 2026-05-08T13:52:50.539Z
+    completed_at: 2026-05-08T13:52:50.539Z
+events:
+  - _ulid: 01KR3X39J2PMYB9NHN5VZXH69X
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-08T13:40:40.642Z
+  - _ulid: 01KR3X3WNQVD471T9SDW289FN5
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-08T13:41:00.215Z
+  - _ulid: 01KR3XR3H280XD3F97FHTTSD1E
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: focused guardrail tests
+    timestamp: 2026-05-08T13:52:02.594Z
+  - _ulid: 01KR3XR6XXRRSFRDDAGS1ARJXB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: git diff --check
+    timestamp: 2026-05-08T13:52:06.077Z
+  - _ulid: 01KR3XRAFRBM1WCDVHH734ANAV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-08T13:52:09.721Z
+  - _ulid: 01KR3XRE3PZ1CQ8D5C07PFQEXN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test -- --fresh
+    timestamp: 2026-05-08T13:52:13.430Z
+  - _ulid: 01KR3XRXJ06FANBXSSKAZ72M1Q
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR3XRW8CWRGXPK4XHZX3WTRS
+    timestamp: 2026-05-08T13:52:29.248Z
+  - _ulid: 01KR3XSKJMQMZF6G3PY4JFYB3N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-08T13:52:51.796Z
+  - _ulid: 01KR3XSWMETZ97MJ8WVVCCSKCH
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-08T13:53:01.070Z
+  - _ulid: 01KR3XSWMEWC3N5CS0TS558P88
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-08T13:53:01.070Z
+  - _ulid: 01KR3ZHBVT3PCN3KRAFVZ6NKJA
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR3XRW8CWRGXPK4XHZX3WTRS
+    timestamp: 2026-05-08T14:23:18.906Z
+  - _ulid: 01KR3ZHNWJES6YZ392KB1VTXJ6
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR3XRW8CWRGXPK4XHZX3WTRS
+    timestamp: 2026-05-08T14:23:29.170Z
+examined_commit: 9ff274ab87aa2948893aecf7bebcc9e14827572c
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR3W7PCMZ7KPMPJ9ZFBQXX7W"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR3XRW8CWRGXPK4XHZX3WTRS
+    anchor:
+      type: code
+      commit: 9ff274ab87aa2948893aecf7bebcc9e14827572c
+      line_end: 1040
+      line_start: 937
+      path: tests/lint-daemon-test-guardrails.test.ts
+      side: head
+    entries:
+      - _ulid: 01KR3XRW8D2HQVQT21JAC75Y3E
+        author: Jacob Chapel
+        body: "MUST-FIX: This branch leaves the newly added regression tests active while the current rule
+          still fails them, so it cannot be merged without breaking the required project test gate.
+          I ran `npm test -- --fresh` and it failed only in this new block: the four direct-entry
+          cases still return oxlint exit code 0, and the two unrelated-subprocess cases still return
+          exit code 1. The focused command `npm test -- --fresh
+          tests/lint-daemon-test-guardrails.test.ts tests/lint-no-leaky-test-daemon.test.ts` shows
+          the same six failures. The plan's regression-first split is useful for development, but
+          the review/merge gate requires no introduced test regressions on the branch that advances
+          to `dev`; please submit these tests together with the rule change that makes them pass, or
+          otherwise keep `npm test` green at merge time."
+        created_at: 2026-05-08T13:52:27.917Z
+      - _ulid: 01KR3ZHAHRNG4FRW8DJGVJMXND
+        author: "@claude"
+        body: "Fixed: switched the six failing-before-fix regression tests in
+          tests/lint-daemon-test-guardrails.test.ts to it.fails() so the merge gate stays green. The
+          regression coverage is preserved live — the assertions still execute and exercise oxlint
+          against the synthetic snippets — but the it.fails modifier flips the pass/fail polarity so
+          today's classifier gaps satisfy the test instead of breaking the suite. When
+          @task-fix-guardrail-daemon-command-classification lands and the assertions succeed,
+          it.fails will itself fail, forcing the dependent task to remove .fails before merge. Doc
+          block above the describe spells this out for the next reviewer and the fix worker.
+          Verified: focused npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+          tests/lint-no-leaky-test-daemon.test.ts → 68/68 pass; full npm test → 8803 passed, 5
+          skipped, 0 failed across 2402 suites."
+        created_at: 2026-05-08T14:23:17.560Z
+    kind: blocker
+    resolved_at: 2026-05-08T14:23:27.854Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-08T13:53:01.070Z
+created_at: 2026-05-08T13:40:40.642Z
+updated_at: 2026-05-08T14:23:27.854Z
+notes: []

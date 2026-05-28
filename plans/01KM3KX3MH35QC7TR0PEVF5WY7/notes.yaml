@@ -1,0 +1,67 @@
+notes:
+  - _ulid: 01KM3M5KHS90CVHXC1QPKDDRDH
+    content: Replace hardcoded dev references with configured integration branch semantics
+    author: Jacob Chapel
+    created_at: 2026-03-19T18:01:51.930Z
+  - _ulid: 01KM3MCWBK6TSTX1VFD3MQ66ZY
+    content: Remove hardcoded main assumptions and generalize to human-owned promotion branch semantics
+    author: Jacob Chapel
+    created_at: 2026-03-19T18:05:50.323Z
+  - _ulid: 01KM3PR0ZSYRYQGWXSMTT39B1H
+    content: Reframe plan around shared-checkout robustness and topology-agnostic dispatch behavior
+    author: Jacob Chapel
+    created_at: 2026-03-19T18:46:52.665Z
+  - _ulid: 01KM3R338AJ5WAE0WK09F61CE8
+    content: Normalize acceptance criteria so each rule reads independently without relational phrasing
+    author: Jacob Chapel
+    created_at: 2026-03-19T19:10:24.010Z
+  - _ulid: 01KM3T1X3TBJ05Q79P248ZBCZZ
+    content: "Address review blockers: narrow scope to shared-checkout behavior, remove separate-clone
+      contract language, and make drift repair AC observable"
+    author: Jacob Chapel
+    created_at: 2026-03-19T19:44:42.106Z
+  - _ulid: 01KM3WR0WXXCC4Q6W0HHVQJYVJ
+    content: Reduce implementation detail leakage by rewriting spec language around observable targeting
+      and coherence behavior
+    author: Jacob Chapel
+    created_at: 2026-03-19T20:31:44.029Z
+  - _ulid: 01KM3Y2GBMBEYRM4QWH1ME9BAT
+    content: Remove remaining topology guidance from plan-facing text and compress intro to behavioral
+      problem statement
+    author: Jacob Chapel
+    created_at: 2026-03-19T20:54:56.116Z
+  - _ulid: 01KM3YR21N681W7PJAWYT6CYEJ
+    content: Rewrite mutation-scope spec as pure observable behavior and soften remaining
+      mechanism-heavy task wording
+    author: Jacob Chapel
+    created_at: 2026-03-19T21:06:42.357Z
+  - _ulid: 01KM3ZMGM7CVPVG54780BBFG64
+    content: |-
+      ### Product boundary
+
+      This plan treats shared-checkout correctness as the product contract:
+
+      - shared checkout is supported and must be robust
+      - linked task worktrees remain part of the dispatch execution model, but
+        they do not define the integration-branch mutation contract
+
+      ### Why this plan does not require a separate checkout
+
+      Requiring a dedicated checkout would overfit one operator workflow into
+      the product contract and would interact awkwardly with the existing
+      `.kspec` identity model, project-root resolution, and task worktree
+      behavior. The right product-level requirement is correctness, not one
+      mandatory topology.
+
+      ### Key runtime boundary
+
+      Task worktrees are for task code execution. Integration-branch mutation
+      is a dispatcher concern. The runtime must keep those responsibilities
+      separate even when dispatch is running from a shared checkout.
+
+      ### Out of scope
+
+      - prescribing a required repository topology for dispatch deployment
+      - replacing shared-checkout robustness with operational workarounds
+    author: Jacob Chapel
+    created_at: 2026-03-19T21:22:14.791Z

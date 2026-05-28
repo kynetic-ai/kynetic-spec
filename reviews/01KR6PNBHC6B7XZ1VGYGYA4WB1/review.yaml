@@ -1,0 +1,252 @@
+_ulid: 01KR6PNBHC6B7XZ1VGYGYA4WB1
+slugs: []
+title: Review cleanup-registration failure regression
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: mise exec -- kspec validate --refs --warnings-ok exited 0. References OK; only existing
+      deprecated-reference warnings were reported.
+    name: refs-validation
+    required: true
+    runner: kspec
+    created_at: 2026-05-09T15:57:39.158Z
+    completed_at: 2026-05-09T15:57:39.158Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: mise exec -- kspec validate --completeness --warnings-ok exited 0. Completeness completed
+      with existing project warnings; new AC annotation for @daemon-test-startup-failure-hygiene
+      ac-cleanup-registration-failure-stops-owned-child is present.
+    name: completeness-validation
+    required: true
+    runner: kspec
+    created_at: 2026-05-09T15:57:51.540Z
+    completed_at: 2026-05-09T15:57:51.540Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts failed: 9 passed, 1 failed.
+      The failing test is startTestDaemon registerCleanup failure cleanup stops the owned child when
+      registerCleanup throws after spawn at tests/helpers/daemon.test.ts:665."
+    name: focused-daemon-suite
+    required: true
+    runner: npm-test
+    created_at: 2026-05-09T15:58:02.430Z
+    completed_at: 2026-05-09T15:58:02.430Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh failed. Aggregate: 8966 passed, 5 skipped, 1 failed out
+      of 8972 tests; 2412 suites passed and 2 suite entries failed out of 2414. Only failing
+      assertion reported was tests/helpers/daemon.test.ts:665. Full log:
+      /tmp/kspec-test-cache/01KR6PKHFDJ51VERQFGP96FJZZ/bb2c4f584f2dc6d6.log"
+    name: full-test-suite
+    required: true
+    runner: npm-test
+    created_at: 2026-05-09T15:58:13.894Z
+    completed_at: 2026-05-09T15:58:13.894Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md, tests/helpers/daemon.ts, tests/helpers/daemon.test.ts,
+      task/spec context for @daemon-test-startup-failure-hygiene, git diff 2ae8cbb..HEAD. Commands
+      run: kspec task get, kspec item get, kspec review for-task/add/open/get, rg AC annotations and
+      seam usage, focused daemon suite, full npm test, refs validation, completeness validation.
+      Claims verified: new seam is synchronous before registerCleanup; new test captures child and
+      endpoint and fails on live child; guardrail suites passed during full run. Categories
+      searched: correctness, edge cases, error handling, test quality, integration, merge gate
+      impact."
+    name: review-evidence-log
+    required: false
+    runner: manual
+    created_at: 2026-05-09T15:58:27.913Z
+    completed_at: 2026-05-09T15:58:27.913Z
+events:
+  - _ulid: 01KR6PNBHBG2ZC1H3A5CXFERZB
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-09T15:45:55.755Z
+  - _ulid: 01KR6PNYBM7DZF9SW5HGQ1F579
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-09T15:46:15.028Z
+  - _ulid: 01KR6Q9AJDVYANH7D8BB3VNB9T
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR6Q99AMC96M1ETSVKGXNPEZ
+    timestamp: 2026-05-09T15:56:50.126Z
+  - _ulid: 01KR6QAH1JF2HRX7TNZQBGB8VT
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR6Q99AMC96M1ETSVKGXNPEZ
+    timestamp: 2026-05-09T15:57:29.522Z
+  - _ulid: 01KR6QAVQVQFFDGS11Y196E7QM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: refs-validation
+    timestamp: 2026-05-09T15:57:40.475Z
+  - _ulid: 01KR6QB7WJWZ65YHWV3YBMVV2W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: completeness-validation
+    timestamp: 2026-05-09T15:57:52.914Z
+  - _ulid: 01KR6QBJK26MXAKYSEJSJ00VPE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: focused-daemon-suite
+    timestamp: 2026-05-09T15:58:03.874Z
+  - _ulid: 01KR6QBXN6P9VH4WCJVJ6EWYEY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: full-test-suite
+    timestamp: 2026-05-09T15:58:15.206Z
+  - _ulid: 01KR6QCBBG7S8FX5D74R9B2WWD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence-log
+    timestamp: 2026-05-09T15:58:29.232Z
+  - _ulid: 01KR6QCND3QRWTWKRRD2BAQE9P
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-09T15:58:39.523Z
+  - _ulid: 01KR6QCND331EE2NHYB9TPVARG
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-09T15:58:39.523Z
+  - _ulid: 01KR6RE63YJFX7ETYJJ7VAT9J2
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR6Q99AMC96M1ETSVKGXNPEZ
+    timestamp: 2026-05-09T16:16:57.982Z
+  - _ulid: 01KR6REJPVQXET2DYZTZFSZZGJ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR6Q99AMC96M1ETSVKGXNPEZ
+    timestamp: 2026-05-09T16:17:10.876Z
+examined_commit: 127e8024b36887d98349e8ccfd3c23bd1bd572cc
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR6M6XARDRJ17BY20Z3BG66B"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR6Q99AMC96M1ETSVKGXNPEZ
+    anchor:
+      type: code
+      commit: 127e8024b36887d98349e8ccfd3c23bd1bd572cc
+      line_end: 665
+      line_start: 665
+      path: tests/helpers/daemon.test.ts
+      side: head
+    entries:
+      - _ulid: 01KR6Q99AMPEVFDDS3Z81X0JRB
+        author: Jacob Chapel
+        body: >-
+          MUST-FIX: this branch introduces an active failing required test. Both the focused command
+          and the full suite fail at this new assertion (), because the helper still returns from a
+          throwing  while the child is alive. That does prove the intended leak, but in  this task
+          would merge a red 
+
+          > @kynetic-ai/spec@0.13.0 test
+
+          > node scripts/test.cjs into  until a later task fixes the helper. Review gates require no
+          introduced test regressions before merge. Keep the regression signal while preserving a
+          green required suite (for example, stage it as an expected-failing regression that the
+          implementation task must flip/remove) or include the helper fix in the same branch so 
+
+          > @kynetic-ai/spec@0.13.0 test
+
+          > node scripts/test.cjs passes before review approval.
+        created_at: 2026-05-09T15:56:48.852Z
+      - _ulid: 01KR6QAFR32GXZVBR8XZY55MK8
+        author: Jacob Chapel
+        body: "Correction to the blocker body: both focused daemon.test.ts and the full npm test run fail at
+          tests/helpers/daemon.test.ts:665 with AssertionError expected false to be true. The
+          failure is introduced by this branch and proves the leak, but it still makes the required
+          suite red in manual_merge before the follow-up helper fix lands."
+        created_at: 2026-05-09T15:57:28.195Z
+      - _ulid: 01KR6RE4PS14GAVCRH0Z62S4E8
+        author: "@claude"
+        body: >-
+          Fixed in 239c4fb96. Wrapped the new regression with vitest `it.fails` so the required
+          suite stays green pre-fix while preserving the regression signal.
+
+
+          Pre-fix: the cleanup-registration leak still trips the child-terminated /
+          endpoint-unreachable assertions; `it.fails` reports that expected failure as PASS, so
+          focused-daemon-suite and full-test-suite no longer go red on this branch.
+
+
+          Post-fix (in @task-fix-register-cleanup-failure-leak): all assertions will pass,
+          `it.fails` will then report as FAIL, forcing the implementation task to flip this back to
+          a regular `it(...)`. That flip is the explicit signal that the leak is closed and the
+          regression now pins post-fix behavior. The body still asserts the full contract (sentinel
+          surfaces, child terminated, endpoint unreachable) so the staged regression covers every
+          facet the dependent fix must preserve.
+
+
+          Verification:
+
+          - mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts → 10/10 pass.
+
+          - mise exec -- npm test → 2414/2414 suites pass, 8967/8972 tests pass (5 skipped, 0
+          failed).
+
+          - mise exec -- kspec validate --refs --warnings-ok → exit 0 (only pre-existing
+          deprecated-ref warnings).
+
+          - mise exec -- kspec validate --completeness --warnings-ok → exit 0 (only pre-existing
+          malformed_ac_token warnings).
+        created_at: 2026-05-09T16:16:56.537Z
+    kind: blocker
+    resolved_at: 2026-05-09T16:17:09.443Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-09T15:58:39.522Z
+created_at: 2026-05-09T15:45:55.756Z
+updated_at: 2026-05-09T16:17:09.443Z
+notes: []

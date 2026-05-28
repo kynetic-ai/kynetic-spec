@@ -1,0 +1,238 @@
+_ulid: 01KMVB0RBMYKYE99PVS2JWVNZ7
+slugs: []
+title: Review completed task record reconciliation (cycle 3)
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      Ran ✓ Validation passed
+
+      ────────────────────────────────────────
+
+      Files checked: 10
+
+      Items checked: 567
+
+      Tasks checked: 0
+
+      Meta: 10 agents, 11 workflows, 10 conventions
+
+
+      Schema: OK
+
+      References: OK
+
+
+      Reference warnings: 1
+        ⚠ @skills
+          Orphaned skill directory 'skills' has no corresponding meta entry
+          in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+      Alignment warnings: 31
+        Orphaned specs (no tasks): 30
+          ○ Test Trait
+          ○ Filterable List Commands
+          ○ Dry Run Preview Mode
+          ... and 27 more
+        Status mismatches: 1
+          ! Task Set Batch Support
+            Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+
+      Alignment stats: 404/567 specs have tasks, 403 aligned
+
+
+      Completeness warnings: 482
+        Missing acceptance criteria: 1
+          ○ @01KJN1WT - Test Trait
+        Missing own AC coverage: 227
+          ! @spec-item - Spec Item
+            Uncovered: ac-item-1, ac-item-2
+          ! @ulid-system - ULID Identifier System
+            Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+          ! @slug-system - Slug Alias System
+            Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+          ... and 224 more
+        Invalid AC annotations: 254
+          ! AC annotation references '@slug' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-workspace-reconciliation-cycle-for-completed-task-records-01kmv52k-review/tests/ac-annotation-validation.test.ts:6
+          ! AC annotation references '@my-spec' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-workspace-reconciliation-cycle-for-completed-task-records-01kmv52k-review/tests/ac-annotation-validation.test.ts:84
+          ! AC annotation references '@my-spec' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-workspace-reconciliation-cycle-for-completed-task-records-01kmv52k-review/tests/ac-annotation-validation.test.ts:87
+          ! AC annotation references '@spec-a' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-workspace-reconciliation-cycle-for-completed-task-records-01kmv52k-review/tests/ac-annotation-validation.test.ts:114
+          ! AC annotation references '@spec-b' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-workspace-reconciliation-cycle-for-completed-task-records-01kmv52k-review/tests/ac-annotation-validation.test.ts:118
+          ... and 249 more
+      Skills: OK (10 files checked); exit code 6 due pre-existing warnings only (1 reference
+      warning, 31 alignment warnings, 482 completeness warnings), with Schema OK and References OK.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-28T23:12:29.749Z
+    completed_at: 2026-03-28T23:12:29.749Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      > @kynetic-ai/spec@0.12.0 test
+
+      > node scripts/test.cjs exited 1 in this snapshot: 7062 passed, 1 failed, 5 skipped (2 failed
+      suites of 1964). The failing test reported by the run was  at line 5878, so the required
+      full-suite gate is not clean.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-28T23:12:29.806Z
+    completed_at: 2026-03-28T23:12:29.806Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      > @kynetic-ai/spec@0.12.0 test
+
+      > node scripts/test.cjs --fresh --run tests/dispatch-workspace-terminal-reconciliation.test.ts
+      tests/daemon-command-api.test.ts failed: 12 failing assertions in
+      tests/daemon-command-api.test.ts, where mutating daemon command API requests returned 500
+      instead of expected 200/422. Workspace terminal reconciliation tests passed in the same run.
+    name: targeted npm test
+    required: false
+    runner: npm
+    created_at: 2026-03-28T23:12:37.941Z
+    completed_at: 2026-03-28T23:12:37.941Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran kspec validate; exit code 6 due pre-existing warnings only, with Schema OK and
+      References OK.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-28T23:12:50.493Z
+    completed_at: 2026-03-28T23:12:50.493Z
+events:
+  - _ulid: 01KMVB0RBK5QM4JWMDMCVNJA7K
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-28T23:03:42.196Z
+  - _ulid: 01KMVB2JGHY2KVHPZTY0FNGPY9
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-28T23:04:41.745Z
+  - _ulid: 01KMVBGW81HGDDTD7WN5PESETK
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-28T23:12:30.465Z
+  - _ulid: 01KMVBGXD41JRAQYE7ECX9QEFE
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-28T23:12:31.653Z
+  - _ulid: 01KMVBH0Z6C4AZQ4X8S74DZVY5
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMVBH02BQ1AC333GVARH3QDZ
+    timestamp: 2026-03-28T23:12:35.302Z
+  - _ulid: 01KMVBH4QCK75Q43334149SMVK
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: targeted npm test
+    timestamp: 2026-03-28T23:12:39.149Z
+  - _ulid: 01KMVBH8Q3YFF216F98VG7Y8E0
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMVBH7C2KK29GDPMPPNWFGND
+    timestamp: 2026-03-28T23:12:43.235Z
+  - _ulid: 01KMVBHGWVBYZNRRSKAF7X91DQ
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-28T23:12:51.612Z
+  - _ulid: 01KMVBRCN0H8QE7YXEKR1AA60Q
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-28T23:16:36.640Z
+examined_commit: afd332b4c3b16543d6a80c9a905ac644ae07d3bd
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMV52K0KFVQ33W970Z9NBCR5"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMVBH02BQ1AC333GVARH3QDZ
+    anchor:
+      type: code
+      commit: afd332b4c3b16543d6a80c9a905ac644ae07d3bd
+      line_end: 190
+      line_start: 187
+      path: packages/daemon/src/routes/command.ts
+      side: head
+    entries:
+      - _ulid: 01KMVBH02BBBAEATWXR5R4HVNJ
+        author: Test User
+        body: >-
+          Unconditionally clearing KSPEC_SPEC_DIR here regresses the daemon mutation path for
+          isolated project contexts. Repro: 
+
+          > @kynetic-ai/spec@0.12.0 test
+
+          > node scripts/test.cjs --fresh --run
+          tests/dispatch-workspace-terminal-reconciliation.test.ts tests/daemon-command-api.test.ts
+          now fails 12 assertions in  (for example lines 387-417 and 519-638), with
+          mutating  and  requests returning 500 instead of 200/422. The same env clearing is
+          repeated in the batch path, so both single-command and batch mutations are affected.
+        created_at: 2026-03-28T23:12:34.379Z
+    kind: blocker
+  - _ulid: 01KMVBH7C2KK29GDPMPPNWFGND
+    anchor:
+      type: code
+      commit: afd332b4c3b16543d6a80c9a905ac644ae07d3bd
+      line_end: 190
+      line_start: 187
+      path: packages/daemon/src/routes/command.ts
+      side: head
+    entries:
+      - _ulid: 01KMVBH7C2K7YR3F5PQ464NW4T
+        author: Test User
+        body: "Unconditionally clearing KSPEC_SPEC_DIR here regresses the daemon mutation path for isolated
+          project contexts. Repro: npm test -- --fresh --run
+          tests/dispatch-workspace-terminal-reconciliation.test.ts tests/daemon-command-api.test.ts
+          now fails 12 assertions in tests/daemon-command-api.test.ts, where mutating /api/command
+          and /api/command/batch requests return 500 instead of 200 or 422. The same env clearing is
+          repeated in the batch path, so both single-command and batch mutations are affected."
+        created_at: 2026-03-28T23:12:41.858Z
+    kind: blocker
+verdicts: []
+created_at: 2026-03-28T23:03:42.196Z
+updated_at: 2026-03-28T23:16:35.958Z
+notes: []

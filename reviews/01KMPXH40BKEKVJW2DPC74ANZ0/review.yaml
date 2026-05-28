@@ -1,0 +1,219 @@
+_ulid: 01KMPXH40BKEKVJW2DPC74ANZ0
+slugs: []
+title: Review task-entity-cache-impl (cycle 17)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Warnings-only exit (code 6): schema and references OK; no validation errors, but
+      repository-wide completeness/alignment warnings remain."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-27T05:57:21.689Z
+    completed_at: 2026-03-27T05:57:21.689Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 1930 suites, 6907 tests, 5 skipped, 0 failed via node scripts/test.cjs."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-27T05:57:23.627Z
+    completed_at: 2026-03-27T05:57:23.627Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/daemon/entity-cache.ts;
+      packages/daemon/src/{server,watcher,project-context}.ts;
+      packages/daemon/src/routes/{tasks,items,sessions,session-related,meta}.ts;
+      tests/daemon-entity-cache.test.ts; tests/session-related-routes.test.ts; scripts/test.cjs;
+      tests/test-runner.test.ts. Commands run: git diff/stat/log, kspec task get, kspec review
+      for-task/get, kspec validate, grep AC annotations, npm test, targeted rg/nl/sed inspection.
+      Claims verified: full suite passes; cache-warm list/detail routes exist for many domains;
+      filtered session list and related-session routes still hit disk on hot paths. Categories
+      searched: correctness, edge cases, error handling, test quality, integration."
+    name: evidence-log
+    required: false
+    created_at: 2026-03-27T05:57:25.527Z
+    completed_at: 2026-03-27T05:57:25.527Z
+events:
+  - _ulid: 01KMPXH40BWHNMWJ80H876XNP3
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T05:51:00.619Z
+  - _ulid: 01KMPXHHWHNTGZ6XJRF74VBH1D
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T05:51:14.833Z
+  - _ulid: 01KMPXWPW9TSE7S7WCSQHFMKG2
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMPXWPAG9ZQ6AZ2Q4X7MEH6H
+    timestamp: 2026-03-27T05:57:20.393Z
+  - _ulid: 01KMPXWRQ0T816J4H3GWMNZ88E
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMPXWR4DTFXFPFT547F83Z9F
+    timestamp: 2026-03-27T05:57:22.272Z
+  - _ulid: 01KMPXWSPDKRAJT3RZ667V40Z9
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-27T05:57:23.277Z
+  - _ulid: 01KMPXWTMR6CFRYEB3JRZAVN0P
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-27T05:57:24.248Z
+  - _ulid: 01KMPXWWEX6RGKYW6G4DAHENH6
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: evidence-log
+    timestamp: 2026-03-27T05:57:26.109Z
+  - _ulid: 01KMPXX3ENRHYFCPFAP04G9XA5
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-27T05:57:33.270Z
+  - _ulid: 01KMPXX3EQ96XNG7NZ9BM1ZKY6
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T05:57:33.271Z
+  - _ulid: 01KMPYWF264BRYQWDJF43XAXMA
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMPXWPAG9ZQ6AZ2Q4X7MEH6H
+    timestamp: 2026-03-27T06:14:40.966Z
+  - _ulid: 01KMPYWQ5NN9YBX6D45KF1ETTN
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPXWPAG9ZQ6AZ2Q4X7MEH6H
+    timestamp: 2026-03-27T06:14:49.270Z
+  - _ulid: 01KMPYX2RSJ7XQTKHBS7PS7WHX
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMPXWR4DTFXFPFT547F83Z9F
+    timestamp: 2026-03-27T06:15:01.145Z
+  - _ulid: 01KMPYXBA0W6KC4NFCFG1XNED0
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPXWR4DTFXFPFT547F83Z9F
+    timestamp: 2026-03-27T06:15:09.892Z
+examined_commit: 5b03acb30a52caaebdc360768c3ede7096e7ea7a
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMMB3T2K3T6A1CJR884EPKJF"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMPXWPAG9ZQ6AZ2Q4X7MEH6H
+    anchor:
+      type: code
+      commit: 5b03acb30a52caaebdc360768c3ede7096e7ea7a
+      line_end: 372
+      line_start: 370
+      path: packages/daemon/src/routes/tasks.ts
+      side: head
+    entries:
+      - _ulid: 01KMPXWPAG049KQA93V6MN3C1H
+        author: "@claude"
+        body: The related-sessions endpoints are still wired through unconditional disk loads.
+          /api/tasks/:ref/sessions eagerly runs initContext() and reloads every task and spec item
+          before delegating to the cache-aware helper, and the same pattern is duplicated in
+          packages/daemon/src/routes/items.ts:610-613. These are still session-summary list reads,
+          so once the tasks/items/sessions domains are warm they should resolve refs from the hot
+          indexes instead of re-reading the repo on every request. Current tests only exercise
+          getRelatedSessionsForTask/Item directly (tests/session-related-routes.test.ts); there is
+          no route-level cache coverage for these endpoints.
+        created_at: 2026-03-27T05:57:19.824Z
+      - _ulid: 01KMPYWEFFF1CC9B3CAPQX4P9X
+        author: "@claude"
+        body: "Fixed: Both tasks.ts and items.ts /:ref/sessions routes now check cache domain state for
+          tasks and items. When both domains are warm, they use getTaskIndex()/getItemIndex() (cast
+          to LoadedTask[]/LoadedSpecItem[] — structurally sufficient for ReferenceIndex and
+          AlignmentIndex which only access _ulid and slugs). sessionsDir is derived directly from
+          projectContext.path without initContext(). Disk fallback preserved for cold cache. Added
+          route-level tests in tests/daemon-cache-route-coverage.test.ts proving the happy path
+          serves from a warm mock cache."
+        created_at: 2026-03-27T06:14:40.367Z
+    kind: blocker
+    resolved_at: 2026-03-27T06:14:48.694Z
+    resolved_by: "@claude"
+  - _ulid: 01KMPXWR4DTFXFPFT547F83Z9F
+    anchor:
+      type: code
+      commit: 5b03acb30a52caaebdc360768c3ede7096e7ea7a
+      line_end: 199
+      line_start: 190
+      path: packages/daemon/src/routes/sessions.ts
+      side: head
+    entries:
+      - _ulid: 01KMPXWR4EK4D5BXHVMMRQ0KFP
+        author: "@claude"
+        body: "The filtered /api/sessions hot path still bypasses the entity cache. When the sessions domain
+          is ready but the request includes task_id or spec_ref, ensureAlignmentContext()
+          unconditionally initializes context and reloads all tasks and items from disk before
+          filtering. That means a summary/list request falls back to full YAML reads even though the
+          cache is warm, which breaks ac-serve-from-memory and regresses the filtered session list
+          back to pre-cache I/O. The new cache tests do not cover this path: grep only finds
+          unfiltered /api/sessions coverage in daemon-entity-cache.test.ts, with no task_id/spec_ref
+          route-level cache assertions."
+        created_at: 2026-03-27T05:57:21.678Z
+      - _ulid: 01KMPYX2692S5MF3CJRA6N5ZJE
+        author: "@claude"
+        body: "Fixed: The ensureAlignmentContext() helper in filterSessionSummaries() now checks entity
+          cache domain state for tasks and items before falling back to disk. When both domains are
+          warm, it serves TaskSummary[]/ItemSummary[] from cache (structurally compatible for
+          ReferenceIndex/AlignmentIndex/buildTaskRefSet). The entityCache variable was already
+          captured at the top of filterSessionSummaries, so it's reused here. Added tests covering
+          GET /api/sessions?task_id=... and GET /api/sessions?spec_ref=... with warm cache in
+          tests/daemon-cache-route-coverage.test.ts."
+        created_at: 2026-03-27T06:15:00.553Z
+    kind: blocker
+    resolved_at: 2026-03-27T06:15:09.296Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-27T05:57:33.269Z
+created_at: 2026-03-27T05:51:00.619Z
+updated_at: 2026-03-27T06:15:09.296Z
+notes: []

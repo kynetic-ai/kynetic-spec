@@ -1,0 +1,164 @@
+_ulid: 01KS0849DB0BP7PDD9BTKZ3EGF
+slugs: []
+title: Review stabilize Bun websocket runtime parity startup hook
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok and kspec validate --completeness --warnings-ok both
+      exited 0. Remaining warnings are pre-existing project-wide warnings, including deprecated
+      refs, missing own AC coverage elsewhere, malformed AC annotations elsewhere, and this bug task
+      lacking spec_ref.
+    name: kspec validation
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-19T14:08:12.082Z
+    completed_at: 2026-05-19T14:08:12.082Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh ran the full suite: tests/daemon-api/websocket-protocol.test.ts
+      passed in the full run (15 tests, 7.4s). The full run had one unrelated deterministic failure
+      in tests/cli-no-daemon.test.ts:145; focused rerun reproduced it, and git diff shows this
+      branch only changes tests/daemon-api/websocket-protocol.test.ts with no related diff in
+      tests/cli-no-daemon.test.ts, src/cli, src/daemon, src/daemon-shared, or tests/helpers. Tracked
+      separately as @01KS090W."
+    name: regression triage
+    required: true
+    runner: npm test
+    created_at: 2026-05-19T14:08:16.632Z
+    completed_at: 2026-05-19T14:08:16.632Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh exited 1 after 2675.4s: 9027 passed, 5 skipped, 1 failed. Failure:
+      tests/cli-no-daemon.test.ts:145 ps -p <pid> -o command= exited 1 after the auto-start PID file
+      appeared. Classified as unrelated/pre-existing by focused reproduction and no related branch
+      diff; follow-up @01KS090W created."
+    name: raw full npm test
+    required: false
+    runner: npm test
+    created_at: 2026-05-19T14:08:21.219Z
+    completed_at: 2026-05-19T14:08:21.219Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test tests/daemon-api/websocket-protocol.test.ts -- --fresh passed: 15/15 tests in
+      7.5s. Bun available at /home/chapel/.local/share/mise/installs/bun/1.3.11/bin/bun (1.3.11)."
+    name: focused websocket protocol
+    required: true
+    runner: npm test
+    created_at: 2026-05-19T14:08:25.868Z
+    completed_at: 2026-05-19T14:08:25.868Z
+events:
+  - _ulid: 01KS0849D7NTB6G4HDVY3MPQ7A
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-19T13:52:11.687Z
+  - _ulid: 01KS08530W08TCEGNWKEN188A9
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-19T13:52:37.916Z
+  - _ulid: 01KS091MVK0NXW0ZF899TBZATF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validation
+    timestamp: 2026-05-19T14:08:13.683Z
+  - _ulid: 01KS091S9KEANGQ60D20WSN2SA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: regression triage
+    timestamp: 2026-05-19T14:08:18.228Z
+  - _ulid: 01KS091XSVYY0RN2TP441SX9AC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: raw full npm test
+    timestamp: 2026-05-19T14:08:22.843Z
+  - _ulid: 01KS0922CVJGC31PRZ6V9RZ6H2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused websocket protocol
+    timestamp: 2026-05-19T14:08:27.548Z
+  - _ulid: 01KS092PFQXT80VFV0W6A6FD7C
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KS092MSZMW6JJZGXFGG3922R
+    timestamp: 2026-05-19T14:08:48.119Z
+  - _ulid: 01KS0935ME4VF946V4JJ1JPK06
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-19T14:09:03.630Z
+  - _ulid: 01KS0935MEGK8S4NF8EQC1DB24
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-19T14:09:03.630Z
+examined_commit: 2c98d77b49c9a9ae0c827afe040b447fd97f2349
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRC2R0XFZ9558AF3EN6DS6DK"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KS092MSZMW6JJZGXFGG3922R
+    entries:
+      - _ulid: 01KS092MSZKXNTQ97CA37KKHYE
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; .agents/skills/kspec-review/SKILL.md;
+          .agents/skills/review-gates/SKILL.md; .agents/skills/kspec-merge/SKILL.md;
+          tests/daemon-api/websocket-protocol.test.ts; tests/helpers/daemon.ts;
+          tests/cli-no-daemon.test.ts; full npm test failure log. Commands run: kspec task get
+          @01KRC2R0XFZ9558AF3EN6DS6DK; kspec review for-task; git diff/stat/name-only against
+          e108bce..2c98d77; kspec item get for daemon runtime/fixture specs; rg AC annotations;
+          kspec validate --refs --warnings-ok; kspec validate --completeness --warnings-ok; npm test
+          tests/daemon-api/websocket-protocol.test.ts -- --fresh; npm test -- --fresh; npm test
+          tests/cli-no-daemon.test.ts -- --fresh; git diff --quiet on unrelated failure paths; kspec
+          task add follow-up @01KS090W. Claims verified: timeoutMs is per readiness stage in
+          startTestDaemon; launch errors race readiness; parity suite exercises Node and Bun when
+          available; WebSocket protocol passed both focused and inside full suite. Categories
+          searched: correctness, edge cases, error handling/diagnostics, test
+          quality/source-scanning, integration, regression triage. No blocking findings for this
+          task."
+        created_at: 2026-05-19T14:08:46.399Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-19T14:09:03.630Z
+created_at: 2026-05-19T13:52:11.691Z
+updated_at: 2026-05-19T14:09:03.630Z
+notes: []

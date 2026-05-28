@@ -1,0 +1,71 @@
+_ulid: 01KM0NX4MZX2J9KC7K2AN3J78Z
+slugs: []
+title: Review task-cancel-old-trigger-task (cycle 1)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 6372 passed, 1 pre-existing failure (review-cli.test.ts examined_commit null check —
+      unrelated to this task which has zero code changes)
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T14:38:29.176Z
+    completed_at: 2026-03-18T14:38:29.176Z
+events:
+  - _ulid: 01KM0NX4MZTZH9EZY4J3XE8269
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T14:34:28.383Z
+  - _ulid: 01KM0NXT3CSNZ5RYCZKY6Y9VV6
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T14:34:50.348Z
+  - _ulid: 01KM0P4FY1YRFVC5498GCVQ8BE
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T14:38:29.313Z
+  - _ulid: 01KM0P4QKTRK2VZ636P8K8HB1Q
+    actor: pr-reviewer@dispatch
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-18T14:38:37.178Z
+  - _ulid: 01KM0P4QKTXZ9ASAYRA9CAVASJ
+    actor: pr-reviewer@dispatch
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T14:38:37.178Z
+examined_commit: 7e797cb1b7e3b59e0671a481f6c7ad1eb55778df
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKZPW8ER84M8MY528CFW576N"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer@dispatch
+    role: reviewer
+    created_at: 2026-03-18T14:38:37.022Z
+created_at: 2026-03-18T14:34:28.383Z
+updated_at: 2026-03-18T14:38:37.022Z
+notes: []

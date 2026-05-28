@@ -1,0 +1,179 @@
+_ulid: 01KPT7G16FKR9CB2X5DX2J9EXW
+slugs: []
+title: "Plan review: Portable Skill File References and Detached Reviewer Merge Foundation"
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "The portable supporting-file spec is mostly behavioral and user-observable: it specifies
+      resolved paths, rejection of missing targets, and boundary enforcement without prescribing
+      file names or parser internals. The task includes implementation guidance, but that is
+      appropriate at task level rather than a spec-language blocker."
+    name: Behavioral spec language
+    required: true
+    created_at: 2026-04-22T09:15:01.170Z
+    completed_at: 2026-04-22T09:15:01.170Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The plan serializes @task-detached-reviewer-merge-helper behind portable reference
+      rewriting even though the helper mechanics appear independently executable with existing
+      supporting-file copying. The real consumer of task 1 is the guidance/wiring task, which should
+      depend directly on both prerequisites if task 2 is decoupled.
+    name: Dependency ordering
+    required: true
+    created_at: 2026-04-22T09:15:01.242Z
+    completed_at: 2026-04-22T09:15:01.242Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@task-detached-reviewer-merge-guidance claims to cover helper runtime behaviors (no-op
+      merge, dirty-target refusal, conflict-safe exit) even though its scope is prompt/skill/doc
+      wiring. Coverage ownership is not crisp or reviewable."
+    name: Task coverage mapping
+    required: true
+    created_at: 2026-04-22T09:15:01.301Z
+    completed_at: 2026-04-22T09:15:01.301Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Portable Skill Supporting File References is additive to existing
+      @supporting-files-convention and @portable-skill-references coverage rather than a duplicate:
+      existing specs cover supporting-directory copying and {skill:...} alias rewriting, while this
+      plan adds a new contract for referencing copied supporting files from markdown and
+      prompt-injected skill content."
+    name: Spec neighborhood alignment
+    required: true
+    created_at: 2026-04-22T09:15:01.303Z
+    completed_at: 2026-04-22T09:15:01.303Z
+events:
+  - _ulid: 01KPT7G16EAW8TKTZRVTRAZJY4
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-22T09:14:17.678Z
+  - _ulid: 01KPT7GTCH4KQ4P0A5SQDTJ1KY
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPT7GSBE3EXSNA2261YBMBKP
+    timestamp: 2026-04-22T09:14:43.473Z
+  - _ulid: 01KPT7GVZWWYAHZVEAEQRS8HBB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPT7GSDTYJ9EAZNNYHF74KWF
+    timestamp: 2026-04-22T09:14:45.116Z
+  - _ulid: 01KPT7GXM46XM2NT66APD1MWTK
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-22T09:14:46.788Z
+  - _ulid: 01KPT7HCPXVGEB8X7BT8Z4BNNY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Behavioral spec language
+    timestamp: 2026-04-22T09:15:02.237Z
+  - _ulid: 01KPT7HE8YVNQ9H1AR4J2H26V6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Dependency ordering
+    timestamp: 2026-04-22T09:15:03.838Z
+  - _ulid: 01KPT7HFX17PN9F77HH4S49XWA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Task coverage mapping
+    timestamp: 2026-04-22T09:15:05.505Z
+  - _ulid: 01KPT7HHGMS2CZTDG73NT8M5VY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec neighborhood alignment
+    timestamp: 2026-04-22T09:15:07.157Z
+  - _ulid: 01KPT7HSSKYRBXDHJHJV4WYZT2
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-22T09:15:15.636Z
+  - _ulid: 01KPT7HSSM5D1YSZPEB88KQJVH
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-22T09:15:15.636Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-portable-skill-file-references-and-detached-review"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPT7GSBE3EXSNA2261YBMBKP
+    anchor:
+      type: structured
+      ref: "@task-detached-reviewer-merge-guidance"
+    entries:
+      - _ulid: 01KPT7GSBENSP68CRFPG8VTAFY
+        author: Jacob Chapel
+        body: "This task's scope is guidance/docs/rendered-skill wiring, but its Covers block claims runtime
+          helper behaviors (no-op merge, dirty-target refusal, conflict-safe exit) that are actually
+          implemented and behaviorally verified in @task-detached-reviewer-merge-helper. That makes
+          task ownership non-standalone and reviewability ambiguous: a reviewer cannot tell which
+          task is responsible for proving those helper mechanics. Narrow this task's coverage to
+          ac-helper-path-in-reviewer-guidance and keep the runtime merge mechanics ACs owned by the
+          helper-mechanics task."
+        created_at: 2026-04-22T09:14:42.415Z
+    kind: blocker
+  - _ulid: 01KPT7GSDTYJ9EAZNNYHF74KWF
+    anchor:
+      type: structured
+      section: dependencies
+    entries:
+      - _ulid: 01KPT7GSDTTPKYV16C7TEEXE7G
+        author: Jacob Chapel
+        body: The dependency graph is over-constrained and hides the real prerequisite edge.
+          @task-detached-reviewer-merge-helper does not appear to need portable supporting-file
+          reference rewriting in order to implement and test the helper script's merge mechanics;
+          existing supporting-file copying already exists. The portable-reference work is needed
+          when reviewer guidance/rendered skill content must point at that helper path, which is
+          @task-detached-reviewer-merge-guidance's concern. Remove the task-2 -> task-1 dependency
+          unless the mechanics task truly cannot proceed without it, and if you decouple them, make
+          @task-detached-reviewer-merge-guidance depend directly on both prerequisites.
+        created_at: 2026-04-22T09:14:42.490Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-22T09:15:15.635Z
+created_at: 2026-04-22T09:14:17.679Z
+updated_at: 2026-04-22T09:15:15.636Z
+notes: []

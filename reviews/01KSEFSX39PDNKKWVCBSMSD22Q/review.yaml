@@ -1,0 +1,151 @@
+_ulid: 01KSEFSX39PDNKKWVCBSMSD22Q
+slugs: []
+title: Review task-plan-review-folder-storage-migration-1 cycle 8
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh: 2519 suites passed; 9602 tests passed; 5 skipped; log
+      /tmp/kspec-test-cache/01KSEFRN639ME7KNRG259ZDD4G/d6691aeaf45f761f.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-25T02:53:33.479Z
+    completed_at: 2026-05-25T02:53:33.479Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate: schema/references OK; exit 6 due existing repo warnings (deprecated refs,
+      alignment warnings, historical missing AC coverage/invalid annotations)"
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-25T02:53:38.302Z
+    completed_at: 2026-05-25T02:53:38.302Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check b588e89919cb699a8e1134993f5061c00f1f4f5a...HEAD passed; changed files
+      reviewed in upgrade, migration, safety, buffer, and tests
+    name: diff hygiene
+    required: false
+    runner: git
+    created_at: 2026-05-25T02:53:43.172Z
+    completed_at: 2026-05-25T02:53:43.172Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/upgrade-folder-storage.test.ts --fresh: 18 passed; migration
+      module focused run: 64 passed across plan/review/migration-safety/batch-write-buffer tests"
+    name: focused migration tests
+    required: false
+    runner: npm
+    created_at: 2026-05-25T02:53:48.100Z
+    completed_at: 2026-05-25T02:53:48.100Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/cli/commands/upgrade.ts, src/parser/plan-folder-migration.ts,
+      src/parser/review-folder-migration.ts, src/parser/migration-safety.ts,
+      src/cli/batch-write-buffer.ts, changed migration tests. Claims verified: same-ULID
+      folder+monolithic overlap now sets partialLayout and refused apply leaves existing folder
+      content untouched; protected tripwire gates executing pipeline; empty resources directories
+      materialize via WriteBuffer. Categories: correctness, edge cases, error handling, test
+      quality, integration, diff hygiene."
+    name: review evidence log
+    required: false
+    runner: codex-reviewer
+    created_at: 2026-05-25T02:54:04.294Z
+    completed_at: 2026-05-25T02:54:04.294Z
+events:
+  - _ulid: 01KSEFSX3958JY23XW1V6VMZ1W
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-25T02:35:42.057Z
+  - _ulid: 01KSEFTN0RNSTFE97MNAMNGZWK
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-25T02:36:06.553Z
+  - _ulid: 01KSEGTN3BWWBSTRV396VVQXB9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-25T02:53:35.211Z
+  - _ulid: 01KSEGTSSDYTDYHC2MFYHJ2163
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-05-25T02:53:40.014Z
+  - _ulid: 01KSEGTYK9J2F0VR36XBRQDVYV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff hygiene
+    timestamp: 2026-05-25T02:53:44.938Z
+  - _ulid: 01KSEGV3CCBGJJ6JJS6YJM4WD0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused migration tests
+    timestamp: 2026-05-25T02:53:49.836Z
+  - _ulid: 01KSEGVK56Q5RY9SKR2F3FHRC7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-25T02:54:05.990Z
+  - _ulid: 01KSEGVY4WK805BPWB03DVS3C0
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-25T02:54:17.244Z
+  - _ulid: 01KSEGVY4WEEXG8SXS4CXJ38FV
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-25T02:54:17.244Z
+examined_commit: 03c37aed2c2b13d94f58569df364e5c5dce6f821
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XAYZTG0MN48Z78D45PBV6"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-25T02:54:17.244Z
+created_at: 2026-05-25T02:35:42.057Z
+updated_at: 2026-05-25T02:54:17.244Z
+notes: []

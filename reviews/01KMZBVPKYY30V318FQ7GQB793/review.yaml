@@ -1,0 +1,263 @@
+_ulid: 01KMZBVPKYY30V318FQ7GQB793
+slugs: []
+title: Review task-migrate-api-tests-vitest (cycle 2)
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: packages/daemon/src/routes/inbox.ts, packages/daemon/src/routes/sessions.ts,
+      packages/daemon/src/server.ts, packages/daemon/src/routes/reviews.ts,
+      packages/daemon/src/routes/projects.ts, tests/daemon-api/helpers.ts,
+      tests/daemon-api/agent-dispatch.test.ts, tests/daemon-api/server.test.ts,
+      tests/daemon-api/sessions-search.test.ts, tests/daemon-api/reviews-list.test.ts,
+      tests/daemon-api/projects.test.ts. Commands run: git diff --stat/--name-only against dev,
+      targeted git diff reads for migrated specs, kspec task get, kspec review get/for-task, rg AC
+      annotations, kspec validate, npm test. Claims verified: previous review blockers were
+      addressed in agent-dispatch/server/sessions-search; projects/reviews migrations still reduce
+      coverage versus deleted Playwright specs; full suite is failing in this snapshot. Categories
+      searched: correctness, edge cases, error handling, test quality, integration."
+    name: review-evidence
+    required: false
+    created_at: 2026-03-30T12:37:54.953Z
+    completed_at: 2026-03-30T12:37:54.953Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation passed with warnings only (exit 6): schema and references OK; repo-wide
+      warnings remain for orphaned skills/specs and invalid AC annotations unrelated to this
+      change."
+    name: kspec validate
+    required: false
+    created_at: 2026-03-30T12:37:56.751Z
+    completed_at: 2026-03-30T12:37:56.751Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Cached full-suite run failed in this snapshot: 4 suites failed, 2 tests failed, 7487
+      passed, 5 skipped. Failures included tests/dispatch-runtime-bootstrap-contract.test.ts and
+      tests/dispatch-workspace-registry.test.ts. Full log:
+      /tmp/kspec-test-cache/01KMZBHWYEMYRZ34HDEY9Q4Y95/4d5c4b10035bcebc.log"
+    name: npm test
+    required: true
+    runner: test-runner
+    created_at: 2026-03-30T12:37:58.511Z
+    completed_at: 2026-03-30T12:37:58.511Z
+events:
+  - _ulid: 01KMZBVPKYDFZZK6PVYQBAHESV
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-30T12:35:22.878Z
+  - _ulid: 01KMZBWS9WAKV7MV4VWK0NCTF8
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-30T12:35:58.396Z
+  - _ulid: 01KMZBZM9473KXR8WHPEJW5Q74
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMZBZKQA4F3EN2PCQNYFFXYH
+    timestamp: 2026-03-30T12:37:31.556Z
+  - _ulid: 01KMZBZP32PA135DX08T4GTN9W
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMZBZNE5G63F7WGVPAVW0824
+    timestamp: 2026-03-30T12:37:33.410Z
+  - _ulid: 01KMZBZR5D6MDP631NTMAMRJ50
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMZBZQEJ7DN8VVB6T13MJAM0
+    timestamp: 2026-03-30T12:37:35.533Z
+  - _ulid: 01KMZC0BNHYMAQQT4RB5P8EDKK
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-03-30T12:37:55.505Z
+  - _ulid: 01KMZC0DDQ9ZEYAYVJ776WB065
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-30T12:37:57.303Z
+  - _ulid: 01KMZC0F6A62F746FF7H7EG0K7
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-30T12:37:59.114Z
+  - _ulid: 01KMZC0QCT7HWG6JMJ6V5C4F39
+    actor: codex@local
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-30T12:38:07.515Z
+  - _ulid: 01KMZC0QCV2HFE96AGE3AXB3XN
+    actor: codex@local
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-30T12:38:07.515Z
+  - _ulid: 01KMZD86GBHPMCCBG2A5WZXB6X
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMZBZKQA4F3EN2PCQNYFFXYH
+    timestamp: 2026-03-30T12:59:40.939Z
+  - _ulid: 01KMZD87Z28ASYDRHXZ903JEBX
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMZBZKQA4F3EN2PCQNYFFXYH
+    timestamp: 2026-03-30T12:59:42.434Z
+  - _ulid: 01KMZD89CJ3SD2ZMTY7030X32M
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMZBZNE5G63F7WGVPAVW0824
+    timestamp: 2026-03-30T12:59:43.890Z
+  - _ulid: 01KMZD8AS8YJZ0DGBQ27SA49F0
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMZBZNE5G63F7WGVPAVW0824
+    timestamp: 2026-03-30T12:59:45.320Z
+  - _ulid: 01KMZD8C6A1YVEE7RHWYRW2YK5
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMZBZQEJ7DN8VVB6T13MJAM0
+    timestamp: 2026-03-30T12:59:46.762Z
+  - _ulid: 01KMZD8DJAJP1E4QEBA87R3E3Y
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMZBZQEJ7DN8VVB6T13MJAM0
+    timestamp: 2026-03-30T12:59:48.170Z
+examined_commit: 1b14f9251d210312870ad8acab4d20393f1c18c4
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMZ1BV3H7S2SQ91TX8B80J1Y"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMZBZKQA4F3EN2PCQNYFFXYH
+    anchor:
+      type: code
+      commit: 1b14f9251d210312870ad8acab4d20393f1c18c4
+      line_end: 307
+      line_start: 270
+      path: tests/daemon-api/reviews-list.test.ts
+      side: head
+    entries:
+      - _ulid: 01KMZBZKQAH934S9AW9RMYNH51
+        author: Test User
+        body: The detail migration also dropped part of the existing response-contract coverage. The
+          previous API spec verified that GET /api/reviews/:id included checks, verdicts, events,
+          and the full empty-review shape; the new tests only assert the ULID, lifecycle_state,
+          subject ref, threads, and disposition. Because packages/daemon/src/routes/reviews.ts still
+          exposes checks/verdicts/events, the migrated suite no longer guards those fields against
+          regression, so this rewrite reduces coverage instead of preserving it.
+        created_at: 2026-03-30T12:37:30.986Z
+      - _ulid: 01KMZD85YMM1P5GPY0JN5VQ8WX
+        author: "@claude"
+        body: "Fixed: Detail test now asserts title, checks, verdicts, events, and subject fields (matching
+          original Playwright coverage). Empty-review test verifies checks:[], verdicts:[]. Thread
+          test strengthened with specific blocker thread entry body and resolved question thread
+          checks. 404 test now verifies error shape (error, suggestion)."
+        created_at: 2026-03-30T12:59:40.372Z
+    kind: blocker
+    resolved_at: 2026-03-30T12:59:41.875Z
+    resolved_by: "@claude"
+  - _ulid: 01KMZBZNE5G63F7WGVPAVW0824
+    anchor:
+      type: code
+      commit: 1b14f9251d210312870ad8acab4d20393f1c18c4
+      line_end: 209
+      line_start: 96
+      path: tests/daemon-api/projects.test.ts
+      side: head
+    entries:
+      - _ulid: 01KMZBZNE6J1Y0GPA05K6G8BAN
+        author: Test User
+        body: "This projects rewrite dropped several assertions that the skipped Playwright suite covered
+          and that the route still promises: GET /api/projects no longer checks total, registeredAt,
+          or watcherStatus, POST no longer checks success plus the returned
+          registeredAt/watcherStatus fields, and DELETE only checks HTTP 200 instead of the success
+          payload. createProjectsRoutes still returns those fields, so the new tests would miss
+          regressions in the multi-project API contract. Under this repo's work gates, replacement
+          tests must be a superset of the old behavioral coverage, and this suite is not."
+        created_at: 2026-03-30T12:37:32.742Z
+      - _ulid: 01KMZD88VAMNWM157BXBBMK8WK
+        author: "@claude"
+        body: "Fixed: GET now asserts total field and total===projects.length. Each project checked for
+          registeredAt (valid ISO date) and watcherStatus (active|stopped). POST response checks
+          success:true plus full project shape (path, registeredAt, watcherStatus). DELETE checks
+          success:true payload. Second-project test verifies registeredAt and watcherStatus on newly
+          registered project."
+        created_at: 2026-03-30T12:59:43.338Z
+    kind: blocker
+    resolved_at: 2026-03-30T12:59:44.792Z
+    resolved_by: "@claude"
+  - _ulid: 01KMZBZQEJ7DN8VVB6T13MJAM0
+    anchor:
+      type: code
+      commit: 1b14f9251d210312870ad8acab4d20393f1c18c4
+      line_end: 73
+      line_start: 62
+      path: tests/daemon-api/reviews-list.test.ts
+      side: head
+    entries:
+      - _ulid: 01KMZBZQEJ8FZSH06AZ407XATN
+        author: Test User
+        body: The review-list migration weakened the summary contract coverage instead of preserving it. The
+          deleted Playwright spec asserted fields like title and author/reviewer on each summary
+          row, but the replacement test only checks _ulid, lifecycle_state, disposition,
+          subject_type, and created_at. Since the route still returns title/author today, this suite
+          would now pass even if a future refactor dropped fields the /reviews UI depends on, which
+          violates the migration task's requirement that the vitest replacement be a superset of the
+          skipped API coverage.
+        created_at: 2026-03-30T12:37:34.802Z
+      - _ulid: 01KMZD8BM3ZE22506H1CVRHH0F
+        author: "@claude"
+        body: "Fixed: Summary test now asserts title, author, thread_count, unresolved_blocker_count,
+          check_count, and verdict_count in addition to the existing _ulid, lifecycle_state,
+          disposition, subject_type, created_at — matching the full toReviewSummary contract."
+        created_at: 2026-03-30T12:59:46.179Z
+    kind: blocker
+    resolved_at: 2026-03-30T12:59:47.637Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@local
+    role: reviewer
+    created_at: 2026-03-30T12:38:07.514Z
+created_at: 2026-03-30T12:35:22.878Z
+updated_at: 2026-03-30T12:59:47.637Z
+notes: []

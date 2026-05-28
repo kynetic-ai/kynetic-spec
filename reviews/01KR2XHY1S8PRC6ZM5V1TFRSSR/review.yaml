@@ -1,0 +1,284 @@
+_ulid: 01KR2XHY1S8PRC6ZM5V1TFRSSR
+slugs: []
+title: Review task-enforce-daemon-test-fixture-usage cycle 2
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts
+      tests/lint-daemon-test-guardrails.test.ts: 12 suites passed, 53 tests passed. Log:
+      /tmp/kspec-test-cache/01KR2XGH9S7THPPZW54BT7M1XK/04b7624a421223c7.log"
+    name: focused lint-rule tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-08T04:40:56.531Z
+    completed_at: 2026-05-08T04:40:56.531Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh: 2399 suites passed; 8788 tests passed, 5 skipped. Log:
+      /tmp/kspec-test-cache/01KR2XGH9S7THPPZW54BT7M1XK/a9db3942bb61895b.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-05-08T04:40:59.556Z
+    completed_at: 2026-05-08T04:40:59.556Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation completed with warnings only (exit 6): schema/references OK; existing
+      reference/alignment/completeness warnings remain. No daemon-test-harness-guardrails AC
+      coverage gap found."
+    name: kspec validate
+    required: false
+    runner: kspec validate
+    created_at: 2026-05-08T04:41:02.566Z
+    completed_at: 2026-05-08T04:41:02.566Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run lint exits 1 with the repository baseline count: 13 errors and 721 warnings. No
+      new no-leaky-test-daemon violations appeared."
+    name: npm run lint
+    required: false
+    runner: oxlint
+    created_at: 2026-05-08T04:41:05.579Z
+    completed_at: 2026-05-08T04:41:05.579Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check
+      d128008209d54186b74d3e9acb779daf7e615186..cffda7739392d5ad338da74ce52e12ff0db0a6bb produced no
+      output.
+    name: diff hygiene
+    required: false
+    runner: git diff --check
+    created_at: 2026-05-08T04:41:08.878Z
+    completed_at: 2026-05-08T04:41:08.878Z
+events:
+  - _ulid: 01KR2XHY1SHFVTHXTD6Y3YNJQP
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-08T04:29:25.945Z
+  - _ulid: 01KR2XJH3JTVS2PW6Y6YRT71G2
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-08T04:29:45.458Z
+  - _ulid: 01KR2XPDXJ080VWH04BGGRNEMB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR2XPCGSEBGWKGEVCYMVCMDK
+    timestamp: 2026-05-08T04:31:53.266Z
+  - _ulid: 01KR2XPHABCE5E5YNSZ52MPACA
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR2XPG0N5RGPPR1FWSF1MW1F
+    timestamp: 2026-05-08T04:31:56.747Z
+  - _ulid: 01KR2Y6YJZNESFTXGWM2GVWEVP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KR2Y6XAP5ERYW5PQ4PDTTHXR
+    timestamp: 2026-05-08T04:40:54.623Z
+  - _ulid: 01KR2Y71JXCCTBRVKQ32H7AEDR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused lint-rule tests
+    timestamp: 2026-05-08T04:40:57.693Z
+  - _ulid: 01KR2Y74HX5A1N6298MR50D5RJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-08T04:41:00.733Z
+  - _ulid: 01KR2Y77F38E6BMNHPZW4G2M3D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-08T04:41:03.715Z
+  - _ulid: 01KR2Y7AHF11WAF84429YKA9ZN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm run lint
+    timestamp: 2026-05-08T04:41:06.864Z
+  - _ulid: 01KR2Y7DMR9JWS2JXEA5W03T84
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff hygiene
+    timestamp: 2026-05-08T04:41:10.040Z
+  - _ulid: 01KR2Y7GT154T4HEJ2BXMJFJJS
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-08T04:41:13.281Z
+  - _ulid: 01KR2Y7GT1NDVMFRQ8S2MWTQ6H
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-08T04:41:13.281Z
+  - _ulid: 01KR2ZRTTKKB5HJES3CK6YCK1F
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR2XPCGSEBGWKGEVCYMVCMDK
+    timestamp: 2026-05-08T05:08:09.171Z
+  - _ulid: 01KR2ZRY0F46QST2S4F87P129D
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR2XPCGSEBGWKGEVCYMVCMDK
+    timestamp: 2026-05-08T05:08:12.431Z
+  - _ulid: 01KR2ZS11FGANK01XS8633SW1A
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR2XPG0N5RGPPR1FWSF1MW1F
+    timestamp: 2026-05-08T05:08:15.535Z
+  - _ulid: 01KR2ZS449JA4Z9PXTFG2EYXF8
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR2XPG0N5RGPPR1FWSF1MW1F
+    timestamp: 2026-05-08T05:08:18.697Z
+examined_commit: cffda7739392d5ad338da74ce52e12ff0db0a6bb
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR22GM64MB7X4HAPX8SAJ5VS"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR2XPCGSEBGWKGEVCYMVCMDK
+    anchor:
+      type: code
+      commit: cffda7739392d5ad338da74ce52e12ff0db0a6bb
+      line_end: 538
+      line_start: 488
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KR2XPCGSV5JDJH2Z1AB8CQ3T
+        author: Jacob Chapel
+        body: "MUST-FIX: localhost URL tracking is file-global instead of scoped. Once any variable name is
+          initialized from a localhost:<port> URL, every later fetch(url) or new WebSocket(url)
+          using the same identifier name is reported even if that later variable is a
+          fixture-resolved endpoint. I verified with a synthetic file where one test only asserts on
+          const url = http://localhost:<port>/... and a later test does const url = daemon.apiUrl;
+          await fetch(url); oxlint reports the fixture-resolved fetch at line 13. This creates false
+          positives for legitimate shared-fixture tests and can force unnecessary disables, which
+          violates the guardrail intent to flag only tests constructing daemon URLs from localhost
+          plus a raw port."
+        created_at: 2026-05-08T04:31:51.833Z
+      - _ulid: 01KR2ZRSJENWQ4XSGK7H08ZAPE
+        author: "@claude"
+        body: Fixed in commit da1403a5e. Replaced the file-global localhostUrlIdentifiers Set with a
+          Map<name, Array<{scopeNode, position, isLocalhost}>>. recordBinding tags each
+          VariableDeclarator/AssignmentExpression with its enclosing scope
+          (BlockStatement/Program/Function/Arrow/StaticBlock) and source position;
+          findApplicableBinding walks scopes outward from the use site and picks the innermost entry
+          whose position precedes the use, so an inner non-localhost shadow declaration
+          short-circuits an outer localhost one. Function parameters named `url` also short-circuit
+          (treated as non-localhost). New tests in tests/lint-daemon-test-guardrails.test.ts cover
+          the reviewer's exact repro (two test() blocks, separate const url declarations) plus
+          inner-block shadowing, let reassignment in both directions, closure capture of an outer
+          localhost binding, and parameter shadowing — eight cases total.
+        created_at: 2026-05-08T05:08:07.886Z
+    kind: blocker
+    resolved_at: 2026-05-08T05:08:11.199Z
+    resolved_by: "@claude"
+  - _ulid: 01KR2XPG0N5RGPPR1FWSF1MW1F
+    anchor:
+      type: code
+      commit: cffda7739392d5ad338da74ce52e12ff0db0a6bb
+      line_end: 59
+      line_start: 54
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KR2XPG0PYKF25XE1CKFBSPVW
+        author: Jacob Chapel
+        body: 'MUST-FIX: the helper allowlist is broader than the approved helper implementations. The rule
+          exits for every file under tests/helpers/, but the task only approves the shared daemon
+          fixture implementation, the mock daemon helper implementation, and explicit lint-rule
+          fixture strings. I verified a synthetic tests/helpers/rogue-helper.ts containing
+          spawn("node", [DAEMON_ENTRY, "--port", "0"]) passes with zero findings. That lets future
+          generic helpers reintroduce direct daemon startup without a local documented exception,
+          undermining the guardrail.'
+        created_at: 2026-05-08T04:31:55.414Z
+      - _ulid: 01KR2ZRZWM5MP1K4NBX1K62FMK
+        author: "@claude"
+        body: "Fixed in commit da1403a5e. HELPER_PATH_PATTERNS no longer matches the whole tests/helpers/
+          tree — it now lists the approved files individually: tests/helpers/daemon.ts (shared
+          daemon fixture), tests/helpers/mock-daemon.ts (mock daemon helper), tools/eslint-rules/,
+          tests/lint-no-leaky-test-daemon.test.ts, and tests/lint-daemon-test-guardrails.test.ts.
+          New tests verify: tests/helpers/rogue-helper.ts spawn(DAEMON_ENTRY) is flagged,
+          tests/helpers/rogue-helper.ts localhost fetch is flagged, and a contract-test sibling at
+          tests/helpers/daemon.test.ts that calls spawn(DAEMON_ENTRY) is also flagged (only the .ts
+          implementation is approved, not its .test.ts neighbour). The pre-existing
+          tests/helpers/daemon.test.ts and tests/helpers/mock-daemon.test.ts contract-test files
+          only call into the helper API (no direct daemon spawn or localhost:<port> URLs), so the
+          narrower allowlist does not introduce real-codebase violations — verified by the existing
+          real-codebase oxlint pass test in tests/lint-no-leaky-test-daemon.test.ts."
+        created_at: 2026-05-08T05:08:14.356Z
+    kind: blocker
+    resolved_at: 2026-05-08T05:08:17.492Z
+    resolved_by: "@claude"
+  - _ulid: 01KR2Y6XAP5ERYW5PQ4PDTTHXR
+    entries:
+      - _ulid: 01KR2Y6XAPXR7G52YF73N8ZW9P
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md, task/spec context, prior review
+          @01KR2V04D1W3CQ3SXCRNE3ZFE9, .oxlintrc.json, tools/eslint-rules/no-leaky-test-daemon.js,
+          tests/lint-daemon-test-guardrails.test.ts, tests/lint-no-leaky-test-daemon.test.ts,
+          tests/cli-serve.test.ts. Commands run: kspec task get, kspec item get, kspec review get,
+          rg AC annotations, kspec validate, focused npm test, full npm test, npm run lint, git
+          diff/stat/check, two synthetic oxlint probes. Claims verified: prior blockers for argv
+          detached serve, variable-bound localhost URLs, and localized disables have direct tests;
+          focused and full suites pass. Categories searched: correctness, false positives, allowlist
+          scope, test quality, AC coverage, integration, lint behavior."
+        created_at: 2026-05-08T04:40:53.334Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-08T04:41:13.281Z
+created_at: 2026-05-08T04:29:25.945Z
+updated_at: 2026-05-08T05:08:17.492Z
+notes: []

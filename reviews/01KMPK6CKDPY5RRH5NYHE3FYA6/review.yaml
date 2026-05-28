@@ -1,0 +1,173 @@
+_ulid: 01KMPK6CKDPY5RRH5NYHE3FYA6
+slugs: []
+title: Review task-entity-cache-impl (cycle 11)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran npm test in this workspace. Result: 1928 test suites passed, 6901 tests passed, 5
+      skipped."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-27T02:55:05.375Z
+    completed_at: 2026-03-27T02:55:05.375Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran kspec validate. Schema and references passed; command exited with warnings only
+      (repo-wide orphaned specs / AC annotation warnings, no task-specific validation error).
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-27T02:55:06.729Z
+    completed_at: 2026-03-27T02:55:06.729Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/daemon/entity-cache.ts; packages/daemon/src/server.ts;
+      packages/daemon/src/project-context.ts; packages/daemon/src/routes/items.ts;
+      packages/daemon/src/routes/plans.ts; packages/daemon/src/routes/reviews.ts;
+      packages/daemon/src/routes/triage.ts; packages/daemon/src/routes/sessions.ts;
+      packages/daemon/src/routes/refs.ts; tests/daemon-entity-cache.test.ts. Commands run: git diff
+      --stat/name-only; kspec task get; kspec item get; kspec review for-task; kspec validate; npm
+      test; rg AC annotations; tsx probes against ProjectEntityCache. Claims verified: full suite
+      passes on snapshot; cache index for plans/reviews/triage still contains detail payloads;
+      detail routes read from index instead of detail tier. Categories searched: correctness (found
+      blocker), edge cases (checked invalidation/warming paths), error handling (checked degraded
+      fallback), test quality (AC annotations present), integration (server/project-context
+      wiring)."
+    name: review-evidence
+    required: false
+    runner: manual
+    created_at: 2026-03-27T02:55:09.499Z
+    completed_at: 2026-03-27T02:55:09.499Z
+events:
+  - _ulid: 01KMPK6CKDNT0DDBJ6AR5RWG2B
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T02:50:23.213Z
+  - _ulid: 01KMPK72W8VE5KQ2KZ6QMD7YEP
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T02:50:46.024Z
+  - _ulid: 01KMPKF0K0AYJFZJ7BE7X5V7WJ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-27T02:55:05.824Z
+  - _ulid: 01KMPKF1X3YM36GKHBBE74T4RV
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-27T02:55:07.171Z
+  - _ulid: 01KMPKF37SR3K9JKCJBADBZN58
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMPKF2TYJ30Y4ZG4XJMNF9VJ
+    timestamp: 2026-03-27T02:55:08.537Z
+  - _ulid: 01KMPKF4J90VNZQPDS9CGWHS6S
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-03-27T02:55:09.897Z
+  - _ulid: 01KMPKGA9WFMHAZTQVVPQBJGPA
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-27T02:55:48.540Z
+  - _ulid: 01KMPKGA9WHZP102FB8ZESR7ZB
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T02:55:48.540Z
+  - _ulid: 01KMPMHSG8BR9CJ40C7N37H1Q7
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMPKF2TYJ30Y4ZG4XJMNF9VJ
+    timestamp: 2026-03-27T03:14:05.448Z
+  - _ulid: 01KMPMJ3H48N9RVPD1TBX9MG8C
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPKF2TYJ30Y4ZG4XJMNF9VJ
+    timestamp: 2026-03-27T03:14:15.716Z
+examined_commit: 4c9a805d7cc6c6b0ae612ba38e475faefde387f2
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMMB3T2K3T6A1CJR884EPKJF"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMPKF2TYJ30Y4ZG4XJMNF9VJ
+    anchor:
+      type: code
+      commit: 4c9a805d7cc6c6b0ae612ba38e475faefde387f2
+      line_end: 590
+      line_start: 576
+      path: src/daemon/entity-cache.ts
+      side: head
+    entries:
+      - _ulid: 01KMPKF2TZCE7T1YCA4Z22GR7M
+        author: "@claude"
+        body: The cache still keeps full plan, review, and triage records in the index tier, so
+          detail-on-demand is not actually implemented for those domains.  stores , , and  directly
+          in , , and , and the detail handlers then read those same arrays back (, , ) instead of
+          using the detail-tier getters. I verified this against the live workspace with , which
+          showed , , and  immediately after only loading the index domains. That means large fields
+          like plan markdown, review threads/checks/verdicts, and triage reasoning/evidence stay hot
+          in memory for every registered project, which defeats the two-tier storage contract this
+          task is supposed to deliver.
+        created_at: 2026-03-27T02:55:08.127Z
+      - _ulid: 01KMPMHRXX65GMJWKMP490F1KB
+        author: "@claude"
+        body: "Fixed: Created PlanIndexSummary, ReviewIndexSummary, and TriageIndexSummary types that strip
+          heavy fields (content, threads, checks, verdicts, events, notes, item_snapshot,
+          reasoning). Index tier now stores only these summaries. Full records are loaded into the
+          detail tier during domain loading and served via detail-tier getters. Review summaries
+          pre-compute disposition and counts at index load time. All detail routes (plans, reviews,
+          triage) now resolve refs via the index, then load from the detail tier with disk fallback.
+          Verified with tsc --noEmit (clean) and full test suite (6900 passed, 1 pre-existing
+          timeout failure in dispatch-runtime-bootstrap-contract)."
+        created_at: 2026-03-27T03:14:04.861Z
+    kind: blocker
+    resolved_at: 2026-03-27T03:14:15.139Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-27T02:55:48.539Z
+created_at: 2026-03-27T02:50:23.213Z
+updated_at: 2026-03-27T03:14:15.139Z
+notes: []

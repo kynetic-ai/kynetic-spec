@@ -1,0 +1,111 @@
+_ulid: 01KM0A3VP2A5X21RPYTQZSF5W0
+slugs: []
+title: "Review: Define event payload schemas"
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 6193/6197 passing (1 pre-existing review-cli failure unrelated to this task, 3 skipped).
+      All 56 new event-payloads tests pass.
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T11:08:51.945Z
+    completed_at: 2026-03-18T11:08:51.945Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 5 ACs (ac-1 through ac-5) have test annotations in tests/event-payloads.test.ts and
+      schema annotations in src/schema/event-payloads.ts. Additional ac-3 coverage in
+      tests/session-lifecycle-events.test.ts.
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-18T11:08:59.525Z
+    completed_at: 2026-03-18T11:08:59.525Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Each AC verified against schema fields: ac-1 (8 task fields match), ac-2 (invocation
+      started/terminal split with optional task_ref and terminal duration_ms), ac-3 (6 session
+      fields including work_summary with passthrough), ac-4 (4 schedule fields including tick_time
+      and run_count), ac-5 (action started/terminal split with hook_id/schedule_id source and
+      optional session_id for agent type)."
+    name: spec-alignment
+    required: true
+    runner: manual
+    created_at: 2026-03-18T11:09:08.864Z
+    completed_at: 2026-03-18T11:09:08.864Z
+events:
+  - _ulid: 01KM0A3VP2NVMCG310XMR3JNPT
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T11:08:25.666Z
+  - _ulid: 01KM0A43FRGZSNKRDW3XPTWN77
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T11:08:33.656Z
+  - _ulid: 01KM0A4NERECZ6P7FMSMC0J50X
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T11:08:52.056Z
+  - _ulid: 01KM0A4WWGKTQXWB020Y4QCCCH
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-18T11:08:59.664Z
+  - _ulid: 01KM0A55ZRZ177SPT9G2GRP1X8
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: spec-alignment
+    timestamp: 2026-03-18T11:09:08.984Z
+  - _ulid: 01KM0A5D0NVNXZWBDNC8QYDPGG
+    actor: agent@kspec-dispatch
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-18T11:09:16.181Z
+  - _ulid: 01KM0A5D0N594NTY3YQVQGSZ2F
+    actor: agent@kspec-dispatch
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T11:09:16.181Z
+examined_commit: e12343839501de77cb22fc5d810ca6b17cdb6378
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKZPVGQBTNWQK6NCTG0N349A"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: agent@kspec-dispatch
+    role: reviewer
+    created_at: 2026-03-18T11:09:16.060Z
+created_at: 2026-03-18T11:08:25.666Z
+updated_at: 2026-03-18T11:09:16.060Z
+notes: []

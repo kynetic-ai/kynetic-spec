@@ -1,0 +1,172 @@
+_ulid: 01KSGF89Z0G7KKRN7DJV1SG04M
+slugs: []
+title: Review task-review-screenshot-resource-ui (cycle 9)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check
+      25e55fa9067eba15e70dd1659669a8e34465407c..0a3bfa159d4615c2a8345316f5a5a5f0e6722b84 produced no
+      output.
+    name: git diff --check
+    required: true
+    runner: git
+    created_at: 2026-05-25T21:18:58.588Z
+    completed_at: 2026-05-25T21:18:58.588Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate reported existing repository warnings; kspec validate --warnings-ok exited 0.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-25T21:19:12.924Z
+    completed_at: 2026-05-25T21:19:12.924Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck completed successfully (tsc --noEmit).
+    name: typecheck
+    required: true
+    runner: npm
+    created_at: 2026-05-25T21:19:24.392Z
+    completed_at: 2026-05-25T21:19:24.392Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npx oxlint on all changed files exited 0 with 40 warnings and 0 errors. Full npm run lint
+      still has pre-existing repository-wide lint debt.
+    name: changed-file oxlint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-25T21:19:35.864Z
+    completed_at: 2026-05-25T21:19:35.864Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test passed: 2563 suites passed, 9784 tests passed, 5 skipped, duration 2600.7s. Full
+      log: /tmp/kspec-test-cache/01KSGF6DVDYEP5QST5Y5RK2KC1/b063f07c9047d5ed.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-25T21:19:47.243Z
+    completed_at: 2026-05-25T21:19:47.243Z
+events:
+  - _ulid: 01KSGF89Z0SPSTH38E427N7NT1
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-25T21:04:34.272Z
+  - _ulid: 01KSGF8X5MCHR0KHNHWTKRSFRZ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-25T21:04:53.940Z
+  - _ulid: 01KSGG2QPXB94KQ0RBYA2ZT5CK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: git diff --check
+    timestamp: 2026-05-25T21:19:00.317Z
+  - _ulid: 01KSGG35N5JVC9R95BPVW92YT1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-25T21:19:14.597Z
+  - _ulid: 01KSGG3GY48CH83V3NC6GXJXA4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-25T21:19:26.148Z
+  - _ulid: 01KSGG3W42RJD493DJ9HTS6MX1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file oxlint
+    timestamp: 2026-05-25T21:19:37.602Z
+  - _ulid: 01KSGG4782VCG9SJ1SG29NJ117
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-25T21:19:48.994Z
+  - _ulid: 01KSGG4RCEVCTJ6FN9A1MCQ72F
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSGG4PPVPPYBV1X7EJ5CNS8W
+    timestamp: 2026-05-25T21:20:06.542Z
+  - _ulid: 01KSGG52HVCC46W3GWDNJGSP7Y
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-25T21:20:16.955Z
+  - _ulid: 01KSGG52HVMNEYYCR32X2V6FGS
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-25T21:20:16.955Z
+examined_commit: 0a3bfa159d4615c2a8345316f5a5a5f0e6722b84
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XB0EKNTMZS4XJMC4ED4SK"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSGG4PPVPPYBV1X7EJ5CNS8W
+    entries:
+      - _ulid: 01KSGG4PPVDFQSX99Z71F07HYH
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; task/spec/review records;
+          src/parser/review-resource-manager.ts; src/parser/entity-local-resources.ts;
+          packages/daemon/src/routes/review-resources.ts; packages/daemon/src/routes/reviews.ts;
+          packages/daemon/src/server.ts; packages/daemon/src/middleware/project-context.ts;
+          src/cli/commands/review-resource.ts; packages/web-ui/src/lib/api.ts;
+          packages/web-ui/src/routes/reviews/[id]/+page.svelte; src/export/json.ts; review resource
+          tests. Commands run: git diff/stat/name-status/log/check; kspec task get; kspec item get;
+          kspec review for-task/get/add/open; kspec validate and kspec validate --warnings-ok; npm
+          run typecheck; changed-file npx oxlint; npm test. Claims verified: prior source-scanning
+          fixture reads were replaced with manager APIs; daemon beforeEach standalone expect was
+          moved into a helper; targeted oxlint suppression is limited to fixture bootstrap, not
+          implementation source scanning. Categories searched: correctness, edge cases, error
+          handling, security/path traversal and symlink handling, test quality/AC coverage, static
+          export and UI integration."
+        created_at: 2026-05-25T21:20:04.827Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-25T21:20:16.955Z
+created_at: 2026-05-25T21:04:34.272Z
+updated_at: 2026-05-25T21:20:16.955Z
+notes: []

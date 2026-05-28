@@ -1,0 +1,146 @@
+_ulid: 01KMPBM6Z6AX5ZY3KTGBT68WVX
+slugs: []
+title: Review fix-git-subprocess-interactive-prompt-hang-in-daemon-dispatch
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 6 with repository-wide warnings only; schema and references passed, and no
+      task-specific validation errors were introduced.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-03-27T00:43:02.834Z
+    completed_at: 2026-03-27T00:43:02.834Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Full suite exit 1 due to pre-existing parse error in
+      tests/agent-dispatch-engine.test.ts:2532 ('mockMetadata' already declared). Verified identical
+      failure exists on base commit 10f03ef092b8d60326feb37c02c50dd45f5ed65a, so this patch did not
+      introduce the failure.
+    name: npm test
+    required: false
+    runner: npm
+    created_at: 2026-03-27T00:43:04.171Z
+    completed_at: 2026-03-27T00:43:04.171Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/git-terminal-prompt-suppression.test.ts passed: 4 suites, 7 tests."
+    name: targeted prompt suppression tests
+    required: true
+    runner: npm
+    created_at: 2026-03-27T00:43:05.541Z
+    completed_at: 2026-03-27T00:43:05.541Z
+events:
+  - _ulid: 01KMPBM6Z6D9W1ZCYG9RA326AY
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T00:38:07.590Z
+  - _ulid: 01KMPBMJGKPST5DP8E5T7VZNY1
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T00:38:19.412Z
+  - _ulid: 01KMPBX7QKVYT1Y7ZK3FEK9KWN
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-27T00:43:03.283Z
+  - _ulid: 01KMPBX8ZTTE3K00BDHMK413HV
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-27T00:43:04.570Z
+  - _ulid: 01KMPBXAB7Y19TKRE810AG2R2B
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted prompt suppression tests
+    timestamp: 2026-03-27T00:43:05.959Z
+  - _ulid: 01KMPBXBMHAS10YNBBXF088239
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMPBXB7TH7J0HGGV48D5NMJF
+    timestamp: 2026-03-27T00:43:07.282Z
+  - _ulid: 01KMPBXPDKRV7HBCQ70NMC29CP
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-27T00:43:18.323Z
+  - _ulid: 01KMPBXPDK4RBR0ZQXNR7RGZEP
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T00:43:18.323Z
+examined_commit: 1dee6a463dd7feeecf5354988107b287660b684e
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMPAH4QK86PFPYAA2W7SQANC"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMPBXB7TH7J0HGGV48D5NMJF
+    entries:
+      - _ulid: 01KMPBXB7TJ6T5QYSVW94ZDSHJ
+        author: "@claude"
+        body: >-
+          Evidence log
+
+
+          Files read: src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts,
+          src/parser/shadow.ts, src/parser/shadow-sync-scheduler.ts,
+          tests/git-terminal-prompt-suppression.test.ts, tests/agent-dispatch-engine.test.ts
+
+          Commands run: git diff --stat/base...head, git diff --unified=80 base...head, kspec task
+          get @01KMPAH4QK86PFPYAA2W7SQANC, kspec item get @dispatch-remote-branch-sync, kspec
+          validate, npm test, npm test -- --run tests/git-terminal-prompt-suppression.test.ts, grep
+          for AC annotations, rg for git subprocess call sites, git show
+          base:tests/agent-dispatch-engine.test.ts
+
+          Claims verified: verified the full-suite failure is pre-existing by comparing the same
+          duplicate mockMetadata declaration on base commit
+          10f03ef092b8d60326feb37c02c50dd45f5ed65a; verified the new regression test passes in this
+          snapshot; verified dispatch remote git calls route through buildDispatchGitEnv() and
+          shadow remote git calls route through buildShadowGitEnv()/runGitAsync()/spawn wrappers.
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration.
+          No task-specific blockers found.
+        created_at: 2026-03-27T00:43:06.874Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-27T00:43:18.323Z
+created_at: 2026-03-27T00:38:07.590Z
+updated_at: 2026-03-27T00:43:18.323Z
+notes: []

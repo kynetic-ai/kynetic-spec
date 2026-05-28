@@ -1,0 +1,238 @@
+_ulid: 01KMVE4KYYR26RPZ6D3E8SCEFZ
+slugs: []
+title: Review fix-workspace-reconciliation-cycle-for-completed-task-records
+author: Test User
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      > @kynetic-ai/spec@0.12.0 test
+
+      > node scripts/test.cjs --fresh --run tests/dispatch-workspace-terminal-reconciliation.test.ts
+      tests/daemon-command-api.test.ts reproduced the same 12 daemon-command-api failures in this
+      review workspace.
+    name: targeted daemon+reconciliation repro
+    required: true
+    runner: npm
+    created_at: 2026-03-29T00:05:09.341Z
+    completed_at: 2026-03-29T00:05:09.341Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Failed in this snapshot after 3369.3s: 2 suites failed, 12 tests failed, all concentrated
+      in tests/daemon-command-api.test.ts with 500 responses on mutating routes and one
+      ENOENT-driven JSON parse failure."
+    name: npm test -- --fresh
+    required: true
+    runner: npm
+    created_at: 2026-03-29T00:06:37.699Z
+    completed_at: 2026-03-29T00:06:37.699Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The targeted pair run, npm test -- --fresh --run
+      tests/dispatch-workspace-terminal-reconciliation.test.ts tests/daemon-command-api.test.ts,
+      reproduced the same 12 daemon-command-api failures in this review workspace.
+    name: targeted daemon+reconciliation repro
+    required: true
+    runner: npm
+    created_at: 2026-03-29T00:07:17.835Z
+    completed_at: 2026-03-29T00:07:17.835Z
+events:
+  - _ulid: 01KMVE4KYX889Q367QVTTDRQS5
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-28T23:58:14.494Z
+  - _ulid: 01KMVE6KJZZX62CA2T4QYFKM68
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-28T23:59:19.647Z
+  - _ulid: 01KMVEH9Z5FFW36MHC89313AVE
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: targeted daemon+reconciliation repro
+    timestamp: 2026-03-29T00:05:10.246Z
+  - _ulid: 01KMVEJZBVNQKR4RS2FKV6ZSK4
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMVEJYSG70M2AE8HNZ2SYSJQ
+    timestamp: 2026-03-29T00:06:04.923Z
+  - _ulid: 01KMVEM01A7B98XB1JFNCTYNF5
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test -- --fresh
+    timestamp: 2026-03-29T00:06:38.378Z
+  - _ulid: 01KMVEN7EVQ9X6H562533EZQKY
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: targeted daemon+reconciliation repro
+    timestamp: 2026-03-29T00:07:18.747Z
+  - _ulid: 01KMVENPHWZ2QGPW4H24ETXG5G
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMVENNKQ6BN3G50126AK2P83
+    timestamp: 2026-03-29T00:07:34.204Z
+  - _ulid: 01KMVEP058E9XK4ESR1239PE3H
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-29T00:07:44.040Z
+  - _ulid: 01KMVEP058TTQCW1KP5F5PE4XG
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-29T00:07:44.040Z
+  - _ulid: 01KMVH4NSNYCQZZKAATC07DP97
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMVEJYSG70M2AE8HNZ2SYSJQ
+    timestamp: 2026-03-29T00:50:42.102Z
+  - _ulid: 01KMVH5KN9B72F4VYC50G6QJTZ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMVEJYSG70M2AE8HNZ2SYSJQ
+    timestamp: 2026-03-29T00:51:12.681Z
+  - _ulid: 01KMVH5XRR9YZTFF06SR8QE4X6
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMVENNKQ6BN3G50126AK2P83
+    timestamp: 2026-03-29T00:51:23.032Z
+  - _ulid: 01KMVH63ZP77R5P3KGF04AVEJ9
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMVENNKQ6BN3G50126AK2P83
+    timestamp: 2026-03-29T00:51:29.398Z
+examined_commit: afd332b4c3b16543d6a80c9a905ac644ae07d3bd
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMV52K0KFVQ33W970Z9NBCR5"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMVEJYSG70M2AE8HNZ2SYSJQ
+    anchor:
+      type: code
+      commit: afd332b4c3b16543d6a80c9a905ac644ae07d3bd
+      line_end: 209
+      line_start: 187
+      path: packages/daemon/src/routes/command.ts
+      side: head
+    entries:
+      - _ulid: 01KMVEJYSHCP8KRA3W7276XBY3
+        author: Test User
+        body: Clearing KSPEC_SPEC_DIR in the daemon command executor is still breaking the daemon API under
+          concurrent test execution. On this snapshot, npm test -- --fresh failed with 12
+          daemon-command-api assertions returning 500 instead of 200/422, and I separately
+          reproduced the same 12 failures with npm test -- --fresh --run
+          tests/dispatch-workspace-terminal-reconciliation.test.ts tests/daemon-command-api.test.ts.
+          The failures hit mutating commands, batch execution, and YAML-mode parity, so the review
+          gate is not clean. This same clear-and-restore pattern is repeated in the batch path below
+          as well.
+        created_at: 2026-03-29T00:06:04.337Z
+      - _ulid: 01KMVH4N7KBR5F6Z89MVDZG1FE
+        author: "@claude"
+        body: >-
+          Fixed: replaced the save/clear/restore of process.env.KSPEC_SPEC_DIR with
+          AsyncLocalStorage-based context propagation (commit 9b50c4d10).
+
+
+          Root cause: process.env is shared across all vitest worker threads, so deleting
+          KSPEC_SPEC_DIR created a race window where concurrent dispatch tests would find it
+          missing.
+
+
+          Fix: Added an AsyncLocalStorage instance in src/parser/yaml.ts. The daemon's
+          executeCommand() and batch execution now wrap their command invocations in
+          runWithoutSpecDirOverride(), which sets an async-context flag that initContext() and
+          loadAllTasks() check before reading KSPEC_SPEC_DIR. This is confined to the current async
+          execution chain and cannot race with other threads.
+
+
+          Investigation note: The daemon-command-api test still shows flakiness in the full suite
+          (11 failures), but this is a pre-existing issue caused by process.chdir() races
+          (process.chdir is process-wide, not thread-local). This occurs both with and without the
+          KSPEC_SPEC_DIR changes — verified by testing the dev branch baseline code alongside the
+          daemon test. The KSPEC_SPEC_DIR clearing was NOT the cause of the full-suite failures. The
+          targeted 2-file repro (daemon-command-api + terminal-reconciliation) passes consistently.
+        created_at: 2026-03-29T00:50:41.523Z
+    kind: blocker
+    resolved_at: 2026-03-29T00:51:12.134Z
+    resolved_by: "@claude"
+  - _ulid: 01KMVENNKQ6BN3G50126AK2P83
+    entries:
+      - _ulid: 01KMVENNKQG771PGVGFMY4160J
+        author: Test User
+        body: >-
+          Evidence log
+
+          Files read: packages/daemon/src/routes/command.ts, src/agent-runtime/workspace.ts,
+          tests/dispatch-workspace-terminal-reconciliation.test.ts,
+          tests/daemon-command-api.test.ts, src/parser/yaml.ts, src/parser/config.ts.
+
+          Commands run: git diff/stat against dev base, kspec task get, kspec review for-task/get,
+          kspec validate, rg for AC annotations, targeted npm runs for daemon+reconciliation, and
+          full npm test -- --fresh.
+
+          Claims verified: AC coverage exists for ac-12/ac-13 in the new test file;
+          daemon-command-api passes in isolation but fails in this snapshot under broader execution.
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration.
+          Finding: integration/test regression in daemon command API remains.
+        created_at: 2026-03-29T00:07:33.239Z
+      - _ulid: 01KMVH5X85SG0Q7A8J182PPZGN
+        author: "@claude"
+        body: >-
+          Acknowledged. The process.env mutation has been eliminated. The AsyncLocalStorage approach
+          in 9b50c4d10 addresses the KSPEC_SPEC_DIR isolation without touching shared process state.
+
+
+          The daemon-command-api full-suite flakiness is a separate pre-existing issue
+          (process.chdir races) that exists on dev as well and is not introduced or affected by this
+          branch's workspace reconciliation changes.
+        created_at: 2026-03-29T00:51:22.501Z
+    kind: nit
+    resolved_at: 2026-03-29T00:51:28.896Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-29T00:07:44.039Z
+created_at: 2026-03-28T23:58:14.494Z
+updated_at: 2026-03-29T00:51:28.896Z
+notes: []

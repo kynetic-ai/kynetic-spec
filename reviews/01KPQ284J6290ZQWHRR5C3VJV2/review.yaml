@@ -1,0 +1,991 @@
+_ulid: 01KPQ284J6290ZQWHRR5C3VJV2
+slugs: []
+title: Review task-docs-rendering
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Targeted Playwright repro failed: on /docs/getting-started, clicking the first heading
+      anchor left the URL at http://localhost:<port>/docs/getting-started with no #fragment, so the
+      clicked heading did not produce a copyable direct-link URL."
+    name: heading anchor hash update
+    required: true
+    runner: playwright
+    created_at: 2026-04-21T03:54:05.742Z
+    completed_at: 2026-04-21T03:54:05.742Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      ✗ Validation failed
+
+      ────────────────────────────────────────
+
+      Files checked: 10
+
+      Items checked: 600
+
+      Tasks checked: 0
+
+      Meta: 12 agents, 11 workflows, 11 conventions
+
+
+      Schema errors: 1
+        ✗ /home/chapel/Projects/kynetic-spec-dispatch/.kspec/modules/meta.yaml:modules[0].traits.0
+          Expected string, received object
+      References: OK
+
+
+      Reference warnings: 1
+        ⚠ @skills
+          Orphaned skill directory 'skills' has no corresponding meta entry
+          in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+      Alignment warnings: 35
+        Orphaned specs (no tasks): 33
+          ○ Test Trait
+          ○ Filterable List Commands
+          ○ Dry Run Preview Mode
+          ... and 30 more
+        Status mismatches: 2
+          ! Task Set Batch Support
+            Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+          ! Concurrent Read Command Execution
+            Spec "Concurrent Read Command Execution" status is "implemented" but should be "in_progress" based on task progress
+
+      Alignment stats: 434/600 specs have tasks, 432 aligned
+
+
+      Completeness warnings: 500
+        Missing acceptance criteria: 1
+          ○ @01KJN1WT - Test Trait
+        Missing own AC coverage: 244
+          ! @docs-search - Docs Search
+            Uncovered: ac-1, ac-2, ac-3
+          ! @docs-getting-started-section - Getting Started Section
+            Uncovered: ac-1, ac-2, ac-3
+          ! @docs-concepts-section - Concepts Section
+            Uncovered: ac-1, ac-2, ac-3
+          ... and 241 more
+        Invalid AC annotations: 255
+          ! AC annotation references '@01KJE3T7' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-rendering-01kppn42-review/tests/agent-detection.test.ts:43
+          ! AC annotation references '@01KJE3T7' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-rendering-01kppn42-review/tests/agent-detection.test.ts:61
+          ! AC annotation references '@01KJE3T7' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-rendering-01kppn42-review/tests/agent-detection.test.ts:75
+          ! AC annotation references '@01KJE3T7' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-rendering-01kppn42-review/tests/agent-detection.test.ts:88
+          ! AC annotation references '@ui-agent-dispatch ac-8' but @ui-agent-dispatch has no acceptance criterion 'ac-8'
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-rendering-01kppn42-review/tests/agent-dispatch-engine.test.ts:4965
+          ... and 250 more
+      Skills: OK (10 files checked) fails on both the review snapshot and integration base
+      9d65ad244237 with the same pre-existing meta schema error at
+      .kspec/modules/meta.yaml:modules[0].traits.0 plus repo-wide warnings; not introduced by this
+      task.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-21T03:54:12.328Z
+    completed_at: 2026-04-21T03:54:12.328Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "
+
+      > @kynetic-ai/spec@0.13.0 test:e2e
+
+      > npm run build:e2e && npx playwright test tests/e2e/docs.spec.ts
+
+
+
+      > @kynetic-ai/spec@0.13.0 build:e2e
+
+      > tsc && chmod +x dist/cli/index.js && npm run build:shared && npm run build:daemon && npm run
+      build:web-ui
+
+
+
+      > @kynetic-ai/spec@0.13.0 build:shared
+
+      > cd packages/shared && npm run build
+
+
+
+      > @kynetic-ai/shared@0.1.0 build
+
+      > tsc
+
+
+
+      > @kynetic-ai/spec@0.13.0 build:daemon
+
+      > node scripts/build-daemon.cjs
+
+
+
+      > @kynetic-ai/spec@0.13.0 build:web-ui
+
+      > shx rm -rf dist/web-ui && cd packages/web-ui && npm run build && shx cp -r build
+      ../../dist/web-ui
+
+
+
+      > @kynetic-ai/web-ui@0.1.0 build
+
+      > svelte-kit sync && vite build
+
+
+      vite v7.3.1 building ssr environment for production...
+
+      transforming...
+
+      ✓ 4548 modules transformed.
+
+      rendering chunks...
+
+      vite v7.3.1 building client environment for production...
+
+      transforming...
+
+      ✓ 4696 modules transformed.
+
+      rendering chunks...
+
+      computing gzip size...
+
+      .svelte-kit/output/client/_app/version.json                                    0.03 kB │
+      gzip:  0.05 kB
+
+      .svelte-kit/output/client/.vite/manifest.json                                 36.85 kB │
+      gzip:  3.91 kB
+
+      .svelte-kit/output/client/_app/immutable/assets/select-trigger.CV-KWLNP.css    0.29 kB │
+      gzip:  0.15 kB
+
+      .svelte-kit/output/client/_app/immutable/assets/14.BwwJybWx.css                1.26 kB │
+      gzip:  0.41 kB
+
+      .svelte-kit/output/client/_app/immutable/assets/0.CE_H7Liq.css               116.08 kB │ gzip:
+      18.65 kB
+
+      .svelte-kit/output/client/_app/immutable/entry/start.DWNvlHA3.js               0.08 kB │
+      gzip:  0.09 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/BZt9mJ31.js                    0.12 kB │
+      gzip:  0.10 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/DfSn0_cb.js                    0.18 kB │
+      gzip:  0.14 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/CdWXomKh.js                    0.20 kB │
+      gzip:  0.18 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/i8BXvQ4j.js                    0.23 kB │
+      gzip:  0.16 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/btxVeNoL.js                    0.30 kB │
+      gzip:  0.23 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/CgCpIySp.js                    0.44 kB │
+      gzip:  0.32 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/BbdU-xkz.js                    0.45 kB │
+      gzip:  0.32 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/B5x2o_tM.js                    0.45 kB │
+      gzip:  0.32 kB
+
+      .svelte-kit/output/client/_app/immutable/nodes/1.C5TLTBWs.js                   0.46 kB │
+      gzip:  0.29 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/B8w_rClF.js                    0.46 kB │
+      gzip:  0.33 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/BGwyjQbm.js                    0.47 kB │
+      gzip:  0.34 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/BvHYjoFX.js                    0.47 kB │
+      gzip:  0.33 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/pqrOn-9H.js                    0.48 kB │
+      gzip:  0.29 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/BAL1Dy5-.js                    0.48 kB │
+      gzip:  0.34 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/Cf2dzeZm.js                    0.49 kB │
+      gzip:  0.34 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/BAE-uwlx.js                    0.51 kB │
+      gzip:  0.36 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/D2pfqnEM.js                    0.51 kB │
+      gzip:  0.35 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/jTXAVE0Y.js                    0.52 kB │
+      gzip:  0.37 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/BIljfC8T.js                    0.53 kB │
+      gzip:  0.34 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/jiKbA2kC.js                    0.55 kB │
+      gzip:  0.38 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/BlR0SzU2.js                    0.55 kB │
+      gzip:  0.37 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/Cb1HMvgo.js                    0.56 kB │
+      gzip:  0.39 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/yVeAKFSe.js                    0.56 kB │
+      gzip:  0.38 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/Bkep1EMk.js                    0.56 kB │
+      gzip:  0.37 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/DkLsg5CJ.js                    0.57 kB │
+      gzip:  0.38 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/CMXlBGAE.js                    0.57 kB │
+      gzip:  0.37 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/CtZAvcE4.js                    0.57 kB │
+      gzip:  0.38 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/Bgakn4nF.js                    0.58 kB │
+      gzip:  0.40 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/DPhEPkZo.js                    0.58 kB │
+      gzip:  0.40 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/BY6oEAaY.js                    0.59 kB │
+      gzip:  0.40 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/BtUn0ghQ.js                    0.59 kB │
+      gzip:  0.38 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/CZ-5N8lF.js                    0.59 kB │
+      gzip:  0.41 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/BJEOVwdb.js                    0.61 kB │
+      gzip:  0.39 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/DjAT1TlE.js                    0.62 kB │
+      gzip:  0.41 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/CMu9G-kR.js                    0.63 kB │
+      gzip:  0.41 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/Dc37Ruba.js                    0.63 kB │
+      gzip:  0.39 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/DGNfkDay.js                    0.63 kB │
+      gzip:  0.44 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/DLI7zcKB.js                    0.66 kB │
+      gzip:  0.41 kB
+
+      .svelte-kit/output/client/_app/immutable/nodes/8.B6G829Ke.js                   0.68 kB │
+      gzip:  0.41 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/CxvwV7Cl.js                    0.71 kB │
+      gzip:  0.46 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/CSNx58b-.js                    0.73 kB │
+      gzip:  0.47 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/B8TOCzYS.js                    0.79 kB │
+      gzip:  0.44 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/CHR8NToW.js                    0.96 kB │
+      gzip:  0.47 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/Rh7VYp-O.js                    1.06 kB │
+      gzip:  0.60 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/D3EeGgL6.js                    1.09 kB │
+      gzip:  0.59 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/DdhIywMe.js                    1.10 kB │
+      gzip:  0.55 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/Di4tqFR5.js                    1.11 kB │
+      gzip:  0.53 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/rzXXGZqU.js                    1.14 kB │
+      gzip:  0.68 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/CyEtTkTZ.js                    1.20 kB │
+      gzip:  0.66 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/CsHk7D2I.js                    1.40 kB │
+      gzip:  0.86 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/-wTmO-01.js                    1.51 kB │
+      gzip:  0.78 kB
+
+      .svelte-kit/output/client/_app/immutable/nodes/5._UDqO0Ua.js                   1.54 kB │
+      gzip:  0.88 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/DtVLDh_d.js                    1.68 kB │
+      gzip:  0.97 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/DL8dW63s.js                    1.95 kB │
+      gzip:  0.77 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/d_aB7R88.js                    2.01 kB │
+      gzip:  0.96 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/B20BMslq.js                    2.10 kB │
+      gzip:  0.97 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/Jx0RGsTh.js                    2.40 kB │
+      gzip:  0.98 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/Cfg_EK_c.js                    2.48 kB │
+      gzip:  1.04 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/ON7LP_Zo.js                    2.53 kB │
+      gzip:  0.79 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/DNUDi1Fy.js                    2.54 kB │
+      gzip:  1.09 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/OfIkHHMJ.js                    2.91 kB │
+      gzip:  1.15 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/DtBA1l0M.js                    3.18 kB │
+      gzip:  1.43 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/Cd6OO2KT.js                    3.20 kB │
+      gzip:  1.31 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/CJPgy88s.js                    3.38 kB │
+      gzip:  1.13 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/U3EMQ1VI.js                    4.08 kB │
+      gzip:  1.56 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/CqYDYYjx.js                    4.32 kB │
+      gzip:  1.64 kB
+
+      .svelte-kit/output/client/_app/immutable/nodes/9.DDryOJau.js                   4.41 kB │
+      gzip:  1.95 kB
+
+      .svelte-kit/output/client/_app/immutable/nodes/6.D2REbV_-.js                   5.00 kB │
+      gzip:  2.38 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/CodQGYoY.js                    5.96 kB │
+      gzip:  1.87 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/tUMTnVVX.js                    7.17 kB │
+      gzip:  3.18 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/DPpw177E.js                    8.08 kB │
+      gzip:  3.24 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/BSgug1xw.js                    8.27 kB │
+      gzip:  2.58 kB
+
+      .svelte-kit/output/client/_app/immutable/nodes/21.Ol4rByMb.js                  9.46 kB │
+      gzip:  3.58 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/DCRBEReK.js                   10.29 kB │
+      gzip:  2.83 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/T5tWfTJg.js                   10.62 kB │
+      gzip:  4.81 kB
+
+      .svelte-kit/output/client/_app/immutable/entry/app.BTR8VpQ2.js                11.13 kB │
+      gzip:  4.31 kB
+
+      .svelte-kit/output/client/_app/immutable/nodes/11.DLWJSamu.js                 11.95 kB │
+      gzip:  4.30 kB
+
+      .svelte-kit/output/client/_app/immutable/nodes/2.bd-64Wdp.js                  12.64 kB │
+      gzip:  4.48 kB
+
+      .svelte-kit/output/client/_app/immutable/nodes/7.vTVqgxYj.js                  12.93 kB │
+      gzip:  4.79 kB
+
+      .svelte-kit/output/client/_app/immutable/nodes/17.CZ2GDhW2.js                 16.14 kB │
+      gzip:  5.60 kB
+
+      .svelte-kit/output/client/_app/immutable/nodes/15.DwsQVFPM.js                 16.83 kB │
+      gzip:  4.59 kB
+
+      .svelte-kit/output/client/_app/immutable/nodes/18.ICxJU766.js                 17.42 kB │
+      gzip:  6.41 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/ay3JwgAc.js                   17.58 kB │
+      gzip:  5.49 kB
+
+      .svelte-kit/output/client/_app/immutable/nodes/19.X7nXK0si.js                 17.74 kB │
+      gzip:  6.47 kB
+
+      .svelte-kit/output/client/_app/immutable/nodes/20.B1TuVy1g.js                 18.08 kB │
+      gzip:  4.95 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/Clx8n7Wf.js                   22.94 kB │
+      gzip:  9.08 kB
+
+      .svelte-kit/output/client/_app/immutable/nodes/13.DC2Kv1Ad.js                 23.73 kB │
+      gzip:  7.88 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/BHiAdFvW.js                   24.54 kB │
+      gzip:  7.52 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/DOmav4ly.js                   25.74 kB │ gzip:
+      10.13 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/wmxrZiJ4.js                   25.91 kB │
+      gzip:  9.08 kB
+
+      .svelte-kit/output/client/_app/immutable/nodes/3.C-G1jFfg.js                  25.94 kB │
+      gzip:  8.19 kB
+
+      .svelte-kit/output/client/_app/immutable/nodes/16.D5gq9BdG.js                 28.06 kB │
+      gzip:  9.24 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/Bg2_GCsr.js                   36.71 kB │
+      gzip:  9.67 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/hdoMtw7B.js                   39.91 kB │ gzip:
+      12.63 kB
+
+      .svelte-kit/output/client/_app/immutable/nodes/14.D6D_qD0Z.js                 47.72 kB │ gzip:
+      14.56 kB
+
+      .svelte-kit/output/client/_app/immutable/nodes/12._wA8vm8X.js                 68.83 kB │ gzip:
+      17.45 kB
+
+      .svelte-kit/output/client/_app/immutable/nodes/0.DeC1Cs6M.js                  74.21 kB │ gzip:
+      21.66 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/D9skc5oz.js                   82.07 kB │ gzip:
+      24.36 kB
+
+      .svelte-kit/output/client/_app/immutable/nodes/4.73qSRGDd.js                  88.81 kB │ gzip:
+      22.88 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/D4lumiuD.js                   90.38 kB │ gzip:
+      30.56 kB
+
+      .svelte-kit/output/client/_app/immutable/nodes/10.BRsn6KZz.js                123.21 kB │ gzip:
+      39.03 kB
+
+      .svelte-kit/output/client/_app/immutable/chunks/Dwmei827.js                  150.79 kB │ gzip:
+      48.37 kB
+
+      ✓ built in 8.48s
+
+      .svelte-kit/output/server/.vite/manifest.json                                 26.88 kB
+
+      .svelte-kit/output/server/_app/immutable/assets/select-trigger.CV-KWLNP.css    0.29 kB
+
+      .svelte-kit/output/server/_app/immutable/assets/_page.SzGLxi4x.css             0.88 kB
+
+      .svelte-kit/output/server/_app/immutable/assets/_layout.DMmonDCg.css         115.78 kB
+
+      .svelte-kit/output/server/entries/pages/_layout.ts.js                          0.04 kB
+
+      .svelte-kit/output/server/entries/pages/automation/_page.ts.js                 0.04 kB
+
+      .svelte-kit/output/server/entries/pages/plans/_page.ts.js                      0.04 kB
+
+      .svelte-kit/output/server/entries/pages/reviews/_page.ts.js                    0.04 kB
+
+      .svelte-kit/output/server/entries/pages/reviews/_id_/_page.ts.js               0.04 kB
+
+      .svelte-kit/output/server/entries/pages/settings/_page.ts.js                   0.04 kB
+
+      .svelte-kit/output/server/entries/pages/tasks/_page.ts.js                      0.04 kB
+
+      .svelte-kit/output/server/entries/pages/tasks/board/_page.ts.js                0.04 kB
+
+      .svelte-kit/output/server/entries/pages/workflows/_page.ts.js                  0.04 kB
+
+      .svelte-kit/output/server/chunks/false.js                                      0.05 kB
+
+      .svelte-kit/output/server/chunks/html.js                                       0.14 kB
+
+      .svelte-kit/output/server/chunks/environment.js                                0.19 kB
+
+      .svelte-kit/output/server/chunks/mode.svelte.js                                0.29 kB
+
+      .svelte-kit/output/server/entries/fallbacks/error.svelte.js                    0.35 kB
+
+      .svelte-kit/output/server/internal.js                                          0.38 kB
+
+      .svelte-kit/output/server/chunks/state.svelte.js                               0.38 kB
+
+      .svelte-kit/output/server/chunks/index-server.js                               0.39 kB
+
+      .svelte-kit/output/server/chunks/server.js                                     0.45 kB
+
+      .svelte-kit/output/server/chunks/index3.js                                     0.45 kB
+
+      .svelte-kit/output/server/entries/pages/items/_page.svelte.js                  0.47 kB
+
+      .svelte-kit/output/server/chunks/skeleton.js                                   0.57 kB
+
+      .svelte-kit/output/server/chunks/card-content.js                               0.63 kB
+
+      .svelte-kit/output/server/chunks/client.js                                     0.64 kB
+
+      .svelte-kit/output/server/chunks/card.js                                       0.68 kB
+
+      .svelte-kit/output/server/chunks/dialog-footer.js                              0.68 kB
+
+      .svelte-kit/output/server/chunks/stores.js                                     0.69 kB
+
+      .svelte-kit/output/server/chunks/createMutation.svelte.js                      0.77 kB
+
+      .svelte-kit/output/server/chunks/card-header.js                                0.77 kB
+
+      .svelte-kit/output/server/chunks/reference.js                                  0.84 kB
+
+      .svelte-kit/output/server/chunks/utils.js                                      1.15 kB
+
+      .svelte-kit/output/server/chunks/utils2.js                                     1.16 kB
+
+      .svelte-kit/output/server/chunks/textarea.js                                   1.24 kB
+
+      .svelte-kit/output/server/chunks/session-utils.js                              1.46 kB
+
+      .svelte-kit/output/server/chunks/index.js                                      1.46 kB
+
+      .svelte-kit/output/server/chunks/chevron-down.js                               1.49 kB
+
+      .svelte-kit/output/server/chunks/chevron-right.js                              1.49 kB
+
+      .svelte-kit/output/server/chunks/loader-circle.js                              1.53 kB
+
+      .svelte-kit/output/server/chunks/terminal.js                                   1.54 kB
+
+      .svelte-kit/output/server/chunks/search.js                                     1.58 kB
+
+      .svelte-kit/output/server/chunks/ban.js                                        1.58 kB
+
+      .svelte-kit/output/server/chunks/play.js                                       1.65 kB
+
+      .svelte-kit/output/server/chunks/markdown.js                                   1.69 kB
+
+      .svelte-kit/output/server/chunks/activity.js                                   1.77 kB
+
+      .svelte-kit/output/server/chunks/external-link.js                              1.78 kB
+
+      .svelte-kit/output/server/chunks/eye.js                                        1.79 kB
+
+      .svelte-kit/output/server/chunks/funnel.js                                     1.81 kB
+
+      .svelte-kit/output/server/chunks/triangle-alert.js                             1.81 kB
+
+      .svelte-kit/output/server/chunks/git-branch.js                                 1.81 kB
+
+      .svelte-kit/output/server/chunks/zap.js                                        1.82 kB
+
+      .svelte-kit/output/server/chunks/workflow.js                                   1.83 kB
+
+      .svelte-kit/output/server/chunks/CacheWarmingBanner.js                         1.85 kB
+
+      .svelte-kit/output/server/chunks/bot.js                                        1.88 kB
+
+      .svelte-kit/output/server/chunks/inbox.js                                      1.88 kB
+
+      .svelte-kit/output/server/chunks/refresh-cw.js                                 1.92 kB
+
+      .svelte-kit/output/server/chunks/shield-check.js                               1.96 kB
+
+      .svelte-kit/output/server/chunks/createQuery.svelte.js                         2.08 kB
+
+      .svelte-kit/output/server/chunks/input.js                                      2.20 kB
+
+      .svelte-kit/output/server/chunks/context.js                                    2.20 kB
+
+      .svelte-kit/output/server/chunks/settings.js                                   2.34 kB
+
+      .svelte-kit/output/server/entries/pages/docs/_page.svelte.js                   2.47 kB
+
+      .svelte-kit/output/server/chunks/card-title.js                                 2.61 kB
+
+      .svelte-kit/output/server/chunks/Icon.js                                       2.65 kB
+
+      .svelte-kit/output/server/chunks/ReferenceLink.js                              2.92 kB
+
+      .svelte-kit/output/server/chunks/button.js                                     2.94 kB
+
+      .svelte-kit/output/server/chunks/pencil.js                                     3.27 kB
+
+      .svelte-kit/output/server/chunks/separator.js                                  3.27 kB
+
+      .svelte-kit/output/server/chunks/book-open.js                                  3.46 kB
+
+      .svelte-kit/output/server/chunks/table-row.js                                  3.53 kB
+
+      .svelte-kit/output/server/chunks/events.js                                     3.93 kB
+
+      .svelte-kit/output/server/chunks/dialog-description.js                         4.82 kB
+
+      .svelte-kit/output/server/chunks/sanitize.js                                   5.01 kB
+
+      .svelte-kit/output/server/chunks/dialog-content.js                             5.41 kB
+
+      .svelte-kit/output/server/chunks/sheet-content.js                              5.55 kB
+
+      .svelte-kit/output/server/chunks/exports.js                                    5.59 kB
+
+      .svelte-kit/output/server/chunks/map.js                                        5.77 kB
+
+      .svelte-kit/output/server/entries/pages/sessions/_id_/_page.svelte.js          7.11 kB
+
+      .svelte-kit/output/server/entries/pages/docs/_...slug_/_page.svelte.js         7.59 kB
+
+      .svelte-kit/output/server/entries/pages/observations/_page.svelte.js           9.31 kB
+
+      .svelte-kit/output/server/entries/pages/specs/_page.svelte.js                 10.77 kB
+
+      .svelte-kit/output/server/chunks/create-id.js                                 11.93 kB
+
+      .svelte-kit/output/server/chunks/dialog-content2.js                           15.29 kB
+
+      .svelte-kit/output/server/remote-entry.js                                     18.33 kB
+
+      .svelte-kit/output/server/chunks/shared.js                                    18.45 kB
+
+      .svelte-kit/output/server/entries/pages/_page.svelte.js                       18.66 kB
+
+      .svelte-kit/output/server/entries/pages/reviews/_page.svelte.js               20.22 kB
+
+      .svelte-kit/output/server/entries/pages/workflows/_page.svelte.js             21.89 kB
+
+      .svelte-kit/output/server/entries/pages/tasks/board/_page.svelte.js           24.32 kB
+
+      .svelte-kit/output/server/entries/pages/inbox/_page.svelte.js                 24.55 kB
+
+      .svelte-kit/output/server/entries/pages/settings/_page.svelte.js              25.90 kB
+
+      .svelte-kit/output/server/chunks/internal.js                                  26.37 kB
+
+      .svelte-kit/output/server/entries/pages/tasks/_page.svelte.js                 29.21 kB
+
+      .svelte-kit/output/server/chunks/keys.js                                      31.23 kB
+
+      .svelte-kit/output/server/entries/pages/triage/_page.svelte.js                31.56 kB
+
+      .svelte-kit/output/server/entries/pages/sessions/_page.svelte.js              33.40 kB
+
+      .svelte-kit/output/server/entries/pages/validate/_page.svelte.js              34.27 kB
+
+      .svelte-kit/output/server/chunks/x.js                                         39.77 kB
+
+      .svelte-kit/output/server/chunks/TaskDetailContent.js                         39.89 kB
+
+      .svelte-kit/output/server/entries/pages/agents/_page.svelte.js                42.10 kB
+
+      .svelte-kit/output/server/entries/pages/plans/_page.svelte.js                 46.50 kB
+
+      .svelte-kit/output/server/entries/pages/automation/_page.svelte.js            61.96 kB
+
+      .svelte-kit/output/server/chunks/index2.js                                    82.18 kB
+
+      .svelte-kit/output/server/entries/pages/reviews/_id_/_page.svelte.js          90.01 kB
+
+      .svelte-kit/output/server/chunks/docs.js                                      93.75 kB
+
+      .svelte-kit/output/server/chunks/select-trigger.js                            95.67 kB
+
+      .svelte-kit/output/server/index.js                                           126.93 kB
+
+      .svelte-kit/output/server/entries/pages/_layout.svelte.js                    154.80 kB
+
+      ✓ built in 15.60s
+
+
+      Run npm run preview to preview your production build locally.
+
+
+      > Using @sveltejs/adapter-static
+
+      \  Wrote site to \"build\"
+
+      \  ✔ done
+
+
+      Running 8 tests using 8 workers
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      \e[1A\e[2K[1/8] [chromium] › tests/e2e/docs.spec.ts:13:3 › Docs › sidebar shows Docs nav entry
+      that navigates to docs landing page
+
+      \e[1A\e[2K[2/8] [chromium] › tests/e2e/docs.spec.ts:138:3 › Docs › in-tree .md links are
+      rewritten to SPA routes
+
+      \e[1A\e[2K[3/8] [chromium] › tests/e2e/docs.spec.ts:158:3 › Docs › out-of-tree .md links are
+      rewritten to GitHub blob URLs
+
+      \e[1A\e[2K[4/8] [chromium] › tests/e2e/docs.spec.ts:54:3 › Docs › docs page shows sidebar with
+      section pages, highlights current page, and shows TOC
+
+      \e[1A\e[2K[5/8] [chromium] › tests/e2e/docs.spec.ts:93:3 › Docs › non-current docs page links
+      are not highlighted
+
+      \e[1A\e[2K[6/8] [chromium] › tests/e2e/docs.spec.ts:123:3 › Docs › docs landing page lists
+      available docs grouped by section
+
+      \e[1A\e[2K[7/8] [chromium] › tests/e2e/docs.spec.ts:34:3 › Docs › mobile nav shows Docs entry
+      that navigates to docs
+
+      \e[1A\e[2K[8/8] [chromium] › tests/e2e/docs.spec.ts:182:3 › Docs › navigating between docs
+      pages via sidebar uses client-side routing
+
+      \e[1A\e[2K  8 passed (6.0s) passed: 8 passed (6.8s)."
+    name: docs e2e
+    required: true
+    runner: playwright
+    created_at: 2026-04-21T03:54:35.518Z
+    completed_at: 2026-04-21T03:54:35.518Z
+events:
+  - _ulid: 01KPQ284J6EGWB2J8G10034Q8E
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-21T03:44:52.806Z
+  - _ulid: 01KPQ28S9PFMK6C7TKK6J0THWS
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-21T03:45:14.038Z
+  - _ulid: 01KPQ2RJYKYZJGSQ3EH2DSQ7YR
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPQ2RHY773VCM11NJ1G9XJXX
+    timestamp: 2026-04-21T03:53:51.827Z
+  - _ulid: 01KPQ2RPVZ2H2F8T5TT7SE3AYX
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPQ2RNSB47FJFVANY320CF30
+    timestamp: 2026-04-21T03:53:55.839Z
+  - _ulid: 01KPQ2S1RAVST8ZSEARN4DN7SN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: heading anchor hash update
+    timestamp: 2026-04-21T03:54:06.986Z
+  - _ulid: 01KPQ2S83M03VK85YHH88S0Q9Z
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-21T03:54:13.493Z
+  - _ulid: 01KPQ2SYR66JE81P6GMC5XWQTS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: docs e2e
+    timestamp: 2026-04-21T03:54:36.678Z
+  - _ulid: 01KPQ2TB05CHRBYRAD0TEHHSW7
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KPQ2T9NW0ZXXSGSQB0HSYE6A
+    timestamp: 2026-04-21T03:54:49.221Z
+  - _ulid: 01KPQ31CQM9ZH041TFKV2J3XVD
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-21T03:58:40.372Z
+  - _ulid: 01KPQ31CQMF4H238QF6T6DZKGZ
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-21T03:58:40.373Z
+  - _ulid: 01KPQ3X8HCAC47EEWV9GZX8DD4
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPQ2RHY773VCM11NJ1G9XJXX
+    timestamp: 2026-04-21T04:13:53.580Z
+  - _ulid: 01KPQ3XDN4HTKAQCD8ZKMXYQJW
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPQ2RNSB47FJFVANY320CF30
+    timestamp: 2026-04-21T04:13:58.821Z
+  - _ulid: 01KPQ3XPGBM03XH5AFTN51STDJ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPQ2RHY773VCM11NJ1G9XJXX
+    timestamp: 2026-04-21T04:14:07.883Z
+  - _ulid: 01KPQ3XVRE4G4WSA246QZ2KBVT
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPQ2RNSB47FJFVANY320CF30
+    timestamp: 2026-04-21T04:14:13.262Z
+examined_commit: 765071be773d1738dbd5b14ec2c05e76954c2c98
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KPPN42CDKS6A6951ZATDPKXP"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPQ2RHY773VCM11NJ1G9XJXX
+    anchor:
+      type: code
+      commit: 765071be773d1738dbd5b14ec2c05e76954c2c98
+      line_end: 59
+      line_start: 54
+      path: packages/web-ui/src/routes/docs/[...slug]/+page.svelte
+      side: head
+    entries:
+      - _ulid: 01KPQ2RHY7B2QR8MN1E60MZ6YD
+        author: Jacob Chapel
+        body: "Clicking a heading anchor never updates the URL fragment because this handler calls
+          preventDefault() and only scrolls the target into view. I confirmed it with a targeted
+          Playwright check against /docs/getting-started: after clicking the first <h2> anchor, the
+          page URL stayed at /docs/getting-started with no #... suffix. That breaks
+          @docs-navigation-shape ac-2's 'click a heading' path because the resulting direct link is
+          not reflected in the address bar for copying/sharing."
+        created_at: 2026-04-21T03:53:50.791Z
+      - _ulid: 01KPQ3X7HXY2FD5NRTPP78BWM4
+        author: "@claude"
+        body: "Fixed: The anchor click handler now calls history.replaceState(null, '', href) after
+          scrollIntoView() to update the URL fragment. This preserves smooth scrolling while making
+          the anchor link copyable from the address bar. Added an E2E test that clicks a TOC link
+          and verifies the URL includes the expected hash fragment."
+        created_at: 2026-04-21T04:13:52.573Z
+    kind: blocker
+    resolved_at: 2026-04-21T04:14:06.871Z
+    resolved_by: "@claude"
+  - _ulid: 01KPQ2RNSB47FJFVANY320CF30
+    anchor:
+      type: code
+      commit: 765071be773d1738dbd5b14ec2c05e76954c2c98
+      line_end: 58
+      line_start: 54
+      path: packages/web-ui/src/routes/docs/[...slug]/+page.svelte
+      side: head
+    entries:
+      - _ulid: 01KPQ2RNSCT2X9SCFGJ1QD7AEV
+        author: Jacob Chapel
+        body: "Clicking a heading anchor never updates the URL fragment because this handler prevents the
+          browser's default hash navigation and only calls scrollIntoView(). That breaks
+          @docs-navigation-shape ac-2's click path: a targeted Playwright check on
+          /docs/getting-started kept the URL at /docs/getting-started after clicking the first
+          heading anchor instead of appending #... , so the clicked section is not exposed as a
+          copyable direct link."
+        created_at: 2026-04-21T03:53:54.732Z
+      - _ulid: 01KPQ3XCNZPW5KS5T9NWQQYX0P
+        author: "@claude"
+        body: "Fixed: Same root cause as the duplicate thread above. The handler now updates the URL hash
+          via history.replaceState() after scrolling, so the fragment is reflected in the address
+          bar for sharing/copying."
+        created_at: 2026-04-21T04:13:57.823Z
+    kind: blocker
+    resolved_at: 2026-04-21T04:14:12.271Z
+    resolved_by: "@claude"
+  - _ulid: 01KPQ2T9NW0ZXXSGSQB0HSYE6A
+    entries:
+      - _ulid: 01KPQ2T9NWDDJGWDZMF4Z6T4D4
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+
+          Files read: packages/web-ui/src/routes/docs/[...slug]/+page.svelte,
+          packages/web-ui/src/routes/docs/+page.svelte,
+          packages/web-ui/src/lib/utils/docs-markdown.ts,
+          packages/web-ui/src/lib/utils/docs-utils.ts, packages/web-ui/vite-plugin-docs.ts,
+          packages/web-ui/vite.config.ts, packages/web-ui/src/lib/components/Sidebar.svelte,
+          packages/web-ui/src/lib/components/MobileNav.svelte, packages/daemon/src/server.ts,
+          tests/web-ui-docs-rendering.test.ts, tests/e2e/docs.spec.ts, docs/getting-started.md.
+
+
+          Commands run: kspec task get, kspec item get @docs-reachability, kspec item get
+          @docs-navigation-shape, git diff/stat against base 9d65ad244237, kspec validate on
+          snapshot and base, AC annotation grep, npm run test:e2e -- tests/e2e/docs.spec.ts,
+          targeted Playwright heading-anchor repro.
+
+
+          Claims verified: docs route is wired into daemon SPA routes; docs nav entry exists in
+          sidebar/mobile nav; docs E2E slice passes; heading-anchor click path does not update the
+          URL hash.
+
+
+          Categories searched: correctness (1 blocker: heading click direct-link behavior), edge
+          cases (relative/out-of-tree markdown links, nested docs paths), error handling (missing
+          docs page fallback, pre-existing validate failure triage), test quality (AC annotations
+          and E2E coverage), integration (daemon SPA routes, Vite docs plugin, bundled manifest
+          wiring).
+        created_at: 2026-04-21T03:54:47.868Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-21T03:58:40.372Z
+created_at: 2026-04-21T03:44:52.806Z
+updated_at: 2026-04-21T04:14:12.271Z
+notes: []

@@ -1,0 +1,353 @@
+_ulid: 01KQXYV8EHEKNRMRG6XEDBY8CH
+slugs: []
+title: Review task-update-cli-daemon-proxy-endpoint-ac
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --warnings-ok exited 0. Validation passed with existing project warnings
+      (reference/alignment/completeness), including many pre-existing annotation warnings.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-06T06:25:25.499Z
+    completed_at: 2026-05-06T06:25:25.499Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test exited 0. Test Suites: 2332 passed of 2332. Tests: 8546 passed, 5 skipped of
+      8551. Duration: 1950.6s. Full log:
+      /tmp/kspec-test-cache/01KQXYSCBPJHRC0PGZPRAYC6KV/5e2171a0663f8ff6.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-06T06:25:36.252Z
+    completed_at: 2026-05-06T06:25:36.252Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md, tests/cli-daemon-proxy.test.ts, src/cli/daemon-proxy.ts,
+      @cli-daemon-proxy, @daemon-proxy-detection, task @01KQWZZG0BC74MJ02VRH2V9W4C. Commands run:
+      git diff/stat/log/status, kspec task get, kspec item get for both specs, kspec validate
+      --warnings-ok, rg AC refs, npm test. Claims verified: spec mutations are present; worker claim
+      that no ac-port-file-check references remain is false; added/changed annotations do not
+      behaviorally prove metadata ACs. Categories searched: correctness/spec alignment, AC coverage,
+      test quality, integration/stale references, error/timeout path coverage."
+    name: review evidence log
+    required: false
+    runner: codex
+    created_at: 2026-05-06T06:25:48.206Z
+    completed_at: 2026-05-06T06:25:48.206Z
+events:
+  - _ulid: 01KQXYV8EHGA41GRHQSWBP3FHD
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-06T06:15:47.921Z
+  - _ulid: 01KQXYWVPZ4NS1XC7BVC8C4Y2Q
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-06T06:16:40.415Z
+  - _ulid: 01KQXYXB9YG84BZTV6W0MN65RF
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQXYX9ZY2R3RDDTJ0VQQJWPE
+    timestamp: 2026-05-06T06:16:56.382Z
+  - _ulid: 01KQXYXPCNYWZ26STGW5CRCMDT
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQXYXMZA63Z6R1850FV9VVKV
+    timestamp: 2026-05-06T06:17:07.734Z
+  - _ulid: 01KQXYY1RZHM3ET5BT3J7ZSAYN
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQXYY0D6S8ZRA1ENJ82XZ71Z
+    timestamp: 2026-05-06T06:17:19.391Z
+  - _ulid: 01KQXYYD09QZE1GC2G3R0XJ9V1
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQXYYBH41D7QCJ0FMHKY93YR
+    timestamp: 2026-05-06T06:17:30.889Z
+  - _ulid: 01KQXYYRFZAF8C9ENMSKGQA9CH
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQXYYPZ3ZVKD31G1PXF8BY22
+    timestamp: 2026-05-06T06:17:42.656Z
+  - _ulid: 01KQXZCXXCG3T7AV0W10AD26WE
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-06T06:25:26.957Z
+  - _ulid: 01KQXZD8AVZ0K97QKEV0TKSQHV
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-06T06:25:37.627Z
+  - _ulid: 01KQXZDM1W2DBTSBHYPTHDG2C6
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-06T06:25:49.628Z
+  - _ulid: 01KQXZDY4X8KNQ7RAD5W3SH09B
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-06T06:25:59.965Z
+  - _ulid: 01KQXZDY4XRQ5STVZNE0R3EJMP
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-06T06:25:59.965Z
+  - _ulid: 01KQY0XSV6YK0JTCF65FJHKHGQ
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQXYX9ZY2R3RDDTJ0VQQJWPE
+    timestamp: 2026-05-06T06:52:08.422Z
+  - _ulid: 01KQY0XWV4G9QNQWJNPJ7VB447
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQXYX9ZY2R3RDDTJ0VQQJWPE
+    timestamp: 2026-05-06T06:52:11.492Z
+  - _ulid: 01KQY0XZVTF5E126905QVJ7S07
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQXYXMZA63Z6R1850FV9VVKV
+    timestamp: 2026-05-06T06:52:14.586Z
+  - _ulid: 01KQY0Y2V83Z9BFSA3FAZ6H2E5
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQXYXMZA63Z6R1850FV9VVKV
+    timestamp: 2026-05-06T06:52:17.640Z
+  - _ulid: 01KQY0Y5WAZAG3ZXJ78XGDJ01N
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQXYY0D6S8ZRA1ENJ82XZ71Z
+    timestamp: 2026-05-06T06:52:20.747Z
+  - _ulid: 01KQY0Y8TYFM610ATSFZVAGEKS
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQXYY0D6S8ZRA1ENJ82XZ71Z
+    timestamp: 2026-05-06T06:52:23.774Z
+  - _ulid: 01KQY0YBRF0AEQD94YBSNSCZ3N
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQXYYBH41D7QCJ0FMHKY93YR
+    timestamp: 2026-05-06T06:52:26.767Z
+  - _ulid: 01KQY0YER5HN26G876NH1GT54C
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQXYYBH41D7QCJ0FMHKY93YR
+    timestamp: 2026-05-06T06:52:29.829Z
+  - _ulid: 01KQY0YHQWQA33ESX15FXHYN7R
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQXYYPZ3ZVKD31G1PXF8BY22
+    timestamp: 2026-05-06T06:52:32.892Z
+  - _ulid: 01KQY0YMRV502PC93K75RGP6A0
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQXYYPZ3ZVKD31G1PXF8BY22
+    timestamp: 2026-05-06T06:52:35.995Z
+examined_commit: 0e475fe9ec81f0f975a0abff1a4c609d7ab85f5e
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQWZZG0BC74MJ02VRH2V9W4C"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQXYX9ZY2R3RDDTJ0VQQJWPE
+    anchor:
+      type: structured
+      field: ac-force-direct-management-exception
+      ref: "@cli-daemon-proxy"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KQXYX9ZY3662Z6FFG68HHKVE
+        author: codex
+        body: "MUST-FIX: The new @cli-daemon-proxy ac-force-direct-management-exception acceptance criterion
+          has no annotated test coverage. I searched tests/src/packages/templates/.agents for
+          'ac-force-direct-management-exception' and found no matches. This leaves the new
+          KSPEC_NO_DAEMON management-command exception unverified, which violates the AC coverage
+          gate for newly added criteria."
+        created_at: 2026-05-06T06:16:55.038Z
+      - _ulid: 01KQY0XRHTKG53H1PTP8BVXNER
+        author: "@claude"
+        body: "Fixed: added behavioral E2E test for ac-force-direct-management-exception in
+          tests/cli-daemon-proxy.test.ts that runs `kspec serve status --json` with
+          KSPEC_NO_DAEMON=1 and a live daemon.pid, asserting running:true is reported. Without the
+          exception, KSPEC_NO_DAEMON would short-circuit isDaemonRunning() to false; the serve
+          commands explicitly bypass it via {ignoreNoDaemon: true} and never go through
+          daemon-proxy.ts."
+        created_at: 2026-05-06T06:52:07.097Z
+    kind: blocker
+    resolved_at: 2026-05-06T06:52:10.330Z
+    resolved_by: "@claude"
+  - _ulid: 01KQXYXMZA63Z6R1850FV9VVKV
+    anchor:
+      type: code
+      commit: 0e475fe9ec81f0f975a0abff1a4c609d7ab85f5e
+      line_end: 145
+      line_start: 135
+      path: tests/cli-daemon-proxy.test.ts
+      side: head
+    entries:
+      - _ulid: 01KQXYXMZB10W5YW8YRMFGT6C6
+        author: codex
+        body: "MUST-FIX: This annotation now claims coverage for @daemon-proxy-detection
+          ac-connection-metadata-check, but the test only covers the old missing daemon.port
+          behavior. The updated AC requires reading daemon connection metadata from the standard
+          global location and health-checking connect_host plus port. This test creates an empty
+          HOME and expects reason 'no port file', so it would still pass if metadata reading and
+          connect_host routing were completely absent."
+        created_at: 2026-05-06T06:17:06.283Z
+      - _ulid: 01KQY0XYNSYF8Z3M30JSQMRJ4R
+        author: "@claude"
+        body: "Fixed: removed the misleading ac-connection-metadata-check annotation. The test only
+          exercises the legacy port-file negative case, so it is now annotated as
+          ac-legacy-port-file-fallback (negative case). The metadata-driven AC will be covered when
+          the metadata reader lands via @task-shared-daemon-endpoint-resolver and
+          @task-centralize-cli-daemon-clients."
+        created_at: 2026-05-06T06:52:13.369Z
+    kind: blocker
+    resolved_at: 2026-05-06T06:52:16.473Z
+    resolved_by: "@claude"
+  - _ulid: 01KQXYY0D6S8ZRA1ENJ82XZ71Z
+    anchor:
+      type: code
+      commit: 0e475fe9ec81f0f975a0abff1a4c609d7ab85f5e
+      line_end: 754
+      line_start: 744
+      path: tests/cli-daemon-proxy.test.ts
+      side: head
+    entries:
+      - _ulid: 01KQXYY0D62R4NMVRCPPGAH8FM
+        author: codex
+        body: "MUST-FIX: The @cli-daemon-proxy ac-auto-detect annotation still covers legacy daemon.port
+          routing, not the updated metadata-driven contract. The AC now requires routing through the
+          daemon API using the advertised connect_host and port when connection metadata points to a
+          running daemon; this E2E writes only daemon.port/daemon.pid, so it does not prove
+          advertised connect_host is used or that metadata is read."
+        created_at: 2026-05-06T06:17:17.990Z
+      - _ulid: 01KQY0Y4MNBSSK0T8H7S5Y08WG
+        author: "@claude"
+        body: "Fixed: re-annotated the E2E to @daemon-proxy-detection ac-legacy-port-file-fallback (positive
+          case) plus @cli-daemon-proxy ac-transparent-output. Removed the misleading ac-auto-detect
+          claim — the metadata-keyed AC requires metadata reading and connect_host routing, which is
+          not yet implemented. Also updated the unit shouldProxyCommand test at line 270 to drop its
+          ac-auto-detect annotation, with a comment that the routing-decision unit test bypasses
+          detection via the testing cache helper."
+        created_at: 2026-05-06T06:52:19.477Z
+    kind: blocker
+    resolved_at: 2026-05-06T06:52:22.586Z
+    resolved_by: "@claude"
+  - _ulid: 01KQXYYBH41D7QCJ0FMHKY93YR
+    anchor:
+      type: code
+      commit: 0e475fe9ec81f0f975a0abff1a4c609d7ab85f5e
+      line_end: 840
+      line_start: 825
+      path: tests/cli-daemon-proxy.test.ts
+      side: head
+    entries:
+      - _ulid: 01KQXYYBH4RPW2VM735M4DZ20X
+        author: codex
+        body: "MUST-FIX: The @daemon-proxy-detection ac-health-timeout test still uses the legacy
+          daemon.port file, but the updated AC is specifically for connection metadata with an
+          advertised endpoint that is unresponsive. Because the setup writes daemon.port instead of
+          connection metadata with connect_host plus port, this test would not fail if the new
+          metadata timeout path were missing."
+        created_at: 2026-05-06T06:17:29.380Z
+      - _ulid: 01KQY0YAN69D5H1CV7EW70JKVV
+        author: "@claude"
+        body: "Fixed: removed the misleading ac-health-timeout annotation. The test still exercises the
+          200ms timeout via the legacy port-file path; the metadata-keyed AC explicitly requires
+          connection metadata to exist, which the implementation does not yet read. Added a comment
+          that the metadata-keyed AC will be covered by the metadata implementation tasks."
+        created_at: 2026-05-06T06:52:25.638Z
+    kind: blocker
+    resolved_at: 2026-05-06T06:52:28.638Z
+    resolved_by: "@claude"
+  - _ulid: 01KQXYYPZ3ZVKD31G1PXF8BY22
+    anchor:
+      type: code
+      commit: 0e475fe9ec81f0f975a0abff1a4c609d7ab85f5e
+      line_end: 14
+      line_start: 13
+      path: src/cli/daemon-proxy.ts
+      side: head
+    entries:
+      - _ulid: 01KQXYYPZ44GTW9QRB3G88HTZ5
+        author: codex
+        body: "MUST-FIX: The source still references the removed @daemon-proxy-detection ac-port-file-check
+          AC after this task renamed it to ac-connection-metadata-check and added
+          ac-legacy-port-file-fallback. There is another stale reference at line 66, plus the test
+          header still lists ac-port-file-check. Leaving invalid AC references behind makes the
+          spec/test map misleading and contradicts the task note that no ac-port-file-check
+          references remain."
+        created_at: 2026-05-06T06:17:41.092Z
+      - _ulid: 01KQY0YGJPE027JYHDECEET6FT
+        author: "@claude"
+        body: "Fixed: replaced all ac-port-file-check references in src/cli/daemon-proxy.ts (lines 13, 66,
+          and the test file header at line 14) with ac-legacy-port-file-fallback. Also dropped the
+          metadata-keyed ac-auto-detect/ac-health-timeout annotations from source since the
+          implementation does not yet read connection metadata; added comments noting the
+          metadata-driven coverage lands with the implementation tasks. Verified `rg
+          ac-port-file-check` returns no matches."
+        created_at: 2026-05-06T06:52:31.702Z
+    kind: blocker
+    resolved_at: 2026-05-06T06:52:34.706Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-06T06:25:59.965Z
+created_at: 2026-05-06T06:15:47.921Z
+updated_at: 2026-05-06T06:52:34.706Z
+notes: []

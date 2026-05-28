@@ -1,0 +1,338 @@
+_ulid: 01KNDCZZ3CPD2C17RZXGPW47Z4
+slugs: []
+title: "Plan review: Granular Cache Invalidation (R2)"
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan preserves ac-granular-reload as-is on @daemon-entity-cache for cross-domain
+      isolation. Within-domain entity-level granularity owned by @daemon-incremental-cache via
+      ac-single-entity-patch. Clear ownership boundary, no conflict.
+    name: "Blocker 1: ac-granular-reload regression"
+    required: true
+    created_at: 2026-04-04T23:25:00.153Z
+    completed_at: 2026-04-04T23:25:00.153Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: AC uses behavioral language (pre/post state, never partial mix). Tasks describe
+      clone-patch-swap mechanism explicitly for each domain. Incremental path is clearly
+      differentiated from full-reload path.
+    name: "Blocker 2: ac-index-consistency mechanism"
+    required: true
+    created_at: 2026-04-04T23:25:07.633Z
+    completed_at: 2026-04-04T23:25:07.633Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Task now explicitly distinguishes onFileChange (always has content) vs onFileRemoved
+      (separate code path, no content). Matches actual code: watcher.ts:159 passes content,
+      watcher.ts:173 calls onFileRemoved without content. Cache must handle both cases."
+    name: "Blocker 3: ac-watcher-content-passthrough"
+    required: true
+    created_at: 2026-04-04T23:25:15.356Z
+    completed_at: 2026-04-04T23:25:15.356Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "ac-initial-load-all added to daemon-meta-subdomain: requires all three sub-domains loaded
+      before meta domain transitions to ready state."
+    name: "Question: meta initial-load AC"
+    required: true
+    created_at: 2026-04-04T23:25:26.862Z
+    completed_at: 2026-04-04T23:25:26.862Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: task-add-ac-context-reuse is a standalone spec-update task with no code dependencies.
+      task-watcher-content-passthrough depends on it, which is correct ordering — spec contract
+      before implementation.
+    name: "Question: Phase 1 dependency chain"
+    required: true
+    created_at: 2026-04-04T23:25:34.332Z
+    completed_at: 2026-04-04T23:25:34.332Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Plan explicitly states: traits are stored as reference strings, resolved at query time
+      not load time. Changing a trait definition file updates only inline items from that file via
+      normal incremental path."
+    name: "Question: trait resolution"
+    required: true
+    created_at: 2026-04-04T23:25:41.649Z
+    completed_at: 2026-04-04T23:25:41.649Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan identifies inbox, plans, triage, reviews as single-file domains where full reload IS
+      the minimal update. This is accurate — these are stored in single YAML files, not per-entity
+      directories.
+    name: "Question: single-file domain classification"
+    required: true
+    created_at: 2026-04-04T23:25:49.105Z
+    completed_at: 2026-04-04T23:25:49.105Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All ACs use given/when/then format. ACs are behavioral not implementation-prescriptive.
+      Each AC is independently testable. daemon-incremental-cache has 8 ACs covering core paths
+      (single entity, multi-entity, fallback, removal, consistency, batching, passthrough).
+      daemon-meta-subdomain has 4 ACs covering each sub-domain plus initial load.
+    name: Spec quality (behavioral language)
+    required: true
+    created_at: 2026-04-04T23:26:02.420Z
+    completed_at: 2026-04-04T23:26:02.420Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 12 new ACs (8 on daemon-incremental-cache, 4 on daemon-meta-subdomain) plus 1 new AC
+      on daemon-entity-cache are claimed by at least one task. Coverage:
+      ac-file-path-preserved(debounce), ac-single-entity-patch(tasks+items+sessions+writethrough),
+      ac-multi-entity-file(items), ac-fallback-full-reload(tasks+items+sessions),
+      ac-removal-detection(tasks+items+sessions), ac-index-consistency(tasks+items+sessions),
+      ac-batch-coalescing(debounce), ac-watcher-content-passthrough(passthrough),
+      ac-manifest-only-reload+ac-shadow-on-schedule+ac-session-context-independent+ac-initial-load-\
+      all(meta-decomp), ac-context-reuse(context-cache)."
+    name: AC coverage
+    required: true
+    created_at: 2026-04-04T23:26:10.026Z
+    completed_at: 2026-04-04T23:26:10.026Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Linear phases with correct ordering: P1(spec
+      update)->P2(passthrough->debounce)->P3(context cache)->P4(tasks|items|sessions
+      parallel)->P5(meta decomp)->P6(writethrough). P1 depends on nothing. P2 depends on P1. P3
+      depends on P2. P4 tasks all depend on P2 (debounce) and are parallel. P5 depends on P3
+      (context cache). P6 depends on all P4 tasks. No circular deps. Priority alignment correct
+      (P1=spec+plumbing, P2=perf, P3=decomp+alignment)."
+    name: Dependency ordering
+    required: true
+    created_at: 2026-04-04T23:26:17.650Z
+    completed_at: 2026-04-04T23:26:17.650Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Each task has: clear What section, Why with motivation, How with implementation guidance,
+      file paths and line numbers for orientation, Covers line with AC mapping, specific test
+      expectations. Agent can pick up any task cold and execute."
+    name: Task standalone-ness
+    required: true
+    created_at: 2026-04-04T23:26:25.449Z
+    completed_at: 2026-04-04T23:26:25.449Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All spec_ref values point to valid specs (daemon-entity-cache exists,
+      daemon-incremental-cache and daemon-meta-subdomain defined in plan). All depends_on refs point
+      to tasks defined in plan. AC IDs in Covers lines match AC ids defined in specs. No orphan
+      refs.
+    name: Cross-reference validation
+    required: true
+    created_at: 2026-04-04T23:26:33.128Z
+    completed_at: 2026-04-04T23:26:33.128Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Plan covers: spec updates (Phase 1), watcher plumbing (Phase 2), context optimization
+      (Phase 3), per-domain incremental for all applicable domains (Phase 4), meta decomposition
+      (Phase 5), write-through alignment (Phase 6). Single-file domains (inbox, plans, triage,
+      reviews) correctly excluded — full reload IS minimal. Error handling covered by
+      ac-fallback-full-reload. Concurrent safety covered by ac-index-consistency."
+    name: Completeness
+    required: true
+    created_at: 2026-04-04T23:26:45.771Z
+    completed_at: 2026-04-04T23:26:45.771Z
+events:
+  - _ulid: 01KNDCZZ3C5J0KS3WC3YWT270M
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-04T23:24:33.260Z
+  - _ulid: 01KNDD0TZH80Z3Y6B0S2Y3RZ4C
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: "Blocker 1: ac-granular-reload regression"
+    timestamp: 2026-04-04T23:25:01.810Z
+  - _ulid: 01KNDD127ETH3A1NKW4X26YC6V
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: "Blocker 2: ac-index-consistency mechanism"
+    timestamp: 2026-04-04T23:25:09.231Z
+  - _ulid: 01KNDD19R1R508X02D7GKAV50Q
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: "Blocker 3: ac-watcher-content-passthrough"
+    timestamp: 2026-04-04T23:25:16.929Z
+  - _ulid: 01KNDD1N0BV1P9P8CYCW8C962K
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: "Question: meta initial-load AC"
+    timestamp: 2026-04-04T23:25:28.459Z
+  - _ulid: 01KNDD1WAGHN9X2777VKYG2T4X
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: "Question: Phase 1 dependency chain"
+    timestamp: 2026-04-04T23:25:35.953Z
+  - _ulid: 01KNDD23EER3VNQS800CYVFNVJ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: "Question: trait resolution"
+    timestamp: 2026-04-04T23:25:43.246Z
+  - _ulid: 01KNDD2ARVME6FWQB8QJC3YKDY
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: "Question: single-file domain classification"
+    timestamp: 2026-04-04T23:25:50.747Z
+  - _ulid: 01KNDD2QQWWDV4ZVMQ42YXEPA4
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec quality (behavioral language)
+    timestamp: 2026-04-04T23:26:04.028Z
+  - _ulid: 01KNDD2Z3G03FC2F42QN705T5P
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage
+    timestamp: 2026-04-04T23:26:11.568Z
+  - _ulid: 01KNDD36KFTKAD5S6V9EMTQWY1
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-04-04T23:26:19.247Z
+  - _ulid: 01KNDD3E84JR5724XBXY9GNDS1
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Task standalone-ness
+    timestamp: 2026-04-04T23:26:27.076Z
+  - _ulid: 01KNDD3NPTECJB14HPB3PVPRH7
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Cross-reference validation
+    timestamp: 2026-04-04T23:26:34.715Z
+  - _ulid: 01KNDD421W481X96XTG47E7JCH
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Completeness
+    timestamp: 2026-04-04T23:26:47.356Z
+  - _ulid: 01KNDD4BYGGN7KNAMMDFZYFSJ4
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNDD4B6THHNKRVEQJ2VXD6EP
+    timestamp: 2026-04-04T23:26:57.488Z
+  - _ulid: 01KNDD4GHX3NY69VV8ER9MQV9H
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNDD4FTBN4K3CR4B3D9WCTS2
+    timestamp: 2026-04-04T23:27:02.205Z
+  - _ulid: 01KNDD4Q956EZW9DMMH8V1JQBN
+    actor: "@claude"
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-04T23:27:09.094Z
+  - _ulid: 01KNDD4Q96S74S37HXPE89S9C9
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: closed
+    timestamp: 2026-04-04T23:27:09.094Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-granular-cache-invalidation"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNDD4B6THHNKRVEQJ2VXD6EP
+    anchor:
+      type: structured
+      ref: "@daemon-meta-subdomain"
+      section: specs
+    entries:
+      - _ulid: 01KNDD4B6TJGPXTKC3QC1FZWMN
+        author: "@claude"
+        body: daemon-meta-subdomain is typed 'requirement' while daemon-incremental-cache is typed
+          'feature'. This inconsistency was noted in the previous review as a nit. The types are
+          arguably correct (meta-subdomain is a structural requirement, incremental-cache is a
+          user-facing feature), but worth confirming the intent is deliberate.
+        created_at: 2026-04-04T23:26:56.730Z
+    kind: nit
+  - _ulid: 01KNDD4FTBN4K3CR4B3D9WCTS2
+    anchor:
+      type: structured
+      ref: "@task-cache-kspec-context"
+    entries:
+      - _ulid: 01KNDD4FTCMZTACVFP9N3H0E1X
+        author: "@claude"
+        body: "The context cache validity description says 'invalidated when the debounce cycle completes'
+          but does not specify what happens if a new debounce cycle starts while a previous one's
+          domain reloads are still in flight. Edge case: fast successive changes could have
+          overlapping cycles. The task's How section says 'Clear the cached context at the end of
+          each debounce cycle (when the timer fires and processing completes)' which implies
+          sequential, but debounce timer firing and reload completion are async. Minor — implementer
+          can handle this, but noting for awareness."
+        created_at: 2026-04-04T23:27:01.452Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: "@claude"
+    role: reviewer
+    created_at: 2026-04-04T23:27:09.093Z
+created_at: 2026-04-04T23:24:33.260Z
+updated_at: 2026-04-04T23:27:09.094Z
+notes: []

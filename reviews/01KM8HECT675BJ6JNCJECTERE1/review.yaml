@@ -1,0 +1,144 @@
+_ulid: 01KM8HECT675BJ6JNCJECTERE1
+slugs: []
+title: Review per-task core data and notes files (cycle 19)
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 302 files passed, 6890 tests passed, 3 skipped.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-21T15:51:20.550Z
+    completed_at: 2026-03-21T15:51:20.550Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation returned warnings only (exit 6), including pre-existing completeness/alignment
+      warnings; no validation errors.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-21T15:51:22.447Z
+    completed_at: 2026-03-21T15:51:22.447Z
+events:
+  - _ulid: 01KM8HECT6EZ1MEGGJS2NYN8JZ
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T15:50:26.374Z
+  - _ulid: 01KM8HG12W28AEB3KYF5HY098M
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T15:51:19.900Z
+  - _ulid: 01KM8HG203DSCXS4FZEQ2FWY39
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-21T15:51:20.835Z
+  - _ulid: 01KM8HG2YCQ6343FNN3QB89KTP
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM8HG2P0WYQQ2KSG6H6QW1GN
+    timestamp: 2026-03-21T15:51:21.804Z
+  - _ulid: 01KM8HG3TWG2AQ70E4G0WMGXYD
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-21T15:51:22.716Z
+  - _ulid: 01KM8HGJG130JMZZ8QQ3YD3V5E
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM8HGJ67KMMZWHTRGXWZZT3V
+    timestamp: 2026-03-21T15:51:37.729Z
+  - _ulid: 01KM8HGKGNB4SCZ89AA441VQMX
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-21T15:51:38.773Z
+  - _ulid: 01KM8HGKGN4R6XYVBR1X2AASTA
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-21T15:51:38.773Z
+examined_commit: 0137c640a8a95d2d11ebec3a6646bc5e3023a927
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YET1A7XY9D0V3YQ9DRASG"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM8HG2P0WYQQ2KSG6H6QW1GN
+    anchor:
+      type: code
+      commit: 0137c640a8a95d2d11ebec3a6646bc5e3023a927
+      line_end: 952
+      line_start: 946
+      path: src/parser/task-data-manager.ts
+      side: head
+    entries:
+      - _ulid: 01KM8HG2P0H0J1S2Q12W35PK2M
+        author: Test User
+        body: When a split-storage mutation runs inside an existing write-buffer scope, `runWithBuffer()`
+          reuses the parent buffer and returns before any flush occurs, but `withWriteBuffer()`
+          still calls `commitIfShadow()` immediately afterward. That means batched or nested task
+          mutations can create a shadow commit against pre-flush state even though the parent buffer
+          still owns flush/discard. This breaks the atomicity contract for buffered task writes and
+          can leave shadow history out of sync with the eventual on-disk result if the parent buffer
+          later fails or is discarded.
+        created_at: 2026-03-21T15:51:21.536Z
+    kind: blocker
+  - _ulid: 01KM8HGJ67KMMZWHTRGXWZZT3V
+    entries:
+      - _ulid: 01KM8HGJ67WAWHW4SWZK7G0JVN
+        author: Test User
+        body: "Evidence log: Files read: src/parser/task-data-manager.ts, src/cli/batch-write-buffer.ts,
+          src/parser/split-backend.ts, src/cli/commands/task.ts, src/cli/commands/tasks.ts,
+          src/cli/commands/item.ts, src/parser/review-task-integration.ts,
+          packages/daemon/src/routes/tasks.ts, tests/per-task-files.test.ts,
+          tests/task-atomic-writes.test.ts, tests/task-rebuild-index.test.ts,
+          tests/split-backend.test.ts. Commands run: git diff/stat/show, kspec task get, kspec item
+          get @task-core-data-file, kspec item get @task-notes-file, kspec validate, rg AC
+          annotations, npm test. Claims verified: worker claim that latest fix adds commit metadata
+          to dangling-ref cleanup and tasks assess call sites, confirmed in item.ts and tasks.ts;
+          full test suite pass, confirmed via npm test. Categories searched: correctness (found
+          blocker in buffered commit ordering), edge cases (batch/nested buffer reuse), error
+          handling (validate warnings only), test quality (coverage present for both task specs and
+          rebuild-index traits), integration (task CLI, daemon routes, review integration)."
+        created_at: 2026-03-21T15:51:37.415Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-21T15:51:38.773Z
+created_at: 2026-03-21T15:50:26.374Z
+updated_at: 2026-03-21T15:51:38.773Z
+notes: []

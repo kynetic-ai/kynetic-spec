@@ -1,0 +1,114 @@
+_ulid: 01KM7N7JCE58R2Y5NVNJFD6X9R
+slugs: []
+title: Review task-impl-split-storage (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation exited with warnings only (exit 6): repo-wide pre-existing
+      completeness/alignment warnings, no task-specific schema/reference regression."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-21T07:41:27.940Z
+    completed_at: 2026-03-21T07:41:27.940Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 299 test files passed; 6793 tests passed, 3 skipped, 0 failed.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-21T07:41:28.872Z
+    completed_at: 2026-03-21T07:41:28.872Z
+events:
+  - _ulid: 01KM7N7JCDXMZR0K694F662C9R
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T07:37:22.574Z
+  - _ulid: 01KM7N854RWGGJXQ3K46GT7R6E
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T07:37:41.784Z
+  - _ulid: 01KM7NF1DKCM5SX9HAF883G3Q5
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM7NF142NJATFDX0RAMJ7JHA
+    timestamp: 2026-03-21T07:41:27.347Z
+  - _ulid: 01KM7NF295M1ERQA4WXH3XVSKY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-21T07:41:28.229Z
+  - _ulid: 01KM7NF35G4CD3V4NVMMPZ6YJD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-21T07:41:29.136Z
+  - _ulid: 01KM7NFG2RAWW8PEM4087TZFGA
+    actor: codex@gpt-5
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-21T07:41:42.361Z
+  - _ulid: 01KM7NFG2SYZKVPE90R2RQKCJA
+    actor: codex@gpt-5
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-21T07:41:42.361Z
+examined_commit: e3cad16ed523d9896944f9251cbb65fa5fd8f86d
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YERMDKKYA1XXRN025G0FT"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM7NF142NJATFDX0RAMJ7JHA
+    entries:
+      - _ulid: 01KM7NF142VYYBMF48DE6R7SMQ
+        author: Jacob Chapel
+        body: "Evidence log: Files read: src/parser/task-data-manager.ts, src/parser/split-backend.ts,
+          src/parser/alignment.ts, src/parser/index.ts, src/cli/commands/task.ts,
+          src/cli/commands/derive.ts, tests/split-backend.test.ts, tests/task-data-manager.test.ts.
+          Commands run: kspec task get @01KM6YERMDKKYA1XXRN025G0FT, kspec review for-task
+          @01KM6YERMDKKYA1XXRN025G0FT, kspec review get @01KM7K9APW6JFK2G1AETY551HG, kspec item get
+          @task-directory-storage, kspec validate, rg -n \"AC: @task-directory-storage|AC: @trait-\"
+          tests, git diff against 61eb4369..e3cad16, git log, npm test. Claims verified: split index
+          now persists notes_count/todos_count and TaskDataManager('split') lazy-loads split-backend
+          registration. Categories searched: correctness, edge cases, error handling, test quality,
+          integration. No new blockers found."
+        created_at: 2026-03-21T07:41:27.042Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@gpt-5
+    role: reviewer
+    created_at: 2026-03-21T07:41:42.360Z
+created_at: 2026-03-21T07:37:22.574Z
+updated_at: 2026-03-21T07:41:42.361Z
+notes: []

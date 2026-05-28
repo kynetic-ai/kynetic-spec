@@ -1,0 +1,56 @@
+notes:
+  - _ulid: 01KQ9283BTBHR0XDH44ZJPHZ2M
+    content: "Address cycle 1 review nits: remove unsupported planned spec tags and make final gate
+      Covers concrete"
+    author: Jacob Chapel
+    created_at: 2026-04-28T03:31:11.355Z
+  - _ulid: 01KQ92TVG08A04Z1AGPV3TVTA0
+    content: Plan-reviewer loop complete. Cycle 1 @01KQ922MCW2QB7HZ1JVA0N3J4Z approved with nits; cycle
+      2 @01KQ92CYKV64WAKRHY1HT17AQZ requested changes because provisional task
+      @task-normalize-ac-ids-and-annotations was active; duplicate task is now
+      cancelled/manual_only; cycle 3 @01KQ92Q3GCKTSTTNHT20RSYA31 approved with gate passing and no
+      remaining findings.
+    author: Jacob Chapel
+    created_at: 2026-04-28T03:41:25.888Z
+  - _ulid: 01KQ93NFN2HJZHWFX0S6JNJM7Z
+    content: |-
+      ### Investigation summary
+
+      Current implementation observations used to shape this plan:
+
+      - Acceptance criterion ids are stored on spec and trait items under
+        `acceptance_criteria[].id`.
+      - The item schema currently accepts any string for the AC id field.
+      - `kspec item ac add` and `kspec item ac set --id` currently validate
+        duplicates and presence but do not enforce an id token format.
+      - The coverage annotation parser treats ac-prefixed tokens as explicit AC
+        ids. Non-prefixed words after a spec ref are not parsed as AC ids and
+        therefore behave like a bare spec reference.
+      - The current repository has already started catalog id normalization, but
+        coverage annotations and enforcement behavior still need a reviewed,
+        self-contained implementation path.
+
+      ### Boundary decisions
+
+      - The required format is ac-prefixed kebab-case. This matches the current
+        normalized catalog direction and the existing annotation parser's
+        explicit-token behavior.
+      - This plan does not broaden annotation parsing to accept arbitrary
+        non-prefixed AC id tokens.
+      - This plan does not own the broad missing-own-AC coverage backlog.
+      - A direct provisional task for this work was retired before this plan
+        became authoritative; plan-derived tasks should be treated as the source
+        of truth for remaining implementation.
+
+      ### Dependency ordering
+
+      1. Enforce the write/validation boundary first so future catalog mutations
+         cannot introduce new nonconforming AC ids.
+      2. Normalize the live catalog and annotations after the validator exists,
+         so the migration can prove it leaves the project in the enforced shape.
+      3. Align annotation tests and parser guidance in parallel with the live
+         annotation cleanup.
+      4. Run the final validation gate after both enforcement and annotation
+         cleanup have landed.
+    author: Jacob Chapel
+    created_at: 2026-04-28T03:55:58.498Z

@@ -1,0 +1,117 @@
+_ulid: 01KMRG73BDHYFR6G8JGTGVC4S4
+slugs: []
+title: Review task-daemon-command-api (cycle 9)
+author: "@claude"
+checks:
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 6 with pre-existing repo-wide warnings (orphaned skills/specs and global AC
+      coverage warnings). No task-specific validation blocker observed for @daemon-command-api.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-27T20:41:57.167Z
+    completed_at: 2026-03-27T20:41:57.167Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed in review workspace. 1944/1944 suites passed, 6969/6974 tests passed, 5 skipped.
+      Rebuilt dist/cli/index.js before execution.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-27T20:41:58.893Z
+    completed_at: 2026-03-27T20:41:58.893Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: packages/daemon/src/routes/command.ts, packages/daemon/src/server.ts,
+      src/cli/batch-exec.ts, src/agent-runtime/workspace.ts, tests/daemon-command-api.test.ts,
+      tests/daemon-api-input-validation.test.ts, packages/daemon/src/middleware/project-context.ts.
+      Commands run: git diff/stat/name-only, kspec task get, kspec item get @daemon-command-api,
+      kspec item get @trait-api-endpoint, kspec item get @trait-localhost-security, kspec review
+      for-task, kspec validate, rg AC annotations, npm test. Claims verified: canonical dispatch
+      lock path now comes from getDispatchShadowMutationLockPath(); full test suite passes.
+      Categories searched: correctness, edge cases, error handling, security/localhost trait
+      handling, test quality, integration. No remaining blockers found."
+    name: review evidence
+    required: false
+    runner: reviewer
+    created_at: 2026-03-27T20:42:00.658Z
+    completed_at: 2026-03-27T20:42:00.658Z
+events:
+  - _ulid: 01KMRG73BCF8ZRHJDEQ25H658K
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T20:36:49.645Z
+  - _ulid: 01KMRG7XQ4C7MPC7ZT5NYFTKKC
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T20:37:16.645Z
+  - _ulid: 01KMRGGG7X3WFJN3F1HVEY21ZY
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-03-27T20:41:57.757Z
+  - _ulid: 01KMRGGHWSVEQC4HQ1P0082XHE
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-27T20:41:59.449Z
+  - _ulid: 01KMRGGKMNZ2TZR8QZPBV23JPF
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence
+    timestamp: 2026-03-27T20:42:01.237Z
+  - _ulid: 01KMRGGW57TRBK5J8C1JP4VGNP
+    actor: test@example.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-27T20:42:09.959Z
+  - _ulid: 01KMRGGW57QSSNM6VPAAGGB4F6
+    actor: test@example.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T20:42:09.959Z
+examined_commit: dc170993b418400aeedeba1a53323ec4f275efd4
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMMB3V7N2GC0JSPJKJYMPJPV"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: test@example.com
+    role: reviewer
+    created_at: 2026-03-27T20:42:09.959Z
+created_at: 2026-03-27T20:36:49.645Z
+updated_at: 2026-03-27T20:42:09.959Z
+notes: []

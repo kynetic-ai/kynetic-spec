@@ -1,0 +1,149 @@
+_ulid: 01KPQ41YRC2K4SB8DSGCXP2YT8
+slugs: []
+title: Review task-docs-rendering (cycle 7)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2207 suites, 8099 passed, 5 skipped."
+    name: npm test
+    required: true
+    runner: test.cjs
+    created_at: 2026-04-21T04:28:04.461Z
+    completed_at: 2026-04-21T04:28:04.461Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Pre-existing repo-wide validation issues unrelated to this task: meta schema error in
+      .kspec/modules/meta.yaml plus existing completeness/alignment warnings."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-21T04:28:07.363Z
+    completed_at: 2026-04-21T04:28:07.363Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "tests/e2e/docs.spec.ts passed: 9/9."
+    name: docs e2e
+    required: true
+    runner: playwright
+    created_at: 2026-04-21T04:28:13.319Z
+    completed_at: 2026-04-21T04:28:13.319Z
+events:
+  - _ulid: 01KPQ41YRCH0JJW5CGTM4N5XGV
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-21T04:16:27.404Z
+  - _ulid: 01KPQ4329861KCHBAJKHHPXA91
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-21T04:17:03.784Z
+  - _ulid: 01KPQ4Q8E5VZ8VZKPDQHARKNRH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-21T04:28:05.445Z
+  - _ulid: 01KPQ4QBBKM6GCMSTG7CQA9FYX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-21T04:28:08.435Z
+  - _ulid: 01KPQ4QE92NBZF2EXF0VW52RW9
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KPQ4QD8ADJ9ZT1395MZ3P066
+    timestamp: 2026-04-21T04:28:11.426Z
+  - _ulid: 01KPQ4QH642QTC5J446ZNQ0GCF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: docs e2e
+    timestamp: 2026-04-21T04:28:14.404Z
+  - _ulid: 01KPQ4QVGG00VDEF4VEFVRKDJE
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-21T04:28:24.976Z
+  - _ulid: 01KPQ4QVGG43XXBBN35B2WMZGT
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-21T04:28:24.976Z
+examined_commit: 498c3bfcac17469de57268f0f62fc08fca80ee33
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KPPN42CDKS6A6951ZATDPKXP"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPQ4QD8ADJ9ZT1395MZ3P066
+    entries:
+      - _ulid: 01KPQ4QD8APGGVY3AJ5CSFRJ58
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+
+          Files read: packages/web-ui/src/routes/docs/+page.svelte,
+          packages/web-ui/src/routes/docs/[...slug]/+page.svelte, packages/web-ui/src/lib/docs.ts,
+          packages/web-ui/src/lib/utils/docs-markdown.ts,
+          packages/web-ui/src/lib/utils/docs-utils.ts,
+          packages/web-ui/src/lib/components/Sidebar.svelte,
+          packages/web-ui/src/lib/components/MobileNav.svelte, packages/web-ui/vite-plugin-docs.ts,
+          packages/web-ui/vite.config.ts, packages/web-ui/src/lib/utils/sanitize.ts,
+          packages/daemon/src/server.ts, tests/e2e/docs.spec.ts,
+          tests/web-ui-docs-rendering.test.ts.
+
+
+          Commands run: kspec task get, kspec item get @docs-reachability, kspec item get
+          @docs-navigation-shape, kspec review get previous review, git diff against dev base, grep
+          AC annotations, kspec validate, npm test -- tests/web-ui-docs-rendering.test.ts --verbose,
+          npm run test:e2e -- tests/e2e/docs.spec.ts, npm test.
+
+
+          Claims verified: docs routes are reachable in daemon/static builds, docs nav entry exists
+          in desktop/mobile nav, current-section sidebar/TOC render, heading anchors update hash,
+          and out-of-tree .md links rewrite to GitHub blob URLs.
+
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration.
+          No branch-introduced findings.
+        created_at: 2026-04-21T04:28:10.378Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-21T04:28:24.976Z
+created_at: 2026-04-21T04:16:27.404Z
+updated_at: 2026-04-21T04:28:24.976Z
+notes: []

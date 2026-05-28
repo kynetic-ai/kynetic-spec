@@ -1,0 +1,127 @@
+notes:
+  - _ulid: 01KQ0F6SVZZDFCQDH88YJFSNGK
+    content: "Address review cycle 1: remove unsupported automation YAML, split skipped-annotation AC,
+      keep final gate standalone, align final gate priority, clarify repair-wave support"
+    author: Jacob Chapel
+    created_at: 2026-04-24T19:24:30.463Z
+  - _ulid: 01KQ0FQRPWD4C8Y2SPHNSMSDEJ
+    content: "Created from cruft cleanup program charter @cruft-cleanup-program-charter and seed
+      @cruft-01-spec-catalog-health-seed by manual planning task
+      @task-convert-cruft-01-spec-catalog-health-plan. Source audit context:
+      /home/chapel/Projects/kynetic-spec/plans/cruft-audit-2026-04-24.md. Plan-reviewer history:
+      @01KQ0ERKXPS93QMFXVPKWTDWB3 identified cycle-1 blockers/majors; revised plan addressed them
+      and cycle 2 @01KQ0FAKTH1FV6YG97H56R426D approved with disposition approved and gate passing.
+      Keep seed/charter/audit as context only; this plan should stand alone for derivation/review."
+    author: Jacob Chapel
+    created_at: 2026-04-24T19:33:46.332Z
+  - _ulid: 01KQ0HE33M6N1GB7VP7VEHY56C
+    content: "Clarify ephemeral baseline coordination: baseline task writes ignored root plans artifact,
+      downstream tasks may read it, and missing/stale/inaccessible artifact falls back to rerunning
+      baseline commands"
+    author: Jacob Chapel
+    created_at: 2026-04-24T20:03:26.452Z
+  - _ulid: 01KQ0HR422RWXYP8VKDBVEFYTB
+    content: "Updated after baseline-coordination discussion: task-catalog-health-baseline now writes an
+      ephemeral ignored root-checkout artifact at
+      plans/cruft-baselines/spec-catalog-health-validation-trust-baseline.md; downstream tasks
+      explicitly may read it only as starting-state/before-after evidence and must rerun baseline
+      commands if it is missing, stale, or inaccessible. Review cycle 3 @01KQ0HKVBVY6EGBGJTCHQFY29V
+      approved the updated plan with gate passing."
+    author: Jacob Chapel
+    created_at: 2026-04-24T20:08:55.107Z
+  - _ulid: 01KQ0JDMNEXCP8XHVPMZYTTD97
+    content: |-
+      This plan was created from the non-derivable seed plan
+      `@cruft-01-spec-catalog-health-seed` under the program charter
+      `@cruft-cleanup-program-charter`. Those records are context only; this
+      plan must stand on its own for workers and reviewers.
+
+      Ephemeral baseline coordination:
+
+      - `@task-catalog-health-baseline` writes this plan's before-state report
+        to the root checkout's ignored plan workspace at
+        `plans/cruft-baselines/spec-catalog-health-validation-trust-baseline.md`.
+      - The baseline report is not a repo deliverable and should not be
+        committed. It exists only while this plan's tasks are being executed.
+      - Downstream tasks are explicitly allowed to read that root-checkout file
+        even when their derived task workspace does not contain the gitignored
+        `plans/` directory. If the file is unavailable, the task should rerun
+        the baseline commands recorded in `@task-catalog-health-baseline` and
+        note the regenerated before-state before making scope decisions.
+
+      Current baseline at plan drafting time:
+
+      - `kspec validate --refs --warnings-ok -v` exited 4 with four hard
+        reference failures:
+        - `@cmd-derive` in `.kspec/kynetic.tasks.yaml`
+        - `@session-remove-shadow-commits` in `.kspec/project.tasks.yaml`
+        - `@session-branch-worktree` in `.kspec/project.tasks.yaml` twice
+      - `kspec validate --alignment -v` exited 6 with warning output.
+      - `kspec validate --completeness -v` exited 6 with 491 warnings:
+        - 1 missing-AC item: `@01KJN1WT` / `Test Trait`
+        - 235 missing own-AC coverage warnings
+        - 255 invalid AC annotations
+
+      Known exact task candidates containing the hard missing refs include:
+
+      - `@task-recursive-derive` and/or `@01KJWK89Y` history for `@cmd-derive`;
+        current derivation specs include `@derive-command`, `@derive-commands`,
+        and plan-derive specs, so workers must inspect before retargeting.
+      - `@remove-shadowautocommit-from-session-operations` for
+        `@session-remove-shadow-commits`.
+      - `@implement-session-branch-worktree-mode` and the cancelled task
+        `@01KKBBS7` for `@session-branch-worktree`.
+
+      Overlap to manage before derivation:
+
+      - Existing approved plan `@plan-completeness-warning-debt-reduction` and
+        needs-work task `@task-plan-completeness-warning-debt-reduction` already
+        cover broad completeness warning reduction. This plan is narrower: it
+        only restores validation/reference/annotation trust and should not take
+        over the entire completeness backlog.
+      - Existing task `@task-triage-automation-eligible-missing-spec-ref` owns
+        automation-without-spec triage and is out of scope.
+
+      Dependency ordering:
+
+      1. Capture baseline first and write the ignored root-checkout baseline
+         artifact for downstream comparison.
+      2. Repair broken refs and Test Trait independently after baseline.
+      3. Tighten validation read/reporting behavior before mass annotation
+         repair.
+      4. Repair only high-confidence invalid annotations in this plan.
+      5. Run final validation gate and record the remaining validation-trust
+         state.
+
+      Task automation status is intentionally not encoded in this plan because
+      current plan derivation does not preserve automation metadata from plan
+      YAML. Set automation status explicitly after derivation according to the
+      approved execution strategy.
+    author: Jacob Chapel
+    created_at: 2026-04-24T20:20:40.238Z
+  - _ulid: 01KQ0JKSB7BT6XZYW4GJG89GSP
+    content: "User approved final plan for derivation. Plan was set to approved, derived under module
+      @schema, and derived tasks were marked automation=eligible: @task-catalog-health-baseline,
+      @task-repair-broken-spec-refs, @task-remove-live-test-trait,
+      @task-validation-task-data-manager-read-path, @task-ac-annotation-integrity-reporting,
+      @task-coverage-annotation-scope-boundaries, @task-ac-annotation-repair-wave-one,
+      @task-validation-trust-final-gate. Review approval: @01KQ0HKVBVY6EGBGJTCHQFY29V."
+    author: Jacob Chapel
+    created_at: 2026-04-24T20:24:01.639Z
+  - _ulid: 01KQ90ZT93WE62730GWH5BSDNK
+    content: "Post-implementation validation follow-up: user approved fixing the newly visible hard refs
+      failure and creating a separate cleanup task for non-ac-prefixed AC ids/annotations. Cleared
+      stale unresolved dependency @task-state-transitions from @task-pending-review-state because no
+      such task/item exists and the task is completed against @pending-review-state. Created
+      @task-normalize-ac-ids-and-annotations to normalize remaining non-ac-* AC ids and matching
+      annotations, linked to @ac-annotation-integrity-reporting. The ignored baseline artifact was
+      only needed during plan execution; durable baseline/final evidence remains in task notes."
+    author: Jacob Chapel
+    created_at: 2026-04-28T03:09:11.331Z
+  - _ulid: 01KQG867V22WEZVQVX42HZ2XQN
+    content: "Hermes closure audit: authoritative derived validation-trust tasks are completed; the
+      cancelled AC normalization follow-up was superseded by @plan-ac-id-format-normalization and
+      its stale spec_ref was cleared. Remaining validation warnings are broad/project-wide debt, not
+      blockers for this plan."
+    author: Jacob Chapel
+    created_at: 2026-04-30T22:29:42.882Z

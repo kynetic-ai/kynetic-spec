@@ -1,0 +1,556 @@
+_ulid: 01KNXZSGBE46QN0SE49B6NGN6X
+slugs: []
+title: Review scaffold-project-config-file during init setup
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      > @kynetic-ai/spec@0.12.0 test
+
+      > node scripts/test.cjs --run tests/scaffold-project-config.test.ts passed: 8 suites / 14
+      tests.
+    name: scaffold-project-config tests
+    required: true
+    runner: npm
+    created_at: 2026-04-11T10:06:19.960Z
+    completed_at: 2026-04-11T10:06:19.960Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Pre-existing repo validation failure unrelated to this task:  schema error plus
+      long-standing completeness/alignment warnings."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-11T10:06:25.562Z
+    completed_at: 2026-04-11T10:06:25.562Z
+events:
+  - _ulid: 01KNXZSGBE2QED5CMJ5QSK2FWY
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-11T10:00:55.406Z
+  - _ulid: 01KNXZT244JCP874T89GZEE4TM
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-11T10:01:13.604Z
+  - _ulid: 01KNY038NT32J5R9FE0PZYQAFF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNY037R7P0A34TQE2XSF78JC
+    timestamp: 2026-04-11T10:06:15.226Z
+  - _ulid: 01KNY03BFKTV7164J61V1NRBVB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNY03AF6PTHXA56SJNBDZ1A1
+    timestamp: 2026-04-11T10:06:18.099Z
+  - _ulid: 01KNY03E6RWZDG8YEJ8G4YTSS4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: scaffold-project-config tests
+    timestamp: 2026-04-11T10:06:20.888Z
+  - _ulid: 01KNY03H0TJTCG103QGTX0WGNR
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNY03G0VM8WPNGX2FKKYYAAA
+    timestamp: 2026-04-11T10:06:23.770Z
+  - _ulid: 01KNY03KQ82D5FRTJE84BH4DVK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-11T10:06:26.536Z
+  - _ulid: 01KNY03PD5XVWJ9QBR8GA79EAY
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNY03NGZVPXS10M5XW7ESBAM
+    timestamp: 2026-04-11T10:06:29.285Z
+  - _ulid: 01KNY0485EMXGR127P1N5FA86M
+    actor: "@codex"
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-11T10:06:47.470Z
+  - _ulid: 01KNY0485E7D8HQ7DPAXTS511S
+    actor: "@codex"
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-11T10:06:47.470Z
+  - _ulid: 01KP5KKSJH4548MVE41EKS38S3
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNY037R7P0A34TQE2XSF78JC
+    timestamp: 2026-04-14T09:02:00.785Z
+  - _ulid: 01KP5KKYQ67QPBVKK4CERSKTPN
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNY03AF6PTHXA56SJNBDZ1A1
+    timestamp: 2026-04-14T09:02:06.054Z
+  - _ulid: 01KP5KM3K6TQ8N4XG8AV1KH8R0
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNY03G0VM8WPNGX2FKKYYAAA
+    timestamp: 2026-04-14T09:02:11.046Z
+  - _ulid: 01KP5KMCKYZNR6E894CPND25EP
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNY037R7P0A34TQE2XSF78JC
+    timestamp: 2026-04-14T09:02:20.286Z
+  - _ulid: 01KP5KMHGQXRF9GJX39B6NXVED
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNY03AF6PTHXA56SJNBDZ1A1
+    timestamp: 2026-04-14T09:02:25.303Z
+  - _ulid: 01KP5KMPDQYBVXHGNVTNND262C
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNY03G0VM8WPNGX2FKKYYAAA
+    timestamp: 2026-04-14T09:02:30.328Z
+examined_commit: 4f57708fe3e613630f0e50337cbdaf60d0493333
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNXYJ3PYYG1ABH6SMQ2KRE1S"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNY037R7P0A34TQE2XSF78JC
+    anchor:
+      type: code
+      commit: 4f57708fe3e613630f0e50337cbdaf60d0493333
+      line_end: 1199
+      line_start: 1160
+      path: src/cli/commands/setup.ts
+      side: head
+    entries:
+      - _ulid: 01KNY037R7DGHV9D9H4JZW0EK3
+        author: Jacob Chapel
+        body: This task explicitly required reusing the dispatcher's existing default-base resolver, but the
+          implementation copies that logic into a new local helper instead.  duplicates the
+          remote-HEAD/current-branch fallback sequence already implemented in  ( / ), which means
+          future fixes can diverge between setup scaffolding and workspace provisioning. The
+          requirement here was reuse, not a second implementation of the same algorithm.
+        created_at: 2026-04-11T10:06:14.279Z
+      - _ulid: 01KP5KKRPKKR7JW5CVY8G5FSD6
+        author: "@claude"
+        body: "Fixed: Extracted resolveDefaultBranch() into src/agent-runtime/workspace.ts as a shared
+          helper. It encapsulates the remote-HEAD → current-branch → 'main' fallback chain. Both
+          resolveDispatchWorkspaceConfig() and setup's generateConfigContent() now call this single
+          function. The local detectDefaultBranch() with its execSync calls has been removed
+          entirely."
+        created_at: 2026-04-14T09:01:59.891Z
+    kind: blocker
+    resolved_at: 2026-04-14T09:02:19.351Z
+    resolved_by: "@claude"
+  - _ulid: 01KNY03AF6PTHXA56SJNBDZ1A1
+    anchor:
+      type: code
+      commit: 4f57708fe3e613630f0e50337cbdaf60d0493333
+      line_end: 1291
+      line_start: 1263
+      path: src/cli/commands/setup.ts
+      side: head
+    entries:
+      - _ulid: 01KNY03AF6N8QR3W4SR9ABYMAW
+        author: Jacob Chapel
+        body: "The scaffold step treats a post-write load warning as a failed summary line instead of
+          aborting the command, so it does not satisfy the task's 'fail loudly'
+          requirement.  returns  for an invalid scaffolded file,  just records that as a failed
+          step, and the  command still exits 0 and prints 'Setup complete.' Evidence: running
+          kspec-meta shadow state exists but .kspec worktree is missing or unhealthy. Create it?
+          (y/N)  in a non-kspec repo produced exit status 0 even with  in the summary, which shows
+          this pipeline path does not surface step failures to callers."
+        created_at: 2026-04-11T10:06:17.062Z
+      - _ulid: 01KP5KKXTA8BG1YZ49465NJ9JR
+        author: "@claude"
+        body: "Fixed: scaffoldProjectConfig() now throws on validation failure instead of returning a
+          validationError field. On fresh creation the broken file is deleted; on force overwrite
+          the original is restored from backup. The setup and init command handlers check
+          specifically for scaffold step failure and exit non-zero. Other non-critical step failures
+          (like plugin marketplace) remain non-fatal to avoid breaking existing test contracts."
+        created_at: 2026-04-14T09:02:05.130Z
+    kind: blocker
+    resolved_at: 2026-04-14T09:02:24.417Z
+    resolved_by: "@claude"
+  - _ulid: 01KNY03G0VM8WPNGX2FKKYYAAA
+    anchor:
+      type: code
+      commit: 4f57708fe3e613630f0e50337cbdaf60d0493333
+      line_end: 15
+      line_start: 1
+      path: tests/scaffold-project-config.test.ts
+      side: head
+    entries:
+      - _ulid: 01KNY03G0VY31S93Q8T3A4D09J
+        author: Jacob Chapel
+        body: >-
+          The new coverage only annotates the requirement's own ACs and ; it does not cover the
+          inherited  ACs shown on Scaffolded Project Config File
+
+          ────────────────────────────────────────
+
+          ULID:      01KNXYJ2Y3A2MAVHRQQ97VD0PV
+
+          Slugs:     scaffolded-project-config
+
+          Type:      requirement
+
+          Maturity:  draft
+
+          Implementation: in_progress
+
+
+          ─── Description ───
+
+          When a project is initialized with full setup, a project config
+
+          file is scaffolded at the project root with placeholder values
+
+          for the knobs that real projects are expected to customize.
+
+          The scaffolded file uses only documented config keys, is valid
+
+          on first load, and marks itself visibly as a template that the
+
+          user should review.
+
+
+
+          ─── Acceptance Criteria ───
+            [ac-file-scaffolded]
+              Given: A project has no project config file at its root
+
+              When: The project is initialized with full setup
+
+              Then: A project config file is created at the project root
+
+            [ac-file-valid-on-load]
+              Given: A scaffolded project config file has just been written
+
+              When: The config is loaded by any kspec command
+
+              Then: The file parses successfully and produces the same resolved
+          configuration as an empty config would, so scaffolding does
+
+          not change runtime behavior
+
+            [ac-placeholder-publication-mode]
+              Given: A scaffolded project config file is written
+
+              When: The file contents are inspected
+
+              Then: The dispatch publication mode key is present with a
+          default value and an adjacent comment naming the other
+
+          accepted values
+
+            [ac-placeholder-base-branch]
+              Given: A scaffolded project config file is written
+
+              When: The file contents are inspected
+
+              Then: The dispatch base branch key is present with a resolved
+          value taken from the current repository's default branch
+
+            [ac-placeholder-coverage]
+              Given: A scaffolded project config file is written
+
+              When: The file contents are inspected
+
+              Then: The coverage scan paths key is present as a commented-out
+          example with sample paths, so users know the knob exists
+
+          without forcing a choice at init time
+
+            [ac-file-exists-preserved]
+              Given: A project already has a project config file at its root
+
+              When: The project is re-initialized or setup is re-run without
+          the force flag
+
+              Then: The existing file is preserved byte-for-byte
+
+            [ac-file-force-overwrites]
+              Given: A project already has a project config file and setup is
+          invoked with the force flag
+
+              When: Setup runs
+
+              Then: The existing file is replaced with a freshly scaffolded
+          template
+
+            [ac-file-force-backup]
+              Given: A project already has a project config file and setup is
+          invoked with the force flag
+
+              When: Setup overwrites the existing file
+
+              Then: The previous content is preserved as a sibling backup
+          file whose path is reported in the setup output
+
+
+
+          ─── Inherited from @trait-idempotent-file-scaffold ───
+            [ac-existing-file-preserved-without-force] (from @trait-idempotent-file-scaffold)
+              Given: A file scaffold step's target file already exists
+
+              When: The step runs without the force flag
+
+              Then: The existing file is preserved byte-for-byte and
+          the step reports "skipped"
+
+            [ac-force-backs-up-before-overwrite] (from @trait-idempotent-file-scaffold)
+              Given: A file scaffold step's target file already exists and
+          the step is invoked with the force flag
+
+              When: The step runs
+
+              Then: The previous content is preserved as a sibling backup
+          with a timestamped name, the backup path is reported
+
+          before the overwrite, and only then is the file
+
+          replaced with a freshly scaffolded template
+
+            [ac-fresh-file-creation] (from @trait-idempotent-file-scaffold)
+              Given: A file scaffold step's target file does not exist
+
+              When: The step runs with or without the force flag
+
+              Then: The file is created and the step reports "created"
+
+            [ac-step-reports-action] (from @trait-idempotent-file-scaffold)
+              Given: Any file scaffold step completes
+
+              When: The setup summary is produced
+
+              Then: The step's action (created, skipped, force-recreated)
+          and any backup path are included in the summary in a
+
+          stable format
+
+
+
+          ─── Inherited from @trait-error-guidance ───
+            [ac-1] (from @trait-error-guidance)
+              Given: command encounters error
+              When: error message is shown
+              Then: includes description of what went wrong
+            [ac-2] (from @trait-error-guidance)
+              Given: command encounters error
+              When: error message is shown
+              Then: includes suggested action to resolve
+            [ac-3] (from @trait-error-guidance)
+              Given: reference not found
+              When: error is shown
+              Then: suggests checking ref with kspec search or kspec <type> list
+            [ac-4] (from @trait-error-guidance)
+              Given: invalid state transition
+              When: error is shown
+              Then: indicates current state and valid next states
+            [ac-5] (from @trait-error-guidance)
+              Given: validation error
+              When: error is shown
+              Then: indicates which field/value failed validation
+            [ac-6] (from @trait-error-guidance)
+              Given: error in JSON mode
+              When: --json is active
+              Then: guidance included in structured error object. A repo-wide search of the setup/init/scaffold tests found no  annotations in this area, so the task is missing required inherited AC coverage (or explicit N/A annotations) for the command surface it changed.
+        created_at: 2026-04-11T10:06:22.747Z
+      - _ulid: 01KP5KM2R8NDZ3MBJ9VT9KA5QJ
+        author: "@claude"
+        body: "Fixed: Converted all AC annotations from JSDoc block comment to standalone line comments for
+          machine parseability. Full trait AC coverage: @trait-idempotent-file-scaffold (4 ACs
+          covered by individual tests), @trait-error-guidance ac-1/2/5/6 (covered by fail-loudly
+          tests), ac-3/4 (N/A-annotated with reasons)."
+        created_at: 2026-04-14T09:02:10.184Z
+    kind: blocker
+    resolved_at: 2026-04-14T09:02:29.430Z
+    resolved_by: "@claude"
+  - _ulid: 01KNY03NGZVPXS10M5XW7ESBAM
+    entries:
+      - _ulid: 01KNY03NGZ5RBBZ47XZG6NV2F0
+        author: Jacob Chapel
+        body: >-
+          Review evidence log: Files read: src/cli/commands/setup.ts, src/parser/config.ts,
+          src/agent-runtime/workspace.ts, tests/scaffold-project-config.test.ts,
+          tests/init-setup-integration.test.ts, tests/setup-pipeline-unification.test.ts,
+          tests/dispatch-workspace-config.test.ts. Commands run: , , , , , ✗ Validation failed
+
+          ────────────────────────────────────────
+
+          Files checked: 10
+
+          Items checked: 589
+
+          Tasks checked: 0
+
+          Meta: 11 agents, 11 workflows, 10 conventions
+
+
+          Schema errors: 1
+            ✗ /home/chapel/Projects/kynetic-spec-dispatch/.kspec/modules/meta.yaml:modules[0].traits.0
+              Expected string, received object
+          References: OK
+
+
+          Reference warnings: 1
+            ⚠ @skills
+              Orphaned skill directory 'skills' has no corresponding meta entry
+              in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+          Alignment warnings: 33
+            Orphaned specs (no tasks): 31
+              ○ Test Trait
+              ○ Filterable List Commands
+              ○ Dry Run Preview Mode
+              ... and 28 more
+            Status mismatches: 2
+              ! Task Set Batch Support
+                Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+              ! Concurrent Read Command Execution
+                Spec "Concurrent Read Command Execution" status is "implemented" but should be "in_progress" based on task progress
+
+          Alignment stats: 425/589 specs have tasks, 423 aligned
+
+
+          Completeness warnings: 483
+            Missing acceptance criteria: 1
+              ○ @01KJN1WT - Test Trait
+            Missing own AC coverage: 243
+              ! @spec-item - Spec Item
+                Uncovered: ac-item-1, ac-item-2
+              ! @ulid-system - ULID Identifier System
+                Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+              ! @slug-system - Slug Alias System
+                Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+              ... and 240 more
+            Invalid AC annotations: 239
+              ! AC annotation references '@01KJE3T7' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/tests/agent-detection.test.ts:43
+              ! AC annotation references '@01KJE3T7' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/tests/agent-detection.test.ts:61
+              ! AC annotation references '@01KJE3T7' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/tests/agent-detection.test.ts:75
+              ! AC annotation references '@01KJE3T7' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/tests/agent-detection.test.ts:88
+              ! AC annotation references '@ui-agent-dispatch ac-8' but @ui-agent-dispatch has no acceptance criterion 'ac-8'
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/tests/agent-dispatch-engine.test.ts:4965
+              ... and 234 more
+          Skills: OK (10 files checked), targeted / searches, 
+
+          > @kynetic-ai/spec@0.12.0 test
+
+          > node scripts/test.cjs --run tests/scaffold-project-config.test.ts, and a direct
+          kspec-meta shadow state exists but .kspec worktree is missing or unhealthy. Create it?
+          (y/N)  reproduction for failed-step exit behavior. Claims verified: new scaffold tests
+          pass; repo-wide ✗ Validation failed
+
+          ────────────────────────────────────────
+
+          Files checked: 10
+
+          Items checked: 589
+
+          Tasks checked: 0
+
+          Meta: 11 agents, 11 workflows, 10 conventions
+
+
+          Schema errors: 1
+            ✗ /home/chapel/Projects/kynetic-spec-dispatch/.kspec/modules/meta.yaml:modules[0].traits.0
+              Expected string, received object
+          References: OK
+
+
+          Reference warnings: 1
+            ⚠ @skills
+              Orphaned skill directory 'skills' has no corresponding meta entry
+              in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+          Alignment warnings: 33
+            Orphaned specs (no tasks): 31
+              ○ Test Trait
+              ○ Filterable List Commands
+              ○ Dry Run Preview Mode
+              ... and 28 more
+            Status mismatches: 2
+              ! Task Set Batch Support
+                Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+              ! Concurrent Read Command Execution
+                Spec "Concurrent Read Command Execution" status is "implemented" but should be "in_progress" based on task progress
+
+          Alignment stats: 425/589 specs have tasks, 423 aligned
+
+
+          Completeness warnings: 483
+            Missing acceptance criteria: 1
+              ○ @01KJN1WT - Test Trait
+            Missing own AC coverage: 243
+              ! @spec-item - Spec Item
+                Uncovered: ac-item-1, ac-item-2
+              ! @ulid-system - ULID Identifier System
+                Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+              ! @slug-system - Slug Alias System
+                Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+              ... and 240 more
+            Invalid AC annotations: 239
+              ! AC annotation references '@01KJE3T7' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/tests/agent-detection.test.ts:43
+              ! AC annotation references '@01KJE3T7' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/tests/agent-detection.test.ts:61
+              ! AC annotation references '@01KJE3T7' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/tests/agent-detection.test.ts:75
+              ! AC annotation references '@01KJE3T7' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/tests/agent-detection.test.ts:88
+              ! AC annotation references '@ui-agent-dispatch ac-8' but @ui-agent-dispatch has no acceptance criterion 'ac-8'
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scaffold-project-config-01knxyj3-review/tests/agent-dispatch-engine.test.ts:4965
+              ... and 234 more
+          Skills: OK (10 files checked) is already failing; setup currently exits 0 even when a
+          pipeline step is marked failed. Categories searched: correctness, AC coverage, error
+          handling, integration, test quality.
+        created_at: 2026-04-11T10:06:28.383Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: "@codex"
+    role: reviewer
+    created_at: 2026-04-11T10:06:47.469Z
+created_at: 2026-04-11T10:00:55.406Z
+updated_at: 2026-04-14T09:02:29.430Z
+notes: []

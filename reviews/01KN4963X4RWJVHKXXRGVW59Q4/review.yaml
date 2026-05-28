@@ -1,0 +1,159 @@
+_ulid: 01KN4963X4RWJVHKXXRGVW59Q4
+slugs: []
+title: Review @01KMZ1BXPTATS8CAVJ2NMYADPW
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed on snapshot 0235550eb614: 2082/2082 suites, 7522 tests passed, 5 skipped, 0 failed
+      (~64.4m)."
+    name: npm test --fresh
+    required: true
+    runner: npm
+    created_at: 2026-04-01T10:31:59.606Z
+    completed_at: 2026-04-01T10:31:59.606Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed on snapshot 0235550eb614: 252 passed, 1 skipped, 2 flaky, 0 failed (~4.2m)."
+    name: npm run test:e2e:ci -- --shard=2/2
+    required: true
+    runner: playwright
+    created_at: 2026-04-01T10:32:01.533Z
+    completed_at: 2026-04-01T10:32:01.533Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation returned warnings only (exit 6): no schema/reference errors, no task-specific
+      blockers for this infra task."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-01T10:32:03.603Z
+    completed_at: 2026-04-01T10:32:03.603Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed on snapshot 0235550eb614: 206 passed, 48 skipped, 2 flaky, 0 failed (~4.9m)."
+    name: npm run test:e2e:ci -- --shard=1/2
+    required: true
+    runner: playwright
+    created_at: 2026-04-01T10:32:05.615Z
+    completed_at: 2026-04-01T10:32:05.615Z
+events:
+  - _ulid: 01KN4963X4BC4JBJAF1J9ZXS7J
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-01T10:24:50.596Z
+  - _ulid: 01KN496KWB0K421JWCQZVZ4J3K
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-01T10:25:06.955Z
+  - _ulid: 01KN49K7FCSMDNTC0VTV5C5S8Z
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test --fresh
+    timestamp: 2026-04-01T10:32:00.236Z
+  - _ulid: 01KN49K9E4TD891F1TA0Y1JCZP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run test:e2e:ci -- --shard=2/2
+    timestamp: 2026-04-01T10:32:02.245Z
+  - _ulid: 01KN49KBDAFHEFHFV94F6R3YWW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-01T10:32:04.266Z
+  - _ulid: 01KN49KDCCXE484DY4RTB515HG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run test:e2e:ci -- --shard=1/2
+    timestamp: 2026-04-01T10:32:06.284Z
+  - _ulid: 01KN49KVGWX5D39B37B18NXTYP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN49KTXVW0GV4N3DDHYCWCFB
+    timestamp: 2026-04-01T10:32:20.765Z
+  - _ulid: 01KN49M0HPJCDFK9021H9XB7Z3
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-01T10:32:25.910Z
+  - _ulid: 01KN49M0HPT82VS5MKFQCQ1NBH
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-01T10:32:25.910Z
+examined_commit: 0235550eb614d651ed4c968d4eace64cded4a0ab
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMZ1BXPTATS8CAVJ2NMYADPW"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN49KTXVW0GV4N3DDHYCWCFB
+    entries:
+      - _ulid: 01KN49KTXVTVVTWVB6DBNASF3A
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: .github/workflows/test.yml, package.json, playwright.config.ts, prior review
+          @01KN47XK6RMN1A532N6FK04PK2, task record @01KMZ1BXPTATS8CAVJ2NMYADPW.
+
+          Commands run: git diff 53c43f40...0235550, git diff abee0293..0235550, git show 0235550,
+          git merge-tree <base> 53c43f40 0235550, kspec task get @01KMZ1BXPTATS8CAVJ2NMYADPW, kspec
+          review for-task @01KMZ1BXPTATS8CAVJ2NMYADPW, kspec review get @01KN47XK6RMN1A532N6FK04PK2,
+          kspec validate, npm test --fresh, npm run test:e2e:ci -- --shard=1/2, npm run test:e2e:ci
+          -- --shard=2/2.
+
+          Claims verified: the fix-cycle commit adds playwright.config.ts to pull_request.paths so
+          config-only PRs trigger the E2E gate; the full shard-based CI commands pass on this
+          snapshot; the repo-wide test suite passes on this snapshot.
+
+          Categories searched: correctness (trigger coverage and merge shape), test quality (scripts
+          and workflow invocation), edge cases (config-only PR path coverage), integration
+          (workflow/package/config alignment), error handling/security (no new concerns in the
+          one-line fix-cycle delta).
+        created_at: 2026-04-01T10:32:20.155Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-01T10:32:25.910Z
+created_at: 2026-04-01T10:24:50.596Z
+updated_at: 2026-04-01T10:32:25.910Z
+notes: []

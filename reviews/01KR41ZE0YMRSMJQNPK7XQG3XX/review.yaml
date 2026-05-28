@@ -1,0 +1,181 @@
+_ulid: 01KR41ZE0YMRSMJQNPK7XQG3XX
+slugs: []
+title: Review real daemon startup-failure contract tests (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run typecheck: tsc --noEmit passed"
+    name: typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-08T15:16:58.317Z
+    completed_at: 2026-05-08T15:16:58.317Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate --warnings-ok: schema/references OK; project-wide existing warnings only"
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-08T15:17:01.912Z
+    completed_at: 2026-05-08T15:17:01.912Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh: 2402/2402 suites passed; 8800 passed, 5 skipped; duration 1952.2s"
+    name: npm test full suite
+    required: true
+    runner: npm test
+    created_at: 2026-05-08T15:17:05.574Z
+    completed_at: 2026-05-08T15:17:05.574Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/helpers/daemon.test.ts: 8 suites passed; 9/9 tests passed;
+      duration 2.3s"
+    name: npm test focused daemon helper
+    required: true
+    runner: npm test
+    created_at: 2026-05-08T15:17:09.245Z
+    completed_at: 2026-05-08T15:17:09.245Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npx oxlint tests/helpers/daemon.ts tests/helpers/daemon.test.ts: 0 warnings, 0 errors"
+    name: changed-file lint
+    required: false
+    runner: oxlint
+    created_at: 2026-05-08T15:17:22.637Z
+    completed_at: 2026-05-08T15:17:22.637Z
+events:
+  - _ulid: 01KR41ZE0XHPTSPYC4S8EDF545
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-08T15:05:57.022Z
+  - _ulid: 01KR41ZVW3VD6YABAPVH1RQMJ2
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-08T15:06:11.203Z
+  - _ulid: 01KR42KN2TT2VQR3R0QMQ0V1R3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-08T15:16:59.610Z
+  - _ulid: 01KR42KRKDERYK3RJW8MTYRJY9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-08T15:17:03.213Z
+  - _ulid: 01KR42KW4FQBEYSMZD7H687BQY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test full suite
+    timestamp: 2026-05-08T15:17:06.831Z
+  - _ulid: 01KR42KZQZ72BXVFQPSGWT63AC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test focused daemon helper
+    timestamp: 2026-05-08T15:17:10.528Z
+  - _ulid: 01KR42MCWC2WMNMRCZ62QD1K7X
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file lint
+    timestamp: 2026-05-08T15:17:23.980Z
+  - _ulid: 01KR42MYT6R6Y47EAC8H16BPN5
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KR42MXG20XSV78XV2FKYE5PH
+    timestamp: 2026-05-08T15:17:42.342Z
+  - _ulid: 01KR42NKXZXH90RAV9WN7RNZ1W
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-08T15:18:03.967Z
+  - _ulid: 01KR42NKXZA7WW9KW91QT74JXV
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-08T15:18:03.967Z
+examined_commit: 324ac8a62aba4af96c2783d7b5da692419615644
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR3W7QN8Y4NJFQ4HST166KVR"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR42MXG20XSV78XV2FKYE5PH
+    entries:
+      - _ulid: 01KR42MXG2329VVTFTY4TJQKKP
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+
+          Files read: kspec-agents.md, tests/helpers/daemon.ts, tests/helpers/daemon.test.ts,
+          tests/helpers/cli.ts, prior review @01KR3YW0, specs @daemon-test-startup-failure-hygiene
+          and @daemon-backed-test-fixture-contract.
+
+
+          Commands run: git diff/stat/name-only against dev base, kspec task get, kspec review
+          for-task/get, kspec item get, rg AC annotations, kspec validate, kspec validate
+          --warnings-ok, npm test -- --fresh tests/helpers/daemon.test.ts, npm test -- --fresh, npm
+          run typecheck, npm run lint, npx oxlint changed daemon files, git diff --check.
+
+
+          Claims verified: prior failing launch-failure test now passes; full test suite passes;
+          helper now captures child spawn error, races readiness against launch failure, preserves
+          launch-related diagnostic cause, stops owned child on failure, and registers cleanup
+          before readiness probing.
+
+
+          Categories searched: correctness, startup/error handling, cleanup ordering/idempotence, AC
+          annotation coverage, source-scanning/test integrity, integration with existing readiness
+          diagnostics, and changed-file lint/type safety. No blocking findings found. Repo-wide lint
+          and kspec validate still report pre-existing unrelated warnings/errors outside this task;
+          changed files are clean and validation has no schema/reference errors.
+        created_at: 2026-05-08T15:17:40.994Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-08T15:18:03.966Z
+created_at: 2026-05-08T15:05:57.022Z
+updated_at: 2026-05-08T15:18:03.967Z
+notes: []

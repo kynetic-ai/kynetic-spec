@@ -1,0 +1,141 @@
+_ulid: 01KSG5SRJFWMCPDCB0VYY6Z5BC
+slugs: []
+title: Review task-plan-resource-api-ui-static cycle 3
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh passed: 2548 suites passed; 9716 tests passed; 5 skipped; duration
+      2807.8s. Full log: /tmp/kspec-test-cache/01KSG5RN83CFYFJXDVVKA8EHM3/ef6e532b8b5dd907.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-05-25T18:33:41.662Z
+    completed_at: 2026-05-25T18:33:41.662Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate --warnings-ok passed. Baseline project warnings remain: deprecated
+      references, alignment warnings, and completeness warnings; no schema/reference errors."
+    name: kspec validate
+    required: false
+    runner: kspec validate
+    created_at: 2026-05-25T18:33:52.977Z
+    completed_at: 2026-05-25T18:33:52.977Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check
+      33b8f7cf76b2021af7edc0745abd4b7a45239c74...06b5e1d8823bc8e5bad531c5cbe57228f8da4c98 produced
+      no whitespace errors.
+    name: diff whitespace
+    required: false
+    runner: git diff --check
+    created_at: 2026-05-25T18:34:04.677Z
+    completed_at: 2026-05-25T18:34:04.677Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: packages/daemon/src/routes/plan-resources.ts,
+      packages/daemon/src/routes/plans.ts, packages/daemon/src/server.ts,
+      packages/shared/src/api.ts, packages/web-ui/src/lib/api-static.ts,
+      packages/web-ui/src/lib/utils/plan-resource-links.ts,
+      packages/web-ui/src/lib/utils/plan-embedded-content.ts, src/export/json.ts,
+      src/export/types.ts, src/parser/plan-storage-manager.ts, src/daemon/entity-cache.ts,
+      tests/daemon-api/plan-resources.test.ts, tests/export/plan-resources.test.ts,
+      tests/web-ui/plan-resource-links.test.ts, tests/web-ui/api-static.test.ts. Commands run: kspec
+      task get, kspec item get, kspec review for-task/get/add/open, rg AC annotations, git
+      diff/name-status/stat/check, kspec validate --warnings-ok, npm test -- --fresh. Claims
+      verified: cycle 2 blockers fixed by storage resource gate, PlanResourceExportError
+      propagation, and POST symlink safety tests/code; strict 9-field metadata preserved;
+      cache-ready list projects resource_summary. Categories searched: correctness, edge cases,
+      error handling, security/path escape, test quality, integration/cache/static export."
+    name: review evidence log
+    required: false
+    runner: codex review
+    created_at: 2026-05-25T18:34:23.112Z
+    completed_at: 2026-05-25T18:34:23.112Z
+events:
+  - _ulid: 01KSG5SRJF18Z1PZCMZTXG6RY0
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-25T18:19:20.527Z
+  - _ulid: 01KSG5TJDEA4YQ5WYQ4V2G3052
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-25T18:19:46.991Z
+  - _ulid: 01KSG6M39F7M6ZGH7MVMHTH514
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-25T18:33:43.471Z
+  - _ulid: 01KSG6ME7XE56TF9GHE2QB6EDM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-25T18:33:54.685Z
+  - _ulid: 01KSG6MSNKXVER5EX5ZSTF70F2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff whitespace
+    timestamp: 2026-05-25T18:34:06.387Z
+  - _ulid: 01KSG6NBP8Z06QW75KGCZGTZDA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-25T18:34:24.840Z
+  - _ulid: 01KSG6NP9ZQ5Z0W4NFBAJVCHBB
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-25T18:34:35.711Z
+  - _ulid: 01KSG6NP9ZXP2EB2K77J1VSZ4R
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-25T18:34:35.711Z
+examined_commit: 06b5e1d8823bc8e5bad531c5cbe57228f8da4c98
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XB035D6C69W9TR1JZDR4P"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-25T18:34:35.711Z
+created_at: 2026-05-25T18:19:20.527Z
+updated_at: 2026-05-25T18:34:35.711Z
+notes: []

@@ -1,0 +1,193 @@
+_ulid: 01KMR24AW39T9T824CPMZQ5A73
+slugs: []
+title: Review task-migrate-read-routes
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed in this snapshot: 1947/1947 suites, 6963/6968 tests passed (5 skipped)."
+    name: npm test
+    required: true
+    runner: test-runner
+    created_at: 2026-03-27T16:34:37.911Z
+    completed_at: 2026-03-27T16:34:37.911Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation completed with repository-baseline warnings only (exit 6): 1 reference
+      warning, 34 alignment warnings, 485 completeness warnings; no schema or reference errors for
+      this snapshot."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-27T16:34:39.446Z
+    completed_at: 2026-03-27T16:34:39.446Z
+events:
+  - _ulid: 01KMR24AW2XRHS12JHV4QVEX87
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T16:30:38.978Z
+  - _ulid: 01KMR24W84EBACS13TGMJ6BE09
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T16:30:56.772Z
+  - _ulid: 01KMR2BK4M6WSMFHAPZA4W4AZT
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMR2BJM2K27T1QG18B5HBTVA
+    timestamp: 2026-03-27T16:34:36.821Z
+  - _ulid: 01KMR2BMPPMCHV909AX58DRRR2
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-27T16:34:38.422Z
+  - _ulid: 01KMR2BP64E11ZDKAPGW3AF3C8
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-27T16:34:39.940Z
+  - _ulid: 01KMR2BT51P9KK2JX0KT3XTV7V
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMR2BSP1R6SRNHQBPSVBMKX0
+    timestamp: 2026-03-27T16:34:44.001Z
+  - _ulid: 01KMR2C4JM4D91K1DXK3P7GS0T
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-27T16:34:54.676Z
+  - _ulid: 01KMR2C4JMY61PK5GK7F3BFX6K
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T16:34:54.676Z
+  - _ulid: 01KMR3MR733Y5EDWAFDQMMFKME
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMR2BJM2K27T1QG18B5HBTVA
+    timestamp: 2026-03-27T16:57:05.507Z
+  - _ulid: 01KMR3N21N9F3WY3QFS681GMWG
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMR2BJM2K27T1QG18B5HBTVA
+    timestamp: 2026-03-27T16:57:15.574Z
+  - _ulid: 01KMR3NEPM868VEE6RA0ZVRY09
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMR2BSP1R6SRNHQBPSVBMKX0
+    timestamp: 2026-03-27T16:57:28.532Z
+  - _ulid: 01KMR3NT2R7RYVXQHQAM57G7RM
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMR2BSP1R6SRNHQBPSVBMKX0
+    timestamp: 2026-03-27T16:57:40.184Z
+examined_commit: 1cfca170864e89adef9907fadaaa2da720c992d6
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMMB3TNHWVQT4HHB9XC1DE0X"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMR2BJM2K27T1QG18B5HBTVA
+    anchor:
+      type: code
+      commit: 1cfca170864e89adef9907fadaaa2da720c992d6
+      line_end: 66
+      line_start: 55
+      path: packages/daemon/src/routes/validation.ts
+      side: head
+    entries:
+      - _ulid: 01KMR2BJM2TKFKDC5HB5XWV9Q6
+        author: "@claude"
+        body: "Blocking: /api/search now searches cache summaries instead of full task/item entities, so
+          matches that previously came from task descriptions, notes, or item AC/description content
+          disappear once the cache is warm. The new code feeds TaskSummary/ItemSummary objects into
+          grepItem(), but ItemSummary explicitly strips description, notes, and AC text. I confirmed
+          the behavioral loss by running grepItem on equivalent objects: a full item with 'needle'
+          only in description/AC text matched ['description', 'acceptance_criteria[0].then'], while
+          the corresponding summary object returned null. That breaks the existing 'search across
+          all entities' contract and violates the task requirement that response behavior remain
+          unchanged after the cache migration."
+        created_at: 2026-03-27T16:34:36.290Z
+      - _ulid: 01KMR3MQD64EAY1HXYA1DG9V5H
+        author: "@claude"
+        body: "Fixed: The search route now uses getAllTaskDetails()/getAllItemDetails() from the entity
+          cache detail tier instead of getTaskIndex()/getItemIndex() summaries. The entity cache's
+          domain load now populates the detail tier alongside the index tier — for tasks,
+          loadAllTasks() replaces listTasks(), and for items, the already-loaded full items are
+          stored in the detail tier during load. This ensures grepItem receives full entity data
+          with description, notes, AC content etc. Added 3 regression tests that verify search finds
+          matches in task descriptions, task notes, and item description/AC content."
+        created_at: 2026-03-27T16:57:04.678Z
+    kind: blocker
+    resolved_at: 2026-03-27T16:57:14.709Z
+    resolved_by: "@claude"
+  - _ulid: 01KMR2BSP1R6SRNHQBPSVBMKX0
+    entries:
+      - _ulid: 01KMR2BSP1ZCZAS7QWF0A5WBN1
+        author: "@claude"
+        body: 'Evidence log:\nFiles read: packages/daemon/src/routes/aggregation.ts,
+          packages/daemon/src/routes/validation.ts, src/parser/refs.ts, src/parser/alignment.ts,
+          src/parser/yaml.ts, src/daemon/entity-cache.ts, src/utils/grep.ts,
+          packages/web-ui/tests/e2e/api-meta.spec.ts, src/cli/commands/search.ts,
+          tests/daemon-read-path.test.ts.\nCommands run: git diff
+          1001be210b4251982b7386b475a48b0cc68188e4..1cfca170864e89adef9907fadaaa2da720c992d6 --
+          packages/daemon/src/routes/aggregation.ts packages/daemon/src/routes/validation.ts
+          tests/daemon-read-path.test.ts; kspec item get @daemon-read-path; kspec validate; grep
+          -Rni "AC: @daemon-read-path\|AC: @trait-" tests/daemon-read-path.test.ts tests; npm test;
+          ./node_modules/.bin/tsx grepItem reproduction.\nClaims verified: full suite passes in this
+          snapshot; cache summary objects omit searchable content fields, so /api/search no longer
+          preserves pre-migration search behavior.\nCategories searched: correctness (1 blocker in
+          /api/search), edge cases (cache-warm search surface), error handling (no new blocker),
+          test quality (new tests pass but miss description/AC search regression), integration
+          (alignment/reference index paths rechecked).'
+        created_at: 2026-03-27T16:34:43.521Z
+      - _ulid: 01KMR3NDW5WXK7HJXYMS0X451F
+        author: "@claude"
+        body: Acknowledged. The search regression identified in the evidence log is now fixed. Entity cache
+          populates detail tier during domain load so full entities are always available for search
+          without per-request disk reads.
+        created_at: 2026-03-27T16:57:27.685Z
+    kind: nit
+    resolved_at: 2026-03-27T16:57:39.353Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-27T16:34:54.676Z
+created_at: 2026-03-27T16:30:38.979Z
+updated_at: 2026-03-27T16:57:39.353Z
+notes: []

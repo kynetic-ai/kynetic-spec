@@ -1,0 +1,122 @@
+_ulid: 01KNP0DX9Q0YE50ZDXPT471FXB
+slugs: []
+title: Review task-shadow-sync-narrow-invalidation
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran npm test twice on head: both runs reported the same unrelated failures. Deterministic
+      failure: tests/daemon-triage-write-through.test.ts missing
+      dist/daemon/middleware/project-context.ts. Full-suite-only timeout failures:
+      tests/native-guard-setup.test.ts, tests/review-per-cycle-lifecycle.test.ts,
+      tests/setup-pipeline-unification.test.ts. Isolated targeted runs on both head and integration
+      base passed those 23 timeout-prone tests and failed only daemon-triage-write-through, so no
+      regression is attributable to this two-file change."
+    name: npm-test
+    required: true
+    runner: test-runner
+    created_at: 2026-04-08T08:04:41.896Z
+    completed_at: 2026-04-08T08:04:41.896Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: packages/daemon/src/server.ts, tests/daemon-read-path.test.ts,
+      tests/daemon-entity-cache.test.ts. Commands run: kspec task get, kspec item get, kspec
+      validate, rg AC searches, git diff against plan/plan-granular-cache-invalidation/01kndbmk, npm
+      test twice, targeted npm test on head, targeted npm test on integration base via detached
+      worktree. Claims verified: onPull now calls refreshMetaShadowInfo(); existing entity-cache AC
+      test still proves shadow-only reload; changed test annotation matches @daemon-meta-subdomain
+      ac-shadow-on-schedule. Categories searched: correctness, edge cases, error handling, test
+      quality, integration; no task-specific findings."
+    name: review-evidence
+    required: false
+    runner: manual
+    created_at: 2026-04-08T08:04:44.742Z
+    completed_at: 2026-04-08T08:04:44.742Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exited 6 with repo-wide warnings only (orphaned skill dir, existing
+      alignment/completeness warnings); no task-specific schema or reference errors in the reviewed
+      change.
+    name: validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-08T08:04:47.693Z
+    completed_at: 2026-04-08T08:04:47.693Z
+events:
+  - _ulid: 01KNP0DX9QX0VHEWJ1R0Q5V4JM
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-08T07:38:08.567Z
+  - _ulid: 01KNP0EKPZ6EFJY7ED519KEYZG
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-08T07:38:31.519Z
+  - _ulid: 01KNP1YJ6BRZPQF34A7X28DXHQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm-test
+    timestamp: 2026-04-08T08:04:42.827Z
+  - _ulid: 01KNP1YN1TCFW4Y6P3285XG2X7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-04-08T08:04:45.754Z
+  - _ulid: 01KNP1YQYKS6X5X84AXQ5J73NC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: validate
+    timestamp: 2026-04-08T08:04:48.723Z
+  - _ulid: 01KNP1ZCD2Q753GX3TCN3SR979
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-08T08:05:09.666Z
+  - _ulid: 01KNP1ZCD2YYNMTT6E6B9DQVSB
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-08T08:05:09.667Z
+examined_commit: 0c91c0d9d36df1418b5f95c65e2ef485a3466a90
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNNTXZD9KNAE0HX81SNQM0A8"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-08T08:05:09.666Z
+created_at: 2026-04-08T07:38:08.567Z
+updated_at: 2026-04-08T08:05:09.666Z
+notes: []

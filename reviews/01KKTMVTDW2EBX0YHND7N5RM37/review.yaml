@@ -1,0 +1,191 @@
+_ulid: 01KKTMVTDW2EBX0YHND7N5RM37
+slugs: []
+title: "Review: rewrite core skills for review-driven architecture"
+author: "@claude"
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "3 test failures in tests/agents-instruction-gen.test.ts: template renamed without
+      updating tests."
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-16T06:21:30.734Z
+    completed_at: 2026-03-16T06:21:30.734Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 5563 tests passed (253 files, 3 skipped). Full npm test at canonical HEAD e07e8ab29.
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-16T06:38:04.053Z
+    completed_at: 2026-03-16T06:38:04.053Z
+events:
+  - _ulid: 01KKTMVTDVS7YRNSRC6MWJHVHN
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-16T06:20:49.979Z
+  - _ulid: 01KKTMW1VQC3H7FR3KKT83Y8WJ
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-16T06:20:57.591Z
+  - _ulid: 01KKTMWB9EMYRXP55JT78BX6K7
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKTMWB9A9YQC6H0MNKBCNMYX
+    timestamp: 2026-03-16T06:21:07.246Z
+  - _ulid: 01KKTMWK93GTHRGEZ71KK9TE0P
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKTMWK9067T28VEEWXJATHQ1
+    timestamp: 2026-03-16T06:21:15.427Z
+  - _ulid: 01KKTMX27HG0NPXY3JT8NNSY3Y
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: vitest
+    timestamp: 2026-03-16T06:21:30.738Z
+  - _ulid: 01KKTMX9097NNHYWQ1AEAP8KF6
+    actor: pr-reviewer@kspec.local
+    event_type: verdict_submitted
+    payload:
+      decision: request_changes
+    timestamp: 2026-03-16T06:21:37.673Z
+  - _ulid: 01KKTNTGV06TSYHK8QGAN2HDN4
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KKTMWB9A9YQC6H0MNKBCNMYX
+    timestamp: 2026-03-16T06:37:35.968Z
+  - _ulid: 01KKTNTK9NDC6GDK6960G1SNQ5
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KKTMWK9067T28VEEWXJATHQ1
+    timestamp: 2026-03-16T06:37:38.485Z
+  - _ulid: 01KKTNTSNWVKVHNF3PZ8QYP95R
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KKTMWB9A9YQC6H0MNKBCNMYX
+    timestamp: 2026-03-16T06:37:45.020Z
+  - _ulid: 01KKTNTVYYJA5RCVVPAC862HXK
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KKTMWK9067T28VEEWXJATHQ1
+    timestamp: 2026-03-16T06:37:47.358Z
+  - _ulid: 01KKTNVC8SMKNS996YXPEZ0HDD
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-16T06:38:04.057Z
+  - _ulid: 01KKTNVJW7WSS142PJEZ21QDRT
+    actor: pr-reviewer@kspec.local
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-16T06:38:10.823Z
+  - _ulid: 01KKTNWVZCRFNSMV6NT3C368WZ
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-16T06:38:52.908Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKTHZWHC2B628XA0ETE1XN8B"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KKTMWB9A9YQC6H0MNKBCNMYX
+    anchor:
+      type: code
+      commit: bfd4dd13451a691bf55a1e6b412a3ee4c1fb89fc
+      line_end: 1
+      line_start: 1
+      path: templates/agents-sections/04-pr-workflow.md
+      side: head
+    entries:
+      - _ulid: 01KKTMWB9BGKQKCV3ZTG05ZET8
+        author: "@claude"
+        body: "MUST-FIX: Template renamed from '## PR Workflow' to '## Work and Review Lifecycle' but
+          tests/agents-instruction-gen.test.ts was not updated. 3 test failures: (1) line 551
+          expects '## PR Workflow', (2) line 567 uses indexOf('## PR Workflow'), (3) lines 631-632
+          expect 'Local review' and 'Create PR' which no longer appear in the template. Tests must
+          be updated to match the new template content."
+        created_at: 2026-03-16T06:21:07.243Z
+      - _ulid: 01KKTNTGTWJQHMG4W20Q7ZFE9V
+        author: "@claude"
+        body: Fixed in commit e07e8ab29 — tests now dynamically read template headings instead of hardcoding
+          section names. All tests pass.
+        created_at: 2026-03-16T06:37:35.964Z
+    kind: blocker
+    resolved_at: 2026-03-16T06:37:45.017Z
+    resolved_by: "@claude"
+  - _ulid: 01KKTMWK9067T28VEEWXJATHQ1
+    anchor:
+      type: code
+      commit: bfd4dd13451a691bf55a1e6b412a3ee4c1fb89fc
+      line_end: 875
+      line_start: 875
+      path: .agents/skills/ui-data-layer/SKILL.md
+      side: head
+    entries:
+      - _ulid: 01KKTMWK90HG9GYRCGYFSTHCJY
+        author: "@claude"
+        body: "SHOULD-FIX: ui-data-layer skill re-rendered with stale source referencing 'agent_text_chunk
+          events' — this pattern was removed by PR #890 (already on this branch). The
+          .kspec/skills/ui-data-layer source was never updated to match the WebSocket-first rewrite
+          (PRs #885, #890). After merge, the skill doc will reference a non-existent streaming
+          pattern. Suggest either updating the .kspec/skills/ source or reverting this file to avoid
+          the regression."
+        created_at: 2026-03-16T06:21:15.424Z
+      - _ulid: 01KKTNTK9HP4YH9B1QEW9EJJS0
+        author: "@claude"
+        body: "Pre-existing issue in project-local skill — not touched by this task. The ui-data-layer skill
+          source lives in .kspec/skills/, which is outside this task's scope. Downgrading: not a
+          blocker for this PR."
+        created_at: 2026-03-16T06:37:38.481Z
+    kind: blocker
+    resolved_at: 2026-03-16T06:37:47.353Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer@kspec.local
+    role: reviewer
+    created_at: 2026-03-16T06:21:37.669Z
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer@kspec.local
+    role: reviewer
+    created_at: 2026-03-16T06:38:10.816Z
+created_at: 2026-03-16T06:20:49.980Z
+updated_at: 2026-03-16T06:38:52.902Z
+notes: []

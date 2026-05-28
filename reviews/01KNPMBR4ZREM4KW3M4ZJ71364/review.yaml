@@ -1,0 +1,149 @@
+_ulid: 01KNPMBR4ZREM4KW3M4ZJ71364
+slugs: []
+title: Review fix-daemon-dist-module-import-failures-in-test-runner (cycle 3)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh passed: 2095/2095 suites, 7608 passed, 5 skipped, 0 failed. Full log:
+      /tmp/kspec-test-cache/01KNPMA6G8QF82PRV3NBM3Y0PG/a36fdce159bbfced.log"
+    name: npm-test
+    required: true
+    runner: test.cjs
+    created_at: 2026-04-08T14:13:14.497Z
+    completed_at: 2026-04-08T14:13:14.497Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test -- tests/lint-no-daemon-ts-imports.test.ts --fresh passed (2 suites, 6 tests).
+      npm test -- tests/daemon-read-path.test.ts --fresh passed (5 suites, 25 tests). Direct npx
+      oxlint repro also flagged side-effect import and allowed type-only import.
+    name: targeted-daemon-and-rule
+    required: true
+    runner: test.cjs
+    created_at: 2026-04-08T14:13:17.044Z
+    completed_at: 2026-04-08T14:13:17.044Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exited 6 with pre-existing repository-wide warnings (orphaned skill dir,
+      orphaned specs, many unrelated AC coverage warnings). No task-local validation error was
+      introduced by this branch.
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-08T14:13:19.783Z
+    completed_at: 2026-04-08T14:13:19.783Z
+events:
+  - _ulid: 01KNPMBR4YA4RSVG8M1PHJBWFB
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-08T13:26:29.279Z
+  - _ulid: 01KNPMC5ZBYN4XHEKAE9W87X3Y
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-08T13:26:43.435Z
+  - _ulid: 01KNPQ1A0F6CDGZ73MT7VTJ1S2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNPQ194P8WZTWPS8EJRNR5QY
+    timestamp: 2026-04-08T14:13:12.847Z
+  - _ulid: 01KNPQ1CFEDY6NC0FDDCBJPMJ1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm-test
+    timestamp: 2026-04-08T14:13:15.374Z
+  - _ulid: 01KNPQ1F24G0EER5AW4106DKQ1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted-daemon-and-rule
+    timestamp: 2026-04-08T14:13:18.020Z
+  - _ulid: 01KNPQ1HMQP00VSB2GGHQHR9CW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec-validate
+    timestamp: 2026-04-08T14:13:20.663Z
+  - _ulid: 01KNPQ23SKXW5QAPTSAJN13AKQ
+    actor: "@codex"
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-08T14:13:39.251Z
+  - _ulid: 01KNPQ23SK9NC59VHY3ZD1MKCK
+    actor: "@codex"
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-08T14:13:39.251Z
+examined_commit: efd95569e94451efa368054907859bca82fed913
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNMCPT0W7P3V0PXESVZ40GFN"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNPQ194P8WZTWPS8EJRNR5QY
+    entries:
+      - _ulid: 01KNPQ194PGTV2XVN6MBCPRJ2W
+        author: Jacob Chapel
+        body: >-
+          Evidence log
+
+          Files read: AGENTS.md; kspec-agents.md; .agents/skills/review-gates/SKILL.md; task
+          metadata; prior review @01KNPGQESJ8MNJQ8Q5FAMGHFJT; .oxlintrc.json;
+          tools/eslint-rules/no-daemon-ts-imports.js; tests/lint-no-daemon-ts-imports.test.ts;
+          tests/daemon-read-path.test.ts; tests/test-runner.test.ts.
+
+          Commands run: kspec task get @01KNMCPT0W7P3V0PXESVZ40GFN; kspec review for-task/get; git
+          diff/log/show against snapshot and recorded base 6a8fd6df49537d95cca2f6283be8a4aa82cc30c8;
+          kspec validate; rg for ACs and dist/daemon/*.ts imports; direct npx oxlint repros; npm
+          test -- tests/lint-no-daemon-ts-imports.test.ts --fresh; npm test --
+          tests/daemon-read-path.test.ts --fresh; npm test -- --fresh; npx oxlint
+          tests/lint-no-daemon-ts-imports.test.ts tools/eslint-rules/no-daemon-ts-imports.js
+          .oxlintrc.json.
+
+          Claims verified: the new rule now flags side-effect-only dist/daemon/*.ts imports; it
+          still allows type-only dist/daemon/*.ts imports; targeted rule tests pass; daemon
+          read-path suite passes against .js dist imports; full suite passes in this snapshot.
+
+          Categories searched: correctness (rule logic and regex scope), edge cases (side-effect
+          imports, mixed imports, type-only imports), error handling (rule reports actionable
+          message), test quality (behavioral lint invocation instead of source scanning),
+          integration (oxlint config wiring, daemon read-path suite, full npm test).
+        created_at: 2026-04-08T14:13:11.958Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: "@codex"
+    role: reviewer
+    created_at: 2026-04-08T14:13:39.251Z
+created_at: 2026-04-08T13:26:29.279Z
+updated_at: 2026-04-08T14:13:39.251Z
+notes: []

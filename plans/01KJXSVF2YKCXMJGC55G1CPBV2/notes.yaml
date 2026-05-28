@@ -1,0 +1,60 @@
+notes:
+  - _ulid: 01KJXSVF2YDSBAM76XMSQHBCFX
+    content: |-
+      Implementation notes:
+
+      #### ui-design-system
+      Set up the isolated clone first. Port imgen's full token-contract.css into
+      Tailwind @theme inline in app.css. Start with the token bridge pilot on the
+      dashboard page to validate the approach before touching other views. Create
+      tokens.css, animations.css, typography.css in lib/ds/. Establish loading
+      skeleton and error boundary patterns.
+
+      #### ui-app-shell
+      Restructure +layout.svelte with new sidebar component. Migrate existing
+      Sidebar.svelte to grouped navigation. Add /items -> /specs redirect.
+      Fix Observations nav visibility bug. Migrate taskDetailStore from Svelte 4
+      to Svelte 5 runes. Consolidate three existing task detail implementations.
+      Ensure all existing routes still work.
+
+      #### ui-task-board
+      Prerequisite: daemon must return type and automation in task list API response
+      (quick fix to packages/daemon/src/routes/tasks.ts). Add needs_work to status
+      color/label maps. Build KanbanBoard, KanbanColumn, TaskCard, TaskDetailModal,
+      ActiveFleetRow components. Wire to tasks:updates WebSocket topic. Build task
+      mutation endpoints in daemon (submit, complete, block) for detail modal actions.
+
+      #### ui-session-stream
+      Prerequisite: build GET /api/sessions and GET /api/sessions/:id/events daemon
+      endpoints. Two-tier rendering: structured events from events.jsonl for history,
+      agent_text_chunk WS for live text. Build SessionStream, ChatMessage,
+      ToolCallView, ThinkingBlock components. Implement auto-scroll with pause/resume.
+      Port patterns from kynetic-internal's ChatPanel.
+
+      #### ui-agent-dispatch
+      Uses existing GET /api/agent/dispatch/status and GET /api/agent/status endpoints.
+      Subscribe to agents WS topic for real-time updates. Build AgentList,
+      DispatchStatus, InvocationCard components.
+
+      #### ui-session-history
+      Depends on GET /api/sessions endpoint from ui-session-stream work.
+      Build SessionList with filtering. Link to session stream view.
+
+      #### ui-inbox-enhanced
+      Enhance existing inbox view. Add triage status from existing triage API.
+      Add filter controls. Keep existing add/delete functionality.
+
+      #### ui-plans-view
+      Prerequisite: build GET /api/plans daemon endpoint (wrap existing loadAllPlans).
+      Build PlanList with progress calculation from linked task statuses.
+
+      #### ui-validation-view
+      Uses existing GET /api/validate and GET /api/alignment endpoints.
+      Build ValidationSummary, AlignmentStats, IssueList components.
+
+      #### ui-dashboard-overview
+      Build last. Uses data from tasks, inbox, observations, validation APIs.
+      Active work section reuses ActiveFleetRow from task board.
+      No aggregated activity API needed — merge recent data client-side.
+    author: "@claude"
+    created_at: 2026-03-05T01:30:02.718Z

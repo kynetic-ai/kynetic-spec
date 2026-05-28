@@ -1,0 +1,51 @@
+_ulid: 01KKSZ5E32Z86Y1NM88XGE0XTS
+slugs:
+  - plan-dispatch-event-system-expansion
+title: Dispatch Event System Expansion
+status: completed
+approved_at: 2026-03-18T05:31:35.024Z
+derived_specs:
+  - "@dispatch-event-envelope"
+  - "@dispatch-event-taxonomy"
+  - "@dispatch-event-payload"
+  - "@dispatch-action-model"
+  - "@dispatch-command-action"
+  - "@dispatch-agent-action-input"
+  - "@dispatch-hook-system"
+  - "@dispatch-hook-schema"
+  - "@dispatch-hook-filter"
+  - "@dispatch-schedule-entities"
+  - "@dispatch-schedule-runtime"
+  - "@dispatch-schedule-schema"
+  - "@dispatch-composition-patterns"
+  - "@dispatch-composition-correlation"
+  - "@dispatch-composition-schema"
+  - "@dispatch-event-cli"
+  - "@automation-api"
+  - "@automation-event-stream"
+  - "@ui-automation-view"
+derived_tasks:
+  - "@task-event-bus"
+  - "@task-event-schema"
+  - "@task-event-payloads"
+  - "@task-action-model"
+  - "@task-command-action"
+  - "@task-agent-action-input"
+  - "@task-session-events"
+  - "@task-hook-schema"
+  - "@task-hook-executor"
+  - "@task-schedule-schema"
+  - "@task-schedule-engine"
+  - "@task-hook-cli"
+  - "@task-schedule-cli"
+  - "@task-event-cli"
+  - "@task-daemon-api"
+  - "@task-validate-integration"
+  - "@task-composition-join"
+  - "@task-automation-view"
+  - "@task-migrate-triggers"
+  - "@task-cancel-old-trigger-task"
+module_ref: "@agent-integration"
+source_path: /home/chapel/Projects/kynetic-spec/plans/dispatch-event-expansion.md
+created_at: 2026-03-16T00:01:36.354Z
+completed_at: null

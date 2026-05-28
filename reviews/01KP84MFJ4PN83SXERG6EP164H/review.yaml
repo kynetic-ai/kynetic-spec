@@ -1,0 +1,224 @@
+_ulid: 01KP84MFJ4PN83SXERG6EP164H
+slugs: []
+title: Review @01KNXYJ3PYYG1ABH6SMQ2KRE1S (cycle 9)
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Fails on both this snapshot and base plan branch with the same pre-existing meta/schema
+      issues (e.g. .kspec/modules/meta.yaml traits[0] expected string, orphaned skills dir, broad AC
+      coverage warnings). Not a regression from this task.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-15T08:48:43.207Z
+    completed_at: 2026-04-15T08:48:43.207Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2147/2147 suites, 7824 passed, 5 skipped, 0 failed."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-15T08:48:46.406Z
+    completed_at: 2026-04-15T08:48:46.406Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Focused scaffold suite passed: 9/9 suites, 20/20 tests."
+    name: npm test -- scaffold-project-config
+    required: true
+    runner: npm
+    created_at: 2026-04-15T08:48:49.682Z
+    completed_at: 2026-04-15T08:48:49.682Z
+events:
+  - _ulid: 01KP84MFJ446NQ091YPMXRWA7E
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-15T08:37:57.956Z
+  - _ulid: 01KP84N009KT33VNTDJFXAK9B4
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-15T08:38:14.793Z
+  - _ulid: 01KP8583SX4R9M49049HQ7TC9H
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP8582W5W4W963YTKS7BP9JX
+    timestamp: 2026-04-15T08:48:41.277Z
+  - _ulid: 01KP8586R53QT5835VDPF2XS1W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-15T08:48:44.294Z
+  - _ulid: 01KP8589YCNGXWW87DWMQNJKV2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-15T08:48:47.564Z
+  - _ulid: 01KP858CZ5DYQEKX0BJ10966A7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- scaffold-project-config
+    timestamp: 2026-04-15T08:48:50.662Z
+  - _ulid: 01KP858VTWSF433C3M4BDHR5DV
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP858TWGNR58R4T81J09TMSB
+    timestamp: 2026-04-15T08:49:05.884Z
+  - _ulid: 01KP858YPK6GR80XKFDVC5EGBE
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KP858XKYQK04NTBTKPNNXF9Q
+    timestamp: 2026-04-15T08:49:08.819Z
+  - _ulid: 01KP8599WPA44S2FPDAMBD3ZTC
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-15T08:49:20.278Z
+  - _ulid: 01KP8599WP661244V0GQPEXF35
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-15T08:49:20.278Z
+  - _ulid: 01KP85A7B291NB2WEPZPB2CAEY
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP8582W5W4W963YTKS7BP9JX
+    timestamp: 2026-04-15T08:49:50.434Z
+  - _ulid: 01KP86BCZFE56SBP1AME1GAY4K
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP858TWGNR58R4T81J09TMSB
+    timestamp: 2026-04-15T09:07:57.551Z
+  - _ulid: 01KP86BHJEA4E27ET0KGC0WZKY
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP858TWGNR58R4T81J09TMSB
+    timestamp: 2026-04-15T09:08:02.254Z
+  - _ulid: 01KP86BSTTT1ZXNEXVPMCEFQJQ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP858XKYQK04NTBTKPNNXF9Q
+    timestamp: 2026-04-15T09:08:10.714Z
+examined_commit: 156714dac6942a1a20836fc6074b04f700a4d3e2
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNXYJ3PYYG1ABH6SMQ2KRE1S"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KP8582W5W4W963YTKS7BP9JX
+    anchor:
+      type: code
+      commit: 156714dac6942a1a20836fc6074b04f700a4d3e2
+      line_end: 1844
+      line_start: 1821
+      path: src/cli/commands/setup.ts
+      side: head
+    entries:
+      - _ulid: 01KP8582W5PCAHPFRREN7S70A4
+        author: Jacob Chapel
+        body: The inherited @trait-error-guidance ac-6 is still not satisfied on the scaffold-failure path.
+          Reproducing  against a read-only kspec.config.yaml exits 1 but writes the human-readable
+          setup summary to stdout before the JSON payload, and the payload is only a generic steps
+          dump rather than a structured error object with recovery guidance. That means machine
+          consumers cannot reliably parse the failure output, and the new test at
+          tests/scaffold-project-config.test.ts:465 only checks for substrings instead of asserting
+          valid structured error output, so it falsely marks this AC as covered.
+        created_at: 2026-04-15T08:48:40.325Z
+    kind: blocker
+    resolved_at: 2026-04-15T08:49:49.423Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KP858TWGNR58R4T81J09TMSB
+    anchor:
+      type: code
+      commit: 156714dac6942a1a20836fc6074b04f700a4d3e2
+      line_end: 1844
+      line_start: 1821
+      path: src/cli/commands/setup.ts
+      side: head
+    entries:
+      - _ulid: 01KP858TWG492J7B1H9H0N0CXA
+        author: Jacob Chapel
+        body: The inherited @trait-error-guidance ac-6 is still not satisfied on the scaffold-failure path.
+          Reproducing setup --force --json against a read-only kspec.config.yaml exits 1 but writes
+          the human-readable setup summary to stdout before the JSON payload, and the payload is
+          only a generic steps dump rather than a structured error object with recovery guidance.
+          That means machine consumers cannot reliably parse the failure output, and the new test at
+          tests/scaffold-project-config.test.ts:465 only checks for substrings instead of asserting
+          valid structured error output, so it falsely marks this AC as covered.
+        created_at: 2026-04-15T08:49:04.912Z
+      - _ulid: 01KP86BC35HW3H7BP7G8QKEH57
+        author: "@claude"
+        body: "Fixed: Two changes address this. (1) runSetupPipeline's summary printing is now guarded with
+          \\!isStructuredMode() so human-readable text no longer contaminates stdout in JSON mode.
+          (2) The JSON output object now includes success: false, error (with description), and
+          suggestion (with recovery action) fields when a scaffold failure occurs. Test now parses
+          JSON.parse(stdout) and asserts on the structured error fields."
+        created_at: 2026-04-15T09:07:56.645Z
+    kind: blocker
+    resolved_at: 2026-04-15T09:08:01.307Z
+    resolved_by: "@claude"
+  - _ulid: 01KP858XKYQK04NTBTKPNNXF9Q
+    entries:
+      - _ulid: 01KP858XKYY2EFRCGH8CZ869JT
+        author: Jacob Chapel
+        body: "Evidence log: Files read: src/cli/commands/setup.ts, src/cli/commands/init.ts,
+          src/parser/config.ts, src/agent-runtime/workspace.ts,
+          tests/scaffold-project-config.test.ts. Commands run: kspec task get, kspec item get, kspec
+          review for-task, kspec review get, git log target..HEAD, git diff target..HEAD, grep for
+          AC annotations, kspec validate on snapshot and base, npm test -- scaffold-project-config,
+          npm test, and a direct CLI reproduction of setup --force --json on a read-only config
+          file. Claims verified: scaffolded config preserves empty-config defaults, focused and full
+          tests pass, validate failure is pre-existing on base, and JSON failure output is not
+          machine-safe. Categories searched: correctness, error handling, test quality, integration,
+          spec alignment."
+        created_at: 2026-04-15T08:49:07.710Z
+    kind: nit
+    resolved_at: 2026-04-15T09:08:09.791Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-15T08:49:20.278Z
+created_at: 2026-04-15T08:37:57.956Z
+updated_at: 2026-04-15T09:08:09.791Z
+notes: []

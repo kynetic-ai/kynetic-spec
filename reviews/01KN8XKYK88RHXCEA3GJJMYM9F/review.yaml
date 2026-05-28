@@ -1,0 +1,209 @@
+_ulid: 01KN8XKYK88RHXCEA3GJJMYM9F
+slugs: []
+title: Review task-impl-active-target-set
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2068 suites, 7495 tests, 5 skipped, 0 failed."
+    name: npm test -- --fresh
+    required: true
+    runner: npm
+    created_at: 2026-04-03T05:49:45.023Z
+    completed_at: 2026-04-03T05:49:45.023Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation exited with warnings only (exit 6): schema/references OK; warnings are
+      pre-existing orphan/alignment/completeness debt."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-03T05:49:51.823Z
+    completed_at: 2026-04-03T05:49:51.823Z
+events:
+  - _ulid: 01KN8XKYK7FJ2NDRBWMCG7DBF8
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-03T05:38:53.159Z
+  - _ulid: 01KN8XN2QQMS47R5ZA3QY1P4Y8
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-03T05:39:30.168Z
+  - _ulid: 01KN8Y7VWM3Q16YSX7WN7H4Y0Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-04-03T05:49:45.748Z
+  - _ulid: 01KN8Y7Y1VVHBHK72TB0DB7KEJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN8Y7XBN80EMVX13Y04008T8
+    timestamp: 2026-04-03T05:49:47.963Z
+  - _ulid: 01KN8Y80C5NPGSR7WMWY3HXJQC
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN8Y7ZGCPBYYKEGAATBCF604
+    timestamp: 2026-04-03T05:49:50.341Z
+  - _ulid: 01KN8Y82GXNR1DXRH5EDF9PAYJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-03T05:49:52.541Z
+  - _ulid: 01KN8Y84KW1KMF8EJJBMAQKR42
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN8Y83WZ537RJHK3HRMP5MKC
+    timestamp: 2026-04-03T05:49:54.684Z
+  - _ulid: 01KN8Y8TV56PBN6SQJ0T357QKZ
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-03T05:50:17.445Z
+  - _ulid: 01KN8Y8TV56634VQCK91APTJKP
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-03T05:50:17.445Z
+  - _ulid: 01KN8YZECP7S9G9ZX4QPPJM3YV
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN8Y83WZ537RJHK3HRMP5MKC
+    timestamp: 2026-04-03T06:02:38.358Z
+  - _ulid: 01KN8YZGMEN3HFNPB5CHTYNBER
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN8Y7ZGCPBYYKEGAATBCF604
+    timestamp: 2026-04-03T06:02:40.654Z
+  - _ulid: 01KN8YZY0XKSND8QE59B0TRE7X
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN8Y7ZGCPBYYKEGAATBCF604
+    timestamp: 2026-04-03T06:02:54.365Z
+  - _ulid: 01KN8Z002SJMD4XS9XGSWNHW22
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN8Y83WZ537RJHK3HRMP5MKC
+    timestamp: 2026-04-03T06:02:56.473Z
+examined_commit: 0db514f9fe5692c79ae5eff7495a6b1893bc050a
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN8T19V08CS20XYP25QJHRC5"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN8Y7XBN80EMVX13Y04008T8
+    entries:
+      - _ulid: 01KN8Y7XBN2K1KN7T7070Q5NZ0
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: src/agent-runtime/dispatch.ts,
+          tests/dispatch-target-sync.test.ts, tests/dispatch-branch-push-lifecycle.test.ts. Commands
+          run: kspec task get @01KN8T19V08CS20XYP25QJHRC5, kspec item get
+          @dispatch-remote-branch-sync, git diff against fb3342db29d0f52d03646cc5ec095e7d9bd0c310,
+          rg/nl/sed on dispatch runtime and tests, kspec validate, npm test -- --fresh. Claims
+          verified: worker claim that unified active-target state exists is true for
+          bookkeeping/status exposure; claim that push/pull share that source of truth is false in
+          the current runtime paths. Categories searched: correctness, edge cases, test quality,
+          integration, error handling."
+        created_at: 2026-04-03T05:49:47.253Z
+    kind: nit
+  - _ulid: 01KN8Y7ZGCPBYYKEGAATBCF604
+    anchor:
+      type: code
+      commit: 0db514f9fe5692c79ae5eff7495a6b1893bc050a
+      line_end: 1436
+      line_start: 1412
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KN8Y7ZGCRQQYWFXPSQ5BBKJT
+        author: Jacob Chapel
+        body: "The push path also remains base-branch-only.  serializes one global push and resolves the
+          target with , so periodic retry and post-merge push still operate only on the configured
+          base branch rather than the active integration target that actually received the merge.
+          This breaks the task's stated goal of a shared push/pull source of truth: non-base targets
+          can be added to  but are never pushed. The current tests only assert helper/state
+          exposure, not that a non-base active target is actually pushed."
+        created_at: 2026-04-03T05:49:49.452Z
+      - _ulid: 01KN8YZFVE230NE0W370CE3D42
+        author: Jacob Chapel
+        body: Fixed in fcf063252. _pushIntegrationTargetAsync now accepts a target branch, uses per-branch
+          in-progress serialization, reviewer post-merge pushes target
+          workspace.metadata.integrationTargetBranch, and periodic reconciliation pushes every
+          branch in _activeTargets. Added a regression test that proves plan/alpha is actually
+          pushed during periodic reconciliation.
+        created_at: 2026-04-03T06:02:39.854Z
+    kind: blocker
+    resolved_at: 2026-04-03T06:02:53.654Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KN8Y83WZ537RJHK3HRMP5MKC
+    anchor:
+      type: code
+      commit: 0db514f9fe5692c79ae5eff7495a6b1893bc050a
+      line_end: 3124
+      line_start: 3094
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KN8Y83WZME6V3B45AFZ7XVXA
+        author: Jacob Chapel
+        body: "The pull path still ignores the active target set.  rebuilds and logs , but  immediately
+          collapses back to  and fetches only that single branch. That means startup sync, periodic
+          stale sync, and pre-provision sync still refresh only the configured base branch, so
+          workspaces targeting branches like  can remain stale even though they are present in .
+          Evidence:  shows  is only used for logging/status, and the only sync call sites (, , )
+          still invoke  with no branch parameter."
+        created_at: 2026-04-03T05:49:53.951Z
+      - _ulid: 01KN8YZDNDCVGFGJFBDAP4NZTR
+        author: Jacob Chapel
+        body: Fixed in fcf063252. _syncTargetBranch now accepts an optional branch, startup and periodic
+          reconciliation iterate the active target set via _syncActiveTargetBranches(), and
+          pre-provision sync resolves the task-specific base branch before provisioning. Added a
+          regression test that proves a non-base active target from the workspace registry is pulled
+          on engine start.
+        created_at: 2026-04-03T06:02:37.613Z
+    kind: blocker
+    resolved_at: 2026-04-03T06:02:55.767Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-03T05:50:17.445Z
+created_at: 2026-04-03T05:38:53.160Z
+updated_at: 2026-04-03T06:02:55.767Z
+notes: []

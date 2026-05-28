@@ -1,0 +1,217 @@
+_ulid: 01KSJMSPM15603HV4AFTFTAAED
+slugs: []
+title: "Plan review: Dispatch Merge Helper Target Lock Hardening (cycle 2)"
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Dry-run import preserved draft status and stored the full document; Specs is intentionally
+      empty and derive_from_specs is false for existing-spec update work.
+    name: Plan shape
+    required: true
+    created_at: 2026-05-26T17:20:43.803Z
+    completed_at: 2026-05-26T17:20:43.803Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All four blockers from @01KSJM9WPCTXFTYF42ZRPMX3W2 are resolved: real dispatch
+      target/degraded test paths are used, rendered skill regeneration uses kspec skill render,
+      Covers includes rewritten helper ACs, and the E2E task requires the combined incident path or
+      stop/escalate."
+    name: Prior blocker verification
+    required: true
+    created_at: 2026-05-26T17:20:48.361Z
+    completed_at: 2026-05-26T17:20:48.361Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Reviewed @detached-reviewer-merge-helper, @dispatch-integration-mutation-scope,
+      @dispatch-remote-branch-sync, @plan-branch-dispatch-target, and related integration-target
+      specs; the plan updates existing contracts rather than duplicating specs.
+    name: Existing spec neighborhood
+    required: true
+    created_at: 2026-05-26T17:20:52.762Z
+    completed_at: 2026-05-26T17:20:52.762Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed with only existing catalog warnings; referenced
+      source/rendered helper paths and test files exist, including
+      tests/dispatch-target-sync.test.ts and tests/dispatch-degraded-state.test.ts.
+    name: Reference and path validation
+    required: true
+    created_at: 2026-05-26T17:20:57.320Z
+    completed_at: 2026-05-26T17:20:57.320Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "New and rewritten ACs are observable and testable: helper worktree lifecycle,
+      occupied-target refusal, auxiliary branch-lock release, and degraded-state recovery all state
+      clear given/when/then behavior."
+    name: Spec language and AC quality
+    required: true
+    created_at: 2026-05-26T17:21:01.711Z
+    completed_at: 2026-05-26T17:21:01.711Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Every new or rewritten AC named in the plan is claimed by at least one task, including
+      ac-helper-no-op-merge, ac-helper-refuses-dirty-target, ac-helper-safe-conflict-exit, and the
+      new dispatch scope and remote-sync ACs.
+    name: AC coverage mapping
+    required: true
+    created_at: 2026-05-26T17:21:07.424Z
+    completed_at: 2026-05-26T17:21:07.424Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Spec alignment task precedes implementation; helper regression coverage follows helper
+      implementation; degraded-state recovery can run after spec alignment; final E2E waits for
+      helper and degraded-state work. No circular or priority-inverted dependencies found.
+    name: Dependency ordering
+    required: true
+    created_at: 2026-05-26T17:21:11.716Z
+    completed_at: 2026-05-26T17:21:11.716Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Testing instructions use temp repos/fixtures, preserve the combined plan-target
+      manual_merge regression, and explicitly forbid substituting narrower helper-only or sync-only
+      coverage while claiming E2E coverage.
+    name: Test scope and live-repo guardrails
+    required: true
+    created_at: 2026-05-26T17:21:16.127Z
+    completed_at: 2026-05-26T17:21:16.127Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec plan import plans/dispatch-merge-helper-target-lock-hardening.md --dry-run passed;
+      kspec validate --alignment --warnings-ok passed with existing orphan/status warnings only.
+    name: Validation
+    required: true
+    created_at: 2026-05-26T17:21:20.610Z
+    completed_at: 2026-05-26T17:21:20.610Z
+events:
+  - _ulid: 01KSJMSPM0C3B2VC5NHNC0TF59
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-26T17:19:56.032Z
+  - _ulid: 01KSJMV2GFCKCDTJCR0ZBCXK2E
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-26T17:20:40.976Z
+  - _ulid: 01KSJMV6ZQKVSZ45Q90DTRGRFM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan shape
+    timestamp: 2026-05-26T17:20:45.559Z
+  - _ulid: 01KSJMVBC5TZ0GM8TMYDFHPV59
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Prior blocker verification
+    timestamp: 2026-05-26T17:20:50.053Z
+  - _ulid: 01KSJMVFTK89AK6R4G7VPCEAFC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Existing spec neighborhood
+    timestamp: 2026-05-26T17:20:54.611Z
+  - _ulid: 01KSJMVM5DWCP6Z9A7QJ1MD5RA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Reference and path validation
+    timestamp: 2026-05-26T17:20:59.053Z
+  - _ulid: 01KSJMVRG32CN9KYQ83MG73317
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec language and AC quality
+    timestamp: 2026-05-26T17:21:03.491Z
+  - _ulid: 01KSJMVXYCCR11Y919W5NJAEJ4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage mapping
+    timestamp: 2026-05-26T17:21:09.069Z
+  - _ulid: 01KSJMW274SYN26DBXDBW594B7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-05-26T17:21:13.445Z
+  - _ulid: 01KSJMW6J1JT299SG9B021GFSH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Test scope and live-repo guardrails
+    timestamp: 2026-05-26T17:21:17.889Z
+  - _ulid: 01KSJMWAXYDA00QFYPPD8BEW5F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Validation
+    timestamp: 2026-05-26T17:21:22.366Z
+  - _ulid: 01KSJMWFCV8VZ9R4FRBFY9N8P5
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-26T17:21:26.939Z
+  - _ulid: 01KSJMWFCVJ653S9CMH0PX8P5Q
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-26T17:21:26.939Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-dispatch-merge-helper-target-lock-hardening"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-26T17:21:26.939Z
+created_at: 2026-05-26T17:19:56.033Z
+updated_at: 2026-05-26T17:21:26.939Z
+notes: []

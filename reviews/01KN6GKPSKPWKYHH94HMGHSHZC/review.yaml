@@ -1,0 +1,126 @@
+_ulid: 01KN6GKPSKPWKYHH94HMGHSHZC
+slugs: []
+title: Review default plan derive to include tasks
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Focused plan-derive suite passed (19/19). Full suite on head 8d178dfefb4f had one
+      unrelated timeout in tests/dispatch-workspace-config.test.ts under full load while 7468 tests
+      passed; the exact test passed when rerun in isolation on both head 8d178dfefb4f and base
+      ed8d1259edd9, so this was treated as a flaky non-regression. Follow-up task: @01KN6HMD."
+    name: npm test -- --fresh
+    required: true
+    runner: test-runner
+    created_at: 2026-04-02T07:31:38.155Z
+    completed_at: 2026-04-02T07:31:38.155Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation reported no errors. It exited with warnings only: existing orphaned-skill,
+      alignment, completeness, and invalid-annotation warnings unrelated to this task."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-02T07:31:40.411Z
+    completed_at: 2026-04-02T07:31:40.411Z
+events:
+  - _ulid: 01KN6GKPSKMYGQXCM02QNA7VTJ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-02T07:13:04.819Z
+  - _ulid: 01KN6GMBHYHS9TVHNNE1M5MAMM
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-02T07:13:26.078Z
+  - _ulid: 01KN6HNPRK13H7FR5RQ1K4J2RP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-04-02T07:31:38.900Z
+  - _ulid: 01KN6HNS023DXCZJK6XNNM0X47
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-02T07:31:41.187Z
+  - _ulid: 01KN6HPEZ8ARCMG6ATVQYK29RE
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN6HPE767GXA6KDDB2QGFVNQ
+    timestamp: 2026-04-02T07:32:03.688Z
+  - _ulid: 01KN6HPWG1QYXA8PJMSW0WC2G4
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-02T07:32:17.538Z
+  - _ulid: 01KN6HPWG2C3EMW1Z4JA56BMYB
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-02T07:32:17.538Z
+examined_commit: 8d178dfefb4fd68c9824de23346c9064214c99aa
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN6CFCMZJRBS1529D0NXJB50"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN6HPE767GXA6KDDB2QGFVNQ
+    entries:
+      - _ulid: 01KN6HPE76W5G1WP985RFDGJAT
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          Files read: src/cli/commands/plan.ts, tests/cli-plan-derive.test.ts,
+          templates/skills/plan/SKILL.md, tests/dispatch-workspace-config.test.ts.
+
+          Commands run: git diff --stat, git diff, kspec task get, kspec item get (via task
+          context), kspec review for-task/get, kspec validate, rg AC annotation scan,
+          ./dist/cli/index.js plan derive --help, ./dist/cli/index.js batch commands, npm test --
+          --fresh tests/cli-plan-derive.test.ts, npm test -- --fresh, isolated reruns of the single
+          failing full-suite test on head and base ed8d1259edd9.
+
+          Claims verified: JSON output now includes task-inclusion state; human output includes
+          included/skipped task mode; --tasks remains accepted; --no-tasks opt-out works; batch/CLI
+          help reflects the new default.
+
+          Categories searched: correctness, test quality, AC coverage, error guidance, backward
+          compatibility, integration, dry-run/JSON parity. No task-specific blockers found.
+          Full-suite timeout was isolated to unrelated flaky test task @01KN6HMDX76CP904YS0DCBBXGV.
+        created_at: 2026-04-02T07:32:02.918Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-02T07:32:17.537Z
+created_at: 2026-04-02T07:13:04.819Z
+updated_at: 2026-04-02T07:32:17.538Z
+notes: []

@@ -1,0 +1,106 @@
+_ulid: 01KKWA9K76M3G8J3MKCGAR7PQA
+slugs: []
+title: Review dispatch config fallback for submission linkage
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 13 tests passed in task-submission-linkage.test.ts including 2 new ac-5 tests
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-16T21:55:09.313Z
+    completed_at: 2026-03-16T21:55:09.313Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No new validation errors. 3 pre-existing reference errors in meta.yaml unrelated to this
+      change.
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-16T21:55:17.844Z
+    completed_at: 2026-03-16T21:55:17.844Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "ac-5 has 2 test annotations: fallback test (line 319) and precedence test (line 345).
+      Both tests exercise the behavior described in the AC."
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-16T21:55:25.542Z
+    completed_at: 2026-03-16T21:55:25.542Z
+events:
+  - _ulid: 01KKWA9K750XS4MZH8CPVVEFNZ
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-16T21:54:35.877Z
+  - _ulid: 01KKWA9WJKZVHS400V1PJX68DH
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-16T21:54:45.459Z
+  - _ulid: 01KKWAAKX53CH60WRZ0TM013WE
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-16T21:55:09.349Z
+  - _ulid: 01KKWAAW7RV7QFCT7JCV7WH3ZD
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-16T21:55:17.880Z
+  - _ulid: 01KKWAB3RAX9J9MH5HKDT519QH
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-16T21:55:25.578Z
+  - _ulid: 01KKWABFQYE66P0ZDZ1Z8XK01D
+    actor: pr-reviewer@kspec
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-16T21:55:37.855Z
+  - _ulid: 01KKWACENCDVM3S5PTP1BKRC0Y
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-16T21:56:09.516Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-submission-linkage-dispatch-fallback"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer@kspec
+    role: reviewer
+    created_at: 2026-03-16T21:55:37.818Z
+created_at: 2026-03-16T21:54:35.878Z
+updated_at: 2026-03-16T21:56:09.482Z
+notes: []

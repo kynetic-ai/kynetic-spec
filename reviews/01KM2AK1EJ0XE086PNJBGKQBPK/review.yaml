@@ -1,0 +1,189 @@
+_ulid: 01KM2AK1EJ0XE086PNJBGKQBPK
+slugs: []
+title: Review handle git worktree collisions between multiple project checkouts (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: tests/dispatch-workspace-config.test.ts +
+      tests/dispatch-workspace-registry.test.ts (45/45). Includes ac-8 foreign-root record collision
+      and foreign canonical-branch collision coverage."
+    name: workspace-focused-tests
+    required: true
+    runner: npm test
+    created_at: 2026-03-19T06:07:27.737Z
+    completed_at: 2026-03-19T06:07:27.737Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repo-wide pre-existing validation failures unrelated to this task: missing references in
+      .kspec/modules/meta.yaml, orphaned skills entry, and broad completeness/alignment warnings. No
+      new task-specific validation failure was isolated."
+    name: kspec-validate
+    required: false
+    runner: kspec validate
+    created_at: 2026-03-19T06:07:28.306Z
+    completed_at: 2026-03-19T06:07:28.306Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite remains red in this snapshot. With dispatch env present: review-cli
+      examined_commit test fails and agent-dispatch-engine role-entrypoint test times out. With
+      KSPEC_DISPATCH_CANONICAL_HEAD unset: unrelated full-suite failures remain in
+      tests/action-model.test.ts and tests/agent-dispatch-engine.test.ts despite isolated reruns of
+      the affected files passing. Merge gate is blocked by external/pre-existing suite instability,
+      not by a task-local regression found in the diff."
+    name: npm-test
+    required: true
+    runner: npm test
+    created_at: 2026-03-19T06:07:28.927Z
+    completed_at: 2026-03-19T06:07:28.927Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed in isolation with KSPEC_DISPATCH_CANONICAL_HEAD unset: tests/review-cli.test.ts
+      (64/64). The failing full-suite assertion depends on dispatch-only environment leakage, not
+      this task's workspace changes."
+    name: review-cli-env-isolated
+    required: false
+    runner: npm test
+    created_at: 2026-03-19T06:07:28.933Z
+    completed_at: 2026-03-19T06:07:28.933Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed in isolation: tests/agent-dispatch-engine.test.ts (117/117). The full-suite
+      failures in this file did not reproduce when run alone, indicating suite-level
+      interference/flakiness rather than a deterministic regression from this task."
+    name: agent-dispatch-engine-isolated
+    required: false
+    runner: npm test
+    created_at: 2026-03-19T06:07:29.813Z
+    completed_at: 2026-03-19T06:07:29.813Z
+events:
+  - _ulid: 01KM2AK1EHBA41SQEH4ZZH9VN9
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-19T05:55:11.954Z
+  - _ulid: 01KM2AKVNHHQCZ4FCRG35GEBVH
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-19T05:55:38.801Z
+  - _ulid: 01KM2B9G57CPY6EGAT0GMPDG5S
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: workspace-focused-tests
+    timestamp: 2026-03-19T06:07:27.911Z
+  - _ulid: 01KM2B9GQ20XJN1K897XREYE4J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec-validate
+    timestamp: 2026-03-19T06:07:28.483Z
+  - _ulid: 01KM2B9HA6GZ6R7SARN6F42H93
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm-test
+    timestamp: 2026-03-19T06:07:29.094Z
+  - _ulid: 01KM2B9HM95QZV8BZ3XY8Z1QYC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-cli-env-isolated
+    timestamp: 2026-03-19T06:07:29.418Z
+  - _ulid: 01KM2B9J64Z8HQHGP68B4YHKA7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: agent-dispatch-engine-isolated
+    timestamp: 2026-03-19T06:07:29.988Z
+  - _ulid: 01KM2BAH5QKJDQSGNPYTRMPQAR
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: comment
+    timestamp: 2026-03-19T06:08:01.719Z
+  - _ulid: 01KM2BAJ84F78JEGFA8PB1DXKW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM2BAJ2QXM4A3D5T174KYEWS
+    timestamp: 2026-03-19T06:08:02.820Z
+  - _ulid: 01KM49A3B6W2HH2WRRGW19GGG7
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-20T00:11:19.271Z
+examined_commit: c6a9f65fc8ec1d98cd25e81b6c318b02a4b6392b
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM26DB8RCM6D2T1SYZGZJR9X"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM2BAJ2QXM4A3D5T174KYEWS
+    entries:
+      - _ulid: 01KM2BAJ2RPWV88QMQ5JBT3QY0
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          Files read: src/agent-runtime/workspace.ts, src/parser/dispatch-workspaces.ts,
+          tests/dispatch-workspace-config.test.ts, tests/dispatch-workspace-registry.test.ts
+
+          Commands run: git diff --stat/dev diff, kspec task get, kspec item get, kspec review
+          get/for-task, kspec validate, npm test -- tests/dispatch-workspace-config.test.ts
+          tests/dispatch-workspace-registry.test.ts, npm test --
+          tests/agent-dispatch-engine.test.ts, npm test -- tests/review-cli.test.ts, env -u
+          KSPEC_DISPATCH_CANONICAL_HEAD npm test -- tests/review-cli.test.ts, npm test, env -u
+          KSPEC_DISPATCH_CANONICAL_HEAD npm test
+
+          Claims verified: previous blocker resolved by preserving global single-open-workspace
+          invariant in parser/dispatch-workspaces.ts while moving foreign-checkout rejection into
+          provisioning; ac-8 behavior covered by deterministic foreign-record and foreign-worktree
+          tests
+
+          Categories searched: correctness (no task-local regression found), edge cases (foreign
+          registry/worktree ownership), error handling (actionable DispatchWorkspaceError guidance),
+          test quality (new assertions prove rejection paths and registry non-mutation), integration
+          (full-suite gate remains blocked by unrelated/pre-existing failures)
+        created_at: 2026-03-19T06:08:02.648Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: comment
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-19T06:08:01.719Z
+created_at: 2026-03-19T05:55:11.954Z
+updated_at: 2026-03-20T00:11:18.905Z
+notes: []

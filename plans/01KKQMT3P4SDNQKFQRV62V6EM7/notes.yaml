@@ -1,0 +1,32 @@
+notes:
+  - _ulid: 01KKQPAFENGBHVJ0S21FPV5BVA
+    content: Add formal depends_on to task definitions
+    author: "@claude"
+    created_at: 2026-03-15T02:48:35.541Z
+  - _ulid: 01KKQPC4Y3XWM6GDGXMGZ7AAWZ
+    content: "Set derive_from_specs: false — explicit tasks cover all work, spec-derived tasks would be
+      redundant"
+    author: "@claude"
+    created_at: 2026-03-15T02:49:30.307Z
+  - _ulid: 01KKQPST4XQHQKD9S34C7Y43RG
+    content: "Restructure: 6 specs → 3 behavioral specs, move implementation details to task acceptance
+      gates"
+    author: "@claude"
+    created_at: 2026-03-15T02:56:58.013Z
+  - _ulid: 01KKQQ7SNWDNVQ8YX7E3R99WH1
+    content: Remove 'currently' sections from spec descriptions — stale after implementation
+    author: "@claude"
+    created_at: 2026-03-15T03:04:36.284Z
+  - _ulid: 01KKQQABN6887N31R8X9QRZ545
+    content: Require skill task to research actual TanStack docs online, include references
+    author: "@claude"
+    created_at: 2026-03-15T03:06:00.230Z
+  - _ulid: 01KKQQKGBWS6P82BH8E2C5SN8R
+    content: Move context to top, remove implementation notes section, convention added to development rules
+    author: "@claude"
+    created_at: 2026-03-15T03:10:59.964Z
+  - _ulid: 01KKQQXX3BWT7V639D7XHMMF4M
+    content: "Apply review fixes: remove duplicate ac-5, fix ac-3 then clause, fix ac-4 temporal
+      framing, add cleanup acceptance gates, add ref-index dep to inbox-triage"
+    author: "@claude"
+    created_at: 2026-03-15T03:16:40.683Z

@@ -1,0 +1,299 @@
+_ulid: 01KMR61WDH3RKAYGGRB2ZZA39R
+slugs: []
+title: Review @01KMMB3TNHWVQT4HHB9XC1DE0X
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation returned warnings only (exit 6), with schema and references OK in this snapshot.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-27T17:43:13.048Z
+    completed_at: 2026-03-27T17:43:13.048Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed locally in this snapshot: 1947 suites, 6969 tests."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-27T17:43:17.620Z
+    completed_at: 2026-03-27T17:43:17.620Z
+events:
+  - _ulid: 01KMR61WDGD46E3594F5MAGR81
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T17:39:12.944Z
+  - _ulid: 01KMR62H4EM92NZAGC46YZK6J4
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T17:39:34.158Z
+  - _ulid: 01KMR695SJYN606YV77CGQS3ZG
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMR6953WR31V67WE8W162Q5Z
+    timestamp: 2026-03-27T17:43:11.922Z
+  - _ulid: 01KMR697CBJAEKD3R4CTAA9CW8
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-27T17:43:13.547Z
+  - _ulid: 01KMR698TDST5DYF2DCNRDJXG0
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMR698BP7BAH731100AEF9E8
+    timestamp: 2026-03-27T17:43:15.021Z
+  - _ulid: 01KMR69AAK0A9SGFQ1G15WT8C6
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMR699VEF4ZFNQ2451MJKN9C
+    timestamp: 2026-03-27T17:43:16.564Z
+  - _ulid: 01KMR69BZS3T0ZX49DCMZ5QFVD
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-27T17:43:18.265Z
+  - _ulid: 01KMR69K23GFZ3D41E763VKWZH
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMR69JK5M5MN7J270YR2S1Y1
+    timestamp: 2026-03-27T17:43:25.507Z
+  - _ulid: 01KMR69MMVYA8ZMEQE6Q125W50
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMR69M3XBEV394P03W34FPZ0
+    timestamp: 2026-03-27T17:43:27.131Z
+  - _ulid: 01KMR69X9D609GFBBSBE03ZP0T
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-27T17:43:35.981Z
+  - _ulid: 01KMR69X9DGFRD0CVZ99JKQ2WE
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T17:43:35.981Z
+  - _ulid: 01KMR7CHPZP55GENBDGPG9KVP1
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMR69JK5M5MN7J270YR2S1Y1
+    timestamp: 2026-03-27T18:02:31.007Z
+  - _ulid: 01KMR7CN78WTQ9S7BM99HAQJQE
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMR69JK5M5MN7J270YR2S1Y1
+    timestamp: 2026-03-27T18:02:34.600Z
+  - _ulid: 01KMR7D8D1NEEJRFH7GRZJA597
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMR699VEF4ZFNQ2451MJKN9C
+    timestamp: 2026-03-27T18:02:54.241Z
+  - _ulid: 01KMR7DC1W36REW20XB27W5V84
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMR699VEF4ZFNQ2451MJKN9C
+    timestamp: 2026-03-27T18:02:57.980Z
+  - _ulid: 01KMR7E6CW8XS057292QKC1PZ5
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMR69M3XBEV394P03W34FPZ0
+    timestamp: 2026-03-27T18:03:24.956Z
+  - _ulid: 01KMR7EA5ZWV67DASGNG32YGNP
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMR69M3XBEV394P03W34FPZ0
+    timestamp: 2026-03-27T18:03:28.831Z
+  - _ulid: 01KMR7EMYH6N2JTBHMC1ZHSWM0
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMR6953WR31V67WE8W162Q5Z
+    timestamp: 2026-03-27T18:03:39.857Z
+  - _ulid: 01KMR7ESZGMRGS68NGQHZBMVHF
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMR6953WR31V67WE8W162Q5Z
+    timestamp: 2026-03-27T18:03:45.008Z
+examined_commit: 87a703c5621e68433037da356a68de5007562e68
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMMB3TNHWVQT4HHB9XC1DE0X"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMR6953WR31V67WE8W162Q5Z
+    anchor:
+      type: code
+      commit: 87a703c5621e68433037da356a68de5007562e68
+      line_end: 600
+      line_start: 596
+      path: packages/daemon/src/routes/sessions.ts
+      side: head
+    entries:
+      - _ulid: 01KMR6953WEFZTC77XYHHV70N4
+        author: "@claude"
+        body: "Blocking:  still reloads spec items from disk on the hot read path. The task explicitly
+          includes , but this handler builds  with  even after resolving the session from cache, so
+          read requests still pay per-request filesystem work instead of using the entity-cache
+          detail tier."
+        created_at: 2026-03-27T17:43:11.228Z
+      - _ulid: 01KMR7EMF94D3V7268M54DNCAX
+        author: "@claude"
+        body: "Fixed: duplicate of thread 01KMR69M3X — /api/sessions/:id now uses getAllItemDetails() from
+          the entity cache for spec_context instead of loadAllItems()."
+        created_at: 2026-03-27T18:03:39.369Z
+    kind: blocker
+    resolved_at: 2026-03-27T18:03:44.537Z
+    resolved_by: "@claude"
+  - _ulid: 01KMR698BP7BAH731100AEF9E8
+    entries:
+      - _ulid: 01KMR698BQJPZ6VQ2ZJA9E6PEE
+        author: "@claude"
+        body: >-
+          Evidence log
+
+          Files read: kspec-agents.md, .agents/skills/review-gates/SKILL.md,
+          packages/daemon/src/routes/{aggregation,validation,meta,sessions,tasks,refs,plans}.ts,
+          packages/daemon/src/server.ts, src/daemon/entity-cache.ts,
+          src/parser/{meta,alignment,refs,shadow-sync-scheduler}.ts,
+          tests/{daemon-read-path,daemon-entity-cache}.test.ts.
+
+          Commands run: `kspec task get`, `kspec item get`, `git diff --stat`, `git diff`, `kspec
+          review for-task`, `kspec review get`, `kspec validate`, `grep -Rni "AC:
+          @daemon-read-path\|AC: @trait-" tests`, `npm test`, targeted `rg`/`nl` reads.
+
+          Claims verified: full test suite passes; prior blockers are resolved; read-route migration
+          is still incomplete in `meta.ts` and `sessions.ts`.
+
+          Categories searched: correctness (2 blockers), edge cases (checked cache summary/detail
+          interactions), error handling (checked onPull failure path), test quality (behavioral
+          coverage improved but omitted remaining read routes), integration (server wiring + cache
+          reload path).
+        created_at: 2026-03-27T17:43:14.551Z
+    kind: nit
+  - _ulid: 01KMR699VEF4ZFNQ2451MJKN9C
+    anchor:
+      type: code
+      commit: 87a703c5621e68433037da356a68de5007562e68
+      line_end: 50
+      line_start: 47
+      path: packages/daemon/src/routes/meta.ts
+      side: head
+    entries:
+      - _ulid: 01KMR699VEKW51FZJW8NK9XNJ4
+        author: "@claude"
+        body: "Blocking:  still does per-request context initialization and session-context loading. That
+          leaves a read-only daemon route outside the cache migration, so  is still false for this
+          endpoint. Evidence: this handler unconditionally calls  and then , and  reads the session
+          YAML from disk."
+        created_at: 2026-03-27T17:43:16.078Z
+      - _ulid: 01KMR7D7Y2J03C0KHTG2N0XRM1
+        author: "@claude"
+        body: "Fixed: duplicate of thread 01KMR69JK5 — /api/meta/session now caches session context during
+          meta domain load and serves from cache.getSessionContext()."
+        created_at: 2026-03-27T18:02:53.761Z
+    kind: blocker
+    resolved_at: 2026-03-27T18:02:57.453Z
+    resolved_by: "@claude"
+  - _ulid: 01KMR69JK5M5MN7J270YR2S1Y1
+    anchor:
+      type: code
+      commit: 87a703c5621e68433037da356a68de5007562e68
+      line_end: 50
+      line_start: 47
+      path: packages/daemon/src/routes/meta.ts
+      side: head
+    entries:
+      - _ulid: 01KMR69JK5D0Q5E5SE16KQEQ2E
+        author: "@claude"
+        body: "Blocking: /api/meta/session still does per-request context initialization and session-context
+          loading. That leaves a read-only daemon route outside the cache migration, so
+          @daemon-read-path ac-no-per-request-sync is still false for this endpoint. Evidence: this
+          handler unconditionally calls initContext(projectContext.path) and then
+          loadSessionContext(ctx), and loadSessionContext() reads the session YAML from disk."
+        created_at: 2026-03-27T17:43:25.029Z
+      - _ulid: 01KMR7CH82GGG5BAV79S9HN96G
+        author: "@claude"
+        body: "Fixed: /api/meta/session now serves from entity cache. Added CachedSessionContext type,
+          populated during meta domain load via loadSessionContext(). Route checks
+          cache.getSessionContext() when meta domain is ready, only falling back to initContext on
+          cache miss."
+        created_at: 2026-03-27T18:02:30.530Z
+    kind: blocker
+    resolved_at: 2026-03-27T18:02:34.133Z
+    resolved_by: "@claude"
+  - _ulid: 01KMR69M3XBEV394P03W34FPZ0
+    anchor:
+      type: code
+      commit: 87a703c5621e68433037da356a68de5007562e68
+      line_end: 600
+      line_start: 596
+      path: packages/daemon/src/routes/sessions.ts
+      side: head
+    entries:
+      - _ulid: 01KMR69M3XR516AYS736D1QP82
+        author: "@claude"
+        body: "Blocking: /api/sessions/:id still reloads spec items from disk on the hot read path. The task
+          explicitly includes sessions.ts, but this handler builds spec_context with
+          loadAllItems(await getCtx()) even after resolving the session from cache, so read requests
+          still pay per-request filesystem work instead of using the entity-cache detail tier."
+        created_at: 2026-03-27T17:43:26.589Z
+      - _ulid: 01KMR7E5Y7EXXJHKJBB40BKFZQ
+        author: "@claude"
+        body: "Fixed: /api/sessions/:id now uses getAllItemDetails() from entity cache when items domain is
+          ready, instead of calling loadAllItems(await getCtx()) per request. The full spec items
+          are eagerly populated in the entity cache detail tier during domain load."
+        created_at: 2026-03-27T18:03:24.487Z
+    kind: blocker
+    resolved_at: 2026-03-27T18:03:28.366Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-27T17:43:35.981Z
+created_at: 2026-03-27T17:39:12.945Z
+updated_at: 2026-03-27T18:03:44.537Z
+notes: []

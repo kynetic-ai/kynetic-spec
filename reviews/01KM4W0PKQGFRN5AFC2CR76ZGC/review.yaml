@@ -1,0 +1,133 @@
+_ulid: 01KM4W0PKQGFRN5AFC2CR76ZGC
+slugs: []
+title: Review recover missing workspace for automation-eligible in-progress tasks
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed on rerun: 289 files, 6644 tests passed, 3 skipped, 0 failed."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-20T05:46:14.486Z
+    completed_at: 2026-03-20T05:46:14.486Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fails due to pre-existing project-wide reference/alignment/completeness debt unrelated to
+      this task: 3 reference errors, 1 reference warning, 29 alignment warnings, 400 completeness
+      warnings."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-20T05:46:15.850Z
+    completed_at: 2026-03-20T05:46:15.850Z
+events:
+  - _ulid: 01KM4W0PKQQ95WGK6QN2G35GWN
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-20T05:38:14.263Z
+  - _ulid: 01KM4W1CD326GVK9X69B1Y9X0P
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-20T05:38:36.579Z
+  - _ulid: 01KM4WF8DPCEAHW0A6CVV3K6X7
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM4WF814JVJ10MV66VDQZPV7
+    timestamp: 2026-03-20T05:46:11.254Z
+  - _ulid: 01KM4WF9NXFZDX49PCQK3RKRXS
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-20T05:46:12.542Z
+  - _ulid: 01KM4WF9NYD5H5AZ82C9GANEFP
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-20T05:46:12.542Z
+  - _ulid: 01KM4WFBZBH0BR2SJAT3JEC61R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-20T05:46:14.891Z
+  - _ulid: 01KM4WFD91TFVR0MR8VXYKVYYX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-03-20T05:46:16.226Z
+examined_commit: 88c10fd9b74b568a8ec2aeb6ac3e51a8f0f8967d
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM4NHPTCMTXAVKH0STBCVF22"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM4WF814JVJ10MV66VDQZPV7
+    entries:
+      - _ulid: 01KM4WF814RAXCJT0DGDZJZX58
+        author: Jacob Chapel
+        body: >-
+          Evidence log
+
+
+          Files read: tests/agent-dispatch-engine.test.ts,
+          tests/dispatch-workspace-discovery.test.ts,
+          tests/dispatch-runtime-bootstrap-contract.test.ts, src/agent-runtime/dispatch.ts,
+          src/agent-runtime/workspace.ts, tests/action-model.test.ts
+
+
+          Commands run: git diff 8d98a994f365ceef2e620571967d82c60cf8cdef..88c10fd9b74b --
+          tests/agent-dispatch-engine.test.ts; kspec task get @01KM4NHPTCMTXAVKH0STBCVF22; kspec
+          item get @dispatch-workspace-registry; rg -n "AC: @dispatch-workspace-registry ac-11|AC:
+          @trait-error-guidance" tests; kspec validate; npm test -- agent-dispatch-engine.test.ts;
+          npm test (rerun passed)
+
+
+          Claims verified: verified the fix-cycle claim by reading the diff against prior review and
+          confirming the new AC-11 regression drives engine.start(), reaches provisioning/bootstrap,
+          waits for runInvocation, and asserts the missing worker worktree is recreated before
+          handoff.
+
+
+          Categories searched: correctness (no issue found), edge cases (legacy metadata-backed
+          branch recovery and missing worktree/branch recovery covered), error handling
+          (pre-existing validate debt only), test quality (new test now exercises the end-to-end
+          bootstrap path instead of only helper eligibility), integration (full suite passed on
+          rerun).
+        created_at: 2026-03-20T05:46:10.852Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-20T05:46:12.541Z
+created_at: 2026-03-20T05:38:14.263Z
+updated_at: 2026-03-20T05:46:15.850Z
+notes: []

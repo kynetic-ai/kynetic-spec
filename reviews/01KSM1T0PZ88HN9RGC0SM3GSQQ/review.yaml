@@ -1,0 +1,139 @@
+_ulid: 01KSM1T0PZ88HN9RGC0SM3GSQQ
+slugs: []
+title: Review folder index consistency regressions (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh passed: 2587/2587 suites, 9891/9896 tests passed, 5 skipped. Full
+      log: /tmp/kspec-test-cache/01KSM1R9GKFMMXGSMQ671FGVNM/f84ac7c25a6048ad.log"
+    name: npm test
+    required: true
+    runner: npm test
+    created_at: 2026-05-27T06:39:40.805Z
+    completed_at: 2026-05-27T06:39:40.805Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate reported schema/reference OK and exited 6 for existing repo-wide warnings:
+      deprecated refs, alignment warnings, completeness/annotation warnings. No new validation error
+      found in this branch."
+    name: kspec validate
+    required: false
+    runner: kspec validate
+    created_at: 2026-05-27T06:39:45.517Z
+    completed_at: 2026-05-27T06:39:45.517Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/plan-rebuild-index.test.ts tests/review-rebuild-index.test.ts
+      tests/parser-plans-folder.test.ts tests/parser-reviews-folder.test.ts
+      tests/task-data-manager.test.ts tests/cli-plan-resource.test.ts
+      tests/review-resource-cli.test.ts passed: 42/42 suites, 198/198 tests."
+    name: focused regression suites
+    required: true
+    runner: npm test
+    created_at: 2026-05-27T06:39:55.349Z
+    completed_at: 2026-05-27T06:39:55.349Z
+events:
+  - _ulid: 01KSM1T0PZZBAG0JMSGJSE46SV
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-27T06:26:32.287Z
+  - _ulid: 01KSM1TNZ0MJHDGWGKSW9J3668
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-27T06:26:54.048Z
+  - _ulid: 01KSM2J4C6HM17VPVWGVJYVRX9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-27T06:39:42.470Z
+  - _ulid: 01KSM2J93M5XNAD03S83B5FG0R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-27T06:39:47.316Z
+  - _ulid: 01KSM2JDYH9KSXEKD860KZQXGR
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSM2JC5DPR62H98FT0WZ6FKA
+    timestamp: 2026-05-27T06:39:52.273Z
+  - _ulid: 01KSM2JJME893R8G3MV6TVQ3SF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused regression suites
+    timestamp: 2026-05-27T06:39:57.070Z
+  - _ulid: 01KSM2JX5E60GCK3VM91JM4JD5
+    actor: "@codex"
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-27T06:40:07.854Z
+  - _ulid: 01KSM2JX5EMRPH2GYX8J2CQH9K
+    actor: "@codex"
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-27T06:40:07.854Z
+examined_commit: bd82303404f00f26519bfc2eeb19c3953f3d9afe
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KSKQXJ0Y6N159MWY81JE852J"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSM2JC5DPR62H98FT0WZ6FKA
+    entries:
+      - _ulid: 01KSM2JC5D61ASACH4D0XHMDTN
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; prior review @01KSKX4STV0VY6YRWKDZT571EJ; task
+          @01KSKQXJ0Y6N159MWY81JE852J; specs @trait-folder-backed-entity-1,
+          @folder-backed-plan-storage-1, @folder-backed-review-storage-1; diffs for
+          tests/cli-plan-resource.test.ts, tests/parser-plans-folder.test.ts,
+          tests/parser-reviews-folder.test.ts, tests/plan-rebuild-index.test.ts,
+          tests/review-rebuild-index.test.ts, tests/review-resource-cli.test.ts,
+          tests/task-data-manager.test.ts; surrounding review-storage-manager context for
+          external_links projection. Commands run: git diff/stat/name-only; kspec task get; kspec
+          review for-task/get/add/open; kspec item get; rg AC annotations; rg source-read patterns;
+          kspec validate; focused npm test; full npm test. Claims verified: prior red tests are now
+          encoded as it.fails and the changed focused suites pass; full suite passes. Categories
+          searched: correctness, test quality, AC annotation coverage, source-scanning risk,
+          integration with CLI/storage-manager paths, and regression gates."
+        created_at: 2026-05-27T06:39:50.445Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: "@codex"
+    role: reviewer
+    created_at: 2026-05-27T06:40:07.854Z
+created_at: 2026-05-27T06:26:32.287Z
+updated_at: 2026-05-27T06:40:07.854Z
+notes: []

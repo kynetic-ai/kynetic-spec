@@ -1,0 +1,119 @@
+_ulid: 01KQXAZHH6SVN26TH47A2PZEYY
+slugs: []
+title: Review task-update-localhost-security-trait
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full npm test ran: 8544 passed, 5 skipped, 1 failed in tests/session-create.test.ts. The
+      failed file reproduced twice with npm test -- --run tests/session-create.test.ts --fresh. git
+      diff --name-only dev...HEAD is empty, so this is not introduced by the reviewed spec-only
+      task. Created follow-up bug task @01KQXBKW."
+    name: npm test regression triage
+    required: true
+    runner: npm
+    created_at: 2026-05-06T00:40:09.849Z
+    completed_at: 2026-05-06T00:40:09.849Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files/context read: kspec-agents.md, task @01KQWZZF3YJRCPKB6176HW9HWW, trait
+      @trait-localhost-security, plan @plan-daemon-network-endpoint-contract, @daemon-server
+      inherited trait context, git log/status/diff. Commands run: git status/log/diff, kspec task
+      get, kspec item get, kspec plan get, kspec validate --warnings-ok, rg AC annotations, npm
+      test, two targeted fresh reruns of tests/session-create.test.ts. Claims verified: trait
+      title/description/AC IDs exactly match task; slug unchanged; downstream warning fallout is
+      part of the approved staged plan. Categories searched: correctness, spec alignment,
+      validation, AC annotation impact, test regression triage, integration/merge state."
+    name: review evidence log
+    required: false
+    runner: reviewer
+    created_at: 2026-05-06T00:40:13.385Z
+    completed_at: 2026-05-06T00:40:13.385Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Command exited 0. Validation passed with warnings allowed as requested by the task;
+      warnings include downstream missing/renamed @trait-localhost-security AC coverage that the
+      approved plan schedules for dependent follow-up tasks.
+    name: kspec validate --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-06T00:40:17.003Z
+    completed_at: 2026-05-06T00:40:17.003Z
+events:
+  - _ulid: 01KQXAZHH6AEEDEPTJADSDXNF3
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-06T00:28:36.774Z
+  - _ulid: 01KQXB23FC2V5R9ZB9DRGD3V81
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-06T00:30:00.684Z
+  - _ulid: 01KQXBMQKQ4ZD0SSKZ9FDC7J7Z
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test regression triage
+    timestamp: 2026-05-06T00:40:11.128Z
+  - _ulid: 01KQXBMV2NMHFSG98MGY7G1B05
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-06T00:40:14.677Z
+  - _ulid: 01KQXBMYK5SK8E8MKZ8X7RWM4C
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --warnings-ok
+    timestamp: 2026-05-06T00:40:18.277Z
+  - _ulid: 01KQXBN82WQWC7R43N5Y5H76H9
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-06T00:40:27.996Z
+  - _ulid: 01KQXBN82WWWZX7QJTP03CYXWH
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-06T00:40:27.996Z
+examined_commit: 9981f4ac54e5f26fdfe1bbc72bfe9264bfa816ec
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQWZZF3YJRCPKB6176HW9HWW"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-06T00:40:27.996Z
+created_at: 2026-05-06T00:28:36.774Z
+updated_at: 2026-05-06T00:40:27.996Z
+notes: []

@@ -1,0 +1,215 @@
+_ulid: 01KMPMPATKJ7239MT8D0PM29FG
+slugs: []
+title: Review @01KMMB3T2K3T6A1CJR884EPKJF
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test passed: 1928/1928 suites, 6901 passed, 5 skipped."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-27T03:21:18.449Z
+    completed_at: 2026-03-27T03:21:18.449Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate produced warnings only (exit 6) with no validation errors; warnings were
+      repo-wide orphan/alignment/completeness noise unrelated to this task.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-27T03:21:22.252Z
+    completed_at: 2026-03-27T03:21:22.252Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/daemon/entity-cache.ts, packages/daemon/src/server.ts,
+      packages/daemon/src/project-context.ts,
+      packages/daemon/src/routes/{tasks,items,inbox,meta,plans,reviews,triage,sessions,session-rela\
+      ted,refs}.ts, tests/daemon-entity-cache.test.ts. Commands run: kspec task
+      get/review/item/validate, git status/log/diff, npm test, bun eval preload probes. Categories
+      searched: correctness, edge cases, error handling, test quality, integration."
+    name: review-evidence
+    required: false
+    runner: codex
+    created_at: 2026-03-27T03:21:26.064Z
+    completed_at: 2026-03-27T03:21:26.064Z
+events:
+  - _ulid: 01KMPMPATJ7FA8VX0B3J2ZF4T3
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T03:16:34.258Z
+  - _ulid: 01KMPMQ6H530XE1TKH7SBN440A
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T03:17:02.629Z
+  - _ulid: 01KMPMYZ4R2N4Y8PTNW5GB7NJE
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMPMYYHWN2YSG71JJ2TMD3F7
+    timestamp: 2026-03-27T03:21:17.208Z
+  - _ulid: 01KMPMZ0X5QTRWXCKTQC4SAR69
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-27T03:21:19.013Z
+  - _ulid: 01KMPMZ2NTZN05WSA8H0GB83BV
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMPMZ23ZZ66YXSVAYQQJGVP8
+    timestamp: 2026-03-27T03:21:20.826Z
+  - _ulid: 01KMPMZ4NFTBXWCF2VVBH6BRVZ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-27T03:21:22.863Z
+  - _ulid: 01KMPMZ8C28JSNHRNN0Y16AF3S
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-03-27T03:21:26.658Z
+  - _ulid: 01KMPMZC1WCW0M36GMZRSMJQ1E
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-27T03:21:30.429Z
+  - _ulid: 01KMPMZC1XZH49TFP2PXPX7K8B
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T03:21:30.429Z
+  - _ulid: 01KMPP6R70YTQYXPM0R6EYCWY4
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMPMYYHWN2YSG71JJ2TMD3F7
+    timestamp: 2026-03-27T03:43:00.832Z
+  - _ulid: 01KMPP6VGXXHB627WN28KFDNR5
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPMYYHWN2YSG71JJ2TMD3F7
+    timestamp: 2026-03-27T03:43:04.221Z
+  - _ulid: 01KMPP75QK71T140T25JYEY8CX
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMPMZ23ZZ66YXSVAYQQJGVP8
+    timestamp: 2026-03-27T03:43:14.675Z
+  - _ulid: 01KMPP793Y28DS9EY3W8F5QR1W
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPMZ23ZZ66YXSVAYQQJGVP8
+    timestamp: 2026-03-27T03:43:18.142Z
+examined_commit: ea11de060b7e709735e4d74f9a686a48a8fde614
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMMB3T2K3T6A1CJR884EPKJF"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMPMYYHWN2YSG71JJ2TMD3F7
+    anchor:
+      type: code
+      commit: ea11de060b7e709735e4d74f9a686a48a8fde614
+      line_end: 605
+      line_start: 599
+      path: src/daemon/entity-cache.ts
+      side: head
+    entries:
+      - _ulid: 01KMPMYYHWEAGD40B040FNB5Y6
+        author: "@claude"
+        body: "Warmup state is still incorrect for domains later in the progressive load order. `loadAll()`
+          only calls `loadDomain()` sequentially, and untouched domains remain `\"unloaded\"` until
+          their turn starts, but every route treats only `\"loading\"` as the signal to return
+          `_cache_status: \"loading\"`. The repo's own route-level test documents this mismatch
+          (`tests/daemon-entity-cache.test:974-979` expects the route check to see `\"unloaded\"`
+          before `loadAll()`), so requests for plans/reviews/triage/etc. during registration warmup
+          will still fall back to disk instead of returning the required loading response. That
+          breaks `@daemon-entity-cache` `ac-warming-availability` and undermines
+          `ac-progressive-loading` for not-yet-started domains."
+        created_at: 2026-03-27T03:21:16.604Z
+      - _ulid: 01KMPP6QQZ3XAWX0SA3K8F6BRX
+        author: "@claude"
+        body: "Fixed: loadAll() now sets all domains to 'loading' upfront before starting sequential loads.
+          This ensures routes see 'loading' (not 'unloaded') for not-yet-started domains and return
+          _cache_status: 'loading' instead of falling through to disk. Added a test that verifies
+          all domains show 'loading' or 'ready' after loadAll() starts."
+        created_at: 2026-03-27T03:43:00.351Z
+    kind: blocker
+    resolved_at: 2026-03-27T03:43:03.741Z
+    resolved_by: "@claude"
+  - _ulid: 01KMPMZ23ZZ66YXSVAYQQJGVP8
+    anchor:
+      type: code
+      commit: ea11de060b7e709735e4d74f9a686a48a8fde614
+      line_end: 715
+      line_start: 688
+      path: src/daemon/entity-cache.ts
+      side: head
+    entries:
+      - _ulid: 01KMPMZ2448JC705TJM6BCHEDZ
+        author: "@claude"
+        body: "The cache still eagerly preloads full plan/review/triage records during index loads. In
+          `doLoadDomain()` the `plans`, `triage`, and `reviews` branches all load every full record
+          and immediately populate `details`, so these domains are no longer \"detail on demand\" in
+          any meaningful sense. I verified this against the snapshot with `bun --eval ...`: after
+          `loadDomain(\"plans\")`, `loadDomain(\"reviews\")`, and `loadDomain(\"triage\")`,
+          `getPlanDetail/getReviewDetail/getTriageDetail` all returned non-null before any detail
+          request
+          (`{\"planDetailPreloaded\":true,\"reviewDetailPreloaded\":true,\"triageDetailPreloaded\":\
+          true}`). That violates the task's two-tier storage requirement and `@daemon-entity-cache`
+          `ac-detail-on-demand` by keeping the heavy content hot in memory up front."
+        created_at: 2026-03-27T03:21:20.261Z
+      - _ulid: 01KMPP758PC0WVGEPEYYZRV8TY
+        author: "@claude"
+        body: "Fixed: Removed eager detail preloading from doLoadDomain() for plans, reviews, and triage.
+          Index loading now only populates the index tier with summaries and clears the detail
+          cache. Full records are loaded on demand when accessed by ID via the route-level
+          get*Detail/set*Detail pattern. Added 3 behavioral tests that verify detail tier is null
+          after loadDomain for each of these domains."
+        created_at: 2026-03-27T03:43:14.198Z
+    kind: blocker
+    resolved_at: 2026-03-27T03:43:17.637Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-27T03:21:30.428Z
+created_at: 2026-03-27T03:16:34.259Z
+updated_at: 2026-03-27T03:43:17.637Z
+notes: []

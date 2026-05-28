@@ -1,0 +1,342 @@
+_ulid: 01KRFNCRS3YFATK87B3MGYD0PA
+slugs: []
+title: Review fix guardrail cleanup-effect classification (cycle 17)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation passed with warnings only: reference, alignment, completeness, and invalid AC
+      annotation warnings are existing project-wide warnings."
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-13T03:30:49.106Z
+    completed_at: 2026-05-13T03:30:49.106Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts
+      tests/lint-daemon-test-guardrails.test.ts: 23 suites passed, 383 tests passed, duration
+      88.2s."
+    name: targeted lint-rule suites
+    required: true
+    runner: npm-test
+    created_at: 2026-05-13T03:30:55.455Z
+    completed_at: 2026-05-13T03:30:55.455Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2430 suites passed, 9170 tests passed, 5 skipped of 9175, duration
+      2101.2s."
+    name: npm test -- --fresh
+    required: true
+    runner: npm-test
+    created_at: 2026-05-13T03:31:01.429Z
+    completed_at: 2026-05-13T03:31:01.429Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- oxlint tools/eslint-rules/no-leaky-test-daemon.js
+      tests/lint-no-leaky-test-daemon.test.ts tests/lint-daemon-test-guardrails.test.ts: 0 errors,
+      35 warnings."
+    name: changed-file oxlint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-13T03:31:07.509Z
+    completed_at: 2026-05-13T03:31:07.509Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide lint fails with 13 errors and 721 warnings in unrelated pre-existing files;
+      changed-file oxlint has 0 errors.
+    name: npm run lint
+    required: false
+    runner: oxlint
+    created_at: 2026-05-13T03:31:13.983Z
+    completed_at: 2026-05-13T03:31:13.983Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Fixture with type-only killPid import from ./helpers/daemon plus onTestFinished cleanup
+      exited 0 and emitted only no-unused-vars, no no-leaky-test-daemon diagnostic.
+    name: ad hoc type-only approved helper import probe
+    required: true
+    runner: oxlint
+    created_at: 2026-05-13T03:31:20.004Z
+    completed_at: 2026-05-13T03:31:20.004Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Fixture with type-only stopPidBounded import from ./helpers/process-stop inside local
+      killPid helper exited 0 and emitted only no-unused-vars, no no-leaky-test-daemon diagnostic.
+    name: ad hoc type-only shared primitive import probe
+    required: true
+    runner: oxlint
+    created_at: 2026-05-13T03:31:26.117Z
+    completed_at: 2026-05-13T03:31:26.117Z
+events:
+  - _ulid: 01KRFNCRS37VKYHTTJGE8TAG87
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-13T03:16:55.715Z
+  - _ulid: 01KRFNDD0J8JTGXW96E60KEZTN
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-13T03:17:16.434Z
+  - _ulid: 01KRFNPRTY8P7M3G64EJR6G2CJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRFNPQ6S1FHMHQQVGTJECAWW
+    timestamp: 2026-05-13T03:22:23.454Z
+  - _ulid: 01KRFNVD7DZPXZXKJTPCF9ZGSH
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRFNVBT1EV6BGZA7MHHP8Z0R
+    timestamp: 2026-05-13T03:24:55.405Z
+  - _ulid: 01KRFNW4FP5EZMYNJKC32578P2
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRFNPQ6S1FHMHQQVGTJECAWW
+    timestamp: 2026-05-13T03:25:19.222Z
+  - _ulid: 01KRFP683YNME655NNCA1DDN9V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-13T03:30:50.622Z
+  - _ulid: 01KRFP6E6J0HGVQ6EWP42JXK0H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted lint-rule suites
+    timestamp: 2026-05-13T03:30:56.850Z
+  - _ulid: 01KRFP6M22DP3GMPSDKHKJ4VDA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-05-13T03:31:02.850Z
+  - _ulid: 01KRFP6T1RBS6JJ8B5BHM2EEWP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file oxlint
+    timestamp: 2026-05-13T03:31:08.984Z
+  - _ulid: 01KRFP708K57H87Y914XBY7RE4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm run lint
+    timestamp: 2026-05-13T03:31:15.347Z
+  - _ulid: 01KRFP766J7248FDNHBNBFVAQQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: ad hoc type-only approved helper import probe
+    timestamp: 2026-05-13T03:31:21.426Z
+  - _ulid: 01KRFP7C4H16YGMVH20S1XAKMT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: ad hoc type-only shared primitive import probe
+    timestamp: 2026-05-13T03:31:27.505Z
+  - _ulid: 01KRFP7WT1Z9ZMECCWY6ZFRKBN
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KRFP7VDJ0STP0Y0980A8AQMZ
+    timestamp: 2026-05-13T03:31:44.578Z
+  - _ulid: 01KRFP83280XEFXFCW0W9GVC9K
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-13T03:31:50.984Z
+  - _ulid: 01KRFP8328KMK4CHZK04HQRBFP
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-13T03:31:50.984Z
+  - _ulid: 01KRFR47826Z1H3CFSG7SFKY0A
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRFNPQ6S1FHMHQQVGTJECAWW
+    timestamp: 2026-05-13T04:04:41.346Z
+  - _ulid: 01KRFR4HJA4JZYNKA8TS1MN7EP
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KRFNPQ6S1FHMHQQVGTJECAWW
+    timestamp: 2026-05-13T04:04:51.914Z
+  - _ulid: 01KRFR4Z0HKS46AD4V6CCRZYQ3
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRFNVBT1EV6BGZA7MHHP8Z0R
+    timestamp: 2026-05-13T04:05:05.681Z
+  - _ulid: 01KRFR59GWARKFQGR74DVVEG1B
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KRFNVBT1EV6BGZA7MHHP8Z0R
+    timestamp: 2026-05-13T04:05:16.444Z
+examined_commit: 493ede939a32cbd9a28e66adea498ac5a08143bf
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRCRJPMHMHC410TKRC5Y9HF1"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRFNPQ6S1FHMHQQVGTJECAWW
+    anchor:
+      type: code
+      commit: 493ede939a32cbd9a28e66adea498ac5a08143bf
+      line_end: 1256
+      line_start: 1249
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KRFNPQ6SV5Q5BVE80PKP3WEZ
+        author: Jacob Chapel
+        body: "MUST-FIX: approved helper imports are trusted even when the binding is type-only. The loop
+          accepts any ImportSpecifier from an approved helper path and never checks stmt.importKind
+          or spec.importKind, so a test with  plus  receives no no-leaky-test-daemon diagnostic.
+          Type-only imports are erased at runtime, so the cleanup callback would throw instead of
+          terminating the just-started daemon. Evidence: an ad hoc oxlint fixture with that exact
+          import exited 0 and only reported no-unused-vars, with no no-leaky-test-daemon error.
+          Reject type-only helper imports before returning true here."
+        created_at: 2026-05-13T03:22:21.785Z
+      - _ulid: 01KRFNW32W4AGGVR7XY6MX1W34
+        author: Jacob Chapel
+        body: "Clarification for the stripped examples in the blocker above: the failing fixture used a
+          type-only import of killPid from ./helpers/daemon and then registered onTestFinished with
+          a callback that calls killPid(pid). Oxlint exited 0 with only a no-unused-vars warning and
+          no no-leaky-test-daemon diagnostic, proving the helper import trust path treats type-only
+          imports as runtime cleanup."
+        created_at: 2026-05-13T03:25:17.787Z
+      - _ulid: 01KRFR45XJBFYZA7G3NDXQ2710
+        author: "@claude"
+        body: Fixed in f471dc1dc. isHelperNameImportedFromApprovedPath now rejects type-only imports at both
+          the declaration level (stmt.importKind === "type", e.g. import type { killPid } from
+          "./helpers/daemon") and the specifier level (spec.importKind === "type", e.g. import {
+          type killPid } from "./helpers/daemon") before the recogniser credits the binding as
+          approved cleanup. Verified by ad-hoc oxlint probes against both shapes — both now exit 1
+          with a no-leaky-test-daemon error. Added two AC-annotated regression tests in
+          tests/lint-no-leaky-test-daemon.test.ts (declaration-level and specifier-level type-only
+          approved helper imports).
+        created_at: 2026-05-13T04:04:39.985Z
+    kind: blocker
+    resolved_at: 2026-05-13T04:04:50.520Z
+    resolved_by: "@claude"
+  - _ulid: 01KRFNVBT1EV6BGZA7MHHP8Z0R
+    anchor:
+      type: code
+      commit: 493ede939a32cbd9a28e66adea498ac5a08143bf
+      line_end: 1387
+      line_start: 1380
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KRFNVBT2AHH5N7BSZGA7B8XK
+        author: Jacob Chapel
+        body: "MUST-FIX: approved shared cleanup primitives have the same type-only import trust gap.
+          isSharedCleanupPrimitiveImported accepts a type-only import of stopPidBounded from
+          ./helpers/process-stop, so a local killPid helper that calls stopPidBounded is classified
+          as terminating even though that primitive binding is erased at runtime. Evidence: an ad
+          hoc oxlint fixture using import type for stopPidBounded exited 0 with only a
+          no-unused-vars warning and no no-leaky-test-daemon diagnostic. This violates the
+          cleanup-effect contract because helper-body trust must prove a runtime terminating
+          primitive, not a type-only name."
+        created_at: 2026-05-13T03:24:53.954Z
+      - _ulid: 01KRFR4XKS035JGS0HJ48F7WYC
+        author: "@claude"
+        body: 'Fixed in f471dc1dc. isSharedCleanupPrimitiveImported applies the same type-only import
+          filter: stmt.importKind === "type" (e.g. import type { stopPidBounded } from
+          "./helpers/process-stop") and spec.importKind === "type" (e.g. import { type
+          stopPidBounded } from "./helpers/process-stop") are both skipped before the recogniser
+          credits the primitive binding as runtime cleanup. Verified by ad-hoc oxlint probes against
+          both shapes wrapping a local killPid helper that calls the (erased) primitive — both now
+          exit 1 with a no-leaky-test-daemon error. Added two AC-annotated regression tests in
+          tests/lint-no-leaky-test-daemon.test.ts (declaration-level and specifier-level type-only
+          shared primitive imports).'
+        created_at: 2026-05-13T04:05:04.249Z
+    kind: blocker
+    resolved_at: 2026-05-13T04:05:15.049Z
+    resolved_by: "@claude"
+  - _ulid: 01KRFP7VDJ0STP0Y0980A8AQMZ
+    entries:
+      - _ulid: 01KRFP7VDJ5744M30RK2KA8QZ1
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+
+          Files read: kspec-agents.md; task @01KRCRJPMHMHC410TKRC5Y9HF1; prior review
+          @01KRFJZMTV861R70M2R54EW1T4; @daemon-test-guardrail-precision;
+          tools/eslint-rules/no-leaky-test-daemon.js; tests/lint-no-leaky-test-daemon.test.ts;
+          tests/lint-daemon-test-guardrails.test.ts.
+
+
+          Commands run: git status/rev-parse/log/diff; kspec task get; kspec review
+          for-task/get/add/open; kspec item get; kspec validate; AC annotation rg; targeted npm test
+          fresh for lint suites; full npm test fresh; changed-file oxlint; repo-wide npm run lint;
+          ad hoc oxlint probes for type-only approved helper imports and type-only shared cleanup
+          primitive imports.
+
+
+          Claims verified: cycle-16 declare ambient fix is present in statementBindsNameOpaquely and
+          covered by declare enum/class/const tests. Targeted and full test suites pass. New blocker
+          found by adversarial type-only import probes.
+
+
+          Categories searched: correctness, AC alignment, cleanup helper origin, helper-body
+          primitive trust, TypeScript erased runtime bindings, test quality, source-scanning
+          patterns, repo integration and lint.
+        created_at: 2026-05-13T03:31:43.154Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-13T03:31:50.984Z
+created_at: 2026-05-13T03:16:55.715Z
+updated_at: 2026-05-13T04:05:15.049Z
+notes: []

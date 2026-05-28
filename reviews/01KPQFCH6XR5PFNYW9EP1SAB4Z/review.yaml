@@ -1,0 +1,119 @@
+_ulid: 01KPQFCH6XR5PFNYW9EP1SAB4Z
+slugs: []
+title: Review task-docs-section-scaffolding (cycle 5)
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Pre-existing validation failures unrelated to this task: .kspec/modules/meta.yaml schema
+      error, orphaned skill directory warning, and broad repo-level completeness/alignment warnings.
+      No task-specific validation regression observed."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-21T07:43:59.236Z
+    completed_at: 2026-04-21T07:43:59.236Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Observed full-suite npm test run on this snapshot with the affected docs/web UI suites
+      passing, including tests/web-ui-docs-rendering.test.ts. No failures were observed during
+      review.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-21T07:44:03.467Z
+    completed_at: 2026-04-21T07:44:03.467Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: docs/* section index pages, packages/web-ui/src/lib/docs.ts,
+      packages/web-ui/src/lib/utils/docs-markdown.ts, packages/web-ui/src/lib/utils/docs-utils.ts,
+      packages/web-ui/src/routes/docs/+page.svelte, packages/web-ui/vite-plugin-docs.ts,
+      packages/web-ui/vite.config.ts, tests/web-ui-docs-rendering.test.ts. Commands run: kspec task
+      get, kspec item get, kspec review get/for-task, git diff/stat/log, rg for AC annotations,
+      kspec validate, npm test, manifest/grouping node probes, docs tree listing. Claims verified:
+      canonical section order, section landing-page slugs, release-notes synthetic entry grouping,
+      exclusion of contributor-only docs, AC annotation presence. Categories searched: correctness,
+      edge cases, test quality, integration, routing/publication behavior. Findings: none."
+    name: review-evidence
+    required: false
+    runner: review
+    created_at: 2026-04-21T07:44:07.751Z
+    completed_at: 2026-04-21T07:44:07.751Z
+events:
+  - _ulid: 01KPQFCH6WXZGCQCSPT9K8H3CM
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-21T07:34:28.317Z
+  - _ulid: 01KPQFD7W78PTT9ET39MB98D7Q
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-21T07:34:51.528Z
+  - _ulid: 01KPQFY060B505153SZ3K77YP7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-21T07:44:00.704Z
+  - _ulid: 01KPQFY4B6WD5J8W5337R4QT95
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-21T07:44:04.966Z
+  - _ulid: 01KPQFY8GVN6WW2PS29JEH0ZKP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-04-21T07:44:09.244Z
+  - _ulid: 01KPQFYCQ1ZMVBV05CRSJRK6T4
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-21T07:44:13.537Z
+  - _ulid: 01KPQFYCQ1DP2R3EQ9N0H738E5
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-21T07:44:13.537Z
+examined_commit: 0fa290b38afb74ee97b38d019e58c5402d0126c8
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KPPN42NCR77J23TWYP63VXDH"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-21T07:44:13.536Z
+created_at: 2026-04-21T07:34:28.317Z
+updated_at: 2026-04-21T07:44:13.537Z
+notes: []

@@ -1,0 +1,250 @@
+_ulid: 01KMGYQTS9R551YA82C14VWHMZ
+slugs: []
+title: "Plan re-review: Daemon Optimistic Data Layer (v2)"
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All parent refs valid: @daemon-entity-cache under @daemon-server (exists, feature),
+      @daemon-read-path under @daemon-entity-cache (valid child), @cli-daemon-proxy under @cli
+      (exists, module), @daemon-command-api under @cli-daemon-proxy (valid child),
+      @daemon-proxy-detection under @cli-daemon-proxy (valid child)."
+    name: Spec hierarchy placement
+    required: true
+    created_at: 2026-03-24T22:17:27.466Z
+    completed_at: 2026-03-24T22:17:27.466Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: trait-api-endpoint on @daemon-command-api (REST endpoint, correct),
+      trait-localhost-security on @daemon-command-api (daemon endpoint, correct),
+      trait-error-guidance on @cli-daemon-proxy (CLI-facing feature with error cases, correct). No
+      missing traits identified.
+    name: Trait selection
+    required: true
+    created_at: 2026-03-24T22:17:31.059Z
+    completed_at: 2026-03-24T22:17:31.059Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 34 ACs across 5 specs describe single testable behaviors. No compound ACs found. Each
+      AC has a clear given/when/then with one observable outcome.
+    name: AC atomicity
+    required: true
+    created_at: 2026-03-24T22:17:34.794Z
+    completed_at: 2026-03-24T22:17:34.794Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 6 tasks have what/why/how sections, reference specific files and patterns, list
+      covered ACs explicitly, and could be executed by an agent without chat history. Design task is
+      clearly scoped as design-only (no implementation code). Implementation tasks reference
+      concrete source files.
+    name: Task standalone executability
+    required: true
+    created_at: 2026-03-24T22:17:38.684Z
+    completed_at: 2026-03-24T22:17:38.684Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "P1 chain: design -> impl -> migrate-read-routes. P2 chain: impl -> command-api ->
+      cli-proxy-routing. P2 also: design -> update-related-specs. No cycles. P1 tasks never depend
+      on P2. Parallelism possible: command-api and migrate-read-routes can run concurrently after
+      impl. update-related-specs can run concurrently with impl."
+    name: Dependency ordering
+    required: true
+    created_at: 2026-03-24T22:17:42.974Z
+    completed_at: 2026-03-24T22:17:42.974Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 34 ACs covered: @daemon-entity-cache (13 ACs) by design+impl tasks, @daemon-read-path
+      (4 ACs) by migrate-read-routes, @cli-daemon-proxy (8 ACs) by cli-proxy-routing,
+      @daemon-command-api (5 ACs) by daemon-command-api, @daemon-proxy-detection (4 ACs) by
+      cli-proxy-routing. derive_from_specs: false with explicit manual coverage. No orphan ACs."
+    name: AC coverage by tasks
+    required: true
+    created_at: 2026-03-24T22:17:46.913Z
+    completed_at: 2026-03-24T22:17:46.913Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Previous v1 tensions resolved: (1) @shadow-lazy-read-sync scope narrowing explicitly
+      documented in @daemon-read-path description and covered by task-update-related-specs. (2)
+      @session-summary-cache absorption explicitly stated in @daemon-entity-cache description with
+      task to mark relationship. (3) KSPEC_NO_DAEMON=1 references @multi-directory-daemon ac-32
+      rather than re-specifying. (4) @shadow-daemon-push-sync background sync relationship
+      documented in @daemon-read-path."
+    name: Existing spec conflict check
+    required: true
+    created_at: 2026-03-24T22:17:50.775Z
+    completed_at: 2026-03-24T22:17:50.775Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 6 threads from review 01KMGWR3 addressed: (1) session-summary-cache relationship —
+      absorption documented in description + task. (2) shadow-lazy-read-sync scope — explicitly
+      narrowed in daemon-read-path description + task. (3) KSPEC_NO_DAEMON=1 — references
+      @multi-directory-daemon ac-32. (4) Cache warming latency — new ACs ac-warming-availability and
+      ac-progressive-loading added. (5) Memory bounds — explicit non-goal in description, follows
+      multi-directory-daemon precedent. (6) Dispatch re-entrancy — addressed in cli-daemon-proxy and
+      daemon-command-api descriptions. Both previously failing checks (AC coverage, spec conflict)
+      now pass."
+    name: Previous review findings addressed
+    required: true
+    created_at: 2026-03-24T22:18:01.636Z
+    completed_at: 2026-03-24T22:18:01.636Z
+events:
+  - _ulid: 01KMGYQTS9JPQGA49J953K0HJM
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-24T22:16:42.537Z
+  - _ulid: 01KMGYRV5N19P52SP7MNK92TR2
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMGYRTS9276794RWGHV0BZM8
+    timestamp: 2026-03-24T22:17:15.701Z
+  - _ulid: 01KMGYRYPYR2SQ0G2EYVKV0Z21
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMGYRYABN8GRG5DK9PV94NPS
+    timestamp: 2026-03-24T22:17:19.327Z
+  - _ulid: 01KMGYS71SJ73A0JCAWG8MKCQD
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec hierarchy placement
+    timestamp: 2026-03-24T22:17:27.865Z
+  - _ulid: 01KMGYSAJG1K9Z6KRRMPND5V99
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Trait selection
+    timestamp: 2026-03-24T22:17:31.472Z
+  - _ulid: 01KMGYSE720J8QE3X6PWFF0D8K
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC atomicity
+    timestamp: 2026-03-24T22:17:35.202Z
+  - _ulid: 01KMGYSJ0NXFA31YA74G4DTBWS
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Task standalone executability
+    timestamp: 2026-03-24T22:17:39.093Z
+  - _ulid: 01KMGYSP6D8GJFM4X23KD7BXPP
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-03-24T22:17:43.373Z
+  - _ulid: 01KMGYST1YR3WKB7D2AX7XAKB1
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage by tasks
+    timestamp: 2026-03-24T22:17:47.326Z
+  - _ulid: 01KMGYSXSYCPDG3C13RY444XMM
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Existing spec conflict check
+    timestamp: 2026-03-24T22:17:51.166Z
+  - _ulid: 01KMGYT8DEBB0KN1TG3266D2S2
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Previous review findings addressed
+    timestamp: 2026-03-24T22:18:02.030Z
+  - _ulid: 01KMGYTJ27FHR2MVVEYKAYCYRV
+    actor: "@claude"
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-24T22:18:11.911Z
+  - _ulid: 01KMGYTJ27J3ZPPG9GCQ6QWGNF
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: closed
+    timestamp: 2026-03-24T22:18:11.911Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-daemon-optimistic-data-layer"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMGYRTS9276794RWGHV0BZM8
+    anchor:
+      type: structured
+      field: ac-timeout-fallback
+      ref: "@cli-daemon-proxy"
+      section: specs
+    entries:
+      - _ulid: 01KMGYRTSAWHA2K1Z9GYNRT6VV
+        author: "@claude"
+        body: ac-timeout-fallback's given says 'the daemon is reachable via health check' but the then
+          describes fallback to direct mode. The scenario is coherent (health check passed, command
+          itself timed out) but reads contradictorily at first glance. Consider rewording the given
+          to 'a CLI command is routed through the daemon after a successful health check' to make
+          the sequence clearer. Non-blocking.
+        created_at: 2026-03-24T22:17:15.306Z
+    kind: nit
+  - _ulid: 01KMGYRYABN8GRG5DK9PV94NPS
+    anchor:
+      type: structured
+      ref: "@task-update-related-specs"
+      section: tasks
+    entries:
+      - _ulid: 01KMGYRYABS7E2PGATEJJJV94X
+        author: "@claude"
+        body: "task-update-related-specs has spec_ref: @daemon-entity-cache, but its work is updating other
+          specs (@shadow-lazy-read-sync, @session-summary-cache, @daemon-server,
+          @multi-directory-daemon). Since spec_ref tracks which spec the task implements rather than
+          which specs it modifies, this is acceptable. Just noting the slight mismatch for
+          awareness."
+        created_at: 2026-03-24T22:17:18.923Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: "@claude"
+    role: reviewer
+    created_at: 2026-03-24T22:18:11.911Z
+created_at: 2026-03-24T22:16:42.537Z
+updated_at: 2026-03-24T22:18:11.911Z
+notes: []

@@ -1,0 +1,217 @@
+_ulid: 01KPQS9FGKZ571MRWFZ3WGH0HQ
+slugs: []
+title: Review task-docs-guides-content (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation currently fails due to a pre-existing schema error in .kspec/modules/meta.yaml
+      (modules[0].traits.0 expected string, received object) plus repo-wide warnings unrelated to
+      this docs task.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-21T10:39:52.137Z
+    completed_at: 2026-04-21T10:39:52.137Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2232/2232 suites passed; 8220 tests passed, 5 skipped, 0 failed (node scripts/test.cjs).
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-21T10:40:01.662Z
+    completed_at: 2026-04-21T10:40:01.662Z
+events:
+  - _ulid: 01KPQS9FGJGDARD2E94Y5HHEVM
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-21T10:27:34.035Z
+  - _ulid: 01KPQS9Y531D8M2H0Q785PVDDD
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-21T10:27:49.028Z
+  - _ulid: 01KPQT01D86BCMJJX0YJHMQ6A3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-21T10:39:53.256Z
+  - _ulid: 01KPQT04E7Q1GCTR046XMJZP06
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPQT039RGR3YZ97X25VC3FDW
+    timestamp: 2026-04-21T10:39:56.359Z
+  - _ulid: 01KPQT07K79TPRMCDNFWN7YPVN
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPQT06GT68B8HJ9N1YHB8JQ4
+    timestamp: 2026-04-21T10:39:59.591Z
+  - _ulid: 01KPQT0ANPV1H3EQ4E8DMEJS5F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-21T10:40:02.742Z
+  - _ulid: 01KPQT0DRE0FXAHKQNW7J89NYQ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KPQT0CMZT6MX4BYR63K15PRD
+    timestamp: 2026-04-21T10:40:05.902Z
+  - _ulid: 01KPQT1FNPFRWWEVEBTW5MF904
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-21T10:40:40.630Z
+  - _ulid: 01KPQT1FNPGFPN4Z28QJGP0CRV
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-21T10:40:40.630Z
+  - _ulid: 01KPQVH6F402RJE7TBE25WY35S
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPQT039RGR3YZ97X25VC3FDW
+    timestamp: 2026-04-21T11:06:44.068Z
+  - _ulid: 01KPQVHBWCG455J7QVEM7YABPC
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPQT06GT68B8HJ9N1YHB8JQ4
+    timestamp: 2026-04-21T11:06:49.612Z
+  - _ulid: 01KPQVHMH8BN6VA5ZDY90JRWH1
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPQT039RGR3YZ97X25VC3FDW
+    timestamp: 2026-04-21T11:06:58.472Z
+  - _ulid: 01KPQVHTN78Z5ZVR8E9BJWQPED
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPQT06GT68B8HJ9N1YHB8JQ4
+    timestamp: 2026-04-21T11:07:04.743Z
+  - _ulid: 01KPQVHZZHAVX8TSYT0P7VFHQ7
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPQT0CMZT6MX4BYR63K15PRD
+    timestamp: 2026-04-21T11:07:10.193Z
+examined_commit: fb6fc21cee4d59dfaf14316a6d2062f48a4f8999
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KPPN43TRBTZC712K4JV1VSZB"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPQT039RGR3YZ97X25VC3FDW
+    anchor:
+      type: code
+      commit: fb6fc21cee4d59dfaf14316a6d2062f48a4f8999
+      line_end: 56
+      line_start: 52
+      path: docs/guides/reviewing-an-agents-work.md
+      side: head
+    entries:
+      - _ulid: 01KPQT039RBTT60HV6MGVDE2T2
+        author: Jacob Chapel
+        body: This review workflow hardcodes  as the diff base, but kspec explicitly supports configurable
+          integration branches and its own merge guidance says not to assume a branch name. In
+          repositories that use  or another integration target, these commands either fail or
+          compare against the wrong base, which makes the guide inaccurate for the supported
+          workflow. Replace  with instructions to use the actual integration branch for the task or
+          repository.
+        created_at: 2026-04-21T10:39:55.192Z
+      - _ulid: 01KPQVH5FTGXMRXYS2WJAESF67
+        author: "@claude"
+        body: "Fixed: replaced hardcoded origin/dev with <integration-branch> placeholder. Added instruction
+          to run kspec task get @task-ref to find the correct integration branch for the task."
+        created_at: 2026-04-21T11:06:43.065Z
+    kind: blocker
+    resolved_at: 2026-04-21T11:06:57.429Z
+    resolved_by: "@claude"
+  - _ulid: 01KPQT06GT68B8HJ9N1YHB8JQ4
+    anchor:
+      type: code
+      commit: fb6fc21cee4d59dfaf14316a6d2062f48a4f8999
+      line_end: 59
+      line_start: 57
+      path: docs/guides/starting-a-new-project.md
+      side: head
+    entries:
+      - _ulid: 01KPQT06GTCX5JMB0W0FYC37QF
+        author: Jacob Chapel
+        body: The module-creation example is not runnable as written.  fails because  requires a parent or ,
+          and module creation is exposed via  instead. Readers following this guide will hit an
+          immediate CLI error instead of creating the additional modules this step promises. Update
+          the guide to use the supported module command surface.
+        created_at: 2026-04-21T10:39:58.490Z
+      - _ulid: 01KPQVHAVJ4YEHKXKSAH5ZDNH2
+        author: "@claude"
+        body: "Fixed: replaced kspec item add --type module with kspec module add, which is the actual CLI
+          surface for module creation. Also added a reference to kspec module add --help per AC-3."
+        created_at: 2026-04-21T11:06:48.562Z
+    kind: blocker
+    resolved_at: 2026-04-21T11:07:03.555Z
+    resolved_by: "@claude"
+  - _ulid: 01KPQT0CMZT6MX4BYR63K15PRD
+    entries:
+      - _ulid: 01KPQT0CMZA8QMAXAXRJG69JFA
+        author: Jacob Chapel
+        body: "Evidence log:\\nFiles read: docs/guides/index.md, docs/guides/starting-a-new-project.md,
+          docs/guides/directing-your-agent.md, docs/guides/importing-and-approving-a-plan.md,
+          docs/guides/authoring-and-completing-a-task.md, docs/guides/reviewing-an-agents-work.md,
+          docs/guides/upgrading-kspec.md, docs/guides/recovering-from-shadow-branch-issues.md,
+          tests/web-ui-docs-rendering.test.ts, src/cli/commands/module.ts,
+          .agents/skills/kspec-merge/SKILL.md.\\nCommands run: kspec task get, kspec review
+          for-task/get/add/open, git diff/stat, kspec item get @docs-guides-section, kspec validate,
+          grep AC annotations, kspec --help, kspec help plan/review/task/shadow/upgrade/derive,
+          kspec task list --help, kspec plan import --help, kspec plan set --help, kspec item add
+          --help, kspec module --help, kspec module add --help, npm test.\\nClaims verified: guide
+          command examples checked against live CLI help and direct command execution; full test
+          suite executed and passed.\\nCategories searched: correctness (2 blockers found), test
+          quality (structural docs tests present but they do not validate command correctness), edge
+          cases (review guide assumes a fixed integration branch), integration (guide commands
+          checked against shipped CLI surfaces), error handling/security (no additional issues
+          found)."
+        created_at: 2026-04-21T10:40:04.767Z
+    kind: nit
+    resolved_at: 2026-04-21T11:07:09.129Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-21T10:40:40.630Z
+created_at: 2026-04-21T10:27:34.035Z
+updated_at: 2026-04-21T11:07:09.129Z
+notes: []

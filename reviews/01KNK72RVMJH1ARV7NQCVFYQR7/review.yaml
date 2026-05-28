@@ -1,0 +1,185 @@
+_ulid: 01KNK72RVMJH1ARV7NQCVFYQR7
+slugs: []
+title: Review task-writethrough-incremental-alignment (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm_config_omit= NODE_ENV= npm test -- --fresh → 2070/2070 suites passed, 7553 passed, 5
+      skipped.
+    name: full-test-suite
+    required: true
+    runner: npm
+    created_at: 2026-04-07T05:47:09.746Z
+    completed_at: 2026-04-07T05:47:09.746Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm_config_omit= NODE_ENV= npm test -- --fresh daemon-read-path daemon-entity-cache ->
+      36/36 suites, 160/160 tests passed.
+    name: targeted-tests
+    required: true
+    runner: npm
+    created_at: 2026-04-07T05:48:00.731Z
+    completed_at: 2026-04-07T05:48:00.731Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: packages/daemon/src/server.ts, packages/daemon/src/routes/tasks.ts,
+      packages/daemon/src/routes/reviews.ts, src/daemon/entity-cache.ts,
+      tests/daemon-entity-cache.test.ts, tests/daemon-read-path.test.ts,
+      src/parser/shadow-sync-scheduler.ts. Commands run: kspec task get, kspec item get, kspec
+      validate, git diff, grep AC annotations, npm_config_omit= NODE_ENV= npm test -- --fresh
+      daemon-read-path daemon-entity-cache, npm_config_omit= NODE_ENV= npm test -- --fresh. Claims
+      verified: prior concurrent write-through race fixed by regression test and passing targeted
+      suites; searched correctness, edge cases, integration, and test quality. Finding: background
+      sync callback now refreshes only meta shadow info instead of reloading pulled entity data."
+    name: review-evidence
+    required: false
+    runner: reviewer
+    created_at: 2026-04-07T05:48:03.119Z
+    completed_at: 2026-04-07T05:48:03.119Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exited 6 with repository-wide pre-existing warnings only; no new validation
+      errors for this change.
+    name: validation
+    required: false
+    runner: kspec
+    created_at: 2026-04-07T05:48:05.568Z
+    completed_at: 2026-04-07T05:48:05.568Z
+events:
+  - _ulid: 01KNK72RVMXYATDDVQGZF1PPM5
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-07T05:36:40.308Z
+  - _ulid: 01KNK754DRWHVCD1GP0T7TY1H8
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-07T05:37:57.688Z
+  - _ulid: 01KNK7P0C8VB44XT6BE74AM2SV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full-test-suite
+    timestamp: 2026-04-07T05:47:10.600Z
+  - _ulid: 01KNK7P2SZ5RNQBR16ZRPQ6XAS
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNK7P1WSP3MNRVQ81XFSD21Q
+    timestamp: 2026-04-07T05:47:13.087Z
+  - _ulid: 01KNK7QJ4TSPAVB8VFVC6DGZMV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted-tests
+    timestamp: 2026-04-07T05:48:01.562Z
+  - _ulid: 01KNK7QMGWS7JQ0ZCNQ53YG2SA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-04-07T05:48:03.996Z
+  - _ulid: 01KNK7QPW7GKPK138EK70J5PR6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: validation
+    timestamp: 2026-04-07T05:48:06.407Z
+  - _ulid: 01KNK7RQBWQR7S2N8X7QZRS38H
+    actor: codex@local
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-07T05:48:39.676Z
+  - _ulid: 01KNK7RQBWPRNNWMYMS7VA7CKP
+    actor: codex@local
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-07T05:48:39.676Z
+  - _ulid: 01KNK8GJ62KPQC44N7QBV1T3MH
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNK7P1WSP3MNRVQ81XFSD21Q
+    timestamp: 2026-04-07T06:01:40.802Z
+  - _ulid: 01KNK8GNZTVN4VJYGVZB6MXBME
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNK7P1WSP3MNRVQ81XFSD21Q
+    timestamp: 2026-04-07T06:01:44.698Z
+examined_commit: fee4f128f4c1a3d24a69690d1ae11fbfa6154991
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNDDJ4PD7MDPS1RB53K0QZFG"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNK7P1WSP3MNRVQ81XFSD21Q
+    anchor:
+      type: code
+      commit: fee4f128f4c1a3d24a69690d1ae11fbfa6154991
+      line_end: 672
+      line_start: 667
+      path: packages/daemon/src/server.ts
+      side: head
+    entries:
+      - _ulid: 01KNK7P1WSRM9GHAMT0XHSSK48
+        author: Jacob Chapel
+        body: " no longer reloads entity domains after a successful shadow pull.  requires pulled data to
+          invalidate and reload the entity cache, but this branch changed the callback
+          from  to  only. That updates shadow status metadata while leaving tasks/items/reviews/etc.
+          at their old snapshots, so daemon read routes can continue serving stale data after remote
+          shadow updates until some unrelated local invalidation happens."
+        created_at: 2026-04-07T05:47:12.153Z
+      - _ulid: 01KNK8GHBTGNCGHNABJ1RS2E38
+        author: Jacob Chapel
+        body: "Fixed in 6391877ed: restored the daemon shadow-sync onPull callback to reload the full entity
+          cache after successful pulls instead of refreshing only cached shadow metadata. Added a
+          regression test in tests/daemon-read-path.test.ts that asserts the server callback calls
+          cache.loadAll() for the startup project. Verification: NODE_ENV= npm test -- --fresh
+          daemon-read-path daemon-entity-cache (36/36 suites, 161/161 tests); kspec validate exits 6
+          with only pre-existing repository warnings; the full suite hit an unrelated
+          dispatch-target-sync STACK_TRACE_ERROR, and NODE_ENV= npm test -- --fresh
+          dispatch-target-sync passed immediately in isolation (2/2 suites, 41/41 tests)."
+        created_at: 2026-04-07T06:01:39.962Z
+    kind: blocker
+    resolved_at: 2026-04-07T06:01:43.850Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@local
+    role: reviewer
+    created_at: 2026-04-07T05:48:39.676Z
+created_at: 2026-04-07T05:36:40.308Z
+updated_at: 2026-04-07T06:01:43.850Z
+notes: []

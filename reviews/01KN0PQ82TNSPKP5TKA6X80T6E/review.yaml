@@ -1,0 +1,115 @@
+_ulid: 01KN0PQ82TNSPKP5TKA6X80T6E
+slugs: []
+title: Review task-e2e-session-search
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test failed in unchanged areas only: tests/agent-dispatch-engine.test.ts and
+      tests/dispatch-workspace-registry.test.ts. Reviewed diff changes only
+      tests/e2e/sessions.spec.ts, so these failures are not attributable to this task snapshot."
+    name: npm-test
+    required: false
+    runner: npm
+    created_at: 2026-03-31T01:10:49.689Z
+    completed_at: 2026-03-31T01:10:49.689Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Targeted run: npm run build:e2e && npx playwright test tests/e2e/sessions.spec.ts. All
+      six Session Search tests passed; the file's remaining failures were outside the Session Search
+      block."
+    name: session-search-e2e
+    required: true
+    runner: playwright
+    created_at: 2026-03-31T01:10:51.623Z
+    completed_at: 2026-03-31T01:10:51.623Z
+events:
+  - _ulid: 01KN0PQ82TP2DE6RK67STXTGYE
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-31T01:04:25.690Z
+  - _ulid: 01KN0PQV8PZFSJHDHC7D4QP9HS
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-31T01:04:45.334Z
+  - _ulid: 01KN0Q2ZNS7V4HFVTSNTYV9MKJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm-test
+    timestamp: 2026-03-31T01:10:50.298Z
+  - _ulid: 01KN0Q31JQ4DC75E07GTMYWW1A
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: session-search-e2e
+    timestamp: 2026-03-31T01:10:52.247Z
+  - _ulid: 01KN0Q33FNYCRJRYTFVYYVRSEP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN0Q32VF08QG33FHMVSZSQ9Z
+    timestamp: 2026-03-31T01:10:54.197Z
+  - _ulid: 01KN0Q3D2NBSH0VTK4Z3C00BSD
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-31T01:11:04.021Z
+  - _ulid: 01KN0Q3D2N33FCJ07NMTD5XMGT
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-31T01:11:04.021Z
+examined_commit: 1309666de79c1f799a7573f839864a7f13b126b0
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMZ1BWX3KMC7GMD6H90F6SM3"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN0Q32VF08QG33FHMVSZSQ9Z
+    entries:
+      - _ulid: 01KN0Q32VF7DS9PWD1QTV9GMNZ
+        author: Jacob Chapel
+        body: "Evidence log: Files read: tests/e2e/sessions.spec.ts,
+          packages/web-ui/src/routes/sessions/+page.svelte, package.json. Commands run: git
+          diff/stat/show against dev, kspec task get, kspec item get @session-text-search, kspec
+          validate, rg for AC annotations, targeted Playwright sessions spec, npm test. Claims
+          verified: the patch only changes tests/e2e/sessions.spec.ts; the /sessions page only
+          performs search on submit; search requests include active metadata filters; all six
+          Session Search Playwright tests pass. Categories searched: correctness, edge cases, error
+          handling, test quality, integration; no task-scoped blockers found."
+        created_at: 2026-03-31T01:10:53.551Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-31T01:11:04.021Z
+created_at: 2026-03-31T01:04:25.690Z
+updated_at: 2026-03-31T01:11:04.021Z
+notes: []

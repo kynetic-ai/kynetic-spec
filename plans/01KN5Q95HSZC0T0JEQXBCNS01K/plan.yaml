@@ -1,0 +1,20 @@
+_ulid: 01KN5Q95HSZC0T0JEQXBCNS01K
+slugs:
+  - plan-plan-scoped-branch-targeting
+title: Plan-Scoped Branch Targeting
+status: completed
+approved_at: 2026-04-02T01:42:41.646Z
+derived_specs:
+  - "@plan-branch-association"
+  - "@plan-branch-creation"
+  - "@plan-branch-dispatch-target"
+  - "@plan-branch-derive-guidance"
+derived_tasks:
+  - "@task-plan-branch-schema"
+  - "@task-plan-branch-command"
+  - "@task-dispatch-plan-branch-resolution"
+  - "@task-plan-branch-activation"
+module_ref: "@agent-integration"
+source_path: /tmp/plan-scoped-branches.md
+created_at: 2026-04-01T23:50:25.081Z
+completed_at: null

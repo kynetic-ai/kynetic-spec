@@ -1,0 +1,11 @@
+_ulid: 01KJWX2BHT0D4VZQDMH0N1KXPD
+slugs:
+  - plan-fix-batch-write-buffer-bypass
+title: Fix batch write buffer bypass
+status: completed
+approved_at: null
+derived_specs: []
+derived_tasks: []
+source_path: null
+created_at: 2026-03-04T17:06:59.770Z
+completed_at: 2026-03-04T18:26:50.372Z

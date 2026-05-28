@@ -1,0 +1,156 @@
+_ulid: 01KN0M3QDGS3ECFJPQ95ZWT5KV
+slugs: []
+title: Review task-fix-stale-selectors (cycle 2)
+author: Test User
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite failed on this snapshot. Failing tests: dispatch-workspace-registry shadow
+      durability reconciliation timeout/cleanup, integration task note CLI import error (missing
+      sessionStaleCloseAction export), triage list CLI import error (missing AlignmentIndex export).
+      Log: /tmp/kspec-test-cache/01KN0KPYNJF3RVYXKGE503Q4XZ/a838395fb1204825.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-31T00:19:46.748Z
+    completed_at: 2026-03-31T00:19:46.748Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run test:e2e -- tests/e2e/search.spec.ts tests/e2e/validate.spec.ts
+      tests/e2e/reviews-detail.spec.ts passed; 55 Playwright tests green on this snapshot.
+    name: focused e2e selectors
+    required: false
+    runner: playwright
+    created_at: 2026-03-31T00:19:50.549Z
+    completed_at: 2026-03-31T00:19:50.549Z
+events:
+  - _ulid: 01KN0M3QDFZZX231Q77QEEB9V5
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-31T00:18:48.879Z
+  - _ulid: 01KN0M43MSANZ65Z3XA7DSHBAN
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-31T00:19:01.401Z
+  - _ulid: 01KN0M5C85ZT97CV99ZCK4ATX8
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN0M5BN9V633TA1GZQEGRKP1
+    timestamp: 2026-03-31T00:19:42.981Z
+  - _ulid: 01KN0M5GGRDQ5ZK6W4HS4VDV8S
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-31T00:19:47.353Z
+  - _ulid: 01KN0M5JAY5PCNBWF02GVZF2AZ
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN0M5HR1Q8EW0G77CHSABRAC
+    timestamp: 2026-03-31T00:19:49.214Z
+  - _ulid: 01KN0M5M7CJ77B22N602N3AA0Y
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused e2e selectors
+    timestamp: 2026-03-31T00:19:51.148Z
+  - _ulid: 01KN0M61DHC5JPST8DT49PJ9GW
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-31T00:20:04.657Z
+  - _ulid: 01KN0M61DHSVJY8CX0C1T5KM8E
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-31T00:20:04.657Z
+  - _ulid: 01KN0NQM6AB99WSQGSTPH62KA1
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN0M5HR1Q8EW0G77CHSABRAC
+    timestamp: 2026-03-31T00:47:09.514Z
+examined_commit: 6af239cd6fa544629b0fe4ec47cb2d8976d0390e
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMZ1BVBBDPGQMSK3C8GDK3HP"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN0M5BN9V633TA1GZQEGRKP1
+    entries:
+      - _ulid: 01KN0M5BNAGJVJ3BV0F6JKS6SS
+        author: Test User
+        body: "Review evidence log\\nFiles read: packages/web-ui/src/lib/components/CommandPalette.svelte;
+          packages/web-ui/src/lib/components/ui/command/command-dialog.svelte;
+          packages/web-ui/src/lib/utils/markdown.ts; packages/web-ui/src/routes/tasks/+page.svelte;
+          packages/web-ui/src/routes/tasks/board/+page.svelte; changed E2E and daemon-api
+          diffs.\\nCommands run: git diff --stat/name-only/check; git log and merge-base against
+          dev; node dist/cli/index.js task get/review get/validate; npm run build; npm run test:e2e
+          -- tests/e2e/search.spec.ts tests/e2e/validate.spec.ts tests/e2e/reviews-detail.spec.ts;
+          npm test.\\nClaims verified: the worker's focused Playwright run claim is correct (55
+          tests passed); prior review blockers are removed from the diff; full-suite green claim is
+          not established because npm test still fails.\\nCategories searched: correctness,
+          regression risk, test quality, integration, scope drift."
+        created_at: 2026-03-31T00:19:42.378Z
+    kind: nit
+  - _ulid: 01KN0M5HR1Q8EW0G77CHSABRAC
+    entries:
+      - _ulid: 01KN0M5HR1YTJ5WDYV556PFV3G
+        author: Test User
+        body: >-
+          Required merge gate failed on the reviewed snapshot: \Unknown command: "test\"
+
+
+
+          Did you mean this?
+            npm test # Test a package
+          To see a list of supported npm commands, run:
+            npm help exits 1. I verified the selector-focused suites pass, but the full run still reports three blockers: tests/dispatch-workspace-registry.test.ts times out in 'reconciliation acquires the lock per dirty record, not once for the entire batch', tests/integration.test.ts fails because dist/cli/commands/session/commands.js imports a missing sessionStaleCloseAction export, and tests/triage-cli.test.ts fails because dist/cli/commands/derive.js imports a missing AlignmentIndex export. The task cannot advance while the required suite is red.
+        created_at: 2026-03-31T00:19:48.610Z
+      - _ulid: 01KN0NQKK9EJ2HJGJ03QDZX28G
+        author: Jacob Chapel
+        body: Re-verified on the rebased branch. The prior missing-export failures no longer reproduce, but
+          the required npm test gate is still red due to an unrelated timeout in
+          tests/dispatch-workspace-registry.test.ts ('reconciliation acquires the lock per dirty
+          record, not once for the entire batch'). I re-ran the failing cluster fresh and only that
+          dispatch-workspace-registry test remained reproducible. This branch diff against
+          origin/dev is limited to selector-related web UI and tests/e2e files, so the remaining
+          blocker is outside this task's code delta.
+        created_at: 2026-03-31T00:47:08.905Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-31T00:20:04.656Z
+created_at: 2026-03-31T00:18:48.880Z
+updated_at: 2026-03-31T00:47:08.905Z
+notes: []

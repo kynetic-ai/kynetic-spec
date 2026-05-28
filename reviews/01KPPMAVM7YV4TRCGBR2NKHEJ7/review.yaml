@@ -1,0 +1,206 @@
+_ulid: 01KPPMAVM7YV4TRCGBR2NKHEJ7
+slugs: []
+title: Review extend daemon background shadow sync to all registered projects (cycle 5)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: packages/daemon/src/server.ts, packages/daemon/src/shadow-sync-manager.ts,
+      src/daemon/shadow-sync-manager.ts, scripts/build-daemon.cjs,
+      packages/daemon/src/{project-context,middleware/project-context,websocket/project-resolution,\
+      routes/projects}.ts,
+      tests/{daemon-shadow-sync-multi-project,daemon-read-path,daemon-session-sync-multi-project}.t\
+      est.ts. Commands run: git diff/stat, kspec task get, kspec item get @config-shadow, kspec
+      validate, kspec review get prior cycle, npm run build:daemon, targeted daemon tests, npm test,
+      and an ad hoc repro via scripts/test.cjs. Claims verified: full suite passes; daemon build
+      passes; registration callbacks cover POST/middleware/WebSocket and unregister callback covers
+      delete/permanent failure; re-register race reproduced. Categories searched: correctness (1
+      blocker), edge cases (race windows around start/stop/re-register), error handling (no new
+      blocker), test quality (new tests miss this race), integration/build (build pass)."
+    name: evidence log
+    required: false
+    created_at: 2026-04-20T23:53:38.422Z
+    completed_at: 2026-04-20T23:53:38.422Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2202/2202 suites passed, 8065 passed and 5 skipped tests in 2136.8s. Verified in this
+      snapshot via npm test.
+    name: npm test
+    required: true
+    runner: scripts/test.cjs
+    created_at: 2026-04-20T23:53:41.896Z
+    completed_at: 2026-04-20T23:53:41.896Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ad hoc vitest repro: start -> stop -> second start before loadProjectConfig resolves
+      leaves shadowSyncSchedulers.has(projectPath) false. This confirms a registration-loss race in
+      src/daemon/shadow-sync-manager.ts."
+    name: re-register race repro
+    required: true
+    runner: scripts/test.cjs
+    created_at: 2026-04-20T23:53:45.294Z
+    completed_at: 2026-04-20T23:53:45.294Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Fails for pre-existing repo issues outside this task, including .kspec/modules/meta.yaml
+      traits schema error and existing invalid AC annotations. Not attributed to this branch.
+    name: kspec validate
+    required: false
+    runner: kspec validate
+    created_at: 2026-04-20T23:53:48.602Z
+    completed_at: 2026-04-20T23:53:48.602Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Daemon build completed successfully and emitted dist/daemon/* output from the staged
+      source tree.
+    name: build:daemon
+    required: true
+    runner: npm run build:daemon
+    created_at: 2026-04-20T23:53:52.020Z
+    completed_at: 2026-04-20T23:53:52.020Z
+events:
+  - _ulid: 01KPPMAVM615GCDZ6ZB1335X95
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-20T23:41:41.895Z
+  - _ulid: 01KPPMBVW7P6G856B2ZB325Z2E
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-20T23:42:14.919Z
+  - _ulid: 01KPPN0NBMP8KGW7Z6V9HATWDA
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPPN0M8E4QQ7Z3JDBZRJR04J
+    timestamp: 2026-04-20T23:53:36.372Z
+  - _ulid: 01KPPN0RFWRSCS3KM7KQ6VAR38
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: evidence log
+    timestamp: 2026-04-20T23:53:39.581Z
+  - _ulid: 01KPPN0VY3HNJ0E9X9QGQDDFPM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-20T23:53:43.107Z
+  - _ulid: 01KPPN0Z5KPS3AQ4T4CNT33EEN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: re-register race repro
+    timestamp: 2026-04-20T23:53:46.420Z
+  - _ulid: 01KPPN12HS5MC5R3ARBAFHRP6H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-20T23:53:49.881Z
+  - _ulid: 01KPPN15S507JZBQHS7ZEEFDAE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: build:daemon
+    timestamp: 2026-04-20T23:53:53.189Z
+  - _ulid: 01KPPN1K79B39BP9A4A8EEABYS
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-20T23:54:06.953Z
+  - _ulid: 01KPPN1K79DKREZDXMZERCCZCC
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-20T23:54:06.954Z
+  - _ulid: 01KPPNWSCBD9BF3C21Q1ZNVVQV
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPPN0M8E4QQ7Z3JDBZRJR04J
+    timestamp: 2026-04-21T00:08:57.995Z
+  - _ulid: 01KPPNX1RZDYSRDFEY2M3WSQ59
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPPN0M8E4QQ7Z3JDBZRJR04J
+    timestamp: 2026-04-21T00:09:06.591Z
+examined_commit: e74e79ee2864316da7f5bc658b8fa72753017f2e
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KPP7XFJ7Z1MG2NQAXMWZTA6W"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPPN0M8E4QQ7Z3JDBZRJR04J
+    anchor:
+      type: code
+      commit: e74e79ee2864316da7f5bc658b8fa72753017f2e
+      line_end: 78
+      line_start: 75
+      path: src/daemon/shadow-sync-manager.ts
+      side: head
+    entries:
+      - _ulid: 01KPPN0M8G826GAVE678XR1XPP
+        author: Jacob Chapel
+        body: The new in-flight start guard still drops a valid re-registration. If  is in ,  marks the
+          project cancelled, and the project is then registered again before the first start
+          resolves, this branch just awaits the cancelled promise and returns without retrying. When
+          the first start later bails out on , no scheduler is installed for the now-registered
+          project, so background shadow pulls stay off until some later registration happens. I
+          reproduced this with an executable vitest case in this snapshot ( ->  -> second  before
+          resolving config), which leaves . That violates ac-14/ac-16 for rapid
+          unregister/re-register cycles.
+        created_at: 2026-04-20T23:53:35.248Z
+      - _ulid: 01KPPNWRDGPWVTGMQXGRB2J966
+        author: "@claude"
+        body: "Fixed: after awaiting a cancelled in-flight promise, the second start now checks
+          shadowSyncSchedulers.has() instead of returning unconditionally. If no scheduler was
+          installed (because the first start was cancelled), it falls through to perform its own
+          start attempt. Added a behavioral test reproducing the exact start→stop→re-start race that
+          confirms the scheduler is installed for the re-registered project."
+        created_at: 2026-04-21T00:08:57.007Z
+    kind: blocker
+    resolved_at: 2026-04-21T00:09:05.597Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-20T23:54:06.953Z
+created_at: 2026-04-20T23:41:41.895Z
+updated_at: 2026-04-21T00:09:05.597Z
+notes: []

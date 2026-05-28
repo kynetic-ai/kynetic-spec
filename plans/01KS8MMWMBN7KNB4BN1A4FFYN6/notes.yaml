@@ -1,0 +1,303 @@
+notes:
+  - _ulid: 01KS8NB8BDWF60WZFDCVW48FEC
+    content: "Address review @01KS8MV5 blockers: fixed final design decisions, version/compatibility,
+      task ordering, trait duplication, stale refs, review function names, and resource_refs
+      semantics"
+    author: Jacob Chapel
+    created_at: 2026-05-22T20:17:06.925Z
+  - _ulid: 01KS8P59PF5WN3Z1DQKZV2V465
+    content: "Address review @01KS8NGVRBMTVRCP6DSXZTBKQE blockers: exact resource commands/routes, exact
+      rebuild-index commands, corrected coverage overclaims, concrete resource delete coverage"
+    author: Jacob Chapel
+    created_at: 2026-05-22T20:31:20.271Z
+  - _ulid: 01KS8PR49RBH11JDG068NJEBCG
+    content: "Address review @01KS8PCN04Z6ACMYWCMMJFRT6A blockers: define resource JSON/API payloads,
+      rebuild JSON envelope, plan route ownership, docs hierarchy/spec_ref"
+    author: Jacob Chapel
+    created_at: 2026-05-22T20:41:37.336Z
+  - _ulid: 01KS8QRRD5HMNMTP3C4SH8PPP6
+    content: "Address review @01KS8PXHDS0CAA9W4NPDC9Q25V blockers: CLI owner-not-found and confirmation
+      JSON errors, missing multipart file API errors, shared entity_storage_incompatible envelope"
+    author: Jacob Chapel
+    created_at: 2026-05-22T20:59:26.501Z
+  - _ulid: 01KS8R8JTMNX2J5V5QRQMSD1JA
+    content: "Address review @01KS8QYW7SQFY2DKWN6E894BN8 blockers: resource CLI exit codes/source-file
+      JSON errors and multipart replace wire contract"
+    author: Jacob Chapel
+    created_at: 2026-05-22T21:08:05.076Z
+  - _ulid: 01KS8TPZCJQPTT5XXJ0M7AJTH2
+    content: "Address Jacob explicitness feedback: exact existing-spec AC edits and embed plan decisions
+      into task bodies"
+    author: Jacob Chapel
+    created_at: 2026-05-22T21:50:53.842Z
+  - _ulid: 01KS8VA282BS9NFJV3A3SXDFAS
+    content: "Address strict review 01KS8TWS blockers: final spec statuses, cache AC owner task,
+      content_type fallback"
+    author: Jacob Chapel
+    created_at: 2026-05-22T22:01:19.362Z
+  - _ulid: 01KS8WN75MTY4NH31W0FV5PBWN
+    content: Add live-project migration safety guardrails
+    author: Jacob Chapel
+    created_at: 2026-05-22T22:24:53.428Z
+  - _ulid: 01KS8XAEAE4E18RX1HYAJ6HHB4
+    content: Normalize derived task priorities to supported 1-5 range after derive schema check
+    author: Jacob Chapel
+    created_at: 2026-05-22T22:36:28.878Z
+  - _ulid: 01KS8XB16XRP6YV2799SYY1KJ9
+    content: >-
+      ### Final conversion scope
+
+
+      - Convert plans first. Plan documents are already markdown, already long-lived, already
+      reviewed, and naturally own design/research/supporting artifacts.
+
+      - Convert reviews second, but keep the first folder-backed review layout simple. The main gain
+      is review-local screenshots/evidence; split review threads/events/checks/verdicts/notes only
+      if a later measured need justifies that complexity.
+
+      - Do not convert inbox in this plan. Inbox is intentionally small text capture and should be
+      cleared by triage.
+
+      - Do not convert triage unless triage becomes an evidence-owning artifact. For now it can
+      reference resources owned by plans/reviews/tasks/specs.
+
+      - Do not broadly convert meta. Skills already have the right folder/resource model. Other meta
+      types are small enough for manifest/include storage until proven otherwise.
+
+      - Sessions are not a conversion target; they are a precedent for blob pointer metadata and
+      bounded previews.
+
+
+      ### Shared traits
+
+
+      This plan adds reusable traits instead of making folder/resource behavior plan- or
+      review-specific:
+
+
+      - `@trait-folder-backed-entity` owns per-ULID directories, bounded index projections,
+      unknown-file preservation, and index rebuild behavior.
+
+      - `@trait-entity-scoped-local-resources` builds on that folder trait and owns resource
+      manifests, safe path resolution, metadata projection, delete behavior, static export copying,
+      and git/content-version metadata.
+
+
+      Tasks already satisfy much of the folder-backed trait in practice; implementation should
+      extract or formalize that behavior rather than fork it for plans and reviews.
+
+
+      ### Git-backed resource versioning
+
+
+      Because kspec state is stored in git, resource manifests do not need their own history model.
+      A resource reference records `sha256` and, when available, `git_commit` plus
+      repository-relative `git_path`. Drift detection compares the recorded identity to current
+      working/shadow state instead of maintaining a parallel per-resource revision log.
+
+
+      ### Chosen folder layouts
+
+
+      ```text
+
+      .kspec/
+        kynetic.yaml                    # kynetic: "1.2" + storage format fields
+        project.plans.yaml              # lean plan index
+        plans/
+          <plan-ulid>/
+            plan.md                     # authoritative markdown content
+            plan.yaml                   # bounded plan metadata
+            notes.yaml                  # optional plan notes/work log
+            resources.yaml              # resource manifest, bounded metadata
+            resources/
+              research.pdf
+              ux/empty-state.png
+
+        project.reviews.yaml            # lean review index
+        reviews/
+          <review-ulid>/
+            review.yaml                 # full cohesive ReviewRecord detail
+            resources.yaml              # resource manifest, bounded metadata
+            resources/
+              screenshots/failure.png
+              logs/test-output.txt
+      ```
+
+
+      ### Resource manifest and reference syntax
+
+
+      Each entity-local `resources.yaml` has this shape:
+
+
+      ```yaml
+
+      resources:
+        - id: ux-empty-state
+          label: Empty state screenshot
+          path: ux/empty-state.png
+          content_type: image/png
+          bytes: 12345
+          sha256: <hex>
+          git_commit: <commit-or-null>
+          git_path: .kspec/plans/<plan-ulid>/resources/ux/empty-state.png
+          description: Optional human context
+      ```
+
+
+      Accepted authoring references in plan/review markdown and plan task `resource_refs` are
+      `./resources/<relative-path>` entries. Internal references normalize to owner type, owner ref,
+      resource id, manifest path, content hash, and git commit/path identity. Raw absolute paths,
+      parent traversal, undeclared resource paths, and symlink escapes are rejected.
+
+
+      ### Derivation copy-vs-reference decision
+
+
+      Default to keeping a versioned reference to the plan resource, not copying bytes into the
+      task. Reasons:
+
+
+      - The plan is the reviewed context bundle and should remain the canonical owner of research/UX
+      references.
+
+      - Copying every referenced image/PDF into every derived task creates duplicate bytes and
+      drift.
+
+      - A task can still be standalone if the task body includes explicit resource refs and the
+      agent resolver knows how to fetch them.
+
+      - Hash/git-version metadata lets the UI/agent report drift if someone changes the plan
+      resource after derivation.
+
+
+      Explicit materialize/copy mode is available only when requested on derivation and creates
+      task-owned resource copies.
+
+
+      ### Migration and compatibility decision
+
+
+      This plan follows the task-storage compatibility model but applies it to plan/review/resource
+      storage:
+
+
+      - New format marker: `kynetic: "1.2"`.
+
+      - Required manifest fields: `task_storage.format: split`, `plan_storage.format: folder`,
+      `review_storage.format: folder`, `resource_storage.format: entity_scoped`.
+
+      - `kspec upgrade --dry-run` previews the exact file moves and manifest changes.
+
+      - `kspec upgrade` performs the migration and commits one logical shadow mutation.
+
+      - Normal plan/review/resource commands do not opportunistically migrate old projects.
+
+      - A newer kspec that requires folder-backed plan/review/resource behavior blocks incompatible
+      projects with `entity_storage_incompatible` and guidance to run `kspec upgrade` or use a kspec
+      version compatible with the current manifest.
+
+      - Rollback guidance is git-based: the upgrade output reports the previous shadow commit. The
+      migration does not create parallel backup files that duplicate git history.
+
+
+      ### Migration test isolation and live-project tripwire
+
+
+      During this plan's implementation/review work, `/home/chapel/Projects/kynetic-spec` and
+      `/home/chapel/Projects/kynetic-spec-dispatch` are protected live projects. They may be
+      inspected and dry-run diagnostics may be used when they do not mutate state, but agents must
+      not run executing migration/upgrade commands against either live project or its `.kspec`
+      worktree. Manual and exploratory migration tests must use temp directories, checked-in
+      fixtures, or explicitly disposable copies whose paths are verified before writes begin.
+
+
+      If any worker or reviewer detects that either protected live project was migrated by this
+      plan's work — for example `kynetic: "1.2"`, `plan_storage.format: folder`,
+      `review_storage.format: folder`, or unexpected `.kspec/plans/` / `.kspec/reviews/` directories
+      appear — the agent must stop the current task, make no further writes to that project, and
+      report the exact path plus observed marker. Recovery is intentionally left to Jacob; agents
+      must not hide the issue by reverting or cleanup scripts.
+
+
+      ### Final command and route decisions
+
+
+      - Plan resources use `kspec plan resource add|list|get|remove`; review resources use `kspec
+      review resource add|list|get|remove`. `add` always requires explicit `--id` and `--path`.
+      Collisions fail unless `--replace` is present. `remove` requires `--force` in non-interactive
+      mode.
+
+      - Plan resource routes are `/api/plans/:ref/resources`,
+      `/api/plans/:ref/resources/:resourceId`, and `/api/plans/:ref/resources/:resourceId/bytes`,
+      with `POST` on the collection and `DELETE` on the resource id. Review resource routes mirror
+      this under `/api/reviews/:ref/resources`.
+
+      - Resource identifiers are explicit, stable ids matching `[a-z0-9][a-z0-9._-]{0,127}`.
+      Resource paths use POSIX-style relative paths under the owner `resources/` directory; they
+      must not start with `/`, contain `..`, contain `\`, or resolve through symlinks outside the
+      resource root.
+
+      - `<ResourceMetadata>` means `{ "id": string, "label": string|null, "path": string,
+      "content_type": string, "bytes": number, "sha256": string, "git_commit": string|null,
+      "git_path": string|null, "description": string|null }`.
+
+      - `content_type` is always populated: explicit CLI/API values must be non-empty `type/subtype`
+      tokens with no whitespace; omitted values are inferred from the final resource path extension;
+      unknown extensions use `application/octet-stream`.
+
+      - CLI and API resource errors share codes where their transports overlap:
+      `invalid_resource_id`, `invalid_resource_path`, `resource_conflict`, `resource_not_found`,
+      `plan_not_found`, `review_not_found`, and `entity_storage_incompatible`. CLI-only add/remove
+      errors include `source_file_missing`, `source_file_unreadable`, `confirmation_required`, and
+      `operation_cancelled`; API-only multipart errors include `missing_resource_file` and
+      `invalid_replace_value`. API `entity_storage_incompatible` always uses the shared
+      storage-compatibility envelope rather than the resource-error envelope.
+
+      - Rebuild-index JSON for plans/reviews uses one shared envelope with `domain`, `status`,
+      `dry_run`, `repair`, `force`, `summary`, `changes`, and `conflicts`; status is `clean`,
+      `drift`, `repaired`, or `blocked`.
+
+      - Plan import validates `./resources/` links against a sibling `resources.yaml` plus sibling
+      `resources/` directory. Plan set validates links against the existing plan manifest. Plan
+      derive validates task `resource_refs` against the source plan manifest.
+
+      - The only task-resource materialization flag is `kspec plan derive ...
+      --materialize-resources`. Default derivation keeps versioned plan-owned references.
+
+      - Rebuild commands are exact per-domain commands: `kspec plan rebuild-index` and `kspec review
+      rebuild-index`, with `--dry-run`, `--repair`, `--force`, and `--json`. There is no unspecified
+      shared alternative in this plan.
+
+
+      ### Main implementation risks
+
+
+      - Existing specs hard-code `project.plans.yaml` and `project.reviews.yaml`; those must be
+      updated first.
+
+      - `PlanSchema.content` is inline today, and many consumers expect `PlanDetail.content`; the
+      manager/API should preserve that logical detail field while changing physical storage.
+
+      - `plan derive` currently parses `foundPlan.content`; storage manager detail loading must
+      provide the current markdown before derivation.
+
+      - Entity cache and web invalidation only watch monolithic file paths today.
+
+      - Migration must preserve unknown fields and raw shape well enough to avoid losing data from
+      older files.
+
+      - Static export must copy resource files to deterministic exported asset paths so the static
+      UI can load images/PDFs offline.
+    author: Jacob Chapel
+    created_at: 2026-05-22T22:36:48.221Z
+  - _ulid: 01KSJ4BCRRW409T0VM6Q7TF5ZK
+    content: "Closure: merged plan branch
+      plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw into dev at
+      32d374363549d45f4edb1d067c9d97307e9b7f2d after lint/format cleanup commit d5c0ddf177.
+      Verification passed: format:check, npm run lint (0 errors), typecheck, build, kspec validate
+      --warnings-ok, and full npm test -- --fresh (2578 suites, 9848 passed, 5 skipped). All 12
+      derived tasks are completed with reviews."
+    author: Jacob Chapel
+    created_at: 2026-05-26T12:32:29.976Z

@@ -1,0 +1,133 @@
+_ulid: 01KM44E3J0C9T8C7PKTVW7B8HQ
+slugs: []
+title: Review @01KM3ZMDYZB4RYWVX78Z8YVTE6 (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test passed: 286 files, 6606 passed, 3 skipped."
+    name: full-test-suite
+    required: true
+    runner: npm
+    created_at: 2026-03-19T22:49:43.044Z
+    completed_at: 2026-03-19T22:49:43.044Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: AC annotations found for ac-1/ac-2/ac-3/ac-4 in tests/dispatch-target-sync.test.ts, and
+      the tests assert shared checkout isolation, task worktree isolation, stable mutation surface
+      reuse, and unsafe-target refusal guidance.
+    name: spec-ac-coverage
+    required: true
+    runner: rg
+    created_at: 2026-03-19T22:49:49.656Z
+    completed_at: 2026-03-19T22:49:49.656Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate still exits 4 with pre-existing repo-wide reference/completeness debt in
+      .kspec/meta coverage unrelated to this task's changed files or
+      @dispatch-integration-mutation-scope annotations.
+    name: validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-19T22:49:52.493Z
+    completed_at: 2026-03-19T22:49:52.493Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts,
+      tests/agent-dispatch-engine.test.ts, tests/dispatch-target-sync.test.ts. Commands run: git
+      diff/stat, kspec task/item/review get, rg AC coverage, kspec validate, npm test. Claims
+      verified: full-suite green after fix cycle, integration sync mutates only shared checkout,
+      ambiguous target refuses with actionable guidance. Categories searched: correctness, tests,
+      edge cases, error handling, integration; no new issues found."
+    name: review-evidence
+    required: false
+    runner: codex
+    created_at: 2026-03-19T22:49:58.310Z
+    completed_at: 2026-03-19T22:49:58.310Z
+events:
+  - _ulid: 01KM44E3J0DF6DEK13ZG6H255X
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-19T22:46:07.680Z
+  - _ulid: 01KM44EG42MDTF97XFPJABMKG9
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-19T22:46:20.546Z
+  - _ulid: 01KM44MP2K9FVJB7D94NRE7ARB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full-test-suite
+    timestamp: 2026-03-19T22:49:43.251Z
+  - _ulid: 01KM44MWGXSNCHY9SHSE7MDWV6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: spec-ac-coverage
+    timestamp: 2026-03-19T22:49:49.853Z
+  - _ulid: 01KM44MZA4AWQBXPESDBTMTHNP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: validate
+    timestamp: 2026-03-19T22:49:52.708Z
+  - _ulid: 01KM44N501Q4NRZWZDS4P84ZV6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-03-19T22:49:58.529Z
+  - _ulid: 01KM44NARM3X5MW6MKGGJ1WJTT
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-19T22:50:04.437Z
+  - _ulid: 01KM44NARN9N6SZ6FYCCYV4Y3J
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-19T22:50:04.437Z
+examined_commit: 6a48f8bc1ecd8493d2083089c52904db25f9d6cf
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM3ZMDYZB4RYWVX78Z8YVTE6"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-19T22:50:04.436Z
+created_at: 2026-03-19T22:46:07.680Z
+updated_at: 2026-03-19T22:50:04.437Z
+notes: []

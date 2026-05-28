@@ -1,0 +1,209 @@
+_ulid: 01KR6BS8YT6ZR4TWAD5TRA55H2
+slugs: []
+title: Review validate daemon test hardening end to end
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- kspec validate --refs --warnings-ok passed. Reference warnings only: 6
+      deprecated spec_ref warnings for @session-summary-cache/@task-activity-git-query on unrelated
+      tasks."
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-05-09T12:50:05.054Z
+    completed_at: 2026-05-09T12:50:05.054Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: mise exec -- kspec validate --alignment --warnings-ok passed. Warnings were 34 orphaned
+      specs and 4 unrelated status mismatches; the four daemon hardening specs under review were not
+      in the mismatch list.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-05-09T12:50:14.945Z
+    completed_at: 2026-05-09T12:50:14.945Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts
+      tests/helpers/mock-daemon.test.ts tests/daemon-api/helpers.test.ts passed: 18 suites, 47
+      tests."
+    name: focused daemon helper/api tests
+    required: true
+    runner: npm-test
+    created_at: 2026-05-09T12:50:25.044Z
+    completed_at: 2026-05-09T12:50:25.044Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts passed: 19 suites, 213 tests."
+    name: focused daemon guardrail tests
+    required: true
+    runner: npm-test
+    created_at: 2026-05-09T12:50:36.927Z
+    completed_at: 2026-05-09T12:50:36.927Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh tests/cli-serve.test.ts
+      tests/daemon-api/websocket-protocol.test.ts tests/daemon-build.test.ts passed: 13 suites, 57
+      tests."
+    name: focused CLI lifecycle daemon tests
+    required: true
+    runner: npm-test
+    created_at: 2026-05-09T12:50:47.197Z
+    completed_at: 2026-05-09T12:50:47.197Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm run test:e2e -- tests/e2e/api-websocket.spec.ts
+      tests/e2e/connection.spec.ts passed: 11 tests. Build emitted existing Svelte warnings but
+      exited successfully."
+    name: Playwright daemon fixture slice
+    required: true
+    runner: playwright
+    created_at: 2026-05-09T12:50:59.229Z
+    completed_at: 2026-05-09T12:50:59.229Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh passed: 2,413 suites, 8,966 passed, 5 skipped of 8,971
+      tests. Full log: /tmp/kspec-test-cache/01KR6BQS52RR3825JDNC055WPP/baaa6837624eb58f.log"
+    name: full npm test
+    required: true
+    runner: npm-test
+    created_at: 2026-05-09T12:51:10.490Z
+    completed_at: 2026-05-09T12:51:10.490Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read all four linked specs and representative annotated tests. rg confirmed annotations
+      for all 14 ACs. Reviewed source-audit hits for direct daemon entrypoints, detach commands,
+      direct loopback URL construction, and guardrail suppressions; remaining hits are lint
+      fixtures, CLI lifecycle behavior under test, endpoint fallback/bind-host assertions, or
+      non-spawning assertions. git diff dev...HEAD is empty; task branch is already at dev
+      tip/no-op.
+    name: AC coverage and source audit
+    required: false
+    runner: manual-review
+    created_at: 2026-05-09T12:51:21.754Z
+    completed_at: 2026-05-09T12:51:21.754Z
+events:
+  - _ulid: 01KR6BS8YMS8VR7P8ZXH8E7VWN
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-09T12:35:49.844Z
+  - _ulid: 01KR6BSW001RDDMB3ADJTDSRWV
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-09T12:36:09.344Z
+  - _ulid: 01KR6CKDBEK7AR30VJ8STAW0B7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-05-09T12:50:06.318Z
+  - _ulid: 01KR6CKQ2RBVKT1JGJG83SMH0K
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-05-09T12:50:16.280Z
+  - _ulid: 01KR6CM0ZA67DQ0E4F4NRP4M1B
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused daemon helper/api tests
+    timestamp: 2026-05-09T12:50:26.410Z
+  - _ulid: 01KR6CMCHENKA3BA0ATR8F7RFV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused daemon guardrail tests
+    timestamp: 2026-05-09T12:50:38.254Z
+  - _ulid: 01KR6CMPKGND083A0R3T4HFMT5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused CLI lifecycle daemon tests
+    timestamp: 2026-05-09T12:50:48.560Z
+  - _ulid: 01KR6CN2A7VHQ6Q2D4SC174QGG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Playwright daemon fixture slice
+    timestamp: 2026-05-09T12:51:00.551Z
+  - _ulid: 01KR6CNDA75N1YEDFVG83YXR7N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full npm test
+    timestamp: 2026-05-09T12:51:11.815Z
+  - _ulid: 01KR6CNRAD2Q004550R9A61JM7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage and source audit
+    timestamp: 2026-05-09T12:51:23.085Z
+  - _ulid: 01KR6CP20NVYHSJRQ5H2ABNGZA
+    actor: jacob.chapel@gmail.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-09T12:51:33.013Z
+  - _ulid: 01KR6CP20NJW4VVSN7AX24JFH3
+    actor: jacob.chapel@gmail.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-09T12:51:33.013Z
+examined_commit: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR3W7SPKCKPWKXD8SJHNZVHT"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: jacob.chapel@gmail.com
+    role: reviewer
+    created_at: 2026-05-09T12:51:33.013Z
+created_at: 2026-05-09T12:35:49.850Z
+updated_at: 2026-05-09T12:51:33.013Z
+notes: []

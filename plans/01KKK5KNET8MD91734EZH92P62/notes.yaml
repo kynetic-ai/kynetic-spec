@@ -1,0 +1,45 @@
+notes:
+  - _ulid: 01KKK5YMXAXZZN87WFJ3EMY72H
+    content: Content updated from file
+    author: Jacob Chapel
+    created_at: 2026-03-13T08:45:32.970Z
+  - _ulid: 01KKK7RF88Q5MAMZN026MVJ6S9
+    content: |-
+      Treat this as a staged capability, not a one-shot branch-discovery patch.
+
+      Preferred state model:
+
+      - task state holds portable submission linkage that another checkout can use to
+        discover the submitted code lineage
+      - dispatch workspace registry remains the runtime source of truth once a branch
+        is adopted or provisioned
+
+      Important behavioral boundary:
+
+      - `task.ready` or fresh automation work may still synthesize deterministic
+        dispatcher-owned branches when appropriate
+      - `pending_review` and `needs_work` must not silently synthesize a fresh branch
+        when the submitted work is missing; those states require recovery or explicit
+        blockage because code already exists somewhere and the wrong branch would
+        corrupt review continuity
+
+      Branch-of-record precedence should be explicit in the plan and later specs:
+
+      - existing dispatch workspace registry state
+      - explicitly repaired or backfilled task submission linkage
+      - captured task submission linkage from submit time
+      - remote or review-derived discovery
+      - otherwise block with guidance for `pending_review` and `needs_work`
+
+      The deterministic helper and documentation layer should be treated as defense
+      in depth. It reduces incidence for manual work, but the runtime still needs to
+      adopt and preserve already-existing non-dispatch branches reliably. In this
+      plan, the helper standardizes on the exact dispatch-compatible branch format
+      rather than introducing a second alias or mapping layer.
+
+      The documentation/convention work should update the dynamic conventions and any
+      rendered agent instructions or skill output if their sources change. The helper
+      command should explain both the naming contract and why dispatch continuity
+      depends on it.
+    author: Jacob Chapel
+    created_at: 2026-03-13T09:17:07.720Z

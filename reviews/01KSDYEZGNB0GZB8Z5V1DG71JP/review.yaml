@@ -1,0 +1,414 @@
+_ulid: 01KSDYEZGNB0GZB8Z5V1DG71JP
+slugs: []
+title: Review task-plan-review-folder-storage-migration-1 cycle 3
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2519 suites passed; 9585 passed, 5 skipped of 9590. Log:
+      /tmp/kspec-test-cache/01KSDYDWMH5SNGSV90DEAJ0V6C/8cbbdd7288a813b4.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-24T21:46:27.342Z
+    completed_at: 2026-05-24T21:46:27.342Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/plan-folder-migration.test.ts
+      tests/review-folder-migration.test.ts tests/upgrade-folder-storage.test.ts
+      tests/migration-safety.test.ts passed: 8 suites, 32 tests."
+    name: targeted migration tests
+    required: false
+    runner: npm
+    created_at: 2026-05-24T21:46:39.315Z
+    completed_at: 2026-05-24T21:46:39.315Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate exited 6 with warnings only: schema OK, references OK, validation passed;
+      pre-existing reference/alignment/completeness warnings remain."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-24T21:46:51.207Z
+    completed_at: 2026-05-24T21:46:51.207Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: rg found 191 AC annotations for @entity-folder-migration-and-compatibility-1 across
+      src/tests; changed migration tests include annotations for the scoped ACs. No source-scanning
+      tests found in the changed migration test files.
+    name: AC annotation scan
+    required: false
+    runner: rg
+    created_at: 2026-05-24T21:47:07.596Z
+    completed_at: 2026-05-24T21:47:07.596Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check
+      b588e89919cb699a8e1134993f5061c00f1f4f5a..6cd0bb4dbb5898ea85b231905bb7380bf7d5480c produced no
+      whitespace errors.
+    name: diff whitespace
+    required: false
+    runner: git
+    created_at: 2026-05-24T21:47:19.759Z
+    completed_at: 2026-05-24T21:47:19.759Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md, task/spec context, prior reviews,
+      src/cli/commands/upgrade.ts, src/parser/plan-folder-migration.ts,
+      src/parser/review-folder-migration.ts, src/parser/migration-safety.ts,
+      batch-write-buffer/yaml/folder-backed managers, changed migration tests. Claims verified:
+      force bypass fix, atomic rollback fix, AC coverage/test integrity. Categories searched:
+      correctness, edge cases, error handling, test quality, integration, reporting."
+    name: review evidence log
+    required: false
+    runner: reviewer
+    created_at: 2026-05-24T21:47:32.326Z
+    completed_at: 2026-05-24T21:47:32.326Z
+events:
+  - _ulid: 01KSDYEZGNV6DF2KGSQ5N1GSBE
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-24T21:32:38.293Z
+  - _ulid: 01KSDYG9VF62JBSW5TYDCXYFMY
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-24T21:33:21.648Z
+  - _ulid: 01KSDYP42G238Q2N6QDTXWNA6F
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSDYP1Z4T6XYA65SF1V8CJQK
+    timestamp: 2026-05-24T21:36:32.336Z
+  - _ulid: 01KSDYPGZPKSXS5M8CWY2JTZ71
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSDYPET3R9DZE2YXARDDGXJJ
+    timestamp: 2026-05-24T21:36:45.558Z
+  - _ulid: 01KSDYPYYYAEXA8E53VHD4JJH8
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSDYPWV44SSP0GDPJD9BA6QH
+    timestamp: 2026-05-24T21:36:59.870Z
+  - _ulid: 01KSDYQBXNMZFNNZGV2JGWQQFD
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSDYQ9X3EK8XRZGPVKNBANWV
+    timestamp: 2026-05-24T21:37:13.141Z
+  - _ulid: 01KSDYQX6D4DYXEET47PKB1GSQ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSDYQV55MGB0NGQTGKS8FKEF
+    timestamp: 2026-05-24T21:37:30.829Z
+  - _ulid: 01KSDZ8AX4CMXCF7GKJ302KEHF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-24T21:46:29.156Z
+  - _ulid: 01KSDZ8PE7X6FQH7VNM79JK4CB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted migration tests
+    timestamp: 2026-05-24T21:46:40.967Z
+  - _ulid: 01KSDZ926Y183K0WPSNX89C3B7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-05-24T21:46:53.022Z
+  - _ulid: 01KSDZ9J4MRQA9CS4F7HKSGJKV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC annotation scan
+    timestamp: 2026-05-24T21:47:09.333Z
+  - _ulid: 01KSDZ9XYT7CEN7C3B111ZSA3M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff whitespace
+    timestamp: 2026-05-24T21:47:21.434Z
+  - _ulid: 01KSDZAA94TSQMXS1D2S0BS63W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-24T21:47:34.052Z
+  - _ulid: 01KSDZAM9G1PDM5S3JAK0YQXQN
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-24T21:47:44.305Z
+  - _ulid: 01KSDZAM9HD59G6DG5H4158M23
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-24T21:47:44.305Z
+  - _ulid: 01KSE1EDWJTVK8ECW8Y2Q0MFX2
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSDYP1Z4T6XYA65SF1V8CJQK
+    timestamp: 2026-05-24T22:24:45.970Z
+  - _ulid: 01KSE1EN9A9CSQZEXP56N5BPKD
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSDYPET3R9DZE2YXARDDGXJJ
+    timestamp: 2026-05-24T22:24:53.546Z
+  - _ulid: 01KSE1F33VNKEDJDXMWXAWW22D
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSDYPWV44SSP0GDPJD9BA6QH
+    timestamp: 2026-05-24T22:25:07.707Z
+  - _ulid: 01KSE1FA5SX78X2MM4A78PC8DS
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSDYQ9X3EK8XRZGPVKNBANWV
+    timestamp: 2026-05-24T22:25:14.937Z
+  - _ulid: 01KSE1FHFFQNG2EZD8XFPWF4B4
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSDYQV55MGB0NGQTGKS8FKEF
+    timestamp: 2026-05-24T22:25:22.415Z
+  - _ulid: 01KSE1FXYQF0QKJ7Y5NDYCYQJN
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSDYP1Z4T6XYA65SF1V8CJQK
+    timestamp: 2026-05-24T22:25:35.191Z
+  - _ulid: 01KSE1G296K1QM9N6V6MDKT5D7
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSDYPET3R9DZE2YXARDDGXJJ
+    timestamp: 2026-05-24T22:25:39.623Z
+  - _ulid: 01KSE1G6G75BG799ADYQTPPEAH
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSDYPWV44SSP0GDPJD9BA6QH
+    timestamp: 2026-05-24T22:25:43.943Z
+  - _ulid: 01KSE1GANRADY1PNYT2648CAZ3
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSDYQ9X3EK8XRZGPVKNBANWV
+    timestamp: 2026-05-24T22:25:48.216Z
+  - _ulid: 01KSE1GF4XZA1TKWA6821XTC54
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSDYQV55MGB0NGQTGKS8FKEF
+    timestamp: 2026-05-24T22:25:52.797Z
+examined_commit: 6cd0bb4dbb5898ea85b231905bb7380bf7d5480c
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XAYZTG0MN48Z78D45PBV6"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSDYP1Z4T6XYA65SF1V8CJQK
+    anchor:
+      type: code
+      commit: 6cd0bb4dbb5898ea85b231905bb7380bf7d5480c
+      line_end: 376
+      line_start: 371
+      path: src/parser/plan-folder-migration.ts
+      side: head
+    entries:
+      - _ulid: 01KSDYP1Z466XZC2RRDWAS0SF4
+        author: Jacob Chapel
+        body: "MUST-FIX: migrated plan folders never create the required resources/ subdirectory. The task
+          explicitly requires each plan folder to contain plan.md, plan.yaml, optional notes.yaml,
+          resources.yaml, and resources/. This code writes only resources.yaml and says resources/
+          will materialize later, so a successful migration produces a layout that does not match
+          the contract. It also leaves resource resolution on migrated plans in the 'no resources
+          directory yet' state even though the migration declared the entity-scoped resource
+          sidecar."
+        created_at: 2026-05-24T21:36:30.180Z
+      - _ulid: 01KSE1EC6JX46RRNE3XYFMYF5Y
+        author: "@claude"
+        body: "Fixed: migrated plan folders now create the empty resources/ subdirectory. The apply step
+          calls mkdirBufferAware(entry.resourcesDir) inside the buffered transaction, and
+          WriteBuffer was extended with pendingDirCreations so the empty directory materialises on
+          flush AND is discarded if the transaction aborts. tests/plan-folder-migration.test.ts
+          asserts the resources/ dir exists and is empty after migration;
+          tests/upgrade-folder-storage.test.ts asserts the same end-to-end via the CLI."
+        created_at: 2026-05-24T22:24:44.242Z
+    kind: blocker
+    resolved_at: 2026-05-24T22:25:33.425Z
+    resolved_by: "@claude"
+  - _ulid: 01KSDYPET3R9DZE2YXARDDGXJJ
+    anchor:
+      type: code
+      commit: 6cd0bb4dbb5898ea85b231905bb7380bf7d5480c
+      line_end: 315
+      line_start: 313
+      path: src/parser/review-folder-migration.ts
+      side: head
+    entries:
+      - _ulid: 01KSDYPET3DMJXHRHF29NG0837
+        author: Jacob Chapel
+        body: "MUST-FIX: migrated review folders also omit the required resources/ subdirectory. The
+          submitted task requires each review folder to contain review.yaml, resources.yaml, and
+          resources/. This code writes only resources.yaml and intentionally defers resources/
+          creation, so the executing migration can report success while producing the wrong folder
+          shape."
+        created_at: 2026-05-24T21:36:43.331Z
+      - _ulid: 01KSE1EKH4W62VV1VPWYVSSMNR
+        author: "@claude"
+        body: "Fixed: migrated review folders now create the empty resources/ subdirectory via the same
+          mechanism as plans (mkdirBufferAware(entry.resourcesDir) inside the buffered transaction,
+          backed by the new WriteBuffer.pendingDirCreations set).
+          tests/review-folder-migration.test.ts and tests/upgrade-folder-storage.test.ts both assert
+          the resources/ dir exists and is empty after migration."
+        created_at: 2026-05-24T22:24:51.748Z
+    kind: blocker
+    resolved_at: 2026-05-24T22:25:37.875Z
+    resolved_by: "@claude"
+  - _ulid: 01KSDYPWV44SSP0GDPJD9BA6QH
+    anchor:
+      type: code
+      commit: 6cd0bb4dbb5898ea85b231905bb7380bf7d5480c
+      line_end: 717
+      line_start: 705
+      path: src/cli/commands/upgrade.ts
+      side: head
+    entries:
+      - _ulid: 01KSDYPWV4N418BVN2P6QEHYK0
+        author: Jacob Chapel
+        body: "MUST-FIX: an atomic abort can still return an earlier storage step as status=done even though
+          its buffered writes were discarded. In the reproduced shape from the prior review, plan
+          migration is collected as done, review migration fails, runWithBuffer rolls back the plan
+          files, then the caller still sees a done plan step and adds the 'Plan storage: N plan(s)
+          migrated' follow-up. That is incorrect reporting for a failed migration and violates the
+          clear partial-layout reporting/rollback guidance requirement."
+        created_at: 2026-05-24T21:36:57.700Z
+      - _ulid: 01KSE1F1EWCPYCJZNR8W941A2Z
+        author: "@claude"
+        body: "Fixed: when StorageMigrationAbort fires, runAtomicStorageMigration now walks the collected
+          step list and relabels every previously-done step as status=rolled_back with a clear
+          message. UpgradeStepResult.status gained a 'rolled_back' variant so JSON consumers see the
+          truth, the follow-up generator does not fire (it only triggers on status==='done'), and
+          the console renderer prints 'rolled back' instead of a green checkmark.
+          tests/upgrade-folder-storage.test.ts 'upgrade rolls back plan migration when review
+          migration fails (atomic)' now asserts planStep.status === 'rolled_back' and that no 'Plan
+          storage: N plan(s) migrated' follow-up is emitted."
+        created_at: 2026-05-24T22:25:06.012Z
+    kind: blocker
+    resolved_at: 2026-05-24T22:25:42.213Z
+    resolved_by: "@claude"
+  - _ulid: 01KSDYQ9X3EK8XRZGPVKNBANWV
+    anchor:
+      type: code
+      commit: 6cd0bb4dbb5898ea85b231905bb7380bf7d5480c
+      line_end: 838
+      line_start: 824
+      path: src/cli/commands/upgrade.ts
+      side: head
+    entries:
+      - _ulid: 01KSDYQ9X3QEKZJYFGN2DT1S09
+        author: Jacob Chapel
+        body: "MUST-FIX: the dry-run report for plan migration does not include the sidecar files or
+          resource manifest changes required by ac-upgrade-dry-run-previews-layout. It reports
+          folder_root/index_path/monolithic_path and entry summaries, but omits the plan.md,
+          plan.yaml, optional notes.yaml, resources.yaml, and resources/ targets that the dry-run AC
+          says must be previewed before any write occurs."
+        created_at: 2026-05-24T21:37:11.076Z
+      - _ulid: 01KSE1F8GS9T375Z693WXB2MPD
+        author: "@claude"
+        body: "Fixed: plan dry-run details now include per-entry sidecar paths (sidecars.plan_yaml, plan_md,
+          notes_yaml, resources_yaml, resources_dir) and a resource_manifest_changes summary
+          (new_empty_manifests count, manifest_filename, paths[]). The sidecars.notes_yaml field is
+          null for source records with empty notes so the preview accurately signals which folders
+          will skip the optional sidecar. New test 'dry-run reports plan sidecar paths and resource
+          manifest changes' in tests/upgrade-folder-storage.test.ts exercises a record with notes
+          AND one without to verify both branches."
+        created_at: 2026-05-24T22:25:13.241Z
+    kind: blocker
+    resolved_at: 2026-05-24T22:25:46.587Z
+    resolved_by: "@claude"
+  - _ulid: 01KSDYQV55MGB0NGQTGKS8FKEF
+    anchor:
+      type: code
+      commit: 6cd0bb4dbb5898ea85b231905bb7380bf7d5480c
+      line_end: 931
+      line_start: 917
+      path: src/cli/commands/upgrade.ts
+      side: head
+    entries:
+      - _ulid: 01KSDYQV550QGMZSA7F7H3NYW4
+        author: Jacob Chapel
+        body: "MUST-FIX: the review dry-run details have the same AC gap. The preview names the folder root
+          and index path, but it does not report the review.yaml, resources.yaml, and resources/
+          targets or the resource manifest change that ac-upgrade-dry-run-previews-layout requires
+          users to see before executing the migration."
+        created_at: 2026-05-24T21:37:28.741Z
+      - _ulid: 01KSE1FFR8Y85Y259EM7E1JXJF
+        author: "@claude"
+        body: "Fixed: review dry-run details now include per-entry sidecar paths (sidecars.review_yaml,
+          resources_yaml, resources_dir) plus the same resource_manifest_changes summary. New test
+          'dry-run reports review sidecar paths and resource manifest changes' in
+          tests/upgrade-folder-storage.test.ts exercises two reviews and asserts both the per-entry
+          sidecar paths and the resource_manifest_changes aggregate."
+        created_at: 2026-05-24T22:25:20.647Z
+    kind: blocker
+    resolved_at: 2026-05-24T22:25:50.999Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-24T21:47:44.304Z
+created_at: 2026-05-24T21:32:38.293Z
+updated_at: 2026-05-24T22:25:50.999Z
+notes: []

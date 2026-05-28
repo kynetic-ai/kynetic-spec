@@ -1,0 +1,152 @@
+_ulid: 01KMA7W0W839C4ZW7SD6TTP7WT
+slugs: []
+title: Review active session registry
+author: Test User
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Full npm test could not complete in this snapshot because the pre-test build step failed
+      in packages/web-ui with ENOENT for .svelte-kit/output/server/manifest-full.js. Focused
+      registry test run still passed and the failure appears unrelated to the registry files under
+      review.
+    name: npm test
+    required: false
+    runner: npm
+    created_at: 2026-03-22T07:48:27.843Z
+    completed_at: 2026-03-22T07:48:27.843Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/active-session-registry.test.ts passed: 19 tests in 1 file."
+    name: active-session-registry tests
+    required: true
+    runner: vitest
+    created_at: 2026-03-22T07:48:29.032Z
+    completed_at: 2026-03-22T07:48:29.032Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test passed after environment repair in this snapshot: 306 files passed, 7000 tests
+      passed, 3 skipped, test-runner reported Tests passed."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-22T07:49:14.445Z
+    completed_at: 2026-03-22T07:49:14.445Z
+events:
+  - _ulid: 01KMA7W0W8GECTZTB06TDVV6CY
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-22T07:41:36.008Z
+  - _ulid: 01KMA7WFHXG3A0ZWQSYQ93A88G
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-22T07:41:51.037Z
+  - _ulid: 01KMA88GBESFQR3M9QMPFQ43QF
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-22T07:48:25.070Z
+  - _ulid: 01KMA88GBE6ATABRRQK8JDNYMX
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-22T07:48:25.070Z
+  - _ulid: 01KMA88J82B3S61GMTT6B2K4V4
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMA88HYPKZJ2VHBPRFPWZR5W
+    timestamp: 2026-03-22T07:48:27.010Z
+  - _ulid: 01KMA88KD4RD2V375G9Y2ACC1A
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-22T07:48:28.196Z
+  - _ulid: 01KMA88MGS3PND446D6VJPD2NP
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: active-session-registry tests
+    timestamp: 2026-03-22T07:48:29.337Z
+  - _ulid: 01KMA8A0WBM276CX6XV5NASVC0
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-22T07:49:14.763Z
+examined_commit: 5447244e888087b2fa8ee12b5bcc163d321b474a
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMA74DPD6ESYCQAT6YY8DXJJ"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMA88HYPKZJ2VHBPRFPWZR5W
+    entries:
+      - _ulid: 01KMA88HYPSAY7C3EM8Z1X3TFC
+        author: Test User
+        body: >-
+          Review evidence log
+
+
+          Files read: src/agent-runtime/session-registry.ts, src/agent-runtime/index.ts,
+          src/agent-runtime/dispatch.ts, src/agent-runtime/invocation.ts, src/acp/client.ts,
+          tests/active-session-registry.test.ts, tests/acp.test.ts.
+
+
+          Commands run: git diff --stat
+          3997b9bdf83ad069eeae20912280def282bc6b77..5447244e888087b2fa8ee12b5bcc163d321b474a; git
+          diff 3997b9bdf83ad069eeae20912280def282bc6b77..5447244e888087b2fa8ee12b5bcc163d321b474a --
+          src/agent-runtime/index.ts src/agent-runtime/session-registry.ts
+          tests/active-session-registry.test.ts; kspec task get @01KMA74DPD6ESYCQAT6YY8DXJJ; kspec
+          item get @active-session-registry; kspec review for-task @01KMA74DPD6ESYCQAT6YY8DXJJ;
+          kspec validate; rg -n "AC: @active-session-registry|AC: @trait-" tests; rg -n
+          "SessionRegistry|SessionHandle|session-registry|sendPrompt\(|requestClose\(|listActive\("
+          src tests; npm test -- --run tests/active-session-registry.test.ts.
+
+
+          Claims verified: spec AC coverage exists for ac-1 through ac-4 in
+          tests/active-session-registry.test.ts; barrel export added in src/agent-runtime/index.ts;
+          runtime close semantics checked against src/acp/client.ts and
+          src/agent-runtime/invocation.ts.
+
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration.
+          No task-specific blockers found.
+        created_at: 2026-03-22T07:48:26.710Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-22T07:48:25.069Z
+created_at: 2026-03-22T07:41:36.008Z
+updated_at: 2026-03-22T07:49:14.445Z
+notes: []

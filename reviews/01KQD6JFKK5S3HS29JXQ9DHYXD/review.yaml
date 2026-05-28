@@ -1,0 +1,211 @@
+_ulid: 01KQD6JFKK5S3HS29JXQ9DHYXD
+slugs: []
+title: Review daemon web UI current entry responses
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/daemon-web-ui-entry.test.ts tests/daemon-web-ui-bundle.test.ts
+      tests/daemon-api/server.test.ts: 36 passed across 11 suites"
+    name: targeted daemon web UI tests
+    required: true
+    runner: npm test
+    created_at: 2026-04-29T18:07:47.336Z
+    completed_at: 2026-04-29T18:07:47.336Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Schema and references passed; command exited 6 for existing project-wide warnings
+      (reference/alignment/completeness warnings not introduced by this branch).
+    name: kspec validate
+    required: false
+    runner: kspec validate
+    created_at: 2026-04-29T18:07:51.191Z
+    completed_at: 2026-04-29T18:07:51.191Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "With staticPlugin({ prefix: '/' }) registered before registerWebUiEntryRoutes(),
+      replacing index.html left GET / on the plugin response (old body/cache policy) while GET
+      /tasks returned the updated helper body. Bun run also showed / did not reach the helper."
+    name: non-node root route static plugin repro
+    required: true
+    runner: manual Elysia route repro
+    created_at: 2026-04-29T18:07:55.241Z
+    completed_at: 2026-04-29T18:07:55.241Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exit 0. Test Suites: 2328 passed of 2328. Tests: 5 skipped, 8539 passed of 8544.
+      Duration: 1874.2s. Full log:
+      /tmp/kspec-test-cache/01KQD6HC1Y9FZ5NTPAKDRVX85Y/b84d37353cbb0fd6.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-04-29T18:14:45.202Z
+    completed_at: 2026-04-29T18:14:45.202Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: packages/daemon/src/server.ts, packages/daemon/src/web-ui-entry.ts,
+      tests/daemon-web-ui-entry.test.ts, tests/daemon-web-ui-bundle.test.ts,
+      tests/daemon-api/server.test.ts, node_modules/@elysiajs/static/dist/index.js. Commands run:
+      kspec task get, kspec item get @daemon-server, kspec item get @daemon-web-ui-bundle, kspec
+      validate, rg AC annotations/source reads, git diff, targeted npm test, full npm test, Node/Bun
+      Elysia static-plugin repros. Claims verified: helper re-reads index.html for app routes; root
+      route still bypasses helper in non-node static-plugin stack. Categories searched: correctness,
+      edge cases, error handling, cache behavior, route precedence/integration, test quality, path
+      containment/security."
+    name: review evidence log
+    required: false
+    runner: manual review
+    created_at: 2026-04-29T18:15:00.072Z
+    completed_at: 2026-04-29T18:15:00.072Z
+events:
+  - _ulid: 01KQD6JFKJR6XB370SJ3TS72QV
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-29T18:03:43.603Z
+  - _ulid: 01KQD6JZTCH4DBTTHY7VMMSPM6
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-29T18:04:00.204Z
+  - _ulid: 01KQD6SENAXGGXASCQEHVT46CK
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQD6SDEV7JGB5ZTYGRHFCKNE
+    timestamp: 2026-04-29T18:07:32.010Z
+  - _ulid: 01KQD6SYXN53R0NCNH4JKDZNPC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted daemon web UI tests
+    timestamp: 2026-04-29T18:07:48.662Z
+  - _ulid: 01KQD6T2R7T3FPM3F69K38QESE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-29T18:07:52.583Z
+  - _ulid: 01KQD6T6KNN0GXENNS644YWHA3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: non-node root route static plugin repro
+    timestamp: 2026-04-29T18:07:56.533Z
+  - _ulid: 01KQD76PTPJ6MM3V8K08SPCWG4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-04-29T18:14:46.358Z
+  - _ulid: 01KQD775ANVNAVQ44H4S2YJ0AJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-04-29T18:15:01.206Z
+  - _ulid: 01KQD77EZKGPR6A5MMWY6YCGEF
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-29T18:15:11.091Z
+  - _ulid: 01KQD77EZK2TSHAF2PBKEDTSN9
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-29T18:15:11.091Z
+  - _ulid: 01KQD8PRVJGYT2N95K6SCX0HXW
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQD6SDEV7JGB5ZTYGRHFCKNE
+    timestamp: 2026-04-29T18:41:01.298Z
+  - _ulid: 01KQD8PVYY9KCYJVQCX9YG0FGS
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQD6SDEV7JGB5ZTYGRHFCKNE
+    timestamp: 2026-04-29T18:41:04.478Z
+examined_commit: 945338daa35a23bc27de0d5a6c0fd0a65cfef91b
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQD418BKZPZWMMFBVM4931V5"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQD6SDEV7JGB5ZTYGRHFCKNE
+    anchor:
+      type: code
+      commit: 945338daa35a23bc27de0d5a6c0fd0a65cfef91b
+      line_end: 676
+      line_start: 660
+      path: packages/daemon/src/server.ts
+      side: head
+    entries:
+      - _ulid: 01KQD6SDEVTWVSV3EKHFQ1YT8K
+        author: Jacob Chapel
+        body: "MUST-FIX: the non-Node web UI route stack still lets the static plugin handle GET / before
+          the new entry helper. In createServer(), runtime !== 'node' registers staticPlugin({
+          prefix: '/' }) and only then calls registerWebUiEntryRoutes(). I reproduced that stack
+          with a temp bundle: after replacing index.html, GET / continued returning the plugin's old
+          entry response/cache policy while GET /tasks returned the new helper response. This
+          violates @daemon-server ac-root-route-current-entry and @daemon-web-ui-bundle
+          ac-reload-uses-current-entry because the root route can remain tied to the older served
+          bundle and be browser-cacheable instead of revalidating."
+        created_at: 2026-04-29T18:07:30.779Z
+      - _ulid: 01KQD8PQH77FNTJV178NA0V14C
+        author: "@claude"
+        body: "Fixed: registerWebUiEntryRoutes now runs BEFORE staticPlugin in the non-node branch, and the
+          plugin is mounted with indexHTML: false so it no longer claims '/' from index.html.
+          Reproduced the original bug under Bun (GET / returned the plugin's '{}' bundle response,
+          never reflected bundle changes), then verified the fix: GET / and GET /tasks both serve
+          the entry helper's revalidating response and pick up the new bundle on the next request
+          after replacing index.html. Added tests/daemon-web-ui-bun-route-order.test.ts which spawns
+          Bun against tests/fixtures/daemon-web-ui-bun-route-order.mjs, mirrors the production
+          server stack (registerWebUiEntryRoutes -> staticPlugin), and asserts the entry helper
+          handles '/' and '/tasks' across a bundle replacement while the plugin still serves
+          /_app/main.js. Asset routes (/_app/*, /favicon.svg) and the explicit Node-runtime asset
+          handlers are unchanged."
+        created_at: 2026-04-29T18:40:59.942Z
+    kind: blocker
+    resolved_at: 2026-04-29T18:41:03.250Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-29T18:15:11.091Z
+created_at: 2026-04-29T18:03:43.603Z
+updated_at: 2026-04-29T18:41:03.250Z
+notes: []

@@ -1,0 +1,129 @@
+_ulid: 01KPPMR2NVTY1SF9B0W3X5C8YY
+slugs: []
+title: "Plan re-review: User Documentation Foundation (cycle 7)"
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "2026-04-20: kspec plan import plans/user-documentation-foundation.md --dry-run parsed
+      successfully with full document storage preview."
+    name: Plan import dry-run
+    required: true
+    created_at: 2026-04-20T23:49:31.337Z
+    completed_at: 2026-04-20T23:49:31.337Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Re-read the revised ACs for @docs-getting-started-section, @docs-concepts-section,
+      @docs-troubleshooting-section, @docs-release-notes-availability, and @readme-landing-page. The
+      changed language now tests page/file properties a reviewer can verify directly, without
+      requiring reader cognition or contributor process claims.
+    name: AC verifiability re-check
+    required: true
+    created_at: 2026-04-20T23:49:31.348Z
+    completed_at: 2026-04-20T23:49:31.348Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Verified removed refs reflective-operational-boundary, docs-authoring-conventions,
+      task-docs-boundary-audit, and task-docs-authoring-conventions are absent from
+      plans/user-documentation-foundation.md; Non-scope and Order of operations now describe the
+      removals instead.
+    name: Cycle 7 scope cleanup
+    required: true
+    created_at: 2026-04-20T23:49:31.419Z
+    completed_at: 2026-04-20T23:49:31.419Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Confirmed @task-docs-search no longer depends on removed task-docs-authoring-conventions,
+      and remaining dependency chain still matches the plan's Order of operations after the two
+      scope removals.
+    name: Dependency cleanup
+    required: true
+    created_at: 2026-04-20T23:49:45.878Z
+    completed_at: 2026-04-20T23:49:45.878Z
+events:
+  - _ulid: 01KPPMR2NVQ2VK24TWDSC340CD
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-20T23:48:55.099Z
+  - _ulid: 01KPPMRN7CZAAP24063G8RW3Y6
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-20T23:49:14.092Z
+  - _ulid: 01KPPMS76ZE9Y1P49QQKPM253E
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan import dry-run
+    timestamp: 2026-04-20T23:49:32.511Z
+  - _ulid: 01KPPMS90VAVGRWVCVN66BKZJ4
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC verifiability re-check
+    timestamp: 2026-04-20T23:49:34.363Z
+  - _ulid: 01KPPMSAVX4DG2K23KRNJKZCQ5
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Cycle 7 scope cleanup
+    timestamp: 2026-04-20T23:49:36.253Z
+  - _ulid: 01KPPMSNACMC4ZHT4HE767FJ89
+    actor: codex@local
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-20T23:49:46.956Z
+  - _ulid: 01KPPMSNACPYA9R12B65QF2GQ6
+    actor: codex@local
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-20T23:49:46.956Z
+  - _ulid: 01KPPMSQ690XG6GPCWN96Z7VJ7
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency cleanup
+    timestamp: 2026-04-20T23:49:48.873Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-user-documentation-foundation"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@local
+    role: reviewer
+    created_at: 2026-04-20T23:49:46.956Z
+created_at: 2026-04-20T23:48:55.099Z
+updated_at: 2026-04-20T23:49:45.878Z
+notes: []

@@ -1,0 +1,184 @@
+_ulid: 01KSGJS0RJ79A2KR4035HCCT17
+slugs: []
+title: Review task-review-screenshot-resource-ui (cycle 10)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw...HEAD
+      exited 0.
+    name: git diff --check
+    required: true
+    runner: git
+    created_at: 2026-05-25T22:18:38.209Z
+    completed_at: 2026-05-25T22:18:38.209Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --warnings-ok exited 0; schema and refs OK; project-wide warnings are
+      pre-existing.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-25T22:18:45.064Z
+    completed_at: 2026-05-25T22:18:45.064Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck exited 0.
+    name: typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-25T22:18:51.993Z
+    completed_at: 2026-05-25T22:18:51.993Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npx oxlint on changed files exited 0 errors, 12 warnings. Whole-repo npm run lint still
+      has pre-existing errors outside this review surface.
+    name: changed-file oxlint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-25T22:18:59.242Z
+    completed_at: 2026-05-25T22:18:59.242Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test passed: 2575 suites passed; 9832 tests passed; 5 skipped; duration 2570.6s."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-25T22:19:06.309Z
+    completed_at: 2026-05-25T22:19:06.309Z
+events:
+  - _ulid: 01KSGJS0RJW7SRCJ4FTTN7GDKJ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-25T22:06:07.634Z
+  - _ulid: 01KSGJSVH2CKNVF55QMX7MCE5S
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-25T22:06:35.043Z
+  - _ulid: 01KSGKFZD59M29NP6E6ENJ5V0X
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: git diff --check
+    timestamp: 2026-05-25T22:18:39.909Z
+  - _ulid: 01KSGKG65GW7B2R9TNDJ2MF04P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-25T22:18:46.832Z
+  - _ulid: 01KSGKGCX225WD01M9209VYXHA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-25T22:18:53.730Z
+  - _ulid: 01KSGKGKZP3A071XFEXHASG8P4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file oxlint
+    timestamp: 2026-05-25T22:19:00.982Z
+  - _ulid: 01KSGKGTW7EGGVPJSQC6X2ZMQK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-25T22:19:08.039Z
+  - _ulid: 01KSGKH1N2FESFBWTXNW5FJ9W7
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSGKGZX7KJM7EYPCRRKD0VK7
+    timestamp: 2026-05-25T22:19:14.978Z
+  - _ulid: 01KSGKH8D81V5XG9KD84DVXYB9
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-25T22:19:21.896Z
+  - _ulid: 01KSGKH8D9Z1JKSPER4HCV74K3
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-25T22:19:21.897Z
+examined_commit: addb7d63ba048919b16ee2c6cf46dc3cf15e7d2c
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XB0EKNTMZS4XJMC4ED4SK"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSGKGZX7KJM7EYPCRRKD0VK7
+    entries:
+      - _ulid: 01KSGKGZX76R0XX8J9KAY733QS
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          Files read: kspec-agents.md; task/spec/review records;
+          src/parser/review-resource-manager.ts; src/parser/entity-local-resources.ts;
+          src/cli/commands/review-resource.ts; src/cli/commands/export.ts; src/export/json.ts;
+          src/export/types.ts; packages/daemon/src/routes/review-resources.ts;
+          packages/daemon/src/routes/reviews.ts; packages/daemon/src/middleware/project-context.ts;
+          packages/daemon/src/server.ts; packages/shared/src/api.ts; packages/web-ui/src/lib/api.ts;
+          packages/web-ui/src/lib/api-static.ts;
+          packages/web-ui/src/routes/reviews/[id]/+page.svelte; review resource
+          CLI/manager/daemon/static/UI tests.
+
+          Commands run: kspec item get @folder-backed-review-storage-1; kspec validate
+          --warnings-ok; rg AC annotations; git diff/stat/check against
+          plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw...HEAD; npm run
+          typecheck; npx oxlint on changed files; npm test.
+
+          Claims verified: worker claimed the merge conflict in src/export/json.ts preserved both
+          plan-resource and review-resource export behavior; verified by reading the merge diff and
+          static export implementation/tests. Worker claimed full test suite passed; independently
+          ran npm test (2575 suites, 9832 passed, 5 skipped).
+
+          Categories searched: correctness, merge-conflict integration, path/symlink safety, CLI/API
+          error mapping, cache write-through/WebSocket broadcasts, static export asset paths,
+          selected-project binary routing, UI/static mode resource URLs, AC coverage, and test
+          quality/source-scanning. No blocking issues found.
+        created_at: 2026-05-25T22:19:13.191Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-25T22:19:21.896Z
+created_at: 2026-05-25T22:06:07.634Z
+updated_at: 2026-05-25T22:19:21.897Z
+notes: []

@@ -1,0 +1,158 @@
+_ulid: 01KM07Z44G8EQ91B7K22VVP50C
+slugs: []
+title: Review task-dispatch-target-sync (cycle 2)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 271/272 pass. 1 failure in review-cli.test.ts is pre-existing (not modified by this task).
+      All 14 dispatch-target-sync tests pass.
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T10:40:09.694Z
+    completed_at: 2026-03-18T10:40:09.694Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 7 in-scope ACs annotated in tests: ac-pull-target-on-start (L102), ac-pull-ff-only
+      (L147+L516), ac-pull-target-periodic (L185), ac-pull-target-periodic-deferred (L229),
+      ac-pull-target-before-provision (L293), ac-transient-no-degrade (L322+L355), ac-no-remote
+      (L391+L463). Source annotations present in dispatch.ts for all ACs."
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-18T10:40:13.702Z
+    completed_at: 2026-03-18T10:40:13.702Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Cycle 1 MUST-FIX blocker resolved: _reconcile() now gates sync on _isTargetSyncStale()
+      (line 1211). Test for ac-pull-target-periodic exercises _reconcile() path directly, verifying
+      fresh timestamp skips sync and stale timestamp triggers it. Suggestions also addressed: dead
+      code removed, GIT_WORK_TREE comment clarified."
+    name: cycle-1-fix
+    required: true
+    runner: manual
+    created_at: 2026-03-18T10:40:16.649Z
+    completed_at: 2026-03-18T10:40:16.649Z
+events:
+  - _ulid: 01KM07Z44FRNN6GNPKJV3Q6QQV
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T10:30:53.327Z
+  - _ulid: 01KM07ZE0F7725J6H2H48K5C9J
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T10:31:03.440Z
+  - _ulid: 01KM08FP9AV072VZARMY8ZX1JK
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM08FP5KQ33VX4YSR8MJ0Y9B
+    timestamp: 2026-03-18T10:39:56.202Z
+  - _ulid: 01KM08FRXJXRYNX438A7ANKE9T
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM08FRSF5EMWTWM9YAER1PJ3
+    timestamp: 2026-03-18T10:39:58.898Z
+  - _ulid: 01KM08G3JCR49B49HYYP36GH19
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T10:40:09.804Z
+  - _ulid: 01KM08G7FSA2YKCR7K6220B80W
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-18T10:40:13.817Z
+  - _ulid: 01KM08GABYYA9TDZ8YEMJP4GVX
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: cycle-1-fix
+    timestamp: 2026-03-18T10:40:16.766Z
+  - _ulid: 01KM08GJZR7KMAF5QWFNMA6YDW
+    actor: dispatch-reviewer
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-18T10:40:25.592Z
+  - _ulid: 01KM08GJZRCDHNY7YPDQ86WR58
+    actor: dispatch-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T10:40:25.592Z
+examined_commit: 95f59903248481497072cc172341366343df7aaa
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKZWB75X6Q1X1ZZC5S6KBH6B"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM08FP5KQ33VX4YSR8MJ0Y9B
+    anchor:
+      type: code
+      commit: 95f59903248481497072cc172341366343df7aaa
+      line_end: 11
+      line_start: 11
+      path: tests/dispatch-target-sync.test.ts
+      side: head
+    entries:
+      - _ulid: 01KM08FP5KK792N6F0FHVQFY9K
+        author: "@claude"
+        body: "Unused import: testUlid is imported on line 11 but never used in the test file."
+        created_at: 2026-03-18T10:39:56.083Z
+    kind: nit
+  - _ulid: 01KM08FRSF5EMWTWM9YAER1PJ3
+    anchor:
+      type: code
+      commit: 95f59903248481497072cc172341366343df7aaa
+      line_end: 320
+      line_start: 293
+      path: tests/dispatch-target-sync.test.ts
+      side: head
+    entries:
+      - _ulid: 01KM08FRSFDF9M94Q4AWSDQP1E
+        author: "@claude"
+        body: The ac-pull-target-before-provision test (line 293) only validates _isTargetSyncStale() logic
+          — it doesn't verify that sync actually occurs before workspace provisioning in
+          _spawnInvocation. The periodic test (ac-pull-target-periodic) does integration-test the
+          reconcile path end-to-end, but the provision path only has unit coverage on the staleness
+          helper. Not blocking since the guard clause uses already-tested methods and the code path
+          is straightforward.
+        created_at: 2026-03-18T10:39:58.767Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: dispatch-reviewer
+    role: reviewer
+    created_at: 2026-03-18T10:40:25.477Z
+created_at: 2026-03-18T10:30:53.328Z
+updated_at: 2026-03-18T10:40:25.477Z
+notes: []

@@ -1,0 +1,273 @@
+_ulid: 01KNKF782DPZW5WPR11S2KWF6Z
+slugs: []
+title: "Plan review: Cache-Aware Command Execution"
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "The main execution order is coherent: cache-context plumbing precedes cache-aware
+      loaders, task-history builds on task loading, and the concurrency phase depends on the
+      cache-serving phases it needs."
+    name: Dependency ordering
+    required: true
+    created_at: 2026-04-07T08:00:19.619Z
+    completed_at: 2026-04-07T08:00:19.619Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@daemon-concurrent-reads defines success by internal mutex/file-lock acquisition, and
+      @daemon-cache-command mixes internal execution-path language into the contract instead of
+      staying purely behavioral."
+    name: Behavioral purity
+    required: true
+    created_at: 2026-04-07T08:00:19.654Z
+    completed_at: 2026-04-07T08:00:19.654Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Each proposed spec AC is claimed by at least one task, and the major phases are mapped to
+      the new specs without orphaned acceptance criteria.
+    name: Coverage mapping
+    required: true
+    created_at: 2026-04-07T08:00:19.712Z
+    completed_at: 2026-04-07T08:00:19.712Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Several ACs bundle outcome with mechanism-level constraints, especially
+      @daemon-concurrent-reads and @daemon-cache-command ac-mutation-disk-path, so the plan is not
+      consistently using single focused behavioral assertions.
+    name: AC focus
+    required: true
+    created_at: 2026-04-07T08:00:19.674Z
+    completed_at: 2026-04-07T08:00:19.674Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@task-read-command-concurrency and @task-cache-task-history still contain unresolved
+      design forks, and @task-cache-aware-remaining-loaders is too coarse relative to the benchmark
+      plans to be reliably standalone."
+    name: Task executability
+    required: true
+    created_at: 2026-04-07T08:00:32.842Z
+    completed_at: 2026-04-07T08:00:32.842Z
+events:
+  - _ulid: 01KNKF782DQVR1C3GRR37P39TP
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-07T07:58:55.565Z
+  - _ulid: 01KNKF7FQT9GFPNM7Z6SF1S9SZ
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-07T07:59:03.418Z
+  - _ulid: 01KNKF8N9Q8VTNH67EKPNPP3KR
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNKF8MG7DX4GKR77FWAMET60
+    timestamp: 2026-04-07T07:59:41.879Z
+  - _ulid: 01KNKF8PJTQ9ND4N34CDYGH586
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNKF8MHC319XR0VQ5C7X832R
+    timestamp: 2026-04-07T07:59:43.194Z
+  - _ulid: 01KNKF8R0T6QSCC403KW37Z12X
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNKF8MH5XNSMD75BTW5890DE
+    timestamp: 2026-04-07T07:59:44.667Z
+  - _ulid: 01KNKF8SDYDG58K0DHYENHNWH5
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KNKF8MGN9CEQRRF17MG0YKV3
+    timestamp: 2026-04-07T07:59:46.110Z
+  - _ulid: 01KNKF95B18K613T9ZAXVKSRRA
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNKF94HK5DH1MNS15HKPWSKT
+    timestamp: 2026-04-07T07:59:58.305Z
+  - _ulid: 01KNKF9AXKKVGN3T8W6N3Z3TTE
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KNKF9A3M8M3F5YFDGFSBAWCT
+    timestamp: 2026-04-07T08:00:04.019Z
+  - _ulid: 01KNKF9TYPMCVK01J5X011DFSA
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-04-07T08:00:20.439Z
+  - _ulid: 01KNKF9W99WX64RNRHWN8TTCFD
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Behavioral purity
+    timestamp: 2026-04-07T08:00:21.801Z
+  - _ulid: 01KNKF9XPZ7KWP04YQBMMFDMSJ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Coverage mapping
+    timestamp: 2026-04-07T08:00:23.263Z
+  - _ulid: 01KNKF9Z40RCBJAT0FBZ5KG627
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: AC focus
+    timestamp: 2026-04-07T08:00:24.705Z
+  - _ulid: 01KNKFA7WBT7BTWTDX9DFJZKBV
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Task executability
+    timestamp: 2026-04-07T08:00:33.675Z
+  - _ulid: 01KNKFAG50H5W0VB1CN2ABJHTB
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-07T08:00:42.144Z
+  - _ulid: 01KNKFAG50PZG2D4SBJF48A95W
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-07T08:00:42.145Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-cache-aware-command-execution"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNKF8MG7DX4GKR77FWAMET60
+    anchor:
+      type: structured
+      ref: "@daemon-cache-command"
+    entries:
+      - _ulid: 01KNKF8MG74PX5MVR5FJMQ4MV3
+        author: "@claude"
+        body: This spec duplicates ownership with the planned @daemon-command-api AC update. Both describe
+          read commands being served from cache when domains are ready, so the plan currently
+          assigns the same behavior to two contracts. The benchmark plans keep spec boundaries
+          crisp; choose one home for the command-API cache-serving behavior and make the other spec
+          complementary rather than overlapping.
+        created_at: 2026-04-07T07:59:41.063Z
+    kind: blocker
+  - _ulid: 01KNKF8MHC319XR0VQ5C7X832R
+    anchor:
+      type: structured
+      ref: "@task-read-command-concurrency"
+      section: description
+    entries:
+      - _ulid: 01KNKF8MHDKRNCR6TXDW7P4A7F
+        author: "@claude"
+        body: This task is not standalone-executable yet. Its How section leaves the core implementation
+          choice unresolved (cache-only mode vs conservative allowlist), includes an explicit
+          fallback-if-it-causes-issues branch, and assumes the worker will discover which commands
+          are truly safe mid-task. Split the design decision from the implementation or commit to
+          one concrete approach and verification plan.
+        created_at: 2026-04-07T07:59:41.101Z
+    kind: blocker
+  - _ulid: 01KNKF8MH5XNSMD75BTW5890DE
+    anchor:
+      type: structured
+      ref: "@daemon-concurrent-reads"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KNKF8MH55AVVXE860PE9B4ST
+        author: "@claude"
+        body: All three ACs define success in terms of internal mutex/file-lock acquisition rather than
+          observable command behavior. Rewrite this spec around externally verifiable outcomes (for
+          example, cache-backed reads can overlap without blocking each other, while commands that
+          need disk/global-state serialization still do not) so the contract stays behavioral
+          instead of locking in one implementation.
+        created_at: 2026-04-07T07:59:41.093Z
+    kind: blocker
+  - _ulid: 01KNKF8MGN9CEQRRF17MG0YKV3
+    anchor:
+      type: structured
+      ref: "@task-cache-task-history"
+      section: description
+    entries:
+      - _ulid: 01KNKF8MGPZJGFVFRFNYFCR0DM
+        author: "@claude"
+        body: This task still presents three competing implementation options before saying option (b) is
+          cleanest. The benchmark plans usually leave workers with one concrete path, not an in-task
+          design fork. Tighten the task so the chosen approach, required interface changes, and
+          verification boundary are explicit.
+        created_at: 2026-04-07T07:59:41.078Z
+    kind: question
+  - _ulid: 01KNKF94HK5DH1MNS15HKPWSKT
+    anchor:
+      type: structured
+      ref: "@daemon-task-history-cache"
+    entries:
+      - _ulid: 01KNKF94HM555FN129YCJTV6GM
+        author: "@claude"
+        body: This spec overlaps with the planned @daemon-entity-cache AC update instead of extending it
+          cleanly. Retaining task history in cache is being introduced both as a new feature spec
+          and as a new AC on the existing entity-cache spec, which creates duplicate ownership and
+          review ambiguity. Consolidate the history-retention contract into one place and let the
+          other spec reference it.
+        created_at: 2026-04-07T07:59:57.492Z
+    kind: blocker
+  - _ulid: 01KNKF9A3M8M3F5YFDGFSBAWCT
+    anchor:
+      type: structured
+      ref: "@task-cache-aware-remaining-loaders"
+      section: description
+    entries:
+      - _ulid: 01KNKF9A3MWJQ48J9X98BF051T
+        author: "@claude"
+        body: "This task is much coarser than the benchmark plans: it bundles five loaders across four
+          modules plus mixed index/detail fallback rules into one implementation step. Consider
+          splitting it by domain or file cluster so each task stays independently executable, easier
+          to review, and less likely to hide partial coverage gaps."
+        created_at: 2026-04-07T08:00:03.188Z
+    kind: question
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-07T08:00:42.144Z
+created_at: 2026-04-07T07:58:55.565Z
+updated_at: 2026-04-07T08:00:42.144Z
+notes: []

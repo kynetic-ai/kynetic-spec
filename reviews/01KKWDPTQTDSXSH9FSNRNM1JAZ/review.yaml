@@ -1,0 +1,89 @@
+_ulid: 01KKWDPTQTDSXSH9FSNRNM1JAZ
+slugs: []
+title: Review task-implement-activity-git-query
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 13/13 tests passed in activity-git-query.test.ts
+    name: vitest-activity
+    required: true
+    runner: vitest
+    created_at: 2026-03-16T22:54:43.755Z
+    completed_at: 2026-03-16T22:54:43.755Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 5599/5599 tests passed. 3 failing test files are pre-existing on dev
+      (dispatch-workspace-and-scheduler-flow, dispatch-runtime-bootstrap-contract,
+      agent-dispatch-engine). No regressions.
+    name: full-suite-regression
+    required: true
+    runner: vitest
+    created_at: 2026-03-16T22:54:50.991Z
+    completed_at: 2026-03-16T22:54:50.991Z
+events:
+  - _ulid: 01KKWDPTQPAC4F2BZ7P4KG563Y
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-16T22:54:15.289Z
+  - _ulid: 01KKWDQ2S07FQY3M3V61R2BGX2
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-16T22:54:23.520Z
+  - _ulid: 01KKWDQPJGS98078MY1PNHYEAC
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest-activity
+    timestamp: 2026-03-16T22:54:43.793Z
+  - _ulid: 01KKWDQXMQKXGNDZEFMZC0H4HX
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: full-suite-regression
+    timestamp: 2026-03-16T22:54:51.031Z
+  - _ulid: 01KKWDR4482H9X88QNQWTGRWEB
+    actor: pr-reviewer-agent
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-16T22:54:57.672Z
+  - _ulid: 01KKWDR448MES3VE11PW1RHAFP
+    actor: pr-reviewer-agent
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-16T22:54:57.672Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-implement-activity-git-query"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer-agent
+    role: reviewer
+    created_at: 2026-03-16T22:54:57.629Z
+created_at: 2026-03-16T22:54:15.290Z
+updated_at: 2026-03-16T22:54:57.629Z
+notes: []

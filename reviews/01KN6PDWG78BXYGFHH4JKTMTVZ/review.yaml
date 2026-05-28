@@ -1,0 +1,148 @@
+_ulid: 01KN6PDWG78BXYGFHH4JKTMTVZ
+slugs: []
+title: Review pre-invocation workspace executability validation (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh passed: 2065/2065 suites, 7478 passed, 5 skipped."
+    name: npm-test
+    required: true
+    runner: test-runner
+    created_at: 2026-04-02T09:03:24.994Z
+    completed_at: 2026-04-02T09:03:24.994Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exited 6 with only existing repository warning backlog; no new schema or
+      reference errors introduced by this task.
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-02T09:03:27.526Z
+    completed_at: 2026-04-02T09:03:27.526Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: dispatch-runtime-bootstrap-contract ac-7..ac-10 and trait-error-guidance coverage/N-A
+      annotations are present in tests/dispatch-runtime-bootstrap-contract.test.ts.
+    name: ac-coverage
+    required: false
+    runner: rg
+    created_at: 2026-04-02T09:03:29.768Z
+    completed_at: 2026-04-02T09:03:29.768Z
+events:
+  - _ulid: 01KN6PDWG6RXFP5Z4W5J8YJZSA
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-02T08:54:45.510Z
+  - _ulid: 01KN6PEA0H5Y6R8YCQ0AMEPXAF
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-02T08:54:59.345Z
+  - _ulid: 01KN6PXPC196ZCQ72KABMD1RXC
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN6PXNPSBKG9DVEJW4GZ1H0R
+    timestamp: 2026-04-02T09:03:23.521Z
+  - _ulid: 01KN6PXRKT6NAV0V50SRET3EN4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm-test
+    timestamp: 2026-04-02T09:03:25.818Z
+  - _ulid: 01KN6PXV1XTJQJ08EZSYFGDQ6Z
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-04-02T09:03:28.317Z
+  - _ulid: 01KN6PXX6KTA814VDJHVHDSGHG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-04-02T09:03:30.515Z
+  - _ulid: 01KN6PYDZTN37VSV5Z9A0MEY19
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-02T09:03:47.706Z
+  - _ulid: 01KN6PYDZTFXV8MJ5H90KAQRVD
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-02T09:03:47.706Z
+examined_commit: 4d39d320fa3721dbe60c8b003ff225d92d9e8a3f
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN6J53YQST2TF8BMFJ7GZC7T"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN6PXNPSBKG9DVEJW4GZ1H0R
+    entries:
+      - _ulid: 01KN6PXNPTRR0S9SYG9PH8ACJY
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          Files read: src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts,
+          tests/dispatch-runtime-bootstrap-contract.test.ts, vitest.config.ts
+
+          Commands run: kspec task get @01KN6J53YQST2TF8BMFJ7GZC7T; kspec review for-task
+          @01KN6J53YQST2TF8BMFJ7GZC7T; kspec review get @01KN6MMPTF2KMDJ6DM7WAC2NWG; git diff --stat
+          97615415a87f8458a20728d4acfb8e8b635015bd..4d39d320fa3721dbe60c8b003ff225d92d9e8a3f; git
+          diff 97615415a87f8458a20728d4acfb8e8b635015bd..4d39d320fa3721dbe60c8b003ff225d92d9e8a3f --
+          src/agent-runtime/dispatch.ts; git diff
+          97615415a87f8458a20728d4acfb8e8b635015bd..4d39d320fa3721dbe60c8b003ff225d92d9e8a3f --
+          src/agent-runtime/workspace.ts; git diff
+          97615415a87f8458a20728d4acfb8e8b635015bd..4d39d320fa3721dbe60c8b003ff225d92d9e8a3f --
+          tests/dispatch-runtime-bootstrap-contract.test.ts vitest.config.ts; kspec item get
+          @dispatch-runtime-bootstrap-contract; kspec item get @trait-error-guidance; rg -n "AC:
+          @dispatch-runtime-bootstrap-contract|AC: @trait-error-guidance"
+          tests/dispatch-runtime-bootstrap-contract.test.ts; kspec validate; npm test -- --fresh
+
+          Claims verified: prior blocker fixed by explicit N/A annotations for @trait-error-guidance
+          ac-3..ac-6; pre-invocation validation runs before adapter handoff and blocks instead of
+          launching on failure; recovery path reprovisions, re-bootstraps, and revalidates before
+          launch
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration.
+          No new issues found.
+        created_at: 2026-04-02T09:03:22.842Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-04-02T09:03:47.705Z
+created_at: 2026-04-02T08:54:45.511Z
+updated_at: 2026-04-02T09:03:47.706Z
+notes: []

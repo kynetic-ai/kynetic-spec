@@ -1,0 +1,290 @@
+_ulid: 01KM0TTWAWA3WKZYQ1S91JM8PQ
+slugs: []
+title: Review task-automation-view (cycle 1)
+author: "@claude"
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "1 test failed: review-cli.test.ts 'should leave examined_commit null when not provided' —
+      AssertionError: expected HEAD commit hash to be null. Environment-dependent failure
+      (KSPEC_DISPATCH_CANONICAL_HEAD set in dispatch worktree). 6511 passed, 1 failed, 3 skipped."
+    name: npm test
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T16:01:48.564Z
+    completed_at: 2026-03-18T16:01:48.564Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Reference errors (3) and completeness warnings (396) are pre-existing. No new validation
+      errors introduced by this commit.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-18T16:01:51.527Z
+    completed_at: 2026-03-18T16:01:51.527Z
+events:
+  - _ulid: 01KM0TTWAVDEBPSC42HE6V1SGF
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T16:00:37.212Z
+  - _ulid: 01KM0TV4GN8WXVBAVNED6QPDSG
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T16:00:45.590Z
+  - _ulid: 01KM0TVEX0GESFHZB1WPMQVPJY
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM0TVER2J8PJV89YDSXTA64K
+    timestamp: 2026-03-18T16:00:56.224Z
+  - _ulid: 01KM0TVJBK7TF6PBA857DBV3KY
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM0TVJ6V385QX8WJ7YAY6H8R
+    timestamp: 2026-03-18T16:00:59.763Z
+  - _ulid: 01KM0TVQ4X3KWDPWZAFARSMN82
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM0TVQ05EKXCCH8ZY1XAE9FR
+    timestamp: 2026-03-18T16:01:04.669Z
+  - _ulid: 01KM0TVZ08R7P3ZSDQ2D4XEMP7
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM0TVYVB3DXZN75XJ92EN2QT
+    timestamp: 2026-03-18T16:01:12.712Z
+  - _ulid: 01KM0TW3AP7V0XS8DQJ06D1KK3
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM0TW35M2AMFK4BW8XEC5KR6
+    timestamp: 2026-03-18T16:01:17.142Z
+  - _ulid: 01KM0TW6S7P1SK9NF2XK5TQWBZ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM0TW6MQEZK4FJTJPFE2YMY2
+    timestamp: 2026-03-18T16:01:20.679Z
+  - _ulid: 01KM0TWF1VZ2QQ9189QNEZNVBJ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM0TWEX7CD74QA3ZWZ7V4088
+    timestamp: 2026-03-18T16:01:29.147Z
+  - _ulid: 01KM0TWHVBG8K7QHY8NQW16EQM
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM0TWHNZQYXFV33FGMATAEVY
+    timestamp: 2026-03-18T16:01:32.011Z
+  - _ulid: 01KM0TX25A1WTBRCRYXYZFH0MN
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-18T16:01:48.714Z
+  - _ulid: 01KM0TX52G4DQHAYNFWY0G6T42
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-03-18T16:01:51.696Z
+  - _ulid: 01KM0TXFQ8F7531A99PKJWWRX4
+    actor: pr-reviewer@dispatch
+    event_type: verdict_submitted
+    payload:
+      decision: request_changes
+    timestamp: 2026-03-18T16:02:02.600Z
+  - _ulid: 01KM0TXFQ8FRRGBVRX2RH1M6N8
+    actor: pr-reviewer@dispatch
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T16:02:02.600Z
+examined_commit: 7656f7bb405dee7c1feaae24f00f312fb5d4fedf
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-automation-view"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM0TVER2J8PJV89YDSXTA64K
+    anchor:
+      type: code
+      commit: ""
+      line_end: 1
+      line_start: 1
+      path: packages/web-ui/src/routes/automation/
+      side: head
+    entries:
+      - _ulid: 01KM0TVER328BVC3X7F9K5BA92
+        author: "@claude"
+        body: "Missing +page.ts file for /automation route. Every other route in the web UI has a +page.ts
+          file that disables SSR (export const ssr = false) to prevent Svelte 5 hydration issues.
+          The automation route will fail at build-time or produce hydration errors in production.
+          File needed: packages/web-ui/src/routes/automation/+page.ts with 'export const ssr =
+          false;'"
+        created_at: 2026-03-18T16:00:56.067Z
+    kind: blocker
+  - _ulid: 01KM0TVJ6V385QX8WJ7YAY6H8R
+    anchor:
+      type: code
+      commit: ""
+      line_end: 27
+      line_start: 27
+      path: packages/web-ui/src/lib/components/automation/CompositionsSection.svelte
+      side: head
+    entries:
+      - _ulid: 01KM0TVJ6V3QPDHDBNBXX8MBH4
+        author: "@claude"
+        body: "CompositionsSection.svelte: compositionConfigIds is initialized as empty array
+          (<string[]>([])) and is never populated — no prop from parent, no API call, no user
+          interaction sets it. The component will always show the empty state. AC-6 ('Each config
+          shows its active activations with join progress, member action runs, and timeout status
+          per activation') is functionally unimplemented. The component needs either a
+          list-compositions endpoint or parent-driven config IDs passed as a prop."
+        created_at: 2026-03-18T16:00:59.611Z
+    kind: blocker
+  - _ulid: 01KM0TVQ05EKXCCH8ZY1XAE9FR
+    anchor:
+      type: code
+      commit: ""
+      line_end: 1
+      line_start: 1
+      path: src/cli/commands/review.ts
+      side: head
+    entries:
+      - _ulid: 01KM0TVQ056389BD1Q2HEG4NBA
+        author: "@claude"
+        body: "Out-of-scope changes: The commit modifies src/cli/commands/review.ts,
+          tests/review-cli.test.ts, and tests/review-per-cycle-lifecycle.test.ts — all unrelated to
+          the automation view task. These changes alter the review CLI contract: (1) review check
+          and review verdict now require explicit --version-base/--version-head/--version-hash flags
+          instead of auto-deriving from the review subject, (2) the inline verdict logic bypasses
+          transitionLifecycle() validation that guards against invalid state transitions (e.g.,
+          closing an archived review). These changes should be a separate task. The removed
+          auto-derive behavior was part of @review-cli-mutation-commands ac-2 which now has
+          different semantics."
+        created_at: 2026-03-18T16:01:04.517Z
+    kind: blocker
+  - _ulid: 01KM0TVYVB3DXZN75XJ92EN2QT
+    anchor:
+      type: code
+      commit: ""
+      line_end: 128
+      line_start: 128
+      path: packages/web-ui/src/lib/components/automation/CompositionsSection.svelte
+      side: head
+    entries:
+      - _ulid: 01KM0TVYVBVCH3XCRK322ADZAC
+        author: "@claude"
+        body: "CompositionsSection.svelte line 128: Division by zero risk. The progress bar width
+          calculation (activation.completed_count / activation.total_members) * 100 will produce NaN
+          when total_members is 0. Add a guard: total_members > 0 ? (completed_count / total_members
+          * 100) : 0"
+        created_at: 2026-03-18T16:01:12.555Z
+    kind: blocker
+  - _ulid: 01KM0TW35M2AMFK4BW8XEC5KR6
+    anchor:
+      type: code
+      commit: ""
+      line_end: 1
+      line_start: 1
+      path: packages/web-ui/src/lib/components/automation/HooksSection.svelte
+      side: head
+    entries:
+      - _ulid: 01KM0TW35NAJVXJB2K2KY8MEHH
+        author: "@claude"
+        body: AC-3 (editing hooks/schedules) is only partially implemented. For schedules, there's a manual
+          trigger button but no inline editing of schedule configuration (cron, timezone,
+          overlap_policy). For hooks, the component is display-only with a comment 'editing via
+          config'. The AC says 'When they save changes, the configuration is persisted via the API
+          and the view updates to reflect the change.' Only the dispatch trigger editing (AC-5) has
+          actual inline editing.
+        created_at: 2026-03-18T16:01:16.981Z
+    kind: blocker
+  - _ulid: 01KM0TW6MQEZK4FJTJPFE2YMY2
+    anchor:
+      type: code
+      commit: ""
+      line_end: 1
+      line_start: 1
+      path: packages/web-ui/src/lib/query/ws-invalidation.ts
+      side: head
+    entries:
+      - _ulid: 01KM0TW6MQVXF81WB7FEX5B63D
+        author: "@claude"
+        body: ws-invalidation.ts adds 'automation:updates' topic but the daemon server never broadcasts on
+          this topic. The topic entry in INVALIDATION_TOPICS is dead code. The page instead
+          subscribes to 'agents' and 'tasks:updates' for real-time updates. Either remove the dead
+          automation:updates topic or add a note explaining it's for future use.
+        created_at: 2026-03-18T16:01:20.535Z
+    kind: nit
+  - _ulid: 01KM0TWEX7CD74QA3ZWZ7V4088
+    anchor:
+      type: code
+      commit: ""
+      line_end: 65
+      line_start: 63
+      path: packages/web-ui/src/lib/components/automation/CompositionsSection.svelte
+      side: head
+    entries:
+      - _ulid: 01KM0TWEX7FRXSWDZ9EHFP32K6
+        author: "@claude"
+        body: "CompositionsSection.svelte: Unused variable 'hasActivations' is declared as $derived but
+          never referenced in the template."
+        created_at: 2026-03-18T16:01:29.000Z
+    kind: nit
+  - _ulid: 01KM0TWHNZQYXFV33FGMATAEVY
+    anchor:
+      type: code
+      commit: ""
+      line_end: 14
+      line_start: 6
+      path: packages/web-ui/src/lib/components/automation/CompositionsSection.svelte
+      side: head
+    entries:
+      - _ulid: 01KM0TWHNZKK465MXF1AH4MNTS
+        author: "@claude"
+        body: "CompositionsSection.svelte: Imports createQuery, useQueryClient, fetchAgentDefinitions, and
+          queryKeys but none of them are used. The component uses raw $effect + fetch instead of
+          TanStack Query, which is inconsistent with every other data-fetching component in the web
+          UI."
+        created_at: 2026-03-18T16:01:31.839Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer@dispatch
+    role: reviewer
+    created_at: 2026-03-18T16:02:02.437Z
+created_at: 2026-03-18T16:00:37.212Z
+updated_at: 2026-03-18T16:02:02.437Z
+notes: []

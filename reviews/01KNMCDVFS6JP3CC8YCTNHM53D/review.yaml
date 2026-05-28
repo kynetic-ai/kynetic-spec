@@ -1,0 +1,213 @@
+_ulid: 01KNMCDVFS6JP3CC8YCTNHM53D
+slugs: []
+title: Review task-update-entity-cache-history-ac
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran kspec validate on 2026-04-07. Command exited 6 with the repo's existing global
+      warnings (orphaned specs, invalid AC annotation fixtures, orphaned skill dir) but no
+      task-specific validation error for @daemon-entity-cache; ac-task-history-retention is present
+      in the spec.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-04-07T16:35:25.926Z
+    completed_at: 2026-04-07T16:35:25.926Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran npm test on snapshot 343472d01808d514accacb66d1bb86db4519b37f; full suite reported
+      2078 passed and 2 failed. Failures were deterministic import errors in
+      tests/daemon-read-path.test.ts and tests/daemon-triage-write-through.test.ts against missing
+      dist/daemon modules, reproduced with npm test -- tests/daemon-read-path.test.ts
+      tests/daemon-triage-write-through.test.ts --fresh. Because this snapshot exactly matches the
+      integration target tip and the reviewed task only changed kspec-meta, I treated them as
+      pre-existing and filed follow-up task @01KNMCPT.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-07T16:36:19.188Z
+    completed_at: 2026-04-07T16:36:19.188Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: modules/web-ui.yaml; project.tasks.yaml;
+      tasks/01KNMBPC0GJ184YT6G3T43TNGB/task.yaml; tasks/01KNMBPC0GJ184YT6G3T43TNGB/notes.yaml;
+      src/daemon/entity-cache.ts; src/parser/split-backend.ts; src/parser/task-data-manager.ts;
+      packages/daemon/src/routes/tasks.ts; packages/daemon/src/routes/entity-cache-types.ts;
+      src/cli/commands/task.ts. Commands run: kspec task get, kspec item get, kspec validate, kspec
+      review for-task/get/add/open, git show/log/diff/merge-base, grep and rg AC scans, npm test,
+      npm test -- tests/daemon-read-path.test.ts tests/daemon-triage-write-through.test.ts --fresh.
+      Claims verified: the AC exists in the spec; the task snapshot only changed kspec-meta; task
+      history is stripped before caching and still read separately from disk; no test annotation
+      covers ac-task-history-retention. Categories searched: correctness, test quality, integration,
+      read-path behavior, regression triage."
+    name: review evidence
+    required: false
+    runner: codex
+    created_at: 2026-04-07T16:36:21.777Z
+    completed_at: 2026-04-07T16:36:21.777Z
+events:
+  - _ulid: 01KNMCDVFSYSRSSMHTCK5EF8AQ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-07T16:29:20.761Z
+  - _ulid: 01KNMCEGKHA8RYFY7V1Z1F58DK
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-07T16:29:42.385Z
+  - _ulid: 01KNMCRX7VCCJPJCS6XFPR36TC
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNMCRVR0R6Y201GXGGTGAWTW
+    timestamp: 2026-04-07T16:35:23.003Z
+  - _ulid: 01KNMCS1J9KAGZ2YTMXZ6NBP2W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-07T16:35:27.433Z
+  - _ulid: 01KNMCS6358J273C75ETKRBKWS
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNMCS4HEQ2SHX3VA6KHERNER
+    timestamp: 2026-04-07T16:35:32.069Z
+  - _ulid: 01KNMCTMYRT4NQBAFF736XF8YB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-07T16:36:20.056Z
+  - _ulid: 01KNMCTQH8GHN2AX8CBBV4K1JA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence
+    timestamp: 2026-04-07T16:36:22.696Z
+  - _ulid: 01KNMCTT0XC1WVVHB4K641CFPH
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-07T16:36:25.245Z
+  - _ulid: 01KNMCTT0XFM5NAJPE3FSGMQWM
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-07T16:36:25.245Z
+  - _ulid: 01KNME789W6BPS5364B5HJ9W3K
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNMCRVR0R6Y201GXGGTGAWTW
+    timestamp: 2026-04-07T17:00:41.660Z
+  - _ulid: 01KNME7GZ6BDQ697CV2DW0APDP
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNMCRVR0R6Y201GXGGTGAWTW
+    timestamp: 2026-04-07T17:00:50.534Z
+  - _ulid: 01KNME7WFSSBVZ87H6WPV3G2E1
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNMCS4HEQ2SHX3VA6KHERNER
+    timestamp: 2026-04-07T17:01:02.329Z
+  - _ulid: 01KNME84MHJM3QP96VDPZ7NR2Z
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNMCS4HEQ2SHX3VA6KHERNER
+    timestamp: 2026-04-07T17:01:10.673Z
+examined_commit: 343472d01808d514accacb66d1bb86db4519b37f
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNMBPC0GJ184YT6G3T43TNGB"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNMCRVR0R6Y201GXGGTGAWTW
+    anchor:
+      type: structured
+      field: ac-task-history-retention
+      ref: "@daemon-entity-cache"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KNMCRVR12J25KKK9MKY2M5WB
+        author: Jacob Chapel
+        body: " has no annotated test coverage in this snapshot.  returns no matches, so there is no
+          AC-linked proof that task history is retained and served from cache. Adding a new
+          acceptance criterion without adding or re-annotating a behavioral test leaves the new
+          contract unverified."
+        created_at: 2026-04-07T16:35:21.473Z
+      - _ulid: 01KNME77J38SEHADS6NWTPD2JH
+        author: Jacob Chapel
+        body: Added AC-tagged behavioral coverage in tests/daemon-entity-cache.test.ts for both initial
+          task-domain load and hinted task write-through updates. The new tests verify cached task
+          detail retains field-change history rather than relying on spec-only assertions.
+        created_at: 2026-04-07T17:00:40.899Z
+    kind: blocker
+    resolved_at: 2026-04-07T17:00:49.697Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KNMCS4HEQ2SHX3VA6KHERNER
+    anchor:
+      type: structured
+      field: ac-task-history-retention
+      ref: "@daemon-entity-cache"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KNMCS4HEN0ZGTMVZPAYA1GY0
+        author: Jacob Chapel
+        body: The new AC is not true of the current daemon cache implementation.  only stores  detail
+          objects for the tasks domain (), and  is built from split-task data after
+          stripping  history out of the parsed record (). Current consumers still fetch history
+          through  as a separate disk read (). As written,  claims history is retained in cache and
+          available without rereading the file, but the code path still discards history before
+          caching it.
+        created_at: 2026-04-07T16:35:30.478Z
+      - _ulid: 01KNME7VQY9ZSHSRR5356TFBV2
+        author: Jacob Chapel
+        body: Updated the daemon cache so cached task detail now retains per-task field-change history on
+          both initial tasks-domain loads and incremental task updates. src/daemon/entity-cache.ts
+          now attaches TaskDataManager.getTaskHistory() results before storing task detail, and the
+          AC tests exercise both load paths.
+        created_at: 2026-04-07T17:01:01.566Z
+    kind: blocker
+    resolved_at: 2026-04-07T17:01:09.834Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-07T16:36:25.245Z
+created_at: 2026-04-07T16:29:20.761Z
+updated_at: 2026-04-07T17:01:09.834Z
+notes: []

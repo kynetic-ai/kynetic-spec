@@ -1,0 +1,414 @@
+_ulid: 01KKTVKRB3MNTX1EGF98QKYV8X
+slugs: []
+title: "Review: Review Records Web UI plan (round 7 — diff viewer + revisions)"
+author: "@claude"
+checks: []
+events:
+  - _ulid: 01KKTVKRB3M89C0ZW5R5KT4FS0
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-16T08:18:45.731Z
+  - _ulid: 01KKTVKYVAWZR9RMHJ2CBG3SK0
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-16T08:18:52.394Z
+  - _ulid: 01KKTVR1Y78PZ3FJH6ESVRC4F7
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKTVR1XNKPF715NGARH06V3G
+    timestamp: 2026-03-16T08:21:06.631Z
+  - _ulid: 01KKTVREA64EFXNZX6J4S4S1TT
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKTVRE9NBER2D85VPVMRD3VE
+    timestamp: 2026-03-16T08:21:19.302Z
+  - _ulid: 01KKTVRR3H81DAM7HQ6NKYVAS2
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKTVRR31F3408SRDYCT4Q6T0
+    timestamp: 2026-03-16T08:21:29.329Z
+  - _ulid: 01KKTVS3JZ508BABP2HMQ241YC
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKTVS3JBQB956MEDG81RTV72
+    timestamp: 2026-03-16T08:21:41.087Z
+  - _ulid: 01KKTVSEWE4KMA88AWXX10S6XQ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KKTVSEVZA1VSY52ASDJWQXEX
+    timestamp: 2026-03-16T08:21:52.654Z
+  - _ulid: 01KKTVSS6N8EH7A7RSPVF8A5N4
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KKTVSS64ZWH9MHZRF924902S
+    timestamp: 2026-03-16T08:22:03.222Z
+  - _ulid: 01KKTVT3FCPC5T4B4PVXAFMVEA
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKTVT3ERYXE09J0VTS1W2TBV
+    timestamp: 2026-03-16T08:22:13.740Z
+  - _ulid: 01KKTVTDE0GQ82RGWRTHS6P77D
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKTVTDD9V3PSRCE0W1WCF13G
+    timestamp: 2026-03-16T08:22:23.936Z
+  - _ulid: 01KKTVTTA6F769D7K87Y8FW4Z8
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KKTVTT9K69KNJRV938WF7VAE
+    timestamp: 2026-03-16T08:22:37.126Z
+  - _ulid: 01KKTVV506Y5YJKJ22WFV6QZMK
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKTVV4ZNG580SPNRFT9GJ7Y4
+    timestamp: 2026-03-16T08:22:48.070Z
+  - _ulid: 01KKTVVN1Z7KG1XBT2PC0F4J2V
+    actor: plan-review-agent-r7
+    event_type: verdict_submitted
+    payload:
+      decision: request_changes
+    timestamp: 2026-03-16T08:23:04.511Z
+  - _ulid: 01KKTVY2R4YP3QDSN9XVSM6EFN
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-16T08:24:24.068Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-review-records-web-ui"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KKTVR1XNKPF715NGARH06V3G
+    entries:
+      - _ulid: 01KKTVR1XNA2VZ150A5ZK7X36K
+        author: "@claude"
+        body: >-
+          **BLOCKER: Diff API route pattern `/:base..:head` is not valid Elysia routing**
+
+
+          The plan specifies `GET /api/diff/:base..:head` but Elysia (the daemon's HTTP framework)
+          uses standard route params like `/:ref`. The `..` literal between two params is not a
+          valid Elysia route pattern — it would be interpreted as a single param or fail to match.
+
+
+          **Options:**
+
+          1. Use query params: `GET /api/diff?base=abc&head=def`
+
+          2. Use two path segments: `GET /api/diff/:base/:head`
+
+          3. Use a single param and parse server-side: `GET /api/diff/:range` where range is
+          `abc..def`
+
+
+          Option 3 is closest to the git convention but requires manual parsing. Option 2 is
+          cleanest for Elysia. The same issue applies to `GET /api/diff/:base..:head/:path` and `GET
+          /api/diff/:base..:head/context`.
+
+
+          This affects: review-content-diff-api ac-1, ac-2, ac-3 and task-diff-api.
+        created_at: 2026-03-16T08:21:06.613Z
+    kind: blocker
+  - _ulid: 01KKTVRE9NBER2D85VPVMRD3VE
+    entries:
+      - _ulid: 01KKTVRE9P68AYHD4W7STS971J
+        author: "@claude"
+        body: >-
+          **BLOCKER: Revision selector query assumes `subject-ref` filter but code reviews have no
+          `ref`**
+
+
+          The revision selector (ac-11) and task-review-detail-page both say to query `GET
+          /api/reviews?subject-ref=X` to find sibling reviews. However, the review schema uses a
+          discriminated union for the subject:
+
+
+          - **plan/task/spec reviews** have `subject.ref` (e.g., `@plan-review-records-web-ui`)
+
+          - **code reviews** have NO `ref` — they have `base_commit`, `head_commit`, `base_branch`,
+          `head_branch`
+
+
+          The plan says to match code reviews by "same base-branch/head-branch" but the API spec
+          (review-records-daemon-api ac-1) only lists `subject-ref` as a filter, not
+          `base-branch`/`head-branch`.
+
+
+          **Fix needed:**
+
+          1. Add `base-branch` and `head-branch` as query filters to review-records-daemon-api ac-1
+
+          2. Specify in ac-11 exactly which fields to match for each subject type
+
+          3. Consider: should `subject-ref` filter also search `related_refs`?
+        created_at: 2026-03-16T08:21:19.286Z
+    kind: blocker
+  - _ulid: 01KKTVRR31F3408SRDYCT4Q6T0
+    entries:
+      - _ulid: 01KKTVRR31JE2HFM6T2804XH6G
+        author: "@claude"
+        body: >-
+          **QUESTION: Context expansion route conflicts with single-file diff route**
+
+
+          The task-diff-api description specifies:
+
+          - `GET /api/diff/:base..:head/:path` — single-file diff (lazy loading)
+
+          - `GET /api/diff/:base..:head/context` — expanded context lines
+
+
+          If `:path` is a wildcard param, then `context` would be matched as a path value, not as a
+          literal route segment. These two routes conflict.
+
+
+          **Suggestion:** Use a query param approach for context expansion instead: `GET
+          /api/diff/:range/:path?expand=true&start=N&end=N`, or use a distinct route prefix like
+          `GET /api/diff/:range/expand-context?path=X&start=N&end=N`.
+        created_at: 2026-03-16T08:21:29.313Z
+    kind: blocker
+  - _ulid: 01KKTVS3JBQB956MEDG81RTV72
+    entries:
+      - _ulid: 01KKTVS3JBHP97KJRDCKRH012E
+        author: "@claude"
+        body: >-
+          **NIT: npm package verification — both packages exist and are viable**
+
+
+          Verified:
+
+          - `@git-diff-view/svelte` — exists on npm (from MrWangJustToDo/git-diff-view repo).
+          Provides native Svelte diff components with widget system, split/unified views, syntax
+          highlighting. The plan's description of `renderWidgetLine`, `onAddWidgetClick`, and
+          `extendData` APIs is accurate per the repo docs.
+
+          - `parse-git-diff` — exists on npm (v0.0.19). Zero-dependency parser for raw git diff
+          output. MIT licensed.
+
+
+          Both packages are appropriate choices for the specified use case.
+        created_at: 2026-03-16T08:21:41.067Z
+    kind: nit
+  - _ulid: 01KKTVSEVZA1VSY52ASDJWQXEX
+    entries:
+      - _ulid: 01KKTVSEW08HZ5M5BH7KGCGM6Z
+        author: "@claude"
+        body: >-
+          **QUESTION: review-content-diff-api ac-2 "context expansion" — where do path/start/end
+          params come from?**
+
+
+          ac-2 says "the request includes path, start line, and end line" but doesn't specify the
+          endpoint URL or whether these are query params vs path params. The task description uses
+          `GET /api/diff/:base..:head/context` which doesn't include path/start/end in the URL
+          pattern.
+
+
+          Should this AC specify the exact request format? E.g.: `GET
+          /api/diff/:range/context?path=src/foo.ts&start=10&end=30&commit=abc1234`
+
+
+          Also: the AC says "at the specified commit" — but the route uses base..head range. Which
+          commit should the context be resolved against? Presumably `head` for new-side context and
+          `base` for old-side, but the AC is ambiguous. Consider specifying a `side` or `commit`
+          query param.
+        created_at: 2026-03-16T08:21:52.640Z
+    kind: question
+  - _ulid: 01KKTVSS64ZWH9MHZRF924902S
+    entries:
+      - _ulid: 01KKTVSS64F6JQ0DA7RBH5E14X
+        author: "@claude"
+        body: >-
+          **QUESTION: Should review-records-web-ui use a /reviews/[id] dynamic route?**
+
+
+          The existing web UI routes use flat page patterns (e.g., `/tasks`, `/plans`,
+          `/sessions/[id]`). Only `sessions/[id]` uses a dynamic route param. The plan proposes
+          `/reviews/[id]` which follows the sessions pattern — this is consistent.
+
+
+          However, the current task detail and plan detail pages don't appear to use dynamic routes
+          — they seem to use URL query params or in-page expansion. Is the intent to introduce a new
+          dynamic route pattern for reviews, or should the detail view follow the existing
+          expansion/modal pattern used by tasks and plans?
+
+
+          This is non-blocking — either approach works — but worth confirming the UX intent matches
+          the existing app patterns.
+        created_at: 2026-03-16T08:22:03.204Z
+    kind: question
+  - _ulid: 01KKTVT3ERYXE09J0VTS1W2TBV
+    entries:
+      - _ulid: 01KKTVT3ESK7NBC6DQPRDWK2HT
+        author: "@claude"
+        body: >-
+          **NIT: Dependency chain is correct and well-structured**
+
+
+          The dependency graph is sound:
+
+          - task-review-api-read (no deps) — foundation
+
+          - task-review-api-threads depends on task-review-api-read — correct
+
+          - task-review-api-verdicts depends on task-review-api-read — correct
+
+          - task-review-api-websocket depends on threads + verdicts — correct (needs mutation
+          endpoints to broadcast)
+
+          - task-diff-api (no deps on review API) — correct, independent data source
+
+          - task-review-list-page depends on task-review-api-read — correct
+
+          - task-review-detail-page depends on list page + threads + verdicts — correct
+
+          - task-review-interaction depends on detail page — correct
+
+          - task-code-diff-viewer depends on diff API + detail page + interaction — correct
+
+          - task-structured-content-viewer depends on diff API + detail page + interaction — correct
+
+          - task-review-task-integration depends on review API read — correct
+
+
+          No circular dependencies. Parallelization opportunities are preserved (threads and
+          verdicts can proceed in parallel, code and structured content viewers can proceed in
+          parallel).
+        created_at: 2026-03-16T08:22:13.721Z
+    kind: nit
+  - _ulid: 01KKTVTDD9V3PSRCE0W1WCF13G
+    entries:
+      - _ulid: 01KKTVTDDABYNFNPW3EF969X59
+        author: "@claude"
+        body: |-
+          **NIT: AC coverage is complete across specs and tasks**
+
+          Verified AC-to-task mapping:
+
+          **review-records-daemon-api (10 ACs):**
+          - ac-1, ac-2 → task-review-api-read ✓
+          - ac-3, ac-4, ac-5, ac-10 → task-review-api-threads ✓
+          - ac-6, ac-7, ac-8, ac-10 → task-review-api-verdicts ✓
+          - ac-9 → task-review-api-websocket ✓
+          - ac-10 appears in both thread and verdict tasks (correct — both need error handling)
+
+          **review-content-diff-api (4 ACs):**
+          - ac-1, ac-2, ac-3, ac-4 → task-diff-api ✓
+
+          **review-records-web-ui (11 ACs):**
+          - ac-1, ac-10 → task-review-list-page ✓
+          - ac-2, ac-8, ac-9, ac-10, ac-11 → task-review-detail-page ✓
+          - ac-3, ac-4, ac-5, ac-6 → task-review-interaction ✓
+          - ac-7 → task-review-task-integration ✓
+
+          **review-code-diff-viewer (6 ACs):**
+          - ac-1 through ac-6 → task-code-diff-viewer ✓
+
+          **review-structured-content-viewer (4 ACs):**
+          - ac-1 through ac-4 → task-structured-content-viewer ✓
+
+          All ACs have task coverage. No gaps found.
+        created_at: 2026-03-16T08:22:23.914Z
+    kind: nit
+  - _ulid: 01KKTVTT9K69KNJRV938WF7VAE
+    entries:
+      - _ulid: 01KKTVTT9KYPJTWC8DS11QJ69N
+        author: "@claude"
+        body: >-
+          **QUESTION: review-content-diff-api ac-4 "structured display with section identifiers" —
+          what format?**
+
+
+          ac-4 says the endpoint returns entity content "in a format suitable for structured display
+          with section identifiers." This is vague — what does the response JSON look like?
+
+
+          For plan content: Is it raw markdown? Parsed sections? A tree of headings/blocks?
+
+          For spec content: Is it the raw YAML? Parsed fields as JSON?
+
+
+          The task description says "parse plan markdown into sections (split on ## headings, YAML
+          code blocks)" and "parse spec YAML into structured fields" — but is this parsing done
+          server-side (in the API) or client-side (in the Svelte component)?
+
+
+          If server-side, the API response schema should be specified. If client-side, the API just
+          returns raw text and the AC wording "format suitable for structured display" is
+          misleading.
+
+
+          Recommend: specify the response shape, even informally, so the implementer knows what to
+          return.
+        created_at: 2026-03-16T08:22:37.107Z
+    kind: question
+  - _ulid: 01KKTVV4ZNG580SPNRFT9GJ7Y4
+    entries:
+      - _ulid: 01KKTVV4ZPQ1Q773XYY2ANNMQD
+        author: "@claude"
+        body: >-
+          **NIT: Task descriptions are well-structured with why/what/how**
+
+
+          All 12 tasks follow the required pattern:
+
+          - **Why**: Business motivation clearly stated
+
+          - **What**: Concrete deliverables with specific endpoints, components, and behaviors
+
+          - **How**: Implementation approach referencing existing code patterns and library
+          functions
+
+          - **Covers**: Explicit AC references per task
+
+
+          The task descriptions correctly reference real function names (loadReviewRecords,
+          addThread, addReply, resolveThread, reopenThread, submitVerdict, transitionLifecycle,
+          createCheck, createLocalCheck, mutateReviewAtomically) and real file paths
+          (parser/reviews.ts, parser/review-operations.ts, parser/review-threads.ts,
+          review/checks.ts). All verified to exist in the codebase.
+        created_at: 2026-03-16T08:22:48.054Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: plan-r7-draft
+    decision: request_changes
+    reviewer: plan-review-agent-r7
+    role: reviewer
+    created_at: 2026-03-16T08:23:04.489Z
+created_at: 2026-03-16T08:18:45.731Z
+updated_at: 2026-03-16T08:24:24.046Z
+notes: []

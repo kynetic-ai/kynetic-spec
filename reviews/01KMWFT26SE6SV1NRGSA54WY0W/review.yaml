@@ -1,0 +1,184 @@
+_ulid: 01KMWFT26SE6SV1NRGSA54WY0W
+slugs: []
+title: Review task-migrate-route-handlers-envelope (cycle 4)
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed in review workspace: 1973/1973 suites, 7123 passed, 5 skipped, 7128 total.
+      Duration 3458.1s. Log: /tmp/kspec-test-cache/01KMWFRMWEZYHQM8RCF0TGM4TY/063e20032bf0dfbf.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-29T09:54:11.381Z
+    completed_at: 2026-03-29T09:54:11.381Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 6 with repo-wide existing warnings only; no task-specific schema/reference errors
+      observed. Warnings include baseline orphaned specs/skills and historical AC coverage issues
+      unrelated to this route migration.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-29T09:54:13.386Z
+    completed_at: 2026-03-29T09:54:13.386Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: AGENTS.md, kspec-agents.md,
+      packages/daemon/src/routes/{aggregation,inbox,items,meta,plans,refs,reviews,sessions,tasks,tr\
+      iage,validation,response-envelope}.ts, packages/web-ui/src/lib/api.ts,
+      packages/web-ui/src/lib/components/board/TaskDetailContent.svelte,
+      packages/web-ui/src/lib/components/ItemDetail.svelte,
+      packages/web-ui/src/routes/{sessions/[id],settings,validate,workflows,reviews/[id]}/+page.sve\
+      lte,
+      tests/{api-response-envelope,daemon-api-input-validation,daemon-cache-route-coverage,daemon-r\
+      ead-path}.test.ts, packages/web-ui/tests/e2e/{api-sessions-search,sessions}.spec.ts. Commands
+      run: kspec task get, kspec item get @api-contract, kspec review for-task/get, git
+      diff/stat/name-only, rg AC annotations, kspec validate, npm test. Claims verified: server
+      routes now return wrapResponse envelopes; full test suite passes; previous session-route
+      blockers were fixed. Categories searched: correctness, edge cases/loading states, error
+      handling, test quality, integration."
+    name: review-evidence
+    required: false
+    created_at: 2026-03-29T09:54:15.267Z
+    completed_at: 2026-03-29T09:54:15.267Z
+events:
+  - _ulid: 01KMWFT26SDF8C42VZP943HXTW
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-29T09:46:40.217Z
+  - _ulid: 01KMWFTGZWHP15TC8NAP8QTC16
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-29T09:46:55.356Z
+  - _ulid: 01KMWG7SNQY9EM37WFWWW8FTFP
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMWG7S1X6DY1NJDR7RJNCZMD
+    timestamp: 2026-03-29T09:54:10.231Z
+  - _ulid: 01KMWG7VH48XGWBSNA5N4X53YP
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-29T09:54:12.132Z
+  - _ulid: 01KMWG7XDEJGYHRFXZZ7AQY3N4
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-03-29T09:54:14.063Z
+  - _ulid: 01KMWG7Z7PP06WD97N0B6GKHAH
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-03-29T09:54:15.926Z
+  - _ulid: 01KMWG89168SMNXP7HMA4MMMHM
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-29T09:54:25.958Z
+  - _ulid: 01KMWG8916VXH4Z8CT9KK9AVW9
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-29T09:54:25.958Z
+  - _ulid: 01KMWHHKPPB5Q0JQCHD2J6CVC9
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMWG7S1X6DY1NJDR7RJNCZMD
+    timestamp: 2026-03-29T10:17:00.374Z
+  - _ulid: 01KMWHHWR8W59KWN26AGWKNDXR
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMWG7S1X6DY1NJDR7RJNCZMD
+    timestamp: 2026-03-29T10:17:09.641Z
+examined_commit: dfd20ae3709b032ac181cf04488b97e11b82d689
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMW68KM0EXKESA30EMPW63VY"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMWG7S1X6DY1NJDR7RJNCZMD
+    anchor:
+      type: code
+      commit: dfd20ae3709b032ac181cf04488b97e11b82d689
+      line_end: 172
+      line_start: 155
+      path: packages/web-ui/src/lib/api.ts
+      side: head
+    entries:
+      - _ulid: 01KMWG7S1X7C2EX1GZ6W57KQJQ
+        author: Test User
+        body: The daemon routes are now correctly emitting the unified {data, meta} envelope, but the web UI
+          client only updated a few session helpers and still returns raw response.json() for many
+          migrated read APIs. In this file, fetchTask()/fetchItem()/fetchItemTasks() and later
+          fetchReview()/fetchWorkflows()/fetchTaskSessions()/fetchItemSessions()/fetchSession()/fetchValidation()/fetchAlignment()/fetchConventions()
+          all leak the envelope object to callers typed as bare payloads. Those callers immediately
+          dereference payload fields (for example TaskDetailContent.svelte reads response.items,
+          ItemDetail.svelte reads itemResponse.title and tasksResponse.items,
+          sessions/[id]/+page.svelte reads sessionQuery.data.status, validate/+page.svelte reads
+          validation.schemaErrors, settings/+page.svelte reads conventionsQuery.data.items,
+          workflows/+page.svelte reads workflowsQuery.data.items, reviews/[id]/+page.svelte reads
+          review.subject). That means these pages will render undefined data or break as soon as
+          they hit the migrated daemon, even though the route tests now prove the server returns
+          envelopes (for example tasks.ts:321 and :406, items.ts:451/:522/:667,
+          sessions.ts:645/:700/:774, validation.ts:258/:311). This migration needs to finish the
+          client-side unwrapping for every affected read helper before it is safe to merge.
+        created_at: 2026-03-29T09:54:09.597Z
+      - _ulid: 01KMWHHK49XXD8TMYZG1GY8NH3
+        author: "@claude"
+        body: "Fixed: Added unwrapEnvelope() and unwrapPaginatedEnvelope() helpers to api.ts. Updated all
+          ~30 affected client functions (fetchTask, fetchItem, fetchItemTasks, fetchReview,
+          fetchSession, fetchValidation, fetchAlignment, fetchConventions, fetchWorkflows,
+          fetchAgentDefinitions, fetchPlans, fetchPlanContent, fetchSessions, fetchTaskSessions,
+          fetchItemSessions, fetchSessionContext, fetchProjectConfig, fetchShadowStatus,
+          fetchMergedInbox, fetchValidationAggregation, search, fetchInbox, fetchObservations,
+          fetchTriageRecords, fetchTasks, fetchItems, fetchReviews, fetchReviewsForTask) to unwrap
+          the envelope before returning data to callers. Also updated E2E test mocks in 6 spec files
+          (dashboard, sessions, validate, reviews-detail, code-diff-viewer, smoke) to return the new
+          envelope format. All 7123 tests pass."
+        created_at: 2026-03-29T10:16:59.785Z
+    kind: blocker
+    resolved_at: 2026-03-29T10:17:09.011Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-29T09:54:25.958Z
+created_at: 2026-03-29T09:46:40.217Z
+updated_at: 2026-03-29T10:17:09.011Z
+notes: []

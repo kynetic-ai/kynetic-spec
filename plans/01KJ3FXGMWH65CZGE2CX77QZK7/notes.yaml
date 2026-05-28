@@ -1,0 +1,24 @@
+notes:
+  - _ulid: 01KJ3FXGMWFBP6FGMJH2HRVYMP
+    content: |-
+      Implementation notes:
+
+      Implementation order follows dependency chain:
+      1. Schema first (triage-record-schema) — everything depends on types
+      2. Parser/storage — loadTriageRecords, saveTriageRecord in src/parser/yaml.ts
+      3. CLI + API + Export can parallel after schema
+      4. Web UI last — depends on API routes
+
+      Key patterns to follow:
+      - Schema: src/schema/plan.ts (status lifecycle pattern)
+      - Parser: src/parser/yaml.ts (getXxxFilePath, loadXxx, saveXxx)
+      - CLI: src/cli/commands/inbox.ts (promote logic reuse)
+      - Daemon: packages/daemon/src/routes/inbox.ts (Elysia + pubsub)
+      - Web UI: packages/web-ui/src/routes/inbox/+page.svelte (Svelte 5 reactivity)
+
+      Triage skill integration: Update .claude/skills/triage/SKILL.md and docs/inbox.md
+      to use kspec triage record + kspec triage act instead of directly calling
+      kspec inbox promote/delete. The skill becomes the orchestrator that creates
+      persistent triage records, and the user can review/override via web UI.
+    author: "@claude"
+    created_at: 2026-02-22T20:16:08.860Z

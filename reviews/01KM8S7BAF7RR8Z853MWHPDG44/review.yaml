@@ -1,0 +1,149 @@
+_ulid: 01KM8S7BAF7RR8Z853MWHPDG44
+slugs: []
+title: Review task-build-migration (cycle 3)
+author: Test User
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "6912 passed, 1 failed, 3 skipped. Current failure:
+      tests/agent-invocation-lifecycle.test.ts:1646 timed out after 15000ms in 'should NOT call
+      shadowAutoCommit after failed invocation'. Separate isolated rerun of
+      tests/agent-invocation-lifecycle.test.ts passed, so this appears flaky/unrelated, but the full
+      required suite did not pass."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-21T18:15:14.346Z
+    completed_at: 2026-03-21T18:15:14.346Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation completed with repo-wide pre-existing warnings only (orphaned specs/skills and
+      invalid AC annotations in dedicated validation tests); no task-specific schema or reference
+      errors were introduced by this snapshot.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-21T18:15:15.396Z
+    completed_at: 2026-03-21T18:15:15.396Z
+events:
+  - _ulid: 01KM8S7BAF5Z3Y5BF2WQSZ5230
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T18:06:24.079Z
+  - _ulid: 01KM8S82Z4BVK2GJ6DFGW8ZPM9
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T18:06:48.292Z
+  - _ulid: 01KM8SHV6E7F1CXASAJ1FANB08
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM8SHTWEHK5YCTDXN8CHZ33X
+    timestamp: 2026-03-21T18:12:08.014Z
+  - _ulid: 01KM8SQHFTA0B7ZFMT6EEHCJC3
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-21T18:15:14.683Z
+  - _ulid: 01KM8SQJFNRTHGNP4K74ADR164
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-21T18:15:15.701Z
+  - _ulid: 01KM8SQKK271F95RC5RB4NACYA
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-21T18:15:16.834Z
+  - _ulid: 01KM8SQKK2JH7ADREXSW5QNM2X
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-21T18:15:16.834Z
+  - _ulid: 01KM8SQP2HKP3K48V61CB0N63D
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM8SQNSF3MME3DF7J624V74K
+    timestamp: 2026-03-21T18:15:19.377Z
+examined_commit: d272c3a0e66962b616ef8f6bf63e661fa80191a6
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YEWY1WSKEXTF5YNP5GG81"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM8SHTWEHK5YCTDXN8CHZ33X
+    anchor:
+      type: code
+      commit: d272c3a0e66962b616ef8f6bf63e661fa80191a6
+      line_end: 3255
+      line_start: 3247
+      path: src/cli/commands/task.ts
+      side: head
+    entries:
+      - _ulid: 01KM8SHTWEVPTW4JBX2D99TTKW
+        author: Test User
+        body: "Malformed non-empty _ulid values are still migrated verbatim instead of being regenerated.
+          This branch only replaces _ulid when it is missing or empty, so a task like '_ulid:
+          not-a-valid-ulid' is written to .kspec/tasks/not-a-valid-ulid/ and kept in
+          project.tasks.yaml. That reintroduces the blocker from the previous cycle and violates the
+          split-storage contract that task directories are ULID-named. I reproduced it against this
+          snapshot with the current CLI in a temp project: the command exited 0, printed a
+          validation warning, and created .kspec/tasks/not-a-valid-ulid/{task,notes}.yaml."
+        created_at: 2026-03-21T18:12:07.694Z
+    kind: blocker
+  - _ulid: 01KM8SQNSF3MME3DF7J624V74K
+    entries:
+      - _ulid: 01KM8SQNSFE75NPVC0AQ4M4QZN
+        author: Test User
+        body: "Evidence log:\\nFiles read: src/cli/commands/task.ts, src/parser/split-backend.ts,
+          src/schema/task.ts, tests/task-migrate.test.ts.\\nCommands run: kspec task get
+          @01KM6YEWY1WSKEXTF5YNP5GG81; kspec review get @01KM8RHZ8DKY6EJ2GAFR9JBFHY; git diff
+          87331ee1e9d640686caa51de93719322fb0c1a82...d272c3a0e66962b616ef8f6bf63e661fa80191a6;
+          grep/rg for AC annotations and ULID handling; kspec validate; npm test twice; isolated
+          rerun of tests/agent-invocation-lifecycle.test.ts; temp-project CLI repro with malformed
+          _ulid.\\nClaims verified: the previous blocker about malformed _ulid handling is still
+          present; canonical split data path for already-migrated entries appears fixed by the new
+          regression tests.\\nCategories searched: correctness (found malformed _ulid regression),
+          edge cases (missing/malformed ULIDs, mixed formats, already-migrated data), error handling
+          (validation-warning path, dry-run path), test quality (checked AC annotations and added
+          regressions in this snapshot), integration (index rebuild against split-backend ULID
+          directory contract)."
+        created_at: 2026-03-21T18:15:19.087Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-21T18:15:16.834Z
+created_at: 2026-03-21T18:06:24.079Z
+updated_at: 2026-03-21T18:15:19.087Z
+notes: []

@@ -1,0 +1,281 @@
+_ulid: 01KQXCSWEA8NKFB23BDNCR8DVC
+slugs: []
+title: Review task-update-config-daemon-endpoint-ac
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0. Validation passed with warnings allowed; verbose output shows pre-existing warning
+      volume plus task-relevant stale @config-daemon ac-5/ac-6 annotations, recorded separately as
+      blockers.
+    name: kspec validate --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-06T01:11:55.072Z
+    completed_at: 2026-05-06T01:11:55.072Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: rg found stale @config-daemon ac-5/ac-6 annotations in tests/parser/config.test.ts:85,
+      tests/parser/config.test.ts:286, and src/parser/config.ts:699 after the spec renamed those
+      ACs. kspec validate --warnings-ok -v confirms missing AC warnings for the two test
+      annotations.
+    name: AC annotation integrity
+    required: true
+    runner: rg+kspec
+    created_at: 2026-05-06T01:12:08.183Z
+    completed_at: 2026-05-06T01:12:08.183Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite: 1 failed, 8544 passed, 5 skipped; failing test tests/session-create.test.ts:
+      Environment Injection injectEnvForAdapter / removeEnvForAdapter should resolve codex-acp as a
+      registered adapter. Focused rerun with npm test -- tests/session-create.test.ts --fresh failed
+      the same way. The failure is from this detached snapshot being behind dev; dev has
+      d827bf98/91354aec fixing the expectation."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-06T01:12:18.360Z
+    completed_at: 2026-05-06T01:12:18.360Z
+events:
+  - _ulid: 01KQXCSWE995HBKWCB9T33400Z
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-06T01:00:28.490Z
+  - _ulid: 01KQXCTR7C5VMT0CH20J6X4XH6
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-06T01:00:56.940Z
+  - _ulid: 01KQXDE3TBTDTGCYS7R5PM2AC2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQXDE2KVBP34C6ZZ0VKMMD1Q
+    timestamp: 2026-05-06T01:11:31.403Z
+  - _ulid: 01KQXDE79Z2KRZ9JNT3SY83WNM
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQXDE60K7E7680XQGRGYCYXP
+    timestamp: 2026-05-06T01:11:34.975Z
+  - _ulid: 01KQXDEATKEAQ7A2BRHMM7Z0V0
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQXDE9M08PJPKJV0GY1VN253
+    timestamp: 2026-05-06T01:11:38.579Z
+  - _ulid: 01KQXDEW4XW3FPK09MWWBP4YDX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --warnings-ok
+    timestamp: 2026-05-06T01:11:56.317Z
+  - _ulid: 01KQXDF8XRWHZWKQS8YFDN6Q3Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: AC annotation integrity
+    timestamp: 2026-05-06T01:12:09.400Z
+  - _ulid: 01KQXDFJTWRZAZ692HEWYCDKKX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-05-06T01:12:19.548Z
+  - _ulid: 01KQXDG15RAJBNFHB8F7AF9H3K
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KQXDG011D3NPXSGNBZYYTMEX
+    timestamp: 2026-05-06T01:12:34.232Z
+  - _ulid: 01KQXDGCB2D9S253TQR19RHZS8
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-06T01:12:45.666Z
+  - _ulid: 01KQXDGCB25T1CVJA6M1YNGAZZ
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-06T01:12:45.666Z
+  - _ulid: 01KQXEEFBRR03BXZKYN906E650
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQXDE2KVBP34C6ZZ0VKMMD1Q
+    timestamp: 2026-05-06T01:29:11.800Z
+  - _ulid: 01KQXEEY6QBTKCD1274929MGDT
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQXDE2KVBP34C6ZZ0VKMMD1Q
+    timestamp: 2026-05-06T01:29:26.999Z
+  - _ulid: 01KQXEF3VFVB8KR05FEDCGDJG2
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQXDE60K7E7680XQGRGYCYXP
+    timestamp: 2026-05-06T01:29:32.783Z
+  - _ulid: 01KQXEF93GYM4T2D2G12EJA7ZX
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQXDE60K7E7680XQGRGYCYXP
+    timestamp: 2026-05-06T01:29:38.161Z
+  - _ulid: 01KQXEFEP3HDEDG39E9G84XKA6
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQXDE9M08PJPKJV0GY1VN253
+    timestamp: 2026-05-06T01:29:43.875Z
+  - _ulid: 01KQXEFKZXVS2WT27Y21ZSTBJ3
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQXDE9M08PJPKJV0GY1VN253
+    timestamp: 2026-05-06T01:29:49.309Z
+examined_commit: 9981f4ac54e5f26fdfe1bbc72bfe9264bfa816ec
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQWZZFDFPSHHNAGVB8NAXJRJ"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQXDE2KVBP34C6ZZ0VKMMD1Q
+    anchor:
+      type: code
+      commit: 9981f4ac54e5f26fdfe1bbc72bfe9264bfa816ec
+      line_end: 85
+      line_start: 85
+      path: tests/parser/config.test.ts
+      side: head
+    entries:
+      - _ulid: 01KQXDE2KWYFVV60GWKDTK13KM
+        author: Jacob Chapel
+        body: "MUST-FIX: @config-daemon no longer has ac-5 after this spec update, but this test annotation
+          still targets @config-daemon ac-5. Evidence: kspec validate --warnings-ok -v reports
+          'Missing AC: @config-daemon ac-5' at tests/parser/config.test.ts:85. Update the annotation
+          to the new AC id that this behavioral test proves (likely ac-host-config) so coverage
+          points at an existing criterion."
+        created_at: 2026-05-06T01:11:30.172Z
+      - _ulid: 01KQXEEE5SEAQYWWHWHJD17BWP
+        author: "@claude"
+        body: "Fixed: updated tests/parser/config.test.ts:85 annotation from '@config-daemon ac-5' to
+          '@config-daemon ac-host-config'. Validation now reports zero @config-daemon missing-AC
+          warnings."
+        created_at: 2026-05-06T01:29:10.585Z
+    kind: blocker
+    resolved_at: 2026-05-06T01:29:25.806Z
+    resolved_by: "@claude"
+  - _ulid: 01KQXDE60K7E7680XQGRGYCYXP
+    anchor:
+      type: code
+      commit: 9981f4ac54e5f26fdfe1bbc72bfe9264bfa816ec
+      line_end: 286
+      line_start: 286
+      path: tests/parser/config.test.ts
+      side: head
+    entries:
+      - _ulid: 01KQXDE60KY5ZA4SN19J3TNZQQ
+        author: Jacob Chapel
+        body: "MUST-FIX: @config-daemon no longer has ac-6 after this spec update, but this test annotation
+          still targets @config-daemon ac-6. Evidence: kspec validate --warnings-ok -v reports
+          'Missing AC: @config-daemon ac-6' at tests/parser/config.test.ts:286. Update the
+          annotation to the new AC id this test proves (likely ac-host-env-precedence) so validation
+          no longer carries stale coverage metadata."
+        created_at: 2026-05-06T01:11:33.651Z
+      - _ulid: 01KQXEF2NERC0JBJGTEDJGT9C3
+        author: "@claude"
+        body: "Fixed: updated tests/parser/config.test.ts:286 annotation from '@config-daemon ac-6' to
+          '@config-daemon ac-host-env-precedence'. Also added '@config-daemon
+          ac-port-env-precedence' on the same test since it asserts both KSPEC_DAEMON_PORT and
+          KSPEC_DAEMON_HOST overriding their config-file counterparts."
+        created_at: 2026-05-06T01:29:31.566Z
+    kind: blocker
+    resolved_at: 2026-05-06T01:29:36.964Z
+    resolved_by: "@claude"
+  - _ulid: 01KQXDE9M08PJPKJV0GY1VN253
+    anchor:
+      type: code
+      commit: 9981f4ac54e5f26fdfe1bbc72bfe9264bfa816ec
+      line_end: 699
+      line_start: 699
+      path: src/parser/config.ts
+      side: head
+    entries:
+      - _ulid: 01KQXDE9M130G8QQSWT7ACY7SN
+        author: Jacob Chapel
+        body: "MUST-FIX: this source annotation still points to the removed @config-daemon ac-5/ac-6 ids.
+          The task renamed those criteria to ac-host-config and ac-host-env-precedence, so leaving
+          stale IDs here breaks traceability for the daemon host/env behavior. Update this comment
+          to the current AC ids along with the test annotations."
+        created_at: 2026-05-06T01:11:37.345Z
+      - _ulid: 01KQXEFDERMNHBZ1ND4J0K91P4
+        author: "@claude"
+        body: "Fixed: updated src/parser/config.ts:699 from '@config-daemon ac-5 ac-6 — host from
+          config/env' to '@config-daemon ac-host-default ac-host-config ac-host-env-precedence —
+          host from env/config/default'. The host = envHost ?? file.daemon?.host ??
+          DEFAULT_CONFIG.daemon.host chain implements all three precedence ACs, so the annotation
+          now lists each."
+        created_at: 2026-05-06T01:29:42.615Z
+    kind: blocker
+    resolved_at: 2026-05-06T01:29:48.128Z
+    resolved_by: "@claude"
+  - _ulid: 01KQXDG011D3NPXSGNBZYYTMEX
+    entries:
+      - _ulid: 01KQXDG011F1ER24E4CXP68HV3
+        author: Jacob Chapel
+        body: "Review evidence log:\\nFiles read: kspec-agents.md; @config-daemon via kspec item get;
+          @trait-localhost-security and @trait-error-guidance via kspec item get;
+          tests/parser/config.test.ts around lines 85 and 286; src/parser/config.ts around line 699;
+          tests/session-create.test.ts and src/agents/adapters.ts around the npm test failure; git
+          history around HEAD/dev.\\nCommands run: kspec task get @01KQWZZFDFPSHHNAGVB8NAXJRJ; kspec
+          review add/open; kspec item get @config-daemon; kspec item get @trait-localhost-security;
+          kspec item get @trait-error-guidance; kspec validate --warnings-ok; kspec validate
+          --warnings-ok -v filtered for config-daemon; rg for @config-daemon annotations; npm test;
+          npm test -- tests/session-create.test.ts --fresh; git log/rev-parse comparison.\\nClaims
+          verified: worker claim that @config-daemon description and requested ACs were updated is
+          true by kspec item get; worker claim that kspec validate --warnings-ok exits 0 is true;
+          however verbose validation and annotation search show stale ac-5/ac-6 metadata
+          remains.\\nCategories searched: spec alignment, AC annotation integrity, validation
+          behavior, test quality/coverage metadata, integration branch freshness, and full-suite
+          regression signal."
+        created_at: 2026-05-06T01:12:33.057Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-06T01:12:45.666Z
+created_at: 2026-05-06T01:00:28.490Z
+updated_at: 2026-05-06T01:29:48.128Z
+notes: []

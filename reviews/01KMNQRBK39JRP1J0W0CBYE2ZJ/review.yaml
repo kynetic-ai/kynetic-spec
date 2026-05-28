@@ -1,0 +1,374 @@
+_ulid: 01KMNQRBK39JRP1J0W0CBYE2ZJ
+slugs: []
+title: Review task-remove-monolithic (cycle 3)
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      ✓ Validation passed
+
+      ────────────────────────────────────────
+
+      Files checked: 10
+
+      Items checked: 566
+
+      Tasks checked: 0
+
+      Meta: 10 agents, 11 workflows, 10 conventions
+
+
+      Schema: OK
+
+      References: OK
+
+
+      Reference warnings: 1
+        ⚠ @skills
+          Orphaned skill directory 'skills' has no corresponding meta entry
+          in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+      Alignment warnings: 34
+        Orphaned specs (no tasks): 30
+          ○ Test Trait
+          ○ Filterable List Commands
+          ○ Dry Run Preview Mode
+          ... and 27 more
+        Status mismatches: 4
+          ! Task Set Batch Support
+            Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+          ! Lazy Shadow Sync on Reads
+            Spec "Lazy Shadow Sync on Reads" status is "implemented" but should be "in_progress" based on task progress
+          ! Session Summary Cache
+            Spec "Session Summary Cache" status is "implemented" but should be "in_progress" based on task progress
+          ! Multi-Directory Daemon Architecture
+            Spec "Multi-Directory Daemon Architecture" status is "implemented" but should be "in_progress" based on task progress
+
+      Alignment stats: 403/566 specs have tasks, 399 aligned
+
+
+      Completeness warnings: 489
+        Missing acceptance criteria: 1
+          ○ @01KJN1WT - Test Trait
+        Missing own AC coverage: 233
+          ! @spec-item - Spec Item
+            Uncovered: ac-item-1, ac-item-2
+          ! @ulid-system - ULID Identifier System
+            Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+          ! @slug-system - Slug Alias System
+            Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+          ... and 230 more
+        Invalid AC annotations: 255
+          ! AC annotation references '@slug' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-remove-monolithic-01km6yey-review/tests/ac-annotation-validation.test.ts:6
+          ! AC annotation references '@my-spec' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-remove-monolithic-01km6yey-review/tests/ac-annotation-validation.test.ts:84
+          ! AC annotation references '@my-spec' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-remove-monolithic-01km6yey-review/tests/ac-annotation-validation.test.ts:87
+          ! AC annotation references '@spec-a' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-remove-monolithic-01km6yey-review/tests/ac-annotation-validation.test.ts:114
+          ! AC annotation references '@spec-b' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-remove-monolithic-01km6yey-review/tests/ac-annotation-validation.test.ts:118
+          ... and 250 more
+      Skills: OK (10 files checked) returned warnings only (exit 6): no schema/reference errors, but
+      the repo still has its existing warning set.
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-26T18:58:31.959Z
+    completed_at: 2026-03-26T18:58:31.959Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test failed on this snapshot in full-suite mode at
+      tests/agent-invocation-lifecycle.test.ts > No shadow commit on session close > should NOT call
+      shadowAutoCommit after timed-out invocation. Rerunning that file alone passed, so the failure
+      is flaky rather than deterministic, but the required full-suite gate did not pass.
+    name: npm-test
+    required: true
+    runner: npm
+    created_at: 2026-03-26T19:01:28.067Z
+    completed_at: 2026-03-26T19:01:28.067Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate returned warnings only (exit 6): no schema/reference errors, but the
+      repository still has its existing warning set."
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-26T19:02:36.740Z
+    completed_at: 2026-03-26T19:02:36.740Z
+events:
+  - _ulid: 01KMNQRBK3AP1104NTG97RGP8D
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-26T18:50:51.875Z
+  - _ulid: 01KMNQSHYSKJKJ0EK5RR7X8Q0H
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-26T18:51:31.161Z
+  - _ulid: 01KMNR68BYWN10JJ4VV69SPJEC
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMNR679FPNV1JKG919N3C2B4
+    timestamp: 2026-03-26T18:58:27.326Z
+  - _ulid: 01KMNR6DN53SE0KVGJKH4Q60P8
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-26T18:58:32.741Z
+  - _ulid: 01KMNR72J4GQMJY7SFTTVZFE64
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMNR71QJDFY8A792RTH8FJCV
+    timestamp: 2026-03-26T18:58:54.148Z
+  - _ulid: 01KMNR9PSCT5CZWX01BQME79N8
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMNR9P8JGQ640KSZH08BVWKZ
+    timestamp: 2026-03-26T19:00:20.396Z
+  - _ulid: 01KMNRA15KA4GJG7NJDHDVZHE1
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMNRA0P3C3B7MV1VYE9D6P10
+    timestamp: 2026-03-26T19:00:31.027Z
+  - _ulid: 01KMNRBESD90V7ETK5T23J05KS
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMNRBED2P5NP5VAT6GE2RZTS
+    timestamp: 2026-03-26T19:01:17.741Z
+  - _ulid: 01KMNRBSBS4FX2RKQ21H6Z9PSR
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm-test
+    timestamp: 2026-03-26T19:01:28.569Z
+  - _ulid: 01KMNRDWQ8VJX3RV79EVR2F4V3
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-26T19:02:37.545Z
+  - _ulid: 01KMNRE4FTC0BB7MD5QGKG0J95
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-26T19:02:45.498Z
+  - _ulid: 01KMNRE4FT1757Q3VV939GKFJV
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-26T19:02:45.498Z
+  - _ulid: 01KMP7PDJZ758YSVT7MJZH23KK
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMNR679FPNV1JKG919N3C2B4
+    timestamp: 2026-03-26T23:29:25.599Z
+  - _ulid: 01KMP7PEY4W39XZVZD298CCEPF
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMNR679FPNV1JKG919N3C2B4
+    timestamp: 2026-03-26T23:29:26.980Z
+  - _ulid: 01KMP7PG7RHBEVR5TKH0YWVZH0
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMNR9P8JGQ640KSZH08BVWKZ
+    timestamp: 2026-03-26T23:29:28.312Z
+  - _ulid: 01KMP7PHGPT519RCQ5QJJYR9W9
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMNR9P8JGQ640KSZH08BVWKZ
+    timestamp: 2026-03-26T23:29:29.622Z
+  - _ulid: 01KMP7PJTA7KPRYJJS98YZ0YDP
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMNRA0P3C3B7MV1VYE9D6P10
+    timestamp: 2026-03-26T23:29:30.954Z
+  - _ulid: 01KMP7PM4W2N9F5A2D1QJPJCYD
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMNRA0P3C3B7MV1VYE9D6P10
+    timestamp: 2026-03-26T23:29:32.316Z
+  - _ulid: 01KMP7PNGGA0THSAF5E91BZAVV
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMNR71QJDFY8A792RTH8FJCV
+    timestamp: 2026-03-26T23:29:33.712Z
+  - _ulid: 01KMP7PPVB020D4P3MYH9ET1D3
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMNR71QJDFY8A792RTH8FJCV
+    timestamp: 2026-03-26T23:29:35.084Z
+examined_commit: 9971c42b49331334930881e8e6291b3bf041d99b
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YEYAEWFKETRCB53V73HHK"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMNR679FPNV1JKG919N3C2B4
+    anchor:
+      type: code
+      commit: 9971c42b49331334930881e8e6291b3bf041d99b
+      line_end: 549
+      line_start: 504
+      path: src/parser/doctor.ts
+      side: head
+    entries:
+      - _ulid: 01KMNR679FSRB3ENFJYJ2VZA2W
+        author: Test User
+        body: This adds a new task-storage doctor check, but the owning doctor contract was not updated to
+          cover it and there is still no behavioral test for it. kspec item get @doctor-command
+          still describes doctor as shadow/setup/daemon only, and tests/parser/doctor.test.ts
+          contains no assertions for taskStorage, task-storage-format, or the new legacy/split
+          messages. That leaves an exit-code-affecting user-visible behavior outside the source of
+          truth and without regression coverage.
+        created_at: 2026-03-26T18:58:26.223Z
+      - _ulid: 01KMP7PD26X85SQG9B2VCG62V0
+        author: "@claude"
+        body: "Fixed: Added @doctor-command ac-task-storage to the spec and 5 behavioral tests covering all
+          three check outcomes (ok/warning/error), graceful skip, and overall verdict contribution.
+          Also fixed a bug where buildTaskStorageSection hardcoded 'kynetic.yaml' instead of using
+          findManifestInDir — slug-based manifests (e.g., test-project.yaml) were silently skipped."
+        created_at: 2026-03-26T23:29:25.062Z
+    kind: blocker
+    resolved_at: 2026-03-26T23:29:26.446Z
+    resolved_by: "@claude"
+  - _ulid: 01KMNR71QJDFY8A792RTH8FJCV
+    entries:
+      - _ulid: 01KMNR71QJNQK3KJKX634NRYXZ
+        author: codex
+        body: smoke test comment
+        created_at: 2026-03-26T18:58:53.298Z
+      - _ulid: 01KMP7PMYWFT55N13Q0FHT7ZGF
+        author: "@claude"
+        body: Acknowledged.
+        created_at: 2026-03-26T23:29:33.148Z
+    kind: nit
+    resolved_at: 2026-03-26T23:29:34.540Z
+    resolved_by: "@claude"
+  - _ulid: 01KMNR9P8JGQ640KSZH08BVWKZ
+    anchor:
+      type: code
+      commit: 9971c42b49331334930881e8e6291b3bf041d99b
+      line_end: 549
+      line_start: 504
+      path: src/parser/doctor.ts
+      side: head
+    entries:
+      - _ulid: 01KMNR9P8JE7X5W76A637K3TRK
+        author: codex
+        body: This adds a new task-storage doctor check, but the owning doctor contract was not updated to
+          cover it and there is still no behavioral test for it. kspec item get @doctor-command
+          still describes doctor as shadow/setup/daemon only, and tests/parser/doctor.test.ts
+          contains no assertions for taskStorage, task-storage-format, or the new legacy/split
+          messages. That leaves an exit-code-affecting user-visible behavior outside the source of
+          truth and without regression coverage.
+        created_at: 2026-03-26T19:00:19.858Z
+      - _ulid: 01KMP7PFQKE4DXGJW5JAB8BES6
+        author: "@claude"
+        body: "Fixed: Same as above — added spec AC and 5 behavioral tests for the doctor task-storage
+          check. Fixed manifest path resolution bug."
+        created_at: 2026-03-26T23:29:27.795Z
+    kind: blocker
+    resolved_at: 2026-03-26T23:29:29.114Z
+    resolved_by: "@claude"
+  - _ulid: 01KMNRA0P3C3B7MV1VYE9D6P10
+    anchor:
+      type: code
+      commit: 9971c42b49331334930881e8e6291b3bf041d99b
+      line_end: 1679
+      line_start: 1656
+      path: tests/agent-invocation-lifecycle.test.ts
+      side: head
+    entries:
+      - _ulid: 01KMNRA0P389B1MGE9DKH659D5
+        author: codex
+        body: The required full-suite gate is still not green on this snapshot. My npm test run failed in
+          full-suite mode at this timed-out-invocation assertion even though the file passed when
+          rerun alone, so the branch still does not satisfy the task requirement to verify the full
+          test suite passes. Until the suite is stable under the normal npm test entrypoint, this
+          task is not ready to merge.
+        created_at: 2026-03-26T19:00:30.531Z
+      - _ulid: 01KMP7PJAND5B02T8G67SAB22H
+        author: "@claude"
+        body: "Fixed: Full suite now passes consistently (verified 2 consecutive runs, 301 files, 6825
+          tests). Three changes: (1) Added { timeout: 120_000 } to 'Skill resolution' describe block
+          that was missing it entirely, (2) Increased all describe block timeouts from 60s to 120s
+          for consistency across the file, (3) Fixed the shadow commit timeout test race condition —
+          increased MOCK_ACP_DELAY_MS to 30s and timeoutMinutes to 0.05 (3s) so the mock process has
+          time to start before the invocation timeout fires under heavy concurrent load."
+        created_at: 2026-03-26T23:29:30.453Z
+    kind: blocker
+    resolved_at: 2026-03-26T23:29:31.817Z
+    resolved_by: "@claude"
+  - _ulid: 01KMNRBED2P5NP5VAT6GE2RZTS
+    entries:
+      - _ulid: 01KMNRBED2Y11NCQE5R682A9BH
+        author: codex
+        body: "Evidence log: Files read: src/parser/task-data-manager.ts, src/parser/doctor.ts,
+          src/cli/commands/task.ts, src/cli/commands/doctor.ts, src/parser/yaml.ts,
+          tests/legacy-format-detection.test.ts, tests/parser/doctor.test.ts,
+          tests/agent-invocation-lifecycle.test.ts. Commands run: kspec task get, kspec review
+          for-task/get, git diff/stat, kspec validate, kspec item get
+          @task-storage-migration/@task-storage-activation/@doctor-command/@task-data-manager, npm
+          test, npm test -- tests/agent-invocation-lifecycle.test.ts, targeted searches, and a
+          manual doctor --json repro on a legacy manifest. Claims verified: manifest upgrade on
+          migrate, legacy runtime gate, split-only default, doctor task-storage output path, and the
+          full-suite gate behavior. Categories searched: correctness, spec alignment, test quality,
+          integration, error handling, and gate stability."
+        created_at: 2026-03-26T19:01:17.346Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-26T19:02:45.497Z
+created_at: 2026-03-26T18:50:51.875Z
+updated_at: 2026-03-26T23:29:34.540Z
+notes: []

@@ -1,0 +1,142 @@
+_ulid: 01KM4990NW27N2DBW6TFE9MZCY
+slugs: []
+title: Review shared-checkout drift detection and safe repair
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed after environment prep. 286 files, 6610 tests, 3 skipped, 0 failed.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-20T00:16:32.145Z
+    completed_at: 2026-03-20T00:16:32.145Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Pre-existing repo-wide validation failures unrelated to this task: 3 missing refs in
+      .kspec/modules/meta.yaml plus existing alignment/completeness warnings."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-20T00:16:32.919Z
+    completed_at: 2026-03-20T00:16:32.919Z
+events:
+  - _ulid: 01KM4990NWPMQDR5CV4H1QS3BG
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-20T00:10:43.772Z
+  - _ulid: 01KM499MX3WGEG9YENFQ4T4GD3
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-20T00:11:04.483Z
+  - _ulid: 01KM49KN4B8F37R1S1VQM3S6A7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-20T00:16:32.395Z
+  - _ulid: 01KM49KNX10C7W1GG02RX5WVPP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-03-20T00:16:33.185Z
+  - _ulid: 01KM49KPNHVFA9YSN4XY105RYM
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM49KPEQGXR7ZQCXQYZN8PAW
+    timestamp: 2026-03-20T00:16:33.969Z
+  - _ulid: 01KM49M7Q0FH09TRB3QD81V89G
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-20T00:16:51.424Z
+  - _ulid: 01KM49M7Q0K2VBDNNSEKYB7PZH
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-20T00:16:51.424Z
+  - _ulid: 01KM4ASM4ZBZFAAQCRQ4DH5K0Y
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KM49KPEQGXR7ZQCXQYZN8PAW
+    timestamp: 2026-03-20T00:37:16.576Z
+  - _ulid: 01KM4ASMS85VF3YBY5J31QHZGP
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM49KPEQGXR7ZQCXQYZN8PAW
+    timestamp: 2026-03-20T00:37:17.224Z
+examined_commit: 05e31856c8a3ccf29936c1b0df5efe5902a98977
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM3ZMF9C5B3JEDTE4AR74K46"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM49KPEQGXR7ZQCXQYZN8PAW
+    anchor:
+      type: code
+      commit: 05e31856c8a3ccf29936c1b0df5efe5902a98977
+      line_end: 470
+      line_start: 438
+      path: src/agent-runtime/workspace.ts
+      side: head
+    entries:
+      - _ulid: 01KM49KPEQ5YA1JF4V5TWHBZKX
+        author: Jacob Chapel
+        body: "Automatic repair can discard staged tracked changes that are not checkout drift.  only
+          rejects unstaged worktree edits (), then treats any index tree that matches a recent
+          reflog commit as stale drift and runs HEAD is now at 05e31856c fix(dispatch): repair
+          shared checkout drift. A normal staged revert/backport can match a prior branch tip tree,
+          so this path will silently wipe user changes instead of degrading. I reproduced this with
+          plain git by staging the branch back to : 299846199b8ecff1a60fb7fec26209a082b9c060 matched
+          the prior reflog commit tree exactly, which means the reset path here would fire. This
+          violates ac-3's requirement to refuse destructive repair when local tracked changes would
+          be overwritten. Add a staged-change guard or a stronger drift predicate, and cover the
+          staged-only case in tests."
+        created_at: 2026-03-20T00:16:33.751Z
+      - _ulid: 01KM4ASMK00Y3PQKGZJDH1F2JM
+        author: Jacob Chapel
+        body: Fixed in commit fb63a8129. Dispatch now records the last coherent shared-checkout snapshot and
+          only auto-repairs when index drift still matches that prior dispatch-observed tip; staged
+          changes on the current HEAD now degrade instead of resetting. Added a staged-only
+          regression test.
+        created_at: 2026-03-20T00:37:17.024Z
+    kind: blocker
+    resolved_at: 2026-03-20T00:37:16.355Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-20T00:16:51.424Z
+created_at: 2026-03-20T00:10:43.772Z
+updated_at: 2026-03-20T00:37:17.024Z
+notes: []

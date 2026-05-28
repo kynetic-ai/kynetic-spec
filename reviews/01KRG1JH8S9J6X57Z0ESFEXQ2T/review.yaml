@@ -1,0 +1,147 @@
+_ulid: 01KRG1JH8S9J6X57Z0ESFEXQ2T
+slugs: []
+title: Review stabilize daemon readiness diagnostics lastHealth flake
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/helpers/daemon.test.ts: 14 suites passed; 16/16 tests passed in 9.9s."
+    name: focused daemon helper tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-13T07:03:45.725Z
+    completed_at: 2026-05-13T07:03:45.725Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh: 2435/2435 suites passed; 9211/9216 tests passed, 5 skipped; duration
+      2358.8s; log /tmp/kspec-test-cache/01KRG1HBXJ36KZC24RD0ZEBMAH/3d2b1e9293b77a3b.log."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-05-13T07:03:56.977Z
+    completed_at: 2026-05-13T07:03:56.977Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate --warnings-ok: schema OK, references OK, skills OK. Warnings remain
+      existing project-wide validation debt, including this automation bug task lacking spec_ref; no
+      schema/reference errors."
+    name: kspec validate
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-13T07:04:07.358Z
+    completed_at: 2026-05-13T07:04:07.358Z
+events:
+  - _ulid: 01KRG1JH8R5XM0EE68PNPXDD4M
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-13T06:49:47.544Z
+  - _ulid: 01KRG1K8DZNP0DMVYSAAMP7FEY
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-13T06:50:11.264Z
+  - _ulid: 01KRG2C557MD68MV49R58EXEX3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused daemon helper tests
+    timestamp: 2026-05-13T07:03:47.111Z
+  - _ulid: 01KRG2CG6CXY1DHEZ4AFF5B305
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-13T07:03:58.412Z
+  - _ulid: 01KRG2CT9BX16SY60SWRRRKT53
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-13T07:04:08.747Z
+  - _ulid: 01KRG2D9RKHQF0P6F6RY9E9Q0M
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KRG2D8D9JG7Y4XR4XQPHWWAY
+    timestamp: 2026-05-13T07:04:24.595Z
+  - _ulid: 01KRG2DR7SQYTG5WY1VND8DMA2
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-13T07:04:39.418Z
+  - _ulid: 01KRG2DR7TMZFH2WXPJ3XJA5N5
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-13T07:04:39.418Z
+examined_commit: d8908e58f6ced81694a1d8023c8ce175c956ec6d
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRF9WAG6J46D1WJ3R9DX0SNG"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRG2D8D9JG7Y4XR4XQPHWWAY
+    entries:
+      - _ulid: 01KRG2D8DAD69R9998S0A8FEGD
+        author: Jacob Chapel
+        body: >-
+          Review evidence log (non-blocking):
+
+
+          Files read: tests/helpers/daemon.ts; tests/helpers/daemon.test.ts;
+          tests/helpers/daemon-fetch.ts; relevant spec items @daemon-backed-test-fixture-contract,
+          @daemon-test-harness-guardrails, @daemon-sensitive-cli-test-determinism,
+          @daemon-test-startup-failure-hygiene.
+
+
+          Commands run: git diff --stat and full patch against
+          cb9d7cedfc8e7496b60178495fee4b681363038e; rg AC annotations; kspec item get for related
+          ACs; kspec validate; kspec validate --warnings-ok; npm test -- --run
+          tests/helpers/daemon.test.ts; npm test -- --fresh.
+
+
+          Claims verified: The worker claimed a delayed-bind regression now passes and the full
+          suite is green. Verified focused daemon helper tests pass 16/16 and fresh full suite
+          passes 2435/2435 suites with 9211 passed and 5 skipped.
+
+
+          Categories searched: correctness, edge cases around launch failure/dead child/live late
+          bind, error handling, cleanup, test quality, AC annotation coverage, and integration with
+          full suite. No blocking findings.
+        created_at: 2026-05-13T07:04:23.210Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-13T07:04:39.410Z
+created_at: 2026-05-13T06:49:47.545Z
+updated_at: 2026-05-13T07:04:39.418Z
+notes: []

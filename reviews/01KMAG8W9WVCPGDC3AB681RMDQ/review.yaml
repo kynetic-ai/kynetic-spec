@@ -1,0 +1,197 @@
+_ulid: 01KMAG8W9WVCPGDC3AB681RMDQ
+slugs: []
+title: Review task-session-prompt-action cycle 2
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran kspec validate. Exit 6 due to repo-wide existing warnings only; no schema or reference
+      errors introduced by this task.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-22T10:13:33.022Z
+    completed_at: 2026-03-22T10:13:33.022Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran npm test -- tests/session-prompt-action.test.ts tests/hook-schema.test.ts
+      tests/validate-integration.test.ts; 103 tests passed.
+    name: targeted tests
+    required: false
+    runner: npm
+    created_at: 2026-03-22T10:13:34.836Z
+    completed_at: 2026-03-22T10:13:34.836Z
+events:
+  - _ulid: 01KMAG8W9W5AQTTSWSW7PYG94C
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-22T10:08:25.916Z
+  - _ulid: 01KMAGA2GCHPCFSEYSJQ81RAJC
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-22T10:09:05.036Z
+  - _ulid: 01KMAGH86EMX3G6N3YH2C11MYP
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMAGH7MVTNYSJD2J93377464
+    timestamp: 2026-03-22T10:13:00.238Z
+  - _ulid: 01KMAGHA1F0RBBZF4WKQDGXGHY
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMAGH9G6AWCT4C3K7KBQCXWX
+    timestamp: 2026-03-22T10:13:02.128Z
+  - _ulid: 01KMAGJ8HMX61D59MJY96YZJJT
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-22T10:13:33.365Z
+  - _ulid: 01KMAGJA9P20FQSAABVW7X8MC8
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted tests
+    timestamp: 2026-03-22T10:13:35.158Z
+  - _ulid: 01KMAGJBH6Q9R4FYZ4VRM6DS00
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KMAGJB52DWM5ZS178XF36R7P
+    timestamp: 2026-03-22T10:13:36.422Z
+  - _ulid: 01KMAGJCQBC8SXMM5GP94HW1DN
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMAGJCAE98RHVGE27AK9NJ0J
+    timestamp: 2026-03-22T10:13:37.644Z
+  - _ulid: 01KMAGJRGA77KW39FV078P7M12
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-22T10:13:49.707Z
+  - _ulid: 01KMAGJRGBZG4E79QFQNWRJW6B
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-22T10:13:49.707Z
+examined_commit: 5d6f8f9881322ed407f0013005a1b4c0f7835a04
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMA74ECH1ZW03KM3403N023Z"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMAGH7MVTNYSJD2J93377464
+    anchor:
+      type: code
+      commit: 5d6f8f9881322ed407f0013005a1b4c0f7835a04
+      line_end: 255
+      line_start: 107
+      path: packages/daemon/src/routes/agent-dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KMAGH7MW2CYN5B4N4WKQ0QX5
+        author: Test User
+        body: " is only test-wired today. In production, the daemon constructs every  without a , so hook,
+          schedule, and composition executions will always hit the  failure path instead of
+          delivering or queueing a prompt. That breaks the core feature this task is meant to add: a
+          configured  hook cannot actually send a follow-up prompt to the live session. Please
+          thread the active  through the daemon/runtime construction path and add an integration
+          test that exercises the real executor wiring, not just direct unit construction."
+        created_at: 2026-03-22T10:12:59.676Z
+    kind: blocker
+  - _ulid: 01KMAGH9G6AWCT4C3K7KBQCXWX
+    anchor:
+      type: code
+      commit: 5d6f8f9881322ed407f0013005a1b4c0f7835a04
+      line_end: 255
+      line_start: 107
+      path: packages/daemon/src/routes/agent-dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KMAGH9G6JNWFJH2VNCV1FJG5
+        author: Test User
+        body: 'session_prompt is only test-wired today. In production, the daemon constructs every
+          ActionExecutor without a sessionRegistry, so hook, schedule, and composition executions
+          will always hit the "No session registry configured" failure path instead of delivering or
+          queueing a prompt. That breaks the core feature this task is meant to add: a configured
+          session.idle hook cannot actually send a follow-up prompt to the live session. Please
+          thread the active SessionRegistry through the daemon/runtime construction path and add an
+          integration test that exercises the real executor wiring, not just direct unit
+          construction.'
+        created_at: 2026-03-22T10:13:01.574Z
+    kind: blocker
+  - _ulid: 01KMAGJB52DWM5ZS178XF36R7P
+    entries:
+      - _ulid: 01KMAGJB5268CM2S2MQ1DE755P
+        author: Test User
+        body: "Evidence log: Files read: src/schema/action.ts, src/agent-runtime/action-executor.ts,
+          src/parser/validate.ts, src/agent-runtime/session-registry.ts,
+          src/schema/event-payloads.ts, packages/daemon/src/routes/agent-dispatch.ts,
+          tests/session-prompt-action.test.ts, tests/hook-schema.test.ts. Commands run: kspec task
+          get, kspec item get, git diff, kspec review for-task, kspec validate, grep AC search,
+          targeted npm test. Claims verified: the previous schema blocker is fixed because hooks,
+          schedules, and compositions now parse through ActionSchema; the runtime still lacks
+          sessionRegistry wiring because all production ActionExecutor constructors in
+          packages/daemon/src/routes/agent-dispatch.ts omit it. Categories searched: correctness,
+          integration, validation path, test quality, edge cases."
+        created_at: 2026-03-22T10:13:36.034Z
+    kind: question
+  - _ulid: 01KMAGJCAE98RHVGE27AK9NJ0J
+    anchor:
+      type: code
+      commit: 5d6f8f9881322ed407f0013005a1b4c0f7835a04
+      line_end: 255
+      line_start: 107
+      path: packages/daemon/src/routes/agent-dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KMAGJCAEDVYDCHVM3REQB6Z7
+        author: Test User
+        body: 'session_prompt is only test-wired today. In production, the daemon constructs every
+          ActionExecutor without a sessionRegistry, so hook, schedule, and composition executions
+          will always hit the "No session registry configured" failure path instead of delivering or
+          queueing a prompt. That breaks the core feature this task is meant to add: a configured
+          session.idle hook cannot actually send a follow-up prompt to the live session. Please
+          thread the active SessionRegistry through the daemon/runtime construction path and add an
+          integration test that exercises the real executor wiring, not just direct unit
+          construction.'
+        created_at: 2026-03-22T10:13:37.230Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-22T10:13:49.706Z
+created_at: 2026-03-22T10:08:25.916Z
+updated_at: 2026-03-22T10:13:49.707Z
+notes: []

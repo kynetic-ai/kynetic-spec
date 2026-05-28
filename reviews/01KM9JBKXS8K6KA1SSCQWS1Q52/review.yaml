@@ -1,0 +1,127 @@
+_ulid: 01KM9JBKXS8K6KA1SSCQWS1Q52
+slugs: []
+title: Review fix-worktree-guard-to-detect-actual-shadow-branch-not-substring-match (cycle 3)
+author: Test User
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Run 1: 303 files passed, 1 failed; timeouts in
+      tests/agent-invocation-lifecycle.test.ts:463 and :1620 after ~150.59s. Run 2: 303 files
+      passed, 1 failed; timeout in tests/agent-invocation-lifecycle.test.ts:351 after ~151.53s.
+      Isolated rerun of tests/agent-invocation-lifecycle.test.ts passed 49/49 in 11.39s, so the
+      failing required gate appears nondeterministic but remains red on full-suite execution."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-22T01:32:00.175Z
+    completed_at: 2026-03-22T01:32:00.175Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/cli/commands/guard.ts, tests/guard-worktree.test.ts,
+      src/cli/commands/setup.ts, src/parser/config.ts, tests/enhanced-setup.test.ts,
+      tests/agent-invocation-lifecycle.test.ts. Commands run: git diff base...head, git diff --stat,
+      kspec task get, kspec review for-task/get, kspec validate, rg AC annotations, npm test --
+      tests/guard-worktree.test.ts, npm test -- tests/agent-invocation-lifecycle.test.ts, npm test
+      (twice). Claims verified: current patch now compares against resolved absolute shadow worktree
+      path and covers nested unrelated .kspec paths; verified in code and targeted tests. Categories
+      searched: correctness, edge cases, error handling, test quality, integration. Finding: no
+      code-level regression found in the submitted guard patch, but required full-suite gate remains
+      failing."
+    name: review-evidence
+    required: false
+    created_at: 2026-03-22T01:32:01.322Z
+    completed_at: 2026-03-22T01:32:01.322Z
+events:
+  - _ulid: 01KM9JBKXSN6TGT9PCG19MH6TD
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-22T01:25:38.361Z
+  - _ulid: 01KM9JDC603ME2RD3ZDWHC08SF
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-22T01:26:35.968Z
+  - _ulid: 01KM9JQ82QGZY2SY152Z03XJP9
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM9JQ7RVXX2HNG6001EGKJ27
+    timestamp: 2026-03-22T01:31:59.447Z
+  - _ulid: 01KM9JQ9466DT51CR1B9QD2Z79
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-22T01:32:00.518Z
+  - _ulid: 01KM9JQA6FB3BRREFWV5DCZ50V
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-03-22T01:32:01.615Z
+  - _ulid: 01KM9JQJ0AF181DKKEAQ5E6SPS
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-22T01:32:09.611Z
+  - _ulid: 01KM9JQJ0BMKQWYXEETGFE1Q0K
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-22T01:32:09.611Z
+examined_commit: 4d66d49bc8ea95ad119c39fe63d7d437d5116019
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM9FB8PAK46RP5SRP1JVD2FD"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM9JQ7RVXX2HNG6001EGKJ27
+    anchor:
+      type: code
+      commit: 4d66d49bc8ea95ad119c39fe63d7d437d5116019
+      line_end: 351
+      line_start: 351
+      path: tests/agent-invocation-lifecycle.test.ts
+      side: head
+    entries:
+      - _ulid: 01KM9JQ7RV4AFRBK0GKKWQ1AY4
+        author: Test User
+        body: "Required merge gate is still red: full `npm test` does not complete cleanly on this snapshot.
+          I reproduced nondeterministic 30s timeouts in `tests/agent-invocation-lifecycle.test.ts`
+          during two full-suite runs (first at lines 463 and 1620, second at line 351), even though
+          the isolated file passes. Until the branch can produce a green full-suite run, this task
+          is not mergeable under the project review gates."
+        created_at: 2026-03-22T01:31:59.131Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-22T01:32:09.610Z
+created_at: 2026-03-22T01:25:38.361Z
+updated_at: 2026-03-22T01:32:09.611Z
+notes: []

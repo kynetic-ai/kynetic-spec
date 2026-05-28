@@ -1,0 +1,133 @@
+_ulid: 01KNAGJQC43847FZWHYADK93WK
+slugs: []
+title: Review task-impl-sync-integration-tests (cycle 5)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git checkout plan/plan-workspace-scoped-integration-target-sync/01kn8bx4 && git merge
+      --no-ff --no-commit dispatch/task/task-impl-sync-integration-tests/01kn8t1a completed without
+      conflicts against the actual local integration branch.
+    name: manual-merge-preflight
+    required: true
+    runner: git
+    created_at: 2026-04-03T20:34:42.504Z
+    completed_at: 2026-04-03T20:34:42.504Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/agent-runtime/dispatch.ts, tests/dispatch-target-sync.test.ts, prior
+      review @01KNAFET. Commands run: kspec task get, kspec item get, kspec review for-task/get, git
+      diff/stat/show, grep AC annotations, kspec validate, npm test, merge preflight. Claims
+      verified: startup sync now runs once per active target; actual local integration branch merges
+      cleanly; full suite passes. Categories searched: correctness, test quality, edge cases,
+      integration, error handling; no blocking findings."
+    name: review-evidence
+    required: false
+    runner: codex
+    created_at: 2026-04-03T20:34:44.724Z
+    completed_at: 2026-04-03T20:34:44.724Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed in review workspace: 2068/2068 suites, 7511 passed, 5 skipped; duration 2923.2s;
+      no failing tests."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-03T20:34:47.087Z
+    completed_at: 2026-04-03T20:34:47.087Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 6 with existing repo-wide warnings only (orphaned skill directory, orphaned specs,
+      existing AC coverage warnings); no validation errors for this task review.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-03T20:34:49.341Z
+    completed_at: 2026-04-03T20:34:49.341Z
+events:
+  - _ulid: 01KNAGJQC4HJ6WCN05HYGDVGY4
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-03T20:29:30.372Z
+  - _ulid: 01KNAGK930H1B5BRRBZVHVAAQ1
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-03T20:29:48.512Z
+  - _ulid: 01KNAGW8XTZP2H9GD4DSFSXC8F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: manual-merge-preflight
+    timestamp: 2026-04-03T20:34:43.259Z
+  - _ulid: 01KNAGWB4DZB0TFFG8WQS7AJY5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-04-03T20:34:45.517Z
+  - _ulid: 01KNAGWDD0V2R5X5EH1BDWSPPJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-03T20:34:47.840Z
+  - _ulid: 01KNAGWFM4X138V1GHVF9VM7W8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-03T20:34:50.116Z
+  - _ulid: 01KNAGWWCEMY0KFJXQNMQZJRVX
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-03T20:35:03.182Z
+  - _ulid: 01KNAGWWCE8DCF0KH5AA1KBM9Y
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-03T20:35:03.182Z
+examined_commit: 19f3e5312bbffda3de2bc2edde6d511f046ad545
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN8T1AZ0RSE7SA5SBK7AG5KD"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-03T20:35:03.182Z
+created_at: 2026-04-03T20:29:30.372Z
+updated_at: 2026-04-03T20:35:03.182Z
+notes: []

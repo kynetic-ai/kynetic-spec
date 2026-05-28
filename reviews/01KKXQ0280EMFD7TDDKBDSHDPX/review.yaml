@@ -1,0 +1,147 @@
+_ulid: 01KKXQ0280EMFD7TDDKBDSHDPX
+slugs: []
+title: Review improve-review-skill-anchors (cycle 1)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 5734 passed, 1 failed (pre-existing review-cli.test.ts:152 — detached HEAD env issue, not
+      introduced by this change), 3 skipped across 263 test files
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-17T10:56:22.735Z
+    completed_at: 2026-03-17T10:56:22.735Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: CONFLICT (content) in kspec-agents.md — dev removed skills table (82896f848), this branch
+      still has it. Generated file conflict, resolvable by regeneration after merge.
+    name: merge-conflict
+    required: true
+    runner: git merge-tree
+    created_at: 2026-03-17T10:56:30.240Z
+    completed_at: 2026-03-17T10:56:30.240Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 4 task description items verified in templates/skills/review/SKILL.md: (1) reviewer
+      workflow step 5 directs --section/--field for plans, (2) step 5 directs
+      --path/--line-start/--line-end for code, (3) Why Anchors Matter section with 4 examples
+      (anchored vs unanchored for both code and plans), (4) Finding Quality includes Anchor field.
+      Rendered outputs match template."
+    name: template-review
+    required: true
+    runner: manual
+    created_at: 2026-03-17T10:56:39.092Z
+    completed_at: 2026-03-17T10:56:39.092Z
+events:
+  - _ulid: 01KKXQ027Z0Y0C4ZKCR6P8S0W5
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-17T10:55:49.503Z
+  - _ulid: 01KKXQ0A6QYN2NYJBS8S9T86C9
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-17T10:55:57.656Z
+  - _ulid: 01KKXQ0NFDW0KMQGTB80D8WXKX
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKXQ0NDFH8ZTY7396TDF7KZK
+    timestamp: 2026-03-17T10:56:09.197Z
+  - _ulid: 01KKXQ12RM9XM52D5K0MZZB3QX
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-17T10:56:22.804Z
+  - _ulid: 01KKXQ1A3168PZQFW3BG0NM94G
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: merge-conflict
+    timestamp: 2026-03-17T10:56:30.305Z
+  - _ulid: 01KKXQ1JR7J5KW0TD02NJZKZDT
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: template-review
+    timestamp: 2026-03-17T10:56:39.175Z
+  - _ulid: 01KKXQ1Z3EWNSZX8Z20JM2M530
+    actor: pr-reviewer@dispatch
+    event_type: verdict_submitted
+    payload:
+      decision: request_changes
+    timestamp: 2026-03-17T10:56:51.822Z
+  - _ulid: 01KKXQ1Z3EES6QDS41WW71Q5KH
+    actor: pr-reviewer@dispatch
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-17T10:56:51.822Z
+  - _ulid: 01KKXQZMCH9J4XEB2J3YWAWC55
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KKXQ0NDFH8ZTY7396TDF7KZK
+    timestamp: 2026-03-17T11:13:03.889Z
+examined_commit: b5d5cf721238a68b6d1248b19f6d3d86ddaf1f9f
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKTTC2CTEPS5X2VPE7QVFA16"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KKXQ0NDFH8ZTY7396TDF7KZK
+    anchor:
+      type: code
+      commit: b5d5cf721238a68b6d1248b19f6d3d86ddaf1f9f
+      line_end: 1
+      line_start: 1
+      path: kspec-agents.md
+      side: head
+    entries:
+      - _ulid: 01KKXQ0NDFE6AVEY75T0SNR7S6
+        author: "@claude"
+        body: "Merge conflict in kspec-agents.md. Dev branch received commit 82896f848 (refactor: remove
+          skill table from kspec-agents.md generation) after this branch diverged. The task commit
+          only changed the timestamp in kspec-agents.md, but the three-way merge conflicts because
+          dev removed the skills table section while this branch still has it. Resolution: after
+          merge, take dev's version and regenerate with kspec agents generate. This is a generated
+          file conflict, not a semantic conflict in the actual template work."
+        created_at: 2026-03-17T10:56:09.135Z
+      - _ulid: 01KKXQZMAF450AD8R6GSZJ7G14
+        author: "@claude"
+        body: "Fixed: merged dev into task branch (commit 8bcd93487), regenerated kspec-agents.md with kspec
+          v0.12.0 (commit a7195c9f4). Conflict resolved."
+        created_at: 2026-03-17T11:13:03.823Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer@dispatch
+    role: reviewer
+    created_at: 2026-03-17T10:56:51.759Z
+created_at: 2026-03-17T10:55:49.504Z
+updated_at: 2026-03-17T11:13:03.823Z
+notes: []

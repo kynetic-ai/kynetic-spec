@@ -1,0 +1,154 @@
+_ulid: 01KR6A2X5VY2Q7G2SXRED1TC7Z
+slugs: []
+title: Review task-resolve-cli-lifecycle-test-endpoints
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate: schema/references/skills OK; exited 6 due to repo-wide warnings
+      (reference/alignment/completeness) unrelated to this one-file tests/cli-serve.test.ts change."
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-09T12:18:49.336Z
+    completed_at: 2026-05-09T12:18:49.336Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh tests/cli-serve.test.ts: 5 suites passed, 40/40 tests
+      passed (47.0s)."
+    name: cli serve endpoint tests
+    required: true
+    runner: npm
+    created_at: 2026-05-09T12:19:02.257Z
+    completed_at: 2026-05-09T12:19:02.257Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts: 19 suites passed, 213/213 tests passed (52.2s)."
+    name: daemon guardrail tests
+    required: true
+    runner: npm
+    created_at: 2026-05-09T12:19:15.392Z
+    completed_at: 2026-05-09T12:19:15.392Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh: 2413/2413 suites passed; 8966 passed, 5 skipped, 0
+      failed (2048.1s). Full log:
+      /tmp/kspec-test-cache/01KR6A1TQE1Z36G7NK6AY25BAJ/baaa6837624eb58f.log"
+    name: full npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-09T12:19:26.053Z
+    completed_at: 2026-05-09T12:19:26.053Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: tests/cli-serve.test.ts diff and endpoint sections;
+      src/daemon-shared/endpoint.ts; src/cli/commands/serve.ts; packages/daemon/src/server.ts;
+      relevant resolver tests. Commands run: kspec task get, kspec item get for
+      @cli-lifecycle-test-endpoint-consumption and @daemon-test-endpoint-consistency, kspec
+      validate, rg audits for localhost/direct loopback/AC annotations, git diff --check, targeted
+      tests, full npm test. Claims verified: replaced generic localhost fetches with
+      endpoint.apiUrl; remaining direct loopback fetches are endpoint-subject tests; production
+      resolver prefers metadata and falls back to legacy port. Categories searched: correctness,
+      edge cases, error handling, test quality, integration."
+    name: review evidence log
+    required: false
+    runner: codex-review
+    created_at: 2026-05-09T12:19:38.462Z
+    completed_at: 2026-05-09T12:19:38.462Z
+events:
+  - _ulid: 01KR6A2X5TD95S7DME4TJPFWMD
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-09T12:06:08.315Z
+  - _ulid: 01KR6A3NHXD5A6F6VC97PDWPGR
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-09T12:06:33.277Z
+  - _ulid: 01KR6AT5MP059DYVAFD0S3R246
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-09T12:18:50.647Z
+  - _ulid: 01KR6ATJ8R9HBPDKP2PQDFJPS3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: cli serve endpoint tests
+    timestamp: 2026-05-09T12:19:03.576Z
+  - _ulid: 01KR6ATZ5855VJKYD02CBVQBY9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: daemon guardrail tests
+    timestamp: 2026-05-09T12:19:16.776Z
+  - _ulid: 01KR6AV9EP5D36XZ8PV3RME9PN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full npm test
+    timestamp: 2026-05-09T12:19:27.318Z
+  - _ulid: 01KR6AVNMYZ0D6DBBTF6T4JVP5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-09T12:19:39.806Z
+  - _ulid: 01KR6AW0PBXKJA230FAEHZ395G
+    actor: codex-reviewer@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-09T12:19:51.115Z
+  - _ulid: 01KR6AW0PB5BKBW60B57821Z4P
+    actor: codex-reviewer@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-09T12:19:51.115Z
+examined_commit: c9e84cf090a02f85fdbba45cd9949d62bcfd8b44
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR3W7S3VS0QRZ26RGXS0F3C4"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer@openai.com
+    role: reviewer
+    created_at: 2026-05-09T12:19:51.115Z
+created_at: 2026-05-09T12:06:08.315Z
+updated_at: 2026-05-09T12:19:51.115Z
+notes: []

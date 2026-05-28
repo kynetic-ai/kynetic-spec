@@ -1,0 +1,73 @@
+_ulid: 01KM3ZNA7FNXPMEH1KPQGVHP7G
+slugs: []
+title: Review derived output for dispatch shared-checkout plan
+author: Jacob Chapel
+checks:
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide validation failures are unrelated to the derived plan output
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-19T21:23:15.664Z
+    completed_at: 2026-03-19T21:23:15.664Z
+events:
+  - _ulid: 01KM3ZNA7FTCZ42YST9K6S5AJK
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-19T21:22:41.007Z
+  - _ulid: 01KM3ZNM0A95CFCCA2NKG6PVPB
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-19T21:22:51.018Z
+  - _ulid: 01KM3ZPC90ZHFVQHS6YE2CV8TD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-03-19T21:23:15.872Z
+  - _ulid: 01KM3ZPCKM5EE27BF3RKHXC30N
+    actor: jacob.chapel@example.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-19T21:23:16.213Z
+  - _ulid: 01KM3ZPCKN2HQD57Q1JE5C3R0S
+    actor: jacob.chapel@example.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-19T21:23:16.213Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-dispatch-integration-checkout-boundaries"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: jacob.chapel@example.com
+    role: reviewer
+    created_at: 2026-03-19T21:23:16.212Z
+created_at: 2026-03-19T21:22:41.007Z
+updated_at: 2026-03-19T21:23:16.213Z
+notes: []

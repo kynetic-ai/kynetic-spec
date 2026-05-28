@@ -1,0 +1,184 @@
+_ulid: 01KREEADWRFZ4HV75GJYFJ31BS
+slugs: []
+title: Review bounded process-stop primitives
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2431 suites, 9086 tests passed, 5 skipped. Full log:
+      /tmp/kspec-test-cache/01KREE7B3YMJ84KMMKPQR5GM3N/c2e7f82a89558a88.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-12T16:09:32.829Z
+    completed_at: 2026-05-12T16:09:32.829Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/helpers/daemon.test.ts tests/helpers/mock-daemon.test.ts
+      tests/cli-serve.test.ts passed: 23 suites, 82 tests. Full log:
+      /tmp/kspec-test-cache/01KREE7B3YMJ84KMMKPQR5GM3N/6aad629dd734498e.log"
+    name: targeted daemon stop slice
+    required: true
+    runner: npm
+    created_at: 2026-05-12T16:09:36.961Z
+    completed_at: 2026-05-12T16:09:36.961Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: tests/helpers/process-stop.ts, tests/helpers/daemon.ts,
+      tests/helpers/mock-daemon.ts, tests/cli-serve.test.ts, tests/helpers/daemon.test.ts,
+      tests/helpers/mock-daemon.test.ts. Commands: git diff --stat/name-status, git diff --check, rg
+      AC annotations, rg killPid call sites. Claims verified: shared primitive observes
+      signalCode/exit events and target tests cover relevant ACs. Categories searched: correctness,
+      cleanup edge cases, error handling, test quality, integration."
+    name: diff and AC review
+    required: false
+    runner: reviewer
+    created_at: 2026-05-12T16:09:41.013Z
+    completed_at: 2026-05-12T16:09:41.013Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate: schema and references OK; repository-wide warnings only (exit 6). kspec
+      validate --warnings-ok exited 0 with the same warnings."
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-12T16:09:45.097Z
+    completed_at: 2026-05-12T16:09:45.097Z
+events:
+  - _ulid: 01KREEADWJGYC6D3Q0W0G7HHA4
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-12T15:54:04.562Z
+  - _ulid: 01KREEAWQY352CJNYKF9EZHYKC
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-12T15:54:19.774Z
+  - _ulid: 01KREF6STHP55Q9RW7R65KF7A2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-12T16:09:34.289Z
+  - _ulid: 01KREF6XTZMWCQCWGSE1QX5WPT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted daemon stop slice
+    timestamp: 2026-05-12T16:09:38.399Z
+  - _ulid: 01KREF71T28PE13G19EFBYTJA8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff and AC review
+    timestamp: 2026-05-12T16:09:42.466Z
+  - _ulid: 01KREF75Y0JF1VR95T9VWAXAF3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-12T16:09:46.689Z
+  - _ulid: 01KREF7VA4RNSRNV0HE6TWASYM
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KREF7SYYK22M7DKE1YX2Z86D
+    timestamp: 2026-05-12T16:10:08.581Z
+  - _ulid: 01KREF8G6E9PZVBPHY5C5XD3NV
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KREF8EVWEKW97948MK3NNV45
+    timestamp: 2026-05-12T16:10:29.966Z
+  - _ulid: 01KREF90MCH4DK8RKC0G2K9SWP
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-12T16:10:46.796Z
+  - _ulid: 01KREF90MCA46853PZGFBYDAHA
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-12T16:10:46.796Z
+examined_commit: 4d2f7f4356bd9c0d660ff8986571869f0386aeb3
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRCRJRF7TZVW59Q8ZK9JSS0X"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KREF7SYYK22M7DKE1YX2Z86D
+    anchor:
+      type: code
+      commit: 4d2f7f4356bd9c0d660ff8986571869f0386aeb3
+      line_end: 669
+      line_start: 669
+      path: tests/cli-serve.test.ts
+      side: head
+    entries:
+      - _ulid: 01KREF7SYYN8ZQS9MF2DZD4J40
+        author: Jacob Chapel
+        body: "MUST-FIX: killPid() now returns the bounded stop promise, but this onTestFinished callback
+          drops it. Vitest treats teardown as complete immediately, so if this failure-path cleanup
+          runs, the detached daemon stop is no longer awaited/observed and any
+          BoundedProcessStopError is detached from the cleanup lifecycle. Return or await the
+          killPid(stalePid) promise so teardown does not report complete before termination is
+          observed."
+        created_at: 2026-05-12T16:10:07.198Z
+    kind: blocker
+  - _ulid: 01KREF8EVWEKW97948MK3NNV45
+    anchor:
+      type: code
+      commit: 4d2f7f4356bd9c0d660ff8986571869f0386aeb3
+      line_end: 1330
+      line_start: 1329
+      path: tests/cli-serve.test.ts
+      side: head
+    entries:
+      - _ulid: 01KREF8EVW2XHV4224FYMJH6B6
+        author: Jacob Chapel
+        body: "MUST-FIX: this async onTestFinished callback calls the new async killPid(pid) but does not
+          await it before deleting the temp directory. On assertion failure before the normal serve
+          stop path, cleanupTempDir can run while the daemon is still in the bounded stop sequence,
+          so cleanup no longer guarantees observed process termination before teardown completes.
+          Await killPid(pid) before removing the fixture directory."
+        created_at: 2026-05-12T16:10:28.604Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-12T16:10:46.796Z
+created_at: 2026-05-12T15:54:04.568Z
+updated_at: 2026-05-12T16:10:46.796Z
+notes: []

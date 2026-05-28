@@ -1,0 +1,208 @@
+_ulid: 01KMVTX0SMTC5E37X4F4JJ59YN
+slugs: []
+title: Review purge-unrecoverable workspace records
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      > @kynetic-ai/spec@0.12.0 test
+
+      > node scripts/test.cjs --fresh tests/dispatch-workspace-unrecoverable-purge.test.ts passed: 2
+      suites, 6 tests.
+    name: targeted-regression
+    required: true
+    runner: npm
+    created_at: 2026-03-29T03:47:16.006Z
+    completed_at: 2026-03-29T03:47:16.006Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/agent-runtime/dispatch.ts, src/parser/dispatch-workspaces.ts,
+      src/agent-runtime/workspace.ts, tests/dispatch-workspace-unrecoverable-purge.test.ts,
+      tests/dispatch-workspace-registry.test.ts. Commands run: git diff 6e86281bb..2529f7659, kspec
+      task get @01KMVRW6KV9FB4FNY76FBB85RA, kspec item get @dispatch-workspace-registry, grep AC
+      annotations, kspec validate, npm run build, npm test -- --fresh
+      tests/dispatch-workspace-unrecoverable-purge.test.ts. Claims verified: the new purge path
+      exists and targeted tests pass; shadow-runtime durability is not covered. Categories searched:
+      correctness (found blocker), edge cases (checked terminal/stale cases), error handling
+      (checked idempotent delete path), integration (found shadow durability gap), test quality
+      (found missing shadow-backed coverage)."
+    name: review-evidence
+    required: false
+    runner: manual
+    created_at: 2026-03-29T03:47:17.029Z
+    completed_at: 2026-03-29T03:47:17.029Z
+events:
+  - _ulid: 01KMVTX0SKFQNBMJ1MHBGJJXWA
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-29T03:41:16.979Z
+  - _ulid: 01KMVV0S0J95ZD1KRS76VBKS19
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-29T03:43:20.082Z
+  - _ulid: 01KMVV8058PCDA0MSFRX8A8S62
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted-regression
+    timestamp: 2026-03-29T03:47:16.776Z
+  - _ulid: 01KMVV819ZKM1XM9ERA5BSRH1Z
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-03-29T03:47:17.951Z
+  - _ulid: 01KMVV83E2VQ0FW2086DDGDYH2
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMVV82QK6VBHYQP6B6QVDMF7
+    timestamp: 2026-03-29T03:47:20.130Z
+  - _ulid: 01KMVV8GD0ZW0NNCFSN8VMEW1F
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMVV8FRZRA86ZJNK71BNAXCB
+    timestamp: 2026-03-29T03:47:33.408Z
+  - _ulid: 01KMVV8S8YG6R66HEGAN876BY5
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-29T03:47:42.494Z
+  - _ulid: 01KMVV8S8YVC8DKBHE8TR3R5AT
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-29T03:47:42.494Z
+  - _ulid: 01KMVW973W3WKM51JM27F80SYN
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMVV82QK6VBHYQP6B6QVDMF7
+    timestamp: 2026-03-29T04:05:25.244Z
+  - _ulid: 01KMVW9EBJ978KNDM1X989BN7H
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMVV82QK6VBHYQP6B6QVDMF7
+    timestamp: 2026-03-29T04:05:32.659Z
+  - _ulid: 01KMVW9R8QQAWDMADFYSFHHCX6
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMVV8FRZRA86ZJNK71BNAXCB
+    timestamp: 2026-03-29T04:05:42.807Z
+  - _ulid: 01KMVWATW4XYKVHQK62V8RR5ZD
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMVV8FRZRA86ZJNK71BNAXCB
+    timestamp: 2026-03-29T04:06:18.244Z
+examined_commit: 2529f7659365ae1d9a7dbba2c6f35edf93d2d222
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMVRW6KV9FB4FNY76FBB85RA"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMVV82QK6VBHYQP6B6QVDMF7
+    anchor:
+      type: code
+      commit: 2529f7659365ae1d9a7dbba2c6f35edf93d2d222
+      line_end: 647
+      line_start: 625
+      path: src/parser/dispatch-workspaces.ts
+      side: head
+    entries:
+      - _ulid: 01KMVV82QMF124DJTA497T7J5C
+        author: Test User
+        body: This purge helper rewrites  with only the per-file lock, but the dispatch runtime requires
+          shadow-branch registry mutations to run under the shared dispatch shadow-mutation lock and
+          to be durably committed before the new state is treated as authoritative.  now calls this
+          helper during scheduling, so a failed or interrupted purge can leave an uncommitted
+          deletion in the shadow worktree while the scheduler immediately reprovisions from the
+          in-memory result. On daemon restart that stale record can reappear, which violates the
+          durability contract from  and reintroduces the stuck-task behavior you are trying to fix.
+          The existing tests only assert the on-disk YAML changed; they do not exercise
+          shadow-backed projects or verify a matching shadow commit.
+        created_at: 2026-03-29T03:47:19.412Z
+      - _ulid: 01KMVW96J263BEVWN5DNBF5J7R
+        author: "@claude"
+        body: "Fixed: Added purgeDispatchWorkspaceRecord() in workspace.ts that wraps the delete inside
+          withDispatchShadowMutationLock + commitWorkspaceRegistryToShadow.
+          _purgeUnrecoverableWorkspaceRecord in dispatch.ts now calls this durable path instead of
+          deleteDispatchWorkspaceRecord directly. Added two shadow-backed tests: (1) verifying the
+          purge creates a shadow commit and leaves clean worktree state, (2) verifying the purge
+          acquires the shadow mutation lock (times out when lock is held). Both tests use
+          it.skipIf(!canRunShadowTests) following the existing pattern."
+        created_at: 2026-03-29T04:05:24.674Z
+    kind: blocker
+    resolved_at: 2026-03-29T04:05:32.070Z
+    resolved_by: "@claude"
+  - _ulid: 01KMVV8FRZRA86ZJNK71BNAXCB
+    anchor:
+      type: code
+      commit: 2529f7659365ae1d9a7dbba2c6f35edf93d2d222
+      line_end: 647
+      line_start: 625
+      path: src/parser/dispatch-workspaces.ts
+      side: head
+    entries:
+      - _ulid: 01KMVV8FRZ5QAX8K9JHTFXNDSZ
+        author: Test User
+        body: This purge helper rewrites the dispatch workspace registry with only the per-file lock, but
+          the dispatch runtime requires shadow-branch registry mutations to run under the shared
+          dispatch shadow-mutation lock and to be durably committed before the new state is treated
+          as authoritative. _workspaceCandidateHealth() now calls this helper during scheduling, so
+          a failed or interrupted purge can leave an uncommitted deletion in the shadow worktree
+          while the scheduler immediately reprovisions from the in-memory result. On daemon restart
+          that stale record can reappear, which violates the durability contract from ac-8 and
+          reintroduces the stuck-task behavior this change is trying to fix. The new tests only
+          assert that the YAML file changed; they do not exercise shadow-backed projects or verify a
+          matching shadow commit.
+        created_at: 2026-03-29T03:47:32.767Z
+      - _ulid: 01KMVW9QPPY45HXJMP1DBY4Z5E
+        author: "@claude"
+        body: "Fixed: Same fix as the other thread — this was a duplicate blocker for the same issue. The
+          purge now goes through purgeDispatchWorkspaceRecord() which acquires the dispatch shadow
+          mutation lock, calls deleteDispatchWorkspaceRecord for the file-level write, then
+          commitWorkspaceRegistryToShadow to durably persist the deletion. The scheduler only
+          returns eligible after the durable commit succeeds."
+        created_at: 2026-03-29T04:05:42.230Z
+    kind: blocker
+    resolved_at: 2026-03-29T04:06:17.653Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-29T03:47:42.494Z
+created_at: 2026-03-29T03:41:16.980Z
+updated_at: 2026-03-29T04:06:17.653Z
+notes: []

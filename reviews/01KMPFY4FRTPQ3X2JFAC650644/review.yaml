@@ -1,0 +1,193 @@
+_ulid: 01KMPFY4FRTPQ3X2JFAC650644
+slugs: []
+title: Review task-entity-cache-impl (cycle 7)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed locally in review snapshot: 6899 passed, 5 skipped, 0 failed."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-27T01:57:12.769Z
+    completed_at: 2026-03-27T01:57:12.769Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/daemon/entity-cache.ts; packages/daemon/src/project-context.ts;
+      packages/daemon/src/server.ts;
+      packages/daemon/src/routes/{meta,plans,reviews,triage,items,refs,sessions}.ts;
+      tests/daemon-entity-cache.test.ts. Commands run: kspec task get @01KMMB3T2K3T6A1CJR884EPKJF;
+      kspec item get @daemon-entity-cache; kspec validate; rg -n 'AC: @daemon-entity-cache'
+      tests/...; git diff ...; rg/nl on cache invalidation paths; npx tsx -e 'fileToDomain(...)';
+      npm test. Claims verified: final fix-cycle claims for meta read wiring, detail-tier wiring,
+      and full-suite pass. Categories searched: correctness, edge cases, error handling, test
+      quality, integration."
+    name: review-evidence
+    required: false
+    created_at: 2026-03-27T01:57:14.149Z
+    completed_at: 2026-03-27T01:57:14.149Z
+events:
+  - _ulid: 01KMPFY4FRH3GP6NMPVGZJCXAK
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T01:53:27.032Z
+  - _ulid: 01KMPFYHDNTMM9WH26TG6JWTNC
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T01:53:40.277Z
+  - _ulid: 01KMPG51BDQ9V5MYAQG2VCKWSN
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-27T01:57:13.197Z
+  - _ulid: 01KMPG52P54EGGMA67M7G7CHQM
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-03-27T01:57:14.566Z
+  - _ulid: 01KMPG53ZDX2S599JQH6YJZ3BB
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMPG53HTC4XX7D4HC5S5V2ZP
+    timestamp: 2026-03-27T01:57:15.885Z
+  - _ulid: 01KMPG5RERVH93WW7671DD2J3Z
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMPG5R15W00ZHGMVZ7AGTV1Q
+    timestamp: 2026-03-27T01:57:36.856Z
+  - _ulid: 01KMPG5Z20TK7ZDDMVE7SM4E9S
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-27T01:57:43.616Z
+  - _ulid: 01KMPG5Z20MB4A0B1M1YXEQSHB
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T01:57:43.616Z
+  - _ulid: 01KMPGRHGDM86A7X4SCY7ZJ597
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMPG53HTC4XX7D4HC5S5V2ZP
+    timestamp: 2026-03-27T02:07:52.333Z
+  - _ulid: 01KMPGRJNWSS7C6HWF88M9GSXP
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPG53HTC4XX7D4HC5S5V2ZP
+    timestamp: 2026-03-27T02:07:53.533Z
+  - _ulid: 01KMPGRKSYC1BSFPQQRB3EGP2N
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMPG5R15W00ZHGMVZ7AGTV1Q
+    timestamp: 2026-03-27T02:07:54.686Z
+  - _ulid: 01KMPGRMV9RZER6XNTXCPQWYR1
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPG5R15W00ZHGMVZ7AGTV1Q
+    timestamp: 2026-03-27T02:07:55.753Z
+examined_commit: 8813ba365e630450d68e9880bf09f935ba60c6f8
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMMB3T2K3T6A1CJR884EPKJF"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMPG53HTC4XX7D4HC5S5V2ZP
+    anchor:
+      type: code
+      commit: 8813ba365e630450d68e9880bf09f935ba60c6f8
+      line_end: 203
+      line_start: 159
+      path: src/daemon/entity-cache.ts
+      side: head
+    entries:
+      - _ulid: 01KMPG53HTF62N0934C9M1FHF7
+        author: "@claude"
+        body: Session watcher invalidation never reaches the sessions domain.  forwards  changes into ,
+          but  only recognizes  YAML paths, so session paths like  and  map to null (confirmed with
+          {"metadata":null,"events":null} => ). That leaves the unified session index stale after
+          session writes, which violates watcher-driven invalidation for the sessions domain.
+        created_at: 2026-03-27T01:57:15.450Z
+      - _ulid: 01KMPGRH2Y6QXG6KE3Q0ZVF83W
+        author: "@claude"
+        body: "Fixed: Added ULID-pattern recognition to fileToDomain() so session paths (bare ULID or
+          ULID/filename) now correctly map to the sessions domain. The server.ts callback no longer
+          needs special-case handling for .kspec-sessions paths — all paths flow through
+          handleFileChange → fileToDomain. Added unit test verifying fileToDomain maps bare ULID,
+          ULID/metadata.json, and ULID/events.jsonl to sessions, plus a behavioral test verifying
+          handleFileChange invalidates the sessions domain when called with a session watcher path."
+        created_at: 2026-03-27T02:07:51.902Z
+    kind: blocker
+    resolved_at: 2026-03-27T02:07:53.093Z
+    resolved_by: "@claude"
+  - _ulid: 01KMPG5R15W00ZHGMVZ7AGTV1Q
+    anchor:
+      type: code
+      commit: 8813ba365e630450d68e9880bf09f935ba60c6f8
+      line_end: 203
+      line_start: 159
+      path: src/daemon/entity-cache.ts
+      side: head
+    entries:
+      - _ulid: 01KMPG5R154AA0S832WM28DX61
+        author: "@claude"
+        body: Session watcher invalidation never reaches the sessions domain.
+          packages/daemon/src/project-context.ts forwards .kspec-sessions changes into
+          handleFileChange(), but fileToDomain() only recognizes .kspec YAML paths, so session files
+          are ignored instead of mapping to sessions. I confirmed that directly with `npx tsx -e
+          "import { fileToDomain } from './src/daemon/entity-cache.ts'; console.log(JSON.stringify({
+          metadata:fileToDomain('01ABC/metadata.json'), events:fileToDomain('01ABC/events.jsonl')
+          }));"`, which returned {"metadata":null,"events":null}. That leaves the unified session
+          index stale after session writes, violating watcher-driven invalidation for the sessions
+          domain.
+        created_at: 2026-03-27T01:57:36.421Z
+      - _ulid: 01KMPGRKBPH0CH7GJ1DSQ63NDZ
+        author: "@claude"
+        body: "Fixed: Same fix as thread 1 (duplicate finding). fileToDomain() now matches ULID-prefixed
+          paths via /^[0-9A-HJKMNP-TV-Z]{26}$/i on the first path segment, mapping them to the
+          sessions domain."
+        created_at: 2026-03-27T02:07:54.230Z
+    kind: blocker
+    resolved_at: 2026-03-27T02:07:55.356Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-27T01:57:43.616Z
+created_at: 2026-03-27T01:53:27.032Z
+updated_at: 2026-03-27T02:07:55.356Z
+notes: []

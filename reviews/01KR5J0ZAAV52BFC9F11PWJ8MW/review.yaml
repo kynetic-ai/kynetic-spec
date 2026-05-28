@@ -1,0 +1,261 @@
+_ulid: 01KR5J0ZAAV52BFC9F11PWJ8MW
+slugs: []
+title: Review fix guardrail daemon command classification (cycle 12)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts: 19 suites passed, 177 tests passed, duration 39.7s."
+    name: targeted guardrail tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-09T05:20:36.575Z
+    completed_at: 2026-05-09T05:20:36.575Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test: 2413 suites passed; 8930 tests passed, 5 skipped; duration 1999.7s."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-05-09T05:20:46.869Z
+    completed_at: 2026-05-09T05:20:46.869Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npx oxlint on the 13 changed source/test/config files exited 0 with 0 errors and 26 warnings.
+    name: changed-file oxlint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-09T05:20:56.881Z
+    completed_at: 2026-05-09T05:20:56.881Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate: schema and references OK; no validation errors. Command exited 6 because
+      the repository has existing warnings (reference/alignment/completeness warnings), not because
+      of this task."
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-09T05:21:07.255Z
+    completed_at: 2026-05-09T05:21:07.255Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Synthetic oxlint probe with exec("kspec search \"serve start --detach\"") and
+      spawn("kspec", ["search", "serve start --detach"]) exited 1 and emitted no-leaky-test-daemon
+      diagnostics for both non-daemon search calls.
+    name: manual classifier probes
+    required: true
+    runner: oxlint
+    created_at: 2026-05-09T05:21:17.842Z
+    completed_at: 2026-05-09T05:21:17.842Z
+events:
+  - _ulid: 01KR5J0ZA9ZADFNNSKFDF5T5GW
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-09T05:05:39.145Z
+  - _ulid: 01KR5J1HPN88E6N12AK2F87R28
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-09T05:05:57.973Z
+  - _ulid: 01KR5JTTWG0E0Y75DBAQBW1767
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR5JTSF7N3RZK4B4J5NBC3YS
+    timestamp: 2026-05-09T05:19:46.576Z
+  - _ulid: 01KR5JW0HQPVNJBB2GVAPXD894
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR5JTSF7N3RZK4B4J5NBC3YS
+    timestamp: 2026-05-09T05:20:25.143Z
+  - _ulid: 01KR5JWD0B07F1JRC002WPRX84
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted guardrail tests
+    timestamp: 2026-05-09T05:20:37.899Z
+  - _ulid: 01KR5JWQ4F04RMTN38H91X8RE8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-09T05:20:48.271Z
+  - _ulid: 01KR5JX0TCR2R809FHJ0B4GKK6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file oxlint
+    timestamp: 2026-05-09T05:20:58.189Z
+  - _ulid: 01KR5JXAWR2SQ8RA439ADXVP7C
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-09T05:21:08.504Z
+  - _ulid: 01KR5JXN6X0JCJS7GYPSEXGB44
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: manual classifier probes
+    timestamp: 2026-05-09T05:21:19.069Z
+  - _ulid: 01KR5JY52W074NZMFW8GKBR1Z7
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KR5JY3SNTJ1CFTY3XA2X2388
+    timestamp: 2026-05-09T05:21:35.325Z
+  - _ulid: 01KR5JZJZF27MWGG5NC3XZ3DES
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-09T05:22:22.319Z
+  - _ulid: 01KR5JZJZFVSMJ888QNFHHFHAT
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-09T05:22:22.319Z
+  - _ulid: 01KR5MGVVZC9W0JBF6Y6JPXBA6
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR5JTSF7N3RZK4B4J5NBC3YS
+    timestamp: 2026-05-09T05:49:17.055Z
+  - _ulid: 01KR5MGYYMXD4628H3N41HKEMK
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR5JTSF7N3RZK4B4J5NBC3YS
+    timestamp: 2026-05-09T05:49:20.212Z
+  - _ulid: 01KR5MH23PX97Q3BXA5S851KHB
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR5JY3SNTJ1CFTY3XA2X2388
+    timestamp: 2026-05-09T05:49:23.446Z
+examined_commit: 74ab0ec544bc889c0aef25550ccb2d1e691b8f1c
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR3W7PPVDFR8F03VQ6J54M3K"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR5JTSF7N3RZK4B4J5NBC3YS
+    anchor:
+      type: code
+      commit: 74ab0ec544bc889c0aef25550ccb2d1e691b8f1c
+      line_end: 403
+      line_start: 392
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KR5JTSF7JA9ZHXSE7V2DTPPD
+        author: Jacob Chapel
+        body: "MUST-FIX: detached-serve classification still matches non-daemon kspec commands by
+          substring.  returns true when any string contribution contains  plus , so a command
+          like  or  is reported as a detached daemon start even though the kspec subcommand is , not
+          . This violates @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported
+          and the task's requirement that detached-serve detection be tied to a kspec daemon
+          lifecycle command. Evidence: a synthetic oxlint probe against this snapshot exited 1 with
+          two no-leaky-test-daemon diagnostics on those two non-daemon search calls."
+        created_at: 2026-05-09T05:19:45.128Z
+      - _ulid: 01KR5JVZ9CVFQT91GK3A2722MY
+        author: Jacob Chapel
+        body: 'Corrected details for the blocker above: argListResolvesToDetachedServe returns true when any
+          string contribution contains the substring serve start plus --detach. That means
+          non-daemon kspec commands such as exec("kspec search \"serve start --detach\"") and
+          spawn("kspec", ["search", "serve start --detach"]) are reported as detached daemon starts
+          even though the subcommand is search, not serve start. This violates
+          @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported and the task
+          requirement that detached-serve detection be tied to a kspec daemon lifecycle command.
+          Evidence: a synthetic oxlint probe against this snapshot exited 1 with two
+          no-leaky-test-daemon diagnostics for those two search calls.'
+        created_at: 2026-05-09T05:20:23.852Z
+      - _ulid: 01KR5MGTJEHAHCQJGTWBX1W6SH
+        author: "@claude"
+        body: 'Fixed in 5222b9c23. Replaced the substring-based argListResolvesToDetachedServe with a
+          positional-aware tokensResolveToDetachedServe that requires the FIRST TWO non-flag
+          positionals after the kspec executable to be exactly `serve` then `start` (and `--detach`
+          to appear as a flag token). All three call shapes were updated in lockstep: exec/execSync
+          now tokenises the shell string quote-aware and slices off the leading `kspec`, then walks
+          the rest; spawn/spawnSync/execFile/execFileSync walks each argv element as one OS argv
+          slot (no whitespace re-split); runKspec/kspec gathers per-arg tokens via a helper that
+          reuses the same shell tokeniser for strings and per-element semantics for arrays. Both
+          reviewer reproductions (`exec("kspec search \"serve start --detach\"")` and
+          `spawn("kspec", ["search", "serve start --detach"])`) now exit 0 with 0 errors against a
+          synthetic oxlint probe. Added five behavioral regression tests under
+          @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported covering
+          exec/spawn/execFile/runKspec false-positive shapes plus a free-form `kspec inbox add`
+          shape whose body text mentions the lifecycle words. Targeted suite: 182 tests passed. Full
+          suite: 8935 tests passed (5 added). Changed-file oxlint: 0 errors, 25 warnings (all
+          pre-existing style; one fewer than cycle 11 because the old collectArgStringContributions
+          helper is now unused and was removed).'
+        created_at: 2026-05-09T05:49:15.726Z
+    kind: blocker
+    resolved_at: 2026-05-09T05:49:19.022Z
+    resolved_by: "@claude"
+  - _ulid: 01KR5JY3SNTJ1CFTY3XA2X2388
+    entries:
+      - _ulid: 01KR5JY3SNMX2NDAAXV5DV9B9Q
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: kspec-agents.md; .agents/skills/kspec-review, kspec-merge,
+          review-gates, work-gates; task and spec context for @01KR3W7PPVDFR8F03VQ6J54M3K; prior
+          cycle-11 review; full diff summary; tools/eslint-rules/no-leaky-test-daemon.js;
+          tests/lint-daemon-test-guardrails.test.ts; tests/lint-no-leaky-test-daemon.test.ts;
+          tests/helpers/daemon.ts and tests/helpers/mock-daemon.ts plus their focused tests;
+          tests/e2e/fixtures/test-base.ts and daemon-fixture.ts; tests/daemon-api/helpers.ts and
+          helpers.test.ts; vitest.config.ts. Commands run: kspec task get, kspec item get for
+          @daemon-test-guardrail-precision and @daemon-test-harness-guardrails, kspec review
+          for-task/get, git diff/stat/name-status/log/status, rg AC annotation searches, kspec
+          validate, targeted guardrail npm test, full npm test, changed-file oxlint, two manual
+          synthetic oxlint classifier probes. Claims verified: --import and --env-file regressions
+          are covered by behavioral tests and targeted/full suites pass; independent probe found
+          detached-serve false positive for kspec search. Categories searched: correctness, edge
+          cases, error handling around runtime flag parsing, test quality and AC annotations,
+          integration with helper allowlists and daemon fixtures."
+        created_at: 2026-05-09T05:21:34.005Z
+    kind: nit
+    resolved_at: 2026-05-09T05:49:22.227Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-09T05:22:22.319Z
+created_at: 2026-05-09T05:05:39.146Z
+updated_at: 2026-05-09T05:49:22.227Z
+notes: []

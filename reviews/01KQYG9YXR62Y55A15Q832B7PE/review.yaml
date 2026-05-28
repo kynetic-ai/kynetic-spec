@@ -1,0 +1,198 @@
+_ulid: 01KQYG9YXR62Y55A15Q832B7PE
+slugs: []
+title: Review shared daemon endpoint resolver (cycle 4)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2359/2359 suites passed; 8640 tests passed, 5 skipped; duration 1917.2s; full log
+      /tmp/kspec-test-cache/01KQYG8647FKFV4Z2SQ7XEJ82B/bf791d702d83af78.log
+    name: npm test -- --fresh
+    required: true
+    runner: npm test
+    created_at: 2026-05-06T11:31:01.999Z
+    completed_at: 2026-05-06T11:31:01.999Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exited 6: schema and references OK; validation produced warnings only. Warnings are broad
+      pre-existing coverage/alignment/annotation warnings not introduced by this task."
+    name: kspec validate
+    required: false
+    runner: kspec validate
+    created_at: 2026-05-06T11:31:05.497Z
+    completed_at: 2026-05-06T11:31:05.497Z
+events:
+  - _ulid: 01KQYG9YXRZ5BNJGR4933HYXFR
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-06T11:20:55.480Z
+  - _ulid: 01KQYGAKQRE5MG277FN09MYBH1
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-06T11:21:16.792Z
+  - _ulid: 01KQYGGB9YJH7M5HVXYDNEJBDY
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQYGG9XC4MB9E9TYQ7N3F329
+    timestamp: 2026-05-06T11:24:24.766Z
+  - _ulid: 01KQYGWGEXY68VZBKEPVHYTQNQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-05-06T11:31:03.261Z
+  - _ulid: 01KQYGWKT3VQQXKPF8YEFRQ50A
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-05-06T11:31:06.691Z
+  - _ulid: 01KQYGWQ73968PM8G9S82YFAHE
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KQYGWP2XEM6W3BEPDV9QGQX3
+    timestamp: 2026-05-06T11:31:10.179Z
+  - _ulid: 01KQYGX1B2Q668M4GWP5RKJ2AQ
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-06T11:31:20.547Z
+  - _ulid: 01KQYGX1B3NT8F549MZRNCMV59
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-06T11:31:20.547Z
+  - _ulid: 01KQYJ5MT35SP25WSEZ4JZ0NJG
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQYGG9XC4MB9E9TYQ7N3F329
+    timestamp: 2026-05-06T11:53:31.203Z
+  - _ulid: 01KQYJ5X32CN3VJGNYNZBF1YCS
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQYGG9XC4MB9E9TYQ7N3F329
+    timestamp: 2026-05-06T11:53:39.682Z
+  - _ulid: 01KQYJ62Q3SYDBH467SP553BK7
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQYGWP2XEM6W3BEPDV9QGQX3
+    timestamp: 2026-05-06T11:53:45.443Z
+  - _ulid: 01KQYJ6AAJFHC9YN7HE96EM3HM
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQYGWP2XEM6W3BEPDV9QGQX3
+    timestamp: 2026-05-06T11:53:53.235Z
+examined_commit: 3ef22cbfd8d59b8a6c4aa5c9ecc57b826152024a
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQWZZH7R9W7WKATZXFB61MPC"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQYGG9XC4MB9E9TYQ7N3F329
+    anchor:
+      type: code
+      commit: 3ef22cbfd8d59b8a6c4aa5c9ecc57b826152024a
+      line_end: 340
+      line_start: 296
+      path: src/daemon-shared/endpoint.ts
+      side: head
+    entries:
+      - _ulid: 01KQYGG9XC9MESHZP5DQQ834PS
+        author: Jacob Chapel
+        body: "MUST-FIX: IPv6 fallback currently treats every 127.0.0.1 bind failure as 'IPv4 loopback
+          unavailable'.  collapses EADDRINUSE, EAFNOSUPPORT, EADDRNOTAVAIL, and other errors to ,
+          and  then falls back to ::1 for all of them. That means if the requested port is already
+          occupied on 127.0.0.1 by another service,  can silently start a daemon on the same port
+          over IPv6 instead of reporting the port collision. The spec's ac-default-ipv6-fallback
+          only permits fallback when IPv4 loopback itself is unavailable; port-in-use is a different
+          startup failure. Evidence: tests/cli-serve.test.ts:409-417 pre-binds 127.0.0.1:PORT and
+          expects fallback, proving the submitted behavior is using EADDRINUSE as the fallback
+          signal rather than an IPv4-loopback-unavailable condition."
+        created_at: 2026-05-06T11:24:23.340Z
+      - _ulid: 01KQYJ5KJP0KS3PM0DMQ319RWJ
+        author: "@claude"
+        body: "Fixed: probeBindAvailable now returns ProbeBindResult that classifies the underlying errno:
+          EADDRNOTAVAIL/EAFNOSUPPORT -> address_unavailable, EADDRINUSE -> port_in_use, otherwise
+          unknown. selectStartupBindHost falls back to ::1 only when reason ===
+          'address_unavailable'; port_in_use and unknown errors return the original IPv4 bind host
+          so app.listen() surfaces the real error. New unit tests in tests/daemon-endpoint.test.ts
+          assert (a) the probe reports reason='port_in_use' on EADDRINUSE and (b)
+          selectStartupBindHost does NOT fall back on either port_in_use or unknown probe errors.
+          The misleading e2e test in tests/cli-serve.test.ts (which pre-bound 127.0.0.1:PORT and
+          expected fallback) is replaced with a regression guard that pre-binds 127.0.0.1:PORT, runs
+          serve start --detach, and asserts nothing ever comes up on [::1]:PORT and any persisted
+          metadata advertises 127.0.0.1. End-to-end coverage of true address-unavailable cannot be
+          reliably simulated on a CI runner without root; the unit tests exhaustively cover that
+          path."
+        created_at: 2026-05-06T11:53:29.942Z
+    kind: blocker
+    resolved_at: 2026-05-06T11:53:38.438Z
+    resolved_by: "@claude"
+  - _ulid: 01KQYGWP2XEM6W3BEPDV9QGQX3
+    entries:
+      - _ulid: 01KQYGWP2XPKD2Y0JEY6XA7ZVP
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; task @01KQWZZH7R9W7WKATZXFB61MPC; specs
+          @daemon-network-endpoint-contract and @config-daemon; prior review @01KQYDJ9; changed
+          implementation files including src/daemon-shared/endpoint.ts,
+          packages/daemon/src/server.ts, packages/daemon/src/index.ts, src/parser/config.ts,
+          src/cli/index.ts, src/cli/daemon-proxy.ts, src/cli/commands/serve.ts,
+          src/parser/daemon-status.ts, packages/web-ui/vite.config.ts,
+          packages/web-ui/src/lib/constants.ts, scripts/build-daemon.cjs, pid shims, and changed
+          endpoint tests. Commands run: git status, git diff stat/name/summary, kspec task get,
+          kspec item get, kspec review get/add/open/comment/check, rg AC annotations, kspec
+          validate, npm test -- --fresh. Claims verified: auto-start flag forwarding exists in
+          src/cli/index.ts; dist daemon shared module was moved outside dist/daemon via
+          src/daemon-shared plus build-daemon staging; clients now resolve metadata first via
+          resolveDaemonClientEndpoint; full test suite passes. Categories searched: correctness,
+          edge cases, error handling, security warning path, test quality, integration and build
+          staging. Finding recorded: IPv6 fallback conflates port collision with IPv4 loopback
+          unavailability."
+        created_at: 2026-05-06T11:31:09.021Z
+      - _ulid: 01KQYJ61DCZZE79EKDB1Q270JS
+        author: "@claude"
+        body: Acknowledged. The evidence-log nit is informational; no code change required.
+        created_at: 2026-05-06T11:53:44.108Z
+    kind: nit
+    resolved_at: 2026-05-06T11:53:52.017Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-06T11:31:20.546Z
+created_at: 2026-05-06T11:20:55.480Z
+updated_at: 2026-05-06T11:53:52.017Z
+notes: []

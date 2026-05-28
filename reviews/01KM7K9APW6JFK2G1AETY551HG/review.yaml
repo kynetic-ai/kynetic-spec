@@ -1,0 +1,148 @@
+_ulid: 01KM7K9APW6JFK2G1AETY551HG
+slugs: []
+title: Review task-impl-split-storage
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "scripts/test.cjs did not start the test runner because dist/cli/index.js was missing,
+      triggered npm run build, and that build failed with TypeScript errors in
+      src/cli/commands/task.ts:1331, :1656, and :1839. Result: 0 tests ran."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-21T07:06:42.052Z
+    completed_at: 2026-03-21T07:06:42.052Z
+events:
+  - _ulid: 01KM7K9APW33HZW99GW0XMHWGR
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T07:03:23.100Z
+  - _ulid: 01KM7K9X0JWP92359EJ9KCDW64
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T07:03:41.842Z
+  - _ulid: 01KM7KFAMM5E1GHTWWE58BVYA3
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM7KFAD08WYRM3SY6T07RNHY
+    timestamp: 2026-03-21T07:06:39.636Z
+  - _ulid: 01KM7KFBG55TS8AS0ZWDDNZGV7
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM7KFB787Z7NV5WQZF31471A
+    timestamp: 2026-03-21T07:06:40.517Z
+  - _ulid: 01KM7KFCC3WGETE9EBGE665T1M
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM7KFC2E4NGC688JH6DAZDHV
+    timestamp: 2026-03-21T07:06:41.411Z
+  - _ulid: 01KM7KFD8T2P6YMR02HW35APP7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-21T07:06:42.330Z
+  - _ulid: 01KM7KFQME03PCFGWJJBT9F6G4
+    actor: codex@gpt-5
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-21T07:06:52.942Z
+  - _ulid: 01KM7KFQME0P6YB8A3A0ZWEDK7
+    actor: codex@gpt-5
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-21T07:06:52.942Z
+examined_commit: dd5e26ef8777fce556ae0ccaa5d1ff5bd14f779a
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YERMDKKYA1XXRN025G0FT"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM7KFAD08WYRM3SY6T07RNHY
+    anchor:
+      type: code
+      commit: dd5e26ef8777fce556ae0ccaa5d1ff5bd14f779a
+      line_end: 849
+      line_start: 810
+      path: src/parser/split-backend.ts
+      side: head
+    entries:
+      - _ulid: 01KM7KFAD0JW8KRM8R4R48HRF1
+        author: Jacob Chapel
+        body: "The split index never persists  or , but  still derives those fields entirely from the index
+          record. Repro: create a split task, call , then ;  returns one note while the summary
+          still reports  (). The daemon task list API forwards those summary counts directly, so
+          task cards and detail badges will silently show the wrong numbers in split mode."
+        created_at: 2026-03-21T07:06:39.392Z
+    kind: blocker
+  - _ulid: 01KM7KFB787Z7NV5WQZF31471A
+    entries:
+      - _ulid: 01KM7KFB7882G9DXEHK031BT87
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md, .agents/skills/review-gates/SKILL.md,
+          src/parser/task-data-manager.ts, src/parser/split-backend.ts, src/parser/index.ts,
+          src/cli/batch-write-buffer.ts, src/cli/commands/task.ts,
+          packages/daemon/src/routes/tasks.ts, tests/split-backend.test.ts,
+          tests/task-data-manager.test.ts. Commands run: git diff/stat against 61eb4369..dd5e26ef,
+          kspec task get, kspec item get, kspec validate, rg for AC annotations/usages, npm test,
+          targeted tsx repros for split registration and notes-count behavior. Claims verified:
+          direct-import split activation, list-summary count behavior after addNote, and npm test
+          preflight behavior. Categories searched: correctness, integration, test quality,
+          atomicity, verification gates."
+        created_at: 2026-03-21T07:06:40.232Z
+    kind: nit
+  - _ulid: 01KM7KFC2E4NGC688JH6DAZDHV
+    anchor:
+      type: code
+      commit: dd5e26ef8777fce556ae0ccaa5d1ff5bd14f779a
+      line_end: 891
+      line_start: 885
+      path: src/parser/split-backend.ts
+      side: head
+    entries:
+      - _ulid: 01KM7KFC2E6W8M86D30QPXAK17
+        author: Jacob Chapel
+        body: ' still fails unless callers import  for its side effect first. This module claims
+          registration at load time makes the split backend generally available, but
+          importing  directly and constructing  still throws "No storage backend registered for
+          format "split"". That means the new backend is not actually activated by choosing the
+          format; it only works in call sites and tests that happen to import this module
+          separately, which breaks the storage-format abstraction this task is supposed to add.'
+        created_at: 2026-03-21T07:06:41.102Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@gpt-5
+    role: reviewer
+    created_at: 2026-03-21T07:06:52.942Z
+created_at: 2026-03-21T07:03:23.100Z
+updated_at: 2026-03-21T07:06:52.942Z
+notes: []

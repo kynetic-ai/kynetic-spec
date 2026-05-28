@@ -1,0 +1,245 @@
+notes:
+  - _ulid: 01KKCYMBT304MRW0C8AJX3KBM5
+    content: >-
+      Implementation notes:
+
+
+      ### Plan Export
+
+
+      Add `plan export <ref>` subcommand to `src/cli/commands/plan.ts`.
+
+      - Output plan `content` field as-is (markdown) to stdout or `--output <path>`
+
+      - `--json` outputs structured plan data
+
+      - Error if content is empty
+
+
+      ### Plan Import --into
+
+
+      Add `--into <ref>` option to the existing `plan import` command in
+      `src/cli/commands/plan-import.ts`. When `--into` is provided:
+
+      1. Resolve the existing plan record
+
+      2. Check status guard (draft/approved allowed; active and terminal rejected)
+
+      3. Read the file content
+
+      4. Parse H1 heading as title update (if present)
+
+      5. Replace the plan's `content` field with the full document
+
+      6. Ignore `--update`, `--status`, `--module` flags with warning
+
+      7. Add auto-note: use `--reason` text if provided, otherwise default "Content updated from
+      file"
+
+      8. Commit to shadow branch
+
+
+      `--module` is NOT required for `--into` since no specs are created.
+
+      `--dry-run` is supported to preview changes.
+
+      `--reason` follows the same pattern as `kspec task block --reason` — `plan set` should also
+      support `--reason` using the same note structure, but that's outside this plan's scope.
+
+
+      ### Plan Import → Content-Only Storage
+
+
+      In `src/cli/commands/plan-import.ts`:
+
+      1. Change `status: "active"` to `status: options.status || "draft"`
+
+      2. Add `--status <status>` option to the command definition
+
+      3. Remove all spec creation logic from import — import only creates the plan record with
+      content
+
+      4. Remove all task derivation logic from import
+
+      5. `--module` becomes optional — if provided, stored on plan record for later derive
+
+      6. `--update` flag becomes a no-op with warning
+
+      7. Update affected @plan-import ACs to reference @plan-derive-enhanced
+
+
+      ### Enhanced Plan Derive
+
+
+      In `src/cli/commands/plan.ts`, replace the current simple `derive` command:
+
+      1. Parse plan's `content` field using `parsePlanDocument()` (move from import)
+
+      2. Move all spec creation logic from `importPlan()` to derive:
+         - Topological ordering (`topologicalSort`)
+         - Parent resolution (local + existing refs)
+         - Slug deduplication
+         - Trait normalization
+         - Dependency mapping
+         - Validation error handling
+      3. Add `--module <ref>` option (required unless stored on plan record from import)
+
+      4. `--module` on derive overrides the stored value from import
+
+      5. Add `--tasks` flag to control task derivation (default: specs only)
+
+      6. Guard against re-derivation (active plan → error)
+
+      7. Add `--dry-run` and `--json` support
+
+      8. Remove old single-task derive behavior
+
+
+      The key refactoring is extracting `importPlan()`'s spec/task creation into a shared
+      `materializePlanContent()` function that both the legacy code path and the new derive command
+      can use during the transition.
+
+
+      ### AC Migration — @plan-import
+
+
+      The `plan-import-content-only` spec supersedes most of `@plan-import`'s ACs, but several stay
+      on import (possibly modified) and others move to `plan-derive-enhanced`. This table is the
+      authoritative mapping.
+
+
+      | AC | Summary | Fate | New location / notes |
+
+      |----|---------|------|---------------------|
+
+      | ac-11 | Parse specs from YAML | **Moves to derive** | `plan-derive-enhanced`
+      ac-parse-content |
+
+      | ac-12 | Auto-derive tasks from specs | **Moves to derive** | `plan-derive-enhanced`
+      ac-tasks-flag |
+
+      | ac-13 | Implementation notes (per-spec + global) | **Moves to derive** |
+      `plan-derive-enhanced` ac-impl-notes-global, ac-impl-notes-per-spec |
+
+      | ac-14 | Skip existing slug with warning | **Moves to derive** | `plan-derive-enhanced`
+      ac-slug-dedup (enhanced: appends suffix instead of skipping) |
+
+      | ac-15 | `--dry-run` shows what would be created | **Stays on import (modified)** | Dry-run
+      shows plan record that would be created (no spec/task preview) |
+
+      | ac-16 | Topological sort for parent refs | **Moves to derive** | `plan-derive-enhanced`
+      ac-topo-sort |
+
+      | ac-17 | Missing parent error + skip | **Moves to derive** | `plan-derive-enhanced`
+      ac-parent-unresolved |
+
+      | ac-18 | Circular parent reference error | **Moves to derive** | `plan-derive-enhanced`
+      ac-circular-dep |
+
+      | ac-19 | Derived tasks have spec_ref + plan_ref | **Moves to derive** |
+      `plan-derive-enhanced` ac-task-refs |
+
+      | ac-20 | Derived task title "Implement \<spec title\>" | **Moves to derive** |
+      `plan-derive-enhanced` ac-tasks-flag |
+
+      | ac-21 | Malformed YAML error with line number | **Moves to derive** | `plan-derive-enhanced`
+      ac-validation-errors |
+
+      | ac-22 | Missing title field error | **Moves to derive** | `plan-derive-enhanced`
+      ac-validation-errors |
+
+      | ac-23 | Partial success (3 created, 2 errors) | **Moves to derive** | `plan-derive-enhanced`
+      ac-validation-errors |
+
+      | ac-24 | Plan created with `status: active` | **Modified** | `plan-import-content-only`
+      ac-draft-default (now `draft`) |
+
+      | ac-25 | Re-import skips existing specs | **Obsolete** | Content-only import doesn't create
+      specs; duplicate plan slug detection is separate (plan-crud ac-1) |
+
+      | ac-26 | `--update` modifies existing specs | **Obsolete** | `--update` becomes no-op with
+      warning per `plan-import-content-only` ac-update-ignored |
+
+      | ac-27 | Additional tasks in Tasks section | **Moves to derive** | `plan-derive-enhanced`
+      ac-additional-tasks |
+
+      | ac-28 | Plan reference resolution | **Stays on import** | Unrelated to spec creation — plan
+      record still resolves via ReferenceIndex |
+
+      | ac-29 | Partial error handling (5 specs, 2 errors) | **Moves to derive** |
+      `plan-derive-enhanced` ac-validation-errors |
+
+      | ac-32 | `--json` output | **Stays on import (modified)** | JSON output shape changes — no
+      `specs`/`tasks` keys, just plan record fields |
+
+      | ac-33 | Missing parent error guidance | **Moves to derive** | `plan-derive-enhanced`
+      ac-parent-unresolved (includes recovery hint; trait @trait-error-guidance) |
+
+      | ac-34 | Missing YAML block warning | **Moves to derive (behavior change)** |
+      `plan-derive-enhanced` ac-no-specs-content (was warning + 0 results, now USAGE_ERROR) |
+
+      | ac-35 | `depends_on` mapping | **Moves to derive** | `plan-derive-enhanced` ac-depends-on |
+
+      | ac-36 | Priority inheritance to tasks | **Moves to derive** | `plan-derive-enhanced`
+      ac-priority-inheritance |
+
+      | ac-37 | YAML quoting diagnostics | **Moves to derive** | `plan-derive-enhanced`
+      ac-validation-errors |
+
+
+      ### AC Migration — @plan-derive
+
+
+      `plan-derive-enhanced` replaces the existing `@plan-derive` spec entirely.
+
+
+      | AC | Summary | Fate | Notes |
+
+      |----|---------|------|-------|
+
+      | ac-5 | Single-task derivation + status transition | **Superseded** | `plan-derive-enhanced`
+      ac-parse-content, ac-status-transition (now creates specs, optionally tasks) |
+
+      | ac-6 | Bidirectional link display | **Moves to derive-enhanced** | `plan-derive-enhanced`
+      ac-bidirectional-links |
+
+
+      ### Migration
+
+
+      Existing plans imported under the old behavior (status: active, specs/tasks already created)
+      are unaffected — they already went through the full lifecycle. The new behavior only applies
+      to future imports.
+
+
+      For the transition period:
+
+      - `plan import` stops creating specs/tasks (breaking change)
+
+      - `plan derive` defaults to specs-only (no `--tasks`) — this reverses the current import
+      behavior where `derive_from_specs: true` auto-created tasks. Users must explicitly pass
+      `--tasks` to derive tasks.
+
+      - Users who relied on the old import-and-materialize flow should use `plan import` then `plan
+      derive --module @mod --tasks`
+
+      - Consider logging a deprecation notice for one release cycle
+
+      - Update AGENTS.md workflow documentation and the /kspec:plan skill
+
+
+      **Supersession details:** Spec/task creation ACs move from @plan-import to
+      @plan-derive-enhanced. ACs that stay on import (modified): ac-15 (dry-run), ac-28 (reference
+      resolution), ac-32 (JSON output). ACs made obsolete: ac-25, ac-26. See AC Migration tables
+      above for the complete mapping.
+
+
+      ### Shadow Branch History
+
+
+      Since all plan mutations auto-commit to shadow branch, `git log` and `git diff` on
+      `.kspec/project.plans.yaml` provide version history. A future `kspec plan history @ref` or
+      `kspec plan diff @ref` could surface this but is not needed for initial iteration.
+    author: "@claude"
+    created_at: 2026-03-10T22:42:09.347Z

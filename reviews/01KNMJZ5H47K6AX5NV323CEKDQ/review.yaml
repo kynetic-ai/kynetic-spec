@@ -1,0 +1,148 @@
+_ulid: 01KNMJZ5H47K6AX5NV323CEKDQ
+slugs: []
+title: Review task-cache-aware-task-loading (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck passed in reviewer snapshot
+    name: typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-04-07T18:29:38.536Z
+    completed_at: 2026-04-07T18:29:38.536Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test passed after runner auto-built dist: 2089 suites passed, 7609 tests passed, 5
+      skipped"
+    name: full test suite
+    required: true
+    runner: npm-test
+    created_at: 2026-04-07T18:29:41.128Z
+    completed_at: 2026-04-07T18:29:41.128Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exited with warnings only (repo baseline completeness/alignment warnings;
+      no new validation errors for this task)
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-07T18:29:43.687Z
+    completed_at: 2026-04-07T18:29:43.687Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/task-data-manager.test.ts
+      tests/parser/entity-cache-context.test.ts passed: 22 suites, 63 tests"
+    name: targeted tests
+    required: true
+    runner: npm-test
+    created_at: 2026-04-07T18:29:46.229Z
+    completed_at: 2026-04-07T18:29:46.229Z
+events:
+  - _ulid: 01KNMJZ5H3Z7PYKMRTRN7TED1Q
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-07T18:23:39.555Z
+  - _ulid: 01KNMJZNFQ0KJSXJC89SEXY7KF
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-07T18:23:55.895Z
+  - _ulid: 01KNMKA4ZBQ35QA36CEV498SBH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-04-07T18:29:39.435Z
+  - _ulid: 01KNMKA7FTFXQRAJ9S0RQQPM6D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-04-07T18:29:42.010Z
+  - _ulid: 01KNMKAA0NPTDNFNGTJNCMSZX3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-07T18:29:44.597Z
+  - _ulid: 01KNMKACGSFXBFVKT2QBV55DTC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted tests
+    timestamp: 2026-04-07T18:29:47.162Z
+  - _ulid: 01KNMKB7Y0JNZ10QZRE4Q4GFF9
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNMKB72NZG15X6TP93445FGT
+    timestamp: 2026-04-07T18:30:15.232Z
+  - _ulid: 01KNMKBF8QXPFSC4PZXQ2TFMAP
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-07T18:30:22.743Z
+  - _ulid: 01KNMKBF8QNCCJ9NK6HTHYHBWT
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-07T18:30:22.743Z
+examined_commit: b53db594898c8844cc6eb960f7777b1ef295c2a9
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNMBPCVJ0GEZR7FSE927QKNW"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNMKB72NZG15X6TP93445FGT
+    entries:
+      - _ulid: 01KNMKB72NJ27HR1MH9KG69N68
+        author: Jacob Chapel
+        body: "Evidence log: read src/parser/task-data-manager.ts, src/parser/yaml.ts,
+          src/daemon/entity-cache.ts, tests/task-data-manager.test.ts, and
+          tests/parser/entity-cache-context.test.ts. Ran kspec validate, npm run typecheck, npm test
+          -- --run tests/task-data-manager.test.ts tests/parser/entity-cache-context.test.ts, and
+          npm test. Verified cache-hit reads, non-ready fallback, cache detail write-through,
+          initContext meta-cache reuse, and full-suite stability in this snapshot. Searched
+          correctness, edge cases, error handling, test quality, and integration; no additional
+          findings."
+        created_at: 2026-04-07T18:30:14.357Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-07T18:30:22.743Z
+created_at: 2026-04-07T18:23:39.556Z
+updated_at: 2026-04-07T18:30:22.743Z
+notes: []

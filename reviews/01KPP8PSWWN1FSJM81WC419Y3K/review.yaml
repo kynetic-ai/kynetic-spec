@@ -1,0 +1,171 @@
+_ulid: 01KPP8PSWWN1FSJM81WC419Y3K
+slugs: []
+title: "Plan re-review: User Documentation Foundation (major rewrite)"
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec plan import plans/user-documentation-foundation.md --dry-run parsed successfully on
+      2026-04-20 and preserved the stored title/status/content structure.
+    name: Plan import dry-run
+    required: true
+    created_at: 2026-04-20T20:19:03.749Z
+    completed_at: 2026-04-20T20:19:03.749Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@docs-authoring-conventions ac-3 requires review-time enforcement, but no task updates
+      reviewer-facing process or rules; the current task set only publishes contributor guidance."
+    name: AC coverage by tasks
+    required: true
+    created_at: 2026-04-20T20:19:03.798Z
+    completed_at: 2026-04-20T20:19:03.798Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The rewrite removed the earlier implementation-only specs and moved
+      renderer/source/search-tool choices into Implementation Notes; the remaining spec descriptions
+      and ACs are primarily user-observable contracts.
+    name: Behavioral spec boundary
+    required: true
+    created_at: 2026-04-20T20:19:03.776Z
+    completed_at: 2026-04-20T20:19:03.776Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@task-docs-search can complete before @task-docs-release-notes-rendering and
+      @task-docs-authoring-conventions even though @docs-search promises results over every docs
+      page."
+    name: Dependency ordering
+    required: true
+    created_at: 2026-04-20T20:19:03.820Z
+    completed_at: 2026-04-20T20:19:03.820Z
+events:
+  - _ulid: 01KPP8PSWVVM9MDE8EZSX99DKD
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-20T20:18:30.427Z
+  - _ulid: 01KPP8Q9CYB6XDRESTF5PYXHND
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-20T20:18:46.302Z
+  - _ulid: 01KPP8QAYVXSZWHHXXDRX2C06X
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPP8Q8ED8WTKXSVATACC9FH4
+    timestamp: 2026-04-20T20:18:47.900Z
+  - _ulid: 01KPP8QCGRNK19XFB0DC2DZ6J7
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPP8Q8ET7335XSXGC8FRM2HV
+    timestamp: 2026-04-20T20:18:49.496Z
+  - _ulid: 01KPP8QVCWQV4ZXV6MRXQX9MCC
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan import dry-run
+    timestamp: 2026-04-20T20:19:04.732Z
+  - _ulid: 01KPP8QWYF3TF71SKD0WPFNJH9
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: AC coverage by tasks
+    timestamp: 2026-04-20T20:19:06.319Z
+  - _ulid: 01KPP8QYF4WAAXSCHBFF9PK3KD
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Behavioral spec boundary
+    timestamp: 2026-04-20T20:19:07.876Z
+  - _ulid: 01KPP8QZZB71P5PBHSWJM9FAV8
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Dependency ordering
+    timestamp: 2026-04-20T20:19:09.420Z
+  - _ulid: 01KPP8R8K4J1Z7FDTGX68H97VS
+    actor: codex@local
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-20T20:19:18.244Z
+  - _ulid: 01KPP8R8K4RR6HHPV1ZTHPKJP6
+    actor: codex@local
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-20T20:19:18.244Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-user-documentation-foundation"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPP8Q8ED8WTKXSVATACC9FH4
+    anchor:
+      type: structured
+      ref: "@task-docs-search"
+      section: dependencies
+    entries:
+      - _ulid: 01KPP8Q8ED0YRHMWD28CF6A3TH
+        author: "@claude"
+        body: This task claims full coverage of @docs-search ac-1 through ac-3, but it can complete before
+          @task-docs-release-notes-rendering and @task-docs-authoring-conventions. The spec promises
+          search over the full text of every docs page; without those dependencies, the search index
+          can ship missing at least the release-notes page and the contributor-guidance page that
+          the plan itself adds to the docs surface.
+        created_at: 2026-04-20T20:18:45.325Z
+    kind: blocker
+  - _ulid: 01KPP8Q8ET7335XSXGC8FRM2HV
+    anchor:
+      type: structured
+      field: ac-3
+      ref: "@docs-authoring-conventions"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KPP8Q8EVE1Q89WERFSVB54MW
+        author: "@claude"
+        body: ac-3 adds a reviewer-behavior contract ('the review checks that the relevant docs page has
+          been updated'), but the only implementing task for this spec publishes contributor
+          guidance. No task updates reviewer-facing rules, checklists, or review workflow, so the
+          plan currently has no executable path that would make reviews perform this check rather
+          than merely describe it in prose.
+        created_at: 2026-04-20T20:18:45.339Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@local
+    role: reviewer
+    created_at: 2026-04-20T20:19:18.244Z
+created_at: 2026-04-20T20:18:30.428Z
+updated_at: 2026-04-20T20:19:18.244Z
+notes: []

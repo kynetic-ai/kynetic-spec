@@ -1,0 +1,194 @@
+_ulid: 01KN7P72PJTMXT2GS560A6E7Z1
+slugs: []
+title: "Plan review: Daemon File Monitoring Reliability"
+author: "@claude"
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@daemon-file-monitoring ac-4 prescribes internal backend strategy ('same monitoring
+      backend', 'no runtime fallback') instead of observable behavior."
+    name: Spec quality
+    required: true
+    created_at: 2026-04-02T18:11:00.865Z
+    completed_at: 2026-04-02T18:11:00.865Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Phase 1 behavior-changing tasks run before Phase 2 tasks that update @daemon-server ac-8
+      and @multi-directory-daemon ac-19, leaving implementation ordered ahead of the corresponding
+      spec updates.
+    name: Dependency ordering
+    required: true
+    created_at: 2026-04-02T18:11:00.883Z
+    completed_at: 2026-04-02T18:11:00.883Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate --alignment: schema OK, references OK; no broken internal refs surfaced
+      while reviewing @plan-daemon-file-monitoring-reliability."
+    name: Cross-reference validation
+    required: true
+    created_at: 2026-04-02T18:11:00.887Z
+    completed_at: 2026-04-02T18:11:00.887Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@daemon-file-monitoring ac-6 and ac-8 are only claimed by @task-test-chokidar-watcher; no
+      implementation task clearly owns those behaviors."
+    name: Task coverage mapping
+    required: true
+    created_at: 2026-04-02T18:11:00.902Z
+    completed_at: 2026-04-02T18:11:00.902Z
+events:
+  - _ulid: 01KN7P72PJ3FHGSVCDCCGRT06F
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-02T18:10:16.914Z
+  - _ulid: 01KN7P801EZ1XJWREJ8S28BXE5
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN7P7ZBMEBTV3TMTFKYE29Q1
+    timestamp: 2026-04-02T18:10:46.958Z
+  - _ulid: 01KN7P814NEA8PNNDTFHZFGH9A
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-02T18:10:48.086Z
+  - _ulid: 01KN7P826S4P21TAKT5APN0QR4
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN7P7ZEZCDEJ4YZXA1B53RE9
+    timestamp: 2026-04-02T18:10:49.177Z
+  - _ulid: 01KN7P83A640FSG1PWSFHMTTMP
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN7P7ZEZPKGN6WDT4Y6K19YS
+    timestamp: 2026-04-02T18:10:50.310Z
+  - _ulid: 01KN7P8E9CA9915E87CHS8G2YW
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Spec quality
+    timestamp: 2026-04-02T18:11:01.548Z
+  - _ulid: 01KN7P8FBN6KCZ5NM828J275RV
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Dependency ordering
+    timestamp: 2026-04-02T18:11:02.645Z
+  - _ulid: 01KN7P8GE8248PY65EFDEGMXHZ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Cross-reference validation
+    timestamp: 2026-04-02T18:11:03.752Z
+  - _ulid: 01KN7P8HG2G1GXFB60WHKD9QM7
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Task coverage mapping
+    timestamp: 2026-04-02T18:11:04.834Z
+  - _ulid: 01KN7P8SYWTV2NERG6N424FK0A
+    actor: "@claude"
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-02T18:11:13.500Z
+  - _ulid: 01KN7P8SYW86WV0G4EE7MZG569
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-02T18:11:13.500Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-daemon-file-monitoring-reliability"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN7P7ZBMEBTV3TMTFKYE29Q1
+    anchor:
+      type: structured
+      field: ac-4
+      ref: "@daemon-file-monitoring"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KN7P7ZBMC7ZMSCP8WPEFVJKS
+        author: "@claude"
+        body: "ac-4 is written as an implementation contract rather than observable behavior: 'the same
+          monitoring backend is used' and 'no runtime fallback' are internal design choices, not
+          outcomes a consumer can verify. This conflicts with the spec-writing rule against
+          implementation leakage. Rewrite the AC in behavioral terms (for example, reliable change
+          detection across supported platforms) and leave backend selection in implementation notes
+          or tasks."
+        created_at: 2026-04-02T18:10:46.260Z
+    kind: blocker
+  - _ulid: 01KN7P7ZEZCDEJ4YZXA1B53RE9
+    anchor:
+      type: structured
+      section: dependencies
+    entries:
+      - _ulid: 01KN7P7ZEZMF5KT9GTAWDWX6ZJ
+        author: "@claude"
+        body: "The task graph puts spec-change work after implementation work: Phase 1 changes watcher
+          behavior first, while Phase 2 later updates @daemon-server ac-8 and
+          @multi-directory-daemon ac-19 to match. That violates the project's spec-first workflow
+          and leaves at least task-chokidar-standardize operating against stale existing specs. Move
+          the spec-update tasks ahead of the behavior-changing implementation tasks, or fold those
+          spec updates into an earlier prerequisite step."
+        created_at: 2026-04-02T18:10:46.367Z
+    kind: blocker
+  - _ulid: 01KN7P7ZEZPKGN6WDT4Y6K19YS
+    anchor:
+      type: structured
+      ref: "@task-test-chokidar-watcher"
+      section: tasks
+    entries:
+      - _ulid: 01KN7P7ZF0C2B5YVQT8JSEQJR4
+        author: "@claude"
+        body: The coverage map is incomplete for @daemon-file-monitoring. This task is a test task, but it
+          is the only task that claims coverage for ac-6 and ac-8. No implementation task currently
+          owns the work for cross-project event isolation or unregistering a project after
+          persistent monitoring failure. Add implementation ownership for those ACs (or explicitly
+          point to existing implementation work if those behaviors are already satisfied), then keep
+          this task focused on verification.
+        created_at: 2026-04-02T18:10:46.368Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: "@claude"
+    role: reviewer
+    created_at: 2026-04-02T18:11:13.499Z
+created_at: 2026-04-02T18:10:16.914Z
+updated_at: 2026-04-02T18:11:13.500Z
+notes: []

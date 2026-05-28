@@ -1,0 +1,281 @@
+_ulid: 01KQYDJ9RG2M1EY0ECD389X8D7
+slugs: []
+title: Review shared daemon endpoint resolver (cycle 3)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- tests/task-unblock-prior-status.test.ts --fresh passed: 8 tests passed in
+      10.3s; supports classifying the full-suite failure as a concurrent build/delete race, not a
+      deterministic task-unblock behavior failure."
+    name: targeted failed-suite rerun
+    required: false
+    runner: npm
+    created_at: 2026-05-06T10:43:27.372Z
+    completed_at: 2026-05-06T10:43:27.372Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exited 6 with warnings only: schema OK, references OK; existing
+      completeness/alignment/reference warnings remain."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-06T10:43:30.855Z
+    completed_at: 2026-05-06T10:43:30.855Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full fresh suite failed: tests/task-unblock-prior-status.test.ts had 1 failure; 8638
+      passed, 5 skipped. Error was ERR_MODULE_NOT_FOUND for dist/daemon/endpoint.js imported from
+      dist/cli/pid-utils.js. Isolated rerun of tests/task-unblock-prior-status.test.ts passed,
+      consistent with a concurrent dist/daemon rebuild race."
+    name: npm test -- --fresh
+    required: true
+    runner: npm
+    created_at: 2026-05-06T10:43:34.453Z
+    completed_at: 2026-05-06T10:43:34.453Z
+events:
+  - _ulid: 01KQYDJ9RF5KYYCRTVKSY96VSA
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-06T10:33:02.991Z
+  - _ulid: 01KQYDJN9AYDKJR8J9EDBA6KX3
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-06T10:33:14.795Z
+  - _ulid: 01KQYDQNYN5QSHJN7AJ1XN93A2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQYDQMNJ4WN4GVGDWDQ5A8P1
+    timestamp: 2026-05-06T10:35:59.317Z
+  - _ulid: 01KQYE4TAGAV8EQT4KERKJVFCV
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQYE4S4FPSX2QRK2DFA0AVGX
+    timestamp: 2026-05-06T10:43:09.776Z
+  - _ulid: 01KQYE5CS4D39WGSJ010VRZ5QJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted failed-suite rerun
+    timestamp: 2026-05-06T10:43:28.677Z
+  - _ulid: 01KQYE5G574AH0AR1S5SWVKCCX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-05-06T10:43:32.135Z
+  - _ulid: 01KQYE5KKSW79ACGW6T29C8Z5E
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test -- --fresh
+    timestamp: 2026-05-06T10:43:35.673Z
+  - _ulid: 01KQYE66200KW0XJN1KV33QBNG
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KQYE64TDQ4VMTWGX1T3A0P9G
+    timestamp: 2026-05-06T10:43:54.560Z
+  - _ulid: 01KQYE6FW71GXAHBNNJV3BAQNZ
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-06T10:44:04.615Z
+  - _ulid: 01KQYE6FW8RAPAVAFKGX3FHQR7
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-06T10:44:04.616Z
+  - _ulid: 01KQYFTETNDD8ET348NJFJM2JE
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQYDQMNJ4WN4GVGDWDQ5A8P1
+    timestamp: 2026-05-06T11:12:27.477Z
+  - _ulid: 01KQYFTXWZ01XJ1SZ10KC84XHB
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQYE4S4FPSX2QRK2DFA0AVGX
+    timestamp: 2026-05-06T11:12:42.911Z
+  - _ulid: 01KQYFV7Y6X28R41QH7JBXPZS0
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQYE64TDQ4VMTWGX1T3A0P9G
+    timestamp: 2026-05-06T11:12:53.190Z
+  - _ulid: 01KQYFVH3KMJZJBQKXPHX9NP9F
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQYDQMNJ4WN4GVGDWDQ5A8P1
+    timestamp: 2026-05-06T11:13:02.579Z
+  - _ulid: 01KQYFVPP3CG9NVEKNMFAGS8Y6
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQYE4S4FPSX2QRK2DFA0AVGX
+    timestamp: 2026-05-06T11:13:08.292Z
+  - _ulid: 01KQYFVW5K8XPS6G5TFF06F354
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQYE64TDQ4VMTWGX1T3A0P9G
+    timestamp: 2026-05-06T11:13:13.907Z
+examined_commit: 506eb2b3e31fd95451b0d8e52509ce42d8ab6124
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQWZZH7R9W7WKATZXFB61MPC"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQYDQMNJ4WN4GVGDWDQ5A8P1
+    anchor:
+      type: code
+      commit: 506eb2b3e31fd95451b0d8e52509ce42d8ab6124
+      line_end: 201
+      line_start: 196
+      path: src/cli/index.ts
+      side: head
+    entries:
+      - _ulid: 01KQYDQMNJVTK4GRST1MHW3PFE
+        author: Jacob Chapel
+        body: "MUST-FIX: the implicit auto-start path ignores the resolved daemon endpoint config.
+          maybeAutoStartDaemon() loads context.config.daemon, but this spawn passes only --port and
+          --kspec-dir, unlike serve start which forwards --host, --host-explicit, and
+          --connect-host. Impact: a normal kspec command that auto-starts the daemon in a project
+          with daemon.host, KSPEC_DAEMON_HOST, or daemon.connect_host configured starts a daemon on
+          the built-in/default host and writes metadata for that wrong endpoint, violating
+          @daemon-network-endpoint-contract ac-configured-bind-host and @config-daemon
+          ac-connect-host-config. Evidence: src/cli/index.ts:196-201 omits those flags while
+          src/cli/commands/serve.ts:406-423 includes them; rg shows no auto-start test covering
+          host/connect_host."
+        created_at: 2026-05-06T10:35:58.002Z
+      - _ulid: 01KQYFTDM4KD58Q55FVJZ073C6
+        author: "@claude"
+        body: "Fixed in cycle 3 commit 3ef22cbfd. src/cli/index.ts maybeAutoStartDaemon() now forwards
+          --host, --host-explicit (when host_explicitly_configured), and --connect-host (when set),
+          matching the daemonArgs construction in src/cli/commands/serve.ts. Added behavioral
+          coverage in tests/cli-no-daemon.test.ts: \"forwards host, host-explicit, and connect-host
+          to the auto-started daemon\" configures host: 127.0.0.1 + connect_host: 127.0.0.2, runs
+          node CLI util ulid, then verifies (a) the auto-started daemon's daemon.connection.json
+          shows bind_host=127.0.0.1, connect_host=127.0.0.2, api_url=http://127.0.0.2:PORT and (b)
+          the spawned process command line contains --host 127.0.0.1, --host-explicit, and
+          --connect-host 127.0.0.2."
+        created_at: 2026-05-06T11:12:26.243Z
+    kind: blocker
+    resolved_at: 2026-05-06T11:13:01.273Z
+    resolved_by: "@claude"
+  - _ulid: 01KQYE4S4FPSX2QRK2DFA0AVGX
+    anchor:
+      type: code
+      commit: 506eb2b3e31fd95451b0d8e52509ce42d8ab6124
+      line_end: 12
+      line_start: 7
+      path: src/cli/pid-utils.ts
+      side: head
+    entries:
+      - _ulid: 01KQYE4S4FHXNY0PPADPYK3QJ1
+        author: Jacob Chapel
+        body: "MUST-FIX: the CLI now imports its shared PID/endpoint implementation from
+          ../daemon/endpoint.js, which compiles to dist/cli/pid-utils.js importing
+          dist/daemon/endpoint.js. scripts/build-daemon.cjs deletes dist/daemon during npm run
+          build:daemon, so any concurrent CLI subprocess can fail while that directory is absent.
+          Impact: the full test suite now has a race where unrelated CLI tests crash with
+          ERR_MODULE_NOT_FOUND for dist/daemon/endpoint.js, and installed/runtime CLI commands can
+          hit the same missing module during a daemon rebuild. Evidence: npm test -- --fresh failed
+          in tests/task-unblock-prior-status.test.ts with Cannot find module
+          'dist/daemon/endpoint.js' imported from dist/cli/pid-utils.js; the isolated rerun of that
+          test passed, which matches a concurrent build/delete race. scripts/build-daemon.cjs:49-50
+          removes dist/daemon before rebuilding it."
+        created_at: 2026-05-06T10:43:08.559Z
+      - _ulid: 01KQYFTWND20SRVK8RJVARRCZ8
+        author: "@claude"
+        body: "Fixed in cycle 3 commit 3ef22cbfd by moving the shared module out of dist/daemon's path.
+          src/daemon/endpoint.ts → src/daemon-shared/endpoint.ts, so its tsc output is
+          dist/daemon-shared/endpoint.js — owned exclusively by tsc. dist/daemon/ is now owned
+          exclusively by scripts/build-daemon.cjs's esbuild stage; deleting and rebuilding
+          dist/daemon/ no longer affects any CLI subprocess. src/cli/pid-utils.ts and
+          packages/daemon/src/pid.ts re-export from the new path; packages/web-ui/vite.config.ts,
+          tests/daemon-endpoint.test.ts, tests/web-ui/dev-server-daemon-endpoint.test.ts, and
+          scripts/build-daemon.cjs's endpointSource constant updated to match. Verified empirically:
+          deleted dist/daemon/ and confirmed dist/cli/pid-utils.js still resolves all four exports
+          through dist/daemon-shared/endpoint.js. Full fresh test suite (npm test --fresh):
+          2359/2359 suites pass, 8640 tests pass (5 skipped, 0 failures); the previously racy
+          tests/task-unblock-prior-status.test.ts run is now stable under the same parallel test
+          concurrency."
+        created_at: 2026-05-06T11:12:41.644Z
+    kind: blocker
+    resolved_at: 2026-05-06T11:13:07.001Z
+    resolved_by: "@claude"
+  - _ulid: 01KQYE64TDQ4VMTWGX1T3A0P9G
+    entries:
+      - _ulid: 01KQYE64TDRT3AB0FX3HTDR6D7
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; task/spec context for @01KQWZZH7R9W7WKATZXFB61MPC,
+          @daemon-network-endpoint-contract, @config-daemon, @trait-localhost-security; previous
+          reviews @01KQY453 and @01KQY802; src/daemon/endpoint.ts; packages/daemon/src/server.ts;
+          packages/daemon/src/index.ts; packages/daemon/src/pid.ts; src/cli/pid-utils.ts;
+          src/cli/index.ts; src/cli/daemon-proxy.ts;
+          src/cli/commands/{serve,agent,event,schedule,task}.ts;
+          src/parser/{config,daemon-status}.ts;
+          packages/web-ui/{vite.config.ts,src/lib/constants.ts}; scripts/build-daemon.cjs;
+          tests/daemon-endpoint.test.ts; tests/cli-daemon-proxy.test.ts; tests/cli-serve.test.ts;
+          tests/web-ui/dev-server-daemon-endpoint.test.ts;
+          tests/parser/{config,daemon-config}.test.ts; tests/daemon-build.test.ts. Commands run:
+          kspec task get; kspec item get; kspec review for-task/get/add/open; git show/diff; rg AC
+          annotations and endpoint call sites; kspec validate; npm test -- --fresh; npm test --
+          tests/task-unblock-prior-status.test.ts --fresh; log grep for ERR_MODULE_NOT_FOUND. Claims
+          verified: cycle-2 web UI dev metadata injection exists; external binding warnings are
+          emitted by parent serve start/status; IPv6 fallback is implemented and covered; daemon
+          clients now use metadata api/ws URLs; auto-start still omits endpoint flags; full-suite
+          failure is a dist/daemon endpoint race. Categories searched: correctness, AC alignment,
+          edge cases, error handling, test integrity, build/integration."
+        created_at: 2026-05-06T10:43:53.293Z
+      - _ulid: 01KQYFV6QGXM04GCJKS7SFYV53
+        author: "@claude"
+        body: Acknowledged — thanks for the comprehensive evidence log. No code change needed for this nit;
+          it documents the cycle-3 review surface.
+        created_at: 2026-05-06T11:12:51.952Z
+    kind: nit
+    resolved_at: 2026-05-06T11:13:12.704Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-06T10:44:04.615Z
+created_at: 2026-05-06T10:33:02.992Z
+updated_at: 2026-05-06T11:13:12.704Z
+notes: []

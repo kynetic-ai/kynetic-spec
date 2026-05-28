@@ -1,0 +1,127 @@
+_ulid: 01KP6WE68779Q5AMYA88CA33TT
+slugs: []
+title: Review task-meta-set-multi-value
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Head and base f205808d2cf1f58d18f7fdf45435996b4092d52a both report the same pre-existing
+      schema error in .kspec/modules/meta.yaml plus existing repo-wide warnings; no task-specific
+      validation regression observed.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-14T21:05:29.104Z
+    completed_at: 2026-04-14T21:05:29.104Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "2120 suites passed, 7763 tests passed, 5 skipped. Full log:
+      /tmp/kspec-test-cache/01KP6WD42E16DXVD9K8XT81SJM/19f24e3c4cbc3db5.log"
+    name: npm test
+    required: true
+    runner: test.cjs
+    created_at: 2026-04-14T21:05:36.102Z
+    completed_at: 2026-04-14T21:05:36.102Z
+events:
+  - _ulid: 01KP6WE687PRSFTMRSVPHBX0B2
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-14T20:55:28.775Z
+  - _ulid: 01KP6WEQBRDWV9HF10SKVKA4HT
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-14T20:55:46.297Z
+  - _ulid: 01KP6X0DE1RR0V43SHFFMGEA28
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KP6X0CG0G4HA1CXJV4M021SD
+    timestamp: 2026-04-14T21:05:25.953Z
+  - _ulid: 01KP6X0HCZ19A38BJ5DW1RP5Z6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-14T21:05:30.015Z
+  - _ulid: 01KP6X0M707G7K16DXEQ21DACJ
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-14T21:05:32.896Z
+  - _ulid: 01KP6X0M71ZP09N9ZZSR24JSCW
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-14T21:05:32.897Z
+  - _ulid: 01KP6X0R92T90895X0FH5J8GS3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-14T21:05:37.058Z
+examined_commit: d8f9c25d3b8dad39a6e1b074ec58733867fd3cd7
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNXYJ6GNEEFAAYRXSCPHVNSR"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KP6X0CG0G4HA1CXJV4M021SD
+    entries:
+      - _ulid: 01KP6X0CG1AD6FX7CWZJGAN1FB
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          Files read: src/cli/commands/meta.ts, tests/meta.test.ts, kspec-agents.md
+
+          Commands run: kspec task get @01KNXYJ6GNEEFAAYRXSCPHVNSR; kspec review for-task
+          @01KNXYJ6GNEEFAAYRXSCPHVNSR; git diff
+          f205808d2cf1f58d18f7fdf45435996b4092d52a...d8f9c25d3b8dad39a6e1b074ec58733867fd3cd7 --
+          src/cli/commands/meta.ts tests/meta.test.ts; kspec validate; grep -n "AC:
+          @meta-set-multi-value-parity" tests/meta.test.ts; npm test; git merge --no-ff
+          dispatch/task/task-meta-set-multi-value/01knxyj6
+
+          Claims verified: repeated meta set flags now preserve all supplied values; mixed
+          remove+add applies removes before adds; meta add behavior remains unchanged
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration.
+          No task-specific findings.
+
+          Validation note: kspec validate reports a pre-existing schema error and repo-wide coverage
+          noise on both head and base f205808d2cf1f58d18f7fdf45435996b4092d52a, so not treated as a
+          regression for this task.
+        created_at: 2026-04-14T21:05:24.993Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-14T21:05:32.896Z
+created_at: 2026-04-14T20:55:28.775Z
+updated_at: 2026-04-14T21:05:36.102Z
+notes: []

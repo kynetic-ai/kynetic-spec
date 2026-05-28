@@ -1,0 +1,123 @@
+_ulid: 01KPVZ748B7FKEF8ZYPQC0X622
+slugs: []
+title: Review detached reviewer merge guidance (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fails outside task scope in detached review workspace: schema error for
+      /home/chapel/Projects/kynetic-spec-dispatch/.kspec/modules/meta.yaml plus longstanding
+      completeness/alignment warnings unrelated to this diff."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-23T01:39:47.798Z
+    completed_at: 2026-04-23T01:39:47.798Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran npm test twice. Both runs passed: 2269/2269 suites, 8362 passed, 5 skipped."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-23T01:39:53.967Z
+    completed_at: 2026-04-23T01:39:53.967Z
+events:
+  - _ulid: 01KPVZ748A0BMXND56E527958E
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-23T01:28:06.154Z
+  - _ulid: 01KPVZW1GT9YFP3M34K1WK55VR
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-23T01:39:31.482Z
+  - _ulid: 01KPVZWJECFPSTYHSVAQS9H6EP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-23T01:39:48.813Z
+  - _ulid: 01KPVZWNFVXZWGSV1HC50PZ6KY
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KPVZWMD8AX635P33SK31ER5Y
+    timestamp: 2026-04-23T01:39:51.931Z
+  - _ulid: 01KPVZWRMFBV0YP3SME28Z6ND7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-23T01:39:55.152Z
+  - _ulid: 01KPVZX59PYXKDS2JCHDRF3X16
+    actor: Codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-23T01:40:08.119Z
+  - _ulid: 01KPVZX59QH18K9JCKC4925207
+    actor: Codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-23T01:40:08.119Z
+examined_commit: 6938917bc654e9b29aaa9dfe781c62dafa18531d
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KPVJ8RA8P0TGB5KQEZ70M39K"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPVZWMD8AX635P33SK31ER5Y
+    entries:
+      - _ulid: 01KPVZWMD97GR4F674KZ2VBNQT
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          Files read: src/agent-runtime/dispatch.ts, src/cli/commands/setup-defaults.ts,
+          templates/skills/merge/SKILL.md, templates/agents-sections/06-agent-dispatch-mode.md,
+          docs/agents-eval-scenarios.md, docs/prime-mock.md, tests/agent-dispatch-engine.test.ts,
+          tests/setup-builtin-agents.test.ts, tests/supporting-file-references.test.ts.
+
+          Commands run: git diff --stat, git diff --name-only, git diff on changed files, kspec task
+          get, kspec review for-task, kspec review get prior review, kspec validate, rg for AC
+          annotations, npm test (twice).
+
+          Claims verified: reviewer publication guidance points to the detached merge helper;
+          rendered merge skill resolves supporting-file helper paths for different adapters; the
+          previous source-scanning blocker was replaced with prompt-pipeline behavioral coverage.
+
+          Categories searched: correctness, test quality, AC coverage, integration, docs/regenerated
+          output. No new findings.
+        created_at: 2026-04-23T01:39:50.825Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: Codex
+    role: reviewer
+    created_at: 2026-04-23T01:40:08.118Z
+created_at: 2026-04-23T01:28:06.155Z
+updated_at: 2026-04-23T01:40:08.119Z
+notes: []

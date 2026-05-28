@@ -1,0 +1,239 @@
+_ulid: 01KNVATP2CP05287J6558P4PJT
+slugs: []
+title: "Plan review: Init, Setup, and Upgrade Rough Edges"
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "The new specs fit existing parents without obvious duplicate coverage: setup scaffolds
+      extend @enhanced-setup/@init-commands/@agent-integration, plan import guidance extends
+      @plan-support, and the meta bugfix hangs off @meta."
+    name: Spec neighborhood
+    required: true
+    created_at: 2026-04-10T09:17:12.523Z
+    completed_at: 2026-04-10T09:17:12.523Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "The blocker-level release gaps in RELEASE_GAPS.md are both represented: missing config
+      scaffold -> @scaffolded-project-config, missing AGENTS scaffold -> @scaffolded-agents-file."
+    name: Gap coverage
+    required: true
+    created_at: 2026-04-10T09:17:12.589Z
+    completed_at: 2026-04-10T09:17:12.589Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: task-upgrade-command composes the default-module and default-reflection-hook scaffolds in
+      its step list but does not depend on @task-derivable-default-module or
+      @task-default-reflection-hooks.
+    name: Dependency ordering
+    required: true
+    created_at: 2026-04-10T09:17:12.609Z
+    completed_at: 2026-04-10T09:17:12.609Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 60 plan ACs are claimed by at least one task via Covers lines. I did not find any
+      orphan ACs inside this draft plan.
+    name: AC coverage
+    required: true
+    created_at: 2026-04-10T09:17:42.734Z
+    completed_at: 2026-04-10T09:17:42.734Z
+events:
+  - _ulid: 01KNVATP2B7BVQFAWZNC206QMF
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-10T09:16:05.068Z
+  - _ulid: 01KNVAVTCQ81R7DV6ZQVTV1F28
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNVAVSDXR9C3MXACXBZ2JPGM
+    timestamp: 2026-04-10T09:16:42.263Z
+  - _ulid: 01KNVAVVRS50XM2ZA99R0DQFKB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNVAVSHGYEZZSV1YDXJYCREX
+    timestamp: 2026-04-10T09:16:43.673Z
+  - _ulid: 01KNVAVX99P2T0ZYT3474MZSTG
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNVAVSFDRSRMHZJ5MEMYY1EG
+    timestamp: 2026-04-10T09:16:45.225Z
+  - _ulid: 01KNVAVYQ789CS1XXQBTKKD9A1
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-10T09:16:46.695Z
+  - _ulid: 01KNVAWRSEP29CNTVPPTN5CFW6
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KNVAWQXA1H4SKDXMH2WZKRRA
+    timestamp: 2026-04-10T09:17:13.391Z
+  - _ulid: 01KNVAWT6444F7K1Q9X6KPF8C5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec neighborhood
+    timestamp: 2026-04-10T09:17:14.820Z
+  - _ulid: 01KNVAWVPV06PM1QQ82CRN1VWN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Gap coverage
+    timestamp: 2026-04-10T09:17:16.380Z
+  - _ulid: 01KNVAWX2KPTSM0F4SADV06HCP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Dependency ordering
+    timestamp: 2026-04-10T09:17:17.779Z
+  - _ulid: 01KNVAXEJHKRQQY6HTEG2HYNMB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNVAXDQ6RNNTECWNPZC7S2PZ
+    timestamp: 2026-04-10T09:17:35.697Z
+  - _ulid: 01KNVAXP8RMZRZ7A0GK72SXNEM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage
+    timestamp: 2026-04-10T09:17:43.576Z
+  - _ulid: 01KNVAY850QZAGA2P7K920HWBJ
+    actor: codex@local
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-10T09:18:01.889Z
+  - _ulid: 01KNVAY851JXGBBM6Z33FN63QD
+    actor: codex@local
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-10T09:18:01.889Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-init-setup-and-upgrade-rough-edges"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNVAVSDXR9C3MXACXBZ2JPGM
+    anchor:
+      type: structured
+      ref: "@task-upgrade-command"
+      section: dependencies
+    entries:
+      - _ulid: 01KNVAVSDYCJ72EYJS64QGVT6W
+        author: Jacob Chapel
+        body: This task's step 5 explicitly invokes the default-module scaffold and the default
+          reflection-hook scaffold, but depends_on only lists the config, AGENTS file, gitignore,
+          and default-agents tasks. As written, the plan allows the upgrade task to start before the
+          module or hook scaffolds exist, even though it is supposed to compose those behaviors. Add
+          dependencies on @task-derivable-default-module and @task-default-reflection-hooks, or
+          remove those steps from the upgrade task's scope.
+        created_at: 2026-04-10T09:16:41.278Z
+    kind: blocker
+  - _ulid: 01KNVAVSHGYEZZSV1YDXJYCREX
+    anchor:
+      type: structured
+      ref: "@scaffolded-agents-file"
+      section: description
+    entries:
+      - _ulid: 01KNVAVSHHFJK9BK75E20SRY7D
+        author: Jacob Chapel
+        body: The description promises the scaffolded AGENTS file is never overwritten unless the force flag
+          is set, but the spec has no AC for the force path or backup behavior while the task
+          implements both. That leaves a user-visible overwrite contract unreviewable and
+          untestable. Add explicit ACs for forced overwrite behavior (and backup, if intended), or
+          narrow the description so the task does not implement behavior the spec never defines.
+        created_at: 2026-04-10T09:16:41.393Z
+    kind: blocker
+  - _ulid: 01KNVAVSFDRSRMHZJ5MEMYY1EG
+    anchor:
+      type: structured
+      ref: "@default-project-agents-and-conventions"
+      section: description
+    entries:
+      - _ulid: 01KNVAVSFD5WK9PVQA3NEV2X7E
+        author: Jacob Chapel
+        body: This description says users may edit, rename, or remove the scaffolded defaults, but neither
+          the ACs nor the task define how rerunning setup preserves those choices. The task
+          currently says to recreate any missing default item, which would silently undo a user
+          removal and likely break renamed defaults as well. Either remove the
+          removability/editability promise from the spec, or add explicit ACs and task logic that
+          preserve user removals/renames across reruns.
+        created_at: 2026-04-10T09:16:41.325Z
+    kind: blocker
+  - _ulid: 01KNVAWQXA1H4SKDXMH2WZKRRA
+    anchor:
+      type: structured
+      ref: "@task-release-notes"
+      section: description
+    entries:
+      - _ulid: 01KNVAWQXBXMPJ5A9KC1GB938S
+        author: Jacob Chapel
+        body: This task adds a structured/programmatic output mode for the release-notes command, but
+          @release-notes-accessible has no AC for machine-readable output and no JSON-output trait.
+          Either add that contract to the spec (preferred, since this is user-visible CLI behavior)
+          or drop the requirement from the task so the implementation surface matches the plan.
+        created_at: 2026-04-10T09:17:12.491Z
+    kind: question
+  - _ulid: 01KNVAXDQ6RNNTECWNPZC7S2PZ
+    anchor:
+      type: structured
+      ref: "@task-upgrade-command"
+      section: description
+    entries:
+      - _ulid: 01KNVAXDQ67JNGPQTXBX66ZKVH
+        author: Jacob Chapel
+        body: The upgrade spec requires the command to detect version skew and report both the source and
+          target versions before applying changes, but this task only proposes reading the source
+          version from a new shadow-branch state field. Older supported projects will not have that
+          field, so the task as written cannot satisfy ac-detects-skew/ac-reports-skew for the very
+          upgrade cases this plan is meant to handle. Define a fallback source-version detection
+          strategy for pre-state-file projects, or narrow the spec so it does not promise exact
+          from-version reporting when the version cannot be inferred.
+        created_at: 2026-04-10T09:17:34.822Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@local
+    role: reviewer
+    created_at: 2026-04-10T09:18:01.888Z
+created_at: 2026-04-10T09:16:05.068Z
+updated_at: 2026-04-10T09:18:01.889Z
+notes: []

@@ -1,0 +1,168 @@
+_ulid: 01KQ8S259SQBBK6N129NKXPX66
+slugs: []
+title: "Plan review: Default Session Reflection Reliability"
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The plan names exact target specs @multi-turn-session-lifecycle,
+      @default-project-agents-and-conventions, and @single-command-version-upgrade; gives stable AC
+      ids and Given/When/Then text; explicitly excludes code changes, duplicate
+      @default-session-reflection-hook ACs, and validation/doctor work tracked by @01KQ8PRY.
+    name: Spec-update task detail
+    required: true
+    created_at: 2026-04-28T00:51:08.741Z
+    completed_at: 2026-04-28T00:51:08.741Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Implementation task @task-default-session-reflection-reliability depends on
+      @task-default-session-reflection-spec-updates. Priorities align P1 before P2, and
+      implementation prose says it must not mix spec authoring with code work.
+    name: Dependency ordering
+    required: true
+    created_at: 2026-04-28T00:51:19.174Z
+    completed_at: 2026-04-28T00:51:19.174Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Implementation Covers lines claim the three new ACs plus existing
+      @default-session-reflection-hook ac-fires-once-per-invocation. Scope preserves default idle
+      grace reliability, setup/upgrade parity, behavioral tests, validation/doctor as @01KQ8PRY, and
+      no existing-hook migration.
+    name: Coverage and scope mapping
+    required: true
+    created_at: 2026-04-28T00:51:28.470Z
+    completed_at: 2026-04-28T00:51:28.470Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read @multi-turn-session-lifecycle, @default-project-agents-and-conventions,
+      @default-session-reflection-hook, @single-command-version-upgrade, plus adjacent
+      @session-idle-event and @session-prompt-action. The plan extends owning specs without
+      contradicting or duplicating existing first-idle behavior.
+    name: Existing spec neighborhood
+    required: true
+    created_at: 2026-04-28T00:51:38.054Z
+    completed_at: 2026-04-28T00:51:38.054Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Plan import dry-run accepts the markdown. The hardcoded import summary reports zero
+      derived artifacts by design; plan derive implementation and tests support
+      task-only/manual-task plans with derive_from_specs: false."
+    name: Plan parser surface
+    required: true
+    created_at: 2026-04-28T00:51:46.614Z
+    completed_at: 2026-04-28T00:51:46.614Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran kspec validate; it exits 4 on unrelated existing repo-health issues: meta.yaml traits
+      schema error, missing @task-state-transitions reference, deprecated-reference warnings,
+      orphan/alignment warnings, and existing AC coverage warnings. No plan-specific validation
+      artifact exists before derivation."
+    name: Baseline validation
+    required: false
+    created_at: 2026-04-28T00:51:56.074Z
+    completed_at: 2026-04-28T00:51:56.074Z
+events:
+  - _ulid: 01KQ8S259S7APDY3J5P0NMTHJB
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-28T00:50:39.545Z
+  - _ulid: 01KQ8S2SNDKHP0MTWKVSH54EDV
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-28T00:51:00.397Z
+  - _ulid: 01KQ8S32XBZEX891HYEJ43S3NA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec-update task detail
+    timestamp: 2026-04-28T00:51:09.867Z
+  - _ulid: 01KQ8S3D44AQXGNKPJNXRME5SA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-04-28T00:51:20.324Z
+  - _ulid: 01KQ8S3P6FM7X5VYAPZFT03767
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Coverage and scope mapping
+    timestamp: 2026-04-28T00:51:29.615Z
+  - _ulid: 01KQ8S3ZJHXP2SRAZ72XFR61NY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Existing spec neighborhood
+    timestamp: 2026-04-28T00:51:39.217Z
+  - _ulid: 01KQ8S47X2A9CMNWSX14NDE2CN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan parser surface
+    timestamp: 2026-04-28T00:51:47.746Z
+  - _ulid: 01KQ8S4H3TGFH0PJT6HGK90XY3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: Baseline validation
+    timestamp: 2026-04-28T00:51:57.178Z
+  - _ulid: 01KQ8S4RYQTFBG8DTGAHR66MG8
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-28T00:52:05.207Z
+  - _ulid: 01KQ8S4RYQA4A9CAQBSBAXMYT6
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-28T00:52:05.207Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-default-session-reflection-reliability"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-28T00:52:05.207Z
+created_at: 2026-04-28T00:50:39.545Z
+updated_at: 2026-04-28T00:52:05.207Z
+notes: []

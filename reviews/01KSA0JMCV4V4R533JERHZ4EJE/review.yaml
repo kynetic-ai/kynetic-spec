@@ -1,0 +1,216 @@
+_ulid: 01KSA0JMCV4V4R533JERHZ4EJE
+slugs: []
+title: Review entity-local resource trait resolver (cycle 4)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "2476 test suites passed; 9397 tests passed, 5 skipped. Full log:
+      /tmp/kspec-test-cache/01KSA0HNK3PE7CASC4K6YDPG6B/d6a976f0d5d13713.log"
+    name: npm test -- --fresh
+    required: true
+    runner: npm
+    created_at: 2026-05-23T09:07:24.857Z
+    completed_at: 2026-05-23T09:07:24.857Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exited 0: 0 errors, 725 existing warnings reported."
+    name: npm run lint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-23T09:07:29.050Z
+    completed_at: 2026-05-23T09:07:29.050Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit exited 0.
+    name: npm run typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-23T09:07:33.331Z
+    completed_at: 2026-05-23T09:07:33.331Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Reviewed command exits 6 due pre-existing global completeness warnings; rerun with
+      --warnings-ok exited 0. No warnings were reported for @trait-entity-scoped-local-resources-1
+      after this fix cycle.
+    name: kspec validate --completeness
+    required: true
+    runner: kspec
+    created_at: 2026-05-23T09:07:37.409Z
+    completed_at: 2026-05-23T09:07:37.409Z
+events:
+  - _ulid: 01KSA0JMCCJQH83BCXXCRERP12
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-23T08:52:37.389Z
+  - _ulid: 01KSA0KC6ZTEGF6KXSRSM1E5TH
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-23T08:53:01.792Z
+  - _ulid: 01KSA1CVVC2DDKB3XJ8ZJA3C3J
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSA1CT802PTKFYSM6YYZCQTN
+    timestamp: 2026-05-23T09:06:57.004Z
+  - _ulid: 01KSA1DRNC095X6TGM3Y94PF64
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-05-23T09:07:26.508Z
+  - _ulid: 01KSA1DWV44EKMRBY7ZXW4BGA5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run lint
+    timestamp: 2026-05-23T09:07:30.788Z
+  - _ulid: 01KSA1E0W0Z265RENDA07ATAZD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run typecheck
+    timestamp: 2026-05-23T09:07:34.912Z
+  - _ulid: 01KSA1E4SW3SW8YSTJKWVX0NBW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --completeness
+    timestamp: 2026-05-23T09:07:38.940Z
+  - _ulid: 01KSA1E8SRH2C3MZYR81Q0S00M
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSA1E797TK4HE3SZE7QHJKVK
+    timestamp: 2026-05-23T09:07:43.032Z
+  - _ulid: 01KSA1ECQ09W35EPA83W283XTC
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-23T09:07:47.040Z
+  - _ulid: 01KSA1ECQ0CDA056D9QGPPE2N1
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-23T09:07:47.040Z
+  - _ulid: 01KSA2TE2S24QZR6JSDN3QJDB6
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSA1CT802PTKFYSM6YYZCQTN
+    timestamp: 2026-05-23T09:31:50.233Z
+  - _ulid: 01KSA2TQSYD86J58Y6PEKRWAXD
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSA1CT802PTKFYSM6YYZCQTN
+    timestamp: 2026-05-23T09:32:00.190Z
+examined_commit: 153ed3a92e5e76a9559d81221f045208d19add18
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XAW3HQ2DGQPD6HFC19FAV"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSA1CT802PTKFYSM6YYZCQTN
+    anchor:
+      type: code
+      commit: 153ed3a92e5e76a9559d81221f045208d19add18
+      line_end: 337
+      line_start: 323
+      path: src/parser/entity-local-resources.ts
+      side: head
+    entries:
+      - _ulid: 01KSA1CT81H24KPD6H0S0HVJ4R
+        author: Jacob Chapel
+        body: "MUST-FIX: resolveResourcePath only rejects undeclared paths when callers provide the optional
+          manifest. If manifest is omitted, the public resolver validates the relative path and
+          resolves any existing file under resources/, which violates
+          @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner and
+          ac-path-escape-rejected: resources must resolve only when declared, and undeclared paths
+          must be rejected. Evidence: the signature makes manifest optional, the undeclared check is
+          conditional on options.manifest, and tests/entity-local-resources.test.ts:305 exercises
+          successful resolution without a manifest. Make the declared manifest check mandatory, or
+          add a higher-level exported resolver that loads resources.yaml and use that as the
+          trait-compliant resolver while keeping any unchecked helper private/internal."
+        created_at: 2026-05-23T09:06:55.361Z
+      - _ulid: 01KSA2TCHVRBEQKXGVMQWJR9WY
+        author: "@claude"
+        body: "Fixed: made the manifest argument required on the public resolveResourcePath and
+          copyResourceForStaticExport so undeclared paths are rejected unconditionally at the type
+          level. Added a new higher-level resolveResourceReference(ownerEntityDir, relativePath)
+          helper that loads resources.yaml from disk and delegates to resolveResourcePath, giving
+          callers without a parsed manifest a trait-compliant entry point. Updated existing
+          resolveResourcePath tests to pass manifests. Added four behavioral tests covering:
+          declared resolution via loaded manifest, undeclared-file rejection even when the file
+          exists on disk, rejection when no resources.yaml has been written, and
+          absolute/parent-traversal rejection at the path level. Full suite 9401/9406 passing (5
+          skipped, +4 new), lint and typecheck clean."
+        created_at: 2026-05-23T09:31:48.663Z
+    kind: blocker
+    resolved_at: 2026-05-23T09:31:58.605Z
+    resolved_by: "@claude"
+  - _ulid: 01KSA1E797TK4HE3SZE7QHJKVK
+    entries:
+      - _ulid: 01KSA1E797NDWCXCS3M25WPMWQ
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: kspec-agents.md, src/parser/entity-local-resources.ts,
+          src/schema/resources.ts, src/schema/index.ts, tests/entity-local-resources.test.ts,
+          src/parser/yaml.ts, prior review @01KS9XQFH25P13AS179EFY0YC9.
+
+          Commands run: kspec task get @01KS8XAW3HQ2DGQPD6HFC19FAV; kspec review for-task
+          @01KS8XAW3HQ2DGQPD6HFC19FAV; kspec review add/open @01KSA0JM; kspec item get
+          @trait-entity-scoped-local-resources-1; git diff/stat/log; rg AC annotations; kspec
+          validate --completeness; kspec validate --completeness --warnings-ok; npm test -- --fresh;
+          npm run lint; npm run typecheck.
+
+          Claims verified: prior blockers for non-regular resources, corrupt manifest handling, and
+          delete cascade coverage are addressed; full fresh suite passes.
+
+          Categories searched: correctness, AC/spec alignment, path traversal and symlink handling,
+          undeclared resource behavior, manifest error handling, binary/preview handling, git
+          metadata, static export, test quality.
+        created_at: 2026-05-23T09:07:41.479Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-23T09:07:47.039Z
+created_at: 2026-05-23T08:52:37.403Z
+updated_at: 2026-05-23T09:31:58.605Z
+notes: []

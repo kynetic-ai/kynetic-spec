@@ -1,0 +1,136 @@
+_ulid: 01KS0C5B4KH9T2FAK0A3ZM5AJ2
+slugs: []
+title: Review stabilize cli-no-daemon auto-start process assertion
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/cli-no-daemon.test.ts passed: 3 suites, 7 tests in 2.6s.
+      Verified the named runtime auto-start test now waits for daemon.connection.json and asserts
+      metadata.runtime plus matching pid instead of racing ps -p."
+    name: focused cli-no-daemon
+    required: true
+    runner: npm test
+    created_at: 2026-05-19T15:17:12.155Z
+    completed_at: 2026-05-19T15:17:12.155Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh passed: 2450 suites, 9294 passed, 5 skipped; duration 2486.7s. Full
+      log: /tmp/kspec-test-cache/01KS0C247J4RCTFAQN2Y4CP798/2dff0abd101aaa53.log"
+    name: full npm test
+    required: true
+    runner: npm test
+    created_at: 2026-05-19T15:17:16.121Z
+    completed_at: 2026-05-19T15:17:16.121Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate reported schema/reference OK and warnings only (exit 6): existing
+      reference/alignment/completeness warnings, including this direct bug task being
+      automation-eligible without spec_ref. No validation errors."
+    name: kspec validate
+    required: false
+    runner: kspec validate
+    created_at: 2026-05-19T15:17:20.129Z
+    completed_at: 2026-05-19T15:17:20.129Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md, task details, tests/cli-no-daemon.test.ts,
+      tests/daemon-api/websocket-protocol.test.ts diff, commit 08b8716238. Commands run: git
+      status/rev-parse/log/diff/show, kspec task get, kspec review for-task/add/open, kspec
+      validate, npm test -- --fresh tests/cli-no-daemon.test.ts, npm test -- --fresh. Claims
+      verified: prior fix 08b8716238 replaces the failing ps -p runtime assertion with persisted
+      metadata.runtime; focused and full fresh tests pass. Categories searched: correctness, edge
+      cases/process lifecycle race, error handling/readiness wait, test quality/no source scanning
+      in submitted diff, integration/full suite."
+    name: review evidence log
+    required: false
+    runner: manual review
+    created_at: 2026-05-19T15:17:24.053Z
+    completed_at: 2026-05-19T15:17:24.053Z
+events:
+  - _ulid: 01KS0C5B4CJ5W11VAWVBRXSDFP
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-19T15:02:40.524Z
+  - _ulid: 01KS0C60T99S1K51BMHJ8GGRM0
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-19T15:03:02.729Z
+  - _ulid: 01KS0CZZV2F0V8F265SM6WB8YM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused cli-no-daemon
+    timestamp: 2026-05-19T15:17:13.698Z
+  - _ulid: 01KS0D03T06E4T7H2SMKZA6WW3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full npm test
+    timestamp: 2026-05-19T15:17:17.760Z
+  - _ulid: 01KS0D07JNVQ9AWBMDXNQ8AF6R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-19T15:17:21.621Z
+  - _ulid: 01KS0D0BFCFQ7JDWS0JB502CNK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-19T15:17:25.612Z
+  - _ulid: 01KS0D0FFWA0ACJ4CNDVMY5Q4W
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-19T15:17:29.725Z
+  - _ulid: 01KS0D0FFXZEKRA7WPVPQ4T2GY
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-19T15:17:29.725Z
+examined_commit: d4202f5fd5b5f3e85d75c2cbbaf0f781d45b45f6
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS090WJR79MQXR6B052BN6DQ"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-19T15:17:29.724Z
+created_at: 2026-05-19T15:02:40.531Z
+updated_at: 2026-05-19T15:17:29.725Z
+notes: []

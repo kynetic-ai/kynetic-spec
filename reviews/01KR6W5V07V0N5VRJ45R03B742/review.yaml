@@ -1,0 +1,154 @@
+_ulid: 01KR6W5V07V0N5VRJ45R03B742
+slugs: []
+title: Review cleanup-registration failure regression cycle 3
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts: passed; 9/9 suites, 10/10
+      tests, duration 2.4s."
+    name: focused-daemon-suite
+    required: true
+    runner: npm-test
+    created_at: 2026-05-09T17:33:24.555Z
+    completed_at: 2026-05-09T17:33:24.555Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- kspec validate --refs --warnings-ok: exit 0; schema and references OK;
+      warnings are existing deprecated-reference warnings."
+    name: refs-validation
+    required: true
+    runner: kspec-validate
+    created_at: 2026-05-09T17:33:34.028Z
+    completed_at: 2026-05-09T17:33:34.028Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- kspec validate --completeness --warnings-ok: exit 0; warnings are existing
+      project-wide missing coverage and malformed annotation warnings, not introduced by the changed
+      daemon helper files."
+    name: completeness-validation
+    required: true
+    runner: kspec-validate
+    created_at: 2026-05-09T17:33:43.828Z
+    completed_at: 2026-05-09T17:33:43.828Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test: passed; 2414/2414 suites, 8967/8972 tests passed, 5 skipped, 0
+      failed; duration 2038.9s."
+    name: full-test-suite
+    required: true
+    runner: npm-test
+    created_at: 2026-05-09T17:33:55.150Z
+    completed_at: 2026-05-09T17:33:55.150Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md, task/spec context, previous reviews @01KR6PNB and @01KR6T0X,
+      tests/helpers/daemon.ts, tests/helpers/daemon.test.ts. Commands run: git
+      diff/stat/log/show/diff-check, kspec task get, kspec item get for linked specs, kspec review
+      for-task/get/add/open/check, rg AC and seam usages, focused daemon suite, full npm test,
+      refs/completeness/full validation. Claims verified: cycle-2 endpoint blocker is addressed in
+      the post-fix contract path; the observer seam is only used by this regression and remains
+      before registerCleanup; guardrail and full suites pass. Categories searched: correctness, AC
+      alignment, cleanup-registration edge case, endpoint behavior, test quality, guardrail
+      integration."
+    name: review-evidence-log
+    required: false
+    runner: codex-reviewer
+    created_at: 2026-05-09T17:34:07.061Z
+    completed_at: 2026-05-09T17:34:07.061Z
+events:
+  - _ulid: 01KR6W5V07JD6X8N7ABM5ENMXX
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-09T17:22:18.759Z
+  - _ulid: 01KR6W67R54PVFFKD606HX8T8V
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-09T17:22:31.814Z
+  - _ulid: 01KR6WT6FVP33A6F5ST2YMGBM7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-daemon-suite
+    timestamp: 2026-05-09T17:33:25.883Z
+  - _ulid: 01KR6WTFSZR80D1V6053YY0YH4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: refs-validation
+    timestamp: 2026-05-09T17:33:35.424Z
+  - _ulid: 01KR6WTSC4Y569RC8J2DSM1T00
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: completeness-validation
+    timestamp: 2026-05-09T17:33:45.220Z
+  - _ulid: 01KR6WV4CYCJXP5NW66NXHN0C7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full-test-suite
+    timestamp: 2026-05-09T17:33:56.511Z
+  - _ulid: 01KR6WVG28AG5G90RV7DXBXT29
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence-log
+    timestamp: 2026-05-09T17:34:08.456Z
+  - _ulid: 01KR6WVRV226976TGX0Q1QNPW7
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-09T17:34:17.442Z
+  - _ulid: 01KR6WVRV2MD46WY9C0490NH73
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-09T17:34:17.442Z
+examined_commit: 354731a684d7b55ebb1776e0f2751c2dc5e17071
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR6M6XARDRJ17BY20Z3BG66B"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-09T17:34:17.441Z
+created_at: 2026-05-09T17:22:18.759Z
+updated_at: 2026-05-09T17:34:17.442Z
+notes: []

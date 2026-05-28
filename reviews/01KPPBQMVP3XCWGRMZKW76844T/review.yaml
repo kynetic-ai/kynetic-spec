@@ -1,0 +1,206 @@
+_ulid: 01KPPBQMVP3XCWGRMZKW76844T
+slugs: []
+title: Review extend daemon background shadow sync to all registered projects (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm --prefix packages/daemon run build -- --pretty false reports TS2307 at
+      packages/daemon/src/server.ts:53 for ./shadow-sync-manager.js; the new helper exists only at
+      src/daemon/shadow-sync-manager.ts.
+    name: daemon-package-build
+    required: false
+    runner: npm
+    created_at: 2026-04-20T21:21:36.657Z
+    completed_at: 2026-04-20T21:21:36.657Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2202/2202 suites passed; 8063 tests passed, 5 skipped, 0 failed (npm test, ~31m).
+    name: npm-test
+    required: true
+    runner: npm
+    created_at: 2026-04-20T21:21:39.579Z
+    completed_at: 2026-04-20T21:21:39.579Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation reports pre-existing unrelated meta/schema issues in .kspec/modules/meta.yaml
+      plus repository-wide completeness warnings; diff contains no .kspec changes.
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-20T21:21:42.476Z
+    completed_at: 2026-04-20T21:21:42.476Z
+events:
+  - _ulid: 01KPPBQMVPKH4QGWCX8NFRQS5S
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-20T21:11:23.766Z
+  - _ulid: 01KPPBT0FCGF373ES2T7087G42
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-20T21:12:41.196Z
+  - _ulid: 01KPPCA9DXZ9KQJFGW7Q0BFH84
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KPPCA8CQ2J4CBZZ7ZWEERCTK
+    timestamp: 2026-04-20T21:21:34.654Z
+  - _ulid: 01KPPCACDM5EX8C74RE86B92M6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: daemon-package-build
+    timestamp: 2026-04-20T21:21:37.716Z
+  - _ulid: 01KPPCAF7CY24CVW5B66FC1YEC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm-test
+    timestamp: 2026-04-20T21:21:40.588Z
+  - _ulid: 01KPPCAJ2Q78JVQ602DAZ3X2R3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec-validate
+    timestamp: 2026-04-20T21:21:43.511Z
+  - _ulid: 01KPPCAY69WC6Q1TA8HHES332T
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPPCAX7MPFT3HASJAWD3KTTZ
+    timestamp: 2026-04-20T21:21:55.913Z
+  - _ulid: 01KPPCBHNJ6MB5JEXDZYZ7SBKZ
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-20T21:22:15.858Z
+  - _ulid: 01KPPCBHNJVJKJ3NFDBMK1PH6F
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-20T21:22:15.859Z
+  - _ulid: 01KPPDN90TNG0V698REZ4WA26C
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPPCAX7MPFT3HASJAWD3KTTZ
+    timestamp: 2026-04-20T21:45:03.258Z
+  - _ulid: 01KPPDNE634FCQNXAXZ74P91C8
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPPCAX7MPFT3HASJAWD3KTTZ
+    timestamp: 2026-04-20T21:45:08.548Z
+  - _ulid: 01KPPDNQJXQ01EYYS99JKABB34
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPPCA8CQ2J4CBZZ7ZWEERCTK
+    timestamp: 2026-04-20T21:45:18.173Z
+  - _ulid: 01KPPDNWP990N8TDRK5BETH65B
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPPCA8CQ2J4CBZZ7ZWEERCTK
+    timestamp: 2026-04-20T21:45:23.401Z
+examined_commit: 7550973cbc98c5362af40c89b13f447d06efc248
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KPP7XFJ7Z1MG2NQAXMWZTA6W"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPPCA8CQ2J4CBZZ7ZWEERCTK
+    entries:
+      - _ulid: 01KPPCA8CQ0EAPJT329KRFYA7B
+        author: Jacob Chapel
+        body: "Evidence log:\\nFiles read: packages/daemon/src/server.ts, src/daemon/shadow-sync-manager.ts,
+          tests/daemon-shadow-sync-multi-project.test.ts,
+          tests/daemon-session-sync-multi-project.test.ts, scripts/build-daemon.cjs, AGENTS.md,
+          kspec-agents.md.\\nCommands run: git diff --stat/base...head, git diff on changed files,
+          kspec task get, kspec item get @config-shadow, grep for AC annotations, kspec validate,
+          npm test, npm run typecheck -- --pretty false, npm --prefix packages/daemon run build --
+          --pretty false, ls packages/daemon/src, rg shadow-sync-manager.\\nClaims verified:
+          fix-cycle claim that no-remote projects skip schedulers (confirmed in
+          src/daemon/shadow-sync-manager.ts and tests/daemon-shadow-sync-multi-project.test.ts);
+          claim that WebSocket and watcher-failure paths are covered (confirmed by added tests and
+          passing npm test).\\nCategories searched: correctness, test quality, integration/build
+          surfaces, error handling, edge cases."
+        created_at: 2026-04-20T21:21:33.591Z
+      - _ulid: 01KPPDNPKYQYP4KFCZE4SS37H8
+        author: "@claude"
+        body: Acknowledged. Evidence log confirms all prior fix-cycle claims remain valid.
+        created_at: 2026-04-20T21:45:17.182Z
+    kind: nit
+    resolved_at: 2026-04-20T21:45:22.407Z
+    resolved_by: "@claude"
+  - _ulid: 01KPPCAX7MPFT3HASJAWD3KTTZ
+    anchor:
+      type: code
+      commit: 7550973cbc98c5362af40c89b13f447d06efc248
+      line_end: 53
+      line_start: 48
+      path: packages/daemon/src/server.ts
+      side: head
+    entries:
+      - _ulid: 01KPPCAX7M4WGPX8605Q7FKJ7X
+        author: Jacob Chapel
+        body: "server.ts now imports ./shadow-sync-manager.js, but this branch only adds the helper at
+          src/daemon/shadow-sync-manager.ts; there is no sibling source module under
+          packages/daemon/src/. That means the daemon package's own source tree cannot resolve the
+          new import: npm --prefix packages/daemon run build -- --pretty false reports TS2307 at
+          src/server.ts:53, and the package still declares tsc and bun --watch src/index.ts
+          entrypoints that consume this source tree directly. Unless the helper is moved into
+          packages/daemon/src/ or the import path is made resolvable from source, this change
+          regresses the package-local daemon build/dev surface even though the staged root daemon
+          build passes."
+        created_at: 2026-04-20T21:21:54.932Z
+      - _ulid: 01KPPDN81WD96TZE5JX6ZDW10G
+        author: "@claude"
+        body: "Fixed: Added a re-export shim at packages/daemon/src/shadow-sync-manager.ts that forwards all
+          exports from the canonical implementation at src/daemon/shadow-sync-manager.ts. This makes
+          the ./shadow-sync-manager.js import visible in the daemon package source tree for IDE
+          navigation, matching the existing pattern used by shadow-sync.ts and session-sync.ts. The
+          build script already copies the real implementation over the shim during staging, so
+          runtime behavior and dist/ output are unchanged. Daemon build (build-daemon.cjs) verified
+          passing, all 8063 tests pass."
+        created_at: 2026-04-20T21:45:02.268Z
+    kind: blocker
+    resolved_at: 2026-04-20T21:45:07.549Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-20T21:22:15.858Z
+created_at: 2026-04-20T21:11:23.766Z
+updated_at: 2026-04-20T21:45:22.407Z
+notes: []

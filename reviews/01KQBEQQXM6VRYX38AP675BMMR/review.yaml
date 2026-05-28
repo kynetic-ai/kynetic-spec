@@ -1,0 +1,133 @@
+_ulid: 01KQBEQQXM6VRYX38AP675BMMR
+slugs: []
+title: Review task-strict-ac-annotation-token-parsing
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2314/2314 suites, 8483/8488 tests passed, 5 skipped. Duration 2089.1s."
+    name: npm test
+    required: true
+    runner: npm test
+    created_at: 2026-04-29T01:58:52.677Z
+    completed_at: 2026-04-29T01:58:52.677Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit completed with exit code 0.
+    name: npm run typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-04-29T01:59:01.101Z
+    completed_at: 2026-04-29T01:59:01.101Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Schema and references OK. Command exited 6 because this repository currently has
+      warning-level validation debt: 7 reference warnings, 36 alignment warnings, 234 completeness
+      warnings, including 2 existing invalid AC annotations. No schema/reference errors were
+      reported and no malformed-token warnings from this change were present."
+    name: kspec validate
+    required: true
+    runner: kspec validate
+    created_at: 2026-04-29T01:59:11.799Z
+    completed_at: 2026-04-29T01:59:11.799Z
+events:
+  - _ulid: 01KQBEQQXMXP8G1X0HA89VXCKB
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-29T01:47:55.700Z
+  - _ulid: 01KQBERDSCPEFY0HRHG3BTRQGN
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-29T01:48:18.093Z
+  - _ulid: 01KQBFBTJN8T39TW40C05S0GYV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-29T01:58:53.782Z
+  - _ulid: 01KQBFC2V3MZPXCPGBF188J8YN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run typecheck
+    timestamp: 2026-04-29T01:59:02.243Z
+  - _ulid: 01KQBFCD912CY6P69Y6810PV97
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-29T01:59:12.929Z
+  - _ulid: 01KQBFCRYCG65P6VRMH4ZRB74H
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KQBFCQTHBY0SRGS657H4VNN3
+    timestamp: 2026-04-29T01:59:24.876Z
+  - _ulid: 01KQBFD20ER4438A3YMKY5Z4YE
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-29T01:59:34.158Z
+  - _ulid: 01KQBFD20EV1ZJPY9Q857N6V6E
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-29T01:59:34.158Z
+examined_commit: a784c6635ed440da739f01ac5ce12a61d5fc426a
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQB9J1X2V281Z6YFN7WM1V1W"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQBFCQTHBY0SRGS657H4VNN3
+    entries:
+      - _ulid: 01KQBFCQTJQZMZ6G1WWJS20R1W
+        author: Jacob Chapel
+        body: "Review evidence log (non-blocking): Files read: src/parser/validate.ts,
+          src/cli/commands/validate.ts, tests/ac-annotation-identifier-format.test.ts,
+          tests/ac-annotation-integrity.test.ts, tests/ac-annotation-validation.test.ts,
+          tests/ac-id-format-gate.test.ts. Commands run: kspec item get
+          @ac-annotation-identifier-format; kspec item get @ac-annotation-integrity-reporting; rg AC
+          annotations; rg source-read patterns in changed tests; kspec validate; npm run typecheck;
+          npm test; node --import tsx parser/validator probe. Claims verified: malformed
+          ac-good.extra is preserved as malformed, not truncated; comma/whitespace valid tokens
+          still parse; malformed tokens surface as invalid_ac_annotation warnings. Categories
+          searched: correctness, edge cases, error handling, test quality, integration."
+        created_at: 2026-04-29T01:59:23.730Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-29T01:59:34.157Z
+created_at: 2026-04-29T01:47:55.700Z
+updated_at: 2026-04-29T01:59:34.158Z
+notes: []

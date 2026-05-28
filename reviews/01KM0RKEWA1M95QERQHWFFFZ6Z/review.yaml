@@ -1,0 +1,111 @@
+_ulid: 01KM0RKEWA1M95QERQHWFFFZ6Z
+slugs: []
+title: Review task-schedule-cli (cycle 2)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 283 files passed, 6437 tests passed (1 pre-existing environmental failure in
+      review-cli.test.ts unrelated to this task)
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T15:21:59.704Z
+    completed_at: 2026-03-18T15:21:59.704Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validate exit 4 due to pre-existing reference errors in meta.yaml and missing AC coverage
+      for unrelated specs. No new errors introduced by this task.
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-18T15:22:07.769Z
+    completed_at: 2026-03-18T15:22:07.769Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All own ACs covered: @dispatch-event-cli ac-2 (test:84, test:102, test:116), ac-3
+      (test:650). All trait ACs covered or annotated N/A: @trait-json-output ac-1 through ac-6,
+      @trait-filterable-list ac-1 through ac-8, @trait-error-guidance ac-1 through ac-6,
+      @trait-shadow-commit ac-1 through ac-8, @trait-semantic-exit-codes ac-1 through ac-8. Both
+      prior blocker findings resolved: @trait-error-guidance ac-4 N/A and @trait-semantic-exit-codes
+      ac-4 N/A annotations added."
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-18T15:22:18.253Z
+    completed_at: 2026-03-18T15:22:18.253Z
+events:
+  - _ulid: 01KM0RKEW9PXMBEFZ62YBY4H0P
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T15:21:36.906Z
+  - _ulid: 01KM0RKVQ0E5AW5JZ2GZMCRW3N
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T15:21:50.049Z
+  - _ulid: 01KM0RM5DRNWBJPPRA4J9GXYMT
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T15:21:59.992Z
+  - _ulid: 01KM0RMD9KCBH0YK5N1V45HWZA
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-18T15:22:08.051Z
+  - _ulid: 01KM0RMQGN39HEPH71D25G7VWR
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-18T15:22:18.517Z
+  - _ulid: 01KM0RMZ8YJH5TM1CEMBCWS896
+    actor: pr-reviewer@kspec
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-18T15:22:26.462Z
+  - _ulid: 01KM0RMZ8Y7VA1G0XVW6Y3D96T
+    actor: pr-reviewer@kspec
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T15:22:26.462Z
+examined_commit: b9a663d5e5afc91e08a0b7fdf051d666559bdd27
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-schedule-cli"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer@kspec
+    role: reviewer
+    created_at: 2026-03-18T15:22:26.198Z
+created_at: 2026-03-18T15:21:36.906Z
+updated_at: 2026-03-18T15:22:26.198Z
+notes: []

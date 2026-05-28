@@ -1,0 +1,132 @@
+_ulid: 01KM274TXQTQ8CXMV1VSGDT1EA
+slugs: []
+title: Review dispatch-engine-cli-calls-must-not-crash-the-engine-on-failure
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate exited 4 with pre-existing repository-wide issues unrelated to this diff:
+      3 missing references in .kspec/modules/meta.yaml, orphaned skill warning, and existing
+      completeness/alignment warnings."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-19T05:01:16.173Z
+    completed_at: 2026-03-19T05:01:16.173Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test exited 1. Failures observed: tests/agent-dispatch-engine.test.ts (Active fleet
+      cleanup on invocation completion > emits started before terminal invocation events even for
+      quiet success and early failure) and tests/review-cli.test.ts (Integration: review CLI
+      commands > review add > should leave examined_commit null when not provided). The
+      dispatch-file failure passed when re-run in isolation; the full-suite gate is still red on
+      this snapshot."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-19T05:01:16.755Z
+    completed_at: 2026-03-19T05:01:16.755Z
+events:
+  - _ulid: 01KM274TXQXREHKXDE9EDNTJ89
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-19T04:55:00.791Z
+  - _ulid: 01KM27599DSRXNFA8PJ832NJ5G
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-19T04:55:15.501Z
+  - _ulid: 01KM27G94HAH4RQ3V3RBT09GTF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM27G8ZB9ZPDSG5CN3X8DVT8
+    timestamp: 2026-03-19T05:01:15.793Z
+  - _ulid: 01KM27G9N8S9Z2XJ0PQ0PG5MAC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-03-19T05:01:16.328Z
+  - _ulid: 01KM27GA7NGA1VVFFD5HVNZZ83
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-19T05:01:16.917Z
+  - _ulid: 01KM27GKYVA4B7VP9N07GYWFWG
+    actor: codex@gpt-5
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-19T05:01:26.875Z
+  - _ulid: 01KM27GKYVQKBPWE00BZAPJX82
+    actor: codex@gpt-5
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-19T05:01:26.875Z
+examined_commit: 32fd0963c67aa3a50ecfb6b21f84c544a96bf7e1
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM26C8WX6CMY7S9XD3RJZ003"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM27G8ZB9ZPDSG5CN3X8DVT8
+    entries:
+      - _ulid: 01KM27G8ZBX8F0ZEG4MZYHSG87
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+
+          Files read: src/agent-runtime/dispatch.ts, tests/agent-dispatch-engine.test.ts,
+          tests/mocks/kspec-capture-mock.cjs, scripts/test.cjs, package.json
+
+          Commands run: git diff --stat, git diff, kspec task get, kspec review for-task, rg AC
+          annotations, kspec validate, npm test, npm test -- tests/agent-dispatch-engine.test.ts,
+          npm test -- tests/agent-dispatch-engine.test.ts -t "emits started before terminal
+          invocation events even for quiet success and early failure", npm test --
+          tests/agent-dispatch-engine.test.ts -t "does not throw when dispatch workspace blocking
+          cannot be executed successfully|continues recovery blocking when adding the workspace
+          failure note also fails}"
+
+          Claims verified: verified the new recovery wrapper is only applied in the
+          workspace-provisioning recovery path; verified both new recovery tests pass in isolation;
+          verified full npm test is red on this snapshot
+
+          Categories searched: correctness (no task-local bug found), error handling (recovery path
+          hardened as intended), test quality (new tests exercise both note and block failure
+          paths), integration (snapshot still fails required test gate)
+        created_at: 2026-03-19T05:01:15.627Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@gpt-5
+    role: reviewer
+    created_at: 2026-03-19T05:01:26.875Z
+created_at: 2026-03-19T04:55:00.791Z
+updated_at: 2026-03-19T05:01:26.875Z
+notes: []

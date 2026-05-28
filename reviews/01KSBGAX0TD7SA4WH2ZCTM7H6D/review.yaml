@@ -1,0 +1,197 @@
+_ulid: 01KSBGAX0TD7SA4WH2ZCTM7H6D
+slugs: []
+title: Review folder-backed plan storage manager fix cycle
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full test suite passed: 2507 suites passed; 9529 passed, 5 skipped, 0 failed (log
+      /tmp/kspec-test-cache/01KSBG9JECG00K2HD8V5YSZSFP/c3ed423c636570f0.log)."
+    name: npm test
+    required: true
+    runner: npm test
+    created_at: 2026-05-23T23:01:27.548Z
+    completed_at: 2026-05-23T23:01:27.548Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: tests/parser-plans-folder.test.ts, tests/plan-rebuild-index.test.ts,
+      tests/entity-storage-partial-layout-manager.test.ts, tests/daemon-api/plans.test.ts (50 tests
+      passed)."
+    name: targeted plan storage tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-23T23:01:41.194Z
+    completed_at: 2026-05-23T23:01:41.194Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit completed with exit 0.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-05-23T23:01:51.772Z
+    completed_at: 2026-05-23T23:01:51.772Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No whitespace errors in diff
+      44fa00bca19764eb8af3e57983f8a0d01f861e68..984af0c7589a8044eedb252a02bd2cde4992f69d.
+    name: git diff --check
+    required: true
+    runner: git diff --check
+    created_at: 2026-05-23T23:02:04.001Z
+    completed_at: 2026-05-23T23:02:04.001Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 6 with repository-wide warnings only; validation reported schema/references OK and
+      @folder-backed-plan-storage-1 was not in the missing-AC list.
+    name: kspec validate
+    required: false
+    runner: kspec validate
+    created_at: 2026-05-23T23:02:15.087Z
+    completed_at: 2026-05-23T23:02:15.087Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Direct oxlint on the 8 changed files exited 1. The hard error is the pre-existing
+      no-source-scanning hit at tests/daemon-api/helpers.ts:287 (line unchanged from base);
+      additional no-shadow warnings are also pre-existing. No new blocking lint regression
+      identified in this review.
+    name: oxlint changed files
+    required: false
+    runner: oxlint
+    created_at: 2026-05-23T23:02:27.175Z
+    completed_at: 2026-05-23T23:02:27.175Z
+events:
+  - _ulid: 01KSBGAX0KGPDF06GHVVAFE5AG
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-23T22:47:15.731Z
+  - _ulid: 01KSBGBV9B67BYAKND9338S2YY
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-23T22:47:46.731Z
+  - _ulid: 01KSBH4J4D7290GV6E3WS17TE2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSBH4GEY5NBWQP301BMB3QS9
+    timestamp: 2026-05-23T23:01:16.557Z
+  - _ulid: 01KSBH4YG9VVAMMDYZMPGR1JTW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-23T23:01:29.225Z
+  - _ulid: 01KSBH5BWD3NSBDTEXTNQ8YHDG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted plan storage tests
+    timestamp: 2026-05-23T23:01:42.925Z
+  - _ulid: 01KSBH5P4XETD6QJKBKJ8HM400
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-23T23:01:53.437Z
+  - _ulid: 01KSBH6226BQ7PBA6MSQWGQFYS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: git diff --check
+    timestamp: 2026-05-23T23:02:05.638Z
+  - _ulid: 01KSBH6DENF3C4P1EHVX9D679C
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-05-23T23:02:17.301Z
+  - _ulid: 01KSBH6RS3860E9N1935R5CM2J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: oxlint changed files
+    timestamp: 2026-05-23T23:02:28.899Z
+  - _ulid: 01KSBH7ABV5BABNRM7R7YKAN5J
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-23T23:02:46.907Z
+  - _ulid: 01KSBH7ABVAJFTPVMRDMZGCJJ6
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-23T23:02:46.907Z
+examined_commit: 984af0c7589a8044eedb252a02bd2cde4992f69d
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XAY52P099Y1PQ8PFJ6G0P"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSBH4GEY5NBWQP301BMB3QS9
+    entries:
+      - _ulid: 01KSBH4GEYAHQ6MA7GV56ZAA3W
+        author: Jacob Chapel
+        body: "Evidence log: Files read: src/parser/plan-storage-manager.ts, src/parser/plans.ts,
+          src/cli/commands/plan.ts, src/parser/entity-storage-compatibility.ts,
+          src/parser/folder-backed-entity.ts, src/cli/batch-write-buffer.ts,
+          tests/parser-plans-folder.test.ts, tests/plan-rebuild-index.test.ts,
+          tests/daemon-api/helpers.ts, tests/daemon-api/plans.test.ts,
+          tests/entity-storage-partial-layout-manager.test.ts, src/daemon/entity-cache.ts,
+          packages/daemon/src/routes/plans.ts. Commands run: kspec task get
+          @01KS8XAY52P099Y1PQ8PFJ6G0P; kspec item get @folder-backed-plan-storage-1; kspec review
+          get @01KSBBAK57DTXXXJZ4PX9J851E; kspec validate; npm test; npm test --
+          tests/parser-plans-folder.test.ts tests/plan-rebuild-index.test.ts
+          tests/entity-storage-partial-layout-manager.test.ts tests/daemon-api/plans.test.ts; npm
+          run typecheck; oxlint on changed files; git diff --check. Claims verified: fix cycle
+          blocker 1 verified by code/tests that savePlan and mutatePlanAtomically remove notes.yaml
+          and load returns empty notes; blocker 2 verified by code/tests that missing plan.md raises
+          partial_entity_storage_layout and rebuild-index reports it as conflict. Categories
+          searched: correctness, fix-cycle regressions, AC coverage, error handling, batch/delete
+          behavior, CLI envelope/exit codes, daemon cache/API integration, lint/validation/test
+          quality. No blocking regressions found."
+        created_at: 2026-05-23T23:01:14.846Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-23T23:02:46.901Z
+created_at: 2026-05-23T22:47:15.738Z
+updated_at: 2026-05-23T23:02:46.907Z
+notes: []

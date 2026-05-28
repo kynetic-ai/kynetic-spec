@@ -1,0 +1,23 @@
+notes:
+  - _ulid: 01KRER8SAYTMP8Y17VBN2YWHNV
+    content: "Address review @01KREPPJP2CAQXRA7072P3KS01: existing-spec update plan shape, standalone AC
+      payloads, lease owner recovery semantics"
+    author: Jacob Chapel
+    created_at: 2026-05-12T18:47:56.510Z
+  - _ulid: 01KRERAJ9WGYAAX28KRAQBW8BS
+    content: "Fix parser shape: use prose existing-spec section and task-only derivation"
+    author: Jacob Chapel
+    created_at: 2026-05-12T18:48:54.845Z
+  - _ulid: 01KRES03TSPCDX2Q8MRR9428Q2
+    content: "Address review @01KRERNSBMVT2M524R6JBTT54Q: gate schema task on bootstrap AC update and
+      split artifact-protection ACs by cleanup path"
+    author: Jacob Chapel
+    created_at: 2026-05-12T19:00:40.922Z
+  - _ulid: 01KRF0SAQPDGHNCVKJ1Z8VE1Z3
+    content: Preserve durable lease design as deferred/superseded and record focused review feedback
+    author: Jacob Chapel
+    created_at: 2026-05-12T21:16:47.222Z
+  - _ulid: 01KRF2Y6X13ATYAEXE8CYES5H5
+    content: Remove environment-specific mise wrappers from deferred plan commands
+    author: Jacob Chapel
+    created_at: 2026-05-12T21:54:24.289Z

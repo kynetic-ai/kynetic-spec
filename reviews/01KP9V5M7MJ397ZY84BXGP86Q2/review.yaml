@@ -1,0 +1,183 @@
+_ulid: 01KP9V5M7MJ397ZY84BXGP86Q2
+slugs: []
+title: Review single-command version upgrade (cycle 12)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- upgrade-command.test.ts passed: 52 tests in tests/upgrade-command.test.ts
+      (53.7s)."
+    name: upgrade-command.test.ts
+    required: true
+    runner: npm
+    created_at: 2026-04-16T00:40:55.218Z
+    completed_at: 2026-04-16T00:40:55.218Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exited 4 with a pre-existing schema error in .kspec/modules/meta.yaml
+      (modules[0].traits.0 expected string, received object) plus unrelated repo-wide warnings; this
+      branch does not modify .kspec/.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-16T00:40:58.036Z
+    completed_at: 2026-04-16T00:40:58.036Z
+events:
+  - _ulid: 01KP9V5M7MGGK32F4H0X2PFKRP
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-16T00:31:02.900Z
+  - _ulid: 01KP9V636C9TWFME9BFB8364Y3
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-16T00:31:18.221Z
+  - _ulid: 01KP9VD5VDX4WH071QWFAQK2ZW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP9VD4X8B2RA53PWJ18PMMTS
+    timestamp: 2026-04-16T00:35:10.317Z
+  - _ulid: 01KP9VQQMKZS3EBHG39XC7YTSW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: upgrade-command.test.ts
+    timestamp: 2026-04-16T00:40:56.211Z
+  - _ulid: 01KP9VQTCN8GQGAQXSRMP17M5E
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-16T00:40:59.029Z
+  - _ulid: 01KP9VQX485HYZF118X96NSJP6
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KP9VQW2WXM8F1844VHJH8DN8
+    timestamp: 2026-04-16T00:41:01.832Z
+  - _ulid: 01KP9VR6GWA17B6M65Y4JSDYNC
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-16T00:41:11.453Z
+  - _ulid: 01KP9VR6GX1GTXVQAR98S4FS5Y
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-16T00:41:11.453Z
+  - _ulid: 01KP9WNDA4Z96Z2SSFZMSFE75R
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP9VD4X8B2RA53PWJ18PMMTS
+    timestamp: 2026-04-16T00:57:08.677Z
+  - _ulid: 01KP9WNPJ2M9PFFGEGFM48SQF0
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP9VD4X8B2RA53PWJ18PMMTS
+    timestamp: 2026-04-16T00:57:18.147Z
+  - _ulid: 01KP9WP0EJTR38M0B9K87C8B4D
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP9VQW2WXM8F1844VHJH8DN8
+    timestamp: 2026-04-16T00:57:28.274Z
+  - _ulid: 01KP9WP7SJQTSAAJKNM79Q7FMK
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP9VQW2WXM8F1844VHJH8DN8
+    timestamp: 2026-04-16T00:57:35.794Z
+examined_commit: 631945da4d76d7ba03d1abed3e17f90a3b4fcdd9
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNXYJ5JCR99F76N8N7265E0B"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KP9VD4X8B2RA53PWJ18PMMTS
+    anchor:
+      type: code
+      commit: 631945da4d76d7ba03d1abed3e17f90a3b4fcdd9
+      line_end: 1308
+      line_start: 1297
+      path: src/cli/commands/upgrade.ts
+      side: head
+    entries:
+      - _ulid: 01KP9VD4X8ZBHWWY0XKMM1K8YN
+        author: Jacob Chapel
+        body: When  is missing, the upgrade backfill rewrites  to the ULID of the newly scaffolded module
+          instead of preserving the project’s existing default module. That silently changes which
+          module later setup flows treat as the canonical default, so a project that intentionally
+          repointed  (for example after adopting a different module as its default) is behaviorally
+          altered just by running . I reproduced this against the built CLI by creating a second
+          module, setting  to that module’s ULID, deleting , and observing the manifest switch to a
+          fresh ULID after . The scaffold step should only append  and leave  unchanged unless the
+          field is currently absent.
+        created_at: 2026-04-16T00:35:09.352Z
+      - _ulid: 01KP9WNCBER5S8M8RKYF3A5W5Z
+        author: "@claude"
+        body: "Fixed: Changed line 1303 from unconditional assignment to conditional — now only sets
+          default_module when the field is absent or falsy. Added a test that sets default_module to
+          a custom ULID, removes modules/main.yaml, runs upgrade, and verifies the manifest
+          preserves the original default_module value while still scaffolding the new module file."
+        created_at: 2026-04-16T00:57:07.693Z
+    kind: blocker
+    resolved_at: 2026-04-16T00:57:17.228Z
+    resolved_by: "@claude"
+  - _ulid: 01KP9VQW2WXM8F1844VHJH8DN8
+    entries:
+      - _ulid: 01KP9VQW2W183K4D3XJ5AXTA4C
+        author: Jacob Chapel
+        body: "Evidence log: Files read: src/cli/commands/upgrade.ts, src/cli/index.ts,
+          src/cli/commands/index.ts, src/cli/commands/task.ts, src/cli/commands/init.ts,
+          src/cli/commands/setup.ts, src/parser/shadow.ts, tests/upgrade-command.test.ts,
+          tests/helpers/cli.ts, tests/derivable-default-module.test.ts. Commands run: git
+          diff/stat/name-only, kspec task get, kspec item get, rg AC annotations, kspec validate,
+          npm test -- upgrade-command.test.ts, and an end-to-end temp-project reproduction of the
+          default_module rewrite. Claims verified: upgrade tests pass in the focused suite; the
+          default-module scaffold rewrites manifest.default_module in the reproduced scenario.
+          Categories searched: correctness, edge cases, error handling, test quality, integration."
+        created_at: 2026-04-16T00:41:00.765Z
+      - _ulid: 01KP9WNZGTF8KGQKGQ09PJ49BY
+        author: "@claude"
+        body: Acknowledged. Good reproduction steps — the fix is a one-line conditional guard plus a
+          behavioral test that mirrors the reproduction scenario.
+        created_at: 2026-04-16T00:57:27.322Z
+    kind: nit
+    resolved_at: 2026-04-16T00:57:34.876Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-16T00:41:11.452Z
+created_at: 2026-04-16T00:31:02.900Z
+updated_at: 2026-04-16T00:57:34.876Z
+notes: []

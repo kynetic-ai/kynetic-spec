@@ -1,0 +1,175 @@
+_ulid: 01KMAGQCJJX3P3D6TFS0FXKD46
+slugs: []
+title: Review task-multi-turn-invocation
+author: Test User
+checks:
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Warnings-only exit (6) from existing repo-wide issues: orphaned skill dir, orphaned
+      specs, and known invalid AC annotations outside this change."
+    name: kspec validate
+    required: false
+    created_at: 2026-03-22T10:20:22.971Z
+    completed_at: 2026-03-22T10:20:22.971Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Tests passed: 307 files, 7031 passed, 3 skipped."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-22T10:20:26.350Z
+    completed_at: 2026-03-22T10:20:26.350Z
+events:
+  - _ulid: 01KMAGQCJHFRG7NG1BBMAF2AS3
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-22T10:16:21.330Z
+  - _ulid: 01KMAGR4HN2HN1P5BRSS2E1WGV
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-22T10:16:45.877Z
+  - _ulid: 01KMAGYRVZV3J1ZVM7G1Y4JBJ7
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-03-22T10:20:23.295Z
+  - _ulid: 01KMAGYSZ5E94FD460VN4GVFGY
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMAGYSMQQFVPB12ZPV790GKH
+    timestamp: 2026-03-22T10:20:24.421Z
+  - _ulid: 01KMAGYV18JP0AYB6V2KDM7W8S
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMAGYTPWT8A5TRKMBPA2VZXH
+    timestamp: 2026-03-22T10:20:25.512Z
+  - _ulid: 01KMAGYW5PXP58QTS9YB19ZXY8
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-22T10:20:26.678Z
+  - _ulid: 01KMAGZB8GNH2S7G13Z9D2RTMW
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMAGZAVJPGHCDZ7E33PEX8DF
+    timestamp: 2026-03-22T10:20:42.128Z
+  - _ulid: 01KMAGZCBWKFQ8SVCTHVASJPN5
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-22T10:20:43.260Z
+  - _ulid: 01KMAGZCBWXYY78WECCCRHVVD1
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-22T10:20:43.260Z
+examined_commit: 6512cfcb14755cd254463a1452552cd254ad72cd
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMA74DY7WGG4KA6P07BTMJFD"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMAGYSMQQFVPB12ZPV790GKH
+    anchor:
+      type: code
+      commit: 6512cfcb14755cd254463a1452552cd254ad72cd
+      line_end: 151
+      line_start: 135
+      path: src/schema/event-registry.ts
+      side: head
+    entries:
+      - _ulid: 01KMAGYSMQPNEP2PK9HP7X88Y4
+        author: Test User
+        body: AC-3 and the task description both require a `session.idle` event, but the event system still
+          only knows about `session.ended`, `session.idle_timeout`, and `session.cancelled`. There
+          is no registered `session.idle` event type or payload contract, so hooks cannot subscribe
+          to idle transitions even if the dispatch engine started calling `onIdle`. That leaves the
+          core post-turn automation trigger for this feature unavailable in the actual runtime.
+        created_at: 2026-03-22T10:20:24.087Z
+    kind: blocker
+  - _ulid: 01KMAGYTPWT8A5TRKMBPA2VZXH
+    anchor:
+      type: code
+      commit: 6512cfcb14755cd254463a1452552cd254ad72cd
+      line_end: 2466
+      line_start: 2431
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KMAGYTPWF2CJ7XS6KHHYCZB5
+        author: Test User
+        body: The new multi-turn runner is not wired into the production dispatch path. `runInvocation()`
+          only stays open for external follow-up prompts when callers provide `sessionRegistry`, and
+          it only exposes idle transitions through `onIdle`, but the dispatch engine still
+          constructs `InvocationOptions` without either field. As a result, reviewer/worker
+          invocations continue to behave as single-turn sessions in real dispatch, and no external
+          component can enqueue prompts into the live session handle despite the task description
+          making that the interface other components should use. The direct unit tests pass because
+          they inject a registry/callback themselves, but the main call site never does.
+        created_at: 2026-03-22T10:20:25.180Z
+    kind: blocker
+  - _ulid: 01KMAGZAVJPGHCDZ7E33PEX8DF
+    entries:
+      - _ulid: 01KMAGZAVJNE4FH1D9E84S8SCA
+        author: Test User
+        body: >-
+          Evidence log:
+
+          Files read: src/agent-runtime/invocation.ts, src/agent-runtime/dispatch.ts,
+          src/agent-runtime/session-registry.ts, src/sessions/store.ts, src/sessions/types.ts,
+          src/schema/event-registry.ts, src/schema/event-payloads.ts,
+          tests/multi-turn-invocation.test.ts, tests/session-lifecycle-events.test.ts.
+
+          Commands run: sed -n kspec-agents.md; kspec task get @01KMA74DY7WGG4KA6P07BTMJFD; kspec
+          item get @multi-turn-session-lifecycle; git diff/stat against
+          463db210d316c43a70446ac83bc179c6de5a1616...6512cfcb1475; rg for
+          runInvocation/session.idle/SessionRegistry; npm test; kspec validate.
+
+          Claims verified: previous sendPrompt rejection fix is present in
+          src/agent-runtime/invocation.ts; async queue grace-period behavior is covered by tests;
+          dispatch integration and session.idle event registration are still missing.
+
+          Categories searched: correctness, integration, event wiring, queue lifecycle, persistence,
+          test quality.
+        created_at: 2026-03-22T10:20:41.714Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-22T10:20:43.260Z
+created_at: 2026-03-22T10:16:21.330Z
+updated_at: 2026-03-22T10:20:43.260Z
+notes: []

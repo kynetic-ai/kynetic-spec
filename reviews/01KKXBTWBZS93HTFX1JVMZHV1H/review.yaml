@@ -1,0 +1,73 @@
+_ulid: 01KKXBTWBZS93HTFX1JVMZHV1H
+slugs: []
+title: Review fix-yaml-stringify-anchor-alias-crash
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 38 tests passed in 4 targeted test files (yaml-round-trip-stability,
+      yaml-canonical-key-order, dispatch-runtime-bootstrap-contract,
+      dispatch-workspace-and-scheduler-flow). Full suite: 5668 passed, 4 flaky failures unrelated to
+      change (fake timer race + ENOTEMPTY race)."
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-17T07:41:08.740Z
+    completed_at: 2026-03-17T07:41:08.740Z
+events:
+  - _ulid: 01KKXBTWBW3HBH0VB9KWG2ZX4V
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-17T07:40:45.311Z
+  - _ulid: 01KKXBV7DGDXP8J3B4ZCZE3TYT
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-17T07:40:56.624Z
+  - _ulid: 01KKXBVK9RVFDRQX2T505TM0QK
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-17T07:41:08.792Z
+  - _ulid: 01KKXBWEY81QSW2235RV8AXY7B
+    actor: claude-opus-4-6@anthropic.com
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-17T07:41:37.097Z
+  - _ulid: 01KKXBWEY9R4CM3CJT8KHCSYB9
+    actor: claude-opus-4-6@anthropic.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-17T07:41:37.097Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKXAFX"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: claude-opus-4-6@anthropic.com
+    role: reviewer
+    created_at: 2026-03-17T07:41:37.044Z
+created_at: 2026-03-17T07:40:45.311Z
+updated_at: 2026-03-17T07:41:37.044Z
+notes: []

@@ -1,0 +1,216 @@
+_ulid: 01KR206B56WKJX5Z6N17ER1R31
+slugs: []
+title: "Plan review: Daemon Test Fixture Standardization"
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec plan import plans/daemon-test-fixture-standardization.md --dry-run completed
+      successfully; stored content previewed without changes.
+    name: Plan import dry-run
+    required: true
+    runner: kspec
+    created_at: 2026-05-07T19:57:41.847Z
+    completed_at: 2026-05-07T19:57:41.847Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Manual dependency graph is acyclic and orders spec updates and shared helper before
+      migrations; each new and updated AC is claimed by at least one task Covers line.
+    name: Dependency and coverage review
+    required: true
+    created_at: 2026-05-07T19:57:42.091Z
+    completed_at: 2026-05-07T19:57:42.091Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: task-update-daemon-test-specs names @daemon-sensitive-cli-test-determinism,
+      @e2e-test-daemon-isolation, and @daemon-network-endpoint-contract with concrete final
+      titles/descriptions/AC text.
+    name: Existing spec update precision
+    required: true
+    created_at: 2026-05-07T19:57:42.001Z
+    completed_at: 2026-05-07T19:57:42.001Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed; only pre-existing deprecated-ref warnings were
+      reported.
+    name: Reference validation
+    required: true
+    runner: kspec
+    created_at: 2026-05-07T19:58:06.026Z
+    completed_at: 2026-05-07T19:58:06.026Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Found blocker threads on implementation details and compound Then clauses in new ACs; plan
+      is not approvable until those are fixed.
+    name: Spec language quality
+    required: true
+    created_at: 2026-05-07T19:58:11.720Z
+    completed_at: 2026-05-07T19:58:11.720Z
+events:
+  - _ulid: 01KR206B55B41CZS8ATC22BF9R
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-07T19:56:17.445Z
+  - _ulid: 01KR206W07TBM82WDA3MMQCWW2
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-07T19:56:34.695Z
+  - _ulid: 01KR207A9VNDWYCDNRQD4HAFJT
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR20790XMSJC2KFM5BXVA5WX
+    timestamp: 2026-05-07T19:56:49.339Z
+  - _ulid: 01KR20850GK1J0M704ZJDNQRX3
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR2083RCP53F7WJGC73PAAT4
+    timestamp: 2026-05-07T19:57:16.688Z
+  - _ulid: 01KR208FP7BP6RT311R5GA1Y2B
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR208EBXSXQS03C2QRZCYHYY
+    timestamp: 2026-05-07T19:57:27.623Z
+  - _ulid: 01KR208YSZMAS35950FF4BRVXN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan import dry-run
+    timestamp: 2026-05-07T19:57:43.103Z
+  - _ulid: 01KR2090S0C5HNY7QCXEGX5E8P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency and coverage review
+    timestamp: 2026-05-07T19:57:45.121Z
+  - _ulid: 01KR2092M9EWWG43YWGPB3QMC4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Existing spec update precision
+    timestamp: 2026-05-07T19:57:47.017Z
+  - _ulid: 01KR209PE9292KE1XQ6DVSQJKZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Reference validation
+    timestamp: 2026-05-07T19:58:07.305Z
+  - _ulid: 01KR209W1V4338KH0AVHC19B6J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Spec language quality
+    timestamp: 2026-05-07T19:58:13.051Z
+  - _ulid: 01KR20A73ET53YY56NSRNRH3MH
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-07T19:58:24.366Z
+  - _ulid: 01KR20A73EBTKEV3AP10QXG67E
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-07T19:58:24.366Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-daemon-test-fixture-standardization"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR20790XMSJC2KFM5BXVA5WX
+    anchor:
+      type: structured
+      field: ac-direct-daemon-spawn-flagged
+      ref: "@daemon-test-harness-guardrails"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KR20790X0JJBV1WAVK2P6072
+        author: Jacob Chapel
+        body: AC ac-direct-daemon-spawn-flagged names the concrete build artifact path dist/daemon/index.js
+          in the Given clause. That makes the spec depend on the current daemon launcher layout
+          rather than the durable behavior being guarded. Rewrite this AC to describe direct daemon
+          executable/startup outside approved helpers, and keep exact paths such as
+          dist/daemon/index.js in the task implementation details or lint-rule examples. Also review
+          the same spec for command-level implementation wording so the ACs remain behavioral and
+          timeless.
+        created_at: 2026-05-07T19:56:48.029Z
+    kind: blocker
+  - _ulid: 01KR2083RCP53F7WJGC73PAAT4
+    anchor:
+      type: structured
+      field: ac-resolved-endpoint-source
+      ref: "@daemon-test-endpoint-consistency"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KR2083RCAH1W4TTPSRC4WEGJ
+        author: Jacob Chapel
+        body: AC ac-resolved-endpoint-source exposes fixture field names (api_url/ws_url) in the Then
+          clause, and ac-mock-metadata-fidelity names daemon.connection.json. Per the spec language
+          rules, ACs should describe the observable endpoint behavior, not internal field or file
+          names. Rewrite these to say the request uses the fixture-provided HTTP API endpoint or
+          WebSocket endpoint, and mock metadata follows the canonical daemon connection metadata
+          contract; keep exact field/file names in task How/What details.
+        created_at: 2026-05-07T19:57:15.404Z
+    kind: blocker
+  - _ulid: 01KR208EBXSXQS03C2QRZCYHYY
+    anchor:
+      type: structured
+      field: ac-readiness-diagnostics
+      ref: "@daemon-backed-test-fixture-contract"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KR208EBX8JHPFMZKC0DHRJAN
+        author: Jacob Chapel
+        body: "AC ac-readiness-diagnostics has a compound Then clause that requires several independently
+          verifiable diagnostics: endpoint, runtime, process state, recent stdout, recent stderr,
+          and last readiness observation. The review objective requires no compound Then clauses.
+          Split this into atomic ACs, or rewrite it as one observable diagnostic-bundle behavior and
+          move the required field list into task implementation/testing guidance."
+        created_at: 2026-05-07T19:57:26.269Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-07T19:58:24.366Z
+created_at: 2026-05-07T19:56:17.446Z
+updated_at: 2026-05-07T19:58:24.366Z
+notes: []

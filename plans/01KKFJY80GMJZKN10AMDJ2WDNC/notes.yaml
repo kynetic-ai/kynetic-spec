@@ -1,0 +1,7 @@
+notes:
+  - _ulid: 01KKW5RDT3NP0VFASMKR0DVJF8
+    content: "Added implementation notes: completed prerequisites (publication mode, dev branch),
+      integration branch as implicit grouping model, activity timeline as review package data
+      source, design considerations"
+    author: "@claude"
+    created_at: 2026-03-16T20:35:18.979Z

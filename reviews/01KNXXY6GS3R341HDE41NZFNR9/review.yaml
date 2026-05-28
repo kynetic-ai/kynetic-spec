@@ -1,0 +1,186 @@
+_ulid: 01KNXXY6GS3R341HDE41NZFNR9
+slugs: []
+title: "Plan re-review: Init, Setup, and Upgrade Rough Edges (cycle 4)"
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@release-notes-accessible still defers release-note section conventions to the release
+      skill, and the task text updates that skill rather than hard-coding a file schema into the
+      spec contract."
+    name: Release notes format deferral
+    required: true
+    created_at: 2026-04-11T09:29:52.053Z
+    completed_at: 2026-04-11T09:29:52.053Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@scaffolded-project-config still separates non-force preservation
+      (ac-file-exists-preserved) from force overwrite/backup (ac-file-force-overwrites,
+      ac-file-force-backup), so the file-scaffold force path remains mutually exclusive and
+      testable."
+    name: Force-path AC separation
+    required: true
+    created_at: 2026-04-11T09:29:52.086Z
+    completed_at: 2026-04-11T09:29:52.086Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "The upgrade task still defines concrete fallback probes for ac-source-version-fallback:
+      legacy monolithic task storage vs split storage, scaffolded config presence, rendered
+      review-plan skill presence, and task-format marker shape, with selection by newest version
+      consistent with all probes."
+    name: Source version fallback concreteness
+    required: true
+    created_at: 2026-04-11T09:29:52.097Z
+    completed_at: 2026-04-11T09:29:52.097Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@plan-import-format-guidance still cleanly separates empty-plan behaviors: import stores
+      empty plans with a warning (ac-empty-plan-import-warns), while derive rejects plans with no
+      derivable work (ac-empty-plan-derive-fails), matching the current plan-support model."
+    name: Plan import/derive split
+    required: true
+    created_at: 2026-04-11T09:29:52.118Z
+    completed_at: 2026-04-11T09:29:52.118Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@default-project-agents-and-conventions still has explicit ACs for task worker, code
+      reviewer, primary dev, and plan reviewer, plus ac-all-defaults-write-authorized to cover
+      unconditional write authorization across the full default roster."
+    name: Default agent roster coverage
+    required: true
+    created_at: 2026-04-11T09:30:15.453Z
+    completed_at: 2026-04-11T09:30:15.453Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "The prior trait-fit blocker is resolved: the trait is now narrowed to
+      @trait-idempotent-file-scaffold, scoped explicitly to file scaffolds only, and is attached
+      only to the file-writing specs (@scaffolded-project-config and @complete-auto-gitignore), not
+      to the meta-item scaffolds with first-run/reseed semantics."
+    name: Idempotent scaffold trait fit
+    required: true
+    created_at: 2026-04-11T09:30:23.580Z
+    completed_at: 2026-04-11T09:30:23.580Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "The prior dependency-story blocker is resolved: @default-session-reflection-hook and
+      @task-default-reflection-hook describe a universal hook with no per-agent filter, the task has
+      no depends_on edge on default agents, and the implementation notes now state that this
+      dependency no longer exists because reflection is universal."
+    name: Reflection hook consistency
+    required: true
+    created_at: 2026-04-11T09:30:32.832Z
+    completed_at: 2026-04-11T09:30:32.832Z
+events:
+  - _ulid: 01KNXXY6GSD57ZC41RCSMMY34W
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-11T09:28:32.025Z
+  - _ulid: 01KNXXZ4D18BPRJZRZMRJEMBYR
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-11T09:29:02.626Z
+  - _ulid: 01KNXY0NJ8V9WKBSJZ0760HVC6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Release notes format deferral
+    timestamp: 2026-04-11T09:29:52.968Z
+  - _ulid: 01KNXY0Q62WPM229ZHYDFZK3W1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Force-path AC separation
+    timestamp: 2026-04-11T09:29:54.626Z
+  - _ulid: 01KNXY0RH6T7DFH7K44WSAZ09Z
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Source version fallback concreteness
+    timestamp: 2026-04-11T09:29:56.006Z
+  - _ulid: 01KNXY0SZM57641KFRQ1QYC38J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan import/derive split
+    timestamp: 2026-04-11T09:29:57.492Z
+  - _ulid: 01KNXY1CD60MVZVS3HF63S7X80
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Default agent roster coverage
+    timestamp: 2026-04-11T09:30:16.359Z
+  - _ulid: 01KNXY1MB8DQCRXQ6RPNVRDYZK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Idempotent scaffold trait fit
+    timestamp: 2026-04-11T09:30:24.488Z
+  - _ulid: 01KNXY1XDQK8YV0GNPHPEBCDWC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Reflection hook consistency
+    timestamp: 2026-04-11T09:30:33.783Z
+  - _ulid: 01KNXY28GVR5BH8BWWK0MTPC8V
+    actor: codex@local
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-11T09:30:45.147Z
+  - _ulid: 01KNXY28GVMSGPXVC8NFDB73D6
+    actor: codex@local
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-11T09:30:45.147Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-init-setup-and-upgrade-rough-edges"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@local
+    role: reviewer
+    created_at: 2026-04-11T09:30:45.146Z
+created_at: 2026-04-11T09:28:32.025Z
+updated_at: 2026-04-11T09:30:45.147Z
+notes: []

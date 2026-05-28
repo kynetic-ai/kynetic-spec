@@ -1,0 +1,189 @@
+_ulid: 01KQ129BCB2WC3ZEJH5A2BGK4A
+slugs: []
+title: Review coverage annotation scan boundaries (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit completed with exit code 0.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-04-25T01:08:29.217Z
+    completed_at: 2026-04-25T01:08:29.217Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2275 suites passed; 8376 tests passed, 5 skipped; duration 1868.7s;
+      log /tmp/kspec-test-cache/01KQ12736BCCNGKY11MD66Z7J3/602bb3b3f9dbacab.log"
+    name: npm test
+    required: true
+    runner: npm test
+    created_at: 2026-04-25T01:08:32.330Z
+    completed_at: 2026-04-25T01:08:32.330Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: ./node_modules/.bin/oxlint tests/coverage-annotation-scope-boundaries.test.ts found 0
+      warnings and 0 errors. Full npm run lint still fails on unrelated pre-existing files outside
+      this diff.
+    name: changed-file lint
+    required: true
+    runner: oxlint
+    created_at: 2026-04-25T01:08:35.609Z
+    completed_at: 2026-04-25T01:08:35.609Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 14 tests passed in tests/coverage-annotation-scope-boundaries.test.ts; exercised
+      configured scan paths, excluded paths, no skipped coverage credit, and no skipped
+      invalid-annotation debt.
+    name: focused coverage boundary test
+    required: true
+    runner: npm test -- --run tests/coverage-annotation-scope-boundaries.test.ts
+    created_at: 2026-04-25T01:08:38.977Z
+    completed_at: 2026-04-25T01:08:38.977Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check ec9a83a59ee6919e49c3597c583c18a19262fa83...HEAD completed with no
+      whitespace errors.
+    name: diff hygiene
+    required: true
+    runner: git diff --check
+    created_at: 2026-04-25T01:08:58.577Z
+    completed_at: 2026-04-25T01:08:58.577Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: tests/coverage-annotation-scope-boundaries.test.ts, src/parser/validate.ts,
+      kspec.config.yaml, task/spec/prior review records. Commands run: kspec task get, kspec item
+      get, kspec review get/for-task, rg AC annotations, git diff/stat/show/diff --check, kspec
+      validate --completeness, npm run lint, changed-file oxlint, npm run typecheck, focused npm
+      test, full npm test. Claims verified: prior blockers resolved; new AC annotations are scanned;
+      fixture AC strings are constructed at runtime; skipped files produce neither coverage credit
+      nor invalid annotation debt. Categories searched: correctness, edge cases, error handling,
+      test quality, integration, config boundaries."
+    name: review evidence log
+    required: false
+    runner: manual review
+    created_at: 2026-04-25T01:09:01.625Z
+    completed_at: 2026-04-25T01:09:01.625Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation valid=true; schema and references OK. Completeness warnings remain as baseline
+      catalog debt, but JSON filter found 0 warnings for @coverage-annotation-scope-boundaries.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-04-25T01:09:04.886Z
+    completed_at: 2026-04-25T01:09:04.886Z
+events:
+  - _ulid: 01KQ129BCBHSPNC27P1JPNJ3Q1
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-25T00:57:56.875Z
+  - _ulid: 01KQ129RS7G39BGDA3P56PCBVQ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-25T00:58:10.599Z
+  - _ulid: 01KQ12WP09WWRZ55ZB6P5QGH6D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-04-25T01:08:30.345Z
+  - _ulid: 01KQ12WS2P1K4FZAPAR9STAD05
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-25T01:08:33.494Z
+  - _ulid: 01KQ12WWB2147G6Z6ABND7FRNX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file lint
+    timestamp: 2026-04-25T01:08:36.834Z
+  - _ulid: 01KQ12WZH8SDA5FYN20TQ4X44Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused coverage boundary test
+    timestamp: 2026-04-25T01:08:40.104Z
+  - _ulid: 01KQ12XJKC4ZVWR22XV3TA5XKA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff hygiene
+    timestamp: 2026-04-25T01:08:59.628Z
+  - _ulid: 01KQ12XNMTBVDB5CYCB26J12AQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-04-25T01:09:02.747Z
+  - _ulid: 01KQ12XRVCHY60W9WR2EDRVVPG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-04-25T01:09:06.029Z
+  - _ulid: 01KQ12YCGCG14912FHF0PY974D
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-25T01:09:26.156Z
+  - _ulid: 01KQ12YCGCMZY5B903WR8V9YCM
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-25T01:09:26.156Z
+examined_commit: 802dab8e49e3afcc7e29ebbf39d3d107021ef0d3
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQ0JDKGM2QJTT0PVQB2497K2"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-25T01:09:26.155Z
+created_at: 2026-04-25T00:57:56.875Z
+updated_at: 2026-04-25T01:09:26.156Z
+notes: []

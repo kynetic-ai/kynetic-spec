@@ -1,0 +1,288 @@
+_ulid: 01KMPDGE8EP8ZANPMEHH8H5CPA
+slugs: []
+title: Review task-entity-cache-impl (cycle 5)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: packages/daemon/src/server.ts, packages/daemon/src/project-context.ts,
+      packages/daemon/src/routes/{tasks,items,refs,sessions,session-related,inbox,meta,plans,triage\
+      ,reviews}.ts, src/daemon/entity-cache.ts, src/parser/yaml.ts,
+      tests/daemon-entity-cache.test.ts, tests/agent-dispatch-engine.test.ts. Commands run: git diff
+      --stat/name-only/unified, kspec task get, kspec item get, kspec review for-task/get, kspec
+      validate, rg for AC annotations and route/cache wiring, npm test. Claims verified: full suite
+      passes; prior blocker on kynetic.yaml dual-domain invalidation is fixed; cache invalidation
+      callback is wired; several cached domains still bypass cache entirely; cache-hit list paths
+      still call initContext. Categories searched: correctness, integration, cache invalidation,
+      write-through, test quality, route coverage."
+    name: review-evidence
+    required: false
+    created_at: 2026-03-27T01:14:55.763Z
+    completed_at: 2026-03-27T01:14:55.763Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Executed in the detached review snapshot; 1928/1928 suites passed, 6899 tests passed, 5
+      skipped.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-27T01:14:57.115Z
+    completed_at: 2026-03-27T01:14:57.115Z
+events:
+  - _ulid: 01KMPDGE8DA4T9ZRXVN5GVFQ39
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T01:11:01.133Z
+  - _ulid: 01KMPDH98DCZZTVQ194XS0NMW8
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T01:11:28.781Z
+  - _ulid: 01KMPDQH4KAHAECPZA65MR3Z51
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMPDQGQQ73DFPK7FW57W40D4
+    timestamp: 2026-03-27T01:14:53.459Z
+  - _ulid: 01KMPDQJEQSPFKRR559B06QKFM
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMPDQJ1RYVSEDSBW0NZ8GTV9
+    timestamp: 2026-03-27T01:14:54.807Z
+  - _ulid: 01KMPDQKSDED4PVHHAQ2YBDHGX
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-03-27T01:14:56.173Z
+  - _ulid: 01KMPDQN4HV79EACJSGZ9GCBA2
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-27T01:14:57.553Z
+  - _ulid: 01KMPDR3HS4X62X93SBQZG8V3H
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMPDR35GTAT431Z8PH2B0H2P
+    timestamp: 2026-03-27T01:15:12.313Z
+  - _ulid: 01KMPDR4V2BSFYHN8MEXM809AN
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMPDR4E3G773PJW05BRG79G4
+    timestamp: 2026-03-27T01:15:13.634Z
+  - _ulid: 01KMPDRD4QZZ99WKNYKKDYYTVS
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-27T01:15:22.135Z
+  - _ulid: 01KMPDRD4QBXXC76WTA2GA8RK5
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T01:15:22.135Z
+  - _ulid: 01KMPEP9JQ29YYNWEQEJKXC235
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMPDQGQQ73DFPK7FW57W40D4
+    timestamp: 2026-03-27T01:31:41.527Z
+  - _ulid: 01KMPEPARVTAA0GM5CTGW83V7V
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPDQGQQ73DFPK7FW57W40D4
+    timestamp: 2026-03-27T01:31:42.747Z
+  - _ulid: 01KMPEPBWQW2VHMW91RRX210JR
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMPDR4E3G773PJW05BRG79G4
+    timestamp: 2026-03-27T01:31:43.895Z
+  - _ulid: 01KMPEPCZGJ6T2YR6RQ5SA4D8Z
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPDR4E3G773PJW05BRG79G4
+    timestamp: 2026-03-27T01:31:45.008Z
+  - _ulid: 01KMPEPE34TEM53X268PKA4DSA
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMPDQJ1RYVSEDSBW0NZ8GTV9
+    timestamp: 2026-03-27T01:31:46.148Z
+  - _ulid: 01KMPEPF87EMXE3WB8RHJHX72H
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPDQJ1RYVSEDSBW0NZ8GTV9
+    timestamp: 2026-03-27T01:31:47.335Z
+  - _ulid: 01KMPEPG9KR58V228EHYSY9KHR
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMPDR35GTAT431Z8PH2B0H2P
+    timestamp: 2026-03-27T01:31:48.403Z
+  - _ulid: 01KMPEPHB1PBD05K7XKBB9XFW8
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPDR35GTAT431Z8PH2B0H2P
+    timestamp: 2026-03-27T01:31:49.473Z
+examined_commit: fa0841f6d5564907021177908da89f6890308163
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMMB3T2K3T6A1CJR884EPKJF"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMPDQGQQ73DFPK7FW57W40D4
+    anchor:
+      type: code
+      commit: fa0841f6d5564907021177908da89f6890308163
+      line_end: 101
+      line_start: 82
+      path: packages/daemon/src/routes/tasks.ts
+      side: head
+    entries:
+      - _ulid: 01KMPDQGQRZ2W9Y0ESNVMDWYDG
+        author: "@claude"
+        body: This hot path still initializes parser context before it even consults the cache.  runs
+          unconditionally, and  loads project config and performs shadow detection (), which means a
+          cache hit still does filesystem/git work before returning cached task summaries. The same
+          eager pattern remains in the cached item/ref paths as well. Because  ac-serve-from-memory
+          explicitly requires serving cached summary requests without disk reads or git operations,
+          the optimization is incomplete even on the routes that were wired to the cache.
+        created_at: 2026-03-27T01:14:53.048Z
+      - _ulid: 01KMPEP94P74XNJ8YDAJVTZWAH
+        author: "@claude"
+        body: "Fixed: initContext() is now deferred behind a lazy getCtx() helper on all cached read paths
+          (tasks list, items list, refs, plans list). When all needed data is served from cache,
+          initContext() is never called — no disk reads, no git operations."
+        created_at: 2026-03-27T01:31:41.078Z
+    kind: blocker
+    resolved_at: 2026-03-27T01:31:42.248Z
+    resolved_by: "@claude"
+  - _ulid: 01KMPDQJ1RYVSEDSBW0NZ8GTV9
+    anchor:
+      type: code
+      commit: fa0841f6d5564907021177908da89f6890308163
+      line_end: 358
+      line_start: 315
+      path: packages/daemon/src/server.ts
+      side: head
+    entries:
+      - _ulid: 01KMPDQJ1RC2QWKYM4Q5WPMAAW
+        author: "@claude"
+        body: The new cache is registered for eight domains, but only the task/item/session/ref route
+          factories receive a cache accessor here. , , , , and  still go straight to  plus disk
+          loaders (, , , , ) on every request, and their write endpoints never call . That means
+          five cached domains are never actually served from memory and are not kept coherent after
+          daemon API writes, so  ac-serve-from-memory/ac-write-through remain unmet outside the
+          task/item/session/ref subset.
+        created_at: 2026-03-27T01:14:54.393Z
+      - _ulid: 01KMPEPDP3T28J94AQG3NWJWYE
+        author: "@claude"
+        body: "Fixed: All 8 domains now wired. Extended RouteEntityCache with getInboxIndex(),
+          getTriageIndex(), getReviewsIndex(), getMetaIndex(). Inbox list serves from cache +
+          write-through on create/delete. Meta has write-through on agent update. Plans list uses
+          cache for both plans and tasks domains. Triage list serves from cache + write-through on
+          record/override/act. Reviews list serves from cache + write-through on all 7 mutation
+          endpoints. server.ts passes getEntityCache to all newly wired route factories."
+        created_at: 2026-03-27T01:31:45.731Z
+    kind: blocker
+    resolved_at: 2026-03-27T01:31:46.929Z
+    resolved_by: "@claude"
+  - _ulid: 01KMPDR35GTAT431Z8PH2B0H2P
+    anchor:
+      type: code
+      commit: fa0841f6d5564907021177908da89f6890308163
+      line_end: 358
+      line_start: 315
+      path: packages/daemon/src/server.ts
+      side: head
+    entries:
+      - _ulid: 01KMPDR35GA0FH127T7209SEXG
+        author: "@claude"
+        body: The new cache is registered for eight domains, but only the task/item/session/ref route
+          factories receive a cache accessor here. `createInboxRoutes`, `createMetaRoutes`,
+          `createTriageRoutes`, `createPlansRoutes`, and `createReviewsRoutes` still go straight to
+          `initContext()` plus disk loaders (`loadInboxItems`, `loadMetaContext`,
+          `loadTriageRecords`, `loadPlans`, `loadReviewRecords`) on every request, and their write
+          endpoints never call `writeThrough()`. That means five cached domains are never actually
+          served from memory and are not kept coherent after daemon API writes, so
+          `@daemon-entity-cache` ac-serve-from-memory/ac-write-through remain unmet outside the
+          task/item/session/ref subset.
+        created_at: 2026-03-27T01:15:11.920Z
+      - _ulid: 01KMPEPFXB3RDS2NFTDDSJWQX8
+        author: "@claude"
+        body: "Fixed: duplicate of thread 2 — all 8 domains now wired to routes with cache-first reads and
+          write-through on mutations."
+        created_at: 2026-03-27T01:31:48.011Z
+    kind: blocker
+    resolved_at: 2026-03-27T01:31:49.066Z
+    resolved_by: "@claude"
+  - _ulid: 01KMPDR4E3G773PJW05BRG79G4
+    anchor:
+      type: code
+      commit: fa0841f6d5564907021177908da89f6890308163
+      line_end: 101
+      line_start: 82
+      path: packages/daemon/src/routes/tasks.ts
+      side: head
+    entries:
+      - _ulid: 01KMPDR4E3RQFRJFFWC3WSM9NS
+        author: "@claude"
+        body: This hot path still initializes parser context before it even consults the cache.
+          `initContext(projectContext.path)` runs unconditionally, and `initContext()` loads project
+          config and performs shadow detection (`src/parser/yaml.ts:512-589`), which means a cache
+          hit still does filesystem/git work before returning cached task summaries. The same eager
+          pattern remains in the cached item/ref paths as well. Because `@daemon-entity-cache`
+          ac-serve-from-memory explicitly requires serving cached summary requests without disk
+          reads or git operations, the optimization is incomplete even on the routes that were wired
+          to the cache.
+        created_at: 2026-03-27T01:15:13.219Z
+      - _ulid: 01KMPEPBDG8TZD79DHZC9CZ9M6
+        author: "@claude"
+        body: "Fixed: duplicate of thread 1 — same lazy getCtx() pattern applied to all cached read paths."
+        created_at: 2026-03-27T01:31:43.407Z
+    kind: blocker
+    resolved_at: 2026-03-27T01:31:44.575Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-27T01:15:22.135Z
+created_at: 2026-03-27T01:11:01.134Z
+updated_at: 2026-03-27T01:31:49.066Z
+notes: []

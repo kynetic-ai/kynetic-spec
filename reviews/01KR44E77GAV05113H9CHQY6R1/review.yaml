@@ -1,0 +1,202 @@
+_ulid: 01KR44E77GAV05113H9CHQY6R1
+slugs: []
+title: Review detached cleanup timing regressions (cycle 3)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exits 6 due pre-existing repo-wide warnings; kspec validate --warnings-ok
+      exits 0. @daemon-test-guardrail-precision is not listed under Missing own AC coverage.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-08T16:00:12.412Z
+    completed_at: 2026-05-08T16:00:12.412Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts passed: 15 suites, 71/71 tests."
+    name: focused daemon lint tests
+    required: true
+    runner: npm
+    created_at: 2026-05-08T16:00:16.337Z
+    completed_at: 2026-05-08T16:00:16.337Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test passed: 2402 suites, 8806 passed, 5 skipped, 0 failed."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-08T16:00:20.570Z
+    completed_at: 2026-05-08T16:00:20.570Z
+events:
+  - _ulid: 01KR44E77GG0E010R2V40J5ZEM
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-08T15:48:58.736Z
+  - _ulid: 01KR44EKBAB68P2TPW9MTXF1J8
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-08T15:49:11.146Z
+  - _ulid: 01KR452TG2PWYYKSXWA8YTXTT9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-08T16:00:13.827Z
+  - _ulid: 01KR452YC4CRXDFA4BZA0KFP1P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused daemon lint tests
+    timestamp: 2026-05-08T16:00:17.797Z
+  - _ulid: 01KR4532F99RPT5NSXEV491WH6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-08T16:00:21.993Z
+  - _ulid: 01KR453H3X67MV0PHMSF5XEV8P
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR453FRVXCEQ0N8P73C4ACTP
+    timestamp: 2026-05-08T16:00:36.989Z
+  - _ulid: 01KR4541F4NPTTBW1CP481X6MB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KR454069FS05CBR6Q69CNEBC
+    timestamp: 2026-05-08T16:00:53.732Z
+  - _ulid: 01KR454CFKKP07PQDDBSPZRMZB
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-08T16:01:05.011Z
+  - _ulid: 01KR454CFKKG9G6171060GTTZC
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-08T16:01:05.011Z
+  - _ulid: 01KR47GTYKNFP53G411ZEAWY55
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR453FRVXCEQ0N8P73C4ACTP
+    timestamp: 2026-05-08T16:42:50.195Z
+  - _ulid: 01KR47GY9SP0QT5BHAW7CRHNEX
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR453FRVXCEQ0N8P73C4ACTP
+    timestamp: 2026-05-08T16:42:53.625Z
+  - _ulid: 01KR47H1NW7CX5326HYN14XJ4R
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR454069FS05CBR6Q69CNEBC
+    timestamp: 2026-05-08T16:42:57.084Z
+examined_commit: 500780baf6daf57dfb1a289e18052b22c9ab5ce3
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR3W7Q0H2FVXHDJ51WCFAVNN"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR453FRVXCEQ0N8P73C4ACTP
+    anchor:
+      type: code
+      commit: 500780baf6daf57dfb1a289e18052b22c9ab5ce3
+      line_end: 837
+      line_start: 837
+      path: tests/lint-daemon-test-guardrails.test.ts
+      side: head
+    entries:
+      - _ulid: 01KR453FRV9W2E2V773X61DCGF
+        author: Jacob Chapel
+        body: 'MUST-FIX: This annotation claims coverage for `@daemon-test-guardrail-precision
+          ac-unrelated-subprocesses-not-reported`, but the annotated block does not exercise the AC.
+          The AC requires a non-kspec subprocess whose arguments contain words also used by daemon
+          lifecycle commands; the only subprocess case here is `spawnSync("bun", ["run",
+          "some-script.mjs"])`, which does not include `serve`, `start`, `--detach`, or another
+          daemon lifecycle command word. This satisfies the annotation scanner but does not prove
+          the behavior, so the spec still lacks behavioral coverage for this AC. Add or annotate a
+          test with an unrelated subprocess whose argv overlaps daemon lifecycle terms and assert it
+          is not reported.'
+        created_at: 2026-05-08T16:00:35.611Z
+      - _ulid: 01KR47GSK90SDW2KD3T6N9RE68
+        author: "@claude"
+        body: "Fixed: dropped the false annotation. The annotated block (`describe(\"does not regress
+          legitimate non-daemon patterns\")`) does not exercise
+          ac-unrelated-subprocesses-not-reported because its only subprocess case is
+          `spawnSync(\"bun\", [\"run\", \"some-script.mjs\"])`, whose argv has no overlap with
+          daemon lifecycle command words. Rebased the branch onto dev to pick up the merged sibling
+          task (@task-add-guardrail-classification-regressions), which provides proper behavioral
+          coverage in its own `describe(\"daemon test guardrail precision\") > describe(\"non-kspec
+          subprocesses are not reported as daemon lifecycle violations\")` block via two cases:
+          `spawn(\"echo\", [\"serve\", \"start\", \"--detach\"])` and `spawnSync(\"git\", [\"log\",
+          \"serve\", \"start\", \"--detach\"])`. Both match the AC's required shape (non-kspec
+          executable + argv tokens overlap daemon lifecycle commands) and are wrapped in
+          `expectClassifierGap()` as failing-before-fix regressions for the dependent rule fix.
+          kspec validate is clean for @daemon-test-guardrail-precision after the change."
+        created_at: 2026-05-08T16:42:48.809Z
+    kind: blocker
+    resolved_at: 2026-05-08T16:42:52.302Z
+    resolved_by: "@claude"
+  - _ulid: 01KR454069FS05CBR6Q69CNEBC
+    entries:
+      - _ulid: 01KR454069X55GQZDGQMGK0YYQ
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: AGENTS.md context and kspec-agents.md, task metadata for
+          @01KR3W7Q0H2FVXHDJ51WCFAVNN, prior reviews @01KR3XZG and @01KR40VM,
+          @daemon-test-guardrail-precision ACs, full diff against dev,
+          tests/lint-daemon-test-guardrails.test.ts, and tools/eslint-rules/no-leaky-test-daemon.js.
+          Commands run: git diff/stat/log, kspec task get, kspec review for-task/get/add/open, kspec
+          item get, rg AC annotations, git diff --check, kspec validate, kspec validate
+          --warnings-ok, focused daemon lint tests, and full npm test. Claims verified: the it.fails
+          conversion keeps current tests green while preserving expected-failing assertions; the
+          previous missing-annotation warning is absent from validation; the newly added
+          direct-daemon annotation maps to real daemon-entry spawn tests; the unrelated-subprocess
+          annotation does not match its AC. Categories searched: correctness/spec alignment, AC
+          coverage quality, test integrity, edge cases around expected-failing lint fixtures, and
+          integration/regression suite status."
+        created_at: 2026-05-08T16:00:52.425Z
+    kind: nit
+    resolved_at: 2026-05-08T16:42:55.724Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-08T16:01:05.011Z
+created_at: 2026-05-08T15:48:58.736Z
+updated_at: 2026-05-08T16:42:55.724Z
+notes: []

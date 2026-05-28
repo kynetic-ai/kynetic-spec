@@ -1,0 +1,320 @@
+_ulid: 01KSANQM8TPEHNE5M44ZJ94A8Y
+slugs: []
+title: Review entity storage version and incompatibility gates (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full clean rerun passed: 2501 test suites passed; 9471 tests passed; 5 skipped. An
+      earlier full run failed because I ran npm run build concurrently and dist was transiently
+      inconsistent; the failed suite passed on focused retry before the clean full rerun."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-23T15:33:16.132Z
+    completed_at: 2026-05-23T15:33:16.132Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Build completed: TypeScript, shared, daemon, web UI, docs search, and plugin build
+      passed. Svelte warnings were pre-existing style/a11y warnings."
+    name: npm run build
+    required: true
+    runner: npm
+    created_at: 2026-05-23T15:33:20.756Z
+    completed_at: 2026-05-23T15:33:20.756Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation passed with warnings allowed: schema/references OK; existing
+      reference/alignment/completeness warnings only."
+    name: kspec validate --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-23T15:33:25.431Z
+    completed_at: 2026-05-23T15:33:25.431Z
+events:
+  - _ulid: 01KSANQM8TZMGTWZ21ZJEQHW5B
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-23T15:02:21.210Z
+  - _ulid: 01KSANRCHXY8N0E6SSH4J8MS74
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-23T15:02:46.077Z
+  - _ulid: 01KSAQCRE2VQ2JKYZJ5ZRRJ1A1
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSAQCPX8NNSTK6YBHK2NBB8W
+    timestamp: 2026-05-23T15:31:22.178Z
+  - _ulid: 01KSAQF8F429Q02KF6YGSK4PQR
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSAQF6WZ75ADJ89T49Z4XCVH
+    timestamp: 2026-05-23T15:32:44.132Z
+  - _ulid: 01KSAQFQFRFS2A9F292PQ1VKRN
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSAQFNYB5EPPX0C805A7HVNC
+    timestamp: 2026-05-23T15:32:59.512Z
+  - _ulid: 01KSAQG98KZX7XJCFS2ZKWZKHW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-23T15:33:17.715Z
+  - _ulid: 01KSAQGDW5Y3F4K254VZVPN4X2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run build
+    timestamp: 2026-05-23T15:33:22.438Z
+  - _ulid: 01KSAQGJF1PGVPFN58PBT9AQ3Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --warnings-ok
+    timestamp: 2026-05-23T15:33:27.137Z
+  - _ulid: 01KSAQH274G0TJEKQ2J3A9MBAX
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSAQH0KD7A1ZNDPAS1FA6XZF
+    timestamp: 2026-05-23T15:33:43.268Z
+  - _ulid: 01KSAQHD6HYYXHAEPW4K5ADGHH
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-23T15:33:54.513Z
+  - _ulid: 01KSAQHD6HM55Y6G2QFNQ0FDC1
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-23T15:33:54.513Z
+  - _ulid: 01KSAWDV27EDS42BB40YA3BK4W
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSAQCPX8NNSTK6YBHK2NBB8W
+    timestamp: 2026-05-23T16:59:20.519Z
+  - _ulid: 01KSAWEE36KRFHDSDT0PKKXZZ7
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSAQCPX8NNSTK6YBHK2NBB8W
+    timestamp: 2026-05-23T16:59:40.006Z
+  - _ulid: 01KSAWEYQJ89TBNDGBFKBEE196
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSAQF6WZ75ADJ89T49Z4XCVH
+    timestamp: 2026-05-23T16:59:57.042Z
+  - _ulid: 01KSAWF88J70JMT26Y1H486FRM
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSAQF6WZ75ADJ89T49Z4XCVH
+    timestamp: 2026-05-23T17:00:06.802Z
+  - _ulid: 01KSAWFT1G1REQVK4M548ZPJ0G
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSAQFNYB5EPPX0C805A7HVNC
+    timestamp: 2026-05-23T17:00:25.008Z
+  - _ulid: 01KSAWG5AY86ACGGZG1XGAZ651
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSAQFNYB5EPPX0C805A7HVNC
+    timestamp: 2026-05-23T17:00:36.575Z
+examined_commit: 990d24115785a42e739cf439605a63530c652069
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XAWNAQ1AA9SJS8BYH9056"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSAQCPX8NNSTK6YBHK2NBB8W
+    anchor:
+      type: code
+      commit: 990d24115785a42e739cf439605a63530c652069
+      line_end: 280
+      line_start: 277
+      path: src/parser/entity-storage-compatibility.ts
+      side: head
+    entries:
+      - _ulid: 01KSAQCPX8JPP8YJNJ060HHTM8
+        author: Jacob Chapel
+        body: "MUST-FIX: The lenient manifest gate explicitly returns success for legacy projects with no
+          plan_storage/review_storage declarations. Because daemon plan/review routes reach this
+          gate through loadPlans/loadReviewRecords, tests now assert GET /api/plans and GET
+          /api/reviews return 200 for a kynetic 1.1 project without storage declarations
+          (tests/daemon-api/entity-storage-incompatibility-routes.test.ts:177-199). That contradicts
+          the task/AC requirement that unmigrated plan/review reads fail with
+          entity_storage_incompatible guidance and a 409 instead of serving legacy monolithic data.
+          Use the strict gate for daemon routes/callers that require folder-backed behavior, or
+          otherwise ensure old layouts produce legacy_plan_storage_removed /
+          legacy_review_storage_removed with the structured 409 response."
+        created_at: 2026-05-23T15:31:20.616Z
+      - _ulid: 01KSAWDSF2JWNPDCD6YJC754N8
+        author: "@claude"
+        body: "Fixed: daemon plan and review routes now call the strict requirePlanFolderStorage /
+          requireReviewFolderStorage gates at every entry (list, detail, mutation, plus the reviews
+          onError handler). On a legacy project (kynetic < 1.2, no plan_storage / review_storage
+          declaration) the gate raises legacy_plan_storage_removed / legacy_review_storage_removed
+          and the entityStorageIncompatibilityResponse helper turns it into a structured 409 with
+          code, domain, field, suggestion, and cache_domain.
+          tests/daemon-api/entity-storage-incompatibility-routes.test.ts now asserts that GET
+          /api/plans, GET /api/plans/:ref, and GET /api/reviews on a legacy 1.1 project (with
+          project.plans.yaml / project.reviews.yaml present and empty) return 409
+          entity_storage_incompatible with legacy_*_storage_removed instead of 200 — exactly the
+          contract the prior fix violated."
+        created_at: 2026-05-23T16:59:18.876Z
+    kind: blocker
+    resolved_at: 2026-05-23T16:59:38.390Z
+    resolved_by: "@claude"
+  - _ulid: 01KSAQF6WZ75ADJ89T49Z4XCVH
+    anchor:
+      type: code
+      commit: 990d24115785a42e739cf439605a63530c652069
+      line_end: 445
+      line_start: 436
+      path: src/parser/entity-local-resources.ts
+      side: head
+    entries:
+      - _ulid: 01KSAQF6WZG8AP4JB6FD5987E2
+        author: Jacob Chapel
+        body: "MUST-FIX: The resource-storage compatibility gate is only defined, not enforced on resource
+          reads. `rg` shows assertResourceStorageCompatible/requireResourceFolderStorage are
+          referenced only in entity-storage-compatibility.ts and tests; the resource entry point
+          here takes only ownerEntityDir/relativePath, loads resources.yaml, and resolves the
+          resource without any KspecContext/manifest check. That leaves the resource domain outside
+          the task contract: an unmigrated or missing `resource_storage.format: entity_scoped`
+          project can still read entity-local resources without an entity_storage_incompatible
+          409/guidance path. Wire the resource gate into the resource manager/callers that need
+          resource behavior, or add an explicit compatibility boundary with tests for the resource
+          domain."
+        created_at: 2026-05-23T15:32:42.527Z
+      - _ulid: 01KSAWEX4PV882XAKSQFJQENH6
+        author: "@claude"
+        body: "Fixed: resolveResourceReference now takes a required ctx: KspecContext and calls
+          requireResourceFolderStorage(ctx) before loadResourceManifest / resolveResourcePath. The
+          signature change is enforced by the type system so any future caller is forced to thread
+          the project context. Legacy projects (kynetic < 1.2 without resource_storage) raise
+          legacy_plan_storage_removed with domain: 'resources'; 1.2 projects missing or declaring a
+          non-entity_scoped resource_storage raise missing_plan_folder_storage with domain:
+          'resources'. tests/entity-local-resources.test.ts adds three new behavioural tests against
+          resolveResourceReference that exercise each of those project states and assert
+          EntityStorageCompatibilityError with the correct code, domain, and field. The daemon
+          resource error mapping was already in entityStorageIncompatibilityResponse, so callers
+          that thread the resolver into route handlers will automatically get the 409 contract."
+        created_at: 2026-05-23T16:59:55.413Z
+    kind: blocker
+    resolved_at: 2026-05-23T17:00:05.203Z
+    resolved_by: "@claude"
+  - _ulid: 01KSAQFNYB5EPPX0C805A7HVNC
+    anchor:
+      type: code
+      commit: 990d24115785a42e739cf439605a63530c652069
+      line_end: 309
+      line_start: 280
+      path: src/parser/plans.ts
+      side: head
+    entries:
+      - _ulid: 01KSAQFNYB7DQAD8E084Q9EN3Q
+        author: Jacob Chapel
+        body: "MUST-FIX: A clean folder-declared project can still be written through the monolithic plan
+          store. New projects now declare `plan_storage.format: folder`, but savePlan first calls
+          the lenient gate, which passes when there are no existing monolithic records, and then
+          writes `project.plans.yaml`. The CLI plan add/import paths still call savePlan
+          (src/cli/commands/plan.ts:748-749 and src/cli/commands/plan-import.ts:236-252), so a fresh
+          1.2 project can create legacy monolithic plan data under a folder-storage manifest. That
+          immediately creates the partial layout this task is supposed to prevent, and the branch
+          works around it by downgrading several plan integration fixtures to legacy storage. Plan
+          writes for folder-declared projects need to route to folder-backed storage or fail with
+          structured incompatibility until that storage manager is available; they must not create
+          monolithic files under a 1.2 folder manifest."
+        created_at: 2026-05-23T15:32:57.931Z
+      - _ulid: 01KSAWFREZJHMSGBC19E1NBPM4
+        author: "@claude"
+        body: "Fixed: introduced assertPlanStorageWritable / assertReviewStorageWritable as the
+          storage-manager write gate. They run the lenient manifest check + partial-layout detector
+          (same as the read gate) PLUS describeMonolithicWriteIncompatibility, which rejects any
+          write whenever the manifest declares folder/entity_scoped storage — even when the on-disk
+          layout is currently clean. savePlan, mutatePlanAtomically, deletePlan and the review
+          equivalents now call the new writable gate, so a fresh kynetic 1.2 project cannot create a
+          monolithic project.plans.yaml / project.reviews.yaml beneath a folder manifest.
+          tests/entity-storage-partial-layout-manager.test.ts pins this behaviour: on a clean
+          folder-declared project, savePlan rejects with partial_entity_storage_layout (domain:
+          plans) BEFORE any file is created (asserted via fs.access raising ENOENT after the
+          rejection). Same coverage for the review side. The plan integration fixtures that
+          previously used a folder-declared manifest now call downgradeManifestToLegacyStorage with
+          an inline comment noting the dependency on the sibling folder-backed plan storage manager
+          task — those tests exercise the legacy storage path that still works on legacy manifests,
+          not the folder-declared write path the gate rejects."
+        created_at: 2026-05-23T17:00:23.386Z
+    kind: blocker
+    resolved_at: 2026-05-23T17:00:34.889Z
+    resolved_by: "@claude"
+  - _ulid: 01KSAQH0KD7A1ZNDPAS1FA6XZF
+    entries:
+      - _ulid: 01KSAQH0KE464P6VWKDJVK2BX8
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md, task/spec context, prior review
+          @01KSAHA1303G3VNXJD346E6BG4, src/parser/entity-storage-compatibility.ts,
+          src/parser/plans.ts, src/parser/reviews.ts, src/parser/entity-local-resources.ts,
+          src/cli/commands/init.ts, src/parser/shadow.ts, src/schema/spec.ts,
+          packages/daemon/src/routes/* entity-storage changes,
+          tests/entity-storage-compatibility.test.ts,
+          tests/entity-storage-partial-layout-manager.test.ts,
+          tests/daemon-api/entity-storage-incompatibility-routes.test.ts,
+          tests/init-folder-storage-declarations.test.ts. Commands run: git diff stat/name-only, rg
+          AC/gate searches, kspec item get, kspec review get/open/comment/check, kspec validate
+          --warnings-ok, npm run build, npm test -- --fresh, npm test -- --fresh
+          tests/cli-agent-commands.test.ts, npm test. Claims verified: prior partial-layout blocker
+          is fixed for monolithic manager reads/writes; new-project manifest declarations are
+          tested; daemon 409 mapping exists for 1.2 missing declarations; legacy daemon reads and
+          resource reads remain ungated. Categories searched: correctness, spec alignment, edge
+          cases, error handling, daemon integration, resource-domain coverage, test quality, AC
+          annotations."
+        created_at: 2026-05-23T15:33:41.614Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-23T15:33:54.513Z
+created_at: 2026-05-23T15:02:21.210Z
+updated_at: 2026-05-23T17:00:34.889Z
+notes: []

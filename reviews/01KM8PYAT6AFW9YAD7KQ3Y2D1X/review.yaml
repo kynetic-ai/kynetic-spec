@@ -1,0 +1,137 @@
+_ulid: 01KM8PYAT6AFW9YAD7KQ3Y2D1X
+slugs: []
+title: Review task-impl-activity
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation completed with no errors. Exit code 6 was due to existing repo-wide warnings only.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-03-21T17:30:30.127Z
+    completed_at: 2026-03-21T17:30:30.127Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Two consecutive full-suite runs failed on unrelated 15s timeouts in
+      tests/agent-invocation-lifecycle.test.ts (first at should restore env even when invocation
+      fails, second at should NOT call shadowAutoCommit after failed invocation). Activity-specific
+      suites passed: tests/activity-in-file.test.ts and tests/activity-display.test.ts."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-21T17:30:34.910Z
+    completed_at: 2026-03-21T17:30:34.910Z
+events:
+  - _ulid: 01KM8PYAT64VPDEHQ4YNMR9Q9X
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T17:26:31.494Z
+  - _ulid: 01KM8PYKE2RWAJYD67YXSGPATB
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T17:26:40.322Z
+  - _ulid: 01KM8Q54D3CYN6HWFVQ26W3WM9
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM8Q543Y2W1QF849Q2NBEH8V
+    timestamp: 2026-03-21T17:30:14.307Z
+  - _ulid: 01KM8Q5EYW3JYZ8A840G4SB2H6
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM8Q5EPBGN5DZ12VQD39QHBE
+    timestamp: 2026-03-21T17:30:25.116Z
+  - _ulid: 01KM8Q5M5AT4Y26B5Y8BN8JHCS
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-21T17:30:30.442Z
+  - _ulid: 01KM8Q5RTA00KF5CPAYWT7HJQB
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-21T17:30:35.210Z
+  - _ulid: 01KM8Q5WSHCXZJ65W6DB4AMBTV
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: comment
+    timestamp: 2026-03-21T17:30:39.281Z
+  - _ulid: 01KM8Q621T8H37PQTQ8BYNRS6H
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-21T17:30:44.666Z
+examined_commit: f68480a8d01aadbdce406f6aca86f353cc32e282
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YETR12GG1EZ5G68KSNTBK"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM8Q543Y2W1QF849Q2NBEH8V
+    entries:
+      - _ulid: 01KM8Q543YZBHAYAD8RQ760T8Y
+        author: Test User
+        body: "Evidence log: Files read: src/utils/activity.ts, src/cli/commands/task.ts,
+          src/utils/index.ts, tests/activity-in-file.test.ts, tests/activity-display.test.ts,
+          src/parser/task-data-manager.ts, src/parser/split-backend.ts, src/cli/output.ts. Commands
+          run: git diff/stat, kspec task get, kspec item get, kspec review for-task, kspec validate,
+          rg AC coverage searches, npm test, npm test -- tests/activity-in-file.test.ts, npm test --
+          tests/activity-display.test.ts, npm test -- tests/agent-invocation-lifecycle.test.ts, and
+          the same lifecycle test on base commit 87331ee1e9d640686caa51de93719322fb0c1a82 via a
+          temporary worktree. Claims verified: the new timeline is assembled from stored history
+          plus notes without VCS queries in the primary path; activity-focused tests pass; the
+          failing full-suite timeout is outside the changed area and reproduces as a flaky timing
+          issue rather than a deterministic regression from this patch. Categories searched:
+          correctness, edge cases, error handling, test quality, integration."
+        created_at: 2026-03-21T17:30:14.014Z
+    kind: nit
+  - _ulid: 01KM8Q5EPBGN5DZ12VQD39QHBE
+    entries:
+      - _ulid: 01KM8Q5EPBJ3RBY7C456K9MY6G
+        author: Test User
+        body: Merge gate is currently blocked by unrelated full-suite instability. Two consecutive npm test
+          runs in this snapshot timed out after 15s in tests/agent-invocation-lifecycle.test.ts,
+          while the activity-specific suites added by this task passed and the same lifecycle file
+          also passed in isolation and on the dev base commit. This does not point to a defect in
+          the submitted activity-timeline change, but it does mean the required full-suite gate is
+          not clean enough to merge safely right now.
+        created_at: 2026-03-21T17:30:24.843Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: comment
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-21T17:30:39.281Z
+created_at: 2026-03-21T17:26:31.494Z
+updated_at: 2026-03-21T17:30:44.370Z
+notes: []

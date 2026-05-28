@@ -1,0 +1,71 @@
+notes:
+  - _ulid: 01KJP2761REJ3DDP6JKQ9AHXWC
+    content: >-
+      Implementation notes:
+
+
+      ### Architecture Overview
+
+
+      The reactive agent runtime replaces ralph's batch for-loop with event-driven dispatch. Instead
+      of iterating N times and polling for work, agents are dispatched in response to task state
+      transitions detected via file watchers and direct API events. Each invocation gets its own
+      isolated session.
+
+
+      ### Implementation Sequence
+
+
+      Phase 1 (Foundation): agent-definition-schema + session-model-evolution — schema changes with
+      no runtime impact, enabling stable types for the rest.
+
+
+      Phase 2 (Core Runtime): agent-invocation-lifecycle + agent-dispatch-engine — extract reusable
+      pieces from ralph.ts (prompt building, tool handling, streaming) into shared modules. Build
+      the invocation lifecycle as the core unit, then the dispatch engine to orchestrate.
+
+
+      Phase 3 (CLI + Daemon): cli-agent-commands + daemon-agent-dispatch — wire the runtime into
+      user-facing interfaces.
+
+
+      Phase 4 (Migration): ralph-replacement — remove ralph, update workflows/skills/templates,
+      create default agent definitions.
+
+
+      ### Key Reusable Infrastructure
+
+
+      - ACP client and spawner (src/acp/client.ts, src/agents/spawner.ts) — fully reusable
+
+      - Session store (src/sessions/store.ts) — extend, don't replace
+
+      - Adapter registry (src/agents/adapters.ts) — reuse as-is, including ad-hoc adapter support
+
+      - Daemon file watcher (packages/daemon/src/watcher.ts) — enhance with task state diffing
+
+      - Prompt building and tool handling from ralph.ts — extract into shared modules
+
+
+      ### Risk Areas
+
+
+      - **File watcher task diffing** — must handle partial YAML writes and debounce correctly;
+      store previous parsed state in memory
+
+      - **Concurrent shadow branch commits** — parallel agents need serialized commit operations;
+      dispatch engine mediates access
+
+      - **Prompt extraction from ralph.ts** — ~2100 lines with interleaved concerns; decompose into
+      prompts.ts, invocation.ts, and tool-handler.ts
+
+      - **Daemon not running for one-shot** — CLI one-shot must work independently of daemon; only
+      reactive dispatch requires daemon
+
+      - **Event deduplication** — dual event sources (watcher + API) require dedup via (task_id,
+      from, to) tuples with TTL window
+
+      - **Bootstrap on start** — dispatch engine must evaluate existing task states on startup, not
+      just react to future changes
+    author: "@claude"
+    created_at: 2026-03-02T01:22:19.832Z

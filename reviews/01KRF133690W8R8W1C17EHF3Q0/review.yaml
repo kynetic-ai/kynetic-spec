@@ -1,0 +1,140 @@
+_ulid: 01KRF133690W8R8W1C17EHF3Q0
+slugs: []
+title: "Plan review: Dispatch Workspace In-Flight Cleanup Protection"
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec plan import plans/dispatch-workspace-inflight-cleanup-protection.md --dry-run parsed
+      the draft without state changes; structured Specs omitted and no duplicate specs derived on
+      import.
+    name: Plan import dry-run
+    required: true
+    runner: kspec
+    created_at: 2026-05-12T21:22:43.500Z
+    completed_at: 2026-05-12T21:22:43.500Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Reviewed @agent-dispatch-engine, @dispatch-workspace-cleanup-policy,
+      @dispatch-workspace-registry, and superseded
+      @plan-dispatch-workspace-provisioning-lease-protection. Plan updates existing specs and
+      excludes durable owner/PID/TTL/renewal/CAS lease scope.
+    name: Spec neighborhood and Path A scope
+    required: true
+    runner: kspec
+    created_at: 2026-05-12T21:22:53.838Z
+    completed_at: 2026-05-12T21:22:53.838Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Task @task-add-cleanup-protection-maintenance-guardrails allows source-level/static tests
+      for AC coverage, conflicting with project review rules and the no-source-scanning lint
+      guardrail.
+    name: Testability and guardrail coverage
+    required: true
+    runner: manual
+    created_at: 2026-05-12T21:23:03.989Z
+    completed_at: 2026-05-12T21:23:03.989Z
+events:
+  - _ulid: 01KRF133687JF68MVKDCFWD8X6
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-12T21:22:07.177Z
+  - _ulid: 01KRF13RTMFF9TR0ADCP1ZS4MD
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-12T21:22:29.332Z
+  - _ulid: 01KRF13V3HHQVHH39JQDCQ3DTC
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRF13QDK2DXKHPY6B547EN9G
+    timestamp: 2026-05-12T21:22:31.665Z
+  - _ulid: 01KRF14829SHZCHFQW3A45WJ9D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan import dry-run
+    timestamp: 2026-05-12T21:22:44.937Z
+  - _ulid: 01KRF14J5QJ0PTQ4RSK2SC03WB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec neighborhood and Path A scope
+    timestamp: 2026-05-12T21:22:55.287Z
+  - _ulid: 01KRF14W24KDRAR49TZKH522AQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Testability and guardrail coverage
+    timestamp: 2026-05-12T21:23:05.412Z
+  - _ulid: 01KRF1578XX6WZJVZ5KH7WZCCR
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-12T21:23:16.893Z
+  - _ulid: 01KRF1578XQ56ST5Q28G7QA2YN
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-12T21:23:16.893Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRF13QDK2DXKHPY6B547EN9G
+    anchor:
+      type: structured
+      field: testing
+      ref: "@task-add-cleanup-protection-maintenance-guardrails"
+      section: tasks
+    entries:
+      - _ulid: 01KRF13QDKXGX2FY53XXH97BZS
+        author: Jacob Chapel
+        body: The guardrail task permits source-level/static tests that enumerate destructive operations in
+          src/agent-runtime/workspace.ts. Project review rules reject source-scanning tests as valid
+          AC coverage, and the no-source-scanning lint rule is intended to enforce that. If
+          implemented as written, this can produce non-behavioral coverage for
+          ac-protection-applies-to-every-destructive-surface. Fix by removing the
+          source-level/static-audit option and requiring behavioral/contract tests through the
+          public reconciliation path or a focused helper API, with explicit protected and
+          cleanup-eligible cases for each destructive surface.
+        created_at: 2026-05-12T21:22:27.891Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-12T21:23:16.889Z
+created_at: 2026-05-12T21:22:07.177Z
+updated_at: 2026-05-12T21:23:16.893Z
+notes: []

@@ -1,0 +1,348 @@
+_ulid: 01KNDGY4BEKVTZNBP48Z485HEW
+slugs: []
+title: "Plan review: Configurable Daemon Runtime (re-review)"
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: New task task-ws-connection-state-abstraction introduces WeakMap-based
+      ConnectionStateManager. Covers all ~20 ws.data call sites across 5 files. New
+      ac-connection-state added to spec. Resolved.
+    name: "Blocker 1: ws.data per-connection state"
+    required: true
+    created_at: 2026-04-05T00:33:37.876Z
+    completed_at: 2026-04-05T00:33:37.876Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: task-ws-degradation-node step 2 now explicitly addresses the pong handler at server.ts:524
+      — documents that crossws does not fire pong events, traces the heartbeat flow to confirm
+      safety when lastPing is never set. Resolved.
+    name: "Blocker 2: pong handler bun-only"
+    required: true
+    created_at: 2026-04-05T00:33:42.427Z
+    completed_at: 2026-04-05T00:33:42.427Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "New task task-daemon-compile-js explicitly addresses removing bun-types from tsconfig
+      types array and resolving moduleResolution: bundler by compiling to JS. The compiled output
+      bypasses both issues. Resolved."
+    name: "Blocker 3: tsconfig bun-types and moduleResolution"
+    required: true
+    created_at: 2026-04-05T00:33:46.807Z
+    completed_at: 2026-04-05T00:33:46.807Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 12 ACs on daemon-runtime-adapter are claimed by at least one task.
+      ac-runtime-selection/ac-default-bun: task-daemon-runtime-config + task-daemon-spawn-runtime.
+      ac-node-http: task-elysia-node-adapter. ac-node-websocket:
+      task-ws-connection-state-abstraction + task-ws-degradation-node. ac-connection-state:
+      task-ws-connection-state-abstraction. ac-heartbeat-degradation/ac-backpressure-degradation:
+      task-ws-degradation-node. ac-runtime-health: task-health-runtime-field. ac-graceful-shutdown:
+      task-elysia-node-adapter. ac-auto-start-runtime/ac-runtime-missing: task-daemon-spawn-runtime.
+      ac-compiled-output: task-daemon-compile-js."
+    name: AC coverage
+    required: true
+    created_at: 2026-04-05T00:33:57.414Z
+    completed_at: 2026-04-05T00:33:57.414Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "No circular dependencies. Chain: scope-ac16 -> compile-js -> {runtime-config,
+      ws-connection-state} -> elysia-node-adapter -> daemon-spawn-runtime -> {health-runtime-field,
+      e2e-runtime-aware}. ws-degradation-node depends on ws-connection-state + elysia-node-adapter.
+      All P1 tasks depend only on P1 tasks. P2 health-runtime-field depends on P1 spawn-runtime
+      (correct). P3 tasks depend on P1 (correct)."
+    name: Dependency ordering
+    required: true
+    created_at: 2026-04-05T00:34:01.691Z
+    completed_at: 2026-04-05T00:34:01.691Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: daemon-runtime-adapter complements daemon-server (does not duplicate — adds runtime
+      configurability). Heartbeat degradation is complementary to trait-websocket-protocol ac-4/ac-5
+      (trait says do heartbeat, adapter says degrade when unavailable). No overlap with
+      daemon-entity-cache. Existing ac-16 on daemon-server is scoped in task-scope-ac16-bun-only to
+      avoid conflict.
+    name: Spec conflicts with existing specs
+    required: true
+    created_at: 2026-04-05T00:34:06.336Z
+    completed_at: 2026-04-05T00:34:06.336Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Implementation notes enumerate 13 bun-specific items. All are addressed: Bun.file
+      (task-elysia-node-adapter step 3), ServerWebSocket type (type-only, erased at compile),
+      ws.data (task-ws-connection-state-abstraction), ws.ping (task-ws-degradation-node), pong
+      handler (task-ws-degradation-node step 2), getBufferedAmount/subscribe/unsubscribe (already
+      guarded, verified in task-ws-degradation-node step 4), app.server.stop
+      (task-elysia-node-adapter step 4), spawn hardcoding (task-daemon-spawn-runtime), BUN_ENV
+      (task-daemon-spawn-runtime step 3), shebang (cosmetic), tsconfig (task-daemon-compile-js)."
+    name: Bun-specific surface area completeness
+    required: true
+    created_at: 2026-04-05T00:34:10.590Z
+    completed_at: 2026-04-05T00:34:10.590Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All tasks include what/why/how with specific file paths and line numbers. Code locations
+      verified against source: ws.data sites match, Bun.file at line 571, app.server.stop at line
+      728, spawn hardcoding at lines 322/372, process.execPath at line 178, buildDaemonChildEnv at
+      line 109, tsconfig types/moduleResolution confirmed. Each task has concrete steps and
+      verification criteria."
+    name: Task standalone executability
+    required: true
+    created_at: 2026-04-05T00:34:15.044Z
+    completed_at: 2026-04-05T00:34:15.044Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified: serve.ts line 322 and 372 both say const runtime = bun (confirmed). serve.ts
+      line 109 is buildDaemonChildEnv (confirmed). index.ts line 169 references dist/daemon/index.js
+      (confirmed). index.ts line 178 uses process.execPath (confirmed, not 177 as stated but close).
+      server.ts:487 ws.data access (confirmed). server.ts:524 pong handler (confirmed).
+      server.ts:571 Bun.file (confirmed). server.ts:728 app.server.stop (confirmed). tsconfig
+      bun-types line 17 and moduleResolution line 5 (confirmed)."
+    name: Code location accuracy
+    required: true
+    created_at: 2026-04-05T00:34:19.582Z
+    completed_at: 2026-04-05T00:34:19.582Z
+events:
+  - _ulid: 01KNDGY4BEVWK68BV5880QX9NN
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-05T00:33:27.406Z
+  - _ulid: 01KNDGYFA4ZE9CW3GMD3KSB7NF
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: "Blocker 1: ws.data per-connection state"
+    timestamp: 2026-04-05T00:33:38.628Z
+  - _ulid: 01KNDGYKQGSZR2SEDGEDK2ADV9
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: "Blocker 2: pong handler bun-only"
+    timestamp: 2026-04-05T00:33:43.152Z
+  - _ulid: 01KNDGYR0W8YYVC2Z8HEJDPAVT
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: "Blocker 3: tsconfig bun-types and moduleResolution"
+    timestamp: 2026-04-05T00:33:47.548Z
+  - _ulid: 01KNDGZ2CZYARX82C7J29RMQ9V
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage
+    timestamp: 2026-04-05T00:33:58.176Z
+  - _ulid: 01KNDGZ6JNZ1095BA00WTGHRHN
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-04-05T00:34:02.453Z
+  - _ulid: 01KNDGZB1A84E4J4EDCBRRB8XG
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec conflicts with existing specs
+    timestamp: 2026-04-05T00:34:07.018Z
+  - _ulid: 01KNDGZF8B0X0228A1FQEJBMXV
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Bun-specific surface area completeness
+    timestamp: 2026-04-05T00:34:11.340Z
+  - _ulid: 01KNDGZKM95GDYHPN9EAWF4RCY
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Task standalone executability
+    timestamp: 2026-04-05T00:34:15.817Z
+  - _ulid: 01KNDGZR26TQKBTQY0P35P1DCG
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Code location accuracy
+    timestamp: 2026-04-05T00:34:20.358Z
+  - _ulid: 01KNDH02BF8GT4MXJJZC1QNW4V
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KNDH01KV8VDP05ZQ5THFNPKB
+    timestamp: 2026-04-05T00:34:30.896Z
+  - _ulid: 01KNDH06XWC4NFRN3EBX1EQ6NZ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNDH065XJE044QCSMWAD9NQM
+    timestamp: 2026-04-05T00:34:35.581Z
+  - _ulid: 01KNDH0B9EZZMWZ5C3RCNS982S
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNDH0AHAEP2PB7R75BJTD0DG
+    timestamp: 2026-04-05T00:34:40.046Z
+  - _ulid: 01KNDH0G0BYAKWQ3AW0P0HDVPP
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KNDH0F8NYCKHRYFSC9GDXADW
+    timestamp: 2026-04-05T00:34:44.875Z
+  - _ulid: 01KNDH0MGP0HKSVWH40WFHMQ7V
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNDH0KSSCVHN79KQ5F7PQ1GS
+    timestamp: 2026-04-05T00:34:49.494Z
+  - _ulid: 01KNDH0V3JPR6NYEYZ4367T7TB
+    actor: "@claude"
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-05T00:34:56.242Z
+  - _ulid: 01KNDH0V3J8TX3TWR7H5YVD6CZ
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: closed
+    timestamp: 2026-04-05T00:34:56.242Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-configurable-daemon-runtime"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNDH01KV8VDP05ZQ5THFNPKB
+    anchor:
+      type: structured
+      ref: "@daemon-runtime-adapter"
+      section: description
+    entries:
+      - _ulid: 01KNDH01KV591ND6R1VPZVHWMF
+        author: "@claude"
+        body: The serve.ts line reference for maybeAutoStartDaemon says line 177 for process.execPath but
+          the actual code shows it at line 178. Minor discrepancy — not a blocker since the task
+          description gives enough context to find it regardless. Similarly,
+          task-daemon-spawn-runtime says "buildDaemonChildEnv() (line 109)" which is correct for the
+          function declaration, but the BUN_ENV assignment is at line 111. These are cosmetic — the
+          task descriptions are still navigable.
+        created_at: 2026-04-05T00:34:30.139Z
+    kind: question
+  - _ulid: 01KNDH065XJE044QCSMWAD9NQM
+    anchor:
+      type: structured
+      ref: "@task-daemon-compile-js"
+      section: tasks
+    entries:
+      - _ulid: 01KNDH065Y23WZ8X68H0SDDY7H
+        author: "@claude"
+        body: Step 1 says "Add a conditional type reference or runtime type shim for Bun.file()" — but
+          Bun.file() replacement is handled separately in task-elysia-node-adapter step 3. This
+          could confuse an agent. Clarify that the compile task only needs to remove bun-types from
+          tsconfig and that the Bun.file() call site is addressed by the adapter task.
+        created_at: 2026-04-05T00:34:34.814Z
+    kind: nit
+  - _ulid: 01KNDH0AHAEP2PB7R75BJTD0DG
+    anchor:
+      type: structured
+      ref: "@task-ws-connection-state-abstraction"
+      section: tasks
+    entries:
+      - _ulid: 01KNDH0AHB05MN0GH7AMZ5N23T
+        author: "@claude"
+        body: "The task says ws.data is accessed in ~20 call sites across 5 files — verified this is
+          accurate (grep found 20 matches across server.ts, heartbeat.ts, handler.ts, pubsub.ts,
+          lifecycle.ts). The task correctly identifies all 5 files. Note: server.ts:487-497 shows an
+          interesting pattern where ws.data is first read (as openContext to get the request for
+          project path resolution via a separate WeakMap), then overwritten with connection state.
+          The ConnectionStateManager needs to handle this two-phase pattern — the WeakMap init
+          should happen after the openContext read, which the current description implies but does
+          not explicitly call out."
+        created_at: 2026-04-05T00:34:39.275Z
+    kind: nit
+  - _ulid: 01KNDH0F8NYCKHRYFSC9GDXADW
+    anchor:
+      type: structured
+      ref: "@task-elysia-node-adapter"
+      section: tasks
+    entries:
+      - _ulid: 01KNDH0F8NFZH2KKMBBJC5ESAE
+        author: "@claude"
+        body: Step 3 proposes readFileSync for the Bun.file() replacement — reads once at startup and serves
+          from memory. This works for the index.html SPA fallback but note that the current
+          Bun.file() call is inside the route handler (line 571), meaning it reads on every request
+          (benefiting from Bun's file caching). The readFileSync-at-startup approach is actually
+          better (consistent memory behavior), but the task should note that this changes the
+          caching behavior — if index.html is updated while the daemon runs, the old version is
+          served until restart. This is likely acceptable since the web UI build is a deploy-time
+          artifact, but worth documenting.
+        created_at: 2026-04-05T00:34:44.117Z
+    kind: question
+  - _ulid: 01KNDH0KSSCVHN79KQ5F7PQ1GS
+    anchor:
+      type: structured
+      field: ac-connection-state
+      ref: "@daemon-runtime-adapter"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KNDH0KSTZQ9XPFXC7Z6953TJ
+        author: "@claude"
+        body: ac-connection-state's then clause enumerates specific state fields (session ID, subscribed
+          topics, sequence number, heartbeat timestamps, project path). This is more prescriptive
+          than other ACs in the spec — it describes the data model rather than observable behavior.
+          Consider whether "Per-connection state is tracked and accessible throughout the connection
+          lifecycle without depending on runtime-specific WebSocket properties" would be more
+          behavioral while still capturing the intent. Not a blocker — the current wording works and
+          the enumeration helps implementers.
+        created_at: 2026-04-05T00:34:48.762Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: "@claude"
+    role: reviewer
+    created_at: 2026-04-05T00:34:56.242Z
+created_at: 2026-04-05T00:33:27.406Z
+updated_at: 2026-04-05T00:34:56.242Z
+notes: []

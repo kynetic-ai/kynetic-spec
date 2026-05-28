@@ -1,0 +1,273 @@
+_ulid: 01KR7CCM51KFSKYJM8MMT86CPN
+slugs: []
+title: Review task-fix-guardrail-binding-wrapper-analysis cycle 6
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts: 23 suites passed, 249 tests passed, duration 58.6s"
+    name: focused lint guardrail tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-09T22:17:22.555Z
+    completed_at: 2026-05-09T22:17:22.555Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- kspec validate --refs --warnings-ok: exited 0. Schema OK, references OK; 6
+      pre-existing reference warnings allowed by --warnings-ok."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-09T22:17:36.338Z
+    completed_at: 2026-05-09T22:17:36.338Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- kspec validate --completeness --warnings-ok: exited 0. Completeness warnings
+      are pre-existing repository-wide debt and allowed by --warnings-ok."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-09T22:17:47.046Z
+    completed_at: 2026-05-09T22:17:47.046Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh: 2418 suites passed; 9003 tests passed, 5 skipped;
+      duration 2057.9s. Log: /tmp/kspec-test-cache/01KR7CA661ZV2F83VRVD7EX4SA/f5828b99ba726354.log"
+    name: full npm test
+    required: true
+    runner: npm test
+    created_at: 2026-05-09T22:18:00.291Z
+    completed_at: 2026-05-09T22:18:00.291Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Manual oxlint probe with let pid; try { runKspec("serve start --detach --port 3456");
+      expect(true).toBe(true); pid = readPidFromFile(); } finally { process.kill(pid as number,
+      "SIGTERM"); } exited 0 with no no-leaky-test-daemon report. Expected a report because pid is
+      not owned before the intervening assertion can fail.
+    name: manual finalizer ownership probe
+    required: true
+    runner: oxlint
+    created_at: 2026-05-09T22:18:11.532Z
+    completed_at: 2026-05-09T22:18:11.532Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md, tools/eslint-rules/no-leaky-test-daemon.js,
+      tests/lint-daemon-test-guardrails.test.ts, tests/lint-no-leaky-test-daemon.test.ts,
+      tests/cli-serve.test.ts, tests/helpers/daemon.ts, tests/helpers/daemon.test.ts. Commands run:
+      task/spec/review lookups, AC annotation search, git diff/log checks, focused tests, full npm
+      test, kspec validate refs/completeness, manual oxlint probes. Claims verified: TS-wrapped
+      null/undefined fix present and covered; focused and full suites pass. Categories searched:
+      correctness, edge cases, error handling, test quality, integration. Finding: direct
+      try/finally cleanup calls bypass ownership analysis."
+    name: review evidence log
+    required: false
+    runner: reviewer
+    created_at: 2026-05-09T22:18:24.823Z
+    completed_at: 2026-05-09T22:18:24.823Z
+events:
+  - _ulid: 01KR7CCM50ZZCAK8PNHADYVRQA
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-09T22:05:38.337Z
+  - _ulid: 01KR7CDGGGB2SQEAXD3QQFNTWZ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-09T22:06:07.376Z
+  - _ulid: 01KR7CKBG4MJDANECZE7RKX8PD
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR7CK9ZEW901BQHEKNA673SF
+    timestamp: 2026-05-09T22:09:18.852Z
+  - _ulid: 01KR7CMZPP2A4JP51TRQM1RJ3C
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR7CK9ZEW901BQHEKNA673SF
+    timestamp: 2026-05-09T22:10:12.310Z
+  - _ulid: 01KR7D2557WYMK814JHJBNAVVT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused lint guardrail tests
+    timestamp: 2026-05-09T22:17:23.880Z
+  - _ulid: 01KR7D2JMRCCCJ5J59GEM1J6MY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-05-09T22:17:37.688Z
+  - _ulid: 01KR7D2X3F0HDGKBH3Q5V07PW9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-05-09T22:17:48.399Z
+  - _ulid: 01KR7D3A35KG2M72WE89EQ1GJ9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full npm test
+    timestamp: 2026-05-09T22:18:01.701Z
+  - _ulid: 01KR7D3N1RKBH3JTD2A03T8DZZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: manual finalizer ownership probe
+    timestamp: 2026-05-09T22:18:12.920Z
+  - _ulid: 01KR7D41ZNZAQC0V6FHDPM2GVJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-09T22:18:26.165Z
+  - _ulid: 01KR7D4BFFFNFVR6P6X95EZP53
+    actor: reviewer-agent
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-09T22:18:35.887Z
+  - _ulid: 01KR7D4BFFT3KXWTF6VB9FKA5T
+    actor: reviewer-agent
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-09T22:18:35.887Z
+  - _ulid: 01KR7EW1MCF2XAJ4E0BVZRANGJ
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR7CK9ZEW901BQHEKNA673SF
+    timestamp: 2026-05-09T22:49:00.812Z
+  - _ulid: 01KR7EWA7K22MQ621MQ2HE2N1T
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR7CK9ZEW901BQHEKNA673SF
+    timestamp: 2026-05-09T22:49:09.619Z
+examined_commit: 08328dee7a47f0c5c2a9b172770ef237860f8f6d
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR6M77JA0S1EEVZX8KKRPY1V"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR7CK9ZEW901BQHEKNA673SF
+    anchor:
+      type: code
+      commit: 08328dee7a47f0c5c2a9b172770ef237860f8f6d
+      line_end: 1535
+      line_start: 1535
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KR7CK9ZECWEWME2XAM0GGTSE
+        author: Jacob Chapel
+        body: "MUST-FIX: direct cleanup calls in try/finally finalizers bypass the new ownership
+          check.  only calls  after entering a cleanup-registration callback, then line 1535 accepts
+          any  directly. Manual oxlint probe:  exits 0 with no report. If the assertion throws
+          before  is assigned, the finalizer runs with an undefined kill target and the detached
+          daemon leaks, violating @daemon-test-guardrail-precision
+          ac-detached-cleanup-bound-before-observation's requirement that cleanup own the
+          just-started daemon before an intervening observation can fail."
+        created_at: 2026-05-09T22:09:17.294Z
+      - _ulid: 01KR7CMY40DWMC18PH5CRW63YV
+        author: Jacob Chapel
+        body: 'Clarification with shell-safe formatting: `subtreeContainsDaemonCleanupCall` only calls
+          `cleanupCallbackBindingStatus(...)` after entering a cleanup-registration callback, but
+          direct cleanup calls in a `finally` block reach `if (isDaemonCleanupCallExpression(node))
+          return true;` without any binding or ownership validation. Manual probe that passed
+          unexpectedly: `let pid; try { runKspec("serve start --detach --port 3456");
+          expect(true).toBe(true); pid = readPidFromFile(); } finally { process.kill(pid as number,
+          "SIGTERM"); }`. That exits 0 under the rule, even though a thrown assertion before
+          assignment leaves the finalizer with no concrete kill target for the just-started daemon.'
+        created_at: 2026-05-09T22:10:10.688Z
+      - _ulid: 01KR7EW087XMQ5MSKP98BPHEBP
+        author: "@claude"
+        body: >-
+          Fixed in commit ede9e8e18. Root cause: subtreeContainsDaemonCleanupCall only invoked
+          cleanupCallbackBindingStatus when descent crossed a registered-callback boundary, so a
+          direct daemon-kill in a try/finally finalizer (or any other position outside a registered
+          callback) reached `if (isDaemonCleanupCallExpression(node)) return true;` on shape alone.
+
+
+          Fix in tools/eslint-rules/no-leaky-test-daemon.js: the direct-cleanup branch now calls the
+          new directCleanupCallOwnsDetachedDaemon helper, which mirrors
+          cleanupCallbackBindingStatus' rules — every captured outer identifier must be concretely
+          bound at the implicit registration site AND own the just-started daemon (binding range[1]
+          >= detachedStart). The "use position" is the enclosing TryStatement (control crosses that
+          boundary before any in-try throw can fire the finalizer); when there is no enclosing try,
+          the call itself is the registration. UNVERIFIABLE_KILL_TARGET still rejects
+          non-Identifier-rooted kill targets up front.
+
+
+          Diagnostic precision: extended findUnboundCleanupClosure with a parallel scanner
+          findUnboundDirectCleanupCapture so cleanupClosureUnbound names the offending capture for
+          the finalizer case too (matches the registered-callback path's wording). Program:exit now
+          consults both scanners before falling back to the generic missingCleanup message.
+
+
+          Manual oxlint probe against the cycle-6 reviewer source:
+            let pid; try { runKspec("serve start --detach --port 3456"); expect(true).toBe(true); pid = readPidFromFile(); } finally { process.kill(pid as number, "SIGTERM"); }
+          exits 1 with cleanupClosureUnbound on `pid` (was 0/no warnings before the fix).
+
+
+          Six new regression tests in tests/lint-daemon-test-guardrails.test.ts cover the cycle-6
+          probe, undeclared finalizer pid, stale pre-start literal, MemberExpression root predating
+          the start, and the two safe alternatives (pid bound after start before try, const child =
+          spawn before try). The pre-existing tests/lint-no-leaky-test-daemon.test.ts case "should
+          allow serve start --detach in try/finally with cleanup" used an undeclared free `pid`;
+          updated it to capture pid into a const between the start and the try block (the canonical
+          safe shape) since the cycle-6 ownership leg correctly rejects undeclared captures.
+
+
+          Validation: focused lint suites 249 -> 255 passing tests with --fresh; full npm test 9011
+          passing tests (5 pre-existing skips, 2001.2s); kspec validate --refs and --completeness
+          both pass with --warnings-ok (warnings unchanged from pre-existing repository debt).
+        created_at: 2026-05-09T22:48:59.398Z
+    kind: blocker
+    resolved_at: 2026-05-09T22:49:08.252Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: reviewer-agent
+    role: reviewer
+    created_at: 2026-05-09T22:18:35.887Z
+created_at: 2026-05-09T22:05:38.337Z
+updated_at: 2026-05-09T22:49:08.252Z
+notes: []

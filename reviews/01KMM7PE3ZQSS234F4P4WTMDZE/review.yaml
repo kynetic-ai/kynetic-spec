@@ -1,0 +1,194 @@
+_ulid: 01KMM7PE3ZQSS234F4P4WTMDZE
+slugs: []
+title: Review smart error message for task set --status rejection
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test -- tests/task-set-batch.test.ts passed (19 tests).
+    name: task-set-batch
+    required: true
+    runner: vitest
+    created_at: 2026-03-26T04:54:56.703Z
+    completed_at: 2026-03-26T04:54:56.703Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exited 6 with existing repo-wide warnings (orphaned skills, global coverage
+      warnings, invalid fixture annotations). No task-specific validation error was introduced by
+      this change.
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-26T04:55:00.212Z
+    completed_at: 2026-03-26T04:55:00.212Z
+events:
+  - _ulid: 01KMM7PE3YRM902FYR6AJTYSP8
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-26T04:50:57.278Z
+  - _ulid: 01KMM7R9RJX8Q54CSMG4MJCNPN
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-26T04:51:58.354Z
+  - _ulid: 01KMM7XRBH02NZG7AAAKWMDSHA
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: task-set-batch
+    timestamp: 2026-03-26T04:54:57.137Z
+  - _ulid: 01KMM7XSPS3T2ZXEM7RWEN1CW2
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMM7XSA2R31K6TS4QDE38EWW
+    timestamp: 2026-03-26T04:54:58.521Z
+  - _ulid: 01KMM7XVRXNEH1SF5JWT3VNHFP
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec-validate
+    timestamp: 2026-03-26T04:55:00.637Z
+  - _ulid: 01KMM7XX5PZ6JE297PAQQVQX86
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMM7XWRA641FA3TQYR85HD3Z
+    timestamp: 2026-03-26T04:55:02.070Z
+  - _ulid: 01KMM7Z7QAXQMF6D3G8T1F11G9
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-26T04:55:45.642Z
+  - _ulid: 01KMM7Z7QBFR1J8DHPE3PT189M
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-26T04:55:45.643Z
+  - _ulid: 01KMM8M0D199XFHQABWBGFAY4F
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMM7XSA2R31K6TS4QDE38EWW
+    timestamp: 2026-03-26T05:07:06.273Z
+  - _ulid: 01KMM8M41125BVXG76KHX1XWK9
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMM7XWRA641FA3TQYR85HD3Z
+    timestamp: 2026-03-26T05:07:09.985Z
+  - _ulid: 01KMM8MBZ7G0BN7WSAWYA9AEM4
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMM7XSA2R31K6TS4QDE38EWW
+    timestamp: 2026-03-26T05:07:18.119Z
+  - _ulid: 01KMM8MFT30WFV8SQ84J1RRM5M
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMM7XWRA641FA3TQYR85HD3Z
+    timestamp: 2026-03-26T05:07:22.051Z
+examined_commit: 1346c54c59d9445eed8d532e23938edd3fc5aa66
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMM6PH4EQBRZW72DXWMMNFP3"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMM7XSA2R31K6TS4QDE38EWW
+    anchor:
+      type: code
+      commit: 1346c54c59d9445eed8d532e23938edd3fc5aa66
+      line_end: 118
+      line_start: 70
+      path: tests/task-set-batch.test.ts
+      side: head
+    entries:
+      - _ulid: 01KMM7XSA35QCZT3XEKY2N7PPY
+        author: Test User
+        body: >-
+          The status-rejection AC was moved to , but the new tests are still annotated only as .
+          tests/task-set-batch.test.ts:70:  // AC: @spec-task-set-batch ac-3
+
+          tests/task-set-batch.test.ts:89:  // AC: @spec-task-set-batch ac-3 — batch mode also
+          rejects --status
+
+          tests/task-set-batch.test.ts:102:  // AC: @spec-task-set-batch ac-3, @trait-error-guidance
+          ac-4 — shows valid transitions for in_progress task
+
+          tests/task-set-batch.test.ts:118:  // AC: @spec-task-set-batch ac-3, @trait-error-guidance
+          ac-6 — JSON mode includes guidance in structured error finds the four new annotations for
+          the batch spec and no annotation for . Missing own-AC coverage is a MUST-FIX review gate
+          in this repo, so the coverage needs to be re-annotated against the spec that now owns the
+          behavior.
+        created_at: 2026-03-26T04:54:58.115Z
+      - _ulid: 01KMM8KZYTGXTX5PQBHHMT7J94
+        author: "@claude"
+        body: "Fixed: All 4 test annotations updated from @spec-task-set-batch ac-3 to @task-set ac-1. Also
+          updated source code annotations in errors.ts and task.ts to reference @task-set ac-1."
+        created_at: 2026-03-26T05:07:05.818Z
+    kind: blocker
+    resolved_at: 2026-03-26T05:07:17.700Z
+    resolved_by: "@claude"
+  - _ulid: 01KMM7XWRA641FA3TQYR85HD3Z
+    anchor:
+      type: code
+      commit: 1346c54c59d9445eed8d532e23938edd3fc5aa66
+      line_end: 176
+      line_start: 172
+      path: src/strings/errors.ts
+      side: head
+    entries:
+      - _ulid: 01KMM7XWRAKPBJGZ2VBNE6W3VN
+        author: Test User
+        body: >-
+          The new guidance suggests transition commands that are not actually valid from the task's
+          current state.  always prints the command for the requested target (for example ✗ Complete
+          failed: @ref
+            Reference "@ref" not found for ) even when the current state is  or , where that command still fails. I reproduced this by creating a pending task, running , then running the suggested  command and getting exit 1. That violates the task requirement for an actionable command and will mislead automation into the wrong next step instead of telling it the requested transition is invalid from the current state.
+        created_at: 2026-03-26T04:55:01.642Z
+      - _ulid: 01KMM8M3KYRD7Z20AWD6HWGGSN
+        author: "@claude"
+        body: 'Fixed: statusSetRejection() now checks VALID_TRANSITIONS_FROM before suggesting a command.
+          Invalid transitions (e.g., pending→completed) get "Cannot transition from X to Y — that
+          transition is not valid" instead of a misleading command suggestion. suggestedCommand in
+          JSON details is null for invalid transitions. When currentStatus is unknown (batch mode),
+          the command is still shown as best-effort guidance. Added 2 new tests covering valid
+          transition paths (text and JSON mode).'
+        created_at: 2026-03-26T05:07:09.566Z
+    kind: blocker
+    resolved_at: 2026-03-26T05:07:21.628Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-26T04:55:45.642Z
+created_at: 2026-03-26T04:50:57.279Z
+updated_at: 2026-03-26T05:07:21.628Z
+notes: []

@@ -1,0 +1,161 @@
+_ulid: 01KRF6XTECR7TN6658KNR8Q6PY
+slugs: []
+title: Review @01KRF37XVT9YSRGV87660W7BR6
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified with kspec task get and kspec item get: @dispatch-workspace-registry contains
+      ac-partial-provisioning-classified-before-cleanup with the requested Given/When/Then text, and
+      implementation status is in_progress as required for this Phase 1 spec-alignment task. git
+      diff dev...HEAD has no source-code changes."
+    name: spec alignment
+    required: true
+    runner: kspec
+    created_at: 2026-05-12T23:56:26.811Z
+    completed_at: 2026-05-12T23:56:26.811Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate exits 6 due repo-wide warnings; kspec validate --warnings-ok exits 0 with
+      Schema OK and References OK. Focused verbose validation shows only expected uncovered new AC:
+      @dispatch-workspace-registry ac-partial-provisioning-classified-before-cleanup, which
+      downstream plan tasks implement/test."
+    name: kspec validate --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-12T23:56:42.239Z
+    completed_at: 2026-05-12T23:56:42.239Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite rerun exited 1: 2430 passed suites, 2 failed suites reported, 9087 passed, 1
+      failed, 5 skipped. Failure: tests/helpers/daemon.test.ts readiness diagnostics lastHealth got
+      fetch failed at line 351. This file passed in the first interrupted full-suite attempt and
+      passed focused rerun; classified flaky/pre-existing. Follow-up task created: @01KRF9WA."
+    name: npm test full suite
+    required: false
+    runner: npm
+    created_at: 2026-05-12T23:56:58.160Z
+    completed_at: 2026-05-12T23:56:58.160Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/helpers/daemon.test.ts passed: 13 suites passed, 15 tests passed
+      in 10.0s."
+    name: focused daemon flake rerun
+    required: true
+    runner: npm
+    created_at: 2026-05-12T23:57:13.144Z
+    completed_at: 2026-05-12T23:57:13.144Z
+events:
+  - _ulid: 01KRF6XTEC6W8FX7X5FRXN551C
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-12T23:04:05.836Z
+  - _ulid: 01KRF6ZA2VV1J8WBQDMH3R9EQS
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-12T23:04:54.619Z
+  - _ulid: 01KRF9XT6DK24HDPG5F42QHJJN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: spec alignment
+    timestamp: 2026-05-12T23:56:31.309Z
+  - _ulid: 01KRF9Y9A2WSRD5WBQXTN0ER88
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --warnings-ok
+    timestamp: 2026-05-12T23:56:46.786Z
+  - _ulid: 01KRF9YRSK9FBVF9PYQAS6KA8C
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test full suite
+    timestamp: 2026-05-12T23:57:02.643Z
+  - _ulid: 01KRF9Z78H6XMT6FRTRFRX63SS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused daemon flake rerun
+    timestamp: 2026-05-12T23:57:17.457Z
+  - _ulid: 01KRF9ZYGMGQSH92C9J2ZGYQE5
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KRF9ZT2NCGSDE4HMT4AE29SP
+    timestamp: 2026-05-12T23:57:41.268Z
+  - _ulid: 01KRFA13YRZX1G0G4DNYZGHM6E
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-12T23:58:19.613Z
+  - _ulid: 01KRFA13YYFP5HDH15JMZGY510
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-12T23:58:19.614Z
+examined_commit: 0c6506a55cdb40538275c315cad4c85b131bc7ba
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRF37XVT9YSRGV87660W7BR6"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRF9ZT2NCGSDE4HMT4AE29SP
+    entries:
+      - _ulid: 01KRF9ZT2PSP4Z41DMW3XGBWTR
+        author: Jacob Chapel
+        body: "Evidence log: Files/context read: kspec-agents.md,
+          kspec-review/kspec-merge/review-gates/work-gates skills, task @01KRF37XVT9YSRGV87660W7BR6,
+          spec @dispatch-workspace-registry, plan
+          @plan-dispatch-workspace-in-flight-cleanup-protection, git diff/status/log, AC annotation
+          search, tests/helpers/daemon.test.ts failure context. Commands run: git
+          status/rev-parse/diff/log/show, kspec task get, kspec item get, kspec review
+          add/open/get/for-task/check, kspec validate, kspec validate -v filtered for target AC,
+          kspec validate --warnings-ok, rg AC/source-scan search, npm test (one interrupted near
+          completion after no summary, one full failure classified flaky), npm test -- --run
+          tests/helpers/daemon.test.ts. Claims verified: worker's exact AC addition and in_progress
+          implementation status verified by kspec item get; no source diff verified by git diff
+          dev...HEAD; downstream implementation/test scope verified in plan. Categories searched:
+          correctness/spec alignment, validation, test quality/source-scanning risk, integration/no
+          source diff, and test regression triage. Findings: none against this task."
+        created_at: 2026-05-12T23:57:36.726Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-12T23:58:19.607Z
+created_at: 2026-05-12T23:04:05.836Z
+updated_at: 2026-05-12T23:58:19.614Z
+notes: []

@@ -1,0 +1,355 @@
+_ulid: 01KMQ23013ATFFZ4294VVTNNSK
+slugs: []
+title: Review entity cache with tiered storage and watcher invalidation (cycle 20)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      ✓ Validation passed
+
+      ────────────────────────────────────────
+
+      Files checked: 10
+
+      Items checked: 567
+
+      Tasks checked: 0
+
+      Meta: 10 agents, 11 workflows, 10 conventions
+
+
+      Schema: OK
+
+      References: OK
+
+
+      Reference warnings: 1
+        ⚠ @skills
+          Orphaned skill directory 'skills' has no corresponding meta entry
+          in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+      Alignment warnings: 34
+        Orphaned specs (no tasks): 30
+          ○ Test Trait
+          ○ Filterable List Commands
+          ○ Dry Run Preview Mode
+          ... and 27 more
+        Status mismatches: 4
+          ! Task Set Batch Support
+            Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+          ! Lazy Shadow Sync on Reads
+            Spec "Lazy Shadow Sync on Reads" status is "implemented" but should be "in_progress" based on task progress
+          ! Session Summary Cache
+            Spec "Session Summary Cache" status is "implemented" but should be "in_progress" based on task progress
+          ! Multi-Directory Daemon Architecture
+            Spec "Multi-Directory Daemon Architecture" status is "implemented" but should be "in_progress" based on task progress
+
+      Alignment stats: 404/567 specs have tasks, 400 aligned
+
+
+      Completeness warnings: 485
+        Missing acceptance criteria: 1
+          ○ @01KJN1WT - Test Trait
+        Missing own AC coverage: 232
+          ! @spec-item - Spec Item
+            Uncovered: ac-item-1, ac-item-2
+          ! @ulid-system - ULID Identifier System
+            Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+          ! @slug-system - Slug Alias System
+            Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+          ... and 229 more
+        Invalid AC annotations: 252
+          ! AC annotation references '@slug' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-entity-cache-impl-01kmmb3t-review/tests/ac-annotation-validation.test.ts:6
+          ! AC annotation references '@my-spec' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-entity-cache-impl-01kmmb3t-review/tests/ac-annotation-validation.test.ts:84
+          ! AC annotation references '@my-spec' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-entity-cache-impl-01kmmb3t-review/tests/ac-annotation-validation.test.ts:87
+          ! AC annotation references '@spec-a' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-entity-cache-impl-01kmmb3t-review/tests/ac-annotation-validation.test.ts:114
+          ! AC annotation references '@spec-b' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-entity-cache-impl-01kmmb3t-review/tests/ac-annotation-validation.test.ts:118
+          ... and 247 more
+      Skills: OK (10 files checked) reported no schema/reference errors for this review target, but
+      repo-wide warnings remain (exit 6): 1 reference warning, 34 alignment warnings, and
+      completeness warnings outside this task scope.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-27T07:23:00.456Z
+    completed_at: 2026-03-27T07:23:00.456Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test exited 1 in this snapshot: 6723 passed, 2 failed. Both failures were timeouts in
+      tests/dispatch-runtime-bootstrap-contract.test.ts: reuses valid worker bootstrap state for
+      reviewer preflight instead of rerunning it; does not let reviewer bootstrap readiness skip the
+      first worker bootstrap run."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-27T07:23:51.373Z
+    completed_at: 2026-03-27T07:23:51.373Z
+events:
+  - _ulid: 01KMQ23012YWG70H646VDQ3NA4
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T07:10:40.675Z
+  - _ulid: 01KMQ23YNCCN4NMMZQTASY35T0
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T07:11:12.044Z
+  - _ulid: 01KMQ2H25QM895FYJMVQMW3F21
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMQ2H12KTB9RCABGX7JFAMZH
+    timestamp: 2026-03-27T07:18:21.623Z
+  - _ulid: 01KMQ2HADCT2XXQGP5NYCKR4WE
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMQ2H9BFD9THJB7MXFXH84QE
+    timestamp: 2026-03-27T07:18:30.061Z
+  - _ulid: 01KMQ2R7XG4Z4V6PC58MJZHH26
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMQ2R7ANZJ0S10N315VSVMRT
+    timestamp: 2026-03-27T07:22:16.880Z
+  - _ulid: 01KMQ2RHCM0XQMMQCM602VXASN
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMQ2RGTCZPCGX3ETN77A4D40
+    timestamp: 2026-03-27T07:22:26.580Z
+  - _ulid: 01KMQ2SKHJN1S2SGF1KASAYQAM
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-27T07:23:01.555Z
+  - _ulid: 01KMQ2V597PN71RW1E4DVQ96EG
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-27T07:23:52.487Z
+  - _ulid: 01KMQ2W0ZDZXFS0TAH86A5403S
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-27T07:24:20.846Z
+  - _ulid: 01KMQ2W0ZE14VCY29XE80VY40Q
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T07:24:20.846Z
+  - _ulid: 01KMQ472812W9R7VMW0P0530XK
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMQ2H12KTB9RCABGX7JFAMZH
+    timestamp: 2026-03-27T07:47:51.169Z
+  - _ulid: 01KMQ475SZHZC95Y6J3942VPFC
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMQ2H9BFD9THJB7MXFXH84QE
+    timestamp: 2026-03-27T07:47:54.815Z
+  - _ulid: 01KMQ47999XTXH8DZMNA3NG2DC
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMQ2R7ANZJ0S10N315VSVMRT
+    timestamp: 2026-03-27T07:47:58.377Z
+  - _ulid: 01KMQ47CTAQFSSND50752RM189
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMQ2RGTCZPCGX3ETN77A4D40
+    timestamp: 2026-03-27T07:48:01.994Z
+  - _ulid: 01KMQ487XJNVJG7YX8N7WWVGAE
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMQ2H12KTB9RCABGX7JFAMZH
+    timestamp: 2026-03-27T07:48:29.746Z
+  - _ulid: 01KMQ48B6BK9QYKBFC3TC40HDF
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMQ2H9BFD9THJB7MXFXH84QE
+    timestamp: 2026-03-27T07:48:33.099Z
+  - _ulid: 01KMQ48EGZ0VC4656BRWC9N5R1
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMQ2R7ANZJ0S10N315VSVMRT
+    timestamp: 2026-03-27T07:48:36.511Z
+  - _ulid: 01KMQ48HRVZB5NY1KS2N5NBEKM
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMQ2RGTCZPCGX3ETN77A4D40
+    timestamp: 2026-03-27T07:48:39.835Z
+examined_commit: caf1f08f934535175a2338ac462aaa9457963c40
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMMB3T2K3T6A1CJR884EPKJF"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMQ2H12KTB9RCABGX7JFAMZH
+    anchor:
+      type: code
+      commit: caf1f08f934535175a2338ac462aaa9457963c40
+      line_end: 156
+      line_start: 122
+      path: packages/daemon/src/watcher.ts
+      side: head
+    entries:
+      - _ulid: 01KMQ2H12M2J5VSKGHCH6KAPZB
+        author: "@claude"
+        body: "Reload dedup is still broken for multi-file edits in the same domain.  debounces by file
+          path, so changing  and  100 ms apart schedules two separate timers. Each timer calls ,
+          and  only reuses an in-flight promise while a reload is already running. Once the first
+          reload finishes, the second timer triggers a second  reload. I reproduced this
+          with  against the current snapshot: two  files changed within one debounce window produced
+          . That violates , which requires a single reload per affected domain for clustered watcher
+          events, and it also makes write-heavy commits pay redundant full-domain reloads."
+        created_at: 2026-03-27T07:18:20.500Z
+      - _ulid: 01KMQ471T7988SAG3Q4YQGGNFA
+        author: "@claude"
+        body: "Fixed: Added domain-level debounce timers (100ms) to ProjectEntityCache.invalidateDomain().
+          Multiple watcher events for the same domain within the debounce window now coalesce into a
+          single reload. The deferred promise pattern ensures all callers await the same reload."
+        created_at: 2026-03-27T07:47:50.727Z
+    kind: blocker
+    resolved_at: 2026-03-27T07:48:29.272Z
+    resolved_by: "@claude"
+  - _ulid: 01KMQ2H9BFD9THJB7MXFXH84QE
+    anchor:
+      type: code
+      commit: caf1f08f934535175a2338ac462aaa9457963c40
+      line_end: 156
+      line_start: 122
+      path: packages/daemon/src/watcher.ts
+      side: head
+    entries:
+      - _ulid: 01KMQ2H9BGWA7BDB7GBFPNMPC5
+        author: "@claude"
+        body: 'Reload dedup is still broken for multi-file edits in the same domain. `KspecWatcher`
+          debounces by file path, so changing `modules/a.yaml` and `modules/b.yaml` 100 ms apart
+          schedules two separate timers. Each timer calls `cache.handleFileChange(...)`, and
+          `invalidateDomain()` only reuses an in-flight promise while a reload is already running.
+          Once the first reload finishes, the second timer triggers a second `items` reload. I
+          reproduced this with `npx tsx` against the current snapshot: two `items` files changed
+          within one debounce window produced `{"itemReloads":2}`. That violates `ac-reload-dedup`,
+          which requires a single reload per affected domain for clustered watcher events, and it
+          also makes write-heavy commits pay redundant full-domain reloads.'
+        created_at: 2026-03-27T07:18:28.976Z
+      - _ulid: 01KMQ475AZ09VK9RBBYDZNSBNS
+        author: "@claude"
+        body: "Fixed: Same domain-level debounce fix as the duplicate thread above. The debounce timer
+          resets on each invalidation call, so clustered file changes produce a single reload per
+          domain."
+        created_at: 2026-03-27T07:47:54.335Z
+    kind: blocker
+    resolved_at: 2026-03-27T07:48:32.629Z
+    resolved_by: "@claude"
+  - _ulid: 01KMQ2R7ANZJ0S10N315VSVMRT
+    anchor:
+      type: code
+      commit: caf1f08f934535175a2338ac462aaa9457963c40
+      line_end: 196
+      line_start: 176
+      path: packages/daemon/src/routes/triage.ts
+      side: head
+    entries:
+      - _ulid: 01KMQ2R7AN2M6XNCDV16KKNYF2
+        author: "@claude"
+        body: "`/api/triage/export` is serving the triage summary tier, but the export contract still
+          requires full triage records. On a warm cache this route uses `cache.getTriageIndex()`,
+          and that summary type explicitly strips `item_snapshot`, `reasoning`, and
+          `override_reasoning`. The shared formatter dereferences `record.item_snapshot`
+          unconditionally, so the cache-backed path can throw for `format=context` and returns
+          truncated objects for `format=json`. I verified this by running `npx tsx` against the
+          current snapshot: `exportTriageRecords(summaryOnly, 'context')` raises `TypeError: Cannot
+          read properties of undefined (reading 'split')`."
+        created_at: 2026-03-27T07:22:16.278Z
+      - _ulid: 01KMQ478TN6YSSQB2GQVP3Z3GG
+        author: "@claude"
+        body: "Fixed: /api/triage/export now always loads full triage records from disk via
+          loadTriageRecords(). The cache index tier (TriageIndexSummary) intentionally strips
+          item_snapshot, reasoning, and override_reasoning, which the export formatter requires.
+          Export is inherently a full-record operation."
+        created_at: 2026-03-27T07:47:57.909Z
+    kind: blocker
+    resolved_at: 2026-03-27T07:48:36.011Z
+    resolved_by: "@claude"
+  - _ulid: 01KMQ2RGTCZPCGX3ETN77A4D40
+    anchor:
+      type: code
+      commit: caf1f08f934535175a2338ac462aaa9457963c40
+      line_end: 582
+      line_start: 559
+      path: packages/daemon/src/routes/sessions.ts
+      side: head
+    entries:
+      - _ulid: 01KMQ2RGTDG787ZZNB0HB664BT
+        author: "@claude"
+        body: 'The cache-hit path for `/api/sessions/:id` cannot preserve spec acceptance criteria. When
+          both `tasks` and `items` are warm, this code builds `spec_context` from
+          `cache.getItemIndex()` after casting `ItemSummary[]` to `LoadedSpecItem[]`. But the item
+          index intentionally keeps only `acceptance_criteria_count`, not the AC content itself, so
+          the route silently returns `spec_context.acceptance_criteria: []` on cache hits even when
+          the spec has ACs. I verified the current logic with `npx tsx`: building a `ReferenceIndex`
+          from `TaskSummary[]` + `ItemSummary[]` and running the same mapping code produced
+          `{"spec_ref":"@spec-a","title":"Spec A","acceptance_criteria":[]}`.'
+        created_at: 2026-03-27T07:22:25.997Z
+      - _ulid: 01KMQ47CCYX6HY6N56CB1YFNTZ
+        author: "@claude"
+        body: "Fixed: /api/sessions/:id now loads full spec items from disk via loadAllItems() when building
+          spec_context. The cache item index only stores acceptance_criteria_count (summary tier),
+          not the AC content itself. Tasks still use the cache index for task_title resolution since
+          TaskSummary has the title field."
+        created_at: 2026-03-27T07:48:01.565Z
+    kind: blocker
+    resolved_at: 2026-03-27T07:48:39.395Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-27T07:24:20.845Z
+created_at: 2026-03-27T07:10:40.675Z
+updated_at: 2026-03-27T07:48:39.395Z
+notes: []

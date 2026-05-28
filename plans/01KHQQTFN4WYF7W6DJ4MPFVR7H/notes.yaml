@@ -1,0 +1,21 @@
+notes:
+  - _ulid: 01KHQQTFN4G55AS85ESCFHW09W
+    content: |-
+      Implementation notes:
+
+      Work these in order: Bundle 2 (dead code) first since it reduces noise for
+      everything else. Bundle 1 (setup unification) is the highest impact.
+      Bundle 3 (cross-platform) makes things reliable. Bundle 6 (bootstrapping)
+      improves the new-project experience. Bundle 4 (module split) is
+      maintainability. Bundle 5 (polish) is nice-to-have.
+
+      Inbox items consolidated into these bundles:
+      01KHJ4RV (dead code x3, legacy render, agent gen reimpl, silent errors, toKebabCase),
+      01KHG6EP (setup.ts duplicated step logic), 01KHG6EX (renderSkill dup - ALREADY FIXED),
+      01KHKTNJ (monolith, renderer dedup, CRLF, version, setup status, normalizeBaseDir,
+      guard scripts, diff, readFileSync, mutation safety, EXPECTED_TEMPLATES, naming,
+      redundant defaults, warning types), 01KHKTNH (type guard), 01KHKTNT (lookup dedup,
+      weak test), 01KHFCDS (permission bootstrap, memory seeding, version pinning),
+      01KGQY6N (skill staleness).
+    author: "@claude"
+    created_at: 2026-02-18T06:43:24.964Z

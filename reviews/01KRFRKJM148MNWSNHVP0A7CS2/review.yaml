@@ -1,0 +1,197 @@
+_ulid: 01KRFRKJM148MNWSNHVP0A7CS2
+slugs: []
+title: Review fix guardrail cleanup-effect classification (cycle 18)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exits 6 with warnings only; kspec validate --warnings-ok exits 0. Warnings
+      are broad pre-existing metadata/alignment/annotation debt, no schema/reference errors for this
+      task.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-13T04:24:23.465Z
+    completed_at: 2026-05-13T04:24:23.465Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts
+      tests/lint-daemon-test-guardrails.test.ts: 23 suites passed, 387 tests passed."
+    name: targeted lint-rule suites
+    required: true
+    runner: npm test
+    created_at: 2026-05-13T04:24:29.601Z
+    completed_at: 2026-05-13T04:24:29.601Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full fresh suite passed: 2430 suites passed; 9174 passed, 5 skipped of 9179; duration
+      2101.8s."
+    name: npm test -- --fresh
+    required: true
+    runner: npm test
+    created_at: 2026-05-13T04:24:35.838Z
+    completed_at: 2026-05-13T04:24:35.838Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npx oxlint tools/eslint-rules/no-leaky-test-daemon.js
+      tests/lint-no-leaky-test-daemon.test.ts tests/lint-daemon-test-guardrails.test.ts: 0 errors,
+      35 pre-existing warnings."
+    name: changed-file oxlint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-13T04:24:42.001Z
+    completed_at: 2026-05-13T04:24:42.001Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Independent ad hoc probes for helper declaration-level type import, helper specifier-level
+      type import, primitive declaration-level type import, and primitive specifier-level type
+      import all exited 1 with no-leaky-test-daemon missing-cleanup diagnostics.
+    name: type-only import probes
+    required: true
+    runner: oxlint
+    created_at: 2026-05-13T04:24:48.095Z
+    completed_at: 2026-05-13T04:24:48.095Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repository lint still reports 13 errors and 721 warnings, matching prior-cycle known lint
+      debt outside the task scope; changed-file oxlint has 0 errors.
+    name: npm run lint
+    required: false
+    runner: oxlint
+    created_at: 2026-05-13T04:24:54.448Z
+    completed_at: 2026-05-13T04:24:54.448Z
+events:
+  - _ulid: 01KRFRKJM1P0RWY11ZCT2YCYPW
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-13T04:13:04.513Z
+  - _ulid: 01KRFRM4XD2VN2AE2H1JBFQE26
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-13T04:13:23.245Z
+  - _ulid: 01KRFS8B1JS9PHVN9F589RJMP3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-13T04:24:24.882Z
+  - _ulid: 01KRFS8H1TKP2PBG2S0A7G2W87
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted lint-rule suites
+    timestamp: 2026-05-13T04:24:31.034Z
+  - _ulid: 01KRFS8Q41XK6DD6FHTVJ21N1J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-05-13T04:24:37.249Z
+  - _ulid: 01KRFS8X4F2JTF0S0R1MZYNET0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file oxlint
+    timestamp: 2026-05-13T04:24:43.407Z
+  - _ulid: 01KRFS9349P9F1GGK6NNF2SMQH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: type-only import probes
+    timestamp: 2026-05-13T04:24:49.546Z
+  - _ulid: 01KRFS99ARE6Q5SDB60TSHMH3P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm run lint
+    timestamp: 2026-05-13T04:24:55.896Z
+  - _ulid: 01KRFS9F7YCVE1KGYS4A95S2Q2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KRFS9DWB3VF8D5SW6WPJ0VWF
+    timestamp: 2026-05-13T04:25:01.950Z
+  - _ulid: 01KRFS9TJAQ3C3ZBNH07933PKJ
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-13T04:25:13.546Z
+  - _ulid: 01KRFS9TJA2DRKS3Z2PXHZBGWC
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-13T04:25:13.546Z
+examined_commit: f471dc1dcfbca0288216dffefa3abbac6e163ad8
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRCRJPMHMHC410TKRC5Y9HF1"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRFS9DWB3VF8D5SW6WPJ0VWF
+    entries:
+      - _ulid: 01KRFS9DWBN5YVPKE308997PAF
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; task @01KRCRJPMHMHC410TKRC5Y9HF1; specs
+          @daemon-test-guardrail-precision and @daemon-test-harness-guardrails; previous review
+          @01KRFNCR; full diff for tests/lint-daemon-test-guardrails.test.ts,
+          tests/lint-no-leaky-test-daemon.test.ts, tools/eslint-rules/no-leaky-test-daemon.js;
+          focused rule sections around helper-origin import trust, shared primitive import trust,
+          local binding/shadow classification, and new type-only tests. Commands run: git
+          status/rev-parse/merge-base/diff/log; rg AC annotations and source-scanning markers; kspec
+          validate and kspec validate --warnings-ok; targeted npm test -- --fresh for the two lint
+          suites; full npm test -- --fresh; changed-file npx oxlint; npm run lint; four ad hoc
+          oxlint probes for the prior type-only import blockers; git diff --check. Claims verified:
+          cycle-17 type-only approved helper/primitive import blockers now reject both
+          declaration-level and specifier-level type imports; invalid implicit-autostart
+          expected-failure/source-scanning block was removed; current task ACs remain behaviorally
+          covered by lint-rule execution tests. Categories searched: correctness, edge cases around
+          imports/shadowing, error handling via missing cleanup diagnostics, test quality/source
+          scanning, integration with existing helper allowlists and full-suite regression. No
+          blockers found."
+        created_at: 2026-05-13T04:25:00.555Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-13T04:25:13.545Z
+created_at: 2026-05-13T04:13:04.513Z
+updated_at: 2026-05-13T04:25:13.546Z
+notes: []

@@ -1,0 +1,134 @@
+_ulid: 01KR4MTFQ3GT7HS47QC0M0TMD2
+slugs: []
+title: Review clarify in-process daemon API helper boundary
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh tests/daemon-api/helpers.test.ts
+      tests/daemon-api-input-validation.test.ts tests/daemon-review-verdicts-api.test.ts
+      tests/daemon-review-websocket.test.ts: 17 suites passed; 68 tests passed."
+    name: targeted daemon helper tests
+    required: true
+    runner: npm
+    created_at: 2026-05-08T20:47:07.172Z
+    completed_at: 2026-05-08T20:47:07.172Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh: 2410 suites passed; 8827 tests passed; 5 skipped. Full log:
+      /tmp/kspec-test-cache/01KR4MSCXDD6QC5HGAQWY6J1RM/81b0a4fead1b0f9d.log"
+    name: full test suite
+    required: true
+    runner: npm
+    created_at: 2026-05-08T20:47:17.881Z
+    completed_at: 2026-05-08T20:47:17.881Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate --warnings-ok: schema OK, references OK, skills OK. Plain kspec validate
+      exits 6 due to existing repository-wide warnings outside this two-file diff."
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-08T20:47:28.440Z
+    completed_at: 2026-05-08T20:47:28.440Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: tests/daemon-api/helpers.ts, tests/daemon-api/helpers.test.ts,
+      packages/daemon/src/server.ts, packages/daemon/src/routes/{automation,diff,refs,debug}.ts,
+      tests/daemon-api/server.test.ts, tests/daemon-api/projects.test.ts,
+      tests/daemon-review-websocket.test.ts. Claims verified: createTestApp registers a subset and
+      omits production server routes/middleware; existing callers do not use omitted routes except
+      boundary assertions. Categories searched: correctness, helper boundary/spec alignment, test
+      quality/source scanning, route integration, server-level error/security boundaries."
+    name: review evidence log
+    required: false
+    runner: manual
+    created_at: 2026-05-08T20:47:40.887Z
+    completed_at: 2026-05-08T20:47:40.887Z
+events:
+  - _ulid: 01KR4MTFQ2J0Y8FETD294GGMXH
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-08T20:35:17.859Z
+  - _ulid: 01KR4MV11KEM1WANFYW9RQZAS3
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-08T20:35:35.604Z
+  - _ulid: 01KR4NG5PF72AFF32JPTRCB786
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted daemon helper tests
+    timestamp: 2026-05-08T20:47:08.495Z
+  - _ulid: 01KR4NGG7GQZA6P947YY4V50EQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-08T20:47:19.280Z
+  - _ulid: 01KR4NGTJ3N9H8YRX1ZH7FH1EC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-08T20:47:29.859Z
+  - _ulid: 01KR4NH6QMQACM362P0X31QRRV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-08T20:47:42.324Z
+  - _ulid: 01KR4NHG87VT6W17TC64SV8B32
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-08T20:47:52.072Z
+  - _ulid: 01KR4NHG88QB4V1F4VTJCM8067
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-08T20:47:52.072Z
+examined_commit: e0b6617b7baa8a96f4c13257621dfdc2a3c14a70
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR3W7SD99V6PMBDTR5WW1TBX"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-08T20:47:52.071Z
+created_at: 2026-05-08T20:35:17.859Z
+updated_at: 2026-05-08T20:47:52.072Z
+notes: []

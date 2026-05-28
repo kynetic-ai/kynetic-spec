@@ -1,0 +1,228 @@
+_ulid: 01KR2APDM1X2QE9GF27BM8ZPCW
+slugs: []
+title: Review shared daemon test fixture core
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate --warnings-ok: schema OK, references OK, skills OK; repo-wide warnings
+      remain but command exited 0 with --warnings-ok."
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-07T23:12:07.961Z
+    completed_at: 2026-05-07T23:12:07.961Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh tests/helpers/daemon.test.ts: 6 tests passed in
+      tests/helpers/daemon.test.ts; 5 suites passed; log
+      /tmp/kspec-test-cache/01KR2AJVGVYQHBAG4JSHENEX32/928857f533548ed7.log"
+    name: helper contract tests
+    required: true
+    runner: npm
+    created_at: 2026-05-07T23:12:18.285Z
+    completed_at: 2026-05-07T23:12:18.285Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh: 8,728 passed, 5 skipped, 2,382 suites passed; duration
+      1989.5s; log /tmp/kspec-test-cache/01KR2AJVGVYQHBAG4JSHENEX32/a112d64d745ed3e2.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-07T23:12:30.795Z
+    completed_at: 2026-05-07T23:12:30.795Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm run typecheck: tsc --noEmit exited 0."
+    name: typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-07T23:12:40.480Z
+    completed_at: 2026-05-07T23:12:40.480Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- oxlint tests/helpers/daemon.ts tests/helpers/daemon.test.ts: 0 warnings, 0
+      errors. Whole-repo npm run lint was also sampled and still fails on pre-existing violations
+      outside these changed files."
+    name: changed-file lint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-07T23:12:50.676Z
+    completed_at: 2026-05-07T23:12:50.676Z
+events:
+  - _ulid: 01KR2APDM1DP6W32P8N06KVRPP
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-07T22:59:50.017Z
+  - _ulid: 01KR2APS78ENEPC9ARE82SC2QB
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-07T23:00:01.897Z
+  - _ulid: 01KR2BBWEESCKNY3AGT58EDF0D
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR2BBV50H8G7DAED3AYDRZAB
+    timestamp: 2026-05-07T23:11:33.327Z
+  - _ulid: 01KR2BCZKKC2CZYW5B7T99H7AW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-07T23:12:09.332Z
+  - _ulid: 01KR2BD9K6K57MDV8XFTSGGFZG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: helper contract tests
+    timestamp: 2026-05-07T23:12:19.558Z
+  - _ulid: 01KR2BDNWQKJEDQ4T976YF5NWH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-07T23:12:32.151Z
+  - _ulid: 01KR2BDZ8WQWQY681HPJTV2S2Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-07T23:12:41.756Z
+  - _ulid: 01KR2BE99RDYW6DGPG6SMXRSXC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file lint
+    timestamp: 2026-05-07T23:12:52.024Z
+  - _ulid: 01KR2BEVZ3171C88ERT7ZDQBA6
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KR2BETNSVA6VNJ9EWP68H4BM
+    timestamp: 2026-05-07T23:13:11.139Z
+  - _ulid: 01KR2BF5T9G838AZ6W6W7TT1R1
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-07T23:13:21.225Z
+  - _ulid: 01KR2BF5T9TEXE4XMA6KWTSM1Q
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-07T23:13:21.225Z
+  - _ulid: 01KR2CJEZ2DEVJZGW3D541AHNQ
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR2BBV50H8G7DAED3AYDRZAB
+    timestamp: 2026-05-07T23:32:37.474Z
+  - _ulid: 01KR2CJWZ1YSYYWAV3FD88HCEW
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR2BBV50H8G7DAED3AYDRZAB
+    timestamp: 2026-05-07T23:32:51.809Z
+examined_commit: 6b1e1f472bd1d68ff10079cdd59eeebfca32bfe4
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR22GJR5YSYRMW6VSD6MQ362"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR2BBV50H8G7DAED3AYDRZAB
+    anchor:
+      type: code
+      commit: 6b1e1f472bd1d68ff10079cdd59eeebfca32bfe4
+      line_end: 630
+      line_start: 626
+      path: tests/helpers/daemon.ts
+      side: head
+    entries:
+      - _ulid: 01KR2BBV50WXVYNBG7NYFQ2GM5
+        author: Jacob Chapel
+        body: "MUST-FIX: custom readiness failures omit the required health/cache diagnostic observations.
+          The task requires readiness failures to include the last health response and last
+          cache-status response, but the custom readiness branch goes straight to the caller probe
+          and never samples either endpoint before building diagnostics. I verified this with an ad
+          hoc startTestDaemon custom-probe timeout: the thrown DaemonReadinessError had
+          lastHealth:null and lastCacheStatus:null. Please make the failure path populate those
+          diagnostics (for example by sampling health and /api/debug/cache-status for diagnostics)
+          and add assertions so the contract test would fail if either field is missing."
+        created_at: 2026-05-07T23:11:32.000Z
+      - _ulid: 01KR2CJDN2RZ58CV1AYCNXED8Q
+        author: "@claude"
+        body: Fixed in ab433d4. The custom readiness branch no longer relies on per-probe state for
+          diagnostics — startTestDaemon's catch block now samples /api/health and
+          /api/debug/cache-status in parallel (2s per-call timeout) regardless of mode, so the
+          bundle is populated unconditionally. Dropped HealthProbeState/CacheProbeState plumbing
+          since it was only feeding diagnostics. The readiness-diagnostics contract test now fails
+          if either field comes back null or non-200 for a live daemon (it asserts status=200, body
+          contains '"status":"ok"' for health and 'projects' for cache-status), and the error
+          message is asserted to include 'last-health=' and 'last-cache-status=' so failure logs
+          surface both observations. Verified the failing-probe scenario now produces populated
+          diagnostics via the contract test (passes after the fix; earlier null-field path is no
+          longer reachable).
+        created_at: 2026-05-07T23:32:36.129Z
+    kind: blocker
+    resolved_at: 2026-05-07T23:32:50.474Z
+    resolved_by: "@claude"
+  - _ulid: 01KR2BETNSVA6VNJ9EWP68H4BM
+    entries:
+      - _ulid: 01KR2BETNSMY57YSET8M7SE0T9
+        author: Jacob Chapel
+        body: "Evidence log (non-blocking): Files read: tests/helpers/daemon.ts,
+          tests/helpers/daemon.test.ts, tests/helpers/cli.ts, src/daemon-shared/endpoint.ts,
+          src/cli/commands/serve.ts, packages/daemon/src/index.ts, packages/daemon/src/server.ts,
+          packages/daemon/src/routes/debug.ts, packages/daemon/src/project-context.ts,
+          src/parser/yaml.ts, tests/e2e/fixtures/test-base.ts. Commands run: kspec task get, kspec
+          item get for linked daemon specs, kspec validate / --warnings-ok, AC annotation search,
+          focused helper tests, full npm test, typecheck, changed-file oxlint, ad hoc custom
+          readiness timeout reproduction. Claims verified: default runtime/endpoint/isolated
+          project/cleanup paths are covered by helper tests; custom readiness diagnostics currently
+          produce null lastHealth/lastCacheStatus. Categories searched: correctness, AC alignment,
+          readiness edge cases, cleanup scope, environment isolation, endpoint consistency, test
+          quality, and integration with daemon project-root handling."
+        created_at: 2026-05-07T23:13:09.817Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-07T23:13:21.225Z
+created_at: 2026-05-07T22:59:50.017Z
+updated_at: 2026-05-07T23:32:50.474Z
+notes: []

@@ -1,0 +1,150 @@
+_ulid: 01KRYJNHZ3S90HYPZ9SEEGJ8J8
+slugs: []
+title: "Plan re-review: Daemon Dispatch OOM Hardening Spec Alignment (cycle 2)"
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified cycle-1 findings are addressed: no duplicate task-storage API implementation
+      task; no new @daemon-command-api storage incompatibility AC; validation Covers uses exact
+      @daemon-entity-cache and @api-contract AC ids; EventBus resource-lifetime ACs are behavioral;
+      invocation helper AC is proxy-only with mutation/env preservation kept task-level; spec-update
+      How uses kspec batch."
+    name: Prior review findings
+    required: true
+    created_at: 2026-05-18T22:18:38.206Z
+    completed_at: 2026-05-18T22:18:38.206Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec plan import plans/daemon-dispatch-oom-hardening-spec-alignment.md --dry-run parsed
+      successfully; derived specs 0 and derived tasks 0 as intended for an existing-spec update
+      plan.
+    name: Plan import dry-run
+    required: true
+    runner: kspec
+    created_at: 2026-05-18T22:18:41.922Z
+    completed_at: 2026-05-18T22:18:41.922Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed; remaining reference warnings are pre-existing deprecated-item
+      references unrelated to this plan.
+    name: kspec validate --refs --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-18T22:18:45.619Z
+    completed_at: 2026-05-18T22:18:45.619Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Proposed ACs are atomic behavioral contracts owned by existing specs: event envelope
+      lifetime, dispatch reconciliation, command recursion suppression, scoped CLI proxy behavior,
+      invocation daemon isolation, and cleanup diagnostics."
+    name: Spec quality and ownership
+    required: true
+    created_at: 2026-05-18T22:18:49.373Z
+    completed_at: 2026-05-18T22:18:49.373Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Each proposed AC is covered by an implementation task and final validation; existing
+      @api-contract storage-incompatibility ACs are referenced through the existing external
+      dependency @task-daemon-api-task-storage-incompatibility-errors; spec update precedes
+      implementation tasks and final validation depends on implementation tasks.
+    name: Coverage mapping and dependencies
+    required: true
+    created_at: 2026-05-18T22:18:53.168Z
+    completed_at: 2026-05-18T22:18:53.168Z
+events:
+  - _ulid: 01KRYJNHZ3H4VZFQE657DJ8HNN
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-18T22:17:54.403Z
+  - _ulid: 01KRYJPTF5GA23KS924MV8CY7C
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-18T22:18:35.877Z
+  - _ulid: 01KRYJPY6BQKY2RRX7YE7A2721
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Prior review findings
+    timestamp: 2026-05-18T22:18:39.691Z
+  - _ulid: 01KRYJQ1QXJF7M536VQ9M3JHAB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan import dry-run
+    timestamp: 2026-05-18T22:18:43.326Z
+  - _ulid: 01KRYJQ5DH4BTCMAFCEZDSGFRV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --refs --warnings-ok
+    timestamp: 2026-05-18T22:18:47.089Z
+  - _ulid: 01KRYJQ92J9D5X1X3YZ93NBQKX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec quality and ownership
+    timestamp: 2026-05-18T22:18:50.834Z
+  - _ulid: 01KRYJQCPJBV7008BWNM2QC6T9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Coverage mapping and dependencies
+    timestamp: 2026-05-18T22:18:54.546Z
+  - _ulid: 01KRYJQGAE3A3ERXRYWF16RPYC
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-18T22:18:58.254Z
+  - _ulid: 01KRYJQGAEGRJN2W6R0J9SVH19
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-18T22:18:58.254Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-18T22:18:58.254Z
+created_at: 2026-05-18T22:17:54.403Z
+updated_at: 2026-05-18T22:18:58.254Z
+notes: []

@@ -1,0 +1,167 @@
+_ulid: 01KRH2WYBPJ48YTR95V2008Q2J
+slugs: []
+title: "Plan re-review: Dispatch Workspace Cleanup Classification Hardening"
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "The regression task now specifies a concrete recovery-path test in
+      tests/agent-dispatch-engine.test.ts: seed an automation-eligible non-terminal task, remove the
+      corrupt artifact through cleanup, start DispatchEngine, and assert provisioning/worker
+      invocation still runs for the same task ref."
+    name: Previous blocker
+    required: true
+    created_at: 2026-05-13T16:32:40.052Z
+    completed_at: 2026-05-13T16:32:40.052Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Specs YAML remains []; derive_from_specs is false. The plan updates existing
+      @dispatch-workspace-cleanup-policy and @dispatch-workspace-registry ACs instead of introducing
+      overlapping specs, and the approval boundary says not to derive or start implementation while
+      draft.
+    name: Existing-spec update boundary
+    required: true
+    created_at: 2026-05-13T16:32:50.507Z
+    completed_at: 2026-05-13T16:32:50.507Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Task 1 adds the three clarified ACs. Task 2 covers both cleanup-policy ACs plus the
+      registry recovery AC, and preserves coverage for fail-closed, active/in-flight/provisioning
+      protection, every destructive surface, and partial provisioning classification.
+    name: Coverage mapping
+    required: true
+    created_at: 2026-05-13T16:33:02.417Z
+    completed_at: 2026-05-13T16:33:02.417Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The regression/evidence task depends on the spec-update task, both are P1, and no cycle or
+      priority inversion is present. Both tasks include What/Why/How/Testing sections with concrete
+      files, helpers, commands, and Covers lines.
+    name: Dependency and task quality
+    required: true
+    created_at: 2026-05-13T16:33:13.240Z
+    completed_at: 2026-05-13T16:33:13.240Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed. Referenced target specs resolve; warnings are
+      existing deprecated-reference warnings outside this plan.
+    name: Reference validation
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-13T16:33:23.705Z
+    completed_at: 2026-05-13T16:33:23.705Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok and kspec validate --completeness --warnings-ok
+      both passed. Reported warnings are existing repository-wide warnings, not new blockers
+      introduced by this draft plan.
+    name: Alignment and completeness validation
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-13T16:33:34.129Z
+    completed_at: 2026-05-13T16:33:34.129Z
+events:
+  - _ulid: 01KRH2WYBMSTFSAZPFG2R1RBN6
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-13T16:32:11.637Z
+  - _ulid: 01KRH2XEMZ0M245S5Y7JACN9ED
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-13T16:32:28.319Z
+  - _ulid: 01KRH2XVKM9RETKCANVFPXP7BS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Previous blocker
+    timestamp: 2026-05-13T16:32:41.588Z
+  - _ulid: 01KRH2Y5VQQTXS7TN1KM73WNDQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Existing-spec update boundary
+    timestamp: 2026-05-13T16:32:52.087Z
+  - _ulid: 01KRH2YHFEHXF22X4PC06MB9QC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Coverage mapping
+    timestamp: 2026-05-13T16:33:03.982Z
+  - _ulid: 01KRH2YW1DRXKZDRS6V28ZPEBS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency and task quality
+    timestamp: 2026-05-13T16:33:14.798Z
+  - _ulid: 01KRH2Z67ZNT6T4CETASYWYN44
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Reference validation
+    timestamp: 2026-05-13T16:33:25.247Z
+  - _ulid: 01KRH2ZGDM9W42Y75EHHBG9C0R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Alignment and completeness validation
+    timestamp: 2026-05-13T16:33:35.668Z
+  - _ulid: 01KRH2ZT1TSNVT22MPEDK26YH1
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-13T16:33:45.531Z
+  - _ulid: 01KRH2ZT1V2YVQG4YB2KPBXB3N
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-13T16:33:45.531Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-dispatch-workspace-cleanup-classification-hardenin"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-13T16:33:45.530Z
+created_at: 2026-05-13T16:32:11.638Z
+updated_at: 2026-05-13T16:33:45.531Z
+notes: []

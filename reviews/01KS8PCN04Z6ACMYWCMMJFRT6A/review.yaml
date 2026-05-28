@@ -1,0 +1,265 @@
+_ulid: 01KS8PCN04Z6ACMYWCMMJFRT6A
+slugs: []
+title: "Plan review: Folder-Backed Plans, Reviews, and Local Resources (cycle 3)"
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "`kspec plan import plans/folder-backed-plans-reviews-and-resources.md --dry-run`
+      succeeded and reported no state changes."
+    name: Plan import dry-run
+    required: true
+    runner: kspec plan import --dry-run
+    created_at: 2026-05-22T20:37:09.195Z
+    completed_at: 2026-05-22T20:37:09.195Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with existing warnings only; schema and references are OK.
+    name: Project validation baseline
+    required: true
+    runner: kspec validate --warnings-ok
+    created_at: 2026-05-22T20:37:13.220Z
+    completed_at: 2026-05-22T20:37:13.220Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The prior cycle blockers for named commands/routes, rebuild commands, overclaims,
+      docs-only coverage, and resource-delete coverage are mostly addressed, but JSON/API semantics
+      remain underspecified and task ownership still has ambiguous API overlap.
+    name: Prior cycle blocker verification
+    required: true
+    created_at: 2026-05-22T20:37:17.679Z
+    completed_at: 2026-05-22T20:37:17.679Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Spec update, shared traits, resource model, and version gates precede storage managers;
+      migration precedes API/UI/docs tasks.
+    name: Dependency ordering
+    required: true
+    created_at: 2026-05-22T20:37:21.863Z
+    completed_at: 2026-05-22T20:37:21.863Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "`@task-folder-backed-resources-docs` points at the resource trait while claiming
+      documentation ACs, and the documentation spec is outside the existing user-documentation
+      hierarchy."
+    name: Task/spec standalone quality
+    required: true
+    created_at: 2026-05-22T20:37:26.044Z
+    completed_at: 2026-05-22T20:37:26.044Z
+events:
+  - _ulid: 01KS8PCMZZ1RKHXA54N6BBZZ81
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-22T20:35:21.216Z
+  - _ulid: 01KS8PD394AGH5FQARXRXCGY5D
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-22T20:35:35.844Z
+  - _ulid: 01KS8PFC5236GY0FF1929DDTT5
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KS8PFAJWEDRB3VKEDP4YRRBM
+    timestamp: 2026-05-22T20:36:50.466Z
+  - _ulid: 01KS8PFG645571XQ3WWNZNERHF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KS8PFEJ58C27WZHX1HEJCFDX
+    timestamp: 2026-05-22T20:36:54.596Z
+  - _ulid: 01KS8PFM41X4NW2X1R005NE453
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KS8PFJK39XXQD7YGHZKVC97T
+    timestamp: 2026-05-22T20:36:58.625Z
+  - _ulid: 01KS8PFR4M64F6NNP8QVPRG5Z0
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KS8PFPK9Z55BHZAACNXAY3VE
+    timestamp: 2026-05-22T20:37:02.740Z
+  - _ulid: 01KS8PFW1VHYA0ZZ9PCCBGRD90
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KS8PFTH8WJ0BCEVEFB9126YN
+    timestamp: 2026-05-22T20:37:06.747Z
+  - _ulid: 01KS8PFZYQ4REMHPBNHT4FD4TD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan import dry-run
+    timestamp: 2026-05-22T20:37:10.743Z
+  - _ulid: 01KS8PG435P08PGBME66MQK3TT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Project validation baseline
+    timestamp: 2026-05-22T20:37:14.981Z
+  - _ulid: 01KS8PG89KQE3C89Q3CMH864B4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Prior cycle blocker verification
+    timestamp: 2026-05-22T20:37:19.283Z
+  - _ulid: 01KS8PGCF91H9WMP9CMJKT1YTC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-05-22T20:37:23.562Z
+  - _ulid: 01KS8PGGD5YRJFW90FS330EKC8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Task/spec standalone quality
+    timestamp: 2026-05-22T20:37:27.589Z
+  - _ulid: 01KS8PGMCQT6N63PBDADFC1WXS
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-22T20:37:31.671Z
+  - _ulid: 01KS8PGMCQJRTJDCEHMWEPBEZR
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-22T20:37:31.671Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KS8PFAJWEDRB3VKEDP4YRRBM
+    anchor:
+      type: structured
+      ref: "@task-plan-resource-import-and-derive"
+      section: tasks
+    entries:
+      - _ulid: 01KS8PFAJWT13DEAXPD85YMDW5
+        author: Jacob Chapel
+        body: "The plan resource interface is still not specified enough for independent implementation. The
+          task names `--json` and `POST /api/plans/:ref/resources`, but it does not define JSON
+          success payloads for add/list/get/remove, structured error payload and status mapping, or
+          the POST request/upload body. Impact: agents can implement incompatible resource clients
+          and tests while using the same route names. Exact fix: define the CLI JSON shapes and API
+          request/response schema for each plan resource operation, including `resource_conflict`,
+          invalid path, not-found, and delete-confirmation errors."
+        created_at: 2026-05-22T20:36:48.860Z
+    kind: blocker
+  - _ulid: 01KS8PFEJ58C27WZHX1HEJCFDX
+    anchor:
+      type: structured
+      ref: "@task-review-screenshot-resource-ui"
+      section: tasks
+    entries:
+      - _ulid: 01KS8PFEJ5YHQ3C3KV9M0ZC1QC
+        author: Jacob Chapel
+        body: "Review resources have the same remaining API/JSON ambiguity. The task names the review
+          resource commands and routes, but it does not define JSON success payloads, structured
+          error payload and status mapping, or the `POST /api/reviews/:ref/resources` request/upload
+          body. Impact: review evidence support can diverge from plan resources or from
+          documentation. Exact fix: define the review resource CLI JSON shapes and API
+          request/response schema, matching the plan resource contract where intended."
+        created_at: 2026-05-22T20:36:52.933Z
+    kind: blocker
+  - _ulid: 01KS8PFJK39XXQD7YGHZKVC97T
+    anchor:
+      type: structured
+      ref: "@task-folder-backed-plan-storage-manager"
+      section: tasks
+    entries:
+      - _ulid: 01KS8PFJK3Y68ZJV1FZ7GD1T4N
+        author: Jacob Chapel
+        body: "The rebuild-index contract still names `--json` without defining its semantics. The plan and
+          review storage-manager tasks define dry-run, repair, and force behavior in human terms,
+          but not the JSON payload for no drift, drift, missing-folder conflict, repair result, or
+          force-dropped stale entries. Impact: workers can choose incompatible machine-readable
+          outputs. Exact fix: define one shared JSON schema for `kspec plan rebuild-index --json`
+          and `kspec review rebuild-index --json`, including exit codes and error objects for stale
+          or partial layouts."
+        created_at: 2026-05-22T20:36:57.059Z
+    kind: blocker
+  - _ulid: 01KS8PFPK9Z55BHZAACNXAY3VE
+    anchor:
+      type: structured
+      ref: "@task-plan-resource-api-ui-static"
+      section: tasks
+    entries:
+      - _ulid: 01KS8PFPK9SAS7DKTK157V8YM4
+        author: Jacob Chapel
+        body: "Plan resource route ownership is duplicated. `@task-plan-resource-import-and-derive` says to
+          add the exact plan-resource daemon routes, while this API/UI task also says to add
+          authenticated/project-scoped resource endpoints for plan resource metadata and bytes.
+          Impact: two automation agents can both edit the same route surface or assume the other
+          task owns part of it. Exact fix: make one task the owner of plan resource route
+          implementation and make the other consume that contract; update Testing and Covers lines
+          to match the ownership boundary."
+        created_at: 2026-05-22T20:37:01.161Z
+    kind: blocker
+  - _ulid: 01KS8PFTH8WJ0BCEVEFB9126YN
+    anchor:
+      type: structured
+      ref: "@task-folder-backed-resources-docs"
+      section: tasks
+    entries:
+      - _ulid: 01KS8PFTH8328WRQWJTB2PN3R8
+        author: Jacob Chapel
+        body: "The documentation task is still not linked to the documentation spec it covers. Its
+          `spec_ref` is `@trait-entity-scoped-local-resources`, while its Covers line claims only
+          `@folder-backed-resource-documentation` ACs; the documentation spec itself is also
+          parented under `@core` even though the existing `@user-documentation` module owns end-user
+          docs. Impact: an agent loading the task spec will read the resource trait instead of the
+          docs contract, and the new docs behavior lands outside the established docs hierarchy.
+          Exact fix: parent `@folder-backed-resource-documentation` under `@user-documentation` or
+          the appropriate docs child, and set this task `spec_ref` to
+          `@folder-backed-resource-documentation`."
+        created_at: 2026-05-22T20:37:05.192Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-22T20:37:31.671Z
+created_at: 2026-05-22T20:35:21.220Z
+updated_at: 2026-05-22T20:37:31.671Z
+notes: []

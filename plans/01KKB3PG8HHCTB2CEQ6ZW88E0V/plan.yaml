@@ -1,0 +1,25 @@
+_ulid: 01KKB3PG8HHCTB2CEQ6ZW88E0V
+slugs:
+  - plan-session-explorer-unified-session-browsing-filterin
+title: "Session Explorer: Unified Session Browsing & Filtering"
+status: completed
+approved_at: null
+derived_specs:
+  - "@session-list-pagination-api"
+  - "@session-summary-cache"
+  - "@session-list-infinite-scroll"
+  - "@session-filter-controls"
+  - "@session-cli-unified-filtering"
+  - "@task-spec-session-context"
+  - "@session-text-search"
+derived_tasks:
+  - "@implement-session-list-pagination-api"
+  - "@implement-session-summary-cache"
+  - "@implement-session-list-infinite-scroll-ui"
+  - "@implement-session-filter-controls"
+  - "@implement-session-cli-unified-filtering"
+  - "@implement-task-and-spec-session-context"
+  - "@implement-session-text-search"
+source_path: /home/chapel/Projects/kynetic-spec/plans/session-explorer.md
+created_at: 2026-03-10T05:32:13.457Z
+completed_at: 2026-03-11T06:58:00.140Z

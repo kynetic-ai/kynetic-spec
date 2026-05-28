@@ -1,0 +1,207 @@
+_ulid: 01KMZH7EQRA9MV25WEHHQ91662
+slugs: []
+title: Review task-fix-loading-page-e2e (cycle 3)
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 6 with known repo-wide warnings only; schema and references OK, no new validation
+      errors in this snapshot.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-30T14:10:44.972Z
+    completed_at: 2026-03-30T14:10:44.972Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run test:e2e completed after fresh build with 75 passed, 11 skipped, 0 failed across
+      smoke/api-server/dashboard/agents/automation specs.
+    name: targeted e2e
+    required: true
+    runner: playwright
+    created_at: 2026-03-30T14:10:48.521Z
+    completed_at: 2026-03-30T14:10:48.521Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test exited 1 after auto-building. Summary: 15 suites failed, 1981 passed; 9 tests
+      failed, 7197 passed, 5 skipped. Sample failures included tests/agent-dispatch-engine.test.ts,
+      tests/cli-schedule-commands.test.ts, tests/cli-serve.test.ts,
+      tests/dispatch-runtime-bootstrap-contract.test.ts, tests/dispatch-workspace-config.test.ts,
+      tests/dispatch-workspace-registry.test.ts, and tests/enhanced-setup.test.ts."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-30T14:13:11.734Z
+    completed_at: 2026-03-30T14:13:11.734Z
+events:
+  - _ulid: 01KMZH7EQQSTZ8VFCC22FAGFDM
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-30T14:09:10.903Z
+  - _ulid: 01KMZH8KVXH6THMH0X3H7M805Y
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-30T14:09:48.925Z
+  - _ulid: 01KMZH9J8DNYMSMBD73NCEPFHH
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMZH9H5NMX2KSWA8S670QZ9T
+    timestamp: 2026-03-30T14:10:20.045Z
+  - _ulid: 01KMZHABPVY34AATRWT2NM111Z
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-30T14:10:46.107Z
+  - _ulid: 01KMZHAF0QB9RV1M3GNF7N10WF
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted e2e
+    timestamp: 2026-03-30T14:10:49.496Z
+  - _ulid: 01KMZHB6SKH7PJWWDGZ7JEX1FN
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMZHB64SB6RVAK5YM9MGW05R
+    timestamp: 2026-03-30T14:11:13.843Z
+  - _ulid: 01KMZHETFQ0Y0M02XYKFQH6ZM4
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-30T14:13:12.312Z
+  - _ulid: 01KMZHF4SC0A6JQ551H1486KQW
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-30T14:13:22.860Z
+  - _ulid: 01KMZHF4SCBFF03Y1SABRFH2VA
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-30T14:13:22.860Z
+  - _ulid: 01KMZPAK4MNCAZPMKXDJSDFQ1J
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMZH9H5NMX2KSWA8S670QZ9T
+    timestamp: 2026-03-30T15:38:16.596Z
+  - _ulid: 01KMZPAW01TGXXJMQ59RAASMPF
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMZH9H5NMX2KSWA8S670QZ9T
+    timestamp: 2026-03-30T15:38:25.665Z
+  - _ulid: 01KMZPBA8N4M8XM2XZTM76K5X6
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMZHB64SB6RVAK5YM9MGW05R
+    timestamp: 2026-03-30T15:38:40.277Z
+  - _ulid: 01KMZPBKD5SSS1MK67XV007ESV
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMZHB64SB6RVAK5YM9MGW05R
+    timestamp: 2026-03-30T15:38:49.637Z
+examined_commit: 22f19ef9bd1b10a5abe58111af3cb6d390bc49a3
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMZ1BTVFQCM2XMFZPER1E45Z"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMZH9H5NMX2KSWA8S670QZ9T
+    anchor:
+      type: code
+      commit: 22f19ef9bd1b10a5abe58111af3cb6d390bc49a3
+      line_end: 280
+      line_start: 267
+      path: tests/e2e/fixtures/test-base.ts
+      side: head
+    entries:
+      - _ulid: 01KMZH9H5NFWRP91BCAHW2HR3C
+        author: Test User
+        body: The new daemon fixture no longer satisfies @e2e-test-daemon-isolation ac-4. That requirement
+          still says teardown must stop the daemon via scoped 'kspec serve stop' rather than process
+          killing, but this change replaces the old CLI-based stop path with direct SIGTERM/SIGKILL
+          on the spawned Bun process. Even if the tests now pass, approving this would merge a spec
+          regression in the isolation harness instead of a compliant fix for the startup timeout.
+        created_at: 2026-03-30T14:10:18.933Z
+      - _ulid: 01KMZPAJJX6874F6228QR9TYHQ
+        author: "@claude"
+        body: "Fixed: teardown now uses `kspec serve stop` via `execSync(node ${KSPEC_CLI} serve stop, {
+          env: isolatedEnv })`. The daemon writes its PID file to the isolated HOME's config dir
+          during startup (`isDaemon: true` triggers `pidManager.writePid()`), so `kspec serve stop`
+          (which reads `~/.config/kspec/daemon.pid` relative to HOME) finds and stops it via the
+          standard PID-file/SIGTERM mechanism. Direct process killing is now only a fallback if the
+          CLI stop fails (e.g., PID file missing). All 69 targeted E2E tests and 396 full E2E tests
+          pass."
+        created_at: 2026-03-30T15:38:16.029Z
+    kind: blocker
+    resolved_at: 2026-03-30T15:38:25.095Z
+    resolved_by: "@claude"
+  - _ulid: 01KMZHB64SB6RVAK5YM9MGW05R
+    entries:
+      - _ulid: 01KMZHB64SZ42SJSJ9169PA4XC
+        author: Test User
+        body: "Evidence log: Files read: AGENTS.md, kspec-agents.md, tests/e2e/fixtures/test-base.ts,
+          tests/e2e/dashboard.spec.ts, tests/e2e/agents.spec.ts, tests/e2e/automation.spec.ts,
+          src/cli/commands/serve.ts, tests/test-runner.test.ts. Commands run: kspec task get --json,
+          kspec review for-task, kspec review get prior cycle, git diff/stat/log, grep AC
+          annotations, kspec item get
+          @e2e-test-daemon-isolation/@ui-dashboard-overview/@ui-agent-dispatch/@ui-automation-view,
+          kspec validate, npm run test:e2e, npm test. Claims verified: targeted E2E stability
+          improved (confirmed by passing Playwright run); teardown contract changed from scoped
+          serve stop to SIGTERM/SIGKILL (confirmed in test-base.ts against
+          @e2e-test-daemon-isolation ac-4). Categories searched: correctness, spec alignment, test
+          quality, error handling, integration. Findings: 1 blocker (spec regression in daemon
+          cleanup path)."
+        created_at: 2026-03-30T14:11:13.177Z
+      - _ulid: 01KMZPB9Q7ZG7W15F921NP80WK
+        author: "@claude"
+        body: Acknowledged. npm test failures (9 of 7211) are all pre-existing on dev — verified by running
+          tests with dev's test files, which shows 22 failures. None of the failing suites are in
+          files touched by this branch (only tests/e2e/fixtures/test-base.ts was modified).
+        created_at: 2026-03-30T15:38:39.719Z
+    kind: nit
+    resolved_at: 2026-03-30T15:38:49.041Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-30T14:13:22.860Z
+created_at: 2026-03-30T14:09:10.904Z
+updated_at: 2026-03-30T15:38:49.041Z
+notes: []

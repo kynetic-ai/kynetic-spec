@@ -1,0 +1,144 @@
+_ulid: 01KN6EPC97A6JH0QZVVSG9PHHM
+slugs: []
+title: Review stabilize flaky full-suite failures in dispatch workspace config and enhanced setup
+  tests (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/dispatch-workspace-config.test.ts tests/enhanced-setup.test.ts
+      tests/dispatch-workspace-cleanup.test.ts tests/dispatch-branch-integration-contract.test.ts
+      passed: 19/19 suites, 87/87 tests, 130.8s."
+    name: targeted dispatch/setup verification
+    required: true
+    runner: npm
+    created_at: 2026-04-02T07:07:19.023Z
+    completed_at: 2026-04-02T07:07:19.023Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test -- --fresh on reviewed snapshot 66aa4da1c1099858a6a8de88488d1d7388f9d52f hit an
+      unrelated timeout in tests/dispatch-runtime-bootstrap-contract.test.ts:507 after 4387.7s, but
+      that suite passed in isolation (4/4 suites, 18/18 tests, 123.6s). Integration base
+      190827af3c1fb918d3235cf9159a67047fae3590 also failed npm test -- --fresh in unrelated
+      tests/daemon-api/meta.test.ts timeouts after 5768.2s. Per review-gates, treated as
+      pre-existing/flaky full-suite instability; follow-up bug @01KN6G6C opened.
+    name: full npm test triage
+    required: true
+    runner: npm
+    created_at: 2026-04-02T07:07:21.729Z
+    completed_at: 2026-04-02T07:07:21.729Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/agent-runtime/workspace.ts; tests/helpers/cli.ts;
+      tests/enhanced-setup.test.ts; tests/dispatch-workspace-cleanup.test.ts;
+      tests/dispatch-workspace-config.test.ts; tests/dispatch-branch-integration-contract.test.ts;
+      tests/dispatch-runtime-bootstrap-contract.test.ts. Commands run: kspec task get; kspec review
+      for-task/get/add/open; git diff/stat/status; rg AC annotations; kspec item get
+      @dispatch-workspace-cleanup-policy and @enhanced-setup; kspec validate; npm test targeted
+      suites; npm test isolated bootstrap suite; npm test -- --fresh on snapshot and integration
+      base. Claims verified: helper fix preserves omitted cwd coverage and invalid cwd passthrough;
+      stale worktree registrations are pruned when directory is absent; leaked parent agent markers
+      no longer affect setup status detection. Categories searched: correctness, edge cases, error
+      handling, test quality, integration. No branch-introduced findings found."
+    name: review evidence log
+    required: false
+    runner: manual
+    created_at: 2026-04-02T07:07:24.599Z
+    completed_at: 2026-04-02T07:07:24.599Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate currently fails due to unrelated shadow metadata schema errors in
+      kynetic.meta.yaml (invalid session.idle hook entries) plus longstanding completeness/alignment
+      warnings. The reviewed code diff does not touch .kspec metadata.
+    name: kspec validate baseline
+    required: false
+    runner: kspec
+    created_at: 2026-04-02T07:07:27.516Z
+    completed_at: 2026-04-02T07:07:27.516Z
+events:
+  - _ulid: 01KN6EPC96TVSQR6H21W0BTBFT
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-02T06:39:35.207Z
+  - _ulid: 01KN6EQDFDX4SVZDWPY7ZK52A3
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-02T06:40:09.199Z
+  - _ulid: 01KN6G960F76Z6YC5DC1HZVA55
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted dispatch/setup verification
+    timestamp: 2026-04-02T07:07:19.951Z
+  - _ulid: 01KN6G98QP9Y9WEJ37X7YRVT3M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full npm test triage
+    timestamp: 2026-04-02T07:07:22.742Z
+  - _ulid: 01KN6G9BGHNBW1WE26KVEMZ8EG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-04-02T07:07:25.585Z
+  - _ulid: 01KN6G9E9MJ8YKEW3404N5ND4B
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate baseline
+    timestamp: 2026-04-02T07:07:28.437Z
+  - _ulid: 01KN6G9X9BDGYHT5QGBV7JX44Q
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-02T07:07:43.787Z
+  - _ulid: 01KN6G9X9B6ZDTMTD5WHRRX55C
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-02T07:07:43.787Z
+examined_commit: 66aa4da1c1099858a6a8de88488d1d7388f9d52f
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN6AAH0TMTBBPB8DSK8PP4K3"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-02T07:07:43.786Z
+created_at: 2026-04-02T06:39:35.207Z
+updated_at: 2026-04-02T07:07:43.787Z
+notes: []

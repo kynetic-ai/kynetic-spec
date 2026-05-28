@@ -1,0 +1,215 @@
+_ulid: 01KRF1V6RPETTP6XBJQ4GB36VM
+slugs: []
+title: "Plan re-review: Dispatch Workspace In-Flight Cleanup Protection (cycle 3)"
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "`kspec plan import /tmp/plan-inflight-cleanup-review.md --dry-run` succeeded with no
+      changes. The plan remains draft and intentionally derives no structured specs from a Specs
+      YAML block."
+    name: Plan import preview
+    required: true
+    runner: kspec plan import --dry-run
+    created_at: 2026-05-12T21:36:47.354Z
+    completed_at: 2026-05-12T21:36:47.354Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Reviewed @agent-dispatch-engine, @dispatch-workspace-cleanup-policy,
+      @dispatch-workspace-registry, @dispatch-runtime-bootstrap-contract, the superseded
+      durable-lease plan, and current workspace cleanup code/tests. Found unresolved ambiguity
+      against @dispatch-workspace-registry ac-13 for `closing` branch preservation during artifact
+      reconciliation.
+    name: Existing spec neighborhood
+    required: true
+    created_at: 2026-05-12T21:36:51.054Z
+    completed_at: 2026-05-12T21:36:51.054Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The current plan keeps the durable lease work deferred and does not introduce owner IDs,
+      PIDs, process-start timestamps, TTLs, renewals, abandoned lease ownership, or compare-and-swap
+      lease writes.
+    name: Simplified Path A scope
+    required: true
+    created_at: 2026-05-12T21:36:54.718Z
+    completed_at: 2026-05-12T21:36:54.718Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Positive/regression coverage is present for active, in-flight, provisioning, ambiguous,
+      closed, and orphaned cases, but the plan lacks a precise test split for the `closing`
+      branch-pruning vs scheduled-reap distinction and still has overlapping ownership between the
+      main regression task and the guardrail task.
+    name: Coverage and maintainability
+    required: true
+    created_at: 2026-05-12T21:36:58.371Z
+    completed_at: 2026-05-12T21:36:58.371Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "`kspec validate --warnings-ok` exited 0 with existing baseline reference, alignment, and
+      completeness warnings."
+    name: Validation
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-12T21:37:02.012Z
+    completed_at: 2026-05-12T21:37:02.012Z
+events:
+  - _ulid: 01KRF1V6RNVJFBZR8V6FH2R8XR
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-12T21:35:17.269Z
+  - _ulid: 01KRF1XM9ENBHMXJTXKBVBX8KQ
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-12T21:36:36.654Z
+  - _ulid: 01KRF1XQXRJA5RZDXZQZPDJV9M
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRF1XPGFMXZ5V4YB6GT8R5TA
+    timestamp: 2026-05-12T21:36:40.377Z
+  - _ulid: 01KRF1XVFRQYM5Z0JD1X4KBFZ4
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KRF1XT38ANZXGK3P2Z3TBFBE
+    timestamp: 2026-05-12T21:36:44.024Z
+  - _ulid: 01KRF1Y04ZK6V7NSR372Y4TEW0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan import preview
+    timestamp: 2026-05-12T21:36:48.799Z
+  - _ulid: 01KRF1Y3QG7D5KWN6YEC4MRMQF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Existing spec neighborhood
+    timestamp: 2026-05-12T21:36:52.465Z
+  - _ulid: 01KRF1Y7AJ74C6NANK656ZYSXE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Simplified Path A scope
+    timestamp: 2026-05-12T21:36:56.146Z
+  - _ulid: 01KRF1YAVNS5EM8QHTCGVDNJY5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Coverage and maintainability
+    timestamp: 2026-05-12T21:36:59.765Z
+  - _ulid: 01KRF1YEEBG8HKM1NZ21HRGGEC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Validation
+    timestamp: 2026-05-12T21:37:03.435Z
+  - _ulid: 01KRF1YHXS32EJW2QD5G9J2JN3
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-12T21:37:07.001Z
+  - _ulid: 01KRF1YHXSQT3GNBBQSD93J0TW
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-12T21:37:07.001Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRF1XPGFMXZ5V4YB6GT8R5TA
+    anchor:
+      type: structured
+      field: description
+      ref: "@task-apply-protection-policy-across-artifact-reconciliation"
+      section: tasks
+    entries:
+      - _ulid: 01KRF1XPGG7HBXJ3DD2ZK30X4X
+        author: Jacob Chapel
+        body: "MUST-FIX: The `closing` cleanup-eligible wording still conflicts with the existing
+          dispatch-branch preservation contract unless the plan explicitly confines branch deletion
+          for `closing` records to scheduled reaping. Existing @dispatch-workspace-registry ac-13,
+          its implementation comments in `reconcileDispatchWorkspaceArtifacts()`, and
+          `tests/dispatch-workspace-terminal-reconciliation.test.ts` require artifact reconciliation
+          to preserve dispatch branches for any non-closed registry record, including `closing`;
+          only `closed` records are eligible for branch-pruning deletion. This task says `closing`
+          is not protected once cleanup prerequisites are met and step 5 allows dispatch branches to
+          be deleted after cleanup classification determines they are safe, which leaves
+          implementers free to delete a `closing` record's branch in the orphan-branch pruning pass
+          before `reapDispatchWorkspace()` has completed and persisted `closed`. Impact: this can
+          violate @dispatch-workspace-registry ac-13, bypass the cleanup-completion ACs that mark
+          records closed after physical reap, or produce tests that encode a behavior opposite the
+          existing regression. Fix: state the precedence explicitly: active/in-flight/provisioning
+          and unclassified records are preserved; `closing` records may proceed through
+          `reapDispatchWorkspace()` when terminal and unprotected; the standalone dispatch-branch
+          pruning surface must continue preserving non-closed registry branches until the record
+          reaches `closed`, unless this plan also updates @dispatch-workspace-registry ac-13 and its
+          tests. Add a negative-control test proving a cleanup-eligible `closing` workspace is
+          reaped through the scheduled cleanup path, and a regression preserving a `closing`
+          registry branch encountered only by branch pruning."
+        created_at: 2026-05-12T21:36:38.928Z
+    kind: blocker
+  - _ulid: 01KRF1XT38ANZXGK3P2Z3TBFBE
+    anchor:
+      type: structured
+      field: description
+      ref: "@task-add-cleanup-protection-maintenance-guardrails"
+      section: tasks
+    entries:
+      - _ulid: 01KRF1XT38CT89M67XMH9V6MTX
+        author: Jacob Chapel
+        body: "SHOULD-FIX: The guardrail task remains hard to distinguish from
+          @task-test-cleanup-protection-positive-and-regression-cases. Both tasks still require
+          protected and cleanup-eligible coverage for every destructive surface through
+          `reconcileDispatchWorkspaceArtifacts()` or equivalent behavior. Impact: two implementers
+          can produce duplicate test matrices or split the same AC coverage ambiguously. Fix: either
+          fold this task into the main regression task, or make its distinct responsibility
+          explicit, such as a small helper-contract matrix for the centralized policy while the main
+          test task owns public reconciliation/regression coverage."
+        created_at: 2026-05-12T21:36:42.600Z
+    kind: question
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-12T21:37:07.001Z
+created_at: 2026-05-12T21:35:17.270Z
+updated_at: 2026-05-12T21:37:07.001Z
+notes: []

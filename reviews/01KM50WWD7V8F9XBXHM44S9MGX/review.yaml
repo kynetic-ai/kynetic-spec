@@ -1,0 +1,169 @@
+_ulid: 01KM50WWD7V8F9XBXHM44S9MGX
+slugs: []
+title: Review @01KM4QGVTQR64KQPQ0S24AHV0S (cycle 6)
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repository-level baseline validation failures remain: 3 broken references in
+      .kspec/modules/meta.yaml plus existing completeness/alignment warnings unrelated to this
+      task."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-20T07:04:10.680Z
+    completed_at: 2026-03-20T07:04:10.680Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Full npm test passed in reviewer snapshot.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-20T07:04:11.434Z
+    completed_at: 2026-03-20T07:04:11.434Z
+events:
+  - _ulid: 01KM50WWD7ZYM1MGF39DCQ5F72
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-20T07:03:32.007Z
+  - _ulid: 01KM50Y1MMGWB1EQ43QSNZD5PH
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM50Y1CQ9NN8FW01B3SW08F5
+    timestamp: 2026-03-20T07:04:10.132Z
+  - _ulid: 01KM50Y2DV3DVQ1VMX2ZB25AXN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-03-20T07:04:10.939Z
+  - _ulid: 01KM50Y35HMPF7ZTNX2GFBMA62
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-20T07:04:11.697Z
+  - _ulid: 01KM50Y3XFMP66ZKDTVA5ANAWP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM50Y3PXBNK0MT8GBC9WY283
+    timestamp: 2026-03-20T07:04:12.463Z
+  - _ulid: 01KM50Y4P0WF9FBH0WZZB9YAXS
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-20T07:04:13.249Z
+  - _ulid: 01KM50YNWCHZMG1AK441TR2X8M
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-20T07:04:30.860Z
+  - _ulid: 01KM50YNWC8DKY3ABK5Q6ZWNQ2
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-20T07:04:30.860Z
+  - _ulid: 01KM51EBQ35VAESQ1EBWWRPDP9
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM50Y1CQ9NN8FW01B3SW08F5
+    timestamp: 2026-03-20T07:13:04.739Z
+  - _ulid: 01KM51EE5TB7MBHAK1Q0WEZVEC
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KM50Y1CQ9NN8FW01B3SW08F5
+    timestamp: 2026-03-20T07:13:07.258Z
+examined_commit: 47d46a5f52f53d6fa2ae2257220d411f898f631a
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM4QGVTQR64KQPQ0S24AHV0S"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM50Y1CQ9NN8FW01B3SW08F5
+    anchor:
+      type: code
+      commit: 47d46a5f52f53d6fa2ae2257220d411f898f631a
+      line_end: 1036
+      line_start: 1018
+      path: packages/web-ui/tests/e2e/sessions.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KM50Y1CQ2YZMDCKZPCMCZ7BD
+        author: Jacob Chapel
+        body: The new ac-live-update-source-agnostic Playwright case injects its event through
+          window.__test_ws_instances, but this test never installs the addInitScript proxy that
+          populates that array. In this file the surrounding live-update tests all set that hook up
+          first; here injected will stay false and the test will fail as soon as the E2E suite
+          actually runs. That means the claimed regression coverage for source-agnostic freshness is
+          currently broken rather than proving the behavior.
+        created_at: 2026-03-20T07:04:09.879Z
+      - _ulid: 01KM51EBFTP3T2N1P4VD6CJ30R
+        author: Jacob Chapel
+        body: Fixed in commit f72a88e05. The source-agnostic Playwright case no longer depends on
+          window.__test_ws_instances; it now writes real session fixture files under the daemon temp
+          project so the update flows through the session watcher and shared query invalidation
+          layer.
+        created_at: 2026-03-20T07:13:04.505Z
+    kind: blocker
+    resolved_at: 2026-03-20T07:13:06.988Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KM50Y3PXBNK0MT8GBC9WY283
+    entries:
+      - _ulid: 01KM50Y3PX2TS9M2X1RRSAASX8
+        author: Jacob Chapel
+        body: "Evidence log:\\nFiles read: packages/web-ui/src/routes/sessions/+page.svelte,
+          packages/web-ui/src/lib/query/ws-invalidation.ts, packages/daemon/src/project-context.ts,
+          packages/daemon/src/session-watcher.ts, packages/web-ui/tests/e2e/sessions.spec.ts,
+          packages/web-ui/tests/e2e/api-watcher.spec.ts, tests/session-watcher.test.ts,
+          tests/web-ui-tanstack-query.test.ts, src/parser/shadow.ts, src/cli/commands/setup.ts,
+          src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts,
+          tests/daemon-context-manager.test.ts, tests/init-setup-sessions-dir.test.ts,
+          tests/plan-inbox-mutation-serialization.test.ts, tests/cli-plan.test.ts,
+          tests/agent-dispatch-engine.test.ts.\\nCommands run: kspec task get
+          @01KM4QGVTQR64KQPQ0S24AHV0S; kspec item get @session-list-infinite-scroll; kspec review
+          for-task @01KM4QGVTQR64KQPQ0S24AHV0S; kspec review get @01KM4ZY6KMAWPX0SPAJWNQ9ARY; kspec
+          validate; rg -n \"AC: @session-list-infinite-scroll|AC: @ui-url-panel-state\" tests
+          packages/web-ui/tests; git diff ...; npm test.\\nClaims verified: full repo test suite
+          passes on this snapshot; the previous review's global-subscription concern is addressed on
+          the page; the new source-agnostic E2E case does not set up __test_ws_instances before
+          using it.\\nCategories searched: correctness, test quality, edge cases, integration, error
+          handling."
+        created_at: 2026-03-20T07:04:12.253Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-20T07:04:30.860Z
+created_at: 2026-03-20T07:03:32.007Z
+updated_at: 2026-03-20T07:13:06.988Z
+notes: []

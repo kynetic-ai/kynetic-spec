@@ -1,0 +1,98 @@
+_ulid: 01KNBSKXGGHAPTZG7JGED988J7
+slugs: []
+title: Review task-fix-session-dir-fd-leak
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/daemon/entity-cache.ts, tests/daemon-entity-cache.test.ts. Commands run:
+      git diff --stat, git diff --unified=80, kspec task get @01KNBS17JCVH7DPTJJNE3K5GCA, kspec item
+      get @daemon-entity-cache, kspec validate, rg -n 'AC: @(daemon-entity-cache|trait-)' tests, rg
+      -n 'AC: @daemon-entity-cache' tests/daemon-entity-cache.test.ts, npm test. Claims verified:
+      loadSessionIndex now closes directory handles on success and failure via finally +
+      closeDirectoryHandle; tests exercise both paths; full suite passed. Categories searched:
+      correctness, edge cases, error handling, test quality, integration; no findings."
+    name: npm test
+    required: true
+    runner: test-runner
+    created_at: 2026-04-04T08:30:34.583Z
+    completed_at: 2026-04-04T08:30:34.583Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation exited with warnings only (exit 6). Warnings were repository-wide
+      completeness/alignment issues and one orphaned skill directory, with no task-specific
+      schema/reference errors for this change.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-04T08:30:36.909Z
+    completed_at: 2026-04-04T08:30:36.909Z
+events:
+  - _ulid: 01KNBSKXGG4QKY8SS7K7CZ74QB
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-04T08:26:41.040Z
+  - _ulid: 01KNBSMEYB85D5PF2VSRVGSY8R
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-04T08:26:58.891Z
+  - _ulid: 01KNBSV2BT6TDFH37KN1TM920C
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-04T08:30:35.386Z
+  - _ulid: 01KNBSV4KV5V8T1TXC0T8F46DZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-04T08:30:37.691Z
+  - _ulid: 01KNBSV6RKTWEGCD2SCJQEQTAF
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-04T08:30:39.892Z
+  - _ulid: 01KNBSV6RMJ9R3QHQPJ1VPXP0Z
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-04T08:30:39.892Z
+examined_commit: f0b57ed462924ff708a9c0808453945da3599ec3
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNBS17JCVH7DPTJJNE3K5GCA"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-04T08:30:39.891Z
+created_at: 2026-04-04T08:26:41.040Z
+updated_at: 2026-04-04T08:30:39.892Z
+notes: []

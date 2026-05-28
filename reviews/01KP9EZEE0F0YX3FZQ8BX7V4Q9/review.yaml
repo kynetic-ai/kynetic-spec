@@ -1,0 +1,478 @@
+_ulid: 01KP9EZEE0F0YX3FZQ8BX7V4Q9
+slugs: []
+title: Review task-upgrade-command (cycle 7)
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Synthetic project with  plus present  returned  instead of unknown.
+    name: upgrade source-version contradiction repro
+    required: true
+    runner: manual
+    created_at: 2026-04-15T21:11:42.374Z
+    completed_at: 2026-04-15T21:11:42.374Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 'Synthetic project with `kynetic: "1.0"` plus present `kspec.config.yaml` returned
+      `source_version: "0.11.0", confidence: "approximate"` instead of unknown.'
+    name: upgrade source-version contradiction repro
+    required: true
+    runner: manual
+    created_at: 2026-04-15T21:11:51.073Z
+    completed_at: 2026-04-15T21:11:51.073Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: With `.agents/skills` replaced by a regular file, `upgrade --force --json` failed
+      `Re-render skills` with ENOTDIR and exited 3, while `upgrade --force --dry-run --json`
+      reported the step as done and exited 0. On a freshly initialized project, `upgrade --force
+      --json` skipped agent regeneration but `upgrade --force --dry-run --json` reported `would
+      regenerate kspec-agents.md`.
+    name: upgrade dry-run parity repro
+    required: true
+    runner: manual
+    created_at: 2026-04-15T21:12:07.381Z
+    completed_at: 2026-04-15T21:12:07.381Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "`kspec validate` exited 4. Unrelated repo-wide issues remain, including
+      `/home/chapel/Projects/kynetic-spec-dispatch/.kspec/modules/meta.yaml:modules[0].traits.0
+      Expected string, received object`, an orphaned skill directory warning, and broad existing AC
+      coverage warnings."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-15T21:12:16.665Z
+    completed_at: 2026-04-15T21:12:16.665Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "`npm test` exited 1 after 7948 tests because `tests/cli-agent-commands.test.ts` fails
+      with `EACCES: permission denied, mkdir '/tmp/.kspec-sessions/<id>'` from
+      `src/sessions/store.ts:173`. The failures are outside the changed files for this task; I
+      reproduced them again with `npm test -- --run tests/cli-agent-commands.test.ts`, but an ad-hoc
+      base worktree could not run the same command because its dependency readiness check failed
+      before Vitest started."
+    name: npm test
+    required: false
+    runner: npm
+    created_at: 2026-04-15T21:12:27.540Z
+    completed_at: 2026-04-15T21:12:27.540Z
+events:
+  - _ulid: 01KP9EZEE0954KEH7M5RK1F57Q
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-15T20:57:57.440Z
+  - _ulid: 01KP9F0D5XKJ3K0YYR09J7DZJY
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-15T20:58:28.925Z
+  - _ulid: 01KP9FNVMY1CPH2A5J1QBDNF83
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP9FNTPC8QTA9NCQ12J7997Q
+    timestamp: 2026-04-15T21:10:11.870Z
+  - _ulid: 01KP9FP4Y7JHMN115VW93SSFRT
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP9FP3ZWSTPEGY2SSGW56G85
+    timestamp: 2026-04-15T21:10:21.383Z
+  - _ulid: 01KP9FPFYCEEZPJRJ4P1KMV45Z
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP9FPF07D4AZ69Q92JKZSKXY
+    timestamp: 2026-04-15T21:10:32.652Z
+  - _ulid: 01KP9FPW1J7WKSZ0GWCMCAQD31
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP9FPV3S14FVFTKW0YG2APXG
+    timestamp: 2026-04-15T21:10:45.042Z
+  - _ulid: 01KP9FQ86FMSN0RPKRN223TX96
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP9FQ78P0DQJZXTWFZ0DXP1G
+    timestamp: 2026-04-15T21:10:57.487Z
+  - _ulid: 01KP9FQKX7X7M151F03V89GVT5
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP9FQJYMVABKK0S7YWKCB765
+    timestamp: 2026-04-15T21:11:09.479Z
+  - _ulid: 01KP9FR9TNCK604XMKC4TG1SBT
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KP9FR8WAQYH307V98ZCKVV7Q
+    timestamp: 2026-04-15T21:11:31.925Z
+  - _ulid: 01KP9FRMZZVWDE2AXFXYZCSRS6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: upgrade source-version contradiction repro
+    timestamp: 2026-04-15T21:11:43.359Z
+  - _ulid: 01KP9FRXFKRT6N44P027DQY1VJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: upgrade source-version contradiction repro
+    timestamp: 2026-04-15T21:11:52.051Z
+  - _ulid: 01KP9FSDBMGKD51YRNFX2XCFD0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: upgrade dry-run parity repro
+    timestamp: 2026-04-15T21:12:08.308Z
+  - _ulid: 01KP9FSPCMSEE6AT0ZQCX5G390
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-15T21:12:17.556Z
+  - _ulid: 01KP9FT1302C207E80X48XC4JG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-04-15T21:12:28.512Z
+  - _ulid: 01KP9FTCEY8CT1NA8F52955V6X
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-15T21:12:40.158Z
+  - _ulid: 01KP9FTCEYG5ER4EXQG7QTHR84
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-15T21:12:40.158Z
+  - _ulid: 01KP9JMCH48DS29CA8DP9HVZ9S
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP9FNTPC8QTA9NCQ12J7997Q
+    timestamp: 2026-04-15T22:01:49.348Z
+  - _ulid: 01KP9JMHKR9ME48XP7W11ZME54
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP9FP3ZWSTPEGY2SSGW56G85
+    timestamp: 2026-04-15T22:01:54.553Z
+  - _ulid: 01KP9JMPSZ614QX3KAW5F6GM4E
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP9FPF07D4AZ69Q92JKZSKXY
+    timestamp: 2026-04-15T22:01:59.871Z
+  - _ulid: 01KP9JMVM95V05FFD87YTM9Y0J
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP9FPV3S14FVFTKW0YG2APXG
+    timestamp: 2026-04-15T22:02:04.809Z
+  - _ulid: 01KP9JN0JE08BF9HV1Q4XE2Y3R
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP9FQ78P0DQJZXTWFZ0DXP1G
+    timestamp: 2026-04-15T22:02:09.870Z
+  - _ulid: 01KP9JN5DX59PDXWEWM1F8HF3H
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP9FQJYMVABKK0S7YWKCB765
+    timestamp: 2026-04-15T22:02:14.845Z
+  - _ulid: 01KP9JNM62CAWVC5W28PQT71DP
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP9FNTPC8QTA9NCQ12J7997Q
+    timestamp: 2026-04-15T22:02:29.954Z
+  - _ulid: 01KP9JNRZYJJE5PSPAFSXPG7YG
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP9FP3ZWSTPEGY2SSGW56G85
+    timestamp: 2026-04-15T22:02:34.878Z
+  - _ulid: 01KP9JNXVZ9SBVH8B50YH4856K
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP9FPF07D4AZ69Q92JKZSKXY
+    timestamp: 2026-04-15T22:02:39.871Z
+  - _ulid: 01KP9JP2TZAY9KN051WC5ZX8DY
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP9FPV3S14FVFTKW0YG2APXG
+    timestamp: 2026-04-15T22:02:44.959Z
+  - _ulid: 01KP9JP7ZT4AWFW7WXT0HXCFES
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP9FQ78P0DQJZXTWFZ0DXP1G
+    timestamp: 2026-04-15T22:02:50.234Z
+  - _ulid: 01KP9JPD22P21NWD1N72HZFNFG
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP9FQJYMVABKK0S7YWKCB765
+    timestamp: 2026-04-15T22:02:55.426Z
+  - _ulid: 01KP9JPJ0Q9FGM06Y4QFN7H1SB
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP9FR8WAQYH307V98ZCKVV7Q
+    timestamp: 2026-04-15T22:03:00.503Z
+examined_commit: 2954ef826857c2ec41850cba22ae384ab50c3e0f
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNXYJ5JCR99F76N8N7265E0B"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KP9FNTPC8QTA9NCQ12J7997Q
+    anchor:
+      type: code
+      commit: 2954ef826857c2ec41850cba22ae384ab50c3e0f
+      line_end: 222
+      line_start: 160
+      path: src/cli/commands/upgrade.ts
+      side: head
+    entries:
+      - _ulid: 01KP9FNTPCAPMVV5TPT5NRX3D4
+        author: Jacob Chapel
+        body: "The source-version fallback never checks whether the positive probes are mutually consistent;
+          it only keeps the highest lower bound. In a hand-edited/skewed project this reports an
+          approximate version instead of the required unknown fallback. I reproduced this with a
+          synthetic project whose manifest advertised old state () while  advertised newer
+          state:  returned  instead of treating the shape as unrecognizable. That makes the reported
+          source version unreliable in exactly the scenario the task description calls out."
+        created_at: 2026-04-15T21:10:10.892Z
+      - _ulid: 01KP9JMBKEZNG4Y5TXZTNQB17W
+        author: "@claude"
+        body: "Fixed: replaced single maxMinVersion tracking with ProbeResult ranges that carry both
+          minVersion and maxVersion. Old manifest versions now cap at maxVersion 0.8.99. After all
+          probes fire, the code computes the global intersection (max of mins, min of maxes). If
+          globalMin > globalMax, probes are contradictory → returns unknown. Test added that creates
+          manifest with kynetic: 1.0 (caps < 0.9) + kspec.config.yaml (requires >= 0.11) and asserts
+          unknown confidence."
+        created_at: 2026-04-15T22:01:48.398Z
+    kind: blocker
+    resolved_at: 2026-04-15T22:02:29.055Z
+    resolved_by: "@claude"
+  - _ulid: 01KP9FP3ZWSTPEGY2SSGW56G85
+    anchor:
+      type: code
+      commit: 2954ef826857c2ec41850cba22ae384ab50c3e0f
+      line_end: 222
+      line_start: 160
+      path: src/cli/commands/upgrade.ts
+      side: head
+    entries:
+      - _ulid: 01KP9FP3ZX4184F9JM1Y5VG10H
+        author: Jacob Chapel
+        body: 'The source-version fallback never checks whether the positive probes are mutually consistent;
+          it only keeps the highest lower bound. In a hand-edited/skewed project this reports an
+          approximate version instead of the required unknown fallback. I reproduced this with a
+          synthetic project whose manifest advertised old state (`kynetic: "1.0"`) while
+          `kspec.config.yaml` advertised newer state: `upgrade --dry-run --json` returned
+          `source_version: "0.11.0", confidence: "approximate"` instead of treating the shape as
+          unrecognizable. That makes the reported source version unreliable in exactly the scenario
+          the task description calls out.'
+        created_at: 2026-04-15T21:10:20.413Z
+      - _ulid: 01KP9JMGN9S5PNRE8TRAG35PPP
+        author: "@claude"
+        body: "Fixed: same fix as duplicate thread above — ProbeResult range intersection detects
+          contradictions."
+        created_at: 2026-04-15T22:01:53.577Z
+    kind: blocker
+    resolved_at: 2026-04-15T22:02:33.900Z
+    resolved_by: "@claude"
+  - _ulid: 01KP9FPF07D4AZ69Q92JKZSKXY
+    anchor:
+      type: code
+      commit: 2954ef826857c2ec41850cba22ae384ab50c3e0f
+      line_end: 724
+      line_start: 640
+      path: src/cli/commands/upgrade.ts
+      side: head
+    entries:
+      - _ulid: 01KP9FPF08EBBT7MBSYJMF4CHR
+        author: Jacob Chapel
+        body: "The dry-run path is not surfacing execution errors that would occur on a real upgrade. I
+          reproduced this by replacing `.agents/skills` with a regular file: `upgrade --force
+          --json` failed the `Re-render skills` step with ENOTDIR and exited 3, but `upgrade --force
+          --dry-run --json` reported that same step as `done` and exited 0. That violates
+          `@trait-dry-run ac-4`, which requires dry-run to show the error a real run would hit while
+          still avoiding writes."
+        created_at: 2026-04-15T21:10:31.688Z
+      - _ulid: 01KP9JMNSDGAQZEVC022B9M9MJ
+        author: "@claude"
+        body: "Fixed: added pre-flight check that runs for both dry-run and real-run. Before rendering, each
+          platform's output directory is stat'd — if it exists but is not a directory, the error is
+          collected and the step reports failure immediately. Test added that replaces
+          .agents/skills with a regular file and asserts dry-run reports the same failure as
+          real-run."
+        created_at: 2026-04-15T22:01:58.828Z
+    kind: blocker
+    resolved_at: 2026-04-15T22:02:38.922Z
+    resolved_by: "@claude"
+  - _ulid: 01KP9FPV3S14FVFTKW0YG2APXG
+    anchor:
+      type: code
+      commit: 2954ef826857c2ec41850cba22ae384ab50c3e0f
+      line_end: 855
+      line_start: 801
+      path: src/cli/commands/upgrade.ts
+      side: head
+    entries:
+      - _ulid: 01KP9FPV3SMZXAC1YHM0RY3PWF
+        author: Jacob Chapel
+        body: "The dry-run preview for agent regeneration is inaccurate because the up-to-date/hash check
+          only runs in the non-dry-run branch. On a freshly initialized project I reproduced
+          `upgrade --force --json` returning `Regenerate agent instructions: skipped` while `upgrade
+          --force --dry-run --json` reported `would regenerate kspec-agents.md` and added a
+          follow-up entry. That means the preview can claim work will happen even when the real
+          upgrade would skip the step."
+        created_at: 2026-04-15T21:10:44.089Z
+      - _ulid: 01KP9JMTP7R4Z8145A3VK2S9YP
+        author: "@claude"
+        body: "Fixed: moved the metaHash computation, stored hash read, and file existence check outside the
+          if(\\!dryRun) branch. Now both dry-run and real-run perform the same up-to-date check.
+          When the hash matches and the output file exists, both paths return 'skipped'. Test added
+          that runs upgrade once (populating hash), then verifies both dry-run and real-run agree on
+          'skipped'."
+        created_at: 2026-04-15T22:02:03.847Z
+    kind: blocker
+    resolved_at: 2026-04-15T22:02:43.900Z
+    resolved_by: "@claude"
+  - _ulid: 01KP9FQ78P0DQJZXTWFZ0DXP1G
+    anchor:
+      type: code
+      commit: 2954ef826857c2ec41850cba22ae384ab50c3e0f
+      line_end: 300
+      line_start: 287
+      path: tests/upgrade-command.test.ts
+      side: head
+    entries:
+      - _ulid: 01KP9FQ78PG85ZZ7ZW1NFWZJX3
+        author: Jacob Chapel
+        body: This test does not prove `ac-runs-task-storage-migration`. `initProject()` creates a current
+          split-storage project, and the assertion explicitly allows `skipped`, so a regression
+          where upgrade never invokes migration would still pass. The task AC needs a behavioral
+          test that starts from legacy monolithic task storage and verifies the migration step
+          actually runs and reports migrated work.
+        created_at: 2026-04-15T21:10:56.534Z
+      - _ulid: 01KP9JMZMC28R6QYVZXBT3HM18
+        author: "@claude"
+        body: "Fixed: replaced the test entirely. New test creates actual legacy monolithic task storage —
+          downgrades manifest to kynetic: 1.0, removes task_storage field, writes a tasks file with
+          inline notes array (the monolithic signature). Asserts the migration step status is
+          'done', not just allows 'skipped'."
+        created_at: 2026-04-15T22:02:08.908Z
+    kind: blocker
+    resolved_at: 2026-04-15T22:02:49.304Z
+    resolved_by: "@claude"
+  - _ulid: 01KP9FQJYMVABKK0S7YWKCB765
+    anchor:
+      type: code
+      commit: 2954ef826857c2ec41850cba22ae384ab50c3e0f
+      line_end: 483
+      line_start: 474
+      path: tests/upgrade-command.test.ts
+      side: head
+    entries:
+      - _ulid: 01KP9FQJYMTXKRVJE98CG26YGW
+        author: Jacob Chapel
+        body: "`follow_ups` is always returned as an array, so this assertion stays green even if upgrade
+          stops reporting any manual follow-up entries. Because the test never forces a
+          scaffold/gitignore/regen change and never checks for a non-empty, user-actionable message,
+          it does not actually cover `ac-reports-manual-follow-ups`."
+        created_at: 2026-04-15T21:11:08.500Z
+      - _ulid: 01KP9JN4FX0P97ZZNDBEWCFHSC
+        author: "@claude"
+        body: "Fixed: test now forces a real change by deleting .gitignore before running upgrade. Asserts
+          follow_ups array has length > 0, validates each entry is a non-empty string, and checks
+          that at least one follow-up mentions 'gitignore'."
+        created_at: 2026-04-15T22:02:13.885Z
+    kind: blocker
+    resolved_at: 2026-04-15T22:02:54.362Z
+    resolved_by: "@claude"
+  - _ulid: 01KP9FR8WAQYH307V98ZCKVV7Q
+    entries:
+      - _ulid: 01KP9FR8WA9ACA09WDJ8V1RSGR
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: src/cli/index.ts, src/cli/commands/index.ts, src/cli/commands/upgrade.ts,
+          tests/upgrade-command.test.ts, src/cli/commands/init.ts, src/parser/shadow.ts,
+          tests/fixtures/modules/core.yaml.
+
+          Commands run: `kspec task get @01KNXYJ5JCR99F76N8N7265E0B`, `kspec review for-task
+          @01KNXYJ5JCR99F76N8N7265E0B`, `kspec review get @01KP9D52X9BZ1REAV5CBMNAYQV`, `kspec
+          validate`, `grep -rn "AC: @single-command-version-upgrade\|AC: @trait-"
+          tests/upgrade-command.test.ts`, `npm test`, `npm test -- --run
+          tests/cli-agent-commands.test.ts`, plus direct `node dist/cli/index.js upgrade ...` repro
+          runs in temp projects.
+
+          Claims verified: reproduced contradictory-version inference, reproduced dry-run/real-run
+          mismatch for skill render failures, reproduced dry-run/real-run mismatch for
+          agent-regeneration preview, verified AC annotation inventory and individual test quality
+          for migration/manual follow-up coverage.
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration.
+          Findings recorded in correctness/dry-run semantics and AC coverage.
+        created_at: 2026-04-15T21:11:30.954Z
+    kind: nit
+    resolved_at: 2026-04-15T22:02:59.550Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-15T21:12:40.158Z
+created_at: 2026-04-15T20:57:57.440Z
+updated_at: 2026-04-15T22:02:59.550Z
+notes: []

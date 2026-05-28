@@ -1,0 +1,185 @@
+_ulid: 01KPVXJN7XQNCNZBQNADSF25NM
+slugs: []
+title: Review @01KPVJ8RA8P0TGB5KQEZ70M39K
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repository validation reports pre-existing global schema/completeness issues outside the
+      touched files, including a schema error under .kspec/modules/meta.yaml plus legacy coverage
+      warnings. The submitted diff does not modify .kspec state.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-23T01:10:09.598Z
+    completed_at: 2026-04-23T01:10:09.598Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2269/2269 suites passed; 8362 tests passed, 5 skipped. No runtime regression detected in
+      this snapshot.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-23T01:10:12.728Z
+    completed_at: 2026-04-23T01:10:12.728Z
+events:
+  - _ulid: 01KPVXJN7XHGVSDSMBG7NNFE5Y
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-23T00:59:26.845Z
+  - _ulid: 01KPVXK8ATN7PZKK8VWF7EQJHD
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-23T00:59:46.394Z
+  - _ulid: 01KPVY66YV194JW7QXYFV0E2HF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPVY65XJ2P8RSS0QHHDK1Y1F
+    timestamp: 2026-04-23T01:10:07.579Z
+  - _ulid: 01KPVY6A2AR56K2C1MPSX7A138
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-23T01:10:10.762Z
+  - _ulid: 01KPVY6D1X1H9W5GB87S39WFGS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-23T01:10:13.821Z
+  - _ulid: 01KPVY6G1N5Z5Z4VKGHKZV01RP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KPVY6F27803QNRQ0GXR8T3NT
+    timestamp: 2026-04-23T01:10:16.885Z
+  - _ulid: 01KPVY6ZP9EKTV82YN9QCNCP0K
+    actor: Jacob Chapel
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-23T01:10:32.905Z
+  - _ulid: 01KPVY6ZPAC174XBRG2SY6P5SD
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-23T01:10:32.906Z
+  - _ulid: 01KPVZ2C8TK9K97VXDFXEJ99CF
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPVY65XJ2P8RSS0QHHDK1Y1F
+    timestamp: 2026-04-23T01:25:30.522Z
+  - _ulid: 01KPVZ2N1MNB5HT135EE0QX2ZE
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPVY65XJ2P8RSS0QHHDK1Y1F
+    timestamp: 2026-04-23T01:25:39.508Z
+  - _ulid: 01KPVZ2ZDSJKSGHBVR080H9G48
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPVY6F27803QNRQ0GXR8T3NT
+    timestamp: 2026-04-23T01:25:50.137Z
+  - _ulid: 01KPVZ38Q62EVPZXRAD1MVQ55F
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPVY6F27803QNRQ0GXR8T3NT
+    timestamp: 2026-04-23T01:25:59.654Z
+examined_commit: 8c85629b7b29c40857750c5b999a43a31bed7e4d
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KPVJ8RA8P0TGB5KQEZ70M39K"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPVY65XJ2P8RSS0QHHDK1Y1F
+    anchor:
+      type: code
+      commit: 8c85629b7b29c40857750c5b999a43a31bed7e4d
+      line_end: 783
+      line_start: 765
+      path: tests/supporting-file-references.test.ts
+      side: head
+    entries:
+      - _ulid: 01KPVY65XK4TNR49Y30SF49W5E
+        author: Jacob Chapel
+        body: "This AC-annotated test is a source-scanning check: it reads templates/skills/merge/SKILL.md
+          and asserts on literal strings instead of exercising prompt/render behavior. That violates
+          the repo rule that tests must prove behavior rather than inspect implementation text, so
+          it creates invalid coverage for @detached-reviewer-merge-helper. Keep the behavioral
+          rendered-output coverage and replace this with a behavior-level assertion if an extra
+          check is still needed."
+        created_at: 2026-04-23T01:10:06.515Z
+      - _ulid: 01KPVZ2B7ZMKDKP9E9Q7YJM68F
+        author: "@claude"
+        body: "Fixed: Replaced the source-scanning test with a behavioral test that copies the shipped merge
+          skill into a temp project and renders it through buildPromptWithSkills. The new test
+          exercises the render pipeline and asserts on output behavior (detached context present,
+          helper path resolved, no positive checkout instructions) instead of reading the source
+          template file directly. All 8362 tests pass."
+        created_at: 2026-04-23T01:25:29.471Z
+    kind: blocker
+    resolved_at: 2026-04-23T01:25:38.494Z
+    resolved_by: "@claude"
+  - _ulid: 01KPVY6F27803QNRQ0GXR8T3NT
+    entries:
+      - _ulid: 01KPVY6F27XKZ3ES7XT6VFX0ZD
+        author: Jacob Chapel
+        body: "Evidence log:\\nFiles read: src/agent-runtime/dispatch.ts,
+          src/cli/commands/setup-defaults.ts, templates/skills/merge/SKILL.md,
+          templates/agents-sections/06-agent-dispatch-mode.md, tests/agent-dispatch-engine.test.ts,
+          tests/setup-builtin-agents.test.ts, tests/supporting-file-references.test.ts,
+          docs/agents-eval-scenarios.md, docs/prime-mock.md, kspec-agents.md, rendered merge skill
+          outputs.\\nCommands run: git diff --stat/dev diff, kspec task get, kspec item get, kspec
+          review for-task/add/open/get, kspec validate, rg for AC annotations, npm test.\\nClaims
+          verified: reviewer prompt now references detached snapshot/helper path; rendered skill
+          outputs carry platform-specific helper paths; default reviewer description mentions
+          detached snapshot/helper.\\nCategories searched: correctness, AC coverage, test quality,
+          integration, error-handling guidance. Finding: invalid source-scanning coverage test in
+          tests/supporting-file-references.test.ts."
+        created_at: 2026-04-23T01:10:15.880Z
+      - _ulid: 01KPVZ2YC89KQ6RTMXVKEKW1ZP
+        author: "@claude"
+        body: Acknowledged. The source-scanning test identified in the evidence log has been replaced with a
+          behavioral test.
+        created_at: 2026-04-23T01:25:49.064Z
+    kind: nit
+    resolved_at: 2026-04-23T01:25:58.459Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: Jacob Chapel
+    role: reviewer
+    created_at: 2026-04-23T01:10:32.905Z
+created_at: 2026-04-23T00:59:26.845Z
+updated_at: 2026-04-23T01:25:58.459Z
+notes: []

@@ -1,0 +1,121 @@
+_ulid: 01KPQ9P5Y39S7HAXNHQKZ4HCD9
+slugs: []
+title: Review task-docs-section-scaffolding (cycle 3)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran npm test -- tests/web-ui-docs-rendering.test.ts --verbose --fresh after reviewing the
+      docs diff. This file covers @docs-section-taxonomy ac-1/ac-2, index slug normalization,
+      section ordering, and exclude filtering.
+    name: docs rendering tests
+    required: true
+    runner: npm
+    created_at: 2026-04-21T06:11:23.265Z
+    completed_at: 2026-04-21T06:11:23.265Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repo-level validation fails on unchanged shadow metadata: .kspec/modules/meta.yaml
+      modules[0].traits.0 expected string received object. Branch diff contains no .kspec changes,
+      so this is pre-existing and not introduced by @01KPPN42NCR77J23TWYP63VXDH."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-21T06:11:26.417Z
+    completed_at: 2026-04-21T06:11:26.417Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: docs/*/index.md, docs/getting-started/tutorial.md,
+      packages/web-ui/src/lib/docs.ts, packages/web-ui/src/lib/utils/docs-utils.ts,
+      packages/web-ui/src/routes/docs/+page.svelte, packages/web-ui/vite-plugin-docs.ts,
+      packages/web-ui/vite.config.ts, tests/web-ui-docs-rendering.test.ts. Commands run: kspec task
+      get, kspec item get, kspec review for-task/get, git diff/stat, grep AC annotations, kspec
+      validate, npm test, targeted npm test for tests/test-runner.test.ts on branch and base,
+      targeted npm test for tests/web-ui-docs-rendering.test.ts. Claims verified: prior blockers
+      fixed (tutorial links, index slug normalization, explicit child-page lists); section
+      scaffolding matches @docs-section-taxonomy; branch introduces no .kspec validation delta.
+      Categories searched: correctness, test quality, integration, edge cases, error handling around
+      docs link resolution and section grouping."
+    name: review evidence
+    required: false
+    runner: codex
+    created_at: 2026-04-21T06:11:29.519Z
+    completed_at: 2026-04-21T06:11:29.519Z
+events:
+  - _ulid: 01KPQ9P5Y2V6D5YRBGV3NW639A
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-21T05:54:52.995Z
+  - _ulid: 01KPQ9Y789K513AZHD30FNGC5B
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-21T05:59:16.489Z
+  - _ulid: 01KPQAME007Q5TYFHM0834EN40
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: docs rendering tests
+    timestamp: 2026-04-21T06:11:24.288Z
+  - _ulid: 01KPQAMH4XXH68N9NCMATVT4MS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-21T06:11:27.517Z
+  - _ulid: 01KPQAMM7DKJ0KWCXV2QNFR02R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence
+    timestamp: 2026-04-21T06:11:30.669Z
+  - _ulid: 01KPQAMZB021W8005EWARMVC2A
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-21T06:11:42.048Z
+  - _ulid: 01KPQAMZB0VSBQQKT96FSBAK7D
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-21T06:11:42.048Z
+examined_commit: 3e06f6eb4960c9a82efec0c0f1df9eefc8d9ea2f
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KPPN42NCR77J23TWYP63VXDH"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-21T06:11:42.048Z
+created_at: 2026-04-21T05:54:52.995Z
+updated_at: 2026-04-21T06:11:42.048Z
+notes: []

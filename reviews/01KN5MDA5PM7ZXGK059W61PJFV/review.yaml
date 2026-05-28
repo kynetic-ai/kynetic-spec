@@ -1,0 +1,238 @@
+_ulid: 01KN5MDA5PM7ZXGK059W61PJFV
+slugs: []
+title: Review task-consolidate-session-cache (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: packages/daemon/src/routes/session-related.ts,
+      packages/daemon/src/routes/session-summary-utils.ts, packages/daemon/src/routes/sessions.ts,
+      packages/daemon/src/project-context.ts, packages/daemon/src/server.ts,
+      src/daemon/entity-cache.ts, tests/daemon-cache-route-coverage.test.ts,
+      tests/daemon-entity-cache.test.ts, AGENTS.md, kspec-agents.md. Commands run: kspec task get,
+      kspec item get, kspec review for-task/get/add/open, git diff/name-only/stat, kspec validate,
+      rg AC annotation search, npm test -- --run tests/daemon-cache-route-coverage.test.ts, direct
+      node reproduction of getRelatedSessionsForTask(), log inspection for npm test. Claims
+      verified: prior blocker fix for degraded /api/sessions?task_id path is covered and passes;
+      related-session stale-index path still returns event_count 0 despite live counter 3.
+      Categories searched: correctness (1 blocker), tests/coverage (gap found), integration (session
+      routes + broadcast path checked), edge cases (ready-but-stale cache fallback), error
+      handling/security (no additional findings)."
+    name: review-evidence
+    required: false
+    runner: codex
+    created_at: 2026-04-01T23:11:01.907Z
+    completed_at: 2026-04-01T23:11:01.907Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      > @kynetic-ai/spec@0.12.0 test
+
+      > node scripts/test.cjs --run tests/daemon-cache-route-coverage.test.ts passed (3 suites / 10
+      tests). The existing focused route coverage still passes, which confirms it does not exercise
+      the ready-but-stale related-sessions fallback that I reproduced separately.
+    name: daemon-cache-route-coverage
+    required: false
+    runner: npm
+    created_at: 2026-04-01T23:11:03.947Z
+    completed_at: 2026-04-01T23:11:03.947Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      ✓ Validation passed
+
+      ────────────────────────────────────────
+
+      Files checked: 10
+
+      Items checked: 567
+
+      Tasks checked: 0
+
+      Meta: 10 agents, 11 workflows, 10 conventions
+
+
+      Schema: OK
+
+      References: OK
+
+
+      Reference warnings: 1
+        ⚠ @skills
+          Orphaned skill directory 'skills' has no corresponding meta entry
+          in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+      Alignment warnings: 31
+        Orphaned specs (no tasks): 30
+          ○ Test Trait
+          ○ Filterable List Commands
+          ○ Dry Run Preview Mode
+          ... and 27 more
+        Status mismatches: 1
+          ! Task Set Batch Support
+            Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+
+      Alignment stats: 404/567 specs have tasks, 403 aligned
+
+
+      Completeness warnings: 519
+        Missing acceptance criteria: 1
+          ○ @01KJN1WT - Test Trait
+        Missing own AC coverage: 232
+          ! @spec-item - Spec Item
+            Uncovered: ac-item-1, ac-item-2
+          ! @ulid-system - ULID Identifier System
+            Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+          ! @slug-system - Slug Alias System
+            Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+          ... and 229 more
+        Invalid AC annotations: 286
+          ! AC annotation references '@slug' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-consolidate-session-cache-01kn5j2e-review/tests/ac-annotation-validation.test.ts:6
+          ! AC annotation references '@my-spec' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-consolidate-session-cache-01kn5j2e-review/tests/ac-annotation-validation.test.ts:84
+          ! AC annotation references '@my-spec' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-consolidate-session-cache-01kn5j2e-review/tests/ac-annotation-validation.test.ts:87
+          ! AC annotation references '@spec-a' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-consolidate-session-cache-01kn5j2e-review/tests/ac-annotation-validation.test.ts:114
+          ! AC annotation references '@spec-b' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-consolidate-session-cache-01kn5j2e-review/tests/ac-annotation-validation.test.ts:118
+          ... and 281 more
+      Skills: OK (10 files checked) exited 6 with repository-wide pre-existing warnings only
+      (orphaned skill directory, orphaned specs, broad AC coverage warnings). No task-specific
+      validation error was introduced by this change.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-01T23:11:05.929Z
+    completed_at: 2026-04-01T23:11:05.929Z
+events:
+  - _ulid: 01KN5MDA5NMX9K1JN3NR42TTHC
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-01T23:00:15.157Z
+  - _ulid: 01KN5ME3YTPRQPT2CJ7Y8CX8K5
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-01T23:00:41.562Z
+  - _ulid: 01KN5N10EQ8RGMVRM66B6DQK0Y
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN5N0ZS3APCZAGB26NRP9GZ4
+    timestamp: 2026-04-01T23:11:00.567Z
+  - _ulid: 01KN5N12E641F59V808EDMXAXZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-04-01T23:11:02.598Z
+  - _ulid: 01KN5N14CYV6D9F2DN5APTZGKM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: daemon-cache-route-coverage
+    timestamp: 2026-04-01T23:11:04.606Z
+  - _ulid: 01KN5N16BNBYZ3AH7CG0A9HT85
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-04-01T23:11:06.614Z
+  - _ulid: 01KN5N1Z9SH3PBHFM11F025X2P
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-01T23:11:32.153Z
+  - _ulid: 01KN5N1Z9S892J4Z9CGB8M7H0Q
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-01T23:11:32.153Z
+  - _ulid: 01KN5NBS449MT2N8EDBPQ6YBRR
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN5N0ZS3APCZAGB26NRP9GZ4
+    timestamp: 2026-04-01T23:16:53.508Z
+  - _ulid: 01KN5NBV59CH7HEA76E3AFJKE2
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN5N0ZS3APCZAGB26NRP9GZ4
+    timestamp: 2026-04-01T23:16:55.594Z
+examined_commit: 613afcce6db17299caa79077049326cc975e460e
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN5J2ETHQMPQGA334D827YWG"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN5N0ZS3APCZAGB26NRP9GZ4
+    anchor:
+      type: code
+      commit: 613afcce6db17299caa79077049326cc975e460e
+      line_end: 80
+      line_start: 76
+      path: packages/daemon/src/routes/session-related.ts
+      side: head
+    entries:
+      - _ulid: 01KN5N0ZS43H3QX9AN2ZEPVWYE
+        author: Jacob Chapel
+        body: The related-sessions stale-index fallback still drops live event counts for active
+          sessions.  correctly decides to re-read from disk when the ready cache index returns no
+          matching sessions, but it calls  without the cache accessor. That path reaches  with no ,
+          so active sessions come back with  from  (often 0) instead of the live counter. I
+          reproduced this by calling  with a ready sessions cache whose index was empty and ; the
+          returned session still had . This means  and  still regress to stale counters on the exact
+          stale-index path this helper is meant to cover.
+        created_at: 2026-04-01T23:10:59.876Z
+      - _ulid: 01KN5NBRF1VMX79EAVHJCC28D3
+        author: Jacob Chapel
+        body: "Fixed in f9baca482: the ready-but-stale related-session fallback no longer re-enters
+          getAllSessionSummaries() and reuses the empty ready-cache index. It now forces a
+          disk-backed session summary read with the current ProjectEntityCache instance so
+          active-session live event counters are preserved on the stale-index path as well. Added
+          regression coverage in tests/session-related-routes.test.ts for
+          getRelatedSessionsForTask() with a ready sessions domain, empty cached index, and live
+          counter overlay. Verification: npm test -- --run tests/session-related-routes.test.ts
+          tests/daemon-cache-route-coverage.test.ts passed."
+        created_at: 2026-04-01T23:16:52.833Z
+    kind: blocker
+    resolved_at: 2026-04-01T23:16:54.924Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-01T23:11:32.153Z
+created_at: 2026-04-01T23:00:15.158Z
+updated_at: 2026-04-01T23:16:54.924Z
+notes: []

@@ -1,0 +1,90 @@
+_ulid: 01KMGXVMGVFGNQHTR1Q2BET53D
+slugs: []
+title: Review task-readtestoutput-skill-cli
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 96 tests passed in tests/skill-cli.test.ts (45.41s)
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-24T22:01:51.135Z
+    completed_at: 2026-03-24T22:01:51.135Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 warnings and 0 errors on tests/skill-cli.test.ts
+    name: oxlint
+    required: true
+    runner: oxlint
+    created_at: 2026-03-24T22:01:55.417Z
+    completed_at: 2026-03-24T22:01:55.417Z
+events:
+  - _ulid: 01KMGXVMGVPPDD8SXE4XC2214W
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-24T22:01:18.619Z
+  - _ulid: 01KMGXW8BB91CHC6BYWFHKJFD8
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-24T22:01:38.923Z
+  - _ulid: 01KMGXWMN9193N1V721AD6D2YY
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-24T22:01:51.529Z
+  - _ulid: 01KMGXWRSVKXA4KEQF744TGTH2
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: oxlint
+    timestamp: 2026-03-24T22:01:55.771Z
+  - _ulid: 01KMGXXMKGSGXP5EK1DGWTP5XY
+    actor: agent@dispatch
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-24T22:02:24.240Z
+  - _ulid: 01KMGXXMKG4GTFV02PBGANE4TQ
+    actor: agent@dispatch
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-24T22:02:24.240Z
+examined_commit: fd19af112e50f3aa7ab053e2aafa7c76c3e0cae2
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-readtestoutput-skill-cli"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: agent@dispatch
+    role: reviewer
+    created_at: 2026-03-24T22:02:24.240Z
+created_at: 2026-03-24T22:01:18.619Z
+updated_at: 2026-03-24T22:02:24.240Z
+notes: []

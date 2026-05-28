@@ -1,0 +1,185 @@
+_ulid: 01KNVB8HQT69R0MVQT0HH3CXZW
+slugs: []
+title: "Plan review: Init, Setup, and Upgrade Rough Edges (cycle 2)"
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Specs remain behavioral and mostly atomic. The revised release-notes spec now includes
+      ac-structured-output, closing the prior task/spec mismatch, and the
+      scaffold/default-preservation contracts are now explicit and testable.
+    name: Spec quality
+    required: true
+    created_at: 2026-04-10T09:25:22.419Z
+    completed_at: 2026-04-10T09:25:22.419Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "The plan still covers every blocker-severity gap from RELEASE_GAPS.md without leaking
+      audit references into specs/tasks: missing config scaffold, missing AGENTS scaffold, and their
+      surrounding setup/upgrade readiness gaps remain represented by standalone specs and tasks."
+    name: Gap coverage
+    required: true
+    created_at: 2026-04-10T09:25:22.564Z
+    completed_at: 2026-04-10T09:25:22.564Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All plan ACs remain claimed by task Covers lines, including the newly-added
+      overwrite/preservation/version-detection/structured-output contracts from the cycle-1 fix
+      pass.
+    name: AC coverage
+    required: true
+    created_at: 2026-04-10T09:25:22.579Z
+    completed_at: 2026-04-10T09:25:22.579Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Tasks match the quality bar from @plan-plan-scoped-branch-targeting and
+      @plan-dispatch-event-system-expansion: each task states what/why/how/testing/covers, names
+      concrete code areas or patterns, and does not rely on planning-chat context."
+    name: Task standalone executability
+    required: true
+    created_at: 2026-04-10T09:25:22.550Z
+    completed_at: 2026-04-10T09:25:22.550Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Rechecked the exact prior anchors. @scaffolded-agents-file now defines forced overwrite
+      and backup ACs; @default-project-agents-and-conventions now defines first-run marker plus
+      removal/rename preservation and force reseed semantics; @task-upgrade-command now depends on
+      @task-default-reflection-hooks and @task-derivable-default-module; and the upgrade task now
+      defines fallback and unknown source-version detection paths for pre-version-tracking projects.
+    name: Previous-cycle blockers
+    required: true
+    created_at: 2026-04-10T09:25:45.172Z
+    completed_at: 2026-04-10T09:25:45.172Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "The upgrade task now declares the previously-missing dependencies on
+      @task-default-reflection-hooks and @task-derivable-default-module. Other task ordering remains
+      coherent: hook defaults depend on default agents, release notes depend on upgrade, and doctor
+      depends on scaffold + upgrade surfaces it inspects."
+    name: Dependency ordering
+    required: true
+    created_at: 2026-04-10T09:25:54.178Z
+    completed_at: 2026-04-10T09:25:54.178Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Each new behavioral surface has corresponding persisted state or source-of-truth design
+      in task descriptions: first-run seeding marker, last-known version field, derivable default
+      module item, release-notes source file, and doctor-visible setup state."
+    name: Data-model support
+    required: true
+    created_at: 2026-04-10T09:26:02.575Z
+    completed_at: 2026-04-10T09:26:02.575Z
+events:
+  - _ulid: 01KNVB8HQT80AT5CCZTD9QA4RP
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-10T09:23:39.386Z
+  - _ulid: 01KNVB97E5CT0ANXVE2S4XMD9V
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-10T09:24:01.605Z
+  - _ulid: 01KNVBBQ7XN9JXJ15WAFH7YYAB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec quality
+    timestamp: 2026-04-10T09:25:23.325Z
+  - _ulid: 01KNVBBRKJYJVN4QY88Z24CHN8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Gap coverage
+    timestamp: 2026-04-10T09:25:24.722Z
+  - _ulid: 01KNVBBT4JNNRNHC50VXG2TZS3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage
+    timestamp: 2026-04-10T09:25:26.290Z
+  - _ulid: 01KNVBBVN9WBR4VXB6PE20BVRV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Task standalone executability
+    timestamp: 2026-04-10T09:25:27.850Z
+  - _ulid: 01KNVBCDEP287YRVBDF2RNDKT5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Previous-cycle blockers
+    timestamp: 2026-04-10T09:25:46.070Z
+  - _ulid: 01KNVBCPCNFE81V5QABRSN3THQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-04-10T09:25:55.221Z
+  - _ulid: 01KNVBCYEA81RDMHZRX2FFHJKT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Data-model support
+    timestamp: 2026-04-10T09:26:03.467Z
+  - _ulid: 01KNVBD893HRW00ZK6F6ASXM3M
+    actor: codex@local
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-10T09:26:13.539Z
+  - _ulid: 01KNVBD893RC81EJGRQ6VJ6W9Z
+    actor: codex@local
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-10T09:26:13.539Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-init-setup-and-upgrade-rough-edges"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@local
+    role: reviewer
+    created_at: 2026-04-10T09:26:13.539Z
+created_at: 2026-04-10T09:23:39.386Z
+updated_at: 2026-04-10T09:26:13.539Z
+notes: []

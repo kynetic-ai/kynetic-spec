@@ -1,0 +1,160 @@
+_ulid: 01KQ96R59FQ4QZSSRHQGMX4SBR
+slugs: []
+title: Review enforce AC identifier format
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exit 0. 2292/2292 suites passed; 8422 passed, 5 skipped, 8427 total. Log:
+      /tmp/kspec-test-cache/01KQ96PNRZJYCFE7SK0T2WBN82/ee321cc33fdee80a.log"
+    name: npm test
+    required: true
+    runner: npm test
+    created_at: 2026-04-28T05:00:17.715Z
+    completed_at: 2026-04-28T05:00:17.715Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec item get @acceptance-criterion-id-format showed five ACs; rg found annotations for
+      ac-stored-id-format, ac-invalid-stored-id-reported, ac-create-rejects-invalid-id,
+      ac-rename-rejects-invalid-id, and ac-generated-ids-conform in tests/ac-id-format.test.ts.
+    name: AC coverage
+    required: true
+    runner: manual+rg
+    created_at: 2026-04-28T05:00:20.972Z
+    completed_at: 2026-04-28T05:00:20.972Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff a905c802f26bb5974a12d3860687d4a548f60742..HEAD --check exited 0.
+    name: git diff --check
+    required: true
+    runner: git
+    created_at: 2026-04-28T05:00:24.344Z
+    completed_at: 2026-04-28T05:00:24.344Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exit 4. Pre-existing/unrelated schema error: .kspec/modules/meta.yaml:modules[0].traits.0
+      Expected string, received object. Branch changed AC id validation only; dev base
+      src/schema/spec.ts already required traits: z.array(RefSchema). Separate follow-up task
+      created."
+    name: kspec validate
+    required: false
+    runner: kspec validate
+    created_at: 2026-04-28T05:00:29.334Z
+    completed_at: 2026-04-28T05:00:29.334Z
+events:
+  - _ulid: 01KQ96R59E5CHYAKS6CXANPFFJ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-28T04:49:51.919Z
+  - _ulid: 01KQ96S41WD29KPSYDV6H05WBR
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-28T04:50:23.420Z
+  - _ulid: 01KQ97B9HWXK3SB58KJGTVAFZ0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-28T05:00:18.876Z
+  - _ulid: 01KQ97BCS5QBDZKM80ARAQW2HH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage
+    timestamp: 2026-04-28T05:00:22.181Z
+  - _ulid: 01KQ97BG3ED6A2Y2MCWK30SVN3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: git diff --check
+    timestamp: 2026-04-28T05:00:25.582Z
+  - _ulid: 01KQ97BMXE0BAG1CVCMJD0CVPY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-28T05:00:30.510Z
+  - _ulid: 01KQ97C6XEFZZGKVWW484YXBJZ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KQ97C5R6C0TDBGT57EXVRWES
+    timestamp: 2026-04-28T05:00:48.942Z
+  - _ulid: 01KQ97CH8CX678Y1H87BWXHR20
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-28T05:00:59.532Z
+  - _ulid: 01KQ97CH8C0FERB7FDJY0Q2420
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-28T05:00:59.532Z
+examined_commit: 6a54d8669fac304c6ed57cb57298159a12bfbc58
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQ93NEDWGRGWMG1VM1FBB94S"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQ97C5R6C0TDBGT57EXVRWES
+    entries:
+      - _ulid: 01KQ97C5R68ZY00YAS9F89XM89
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          Files read: src/schema/common.ts, src/schema/spec.ts, src/cli/commands/item.ts,
+          src/strings/errors.ts, tests/ac-id-format.test.ts, tests/integration.test.ts,
+          src/parser/yaml.ts, src/parser/validate.ts, src/cli/commands/validate.ts.
+
+          Commands run: kspec task get, kspec item get, kspec review add/open, git
+          diff/stat/name-status, rg AC annotations, kspec validate, git diff --check, npm test.
+
+          Claims verified: shared AC id pattern/schema is applied to AcceptanceCriterionSchema and
+          CLI add/set rejection happens before updateSpecItem; generated IDs remain ac-N; tests are
+          behavioral and annotated for all five ACs.
+
+          Categories searched: correctness, schema/write boundaries, CLI error handling,
+          mutation-before-validation, test quality/source-scanning, fixture impact, integration with
+          item patch/plan parsing. No branch-introduced blockers found.
+        created_at: 2026-04-28T05:00:47.750Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-28T05:00:59.532Z
+created_at: 2026-04-28T04:49:51.919Z
+updated_at: 2026-04-28T05:00:59.532Z
+notes: []

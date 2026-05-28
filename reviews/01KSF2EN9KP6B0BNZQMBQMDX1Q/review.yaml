@@ -1,0 +1,251 @@
+_ulid: 01KSF2EN9KP6B0BNZQMBQMDX1Q
+slugs: []
+title: Review task-plan-resource-import-and-derive-1 (cycle 4)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npx oxlint on changed implementation/test files completed with 0 errors; reported 4
+      no-shadow warnings in src/cli/commands/plan.ts.
+    name: changed-file oxlint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-25T08:14:35.110Z
+    completed_at: 2026-05-25T08:14:35.110Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Reproduced via CLI: after plan derive --materialize-resources, task get --json returned
+      resource_refs[0].owner_ref='@implement-shot-view-mat' and
+      resolved_resources[0].status='unresolved' for the copied task-owned resource."
+    name: materialized task resource resolver repro
+    required: true
+    runner: manual-cli
+    created_at: 2026-05-25T08:14:40.173Z
+    completed_at: 2026-05-25T08:14:40.173Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck completed successfully (tsc --noEmit).
+    name: typecheck
+    required: true
+    runner: npm
+    created_at: 2026-05-25T08:14:45.430Z
+    completed_at: 2026-05-25T08:14:45.430Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2536 test suites, 9667 tests passed, 5 skipped. Full log:
+      /tmp/kspec-test-cache/01KSF2BMV99NZK2FDKWM832S4E/cbf0c91b5cba6e64.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-25T08:14:50.803Z
+    completed_at: 2026-05-25T08:14:50.803Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate returned warning-only exit 6: schema/references OK, with pre-existing
+      global reference/alignment/completeness warnings. The reviewed spec ACs were loaded and
+      annotated tests were found for all five task ACs."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-25T08:15:11.222Z
+    completed_at: 2026-05-25T08:15:11.222Z
+events:
+  - _ulid: 01KSF2EN9K0G867S0PH6A1KF2J
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-25T08:01:36.563Z
+  - _ulid: 01KSF2F5NRYR8RC7GKCR5R72W0
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-25T08:01:53.336Z
+  - _ulid: 01KSF2PYD82NAKYRBVXT7N289X
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSF2PW9RDYC6EQ6E8KQAGAY3
+    timestamp: 2026-05-25T08:06:08.040Z
+  - _ulid: 01KSF36F9X9AB0S8EC0D4X86KA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file oxlint
+    timestamp: 2026-05-25T08:14:36.861Z
+  - _ulid: 01KSF36ME63XJXN9W7BJGYR4SA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: materialized task resource resolver repro
+    timestamp: 2026-05-25T08:14:42.118Z
+  - _ulid: 01KSF36SGXC643K1Z4EJH3NBE9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-25T08:14:47.326Z
+  - _ulid: 01KSF36YQEG0PT8V2QCVHY1YZM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-25T08:14:52.654Z
+  - _ulid: 01KSF37JJGCYR74Q1CK8Z29FXB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-25T08:15:12.976Z
+  - _ulid: 01KSF37QNEVEWW8B1R5C70BS92
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSF37NRK4YTQ9BRYBE2CM0RJ
+    timestamp: 2026-05-25T08:15:18.190Z
+  - _ulid: 01KSF38871ZNRAHYQAJ45C7M7A
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-25T08:15:35.137Z
+  - _ulid: 01KSF388716HG5GYX8HYXK7JV0
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-25T08:15:35.137Z
+  - _ulid: 01KSF5B40XQNZXRPM2M9VM3R1H
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSF2PW9RDYC6EQ6E8KQAGAY3
+    timestamp: 2026-05-25T08:52:06.301Z
+  - _ulid: 01KSF5BH5W416FKY6G1XFR7N1X
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSF2PW9RDYC6EQ6E8KQAGAY3
+    timestamp: 2026-05-25T08:52:19.773Z
+  - _ulid: 01KSF5BWB9KNWS05VKMM2TXNB4
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSF37NRK4YTQ9BRYBE2CM0RJ
+    timestamp: 2026-05-25T08:52:31.209Z
+  - _ulid: 01KSF5C6WCCW70HRVC901Z2ADM
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSF37NRK4YTQ9BRYBE2CM0RJ
+    timestamp: 2026-05-25T08:52:41.996Z
+examined_commit: cec6e309c6730167415e73bd396a8700ef4d0030
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XAZQ5478RV2AVKG8MNB0S"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSF2PW9RDYC6EQ6E8KQAGAY3
+    anchor:
+      type: code
+      commit: cec6e309c6730167415e73bd396a8700ef4d0030
+      line_end: 150
+      line_start: 149
+      path: src/parser/task-resource-resolver.ts
+      side: head
+    entries:
+      - _ulid: 01KSF2PW9S8RQZVK4CKARJCQ5W
+        author: Jacob Chapel
+        body: 'MUST-FIX: materialized task-owned resources are recorded with the task slug ref, but the
+          task-owned resolver only accepts owner_ref equal to task._ulid. `plan derive
+          --materialize-resources` calls `materializePlanResourcesForTask` with `taskCanonicalRef:
+          canonicalRef(created)`, which is usually the derived task slug. The resolver then returns
+          null at this line for that same task, so `task get --json` reports the copied task-owned
+          resource as `unresolved` instead of `present`. I reproduced this via the CLI: derive a
+          task with `--materialize-resources`, then `task get @implement-shot-view-mat --json`
+          produced `resource_refs[0].owner_ref = "@implement-shot-view-mat"` and
+          `resolved_resources[0].status = "unresolved"` with message `Owning task
+          @implement-shot-view-mat could not be located`. This breaks the materialized-copy contract
+          because the task reference points at a task-owned copy that consumers cannot resolve.'
+        created_at: 2026-05-25T08:06:05.881Z
+      - _ulid: 01KSF5B2C401GF9XQX7YQ99S5D
+        author: "@claude"
+        body: "Fixed in 9802d44502. Root cause: task-resource-resolver only accepted owner_ref equal to
+          task._ulid, but materializePlanResourcesForTask records canonicalRef(created), which is
+          slug-first. Updated loadOwnerManifest to accept any identifier that resolves to the
+          current task (ULID OR any slug). Regression test mirrors the reviewer repro: derive
+          --materialize-resources -> task get JSON shows resolved_resources[0].status='present' (not
+          'unresolved'), text mode shows [OK] (not UNRESOLVED). Also extended the existing
+          materialize test to assert resolved status, so the resolver gap can't regress silently."
+        created_at: 2026-05-25T08:52:04.612Z
+    kind: blocker
+    resolved_at: 2026-05-25T08:52:18.047Z
+    resolved_by: "@claude"
+  - _ulid: 01KSF37NRK4YTQ9BRYBE2CM0RJ
+    entries:
+      - _ulid: 01KSF37NRK7914AQ8V4GVWJJX2
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; .agents/skills/kspec-review/SKILL.md;
+          .agents/skills/kspec-merge/SKILL.md; .agents/skills/review-gates/SKILL.md;
+          .agents/skills/work-gates/SKILL.md; src/schema/resources.ts; src/schema/task.ts;
+          src/parser/plan-document.ts; src/parser/entity-local-resources.ts;
+          src/parser/plan-resource-import.ts; src/parser/task-resource-resolver.ts;
+          src/cli/commands/plan-import.ts; src/cli/commands/plan-resource.ts;
+          src/cli/commands/plan.ts; src/cli/commands/task.ts; src/cli/output.ts;
+          src/agent-runtime/dispatch.ts; tests/cli-plan-derive-resources.test.ts;
+          tests/cli-plan-import-resources.test.ts; tests/cli-plan-resource.test.ts;
+          tests/plan-document-resource-refs.test.ts. Commands run: git status/log/diff; kspec task
+          get; kspec review for-task/add/open; kspec item get; kspec validate; AC annotation rg
+          scans; npm test; npm run typecheck; npx oxlint on changed files; manual CLI reproduction
+          for materialized task-owned resource resolution. Claims verified: worker test claim
+          verified by full npm test; typecheck verified; AC coverage annotations verified for all
+          five task ACs; materialized resource resolver behavior disproved by CLI repro. Categories
+          searched: correctness, edge cases around symlink/partial mutation fixes, error
+          handling/exit envelopes, test quality/source-scanning, AC coverage, integration with task
+          get and dispatch orientation."
+        created_at: 2026-05-25T08:15:16.243Z
+      - _ulid: 01KSF5BTNMTAK4KFF6B9JGJMEH
+        author: "@claude"
+        body: Noted — thank you for the detailed evidence log.
+        created_at: 2026-05-25T08:52:29.492Z
+    kind: nit
+    resolved_at: 2026-05-25T08:52:40.275Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-25T08:15:35.137Z
+created_at: 2026-05-25T08:01:36.563Z
+updated_at: 2026-05-25T08:52:40.275Z
+notes: []

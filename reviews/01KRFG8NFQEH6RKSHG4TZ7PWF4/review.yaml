@@ -1,0 +1,305 @@
+_ulid: 01KRFG8NFQEH6RKSHG4TZ7PWF4
+slugs: []
+title: Review fix guardrail cleanup-effect classification (cycle 15)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2429 suites, 9157 passed, 5 skipped of 9162; duration 2075.4s; log
+      /tmp/kspec-test-cache/01KRFG7FKWNHVQBG4ZN8D7J0A7/e6210f76fa7d818f.log."
+    name: npm test -- --fresh
+    required: true
+    runner: npm test
+    created_at: 2026-05-13T02:00:48.396Z
+    completed_at: 2026-05-13T02:00:48.396Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts
+      tests/lint-daemon-test-guardrails.test.ts passed: 23 suites, 375 tests."
+    name: targeted lint-rule suites
+    required: true
+    runner: npm test
+    created_at: 2026-05-13T02:00:52.637Z
+    completed_at: 2026-05-13T02:00:52.637Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check 0dcbcdd27642e95299a7b77a48da1e5d295df176...HEAD produced no output.
+    name: git diff --check dev...HEAD
+    required: true
+    runner: git
+    created_at: 2026-05-13T02:00:56.760Z
+    completed_at: 2026-05-13T02:00:56.760Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Schema/references/skills OK; warnings are existing project-wide
+      reference/alignment/completeness warnings; --warnings-ok exited 0.
+    name: kspec validate --warnings-ok
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-13T02:01:00.875Z
+    completed_at: 2026-05-13T02:01:00.875Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: rg found dense annotations for @daemon-test-guardrail-precision,
+      @daemon-test-harness-guardrails, and trait ACs in the two lint-rule suites; no source-scanning
+      AC test was found in the submitted lint-rule sections.
+    name: AC annotation scan
+    required: true
+    runner: rg
+    created_at: 2026-05-13T02:01:05.102Z
+    completed_at: 2026-05-13T02:01:05.102Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npx oxlint tools/eslint-rules/no-leaky-test-daemon.js
+      tests/lint-no-leaky-test-daemon.test.ts tests/lint-daemon-test-guardrails.test.ts exited 0
+      with 35 warnings and 0 errors.
+    name: changed-file oxlint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-13T02:01:09.163Z
+    completed_at: 2026-05-13T02:01:09.163Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run lint exited 1 with 13 errors and 721 warnings. These are existing repository lint
+      issues outside the submitted cleanup-classifier change; changed-file oxlint has 0 errors.
+    name: npm run lint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-13T02:01:13.279Z
+    completed_at: 2026-05-13T02:01:13.279Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Two synthetic fixtures with enum killPid / enum stopPidBounded shadowing approved cleanup
+      imports exited 0 with only no-unused-vars warnings and no no-leaky-test-daemon error; see
+      blocker thread anchored at tools/eslint-rules/no-leaky-test-daemon.js:1717.
+    name: ad hoc enum-shadow cleanup probe
+    required: true
+    runner: oxlint
+    created_at: 2026-05-13T02:01:17.395Z
+    completed_at: 2026-05-13T02:01:17.395Z
+events:
+  - _ulid: 01KRFG8NFQBE07JGBVCPJ215PD
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-13T01:47:18.391Z
+  - _ulid: 01KRFG9BPSS6B93JXKPSGF91YA
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-13T01:47:41.145Z
+  - _ulid: 01KRFGEJ464D9CGMRSZNJ1KQZT
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRFGEGJBXRJJCYN2EDTFKCN1
+    timestamp: 2026-05-13T01:50:31.558Z
+  - _ulid: 01KRFH1E513VATXWDW0YXBY389
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-05-13T02:00:50.082Z
+  - _ulid: 01KRFH1J7CD874BTNY3ZJZ75FX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted lint-rule suites
+    timestamp: 2026-05-13T02:00:54.252Z
+  - _ulid: 01KRFH1P90TVHKGRQY2VVHDJ7P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: git diff --check dev...HEAD
+    timestamp: 2026-05-13T02:00:58.400Z
+  - _ulid: 01KRFH1T7ZMPPCG83KN5ABE2Z8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --warnings-ok
+    timestamp: 2026-05-13T02:01:02.463Z
+  - _ulid: 01KRFH1YAZDRTDYDC9ZM4M25V6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC annotation scan
+    timestamp: 2026-05-13T02:01:06.655Z
+  - _ulid: 01KRFH22BM48VJ3BD75E6FVEB0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file oxlint
+    timestamp: 2026-05-13T02:01:10.772Z
+  - _ulid: 01KRFH26C0BNWP0T3ZDMKYMT40
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm run lint
+    timestamp: 2026-05-13T02:01:14.880Z
+  - _ulid: 01KRFH2AD5RRT9SHQDXGDATXDS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: ad hoc enum-shadow cleanup probe
+    timestamp: 2026-05-13T02:01:19.013Z
+  - _ulid: 01KRFH2EHWHB5ATHJH63634FRZ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KRFH2CYX8D3MKRXP0148MVKB
+    timestamp: 2026-05-13T02:01:23.260Z
+  - _ulid: 01KRFH2JKS416FAPBTBAWJ3Y8K
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-13T02:01:27.417Z
+  - _ulid: 01KRFH2JKS1C70WR6HH3780QST
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-13T02:01:27.417Z
+  - _ulid: 01KRFJPR8ZJVZ8Z6BSMNS612G0
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRFGEGJBXRJJCYN2EDTFKCN1
+    timestamp: 2026-05-13T02:29:57.151Z
+  - _ulid: 01KRFJQ0S1GQ2Q76RMC018Z0ET
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KRFGEGJBXRJJCYN2EDTFKCN1
+    timestamp: 2026-05-13T02:30:05.857Z
+examined_commit: 92816aacafc0dc3a999bf21a12bd73015e4a5fe9
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRCRJPMHMHC410TKRC5Y9HF1"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRFGEGJBXRJJCYN2EDTFKCN1
+    anchor:
+      type: code
+      commit: 92816aacafc0dc3a999bf21a12bd73015e4a5fe9
+      line_end: 1733
+      line_start: 1717
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KRFGEGJBC910B2KB1FQ66TQN
+        author: Jacob Chapel
+        body: "MUST-FIX: statementBindsNameOpaquely still misses TypeScript enum value bindings, so enum
+          declarations can shadow approved cleanup helpers and be credited as daemon cleanup.
+          Evidence: an ad hoc oxlint fixture with import { killPid } from './helpers/daemon', then
+          inside the test body 'enum killPid { noop }' before onTestFinished(() => killPid(pid)),
+          exited 0 with only no-unused-vars and no no-leaky-test-daemon error. The same false
+          negative reproduces inside a helper body with 'enum stopPidBounded { noop }' shadowing the
+          approved shared primitive import. At runtime these enum bindings are not callable cleanup
+          functions, so the cleanup callback throws and the daemon is left running. This violates
+          @daemon-test-guardrail-precision ac-cleanup-helper-origin-is-trusted and
+          ac-cleanup-operation-terminates-daemon; treat TSEnumDeclaration or equivalent runtime TS
+          declarations as opaque local bindings before falling through to approved-import trust."
+        created_at: 2026-05-13T01:50:29.963Z
+      - _ulid: 01KRFJPPTF6NA9YD2SH2SZTA1S
+        author: "@claude"
+        body: "Fixed: extended statementBindsNameOpaquely to recognise TSEnumDeclaration (the reviewer's
+          exact probe shape), TSModuleDeclaration (namespace with body, non-declare), and
+          TSImportEqualsDeclaration alongside the existing ClassDeclaration handling. All three emit
+          a runtime binding whose value is not callable as a cleanup primitive, so calling
+          `<name>(pid)` at teardown throws TypeError and leaves the daemon running. The export
+          wrapper unwrap path already routes through statementBindsNameOpaquely so `export enum
+          killPid { noop }` is handled by the same descent. Pure type-only declarations (interface,
+          type alias, bodyless `declare` ambient forms) are erased by the TS compiler and so cannot
+          shadow a runtime binding; they are deliberately NOT treated as opaque. Added 4 regression
+          tests in tests/lint-no-leaky-test-daemon.test.ts mirroring the reviewer's probes: (1) enum
+          killPid call-site shadow of approved import, (2) enum stopPidBounded helper-body shadow of
+          approved shared primitive, (3) export enum killPid module-top shadow, and (4) namespace
+          killPid TSModuleDeclaration shadow. Verified at shell level too: the reviewer's exact
+          probe (import { killPid } from './helpers/daemon' + inner 'enum killPid { noop }' +
+          onTestFinished(() => killPid(pid))) now exits 1 with the no-leaky-test-daemon error, and
+          the helper-body 'enum stopPidBounded { noop }' shadow likewise. Targeted lint suites: 379
+          tests pass (4 new). Full npm test: 9166 passed, 5 skipped of 9171."
+        created_at: 2026-05-13T02:29:55.663Z
+    kind: blocker
+    resolved_at: 2026-05-13T02:30:04.407Z
+    resolved_by: "@claude"
+  - _ulid: 01KRFH2CYX8D3MKRXP0148MVKB
+    entries:
+      - _ulid: 01KRFH2CYY7DT5QN9CBCAZ7V6G
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+
+          Files read: kspec-agents.md; task @01KRCRJPMHMHC410TKRC5Y9HF1; prior review
+          @01KRF97V6AP2CG9FRKTV29NDP7; tools/eslint-rules/no-leaky-test-daemon.js;
+          tests/lint-no-leaky-test-daemon.test.ts; tests/lint-daemon-test-guardrails.test.ts.
+
+
+          Commands run: kspec task get; kspec item get @daemon-test-guardrail-precision; kspec
+          review add/open/get; git status/log/diff/show; kspec validate; kspec validate
+          --warnings-ok; rg AC annotations; git diff --check; npm test -- --fresh
+          tests/lint-no-leaky-test-daemon.test.ts tests/lint-daemon-test-guardrails.test.ts; npm
+          test -- --fresh; npm run lint; npx oxlint on changed files; two ad hoc npx oxlint
+          enum-shadow probes.
+
+
+          Claims verified: cycle-14 class-shadow fix is implemented for ClassDeclaration; targeted
+          and full test suites pass; the adjacent runtime-binding enum shape still bypasses the
+          helper-origin classifier.
+
+
+          Categories searched: correctness, helper-origin trust, cleanup effect semantics, TS
+          lexical binding edge cases, test quality/source-scanning, AC coverage, lint/build hygiene,
+          integration with approved helper imports.
+        created_at: 2026-05-13T02:01:21.630Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-13T02:01:27.417Z
+created_at: 2026-05-13T01:47:18.391Z
+updated_at: 2026-05-13T02:30:04.407Z
+notes: []

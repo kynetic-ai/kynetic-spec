@@ -1,0 +1,253 @@
+_ulid: 01KR5S9MXRGYWHM8Z8Q5TJMPGB
+slugs: []
+title: Review task-fix-detached-cleanup-timing-analysis cycle 2
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate exited 6 with warnings only: schema and references OK; pre-existing
+      reference, alignment, completeness, and invalid-annotation warnings remain outside this task
+      area."
+    name: kspec validate
+    required: false
+    runner: kspec validate
+    created_at: 2026-05-09T07:15:20.849Z
+    completed_at: 2026-05-09T07:15:20.849Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts: 19 suites passed, 184 tests passed."
+    name: targeted guardrail tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-09T07:15:29.392Z
+    completed_at: 2026-05-09T07:15:29.392Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Synthetic detached-start probes with console.log("SIGTERM docs"), const cleanupDocs =
+      "killPid should be used later", and try/finally console.log("SIGTERM docs") all exited 0 with
+      no no-leaky-test-daemon diagnostic, proving token-only text is accepted as cleanup.
+    name: manual token-only cleanup probes
+    required: false
+    runner: npx oxlint
+    created_at: 2026-05-09T07:15:29.394Z
+    completed_at: 2026-05-09T07:15:29.394Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh: 2413 suites passed; 8937 tests passed, 5 skipped of 8942; duration
+      2034.2s. Full log: /tmp/kspec-test-cache/01KR5S86V15Z5GH0PY0VGA9QYC/906013c0e72d7ac6.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-05-09T07:24:52.314Z
+    completed_at: 2026-05-09T07:24:52.314Z
+events:
+  - _ulid: 01KR5S9MXQ92QRX1BF08EGGBT2
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-09T07:12:43.448Z
+  - _ulid: 01KR5SAFPA58AF0QK49C9EZY92
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-09T07:13:10.859Z
+  - _ulid: 01KR5SEG327ZJDZVEJCTT68PAN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-05-09T07:15:22.338Z
+  - _ulid: 01KR5SEMA2YT6S1KAXMGHN038X
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR5SEJW8YPQ1K2RD2QEXX0H5
+    timestamp: 2026-05-09T07:15:26.659Z
+  - _ulid: 01KR5SERFFTRR2DXXV44YKQDBS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted guardrail tests
+    timestamp: 2026-05-09T07:15:30.928Z
+  - _ulid: 01KR5SETTTH8E96AY2KK3DZRWR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: manual token-only cleanup probes
+    timestamp: 2026-05-09T07:15:33.339Z
+  - _ulid: 01KR5SZY0J6WE504ED3TGS1ZGS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-09T07:24:53.650Z
+  - _ulid: 01KR5T01H1E2SKD4VDBA0GGXM9
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KR5T00AJX0N82YGQGG3CMYF9
+    timestamp: 2026-05-09T07:24:57.249Z
+  - _ulid: 01KR5T0DKFWT6SKJCH8DTXV0X8
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-09T07:25:09.615Z
+  - _ulid: 01KR5T0DKFVT9RZ5Q1Z4AJNCDV
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-09T07:25:09.615Z
+  - _ulid: 01KR5V6V3ZHVZZBVX7RXK1PWQY
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR5SEJW8YPQ1K2RD2QEXX0H5
+    timestamp: 2026-05-09T07:46:08.639Z
+  - _ulid: 01KR5V6Y9K1PJXZX44JYWM39E4
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR5SEJW8YPQ1K2RD2QEXX0H5
+    timestamp: 2026-05-09T07:46:11.891Z
+  - _ulid: 01KR5V71EPCMVVFPFM4TGRCJJY
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR5T00AJX0N82YGQGG3CMYF9
+    timestamp: 2026-05-09T07:46:15.126Z
+  - _ulid: 01KR5V74HS1KR6FA045NJ70YB9
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR5T00AJX0N82YGQGG3CMYF9
+    timestamp: 2026-05-09T07:46:18.297Z
+examined_commit: 269e3ea47db29e1de702da174c4f6e9f91d29620
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR3W7QAH8VZCH3A60NSB3HBN"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR5SEJW8YPQ1K2RD2QEXX0H5
+    anchor:
+      type: code
+      commit: 269e3ea47db29e1de702da174c4f6e9f91d29620
+      line_end: 340
+      line_start: 338
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KR5SEJW90ABFXK1292RH3ETS
+        author: Jacob Chapel
+        body: 'MUST-FIX: statementContainsCleanup now treats any later statement containing a daemon-kill
+          token as valid cleanup, even when that statement is not a cleanup registration and does
+          not target the detached daemon. I verified this with a synthetic test containing
+          runKspec("serve start --detach --port 3456"); console.log("SIGTERM docs");
+          expect(true).toBe(true); oxlint exited 0 with no no-leaky-test-daemon diagnostic. A second
+          probe with const cleanupDocs = "killPid should be used later" also exited 0. That violates
+          @daemon-test-guardrail-precision ac-detached-cleanup-before-observation because cleanup
+          was never registered before the later assertion. The same broad token predicate also lets
+          try/finally finalizers with only console.log("SIGTERM docs") suppress the detached-start
+          report, so the fix needs to verify an actual cleanup call or registration shape, not just
+          token presence.'
+        created_at: 2026-05-09T07:15:25.193Z
+      - _ulid: 01KR5V6STZ7VH9PA00NQYEC1P2
+        author: "@claude"
+        body: >-
+          Fixed in bb5e4d849 by replacing the token-only `hasDaemonCleanupPattern(text)` scan with
+          an AST walker that requires a CallExpression whose callee statically resolves to a
+          daemon-cleanup operation: `process.kill(...)`, `<expr>.kill('SIGTERM'|'SIGKILL'|'SIGINT',
+          ...)`, the `killPid`/`stopDaemon`/`stopMockDaemon` Identifier callees, or a kspec CLI
+          invocation whose first two non-flag positional tokens are `serve` then `stop` (covers the
+          `runKspec`/`kspec` helper, `exec`/`execSync` shell forms, and
+          `spawn`/`spawnSync`/`execFile`/`execFileSync` argv forms). The same walker gates the
+          try/finally finalizer escape hatch and the await/expect observation check.
+
+
+          Verified all three reviewer probes against the patched rule via direct `npx oxlint` runs:
+
+          - `runKspec("serve start --detach --port 3456"); console.log("SIGTERM docs");
+          expect(true).toBe(true);` → exits 1 with `no-leaky-test-daemon` diagnostic
+
+          - `runKspec("serve start --detach --port 3456"); const cleanupDocs = "killPid should be
+          used later"; expect(...)` → exits 1 with diagnostic
+
+          - `try { runKspec("serve start --detach --port 3456"); expect(...); } finally {
+          console.log("SIGTERM docs"); }` → exits 1 with diagnostic
+
+          - Negative control with real cleanup `onTestFinished(() => killPid(pid))` still exits 0
+
+
+          Added three behavioral regression tests in tests/lint-no-leaky-test-daemon.test.ts (one
+          per probe) so the false-negative cannot return.
+
+
+          Targeted guardrail tests: 19/19 suites, 187/187 tests pass. Full suite: 2413/2413 suites,
+          8940 tests pass, 5 skipped (1968.1s).
+        created_at: 2026-05-09T07:46:07.327Z
+    kind: blocker
+    resolved_at: 2026-05-09T07:46:10.665Z
+    resolved_by: "@claude"
+  - _ulid: 01KR5T00AJX0N82YGQGG3CMYF9
+    entries:
+      - _ulid: 01KR5T00AJKYNYNK4JHVN8M1DX
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: kspec-agents.md; task @01KR3W7QAH8VZCH3A60NSB3HBN; prior
+          review @01KR5Q3Y9XZFCGWMQMBEQW7FFV; @daemon-test-guardrail-precision;
+          @daemon-test-harness-guardrails; tools/eslint-rules/no-leaky-test-daemon.js;
+          tests/lint-no-leaky-test-daemon.test.ts; tests/lint-daemon-test-guardrails.test.ts;
+          targeted sections of tests/cli-serve.test.ts. Commands run: git
+          diff/stat/name-only/log/status; kspec validate; AC annotation rg; targeted guardrail
+          tests; full npm test -- --fresh; manual npx oxlint synthetic probes for safe cleanup,
+          unrelated onTestFinished cleanup, token-only same-flow cleanup, token-only try/finally
+          cleanup, and non-awaited fetch before cleanup. Claims verified: prior blocker on unrelated
+          onTestFinished is fixed; targeted and full tests pass; current implementation still
+          accepts token-only text as cleanup. Categories searched: correctness, edge cases, error
+          handling/cleanup ordering, test quality, integration with real cli-serve detached starts,
+          and source-scanning risks."
+        created_at: 2026-05-09T07:24:56.018Z
+      - _ulid: 01KR5V709GQ9JG7FFEC2QE2DJC
+        author: "@claude"
+        body: Acknowledged — review evidence log is informational, no code change required.
+        created_at: 2026-05-09T07:46:13.936Z
+    kind: nit
+    resolved_at: 2026-05-09T07:46:17.093Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-09T07:25:09.615Z
+created_at: 2026-05-09T07:12:43.448Z
+updated_at: 2026-05-09T07:46:17.093Z
+notes: []

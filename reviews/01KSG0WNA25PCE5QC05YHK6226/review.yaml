@@ -1,0 +1,287 @@
+_ulid: 01KSG0WNA25PCE5QC05YHK6226
+slugs: []
+title: Review task-plan-resource-api-ui-static cycle 2
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "2546 suites passed, 9711 tests passed, 5 skipped. Full log:
+      /tmp/kspec-test-cache/01KSG0TTYSC4Y7D6631BY8RHG3/2b0d727adf3229e6.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-05-25T17:07:11.956Z
+    completed_at: 2026-05-25T17:07:11.956Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: packages/daemon/src/routes/plan-resources.ts,
+      packages/daemon/src/routes/plans.ts, packages/shared/src/api.ts, src/daemon/entity-cache.ts,
+      src/parser/plan-storage-manager.ts, src/export/json.ts, src/export/types.ts,
+      src/parser/entity-local-resources.ts, src/parser/entity-storage-compatibility.ts,
+      packages/web-ui/src/lib/api-static.ts, packages/web-ui/src/lib/utils/plan-resource-links.ts,
+      packages/web-ui/src/lib/utils/plan-embedded-content.ts,
+      tests/daemon-api/plan-resources.test.ts, tests/export/plan-resources.test.ts,
+      tests/web-ui/api-static.test.ts, tests/web-ui/plan-resource-links.test.ts. Commands run: kspec
+      task get, kspec item get, kspec review get/for-task/add/open/comment, git diff/show, rg AC
+      annotations, kspec validate, npm test, two ad hoc Node reproductions for resource-storage gate
+      and static symlink export. Claims verified: prior bytes_url/cache-list blockers were
+      addressed; resource API still misses resource_storage gate; static export silently drops
+      symlink-escaping resources. Categories searched: correctness, edge cases, error handling,
+      security/path escape, test quality, integration/cache/static."
+    name: review evidence log
+    required: false
+    created_at: 2026-05-25T17:07:19.334Z
+    completed_at: 2026-05-25T17:07:19.334Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Schema and references OK; command exited 6 due existing warnings (reference, alignment,
+      completeness/annotation warnings). No new task-specific validation error observed.
+    name: kspec validate
+    required: false
+    runner: kspec validate
+    created_at: 2026-05-25T17:07:26.684Z
+    completed_at: 2026-05-25T17:07:26.684Z
+events:
+  - _ulid: 01KSG0WNA25E954PEJE07FPZ8B
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-25T16:53:32.610Z
+  - _ulid: 01KSG0XDPKKPNXDDKT3N2GJN9H
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-25T16:53:57.587Z
+  - _ulid: 01KSG1565NBHR5SWREKZHES49W
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSG153SB7EB18PJ6KT9HD9MM
+    timestamp: 2026-05-25T16:58:12.022Z
+  - _ulid: 01KSG15CWPSR1AQN1VB1A5YN8R
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSG15AFBMQSS730QFQJGE8TM
+    timestamp: 2026-05-25T16:58:18.902Z
+  - _ulid: 01KSG1714E7BP5T40Y3D0NKK5R
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSG16YWFDTBRV3BN988YFV1W
+    timestamp: 2026-05-25T16:59:12.398Z
+  - _ulid: 01KSG1NR1GAH4Q7KX0DW177FQX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-25T17:07:14.608Z
+  - _ulid: 01KSG1NZ8NR1S86M644014HYCY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-25T17:07:22.005Z
+  - _ulid: 01KSG1P6F45PW5NTJRPGTAQ8XJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-25T17:07:29.380Z
+  - _ulid: 01KSG1PKKPSYMZZ0BV374JJKEW
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-25T17:07:42.838Z
+  - _ulid: 01KSG1PKKPWC025BTHVE0CS6BT
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-25T17:07:42.838Z
+  - _ulid: 01KSG3866QX4PWDPW1GFJFKB4J
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSG153SB7EB18PJ6KT9HD9MM
+    timestamp: 2026-05-25T17:34:47.511Z
+  - _ulid: 01KSG38G8XEWVWN3TMRB7QEKS2
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSG153SB7EB18PJ6KT9HD9MM
+    timestamp: 2026-05-25T17:34:57.821Z
+  - _ulid: 01KSG38ZG166CZFFT9KXP6YSVX
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSG15AFBMQSS730QFQJGE8TM
+    timestamp: 2026-05-25T17:35:13.409Z
+  - _ulid: 01KSG399B4WJX47CG4DBV75T57
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSG15AFBMQSS730QFQJGE8TM
+    timestamp: 2026-05-25T17:35:23.492Z
+  - _ulid: 01KSG3A132PMSEYYDHV8M7AKJT
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSG16YWFDTBRV3BN988YFV1W
+    timestamp: 2026-05-25T17:35:47.810Z
+  - _ulid: 01KSG3AD1A07Y64KFNS7KZQZJ5
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSG16YWFDTBRV3BN988YFV1W
+    timestamp: 2026-05-25T17:36:00.042Z
+examined_commit: 58df2d14fb652674f714e9bbd14bea9318431ccb
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XB035D6C69W9TR1JZDR4P"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSG153SB7EB18PJ6KT9HD9MM
+    anchor:
+      type: code
+      commit: 58df2d14fb652674f714e9bbd14bea9318431ccb
+      line_end: 157
+      line_start: 157
+      path: packages/daemon/src/routes/plan-resources.ts
+      side: head
+    entries:
+      - _ulid: 01KSG153SCBWEMWX0Q416XK4E5
+        author: Jacob Chapel
+        body: 'MUST-FIX: Plan resource routes only call requirePlanFolderStorage(), so a kynetic 1.2 project
+          with folder-backed plans but no resource_storage.format: entity_scoped is accepted. The
+          resource API is part of the entity-scoped local resource contract and should surface the
+          shared entity_storage_incompatible 409 envelope for incompatible resource storage.
+          Evidence: I reproduced GET /api/plans/@test-plan/resources against a folder-backed project
+          missing resource_storage and it returned HTTP 200 {"resources":[]} instead of a 409
+          resource-storage incompatibility.'
+        created_at: 2026-05-25T16:58:09.580Z
+      - _ulid: 01KSG384HS7QYEG82JHWV99SX5
+        author: "@claude"
+        body: "Fixed: `resolvePlanForResources` now calls `requireResourceFolderStorage(ctx)` in addition to
+          `requirePlanFolderStorage(ctx)`. A 1.2 project with folder-backed plans but no
+          `resource_storage.format: entity_scoped` now surfaces the shared 409
+          `entity_storage_incompatible` envelope with `domain: 'resources'` and `field:
+          'resource_storage.format'`. New tests in `tests/daemon-api/plan-resources.test.ts`
+          (\"missing resource_storage declaration\" describe block) cover GET list, GET single, GET
+          bytes, POST, and DELETE on a folder-backed plan project that omits the resource storage
+          declaration."
+        created_at: 2026-05-25T17:34:45.816Z
+    kind: blocker
+    resolved_at: 2026-05-25T17:34:55.995Z
+    resolved_by: "@claude"
+  - _ulid: 01KSG15AFBMQSS730QFQJGE8TM
+    anchor:
+      type: code
+      commit: 58df2d14fb652674f714e9bbd14bea9318431ccb
+      line_end: 142
+      line_start: 138
+      path: src/export/json.ts
+      side: head
+    entries:
+      - _ulid: 01KSG15AFBVP9JG5B57MA9824V
+        author: Jacob Chapel
+        body: "MUST-FIX: exportPlanResources swallows copyResourceForStaticExport failures and silently
+          omits the resource. That violates ac-path-escape-rejected for static export: symlink
+          escapes must reject the operation with actionable guidance, not produce a successful
+          snapshot with the resource missing and the original ./resources link left unresolved.
+          Evidence: I generated a static snapshot for a plan whose declared resource path traversed
+          a symlinked resources/screenshots directory to an outside folder;
+          generateJsonSnapshot(..., { assetsOutputDir }) returned ok with resources: [] and
+          unchanged markdown instead of failing."
+        created_at: 2026-05-25T16:58:16.427Z
+      - _ulid: 01KSG38XTV2KX2MSJHH9T53KMY
+        author: "@claude"
+        body: "Fixed: `exportPlanResources` no longer swallows `copyResourceForStaticExport` failures. A new
+          `PlanResourceExportError` carries the plan ULID, the failing relative path, the resolver's
+          reason, and an actionable suggestion to fix the manifest or resources layout. The error is
+          exported from `src/export/index.ts` so CLI callers can identify and surface it. Symlink
+          escapes, intermediate symlinks, undeclared paths, and missing files all abort the export
+          with a single structured failure rather than producing a snapshot that silently omits the
+          resource while leaving the rewritten markdown pointing at a missing asset path. New tests
+          in `tests/export/plan-resources.test.ts` reproduce the symlink-escape scenario you
+          described and assert: (a) `generateJsonSnapshot` rejects with `PlanResourceExportError`,
+          (b) no bytes are written to the would-be exported path, and (c) the error carries plan
+          ULID, resource path, and reason."
+        created_at: 2026-05-25T17:35:11.707Z
+    kind: blocker
+    resolved_at: 2026-05-25T17:35:21.728Z
+    resolved_by: "@claude"
+  - _ulid: 01KSG16YWFDTBRV3BN988YFV1W
+    anchor:
+      type: code
+      commit: 58df2d14fb652674f714e9bbd14bea9318431ccb
+      line_end: 435
+      line_start: 430
+      path: packages/daemon/src/routes/plan-resources.ts
+      side: head
+    entries:
+      - _ulid: 01KSG16YWGEE1T96RNESN0J70Z
+        author: Jacob Chapel
+        body: "MUST-FIX: the POST upload path writes the temporary upload file under resourcesDir before
+          calling assertSafeResourceMutationPath(). If the owning plan resources/ directory is
+          already a symlink to an outside directory, fs.mkdir(..., {recursive:true}) accepts it and
+          fs.writeFile(tempPath, buffer) writes uploaded bytes outside the owning entity tree before
+          the later safety check rejects the destination and tries to clean up. This violates
+          ac-path-escape-rejected, which requires no file outside the owning resource tree to be
+          written. Validate the resources root/final mutation path before materialising upload
+          bytes, or stage the temp file somewhere not reachable through the untrusted resources/
+          tree."
+        created_at: 2026-05-25T16:59:10.096Z
+      - _ulid: 01KSG39ZBQEZ2P1837G9HVRC0A
+        author: "@claude"
+        body: 'Fixed: the POST upload path now validates the resource mutation safety BEFORE materialising
+          any bytes. `assertSafeResourceMutationPath` (which lstat-walks the resourcesDir and
+          intermediate segments, rejecting pre-existing symlinks) is called first; only after it
+          passes do we mkdir/write. Additionally, the temp upload file is now staged in `planDir`
+          directly, not under `resourcesDir` — even if a TOCTOU race swapped `resources/` for a
+          symlink between the check and the rename, the bytes still land inside the kspec-owned plan
+          directory rather than escaping the entity tree. New test in
+          `tests/daemon-api/plan-resources.test.ts` ("POST symlink safety" describe block)
+          reproduces the symlinked-`resources/`-root scenario: the POST returns 400
+          `invalid_resource_path`, the error message mentions "symlink", AND the outside directory
+          the symlink targets remains empty — proving no bytes were written before the safety gate
+          fired.'
+        created_at: 2026-05-25T17:35:46.039Z
+    kind: blocker
+    resolved_at: 2026-05-25T17:35:58.310Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-25T17:07:42.838Z
+created_at: 2026-05-25T16:53:32.610Z
+updated_at: 2026-05-25T17:35:58.310Z
+notes: []

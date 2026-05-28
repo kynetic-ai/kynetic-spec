@@ -1,0 +1,342 @@
+_ulid: 01KM27YNADEAT4CXPG9SRHYB6W
+slugs: []
+title: Review handle git worktree collisions between multiple project checkouts
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      ✗ Validation failed
+
+      ────────────────────────────────────────
+
+      Files checked: 10
+
+      Items checked: 554
+
+      Tasks checked: 0
+
+      Meta: 10 agents, 11 workflows, 10 conventions
+
+
+      Schema: OK
+
+
+      Reference errors: 3
+        ✗ @01KFM9SNV2QRRGREJ1HMZWXCFT
+          Reference "@01KFM9SNV2QRRGREJ1HMZWXCFT" not found
+          in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/modules/meta.yaml (relates_to)
+        ✗ @01KFM9X3C64AHJAD6J2YJZ3YA6
+          Reference "@01KFM9X3C64AHJAD6J2YJZ3YA6" not found
+          in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/modules/meta.yaml (relates_to)
+        ✗ @01KFM9G3BR4VFNBM2G7BGE5BZY
+          Reference "@01KFM9G3BR4VFNBM2G7BGE5BZY" not found
+          in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/modules/meta.yaml (relates_to)
+
+      Reference warnings: 1
+        ⚠ @skills
+          Orphaned skill directory 'skills' has no corresponding meta entry
+          in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+      Alignment warnings: 29
+        Orphaned specs (no tasks): 29
+          ○ Test Trait
+          ○ Filterable List Commands
+          ○ Dry Run Preview Mode
+          ... and 26 more
+
+      Alignment stats: 418/554 specs have tasks, 418 aligned
+
+
+      Completeness warnings: 397
+        Missing acceptance criteria: 1
+          ○ @01KJN1WT - Test Trait
+        Missing own AC coverage: 231
+          ! @spec-item - Spec Item
+            Uncovered: ac-item-1, ac-item-2
+          ! @ulid-system - ULID Identifier System
+            Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+          ! @slug-system - Slug Alias System
+            Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+          ... and 228 more
+        Invalid AC annotations: 165
+          ! AC annotation references '@slug' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/handle-git-worktree-collisions-between-multiple-project-checkouts-01km26db-review/tests/ac-annotation-validation.test.ts:6
+          ! AC annotation references '@my-spec' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/handle-git-worktree-collisions-between-multiple-project-checkouts-01km26db-review/tests/ac-annotation-validation.test.ts:88
+          ! AC annotation references '@my-spec' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/handle-git-worktree-collisions-between-multiple-project-checkouts-01km26db-review/tests/ac-annotation-validation.test.ts:91
+          ! AC annotation references '@spec-a' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/handle-git-worktree-collisions-between-multiple-project-checkouts-01km26db-review/tests/ac-annotation-validation.test.ts:124
+          ! AC annotation references '@spec-b' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/handle-git-worktree-collisions-between-multiple-project-checkouts-01km26db-review/tests/ac-annotation-validation.test.ts:128
+          ... and 160 more
+      Skills: OK (9 files checked) reports repo-wide pre-existing issues: 3 reference errors in
+      .kspec/modules/meta.yaml plus broader completeness/alignment warnings; no task-specific AC
+      coverage failure was identified in the touched workspace tests.
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-19T05:15:39.944Z
+    completed_at: 2026-03-19T05:15:39.944Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      > @kynetic-ai/spec@0.11.0 test
+
+      > node scripts/test.cjs tests/dispatch-workspace-config.test.ts
+      tests/dispatch-workspace-registry.test.ts
+
+
+       RUN  v4.0.17 /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/handle-git-worktree-collisions-between-multiple-project-checkouts-01km26db-review
+
+       ✓ tests/dispatch-workspace-registry.test.ts (25 tests) 24316ms
+           ✓ persists canonical workspace records in the shadow registry with required fields  442ms
+           ✓ persists a provisioning lifecycle record before the final ready snapshot  511ms
+           ✓ reloads registry state on startup and marks missing worktrees stale with recovery data  873ms
+           ✓ preserves a live active workspace role during periodic reconciliation  845ms
+           ✓ persists lifecycle transitions across explicit dispatch workspace lifecycle states  4042ms
+           ✓ keeps closing lifecycle when reviewer cleanup sees stale worker metadata  742ms
+           ✓ durably commits provisioning and reconciliation registry writes on the shadow branch  1938ms
+           ✓ raises actionable guidance when the registry write cannot be durably committed  1451ms
+           ✓ uses the shared dispatch shadow mutation lock for runtime registry writes  1311ms
+           ✓ suppresses registry write and commit when reconciliation produces no meaningful change  2330ms
+           ✓ performs registry write when a meaningful field changes between reconciliations  5711ms
+           ✓ does not create a shadow commit when reconciliation state is unchanged  3787ms
+       ✓ tests/dispatch-workspace-config.test.ts (19 tests) 31910ms
+           ✓ falls back to remote HEAD when dispatch.base_branch is unset  330ms
+           ✓ provisions a task worktree and records the resolved merge target without drift  2333ms
+           ✓ uses the provisioned worktree cwd for dispatched invocations  1861ms
+           ✓ fails with actionable guidance when the canonical branch is already attached in a foreign checkout  410ms
+           ✓ manual_merge config overrides auto-detection when gh is available  1322ms
+           ✓ pull_request config overrides auto-detection when gh is unavailable  1435ms
+           ✓ auto preserves environment-based detection  1403ms
+           ✓ auto-updates integration target when config changes and integration is pending  2453ms
+           ✓ throws with actionable guidance when config changes but integration is active  1873ms
+           ✓ error includes description and suggested resolution for active integration conflict  2211ms
+           ✓ dispatch prompt reflects updated integration target after re-provisioning  8416ms
+           ✓ preserves integration target when config matches existing record  6967ms
+
+       Test Files  2 passed (2)
+            Tests  44 passed (44)
+         Start at  22:15:35
+         Duration  33.10s (transform 1.70s, setup 15ms, import 2.13s, tests 56.23s, environment 0ms) passed (2 files, 44 tests).
+    name: workspace-focused-tests
+    required: true
+    runner: npm
+    created_at: 2026-03-19T05:16:09.521Z
+    completed_at: 2026-03-19T05:16:09.521Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full `npm test` failed: 4 files / 14 tests failed. Notable failures were in
+      `tests/agent-dispatch-engine.test.ts` (11 failures),
+      `tests/canonical-task-workspace-contract.test.ts` (timeout),
+      `tests/dispatch-runtime-bootstrap-contract.test.ts` (timeout), and `tests/review-cli.test.ts`
+      (`examined_commit` expected null, got the current commit)."
+    name: npm-test
+    required: true
+    runner: npm
+    created_at: 2026-03-19T05:17:15.974Z
+    completed_at: 2026-03-19T05:17:15.974Z
+events:
+  - _ulid: 01KM27YNADPM2JD6W7B49DA3RQ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-19T05:09:07.021Z
+  - _ulid: 01KM27ZCG77RB5QJSFYG959TT7
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-19T05:09:30.760Z
+  - _ulid: 01KM28AGJMERM3KN5GTTS563S3
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM28AGBQVF6F8ZGGBDSYHMAD
+    timestamp: 2026-03-19T05:15:35.380Z
+  - _ulid: 01KM28ANATAF7SVGF1A83YANRR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec-validate
+    timestamp: 2026-03-19T05:15:40.250Z
+  - _ulid: 01KM28BJ846QWMPWVAK60BF6KW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: workspace-focused-tests
+    timestamp: 2026-03-19T05:16:09.861Z
+  - _ulid: 01KM28DHEPD7EYHEB57AJ92AMJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM28DH0D3YVEZS8CRM86CWGJ
+    timestamp: 2026-03-19T05:17:14.582Z
+  - _ulid: 01KM28DK3TBQQCAK8E4PQT4XEJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm-test
+    timestamp: 2026-03-19T05:17:16.282Z
+  - _ulid: 01KM28DMKBJR4NEQ3K0MR4RDHA
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM28DM1A8DBTQGDMJKAWBBJD
+    timestamp: 2026-03-19T05:17:17.803Z
+  - _ulid: 01KM28DNV647CRWA62F64GHNWJ
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-19T05:17:19.078Z
+  - _ulid: 01KM28DNV6TGJ83DN2KP0BARX0
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-19T05:17:19.078Z
+  - _ulid: 01KM2AF5Z621TZ3MVYF2KAVKDC
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM28AGBQVF6F8ZGGBDSYHMAD
+    timestamp: 2026-03-19T05:53:05.510Z
+  - _ulid: 01KM2AF6KMBHMN5B00Q9NAEXE9
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM28DH0D3YVEZS8CRM86CWGJ
+    timestamp: 2026-03-19T05:53:06.164Z
+  - _ulid: 01KM2AFJ78NE79NNDBX9TXAX2W
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KM28DH0D3YVEZS8CRM86CWGJ
+    timestamp: 2026-03-19T05:53:18.056Z
+  - _ulid: 01KM2AFJTPE7Q6HK4DVBWBCS1Q
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KM28AGBQVF6F8ZGGBDSYHMAD
+    timestamp: 2026-03-19T05:53:18.678Z
+examined_commit: 0e22dbfff8e98a3aeb3bf8f73c4a569d5b0748b1
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM26DB8RCM6D2T1SYZGZJR9X"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM28AGBQVF6F8ZGGBDSYHMAD
+    anchor:
+      type: code
+      commit: 0e22dbfff8e98a3aeb3bf8f73c4a569d5b0748b1
+      line_end: 2378
+      line_start: 2374
+      path: src/agent-runtime/workspace.ts
+      side: head
+    entries:
+      - _ulid: 01KM28AGBRK38ACXGR1DE45MTM
+        author: Jacob Chapel
+        body: Scoping lookup to the current  here means a sibling checkout's open record is now treated as
+          'missing', so provisioning falls through to creating a fresh workspace record. But
+          registry writes still enforce a global single-open-record-per-task rule in  (), which will
+          reject the save with  as soon as that foreign record already exists. In the cross-checkout
+          scenario from the task description, the second checkout still cannot provision
+          successfully; it just fails later during registry persistence instead of git worktree
+          creation.
+        created_at: 2026-03-19T05:15:35.160Z
+      - _ulid: 01KM2AF5S28J1BCASWSZ86S63Y
+        author: Jacob Chapel
+        body: Addressed in c6a9f65fc8ec1d98cd25e81b6c318b02a4b6392b. Restored the global
+          single-open-workspace-per-task registry invariant and added an early provisioning guard
+          for foreign-root open workspace records, so the collision now surfaces as actionable
+          ownership guidance instead of a late registry write failure.
+        created_at: 2026-03-19T05:53:05.313Z
+    kind: blocker
+    resolved_at: 2026-03-19T05:53:18.490Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KM28DH0D3YVEZS8CRM86CWGJ
+    anchor:
+      type: code
+      commit: 0e22dbfff8e98a3aeb3bf8f73c4a569d5b0748b1
+      line_end: 2378
+      line_start: 2374
+      path: src/agent-runtime/workspace.ts
+      side: head
+    entries:
+      - _ulid: 01KM28DH0DTP9W5N2B6VPJTGY8
+        author: Jacob Chapel
+        body: "Scoping lookup to the current `worktree_root` here means a sibling checkout's open record is
+          now treated as missing, so provisioning falls through to creating a fresh workspace
+          record. Registry persistence still enforces a global single-open-record-per-task rule in
+          `validateSingleOpenWorkspacePerTaskRaw` (`src/parser/dispatch-workspaces.ts`), so once a
+          foreign-root record already exists this path still fails with `Task <ref> has multiple
+          active dispatch workspace records ...`. That leaves the cross-checkout collision
+          unresolved: the second checkout no longer dies in `git worktree add`, but it still cannot
+          provision successfully."
+        created_at: 2026-03-19T05:17:14.125Z
+      - _ulid: 01KM2AF6D9MFCW7V08GMTBKG62
+        author: Jacob Chapel
+        body: "Addressed in c6a9f65fc8ec1d98cd25e81b6c318b02a4b6392b. The task path no longer falls through
+          to save a second open workspace record: provisioning now detects a foreign owner before
+          persistence and returns actionable checkout-specific guidance."
+        created_at: 2026-03-19T05:53:05.961Z
+    kind: blocker
+    resolved_at: 2026-03-19T05:53:17.874Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KM28DM1A8DBTQGDMJKAWBBJD
+    entries:
+      - _ulid: 01KM28DM1AWM8R4FWKRVN05YCC
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          Files read: src/agent-runtime/workspace.ts, src/parser/dispatch-workspaces.ts,
+          tests/dispatch-workspace-config.test.ts, tests/dispatch-workspace-registry.test.ts.
+
+          Commands run: git diff dev...HEAD; kspec task get @01KM26DB8RCM6D2T1SYZGZJR9X; kspec item
+          get @dispatch-workspace-configuration; kspec validate; rg -n "AC:
+          @dispatch-workspace-configuration|AC: @trait-error-guidance" tests; npm test; npm test --
+          tests/dispatch-workspace-config.test.ts tests/dispatch-workspace-registry.test.ts.
+
+          Claims verified: focused workspace tests pass; full npm test fails; registry persistence
+          still applies the task-global single-open-workspace constraint.
+
+          Categories searched: correctness, integration, error handling, test quality.
+        created_at: 2026-03-19T05:17:17.226Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-19T05:17:19.077Z
+created_at: 2026-03-19T05:09:07.021Z
+updated_at: 2026-03-19T05:53:18.490Z
+notes: []

@@ -1,0 +1,145 @@
+_ulid: 01KM9BYS6V3FV16NX8F9JZK5TN
+slugs: []
+title: Review add-missing-ac-test-annotations-for-storage-split-specs (cycle 2)
+author: Test User
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Full suite failed twice in tests/agent-invocation-lifecycle.test.ts with 15s timeout
+      failures in timeout-handling cases. Isolated rerun of that file passed, indicating suite-level
+      flakiness but not a mergeable green build.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-21T23:41:53.633Z
+    completed_at: 2026-03-21T23:41:53.633Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with existing repository-wide warnings only; no new validation errors in
+      this snapshot.
+    name: kspec validate --warnings-ok
+    required: false
+    runner: kspec
+    created_at: 2026-03-21T23:41:55.655Z
+    completed_at: 2026-03-21T23:41:55.655Z
+events:
+  - _ulid: 01KM9BYS6V1MBCCTGVMP0B5SCH
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T23:33:46.331Z
+  - _ulid: 01KM9BZGBKFRRMC91RQ09NE886
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T23:34:10.035Z
+  - _ulid: 01KM9CDMDMPT7J7ART2VTK27V1
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM9CDM3AZD0APHSATCB4TNG8
+    timestamp: 2026-03-21T23:41:52.948Z
+  - _ulid: 01KM9CDNDC4WZMDHHHXNSEQECV
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-21T23:41:53.964Z
+  - _ulid: 01KM9CDPC30R6Z2XDJ0F926A7G
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM9CDP2TG3ZTA00GHTHBC8KJ
+    timestamp: 2026-03-21T23:41:54.947Z
+  - _ulid: 01KM9CDQC8GXEDS6E09607WVNF
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --warnings-ok
+    timestamp: 2026-03-21T23:41:55.976Z
+  - _ulid: 01KM9CE1GF0WDKABSRT10EEBEQ
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-21T23:42:06.351Z
+  - _ulid: 01KM9CE1GFRZ1XV4NDZNDK462X
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-21T23:42:06.351Z
+examined_commit: e85852381a7bdabdd4cae7f7fd041c9e3d106e4d
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM99VKMSAS3JBX7S3QWBHRSV"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM9CDM3AZD0APHSATCB4TNG8
+    anchor:
+      type: code
+      commit: e85852381a7bdabdd4cae7f7fd041c9e3d106e4d
+      line_end: 485
+      line_start: 463
+      path: tests/agent-invocation-lifecycle.test.ts
+      side: head
+    entries:
+      - _ulid: 01KM9CDM3A3JV0TXJEP0Q7CAD3
+        author: Test User
+        body: The merge gate is still red on this snapshot. I ran `npm test` twice and both full-suite runs
+          failed in timeout-handling tests in this file (first `should close session as timed_out
+          when timeout is reached`, then `should dispatch ACP cancel request on timeout` at this
+          block) with the 15s test timeout. I reran this file in isolation and it passed, so this
+          looks like suite-level flakiness rather than a regression from the AC annotation changes,
+          but we still cannot approve or merge while `npm test` is failing on the branch. Please
+          stabilize or explain the timeout behavior and resubmit with a clean full-suite run.
+        created_at: 2026-03-21T23:41:52.618Z
+    kind: blocker
+  - _ulid: 01KM9CDP2TG3ZTA00GHTHBC8KJ
+    entries:
+      - _ulid: 01KM9CDP2T90A90J8N185P1THJ
+        author: Test User
+        body: "Evidence log: Files read: AGENTS.md, kspec-agents.md, tests/split-backend.test.ts,
+          tests/task-data-manager.test.ts, tests/per-task-files.test.ts,
+          tests/agent-invocation-lifecycle.test.ts, package.json, scripts/test.cjs. Commands run:
+          git diff --stat/base diff, kspec task get, kspec review for-task/get, kspec item get for
+          @task-directory-storage/@task-listing-performance/@task-detail-loading/@task-storage-acti\
+          vation, rg AC annotation search, kspec review open, kspec validate, kspec validate
+          --warnings-ok, npm test (twice), npm test -- tests/agent-invocation-lifecycle.test.ts, git
+          branch --all --contains. Claims verified: the worker’s two prior blockers are addressed in
+          code; targeted AC annotations now exist and the new/expanded tests match the relevant ACs;
+          the branch still does not produce a passing full-suite run. Categories searched:
+          correctness, test quality, integration, edge cases, error handling; no new AC-coverage
+          defects found, full-suite stability remains blocking."
+        created_at: 2026-03-21T23:41:54.651Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-21T23:42:06.351Z
+created_at: 2026-03-21T23:33:46.331Z
+updated_at: 2026-03-21T23:42:06.351Z
+notes: []

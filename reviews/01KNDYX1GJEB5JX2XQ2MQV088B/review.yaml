@@ -1,0 +1,184 @@
+_ulid: 01KNDYX1GJEB5JX2XQ2MQV088B
+slugs: []
+title: "Plan review: Configurable Daemon Runtime (round 3)"
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "The current @daemon-runtime-adapter AC set is atomic and behavior-focused. Round-3 fixes
+      are present: ac-default-bun, ac-http-parity, ac-websocket-parity, and ac-auto-start-runtime
+      are runtime-generic, and the implementation-specific ac-compiled-output AC is no longer
+      present."
+    name: AC quality
+    required: true
+    created_at: 2026-04-05T04:38:10.447Z
+    completed_at: 2026-04-05T04:38:10.447Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 11 ACs on @daemon-runtime-adapter are claimed by at least one task. Coverage spans
+      runtime selection/defaulting, HTTP and WebSocket parity, connection state, degradation paths,
+      health response, graceful shutdown, auto-start, and missing-runtime errors.
+    name: AC coverage
+    required: true
+    created_at: 2026-04-05T04:38:10.516Z
+    completed_at: 2026-04-05T04:38:10.516Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate currently fails due to unrelated pre-existing repository
+      reference/completeness issues outside this plan (for example missing refs @cmd-derive and
+      @session-branch-worktree). No plan-specific validation error was surfaced during this review.
+    name: Workspace validate context
+    required: false
+    created_at: 2026-04-05T04:38:10.557Z
+    completed_at: 2026-04-05T04:38:10.557Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Plan refs resolve cleanly: @daemon-server and @trait-websocket-protocol exist, task
+      dependency refs point to tasks defined in the plan, and AC identifiers on
+      @daemon-runtime-adapter are sequential and internally consistent."
+    name: Cross-reference validation
+    required: true
+    created_at: 2026-04-05T04:38:10.568Z
+    completed_at: 2026-04-05T04:38:10.568Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Reviewed @daemon-server and @trait-websocket-protocol alongside the plan. The round-3 AC
+      edits remain complementary to existing daemon/server and websocket trait contracts; no
+      overlapping or contradictory behavior introduced.
+    name: Spec conflicts with existing specs
+    required: true
+    created_at: 2026-04-05T04:38:29.046Z
+    completed_at: 2026-04-05T04:38:29.046Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Rechecked the three original blockers. ws.data abstraction is still explicitly planned,
+      the missing pong-handler behavior is still covered in the degradation task, and bun-specific
+      tsconfig settings remain called out in the compile task. The round-3 AC cleanup did not
+      regress any prior fix.
+    name: Round-2 blocker regression check
+    required: true
+    created_at: 2026-04-05T04:38:29.087Z
+    completed_at: 2026-04-05T04:38:29.087Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "The dependency chain is coherent: build pipeline first, then config/state abstraction,
+      then adapter, then spawn/degradation, with health and E2E follow-ons after runtime support
+      exists. No circular dependencies or priority inversions were found in the current plan."
+    name: Dependency ordering
+    required: true
+    created_at: 2026-04-05T04:38:29.111Z
+    completed_at: 2026-04-05T04:38:29.111Z
+events:
+  - _ulid: 01KNDYX1GJ3SKC5PFB59KGWM8A
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-05T04:37:31.794Z
+  - _ulid: 01KNDYXDYGKXF6MSG5C6EK0YQQ
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-05T04:37:44.528Z
+  - _ulid: 01KNDYY88NE05Z82G65M8Z4NHY
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC quality
+    timestamp: 2026-04-05T04:38:11.478Z
+  - _ulid: 01KNDYY9WCF0VVV7R01A97B2MN
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage
+    timestamp: 2026-04-05T04:38:13.132Z
+  - _ulid: 01KNDYYBG7AY52K5QRXBX7MSX9
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: skipped
+      name: Workspace validate context
+    timestamp: 2026-04-05T04:38:14.791Z
+  - _ulid: 01KNDYYD3BSPWDB2S4SQABBKDS
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Cross-reference validation
+    timestamp: 2026-04-05T04:38:16.427Z
+  - _ulid: 01KNDYYTE7ADDNY3JQ3J5WNQY2
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec conflicts with existing specs
+    timestamp: 2026-04-05T04:38:30.087Z
+  - _ulid: 01KNDYYW1CASSQ81J8JA9DEFQH
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Round-2 blocker regression check
+    timestamp: 2026-04-05T04:38:31.725Z
+  - _ulid: 01KNDYYXMVT069CPKN28NV5XTH
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-04-05T04:38:33.372Z
+  - _ulid: 01KNDYZ57STA28XXBG4RTRJG4E
+    actor: "@codex"
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-05T04:38:41.145Z
+  - _ulid: 01KNDYZ57SBS2Y9G0VYSAGP958
+    actor: "@codex"
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-05T04:38:41.145Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-configurable-daemon-runtime"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: "@codex"
+    role: reviewer
+    created_at: 2026-04-05T04:38:41.145Z
+created_at: 2026-04-05T04:37:31.794Z
+updated_at: 2026-04-05T04:38:41.145Z
+notes: []

@@ -1,0 +1,122 @@
+_ulid: 01KKZYN04K85BTGN92Y1JNFYCH
+slugs: []
+title: Review task-code-diff-viewer (cycle 5)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 5857 pass, 1 fail (pre-existing review-cli.test.ts examined_commit null check), 3 skipped
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T07:48:25.115Z
+    completed_at: 2026-03-18T07:48:25.115Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Zero errors in diff components; all errors are pre-existing in other files
+    name: svelte-check
+    required: true
+    runner: svelte-check
+    created_at: 2026-03-18T07:48:32.573Z
+    completed_at: 2026-03-18T07:48:32.573Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 6 ACs (ac-1 through ac-6) annotated in both implementation (7 files) and test
+      (code-diff-viewer.spec.ts, 17 E2E tests)
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-18T07:48:40.551Z
+    completed_at: 2026-03-18T07:48:40.551Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: E2E tests require daemon; skipped in dispatch env (daemon-blocked)
+    name: e2e
+    required: false
+    runner: playwright
+    created_at: 2026-03-18T07:48:48.170Z
+    completed_at: 2026-03-18T07:48:48.170Z
+events:
+  - _ulid: 01KKZYN04KV8T7B1S5AQMBZ36S
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T07:48:04.371Z
+  - _ulid: 01KKZYNAC7FAW3M9G1052S9M6R
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T07:48:14.856Z
+  - _ulid: 01KKZYNMJMTS5NQKVT5C9QG5D6
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T07:48:25.301Z
+  - _ulid: 01KKZYNVVJ2J4HS22A0H9WKRMJ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: svelte-check
+    timestamp: 2026-03-18T07:48:32.754Z
+  - _ulid: 01KKZYP3JX699EV65E5H8Y9HQM
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-18T07:48:40.669Z
+  - _ulid: 01KKZYPB1FB0VNMZF6WV205PQK
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: skipped
+      name: e2e
+    timestamp: 2026-03-18T07:48:48.303Z
+  - _ulid: 01KKZYPJV4H98EZB2D9MFZ99XX
+    actor: pr-reviewer@kspec
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-18T07:48:56.293Z
+  - _ulid: 01KKZYPJV5EM5SB9C2GWSQYN2E
+    actor: pr-reviewer@kspec
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T07:48:56.293Z
+examined_commit: 3a134c292f6b4907a5072a8b14ede10505561779
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-code-diff-viewer"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer@kspec
+    role: reviewer
+    created_at: 2026-03-18T07:48:56.175Z
+created_at: 2026-03-18T07:48:04.371Z
+updated_at: 2026-03-18T07:48:56.175Z
+notes: []

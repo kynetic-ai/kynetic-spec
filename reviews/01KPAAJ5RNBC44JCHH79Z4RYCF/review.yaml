@@ -1,0 +1,120 @@
+_ulid: 01KPAAJ5RNBC44JCHH79Z4RYCF
+slugs: []
+title: Review @01KNXYJ5XEHD54A46S1988T3CV
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Pass on reviewed snapshot 8527f5cea4d38938bcde4dbbc64aba92e315baf0: 2181/2181 suites
+      passed, 7992/7997 tests passed, 5 skipped. Verified by full npm test run."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-16T05:11:02.921Z
+    completed_at: 2026-04-16T05:11:02.921Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: RELEASE_NOTES.md, src/parser/release-notes.ts,
+      src/cli/commands/release-notes.ts, src/cli/commands/upgrade.ts, package.json,
+      src/cli/index.ts, src/cli/commands/index.ts, tests/release-notes-command.test.ts,
+      tests/release-notes-parser.test.ts, tests/upgrade-command.test.ts, rendered release skill
+      files. Commands run: git diff/stat, kspec task get, kspec item get, rg AC scans, kspec
+      validate, base-branch kspec validate, npm test, node dist/cli/index.js release-notes, node
+      dist/cli/index.js release-notes --from 0.10.0 --to 0.12.0 --json, parser helper
+      load/get/render checks. Claims verified: command outputs authored markdown; range output is
+      chronological; upgrade helper returns intervening versions only; full suite passes. Categories
+      searched: correctness, edge cases, error handling, test quality, integration."
+    name: review-evidence
+    required: false
+    runner: manual
+    created_at: 2026-04-16T05:11:05.739Z
+    completed_at: 2026-04-16T05:11:05.739Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Fails on reviewed snapshot and on integration base
+      2d24a0b0a4d99e19df22ac5789c627697ac962be with identical pre-existing shadow/meta issues
+      (schema error in .kspec/modules/meta.yaml plus longstanding warnings). Not introduced by this
+      task.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-16T05:11:08.695Z
+    completed_at: 2026-04-16T05:11:08.695Z
+events:
+  - _ulid: 01KPAAJ5RMMWRMCPNCEM775SVA
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-16T05:00:02.708Z
+  - _ulid: 01KPAAJPH4MY7S35VKWA8PY1S0
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-16T05:00:19.876Z
+  - _ulid: 01KPAB6BES0NZ4GZYGRT0T4JRV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-16T05:11:03.897Z
+  - _ulid: 01KPAB6E8PP3QE880HERMR4S6N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-04-16T05:11:06.774Z
+  - _ulid: 01KPAB6H4P1W40A147Y10E27XF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-16T05:11:09.718Z
+  - _ulid: 01KPAB6X4M1YB229AKF6R7A60W
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-16T05:11:22.005Z
+  - _ulid: 01KPAB6X4NB0MESZAMS5HEX8QM
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-16T05:11:22.005Z
+examined_commit: 8527f5cea4d38938bcde4dbbc64aba92e315baf0
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNXYJ5XEHD54A46S1988T3CV"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-16T05:11:22.004Z
+created_at: 2026-04-16T05:00:02.709Z
+updated_at: 2026-04-16T05:11:22.005Z
+notes: []

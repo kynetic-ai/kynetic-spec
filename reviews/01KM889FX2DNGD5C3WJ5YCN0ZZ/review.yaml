@@ -1,0 +1,148 @@
+_ulid: 01KM889FX2DNGD5C3WJ5YCN0ZZ
+slugs: []
+title: Review per-task core data and notes files (cycle 15)
+author: Jacob Chapel
+checks:
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 6 due pre-existing repo-wide warnings only; schema and references passed, no
+      task-specific validation errors found during review.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-21T13:16:51.521Z
+    completed_at: 2026-03-21T13:16:51.521Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 302 test files passed; 6888 tests passed, 3 skipped; exit 0.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-21T13:16:52.513Z
+    completed_at: 2026-03-21T13:16:52.513Z
+events:
+  - _ulid: 01KM889FX1NHYNJAFQ5SKMZQM2
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T13:10:28.514Z
+  - _ulid: 01KM889PJHQ7377CEHD8SDPQAW
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T13:10:35.345Z
+  - _ulid: 01KM88MXKGPXYJFZ7RMB8VDRTB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM88MX9YPZDVCMVKKK3YE5XD
+    timestamp: 2026-03-21T13:16:42.992Z
+  - _ulid: 01KM88N685SFBC8WJY6D177XGC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-03-21T13:16:51.845Z
+  - _ulid: 01KM88N785DMGVECXKQ17FWJWH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-21T13:16:52.869Z
+  - _ulid: 01KM88NZ9GW3VYXTMFY71YKJCW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM88NZ0J44ZQVWB2K98WQYSG
+    timestamp: 2026-03-21T13:17:17.488Z
+  - _ulid: 01KM88P39NDSJ449N6W5GJFGFB
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-21T13:17:21.589Z
+  - _ulid: 01KM88P39NYKCFPQFD1HZ01XE3
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-21T13:17:21.589Z
+examined_commit: 4245fa4dfadcd899df46ee3bcf8b1c7ec90f97b6
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YET1A7XY9D0V3YQ9DRASG"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM88MX9YPZDVCMVKKK3YE5XD
+    anchor:
+      type: code
+      commit: 4245fa4dfadcd899df46ee3bcf8b1c7ec90f97b6
+      line_end: 534
+      line_start: 492
+      path: packages/daemon/src/routes/diff.ts
+      side: head
+    entries:
+      - _ulid: 01KM88MX9YFH129Y0HDNE402V5
+        author: Jacob Chapel
+        body: The daemon still reads task review subjects through the legacy loadAllTasks(ctx) path here. In
+          split storage, that helper only scans *.tasks.yaml / project.tasks.yaml entries and never
+          loads tasks/<ulid>/task.yaml or notes.yaml (see src/parser/yaml.ts:839-872), so this
+          response is assembled from the lean index instead of the real per-task files. The
+          immediate regression is that reviewed task content loses split-only detail such as
+          description and notes, and the same raw loader is still used in multiple daemon routes
+          (tasks.ts, items.ts, sessions.ts, etc.). The CLI was switched to
+          resolveTaskDataManager(ctx).loadAllTasks(ctx), but the daemon/web surface is still
+          incomplete in this snapshot.
+        created_at: 2026-03-21T13:16:42.686Z
+    kind: blocker
+  - _ulid: 01KM88NZ0J44ZQVWB2K98WQYSG
+    entries:
+      - _ulid: 01KM88NZ0KG1NJCAQQM0KYTEJ4
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: src/parser/split-backend.ts,
+          src/parser/task-data-manager.ts, src/parser/yaml.ts, src/cli/commands/task.ts,
+          packages/daemon/src/routes/tasks.ts, packages/daemon/src/routes/triage.ts,
+          packages/daemon/src/routes/sessions.ts, packages/daemon/src/routes/diff.ts,
+          src/schema/spec.ts, tests/per-task-files.test.ts, tests/task-atomic-writes.test.ts,
+          tests/task-rebuild-index.test.ts, tests/split-backend.test.ts. Commands run: git diff
+          --stat/name-only, kspec task get, kspec review for-task, kspec item get
+          @task-core-data-file, kspec item get @task-notes-file, kspec validate, rg AC annotations,
+          rg loadAllTasks/resolveTaskDataManager usage, npm test. Claims verified: full test suite
+          passes; CLI/task paths are largely switched to resolveTaskDataManager; split-mode daemon
+          paths still contain raw loadAllTasks call sites. Categories searched: correctness (found
+          blocker in daemon read path), integration (found blocker), tests/AC coverage (coverage
+          present in tests/per-task-files.test.ts), edge cases (migration gate and note-only/history
+          paths inspected), error handling (validate warnings only, no new task-specific errors),
+          security (no relevant issues found in inspected change set)."
+        created_at: 2026-03-21T13:17:17.203Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-21T13:17:21.589Z
+created_at: 2026-03-21T13:10:28.514Z
+updated_at: 2026-03-21T13:17:21.589Z
+notes: []

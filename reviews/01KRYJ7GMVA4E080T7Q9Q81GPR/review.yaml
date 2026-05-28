@@ -1,0 +1,262 @@
+_ulid: 01KRYJ7GMVA4E080T7Q9Q81GPR
+slugs: []
+title: "Plan review: Daemon Dispatch OOM Hardening Spec Alignment"
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation task Covers line uses shorthand/non-existent refs instead of exact AC ids; API
+      task points at @daemon-command-api ac-task-storage-incompatibility-conflict-response, which
+      should not be added.
+    name: Coverage mapping
+    required: true
+    created_at: 2026-05-18T22:12:12.818Z
+    completed_at: 2026-05-18T22:12:12.818Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with pre-existing reference warnings only.
+    name: kspec validate --refs --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-18T22:12:12.936Z
+    completed_at: 2026-05-18T22:12:12.936Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@api-contract already owns task-storage incompatibility API response ACs;
+      @task-daemon-api-task-storage-incompatibility-errors is in_progress. Draft duplicates this
+      under @daemon-command-api/@daemon-entity-cache."
+    name: Existing spec ownership
+    required: true
+    created_at: 2026-05-18T22:12:32.909Z
+    completed_at: 2026-05-18T22:12:32.909Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Spec update task is first, implementation tasks depend on it, and final validation depends
+      on implementation tasks. No cycle found in the draft task graph.
+    name: Dependency ordering
+    required: true
+    created_at: 2026-05-18T22:12:45.384Z
+    completed_at: 2026-05-18T22:12:45.384Z
+events:
+  - _ulid: 01KRYJ7GMVTZ5CQV8B6YTAAT65
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-18T22:10:14.299Z
+  - _ulid: 01KRYJ84YJER6VAFYNR31J10FQ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-18T22:10:35.091Z
+  - _ulid: 01KRYJ8KG8BH0BYHGG5DAHVEA0
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRYJ8HJ1ZC3812S5MAQDBDGG
+    timestamp: 2026-05-18T22:10:49.992Z
+  - _ulid: 01KRYJ9171HAC921GQCV11JBWE
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRYJ8ZAFTW37KFDWAEVF195P
+    timestamp: 2026-05-18T22:11:04.033Z
+  - _ulid: 01KRYJ9DWWW2YTRN57GT0NPJC1
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRYJ9BYPYYCNF1ZF91ATA6HS
+    timestamp: 2026-05-18T22:11:17.020Z
+  - _ulid: 01KRYJ9VFKNEZNZC791EQ9X1TY
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KRYJ9SJWDMTXE409ED0RNABA
+    timestamp: 2026-05-18T22:11:30.931Z
+  - _ulid: 01KRYJA84TWKC34T44WSJSRQPA
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KRYJA66X1KF42A8MNRVTJCVR
+    timestamp: 2026-05-18T22:11:43.898Z
+  - _ulid: 01KRYJAKVH8YCK8E0QJR8GPHH8
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KRYJAHV4SHZBKWA09W5YZSAQ
+    timestamp: 2026-05-18T22:11:55.889Z
+  - _ulid: 01KRYJB6ANQT1JQ33VCGKJ7796
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Coverage mapping
+    timestamp: 2026-05-18T22:12:14.805Z
+  - _ulid: 01KRYJB9GA9P89QE8A1JVXM9RV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --refs --warnings-ok
+    timestamp: 2026-05-18T22:12:18.058Z
+  - _ulid: 01KRYJBT0FWKTWH3H2DYWDX40D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Existing spec ownership
+    timestamp: 2026-05-18T22:12:34.959Z
+  - _ulid: 01KRYJC64DYYEH3PPJ1R3R0D59
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-05-18T22:12:47.373Z
+  - _ulid: 01KRYJCK5FWM7JN8J2W3NS5G7P
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-18T22:13:00.719Z
+  - _ulid: 01KRYJCK5FXP3PHQEG2K8JTS4C
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-18T22:13:00.720Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-daemon-dispatch-oom-hardening-spec-alignment"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRYJ8HJ1ZC3812S5MAQDBDGG
+    anchor:
+      type: structured
+      ref: "@task-standardize-task-storage-incompatibility-api"
+      section: tasks
+    entries:
+      - _ulid: 01KRYJ8HJ203335AGK9SX1FFAC
+        author: Jacob Chapel
+        body: The task-storage API response work is duplicated and attached to the wrong owner.
+          @api-contract already owns this behavior through
+          ac-task-storage-incompatibility-conflict-status,
+          ac-task-storage-incompatibility-error-code, ac-task-storage-incompatibility-guidance,
+          ac-task-storage-incompatibility-not-not-found, and context ACs;
+          @task-daemon-api-task-storage-incompatibility-errors is already in_progress for that
+          scope. Do not add ac-task-storage-incompatibility-conflict-response to @daemon-command-api
+          or create a parallel implementation task. Retarget this plan to reference the existing
+          @api-contract ACs/task, or explicitly depend on/validate that existing task.
+        created_at: 2026-05-18T22:10:48.002Z
+    kind: blocker
+  - _ulid: 01KRYJ8ZAFTW37KFDWAEVF195P
+    anchor:
+      type: structured
+      field: ac-task-storage-incompatibility-conflict-response
+      ref: "@daemon-command-api"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KRYJ8ZAFJHXC8Y4C652XD5DG
+        author: Jacob Chapel
+        body: "The proposed AC is compound and mis-scoped: it combines HTTP status, error code, and recovery
+          guidance, and @daemon-command-api owns /api/command parity rather than task route
+          responses. The existing @api-contract already splits these into atomic ACs. Remove this AC
+          addition and use the existing @api-contract task-storage incompatibility AC ids in
+          Covers/validation."
+        created_at: 2026-05-18T22:11:02.095Z
+    kind: blocker
+  - _ulid: 01KRYJ9BYPYYCNF1ZF91ATA6HS
+    anchor:
+      type: structured
+      ref: "@task-validate-daemon-dispatch-oom-hardening-slice"
+      section: tasks
+    entries:
+      - _ulid: 01KRYJ9BYQPEP7FYDD4VCG4DHV
+        author: Jacob Chapel
+        body: "The Covers line is not machine-checkable and includes non-existent or shorthand references:
+          '@daemon-entity-cache task-storage incompatibility ACs', '@agent-invocation-lifecycle
+          daemon-proxy isolation ACs', '@dispatch-workspace-cleanup-policy preservation diagnostic
+          ACs', and @daemon-command-api ac-task-storage-incompatibility-conflict-response. Covers
+          lines must name exact AC ids that exist. Replace the shorthand with the exact AC ids and
+          use @api-contract for task-storage API response ACs."
+        created_at: 2026-05-18T22:11:15.031Z
+    kind: blocker
+  - _ulid: 01KRYJ9SJWDMTXE409ED0RNABA
+    anchor:
+      type: structured
+      ref: "@dispatch-event-envelope"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KRYJ9SJW8F1CYG03PFTYTXRR
+        author: Jacob Chapel
+        body: "The two proposed EventBus memory ACs use implementation-specific terms ('correlation-depth
+          metadata' and 'delivery bookkeeping'). Reword them as behavioral resource-lifetime
+          contracts: completed/aged-out event lineage and source-ordering state must not accumulate
+          beyond the recent-event/delivery lifetime, without naming internal maps or metadata
+          structures."
+        created_at: 2026-05-18T22:11:28.988Z
+    kind: question
+  - _ulid: 01KRYJA66X1KF42A8MNRVTJCVR
+    anchor:
+      type: structured
+      field: ac-invocation-lifecycle-helper-commands-do-not-proxy
+      ref: "@agent-invocation-lifecycle"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KRYJA66Y4SDBWDZTV1JSVFNT
+        author: Jacob Chapel
+        body: "This AC is compound: it asserts both daemon-proxy suppression and preservation of
+          mutation-safety environment. Split those into separate ACs, or keep the
+          mutation-safety/env preservation detail in the implementation task if existing invocation
+          ACs already own that behavior."
+        created_at: 2026-05-18T22:11:41.918Z
+    kind: question
+  - _ulid: 01KRYJAHV4SHZBKWA09W5YZSAQ
+    anchor:
+      type: structured
+      ref: "@task-update-daemon-dispatch-hardening-specs"
+      section: tasks
+    entries:
+      - _ulid: 01KRYJAHV5NGSGPSX0PD127C6K
+        author: Jacob Chapel
+        body: The spec-update task lists many sequential 'kspec item ac add' mutations. Project convention
+          requires batch mutations for 2+ sequential kspec writes, so make the How section say to
+          use kspec batch with the AC additions, then inspect each owning spec with kspec item get.
+        created_at: 2026-05-18T22:11:53.829Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-18T22:13:00.719Z
+created_at: 2026-05-18T22:10:14.299Z
+updated_at: 2026-05-18T22:13:00.719Z
+notes: []

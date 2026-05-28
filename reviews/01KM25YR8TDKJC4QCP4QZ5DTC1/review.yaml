@@ -1,0 +1,128 @@
+_ulid: 01KM25YR8TDKJC4QCP4QZ5DTC1
+slugs: []
+title: Review remove dead parseVersionFromOptions function
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Changed file src/cli/commands/review.ts only removes dead parseVersionFromOptions helper
+      and unused ReviewSubjectVersion import. tests/review-cli.test.ts passes when run with
+      dispatch/session env cleared, confirming no regression in the touched command surface.
+    name: review-cli impacted suite
+    required: true
+    runner: npm
+    created_at: 2026-03-19T04:42:51.849Z
+    completed_at: 2026-03-19T04:42:51.849Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite in dispatch reviewer workspace failed in unrelated areas:
+      tests/agent-dispatch-engine.test.ts (2 failures in dispatch prompt/runInvocation behavior) and
+      tests/review-cli.test.ts examined_commit assertion due injected KSPEC_DISPATCH_CANONICAL_HEAD.
+      The review-cli failure disappears when rerun with dispatch/session env cleared;
+      agent-dispatch-engine failures are outside this diff."
+    name: npm test (full suite)
+    required: false
+    runner: npm
+    created_at: 2026-03-19T04:42:53.822Z
+    completed_at: 2026-03-19T04:42:53.822Z
+events:
+  - _ulid: 01KM25YR8RD12DAT803J8BJBE7
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-19T04:34:12.889Z
+  - _ulid: 01KM25Z6S1MXNVAN0Q901KB924
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-19T04:34:27.746Z
+  - _ulid: 01KM26EJJX28WXFY1PXSH08A8D
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM26EJCCAC3EJ4ZVZ7CXJQWE
+    timestamp: 2026-03-19T04:42:51.358Z
+  - _ulid: 01KM26EK8DSFMTRS9G3CW8YR4S
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-cli impacted suite
+    timestamp: 2026-03-19T04:42:52.045Z
+  - _ulid: 01KM26EKYREQ2WRKXKYKP4QX06
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-19T04:42:52.760Z
+  - _ulid: 01KM26EKYR4DJ73WCVMEG56PAE
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-19T04:42:52.760Z
+  - _ulid: 01KM26EN6D9YCEMDD8T4B8WMAP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test (full suite)
+    timestamp: 2026-03-19T04:42:54.029Z
+examined_commit: fb1c18c7b0784d61a8710960326b0117145b8e95
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM21D00SD4D9WW2G1BFC1YB0"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM26EJCCAC3EJ4ZVZ7CXJQWE
+    entries:
+      - _ulid: 01KM26EJCCEP6HAWZMJ9DV3YVB
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          Files read: src/cli/commands/review.ts, tests/review-cli.test.ts,
+          tests/agent-dispatch-engine.test.ts
+
+          Commands run: git diff base...head, git log -- src/cli/commands/review.ts, kspec task get,
+          kspec item get, kspec validate, npm test, env-cleared targeted npm test on review-cli and
+          agent-dispatch-engine
+
+          Claims verified: parseVersionFromOptions had zero remaining references; active review
+          check path derives applies_to_version via extractSubjectVersion(found.subject); base dev
+          already defaulted examined_commit from KSPEC_DISPATCH_CANONICAL_HEAD, so that failing
+          assertion is pre-existing dispatch-env sensitivity
+
+          Categories searched: correctness, dead-code reachability, CLI behavior/spec alignment,
+          test quality, environment sensitivity, integration risk
+
+          Result: no task-scoped findings in this snapshot
+        created_at: 2026-03-19T04:42:51.148Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-19T04:42:52.760Z
+created_at: 2026-03-19T04:34:12.890Z
+updated_at: 2026-03-19T04:42:53.822Z
+notes: []

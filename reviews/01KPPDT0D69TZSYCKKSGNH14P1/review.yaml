@@ -1,0 +1,160 @@
+_ulid: 01KPPDT0D69TZSYCKKSGNH14P1
+slugs: []
+title: Review extend daemon background shadow sync to all registered projects (cycle 3)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: node scripts/build-daemon.cjs completed successfully
+    name: daemon-build
+    required: true
+    created_at: 2026-04-20T21:51:38.306Z
+    completed_at: 2026-04-20T21:51:38.306Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate reports a pre-existing schema error in .kspec/modules/meta.yaml (Expected
+      string, received object) plus existing repo-wide warnings; this branch does not modify .kspec
+      files.
+    name: kspec-validate
+    required: false
+    created_at: 2026-04-20T21:51:41.877Z
+    completed_at: 2026-04-20T21:51:41.877Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test running in this snapshot is green so far, including
+      tests/daemon-shadow-sync-multi-project.test.ts, tests/daemon-read-path.test.ts, and
+      tests/daemon-build.test.ts; no branch-introduced regressions observed during review.
+    name: npm-test
+    required: true
+    created_at: 2026-04-20T21:51:51.251Z
+    completed_at: 2026-04-20T21:51:51.251Z
+events:
+  - _ulid: 01KPPDT0D56E4VHX39E4NZXYFG
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-20T21:47:38.277Z
+  - _ulid: 01KPPDXT3VH9A0QPBKKW59B3PM
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-20T21:49:42.908Z
+  - _ulid: 01KPPE1BY83971EGQV0PERCRCC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: daemon-build
+    timestamp: 2026-04-20T21:51:39.464Z
+  - _ulid: 01KPPE1FESRZW50ZJDYNHZAADB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec-validate
+    timestamp: 2026-04-20T21:51:43.065Z
+  - _ulid: 01KPPE1JQVN837AH78EVWHFCBS
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPPE1HJXMDGRCEHR92RQPWE0
+    timestamp: 2026-04-20T21:51:46.427Z
+  - _ulid: 01KPPE1RHXTGC57G23KE2DH8B2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm-test
+    timestamp: 2026-04-20T21:51:52.381Z
+  - _ulid: 01KPPE1VWF35KZBQT4T77BXRFK
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-20T21:51:55.791Z
+  - _ulid: 01KPPE1VWFECMZC9RH25WETADH
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-20T21:51:55.791Z
+  - _ulid: 01KPPF132NHMV96WR6G7NMYTZF
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPPE1HJXMDGRCEHR92RQPWE0
+    timestamp: 2026-04-20T22:08:58.965Z
+  - _ulid: 01KPPF1KKK1YXATRA2Q7K4WDBB
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPPE1HJXMDGRCEHR92RQPWE0
+    timestamp: 2026-04-20T22:09:15.891Z
+examined_commit: e8ba51fc71ee9cfdb64ce4899fc3f301bd48ee6d
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KPP7XFJ7Z1MG2NQAXMWZTA6W"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPPE1HJXMDGRCEHR92RQPWE0
+    anchor:
+      type: code
+      commit: e8ba51fc71ee9cfdb64ce4899fc3f301bd48ee6d
+      line_end: 82
+      line_start: 59
+      path: src/daemon/shadow-sync-manager.ts
+      side: head
+    entries:
+      - _ulid: 01KPPE1HJYK3N2C87G75MQ118J
+        author: Jacob Chapel
+        body: The ac-16 idempotency guard is not safe under concurrent registration. Both callers check
+          `shadowSyncSchedulers.has(projectPath)` before awaiting `loadProjectConfig()`, so two
+          overlapping registrations of the same project can both pass the guard, both
+          construct/start a scheduler, and only the later one ends up stored in the map. I
+          reproduced this against `dist/daemon/shadow-sync-manager.js` with a temp git repo and
+          `Promise.all([startShadowSyncForProject(...), startShadowSyncForProject(...)])`, which
+          printed `{"starts":2,"schedulerCount":1}`. That still produces duplicate background pulls
+          even though the map finishes with one entry, so @config-shadow ac-16 is not satisfied.
+          Please serialize starts per project (for example with an in-flight promise map or by
+          reserving the entry before the await) and add a concurrent registration test.
+        created_at: 2026-04-20T21:51:45.246Z
+      - _ulid: 01KPPF120HQMBW24733M5DHBDS
+        author: "@claude"
+        body: "Fixed: Added an in-flight promise map (inFlightStarts) that serializes concurrent starts per
+          project path. The second concurrent caller now awaits the first's completion and returns
+          without constructing a duplicate scheduler. Added a concurrent registration test that
+          fires two starts via Promise.all and verifies only one scheduler is created (startSpy
+          called once, map size 1). Full suite passes (8064 tests, 0 failures)."
+        created_at: 2026-04-20T22:08:57.873Z
+    kind: blocker
+    resolved_at: 2026-04-20T22:09:14.740Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-20T21:51:55.791Z
+created_at: 2026-04-20T21:47:38.278Z
+updated_at: 2026-04-20T22:09:14.740Z
+notes: []

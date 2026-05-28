@@ -1,0 +1,138 @@
+_ulid: 01KMREVM81EJDA0EGSGPFASJJ1
+slugs: []
+title: Review task-link-session-cache
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed in review snapshot: 1947/1947 suites, 6970 passed, 5 skipped, 0 failed."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-27T20:13:34.814Z
+    completed_at: 2026-03-27T20:13:34.814Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exited 6 with repo-wide pre-existing warnings only: orphaned skill dir, alignment
+      warnings, completeness/annotation warnings. No schema or reference errors introduced by this
+      task."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-27T20:13:36.318Z
+    completed_at: 2026-03-27T20:13:36.318Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: grep confirmed existing annotations for @session-summary-cache in
+      tests/session-summary-cache.test.ts (ac-cache-build, ac-cache-invalidate, ac-cache-graceful,
+      ac-active-refresh, ac-persist-on-close, ac-live-counter). This task added no new ACs.
+    name: session-summary-cache AC coverage
+    required: false
+    runner: grep
+    created_at: 2026-03-27T20:13:37.807Z
+    completed_at: 2026-03-27T20:13:37.807Z
+events:
+  - _ulid: 01KMREVM81NHDZ8K6NQN0PARKM
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T20:13:05.153Z
+  - _ulid: 01KMREW3AQ9J0E8P2TPWBD986R
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T20:13:20.599Z
+  - _ulid: 01KMREW4ZEN1PPY8SBRE3NFVGK
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMREW4DEQ99JA6QKXE3N7CEN
+    timestamp: 2026-03-27T20:13:22.286Z
+  - _ulid: 01KMREWHPE5WX0RPPF5BE13BNE
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-27T20:13:35.310Z
+  - _ulid: 01KMREWK4KBAF8KPEB7EDXWJXC
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-27T20:13:36.788Z
+  - _ulid: 01KMREWMKD9GRP6QGYN16GBJMK
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: session-summary-cache AC coverage
+    timestamp: 2026-03-27T20:13:38.286Z
+  - _ulid: 01KMREWXNT62TRVRH08MFNG1D4
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-27T20:13:47.578Z
+  - _ulid: 01KMREWXNTJVMNNMJZGVN1H24G
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T20:13:47.578Z
+examined_commit: 7d699d4855817e533fc2e5066db464312ea38f57
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMMB3WY8E1JYRGHBHZ4RMH9E"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMREW4DEQ99JA6QKXE3N7CEN
+    entries:
+      - _ulid: 01KMREW4DEA04DDV3AXCHGQK4X
+        author: "@claude"
+        body: 'Evidence log:\nFiles read: modules/web-ui.yaml (shadow diff for b5ee9d8c1),
+          @session-summary-cache, @daemon-entity-cache, @task-entity-cache-impl.\nCommands run: git
+          show --stat --summary b5ee9d8c1; git show b5ee9d8c1 -- modules/web-ui.yaml; git show
+          b5ee9d8c1^:modules/web-ui.yaml; git show b5ee9d8c1:modules/web-ui.yaml; kspec task get
+          @01KMMB3WY8E1JYRGHBHZ4RMH9E; kspec review for-task @01KMMB3WY8E1JYRGHBHZ4RMH9E; kspec item
+          get @session-summary-cache; kspec item get @daemon-entity-cache; kspec task get
+          @task-entity-cache-impl; kspec validate; grep -Rni "AC: @session-summary-cache\|AC:
+          @trait-" tests/; npm test.\nClaims verified: the shadow change is only the new relates_to
+          edge; @task-entity-cache-impl explicitly states the session domain replaces the standalone
+          SessionSummaryCache; full test suite passed on this snapshot.\nCategories searched:
+          correctness (relationship matches prior implementation context), integration (spec link
+          points at the implemented unified cache feature), test quality/coverage (existing
+          @session-summary-cache AC annotations remain present), repo health (validate warnings are
+          pre-existing and unrelated).'
+        created_at: 2026-03-27T20:13:21.710Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-27T20:13:47.577Z
+created_at: 2026-03-27T20:13:05.153Z
+updated_at: 2026-03-27T20:13:47.578Z
+notes: []

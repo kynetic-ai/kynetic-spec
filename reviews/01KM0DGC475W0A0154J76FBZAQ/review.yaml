@@ -1,0 +1,238 @@
+_ulid: 01KM0DGC475W0A0154J76FBZAQ
+slugs: []
+title: Review task-hook-executor (cycle 1)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 277/278 test files pass, 6281/6282 tests pass. 1 failure in tests/review-cli.test.ts is
+      pre-existing on dev (test not modified by this branch). All 23 new hook-executor tests pass.
+      All 49 existing action-model tests pass.
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T12:08:50.167Z
+    completed_at: 2026-03-18T12:08:50.167Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Own AC coverage: @dispatch-hook-system ac-1 through ac-5 all have annotated tests in
+      tests/hook-executor.test.ts. Trait AC coverage: @trait-error-guidance ac-1 through ac-6 all
+      annotated as N/A with valid reasoning (internal engine component)."
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-18T12:08:57.975Z
+    completed_at: 2026-03-18T12:08:57.975Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "REGRESSION: This commit removes the completed @dispatch-agent-action-input implementation
+      — prompt_template, task_binding, group_id, buildDefaultAgentPrompt, and 626 lines of passing
+      tests. These features are needed for pipeline chaining (@dispatch-composition-patterns) and
+      were completed by @task-agent-action-input."
+    name: regression-check
+    required: true
+    runner: manual
+    created_at: 2026-03-18T12:09:05.915Z
+    completed_at: 2026-03-18T12:09:05.915Z
+events:
+  - _ulid: 01KM0DGC46DFH57BDZ3M644S5T
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T12:07:41.447Z
+  - _ulid: 01KM0DGKVFMXBZA0XNGVD491MN
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T12:07:49.359Z
+  - _ulid: 01KM0DH0PJQWYKJHRKRCJ40DD4
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM0DH0JFHF8Q52T39TAD1E3N
+    timestamp: 2026-03-18T12:08:02.514Z
+  - _ulid: 01KM0DH9BSNCNS1PP40RVYDEK7
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM0DH97TZ8Y2CZ6WVZ61HTKD
+    timestamp: 2026-03-18T12:08:11.385Z
+  - _ulid: 01KM0DHKD798N0VFHCC19KPWH1
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM0DHK92EPW96QEXCDYS5KFK
+    timestamp: 2026-03-18T12:08:21.671Z
+  - _ulid: 01KM0DHXP167VF5VBGQT97CYRD
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM0DHXH3S5JKGWNB56QVC8XX
+    timestamp: 2026-03-18T12:08:32.193Z
+  - _ulid: 01KM0DJ67VMZ0BFJCW5ZB1A9W6
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM0DJ63KYTNJNSNEB7FZNFXT
+    timestamp: 2026-03-18T12:08:40.955Z
+  - _ulid: 01KM0DJFBX3K2RWSZBHV6T7PQK
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T12:08:50.301Z
+  - _ulid: 01KM0DJPZRDSD3K6ZAZR216TA5
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-18T12:08:58.104Z
+  - _ulid: 01KM0DJYRHMSW2MSSHK4AABJPZ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: regression-check
+    timestamp: 2026-03-18T12:09:06.065Z
+  - _ulid: 01KM0DK5J25DVF84X90NVRTBVB
+    actor: pr-reviewer@dispatch
+    event_type: verdict_submitted
+    payload:
+      decision: request_changes
+    timestamp: 2026-03-18T12:09:13.026Z
+  - _ulid: 01KM0DK5J2ZW9256CQJPQ8JA41
+    actor: pr-reviewer@dispatch
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T12:09:13.026Z
+examined_commit: b8ba5c896287d16de213398aefa3a81c50460faa
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-hook-executor"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM0DH0JFHF8Q52T39TAD1E3N
+    anchor:
+      type: code
+      commit: ""
+      line_end: 791
+      line_start: 781
+      path: src/agent-runtime/action-executor.ts
+      side: head
+    entries:
+      - _ulid: 01KM0DH0JFQC34Q1G1ANJAJ4P5
+        author: "@claude"
+        body: Out-of-scope removal of @dispatch-agent-action-input implementation. This commit deletes the
+          entire agent-action-input.test.ts (626 lines, covering @dispatch-agent-action-input ac-1
+          through ac-4) and removes prompt_template, task_binding, group_id, and
+          buildDefaultAgentPrompt from action-executor.ts and action.ts. These features were
+          implemented by the already-completed @task-agent-action-input task. The hook executor task
+          scope is @dispatch-hook-system ac-1 through ac-5 — it should not be reverting a completed
+          task's work. The removed features (prompt_template on AgentAction, task_binding for
+          event-derived task_ref, group_id propagation, default prompt generation) are part of the
+          agent action input contract needed for pipeline chaining and composition patterns.
+        created_at: 2026-03-18T12:08:02.383Z
+    kind: blocker
+  - _ulid: 01KM0DH97TZ8Y2CZ6WVZ61HTKD
+    anchor:
+      type: code
+      commit: ""
+      line_end: 1
+      line_start: 1
+      path: tests/agent-action-input.test.ts
+      side: head
+    entries:
+      - _ulid: 01KM0DH97TAVQWC2X37V6DVBAQ
+        author: "@claude"
+        body: "Deleted test file tests/agent-action-input.test.ts (626 lines) covering
+          @dispatch-agent-action-input ac-1 through ac-4. This was the sole test coverage for the
+          agent action input contract. Removing it means: (1) prompt_template interpolation for
+          agent actions is untested, (2) task_binding behavior (deriving task_ref from events) is
+          untested, (3) group_id propagation to spawned invocations is untested, (4) default prompt
+          generation (including invocation.completed context) is untested. These were all passing
+          tests from a completed task."
+        created_at: 2026-03-18T12:08:11.258Z
+    kind: blocker
+  - _ulid: 01KM0DHK92EPW96QEXCDYS5KFK
+    anchor:
+      type: code
+      commit: ""
+      line_end: 64
+      line_start: 54
+      path: src/schema/action.ts
+      side: head
+    entries:
+      - _ulid: 01KM0DHK9291Y1MBPS64XTZVJ6
+        author: "@claude"
+        body: AgentActionSchema fields prompt_template and task_binding removed from schema. On the dev
+          branch, AgentActionSchema includes prompt_template (z.string().optional()), task_binding
+          (z.boolean().optional()), and associated JSDoc with AC annotations. This commit strips
+          them to just agent_id, prompt, task_ref, and timeout_minutes. This is a schema regression
+          — any existing hook/schedule configurations using prompt_template or task_binding would
+          silently fail Zod validation after this change.
+        created_at: 2026-03-18T12:08:21.538Z
+    kind: blocker
+  - _ulid: 01KM0DHXH3S5JKGWNB56QVC8XX
+    entries:
+      - _ulid: 01KM0DHXH3F20WYJ8C3BYVJX7V
+        author: "@claude"
+        body: The HookExecutor implementation itself (src/agent-runtime/hook-executor.ts) is well-structured
+          and correct. Event subscription via wildcard pattern, hook matching logic, filter
+          evaluation via matchesFilter, disabled hook skipping, fire-and-forget with defensive
+          catch, versioned config snapshot with reloadHooks(), in-flight action tracking, and
+          correlation_id/causation_id propagation all match the spec. The 23 tests in
+          hook-executor.test.ts provide solid coverage of all 5 ACs. The trait N/A annotations for
+          @trait-error-guidance are well-reasoned (internal engine component, not CLI).
+        created_at: 2026-03-18T12:08:32.035Z
+    kind: nit
+  - _ulid: 01KM0DJ63KYTNJNSNEB7FZNFXT
+    anchor:
+      type: code
+      commit: ""
+      line_end: 220
+      line_start: 190
+      path: src/agent-runtime/action-executor.ts
+      side: head
+    entries:
+      - _ulid: 01KM0DJ63K9QSAGE2S3KRY2SJ2
+        author: "@claude"
+        body: "KNOWN_EVENT_FIELDS removals: 'group_id' was removed from the universal envelope fields and
+          'outcome' from invocation fields. These are part of the @dispatch-agent-action-input and
+          @dispatch-event-payload specs. The 'outcome' field removal from KNOWN_EVENT_FIELDS means
+          template validation would produce false-positive warnings for templates referencing
+          {{outcome}} in invocation contexts."
+        created_at: 2026-03-18T12:08:40.819Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer@dispatch
+    role: reviewer
+    created_at: 2026-03-18T12:09:12.890Z
+created_at: 2026-03-18T12:07:41.447Z
+updated_at: 2026-03-18T12:09:12.890Z
+notes: []

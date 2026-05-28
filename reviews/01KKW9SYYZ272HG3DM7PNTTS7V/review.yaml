@@ -1,0 +1,103 @@
+_ulid: 01KKW9SYYZ272HG3DM7PNTTS7V
+slugs: []
+title: "Review fix: task-add commit ref"
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: code_compare
+      base_commit: 2c85c5dd
+      head_commit: 69b7aecd
+    evidence: All 111 tests passed in shadow.test.ts
+    name: vitest shadow.test
+    required: true
+    runner: vitest
+    created_at: 2026-03-16T21:46:18.533Z
+    completed_at: 2026-03-16T21:46:18.533Z
+events:
+  - _ulid: 01KKW9SYYYYWJRZMGM7X9VTAEY
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-16T21:46:03.615Z
+  - _ulid: 01KKW9T5CQPENSQ0K3YTTDEHRY
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-16T21:46:10.199Z
+  - _ulid: 01KKW9TDJ5PJ16TBJKD5ZMD4P6
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest shadow.test
+    timestamp: 2026-03-16T21:46:18.565Z
+  - _ulid: 01KKW9TRXVZ7ZRBZSY34HNNXG8
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKW9TRX1638T7GNY5BCB5C8N
+    timestamp: 2026-03-16T21:46:30.203Z
+  - _ulid: 01KKW9TZ81GDYAJJ2D9JMDMQ3N
+    actor: pr-reviewer@kspec
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-16T21:46:36.673Z
+  - _ulid: 01KKW9VJRS431694SFZ5CFWQ4F
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-16T21:46:56.665Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: code
+  base_branch: dev
+  base_commit: 2c85c5dd
+  head_branch: dispatch/task/task-fix-task-add-commit-ref/01kkw4vg
+  head_commit: 69b7aecd
+threads:
+  - _ulid: 01KKW9TRX1638T7GNY5BCB5C8N
+    entries:
+      - _ulid: 01KKW9TRX1KBMNEXMVMYAQKD1Y
+        author: "@claude"
+        body: >-
+          Review evidence log:
+
+          Files read: src/parser/shadow.ts (lines 989-995), tests/shadow.test.ts (lines 130-146),
+          src/cli/commands/task.ts (lines 1097-1105), src/cli/commands/meta.ts (lines 1123-1131)
+
+          Commands run: git diff dev...HEAD, npm test -- shadow.test (111 pass), kspec item get
+          @trait-shadow-commit
+
+          Claims verified: (1) Both callers (task.ts:1102, meta.ts:1128) pass ref AND detail —
+          confirmed fix handles actual call pattern. (2) Fallback preserved for detail-only case —
+          confirmed test at line 143.
+
+          Categories searched: correctness (fix matches trait ac-2/ac-3 requirements), edge cases
+          (ref-only fallback path — defensive, never hit by callers, pre-existing behavior
+          unchanged), test quality (AC annotations present, tests prove behavior), integration
+          (callers verified).
+        created_at: 2026-03-16T21:46:30.177Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: code_compare
+      base_commit: 2c85c5dd
+      head_commit: 69b7aecd
+    decision: approve
+    reviewer: pr-reviewer@kspec
+    role: reviewer
+    created_at: 2026-03-16T21:46:36.639Z
+created_at: 2026-03-16T21:46:03.615Z
+updated_at: 2026-03-16T21:46:56.624Z
+notes: []

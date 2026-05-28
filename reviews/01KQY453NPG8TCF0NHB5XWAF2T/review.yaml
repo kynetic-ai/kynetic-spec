@@ -1,0 +1,276 @@
+_ulid: 01KQY453NPG8TCF0NHB5XWAF2T
+slugs: []
+title: Review shared daemon endpoint resolver
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "2351 test suites passed; 8607 tests passed, 5 skipped; duration 1925.6s. Full log:
+      /tmp/kspec-test-cache/01KQY42HKC7HKTC60RM1TXANEM/73c22f47fbfe0d23.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-06T07:59:14.879Z
+    completed_at: 2026-05-06T07:59:14.879Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Schema and references passed; command exited 6 due existing validation warnings:
+      reference warnings, alignment warnings, completeness warnings, and invalid AC annotation
+      warnings."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-06T07:59:21.895Z
+    completed_at: 2026-05-06T07:59:21.895Z
+events:
+  - _ulid: 01KQY453NPTNGDKN46XQG9F7EV
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-06T07:48:33.590Z
+  - _ulid: 01KQY45PEQSTH2WRJBZ5KN18BQ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-06T07:48:52.824Z
+  - _ulid: 01KQY4RQ5F4H6Z4X8PD303QS2Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-06T07:59:16.143Z
+  - _ulid: 01KQY4RTHP30NJJVMKS84MNHG6
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQY4RSBGQ05HYFGTNTDAYH1Q
+    timestamp: 2026-05-06T07:59:19.607Z
+  - _ulid: 01KQY4RXY7T3VNPWXXJY9N6DF1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-05-06T07:59:23.079Z
+  - _ulid: 01KQY4S1ASRD7WA2VFCPE551X7
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQY4S05TBHYZQ8S74AV8G7NV
+    timestamp: 2026-05-06T07:59:26.553Z
+  - _ulid: 01KQY4SMG8KBQHW2HFWHCS3920
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQY4SK9SJHR0CQ8WFST0WXQS
+    timestamp: 2026-05-06T07:59:46.184Z
+  - _ulid: 01KQY4TGNZ00R53CEBCZZZ7KT8
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KQY4TFEMBM796P75K2EYMVNT
+    timestamp: 2026-05-06T08:00:15.039Z
+  - _ulid: 01KQY4TZPSBX0K2HRJ4XFAHQNH
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-06T08:00:30.425Z
+  - _ulid: 01KQY4TZPSKNDKRQEV47PP79WJ
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-06T08:00:30.425Z
+  - _ulid: 01KQY7MDXW7HMXJ0D1XG3G60K3
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQY4RSBGQ05HYFGTNTDAYH1Q
+    timestamp: 2026-05-06T08:49:21.340Z
+  - _ulid: 01KQY7MGX0J8FXYQC0TT9R7WXP
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQY4RSBGQ05HYFGTNTDAYH1Q
+    timestamp: 2026-05-06T08:49:24.384Z
+  - _ulid: 01KQY7MMWQ9P5G610BREFAFM65
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQY4S05TBHYZQ8S74AV8G7NV
+    timestamp: 2026-05-06T08:49:28.472Z
+  - _ulid: 01KQY7MQX12X8EYW9VSHN33Q1G
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQY4S05TBHYZQ8S74AV8G7NV
+    timestamp: 2026-05-06T08:49:31.553Z
+  - _ulid: 01KQY7MTVEBDGND6ZD08N7DBKX
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQY4SK9SJHR0CQ8WFST0WXQS
+    timestamp: 2026-05-06T08:49:34.574Z
+  - _ulid: 01KQY7MY0074S3JTC3N30NE0XK
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQY4SK9SJHR0CQ8WFST0WXQS
+    timestamp: 2026-05-06T08:49:37.793Z
+examined_commit: 65bfbcb012624d11b50d350ce353d2161ca0d9da
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQWZZH7R9W7WKATZXFB61MPC"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQY4RSBGQ05HYFGTNTDAYH1Q
+    anchor:
+      type: code
+      commit: 65bfbcb012624d11b50d350ce353d2161ca0d9da
+      line_end: 312
+      line_start: 307
+      path: packages/daemon/src/server.ts
+      side: head
+    entries:
+      - _ulid: 01KQY4RSBG4PHX90X2F57HX746
+        author: Jacob Chapel
+        body: "MUST-FIX: daemon startup still writes only daemon.pid and legacy daemon.port; it never writes
+          daemon.connection.json. The task and AC @daemon-network-endpoint-contract
+          ac-connection-metadata require successful daemon startup to persist pid, port, bind_host,
+          connect_host, api_url, ws_url, and runtime. The new metadata writer is only exercised by
+          unit tests and is not called from the lifecycle path."
+        created_at: 2026-05-06T07:59:18.384Z
+      - _ulid: 01KQY7MCP3VY5WV1JHAFY18X4X
+        author: "@claude"
+        body: "Fixed: createServer now writes daemon.connection.json on startup via
+          PidFileManager.writeConnectionMetadata, alongside the legacy daemon.pid and daemon.port
+          files. Metadata fields (pid, port, bind_host, connect_host, api_url, ws_url, runtime) come
+          from a single resolveDaemonEndpoint() call so they cannot drift from what the daemon
+          actually binds. Added a behavioral test in tests/cli-serve.test.ts that starts the daemon
+          detached and asserts the metadata file exists with the expected fields plus a 127.0.0.1
+          health check that proves the bind host is the resolved address."
+        created_at: 2026-05-06T08:49:20.067Z
+    kind: blocker
+    resolved_at: 2026-05-06T08:49:23.223Z
+    resolved_by: "@claude"
+  - _ulid: 01KQY4S05TBHYZQ8S74AV8G7NV
+    anchor:
+      type: code
+      commit: 65bfbcb012624d11b50d350ce353d2161ca0d9da
+      line_end: 642
+      line_start: 634
+      path: packages/daemon/src/server.ts
+      side: head
+    entries:
+      - _ulid: 01KQY4S05TEABA0S288HA4F91H
+        author: Jacob Chapel
+        body: "MUST-FIX: the daemon still binds with hostname localhost instead of the resolved endpoint.
+          DEFAULT_CONFIG now says 127.0.0.1 and the task requires all daemon binding code to use the
+          shared resolver, but createServer hardcodes localhost and logs localhost URLs. That means
+          default startup still depends on OS hostname resolution and configured daemon.host values
+          cannot affect the actual listener."
+        created_at: 2026-05-06T07:59:25.370Z
+      - _ulid: 01KQY7MKQYXEVVHZF0WRXRWRG0
+        author: "@claude"
+        body: "Fixed: app.listen() now binds to the resolved bind host (DEFAULT_BIND_HOST = 127.0.0.1 by
+          default, configured value otherwise) instead of the literal string 'localhost'.
+          createServer accepts bindHost/connectHost in ServerOptions and routes them through
+          resolveDaemonEndpoint() before binding. The daemon binary (packages/daemon/src/index.ts)
+          gained --host/--connect-host CLI flags, and serve.ts forwards config.daemon.host /
+          config.daemon.connect_host on every spawn (foreground and detached). Startup logs now show
+          the resolved api_url and emit a visible warning when the bind host is non-loopback
+          (ac-external-binding-warning). Behavioral coverage: tests/cli-serve.test.ts directly
+          fetches http://127.0.0.1:<port>/api/health to prove the daemon is bound on the numeric
+          IPv4 address rather than via OS hostname resolution."
+        created_at: 2026-05-06T08:49:27.294Z
+    kind: blocker
+    resolved_at: 2026-05-06T08:49:30.343Z
+    resolved_by: "@claude"
+  - _ulid: 01KQY4SK9SJHR0CQ8WFST0WXQS
+    anchor:
+      type: code
+      commit: 65bfbcb012624d11b50d350ce353d2161ca0d9da
+      line_end: 95
+      line_start: 78
+      path: src/cli/daemon-proxy.ts
+      side: head
+    entries:
+      - _ulid: 01KQY4SK9SGKW545Q49XJPMA4C
+        author: Jacob Chapel
+        body: "MUST-FIX: daemon clients still ignore the new connection metadata and derive URLs from the
+          legacy port file. detectDaemon reads daemon.port and fetches
+          http://127.0.0.1:<port>/api/health directly; other command paths similarly construct
+          http://localhost:<port>. This violates the task requirement that command files receive or
+          read a resolved endpoint object and AC @daemon-network-endpoint-contract
+          ac-clients-use-metadata; a daemon advertising a different api_url or ws_url will not be
+          used."
+        created_at: 2026-05-06T07:59:44.953Z
+      - _ulid: 01KQY7MSRAYMR9C66DPDCPG225
+        author: "@claude"
+        body: "Fixed: introduced resolveDaemonClientEndpoint() in src/daemon/endpoint.ts that reads
+          daemon.connection.json first and only falls back to the legacy daemon.port file when
+          metadata is absent. detectDaemon() and ensureProjectRegistered() / proxyCommand() now
+          consume the resolved endpoint object (apiUrl, wsUrl) instead of synthesizing
+          http://127.0.0.1:<port>. The DaemonDetectionResult type was extended with an endpoint
+          field so command files receive a fully resolved endpoint, never a port number alone. The
+          four duplicated getDaemonUrl() helpers in commands/agent.ts, event.ts, schedule.ts, and
+          the ws URL in agent.ts now resolve via the shared helper, as does the postDispatchEvent
+          path in commands/task.ts, the kspec serve status fetches in commands/serve.ts, and the
+          doctor health probe in parser/daemon-status.ts. Behavioral tests in
+          tests/cli-daemon-proxy.test.ts stand up an in-process server and prove detectDaemon (a)
+          uses the metadata-advertised api_url when present and (b) falls back to the legacy port
+          file when metadata is absent. tests/daemon-endpoint.test.ts adds round-trip coverage for
+          resolveDaemonClientEndpoint including the metadata-over-legacy precedence."
+        created_at: 2026-05-06T08:49:33.450Z
+    kind: blocker
+    resolved_at: 2026-05-06T08:49:36.513Z
+    resolved_by: "@claude"
+  - _ulid: 01KQY4TFEMBM796P75K2EYMVNT
+    entries:
+      - _ulid: 01KQY4TFEMEH9M3G9C0SJS6A2D
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md, task/spec context, src/daemon/endpoint.ts,
+          src/parser/config.ts, src/cli/pid-utils.ts, packages/daemon/src/pid.ts,
+          packages/daemon/src/server.ts, src/cli/index.ts, src/cli/daemon-proxy.ts,
+          src/cli/commands/{serve,agent,event,schedule,task}.ts, tests/daemon-endpoint.test.ts,
+          tests/parser/{config,daemon-config}.test.ts, tests/daemon-pid.test.ts. Commands run: git
+          diff/stat/log, rg call-site and AC searches, kspec task get, kspec item get
+          @daemon-network-endpoint-contract and @config-daemon, kspec validate, npm test. Claims
+          verified: shared PidFileManager exists, config default/connect_host parsing added, but
+          daemon startup and clients do not use metadata/resolved endpoint. Categories searched:
+          correctness, spec alignment, edge cases for host/wildcard/IPv6, error handling, test
+          quality, integration."
+        created_at: 2026-05-06T08:00:13.780Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-06T08:00:30.425Z
+created_at: 2026-05-06T07:48:33.590Z
+updated_at: 2026-05-06T08:49:36.513Z
+notes: []

@@ -1,0 +1,274 @@
+_ulid: 01KSJM9WPCTXFTYF42ZRPMX3W2
+slugs: []
+title: "Plan review: Dispatch Merge Helper Target Lock Hardening"
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Stored plan is draft. Specs block is `[]` and Tasks section has `derive_from_specs:
+      false`, matching the existing-spec-update/no-structured-specs shape."
+    name: Plan shape
+    required: true
+    created_at: 2026-05-26T17:13:13.288Z
+    completed_at: 2026-05-26T17:13:13.288Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read @detached-reviewer-merge-helper, @dispatch-integration-mutation-scope,
+      @dispatch-remote-branch-sync, @plan-branch-dispatch-target, @dispatch-workspace-configuration,
+      and @dispatch-branch-integration-contract. The three targeted specs are the right update
+      surface; @plan-branch-dispatch-target already covers target selection, so the implementation
+      note is sufficient.
+    name: Existing spec neighborhood
+    required: true
+    created_at: 2026-05-26T17:13:17.847Z
+    completed_at: 2026-05-26T17:13:17.847Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "`kspec validate --refs --warnings-ok` passed: schema OK, references OK, with pre-existing
+      deprecation warnings only."
+    name: Reference validation
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-26T17:13:22.520Z
+    completed_at: 2026-05-26T17:13:22.520Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Blockers recorded for a nonexistent test file, wrong rendered-skill regeneration command,
+      and missing Covers entries for rewritten existing ACs.
+    name: Task exactness and coverage mapping
+    required: true
+    created_at: 2026-05-26T17:13:27.572Z
+    completed_at: 2026-05-26T17:13:27.572Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Spec-update task is first. Helper implementation depends on spec update; helper
+      regressions depend on helper implementation; degraded-state recovery depends on spec update;
+      final plan-target regression depends on helper and degraded-state work. No circular dependency
+      found.
+    name: Dependency ordering
+    required: true
+    created_at: 2026-05-26T17:13:32.176Z
+    completed_at: 2026-05-26T17:13:32.176Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The plan includes the needed temp-repo/live-checkout guardrail, but test scope is not yet
+      exact because one verification path names a missing file and the E2E task allows an unreviewed
+      downgrade to split non-E2E coverage.
+    name: Test scope and live-repo guardrails
+    required: true
+    created_at: 2026-05-26T17:13:36.833Z
+    completed_at: 2026-05-26T17:13:36.833Z
+events:
+  - _ulid: 01KSJM9WPCA964DY7XDGKB8TE5
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-26T17:11:17.964Z
+  - _ulid: 01KSJMCS5XEN8PEZHRXYRFK47Z
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-26T17:12:52.669Z
+  - _ulid: 01KSJMCXJ40N3D0W7Q89RQTB9A
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSJMCVVQY82EMRPRWY35XXAX
+    timestamp: 2026-05-26T17:12:57.156Z
+  - _ulid: 01KSJMD1XEAK6QNC5SBHZ4SG3M
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSJMD0572JYNNQ4PC6BS66TX
+    timestamp: 2026-05-26T17:13:01.614Z
+  - _ulid: 01KSJMD6AD0GY23P8F64FG14E5
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSJMD4M8RMFC847HCQT893F3
+    timestamp: 2026-05-26T17:13:06.125Z
+  - _ulid: 01KSJMDAN79TRGRXSCE6NV4TKE
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSJMD8ZW7TE8GF3BX7Y13QYM
+    timestamp: 2026-05-26T17:13:10.567Z
+  - _ulid: 01KSJMDF1783NK3AC5VGGPCXWC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan shape
+    timestamp: 2026-05-26T17:13:15.047Z
+  - _ulid: 01KSJMDKHBE88RP96SGADW5RWD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Existing spec neighborhood
+    timestamp: 2026-05-26T17:13:19.659Z
+  - _ulid: 01KSJMDR9SW54CTRMESQ524ZTN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Reference validation
+    timestamp: 2026-05-26T17:13:24.538Z
+  - _ulid: 01KSJMDX068RCS2XJCJPGAQZDK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Task exactness and coverage mapping
+    timestamp: 2026-05-26T17:13:29.350Z
+  - _ulid: 01KSJME1GNZ2B9RWWXKQPR5ME8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-05-26T17:13:33.973Z
+  - _ulid: 01KSJME65CFNR4QR9FW529G258
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Test scope and live-repo guardrails
+    timestamp: 2026-05-26T17:13:38.732Z
+  - _ulid: 01KSJMEAM028TTFE2EMYGAKDKQ
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-26T17:13:43.296Z
+  - _ulid: 01KSJMEAM096ERW0R9R9A6W24S
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-26T17:13:43.296Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-dispatch-merge-helper-target-lock-hardening"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSJMCVVQY82EMRPRWY35XXAX
+    anchor:
+      type: structured
+      field: Testing
+      ref: "@task-clear-occupied-checkout-degraded-state-on-retry"
+      section: tasks
+    entries:
+      - _ulid: 01KSJMCVVQ74KNT3TX6GA378K9
+        author: Jacob Chapel
+        body: "The Testing section tells the worker to run `npm test -- --fresh
+          tests/dispatch-remote-branch-sync.test.ts`, but that file does not exist in this
+          repository. Evidence: `rg --files tests | rg 'dispatch|remote|sync|merge'` lists
+          `tests/dispatch-target-sync.test.ts`, `tests/dispatch-degraded-state.test.ts`, and related
+          dispatch tests, but no `tests/dispatch-remote-branch-sync.test.ts`; an earlier `rg` over
+          that path failed with `No such file or directory`. This makes the task non-standalone and
+          gives the worker a failing verification command. Fix by naming the actual existing test
+          file(s) to update/run, or explicitly add creation of
+          `tests/dispatch-remote-branch-sync.test.ts` to the What/How scope."
+        created_at: 2026-05-26T17:12:55.415Z
+    kind: blocker
+  - _ulid: 01KSJMD0572JYNNQ4PC6BS66TX
+    anchor:
+      type: structured
+      field: description
+      ref: "@task-rework-detached-reviewer-merge-helper-ephemeral-target"
+      section: tasks
+    entries:
+      - _ulid: 01KSJMD057Q9SZVZ68TF5HWBVF
+        author: Jacob Chapel
+        body: "The task describes updating the rendered/installed skill copy so
+          `.agents/skills/kspec-merge/scripts/detached-reviewer-merge.sh` receives the same behavior
+          after `kspec agents generate`. That conflicts with the project skill source-of-truth
+          rules: core skill sources live under `templates/skills/`, rendered `.agents/skills/`
+          output is produced by `kspec skill render`, and `kspec agents generate` only regenerates
+          `kspec-agents.md`. Evidence: `kspec skill --help` shows `skill render` renders
+          platform-specific skill files, while `kspec agents --help` only generates agent
+          instructions. Fix the task to say edit
+          `templates/skills/merge/scripts/detached-reviewer-merge.sh`, run `kspec skill render` (or
+          the exact supported render command), and only run `kspec agents generate` if the agent
+          instruction document itself needs regeneration."
+        created_at: 2026-05-26T17:12:59.816Z
+    kind: blocker
+  - _ulid: 01KSJMD4M8RMFC847HCQT893F3
+    anchor:
+      type: structured
+      field: Covers
+      ref: "@task-align-merge-helper-branch-lock-specs"
+      section: tasks
+    entries:
+      - _ulid: 01KSJMD4M8APPNNCHYAXXQY4A2
+        author: Jacob Chapel
+        body: The spec-update task explicitly rewrites existing helper ACs
+          (`ac-helper-refuses-dirty-target`, `ac-helper-safe-conflict-exit`) and updates
+          `ac-helper-no-op-merge` semantics, but its Covers line only lists the newly added AC IDs.
+          The later implementation/regression Covers also omit `ac-helper-refuses-dirty-target`,
+          even though dirty/staged occupied-target refusal remains part of the requested spec
+          behavior. This leaves changed existing behavior outside the plan's coverage map. Fix by
+          adding every rewritten existing AC to the appropriate Covers lines, especially
+          `@detached-reviewer-merge-helper ac-helper-refuses-dirty-target`, and make clear which
+          task implements and tests each rewritten AC.
+        created_at: 2026-05-26T17:13:04.392Z
+    kind: blocker
+  - _ulid: 01KSJMD8ZW7TE8GF3BX7Y13QYM
+    anchor:
+      type: structured
+      field: How
+      ref: "@task-add-plan-target-lock-e2e-regression"
+      section: tasks
+    entries:
+      - _ulid: 01KSJMD8ZXDG6DCZSXNGJR4YA3
+        author: Jacob Chapel
+        body: The E2E regression task says that if full engine orchestration is too heavy, the worker may
+          split it into a helper-level test plus a dispatch-sync test. That gives the worker
+          discretion to downgrade the plan's required incident-level regression without a product
+          decision. The incident was specifically the cross-product of plan-scoped target branches,
+          manual_merge reviewer flow, helper branch locks, and dispatch root sync/push. Fix by
+          requiring a true integration-style regression for that combined path, or by saying the
+          worker must block/escalate if full orchestration proves infeasible rather than
+          substituting narrower tests and still claiming the E2E coverage.
+        created_at: 2026-05-26T17:13:08.861Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-26T17:13:43.296Z
+created_at: 2026-05-26T17:11:17.964Z
+updated_at: 2026-05-26T17:13:43.296Z
+notes: []

@@ -1,0 +1,140 @@
+_ulid: 01KMWABZM4NB3HHYSDMTHP2Z02
+slugs: []
+title: Review add domain ready event AC to entity cache spec
+author: Test User
+checks:
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exited 6 with repository-wide warnings only (no schema/reference errors).
+      Warnings were pre-existing and not specific to this task.
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-29T08:15:55.723Z
+    completed_at: 2026-03-29T08:15:55.723Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test passed in the review snapshot: 1967/1967 suites passed, 7088/7097 tests passed,
+      5 skipped, duration 3251.0s."
+    name: npm-test
+    required: true
+    runner: npm
+    created_at: 2026-03-29T08:15:57.696Z
+    completed_at: 2026-03-29T08:15:57.696Z
+events:
+  - _ulid: 01KMWABZM4CFJS2NTGR68TKBXM
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-29T08:11:35.940Z
+  - _ulid: 01KMWACKZMGD54VFAMA6N98TCB
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-29T08:11:56.788Z
+  - _ulid: 01KMWAKW08Z4BFQWZNAA5G8D1G
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMWAKVBTGQE0QCVX013Q197Q
+    timestamp: 2026-03-29T08:15:54.376Z
+  - _ulid: 01KMWAKXWVA6XEE6RY1A9YK220
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec-validate
+    timestamp: 2026-03-29T08:15:56.315Z
+  - _ulid: 01KMWAKZVCW7B2Y7VMPVAFVZSG
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm-test
+    timestamp: 2026-03-29T08:15:58.317Z
+  - _ulid: 01KMWAMAAXPC94XQRVEEPQP3GM
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-29T08:16:09.053Z
+  - _ulid: 01KMWAMAAXVGVK3JHEPE3034F7
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-29T08:16:09.053Z
+  - _ulid: 01KMWCEWSNDBKBSGE7STHSD8TB
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMWAKVBTGQE0QCVX013Q197Q
+    timestamp: 2026-03-29T08:48:08.501Z
+  - _ulid: 01KMWCF3NNBRDWRM63X2CM6MR5
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMWAKVBTGQE0QCVX013Q197Q
+    timestamp: 2026-03-29T08:48:15.541Z
+examined_commit: 905a844fee7a14ce9a8667f502b96548ce3a3bff
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMW68JT108S4RS3G1GNYH5A9"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMWAKVBTGQE0QCVX013Q197Q
+    anchor:
+      type: code
+      commit: 905a844fee7a14ce9a8667f502b96548ce3a3bff
+      line_end: 1751
+      line_start: 1736
+      path: tests/daemon-entity-cache.test.ts
+      side: head
+    entries:
+      - _ulid: 01KMWAKVBV5KWKE8VAP66YAASD
+        author: Test User
+        body: The new AC is only represented by `it.todo(...)` placeholders, so this review cycle still does
+          not add behavioral coverage for `@daemon-entity-cache ac-domain-ready-event`. These lines
+          never execute the cache or assert the broadcast behavior, which means the task remains
+          without a test that proves the loading→ready/degraded→ready event contract described by
+          the spec.
+        created_at: 2026-03-29T08:15:53.723Z
+      - _ulid: 01KMWCEW6TSJHP3T2DN9Y60YBC
+        author: "@claude"
+        body: "Fixed: replaced all 4 it.todo() stubs with behavioral tests that exercise the real
+          ProjectEntityCache. Added a DomainReadyCallback mechanism to the cache — tests create a
+          cache with the callback, trigger domain loads/transitions, and assert the callback fires
+          with correct domain, projectPath, and previousState. Coverage includes: loading→ready,
+          degraded→ready, event payload validation, and no-broadcast-during-reload
+          (ac-stale-during-reload). All 7092 tests pass with no regressions."
+        created_at: 2026-03-29T08:48:07.898Z
+    kind: blocker
+    resolved_at: 2026-03-29T08:48:15.001Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-29T08:16:09.053Z
+created_at: 2026-03-29T08:11:35.940Z
+updated_at: 2026-03-29T08:48:15.001Z
+notes: []

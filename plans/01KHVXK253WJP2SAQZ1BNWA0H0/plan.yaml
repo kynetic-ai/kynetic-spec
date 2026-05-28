@@ -1,0 +1,23 @@
+_ulid: 01KHVXK253WJP2SAQZ1BNWA0H0
+slugs:
+  - plan-project-level-configuration-system
+title: Project-Level Configuration System
+status: completed
+approved_at: null
+derived_specs:
+  - "@project-config"
+  - "@config-shadow"
+  - "@config-author"
+  - "@config-validation"
+  - "@config-daemon"
+  - "@config-manifest-cleanup"
+derived_tasks:
+  - "@implement-project-config-file"
+  - "@implement-configurable-shadow-branch"
+  - "@implement-configurable-author-identity"
+  - "@implement-configurable-validation-defaults"
+  - "@implement-configurable-daemon-settings"
+  - "@implement-clean-up-dead-manifest-config"
+source_path: /home/chapel/.claude/plans/giggly-strolling-quasar.md
+created_at: 2026-02-19T21:41:10.947Z
+completed_at: 2026-02-20T03:29:36.697Z

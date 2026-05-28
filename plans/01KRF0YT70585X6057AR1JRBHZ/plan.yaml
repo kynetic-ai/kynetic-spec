@@ -1,0 +1,21 @@
+_ulid: 01KRF0YT70585X6057AR1JRBHZ
+slugs:
+  - plan-dispatch-workspace-in-flight-cleanup-protection
+title: Dispatch Workspace In-Flight Cleanup Protection
+status: completed
+approved_at: 2026-05-12T21:59:29.946Z
+derived_specs: []
+derived_tasks:
+  - "@task-add-inflight-cleanup-protection-engine-ac"
+  - "@task-add-cleanup-preservation-no-blind-deletion-acs"
+  - "@task-add-startup-provisioning-classification-ac"
+  - "@task-centralize-dispatch-artifact-protection-decisions"
+  - "@task-include-inflight-spawn-refs-in-cleanup-inputs"
+  - "@task-apply-protection-policy-across-artifact-reconciliation"
+  - "@task-test-cleanup-protection-positive-and-regression-cases"
+  - "@task-test-dispatch-inflight-bootstrap-race-regression"
+  - "@task-validate-inflight-cleanup-protection"
+module_ref: null
+source_path: /home/chapel/Projects/kynetic-spec-dispatch/plans/dispatch-workspace-inflight-cleanup-protection.md
+created_at: 2026-05-12T21:19:46.911Z
+completed_at: null

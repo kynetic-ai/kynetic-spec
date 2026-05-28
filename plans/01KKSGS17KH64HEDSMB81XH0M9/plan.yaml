@@ -1,0 +1,20 @@
+_ulid: 01KKSGS17KH64HEDSMB81XH0M9
+slugs:
+  - plan-session-stream-redesign-websocket-first-with-on-de
+title: "Session Stream Redesign: WebSocket-First with On-Demand Detail"
+status: completed
+approved_at: 2026-03-15T19:50:16.828Z
+derived_specs:
+  - "@ws-session-event-streaming"
+  - "@session-event-broadcast"
+  - "@session-event-detail-endpoint"
+derived_tasks:
+  - "@task-session-event-accumulator"
+  - "@task-session-event-detail-endpoint"
+  - "@task-session-stream-ws-ui"
+  - "@task-cli-watch-ws-events"
+  - "@task-update-session-stream-spec-cleanup"
+module_ref: null
+source_path: /home/chapel/Projects/kynetic-spec/plans/session-stream-redesign.md
+created_at: 2026-03-15T19:50:09.906Z
+completed_at: null

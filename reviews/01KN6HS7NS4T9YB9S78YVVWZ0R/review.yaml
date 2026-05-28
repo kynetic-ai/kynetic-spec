@@ -1,0 +1,144 @@
+_ulid: 01KN6HS7NS4T9YB9S78YVVWZ0R
+slugs: []
+title: Review residual full-suite timeout flake investigation
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh: 2065 passed of 2065 suites; 7468 passed, 5 skipped of 7473 tests;
+      5049.7s; log /tmp/kspec-test-cache/01KN6HMZFZMKE7EE6G1MQ7DKRX/5002aad0e97d2c7c.log"
+    name: full npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-02T07:41:24.664Z
+    completed_at: 2026-04-02T07:41:24.664Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/daemon-api/meta.test.ts
+      tests/dispatch-runtime-bootstrap-contract.test.ts: 6 passed of 6 suites, 45 passed of 45
+      tests, 111.3s"
+    name: targeted fresh suites
+    required: true
+    runner: npm
+    created_at: 2026-04-02T07:41:27.067Z
+    completed_at: 2026-04-02T07:41:27.067Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate exited 6 with repo-wide warnings only and no errors: schema OK, references
+      OK, skills OK"
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-02T07:41:48.990Z
+    completed_at: 2026-04-02T07:41:48.990Z
+events:
+  - _ulid: 01KN6HS7NS8YSMSCD760AHY7W0
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-02T07:33:34.521Z
+  - _ulid: 01KN6HT9E875XEK3D1B8VWK79Z
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-02T07:34:09.096Z
+  - _ulid: 01KN6J7H7G4GP1Y6PZ0GFHGWXF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN6J7GFMBW8D8H780QTKJYCX
+    timestamp: 2026-04-02T07:41:23.056Z
+  - _ulid: 01KN6J7KK5Y4SMAXBF4D2XD3KB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full npm test
+    timestamp: 2026-04-02T07:41:25.477Z
+  - _ulid: 01KN6J7NXGEX7878S6KV75NMCM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted fresh suites
+    timestamp: 2026-04-02T07:41:27.856Z
+  - _ulid: 01KN6J8BA0PPBZRX74AXT5SMB0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-02T07:41:49.760Z
+  - _ulid: 01KN6J8DKFTWR42JBZZ1V43YHA
+    actor: agent-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-02T07:41:52.111Z
+  - _ulid: 01KN6J8DKFSN59NQY9BXCXRYKQ
+    actor: agent-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-02T07:41:52.111Z
+examined_commit: a63ee582dbaca95f6726f53492c9e5fa617effb3
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN6G6CARF7D7JDR8X7XDM5B6"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN6J7GFMBW8D8H780QTKJYCX
+    entries:
+      - _ulid: 01KN6J7GFM6W0AJ0X9AEDSTK7V
+        author: Jacob Chapel
+        body: >-
+          Evidence log
+
+
+          Files read: tests/daemon-api/helpers.ts, tests/daemon-api/helpers.test.ts,
+          tests/daemon-api/meta.test.ts, dist/daemon/middleware/project-context.ts,
+          dist/daemon/project-context.ts
+
+          Commands run: git diff 47fe1963c255211d8f8295fb6763f1d232a9a876...HEAD; kspec task get
+          @01KN6G6CARF7D7JDR8X7XDM5B6 --json; kspec validate; npm test -- --fresh
+          tests/daemon-api/meta.test.ts tests/dispatch-runtime-bootstrap-contract.test.ts; npm test
+          -- --fresh
+
+          Claims verified: the helper-scoped watcher suppression leaves request/response tests
+          working and the originally affected suites pass fresh both in isolation and in the full
+          suite
+
+          Categories searched: correctness (no issues), edge cases/resource cleanup (no issues after
+          helper override), error handling (no issues in changed path), test quality (behavioral
+          assertion added, no source scanning), integration (full suite passed fresh)
+        created_at: 2026-04-02T07:41:22.292Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: agent-reviewer
+    role: reviewer
+    created_at: 2026-04-02T07:41:52.111Z
+created_at: 2026-04-02T07:33:34.521Z
+updated_at: 2026-04-02T07:41:52.111Z
+notes: []

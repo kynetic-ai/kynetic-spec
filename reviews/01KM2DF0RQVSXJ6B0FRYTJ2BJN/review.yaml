@@ -1,0 +1,116 @@
+_ulid: 01KM2DF0RQVSXJ6B0FRYTJ2BJN
+slugs: []
+title: Review add-explicit-generatecommitmessage-cases-for-all-shadow-operations
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 286 files, 6598 tests passed, 3 skipped."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-19T06:45:59.066Z
+    completed_at: 2026-03-19T06:45:59.066Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Fails on pre-existing repo-wide meta/reference/completeness debt in untouched .kspec
+      files; not introduced by this diff.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-19T06:45:59.611Z
+    completed_at: 2026-03-19T06:45:59.611Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/parser/shadow.ts, tests/shadow.test.ts, tests/cli-plan-derive.test.ts,
+      tests/cli-plan-import.test.ts, selected call sites in
+      src/cli/commands/{item,plan,plan-import,review,meta,skill-diff,skill-install,setup,tasks}.
+      Commands run: git diff/stat/check, kspec task get, kspec review for-task, kspec validate, rg
+      commitIfShadow, npm test. Claims verified: all changed operations now use explicit
+      colon-formatted messages; detail-only callers (bulk deletes, skill render/install/update, task
+      assess) preserve intended formatting; plan shadow commit subjects match exact expected
+      strings. Categories searched: correctness, edge cases, test quality, integration; no blocking
+      issues found."
+    name: review-evidence
+    required: false
+    runner: manual
+    created_at: 2026-03-19T06:46:01.908Z
+    completed_at: 2026-03-19T06:46:01.908Z
+events:
+  - _ulid: 01KM2DF0RPVMMS8D975GVCCQGZ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-19T06:45:25.911Z
+  - _ulid: 01KM2DG0QPXQGJCDVJYDVD3QBE
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-19T06:45:58.646Z
+  - _ulid: 01KM2DG1ADFS0HB441FM9JFYWZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-19T06:45:59.245Z
+  - _ulid: 01KM2DG1V27R1GYVK8R5D69PE0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-03-19T06:45:59.778Z
+  - _ulid: 01KM2DG43AFDMWJX2M05QX59S6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-03-19T06:46:02.090Z
+  - _ulid: 01KM2DGGAM45K9ZN2DAS76F499
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-19T06:46:14.612Z
+  - _ulid: 01KM2DGGAM4RQ7WFET6PYY6NHW
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-19T06:46:14.612Z
+examined_commit: b15aecdd0776108089c14b6486d969e2bce3abe6
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKX6QMN6CN74M8NFSBM73X1Q"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-19T06:46:14.611Z
+created_at: 2026-03-19T06:45:25.911Z
+updated_at: 2026-03-19T06:46:14.612Z
+notes: []

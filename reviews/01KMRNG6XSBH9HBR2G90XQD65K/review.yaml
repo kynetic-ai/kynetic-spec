@@ -1,0 +1,185 @@
+_ulid: 01KMRNG6XSBH9HBR2G90XQD65K
+slugs: []
+title: Review task-cli-proxy-routing (cycle 2)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 6 with repo-wide warnings only (orphaned skills/spec coverage warnings); no
+      task-specific validation errors.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-27T22:12:54.977Z
+    completed_at: 2026-03-27T22:12:54.977Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed locally in reviewer snapshot: 1957/1957 suites, 7030 passed, 5 skipped."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-27T22:12:56.480Z
+    completed_at: 2026-03-27T22:12:56.480Z
+events:
+  - _ulid: 01KMRNG6XS39RZY6Q4H396G4SM
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T22:09:11.097Z
+  - _ulid: 01KMRNH48WYJFN4DX72TA6WRPR
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T22:09:41.148Z
+  - _ulid: 01KMRNQ0H1SMJ1XBFECFGRJZQE
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMRNQ00RH5GPF7C6P1JWBF6T
+    timestamp: 2026-03-27T22:12:53.921Z
+  - _ulid: 01KMRNQ20WKSG75CDR0FH9VG49
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-27T22:12:55.452Z
+  - _ulid: 01KMRNQ3HQTWMNR6QETWKB5FWJ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-27T22:12:57.016Z
+  - _ulid: 01KMRNQ544E95FNQT40BHM7GBV
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMRNQ4MGSP54WY6DJDST576E
+    timestamp: 2026-03-27T22:12:58.628Z
+  - _ulid: 01KMRNQFKAG5B02BESBXWMV50P
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-27T22:13:09.355Z
+  - _ulid: 01KMRNQFKB0KJKZ1ZEED7JWGW2
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T22:13:09.355Z
+  - _ulid: 01KMRP30ZK6KAJJRWB7CA9RGCX
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMRNQ00RH5GPF7C6P1JWBF6T
+    timestamp: 2026-03-27T22:19:27.603Z
+  - _ulid: 01KMRP34Q9GE19TNEY3YKNXNXW
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMRNQ4MGSP54WY6DJDST576E
+    timestamp: 2026-03-27T22:19:31.433Z
+  - _ulid: 01KMRP3ECMW6CBFPZJXY1FZ9PX
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMRNQ00RH5GPF7C6P1JWBF6T
+    timestamp: 2026-03-27T22:19:41.332Z
+  - _ulid: 01KMRP3HZWKC0N41H87M5S208H
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMRNQ4MGSP54WY6DJDST576E
+    timestamp: 2026-03-27T22:19:45.020Z
+examined_commit: 5efcd4a5853a2c8af498456961106cb3d38f2a86
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMMB3VRRVWNQFKPPP4WR0TK6"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMRNQ00RH5GPF7C6P1JWBF6T
+    anchor:
+      type: code
+      commit: 5efcd4a5853a2c8af498456961106cb3d38f2a86
+      line_end: 148
+      line_start: 140
+      path: packages/web-ui/tests/fixtures/test-base.ts
+      side: head
+    entries:
+      - _ulid: 01KMRNQ00RS8RKEW28N4R1YN6H
+        author: "@claude"
+        body: "Renaming `serve start --daemon` to `--detach` updated the serve command and its unit tests,
+          but the Playwright daemon fixture still launches `kspec serve start --daemon` here. After
+          this change that flag is parsed as the new global proxy option, so `serve start` runs in
+          foreground mode instead of detaching. I reproduced it with an isolated HOME and a 5s
+          timeout: `./dist/cli/index.js serve start --daemon --port 45678 ...` printed `Starting
+          server in foreground` and blocked until timeout (exit 124). Because
+          `packages/web-ui/tests/fixtures/test-base.ts` uses `spawnSync`, every web E2E test that
+          depends on this fixture now hangs before the browser phase, and `npm test` does not catch
+          it because Playwright runs under the separate `npm test:e2e` workflow."
+        created_at: 2026-03-27T22:12:53.400Z
+      - _ulid: 01KMRP30EK3FR2R9DXH1PAWX75
+        author: "@claude"
+        body: "Fixed: Updated packages/web-ui/tests/fixtures/test-base.ts line 142 from --daemon to
+          --detach. The old --daemon flag was being parsed as the new global proxy option instead of
+          the serve start detach flag. Verified no other stale references exist (grep confirmed only
+          the error-message references in index.ts which correctly refer to the global --daemon
+          flag). Full test suite passes (7030/7030)."
+        created_at: 2026-03-27T22:19:27.058Z
+    kind: blocker
+    resolved_at: 2026-03-27T22:19:40.814Z
+    resolved_by: "@claude"
+  - _ulid: 01KMRNQ4MGSP54WY6DJDST576E
+    entries:
+      - _ulid: 01KMRNQ4MHAXVCCN17W35N9JGH
+        author: "@claude"
+        body: "Evidence log. Files read: src/cli/daemon-proxy.ts, src/cli/index.ts,
+          src/cli/commands/serve.ts, tests/cli-daemon-proxy.test.ts,
+          tests/daemon-command-api.test.ts, packages/web-ui/tests/fixtures/test-base.ts,
+          packages/web-ui/tests/e2e/smoke.spec.ts, package.json, packages/web-ui/package.json.
+          Commands run: kspec task get @01KMMB3VRRVWNQFKPPP4WR0TK6, kspec item get
+          @cli-daemon-proxy, kspec review for-task @01KMMB3VRRVWNQFKPPP4WR0TK6, git diff --stat/base
+          diff vs dev, grep AC annotations, kspec validate, npm test, npm --workspace
+          packages/web-ui run test:e2e:ci:run -- --list, isolated reproduction of `serve start
+          --daemon` with timeout. Claims verified: full suite still passes; daemon command API
+          accepts {command,args}; renamed serve flag regressed the Playwright fixture into
+          foreground startup. Categories searched: correctness, integration, test quality, error
+          handling, spec/AC coverage."
+        created_at: 2026-03-27T22:12:58.129Z
+      - _ulid: 01KMRP347PY5JC9R6TRVTQC9E6
+        author: "@claude"
+        body: Acknowledged. Evidence log noted.
+        created_at: 2026-03-27T22:19:30.933Z
+    kind: nit
+    resolved_at: 2026-03-27T22:19:44.528Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-27T22:13:09.354Z
+created_at: 2026-03-27T22:09:11.097Z
+updated_at: 2026-03-27T22:19:44.528Z
+notes: []

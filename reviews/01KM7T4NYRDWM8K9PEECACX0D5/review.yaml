@@ -1,0 +1,175 @@
+_ulid: 01KM7T4NYRDWM8K9PEECACX0D5
+slugs: []
+title: Review task-impl-index (cycle 4)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 299 test files passed, 6814 tests passed, 3 skipped, exit code 0.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-21T09:09:15.251Z
+    completed_at: 2026-03-21T09:09:15.251Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation reported no errors. Exit 6 came from pre-existing repository warnings (1
+      orphaned skill dir, 33 orphaned specs, 408 completeness warnings).
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-21T09:09:23.806Z
+    completed_at: 2026-03-21T09:09:23.806Z
+events:
+  - _ulid: 01KM7T4NYR893Z0PH3PVECCE4N
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T09:03:10.808Z
+  - _ulid: 01KM7T4WV9SC0PHNYTTPW6FGYY
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T09:03:17.866Z
+  - _ulid: 01KM7TD7TA2C1HQN4PEMK1F5FS
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM7TD7AXQN97TXTZR7REZWP1
+    timestamp: 2026-03-21T09:07:51.242Z
+  - _ulid: 01KM7TF0FN82M8TFNFTXB9Q7RT
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM7TF0205GPVAKQ1PX39ZEFQ
+    timestamp: 2026-03-21T09:08:49.269Z
+  - _ulid: 01KM7TFA5WFXH81H3ANBW74PP9
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM7TF9WXPKBP8M59QZE121N7
+    timestamp: 2026-03-21T09:08:59.196Z
+  - _ulid: 01KM7TFT57K9SXBEDJ5MBXWA5F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-21T09:09:15.559Z
+  - _ulid: 01KM7TG2GRG5WNMQY1H8V24XYR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-21T09:09:24.120Z
+  - _ulid: 01KM7TG7KHANRYWHG12J74WBQK
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-21T09:09:29.329Z
+  - _ulid: 01KM7TG7KHBE7CNBEFVQP32M0Q
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-21T09:09:29.329Z
+examined_commit: 54201d9e92eec58950b8d7ec342b710bb4e0d32a
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YESAF92YTNXT3DF06AC0N"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM7TD7AXQN97TXTZR7REZWP1
+    anchor:
+      type: code
+      commit: 54201d9e92eec58950b8d7ec342b710bb4e0d32a
+      line_end: 271
+      line_start: 226
+      path: src/parser/split-backend.ts
+      side: head
+    entries:
+      - _ulid: 01KM7TD7AYPM46BKYNMSM9F0QR
+        author: Jacob Chapel
+        body: "The new index projection writes plan_ref and review_ref, but the summary path still drops
+          both fields: TaskSummary/rawToSummary() only expose spec_ref. Once split storage is
+          activated, listTasks() will therefore stop returning plan_ref-linked tasks to plan-summary
+          consumers and lose review_ref data from list surfaces, even though this task explicitly
+          marked those refs as indexed. Please carry the new indexed fields through the summary
+          type/parser and add a split-backend coverage test for listTasks()/task list --json."
+        created_at: 2026-03-21T09:07:50.750Z
+    kind: blocker
+  - _ulid: 01KM7TF0205GPVAKQ1PX39ZEFQ
+    anchor:
+      type: code
+      commit: 54201d9e92eec58950b8d7ec342b710bb4e0d32a
+      line_end: 966
+      line_start: 940
+      path: src/parser/split-backend.ts
+      side: head
+    entries:
+      - _ulid: 01KM7TF020XPG5CCNEQNGFVHKK
+        author: Jacob Chapel
+        body: "rebuildIndex() is implemented only on the concrete split backend. There is still no supported
+          way to request a rebuild through TaskStorageBackend, TaskDataManager, or any CLI/API path,
+          and the only callers in this snapshot are tests importing splitBackend directly. That
+          means AC-7 is not actually satisfied for real callers yet: production code cannot trigger
+          the rebuild when drift is detected. Please expose this through the manager/public surface
+          and verify that public entrypoint instead of a test-only direct backend call."
+        created_at: 2026-03-21T09:08:48.832Z
+    kind: blocker
+  - _ulid: 01KM7TF9WXPKBP8M59QZE121N7
+    entries:
+      - _ulid: 01KM7TF9WXCHED2DS0JPFZ1WW8
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+
+          Files read: src/parser/split-backend.ts, src/parser/task-data-manager.ts,
+          src/schema/task.ts, src/cli/commands/task.ts, src/lib/plan-summary.ts,
+          tests/split-backend.test.ts, tests/task-data-manager.test.ts,
+          tests/cli-plan-import.test.ts
+
+          Commands run: git diff --stat, git diff on both changed files, kspec task get, kspec item
+          get, kspec review for-task/get, rg for AC annotations and rebuild callers, kspec validate,
+          npm test
+
+          Claims verified: full test suite passes on this snapshot; split backend writes
+          notes_count/todos_count into index and updates them on note mutations; the prior
+          stale-count blocker is fixed in this cycle
+
+          Categories searched: correctness, spec alignment, public API reachability, test quality,
+          integration with task list and plan-summary consumers
+        created_at: 2026-03-21T09:08:58.909Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-21T09:09:29.328Z
+created_at: 2026-03-21T09:03:10.808Z
+updated_at: 2026-03-21T09:09:29.329Z
+notes: []

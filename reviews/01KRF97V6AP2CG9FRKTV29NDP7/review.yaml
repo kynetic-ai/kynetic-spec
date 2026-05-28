@@ -1,0 +1,290 @@
+_ulid: 01KRF97V6AP2CG9FRKTV29NDP7
+slugs: []
+title: Review fix guardrail cleanup-effect classification (cycle 14)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2429 suites, 9154 passed, 5 skipped of 9159. Duration 5144.3s. Log:
+      /tmp/kspec-test-cache/01KRF95H5Q1P82H6Q4YW1WP6R9/6745eb2c13cf5c1a.log"
+    name: npm test -- --fresh
+    required: true
+    runner: npm test
+    created_at: 2026-05-13T00:07:20.966Z
+    completed_at: 2026-05-13T00:07:20.966Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No whitespace errors.
+    name: git diff --check dev...HEAD
+    required: true
+    runner: git diff --check
+    created_at: 2026-05-13T00:07:24.820Z
+    completed_at: 2026-05-13T00:07:24.820Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Warnings-only exit 6: validation passed schema/references but reported pre-existing
+      reference, alignment, completeness, and AC annotation warnings."
+    name: kspec validate
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-13T00:07:28.544Z
+    completed_at: 2026-05-13T00:07:28.544Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repository lint failed with 13 errors and 721 warnings, matching the known pre-existing
+      lint debt noted in prior cycles; changed-file oxlint below has 0 errors.
+    name: npm run lint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-13T00:07:32.135Z
+    completed_at: 2026-05-13T00:07:32.135Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npx oxlint tools/eslint-rules/no-leaky-test-daemon.js
+      tests/lint-no-leaky-test-daemon.test.ts tests/lint-daemon-test-guardrails.test.ts exited 0
+      with 35 pre-existing warnings and 0 errors.
+    name: changed-file oxlint
+    required: true
+    runner: npx oxlint
+    created_at: 2026-05-13T00:07:35.792Z
+    completed_at: 2026-05-13T00:07:35.792Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: AC annotations for daemon-test-guardrail-precision and daemon-test-harness-guardrails
+      remain present in behavioral oxlint tests. Removed implicit-auto-start/source-scanning block
+      is gone; no readTestOutputSync or collectUnsafeAutoStartFindings remains in
+      lint-daemon-test-guardrails.test.ts.
+    name: AC annotation scan
+    required: true
+    runner: rg
+    created_at: 2026-05-13T00:07:39.462Z
+    completed_at: 2026-05-13T00:07:39.462Z
+events:
+  - _ulid: 01KRF97V6A2ZK58NTV6Q4FBZMS
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-12T23:44:31.434Z
+  - _ulid: 01KRF98QHQ7CFD2RGPZ639Q0D1
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-12T23:45:00.471Z
+  - _ulid: 01KRF9DRVRW85A7FTZDXZMV82G
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRF9DMPKMQGP6V3DEP2BK0PH
+    timestamp: 2026-05-12T23:47:45.656Z
+  - _ulid: 01KRF9F0E58XTH5BH3QK15D3TE
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRF9DMPKMQGP6V3DEP2BK0PH
+    timestamp: 2026-05-12T23:48:26.181Z
+  - _ulid: 01KRFAHP2FWRTYMZKQ957AXY9S
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-05-13T00:07:22.448Z
+  - _ulid: 01KRFAHSSB94P3ZERW65YQHA4Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: git diff --check dev...HEAD
+    timestamp: 2026-05-13T00:07:26.251Z
+  - _ulid: 01KRFAHXE8QHAM2RS47B0BGPRY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-05-13T00:07:29.992Z
+  - _ulid: 01KRFAJ0ZH8CJPAGC1XZY3HSZC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm run lint
+    timestamp: 2026-05-13T00:07:33.618Z
+  - _ulid: 01KRFAJ4FACTRD2QSWJWP2K1EQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file oxlint
+    timestamp: 2026-05-13T00:07:37.194Z
+  - _ulid: 01KRFAJ825FME8K975Q3BXK6Q1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC annotation scan
+    timestamp: 2026-05-13T00:07:40.870Z
+  - _ulid: 01KRFAJBR5PZSVJWZ3TQBW4BNB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KRFAJA8SABFBNHK8SN6YDTAC
+    timestamp: 2026-05-13T00:07:44.645Z
+  - _ulid: 01KRFAJFNF43TG1HCATYCS3E1W
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-13T00:07:48.655Z
+  - _ulid: 01KRFAJFNFMPPRZPM2GA5SKC6X
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-13T00:07:48.655Z
+  - _ulid: 01KRFDQZF00AYP74VEYKH104T1
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRF9DMPKMQGP6V3DEP2BK0PH
+    timestamp: 2026-05-13T01:03:14.400Z
+  - _ulid: 01KRFDR9JY87QHHQMQMJTV4ZCM
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KRF9DMPKMQGP6V3DEP2BK0PH
+    timestamp: 2026-05-13T01:03:24.767Z
+examined_commit: 185cd75f0c9bc830e2f2952ca1525583c1ab95e7
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRCRJPMHMHC410TKRC5Y9HF1"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRF9DMPKMQGP6V3DEP2BK0PH
+    anchor:
+      type: code
+      commit: 185cd75f0c9bc830e2f2952ca1525583c1ab95e7
+      line_end: 1618
+      line_start: 1519
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KRF9DMPMGY4ZG2PZMZRAHXHB
+        author: Jacob Chapel
+        body: "MUST-FIX: local class declarations are not treated as helper-name bindings, so they can
+          shadow an approved cleanup import and still receive cleanup credit.  walks parameters,
+          catch/for bindings, function declarations, and variable declarations, but not ;  also only
+          handles variable declarations. I verified with an oxlint fixture that imports  from , then
+          declares  before : the rule exits with 0 no-leaky-test-daemon errors, even though the
+          cleanup callback invokes the local class binding and throws instead of terminating the
+          daemon. The same false negative reproduces inside a helper body for  shadowing the
+          approved  primitive. This violates @daemon-test-guardrail-precision
+          ac-cleanup-helper-origin-is-trusted and ac-cleanup-operation-terminates-daemon because
+          helper/import trust is not local-scope accurate for class bindings."
+        created_at: 2026-05-12T23:47:41.396Z
+      - _ulid: 01KRF9EWC82D3CBZE07FK3F4AV
+        author: Jacob Chapel
+        body: 'Clarification for the shell-stripped code snippets above: the affected local-binding resolver
+          is findLocalHelperDefinition plus statementBindsNameOpaquely. Repro 1: import killPid from
+          ./helpers/daemon, start with runKspec("serve start --detach"), read pid, declare class
+          killPid {}, then register onTestFinished(() => killPid(pid)). Oxlint produced only
+          no-unused-vars and zero no-leaky-test-daemon errors. Repro 2: import stopPidBounded from
+          ./helpers/process-stop, then inside a local killPid helper declare class stopPidBounded {}
+          before calling stopPidBounded(pid); the cleanup is also credited. These class declarations
+          lexically shadow the approved imports, so they need to be treated as opaque local
+          bindings.'
+        created_at: 2026-05-12T23:48:22.022Z
+      - _ulid: 01KRFDQY3K2BN324680Q0JMG9M
+        author: "@claude"
+        body: >-
+          Fixed in fix-cycle 14: extended `statementBindsNameOpaquely` (the residual-binding
+          predicate consulted by `findLocalHelperDefinition`'s statement walker) to recognise
+          `ClassDeclaration` whose id binds the looked-up name — both as a top-level statement and
+          through the existing `ExportNamedDeclaration` / `ExportDefaultDeclaration` unwrap. Both
+          reviewer repros now resolve as opaque local bindings:
+
+
+          1. `class killPid {}` in the `it` body → `isTrustedHelperByOrigin` sees
+          `LOCAL_BINDING_OPAQUE` and rejects the cleanup callback.
+
+          2. `class stopPidBounded {}` inside a `killPid` helper body →
+          `isApprovedSharedCleanupPrimitiveCall`'s lexical-resolution gate sees the opaque binding
+          and rejects the trust.
+
+
+          Three new positive regressions assert the cycle-14 shapes (in-scope class shadow,
+          helper-body class shadow of an approved shared primitive, exported-class shadow). Full
+          `tests/lint-no-leaky-test-daemon.test.ts` suite passes (156/156), and the full `npm test`
+          suite passes (2429 suites).
+        created_at: 2026-05-13T01:03:13.011Z
+    kind: blocker
+    resolved_at: 2026-05-13T01:03:23.260Z
+    resolved_by: "@claude"
+  - _ulid: 01KRFAJA8SABFBNHK8SN6YDTAC
+    entries:
+      - _ulid: 01KRFAJA8SNR5BEAZXKDTTWPBY
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+
+          Files read: kspec-agents.md; prior review @01KRF5CP; task @01KRCRJPMHMHC410TKRC5Y9HF1;
+          specs @daemon-test-guardrail-precision and @daemon-test-harness-guardrails;
+          tools/eslint-rules/no-leaky-test-daemon.js; tests/lint-no-leaky-test-daemon.test.ts;
+          tests/lint-daemon-test-guardrails.test.ts.
+
+
+          Commands run: kspec task get; kspec review for-task/get/add/open; kspec item get; git
+          diff/stat/name-only; rg AC/source-scanning scans; npm test -- --fresh; kspec validate; git
+          diff --check dev...HEAD; npm run lint; npx oxlint changed files; two ad hoc npx oxlint
+          repros for class shadowing.
+
+
+          Claims verified: cycle-13 source-scanning cleanup was verified by rg: readTestOutputSync,
+          collectUnsafeAutoStartFindings, ac-implicit-autostart-cleanup-before-observation, and
+          it.fails are absent from lint-daemon-test-guardrails.test.ts. Worker test claim verified
+          by full npm test pass.
+
+
+          Categories searched: correctness, helper-origin shadowing, signal/termination
+          classification, scoped cleanup timing, source-scanning test quality, AC annotation
+          coverage, lint/test integration. Finding recorded for class-declaration shadow false
+          negative.
+        created_at: 2026-05-13T00:07:43.129Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-13T00:07:48.655Z
+created_at: 2026-05-12T23:44:31.434Z
+updated_at: 2026-05-13T01:03:23.260Z
+notes: []

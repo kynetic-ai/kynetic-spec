@@ -1,0 +1,119 @@
+_ulid: 01KM4ADFZA90QMMT9BRQYPZWPQ
+slugs: []
+title: Review task-implement-cancelled-task-dependency-cleanup (cycle 3)
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Known repository-wide validation failures remain unrelated to this task: 3 reference
+      errors in .kspec/modules/meta.yaml plus broader completeness warnings."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-20T00:31:14.709Z
+    completed_at: 2026-03-20T00:31:14.709Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "node scripts/test.cjs passed in this review workspace: 287 files, 6613 tests passed, 3
+      skipped."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-20T00:31:15.421Z
+    completed_at: 2026-03-20T00:31:15.421Z
+events:
+  - _ulid: 01KM4ADFZ9M8VMQF5GZDPA05N6
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-20T00:30:39.082Z
+  - _ulid: 01KM4AE2XPHRZTM0QQ4N4X6F8R
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-20T00:30:58.486Z
+  - _ulid: 01KM4AEJ8V46BC2HRX9Z8HD90G
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM4AEJ1JMVN27G5NJEZR275E
+    timestamp: 2026-03-20T00:31:14.203Z
+  - _ulid: 01KM4AEJZZS4HP68V27DCBHT0X
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-03-20T00:31:14.943Z
+  - _ulid: 01KM4AEKQ0CXJ3D60ADGRB5X1K
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-20T00:31:15.680Z
+  - _ulid: 01KM4AET9J41D6WJK7QF8CHT9Z
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-20T00:31:22.418Z
+  - _ulid: 01KM4AET9J8QDGXDN59MGRQQKJ
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-20T00:31:22.418Z
+examined_commit: 86035071daccf934787a0b9f1fe7a029e343d28a
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM43VYQXEFJMMYK2184MR7FH"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM4AEJ1JMVN27G5NJEZR275E
+    entries:
+      - _ulid: 01KM4AEJ1JT8670XCNJN6X77T1
+        author: Jacob Chapel
+        body: "Review evidence log:\\nFiles read: src/cli/commands/task.ts, src/parser/yaml.ts,
+          tests/task-cancel-dependency-cleanup.test.ts, src/cli/batch.ts,
+          src/cli/batch-write-buffer.ts, tests/helpers/cli.ts.\\nCommands run: kspec task get
+          @01KM43VYQXEFJMMYK2184MR7FH; kspec item get @cancelled-task-dependency-cleanup; kspec
+          validate; rg -n 'AC: @cancelled-task-dependency-cleanup'
+          tests/task-cancel-dependency-cleanup.test.ts; git diff --name-only
+          dev...86035071daccf934787a0b9f1fe7a029e343d28a; git log --oneline --graph
+          146e2709913aa6c8f2e597da2e98c9d224b4255d..86035071daccf934787a0b9f1fe7a029e343d28a; npm
+          test.\\nClaims verified: cancellation removes downstream depends_on entries, appends audit
+          notes, preserves ready semantics, and commits atomically across split task files; verified
+          by code inspection plus tests/task-cancel-dependency-cleanup.test.ts and an extra local
+          batch-cancel CLI repro.\\nCategories searched: correctness, edge cases, error handling,
+          test quality, integration; no blocking issues found.\\nNote: kspec validate still reports
+          pre-existing repository-wide reference/completeness errors unrelated to this task."
+        created_at: 2026-03-20T00:31:13.971Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-20T00:31:22.417Z
+created_at: 2026-03-20T00:30:39.082Z
+updated_at: 2026-03-20T00:31:22.418Z
+notes: []

@@ -1,0 +1,117 @@
+_ulid: 01KMRFR4PAMF3VA40HF32K0E0T
+slugs: []
+title: Review task-update-daemon-server-desc
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with repository-wide warnings only; no errors introduced by this
+      task-specific spec description update.
+    name: kspec-validate
+    required: true
+    runner: kspec
+    created_at: 2026-03-27T20:29:12.468Z
+    completed_at: 2026-03-27T20:29:12.468Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: modules/web-ui.yaml (shadow commit bd7477fdf), task
+      @01KMMB3XHCBBHHWD0NFN2D57ST, spec @daemon-server. Commands run: git show bd7477fdf, kspec task
+      get --json, kspec item get --json, kspec validate, npm test. Claims verified: worker claim
+      that this is a spec-only description update; verified exact description text now mentions
+      cache invalidation alongside WebSocket broadcast. Categories searched: correctness, spec
+      alignment, collateral changes, validation/test impact; no task-specific findings."
+    name: task-scope-review
+    required: true
+    runner: codex
+    created_at: 2026-03-27T20:29:12.477Z
+    completed_at: 2026-03-27T20:29:12.477Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite in shared snapshot failed outside this task scope: 14 suites failed, 1934
+      passed; 17 tests failed. Failing suites included tests/cli-serve.test.ts,
+      tests/dispatch-workspace-config.test.ts, tests/dispatch-workspace-registry.test.ts,
+      tests/enhanced-setup.test.ts, tests/grep.test.ts. This task changed only the shadow-branch
+      spec description for @daemon-server and did not modify runtime code or tests."
+    name: npm-test
+    required: false
+    runner: npm
+    created_at: 2026-03-27T20:29:14.998Z
+    completed_at: 2026-03-27T20:29:14.998Z
+events:
+  - _ulid: 01KMRFR4P90N14CDCQWW2D9N08
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T20:28:39.498Z
+  - _ulid: 01KMRFRKEB7YQ0A8SWT05NNMNH
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T20:28:54.603Z
+  - _ulid: 01KMRFS5DBVMBVM8R4ZSG21ZYF
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-27T20:29:13.004Z
+  - _ulid: 01KMRFS69CDDQWECDBA8ZWFBN2
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: task-scope-review
+    timestamp: 2026-03-27T20:29:13.900Z
+  - _ulid: 01KMRFS7VS8TB8XMHCHP8T24TF
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm-test
+    timestamp: 2026-03-27T20:29:15.513Z
+  - _ulid: 01KMRFSJPEWRTR5TD9MAKZ8SMR
+    actor: "@codex"
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-27T20:29:26.606Z
+  - _ulid: 01KMRFSJPE7ADA7ZGZAFGNDKCK
+    actor: "@codex"
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T20:29:26.606Z
+examined_commit: 098d671a198ed582216a99f69c059f0d562fa735
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMMB3XHCBBHHWD0NFN2D57ST"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: "@codex"
+    role: reviewer
+    created_at: 2026-03-27T20:29:26.605Z
+created_at: 2026-03-27T20:28:39.498Z
+updated_at: 2026-03-27T20:29:26.606Z
+notes: []

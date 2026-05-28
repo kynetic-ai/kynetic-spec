@@ -1,0 +1,295 @@
+_ulid: 01KMH0ACFPN66G1E2AJ1DSCK96
+slugs: []
+title: "Plan re-review: Daemon Optimistic Data Layer (v3)"
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 5 spec descriptions checked for: non-goals language, relationship-to sections,
+      justification references, implementation details. All clean. Descriptions are pure behavioral
+      contracts."
+    name: Spec purity — no anti-patterns
+    required: true
+    created_at: 2026-03-24T22:44:58.566Z
+    completed_at: 2026-03-24T22:44:58.566Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All ACs across 5 specs use given/when/then format describing observable behavior. No
+      implementation details in ACs. Checked all 34 ACs. Examples of good form:
+      ac-watcher-invalidation describes the observable effect (cache updated) without specifying
+      mechanism; ac-fast-detection specifies the 50ms time bound as observable behavior."
+    name: AC observability — behavioral only
+    required: true
+    created_at: 2026-03-24T22:45:06.174Z
+    completed_at: 2026-03-24T22:45:06.174Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      AC coverage mapping:
+
+
+      @daemon-entity-cache (13 ACs):
+        task-entity-cache-impl covers ALL: ac-load-on-register, ac-serve-from-memory, ac-watcher-invalidation, ac-granular-reload, ac-write-through, ac-concurrent-reads, ac-reload-dedup, ac-graceful-degradation, ac-project-isolation, ac-unregister-cleanup, ac-session-bounded-index, ac-warming-availability, ac-progressive-loading. COMPLETE.
+
+      @daemon-read-path (4 ACs):
+        task-migrate-read-routes covers ALL: ac-no-per-request-sync, ac-background-sync, ac-index-from-cache, ac-write-routes-sync. COMPLETE.
+
+      @cli-daemon-proxy (8 ACs):
+        task-cli-proxy-routing covers ALL: ac-auto-detect, ac-direct-fallback, ac-force-direct, ac-force-proxy, ac-transparent-output, ac-mutation-coherence, ac-read-from-cache, ac-timeout-fallback. COMPLETE.
+
+      @daemon-command-api (5 ACs):
+        task-daemon-command-api covers ALL: ac-command-endpoint, ac-mutation-cache-update, ac-batch-support, ac-concurrent-mutations, ac-response-parity. COMPLETE.
+
+      @daemon-proxy-detection (4 ACs):
+        task-cli-proxy-routing covers ALL: ac-port-file-check, ac-fast-detection, ac-health-timeout, ac-project-registered. COMPLETE.
+
+      No orphan ACs. Total: 34 ACs across 5 specs, all covered.
+    name: AC coverage — all ACs mapped to tasks
+    required: true
+    created_at: 2026-03-24T22:45:26.557Z
+    completed_at: 2026-03-24T22:45:26.557Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      All 5 tasks checked for what/why/how structure, file references, AC coverage lists:
+
+
+      1. task-entity-cache-impl: Detailed what (9 bullet points), clear why, concrete how with file
+      paths (watcher.ts, project-context.ts, sessions/cache.ts). Covers 13 ACs listed.
+
+      2. task-migrate-read-routes: Lists all affected route files by name. Clear why separating from
+      cache creation. Covers 4 ACs.
+
+      3. task-daemon-command-api: Concrete endpoint spec, serialization approach, references
+      agent-dispatch.ts pattern. Covers 5 ACs.
+
+      4. task-cli-proxy-routing: References specific files (index.ts, serve.ts). Detection approach
+      detailed. Covers 12 ACs across 2 specs.
+
+      5. task-update-related-specs: Lists specific specs to update and specific changes per spec.
+
+
+      No design tasks — all are implementation. An agent could execute any of these without chat
+      history.
+    name: Task quality — agent-executable
+    required: true
+    created_at: 2026-03-24T22:45:40.647Z
+    completed_at: 2026-03-24T22:45:40.647Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      Dependency graph:
+        P1: task-entity-cache-impl (no deps)
+        P1: task-migrate-read-routes → depends on task-entity-cache-impl (P1→P1, OK)
+        P2: task-daemon-command-api → depends on task-entity-cache-impl (P2→P1, OK)
+        P2: task-cli-proxy-routing → depends on task-daemon-command-api (P2→P2, OK)
+        P2: task-update-related-specs (no deps)
+
+      No circular dependencies. No P1 depending on P2. Parallelism: task-migrate-read-routes and
+      task-daemon-command-api can run in parallel after task-entity-cache-impl completes.
+      task-update-related-specs is independent and can run anytime.
+    name: Dependencies — no cycles, priority coherence
+    required: true
+    created_at: 2026-03-24T22:45:52.784Z
+    completed_at: 2026-03-24T22:45:52.784Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      Implementation Notes contain all required architectural detail:
+
+      - Domain mapping table: present, 8 domains with file patterns and load functions
+
+      - Progressive loading priority: present, ordered list with rationale
+
+      - Write-through protocol: present, 7-step protocol with flag-based dedup
+
+      - Session index bounding: present, semantics for bounded vs on-demand
+
+      - Index rebuild strategy: present
+
+      - Relationship to existing caching: properly placed here (not in specs)
+
+      - CLI proxy routing: serialization format and dispatch interaction
+
+
+      Tasks reference this content (e.g., "see Implementation Notes below" in
+      task-entity-cache-impl). The notes serve as the architectural design document, replacing the
+      removed design task.
+    name: Implementation Notes — architectural detail
+    required: true
+    created_at: 2026-03-24T22:45:58.535Z
+    completed_at: 2026-03-24T22:45:58.535Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      All cross-references validated against live spec graph:
+
+      - Parents: @daemon-server (exists), @cli (exists), @daemon-entity-cache (defined in plan),
+      @cli-daemon-proxy (defined in plan)
+
+      - Traits: @trait-api-endpoint (exists, 6 ACs), @trait-error-guidance (exists, 5 ACs),
+      @trait-localhost-security (exists, 3 ACs)
+
+      - depends_on: all task refs are internal to the plan
+
+      - Implementation Notes refs: @session-summary-cache (exists), @shadow-lazy-read-sync (exists),
+      @shadow-daemon-push-sync (exists), @batch-item-fetch-api (exists), @multi-directory-daemon
+      (exists)
+
+      - task-update-related-specs refs: all 4 specs exist
+    name: Cross-references — all valid
+    required: true
+    created_at: 2026-03-24T22:46:03.661Z
+    completed_at: 2026-03-24T22:46:03.661Z
+events:
+  - _ulid: 01KMH0ACFN344DN3TVCXW86CKC
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-24T22:44:19.062Z
+  - _ulid: 01KMH0BKR2FN9HJN2G8JDY19SE
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec purity — no anti-patterns
+    timestamp: 2026-03-24T22:44:59.266Z
+  - _ulid: 01KMH0BV8EYYHVQGXJNRVB1E86
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC observability — behavioral only
+    timestamp: 2026-03-24T22:45:06.958Z
+  - _ulid: 01KMH0CF4A2V057W3Y51ST68JC
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage — all ACs mapped to tasks
+    timestamp: 2026-03-24T22:45:27.306Z
+  - _ulid: 01KMH0CWWNECH7W368JBRKN52Y
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Task quality — agent-executable
+    timestamp: 2026-03-24T22:45:41.397Z
+  - _ulid: 01KMH0D8P6DJX0FHVZC2KN5FAP
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependencies — no cycles, priority coherence
+    timestamp: 2026-03-24T22:45:53.478Z
+  - _ulid: 01KMH0DEAW852M4CYJY1XK4SK4
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Implementation Notes — architectural detail
+    timestamp: 2026-03-24T22:45:59.261Z
+  - _ulid: 01KMH0DKCF3V8DWAY2RKX2MR2M
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Cross-references — all valid
+    timestamp: 2026-03-24T22:46:04.431Z
+  - _ulid: 01KMH0E3M0T5E1Q9V5Y7A19ZJH
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMH0E2W8ZQW7XAFJ6PYHQAHY
+    timestamp: 2026-03-24T22:46:21.056Z
+  - _ulid: 01KMH0EK6FCNSCXVJ6AZFK63SK
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMH0EJRVEG322HCWBNJZVREF
+    timestamp: 2026-03-24T22:46:37.007Z
+  - _ulid: 01KMH0FJZ3ES314PDG8H6JWTPW
+    actor: claude
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-24T22:47:09.540Z
+  - _ulid: 01KMH0FJZ4XNR4TYWKZED2HFW6
+    actor: claude
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: closed
+    timestamp: 2026-03-24T22:47:09.540Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-daemon-optimistic-data-layer"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMH0E2W8ZQW7XAFJ6PYHQAHY
+    anchor:
+      type: structured
+      field: task-update-related-specs
+      section: Tasks
+    entries:
+      - _ulid: 01KMH0E2W8GRWXHA161E2MPB6M
+        author: "@claude"
+        body: This task's Covers line says "Ensures spec graph accurately reflects..." which is a prose
+          justification rather than AC IDs. All other tasks list specific AC IDs. This is fine since
+          it's a spec maintenance task without its own ACs, but noting for consistency. The task has
+          spec_ref @daemon-read-path which is a loose fit — it's really a cross-cutting maintenance
+          task. Consider whether it needs a spec_ref at all, or whether it should ref the plan
+          itself.
+        created_at: 2026-03-24T22:46:20.296Z
+    kind: nit
+  - _ulid: 01KMH0EJRVEG322HCWBNJZVREF
+    anchor:
+      type: structured
+      field: daemon-entity-cache
+      section: Specs
+    entries:
+      - _ulid: 01KMH0EJRVZ352R68DR3YG180K
+        author: "@claude"
+        body: Trait ACs not listed in task coverage. @daemon-entity-cache uses @trait-api-endpoint (6 ACs)
+          and @daemon-command-api uses both @trait-api-endpoint and @trait-localhost-security (3
+          ACs). The tasks don't explicitly list trait AC coverage. This is standard practice (trait
+          ACs are inherited and tested implicitly), but worth noting — during implementation, trait
+          ACs should be annotated per the N/A convention where they don't apply.
+        created_at: 2026-03-24T22:46:36.571Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: claude
+    role: reviewer
+    created_at: 2026-03-24T22:47:09.539Z
+created_at: 2026-03-24T22:44:19.062Z
+updated_at: 2026-03-24T22:47:09.540Z
+notes: []

@@ -1,0 +1,263 @@
+_ulid: 01KR75E7CQ40ZY9EFW27NYMXZ9
+slugs: []
+title: Review task-fix-guardrail-binding-wrapper-analysis cycle 4
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts: 23 suites passed, 241 tests passed, duration 57.1s."
+    name: focused lint guardrail tests
+    required: true
+    runner: npm
+    created_at: 2026-05-09T20:20:40.383Z
+    completed_at: 2026-05-09T20:20:40.383Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- kspec validate --refs --warnings-ok: exited 0. Validation passed with 6
+      pre-existing reference warnings allowed by --warnings-ok."
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-05-09T20:20:50.446Z
+    completed_at: 2026-05-09T20:20:50.446Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- kspec validate --completeness --warnings-ok: exited 0. Validation passed
+      with pre-existing completeness warnings allowed by --warnings-ok."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-05-09T20:21:00.411Z
+    completed_at: 2026-05-09T20:21:00.411Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh: one late timeout in tests/daemon-build.test.ts after
+      180000ms (8994 passed, 5 skipped). Immediate fresh rerun of tests/daemon-build.test.ts passed
+      in 895ms, 2/2 tests. Classified flaky/pre-existing per review gates and created follow-up
+      @01KR76BQ."
+    name: full npm test triage
+    required: true
+    runner: npm
+    created_at: 2026-05-09T20:21:11.063Z
+    completed_at: 2026-05-09T20:21:11.063Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Synthetic test with runKspec('serve start --detach'), onTestFinished callback-local const
+      pid = readPidFromFile(); process.kill(pid, 'SIGTERM'), then expect(true) produced OX_STATUS=0
+      / Found 0 warnings and 0 errors. This violates ac-detached-cleanup-bound-before-observation
+      because no concrete pid is owned at registration time.
+    name: manual oxlint AC probe
+    required: true
+    runner: oxlint
+    created_at: 2026-05-09T20:21:22.800Z
+    completed_at: 2026-05-09T20:21:22.800Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md; tools/eslint-rules/no-leaky-test-daemon.js;
+      tests/lint-daemon-test-guardrails.test.ts; tests/helpers/daemon.ts;
+      tests/helpers/daemon.test.ts; tests/daemon-build.test.ts; prior review @01KR731K. Commands
+      run: git diff/log/status; kspec task get; kspec item get; kspec review add/open/comment/check;
+      rg AC annotations; focused lint tests; full npm test; daemon-build rerun; validate
+      refs/completeness; manual oxlint probes. Claims verified: cycle-3 TS wrapper and
+      callback-local fixes were inspected; focused lint suites pass; manual probe disproved
+      callback-local runtime-read acceptance. Categories searched: correctness, AC alignment, edge
+      cases around callback-local and member-expression captures, test quality, integration/flaky
+      full-suite behavior."
+    name: review evidence log
+    required: false
+    runner: reviewer
+    created_at: 2026-05-09T20:21:36.243Z
+    completed_at: 2026-05-09T20:21:36.243Z
+events:
+  - _ulid: 01KR75E7CQXBM956RK9M2QSH9R
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-09T20:04:10.775Z
+  - _ulid: 01KR75ER9HXENVVGXN1NPMAS7K
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-09T20:04:28.081Z
+  - _ulid: 01KR75J5WM2388GYY5RZMTRGZH
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR75J4HZARHJ6VV0CXN8QFKK
+    timestamp: 2026-05-09T20:06:20.308Z
+  - _ulid: 01KR76CF5NT9BXSMP8CWF62B2F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused lint guardrail tests
+    timestamp: 2026-05-09T20:20:41.781Z
+  - _ulid: 01KR76CRZFMA2AGJ5V6HNQQDG7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-05-09T20:20:51.823Z
+  - _ulid: 01KR76D2TM7P573V1X7TH1SA1W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-05-09T20:21:01.908Z
+  - _ulid: 01KR76DD8ERZ6S1MGCECH6B0SX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full npm test triage
+    timestamp: 2026-05-09T20:21:12.590Z
+  - _ulid: 01KR76DRJV1H26WEC5V4WY3WTW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: manual oxlint AC probe
+    timestamp: 2026-05-09T20:21:24.187Z
+  - _ulid: 01KR76E5R1DNQ9PE8YE3CK7NYF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-09T20:21:37.665Z
+  - _ulid: 01KR76EF3467TXK5DWFPWD77PV
+    actor: reviewer-agent
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-09T20:21:47.236Z
+  - _ulid: 01KR76EF34ZRA2AFHXR17NXXGF
+    actor: reviewer-agent
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-09T20:21:47.236Z
+  - _ulid: 01KR79EZ2TZESCA3JCBRT4Q52V
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR75J4HZARHJ6VV0CXN8QFKK
+    timestamp: 2026-05-09T21:14:29.338Z
+  - _ulid: 01KR79FAWE6MB4NS3PZ0DKPN2N
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR75J4HZARHJ6VV0CXN8QFKK
+    timestamp: 2026-05-09T21:14:41.422Z
+examined_commit: 9a21b6679bf51544740b432212bbf3002afd92b8
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR6M77JA0S1EEVZX8KKRPY1V"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR75J4HZARHJ6VV0CXN8QFKK
+    anchor:
+      type: code
+      commit: 9a21b6679bf51544740b432212bbf3002afd92b8
+      line_end: 1551
+      line_start: 1538
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KR75J4J0XDH9YKH66SB9X1GG
+        author: Jacob Chapel
+        body: "MUST-FIX: callback-local kill targets are accepted when their initializer is a dynamic
+          expression, but that violates ac-detached-cleanup-bound-before-observation. A cleanup
+          registered as onTestFinished(() => { const pid = readPidFromFile(); process.kill(pid,
+          'SIGTERM'); }) does not capture or otherwise own a concrete pid at registration time; if
+          the following expect/await fails, the cleanup callback only reads the pid later at
+          teardown. I verified this with an oxlint probe against the submitted rule: the sample
+          containing runKspec('serve start --detach'), callback-local readPidFromFile(), and a later
+          expect exited 0 with 'Found 0 warnings and 0 errors'. The branch also adds a test at
+          tests/lint-daemon-test-guardrails.test.ts:4275 expecting this unsafe shape to pass, so the
+          implementation is locking in behavior contrary to the AC."
+        created_at: 2026-05-09T20:06:18.944Z
+      - _ulid: 01KR79EXRH5B263P3XK92ESCAA
+        author: "@claude"
+        body: >-
+          Fixed in fix(daemon-lint) ce61a5635. Root cause was a polarity error in
+          cleanupCallbackBindingStatus (tools/eslint-rules/no-leaky-test-daemon.js:1375): the
+          cycle-4 callbackLocalKillTargetIsDynamic helper accepted callback-local kill targets when
+          the initializer was a non-literal RHS, on the theory that 'runtime read at cleanup time'
+          was a valid ownership pattern. Per ac-detached-cleanup-bound-before-observation that's
+          wrong — the cleanup callback must capture or otherwise own the concrete pid AT
+          REGISTRATION TIME so the cleanup contract survives an intervening assertion failure. A
+          callback-local binding (literal OR dynamic) defers ownership entirely to teardown.
+
+
+          Fix: removed the dynamic-RHS exemption and the dead callbackLocalKillTargetIsDynamic /
+          isStaticLiteralExpression helpers. cleanupCallbackBindingStatus now always rejects when
+          isLocalToCallback returns true. Verified against the reviewer's exact probe via manual
+          oxlint: runKspec('serve start --detach') + onTestFinished(() => { const pid =
+          readPidFromFile(); process.kill(pid, 'SIGTERM'); }) + expect(true).toBe(true) → exit 1,
+          cleanupClosureUnbound on 'pid'.
+
+
+          Test updates:
+
+          - tests/lint-daemon-test-guardrails.test.ts:4275 flipped from expects-allowed to
+          expects-flagged with cycle-4 reviewer probe wording.
+
+          - Added three regression tests: callback-local MemberExpression init (state.lastPid as
+          number deferred read), callback-local let + dynamic CallExpression assign, and the safe
+          alternative (read pid OUTSIDE callback after start, register closure that captures the
+          outer const).
+
+          - tests/cli-serve.test.ts ('does NOT silently fall back to [::1]') restructured to read
+          the stale pid before registering cleanup so the production test no longer trips the
+          tightened rule. The daemon parent does not return until listen() succeeds or fails (and
+          the PID file is written before listen() is attempted), so the read-outside pattern catches
+          the same pids as the prior read-inside pattern.
+
+
+          Validation: focused lint suites 241 -> 244 passing tests with --fresh; full npm test 2418
+          suites passed (8998 passed, 5 pre-existing skips, 2042.6s); kspec validate --refs and
+          --completeness pass with --warnings-ok (warnings unchanged from pre-existing repository
+          debt).
+        created_at: 2026-05-09T21:14:27.985Z
+    kind: blocker
+    resolved_at: 2026-05-09T21:14:40.001Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: reviewer-agent
+    role: reviewer
+    created_at: 2026-05-09T20:21:47.236Z
+created_at: 2026-05-09T20:04:10.775Z
+updated_at: 2026-05-09T21:14:40.001Z
+notes: []

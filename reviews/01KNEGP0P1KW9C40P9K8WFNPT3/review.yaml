@@ -1,0 +1,280 @@
+_ulid: 01KNEGP0P1KW9C40P9K8WFNPT3
+slugs: []
+title: Review @01KNE1NMR6HFEVDHMWDH0PGTWH
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test failed once in review snapshot after rebuild: 2 suites failed / 1 test failed,
+      including cli-daemon-proxy ENOTEMPTY flaky cleanup and daemon runtime regression
+      investigation. Re-run: npm test -- cli-daemon-proxy --fresh passed on review snapshot and
+      integration base, so ENOTEMPTY is flaky/pre-existing noise. Branch-specific check:
+      KSPEC_TEST_RUNTIME=node ./node_modules/.bin/playwright test tests/e2e/api-websocket.spec.ts -g
+      'shows connected status in the sidebar when the daemon-backed UI loads' fails on review
+      snapshot but passes on integration base 5346456fa7d296dd63ece3804ccf6a0d92350463; blank page
+      screenshot indicates a regression introduced by this snapshot."
+    name: npm test
+    required: true
+    runner: test-runner
+    created_at: 2026-04-05T09:54:57.084Z
+    completed_at: 2026-04-05T09:54:57.084Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: KSPEC_TEST_RUNTIME=node npx playwright test tests/e2e/api-watcher.spec.ts -g 'broadcasts
+      files:updates when a YAML file in .kspec is modified' passed on review snapshot.
+    name: node watcher e2e
+    required: true
+    runner: playwright
+    created_at: 2026-04-05T09:55:01.527Z
+    completed_at: 2026-04-05T09:55:01.527Z
+events:
+  - _ulid: 01KNEGP0P12NA2V3AEFKY8B81V
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-05T09:48:15.937Z
+  - _ulid: 01KNEGPGCSVTR8WFX6FS7VFRN4
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-05T09:48:32.026Z
+  - _ulid: 01KNEH29W4484TVVH2JHW4T6QZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-04-05T09:54:58.564Z
+  - _ulid: 01KNEH2E0NS3R8Y9DH6MHCRHWY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: node watcher e2e
+    timestamp: 2026-04-05T09:55:02.806Z
+  - _ulid: 01KNEH3HYM2JKCY3SP8XH29HRX
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNEH3H38Y555X6DEJECK9RSM
+    timestamp: 2026-04-05T09:55:39.605Z
+  - _ulid: 01KNEH3Y252100C61D40BKJNJT
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNEH3X85FZNXAXEE6W6YG65K
+    timestamp: 2026-04-05T09:55:52.005Z
+  - _ulid: 01KNEH4DSNAE2ZF83SCZVG701E
+    actor: codex-reviewer@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-05T09:56:08.117Z
+  - _ulid: 01KNEH4DSNAEM7S681GVQ24BXA
+    actor: codex-reviewer@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-05T09:56:08.117Z
+  - _ulid: 01KNEHS2YETCCSXQ1HF80WJW5C
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNEH3H38Y555X6DEJECK9RSM
+    timestamp: 2026-04-05T10:07:25.134Z
+  - _ulid: 01KNEHS57K5DR9JPPQV6VQ9DWG
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNEH3X85FZNXAXEE6W6YG65K
+    timestamp: 2026-04-05T10:07:27.475Z
+  - _ulid: 01KNEHS7FGAWT9X0J5MH0CV5VA
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNEH3X85FZNXAXEE6W6YG65K
+    timestamp: 2026-04-05T10:07:29.776Z
+  - _ulid: 01KNEHS9PYHTENKSRN1BG4S1WY
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNEH3H38Y555X6DEJECK9RSM
+    timestamp: 2026-04-05T10:07:32.062Z
+examined_commit: 2dcb662b95ad4a3b36fa2e9717c1d464d99f7ce7
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNE1NMR6HFEVDHMWDH0PGTWH"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNEH3H38Y555X6DEJECK9RSM
+    entries:
+      - _ulid: 01KNEH3H39DTXHYKY038EVG8PV
+        author: Jacob Chapel
+        body: 'Evidence log: Files read: packages/daemon/src/server.ts,
+          packages/daemon/src/websocket/context-id.ts, packages/daemon/src/websocket/handler.ts,
+          packages/daemon/src/websocket/lifecycle.ts, packages/daemon/src/websocket/pubsub.ts,
+          tests/daemon-websocket-handler.test.ts, tests/e2e/fixtures/test-base.ts,
+          tests/e2e/smoke.spec.ts, tests/e2e/api-websocket.spec.ts. Commands run: kspec task get
+          @01KNE1NMR6HFEVDHMWDH0PGTWH; kspec item get @daemon-runtime-adapter; kspec validate; rg AC
+          annotations in tests; npm test; npm test -- cli-daemon-proxy --fresh; npm run build:e2e;
+          KSPEC_TEST_RUNTIME=node npx playwright test tests/e2e/api-watcher.spec.ts -g "broadcasts
+          files:updates when a YAML file in .kspec is modified"; KSPEC_TEST_RUNTIME=node
+          ./node_modules/.bin/playwright test tests/e2e/api-websocket.spec.ts -g "shows connected
+          status in the sidebar when the daemon-backed UI loads"; same cli-daemon-proxy and
+          api-websocket commands on base worktree @5346456fa7d296dd63ece3804ccf6a0d92350463. Claims
+          verified: node watcher path works on this snapshot; the reported remaining node UI issue
+          is reproducible; the full-suite cli-daemon-proxy ENOTEMPTY failure is flaky because the
+          targeted rerun passes on both snapshot and base. Categories searched: correctness,
+          regression, AC coverage, test quality, runtime-specific integration, error handling.'
+        created_at: 2026-04-05T09:55:38.729Z
+      - _ulid: 01KNEHS272G4213Y8SWXSGK802
+        author: Jacob Chapel
+        body: "Follow-up evidence after the fix: targeted node E2E coverage is now green and the blocker is
+          resolved. The broader npm test -- --fresh rerun still reports unrelated/pre-existing
+          failures outside this task (cli-daemon-proxy ENOTEMPTY cleanup, daemon-executable bun
+          compile, meta context/skill-render), so I did not widen scope beyond the node runtime
+          fixture regression."
+        created_at: 2026-04-05T10:07:24.385Z
+    kind: nit
+    resolved_at: 2026-04-05T10:07:31.272Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KNEH3X85FZNXAXEE6W6YG65K
+    anchor:
+      type: code
+      commit: 2dcb662b95ad4a3b36fa2e9717c1d464d99f7ce7
+      line_end: 247
+      line_start: 239
+      path: tests/e2e/fixtures/test-base.ts
+      side: head
+    entries:
+      - _ulid: 01KNEH3X85M1SBDAX0WXRCAXRP
+        author: Jacob Chapel
+        body: "This change set regresses node-backed UI startup in the E2E fixture. On the review
+          snapshot,\ 
+
+          Running 1 test using 1 worker
+
+
+
+
+
+
+          \e[1A\e[2K[1/1] [chromium] › tests/e2e/api-websocket.spec.ts:11:3 › WebSocket UI Behavior
+          › shows connected status in the sidebar when the daemon-backed UI loads
+
+          \e[1A\e[2K  1) [chromium] › tests/e2e/api-websocket.spec.ts:11:3 › WebSocket UI Behavior ›
+          shows connected status in the sidebar when the daemon-backed UI loads\ 
+
+
+          \    Error:
+          \e[2mexpect(\e[22m\e[31mlocator\e[39m\e[2m).\e[22mtoBeVisible\e[2m(\e[22m\e[2m)\e[22m
+          failed
+
+
+          \    Locator: getByRole('heading', { name: 'Tasks' })
+
+          \    Expected: visible
+
+          \    Timeout: 10000ms
+
+          \    Error: element(s) not found
+
+
+          \    Call log:
+
+          \    \e[2m  - Expect \"toBeVisible\" with timeout 10000ms\e[22m
+
+          \    \e[2m  - waiting for getByRole('heading', { name: 'Tasks' })\e[22m
+
+
+
+          \      14 |   }) => {
+
+          \      15 |     await page.goto(\"/tasks\");
+
+          \    > 16 |     await expect(page.getByRole(\"heading\", { name: \"Tasks\"
+          })).toBeVisible();
+
+          \         |                                                                ^
+
+          \      17 |     await waitForConnected(page);
+
+          \      18 |   });
+
+          \      19 |
+
+          \        at
+          /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-e2e-runtime-aware-01kne\
+          1nm-review/tests/e2e/api-websocket.spec.ts:16:64
+
+
+          \    attachment #1: screenshot (image/png)
+          ──────────────────────────────────────────────────────────
+
+          \    test-results/api-websocket-WebSocket-UI-e9252--the-daemon-backed-UI-loads-chromium/t\
+          est-failed-1.png
+
+          \    ────────────────────────────────────────────────────────────────────────────────────\
+          ────────────
+
+
+          \    attachment #2: video (video/webm)
+          ──────────────────────────────────────────────────────────────
+
+          \    test-results/api-websocket-WebSocket-UI-e9252--the-daemon-backed-UI-loads-chromium/v\
+          ideo.webm
+
+          \    ────────────────────────────────────────────────────────────────────────────────────\
+          ────────────
+
+
+
+          \e[1A\e[2K  1 failed
+
+          \    [chromium] › tests/e2e/api-websocket.spec.ts:11:3 › WebSocket UI Behavior › shows
+          connected status in the sidebar when the daemon-backed UI loads  fails because  never
+          renders its heading and the page stays blank, while the same command passes on the
+          integration base commit . Since this task is supposed to make the runtime-configurable
+          fixture usable for node verification, shipping a branch that breaks an existing
+          node-backed UI smoke is a must-fix regression."
+        created_at: 2026-04-05T09:55:51.173Z
+      - _ulid: 01KNEHS6Q7MA24PZXWP9YDDJKZ
+        author: Jacob Chapel
+        body: Fixed in 22af770c6. The node runtime no longer relies on @elysiajs/static for the SvelteKit
+          bundle in this path; /_app assets are served through an explicit content-type-aware
+          handler, which restores module loading in the isolated E2E fixture. Re-verified with
+          KSPEC_TEST_RUNTIME=node playwright on tests/e2e/api-websocket.spec.ts -g 'shows connected
+          status in the sidebar when the daemon-backed UI loads' and tests/e2e/api-watcher.spec.ts
+          -g 'broadcasts files:updates when a YAML file in .kspec is modified'.
+        created_at: 2026-04-05T10:07:28.999Z
+    kind: blocker
+    resolved_at: 2026-04-05T10:07:26.639Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer@openai.com
+    role: reviewer
+    created_at: 2026-04-05T09:56:08.117Z
+created_at: 2026-04-05T09:48:15.937Z
+updated_at: 2026-04-05T10:07:31.272Z
+notes: []

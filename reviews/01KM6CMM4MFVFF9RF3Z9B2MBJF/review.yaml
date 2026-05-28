@@ -1,0 +1,144 @@
+_ulid: 01KM6CMM4MFVFF9RF3Z9B2MBJF
+slugs: []
+title: Review @01KM6BGYMGZ518JENMCRACJPX3
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 296 files, 6690 tests, 3 skipped."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-20T19:48:46.376Z
+    completed_at: 2026-03-20T19:48:46.376Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exited 6 with warnings only; no validation errors. Warnings are repo-wide/pre-existing
+      (orphaned skill dir, orphaned specs, uncovered/invalid AC annotations). Files read:
+      packages/daemon/src/server.ts; packages/web-ui/src/lib/stores/mode.svelte.ts;
+      packages/web-ui/src/lib/stores/project.svelte.ts; packages/web-ui/src/routes/+layout.svelte;
+      packages/web-ui/src/routes/+page.svelte; packages/web-ui/src/routes/agents/+page.svelte;
+      packages/web-ui/src/routes/automation/+page.svelte;
+      packages/web-ui/src/routes/settings/+page.svelte;
+      packages/web-ui/src/routes/sessions/[id]/+page.svelte;
+      packages/web-ui/src/lib/components/automation/CompositionsSection.svelte;
+      packages/web-ui/src/lib/components/automation/SchedulesSection.svelte;
+      packages/web-ui/src/lib/api.ts; tests/web-ui-tanstack-query.test.ts. Claims verified:
+      /api/health endpoint exists; /automation SPA route added; static mode initializes project
+      store and newly ungated queries call daemon-only APIs. Categories searched: correctness,
+      static-mode edge cases, error handling, integration, test quality."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-20T19:49:00.317Z
+    completed_at: 2026-03-20T19:49:00.317Z
+events:
+  - _ulid: 01KM6CMM4KYH0SQTSSSZV8SCD3
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-20T19:47:58.740Z
+  - _ulid: 01KM6CN7N86N0DYRESY4M0MG18
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-20T19:48:18.728Z
+  - _ulid: 01KM6CNVMAQ8PFZZGYE2CKBS8C
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM6CNVCA6W0VZNRPMWFXJG63
+    timestamp: 2026-03-20T19:48:39.178Z
+  - _ulid: 01KM6CP2XV52HQX2H0FWVVT643
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-20T19:48:46.651Z
+  - _ulid: 01KM6CPGQS4RB1Q7SBV6DFPWT6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-20T19:49:00.794Z
+  - _ulid: 01KM6CPRSKD0FCNYAXAWHXP2RT
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-20T19:49:09.044Z
+  - _ulid: 01KM6CPRSM9P53MVZBVXXF4HEP
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-20T19:49:09.044Z
+  - _ulid: 01KM6HED8SP6X2CE939QBY91N0
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM6CNVCA6W0VZNRPMWFXJG63
+    timestamp: 2026-03-20T21:11:57.977Z
+examined_commit: c9465133970dc4c422a4631a0cc4fc016a5fb9ca
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6BGYMGZ518JENMCRACJPX3"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM6CNVCA6W0VZNRPMWFXJG63
+    anchor:
+      type: code
+      commit: c9465133970dc4c422a4631a0cc4fc016a5fb9ca
+      line_end: 94
+      line_start: 91
+      path: packages/web-ui/src/routes/+page.svelte
+      side: head
+    entries:
+      - _ulid: 01KM6CNVCBKDBNVK14Q0DD3R61
+        author: Jacob Chapel
+        body: "This change reintroduces daemon HTTP requests in static exports. +layout.svelte calls
+          initializeForStaticMode() after initMode(), so isProjectInitialized() becomes true on
+          exported builds. With the !isStaticMode() guard removed here, this query now runs in
+          static mode, but fetchAgentStatus() still performs a live /api/agent/status request
+          instead of serving snapshot data. The same pattern was applied to agents, automation,
+          settings, sessions, and the automation subcomponents, where the newly enabled queries
+          either hit live /api/* endpoints or throw in static mode (fetchSession). That breaks
+          @ui-data-freshness ac-6 and @gh-pages-export ac-24/ac-25: static mode should not attempt
+          daemon HTTP calls once initialization completes."
+        created_at: 2026-03-20T19:48:38.923Z
+      - _ulid: 01KM6HED10S9A4A03FWY8QZMT2
+        author: "@claude"
+        body: Fixed in faf60b38d. Restored !isStaticMode() guards on all daemon-only query gates. The root
+          cause of the first-navigation bug was the health check URL (fix 1), not the query gates.
+          Net branch change is now only the health check URL fix and /automation SPA route.
+        created_at: 2026-03-20T21:11:57.728Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-20T19:49:09.043Z
+created_at: 2026-03-20T19:47:58.740Z
+updated_at: 2026-03-20T21:11:57.728Z
+notes: []

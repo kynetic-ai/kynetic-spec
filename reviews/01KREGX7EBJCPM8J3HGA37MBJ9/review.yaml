@@ -1,0 +1,136 @@
+_ulid: 01KREGX7EBJCPM8J3HGA37MBJ9
+slugs: []
+title: Review bounded process-stop primitives cycle 2
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2431 suites, 9086 tests passed, 5 skipped. Full log:
+      /tmp/kspec-test-cache/01KREGV4Z90KY1EFTA4X2Q537C/6fbbdfb040cc4ec9.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-12T16:54:19.672Z
+    completed_at: 2026-05-12T16:54:19.672Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --warnings-ok passed. Schema/references OK; repository-wide warnings only.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-12T16:54:24.158Z
+    completed_at: 2026-05-12T16:54:24.158Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: tests/helpers/process-stop.ts, tests/helpers/daemon.ts,
+      tests/helpers/mock-daemon.ts, tests/cli-serve.test.ts, tests/helpers/daemon.test.ts,
+      tests/helpers/mock-daemon.test.ts, prior review @01KREEADWRFZ4HV75GJYFJ31BS. Commands: git
+      diff --stat/name-only/diff, git diff --check, rg AC annotations, rg stop helper call sites, rg
+      staged regression helper names. Claims verified: prior onTestFinished blockers now
+      return/await killPid promises; shared primitive observes exitCode or signalCode or exit event,
+      escalates to SIGKILL, and throws BoundedProcessStopError on failed observation; tests cover
+      stop observation, uncooperative bounded terminal outcome, active-request boundedness, setup
+      cleanup, primary-failure preservation, and daemon observation bounds. Categories searched:
+      correctness, edge cases, error handling, test quality, integration."
+    name: diff and AC review
+    required: false
+    runner: reviewer
+    created_at: 2026-05-12T16:54:29.556Z
+    completed_at: 2026-05-12T16:54:29.556Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/helpers/daemon.test.ts tests/helpers/mock-daemon.test.ts
+      tests/cli-serve.test.ts passed: 23 suites, 82 tests. Full log:
+      /tmp/kspec-test-cache/01KREGV4Z90KY1EFTA4X2Q537C/7a5d69ff0ef7815d.log"
+    name: targeted daemon stop slice
+    required: true
+    runner: npm
+    created_at: 2026-05-12T16:54:34.831Z
+    completed_at: 2026-05-12T16:54:34.831Z
+events:
+  - _ulid: 01KREGX7EAB1MR94BMW22A9FJP
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-12T16:39:17.707Z
+  - _ulid: 01KREGY3Q70THNJ1GGHRDWJZ81
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-12T16:39:46.663Z
+  - _ulid: 01KREHRSSQTK8RB4BP1K340RQZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-12T16:54:21.239Z
+  - _ulid: 01KREHRY8CTMSPJN64SN6AJYPB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-12T16:54:25.804Z
+  - _ulid: 01KREHS3E3PZD2E6R5A7H21WZM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff and AC review
+    timestamp: 2026-05-12T16:54:31.107Z
+  - _ulid: 01KREHS8GX73K58R261C4WPSF0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted daemon stop slice
+    timestamp: 2026-05-12T16:54:36.318Z
+  - _ulid: 01KREHSMFGDX28ZC4BTYEVNH74
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-12T16:54:48.560Z
+  - _ulid: 01KREHSMFGMREGBWJ64V9K3H2X
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-12T16:54:48.561Z
+examined_commit: e9b7dc1030ff9359f7f4f36e4e1d6ad60d691f2d
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRCRJRF7TZVW59Q8ZK9JSS0X"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-12T16:54:48.560Z
+created_at: 2026-05-12T16:39:17.707Z
+updated_at: 2026-05-12T16:54:48.560Z
+notes: []

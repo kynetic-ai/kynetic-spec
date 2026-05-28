@@ -1,0 +1,114 @@
+_ulid: 01KKZ7K8JET822T31056Y8TVYY
+slugs: []
+title: Review round-trip stability for triage record YAML writes (cycle 4)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 5795 passed, 1 pre-existing failure (review-cli.test.ts examined_commit null check —
+      unrelated to this change)
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T01:05:25.227Z
+    completed_at: 2026-03-18T01:05:25.227Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "AC: @yaml-serialization-invariants ac-3 annotated at
+      tests/yaml-round-trip-stability.test.ts:1150. 5 triage-specific tests covering: single record
+      save, non-target pollution prevention, multi-record stability, multiple save cycles, new
+      record addition. Implementation annotated at src/parser/yaml.ts:2617."
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-18T01:05:35.833Z
+    completed_at: 2026-03-18T01:05:35.833Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files: src/parser/yaml.ts (+158/-39), tests/yaml-round-trip-stability.test.ts (+291/-1).
+      Implementation follows established raw-data-preservation pattern identical to
+      mergeInboxPreservingRawShape. 5 helper functions added (extractRawTriageArray,
+      writeRawTriageArray, findRawTriageIndex, findRawTriageIndexByInboxRef,
+      mergeTriagePreservingRawShape). Correctness verified: edge cases (legacy array format, empty
+      arrays, null handling), Zod default evidence_refs:[] correctly filtered, merge conflict
+      resolved via dev merge."
+    name: code-review
+    required: true
+    runner: manual
+    created_at: 2026-03-18T01:05:44.339Z
+    completed_at: 2026-03-18T01:05:44.339Z
+events:
+  - _ulid: 01KKZ7K8JD2RX6YHZ0E34ZW2P6
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T01:05:10.222Z
+  - _ulid: 01KKZ7KF7RCPV5ZNH3MCGHABVV
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T01:05:17.048Z
+  - _ulid: 01KKZ7KQA4MPDX45Z2TZP8HG7K
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T01:05:25.316Z
+  - _ulid: 01KKZ7M1P1GWZAKHBW7M3YPRZ8
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-18T01:05:35.938Z
+  - _ulid: 01KKZ7M9ZSTE3REGHPQ1EG7XJ5
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: code-review
+    timestamp: 2026-03-18T01:05:44.441Z
+  - _ulid: 01KKZ7MGF73YM7W5HCESZ79BVC
+    actor: claude-reviewer@dispatch
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-18T01:05:51.079Z
+  - _ulid: 01KKZ7MGF7ZT7EBDPC01EFTQTS
+    actor: claude-reviewer@dispatch
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T01:05:51.079Z
+examined_commit: a8319add715b74b46cf30ee1da60a5fb551ee1e8
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKX6CEQFM17JX8AKKRPXQGR7"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: claude-reviewer@dispatch
+    role: reviewer
+    created_at: 2026-03-18T01:05:50.914Z
+created_at: 2026-03-18T01:05:10.222Z
+updated_at: 2026-03-18T01:05:50.914Z
+notes: []

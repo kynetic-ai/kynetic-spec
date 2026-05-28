@@ -1,0 +1,323 @@
+_ulid: 01KR2V04D1W3CQ3SXCRNE3ZFE9
+slugs: []
+title: Review task-enforce-daemon-test-fixture-usage
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts
+      tests/lint-daemon-test-guardrails.test.ts: 41 tests passed across 12 suites."
+    name: focused lint-rule tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-08T03:56:54.327Z
+    completed_at: 2026-05-08T03:56:54.327Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh: 2399 suites passed; 8776 tests passed, 5 skipped; duration 1893.1s."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-05-08T03:57:04.326Z
+    completed_at: 2026-05-08T03:57:04.326Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate: schema/references/skills OK; exited 6 due existing project warnings
+      (reference, alignment, completeness warnings). No warnings specific to
+      @daemon-test-harness-guardrails found in reviewed output."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-08T03:57:17.430Z
+    completed_at: 2026-05-08T03:57:17.430Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run lint exits 1 with 13 errors and 721 warnings in pre-existing locations; changed
+      files are not reported as error locations and no no-leaky-test-daemon violations were
+      reported.
+    name: npm run lint
+    required: false
+    runner: oxlint
+    created_at: 2026-05-08T03:57:27.224Z
+    completed_at: 2026-05-08T03:57:27.224Z
+events:
+  - _ulid: 01KR2V04D1C3AZ1HNYTRKNQMR5
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-08T03:44:45.473Z
+  - _ulid: 01KR2V0RD5ZDB83WR3J0YZDA3Q
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-08T03:45:05.957Z
+  - _ulid: 01KR2VMG4HGTXN72AK9S1N712D
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR2VMEY7A91GPY90W31SBDMF
+    timestamp: 2026-05-08T03:55:52.850Z
+  - _ulid: 01KR2VMVWTE05C0PMG8F6KAH7Z
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR2VMTPBYF14JBKQGPCSW05K
+    timestamp: 2026-05-08T03:56:04.890Z
+  - _ulid: 01KR2VN7B9Z7MEM5YJWQXK6BFW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR2VN63Q359GE2G4GRXYZM5N
+    timestamp: 2026-05-08T03:56:16.617Z
+  - _ulid: 01KR2VP38VPK9NPWPQT6SZV8SZ
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR2VN63Q359GE2G4GRXYZM5N
+    timestamp: 2026-05-08T03:56:45.211Z
+  - _ulid: 01KR2VPDEJNND9K620636C50DP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused lint-rule tests
+    timestamp: 2026-05-08T03:56:55.634Z
+  - _ulid: 01KR2VPQ61AJ456EEC0QPXQRTZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-08T03:57:05.601Z
+  - _ulid: 01KR2VQ41SGEZ88XQARHBBHSTA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-08T03:57:18.777Z
+  - _ulid: 01KR2VQDFMBEDJTAP71YYJ5C53
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm run lint
+    timestamp: 2026-05-08T03:57:28.437Z
+  - _ulid: 01KR2VRA7P2WAWCBZ3QRBY8XEZ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KR2VR90PKD01P92CSS4MNJ99
+    timestamp: 2026-05-08T03:57:57.878Z
+  - _ulid: 01KR2VRJTJBGBDFRQXPEMDTQ8Z
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-08T03:58:06.674Z
+  - _ulid: 01KR2VRJTKWV3YC4JJTE9J6F8N
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-08T03:58:06.675Z
+  - _ulid: 01KR2X91V18Y5B0GSPJB83M7BZ
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR2VMEY7A91GPY90W31SBDMF
+    timestamp: 2026-05-08T04:24:34.913Z
+  - _ulid: 01KR2X9800X672NPZXPGTVMFWX
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR2VMTPBYF14JBKQGPCSW05K
+    timestamp: 2026-05-08T04:24:41.216Z
+  - _ulid: 01KR2X9FGNVE09K8SR121Z9XZG
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR2VN63Q359GE2G4GRXYZM5N
+    timestamp: 2026-05-08T04:24:48.917Z
+  - _ulid: 01KR2X9TQ2DA2GB9Q1FK7EP4H1
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR2VMEY7A91GPY90W31SBDMF
+    timestamp: 2026-05-08T04:25:00.386Z
+  - _ulid: 01KR2XA0J73BXS3R7QQGA5GMR6
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR2VMTPBYF14JBKQGPCSW05K
+    timestamp: 2026-05-08T04:25:06.376Z
+  - _ulid: 01KR2XA668Z81ESTT3N5QXMMND
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR2VN63Q359GE2G4GRXYZM5N
+    timestamp: 2026-05-08T04:25:12.136Z
+examined_commit: 80326f51ed6858dab18923307b48c372f10622be
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR22GM64MB7X4HAPX8SAJ5VS"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR2VMEY7A91GPY90W31SBDMF
+    anchor:
+      type: code
+      commit: 80326f51ed6858dab18923307b48c372f10622be
+      line_end: 376
+      line_start: 366
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KR2VMEY77DCY6GFDJSP3V0W8
+        author: Jacob Chapel
+        body: "MUST-FIX: The detached serve check only inspects literal/template arguments, so spawn-style
+          argv calls are missed. Repro: a synthetic test with spawn(\"kspec\", [\"serve\",
+          \"start\", \"--detach\", \"--port\", \"3456\"]) and no cleanup produced 'Found 0 warnings
+          and 0 errors.' This violates ac-detached-serve-without-cleanup-flagged because that is a
+          detached daemon start through the CLI without scoped cleanup."
+        created_at: 2026-05-08T03:55:51.623Z
+      - _ulid: 01KR2X90MFGX6QCMB50QBDV3BK
+        author: "@claude"
+        body: 'Fixed: detached-serve detection now also inspects ArrayExpression argv arguments. Replaced
+          the literal/template-only walker in isDetachCallExpression with
+          argsResolveToDetachedServe, which collects string contributions from literals, templates,
+          and array elements (spawn("kspec", ["serve", "start", "--detach", ...])), tokenises them,
+          and returns true when serve+start+--detach all appear (or any single contribution contains
+          the contiguous "serve start ... --detach" substring). New focused tests cover the
+          synthetic spawn argv repro and a spawnSync variant; the cleanup escape hatch is preserved
+          (spawn("kspec", ["serve", "start", "--detach"]) followed by onTestFinished(killPid) still
+          passes).'
+        created_at: 2026-05-08T04:24:33.679Z
+    kind: blocker
+    resolved_at: 2026-05-08T04:24:59.109Z
+    resolved_by: "@claude"
+  - _ulid: 01KR2VMTPBYF14JBKQGPCSW05K
+    anchor:
+      type: code
+      commit: 80326f51ed6858dab18923307b48c372f10622be
+      line_end: 423
+      line_start: 418
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KR2VMTPBFSN0RRAE259Z0ECR
+        author: Jacob Chapel
+        body: "MUST-FIX: The localhost URL guard only checks fetch()/WebSocket() when the first argument is
+          the literal/template URL, so URL construction assigned to a variable and then passed to
+          fetch is not reported. Repro: const url = `http://localhost:${port}/api/health`; await
+          fetch(url) produced 'Found 0 warnings and 0 errors.' The task requires flagging daemon
+          HTTP/WebSocket URLs constructed from localhost plus a raw port outside the allowed
+          endpoint-contract cases."
+        created_at: 2026-05-08T03:56:03.659Z
+      - _ulid: 01KR2X96RXPE410D0P6SD96Z0S
+        author: "@claude"
+        body: "Fixed: variable-bound localhost URLs are now tracked. Added a localhostUrlIdentifiers Set
+          that the rule populates from VariableDeclarator/AssignmentExpression where the init
+          carries a localhost:<port> URL string (literal or template). The fetch() and new
+          WebSocket() checks now also fail when the first argument is an Identifier whose name is in
+          that Set. Repro from the review (const url = `http://localhost:${port}/api/health`; await
+          fetch(url)) is now flagged. Three new tests cover the template-bound, literal-bound, and
+          WebSocket variants, plus a negative case proving non-localhost variable URLs still pass.
+          Caught one true positive in cli-serve.test.ts:117 (waitForDaemonHealth) — annotated with a
+          documented inline disable matching the other CLI-launched-daemon fetches in the same
+          file."
+        created_at: 2026-05-08T04:24:39.965Z
+    kind: blocker
+    resolved_at: 2026-05-08T04:25:05.007Z
+    resolved_by: "@claude"
+  - _ulid: 01KR2VN63Q359GE2G4GRXYZM5N
+    anchor:
+      type: code
+      commit: 80326f51ed6858dab18923307b48c372f10622be
+      line_end: 397
+      line_start: 359
+      path: tests/lint-daemon-test-guardrails.test.ts
+      side: head
+    entries:
+      - _ulid: 01KR2VN63Q23Z1DEVRB6MAFVCG
+        author: Jacob Chapel
+        body: "MUST-FIX: ac-exceptions-are-localized is only tested for the happy path with a documented
+          oxlint-disable-next-line; it does not prove that undocumented or broad exceptions are
+          rejected. I verified both  with no  reason and file-wide  suppress the rule with zero
+          diagnostics. That means intentional exceptions are not required to be locally documented
+          with a narrow reason, contrary to the task and AC."
+        created_at: 2026-05-08T03:56:15.351Z
+      - _ulid: 01KR2VP22M1DSSRRX3T012BK0P
+        author: Jacob Chapel
+        body: "Clarifying repro details: I verified both an oxlint-disable-next-line for
+          no-leaky-test-daemon/no-leaky-test-daemon without a double-dash reason and a file-wide
+          oxlint-disable for no-leaky-test-daemon/no-leaky-test-daemon. Each suppressed the direct
+          daemon spawn with zero diagnostics, so the guardrail currently accepts undocumented and
+          broad exceptions."
+        created_at: 2026-05-08T03:56:43.988Z
+      - _ulid: 01KR2X9EAGJRQYQ232YQCAB47B
+        author: "@claude"
+        body: "Fixed: added a companion rule no-leaky-test-daemon/localized-disable that scans Program-level
+          comments and reports two patterns. (1) File- or block-wide oxlint-disable referencing
+          no-leaky-test-daemon/no-leaky-test-daemon (or the bare plugin name no-leaky-test-daemon) —
+          fileWideDisable. (2) Per-line oxlint-disable-line / oxlint-disable-next-line for the rule
+          with no `-- <reason>` after the rule name — missingReason. Because the meta-check is a
+          separate rule in the same plugin, the disable directive that silences
+          no-leaky-test-daemon/no-leaky-test-daemon does NOT silence localized-disable, so both
+          undocumented and broad exceptions now produce diagnostics. Registered the new rule in
+          .oxlintrc.json and the lint test config so it runs everywhere the main rule does. Four new
+          tests cover both reviewer repros (bare disable-next-line, file-wide disable, plugin-wide
+          file disable, oxlint-disable-line without reason) plus a negative case that an unrelated
+          rule's disable directive does not trigger localized-disable."
+        created_at: 2026-05-08T04:24:47.696Z
+    kind: blocker
+    resolved_at: 2026-05-08T04:25:10.842Z
+    resolved_by: "@claude"
+  - _ulid: 01KR2VR90PKD01P92CSS4MNJ99
+    entries:
+      - _ulid: 01KR2VR90PA7H0TZBY6XVEE27C
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md, task/spec context,
+          tools/eslint-rules/no-leaky-test-daemon.js, tests/lint-daemon-test-guardrails.test.ts,
+          tests/lint-no-leaky-test-daemon.test.ts, tests/cli-serve.test.ts, .oxlintrc.json. Commands
+          run: kspec task get, kspec item get, git diff/stat, rg AC annotations, kspec validate,
+          focused npm test, full npm test, npm run lint, and three synthetic oxlint repros. Claims
+          verified: focused tests and full suite pass; lint failure is unrelated/pre-existing by
+          reported locations; exception localization, detached argv spawn, and localhost variable
+          URL claims fail by executable repro. Categories searched: correctness, AC alignment, test
+          quality, false positives/negatives, lint integration."
+        created_at: 2026-05-08T03:57:56.630Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-08T03:58:06.674Z
+created_at: 2026-05-08T03:44:45.473Z
+updated_at: 2026-05-08T04:25:10.842Z
+notes: []

@@ -1,0 +1,161 @@
+_ulid: 01KMV3AASSA2XGZT3RE9XVEQRG
+slugs: []
+title: Review add rollback note to batch atomic failure output (cycle 3)
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test -- tests/batch-write-buffer.test.ts --verbose passed (33 tests). Verified the
+      lower-level flush-staging failure path still preserves pre-batch state.
+    name: batch-write-buffer
+    required: true
+    runner: vitest
+    created_at: 2026-03-28T20:51:07.485Z
+    completed_at: 2026-03-28T20:51:07.485Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Started npm test twice from this review snapshot. Each run entered vitest but still had no
+      JSON result file and no terminal summary after more than 6 minutes, so a green full-suite run
+      could not be verified for this snapshot.
+    name: npm test
+    required: true
+    runner: test.cjs
+    created_at: 2026-03-28T20:51:11.646Z
+    completed_at: 2026-03-28T20:51:11.646Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test -- tests/batch-exec-engine.test.ts --verbose passed (71 tests). Verified the new
+      atomic/immediate rollback-note cases on commit 30f21b4105cc.
+    name: batch-exec-engine
+    required: true
+    runner: vitest
+    created_at: 2026-03-28T20:51:59.539Z
+    completed_at: 2026-03-28T20:51:59.539Z
+events:
+  - _ulid: 01KMV3AASR5FJW6D5DRQAT7QHZ
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-28T20:49:07.385Z
+  - _ulid: 01KMV3C7PBQ1MRJ9M0Q1QW06NM
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-28T20:50:09.739Z
+  - _ulid: 01KMV3E0Q40XBG5RK16MZBJE4P
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: batch-write-buffer
+    timestamp: 2026-03-28T20:51:08.132Z
+  - _ulid: 01KMV3E2SQ45EW1WY9Y8A071MD
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMV3E248E8K7ZN5WG9YB4CXW
+    timestamp: 2026-03-28T20:51:10.263Z
+  - _ulid: 01KMV3E4SGC7QTK4ETWPPYNBWR
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-28T20:51:12.304Z
+  - _ulid: 01KMV3FKEYGK2EWA5Y7X5SV4G7
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: batch-exec-engine
+    timestamp: 2026-03-28T20:52:00.094Z
+  - _ulid: 01KMV3GSJ1F16CVS6T638GZSJT
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-28T20:52:39.105Z
+  - _ulid: 01KMV3GSJ1QKGBXCW2SYBD9GC5
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-28T20:52:39.105Z
+  - _ulid: 01KMV50AQK9R0XPVECRXNNX3DG
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMV3E248E8K7ZN5WG9YB4CXW
+    timestamp: 2026-03-28T21:18:36.787Z
+  - _ulid: 01KMV50HXKF00FEKR5XTVW4X0J
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMV3E248E8K7ZN5WG9YB4CXW
+    timestamp: 2026-03-28T21:18:44.147Z
+examined_commit: 30f21b4105ccb90b13d45dbf703f748baf7d72ce
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMSV9SCBY5E67N98A4KMBRXD"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMV3E248E8K7ZN5WG9YB4CXW
+    anchor:
+      type: code
+      commit: 30f21b4105ccb90b13d45dbf703f748baf7d72ce
+      line_end: 806
+      line_start: 731
+      path: tests/batch-exec-engine.test.ts
+      side: head
+    entries:
+      - _ulid: 01KMV3E2492JVZN6Z7YE6X3GEF
+        author: Test User
+        body: "MUST-FIX: this fix cycle changes the flush-failure semantics of , but the new batch-level
+          assertions only cover command-execution failure in atomic mode and ordinary immediate-mode
+          failure. There is still no regression test that drives the atomic flush-failure path and
+          proves  stays unset / the rollback note stays absent there. That was the exact bug from
+          the previous review, so without a direct batch-level test this can regress silently even
+          though  still passes at the lower buffer layer."
+        created_at: 2026-03-28T20:51:09.577Z
+      - _ulid: 01KMV50A68TQHT4ZQR0QBKKV4D
+        author: "@claude"
+        body: "Fixed: Added a batch-level regression test for the atomic flush-failure path. The test writes
+          a wrapper .mjs script that patches WriteBuffer.prototype.flush to throw (simulating a
+          flush failure), then runs the CLI batch command via spawnSync. It verifies both JSON
+          output (rolled_back is undefined) and human-readable output (no 'All operations rolled
+          back' note, 'Batch flush failed' message present). This directly exercises the
+          executeAtomic code path where all commands succeed but flush fails, proving the
+          \\!flushFailed guard works correctly at the batch level."
+        created_at: 2026-03-28T21:18:36.231Z
+    kind: blocker
+    resolved_at: 2026-03-28T21:18:43.580Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-28T20:52:39.104Z
+created_at: 2026-03-28T20:49:07.385Z
+updated_at: 2026-03-28T21:18:43.580Z
+notes: []

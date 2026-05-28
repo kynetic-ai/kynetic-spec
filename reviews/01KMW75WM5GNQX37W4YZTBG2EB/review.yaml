@@ -1,0 +1,131 @@
+_ulid: 01KMW75WM5GNQX37W4YZTBG2EB
+slugs: []
+title: Review task-spec-update-api-contract
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 1966/1966 suites passed; 7088 passed, 5 skipped; duration 3461.2s.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-29T07:19:56.516Z
+    completed_at: 2026-03-29T07:19:56.516Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Schema and references OK. Command exited 6 because of pre-existing repository warnings (1
+      orphaned skill dir plus existing alignment/completeness warnings); no task-specific validation
+      errors surfaced for @api-contract or @trait-api-endpoint.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-29T07:19:58.299Z
+    completed_at: 2026-03-29T07:19:58.299Z
+events:
+  - _ulid: 01KMW75WM4GHS1B1CCDX30N60E
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-29T07:15:50.533Z
+  - _ulid: 01KMW76794JFFTHHCR4DGWWS5A
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-29T07:16:01.444Z
+  - _ulid: 01KMW7DBPBZM0200N933KEJTW3
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMW7DB4Y2J1WTS7MRCKJRRGV
+    timestamp: 2026-03-29T07:19:55.339Z
+  - _ulid: 01KMW7DDC5PBQ6K67MZXVWPP7G
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-29T07:19:57.062Z
+  - _ulid: 01KMW7DF6MNS5WD9HJ3HEAAAC7
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-29T07:19:58.932Z
+  - _ulid: 01KMW7DSVD7JS3W6FN7B2AKGSR
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-29T07:20:09.837Z
+  - _ulid: 01KMW7DSVDXTBF7CRH61Y4QV8H
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-29T07:20:09.837Z
+examined_commit: 6943dad4b8203281f7a00c18ae29804ce34c559a
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMW68JFTW7WDPNX354YWEKAN"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMW7DB4Y2J1WTS7MRCKJRRGV
+    entries:
+      - _ulid: 01KMW7DB4ZGBKF8HYDDW8AZ45H
+        author: Test User
+        body: >-
+          Evidence log:
+
+
+          Files read: @api-contract, @trait-api-endpoint, @plan-daemon-cache-warming-ux, git
+          branch/diff state, route search hits for existing _cache_status usage.
+
+
+          Commands run: git diff --stat
+          origin/dev...origin/dispatch/task/task-spec-update-api-contract/01kmw68j; kspec task get
+          @01KMW68JFTW7WDPNX354YWEKAN; kspec review for-task @01KMW68JFTW7WDPNX354YWEKAN; kspec item
+          get @api-contract; kspec item get @trait-api-endpoint; kspec plan get
+          @plan-daemon-cache-warming-ux; kspec validate; npm test; grep -Rni "AC: @api-contract\|AC:
+          @trait-" tests/; rg -n "cache_status|_cache_status|ApiResponse|wrapResponse|normalized
+          envelope|cache readiness" src packages tests docs.
+
+
+          Claims verified: verified the submitted task is spec-only because the task branch and dev
+          resolve to the same commit (6943dad4b820) and the main-tree diff is empty; verified the
+          current AC text matches the planned rewrite/additions; verified full test suite passes.
+
+
+          Categories searched: correctness (AC wording and scope), edge cases (loading vs ready
+          empty/default response distinction), error handling (no new contradictions with existing
+          error ACs), test quality (AC annotation scan and full suite run), integration (plan
+          alignment and existing route shapes using _cache_status). No blockers found.
+        created_at: 2026-03-29T07:19:54.783Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-03-29T07:20:09.837Z
+created_at: 2026-03-29T07:15:50.533Z
+updated_at: 2026-03-29T07:20:09.837Z
+notes: []

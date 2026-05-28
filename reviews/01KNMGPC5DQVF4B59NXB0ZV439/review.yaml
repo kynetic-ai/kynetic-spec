@@ -1,0 +1,115 @@
+_ulid: 01KNMGPC5DQVF4B59NXB0ZV439
+slugs: []
+title: Review task-cache-aware-init-context
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2088/2088 suites, 7603 passed, 5 skipped, after build bootstrap fixed
+      missing dist/cli/index.js."
+    name: npm test
+    required: true
+    runner: test-runner
+    created_at: 2026-04-07T17:51:27.932Z
+    completed_at: 2026-04-07T17:51:27.932Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation completed with repo-wide pre-existing warnings only (exit 6); no task-specific
+      validation errors introduced by this snapshot.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-07T17:51:30.422Z
+    completed_at: 2026-04-07T17:51:30.422Z
+events:
+  - _ulid: 01KNMGPC5D2P2Z4Y8XF6P9F0W2
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-07T17:43:54.285Z
+  - _ulid: 01KNMH45NEBZDNMY5BV2RDF5SA
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNMH44XBCDHGPMMZPZR91J82
+    timestamp: 2026-04-07T17:51:26.382Z
+  - _ulid: 01KNMH482RTAHFAX04V92Q7EPR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-07T17:51:28.856Z
+  - _ulid: 01KNMH4AEPCY7X546323XB932M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-07T17:51:31.286Z
+  - _ulid: 01KNMH4CYDX8CDNB0JTDZBYG0M
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-07T17:51:33.837Z
+  - _ulid: 01KNMH533DWE7W7XMQW08H7QR4
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-07T17:51:56.526Z
+  - _ulid: 01KNMH533E7QHV7C2P0BNKQDWH
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-07T17:51:56.526Z
+examined_commit: 8284b1a506930a0baf9d03648e397ecf94e733e7
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNMBPCJN1F5VZZ2DQV10VG76"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNMH44XBCDHGPMMZPZR91J82
+    entries:
+      - _ulid: 01KNMH44XCZJYE8SDJE80PTMGC
+        author: Jacob Chapel
+        body: "Evidence log: Files read: src/parser/yaml.ts, src/daemon/entity-cache.ts, src/parser/meta.ts,
+          tests/parser/entity-cache-context.test.ts, tests/daemon-command-api.test.ts,
+          dist/daemon/routes/command.js. Commands run: git diff --stat/base diff, kspec task get
+          @01KNMBPCJN1F5VZZ2DQV10VG76, kspec item get @daemon-command-api, grep AC annotations in
+          tests, kspec validate, npm test -- tests/parser/entity-cache-context.test.ts, npm test --
+          tests/daemon-command-api.test.ts, npm test. Claims verified: daemon command execution
+          installs entity cache async context in the built command route; initContext cache hit
+          preserves full KspecContext parity with disk path in the new parser tests; no regression
+          in targeted daemon/parser flows or full suite. Categories searched: correctness, edge
+          cases/fallbacks, error handling, test quality, integration. Findings: none."
+        created_at: 2026-04-07T17:51:25.612Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-07T17:51:56.525Z
+created_at: 2026-04-07T17:43:54.285Z
+updated_at: 2026-04-07T17:51:56.526Z
+notes: []

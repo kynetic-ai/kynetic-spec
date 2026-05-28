@@ -1,0 +1,231 @@
+_ulid: 01KS9E7Y33NGZTC0Z7NY79PCSJ
+slugs: []
+title: Review folder-backed entity trait foundation
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "2460 suites passed; 9323 tests passed; 5 skipped. Full log:
+      /tmp/kspec-test-cache/01KS9E4JA179DGRH76HFQYXFQ6/c4f9076a83f954a2.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-23T03:49:39.446Z
+    completed_at: 2026-05-23T03:49:39.446Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit completed with exit 0
+    name: npm run typecheck
+    required: true
+    runner: npm
+    created_at: 2026-05-23T03:49:50.028Z
+    completed_at: 2026-05-23T03:49:50.028Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: oxlint completed with 0 errors and 724 existing warnings
+    name: npm run lint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-23T03:50:00.214Z
+    completed_at: 2026-05-23T03:50:00.214Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Schema and references OK; command exits 0 with --warnings-ok. Existing project warnings
+      remain, but no missing coverage for @trait-folder-backed-entity-1 was reported.
+    name: kspec validate --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-23T03:50:12.151Z
+    completed_at: 2026-05-23T03:50:12.151Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: oxfmt --check . reports tests/folder-backed-entity.test.ts has format issues. Read-only
+      oxfmt diff shows reflow needed around lines 230 and 499-505.
+    name: npm run format:check
+    required: true
+    runner: oxfmt
+    created_at: 2026-05-23T03:50:22.701Z
+    completed_at: 2026-05-23T03:50:22.701Z
+events:
+  - _ulid: 01KS9E7Y2VBNXMK6GHGQR0MRSH
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-23T03:32:12.507Z
+  - _ulid: 01KS9E8FGF462EPMJ8FA4CPK2T
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-23T03:32:30.351Z
+  - _ulid: 01KS9F7Y1JRDPR0JQZ12ZJ1A12
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-23T03:49:41.042Z
+  - _ulid: 01KS9F88B61ZTH2KZNA8B8QGSV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run typecheck
+    timestamp: 2026-05-23T03:49:51.590Z
+  - _ulid: 01KS9F8J95MMSSVWSBDB59WZEN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run lint
+    timestamp: 2026-05-23T03:50:01.765Z
+  - _ulid: 01KS9F8XY9Z1X5JZ7VQ683HXJ4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --warnings-ok
+    timestamp: 2026-05-23T03:50:13.705Z
+  - _ulid: 01KS9F987D7R6NT2CXD4XD2PW4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm run format:check
+    timestamp: 2026-05-23T03:50:24.237Z
+  - _ulid: 01KS9F9M87SWY7Q6C6BBAZE9NB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KS9F9JS0E5BTG5VMFE2W4ZC8
+    timestamp: 2026-05-23T03:50:36.551Z
+  - _ulid: 01KS9FA3NA3ANQCDSB4JX2W7NQ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KS9FA246X0CYP5X9ZRJRDZEM
+    timestamp: 2026-05-23T03:50:52.330Z
+  - _ulid: 01KS9FADMKJD1VJH6QWFF1YZN2
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-23T03:51:02.547Z
+  - _ulid: 01KS9FADMKDNM4JERXC0X5GMHD
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-23T03:51:02.547Z
+  - _ulid: 01KS9GCK98B7RM7MHFWHC5GG66
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KS9F9JS0E5BTG5VMFE2W4ZC8
+    timestamp: 2026-05-23T04:09:42.440Z
+  - _ulid: 01KS9GCSV4R98N88MKS92MXNTK
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KS9F9JS0E5BTG5VMFE2W4ZC8
+    timestamp: 2026-05-23T04:09:49.156Z
+  - _ulid: 01KS9GD0FK6768P810HHBM6FQ2
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KS9FA246X0CYP5X9ZRJRDZEM
+    timestamp: 2026-05-23T04:09:55.955Z
+  - _ulid: 01KS9GD70MXD35ZRHSH6EK35DY
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KS9FA246X0CYP5X9ZRJRDZEM
+    timestamp: 2026-05-23T04:10:02.644Z
+examined_commit: 75e09ea3cc7ab4ef0a7d3296a6187c77391b425f
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XAVRQCA2ATTCEE98CXKW6"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KS9F9JS0E5BTG5VMFE2W4ZC8
+    anchor:
+      type: code
+      commit: 75e09ea3cc7ab4ef0a7d3296a6187c77391b425f
+      line_end: 505
+      line_start: 499
+      path: tests/folder-backed-entity.test.ts
+      side: head
+    entries:
+      - _ulid: 01KS9F9JS00ASYNHY9C97G59D6
+        author: Jacob Chapel
+        body: "MUST-FIX: the submitted test file is not formatted. Evidence: running npm run format:check
+          fails and reports tests/folder-backed-entity.test.ts; a read-only oxfmt diff shows these
+          expectation calls need reflow. Impact: the formatting gate is failing on a file introduced
+          by this task, so the snapshot is not merge-ready even though behavior tests pass."
+        created_at: 2026-05-23T03:50:35.040Z
+      - _ulid: 01KS9GCHRB1JR8J0X05BEB9CNT
+        author: "@claude"
+        body: "Fixed: ran oxfmt on tests/folder-backed-entity.test.ts to reflow the expectation calls
+          flagged at lines ~230 and ~499-505. npm run format:check now reports 'All matched files
+          use the correct format.' Full verification: format:check pass, typecheck pass, lint clean
+          (0 errors, 724 baseline warnings), npm test pass (9323 passed, 5 skipped, 0 failed)."
+        created_at: 2026-05-23T04:09:40.874Z
+    kind: blocker
+    resolved_at: 2026-05-23T04:09:47.611Z
+    resolved_by: "@claude"
+  - _ulid: 01KS9FA246X0CYP5X9ZRJRDZEM
+    entries:
+      - _ulid: 01KS9FA246AFR7EZQP84HNKAFF
+        author: Jacob Chapel
+        body: "Evidence log: Files read: src/parser/folder-backed-entity.ts, src/parser/split-backend.ts,
+          src/parser/yaml.ts, tests/folder-backed-entity.test.ts, src/cli/batch-write-buffer.ts,
+          src/parser/task-data-manager.ts. Commands run: git diff/stat/name-status against
+          a5ce476850bb299e809c7880cb9c6c8f731c802e, kspec task get, kspec item get
+          @trait-folder-backed-entity-1, rg AC annotations, kspec validate, kspec validate
+          --warnings-ok, npm test, npm run lint, npm run typecheck, npm run format:check, read-only
+          oxfmt diff. Claims verified: worker's test claim verified by full npm test; lint claim
+          verified with 0 errors; shared helper behavior verified by reading task integration paths
+          and fixture tests. Categories searched: correctness, edge cases, error handling, test
+          quality, integration, formatting."
+        created_at: 2026-05-23T03:50:50.758Z
+      - _ulid: 01KS9GCYZN6V6CQWW13HQSBSB7
+        author: "@claude"
+        body: "Acknowledged: the evidence log thread captures the reviewer's investigation steps. No action
+          required from worker; resolving as the underlying gate is now green."
+        created_at: 2026-05-23T04:09:54.421Z
+    kind: nit
+    resolved_at: 2026-05-23T04:10:00.995Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-23T03:51:02.547Z
+created_at: 2026-05-23T03:32:12.515Z
+updated_at: 2026-05-23T04:10:00.995Z
+notes: []

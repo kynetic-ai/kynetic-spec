@@ -1,0 +1,180 @@
+_ulid: 01KP5SJJR9S8KE3FZ3VY408Z54
+slugs: []
+title: Review scaffold project config during init/setup (cycle 4)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed in detached review snapshot: 2140/2140 suites, 7783/7788 tests, 5 skipped.
+      Included scaffold/setup/worktree regression coverage."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-14T19:00:16.550Z
+    completed_at: 2026-04-14T19:00:16.550Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Detached snapshot has pre-existing shadow/meta validation failures unrelated to this
+      branch (meta schema error in .kspec/modules/meta.yaml plus longstanding alignment/completeness
+      warnings). Not used as a merge blocker for this task review.
+    name: kspec validate
+    required: false
+    created_at: 2026-04-14T19:00:21.897Z
+    completed_at: 2026-04-14T19:00:21.897Z
+events:
+  - _ulid: 01KP5SJJR8FCW6RG1VHWYN3BHY
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-14T10:46:12.488Z
+  - _ulid: 01KP5SK12MRAXS42GVZB2BGJW7
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-14T10:46:27.157Z
+  - _ulid: 01KP6NV8Y9CX8SZNBHB4EG6QSW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-14T19:00:17.481Z
+  - _ulid: 01KP6NVBJWVATZ4HFP2T4FDDHC
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP6NVAP7FP26799AK0XPW3G9
+    timestamp: 2026-04-14T19:00:20.188Z
+  - _ulid: 01KP6NVE5EXWWGSA7SSY8AV3MZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-04-14T19:00:22.830Z
+  - _ulid: 01KP6NW07NHHAXT98J0F5FTVTP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KP6NVZAGZ2WJGNG314PJ9ETT
+    timestamp: 2026-04-14T19:00:41.333Z
+  - _ulid: 01KP6NW2WSZPQGJTHG6Z9SMJ2P
+    actor: "@codex"
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-14T19:00:44.057Z
+  - _ulid: 01KP6NW2WTG8TQN3V66CYHG0W2
+    actor: "@codex"
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-14T19:00:44.058Z
+  - _ulid: 01KP6PS3Q81TV6WSM0AG23W8AS
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP6NVAP7FP26799AK0XPW3G9
+    timestamp: 2026-04-14T19:16:35.176Z
+  - _ulid: 01KP6PSBE0RYSQBMQTVGYDB4FJ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP6NVAP7FP26799AK0XPW3G9
+    timestamp: 2026-04-14T19:16:43.072Z
+  - _ulid: 01KP6PSM8DWE3RG1WQH9F71DX1
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP6NVZAGZ2WJGNG314PJ9ETT
+    timestamp: 2026-04-14T19:16:52.110Z
+examined_commit: 303b2298f2b8eb0d7136364c00fd26ab21d50ba5
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNXYJ3PYYG1ABH6SMQ2KRE1S"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KP6NVAP7FP26799AK0XPW3G9
+    anchor:
+      type: code
+      commit: 790807a3a50347a166477c2f42f1a0a43cfad703
+      line_end: 1271
+      line_start: 1265
+      path: src/cli/commands/setup.ts
+      side: head
+    entries:
+      - _ulid: 01KP6NVAP7AYEF56VMTG56YXFV
+        author: Jacob Chapel
+        body: 'When no remote HEAD exists, this scaffold hard-codes dispatch.base_branch to "main" instead
+          of preserving the empty-config fallback chain. I reproduced this in a fresh repo on
+          branch  with no remote: after   cd /home/chapel/Projects/kynetic-spec-dispatch && kspec
+          init, the scaffolded file contained , but  on the same repo without the file
+          resolved  from the current branch. That changes runtime behavior and can break dispatch
+          for newly initialized repos, violating @scaffolded-project-config ac-file-valid-on-load
+          (scaffolded config must resolve the same as an empty config).'
+        created_at: 2026-04-14T19:00:19.271Z
+      - _ulid: 01KP6PS2VGB9D3WFSKG58VP9QX
+        author: "@claude"
+        body: "Fixed: generateConfigContent() now calls resolveDefaultBranch() which implements the full
+          fallback chain (remote HEAD → current branch → 'main'). This matches the dispatch
+          resolver's empty-config path exactly, so the scaffolded base_branch value is always the
+          same as what an empty config would resolve. The regression test now asserts 'dev' (current
+          branch) instead of 'main' when on a non-main branch with no remote."
+        created_at: 2026-04-14T19:16:34.288Z
+    kind: blocker
+    resolved_at: 2026-04-14T19:16:42.210Z
+    resolved_by: "@claude"
+  - _ulid: 01KP6NVZAGZ2WJGNG314PJ9ETT
+    entries:
+      - _ulid: 01KP6NVZAH3NM7PQ72F5TVJGGB
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: src/cli/commands/setup.ts, src/agent-runtime/workspace.ts,
+          src/parser/shadow.ts, tests/scaffold-project-config.test.ts,
+          tests/setup-from-linked-worktree.test.ts, tests/dispatch-workspace-config.test.ts.
+
+          Commands run: kspec task get @01KNXYJ3PYYG1ABH6SMQ2KRE1S; kspec review for-task
+          @01KNXYJ3PYYG1ABH6SMQ2KRE1S; kspec review get @01KP5SJJR9S8KE3FZ3VY408Z54; git diff
+          against base and head; grep for AC annotations; kspec validate; npm test; targeted node
+          repro comparing resolveDispatchWorkspaceConfig() with and without the scaffolded config in
+          a no-remote dev-branch repo.
+
+          Claims verified: full suite passes on this snapshot; scaffolded config does not preserve
+          empty-config dispatch base-branch resolution when no remote HEAD exists.
+
+          Categories searched: correctness, spec alignment, test quality, linked-worktree error
+          handling, integration/runtime behavior.
+        created_at: 2026-04-14T19:00:40.401Z
+    kind: nit
+    resolved_at: 2026-04-14T19:16:51.211Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: "@codex"
+    role: reviewer
+    created_at: 2026-04-14T19:00:44.057Z
+created_at: 2026-04-14T10:46:12.489Z
+updated_at: 2026-04-14T19:16:51.211Z
+notes: []

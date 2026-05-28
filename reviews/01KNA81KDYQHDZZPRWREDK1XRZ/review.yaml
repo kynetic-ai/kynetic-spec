@@ -1,0 +1,168 @@
+_ulid: 01KNA81KDYQHDZZPRWREDK1XRZ
+slugs: []
+title: Review task-impl-degraded-state (cycle 3)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test -- dispatch-degraded-state dispatch-target-sync daemon-api/agent-dispatch passed
+      (11 suites / 66 tests).
+    name: targeted dispatch sync tests
+    required: true
+    runner: test.cjs
+    created_at: 2026-04-03T18:05:33.402Z
+    completed_at: 2026-04-03T18:05:33.402Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck passed.
+    name: typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-04-03T18:05:35.631Z
+    completed_at: 2026-04-03T18:05:35.631Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test passed (2068 suites; 7503 tests passed; 5 skipped).
+    name: npm test
+    required: true
+    runner: test.cjs
+    created_at: 2026-04-03T18:05:38.075Z
+    completed_at: 2026-04-03T18:05:38.075Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exited 6 with repository-level pre-existing warnings only (orphaned
+      skills/specs and invalid AC annotation fixture references); no task-specific validation errors
+      found in the reviewed changes.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-03T18:05:46.025Z
+    completed_at: 2026-04-03T18:05:46.025Z
+events:
+  - _ulid: 01KNA81KDYX660X4EWVEGYANZR
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-03T18:00:20.670Z
+  - _ulid: 01KNA82WSZM9PNMXM5QSQGV8JQ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-03T18:01:03.039Z
+  - _ulid: 01KNA8B3CRFBT5XW9J89KQPSK8
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNA8B2NXMND6FHWPF3SJ6SYJ
+    timestamp: 2026-04-03T18:05:31.928Z
+  - _ulid: 01KNA8B5JYXZPQXNJXXKBWGBMC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted dispatch sync tests
+    timestamp: 2026-04-03T18:05:34.175Z
+  - _ulid: 01KNA8B7W4QXXTG3878ZX7GAPN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-04-03T18:05:36.516Z
+  - _ulid: 01KNA8BA53Y4YGH8W2YMSZCV21
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-03T18:05:38.851Z
+  - _ulid: 01KNA8BHW6XKSY5J5V73NY543X
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-04-03T18:05:46.758Z
+  - _ulid: 01KNA8BRKD2Y51JKMVBVM5NCH6
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-03T18:05:53.645Z
+  - _ulid: 01KNA8BRKD2V2TY0KSVNQG08JY
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-03T18:05:53.645Z
+  - _ulid: 01KNA8HEVRERWY8Y589ACDP7SJ
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNA8B2NXMND6FHWPF3SJ6SYJ
+    timestamp: 2026-04-03T18:09:00.280Z
+  - _ulid: 01KNA8HH0YZV6WSYYDFCKQ9FXE
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNA8B2NXMND6FHWPF3SJ6SYJ
+    timestamp: 2026-04-03T18:09:02.494Z
+examined_commit: a1a65a28c894724d0ec94cb72ffefec6c5f32dfd
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN8T1APSFZ9NRNP7TKT957GD"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNA8B2NXMND6FHWPF3SJ6SYJ
+    entries:
+      - _ulid: 01KNA8B2NX87YZMEXEVAJ5PB4Q
+        author: Jacob Chapel
+        body: |-
+          Review evidence log:
+          Files read: src/agent-runtime/dispatch.ts; packages/daemon/src/routes/agent-dispatch.ts; tests/dispatch-degraded-state.test.ts; tests/dispatch-target-sync.test.ts; tests/daemon-api/agent-dispatch.test.ts.
+          Commands run: git diff --stat 0f27e912..a1a65a28; git diff 0f27e912..a1a65a28 -- relevant files; kspec task get @01KN8T1APSFZ9NRNP7TKT957GD; kspec item get @dispatch-remote-branch-sync; kspec review for-task @01KN8T1APSFZ9NRNP7TKT957GD; grep -RniE "AC: @(dispatch-remote-branch-sync|trait-)" tests/...; rg -n "getDegradedState\(|_enterDegradedState|_exitDegradedState|degradedTargets|degraded_targets" ...; kspec validate; npm run typecheck; npm test -- dispatch-degraded-state dispatch-target-sync daemon-api/agent-dispatch; npm test.
+          Claims verified: per-target degraded state now gates queue draining by resolved target branch; daemon status routes preserve legacy degraded summary while exposing per-target degraded entries; sync_state events include target branch; public/internal API regression coverage exercises the new serialization.
+          Categories searched: correctness, edge cases, error handling, test quality, integration; no blockers found.
+        created_at: 2026-04-03T18:05:31.198Z
+      - _ulid: 01KNA8HE16YXB52BW4Z5G6ZR98
+        author: Jacob Chapel
+        body: "Follow-up verification for fix cycle 3: the merge-conflict note that returned the task to
+          needs_work is stale relative to the current branch graph. I verified
+          origin/plan/plan-workspace-scoped-integration-target-sync/01kn8bx4 is an ancestor of
+          a1a65a28c894 and confirmed a local --no-commit merge from the current target into
+          dispatch/task/task-impl-degraded-state/01kn8t1a succeeds without conflicts."
+        created_at: 2026-04-03T18:08:59.430Z
+    kind: nit
+    resolved_at: 2026-04-03T18:09:01.748Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-03T18:05:53.645Z
+created_at: 2026-04-03T18:00:20.670Z
+updated_at: 2026-04-03T18:09:01.748Z
+notes: []

@@ -1,0 +1,211 @@
+_ulid: 01KM48QNDFF2XFV3A6FR5W4K3D
+slugs: []
+title: Review cancelled-task exclusion in plan summary metrics (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Reproduced on c7627d0: from a temp fixture project, created plan
+      01KM48Q7E603FJ1SWAPGK32HPT, created a task with --plan-ref @01KM48Q7, then plan list and
+      export json reported task_count 0 and zero task_progress for that plan."
+    name: short-ULID plan_ref linkage reproduction
+    required: true
+    created_at: 2026-03-20T00:02:41.778Z
+    completed_at: 2026-03-20T00:02:41.778Z
+events:
+  - _ulid: 01KM48QNDEK370VXPM0N1PJTN9
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-20T00:01:15.182Z
+  - _ulid: 01KM48SS8PGYVQQ3MMSCXMAH8X
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-20T00:02:24.662Z
+  - _ulid: 01KM48TA6KQ3WRW4K5KVWVAN1J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: short-ULID plan_ref linkage reproduction
+    timestamp: 2026-03-20T00:02:42.003Z
+  - _ulid: 01KM48TAWAGEF45GEWVF4GE605
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM48TANDRJXPCS08SAS26YYW
+    timestamp: 2026-03-20T00:02:42.698Z
+  - _ulid: 01KM48TBHE3650HWQXQR6DN8PT
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM48TBB1VF026QH693GS3C3F
+    timestamp: 2026-03-20T00:02:43.374Z
+  - _ulid: 01KM48V5S65A7TRFECD5K7ZSRV
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM48V5J4HSGE8RF88GWQW5K8
+    timestamp: 2026-03-20T00:03:10.246Z
+  - _ulid: 01KM48VDQBRBYCVJCJNW5RS777
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-20T00:03:18.379Z
+  - _ulid: 01KM48VDQBE96RG069V7E9D30W
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-20T00:03:18.379Z
+  - _ulid: 01KM49PAJA7F8HT5QVW777PS6P
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM48V5J4HSGE8RF88GWQW5K8
+    timestamp: 2026-03-20T00:17:59.882Z
+  - _ulid: 01KM49PB8ZQEKSG4GW5NAVN1WB
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM48TBB1VF026QH693GS3C3F
+    timestamp: 2026-03-20T00:18:00.607Z
+  - _ulid: 01KM49PC0GBKA09YFMY2G90D84
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM48TANDRJXPCS08SAS26YYW
+    timestamp: 2026-03-20T00:18:01.360Z
+  - _ulid: 01KM49PP2TXA8FPTHVWJ0GDMYA
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KM48V5J4HSGE8RF88GWQW5K8
+    timestamp: 2026-03-20T00:18:11.675Z
+  - _ulid: 01KM49PPTSDAW6PM6H8M2R93YS
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KM48TANDRJXPCS08SAS26YYW
+    timestamp: 2026-03-20T00:18:12.441Z
+  - _ulid: 01KM49PQHD6MADPS8EBTTFEVRJ
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KM48TBB1VF026QH693GS3C3F
+    timestamp: 2026-03-20T00:18:13.165Z
+examined_commit: c7627d0da34617524b4cedc03341c6229b69a164
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM46GRK3CYYA4V37D8Y32G4K"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM48TANDRJXPCS08SAS26YYW
+    anchor:
+      type: code
+      commit: c7627d0da34617524b4cedc03341c6229b69a164
+      line_end: 46
+      line_start: 34
+      path: src/lib/plan-summary.ts
+      side: head
+    entries:
+      - _ulid: 01KM48TANDDBDXSQH01CYZ5232
+        author: Jacob Chapel
+        body: "The shared matcher now treats plan_ref as an exact match against only the full plan ULID or
+          slug, which drops tasks linked with a short ULID ref.  explicitly accepts short ULIDs, and
+          the previous export implementation matched them via ULID-prefix comparison. Repro: create
+          a plan, capture its short ULID, create a task with , then run  or  and the new helper
+          reports task_count 0 / zero progress for that plan. Because this helper feeds CLI, daemon,
+          and export surfaces, the regression breaks the task's shared linkage semantics across
+          interfaces."
+        created_at: 2026-03-20T00:02:42.477Z
+      - _ulid: 01KM49PBSHX3STVAKK8QK8NXEZ
+        author: Jacob Chapel
+        body: Fixed in 362db73. Shared plan summary matching now treats plan_ref short ULIDs as prefixes of
+          the plan ULID, restoring task linkage for @<short-ulid> refs across CLI/export/daemon
+          surfaces.
+        created_at: 2026-03-20T00:18:01.137Z
+    kind: blocker
+    resolved_at: 2026-03-20T00:18:12.176Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KM48TBB1VF026QH693GS3C3F
+    entries:
+      - _ulid: 01KM48TBB1S5MQS4Y7VGF2PEP7
+        author: Jacob Chapel
+        body: "Evidence log: Files read: src/lib/plan-summary.ts, src/export/json.ts,
+          src/cli/commands/plan.ts, packages/daemon/src/routes/plans.ts, tests/plan-summary.test.ts,
+          tests/export/json.test.ts, tests/cli-plan.test.ts,
+          packages/web-ui/tests/e2e/plans.spec.ts, src/parser/plans.ts, src/cli/commands/task.ts,
+          tests/task-plan-ref.test.ts. Commands run: kspec task get @01KM46GRK3CYYA4V37D8Y32G4K;
+          kspec item get @01KM46FW; kspec review for-task/get; kspec validate; git diff against
+          674cabcd8646e873f128fa67b9d2db44ae74797a; full npm test started successfully; temp-project
+          CLI reproduction for short-ULID plan_ref linkage. Claims verified: the fix-cycle restored
+          plan_ref-only linkage for slug/full-ULID refs, but not for short ULID refs accepted by
+          task add/set. Categories searched: correctness, edge cases, test quality, integration,
+          regression behavior."
+        created_at: 2026-03-20T00:02:43.169Z
+      - _ulid: 01KM49PB25PDWEE6HVQ6N3FVHD
+        author: Jacob Chapel
+        body: "Addressed. Verification on 362db73: npm test -- tests/plan-summary.test.ts
+          tests/cli-plan.test.ts tests/export/json.test.ts passed, and full npm test passed."
+        created_at: 2026-03-20T00:18:00.389Z
+    kind: nit
+    resolved_at: 2026-03-20T00:18:12.946Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KM48V5J4HSGE8RF88GWQW5K8
+    anchor:
+      type: code
+      commit: c7627d0da34617524b4cedc03341c6229b69a164
+      line_end: 46
+      line_start: 34
+      path: src/lib/plan-summary.ts
+      side: head
+    entries:
+      - _ulid: 01KM48V5J4TTZCANQVVPTX1SP5
+        author: Jacob Chapel
+        body: "The shared matcher now treats plan_ref as an exact match against only the full plan ULID or
+          slug, which drops tasks linked with a short ULID ref. task add/set --plan-ref explicitly
+          accepts short ULIDs, and the previous export implementation matched them via ULID-prefix
+          comparison. Repro: create a plan, capture its short ULID, create a task with --plan-ref
+          @<short-ulid>, then run plan list or export json and the new helper reports task_count 0 /
+          zero progress for that plan. Because this helper feeds CLI, daemon, and export surfaces,
+          the regression breaks the task's shared linkage semantics across interfaces."
+        created_at: 2026-03-20T00:03:10.020Z
+      - _ulid: 01KM49PABCKQVQ9S8FQ1WG6E2P
+        author: Jacob Chapel
+        body: Fixed in 362db73. Added regressions for short-ULID plan_ref linkage in
+          tests/plan-summary.test.ts, tests/cli-plan.test.ts, and tests/export/json.test.ts so
+          shared metrics keep honoring @<short-ulid> references while excluding cancelled tasks.
+        created_at: 2026-03-20T00:17:59.660Z
+    kind: blocker
+    resolved_at: 2026-03-20T00:18:11.427Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-20T00:03:18.378Z
+created_at: 2026-03-20T00:01:15.182Z
+updated_at: 2026-03-20T00:18:12.946Z
+notes: []

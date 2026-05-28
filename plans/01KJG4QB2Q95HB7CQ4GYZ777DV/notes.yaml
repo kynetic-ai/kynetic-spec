@@ -1,0 +1,71 @@
+notes:
+  - _ulid: 01KJG4QB2QRMN72CGAZ7GBJVK0
+    content: >-
+      Implementation notes:
+
+
+      **Key reuse points:**
+
+      - `externalizeOversizedPayloads` and `createBlobPointer` in `src/sessions/store.ts` —
+      currently private. Wrap in a new public `compactSessionEvents(specDir, sessionId)` function
+      rather than exporting internals.
+
+      - `readEvents()` for reading existing events (note: loads all into memory — acceptable for
+      current session sizes, largest is 272 MB / 1841 lines)
+
+      - `isSessionBlobPointer` already handles idempotency (early return in externalization)
+
+      - Atomic write pattern from `writeBudgetAtomic` (write to `.{pid}.tmp`, then `rename`)
+
+
+      **Two-stage externalization (must replicate both):**
+
+      1. Field-level: `externalizeOversizedPayloads` targets specific key paths (rawOutput,
+      toolResponse stdout/stderr, chunk text)
+
+      2. Line-level: if JSON line still exceeds `EVENT_LINE_MAX_BYTES` (256 KB) after field
+      externalization, externalize entire `data` payload as single blob
+
+
+      **Re-validate each event through `SessionEventSchema.parse()` after externalization** (same as
+      `appendEvent` does).
+
+
+      **Implementation approach:**
+
+      1. Add `compactSessionEvents(specDir, sessionId): Promise<CompactResult>` to `store.ts`
+
+      2. Add `session compact` CLI command in new `src/cli/commands/session/compact.ts`
+
+      3. Register in `commands.ts` with `markMutating()`
+
+      4. Handle `--all` by iterating `getAllSessionLogSummaries()`, skipping active sessions
+
+      5. Single shadow commit after all compaction completes (not per-session)
+
+      6. Check session status via `readSessionMetadata()` — refuse active sessions
+
+
+      **Rollback strategy:** Git history on shadow branch serves as implicit backup. The atomic
+      rename ensures no partial writes.
+
+
+      **Git size note:** Rewriting events.jsonl means git stores both old and new versions. Net
+      shadow branch size may increase temporarily until `git gc`. The JSONL shrinks but blob files
+      are added. Long-term net effect is positive for clone/sync because JSONL lines stay bounded.
+
+
+      **Files to modify:**
+
+      - `src/sessions/store.ts` — add `compactSessionEvents()` wrapping existing internals
+
+      - `src/cli/commands/session/compact.ts` — new file, CLI action
+
+      - `src/cli/commands/session/commands.ts` — register command
+
+      - `tests/session-compact.test.ts` — new file, tests
+
+
+      **Supersedes inbox item:** `01KGWQ2T` (session log compaction)
+    author: "@claude"
+    created_at: 2026-02-27T18:10:39.831Z

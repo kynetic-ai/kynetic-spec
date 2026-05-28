@@ -1,0 +1,371 @@
+_ulid: 01KMW2Y6CJWCWD47CEZC5BTYPT
+slugs: []
+title: "Plan review: Daemon Cache Warming UX"
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      All 7 proposed ACs are claimed by at least one task:
+
+      - ac-envelope: task-api-response-envelope-type (define), task-migrate-route-handlers-envelope
+      (implement), task-ui-unwrap-envelope (client)
+
+      - ac-cache-status-field: task-migrate-route-handlers-envelope
+
+      - ac-domain-ready-event: task-cache-domain-ready-ws-event
+
+      - ac-warming-skeleton: task-ui-cache-warming-interceptor (detection) +
+      task-ui-warming-skeletons (display) + task-e2e-cache-warming-transition (E2E)
+
+      - ac-warming-auto-transition: task-ui-cache-domain-ready-subscription +
+      task-e2e-cache-warming-transition
+
+      - ac-warming-retry-fallback: task-ui-cache-warming-interceptor +
+      task-e2e-cache-warming-transition
+
+      - ac-warming-timeout: task-ui-cache-warming-interceptor + task-ui-warming-skeletons +
+      task-e2e-cache-warming-transition
+
+      No orphan ACs. Coverage is complete but ac-warming-skeleton split across tasks is informally
+      documented (see question thread).
+    name: AC coverage mapping
+    required: true
+    created_at: 2026-03-29T06:02:52.074Z
+    completed_at: 2026-03-29T06:02:52.074Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      Dependency graph is acyclic and well-ordered:
+
+      Phase 0 (P1): spec-update-api-contract, spec-update-entity-cache, spec-update-data-freshness —
+      no deps, parallel
+
+      Phase 1 (P1-P2): api-response-envelope-type -> migrate-route-handlers-envelope (serial,
+      correct)
+
+      Phase 2 (P1,P3): cache-domain-ready-ws-event (parallel with Phase 1), ui-unwrap-envelope ->
+      migrate-route-handlers
+
+      Phase 3 (P3-P4): ui-cache-warming-interceptor -> ui-unwrap-envelope +
+      spec-update-data-freshness; ui-cache-domain-ready-subscription -> ws-event + interceptor;
+      ui-warming-skeletons -> interceptor
+
+      Phase 4 (P5): e2e-cache-warming-transition -> skeletons + subscription
+
+      No cycles. No unnecessary serialization — Phase 1 and the WS event task correctly run in
+      parallel. Priorities align with dependency depth.
+    name: Dependency ordering
+    required: true
+    created_at: 2026-03-29T06:02:58.155Z
+    completed_at: 2026-03-29T06:02:58.155Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      All spec_ref values resolve: @api-contract (exists, in_progress), @daemon-entity-cache
+      (exists, implemented), @ui-data-freshness (exists, implemented).
+
+      All depends_on refs use @task- prefix with slugs defined within the plan.
+
+      AC IDs in "Covers:" lines reference proposed ACs consistently (ac-envelope,
+      ac-cache-status-field, ac-domain-ready-event, ac-warming-skeleton, ac-warming-auto-transition,
+      ac-warming-retry-fallback, ac-warming-timeout).
+
+      No dangling references.
+    name: Cross-reference validation
+    required: true
+    created_at: 2026-03-29T06:03:02.384Z
+    completed_at: 2026-03-29T06:03:02.384Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      CONFLICT: @trait-api-endpoint ac-4 defines the current pagination wrapper as {items, total,
+      offset, limit}. This trait is inherited by @api-contract. The plan proposes ac-envelope which
+      changes all responses to {data, meta: {total, offset, limit, cache_status}} — a direct
+      contradiction with ac-4. Additionally, @api-contract's own ac-4 says "returns paginated
+      results with {items, total, offset, limit} wrapper."
+
+
+      The plan does not include updating @trait-api-endpoint ac-4 or @api-contract ac-4 to reflect
+      the new envelope shape. This means after implementation, the live system would violate two
+      existing ACs.
+
+
+      No overlap found with @dispatch-event-envelope (that covers internal event bus envelope, not
+      HTTP response envelope — different domain entirely).
+    name: Spec neighborhood overlap
+    required: true
+    created_at: 2026-03-29T06:03:06.532Z
+    completed_at: 2026-03-29T06:03:06.532Z
+events:
+  - _ulid: 01KMW2Y6CH7YP8X5216XWDVXT7
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-29T06:01:44.082Z
+  - _ulid: 01KMW2YEHDX5GHMZS0DWGJVAFP
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-29T06:01:52.429Z
+  - _ulid: 01KMW2YX772XCV3FNHX4VQM83P
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMW2YWNG489Y89YCTYWK1JV0
+    timestamp: 2026-03-29T06:02:07.463Z
+  - _ulid: 01KMW2Z2WHCRN3DGPDVG412DVQ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KMW2Z2AQ1EMP0WKH0B44JYE5
+    timestamp: 2026-03-29T06:02:13.265Z
+  - _ulid: 01KMW2Z98GF7PAAYPD5C5T02R3
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KMW2Z8PHPV0A0BTKTB55DB7C
+    timestamp: 2026-03-29T06:02:19.792Z
+  - _ulid: 01KMW2ZNEASC3PF7B01QSZNGCB
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KMW2ZMWRERHV6R9NAV2PV4ES
+    timestamp: 2026-03-29T06:02:32.266Z
+  - _ulid: 01KMW2ZSE3CQ22JE702GAG0Y9A
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMW2ZRWAWMRTEDX5RWHMS376
+    timestamp: 2026-03-29T06:02:36.355Z
+  - _ulid: 01KMW2ZXDY66F09XHXA5713DTY
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMW2ZWWB7J5YG5PC4PCXNCB2
+    timestamp: 2026-03-29T06:02:40.447Z
+  - _ulid: 01KMW309AD8NZYG7EN227S9M5F
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage mapping
+    timestamp: 2026-03-29T06:02:52.621Z
+  - _ulid: 01KMW30F8WASMJNCRSE66Z6BYE
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-03-29T06:02:58.716Z
+  - _ulid: 01KMW30KDAPC0KHYRPD87E14Z9
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Cross-reference validation
+    timestamp: 2026-03-29T06:03:02.954Z
+  - _ulid: 01KMW30QF2EGK41EACBMN2JWX0
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Spec neighborhood overlap
+    timestamp: 2026-03-29T06:03:07.107Z
+  - _ulid: 01KMW30YFJQQ7F75S743M4MM49
+    actor: "@claude"
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-29T06:03:14.290Z
+  - _ulid: 01KMW30YFJ5MWFDX7MJBASZVHV
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-29T06:03:14.290Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-daemon-cache-warming-ux"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMW2YWNG489Y89YCTYWK1JV0
+    anchor:
+      type: structured
+      ref: "@task-api-response-envelope-type"
+      section: Tasks
+    entries:
+      - _ulid: 01KMW2YWNGGBSTSET983DJ2XP7
+        author: "@claude"
+        body: >-
+          @trait-api-endpoint ac-4 specifies the current response shape: {items, total, offset,
+          limit}. The proposed ac-envelope changes ALL responses to {data, meta: {total, offset,
+          limit, cache_status}}. This directly conflicts with the trait AC that is inherited by
+          @api-contract and every API endpoint spec.
+
+
+          The plan must either:
+
+          1. Update @trait-api-endpoint ac-4 as part of Phase 0 (add a
+          task-spec-update-api-endpoint-trait task), OR
+
+          2. Acknowledge this as a breaking change to the trait contract and explain the migration
+          path.
+
+
+          Similarly, @api-contract ac-4 explicitly says "returns paginated results with {items,
+          total, offset, limit} wrapper" — this AC will be violated by the envelope migration. The
+          plan adds new ACs (ac-envelope, ac-cache-status-field) but does not update or supersede
+          ac-4.
+
+
+          Without addressing this, the envelope migration creates a contradiction: ac-4 says {items,
+          total, offset, limit}, ac-envelope says {data, meta}.
+        created_at: 2026-03-29T06:02:06.896Z
+    kind: blocker
+  - _ulid: 01KMW2Z2AQ1EMP0WKH0B44JYE5
+    anchor:
+      type: structured
+      ref: "@task-migrate-route-handlers-envelope"
+      section: Tasks
+    entries:
+      - _ulid: 01KMW2Z2AQ5DNBTWGYA48BBE5V
+        author: "@claude"
+        body: >-
+          The task description says "~27 route handlers" and lists specific files. This is
+          implementation-prescriptive detail that may go stale. More importantly, the task
+          description contains file paths (packages/daemon/src/routes/, tasks.ts, items.ts, etc.)
+          which violates the spec abstraction convention.
+
+
+          Since this is a task (not a spec), implementation detail is acceptable, but the exact file
+          list creates a risk: if routes are added or renamed before this task executes, the agent
+          will follow stale instructions. Consider replacing the file enumeration with "all route
+          handlers that return data" and let the agent discover the full set.
+
+
+          Also: the "~27 route handlers" claim should be verified. If the count is significantly
+          different, the priority/effort estimate may be wrong.
+        created_at: 2026-03-29T06:02:12.695Z
+    kind: question
+  - _ulid: 01KMW2Z8PHPV0A0BTKTB55DB7C
+    anchor:
+      type: structured
+      ref: "@task-ui-cache-warming-interceptor"
+      section: Tasks
+    entries:
+      - _ulid: 01KMW2Z8PJN7K0X3MDTDG7CYH9
+        author: "@claude"
+        body: >-
+          The "Covers:" line claims ac-warming-skeleton (detection half). But ac-warming-skeleton is
+          about displaying a loading skeleton — the detection half is implicit, not explicitly part
+          of the AC's given/when/then. The AC says "a loading skeleton is displayed instead of empty
+          content, and the warming response is not persisted in the client cache as real data."
+
+
+          The "not persisted in client cache" part IS handled by this task (throwing
+          CacheWarmingError prevents caching). But the "display" part is in
+          task-ui-warming-skeletons. This split coverage is fine but the "detection half" / "display
+          half" labeling is informal and could confuse an automated agent. Suggest either:
+
+          1. Split ac-warming-skeleton into two ACs (ac-warming-no-cache and
+          ac-warming-skeleton-display), or
+
+          2. Have both tasks claim the full AC and note in the description which aspect each covers.
+        created_at: 2026-03-29T06:02:19.218Z
+    kind: question
+  - _ulid: 01KMW2ZMWRERHV6R9NAV2PV4ES
+    anchor:
+      type: structured
+      ref: "@task-cache-domain-ready-ws-event"
+      section: Tasks
+    entries:
+      - _ulid: 01KMW2ZMWRW3HG3W3MR725NC5B
+        author: "@claude"
+        body: >-
+          The existing @daemon-entity-cache has ac-warming-availability ("response indicating the
+          data is still loading") and ac-stale-during-reload ("domain never regresses to loading
+          during a reload"). The proposed ac-domain-ready-event introduces a broadcast on
+          loading->ready transition.
+
+
+          Question: should ac-domain-ready-event also cover the degraded->ready transition? The
+          EntityCache has a "degraded" state (per ac-graceful-degradation). If a domain recovers
+          from degraded to ready, should that also broadcast? The AC as written only says "loading
+          to ready" which may miss recovery scenarios. Consider whether this is intentional scoping
+          or an oversight.
+        created_at: 2026-03-29T06:02:31.704Z
+    kind: question
+  - _ulid: 01KMW2ZRWAWMRTEDX5RWHMS376
+    anchor:
+      type: structured
+      ref: "@task-ui-unwrap-envelope"
+      section: Tasks
+    entries:
+      - _ulid: 01KMW2ZRWBBNKY2N6R41D2TAXF
+        author: "@claude"
+        body: The description mentions returning meta.cache_status via "a response header/side channel" as
+          an alternative to returning a wrapped type. This is unnecessary design ambiguity for an
+          automated agent. The interceptor task (task-ui-cache-warming-interceptor) already assumes
+          the CacheWarmingError approach where the fetch function throws on loading status. The meta
+          doesn't need to be passed through — it's consumed at the fetch layer. Suggest removing the
+          header/side-channel mention to avoid confusion.
+        created_at: 2026-03-29T06:02:35.787Z
+    kind: nit
+  - _ulid: 01KMW2ZWWB7J5YG5PC4PCXNCB2
+    anchor:
+      type: structured
+      ref: "@task-e2e-cache-warming-transition"
+      section: Tasks
+    entries:
+      - _ulid: 01KMW2ZWWB1WSEBZQZKFX311MD
+        author: "@claude"
+        body: >-
+          The "How" section lists three options (a, b, c) for controlling cache warming timing in
+          tests but doesn't commit to one. For a standalone task, the agent needs a clear
+          recommendation. Option (c) "register a new project mid-test" is called "most realistic"
+          but then the timeout scenario says "a mock or very large dataset may be needed" which
+          contradicts the realistic approach.
+
+
+          Suggest picking one approach and stating it as the primary strategy, with fallback noted
+          briefly.
+        created_at: 2026-03-29T06:02:39.883Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: "@claude"
+    role: reviewer
+    created_at: 2026-03-29T06:03:14.290Z
+created_at: 2026-03-29T06:01:44.082Z
+updated_at: 2026-03-29T06:03:14.290Z
+notes: []

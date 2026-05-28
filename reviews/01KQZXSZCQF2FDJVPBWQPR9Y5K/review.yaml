@@ -1,0 +1,140 @@
+_ulid: 01KQZXSZCQF2FDJVPBWQPR9Y5K
+slugs: []
+title: Review retag localhost-security AC annotations
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --warnings-ok -v exited 0. Validation warnings remain as unrelated
+      baseline; targeted grep for trait-localhost-security, Uncovered trait ACs, and Missing AC
+      returned no localhost-security diagnostics.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-07T00:46:58.694Z
+    completed_at: 2026-05-07T00:46:58.694Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh exited 0. Test Suites: 2377 passed of 2377. Tests: 5 skipped, 8722
+      passed of 8727. Full log:
+      /tmp/kspec-test-cache/01KQZXR3B78DJ2T9FP5BKBTWY2/4c281e46f186fcac.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-07T00:47:10.571Z
+    completed_at: 2026-05-07T00:47:10.571Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: rg -n '@trait-localhost-security ac-[123](\b|[, ])' tests and repository-wide variant
+      returned no stale ac-1/ac-2/ac-3 annotations. Current AC ids are present as behavioral
+      coverage in cli-serve, daemon-api/server, daemon-server, and as explicit N/A line comments in
+      route-focused tests.
+    name: localhost annotation grep
+    required: true
+    runner: rg
+    created_at: 2026-05-07T00:47:22.237Z
+    completed_at: 2026-05-07T00:47:22.237Z
+events:
+  - _ulid: 01KQZXSZCQBYDK97S17Q3VN5AH
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-07T00:36:06.167Z
+  - _ulid: 01KQZXTBWFV8CX6EXMV4RG3876
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-07T00:36:18.959Z
+  - _ulid: 01KQZYDXZR49SCWM33AJ37GF16
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-07T00:47:00.088Z
+  - _ulid: 01KQZYE9PPBE62124GAJ430EVK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-07T00:47:12.087Z
+  - _ulid: 01KQZYEN0BH4988BXZ8DH395MQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: localhost annotation grep
+    timestamp: 2026-05-07T00:47:23.659Z
+  - _ulid: 01KQZYF4TRXV705DP3FJVE87D2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KQZYF3CE45G6E9NF5YHJ432G
+    timestamp: 2026-05-07T00:47:39.864Z
+  - _ulid: 01KQZYFEYV6X6SHNBBYNQS3RH4
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-07T00:47:50.235Z
+  - _ulid: 01KQZYFEYV8WVSNJ8NY3RTP0VN
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-07T00:47:50.235Z
+examined_commit: 31b8dee57e515a9af47b40682194c9550343c4c6
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQZWWGPB8MCFYBKD8X66J867"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQZYF3CE45G6E9NF5YHJ432G
+    entries:
+      - _ulid: 01KQZYF3CFWWCGVQPMHRSAHTG5
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: kspec-agents.md, task details, @trait-localhost-security,
+          full diff for 15 touched test files, behavioral coverage sections in
+          tests/cli-serve.test.ts, tests/daemon-server.test.ts, tests/daemon-api/server.test.ts, and
+          current localhost-security annotation inventory. Commands run: git diff
+          --stat/name-only/full patch against dev, kspec task get, kspec review for-task, kspec item
+          get @trait-localhost-security, rg stale/current AC annotations, kspec validate
+          --warnings-ok -v, targeted validation grep for localhost diagnostics, npm test -- --fresh.
+          Claims verified: stale ac-1/ac-2/ac-3 annotations are gone; current trait ids match the
+          four ACs; behavioral claims for loopback default, nonlocal rejection, explicit configured
+          host, and external warning map to executable tests; route-focused files use standalone N/A
+          annotations with reasons. Categories searched: correctness/spec alignment, test quality,
+          coverage regression, security annotation semantics, integration with validation and full
+          test suite. No blocking findings."
+        created_at: 2026-05-07T00:47:38.383Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-07T00:47:50.235Z
+created_at: 2026-05-07T00:36:06.167Z
+updated_at: 2026-05-07T00:47:50.235Z
+notes: []

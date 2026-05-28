@@ -1,0 +1,143 @@
+_ulid: 01KM8WWCEX1YF28PXRQVP75S8D
+slugs: []
+title: Review build migration command (cycle 6)
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 6 with repository-level warnings only; no schema/reference errors and no
+      task-specific blockers for @task-storage-migration.
+    name: kspec validate
+    required: false
+    created_at: 2026-03-21T19:13:45.906Z
+    completed_at: 2026-03-21T19:13:45.906Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 23 migration-focused tests passed, covering spec ACs plus inherited dry-run and
+      error-guidance trait behavior.
+    name: tests/task-migrate.test.ts
+    required: true
+    runner: vitest
+    created_at: 2026-03-21T19:13:46.920Z
+    completed_at: 2026-03-21T19:13:46.920Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 303 test files passed; 6918 tests passed, 3 skipped.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-21T19:13:48.132Z
+    completed_at: 2026-03-21T19:13:48.132Z
+events:
+  - _ulid: 01KM8WWCEXKWAN6TQ4973CEF3D
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T19:10:19.101Z
+  - _ulid: 01KM8WXX6TBC1561A4WDREYZ1F
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T19:11:09.019Z
+  - _ulid: 01KM8X2PQD2B2R6ZEE601T9GG5
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-21T19:13:46.221Z
+  - _ulid: 01KM8X2QSWF1RMVRKN10VJRN4V
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: tests/task-migrate.test.ts
+    timestamp: 2026-03-21T19:13:47.324Z
+  - _ulid: 01KM8X2RWA411X326JYYTV1ZHD
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-21T19:13:48.427Z
+  - _ulid: 01KM8X2SVXQ81NXVKQH8DPSCB8
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM8X2SJ9XA2P6B8N6PWGXDTA
+    timestamp: 2026-03-21T19:13:49.437Z
+  - _ulid: 01KM8X32DPQ4MKXWQYBRC2R2QB
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-21T19:13:58.198Z
+  - _ulid: 01KM8X32DP297PYTNCZ38PWZ82
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-21T19:13:58.198Z
+examined_commit: cb1ed366bb42915d700aae438ac48a1eac4737b4
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YEWY1WSKEXTF5YNP5GG81"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM8X2SJ9XA2P6B8N6PWGXDTA
+    entries:
+      - _ulid: 01KM8X2SJAXYPDB730ZKJD6D01
+        author: Test User
+        body: >-
+          Files read: src/cli/commands/task.ts, src/parser/split-backend.ts,
+          src/parser/task-data-manager.ts, src/parser/yaml.ts, src/schema/task.ts,
+          tests/task-migrate.test.ts, tests/task-data-manager.test.ts
+
+
+          Commands run: kspec task get @01KM6YEWY1WSKEXTF5YNP5GG81; kspec review for-task
+          @01KM6YEWY1WSKEXTF5YNP5GG81; git diff/stat/log against dev; kspec item get
+          @task-storage-migration; kspec validate; npm test -- task-migrate; npm test
+
+
+          Claims verified: the cycle-5 claim that malformed/missing notes rows are treated as
+          monolithic was verified in src/cli/commands/task.ts and src/parser/split-backend.ts; the
+          AC-4 claim that migrated data loads through TaskDataManager was verified by the executable
+          test coverage in tests/task-migrate.test.ts.
+
+
+          Categories searched: correctness (no issues), edge cases (missing/malformed _ulid and
+          notes, mixed lean/monolithic backfill, canonical index rebuild from split data), error
+          handling (dry-run failure path, text/JSON guidance), test quality (AC and trait coverage
+          are executable and aligned), integration (TaskDataManager load path, split backend
+          activation, atomic shadow commit).
+        created_at: 2026-03-21T19:13:49.130Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-21T19:13:58.198Z
+created_at: 2026-03-21T19:10:19.101Z
+updated_at: 2026-03-21T19:13:58.198Z
+notes: []

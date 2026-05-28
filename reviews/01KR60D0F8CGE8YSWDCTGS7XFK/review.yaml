@@ -1,0 +1,293 @@
+_ulid: 01KR60D0F8CGE8YSWDCTGS7XFK
+slugs: []
+title: Review task-fix-detached-cleanup-timing-analysis cycle 5
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts passed: 19 suites, 197 tests, duration 53.0s."
+    name: targeted guardrail tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-09T09:21:18.567Z
+    completed_at: 2026-05-09T09:21:18.567Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate exited 6 with repository-wide warnings only: schema OK, references OK;
+      warnings include deprecated refs, orphaned specs, missing AC coverage, and invalid AC
+      annotations. No task-specific schema/reference error observed."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-09T09:21:22.331Z
+    completed_at: 2026-05-09T09:21:22.331Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Two synthetic files run against the submitted rule failed expected behavior:
+      stored-callback expect before cleanup produced a missingCleanup false positive; fetch to
+      http://127.0.0.1:3456/api/health before cleanup exited 0 with no no-leaky-test-daemon
+      diagnostic."
+    name: manual cleanup control-flow probes
+    required: true
+    runner: npx oxlint
+    created_at: 2026-05-09T09:21:26.265Z
+    completed_at: 2026-05-09T09:21:26.265Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test passed: 2413 suites passed, 8950 tests passed, 5 skipped, duration 2025.0s. Full
+      log: /tmp/kspec-test-cache/01KR609263M4T6RD4BPT2WSYW1/2da16727d8ef0be0.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-05-09T09:27:15.099Z
+    completed_at: 2026-05-09T09:27:15.099Z
+events:
+  - _ulid: 01KR60D0F8H4F18XVJVMDG47JE
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-09T09:16:53.608Z
+  - _ulid: 01KR60DCMP0KNKZSTD9HYRTME5
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-09T09:17:06.070Z
+  - _ulid: 01KR60K5J33W5C61YF94021TJ2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR60K3YNAES3KXMKG662KD1H
+    timestamp: 2026-05-09T09:20:15.427Z
+  - _ulid: 01KR60M4G5S25M395T5AY01ZEX
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR60K3YNAES3KXMKG662KD1H
+    timestamp: 2026-05-09T09:20:47.109Z
+  - _ulid: 01KR60MJR3BPPS4M4ZHAYR5Y3Z
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR60MH9RY9239MQ13KTTDG91
+    timestamp: 2026-05-09T09:21:01.699Z
+  - _ulid: 01KR60N4HCT7JJBY71XEP16SV0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted guardrail tests
+    timestamp: 2026-05-09T09:21:19.916Z
+  - _ulid: 01KR60N87CRS60SJTHTXQKR4WK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-05-09T09:21:23.692Z
+  - _ulid: 01KR60NBZDVW80D6E5W4A48NPX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: manual cleanup control-flow probes
+    timestamp: 2026-05-09T09:21:27.533Z
+  - _ulid: 01KR6100NG2Q1AC41ZX5WR55JX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-09T09:27:16.400Z
+  - _ulid: 01KR610FH0AZFGAAED2HS17GZN
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KR610E9R17RDRSWHA8K6A76P
+    timestamp: 2026-05-09T09:27:31.616Z
+  - _ulid: 01KR610S8BHN17Z9RDMPCDKWH7
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-09T09:27:41.579Z
+  - _ulid: 01KR610S8BD0VQ0YGDB6MMYX5F
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-09T09:27:41.579Z
+  - _ulid: 01KR62748SZA9P0N8RP5BQ17D7
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR60K3YNAES3KXMKG662KD1H
+    timestamp: 2026-05-09T09:48:38.041Z
+  - _ulid: 01KR627E0RR90WB40SS0VZPHHN
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR60K3YNAES3KXMKG662KD1H
+    timestamp: 2026-05-09T09:48:48.024Z
+  - _ulid: 01KR627XXSZQ5EV21847JA0V88
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR60MH9RY9239MQ13KTTDG91
+    timestamp: 2026-05-09T09:49:04.313Z
+  - _ulid: 01KR62864D24QFCZBQRGXVVJTW
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR60MH9RY9239MQ13KTTDG91
+    timestamp: 2026-05-09T09:49:12.717Z
+  - _ulid: 01KR628FJRBC76BH7VY3A4DGCP
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR610E9R17RDRSWHA8K6A76P
+    timestamp: 2026-05-09T09:49:22.392Z
+examined_commit: a62471dde155c874df4a2c180e7877e6e55a5e4b
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR3W7QAH8VZCH3A60NSB3HBN"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR60K3YNAES3KXMKG662KD1H
+    anchor:
+      type: code
+      commit: a62471dde155c874df4a2c180e7877e6e55a5e4b
+      line_end: 789
+      line_start: 756
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KR60K3YP40AFSQPPYBJSBCDG
+        author: Jacob Chapel
+        body: "MUST-FIX:  descends into unregistered function and arrow bodies, so  treats inert callback
+          code as an already-executed observation. Repro against this snapshot:  reports  even
+          though cleanup is registered before any executed observation. This violates the precision
+          requirement by rejecting a safe same-flow cleanup registration based on code that has only
+          been stored, not run. The cleanup walker already avoids this class of false positive; the
+          observation walker needs the same execution-position gating."
+        created_at: 2026-05-09T09:20:13.782Z
+      - _ulid: 01KR60M2Z8XQJJ7X3C4P43GH2D
+        author: Jacob Chapel
+        body: 'Clarification for the mangled shell-quoted text above: the affected function is
+          subtreeContainsAwaitOrExpect, used by hasCleanupAfter. Repro source: runKspec("serve start
+          --detach --port 3456"); const later = () => expect(true).toBe(true); const pid =
+          readPidFromFile(); onTestFinished(() => killPid(pid)); later(); The submitted rule reports
+          missingCleanup at the detached start. That is a false positive because the expect call is
+          inside a stored callback and cleanup is registered before later() executes.'
+        created_at: 2026-05-09T09:20:45.544Z
+      - _ulid: 01KR6272Y9B19K7EE20F2M52YJ
+        author: "@claude"
+        body: "Fixed: subtreeContainsAwaitOrExpect now prunes descent into FunctionDeclaration /
+          FunctionExpression / ArrowFunctionExpression bodies unless the function is in callee
+          position of its parent CallExpression (an IIFE). Stored arrows like `const later = () =>
+          expect(true).toBe(true);` no longer count as straight-line observations, so an in-flow
+          onTestFinished registered before the actual invocation is correctly recognised. Verified
+          with the reviewer's exact probe: oxlint exits 0, the missingCleanup false positive is
+          gone. Symmetric to the cleanup walker's gating (cleanup credits registered-callback
+          bodies; observations credit IIFE bodies). Added two negative regressions in
+          tests/lint-no-leaky-test-daemon.test.ts (stored arrow with expect, stored named function
+          with expect) and one positive regression (IIFE expect runs at this statement, must still
+          flag)."
+        created_at: 2026-05-09T09:48:36.680Z
+    kind: blocker
+    resolved_at: 2026-05-09T09:48:46.687Z
+    resolved_by: "@claude"
+  - _ulid: 01KR60MH9RY9239MQ13KTTDG91
+    anchor:
+      type: code
+      commit: a62471dde155c874df4a2c180e7877e6e55a5e4b
+      line_end: 768
+      line_start: 752
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KR60MH9RQ9RJJHN27EKF2B8K
+        author: Jacob Chapel
+        body: 'MUST-FIX: the observation gate only treats AwaitExpression and direct expect(...) calls as
+          observations. The task and @daemon-test-guardrail-precision
+          ac-detached-cleanup-before-observation require reporting detached starts when daemon
+          observations happen before cleanup registration. Repro against this snapshot:
+          runKspec("serve start --detach --port 3456"); fetch("http://127.0.0.1:3456/api/health");
+          const pid = readPidFromFile(); onTestFinished(() => killPid(pid));
+          expect(true).toBe(true); oxlint exits 0 with no no-leaky-test-daemon diagnostic, even
+          though the daemon was observed before cleanup was registered. This leaves the AC
+          under-implemented for non-await daemon observation calls such as fetch/WebSocket/probe
+          helpers.'
+        created_at: 2026-05-09T09:21:00.216Z
+      - _ulid: 01KR627WMGPSYW9304WMPGMM23
+        author: "@claude"
+        body: "Fixed: extended the observation gate to include daemon network observations beyond
+          AwaitExpression and direct expect(...). subtreeContainsAwaitOrExpect now also matches: (1)
+          bare `fetch(...)` Identifier callees (FETCH_LIKE_CALLEES) and (2) `new WebSocket(...)`
+          NewExpression with WebSocket Identifier callee (WEBSOCKET_LIKE_CONSTRUCTORS). Both
+          surfaces are aligned with the rule's existing daemon-URL detection (isFetchOfLocalhostUrl,
+          isWebSocketCtorOfLocalhostUrl), keeping the rule self-consistent. Verified with the
+          reviewer's exact probe: oxlint now exits 1 with missingCleanup on
+          `fetch(\"http://127.0.0.1:3456/api/health\")` between the detached start and
+          onTestFinished. Member-form callees (http.get, axios.get, etc.) and arbitrary user probe
+          helpers are intentionally NOT matched here — broadening to those would mass-fail unrelated
+          tests, and the rule's URL-detection surface is already constrained to the same Identifier
+          callees. Added two positive regressions in tests/lint-no-leaky-test-daemon.test.ts
+          (unawaited fetch, unawaited new WebSocket)."
+        created_at: 2026-05-09T09:49:02.992Z
+    kind: blocker
+    resolved_at: 2026-05-09T09:49:11.398Z
+    resolved_by: "@claude"
+  - _ulid: 01KR610E9R17RDRSWHA8K6A76P
+    entries:
+      - _ulid: 01KR610E9SSE00GX073PFQE0JJ
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: kspec-agents.md; task @01KR3W7QAH8VZCH3A60NSB3HBN; specs
+          @daemon-test-guardrail-precision and @daemon-test-harness-guardrails; previous review
+          @01KR5XW5JYVK5CN7HXNB480C18; tools/eslint-rules/no-leaky-test-daemon.js;
+          tests/lint-no-leaky-test-daemon.test.ts; tests/lint-daemon-test-guardrails.test.ts;
+          tests/cli-serve.test.ts. Commands run: git diff --stat/name-status/log; git diff --check;
+          rg AC annotations; kspec validate; targeted npm test -- --fresh
+          tests/lint-daemon-test-guardrails.test.ts tests/lint-no-leaky-test-daemon.test.ts; npm
+          test; two npx oxlint synthetic probes. Claims verified: cycle 4 probes for conditional
+          cleanup and process.on non-exit behavior are covered by tests, targeted guardrail tests
+          pass, full suite passes; worker claim that all tests pass verified by npm test. Categories
+          searched: correctness, false positives, false negatives/spec alignment, test quality/AC
+          annotations, integration with real tests/cli-serve cleanup, validation."
+        created_at: 2026-05-09T09:27:30.361Z
+    kind: nit
+    resolved_at: 2026-05-09T09:49:21.038Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-09T09:27:41.579Z
+created_at: 2026-05-09T09:16:53.608Z
+updated_at: 2026-05-09T09:49:21.038Z
+notes: []

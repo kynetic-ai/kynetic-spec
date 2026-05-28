@@ -1,0 +1,267 @@
+_ulid: 01KR651JMRQWXN6G67HJP23SE2
+slugs: []
+title: Review task-fix-detached-cleanup-timing-analysis cycle 7
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts: 19 suites passed, 208 tests passed."
+    name: targeted guardrail tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-09T10:50:21.159Z
+    completed_at: 2026-05-09T10:50:21.159Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test: 2413 suites passed; 8961 tests passed, 5 skipped (8966 total). Full log
+      /tmp/kspec-test-cache/01KR64ZEW8CJCM3HVGBYXFHYB4/114532301d0d9d2f.log."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-05-09T10:50:31.362Z
+    completed_at: 2026-05-09T10:50:31.362Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Probe matrix passed previous blockers (in-test beforeEach/afterEach now flag; unrelated
+      fetch/WebSocket allowed; inline 127.0.0.1 fetch/WebSocket flag; process.on('message') flags;
+      process.on('exit') allowed) but failed identifier-bound loopback cases: const url =
+      'http://127.0.0.1:3456/...'; fetch(url) exited 0 with no diagnostic, and const url =
+      'http://[::1]:3456/...'; fetch(url) also exited 0."
+    name: manual cleanup timing probes
+    required: true
+    runner: npx oxlint
+    created_at: 2026-05-09T10:50:42.601Z
+    completed_at: 2026-05-09T10:50:42.601Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate: schema/references passed, but command exited 6 because of existing
+      repository-wide warnings (deprecated references, orphaned specs/status mismatches, missing AC
+      coverage, invalid annotations). No task-specific schema error found."
+    name: kspec validate
+    required: false
+    runner: kspec validate
+    created_at: 2026-05-09T10:50:53.195Z
+    completed_at: 2026-05-09T10:50:53.195Z
+events:
+  - _ulid: 01KR651JMR8NJ3SMQVC67VXAJ0
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-09T10:38:01.880Z
+  - _ulid: 01KR651YG2C77BACVH3NHM0E6M
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-09T10:38:14.019Z
+  - _ulid: 01KR6561C058HZ91MTPZ55121J
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR655ZTZS0YR6WDFHF2YAYHG
+    timestamp: 2026-05-09T10:40:28.032Z
+  - _ulid: 01KR65R5Y59NMM48MZQK1P8SF8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted guardrail tests
+    timestamp: 2026-05-09T10:50:22.533Z
+  - _ulid: 01KR65RFVW24NEYSK6X05MJ9E3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-09T10:50:32.701Z
+  - _ulid: 01KR65RTX7JM0ZNS2HXT71N8EV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: manual cleanup timing probes
+    timestamp: 2026-05-09T10:50:44.007Z
+  - _ulid: 01KR65S5AYKZGV560TTC3J2XYX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-05-09T10:50:54.687Z
+  - _ulid: 01KR65SMJRXZP61ZR1FJDHSBK3
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KR65SK7KE5B239970J0VRSYY
+    timestamp: 2026-05-09T10:51:10.296Z
+  - _ulid: 01KR65SYMQ69Y6WBW3A5M4A2FZ
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-09T10:51:20.599Z
+  - _ulid: 01KR65SYMQ5VC959GJ5D0J3KQH
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-09T10:51:20.599Z
+  - _ulid: 01KR679397S002KHQHPHT2DFP8
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR655ZTZS0YR6WDFHF2YAYHG
+    timestamp: 2026-05-09T11:17:05.448Z
+  - _ulid: 01KR679E3CRXBEHH8ES9H3BCK5
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR655ZTZS0YR6WDFHF2YAYHG
+    timestamp: 2026-05-09T11:17:16.524Z
+examined_commit: 968843210bc0b3e1680c4f76187a40d56f24e022
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR3W7QAH8VZCH3A60NSB3HBN"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR655ZTZS0YR6WDFHF2YAYHG
+    anchor:
+      type: code
+      commit: 968843210bc0b3e1680c4f76187a40d56f24e022
+      line_end: 2448
+      line_start: 2444
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KR655ZTZSWT61SHH3J1BZM89
+        author: Jacob Chapel
+        body: "MUST-FIX: identifier-bound loopback daemon URLs are not treated as daemon observations. The
+          new observation gate matches inline 127.0.0.1/[::1] literals through
+          carriesDaemonHostPortUrl(), but firstArgIsDaemonObservation() falls back to
+          isLocalhostUrlIdentifier(), whose binding map only records localhost: URLs. A test can
+          therefore start a detached daemon, assign const url = 'http://127.0.0.1:3456/api/health'
+          (or 'http://[::1]:3456/...'), call fetch(url) before cleanup registration, and receive no
+          missingCleanup diagnostic. I verified this with oxlint probes: inline
+          fetch('http://127.0.0.1:3456/...') flags, localhost identifier flags, but 127.0.0.1 and
+          [::1] identifier bindings both exit 0 with no no-leaky-test-daemon diagnostic. That
+          violates @daemon-test-guardrail-precision ac-detached-cleanup-before-observation because
+          the daemon observation happens before cleanup is registered."
+        created_at: 2026-05-09T10:40:26.463Z
+      - _ulid: 01KR6791TFA899MAAKH9YV11RT
+        author: "@claude"
+        body: >-
+          Fixed: identifier-bound 127.0.0.1/[::1] daemon URLs are now correctly recognised by the
+          cleanup-timing observation gate. Two changes:
+
+
+          1. Broadened the binding tracker. `localhostUrlBindings` entries now carry both
+          `isLocalhost` (narrow `localhost:` pattern, drives `localhostDaemonUrl` reporting
+          unchanged) AND `isDaemonHost` (broader `localhost:`/`127.0.0.1:`/`[::1]:` pattern, drives
+          the cleanup-timing observation gate). `recordBinding` takes both flags;
+          `firstArgIsDaemonObservation` now consults `isDaemonHostUrlIdentifier` so an identifier
+          whose binding RHS matches the broader loopback pattern is treated as a daemon observation
+          symmetric with the inline literal/template-literal path through
+          `carriesDaemonHostPortUrl`.
+
+
+          2. Deferred the detach `missingCleanup` check to `Program:exit`. The pre-existing
+          visit-order bug meant the cleanup-timing analysis ran at the daemon-start `CallExpression`
+          entry, BEFORE later `const url = '...'` `VariableDeclarator` visits, leaving
+          identifier-bound URLs (even `localhost:` ones the existing tracker supported) invisible to
+          the observation gate. The detach `CallExpression`s are now collected during traversal and
+          processed at `Program:exit` when all bindings are recorded and parent pointers are set;
+          the cleanup escape hatch (in-flow `onTestFinished`, `try { ... } finally { kill }`,
+          ancestor `afterEach`, scoped disable comments) is preserved unchanged. Verified that the
+          `Program:exit` listener fires after all `VariableDeclarator` visits in oxlint.
+
+
+          Probes (npx oxlint):
+
+          - `const url = 'http://127.0.0.1:3456/api/health'; fetch(url)` between detached start and
+          cleanup → exits 1 with missingCleanup.
+
+          - `const url = 'http://[::1]:3456/api/health'; fetch(url)` → exits 1.
+
+          - `const url = 'http://localhost:3456/api/health'; fetch(url)` → exits 1 with BOTH
+          missingCleanup AND localhostDaemonUrl (regression from the start; the cycle-7 deferral
+          fixes it).
+
+          - WebSocket variant `const url = 'ws://127.0.0.1:3456/api/ws'; new WebSocket(url)` → exits
+          1.
+
+          - Negative controls preserved: identifier-bound unrelated URL (`https://example.com/...`)
+          → exits 0; identifier-bound 127.0.0.1 with cleanup BEFORE observation → exits 0;
+          identifier-bound URL inside a stored arrow body invoked after cleanup → exits 0;
+          outer-scope `const url = 'https://example.com'` shadowed by inner daemon URL → flag (inner
+          shadow wins).
+
+          - Prior-cycle regressions preserved: in-test beforeEach/afterEach/beforeAll/afterAll →
+          flag; `process.on('exit', ...)` → exits 0; conditional onTestFinished → flag.
+
+
+          Added 5 behavioral regressions in tests/lint-no-leaky-test-daemon.test.ts:
+
+          - 4 positive: identifier-bound 127.0.0.1 fetch, identifier-bound [::1] fetch,
+          identifier-bound localhost fetch (asserts on the missingCleanup message text
+          specifically), identifier-bound 127.0.0.1 WebSocket.
+
+          - 1 negative: identifier-bound unrelated URL.
+
+
+          Targeted guardrail tests: 19/19 suites, 213/213 (was 208 — +5). Full suite: 2413/2413
+          suites, 8966 pass / 5 skipped (was 8961, +5). cli-serve.test.ts and full tests/ tree
+          audit: 0 no-leaky-test-daemon violations.
+        created_at: 2026-05-09T11:17:03.945Z
+    kind: blocker
+    resolved_at: 2026-05-09T11:17:14.955Z
+    resolved_by: "@claude"
+  - _ulid: 01KR65SK7KE5B239970J0VRSYY
+    entries:
+      - _ulid: 01KR65SK7KW1B0XSKRPFFPSWDJ
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: kspec-agents.md; task @01KR3W7QAH8VZCH3A60NSB3HBN; spec
+          @daemon-test-guardrail-precision; prior review @01KR62HP; diff and current contents for
+          tools/eslint-rules/no-leaky-test-daemon.js, tests/lint-daemon-test-guardrails.test.ts,
+          tests/lint-no-leaky-test-daemon.test.ts, tests/cli-serve.test.ts. Commands run: git
+          diff/stat/log against dev @3c3f6b7; kspec item get; kspec review get/for-task; rg AC
+          annotations; kspec validate; npm test -- --fresh targeted guardrail tests; manual npx
+          oxlint probe matrices; npm test full suite. Claims verified: cycle-6 fixes for in-test
+          lifecycle hooks and unrelated fetch/WebSocket URLs were verified by probes; full and
+          targeted tests pass. Categories searched: correctness, edge cases, error handling/leak
+          timing, test quality/AC coverage, integration with existing localhost URL binding
+          tracking. Finding recorded: identifier-bound 127.0.0.1/[::1] daemon URL observations are
+          still missed."
+        created_at: 2026-05-09T10:51:08.915Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-09T10:51:20.599Z
+created_at: 2026-05-09T10:38:01.880Z
+updated_at: 2026-05-09T11:17:14.955Z
+notes: []

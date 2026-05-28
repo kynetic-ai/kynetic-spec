@@ -1,0 +1,263 @@
+_ulid: 01KNN71KHNN9HTVRN65Q6CQZVZ
+slugs: []
+title: Review apply cache context and working directory isolation to batch route
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 7649 passed, 5 skipped, 2097/2097 suites passed in 3346.2s.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-08T00:17:15.286Z
+    completed_at: 2026-04-08T00:17:15.286Z
+events:
+  - _ulid: 01KNN71KHN78A7TKGTSAA4SE3K
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-08T00:14:30.965Z
+  - _ulid: 01KNN72GR6ARK7YZ4WG4AW2TN8
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-08T00:15:00.871Z
+  - _ulid: 01KNN73HTNG5PRTHEJJVM877YX
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNN73GXXPBX99SBYK4RZDEXN
+    timestamp: 2026-04-08T00:15:34.741Z
+  - _ulid: 01KNN73MKWH1C8NWYSBJTFMFXH
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNN73KKT0DVTMTV9TJ5DCTTX
+    timestamp: 2026-04-08T00:15:37.596Z
+  - _ulid: 01KNN7458G8KCNNRAM5F6D3HAG
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNN744CTH01V1FKHA3FSV0SQ
+    timestamp: 2026-04-08T00:15:54.640Z
+  - _ulid: 01KNN747Z144XMA6HVP0A1Y18Q
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNN7470GFNE41SXSH47Q6779
+    timestamp: 2026-04-08T00:15:57.409Z
+  - _ulid: 01KNN76MVGM2YXMHF8AH5P0BDK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-08T00:17:16.144Z
+  - _ulid: 01KNN76QK8G3V3BVM7N4MRE1S6
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-08T00:17:18.953Z
+  - _ulid: 01KNN76QK9RYGJBT1FMJDY7F8V
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-08T00:17:18.953Z
+  - _ulid: 01KNN838THKEEG63SBQMW6VDY5
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNN73KKT0DVTMTV9TJ5DCTTX
+    timestamp: 2026-04-08T00:32:54.097Z
+  - _ulid: 01KNN83N7Z1K454MA3E7G39V9Q
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNN744CTH01V1FKHA3FSV0SQ
+    timestamp: 2026-04-08T00:33:06.815Z
+  - _ulid: 01KNN83TK3MEHGJ3R9BFKH4KVA
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNN73GXXPBX99SBYK4RZDEXN
+    timestamp: 2026-04-08T00:33:12.291Z
+  - _ulid: 01KNN83ZVS0AMHDG0Z8N383Y0H
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNN7470GFNE41SXSH47Q6779
+    timestamp: 2026-04-08T00:33:17.689Z
+  - _ulid: 01KNN84GTP2JW4YXW7QABAGR2N
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNN73KKT0DVTMTV9TJ5DCTTX
+    timestamp: 2026-04-08T00:33:35.062Z
+  - _ulid: 01KNN84WSS1FZV2SY31HR689YX
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNN744CTH01V1FKHA3FSV0SQ
+    timestamp: 2026-04-08T00:33:47.321Z
+  - _ulid: 01KNN858MQ247HC1W2MDGNXF62
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNN73GXXPBX99SBYK4RZDEXN
+    timestamp: 2026-04-08T00:33:59.448Z
+  - _ulid: 01KNN85D9AM3H7ZGDP0NAQ0FD9
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNN7470GFNE41SXSH47Q6779
+    timestamp: 2026-04-08T00:34:04.202Z
+examined_commit: 93b76749adaa9d11a0d4f2432a41023a4170bce0
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNN24V593SQEF0CA5Z00NQNF"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNN73GXXPBX99SBYK4RZDEXN
+    anchor:
+      type: code
+      commit: 93b76749adaa9d11a0d4f2432a41023a4170bce0
+      line_end: 1450
+      line_start: 1413
+      path: tests/daemon-command-api.test.ts
+      side: head
+    entries:
+      - _ulid: 01KNN73GXXBHTKX2GB8P89SZMA
+        author: Jacob Chapel
+        body: This stdout-leak test never exercises the behavior it claims to cover. The batch command under
+          test is , but that command reports success through /,
+          not  ([src/cli/commands/inbox.ts:109](/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/apply-cache-context-and-working-directory-isolation-to-batch-route-01knn24v-review/src/cli/commands/inbox.ts#L109)).
+          As a result,  stays empty regardless of whether batch execution is wrapped in , so this AC
+          annotation can pass while the exact  regression remains broken. Use a batch command that
+          actually writes via  or assert against a captured output path that depends on that
+          interception.
+        created_at: 2026-04-08T00:15:33.821Z
+      - _ulid: 01KNN83SQCZTPCCQZFYDJMK7CH
+        author: "@claude"
+        body: "Fixed: Rewrote the test to wrap inbox add's action handler to call process.stdout.write with
+          a sentinel string, then verify the commandExecutionStorage ALS store captured it. Added
+          getCommandExecutionStore() export to command.ts (following getEntityCacheContext() pattern
+          from yaml.ts) so the test can inspect the ALS store from within the command handler."
+        created_at: 2026-04-08T00:33:11.404Z
+    kind: blocker
+    resolved_at: 2026-04-08T00:33:58.622Z
+    resolved_by: "@claude"
+  - _ulid: 01KNN73KKT0DVTMTV9TJ5DCTTX
+    anchor:
+      type: code
+      commit: 93b76749adaa9d11a0d4f2432a41023a4170bce0
+      line_end: 1408
+      line_start: 1357
+      path: tests/daemon-command-api.test.ts
+      side: head
+    entries:
+      - _ulid: 01KNN73KKT5AR60765MXNEK6EX
+        author: Jacob Chapel
+        body: This test does not prove batch cache-context propagation. The body says it uses a non-mutating
+          batch so any cache accessor call must come from , but the request actually executes ,
+          which is mutating. In the route, every successful mutating batch calls  again during the
+          post-batch  step
+          ([packages/daemon/src/routes/command.ts:789](/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/apply-cache-context-and-working-directory-isolation-to-batch-route-01knn24v-review/packages/daemon/src/routes/command.ts#L789)),
+          so  would still pass even if the batch body never ran inside . Replace this with a
+          genuinely non-mutating command or another assertion that distinguishes execution-time
+          cache access from the post-success cache refresh.
+        created_at: 2026-04-08T00:15:36.570Z
+      - _ulid: 01KNN837Z33AV5FPMJZHTWVXYT
+        author: "@claude"
+        body: "Fixed: Replaced accessor call-count assertion with spies on getProjectConfig/getShadowInfo.
+          These methods are ONLY called from tryGetCachedInitContext() via the entityCacheStorage
+          ALS context — the post-batch writeThrough only calls cache.writeThrough(domain), never
+          these methods. So their invocation proves the batch ran inside runWithEntityCache."
+        created_at: 2026-04-08T00:32:53.219Z
+    kind: blocker
+    resolved_at: 2026-04-08T00:33:34.095Z
+    resolved_by: "@claude"
+  - _ulid: 01KNN744CTH01V1FKHA3FSV0SQ
+    anchor:
+      type: code
+      commit: 93b76749adaa9d11a0d4f2432a41023a4170bce0
+      line_end: 1408
+      line_start: 1357
+      path: tests/daemon-command-api.test.ts
+      side: head
+    entries:
+      - _ulid: 01KNN744CTX5CHZT676XZ3CAFQ
+        author: Jacob Chapel
+        body: This test does not prove batch cache-context propagation. The body says it uses a non-mutating
+          batch so any cache accessor call must come from runWithEntityCache, but the request
+          actually executes inbox add, which is mutating. In the route, every successful mutating
+          batch calls getEntityCache?.(projectPath) again during the post-batch writeThrough step,
+          so accessorCallCount >= 1 would still pass even if the batch body never ran inside
+          runWithEntityCache. Replace this with a genuinely non-mutating command or another
+          assertion that distinguishes execution-time cache access from the post-success cache
+          refresh.
+        created_at: 2026-04-08T00:15:53.755Z
+      - _ulid: 01KNN83MECT10QG0BJPY65ZDK0
+        author: "@claude"
+        body: "Fixed: Same fix as the duplicate thread — replaced accessor call-count with domain method
+          spies (getProjectConfig/getShadowInfo) that are unreachable from writeThrough."
+        created_at: 2026-04-08T00:33:05.996Z
+    kind: blocker
+    resolved_at: 2026-04-08T00:33:46.478Z
+    resolved_by: "@claude"
+  - _ulid: 01KNN7470GFNE41SXSH47Q6779
+    anchor:
+      type: code
+      commit: 93b76749adaa9d11a0d4f2432a41023a4170bce0
+      line_end: 1450
+      line_start: 1413
+      path: tests/daemon-command-api.test.ts
+      side: head
+    entries:
+      - _ulid: 01KNN7470G53ME6YBE2663KQDR
+        author: Jacob Chapel
+        body: This stdout-leak test never exercises the behavior it claims to cover. The batch command under
+          test is inbox add, but that command reports success through success(...) and console.log,
+          not process.stdout.write. As a result, leakedStdout stays empty regardless of whether
+          batch execution is wrapped in commandExecutionStorage, so this AC annotation can pass
+          while the exact stdout.write regression remains broken. Use a batch command that actually
+          writes via process.stdout.write or assert against a captured output path that depends on
+          that interception.
+        created_at: 2026-04-08T00:15:56.432Z
+      - _ulid: 01KNN83Z2TQDT3J6J5ADVWW4DB
+        author: "@claude"
+        body: "Fixed: Same fix as the duplicate thread — inbox add handler now calls process.stdout.write
+          with a sentinel and verifies commandExecutionStorage captured it."
+        created_at: 2026-04-08T00:33:16.890Z
+    kind: blocker
+    resolved_at: 2026-04-08T00:34:03.370Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-08T00:17:18.952Z
+created_at: 2026-04-08T00:14:30.965Z
+updated_at: 2026-04-08T00:34:03.370Z
+notes: []

@@ -1,0 +1,157 @@
+_ulid: 01KPT7RHHNR05B655W4Y00CF4H
+slugs: []
+title: "Plan re-review: Portable Skill File References and Detached Reviewer Merge Foundation (cycle 2)"
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Both specs describe observable outcomes: rendered/prompt-delivered helper paths,
+      deterministic rejection of broken or escaping references, reviewer guidance pointing at one
+      supported helper path, and merge helper outcomes for clean refresh, no-op, dirty-target
+      refusal, and conflict-safe exit. No new blocker-level implementation leakage remains in the
+      ACs."
+    name: Behavioral spec language
+    required: true
+    created_at: 2026-04-22T09:19:12.619Z
+    completed_at: 2026-04-22T09:19:12.619Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "The new specs remain additive to existing coverage: @supporting-files-convention covers
+      supporting-directory copying, while this plan adds a new portable reference rewrite contract
+      for markdown/prompt content; @detached-reviewer-merge-helper extends manual_merge reviewer
+      guidance under @dispatch-branch-integration-contract rather than duplicating
+      integration-target metadata or publication-mode behavior."
+    name: Spec neighborhood alignment
+    required: true
+    created_at: 2026-04-22T09:19:12.625Z
+    completed_at: 2026-04-22T09:19:12.625Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Coverage ownership is now crisp. @task-portable-skill-supporting-file-references owns all
+      four portable-reference ACs. @task-detached-reviewer-merge-helper owns the four runtime helper
+      mechanics ACs. @task-detached-reviewer-merge-guidance now claims only
+      @detached-reviewer-merge-helper ac-helper-path-in-reviewer-guidance, matching its
+      prompt/docs/rendered-skill scope.
+    name: Task coverage mapping
+    required: true
+    created_at: 2026-04-22T09:19:32.124Z
+    completed_at: 2026-04-22T09:19:32.124Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The prior over-constraint is removed. @task-detached-reviewer-merge-helper is now
+      independent of portable-reference rewriting, which matches its mechanics-only scope.
+      @task-detached-reviewer-merge-guidance depends on both
+      @task-portable-skill-supporting-file-references and @task-detached-reviewer-merge-helper,
+      which is the real prerequisite graph for publishing a portable helper path in reviewer
+      guidance.
+    name: Dependency ordering
+    required: true
+    created_at: 2026-04-22T09:19:32.140Z
+    completed_at: 2026-04-22T09:19:32.140Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All three tasks are standalone and executable. Each task states why it exists, identifies
+      concrete boundaries, names the relevant surfaces to touch, specifies verification
+      expectations, and avoids relying on planning-conversation context. The guidance task is
+      especially clearer after the Covers narrowing because its scope no longer implies
+      responsibility for merge-runtime behavior.
+    name: Task executability
+    required: true
+    created_at: 2026-04-22T09:19:32.230Z
+    completed_at: 2026-04-22T09:19:32.230Z
+events:
+  - _ulid: 01KPT7RHHNTYC1ENTAWXEC20N7
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-22T09:18:56.565Z
+  - _ulid: 01KPT7S28SF4KSMPAZR9QRT9M6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Behavioral spec language
+    timestamp: 2026-04-22T09:19:13.689Z
+  - _ulid: 01KPT7S3V53BN7MGJ04Z6DZSKK
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-22T09:19:15.301Z
+  - _ulid: 01KPT7S5E7QD55XCTWQ6HTH8GF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec neighborhood alignment
+    timestamp: 2026-04-22T09:19:16.935Z
+  - _ulid: 01KPT7SNA5NE0PXMBB99VV459D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Task coverage mapping
+    timestamp: 2026-04-22T09:19:33.189Z
+  - _ulid: 01KPT7SPX2ASGDZQ2KTNT80ZTH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-04-22T09:19:34.818Z
+  - _ulid: 01KPT7SRGKMFXGWSFV44H4W42A
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Task executability
+    timestamp: 2026-04-22T09:19:36.468Z
+  - _ulid: 01KPT7T4S5BB0FVVKGR35GAMNW
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-22T09:19:49.029Z
+  - _ulid: 01KPT7T4S5HWTWQHSK0CS1F7E1
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-22T09:19:49.029Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-portable-skill-file-references-and-detached-review"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-22T09:19:49.029Z
+created_at: 2026-04-22T09:18:56.565Z
+updated_at: 2026-04-22T09:19:49.029Z
+notes: []

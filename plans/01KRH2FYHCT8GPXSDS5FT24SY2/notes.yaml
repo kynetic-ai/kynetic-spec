@@ -1,0 +1,45 @@
+notes:
+  - _ulid: 01KRH2S7ZXDDBFGHN600SJK11G
+    content: "Address review @01KRH2MS: add concrete task-state recovery test path for registry AC coverage"
+    author: Jacob Chapel
+    created_at: 2026-05-13T16:30:10.430Z
+  - _ulid: 01KRH3F3HRDM6QYGS4NTEBWNWX
+    content: Remove process-only approval boundary note from plan content
+    author: Jacob Chapel
+    created_at: 2026-05-13T16:42:06.776Z
+  - _ulid: 01KRH3KXHGEJNM6ZAP00KZ0Y96
+    content: >-
+      ### Boundary decisions
+
+
+      - Registry/protection failure remains conservative. If cleanup cannot load trusted centralized
+      state, it must not blindly delete dispatcher-managed artifacts.
+
+      - Corrupt or missing artifact-local metadata is different from registry/protection failure.
+      Once trusted centralized state is available and no owner/protection classification exists, the
+      artifact can be treated as untrusted local garbage.
+
+      - The dispatch worktree root is dispatch-owned. Operators should not place durable data
+      directly under `.kspec-worktrees`; cleanup is allowed to remove unknown root entries that are
+      not associated with protected workspace paths.
+
+      - Recovery after artifact cleanup comes from task and registry state. A non-terminal task that
+      still needs work should be requeued, reprovisioned, or marked stale/actionable by normal
+      dispatch reconciliation rather than depending on corrupt per-workspace metadata.
+
+
+      ### Relationship to prior plans
+
+
+      This is a narrow follow-up to @plan-dispatch-workspace-in-flight-cleanup-protection. It does
+      not replace the central protection helper, active/in-flight task-ref protection, or
+      fail-closed registry behavior from that plan. It only clarifies the cleanup-eligible side of
+      the classification boundary.
+    author: Jacob Chapel
+    created_at: 2026-05-13T16:44:44.464Z
+  - _ulid: 01KRHF6FJYMJ6G7CEQBFSNF74W
+    content: "Closure validation: all 2 derived tasks are completed, no direct open plan_ref tasks
+      remain, focused cleanup/dispatch regressions and typecheck were already validated before
+      closure."
+    author: Jacob Chapel
+    created_at: 2026-05-13T20:07:07.102Z

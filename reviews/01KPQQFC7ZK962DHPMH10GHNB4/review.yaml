@@ -1,0 +1,311 @@
+_ulid: 01KPQQFC7ZK962DHPMH10GHNB4
+slugs: []
+title: Review task-docs-concepts-content (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed on snapshot 630b9ae88ce99ad14ec7ee3f6979c1c7ea92f533: 2227/2227 suites passed,
+      8175/8180 tests passed, 5 skipped."
+    name: npm test
+    required: true
+    runner: npm test
+    created_at: 2026-04-21T10:08:49.616Z
+    completed_at: 2026-04-21T10:08:49.616Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Fails on both snapshot 630b9ae88ce99ad14ec7ee3f6979c1c7ea92f533 and base dev
+      fc04b8b291e38268a9b1364bdf4b8d11047c937a with the same pre-existing schema/meta errors (for
+      example .kspec/modules/meta.yaml modules[0].traits[0] expected string, received object).
+    name: kspec validate
+    required: false
+    runner: kspec validate
+    created_at: 2026-04-21T10:08:55.920Z
+    completed_at: 2026-04-21T10:08:55.920Z
+events:
+  - _ulid: 01KPQQFC7Z0T87TCKKBNNKKJQ3
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-21T09:55:50.143Z
+  - _ulid: 01KPQQFZ4C7PZ5S8P8MJG96SHN
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-21T09:56:09.484Z
+  - _ulid: 01KPQR68Y0K9DXSK2TTYSGPT6B
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPQR67X0AX4JR5K65F3RH7RV
+    timestamp: 2026-04-21T10:08:20.416Z
+  - _ulid: 01KPQR6BWN2NT2WAQGYV8BFN2D
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPQR6AT43C1F3EGTXEGANZM3
+    timestamp: 2026-04-21T10:08:23.445Z
+  - _ulid: 01KPQR6ETNDX2W5PFPZEETN5N9
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPQR6DQBYER4FEE2ZC93V5Q0
+    timestamp: 2026-04-21T10:08:26.453Z
+  - _ulid: 01KPQR6HV6MR0QEY6PZX8EFB0K
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPQR6GSJDP3QRYG7WPSQ4RCG
+    timestamp: 2026-04-21T10:08:29.542Z
+  - _ulid: 01KPQR76GW7279S7BBCXWB7S8S
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-21T10:08:50.716Z
+  - _ulid: 01KPQR79KG5RFHD9AXAB2AFRQG
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KPQR78GR0CK03R30W6JR1E0X
+    timestamp: 2026-04-21T10:08:53.872Z
+  - _ulid: 01KPQR7CR88V0E211PT0ZTCF0N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-21T10:08:57.096Z
+  - _ulid: 01KPQR7TY5P8XJV61PZ7709ZX5
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-21T10:09:11.621Z
+  - _ulid: 01KPQR7TY51WWKQZMEAQAMZ4M8
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-21T10:09:11.621Z
+  - _ulid: 01KPQTNC1EM4JTDKYJNTDW7VHY
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPQR67X0AX4JR5K65F3RH7RV
+    timestamp: 2026-04-21T10:51:32.270Z
+  - _ulid: 01KPQTNEN4QYG29017VHY2FSPP
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPQR67X0AX4JR5K65F3RH7RV
+    timestamp: 2026-04-21T10:51:34.948Z
+  - _ulid: 01KPQTNH6ETTBF7ZME54AN0C1Q
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPQR6AT43C1F3EGTXEGANZM3
+    timestamp: 2026-04-21T10:51:37.550Z
+  - _ulid: 01KPQTNKV044M0GDB4W4G3B0HW
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPQR6AT43C1F3EGTXEGANZM3
+    timestamp: 2026-04-21T10:51:40.256Z
+  - _ulid: 01KPQTNPE0TVGV1T17B39P61XV
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPQR6DQBYER4FEE2ZC93V5Q0
+    timestamp: 2026-04-21T10:51:42.912Z
+  - _ulid: 01KPQTNS0YT2CVS4GM4XE92D8F
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPQR6DQBYER4FEE2ZC93V5Q0
+    timestamp: 2026-04-21T10:51:45.566Z
+  - _ulid: 01KPQTNVMBCGW1S4RJ4EQJP8GX
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPQR6GSJDP3QRYG7WPSQ4RCG
+    timestamp: 2026-04-21T10:51:48.235Z
+  - _ulid: 01KPQTNY559PK9QSEC882RM09Q
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPQR6GSJDP3QRYG7WPSQ4RCG
+    timestamp: 2026-04-21T10:51:50.821Z
+  - _ulid: 01KPQTP0PSJHGH9Q9QGHCD5YJ0
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPQR78GR0CK03R30W6JR1E0X
+    timestamp: 2026-04-21T10:51:53.433Z
+examined_commit: 630b9ae88ce99ad14ec7ee3f6979c1c7ea92f533
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KPPN43G7T5FSMEF1YPWS0CPX"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPQR67X0AX4JR5K65F3RH7RV
+    anchor:
+      type: code
+      commit: 630b9ae88ce99ad14ec7ee3f6979c1c7ea92f533
+      line_end: 1391
+      line_start: 1273
+      path: tests/web-ui-docs-rendering.test.ts
+      side: head
+    entries:
+      - _ulid: 01KPQR67X096YD6W63QAQ4FACH
+        author: Jacob Chapel
+        body: 'Missing AC coverage for the Concepts spec. This branch adds a large coverage block for
+          @docs-getting-started-section here, but it still adds no AC: @docs-concepts-section ...
+          annotations anywhere in tests/ (`rg -n "AC: @docs-concepts-section" tests` returns
+          nothing). That leaves all three acceptance criteria for the task under review without the
+          required behavioral test linkage, so reviewers have no machine-checkable evidence that the
+          new Concepts pages satisfy ac-1 through ac-3.'
+        created_at: 2026-04-21T10:08:19.360Z
+      - _ulid: 01KPQTNB174JNQ1TFKNBFPT38N
+        author: "@claude"
+        body: "Fixed: Added a full concepts section content test suite with AC annotations for
+          @docs-concepts-section ac-1 through ac-3. All tests are behavioral — they exercise the
+          docs rendering pipeline."
+        created_at: 2026-04-21T10:51:31.239Z
+    kind: blocker
+    resolved_at: 2026-04-21T10:51:33.915Z
+    resolved_by: "@claude"
+  - _ulid: 01KPQR6AT43C1F3EGTXEGANZM3
+    anchor:
+      type: code
+      commit: 630b9ae88ce99ad14ec7ee3f6979c1c7ea92f533
+      line_end: 40
+      line_start: 40
+      path: docs/concepts/agents-and-dispatch.md
+      side: head
+    entries:
+      - _ulid: 01KPQR6AT4MBQ38N7APRXPTS6R
+        author: Jacob Chapel
+        body: "This sentence exposes the internal task metadata value `automation: eligible`.
+          @docs-concepts-section ac-2 asks for durable conceptual explanations without enumerating
+          schema fields, and this field name is an implementation detail that can be described in
+          plain language instead (for example, 'tasks must be marked as eligible for automation')."
+        created_at: 2026-04-21T10:08:22.340Z
+      - _ulid: 01KPQTNG704YB6K3VZ7KYDPVPS
+        author: "@claude"
+        body: "Fixed: Replaced both occurrences of automation: eligible with plain language."
+        created_at: 2026-04-21T10:51:36.544Z
+    kind: blocker
+    resolved_at: 2026-04-21T10:51:39.181Z
+    resolved_by: "@claude"
+  - _ulid: 01KPQR6DQBYER4FEE2ZC93V5Q0
+    anchor:
+      type: code
+      commit: 630b9ae88ce99ad14ec7ee3f6979c1c7ea92f533
+      line_end: 20
+      line_start: 13
+      path: docs/concepts/traits.md
+      side: head
+    entries:
+      - _ulid: 01KPQR6DQB4FDMN67JC4ASNEMS
+        author: Jacob Chapel
+        body: "The Traits page currently slips into implementation surface area that ac-2 explicitly says to
+          avoid: it names the schema field `type: trait`, shows the `traits: [...]` metadata shape,
+          and uses `--json` flag examples. Those details are exactly the kind of command/schema
+          enumeration this Concepts section was supposed to avoid, so the page is not yet aligned
+          with the spec's durability requirement."
+        created_at: 2026-04-21T10:08:25.323Z
+      - _ulid: 01KPQTNNE7TNSJ6HCZ4AT4CDDJ
+        author: "@claude"
+        body: "Fixed: Removed type: trait, --json flag, and traits: [...] from traits.md. Replaced with
+          plain conceptual language."
+        created_at: 2026-04-21T10:51:41.895Z
+    kind: blocker
+    resolved_at: 2026-04-21T10:51:44.529Z
+    resolved_by: "@claude"
+  - _ulid: 01KPQR6GSJDP3QRYG7WPSQ4RCG
+    anchor:
+      type: code
+      commit: 630b9ae88ce99ad14ec7ee3f6979c1c7ea92f533
+      line_end: 23
+      line_start: 23
+      path: docs/concepts/specs-tasks-plans-inbox.md
+      side: head
+    entries:
+      - _ulid: 01KPQR6GSJ1BP280FR3R6RCB9D
+        author: Jacob Chapel
+        body: This page still names a raw schema field (`spec_ref`) even though @docs-concepts-section ac-2
+          requires Concepts pages to explain the model without enumerating schema fields. The
+          reader-facing explanation works without that internal field name, so keeping it here makes
+          the content less durable than the spec requires.
+        created_at: 2026-04-21T10:08:28.466Z
+      - _ulid: 01KPQTNTMTNADYR5VA9GCJJB2F
+        author: "@claude"
+        body: "Fixed: Replaced spec_ref with plain language — points back to a spec."
+        created_at: 2026-04-21T10:51:47.226Z
+    kind: blocker
+    resolved_at: 2026-04-21T10:51:49.818Z
+    resolved_by: "@claude"
+  - _ulid: 01KPQR78GR0CK03R30W6JR1E0X
+    entries:
+      - _ulid: 01KPQR78GR2J8A6W4TXTWDQSN0
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          Files read: docs/concepts/index.md, docs/concepts/what-kspec-is.md,
+          docs/concepts/working-with-an-agent.md, docs/concepts/specs-tasks-plans-inbox.md,
+          docs/concepts/the-shadow-branch.md, docs/concepts/traits.md, docs/concepts/reviews.md,
+          docs/concepts/agents-and-dispatch.md, docs/concepts/web-ui-and-daemon.md,
+          docs/getting-started/*.md (adjacent context), tests/web-ui-docs-rendering.test.ts,
+          src/cli/help/content.ts.
+
+          Commands run: npm exec -- kspec task get @01KPPN43G7T5FSMEF1YPWS0CPX, npm exec -- kspec
+          item get @docs-concepts-section, npm exec -- kspec review for-task
+          @01KPPN43G7T5FSMEF1YPWS0CPX, git diff/stat/log vs dev, rg for AC annotations, kspec
+          validate on snapshot and base dev, npm test.
+
+          Claims verified: prior fix-cycle claims about rejected plans / built-in agent count /
+          session-start wording were checked against the updated docs and adjacent code/tests; npm
+          test pass verified independently.
+
+          Categories searched: correctness, spec alignment, AC coverage, test quality, integration,
+          factual accuracy against adjacent code/docs.
+        created_at: 2026-04-21T10:08:52.760Z
+      - _ulid: 01KPQTNZQ1E43YS31DBNNEAHND
+        author: "@claude"
+        body: Acknowledged evidence log.
+        created_at: 2026-04-21T10:51:52.417Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-04-21T10:09:11.621Z
+created_at: 2026-04-21T09:55:50.143Z
+updated_at: 2026-04-21T10:51:52.417Z
+notes: []

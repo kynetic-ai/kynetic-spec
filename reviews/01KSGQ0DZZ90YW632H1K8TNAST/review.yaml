@@ -1,0 +1,122 @@
+_ulid: 01KSGQ0DZZ90YW632H1K8TNAST
+slugs: []
+title: Review task-folder-backed-resources-docs
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2578/2578 suites, 9848/9853 tests passed, 5 skipped. Full log:
+      /tmp/kspec-test-cache/01KSGPZE9606QSYMNKV0JEHK1Y/a33405c27f5e33a2.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-25T23:33:16.724Z
+    completed_at: 2026-05-25T23:33:16.724Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: RELEASE_NOTES.md;
+      docs/concepts/local-resources.md,index.md,reviews.md,specs-tasks-plans-inbox.md,the-shadow-br\
+      anch.md;
+      docs/guides/working-with-local-resources.md,upgrading-kspec.md,importing-and-approving-a-plan\
+      .md,index.md; docs/release-notes/index.md;
+      docs/troubleshooting/entity-storage-incompatible.md,index.md,plan-or-review-index-drift.md;
+      tests/folder-backed-resource-docs.test.ts; related CLI/API/export implementation files.
+      Commands run: task/spec/review lookups, git diff, AC annotation search, kspec validate, kspec
+      validate --warnings-ok, npm test, branch-local CLI help via npm run dev. Claims verified:
+      documented CLI commands/routes/manifest fields/materialize/static export/upgrade gates match
+      branch-local implementation and tests. Categories searched: correctness, AC coverage, docs
+      link/index integration, test quality, command/API alignment, upgrade/troubleshooting guidance.
+      No blocking findings."
+    name: manual review
+    required: false
+    runner: codex
+    created_at: 2026-05-25T23:33:21.754Z
+    completed_at: 2026-05-25T23:33:21.754Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate --warnings-ok passed: schema OK, references OK, skills OK. Baseline
+      project warnings remain (deprecated refs, orphan/status/completeness warnings), not introduced
+      by this docs task."
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-25T23:33:26.945Z
+    completed_at: 2026-05-25T23:33:26.945Z
+events:
+  - _ulid: 01KSGQ0DZWFEAQNPQ0HY5Z0Z04
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-25T23:20:04.862Z
+  - _ulid: 01KSGQ173WPZTSF3CXYXN8PVTD
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-25T23:20:30.589Z
+  - _ulid: 01KSGQRN2620M1MBM5VENJ3GFY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-25T23:33:18.534Z
+  - _ulid: 01KSGQRT2F270C3P6TPHWM64ZA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: manual review
+    timestamp: 2026-05-25T23:33:23.663Z
+  - _ulid: 01KSGQRZ23XFREX2YZDXH7DN80
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-25T23:33:28.771Z
+  - _ulid: 01KSGQSBFA52XMZGD29KVHBAQX
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-25T23:33:41.485Z
+  - _ulid: 01KSGQSBFEVS99M3VWR18T6NKY
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-25T23:33:41.486Z
+examined_commit: 3bc2a809cf80c6bbe33a71597b2f4ffe14350b16
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XB0SSRJ871MAMN8V25GW0"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-25T23:33:41.481Z
+created_at: 2026-05-25T23:20:04.863Z
+updated_at: 2026-05-25T23:33:41.485Z
+notes: []

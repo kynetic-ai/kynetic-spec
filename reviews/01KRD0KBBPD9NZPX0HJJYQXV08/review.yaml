@@ -1,0 +1,137 @@
+_ulid: 01KRD0KBBPD9NZPX0HJJYQXV08
+slugs: []
+title: Review cleanup-effect guardrail regressions (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts
+      tests/lint-daemon-test-guardrails.test.ts: 289 passed / 289, exit 0."
+    name: targeted lint regressions
+    required: true
+    runner: npm test
+    created_at: 2026-05-12T02:48:02.975Z
+    completed_at: 2026-05-12T02:48:02.975Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite: 2419 suites passed; 9045 passed, 5 skipped of 9050; exit 0. Log:
+      /tmp/kspec-test-cache/01KRD0H713H4716RGMRH736R5D/abca9738fec6dbc6.log"
+    name: npm test -- --fresh
+    required: true
+    runner: npm test
+    created_at: 2026-05-12T02:48:13.814Z
+    completed_at: 2026-05-12T02:48:13.814Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Schema, references, skills OK. Command exited 0 with --warnings-ok; remaining validation
+      warnings are existing project-wide reference/alignment/completeness warnings, not introduced
+      by the reviewed one-file test change.
+    name: kspec validate --warnings-ok
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-12T02:48:24.522Z
+    completed_at: 2026-05-12T02:48:24.522Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md, .agents/skills/kspec-review/SKILL.md,
+      .agents/skills/kspec-merge/SKILL.md, tests/lint-no-leaky-test-daemon.test.ts,
+      tools/eslint-rules/no-leaky-test-daemon.js, tests/lint-daemon-test-guardrails.test.ts.
+      Commands run: kspec task get, kspec item get, kspec review for-task/get, git
+      diff/stat/name-only/log/show/diff --check, rg AC and cleanup probes, targeted npm test, full
+      npm test, kspec validate. Claims verified: prior red-test blocker resolved by staged
+      expectClassifierGap exact-gap assertions; AC annotations cover cleanup operation, probe
+      rejection, helper-origin, and detached cleanup guardrail; no source-scanning tests introduced.
+      Categories searched: correctness, edge cases, error handling/parser failures via
+      expectOxlintRanCleanly, test quality, integration."
+    name: review evidence log
+    required: false
+    runner: codex review
+    created_at: 2026-05-12T02:48:37.280Z
+    completed_at: 2026-05-12T02:48:37.280Z
+events:
+  - _ulid: 01KRD0KBBFT42TVD86WN8VY8YA
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-12T02:35:02.384Z
+  - _ulid: 01KRD0MGNDW7W384DNS355KNKP
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-12T02:35:40.590Z
+  - _ulid: 01KRD1B6Z12PC46JMH5M21MGK6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted lint regressions
+    timestamp: 2026-05-12T02:48:04.321Z
+  - _ulid: 01KRD1BHKJHT9S6XPYBH2WKEHF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-05-12T02:48:15.219Z
+  - _ulid: 01KRD1BW0J8CT8H3BVJQDYF72N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --warnings-ok
+    timestamp: 2026-05-12T02:48:25.875Z
+  - _ulid: 01KRD1C8GKPAE23ZAWF4AFCGRS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-12T02:48:38.675Z
+  - _ulid: 01KRD1CMVM3CX719BH4M97RY7M
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-12T02:48:51.316Z
+  - _ulid: 01KRD1CMVM3DEKBZN5XSP8DB99
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-12T02:48:51.316Z
+examined_commit: d647b8096eb464f0867666b87740fb4df74ac6a4
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRCRJP9RHZ06B249NBJSPSY3"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-12T02:48:51.316Z
+created_at: 2026-05-12T02:35:02.390Z
+updated_at: 2026-05-12T02:48:51.316Z
+notes: []

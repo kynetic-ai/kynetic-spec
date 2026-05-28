@@ -1,0 +1,122 @@
+_ulid: 01KMRMMSSS45Z6WY9K0NGG2CA0
+slugs: []
+title: Review extract setupShadowDetection to shared test helpers
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation reported schema/reference OK with existing repo-wide warnings only (exit 6): 1
+      orphaned skill directory, 32 alignment warnings, 484 completeness warnings; no new validation
+      errors introduced by this task."
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-03-27T21:58:17.863Z
+    completed_at: 2026-03-27T21:58:17.863Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Test Suites: 1950 passed of 1950; Tests: 6999 passed of 7004, 5 skipped; [test-runner]
+      Tests passed."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-27T21:58:21.813Z
+    completed_at: 2026-03-27T21:58:21.813Z
+events:
+  - _ulid: 01KMRMMSSRYDCRAQEJZG6D12J8
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T21:54:12.921Z
+  - _ulid: 01KMRMNA9DZ94FH25EZT5MG9WG
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T21:54:29.805Z
+  - _ulid: 01KMRMW801F4209QWFE5FAPS1P
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMRMW7GT555Z8AP9QRQM83C0
+    timestamp: 2026-03-27T21:58:16.833Z
+  - _ulid: 01KMRMW9FB8DXG2SG3W7AA2B4E
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-27T21:58:18.347Z
+  - _ulid: 01KMRMWAYBHFKF74QZPNP7WHEC
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-27T21:58:19.852Z
+  - _ulid: 01KMRMWAYCC7FTPPN1ERC0VC88
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T21:58:19.852Z
+  - _ulid: 01KMRMWDBBEZ3Q8G66K00WSMTX
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-27T21:58:22.316Z
+examined_commit: bd7a164208824d95dd552a5e45f6dec00306dc06
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMRGJ8VGS65ZE2569WXT31D7"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMRMW7GT555Z8AP9QRQM83C0
+    entries:
+      - _ulid: 01KMRMW7GTKE2Q9BW8K74JGKYK
+        author: "@claude"
+        body: >-
+          Evidence log:
+
+          Files read: AGENTS.md, kspec-agents.md, tests/helpers/cli.ts,
+          tests/daemon-entity-cache.test.ts.
+
+          Commands run: git diff --stat, git diff --unified=80, git diff --check, git log --oneline,
+          kspec task get, kspec item get @daemon-entity-cache, kspec review for-task, kspec
+          validate, rg -n "AC: @daemon-entity-cache|AC: @trait-" tests/daemon-entity-cache.test.ts
+          tests, npm test.
+
+          Claims verified: extracted helper matches prior setup semantics and reuses initGitRepo();
+          full test suite passes on snapshot.
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration;
+          no findings.
+        created_at: 2026-03-27T21:58:16.346Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-27T21:58:19.851Z
+created_at: 2026-03-27T21:54:12.921Z
+updated_at: 2026-03-27T21:58:21.813Z
+notes: []

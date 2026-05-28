@@ -1,0 +1,17 @@
+_ulid: 01KSBEH47SBEAVSFY5HEPFMQBY
+slugs:
+  - plan-dispatch-merge-helper-target-lock-hardening
+title: Dispatch Merge Helper Target Lock Hardening
+status: completed
+approved_at: 2026-05-26T17:37:45.668Z
+derived_specs: []
+derived_tasks:
+  - "@task-align-merge-helper-branch-lock-specs"
+  - "@task-rework-detached-reviewer-merge-helper-ephemeral-target"
+  - "@task-add-detached-merge-helper-branch-lock-regressions"
+  - "@task-clear-occupied-checkout-degraded-state-on-retry"
+  - "@task-add-plan-target-lock-e2e-regression"
+module_ref: null
+source_path: /home/chapel/Projects/kynetic-spec-dispatch/plans/dispatch-merge-helper-target-lock-hardening.md
+created_at: 2026-05-23T22:15:42.585Z
+completed_at: null

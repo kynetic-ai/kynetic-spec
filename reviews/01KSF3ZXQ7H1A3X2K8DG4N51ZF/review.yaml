@@ -1,0 +1,305 @@
+_ulid: 01KSF3ZXQ7H1A3X2K8DG4N51ZF
+slugs: []
+title: Review task-review-screenshot-resource-ui (cycle 4)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Schema and reference validation passed; command exited 6 due to existing project-wide
+      warnings (7 reference warnings, 37 alignment warnings, 266 completeness warnings, 32 invalid
+      AC annotations).
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-25T08:45:15.664Z
+    completed_at: 2026-05-25T08:45:15.664Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test passed: 2546 suites passed; 9709 tests passed, 5 skipped; duration 2908.9s. Full
+      log: /tmp/kspec-test-cache/01KSF3Y0J1FE9KZ5F7F70FWSH8/8f64b6d904a093d4.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-25T08:45:21.629Z
+    completed_at: 2026-05-25T08:45:21.629Z
+events:
+  - _ulid: 01KSF3ZXQ798B4T5019CSSEJE0
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-25T08:28:30.823Z
+  - _ulid: 01KSF40CVRM81574MC5NJQV5FN
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-25T08:28:46.328Z
+  - _ulid: 01KSF48K3786H97KWBZBMN5023
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSF48GH1C5HE0DWZDJXDXTA0
+    timestamp: 2026-05-25T08:33:14.855Z
+  - _ulid: 01KSF48T7XHP3ZRHXNZYKY6TCY
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSF48QKEC164ZQFDYTGRQT5C
+    timestamp: 2026-05-25T08:33:22.173Z
+  - _ulid: 01KSF4B9JJRGFV79KV85S2C1VF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSF4B6WW8VW59P125Y5BE369
+    timestamp: 2026-05-25T08:34:43.410Z
+  - _ulid: 01KSF4YN1XPKS7RRG4ERN1TTWD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-25T08:45:17.757Z
+  - _ulid: 01KSF4YTZTGHNPHP7XASAV90H9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-25T08:45:23.834Z
+  - _ulid: 01KSF4ZJZNPA07G3ZKRY1RWQC4
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSF4ZGT3HTERQZSQASPBY5T6
+    timestamp: 2026-05-25T08:45:48.405Z
+  - _ulid: 01KSF4ZZ8BNTGBGB8C6CVG9N3Q
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-25T08:46:00.971Z
+  - _ulid: 01KSF4ZZ8BM1GDYYABRTZMSDJ2
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-25T08:46:00.971Z
+  - _ulid: 01KSF6V5M24HG72ATZ4VBR8SVC
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSF48GH1C5HE0DWZDJXDXTA0
+    timestamp: 2026-05-25T09:18:20.802Z
+  - _ulid: 01KSF6VC6BQRHADQ3S48C8MZ2Z
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSF48GH1C5HE0DWZDJXDXTA0
+    timestamp: 2026-05-25T09:18:27.531Z
+  - _ulid: 01KSF6VJNMPNNP48D1787G1QMV
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSF48QKEC164ZQFDYTGRQT5C
+    timestamp: 2026-05-25T09:18:34.164Z
+  - _ulid: 01KSF6VS4YXJJMGWMP4S93RF9S
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSF48QKEC164ZQFDYTGRQT5C
+    timestamp: 2026-05-25T09:18:40.798Z
+  - _ulid: 01KSF6VZYQY89FANDPZR94DBHN
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSF4B6WW8VW59P125Y5BE369
+    timestamp: 2026-05-25T09:18:47.767Z
+  - _ulid: 01KSF6W6C3Q4XV2AXE8WTNWGEX
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSF4B6WW8VW59P125Y5BE369
+    timestamp: 2026-05-25T09:18:54.339Z
+examined_commit: 9f21d1bd4651df54ac5fc5946affb3c84edf6ac6
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XB0EKNTMZS4XJMC4ED4SK"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSF48GH1C5HE0DWZDJXDXTA0
+    anchor:
+      type: code
+      commit: 9f21d1bd4651df54ac5fc5946affb3c84edf6ac6
+      line_end: 492
+      line_start: 492
+      path: src/parser/review-resource-manager.ts
+      side: head
+    entries:
+      - _ulid: 01KSF48GH2546ZHR125P05YCBF
+        author: Jacob Chapel
+        body: "MUST-FIX: removeReviewResource deletes the resource file with fs.rm(path.join(resourcesDir,
+          resource.path)) without using the symlink-safe resolver. If resources/<dir> is a symlink,
+          Node follows that intermediate symlink and removes the outside target; I verified this
+          with a direct fs.rm(resources/link/victim.txt) reproduction where the outside file was
+          deleted. This violates the shared local-resource contract that symlink escapes are
+          rejected and no file outside the owning resources tree is touched. Resolve the declared
+          resource through the same symlink-safe path machinery, or otherwise reject symlinked
+          intermediates before deleting, and add behavioral coverage for remove on a symlink-escape
+          path."
+        created_at: 2026-05-25T08:33:12.226Z
+      - _ulid: 01KSF6V45JT9TSE0JB7W5A2MCG
+        author: "@claude"
+        body: "Fixed: removeReviewResource now routes through a new symlink-safe
+          removeResourceFromOwnerResources helper in entity-local-resources.ts that walks each path
+          segment with lstat, rejects any symlink at the owner root / intermediate dirs /
+          destination, and uses fs.unlink (which does not follow the final-segment symlink). On
+          rejection the manifest is left intact so users observe the failure instead of a
+          half-applied delete. Added three behavioral tests in tests/review-resource-manager.test.ts
+          that reproduce the exact attack shape (intermediate-dir symlink, root symlink, destination
+          symlink) and assert the outside file is untouched plus the manifest is preserved. Also
+          applied the same safe-remove to addReviewResource's replace-path cleanup since it has the
+          same fs.rm pattern."
+        created_at: 2026-05-25T09:18:19.314Z
+    kind: blocker
+    resolved_at: 2026-05-25T09:18:25.952Z
+    resolved_by: "@claude"
+  - _ulid: 01KSF48QKEC164ZQFDYTGRQT5C
+    anchor:
+      type: code
+      commit: 9f21d1bd4651df54ac5fc5946affb3c84edf6ac6
+      line_end: 356
+      line_start: 355
+      path: src/parser/review-resource-manager.ts
+      side: head
+    entries:
+      - _ulid: 01KSF48QKEBZ68N8SXPAQ15S0J
+        author: Jacob Chapel
+        body: "MUST-FIX: source-file readability is only checked with stat().isFile(), so a regular file
+          without read permission passes validation and then fs.copyFile throws EACCES from
+          copySourceIntoOwnerResources. I exercised addReviewResource directly with a chmod 000
+          source file and it threw EACCES instead of returning the documented source_file_unreadable
+          result; the CLI would map that through its unexpected-error path as
+          entity_storage_incompatible/exit 3, and the daemon would not return the required
+          source_file_unreadable envelope. The task explicitly requires unreadable <source-file> to
+          return source_file_unreadable with validation exit/status behavior. Add an
+          access/readability check or catch copy/hash EACCES and map it to source_file_unreadable,
+          with CLI/API coverage using an unreadable regular file rather than only a directory."
+        created_at: 2026-05-25T08:33:19.471Z
+      - _ulid: 01KSF6VH50SDJ6W328RY8VVHCQ
+        author: "@claude"
+        body: "Fixed: validateSourceFile in review-resource-manager.ts now runs an explicit fs.access(R_OK)
+          probe after stat().isFile() so unreadable regular files (e.g. chmod 000) surface as
+          source_file_unreadable at the manager layer instead of leaking EACCES through copyFile
+          into the CLI's unexpected-error bucket / daemon 500. Added a manager-level test (chmod 000
+          source returns source_file_unreadable with the source_file field populated and no bytes
+          written under the review's resources/) and a CLI-level test (production CLI binary returns
+          the documented JSON envelope with code source_file_unreadable and exit 1 for the same
+          chmod 000 case). Both tests skip on win32 and as root where chmod 000 has no effect."
+        created_at: 2026-05-25T09:18:32.608Z
+    kind: blocker
+    resolved_at: 2026-05-25T09:18:39.264Z
+    resolved_by: "@claude"
+  - _ulid: 01KSF4B6WW8VW59P125Y5BE369
+    anchor:
+      type: code
+      commit: 9f21d1bd4651df54ac5fc5946affb3c84edf6ac6
+      line_end: 122
+      line_start: 119
+      path: packages/daemon/src/routes/review-resources.ts
+      side: head
+    entries:
+      - _ulid: 01KSF4B6WWHBNR6SGS6QRDDXH8
+        author: Jacob Chapel
+        body: 'MUST-FIX: the daemon multipart parser treats an explicitly provided empty content_type field
+          as omitted. readTextField returns undefined for empty strings, and the POST handler then
+          passes null to addReviewResource, so an upload with content_type="" silently infers from
+          the path instead of rejecting the explicit non-empty-token violation. The task contract
+          says explicit content_type values must be non-empty type/subtype tokens; only omitted
+          values are inferred. Preserve empty strings for content_type (or special-case it before
+          readTextField) so POST returns the documented 400 invalid_resource_path/error envelope,
+          and add API coverage for an empty content_type field.'
+        created_at: 2026-05-25T08:34:40.668Z
+      - _ulid: 01KSF6VYCQ0YFR2GPANQJ8W1E9
+        author: "@claude"
+        body: "Fixed: the daemon multipart parser now distinguishes 'absent' from 'explicitly empty' for the
+          content_type field. Added a readPresentField helper that preserves empty strings
+          (alongside the existing readTextField which collapses them to undefined for
+          id/path/label/description). The POST handler routes only content_type through
+          readPresentField, so an explicit content_type='' is passed through to addReviewResource
+          which surfaces it as 400 invalid_resource_path with the documented envelope (matches the
+          explicit non-empty-token rule from the task contract). Other fields still treat empty as
+          absent. Added two tests in tests/daemon-api/review-resources.test.ts: (a) explicit
+          content_type='' returns 400 invalid_resource_path and (b) omitted content_type still
+          infers from the path extension — the second is a baseline so the fix doesn't over-correct
+          by rejecting valid uploads that simply omit the field."
+        created_at: 2026-05-25T09:18:46.166Z
+    kind: blocker
+    resolved_at: 2026-05-25T09:18:52.752Z
+    resolved_by: "@claude"
+  - _ulid: 01KSF4ZGT3HTERQZSQASPBY5T6
+    entries:
+      - _ulid: 01KSF4ZGT4TR612C8H9AR94Z30
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+
+          Files read: kspec-agents.md; .agents/skills/kspec-review/SKILL.md;
+          .agents/skills/review-gates/SKILL.md; .agents/skills/kspec-merge/SKILL.md;
+          .agents/skills/work-gates/SKILL.md; task/spec/trait/review records; changed files in
+          src/parser/review-resource-manager.ts, src/parser/entity-local-resources.ts,
+          src/cli/commands/review-resource.ts, packages/daemon/src/routes/review-resources.ts,
+          packages/daemon/src/middleware/project-context.ts, packages/web-ui/src/lib/api.ts,
+          packages/web-ui/src/lib/api-static.ts,
+          packages/web-ui/src/routes/reviews/[id]/+page.svelte, src/export/json.ts,
+          src/export/types.ts, tests/daemon-api/review-resources.test.ts,
+          tests/review-resource-cli.test.ts, tests/review-resource-manager.test.ts,
+          tests/review-resource-static-export.test.ts, tests/web-ui/review-resources-api.test.ts,
+          tests/web-ui/review-static-mode.test.ts.
+
+
+          Commands run: git status/log/diff; kspec task get; kspec item get; kspec review
+          for-task/get/add/open/comment/check; rg AC/error/source-scan searches; direct Node
+          reproductions for symlink delete and chmod-000 source file; kspec validate; npm test.
+
+
+          Claims verified: cycle-3 selected-project URL fix is covered in helper and daemon tests;
+          CLI cancellation and non-regular source tests were added; full test suite passes. New
+          blockers remain in symlink-safe remove, unreadable regular source handling, and empty
+          multipart content_type validation.
+
+
+          Categories searched: correctness, edge cases, error handling, security/path traversal,
+          test quality, daemon route integration, static export, live/static UI integration,
+          multi-project context, cache/WebSocket invalidation.
+        created_at: 2026-05-25T08:45:46.180Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-25T08:46:00.971Z
+created_at: 2026-05-25T08:28:30.823Z
+updated_at: 2026-05-25T09:18:52.752Z
+notes: []

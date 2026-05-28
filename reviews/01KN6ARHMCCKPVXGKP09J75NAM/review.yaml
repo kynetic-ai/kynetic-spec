@@ -1,0 +1,117 @@
+_ulid: 01KN6ARHMCCKPVXGKP09J75NAM
+slugs: []
+title: Review fix-stale-worktree-removal-in-safelyremovedispatchworktree
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test passed: 2063/2063 suites, 7464 passed, 5 skipped, 0 failed. Reviewed live merge
+      delta against dev (merge-base 59c6689e502795c5833491c1e929ba53cb4e787e):
+      src/agent-runtime/workspace.ts and tests/dispatch-workspace-cleanup.test.ts only."
+    name: npm-test
+    required: true
+    runner: npm
+    created_at: 2026-04-02T05:40:14.932Z
+    completed_at: 2026-04-02T05:40:14.932Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/agent-runtime/workspace.ts, tests/dispatch-workspace-cleanup.test.ts,
+      tests/dispatch-workspace-config.test.ts, vitest.config.ts, kspec-agents.md. Commands run: git
+      diff dev...HEAD, git show --stat 4f39f67, kspec task get, kspec item get
+      @dispatch-workspace-cleanup-policy, kspec item get @dispatch-workspace-configuration, kspec
+      item get @plan-branch-dispatch-target, grep for AC annotations, kspec validate, npm test.
+      Claims verified: stale on-disk-missing worktree now prunes git registration instead of calling
+      worktree remove; regression test covers orphaned registration cleanup. Categories searched:
+      correctness, edge cases, error handling, test quality, integration; no findings."
+    name: review-evidence
+    required: false
+    runner: manual
+    created_at: 2026-04-02T05:40:17.247Z
+    completed_at: 2026-04-02T05:40:17.247Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate completed with known repo-wide warnings only (exit 6): no schema/reference
+      errors for this change; warnings are pre-existing orphan/completeness coverage warnings."
+    name: kspec-validate
+    required: true
+    runner: kspec
+    created_at: 2026-04-02T05:40:19.636Z
+    completed_at: 2026-04-02T05:40:19.636Z
+events:
+  - _ulid: 01KN6ARHMC045WBQZY9H29CRBQ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-02T05:30:51.916Z
+  - _ulid: 01KN6AS4GG5WS8C11BBX8P9FE8
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-02T05:31:11.248Z
+  - _ulid: 01KN6B9R6CJV7ZY20ZSV9YK0J1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm-test
+    timestamp: 2026-04-02T05:40:15.692Z
+  - _ulid: 01KN6B9TFHR2E43QD2G2TQGSZ4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-04-02T05:40:18.033Z
+  - _ulid: 01KN6B9WTH4VV1Q1SDXMXXFQ0B
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-04-02T05:40:20.433Z
+  - _ulid: 01KN6BAAYKEWY5TX4KKQ06WRWD
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-02T05:40:34.899Z
+  - _ulid: 01KN6BAAYKEJ7MJ4NHD7K2Y1TZ
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-02T05:40:34.899Z
+examined_commit: 4f39f67f8ada86dcca9d75681a2d9f44a8379d36
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN69S1WZC46EK5MG7Z5Y971P"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-02T05:40:34.899Z
+created_at: 2026-04-02T05:30:51.916Z
+updated_at: 2026-04-02T05:40:34.899Z
+notes: []

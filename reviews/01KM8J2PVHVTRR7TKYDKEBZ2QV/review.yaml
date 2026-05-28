@@ -1,0 +1,239 @@
+_ulid: 01KM8J2PVHVTRR7TKYDKEBZ2QV
+slugs: []
+title: Review per-task core data and notes files (cycle 20)
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 302 test files passed, 6891 tests passed, 3 skipped, exit 0.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-21T16:08:38.040Z
+    completed_at: 2026-03-21T16:08:38.040Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation produced warnings only (exit 6): references/schema OK, no validation errors
+      introduced by this snapshot."
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-03-21T16:08:38.049Z
+    completed_at: 2026-03-21T16:08:38.049Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/parser/task-data-manager.ts, src/parser/split-backend.ts,
+      src/cli/batch-write-buffer.ts, src/parser/review-task-integration.ts,
+      packages/daemon/src/routes/tasks.ts, src/cli/commands/review.ts, src/cli/commands/task.ts,
+      tests/per-task-files.test.ts, tests/split-backend.test.ts, tests/task-atomic-writes.test.ts.
+      Commands run: kspec task get, kspec item get @task-core-data-file, kspec item get
+      @task-notes-file, kspec validate, git diff/stat, rg AC annotations, npm test. Claims verified:
+      AC coverage exists in tests/per-task-files.test.ts; full suite passes. Categories searched:
+      correctness, concurrency, migration/error handling, test quality, integration/commit
+      ordering."
+    name: review-evidence
+    required: false
+    runner: manual
+    created_at: 2026-03-21T16:08:39.057Z
+    completed_at: 2026-03-21T16:08:39.057Z
+events:
+  - _ulid: 01KM8J2PVHS68EE8SXVD9580YA
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T16:01:32.017Z
+  - _ulid: 01KM8J32T89G5VEG9FNE5EHK3X
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T16:01:44.265Z
+  - _ulid: 01KM8JDT9KAN9WWVQNZD2C22XV
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM8JDSZAV0P13QWMCFYAVHEQ
+    timestamp: 2026-03-21T16:07:35.987Z
+  - _ulid: 01KM8JF38GVQ83BX2VXHHP895Y
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM8JF2YSE69V7CYTBEWS5CMQ
+    timestamp: 2026-03-21T16:08:17.936Z
+  - _ulid: 01KM8JF47GR1HAFPAE7283DPMX
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM8JF3Y71QM1KW5C9313Q9DV
+    timestamp: 2026-03-21T16:08:18.928Z
+  - _ulid: 01KM8JF57W4JMT8CER81N55J4W
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM8JF4YPFP9R8GBCF0JACZTA
+    timestamp: 2026-03-21T16:08:19.965Z
+  - _ulid: 01KM8JF67TBSX44T37XVT0CCMD
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM8JF5Y89QPZMR5QYJYRKZB6
+    timestamp: 2026-03-21T16:08:20.986Z
+  - _ulid: 01KM8JFQ65AWVFFSTQKJTS2MPE
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-21T16:08:38.342Z
+  - _ulid: 01KM8JFQP2MSN0SCVDSNHVWRQK
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-21T16:08:38.853Z
+  - _ulid: 01KM8JFR7V1MFSEAHN11QX929P
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-03-21T16:08:39.419Z
+  - _ulid: 01KM8JFXTMM75ZJH9Y097ZFBSY
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-21T16:08:45.140Z
+  - _ulid: 01KM8JFXTM3NWNPNWXTVW6B7DD
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-21T16:08:45.141Z
+examined_commit: 57af9e5bc4227d76b715277cfa249b72e667f07c
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YET1A7XY9D0V3YQ9DRASG"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM8JDSZAV0P13QWMCFYAVHEQ
+    anchor:
+      type: code
+      commit: ""
+      line_end: 331
+      line_start: 311
+      path: packages/daemon/src/routes/tasks.ts
+      side: head
+    entries:
+      - _ulid: 01KM8JDSZA423V0XM8X7SN296H
+        author: Test User
+        body: These API transition routes now pass commit metadata into mutateTask(), which makes
+          TaskDataManager auto-commit the task change, and then they call commitIfShadow() again
+          after spec sync. That splits one logical transition into two shadow commits and can leave
+          the task state already committed if the later sync/commit step fails. The routes need the
+          same skipCommit-style outer commit boundary used in other multi-step flows.
+        created_at: 2026-03-21T16:07:35.659Z
+    kind: blocker
+  - _ulid: 01KM8JF2YSE69V7CYTBEWS5CMQ
+    anchor:
+      type: code
+      commit: ""
+      line_end: 1088
+      line_start: 1074
+      path: src/cli/commands/review.ts
+      side: head
+    entries:
+      - _ulid: 01KM8JF2YSDQXVFB280NZ2ZW3A
+        author: Test User
+        body: "The same commit-order problem exists on request_changes: review verdict is committed before
+          handleVerdictTaskTransition() runs, and that helper now mutates each task with per-task
+          auto-commits. A mid-loop failure leaves a closed review on disk with only some
+          pending_review tasks moved to needs_work, which breaks review/task lifecycle consistency."
+        created_at: 2026-03-21T16:08:17.625Z
+    kind: blocker
+  - _ulid: 01KM8JF3Y71QM1KW5C9313Q9DV
+    anchor:
+      type: code
+      commit: ""
+      line_end: 1069
+      line_start: 1034
+      path: src/parser/split-backend.ts
+      side: head
+    entries:
+      - _ulid: 01KM8JF3Y895ANCAJTQ7GHY4AZ
+        author: Test User
+        body: Split mode now allows unrelated tasks to mutate concurrently, but index updates still do an
+          unlocked read-modify-write of shared project.tasks.yaml. Two concurrent mutations on
+          different tasks can both start from the same index snapshot here, and the later flush
+          overwrites the earlier task's entry change, leaving listTasks stale until a rebuild. The
+          concurrency tests currently only assert the returned tasks, not the persisted index.
+        created_at: 2026-03-21T16:08:18.632Z
+    kind: blocker
+  - _ulid: 01KM8JF4YPFP9R8GBCF0JACZTA
+    anchor:
+      type: code
+      commit: ""
+      line_end: 533
+      line_start: 523
+      path: src/cli/commands/review.ts
+      side: head
+    entries:
+      - _ulid: 01KM8JF4YPX7E4D6DK0CTPS4JM
+        author: Test User
+        body: review add now commits the new review before task linkage runs, but linkReviewToTasks mutates
+          each task with commit metadata of its own. If one of those task updates fails partway
+          through, the review is already committed and only a prefix of linked tasks gets review_ref
+          updated. Carry the history metadata without per-task auto-commits here, then commit once
+          after the whole linkage pass succeeds.
+        created_at: 2026-03-21T16:08:19.670Z
+    kind: blocker
+  - _ulid: 01KM8JF5Y89QPZMR5QYJYRKZB6
+    anchor:
+      type: code
+      commit: ""
+      line_end: 1145
+      line_start: 1116
+      path: src/parser/split-backend.ts
+      side: head
+    entries:
+      - _ulid: 01KM8JF5Y82EWQ34HZE99WJTAS
+        author: Test User
+        body: rebuildIndex() bypasses the migration gate. With split mode enabled on an unmigrated repo, the
+          normal read paths correctly stop with migration guidance, but this method will scan an
+          empty tasks/ directory and rewrite project.tasks.yaml to an empty index instead of
+          refusing the operation. That can destroy the remaining monolithic task records.
+        created_at: 2026-03-21T16:08:20.680Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-21T16:08:45.140Z
+created_at: 2026-03-21T16:01:32.017Z
+updated_at: 2026-03-21T16:08:45.140Z
+notes: []

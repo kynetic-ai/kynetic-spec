@@ -1,0 +1,17 @@
+_ulid: 01KJGBWMZCX7EQFWP4JFN7MB8V
+slugs:
+  - plan-auto-close-stale-active-sessions
+title: Auto-close stale active sessions
+status: completed
+approved_at: null
+derived_specs:
+  - "@session-stale-cleanup"
+  - "@session-stale-criteria"
+  - "@session-stale-close-metadata"
+derived_tasks:
+  - "@implement-stale-active-session-cleanup"
+  - "@implement-stale-session-candidate-criteria"
+  - "@implement-auto-abandon-metadata-and-audit-trail"
+source_path: /tmp/session-stale-cleanup-plan.md
+created_at: 2026-02-27T20:15:53.836Z
+completed_at: 2026-03-01T07:27:41.145Z

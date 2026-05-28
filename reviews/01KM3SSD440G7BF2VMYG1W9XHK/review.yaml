@@ -1,0 +1,159 @@
+_ulid: 01KM3SSD440G7BF2VMYG1W9XHK
+slugs: []
+title: Review Dispatch Integration Branch Robustness
+author: Jacob Chapel
+checks:
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide validation reported unrelated existing schema/reference warnings and errors
+      outside this plan review; not used as a plan gate.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-19T19:41:53.271Z
+    completed_at: 2026-03-19T19:41:53.271Z
+events:
+  - _ulid: 01KM3SSD44NBJQ2FF4MQM40PB8
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-19T19:40:03.588Z
+  - _ulid: 01KM3SSQ6E0WE1DGVP4QVWYFN9
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-19T19:40:13.903Z
+  - _ulid: 01KM3SW1H1A54EB5P2GRNPW986
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM3SW1B24GDQ7VQQ2AVRYE52
+    timestamp: 2026-03-19T19:41:30.017Z
+  - _ulid: 01KM3SW1SXDP7DG2DYHH3TR43K
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KM3SW1CE48HSA7YFHK1R0RKG
+    timestamp: 2026-03-19T19:41:30.301Z
+  - _ulid: 01KM3SW22N06T0HRTNCZ6RAES2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM3SW1BWP9NRTM8KAD21V73Z
+    timestamp: 2026-03-19T19:41:30.581Z
+  - _ulid: 01KM3SWEG2BZS0P86S1A4WZGN4
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM3SWE9WTBZMQR9BG5V1RSFA
+    timestamp: 2026-03-19T19:41:43.298Z
+  - _ulid: 01KM3SWRDMPK8DP08K0PQZVQF2
+    actor: jacob.chapel@example.com
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-03-19T19:41:53.460Z
+  - _ulid: 01KM3SWRPVFNBK26Z8SX8RC5GQ
+    actor: jacob.chapel@example.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-19T19:41:53.756Z
+  - _ulid: 01KM3SWRPWB5FM0CM6GNEF43NN
+    actor: jacob.chapel@example.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-19T19:41:53.756Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-dispatch-integration-checkout-boundaries"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM3SW1B24GDQ7VQQ2AVRYE52
+    anchor:
+      type: structured
+      field: ac-2
+      ref: "@01KM3KX3"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KM3SW1B2WXA988K58JFCM0Y0
+        author: Jacob Chapel
+        body: "Blocker: this spec still turns an operator deployment choice into product behavior. The
+          separate-full-clone scenario belongs in operator guidance or implementation notes, not in
+          the behavioral contract. As written, it forces implementation/test coverage for a topology
+          the user explicitly wants to keep user-controlled."
+        created_at: 2026-03-19T19:41:29.826Z
+    kind: blocker
+  - _ulid: 01KM3SW1CE48HSA7YFHK1R0RKG
+    anchor:
+      type: structured
+      field: slug:task-test-dispatch-integration-branch-robustness
+      ref: "@01KM3KX3"
+      section: tasks
+    entries:
+      - _ulid: 01KM3SW1CF64MDXDD74DZD73ZN
+        author: Jacob Chapel
+        body: "Question: should  keep the separate-clone scenario at all, or should the tests be limited to
+          shared-checkout robustness? Right now the task mixes required product behavior with
+          optional deployment guidance."
+        created_at: 2026-03-19T19:41:29.871Z
+    kind: question
+  - _ulid: 01KM3SW1BWP9NRTM8KAD21V73Z
+    anchor:
+      type: structured
+      field: ac-2
+      ref: "@01KM3KX3"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KM3SW1BWMJMEG8WS944R0P2A
+        author: Jacob Chapel
+        body: "Blocker: AC-2 in  is underspecified. 'Safe repair path' is not an observable contract yet: it
+          does not say what state qualifies as safe, what command family is allowed, or what
+          postcondition proves the checkout matches the integration branch. This needs an explicit
+          precondition and postcondition before implementation can be reviewed."
+        created_at: 2026-03-19T19:41:29.852Z
+    kind: blocker
+  - _ulid: 01KM3SWE9WTBZMQR9BG5V1RSFA
+    anchor:
+      type: structured
+      ref: "@01KM3KX3"
+      section: title
+    entries:
+      - _ulid: 01KM3SWE9X9EWG4DG7J56WRSR3
+        author: Jacob Chapel
+        body: "Nit: the plan title is broader than the document's concrete scope. The actual contract is
+          shared-checkout safety, sanitized git execution, and drift repair. A title that names
+          checkout safety more explicitly would make the plan easier to scan."
+        created_at: 2026-03-19T19:41:43.101Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: jacob.chapel@example.com
+    role: reviewer
+    created_at: 2026-03-19T19:41:53.755Z
+created_at: 2026-03-19T19:40:03.588Z
+updated_at: 2026-03-19T19:41:53.756Z
+notes: []

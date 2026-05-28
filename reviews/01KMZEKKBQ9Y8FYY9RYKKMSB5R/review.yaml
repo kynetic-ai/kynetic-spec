@@ -1,0 +1,144 @@
+_ulid: 01KMZEKKBQ9Y8FYY9RYKKMSB5R
+slugs: []
+title: Review task-migrate-api-tests-vitest (cycle 4)
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation returned warnings only (exit 6): schema/references OK, current AC refs for
+      reviews-list/projects resolve correctly."
+    name: kspec-validate
+    required: true
+    runner: kspec
+    created_at: 2026-03-30T13:31:06.751Z
+    completed_at: 2026-03-30T13:31:06.751Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- tests/daemon-api/reviews-list.test.ts tests/daemon-api/projects.test.ts: 7
+      suites passed, 42 tests passed."
+    name: daemon-api-targeted
+    required: true
+    runner: npm-test
+    created_at: 2026-03-30T13:31:10.478Z
+    completed_at: 2026-03-30T13:31:10.478Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test hit one unrelated timeout in tests/dispatch-workspace-registry.test.ts (1 failed,
+      7488 passed, 5 skipped); isolated rerun of the failing test passed, so this does not indicate
+      a regression in the reviewed files.
+    name: npm-test-full
+    required: false
+    runner: npm-test
+    created_at: 2026-03-30T13:31:12.438Z
+    completed_at: 2026-03-30T13:31:12.438Z
+events:
+  - _ulid: 01KMZEKKBPX4MTHK88S0TGWMR1
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-30T13:23:23.127Z
+  - _ulid: 01KMZEM9GM391FFWZDGVMH7PRJ
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-30T13:23:45.812Z
+  - _ulid: 01KMZF1RPNSPSWM4DVTF7NFQ26
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-30T13:31:07.349Z
+  - _ulid: 01KMZF1TGV54AW1EHA7963PTE3
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMZF1SXN3M6M7CWGKPVQJYZR
+    timestamp: 2026-03-30T13:31:09.211Z
+  - _ulid: 01KMZF1WCK5PX44CBVXYAXK129
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: daemon-api-targeted
+    timestamp: 2026-03-30T13:31:11.123Z
+  - _ulid: 01KMZF1YB1FKNNSB0F4J45XZ4X
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm-test-full
+    timestamp: 2026-03-30T13:31:13.121Z
+  - _ulid: 01KMZF28X1XWH1FGCHHQW8SS9A
+    actor: codex@local
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-30T13:31:23.937Z
+  - _ulid: 01KMZF28X1Z4XKQP8S2HF2K7SN
+    actor: codex@local
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-30T13:31:23.937Z
+examined_commit: 853e55343524ba07ed3c232180e3c1b037623b00
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMZ1BV3H7S2SQ91TX8B80J1Y"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMZF1SXN3M6M7CWGKPVQJYZR
+    entries:
+      - _ulid: 01KMZF1SXNKYMD7NZVV527WGFS
+        author: Test User
+        body: >-
+          Evidence log:
+
+          Files read: tests/daemon-api/reviews-list.test.ts, tests/daemon-api/projects.test.ts,
+          prior diff against d0f61c721, spec items @review-records-daemon-api and
+          @multi-directory-daemon, task history for @01KMZ1BV3H7S2SQ91TX8B80J1Y.
+
+          Commands run: git diff --stat/name-only against dev and d0f61c721, rg AC annotation scans,
+          rg for stale invalid refs, kspec validate, npm test --
+          tests/daemon-api/reviews-list.test.ts tests/daemon-api/projects.test.ts, npm test, npm
+          test -- tests/dispatch-workspace-registry.test.ts -t "reconciliation acquires the lock per
+          dirty record, not once for the entire batch".
+
+          Claims verified: final cycle only changed AC annotations in reviews-list/projects tests;
+          referenced spec refs exist; stale @kspec-review-list/@spec-daemon-projects refs are gone;
+          no skipped migrated API-only Playwright specs remain; targeted daemon-api tests pass;
+          full-suite timeout reproduces as unrelated flake because isolated rerun passes.
+
+          Categories searched: correctness, AC coverage, test quality, integration, regression risk.
+          No blockers found in the submitted snapshot.
+        created_at: 2026-03-30T13:31:08.597Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@local
+    role: reviewer
+    created_at: 2026-03-30T13:31:23.937Z
+created_at: 2026-03-30T13:23:23.127Z
+updated_at: 2026-03-30T13:31:23.937Z
+notes: []

@@ -1,0 +1,142 @@
+_ulid: 01KNDYPZATTW367TYPAJFZVX5M
+slugs: []
+title: "Plan review: Configurable Daemon Runtime (round 3 — AC quality)"
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: ac-default-bun simplified to 'By default the daemon spawns using bun' — no implementation
+      detail. ac-http-parity and ac-websocket-parity now say 'any configured runtime' — fully
+      generic. ac-auto-start-runtime trimmed cleanly.
+    name: "AC quality: runtime-generic language"
+    required: true
+    created_at: 2026-04-05T04:34:35.121Z
+    completed_at: 2026-04-05T04:34:35.121Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "AC removed from spec. No orphaned references in any task Covers: line. Description
+      sentence about compiled JS also removed."
+    name: ac-compiled-output removal
+    required: true
+    created_at: 2026-04-05T04:34:40.645Z
+    completed_at: 2026-04-05T04:34:40.645Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 11 remaining ACs claimed by at least one task. No orphan ACs, no references to
+      removed/renamed IDs (ac-compiled-output, ac-node-http, ac-node-websocket).
+    name: AC coverage mapping
+    required: true
+    created_at: 2026-04-05T04:34:46.335Z
+    completed_at: 2026-04-05T04:34:46.335Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All task Covers: lines use current AC names. task-daemon-compile-js covers
+      ac-runtime-selection. task-daemon-runtime-config covers ac-runtime-selection, ac-default-bun.
+      task-elysia-node-adapter covers ac-http-parity, ac-graceful-shutdown.
+      task-ws-connection-state-abstraction covers ac-connection-state, ac-websocket-parity.
+      task-daemon-spawn-runtime covers ac-runtime-selection, ac-default-bun, ac-auto-start-runtime,
+      ac-runtime-missing. task-ws-degradation-node covers ac-heartbeat-degradation,
+      ac-backpressure-degradation, ac-websocket-parity. task-health-runtime-field covers
+      ac-runtime-health. task-e2e-runtime-aware covers ac-http-parity, ac-websocket-parity."
+    name: Task AC reference consistency
+    required: true
+    created_at: 2026-04-05T04:34:51.862Z
+    completed_at: 2026-04-05T04:34:51.862Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Description is behavioral: mentions runtime selection, configuration, default, adapter,
+      graceful degradation. No file paths, function names, or tech-specific terms beyond necessary
+      domain language (bun, runtime)."
+    name: Spec description quality
+    required: true
+    created_at: 2026-04-05T04:34:57.543Z
+    completed_at: 2026-04-05T04:34:57.543Z
+events:
+  - _ulid: 01KNDYPZASWD8PCDZZ9S2H9994
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-05T04:34:12.953Z
+  - _ulid: 01KNDYQNZYX6S7VK81JJGKW55C
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: "AC quality: runtime-generic language"
+    timestamp: 2026-04-05T04:34:36.158Z
+  - _ulid: 01KNDYQVCJYTX04635BED0Z9D1
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-compiled-output removal
+    timestamp: 2026-04-05T04:34:41.682Z
+  - _ulid: 01KNDYR0XB697TF8J2CEKZV9XE
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage mapping
+    timestamp: 2026-04-05T04:34:47.340Z
+  - _ulid: 01KNDYR6AGXMRNWFCSJZAFD0TB
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Task AC reference consistency
+    timestamp: 2026-04-05T04:34:52.880Z
+  - _ulid: 01KNDYRBW1SBJPZWTCY6X1XD0D
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec description quality
+    timestamp: 2026-04-05T04:34:58.561Z
+  - _ulid: 01KNDYRKND40AXCFTKWCVKME21
+    actor: "@claude"
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-05T04:35:06.541Z
+  - _ulid: 01KNDYRKNDVC2RNKR9C99PXTN7
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: closed
+    timestamp: 2026-04-05T04:35:06.542Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-configurable-daemon-runtime"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: "@claude"
+    role: reviewer
+    created_at: 2026-04-05T04:35:06.541Z
+created_at: 2026-04-05T04:34:12.954Z
+updated_at: 2026-04-05T04:35:06.541Z
+notes: []

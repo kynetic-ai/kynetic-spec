@@ -1,0 +1,172 @@
+_ulid: 01KPQ80K24RHKWPDK43N7AA0A3
+slugs: []
+title: Review task-docs-section-scaffolding (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repository-wide validation currently fails in this snapshot with pre-existing
+      schema/completeness issues (for example .kspec/modules/meta.yaml trait schema error and many
+      unrelated AC annotation warnings), so validate cannot be used as a passing gate for this task.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-21T05:26:56.649Z
+    completed_at: 2026-04-21T05:26:56.649Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran the full suite in this snapshot; task-specific tests passed, including
+      tests/web-ui-docs-rendering.test.ts. A second concurrent npm test invocation produced
+      test-runner interference in the shared workspace, but isolated rerun of
+      tests/test-runner.test.ts passes, so no task regression was confirmed.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-21T05:28:50.828Z
+    completed_at: 2026-04-21T05:28:50.828Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: docs/getting-started/index.md, docs/guides/index.md, docs/concepts/index.md,
+      docs/troubleshooting/index.md, docs/release-notes/index.md,
+      packages/web-ui/src/lib/utils/docs-utils.ts, packages/web-ui/src/routes/docs/+page.svelte,
+      packages/web-ui/vite-plugin-docs.ts, packages/web-ui/vite.config.ts,
+      tests/web-ui-docs-rendering.test.ts. Commands run: kspec task get @01KPPN42NCR77J23TWYP63VXDH,
+      kspec item get @docs-section-taxonomy, git diff/stat against base, grep/rg for AC coverage,
+      kspec review get prior review, kspec validate, npm test, npm test --
+      tests/test-runner.test.ts. Claims verified: prior blocker fixes for slug normalization and
+      moved tutorial links are present in code and tests; docs landing-page content still lacks
+      required child-page lists in four section indexes. Categories searched: correctness, AC
+      coverage, edge cases around index slug normalization, integration in docs manifest/router, and
+      test quality."
+    name: review evidence
+    required: false
+    created_at: 2026-04-21T05:28:55.947Z
+    completed_at: 2026-04-21T05:28:55.947Z
+events:
+  - _ulid: 01KPQ80K23BH0YTTT4MV1Y3XWN
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-21T05:25:36.964Z
+  - _ulid: 01KPQ81Q2XTK0WJ20A9H82FGDJ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-21T05:26:13.853Z
+  - _ulid: 01KPQ82XK0RE5F937VZHG81WH2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPQ82VRRVW6YDTFSP5VF5P76
+    timestamp: 2026-04-21T05:26:53.281Z
+  - _ulid: 01KPQ832N26CS6KXESRMQBSGA5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-21T05:26:58.466Z
+  - _ulid: 01KPQ86J2W2QCTH95NKEH3DF73
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-21T05:28:52.572Z
+  - _ulid: 01KPQ86Q6M9GAG2RRE7E8CH39Z
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence
+    timestamp: 2026-04-21T05:28:57.812Z
+  - _ulid: 01KPQ86WBB2QG30X9QW83RZE0S
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-21T05:29:03.083Z
+  - _ulid: 01KPQ86WBBPE30SJN68EZEYPNG
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-21T05:29:03.083Z
+  - _ulid: 01KPQ9GWNB33YGRSRWS2CG6FDN
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPQ82VRRVW6YDTFSP5VF5P76
+    timestamp: 2026-04-21T05:51:59.659Z
+  - _ulid: 01KPQ9H4X0HFF8EB1PDF02E8G3
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPQ82VRRVW6YDTFSP5VF5P76
+    timestamp: 2026-04-21T05:52:08.096Z
+examined_commit: d5a234bdd2f3544b229648b31e8c65da0d474ca1
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KPPN42NCR77J23TWYP63VXDH"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPQ82VRRVW6YDTFSP5VF5P76
+    anchor:
+      type: code
+      commit: d5a234bdd2f3544b229648b31e8c65da0d474ca1
+      line_end: 5
+      line_start: 1
+      path: docs/guides/index.md
+      side: head
+    entries:
+      - _ulid: 01KPQ82VRRQ5B5TXHQMY7DKKJH
+        author: Jacob Chapel
+        body: The new section landing pages for Guides, Concepts, Troubleshooting, and Release Notes do not
+          list any child pages; each file stops after the purpose paragraph with italic placeholder
+          copy instead of a stub list. The task description requires every new section index to
+          state its purpose and list its child pages, so readers opening these landing pages still
+          have no navigable child-page inventory and the current AC test misses that because it only
+          asserts that rendered HTML contains a paragraph. Please add an explicit stub child-page
+          list for each section and strengthen the test to verify those links exist.
+        created_at: 2026-04-21T05:26:51.416Z
+      - _ulid: 01KPQ9GVPC0JCRCW130E5KN48N
+        author: "@claude"
+        body: "Fixed: Replaced italic placeholder text in Guides, Concepts, Troubleshooting, and Release
+          Notes landing pages with explicit stub child-page lists. Each list entry links to a
+          planned child page (derived from the plan's spec descriptions) with a brief description.
+          Also strengthened the AC test to verify that every section landing page contains at least
+          one markdown link to a child page, and added dedicated per-section tests for Guides,
+          Concepts, Troubleshooting, and Release Notes."
+        created_at: 2026-04-21T05:51:58.668Z
+    kind: blocker
+    resolved_at: 2026-04-21T05:52:07.072Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-21T05:29:03.083Z
+created_at: 2026-04-21T05:25:36.964Z
+updated_at: 2026-04-21T05:52:07.072Z
+notes: []

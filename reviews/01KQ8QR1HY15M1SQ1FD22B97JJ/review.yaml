@@ -1,0 +1,192 @@
+_ulid: 01KQ8QR1HY15M1SQ1FD22B97JJ
+slugs: []
+title: "Plan re-review: Default Session Reflection Reliability"
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified prior blockers from @01KQ8QA3: plan now extends owning specs instead of
+      @agent-definitions, rewrites upgrade/default prompt ACs as single behavioral outcomes, removes
+      existing-hook migration/normalization, and keeps validation/doctor work out of scope via
+      @01KQ8PRY."
+    name: Prior blocker resolution
+    required: true
+    runner: manual-review
+    created_at: 2026-04-28T00:28:04.788Z
+    completed_at: 2026-04-28T00:28:04.788Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read @multi-turn-session-lifecycle, @default-project-agents-and-conventions,
+      @default-session-reflection-hook, @single-command-version-upgrade, and @agent-definitions.
+      Proposed ACs sit under the owning specs and do not duplicate @agent-definitions or conflict
+      with existing ACs.
+    name: Spec hierarchy and overlap
+    required: true
+    runner: manual-review
+    created_at: 2026-04-28T00:28:16.265Z
+    completed_at: 2026-04-28T00:28:16.265Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Proposed ACs are atomic and observable enough for derivation: prompt accepted before
+      auto-close, default-agent reflection prompt accepted before auto-close, and upgrade-created
+      hook excludes later idle events from the scaffolded action."
+    name: AC quality
+    required: true
+    runner: manual-review
+    created_at: 2026-04-28T00:28:28.825Z
+    completed_at: 2026-04-28T00:28:28.825Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Manual task includes what/why/how, concrete files (invocation.ts, setup-defaults.ts,
+      upgrade.ts), explicit preservation rules, testing plan, and Covers lines for all
+      proposed/existing ACs. Scope is tight: default idle grace, fresh setup default-agent
+      promptability, and newly upgrade-created hook first-idle filter only."
+    name: Task standalone executability and scope
+    required: true
+    runner: manual-review
+    created_at: 2026-04-28T00:28:38.899Z
+    completed_at: 2026-04-28T00:28:38.899Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Testing plan requires behavioral runtime hook execution, setup metadata/output checks,
+      upgrade-created hook metadata behavior, removed-hook and existing-hook preservation, and
+      explicitly rejects source-scanning tests.
+    name: Testing approach
+    required: true
+    runner: manual-review
+    created_at: 2026-04-28T00:28:50.138Z
+    completed_at: 2026-04-28T00:28:50.138Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Resolved all referenced specs and inbox item @01KQ8PRY. kspec plan import
+      plans/default-session-reflection-reliability.md --dry-run succeeded. Existing tests confirm
+      derive_from_specs:false still creates manual tasks on plan derive.
+    name: Reference and plan parsing
+    required: true
+    runner: kspec-cli
+    created_at: 2026-04-28T00:29:00.567Z
+    completed_at: 2026-04-28T00:29:00.567Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran kspec validate. It fails on pre-existing repository health issues unrelated to this
+      draft plan: meta.yaml trait schema error, missing @task-state-transitions dependency,
+      deprecated refs, orphan/spec alignment warnings, and historical coverage warnings."
+    name: kspec validate baseline
+    required: false
+    runner: kspec-cli
+    created_at: 2026-04-28T00:29:13.118Z
+    completed_at: 2026-04-28T00:29:13.118Z
+events:
+  - _ulid: 01KQ8QR1HTN76715J5PC6VYTJW
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-28T00:27:39.450Z
+  - _ulid: 01KQ8QRD9T5D26F6TC96BMENRX
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-28T00:27:51.482Z
+  - _ulid: 01KQ8QRVF8VKNKFYACZ2GQZT8H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Prior blocker resolution
+    timestamp: 2026-04-28T00:28:05.992Z
+  - _ulid: 01KQ8QS6MCDWJD7D5T36SS636B
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec hierarchy and overlap
+    timestamp: 2026-04-28T00:28:17.420Z
+  - _ulid: 01KQ8QSJW7DJPS899ANDP0DBPM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC quality
+    timestamp: 2026-04-28T00:28:29.959Z
+  - _ulid: 01KQ8QSWW9CE2SYJC3RB5RBN15
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Task standalone executability and scope
+    timestamp: 2026-04-28T00:28:40.202Z
+  - _ulid: 01KQ8QT7WM0KBGJE241TVWTQR5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Testing approach
+    timestamp: 2026-04-28T00:28:51.476Z
+  - _ulid: 01KQ8QTJMKW9WRWPVVF4J18XJS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Reference and plan parsing
+    timestamp: 2026-04-28T00:29:02.483Z
+  - _ulid: 01KQ8QTYCDNC5N4YH7MHMGKYCC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate baseline
+    timestamp: 2026-04-28T00:29:14.509Z
+  - _ulid: 01KQ8QVEMCH2DNJQB5K7T6HFSF
+    actor: Codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-28T00:29:31.148Z
+  - _ulid: 01KQ8QVEMC8QG359ZG0Z52VRGN
+    actor: Codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-28T00:29:31.148Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-default-session-reflection-reliability"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: Codex
+    role: reviewer
+    created_at: 2026-04-28T00:29:31.143Z
+created_at: 2026-04-28T00:27:39.454Z
+updated_at: 2026-04-28T00:29:31.148Z
+notes: []

@@ -1,0 +1,188 @@
+_ulid: 01KM0KGW2MVN4FYG16VCTGP89K
+slugs: []
+title: Review task-daemon-api
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "6372 tests passed, 2 failed (both pre-existing: cli-serve foreground exit code flake,
+      review-cli examined_commit — neither test file was modified in this commit). 3 skipped. All 19
+      automation route tests passed."
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T14:02:57.261Z
+    completed_at: 2026-03-18T14:02:57.261Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Pre-existing reference errors and completeness warnings only. No new validation issues
+      introduced by this change.
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-18T14:03:05.293Z
+    completed_at: 2026-03-18T14:03:05.293Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 6 own ACs (@automation-api ac-1 through ac-6) have annotated tests. Trait ACs:
+      @trait-api-endpoint ac-1,2,3,4 tested; ac-5,6 N/A with valid justification.
+      @trait-localhost-security ac-1,2,3 N/A (server-level middleware). @trait-json-output ac-1-6
+      N/A (CLI-specific trait). One blocker: timeout_remaining_ms calculation is incorrect in ac-5
+      endpoint."
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-18T14:03:14.793Z
+    completed_at: 2026-03-18T14:03:14.793Z
+events:
+  - _ulid: 01KM0KGW2MPWAQ32Z598RRKE7A
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T13:52:49.236Z
+  - _ulid: 01KM0KH3KN6BKWH1AYGPNY39CP
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T13:52:56.949Z
+  - _ulid: 01KM0M2F0MPKEK18ABAEPVGHDH
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM0M2ETMD25AH19CAZSJYRYS
+    timestamp: 2026-03-18T14:02:25.685Z
+  - _ulid: 01KM0M2S9MH1V2W723YR9DM5J0
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KM0M2S4Y9C9H7E89HTHHRKHP
+    timestamp: 2026-03-18T14:02:36.212Z
+  - _ulid: 01KM0M340KXJ47ZXDNJEF09TWA
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM0M33VZN8EQ58AW0ZAB4DMF
+    timestamp: 2026-03-18T14:02:47.188Z
+  - _ulid: 01KM0M3E0RPVAW5GX6347WDYPW
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T14:02:57.432Z
+  - _ulid: 01KM0M3NV5R63GX50ZNQDZTD4D
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-18T14:03:05.445Z
+  - _ulid: 01KM0M3Z3QZ7RRXW7EH2VKGRR2
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-18T14:03:14.935Z
+  - _ulid: 01KM0M46BBXS2DN2ZH8KJRXVKA
+    actor: pr-reviewer@kspec.local
+    event_type: verdict_submitted
+    payload:
+      decision: request_changes
+    timestamp: 2026-03-18T14:03:22.348Z
+  - _ulid: 01KM0M46BCZJBFJTH55PBDMKFP
+    actor: pr-reviewer@kspec.local
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T14:03:22.348Z
+examined_commit: 1fb3398c8601e4d12109d099515003199b2ea770
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-daemon-api"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM0M2ETMD25AH19CAZSJYRYS
+    anchor:
+      type: code
+      commit: 1fb3398c8601
+      line_end: 380
+      line_start: 377
+      path: packages/daemon/src/routes/automation.ts
+      side: head
+    entries:
+      - _ulid: 01KM0M2ETNYGVPGCZF0W5QKQ77
+        author: "@claude"
+        body: "timeout_remaining_ms calculation is inverted: computes elapsed time (Date.now() -
+          first_run_at) instead of remaining time (timeout_ms - elapsed). The GroupState doesn't
+          carry timeout_ms from the composition config, so the remaining time cannot be computed.
+          Currently returns elapsed time labeled as 'timeout_remaining_ms'. Impact: clients using
+          this field get wrong values — they'd see timeout_remaining growing over time instead of
+          shrinking."
+        created_at: 2026-03-18T14:02:25.493Z
+    kind: blocker
+  - _ulid: 01KM0M2S4Y9C9H7E89HTHHRKHP
+    anchor:
+      type: code
+      commit: 1fb3398c8601
+      line_end: 158
+      line_start: 151
+      path: packages/daemon/src/routes/automation.ts
+      side: head
+    entries:
+      - _ulid: 01KM0M2S4Z9Q2HATW5X9AKHFJV
+        author: "@claude"
+        body: AC-3 specifies 4 trigger outcomes (accepted, buffered, queued, skipped) but only 3 are
+          implemented. The 'queued' outcome (agent concurrency limit reached) is missing from the
+          type union and logic. The schedule engine's triggerSchedule doesn't surface agent
+          concurrency, so this may require upstream work. At minimum, add 'queued' to the outcome
+          type and map any future concurrency-rejected results, or document in code comments that
+          'queued' is deferred pending agent concurrency tracking.
+        created_at: 2026-03-18T14:02:36.063Z
+    kind: question
+  - _ulid: 01KM0M33VZN8EQ58AW0ZAB4DMF
+    anchor:
+      type: code
+      commit: 1fb3398c8601
+      line_end: 28
+      line_start: 22
+      path: packages/daemon/src/routes/automation.ts
+      side: head
+    entries:
+      - _ulid: 01KM0M33VZNB728PA9B2ZVHWRB
+        author: "@claude"
+        body: "AutomationRouteOptions accepts pubsub?: PubSubManager but it's never used in any route
+          handler — dead code. The PubSubManager import is also unused. The task notes claim
+          coverage of @automation-event-stream ac-1, ac-2 but no WebSocket automation topic
+          streaming was implemented. Recommend: either remove the unused pubsub option and correct
+          the task notes, or implement the automation topic broadcasting."
+        created_at: 2026-03-18T14:02:47.039Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer@kspec.local
+    role: reviewer
+    created_at: 2026-03-18T14:03:22.210Z
+created_at: 2026-03-18T13:52:49.236Z
+updated_at: 2026-03-18T14:03:22.210Z
+notes: []

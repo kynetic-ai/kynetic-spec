@@ -1,0 +1,283 @@
+_ulid: 01KR4P17GH2KJZ91V1YDJF0QJD
+slugs: []
+title: Review fix guardrail daemon command classification (cycle 4)
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run lint: exits 1 with known baseline 13 errors and 724 warnings; no changed-file
+      lint errors observed in task files."
+    name: lint
+    required: false
+    runner: oxlint
+    created_at: 2026-05-08T20:58:49.678Z
+    completed_at: 2026-05-08T20:58:49.678Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts: 19 suites passed, 95 tests passed"
+    name: targeted lint guardrail tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-08T20:58:54.820Z
+    completed_at: 2026-05-08T20:58:54.820Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate: schema/references OK but exits 6 due existing repository warnings
+      (deprecated references, alignment warnings, missing AC coverage, invalid annotations)."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-08T20:59:00.040Z
+    completed_at: 2026-05-08T20:59:00.040Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Synthetic test with spawn('cat', ['dist/daemon/index.js']) and execFile('grep',
+      ['dist/daemon/index.js', 'src/']) exited 1 with two no-leaky-test-daemon directDaemonSpawn
+      diagnostics; these commands consume the path as data and do not launch the daemon.
+    name: custom unrelated argv daemon-path probe
+    required: true
+    runner: oxlint
+    created_at: 2026-05-08T20:59:05.977Z
+    completed_at: 2026-05-08T20:59:05.977Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh: 2410 suites passed; 8836 tests passed, 5 skipped; duration 2360.7s;
+      log /tmp/kspec-test-cache/01KR4NZM3WY8SSX4TEM3TF4H98/ad7ebee70f9c9ee3.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-05-08T21:09:19.241Z
+    completed_at: 2026-05-08T21:09:19.241Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "git diff --check
+      67c242fc1cc087bb75bb1a945c9078ecfac65a39...e23ece2eed929bad1e38d89cf824049e8aecf90b: no
+      whitespace errors"
+    name: diff whitespace
+    required: false
+    runner: git
+    created_at: 2026-05-08T21:09:23.101Z
+    completed_at: 2026-05-08T21:09:23.101Z
+events:
+  - _ulid: 01KR4P17GHQ3MYDGXPGENHCDS0
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-08T20:56:27.409Z
+  - _ulid: 01KR4P1WMMXSW8A6RA9CEVJVRJ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-08T20:56:49.044Z
+  - _ulid: 01KR4P5KVK5H48WP7Y48EKKY02
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: lint
+    timestamp: 2026-05-08T20:58:51.124Z
+  - _ulid: 01KR4P5SE8GNQD80KS02XJ9AK1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted lint guardrail tests
+    timestamp: 2026-05-08T20:58:56.841Z
+  - _ulid: 01KR4P5Y12YPJQ94HKVV8QAPG5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-05-08T20:59:01.539Z
+  - _ulid: 01KR4P63Z605498X6A95B8B0GZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: custom unrelated argv daemon-path probe
+    timestamp: 2026-05-08T20:59:07.623Z
+  - _ulid: 01KR4P6KGSBTN7YPXEK9P550T0
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR4P6HY5S1EVX53W9575F4E6
+    timestamp: 2026-05-08T20:59:23.546Z
+  - _ulid: 01KR4PRTJJYCQ6C7XM9B0CXG0Z
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-08T21:09:20.594Z
+  - _ulid: 01KR4PRY893B8W0XF9C8XXDS4V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff whitespace
+    timestamp: 2026-05-08T21:09:24.361Z
+  - _ulid: 01KR4PS20PP5ZVDDEJPF8W8WBP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KR4PS0RSCAB41AHSC5MVA15V
+    timestamp: 2026-05-08T21:09:28.214Z
+  - _ulid: 01KR4PSBDRS0BBFVDJ6XK5T343
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-08T21:09:37.848Z
+  - _ulid: 01KR4PSBDRKC22WBEWMZ8EX18F
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-08T21:09:37.848Z
+  - _ulid: 01KR4RQXY8K7QCVBZJCPETYDA4
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR4P6HY5S1EVX53W9575F4E6
+    timestamp: 2026-05-08T21:43:48.424Z
+  - _ulid: 01KR4RR924T0P5G2QYMXV7JKYA
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR4P6HY5S1EVX53W9575F4E6
+    timestamp: 2026-05-08T21:43:59.812Z
+examined_commit: e23ece2eed929bad1e38d89cf824049e8aecf90b
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR3W7PPVDFR8F03VQ6J54M3K"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR4P6HY5S1EVX53W9575F4E6
+    anchor:
+      type: code
+      commit: e23ece2eed929bad1e38d89cf824049e8aecf90b
+      line_end: 603
+      line_start: 596
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KR4P6HY69KWZYGE3BTT5SXYT
+        author: Jacob Chapel
+        body: "MUST-FIX: the spawn-like direct-entry detector still treats any executable with a
+          daemon-entry argv element as a daemon launch. In this block, after args[0] is not the
+          daemon entry, the code only checks arrayArgContainsDaemonEntry(args[1]) and returns a
+          directDaemonSpawn descriptor without verifying that args[0] is a JS runtime capable of
+          executing the script. I confirmed with an oxlint probe that spawn('cat',
+          ['dist/daemon/index.js']) and execFile('grep', ['dist/daemon/index.js', 'src/']) both emit
+          no-leaky-test-daemon direct-daemon diagnostics even though those subprocesses only consume
+          the path as data and do not start kspec's daemon. That violates
+          @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported and the task
+          requirement to avoid matching unrelated executables. Restrict the argv daemon-entry form
+          to actual runtime executables (for example node/bun/path-ending-in-node-or-bun, consistent
+          with the exec/execSync shell-token logic) and add behavioral regressions for unrelated
+          spawn/execFile argv cases."
+        created_at: 2026-05-08T20:59:21.926Z
+      - _ulid: 01KR4RQWM9J77XF238DN4M70A2
+        author: "@claude"
+        body: >-
+          Fixed: tightened the spawn-like detector in readDaemonEntryInvocation to require args[0]
+          to be a recognised JS runtime before treating an argv-element daemon entry as a daemon
+          launch. New helper isRecognisedRuntimeArg wraps isRecognisedShellRuntimeToken (the same
+          predicate the exec/execSync branch already uses) so 'node' / 'bun' (bare or path-suffixed)
+          match while substring confusables ('nodemon', 'bunyan') and unrelated executables ('cat',
+          'grep', 'docker') do not. The direct-executable form (args[0] IS the daemon entry, e.g.
+          spawn(DAEMON_ENTRY, [...])) is unchanged — that path still fires regardless of args[0]
+          shape because a shebang'd entry IS the runtime.
+
+
+          Behavioral regressions added in tests/lint-daemon-test-guardrails.test.ts under the
+          unrelated-subprocesses-not-reported describe:
+
+          - spawn('cat', [DAEMON_ENTRY]) — must NOT be flagged (reviewer probe)
+
+          - execFile('grep', ['dist/daemon/index.js', 'src/']) — must NOT be flagged (reviewer
+          probe)
+
+          - spawnSync('nodemon', [DAEMON_ENTRY, '--watch', 'src']) — substring-of-runtime guard
+
+          - execFileSync('docker', ['run', 'image', 'dist/daemon/index.js']) — non-runtime
+          executable
+
+          - execFile('/usr/bin/node', [DAEMON_ENTRY, ...]) — positive regression: path-suffixed
+          runtime still flagged
+
+
+          Verification:
+
+          - Targeted suite: 100 tests pass (95 prior + 5 new).
+
+          - Full suite: 8850 passed, 5 skipped, 0 failed.
+
+          - Project lint: 13 errors, 721 warnings — same dev baseline.
+
+          - Reviewer's exact probe (spawn('cat', [...]) + execFile('grep', [...])) exits 0 with 0
+          diagnostics.
+        created_at: 2026-05-08T21:43:47.081Z
+    kind: blocker
+    resolved_at: 2026-05-08T21:43:58.516Z
+    resolved_by: "@claude"
+  - _ulid: 01KR4PS0RSCAB41AHSC5MVA15V
+    entries:
+      - _ulid: 01KR4PS0RTDJSTSMRKYRVWW904
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; task/spec records for @01KR3W7PPVDFR8F03VQ6J54M3K,
+          @daemon-test-guardrail-precision, @daemon-test-harness-guardrails; prior review
+          @01KR4K31VZVTX1RA1RTBA9HFND; git diff for tools/eslint-rules/no-leaky-test-daemon.js and
+          tests/lint-daemon-test-guardrails.test.ts; surrounding code at
+          tools/eslint-rules/no-leaky-test-daemon.js:340-720 and
+          tests/lint-daemon-test-guardrails.test.ts:940-1857. Commands run: git status --short
+          --branch; git diff --stat/name-only/full diff; rg AC/source-scanning search; kspec item
+          get; kspec review get/for-task/add/open; custom oxlint probe for unrelated spawn/execFile
+          daemon-path argv; kspec validate; npm test -- --fresh
+          tests/lint-daemon-test-guardrails.test.ts tests/lint-no-leaky-test-daemon.test.ts; npm run
+          lint; git diff --check; npm test -- --fresh. Claims verified: cycle-3 exec/execSync shell
+          false positive is fixed for echo/cat/grep/nodemon shell strings, but the same
+          unrelated-executable false-positive remains for spawn/execFile argv form. Categories
+          searched: correctness, AC alignment, false positives/edge cases, test quality,
+          source-scanning prohibition, lint/validation/test gates, integration with existing
+          guardrail allowlist."
+        created_at: 2026-05-08T21:09:26.938Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-08T21:09:37.847Z
+created_at: 2026-05-08T20:56:27.409Z
+updated_at: 2026-05-08T21:43:58.516Z
+notes: []

@@ -1,0 +1,212 @@
+_ulid: 01KKZEFMAC9S41E5BNC990MR2C
+slugs: []
+title: Review task-code-diff-viewer (cycle 1)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 5806 tests passed, 6 failed (all failures pre-existing in agent-dispatch-engine.test.ts
+      and review-cli.test.ts — not related to this PR). No test files were modified by this commit.
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T03:07:21.977Z
+    completed_at: 2026-03-18T03:07:21.977Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No errors in any diff viewer component files. 57 pre-existing errors in other files.
+    name: svelte-check
+    required: true
+    runner: svelte-check
+    created_at: 2026-03-18T03:07:30.077Z
+    completed_at: 2026-03-18T03:07:30.077Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Web UI build completed successfully (vite build + adapter-static). Output written to build/.
+    name: vite-build
+    required: true
+    runner: vite
+    created_at: 2026-03-18T03:07:38.499Z
+    completed_at: 2026-03-18T03:07:38.499Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Zero AC test annotations found in test files. All 6 ACs (ac-1 through ac-6) have
+      annotations only in implementation source files, not in test files. No unit or E2E tests exist
+      for any diff viewer component.
+    name: ac-test-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-18T03:07:46.608Z
+    completed_at: 2026-03-18T03:07:46.608Z
+events:
+  - _ulid: 01KKZEFMAC5MDX171QS48BQV17
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T03:05:31.212Z
+  - _ulid: 01KKZEGCS08YK7M8V2ABQBCB3K
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T03:05:56.257Z
+  - _ulid: 01KKZEGY1D978H2KJ5Y6BH5ZH2
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKZEGXR8ZBXDDMTSHQF7CS9B
+    timestamp: 2026-03-18T03:06:13.933Z
+  - _ulid: 01KKZEHFQ2TGRCAT29K531PY25
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKZEHFF5RFD7CNBWYTKDSMF2
+    timestamp: 2026-03-18T03:06:32.035Z
+  - _ulid: 01KKZEJANER55B3KYFRQACC31X
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKZEJAE4R0JNNMH80B4HZM2T
+    timestamp: 2026-03-18T03:06:59.630Z
+  - _ulid: 01KKZEJNRVQGQHVNFAJN5NK3Y0
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KKZEJNKBWKB1EH8XMN6T5H31
+    timestamp: 2026-03-18T03:07:11.003Z
+  - _ulid: 01KKZEK0KXVC7ENYJ99C7TV4FH
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T03:07:22.109Z
+  - _ulid: 01KKZEK8GWWQK23EHV5YFH59E4
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: svelte-check
+    timestamp: 2026-03-18T03:07:30.204Z
+  - _ulid: 01KKZEKGQZ0450EMWP7NMVYZ4Z
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vite-build
+    timestamp: 2026-03-18T03:07:38.623Z
+  - _ulid: 01KKZEKRN9Y9WVTSF7NKS7T002
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: ac-test-coverage
+    timestamp: 2026-03-18T03:07:46.729Z
+  - _ulid: 01KKZEM0V5RHGZ0WD3PKCCX7DH
+    actor: pr-reviewer@kspec
+    event_type: verdict_submitted
+    payload:
+      decision: request_changes
+    timestamp: 2026-03-18T03:07:55.109Z
+  - _ulid: 01KKZEM0V5Y212E9PTQBM6NFHP
+    actor: pr-reviewer@kspec
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T03:07:55.109Z
+examined_commit: c78549495ec28d101a3f21193f7e53105b09f3b2
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-code-diff-viewer"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KKZEGXR8ZBXDDMTSHQF7CS9B
+    entries:
+      - _ulid: 01KKZEGXR98ZBEDF94VKW64AEX
+        author: "@claude"
+        body: No test coverage for any acceptance criteria (ac-1 through ac-6). All AC annotations are in
+          implementation source files, not in test files. The review-gates require every AC to have
+          at least one annotated test that proves the behavior. Zero tests exist for any of the 6
+          new diff viewer components (CodeDiffViewer, DiffFileList, DiffFileView, DiffHunkView,
+          DiffInlineThread, DiffCommentForm) or for the 3 new API functions (fetchDiff,
+          fetchFileDiff, fetchDiffContext). Tests must prove AC behavior, not just annotate
+          implementation code.
+        created_at: 2026-03-18T03:06:13.641Z
+    kind: blocker
+  - _ulid: 01KKZEHFF5RFD7CNBWYTKDSMF2
+    anchor:
+      type: code
+      commit: c78549495ec2
+      line_end: 11
+      line_start: 11
+      path: packages/web-ui/src/lib/components/diff/DiffFileView.svelte
+      side: head
+    entries:
+      - _ulid: 01KKZEHFF6KGCQDJ18AB44VRZ5
+        author: "@claude"
+        body: "Unused import: normalizeLanguage is imported but never used. The component defines its own
+          detectLanguage function instead."
+        created_at: 2026-03-18T03:06:31.782Z
+    kind: nit
+  - _ulid: 01KKZEJAE4R0JNNMH80B4HZM2T
+    anchor:
+      type: code
+      commit: c78549495ec2
+      line_end: 30
+      line_start: 30
+      path: packages/web-ui/src/lib/components/diff/DiffHunkView.svelte
+      side: head
+    entries:
+      - _ulid: 01KKZEJAE4TYEKR99X7YA2QRQT
+        author: "@claude"
+        body: "Unused prop: expandedContextLines is declared in the Props interface but never referenced
+          anywhere in the component template or script. Dead code."
+        created_at: 2026-03-18T03:06:59.396Z
+    kind: nit
+  - _ulid: 01KKZEJNKBWKB1EH8XMN6T5H31
+    anchor:
+      type: code
+      commit: c78549495ec2
+      line_end: 138
+      line_start: 138
+      path: packages/web-ui/src/lib/components/diff/DiffFileView.svelte
+      side: head
+    entries:
+      - _ulid: 01KKZEJNKBJ1KG4BEN2TNB7JMA
+        author: "@claude"
+        body: "ac-3 partial gap: totalFileLines prop is declared as optional in DiffHunkView but
+          DiffFileView never passes it, so hiddenLinesAfter is always 0. The 'Show N more lines
+          below' button at the end of the last hunk will never appear. Context expansion between
+          hunks and above the first hunk works correctly, but bottom-of-file expansion is dead."
+        created_at: 2026-03-18T03:07:10.827Z
+    kind: question
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer@kspec
+    role: reviewer
+    created_at: 2026-03-18T03:07:54.985Z
+created_at: 2026-03-18T03:05:31.212Z
+updated_at: 2026-03-18T03:07:54.985Z
+notes: []

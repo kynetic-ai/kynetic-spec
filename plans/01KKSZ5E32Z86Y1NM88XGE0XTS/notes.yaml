@@ -1,0 +1,77 @@
+notes:
+  - _ulid: 01KKT08E8VP442BP35K7JHZMFE
+    content: Rewritten with behavioral ACs, UI spec, manual tasks with detailed descriptions and
+      dependencies
+    author: "@claude"
+    created_at: 2026-03-16T00:20:43.419Z
+  - _ulid: 01KKT0KZQMM4M5Y9E85AGGTZ2Y
+    content: "Addressed review: added action model spec, event payload spec, composition schema, shell
+      injection AC, shadow mutex AC, dedup clarification, hot reload ACs, validate integration task,
+      UI spec migration, overlap/allow clarification"
+    author: "@claude"
+    created_at: 2026-03-16T00:27:01.748Z
+  - _ulid: 01KKT2PY3YHJ0VBBM55YFCZYP8
+    content: "Comprehensive revision addressing all review feedback: event envelope with
+      causation/correlation, session lifecycle events, action run abstraction, structured command
+      form, agent action input contract, schedule runtime semantics, composition correlation, filter
+      language spec, automation API/WebSocket specs, loop prevention, event emit test command"
+    author: "@claude"
+    created_at: 2026-03-16T01:03:35.551Z
+  - _ulid: 01KKTA88AK83WRC53T7V0870VC
+    content: "Final fix pass: identity model (session_id==invocation_id), session event emission task,
+      action run closure on invocation end, active_run_ids[] for allow overlap, richer trigger
+      outcomes (accepted/buffered/queued/skipped), best-effort backfill, UTC default timezone,
+      composition config vs activation distinction, event emit API endpoint, envelope filters, agent
+      refs as errors not warnings, filterable-list + semantic-exit-codes traits, derive_from_specs:
+      false"
+    author: "@claude"
+    created_at: 2026-03-16T03:15:23.091Z
+  - _ulid: 01KKTBRXVB58SJDV95DM0MWDMA
+    content: "Deep review fixes: correlation propagation via KSPEC_CORRELATION_ID for CLI re-entry loop
+      prevention, scoped shadow mutex (per-mutation not per-command), envelope fields always valid
+      in filter validation, AC coverage gaps closed (hook-filter ac-5, automation-api ac-6,
+      composition ac-1/ac-4), misattributed task coverage corrected, command action shadow
+      pre-commit hook safety net noted"
+    author: "@claude"
+    created_at: 2026-03-16T03:41:57.995Z
+  - _ulid: 01KKZPW9W4SYT0SH3A79D933Q4
+    content: |-
+      This plan expands the dispatch engine's event system across lifecycle
+      hooks, cron schedules, and multi-agent composition.
+
+      Architecture: A unified event bus with standard envelope (identity,
+      causation chain, loop prevention) that all sources publish to. A shared
+      action model with action run tracking (works for all action types, not
+      just agent invocations). Hooks and dispatch rules as independent bus
+      subscribers. Schedules as a time-based event source.
+
+      Key contracts added based on review:
+      1. Event envelope with event_id, correlation_id, causation_id for
+         identity, lineage, and loop prevention (max chain depth).
+      2. Session lifecycle events (session.ended, session.idle_timeout,
+         session.cancelled) — distinct from invocation events.
+      3. Action runs as the uniform abstraction for all action executions,
+         not just invocations. Overlap policies key off action runs.
+      4. Structured command form (program + args[], not shell strings) to
+         eliminate injection by construction.
+      5. Agent action input contract with prompt templating, task_binding
+         opt-in, and correlation/group propagation.
+      6. Schedule runtime state is explicitly volatile (daemon lifetime).
+         Backfill is best-effort. tick_time is scheduled wall-clock time.
+      7. Composition correlation semantics: group_id propagation, success-only
+         join counting, timeout from first run, volatile state.
+      8. Hook filter language: exact-match for scalars, contains-all for
+         arrays. Validate warns on unknown fields.
+      9. Automation API and event stream as proper specs with API/WebSocket
+         traits, not just implementation tasks.
+      10. kspec event emit for testing hook configurations.
+
+      Industry patterns: Claude Code hooks (declarative config, handler types),
+      Temporal Schedules (schedule as entity, overlap policies), LangGraph
+      scatter-gather (fan-out/fan-in without DAG), CloudEvents envelope
+      (identity, source, causation).
+
+      Existing task 01KKBD6GBCWTZA2ECFWN62F92F (dispatch trigger expansion)
+      is subsumed and should be cancelled after plan approval.
+    author: "@claude"
+    created_at: 2026-03-18T05:32:15.108Z

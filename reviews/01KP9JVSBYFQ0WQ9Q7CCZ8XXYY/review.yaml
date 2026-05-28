@@ -1,0 +1,282 @@
+_ulid: 01KP9JVSBYFQ0WQ9Q7CCZ8XXYY
+slugs: []
+title: Review single-command version upgrade
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      ✗ Validation failed
+
+      ────────────────────────────────────────
+
+      Files checked: 10
+
+      Items checked: 589
+
+      Tasks checked: 0
+
+      Meta: 12 agents, 11 workflows, 11 conventions
+
+
+      Schema errors: 1
+        ✗ /home/chapel/Projects/kynetic-spec-dispatch/.kspec/modules/meta.yaml:modules[0].traits.0
+          Expected string, received object
+      References: OK
+
+
+      Reference warnings: 1
+        ⚠ @skills
+          Orphaned skill directory 'skills' has no corresponding meta entry
+          in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+      Alignment warnings: 34
+        Orphaned specs (no tasks): 31
+          ○ Test Trait
+          ○ Filterable List Commands
+          ○ Dry Run Preview Mode
+          ... and 28 more
+        Status mismatches: 3
+          ! Task Set Batch Support
+            Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+          ! Default Session Reflection Hook
+            Spec "Default Session Reflection Hook" status is "implemented" but should be "in_progress" based on task progress
+          ! Concurrent Read Command Execution
+            Spec "Concurrent Read Command Execution" status is "implemented" but should be "in_progress" based on task progress
+
+      Alignment stats: 425/589 specs have tasks, 422 aligned
+
+
+      Completeness warnings: 494
+        Missing acceptance criteria: 1
+          ○ @01KJN1WT - Test Trait
+        Missing own AC coverage: 238
+          ! @spec-item - Spec Item
+            Uncovered: ac-item-1, ac-item-2
+          ! @ulid-system - ULID Identifier System
+            Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+          ! @slug-system - Slug Alias System
+            Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+          ... and 235 more
+        Invalid AC annotations: 255
+          ! AC annotation references '@01KJE3T7' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-upgrade-command-01knxyj5-review/tests/agent-detection.test.ts:43
+          ! AC annotation references '@01KJE3T7' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-upgrade-command-01knxyj5-review/tests/agent-detection.test.ts:61
+          ! AC annotation references '@01KJE3T7' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-upgrade-command-01knxyj5-review/tests/agent-detection.test.ts:75
+          ! AC annotation references '@01KJE3T7' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-upgrade-command-01knxyj5-review/tests/agent-detection.test.ts:88
+          ! AC annotation references '@ui-agent-dispatch ac-8' but @ui-agent-dispatch has no acceptance criterion 'ac-8'
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-upgrade-command-01knxyj5-review/tests/agent-dispatch-engine.test.ts:4965
+          ... and 250 more
+      Skills: OK (10 files checked) exits 4 in this snapshot with repo-wide pre-existing
+      schema/reference/completeness issues (for example .kspec/modules/meta.yaml schema error and
+      many unrelated invalid AC annotations); not isolated to upgrade files.
+    name: kspec validate
+    required: false
+    created_at: 2026-04-15T22:16:49.209Z
+    completed_at: 2026-04-15T22:16:49.209Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      > @kynetic-ai/spec@0.12.0 test
+
+      > node scripts/test.cjs returned 7941 passed, 5 failed, 5 skipped. All failures were in
+      tests/cli-agent-commands.test.ts with , matching the known unrelated session-store failure
+      pattern from prior cycles.
+    name: npm test
+    required: false
+    created_at: 2026-04-15T22:16:52.136Z
+    completed_at: 2026-04-15T22:16:52.136Z
+events:
+  - _ulid: 01KP9JVSBX3QTMK6MTAECJYF3Y
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-15T22:05:51.869Z
+  - _ulid: 01KP9JWDYDAKDW3KTNAX3S4295
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-15T22:06:12.941Z
+  - _ulid: 01KP9KFKS48ZTR3EHSDTCET1B0
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KP9KFJRHZTJBXJ2M2J3R0H1T
+    timestamp: 2026-04-15T22:16:41.508Z
+  - _ulid: 01KP9KFPN13998FG1VV4FNGDSA
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP9KFNNMTK0SB3DHJ70QPX0H
+    timestamp: 2026-04-15T22:16:44.450Z
+  - _ulid: 01KP9KFSF0TZ73VZ1SKRJSWA3K
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP9KFRFKZ2ZGWSQJCADZAKP0
+    timestamp: 2026-04-15T22:16:47.329Z
+  - _ulid: 01KP9KFW7HXCNP7QN713PGR00W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-15T22:16:50.161Z
+  - _ulid: 01KP9KFZ930FCN0A2DW4ZW0SKF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-04-15T22:16:53.283Z
+  - _ulid: 01KP9KGD3VJ8V7ZYVMQH4R6WEA
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-15T22:17:07.451Z
+  - _ulid: 01KP9KGD3V5ZM0AYTGZ8B8ATSK
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-15T22:17:07.451Z
+  - _ulid: 01KP9MKH2XM0WTJS5X1GPK256E
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP9KFNNMTK0SB3DHJ70QPX0H
+    timestamp: 2026-04-15T22:36:18.397Z
+  - _ulid: 01KP9MKP37AQ1PZJ0165H32GW6
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP9KFRFKZ2ZGWSQJCADZAKP0
+    timestamp: 2026-04-15T22:36:23.527Z
+  - _ulid: 01KP9MKZ09VX26APX6CGVXDWZ2
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP9KFNNMTK0SB3DHJ70QPX0H
+    timestamp: 2026-04-15T22:36:32.650Z
+  - _ulid: 01KP9MM3S4R3TSP19QSYMX5HAJ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP9KFRFKZ2ZGWSQJCADZAKP0
+    timestamp: 2026-04-15T22:36:37.540Z
+  - _ulid: 01KP9MMD6ZXRGGC7GTXJMSXF91
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP9KFJRHZTJBXJ2M2J3R0H1T
+    timestamp: 2026-04-15T22:36:47.199Z
+examined_commit: d889ee3c76b715e9b8cc3872a9ae790dc86a3540
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNXYJ5JCR99F76N8N7265E0B"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KP9KFJRHZTJBXJ2M2J3R0H1T
+    entries:
+      - _ulid: 01KP9KFJRHAEJF7FEWNSM6ZAYA
+        author: Jacob Chapel
+        body: "Review evidence log:\\nFiles read: src/cli/commands/upgrade.ts, src/cli/index.ts,
+          src/cli/commands/index.ts, tests/upgrade-command.test.ts,
+          src/cli/commands/setup-defaults.ts, tests/helpers/cli.ts.\\nCommands run: kspec task get
+          @01KNXYJ5JCR99F76N8N7265E0B; kspec review get @01KP9EZEE0F0YX3FZQ8BX7V4Q9; kspec validate;
+          grep -Rni AC annotations in tests/upgrade-command.test.ts; npm test (twice, second run
+          cache hit); targeted repros for malformed .agents/skills probe input and
+          custom-module/no-default-module upgrade path.\\nClaims verified: cycle-7 dry-run parity
+          fixes are present in code; current branch still misclassifies malformed skills probe input
+          and skips default-module backfill when only custom modules exist.\\nCategories searched:
+          correctness, edge cases, error handling, test quality, integration."
+        created_at: 2026-04-15T22:16:40.465Z
+    kind: nit
+    resolved_at: 2026-04-15T22:36:46.242Z
+    resolved_by: "@claude"
+  - _ulid: 01KP9KFNNMTK0SB3DHJ70QPX0H
+    anchor:
+      type: code
+      commit: d889ee3c76b715e9b8cc3872a9ae790dc86a3540
+      line_end: 223
+      line_start: 219
+      path: src/cli/commands/upgrade.ts
+      side: head
+    entries:
+      - _ulid: 01KP9KFNNM4DGBKBMMEW83YKP9
+        author: Jacob Chapel
+        body: The version-fallback probe treats any existing path at  as evidence for the 0.8+ skills
+          layout, but the spec only allows inference from recognizable project shapes. In a repro
+          project with an old manifest () and a corrupted  regular file,  reported  and  instead of
+          . That misclassifies malformed state as a known version and skips the oldest-supported
+          fallback path the spec requires for unrecognizable projects.
+        created_at: 2026-04-15T22:16:43.444Z
+      - _ulid: 01KP9MKG4KWR256SBVJ00QJR3J
+        author: "@claude"
+        body: "Fixed: Changed probe 4 from existsSync() to statSync().isDirectory(). A regular file at
+          .agents/skills is no longer treated as evidence for the 0.8+ skills layout. Added a test
+          that places a regular file at .agents/skills and asserts unknown confidence."
+        created_at: 2026-04-15T22:36:17.427Z
+    kind: blocker
+    resolved_at: 2026-04-15T22:36:31.681Z
+    resolved_by: "@claude"
+  - _ulid: 01KP9KFRFKZ2ZGWSQJCADZAKP0
+    anchor:
+      type: code
+      commit: d889ee3c76b715e9b8cc3872a9ae790dc86a3540
+      line_end: 1212
+      line_start: 1204
+      path: src/cli/commands/upgrade.ts
+      side: head
+    entries:
+      - _ulid: 01KP9KFRFKHAD49H69WC584R3A
+        author: Jacob Chapel
+        body: "The default-module scaffold only checks whether *any* module item exists, so legacy projects
+          that already have a custom module but are missing the new default-module scaffold are
+          treated as upgraded. Repro: initialize a project, replace  with only , remove  and , then
+          run . The command reports , leaves  absent, and never writes . That violates the task
+          requirement to backfill the missing default-module scaffold during upgrade."
+        created_at: 2026-04-15T22:16:46.323Z
+      - _ulid: 01KP9MKN4CRRCG8GAD51X54J1K
+        author: "@claude"
+        body: "Fixed: Changed the default-module scaffold check from items.some(type==='module') to
+          existsSync(modules/main.yaml). Projects with only custom modules now correctly get the
+          default module backfilled. Added a test that creates a custom module without the default
+          one and verifies the scaffold runs."
+        created_at: 2026-04-15T22:36:22.540Z
+    kind: blocker
+    resolved_at: 2026-04-15T22:36:36.606Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-15T22:17:07.450Z
+created_at: 2026-04-15T22:05:51.870Z
+updated_at: 2026-04-15T22:36:46.242Z
+notes: []

@@ -1,0 +1,119 @@
+_ulid: 01KRF5XR6NKPCBYWQCRMRCDGDF
+slugs: []
+title: Review task-add-inflight-cleanup-protection-engine-ac
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Schema/references OK. Validation has warnings only; task-specific completeness warning for
+      @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup is expected because this Phase 1
+      task adds the AC and the dependent implementation task
+      @task-include-inflight-spawn-refs-in-cleanup-inputs remains pending.
+    name: kspec validate --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-12T22:58:42.494Z
+    completed_at: 2026-05-12T22:58:42.494Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "2432 test suites passed; 9088 tests passed; 5 skipped. Full log:
+      /tmp/kspec-test-cache/01KRF5WAM14WHS4DZZBWJV81CQ/8a43f767b096f6f0.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-12T22:58:46.489Z
+    completed_at: 2026-05-12T22:58:46.489Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md, @agent-dispatch-engine,
+      @plan-dispatch-workspace-in-flight-cleanup-protection, src/agent-runtime/dispatch.ts,
+      src/agent-runtime/workspace.ts, tests/agent-dispatch-engine.test.ts references. Commands run:
+      kspec task get, kspec item get, kspec validate, kspec validate --warnings-ok, rg AC/call-site
+      searches, npm test. Claims verified: AC added exactly; implementation status remains
+      in_progress; current cleanup calls use _activeTaskRefs only, while inFlightTaskKeys is only
+      used for scheduler protection; downstream implementation task exists. Categories searched:
+      spec alignment, task dependency ordering, correctness, edge cases around pre-active spawn,
+      test quality, integration."
+    name: review evidence log
+    required: false
+    runner: codex-review
+    created_at: 2026-05-12T22:58:50.439Z
+    completed_at: 2026-05-12T22:58:50.439Z
+events:
+  - _ulid: 01KRF5XR6M8WSME18BXAF6T1VN
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-12T22:46:34.965Z
+  - _ulid: 01KRF5YEPBS9QDBDC75E09J4Y0
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-12T22:46:57.996Z
+  - _ulid: 01KRF6M079PSX5Z797R9302GM2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --warnings-ok
+    timestamp: 2026-05-12T22:58:44.073Z
+  - _ulid: 01KRF6M43SWBGKPJCYW1982QE9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-12T22:58:48.057Z
+  - _ulid: 01KRF6M7VPQH57MV66PNY9M1FC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-12T22:58:51.894Z
+  - _ulid: 01KRF6MBQ5CDKEMT0ECNEPWSW6
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-12T22:58:55.845Z
+  - _ulid: 01KRF6MBQ50NVDQQFBWSBKD1TH
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-12T22:58:55.845Z
+examined_commit: 0c6506a55cdb40538275c315cad4c85b131bc7ba
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRF37WZYVQHSE1W8PYMBH5R2"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: automated-reviewer
+    created_at: 2026-05-12T22:58:55.845Z
+created_at: 2026-05-12T22:46:34.965Z
+updated_at: 2026-05-12T22:58:55.845Z
+notes: []

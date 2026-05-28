@@ -1,0 +1,182 @@
+_ulid: 01KKXKZZ92DKC77GXXTSAAQMFK
+slugs: []
+title: Review task-review-api-verdicts (cycle 1)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 5762 passed, 1 failed (pre-existing review-cli.test.ts examined_commit failure — not in
+      this branch's diff, confirmed unchanged). 3 skipped.
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-17T10:18:30.546Z
+    completed_at: 2026-03-17T10:18:30.546Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Own ACs: ac-6 (5 tests), ac-7 (5 tests), ac-8 (7+ tests), ac-9 (code inspection, no test
+      spy), ac-10 (10+ tests). Trait ACs: all 23 trait ACs annotated as N/A with valid
+      justifications (API endpoints vs CLI commands for json-output/error-guidance; middleware-level
+      for localhost-security/websocket-protocol)."
+    name: ac-coverage
+    required: true
+    runner: reviewer
+    created_at: 2026-03-17T10:18:41.602Z
+    completed_at: 2026-03-17T10:18:41.602Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate shows pre-existing issues (3 reference errors, alignment warnings, missing
+      AC coverage on unrelated specs). No new issues introduced by this change.
+    name: kspec-validate
+    required: false
+    runner: reviewer
+    created_at: 2026-03-17T10:18:49.874Z
+    completed_at: 2026-03-17T10:18:49.874Z
+events:
+  - _ulid: 01KKXKZZ92PDP9MB9J9SADY7X8
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-17T10:03:20.738Z
+  - _ulid: 01KKXM081M0CZTWMVBD62E4E9G
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-17T10:03:29.717Z
+  - _ulid: 01KKXMTRMKFZYFG6WX0S7NGJWR
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKXMTRJQHAVWSSJ08KZ12GQ0
+    timestamp: 2026-03-17T10:17:58.676Z
+  - _ulid: 01KKXMV2K8H4H5Z8F25E4MRT35
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKXMV2HBQ185W55B3ZR4FHVJ
+    timestamp: 2026-03-17T10:18:08.872Z
+  - _ulid: 01KKXMVBQB3379X7ZBNB709KCY
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKXMVBNMPVR5FZCSGTTQW0M0
+    timestamp: 2026-03-17T10:18:18.219Z
+  - _ulid: 01KKXMVQTSJD1EJZS3AJB7RVAT
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-17T10:18:30.618Z
+  - _ulid: 01KKXMW2KNV9WHFX9SQ1DD077P
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-17T10:18:41.653Z
+  - _ulid: 01KKXMWAP6HSM3Y075PS96D76T
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-17T10:18:49.926Z
+  - _ulid: 01KKXMXEYHJ8FZDW1C2C2B22NF
+    actor: pr-reviewer@kspec
+    event_type: verdict_submitted
+    payload:
+      decision: request_changes
+    timestamp: 2026-03-17T10:19:27.057Z
+  - _ulid: 01KKXMXEYH98S4ZJQZGWVYTPVR
+    actor: pr-reviewer@kspec
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-17T10:19:27.057Z
+examined_commit: c8a90fd969018e380793aea63d62d3a760d98e3b
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKTW6GRPMVH8M9WVGH9NTJCF"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KKXMTRJQHAVWSSJ08KZ12GQ0
+    anchor:
+      type: code
+      commit: ""
+      line_end: 138
+      line_start: 62
+      path: packages/daemon/src/routes/reviews.ts
+      side: head
+    entries:
+      - _ulid: 01KKXMTRJRKGAR1BYY3P3JD94Y
+        author: "@claude"
+        body: "Verdict and check endpoints do not validate review lifecycle state before mutating.
+          Submitting an 'approve' or 'request_changes' verdict to an archived review triggers
+          transitionLifecycle('closed') which throws (archived has no valid transitions), resulting
+          in an unhandled 500 instead of a clear 400 error. The 'comment' verdict case is more
+          concerning — it silently succeeds and adds a verdict to a terminal-state (archived)
+          review, which violates the semantic invariant that archived reviews are immutable.
+          Similarly, POST /:id/checks would add checks to an archived review. Recommend adding a
+          lifecycle state guard (e.g., reject mutations on archived reviews with 400) before calling
+          submitVerdict or creating checks. File: packages/daemon/src/routes/reviews.ts, lines
+          62-138 (verdicts) and 200-327 (checks)."
+        created_at: 2026-03-17T10:17:58.616Z
+    kind: blocker
+  - _ulid: 01KKXMV2HBQ185W55B3ZR4FHVJ
+    anchor:
+      type: code
+      commit: ""
+      line_end: 52
+      line_start: 47
+      path: packages/daemon/src/routes/reviews.ts
+      side: head
+    entries:
+      - _ulid: 01KKXMV2HB3C1DXAG1N8VGKN4G
+        author: "@claude"
+        body: The VALID_TRANSITIONS map is duplicated between packages/daemon/src/routes/reviews.ts (line
+          47) and src/parser/review-operations.ts (line 222). Both are currently identical, but if
+          either is updated independently, the route-level validation and library-level validation
+          could diverge. Consider importing a shared constant or re-exporting from the parser
+          module. Low risk currently but could cause subtle bugs if transitions are ever modified.
+        created_at: 2026-03-17T10:18:08.811Z
+    kind: nit
+  - _ulid: 01KKXMVBNMPVR5FZCSGTTQW0M0
+    entries:
+      - _ulid: 01KKXMVBNMMCT6YBH55JWYW5N8
+        author: "@claude"
+        body: AC-9 (WebSocket broadcast) is implemented in all three handlers via pubsub.broadcast() calls,
+          but no test verifies that broadcast was actually called. A PubSubManager spy/mock could
+          confirm the broadcast happens with correct topic and data. This follows the existing
+          codebase pattern (no other route tests verify broadcast either), so it is not a regression
+          — but it means AC-9 coverage relies on code inspection rather than test proof.
+        created_at: 2026-03-17T10:18:18.164Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer@kspec
+    role: reviewer
+    created_at: 2026-03-17T10:19:27.006Z
+created_at: 2026-03-17T10:03:20.738Z
+updated_at: 2026-03-17T10:19:27.006Z
+notes: []

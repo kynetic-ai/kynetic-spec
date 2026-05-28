@@ -1,0 +1,120 @@
+_ulid: 01KNAT07N1SH0SYK6WW9NR57AW
+slugs: []
+title: Review task-sync-concurrent-merge-coverage (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with existing repository warning backlog only (exit 6 warnings-only
+      baseline); no new validation blocker surfaced for this task.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-03T23:18:36.312Z
+    completed_at: 2026-04-03T23:18:36.312Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed in review workspace: 2068/2068 suites, 7512 passed, 5 skipped, exit 0. Runner
+      rebuilt missing dist/cli/index.js before executing."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-03T23:18:38.634Z
+    completed_at: 2026-04-03T23:18:38.634Z
+events:
+  - _ulid: 01KNAT07N1RF1DABHZK85DKQ04
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-03T23:14:10.209Z
+  - _ulid: 01KNAT0GX137D93PKWP6CE09EW
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-03T23:14:19.681Z
+  - _ulid: 01KNAT8A2127RWMZV4D25A1CA1
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNAT899AP1A82SX822VKTMV2
+    timestamp: 2026-04-03T23:18:34.817Z
+  - _ulid: 01KNAT8C9N79FKN0GS78JH5N5C
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-03T23:18:37.109Z
+  - _ulid: 01KNAT8EJG23CH9BJ3ZWZ3K3N3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-03T23:18:39.440Z
+  - _ulid: 01KNAT8PH7YXBVKR98B3RNDX7Y
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-03T23:18:47.591Z
+  - _ulid: 01KNAT8PH7C6EFBV3HBWQ5BV5M
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-03T23:18:47.591Z
+examined_commit: d7ab160b702c4fd5cbf0fb39fc75582dc6ed5519
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNAR1KRSAMGVWGV3TF8V0PPE"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNAT899AP1A82SX822VKTMV2
+    entries:
+      - _ulid: 01KNAT899AKF7YEW2RQXQ6YQMB
+        author: Jacob Chapel
+        body: 'Review evidence log: Files read: tests/dispatch-target-sync.test.ts,
+          src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts,
+          src/parser/review-task-integration.ts. Commands run: kspec task get
+          @01KNAR1KRSAMGVWGV3TF8V0PPE; kspec review for-task @01KNAR1KRSAMGVWGV3TF8V0PPE; kspec
+          review get @01KNARRMPY7VCM33C8D6T2GMKR; git diff --stat
+          360e3ebab9f1c9449e242475a8cb20d77e6d55e2..d7ab160b702c4fd5cbf0fb39fc75582dc6ed5519; git
+          diff 360e3ebab9f1c9449e242475a8cb20d77e6d55e2..d7ab160b702c4fd5cbf0fb39fc75582dc6ed5519 --
+          tests/dispatch-target-sync.test.ts; kspec item get @dispatch-remote-branch-sync; kspec
+          validate; rg -n "AC: @dispatch-remote-branch-sync|AC: @trait-error-guidance"
+          tests/dispatch-target-sync.test.ts; npm test -- dispatch-target-sync.test.ts; npm test.
+          Claims verified: the fix-cycle coverage now exercises DispatchEngine._spawnInvocation
+          reviewer flow and verifies request_changes drives the task to needs_work while the stale
+          integration-target push is rejected non-fast-forward; the missing ac-pull-no-merge-commits
+          and trait-error-guidance annotations are present. Categories searched: correctness, edge
+          cases, error handling, test quality, integration; no findings.'
+        created_at: 2026-04-03T23:18:34.026Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-03T23:18:47.590Z
+created_at: 2026-04-03T23:14:10.209Z
+updated_at: 2026-04-03T23:18:47.591Z
+notes: []

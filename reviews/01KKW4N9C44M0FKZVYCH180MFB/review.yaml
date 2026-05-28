@@ -1,0 +1,192 @@
+_ulid: 01KKW4N9C44M0FKZVYCH180MFB
+slugs: []
+title: "Review: Task Activity Timeline Plan (revision 2)"
+author: "@claude"
+checks: []
+events:
+  - _ulid: 01KKW4N9C1DGWYF7G0RXBJBEPW
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-16T20:16:07.553Z
+  - _ulid: 01KKW4NJGXQBYVKBX70B5PRM7J
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-16T20:16:16.926Z
+  - _ulid: 01KKW4Q3FXVKBKZG1RVFE07DJC
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KKW4Q3EV9HJ5ZXVB9R5PEAEJ
+    timestamp: 2026-03-16T20:17:07.069Z
+  - _ulid: 01KKW4Q77T9FJAJRKJ44RS9W3T
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKW4Q774QRRV0K5EVZ8RW7VC
+    timestamp: 2026-03-16T20:17:10.906Z
+  - _ulid: 01KKW4QEBEA062139PACC2TXRX
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKW4QEAEEMD6RJEA9GPZ3JJ3
+    timestamp: 2026-03-16T20:17:18.190Z
+  - _ulid: 01KKW4QHCJ53862G97KKQQN144
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKW4QHBS2Q5W1MQRYWDZXQXV
+    timestamp: 2026-03-16T20:17:21.298Z
+  - _ulid: 01KKW4QY1R1JVFY61XHZ33FA5Q
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKW4QY11FBE7NVPAY0G38VRN
+    timestamp: 2026-03-16T20:17:34.265Z
+  - _ulid: 01KKW4RY5K4QSVGPSWK2Q0HM67
+    actor: "@claude"
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-16T20:18:07.155Z
+  - _ulid: 01KKW4S2KWZJHW84E25KKKED0N
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-16T20:18:11.708Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-task-activity-timeline"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KKW4Q3EV9HJ5ZXVB9R5PEAEJ
+    anchor:
+      type: structured
+      section: Review Lifecycle
+    entries:
+      - _ulid: 01KKW4Q3EVVKYHBS1S9V53ZXJ3
+        author: "@claude"
+        body: "Prior blocker verification: The plan adds spec @review-record-per-cycle-lifecycle with AC
+          describing the per-cycle model. Task @task-rewrite-review-lifecycle-ac3 rewrites the
+          conflicting ac-3 on @review-verdicts-and-resolution-lifecycle. The dependency chain
+          ensures the rewrite happens before per-cycle implementation. However, the new spec's ac-1
+          says \"the review record automatically transitions from open to closed\" on verdict — this
+          auto-close behavior is new and goes beyond the existing spec's scope. Confirm this is
+          intentional new behavior, not just a spec alignment. (It appears intentional based on the
+          task description for @task-auto-close-review-on-verdict which explains the rationale
+          clearly.)"
+        created_at: 2026-03-16T20:17:07.035Z
+    kind: question
+  - _ulid: 01KKW4Q774QRRV0K5EVZ8RW7VC
+    anchor:
+      type: structured
+      ref: "@task-activity-git-query"
+      section: Specs
+    entries:
+      - _ulid: 01KKW4Q77433NBXE3W1ERV122K
+        author: "@claude"
+        body: Spec @task-activity-git-query ac-2 tests filtering by task ref when multiple tasks exist in
+          the same YAML file. The filtering mechanism (git log --grep) operates on commit messages,
+          not file content. If two tasks are modified in the same commit (e.g., via kspec batch),
+          the commit message may reference both tasks and this AC would require that such commits
+          appear in both timelines. This is probably the desired behavior but worth noting — a
+          single commit can appear in multiple task timelines.
+        created_at: 2026-03-16T20:17:10.884Z
+    kind: nit
+  - _ulid: 01KKW4QEAEEMD6RJEA9GPZ3JJ3
+    anchor:
+      type: structured
+      ref: "@task-submission-linkage-dispatch-fallback"
+      section: Tasks
+    entries:
+      - _ulid: 01KKW4QEAEV7J8ZZ3WKN2FYS3K
+        author: "@claude"
+        body: Task @task-submission-linkage-dispatch-fallback says "Add an AC to
+          @portable-task-submission-linkage" but the task slug doesn't match the naming pattern of
+          the other tasks. The slug uses "submission-linkage-dispatch-fallback" while the spec uses
+          "portable-task-submission-linkage". Minor naming inconsistency, no action needed since
+          kspec handles slug-ref mapping.
+        created_at: 2026-03-16T20:17:18.158Z
+    kind: nit
+  - _ulid: 01KKW4QHBS2Q5W1MQRYWDZXQXV
+    anchor:
+      type: structured
+      ref: "@task-review-examined-commit"
+      section: Tasks
+    entries:
+      - _ulid: 01KKW4QHBS5N2Y4KZRPWDRB8NJ
+        author: "@claude"
+        body: Task @task-review-examined-commit mentions "KSPEC_DISPATCH_CANONICAL_HEAD env var" as the
+          source for examined_commit. This env var doesn't appear to be documented in AGENTS.md or
+          existing specs. When implementing, ensure this env var is documented in the dispatch agent
+          conventions or the relevant spec. Not a plan blocker since the task description is clear
+          about what it does.
+        created_at: 2026-03-16T20:17:21.273Z
+    kind: nit
+  - _ulid: 01KKW4QY11FBE7NVPAY0G38VRN
+    anchor:
+      type: structured
+      section: Summary
+    entries:
+      - _ulid: 01KKW4QY12PB6B3XV2M47KH1GV
+        author: "@claude"
+        body: >-
+          Overall assessment of prior review resolution:
+
+
+          1. BLOCKER (spec conflict with ac-3): RESOLVED. Dedicated rewrite task added as
+          prerequisite. No conflicting spec created.
+
+          2. BLOCKER (@shadow-commit-consistency duplication): RESOLVED. Removed standalone spec.
+          Task is now a bug fix against existing @trait-shadow-commit.
+
+          3. QUESTION (submission linkage overlap): RESOLVED. Folded into existing
+          @portable-task-submission-linkage as new AC.
+
+          4. QUESTION (diff summaries scope): RESOLVED. Deferred to
+          @plan-activity-timeline-diff-summaries (exists as stub).
+
+          5. QUESTION (session timeline): RESOLVED. Implementation notes explain the approach.
+
+
+          Plan structure is well-organized:
+
+          - Specs have testable ACs with given/when/then format
+
+          - Tasks have clear why/what/how structure
+
+          - Dependency chains are logical (commit fix → git query → timeline display; rewrite ac-3 →
+          auto-close → new-per-cycle → examined-commit → diff orientation)
+
+          - Documentation tasks depend on the code changes they document
+
+          - No new spec conflicts detected
+        created_at: 2026-03-16T20:17:34.242Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: plan-rev2-1773692286
+    decision: approve
+    reviewer: "@claude"
+    role: reviewer
+    created_at: 2026-03-16T20:18:07.122Z
+created_at: 2026-03-16T20:16:07.556Z
+updated_at: 2026-03-16T20:18:11.681Z
+notes: []

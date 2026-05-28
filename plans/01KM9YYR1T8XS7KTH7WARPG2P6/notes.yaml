@@ -1,0 +1,146 @@
+notes:
+  - _ulid: 01KMA1201PS2647M75FK9P3DFJ
+    content: Fix trait @ prefixes per codex review
+    author: "@claude"
+    created_at: 2026-03-22T05:42:31.734Z
+  - _ulid: 01KMA186J74PDDYV4GGB1Z4F05
+    content: "Address codex review: split compound ACs, add terminal-event timing AC, broaden auto-close
+      wording, tighten interactive/lifecycle boundaries, add queue-depth task coverage, add per-AC
+      supersession table"
+    author: "@claude"
+    created_at: 2026-03-22T05:45:55.015Z
+  - _ulid: 01KMA1ME2YPCAWG6JWV3N2AJPA
+    content: "Final review fixes: split compound ACs, fix cross-references, add interactive spec
+      coverage, resolve lifecycle/interactive overlap, correct task AC mappings"
+    author: "@claude"
+    created_at: 2026-03-22T05:52:35.934Z
+  - _ulid: 01KMA250EXX5HRGRDS2RPRRVPD
+    content: Remove supersession/non-goals language from specs, make descriptions standalone and timeless
+    author: "@claude"
+    created_at: 2026-03-22T06:01:39.037Z
+  - _ulid: 01KMA2SDR84ZJXN27DAF6ZV1W4
+    content: Remove implementation details from ACs — no ACP, JSONL, stopReason, teardown sequence,
+      WebSocket, or cross-spec references in behavioral contracts
+    author: "@claude"
+    created_at: 2026-03-22T06:12:48.008Z
+  - _ulid: 01KMA366AYK5MPM47KDX1V7SPS
+    content: Split ac-1 into ac-1 (state transition) and ac-2 (session stays open), renumber all
+      subsequent ACs and task coverage
+    author: "@claude"
+    created_at: 2026-03-22T06:19:46.398Z
+  - _ulid: 01KMA4T24PV94M0EBW0J4VPTWM
+    content: "Full cleanup pass: remove field names, internal terms, meta commentary from all ACs and
+      descriptions — pure behavioral language throughout"
+    author: "@claude"
+    created_at: 2026-03-22T06:48:06.039Z
+  - _ulid: 01KMA5F64XZJ5ERK5J3TQ92DXY
+    content: "Fix last 3 should-fix items: stop reason → turn completion reason, schema description,
+      update table protocol terms"
+    author: "@claude"
+    created_at: 2026-03-22T06:59:38.269Z
+  - _ulid: 01KMA5NTQMHMX8FSCF97CNDSWD
+    content: Split out interactive session specs and tasks into separate future plan — this plan now
+      covers core multi-turn lifecycle, session idle event, session prompt action, and active
+      session registry only
+    author: "@claude"
+    created_at: 2026-03-22T07:03:15.956Z
+  - _ulid: 01KMA680N2BZ2P255F3DA5CZT3
+    content: "Fix impl notes: ac-5 → ac-7 for idle timeout event reference"
+    author: "@claude"
+    created_at: 2026-03-22T07:13:11.842Z
+  - _ulid: 01KMA6BDAQ4P7TKJ4FMTXY896J
+    content: Soften interactive language in descriptions, clarify duplicate AC coverage between
+      invocation and dispatch tasks
+    author: "@claude"
+    created_at: 2026-03-22T07:15:03.127Z
+  - _ulid: 01KMA6WZN2NF630E56ZHRT6V47
+    content: "Scope UI task to what's achievable: event log rendering + action type badge. Hook editing
+      doesn't exist yet — full editor is separate work."
+    author: "@claude"
+    created_at: 2026-03-22T07:24:38.946Z
+  - _ulid: 01KMA73BSVAHMD2JTZWJW452VZ
+    content: Approved after multiple review rounds (internal, codex, final). ACs are behavioral and
+      atomic. Interactive sessions split to @plan-interactive-agent-sessions. UI scoped to current
+      capabilities. Automation CRUD UI captured as inbox 01KMA704.
+    author: "@claude"
+    created_at: 2026-03-22T07:28:07.995Z
+  - _ulid: 01KMA74FK1JZF96M33DVJSTXEH
+    content: >-
+      ### Grace period design rationale
+
+
+      The grace period (default 5s) bridges backward compatibility with multi-turn capability. It
+      must be long enough for hooks to fire and queue their prompts, but short enough that
+      single-turn dispatch doesn't feel sluggish. The 5s default is conservative — it should be
+      tunable per-agent.
+
+
+      ### Prompt queue ordering
+
+
+      When multiple sources submit prompts to the same session (hooks + user), FIFO ordering ensures
+      deterministic behavior. The queue is internal to the session handle — external callers don't
+      control ordering beyond submission time. This is simpler than priority-based ordering and
+      avoids the question of who outranks whom.
+
+
+      ### Session handle vs ACP client exposure
+
+
+      The session handle pattern exists to keep the action executor decoupled from ACP internals.
+      The executor calls handle.sendPrompt() without knowing about ACP sessions, JSON-RPC, or
+      process management. This enables future adapter changes without touching the action system.
+
+
+      ### Relationship to existing events
+
+
+      session.idle is distinct from all existing events:
+
+      - session.ended: fires after teardown (session is dead)
+
+      - invocation.completed: fires after teardown (invocation is done)
+
+      - session.idle: fires while session is alive (ready for more work)
+
+
+      The existing events continue to fire at their current timing. session.idle adds a new
+      observation point, not a replacement.
+
+
+      ### Existing spec updates (task-update-existing-specs reference)
+
+
+      These updates align existing specs with the multi-turn lifecycle:
+
+
+      | Existing AC | Current wording (summary) | Updated wording (summary) | Reason |
+
+      |---|---|---|---|
+
+      | @agent-invocation-lifecycle ac-4 | "When the agent signals turn complete → session closed
+      with status completed" | "When the agent signals turn complete → session transitions to idle;
+      session is closed when no more prompts arrive (grace period expiry, explicit close, or
+      timeout)" | Turn completion is a turn boundary, not session completion |
+
+      | @agent-invocation-lifecycle ac-8 | "When invocation completes → cleanup runs (env restore,
+      process termination)" | "When session closes (after all turns complete) → cleanup runs (env
+      restore, process termination)" | Cleanup is per-session, not per-turn |
+
+      | @dispatch-event-taxonomy description | Lists session events as: session.ended,
+      session.idle_timeout, session.cancelled | Add session.idle to the enumeration | New event type
+      |
+
+      | @dispatch-action-model description | Lists 4 action types: command, kspec, agent, notify |
+      Add session_prompt as 5th type | New action type |
+
+
+      ### session.idle_timeout already exists
+
+
+      The existing taxonomy already includes session.idle_timeout. This plan's lifecycle spec ac-7
+      emits that event on idle timeout, which is consistent. No payload change is needed — the
+      existing payload contract covers session_id, agent_id, task_ref, duration_ms, and
+      terminal_reason.
+    author: "@claude"
+    created_at: 2026-03-22T07:28:44.641Z

@@ -1,0 +1,342 @@
+_ulid: 01KSEZSCAYY7HHFE619H6KN1TH
+slugs: []
+title: Review task-plan-resource-import-and-derive-1 (cycle 3)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh passed: 2536 suites passed; 9664 tests passed; 5 skipped; full log
+      /tmp/kspec-test-cache/01KSEZQQBDA9TYSV0C3KXR7CX7/6e3e7117131d1380.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-25T07:29:27.721Z
+    completed_at: 2026-05-25T07:29:27.721Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck passed (tsc --noEmit).
+    name: typecheck
+    required: true
+    runner: npm
+    created_at: 2026-05-25T07:29:35.049Z
+    completed_at: 2026-05-25T07:29:35.049Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exited 6 with repository-wide warnings; current spec AC annotations were
+      verified directly with rg and all five @plan-resource-derivation-semantics-1 ACs have test
+      annotations.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-25T07:29:42.468Z
+    completed_at: 2026-05-25T07:29:42.468Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: ./node_modules/.bin/oxlint on the 16 changed/new source and test files exited 0 with 0
+      errors (warnings only, including pre-existing neighboring no-shadow warnings).
+    name: changed-file oxlint
+    required: false
+    runner: oxlint
+    created_at: 2026-05-25T07:29:49.580Z
+    completed_at: 2026-05-25T07:29:49.580Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Temp project: replaced plan resource file with a symlink to an outside file; kspec plan
+      derive --materialize-resources exited 0 and materialized OUTSIDE_SECRET into the derived task
+      resource."
+    name: materialize symlink escape repro
+    required: false
+    runner: cli-repro
+    created_at: 2026-05-25T07:29:56.831Z
+    completed_at: 2026-05-25T07:29:56.831Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Temp project: valid 128-character plan resource id; kspec plan derive
+      --materialize-resources exited 1 after creating @implement-doc, leaving a partial task with
+      plan-owned resource_refs."
+    name: materialize long-id partial repro
+    required: false
+    runner: cli-repro
+    created_at: 2026-05-25T07:30:04.366Z
+    completed_at: 2026-05-25T07:30:04.366Z
+events:
+  - _ulid: 01KSEZSCAYAP00CAFSQASA6BVK
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-25T07:15:02.110Z
+  - _ulid: 01KSEZV5STK231PNFN5C0MJQR3
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-25T07:16:00.954Z
+  - _ulid: 01KSF0JKFV4D569DCYXB53CRBJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSF0JHR72KEYV2ZXH0XP0Z96
+    timestamp: 2026-05-25T07:28:48.635Z
+  - _ulid: 01KSF0JTR478SQ8XNGMWDZA36J
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSF0JRZ0RFTS4ZGSF9J66T2C
+    timestamp: 2026-05-25T07:28:56.068Z
+  - _ulid: 01KSF0K1XEEYDSY8MHGXCEBYN8
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSF0K06HV0EA80Q2TQSH9VYQ
+    timestamp: 2026-05-25T07:29:03.406Z
+  - _ulid: 01KSF0KVDT7TJ1P23KHTBXY8NY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-25T07:29:29.530Z
+  - _ulid: 01KSF0M2KJPDNA9SY4NZ5VHCA4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-25T07:29:36.882Z
+  - _ulid: 01KSF0M9WPMZ69Z10SX9H08V30
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-05-25T07:29:44.342Z
+  - _ulid: 01KSF0MGQQTBP1ZKC8HMEW0PCZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file oxlint
+    timestamp: 2026-05-25T07:29:51.351Z
+  - _ulid: 01KSF0MR0B8A1MBQSXXBFDS85K
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: materialize symlink escape repro
+    timestamp: 2026-05-25T07:29:58.796Z
+  - _ulid: 01KSF0MZB0R1PGY4GG61SFMW39
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: materialize long-id partial repro
+    timestamp: 2026-05-25T07:30:06.304Z
+  - _ulid: 01KSF0NAF35M6TX2XEAJEHFQEG
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-25T07:30:17.699Z
+  - _ulid: 01KSF0NAF3MFDRYHCYB9TMN6Z5
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-25T07:30:17.699Z
+  - _ulid: 01KSF222QXZR8DT0CZCV3SWWY9
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSF0JHR72KEYV2ZXH0XP0Z96
+    timestamp: 2026-05-25T07:54:44.350Z
+  - _ulid: 01KSF2276XV6RAHV8JXDW0TSR5
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSF0JRZ0RFTS4ZGSF9J66T2C
+    timestamp: 2026-05-25T07:54:48.925Z
+  - _ulid: 01KSF22BRYRQ6V4EXBMR7NQT3P
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSF0K06HV0EA80Q2TQSH9VYQ
+    timestamp: 2026-05-25T07:54:53.598Z
+  - _ulid: 01KSF22G9G2WKJ4DZKCND8BFKT
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSF0JHR72KEYV2ZXH0XP0Z96
+    timestamp: 2026-05-25T07:54:58.224Z
+  - _ulid: 01KSF22MTFS7Y5GE23VA2TXHBN
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSF0JRZ0RFTS4ZGSF9J66T2C
+    timestamp: 2026-05-25T07:55:02.863Z
+  - _ulid: 01KSF22S1JPC7XJQEY7V9DC6B1
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSF0K06HV0EA80Q2TQSH9VYQ
+    timestamp: 2026-05-25T07:55:07.186Z
+examined_commit: 7e8ff3aeec93b5586c92a90e58c70db9c4e3b4cc
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XAZQ5478RV2AVKG8MNB0S"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSF0JHR72KEYV2ZXH0XP0Z96
+    anchor:
+      type: code
+      commit: 7e8ff3aeec93b5586c92a90e58c70db9c4e3b4cc
+      line_end: 557
+      line_start: 552
+      path: src/cli/commands/plan.ts
+      side: head
+    entries:
+      - _ulid: 01KSF0JHR7A9HNCF3X8KKCDJYE
+        author: Jacob Chapel
+        body: "MUST-FIX: `--materialize-resources` copies plan resource bytes through unchecked filesystem
+          paths. This loop builds `sourceAbs` with `path.join(planResourcesDir, planResource.path)`
+          and passes it directly to `fs.copyFile`, so a pre-existing symlink at the plan resource
+          leaf or an intermediate directory is followed. I reproduced this in a temp project by
+          replacing `.kspec/plans/<plan>/resources/doc.txt` with a symlink to an outside file, then
+          running `kspec plan derive @mat-plan --module @mod --materialize-resources`; the command
+          exited 0 and the derived task resource contained `OUTSIDE_SECRET`. That violates the
+          shared resource contract that symlink escapes are forbidden and lets materialization
+          import bytes from outside the plan tree. Use the same symlink-safe resolver/mutation guard
+          pattern here before copying, and add a regression test for materialization."
+        created_at: 2026-05-25T07:28:46.855Z
+      - _ulid: 01KSF2210TW9GXBBKR1RJ79Z2Z
+        author: "@claude"
+        body: "Fixed in cec6e309c6. Added preflightMaterializationSafety(ctx, planUlid, taskPlans) that
+          walks every materialization source path through assertSafeResourceMutationPath BEFORE any
+          createTask runs. A symlinked plan resource leaf (or intermediate directory) now rejects
+          the entire derive with usage_error (exit code 2) and no task is written to disk. The
+          materialize loop itself re-applies the same guard on both source and destination as
+          defense in depth against TOCTOU between preflight and copy. Two regression tests added:
+          (a) plant a symlink at the plan resource leaf pointing at an outside file, derive
+          --materialize-resources, assert exit 2 + stderr mentions 'symlink' + task lookup fails (no
+          partial task on disk); (b) replace plan resources/sub/ with a symlink to an outside
+          directory and verify the same behavior."
+        created_at: 2026-05-25T07:54:42.586Z
+    kind: blocker
+    resolved_at: 2026-05-25T07:54:56.474Z
+    resolved_by: "@claude"
+  - _ulid: 01KSF0JRZ0RFTS4ZGSF9J66T2C
+    anchor:
+      type: code
+      commit: 7e8ff3aeec93b5586c92a90e58c70db9c4e3b4cc
+      line_end: 567
+      line_start: 559
+      path: src/cli/commands/plan.ts
+      side: head
+    entries:
+      - _ulid: 01KSF0JRZ0BQS6K53QYPAH2MCD
+        author: Jacob Chapel
+        body: "MUST-FIX: Materialized resource ids are derived as `plan-${planResource.id}` without
+          validating that the prefixed id still satisfies the resource id contract before any task
+          is created. `plan resource add` accepts ids up to 128 characters, but prefixing a valid
+          128-character id creates a 133-character task resource id; `computeResourceMetadata` then
+          fails after `createTask` has already written the derived task. I reproduced this with a
+          128-character `a...a` plan resource id: `plan derive --materialize-resources` exited 1
+          with the id validation error, but `task get @implement-doc --json` succeeded and showed
+          the partially-created task still present with the original plan-owned `resource_refs`.
+          Valid input should not leave partial derived tasks behind, and materialization needs a
+          deterministic strategy for ids that would overflow after adding `plan-`."
+        created_at: 2026-05-25T07:28:54.240Z
+      - _ulid: 01KSF225DZ7CQE8Q7WJ1JJBR2X
+        author: "@claude"
+        body: "Fixed in cec6e309c6. The same preflightMaterializationSafety pass now validates the computed
+          task id (plan-<original-id>) against validateResourceId BEFORE any createTask runs. A
+          valid 128-char plan resource id that would produce a 133-char task id now fails fast with
+          usage_error (exit code 2) and leaves no partial derived task on disk. Deterministic
+          strategy: reject with a clear message telling the user the plan resource id must fit
+          within 123 chars before the 'plan-' prefix is added so derive --materialize-resources can
+          succeed. Centralized the prefix in buildMaterializedResourceId(planResourceId) so the
+          preflight and the materialize loop cannot drift apart. Regression test plants a 128-char
+          id, runs derive --materialize-resources, asserts exit 2 + stderr matches /cannot be
+          materialized/ + task lookup fails."
+        created_at: 2026-05-25T07:54:47.103Z
+    kind: blocker
+    resolved_at: 2026-05-25T07:55:01.027Z
+    resolved_by: "@claude"
+  - _ulid: 01KSF0K06HV0EA80Q2TQSH9VYQ
+    entries:
+      - _ulid: 01KSF0K06HMHY7V42KWBRRC9D1
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: kspec-agents.md; .agents/skills/review-gates/SKILL.md;
+          .agents/skills/work-gates/SKILL.md; src/cli/commands/plan-resource.ts;
+          src/parser/entity-local-resources.ts; src/cli/commands/plan.ts;
+          src/parser/plan-resource-import.ts; src/cli/commands/plan-import.ts;
+          src/parser/task-resource-resolver.ts; src/cli/commands/task.ts; src/cli/output.ts;
+          src/agent-runtime/dispatch.ts; src/schema/resources.ts; src/schema/task.ts;
+          src/parser/plan-document.ts; tests/cli-plan-resource.test.ts;
+          tests/cli-plan-import-resources.test.ts; tests/cli-plan-derive-resources.test.ts;
+          tests/plan-document-resource-refs.test.ts.
+
+          Commands run: git diff/stat/name-status against 25e55fa; kspec task get
+          @01KS8XAZQ5478RV2AVKG8MNB0S; kspec item get @plan-resource-derivation-semantics-1; kspec
+          review for-task/get prior reviews; kspec validate; AC annotation searches with rg;
+          source-scanning test search; npm test -- --fresh; npm run typecheck; npm run lint (full
+          lint, failed on existing repo lint errors); ./node_modules/.bin/oxlint on changed files (0
+          errors); git diff --check; two temp-project CLI repros for materialization symlink escape
+          and long-id partial derivation.
+
+          Claims verified: prior add/remove symlink fixes are covered by new tests and the
+          add/remove code now uses `assertSafeResourceMutationPath`; worker's full-test claim
+          verified by fresh `npm test`; worker's materialization claim disproved by the symlink and
+          long-id repros.
+
+          Categories searched: correctness, symlink/path security, edge cases, error
+          handling/partial mutation, AC coverage, source-scanning test integrity, integration with
+          task get/dispatch drift surfaces.
+        created_at: 2026-05-25T07:29:01.649Z
+      - _ulid: 01KSF22A0X5C77JMDXWM2P90T0
+        author: "@claude"
+        body: Acknowledged — thanks for the detailed evidence log. Both blockers addressed in cec6e309c6
+          with three new regression tests covering symlinked leaf, symlinked intermediate directory,
+          and prefixed-id overflow scenarios.
+        created_at: 2026-05-25T07:54:51.805Z
+    kind: nit
+    resolved_at: 2026-05-25T07:55:05.546Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-25T07:30:17.699Z
+created_at: 2026-05-25T07:15:02.110Z
+updated_at: 2026-05-25T07:55:05.546Z
+notes: []

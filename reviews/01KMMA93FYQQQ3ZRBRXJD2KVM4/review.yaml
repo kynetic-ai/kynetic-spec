@@ -1,0 +1,136 @@
+_ulid: 01KMMA93FYQQQ3ZRBRXJD2KVM4
+slugs: []
+title: Review smart error message for task set --status rejection (cycle 3)
+author: Test User
+checks: []
+events:
+  - _ulid: 01KMMA93FY008J7S7HBFXTFTSX
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-26T05:36:06.142Z
+  - _ulid: 01KMMAAC6QV9S1C01J9WNKBGZQ
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-26T05:36:47.832Z
+  - _ulid: 01KMMAAFZ4E40KXY744WCD669A
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMMAAF3CY7JJQYNRWJDA9GB5
+    timestamp: 2026-03-26T05:36:51.684Z
+  - _ulid: 01KMMAFAYQ3W13E410XQGEC8AH
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMMAF9ZZW9YZQ1R652VJTHKM
+    timestamp: 2026-03-26T05:39:30.391Z
+  - _ulid: 01KMMAJ2FF56PBRV75Q9BDJTZV
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-26T05:41:00.015Z
+  - _ulid: 01KMMAJ2FFD3GZDX8AR028KKVK
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-26T05:41:00.015Z
+  - _ulid: 01KMNH660EWMXRDXC0NJV98DHZ
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMMAAF3CY7JJQYNRWJDA9GB5
+    timestamp: 2026-03-26T16:56:04.878Z
+  - _ulid: 01KMNH6E0YEQMAVCAR5XXFNM7P
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMMAAF3CY7JJQYNRWJDA9GB5
+    timestamp: 2026-03-26T16:56:13.086Z
+  - _ulid: 01KMNH6NMC5DCDB7QJJEAN1DBA
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMMAF9ZZW9YZQ1R652VJTHKM
+    timestamp: 2026-03-26T16:56:20.876Z
+examined_commit: 31c76a76695b207a1ef6ab2a99901412a2a29ff9
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMM6PH4EQBRZW72DXWMMNFP3"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMMAAF3CY7JJQYNRWJDA9GB5
+    anchor:
+      type: code
+      commit: 31c76a76695b207a1ef6ab2a99901412a2a29ff9
+      line_end: 28
+      line_start: 12
+      path: src/strings/errors.ts
+      side: head
+    entries:
+      - _ulid: 01KMMAAF3DFSSQ8X3Q77FJ80JV
+        author: Test User
+        body: "The new status guidance hard-codes  as a reachable target via , but  transitions a task to ,
+          not . Repro 1:  returns . Repro 2: after blocking a task whose prior status is
+          ,  reports  as a valid transition and suggests , even though  would restore  instead. That
+          means the error can recommend a command that cannot achieve the requested status, which
+          violates @task-set ac-1's requirement to show the specific transition command for the
+          requested status."
+        created_at: 2026-03-26T05:36:50.797Z
+      - _ulid: 01KMNH65JP3B8H9SKT6NPBDGXF
+        author: "@claude"
+        body: "Fixed: Removed static 'pending' and 'in_progress' from VALID_TRANSITIONS_FROM['blocked']. The
+          only static transition from blocked is now 'cancelled'. The unblock target is computed
+          dynamically as prior_status ?? 'pending' and added to valid transitions at runtime. This
+          ensures the error never suggests a command that can't achieve the requested status. Added
+          2 new tests covering the exact repro: blocking from in_progress then requesting --status
+          pending correctly reports 'Cannot transition from blocked to pending' (both text and JSON
+          modes)."
+        created_at: 2026-03-26T16:56:04.437Z
+    kind: blocker
+    resolved_at: 2026-03-26T16:56:12.613Z
+    resolved_by: "@claude"
+  - _ulid: 01KMMAF9ZZW9YZQ1R652VJTHKM
+    entries:
+      - _ulid: 01KMMAF9ZZXZC7GQB1W7AJ332M
+        author: Test User
+        body: "Review evidence log: Files read: src/cli/commands/task.ts, src/strings/errors.ts,
+          tests/task-set-batch.test.ts, tests/agent-invocation-lifecycle.test.ts. Commands run:
+          kspec task get @01KMM6PH4EQBRZW72DXWMMNFP3; kspec item get @task-set; kspec review
+          for-task @01KMM6PH4EQBRZW72DXWMMNFP3; git diff dc022927..31c76a7 on changed files; rg AC
+          annotations in changed files; kspec validate; npm test; npm test --
+          tests/task-set-batch.test.ts; targeted CLI repros for status pending in batch mode and
+          from a blocked task. Claims verified: the submitted task-set test file passes, and the
+          blocker above is reproducible through the built CLI. Categories searched: correctness,
+          edge cases, error handling, test quality, integration."
+        created_at: 2026-03-26T05:39:29.407Z
+    kind: nit
+    resolved_at: 2026-03-26T16:56:20.402Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-26T05:41:00.015Z
+created_at: 2026-03-26T05:36:06.142Z
+updated_at: 2026-03-26T16:56:20.402Z
+notes: []

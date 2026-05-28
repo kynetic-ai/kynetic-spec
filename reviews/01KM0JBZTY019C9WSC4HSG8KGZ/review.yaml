@@ -1,0 +1,108 @@
+_ulid: 01KM0JBZTY019C9WSC4HSG8KGZ
+slugs: []
+title: Review task-validate-integration (cycle 1)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "6350 tests passed, 1 pre-existing failure in review-cli.test.ts (not modified by this
+      task). validate-integration.test.ts: all 18 tests pass."
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T13:33:05.059Z
+    completed_at: 2026-03-18T13:33:05.059Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit clean, no type errors
+    name: tsc
+    required: true
+    runner: tsc
+    created_at: 2026-03-18T13:33:11.482Z
+    completed_at: 2026-03-18T13:33:11.482Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 4 ACs annotated: @dispatch-hook-schema ac-3 (tests/validate-integration.test.ts:37),
+      @dispatch-hook-filter ac-3 (tests/validate-integration.test.ts:108), @dispatch-schedule-schema
+      ac-3 (tests/validate-integration.test.ts:162), @dispatch-action-model ac-7
+      (tests/validate-integration.test.ts:335,512,546,563). Tests exercise real CLI pipeline."
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-18T13:33:19.633Z
+    completed_at: 2026-03-18T13:33:19.633Z
+events:
+  - _ulid: 01KM0JBZTYQ0FTNC4ADP7V46ZC
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T13:32:40.670Z
+  - _ulid: 01KM0JC7AHJQBT2CEWGPRZ9P8N
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T13:32:48.337Z
+  - _ulid: 01KM0JCQSJET31G75GTSYGHTFE
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T13:33:05.202Z
+  - _ulid: 01KM0JCY2CH9F866WWWH6CD8CJ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: tsc
+    timestamp: 2026-03-18T13:33:11.629Z
+  - _ulid: 01KM0JD60ZF9VE10Q31JD80F9Q
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-18T13:33:19.775Z
+  - _ulid: 01KM0JDCMMYKT9WJDK76M2HE08
+    actor: pr-reviewer@dispatch
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-18T13:33:26.548Z
+  - _ulid: 01KM0JDCMMBX732P95V8F7BZ4M
+    actor: pr-reviewer@dispatch
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T13:33:26.548Z
+examined_commit: f49c87c4a33f25afd5f3a95918b46e9a674eabca
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-validate-integration"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer@dispatch
+    role: reviewer
+    created_at: 2026-03-18T13:33:26.402Z
+created_at: 2026-03-18T13:32:40.670Z
+updated_at: 2026-03-18T13:33:26.402Z
+notes: []

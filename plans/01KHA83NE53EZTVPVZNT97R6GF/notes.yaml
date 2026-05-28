@@ -1,0 +1,28 @@
+notes:
+  - _ulid: 01KHA83NE52ADVDXW1593TPF16
+    content: |-
+      Implementation notes:
+
+      ### Execution Order
+      1. Command Group Default Actions + Multi-Value Status Filter (share the list
+         handler refactor -- extract common function first, then add both features)
+      2. Output Format Option (independent, touches global output system)
+      3. Module-Scoped Item Listing (independent, extends item list)
+      4. Unified Cross-Reference Lookup (independent, new command)
+      5. Observation Content Search (independent, extends meta command)
+
+      ### Existing Spec Updates Needed
+      - @trait-json-output ac-6: Update from --json takes precedence to reference
+        the new --format system and conflict error behavior
+      - @trait-filterable-list: Note that --status supports multi-value
+      - @cli-agent-features description: Mention --format, --yaml, and --raw
+
+      ### Inbox Items to Promote
+      - @01KGVK8R -- Module-scoped item list (covered by spec 4)
+      - @01KFHJNZ -- Reverse spec lookup (partially covered by spec 5)
+
+      ### Separate Deliverables (Not In This Plan)
+      - Docs task: Update AGENTS.md and skill prompts for --json discoverability
+      - Inbox item: Observation count in session start output
+    author: "@claude"
+    created_at: 2026-02-13T00:58:40.965Z

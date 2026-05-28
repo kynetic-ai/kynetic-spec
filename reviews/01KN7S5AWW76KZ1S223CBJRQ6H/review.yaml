@@ -1,0 +1,115 @@
+_ulid: 01KN7S5AWW76KZ1S223CBJRQ6H
+slugs: []
+title: Review task-update-daemon-server-ac8
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: AGENTS.md, kspec-agents.md, @01KN7Q6A7SGAZGZC9M5N7DNZK3, @daemon-server,
+      @plan-daemon-file-monitoring-reliability. Commands run: kspec task get, kspec item get/ac
+      list, kspec plan get, kspec validate, rg for watcher backend terms, npm test, git
+      branch/rev-parse/log/status. Claim verified: ac-8 now uses behavioral cross-platform wording
+      and no longer names a watcher backend. Categories searched: correctness, spec alignment,
+      integration metadata, test quality/regression."
+    name: evidence log
+    required: false
+    runner: manual
+    created_at: 2026-04-02T19:10:16.418Z
+    completed_at: 2026-04-02T19:10:16.418Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation completed with warnings only (exit 6): schema and references OK; warnings are
+      repo-wide orphan/completeness noise unrelated to @daemon-server ac-8. No task-specific
+      validation errors found."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-02T19:10:20.459Z
+    completed_at: 2026-04-02T19:10:20.459Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed in review workspace after test runner repaired missing dist/cli/index.js. Results:
+      2067 suites passed, 7481 tests passed, 5 skipped."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-02T19:10:24.431Z
+    completed_at: 2026-04-02T19:10:24.431Z
+events:
+  - _ulid: 01KN7S5AWW40Q3CPMY64F54VC6
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-02T19:01:45.500Z
+  - _ulid: 01KN7S685HCZ11HMSF5T2QH8YQ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-02T19:02:15.473Z
+  - _ulid: 01KN7SMZ41WY59KM6X7RR328AX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: evidence log
+    timestamp: 2026-04-02T19:10:17.729Z
+  - _ulid: 01KN7SN311Q0D0M2SCZRKSMYXE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-02T19:10:21.729Z
+  - _ulid: 01KN7SN70DB9DFY7KDQQC57T1E
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-02T19:10:25.805Z
+  - _ulid: 01KN7SNPH7AJG8N85CZQBPA9FJ
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-02T19:10:41.704Z
+  - _ulid: 01KN7SNPH83D2Z6DR35TDBVD8Y
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-02T19:10:41.704Z
+examined_commit: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN7Q6A7SGAZGZC9M5N7DNZK3"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-02T19:10:41.703Z
+created_at: 2026-04-02T19:01:45.500Z
+updated_at: 2026-04-02T19:10:41.704Z
+notes: []

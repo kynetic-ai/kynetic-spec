@@ -1,0 +1,211 @@
+_ulid: 01KPQ0V5JWDFM3MKA0EBES9N13
+slugs: []
+title: Review task-docs-rendering (cycle 5)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Production web UI build completed successfully. The build surfaced a new Svelte a11y
+      warning at packages/web-ui/src/routes/docs/[...slug]/+page.svelte:107-113 for article
+      role=button.
+    name: npm run build:e2e
+    required: true
+    runner: npm
+    created_at: 2026-04-21T03:34:18.568Z
+    completed_at: 2026-04-21T03:34:18.568Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/web-ui-docs-rendering.test.ts passed: 52/52 tests."
+    name: tests/web-ui-docs-rendering.test.ts
+    required: true
+    runner: npm
+    created_at: 2026-04-21T03:34:21.772Z
+    completed_at: 2026-04-21T03:34:21.772Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run test:e2e -- tests/e2e/docs.spec.ts passed: 8/8 tests."
+    name: tests/e2e/docs.spec.ts
+    required: true
+    runner: playwright
+    created_at: 2026-04-21T03:34:24.848Z
+    completed_at: 2026-04-21T03:34:24.848Z
+events:
+  - _ulid: 01KPQ0V5JVBAJCKRDRBY0EWZX3
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-21T03:20:19.291Z
+  - _ulid: 01KPQ0VRS5CHTESWPZDCCG2FEK
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-21T03:20:38.950Z
+  - _ulid: 01KPQ1MT8RAZQJG38KXZ707DHG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run build:e2e
+    timestamp: 2026-04-21T03:34:19.672Z
+  - _ulid: 01KPQ1MXCKW1N1KJ0Z4BY916QE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: tests/web-ui-docs-rendering.test.ts
+    timestamp: 2026-04-21T03:34:22.867Z
+  - _ulid: 01KPQ1N0CYP1ATJWHR4HJQPSDT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: tests/e2e/docs.spec.ts
+    timestamp: 2026-04-21T03:34:25.950Z
+  - _ulid: 01KPQ1NHN2ZXK06YDVX4TNB6SB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPQ1NGMBJAGV3K96QPKQ9W4F
+    timestamp: 2026-04-21T03:34:43.618Z
+  - _ulid: 01KPQ1P0XEX5EHVG458B3YZEFS
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KPQ1NZYE4HAESDEWJPZ9KGAB
+    timestamp: 2026-04-21T03:34:59.246Z
+  - _ulid: 01KPQ1PC00KDYBTX8C5NY57M6H
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-21T03:35:10.592Z
+  - _ulid: 01KPQ1PC006NX5KNX2EJME3JHG
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-21T03:35:10.592Z
+  - _ulid: 01KPQ21GXMMSWS405KX6YSDCYR
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPQ1NGMBJAGV3K96QPKQ9W4F
+    timestamp: 2026-04-21T03:41:16.085Z
+  - _ulid: 01KPQ21T88EGDK1CP82S7TX336
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPQ1NGMBJAGV3K96QPKQ9W4F
+    timestamp: 2026-04-21T03:41:25.641Z
+  - _ulid: 01KPQ220D5RX6G2AQK37GQ7GCS
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPQ1NZYE4HAESDEWJPZ9KGAB
+    timestamp: 2026-04-21T03:41:31.941Z
+examined_commit: bcb8e71562126b0b6adf00e60db288c5f76aa493
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KPPN42CDKS6A6951ZATDPKXP"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPQ1NGMBJAGV3K96QPKQ9W4F
+    anchor:
+      type: code
+      commit: bcb8e71562126b0b6adf00e60db288c5f76aa493
+      line_end: 113
+      line_start: 107
+      path: packages/web-ui/src/routes/docs/[...slug]/+page.svelte
+      side: head
+    entries:
+      - _ulid: 01KPQ1NGMCTHCA3BQ6JPS9TT7W
+        author: Jacob Chapel
+        body: The docs article is being given role="button" plus a no-op onkeydown handler solely to support
+          delegated click handling. `npm run build:e2e` now emits a Svelte accessibility warning for
+          this exact block because `<article>` is non-interactive content, not a control. In the
+          built UI that makes the entire documentation body announce as a button to assistive tech
+          while providing no real keyboard behavior, which is a user-facing accessibility
+          regression. Move the delegated click handling to a neutral wrapper or another non-semantic
+          event target instead of changing the article semantics.
+        created_at: 2026-04-21T03:34:42.572Z
+      - _ulid: 01KPQ21FN9V6RD7J5SVRHDJ5VP
+        author: "@claude"
+        body: 'Fixed: Removed role="button", tabindex, and the no-op onkeydown from the <article> element
+          entirely. Click delegation now uses imperative addEventListener via bind:this + $effect on
+          the article — no semantic attributes changed, no Svelte a11y lint suppressions needed. The
+          build no longer emits the a11y warning for this block. All 8 E2E tests and 52 unit tests
+          pass.'
+        created_at: 2026-04-21T03:41:14.793Z
+    kind: blocker
+    resolved_at: 2026-04-21T03:41:24.323Z
+    resolved_by: "@claude"
+  - _ulid: 01KPQ1NZYE4HAESDEWJPZ9KGAB
+    entries:
+      - _ulid: 01KPQ1NZYE9P59WW4E2HQG1SK7
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: packages/web-ui/src/routes/docs/[...slug]/+page.svelte,
+          packages/web-ui/src/routes/docs/+page.svelte, packages/web-ui/src/lib/docs.ts,
+          packages/web-ui/src/lib/utils/docs-markdown.ts,
+          packages/web-ui/src/lib/utils/docs-utils.ts,
+          packages/web-ui/src/lib/components/Sidebar.svelte,
+          packages/web-ui/src/lib/components/MobileNav.svelte, packages/web-ui/vite-plugin-docs.ts,
+          packages/web-ui/vite.config.ts, packages/daemon/src/server.ts,
+          tests/web-ui-docs-rendering.test.ts, tests/e2e/docs.spec.ts, docs/getting-started.md.
+
+          Commands run: kspec task get @01KPPN42CDKS6A6951ZATDPKXP; kspec item get
+          @docs-reachability; kspec item get @docs-navigation-shape; kspec review for-task
+          @01KPPN42CDKS6A6951ZATDPKXP; kspec validate; rg for AC annotations and markdown links; git
+          diff against dev and previous review commit; npm test; npm test -- --run
+          tests/upgrade-command.test.ts -t "detects review-plan skill in directory-based layout for
+          version inference"; npm test -- --run tests/web-ui-docs-rendering.test.ts; npm run
+          test:e2e -- tests/e2e/docs.spec.ts; npm run build:e2e.
+
+          Claims verified: docs routes render and navigate in browser (Playwright 8/8 pass); docs
+          unit coverage passes (52/52); daemon SPA routes include /docs and /docs/*; previous
+          out-of-tree link handling fix is present in renderer.
+
+          Categories searched: correctness, edge cases around markdown link resolution, error
+          handling for missing/out-of-tree links, test quality/AC coverage, integration/build
+          output. Findings: 1 blocker on incorrect article semantics causing a new build-time a11y
+          warning.
+
+          Note on npm test: the initial full-suite run reported one unrelated upgrade-command
+          failure caused by stale dist artifacts in this workspace; after build refresh, the
+          previously failing targeted test passed.
+        created_at: 2026-04-21T03:34:58.254Z
+    kind: nit
+    resolved_at: 2026-04-21T03:41:30.617Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-21T03:35:10.591Z
+created_at: 2026-04-21T03:20:19.292Z
+updated_at: 2026-04-21T03:41:30.617Z
+notes: []

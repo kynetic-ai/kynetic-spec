@@ -1,0 +1,211 @@
+_ulid: 01KPPA818PWB4V1CQJDWVN2X9B
+slugs: []
+title: Review extend daemon background shadow sync to all registered projects
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran 'npm test -- tests/daemon-shadow-sync-multi-project.test.ts
+      tests/daemon-read-path.test.ts --verbose'. Both files passed; 13 new multi-project shadow sync
+      tests and 26 daemon read-path tests passed.
+    name: targeted-daemon-tests
+    required: true
+    runner: npm-test
+    created_at: 2026-04-20T20:50:33.087Z
+    completed_at: 2026-04-20T20:50:33.087Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran 'npm run build'. TypeScript, daemon build, web UI build, and plugin build completed
+      successfully.
+    name: build
+    required: true
+    runner: npm-run-build
+    created_at: 2026-04-20T20:50:36.050Z
+    completed_at: 2026-04-20T20:50:36.050Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran 'kspec validate'. It failed for pre-existing repo-wide issues unrelated to this task
+      (meta.yaml schema error, orphaned skill directory, and longstanding coverage/alignment
+      warnings), so it was not treated as a regression introduced by 0159843c6e04.
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-20T20:50:39.088Z
+    completed_at: 2026-04-20T20:50:39.088Z
+events:
+  - _ulid: 01KPPA818N5B7ENGX8JGKJ3T6Q
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-20T20:45:23.606Z
+  - _ulid: 01KPPA8JX5FW0PKC05D62X4KJ2
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-20T20:45:41.669Z
+  - _ulid: 01KPPAGE0GH548TYP0EQ4CP0K3
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPPAGD0G4PWNX915FZ93FM28
+    timestamp: 2026-04-20T20:49:58.800Z
+  - _ulid: 01KPPAGGYXCBN2MFCDXZZDWN50
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPPAGFXHXD1S6TMN79GGXQW5
+    timestamp: 2026-04-20T20:50:01.821Z
+  - _ulid: 01KPPAHGEZ8VCRQG6MF4DHQP4T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted-daemon-tests
+    timestamp: 2026-04-20T20:50:34.080Z
+  - _ulid: 01KPPAHKFHB0HBAT84X473QJ51
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: build
+    timestamp: 2026-04-20T20:50:37.169Z
+  - _ulid: 01KPPAHPDTFCPK8WXRRADG3V2D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec-validate
+    timestamp: 2026-04-20T20:50:40.187Z
+  - _ulid: 01KPPAHVN6FN6KKED5X0Y53J62
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-20T20:50:45.542Z
+  - _ulid: 01KPPAHVN62ZZYM5F4HWWQ21ZZ
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-20T20:50:45.542Z
+  - _ulid: 01KPPBJ82KTSVGPMJ8YE3F3ES0
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPPAGD0G4PWNX915FZ93FM28
+    timestamp: 2026-04-20T21:08:26.835Z
+  - _ulid: 01KPPBJPAWKDGA8HHXA9TERXPY
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPPAGD0G4PWNX915FZ93FM28
+    timestamp: 2026-04-20T21:08:41.437Z
+  - _ulid: 01KPPBK1D3QXZ4W17P0T5SEJ5Z
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPPAGFXHXD1S6TMN79GGXQW5
+    timestamp: 2026-04-20T21:08:52.771Z
+  - _ulid: 01KPPBK9JZ371CGVMT5W7CVM6G
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPPAGFXHXD1S6TMN79GGXQW5
+    timestamp: 2026-04-20T21:09:01.151Z
+examined_commit: 0159843c6e04c7088b536b8185d100e86c91e380
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KPP7XFJ7Z1MG2NQAXMWZTA6W"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPPAGD0G4PWNX915FZ93FM28
+    anchor:
+      type: code
+      commit: 0159843c6e04c7088b536b8185d100e86c91e380
+      line_end: 363
+      line_start: 249
+      path: tests/daemon-shadow-sync-multi-project.test.ts
+      side: head
+    entries:
+      - _ulid: 01KPPAGD0GTEHP430S62FTRZQD
+        author: Jacob Chapel
+        body: The new coverage only exercises POST /api/projects, middleware auto-registration, and DELETE
+          unregistration. This task explicitly required all four registration paths plus both
+          unregistration paths, but there is still no behavioral test for WebSocket project
+          resolution and no test for watcher-permanent-failure cleanup. Because the implementation
+          relies on a shared callback/unregister hook to cover those code paths, omitting them
+          leaves the main regression surface unverified.
+        created_at: 2026-04-20T20:49:57.776Z
+      - _ulid: 01KPPBJ73CNHRCWF1P7J0YJRZ6
+        author: "@claude"
+        body: "Fixed: Added behavioral tests for WebSocket project resolution (via resolveWebSocketProject
+          with onProjectRegistered callback that calls startShadowSyncForProject) and
+          watcher-permanent-failure cleanup (via ProjectContextManager.unregisterProject triggering
+          the unregisterCallback that calls stopShadowSyncForProject). All four registration paths
+          and both unregistration paths are now covered."
+        created_at: 2026-04-20T21:08:25.835Z
+    kind: blocker
+    resolved_at: 2026-04-20T21:08:40.417Z
+    resolved_by: "@claude"
+  - _ulid: 01KPPAGFXHXD1S6TMN79GGXQW5
+    anchor:
+      type: code
+      commit: 0159843c6e04c7088b536b8185d100e86c91e380
+      line_end: 80
+      line_start: 63
+      path: src/daemon/shadow-sync-manager.ts
+      side: head
+    entries:
+      - _ulid: 01KPPAGFXHY4XBESDYSE9TTJWY
+        author: Jacob Chapel
+        body: startShadowSyncForProject still creates a scheduler whenever sync_interval > 0, even when the
+          project has no shadow remote tracking configured. In this workspace kspec.config.yaml has
+          no shadow.remote, but running 'node --import tsx -e "import { startShadowSyncForProject,
+          stopShadowSyncForProject, shadowSyncSchedulers } from
+          './src/daemon/shadow-sync-manager.ts'; const project = process.cwd(); await
+          startShadowSyncForProject(project, { broadcast() {} }, () => undefined);
+          console.log(shadowSyncSchedulers.has(project), shadowSyncSchedulers.size);
+          stopShadowSyncForProject(project);"' printed that a scheduler was started and added to the
+          map. That violates @config-shadow ac-13/ac-14, and it also misses task case (e), which
+          requires projects without remote tracking to avoid scheduler creation entirely.
+        created_at: 2026-04-20T20:50:00.753Z
+      - _ulid: 01KPPBK0E1YRZEJYYQN8ANR76S
+        author: "@claude"
+        body: "Fixed: Added config.shadow.remote guard to the scheduler creation condition (line 66:
+          syncInterval > 0 && config.shadow.remote). Projects without shadow remote tracking
+          configured no longer get a scheduler. Added a dedicated test case verifying that
+          setupConfigMock({ hasRemote: false }) results in no scheduler being created."
+        created_at: 2026-04-20T21:08:51.777Z
+    kind: blocker
+    resolved_at: 2026-04-20T21:09:00.160Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-20T20:50:45.541Z
+created_at: 2026-04-20T20:45:23.606Z
+updated_at: 2026-04-20T21:09:00.160Z
+notes: []

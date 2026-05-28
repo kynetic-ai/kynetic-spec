@@ -1,0 +1,293 @@
+_ulid: 01KRYQJ6THDQ212RH9273N2BRP
+slugs: []
+title: Review bound event bus lineage and source-ordering lifetime
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran kspec validate. Schema/references passed, but command exited 6 with warnings;
+      task-specific completeness warning: @dispatch-event-envelope uncovered
+      ac-retained-event-lineage-is-bounded and ac-completed-source-ordering-is-released."
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-18T23:45:35.516Z
+    completed_at: 2026-05-18T23:45:35.516Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran npm test -- --run tests/event-bus.test.ts. Result: 38 tests passed in
+      tests/event-bus.test.ts; runner summary reported 9 suites passed."
+    name: event-bus focused tests
+    required: true
+    runner: npm
+    created_at: 2026-05-18T23:45:42.108Z
+    completed_at: 2026-05-18T23:45:42.108Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran npm test. Result: 9279 passed, 5 skipped, 1 failed of 9285 tests; failure in
+      tests/cli-no-daemon.test.ts at line 163: expected '[MainThread] <defunct>' to contain 'node'.
+      File is outside this task diff; rerunning to classify flake/pre-existing status."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-19T00:00:21.624Z
+    completed_at: 2026-05-19T00:00:21.624Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran npm test -- --run tests/cli-no-daemon.test.ts --fresh twice after full-suite failure.
+      First isolated rerun failed differently (ps -p returned error), second isolated rerun passed.
+      Classified as flaky/outside task diff and created follow-up task @01KRYRHX.
+    name: cli-no-daemon flaky reruns
+    required: false
+    runner: npm
+    created_at: 2026-05-19T00:01:01.137Z
+    completed_at: 2026-05-19T00:01:01.137Z
+events:
+  - _ulid: 01KRYQJ6TGQE7RJZ4C0P69NHXW
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-18T23:43:27.568Z
+  - _ulid: 01KRYQK583K656YR3F4242QFN0
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-18T23:43:58.723Z
+  - _ulid: 01KRYQM6HNW33M00EKZP5820QK
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRYQM47YSK0BH2H612MEWMXD
+    timestamp: 2026-05-18T23:44:32.821Z
+  - _ulid: 01KRYQMDET334TTJFRCFPNY9FA
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRYQMB2NNSE6BG976PTZKSER
+    timestamp: 2026-05-18T23:44:39.898Z
+  - _ulid: 01KRYQMM9GV565N473P8ZB6KJN
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRYQMHVA0J5QHEVKFR9TMDAX
+    timestamp: 2026-05-18T23:44:46.896Z
+  - _ulid: 01KRYQP61WFXAXGG0S7BTJQBBY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-05-18T23:45:37.852Z
+  - _ulid: 01KRYQPCFN86MD14YE4NP711TH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: event-bus focused tests
+    timestamp: 2026-05-18T23:45:44.438Z
+  - _ulid: 01KRYQPJZY0SFGB7KSRXK3NS7H
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KRYQPGNCTDC6F22Q3296MKSQ
+    timestamp: 2026-05-18T23:45:51.102Z
+  - _ulid: 01KRYRH6NC4T39PC4DB76FRF7C
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-05-19T00:00:23.213Z
+  - _ulid: 01KRYRJDAMNGK20948VM30SRE9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: cli-no-daemon flaky reruns
+    timestamp: 2026-05-19T00:01:02.804Z
+  - _ulid: 01KRYRJHVVTW6B3DFFDR107F6X
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-19T00:01:07.452Z
+  - _ulid: 01KRYRJHVWRB580295YG310MH2
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-19T00:01:07.452Z
+  - _ulid: 01KRYVXZCKDKDAYN2A07K516FH
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRYQM47YSK0BH2H612MEWMXD
+    timestamp: 2026-05-19T00:59:47.475Z
+  - _ulid: 01KRYVY30DQNBZ06HS924Z14Z4
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KRYQM47YSK0BH2H612MEWMXD
+    timestamp: 2026-05-19T00:59:51.182Z
+  - _ulid: 01KRYVY6N9X33HC73HWT80AZ1T
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRYQMB2NNSE6BG976PTZKSER
+    timestamp: 2026-05-19T00:59:54.921Z
+  - _ulid: 01KRYVYA9BGA64930ZVD1TPBRV
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KRYQMB2NNSE6BG976PTZKSER
+    timestamp: 2026-05-19T00:59:58.635Z
+  - _ulid: 01KRYVYDZ8ACHQMQ34CX44SDRC
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRYQMHVA0J5QHEVKFR9TMDAX
+    timestamp: 2026-05-19T01:00:02.408Z
+  - _ulid: 01KRYVYHKRY6A1JF9AY3RVKK4H
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KRYQMHVA0J5QHEVKFR9TMDAX
+    timestamp: 2026-05-19T01:00:06.136Z
+examined_commit: 8de21db24228985d828834bc081bcb37fcd47c25
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRYMPAYBKH8J2HKZPZYGQDA3"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRYQM47YSK0BH2H612MEWMXD
+    anchor:
+      type: code
+      commit: 8de21db24228985d828834bc081bcb37fcd47c25
+      line_end: 383
+      line_start: 383
+      path: src/agent-runtime/event-bus.ts
+      side: head
+    entries:
+      - _ulid: 01KRYQM47ZK2HAWFB0WBESJKP8
+        author: Jacob Chapel
+        body: "MUST-FIX: lineage pruning returns early whenever chainDepths.size <= ringBuffer.size, so
+          stale lineage can remain after its events have aged out. Evidence: with capacity 5,
+          emitting one correlated event and then five uncorrelated events leaves recent events with
+          no correlation IDs while getChainDepth('correlation-stale') still returns 1. That violates
+          the task/spec requirement to release lineage whose related events no longer appear in
+          retained recent events."
+        created_at: 2026-05-18T23:44:30.463Z
+      - _ulid: 01KRYVXY036H686RW6V0DMKD2T
+        author: "@claude"
+        body: Fixed in df446d6338. The early-return guard `chainDepths.size <= ringBuffer.size` was masking
+          stale correlations because a single correlated emit followed by N uncorrelated emits keeps
+          that invariant true forever. Replaced with `chainDepths.size === 0` so any correlation
+          whose events have aged out of the ring buffer is released on the next emit. Added a
+          focused regression covering the exact 1-correlated-+-5-uncorrelated case.
+        created_at: 2026-05-19T00:59:46.051Z
+    kind: blocker
+    resolved_at: 2026-05-19T00:59:49.715Z
+    resolved_by: "@claude"
+  - _ulid: 01KRYQMB2NNSE6BG976PTZKSER
+    anchor:
+      type: code
+      commit: 8de21db24228985d828834bc081bcb37fcd47c25
+      line_end: 448
+      line_start: 427
+      path: tests/event-bus.test.ts
+      side: head
+    entries:
+      - _ulid: 01KRYQMB2N4H81TJNWAQ5D4T0S
+        author: Jacob Chapel
+        body: "MUST-FIX: this regression test is intended to cover completed source-ordering release, but it
+          is not annotated with the new AC id. The only @dispatch-event-envelope annotations in
+          tests/event-bus.test.ts are ac-1 through ac-6, so ac-completed-source-ordering-is-released
+          remains uncovered for review/validation purposes."
+        created_at: 2026-05-18T23:44:37.461Z
+      - _ulid: 01KRYVY57ZFHPPQHQH6YRT3YKS
+        author: "@claude"
+        body: "Fixed in df446d6338. Added `// AC: @dispatch-event-envelope
+          ac-completed-source-ordering-is-released` above the test. `kspec validate --completeness`
+          no longer reports @dispatch-event-envelope as uncovered."
+        created_at: 2026-05-19T00:59:53.471Z
+    kind: blocker
+    resolved_at: 2026-05-19T00:59:57.191Z
+    resolved_by: "@claude"
+  - _ulid: 01KRYQMHVA0J5QHEVKFR9TMDAX
+    anchor:
+      type: code
+      commit: 8de21db24228985d828834bc081bcb37fcd47c25
+      line_end: 650
+      line_start: 633
+      path: tests/event-bus.test.ts
+      side: head
+    entries:
+      - _ulid: 01KRYQMHVAHQSHE8A2RTMDNHWP
+        author: Jacob Chapel
+        body: "MUST-FIX: this regression test is intended to cover retained event-lineage bounds, but it is
+          not annotated with the new AC id. Add a standalone AC annotation for
+          @dispatch-event-envelope ac-retained-event-lineage-is-bounded and make sure the test
+          proves aged-out lineage is released, not only that total entries are <= capacity."
+        created_at: 2026-05-18T23:44:44.394Z
+      - _ulid: 01KRYVYCH0K59BK2BKVA9XS749
+        author: "@claude"
+        body: "Fixed in df446d6338. Added `// AC: @dispatch-event-envelope
+          ac-retained-event-lineage-is-bounded` to the bounded-chain test, strengthened its
+          assertion to verify aged-out correlations are actually released (every remaining
+          chainDepths key must appear as a correlation_id in the ring buffer, and correlations 0-19
+          are explicitly absent), and added a second annotated regression that emits one correlated
+          event followed by uncorrelated ones and asserts the stale correlation's chain depth is 0
+          after it ages out."
+        created_at: 2026-05-19T01:00:00.928Z
+    kind: blocker
+    resolved_at: 2026-05-19T01:00:04.750Z
+    resolved_by: "@claude"
+  - _ulid: 01KRYQPGNCTDC6F22Q3296MKSQ
+    entries:
+      - _ulid: 01KRYQPGNCFR0X5KN1WH4WMZ4D
+        author: Jacob Chapel
+        body: "Evidence log: Files read: src/agent-runtime/event-bus.ts, tests/event-bus.test.ts,
+          kspec-agents.md, task/spec context for @dispatch-event-envelope. Commands run: kspec task
+          get @01KRYMPAYBKH8J2HKZPZYGQDA3; kspec item get @dispatch-event-envelope; git diff
+          f688b032..8de21db; rg AC annotations; kspec validate; kspec validate --completeness -v;
+          npm test -- --run tests/event-bus.test.ts; npm test; direct EventBus runtime probe for
+          aged-out correlated lineage. Claims verified: focused tests pass; new AC annotations are
+          missing; stale chainDepth entry remains after correlated event ages out. Categories
+          searched: correctness, edge cases, error handling, test quality, AC coverage,
+          integration."
+        created_at: 2026-05-18T23:45:48.716Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-19T00:01:07.451Z
+created_at: 2026-05-18T23:43:27.569Z
+updated_at: 2026-05-19T01:00:04.750Z
+notes: []

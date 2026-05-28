@@ -1,0 +1,197 @@
+_ulid: 01KMR1HTH4XBWWQRCJSJTD6JQF
+slugs: []
+title: Review task-daemon-command-api
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran npm test from the review snapshot. Result: 1944/1944 suites passed, 6959 passed, 5
+      skipped."
+    name: npm test
+    required: true
+    runner: test-runner
+    created_at: 2026-03-27T16:21:15.338Z
+    completed_at: 2026-03-27T16:21:15.338Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran kspec validate. It exited with warnings only (reference/alignment/completeness
+      warnings already present elsewhere in the repo), no schema or reference errors for this task.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-27T16:21:19.660Z
+    completed_at: 2026-03-27T16:21:19.660Z
+events:
+  - _ulid: 01KMR1HTH3ZXQDP1P90R7N7PGC
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T16:20:32.420Z
+  - _ulid: 01KMR1JJDD2RBYSRM2K22GG0CA
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMR1JHYT1QMHJQW9PMKYVJRE
+    timestamp: 2026-03-27T16:20:56.877Z
+  - _ulid: 01KMR1JKVXPWVAR43MEKP4MH43
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T16:20:58.365Z
+  - _ulid: 01KMR1JNBDWYGN3W980KRKPNC0
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMR1JMV74EWKMD681DSN86FA
+    timestamp: 2026-03-27T16:20:59.885Z
+  - _ulid: 01KMR1K4X5HA9WM8H1ZKQ9ZTXA
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-27T16:21:15.814Z
+  - _ulid: 01KMR1K6CSA72D95FR5DHWFT8W
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-27T16:21:17.337Z
+  - _ulid: 01KMR1K6CSQD6HS3W6KK8SYXGY
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T16:21:17.337Z
+  - _ulid: 01KMR1K93EJKHE1B79QXN5DE13
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-27T16:21:20.110Z
+  - _ulid: 01KMR2R5SEYTV3XT8KDKY6E8GP
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMR1JHYT1QMHJQW9PMKYVJRE
+    timestamp: 2026-03-27T16:41:29.134Z
+  - _ulid: 01KMR2RXKT2XND7MQM6X3HAR33
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMR1JHYT1QMHJQW9PMKYVJRE
+    timestamp: 2026-03-27T16:41:53.530Z
+  - _ulid: 01KMR2SAHBBJ9KZNWXE63CF16H
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMR1JMV74EWKMD681DSN86FA
+    timestamp: 2026-03-27T16:42:06.763Z
+  - _ulid: 01KMR2SJX49RTM7Y2Y4HG98QH5
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMR1JMV74EWKMD681DSN86FA
+    timestamp: 2026-03-27T16:42:15.332Z
+examined_commit: 65b59e1afcde5d4bda7e227ee4b8947c6573730a
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMMB3V7N2GC0JSPJKJYMPJPV"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMR1JHYT1QMHJQW9PMKYVJRE
+    anchor:
+      type: code
+      commit: 65b59e1afcde5d4bda7e227ee4b8947c6573730a
+      line_end: 162
+      line_start: 58
+      path: packages/daemon/src/routes/command.ts
+      side: head
+    entries:
+      - _ulid: 01KMR1JHYT8EM6ZWMJD5FWQ5VJ
+        author: "@claude"
+        body: The route mutates process-global state (process.cwd(), console.*, and the exit interceptor)
+          around each request without any cross-request serialization, so concurrent command calls
+          can execute against the wrong project or corrupt each other's captured output. I
+          reproduced this by issuing two POST /api/command requests in parallel against different
+          temp projects; on the first iteration both responses came back 500 with ENOENT for an
+          undefined path instead of returning each project's task list. Because the daemon serves
+          multiple requests concurrently, this breaks the endpoint's core correctness under normal
+          load.
+        created_at: 2026-03-27T16:20:56.410Z
+      - _ulid: 01KMR2R5AFH5YW23PTHPJZ5K2F
+        author: "@claude"
+        body: "Fixed: Added DispatchMutex class — a promise-based FIFO mutex that serializes ALL command
+          dispatches within the daemon process. Both single-command and batch routes now wrap their
+          entire execution inside dispatchMutex.run(), which ensures process.cwd(),
+          console.log/error/warn, and the exit interceptor are never concurrently mutated. The file
+          lock (withFileLock) remains inside the mutex for cross-process mutation coordination. Also
+          removed the standalone withProjectDir helper — cwd management is now inline within the
+          mutex-protected sections."
+        created_at: 2026-03-27T16:41:28.655Z
+    kind: blocker
+    resolved_at: 2026-03-27T16:41:53.084Z
+    resolved_by: "@claude"
+  - _ulid: 01KMR1JMV74EWKMD681DSN86FA
+    anchor:
+      type: code
+      commit: 65b59e1afcde5d4bda7e227ee4b8947c6573730a
+      line_end: 359
+      line_start: 145
+      path: tests/daemon-command-api.test.ts
+      side: head
+    entries:
+      - _ulid: 01KMR1JMV84QQ8B3JSAAHBM7E5
+        author: "@claude"
+        body: These tests claim AC coverage for cache updates and response parity, but they never exercise
+          either behavior. The suite constructs the route with createCommandRoutes({ pubsub }) only,
+          so getEntityCache is always undefined and the writeThrough branch at
+          packages/daemon/src/routes/command.ts:266-278 and :390-399 is skipped entirely; the
+          ac-mutation-cache-update tests only assert that a WebSocket event was broadcast. Likewise,
+          the ac-response-parity test never runs the direct CLI or compares stdout/stderr, so it
+          would still pass if the API response diverged from CLI output. This leaves two spec
+          guarantees unproven.
+        created_at: 2026-03-27T16:20:59.368Z
+      - _ulid: 01KMR2SA2RKRJP7EJ8CS1K2KSZ
+        author: "@claude"
+        body: "Fixed: Both unproven behaviors now have genuine behavioral tests. (1)
+          ac-mutation-cache-update: Tests now provide a mock EntityCacheAccessor that returns a
+          spy-instrumented RouteEntityCache. After mutating commands, the test verifies writeThrough
+          was called with the expected domains (tasks, items, inbox, etc.). A new test also verifies
+          writeThrough is NOT called for read-only commands. (2) ac-response-parity: The test now
+          runs the same command via both the API endpoint and the kspec() CLI subprocess helper,
+          then compares the parsed JSON output field-by-field (title, status, _ulid, type,
+          spec_ref). A second parity test verifies matching non-zero exitCode for failing commands."
+        created_at: 2026-03-27T16:42:06.296Z
+    kind: blocker
+    resolved_at: 2026-03-27T16:42:14.848Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-27T16:21:17.337Z
+created_at: 2026-03-27T16:20:32.420Z
+updated_at: 2026-03-27T16:42:14.848Z
+notes: []

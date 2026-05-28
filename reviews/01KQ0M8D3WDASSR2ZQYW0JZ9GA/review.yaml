@@ -1,0 +1,140 @@
+_ulid: 01KQ0M8D3WDASSR2ZQYW0JZ9GA
+slugs: []
+title: Review task-catalog-health-baseline
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full test suite passed: 2269/2269 suites, 8362 passed, 5 skipped, duration 2106.0s. Full
+      log: /tmp/kspec-test-cache/01KQ0M5N9JQ81KHNHEV0DAXSM3/d0d2d9813fc096a8.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-24T21:14:19.358Z
+    completed_at: 2026-04-24T21:14:19.358Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Informational: plain kspec validate exits 4 on current metadata with schema error
+      .kspec/modules/meta.yaml modules[0].traits.0 expected string received object, plus known
+      warnings. Branch has no code diff from dev and scoped task baseline commands were the required
+      deliverable, so this is recorded as pre-existing validation debt rather than a task
+      regression."
+    name: plain kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-24T21:14:25.981Z
+    completed_at: 2026-04-24T21:14:25.981Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Reran task-scoped baseline commands. refs --warnings-ok -v: exit 0, Tasks checked: 0,
+      References OK. alignment -v: exit 6 with 36 warnings. completeness -v: exit 6 with 494
+      warnings (1 missing AC, 238 missing own-AC coverage, 255 invalid annotations). Counts match
+      artifact."
+    name: baseline validation reruns
+    required: true
+    runner: kspec
+    created_at: 2026-04-24T21:14:29.472Z
+    completed_at: 2026-04-24T21:14:29.472Z
+events:
+  - _ulid: 01KQ0M8D3W1MK362EB5GW7W2GZ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-24T20:52:45.820Z
+  - _ulid: 01KQ0M95BM8N10NE9DWCHPQQT3
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-24T20:53:10.645Z
+  - _ulid: 01KQ0NFXE5KFG5J9S2GKMT90WB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-24T21:14:20.485Z
+  - _ulid: 01KQ0NG0MY8Z5663703H56PRS7
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KQ0NFZHJKY9T5G67CNN2N16B
+    timestamp: 2026-04-24T21:14:23.774Z
+  - _ulid: 01KQ0NG3ZJNYCFAWF47MDNZ31Z
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: plain kspec validate
+    timestamp: 2026-04-24T21:14:27.186Z
+  - _ulid: 01KQ0NG7DC147EZFCNA1722G5J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: baseline validation reruns
+    timestamp: 2026-04-24T21:14:30.700Z
+  - _ulid: 01KQ0NGPBBF27HC1FGXJMC699T
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-24T21:14:45.996Z
+  - _ulid: 01KQ0NGPBCRZ3QG0WD152XBFEM
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-24T21:14:45.996Z
+examined_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQ0JDHKHCBEZ7QN7ZZVF9ZVN"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQ0NFZHJKY9T5G67CNN2N16B
+    entries:
+      - _ulid: 01KQ0NFZHJ79C9ARQVM2JZ6G82
+        author: Jacob Chapel
+        body: "Evidence log: Files/artifacts read: kspec-agents.md, task @01KQ0JDHKHCBEZ7QN7ZZVF9ZVN, plan
+          @plan-spec-catalog-health-and-validation-trust, artifact
+          /home/chapel/Projects/kynetic-spec-dispatch/plans/cruft-baselines/spec-catalog-health-val\
+          idation-trust-baseline.md, task records @task-recursive-derive, @01KJWK89Y,
+          @remove-shadowautocommit-from-session-operations, @implement-session-branch-worktree-mode,
+          @01KKBBS7. Commands run: git diff/status/log; kspec task get/search; kspec validate --refs
+          --warnings-ok -v; kspec validate --alignment -v; kspec validate --completeness -v; kspec
+          validate; npm test. Claims verified: artifact exists in dispatch root checkout and
+          validation counts match reruns; unresolved session refs remain on the named terminal
+          tasks; @cmd-derive appears in historical task notes/activity but current spec_ref is null.
+          Categories searched: deliverable presence, baseline accuracy, overlap/task lookup
+          evidence, validation behavior, regression tests, branch diff/integration state."
+        created_at: 2026-04-24T21:14:22.642Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-24T21:14:45.995Z
+created_at: 2026-04-24T20:52:45.820Z
+updated_at: 2026-04-24T21:14:45.996Z
+notes: []

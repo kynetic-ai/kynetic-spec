@@ -1,0 +1,124 @@
+_ulid: 01KNPNZH4X7S1ES27X5XGF3AZP
+slugs: []
+title: Review task-fix-plan-filter-bidirectional (cycle 3)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed from reviewer snapshot: 2098/2098 suites, 7664 tests passed, 5 skipped, 0 failed."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-08T14:06:34.629Z
+    completed_at: 2026-04-08T14:06:34.629Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran kspec validate. Exit code 6 with project-wide pre-existing warnings only (orphaned
+      skill dir, orphaned specs, missing AC coverage, invalid AC annotation fixtures); no
+      schema/reference errors introduced by this task.
+    name: kspec validate
+    required: false
+    created_at: 2026-04-08T14:06:37.296Z
+    completed_at: 2026-04-08T14:06:37.296Z
+events:
+  - _ulid: 01KNPNZH4TXZFNVZJF132FYQ40
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-08T13:54:46.043Z
+  - _ulid: 01KNPP0J1KM9EF7BEX6E5DMD6J
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-08T13:55:19.731Z
+  - _ulid: 01KNPPN61054D1A25T234TSMW1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-08T14:06:35.552Z
+  - _ulid: 01KNPPN8KVRCHZMCBC5P4HXJ1N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-04-08T14:06:38.203Z
+  - _ulid: 01KNPPNB4SMTWPEE70Z14ZHAWF
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-08T14:06:40.793Z
+  - _ulid: 01KNPPNB4SCQGAEYZCA0S9ZMER
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-08T14:06:40.793Z
+  - _ulid: 01KNPPNET8XHJCP84AX124S1NF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNPPNDYC3M25P3PZDQVDX2MT
+    timestamp: 2026-04-08T14:06:44.552Z
+examined_commit: 0f6ce922d951cfad32553f12ac6117ef5d730376
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNP0D9JWZ00XZQJMM5G5X7XX"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNPPNDYC3M25P3PZDQVDX2MT
+    entries:
+      - _ulid: 01KNPPNDYCDR87237JE29015A3
+        author: Jacob Chapel
+        body: >-
+          Evidence log
+
+          Files read: packages/daemon/src/routes/tasks.ts, packages/web-ui/src/lib/api-static.ts,
+          src/lib/plan-summary.ts, tests/daemon-api/tasks.test.ts, tests/web-ui/api-static.test.ts,
+          tests/e2e/fixtures/project.tasks.yaml,
+          tests/e2e/fixtures/tasks/01KG0RRJCC9N4YGP991WD7XSFF/task.yaml
+
+          Commands run: git diff --stat/--name-only/--unified, kspec task get, kspec review
+          for-task/get, grep AC annotations, kspec validate, rg plan_ref/getLinkedPlanSummaryTasks,
+          nl -ba on changed files, npm test
+
+          Claims verified: previous blockers fixed; daemon now resolves full ULID/prefix/slug and
+          includes derived_tasks plus plan_ref matches; static export now compares reverse links
+          against resolved plan identity instead of raw query
+
+          Categories searched: correctness (no findings), edge cases (cross-format reverse links
+          covered, no findings), error handling (not-found returns empty, no findings), test quality
+          (behavioral tests, no source scanning), integration (daemon/static behavior aligned with
+          plan-summary logic, no findings)
+        created_at: 2026-04-08T14:06:43.660Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-08T14:06:40.793Z
+created_at: 2026-04-08T13:54:46.045Z
+updated_at: 2026-04-08T14:06:43.660Z
+notes: []

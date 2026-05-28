@@ -1,0 +1,141 @@
+_ulid: 01KM4ZGKRHFZRRABZ0PJPGY8X2
+slugs: []
+title: Review @01KM4KPPDWB2PQ1YQNYQDK3SJH
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 289 files passed, 6654 tests passed, 3 skipped, 0 failed.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-20T06:44:19.055Z
+    completed_at: 2026-03-20T06:44:19.055Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Changed AC ac-item-ac-id-arg-consistency is annotated in tests/batch-schema.test.ts and
+      the rendered docs now match the command signature.
+    name: AC coverage
+    required: true
+    created_at: 2026-03-20T06:44:22.126Z
+    completed_at: 2026-03-20T06:44:22.126Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Fails on pre-existing repo-wide meta.yaml broken relates_to refs plus existing
+      alignment/completeness warnings unrelated to the branch diff; no task-specific validation
+      regression observed.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-20T06:44:25.233Z
+    completed_at: 2026-03-20T06:44:25.233Z
+events:
+  - _ulid: 01KM4ZGKRGJA650ZC2VS14D0FG
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-20T06:39:21.361Z
+  - _ulid: 01KM4ZJAMXT1A1Z9MZK9HNPX85
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-20T06:40:17.566Z
+  - _ulid: 01KM4ZSNX387GKBESHTXPH7H7B
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM4ZSNKAS4KGDPGNW9000JC5
+    timestamp: 2026-03-20T06:44:18.467Z
+  - _ulid: 01KM4ZSPQPFRYMYMW2S908Y3VE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-20T06:44:19.318Z
+  - _ulid: 01KM4ZSSPJ8NZ2ST593JR6YD7Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage
+    timestamp: 2026-03-20T06:44:22.354Z
+  - _ulid: 01KM4ZSWQQF5ME95KD2VGV4MZJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-03-20T06:44:25.463Z
+  - _ulid: 01KM4ZTBP26J0RCCNNR37D2X73
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-20T06:44:40.770Z
+  - _ulid: 01KM4ZTBP2Y18PDA1NRZ6S4Q4D
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-20T06:44:40.770Z
+examined_commit: 50ebf0b9ccf89045e5c51b97347f276509a4091e
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM4KPPDWB2PQ1YQNYQDK3SJH"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM4ZSNKAS4KGDPGNW9000JC5
+    entries:
+      - _ulid: 01KM4ZSNKABDVPZKZ0FSN7KNP2
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          Files read: src/cli/commands/item.ts, tests/batch-schema.test.ts,
+          templates/skills/writing-specs/SKILL.md, .agents/skills/kspec-writing-specs/SKILL.md,
+          tests/cli-plan.test.ts
+
+          Commands run: git diff --name-only dev...HEAD; git show --stat ea83d724a; git show --stat
+          50ebf0b9c; kspec item get @item-ac; rg -n "AC: @item-ac|AC: @trait-" tests; kspec
+          validate; npm test
+
+          Claims verified: confirmed item ac remove now exposes positional arg metadata as id in
+          src/cli/commands/item.ts; confirmed batch validation accepts id and rejects legacy acId
+          with suggestion; confirmed rendered writing-specs snapshot now documents item ac remove
+          <ref> <id>; confirmed full test suite passes on this snapshot
+
+          Categories searched: correctness (no issue), test quality (no issue), integration (no
+          issue), edge cases (legacy acId suggestion covered), error handling (legacy arg rejected
+          with suggestion)
+        created_at: 2026-03-20T06:44:18.154Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-20T06:44:40.770Z
+created_at: 2026-03-20T06:39:21.361Z
+updated_at: 2026-03-20T06:44:40.770Z
+notes: []

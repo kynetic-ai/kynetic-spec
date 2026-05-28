@@ -1,0 +1,158 @@
+_ulid: 01KQ0VT28QQQ5AK2RF7VMY106X
+slugs: []
+title: Review repair broken task spec references (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: references OK. Files checked: 8; items checked: 606; tasks checked: 0 (known
+      validation read-path limitation for task records)."
+    name: kspec validate --refs --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-04-24T23:18:03.600Z
+    completed_at: 2026-04-24T23:18:03.600Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec task list --json plus kspec item list --json --limit 10000 with ULID-prefix
+      matching: 1415 tasks, 606 items, 0 unresolved task spec_ref values. Watched old refs
+      @cmd-derive and @session-remove-shadow-commits have no task matches; @session-branch-worktree
+      now resolves."
+    name: task spec_ref resolution audit
+    required: true
+    runner: node+kspec
+    created_at: 2026-04-24T23:18:09.086Z
+    completed_at: 2026-04-24T23:18:09.086Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "After NODE_ENV=development npm ci installed dev deps, NODE_ENV=development npm test
+      passed: 2269/2269 suites, 8362/8367 tests passed, 5 skipped. Full log:
+      /tmp/kspec-test-cache/01KQ0VRMYM4GEGHXZ2RCX969Q7/d0d2d9813fc096a8.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-24T23:18:14.561Z
+    completed_at: 2026-04-24T23:18:14.561Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Optional full validation still fails on pre-existing repo-wide debt: meta.yaml traits
+      schema error, orphan skill dir warning, alignment/completeness warnings. References are OK and
+      task-specific ref audit passed."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-24T23:18:19.764Z
+    completed_at: 2026-04-24T23:18:19.764Z
+events:
+  - _ulid: 01KQ0VT28Q4HFTYDJ8Z500SPCE
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-24T23:04:44.567Z
+  - _ulid: 01KQ0VTDCK1BJFQR4Z8XWJW8MW
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-24T23:04:55.955Z
+  - _ulid: 01KQ0WJFNXFWCFV5WA5BZY21KD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --refs --warnings-ok
+    timestamp: 2026-04-24T23:18:04.734Z
+  - _ulid: 01KQ0WJMZ25F03MFGVT6NH52RC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: task spec_ref resolution audit
+    timestamp: 2026-04-24T23:18:10.146Z
+  - _ulid: 01KQ0WJTAS0PHESENEV69RAWQ6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-24T23:18:15.641Z
+  - _ulid: 01KQ0WJZDKAJ2R0W1S8RQKNSWY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-24T23:18:20.851Z
+  - _ulid: 01KQ0WKD9WS0THZGK5CM0WKWRW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KQ0WKC8ATVGHA9HQWV0CSWSS
+    timestamp: 2026-04-24T23:18:35.069Z
+  - _ulid: 01KQ0WKSZKQGRANR02WM5J3EYB
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-24T23:18:48.051Z
+  - _ulid: 01KQ0WKSZKJ68W50P9X6XN3WT1
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-24T23:18:48.051Z
+examined_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQ0JDHZQ4H04WBFWE7WMR6GV"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQ0WKC8ATVGHA9HQWV0CSWSS
+    entries:
+      - _ulid: 01KQ0WKC8ATAB576YPC22HEN16
+        author: Jacob Chapel
+        body: "Review evidence log: Files/records read: kspec-agents.md; prior review
+          @01KQ0PJZCH78WBN9PN2CS9S5CA; task @01KQ0JDHZQ4H04WBFWE7WMR6GV; repaired tasks
+          @task-recursive-derive, @remove-shadowautocommit-from-session-operations,
+          @implement-session-branch-worktree-mode, @01KKBBS7; specs @validation, @ref-validation,
+          @derive-commands, @derive-command, @session-events, @session-branch-worktree;
+          tests/session-branch-worktree.test.ts. Commands run: git status/rev-parse/diff; kspec
+          review/task/item/search/list/validate commands; task spec_ref resolution audit; rg AC
+          annotations; npm test (initial env failure); NODE_ENV=development npm ci;
+          NODE_ENV=development npm test. Claims verified: prior blockers resolved by retargeting
+          @task-recursive-derive to @derive-commands and @implement-session-branch-worktree-mode to
+          recreated @session-branch-worktree; all task spec_refs resolve; task-specific ref
+          validation passes. Categories searched: correctness, spec alignment, old-ref edge cases,
+          test annotations, validation/test gates, integration readiness. No blocking findings."
+        created_at: 2026-04-24T23:18:33.994Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-24T23:18:48.051Z
+created_at: 2026-04-24T23:04:44.567Z
+updated_at: 2026-04-24T23:18:48.051Z
+notes: []

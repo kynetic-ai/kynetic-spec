@@ -1,0 +1,155 @@
+_ulid: 01KR6N9QQNADBTGAQNCP5GEW1J
+slugs: []
+title: Review task-tighten-daemon-hardening-specs
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed. Existing reference warnings only; touched
+      specs were not implicated.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-05-09T15:33:07.391Z
+    completed_at: 2026-05-09T15:33:07.391Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed. @daemon-test-startup-failure-hygiene and
+      @daemon-test-guardrail-precision both report current status in_progress and expected status
+      in_progress.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-05-09T15:33:11.141Z
+    completed_at: 2026-05-09T15:33:11.141Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test passed: 2413 suites passed; 8966 tests passed, 5 skipped of 8971; duration
+      2033.8s. Full log /tmp/kspec-test-cache/01KR6N8QP8VRX1V3T5276TDSGT/baaa6837624eb58f.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-09T15:33:15.104Z
+    completed_at: 2026-05-09T15:33:15.104Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check dev...HEAD passed; source tree diff against dev is empty for this
+      spec-only task.
+    name: git diff check
+    required: true
+    runner: git
+    created_at: 2026-05-09T15:33:31.314Z
+    completed_at: 2026-05-09T15:33:31.314Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files/specs read: kspec-agents.md; task @01KR6M6SW9QGVJWG3VQF4WDT6C; specs
+      @daemon-test-startup-failure-hygiene and @daemon-test-guardrail-precision; spec notes for
+      both; tests/helpers/daemon.ts lines 640-790; tools/eslint-rules/no-leaky-test-daemon.js lines
+      210-290, 360-455, 2180-2230, 2588-2608. Commands run: kspec task get; kspec item
+      get/status/notes; kspec validate --refs --warnings-ok; kspec validate --alignment
+      --warnings-ok; rg AC annotations; git diff --stat/name-only/check dev...HEAD; npm test. Claims
+      verified: new ACs present; both touched specs downgraded to in_progress; evidence notes
+      recorded; cited source gaps still match current code; no root source changes. Categories
+      searched: spec alignment, status/alignment, validation, test regression, evidence quality,
+      implementation/source context."
+    name: review evidence log
+    required: false
+    runner: codex
+    created_at: 2026-05-09T15:33:35.046Z
+    completed_at: 2026-05-09T15:33:35.046Z
+events:
+  - _ulid: 01KR6N9QQN1YWQV55MA52EER1A
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-09T15:22:06.453Z
+  - _ulid: 01KR6NAGXXPSBEV9XNW84WFD9D
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-09T15:22:32.253Z
+  - _ulid: 01KR6NXYEZA7GQWRMXXJNVPFEA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-05-09T15:33:08.703Z
+  - _ulid: 01KR6NY277DGZDMC4GHYT147KT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-05-09T15:33:12.551Z
+  - _ulid: 01KR6NY60N908JWSEK9XV5YYJ1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-09T15:33:16.437Z
+  - _ulid: 01KR6NYNV2Y18WMZSSMM47H5KA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: git diff check
+    timestamp: 2026-05-09T15:33:32.642Z
+  - _ulid: 01KR6NYSEZMBBZW1XH0DCP5WEV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-09T15:33:36.351Z
+  - _ulid: 01KR6NZ2JRA853B2WFJT23TYDN
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-09T15:33:45.688Z
+  - _ulid: 01KR6NZ2JR1KPHGCWN8SR6AT7Z
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-09T15:33:45.688Z
+examined_commit: 2ae8cbb56836d8e89dd71da20121ccffed0b615c
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR6M6SW9QGVJWG3VQF4WDT6C"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-09T15:33:45.687Z
+created_at: 2026-05-09T15:22:06.453Z
+updated_at: 2026-05-09T15:33:45.688Z
+notes: []

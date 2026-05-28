@@ -1,0 +1,189 @@
+_ulid: 01KNMMADY56C0YNMGGTQBCDG38
+slugs: []
+title: Review task-cache-aware-plans-reviews
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Completed with existing repository warning debt only (exit 6): orphaned skill dir,
+      orphaned specs, status mismatch, and longstanding AC annotation/completeness warnings. No new
+      validation error attributable to this task."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-07T18:52:37.772Z
+    completed_at: 2026-04-07T18:52:37.772Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed locally on 2026-04-07: 2092/2092 suites, 7618 passed, 5 skipped, 7623 total.
+      Duration 3092.7s. Verified worker claim that the full suite passes."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-07T18:52:51.524Z
+    completed_at: 2026-04-07T18:52:51.524Z
+events:
+  - _ulid: 01KNMMADY5VDGXJABE0PAMFAQ3
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-07T18:47:17.189Z
+  - _ulid: 01KNMMB721A96002EYE0TSSRZ5
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-07T18:47:42.913Z
+  - _ulid: 01KNMMM8FJ8SY51HABA9HGF7CM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-07T18:52:39.282Z
+  - _ulid: 01KNMMMCTYGCCKMTF1WCE80Y8M
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNMMMBAV13W6NBVVYK4JB2HW
+    timestamp: 2026-04-07T18:52:43.742Z
+  - _ulid: 01KNMMMHAJMZ0W93TXBEHNFN62
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNMMMFS578K2JA5X66Z1APWK
+    timestamp: 2026-04-07T18:52:48.338Z
+  - _ulid: 01KNMMMP18VFX50JPMFEFQQ4ZZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-07T18:52:53.160Z
+  - _ulid: 01KNMMN3JYARM7GYAE4HB3EEZ8
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-07T18:53:07.038Z
+  - _ulid: 01KNMMN3JYFJYRWHS6PZ93HJKN
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-07T18:53:07.038Z
+  - _ulid: 01KNMNRZR92DZCCKTP4QK4945C
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNMMMBAV13W6NBVVYK4JB2HW
+    timestamp: 2026-04-07T19:12:42.761Z
+  - _ulid: 01KNMNS2ACXHAG1WJ4P1AJ8W51
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNMMMFS578K2JA5X66Z1APWK
+    timestamp: 2026-04-07T19:12:45.388Z
+  - _ulid: 01KNMNSKPNJ0RS57564QK8RDS5
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNMMMFS578K2JA5X66Z1APWK
+    timestamp: 2026-04-07T19:13:03.189Z
+  - _ulid: 01KNMNSP6WDHJZFYX1SPW8EK0P
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNMMMBAV13W6NBVVYK4JB2HW
+    timestamp: 2026-04-07T19:13:05.756Z
+examined_commit: 7e7d977f1ee9fa6b316d425babd9ba06eab87328
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNMBPDRSN3PXZ81CHXBWXKTN"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNMMMBAV13W6NBVVYK4JB2HW
+    anchor:
+      type: code
+      commit: 7e7d977f1ee9fa6b316d425babd9ba06eab87328
+      line_end: 198
+      line_start: 193
+      path: src/parser/plans.ts
+      side: head
+    entries:
+      - _ulid: 01KNMMMBAV7N3PR4E8XR3D21PK
+        author: Jacob Chapel
+        body: "This cache-hit branch can return an incomplete plan list. The plans domain is intentionally
+          index-only on initial load, and individual plan details are populated on demand, so a
+          ready domain may have only some details cached. Here the loader maps the full index
+          through getPlanDetail() and returns any non-null subset as soon as at least one detail
+          exists. I reproduced that state against the submitted code with two plans on disk and only
+          one cached detail: loadPlans() returned 1 plan from cache while disk held 2. List-style
+          callers of loadPlans() will silently drop uncached plans instead of falling back to disk
+          unless the detail tier is complete."
+        created_at: 2026-04-07T18:52:42.204Z
+      - _ulid: 01KNMNRYVHT5Z533BBH4AXTNJ8
+        author: Jacob Chapel
+        body: "Fixed in 2723f2529: loadPlans() now uses cached plan data only when getPlansIndex() returns a
+          real index and every indexed plan has a populated detail record. Partial-detail and
+          null-index states now fall through to disk, and parser coverage includes both
+          regressions."
+        created_at: 2026-04-07T19:12:41.841Z
+    kind: blocker
+    resolved_at: 2026-04-07T19:13:04.822Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KNMMMFS578K2JA5X66Z1APWK
+    anchor:
+      type: code
+      commit: 7e7d977f1ee9fa6b316d425babd9ba06eab87328
+      line_end: 188
+      line_start: 183
+      path: src/parser/reviews.ts
+      side: head
+    entries:
+      - _ulid: 01KNMMMFS6GTE0J1QAZ00NA139
+        author: Jacob Chapel
+        body: "The same partial-detail bug exists for reviews. Reviews also load index first and keep detail
+          records on demand, but this code returns whatever subset of review details happens to be
+          cached once the domain is ready. I reproduced it with two review records on disk and a
+          cache that exposed both index entries but only one detail: loadReviewRecords() returned 1
+          review instead of 2. Any review list/read path that relies on loadReviewRecords() can
+          therefore hide uncached reviews after a single detail fetch unless this branch verifies
+          the detail tier is complete before returning cached data."
+        created_at: 2026-04-07T18:52:46.758Z
+      - _ulid: 01KNMNS1F7AN0C7TEKRTMZVFEX
+        author: Jacob Chapel
+        body: "Fixed in 2723f2529: loadReviewRecords() now requires a real reviews index plus complete
+          detail coverage before returning cache data. Partial-detail and null-index cache states
+          fall through to disk, with matching regression tests added."
+        created_at: 2026-04-07T19:12:44.519Z
+    kind: blocker
+    resolved_at: 2026-04-07T19:13:02.340Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-07T18:53:07.038Z
+created_at: 2026-04-07T18:47:17.189Z
+updated_at: 2026-04-07T19:13:04.822Z
+notes: []

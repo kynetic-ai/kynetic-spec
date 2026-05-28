@@ -1,0 +1,314 @@
+_ulid: 01KS8QYW7SQFY2DKWN6E894BN8
+slugs: []
+title: "Plan review: Folder-Backed Plans, Reviews, and Local Resources (cycle 5)"
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec plan import plans/folder-backed-plans-reviews-and-resources.md --dry-run succeeded
+      and reported no state changes.
+    name: Plan import dry-run
+    required: true
+    runner: kspec plan import --dry-run
+    created_at: 2026-05-22T21:04:31.103Z
+    completed_at: 2026-05-22T21:04:31.103Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --warnings-ok exited 0; schema and references are OK with existing warnings
+      only.
+    name: Project validation baseline
+    required: true
+    runner: kspec validate --warnings-ok
+    created_at: 2026-05-22T21:04:42.964Z
+    completed_at: 2026-05-22T21:04:42.964Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Cycle-1 through cycle-3 blockers and the cycle-4
+      owner-not-found/missing-file/shared-envelope code mappings are mostly addressed, but the
+      cycle-4 CLI findings also required exit behavior for each JSON failure case and the current
+      plan still does not define it.
+    name: Prior blocker verification
+    required: true
+    created_at: 2026-05-22T21:04:54.321Z
+    completed_at: 2026-05-22T21:04:54.321Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Spec update, shared folder/resource traits, and version gates precede storage managers;
+      migration precedes plan/review API, UI, static export, and docs tasks.
+    name: Dependency ordering
+    required: true
+    created_at: 2026-05-22T21:05:04.479Z
+    completed_at: 2026-05-22T21:05:04.479Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The Covers lines map each plan AC to concrete owner tasks, docs-only ACs are covered by
+      the docs task, and previously stale existing-spec references are now aligned with current
+      @plan-crud and @review-record-storage-and-identity ACs.
+    name: Coverage and references
+    required: true
+    created_at: 2026-05-22T21:05:14.911Z
+    completed_at: 2026-05-22T21:05:14.911Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Resource commands and routes are named, but CLI JSON failures still omit exit-code
+      behavior and source-file failure handling; multipart API uploads still define replace only as
+      an optional boolean text field without a wire-level representation or invalid-value response.
+    name: Command/API specificity
+    required: true
+    created_at: 2026-05-22T21:05:26.597Z
+    completed_at: 2026-05-22T21:05:26.597Z
+events:
+  - _ulid: 01KS8QYW7N9MM9BF0JZ8WNKA5Q
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-22T21:02:47.029Z
+  - _ulid: 01KS8QZB88MY8RJSKEKXBY8QPT
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-22T21:03:02.408Z
+  - _ulid: 01KS8QZRV9F1DBMK7XH1ZJWKZY
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KS8QZQ9RRNK9X6FHJYYS70P4
+    timestamp: 2026-05-22T21:03:16.329Z
+  - _ulid: 01KS8R051Z7T0ASGCN492JQZM6
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KS8R03ECEWQGFSW4P03RTQEY
+    timestamp: 2026-05-22T21:03:28.831Z
+  - _ulid: 01KS8R0HXM91B93QP95ZBV3C7V
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KS8R0GAM3R6YSYBNZ172FP3N
+    timestamp: 2026-05-22T21:03:42.004Z
+  - _ulid: 01KS8R0XV7E4RV6WY8M65M47D9
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KS8R0W7WAFRBXDE9BBXYAK9V
+    timestamp: 2026-05-22T21:03:54.215Z
+  - _ulid: 01KS8R1CSZHD0RV40B1QRXEA2F
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KS8R1B6SJDKQKCTPHMKDMMGN
+    timestamp: 2026-05-22T21:04:09.536Z
+  - _ulid: 01KS8R1R5NE3CPMV3SJRFDE8PN
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KS8R1PKKJHHJ59HVFR44D41S
+    timestamp: 2026-05-22T21:04:21.173Z
+  - _ulid: 01KS8R23DQ9TRNWKJZRASJ9YB8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan import dry-run
+    timestamp: 2026-05-22T21:04:32.695Z
+  - _ulid: 01KS8R2F00EDEFKYEMJ6R7T74W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Project validation baseline
+    timestamp: 2026-05-22T21:04:44.544Z
+  - _ulid: 01KS8R2T0M9JJ6DS864FC0PZEM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Prior blocker verification
+    timestamp: 2026-05-22T21:04:55.828Z
+  - _ulid: 01KS8R33XY6F4M7EB6P633RRNJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-05-22T21:05:05.983Z
+  - _ulid: 01KS8R3E3WFH18090JWBA92A9G
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Coverage and references
+    timestamp: 2026-05-22T21:05:16.412Z
+  - _ulid: 01KS8R3SGE9Y28776R7HARM7AW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Command/API specificity
+    timestamp: 2026-05-22T21:05:28.078Z
+  - _ulid: 01KS8R42RMFJAC25P9F57QT5Y5
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-22T21:05:37.556Z
+  - _ulid: 01KS8R42RMXTF0K2JG8E8KFE8V
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-22T21:05:37.556Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KS8QZQ9RRNK9X6FHJYYS70P4
+    anchor:
+      type: structured
+      ref: "@task-plan-resource-import-and-derive"
+      section: tasks
+    entries:
+      - _ulid: 01KS8QZQ9RG8TJ6FH8XFR6FZ90
+        author: Jacob Chapel
+        body: "The cycle-4 plan CLI blocker is only partially fixed. The task now defines JSON error codes
+          for missing plans, confirmation_required, and operation_cancelled, but it still does not
+          define exit behavior for those failures or for invalid id/path, resource_not_found,
+          resource_conflict, and entity_storage_incompatible. The prior blocker explicitly required
+          the complete CLI --json error envelope and exit behavior. Impact: automation agents can
+          implement the same JSON codes with incompatible process semantics. Exact fix: add explicit
+          exit-code behavior for every plan resource CLI failure case, including non-interactive
+          remove without --force and interactive prompt decline."
+        created_at: 2026-05-22T21:03:14.744Z
+    kind: blocker
+  - _ulid: 01KS8R03ECEWQGFSW4P03RTQEY
+    anchor:
+      type: structured
+      ref: "@task-review-screenshot-resource-ui"
+      section: tasks
+    entries:
+      - _ulid: 01KS8R03EDD7G2JKQZ2RT0ETA7
+        author: Jacob Chapel
+        body: "The cycle-4 review CLI blocker is only partially fixed. The task now defines JSON error codes
+          for missing reviews, confirmation_required, and operation_cancelled, but it still does not
+          define exit behavior for those failures or for invalid id/path, resource_not_found,
+          resource_conflict, and entity_storage_incompatible. The prior blocker explicitly required
+          the complete CLI --json error envelope and exit behavior. Impact: review resource commands
+          can diverge from plan resource commands and from automation expectations while satisfying
+          the written JSON shape. Exact fix: add explicit exit-code behavior for every review
+          resource CLI failure case, including non-interactive remove without --force and
+          interactive prompt decline."
+        created_at: 2026-05-22T21:03:27.181Z
+    kind: blocker
+  - _ulid: 01KS8R0GAM3R6YSYBNZ172FP3N
+    anchor:
+      type: structured
+      ref: "@task-plan-resource-api-ui-static"
+      section: tasks
+    entries:
+      - _ulid: 01KS8R0GANE9PEMMV99E8088EX
+        author: Jacob Chapel
+        body: "The plan resource multipart upload shape still leaves `replace` undefined at the wire level.
+          The task says POST accepts multipart/form-data with text fields plus optional boolean
+          `replace`, but multipart fields are transmitted as strings and the plan does not say
+          whether replacement is requested by field presence, `true`, `1`, or another value, nor
+          what error/status/code applies to an invalid value. Impact: API, web UI, and tests can
+          implement incompatible replacement behavior while following the same route contract. Exact
+          fix: define the accepted multipart `replace` representation and the invalid-value response
+          shape/status, or make replacement a separate route/flag with an exact contract."
+        created_at: 2026-05-22T21:03:40.373Z
+    kind: blocker
+  - _ulid: 01KS8R0W7WAFRBXDE9BBXYAK9V
+    anchor:
+      type: structured
+      ref: "@task-review-screenshot-resource-ui"
+      section: tasks
+    entries:
+      - _ulid: 01KS8R0W7WESB9JGZZKRSRQ2EM
+        author: Jacob Chapel
+        body: "The review resource multipart upload shape repeats the undefined `replace` contract. POST
+          accepts multipart/form-data with optional boolean `replace`, but the plan does not define
+          the accepted text value(s), whether field presence alone is true, or the invalid-value
+          response status/code. Impact: review resource API and UI agents can diverge from plan
+          resource behavior and from documentation. Exact fix: define the exact multipart `replace`
+          wire representation and invalid-value response, matching the plan resource API contract
+          where intended."
+        created_at: 2026-05-22T21:03:52.573Z
+    kind: blocker
+  - _ulid: 01KS8R1B6SJDKQKCTPHMKDMMGN
+    anchor:
+      type: structured
+      ref: "@task-plan-resource-import-and-derive"
+      section: tasks
+    entries:
+      - _ulid: 01KS8R1B6S3X5M25EPFNT2ZR6J
+        author: Jacob Chapel
+        body: "The plan resource add command still has an undefined JSON failure for the required
+          `<source-file>` input. The task defines errors for resource id/path, collisions, missing
+          plan/resource, confirmation, cancellation, and incompatible storage, but not for a source
+          file that is missing, unreadable, a directory, or otherwise cannot be copied. Impact:
+          agents can implement incompatible `kspec plan resource add ... --json` failures for a
+          required input path. Exact fix: define the JSON code, envelope fields, message guidance,
+          and exit behavior for source-file read/copy failures, or explicitly map these cases to an
+          existing code without conflating the source path with the destination resource path."
+        created_at: 2026-05-22T21:04:07.897Z
+    kind: blocker
+  - _ulid: 01KS8R1PKKJHHJ59HVFR44D41S
+    anchor:
+      type: structured
+      ref: "@task-review-screenshot-resource-ui"
+      section: tasks
+    entries:
+      - _ulid: 01KS8R1PKKBAEZMV704SMTFV5W
+        author: Jacob Chapel
+        body: "The review resource add command has the same undefined JSON failure for the required
+          `<source-file>` input. The task defines errors for resource id/path, collisions, missing
+          review/resource, confirmation, cancellation, and incompatible storage, but not for a
+          source file that is missing, unreadable, a directory, or otherwise cannot be copied.
+          Impact: review resource CLI behavior can diverge from plan resource CLI behavior for a
+          required argument. Exact fix: define the JSON code, envelope fields, message guidance, and
+          exit behavior for source-file read/copy failures, matching the plan command where
+          intended."
+        created_at: 2026-05-22T21:04:19.571Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-22T21:05:37.556Z
+created_at: 2026-05-22T21:02:47.033Z
+updated_at: 2026-05-22T21:05:37.556Z
+notes: []

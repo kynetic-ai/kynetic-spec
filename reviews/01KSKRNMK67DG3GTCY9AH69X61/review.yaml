@@ -1,0 +1,227 @@
+_ulid: 01KSKRNMK67DG3GTCY9AH69X61
+slugs: []
+title: Review folder-backed index consistency trait
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt --check . reported all matched files formatted (956 files)."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-05-27T04:06:21.512Z
+    completed_at: 2026-05-27T04:06:21.512Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing warning baseline: oxlint found 743 warnings and 0 errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-05-27T04:06:29.364Z
+    completed_at: 2026-05-27T04:06:29.364Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: tsc --noEmit exited 0."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-05-27T04:06:37.720Z
+    completed_at: 2026-05-27T04:06:37.720Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2582 suites, 9857 tests passed, 5 skipped. Full log:
+      /tmp/kspec-test-cache/01KSKRKXHYCV0DQQ80WWVHMVSP/3032dc9c150a8b07.log"
+    name: tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-27T04:06:45.820Z
+    completed_at: 2026-05-27T04:06:45.820Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with warnings allowed: schema/references OK; expected new trait coverage/status
+      warnings present, plus existing repo warnings."
+    name: kspec validate
+    required: true
+    runner: kspec validate --warnings-ok
+    created_at: 2026-05-27T04:06:54.316Z
+    completed_at: 2026-05-27T04:06:54.316Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md, .agents/skills/review-gates/SKILL.md,
+      .agents/skills/work-gates/SKILL.md, templates/skills/review/SKILL.md,
+      templates/skills/task-work/SKILL.md. Commands run: task get, item get/status for trait/spec
+      targets, validate --warnings-ok/--refs/--alignment/--completeness, rg AC annotations, git
+      diff/show/status, format/lint/typecheck/npm test. Claims verified: four new folder-backed
+      trait ACs exist with requested ids/text; target specs inherit @trait-folder-backed-entity-1;
+      task/task-index/task-atomic ACs preserved; full suite passed. Categories searched:
+      correctness/spec alignment/status drift, trait inheritance, AC coverage warnings, hygiene
+      gates, tests."
+    name: review evidence log
+    required: false
+    runner: manual review
+    created_at: 2026-05-27T04:07:14.376Z
+    completed_at: 2026-05-27T04:07:14.376Z
+events:
+  - _ulid: 01KSKRNMK531STWXQ4HH0NXSN0
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-27T03:46:51.622Z
+  - _ulid: 01KSKRP8E4D2FS9974FW4JM883
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-27T03:47:11.940Z
+  - _ulid: 01KSKSSD30EH85S51M5A7X7P8S
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-05-27T04:06:23.584Z
+  - _ulid: 01KSKSSMTQZQNXCBN2M50B4NB5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-05-27T04:06:31.511Z
+  - _ulid: 01KSKSSWZ9RZKQVAXQZGMDMTH4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-27T04:06:39.849Z
+  - _ulid: 01KSKST4W0BJ2E3TA7379EJP5Z
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: tests
+    timestamp: 2026-05-27T04:06:47.936Z
+  - _ulid: 01KSKSTDKHKR854DTEAAEG0AD0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-27T04:06:56.881Z
+  - _ulid: 01KSKSV15XQ6MW0S72PEM8P6HZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-27T04:07:16.925Z
+  - _ulid: 01KSKSVMJN7FE5Z93GFQS87YYC
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSKSVJ3D7ZS678AD65EVRF69
+    timestamp: 2026-05-27T04:07:36.789Z
+  - _ulid: 01KSKSW1GPT9CRTQJ647CPZBZ2
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-27T04:07:50.038Z
+  - _ulid: 01KSKSW1GPTTK6CR4VDAD4VTS7
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-27T04:07:50.038Z
+  - _ulid: 01KSKT801E0XGHQ7Z4D278M0DN
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSKSVJ3D7ZS678AD65EVRF69
+    timestamp: 2026-05-27T04:14:21.742Z
+  - _ulid: 01KSKT8CDBBCJPBFD25BNYPH0C
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSKSVJ3D7ZS678AD65EVRF69
+    timestamp: 2026-05-27T04:14:34.412Z
+examined_commit: 14e353c2e7351e94d145b6132aec06cc14f6c3b7
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KSKQXHM9FS7HX58MWZ8NECNW"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSKSVJ3D7ZS678AD65EVRF69
+    anchor:
+      type: structured
+      field: implementation
+      ref: "@trait-entity-scoped-local-resources-1"
+      section: status
+    entries:
+      - _ulid: 01KSKSVJ3E9JM915CADW50PYYG
+        author: Jacob Chapel
+        body: "MUST-FIX: @trait-entity-scoped-local-resources-1 still has implementation status
+          'implemented' while it now inherits the four newly added @trait-folder-backed-entity-1
+          index-consistency ACs. Impact: the spec status now claims the local-resource trait is
+          implemented even though the newly inherited atomic index creation/update, repair
+          convergence, and semantic-default drift requirements are intentionally unproven in this
+          task. Evidence: 'kspec item get @trait-entity-scoped-local-resources-1 --json' shows
+          traits: ['@trait-folder-backed-entity-1'] and status.implementation: 'implemented'; 'kspec
+          validate --completeness --warnings-ok' reports missing trait AC coverage for
+          @trait-entity-scoped-local-resources-1 on all four new AC ids. Either remove the
+          folder-backed trait from this trait if it should not inherit index consistency, or mark
+          this trait in_progress alongside the other affected folder-backed contracts."
+        created_at: 2026-05-27T04:07:34.254Z
+      - _ulid: 01KSKT7XFG5W6RN5F0B3E93DW3
+        author: "@claude"
+        body: "Fixed: set implementation status of @trait-entity-scoped-local-resources-1 to in_progress
+          with --no-cascade. This trait inherits the four newly added @trait-folder-backed-entity-1
+          index-consistency ACs (ac-index-entry-created-with-folder,
+          ac-indexed-mutation-updates-index, ac-index-repair-converges,
+          ac-semantic-defaults-do-not-drift) which are intentionally unproven by this task, so its
+          implementation status must match the other four affected folder-backed contracts
+          (task-directory-storage, task-index-file, folder-backed-plan-storage-1,
+          folder-backed-review-storage-1) rather than claiming 'implemented'. Verified via kspec
+          item get @trait-entity-scoped-local-resources-1 --json (status.implementation=in_progress)
+          and kspec validate --warnings-ok now lists Entity-Scoped Local Resources Trait alongside
+          the other four status-mismatch warnings produced by this task. Trait inheritance retained
+          — local resources ARE folder-backed entities, so they correctly inherit index
+          consistency."
+        created_at: 2026-05-27T04:14:19.112Z
+    kind: blocker
+    resolved_at: 2026-05-27T04:14:31.786Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-27T04:07:50.037Z
+created_at: 2026-05-27T03:46:51.622Z
+updated_at: 2026-05-27T04:14:31.786Z
+notes: []

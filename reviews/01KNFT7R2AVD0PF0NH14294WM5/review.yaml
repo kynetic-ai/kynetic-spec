@@ -1,0 +1,315 @@
+_ulid: 01KNFT7R2AVD0PF0NH14294WM5
+slugs: []
+title: Review task-add-ac-context-reuse
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: npm test -- --fresh tests/daemon-entity-cache.test.ts (31 suites, 100 tests).
+      Confirmed the manifest-change scenario in the existing cache tests still passes."
+    name: daemon entity-cache focused test
+    required: false
+    runner: npm
+    created_at: 2026-04-05T21:59:09.459Z
+    completed_at: 2026-04-05T21:59:09.459Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2069/2069 suites, 7516/7521 tests, 5 skipped. Test runner auto-built missing dist
+      artifacts before execution."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-05T21:59:12.085Z
+    completed_at: 2026-04-05T21:59:12.085Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation exited 6 with repo-wide pre-existing warnings (orphaned skill dir, orphaned
+      specs, missing AC coverage, invalid test annotations). No task-specific validation error was
+      introduced by this change.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-05T21:59:14.657Z
+    completed_at: 2026-04-05T21:59:14.657Z
+events:
+  - _ulid: 01KNFT7R2A45JAJN2FEVY00M7H
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-05T21:54:28.554Z
+  - _ulid: 01KNFT8GZ7EP9EVHTY23T4M4NE
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-05T21:54:54.055Z
+  - _ulid: 01KNFTG8PW4RG31MX79GBSMXNG
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNFTG7WXPZ5HYG8WAYWT2PCY
+    timestamp: 2026-04-05T21:59:07.740Z
+  - _ulid: 01KNFTGBARY3PW22X49JBWK4SE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: daemon entity-cache focused test
+    timestamp: 2026-04-05T21:59:10.424Z
+  - _ulid: 01KNFTGDV4MT27JYZVYABKDBKJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-05T21:59:12.996Z
+  - _ulid: 01KNFTGGDASC4VQ6AV1RQ6H309
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-04-05T21:59:15.626Z
+  - _ulid: 01KNFTGKXB5F9R3DHWNBV6KJFB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNFTGK20G1TK7RP8AQY92DJY
+    timestamp: 2026-04-05T21:59:19.211Z
+  - _ulid: 01KNFTGZKF8HDGW9ZEJ5C6SX21
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNFTGYT5Z544K5D9RQY6FK65
+    timestamp: 2026-04-05T21:59:31.183Z
+  - _ulid: 01KNFTHAPHEECCY235NAB1KPW6
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-05T21:59:42.545Z
+  - _ulid: 01KNFTHAPHE01DFCJDR14B3H4N
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-05T21:59:42.545Z
+  - _ulid: 01KNFV2YJKW74TB7MD615THTNB
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNFTG7WXPZ5HYG8WAYWT2PCY
+    timestamp: 2026-04-05T22:09:19.955Z
+  - _ulid: 01KNFV30K6BBBM4F43NCMRTQPG
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNFTG7WXPZ5HYG8WAYWT2PCY
+    timestamp: 2026-04-05T22:09:22.022Z
+  - _ulid: 01KNFV32GFWSEFNE5NQWM4DZ6T
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNFTGK20G1TK7RP8AQY92DJY
+    timestamp: 2026-04-05T22:09:23.983Z
+  - _ulid: 01KNFV34FN1WR09A4SZC8B9NBC
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNFTGK20G1TK7RP8AQY92DJY
+    timestamp: 2026-04-05T22:09:26.005Z
+  - _ulid: 01KNFV36G04ESVBM8335M49J7E
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNFTGYT5Z544K5D9RQY6FK65
+    timestamp: 2026-04-05T22:09:28.064Z
+  - _ulid: 01KNFV38F34KMZAV2YCZNCBAEZ
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNFTGYT5Z544K5D9RQY6FK65
+    timestamp: 2026-04-05T22:09:30.083Z
+examined_commit: 7179f7c7f383279482d07f1582205ae1b10534f5
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNDDJ28BG65RTB77YFQZVQDM"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNFTG7WXPZ5HYG8WAYWT2PCY
+    anchor:
+      type: structured
+      field: ac-context-reuse
+      ref: "@daemon-entity-cache"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KNFTG7WX22F9198WVNNZRN5Y
+        author: Jacob Chapel
+        body: The new AC claims that shared initialization is reused across all domain reloads in a debounce
+          window, but the current implementation still performs initialization per domain. A
+          manifest change already invalidates both "meta" and "items" in the same window (), and
+          each debounced reload independently calls  (), which in turn calls  inside  (). That means
+          the path this AC describes still does the shared setup once per domain, not once per
+          invalidation window. There is also no  annotation in the test suite. Please defer this AC
+          until the reuse behavior exists and is covered, or implement the reuse + coverage in the
+          same change.
+        created_at: 2026-04-05T21:59:06.910Z
+      - _ulid: 01KNFV2XTF5XED9AJHBZZH0MSA
+        author: Jacob Chapel
+        body: "Fixed in commit c6054304d: watcher-driven invalidations now share a debounce-cycle-scoped
+          initContext() promise, so a manifest-triggered meta+items reload reuses one initialization
+          pass instead of one per domain. Added behavioral coverage in
+          tests/daemon-entity-cache.test.ts for @daemon-entity-cache ac-context-reuse and reverified
+          with focused and full npm test runs."
+        created_at: 2026-04-05T22:09:19.183Z
+    kind: blocker
+    resolved_at: 2026-04-05T22:09:21.246Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KNFTGK20G1TK7RP8AQY92DJY
+    entries:
+      - _ulid: 01KNFTGK21P184XHTTHB9MTRWX
+        author: Jacob Chapel
+        body: >-
+          Evidence log: Files read: AGENTS.md, kspec-agents.md, src/daemon/entity-cache.ts,
+          tests/daemon-entity-cache.test.ts, package.json, kspec task/review metadata, and the
+          kspec-meta diff commit adding . Commands run: , , ✓ Validation passed
+
+          ────────────────────────────────────────
+
+          Files checked: 10
+
+          Items checked: 576
+
+          Tasks checked: 0
+
+          Meta: 11 agents, 11 workflows, 10 conventions
+
+
+          Schema: OK
+
+          References: OK
+
+
+          Reference warnings: 1
+            ⚠ @skills
+              Orphaned skill directory 'skills' has no corresponding meta entry
+              in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+          Alignment warnings: 31
+            Orphaned specs (no tasks): 30
+              ○ Test Trait
+              ○ Filterable List Commands
+              ○ Dry Run Preview Mode
+              ... and 27 more
+            Status mismatches: 1
+              ! Task Set Batch Support
+                Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+
+          Alignment stats: 413/576 specs have tasks, 412 aligned
+
+
+          Completeness warnings: 522
+            Missing acceptance criteria: 1
+              ○ @01KJN1WT - Test Trait
+            Missing own AC coverage: 235
+              ! @spec-item - Spec Item
+                Uncovered: ac-item-1, ac-item-2
+              ! @ulid-system - ULID Identifier System
+                Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+              ! @slug-system - Slug Alias System
+                Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+              ... and 232 more
+            Invalid AC annotations: 286
+              ! AC annotation references '@slug' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-ac-context-reuse-01knddj2-review/tests/ac-annotation-validation.test.ts:6
+              ! AC annotation references '@my-spec' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-ac-context-reuse-01knddj2-review/tests/ac-annotation-validation.test.ts:84
+              ! AC annotation references '@my-spec' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-ac-context-reuse-01knddj2-review/tests/ac-annotation-validation.test.ts:87
+              ! AC annotation references '@spec-a' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-ac-context-reuse-01knddj2-review/tests/ac-annotation-validation.test.ts:114
+              ! AC annotation references '@spec-b' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-ac-context-reuse-01knddj2-review/tests/ac-annotation-validation.test.ts:118
+              ... and 281 more
+          Skills: OK (10 files checked),  for AC annotations, commit
+          7179f7c7f383279482d07f1582205ae1b10534f5
+
+          Merge: d51b5485e f0b57ed46
+
+          Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+          Date:   Sat Apr 4 01:31:25 2026 -0700
+
+              Merge branch 'dispatch/task/task-fix-session-dir-fd-leak/01knbs17' into dev on the shadow-branch change, 
+          > @kynetic-ai/spec@0.12.0 test
+
+          > node scripts/test.cjs, and a focused 
+
+          > @kynetic-ai/spec@0.12.0 test
+
+          > node scripts/test.cjs --fresh tests/daemon-entity-cache.test.ts. Claims verified: the AC
+          was added on the shadow branch; manifest invalidation reloads both  and ; full and focused
+          tests pass. Categories searched: correctness, test quality, spec alignment, and
+          integration.
+        created_at: 2026-04-05T21:59:18.337Z
+      - _ulid: 01KNFV31T70VG0CNZH7C83VQCY
+        author: Jacob Chapel
+        body: Acknowledged. This cycle added the missing implementation and AC-backed test coverage, then
+          reran kspec validate (warnings only, same repo-wide pre-existing warnings) plus focused
+          and full test suites.
+        created_at: 2026-04-05T22:09:23.271Z
+    kind: nit
+    resolved_at: 2026-04-05T22:09:25.225Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KNFTGYT5Z544K5D9RQY6FK65
+    entries:
+      - _ulid: 01KNFTGYT5CYCEQRXR2TP1PQAX
+        author: Jacob Chapel
+        body: "Evidence log: Files read: AGENTS.md, kspec-agents.md, src/daemon/entity-cache.ts,
+          tests/daemon-entity-cache.test.ts, package.json, task metadata, review metadata, and the
+          kspec-meta diff that added ac-context-reuse. Commands run: kspec task get, kspec review
+          for-task, kspec validate, rg for AC annotations, git show on the shadow-branch change, npm
+          test, and npm test -- --fresh tests/daemon-entity-cache.test.ts. Claims verified: the AC
+          was added on the shadow branch; manifest invalidation reloads both meta and items; full
+          and focused tests pass. Categories searched: correctness, test quality, spec alignment,
+          and integration."
+        created_at: 2026-04-05T21:59:30.373Z
+      - _ulid: 01KNFV35PPBRETJ9BR9BKEW0HA
+        author: Jacob Chapel
+        body: Acknowledged. The branch now includes the context-reuse implementation and behavioral AC
+          coverage the review requested; verification results are captured in the task note for this
+          fix cycle.
+        created_at: 2026-04-05T22:09:27.254Z
+    kind: nit
+    resolved_at: 2026-04-05T22:09:29.320Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-05T21:59:42.545Z
+created_at: 2026-04-05T21:54:28.554Z
+updated_at: 2026-04-05T22:09:29.320Z
+notes: []

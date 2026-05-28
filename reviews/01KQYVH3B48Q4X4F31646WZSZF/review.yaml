@@ -1,0 +1,196 @@
+_ulid: 01KQYVH3B48Q4X4F31646WZSZF
+slugs: []
+title: Review task-centralize-web-ui-daemon-endpoints
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full npm test passed: 2367 suites passed; 8680 tests passed, 5 skipped; duration 1917.0s.
+      Log: /tmp/kspec-test-cache/01KQYVG6BDCT0SCT5PR9PXP65H/7638edc7ef1d1389.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-06T14:50:02.553Z
+    completed_at: 2026-05-06T14:50:02.553Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Command rerun passed: npm test -- --run tests/daemon-api/websocket-protocol.test.ts (10
+      tests passed, 17.3s). Full npm test also passed changed files. Initial combined targeted run
+      hit a timeout in an existing websocket close-code test; rerun and full suite passed."
+    name: targeted daemon/web-ui tests
+    required: true
+    runner: npm
+    created_at: 2026-05-06T14:50:13.821Z
+    completed_at: 2026-05-06T14:50:13.821Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate: schema/references OK; exited 6 for repository-wide warnings
+      (reference/alignment/completeness warnings pre-existing in this snapshot), no validation
+      errors."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-06T14:50:24.125Z
+    completed_at: 2026-05-06T14:50:24.125Z
+events:
+  - _ulid: 01KQYVH3B4FYP1Q7BD0T7WHYE2
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-06T14:37:03.716Z
+  - _ulid: 01KQYVHFXNKW4WGPHCXAQB5PG9
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-06T14:37:16.597Z
+  - _ulid: 01KQYVXJVXRCN65ACQZQCKE6JH
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQYVXHH5P1YVDYC55RKMJ8JP
+    timestamp: 2026-05-06T14:43:52.829Z
+  - _ulid: 01KQYW8X4EAQGR8C266TMCFCDK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-06T14:50:03.790Z
+  - _ulid: 01KQYW984298XXJP8R5JSVJN14
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted daemon/web-ui tests
+    timestamp: 2026-05-06T14:50:15.042Z
+  - _ulid: 01KQYW9J79T6QJ1AEW6G1PYTHC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-06T14:50:25.385Z
+  - _ulid: 01KQYW9Z3M547VYA0TP96EE62T
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KQYW9XVSG9083MFGEZ0W6CWS
+    timestamp: 2026-05-06T14:50:38.580Z
+  - _ulid: 01KQYWAA8A1DEB0V8QMY0NFJN3
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-06T14:50:49.994Z
+  - _ulid: 01KQYWAA8AMCC2F94M4K9XM62V
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-06T14:50:49.994Z
+  - _ulid: 01KQYYNV1SCHBY438X1QF8EKVW
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQYVXHH5P1YVDYC55RKMJ8JP
+    timestamp: 2026-05-06T15:32:04.793Z
+  - _ulid: 01KQYYNY0Y52BDR74BX571GMCF
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQYVXHH5P1YVDYC55RKMJ8JP
+    timestamp: 2026-05-06T15:32:07.838Z
+examined_commit: 4603717540f7bb2e42ae700d74115f8d990a1422
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQWZZJ3RF0881VRCVS1H7843"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQYVXHH5P1YVDYC55RKMJ8JP
+    anchor:
+      type: code
+      commit: 4603717540f7bb2e42ae700d74115f8d990a1422
+      line_end: 335
+      line_start: 325
+      path: packages/daemon/src/server.ts
+      side: head
+    entries:
+      - _ulid: 01KQYVXHH56SVRVAFH6PAK03DS
+        author: Jacob Chapel
+        body: "MUST-FIX: production same-origin WebSockets are rejected when the daemon UI is opened through
+          an accepted hostname that is not the advertised connect host. With the default endpoint,
+          buildAllowedOrigins({ apiUrl: 'http://127.0.0.1:3456', connectHost: '127.0.0.1' }) yields
+          ['http://127.0.0.1:3456', 'http://127.0.0.1:5173', 'http://localhost:5173'], and
+          isAllowedOrigin('http://localhost:3456', origins) is false. The daemon still accepts Host:
+          localhost, and constants.ts uses window.location.host in production, so a user opening
+          http://localhost:3456 gets a WebSocket to ws://localhost:3456/ws with Origin
+          http://localhost:3456 and the new beforeHandle check rejects it. This violates
+          @api-contract ac-websocket-origin / task requirement to preserve production same-origin
+          behavior; allow same-origin based on the request Host or include equivalent daemon-port
+          loopback origins without widening to wildcard."
+        created_at: 2026-05-06T14:43:51.461Z
+      - _ulid: 01KQYYNSTFSS38FC40S3JRNZG4
+        author: "@claude"
+        body: "Fixed: buildAllowedOrigins now adds http://localhost:<daemon-port>,
+          http://127.0.0.1:<daemon-port>, and http://[::1]:<daemon-port> as same-origin loopback
+          aliases. The daemon's localhostOnly middleware always accepts Host:
+          localhost/127.0.0.1/::1, so mirroring those aliases on the daemon port matches the actual
+          host allow-list and preserves production same-origin across IPv4/IPv6 fallback and
+          developer-typed `localhost` URLs without widening to wildcard. Added unit coverage for the
+          new origins (server.test.ts) and an end-to-end WS-upgrade regression test
+          (websocket-protocol.test.ts) that exercises the exact failure case
+          (http://localhost:<daemon-port> origin against a 127.0.0.1-bound daemon)."
+        created_at: 2026-05-06T15:32:03.535Z
+    kind: blocker
+    resolved_at: 2026-05-06T15:32:06.663Z
+    resolved_by: "@claude"
+  - _ulid: 01KQYW9XVSG9083MFGEZ0W6CWS
+    entries:
+      - _ulid: 01KQYW9XVS16YZQP168N4NR74J
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: packages/daemon/src/server.ts,
+          packages/web-ui/src/lib/constants.ts, packages/web-ui/src/lib/daemon-endpoint-host.ts,
+          packages/web-ui/vite.config.ts, src/daemon-shared/endpoint.ts,
+          tests/daemon-api/server.test.ts, tests/daemon-api/websocket-protocol.test.ts,
+          tests/web-ui/daemon-endpoint-host-parity.test.ts,
+          tests/web-ui/dev-server-daemon-endpoint.test.ts. Commands run: kspec task get, kspec item
+          get @daemon-network-endpoint-contract/@api-contract/@web-ui, kspec validate, git
+          diff/stat/log, AC annotation search, targeted npm test command, isolated
+          websocket-protocol rerun, full npm test, and a node snippet confirming localhost
+          same-origin is rejected by isAllowedOrigin. Claims verified: dev endpoint URLs use daemon
+          metadata/env formatting; CORS/WS origin allow-list is derived from endpoint config;
+          production same-origin regression found for localhost daemon-port access. Categories
+          searched: correctness, edge cases, error handling, security/origin checks, test quality,
+          integration."
+        created_at: 2026-05-06T14:50:37.305Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-06T14:50:49.994Z
+created_at: 2026-05-06T14:37:03.716Z
+updated_at: 2026-05-06T15:32:06.663Z
+notes: []

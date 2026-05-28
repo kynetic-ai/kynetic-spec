@@ -1,0 +1,164 @@
+_ulid: 01KMZPGH19GJS0YR1D9Y580KBE
+slugs: []
+title: Review task-fix-loading-page-e2e (cycle 4)
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run test:e2e -- tests/e2e/dashboard.spec.ts tests/e2e/agents.spec.ts
+      tests/e2e/automation.spec.ts => 75 passed, 11 skipped, 0 failed.
+    name: targeted e2e
+    required: true
+    runner: playwright
+    created_at: 2026-03-30T15:57:03.329Z
+    completed_at: 2026-03-30T15:57:03.329Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with warnings only: orphaned skill dir, alignment/completeness warnings unrelated
+      to this task; no schema/reference errors."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-30T15:57:05.332Z
+    completed_at: 2026-03-30T15:57:05.332Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Two fresh npm test runs failed in untouched dispatch suites with different tests
+      (dispatch-workspace-registry, dispatch-runtime-bootstrap-contract, agent-dispatch-engine).
+      Focused reruns of tests/dispatch-workspace-registry.test.ts passed on both this branch and
+      dev, so this currently reads as unstable unrelated baseline noise rather than a demonstrated
+      regression from the E2E changes.
+    name: full npm test
+    required: false
+    runner: npm
+    created_at: 2026-03-30T15:57:07.339Z
+    completed_at: 2026-03-30T15:57:07.339Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: After targeted E2E verification, npm test -- --fresh
+      tests/dispatch-workspace-registry.test.ts passed on this branch (27 tests) and in a disposable
+      dev worktree at 4696b19c2dbf188613c651e9d1698e5203f9ccfc (27 tests).
+    name: focused dispatch follow-up
+    required: false
+    runner: npm
+    created_at: 2026-03-30T15:57:09.395Z
+    completed_at: 2026-03-30T15:57:09.395Z
+events:
+  - _ulid: 01KMZPGH18WRD7GMJQX2DVGTHH
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-30T15:41:31.048Z
+  - _ulid: 01KMZPGSN38ANP5C8SX3CER8P6
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-30T15:41:39.875Z
+  - _ulid: 01KMZQCY61QE34Y2QSH095BR98
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMZQCXHVYXFVWPQTGV22SFTC
+    timestamp: 2026-03-30T15:57:02.017Z
+  - _ulid: 01KMZQD03JJRGC79NX85CGTJWJ
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted e2e
+    timestamp: 2026-03-30T15:57:03.987Z
+  - _ulid: 01KMZQD20Y0CVNQ8775QFMPHMD
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-30T15:57:05.950Z
+  - _ulid: 01KMZQD40HZ2PMZPFDR88FTVP2
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: full npm test
+    timestamp: 2026-03-30T15:57:07.986Z
+  - _ulid: 01KMZQD62J5HKG0H7ZE0Z55046
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused dispatch follow-up
+    timestamp: 2026-03-30T15:57:10.099Z
+  - _ulid: 01KMZQDGTT50SNKTTWMD0R2G04
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-30T15:57:21.114Z
+  - _ulid: 01KMZQDGTT3HH86JBA25PXN6H7
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-30T15:57:21.114Z
+examined_commit: 436d68efcd40fabede0ac9afaf82a2af427a931f
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMZ1BTVFQCM2XMFZPER1E45Z"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMZQCXHVYXFVWPQTGV22SFTC
+    entries:
+      - _ulid: 01KMZQCXHW62NEC85MQBNXV97Q
+        author: Test User
+        body: >-
+          Evidence log:
+
+          Files read: AGENTS.md, kspec-agents.md, tests/e2e/agents.spec.ts,
+          tests/e2e/automation.spec.ts, tests/e2e/dashboard.spec.ts,
+          tests/e2e/fixtures/test-base.ts, packages/daemon/src/index.ts,
+          packages/daemon/src/server.ts, packages/daemon/src/pid.ts, src/cli/commands/serve.ts,
+          tests/dispatch-workspace-registry.test.ts.
+
+          Commands run: git diff/stat, kspec task get, kspec review for-task/get, kspec item get
+          @e2e-test-daemon-isolation, kspec validate, targeted E2E run, full npm test twice, focused
+          dispatch reruns on head, focused dispatch rerun on dev.
+
+          Claims verified: the standalone daemon entry writes the isolated PID file used by scoped
+          `kspec serve stop`; the dashboard/agents/automation E2E specs pass behaviorally after
+          these changes.
+
+          Categories searched: correctness, integration, test quality, teardown semantics,
+          timing/readiness behavior, unrelated full-suite regressions.
+        created_at: 2026-03-30T15:57:01.372Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-30T15:57:21.113Z
+created_at: 2026-03-30T15:41:31.049Z
+updated_at: 2026-03-30T15:57:21.114Z
+notes: []

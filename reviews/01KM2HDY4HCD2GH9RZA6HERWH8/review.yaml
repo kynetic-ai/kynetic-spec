@@ -1,0 +1,158 @@
+_ulid: 01KM2HDY4HCD2GH9RZA6HERWH8
+slugs: []
+title: Review task-ralph-migration-guide
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Reviewed current origin/dev..HEAD surface (29 files, 231 insertions/203 deletions). Diff
+      is scoped to ralph cleanup: removed ralph CLI stub, switched runtime config shape to agent
+      with legacy alias support, updated docs/templates/tests, and no unrelated daemon/UI drift
+      remains."
+    name: manual scope
+    required: true
+    runner: manual
+    created_at: 2026-03-19T07:59:16.508Z
+    completed_at: 2026-03-19T07:59:16.508Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fails on pre-existing repo baseline issues unrelated to this task: 3 reference errors in
+      .kspec/modules/meta.yaml plus long-standing completeness/alignment warnings. No new task-local
+      validate regression found on the reviewed diff."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-19T07:59:17.096Z
+    completed_at: 2026-03-19T07:59:17.096Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran full npm test in this worktree. Test runner completed after rebuilding missing
+      dependencies/dist and emitted passing output across the full suite, including changed coverage
+      areas (config parsing, removed ralph command guidance, setup/native guard migration, dispatch
+      entrypoint resolution).
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-19T07:59:17.743Z
+    completed_at: 2026-03-19T07:59:17.743Z
+events:
+  - _ulid: 01KM2HDY4G4RYX25X3KFW0SEQS
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-19T07:54:44.752Z
+  - _ulid: 01KM2HF1VE220NC6ERG6CJ1D98
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-19T07:55:21.326Z
+  - _ulid: 01KM2HN6X6D8WNZ35E9KBEHWPZ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM2HN6PWDG8QWGV6QD6CGPDA
+    timestamp: 2026-03-19T07:58:43.110Z
+  - _ulid: 01KM2HP7Q1NW5W8BM3TB38J2AM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: manual scope
+    timestamp: 2026-03-19T07:59:16.705Z
+  - _ulid: 01KM2HP88XDPCD0CWB4Y18YQNK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-03-19T07:59:17.278Z
+  - _ulid: 01KM2HP8XKT6R9TSMNGR89RPJG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-19T07:59:17.939Z
+  - _ulid: 01KM2HP9J5S51NQFZX9Y54PK5W
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-19T07:59:18.597Z
+  - _ulid: 01KM2HP9J5GNK53XJQD608R4TT
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-19T07:59:18.597Z
+examined_commit: 146e2709913aa6c8f2e597da2e98c9d224b4255d
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KJP279FYHBM6995ZVMYGM7M2"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM2HN6PWDG8QWGV6QD6CGPDA
+    entries:
+      - _ulid: 01KM2HN6PWC3FK40A6CCV70F7G
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          - Files read: AGENTS.md; kspec-agents.md; src/parser/config.ts; src/cli/index.ts;
+          src/cli/commands/index.ts; src/cli/commands/setup.ts; src/agent-runtime/dispatch.ts;
+          src/strings/errors.ts; src/sessions/store.ts; src/sessions/types.ts;
+          templates/agents-sections/06-agent-dispatch-mode.md; tests/parser/config.test.ts;
+          tests/ralph-replacement.test.ts; tests/agent-dispatch-engine.test.ts;
+          tests/cli-agent-commands.test.ts; tests/triage-parser.test.ts; src/parser/setup-status.ts.
+
+          - Commands run: kspec task get @01KJP279FYHBM6995ZVMYGM7M2; kspec review
+          add/open/get/for-task; git diff --stat
+          b0d1b7932b5096c72399b0f6e69bb310e3edb33d..146e2709913aa6c8f2e597da2e98c9d224b4255d; git
+          diff --stat origin/dev..HEAD; git diff origin/dev..HEAD -- <changed files>; git log
+          --oneline --decorate --graph --max-count=20 --all; git fetch origin; kspec item get
+          @ralph-replacement; kspec validate; npm test; node dist/cli/index.js ralph run; rg -n
+          "config\.ralph|RalphConfigSchema|ralphLoop|06-ralph-loop|Ralph loop|ralph loop|kspec
+          ralph" src tests templates packages docs AGENTS.md kspec.config.yaml .agents .factory;
+          node probes for loadProjectConfig alias resolution.
+
+          - Claims verified: `kspec ralph` now errors as a removed command with migration guidance;
+          `agent:` config is the resolved runtime shape while legacy `ralph:` still aliases
+          correctly inside a git project; current origin/dev..HEAD diff is scoped to the cleanup
+          task rather than the prior unrelated daemon/UI surface.
+
+          - Categories searched: correctness (no blocker found after alias/runtime checks);
+          compatibility (legacy `ralph:` config still works, intentional old script names remain
+          only for migration detection); test quality (updated coverage exists for config alias and
+          removed-command behavior); integration (dispatch entrypoint resolution now reads
+          config.agent and matches kspec.config.yaml).
+        created_at: 2026-03-19T07:58:42.908Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-19T07:59:18.597Z
+created_at: 2026-03-19T07:54:44.753Z
+updated_at: 2026-03-19T07:59:18.597Z
+notes: []

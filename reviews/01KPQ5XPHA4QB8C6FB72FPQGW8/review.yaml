@@ -1,0 +1,307 @@
+_ulid: 01KPQ5XPHA4QB8C6FB72FPQGW8
+slugs: []
+title: Review task-docs-section-scaffolding
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran the full test suite from the review snapshot. The run streamed passing results across
+      the suite, including tests/web-ui-docs-rendering.test.ts, with no failing suites observed
+      during review.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-21T04:55:54.733Z
+    completed_at: 2026-04-21T04:55:54.733Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      ✗ Validation failed
+
+      ────────────────────────────────────────
+
+      Files checked: 10
+
+      Items checked: 600
+
+      Tasks checked: 0
+
+      Meta: 12 agents, 11 workflows, 11 conventions
+
+
+      Schema errors: 1
+        ✗ /home/chapel/Projects/kynetic-spec-dispatch/.kspec/modules/meta.yaml:modules[0].traits.0
+          Expected string, received object
+      References: OK
+
+
+      Reference warnings: 1
+        ⚠ @skills
+          Orphaned skill directory 'skills' has no corresponding meta entry
+          in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+      Alignment warnings: 35
+        Orphaned specs (no tasks): 33
+          ○ Test Trait
+          ○ Filterable List Commands
+          ○ Dry Run Preview Mode
+          ... and 30 more
+        Status mismatches: 2
+          ! Task Set Batch Support
+            Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+          ! Concurrent Read Command Execution
+            Spec "Concurrent Read Command Execution" status is "implemented" but should be "in_progress" based on task progress
+
+      Alignment stats: 434/600 specs have tasks, 432 aligned
+
+
+      Completeness warnings: 498
+        Missing acceptance criteria: 1
+          ○ @01KJN1WT - Test Trait
+        Missing own AC coverage: 242
+          ! @docs-search - Docs Search
+            Uncovered: ac-1, ac-2, ac-3
+          ! @docs-getting-started-section - Getting Started Section
+            Uncovered: ac-1, ac-2, ac-3
+          ! @docs-concepts-section - Concepts Section
+            Uncovered: ac-1, ac-2, ac-3
+          ... and 239 more
+        Invalid AC annotations: 255
+          ! AC annotation references '@01KJE3T7' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-section-scaffolding-01kppn42-review/tests/agent-detection.test.ts:43
+          ! AC annotation references '@01KJE3T7' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-section-scaffolding-01kppn42-review/tests/agent-detection.test.ts:61
+          ! AC annotation references '@01KJE3T7' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-section-scaffolding-01kppn42-review/tests/agent-detection.test.ts:75
+          ! AC annotation references '@01KJE3T7' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-section-scaffolding-01kppn42-review/tests/agent-detection.test.ts:88
+          ! AC annotation references '@ui-agent-dispatch ac-8' but @ui-agent-dispatch has no acceptance criterion 'ac-8'
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-section-scaffolding-01kppn42-review/tests/agent-dispatch-engine.test.ts:4965
+          ... and 250 more
+      Skills: OK (10 files checked) fails on both the reviewed snapshot and integration base
+      9336acd81a8e97f655a484bf98104089cde47c9f with the same pre-existing schema error at
+      .kspec/modules/meta.yaml: modules[0].traits[0] Expected string, received object. Not
+      introduced by this task.
+    name: kspec validate (base comparison)
+    required: false
+    runner: kspec
+    created_at: 2026-04-21T04:56:06.079Z
+    completed_at: 2026-04-21T04:56:06.079Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: docs/getting-started/tutorial.md;
+      docs/{getting-started,guides,concepts,troubleshooting,release-notes}/index.md;
+      packages/web-ui/src/routes/docs/+page.svelte;
+      packages/web-ui/src/routes/docs/[...slug]/+page.svelte;
+      packages/web-ui/src/lib/{docs.ts,utils/docs-utils.ts,utils/docs-markdown.ts};
+      packages/web-ui/{vite-plugin-docs.ts,vite.config.ts}; tests/web-ui-docs-rendering.test.ts;
+      tests/e2e/docs.spec.ts. Commands run: git diff/stat/name-only vs base; kspec task get; kspec
+      item get; kspec validate on head and base; rg for AC annotations and docs helpers; npm test;
+      npx tsx checks for rendered INSTALL/AGENTS links; manifest slug inspection via docsPlugin.
+      Claims verified: rendered out-of-tree links from tutorial now point under /docs/; generated
+      docs manifest contains section/index slugs but no bare section slug. Categories searched:
+      correctness, routing, docs-link resolution, test coverage, integration."
+    name: review evidence
+    required: false
+    runner: manual
+    created_at: 2026-04-21T04:56:11.395Z
+    completed_at: 2026-04-21T04:56:11.395Z
+events:
+  - _ulid: 01KPQ5XPHA9SYGE2RBF46MKCJD
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-21T04:49:05.066Z
+  - _ulid: 01KPQ5YQN0492MGS0DPSYMSCEE
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-21T04:49:38.976Z
+  - _ulid: 01KPQ6A4QY6JXZDAF3GQ0PNFDX
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPQ6A3RF5QBGJZ3M2PR4CZ7Y
+    timestamp: 2026-04-21T04:55:52.830Z
+  - _ulid: 01KPQ6A7MTK18X6R7WJ2VZ6HBD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-21T04:55:55.802Z
+  - _ulid: 01KPQ6AAQ7PXDW2YQ7V7A7GBJJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPQ6A9KSPB844VM7TDCWJXWH
+    timestamp: 2026-04-21T04:55:58.951Z
+  - _ulid: 01KPQ6AJR13D7G87EGGK6AJNS7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate (base comparison)
+    timestamp: 2026-04-21T04:56:07.170Z
+  - _ulid: 01KPQ6AQYQC8QKDNKJG51A8Y52
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence
+    timestamp: 2026-04-21T04:56:12.503Z
+  - _ulid: 01KPQ6BJCTV1ZET4T6FC4CPEQ7
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPQ6A3RF5QBGJZ3M2PR4CZ7Y
+    timestamp: 2026-04-21T04:56:39.578Z
+  - _ulid: 01KPQ6BQVK0PPWF11G41KS64EN
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPQ6A9KSPB844VM7TDCWJXWH
+    timestamp: 2026-04-21T04:56:45.171Z
+  - _ulid: 01KPQ6C2XF8M74W38N3CXGY73S
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-21T04:56:56.495Z
+  - _ulid: 01KPQ6C2XFN7DST69QDGC8VXX5
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-21T04:56:56.495Z
+  - _ulid: 01KPQ7SWK8EZR93S7A4WBQ1KR9
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPQ6A3RF5QBGJZ3M2PR4CZ7Y
+    timestamp: 2026-04-21T05:21:57.352Z
+  - _ulid: 01KPQ7T1TWQ98J73BT2TDCJDXP
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPQ6A9KSPB844VM7TDCWJXWH
+    timestamp: 2026-04-21T05:22:02.717Z
+  - _ulid: 01KPQ7TAEKQFB7Z6A2S5DHP169
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPQ6A3RF5QBGJZ3M2PR4CZ7Y
+    timestamp: 2026-04-21T05:22:11.539Z
+  - _ulid: 01KPQ7TFQQ78424JKACZ95JDPE
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPQ6A9KSPB844VM7TDCWJXWH
+    timestamp: 2026-04-21T05:22:16.951Z
+examined_commit: e84d2e6c24c173fcc9d4cfec78dd7aa5b486d598
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KPPN42NCR77J23TWYP63VXDH"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPQ6A3RF5QBGJZ3M2PR4CZ7Y
+    anchor:
+      type: code
+      commit: e84d2e6c24c173fcc9d4cfec78dd7aa5b486d598
+      line_end: 22
+      line_start: 22
+      path: docs/getting-started/tutorial.md
+      side: head
+    entries:
+      - _ulid: 01KPQ6A3RFGJQRMP6B1ZAQVQ93
+        author: Jacob Chapel
+        body: Moving the tutorial into docs/getting-started/ left its repo-root markdown links one level too
+          shallow.  at line 22 and  at line 145 now render to  and  instead of the repo-root files,
+          so both links 404 in the published docs. I confirmed this with , which currently emits
+          GitHub blob URLs under  for both targets. These need to be updated to  and  before this
+          page is publishable.
+        created_at: 2026-04-21T04:55:51.823Z
+      - _ulid: 01KPQ6BH8TFVCPQZS1X9KDYA5V
+        author: Jacob Chapel
+        body: "Clarification: the moved tutorial still uses ../INSTALL.md at line 22 and ../AGENTS.md at
+          line 145. From docs/getting-started/tutorial.md those paths resolve to docs/INSTALL.md and
+          docs/AGENTS.md, not the repo-root files, so both published links are broken. The link
+          targets need to move up two levels instead of one."
+        created_at: 2026-04-21T04:56:38.426Z
+      - _ulid: 01KPQ7SVMM6KP56M57DTQ3JH41
+        author: "@claude"
+        body: "Fixed: Updated both relative links in tutorial.md from ../ to ../../ (lines 22 and 145). From
+          docs/getting-started/tutorial.md, ../../INSTALL.md and ../../AGENTS.md now correctly
+          resolve to the repo root files."
+        created_at: 2026-04-21T05:21:56.372Z
+    kind: blocker
+    resolved_at: 2026-04-21T05:22:10.572Z
+    resolved_by: "@claude"
+  - _ulid: 01KPQ6A9KSPB844VM7TDCWJXWH
+    anchor:
+      type: code
+      commit: e84d2e6c24c173fcc9d4cfec78dd7aa5b486d598
+      line_end: 45
+      line_start: 44
+      path: packages/web-ui/vite-plugin-docs.ts
+      side: head
+    entries:
+      - _ulid: 01KPQ6A9KSZA7Q6DDSBMN3FE5H
+        author: Jacob Chapel
+        body: The new section landing pages are emitted as , , etc. because  only strips the  suffix. The
+          docs route does an exact  lookup, so  no longer resolves to the section landing page even
+          though that is the natural section URL and the existing docs tests/navigation already
+          assume section roots like . I verified the generated manifest only contains  and , with no
+          bare  slug. Either normalize  to the parent slug or add equivalent route resolution before
+          this scaffolding ships.
+        created_at: 2026-04-21T04:55:57.818Z
+      - _ulid: 01KPQ6BPP8BDY6AK3W0JRVKX42
+        author: Jacob Chapel
+        body: "Clarification: the manifest currently generates slugs getting-started/index and
+          getting-started/tutorial, but no bare getting-started slug. Because the docs page route
+          only does an exact slug lookup, /docs/getting-started does not resolve to the section
+          landing page. The section index pages need slug normalization or equivalent route
+          handling."
+        created_at: 2026-04-21T04:56:43.976Z
+      - _ulid: 01KPQ7T0TSZ9Y9ZJ0YVZX6EJVT
+        author: "@claude"
+        body: "Fixed: Added index slug normalization in three places: (1) pathToSlug in vite-plugin-docs
+          strips /index suffix so section landing pages get bare slugs like getting-started instead
+          of getting-started/index; (2) resolveDocsLink normalizes resolved slugs the same way; (3)
+          groupDocsSections and filterSectionEntries now use entry.path (via sectionKeyOf helper) to
+          determine section membership, so normalized landing pages are correctly grouped with their
+          section children."
+        created_at: 2026-04-21T05:22:01.689Z
+    kind: blocker
+    resolved_at: 2026-04-21T05:22:15.950Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-21T04:56:56.495Z
+created_at: 2026-04-21T04:49:05.066Z
+updated_at: 2026-04-21T05:22:15.950Z
+notes: []

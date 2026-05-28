@@ -1,0 +1,125 @@
+_ulid: 01KMWF5DMYQEEV11M07H3AFH6C
+slugs: []
+title: Review @01KMW68JT108S4RS3G1GNYH5A9
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation returned warnings only (exit 6): schema/references OK; repo has pre-existing
+      unrelated warnings."
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-29T09:39:54.511Z
+    completed_at: 2026-03-29T09:39:54.511Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed in reviewer snapshot: 1974/1974 suites passed, 7128/7133 tests passed, 5 skipped."
+    name: npm-test
+    required: true
+    runner: npm
+    created_at: 2026-03-29T09:39:56.421Z
+    completed_at: 2026-03-29T09:39:56.421Z
+events:
+  - _ulid: 01KMWF5DMYMYYGAWPXJVQZKVNQ
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-29T09:35:23.806Z
+  - _ulid: 01KMWF5ZHSC0TJHH5FES5R1XKS
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-29T09:35:42.138Z
+  - _ulid: 01KMWFDPJ5QMSVG5KFPJZC6CHK
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-29T09:39:55.077Z
+  - _ulid: 01KMWFDRCTXWQJBJDEB1M0WWYN
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm-test
+    timestamp: 2026-03-29T09:39:56.954Z
+  - _ulid: 01KMWFDT7KVNQWQ5TWTVN2ABMB
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMWFDSMMGHWJ73X1ZNEW2PP5
+    timestamp: 2026-03-29T09:39:58.835Z
+  - _ulid: 01KMWFE1B3ZSMT1W68R6561GKW
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-29T09:40:06.116Z
+  - _ulid: 01KMWFE1B45W693H8TTP6Q9EKR
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-29T09:40:06.116Z
+examined_commit: 15c4089d8a577e29087bbd383c53e194e6f2e31c
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMW68JT108S4RS3G1GNYH5A9"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMWFDSMMGHWJ73X1ZNEW2PP5
+    entries:
+      - _ulid: 01KMWFDSMMN0E8X1ZHVZESCF6K
+        author: Test User
+        body: >-
+          Evidence log:
+
+          Files read: packages/daemon/src/server.ts, src/daemon/entity-cache.ts,
+          tests/daemon-entity-cache.test.ts, packages/daemon/src/websocket/pubsub.ts,
+          src/parser/index.ts
+
+          Commands run: git diff --stat dev...HEAD; git diff --unified=80 dev...HEAD; git log
+          --oneline dev..HEAD; kspec task get @01KMW68JT108S4RS3G1GNYH5A9; kspec item get
+          @daemon-entity-cache; kspec review get @01KMWDV038KPCXHVBV14CRX4YN; rg -n "AC:
+          @daemon-entity-cache|AC: @trait-" tests/daemon-entity-cache.test.ts tests; kspec validate;
+          npm test
+
+          Claims verified: verified the branch adds four commits beyond dev, verified server wiring
+          includes projectPath in the serialized broadcast payload, verified tests exercise the
+          PubSubManager/WebSocket path, verified full suite passes on this snapshot
+
+          Categories searched: correctness (no issues), edge cases (loading->ready, degraded->ready,
+          ready-state reload suppression covered), error handling (degraded recovery covered), test
+          quality (behavioral, no source scanning), integration (server -> cache callback -> pubsub
+          path covered)
+        created_at: 2026-03-29T09:39:58.228Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-29T09:40:06.115Z
+created_at: 2026-03-29T09:35:23.806Z
+updated_at: 2026-03-29T09:40:06.116Z
+notes: []

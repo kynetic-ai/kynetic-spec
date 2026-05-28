@@ -1,0 +1,27 @@
+_ulid: 01KRCP1DKWKWQZM1PTHBVQXAFR
+slugs:
+  - plan-daemon-test-cleanup-contract-hardening
+title: Daemon Test Cleanup Contract Hardening
+status: completed
+approved_at: 2026-05-12T00:14:28.267Z
+derived_specs:
+  - "@daemon-test-teardown-boundedness"
+derived_tasks:
+  - "@task-tighten-daemon-guardrail-cleanup-semantics-specs"
+  - "@task-add-guardrail-cleanup-effect-regressions"
+  - "@task-fix-guardrail-cleanup-effect-classification"
+  - "@task-add-guardrail-cleanup-boundary-regressions"
+  - "@task-fix-guardrail-cleanup-boundary-classification"
+  - "@task-add-implicit-autostart-cleanup-regressions"
+  - "@task-fix-implicit-autostart-cleanup-coverage"
+  - "@task-add-bounded-process-stop-contract-tests"
+  - "@task-implement-bounded-process-stop-primitives"
+  - "@task-add-active-request-bounded-observation-regressions"
+  - "@task-fix-active-request-teardown-and-observation-bounds"
+  - "@task-add-setup-failure-error-preservation-regressions"
+  - "@task-fix-setup-failure-cleanup-error-preservation"
+  - "@task-validate-daemon-cleanup-contract-hardening"
+module_ref: null
+source_path: /home/chapel/Projects/kynetic-spec-dispatch/plans/daemon-test-cleanup-contract-hardening.md
+created_at: 2026-05-11T23:30:29.111Z
+completed_at: null

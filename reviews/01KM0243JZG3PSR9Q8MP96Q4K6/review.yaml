@@ -1,0 +1,230 @@
+_ulid: 01KM0243JZG3PSR9Q8MP96Q4K6
+slugs: []
+title: Review task-event-bus (cycle 2)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 5893 tests passed, 3 skipped, 1 pre-existing failure (review-cli.test.ts — zero diff from
+      dev). All 36 event-bus tests pass. All 117 dispatch engine tests pass.
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T08:49:36.330Z
+    completed_at: 2026-03-18T08:49:36.330Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 6 ACs (ac-1 through ac-6) have annotated tests in tests/event-bus.test.ts. kspec
+      validate shows no coverage warnings for @dispatch-event-envelope.
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-18T08:49:38.911Z
+    completed_at: 2026-03-18T08:49:38.911Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "git diff 8d087368e..14505dad0 --stat shows exactly 4 files changed:
+      src/agent-runtime/event-bus.ts (new), src/agent-runtime/dispatch.ts (integration),
+      src/agent-runtime/index.ts (re-exports), tests/event-bus.test.ts (new). No out-of-scope
+      changes. Prior cycle's meta.ts/yaml-round-trip-stability blockers confirmed absent."
+    name: scope-check
+    required: true
+    runner: manual
+    created_at: 2026-03-18T08:49:41.569Z
+    completed_at: 2026-03-18T08:49:41.569Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate shows no new errors or warnings related to dispatch-event-envelope.
+      Pre-existing reference errors and orphaned specs are unrelated to this task.
+    name: kspec-validate
+    required: true
+    runner: kspec
+    created_at: 2026-03-18T08:49:44.318Z
+    completed_at: 2026-03-18T08:49:44.318Z
+events:
+  - _ulid: 01KM0243JZANAMSG2J03PVSH87
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T08:48:45.151Z
+  - _ulid: 01KM024B56XETA4H1RV68SGD6G
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T08:48:52.902Z
+  - _ulid: 01KM0251W7HHR9WS0B8ZJK4T2P
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM0251RRMD97WFSGC7A5AKZW
+    timestamp: 2026-03-18T08:49:16.167Z
+  - _ulid: 01KM025A96EPBD5WK9C4VGVP90
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM025A5W2D4QJ922EKQCNM1X
+    timestamp: 2026-03-18T08:49:24.774Z
+  - _ulid: 01KM025DRR8HTDFXF3P6VGJJMF
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM025DK9DJPDJENWPJJ5B77C
+    timestamp: 2026-03-18T08:49:28.344Z
+  - _ulid: 01KM025NNSZWV3V4W6E0Y6C690
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T08:49:36.441Z
+  - _ulid: 01KM025R6G6DQGAAMXTYGEKNJE
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-18T08:49:39.024Z
+  - _ulid: 01KM025TSG8W0HV4ETBFD0P2PB
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: scope-check
+    timestamp: 2026-03-18T08:49:41.680Z
+  - _ulid: 01KM025XF852Z640N1WSPCASGS
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-18T08:49:44.425Z
+  - _ulid: 01KM02659BECX0ZPCMFX17EB82
+    actor: pr-reviewer@kspec-dispatch
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-18T08:49:52.427Z
+  - _ulid: 01KM02659BYMQRG2W9RA529Q1X
+    actor: pr-reviewer@kspec-dispatch
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T08:49:52.428Z
+examined_commit: 14505dad0ba356bbfd037257e46aa75b3d9ebbbc
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKZPVDW4F4YDP0M32CAV2T7F"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM0251RRMD97WFSGC7A5AKZW
+    anchor:
+      type: code
+      commit: ""
+      line_end: 1091
+      line_start: 1091
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KM0251RRZ5JKH0MPV88A33AR
+        author: "@claude"
+        body: >-
+          SHOULD-FIX: Missing _eventBus.clear() in DispatchEngine.stop()
+
+
+          The stop() method (dispatch.ts:1045-1091) clears all engine state — queues, recentEvents,
+          activeCount, invocationAbortControllers, activeInvocationDetails, coalesceTimers — but
+          does NOT call this._eventBus.clear(). After stop(), the event bus retains: all
+          subscribers, ring buffer contents (~500 events), task dedup entries, chain depth tracking,
+          and pending delivery promise chains.
+
+
+          This is inconsistent with the cleanup pattern of every other piece of state in stop() and
+          represents a resource leak in test teardown or daemon restart scenarios where
+          DispatchEngine instances are created/destroyed.
+
+
+          Fix: Add this._eventBus.clear() at the end of stop().
+        created_at: 2026-03-18T08:49:16.056Z
+    kind: nit
+  - _ulid: 01KM025A5W2D4QJ922EKQCNM1X
+    anchor:
+      type: code
+      commit: ""
+      line_end: 291
+      line_start: 237
+      path: src/agent-runtime/event-bus.ts
+      side: head
+    entries:
+      - _ulid: 01KM025A5W7848EJQZ2WBMWPHB
+        author: "@claude"
+        body: >-
+          SHOULD-FIX: Chain depth counter incremented before dedup check in emit()
+
+
+          In event-bus.ts emit(), line 253 increments chainDepths.set(correlation_id, newDepth)
+          BEFORE the task dedup check at lines 270-291. If a task event with a correlation_id passes
+          the chain depth check but is then rejected by dedup, the depth counter has been
+          incremented for an event that was never actually emitted.
+
+
+          This is currently latent — all DispatchEngine callers either use skipDedup: true for task
+          events or emit non-task events (invocation.*) that bypass the dedup path — but the public
+          API contract is incorrect. Future direct EventBus users could hit false positives on chain
+          depth limits.
+
+
+          Fix: Move the task dedup check before the chain depth check, or decrement the counter on
+          dedup rejection.
+        created_at: 2026-03-18T08:49:24.669Z
+    kind: nit
+  - _ulid: 01KM025DK9DJPDJENWPJJ5B77C
+    anchor:
+      type: code
+      commit: ""
+      line_end: 364
+      line_start: 364
+      path: src/agent-runtime/event-bus.ts
+      side: head
+    entries:
+      - _ulid: 01KM025DK99X2MGSJVM7A7E0B3
+        author: "@claude"
+        body: >-
+          SUGGESTION: RingBuffer private field access via string indexing
+
+
+          clear() method at line 364 accesses this.ringBuffer["capacity"] using bracket notation to
+          bypass TypeScript's private check. This works at runtime but is fragile — if RingBuffer is
+          refactored, this breaks silently. Consider adding a public getter or readonly property for
+          capacity.
+        created_at: 2026-03-18T08:49:28.169Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer@kspec-dispatch
+    role: reviewer
+    created_at: 2026-03-18T08:49:52.312Z
+created_at: 2026-03-18T08:48:45.151Z
+updated_at: 2026-03-18T08:49:52.312Z
+notes: []

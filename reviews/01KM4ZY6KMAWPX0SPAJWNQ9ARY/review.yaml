@@ -1,0 +1,183 @@
+_ulid: 01KM4ZY6KMAWPX0SPAJWNQ9ARY
+slugs: []
+title: Review @01KM4QGVTQR64KQPQ0S24AHV0S
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck passed.
+    name: typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-03-20T06:50:58.224Z
+    completed_at: 2026-03-20T06:50:58.224Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed locally in review snapshot: 290 files, 6657 tests passed, 3 skipped."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-20T06:50:58.980Z
+    completed_at: 2026-03-20T06:50:58.980Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide baseline validation still reports unrelated reference/completeness issues
+      (meta.yaml broken refs, orphan skills dir, broad AC coverage warnings); not introduced by this
+      task.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-20T06:50:59.735Z
+    completed_at: 2026-03-20T06:50:59.735Z
+events:
+  - _ulid: 01KM4ZY6KKDNRJF4ZQCZF4NVZV
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-20T06:46:46.644Z
+  - _ulid: 01KM4ZYVQTE2PX17VD0ZJ1C740
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-20T06:47:08.282Z
+  - _ulid: 01KM505VPFD30SZTQ3C27612K9
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM505VD9SMM8XYD6R70PF1W3
+    timestamp: 2026-03-20T06:50:57.615Z
+  - _ulid: 01KM505WHBWES9VYR8K3T3N5W6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-03-20T06:50:58.475Z
+  - _ulid: 01KM505X7P3T59Z94K62EBGD4V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-20T06:50:59.190Z
+  - _ulid: 01KM505XZRHHCBE524SKV3FE0M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-03-20T06:50:59.960Z
+  - _ulid: 01KM506EYNYPW0GJ26AKAMCAN7
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM506EQK5QZQC4F7R6JM1M4Z
+    timestamp: 2026-03-20T06:51:17.334Z
+  - _ulid: 01KM506PYZ5D8ZHK56M0FXZ2HY
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-20T06:51:25.536Z
+  - _ulid: 01KM506PZ0WJEZBE9JTFHQW06S
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-20T06:51:25.536Z
+  - _ulid: 01KM50QP0TJ7YKGHBWED1Y1F48
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM505VD9SMM8XYD6R70PF1W3
+    timestamp: 2026-03-20T07:00:41.626Z
+  - _ulid: 01KM50QPPP4Y9P2WA996QM4Q4N
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KM505VD9SMM8XYD6R70PF1W3
+    timestamp: 2026-03-20T07:00:42.326Z
+examined_commit: 6d437fe5f92df763c535b4aff2f82663d3635e36
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM4QGVTQR64KQPQ0S24AHV0S"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM505VD9SMM8XYD6R70PF1W3
+    anchor:
+      type: code
+      commit: 6d437fe5f92df763c535b4aff2f82663d3635e36
+      line_end: 406
+      line_start: 388
+      path: packages/web-ui/src/routes/sessions/+page.svelte
+      side: head
+    entries:
+      - _ulid: 01KM505VDAE4MJBCS8F4BJC29S
+        author: Jacob Chapel
+        body: This page now owns the transport-level subscription for 'agents' and 'sessions', but those
+          topics are already subscribed globally in +layout via setupWsInvalidation().
+          WebSocketManager.unsubscribe() is not reference-counted, so when /sessions unmounts it
+          sends an unsubscribe for both topics and drops app-wide query invalidation for later views
+          until the socket reconnects. Keep the page-level on/off handlers if needed, but do not
+          call subscribe()/unsubscribe() here unless the manager learns shared subscription
+          accounting.
+        created_at: 2026-03-20T06:50:57.322Z
+      - _ulid: 01KM50QNSJ23TJ20DK6B5EKAWV
+        author: Jacob Chapel
+        body: Fixed in commit 47d46a5f5. The /sessions page no longer calls subscribe()/unsubscribe() for
+          globally owned agents/sessions topics; it only registers local on/off handlers so teardown
+          cannot drop app-wide invalidation.
+        created_at: 2026-03-20T07:00:41.394Z
+    kind: blocker
+    resolved_at: 2026-03-20T07:00:42.111Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KM506EQK5QZQC4F7R6JM1M4Z
+    entries:
+      - _ulid: 01KM506EQKCM9YDH1HB1NKRB5D
+        author: Jacob Chapel
+        body: "Evidence log:\\nFiles read: packages/web-ui/src/routes/sessions/+page.svelte,
+          packages/web-ui/src/lib/query/ws-invalidation.ts,
+          packages/web-ui/src/lib/websocket/manager.ts, packages/web-ui/src/routes/+layout.svelte,
+          packages/daemon/src/project-context.ts, packages/daemon/src/session-watcher.ts,
+          src/parser/shadow.ts, src/cli/commands/setup.ts, src/agent-runtime/dispatch.ts,
+          src/agent-runtime/workspace.ts, packages/web-ui/tests/e2e/sessions.spec.ts,
+          packages/web-ui/tests/e2e/api-watcher.spec.ts, tests/session-watcher.test.ts,
+          tests/daemon-context-manager.test.ts.\\nCommands run: kspec task get, kspec review
+          for-task, git diff against dev base, kspec validate, AC annotation grep, npm run
+          typecheck, npm test, targeted source inspections with sed/nl.\\nClaims verified: full
+          suite passes on this snapshot; typecheck passes; layout-level setupWsInvalidation owns
+          global topic subscriptions; WebSocketManager unsubscribe is not
+          reference-counted.\\nCategories searched: correctness, integration, test quality, edge
+          cases, error handling."
+        created_at: 2026-03-20T06:51:17.107Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-20T06:51:25.535Z
+created_at: 2026-03-20T06:46:46.644Z
+updated_at: 2026-03-20T07:00:42.111Z
+notes: []

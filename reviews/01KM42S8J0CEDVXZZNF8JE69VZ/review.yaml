@@ -1,0 +1,136 @@
+_ulid: 01KM42S8J0CEDVXZZNF8JE69VZ
+slugs: []
+title: Review @01KM3ZMDYZB4RYWVX78Z8YVTE6
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test failed with 1 remaining failure in tests/agent-dispatch-engine.test.ts: should
+      pass a shared mutation lock file to dispatched invocations. The failing assertion was expected
+      runInvocation to be called at least once. An isolated rerun of that file passes, so the
+      snapshot currently has a full-suite-only nondeterministic failure."
+    name: full-test-suite
+    required: true
+    runner: npm
+    created_at: 2026-03-19T22:28:29.295Z
+    completed_at: 2026-03-19T22:28:29.295Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck passed.
+    name: typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-03-19T22:28:30.971Z
+    completed_at: 2026-03-19T22:28:30.971Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test -- tests/dispatch-target-sync.test.ts tests/dispatch-degraded-state.test.ts
+      tests/dispatch-branch-push-lifecycle.test.ts tests/dispatch-workspace-config.test.ts passed
+      (67 tests).
+    name: targeted-dispatch-tests
+    required: true
+    runner: npm
+    created_at: 2026-03-19T22:28:41.507Z
+    completed_at: 2026-03-19T22:28:41.507Z
+events:
+  - _ulid: 01KM42S8HZ6288494PCB4X2QGH
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-19T22:17:16.095Z
+  - _ulid: 01KM42SVWDSYG0NEMVMRFH9VFM
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-19T22:17:35.885Z
+  - _ulid: 01KM43BQNEA8SVPYGHF04N05VW
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-19T22:27:21.390Z
+  - _ulid: 01KM43BQNER8HADRFERMT6ZT20
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-19T22:27:21.390Z
+  - _ulid: 01KM43DRQPEKVNSF8ZHEZNEXPD
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM43DR89HF5FYRB7NVZS22Z3
+    timestamp: 2026-03-19T22:28:28.022Z
+  - _ulid: 01KM43DTBDV7GGVHNJ2RDZE4WX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: full-test-suite
+    timestamp: 2026-03-19T22:28:29.678Z
+  - _ulid: 01KM43DW4J1S129JC8J4C2ADVS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-03-19T22:28:31.506Z
+  - _ulid: 01KM43E6F0D97ZE59CYW0Y00BS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted-dispatch-tests
+    timestamp: 2026-03-19T22:28:42.083Z
+examined_commit: 71f83468591d8b2c6a5a3e488dd2f31651bf7222
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM3ZMDYZB4RYWVX78Z8YVTE6"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM43DR89HF5FYRB7NVZS22Z3
+    anchor:
+      type: code
+      commit: 71f83468591d8b2c6a5a3e488dd2f31651bf7222
+      line_end: 958
+      line_start: 952
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KM43DR89WYW9QKA0HB7NFFN2
+        author: codex
+        body: Full npm test is still red on this snapshot. In a clean full-suite run,
+          tests/agent-dispatch-engine.test.ts fails its AC-12 dispatch invocation assertion because
+          runInvocation is never observed, while that same file passes in isolation. That leaves the
+          change with a suite-level nondeterministic regression, so it is not merge-ready yet.
+        created_at: 2026-03-19T22:28:27.529Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-19T22:27:21.390Z
+created_at: 2026-03-19T22:17:16.096Z
+updated_at: 2026-03-19T22:28:41.507Z
+notes: []

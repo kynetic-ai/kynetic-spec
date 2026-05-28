@@ -1,0 +1,187 @@
+_ulid: 01KRFXT7DHTAZP9GFBP55QGZGN
+slugs: []
+title: Review cleanup protection coverage (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/dispatch-workspace-cleanup.test.ts
+      tests/dispatch-workspace-registry.test.ts: 7 suites passed, 58 tests passed, duration 25.1s"
+    name: targeted cleanup and registry tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-13T05:57:32.274Z
+    completed_at: 2026-05-13T05:57:32.274Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test: 2436 suites passed, 9128 tests passed, 5 skipped, duration 2126.5s"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-05-13T05:57:35.954Z
+    completed_at: 2026-05-13T05:57:35.954Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck completed with exit code 0
+    name: typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-13T05:57:39.601Z
+    completed_at: 2026-05-13T05:57:39.601Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npx oxlint tests/dispatch-workspace-cleanup.test.ts
+      tests/dispatch-workspace-registry.test.ts: 0 warnings, 0 errors"
+    name: changed-file lint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-13T05:57:43.247Z
+    completed_at: 2026-05-13T05:57:43.247Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate --warnings-ok: schema/references/skills OK; warning-only project-wide
+      alignment/completeness output accepted with --warnings-ok"
+    name: kspec validate
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-13T05:57:46.886Z
+    completed_at: 2026-05-13T05:57:46.886Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run lint exits 1 with 721 warnings and 13 errors in unrelated pre-existing files;
+      changed-file oxlint passes with 0 warnings/errors
+    name: full project lint
+    required: false
+    runner: oxlint
+    created_at: 2026-05-13T05:57:50.549Z
+    completed_at: 2026-05-13T05:57:50.549Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: tests/dispatch-workspace-cleanup.test.ts,
+      tests/dispatch-workspace-registry.test.ts, src/agent-runtime/workspace.ts, kspec-agents.md,
+      prior review @01KRFTQZBXREYNAXRMG1RDX5ZH. Commands run: git diff/stat/name-only/log, kspec
+      task get, kspec item get cleanup-policy and registry, kspec review get/for-task, rg AC
+      annotations, kspec validate, targeted npm test, full npm test, npm run typecheck, npm run
+      lint, changed-file oxlint. Claims verified: fix-cycle root-directory test now reaches
+      root-directory pruning via direct child recreated after git worktree removal; bootstrap
+      regression preserves nested files; provisioning/non-closed/ambiguous/positive cleanup cases
+      are behavioral filesystem/git/registry checks. Categories searched: correctness, edge cases,
+      error handling/ambiguous state, test quality, integration. No blockers found."
+    name: review evidence log
+    required: false
+    created_at: 2026-05-13T05:57:54.338Z
+    completed_at: 2026-05-13T05:57:54.338Z
+events:
+  - _ulid: 01KRFXT7DGFY24Z51WJEPKEK7X
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-13T05:44:05.297Z
+  - _ulid: 01KRFXTMNZ8VN7PZZWVE580G8M
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-13T05:44:18.879Z
+  - _ulid: 01KRFYJWTVVBBDR6AYSE88QJ23
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted cleanup and registry tests
+    timestamp: 2026-05-13T05:57:33.659Z
+  - _ulid: 01KRFYK0G5X24PV028R9ARTHT2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-13T05:57:37.413Z
+  - _ulid: 01KRFYK42QXKNFYJS7N3VPFPGA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-13T05:57:41.079Z
+  - _ulid: 01KRFYK7GY9SQ0E0QES7EHG1Q5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file lint
+    timestamp: 2026-05-13T05:57:44.606Z
+  - _ulid: 01KRFYKB2CWP4XR7SQMSZPW7YP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-13T05:57:48.236Z
+  - _ulid: 01KRFYKER7JNSVD7HGGKCN28FB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: full project lint
+    timestamp: 2026-05-13T05:57:52.007Z
+  - _ulid: 01KRFYKJD5VF8TFT4DT62CYEV7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-13T05:57:55.749Z
+  - _ulid: 01KRFYKP0KJFDT5TKBGDRKWZ35
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-13T05:57:59.443Z
+  - _ulid: 01KRFYKP0KD6HAGZV2A3MR0CYK
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-13T05:57:59.443Z
+examined_commit: a820f6e7b1e69d76f77023a1b383d78d40e39569
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRF37ZHJ6AEZ14HEADGHPX6V"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-13T05:57:59.443Z
+created_at: 2026-05-13T05:44:05.297Z
+updated_at: 2026-05-13T05:57:59.443Z
+notes: []

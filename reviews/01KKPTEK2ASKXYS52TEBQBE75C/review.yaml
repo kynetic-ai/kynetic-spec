@@ -1,0 +1,25 @@
+_ulid: 01KKPTEK2ASKXYS52TEBQBE75C
+slugs: []
+title: Code Review
+author: "@claude"
+checks: []
+events:
+  - _ulid: 01KKPTEK29BA1BMPCV5PNBMS5S
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-14T18:41:30.185Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: code
+  base_commit: abc123
+  head_commit: def456
+threads: []
+verdicts: []
+created_at: 2026-03-14T18:41:30.186Z
+updated_at: null
+notes: []

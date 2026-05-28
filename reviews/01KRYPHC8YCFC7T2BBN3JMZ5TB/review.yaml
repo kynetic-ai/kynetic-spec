@@ -1,0 +1,138 @@
+_ulid: 01KRYPHC8YCFC7T2BBN3JMZ5TB
+slugs: []
+title: Review task-update-daemon-dispatch-hardening-specs
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed. Schema and references OK; 6 existing deprecated-reference warnings reported and
+      tolerated by --warnings-ok.
+    name: kspec validate --refs --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-18T23:40:41.498Z
+    completed_at: 2026-05-18T23:40:41.498Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full run: 9277 passed, 5 skipped, 1 failed in tests/cli-no-daemon.test.ts. Focused rerun
+      reproduced the same ps -p PID assertion failure. Classified not introduced by this spec-only
+      task: reviewed snapshot f688b032 is an ancestor of current origin/dev 202bd38, which already
+      includes completed @task-stabilize-cli-no-daemon-runtime-pid-assertion for this failure."
+    name: npm test
+    required: false
+    runner: npm
+    created_at: 2026-05-18T23:40:45.930Z
+    completed_at: 2026-05-18T23:40:45.930Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Strict validation exits 6 due existing project warnings: deprecated refs,
+      alignment/status drift from active tasks, missing historical AC coverage, and malformed
+      historical annotations. No schema/reference errors."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-18T23:40:50.215Z
+    completed_at: 2026-05-18T23:40:50.215Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files/areas read: kspec-agents.md, task @01KRYMPAFQZ7DGGC2EX51C187X, specs
+      @dispatch-event-envelope, @agent-dispatch-engine, @daemon-command-api, @cli-daemon-proxy,
+      @agent-invocation-lifecycle, @dispatch-workspace-cleanup-policy, tests/cli-no-daemon.test.ts.
+      Commands run: git status/branch/rev-parse/diff/log, kspec task get, kspec review
+      for-task/add/open, kspec item get for all affected specs, kspec validate --refs --warnings-ok,
+      kspec validate, npm test, focused npm test -- --fresh tests/cli-no-daemon.test.ts, kspec
+      search. Verified claim: all 10 requested AC IDs/text exist on the requested owning specs.
+      Categories searched: spec alignment, duplicate/misplaced ACs, validation, test regression
+      triage, merge ancestry."
+    name: review evidence
+    required: true
+    runner: reviewer
+    created_at: 2026-05-18T23:40:54.453Z
+    completed_at: 2026-05-18T23:40:54.453Z
+events:
+  - _ulid: 01KRYPHC8YREY5YF1ZDWH5CSRP
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-18T23:25:31.806Z
+  - _ulid: 01KRYPJ2P0T2TEJAW16CF76S49
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-18T23:25:54.753Z
+  - _ulid: 01KRYQD62VJTS7HN1WTA2B1NCB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --refs --warnings-ok
+    timestamp: 2026-05-18T23:40:42.972Z
+  - _ulid: 01KRYQDAFN367WX6QFGT0S71ER
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: npm test
+    timestamp: 2026-05-18T23:40:47.477Z
+  - _ulid: 01KRYQDENW0TR5AA3M7XQPVA7G
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-05-18T23:40:51.772Z
+  - _ulid: 01KRYQDJSD31CQH5RSQ2M7PEQJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence
+    timestamp: 2026-05-18T23:40:55.981Z
+  - _ulid: 01KRYQDYMRWGJNJ51JEDE2K5QJ
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-18T23:41:08.120Z
+  - _ulid: 01KRYQDYMR6DCB6GPHRPKJ6G6G
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-18T23:41:08.120Z
+examined_commit: f688b032ae42aaaac1941fb340c8d5edfe5765e0
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRYMPAFQZ7DGGC2EX51C187X"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-18T23:41:08.120Z
+created_at: 2026-05-18T23:25:31.806Z
+updated_at: 2026-05-18T23:41:08.120Z
+notes: []

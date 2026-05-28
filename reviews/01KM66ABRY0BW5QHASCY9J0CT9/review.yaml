@@ -1,0 +1,240 @@
+_ulid: 01KM66ABRY0BW5QHASCY9J0CT9
+slugs: []
+title: Review task-daemon-api-input-validation
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 294 files passed; 6677 tests passed, 3 skipped.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-20T18:02:03.200Z
+    completed_at: 2026-03-20T18:02:03.200Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Fails with pre-existing project-wide reference/alignment/completeness issues unrelated to
+      this task; no task-specific validation failure identified.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-20T18:02:04.731Z
+    completed_at: 2026-03-20T18:02:04.731Z
+events:
+  - _ulid: 01KM66ABRY5VRPY549WZ8RV8PB
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-20T17:57:31.038Z
+  - _ulid: 01KM66AT9V3NCGKYWF0Z7EJ19W
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-20T17:57:45.916Z
+  - _ulid: 01KM66JM7K8MVCR2C6JMNHMCFN
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM66JKZS79QHA0Y9FJ69ASAH
+    timestamp: 2026-03-20T18:02:01.843Z
+  - _ulid: 01KM66JN109PG7Y4DJ18P1YH9J
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM66JMS4X669GZCG5R2Z7881
+    timestamp: 2026-03-20T18:02:02.656Z
+  - _ulid: 01KM66JNSDJTXM1C6K2HH0GRYP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-20T18:02:03.438Z
+  - _ulid: 01KM66JPH14Y80KVE1473P4YNP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM66JP9ZME06CKH2PWHMP2A9
+    timestamp: 2026-03-20T18:02:04.193Z
+  - _ulid: 01KM66JQ928EA5Q0BGNDVGHV06
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-03-20T18:02:04.963Z
+  - _ulid: 01KM66KQM6C9P7KAEAPETVXEZR
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM66JKZS79QHA0Y9FJ69ASAH
+    timestamp: 2026-03-20T18:02:38.087Z
+  - _ulid: 01KM66KRCGYKFT6J081JVXS3KR
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM66JP9ZME06CKH2PWHMP2A9
+    timestamp: 2026-03-20T18:02:38.864Z
+  - _ulid: 01KM66KZM06JCTEB754W09PQ0X
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-20T18:02:46.272Z
+  - _ulid: 01KM66KZM19EZF15DYJ3K7DX5T
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-20T18:02:46.273Z
+  - _ulid: 01KM676HMZ5CTABXDE5ZFQXT89
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM66JKZS79QHA0Y9FJ69ASAH
+    timestamp: 2026-03-20T18:12:54.559Z
+  - _ulid: 01KM676JEG3GTS0V76NRV8G5FD
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM66JP9ZME06CKH2PWHMP2A9
+    timestamp: 2026-03-20T18:12:55.377Z
+  - _ulid: 01KM676Y360XRMZC52H5NFQP62
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KM66JKZS79QHA0Y9FJ69ASAH
+    timestamp: 2026-03-20T18:13:07.302Z
+  - _ulid: 01KM6770KCZF2A3491XXJCC7H8
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KM66JP9ZME06CKH2PWHMP2A9
+    timestamp: 2026-03-20T18:13:09.868Z
+examined_commit: da5c883a711417c070887f27271be92cd51ba7c5
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM5Z4M7YQN173XSB98TPV8Y2"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM66JKZS79QHA0Y9FJ69ASAH
+    anchor:
+      type: code
+      commit: da5c883a711417c070887f27271be92cd51ba7c5
+      line_end: 318
+      line_start: 318
+      path: packages/daemon/src/routes/sessions.ts
+      side: head
+    entries:
+      - _ulid: 01KM66JKZS7SF4QHEPSWV911Y5
+        author: Jacob Chapel
+        body: " is now validated against , but this route still explicitly supports the  shorthand in its
+          filter logic. That alias is not part of , so  and  now fail at the framework boundary
+          instead of matching  triggers. This regresses existing API behavior that the UI and E2E
+          tests rely on ( covers the shorthand)."
+        created_at: 2026-03-20T18:02:01.593Z
+      - _ulid: 01KM66KQCS2AW5JP2WB5V60DVA
+        author: Jacob Chapel
+        body: The new query schema rejects the existing `dispatched` shorthand before the handler runs.
+          `filterSessionSummaries()` still intentionally maps `trigger=dispatched` to any `task.*`
+          trigger at packages/daemon/src/routes/sessions.ts:154-160, and the UI/E2E coverage already
+          depends on that behavior in packages/web-ui/tests/e2e/api-sessions-pagination.spec.ts:373.
+          Tightening this field to `SessionTriggerSchema.options` therefore removes a supported API
+          filter instead of just hardening invalid input.
+        created_at: 2026-03-20T18:02:37.849Z
+      - _ulid: 01KM676HD04J05N1ZRFF8RX7QN
+        author: Jacob Chapel
+        body: Fixed in commit 8334eae8de18d4abe39d8b6e91fcbe1f0642553f. The sessions list/search query
+          schemas now keep the supported legacy trigger=dispatched alias while remaining closed over
+          known values, so task.* dispatch filters still pass framework validation instead of
+          regressing to 400s.
+        created_at: 2026-03-20T18:12:54.304Z
+    kind: blocker
+    resolved_at: 2026-03-20T18:13:07.047Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KM66JMS4X669GZCG5R2Z7881
+    entries:
+      - _ulid: 01KM66JMS4TWRKS9W3F0463XPC
+        author: Jacob Chapel
+        body: "Review evidence log\\n\\nFiles read: packages/daemon/src/middleware/project-context.ts;
+          packages/daemon/src/routes/{tasks,items,reviews,triage,plans,sessions,validation,meta,age\
+          nt-dispatch}.ts; src/sessions/types.ts; src/schema/review-records.ts;
+          tests/daemon-api-input-validation.test.ts; tests/daemon-review-verdicts-api.test.ts;
+          packages/web-ui/tests/e2e/{api-sessions-pagination,sessions,api-reviews-list}.spec.ts.\\n\
+          \\nCommands run: kspec task get @01KM5Z4M7YQN173XSB98TPV8Y2; kspec review for-task
+          @01KM5Z4M7YQN173XSB98TPV8Y2; git diff/stat against dev base; rg for AC annotations and
+          enum/string route schemas; kspec item get @trait-type-safe-input; kspec validate; npm
+          test.\\n\\nClaims verified: worker note that full npm test passed (confirmed); note that
+          session agent_type remains open by canonical schema (confirmed in src/sessions/types.ts);
+          note that daemon enum validation was tightened in listed routes (confirmed by
+          diff).\\n\\nCategories searched: correctness (found 2 regressions), edge cases (shorthand
+          trigger alias), error handling (validation formatter shape/status), test quality (new
+          tests miss the session shorthand and review subject_type gaps), integration (UI/E2E
+          dependence on trigger=dispatched)."
+        created_at: 2026-03-20T18:02:02.404Z
+    kind: nit
+  - _ulid: 01KM66JP9ZME06CKH2PWHMP2A9
+    anchor:
+      type: code
+      commit: da5c883a711417c070887f27271be92cd51ba7c5
+      line_end: 246
+      line_start: 246
+      path: packages/daemon/src/routes/reviews.ts
+      side: head
+    entries:
+      - _ulid: 01KM66JP9ZTYW18KEFY66R7WR5
+        author: Jacob Chapel
+        body: " is still declared as an unconstrained string array here, even though review subjects come
+          from a closed discriminator set ( in ). The handler immediately filters against that
+          enum-like field, so typos still slip through and silently return empty results instead of
+          a schema error. That leaves  outside the input hardening promised by this task and still
+          violates ."
+        created_at: 2026-03-20T18:02:03.967Z
+      - _ulid: 01KM66KR5913XME4634CHKWM2C
+        author: Jacob Chapel
+        body: "`subject_type` is also a constrained field and should be derived from the canonical review
+          subject discriminator. `ReviewSubjectSchema` only permits `code`, `plan`, `task`, `spec`,
+          and `external` in src/schema/review-records.ts:72-77, but `/api/reviews` still declares
+          `subject_type` as free-form text. As a result, `/api/reviews?subject_type=bogus` still
+          reaches the handler and silently returns zero rows instead of a framework validation
+          error, which is exactly the failure mode this task is meant to eliminate for typed
+          filters."
+        created_at: 2026-03-20T18:02:38.632Z
+      - _ulid: 01KM676J6K0YKDRRVHJAWN7KEA
+        author: Jacob Chapel
+        body: Fixed in commit 8334eae8de18d4abe39d8b6e91fcbe1f0642553f. /api/reviews subject_type now
+          derives from ReviewSubjectSchema.options, so invalid discriminator values fail at the
+          framework boundary instead of silently returning empty results.
+        created_at: 2026-03-20T18:12:55.123Z
+    kind: blocker
+    resolved_at: 2026-03-20T18:13:09.633Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-20T18:02:46.272Z
+created_at: 2026-03-20T17:57:31.038Z
+updated_at: 2026-03-20T18:13:09.633Z
+notes: []

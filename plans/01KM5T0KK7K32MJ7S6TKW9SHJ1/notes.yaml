@@ -1,0 +1,68 @@
+notes:
+  - _ulid: 01KM5T5S2MTXYNTVG9PSTTTBEQ
+    content: Remove derive_from_specs and redundant trait creation task
+    author: "@claude"
+    created_at: 2026-03-20T14:25:17.908Z
+  - _ulid: 01KM5T7WSMAR7WJXA6HCB7YYXF
+    content: "Set derive_from_specs: false, revert to draft"
+    author: "@claude"
+    created_at: 2026-03-20T14:26:27.252Z
+  - _ulid: 01KM5TMPMJWF4PZFTSEKW33XDS
+    content: "Rewrite to gold standard quality: standalone specs with concrete ACs, detailed
+      what/why/how tasks, derive_from_specs: false"
+    author: "@claude"
+    created_at: 2026-03-20T14:33:26.931Z
+  - _ulid: 01KM5TYMMW4TNZN4EQ4N96GA7Y
+    content: Specs now purely behavioral — no file paths, endpoints, or implementation details.
+      Implementation specifics only in tasks.
+    author: "@claude"
+    created_at: 2026-03-20T14:38:52.572Z
+  - _ulid: 01KM5X4019RXHXPJAQZFMJDS8B
+    content: Generalized specs to behavioral contracts — not enum-specific, covers all typed inputs
+      across all surfaces. Specs describe what, not how.
+    author: "@claude"
+    created_at: 2026-03-20T15:16:45.225Z
+  - _ulid: 01KM5XRB2S0MMCJWMPQWMH7ED6
+    content: "Address review: fix trait ac-2 overlap with error-guidance, add daemon API filter
+      endpoints to scope, add non-enum scope deferral note"
+    author: "@claude"
+    created_at: 2026-03-20T15:27:51.897Z
+  - _ulid: 01KM5YAVTR0T019BE1SFQRAN71
+    content: Add schema-derived type definitions spec and task — consolidate hardcoded enums, reconcile
+      automation status divergence, derive all type references from canonical Zod schemas
+    author: "@claude"
+    created_at: 2026-03-20T15:37:58.873Z
+  - _ulid: 01KM5YD9KGJF96CBVVKNH4N71C
+    content: Remove Zod/Elysia references from specs — specs are technology-agnostic, implementation
+      details only in tasks
+    author: "@claude"
+    created_at: 2026-03-20T15:39:18.512Z
+  - _ulid: 01KM5YKD1H8269A8EBD0B6FPQV
+    content: Schema consolidation is P1 prerequisite — all validation tasks now depend on it
+    author: "@claude"
+    created_at: 2026-03-20T15:42:38.641Z
+  - _ulid: 01KM5Z4PXBET3DDM011EJ2XMC6
+    content: |-
+      This plan addresses GitHub issue #899 and a systemic audit that found 25 of 27
+      CLI enum options and 8 daemon API endpoints lack proper input type validation.
+
+      Root cause: Zod schemas define valid types but are only enforced on READ
+      (via safeParse which silently drops invalid records). Write paths use
+      TypeScript "as Type" casts with zero runtime validation.
+
+      The fix is layered:
+      1. Boundary validation (CLI + daemon API) rejects invalid input before persistence
+      2. Defense-in-depth (parser) catches anything that slips through boundaries
+      3. Observability (read warnings) surfaces already-corrupted data
+
+      Priority ordering: P1 mutations (prevent corruption), P2 filters + daemon + parser
+      (UX and defense), P3 read warnings (safety net for existing data).
+
+      Scope note: The trait @trait-type-safe-input is intentionally broad (covering
+      enums, numbers, formats, etc.) but the tasks in this plan focus on enum validation
+      as the immediate priority — it is the source of GitHub #899 and the most common
+      unvalidated input type. Non-enum typed inputs (number ranges like priority 1-5,
+      ref format validation, date formats) are valid future work under the same trait
+      but are not tasked here.
+    author: "@claude"
+    created_at: 2026-03-20T15:52:05.803Z

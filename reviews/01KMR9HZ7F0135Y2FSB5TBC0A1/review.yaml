@@ -1,0 +1,264 @@
+_ulid: 01KMR9HZ7F0135Y2FSB5TBC0A1
+slugs: []
+title: Review @01KMMB3TNHWVQT4HHB9XC1DE0X
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran kspec validate: schema and references passed; command exited 6 due existing repo-wide
+      warnings (1 reference warning, 33 alignment warnings, 485 completeness warnings), with no new
+      task-specific validation errors."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-27T18:46:08.253Z
+    completed_at: 2026-03-27T18:46:08.253Z
+events:
+  - _ulid: 01KMR9HZ7FGCX41KYS81790RV7
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T18:40:25.839Z
+  - _ulid: 01KMR9V3THMJDSCW3XH9T15Z9G
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T18:45:25.458Z
+  - _ulid: 01KMR9V7J60PVW3W5D21HHBXMH
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMR9V6CPQNXZNZ1VKN568P4Y
+    timestamp: 2026-03-27T18:45:29.286Z
+  - _ulid: 01KMR9VBGED7DSBVVWN219XPB5
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMR9VA7Y0CGANJ0J3JHMYA4Y
+    timestamp: 2026-03-27T18:45:33.326Z
+  - _ulid: 01KMR9VG6BWAF0SQH7HT1CJPXK
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMR9VEX8ABPYB2FWSCXYQAXT
+    timestamp: 2026-03-27T18:45:38.123Z
+  - _ulid: 01KMR9VM897BXTRT4P5DA2SYW6
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMR9VJXZ4N54HV9T766KZX3X
+    timestamp: 2026-03-27T18:45:42.282Z
+  - _ulid: 01KMR9W9KNC5PK04JJR37BZQ40
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-27T18:46:04.150Z
+  - _ulid: 01KMR9W9KPPNV0VSEYM8VG529E
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T18:46:04.150Z
+  - _ulid: 01KMR9WEBCCKBFXS4GKP7NP80Y
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-27T18:46:09.004Z
+  - _ulid: 01KMRB81G02XMKMYWPBKTMJFD3
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMR9V6CPQNXZNZ1VKN568P4Y
+    timestamp: 2026-03-27T19:09:57.632Z
+  - _ulid: 01KMRB85RCYT403C0X18HCPRJQ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMR9V6CPQNXZNZ1VKN568P4Y
+    timestamp: 2026-03-27T19:10:01.996Z
+  - _ulid: 01KMRB8FRJC7GK1BCFWK25GVT2
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMR9VA7Y0CGANJ0J3JHMYA4Y
+    timestamp: 2026-03-27T19:10:12.242Z
+  - _ulid: 01KMRB8M63721KV6MQ4EWFW0BJ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMR9VA7Y0CGANJ0J3JHMYA4Y
+    timestamp: 2026-03-27T19:10:16.771Z
+  - _ulid: 01KMRB8YQSF86J4K3FZFMGRJ24
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMR9VEX8ABPYB2FWSCXYQAXT
+    timestamp: 2026-03-27T19:10:27.577Z
+  - _ulid: 01KMRB935JRXMAZFXDY900GKD7
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMR9VEX8ABPYB2FWSCXYQAXT
+    timestamp: 2026-03-27T19:10:32.114Z
+  - _ulid: 01KMRB9D633EMS906BHQ5K1F2W
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMR9VJXZ4N54HV9T766KZX3X
+    timestamp: 2026-03-27T19:10:42.371Z
+  - _ulid: 01KMRB9MZP5VNF7859J7CZ2P8Z
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMR9VJXZ4N54HV9T766KZX3X
+    timestamp: 2026-03-27T19:10:50.359Z
+examined_commit: 1fdbf904e3dd52c1fbad1aaed1da6381a92309b4
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMMB3TNHWVQT4HHB9XC1DE0X"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMR9V6CPQNXZNZ1VKN568P4Y
+    anchor:
+      type: code
+      commit: 1fdbf904e3dd52c1fbad1aaed1da6381a92309b4
+      line_end: 52
+      line_start: 51
+      path: packages/daemon/src/routes/validation.ts
+      side: head
+    entries:
+      - _ulid: 01KMR9V6CPWGM25SSDZ4VRH4FD
+        author: "@claude"
+        body: " only returns  when the tasks or items domains are warming. If  or  is still loading, lines
+          140-172 silently skip those searches and return a normal 200 payload with partial results
+          instead of signaling warmup. That changes search semantics during startup: a query that
+          only matches an agent, workflow, observation, convention, or inbox item disappears until
+          the later domain finishes loading. The route needs to treat any searched domain in  as a
+          loading response, not an incomplete success."
+        created_at: 2026-03-27T18:45:28.086Z
+      - _ulid: 01KMRB80VMWHANR546H78SJ62P
+        author: "@claude"
+        body: "Fixed: The /api/search loading guard now checks all four searched domains (tasks, items,
+          inbox, meta) — not just tasks/items. If any domain is still loading, the route returns
+          _cache_status: 'loading' immediately. The individual per-domain loading checks for inbox
+          and meta further down were also simplified since the upfront guard makes those branches
+          unreachable."
+        created_at: 2026-03-27T19:09:56.980Z
+    kind: blocker
+    resolved_at: 2026-03-27T19:10:01.330Z
+    resolved_by: "@claude"
+  - _ulid: 01KMR9VA7Y0CGANJ0J3JHMYA4Y
+    anchor:
+      type: code
+      commit: 1fdbf904e3dd52c1fbad1aaed1da6381a92309b4
+      line_end: 602
+      line_start: 591
+      path: packages/daemon/src/routes/sessions.ts
+      side: head
+    entries:
+      - _ulid: 01KMR9VA7Y7YVFAYVJGNR4N8EE
+        author: "@claude"
+        body: "The warmup fallback is still present on . When the task or item cache domains are not , this
+          code falls back to  plus / to build  and . That reintroduces the per-request disk reads
+          this task is meant to remove, just on the session detail path instead of the routes
+          covered by the new warmup test. This route needs the same treatment as the other warmup
+          fixes: serve from cache when ready, otherwise return a loading/omitted-cache-status path
+          without calling the disk-backed loaders."
+        created_at: 2026-03-27T18:45:32.030Z
+      - _ulid: 01KMRB8F3PPJBS3C6XDBKEXQ74
+        author: "@claude"
+        body: "Fixed: GET /api/sessions/:id no longer falls back to
+          initContext()/loadAllTasks()/loadAllItems() for task_title and spec_context enrichment
+          when tasks/items domains aren't ready. Instead, these non-critical fields remain null and
+          populate once the cache is warm. No disk reads on the session detail path during warmup."
+        created_at: 2026-03-27T19:10:11.574Z
+    kind: blocker
+    resolved_at: 2026-03-27T19:10:16.041Z
+    resolved_by: "@claude"
+  - _ulid: 01KMR9VEX8ABPYB2FWSCXYQAXT
+    anchor:
+      type: code
+      commit: 1fdbf904e3dd52c1fbad1aaed1da6381a92309b4
+      line_end: 602
+      line_start: 591
+      path: packages/daemon/src/routes/sessions.ts
+      side: head
+    entries:
+      - _ulid: 01KMR9VEX8XS49JARV9HCP83CM
+        author: "@claude"
+        body: "The warmup fallback is still present on GET /api/sessions/:id. When the task or item cache
+          domains are not ready, this code falls back to initContext() plus
+          loadAllTasks()/loadAllItems() to build task_title and spec_context. That reintroduces the
+          per-request disk reads this task is meant to remove, just on the session detail path
+          instead of the routes covered by the new warmup test. This route needs the same treatment
+          as the other warmup fixes: serve from cache when ready, otherwise return a loading or
+          omitted-cache-status path without calling the disk-backed loaders."
+        created_at: 2026-03-27T18:45:36.809Z
+      - _ulid: 01KMRB8Y31T1XYEEM6GJXHRH4R
+        author: "@claude"
+        body: "Fixed: Same as above — the sessions/:id disk fallback for task_title/spec_context is removed.
+          When tasks or items domains aren't ready, these enrichment fields are null instead of
+          triggering per-request disk reads."
+        created_at: 2026-03-27T19:10:26.913Z
+    kind: blocker
+    resolved_at: 2026-03-27T19:10:31.402Z
+    resolved_by: "@claude"
+  - _ulid: 01KMR9VJXZ4N54HV9T766KZX3X
+    anchor:
+      type: code
+      commit: 1fdbf904e3dd52c1fbad1aaed1da6381a92309b4
+      line_end: 52
+      line_start: 51
+      path: packages/daemon/src/routes/validation.ts
+      side: head
+    entries:
+      - _ulid: 01KMR9VJY480D0CMVZ0T2FDT3E
+        author: "@claude"
+        body: 'The /api/search handler only returns _cache_status: "loading" when the tasks or items domains
+          are warming. If meta or inbox is still loading, the later branches skip those searches and
+          return a normal 200 payload with partial results instead of signaling warmup. That changes
+          startup behavior: queries that only match an agent, workflow, observation, convention, or
+          inbox item disappear until that domain finishes loading. This route should return a
+          loading response whenever any searched domain is still warming, not an incomplete success
+          payload.'
+        created_at: 2026-03-27T18:45:40.932Z
+      - _ulid: 01KMRB9CH9RPYPFS572PYH9Q5E
+        author: "@claude"
+        body: "Fixed: The /api/search loading guard now includes inbox and meta domains. The check is: if
+          any of tasks, items, inbox, or meta is in 'loading' state, return _cache_status:
+          'loading'. This prevents partial results from being returned as a success during startup."
+        created_at: 2026-03-27T19:10:41.705Z
+    kind: blocker
+    resolved_at: 2026-03-27T19:10:49.666Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-27T18:46:04.149Z
+created_at: 2026-03-27T18:40:25.839Z
+updated_at: 2026-03-27T19:10:49.666Z
+notes: []

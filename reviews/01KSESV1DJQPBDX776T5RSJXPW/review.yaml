@@ -1,0 +1,386 @@
+_ulid: 01KSESV1DJQPBDX776T5RSJXPW
+slugs: []
+title: Review task-review-screenshot-resource-ui
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "2537 test suites passed; 9664 tests passed, 5 skipped; duration 2625.4s. Full log:
+      /tmp/kspec-test-cache/01KSEST1GYMZ1D6MWPBDXC6QTX/3a96f4fdcec73083.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-25T05:44:53.407Z
+    completed_at: 2026-05-25T05:44:53.407Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation schema/references passed; command exited 6 due existing project-wide warnings
+      (reference, alignment, completeness), not new task-specific errors.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-25T05:45:06.481Z
+    completed_at: 2026-05-25T05:45:06.481Z
+events:
+  - _ulid: 01KSESV1DJR7SKKNV7Q7NHW5H8
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-25T05:31:05.010Z
+  - _ulid: 01KSESVKZYW3PHBG35N9HSH635
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-25T05:31:24.030Z
+  - _ulid: 01KSETA2HXG8TAXMPRYEV7SWW9
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSETA09F9NY3GPP4TX9JT3QF
+    timestamp: 2026-05-25T05:39:17.693Z
+  - _ulid: 01KSETAQMW3KXEZ626EJPG3CEN
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSETAKJTCHZ5Z5WR0320K4ZM
+    timestamp: 2026-05-25T05:39:39.292Z
+  - _ulid: 01KSETB7J23605CNAGS32T9ABY
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSETB54J1C8RCH6VBJMCC8FS
+    timestamp: 2026-05-25T05:39:55.586Z
+  - _ulid: 01KSETBRXV10H40KZVVY1PQ8XB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSETBPP363HJBNDJ82251QTS
+    timestamp: 2026-05-25T05:40:13.371Z
+  - _ulid: 01KSETC6T3YDVQSFTS1RDSXQQA
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSETC4GKT565DEVP88GHX4M4
+    timestamp: 2026-05-25T05:40:27.587Z
+  - _ulid: 01KSETMC61R2AGY365NHM4AVCX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-25T05:44:55.233Z
+  - _ulid: 01KSETMRXWNZMVQD45MHPWF94G
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-25T05:45:08.284Z
+  - _ulid: 01KSETNBB4HZS0WKWB3S63H65M
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSETN9JSNSWS51ZZ3NDX3JT6
+    timestamp: 2026-05-25T05:45:27.140Z
+  - _ulid: 01KSETNPPHFGD0R8BTDNN5P845
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-25T05:45:38.769Z
+  - _ulid: 01KSETNPPHFRJSPWMSQ6626X8V
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-25T05:45:38.769Z
+  - _ulid: 01KSEX4C7D9R4AAWZM8AS1AJFR
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSETA09F9NY3GPP4TX9JT3QF
+    timestamp: 2026-05-25T06:28:36.717Z
+  - _ulid: 01KSEX4GMZW1YER65PSHDD0WQJ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSETA09F9NY3GPP4TX9JT3QF
+    timestamp: 2026-05-25T06:28:41.247Z
+  - _ulid: 01KSEX4N1M3M5CSCV1EGDZAQ31
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSETAKJTCHZ5Z5WR0320K4ZM
+    timestamp: 2026-05-25T06:28:45.748Z
+  - _ulid: 01KSEX4TAQXJEG2K1ED3VWAN7M
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSETAKJTCHZ5Z5WR0320K4ZM
+    timestamp: 2026-05-25T06:28:51.159Z
+  - _ulid: 01KSEX4YQ9F9530DAJSMFH4Y88
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSETB54J1C8RCH6VBJMCC8FS
+    timestamp: 2026-05-25T06:28:55.657Z
+  - _ulid: 01KSEX532TP8XCRHB02J065QKE
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSETB54J1C8RCH6VBJMCC8FS
+    timestamp: 2026-05-25T06:29:00.122Z
+  - _ulid: 01KSEX57HVY3VCFDAZRBB68QND
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSETBPP363HJBNDJ82251QTS
+    timestamp: 2026-05-25T06:29:04.699Z
+  - _ulid: 01KSEX5BX1CAW5VSQQZRB14M4A
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSETBPP363HJBNDJ82251QTS
+    timestamp: 2026-05-25T06:29:09.153Z
+  - _ulid: 01KSEX5G6FHN7K9ENY1471ER8C
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSETC4GKT565DEVP88GHX4M4
+    timestamp: 2026-05-25T06:29:13.551Z
+  - _ulid: 01KSEX5MERDZEPD2GW9VKSDC4R
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSETC4GKT565DEVP88GHX4M4
+    timestamp: 2026-05-25T06:29:17.912Z
+examined_commit: 8ec78b1068c3811f36051e6234aa7fd5d8865b85
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XB0EKNTMZS4XJMC4ED4SK"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSETA09F9NY3GPP4TX9JT3QF
+    anchor:
+      type: code
+      commit: 8ec78b1068c3811f36051e6234aa7fd5d8865b85
+      line_end: 376
+      line_start: 374
+      path: src/parser/review-resource-manager.ts
+      side: head
+    entries:
+      - _ulid: 01KSETA09FDHAA860TPVPWH9XJ
+        author: Jacob Chapel
+        body: "MUST-FIX: review resource add writes with path.join plus fs.copyFile and never resolves the
+          destination against the review resource tree. If <reviewDir>/resources/<path> or an
+          ancestor is a symlink, copyFile follows it and can write outside the owning review
+          directory, violating the task's forbidden symlink-escape requirement. Use a symlink-safe
+          destination check/open pattern before writing and add coverage."
+        created_at: 2026-05-25T05:39:15.375Z
+      - _ulid: 01KSEX4AGJNZKQCEDDEQDR62A4
+        author: "@claude"
+        body: "Fixed. addReviewResource now routes the source-bytes copy through a new
+          copySourceIntoOwnerResources helper in src/parser/entity-local-resources.ts (shared so
+          future plan-resource / spec-resource managers reuse the same gate). The helper rejects:
+          (1) a symlinked owner resources/ root, (2) any symlinked intermediate directory along the
+          relative path, (3) a pre-existing symlink at the destination. After fs.copyFile it
+          realpath-verifies the written file is still contained inside the owner realpath and
+          removes the partial write if not. Failures surface as the documented invalid_resource_path
+          code with path/source_file attached. Coverage in tests/review-resource-manager.test.ts
+          adds three behavioral tests planting symlinks at each level and asserting the outside file
+          is never written."
+        created_at: 2026-05-25T06:28:34.962Z
+    kind: blocker
+    resolved_at: 2026-05-25T06:28:39.532Z
+    resolved_by: "@claude"
+  - _ulid: 01KSETAKJTCHZ5Z5WR0320K4ZM
+    anchor:
+      type: code
+      commit: 8ec78b1068c3811f36051e6234aa7fd5d8865b85
+      line_end: 1378
+      line_start: 1376
+      path: packages/web-ui/src/lib/api.ts
+      side: head
+    entries:
+      - _ulid: 01KSETAKJTQS3VEJNSSN17M8VS
+        author: Jacob Chapel
+        body: "MUST-FIX: static exports now include review resource metadata and copied assets, but the web
+          UI still cannot open review detail in static mode because fetchReview throws here, and
+          fetchReviews returns an empty list. The review detail page depends on fetchReview, so
+          exported screenshot resources are not discoverable or loadable from the static UI
+          snapshot. Add static review list/detail lookup from the snapshot and cover resource
+          rendering in static mode."
+        created_at: 2026-05-25T05:39:35.130Z
+      - _ulid: 01KSEX4KAWDC91M507MZP0DVEJ
+        author: "@claude"
+        body: "Fixed. Added fetchReviewsStatic and fetchReviewStatic in
+          packages/web-ui/src/lib/api-static.ts that resolve against snapshot.reviews.
+          packages/web-ui/src/lib/api.ts fetchReviews and fetchReview now call those helpers when
+          isStaticMode() is true; fetchReviewSiblings drops its short-circuit since fetchReviews now
+          works in static mode. To make snapshot.reviews type-visible to the static helpers I added
+          ExportedReview to packages/shared/src/api.ts and a reviews?: ExportedReview[] field on
+          KspecSnapshot (re-exported through packages/web-ui/src/lib/types/snapshot.ts). The bounded
+          projection from src/export/json.ts already populates that field with each resource's
+          exported_path, so the existing review detail page reads review.resources directly off the
+          snapshot and resolveResourceUrl already prefers exported_path in static mode — no
+          detail-page changes were needed once fetchReview resolved. New file
+          tests/web-ui/review-static-mode.test.ts covers list, detail, siblings, and
+          resource-metadata round-trip (including exported_path) in static mode."
+        created_at: 2026-05-25T06:28:43.996Z
+    kind: blocker
+    resolved_at: 2026-05-25T06:28:49.408Z
+    resolved_by: "@claude"
+  - _ulid: 01KSETB54J1C8RCH6VBJMCC8FS
+    anchor:
+      type: code
+      commit: 8ec78b1068c3811f36051e6234aa7fd5d8865b85
+      line_end: 323
+      line_start: 318
+      path: src/parser/review-resource-manager.ts
+      side: head
+    entries:
+      - _ulid: 01KSETB54KWA08GF4V189D47XZ
+        author: Jacob Chapel
+        body: "MUST-FIX: explicit invalid content_type currently returns the undocumented code
+          invalid_content_type. The task's exact CLI JSON failure code set does not include that
+          code, and the API status/error mapping only defines invalid id/path, missing file, invalid
+          replace, not found, conflict, and storage incompatibility cases. Enforce the content-type
+          rule while mapping failures to the documented envelope/code, and add CLI/API coverage for
+          invalid content_type."
+        created_at: 2026-05-25T05:39:53.107Z
+      - _ulid: 01KSEX4WVXG6KB6SBNNEK7MAT1
+        author: "@claude"
+        body: "Fixed. The task's CLI/API contract enumerates a closed set of failure codes
+          (invalid_resource_id, invalid_resource_path, source_file_missing/unreadable,
+          resource_conflict, resource_not_found, review_not_found, confirmation_required,
+          operation_cancelled, entity_storage_incompatible) and does not include
+          invalid_content_type. Removed invalid_content_type from the ReviewResourceErrorCode union
+          and from the daemon route status map. addReviewResource still enforces the content_type
+          rule (explicit values must be valid `type/subtype` with no whitespace) but maps a
+          malformed explicit value to invalid_resource_path — content_type is path-derived metadata
+          (inferred from the path extension when omitted), so the documented path-shaped code is the
+          right home, with the resource's relative path attached and the message prefixed `Explicit
+          content_type rejected: …` so callers can still distinguish the cause. Coverage:
+          tests/review-resource-manager.test.ts (manager), tests/review-resource-cli.test.ts (CLI
+          --json envelope + exit 1), and tests/daemon-api/review-resources.test.ts (multipart POST →
+          400 invalid_resource_path with content_type message)."
+        created_at: 2026-05-25T06:28:53.757Z
+    kind: blocker
+    resolved_at: 2026-05-25T06:28:58.381Z
+    resolved_by: "@claude"
+  - _ulid: 01KSETBPP363HJBNDJ82251QTS
+    anchor:
+      type: code
+      commit: 8ec78b1068c3811f36051e6234aa7fd5d8865b85
+      line_end: 140
+      line_start: 130
+      path: src/parser/review-resource-manager.ts
+      side: head
+    entries:
+      - _ulid: 01KSETBPP3MFRF5QXEGZTXF7C5
+        author: Jacob Chapel
+        body: "MUST-FIX: getReviewResource does not validate resourceId before lookup. Malformed IDs used by
+          CLI get/remove or API GET/DELETE therefore fall through to resource_not_found instead of
+          the documented invalid_resource_id response for IDs outside the shared resource-id
+          contract. Validate IDs on read/delete paths and add coverage for malformed resource IDs on
+          each surface."
+        created_at: 2026-05-25T05:40:11.075Z
+      - _ulid: 01KSEX55R1617RHM95NZGNK9J8
+        author: "@claude"
+        body: "Fixed. getReviewResource now calls validateResourceId(resourceId) at the top and returns
+          invalid_resource_id (with the offending resourceId attached) before any manifest lookup.
+          This single change cascades to every read/delete surface: resolveReviewResourceFile
+          delegates through getReviewResource, removeReviewResource delegates through
+          getReviewResource, and the daemon GET-single / GET-bytes / DELETE routes all go through
+          the manager — so malformed ids now produce 400 invalid_resource_id (CLI exit 1, daemon
+          400) rather than 404 resource_not_found on every surface. Coverage:
+          tests/review-resource-manager.test.ts adds malformed-id cases on get, resolve, and remove;
+          tests/review-resource-cli.test.ts adds CLI cases on get and remove (--force --json);
+          tests/daemon-api/review-resources.test.ts adds daemon cases on GET single, GET bytes, and
+          DELETE."
+        created_at: 2026-05-25T06:29:02.849Z
+    kind: blocker
+    resolved_at: 2026-05-25T06:29:07.409Z
+    resolved_by: "@claude"
+  - _ulid: 01KSETC4GKT565DEVP88GHX4M4
+    anchor:
+      type: code
+      commit: 8ec78b1068c3811f36051e6234aa7fd5d8865b85
+      line_end: 167
+      line_start: 166
+      path: src/cli/commands/review-resource.ts
+      side: head
+    entries:
+      - _ulid: 01KSETC4GKJMWZ03R6DX6XD44E
+        author: Jacob Chapel
+        body: "MUST-FIX: review resource add uses Commander requiredOption for --id and --path. Missing
+          required option errors happen before the action runs, so --json callers get Commander text
+          instead of the task's required JSON failure envelope with code, message, resource_id,
+          path, and source_file fields. Handle missing --id/--path inside the command action or
+          otherwise route parse errors through the documented envelope, and add tests for both
+          missing options."
+        created_at: 2026-05-25T05:40:25.235Z
+      - _ulid: 01KSEX5EFR0D39TV7ZMNNXJZAV
+        author: "@claude"
+        body: "Fixed. review resource add now uses .option (not .requiredOption) for --id and --path. The
+          action validates both inline at the top — missing --id surfaces invalid_resource_id
+          (resource_id: null, path: <whatever --path was, or null>); missing --path surfaces
+          invalid_resource_path (resource_id: <whatever --id was, or null>, path: null). Both
+          responses go through the same exitWithResourceError path the rest of the command uses, so
+          --json callers receive the documented envelope { error, code, message, resource_id, path,
+          source_file } with exit code 1. Coverage in tests/review-resource-cli.test.ts adds
+          dedicated tests for both missing-option cases."
+        created_at: 2026-05-25T06:29:11.800Z
+    kind: blocker
+    resolved_at: 2026-05-25T06:29:16.148Z
+    resolved_by: "@claude"
+  - _ulid: 01KSETN9JSNSWS51ZZ3NDX3JT6
+    entries:
+      - _ulid: 01KSETN9JT4QFKBKCPHNPAQDTK
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; src/parser/review-resource-manager.ts;
+          src/parser/entity-local-resources.ts; src/parser/review-storage-manager.ts;
+          src/cli/commands/review-resource.ts; packages/daemon/src/routes/review-resources.ts;
+          packages/web-ui/src/lib/api.ts; packages/web-ui/src/routes/reviews/[id]/+page.svelte;
+          src/export/json.ts; src/export/types.ts; tests/review-resource-manager.test.ts;
+          tests/review-resource-cli.test.ts; tests/daemon-api/review-resources.test.ts;
+          tests/review-resource-static-export.test.ts; tests/web-ui/review-resources-api.test.ts.
+          Commands run: kspec task get, kspec item get for spec and trait, kspec validate, rg AC
+          annotations, git diff/stat/name-only, npm test. Claims verified: resource APIs/CLI/tests
+          exist, static export metadata/assets exist, full test suite passes. Categories searched:
+          correctness, symlink/path escape, exact CLI/API error contracts, static export
+          integration, test quality, cache/WebSocket integration."
+        created_at: 2026-05-25T05:45:25.338Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-25T05:45:38.768Z
+created_at: 2026-05-25T05:31:05.010Z
+updated_at: 2026-05-25T06:29:16.148Z
+notes: []

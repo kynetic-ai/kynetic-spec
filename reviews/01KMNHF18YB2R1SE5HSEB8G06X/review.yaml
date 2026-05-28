@@ -1,0 +1,283 @@
+_ulid: 01KMNHF18YB2R1SE5HSEB8G06X
+slugs: []
+title: Review smart error message for task set --status rejection (cycle 4)
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Focused run passed: npm test -- tests/task-set-batch.test.ts (25 tests). Also manually
+      reproduced blocked->pending invalid transition messaging via dist CLI."
+    name: task-set-batch
+    required: false
+    runner: npm
+    created_at: 2026-03-26T17:07:50.272Z
+    completed_at: 2026-03-26T17:07:50.272Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 6 with repo-baseline warnings only; no validation errors. References/schema OK.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-26T17:07:51.527Z
+    completed_at: 2026-03-26T17:07:51.527Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed locally: 301 files, 6832 tests, 5 skipped, exit 0."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-26T17:07:53.631Z
+    completed_at: 2026-03-26T17:07:53.631Z
+events:
+  - _ulid: 01KMNHF18XKWHCW5ES7X5460YX
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-26T17:00:54.941Z
+  - _ulid: 01KMNHFJEK8SX3DBS5EM0RSB19
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-26T17:01:12.531Z
+  - _ulid: 01KMNHVQ8GNMDM2EF4M9S8S33V
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: task-set-batch
+    timestamp: 2026-03-26T17:07:50.672Z
+  - _ulid: 01KMNHVRF9VQWK7FXKMQ9T2JPH
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-26T17:07:51.913Z
+  - _ulid: 01KMNHVTH34ZPY2SVKWYT2WZK7
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-26T17:07:54.019Z
+  - _ulid: 01KMNHVVV0WXRQQTBS9RDPSZSY
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMNHVVDM2WDE7GSYB7PZ6GVD
+    timestamp: 2026-03-26T17:07:55.360Z
+  - _ulid: 01KMNHYJQ7RVYVXVAQWZ5RSPHA
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMNHYHZNVAJG6SH860WQEDCP
+    timestamp: 2026-03-26T17:09:24.327Z
+  - _ulid: 01KMNHYX5KRMSCCP7VZXZ1X0QE
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMNHYWEGATG57GX31PBX6C8T
+    timestamp: 2026-03-26T17:09:35.028Z
+  - _ulid: 01KMNHZ7TBJR3Q2ET6871GHMSA
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMNHZ7CQH3PY95S2NTAV0PYZ
+    timestamp: 2026-03-26T17:09:45.931Z
+  - _ulid: 01KMNJ08HKQ35TZ4QEHA6WDDE8
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-26T17:10:19.443Z
+  - _ulid: 01KMNJ08HK90RFV92TZ526S68P
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-26T17:10:19.443Z
+  - _ulid: 01KMNJZ4TM9KZS8N52B382YZPM
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMNHVVDM2WDE7GSYB7PZ6GVD
+    timestamp: 2026-03-26T17:27:11.444Z
+  - _ulid: 01KMNJZFR6ZWFNW7YNFV9N0R8R
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMNHVVDM2WDE7GSYB7PZ6GVD
+    timestamp: 2026-03-26T17:27:22.630Z
+  - _ulid: 01KMNJZK6NTWFEHR042KGEJZ9M
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMNHYHZNVAJG6SH860WQEDCP
+    timestamp: 2026-03-26T17:27:26.165Z
+  - _ulid: 01KMNJZSVZ1RDYYSQQ4RGC04VF
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMNHYHZNVAJG6SH860WQEDCP
+    timestamp: 2026-03-26T17:27:32.991Z
+  - _ulid: 01KMNJZZGBNVC790GW2ZX5PA40
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMNHYWEGATG57GX31PBX6C8T
+    timestamp: 2026-03-26T17:27:38.763Z
+  - _ulid: 01KMNK0Z4A68AKNVFW9N4VFHAN
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMNHYWEGATG57GX31PBX6C8T
+    timestamp: 2026-03-26T17:28:11.146Z
+examined_commit: da84eed96f51832eb8a43101896382573834e62b
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMM6PH4EQBRZW72DXWMMNFP3"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMNHVVDM2WDE7GSYB7PZ6GVD
+    anchor:
+      type: code
+      commit: da84eed96f51832eb8a43101896382573834e62b
+      line_end: 19
+      line_start: 19
+      path: src/strings/errors.ts
+      side: head
+    entries:
+      - _ulid: 01KMNHVVDNFRG98VJB5CTW73AD
+        author: Test User
+        body: " now returns a misleading fix suggestion. The new  map hard-codes  to , but  transitions a
+          task from  or  to  rather than to . I reproduced this directly with  in a temp fixture
+          repo; the CLI exited 2 and printed . The same incorrect suggestion appears in  mode as .
+          This breaks the new smart-guidance behavior for one valid enum value and will send
+          users/agents to the wrong command instead of telling them there is no direct transition
+          to  unless an / path is actually available from the current state."
+        created_at: 2026-03-26T17:07:54.933Z
+      - _ulid: 01KMNJZ4DA5PR41NXMNY9QKPMY
+        author: "@claude"
+        body: "Fixed: Removed 'pending' from STATUS_TO_COMMAND entirely. There is no direct command to
+          transition TO pending — it's only the initial state or restored via unblock. The function
+          now distinguishes 'known status with no direct command' from 'unknown status' and gives
+          appropriate guidance for each case. Added 3 new E2E tests covering batch mode, single-ref
+          mode, and JSON mode for --status pending."
+        created_at: 2026-03-26T17:27:11.018Z
+    kind: blocker
+    resolved_at: 2026-03-26T17:27:22.232Z
+    resolved_by: "@claude"
+  - _ulid: 01KMNHYHZNVAJG6SH860WQEDCP
+    anchor:
+      type: code
+      commit: da84eed96f51832eb8a43101896382573834e62b
+      line_end: 19
+      line_start: 19
+      path: src/strings/errors.ts
+      side: head
+    entries:
+      - _ulid: 01KMNHYHZNWWG2R5J87R9ZS8XD
+        author: Test User
+        body: >-
+          `task set --status pending` now returns a misleading fix suggestion. The new
+          `STATUS_TO_COMMAND` map hard-codes `pending` to `kspec task start @ref`, but `task start`
+          transitions a task from `pending` or `needs_work` to `in_progress` rather than to
+          `pending`.
+
+
+          I reproduced this directly with `node dist/cli/index.js task set --refs @pending-batch
+          --status pending` in a temp fixture repo; the CLI exited 2 and printed `To transition to
+          pending: kspec task start @ref (to resume from pending)`. The same incorrect suggestion
+          appears in `--json` mode as `details.suggestedCommand`.
+
+
+          This breaks the new smart-guidance behavior for one valid enum value and will send users
+          or agents to the wrong command instead of telling them there is no direct transition to
+          `pending` unless an `unblock` or `reset` path is actually available from the current
+          state.
+        created_at: 2026-03-26T17:09:23.573Z
+      - _ulid: 01KMNJZJQ1PTZNE1NP4ANCEZEG
+        author: "@claude"
+        body: "Fixed: Same root cause as thread above — pending removed from STATUS_TO_COMMAND. Batch mode
+          now says 'No direct command to transition to pending' with null suggestedCommand in JSON."
+        created_at: 2026-03-26T17:27:25.664Z
+    kind: blocker
+    resolved_at: 2026-03-26T17:27:32.593Z
+    resolved_by: "@claude"
+  - _ulid: 01KMNHYWEGATG57GX31PBX6C8T
+    anchor:
+      type: code
+      commit: da84eed96f51832eb8a43101896382573834e62b
+      line_end: 19
+      line_start: 19
+      path: src/strings/errors.ts
+      side: head
+    entries:
+      - _ulid: 01KMNHYWEG47C1AK3V8STKVGXD
+        author: Test User
+        body: "task set --status pending now returns a misleading fix suggestion. STATUS_TO_COMMAND maps
+          pending to 'kspec task start @ref', but task start transitions pending or needs_work to
+          in_progress, not to pending. I reproduced this with 'node dist/cli/index.js task set
+          --refs @pending-batch --status pending' in a temp fixture repo: exit 2 and output 'To
+          transition to pending: kspec task start @ref (to resume from pending)'. The same wrong
+          suggestion appears in JSON mode as details.suggestedCommand. This sends users and agents
+          to the wrong command instead of saying there is no direct transition to pending unless
+          unblock or reset is actually available from the current state."
+        created_at: 2026-03-26T17:09:34.288Z
+      - _ulid: 01KMNJZZ48CBY2S6M78CD0X4K1
+        author: "@claude"
+        body: "Fixed: Same fix applied — all three threads address the same underlying bug. See thread 1 for
+          details."
+        created_at: 2026-03-26T17:27:38.375Z
+    kind: blocker
+    resolved_at: 2026-03-26T17:28:10.773Z
+    resolved_by: "@claude"
+  - _ulid: 01KMNHZ7CQH3PY95S2NTAV0PYZ
+    entries:
+      - _ulid: 01KMNHZ7CQH804JZK3XKHNBKXT
+        author: Test User
+        body: "Review evidence log: Files read: src/cli/commands/task.ts, src/strings/errors.ts,
+          tests/task-set-batch.test.ts, package.json, scripts/test.cjs. Commands run: git diff
+          against dev base, kspec task get, kspec item get @task-set, kspec item get
+          @trait-error-guidance, kspec review get prior cycle, kspec validate, grep/rg for AC
+          annotations, npm test -- tests/task-set-batch.test.ts, full npm test, and direct dist CLI
+          repros for blocked->pending and batch --status pending. Claims verified: blocked-state fix
+          now rejects blocked->pending correctly; full test suite passes; new pending guidance is
+          still wrong in text and JSON modes. Categories searched: correctness (1 blocker found),
+          edge cases (blocked prior_status, batch mode, pending target), error handling (text and
+          JSON guidance), test quality (behavioral E2E coverage present), integration (full suite
+          passed)."
+        created_at: 2026-03-26T17:09:45.495Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-26T17:10:19.443Z
+created_at: 2026-03-26T17:00:54.942Z
+updated_at: 2026-03-26T17:28:10.773Z
+notes: []

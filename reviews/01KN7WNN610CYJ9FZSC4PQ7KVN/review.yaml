@@ -1,0 +1,136 @@
+_ulid: 01KN7WNN610CYJ9FZSC4PQ7KVN
+slugs: []
+title: Review task-chokidar-standardize (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed full suite: 2067/2067 suites, 7481 tests passed, 5 skipped, exit 0. Duration
+      3475.5s. Runner rebuilt missing dist/cli/index.js before execution."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-02T20:10:26.687Z
+    completed_at: 2026-04-02T20:10:26.687Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: packages/daemon/src/watcher.ts, packages/daemon/src/session-watcher.ts,
+      packages/daemon/src/project-context.ts, tests/daemon-watcher-fallback.test.ts,
+      tests/daemon-watcher-error-handling.test.ts, tests/daemon-watcher-multi-project.test.ts,
+      tests/session-watcher.test.ts, tests/e2e/api-watcher.spec.ts, tests/e2e/file-watcher.spec.ts.
+      Commands run: kspec task get, kspec item get, kspec review get, git diff/base show, kspec
+      validate, rg AC annotations, npm test, targeted npm test. Claims verified: watcher stdout
+      regression fixed by code removal and daemon-command-api passing; Chokidar-only startup and
+      ready wait covered by changed code plus tests. Categories searched: correctness, edge cases,
+      error handling, test quality, integration; no blocking findings found."
+    name: review evidence log
+    required: false
+    created_at: 2026-04-02T20:10:29.041Z
+    completed_at: 2026-04-02T20:10:29.041Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation exited 6 with repo-wide pre-existing warnings only: orphaned skill directory,
+      orphaned specs, uncovered AC debt, invalid fixture annotations. No schema or reference errors
+      introduced by this task."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-02T20:10:31.323Z
+    completed_at: 2026-04-02T20:10:31.323Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed targeted coverage: 16/16 suites, 48/48 tests, exit 0. Included
+      tests/daemon-command-api.test.ts, daemon-watcher-fallback/error-handling/multi-project, and
+      session-watcher."
+    name: targeted watcher and daemon command tests
+    required: true
+    runner: npm
+    created_at: 2026-04-02T20:10:33.606Z
+    completed_at: 2026-04-02T20:10:33.606Z
+events:
+  - _ulid: 01KN7WNN61ZAV80AN5BYEQS62Y
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-02T20:03:06.049Z
+  - _ulid: 01KN7WP15ASZMSF6DCRPJS0EDH
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-02T20:03:18.314Z
+  - _ulid: 01KN7X346ZECQZGJ1E07NZ1WHA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-02T20:10:27.423Z
+  - _ulid: 01KN7X36KENFNW88P1J43AA41Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-04-02T20:10:29.870Z
+  - _ulid: 01KN7X38RE38E8VR6DSKX4GKEM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-02T20:10:32.078Z
+  - _ulid: 01KN7X3B14RWAFYR2HV1QJM0TT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted watcher and daemon command tests
+    timestamp: 2026-04-02T20:10:34.404Z
+  - _ulid: 01KN7X3MZF7DXGCCNAJR4FJW9C
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-02T20:10:44.592Z
+  - _ulid: 01KN7X3MZGJKH2GSCK1HP8K99D
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-02T20:10:44.592Z
+examined_commit: 987509e18bdfa9d85e25c3a98d5230ca04fb1198
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN7Q6ARE8SXC9F8AEHYVFHCF"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-02T20:10:44.591Z
+created_at: 2026-04-02T20:03:06.049Z
+updated_at: 2026-04-02T20:10:44.592Z
+notes: []

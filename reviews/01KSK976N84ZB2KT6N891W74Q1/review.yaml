@@ -1,0 +1,189 @@
+_ulid: 01KSK976N84ZB2KT6N891W74Q1
+slugs: []
+title: Review task-add-plan-target-lock-e2e-regression cycle 2
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2582 suites passed; 9857 passed, 5 skipped of 9862 tests. Log:
+      /tmp/kspec-test-cache/01KSK963T4S1T1FEM7RP5KGMCJ/c0e2281b2fbe7c7f.log"
+    name: npm test -- --fresh
+    required: true
+    runner: npm test
+    created_at: 2026-05-26T23:31:05.143Z
+    completed_at: 2026-05-26T23:31:05.143Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Targeted regression passed: 1 test passed. Log:
+      /tmp/kspec-test-cache/01KSK963T4S1T1FEM7RP5KGMCJ/0398869c43fcaf43.log"
+    name: npm test -- --fresh tests/dispatch-plan-target-lock-e2e.test.ts
+    required: true
+    runner: npm test
+    created_at: 2026-05-26T23:31:09.435Z
+    completed_at: 2026-05-26T23:31:09.435Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Dispatch/merge-helper subset passed: 50 suites, 148 tests. Log:
+      /tmp/kspec-test-cache/01KSK963T4S1T1FEM7RP5KGMCJ/30fcc52a22c65a58.log"
+    name: npm test -- --fresh tests/agent-dispatch-engine.test.ts tests/detached-reviewer-merge.test.ts
+    required: true
+    runner: npm test
+    created_at: 2026-05-26T23:31:13.829Z
+    completed_at: 2026-05-26T23:31:13.829Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit completed with exit 0
+    name: npm run typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-26T23:31:18.065Z
+    completed_at: 2026-05-26T23:31:18.065Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation passed with existing alignment warnings: 37 warnings, exit 0 due to --warnings-ok"
+    name: kspec validate --alignment --warnings-ok
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-26T23:31:22.413Z
+    completed_at: 2026-05-26T23:31:22.413Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation passed with existing completeness warnings: 264 warnings, exit 0 due to
+      --warnings-ok"
+    name: kspec validate --completeness --warnings-ok
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-26T23:31:26.688Z
+    completed_at: 2026-05-26T23:31:26.688Z
+events:
+  - _ulid: 01KSK976N8Q2VE65K5QZTHVV6H
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-26T23:16:49.960Z
+  - _ulid: 01KSK980Y3YVJ8AVJ2F6XZ6FND
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-26T23:17:16.867Z
+  - _ulid: 01KSKA1BE92GA0CG06QA99BH7S
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-05-26T23:31:06.826Z
+  - _ulid: 01KSKA1FMJNS7BQFF65MZ83GQC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh tests/dispatch-plan-target-lock-e2e.test.ts
+    timestamp: 2026-05-26T23:31:11.122Z
+  - _ulid: 01KSKA1KXEE0AMWXV4P97MTYNK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh tests/agent-dispatch-engine.test.ts tests/detached-reviewer-merge.test.ts
+    timestamp: 2026-05-26T23:31:15.503Z
+  - _ulid: 01KSKA1R21M6A4K8WRZYE524KQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run typecheck
+    timestamp: 2026-05-26T23:31:19.745Z
+  - _ulid: 01KSKA1W8Y3TPCQ1M8JJZ2076D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --alignment --warnings-ok
+    timestamp: 2026-05-26T23:31:24.063Z
+  - _ulid: 01KSKA20H6S991QNDJ9RJYP4HH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --completeness --warnings-ok
+    timestamp: 2026-05-26T23:31:28.422Z
+  - _ulid: 01KSKA24Q8KM4XJ8HDE11Y8MJQ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSKA233P403RCMHPJ4PJ4GGF
+    timestamp: 2026-05-26T23:31:32.712Z
+  - _ulid: 01KSKA28YBJ92E5J8TXXB1N6AS
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-26T23:31:37.035Z
+  - _ulid: 01KSKA28YB5AQR402F2MYM8JHX
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-26T23:31:37.035Z
+examined_commit: 030317d1fa3d8fa0f11ef35a75c35a411a19c188
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KSJNVQJ5NNXEJSFSFR5SRK6N"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSKA233P403RCMHPJ4PJ4GGF
+    entries:
+      - _ulid: 01KSKA233P20W12XD03MF58BRF
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; tests/dispatch-plan-target-lock-e2e.test.ts;
+          tests/detached-reviewer-merge.test.ts; src/agent-runtime/dispatch.ts;
+          src/agent-runtime/workspace.ts; templates/skills/merge/scripts/detached-reviewer-merge.sh.
+          Commands run: git diff --stat/name-only dev..HEAD; git diff dev..HEAD --
+          tests/dispatch-plan-target-lock-e2e.test.ts; rg AC annotations; kspec item get for
+          @dispatch-integration-mutation-scope, @dispatch-remote-branch-sync,
+          @detached-reviewer-merge-helper; kspec review get prior cycle; targeted npm tests; npm run
+          typecheck; kspec validate alignment/completeness; full npm test -- --fresh. Claims
+          verified: prior overclaimed-annotation blocker is addressed by phase-specific assertions
+          for helper lock, periodic push, occupied refusal, and recovery; the test uses real temp
+          git repos/worktrees and the real merge helper script rather than source scanning.
+          Categories searched: correctness, edge cases around occupied target/refusal/recovery,
+          error guidance, test quality, integration with dispatch active targets and helper cleanup.
+          No blockers found."
+        created_at: 2026-05-26T23:31:31.062Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-26T23:31:37.035Z
+created_at: 2026-05-26T23:16:49.960Z
+updated_at: 2026-05-26T23:31:37.035Z
+notes: []

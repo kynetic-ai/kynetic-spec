@@ -1,0 +1,123 @@
+_ulid: 01KMA8EY9DP6ZT9FAAHP17HHT9
+slugs: []
+title: Review task-session-idle-event
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Warnings only (exit 6), no schema/reference errors and no task-specific validation
+      failures. Warnings are pre-existing repo-wide completeness/alignment items unrelated to this
+      change.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-22T07:55:07.427Z
+    completed_at: 2026-03-22T07:55:07.427Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 306 test files, 7018 tests; 3 skipped."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-22T07:55:08.445Z
+    completed_at: 2026-03-22T07:55:08.445Z
+events:
+  - _ulid: 01KMA8EY9CGD9SN9YX1HCZHDBF
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-22T07:51:55.949Z
+  - _ulid: 01KMA8FMYYZ0F5BT4F8FS435WY
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-22T07:52:19.166Z
+  - _ulid: 01KMA8MSK3SQF6KBM5WTE5RC0Q
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-22T07:55:07.747Z
+  - _ulid: 01KMA8MTMW3WGCCYXV930D6RWS
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-22T07:55:08.829Z
+  - _ulid: 01KMA8MVPJMP81Y8452K671AJ7
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMA8MVD46STQ4F1FPE6JWWMD
+    timestamp: 2026-03-22T07:55:09.906Z
+  - _ulid: 01KMA8N2FV6KFPTZ6F4TYWXZFJ
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-22T07:55:16.860Z
+  - _ulid: 01KMA8N2FWQKJADCC56GNS1EX8
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-22T07:55:16.860Z
+examined_commit: 6d0d9ba61216f23987e1b1f07808a882d6ff8f20
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMA74E4TTWDYMX6QH8K2F86D"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMA8MVD46STQ4F1FPE6JWWMD
+    entries:
+      - _ulid: 01KMA8MVD4WNG12PG7ZQ8GPC9N
+        author: Test User
+        body: >-
+          Evidence log:
+
+          Files read: packages/shared/src/schemas.ts, src/schema/event-payloads.ts,
+          src/schema/event-registry.ts, src/sessions/types.ts, tests/event-payloads.test.ts,
+          tests/event-registry.test.ts, tests/session-idle-event.test.ts
+
+          Commands run: kspec task get @01KMA74E4TTWDYMX6QH8K2F86D; kspec item get
+          @session-idle-event; git diff --stat and full diff against
+          3997b9bdf83ad069eeae20912280def282bc6b77...6d0d9ba61216f23987e1b1f07808a882d6ff8f20; kspec
+          validate; rg -n "AC: @session-idle-event" tests/...; npm test
+
+          Claims verified: session.idle is registered in the taxonomy, has a distinct non-terminal
+          payload schema, is accepted by hook/dispatch/session trigger validation, and the shared
+          UI-facing dispatch event union includes it.
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration.
+          No blocking issues found.
+        created_at: 2026-03-22T07:55:09.604Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-22T07:55:16.859Z
+created_at: 2026-03-22T07:51:55.949Z
+updated_at: 2026-03-22T07:55:16.860Z
+notes: []

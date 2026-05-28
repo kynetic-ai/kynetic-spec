@@ -1,0 +1,168 @@
+_ulid: 01KMAN4TP5Z2C43TB8DPCQSXHA
+slugs: []
+title: Review task-session-prompt-action cycle 5
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed in this workspace: 308 test files, 7077 tests, 3 skipped."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-22T11:38:03.452Z
+    completed_at: 2026-03-22T11:38:03.452Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation succeeded with repository baseline warnings only (orphan skill dir, existing
+      alignment/completeness warnings); no task-specific schema/reference failures.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-03-22T11:38:05.416Z
+    completed_at: 2026-03-22T11:38:05.416Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/schema/action.ts, src/parser/validate.ts,
+      src/agent-runtime/action-executor.ts, src/agent-runtime/invocation.ts,
+      src/agent-runtime/dispatch.ts, src/agent-runtime/hook-executor.ts,
+      src/agent-runtime/session-registry.ts, tests/session-prompt-action.test.ts,
+      tests/daemon-agent-dispatch-routes.test.ts. Commands run: git diff --stat/--name-only, kspec
+      task get, kspec item get, kspec review for-task, grep AC annotations, kspec validate, npm
+      test. Claims verified: full suite passes; AC annotations exist for the new spec/schema tests;
+      daemon wiring shares a session registry. Categories searched: correctness (found 2 blockers),
+      edge cases (multi-hook queue overwrite), error handling (reviewed closed/missing session
+      paths), test quality (tests miss queued-delivery lifecycle semantics), integration
+      (dispatch->invocation->hook path reviewed)."
+    name: review-evidence
+    required: false
+    runner: codex
+    created_at: 2026-03-22T11:38:07.322Z
+    completed_at: 2026-03-22T11:38:07.322Z
+events:
+  - _ulid: 01KMAN4TP4V9YFZWRNGFM9C96N
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-22T11:33:36.069Z
+  - _ulid: 01KMAN57NP1GJNERMNXNM6JQS9
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-22T11:33:49.366Z
+  - _ulid: 01KMANCYFAZYYSFXGWSK2WN5H9
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMANCXX731RCYRSGFG7CRZMM
+    timestamp: 2026-03-22T11:38:02.090Z
+  - _ulid: 01KMAND0CJFDCA8MCS34CHECTV
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-22T11:38:04.050Z
+  - _ulid: 01KMAND29S4YY391Y5CBCSWEZX
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-22T11:38:06.009Z
+  - _ulid: 01KMAND452ZX9WH64W3SFVB709
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-03-22T11:38:07.907Z
+  - _ulid: 01KMAND610QHBTF85A0A6REC1S
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMAND5EJQ2RS25NAFMVEY3PG
+    timestamp: 2026-03-22T11:38:09.825Z
+  - _ulid: 01KMANDTHFFAX58NYZCCAXV00N
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-22T11:38:30.831Z
+  - _ulid: 01KMANDTHFXH9S9G0NQN8HHA2S
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-22T11:38:30.831Z
+examined_commit: 2dbdb68a84693d74e9ae060ab2c9753e3b1d5fa1
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMA74ECH1ZW03KM3403N023Z"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMANCXX731RCYRSGFG7CRZMM
+    anchor:
+      type: code
+      commit: 2dbdb68a84693d74e9ae060ab2c9753e3b1d5fa1
+      line_end: 509
+      line_start: 495
+      path: src/agent-runtime/invocation.ts
+      side: head
+    entries:
+      - _ulid: 01KMANCXX7S1NMW9MME3C1SFM1
+        author: Test User
+        body: When  is called while the session is already , this implementation just assigns  and resolves
+          immediately.  awaits  and then emits , so any queued session_prompt action is marked
+          complete before the follow-up turn has actually run. That violates @session-prompt-action
+          ac-2 ('completed when the turn finishes') and also hides delivery failures that occur in
+          the queued turn path.
+        created_at: 2026-03-22T11:38:01.511Z
+    kind: blocker
+  - _ulid: 01KMAND5EJQ2RS25NAFMVEY3PG
+    anchor:
+      type: code
+      commit: 2dbdb68a84693d74e9ae060ab2c9753e3b1d5fa1
+      line_end: 484
+      line_start: 479
+      path: src/agent-runtime/invocation.ts
+      side: head
+    entries:
+      - _ulid: 01KMAND5EJ9AWT86BZ88VR825V
+        author: Test User
+        body: The follow-up queue only stores a single  string. HookExecutor intentionally fires all
+          matching hooks independently, so two  actions targeting the same live session can arrive
+          while that session is still . In that case the later call overwrites the earlier one, and
+          one prompt is silently dropped even though both action runs report success. This breaks
+          @session-prompt-action ac-1/ac-5 for multi-hook configurations.
+        created_at: 2026-03-22T11:38:09.235Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-22T11:38:30.831Z
+created_at: 2026-03-22T11:33:36.069Z
+updated_at: 2026-03-22T11:38:30.831Z
+notes: []

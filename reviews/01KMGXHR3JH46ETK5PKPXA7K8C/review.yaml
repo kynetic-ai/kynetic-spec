@@ -1,0 +1,73 @@
+_ulid: 01KMGXHR3JH46ETK5PKPXA7K8C
+slugs: []
+title: Review task-readtestoutput-agents-instruction-gen (cycle 1)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 6828 tests passed (301 test files), 3 skipped. Duration: 164.72s."
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-24T21:56:33.544Z
+    completed_at: 2026-03-24T21:56:33.544Z
+events:
+  - _ulid: 01KMGXHR3JTYZE65ZQT7GFKF5X
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-24T21:55:54.610Z
+  - _ulid: 01KMGXJ0GAYPPA2RS01NHTE633
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-24T21:56:03.210Z
+  - _ulid: 01KMGXJYG9K6YG3BY3YA319CVE
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-24T21:56:33.929Z
+  - _ulid: 01KMGXK7JWFS582M5Q7J174S92
+    actor: agent@kspec
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-24T21:56:43.228Z
+  - _ulid: 01KMGXK7JWD9KSA051Z22ECM4V
+    actor: agent@kspec
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-24T21:56:43.228Z
+examined_commit: 4c1f1edfd72c0d60efd3765175a558cb1d4aca4f
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-readtestoutput-agents-instruction-gen"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: agent@kspec
+    role: reviewer
+    created_at: 2026-03-24T21:56:43.228Z
+created_at: 2026-03-24T21:55:54.610Z
+updated_at: 2026-03-24T21:56:43.228Z
+notes: []

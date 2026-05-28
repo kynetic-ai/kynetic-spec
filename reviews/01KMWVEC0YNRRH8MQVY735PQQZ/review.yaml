@@ -1,0 +1,304 @@
+_ulid: 01KMWVEC0YNRRH8MQVY735PQQZ
+slugs: []
+title: Review task-ui-warming-skeletons (cycle 2)
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      UI Data Freshness and Caching
+
+      ────────────────────────────────────────
+
+      ULID:      01KKQRK0C161X7JRT3RZKDAB6F
+
+      Slugs:     ui-data-freshness
+
+      Type:      feature
+
+      Maturity:  draft
+
+      Implementation: in_progress
+
+
+      ─── Description ───
+
+      The web UI maintains a shared, reactive data cache that provides instant
+
+      page transitions, request deduplication, and real-time updates without
+
+      per-page independent fetching. Data fetched by one page is available to
+
+      all pages. Real-time events drive cache invalidation. The UI degrades
+
+      gracefully when the daemon is unreachable and supports read-only static
+
+      mode for exported snapshots.
+
+
+
+      ─── Acceptance Criteria ───
+        [ac-1]
+          Given: A page fetches data on first visit
+
+          When: The user navigates away and returns to the same page
+
+          Then: The page renders immediately from cached data without a loading
+      state, then revalidates in the background if the data is stale.
+
+        [ac-2]
+          Given: Two or more pages or components need the same data concurrently
+
+          When: Both are active at the same time
+
+          Then: Only one HTTP request is made. Both consumers share the result.
+
+        [ac-3]
+          Given: A WebSocket broadcast event indicates data has changed
+
+          When: The event is processed by the UI
+
+          Then: Cached data for the affected entity type is invalidated and
+      active views revalidate in the background. If the broadcast
+
+      includes sufficient enriched data, the cache is updated
+
+      immediately without a server round-trip.
+
+        [ac-4]
+          Given: The UI needs periodic status data (badge counts, agent status)
+
+          When: The data changes on the server
+
+          Then: The data is served from cache and kept current via event-driven
+      invalidation rather than timer-based polling.
+
+        [ac-5]
+          Given: The user switches projects in the multi-directory daemon
+
+          When: The project context changes
+
+          Then: All cached data is discarded. Subsequent data requests fetch
+      fresh data for the new project.
+
+        [ac-6]
+          Given: The app is running in static mode (exported snapshot)
+
+          When: A data request is made
+
+          Then: The request is served from the static data source. No daemon
+      HTTP calls are attempted.
+
+        [ac-7]
+          Given: The daemon is unreachable or returns an error
+
+          When: A data request fails
+
+          Then: The error is surfaced with appropriate messaging (e.g., daemon
+      not running vs data error). Retry behavior is appropriate for
+
+      localhost (minimal retries, short delay).
+
+        [ac-8]
+          Given: A write operation is performed (start task, add note, etc.)
+
+          When: The operation succeeds
+
+          Then: Related cached data is invalidated so the originating client
+      updates immediately without waiting for a broadcast.
+
+        [ac-9]
+          Given: A user performs a hard page refresh or navigates directly to a URL
+          When: The app initializes from scratch (no prior client state)
+          Then: The initialization lifecycle (mode detection, project loading, query enabling) completes and the page renders data. No SSR hydration mismatch prevents reactive state updates from propagating.
+        [ac-10]
+          Given: An entity can change through more than one server-side execution path
+          When: Any path changes list-visible data for an active view
+          Then: The active view stays fresh without a manual reload, and the freshness contract does not depend on which internal path produced the change.
+        [ac-warming-skeleton]
+          Given: the server signals that its cache is still warming
+          When: the UI receives the response
+          Then: a loading skeleton is displayed instead of empty content, and the warming response is not persisted in the client cache as real data
+        [ac-warming-auto-transition]
+          Given: the UI is displaying a loading skeleton due to cache warming
+          When: a real-time event indicates the cache domain is ready
+          Then: the affected queries are invalidated and the view transitions to real data without user interaction
+        [ac-warming-retry-fallback]
+          Given: the UI is displaying a loading skeleton due to cache warming
+          When: no real-time domain-ready event has been received
+          Then: the UI retries the request at short intervals as a fallback for missed or delayed real-time events
+        [ac-warming-timeout]
+          Given: the UI has been retrying a cache-warming response
+          When: the retry ceiling (30 seconds) is reached without the cache becoming ready
+          Then: the UI displays an error state with a manual retry option instead of continuing to show the loading skeleton and AC/test annotation grep completed during review; spec includes ac-warming-skeleton and ac-warming-timeout, and the submitted tests cover tasks/triage but not the sessions search-mode warming path described in the blocker.
+    name: validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-29T13:10:54.478Z
+    completed_at: 2026-03-29T13:10:54.478Z
+events:
+  - _ulid: 01KMWVEC0XAQKDFFWY47HD3647
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-29T13:09:59.966Z
+  - _ulid: 01KMWVF07X0H8VE37AZ1MX69QN
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-29T13:10:20.669Z
+  - _ulid: 01KMWVFY3YW6KAG9VFYTE7XDC9
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMWVFXGPKGKHGN2CZWWTHR3K
+    timestamp: 2026-03-29T13:10:51.262Z
+  - _ulid: 01KMWVG00K1BTTFPP6HG11RFY0
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMWVFZC57P4TDY63RM5A2V0M
+    timestamp: 2026-03-29T13:10:53.203Z
+  - _ulid: 01KMWVG1V6CT500ABKS4S62N9F
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: validate
+    timestamp: 2026-03-29T13:10:55.078Z
+  - _ulid: 01KMWVGZ03F4W1JE540MHXK5QC
+    actor: Test User
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMWVFXGPKGKHGN2CZWWTHR3K
+    timestamp: 2026-03-29T13:11:24.931Z
+  - _ulid: 01KMWVHAWRGB8RT2Z694ED0072
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-29T13:11:37.112Z
+  - _ulid: 01KMWVHAWR9EJP0ZMAHQMF2TP4
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-29T13:11:37.112Z
+  - _ulid: 01KMWW5YXGH6TD4WPF5XNNPZR6
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMWVFXGPKGKHGN2CZWWTHR3K
+    timestamp: 2026-03-29T13:22:52.976Z
+  - _ulid: 01KMWW66N3QXKKYY7J4H3J3RG0
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMWVFXGPKGKHGN2CZWWTHR3K
+    timestamp: 2026-03-29T13:23:00.899Z
+  - _ulid: 01KMWW6H7YJHRPDB8TJRC4JB18
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMWVFZC57P4TDY63RM5A2V0M
+    timestamp: 2026-03-29T13:23:11.742Z
+examined_commit: 7aa92989e9de97463c356afbe1d2bdcc7fc92274
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMW68MZ5Z281YD9Z87K2G55A"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMWVFXGPKGKHGN2CZWWTHR3K
+    anchor:
+      type: code
+      commit: 7aa92989e9de97463c356afbe1d2bdcc7fc92274
+      line_end: 169
+      line_start: 167
+      path: packages/web-ui/src/routes/sessions/+page.svelte
+      side: head
+    entries:
+      - _ulid: 01KMWVFXGPJ7N7J280PWJH8427
+        author: Test User
+        body: " still misses the cache-warming state in search mode. This page has two query paths ( and ),
+          but  only checks , while  can also throw . With , a warming search response falls through
+          to the generic error path instead of showing the required skeleton/banner, and the retry
+          banner resets only the paginated key rather than the active search query. That violates
+          @ui-data-freshness ac-warming-skeleton/ac-warming-timeout for one of the sessions view
+          states."
+        created_at: 2026-03-29T13:10:50.646Z
+      - _ulid: 01KMWVGYDPWGQVV3DTCT9X8347
+        author: Test User
+        body: "Clarification: `searchMode` enables `searchResultsQuery` and disables `sessionsQuery`, but
+          `cacheWarming` is derived only from `sessionsQuery.error`. Existing API tests already
+          prove `fetchSessionSearch()` throws `CacheWarmingError` for `cache_status: \"loading\"`,
+          so `/sessions?q=...` will surface the raw error string instead of the skeleton/timeout
+          banner path. The banner also resets `queryKeys.sessions.list({ ...buildFilterKey(), mode:
+          'paginated' })`, which does not reset the active search query key."
+        created_at: 2026-03-29T13:11:24.342Z
+      - _ulid: 01KMWW5YAF0WRDXDVS2A2JHWB5
+        author: "@claude"
+        body: "Fixed: cacheWarming is now derived from the active query based on searchMode — uses
+          searchResultsQuery.error when in search mode, sessionsQuery.error when paginated. The
+          CacheWarmingBanner queryKey prop is also mode-aware, passing the search query key (with
+          mode: 'search' and q param) when in search mode. The generic error derivation now also
+          suppresses CacheWarmingError from both queries. Added two E2E tests covering sessions
+          search mode: one verifying skeleton display during warming, another verifying timeout
+          banner after retries exhaust."
+        created_at: 2026-03-29T13:22:52.367Z
+    kind: blocker
+    resolved_at: 2026-03-29T13:23:00.273Z
+    resolved_by: "@claude"
+  - _ulid: 01KMWVFZC57P4TDY63RM5A2V0M
+    entries:
+      - _ulid: 01KMWVFZC6JJZWMGF3BMRJKZ13
+        author: Test User
+        body: "Review evidence log\\n\\nFiles read:
+          packages/web-ui/src/lib/components/CacheWarmingBanner.svelte;
+          packages/web-ui/src/routes/tasks/+page.svelte;
+          packages/web-ui/src/routes/tasks/board/+page.svelte;
+          packages/web-ui/src/routes/specs/+page.svelte;
+          packages/web-ui/src/routes/reviews/+page.svelte;
+          packages/web-ui/src/routes/sessions/+page.svelte;
+          packages/web-ui/src/routes/plans/+page.svelte;
+          packages/web-ui/src/routes/inbox/+page.svelte;
+          packages/web-ui/src/routes/triage/+page.svelte; packages/web-ui/src/lib/api.ts;
+          packages/web-ui/tests/cache-warming-view-states.test.ts;
+          packages/web-ui/tests/e2e/cache-warming-views.spec.ts.\\n\\nCommands run: git diff/stat
+          against 9b6b755..7aa9298; node dist/cli/index.js task get @01KMW68MZ5Z281YD9Z87K2G55A;
+          node dist/cli/index.js item get @ui-data-freshness; node dist/cli/index.js review for-task
+          @01KMW68MZ5Z281YD9Z87K2G55A; grep for AC annotations in packages/web-ui/tests; node
+          scripts/test.cjs --fresh --verbose (long-running suite inspection).\\n\\nClaims verified:
+          fetchSessionSearch can raise cache-warming errors (existing API envelope tests); sessions
+          route only derives warming state from sessionsQuery.error; new E2E coverage exercises
+          tasks and triage timeout flows, not sessions search mode.\\n\\nCategories searched:
+          correctness, edge cases, error handling, test quality, integration."
+        created_at: 2026-03-29T13:10:52.550Z
+    kind: nit
+    resolved_at: 2026-03-29T13:23:11.170Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-29T13:11:37.112Z
+created_at: 2026-03-29T13:09:59.966Z
+updated_at: 2026-03-29T13:23:11.170Z
+notes: []

@@ -1,0 +1,37 @@
+_ulid: 01KKFJY4FKCRQH1YPZNMRCTPNR
+slugs:
+  - plan-review-records-and-gates
+title: Review Records and Gates
+status: completed
+approved_at: 2026-03-14T08:45:16.499Z
+derived_specs:
+  - "@review-record-core-model"
+  - "@review-record-storage-and-identity"
+  - "@review-subject-bindings"
+  - "@review-comment-threads-and-anchors"
+  - "@review-checks-and-gate-evaluation"
+  - "@review-verdicts-and-resolution-lifecycle"
+  - "@review-record-validation"
+  - "@review-task-lifecycle-integration"
+  - "@review-cli-commands"
+  - "@review-cli-creation-and-query"
+  - "@review-cli-mutation-commands"
+  - "@review-cli-task-linkage"
+derived_tasks:
+  - "@task-implement-review-record-core"
+  - "@task-implement-review-storage-and-identity"
+  - "@task-implement-review-subject-bindings"
+  - "@task-implement-review-comment-threads"
+  - "@task-implement-review-checks-and-gates"
+  - "@task-implement-review-verdicts-and-resolution"
+  - "@task-implement-review-validation"
+  - "@task-implement-review-task-integration"
+  - "@task-implement-review-cli-surface"
+  - "@task-implement-review-cli-create-query"
+  - "@task-implement-review-cli-mutations"
+  - "@task-implement-review-cli-task-linkage"
+  - "@task-create-review-skill"
+module_ref: null
+source_path: /home/chapel/Projects/kynetic-spec/plans/review-records-and-gates.md
+created_at: 2026-03-11T23:15:29.907Z
+completed_at: null

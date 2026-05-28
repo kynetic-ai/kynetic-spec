@@ -1,0 +1,276 @@
+_ulid: 01KMPPDE0TZX8KPXY0B1CBBHY5
+slugs: []
+title: Review entity cache tiered storage and watcher invalidation
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "node scripts/test.cjs: 6905 passed, 5 skipped, 0 failures."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-27T03:54:42.017Z
+    completed_at: 2026-03-27T03:54:42.017Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exited 6 with repo-wide warnings only; no schema/reference errors for this
+      task's changes.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-27T03:54:43.517Z
+    completed_at: 2026-03-27T03:54:43.517Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "rg -n 'AC: @daemon-entity-cache' tests/daemon-entity-cache.test.ts found coverage
+      annotations for all 15 daemon-entity-cache AC groups."
+    name: AC annotations
+    required: false
+    runner: rg
+    created_at: 2026-03-27T03:54:46.474Z
+    completed_at: 2026-03-27T03:54:46.474Z
+events:
+  - _ulid: 01KMPPDE0TFMGNR6CYQJXP0BPR
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T03:46:39.770Z
+  - _ulid: 01KMPPDYNV7E4JFXHBXR0F36F0
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T03:46:56.828Z
+  - _ulid: 01KMPPV9PB6KQT5RX9C2511K48
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMPPV973971V9Y6ZRFJCCHCH
+    timestamp: 2026-03-27T03:54:14.091Z
+  - _ulid: 01KMPPVB3W8K3V9ZBZ3VJQ0Y0P
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMPPVAP68RQNQQWJ4CMNNSTS
+    timestamp: 2026-03-27T03:54:15.548Z
+  - _ulid: 01KMPPVCJ3W33T1CPJT7G4SX75
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMPPVC3NYHP5TM8PNWBMDR2F
+    timestamp: 2026-03-27T03:54:17.027Z
+  - _ulid: 01KMPPW5E0PDV2HNXGGY2DT0S9
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-27T03:54:42.496Z
+  - _ulid: 01KMPPW6WX7Y3XXEJY84E69NQ6
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-27T03:54:43.997Z
+  - _ulid: 01KMPPW8A5PBKG5TR20BGVN0KZ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KMPPW7V290ZPS0MTTZ73E8Q4
+    timestamp: 2026-03-27T03:54:45.445Z
+  - _ulid: 01KMPPW9RFS2SKG526Y8BD77YH
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC annotations
+    timestamp: 2026-03-27T03:54:46.927Z
+  - _ulid: 01KMPPWP6EJ832G5ZXE2HWGJQG
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-27T03:54:59.662Z
+  - _ulid: 01KMPPWP6EBCZJY6WHD8MAPKCT
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T03:54:59.662Z
+  - _ulid: 01KMPQVVAEFG2QKV09MFVNW6A7
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMPPV973971V9Y6ZRFJCCHCH
+    timestamp: 2026-03-27T04:12:00.718Z
+  - _ulid: 01KMPQVYM2VE4K3MXAEQYH9QHP
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPPV973971V9Y6ZRFJCCHCH
+    timestamp: 2026-03-27T04:12:04.098Z
+  - _ulid: 01KMPQW9VMYTD4MQFG6PP7T016
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMPPVAP68RQNQQWJ4CMNNSTS
+    timestamp: 2026-03-27T04:12:15.604Z
+  - _ulid: 01KMPQWD3XKGX6VGBS3F0T8M0B
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPPVAP68RQNQQWJ4CMNNSTS
+    timestamp: 2026-03-27T04:12:18.941Z
+  - _ulid: 01KMPQWPQ1G9C4FBGG33Y4W2DS
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMPPVC3NYHP5TM8PNWBMDR2F
+    timestamp: 2026-03-27T04:12:28.769Z
+  - _ulid: 01KMPQWT0G1AHMBGQBAETDCZNB
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPPVC3NYHP5TM8PNWBMDR2F
+    timestamp: 2026-03-27T04:12:32.145Z
+  - _ulid: 01KMPQX8RVM9E3KHBCBP3SBZ3Y
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPPW7V290ZPS0MTTZ73E8Q4
+    timestamp: 2026-03-27T04:12:47.259Z
+examined_commit: 50e673a272bd2a8a1c4abd98c41643c3747a39e0
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMMB3T2K3T6A1CJR884EPKJF"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMPPV973971V9Y6ZRFJCCHCH
+    anchor:
+      type: code
+      commit: 50e673a272bd2a8a1c4abd98c41643c3747a39e0
+      line_end: 82
+      line_start: 77
+      path: packages/daemon/src/middleware/project-context.ts
+      side: head
+    entries:
+      - _ulid: 01KMPPV973MZZWW087DX2D3ZD2
+        author: "@claude"
+        body: The startup project is registered here without ever running , but cache creation/warmup only
+          happens inside  in . That means the daemon's default project never gets a  on startup,
+          violating / for the very first registered project and forcing uncached disk reads until
+          some later path re-registers it.
+        created_at: 2026-03-27T03:54:13.603Z
+      - _ulid: 01KMPQVTVNY7ATEQGBE4EAFC8Z
+        author: "@claude"
+        body: "Fixed: Added explicit onProjectRegistered(startupProjectPath) call in server.ts after all
+          callbacks (file change, cache invalidation, unregister) are wired. This ensures the
+          startup project gets an entity cache instance created and loadAll() starts immediately,
+          before the watcher is started. The onProjectRegistered function is idempotent for session
+          sync (has() check), so no double-start."
+        created_at: 2026-03-27T04:12:00.245Z
+    kind: blocker
+    resolved_at: 2026-03-27T04:12:03.609Z
+    resolved_by: "@claude"
+  - _ulid: 01KMPPVAP68RQNQQWJ4CMNNSTS
+    anchor:
+      type: code
+      commit: 50e673a272bd2a8a1c4abd98c41643c3747a39e0
+      line_end: 452
+      line_start: 441
+      path: packages/daemon/src/routes/tasks.ts
+      side: head
+    entries:
+      - _ulid: 01KMPPVAP6RTCHSHFB6DKK4N8D
+        author: "@claude"
+        body: "These status mutations rewrite the linked spec item via , but the cache write-through only
+          refreshes the  domain. The same pattern repeats in submit/complete/block. Result: after a
+          task status change,  and  can continue serving stale implementation status from the items
+          cache until the watcher fires, which breaks the write-through guarantee for cross-domain
+          mutations."
+        created_at: 2026-03-27T03:54:15.110Z
+      - _ulid: 01KMPQW9CXSTPF8F02Y9GCZ5Z3
+        author: "@claude"
+        body: "Fixed: All 4 task status mutation routes (start, submit, complete, block) now write through
+          BOTH tasks and items domains using Promise.all([cache.writeThrough('tasks'),
+          cache.writeThrough('items')]). This covers the cross-domain side effect where
+          syncSpecImplementationStatus() modifies spec item implementation_status after task
+          transitions. The items cache is now immediately consistent after task mutations."
+        created_at: 2026-03-27T04:12:15.133Z
+    kind: blocker
+    resolved_at: 2026-03-27T04:12:18.465Z
+    resolved_by: "@claude"
+  - _ulid: 01KMPPVC3NYHP5TM8PNWBMDR2F
+    anchor:
+      type: code
+      commit: 50e673a272bd2a8a1c4abd98c41643c3747a39e0
+      line_end: 65
+      line_start: 41
+      path: packages/daemon/src/routes/refs.ts
+      side: head
+    entries:
+      - _ulid: 01KMPPVC3P58HSGHZY3E24C663
+        author: "@claude"
+        body: This endpoint ignores the new loading contract. For any domain that is not , it falls straight
+          back to  + disk reads instead of returning a loading response while the cache is warming.
+          During startup warmup,  therefore defeats / and reintroduces exactly the cold-read
+          behavior this task is supposed to remove.
+        created_at: 2026-03-27T03:54:16.566Z
+      - _ulid: 01KMPQWP8M1QH9HGVZ4MAJ9AE0
+        author: "@claude"
+        body: "Fixed: Refs endpoint now checks if any required domain (tasks, items, plans) is in 'loading'
+          state and returns { refs: {}, _cache_status: 'loading' } during warmup, consistent with
+          ac-warming-availability and ac-progressive-loading. Only falls through to disk reads when
+          domains are degraded (not loading), which is the correct graceful-degradation fallback."
+        created_at: 2026-03-27T04:12:28.308Z
+    kind: blocker
+    resolved_at: 2026-03-27T04:12:31.677Z
+    resolved_by: "@claude"
+  - _ulid: 01KMPPW7V290ZPS0MTTZ73E8Q4
+    entries:
+      - _ulid: 01KMPPW7V28533FMQSGDM4HFN9
+        author: "@claude"
+        body: "Evidence log: files read included src/daemon/entity-cache.ts, packages/daemon/src/server.ts,
+          packages/daemon/src/project-context.ts, packages/daemon/src/middleware/project-context.ts,
+          packages/daemon/src/routes/{tasks,items,inbox,meta,plans,reviews,triage,refs,sessions,ses\
+          sion-related}.ts, src/parser/alignment.ts, and tests/daemon-entity-cache.test.ts. Commands
+          run: kspec task get, kspec item get @daemon-entity-cache, kspec validate, rg for AC
+          annotations, git diff against dev base, npm test. Categories checked: correctness, cache
+          invalidation/write-through, warming/loading behavior, route integration, test coverage,
+          and regression risk."
+        created_at: 2026-03-27T03:54:44.962Z
+    kind: question
+    resolved_at: 2026-03-27T04:12:46.778Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-27T03:54:59.662Z
+created_at: 2026-03-27T03:46:39.770Z
+updated_at: 2026-03-27T04:12:46.778Z
+notes: []

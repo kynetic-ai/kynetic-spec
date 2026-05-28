@@ -1,0 +1,250 @@
+_ulid: 01KP8P49512K7X29WN2XKBG411
+slugs: []
+title: Review task-upgrade-command (cycle 3)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Scanned tests/upgrade-command.test.ts for @single-command-version-upgrade and inherited
+      trait annotations; coverage comments are present for spec ACs and trait ACs, with N/A
+      annotations for the non-applicable inherited cases.
+    name: AC annotation scan
+    required: false
+    created_at: 2026-04-15T13:49:11.245Z
+    completed_at: 2026-04-15T13:49:11.245Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repository-wide validation still fails outside this change set: schema error in
+      .kspec/modules/meta.yaml (traits[0] object instead of string), orphaned skill directory
+      warning, and existing completeness/alignment warnings. No validate failure was isolated to the
+      upgrade command diff."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-15T13:49:17.849Z
+    completed_at: 2026-04-15T13:49:17.849Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran npm test -- --run tests/upgrade-command.test.ts. The new suite passed: 40 tests, 0
+      failures."
+    name: upgrade-command tests
+    required: true
+    runner: npm
+    created_at: 2026-04-15T13:49:57.522Z
+    completed_at: 2026-04-15T13:49:57.522Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Running npm test in this snapshot surfaced at least one unrelated repo-wide failure
+      before completion: tests/cli-agent-commands.test.ts reported 5 failed tests while
+      tests/upgrade-command.test.ts passed later in the same run. I did not attribute that existing
+      suite failure to the upgrade diff."
+    name: npm test
+    required: false
+    runner: npm
+    created_at: 2026-04-15T13:50:00.474Z
+    completed_at: 2026-04-15T13:50:00.474Z
+events:
+  - _ulid: 01KP8P49516SK4SK77FVBTDSC5
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-15T13:43:41.473Z
+  - _ulid: 01KP8P4X8TXPRW42F0YNH2FTD5
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-15T13:44:02.075Z
+  - _ulid: 01KP8PEC9AJ870DW8M6RV1A5B4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC annotation scan
+    timestamp: 2026-04-15T13:49:12.362Z
+  - _ulid: 01KP8PEFGVX1CG3RGN6PF1H9KW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP8PEEBS0K8BN3WDAPX6G7MR
+    timestamp: 2026-04-15T13:49:15.675Z
+  - _ulid: 01KP8PEJSWEMRJD031K51H81PV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-15T13:49:19.036Z
+  - _ulid: 01KP8PEP270ADHPQS1EGH0HS7N
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP8PEMY72M9CM13MBAJ05Y5E
+    timestamp: 2026-04-15T13:49:22.375Z
+  - _ulid: 01KP8PFPFVND9YZP0892FGCTDY
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KP8PFNF6GGJAZCC971CF5KT4
+    timestamp: 2026-04-15T13:49:55.579Z
+  - _ulid: 01KP8PFSDRXXVRCT6CEJDXXGDP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: upgrade-command tests
+    timestamp: 2026-04-15T13:49:58.584Z
+  - _ulid: 01KP8PFWA6J47XRPZXMZWZZA78
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-04-15T13:50:01.542Z
+  - _ulid: 01KP8PGMVYTC0GYSS43N0FQTX3
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-15T13:50:26.686Z
+  - _ulid: 01KP8PGMVYCM76D5KKNYXFNSED
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-15T13:50:26.686Z
+  - _ulid: 01KP970CM6XB4YXX2D6V7HTHW1
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP8PEEBS0K8BN3WDAPX6G7MR
+    timestamp: 2026-04-15T18:38:39.750Z
+  - _ulid: 01KP970J6HY9NMAJAVHMKKJQW9
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP8PEMY72M9CM13MBAJ05Y5E
+    timestamp: 2026-04-15T18:38:45.457Z
+  - _ulid: 01KP970W2AWTKB0YV1H35CEECX
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP8PEEBS0K8BN3WDAPX6G7MR
+    timestamp: 2026-04-15T18:38:55.562Z
+  - _ulid: 01KP9711SJNVE0SZF04KMA5F0W
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP8PEMY72M9CM13MBAJ05Y5E
+    timestamp: 2026-04-15T18:39:01.426Z
+examined_commit: 096e915cfb1ae093270734854bfc912b2a29af3f
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNXYJ5JCR99F76N8N7265E0B"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KP8PEEBS0K8BN3WDAPX6G7MR
+    anchor:
+      type: code
+      commit: 096e915cfb1ae093270734854bfc912b2a29af3f
+      line_end: 212
+      line_start: 164
+      path: src/cli/commands/upgrade.ts
+      side: head
+    entries:
+      - _ulid: 01KP8PEEBS3SRB7M3XF4WS6533
+        author: Jacob Chapel
+        body: " is still not implemented. In , the mere presence of  sets , so an unrecognizable project
+          never reports ; it is returned as  with version  instead. I reproduced this by creating a
+          minimal  with no conclusive probes and running , which returned . That contradicts the
+          spec, which requires the command to report the source version as unknown while still
+          proceeding with the full pipeline."
+        created_at: 2026-04-15T13:49:14.489Z
+      - _ulid: 01KP970BK9D3G9SCTEFA6HCJQ4
+        author: "@claude"
+        body: "Fixed: Renamed anyProbeMatched to versionedProbeMatched and removed the line that set it true
+          for mere .kspec/ existence (probe 1). Now only versioned probes (2-5: manifest fields,
+          config, skills dir, review-plan skill) set the flag. A project with .kspec/ but no
+          recognizable version signals correctly returns unknown confidence. Test updated to assert
+          confidence === 'unknown' strictly."
+        created_at: 2026-04-15T18:38:38.697Z
+    kind: blocker
+    resolved_at: 2026-04-15T18:38:54.494Z
+    resolved_by: "@claude"
+  - _ulid: 01KP8PEMY72M9CM13MBAJ05Y5E
+    anchor:
+      type: code
+      commit: 096e915cfb1ae093270734854bfc912b2a29af3f
+      line_end: 425
+      line_start: 399
+      path: src/cli/commands/upgrade.ts
+      side: head
+    entries:
+      - _ulid: 01KP8PEMY7P1N69DSVN1N5CV6D
+        author: Jacob Chapel
+        body: "The command records  even when an earlier upgrade step failed.  always executes step 6 before
+          computing , so a partial failure marks the project current and suppresses future upgrades.
+          I reproduced this by deleting , making  read-only, and running : the command
+          reported  with  failed, but step 6 still said  and  was updated to . On the next run that
+          project will look exact/current even though the agents file was never regenerated."
+        created_at: 2026-04-15T13:49:21.223Z
+      - _ulid: 01KP970H4WFBDT344NNVYSY0HT
+        author: "@claude"
+        body: "Fixed: Step 6 now computes priorStepsAllSucceeded = steps.every(s => s.status \\!== 'failed')
+          before executing. When any prior step failed, step 6 reports status 'skipped' with message
+          explaining why, and does NOT write the target version to .setup-state.json. New test
+          verifies this by forcing the agents regeneration step to fail (EISDIR on kspec-agents.md),
+          then asserting step 6 is skipped and the version file is unchanged."
+        created_at: 2026-04-15T18:38:44.380Z
+    kind: blocker
+    resolved_at: 2026-04-15T18:39:00.255Z
+    resolved_by: "@claude"
+  - _ulid: 01KP8PFNF6GGJAZCC971CF5KT4
+    entries:
+      - _ulid: 01KP8PFNF6KREA1CRV1CBBPA0K
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: src/cli/commands/upgrade.ts, src/cli/commands/index.ts,
+          src/cli/index.ts, tests/upgrade-command.test.ts, src/cli/output.ts. Commands run: kspec
+          task get @01KNXYJ5JCR99F76N8N7265E0B; kspec item get @single-command-version-upgrade;
+          kspec review for-task @01KNXYJ5JCR99F76N8N7265E0B; kspec review get
+          @01KP8MDE1KYXM17FMAWS8F6JJS; git diff/stat against 0501051eb..096e915cf; grep AC
+          annotations in tests/upgrade-command.test.ts; kspec validate; npm test; npm test -- --run
+          tests/upgrade-command.test.ts; manual CLI reproductions for unknown-version and
+          failed-step state-write behavior. Claims verified: JSON error guidance is now structured
+          correctly; review-plan probe path fix is present; upgrade-command test suite passes;
+          unknown-version behavior and post-failure version recording are both reproducible defects.
+          Categories searched: correctness, edge cases, error handling, test quality, integration."
+        created_at: 2026-04-15T13:49:54.534Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-15T13:50:26.686Z
+created_at: 2026-04-15T13:43:41.473Z
+updated_at: 2026-04-15T18:39:00.255Z
+notes: []

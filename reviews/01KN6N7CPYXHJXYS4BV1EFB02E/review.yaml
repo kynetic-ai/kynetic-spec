@@ -1,0 +1,129 @@
+_ulid: 01KN6N7CPYXHJXYS4BV1EFB02E
+slugs: []
+title: Review fix-schedule-engine-race-condition-eager-state-updates-before-action-execution
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/schedule-engine.test.ts passed: 16/16 suites, 25/25 tests."
+    name: npm test (targeted schedule-engine)
+    required: false
+    runner: npm
+    created_at: 2026-04-02T08:40:28.176Z
+    completed_at: 2026-04-02T08:40:28.176Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exited 6 with existing repository-wide warnings only; no
+      schedule-engine-specific errors or uncovered ACs in this task.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-02T08:40:30.407Z
+    completed_at: 2026-04-02T08:40:30.407Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh passed: 2067/2067 suites, 7474 passed, 5 skipped."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-02T08:40:35.803Z
+    completed_at: 2026-04-02T08:40:35.803Z
+events:
+  - _ulid: 01KN6N7CPXKFDZNHW39RN27343
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-02T08:33:44.158Z
+  - _ulid: 01KN6N8JV386AEZHDCY9Y28TJE
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-02T08:34:23.203Z
+  - _ulid: 01KN6NBK9QSP1EWJTTS3MBM9CN
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN6NBJJ24KQBZ62AW9K23JRE
+    timestamp: 2026-04-02T08:36:01.975Z
+  - _ulid: 01KN6NKR348C69C2JMMJHHZJH7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test (targeted schedule-engine)
+    timestamp: 2026-04-02T08:40:29.028Z
+  - _ulid: 01KN6NKT4HQKCD7E8GEFQXVSR0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-04-02T08:40:31.121Z
+  - _ulid: 01KN6NKW8GSGN9JXBQDKA8092X
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-02T08:40:33.296Z
+  - _ulid: 01KN6NKW8G4D90WEYCYEC84X3D
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-02T08:40:33.296Z
+  - _ulid: 01KN6NKZF83SX3NTRYVBCDWWGF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-02T08:40:36.584Z
+examined_commit: 4ee25eab2779ebc9b8ade2f89cb7a7115c26a07f
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN6GE5EFHVY2JXZNK3J7090S"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN6NBJJ24KQBZ62AW9K23JRE
+    entries:
+      - _ulid: 01KN6NBJJ217T82Y70NAAKYE0Z
+        author: Jacob Chapel
+        body: 'Files read: src/agent-runtime/schedule-engine.ts, src/agent-runtime/action-executor.ts,
+          tests/schedule-engine.test.ts. Commands run: kspec task get @01KN6GE5EFHVY2JXZNK3J7090S;
+          kspec item get @dispatch-schedule-entities; kspec validate; rg -n "AC:
+          @dispatch-schedule-entities|AC: @trait-" tests/schedule-engine.test.ts tests; npm test --
+          --fresh tests/schedule-engine.test.ts; npm test -- --fresh. Claims verified:
+          ActionExecutor resolves on completion for command/kspec actions, so pre-await schedule
+          state updates are required for overlap enforcement. Categories searched: correctness, edge
+          cases, error handling, test quality, integration.'
+        created_at: 2026-04-02T08:36:01.218Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-02T08:40:33.296Z
+created_at: 2026-04-02T08:33:44.158Z
+updated_at: 2026-04-02T08:40:35.803Z
+notes: []

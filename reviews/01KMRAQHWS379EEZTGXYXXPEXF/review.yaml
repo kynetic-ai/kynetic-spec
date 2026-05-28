@@ -1,0 +1,214 @@
+_ulid: 01KMRAQHWS379EEZTGXYXXPEXF
+slugs: []
+title: Review task-daemon-command-api (cycle 6)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed on this snapshot: 1944/1944 suites, 6967 passed, 5 skipped. Duration 5300.7s."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-27T19:08:48.224Z
+    completed_at: 2026-03-27T19:08:48.224Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with --warnings-ok. Schema and references OK; warnings are pre-existing repo-wide
+      completeness/alignment/reference warnings, not introduced by this task.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-03-27T19:08:54.707Z
+    completed_at: 2026-03-27T19:08:54.707Z
+events:
+  - _ulid: 01KMRAQHWSKPE8PW91PPHVGBX1
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T19:00:57.369Z
+  - _ulid: 01KMRAQV53AE96X54QKY5XCCGR
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T19:01:06.851Z
+  - _ulid: 01KMRB5YCNBKEK1W8MJM180GZY
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-27T19:08:48.917Z
+  - _ulid: 01KMRB60FXMPZ94XHGMSDMHRTJ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMRB5ZTSV9N7SQF6P0DVBM17
+    timestamp: 2026-03-27T19:08:51.069Z
+  - _ulid: 01KMRB62KFC4KMYKM0MRV6KA0H
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMRB61XTQM76V9HAKM3MAC8S
+    timestamp: 2026-03-27T19:08:53.231Z
+  - _ulid: 01KMRB64RDX39PFRPH8TFXGXMK
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-27T19:08:55.437Z
+  - _ulid: 01KMRB6EV2G3HGF7MRZYV5Y6MV
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMRB6E54MRS9M3QX8TG7K66J
+    timestamp: 2026-03-27T19:09:05.762Z
+  - _ulid: 01KMRB6QW5SZ1EB0YMXQ1YPQE5
+    actor: test@example.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-27T19:09:15.013Z
+  - _ulid: 01KMRB6QW5QZVGTQFGV1RNWR0X
+    actor: test@example.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T19:09:15.013Z
+  - _ulid: 01KMRB7G1RBFP91ZZDNEFQ2XEX
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMRB61XTQM76V9HAKM3MAC8S
+    timestamp: 2026-03-27T19:09:39.768Z
+  - _ulid: 01KMRB7J5P3X8C6207T7AA3HDE
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMRB61XTQM76V9HAKM3MAC8S
+    timestamp: 2026-03-27T19:09:41.942Z
+  - _ulid: 01KMRDK6RS2JFMPDYBYYPTXSYD
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMRB6E54MRS9M3QX8TG7K66J
+    timestamp: 2026-03-27T19:51:00.633Z
+  - _ulid: 01KMRDKDJVAXQ2A9GT71C7RV8Q
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMRB6E54MRS9M3QX8TG7K66J
+    timestamp: 2026-03-27T19:51:07.611Z
+examined_commit: 6995679948a5e6093b1e9bbe606e5750266961b3
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMMB3V7N2GC0JSPJKJYMPJPV"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMRB5ZTSV9N7SQF6P0DVBM17
+    entries:
+      - _ulid: 01KMRB5ZTSNAETSHJ1S9K1YFQS
+        author: "@claude"
+        body: >-
+          Evidence log
+
+          Files read: packages/daemon/src/routes/command.ts, packages/daemon/src/server.ts,
+          src/cli/batch-exec.ts, src/cli/output.ts, packages/daemon/src/routes/tasks.ts,
+          packages/daemon/src/middleware/project-context.ts, tests/daemon-command-api.test.ts,
+          tests/daemon-api-input-validation.test.ts.
+
+          Commands run: git diff --stat, git diff per changed file, kspec task get, kspec item get
+          @daemon-command-api, kspec review for-task, kspec review get prior cycle, rg AC
+          annotations, kspec validate, kspec validate --warnings-ok, npm test, node
+          dist/cli/index.js nonexistent-command.
+
+          Claims verified: full suite passes on this snapshot; validation still only has the repo’s
+          pre-existing warnings; direct CLI unknown-command stderr does not match the API
+          implementation.
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration.
+        created_at: 2026-03-27T19:08:50.393Z
+    kind: nit
+  - _ulid: 01KMRB61XTQM76V9HAKM3MAC8S
+    anchor:
+      type: code
+      commit: 6995679948a5e6093b1e9bbe606e5750266961b3
+      line_end: 123
+      line_start: 119
+      path: packages/daemon/src/routes/command.ts
+      side: head
+    entries:
+      - _ulid: 01KMRB61XTS2QSJ3PH8D3ZDM5D
+        author: "@claude"
+        body: Unknown commands bypass Commander entirely here, so the API no longer returns the same stderr
+          that direct CLI execution produces.  prints  followed by , but this branch returns only .
+          That breaks @daemon-command-api ac-response-parity for invalid commands and drops the
+          standard help/suggestion path.
+        created_at: 2026-03-27T19:08:52.538Z
+      - _ulid: 01KMRB7FBR1XN07MZYY7J60NDK
+        author: "@claude"
+        body: Superseded by duplicate blocker thread 01KMRB6E54MRS9M3QX8TG7K66J with the fully quoted CLI
+          evidence. Use that thread as the actionable finding.
+        created_at: 2026-03-27T19:09:39.064Z
+    kind: blocker
+    resolved_at: 2026-03-27T19:09:41.259Z
+    resolved_by: "@claude"
+  - _ulid: 01KMRB6E54MRS9M3QX8TG7K66J
+    anchor:
+      type: code
+      commit: 6995679948a5e6093b1e9bbe606e5750266961b3
+      line_end: 123
+      line_start: 119
+      path: packages/daemon/src/routes/command.ts
+      side: head
+    entries:
+      - _ulid: 01KMRB6E540589YTB50DKTXEDR
+        author: "@claude"
+        body: "Unknown commands bypass Commander entirely here, so the API no longer returns the same stderr
+          that direct CLI execution produces. `node dist/cli/index.js nonexistent-command` prints
+          `error: unknown command 'nonexistent-command'` followed by `Run 'kspec help' to see
+          available commands`, but this branch returns only `Unknown command:
+          \"nonexistent-command\"`. That breaks @daemon-command-api ac-response-parity for invalid
+          commands and drops the standard help/suggestion path."
+        created_at: 2026-03-27T19:09:05.060Z
+      - _ulid: 01KMRDK69TW1XXV38BZ6M783NT
+        author: "@claude"
+        body: "Fixed: Removed the early findCommand() bail-out that bypassed Commander for unknown commands.
+          Now unknown commands flow through to parseAsync() where Commander's 'command:*' handler
+          fires, producing the exact same stderr output (error message + help suggestion) as direct
+          CLI execution. The exit interceptor converts process.exit() to BatchExitError, and stderr
+          is captured by the console.error interceptor. Added regression test comparing API stderr
+          against CLI subprocess output for unknown commands."
+        created_at: 2026-03-27T19:51:00.154Z
+    kind: blocker
+    resolved_at: 2026-03-27T19:51:07.102Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: test@example.com
+    role: reviewer
+    created_at: 2026-03-27T19:09:15.013Z
+created_at: 2026-03-27T19:00:57.369Z
+updated_at: 2026-03-27T19:51:07.102Z
+notes: []

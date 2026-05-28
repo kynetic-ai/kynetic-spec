@@ -1,0 +1,27 @@
+_ulid: 01KKPTEP4RZGTEH6X3H878MRJM
+slugs:
+  - my-custom-slug
+title: Slug Review
+author: "@claude"
+checks: []
+events:
+  - _ulid: 01KKPTEP4Q73BXN76VW4M54CMH
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-14T18:41:33.335Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-implement-review-cli-create-query"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-03-14T18:41:33.336Z
+updated_at: null
+notes: []

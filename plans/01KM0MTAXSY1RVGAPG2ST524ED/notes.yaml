@@ -1,0 +1,6 @@
+notes:
+  - _ulid: 01KM0NNN65WJWS9E1D539JSDDQ
+    content: Made tasks self-contained with full file paths, spec refs, and line numbers. Added p1
+      priority to all tasks. Addressed review findings F1-F4, F7.
+    author: "@claude"
+    created_at: 2026-03-18T14:30:23.173Z

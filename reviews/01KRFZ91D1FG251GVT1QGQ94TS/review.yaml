@@ -1,0 +1,206 @@
+_ulid: 01KRFZ91D1FG251GVT1QGQ94TS
+slugs: []
+title: Review cleanup-boundary classification
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts
+      tests/lint-daemon-test-guardrails.test.ts: 23 suites passed, 394 tests passed. Full log:
+      /tmp/kspec-test-cache/01KRFZ7AFRW87P6QYWY0S09XZB/bbb0d0268a5b588d.log"
+    name: targeted lint tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-13T06:23:33.384Z
+    completed_at: 2026-05-13T06:23:33.384Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate reported Schema: OK and References: OK; exited 6 because of existing
+      project-wide warnings (reference/alignment/completeness warnings), not errors in this task's
+      changed files."
+    name: kspec validate
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-13T06:23:38.095Z
+    completed_at: 2026-05-13T06:23:38.095Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh: 2433 suites passed; 9199 tests passed, 5 skipped of 9204. Full log:
+      /tmp/kspec-test-cache/01KRFZ7AFRW87P6QYWY0S09XZB/b4553b084c293371.log"
+    name: full npm test
+    required: true
+    runner: npm test
+    created_at: 2026-05-13T06:23:42.904Z
+    completed_at: 2026-05-13T06:23:42.904Z
+events:
+  - _ulid: 01KRFZ91D1P2FV6TBJGAB18WJG
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-13T06:09:39.233Z
+  - _ulid: 01KRFZ9P27ZGG4GAW6NF5Y07P2
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-13T06:10:00.391Z
+  - _ulid: 01KRG01WNCAJ8F1FSXRJ7Z1S5J
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRG01V2RM0NG6DDKHQWPHKY6
+    timestamp: 2026-05-13T06:23:13.580Z
+  - _ulid: 01KRG02HHVE6VSQM9857QB0GZD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted lint tests
+    timestamp: 2026-05-13T06:23:34.971Z
+  - _ulid: 01KRG02PAZCMYRRZBXRTBRGTN0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-13T06:23:39.871Z
+  - _ulid: 01KRG02TXH5FGSDKJBJKT9TH8V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full npm test
+    timestamp: 2026-05-13T06:23:44.561Z
+  - _ulid: 01KRG03BJTBGBEVZKAKA0JDGTF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KRG03A0Y6DS3DRG8VNX4Z0EK
+    timestamp: 2026-05-13T06:24:01.626Z
+  - _ulid: 01KRG03N75WFDRGKSSAVPXEPZT
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-13T06:24:11.493Z
+  - _ulid: 01KRG03N754XEZRD88YDP6WXM3
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-13T06:24:11.493Z
+  - _ulid: 01KRG2DM5DPFQ6XE2QNXDM64RC
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRG01V2RM0NG6DDKHQWPHKY6
+    timestamp: 2026-05-13T07:04:35.245Z
+  - _ulid: 01KRG2DXPPDKHKVYJF68WPZFFE
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KRG01V2RM0NG6DDKHQWPHKY6
+    timestamp: 2026-05-13T07:04:45.014Z
+  - _ulid: 01KRG2E44YQ5XMQ99289XP561M
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRG03A0Y6DS3DRG8VNX4Z0EK
+    timestamp: 2026-05-13T07:04:51.614Z
+  - _ulid: 01KRG2ED55ZGCFNF5C27E6P4XW
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KRG03A0Y6DS3DRG8VNX4Z0EK
+    timestamp: 2026-05-13T07:05:00.837Z
+examined_commit: 5de3b8d30d8798bd4279bd86a3e8223ce03894f4
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRCRJQ8CM6D08AHASH84VRDM"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRG01V2RM0NG6DDKHQWPHKY6
+    anchor:
+      type: code
+      commit: 5de3b8d30d8798bd4279bd86a3e8223ce03894f4
+      line_end: 1095
+      line_start: 1079
+      path: tests/lint-no-leaky-test-daemon.test.ts
+      side: head
+    entries:
+      - _ulid: 01KRG01V2S8VV1XGH5G1ARARCZ
+        author: Jacob Chapel
+        body: 'MUST-FIX: this test is annotated as coverage for @daemon-test-guardrail-precision
+          ac-cleanup-registration-is-test-scoped and says the boundary classifier is the sole
+          rejector, but it starts the daemon with spawn("node", [DAEMON_ENTRY, ...]). This file
+          explicitly documents that direct DAEMON_ENTRY spawns are always reported regardless of
+          cleanup, and the existing direct-spawn tests assert the same behavior even when valid
+          cleanup is present. As written, the test would still pass if process.on("exit", () =>
+          child.kill(...)) were incorrectly credited as scoped cleanup, so it does not prove the
+          boundary-classification AC. Replace it with a daemon-start shape whose only possible
+          report is missing scoped cleanup, or move/remove the AC claim.'
+        created_at: 2026-05-13T06:23:11.961Z
+      - _ulid: 01KRG2DJPM89Y0MG3SAFE7XG54
+        author: "@claude"
+        body: "Fixed: switched the daemon-start in this probe from spawn(\"node\", [DAEMON_ENTRY, ...]) to
+          spawn(\"kspec\", [\"serve\", \"start\", \"--detach\", \"--port\", \"3456\"]). The
+          kspec-executable path with the serve start --detach subcommand routes through
+          isDetachCallExpression and defers to the cleanup classifier, so the direct-daemon-entry
+          guardrail no longer pre-empts the report. The child handle is preserved so
+          child.kill(\"SIGTERM\") still exercises the effect classifier's inspected-spawn-binding
+          terminating-signal accept, leaving the boundary classifier as the sole rejector. Verified:
+          with the rule fix stashed the probe fails (no warnings); with the fix restored the probe
+          passes (no-leaky-test-daemon reported). Commit: e8b400acd."
+        created_at: 2026-05-13T07:04:33.748Z
+    kind: blocker
+    resolved_at: 2026-05-13T07:04:43.589Z
+    resolved_by: "@claude"
+  - _ulid: 01KRG03A0Y6DS3DRG8VNX4Z0EK
+    entries:
+      - _ulid: 01KRG03A0YXEZ0EYRBEC16150V
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md, tools/eslint-rules/no-leaky-test-daemon.js,
+          tests/lint-no-leaky-test-daemon.test.ts, task/spec context for
+          @daemon-test-guardrail-precision. Commands run: git diff/stat/log, kspec task get, kspec
+          item get, kspec validate, AC annotation searches, targeted npm test, full npm test. Claims
+          verified: process.on/process.once are no longer accepted by isCleanupRegistrationCallback;
+          onTestFinished and try/finally remain accepted; targeted suite and full suite pass.
+          Categories searched: correctness, boundary edge cases, error handling/diagnostics text,
+          test quality, integration with direct-spawn guardrails."
+        created_at: 2026-05-13T06:24:00.030Z
+      - _ulid: 01KRG2E2NA5JBFH3YRZDCGTZXT
+        author: "@claude"
+        body: Acknowledged — evidence log noted (nit, no source change requested).
+        created_at: 2026-05-13T07:04:50.090Z
+    kind: nit
+    resolved_at: 2026-05-13T07:04:59.398Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-13T06:24:11.493Z
+created_at: 2026-05-13T06:09:39.233Z
+updated_at: 2026-05-13T07:04:59.398Z
+notes: []

@@ -1,0 +1,164 @@
+_ulid: 01KM71EP47T0JDQVBFQ06PYXSK
+slugs: []
+title: Review task-impl-data-manager (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 6 with existing repo warnings only (orphaned skill dir, orphaned specs,
+      pre-existing AC coverage warnings); no new task-specific validation errors in this snapshot.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-03-21T01:56:18.056Z
+    completed_at: 2026-03-21T01:56:18.056Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed locally in reviewer snapshot: 298 files, 6737 tests passed, 3 skipped."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-21T01:56:18.844Z
+    completed_at: 2026-03-21T01:56:18.844Z
+events:
+  - _ulid: 01KM71EP47HWZB5VEEM6EB8FXT
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T01:51:44.263Z
+  - _ulid: 01KM71NR5FSS1FNEX4P34VV56W
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T01:55:35.727Z
+  - _ulid: 01KM71PK510HEGVQA4JV7PPX6S
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM71PJWEHX3N95C34JSMWJC5
+    timestamp: 2026-03-21T01:56:03.361Z
+  - _ulid: 01KM71PKYA7G8HJ23WRA5HM9B7
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM71PKPBYZEW57PBPXCHQG5A
+    timestamp: 2026-03-21T01:56:04.170Z
+  - _ulid: 01KM71PMR4DW3D67TTP435EARB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM71PMH9R0XDX9T89E2H4NRC
+    timestamp: 2026-03-21T01:56:04.996Z
+  - _ulid: 01KM71Q1RHCY860132A91A26Z6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-21T01:56:18.321Z
+  - _ulid: 01KM71Q2JA522EJ6BKHTKHP9K4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-21T01:56:19.146Z
+  - _ulid: 01KM71QBZGK42XZ39N8JNB533B
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-21T01:56:28.784Z
+  - _ulid: 01KM71QBZGKSVGMM7S9YSVJ9SH
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-21T01:56:28.784Z
+examined_commit: 22590082dbd063c31e0db7037b6fa96c5e6074b0
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YENV3CBFAGSRHVHR7QPJN"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM71PJWEHX3N95C34JSMWJC5
+    anchor:
+      type: code
+      commit: 22590082dbd063c31e0db7037b6fa96c5e6074b0
+      line_end: 185
+      line_start: 174
+      path: src/parser/task-data-manager.ts
+      side: head
+    entries:
+      - _ulid: 01KM71PJWEF3EQRXHMJHFVK4XZ
+        author: Jacob Chapel
+        body: AC-8 still is not implemented. The spec says that when the storage format is activated as ,
+          the manager uses the split backend for all operations. This guard instead throws before
+          any read or write can happen, so a project configured for  becomes unusable rather than
+          using split storage. The new tests in  now codify that failure mode, but that is still a
+          direct mismatch with  and .
+        created_at: 2026-03-21T01:56:03.086Z
+    kind: blocker
+  - _ulid: 01KM71PKPBYZEW57PBPXCHQG5A
+    entries:
+      - _ulid: 01KM71PKPB9ZDAWMZEAT0DWDPY
+        author: Jacob Chapel
+        body: "Evidence log: Files read: src/parser/task-data-manager.ts, src/parser/yaml.ts,
+          src/schema/task.ts, tests/task-data-manager.test.ts. Commands run: git diff
+          --stat/dev..snapshot, git diff on changed files, kspec task get
+          @01KM6YENV3CBFAGSRHVHR7QPJN, kspec review get @01KM7098H4BAJ8VZBC2C2EZPM4, grep for AC
+          annotations, kspec validate, npm test, task-storage activation/spec lookups, and a tsx
+          reproduction script for invalid mutation output. Claims verified: full suite passes;
+          listTasks now strips detail fields; split mode still throws; invalid mutateTask output
+          causes the task to be skipped on subsequent reads. Categories searched: correctness, spec
+          alignment, error handling, concurrency, test quality, integration."
+        created_at: 2026-03-21T01:56:03.915Z
+    kind: nit
+  - _ulid: 01KM71PMH9R0XDX9T89E2H4NRC
+    anchor:
+      type: code
+      commit: 22590082dbd063c31e0db7037b6fa96c5e6074b0
+      line_end: 379
+      line_start: 338
+      path: src/parser/task-data-manager.ts
+      side: head
+    entries:
+      - _ulid: 01KM71PMH9XBXYHS47XXXKS1H0
+        author: Jacob Chapel
+        body: "The new mutation API does not validate the callback's returned task before it is persisted.
+          Both  and  hand the mutated record straight to the YAML writer, so a caller can save an
+          invalid shape and silently corrupt storage. I reproduced this by calling : the write
+          succeeded, and the next  emitted a skipped-invalid-task warning and dropped  from the
+          result set (). This violates the manager's contract as the exclusive task I/O boundary and
+          is not covered by the current tests, which only assert validation on ."
+        created_at: 2026-03-21T01:56:04.777Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-21T01:56:28.784Z
+created_at: 2026-03-21T01:51:44.263Z
+updated_at: 2026-03-21T01:56:28.784Z
+notes: []

@@ -1,0 +1,150 @@
+_ulid: 01KRGBRAHHD059E6AQWHTAAJ4Z
+slugs: []
+title: Review task-fix-implicit-autostart-cleanup-coverage cycle 2
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/cli-no-daemon.test.ts tests/lint-no-leaky-test-daemon.test.ts
+      tests/lint-daemon-test-guardrails.test.ts: 31 suites, 428 tests passed."
+    name: targeted daemon guardrail tests
+    required: true
+    runner: npm
+    created_at: 2026-05-13T10:01:55.334Z
+    completed_at: 2026-05-13T10:01:55.334Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate --warnings-ok: schema/references OK; exited 0 with existing repo warnings."
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-13T10:01:59.577Z
+    completed_at: 2026-05-13T10:01:59.577Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh: 2440 suites passed; 9245 passed, 5 skipped; duration 2108.2s."
+    name: full npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-13T10:02:03.643Z
+    completed_at: 2026-05-13T10:02:03.643Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npx oxlint tests/ exits 1 from existing non-daemon lint errors (19 errors, 597 warnings),
+      but filtered output contains no no-leaky-test-daemon diagnostics from tests/.
+    name: tests no-leaky daemon lint sweep
+    required: true
+    runner: oxlint
+    created_at: 2026-05-13T10:02:18.245Z
+    completed_at: 2026-05-13T10:02:18.245Z
+events:
+  - _ulid: 01KRGBRAHH3RXAQY640998TTDC
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-13T09:47:43.025Z
+  - _ulid: 01KRGCJC8N3VPK35BADN6VWYCW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted daemon guardrail tests
+    timestamp: 2026-05-13T10:01:56.757Z
+  - _ulid: 01KRGCJGDGCK7DQ5ZYQ3E8K4PB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-13T10:02:01.008Z
+  - _ulid: 01KRGCJMF56492Q6FZCY9JHYVJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full npm test
+    timestamp: 2026-05-13T10:02:05.157Z
+  - _ulid: 01KRGCJRFHAC21AKJ6298FQ7C6
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-13T10:02:09.266Z
+  - _ulid: 01KRGCK2K5WNC4VTSPBDQ4ZS0Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: tests no-leaky daemon lint sweep
+    timestamp: 2026-05-13T10:02:19.621Z
+  - _ulid: 01KRGCKKEN44GM7T6X1TSNQ3BY
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KRGCKJ1EM6ZNJHKSX7554MSW
+    timestamp: 2026-05-13T10:02:36.885Z
+  - _ulid: 01KRGCKX4MAQJFWDB3Y60T62ND
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-13T10:02:46.804Z
+  - _ulid: 01KRGCKX4MT6RZ1935XX5F9B1Z
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-13T10:02:46.804Z
+examined_commit: ea3c85356bd7c4ef72e5347d0b8e9a75c023fa5f
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRCRJQVWASBCR27BR3D8VFBA"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRGCKJ1EM6ZNJHKSX7554MSW
+    entries:
+      - _ulid: 01KRGCKJ1EDG19JAQXHFTV36A1
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; task/spec context; prior review @01KRG6R6; diff
+          and surrounding code in tools/eslint-rules/no-leaky-test-daemon.js,
+          tests/lint-daemon-test-guardrails.test.ts, tests/cli-no-daemon.test.ts,
+          tests/parser/daemon-config.test.ts, src/cli/index.ts. Commands run: kspec item get
+          @daemon-test-guardrail-precision; kspec validate and kspec validate --warnings-ok; AC
+          annotation rg; git diff --check; targeted npm test; full npm test -- --fresh; npx oxlint
+          tests/ and filtered no-leaky output. Claims verified: cycle-1 blocker shapes now have
+          behavioral lint fixtures and implementation classifiers for metadata aliases, pid aliases,
+          serve status, and daemon endpoint fetches; real CLI serve status is skip-listed for
+          auto-start, so classifier is gated on prior auto-start-capable kspec calls. Categories
+          searched: correctness, cleanup edge cases, false positives, test quality, integration."
+        created_at: 2026-05-13T10:02:35.438Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-13T10:02:46.804Z
+created_at: 2026-05-13T09:47:43.025Z
+updated_at: 2026-05-13T10:02:46.804Z
+notes: []

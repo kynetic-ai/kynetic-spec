@@ -1,0 +1,124 @@
+_ulid: 01KKWBKHZKDDW10QJZKB2MYNJZ
+slugs:
+  - review-per-cycle-tests
+title: "Review: per-cycle review record tests"
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: 4439a1d4
+    evidence: 3/3 tests passed in review-per-cycle-lifecycle.test.ts (10.07s)
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-16T22:18:10.212Z
+    completed_at: 2026-03-16T22:18:10.212Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: 4439a1d4
+    evidence: "ac-2: annotated on test 1 (line 26) and test 2 (line 91). ac-3: annotated on test 2 (line
+      92) and test 3 (line 148). Both ACs tested with multiple scenarios. ac-1 has dedicated
+      coverage in review-cli.test.ts."
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-16T22:18:17.306Z
+    completed_at: 2026-03-16T22:18:17.306Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: 4439a1d4
+    evidence: No new validation warnings from this change. Existing warnings are pre-existing.
+    name: kspec-validate
+    required: true
+    runner: manual
+    created_at: 2026-03-16T22:18:27.743Z
+    completed_at: 2026-03-16T22:18:27.743Z
+events:
+  - _ulid: 01KKWBKHZJTQB1AZCA3APAS9SK
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-16T22:17:30.867Z
+  - _ulid: 01KKWBM048YKEKA9KSAXZHNVW4
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-16T22:17:45.352Z
+  - _ulid: 01KKWBM81APXSMVBVMQJEPES4A
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKWBM803AHKADJVVPNHJ887V
+    timestamp: 2026-03-16T22:17:53.450Z
+  - _ulid: 01KKWBMREB7C90Y3JP27TYB7WB
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-16T22:18:10.251Z
+  - _ulid: 01KKWBMZC6RVP602SDVFP2S522
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-16T22:18:17.350Z
+  - _ulid: 01KKWBN9J75RH2Z7DRFDE9DXYQ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-16T22:18:27.783Z
+  - _ulid: 01KKWBNFV2AJ9M4CWF9H8NDM4Y
+    actor: pr-reviewer-agent
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-16T22:18:34.210Z
+  - _ulid: 01KKWBNFV2390SXHK0HYCC7G3E
+    actor: pr-reviewer-agent
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-16T22:18:34.210Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-new-review-per-cycle"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KKWBM803AHKADJVVPNHJ887V
+    entries:
+      - _ulid: 01KKWBM803D2M27D5ABTCT895G
+        author: "@claude"
+        body: File-level JSDoc annotation claims ac-1, ac-2, ac-3 coverage, but this file only directly
+          tests ac-2 and ac-3. ac-1 (auto-close on verdict) is exercised incidentally but has
+          dedicated coverage in review-cli.test.ts. Consider narrowing the file-level annotation to
+          ac-2, ac-3 to avoid implying this is the primary ac-1 coverage location.
+        created_at: 2026-03-16T22:17:53.411Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: 4439a1d4
+    decision: approve
+    reviewer: pr-reviewer-agent
+    role: reviewer
+    created_at: 2026-03-16T22:18:34.164Z
+created_at: 2026-03-16T22:17:30.867Z
+updated_at: 2026-03-16T22:18:34.164Z
+notes: []

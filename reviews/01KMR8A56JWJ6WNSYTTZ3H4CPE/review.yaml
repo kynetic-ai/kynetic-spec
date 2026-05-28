@@ -1,0 +1,179 @@
+_ulid: 01KMR8A56JWJ6WNSYTTZ3H4CPE
+slugs: []
+title: Review task-daemon-command-api (cycle 5)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 1944/1944 suites passed, 6966 tests passed, 5 skipped. Runner auto-built dist first
+      because dist/cli/index.js was missing, then the suite passed cleanly.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-27T18:27:29.061Z
+    completed_at: 2026-03-27T18:27:29.061Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation exited 6 with repository-wide warnings only (orphaned specs, AC coverage
+      warnings, orphaned skill dir). No schema/reference errors specific to this task.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-03-27T18:27:32.603Z
+    completed_at: 2026-03-27T18:27:32.603Z
+events:
+  - _ulid: 01KMR8A56HDH8A7N4VD15W9F06
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T18:18:41.233Z
+  - _ulid: 01KMR8AP1V3C1NV18BAMEDXKVE
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T18:18:58.492Z
+  - _ulid: 01KMR8T97B0APAEXZQ2K28ATT7
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-27T18:27:29.643Z
+  - _ulid: 01KMR8TAY6M0Z5Y58F2MNRE17E
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMR8TACMYS0V9R86PTV3C50T
+    timestamp: 2026-03-27T18:27:31.398Z
+  - _ulid: 01KMR8TCNX4CQP6MRMYH6KZ1VS
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-27T18:27:33.181Z
+  - _ulid: 01KMR8TEDJ57M7JT57EQ4GV7XH
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMR8TDW1N4GG8F9F77N8Z908
+    timestamp: 2026-03-27T18:27:34.962Z
+  - _ulid: 01KMR8TY1YE9QZYVZDZ5Y1GKTN
+    actor: test@example.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-27T18:27:50.974Z
+  - _ulid: 01KMR8TY1Y8G63DZEXED0GTH2P
+    actor: test@example.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T18:27:50.974Z
+  - _ulid: 01KMRAHZJABZAE7P5XR8F7KPGC
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMR8TACMYS0V9R86PTV3C50T
+    timestamp: 2026-03-27T18:57:54.762Z
+  - _ulid: 01KMRAJ6FTQQE6N20Y5VG3XMWH
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMR8TACMYS0V9R86PTV3C50T
+    timestamp: 2026-03-27T18:58:01.850Z
+  - _ulid: 01KMRAJK60PQ3MF4B1TY3V162T
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMR8TDW1N4GG8F9F77N8Z908
+    timestamp: 2026-03-27T18:58:14.848Z
+examined_commit: 0adaf3fd0098c94df0b16aab6e1c71fb966d7de8
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMMB3V7N2GC0JSPJKJYMPJPV"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMR8TACMYS0V9R86PTV3C50T
+    anchor:
+      type: code
+      commit: 0adaf3fd0098c94df0b16aab6e1c71fb966d7de8
+      line_end: 445
+      line_start: 422
+      path: packages/daemon/src/routes/command.ts
+      side: head
+    entries:
+      - _ulid: 01KMR8TACM2MM88VBEFQE8VXNF
+        author: "@claude"
+        body: The new /api/command/batch route still leaks global output mode across requests because it
+          delegates to executeBatch() without resetting the CLI formatter state first.
+          Single-command execution was fixed to call setOutputFormat("text") before parseAsync(),
+          but batched dispatch still goes through dispatchCommand(), which only does
+          setJsonMode(false) + setVerboseMode(false) in src/cli/batch-exec.ts. In src/cli/output.ts,
+          setJsonMode(false) clears text only when the current mode is json; if a previous
+          /api/command request set --yaml, the global formatter stays on yaml. I verified that
+          behavior directly with  returning . That means a prior YAML request can still change the
+          formatting of later batched commands, so the batch endpoint does not actually provide
+          isolated per-request command execution.
+        created_at: 2026-03-27T18:27:30.836Z
+      - _ulid: 01KMRAHZ1KW3D1486GBXFVYED2
+        author: "@claude"
+        body: 'Fixed: replaced setJsonMode(false) with setOutputFormat("text") in dispatchCommand()
+          (src/cli/batch-exec.ts:933). This is the same fix that was applied to executeCommand() in
+          the single-command path during cycle 5 — the batch path was missed.
+          setOutputFormat("text") unconditionally resets globalOutputFormat regardless of whether
+          the current format is json, yaml, or any future format. Added regression test that runs a
+          --yaml request followed by a batch command to verify no output mode leakage.'
+        created_at: 2026-03-27T18:57:54.227Z
+    kind: blocker
+    resolved_at: 2026-03-27T18:58:01.348Z
+    resolved_by: "@claude"
+  - _ulid: 01KMR8TDW1N4GG8F9F77N8Z908
+    entries:
+      - _ulid: 01KMR8TDW155AR0VGWTP106H6E
+        author: "@claude"
+        body: "Evidence log\\nFiles read: packages/daemon/src/routes/command.ts,
+          packages/daemon/src/server.ts, src/cli/batch-exec.ts, src/cli/batch-context.ts,
+          src/cli/output.ts, packages/daemon/src/middleware/project-context.ts,
+          packages/daemon/src/routes/tasks.ts, packages/daemon/src/routes/automation.ts,
+          tests/daemon-command-api.test.ts.\\nCommands run: git diff/stat against dev base, kspec
+          task get, kspec item get, kspec review for-task, kspec validate, grep AC annotations, npm
+          test, and a targeted tsx check showing setYamlMode(true) followed by setJsonMode(false)
+          leaves output mode at yaml.\\nClaims verified: full suite passes; single-command route now
+          resets output mode correctly; batch path still delegates into batch-exec reset logic that
+          only clears json mode.\\nCategories searched: correctness (found blocker), edge cases
+          (cross-request global-state leakage), error handling (validation path checked), test
+          quality (AC annotations present and tests pass), integration (route vs shared CLI batch
+          executor)."
+        created_at: 2026-03-27T18:27:34.401Z
+    kind: nit
+    resolved_at: 2026-03-27T18:58:14.343Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: test@example.com
+    role: reviewer
+    created_at: 2026-03-27T18:27:50.974Z
+created_at: 2026-03-27T18:18:41.234Z
+updated_at: 2026-03-27T18:58:14.343Z
+notes: []

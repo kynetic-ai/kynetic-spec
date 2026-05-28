@@ -1,0 +1,211 @@
+_ulid: 01KM2DZGKJD5RKBZ6S59MGE268
+slugs: []
+title: Review @01KJP279FYHBM6995ZVMYGM7M2
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repo baseline still has unrelated reference/completeness failures: 3 broken refs in
+      .kspec/modules/meta.yaml plus existing alignment/completeness warnings."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-19T06:57:38.515Z
+    completed_at: 2026-03-19T06:57:38.515Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Task description requires removing all remaining ralph references, but AGENTS.md and
+      docs/agents-eval-scenarios.md still contain user-facing ralph wording and rg finds further
+      untouched references.
+    name: manual completeness
+    required: true
+    runner: reviewer
+    created_at: 2026-03-19T06:57:39.126Z
+    completed_at: 2026-03-19T06:57:39.126Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Full suite passed in reviewer snapshot (6516 tests passed, 3 skipped).
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-19T06:57:39.755Z
+    completed_at: 2026-03-19T06:57:39.755Z
+events:
+  - _ulid: 01KM2DZGKH30NQE2M27HF1A68R
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-19T06:54:26.417Z
+  - _ulid: 01KM2E03V5BMP7HGDE05XAB3MX
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-19T06:54:46.117Z
+  - _ulid: 01KM2E5B5NAS72FFZ1K7WXHZQ8
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM2E5AZX0094R0TAPVW4F5HR
+    timestamp: 2026-03-19T06:57:37.461Z
+  - _ulid: 01KM2E5BRS3S4M2J6KERJD7340
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM2E5BKEHSXB3TFHTE056CND
+    timestamp: 2026-03-19T06:57:38.073Z
+  - _ulid: 01KM2E5CBTDMM5TTMBC8CQRW7P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-03-19T06:57:38.682Z
+  - _ulid: 01KM2E5CZMF0E7V8D6CMEMGXAH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: manual completeness
+    timestamp: 2026-03-19T06:57:39.316Z
+  - _ulid: 01KM2E5DJWEA4FAQ172KQXN1FS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-19T06:57:39.932Z
+  - _ulid: 01KM2E64H4V2DRRPFH5J9DWTMC
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-19T06:58:03.428Z
+  - _ulid: 01KM2E64H5A95JN7FQJZ3YK169
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-19T06:58:03.429Z
+  - _ulid: 01KM2F5GCTF3MG837PSK73T8RN
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM2E5AZX0094R0TAPVW4F5HR
+    timestamp: 2026-03-19T07:15:11.386Z
+  - _ulid: 01KM2F5H0QHJX1PTSZ7YHRA205
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KM2E5BKEHSXB3TFHTE056CND
+    timestamp: 2026-03-19T07:15:12.023Z
+  - _ulid: 01KM2F5K5VS3J9GFV5PG3QR3YX
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KM2E5AZX0094R0TAPVW4F5HR
+    timestamp: 2026-03-19T07:15:14.235Z
+  - _ulid: 01KM2F5KVMMQY50Y8VNJEHK8QQ
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM2E5BKEHSXB3TFHTE056CND
+    timestamp: 2026-03-19T07:15:14.932Z
+examined_commit: bbaff772decfe825189f288ef9911d9f5696a240
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KJP279FYHBM6995ZVMYGM7M2"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM2E5AZX0094R0TAPVW4F5HR
+    anchor:
+      type: code
+      commit: bbaff772decfe825189f288ef9911d9f5696a240
+      line_end: 41
+      line_start: 41
+      path: AGENTS.md
+      side: head
+    entries:
+      - _ulid: 01KM2E5AZYW765HB8ZRBN52MJG
+        author: Jacob Chapel
+        body: This task is still incomplete. Its description says to "remove all remaining ralph references"
+          and "update any remaining code comments," but this snapshot still leaves user-facing
+          references behind. `AGENTS.md` still documents the templates as including a "ralph loop",
+          and `docs/agents-eval-scenarios.md` still teaches "ralph loop mode" / `kspec ralph
+          end-loop`. A repo-wide `rg -n "ralph|Ralph"` also still finds many additional untouched
+          references. Until those remaining traces are either removed or explicitly scoped out, the
+          task cannot be considered done.
+        created_at: 2026-03-19T06:57:37.278Z
+      - _ulid: 01KM2F5G69YRWJRS9NC1ZDKMWV
+        author: Jacob Chapel
+        body: Addressed in commit 883713aaf. Removed stale user-facing ralph wording from AGENTS.md and
+          docs/agents-eval-scenarios.md, cleaned remaining non-functional ralph comments/helper
+          text, and renamed the legacy config alias schema while keeping the legacy ralph config key
+          for backward compatibility. Verified the remaining rg hits are intentional
+          compatibility/spec fixtures only.
+        created_at: 2026-03-19T07:15:11.177Z
+    kind: blocker
+    resolved_at: 2026-03-19T07:15:14.040Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KM2E5BKEHSXB3TFHTE056CND
+    entries:
+      - _ulid: 01KM2E5BKEX3PPR0XR5VD2F1W8
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          - Files read: AGENTS.md; docs/agents-eval-scenarios.md; src/parser/config.ts;
+          src/sessions/store.ts; src/sessions/types.ts; tests/parser/config.test.ts;
+          tests/cli-agent-commands.test.ts; tests/triage-parser.test.ts
+
+          - Commands run: `git diff --stat
+          b0d1b7932b5096c72399b0f6e69bb310e3edb33d..bbaff772decfe825189f288ef9911d9f5696a240`; `git
+          diff 61ca7bb5b8609e78888aef803da22b303c93ca8b..bbaff772decfe825189f288ef9911d9f5696a240 --
+          ...`; `rg -n "ralph|Ralph" -S .`; `kspec item get @ralph-replacement`; `npm test`; `kspec
+          validate`
+
+          - Claims verified: the prior config-compat blocker is fixed by resolving `file.ralph ??
+          file.agent` into `config.agent`, covered by new parser tests; the branch still leaves
+          documented `ralph` references behind
+
+          - Categories searched: correctness, backward compatibility, docs/task-scope completeness,
+          tests, validation baseline
+        created_at: 2026-03-19T06:57:37.902Z
+      - _ulid: 01KM2F5KMDT2DTETYEV5BJ1GBN
+        author: Jacob Chapel
+        body: "Verification on the rebased branch: repo-wide search now leaves only intentional
+          compatibility/spec-fixture ralph references; full npm test passed after rerun (6600
+          passed, 3 skipped)."
+        created_at: 2026-03-19T07:15:14.700Z
+    kind: nit
+    resolved_at: 2026-03-19T07:15:11.780Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-19T06:58:03.428Z
+created_at: 2026-03-19T06:54:26.418Z
+updated_at: 2026-03-19T07:15:14.700Z
+notes: []

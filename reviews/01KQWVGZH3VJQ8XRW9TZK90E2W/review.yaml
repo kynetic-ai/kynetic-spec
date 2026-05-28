@@ -1,0 +1,165 @@
+_ulid: 01KQWVGZH3VJQ8XRW9TZK90E2W
+slugs: []
+title: "Plan review: Daemon Network Endpoint Contract"
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec plan get @plan-daemon-network-endpoint-contract succeeded; referenced existing specs
+      @daemon-server, @config-daemon, @trait-localhost-security, @cli-daemon-proxy,
+      @daemon-proxy-detection, @multi-directory-daemon, @cli-serve-commands, @api-contract,
+      @daemon-runtime-adapter, and @web-ui resolved via kspec item get.
+    name: plan reference validation
+    required: true
+    runner: kspec
+    created_at: 2026-05-05T19:59:28.091Z
+    completed_at: 2026-05-05T19:59:28.091Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --warnings-ok passed. Existing repo has warnings for deprecated references,
+      orphan specs, and missing AC coverage, but no validation errors blocking this plan review.
+    name: catalog validation
+    required: true
+    runner: kspec
+    created_at: 2026-05-05T19:59:28.202Z
+    completed_at: 2026-05-05T19:59:28.202Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified cited callsites are current: packages/daemon/src/server.ts still binds/logs
+      localhost and enforces localhost Host checks; src/parser/config.ts parses daemon.host/runtime
+      and defaults host to localhost; src/cli/index.ts and src/cli/commands/serve.ts pass only
+      --port/--kspec-dir; CLI/web UI client URL hardcodes cited in daemon-proxy, serve, task,
+      agent/event/schedule, and web-ui constants are present."
+    name: code grounding
+    required: true
+    runner: shell
+    created_at: 2026-05-05T19:59:42.633Z
+    completed_at: 2026-05-05T19:59:42.633Z
+events:
+  - _ulid: 01KQWVGZH37F5ZP8QJHDSBFRK1
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-05T19:58:30.947Z
+  - _ulid: 01KQWVHBMCB74D0JYVSZ0C6PZA
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-05T19:58:43.340Z
+  - _ulid: 01KQWVHX1QGC2T4QXRF7WVQEBB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQWVHVRV63A27YQD837CSQVN
+    timestamp: 2026-05-05T19:59:01.176Z
+  - _ulid: 01KQWVJBVJXTHEBM41BR3EX2HD
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQWVJAE7QHN1WVR2GCVGG76T
+    timestamp: 2026-05-05T19:59:16.338Z
+  - _ulid: 01KQWVJRNGDSN7F23P1Z8036HS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan reference validation
+    timestamp: 2026-05-05T19:59:29.456Z
+  - _ulid: 01KQWVJTWWV9M5ZMNHV0HZV9NG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: catalog validation
+    timestamp: 2026-05-05T19:59:31.740Z
+  - _ulid: 01KQWVK6W8V17S0FVJQYDRNNA6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: code grounding
+    timestamp: 2026-05-05T19:59:44.008Z
+  - _ulid: 01KQWVKP9XNSH24416P1QKE879
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-05T19:59:59.805Z
+  - _ulid: 01KQWVKP9X24RN5J54J2CVM8QG
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-05T19:59:59.805Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-daemon-network-endpoint-contract"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQWVHVRV63A27YQD837CSQVN
+    anchor:
+      type: structured
+      field: ac-clients-use-metadata
+      ref: "@daemon-network-endpoint-contract"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KQWVHVRWS1QNDQ6T412XP19W
+        author: Jacob Chapel
+        body: "MUST-FIX: This AC is implementation-facing instead of behavioral. It requires the endpoint to
+          be produced by the shared daemon endpoint resolver and lists internal CLI code categories,
+          so the spec would test a mechanism rather than an observable contract. Move the
+          shared-resolver requirement into implementation tasks, and rewrite the AC to require that
+          CLI, status, scheduled, agent, event, task-event, and web UI development clients connect
+          using the advertised daemon endpoint metadata/URLs rather than independently derived
+          localhost defaults."
+        created_at: 2026-05-05T19:58:59.868Z
+    kind: blocker
+  - _ulid: 01KQWVJAE7QHN1WVR2GCVGG76T
+    anchor:
+      type: structured
+      field: description
+      ref: "@task-daemon-endpoint-regression-tests"
+      section: tasks
+    entries:
+      - _ulid: 01KQWVJAE7J9P76ADQ1VKTM31Q
+        author: Jacob Chapel
+        body: "MUST-FIX: The task explicitly asks for a negative regression that scans production CLI source
+          files for hardcoded URL strings. Project review rules reject source-scanning tests as
+          invalid AC coverage because they inspect implementation text rather than exercising
+          behavior. Replace this with behavioral coverage that proves all production client call
+          paths use metadata, for example by seeding non-default or IPv6 metadata and exercising
+          proxy, serve status, agent, event, schedule, task-event, and web UI dev endpoint paths. If
+          a lint/static rule is desired, make it a separate non-AC quality guard, not AC coverage."
+        created_at: 2026-05-05T19:59:14.887Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-05T19:59:59.805Z
+created_at: 2026-05-05T19:58:30.947Z
+updated_at: 2026-05-05T19:59:59.805Z
+notes: []

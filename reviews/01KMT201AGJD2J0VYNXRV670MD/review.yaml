@@ -1,0 +1,132 @@
+_ulid: 01KMT201AGJD2J0VYNXRV670MD
+slugs: []
+title: Review @01KMSV50CFZGJEFZE2MV83PGN7 (cycle 2)
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed in isolation on the reviewed snapshot: npm test --
+      tests/daemon-entity-cache.test.ts tests/daemon-command-api.test.ts (30 suites, 109 tests).
+      This covers the changed cache code and the command API regression surface touched by
+      writeThrough/meta reloads."
+    name: targeted npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-28T11:07:51.526Z
+    completed_at: 2026-03-28T11:07:51.526Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full npm test on this snapshot failed outside the changed area: 2 suites failed, 12 tests
+      failed, all in tests/daemon-command-api.test.ts, while that suite passes in isolation with
+      tests/daemon-entity-cache.test.ts. This indicates unrelated cross-test instability rather than
+      a regression introduced by the submitted patch."
+    name: npm test
+    required: false
+    runner: npm
+    created_at: 2026-03-28T11:07:55.416Z
+    completed_at: 2026-03-28T11:07:55.416Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 6 with existing repo-wide warnings only (orphaned skill dir, orphaned specs, broad
+      AC coverage warnings). No task-specific validation error surfaced.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-28T11:08:29.518Z
+    completed_at: 2026-03-28T11:08:29.518Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 6 with existing repo-wide warnings only (orphaned skill dir, orphaned specs, broad
+      AC coverage warnings). No task-specific validation error surfaced.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-28T11:08:31.291Z
+    completed_at: 2026-03-28T11:08:31.291Z
+events:
+  - _ulid: 01KMT201AGACKNEP51CZZCETTX
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-28T11:06:46.992Z
+  - _ulid: 01KMT21B4BEJ4PSG6MHVHXZTC7
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-28T11:07:29.803Z
+  - _ulid: 01KMT220WSWMPBB0N4Y7K7WSBA
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted npm test
+    timestamp: 2026-03-28T11:07:52.089Z
+  - _ulid: 01KMT224NVWDP2RFKMQSNFSJZ5
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-28T11:07:55.963Z
+  - _ulid: 01KMT235ZK9V6BJBGB2HH1Z2TZ
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-03-28T11:08:30.067Z
+  - _ulid: 01KMT237P4Z8CX5RQBXBTGEWYK
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-03-28T11:08:31.812Z
+  - _ulid: 01KMT23C14F2M3CM2T44PE90WW
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-28T11:08:36.260Z
+  - _ulid: 01KMT23C14M40KFK87P60X7QEG
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-28T11:08:36.260Z
+examined_commit: 6dfc4805489d99bea3d96adb5877ae3251faad69
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMSV50CFZGJEFZE2MV83PGN7"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-03-28T11:08:36.259Z
+created_at: 2026-03-28T11:06:46.992Z
+updated_at: 2026-03-28T11:08:36.260Z
+notes: []

@@ -1,0 +1,20 @@
+_ulid: 01KM3KX3MH35QC7TR0PEVF5WY7
+slugs:
+  - plan-dispatch-integration-checkout-boundaries
+title: Dispatch Shared-Checkout Safety and Git Context Hardening
+status: completed
+approved_at: 2026-03-19T21:22:06.778Z
+derived_specs:
+  - "@dispatch-shared-checkout-contract"
+  - "@dispatch-integration-mutation-scope"
+  - "@dispatch-shared-checkout-safety"
+derived_tasks:
+  - "@task-design-dispatch-shared-checkout-contract"
+  - "@task-isolate-dispatch-git-targeting"
+  - "@task-route-dispatch-sync-through-targeting-path"
+  - "@task-implement-dispatch-shared-checkout-safety"
+  - "@task-test-dispatch-shared-checkout-safety"
+module_ref: "@agent-integration"
+source_path: /tmp/dispatch-integration-checkout-boundaries-plan.md
+created_at: 2026-03-19T17:57:13.489Z
+completed_at: null

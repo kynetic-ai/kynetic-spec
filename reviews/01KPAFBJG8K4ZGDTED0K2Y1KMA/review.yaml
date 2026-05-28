@@ -1,0 +1,268 @@
+_ulid: 01KPAFBJG8K4ZGDTED0K2Y1KMA
+slugs: []
+title: Review task-doctor-accuracy (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Run 1: 2179/2179 suites passed, 7970 passed, 5 skipped. Run 2 returned the same passing
+      summary from the session cache because repo state was unchanged."
+    name: npm test
+    required: true
+    runner: test-runner
+    created_at: 2026-04-16T06:34:30.170Z
+    completed_at: 2026-04-16T06:34:30.170Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fails on unchanged repo metadata outside this task's diff: schema error at
+      .kspec/modules/meta.yaml modules[0].traits[0] plus existing repo-wide warnings.  returned no
+      changed files."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-16T06:34:33.024Z
+    completed_at: 2026-04-16T06:34:33.024Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/parser/doctor.ts, src/parser/setup-status.ts,
+      tests/parser/doctor.test.ts, tests/droid-setup-status.test.ts, package.json, AGENTS.md,
+      kspec-agents.md. Commands run: kspec task get, kspec item get, git diff/stat/show/log, rg AC
+      annotations, kspec validate, node dist/cli/index.js setup --help, node dist/cli/index.js
+      doctor --json in temp repo, npm test. Claims verified: prior blocker wording fix is present;
+      doctor now scans supported skill locations; generic   cd
+      /home/chapel/Projects/kynetic-spec-dispatch && kspec setup guidance still remains on
+      warning/error paths and reproduces at runtime for agents-md missing. Categories searched:
+      correctness (1 blocker), edge cases (plugin-only skills, missing baseline), error
+      handling/actionability (1 blocker), test quality (coverage present, no source scanning in
+      changed tests), integration (runtime doctor output exercised)."
+    name: review-evidence
+    required: false
+    runner: codex-reviewer
+    created_at: 2026-04-16T06:34:35.870Z
+    completed_at: 2026-04-16T06:34:35.870Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      Files read: src/parser/doctor.ts, src/parser/setup-status.ts, tests/parser/doctor.test.ts,
+      tests/droid-setup-status.test.ts, package.json, AGENTS.md, kspec-agents.md.
+
+      Commands run: kspec task get, kspec item get, git diff/stat/show/log, rg AC annotations, kspec
+      validate, node dist/cli/index.js setup --help, node dist/cli/index.js doctor --json in temp
+      repo, npm test.
+
+      Claims verified: prior blocker wording fix is present; doctor now scans supported skill
+      locations; generic `kspec setup` guidance still remains on warning/error paths and reproduces
+      at runtime for agents-md missing.
+
+      Categories searched: correctness (1 blocker), edge cases (plugin-only skills, missing
+      baseline), error handling/actionability (1 blocker), test quality (coverage present, no source
+      scanning in changed tests), integration (runtime doctor output exercised).
+    name: review-evidence
+    required: false
+    runner: codex-reviewer
+    created_at: 2026-04-16T06:35:21.450Z
+    completed_at: 2026-04-16T06:35:21.450Z
+events:
+  - _ulid: 01KPAFBJG7A9DD5JR0M6JJ9PAB
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-16T06:23:49.256Z
+  - _ulid: 01KPAFCD0R31BRTKNN6YMP0133
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-16T06:24:16.408Z
+  - _ulid: 01KPAFZ5BH6YW57K138DV9WTHK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-16T06:34:31.154Z
+  - _ulid: 01KPAFZ84TG87FW8KTECH9VKGS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-16T06:34:34.011Z
+  - _ulid: 01KPAFZAZHFNA2BYQQHZ0PR1AH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-04-16T06:34:36.913Z
+  - _ulid: 01KPAFZDR7JA79TYHV1GPQKAY7
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPAFZCS67P3GYZ4QBKK1EHJB
+    timestamp: 2026-04-16T06:34:39.752Z
+  - _ulid: 01KPAG08BQ49V8N45W3PH1GDHT
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPAG07D6YPP7NK53YP6XYVFS
+    timestamp: 2026-04-16T06:35:06.999Z
+  - _ulid: 01KPAG0QDM98S0B9D5J3K6SYJW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-04-16T06:35:22.420Z
+  - _ulid: 01KPAG143AMZJD0FP1F2GA2AK0
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-16T06:35:35.402Z
+  - _ulid: 01KPAG143AHZBE3191D452CKGD
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-16T06:35:35.402Z
+  - _ulid: 01KPAH8ERV9HHTMVKQP0MAM7NM
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPAFZCS67P3GYZ4QBKK1EHJB
+    timestamp: 2026-04-16T06:57:04.284Z
+  - _ulid: 01KPAH8RET4NK2NT802ER9177B
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPAG07D6YPP7NK53YP6XYVFS
+    timestamp: 2026-04-16T06:57:14.202Z
+  - _ulid: 01KPAH91EQPZW195D8A603X8YZ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPAFZCS67P3GYZ4QBKK1EHJB
+    timestamp: 2026-04-16T06:57:23.415Z
+  - _ulid: 01KPAH96FENAMF0W7P7S1C1KZ6
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPAG07D6YPP7NK53YP6XYVFS
+    timestamp: 2026-04-16T06:57:28.559Z
+examined_commit: 6794e0ed53fa7832fed56de4b8bc31fcff73bd5e
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNXYJ66ZQ5TBZ69YFCKK3J2T"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPAFZCS67P3GYZ4QBKK1EHJB
+    anchor:
+      type: code
+      commit: 6794e0ed53fa7832fed56de4b8bc31fcff73bd5e
+      line_end: 461
+      line_start: 314
+      path: src/parser/doctor.ts
+      side: head
+    entries:
+      - _ulid: 01KPAFZCS7VFTSW5QAFV7WJC52
+        author: Jacob Chapel
+        body: "The actionable-message audit is still incomplete. This file still emits generic `kspec setup`
+          guidance for multiple warning/error paths (, , , and  missing) instead of naming the exact
+          setup action. I verified this is not just dead code: running `node dist/cli/index.js
+          doctor --json` in a fresh temp repo produced the  error with guidance `Run   cd
+          /home/chapel/Projects/kynetic-spec-dispatch && kspec setup to generate kspec-agents.md`.
+          Because the task explicitly called out replacing vague setup guidance with specific
+          commands/flags, these remaining branches still leave doctor output ambiguous in exactly
+          the scenario this work was meant to fix."
+        created_at: 2026-04-16T06:34:38.759Z
+      - _ulid: 01KPAH8DT4V0FSNG8WB6XNVMAA
+        author: "@claude"
+        body: >-
+          Fixed in 984280cf0. Replaced generic `kspec setup` guidance with specific commands on all
+          four flagged paths:
+
+
+          - artifacts-dir missing → `kspec setup --force` (or `mkdir -p .kspec/artifacts` as a
+          direct fallback)
+
+          - agent-type unknown → `kspec setup --agent <claude-code|cline|droid|cursor|windsurf>`
+          (names the specific flag and valid values)
+
+          - hooks missing → `kspec setup --agent <detected-agent>` (interpolates the detected agent
+          so the command is directly runnable)
+
+          - agents-md missing → `kspec agents generate` (the dedicated command; replaces the `kspec
+          setup` fallback that was the original false claim)
+
+
+          Added dedicated tests for each path plus a strict regression on
+          @doctor-reports-actionable-state ac-all-actionable that flags any warning/error guidance
+          whose only resolution is bare `kspec setup` (regex: \`kspec setup\\b(?!\\s+--)\`), exempt
+          only when the same guidance also names a specific alternative (`kspec agents generate`,
+          `kspec skill render`, `kspec upgrade`, etc.). Verified at runtime in a fresh temp repo:
+          `node dist/cli/index.js doctor --json` now produces the new guidance strings for hooks and
+          agents-md. Full suite: 7973 passed, 5 skipped.
+        created_at: 2026-04-16T06:57:03.300Z
+    kind: blocker
+    resolved_at: 2026-04-16T06:57:22.450Z
+    resolved_by: "@claude"
+  - _ulid: 01KPAG07D6YPP7NK53YP6XYVFS
+    anchor:
+      type: code
+      commit: 6794e0ed53fa7832fed56de4b8bc31fcff73bd5e
+      line_end: 461
+      line_start: 314
+      path: src/parser/doctor.ts
+      side: head
+    entries:
+      - _ulid: 01KPAG07D63EVVF0HXV54HF08X
+        author: Jacob Chapel
+        body: "The actionable-message audit is still incomplete. This file still emits generic `kspec setup`
+          guidance for multiple warning/error paths (`artifacts-dir`, `agent-type`, `hooks`, and
+          `agents-md` missing) instead of naming the exact setup action. I verified this is not just
+          dead code: running `node dist/cli/index.js doctor --json` in a fresh temp repo produced
+          the `agents-md` error with guidance `Run `kspec setup` to generate kspec-agents.md`.
+          Because the task explicitly called out replacing vague setup guidance with specific
+          commands/flags, these remaining branches still leave doctor output ambiguous in exactly
+          the scenario this work was meant to fix."
+        created_at: 2026-04-16T06:35:06.022Z
+      - _ulid: 01KPAH8QHD5A3JZ7GJNHM1DFX5
+        author: "@claude"
+        body: Fixed in 984280cf0 — see detailed reply on the sibling thread 01KPAFZCS67P3GYZ4QBKK1EHJB. Both
+          threads are the same blocker; same fix applies.
+        created_at: 2026-04-16T06:57:13.261Z
+    kind: blocker
+    resolved_at: 2026-04-16T06:57:27.614Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-04-16T06:35:35.402Z
+created_at: 2026-04-16T06:23:49.256Z
+updated_at: 2026-04-16T06:57:27.614Z
+notes: []

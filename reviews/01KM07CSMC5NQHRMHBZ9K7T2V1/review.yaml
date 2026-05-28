@@ -1,0 +1,223 @@
+_ulid: 01KM07CSMC5NQHRMHBZ9K7T2V1
+slugs: []
+title: Review task-dispatch-target-sync (cycle 1)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 271/272 tests pass (6113 passed, 3 skipped). 1 failure in review-cli.test.ts is
+      pre-existing (examined_commit test, not touched by this task).
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T10:21:42.308Z
+    completed_at: 2026-03-18T10:21:42.308Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "No new validation errors. Pre-existing: 3 reference errors in meta.yaml, 29 orphaned
+      specs (none related to this task or spec)."
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-18T10:21:49.898Z
+    completed_at: 2026-03-18T10:21:49.898Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 7 task-scoped ACs have test annotations: ac-pull-target-on-start,
+      ac-pull-target-periodic, ac-pull-target-periodic-deferred, ac-pull-target-before-provision,
+      ac-pull-ff-only, ac-transient-no-degrade, ac-no-remote. Trait @trait-error-guidance is N/A for
+      this task (internal engine behavior, no CLI commands added). Source annotations present for
+      all ACs."
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-18T10:21:58.779Z
+    completed_at: 2026-03-18T10:21:58.779Z
+events:
+  - _ulid: 01KM07CSMC4ARJHS0H4P4X1D67
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T10:20:52.748Z
+  - _ulid: 01KM07D2QNVGK6BMMGHEDDCNYC
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T10:21:02.069Z
+  - _ulid: 01KM07DEQ5D990AE36E7QTTKWM
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM07DEKK7K75A4KYX1JWD6S1
+    timestamp: 2026-03-18T10:21:14.341Z
+  - _ulid: 01KM07DREPR1FSMRG5VE3ARCGW
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM07DRB8MGG7PYH1MXBKC1C9
+    timestamp: 2026-03-18T10:21:24.310Z
+  - _ulid: 01KM07E0Y7ZM636926RWBMXRSD
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM07E0TGNEW8Z86T7WCHKYQT
+    timestamp: 2026-03-18T10:21:32.999Z
+  - _ulid: 01KM07EA5T3R5REXC1V8ZXWZHE
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T10:21:42.458Z
+  - _ulid: 01KM07EHJ5C3SZATBFWA9DZP5G
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-18T10:21:50.022Z
+  - _ulid: 01KM07ET7KCBK5TPZ96TK3EJDY
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-18T10:21:58.900Z
+  - _ulid: 01KM07F14D6XM4DPC8V0VH8STF
+    actor: dispatch-reviewer
+    event_type: verdict_submitted
+    payload:
+      decision: request_changes
+    timestamp: 2026-03-18T10:22:05.965Z
+  - _ulid: 01KM07F14DCV9RT8VCGVDTJRYM
+    actor: dispatch-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T10:22:05.965Z
+examined_commit: a8052bd5b059db13078127383a5d80362dc490c5
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKZWB75X6Q1X1ZZC5S6KBH6B"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM07DEKK7K75A4KYX1JWD6S1
+    anchor:
+      type: code
+      commit: ""
+      line_end: 1213
+      line_start: 1211
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KM07DEKKXS46Y4SW47WY1AYQ
+        author: "@claude"
+        body: >-
+          MUST-FIX: _reconcile() does not gate sync on _isTargetSyncStale() — violates
+          ac-pull-target-periodic
+
+
+          The periodic sync in _reconcile() (line 1211) checks:
+            if (this._remoteSyncEnabled && !this._hasActiveReviewerInvocation())
+
+          But it does NOT check _isTargetSyncStale(). This means the sync runs on EVERY
+          reconciliation pass, not just when the configured sync_interval has elapsed.
+
+
+          ac-pull-target-periodic says: "When the configured sync interval elapses" — the
+          implementation must respect the sync interval.
+
+
+          If reconcileIntervalMs is 5s and sync_interval is 60s, the git fetch would run every 5s
+          instead of every 60s, which is wasteful and doesn't match spec.
+
+
+          The before-provision path (line 2022) correctly uses _isTargetSyncStale(). The reconcile
+          path should do the same:
+            if (this._remoteSyncEnabled && this._isTargetSyncStale() && !this._hasActiveReviewerInvocation())
+
+          The test for ac-pull-target-periodic (line 186) calls _syncTargetBranch() directly rather
+          than going through _reconcile(), so it does not catch this bug.
+        created_at: 2026-03-18T10:21:14.227Z
+    kind: blocker
+  - _ulid: 01KM07DRB8MGG7PYH1MXBKC1C9
+    anchor:
+      type: code
+      commit: ""
+      line_end: 2565
+      line_start: 2563
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KM07DRB88541NRMDBM2327Z2
+        author: "@claude"
+        body: >-
+          SUGGESTION: No explicit branch verification before git merge --ff-only
+
+
+          _syncTargetBranch() runs git merge --ff-only in this.projectDir but does not verify that
+          HEAD is on _syncBaseBranch. It relies on the implicit invariant that the project directory
+          has the base branch checked out.
+
+
+          The dispatch engine architecture guarantees this (task work happens in worktrees), so this
+          is not a correctness bug in practice. However, a defensive check like:
+            git symbolic-ref --short HEAD === this._syncBaseBranch
+          before the merge would prevent silent corruption if the invariant ever breaks.
+
+
+          Not blocking — the invariant holds in the dispatch model.
+        created_at: 2026-03-18T10:21:24.200Z
+    kind: nit
+  - _ulid: 01KM07E0TGNEW8Z86T7WCHKYQT
+    anchor:
+      type: code
+      commit: ""
+      line_end: 2588
+      line_start: 2582
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KM07E0TGKM9J9JBAZ15EDAH8
+        author: "@claude"
+        body: >-
+          SUGGESTION: Dead code — "Already up to date" check on non-zero exit path
+
+
+          Lines 2582-2588 check for "Already up to date" when mergeResult.status !== 0. However, git
+          merge --ff-only exits 0 (success) when already up to date. The non-zero path only triggers
+          on actual failures (divergence). This check is unreachable dead code.
+
+
+          The same check on the status === 0 path (lines 2602-2604) is correct and handles the
+          up-to-date case properly.
+        created_at: 2026-03-18T10:21:32.880Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: dispatch-reviewer
+    role: reviewer
+    created_at: 2026-03-18T10:22:05.854Z
+created_at: 2026-03-18T10:20:52.748Z
+updated_at: 2026-03-18T10:22:05.854Z
+notes: []

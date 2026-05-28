@@ -1,0 +1,178 @@
+_ulid: 01KRYQPMKK8CYKVR3R4GCHKP0F
+slugs: []
+title: Review prevent overlapping periodic dispatch reconciliation
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/agent-dispatch-engine.test.ts passed: 134 tests passed in
+      tests/agent-dispatch-engine.test.ts; runner summary 40 suites passed of 40."
+    name: focused dispatch tests
+    required: true
+    runner: npm
+    created_at: 2026-05-19T00:03:59.808Z
+    completed_at: 2026-05-19T00:03:59.808Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate: schema and references OK, but command exited 6 because project-wide
+      warnings remain (reference, alignment, completeness, invalid AC annotation warnings)."
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-19T00:04:04.193Z
+    completed_at: 2026-05-19T00:04:04.193Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test failed after full run: tests/cli-no-daemon.test.ts has 1 failing test,
+      'KSPEC_NO_DAEMON auto-starts the daemon with the configured node runtime even when the CLI
+      runs under bun', failing at tests/cli-no-daemon.test.ts:161 because ps -p <pid> -o command=
+      exits 1. Fresh focused rerun reproduced the same failure. This file is outside the task diff;
+      changed files are src/agent-runtime/dispatch.ts and tests/agent-dispatch-engine.test.ts."
+    name: full npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-19T00:04:14.506Z
+    completed_at: 2026-05-19T00:04:14.506Z
+events:
+  - _ulid: 01KRYQPMKJS56PPFW0T8PE0WWC
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-18T23:45:52.755Z
+  - _ulid: 01KRYQQG5EZ855C9C3Q5FCT592
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-18T23:46:20.975Z
+  - _ulid: 01KRYRQVP2YTBF9Q0AJPCRRC5R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused dispatch tests
+    timestamp: 2026-05-19T00:04:01.346Z
+  - _ulid: 01KRYRR011VH81042PKHSCXFKE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-05-19T00:04:05.793Z
+  - _ulid: 01KRYRR4BQ85H53K6BVD3EV40H
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRYRR2SWGPX1BYM8JHP2DQSJ
+    timestamp: 2026-05-19T00:04:10.231Z
+  - _ulid: 01KRYRRA1YK5NWH90ADWRG42DA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: full npm test
+    timestamp: 2026-05-19T00:04:16.062Z
+  - _ulid: 01KRYRSF7XB59JFN15XY0NP6HN
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRYRR2SWGPX1BYM8JHP2DQSJ
+    timestamp: 2026-05-19T00:04:54.141Z
+  - _ulid: 01KRYRSVZZX1YTYP16H9MH5TTK
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-19T00:05:07.199Z
+  - _ulid: 01KRYRSVZZZDQNBM3V890CAJW3
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-19T00:05:07.199Z
+  - _ulid: 01KRYX6A3ZD8YTNXAP0XQ7GVY5
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRYRR2SWGPX1BYM8JHP2DQSJ
+    timestamp: 2026-05-19T01:21:49.183Z
+  - _ulid: 01KRYX6G2ETC24RM8GE31MNBA0
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KRYRR2SWGPX1BYM8JHP2DQSJ
+    timestamp: 2026-05-19T01:21:55.278Z
+examined_commit: 7c8750e4177de585f398dc7d2b00e9a4e1aa657b
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRYMPBC8YM4X3KZC6SPBV6R2"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRYRR2SWGPX1BYM8JHP2DQSJ
+    anchor:
+      type: code
+      commit: 7c8750e4177de585f398dc7d2b00e9a4e1aa657b
+      line_end: 6131
+      line_start: 6096
+      path: tests/agent-dispatch-engine.test.ts
+      side: head
+    entries:
+      - _ulid: 01KRYRR2SW72NH0G77RX4GJK8X
+        author: Jacob Chapel
+        body: "MUST-FIX: the submitted ACs are not covered by machine-linked behavioral tests. The spec now
+          includes @agent-dispatch-engine ac-reconcile-non-overlap and
+          ac-stop-awaits-reconciliation, but  finds no test annotations for either ID. The only new
+          test here is annotated as ac-19/ac-20, and it covers non-overlap indirectly while never
+          exercising the stop guarantee: it calls  before , so stop is not proven to wait while
+          reconciliation is still blocked. Add/retag behavioral tests for ac-reconcile-non-overlap
+          and ac-stop-awaits-reconciliation; the stop test should call stop while the reconcile
+          promise is still unresolved and assert stop does not resolve until the pass is released."
+        created_at: 2026-05-19T00:04:08.636Z
+      - _ulid: 01KRYRSDQ5NC5KDKKQCH8EXXP7
+        author: Jacob Chapel
+        body: "Correction to the evidence text: git grep for ac-reconcile-non-overlap and
+          ac-stop-awaits-reconciliation returns no matches in tests or src. The new test calls
+          releaseReconcile before await engine.stop, so it does not prove stop waits while a
+          reconciliation promise is still unresolved."
+        created_at: 2026-05-19T00:04:52.581Z
+      - _ulid: 01KRYX68NE0ZBY8559F8SK2B8R
+        author: "@claude"
+        body: "Fixed in commit b83adf6c8c. Retagged the non-overlap test with ac-reconcile-non-overlap.
+          Added a new ac-stop-awaits-reconciliation test that calls engine.stop() while the
+          reconcile gate is still held, drains microtasks plus 100ms of fake timers, asserts stop
+          has NOT resolved, then releases the gate and asserts stop resolves AND the reconcile body
+          finished before stop returned. Both AC ids now have machine-linked behavioral coverage.
+          Focused suite: 135/135 pass. Full npm test: 9280/9280 pass (cli-no-daemon failure was
+          unrelated to this task and is already fixed on dev via 08b8716238)."
+        created_at: 2026-05-19T01:21:47.693Z
+    kind: blocker
+    resolved_at: 2026-05-19T01:21:53.792Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-19T00:05:07.199Z
+created_at: 2026-05-18T23:45:52.755Z
+updated_at: 2026-05-19T01:21:53.792Z
+notes: []

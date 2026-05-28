@@ -1,0 +1,265 @@
+_ulid: 01KNA370YATWK3ZZ7MCJ8WHX3W
+slugs: []
+title: Review task-impl-pull-path
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2068/2068 suites, 7499 passed, 5 skipped, 7504 total."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-03T16:41:15.863Z
+    completed_at: 2026-04-03T16:41:15.863Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      > @kynetic-ai/spec@0.12.0 test
+
+      > node scripts/test.cjs tests/dispatch-target-sync.test.ts
+      tests/dispatch-degraded-state.test.ts passed: 4 suites, 46 tests.
+    name: dispatch sync focused tests
+    required: true
+    runner: npm
+    created_at: 2026-04-03T16:41:18.119Z
+    completed_at: 2026-04-03T16:41:18.119Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      ✓ Validation passed
+
+      ────────────────────────────────────────
+
+      Files checked: 10
+
+      Items checked: 573
+
+      Tasks checked: 0
+
+      Meta: 11 agents, 11 workflows, 10 conventions
+
+
+      Schema: OK
+
+      References: OK
+
+
+      Reference warnings: 1
+        ⚠ @skills
+          Orphaned skill directory 'skills' has no corresponding meta entry
+          in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+      Alignment warnings: 31
+        Orphaned specs (no tasks): 30
+          ○ Test Trait
+          ○ Filterable List Commands
+          ○ Dry Run Preview Mode
+          ... and 27 more
+        Status mismatches: 1
+          ! Task Set Batch Support
+            Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+
+      Alignment stats: 410/573 specs have tasks, 409 aligned
+
+
+      Completeness warnings: 520
+        Missing acceptance criteria: 1
+          ○ @01KJN1WT - Test Trait
+        Missing own AC coverage: 233
+          ! @spec-item - Spec Item
+            Uncovered: ac-item-1, ac-item-2
+          ! @ulid-system - ULID Identifier System
+            Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+          ! @slug-system - Slug Alias System
+            Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+          ... and 230 more
+        Invalid AC annotations: 286
+          ! AC annotation references '@slug' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-pull-path-01kn8t1a-review/tests/ac-annotation-validation.test.ts:6
+          ! AC annotation references '@my-spec' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-pull-path-01kn8t1a-review/tests/ac-annotation-validation.test.ts:84
+          ! AC annotation references '@my-spec' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-pull-path-01kn8t1a-review/tests/ac-annotation-validation.test.ts:87
+          ! AC annotation references '@spec-a' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-pull-path-01kn8t1a-review/tests/ac-annotation-validation.test.ts:114
+          ! AC annotation references '@spec-b' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-pull-path-01kn8t1a-review/tests/ac-annotation-validation.test.ts:118
+          ... and 281 more
+      Skills: OK (10 files checked) returned warnings only (exit 6): pre-existing orphaned
+      skill/alignment/completeness warnings, no schema/reference errors attributable to this task.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-03T16:41:21.560Z
+    completed_at: 2026-04-03T16:41:21.560Z
+events:
+  - _ulid: 01KNA370Y9HJDHFPHN0FR90TJ2
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-03T16:35:55.465Z
+  - _ulid: 01KNA37S71T011Q6JEZDKHBHG0
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-03T16:36:20.322Z
+  - _ulid: 01KNA3GREFPTXTXHC0MVG7Q03C
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNA3GQR0835HCS933W9ZA56S
+    timestamp: 2026-04-03T16:41:14.448Z
+  - _ulid: 01KNA3GTJRN0SAJCQXX0Z089GH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-03T16:41:16.633Z
+  - _ulid: 01KNA3GWSHGYW2ESJBWGZCZGF6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: dispatch sync focused tests
+    timestamp: 2026-04-03T16:41:18.898Z
+  - _ulid: 01KNA3GXY3X2T9TGJCY8QHC6PC
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNA3GW1F1TGE11QY913YZ3A3
+    timestamp: 2026-04-03T16:41:20.067Z
+  - _ulid: 01KNA3H048ZCG8ZMEV10W2BZ7V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-03T16:41:22.312Z
+  - _ulid: 01KNA3H9ZB687VM0JQZ5JR3HNR
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-03T16:41:32.395Z
+  - _ulid: 01KNA3H9ZBXWRX3R5RK92GVC55
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-03T16:41:32.395Z
+  - _ulid: 01KNA45VQ9P7EB4AMT1XX8Y69A
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNA3GQR0835HCS933W9ZA56S
+    timestamp: 2026-04-03T16:52:45.929Z
+  - _ulid: 01KNA45XZ7N9VSMDWSM5MYQC5W
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNA3GW1F1TGE11QY913YZ3A3
+    timestamp: 2026-04-03T16:52:48.231Z
+  - _ulid: 01KNA467601RZX2RADWS81Z0Y2
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNA3GW1F1TGE11QY913YZ3A3
+    timestamp: 2026-04-03T16:52:57.664Z
+  - _ulid: 01KNA468BG6NCNWKN6V9WTZG7D
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNA3GQR0835HCS933W9ZA56S
+    timestamp: 2026-04-03T16:52:58.864Z
+examined_commit: 8970bc4822de51d6b080c1c8b0619657196ca47d
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN8T1ADSR97NA4Z1MXF30MZE"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNA3GQR0835HCS933W9ZA56S
+    anchor:
+      type: code
+      commit: 8970bc4822de51d6b080c1c8b0619657196ca47d
+      line_end: 1289
+      line_start: 1240
+      path: tests/dispatch-target-sync.test.ts
+      side: head
+    entries:
+      - _ulid: 01KNA3GQR02GFQHTNP038T26TA
+        author: Jacob Chapel
+        body: This test is annotated for , but it never checks degradation scope. It only verifies that the
+          loop continues and logs a warning after a thrown  call. The test would still pass if one
+          target incorrectly degraded the whole engine or if a later successful target cleared
+          another branch’s degraded state. Per this repo’s review gates, an AC annotation that does
+          not prove the claimed behavior is a must-fix.
+        created_at: 2026-04-03T16:41:13.728Z
+      - _ulid: 01KNA45TZWXH474GD67SWH6XB2
+        author: Jacob Chapel
+        body: Fixed in f91001125. I split the assertions so ac-partial-sync-continues stays on the
+          throw-and-continue test, and added a behavioral ac-partial-sync-scoped-degradation test
+          that creates a dev divergence, lets a later plan/alpha sync succeed, and proves the
+          degraded target list still contains only dev.
+        created_at: 2026-04-03T16:52:45.180Z
+    kind: blocker
+    resolved_at: 2026-04-03T16:52:56.927Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KNA3GW1F1TGE11QY913YZ3A3
+    anchor:
+      type: code
+      commit: 8970bc4822de51d6b080c1c8b0619657196ca47d
+      line_end: 3215
+      line_start: 3207
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KNA3GW1GX20RRGMHRC8QQ01R
+        author: Jacob Chapel
+        body: The new multi-target sync loop still uses a single global degraded flag, and any successful
+          sync clears it unconditionally. In , a branch that diverges enters degraded state via ,
+          but the next successful branch immediately calls  here. That means a failure on one active
+          target can be masked by a later success on another target, re-enabling provisioning even
+          though the original target is still unhealthy. This breaks the task’s per-target
+          partial-failure behavior and the scoped degradation ACs introduced for workspace-scoped
+          targets.
+        created_at: 2026-04-03T16:41:18.128Z
+      - _ulid: 01KNA45X6CX4DG6FC6XY4XQYA8
+        author: Jacob Chapel
+        body: Fixed in f91001125. Degraded sync state is now keyed by integration target branch, and
+          _syncTarget only clears degraded state for the branch that just recovered. Successful
+          syncs on other active targets no longer mask an unrelated diverged/unsafe branch.
+        created_at: 2026-04-03T16:52:47.436Z
+    kind: blocker
+    resolved_at: 2026-04-03T16:52:56.924Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-03T16:41:32.395Z
+created_at: 2026-04-03T16:35:55.466Z
+updated_at: 2026-04-03T16:52:56.927Z
+notes: []

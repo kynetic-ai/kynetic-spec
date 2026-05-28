@@ -1,0 +1,239 @@
+_ulid: 01KQ9DNHEJF1XF62XY855Y2MJ9
+slugs: []
+title: Review task-align-ac-annotation-format-tests cycle 2
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran kspec validate --completeness --warnings-ok. It exited 0 due to warnings-ok, but
+      reported an introduced invalid AC annotation: unresolved target @my-spec at
+      tests/ac-annotation-identifier-format.test.ts:207."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate
+    created_at: 2026-04-28T07:01:36.664Z
+    completed_at: 2026-04-28T07:01:36.664Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exit code 0. Summary: 2301/2301 test suites passed; 8447/8452 tests passed with 5
+      skipped. Full log: /tmp/kspec-test-cache/01KQ9DKTK94ND4ZCX3C79HS9T3/98174a26820bec23.log"
+    name: npm test
+    required: true
+    runner: npm test
+    created_at: 2026-04-28T07:01:40.773Z
+    completed_at: 2026-04-28T07:01:40.773Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check 336a0ea4060ea5a7fa44574d1a67476c7bc36ef8...HEAD produced no whitespace errors.
+    name: git diff check
+    required: true
+    runner: git diff --check
+    created_at: 2026-04-28T07:01:44.005Z
+    completed_at: 2026-04-28T07:01:44.005Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md, src/parser/validate.ts,
+      tests/ac-annotation-identifier-format.test.ts, tests/ac-annotation-validation.test.ts,
+      kspec.config.yaml, prior review @01KQ9AZC. Commands run: kspec task get, kspec item get for
+      @ac-annotation-identifier-format and @test-annotation-sweep, kspec review get/for-task, git
+      diff, rg AC annotations, kspec validate --completeness --warnings-ok, git diff --check, npm
+      test. Claims verified: prior blocker was partially addressed by moving five intended AC
+      annotations into a non-excluded file, but validation still reports an unintended unresolved
+      annotation at line 207. Categories searched: correctness, AC coverage, test quality, fixture
+      false positives, integration with coverage exclude config."
+    name: review evidence log
+    required: true
+    runner: manual review
+    created_at: 2026-04-28T07:01:47.941Z
+    completed_at: 2026-04-28T07:01:47.941Z
+events:
+  - _ulid: 01KQ9DNHEJKEX27M4XPF3BP06N
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-28T06:50:46.098Z
+  - _ulid: 01KQ9DP3J2HCN6V1ERYNGZG9Z1
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-28T06:51:04.642Z
+  - _ulid: 01KQ9DR5KAZ5MN7RHJGSQSFHP2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQ9DR4BE4AMWF32DKYNT67VF
+    timestamp: 2026-04-28T06:52:12.266Z
+  - _ulid: 01KQ9DS39H51A5SKD9CQJPNFPD
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQ9DR4BE4AMWF32DKYNT67VF
+    timestamp: 2026-04-28T06:52:42.673Z
+  - _ulid: 01KQ9E9DZ2DQ2B4H250YBTTCKV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate completeness
+    timestamp: 2026-04-28T07:01:37.890Z
+  - _ulid: 01KQ9E9HZK5T3D01RJJ2ZSEXN5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-28T07:01:42.003Z
+  - _ulid: 01KQ9E9N9JTVSSTP5EQ2WX6R4J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: git diff check
+    timestamp: 2026-04-28T07:01:45.394Z
+  - _ulid: 01KQ9E9S46GXTWW2ERE5FXZ4XA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-04-28T07:01:49.318Z
+  - _ulid: 01KQ9E9WQ0MWK2ABGQM2V47B31
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-28T07:01:52.992Z
+  - _ulid: 01KQ9E9WQ0741FV12AFDWAN7RK
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-28T07:01:52.993Z
+  - _ulid: 01KQ9FGSVV12AQQA8HTQYTJJN3
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQ9DR4BE4AMWF32DKYNT67VF
+    timestamp: 2026-04-28T07:23:08.027Z
+  - _ulid: 01KQ9FH349GZ5H0C08QWM0YZDM
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQ9DR4BE4AMWF32DKYNT67VF
+    timestamp: 2026-04-28T07:23:17.514Z
+examined_commit: 1fdb1ea369cf04108846566b3b8ce0e5ce57096f
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQ93NF0V9VKZSSVYTA0W3Z8X"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQ9DR4BE4AMWF32DKYNT67VF
+    anchor:
+      type: code
+      commit: 1fdb1ea369cf04108846566b3b8ce0e5ce57096f
+      line_end: 207
+      line_start: 207
+      path: tests/ac-annotation-identifier-format.test.ts
+      side: head
+    entries:
+      - _ulid: 01KQ9DR4BE99V73SF5W27Y4296
+        author: Jacob Chapel
+        body: >-
+          MUST-FIX: This prose comment contains a literal coverage annotation string, so the real
+          completeness scanner treats it as an annotation for unresolved @my-spec. Evidence: ✓
+          Validation passed
+
+          ────────────────────────────────────────
+
+          Files checked: 1432
+
+          Items checked: 608
+
+          Tasks checked: 1424
+
+          Meta: 12 agents, 11 workflows, 11 conventions
+
+
+          Schema: OK
+
+          References: OK
+
+
+          Completeness warnings: 273
+            Missing own AC coverage: 233
+              ! @spec-item - Spec Item
+                Uncovered: ac-item-1, ac-item-2
+              ! @ulid-system - ULID Identifier System
+                Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+              ! @slug-system - Slug Alias System
+                Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+              ... and 230 more
+            Automation without spec: 1
+              ! @01KQ99Z7 - Fix meta catalog schema error in traits field
+                Task @01KQ99Z7 is automation: eligible but has no spec_ref - eligible tasks should have linked specs
+            Invalid AC annotations: 39
+              Unresolved targets: 3
+                ! Unresolved target: '@my-spec' cannot be resolved
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-align-ac-annotation-format-tests-01kq93nf-review/tests/ac-annotation-identifier-format.test.ts:207
+                ! Unresolved target: '@test-feature' cannot be resolved
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-align-ac-annotation-format-tests-01kq93nf-review/tests/e2e/fixtures/project-tests/coverage-test.test.ts:6
+                ! Unresolved target: '@test-trait' cannot be resolved
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-align-ac-annotation-format-tests-01kq93nf-review/tests/trait-ac-coverage.test.ts:158
+              Blanket refs (no coverage credit): 36
+                ! Blanket ref: '@cmd-clone-for-testing' without explicit ac-* ids does not count for coverage
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-align-ac-annotation-format-tests-01kq93nf-review/tests/clone-for-testing.test.ts:60
+                ! Blanket ref: '@cmd-clone-for-testing' without explicit ac-* ids does not count for coverage
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-align-ac-annotation-format-tests-01kq93nf-review/tests/clone-for-testing.test.ts:93
+                ! Blanket ref: '@cmd-clone-for-testing' without explicit ac-* ids does not count for coverage
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-align-ac-annotation-format-tests-01kq93nf-review/tests/clone-for-testing.test.ts:119
+                ... and 33 more reports  at this exact line. That reintroduces the same class of false-positive scanner noise the fix cycle was supposed to avoid; construct or reword the comment so non-fixture prose in this non-excluded file does not contain a literal  annotation.
+        created_at: 2026-04-28T06:52:10.990Z
+      - _ulid: 01KQ9DS207WN5C61DW22XKRB4R
+        author: Jacob Chapel
+        body: "Clarification: the blocker is specifically the literal annotation text in the prose comment.
+          Validation reports unresolved target @my-spec at
+          tests/ac-annotation-identifier-format.test.ts:207. Reword the comment or split the marker
+          string so this non-excluded file only exposes intentional real AC annotations."
+        created_at: 2026-04-28T06:52:41.351Z
+      - _ulid: 01KQ9FGRRGMRH8N4QH64FCJFPB
+        author: "@claude"
+        body: "Fixed: reworded the prose comment on line 207 to describe the parser behavior without
+          embedding a literal annotation pattern. The comment now says 'Parser should treat a
+          non-prefixed word like \"validate\" as noise, yielding a blanket ref' — no AC: @ref
+          pattern for the scanner to match. Unresolved targets dropped from 3 to 2 (remaining are
+          pre-existing @test-feature and @test-trait in other fixture files)."
+        created_at: 2026-04-28T07:23:06.896Z
+    kind: blocker
+    resolved_at: 2026-04-28T07:23:16.404Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: automated-reviewer
+    created_at: 2026-04-28T07:01:52.992Z
+created_at: 2026-04-28T06:50:46.098Z
+updated_at: 2026-04-28T07:23:16.404Z
+notes: []

@@ -1,0 +1,150 @@
+_ulid: 01KM4QQRPXBHVDWF83WFNXVG7S
+slugs: []
+title: Review fix-shared-checkout integration targeting
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test -- tests/dispatch-target-sync.test.ts
+      tests/dispatch-branch-push-lifecycle.test.ts passed (43 tests).
+    name: dispatch targeted tests
+    required: true
+    runner: npm
+    created_at: 2026-03-20T04:27:36.299Z
+    completed_at: 2026-03-20T04:27:36.299Z
+events:
+  - _ulid: 01KM4QQRPWNC31K2XPPEDNKCS4
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-20T04:23:27.197Z
+  - _ulid: 01KM4QR98ZRCY702RC3A28SNQN
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-20T04:23:44.159Z
+  - _ulid: 01KM4QZAR0X7E5YNWJA87X7FXN
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM4QZAGJDTSGYJ045T1JGE6R
+    timestamp: 2026-03-20T04:27:35.040Z
+  - _ulid: 01KM4QZBFR66FDWA5HWKM4Y3AX
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM4QZB73XMK870EFA4MSNYQE
+    timestamp: 2026-03-20T04:27:35.801Z
+  - _ulid: 01KM4QZC6SEWCSDJ59BMVP0WVH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: dispatch targeted tests
+    timestamp: 2026-03-20T04:27:36.537Z
+  - _ulid: 01KM4QZSS7TSWR3NK8S5FGMXRX
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-20T04:27:50.439Z
+  - _ulid: 01KM4QZSS76CF5PQAAK1YM29PE
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-20T04:27:50.439Z
+  - _ulid: 01KM4REB5K5K1DPV372SGW5081
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM4QZAGJDTSGYJ045T1JGE6R
+    timestamp: 2026-03-20T04:35:46.995Z
+  - _ulid: 01KM4REBVP116XJ0W65MCBP0Z0
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KM4QZAGJDTSGYJ045T1JGE6R
+    timestamp: 2026-03-20T04:35:47.702Z
+examined_commit: 44d11f272a18ce4c02be15bc1a33a12cb3fcc310
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM4PZRFGV4WZ5HPZ9VZ3HBDN"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM4QZAGJDTSGYJ045T1JGE6R
+    anchor:
+      type: code
+      commit: 44d11f272a18ce4c02be15bc1a33a12cb3fcc310
+      line_end: 1893
+      line_start: 1851
+      path: src/agent-runtime/workspace.ts
+      side: head
+    entries:
+      - _ulid: 01KM4QZAGJF7R879CFYQVX1PQ4
+        author: Jacob Chapel
+        body: "The new non-checked-out sync path skips checkout-coherence checks and updates refs/heads/
+          directly with update-ref. That is not confined to the shared checkout: if the integration
+          branch is checked out in any other worktree, Git will advance that worktree's branch
+          ref/HEAD without touching the shared checkout branch, which violates the mutation-scope
+          contract in AC-1/AC-2. I reproduced this with a separate worktree on dev: after
+          update-ref, the other worktree's HEAD moved from the old dev commit to the new one while
+          the shared checkout stayed on human-feature. This path needs an explicit safety guard for
+          'branch checked out elsewhere' (or a different implementation) plus regression coverage."
+        created_at: 2026-03-20T04:27:34.803Z
+      - _ulid: 01KM4REAY5QTVGXVMXQSXG7ZHD
+        author: Jacob Chapel
+        body: Fixed in commit e05f78fc53850b715197a28a285d793c6f56f310.
+          resolveDispatchIntegrationMutationScope() now refuses the non-checked-out fast-forward
+          path when Git reports the integration branch is checked out in another worktree, so
+          dispatch no longer uses update-ref in a topology that would advance a foreign worktree
+          HEAD. Added regression coverage in tests/dispatch-target-sync.test.ts for that exact
+          topology and verified the foreign worktree stays untouched.
+        created_at: 2026-03-20T04:35:46.757Z
+    kind: blocker
+    resolved_at: 2026-03-20T04:35:47.495Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KM4QZB73XMK870EFA4MSNYQE
+    entries:
+      - _ulid: 01KM4QZB73DQDH5R7QBCCVJX0M
+        author: Jacob Chapel
+        body: "Review evidence log\\n\\nFiles read: src/agent-runtime/dispatch.ts,
+          src/agent-runtime/workspace.ts, tests/dispatch-target-sync.test.ts,
+          tests/dispatch-branch-push-lifecycle.test.ts\\nCommands run: git diff 5c99aae..44d11f2,
+          kspec task get @01KM4PZRFGV4WZ5HPZ9VZ3HBDN, kspec review for-task
+          @01KM4PZRFGV4WZ5HPZ9VZ3HBDN, kspec validate, npm test --
+          tests/dispatch-target-sync.test.ts tests/dispatch-branch-push-lifecycle.test.ts, npm test,
+          ad-hoc git worktree/update-ref repro\\nClaims verified: targeted dispatch tests pass;
+          repository-wide kspec validate failures are pre-existing and unrelated; the new update-ref
+          path can mutate a branch checked out in another worktree\\nCategories searched:
+          correctness (found blocker), edge cases (other worktree on integration branch), error
+          handling (missing safety guard on isolated ff path), test quality/integration (missing
+          regression coverage for that topology)."
+        created_at: 2026-03-20T04:27:35.523Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-20T04:27:50.439Z
+created_at: 2026-03-20T04:23:27.197Z
+updated_at: 2026-03-20T04:35:47.495Z
+notes: []

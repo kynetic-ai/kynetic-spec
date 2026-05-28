@@ -1,0 +1,157 @@
+_ulid: 01KNA6G4GMNMBA7JK63WEP26MV
+slugs: []
+title: Review task-impl-push-path (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate exited 6 with only pre-existing repository warnings: orphaned skill
+      directory, orphaned specs, and invalid AC annotations outside this task; no task-specific
+      validation errors"
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-03T17:34:49.042Z
+    completed_at: 2026-04-03T17:34:49.042Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/dispatch-target-sync.test.ts
+      tests/dispatch-branch-push-lifecycle.test.ts tests/dispatch-degraded-state.test.ts: 12/12
+      suites, 69/69 tests passed"
+    name: dispatch targeted tests
+    required: true
+    runner: vitest
+    created_at: 2026-04-03T17:34:53.380Z
+    completed_at: 2026-04-03T17:34:53.380Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts,
+      tests/dispatch-target-sync.test.ts, tests/dispatch-branch-push-lifecycle.test.ts. Commands
+      run: kspec task get, kspec review for-task/get, git diff/stat/log, rg AC annotations, kspec
+      validate, npm test -- --fresh targeted dispatch suites. Claims verified: reviewer completion
+      now passes workspace.metadata.integrationTargetBranch into _pushIntegrationTargetAsync;
+      periodic fanout skips clean targets before mutation-scope resolution; per-branch in-progress
+      set allows cross-branch concurrency while serializing same-branch pushes. Categories searched:
+      correctness, edge cases, error handling, test quality, integration. Findings: none."
+    name: review evidence
+    required: false
+    runner: codex
+    created_at: 2026-04-03T17:38:41.638Z
+    completed_at: 2026-04-03T17:38:41.638Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Started full npm test from the review workspace twice, including a timeout-bounded run.
+      Neither produced a task-specific assertion failure before hanging/silence, which matches the
+      existing teardown-hang note on this task rather than a regression in the changed dispatch
+      paths.
+    name: npm test
+    required: false
+    runner: test-runner
+    created_at: 2026-04-03T17:39:16.084Z
+    completed_at: 2026-04-03T17:39:16.084Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Started full npm test from the review workspace twice, including a timeout-bounded run.
+      Neither produced a task-specific assertion failure before hanging/silence, consistent with the
+      existing full-suite teardown-hang note on this task rather than a changed-area regression.
+    name: npm test
+    required: false
+    runner: test-runner
+    created_at: 2026-04-03T17:39:23.570Z
+    completed_at: 2026-04-03T17:39:23.570Z
+events:
+  - _ulid: 01KNA6G4GM6TCBZPWP7WXR59SP
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-03T17:33:19.764Z
+  - _ulid: 01KNA6H3GZA03KTGJN4G50X8RY
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-03T17:33:51.520Z
+  - _ulid: 01KNA6JX2KNJXDP7J6N78GA95W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-03T17:34:50.451Z
+  - _ulid: 01KNA6K19XH2DWSHPBXVGPG1KZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: dispatch targeted tests
+    timestamp: 2026-04-03T17:34:54.782Z
+  - _ulid: 01KNA6T4FN8J1589KRJDVYZ69Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence
+    timestamp: 2026-04-03T17:38:47.413Z
+  - _ulid: 01KNA6V3JYEPDQSXKFGMS399R0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: npm test
+    timestamp: 2026-04-03T17:39:19.263Z
+  - _ulid: 01KNA6V9CZSG0RAMCRWSG35WDA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: npm test
+    timestamp: 2026-04-03T17:39:25.215Z
+  - _ulid: 01KNA6W9XRGQ5N5CVK242GAYJS
+    actor: codex@gpt-5
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-03T17:39:58.520Z
+  - _ulid: 01KNA6W9XR0CG5XAMC6ZYQMZ4X
+    actor: codex@gpt-5
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-03T17:39:58.520Z
+examined_commit: e54dfdb82cbd4c4d80d3c1826555d2f75d26a764
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN8T1A51JFRMW4F8W31KJ907"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@gpt-5
+    role: reviewer
+    created_at: 2026-04-03T17:39:58.519Z
+created_at: 2026-04-03T17:33:19.764Z
+updated_at: 2026-04-03T17:39:58.520Z
+notes: []

@@ -1,0 +1,135 @@
+_ulid: 01KRDM0XWQZYKYC3KWWEM17HZD
+slugs: []
+title: Review stabilize flaky file-lock concurrent write test
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/file-lock.test.ts: 21/21 tests passed."
+    name: file-lock targeted tests
+    required: true
+    runner: npm
+    created_at: 2026-05-12T08:26:30.182Z
+    completed_at: 2026-05-12T08:26:30.182Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh: 2425/2425 test suites passed; 9072 passed, 5 skipped of 9077 tests.
+      Full log /tmp/kspec-test-cache/01KRDKWQQEN01G2STVZ448FBEV/2233c2baff8f5394.log"
+    name: full test suite
+    required: true
+    runner: npm
+    created_at: 2026-05-12T08:26:34.011Z
+    completed_at: 2026-05-12T08:26:34.011Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate exits 6 due to repo warnings; kspec validate --warnings-ok exits 0.
+      Schema/references OK. Relevant warning noted: task @01KRD9FY has no spec_ref, while reviewed
+      behavior maps to @scoped-dispatch-shadow-serialization."
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-12T08:26:38.083Z
+    completed_at: 2026-05-12T08:26:38.083Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md; src/parser/file-lock.ts; tests/file-lock.test.ts; task
+      @01KRD9FY; spec @scoped-dispatch-shadow-serialization. Commands run: git
+      diff/stat/name/log/show; kspec task get; kspec review for-task/add/open/check; kspec item get
+      @scoped-dispatch-shadow-serialization; rg AC annotations; kspec validate; kspec validate
+      --warnings-ok; npm test -- --fresh tests/file-lock.test.ts; npm test -- --fresh. Claims
+      verified: worker root-cause claim checked against file-lock diff lines 126-139 and
+      checkStaleLock behavior; existing concurrent write regression test passed targeted and in full
+      suite. Categories searched: correctness, concurrency edge cases, stale-lock error handling,
+      test quality, spec/AC alignment, integration."
+    name: review evidence log
+    required: false
+    runner: codex
+    created_at: 2026-05-12T08:27:06.507Z
+    completed_at: 2026-05-12T08:27:06.507Z
+events:
+  - _ulid: 01KRDM0XWQ3SMK7SKVJMN4JJ65
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-12T08:14:30.295Z
+  - _ulid: 01KRDM2NQCE7N41EZSH159MMK5
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-12T08:15:27.468Z
+  - _ulid: 01KRDMPY5VKHP824RM3QVHAQJV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: file-lock targeted tests
+    timestamp: 2026-05-12T08:26:31.483Z
+  - _ulid: 01KRDMQ20SSG88TCAHZ6WWJKTJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-12T08:26:35.417Z
+  - _ulid: 01KRDMQ60BHGC5AD7J7WTKKAAK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-12T08:26:39.499Z
+  - _ulid: 01KRDMR1MZNSNC1W2VRA75127M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-12T08:27:07.807Z
+  - _ulid: 01KRDMS1ZA3HQ04XFKHECXP3V0
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-12T08:27:40.906Z
+  - _ulid: 01KRDMS1ZA0S9NG7JNB1F7C06M
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-12T08:27:40.906Z
+examined_commit: 866065b339c34190fb52f3673bffb90aac357365
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRD9FY2NX3EH2KR4493T6YYA"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-12T08:27:40.905Z
+created_at: 2026-05-12T08:14:30.295Z
+updated_at: 2026-05-12T08:27:40.906Z
+notes: []

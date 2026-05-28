@@ -1,0 +1,124 @@
+_ulid: 01KP8GN9SNHZMJJTPS7XRF3C08
+slugs: []
+title: Review @01KNXYJ4YKHSY076Q3CQ42C6CP (cycle 5)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran full suite twice: 2157/2157 suites passed, 7899 passed, 5 skipped, 0 failed on both
+      runs. Second run used cached results with unchanged repo state."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-15T12:18:27.198Z
+    completed_at: 2026-04-15T12:18:27.198Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation fails on pre-existing project-wide metadata/completeness issues unrelated to
+      this task, including .kspec/modules/meta.yaml traits schema mismatch and existing AC coverage
+      warnings; no task-specific validate regression found in the changed paths.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-15T12:18:29.971Z
+    completed_at: 2026-04-15T12:18:29.971Z
+events:
+  - _ulid: 01KP8GN9SM18YZB1VJAJB2XQK4
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-15T12:08:07.733Z
+  - _ulid: 01KP8H7YGZSC7YFE4FDC4YCE3N
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-15T12:18:18.783Z
+  - _ulid: 01KP8H816K03EPR7XDYJTZJSS7
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-15T12:18:21.523Z
+  - _ulid: 01KP8H816KFSCY235997F7KZ04
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-15T12:18:21.523Z
+  - _ulid: 01KP8H852D4NNEM73WVJ1QKYGT
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KP8H844EZ5SN6ZAWH3T7GJNT
+    timestamp: 2026-04-15T12:18:25.486Z
+  - _ulid: 01KP8H87P6CWJNRT1DX6Z3WYS1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-15T12:18:28.166Z
+  - _ulid: 01KP8H8ACJYBFAE55Y3RY892D6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-15T12:18:30.930Z
+examined_commit: 8e05644d232c45e5ba96eb698cbf311367634c03
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNXYJ4YKHSY076Q3CQ42C6CP"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KP8H844EZ5SN6ZAWH3T7GJNT
+    entries:
+      - _ulid: 01KP8H844EC70ATBV2RMS843GM
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          - Files read: src/cli/commands/init.ts, src/cli/commands/setup.ts, src/parser/shadow.ts,
+          src/schema/spec.ts, tests/derivable-default-module.test.ts, src/parser/validate.ts.
+
+          - Commands run: kspec task get @01KNXYJ4YKHSY076Q3CQ42C6CP; kspec review for-task
+          @01KNXYJ4YKHSY076Q3CQ42C6CP; kspec review get @01KP8F2JQ61DKVJFRQN7F8PD7Y; kspec item get
+          @derivable-default-module; kspec validate; git diff
+          plan/plan-init-setup-and-upgrade-rough-edges/01knvahv..HEAD; direct CLI repros for
+          init/item get and setup after slug rename; npm test twice.
+
+          - Claims verified: init creates a resolvable @main module item; setup reports a renamed
+          default module by following manifest.default_module ULID rather than first-module load
+          order; prior review blocker about multi-module misidentification is fixed.
+
+          - Categories searched: correctness, edge cases, error handling, test quality, integration.
+          No blocking issues found in this snapshot.
+        created_at: 2026-04-15T12:18:24.526Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-04-15T12:18:21.523Z
+created_at: 2026-04-15T12:08:07.733Z
+updated_at: 2026-04-15T12:18:29.971Z
+notes: []

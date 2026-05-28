@@ -1,0 +1,133 @@
+_ulid: 01KM6BJQXPTK0ZH5WBHAYJA6N6
+slugs: []
+title: Review @01KM6AR90T6NH9Q6RWF35J63DD
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Project-wide validation errors are present in this snapshot before considering the diff:
+      3 unresolved references in .kspec/modules/meta.yaml plus existing completeness warnings. These
+      appear unrelated to the changed review status-filter code but were observed during
+      deterministic review checks."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-20T19:33:06.821Z
+    completed_at: 2026-03-20T19:33:06.821Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed locally in reviewer snapshot: 296 files, 6690 tests passed, 3 skipped."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-20T19:33:09.790Z
+    completed_at: 2026-03-20T19:33:09.790Z
+events:
+  - _ulid: 01KM6BJQXPAAEWE40HTCSXVP4C
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-20T19:29:28.502Z
+  - _ulid: 01KM6BKSJTAAEG3RPXQ9EJ1MN5
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-20T19:30:02.971Z
+  - _ulid: 01KM6BN5T48AAZ159DVYTCT4P9
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM6BN5C0ZDF8K8139P4MEQCN
+    timestamp: 2026-03-20T19:30:48.260Z
+  - _ulid: 01KM6BSDCGFE8TAMRFJX4NAVQH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-03-20T19:33:07.088Z
+  - _ulid: 01KM6BSE57E53MXZV4615GVV5Q
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-20T19:33:07.879Z
+  - _ulid: 01KM6BSE57FNV0TAYS3NC9QX2D
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-20T19:33:07.879Z
+  - _ulid: 01KM6BSG8SEMSNER9D7A8JGCBJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-20T19:33:10.041Z
+  - _ulid: 01KM6CWF4V3ZNJFBJNXMRH91YV
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KM6BN5C0ZDF8K8139P4MEQCN
+    timestamp: 2026-03-20T19:52:15.772Z
+examined_commit: 9af2a866525c2f5b72dac5439c638bb3943c84d5
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6AR90T6NH9Q6RWF35J63DD"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM6BN5C0ZDF8K8139P4MEQCN
+    anchor:
+      type: code
+      commit: 9af2a866525c2f5b72dac5439c638bb3943c84d5
+      line_end: 153
+      line_start: 150
+      path: packages/daemon/src/routes/reviews.ts
+      side: head
+    entries:
+      - _ulid: 01KM6BN5C0QR1MRA7HFK1Y8198
+        author: Jacob Chapel
+        body: "This changes the backend contract for GET /api/reviews: omitting status now returns every
+          lifecycle state instead of defaulting to open reviews. That violates
+          @review-records-daemon-api ac-1 (and the web UI requirement that the list defaults to
+          open) while only masking the validation bug for callers that omit the param. The task can
+          still be fixed without this regression by either allowing an explicit all-status sentinel
+          through validation or preserving the existing open-by-default daemon behavior and changing
+          only the callers that need all reviews."
+        created_at: 2026-03-20T19:30:47.809Z
+      - _ulid: 01KM6CWEWXGGH6M31F5B4F1JFZ
+        author: "@claude"
+        body: Fixed in commit cd1cae22e. Restored the open-by-default backend contract — no status param now
+          defaults to ['open'] as before. UI callers that need all lifecycle states now send all
+          four valid statuses explicitly (draft, open, closed, archived) instead of omitting the
+          param or using the invalid 'all' sentinel.
+        created_at: 2026-03-20T19:52:15.517Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-20T19:33:07.878Z
+created_at: 2026-03-20T19:29:28.502Z
+updated_at: 2026-03-20T19:52:15.517Z
+notes: []

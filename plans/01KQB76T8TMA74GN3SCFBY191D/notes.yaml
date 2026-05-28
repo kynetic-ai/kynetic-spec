@@ -1,0 +1,37 @@
+notes:
+  - _ulid: 01KQB7MYW5A9GDS2EJ5R43VA3E
+    content: "Address review @01KQB7D6: remove internal update wording, split bulk invalid-operation AC,
+      and make delimiter contract exact"
+    author: Jacob Chapel
+    created_at: 2026-04-28T23:44:04.485Z
+  - _ulid: 01KQB7ZYWMVHX8BK0TCJANCMAD
+    content: "Address review @01KQB7QX: reword allow-unknown and bulk dry-run ACs as observable AC-ID
+      command behavior"
+    author: Jacob Chapel
+    created_at: 2026-04-28T23:50:04.949Z
+  - _ulid: 01KQB9J2H8CQCE59CKC1QAC6ZE
+    content: |-
+      The current implementation has two relevant validation asymmetries:
+
+      - Single `kspec item patch` validates patch data before dry-run and before
+        writing, but `kspec item patch --bulk --dry-run` currently validates only the
+        operation shape before reporting success.
+      - `parseACAnnotationLine` extracts `ac-*` substrings before validating the
+        shared AC ID pattern, so punctuation-adjacent malformed tokens can be
+        shortened into valid-looking prefixes.
+
+      This plan keeps the original AC ID normalization plan closed and treats these
+      as follow-up hardening. Spec updates are separated from implementation so agents
+      work from explicit ACs rather than chat history. The implementation tasks are
+      parallel after the spec-update task because patch validation and annotation
+      parsing touch different codepaths. The final gate depends on both behavior
+      changes so status updates and validation evidence happen after both surfaces are
+      covered.
+    author: Jacob Chapel
+    created_at: 2026-04-29T00:17:27.080Z
+  - _ulid: 01KQG85WHDKMAM598D57H2F9GS
+    content: "Hermes closure audit: all derived AC ID hardening tasks are completed; shared AC ID
+      validation, patch validation, strict annotation token handling, and final gate coverage are
+      implemented and focused AC tests passed, so the plan intent is satisfied."
+    author: Jacob Chapel
+    created_at: 2026-04-30T22:29:31.309Z

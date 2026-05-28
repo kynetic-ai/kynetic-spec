@@ -1,0 +1,282 @@
+_ulid: 01KQY802VM6SV93T3MF6XBXE72
+slugs: []
+title: Review shared daemon endpoint resolver (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh run: npm test -- --fresh. Result: 2352 suites passed; 8617 tests passed; 5 skipped;
+      duration 1895.4s."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-06T09:07:23.157Z
+    completed_at: 2026-05-06T09:07:23.157Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate exited 6: schema/references OK, warnings only. Existing warnings include
+      deprecated references, alignment warnings, missing AC coverage, and invalid historical
+      annotations."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-06T09:07:42.540Z
+    completed_at: 2026-05-06T09:07:42.540Z
+events:
+  - _ulid: 01KQY802VK9CSGJGAEV33QTXMP
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-06T08:55:43.219Z
+  - _ulid: 01KQY80QN4CAY87NJ9C8PKKVJD
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-06T08:56:04.516Z
+  - _ulid: 01KQY8N5D2EQPM8QH9P51YV3X4
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQY8N475SHSHDX7T5SR2TBKQ
+    timestamp: 2026-05-06T09:07:13.954Z
+  - _ulid: 01KQY8N8STMSP4EKZEN4Z5N89H
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQY8N7KK3JN4CSV1JHEYN3WB
+    timestamp: 2026-05-06T09:07:17.434Z
+  - _ulid: 01KQY8NC5JJCFW4B10P002YDS9
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQY8NB0P6HDVKGFQAQH9BQYW
+    timestamp: 2026-05-06T09:07:20.882Z
+  - _ulid: 01KQY8NFHYT8SGTACREKEMT5ET
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-06T09:07:24.350Z
+  - _ulid: 01KQY8P2GPCK96ED7FSVCGVV0K
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-05-06T09:07:43.767Z
+  - _ulid: 01KQY8P5W1MZH86MHR29NV1RND
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KQY8P4QC9Q47DADGHCCFY4D0
+    timestamp: 2026-05-06T09:07:47.201Z
+  - _ulid: 01KQY8PSVS00D82B4KX67Q109Z
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-06T09:08:07.673Z
+  - _ulid: 01KQY8PSVTKP8CQ8VAN7MFQ976
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-06T09:08:07.674Z
+  - _ulid: 01KQYD8PM37P6PJHD6F7WVKAW0
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQY8N475SHSHDX7T5SR2TBKQ
+    timestamp: 2026-05-06T10:27:48.483Z
+  - _ulid: 01KQYD93GJX112Z7RF1PY6444G
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQY8N7KK3JN4CSV1JHEYN3WB
+    timestamp: 2026-05-06T10:28:01.682Z
+  - _ulid: 01KQYD9M11DB522GXF2244ESKF
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQY8NB0P6HDVKGFQAQH9BQYW
+    timestamp: 2026-05-06T10:28:18.593Z
+  - _ulid: 01KQYD9YKDYMSWCS7QEZMRF1R1
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQY8N475SHSHDX7T5SR2TBKQ
+    timestamp: 2026-05-06T10:28:29.421Z
+  - _ulid: 01KQYDA43M3PNGGN5WGN6A9KF8
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQY8N7KK3JN4CSV1JHEYN3WB
+    timestamp: 2026-05-06T10:28:35.060Z
+  - _ulid: 01KQYDA9T6WWSG889DTZSQH4V0
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQY8NB0P6HDVKGFQAQH9BQYW
+    timestamp: 2026-05-06T10:28:40.902Z
+examined_commit: d64e038c3b6cb090a8b4e199e212200cc9448da0
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQWZZH7R9W7WKATZXFB61MPC"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQY8N475SHSHDX7T5SR2TBKQ
+    anchor:
+      type: code
+      commit: d64e038c3b6cb090a8b4e199e212200cc9448da0
+      line_end: 25
+      line_start: 17
+      path: packages/web-ui/src/lib/constants.ts
+      side: head
+    entries:
+      - _ulid: 01KQY8N475R1RGSK6EMZFZCPBR
+        author: Jacob Chapel
+        body: "MUST-FIX: @daemon-network-endpoint-contract ac-clients-use-metadata still excludes the web UI
+          development client. In dev mode the web UI still constructs http://localhost:3456 and
+          ws://localhost:3456 directly instead of using the daemon-advertised api_url/ws_url or at
+          least the shared resolved endpoint. This violates the AC's explicit web UI development
+          client case and reintroduces the original localhost resolver drift for browser clients."
+        created_at: 2026-05-06T09:07:12.741Z
+      - _ulid: 01KQYD8NDQTVKQQXY8CDJ5KSZK
+        author: "@claude"
+        body: Fixed. Added resolveDevDaemonEndpoint() in src/daemon/endpoint.ts and wired it into
+          packages/web-ui/vite.config.ts via Vite's define{} block. The dev bundle now reads
+          VITE_KSPEC_DAEMON_API_URL / VITE_KSPEC_DAEMON_WS_URL (populated from daemon-advertised
+          metadata at dev-server start, with 127.0.0.1:3456 fallback when no daemon state exists).
+          packages/web-ui/src/lib/constants.ts uses the injected URLs in dev mode instead of the
+          hardcoded http://localhost:3456 / ws://localhost:3456. New tests in
+          tests/web-ui/dev-server-daemon-endpoint.test.ts cover metadata-present, legacy-port
+          fallback, no-state default, metadata-wins-over-legacy, and constants module integration
+          with stubbed env vars.
+        created_at: 2026-05-06T10:27:47.254Z
+    kind: blocker
+    resolved_at: 2026-05-06T10:28:28.166Z
+    resolved_by: "@claude"
+  - _ulid: 01KQY8N7KK3JN4CSV1JHEYN3WB
+    anchor:
+      type: code
+      commit: d64e038c3b6cb090a8b4e199e212200cc9448da0
+      line_end: 442
+      line_start: 414
+      path: src/cli/commands/serve.ts
+      side: head
+    entries:
+      - _ulid: 01KQY8N7KM0QKA9CTT61QMV5W6
+        author: Jacob Chapel
+        body: 'MUST-FIX: external binding warnings are not visible for detached daemon starts. The daemon
+          emits the warning inside packages/daemon/src/server.ts, but serve start --detach spawns
+          the child with stdio: "ignore" and the parent only prints PID/port. With daemon.host set
+          to 0.0.0.0 or another non-loopback host, the common lifecycle path starts successfully
+          without surfacing the warning required by @daemon-network-endpoint-contract
+          ac-external-binding-warning, @config-daemon ac-host-config, and @trait-localhost-security
+          ac-external-warning.'
+        created_at: 2026-05-06T09:07:16.212Z
+      - _ulid: 01KQYD92ASBGF3B120YJQ6SRS1
+        author: "@claude"
+        body: "Fixed. Surfacing the external-binding warning from the parent CLI process in
+          src/cli/commands/serve.ts so it's visible even when serve start --detach spawns the child
+          with stdio: 'ignore'. Two emit points: (1) startServer() warns before spawning when
+          config.daemon.host is non-loopback; (2) statusServer() warns when reporting a non-loopback
+          bind. warn() routes to stderr in structured output modes. Three new behavioral tests in
+          tests/cli-serve.test.ts pre-configure daemon.host: 0.0.0.0 and assert the warning appears
+          in stderr for both serve start --detach and serve status."
+        created_at: 2026-05-06T10:28:00.472Z
+    kind: blocker
+    resolved_at: 2026-05-06T10:28:33.783Z
+    resolved_by: "@claude"
+  - _ulid: 01KQY8NB0P6HDVKGFQAQH9BQYW
+    anchor:
+      type: code
+      commit: d64e038c3b6cb090a8b4e199e212200cc9448da0
+      line_end: 699
+      line_start: 699
+      path: packages/daemon/src/server.ts
+      side: head
+    entries:
+      - _ulid: 01KQY8NB0P7W6MGYPPXQY2AX8Z
+        author: Jacob Chapel
+        body: "MUST-FIX: @daemon-network-endpoint-contract ac-default-ipv6-fallback is not implemented. The
+          spec says that when default 127.0.0.1 binding fails because IPv4 loopback is unavailable,
+          daemon startup retries on ::1 and advertises bracketed IPv6 URLs. createServer resolves
+          one endpoint and calls app.listen once with endpoint.bindHost, with no catch/retry path
+          that switches to ::1 or rewrites metadata. The only tests annotated for this AC in
+          tests/daemon-endpoint.test.ts check URL formatting for an explicit ::1 host, so they would
+          still pass if startup never retries."
+        created_at: 2026-05-06T09:07:19.702Z
+      - _ulid: 01KQYD9JVFCW3PD3KME2JZHC3S
+        author: "@claude"
+        body: "Fixed. Added probeBindAvailable() + selectStartupBindHost() to src/daemon/endpoint.ts. Daemon
+          startup in packages/daemon/src/server.ts now probes the resolved bind host before
+          app.listen() — when the default IPv4 loopback is unavailable AND the user did not
+          explicitly configure a host (gated by config.daemon.host_explicitly_configured, forwarded
+          via the new --host-explicit CLI flag), bind switches to ::1 and metadata advertises
+          bracketed IPv6 URLs. Explicit config disables fallback so configured 127.0.0.1 surfaces a
+          real bind error. Worked around an @elysiajs/node bug (verified at
+          node_modules/@elysiajs/node/dist/cjs/index.js:906) that constructs new
+          URL('http://::1:port') without bracketing — globalThis.URL is patched only for the
+          synchronous app.listen() call. Behavioral tests: tests/daemon-endpoint.test.ts adds 6 unit
+          tests for probe + selection logic (free port, taken port, port release, default-IPv4 path,
+          fallback path, explicit-config path, end-to-end resolveDaemonEndpoint composition). The
+          decisive test is in tests/cli-serve.test.ts: it pre-binds 127.0.0.1:PORT, spawns the real
+          daemon detached, then verifies the daemon is reachable on [::1]:PORT/api/health AND
+          daemon.connection.json contains bind_host: '::1', api_url: 'http://[::1]:PORT', ws_url:
+          'ws://[::1]:PORT/ws'. This test would fail if startup never retried or if metadata still
+          pointed at 127.0.0.1."
+        created_at: 2026-05-06T10:28:17.390Z
+    kind: blocker
+    resolved_at: 2026-05-06T10:28:39.609Z
+    resolved_by: "@claude"
+  - _ulid: 01KQY8P4QC9Q47DADGHCCFY4D0
+    entries:
+      - _ulid: 01KQY8P4QDGJ401TG1D9M4DR30
+        author: Jacob Chapel
+        body: "Evidence log: Files read: AGENTS.md supplied in prompt, kspec-agents.md, task/spec context
+          for @daemon-network-endpoint-contract and @config-daemon, prior review @01KQY453,
+          src/daemon/endpoint.ts, packages/daemon/src/server.ts, src/cli/daemon-proxy.ts,
+          src/cli/commands/{serve,agent,event,schedule,task}.ts,
+          src/parser/{config,daemon-status}.ts, packages/web-ui/src/lib/constants.ts,
+          tests/daemon-endpoint.test.ts, tests/cli-daemon-proxy.test.ts, tests/cli-serve.test.ts,
+          tests/parser/{config,daemon-config}.test.ts. Commands run: git
+          diff/stat/name-only/check/log, rg for endpoint consumers and AC annotations, kspec item
+          get, kspec review for-task/get/add/open, kspec validate, npm test -- --fresh. Claims
+          verified: prior blockers for metadata write, bind host, and CLI client metadata use were
+          checked against code and tests; npm test claim verified by fresh full run. Categories
+          searched: correctness, AC coverage, edge cases, external binding warnings, client
+          integration, test quality, and source-scanning patterns."
+        created_at: 2026-05-06T09:07:46.029Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-06T09:08:07.673Z
+created_at: 2026-05-06T08:55:43.220Z
+updated_at: 2026-05-06T10:28:39.609Z
+notes: []

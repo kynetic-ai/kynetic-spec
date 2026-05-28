@@ -1,0 +1,259 @@
+_ulid: 01KMRM4KYYE4VRXCTGC68XBD5N
+slugs: []
+title: Review task-cli-proxy-routing
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed in this workspace: 1957/1957 suites passed, 7029/7034 tests passed, 5 skipped, 0
+      failed. Wall clock 4m11s."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-27T21:51:31.845Z
+    completed_at: 2026-03-27T21:51:31.845Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 6 with repo-baseline warnings unrelated to this task (orphaned specs/skills and
+      existing AC annotation warnings); no validation errors.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-27T21:51:33.434Z
+    completed_at: 2026-03-27T21:51:33.434Z
+events:
+  - _ulid: 01KMRM4KYXNPRGVE4B2TCV7K2Q
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T21:45:22.653Z
+  - _ulid: 01KMRM558TRKF34TMYRSDPQRJY
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T21:45:40.378Z
+  - _ulid: 01KMRMEWY23HK08PHEWADQA50K
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMRMEWE1MPQH2JDQ701J7XW1
+    timestamp: 2026-03-27T21:50:59.522Z
+  - _ulid: 01KMRMF544PD8FD271KEF8SMFY
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMRMF4M0PVZ6YCTWRVKV194W
+    timestamp: 2026-03-27T21:51:07.908Z
+  - _ulid: 01KMRMFHF7MMB6833JJBYSCFHJ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMRMFH00VV40230QPQWVJM4G
+    timestamp: 2026-03-27T21:51:20.551Z
+  - _ulid: 01KMRMFX094G5HFTSRZKH9VAH6
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-27T21:51:32.361Z
+  - _ulid: 01KMRMFYH4H63SAHVP19DENKPW
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-03-27T21:51:33.925Z
+  - _ulid: 01KMRMGAYCBAMCBXAVVBW475BP
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMRMGAE39BKNZG75928KSHMZ
+    timestamp: 2026-03-27T21:51:46.636Z
+  - _ulid: 01KMRMGMM0W7143HCK55DW1M7F
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-27T21:51:56.545Z
+  - _ulid: 01KMRMGMM1HEHB0K54QTBBGA95
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T21:51:56.545Z
+  - _ulid: 01KMRMHDZDDRQ6WFB06Z9FM6QH
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMRMEWE1MPQH2JDQ701J7XW1
+    timestamp: 2026-03-27T21:52:22.509Z
+  - _ulid: 01KMRMHFF5KKK680N9B2JCPG03
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMRMEWE1MPQH2JDQ701J7XW1
+    timestamp: 2026-03-27T21:52:24.037Z
+  - _ulid: 01KMRNAPJSY73PHVE594M467TB
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMRMF4M0PVZ6YCTWRVKV194W
+    timestamp: 2026-03-27T22:06:10.521Z
+  - _ulid: 01KMRNAZ7HNSZPS88Q76A6V7C2
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMRMF4M0PVZ6YCTWRVKV194W
+    timestamp: 2026-03-27T22:06:19.377Z
+  - _ulid: 01KMRNBAS3FP84YS9S8PQ55X9V
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMRMFH00VV40230QPQWVJM4G
+    timestamp: 2026-03-27T22:06:31.203Z
+  - _ulid: 01KMRNBJP716VKJN5TNP9FN76Q
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMRMFH00VV40230QPQWVJM4G
+    timestamp: 2026-03-27T22:06:39.303Z
+examined_commit: f49cb5287187d1fe85c0b991136206dfae17d9c7
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMMB3VRRVWNQFKPPP4WR0TK6"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMRMEWE1MPQH2JDQ701J7XW1
+    anchor:
+      type: code
+      commit: f49cb5287187d1fe85c0b991136206dfae17d9c7
+      line_end: 234
+      line_start: 232
+      path: src/cli/index.ts
+      side: head
+    entries:
+      - _ulid: 01KMRMEWE2ZA3SJ144MSEAKPM2
+        author: "@claude"
+        body: The force-proxy AC is specified as a  flag, but this snapshot only defines  here. Running  in
+          this workspace returns , so the documented/spec force-proxy path is not actually
+          available. That means ac-force-proxy is still unmet, and the new tests are asserting the
+          renamed flag instead of the required CLI surface.
+        created_at: 2026-03-27T21:50:59.010Z
+      - _ulid: 01KMRMHDFVMZD9CE77JJVA08NC
+        author: "@claude"
+        body: Superseded by the adjacent blocker thread on the same lines. This duplicate was created by a
+          malformed shell-escaped comment body during review recording.
+        created_at: 2026-03-27T21:52:22.010Z
+    kind: blocker
+    resolved_at: 2026-03-27T21:52:23.534Z
+    resolved_by: "@claude"
+  - _ulid: 01KMRMF4M0PVZ6YCTWRVKV194W
+    anchor:
+      type: code
+      commit: f49cb5287187d1fe85c0b991136206dfae17d9c7
+      line_end: 234
+      line_start: 232
+      path: src/cli/index.ts
+      side: head
+    entries:
+      - _ulid: 01KMRMF4M0X7MFJQC6YGY89ZBQ
+        author: "@claude"
+        body: "The force-proxy AC is specified as a --daemon flag, but this snapshot only defines
+          --require-daemon here. Running ./node_modules/.bin/tsx src/cli/index.ts task list --daemon
+          in this workspace returns error: unknown option --daemon, so the documented/spec
+          force-proxy path is not actually available. That means ac-force-proxy is still unmet, and
+          the new tests are asserting the renamed flag instead of the required CLI surface."
+        created_at: 2026-03-27T21:51:07.392Z
+      - _ulid: 01KMRNAP1GW8BF6N60W22Z4WKF
+        author: "@claude"
+        body: "Fixed: Renamed global --require-daemon to --daemon per spec ac-force-proxy. To resolve the
+          Commander namespace collision with serve start's -d/--daemon (daemonize), renamed that
+          subcommand option to -d/--detach. The -d shorthand is preserved for backward
+          compatibility. All tests updated: E2E proxy test now uses --daemon, serve tests use
+          --detach. Build and full test suite pass (7030 tests)."
+        created_at: 2026-03-27T22:06:09.968Z
+    kind: blocker
+    resolved_at: 2026-03-27T22:06:18.835Z
+    resolved_by: "@claude"
+  - _ulid: 01KMRMFH00VV40230QPQWVJM4G
+    anchor:
+      type: code
+      commit: f49cb5287187d1fe85c0b991136206dfae17d9c7
+      line_end: 167
+      line_start: 158
+      path: src/cli/daemon-proxy.ts
+      side: head
+    entries:
+      - _ulid: 01KMRMFH00FXFCETJNT1F8EFJM
+        author: "@claude"
+        body: "ensureProjectRegistered issues an unbounded fetch before proxyCommand starts its command
+          timeout logic. If /api/projects stalls after the daemon passes health detection, the CLI
+          hangs indefinitely instead of hitting the read fallback or mutation error paths required
+          by the timeout ACs. I reproduced that in this workspace with a local HTTP server that
+          hangs only on /api/projects: a Promise.race returned timed-out-waiting after 1.5s while
+          proxyCommand was still pending, which shows the timeout guard never engaged."
+        created_at: 2026-03-27T21:51:20.064Z
+      - _ulid: 01KMRNBA7YEPHT2369R2ZKDE1P
+        author: "@claude"
+        body: "Fixed: Added REGISTRATION_TIMEOUT_MS (5s) with AbortController to ensureProjectRegistered().
+          The fetch now has a signal-based timeout that aborts if /api/projects stalls. Since
+          registration is non-fatal (the command API middleware auto-registers via X-Kspec-Dir
+          header), the timeout catch is silent and proxyCommand proceeds to the actual command
+          routing with its own timeout logic. Added a unit test that verifies proxyCommand completes
+          within bounded time when /api/projects hangs."
+        created_at: 2026-03-27T22:06:30.654Z
+    kind: blocker
+    resolved_at: 2026-03-27T22:06:38.803Z
+    resolved_by: "@claude"
+  - _ulid: 01KMRMGAE39BKNZG75928KSHMZ
+    entries:
+      - _ulid: 01KMRMGAE4QN77VQJMFA6QD49Q
+        author: "@claude"
+        body: "Evidence log. Files read: src/cli/daemon-proxy.ts, src/cli/index.ts,
+          tests/cli-daemon-proxy.test.ts, tests/helpers/mock-daemon.cjs,
+          tests/daemon-command-api.test.ts, src/cli/commands/task.ts, package.json, kspec-agents.md,
+          .agents/skills/review-gates/SKILL.md. Commands run: git diff/stat, kspec task get, kspec
+          review for-task, kspec item/spec context via task get, kspec validate, rg AC annotations
+          and command API references, ./node_modules/.bin/tsx src/cli/index.ts --help,
+          ./node_modules/.bin/tsx src/cli/index.ts task list --daemon, ./node_modules/.bin/tsx
+          src/cli/index.ts task list --require-daemon, npm test, and a local proxyCommand
+          reproduction against a hanging /api/projects server. Claims verified: the daemon command
+          API payload shape matches {command,args}; npm test passes; the CLI does reject --daemon;
+          project-registration stall bypasses proxy timeout handling. Categories searched:
+          correctness found 2 blockers; edge cases found timeout hang on registration; error
+          handling found incorrect force-proxy surface/guidance; test quality found tests asserting
+          the renamed flag instead of the specified one; integration checked against the existing
+          daemon command API contract."
+        created_at: 2026-03-27T21:51:46.116Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-27T21:51:56.544Z
+created_at: 2026-03-27T21:45:22.654Z
+updated_at: 2026-03-27T22:06:38.803Z
+notes: []

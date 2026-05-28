@@ -1,0 +1,73 @@
+_ulid: 01KMH26WVJN5PFB7Y8DBE015DG
+slugs: []
+title: Review task-readtestoutput-medium-batch-2
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 6828 tests passed (301 test files, 3 skipped). No regressions.
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-24T23:17:39.588Z
+    completed_at: 2026-03-24T23:17:39.588Z
+events:
+  - _ulid: 01KMH26WVJFMHS6NRXM18EWJM7
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-24T23:17:21.906Z
+  - _ulid: 01KMH275KX7AYY3BP67BNP7G7Z
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-24T23:17:30.877Z
+  - _ulid: 01KMH27EGWZM6E3DBKS2F0DAAV
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-24T23:17:39.996Z
+  - _ulid: 01KMH28S7WQM1EPBAN577DY0B9
+    actor: agent@dispatch
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-24T23:18:23.740Z
+  - _ulid: 01KMH28S7WBCVVKHBNRSSGF7YB
+    actor: agent@dispatch
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-24T23:18:23.740Z
+examined_commit: fe2d058cc72fde6f6fd9678b2f828851760f3d77
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-readtestoutput-medium-batch-2"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: agent@dispatch
+    role: reviewer
+    created_at: 2026-03-24T23:18:23.740Z
+created_at: 2026-03-24T23:17:21.906Z
+updated_at: 2026-03-24T23:18:23.740Z
+notes: []

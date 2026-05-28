@@ -1,0 +1,232 @@
+_ulid: 01KQBKQ3Y1BHEG9PRSWDJTBDPQ
+slugs: []
+title: Review centralize AC ID patch validation cycle 4
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npx oxlint src/cli/commands/item.ts src/parser/yaml.ts
+      tests/ac-id-patch-validation.test.ts exits 1; branch-introduced error: src/parser/yaml.ts:18
+      imports AcIdSchema but it is unused."
+    name: changed-file lint
+    required: true
+    runner: oxlint
+    created_at: 2026-04-29T03:19:34.652Z
+    completed_at: 2026-04-29T03:19:34.652Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run typecheck: tsc --noEmit completed with exit 0"
+    name: typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-04-29T03:19:50.775Z
+    completed_at: 2026-04-29T03:19:50.775Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate: schema/references/skills OK; command exited 6 due existing project
+      warnings (deprecated refs, orphaned/status alignment warnings, missing AC coverage, fixture
+      annotation targets)."
+    name: kspec validate
+    required: false
+    runner: kspec validate
+    created_at: 2026-04-29T03:19:54.250Z
+    completed_at: 2026-04-29T03:19:54.250Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check 16b161551bb2c8055be06a503b1701ba756c1dea...HEAD completed with exit 0
+    name: diff check
+    required: false
+    runner: git
+    created_at: 2026-04-29T03:19:57.587Z
+    completed_at: 2026-04-29T03:19:57.587Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2323/2323 suites, 8506/8511 tests passed, 5 skipped, duration 1894.7s.
+      Log: /tmp/kspec-test-cache/01KQBKNDZDAZBWE0HR92D4ANWP/7af37b395b8ec079.log"
+    name: npm test -- --fresh
+    required: true
+    runner: npm test
+    created_at: 2026-04-29T03:25:07.025Z
+    completed_at: 2026-04-29T03:25:07.025Z
+events:
+  - _ulid: 01KQBKQ3Y1K10QPKD0D241TXRZ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-29T03:14:58.113Z
+  - _ulid: 01KQBKQRN26EGRQYKZJ0A9SVR4
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-29T03:15:19.331Z
+  - _ulid: 01KQBKZFS9RH0PETKR0V5M49KD
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQBKZEP2AJNQXWC3QED1R8GE
+    timestamp: 2026-04-29T03:19:32.393Z
+  - _ulid: 01KQBKZK63RF7E6MAE0JZP7PCD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: changed-file lint
+    timestamp: 2026-04-29T03:19:35.875Z
+  - _ulid: 01KQBM02XX63H8TFZ3KB4K54GB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-04-29T03:19:51.998Z
+  - _ulid: 01KQBM06A3B2B6R5BAWDEWWQ52
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-29T03:19:55.460Z
+  - _ulid: 01KQBM09FSXWQYMZJX7D54MZSX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff check
+    timestamp: 2026-04-29T03:19:58.713Z
+  - _ulid: 01KQBM9MGVRMH028SP9S9R5FNS
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KQBM9KDJEB5T51711XG8H6CR
+    timestamp: 2026-04-29T03:25:04.923Z
+  - _ulid: 01KQBM9QPGESCFVYESWWJNG202
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-04-29T03:25:08.177Z
+  - _ulid: 01KQBMA30E9BZK4M9H896FPZ1D
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-29T03:25:19.758Z
+  - _ulid: 01KQBMA30E7V2TKJ8JX379TKJM
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-29T03:25:19.758Z
+  - _ulid: 01KQBN4YNPF046Q4WTVQX2JW0A
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQBKZEP2AJNQXWC3QED1R8GE
+    timestamp: 2026-04-29T03:40:00.054Z
+  - _ulid: 01KQBN541Z7MSWF7JC2BV82PJA
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQBKZEP2AJNQXWC3QED1R8GE
+    timestamp: 2026-04-29T03:40:05.567Z
+  - _ulid: 01KQBN5F6WKC9FKV5M0A8ZWQSP
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQBM9KDJEB5T51711XG8H6CR
+    timestamp: 2026-04-29T03:40:16.988Z
+  - _ulid: 01KQBN5MGDVSGAGJMHB6JA648W
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQBM9KDJEB5T51711XG8H6CR
+    timestamp: 2026-04-29T03:40:22.414Z
+examined_commit: 903835f41e3af9329fd287481534e664c7dc6d96
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQB9J1KRGHYS1ZAJF2D91NTB"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQBKZEP2AJNQXWC3QED1R8GE
+    anchor:
+      type: code
+      commit: 903835f41e3af9329fd287481534e664c7dc6d96
+      line_end: 18
+      line_start: 18
+      path: src/parser/yaml.ts
+      side: head
+    entries:
+      - _ulid: 01KQBKZEP262PJ0655SER5VG7G
+        author: Jacob Chapel
+        body: "MUST-FIX: changed-file lint fails because src/parser/yaml.ts imports AcIdSchema but no longer
+          uses it after nested AC validation switched to AcceptanceCriterionSchema. Evidence:
+          running npx oxlint src/cli/commands/item.ts src/parser/yaml.ts
+          tests/ac-id-patch-validation.test.ts exits 1 with eslint(no-unused-vars) on this import.
+          This is a branch-introduced lint error and should be removed before merge."
+        created_at: 2026-04-29T03:19:31.266Z
+      - _ulid: 01KQBN4XHD14DEYY1170JF3ZCG
+        author: "@claude"
+        body: "Fixed: Removed the unused AcIdSchema import from src/parser/yaml.ts. It became stale in cycle
+          3 when nested AC validation switched to AcceptanceCriterionSchema. Lint now passes cleanly
+          (0 errors on changed files)."
+        created_at: 2026-04-29T03:39:58.892Z
+    kind: blocker
+    resolved_at: 2026-04-29T03:40:04.386Z
+    resolved_by: "@claude"
+  - _ulid: 01KQBM9KDJEB5T51711XG8H6CR
+    entries:
+      - _ulid: 01KQBM9KDJ2BM0AQA63NZK7FY2
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md, task details, prior review cycle 3,
+          @acceptance-criterion-id-format, @item-patch, src/schema/spec.ts, src/schema/common.ts,
+          src/parser/yaml.ts, src/cli/commands/item.ts, tests/ac-id-patch-validation.test.ts,
+          updateSpecItem call sites. Commands run: git diff/stat/name-only, rg AC annotations and
+          validation/call sites, kspec validate, npm run typecheck, git diff --check, npm run lint,
+          npx oxlint on changed files, npm test -- --fresh. Claims verified: prior nested malformed
+          AC blocker is addressed by AcceptanceCriterionSchema validation and targeted tests; bulk
+          dry-run/write semantics remain covered; changed-file lint exposes one introduced unused
+          import. Categories searched: correctness, edge cases, error handling, test quality,
+          integration, lint/code hygiene."
+        created_at: 2026-04-29T03:25:03.794Z
+      - _ulid: 01KQBN5E4RK3MRAN5H7T2FPKFS
+        author: "@claude"
+        body: Acknowledged — evidence log noted.
+        created_at: 2026-04-29T03:40:15.895Z
+    kind: nit
+    resolved_at: 2026-04-29T03:40:21.269Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-29T03:25:19.758Z
+created_at: 2026-04-29T03:14:58.113Z
+updated_at: 2026-04-29T03:40:21.269Z
+notes: []

@@ -1,0 +1,198 @@
+_ulid: 01KNA2D9E6BECNV13GK6H9W6JE
+slugs: []
+title: Review task-impl-push-path
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2068/2068 suites passed; 7501 tests passed, 5 skipped; runner rebuilt dist automatically
+      before executing.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-03T16:26:07.927Z
+    completed_at: 2026-04-03T16:26:07.927Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "tests/dispatch-target-sync.test.ts, tests/dispatch-branch-push-lifecycle.test.ts, and
+      tests/dispatch-degraded-state.test.ts passed: 12/12 suites, 68/68 tests."
+    name: dispatch targeted tests
+    required: true
+    runner: npm
+    created_at: 2026-04-03T16:26:12.132Z
+    completed_at: 2026-04-03T16:26:12.132Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Schema and references passed. Command exited 6 because of repository-wide warnings
+      (orphaned skill dir, orphaned specs, invalid AC annotation fixtures), with no new
+      task-specific validation errors.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-03T16:26:16.576Z
+    completed_at: 2026-04-03T16:26:16.576Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts,
+      tests/dispatch-target-sync.test.ts, tests/dispatch-degraded-state.test.ts,
+      tests/dispatch-branch-push-lifecycle.test.ts. Commands run: git diff/stat, kspec task get,
+      kspec item get, grep AC annotations, kspec validate, targeted npm test, full npm test, inline
+      tsx reproduction for periodic push on a clean active target. Claims verified: full suite
+      passes; targeted dispatch tests pass; periodic fanout uses workspace-specific target branches;
+      periodic fanout incorrectly degrades a clean target when another worktree owns the branch
+      checkout. Categories searched: correctness, edge cases, error handling, test quality,
+      integration."
+    name: review evidence
+    required: false
+    runner: reviewer
+    created_at: 2026-04-03T16:26:21.198Z
+    completed_at: 2026-04-03T16:26:21.198Z
+events:
+  - _ulid: 01KNA2D9E5RQY34JJRGB8H7XAR
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-03T16:21:52.198Z
+  - _ulid: 01KNA2DWXXMN99XG04QQKAKBBE
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-03T16:22:12.157Z
+  - _ulid: 01KNA2MYAS6M5SMGFSNNEGBV9R
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNA2MXM95KQKPQJPTPGQ3YX1
+    timestamp: 2026-04-03T16:26:02.969Z
+  - _ulid: 01KNA2N0DXV8977ZTR1APW5KE8
+    actor: codex@gpt-5
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-03T16:26:05.117Z
+  - _ulid: 01KNA2N0DXDABCMK7QJW70A9KQ
+    actor: codex@gpt-5
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-03T16:26:05.117Z
+  - _ulid: 01KNA2N3XMR05BFTFCJ7VZ5XRW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-03T16:26:08.692Z
+  - _ulid: 01KNA2N808GJZHXXSM5Q4NCMNV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: dispatch targeted tests
+    timestamp: 2026-04-03T16:26:12.873Z
+  - _ulid: 01KNA2NCAH9DJ9P3KTG6V994A8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-03T16:26:17.297Z
+  - _ulid: 01KNA2NGTNFT852FM6T3YWPFNS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence
+    timestamp: 2026-04-03T16:26:21.909Z
+  - _ulid: 01KNA6AJMN6YA7EW5ATE6KTBPE
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNA2MXM95KQKPQJPTPGQ3YX1
+    timestamp: 2026-04-03T17:30:17.621Z
+  - _ulid: 01KNA6AMT0A5MAN7E9VB6BJPYV
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNA2MXM95KQKPQJPTPGQ3YX1
+    timestamp: 2026-04-03T17:30:19.840Z
+  - _ulid: 01KNA6B2VE22H0G744AZ3B6M73
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNA2MXM95KQKPQJPTPGQ3YX1
+    timestamp: 2026-04-03T17:30:34.223Z
+examined_commit: 1559b85cddca6b2ae2f8851c81f5efd3e429ec67
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN8T1A51JFRMW4F8W31KJ907"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNA2MXM95KQKPQJPTPGQ3YX1
+    anchor:
+      type: code
+      commit: 1559b85cddca6b2ae2f8851c81f5efd3e429ec67
+      line_end: 1436
+      line_start: 1427
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KNA2MXM9N44WS1V16TATH7CV
+        author: Jacob Chapel
+        body: "Periodic target fanout now resolves the mutation scope before checking whether the branch
+          actually has anything to push.  already skips branches that are not ahead of upstream, but
+          this wrapper calls  first and enters degraded state on failure. I reproduced this on the
+          submitted snapshot with a clean  branch: after checking  out in a separate worktree and
+          calling , the engine logged DEGRADED and marked the branch unhealthy even though there
+          were no local commits to push. That violates , which says periodic sync should push active
+          targets with unpushed commits, not degrade idle targets just because another worktree owns
+          the branch checkout."
+        created_at: 2026-04-03T16:26:02.249Z
+      - _ulid: 01KNA6AM30S9VZ111QWMW16E3D
+        author: Jacob Chapel
+        body: Fixed in 3a9dd2f. Periodic target fanout now checks whether a branch actually needs a push
+          before resolving mutation scope, so a clean active target no longer enters degraded state
+          just because another worktree owns that branch checkout. Added a regression test for the
+          idle-target worktree case and kept the same-branch serialization/cross-branch concurrency
+          coverage aligned with the new async preflight.
+        created_at: 2026-04-03T17:30:19.103Z
+      - _ulid: 01KNA6B25PAFXXK02VPSWEVN5B
+        author: Jacob Chapel
+        body: "Correction: the fix commit is e54dfdb82. The branch now skips periodic mutation-scope
+          resolution for targets with no unpushed commits, which prevents clean active targets from
+          entering degraded state when another worktree owns the branch checkout."
+        created_at: 2026-04-03T17:30:33.526Z
+    kind: blocker
+    resolved_at: 2026-04-03T17:30:16.832Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@gpt-5
+    role: reviewer
+    created_at: 2026-04-03T16:26:05.116Z
+created_at: 2026-04-03T16:21:52.198Z
+updated_at: 2026-04-03T17:30:33.526Z
+notes: []

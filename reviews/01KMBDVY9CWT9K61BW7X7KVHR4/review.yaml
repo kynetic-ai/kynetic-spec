@@ -1,0 +1,116 @@
+_ulid: 01KMBDVY9CWT9K61BW7X7KVHR4
+slugs: []
+title: Review task-multi-turn-invocation (cycle 10)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 7134 tests passed (3 skipped). 0 failures. npm test completed in ~171s.
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-22T18:46:33.098Z
+    completed_at: 2026-03-22T18:46:33.098Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All assigned ACs covered (ac-1,2,3,4,8,9,10,15,16,17) plus bonus ac-13,ac-14. All
+      trait-error-guidance ACs annotated N/A with valid reasons. kspec validate not run (no spec
+      changes in this cycle).
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-22T18:46:36.607Z
+    completed_at: 2026-03-22T18:46:36.607Z
+events:
+  - _ulid: 01KMBDVY9C91Z5TG6ZJF41Y021
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-22T18:45:39.244Z
+  - _ulid: 01KMBDW6FTAWMZTA93GKTMESS7
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-22T18:45:47.642Z
+  - _ulid: 01KMBDWFVYH2ZFCQDDCG8DH17Z
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMBDWFGJ8KM68ADNYR95FMHG
+    timestamp: 2026-03-22T18:45:57.246Z
+  - _ulid: 01KMBDXK72E3XDXKZXR99S045S
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-22T18:46:33.443Z
+  - _ulid: 01KMBDXPNYBT9ZQ00QYXQ24BVJ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-22T18:46:36.991Z
+  - _ulid: 01KMBDXXH3RG0KH13MFEMMYJ77
+    actor: claude-reviewer@kspec
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-22T18:46:44.003Z
+  - _ulid: 01KMBDXXH37YZ4TEFX01DXS1FS
+    actor: claude-reviewer@kspec
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-22T18:46:44.003Z
+examined_commit: 53ec6f82e20ce4706655edeb2443a30aca424e08
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-multi-turn-invocation"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMBDWFGJ8KM68ADNYR95FMHG
+    anchor:
+      type: code
+      commit: 53ec6f82e20c
+      line_end: 664
+      line_start: 662
+      path: src/agent-runtime/invocation.ts
+      side: head
+    entries:
+      - _ulid: 01KMBDWFGKJBZ15RNT397DHC44
+        author: "@claude"
+        body: "Duplicate session registry registration: line 616 registers the handle at try-block entry,
+          then line 663 registers the same handle again after ACP session creation. Map.set() makes
+          this idempotent and harmless, but the second call is dead code — the first registration
+          already covers the cleanup path via the finally block."
+        created_at: 2026-03-22T18:45:56.883Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: claude-reviewer@kspec
+    role: reviewer
+    created_at: 2026-03-22T18:46:44.003Z
+created_at: 2026-03-22T18:45:39.244Z
+updated_at: 2026-03-22T18:46:44.003Z
+notes: []

@@ -1,0 +1,376 @@
+_ulid: 01KSAX2K0N14KSGJX70FMC6JVQ
+slugs: []
+title: Review entity storage version and incompatibility gates (cycle 3)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: TypeScript, shared, daemon, web UI, docs search, and plugin builds completed; only
+      pre-existing Svelte a11y/deprecation warnings were emitted.
+    name: npm run build
+    required: true
+    runner: npm
+    created_at: 2026-05-23T17:29:02.178Z
+    completed_at: 2026-05-23T17:29:02.178Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed; warnings were existing reference/alignment/completeness categories and
+      exited 0 due to --warnings-ok.
+    name: kspec validate --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-23T17:29:06.863Z
+    completed_at: 2026-05-23T17:29:06.863Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2502 suites passed; 9383 tests passed; 109 skipped; full log
+      /tmp/kspec-test-cache/01KSAWZ92NCDSH1VQF534GGCGY/ba60c4033c83f098.log
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-23T17:29:11.492Z
+    completed_at: 2026-05-23T17:29:11.492Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Created a temp folder-backed plan layout with plans/<ulid>/plan.md,
+      plans/<ulid>/plan.yaml, and a bounded project.plans.yaml index entry;
+      requirePlanFolderStorage(ctx) threw partial_entity_storage_layout, misclassifying the lean
+      index as monolithic data.
+    name: valid folder index compatibility probe
+    required: false
+    runner: node
+    created_at: 2026-05-23T17:29:24.448Z
+    completed_at: 2026-05-23T17:29:24.448Z
+events:
+  - _ulid: 01KSAX2K09YD30TY045PDWYT45
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-23T17:10:40.393Z
+  - _ulid: 01KSAX317GF1H6QD5GC2E3VFD4
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-23T17:10:54.960Z
+  - _ulid: 01KSAY2RC1BZB51AB1EN4SSDVF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSAY2PTS6V89AYDJ0K56843K
+    timestamp: 2026-05-23T17:28:14.465Z
+  - _ulid: 01KSAY370MRF12WFYRCHG0V5VC
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSAY35EBV5KTK1NPSSTCRBCM
+    timestamp: 2026-05-23T17:28:29.460Z
+  - _ulid: 01KSAY3PN37HH206W18QMBESVE
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSAY3N2EGW5W2WV8090RHHPP
+    timestamp: 2026-05-23T17:28:45.475Z
+  - _ulid: 01KSAY48HD0DJYPSTTN7PMXMYH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run build
+    timestamp: 2026-05-23T17:29:03.789Z
+  - _ulid: 01KSAY4D5NAKAFGD3P33CJXD7W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --warnings-ok
+    timestamp: 2026-05-23T17:29:08.533Z
+  - _ulid: 01KSAY4HP5FW90G551D4ZPNR9T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-23T17:29:13.157Z
+  - _ulid: 01KSAY4Y9T88DAM5N8GC11XWV5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: valid folder index compatibility probe
+    timestamp: 2026-05-23T17:29:26.074Z
+  - _ulid: 01KSAY5E60BPBMT6GMXQJFB64P
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSAY5CK46T02M3RVTK454QHQ
+    timestamp: 2026-05-23T17:29:42.336Z
+  - _ulid: 01KSAY5TS9E0V5Y84D5GZ3BCQ6
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-23T17:29:55.241Z
+  - _ulid: 01KSAY5TS9SR24ZWZT9Y2N8DZ0
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-23T17:29:55.241Z
+  - _ulid: 01KSB1CCXB1TJ87FKS5B467FZ4
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSAY2PTS6V89AYDJ0K56843K
+    timestamp: 2026-05-23T18:25:56.139Z
+  - _ulid: 01KSB1CV8Q323WTA5NQM5A80HZ
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSAY35EBV5KTK1NPSSTCRBCM
+    timestamp: 2026-05-23T18:26:10.839Z
+  - _ulid: 01KSB1DANCB0Z15QN2JYZ8906D
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSAY3N2EGW5W2WV8090RHHPP
+    timestamp: 2026-05-23T18:26:26.604Z
+  - _ulid: 01KSB1DT2E174T9YTHWKX1CSQ0
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSAY5CK46T02M3RVTK454QHQ
+    timestamp: 2026-05-23T18:26:42.382Z
+  - _ulid: 01KSB1E5JFPC86FVY5BQG1X2Q4
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSAY2PTS6V89AYDJ0K56843K
+    timestamp: 2026-05-23T18:26:54.159Z
+  - _ulid: 01KSB1ECA1K0B5NNMMN701CZQ3
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSAY35EBV5KTK1NPSSTCRBCM
+    timestamp: 2026-05-23T18:27:01.057Z
+  - _ulid: 01KSB1EJTZRTY3WQ7FTC88TV6Q
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSAY3N2EGW5W2WV8090RHHPP
+    timestamp: 2026-05-23T18:27:07.743Z
+  - _ulid: 01KSB1ESDBVAP37VWQ1V13RR3S
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSAY5CK46T02M3RVTK454QHQ
+    timestamp: 2026-05-23T18:27:14.475Z
+examined_commit: f4a3446b95e612b82912ab4ecd71cd16753252f0
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XAWNAQ1AA9SJS8BYH9056"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSAY2PTS6V89AYDJ0K56843K
+    anchor:
+      type: code
+      commit: f4a3446b95e612b82912ab4ecd71cd16753252f0
+      line_end: 133
+      line_start: 117
+      path: packages/daemon/src/routes/plans.ts
+      side: head
+    entries:
+      - _ulid: 01KSAY2PTSK2X4MZ90Z0565YS5
+        author: Jacob Chapel
+        body: >-
+          MUST-FIX: The plans route skips `requirePlanFolderStorage()` whenever the plans cache
+          reports `ready`, then serves `cache.getPlansIndex()` directly. Cache warm-up does not
+          prove strict folder compatibility: `ProjectEntityCache` populates the plans domain via
+          `loadPlans(ctx)`, and `loadPlans` intentionally uses the lenient storage-manager gate that
+          passes legacy `kynetic < 1.2` projects with no `plan_storage` declaration. Impact: a
+          production daemon with a warmed plans cache can return 200 and serve monolithic legacy
+          plan data instead of the required HTTP 409 `entity_storage_incompatible` response. The
+          strict route-entry gate needs to run even on the ready-cache path, or cache warm-up must
+          itself use the strict folder gate and degrade instead of caching legacy data.
+
+
+          Evidence: `src/daemon/entity-cache.ts:1186-1190` warms plans with `loadPlans(ctx)`, while
+          `src/parser/entity-storage-compatibility.ts:501-506` documents that `loadPlans` is lenient
+          for legacy projects and relies on daemon routes to run `requirePlanFolderStorage`. This
+          route bypasses that strict gate at `plansDomainState === "ready"` and consumes cached
+          plans at lines 131-133.
+        created_at: 2026-05-23T17:28:12.889Z
+      - _ulid: 01KSB1CBBJCPGESV5A671RYQZP
+        author: "@claude"
+        body: "Fixed (commit ae12bb9916): the cache-warm fast path is now safe because
+          ProjectEntityCache.loadDomain(\"plans\") runs requirePlanFolderStorage(ctx) BEFORE
+          loadPlans(ctx) at src/daemon/entity-cache.ts. Legacy projects (kynetic 1.1 without
+          plan_storage) hit the strict gate during warm-up, throw legacy_plan_storage_removed, and
+          the existing catch block transitions the plans domain to \"degraded\" — they never enter
+          \"ready\" with monolithic data. The route's cache-ready short-circuit therefore preserves
+          both @daemon-read-path ac-no-per-request-sync (no per-request initContext on the warm
+          path) and @entity-folder-migration-and-compatibility-1
+          ac-unmigrated-projects-are-blocked-with-guidance (incompatible projects route through the
+          gate-at-route-entry fallback, where requirePlanFolderStorage throws and the 409 helper
+          translates it). Behavioural test in tests/daemon-entity-cache.test.ts asserts the legacy →
+          degraded transition with the right errorReason; cache diagnostics surface the
+          EntityStorageCompatibilityError code via the existing degraded-reason channel."
+        created_at: 2026-05-23T18:25:54.542Z
+    kind: blocker
+    resolved_at: 2026-05-23T18:26:52.507Z
+    resolved_by: "@claude"
+  - _ulid: 01KSAY35EBV5KTK1NPSSTCRBCM
+    anchor:
+      type: code
+      commit: f4a3446b95e612b82912ab4ecd71cd16753252f0
+      line_end: 263
+      line_start: 242
+      path: packages/daemon/src/routes/reviews.ts
+      side: head
+    entries:
+      - _ulid: 01KSAY35EB78J6E8P3Q8ZVXKTE
+        author: Jacob Chapel
+        body: >-
+          MUST-FIX: The review list route has the same cache fast-path bypass as plans: when
+          `reviewsDomainState === "ready"`, it skips `requireReviewFolderStorage()` and serves
+          `cache.getReviewsIndex()` directly. Cache readiness is not proof of strict compatibility
+          because `ProjectEntityCache` warms the reviews domain with `loadReviewRecords(ctx)`, and
+          the review storage-manager gate is intentionally lenient for legacy projects. Impact:
+          warmed daemon caches can serve legacy monolithic review data with 200 responses instead of
+          the required structured 409.
+
+
+          Evidence: `src/daemon/entity-cache.ts:1206-1210` warms reviews with
+          `loadReviewRecords(ctx)`, while `src/parser/entity-storage-compatibility.ts:558-562`
+          applies the lenient `assertReviewStorageCompatible` gate. This route skips strict
+          validation at lines 242-250 and consumes cached review summaries at lines 255-263.
+        created_at: 2026-05-23T17:28:27.851Z
+      - _ulid: 01KSB1CSQEDW6FDW3K9QA7PZRX
+        author: "@claude"
+        body: "Fixed (commit ae12bb9916): same architecture as the plans blocker.
+          ProjectEntityCache.loadDomain(\"reviews\") now calls requireReviewFolderStorage(ctx)
+          BEFORE loadReviewRecords(ctx), so the reviews domain cannot enter \"ready\" with
+          monolithic data warmed via the lenient gate. Legacy projects degrade with
+          legacy_review_storage_removed (or missing_review_folder_storage on 1.2 without
+          declaration), and the route's cache-warm fast path therefore only serves data that already
+          passed the strict gate. The list AND detail routes are both covered (both check
+          reviewsDomainState === \"ready\" before serving from cache). Behavioural test in
+          tests/daemon-entity-cache.test.ts pins the legacy → degraded transition with errorReason =
+          legacy_review_storage_removed."
+        created_at: 2026-05-23T18:26:09.253Z
+    kind: blocker
+    resolved_at: 2026-05-23T18:26:59.467Z
+    resolved_by: "@claude"
+  - _ulid: 01KSAY3N2EGW5W2WV8090RHHPP
+    anchor:
+      type: code
+      commit: f4a3446b95e612b82912ab4ecd71cd16753252f0
+      line_end: 404
+      line_start: 399
+      path: src/parser/entity-storage-compatibility.ts
+      side: head
+    entries:
+      - _ulid: 01KSAY3N2E86XMK95E85W74WDT
+        author: Jacob Chapel
+        body: >-
+          MUST-FIX: `countMonolithicEntries()` treats any `project.plans.yaml` /
+          `project.reviews.yaml` entry with an `_ulid` field as monolithic data. That makes the
+          compatibility gate reject the valid folder-backed layout required by the plan/review
+          storage specs, because those specs keep `project.plans.yaml` and `project.reviews.yaml` as
+          lean indexes that still contain `_ulid` entries. It also does not implement the AC's
+          stated index/folder drift check; it only counts entries and never verifies whether index
+          entries match actual entity folders.
+
+
+          Impact: after the sibling folder-backed storage managers or upgrade migration create
+          `.kspec/plans/<ulid>/` plus a bounded `project.plans.yaml` index,
+          `requirePlanFolderStorage()` will throw `partial_entity_storage_layout` and block a
+          correctly migrated project. I confirmed this with an executable probe that created
+          `plans/<ulid>/plan.md`, `plans/<ulid>/plan.yaml`, and a lean `project.plans.yaml` index
+          entry; `requirePlanFolderStorage(ctx)` threw `partial_entity_storage_layout` with the
+          message that the index entry was a monolithic record.
+        created_at: 2026-05-23T17:28:43.854Z
+      - _ulid: 01KSB1D94AB0P87SF1J3FZ94JP
+        author: "@claude"
+        body: "Fixed (commit ae12bb9916): replaced countMonolithicEntries with a drift-based check
+          (src/parser/entity-storage-compatibility.ts). The detector now reads index ULIDs from
+          project.plans.yaml / project.reviews.yaml, lists .kspec/<domain>/<ulid>/ directories whose
+          authoritative sidecar (plan.yaml / review.yaml) is present, and reports BOTH directions of
+          drift the AC describes: monolithic records without corresponding entity directories (index
+          entries with no matching folder) AND index entries that do not match folders (orphan
+          folders with no matching index entry). Valid folder-backed layouts (lean index entry +
+          matching folder) now pass — verified by re-running your exact reproducer (folder with
+          plan.md + plan.yaml + lean project.plans.yaml entry) which now passes
+          requirePlanFolderStorage. New tests in tests/entity-storage-compatibility.test.ts cover:
+          valid folder-backed layout passes, stranded index entry fails, orphan folder fails, mixed
+          drift fails, and subdirectories without the sidecar are ignored."
+        created_at: 2026-05-23T18:26:25.028Z
+    kind: blocker
+    resolved_at: 2026-05-23T18:27:06.175Z
+    resolved_by: "@claude"
+  - _ulid: 01KSAY5CK46T02M3RVTK454QHQ
+    entries:
+      - _ulid: 01KSAY5CK4J3M0G281SEH8BS3Z
+        author: Jacob Chapel
+        body: "Evidence log: Files read: `kspec-agents.md`; task/spec context; prior reviews `@01KSAHA1` and
+          `@01KSANQM`; `src/parser/entity-storage-compatibility.ts`; `src/parser/plans.ts`;
+          `src/parser/reviews.ts`; `src/parser/entity-local-resources.ts`;
+          `src/daemon/entity-cache.ts`; daemon plan/review routes; schema/init/doctor/upgrade
+          changes; focused entity-storage, daemon route, resource, init, and partial-layout tests;
+          changed skip/downgrade fixture diffs. Commands run: `git diff --stat/name-only/log`;
+          `kspec task get`; `kspec item get`; `kspec review for-task/get`; AC annotation search;
+          valid folder-index probe with `node --import tsx/esm`; `kspec validate --warnings-ok`;
+          `npm test`; `npm run build`. Claims verified: prior blockers for route strict gates,
+          resource resolver gate, and monolithic write-side gate were rechecked; worker
+          test/build/validate claims were rerun. Categories searched: correctness, cache edge cases,
+          partial-layout/index edge cases, route error handling, test integrity, AC coverage,
+          integration with sibling storage-manager specs."
+        created_at: 2026-05-23T17:29:40.708Z
+      - _ulid: 01KSB1DREVH55R3RYDVQ21QWZZ
+        author: "@claude"
+        body: "Acknowledged — evidence log noted. Cycle 3 evidence (commit ae12bb9916): re-read all 4 ACs on
+          @entity-folder-migration-and-compatibility-1 + @daemon-read-path ac-no-per-request-sync
+          (the AC the cache-warm fast-path preserves); inspected entity-cache.ts catch handler to
+          confirm strict-gate failures route to degraded with lastError populated; re-ran your
+          folder + lean-index probe (now passes); ran focused suites (entity-storage-compatibility,
+          entity-storage-partial-layout-manager, daemon-api/entity-storage-incompatibility-routes,
+          daemon-read-path, daemon-entity-cache) + full npm test (2503/9396/109 skipped/0 failed);
+          npm run build clean; kspec validate --warnings-ok passes (pre-existing unresolved-target
+          warnings only)."
+        created_at: 2026-05-23T18:26:40.723Z
+    kind: nit
+    resolved_at: 2026-05-23T18:27:12.863Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-23T17:29:55.237Z
+created_at: 2026-05-23T17:10:40.405Z
+updated_at: 2026-05-23T18:27:12.863Z
+notes: []

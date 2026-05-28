@@ -1,0 +1,141 @@
+_ulid: 01KMB4SCR2VAAV1PHHARHH1WVZ
+slugs: []
+title: Review task-multi-turn-invocation (cycle 8)
+author: "@claude"
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: '15 failures, 7031 passed, 3 skipped. 14 of 15 failures are pre-existing
+      (canonical-task-workspace-contract timeouts, dispatch-runtime-bootstrap-contract timeouts,
+      dispatch-workspace-cleanup timeouts, dispatch-workspace-config timeouts,
+      agent-invocation-lifecycle timeout, agent-dispatch-engine flaky dedup test). 1 failure is
+      task-specific: multi-turn-invocation.test.ts "should apply timeout to total session duration,
+      not per-turn" hangs because taskRef triggers blocking spawnSync in the failure handler.'
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-22T16:08:51.964Z
+    completed_at: 2026-03-22T16:08:51.964Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate passed with no errors. Pre-existing warnings only (orphaned specs, missing
+      AC coverage on other specs).
+    name: kspec-validate
+    required: true
+    runner: kspec
+    created_at: 2026-03-22T16:09:01.292Z
+    completed_at: 2026-03-22T16:09:01.292Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 10 in-scope ACs (ac-1,2,3,4,8,9,10,15,16,17) have test annotations. All 6
+      trait-error-guidance ACs annotated as N/A with valid reasons. Additional coverage for
+      ac-11,13,14 as bonus.
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-22T16:09:04.863Z
+    completed_at: 2026-03-22T16:09:04.863Z
+events:
+  - _ulid: 01KMB4SCR2966HWV304DR67EKV
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-22T16:06:58.562Z
+  - _ulid: 01KMB4SM2SN0Q35759RHX4HV9D
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-22T16:07:06.073Z
+  - _ulid: 01KMB4SZFQ9PT95X21HEBD99DM
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMB4SYX6H33ZDY90F26AZPG1
+    timestamp: 2026-03-22T16:07:17.751Z
+  - _ulid: 01KMB4WVZJJKSCGFS91FA2YNSS
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: vitest
+    timestamp: 2026-03-22T16:08:52.467Z
+  - _ulid: 01KMB4X4ZCWFWY3ZYSWC7YM5N3
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-22T16:09:01.677Z
+  - _ulid: 01KMB4X8H1QQ0QTC9WN63ZPNBF
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-22T16:09:05.313Z
+  - _ulid: 01KMB4YAN7GY5X5FYP7AM3D0Z2
+    actor: claude-reviewer@kspec
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-22T16:09:40.263Z
+  - _ulid: 01KMB4YAN75YY2D8H0A31J5QHS
+    actor: claude-reviewer@kspec
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-22T16:09:40.263Z
+examined_commit: 535d7a68040fb623d7513769f07fa7a1960450bd
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-multi-turn-invocation"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMB4SYX6H33ZDY90F26AZPG1
+    anchor:
+      type: code
+      commit: 535d7a68
+      line_end: 1060
+      line_start: 1060
+      path: tests/multi-turn-invocation.test.ts
+      side: head
+    entries:
+      - _ulid: 01KMB4SYX7HHKHHBT7J52CA51Y
+        author: "@claude"
+        body: 'Timeout tests pass taskRef which triggers a blocking spawnSync kspec CLI call in the
+          InvocationTimeoutError handler (addTaskNote at line 962). This hangs the test because
+          spawnSync blocks the event loop indefinitely in the temp dir environment (no shadow
+          branch). Other error-path tests in the same file correctly omit taskRef with the comment:
+          "Omit taskRef to avoid slow CLI calls in failure handler" (lines 679, 731). Both timeout
+          tests at lines 1041 and 1076 must omit taskRef like the other failure tests do.'
+        created_at: 2026-03-22T16:07:17.159Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: claude-reviewer@kspec
+    role: reviewer
+    created_at: 2026-03-22T16:09:40.263Z
+created_at: 2026-03-22T16:06:58.562Z
+updated_at: 2026-03-22T16:09:40.263Z
+notes: []

@@ -1,0 +1,202 @@
+_ulid: 01KQBHXVB8TYQXV0CK8JTF7TJF
+slugs: []
+title: Review centralize AC ID patch validation cycle 3
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/ac-id-patch-validation.test.ts: 11 suites passed, 31 tests
+      passed, duration 25.0s"
+    name: focused ac-id patch tests
+    required: true
+    runner: npm test
+    created_at: 2026-04-29T02:46:16.723Z
+    completed_at: 2026-04-29T02:46:16.723Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Schema/references/skills OK; command exited 6 due existing warnings: deprecated refs,
+      orphaned specs/status mismatches, missing AC coverage, two fixture annotation targets."
+    name: kspec validate
+    required: false
+    runner: kspec validate
+    created_at: 2026-04-29T02:46:24.324Z
+    completed_at: 2026-04-29T02:46:24.324Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run typecheck: tsc --noEmit completed with exit 0"
+    name: typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-04-29T02:46:28.209Z
+    completed_at: 2026-04-29T02:46:28.209Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2323/2323 suites, 8499/8504 tests passed, 5 skipped, duration 1890.9s.
+      Log: /tmp/kspec-test-cache/01KQBHV9KTEJY4MQNX3J36WV3E/6f6f2455cf2a4be9.log"
+    name: npm test -- --fresh
+    required: true
+    runner: npm test
+    created_at: 2026-04-29T02:53:27.665Z
+    completed_at: 2026-04-29T02:53:27.665Z
+events:
+  - _ulid: 01KQBHXVB86K82518D8634H9VM
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-29T02:43:41.544Z
+  - _ulid: 01KQBHYS9NC0EWVAE0BYSD9HBQ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-29T02:44:12.214Z
+  - _ulid: 01KQBJ2M4C8WEAP7EXX2BHESK5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused ac-id patch tests
+    timestamp: 2026-04-29T02:46:17.996Z
+  - _ulid: 01KQBJ2QTZ9Z7S9HQWX201TKB4
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQBJ2PHZSPGKC09HH7WVGYTE
+    timestamp: 2026-04-29T02:46:21.791Z
+  - _ulid: 01KQBJ2VJJ0R0RDXVR0QQD84H0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-29T02:46:25.618Z
+  - _ulid: 01KQBJ2ZFBAMX1Q3C9C6E6F5N0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-04-29T02:46:29.611Z
+  - _ulid: 01KQBJFRWWTAQEN62KXGA94CHR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-04-29T02:53:28.861Z
+  - _ulid: 01KQBJFW5HRAVRT7T1WHJTC42X
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KQBJFTZJE5BP2TT5QVGVKWQN
+    timestamp: 2026-04-29T02:53:32.209Z
+  - _ulid: 01KQBJG53YN4A67652HVQ5N5D9
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-29T02:53:41.374Z
+  - _ulid: 01KQBJG53Z9E48TR8S4J145YE3
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-29T02:53:41.375Z
+  - _ulid: 01KQBKFP93H5WK932VZE8BYQQR
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQBJ2PHZSPGKC09HH7WVGYTE
+    timestamp: 2026-04-29T03:10:54.755Z
+  - _ulid: 01KQBKFYMTHFPY7Y28Q6695VG7
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQBJ2PHZSPGKC09HH7WVGYTE
+    timestamp: 2026-04-29T03:11:03.322Z
+examined_commit: c071ab72e16dd5eab71222c5e45e233d67b277e0
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQB9J1KRGHYS1ZAJF2D91NTB"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQBJ2PHZSPGKC09HH7WVGYTE
+    anchor:
+      type: code
+      commit: c071ab72e16dd5eab71222c5e45e233d67b277e0
+      line_end: 1840
+      line_start: 1833
+      path: src/parser/yaml.ts
+      side: head
+    entries:
+      - _ulid: 01KQBJ2PHZERY3086J7YAEZF45
+        author: Jacob Chapel
+        body: "MUST-FIX: nested acceptance_criteria entries are not validated with the acceptance criterion
+          schema; only an existing id field is checked. A patch like {features:[{...,
+          acceptance_criteria:[{given:'g', when:'w', then:'t'}]}]} with --allow-unknown currently
+          exits 0 and writes raw YAML that the next load reports as invalid
+          (acceptance_criteria[0].id required). The same happens for a nested AC with id:'ac-valid'
+          but missing then. This violates the task requirement that item patch/update surfaces apply
+          the same known-field validation before writing."
+        created_at: 2026-04-29T02:46:20.479Z
+      - _ulid: 01KQBKFN5JBTWASCC7V7G41C61
+        author: "@claude"
+        body: "Fixed: collectNestedAcErrors now validates each nested acceptance_criteria entry against the
+          full AcceptanceCriterionSchema (id, given, when, then), not just the id field. Previously,
+          a nested AC missing id entirely or having id but missing then would pass through and write
+          invalid YAML. Added 7 new tests covering: (1) nested AC missing id entirely via helper,
+          CLI, and parser layer, (2) nested AC with valid id but missing then via helper, CLI, and
+          parser layer, (3) nested AC missing multiple required fields. All 2323 suites pass (8506
+          tests), typecheck clean."
+        created_at: 2026-04-29T03:10:53.618Z
+    kind: blocker
+    resolved_at: 2026-04-29T03:11:02.169Z
+    resolved_by: "@claude"
+  - _ulid: 01KQBJFTZJE5BP2TT5QVGVKWQN
+    entries:
+      - _ulid: 01KQBJFTZJXATCQMP7NS3TT1E5
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md, task details, @acceptance-criterion-id-format,
+          @item-patch, prior review records, src/parser/yaml.ts, src/cli/commands/item.ts,
+          src/schema/spec.ts, src/schema/common.ts, tests/ac-id-patch-validation.test.ts,
+          surrounding updateSpecItem call sites. Commands run: git diff/stat/name-only, rg AC
+          annotations and validation code, kspec validate, npm test -- --fresh
+          tests/ac-id-patch-validation.test.ts, npm run typecheck, npm test -- --fresh, behavioral
+          repros for nested AC missing id/then via item patch --allow-unknown, git diff --check.
+          Claims verified: prior parser-layer and nested invalid-id blockers are addressed; bulk
+          dry-run/write validation and fail-fast behavior are tested; new repro shows nested
+          malformed ACs without id/then still write. Categories searched: correctness, edge cases,
+          error handling, test quality, integration."
+        created_at: 2026-04-29T02:53:30.994Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-29T02:53:41.374Z
+created_at: 2026-04-29T02:43:41.544Z
+updated_at: 2026-04-29T03:11:02.169Z
+notes: []

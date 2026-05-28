@@ -1,0 +1,126 @@
+_ulid: 01KKXNPRMRZ2MYYERA8ZXVBDCM
+slugs: []
+title: Review remove-skill-table-from-kspec-agents-md (cycle 1)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 5724 passed, 3 skipped, 1 failed (pre-existing review-cli.test.ts:152 — not modified by
+      this branch). All agent-data-sections and agents-instruction-gen tests pass.
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-17T10:38:40.575Z
+    completed_at: 2026-03-17T10:38:40.575Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation issues all pre-existing (3 reference errors, alignment/completeness warnings).
+      No new issues introduced. Skills: OK."
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-17T10:38:47.393Z
+    completed_at: 2026-03-17T10:38:47.393Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Searched entire codebase for generateSkillsTable — zero results. No stale imports,
+      exports, or references remain. LoadedSkill still used appropriately in skill-render, validate,
+      and meta modules.
+    name: dead-references
+    required: false
+    runner: manual
+    created_at: 2026-03-17T10:38:54.602Z
+    completed_at: 2026-03-17T10:38:54.602Z
+events:
+  - _ulid: 01KKXNPRMREFB130N767DZBEN4
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-17T10:33:16.184Z
+  - _ulid: 01KKXNPYTTKWMB06KM0XWNTAPM
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-17T10:33:22.522Z
+  - _ulid: 01KKXP09ZZK9TVNZK6FQQSK2ND
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKXP09YBDBT0898P3SXBH7VR
+    timestamp: 2026-03-17T10:38:28.863Z
+  - _ulid: 01KKXP0NFMJTGNS4T7ZN0MXN1Z
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-17T10:38:40.629Z
+  - _ulid: 01KKXP0W4QM5QGCZJ63KKAG4RR
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-17T10:38:47.448Z
+  - _ulid: 01KKXP13605J9VWXPQ46S2BQ8G
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: dead-references
+    timestamp: 2026-03-17T10:38:54.657Z
+  - _ulid: 01KKXP1BC3X6DHZYZZZNZCYXHT
+    actor: pr-reviewer@kspec
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-17T10:39:03.043Z
+  - _ulid: 01KKXP1BC34HXP2SXMSJ00WJW0
+    actor: pr-reviewer@kspec
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-17T10:39:03.043Z
+examined_commit: 82896f8489f79b6cac198ca9c0ed156634a2ca32
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKTK96Z5M9T8WP900CPFWRNG"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KKXP09YBDBT0898P3SXBH7VR
+    entries:
+      - _ulid: 01KKXP09YB5DGHEC3GM5TMCPKJ
+        author: "@claude"
+        body: Specs @agent-data-sections ac-1 and @agent-instruction-gen ac-2 still describe the skill table
+          behavior that was removed. These ACs are now obsolete. The code correctly removed all AC
+          annotations referencing them, but the spec items themselves should be updated to either
+          remove or revise these ACs to reflect the new behavior. Recommend a follow-up task to
+          clean up these stale spec ACs.
+        created_at: 2026-03-17T10:38:28.811Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer@kspec
+    role: reviewer
+    created_at: 2026-03-17T10:39:02.965Z
+created_at: 2026-03-17T10:33:16.184Z
+updated_at: 2026-03-17T10:39:02.965Z
+notes: []

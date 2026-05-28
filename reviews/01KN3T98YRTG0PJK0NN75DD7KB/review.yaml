@@ -1,0 +1,185 @@
+_ulid: 01KN3T98YRTG0PJK0NN75DD7KB
+slugs: []
+title: Review task-fix-review-detail-e2e-full-gate (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test completed with exit 1: 3 failing tests in tests/agent-dispatch-engine.test.ts;
+      suite summary 7518 passed, 3 failed, 5 skipped"
+    name: npm test
+    required: true
+    runner: scripts/test.cjs
+    created_at: 2026-04-01T06:14:25.446Z
+    completed_at: 2026-04-01T06:14:25.446Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run test:e2e -- tests/e2e/review-detail-page.spec.ts tests/e2e/reviews-detail.spec.ts
+      => 29 passed, 0 failed
+    name: review-detail e2e
+    required: true
+    runner: playwright
+    created_at: 2026-04-01T06:14:27.719Z
+    completed_at: 2026-04-01T06:14:27.719Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: AGENTS.md, kspec-agents.md, packages/web-ui/src/lib/api.ts,
+      packages/web-ui/src/routes/reviews/[id]/+page.svelte, tests/e2e/review-detail-page.spec.ts,
+      tests/e2e/reviews-detail.spec.ts, tests/web-ui/api-envelope.test.ts,
+      tests/agent-dispatch-engine.test.ts. Commands run: git diff --stat/name-only/unified, kspec
+      task get, kspec review for-task/get/add/open, kspec item get @review-records-web-ui, kspec
+      item get @api-contract, rg AC annotations, kspec validate, npm run test:e2e --
+      tests/e2e/review-detail-page.spec.ts tests/e2e/reviews-detail.spec.ts, npm test. Claims
+      verified: review-detail E2Es pass; full gate still fails. Categories searched: correctness,
+      test quality, integration, regressions, error handling."
+    name: review evidence log
+    required: false
+    runner: reviewer
+    created_at: 2026-04-01T06:14:29.658Z
+    completed_at: 2026-04-01T06:14:29.658Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 6 with existing repository warnings only; no task-specific validation error reproduced
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-01T06:14:31.621Z
+    completed_at: 2026-04-01T06:14:31.621Z
+events:
+  - _ulid: 01KN3T98YQD0B2QCH1VEZQ9NDT
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-01T06:04:25.432Z
+  - _ulid: 01KN3TA51XR64ZMJPAAVAS8WZQ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-01T06:04:54.205Z
+  - _ulid: 01KN3TVH5EG6GDMZECAKZE2C9N
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN3TVGA2757YTT7PQCG4K5QA
+    timestamp: 2026-04-01T06:14:23.662Z
+  - _ulid: 01KN3TVKRNHEDBXD8G1WV8MWHP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-04-01T06:14:26.325Z
+  - _ulid: 01KN3TVNQZGH67JXETYAPMJQE8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-detail e2e
+    timestamp: 2026-04-01T06:14:28.351Z
+  - _ulid: 01KN3TVQMQX7Q0NC0RX012TN9R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-04-01T06:14:30.296Z
+  - _ulid: 01KN3TVSK18815MZ3DD15CTPA2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-01T06:14:32.289Z
+  - _ulid: 01KN3TW7ZJHDY9DBM6ZAY9T9DD
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-01T06:14:47.026Z
+  - _ulid: 01KN3TW7ZJVBMW5PYDVZG5VFS0
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-01T06:14:47.026Z
+  - _ulid: 01KN3Y6K91DXSQ49YPQJBJK5RR
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN3TVGA2757YTT7PQCG4K5QA
+    timestamp: 2026-04-01T07:12:52.001Z
+  - _ulid: 01KN3Y6N4SVJMX18D3HMCNTYD3
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN3TVGA2757YTT7PQCG4K5QA
+    timestamp: 2026-04-01T07:12:53.913Z
+examined_commit: 4eed9f6cc2f321ae17abc46f1a25766b8f489b78
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN3Q09YEKYDQ8JCP1RDNGAF1"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN3TVGA2757YTT7PQCG4K5QA
+    anchor:
+      type: code
+      commit: 4eed9f6cc2f321ae17abc46f1a25766b8f489b78
+      line_end: 5659
+      line_start: 5659
+      path: tests/agent-dispatch-engine.test.ts
+      side: head
+    entries:
+      - _ulid: 01KN3TVGA2CCWFXQCFTRY69FBC
+        author: Jacob Chapel
+        body: "MUST-FIX: this snapshot still does not unblock the full CI gate. I ran npm test against
+          4eed9f6cc2f321ae17abc46f1a25766b8f489b78 and the suite completed with 3 failing assertions
+          in tests/agent-dispatch-engine.test.ts (around lines 5659, 5721, and 5878). Because the
+          task goal is to clear the full gate, a snapshot that still leaves npm test red cannot
+          advance even though the review-detail E2Es now pass."
+        created_at: 2026-04-01T06:14:22.786Z
+      - _ulid: 01KN3Y6MHMZ4766W2KXT9N8SF2
+        author: Jacob Chapel
+        body: "Addressed. The full-gate failure was caused by two issues: (1) three post-invocation dispatch
+          assertions were timing out under full-suite load before cleanup finished, which left
+          cascading suite failures; those tests now use bounded condition waits and always stop the
+          engine in finally blocks, and (2) the daemon accepted stale WEB_UI_DIR directories that
+          existed without index.html, so review-detail E2E could boot against a deleted worktree
+          build path. The daemon now requires index.html before selecting explicit/env/bundled UI
+          paths, with coverage in daemon-web-ui-bundle tests. Verification on this branch: npm test
+          passed (2082/2082 suites, 7522/7527 tests, 5 skipped) and review-detail Playwright
+          coverage passed (29/29)."
+        created_at: 2026-04-01T07:12:53.300Z
+    kind: blocker
+    resolved_at: 2026-04-01T07:12:51.383Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-04-01T06:14:47.026Z
+created_at: 2026-04-01T06:04:25.432Z
+updated_at: 2026-04-01T07:12:53.300Z
+notes: []

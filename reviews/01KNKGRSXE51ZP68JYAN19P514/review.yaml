@@ -1,0 +1,127 @@
+_ulid: 01KNKGRSXE51ZP68JYAN19P514
+slugs: []
+title: "Plan review: Cache-Aware Command Execution"
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The plan keeps behavior in specs and task outcomes; the prior hardcoded
+      COMMAND_CACHE_DOMAINS data was removed from the plan and replaced with implementation-time
+      derivation instructions.
+    name: Behavioral purity
+    required: true
+    created_at: 2026-04-07T08:26:14.572Z
+    completed_at: 2026-04-07T08:26:14.572Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The new spec @daemon-concurrent-reads is still fully covered by
+      @task-read-command-concurrency, and the existing spec-update/cache-loader tasks still claim
+      the command-api and entity-cache AC additions introduced by this plan.
+    name: Coverage mapping
+    required: true
+    created_at: 2026-04-07T08:26:17.441Z
+    completed_at: 2026-04-07T08:26:17.441Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Phase 6 still depends on the initContext/cache-loader/history tasks that make cache-backed
+      read execution possible before mutex bypass is attempted.
+    name: Dependency ordering
+    required: true
+    created_at: 2026-04-07T08:26:20.316Z
+    completed_at: 2026-04-07T08:26:20.316Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Phase 6 now gives a standalone method for building COMMAND_CACHE_DOMAINS at
+      implementation time: trace each allowlisted handler's unconditional loader calls, list exactly
+      those domains, and cite the source lines inline in the resulting map comments."
+    name: Task executability
+    required: true
+    created_at: 2026-04-07T08:26:23.132Z
+    completed_at: 2026-04-07T08:26:23.132Z
+events:
+  - _ulid: 01KNKGRSXEQG74XE0W0Q6VFR6S
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-07T08:25:59.470Z
+  - _ulid: 01KNKGS6SGK2JTYSF15YXPWSP4
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-07T08:26:12.656Z
+  - _ulid: 01KNKGS9H8TKE71CQ9EV753T88
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Behavioral purity
+    timestamp: 2026-04-07T08:26:15.465Z
+  - _ulid: 01KNKGSCBXZ6YBXG0J08HJNPWC
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Coverage mapping
+    timestamp: 2026-04-07T08:26:18.365Z
+  - _ulid: 01KNKGSF5780SXAGJBK5RFGTCA
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-04-07T08:26:21.223Z
+  - _ulid: 01KNKGSHYREM52JGRBGQFJ1AVT
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Task executability
+    timestamp: 2026-04-07T08:26:24.088Z
+  - _ulid: 01KNKGSMQF4JR4JVQ681X17ASG
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-07T08:26:26.927Z
+  - _ulid: 01KNKGSMQFVPPQXCNNX24G5P0Z
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-07T08:26:26.927Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-cache-aware-command-execution"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-07T08:26:26.927Z
+created_at: 2026-04-07T08:25:59.470Z
+updated_at: 2026-04-07T08:26:26.927Z
+notes: []

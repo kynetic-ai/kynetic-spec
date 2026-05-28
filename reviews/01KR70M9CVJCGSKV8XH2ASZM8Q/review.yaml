@@ -1,0 +1,247 @@
+_ulid: 01KR70M9CVJCGSKV8XH2ASZM8Q
+slugs: []
+title: Review task-fix-guardrail-binding-wrapper-analysis cycle 2
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test: 8982 passed, 5 skipped, 2418 suites passed in 2046.6s"
+    name: npm test
+    required: true
+    runner: npm test
+    created_at: 2026-05-09T18:52:23.618Z
+    completed_at: 2026-05-09T18:52:23.618Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: mise exec -- kspec validate --completeness --warnings-ok passed; warnings were existing
+      repository-wide coverage/annotation warnings
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-09T18:52:23.627Z
+    completed_at: 2026-05-09T18:52:23.627Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts: 228 passed in 56.0s"
+    name: focused lint guardrail tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-09T18:52:29.754Z
+    completed_at: 2026-05-09T18:52:29.754Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: mise exec -- kspec validate --refs --warnings-ok passed; warnings were pre-existing
+      deprecated reference warnings
+    name: kspec validate refs
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-09T18:52:33.648Z
+    completed_at: 2026-05-09T18:52:33.648Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Two temporary oxlint probes were run against no-leaky-test-daemon. The member-expression
+      pid case exited 0 with Found 0 warnings and 0 errors even though holder.pid was assigned only
+      after an intervening expect. The cleanup-callback-parameter case also exited 0. The
+      member-expression case is recorded as the blocker.
+    name: reviewer oxlint ownership probes
+    required: true
+    runner: manual oxlint probe
+    created_at: 2026-05-09T18:52:53.742Z
+    completed_at: 2026-05-09T18:52:53.742Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md, task/spec/review records,
+      tools/eslint-rules/no-leaky-test-daemon.js, tests/lint-daemon-test-guardrails.test.ts,
+      tests/lint-no-leaky-test-daemon.test.ts snippets. Commands run: git diff/log/merge-base, kspec
+      task get, kspec item get, kspec review get/add/open, AC annotation rg, focused npm test, full
+      npm test, kspec validate refs/completeness, custom oxlint probes. Claims verified: previous
+      ownership blocker fixed for literal pid/unrelated child/imported pid tests, but
+      member-expression pid probe remains false negative. Categories searched: correctness, edge
+      cases, error handling/diagnostics, test quality, integration."
+    name: review evidence log
+    required: false
+    runner: reviewer
+    created_at: 2026-05-09T18:52:57.557Z
+    completed_at: 2026-05-09T18:52:57.557Z
+events:
+  - _ulid: 01KR70M9CTMESV86BFQ9994QZC
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-09T18:40:06.554Z
+  - _ulid: 01KR70MR7Y44WVRGKSMMQ367YA
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-09T18:40:21.758Z
+  - _ulid: 01KR70RDFXK8S03T8HVC4KR7TY
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR70RBZSXV6E0912HVY9KKAE
+    timestamp: 2026-05-09T18:42:21.821Z
+  - _ulid: 01KR70SGMP57K73NGD3BRXWTNA
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR70RBZSXV6E0912HVY9KKAE
+    timestamp: 2026-05-09T18:42:57.814Z
+  - _ulid: 01KR71ATFXD3V479M8FF4FBZ6H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-09T18:52:24.958Z
+  - _ulid: 01KR71AWP5JK9SEGGQNWSGRTFR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-05-09T18:52:27.205Z
+  - _ulid: 01KR71B0GNDNTFSVNKKYJVZEMS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused lint guardrail tests
+    timestamp: 2026-05-09T18:52:31.125Z
+  - _ulid: 01KR71B49K1DWSZ6XEN38WRN2V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-05-09T18:52:34.996Z
+  - _ulid: 01KR71BQXKYKF712E6C7C7N125
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: reviewer oxlint ownership probes
+    timestamp: 2026-05-09T18:52:55.091Z
+  - _ulid: 01KR71BVM82CFTJY9EMR1TBQ2N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-09T18:52:58.888Z
+  - _ulid: 01KR71C5YC08X3V32W4Q8KSN4S
+    actor: reviewer-agent
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-09T18:53:09.452Z
+  - _ulid: 01KR71C5YCWWENE7FBAPPAJYP2
+    actor: reviewer-agent
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-09T18:53:09.452Z
+  - _ulid: 01KR72R1V1D2CMF9T47ZB1Y19D
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR70RBZSXV6E0912HVY9KKAE
+    timestamp: 2026-05-09T19:17:07.041Z
+  - _ulid: 01KR72RF3S7R4DSGC7HV9E85DQ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR70RBZSXV6E0912HVY9KKAE
+    timestamp: 2026-05-09T19:17:20.633Z
+examined_commit: e21bfac48a49698d8ad5dbf05b9e907666203555
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR6M77JA0S1EEVZX8KKRPY1V"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR70RBZSXV6E0912HVY9KKAE
+    anchor:
+      type: code
+      commit: e21bfac48a49698d8ad5dbf05b9e907666203555
+      line_end: 843
+      line_start: 842
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KR70RBZS8M3PH41R9WK61PAY
+        author: Jacob Chapel
+        body: "MUST-FIX: the cleanup ownership check only extracts  targets when the first argument is a
+          bare Identifier. A cleanup registered as  is accepted as scoped cleanup even when  is
+          assigned only after the intervening assertion. I verified with an oxlint probe in this
+          review: the sample exited 0 with 'Found 0 warnings and 0 errors.' That violates  because
+          the callback does not own a concrete pid for the just-started daemon at registration time;
+          it only owns an object whose pid field is still unset. Extend capture/ownership analysis
+          for non-Identifier pid expressions (or conservatively reject them) so cleanup-shaped calls
+          cannot bypass the binding check."
+        created_at: 2026-05-09T18:42:20.281Z
+      - _ulid: 01KR70SF2YCD7D9HYEYE0NKXY2
+        author: Jacob Chapel
+        body: 'Clarification for the blocker body above: the skipped target is `process.kill(...)`, and the
+          accepted unsafe sample is `onTestFinished(() => { if (holder.pid !== undefined)
+          process.kill(holder.pid, "SIGTERM"); })` with `holder.pid` assigned only after
+          `expect(true).toBe(true)`. The independent oxlint probe exited 0 with "Found 0 warnings
+          and 0 errors." This is the same ownership contract as
+          `ac-detached-cleanup-bound-before-observation`: the callback has an object at registration
+          time, but it does not own the concrete pid for the just-started daemon.'
+        created_at: 2026-05-09T18:42:56.222Z
+      - _ulid: 01KR72R0GF8VKX73DVHNZCM5SH
+        author: "@claude"
+        body: "Fixed. Walk MemberExpression / ChainExpression kill-target chains down to their root
+          Identifier and feed the root through the same concrete-binding and ownership predicates as
+          the bare-Identifier case. The reviewer's probe shape (`const holder = {}; runKspec('serve
+          start --detach'); onTestFinished(() => { if (holder.pid !== undefined)
+          process.kill(holder.pid, 'SIGTERM'); }); expect(true).toBe(true); holder.pid = 12345;`)
+          now flags: the walk extracts root `holder`, the ownership predicate sees that `const
+          holder = {}` ends BEFORE the runKspec start, and cleanupClosureUnbound is reported. The
+          same walk applies to `<expr>.kill(...)` member receivers and to
+          `killPid/stopDaemon/stopMockDaemon` first arguments. Non-Identifier-rooted targets
+          (literal pids, CallExpressions, etc.) collapse to UNVERIFIABLE_KILL_TARGET and are
+          rejected as unbound. Allowed-narrow case (`const child = spawn('kspec', ['serve', 'start',
+          '--detach']); onTestFinished(() => process.kill(child.pid, 'SIGTERM'))`) still passes
+          because the root `child`'s declarator range encompasses the spawn that IS the detached
+          start. Five new regression tests cover member-expression target, deep member chain, member
+          receiver, call-expression target, and the allowed-narrow control."
+        created_at: 2026-05-09T19:17:05.679Z
+    kind: blocker
+    resolved_at: 2026-05-09T19:17:19.257Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: reviewer-agent
+    role: reviewer
+    created_at: 2026-05-09T18:53:09.451Z
+created_at: 2026-05-09T18:40:06.555Z
+updated_at: 2026-05-09T19:17:19.257Z
+notes: []

@@ -1,0 +1,148 @@
+_ulid: 01KP80AVYVV8TSVNN50C9C82GY
+slugs: []
+title: Review task-tests-suppress-cli-auto-start-daemon (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- tests/setup.test.ts tests/parser/daemon-config.test.ts
+      tests/cli-daemon-proxy.test.ts passed: 22 suites, 65 tests. tests/setup.test.ts 7 passed;
+      tests/parser/daemon-config.test.ts 27 passed; tests/cli-daemon-proxy.test.ts 31 passed.
+      dist/daemon/index.js count stayed 8 before and after targeted run."
+    name: targeted daemon/setup tests
+    required: true
+    runner: npm
+    created_at: 2026-04-15T07:33:11.298Z
+    completed_at: 2026-04-15T07:33:11.298Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full npm test passed: 2131 suites, 7763 passed, 5 skipped, duration 1675.1s.
+      dist/daemon/index.js count stayed 8 before and after full run, so this snapshot did not add
+      orphan daemon processes."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-15T07:33:14.073Z
+    completed_at: 2026-04-15T07:33:14.073Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Skipped as a gate for this task because validate reports repo-level pre-existing failures
+      unrelated to this patch, including .kspec/modules/meta.yaml schema errors and broad
+      completeness/alignment issues.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-15T07:33:16.960Z
+    completed_at: 2026-04-15T07:33:16.960Z
+events:
+  - _ulid: 01KP80AVYTSQXS383HRT0BPZK6
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-15T07:22:48.667Z
+  - _ulid: 01KP80BFW9X155FZEZFQZ72TTR
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-15T07:23:09.065Z
+  - _ulid: 01KP80XWXH5PRV4AHGYQ2NQB2G
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted daemon/setup tests
+    timestamp: 2026-04-15T07:33:12.242Z
+  - _ulid: 01KP80XZP7ABJQ1PFZSCW777TZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-15T07:33:15.079Z
+  - _ulid: 01KP80Y2FBGCQ602TZ5EVKR23A
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-04-15T07:33:17.931Z
+  - _ulid: 01KP80Y53HBZ52T2Z19ZCDT595
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KP80Y45X6CKXRRKK0WCG3Q7B
+    timestamp: 2026-04-15T07:33:20.625Z
+  - _ulid: 01KP80YENJMN6GJZZEJ9136BAR
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-15T07:33:30.418Z
+  - _ulid: 01KP80YENJ5CMJYXCBJFGTXX3N
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-15T07:33:30.418Z
+examined_commit: 582b948ce0f292d17dc405eb485dd7519f43ecbd
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KP78S9T0YHQWX9S35W8EFCRY"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KP80Y45X6CKXRRKK0WCG3Q7B
+    entries:
+      - _ulid: 01KP80Y45XMBM585CZMF7GD8R8
+        author: Jacob Chapel
+        body: >-
+          Files read: AGENTS.md; kspec-agents.md; tests/helpers/cli.ts; tests/setup.test.ts;
+          tests/cli-daemon-proxy.test.ts; tests/parser/daemon-config.test.ts;
+          tests/batch-exec-engine.test.ts; tests/dispatch-shadow-mutation-lock.test.ts;
+          tests/plan-inbox-mutation-serialization.test.ts;
+          tests/shadow-lifecycle-concurrent.test.ts; tests/task-mutation-serialization.test.ts;
+          src/cli/index.ts; src/cli/daemon-proxy.ts; src/cli/pid-utils.ts.
+
+          Commands run: git diff/stat; kspec task get --json; kspec review get/for-task/add/open; rg
+          for CLI spawn sites and KSPEC_NO_DAEMON usage; kspec validate; npm test --
+          tests/setup.test.ts tests/parser/daemon-config.test.ts tests/cli-daemon-proxy.test.ts; npm
+          test; daemon count snapshots via pgrep -f dist/daemon/index.js.
+
+          Claims verified: worker claim that direct CLI spawn sites now suppress implicit auto-start
+          verified in the changed files; worker claim that daemon-config opt-in tests still exercise
+          the real auto-start path verified by explicit KSPEC_NO_DAEMON:"" overrides in
+          tests/parser/daemon-config.test.ts; worker claim that this cycle prevents new orphan
+          daemons verified by unchanged process counts before/after targeted and full test runs.
+
+          Categories searched: correctness, regression risk, test quality, integration, error
+          handling. No blocking issues found in this snapshot.
+        created_at: 2026-04-15T07:33:19.677Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-15T07:33:30.418Z
+created_at: 2026-04-15T07:22:48.667Z
+updated_at: 2026-04-15T07:33:30.418Z
+notes: []

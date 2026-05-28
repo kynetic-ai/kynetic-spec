@@ -1,0 +1,212 @@
+_ulid: 01KN829CR7JEXD24Q02D8DN2X0
+slugs: []
+title: Review task-test-chokidar-watcher (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exited 6 with pre-existing repo warnings only (orphaned skills/spec
+      alignment/completeness); no new validation errors tied to this task.
+    name: kspec-validate
+    required: false
+    created_at: 2026-04-02T21:42:36.831Z
+    completed_at: 2026-04-02T21:42:36.831Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: timeout 180s npm test -- --fresh tests/daemon-context-manager.test.ts
+      tests/daemon-watcher-error-handling.test.ts tests/daemon-watcher-fallback.test.ts
+      tests/daemon-watcher-multi-project.test.ts tests/session-watcher.test.ts => 25/25 suites,
+      63/63 tests passed in 27.5s.
+    name: watcher-targeted-suite
+    required: true
+    runner: npm-test
+    created_at: 2026-04-02T21:43:23.094Z
+    completed_at: 2026-04-02T21:43:23.094Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test -- --fresh was started in the review snapshot but did not complete promptly;
+      targeted watcher coverage was re-run and passed. No full-suite result recorded for this cycle.
+    name: full-suite
+    required: false
+    runner: npm-test
+    created_at: 2026-04-02T21:43:30.974Z
+    completed_at: 2026-04-02T21:43:30.974Z
+events:
+  - _ulid: 01KN829CR7T8H9EX9K76CCJ03H
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-02T21:41:15.655Z
+  - _ulid: 01KN82AMF02H1P78G4TXDW16B9
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-02T21:41:56.320Z
+  - _ulid: 01KN82BJDSB4QRW0DAHBNB05RG
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN82BFZ0RCNT7TKFCBW3GEYN
+    timestamp: 2026-04-02T21:42:27.006Z
+  - _ulid: 01KN82BRBVHYJE50900BDTM9R2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN82BP6KCKCE3QMJERC6K0WP
+    timestamp: 2026-04-02T21:42:33.083Z
+  - _ulid: 01KN82BXGKRZP6XYK0DVJHDWS7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-04-02T21:42:38.355Z
+  - _ulid: 01KN82CRYJGJWZV67ZK0V1HGVY
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-02T21:43:06.450Z
+  - _ulid: 01KN82CRYK9VXFRFA3WCFYCZJ0
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-02T21:43:06.451Z
+  - _ulid: 01KN82DC45CSNT4TZRYN7EBQAR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: watcher-targeted-suite
+    timestamp: 2026-04-02T21:43:26.085Z
+  - _ulid: 01KN82DK2CAV8G116FFAD2BR79
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: full-suite
+    timestamp: 2026-04-02T21:43:33.196Z
+  - _ulid: 01KN86C553FE5GFYRQ71S2XVT1
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN82BFZ0RCNT7TKFCBW3GEYN
+    timestamp: 2026-04-02T22:52:40.483Z
+  - _ulid: 01KN86C7CH23JJMGV4VM8Z0NYV
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN82BP6KCKCE3QMJERC6K0WP
+    timestamp: 2026-04-02T22:52:42.769Z
+  - _ulid: 01KN86CPJYFGXHYEGCVZEPNJCB
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN82BFZ0RCNT7TKFCBW3GEYN
+    timestamp: 2026-04-02T22:52:58.334Z
+  - _ulid: 01KN86CSW9QRSJVC1Q5KV9SCJ3
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN82BP6KCKCE3QMJERC6K0WP
+    timestamp: 2026-04-02T22:53:01.705Z
+examined_commit: b850d3f95ceaea076bcf2d2c62e469f4f6fcd3b3
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN7Q6BHCW3EXFA9SCBQAT05K"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN82BFZ0RCNT7TKFCBW3GEYN
+    anchor:
+      type: code
+      commit: b850d3f95ceaea076bcf2d2c62e469f4f6fcd3b3
+      line_end: 156
+      line_start: 129
+      path: tests/daemon-context-manager.test.ts
+      side: head
+    entries:
+      - _ulid: 01KN82BFZ1DREBMJKJTY625G5M
+        author: Jacob Chapel
+        body: AC-8 coverage is still incomplete. Both newly annotated tests prove the permanent-failure
+          callback and project cleanup, but neither asserts the spec-required logged error that
+          identifies the affected project after retries are exhausted. In
+          `tests/daemon-watcher-error-handling.test.ts`, the test stops at
+          `onPermanentFailure`/`onError` counts; in `tests/daemon-context-manager.test.ts`, it stops
+          at unregister/stop assertions. Because `@daemon-file-monitoring ac-8` explicitly includes
+          the logging requirement, these annotations currently overclaim coverage.
+        created_at: 2026-04-02T21:42:24.481Z
+      - _ulid: 01KN86C4DXR8XN4NYFA79RVFVH
+        author: Jacob Chapel
+        body: Fixed in fix cycle 2. The permanent-failure path now logs the missing watched root path in
+          packages/daemon/src/watcher.ts before invoking onPermanentFailure, and
+          tests/daemon-watcher-error-handling.test.ts now asserts that exhausted retries emit a
+          warning containing the affected .kspec path.
+        created_at: 2026-04-02T22:52:39.741Z
+    kind: blocker
+    resolved_at: 2026-04-02T22:52:57.643Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KN82BP6KCKCE3QMJERC6K0WP
+    entries:
+      - _ulid: 01KN82BP6M9HTHG76BC0ED9C97
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          Files read: tests/daemon-context-manager.test.ts,
+          tests/daemon-watcher-error-handling.test.ts, tests/daemon-watcher-fallback.test.ts,
+          tests/daemon-watcher-multi-project.test.ts, tests/session-watcher.test.ts,
+          packages/daemon/src/watcher.ts, packages/daemon/src/session-watcher.ts,
+          packages/daemon/src/project-context.ts.
+
+          Commands run: git diff, kspec task get, kspec item get @daemon-file-monitoring, kspec item
+          get @trait-error-guidance, kspec review get @01KN804T5VPQYZ02QBQ4PNF48J, kspec validate,
+          rg for AC annotations and logging assertions, npm test -- --fresh, timeout 180s npm test
+          -- --fresh <watcher tests>.
+
+          Claims verified: previous fix-cycle claim that AC-3 no longer uses source scanning;
+          current tests measure runtime FDs via /proc/self/fd.
+
+          Categories searched: correctness (found missing AC-8 logging coverage), test quality
+          (found overclaimed annotation), edge cases/error handling/integration (checked watcher
+          retry, atomic rename, session bootstrap, project isolation).
+        created_at: 2026-04-02T21:42:30.868Z
+      - _ulid: 01KN86C6MS43RZ2YAAKED6ERJ5
+        author: Jacob Chapel
+        body: Addressed. Re-verified the corrected AC-8 coverage with npm test -- --fresh
+          tests/daemon-watcher-error-handling.test.ts and a fresh full npm test run (2068/2068
+          suites, 7491 passed, 5 skipped).
+        created_at: 2026-04-02T22:52:42.009Z
+    kind: nit
+    resolved_at: 2026-04-02T22:53:00.959Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-02T21:43:06.450Z
+created_at: 2026-04-02T21:41:15.655Z
+updated_at: 2026-04-02T22:53:00.959Z
+notes: []

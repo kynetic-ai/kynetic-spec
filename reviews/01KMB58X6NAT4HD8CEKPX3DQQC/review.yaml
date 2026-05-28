@@ -1,0 +1,114 @@
+_ulid: 01KMB58X6NAT4HD8CEKPX3DQQC
+slugs: []
+title: Review migrate-batch-buffer-scoping (cycle 1)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 50 batch-related tests pass (33 in batch-write-buffer.test.ts + 17 in
+      task-atomic-writes.test.ts). 13 failures in unrelated dispatch engine tests (timeouts and
+      prompt assertion mismatches) — all pre-existing, not introduced by this change.
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-22T16:22:44.072Z
+    completed_at: 2026-03-22T16:22:44.072Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "AC annotations verified: ac-1 (buffer intercepts writes) covered in
+      batch-write-buffer.test.ts:353, ac-9 (concurrent isolation) covered in
+      batch-write-buffer.test.ts:363,377. Source annotations present in batch-write-buffer.ts:527
+      and batch-exec.ts:781. No remaining callers of deprecated
+      activateBatchBuffer/deactivateBatchBuffer in src/ or tests/."
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-22T16:22:53.351Z
+    completed_at: 2026-03-22T16:22:53.351Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: grep for activateBatchBuffer/deactivateBatchBuffer in src/ and tests/ confirms only the
+      deprecated function definitions remain — no production or test callers.
+    name: no-deprecated-callers
+    required: true
+    runner: manual
+    created_at: 2026-03-22T16:23:03.265Z
+    completed_at: 2026-03-22T16:23:03.265Z
+events:
+  - _ulid: 01KMB58X6NXKYCBYE2NYY8DM6S
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-22T16:15:26.933Z
+  - _ulid: 01KMB59629481933AV06EAZ9ZK
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-22T16:15:36.010Z
+  - _ulid: 01KMB5P8EQDW1ZER6P6GSDQC8K
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-22T16:22:44.439Z
+  - _ulid: 01KMB5PHJ04DPGSWQ501428VDH
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-22T16:22:53.760Z
+  - _ulid: 01KMB5PV6ZGX7AHC5TEJH9875W
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: no-deprecated-callers
+    timestamp: 2026-03-22T16:23:03.647Z
+  - _ulid: 01KMB5Q3V1NZYN4F9S1N3GYGRQ
+    actor: agent@kspec-dispatch
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-22T16:23:12.481Z
+  - _ulid: 01KMB5Q3V1XVQAQ1GKCEMN2F15
+    actor: agent@kspec-dispatch
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-22T16:23:12.481Z
+examined_commit: 861d966082cd395f0fd6072be639f10950f1be31
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMA735DM9VEGT6DA7G603G58"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: agent@kspec-dispatch
+    role: reviewer
+    created_at: 2026-03-22T16:23:12.480Z
+created_at: 2026-03-22T16:15:26.933Z
+updated_at: 2026-03-22T16:23:12.481Z
+notes: []

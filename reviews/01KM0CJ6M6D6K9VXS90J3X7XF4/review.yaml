@@ -1,0 +1,112 @@
+_ulid: 01KM0CJ6M6D6K9VXS90J3X7XF4
+slugs: []
+title: Review agent action input contract
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "6251 tests passed, 1 pre-existing failure in review-cli.test.ts (examined_commit in
+      worktree context), 3 skipped. 276/277 test files passed. agent-action-input.test.ts: 26/26
+      passed. action-model.test.ts: 49/49 passed."
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T11:59:13.423Z
+    completed_at: 2026-03-18T11:59:13.423Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit code 4 — all errors and warnings are pre-existing (3 dangling refs in meta.yaml,
+      orphaned skill dir, missing AC coverage for other specs). No new validation errors introduced
+      by this task. dispatch-agent-action-input ACs have full coverage.
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-18T11:59:22.627Z
+    completed_at: 2026-03-18T11:59:22.627Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 4 ACs (@dispatch-agent-action-input ac-1 through ac-4) have annotated tests in
+      tests/agent-action-input.test.ts. ac-1: 5 tests (prompt interpolation, prompt_template,
+      precedence, default prompt). ac-2: 4 tests (invocation.completed default prompt variants).
+      ac-3: 5 tests (task_binding true/false/undefined, precedence). ac-4: 5 tests (correlation_id,
+      group_id, both, missing). Source annotations present in action.ts and action-executor.ts."
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-18T11:59:33.103Z
+    completed_at: 2026-03-18T11:59:33.103Z
+events:
+  - _ulid: 01KM0CJ6M6W68S4CE0D76VNM1P
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T11:51:12.774Z
+  - _ulid: 01KM0CJEND3B63EPYGDVC5H4G5
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T11:51:21.005Z
+  - _ulid: 01KM0D0W9GN87NZAXENF4V69AE
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T11:59:13.712Z
+  - _ulid: 01KM0D156V3AZDG6B74D2PV5YA
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-18T11:59:22.843Z
+  - _ulid: 01KM0D1FCMBEB1BB4CEH70CC3K
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-18T11:59:33.268Z
+  - _ulid: 01KM0D1Q1ANVH1NWGVE0MJAR7S
+    actor: agent-pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-18T11:59:41.099Z
+  - _ulid: 01KM0D1Q1B293HH8DK7DPTYSHP
+    actor: agent-pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T11:59:41.099Z
+examined_commit: 9abea94245dd4172258e016289afe7572c0d0a3a
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKZPVMVM269XTHFNX9GRPA5N"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: agent-pr-reviewer
+    role: reviewer
+    created_at: 2026-03-18T11:59:40.930Z
+created_at: 2026-03-18T11:51:12.774Z
+updated_at: 2026-03-18T11:59:40.930Z
+notes: []

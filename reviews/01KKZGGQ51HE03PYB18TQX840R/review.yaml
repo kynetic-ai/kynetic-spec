@@ -1,0 +1,152 @@
+_ulid: 01KKZGGQ51HE03PYB18TQX840R
+slugs: []
+title: Review task-code-diff-viewer (cycle 2)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 5809 passed, 3 failed (all 3 failures pre-existing in agent-dispatch-engine.test.ts and
+      review-cli.test.ts — not related to diff viewer changes)
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T03:41:35.022Z
+    completed_at: 2026-03-18T03:41:35.022Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 57 errors all pre-existing in unchanged files (AgentEditForm, SessionFilters,
+      PlanEmbeddedBlocks, etc). Zero errors in new diff components.
+    name: svelte-check
+    required: true
+    runner: svelte-check
+    created_at: 2026-03-18T03:41:43.885Z
+    completed_at: 2026-03-18T03:41:43.885Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 6 ACs have test annotations in code-diff-viewer.spec.ts (ac-1 through ac-6).
+      Implementation components also have AC annotations. AC coverage complete.
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-18T03:41:51.934Z
+    completed_at: 2026-03-18T03:41:51.934Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 17 E2E tests fail with 'Failed to start daemon' — infrastructure issue in detached
+      worktree. Tests cannot be verified in review snapshot. Additionally, AC-4 test has route mock
+      bug (/threads should be /comments) — test would fail even with working daemon.
+    name: e2e
+    required: true
+    runner: playwright
+    created_at: 2026-03-18T03:42:01.020Z
+    completed_at: 2026-03-18T03:42:01.020Z
+events:
+  - _ulid: 01KKZGGQ51BGHD89M5VC5020G7
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T03:41:04.033Z
+  - _ulid: 01KKZGGZ2RPEMJZTFCZ1B83KE5
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T03:41:12.152Z
+  - _ulid: 01KKZGHBW5X1M5GCN2R6NWQVJ9
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKZGHBRR0B6SYR594DFP2H58
+    timestamp: 2026-03-18T03:41:25.253Z
+  - _ulid: 01KKZGHNGC8XY18XZGPAVNKMC7
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T03:41:35.116Z
+  - _ulid: 01KKZGHY5SBBG3T889Z8M9T4DY
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: svelte-check
+    timestamp: 2026-03-18T03:41:43.994Z
+  - _ulid: 01KKZGJ60WXVB8C5VP69XR9QC6
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-18T03:41:52.028Z
+  - _ulid: 01KKZGJEX3WJ5G1GRV972D037J
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: e2e
+    timestamp: 2026-03-18T03:42:01.123Z
+  - _ulid: 01KKZGJPPGA5DM1F8TQZS3GRCM
+    actor: pr-reviewer@kspec
+    event_type: verdict_submitted
+    payload:
+      decision: request_changes
+    timestamp: 2026-03-18T03:42:09.104Z
+  - _ulid: 01KKZGJPPG5CYF6ACQKEEGKW97
+    actor: pr-reviewer@kspec
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T03:42:09.104Z
+examined_commit: f8ff6b04d1c3d5a47cd87ec248123e81023fb1c3
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-code-diff-viewer"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KKZGHBRR0B6SYR594DFP2H58
+    anchor:
+      type: code
+      commit: f8ff6b04d1c3
+      line_end: 541
+      line_start: 541
+      path: packages/web-ui/tests/e2e/code-diff-viewer.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KKZGHBRR0CHV4XW6YE61WZTY
+        author: "@claude"
+        body: "E2E test for AC-4 (click-to-comment) mocks the wrong API route. The test intercepts
+          `**/api/reviews/${CODE_REVIEW_ULID}/threads` but the actual API client
+          (`createReviewThread` in api.ts) posts to `**/api/reviews/${id}/comments`. The Playwright
+          route intercept never fires, so `threadRequest` remains `null` and the assertion
+          `expect(threadRequest).not.toBeNull()` will fail when this E2E test actually runs against
+          a live daemon. Fix: change `/threads` to `/comments` in the route mock at line 541."
+        created_at: 2026-03-18T03:41:25.144Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer@kspec
+    role: reviewer
+    created_at: 2026-03-18T03:42:09.008Z
+created_at: 2026-03-18T03:41:04.033Z
+updated_at: 2026-03-18T03:42:09.008Z
+notes: []

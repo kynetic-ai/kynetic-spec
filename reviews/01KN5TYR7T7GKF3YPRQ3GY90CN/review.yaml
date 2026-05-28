@@ -1,0 +1,436 @@
+_ulid: 01KN5TYR7T7GKF3YPRQ3GY90CN
+slugs: []
+title: "Plan review: Plan-Scoped Branch Targeting"
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All ACs across 4 specs are claimed by tasks. task-plan-branch-schema covers all 5
+      plan-branch-association ACs. task-plan-branch-command covers all 7 plan-branch-creation ACs.
+      task-dispatch-plan-branch-resolution covers all 6 plan-branch-dispatch-target ACs.
+      task-plan-branch-activation covers both plan-branch-lifecycle-guidance ACs. No orphan ACs.
+    name: AC coverage mapping
+    required: true
+    created_at: 2026-04-02T00:56:16.150Z
+    completed_at: 2026-04-02T00:56:16.150Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "task-plan-branch-schema (P1, no deps) is the foundation. task-plan-branch-command (P1)
+      and task-dispatch-plan-branch-resolution (P1) both depend only on task-plan-branch-schema and
+      can run in parallel. task-plan-branch-activation (P2) depends on task-plan-branch-command. No
+      circular deps. No P1-depends-on-P2 misalignment. Good parallelism: tasks 2 and 3 are
+      independent after task 1."
+    name: Dependency ordering
+    required: true
+    created_at: 2026-04-02T00:56:20.681Z
+    completed_at: 2026-04-02T00:56:20.681Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 4 tasks have detailed What/Why/How sections, specific file references, testing
+      guidance, and explicit Covers lines. No implicit references to plan discussion context. An
+      agent could pick up any task in a fresh session.
+    name: Task standalone-ness
+    required: true
+    created_at: 2026-04-02T00:56:25.009Z
+    completed_at: 2026-04-02T00:56:25.009Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@plan-support exists (01KGKSNZ, feature, implemented). @dispatch-workspace-configuration
+      exists (01KKFY93P2, feature, implemented). Both are valid parents for requirement-type specs."
+    name: Parent ref validity
+    required: true
+    created_at: 2026-04-02T00:56:29.555Z
+    completed_at: 2026-04-02T00:56:29.555Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec search 'plan branch' returned 0 matches. No existing specs cover plan-scoped branch
+      behavior. This is genuinely new territory.
+    name: No duplicate specs
+    required: true
+    created_at: 2026-04-02T00:56:34.113Z
+    completed_at: 2026-04-02T00:56:34.113Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: ACs describe observable behavior (branch created, output shown, work targets branch). No
+      code-level terms (function names, variable names, protocol details) in AC given/when/then.
+      Implementation details are correctly confined to task descriptions. Minor nits on descriptions
+      noted separately.
+    name: Behavioral language purity
+    required: true
+    created_at: 2026-04-02T00:56:38.528Z
+    completed_at: 2026-04-02T00:56:38.528Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "ac-stale-target-detection on plan-branch-dispatch-target has compound then-clause:
+      detection AND update. Should be two ACs. All other ACs across all 4 specs are atomic with
+      single verifiable outcomes."
+    name: AC atomicity
+    required: true
+    created_at: 2026-04-02T00:56:43.053Z
+    completed_at: 2026-04-02T00:56:43.053Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: plan-branch-creation defines a CLI command with JSON output (ac-reports-result), shadow
+      state mutation (ac-updates-plan-record), and error paths (ac-rehydrate-remote failure) but
+      declares no traits. Should have trait-json-output, trait-semantic-exit-codes,
+      trait-error-guidance, and trait-shadow-commit. plan-branch-association and
+      plan-branch-lifecycle-guidance trait selections need clarification.
+    name: Trait selection
+    required: true
+    created_at: 2026-04-02T00:56:47.559Z
+    completed_at: 2026-04-02T00:56:47.559Z
+events:
+  - _ulid: 01KN5TYR7TTV16M9J8EQRTRGCR
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-02T00:54:38.074Z
+  - _ulid: 01KN5TZ21VJBNWSVKRQYTKVRXA
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-02T00:54:48.124Z
+  - _ulid: 01KN5TZDMK1ZATEG1Z72J5QCR0
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN5TZCZ7RC0RD0EEWVCWDNET
+    timestamp: 2026-04-02T00:54:59.987Z
+  - _ulid: 01KN5TZJ34CNKM8GEDXAPDNZN3
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KN5TZHE113CSFPZVKDK45SVP
+    timestamp: 2026-04-02T00:55:04.548Z
+  - _ulid: 01KN5TZXGWJWYP1BYBCQ4YB0G7
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN5TZWWS08CH6X1Y46WE6Y5M
+    timestamp: 2026-04-02T00:55:16.252Z
+  - _ulid: 01KN5V01WE62N65VMJKJ02DB9J
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN5V017XHVDXK1BS4ZYDDYJD
+    timestamp: 2026-04-02T00:55:20.718Z
+  - _ulid: 01KN5V0D61XV8HZXT64NCV15QQ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KN5V0CHE05GEE4A6E7HD1EQZ
+    timestamp: 2026-04-02T00:55:32.289Z
+  - _ulid: 01KN5V0HEDZ13QRQMNDTNX80C8
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN5V0GS530568K37ZTA4TH4W
+    timestamp: 2026-04-02T00:55:36.653Z
+  - _ulid: 01KN5V0WKZ46QADVHBE2B98SM4
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KN5V0VZBMTJDYP08T2X0WJKN
+    timestamp: 2026-04-02T00:55:48.095Z
+  - _ulid: 01KN5V10ZCXX759W3F17MQX02Z
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KN5V10A6RGCQEMKPJB0TWZCD
+    timestamp: 2026-04-02T00:55:52.556Z
+  - _ulid: 01KN5V1AHHNFQQZQFSQA4JA0CM
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN5V19W8HNG4VNCFC84EE0ZJ
+    timestamp: 2026-04-02T00:56:02.353Z
+  - _ulid: 01KN5V1ERB10R83WZA7CKH7QM6
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN5V1E3C8S2TMVDM6NH30TRH
+    timestamp: 2026-04-02T00:56:06.667Z
+  - _ulid: 01KN5V1RNG90NR027W39VSDGYC
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage mapping
+    timestamp: 2026-04-02T00:56:16.817Z
+  - _ulid: 01KN5V1X2CSDS1XTMW2N1M403K
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-04-02T00:56:21.324Z
+  - _ulid: 01KN5V21AE5JHMN61VPKFR0X1Y
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Task standalone-ness
+    timestamp: 2026-04-02T00:56:25.678Z
+  - _ulid: 01KN5V25REG4TN18PHNPHHMPYW
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Parent ref validity
+    timestamp: 2026-04-02T00:56:30.222Z
+  - _ulid: 01KN5V2A6DA6SJ0DN34AJSG6J2
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: No duplicate specs
+    timestamp: 2026-04-02T00:56:34.765Z
+  - _ulid: 01KN5V2EGVCSKA55Z89W76MTQZ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Behavioral language purity
+    timestamp: 2026-04-02T00:56:39.196Z
+  - _ulid: 01KN5V2JYE9PZHAWK1TBPRSPVF
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: AC atomicity
+    timestamp: 2026-04-02T00:56:43.726Z
+  - _ulid: 01KN5V2QBBFG04SM3ZSZFMV2SZ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Trait selection
+    timestamp: 2026-04-02T00:56:48.235Z
+  - _ulid: 01KN5V2YJR8NKXN0X0HDDH3HA0
+    actor: "@claude"
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-02T00:56:55.640Z
+  - _ulid: 01KN5V2YJRAV64YVHQR5B9V0JT
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-02T00:56:55.640Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-plan-scoped-branch-targeting"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN5TZCZ7RC0RD0EEWVCWDNET
+    anchor:
+      type: structured
+      ref: "@plan-branch-creation"
+      section: traits
+    entries:
+      - _ulid: 01KN5TZCZ75EW36398ME96XX2Z
+        author: "@claude"
+        body: "plan-branch-creation is a CLI command that creates branches and updates shadow state, but has
+          no traits. It should have: trait-json-output (ac-reports-result mentions output),
+          trait-semantic-exit-codes (error cases need exit code semantics), trait-error-guidance
+          (remote fetch failures, invalid refs), and trait-shadow-commit (updates plan record on
+          shadow branch). Compare with @deterministic-task-branch-helper which has all three of
+          json-output, semantic-exit-codes, and error-guidance."
+        created_at: 2026-04-02T00:54:59.303Z
+    kind: blocker
+  - _ulid: 01KN5TZHE113CSFPZVKDK45SVP
+    anchor:
+      type: structured
+      ref: "@plan-branch-association"
+      section: traits
+    entries:
+      - _ulid: 01KN5TZHE1BG15MZWDS55F01NG
+        author: "@claude"
+        body: plan-branch-association is a data model spec for plan set --branch, which mutates shadow
+          state. Should it carry trait-shadow-commit? The parent @plan-support already has it, but
+          the child requirement doesn't inherit parent traits — each spec must declare its own. The
+          plan set command for status already exists under @plan-crud, so if --branch is just
+          another plan set flag, the trait coverage may come from @plan-crud's existing trait
+          bindings. Clarify whether this spec describes new command behavior or just schema.
+        created_at: 2026-04-02T00:55:03.873Z
+    kind: question
+  - _ulid: 01KN5TZWWS08CH6X1Y46WE6Y5M
+    anchor:
+      type: structured
+      field: ac-stale-target-detection
+      ref: "@plan-branch-dispatch-target"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KN5TZWWTK2M30TJDK9KYEZX0
+        author: "@claude"
+        body: "ac-stale-target-detection has a compound then-clause: 'the stale integration target is
+          detected AND the workspace record is updated.' These are two distinct verifiable behaviors
+          — detection and remediation. Split into two ACs: one for detecting the mismatch, one for
+          updating the target. This also mirrors @dispatch-workspace-configuration ac-6 which
+          already covers config-change-driven stale detection — clarify how plan-branch stale
+          detection interacts with or supersedes that existing AC."
+        created_at: 2026-04-02T00:55:15.610Z
+    kind: blocker
+  - _ulid: 01KN5V017XHVDXK1BS4ZYDDYJD
+    anchor:
+      type: structured
+      ref: "@plan-branch-dispatch-target"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KN5V017XS6SHDF848NY68S0A
+        author: "@claude"
+        body: "Overlap with @dispatch-workspace-configuration: ac-6 on that existing spec already describes
+          'when the operator changes dispatch.base_branch, the dispatcher detects the mismatch and
+          updates or surfaces the conflict.' This plan's ac-stale-target-detection describes the
+          same pattern but for plan branches. Both specs describe stale integration target behavior
+          in the same function (resolveDispatchWorkspaceConfig). The plan needs to clarify how these
+          interact — does plan-branch override config-change detection? Do they compose? Should
+          ac-stale-target-detection reference @dispatch-workspace-configuration ac-6 as a
+          foundation?"
+        created_at: 2026-04-02T00:55:20.062Z
+    kind: blocker
+  - _ulid: 01KN5V0CHE05GEE4A6E7HD1EQZ
+    anchor:
+      type: structured
+      field: ac-plan-branch-missing
+      ref: "@plan-branch-dispatch-target"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KN5V0CHEACX97CT6T9K025XW
+        author: "@claude"
+        body: ac-plan-branch-missing says the dispatcher 'attempts to fetch the branch from configured
+          remotes before failing.' What happens after failing? The AC doesn't describe the failure
+          behavior. Should the task be blocked? Should it fall through to the default integration
+          branch? Should it surface an error to the operator? Compare with
+          @dispatch-workspace-configuration ac-4 which specifies 'fails with actionable guidance.'
+          The then-clause needs the observable outcome.
+        created_at: 2026-04-02T00:55:31.630Z
+    kind: question
+  - _ulid: 01KN5V0GS530568K37ZTA4TH4W
+    anchor:
+      type: structured
+      field: ac-deterministic-name
+      ref: "@plan-branch-creation"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KN5V0GS54MDCJKRV4X9ZBF0V
+        author: "@claude"
+        body: ac-deterministic-name includes 'plan/<normalized-slug>/<short-ref>' — this is the naming
+          convention, which is fine for a spec. But the task description goes further and specifies
+          the exact normalization algorithm. That's task-level detail and belongs only there, which
+          it does. The AC is borderline — consider whether 'a branch is created using a
+          deterministic naming convention derived from the plan identity' is cleaner, leaving the
+          exact pattern to implementation. Minor — the current form is acceptable.
+        created_at: 2026-04-02T00:55:35.973Z
+    kind: nit
+  - _ulid: 01KN5V0VZBMTJDYP08T2X0WJKN
+    anchor:
+      type: structured
+      ref: "@plan-branch-lifecycle-guidance"
+      section: specs
+    entries:
+      - _ulid: 01KN5V0VZBA3MH2FYS1098JWRS
+        author: "@claude"
+        body: plan-branch-lifecycle-guidance has only 2 ACs (derive-hint and derive-existing), both about
+          derive output. The spec title says 'Lifecycle Guidance' which implies broader awareness —
+          what about plan completion? When a plan completes, should the user be informed the plan
+          branch can be merged/deleted? What about plan get showing branch status? If the scope is
+          intentionally narrow (derive-only), the title/description should match — e.g., 'Plan
+          Branch Derive Guidance' instead of 'Lifecycle.'
+        created_at: 2026-04-02T00:55:47.435Z
+    kind: question
+  - _ulid: 01KN5V10A6RGCQEMKPJB0TWZCD
+    anchor:
+      type: structured
+      ref: "@plan-branch-dispatch-target"
+      section: specs
+    entries:
+      - _ulid: 01KN5V10A64KY781E52ZBFZJZS
+        author: "@claude"
+        body: "Parent placement: plan-branch-dispatch-target is under @dispatch-workspace-configuration,
+          while the other three specs are under @plan-support. This makes sense conceptually
+          (dispatch behavior lives under dispatch config), but it means a single plan's specs span
+          two module subtrees. Verify this is intentional — it creates a cross-module dependency
+          where dispatch specs reference plan data. The alternative would be placing all four under
+          @plan-support with a depends_on to @dispatch-workspace-configuration."
+        created_at: 2026-04-02T00:55:51.878Z
+    kind: question
+  - _ulid: 01KN5V19W8HNG4VNCFC84EE0ZJ
+    anchor:
+      type: structured
+      ref: "@plan-branch-creation"
+      section: description
+    entries:
+      - _ulid: 01KN5V19W86Q0CEQBFSMXKCBDT
+        author: "@claude"
+        body: "Description says 'paralleling how task branches are created for tasks' — this is
+          comparative/justification language. The description should stand on its own: 'A dedicated
+          command creates or resumes a branch for a plan using a deterministic naming convention.'
+          Drop the comparison clause."
+        created_at: 2026-04-02T00:56:01.672Z
+    kind: nit
+  - _ulid: 01KN5V1E3C8S2TMVDM6NH30TRH
+    anchor:
+      type: structured
+      ref: "@plan-branch-dispatch-target"
+      section: description
+    entries:
+      - _ulid: 01KN5V1E3CB5RN33RWPFXRSJK3
+        author: "@claude"
+        body: "Description says 'instead of the project's default integration branch' — this comparative
+          framing describes what doesn't happen rather than what does. Simplify to: 'When the
+          dispatch engine provisions a workspace for a task that belongs to a plan with an
+          associated branch, the plan branch is used as the task's integration target.' The fallback
+          behavior is already covered by ac-no-plan-ref-passthrough and ac-null-branch-passthrough."
+        created_at: 2026-04-02T00:56:05.996Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: "@claude"
+    role: reviewer
+    created_at: 2026-04-02T00:56:55.640Z
+created_at: 2026-04-02T00:54:38.074Z
+updated_at: 2026-04-02T00:56:55.640Z
+notes: []

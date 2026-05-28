@@ -1,0 +1,183 @@
+_ulid: 01KMVJ8QGEZTKRG0P3X7RM1MBV
+slugs: []
+title: Review fix-dispatch-shadow-mutation-lock-contention-and-leak-between-daemon-and-agents (cycle 2)
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 1962/1962 suites, 7073 passed, 5 skipped, 0 failed. Files read:
+      src/parser/file-lock.ts, src/cli/index.ts, src/agent-runtime/workspace.ts,
+      src/parser/dispatch-workspaces.ts, tests/file-lock.test.ts,
+      tests/dispatch-shadow-mutation-lock.test.ts, tests/dispatch-workspace-registry.test.ts.
+      Commands run: kspec task get @01KMVCF95W6HCCPP6H5SSA7HBG; kspec item get
+      @scoped-dispatch-shadow-serialization; kspec review get @01KMVF0BZ1CFC953MH2ZPTN6KS; kspec
+      review for-task @01KMVCF95W6HCCPP6H5SSA7HBG; git diff 737fd3d...5055285; rg AC annotations in
+      changed tests; kspec validate; npm test. Claims verified: previous review fixes for staged
+      cleanup, ac-9 test rewrite, ac-11 test addition. Categories searched: correctness, edge cases,
+      error handling, test quality, integration."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-29T01:15:15.633Z
+    completed_at: 2026-03-29T01:15:15.633Z
+events:
+  - _ulid: 01KMVJ8QGEKKRX97AB5JYEXYA6
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-29T01:10:23.502Z
+  - _ulid: 01KMVJG2BZABMW78CF0XYQ8VGK
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-29T01:14:24.000Z
+  - _ulid: 01KMVJGDX1BXJ8N8H8DJYGJYT8
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMVJGDCTCNHWTV6541CCEB3J
+    timestamp: 2026-03-29T01:14:35.809Z
+  - _ulid: 01KMVJGR1NY8615JZE5ARRDKKJ
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMVJGQEG8M1VG6G821TFAG5T
+    timestamp: 2026-03-29T01:14:46.197Z
+  - _ulid: 01KMVJHN9EGGHHXACVHRTYGZ77
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-29T01:15:16.143Z
+  - _ulid: 01KMVJHYJB2Z3HRPNQV1EDPGCT
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-29T01:15:25.643Z
+  - _ulid: 01KMVJHYJB04TSDJZ9BMZY48NJ
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-29T01:15:25.643Z
+  - _ulid: 01KMVK4CQ366RZ0PC428EPM1BQ
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMVJGDCTCNHWTV6541CCEB3J
+    timestamp: 2026-03-29T01:25:29.955Z
+  - _ulid: 01KMVK4GPR2JV3S07MHC3BGA1F
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMVJGQEG8M1VG6G821TFAG5T
+    timestamp: 2026-03-29T01:25:34.040Z
+  - _ulid: 01KMVK4TA6XBTTSVDG8ANXT04Y
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMVJGDCTCNHWTV6541CCEB3J
+    timestamp: 2026-03-29T01:25:43.878Z
+  - _ulid: 01KMVK4YAR7P843T7A4931EBJF
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMVJGQEG8M1VG6G821TFAG5T
+    timestamp: 2026-03-29T01:25:47.993Z
+examined_commit: 5055285aca2f919de50c96cdff688775120a90d5
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMVCF95W6HCCPP6H5SSA7HBG"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMVJGDCTCNHWTV6541CCEB3J
+    anchor:
+      type: code
+      commit: 5055285aca2f919de50c96cdff688775120a90d5
+      line_end: 104
+      line_start: 102
+      path: src/cli/index.ts
+      side: head
+    entries:
+      - _ulid: 01KMVJGDCTH1C7P6PPWR7HA49V
+        author: Test User
+        body: The force-reclaim cleanup only runs in withDispatchShadowMutationLock, so CLI mutations still
+          skip the ac-11 safety check. The new max-hold reclaim path is used by the CLI preAction
+          hook in src/cli/index.ts, but maybeAcquireDispatchMutationLock only stores the release
+          handle and immediately proceeds into task/review mutations. If a reviewer or worker CLI
+          command reclaims the lock from an alive-but-stuck daemon, any staged or untracked
+          shadow-branch residue is left in place and can be committed together with the CLI
+          mutation, which is exactly the corruption ac-11 is meant to prevent.
+        created_at: 2026-03-29T01:14:35.290Z
+      - _ulid: 01KMVK4C66EX2PPHQ7KNGG9833
+        author: "@claude"
+        body: 'Fixed: maybeAcquireDispatchMutationLock in src/cli/index.ts now checks
+          release.info.forceReclaimed and calls rollbackDirtyShadowWorktree(process.cwd(), "cli",
+          release.info) before proceeding with the CLI mutation. The rollbackDirtyShadowWorktree
+          function was exported from workspace.ts, and the heldMutationLockRelease type was updated
+          to include the .info property. This ensures CLI mutations that reclaim a lock from a stuck
+          daemon clean up any dirty shadow state before committing their own changes.'
+        created_at: 2026-03-29T01:25:29.414Z
+    kind: blocker
+    resolved_at: 2026-03-29T01:25:43.219Z
+    resolved_by: "@claude"
+  - _ulid: 01KMVJGQEG8M1VG6G821TFAG5T
+    anchor:
+      type: code
+      commit: 5055285aca2f919de50c96cdff688775120a90d5
+      line_end: 179
+      line_start: 147
+      path: tests/dispatch-shadow-mutation-lock.test.ts
+      side: head
+    entries:
+      - _ulid: 01KMVJGQEG4RPPK51H45JXNF7A
+        author: Test User
+        body: The only ac-9 annotation still does not exercise reconcileDispatchWorkspaceRegistry or
+          multiple dirty records. This test acquires the lock manually, starts a CLI task note, and
+          releases it; it would still pass if reconciliation reverted to a single batch-wide lock,
+          because the code under test never invokes reconciliation at all. That leaves ac-9 without
+          a behavioral test proving that reconciliation actually yields between per-record
+          save+commit cycles.
+        created_at: 2026-03-29T01:14:45.584Z
+      - _ulid: 01KMVK4G6FQFZJ3TM93CHBWJ5R
+        author: "@claude"
+        body: "Fixed: Replaced the simulated lock-interleaving test with a behavioral test in
+          dispatch-workspace-registry.test.ts that provisions 2 workspace records, runs
+          reconcileDispatchWorkspaceRegistry with both records dirty (status changed to completed),
+          and asserts acquireFileLock was called exactly 2 times (once per dirty record). This test
+          would fail if reconciliation reverted to a single batch-wide lock (which would call
+          acquireFileLock once). The old test in dispatch-shadow-mutation-lock.test.ts was
+          re-annotated as ac-4 since it tests general lock blocking/release, not
+          reconciliation-specific yielding."
+        created_at: 2026-03-29T01:25:33.519Z
+    kind: blocker
+    resolved_at: 2026-03-29T01:25:47.473Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-29T01:15:25.643Z
+created_at: 2026-03-29T01:10:23.502Z
+updated_at: 2026-03-29T01:25:47.473Z
+notes: []

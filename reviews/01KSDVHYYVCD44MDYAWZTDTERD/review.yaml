@@ -1,0 +1,208 @@
+_ulid: 01KSDVHYYVCD44MDYAWZTDTERD
+slugs: []
+title: Review task-plan-review-folder-storage-migration-1 cycle 2
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exit 6: schema/references OK; validation produced pre-existing warnings (deprecated refs,
+      orphaned specs, missing AC coverage outside this task, invalid annotations outside this task).
+      No task-specific validation error found."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-24T20:53:47.350Z
+    completed_at: 2026-05-24T20:53:47.350Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Searched AC annotations for @entity-folder-migration-and-compatibility-1 and trait
+      annotations in tests/src; changed tests include behavioral upgrade and migration coverage.
+      Reviewed new test files for source-scanning patterns; reads are fixture/output reads via
+      fs/readTestOutput, not source assertions.
+    name: AC annotation scan
+    required: false
+    runner: rg
+    created_at: 2026-05-24T20:53:58.660Z
+    completed_at: 2026-05-24T20:53:58.660Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test passed: 2519 suites passed; 9584 passed, 5 skipped of 9589. Full log:
+      /tmp/kspec-test-cache/01KSDVH1HG35N61BZKG8NV53HD/c3e346264258d81e.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-24T20:54:09.643Z
+    completed_at: 2026-05-24T20:54:09.643Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Isolated /tmp/kspec-review-atomicity-* repro: one monolithic plan plus partial review
+      layout made kspec upgrade --json exit 3 with Review storage folder migration failed; manifest
+      remained kynetic 1.1/no plan_storage while project.plans.yaml was already rewritten to a lean
+      index and .kspec/plans/<ulid>/ existed."
+    name: atomicity reproduction
+    required: false
+    runner: manual
+    created_at: 2026-05-24T20:54:21.068Z
+    completed_at: 2026-05-24T20:54:21.068Z
+events:
+  - _ulid: 01KSDVHYYV4ZVCJYVM87VPVTZ1
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-24T20:41:50.299Z
+  - _ulid: 01KSDVJD4X24P4BBRVBR0A9DFM
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-24T20:42:04.829Z
+  - _ulid: 01KSDW7J033J8GZJF1WV7AATS0
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSDW7GGJT5HXWJHM6TF17MG3
+    timestamp: 2026-05-24T20:53:37.923Z
+  - _ulid: 01KSDW7WR2QHA1QG9AQ29EX1XN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-05-24T20:53:48.930Z
+  - _ulid: 01KSDW87MJVDHDYT2X3VQQ9WTJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC annotation scan
+    timestamp: 2026-05-24T20:54:00.082Z
+  - _ulid: 01KSDW8JDWCPWHZ0Q9G0GMWF9E
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-24T20:54:11.132Z
+  - _ulid: 01KSDW8XJH3VW9QFB6MMK33YT0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: atomicity reproduction
+    timestamp: 2026-05-24T20:54:22.545Z
+  - _ulid: 01KSDW976W47V8R98NMPNNPQDN
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-24T20:54:32.413Z
+  - _ulid: 01KSDW976XV5GB6HX2MYG5XC4C
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-24T20:54:32.413Z
+  - _ulid: 01KSDXQCQE8CBHYR5H1CF2Q32A
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSDW7GGJT5HXWJHM6TF17MG3
+    timestamp: 2026-05-24T21:19:45.391Z
+  - _ulid: 01KSDXQQV9JZ8Z8XCMAZT81RP7
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSDW7GGJT5HXWJHM6TF17MG3
+    timestamp: 2026-05-24T21:19:56.777Z
+examined_commit: 0b0265444b277ffe4a70afc4b37887095e29fefa
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XAYZTG0MN48Z78D45PBV6"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSDW7GGJT5HXWJHM6TF17MG3
+    anchor:
+      type: code
+      commit: 0b0265444b277ffe4a70afc4b37887095e29fefa
+      line_end: 752
+      line_start: 747
+      path: src/cli/commands/upgrade.ts
+      side: head
+    entries:
+      - _ulid: 01KSDW7GGJXNG2G58YGRXA89NG
+        author: Jacob Chapel
+        body: "MUST-FIX: The storage migration is not atomic across the plan/review/manifest steps.
+          runPlanFolderMigrationStep commits immediately after rewriting plans, before review
+          migration and manifest promotion run. I reproduced this in an isolated
+          /tmp/kspec-review-atomicity-* project with one monolithic plan plus a partial review
+          layout: kspec upgrade --json exited 3 with Review storage folder migration failed,
+          manifest stayed kynetic 1.1 with no plan_storage, but project.plans.yaml had already been
+          rewritten to a lean index without content and .kspec/plans/<ulid>/ existed. Legacy
+          manifest routing then cannot read the migrated plan body, violating
+          ac-upgrade-executes-folder-migration and the one logical shadow mutation requirement, and
+          leaving a mixed project after a failed upgrade. Buffer/commit the plan migration, review
+          migration, and manifest promotion as one logical mutation or roll back earlier storage
+          writes when a later storage step fails."
+        created_at: 2026-05-24T20:53:36.402Z
+      - _ulid: 01KSDXQB3EY04ZZVCY4CM1AP0Y
+        author: "@claude"
+        body: >-
+          Fixed in 6cd0bb4dbb. Wrapped plan-folder migration, review-folder migration, and manifest
+          promotion in a single `runWithBuffer` scope in `src/cli/commands/upgrade.ts` (new
+          `runAtomicStorageMigration` orchestrator). The nested `runWithBuffer` calls inside
+          `applyPlanMigration`, `applyReviewMigration`, and the buffer-aware yaml writer now reuse
+          the outer buffer instead of flushing per-step. Removed the per-step `commitIfShadow`
+          calls; the orchestrator issues exactly one shadow commit after the buffer flushes
+          ("migrate plan/review storage to folder-backed layout (kynetic 1.2)"). On any step failure
+          or unexpected throw inside the buffered scope the orchestrator throws an internal
+          `StorageMigrationAbort` sentinel, the surrounding `runWithBuffer` discards every buffered
+          write, and no files reach disk. Synthetic skipped step records are surfaced for steps that
+          did not run so JSON consumers and the existing partial-layout tests still see the expected
+          step names.
+
+
+          Added a regression test (`upgrade rolls back plan migration when review migration fails
+          (atomic)`) that reproduces your scenario: one valid monolithic plan plus a partial review
+          layout (pre-existing folder + monolithic record). The test snapshots `project.plans.yaml`
+          and `project.reviews.yaml` before the run and asserts they are byte-identical after the
+          failed upgrade, that no plan folder was created for the monolithic plan, that the manifest
+          stays at kynetic 1.1 with no `plan_storage`/`review_storage`, and that the pre-existing
+          review folder is still on disk untouched.
+
+
+          Verification: `npm test` — 2519 suites passed, 9585 passed, 5 pre-existing skipped of 9590
+          (cache log `/tmp/kspec-test-cache/01KSDWFR7ZNDGKYWZ6MXKSHH0N/9a1db04cde58d02d.log`).
+        created_at: 2026-05-24T21:19:43.726Z
+    kind: blocker
+    resolved_at: 2026-05-24T21:19:54.850Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-24T20:54:32.412Z
+created_at: 2026-05-24T20:41:50.299Z
+updated_at: 2026-05-24T21:19:54.850Z
+notes: []

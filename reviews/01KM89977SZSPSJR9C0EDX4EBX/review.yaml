@@ -1,0 +1,208 @@
+_ulid: 01KM89977SZSPSJR9C0EDX4EBX
+slugs: []
+title: Review per-task core data and notes files
+author: Jacob Chapel
+checks:
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation completed with repo-wide pre-existing warnings only (exit 6): orphaned
+      specs/skills and invalid AC-annotation fixtures outside this task's scope; no task-specific
+      validation error was surfaced."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-21T13:34:24.997Z
+    completed_at: 2026-03-21T13:34:24.997Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite failed in this snapshot. Failing file:
+      tests/dispatch-workspace-registry.test.ts (2 failing tests: 'suppresses registry write and
+      commit when reconciliation produces no meaningful change' and 'performs registry write when a
+      meaningful field changes between reconciliations')."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-21T13:34:28.459Z
+    completed_at: 2026-03-21T13:34:28.459Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation exited 6 with pre-existing repository warnings (orphaned specs/skills and
+      invalid AC fixtures); no new task-specific validation error surfaced.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-21T13:34:29.587Z
+    completed_at: 2026-03-21T13:34:29.587Z
+events:
+  - _ulid: 01KM89977R9VC91DPFWVNY8GRW
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T13:27:48.217Z
+  - _ulid: 01KM89MPH5H6MXGY490GKBP9Y5
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T13:34:04.325Z
+  - _ulid: 01KM89MQJCMY2VCEPZGZ72MXD7
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM89MQ87BNEETAC0N2DKXHMN
+    timestamp: 2026-03-21T13:34:05.388Z
+  - _ulid: 01KM89MRK3PT49VR9G4HRQTMPK
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM89MRA4NDQBGWD92H47A43Z
+    timestamp: 2026-03-21T13:34:06.435Z
+  - _ulid: 01KM89NB0STQZKZRG7Z25PSBFM
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-03-21T13:34:25.305Z
+  - _ulid: 01KM89NBZH96D2D8122GCPZBQQ
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-21T13:34:26.289Z
+  - _ulid: 01KM89NBZHJR1Z48ATQ2HXRSAQ
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-21T13:34:26.290Z
+  - _ulid: 01KM89NEFDERB25F795JM6NCNE
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-21T13:34:28.845Z
+  - _ulid: 01KM89NFG9V1VNXSY2Z0BN0WHB
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-03-21T13:34:29.897Z
+  - _ulid: 01KM89NGGD2PH3SP48R3HNZA3H
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM89NG6BNSMNYVQJYWJ3G1ZB
+    timestamp: 2026-03-21T13:34:30.925Z
+  - _ulid: 01KM89NSQBQCVRYS3SJ7462FQX
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-21T13:34:40.363Z
+examined_commit: 04dd1dbb397bb4101d90c59dac3a3e27f314b57b
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YET1A7XY9D0V3YQ9DRASG"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM89MQ87BNEETAC0N2DKXHMN
+    anchor:
+      type: code
+      commit: 04dd1dbb397bb4101d90c59dac3a3e27f314b57b
+      line_end: 979
+      line_start: 939
+      path: src/parser/task-data-manager.ts
+      side: head
+    entries:
+      - _ulid: 01KM89MQ87E8XQXZJR08SWPWZG
+        author: Test User
+        body: 'Split-format write buffering is still process-global instead of operation-scoped.
+          withWriteBuffer() reuses any active buffer, and activateBatchBuffer() stores that buffer
+          in the module singleton _activeBuffer. In a normal concurrent workload, a second
+          mutateTask() on a different task will join the first mutation buffer even though no batch
+          is in progress. I reproduced this with two concurrent split mutations where task A throws
+          after 50ms and task B succeeds after 5ms: Promise.allSettled returned one rejection and
+          one fulfillment, but getTask("@b") still returned the old priority because task A
+          discarded the shared buffer. That silently loses successful writes whenever a sibling
+          operation fails, violating the atomicity/concurrency guarantees for non-overlapping task
+          mutations.'
+        created_at: 2026-03-21T13:34:05.064Z
+    kind: blocker
+  - _ulid: 01KM89MRA4NDQBGWD92H47A43Z
+    entries:
+      - _ulid: 01KM89MRA5X2Y9QVXEK8EGWVTC
+        author: Test User
+        body: "Review evidence log: Files read: AGENTS.md, kspec-agents.md, src/parser/task-data-manager.ts,
+          src/parser/split-backend.ts, src/cli/batch-write-buffer.ts, src/cli/commands/task.ts,
+          packages/daemon/src/routes/tasks.ts, packages/daemon/src/routes/diff.ts,
+          tests/per-task-files.test.ts, tests/split-backend.test.ts,
+          tests/task-atomic-writes.test.ts, tests/task-data-manager.test.ts. Commands run: git diff
+          --stat/name-only, kspec task get, kspec item get @task-core-data-file, kspec item get
+          @task-notes-file, rg AC annotations, rg resolveTaskDataManager/loadAllTasks call sites,
+          kspec validate, npm test, and a direct node reproduction against dist/. Claims verified:
+          split-callers now route through resolveTaskDataManager(ctx); AC annotations exist for both
+          specs; concurrent split writes can still lose a successful mutation because of shared
+          buffer reuse. Categories searched: correctness, concurrency/atomicity, test coverage,
+          integration call paths."
+        created_at: 2026-03-21T13:34:06.149Z
+    kind: nit
+  - _ulid: 01KM89NG6BNSMNYVQJYWJ3G1ZB
+    entries:
+      - _ulid: 01KM89NG6BY57EQVJVDF9A5MBD
+        author: Test User
+        body: "Review evidence log: Files read: src/parser/split-backend.ts,
+          src/parser/task-data-manager.ts, src/cli/commands/task.ts, src/cli/commands/review.ts,
+          src/parser/review-task-integration.ts, src/agent-runtime/dispatch.ts,
+          packages/daemon/src/routes/tasks.ts, packages/daemon/src/routes/diff.ts,
+          tests/per-task-files.test.ts, tests/split-backend.test.ts,
+          tests/task-atomic-writes.test.ts, tests/task-rebuild-index.test.ts. Commands run: git
+          diff/stat, kspec task get, kspec item get, kspec review for-task/get, rg for AC
+          annotations and task loaders, kspec validate, npm test. Claims verified: remaining
+          daemon/CLI task load paths now use resolveTaskDataManager(ctx); task/history mutation
+          sites carry explicit commit metadata where applicable. Categories searched: correctness,
+          test quality, integration, error handling; blocking issue is failing required test gate."
+        created_at: 2026-03-21T13:34:30.603Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-21T13:34:26.289Z
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-21T13:34:40.363Z
+created_at: 2026-03-21T13:27:48.217Z
+updated_at: 2026-03-21T13:34:40.363Z
+notes: []

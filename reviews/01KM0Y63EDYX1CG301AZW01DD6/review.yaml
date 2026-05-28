@@ -1,0 +1,138 @@
+_ulid: 01KM0Y63EDYX1CG301AZW01DD6
+slugs: []
+title: Review task-review-skill-version-docs (cycle 3)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: 8902b7aa1f3e
+    evidence: 6510/6511 tests pass, 285/286 files pass. Single failure is pre-existing on dev.
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T16:59:56.770Z
+    completed_at: 2026-03-18T16:59:56.770Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: 8902b7aa1f3e
+    evidence: "kspec validate: pre-existing warnings only. Skills validation: OK (9 files checked)."
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-18T17:00:04.325Z
+    completed_at: 2026-03-18T17:00:04.325Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: 8902b7aa1f3e
+    evidence: Only 4 doc/template files changed. No src/ or tests/ files. Cycle 2 out-of-scope code
+      changes fully reverted.
+    name: scope-compliance
+    required: true
+    created_at: 2026-03-18T17:00:07.410Z
+    completed_at: 2026-03-18T17:00:07.410Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: 8902b7aa1f3e
+    evidence: Zero --version-base/--version-head references in any skill or agent doc file. All 6
+      examples confirmed clean.
+    name: version-flag-removal
+    required: true
+    created_at: 2026-03-18T17:00:10.134Z
+    completed_at: 2026-03-18T17:00:10.134Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: 8902b7aa1f3e
+    evidence: Source template and both rendered outputs (.agents/, .factory/) have identical content for
+      check/verdict sections.
+    name: source-rendered-consistency
+    required: true
+    created_at: 2026-03-18T17:00:13.540Z
+    completed_at: 2026-03-18T17:00:13.540Z
+events:
+  - _ulid: 01KM0Y63EC6F8XV3PXDBQ7SC9Y
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T16:59:10.669Z
+  - _ulid: 01KM0Y6BKZW2MQQPXJZNTW2BR9
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T16:59:19.039Z
+  - _ulid: 01KM0Y7GM7JQCYEDVQGSMYXZKS
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T16:59:56.936Z
+  - _ulid: 01KM0Y7R073RP9RRQZWR163Q0N
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-18T17:00:04.488Z
+  - _ulid: 01KM0Y7V1JYDGE6TGKSVFFG22P
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: scope-compliance
+    timestamp: 2026-03-18T17:00:07.603Z
+  - _ulid: 01KM0Y7XNZ016B6QRVZ1FR89PQ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: version-flag-removal
+    timestamp: 2026-03-18T17:00:10.303Z
+  - _ulid: 01KM0Y80ZXW5PR5KXV1AKXFM3R
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: source-rendered-consistency
+    timestamp: 2026-03-18T17:00:13.694Z
+  - _ulid: 01KM0Y8H0VMT6YTN60KD7RESVX
+    actor: pr-reviewer-agent
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-18T17:00:30.107Z
+  - _ulid: 01KM0Y8H0VNJKJZ4NNXFQ937JK
+    actor: pr-reviewer-agent
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T17:00:30.107Z
+examined_commit: 8902b7aa1f3e228f12750aa934dd24ec51b853f4
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-review-skill-version-docs"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: 8902b7aa1f3e
+    decision: approve
+    reviewer: pr-reviewer-agent
+    role: reviewer
+    created_at: 2026-03-18T17:00:29.927Z
+created_at: 2026-03-18T16:59:10.669Z
+updated_at: 2026-03-18T17:00:29.927Z
+notes: []

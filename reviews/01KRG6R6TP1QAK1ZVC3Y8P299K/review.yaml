@@ -1,0 +1,303 @@
+_ulid: 01KRG6R6TP1QAK1ZVC3Y8P299K
+slugs: []
+title: Review task-fix-implicit-autostart-cleanup-coverage
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/cli-no-daemon.test.ts tests/lint-no-leaky-test-daemon.test.ts
+      tests/lint-daemon-test-guardrails.test.ts passed: 29 suites, 413 tests, duration 95.4s."
+    name: targeted daemon guardrail tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-13T08:36:11.646Z
+    completed_at: 2026-05-13T08:36:11.646Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh passed: 2438 suites, 9230 passed / 9235 tests, 5 skipped, duration
+      2109.7s. Full log: /tmp/kspec-test-cache/01KRG6P0ZHJZFC0XTG5R70E4F4/c3705153724821f6.log"
+    name: full npm test
+    required: true
+    runner: npm test
+    created_at: 2026-05-13T08:36:43.505Z
+    completed_at: 2026-05-13T08:36:43.505Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Synthetic fixtures after a prior kspec CLI subprocess returned 'Found 0 warnings and 0
+      errors' for four unsafe no-cleanup cases: metadataPath alias read, pidPath alias read, kspec
+      serve status --json observation, and fetch via daemon.apiUrl endpoint. Expected
+      no-leaky-test-daemon to report per @daemon-test-guardrail-precision
+      ac-implicit-autostart-cleanup-before-observation."
+    name: implicit auto-start observation coverage
+    required: true
+    runner: npx oxlint
+    created_at: 2026-05-13T08:37:09.704Z
+    completed_at: 2026-05-13T08:37:09.704Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate: schema/references/skills OK; exited 6 because of existing repository-wide
+      warnings (deprecated refs, orphaned specs, missing AC coverage, invalid AC annotations) not
+      specific to this task."
+    name: kspec validate
+    required: false
+    runner: kspec validate
+    created_at: 2026-05-13T08:37:26.457Z
+    completed_at: 2026-05-13T08:37:26.457Z
+events:
+  - _ulid: 01KRG6R6TPV0A046MJ449QPV5G
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-13T08:20:16.342Z
+  - _ulid: 01KRG6X14K43N1XWK2D8BQS368
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-13T08:22:54.355Z
+  - _ulid: 01KRG736EZWA8K9SWD439KVPS0
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRG734W4KQDM2JM8HMVA6GY3
+    timestamp: 2026-05-13T08:26:16.415Z
+  - _ulid: 01KRG7ND570NZP80E3JAV0969J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted daemon guardrail tests
+    timestamp: 2026-05-13T08:36:13.095Z
+  - _ulid: 01KRG7PC9AAT7G2H4NNG2JMN8M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full npm test
+    timestamp: 2026-05-13T08:36:44.971Z
+  - _ulid: 01KRG7Q5TVRQPATNB3XKRFRW5K
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: implicit auto-start observation coverage
+    timestamp: 2026-05-13T08:37:11.131Z
+  - _ulid: 01KRG7QP5ZXGTHJ5GAHN9MN57T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-13T08:37:27.871Z
+  - _ulid: 01KRG7RT354VMW707TGJGGMBEJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KRG7RRQ2DSME07CV5AHXGKKQ
+    timestamp: 2026-05-13T08:38:04.646Z
+  - _ulid: 01KRG7SJQT47NYSKX7MMYRTW3Q
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-13T08:38:29.882Z
+  - _ulid: 01KRG7SJQTVYJSFSPBPPFNZB6M
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-13T08:38:29.882Z
+  - _ulid: 01KRGAWR71CQ7BXEMZ61ZBT2XF
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRG734W4KQDM2JM8HMVA6GY3
+    timestamp: 2026-05-13T09:32:39.521Z
+  - _ulid: 01KRGAX1XKEK0H6AXEHNYCKR0F
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KRG734W4KQDM2JM8HMVA6GY3
+    timestamp: 2026-05-13T09:32:49.459Z
+  - _ulid: 01KRGAXDNDY8MJ0NNZ9G4ZBETA
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRG7RRQ2DSME07CV5AHXGKKQ
+    timestamp: 2026-05-13T09:33:01.485Z
+  - _ulid: 01KRGAXKHEGZS96S5RV2T01003
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KRG7RRQ2DSME07CV5AHXGKKQ
+    timestamp: 2026-05-13T09:33:07.502Z
+examined_commit: 67fe23685ef6ba6c463cf83414a02ad61e7b7027
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRCRJQVWASBCR27BR3D8VFBA"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRG734W4KQDM2JM8HMVA6GY3
+    anchor:
+      type: code
+      commit: 67fe23685ef6ba6c463cf83414a02ad61e7b7027
+      line_end: 6421
+      line_start: 6412
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KRG734W5TXBH4NR7NGYBND0N
+        author: Jacob Chapel
+        body: "MUST-FIX: the implicit auto-start classifier only queues observations when the same
+          initializer both names daemonPidFilePath/daemon.connection.json and performs the read.
+          That leaves required observation shapes unreported: a normal alias pattern (metadataPath =
+          join(..., 'daemon.connection.json'); readTestOutputSync(metadataPath)), a pidPath alias, a
+          follow-up 'kspec serve status --json', and endpoint fetches via an existing daemon URL all
+          pass with zero no-leaky-test-daemon errors and no scoped cleanup. This violates
+          ac-implicit-autostart-cleanup-before-observation, which covers pid, metadata, status, and
+          endpoint observations after a CLI command may auto-start the daemon. Evidence: I ran
+          synthetic oxlint fixtures for metadata alias, pid alias, serve status, and daemon.apiUrl
+          endpoint observation; all returned 'Found 0 warnings and 0 errors' despite no
+          onTestFinished/try-finally cleanup."
+        created_at: 2026-05-13T08:26:14.789Z
+      - _ulid: 01KRGAWPSREN11V554YPY4ZPP3
+        author: "@claude"
+        body: >-
+          Fixed in this cycle. Extended the implicit auto-start classifier to recognise the four
+          missed observation shapes plus the secondary-observation cleanup-timing boundary:
+
+
+          1. **Path alias chain** (`metadataPath = join(home.configDir, 'daemon.connection.json');
+          read(metadataPath)` and `pidPath = isolatedHome.daemonPidFilePath;
+          readFileSync(pidPath)`). Bindings whose init NAMES the daemon path without a read
+          primitive are now recorded in `daemonPathAliasBindings`; a later file-read primitive whose
+          argument resolves to one of these alias identifiers is classified as a daemon-ownership
+          observation (`subtreeContainsReadOnDaemonPathAlias`).
+
+
+          2. **`kspec serve status` invocations**. `isKspecServeStatusCall` +
+          `subtreeContainsKspecServeStatus` recognise CLI calls whose argv tokenises to `serve
+          status` — covers the helper string form (`kspec("serve status --json", tempDir)`), the
+          helper argv form (`kspec(["serve", "status", "--json"], cwd)`), the exec/execSync
+          shell-string form, and the spawn/spawnSync argv-array form. Token collection is
+          quote-aware so `kspec search "serve status"` stays a single argv slot to `search` and is
+          NOT mis-classified.
+
+
+          3. **Endpoint fetches via member access** (`fetch(daemon.apiUrl)`, `new
+          WebSocket(daemon.wsUrl)`). `daemonShapedBindings` tracks bindings whose init is itself a
+          recognised observation; `subtreeContainsFetchOnDaemonMember` / `isDaemonEndpointMemberArg`
+          accept fetch / new WebSocket against a `apiUrl`/`wsUrl`/`baseUrl`/`url` member on those
+          bindings, descending into TemplateLiteral interpolations (`` `${daemon.apiUrl}/api/health`
+          ``).
+
+
+          4. **Standalone (unbound) observation calls**. CallExpression visit queues `await
+          kspec("serve status …")` and `await fetch(daemon.apiUrl)` when they're entire
+          ExpressionStatement payloads (not bound to a variable). Symmetric NewExpression visit
+          handles `new WebSocket(daemon.wsUrl)`.
+
+
+          5. **Secondary-observation cleanup boundary**. The cycle-1 cleanup-timing walk
+          (`hasCleanupAfter`) didn't recognise the codebase's common pattern of registering cleanup
+          once UP-FRONT and then reading metadata later for assertions (e.g.
+          `tests/cli-serve.test.ts:570` registers `onTestFinished(() => killPid(pid))` then reads
+          `metadataPath` at line 577). Added `hasCleanupBefore` anchored at the EARLIEST prior kspec
+          CLI call (the implicit auto-start moment) so cleanup-before-secondary-observation is
+          accepted while stale-pid cleanups (`const pid = 12345; onTestFinished(...); kspec(...)`)
+          are still rejected via the existing `isCaptureOwnedByDetachedStart` ownership check.
+
+
+          6. **Helper-function check differentiation**. Pure observation patterns (serve status,
+          endpoint fetch) carry a `kind: "observation"` flag and skip the `isInHelperFunction`
+          localWrapperUnsafe diagnostic. The helper-wrapper concern is about hiding daemon STARTUP
+          from the call site; observation calls inside a polling helper / async callback are normal
+          practice — the daemon was started in the caller's scope where the start has its own
+          cleanup contract. Ownership captures (pid/metadata reads, direct or via alias) keep the
+          helper check.
+
+
+          Fixtures cover the four unsafe shapes (bound + standalone, including a spawnSync argv-form
+          serve status), safe boundaries (cleanup-before, cleanup-immediate, polling helper,
+          alias-with-cleanup), the stale-pid regression, and the quote-aware `kspec search 'serve
+          status'` negative control.
+
+
+          Verification:
+
+          - `mise exec -- npm test -- --fresh tests/cli-no-daemon.test.ts
+          tests/lint-no-leaky-test-daemon.test.ts tests/lint-daemon-test-guardrails.test.ts`: 31
+          suites, 424 tests pass (was 413; the 11 new tests cover the cycle-2 shapes plus the
+          safe-boundary regressions).
+
+          - `mise exec -- npm test --fresh`: 2440 suites, 9245 passed / 9250 tests (5 skipped, same
+          as cycle 1).
+
+          - `npx oxlint tests/` returns to the 19-error pre-task baseline with zero
+          `no-leaky-test-daemon` errors anywhere in the repo (previously after my cycle-2 extension
+          this went up to 35 errors due to false positives on legitimate cli-no-daemon.test.ts /
+          cli-serve.test.ts patterns; those are eliminated by the `hasCleanupBefore` + helper-kind
+          fixes).
+
+          - Synthetic fixtures mirroring the four reviewer probes (metadataPath alias, pidPath
+          alias, kspec serve status, daemon.apiUrl endpoint) now emit `no-leaky-test-daemon` errors
+          with the new pattern strings `aliased daemon path read` / `kspec serve status observation`
+          / `daemon endpoint fetch`.
+        created_at: 2026-05-13T09:32:38.072Z
+    kind: blocker
+    resolved_at: 2026-05-13T09:32:48.042Z
+    resolved_by: "@claude"
+  - _ulid: 01KRG7RRQ2DSME07CV5AHXGKKQ
+    entries:
+      - _ulid: 01KRG7RRQ2MD5M1YFE1PFZ1R7X
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md, task/spec context, tests/cli-no-daemon.test.ts,
+          tests/parser/daemon-config.test.ts, tests/lint-daemon-test-guardrails.test.ts,
+          tools/eslint-rules/no-leaky-test-daemon.js. Commands run: git diff/stat/check, kspec task
+          get, kspec item get, kspec validate, AC annotation rg, targeted npm test, full npm test,
+          synthetic npx oxlint false-negative fixtures. Claims verified: worker's targeted and full
+          test claims pass; guardrail expansion does not cover all claimed/required implicit
+          observation shapes. Categories searched: correctness, spec alignment, edge cases around
+          aliases/status/endpoints, cleanup scoping, test quality, integration."
+        created_at: 2026-05-13T08:38:03.234Z
+      - _ulid: 01KRGAXCA074ANPMMB987K05CJ
+        author: "@claude"
+        body: Acknowledged — the evidence log accurately captured the four missed observation shapes. The
+          cycle-2 fix targets each one with a dedicated classifier and includes the safe-boundary
+          controls (cleanup-before, polling helper, stale-pid rejection) the original evidence log
+          surfaced as adjacent risks.
+        created_at: 2026-05-13T09:33:00.096Z
+    kind: nit
+    resolved_at: 2026-05-13T09:33:06.106Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-13T08:38:29.882Z
+created_at: 2026-05-13T08:20:16.342Z
+updated_at: 2026-05-13T09:33:06.106Z
+notes: []

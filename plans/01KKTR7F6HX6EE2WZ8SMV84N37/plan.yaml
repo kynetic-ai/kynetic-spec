@@ -1,0 +1,28 @@
+_ulid: 01KKTR7F6HX6EE2WZ8SMV84N37
+slugs:
+  - plan-review-records-web-ui
+title: Review Records Web UI
+status: completed
+approved_at: 2026-03-16T08:28:16.048Z
+derived_specs:
+  - "@review-records-daemon-api"
+  - "@review-content-diff-api"
+  - "@review-records-web-ui"
+  - "@review-code-diff-viewer"
+  - "@review-structured-content-viewer"
+derived_tasks:
+  - "@task-review-api-read"
+  - "@task-review-api-threads"
+  - "@task-review-api-verdicts"
+  - "@task-review-api-websocket"
+  - "@task-diff-api"
+  - "@task-review-list-page"
+  - "@task-review-detail-page"
+  - "@task-review-interaction"
+  - "@task-code-diff-viewer"
+  - "@task-structured-content-viewer"
+  - "@task-review-task-integration"
+module_ref: null
+source_path: /home/chapel/Projects/kynetic-spec/plans/review-records-web-ui.md
+created_at: 2026-03-16T07:19:37.425Z
+completed_at: null

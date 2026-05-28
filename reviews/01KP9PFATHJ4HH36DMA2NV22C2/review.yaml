@@ -1,0 +1,257 @@
+_ulid: 01KP9PFATHJ4HH36DMA2NV22C2
+slugs: []
+title: Review single-command version upgrade (cycle 10)
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate fails on repo-wide pre-existing issues in .kspec/modules/meta.yaml (schema
+      error) plus existing completeness/alignment warnings; no task-specific validation regression
+      was isolated from this command.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-15T23:22:37.927Z
+    completed_at: 2026-04-15T23:22:37.927Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Two npm test invocations in the review worktree reported the same 5 failing tests in
+      tests/cli-agent-commands.test.ts with EACCES mkdir errors under /tmp/.kspec-sessions; the
+      second invocation reused cached results. A separate base-commit worktree could not classify
+      the baseline because dependency bootstrapping failed before Vitest ran.
+    name: npm test
+    required: false
+    runner: npm
+    created_at: 2026-04-15T23:22:41.033Z
+    completed_at: 2026-04-15T23:22:41.033Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: node scripts/test.cjs --fresh tests/upgrade-command.test.ts -> 49/49 tests passed in 58.0s.
+    name: upgrade-command tests
+    required: false
+    runner: vitest
+    created_at: 2026-04-15T23:22:43.950Z
+    completed_at: 2026-04-15T23:22:43.950Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Initialized a temp project, forced .kspec state to lastKnownVersion=0.8.0, kept manifest
+      task_storage.format=split, rewrote the tasks file to a monolithic task with inline notes, then
+      ran dist/cli/index.js upgrade --json. The Task storage migration step reported 'skipped:
+      already using split format' and the monolithic YAML remained unchanged."
+    name: manual upgrade reproduction
+    required: false
+    runner: manual
+    created_at: 2026-04-15T23:22:55.885Z
+    completed_at: 2026-04-15T23:22:55.885Z
+events:
+  - _ulid: 01KP9PFATH3F0EA7S0SEZSRHY3
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-15T23:08:58.065Z
+  - _ulid: 01KP9PH4NBMP97K8XPDXHHN45A
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-15T23:09:57.292Z
+  - _ulid: 01KP9Q86QZ41HSYNM7VT0C2Q2G
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KP9Q85TR3EJK662PQ10YZZDQ
+    timestamp: 2026-04-15T23:22:33.088Z
+  - _ulid: 01KP9Q89MTAS83WW9T2KB8312W
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP9Q88MK95359PPQGRA4CH58
+    timestamp: 2026-04-15T23:22:36.058Z
+  - _ulid: 01KP9Q8CH0CZJD42WSQQ03FYVX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-15T23:22:39.008Z
+  - _ulid: 01KP9Q8FGP5A6Y30HN6QZT47DK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-04-15T23:22:42.070Z
+  - _ulid: 01KP9Q8JA3TYZWW29X1CGWFRPH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: upgrade-command tests
+    timestamp: 2026-04-15T23:22:44.932Z
+  - _ulid: 01KP9Q8XYDQ9FJ38T60DJHFE8N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: manual upgrade reproduction
+    timestamp: 2026-04-15T23:22:56.845Z
+  - _ulid: 01KP9Q90W60R9ZA852ZKRFBAMD
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP9Q8ZT1K4Q4WJMXW1FX09YA
+    timestamp: 2026-04-15T23:22:59.846Z
+  - _ulid: 01KP9Q9CH69SCPKTMKNX3M47VS
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-15T23:23:11.782Z
+  - _ulid: 01KP9Q9CH6VS1WY21EH5Y4K8VA
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-15T23:23:11.782Z
+  - _ulid: 01KP9QAHBXMGC1J1ZZ4MK40H5E
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP9Q88MK95359PPQGRA4CH58
+    timestamp: 2026-04-15T23:23:49.501Z
+  - _ulid: 01KP9QAM6KYTCJWQ42JXKYH998
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP9Q88MK95359PPQGRA4CH58
+    timestamp: 2026-04-15T23:23:52.403Z
+  - _ulid: 01KP9R8FM2P2Q3SQ74595BN22J
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP9Q8ZT1K4Q4WJMXW1FX09YA
+    timestamp: 2026-04-15T23:40:10.754Z
+  - _ulid: 01KP9R8QVM8371YWGZDW5753AG
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP9Q8ZT1K4Q4WJMXW1FX09YA
+    timestamp: 2026-04-15T23:40:19.189Z
+examined_commit: 4a024fed7210a6d4e75ec6705cba591d27320347
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNXYJ5JCR99F76N8N7265E0B"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KP9Q85TR3EJK662PQ10YZZDQ
+    entries:
+      - _ulid: 01KP9Q85TSJ3GE273AXYB2SBE3
+        author: Jacob Chapel
+        body: 'Review evidence log:\nFiles read: src/cli/commands/index.ts, src/cli/index.ts,
+          src/cli/commands/upgrade.ts, src/cli/commands/setup.ts,
+          src/cli/commands/setup-defaults.ts, src/cli/exit-codes.ts, src/parser/gitignore.ts,
+          src/cli/commands/task.ts, tests/upgrade-command.test.ts,
+          tests/setup-reflection-hook.test.ts.\nCommands run: kspec task get
+          @01KNXYJ5JCR99F76N8N7265E0B; kspec review for-task @01KNXYJ5JCR99F76N8N7265E0B; kspec item
+          get @single-command-version-upgrade; kspec validate; rg -n "AC:
+          @(single-command-version-upgrade|trait-error-guidance|trait-semantic-exit-codes|trait-dry-run|trait-json-output)"
+          tests; git diff/stat against 0501051eb49e...4a024fed7210; node scripts/test.cjs --fresh
+          tests/upgrade-command.test.ts; npm test (twice in the review worktree); manual CLI
+          reproduction of a split-manifest + monolithic-tasks project state.\nClaims verified: the
+          new upgrade tests pass; full-suite failure in this snapshot matches the prior-cycle EACCES
+          session-store failures; the task-migration guard skips real monolithic data when the
+          manifest already says split.\nCategories searched: correctness (1 blocker: task migration
+          guard trusts manifest over storage shape), edge cases (hand-edited/partial-upgrade state
+          reproduced), error handling (step-failure behavior and JSON error paths read/tested), test
+          quality (new suite passes but misses the reproduced partial-upgrade state), integration
+          (setup/gitignore/scaffold reuse compared against existing setup code).'
+        created_at: 2026-04-15T23:22:32.153Z
+    kind: nit
+  - _ulid: 01KP9Q88MK95359PPQGRA4CH58
+    anchor:
+      type: code
+      commit: 4a024fed7210a6d4e75ec6705cba591d27320347
+      line_end: 542
+      line_start: 536
+      path: src/cli/commands/upgrade.ts
+      side: head
+    entries:
+      - _ulid: 01KP9Q88MKZKJVZK100G6AAGME
+        author: Jacob Chapel
+        body: "This early return makes  trust the manifest's  marker over the actual task storage shape. I
+          reproduced a hand-edited/partial-upgrade state with  still present but  containing a
+          monolithic task with inline , then ran : the command reported  as skipped and left the
+          monolithic YAML unchanged. That violates the upgrade contract for unknown/hand-edited
+          states to safely run the full pipeline and leaves legacy task storage unmigrated."
+        created_at: 2026-04-15T23:22:35.028Z
+      - _ulid: 01KP9QAK6E95BK2GCQS0F0CZYJ
+        author: Jacob Chapel
+        body: Superseded by the corrected blocker thread immediately below; this duplicate was created by a
+          shell-escaping error during review recording.
+        created_at: 2026-04-15T23:23:51.374Z
+    kind: blocker
+    resolved_at: 2026-04-15T23:23:48.502Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KP9Q8ZT1K4Q4WJMXW1FX09YA
+    anchor:
+      type: code
+      commit: 4a024fed7210a6d4e75ec6705cba591d27320347
+      line_end: 542
+      line_start: 536
+      path: src/cli/commands/upgrade.ts
+      side: head
+    entries:
+      - _ulid: 01KP9Q8ZT2Q0PPSKYT0KTYBBWY
+        author: Jacob Chapel
+        body: "This early return makes kspec upgrade trust the manifest field task_storage.format over the
+          actual task storage shape. I reproduced a hand-edited partial-upgrade state with
+          task_storage.format: split still present but the tasks file still containing a monolithic
+          task with inline notes, then ran kspec upgrade --json: the command reported Task storage
+          migration as skipped and left the monolithic YAML unchanged. That violates the upgrade
+          contract for unknown or hand-edited states to safely run the full pipeline and leaves
+          legacy task storage unmigrated."
+        created_at: 2026-04-15T23:22:58.754Z
+      - _ulid: 01KP9R8EKXVD9W91HE0KFFP4WQ
+        author: "@claude"
+        body: "Fixed: removed the early return that trusted the manifest task_storage.format marker. The
+          function now always reads the actual task file and counts monolithic entries (those
+          without notes_count). This ensures partial-upgrade states where the manifest says split
+          but the tasks file still contains monolithic data are correctly detected and migrated.
+          Added a dedicated test that reproduces the exact scenario described (manifest says split,
+          task file has inline notes)."
+        created_at: 2026-04-15T23:40:09.725Z
+    kind: blocker
+    resolved_at: 2026-04-15T23:40:18.180Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-15T23:23:11.782Z
+created_at: 2026-04-15T23:08:58.065Z
+updated_at: 2026-04-15T23:40:18.180Z
+notes: []

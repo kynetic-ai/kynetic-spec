@@ -1,0 +1,266 @@
+_ulid: 01KR7MRH0X3TWJK0W7M5NSAPJ5
+slugs: []
+title: Review task-fix-guardrail-binding-wrapper-analysis cycle 9
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts => 23 suites passed; 264 tests passed; duration 62.2s
+    name: focused lint guardrail tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-10T00:45:13.752Z
+    completed_at: 2026-05-10T00:45:13.752Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: mise exec -- kspec validate --refs --warnings-ok => passed; 6 pre-existing
+      deprecated-reference warnings; exit 0
+    name: kspec validate refs
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-10T00:45:17.233Z
+    completed_at: 2026-05-10T00:45:17.233Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: mise exec -- kspec validate --completeness --warnings-ok => passed; 251 pre-existing
+      repository-wide completeness/annotation warnings; exit 0
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-10T00:45:20.564Z
+    completed_at: 2026-05-10T00:45:20.564Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: mise exec -- npm test => 2419 suites passed; 9020 tests passed; 5 skipped; duration
+      2055.2s; log /tmp/kspec-test-cache/01KR7MPYQJ47E7Z4YSF30G596X/196d04679de743bc.log
+    name: full npm test
+    required: true
+    runner: npm test
+    created_at: 2026-05-10T00:45:23.936Z
+    completed_at: 2026-05-10T00:45:23.936Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Object-method local helper start() with runKspec serve start --detach, const pid read,
+      onTestFinished process.kill(pid), then daemonHelper.start(); expect(true) exited 0 with Found
+      0 warnings and 0 errors. Expected a local helper boundary diagnostic for
+      ac-approved-daemon-helper-boundary-explicit.
+    name: manual object-method helper boundary probe
+    required: true
+    runner: manual oxlint probe
+    created_at: 2026-05-10T00:45:27.365Z
+    completed_at: 2026-05-10T00:45:27.365Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec item get @daemon-test-guardrail-precision showed 7 own ACs. rg found annotations for
+      all 7 in tests/lint-daemon-test-guardrails.test.ts and
+      tests/lint-no-leaky-test-daemon.test.ts. New tests are behavioral oxlint invocations against
+      synthetic test files, not implementation source scans.
+    name: AC annotation coverage spot-check
+    required: true
+    runner: rg + inspection
+    created_at: 2026-05-10T00:45:30.795Z
+    completed_at: 2026-05-10T00:45:30.795Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md; tools/eslint-rules/no-leaky-test-daemon.js;
+      tests/lint-daemon-test-guardrails.test.ts; tests/lint-no-leaky-test-daemon.test.ts;
+      tests/cli-serve.test.ts; task/spec/review records. Commands run: task get, item get, review
+      for-task/get/add/open, rg AC annotations, git diff/log/diff --check, focused npm test fresh,
+      kspec validate refs/completeness, full npm test, manual oxlint object-method probe. Claims
+      verified: cycle-8 multi-start regression covered by tests; focused and full tests pass.
+      Categories searched: correctness, helper-boundary edge cases, cleanup ownership edge cases,
+      diagnostics, test quality/source scanning, integration."
+    name: review evidence log
+    required: false
+    runner: reviewer
+    created_at: 2026-05-10T00:45:34.060Z
+    completed_at: 2026-05-10T00:45:34.060Z
+events:
+  - _ulid: 01KR7MRH0XDDXWCF0ZTM65N03B
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-10T00:31:56.957Z
+  - _ulid: 01KR7MS5TFZVBQB3TRV20VN72E
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-10T00:32:18.255Z
+  - _ulid: 01KR7MZQGXMYW31CFCFRY5642T
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR7MZP0C8E10R7MFCGDWSY0F
+    timestamp: 2026-05-10T00:35:52.989Z
+  - _ulid: 01KR7N0TPSV9MH068G4KSPQDCG
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR7MZP0C8E10R7MFCGDWSY0F
+    timestamp: 2026-05-10T00:36:29.017Z
+  - _ulid: 01KR7NGWFSGEZN4PZJXFBSJPXG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused lint guardrail tests
+    timestamp: 2026-05-10T00:45:15.129Z
+  - _ulid: 01KR7NGZTNCA8XRTRW7JJ908WT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-05-10T00:45:18.549Z
+  - _ulid: 01KR7NH33C5KBJK3JT9Q6VW715
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-05-10T00:45:21.900Z
+  - _ulid: 01KR7NH6EDRH9EA1WP4RH5G5RN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full npm test
+    timestamp: 2026-05-10T00:45:25.325Z
+  - _ulid: 01KR7NH9PC76SMN6CQ141FVEPT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: manual object-method helper boundary probe
+    timestamp: 2026-05-10T00:45:28.652Z
+  - _ulid: 01KR7NHD0HV688FQW4R51MHF3T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC annotation coverage spot-check
+    timestamp: 2026-05-10T00:45:32.049Z
+  - _ulid: 01KR7NHG7XJY6QXYAN94KKBNZ2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-10T00:45:35.357Z
+  - _ulid: 01KR7NHKJV7TBN5MQWQ7V28Q9D
+    actor: reviewer-agent
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-10T00:45:38.779Z
+  - _ulid: 01KR7NHKJVNHK632RHFMJ2ZVTW
+    actor: reviewer-agent
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-10T00:45:38.779Z
+  - _ulid: 01KR7PTMRNXV9AK4E863D93PNE
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR7MZP0C8E10R7MFCGDWSY0F
+    timestamp: 2026-05-10T01:08:03.477Z
+  - _ulid: 01KR7PV6W6XWX61FW5PTXZ13QB
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR7MZP0C8E10R7MFCGDWSY0F
+    timestamp: 2026-05-10T01:08:22.022Z
+examined_commit: c3f48a086aec3b6407f563b68ce27785cd4b97ee
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR6M77JA0S1EEVZX8KKRPY1V"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR7MZP0C8E10R7MFCGDWSY0F
+    anchor:
+      type: code
+      commit: c3f48a086aec3b6407f563b68ce27785cd4b97ee
+      line_end: 304
+      line_start: 273
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KR7MZP0C0H99864RB0WDB0JY
+        author: Jacob Chapel
+        body: "MUST-FIX: local helper-like abstractions are still only partially covered.  recognizes
+          FunctionDeclaration and variable-bound function/arrow wrappers, but not object/class
+          method wrappers. I confirmed with a manual oxlint probe that an ordinary test file
+          containing  exits 0 with no  diagnostic. That is a local helper-like abstraction, not an
+          approved shared fixture or documented guardrail internal, and it hides the daemon startup
+          behind a wrapper while satisfying cleanup internally. This violates
+          @daemon-test-guardrail-precision ac-approved-daemon-helper-boundary-explicit; the
+          helper-boundary detection needs to include method/property forms (and equivalent
+          class/object helper shapes) or otherwise report these wrapped starts."
+        created_at: 2026-05-10T00:35:51.436Z
+      - _ulid: 01KR7N0S5F5F3DKNE4EEY4B20V
+        author: Jacob Chapel
+        body: 'Correction to preserve the probe text after shell interpolation: the missing case is a local
+          object-method helper. Probe source shape: const daemonHelper = { start() { runKspec("serve
+          start --detach --port 3456"); const pid = readPidFromFile(); onTestFinished(() =>
+          process.kill(pid, "SIGTERM")); } }; then the test body calls daemonHelper.start();
+          expect(true).toBe(true). The manual oxlint run exited 0 with "Found 0 warnings and 0
+          errors." The helper is neither tests/helpers/daemon.ts nor a documented guardrail
+          internal, so ac-approved-daemon-helper-boundary-explicit still has a false negative for
+          method/property helper wrappers.'
+        created_at: 2026-05-10T00:36:27.439Z
+      - _ulid: 01KR7PTKER61CJKJB8M36T97VR
+        author: "@claude"
+        body: Fixed in cycle 10. Extended isInHelperFunction in tools/eslint-rules/no-leaky-test-daemon.js
+          to recognize function/arrow expressions whose parent is a Property (object-method
+          shorthand and longhand value forms), MethodDefinition (class methods, instance/static),
+          PropertyDefinition (class-field arrows/functions), or a plain '=' AssignmentExpression
+          whose LHS is an Identifier or MemberExpression. Manual oxlint probe against the cycle-9
+          reviewer source (object shorthand daemonHelper.start with internal cleanup) now exits 1
+          with localWrapperUnsafe; added regression tests for the shorthand probe, longhand-fn
+          property, arrow property, class instance method, static class method, class-field arrow,
+          and assignment-to-member shapes, plus an allowed-narrow control proving the
+          path-allowlisted shared fixture stays exempt. Diagnostic message updated to name
+          'function, arrow, or method'.
+        created_at: 2026-05-10T01:08:02.127Z
+    kind: blocker
+    resolved_at: 2026-05-10T01:08:20.690Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: reviewer-agent
+    role: reviewer
+    created_at: 2026-05-10T00:45:38.779Z
+created_at: 2026-05-10T00:31:56.957Z
+updated_at: 2026-05-10T01:08:20.690Z
+notes: []

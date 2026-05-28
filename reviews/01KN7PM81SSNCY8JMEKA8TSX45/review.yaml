@@ -1,0 +1,203 @@
+_ulid: 01KN7PM81SSNCY8JMEKA8TSX45
+slugs: []
+title: "Plan review: Daemon File Monitoring Reliability (revision 3)"
+author: "@claude"
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "New spec ac-4 is fixed, but task @task-update-daemon-server-ac8 still prescribes
+      replacement AC text with implementation leakage: 'using a single proven monitoring backend'."
+    name: Spec quality
+    required: true
+    created_at: 2026-04-02T18:18:18.061Z
+    completed_at: 2026-04-02T18:18:18.061Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Revision 3 fixes the prior ordering issue: spec-update tasks are now Phase 1 P1 work, and
+      implementation/testing tasks depend downstream on that spec-first layer."
+    name: Dependency ordering
+    required: true
+    created_at: 2026-04-02T18:18:18.124Z
+    completed_at: 2026-04-02T18:18:18.124Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Each task includes concrete what/why/how context, file areas or commands, and intended
+      verification scope; a fresh-session agent could execute them without relying on planning chat
+      history.
+    name: Task standalone-ness
+    required: true
+    created_at: 2026-04-02T18:18:18.061Z
+    completed_at: 2026-04-02T18:18:18.061Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "The new watcher specs align with @daemon-server, @daemon-entity-cache, and
+      @multi-directory-daemon: cross-project isolation and unregister-on-persistent-failure match
+      existing daemon guarantees rather than contradicting them."
+    name: Existing spec alignment
+    required: true
+    created_at: 2026-04-02T18:18:18.132Z
+    completed_at: 2026-04-02T18:18:18.132Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Referenced specs and task dependencies resolve, and the new specs' AC numbering is
+      sequential with no broken internal references observed.
+    name: Cross-reference validation
+    required: true
+    created_at: 2026-04-02T18:18:18.142Z
+    completed_at: 2026-04-02T18:18:18.142Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@daemon-file-monitoring ac-6 and ac-8 are only mentioned in explanatory prose under
+      @task-test-chokidar-watcher, not in any task's Covers: mapping. They remain orphan ACs."
+    name: Task coverage mapping
+    required: true
+    created_at: 2026-04-02T18:18:29.085Z
+    completed_at: 2026-04-02T18:18:29.085Z
+events:
+  - _ulid: 01KN7PM81S6QSR1ZES98HQKCQV
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-02T18:17:28.377Z
+  - _ulid: 01KN7PMQ4TQT2ZG35E04T2A32Q
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-02T18:17:43.834Z
+  - _ulid: 01KN7PN6KYYP3VP8ARJ9XQH3BW
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN7PN5Y0N53VFQ3SF7R14ZQV
+    timestamp: 2026-04-02T18:17:59.678Z
+  - _ulid: 01KN7PN7PX0GRJ6PAZJC8BA3YR
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN7PN5Y6M9FP7PYWNHJGRSPD
+    timestamp: 2026-04-02T18:18:00.797Z
+  - _ulid: 01KN7PNS87TGDJ4BJVCTKT59CD
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Spec quality
+    timestamp: 2026-04-02T18:18:18.759Z
+  - _ulid: 01KN7PNT9JRVVC74GH8QKQ1J4C
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-04-02T18:18:19.826Z
+  - _ulid: 01KN7PNVBN7FXYGK6H0JEPPZJB
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Task standalone-ness
+    timestamp: 2026-04-02T18:18:20.917Z
+  - _ulid: 01KN7PNWDKG7EBQQGJEK9H5N48
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Existing spec alignment
+    timestamp: 2026-04-02T18:18:22.004Z
+  - _ulid: 01KN7PNXF6HEB60EFSFP5H6HZ0
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Cross-reference validation
+    timestamp: 2026-04-02T18:18:23.078Z
+  - _ulid: 01KN7PP40F7FXTPXSFR76MP9QG
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Task coverage mapping
+    timestamp: 2026-04-02T18:18:29.775Z
+  - _ulid: 01KN7PPESE7K8GPKAWWABZ36PA
+    actor: "@codex"
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-02T18:18:40.815Z
+  - _ulid: 01KN7PPESFV9N75QQFZJ55QMVR
+    actor: "@codex"
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-02T18:18:40.815Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-daemon-file-monitoring-reliability"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN7PN5Y0N53VFQ3SF7R14ZQV
+    anchor:
+      type: structured
+      ref: "@task-update-daemon-server-ac8"
+      section: description
+    entries:
+      - _ulid: 01KN7PN5Y046CWDWBGP3A85121
+        author: "@claude"
+        body: The prescribed replacement text for @daemon-server ac-8 still leaks implementation. Its Then
+          clause says 'using a single proven monitoring backend', which constrains the mechanism
+          instead of describing only the observable guarantee. That means the prior spec-quality
+          blocker is not fully resolved; rewrite this task so the replacement AC stops at reliable
+          cross-platform change detection.
+        created_at: 2026-04-02T18:17:58.976Z
+    kind: blocker
+  - _ulid: 01KN7PN5Y6M9FP7PYWNHJGRSPD
+    anchor:
+      type: structured
+      ref: "@task-test-chokidar-watcher"
+      section: tasks
+    entries:
+      - _ulid: 01KN7PN5Y60F8J890HCX93FDKD
+        author: "@claude"
+        body: "The added 'Verifies' prose does not actually claim coverage for @daemon-file-monitoring ac-6
+          or ac-8. Those ACs still do not appear in any task's Covers: mapping, so the plan still
+          has orphan acceptance criteria. Add explicit task ownership for those ACs, even if the
+          work is only verification of behavior already implemented under existing specs."
+        created_at: 2026-04-02T18:17:58.982Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: "@codex"
+    role: reviewer
+    created_at: 2026-04-02T18:18:40.814Z
+created_at: 2026-04-02T18:17:28.377Z
+updated_at: 2026-04-02T18:18:40.815Z
+notes: []

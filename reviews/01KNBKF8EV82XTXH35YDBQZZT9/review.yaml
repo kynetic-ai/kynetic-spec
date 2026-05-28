@@ -1,0 +1,100 @@
+_ulid: 01KNBKF8EV82XTXH35YDBQZZT9
+slugs: []
+title: Review task-monitoring-spec-ac3-active-sessions
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 'Files read: AGENTS.md, kspec-agents.md, task @01KNBK4T85CE6ZWNVNMMV5P8J5, plan
+      @plan-active-session-scoped-file-monitoring, spec @daemon-file-monitoring. Commands run: git
+      status --short --branch; git log --oneline --decorate -n 12; git diff --stat dev...HEAD; kspec
+      review for-task @01KNBK4T85CE6ZWNVNMMV5P8J5; kspec item get @daemon-file-monitoring; kspec
+      plan get @plan-active-session-scoped-file-monitoring; kspec validate; rg -n "AC:
+      @daemon-file-monitoring|AC: @trait-" tests; kspec log @daemon-file-monitoring; npm test twice.
+      Claims verified: ac-3 wording matches approved plan and current spec output; no source diff
+      beyond submitted snapshot; full test suite passed twice. Categories searched: correctness,
+      spec alignment, test quality, integration, error handling; no task-specific findings.'
+    name: npm-test
+    required: true
+    runner: npm
+    created_at: 2026-04-04T06:44:00.100Z
+    completed_at: 2026-04-04T06:44:00.100Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate returned warnings only (exit 6): orphaned skill directory, repo-wide
+      orphaned spec/status mismatch/completeness warnings. No schema or reference errors, and
+      nothing specific to @daemon-file-monitoring or this task."
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-04T06:44:05.952Z
+    completed_at: 2026-04-04T06:44:05.952Z
+events:
+  - _ulid: 01KNBKF8EVT316KWB4GP3EAEBM
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-04T06:39:16.955Z
+  - _ulid: 01KNBKFZM2ZDEA603X3HYNF6ST
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-04T06:39:40.674Z
+  - _ulid: 01KNBKQXR1BMKTR3CFB3B1M4FW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm-test
+    timestamp: 2026-04-04T06:44:00.897Z
+  - _ulid: 01KNBKR035Z8FQMV75YZ39W4J4
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-04T06:44:03.301Z
+  - _ulid: 01KNBKR035MP79450405BC41F9
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-04T06:44:03.301Z
+  - _ulid: 01KNBKR3FMCP720J9YMB7H5NW1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-04-04T06:44:06.773Z
+examined_commit: 0d05e503f03020b11bd11616e265cc09f024f0d3
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNBK4T85CE6ZWNVNMMV5P8J5"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-04T06:44:03.301Z
+created_at: 2026-04-04T06:39:16.955Z
+updated_at: 2026-04-04T06:44:05.952Z
+notes: []

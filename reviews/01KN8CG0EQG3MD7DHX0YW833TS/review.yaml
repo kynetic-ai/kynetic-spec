@@ -1,0 +1,129 @@
+_ulid: 01KN8CG0EQG3MD7DHX0YW833TS
+slugs: []
+title: "Plan re-review: Workspace-Scoped Integration Target Sync (round 3)"
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All rewritten/new ACs are behavioral, atomic enough to test independently, and the
+      implementation-detail AC flagged in review 01KN8C1B was removed from the plan.
+    name: Spec AC quality
+    required: true
+    created_at: 2026-04-03T00:39:53.245Z
+    completed_at: 2026-04-03T00:39:53.245Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Each task includes why/what/how/testing context, concrete target files or APIs, and
+      explicit Covers lines. Round-2 orphan coverage issues for ac-pull-target-periodic-deferred and
+      ac-divergence-log-guidance are now claimed by task-impl-pull-path and task-impl-degraded-state
+      respectively.
+    name: Task standalone-ness
+    required: true
+    created_at: 2026-04-03T00:39:53.375Z
+    completed_at: 2026-04-03T00:39:53.375Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Spec rewrite tasks establish terminology and ACs before implementation. Implementation
+      tasks depend on the active-target-set foundation where needed, and the only P2 task is the
+      integration-test task depending on completed P1 implementation tasks.
+    name: Dependency ordering
+    required: true
+    created_at: 2026-04-03T00:39:53.381Z
+    completed_at: 2026-04-03T00:39:53.381Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Every rewritten/new AC in the plan is claimed by at least one implementation task. The
+      round-2 gaps are closed: ac-pull-target-periodic-deferred is covered by task-impl-pull-path
+      and integration tests; ac-divergence-log-guidance is covered by task-impl-degraded-state and
+      integration tests."
+    name: AC coverage mapping
+    required: true
+    created_at: 2026-04-03T00:39:53.385Z
+    completed_at: 2026-04-03T00:39:53.385Z
+events:
+  - _ulid: 01KN8CG0EPPXD8JHXFWKA9KBJJ
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-03T00:39:38.199Z
+  - _ulid: 01KN8CGFTRW0GZ650JGEFKEF1Q
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec AC quality
+    timestamp: 2026-04-03T00:39:53.944Z
+  - _ulid: 01KN8CGGWBTHW0MN52673GM373
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Task standalone-ness
+    timestamp: 2026-04-03T00:39:55.019Z
+  - _ulid: 01KN8CGHXHTR5T5R03SR9S8Z3R
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-04-03T00:39:56.081Z
+  - _ulid: 01KN8CGK1KRQEFFMY86PFAT54P
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage mapping
+    timestamp: 2026-04-03T00:39:57.236Z
+  - _ulid: 01KN8CGM64T3TK7HPFXQBVMA6B
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-03T00:39:58.404Z
+  - _ulid: 01KN8CGSTRRKQY3KM8NGHK5YVX
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-03T00:40:04.185Z
+  - _ulid: 01KN8CGSTSXRDRJQ72Y7GXQ5A7
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-03T00:40:04.185Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-workspace-scoped-integration-target-sync"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-04-03T00:40:04.184Z
+created_at: 2026-04-03T00:39:38.199Z
+updated_at: 2026-04-03T00:40:04.185Z
+notes: []

@@ -1,0 +1,247 @@
+_ulid: 01KR4GFJ4FMYHKKBYDAE49NKJB
+slugs: []
+title: Review fix guardrail daemon command classification (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts: 81 tests passed."
+    name: targeted lint guardrail tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-08T19:31:51.278Z
+    completed_at: 2026-05-08T19:31:51.278Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test: 2409 suites passed; 8822 tests passed; 5 skipped; full log
+      /tmp/kspec-test-cache/01KR4GDB77FXKDFXFWWFSJD4SM/b4fbf11ab1419088.log."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-05-08T19:32:01.630Z
+    completed_at: 2026-05-08T19:32:01.630Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 'Synthetic test with exec("node dist/daemon/index.js --port 0") and execSync("node
+      dist/daemon/index.js --port 0") returned exit 0: Found 0 warnings and 0 errors.'
+    name: custom exec daemon-entry probe
+    required: true
+    runner: npx oxlint
+    created_at: 2026-05-08T19:32:12.204Z
+    completed_at: 2026-05-08T19:32:12.204Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate exited 6 with warnings only: schema/references OK, validation passed,
+      existing reference/alignment/completeness warnings remain."
+    name: kspec validate
+    required: false
+    runner: kspec validate
+    created_at: 2026-05-08T19:32:22.190Z
+    completed_at: 2026-05-08T19:32:22.190Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run lint exits 1 with the existing project baseline: 13 errors and 724 warnings, not
+      in the changed files. Focused oxlint of changed files still has a pre-existing
+      tools/no-leaky-test-daemon META_RULE_NAME error plus warnings."
+    name: lint
+    required: false
+    runner: npm run lint
+    created_at: 2026-05-08T19:32:32.168Z
+    completed_at: 2026-05-08T19:32:32.168Z
+events:
+  - _ulid: 01KR4GFJ4E4P21DBD9RRA6MTZT
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-08T19:19:25.582Z
+  - _ulid: 01KR4GG3YX23T2XKXV8CVVNQTZ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-08T19:19:43.837Z
+  - _ulid: 01KR4H60Y3J1HTHCWQBTYT0JG6
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR4H5ZNEHC40V175FG0TDEC6
+    timestamp: 2026-05-08T19:31:41.635Z
+  - _ulid: 01KR4H6BMMBB6P2H1F7VM4G6KR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted lint guardrail tests
+    timestamp: 2026-05-08T19:31:52.596Z
+  - _ulid: 01KR4H6NRCT02CJY0CYXRGHPZZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-08T19:32:02.956Z
+  - _ulid: 01KR4H703ESVW2A9MK1HFY4NQ2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: custom exec daemon-entry probe
+    timestamp: 2026-05-08T19:32:13.550Z
+  - _ulid: 01KR4H79TWJBHTT1WWVAT7KPNQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-05-08T19:32:23.516Z
+  - _ulid: 01KR4H7KJ9M16231Q1FJPYAGG5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: lint
+    timestamp: 2026-05-08T19:32:33.481Z
+  - _ulid: 01KR4H80ZQMH03YMH4K9T4J216
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KR4H7ZQH5VV089ZMSHDHPWEE
+    timestamp: 2026-05-08T19:32:47.223Z
+  - _ulid: 01KR4H8C409FPNJ6NPBHCZ7DM3
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-08T19:32:58.625Z
+  - _ulid: 01KR4H8C41WWDDQKXMJCTZ847D
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-08T19:32:58.625Z
+  - _ulid: 01KR4JPP2A6ZGFGM2CNTM1PF7M
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR4H5ZNEHC40V175FG0TDEC6
+    timestamp: 2026-05-08T19:58:16.138Z
+  - _ulid: 01KR4JPYBAVEF27Q1MHYZ9PNRK
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR4H5ZNEHC40V175FG0TDEC6
+    timestamp: 2026-05-08T19:58:24.618Z
+  - _ulid: 01KR4JQ87ZA116Z9Q6KWB2154T
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR4H7ZQH5VV089ZMSHDHPWEE
+    timestamp: 2026-05-08T19:58:34.751Z
+  - _ulid: 01KR4JQPC9EEF456M6VQ3MKAAT
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR4H7ZQH5VV089ZMSHDHPWEE
+    timestamp: 2026-05-08T19:58:49.225Z
+examined_commit: 09c83cadfc2e708ff8727c4fbbc2e9126d50fb2e
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR3W7PPVDFR8F03VQ6J54M3K"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR4H5ZNEHC40V175FG0TDEC6
+    anchor:
+      type: code
+      commit: 09c83cadfc2e708ff8727c4fbbc2e9126d50fb2e
+      line_end: 535
+      line_start: 503
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KR4H5ZNEHYQDT316T4XR7M92
+        author: Jacob Chapel
+        body: 'MUST-FIX: direct daemon entry detection still misses shell child-process APIs. The task and
+          @daemon-test-guardrail-precision require direct real daemon entrypoint starts outside
+          approved helpers to be reported, but this branch only checks
+          spawn/spawnSync/execFile/execFileSync and fork. A synthetic oxlint probe containing
+          exec("node dist/daemon/index.js --port 0") and execSync("node dist/daemon/index.js --port
+          0") exited 0 with "Found 0 warnings and 0 errors", so those direct daemon launches still
+          bypass the shared fixture guardrail. Add exec/execSync direct-entry detection and
+          behavioral coverage for those shell-string shapes.'
+        created_at: 2026-05-08T19:31:40.334Z
+      - _ulid: 01KR4JPMTSQ1CF81PP19GHB07D
+        author: "@claude"
+        body: "Fixed in this cycle. readDaemonEntryInvocation now also handles the exec/execSync
+          shell-string callees: the command argument is tokenised on whitespace (literalString or
+          templateLiteralRaw with ${...} placeholders preserved) and a daemon entry token anywhere
+          in the command triggers the directDaemonSpawn message. The runtime-form (exec(\"node
+          dist/daemon/index.js …\")), direct-executable form (exec(\"dist/daemon/index.js …\")),
+          absolute path (exec(\"node /…/dist/daemon/index.js …\")), template literal, and
+          bun-runtime shape are all now reported. Verified manually with the reviewer's
+          exec/execSync probe — both lines now flag with the directDaemonSpawn message.
+          Detached-serve classification for exec(\"kspec serve start --detach\") is preserved (kspec
+          does not carry the daemon entry token, so the call still routes through the detach
+          detector). 6 new behavioral tests in tests/lint-daemon-test-guardrails.test.ts cover the
+          new shapes plus a regression confirming the detached-serve / direct-spawn split."
+        created_at: 2026-05-08T19:58:14.873Z
+    kind: blocker
+    resolved_at: 2026-05-08T19:58:23.282Z
+    resolved_by: "@claude"
+  - _ulid: 01KR4H7ZQH5VV089ZMSHDHPWEE
+    entries:
+      - _ulid: 01KR4H7ZQH3CJXMPG2YBDB4W1N
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; task/spec/review records;
+          tools/eslint-rules/no-leaky-test-daemon.js; tests/lint-daemon-test-guardrails.test.ts;
+          tests/lint-no-leaky-test-daemon.test.ts; package.json. Commands run: git diff/log/status;
+          kspec task get; kspec item get; kspec review for-task/get/add/open; kspec validate; AC
+          annotation rg; source-scanning rg; npm test focused; npm test full; npm run lint; focused
+          npx oxlint over changed rule/tests; custom oxlint probe for exec/execSync direct daemon
+          entry. Claims verified: prior direct-executable blocker is fixed for
+          spawn/spawnSync/execFile/execFileSync forms; prior string.endsWith lint regression is
+          gone; unrelated subprocess argv cases are covered; exec/execSync shell direct-entry
+          remains a gap. Categories searched: correctness, AC coverage, test quality, lint/build
+          hygiene, edge cases around child_process callee shapes, pre-existing warnings."
+        created_at: 2026-05-08T19:32:45.937Z
+      - _ulid: 01KR4JQ6Y0R1HAA6YHG6TW2YRJ
+        author: "@claude"
+        body: Acknowledged — evidence log noted. The exec/execSync shell-string gap it identified is the
+          focus of this cycle's fix.
+        created_at: 2026-05-08T19:58:33.408Z
+    kind: nit
+    resolved_at: 2026-05-08T19:58:47.896Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-08T19:32:58.624Z
+created_at: 2026-05-08T19:19:25.583Z
+updated_at: 2026-05-08T19:58:47.896Z
+notes: []

@@ -1,0 +1,102 @@
+notes:
+  - _ulid: 01KKB5HX58VGPXYZXJVR9Y8JRN
+    content: >-
+      Implementation notes:
+
+
+      ### Architecture Decision: Streaming vs Static Rendering
+
+
+      Two rendering paths coexist:
+
+      1. **StreamingMarkdown component** — for live session output where content grows
+      incrementally. Uses streaming-markdown npm package for parser, applies highlight.js
+      post-stream.
+
+      2. **renderMarkdown() utility** — for static content (plan text, descriptions, notes). Uses
+      marked + DOMPurify. Enhanced with highlight.js via marked's highlight option.
+
+
+      Both share: highlight.js setup (via shared highlight.ts), DOMPurify sanitization config (via
+      shared sanitize.ts), syntax theme CSS.
+
+
+      ### Port Strategy from kynetic-internal
+
+
+      Port selectively, not wholesale:
+
+      - **Keep:** streaming-markdown parser, highlight.js with language subset, DOMPurify
+      sanitization, custom renderer with Tailwind classes, syntax highlight CSS theme
+
+      - **Drop:** KaTeX math rendering, Mermaid diagram support, custom element handling for
+      equations
+
+      - **Adapt:** Effect lifecycle for Svelte 5 patterns already used in kspec web-ui, prose class
+      configuration for kspec's dark theme
+
+
+      **Bundle size:** Use `highlight.js/lib/core` with individual language imports (`import
+      javascript from 'highlight.js/lib/languages/javascript'`). Register only the 15 target
+      languages. This keeps the highlight.js contribution under 50KB gzipped vs 200KB+ for the full
+      bundle.
+
+
+      **DOMPurify unification:** The existing `renderMarkdown()` in `markdown.ts` uses an explicit
+      ALLOWED_TAGS/ALLOWED_ATTR allowlist. The streaming path from kynetic-internal uses a slightly
+      different config. Extract a shared `sanitize.ts` with a single canonical DOMPurify
+      configuration used by both paths to avoid security inconsistencies.
+
+
+      ### Prose Typography Prerequisite
+
+
+      The `@tailwindcss/typography` plugin (or Tailwind v4 equivalent) must be installed and
+      configured FIRST. Currently, `prose` classes in MessageBlock.svelte and plans/+page.svelte are
+      no-ops — they have no styling effect. This blocks all visual markdown improvements.
+
+
+      ### Plan Embedded Views Architecture
+
+
+      Plan content is a markdown string with known structure (## Specs, ## Tasks headings with YAML
+      blocks). Processing pipeline:
+
+      1. Parse markdown into sections by heading
+
+      2. Detect YAML code blocks after ## Specs and ## Tasks headings
+
+      3. Cross-reference parsed slugs against plan.derived_specs / plan.derived_tasks
+
+      4. Fetch resolved item summaries via batch API (POST /api/items/batch)
+
+      5. For matched items, render embedded card components instead of code blocks
+
+      6. For unmatched or unparseable YAML, fall back to syntax-highlighted code block
+
+      7. Render remaining markdown normally
+
+
+      ### Dependency Order
+
+
+      1. **Prose typography setup** (prerequisite — fixes existing broken styling)
+
+      2. Trait definition (no code dependency)
+
+      3. Streaming markdown component + highlight.js + sanitization (foundation)
+
+      4. Session stream integration (highest visibility improvement)
+
+      5. Static markdown enhancement (add highlight.js to existing renderMarkdown)
+
+      6. UI surface adoption (task notes, descriptions, inbox, etc.)
+
+      7. Batch item fetch API (required by embedded views)
+
+      8. Plan embedded views (most complex, builds on everything above)
+
+      9. Trait attachment to existing specs (update @ui-session-stream, @ui-plans-view,
+      @web-dashboard)
+    author: "@claude"
+    created_at: 2026-03-10T06:04:39.976Z

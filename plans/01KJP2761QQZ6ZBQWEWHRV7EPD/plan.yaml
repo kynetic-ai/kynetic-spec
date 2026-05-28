@@ -1,0 +1,26 @@
+_ulid: 01KJP2761QQZ6ZBQWEWHRV7EPD
+slugs:
+  - plan-reactive-agent-runtime
+title: Reactive Agent Runtime
+status: completed
+approved_at: null
+derived_specs:
+  - "@agent-definition-schema"
+  - "@session-model-evolution"
+  - "@agent-invocation-lifecycle"
+  - "@agent-dispatch-engine"
+  - "@cli-agent-commands"
+  - "@daemon-agent-dispatch"
+  - "@ralph-replacement"
+derived_tasks:
+  - "@implement-agent-definition-schema"
+  - "@implement-session-model-evolution"
+  - "@implement-agent-invocation-lifecycle"
+  - "@implement-agent-dispatch-engine"
+  - "@implement-cli-agent-commands"
+  - "@implement-daemon-agent-dispatch-integration"
+  - "@implement-ralph-replacement"
+  - "@task-ralph-migration-guide"
+source_path: /home/chapel/.claude/plans/jiggly-frolicking-kahn.md
+created_at: 2026-03-02T01:22:19.831Z
+completed_at: null

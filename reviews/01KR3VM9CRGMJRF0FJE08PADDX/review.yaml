@@ -1,0 +1,189 @@
+_ulid: 01KR3VM9CRGMJRF0FJE08PADDX
+slugs: []
+title: "Plan re-review: Daemon Test Fixture Hardening"
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Re-checked prior review @01KR3V91: spec tags are removed; the status-only metadata task
+      is gone; @daemon-test-guardrail-precision split local suppression and documented-subject
+      suppression into separate ACs; @task-add-real-daemon-startup-failure-tests now explicitly
+      covers real-fixture env sanitation/annotation for ac-child-env-sanitized."
+    name: Prior blocker resolution
+    required: true
+    created_at: 2026-05-08T13:15:27.622Z
+    completed_at: 2026-05-08T13:15:27.622Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec plan import plans/daemon-test-fixture-hardening.md --dry-run parsed the current
+      document; kspec validate --refs --warnings-ok passed with only existing deprecated-ref
+      warnings; kspec validate --alignment --warnings-ok passed with existing alignment warnings.
+    name: Plan parse and references
+    required: true
+    created_at: 2026-05-08T13:15:36.922Z
+    completed_at: 2026-05-08T13:15:36.922Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Reviewed @daemon-server, @daemon-backed-test-fixture-contract,
+      @daemon-test-harness-guardrails, @daemon-test-endpoint-consistency,
+      @daemon-test-mode-boundaries, @e2e-test-daemon-isolation, and
+      @daemon-network-endpoint-contract. New requirements refine uncovered hardening gaps under the
+      correct parents without contradicting existing ACs.
+    name: Existing spec neighborhood
+    required: true
+    created_at: 2026-05-08T13:15:46.825Z
+    completed_at: 2026-05-08T13:15:46.825Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Reviewed 4 proposed requirements and 14 ACs. ACs are observable daemon-test behaviors, not
+      implementation instructions; prior compound suppression AC is split into
+      ac-local-exception-is-local and ac-exception-reason-states-subject; no gaps, duplicate AC IDs,
+      or compound AC blockers found.
+    name: Behavioral spec and AC quality
+    required: true
+    created_at: 2026-05-08T13:15:59.017Z
+    completed_at: 2026-05-08T13:15:59.017Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Parsed current Specs/Tasks YAML and mapped Covers lines. All 14 new ACs are claimed by at
+      least one concrete test/fix task plus final validation where appropriate; no unknown new AC
+      references or orphan new ACs found.
+    name: AC coverage mapping
+    required: true
+    created_at: 2026-05-08T13:16:08.861Z
+    completed_at: 2026-05-08T13:16:08.861Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Reviewed all 12 tasks. Each has concrete What/Why/How/Testing/Covers content, source files
+      or helper surfaces to inspect, verification commands or explicit fallback, and no dependency
+      on chat-only context. The prior Playwright slice reference is discoverable from completed task
+      @task-validate-daemon-test-fixture-standardization and final validation includes a
+      document-if-unavailable fallback.
+    name: Task standalone quality
+    required: true
+    created_at: 2026-05-08T13:16:18.575Z
+    completed_at: 2026-05-08T13:16:18.575Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Reviewed task graph: P1 regression-test tasks precede matching P1 fix tasks; guardrail
+      cleanup fix waits for command-classification fix; P2 endpoint/Playwright tasks depend on
+      required fixture/guardrail fixes; P3 validation depends on all implementation tasks. No cycle,
+      missing prerequisite, or priority inversion found."
+    name: Dependency ordering
+    required: true
+    created_at: 2026-05-08T13:16:27.737Z
+    completed_at: 2026-05-08T13:16:27.737Z
+events:
+  - _ulid: 01KR3VM9CQQY1D1ZWDAS4HYBQB
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-08T13:15:00.376Z
+  - _ulid: 01KR3VMPRNH8PW6JA9A6QX6DVK
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-08T13:15:14.069Z
+  - _ulid: 01KR3VN57PA9JB42BHJARSEY15
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Prior blocker resolution
+    timestamp: 2026-05-08T13:15:28.886Z
+  - _ulid: 01KR3VNEBNDJ0WTY4GA7R9H838
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan parse and references
+    timestamp: 2026-05-08T13:15:38.229Z
+  - _ulid: 01KR3VNR2DFQEZ7QPG0MSMM1Z4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Existing spec neighborhood
+    timestamp: 2026-05-08T13:15:48.174Z
+  - _ulid: 01KR3VP3Y9CDJKX1HTYKGH6XH0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Behavioral spec and AC quality
+    timestamp: 2026-05-08T13:16:00.329Z
+  - _ulid: 01KR3VPDHMXFQS5DP570ZT5A01
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage mapping
+    timestamp: 2026-05-08T13:16:10.164Z
+  - _ulid: 01KR3VPPZFSJTPA5QY4AJQ7BP2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Task standalone quality
+    timestamp: 2026-05-08T13:16:19.823Z
+  - _ulid: 01KR3VQ00M5VGHHCEZHG831XB7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-05-08T13:16:29.077Z
+  - _ulid: 01KR3VQ8CTF3NBSYYTD20QRE5F
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-08T13:16:37.658Z
+  - _ulid: 01KR3VQ8CT3CZ68N9BHMJM7N49
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-08T13:16:37.658Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-daemon-test-fixture-hardening"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-08T13:16:37.658Z
+created_at: 2026-05-08T13:15:00.376Z
+updated_at: 2026-05-08T13:16:37.658Z
+notes: []

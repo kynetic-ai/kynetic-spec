@@ -1,0 +1,92 @@
+_ulid: 01KKWTA85J22JSWC9ND019KXNB
+slugs: []
+title: "Review: fix-cycle diff orientation"
+author: "@claude"
+checks: []
+events:
+  - _ulid: 01KKWTA85HSKPTJ75QEEZXAZD5
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-17T02:34:34.546Z
+  - _ulid: 01KKWTAEVCAX8SC17ZC29XB1NR
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-17T02:34:41.388Z
+  - _ulid: 01KKWTAXAN31TV2BKQP03E3ME3
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKWTAX9P0T7M55DX410FH7HW
+    timestamp: 2026-03-17T02:34:56.214Z
+  - _ulid: 01KKWTBGQQ8JD0XB5V0T07RXFH
+    actor: "@claude"
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-17T02:35:16.087Z
+  - _ulid: 01KKWTBGQQHSVGMNDWGQRX646Z
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-17T02:35:16.087Z
+examined_commit: b7004833684b0a7f6a3fda8ce5ee8822fd7b3531
+external_links: []
+lifecycle_state: closed
+related_refs:
+  - "@task-review-diff-orientation"
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-review-diff-orientation"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KKWTAX9P0T7M55DX410FH7HW
+    entries:
+      - _ulid: 01KKWTAX9PKR8DZ7BP1XC5H54H
+        author: "@claude"
+        body: >-
+          AC coverage verified:
+
+
+          - AC-2 (prior closed review with examined_commit → reviewer prompt includes diff summary):
+          Covered by findPriorExaminedCommit tests (7 cases), computeDiffStat happy-path test,
+          buildOrientationContext integration test, and the _buildDispatchPrompt wiring. AC
+          annotations present on all relevant functions and tests.
+
+
+          - AC-3 (unreachable commits → graceful omission): Covered by computeDiffStat tests for
+          unreachable commit (null object ID), non-git directory, and identical commits.
+          getFixCycleDiffSummary has a top-level catch that returns null. AC annotations present.
+
+
+          - AC-1 is out of scope for this task (handled by @task-review-examined-commit dependency).
+
+
+          Code quality: Clean decomposition into three exported functions (findPriorExaminedCommit,
+          computeDiffStat, getFixCycleDiffSummary) with single responsibilities. The options
+          parameter on buildOrientationContext is backward-compatible (optional, defaults to
+          undefined). The diff section is correctly scoped inside the pending_review trigger block.
+
+
+          All 129 tests pass (12 new + 117 existing dispatch engine tests).
+        created_at: 2026-03-17T02:34:56.182Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: "@claude"
+    role: reviewer
+    created_at: 2026-03-17T02:35:16.055Z
+created_at: 2026-03-17T02:34:34.546Z
+updated_at: 2026-03-17T02:35:16.055Z
+notes: []

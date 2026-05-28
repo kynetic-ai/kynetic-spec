@@ -1,0 +1,175 @@
+_ulid: 01KQ99T59XECCTAHG56JPCGS0N
+slugs: []
+title: Review normalize catalog AC ids and annotations
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/ac-annotation*.test.ts tests/trait-ac-coverage.test.ts
+      tests/validate-exit-codes.test.ts tests/exit-codes.test.ts tests/staleness.test.ts
+      tests/clone-for-testing.test.ts passed: 31 suites, 87 tests."
+    name: focused annotation tests
+    required: true
+    runner: npm
+    created_at: 2026-04-28T05:54:04.012Z
+    completed_at: 2026-04-28T05:54:04.012Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok exited 0. Blanket-ref findings are gone;
+      remaining warnings are 231 pre-existing missing own AC coverage plus 2 unresolved fixture
+      targets.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-04-28T05:54:07.374Z
+    completed_at: 2026-04-28T05:54:07.374Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok exited 0. References OK; only deprecated-reference
+      warnings remained.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-04-28T05:54:07.379Z
+    completed_at: 2026-04-28T05:54:07.379Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test exited 0. 2292/2292 suites passed; 8422/8427 tests passed; 5 skipped. Full log:
+      /tmp/kspec-test-cache/01KQ99RG4A7N6PYYYFN66ZMVX6/c5ab84d5426e68f1.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-28T05:54:10.749Z
+    completed_at: 2026-04-28T05:54:10.749Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate --warnings-ok currently exits 4 due to pre-existing catalog schema error:
+      .kspec/modules/meta.yaml:modules[0].traits.0 Expected string, received object. Tracked
+      separately as @01KQ99Z7; scoped refs and completeness checks for this task passed."
+    name: full kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-28T05:54:28.757Z
+    completed_at: 2026-04-28T05:54:28.757Z
+events:
+  - _ulid: 01KQ99T59WB2A8HC6Q4CKJ23CS
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-28T05:43:23.197Z
+  - _ulid: 01KQ99TSMVQK1541QY1KMWB82N
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-28T05:43:44.027Z
+  - _ulid: 01KQ9ADR6GPNNK0666FZ8NBK8Z
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused annotation tests
+    timestamp: 2026-04-28T05:54:05.137Z
+  - _ulid: 01KQ9ADVGG681R12N6QY0CYNEX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-04-28T05:54:08.528Z
+  - _ulid: 01KQ9ADXAHJB8CCKEHD6YQ4VD1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-04-28T05:54:10.385Z
+  - _ulid: 01KQ9ADZ2R9SSMCZ8980MME0P5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-28T05:54:12.184Z
+  - _ulid: 01KQ9AEGBNDDVJJJT3CK82NWBA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: full kspec validate
+    timestamp: 2026-04-28T05:54:29.877Z
+  - _ulid: 01KQ9AEKMAESVX59DAWJXDDAGD
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KQ9AEJEAY6G373ZZWGA1G56E
+    timestamp: 2026-04-28T05:54:33.226Z
+  - _ulid: 01KQ9AEXFFRFNRJFSG96RFV7ED
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-28T05:54:43.311Z
+  - _ulid: 01KQ9AEXFF91Q4CZMA19A45WKP
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-28T05:54:43.311Z
+examined_commit: 9ece11f41336ff3bf1552e8d2ab3fddb1dbbf8f4
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQ93NEQHAYY4Y1MHA64M9FX2"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQ9AEJEAY6G373ZZWGA1G56E
+    entries:
+      - _ulid: 01KQ9AEJEBBQKWFT8GZCSEJD07
+        author: Jacob Chapel
+        body: "Evidence log: Files read: src/cli/commands/log.ts, src/cli/commands/task.ts,
+          src/cli/exit-codes.ts, tests/clone-for-testing.test.ts, tests/exit-codes.test.ts,
+          tests/integration.test.ts, tests/staleness.test.ts, tests/validate-exit-codes.test.ts,
+          src/parser/validate.ts, annotation validation tests. Commands run: git
+          diff/stat/log/status, kspec task get, kspec item get for @acceptance-criterion-id-format,
+          @ac-annotation-identifier-format, @ac-annotation-integrity-reporting, @cli-exit-codes,
+          @cmd-clone-for-testing, @cmd-log, @multi-ref-batch, @stale-status-detection; kspec
+          validate --refs --warnings-ok; kspec validate --completeness --warnings-ok; kspec validate
+          --warnings-ok; focused npm test slice; npm test. Claims verified: old non-prefixed tokens
+          for the five affected refs are absent in AC annotations; replacement ids exist in catalog;
+          completeness invalid annotation state is down to the two known unresolved fixture targets.
+          Categories searched: correctness/spec alignment, test quality, annotation integrity,
+          validation behavior, integration/regression risk."
+        created_at: 2026-04-28T05:54:32.011Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-28T05:54:43.311Z
+created_at: 2026-04-28T05:43:23.197Z
+updated_at: 2026-04-28T05:54:43.311Z
+notes: []

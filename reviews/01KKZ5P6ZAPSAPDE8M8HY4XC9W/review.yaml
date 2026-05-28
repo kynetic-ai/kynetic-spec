@@ -1,0 +1,107 @@
+_ulid: 01KKZ5P6ZAPSAPDE8M8HY4XC9W
+slugs: []
+title: Review round-trip stability for triage record YAML writes (cycle 2)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 5795 tests passed (1 pre-existing failure in review-cli.test.ts — not modified by this branch)
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T00:32:13.125Z
+    completed_at: 2026-03-18T00:32:13.125Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Pre-existing reference errors and alignment warnings only; no new issues from this task
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-18T00:32:25.925Z
+    completed_at: 2026-03-18T00:32:25.925Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "AC: @yaml-serialization-invariants ac-3 annotated at
+      tests/yaml-round-trip-stability.test.ts:1150 and src/parser/yaml.ts:2617. 5 test cases cover
+      single record stability, non-target pollution, multi-record, multi-cycle, and new record
+      addition."
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-18T00:32:49.811Z
+    completed_at: 2026-03-18T00:32:49.811Z
+events:
+  - _ulid: 01KKZ5P6ZAA1Z6204JFZPTFBKN
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T00:31:49.738Z
+  - _ulid: 01KKZ5PJ3B1HMH7DD69Q8HRHFA
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T00:32:01.131Z
+  - _ulid: 01KKZ5PXZBRPGKD64N60YHW8VA
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T00:32:13.291Z
+  - _ulid: 01KKZ5QAEXMH6T8BP983FXVQCG
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-18T00:32:26.077Z
+  - _ulid: 01KKZ5R1SS31KZ8W9PDPN8FBEK
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-18T00:32:49.977Z
+  - _ulid: 01KKZ5RA9FNY37E1BM27JDSF4D
+    actor: claude-reviewer@dispatch
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-18T00:32:58.671Z
+  - _ulid: 01KKZ5RA9HTJKT3Q02CF2M6BBB
+    actor: claude-reviewer@dispatch
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T00:32:58.673Z
+examined_commit: a8319add715b74b46cf30ee1da60a5fb551ee1e8
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKX6CEQFM17JX8AKKRPXQGR7"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: claude-reviewer@dispatch
+    role: reviewer
+    created_at: 2026-03-18T00:32:58.509Z
+created_at: 2026-03-18T00:31:49.738Z
+updated_at: 2026-03-18T00:32:58.509Z
+notes: []

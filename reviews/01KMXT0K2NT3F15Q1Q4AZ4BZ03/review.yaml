@@ -1,0 +1,324 @@
+_ulid: 01KMXT0K2NT3F15Q1Q4AZ4BZ03
+slugs: []
+title: Review task-e2e-cache-warming-transition
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run test:e2e -- packages/web-ui/tests/e2e/cache-warming-transition.spec.ts passed: 19
+      passed, 1 skipped (the skipped case is the unimplemented timeout scenario called out in review
+      threads)."
+    name: targeted-playwright
+    required: true
+    runner: playwright
+    created_at: 2026-03-29T22:09:32.039Z
+    completed_at: 2026-03-29T22:09:32.039Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test exited 1 in this snapshot: 1996 suites passed, 2 failed; 7206 tests passed, 1
+      failed, 5 skipped. Visible failure: tests/dispatch-workspace-registry.test.ts ('dispatch
+      workspace registry shadow durability reconciliation acquires the lock per dirty record, not
+      once for the entire batch')."
+    name: npm-test
+    required: true
+    runner: test-runner
+    created_at: 2026-03-29T22:09:33.716Z
+    completed_at: 2026-03-29T22:09:33.716Z
+events:
+  - _ulid: 01KMXT0K2MB7HETRGQTRXTK9VQ
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-29T22:04:14.293Z
+  - _ulid: 01KMXT1578WXKSA4XVCF40BZR2
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-29T22:04:32.872Z
+  - _ulid: 01KMXT9V6DVAF3AXGZGKSGKS43
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMXT9TMXP60W9K29S6YS3ZXK
+    timestamp: 2026-03-29T22:09:17.517Z
+  - _ulid: 01KMXT9WWFS34CWNZZ5QYNKPRS
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMXT9WANBQ8RGBTMJCX49C1H
+    timestamp: 2026-03-29T22:09:19.247Z
+  - _ulid: 01KMXTA9XDYJK2H90HV2PYJSYH
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted-playwright
+    timestamp: 2026-03-29T22:09:32.589Z
+  - _ulid: 01KMXTABKD91X86TKVFA2FD217
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm-test
+    timestamp: 2026-03-29T22:09:34.317Z
+  - _ulid: 01KMXTAPZMH8YRCZTQ395Q792X
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-29T22:09:45.972Z
+  - _ulid: 01KMXTAPZM3BYDYQB6QCRWRZTE
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-29T22:09:45.972Z
+  - _ulid: 01KMXTC3CSKFH5F0979VAA0QKV
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMXTC2TM1RX7D43X6F41G2ZZ
+    timestamp: 2026-03-29T22:10:31.449Z
+  - _ulid: 01KMXTC52ZF1WX3ZAWA9A9HNER
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMXTC4GX1XSZDD9ZDHY65PNA
+    timestamp: 2026-03-29T22:10:33.183Z
+  - _ulid: 01KMXTC6T8NSJDAYHE7QQPB2PR
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMXTC67SFRCBN48KE8B67HHZ
+    timestamp: 2026-03-29T22:10:34.952Z
+  - _ulid: 01KN0MYZEY6CQVPSKD6E33N759
+    actor: Test User
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMXT9WANBQ8RGBTMJCX49C1H
+    timestamp: 2026-03-31T00:33:41.854Z
+  - _ulid: 01KN0MZ117S9FV2XFEYXYKKJDC
+    actor: Test User
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMXT9WANBQ8RGBTMJCX49C1H
+    timestamp: 2026-03-31T00:33:43.463Z
+  - _ulid: 01KN0MZ2JGE936PQFHQ9B601GR
+    actor: Test User
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMXTC67SFRCBN48KE8B67HHZ
+    timestamp: 2026-03-31T00:33:45.040Z
+  - _ulid: 01KN0MZ43GSJS1KVZRVKK79TVP
+    actor: Test User
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMXTC67SFRCBN48KE8B67HHZ
+    timestamp: 2026-03-31T00:33:46.608Z
+  - _ulid: 01KN0MZ5N0JK8V24NZYF9B8B91
+    actor: Test User
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMXTC4GX1XSZDD9ZDHY65PNA
+    timestamp: 2026-03-31T00:33:48.192Z
+  - _ulid: 01KN0MZ75FWF2FVWMNM56T1TPP
+    actor: Test User
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMXTC4GX1XSZDD9ZDHY65PNA
+    timestamp: 2026-03-31T00:33:49.743Z
+  - _ulid: 01KN0MZSPGBZSPGZADH6G7CYVX
+    actor: Test User
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMXT9TMXP60W9K29S6YS3ZXK
+    timestamp: 2026-03-31T00:34:08.720Z
+  - _ulid: 01KN0MZV88GKKAGWM9JABVJ3N6
+    actor: Test User
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMXT9TMXP60W9K29S6YS3ZXK
+    timestamp: 2026-03-31T00:34:10.313Z
+  - _ulid: 01KN0MZWRC07HHT0RDD73JRYBJ
+    actor: Test User
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMXTC2TM1RX7D43X6F41G2ZZ
+    timestamp: 2026-03-31T00:34:11.852Z
+  - _ulid: 01KN0MZYAYZ72BYJRPEC007FK6
+    actor: Test User
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMXTC2TM1RX7D43X6F41G2ZZ
+    timestamp: 2026-03-31T00:34:13.470Z
+examined_commit: 16bf033f141f9de2e878c93802f2979933dacc09
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMW68N7AB8WWRZMVQV3C2789"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMXT9TMXP60W9K29S6YS3ZXK
+    anchor:
+      type: code
+      commit: 16bf033f141f9de2e878c93802f2979933dacc09
+      line_end: 166
+      line_start: 158
+      path: packages/web-ui/tests/e2e/cache-warming-transition.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KMXT9TMX7DZE7KF7EP6WPR6X
+        author: Test User
+        body: "The full-stack timeout scenario required by this task is still unimplemented in this
+          snapshot: it is checked in as , and the Playwright run for this file reports . Existing
+          timeout coverage on  only route-mocks the API, so the daemon-cache -> retry-ceiling ->
+          banner path this task set out to cover can still regress without any full-stack test
+          failing."
+        created_at: 2026-03-29T22:09:16.957Z
+      - _ulid: 01KN0MZS305WB543K1WHA6DTCY
+        author: Test User
+        body: "Fixed in commits e25be6f61 and 5ec099509. The timeout scenario is no longer checked in as a
+          skipped test: it now waits through the real 30s retry ceiling, asserts the timeout banner
+          and Retry button, clicks Retry while the cache gate is still held, and then proves
+          recovery after the gate is released."
+        created_at: 2026-03-31T00:34:08.096Z
+    kind: blocker
+    resolved_at: 2026-03-31T00:34:09.708Z
+    resolved_by: Test User
+  - _ulid: 01KMXT9WANBQ8RGBTMJCX49C1H
+    anchor:
+      type: code
+      commit: 16bf033f141f9de2e878c93802f2979933dacc09
+      line_end: 152
+      line_start: 147
+      path: packages/web-ui/tests/e2e/cache-warming-transition.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KMXT9WANAHKF721CPBBA0BXP
+        author: Test User
+        body: This test does not prove the WebSocket-driven transition it claims to cover. The assertion
+          explicitly accepts either the  invalidation path or the 2s retry fallback, so a broken WS
+          subscription/query-key mapping would still pass once the next retry refetches ready data.
+          The task exists to catch exactly that cross-system regression, so this needs an assertion
+          that distinguishes the push-driven path from the polling fallback.
+        created_at: 2026-03-29T22:09:18.677Z
+      - _ulid: 01KN0MYYVNYVV5F1793RMYCR62
+        author: Test User
+        body: Fixed in commits e25be6f61 and 5ec099509. The auto-transition scenario now records real
+          browser WebSocket frames, waits for cache:status/domain_ready for the delayed second
+          project, and asserts an immediate post-broadcast /api/tasks refetch arrives before the 2s
+          retry fallback window.
+        created_at: 2026-03-31T00:33:41.237Z
+    kind: blocker
+    resolved_at: 2026-03-31T00:33:42.850Z
+    resolved_by: Test User
+  - _ulid: 01KMXTC2TM1RX7D43X6F41G2ZZ
+    anchor:
+      type: code
+      commit: 16bf033f141f9de2e878c93802f2979933dacc09
+      line_end: 166
+      line_start: 158
+      path: packages/web-ui/tests/e2e/cache-warming-transition.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KMXTC2TM9TMEVD5NB99A3261
+        author: Test User
+        body: The submitted task scope includes the timeout scenario, but the full-stack timeout test is
+          checked in as . That leaves @ui-data-freshness ac-warming-timeout without the end-to-end
+          coverage this task was created to add. Existing route-intercepted coverage elsewhere does
+          not satisfy this task's missing full-stack scenario; as submitted, the third scenario is
+          explicitly skipped.
+        created_at: 2026-03-29T22:10:30.868Z
+      - _ulid: 01KN0MZW5V5APYB8D6K136NMDB
+        author: Test User
+        body: Fixed in commits e25be6f61 and 5ec099509. This task now includes the missing full-stack
+          timeout coverage for @ui-data-freshness ac-warming-timeout instead of relying only on
+          route-mocked view tests. The new E2E covers banner display after the retry ceiling and
+          successful recovery through the manual retry path.
+        created_at: 2026-03-31T00:34:11.259Z
+    kind: blocker
+    resolved_at: 2026-03-31T00:34:12.855Z
+    resolved_by: Test User
+  - _ulid: 01KMXTC4GX1XSZDD9ZDHY65PNA
+    anchor:
+      type: code
+      commit: 16bf033f141f9de2e878c93802f2979933dacc09
+      line_end: 155
+      line_start: 152
+      path: packages/web-ui/tests/e2e/cache-warming-transition.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KMXTC4GXKTS7A4G0C3AGP4M5
+        author: Test User
+        body: This assertion does not verify a transition to real data. The page heading is always rendered
+          on /tasks, so checking for 'Tasks' plus the skeleton disappearing can still pass if the
+          page lands in another non-data state. The route already exposes a concrete signal for
+          loaded content (), but the test never asserts that the list or empty-state content for the
+          second project actually rendered.
+        created_at: 2026-03-29T22:10:32.605Z
+      - _ulid: 01KN0MZ51923DT34YV4WES74W4
+        author: Test User
+        body: Fixed in commits e25be6f61 and 5ec099509. The loaded-state assertion now waits for the real
+          task list container and the second project's empty-state content (No tasks found), rather
+          than only checking the always-present page heading and skeleton disappearance.
+        created_at: 2026-03-31T00:33:47.561Z
+    kind: blocker
+    resolved_at: 2026-03-31T00:33:49.144Z
+    resolved_by: Test User
+  - _ulid: 01KMXTC67SFRCBN48KE8B67HHZ
+    anchor:
+      type: code
+      commit: 16bf033f141f9de2e878c93802f2979933dacc09
+      line_end: 152
+      line_start: 147
+      path: packages/web-ui/tests/e2e/cache-warming-transition.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KMXTC67S8EPZBGQ758CQT5VS
+        author: Test User
+        body: The 'auto-transition' test does not prove the WebSocket-driven path required by
+          @ui-data-freshness ac-warming-auto-transition. The assertion window is 15s, while the
+          fallback retry path is intentionally allowed every short interval; the test comment
+          explicitly says either WebSocket invalidation or retry fallback is acceptable. That means
+          a regression in the real-time domain_ready subscription can still pass this test, so the
+          primary integration path this task was meant to cover remains unverified.
+        created_at: 2026-03-29T22:10:34.361Z
+      - _ulid: 01KN0MZ1Z4BMYF1RG7P1APJCE1
+        author: Test User
+        body: "Fixed in commits e25be6f61 and 5ec099509. This no longer accepts retry fallback as a
+          sufficient proof: the test requires the real domain_ready broadcast plus a refetch that
+          lands before the retry delay, so a broken WebSocket/query-key mapping now fails the test."
+        created_at: 2026-03-31T00:33:44.420Z
+    kind: blocker
+    resolved_at: 2026-03-31T00:33:45.992Z
+    resolved_by: Test User
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-29T22:09:45.971Z
+created_at: 2026-03-29T22:04:14.293Z
+updated_at: 2026-03-31T00:34:12.855Z
+notes: []

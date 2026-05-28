@@ -1,0 +1,153 @@
+_ulid: 01KN5NGQGJFRBW0XW60XA1G5TF
+slugs: []
+title: Review task-consolidate-session-cache (cycle 3)
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh full suite run failed in tests/file-lock.test.ts:191 (expected count: 5, got count:
+      4). This appears unrelated to the session-cache consolidation diff but blocks merge because
+      the required suite is not green."
+    name: npm test -- --fresh
+    required: true
+    runner: npm
+    created_at: 2026-04-01T23:34:38.750Z
+    completed_at: 2026-04-01T23:34:38.750Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: packages/daemon/src/project-context.ts,
+      packages/daemon/src/routes/entity-cache-types.ts,
+      packages/daemon/src/routes/session-related.ts,
+      packages/daemon/src/routes/session-summary-utils.ts, packages/daemon/src/routes/sessions.ts,
+      packages/daemon/src/server.ts, src/agent-runtime/dispatch.ts, src/agent-runtime/invocation.ts,
+      src/daemon/entity-cache.ts, src/sessions/index.ts, src/sessions/store.ts,
+      src/sessions/types.ts, tests/daemon-cache-route-coverage.test.ts,
+      tests/daemon-entity-cache.test.ts, tests/session-related-routes.test.ts. Commands run: kspec
+      task get, kspec item get, kspec review for-task/get/open, kspec validate, grep for AC
+      annotations, git diff/stat, npm run build, npm test -- --run targeted suites, npm test, npm
+      test -- --fresh, isolated reruns for daemon-web-ui-bundle, cli-serve, integration. Claims
+      verified: live event counters now read/write through ProjectEntityCache; related-session and
+      degraded list fallbacks preserve live counters; sessions-topic broadcast moved to post-reload
+      callback. Categories searched: correctness, edge cases, error handling, test quality,
+      integration; no code findings in the submitted diff, but the required full-suite gate remains
+      red on an unrelated file-lock concurrency test."
+    name: review-evidence
+    required: false
+    runner: codex
+    created_at: 2026-04-01T23:34:40.803Z
+    completed_at: 2026-04-01T23:34:40.803Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run build passed in this snapshot. Existing Svelte accessibility/deprecation warnings
+      were emitted but the build completed successfully.
+    name: build
+    required: false
+    runner: npm
+    created_at: 2026-04-01T23:34:42.850Z
+    completed_at: 2026-04-01T23:34:42.850Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test -- --run tests/daemon-entity-cache.test.ts
+      tests/daemon-cache-route-coverage.test.ts tests/session-related-routes.test.ts passed (35
+      suites, 111 tests).
+    name: targeted session-cache regressions
+    required: false
+    runner: npm
+    created_at: 2026-04-01T23:34:44.957Z
+    completed_at: 2026-04-01T23:34:44.957Z
+events:
+  - _ulid: 01KN5NGQGHPMRHB8DW9R3XM5XJ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-01T23:19:35.698Z
+  - _ulid: 01KN5NHH6VYDHDKNHY755V0MB3
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-01T23:20:02.011Z
+  - _ulid: 01KN5PCA2F8PZV6CHBPNMH2WHX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test -- --fresh
+    timestamp: 2026-04-01T23:34:39.439Z
+  - _ulid: 01KN5PCC1RT9XMRXHQYK8MP45P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-04-01T23:34:41.464Z
+  - _ulid: 01KN5PCE3EH2EQQE31A302SXGK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: build
+    timestamp: 2026-04-01T23:34:43.566Z
+  - _ulid: 01KN5PCG3KY1E8845DEZV61495
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted session-cache regressions
+    timestamp: 2026-04-01T23:34:45.619Z
+  - _ulid: 01KN5PD20FR6B6Q61J8GBM4YNK
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN5PD1BBE85M8EBG7BRFE4WR
+    timestamp: 2026-04-01T23:35:03.951Z
+  - _ulid: 01KN5QCCKNHQDBZRDPHZR4837K
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-01T23:52:10.613Z
+examined_commit: f9baca4826d02c234e43bf65412a92c426fd50fb
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN5J2ETHQMPQGA334D827YWG"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN5PD1BBE85M8EBG7BRFE4WR
+    anchor:
+      type: code
+      commit: f9baca4826d02c234e43bf65412a92c426fd50fb
+      line_end: 191
+      line_start: 191
+      path: tests/file-lock.test.ts
+      side: head
+    entries:
+      - _ulid: 01KN5PD1BB4XDDF2QX9FWEEABH
+        author: Jacob Chapel
+        body: "Fresh required verification is still red: npm test -- --fresh failed at
+          tests/file-lock.test.ts:191 (expected count: 5, got count: 4). I did not find a code
+          defect in this session-cache consolidation diff, and the task-specific session/cache
+          regressions plus build pass in isolation, but merge remains blocked until the
+          repository-wide suite is green."
+        created_at: 2026-04-01T23:35:03.275Z
+    kind: blocker
+verdicts: []
+created_at: 2026-04-01T23:19:35.698Z
+updated_at: 2026-04-01T23:52:09.965Z
+notes: []

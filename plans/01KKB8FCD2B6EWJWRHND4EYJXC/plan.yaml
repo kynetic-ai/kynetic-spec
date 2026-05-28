@@ -1,0 +1,27 @@
+_ulid: 01KKB8FCD2B6EWJWRHND4EYJXC
+slugs:
+  - plan-spec-reconciliation-close-validate-completeness-ga
+title: Spec Reconciliation — Close Validate Completeness Gaps
+status: completed
+approved_at: null
+derived_specs:
+  - "@spec-completeness-policy"
+  - "@core-ac-backfill"
+  - "@schema-ac-backfill"
+  - "@cli-ac-backfill"
+  - "@tasks-ac-backfill"
+  - "@meta-shadow-ac-backfill"
+  - "@test-annotation-sweep"
+  - "@description-backfill"
+derived_tasks:
+  - "@implement-spec-completeness-policy"
+  - "@implement-core-primitives-ac-backfill"
+  - "@implement-schema-and-structure-ac-backfill"
+  - "@implement-cli-ac-backfill"
+  - "@implement-task-system-ac-backfill"
+  - "@implement-meta-and-shadow-branch-ac-backfill"
+  - "@implement-test-coverage-annotation-sweep"
+  - "@implement-missing-description-backfill"
+source_path: /home/chapel/Projects/kynetic-spec/plan-spec-reconciliation.md
+created_at: 2026-03-10T06:55:43.010Z
+completed_at: null

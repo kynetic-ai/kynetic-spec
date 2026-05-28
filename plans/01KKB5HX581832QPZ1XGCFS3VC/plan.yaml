@@ -1,0 +1,24 @@
+_ulid: 01KKB5HX581832QPZ1XGCFS3VC
+slugs:
+  - plan-ui-wide-markdown-rendering-plan-embedded-views
+title: UI-Wide Markdown Rendering & Plan Embedded Views
+status: completed
+approved_at: null
+derived_specs:
+  - "@trait-markdown-rendering"
+  - "@prose-typography-setup"
+  - "@streaming-markdown-component"
+  - "@batch-item-fetch-api"
+  - "@plan-embedded-views"
+  - "@markdown-ui-adoption"
+derived_tasks:
+  - "@implement-markdown-rendering-trait"
+  - "@implement-prose-typography-setup"
+  - "@implement-streaming-markdown-component"
+  - "@implement-batch-item-fetch-api"
+  - "@implement-plan-content-embedded-views"
+  - "@implement-markdown-adoption-across-ui-surfaces"
+  - "@task-add-markdown-trait"
+source_path: /home/chapel/Projects/kynetic-spec/plan-markdown-ui.md
+created_at: 2026-03-10T06:04:39.976Z
+completed_at: null

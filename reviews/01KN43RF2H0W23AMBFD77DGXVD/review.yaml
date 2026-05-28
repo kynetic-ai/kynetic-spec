@@ -1,0 +1,133 @@
+_ulid: 01KN43RF2H0W23AMBFD77DGXVD
+slugs: []
+title: Review task-fix-observations-e2e-full-gate
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2082/2082 suites passed; 7522/7527 tests passed, 5 skipped, 0 failed.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-01T08:58:20.780Z
+    completed_at: 2026-04-01T08:58:20.780Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npx playwright test tests/e2e/observations.spec.ts passed: 13 tests, 0 failures."
+    name: playwright observations
+    required: true
+    runner: playwright
+    created_at: 2026-04-01T08:58:22.841Z
+    completed_at: 2026-04-01T08:58:22.841Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/schema/meta.ts, src/parser/meta.ts,
+      packages/web-ui/src/routes/observations/+page.svelte, packages/web-ui/src/lib/api.ts,
+      tests/e2e/observations.spec.ts, tests/yaml-round-trip-stability.test.ts,
+      tests/daemon-api/meta.test.ts, packages/shared/src/api.ts. Commands run: git diff --stat, git
+      diff, kspec task get, kspec review for-task, kspec item get @web-dashboard, kspec item get
+      @markdown-ui-adoption, grep AC annotations, kspec validate, npm test, npm run build:e2e, npx
+      playwright test tests/e2e/observations.spec.ts. Claims verified: observation context survives
+      schema validation/load path and renders on the observations page; focused observations E2E
+      suite passes. Categories searched: correctness, test quality, integration, edge cases, error
+      handling."
+    name: review evidence
+    required: false
+    runner: reviewer
+    created_at: 2026-04-01T08:58:26.957Z
+    completed_at: 2026-04-01T08:58:26.957Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run build:e2e completed successfully, including packages/web-ui static build.
+    name: build:e2e
+    required: true
+    runner: npm
+    created_at: 2026-04-01T08:58:28.902Z
+    completed_at: 2026-04-01T08:58:28.902Z
+events:
+  - _ulid: 01KN43RF2GDN53MWGYG5J84A96
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-01T08:50:00.401Z
+  - _ulid: 01KN43S7HQPSNM5G05F033CTTS
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-01T08:50:25.463Z
+  - _ulid: 01KN447RAWYBXMS0Y98KNNATSV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-01T08:58:21.405Z
+  - _ulid: 01KN447TD483EA07D3YBRTM08G
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: playwright observations
+    timestamp: 2026-04-01T08:58:23.525Z
+  - _ulid: 01KN447YCVKMDXR0Y2WE69AJH7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence
+    timestamp: 2026-04-01T08:58:27.611Z
+  - _ulid: 01KN44808PW1DG6FANS01YXAHR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: build:e2e
+    timestamp: 2026-04-01T08:58:29.526Z
+  - _ulid: 01KN44898M36ZDHGGQ7EFAGGJJ
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-01T08:58:38.740Z
+  - _ulid: 01KN44898M89T8WNWNAQ68HHCF
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-01T08:58:38.740Z
+examined_commit: 37e60220bea429eabfccfa1d3cf783112201a3d7
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN3Q08YPMW3NFQKWB01XX9V2"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-04-01T08:58:38.739Z
+created_at: 2026-04-01T08:50:00.401Z
+updated_at: 2026-04-01T08:58:38.740Z
+notes: []

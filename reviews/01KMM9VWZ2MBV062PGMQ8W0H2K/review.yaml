@@ -1,0 +1,208 @@
+_ulid: 01KMM9VWZ2MBV062PGMQ8W0H2K
+slugs: []
+title: "Plan review: Daemon Optimistic Data Layer (v5)"
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@cli-daemon-proxy ac-timeout-fallback allows timeout fallback after routed commands
+      without constraining the behavior to read-only operations or defining at-most-once semantics
+      for mutations."
+    name: Mutation safety
+    required: true
+    created_at: 2026-03-26T05:29:34.463Z
+    completed_at: 2026-03-26T05:29:34.463Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: task-cli-proxy-routing claims @cli-daemon-proxy ac-read-from-cache but does not depend on
+      task-migrate-read-routes, which is the task that actually moves daemon reads onto the
+      cache-backed path.
+    name: Dependency ordering
+    required: true
+    created_at: 2026-03-26T05:29:34.483Z
+    completed_at: 2026-03-26T05:29:34.483Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@daemon-entity-cache applies @trait-api-endpoint even though it is not an endpoint spec,
+      which injects unrelated inherited ACs and breaks the AC-to-task mapping."
+    name: Spec/task alignment
+    required: true
+    created_at: 2026-03-26T05:29:34.464Z
+    completed_at: 2026-03-26T05:29:34.464Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: task-update-related-specs uses prose in Covers and a mismatched spec_ref instead of
+      concrete AC refs/target refs, so a fresh agent would not have a crisp validation target.
+    name: Task standalone executability
+    required: true
+    created_at: 2026-03-26T05:29:34.548Z
+    completed_at: 2026-03-26T05:29:34.548Z
+events:
+  - _ulid: 01KMM9VWZ2P44GS4DYM4DNW5FS
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-26T05:28:53.474Z
+  - _ulid: 01KMM9WN30C2T0TDMEGYKQDX9X
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMM9WMEDDB75SPVAZ2W106RE
+    timestamp: 2026-03-26T05:29:18.176Z
+  - _ulid: 01KMM9WP9JQJ3EEY55BG8A1MSR
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMM9WMEXEJ6W9S4MKDJ2AXZE
+    timestamp: 2026-03-26T05:29:19.410Z
+  - _ulid: 01KMM9WQ96A0YA33V1MGBGEP2T
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMM9WMF46BF685GMD7W4FWRN
+    timestamp: 2026-03-26T05:29:20.422Z
+  - _ulid: 01KMM9WRAZX2BFZMSEVQ73K7F9
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KMM9WMH82SHFM08509K0KAPT
+    timestamp: 2026-03-26T05:29:21.503Z
+  - _ulid: 01KMM9X5DP0PY7BX6JHRA5D6Z6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Mutation safety
+    timestamp: 2026-03-26T05:29:34.902Z
+  - _ulid: 01KMM9X61HDRW3S4J664437XBF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Dependency ordering
+    timestamp: 2026-03-26T05:29:35.537Z
+  - _ulid: 01KMM9X6P3E3VGD93GBXHY4VQP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Spec/task alignment
+    timestamp: 2026-03-26T05:29:36.195Z
+  - _ulid: 01KMM9X7B91WFKG33DX1373R95
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Task standalone executability
+    timestamp: 2026-03-26T05:29:36.874Z
+  - _ulid: 01KMM9XFMT9NAMVDM9KGCHTTR4
+    actor: Jacob Chapel
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-26T05:29:45.370Z
+  - _ulid: 01KMM9XFMTZD9DC8E2T1YSRP6G
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: closed
+    timestamp: 2026-03-26T05:29:45.370Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-daemon-optimistic-data-layer"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMM9WMEDDB75SPVAZ2W106RE
+    anchor:
+      type: structured
+      ref: "@daemon-entity-cache"
+      section: traits
+    entries:
+      - _ulid: 01KMM9WMEEDB4WJFF3YJCM3WXH
+        author: Jacob Chapel
+        body: "@daemon-entity-cache is modeled as a cache behavior spec, not an HTTP endpoint, but it
+          applies @trait-api-endpoint. That injects endpoint-only ACs like 2xx/4xx status handling,
+          pagination wrappers, and X-Request-Id that are unrelated to this cache contract and are
+          not claimed by any task. Remove the trait here, or move actual endpoint behavior into the
+          endpoint specs that expose cached data."
+        created_at: 2026-03-26T05:29:17.518Z
+    kind: blocker
+  - _ulid: 01KMM9WMEXEJ6W9S4MKDJ2AXZE
+    anchor:
+      type: structured
+      ref: "@task-cli-proxy-routing"
+      section: dependencies
+    entries:
+      - _ulid: 01KMM9WMEXCXCJN8SYYNYD9S6Q
+        author: Jacob Chapel
+        body: task-cli-proxy-routing claims coverage of @cli-daemon-proxy ac-read-from-cache, but it depends
+          only on @task-daemon-command-api. The behavior behind ac-read-from-cache actually arrives
+          in @task-migrate-read-routes, which is what makes daemon-served reads come from the entity
+          cache instead of the existing initContext/loadAll* path. Add the missing dependency or
+          narrow the task coverage so the dependency graph matches the claimed ACs.
+        created_at: 2026-03-26T05:29:17.533Z
+    kind: blocker
+  - _ulid: 01KMM9WMF46BF685GMD7W4FWRN
+    anchor:
+      type: structured
+      field: ac-timeout-fallback
+      ref: "@cli-daemon-proxy"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KMM9WMF4K71V89VGEFTJ7CYA
+        author: Jacob Chapel
+        body: "ac-timeout-fallback currently says the CLI falls back to direct mode after a routed command
+          times out. For mutating commands, that can double-execute the mutation: the daemon may
+          still commit after the client times out, then the CLI repeats the same write locally. That
+          conflicts with the single-writer/coherence goal. Constrain fallback to read-only commands,
+          or add an at-most-once/idempotency contract before approving this behavior."
+        created_at: 2026-03-26T05:29:17.540Z
+    kind: blocker
+  - _ulid: 01KMM9WMH82SHFM08509K0KAPT
+    anchor:
+      type: structured
+      ref: "@task-update-related-specs"
+      section: tasks
+    entries:
+      - _ulid: 01KMM9WMH839CDMYTZ355GEB88
+        author: Jacob Chapel
+        body: task-update-related-specs is not anchored to explicit AC ids and its Covers line is prose
+          rather than concrete references. It also uses spec_ref=@daemon-read-path even though the
+          work edits four different existing specs. That makes the task hard to validate in
+          isolation. Either turn these spec deltas into explicit plan/spec edits now, or split this
+          into concrete tasks with direct target refs and real AC coverage.
+        created_at: 2026-03-26T05:29:17.608Z
+    kind: question
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: Jacob Chapel
+    role: reviewer
+    created_at: 2026-03-26T05:29:45.370Z
+created_at: 2026-03-26T05:28:53.474Z
+updated_at: 2026-03-26T05:29:45.370Z
+notes: []

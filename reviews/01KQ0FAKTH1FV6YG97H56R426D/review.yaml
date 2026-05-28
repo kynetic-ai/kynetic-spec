@@ -1,0 +1,129 @@
+_ulid: 01KQ0FAKTH1FV6YG97H56R426D
+slugs: []
+title: "Plan review: Spec Catalog Health and Validation Trust (cycle 2)"
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified cycle-1 items: no automation/manual_only task metadata remains; seed/charter
+      references are context-only; @coverage-annotation-scope-boundaries split skipped annotation
+      behavior into separate credit/debt ACs; final gate is P2 with coherent dependencies;
+      repair-wave support line names concrete AC taxonomy."
+    name: Prior cycle blockers
+    required: true
+    created_at: 2026-04-24T19:29:00.218Z
+    completed_at: 2026-04-24T19:29:00.218Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Parents @validation, @spec-completeness, and @coverage-scan-config resolve. Related
+      @test-annotation-sweep blanket-ref semantics were inspected; new specs extend integrity
+      reporting and scan boundaries without conflict.
+    name: Spec neighborhood and refs
+    required: true
+    created_at: 2026-04-24T19:29:00.228Z
+    completed_at: 2026-04-24T19:29:00.228Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Each new spec AC is claimed by a concrete task Covers line. Discovery/repair/final-gate
+      tasks are standalone, dependencies are acyclic, and P2 final gate depends only on prerequisite
+      P1/P2 work through coherent chains.
+    name: Task coverage and ordering
+    required: true
+    created_at: 2026-04-24T19:29:00.271Z
+    completed_at: 2026-04-24T19:29:00.271Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec plan import plans/spec-catalog-health-validation-trust.md --dry-run succeeded;
+      parsePlanDocument reports 3 specs, 8 manual tasks, derive_from_specs=false, zero
+      errors/warnings, and task keys limited to supported fields.
+    name: Plan parser/import
+    required: true
+    created_at: 2026-04-24T19:29:21.377Z
+    completed_at: 2026-04-24T19:29:21.377Z
+events:
+  - _ulid: 01KQ0FAKTGY9NSPSXYX0N6J9M7
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-24T19:26:35.345Z
+  - _ulid: 01KQ0FB418H2H5R7G9PWW8ARZG
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-24T19:26:51.945Z
+  - _ulid: 01KQ0FF2GKAX9EPKH5ZMT8770D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Prior cycle blockers
+    timestamp: 2026-04-24T19:29:01.460Z
+  - _ulid: 01KQ0FF4BFRXWJY2D9PCWCWRBQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec neighborhood and refs
+    timestamp: 2026-04-24T19:29:03.343Z
+  - _ulid: 01KQ0FF688TH5C2W14XBF23T5Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Task coverage and ordering
+    timestamp: 2026-04-24T19:29:05.288Z
+  - _ulid: 01KQ0FFQ6D0PG9SZD353CNSDNY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan parser/import
+    timestamp: 2026-04-24T19:29:22.637Z
+  - _ulid: 01KQ0FG27Y9DMGBJ29029GGS2F
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-24T19:29:33.950Z
+  - _ulid: 01KQ0FG27Y8BCDEQCHE66D5MN1
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-24T19:29:33.951Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-spec-catalog-health-and-validation-trust"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-24T19:29:33.950Z
+created_at: 2026-04-24T19:26:35.345Z
+updated_at: 2026-04-24T19:29:33.950Z
+notes: []

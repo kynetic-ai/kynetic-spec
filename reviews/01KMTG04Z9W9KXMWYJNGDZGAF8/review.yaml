@@ -1,0 +1,199 @@
+_ulid: 01KMTG04Z9W9KXMWYJNGDZGAF8
+slugs: []
+title: Review replace synchronous process spawning in dispatch engine
+author: Test User
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      > @kynetic-ai/spec@0.12.0 test
+
+      > node scripts/test.cjs failed on this snapshot (cached result for current repo state): 2
+      failed suites / 12 failed tests. The visible failures are all in , with 500 responses where
+      200/422 were expected and one JSON parse failure. Full log:
+      /tmp/kspec-test-cache/01KMTFY4NF3PD6KP89E0KFWG23/d76ecc3ac67f9891.log
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-28T15:16:42.906Z
+    completed_at: 2026-03-28T15:16:42.906Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: AGENTS.md, kspec-agents.md, src/agent-runtime/bootstrap.ts,
+      src/agent-runtime/dispatch.ts, src/agent-runtime/invocation.ts,
+      src/agent-runtime/workspace.ts, tests/agent-dispatch-engine.test.ts,
+      tests/dispatch-branch-push-lifecycle.test.ts, tests/dispatch-target-sync.test.ts,
+      tests/review-fix-cycle-diff.test.ts, tests/daemon-command-api.test.ts. Commands run: kspec
+      task get @01KMSV5ERVHAAC92XGR8TYP19A; kspec item get @agent-dispatch-engine; git diff/stat
+      against a83f81a891a86a63980effc34ff74d56125f34e9; kspec review for-task; kspec validate; rg AC
+      annotations; npm test; targeted rg/sed/nl reads. Claims verified: sync child-process calls
+      were removed from the touched dispatch files, but sync filesystem calls remain on the dispatch
+      path. Categories searched: correctness, edge cases, error handling, test quality,
+      integration."
+    name: review-evidence
+    required: false
+    created_at: 2026-03-28T15:16:45.013Z
+    completed_at: 2026-03-28T15:16:45.013Z
+events:
+  - _ulid: 01KMTG04Z9FWNBHTW19TDA1AWS
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-28T15:11:30.793Z
+  - _ulid: 01KMTG9GCPH3V0A2HW35JW30BK
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-28T15:16:37.398Z
+  - _ulid: 01KMTG9JBQGSQ0XNM43TY48NGV
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMTG9HQS6C55GXHCBSHR3DD5
+    timestamp: 2026-03-28T15:16:39.415Z
+  - _ulid: 01KMTG9MBR99CK1FCVQWA52WBP
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMTG9KPYT8QCV7GVWG67ZKNK
+    timestamp: 2026-03-28T15:16:41.464Z
+  - _ulid: 01KMTG9PDNBAWX20C9RDQ8V2G7
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-28T15:16:43.573Z
+  - _ulid: 01KMTG9RG1BWN76PAFR1TAGJMQ
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-03-28T15:16:45.697Z
+  - _ulid: 01KMTGBCKE8YTKFRMMZ5TKMW2Q
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-28T15:17:39.054Z
+  - _ulid: 01KMTGBCKE8K82XHTEM232DTMD
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-28T15:17:39.054Z
+  - _ulid: 01KMTHBQTQQ4QRVE2QQKBAGRJH
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMTG9HQS6C55GXHCBSHR3DD5
+    timestamp: 2026-03-28T15:35:19.127Z
+  - _ulid: 01KMTHBVW1CPV6CC63BWREPV2A
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMTG9KPYT8QCV7GVWG67ZKNK
+    timestamp: 2026-03-28T15:35:23.265Z
+  - _ulid: 01KMTHC4GZ3F53NQASPQ9BDK6B
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMTG9HQS6C55GXHCBSHR3DD5
+    timestamp: 2026-03-28T15:35:32.127Z
+  - _ulid: 01KMTHD7KSS4DC346EF3MAT52B
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMTG9KPYT8QCV7GVWG67ZKNK
+    timestamp: 2026-03-28T15:36:08.058Z
+examined_commit: 11fcbee97e6b8f5fff51f0268670dd169c0e0f4e
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMSV5ERVHAAC92XGR8TYP19A"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMTG9HQS6C55GXHCBSHR3DD5
+    anchor:
+      type: code
+      commit: 11fcbee97e6b8f5fff51f0268670dd169c0e0f4e
+      line_end: 486
+      line_start: 439
+      path: src/agent-runtime/workspace.ts
+      side: head
+    entries:
+      - _ulid: 01KMTG9HQS1N75FS5E7HD6MWFS
+        author: Test User
+        body: The dispatch runtime still performs synchronous file I/O in the integration-target coherence
+          path.  and  use , , and , and these functions are awaited from  during dispatch
+          synchronization. So the change removed synchronous child-process spawning, but this path
+          still blocks the Node event loop on local filesystem reads/writes, which is the same AC-28
+          guarantee the task is trying to restore.
+        created_at: 2026-03-28T15:16:38.777Z
+      - _ulid: 01KMTHBQ90KBMS9G2WSKDNDN6G
+        author: "@claude"
+        body: "Fixed: Converted all sync file I/O in the coherence snapshot path
+          (loadDispatchCheckoutCoherenceSnapshot and persistDispatchCheckoutCoherenceSnapshot) from
+          fsSync.existsSync/readFileSync/writeFileSync to async fs.readFile/fs.writeFile from
+          node:fs/promises. Removed the fsSync import entirely from workspace.ts. The existence
+          check for loadDispatchCheckoutCoherenceSnapshot is handled by the try/catch around
+          fs.readFile (ENOENT triggers the catch, returning null)."
+        created_at: 2026-03-28T15:35:18.560Z
+    kind: blocker
+    resolved_at: 2026-03-28T15:35:31.598Z
+    resolved_by: "@claude"
+  - _ulid: 01KMTG9KPYT8QCV7GVWG67ZKNK
+    anchor:
+      type: code
+      commit: 11fcbee97e6b8f5fff51f0268670dd169c0e0f4e
+      line_end: 164
+      line_start: 138
+      path: src/agent-runtime/bootstrap.ts
+      side: head
+    entries:
+      - _ulid: 01KMTG9KPYQTRW1MYRP6QCCRG5
+        author: Test User
+        body: AC-28 still is not met in the bootstrap path.  is called from  during , but it still
+          uses  and  on the daemon event loop. That leaves synchronous filesystem bookkeeping in the
+          dispatch execution path, so workspace bootstrap can still block HTTP/WebSocket servicing
+          while it probes , , and .
+        created_at: 2026-03-28T15:16:40.798Z
+      - _ulid: 01KMTHBVBDRS5EJCZEJRXKCSXJ
+        author: "@claude"
+        body: "Fixed: Converted bootstrap.ts from importing node:fs (sync) to node:fs/promises.
+          checkWorkspaceDependencies is now async, using fs.access for existence checks and
+          fs.readFile for reading package.json. Dependency existence checks use
+          Promise.all(fs.access) for concurrent async probing. implicitDependencyStep and its caller
+          in ensureWorkspaceBootstrap updated to await the async results."
+        created_at: 2026-03-28T15:35:22.733Z
+    kind: blocker
+    resolved_at: 2026-03-28T15:36:07.567Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-28T15:17:39.053Z
+created_at: 2026-03-28T15:11:30.793Z
+updated_at: 2026-03-28T15:36:07.567Z
+notes: []

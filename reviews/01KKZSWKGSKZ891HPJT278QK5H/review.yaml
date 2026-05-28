@@ -1,0 +1,768 @@
+_ulid: 01KKZSWKGSKZ891HPJT278QK5H
+slugs: []
+title: Review dispatch-remote-sync plan
+author: "@claude"
+checks: []
+events:
+  - _ulid: 01KKZSWKGR98HNF0NXCWZ9GYFE
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T06:24:50.713Z
+  - _ulid: 01KKZSWTMBAQ5FG0QVADB4SN8M
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T06:24:57.995Z
+  - _ulid: 01KKZSYZZBMGRNEYQB42XHWF80
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKZSYZV5J3W4D118AS03YDME
+    timestamp: 2026-03-18T06:26:09.003Z
+  - _ulid: 01KKZSZAVXF1FWCTPJFC55T1CS
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKZSZAQG5FP9VP15B6FQRMYC
+    timestamp: 2026-03-18T06:26:20.157Z
+  - _ulid: 01KKZSZQ2MPCN2J0VH3738W653
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKZSZPY4HKP15905ENDD6E51
+    timestamp: 2026-03-18T06:26:32.660Z
+  - _ulid: 01KKZT03YTR73JKWJFFZ2W0HJQ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKZT03TJ9A868GW1W7950BAW
+    timestamp: 2026-03-18T06:26:45.850Z
+  - _ulid: 01KKZT0EEYMRZ25P7YWNX6R1PT
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKZT0EAYZ9HK62N4693BR9JJ
+    timestamp: 2026-03-18T06:26:56.606Z
+  - _ulid: 01KKZT0RNB9HY0FJEF7XNR3B26
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKZT0RHJB35N3XNZF9SHX0WD
+    timestamp: 2026-03-18T06:27:07.052Z
+  - _ulid: 01KKZT133V99D5WXQE300XCBM2
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KKZT12ZNFM0GQYG2ZVZREAB7
+    timestamp: 2026-03-18T06:27:17.755Z
+  - _ulid: 01KKZT1C4SEAFBT1ANS9RB2WSR
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKZT1C0SMS73E3WW3YT3BNH5
+    timestamp: 2026-03-18T06:27:27.001Z
+  - _ulid: 01KKZT1QGJZ9W66HA2CWJ18W4W
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KKZT1QCZ136ZR7RPK64RSJTA
+    timestamp: 2026-03-18T06:27:38.642Z
+  - _ulid: 01KKZT23KVA8S3V2DA85QNXPTJ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KKZT23FWWWJZRZB0GM3QFJZK
+    timestamp: 2026-03-18T06:27:51.035Z
+  - _ulid: 01KKZT2EVY3SNXYH86QY76JA3J
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKZT2EQRTQR2MNF6J08DENZN
+    timestamp: 2026-03-18T06:28:02.558Z
+  - _ulid: 01KKZT2WYZKYPSGA1429EJ6S7P
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKZT2WV4A05C8ABR6VW4AX07
+    timestamp: 2026-03-18T06:28:16.991Z
+  - _ulid: 01KKZT39J36KT2AZDKYDHJKR3R
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KKZT39DKWVJ7B2ARE19PSSWD
+    timestamp: 2026-03-18T06:28:29.891Z
+  - _ulid: 01KKZT3MKGSW2Y6MVC5PCE95XQ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KKZT3MFBSCXD24FHCVE65RD7
+    timestamp: 2026-03-18T06:28:41.200Z
+  - _ulid: 01KKZT3ZWS0ZV96RA5B51DY0K2
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKZT3ZRFVB59V8EPCCG63SZN
+    timestamp: 2026-03-18T06:28:52.761Z
+  - _ulid: 01KKZT73XT3ESMDGRNJCQYEH90
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKZT73SR8S5YFBP5M6H6XCR4
+    timestamp: 2026-03-18T06:30:35.194Z
+  - _ulid: 01KKZT80FDSAWYZWEV1C51H6KY
+    actor: plan-reviewer@kspec
+    event_type: verdict_submitted
+    payload:
+      decision: request_changes
+    timestamp: 2026-03-18T06:31:04.429Z
+  - _ulid: 01KKZT80FDR0QK0RVGA30M7FH2
+    actor: plan-reviewer@kspec
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T06:31:04.429Z
+  - _ulid: 01KKZV01QDY87CHE9JMTS19X45
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KKZSYZV5J3W4D118AS03YDME
+    timestamp: 2026-03-18T06:44:12.141Z
+  - _ulid: 01KKZV04858Y3XAYJB1N4S5P31
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KKZSYZV5J3W4D118AS03YDME
+    timestamp: 2026-03-18T06:44:14.725Z
+  - _ulid: 01KKZV0NVA3DPMYEVP2F29KV68
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KKZSZAQG5FP9VP15B6FQRMYC
+    timestamp: 2026-03-18T06:44:32.746Z
+  - _ulid: 01KKZV0RCCZWG84690N8WZAM7Q
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KKZSZAQG5FP9VP15B6FQRMYC
+    timestamp: 2026-03-18T06:44:35.341Z
+  - _ulid: 01KKZV0V2VBDB4JBXKN83Z9T7Y
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KKZSZPY4HKP15905ENDD6E51
+    timestamp: 2026-03-18T06:44:38.107Z
+  - _ulid: 01KKZV0XT2TRNDCA7SJDQ5CYP2
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KKZSZPY4HKP15905ENDD6E51
+    timestamp: 2026-03-18T06:44:40.899Z
+  - _ulid: 01KKZV10FPYH1H462MBGJZZMAF
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KKZT03TJ9A868GW1W7950BAW
+    timestamp: 2026-03-18T06:44:43.638Z
+  - _ulid: 01KKZV12ZQXAKJK492DVG13SMT
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KKZT03TJ9A868GW1W7950BAW
+    timestamp: 2026-03-18T06:44:46.199Z
+  - _ulid: 01KKZV15FFXVHWX0C5VNS3Q1YD
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KKZT0EAYZ9HK62N4693BR9JJ
+    timestamp: 2026-03-18T06:44:48.751Z
+  - _ulid: 01KKZV17WEABMY7XZPNHA8CB3V
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KKZT0EAYZ9HK62N4693BR9JJ
+    timestamp: 2026-03-18T06:44:51.214Z
+  - _ulid: 01KKZV1ABJ2GH9JY7BMF6TCFYF
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KKZT0RHJB35N3XNZF9SHX0WD
+    timestamp: 2026-03-18T06:44:53.746Z
+  - _ulid: 01KKZV1D1DB5EZB04Y4T5GA0FN
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KKZT0RHJB35N3XNZF9SHX0WD
+    timestamp: 2026-03-18T06:44:56.493Z
+  - _ulid: 01KKZV51B32AA90RG5SB30NTY3
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KKZT12ZNFM0GQYG2ZVZREAB7
+    timestamp: 2026-03-18T06:46:55.588Z
+  - _ulid: 01KKZV53XMB07ACP66J91W0KMK
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KKZT12ZNFM0GQYG2ZVZREAB7
+    timestamp: 2026-03-18T06:46:58.228Z
+  - _ulid: 01KKZV56F4RP1J43FECPK0MF2E
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KKZT1C0SMS73E3WW3YT3BNH5
+    timestamp: 2026-03-18T06:47:00.837Z
+  - _ulid: 01KKZV591H3EVHHWGJPSZ9TT6B
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KKZT1QCZ136ZR7RPK64RSJTA
+    timestamp: 2026-03-18T06:47:03.473Z
+  - _ulid: 01KKZV5BKVPDAM2JSXFDBGZ3VZ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KKZT1QCZ136ZR7RPK64RSJTA
+    timestamp: 2026-03-18T06:47:06.107Z
+  - _ulid: 01KKZV5EH2ND0VA1GZ03WNTQW7
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KKZT23FWWWJZRZB0GM3QFJZK
+    timestamp: 2026-03-18T06:47:09.090Z
+  - _ulid: 01KKZV5H1QAYWTPSHMPFZ8C1S6
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KKZT23FWWWJZRZB0GM3QFJZK
+    timestamp: 2026-03-18T06:47:11.671Z
+  - _ulid: 01KKZV5KRTYYR0KMC4J68K0F5P
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KKZT2EQRTQR2MNF6J08DENZN
+    timestamp: 2026-03-18T06:47:14.458Z
+  - _ulid: 01KKZV5PATZQZBD8PAHRPCHHA1
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KKZT2EQRTQR2MNF6J08DENZN
+    timestamp: 2026-03-18T06:47:17.083Z
+  - _ulid: 01KKZV5RKGZK29FFM8BNR5RE8E
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KKZT2WV4A05C8ABR6VW4AX07
+    timestamp: 2026-03-18T06:47:19.408Z
+  - _ulid: 01KKZV5V21XVF8QW3RSM50D7DB
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KKZT2WV4A05C8ABR6VW4AX07
+    timestamp: 2026-03-18T06:47:21.921Z
+  - _ulid: 01KKZV5XJEB6DN1MCJ2D53N7NB
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KKZT39DKWVJ7B2ARE19PSSWD
+    timestamp: 2026-03-18T06:47:24.494Z
+  - _ulid: 01KKZV602K494Y36W3YBF35EAJ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KKZT39DKWVJ7B2ARE19PSSWD
+    timestamp: 2026-03-18T06:47:27.059Z
+  - _ulid: 01KKZV62W3C5VZX7QHHSKQ937A
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KKZT3MFBSCXD24FHCVE65RD7
+    timestamp: 2026-03-18T06:47:29.923Z
+  - _ulid: 01KKZV65K4FA1PKDJE22BJNHF7
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KKZT3MFBSCXD24FHCVE65RD7
+    timestamp: 2026-03-18T06:47:32.709Z
+  - _ulid: 01KKZV681P7YKCNY44F2A07GVR
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KKZT3ZRFVB59V8EPCCG63SZN
+    timestamp: 2026-03-18T06:47:35.222Z
+  - _ulid: 01KKZV6ANCPN4MY90XD2ATTGV2
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KKZT3ZRFVB59V8EPCCG63SZN
+    timestamp: 2026-03-18T06:47:37.900Z
+  - _ulid: 01KKZV6DAD36ET57P6ENTFB01X
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KKZT73SR8S5YFBP5M6H6XCR4
+    timestamp: 2026-03-18T06:47:40.621Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-dispatch-remote-sync"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KKZSYZV5J3W4D118AS03YDME
+    anchor:
+      type: structured
+      field: ac-divergence-detection
+      ref: "@dispatch-remote-branch-sync"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KKZSYZV66A39WW82D2950NHK
+        author: "@claude"
+        body: "ac-divergence-detection bundles two distinct behaviors in one AC: (1) detecting that ff-only
+          merge fails and entering degraded state, and (2) producing a log message that
+          distinguishes between 'local has unpushed merges' vs 'remote was force-pushed.' These are
+          independently testable: one test for the degraded state transition, another for the log
+          message classification. Split into ac-divergence-enters-degraded (ff-only fails → degraded
+          state, no merge created) and ac-divergence-diagnosis (degraded log message distinguishes
+          local-ahead vs remote-force-pushed). Compare: the reference plan's
+          @dispatch-event-envelope ac-5 tests one thing — cycle detection rejection — not cycle
+          detection plus different log message formats."
+        created_at: 2026-03-18T06:26:08.870Z
+      - _ulid: 01KKZV01K7Y29VS1D52KPZMD69
+        author: "@claude"
+        body: Split into ac-divergence-enters-degraded (state transition) and ac-divergence-log-guidance
+          (log message classification). Each is independently testable.
+        created_at: 2026-03-18T06:44:12.007Z
+    kind: blocker
+    resolved_at: 2026-03-18T06:44:14.599Z
+    resolved_by: "@claude"
+  - _ulid: 01KKZSZAQG5FP9VP15B6FQRMYC
+    anchor:
+      type: structured
+      field: ac-degraded-status
+      ref: "@dispatch-remote-branch-sync"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KKZSZAQG2V1QPJXM6NBCGEKT
+        author: "@claude"
+        body: "ac-degraded-status bundles three observation surfaces and a display concern into one AC: (1)
+          CLI output, (2) REST API response, (3) WebSocket broadcast, and (4) CLI display formatting
+          with resolution steps. Each surface could independently regress and deserves its own test.
+          The reference plan keeps each output surface as a separate AC — e.g.
+          @dispatch-event-payload has per-domain ACs (ac-1 through ac-5), each testing one payload
+          shape. Split into: ac-degraded-status-api (REST response includes degraded
+          flag/reason/timestamp), ac-degraded-status-cli (CLI shows warning with resolution steps),
+          ac-degraded-status-ws (WebSocket broadcast includes degraded state)."
+        created_at: 2026-03-18T06:26:20.016Z
+      - _ulid: 01KKZV0NQCXTTTWN3K7A95NC6D
+        author: "@claude"
+        body: Split into ac-degraded-status-api (CLI/API query response) and ac-degraded-status-broadcast
+          (WebSocket state transition events). Display formatting removed from ACs.
+        created_at: 2026-03-18T06:44:32.620Z
+    kind: blocker
+    resolved_at: 2026-03-18T06:44:35.206Z
+    resolved_by: "@claude"
+  - _ulid: 01KKZSZPY4HKP15905ENDD6E51
+    anchor:
+      type: structured
+      field: ac-degraded-auto-recover
+      ref: "@dispatch-remote-branch-sync"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KKZSZPY4PTFT77YZ0MR4F99X
+        author: "@claude"
+        body: "ac-degraded-auto-recover packs four assertions into the then-clause: (1) exits degraded
+          state, (2) logs recovery, (3) broadcasts recovery event on WebSocket, and (4) resumes
+          dispatch including draining queued tasks. These are distinct behaviors. Recovery logging
+          and WebSocket broadcast are independently testable from the state transition and queue
+          drain. Split into at least: ac-degraded-recovery (sync succeeds → exits degraded state,
+          resumes provisioning), ac-degraded-recovery-drain (queued tasks are dispatched after
+          recovery), ac-degraded-recovery-broadcast (recovery event broadcast on agents topic). The
+          log assertion can fold into the recovery AC as a natural side-effect."
+        created_at: 2026-03-18T06:26:32.516Z
+      - _ulid: 01KKZV0TYFEYG34S596CXHYW72
+        author: "@claude"
+        body: Split into ac-degraded-auto-recover (exit degraded + resume dispatch) and
+          ac-degraded-recovery-logged (log recovery with duration). Broadcast covered by
+          ac-degraded-status-broadcast. Queue drain is part of 'resume normal dispatch operations.'
+        created_at: 2026-03-18T06:44:37.967Z
+    kind: blocker
+    resolved_at: 2026-03-18T06:44:40.759Z
+    resolved_by: "@claude"
+  - _ulid: 01KKZT03TJ9A868GW1W7950BAW
+    anchor:
+      type: structured
+      field: ac-repeated-transient-failures
+      ref: "@dispatch-remote-branch-sync"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KKZT03TJTTPYR3DR4RB4H7Y1
+        author: "@claude"
+        body: "ac-repeated-transient-failures has a dense then-clause: (1) escalated warning logged, (2)
+          warning is distinct from per-failure warning, (3) includes failure count and duration, (4)
+          engine does NOT enter degraded state, (5) operator signal about durability guarantees.
+          Items 1-3 can stay together (they describe one log message's content). But the 'does not
+          enter degraded state' assertion is a separate behavioral guarantee — it should be its own
+          AC or merged into ac-transient-fetch-failure with a clause like 'transient failures never
+          trigger degraded state regardless of count.' The conceptual split:
+          ac-repeated-transient-escalation (escalated warning with count/duration after N
+          consecutive failures) and fold the 'no degraded state' guarantee into
+          ac-transient-fetch-failure's then-clause."
+        created_at: 2026-03-18T06:26:45.714Z
+      - _ulid: 01KKZV10BBF8220QKNPJXYMHJ2
+        author: "@claude"
+        body: Split into ac-repeated-transient-escalation (escalated warning with count/duration) and
+          ac-repeated-transient-no-degrade (no degraded state for transient failures). Each
+          independently testable.
+        created_at: 2026-03-18T06:44:43.499Z
+    kind: blocker
+    resolved_at: 2026-03-18T06:44:46.069Z
+    resolved_by: "@claude"
+  - _ulid: 01KKZT0EAYZ9HK62N4693BR9JJ
+    anchor:
+      type: structured
+      field: ac-task-merge-conflict
+      ref: "@dispatch-remote-branch-sync"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KKZT0EB26JHDFCBD54QS9Y5K
+        author: "@claude"
+        body: "ac-task-merge-conflict bundles four actions: (1) task blocked with reason listing conflicting
+          files, (2) dispatch branch pushed to remote, (3) engine continues dispatching, (4) engine
+          does NOT enter degraded state. These are orthogonal behaviors. The push-on-conflict
+          behavior is a durability concern independent of the blocking behavior. The 'no degraded
+          state' is a negative assertion about engine scope. Split into:
+          ac-merge-conflict-blocks-task (conflict → task blocked with file list and branch names),
+          ac-merge-conflict-push (conflict → branch pushed for human access),
+          ac-merge-conflict-engine-continues (engine continues without degraded state). The
+          reference plan keeps action-scope and engine-scope effects in separate ACs — see
+          @dispatch-action-model ac-9 (failure isolation) vs individual action ACs."
+        created_at: 2026-03-18T06:26:56.482Z
+      - _ulid: 01KKZV15BAGHCFM4PGX35VKPMJ
+        author: "@claude"
+        body: Split into ac-merge-conflict-blocks-task (block with reason), ac-merge-conflict-pushes-branch
+          (push to remote), ac-merge-conflict-engine-continues (engine not degraded). Three
+          independent assertions.
+        created_at: 2026-03-18T06:44:48.617Z
+    kind: blocker
+    resolved_at: 2026-03-18T06:44:51.087Z
+    resolved_by: "@claude"
+  - _ulid: 01KKZT0RHJB35N3XNZF9SHX0WD
+    anchor:
+      type: structured
+      field: ac-remote-branch-stale
+      ref: "@dispatch-remote-branch-sync"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KKZT0RHJKDN83WNNPQ4JQE5A
+        author: "@claude"
+        body: "ac-remote-branch-stale bundles the initial push behavior with a subsequent-push constraint:
+          (1) first push uses --force-with-lease, (2) subsequent pushes use normal push. These two
+          behaviors have different test setups (stale remote ref present vs normal tracking). Split
+          into: ac-stale-remote-ref-overwrite (stale remote branch exists → initial push uses
+          --force-with-lease, succeeds) and modify ac-push-after-invocation's given to clarify it
+          covers the normal (non-force) push case. This keeps the 'why force-with-lease is safe
+          (single-writer)' rationale in the stale-ref AC where it belongs."
+        created_at: 2026-03-18T06:27:06.930Z
+      - _ulid: 01KKZV1A7AY9NSZMF8SK3HYHXQ
+        author: "@claude"
+        body: "Split into ac-first-push-sets-tracking (establishes upstream) and
+          ac-first-push-replaces-stale-ref (safely replaces stale remote ref). Subsequent push
+          behavior is its own AC: ac-subsequent-push."
+        created_at: 2026-03-18T06:44:53.609Z
+    kind: blocker
+    resolved_at: 2026-03-18T06:44:56.369Z
+    resolved_by: "@claude"
+  - _ulid: 01KKZT12ZNFM0GQYG2ZVZREAB7
+    anchor:
+      type: structured
+      field: ac-integration-push-serialization
+      ref: "@dispatch-remote-branch-sync"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KKZT12ZNETAQG8BZTJA30PCS
+        author: "@claude"
+        body: ac-integration-push-serialization's then-clause describes both the serialization mechanism AND
+          the skip-if-in-flight optimization. The skip behavior is a distinct optimization on top of
+          serialization. A pure serialization AC would just say 'at most one push runs at a time;
+          the second waits.' The skip-if-in-flight is an additional behavior (the second operation
+          skips because the in-flight push delivers same-or-newer state). These could be one AC if
+          the skip semantics are considered intrinsic to the serialization design, but if you want
+          to test serialization independently from the skip optimization, split them.
+        created_at: 2026-03-18T06:27:17.621Z
+      - _ulid: 01KKZV5178RR1R870SNAQJPXKR
+        author: "@claude"
+        body: "Renamed to ac-target-push-serialization. Simplified to one behavior: second operation skips.
+          No ambiguity."
+        created_at: 2026-03-18T06:46:55.464Z
+    kind: question
+    resolved_at: 2026-03-18T06:46:58.101Z
+    resolved_by: "@claude"
+  - _ulid: 01KKZT1C0SMS73E3WW3YT3BNH5
+    anchor:
+      type: structured
+      field: ac-push-first-invocation
+      ref: "@dispatch-remote-branch-sync"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KKZT1C0SRGYHQH4ZAGKK6Y9V
+        author: "@claude"
+        body: "Several ACs are well-sized and follow the reference plan's style closely:
+          ac-push-first-invocation, ac-push-after-invocation, ac-push-target-after-merge,
+          ac-pull-target-on-start, ac-degraded-no-provision, ac-no-remote, ac-cleanup-remote-branch,
+          and all four @dispatch-sync-configuration ACs (ac-sync-interval, ac-remote-sync-disabled,
+          ac-remote-sync-default, ac-validation). These each test one observable behavior with clear
+          given/when/then separation. Good work."
+        created_at: 2026-03-18T06:27:26.873Z
+    kind: nit
+    resolved_at: 2026-03-18T06:47:00.704Z
+    resolved_by: "@claude"
+  - _ulid: 01KKZT1QCZ136ZR7RPK64RSJTA
+    anchor:
+      type: structured
+      field: ac-transient-fetch-failure
+      ref: "@dispatch-remote-branch-sync"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KKZT1QCZS7ZXRZ6G07QSCSRK
+        author: "@claude"
+        body: "Missing edge case: What happens when the remote is configured but requires authentication
+          that has expired or is missing? The current ACs cover 'no remote' (ac-no-remote) and
+          'transient fetch failure' (ac-transient-fetch-failure), but an auth failure is neither
+          transient nor 'no remote' — it's a persistent, recoverable-by-operator failure mode.
+          Should it be classified as transient (retried, eventually escalated) or should it trigger
+          degraded state? The plan description says 'transient error (network unreachable, DNS
+          failure, connection timeout)' which doesn't cover auth failures. Consider either: (1)
+          adding an AC for auth/permission failures, or (2) explicitly stating in the description
+          that auth failures are classified as transient failures for the purposes of the
+          retry/escalation logic."
+        created_at: 2026-03-18T06:27:38.527Z
+      - _ulid: 01KKZV58XEFGZEXA12MXEWQTAV
+        author: "@claude"
+        body: Auth failures are classified as transient (same as network errors). The
+          ac-repeated-transient-escalation AC covers the case where auth failures persist — the
+          escalated warning signals the operator. No special auth handling needed.
+        created_at: 2026-03-18T06:47:03.339Z
+    kind: question
+    resolved_at: 2026-03-18T06:47:05.977Z
+    resolved_by: "@claude"
+  - _ulid: 01KKZT23FWWWJZRZB0GM3QFJZK
+    anchor:
+      type: structured
+      field: ac-pull-target-before-provision
+      ref: "@dispatch-remote-branch-sync"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KKZT23FW0ZZPSTAPTE0KEV0Z
+        author: "@claude"
+        body: "Missing interaction: ac-pull-target-periodic says sync is deferred when a reviewer invocation
+          is active, but there is no AC for what happens when a reviewer is active AND the target is
+          stale AND a new workspace is about to be provisioned (ac-pull-target-before-provision).
+          Does the before-provision sync also defer if a reviewer is active? The before-provision AC
+          has no reviewer-active guard, which could mean it syncs the target branch while a reviewer
+          is mid-merge — potentially causing the reviewer's merge to conflict with a concurrently
+          updated target. Clarify the interaction between reviewer-active guards and the
+          before-provision sync."
+        created_at: 2026-03-18T06:27:50.908Z
+      - _ulid: 01KKZV5ECK4MQHSE1N1K5W609Y
+        author: "@claude"
+        body: "Clarified in implementation notes: before-provision sync checks lastSyncTimestamp staleness,
+          NOT reviewer activity. Safe because provision creates a new worktree from HEAD, not
+          interfering with reviewer merge. Periodic sync skips during reviewer to avoid moving
+          target mid-merge."
+        created_at: 2026-03-18T06:47:08.947Z
+    kind: question
+    resolved_at: 2026-03-18T06:47:11.539Z
+    resolved_by: "@claude"
+  - _ulid: 01KKZT2EQRTQR2MNF6J08DENZN
+    anchor:
+      type: structured
+      field: ac-push-target-periodic
+      ref: "@dispatch-remote-branch-sync"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KKZT2EQRE1JTSAPGKV8XEW1P
+        author: "@claude"
+        body: ac-push-target-periodic's given clause says 'the local integration target branch is ahead of
+          its remote tracking ref (has unpushed merge commits)' — but this check (isAheadOfUpstream)
+          itself requires a fetch to have current remote ref info. The AC doesn't specify whether
+          the periodic sync does fetch-then-check-ahead-then-push or just checks local ref state. If
+          it only checks local refs without fetching first, it might attempt a push when remote has
+          advanced (e.g., another developer pushed to the target), which would fail. The fetch is
+          covered by ac-pull-target-periodic for the pull side, but the ordering dependency (fetch
+          first, then check ahead, then push) is implicit. Consider making this explicit or noting
+          that the push happens after the periodic fetch.
+        created_at: 2026-03-18T06:28:02.424Z
+      - _ulid: 01KKZV5KMKQNPM6T7E53T8CY0R
+        author: "@claude"
+        body: Simplified given clause to 'has commits not yet on the remote' — removed the parenthetical
+          implementation detail.
+        created_at: 2026-03-18T06:47:14.323Z
+    kind: nit
+    resolved_at: 2026-03-18T06:47:16.959Z
+    resolved_by: "@claude"
+  - _ulid: 01KKZT2WV4A05C8ABR6VW4AX07
+    anchor:
+      type: structured
+      field: task-dispatch-target-sync
+      ref: "@dispatch-remote-branch-sync"
+      section: tasks
+    entries:
+      - _ulid: 01KKZT2WV4V30J1AZPG8EMG3XS
+        author: "@claude"
+        body: "task-dispatch-target-sync covers 10 ACs, which is very heavy for a single task. Compare with
+          the reference plan where tasks typically cover 3-6 ACs. The degraded state surface area
+          alone (detection, no-provision, status across 3 surfaces, auto-recovery, transient
+          handling, escalation) is enough for its own task. Consider splitting into: (1)
+          task-dispatch-target-sync — core sync logic (ac-pull-target-on-start,
+          ac-pull-target-periodic, ac-pull-target-before-provision, ac-no-remote) and (2)
+          task-dispatch-degraded-state — degraded state machine and surfaces
+          (ac-divergence-detection, ac-degraded-no-provision, ac-degraded-status,
+          ac-degraded-auto-recover, ac-transient-fetch-failure, ac-repeated-transient-failures).
+          This mirrors how the reference plan separates @task-event-bus (core runtime) from
+          @task-event-schema (structural definitions)."
+        created_at: 2026-03-18T06:28:16.868Z
+      - _ulid: 01KKZV5RFCQVW1YHXJBJE02GRA
+        author: "@claude"
+        body: "Split into task-dispatch-target-sync (7 ACs: sync mechanics) and task-dispatch-degraded-state
+          (9 ACs: state machine + status surfaces). Degraded state depends on target sync."
+        created_at: 2026-03-18T06:47:19.276Z
+    kind: blocker
+    resolved_at: 2026-03-18T06:47:21.788Z
+    resolved_by: "@claude"
+  - _ulid: 01KKZT39DKWVJ7B2ARE19PSSWD
+    anchor:
+      type: structured
+      field: task-dispatch-branch-push
+      ref: "@dispatch-remote-branch-sync"
+      section: tasks
+    entries:
+      - _ulid: 01KKZT39DK2G0BS01VF35JMRJX
+        author: "@claude"
+        body: "task-dispatch-branch-push similarly covers 8 ACs spanning push lifecycle, stale ref handling,
+          cleanup, and serialization. The remote branch cleanup (ac-cleanup-remote-branch) is a
+          workspace lifecycle concern that could be its own small task or grouped with the merge
+          conflict task. The serialization AC (ac-integration-push-serialization) is cross-cutting
+          infrastructure. Consider: (1) task-dispatch-branch-push — core push lifecycle
+          (ac-push-first-invocation, ac-push-after-invocation, ac-push-target-after-merge,
+          ac-push-target-periodic, ac-remote-branch-stale, ac-no-remote push side) and (2) fold
+          ac-cleanup-remote-branch and ac-integration-push-serialization into the merge conflict
+          task or a separate small task."
+        created_at: 2026-03-18T06:28:29.747Z
+      - _ulid: 01KKZV5XE673628VB0R3AJ5F32
+        author: "@claude"
+        body: Kept as one task — the ACs are cohesive (all push lifecycle). Added ac-push-non-fatal as a
+          shared AC reducing per-push duplication. 9 ACs but they form a single concern.
+        created_at: 2026-03-18T06:47:24.358Z
+    kind: question
+    resolved_at: 2026-03-18T06:47:26.914Z
+    resolved_by: "@claude"
+  - _ulid: 01KKZT3MFBSCXD24FHCVE65RD7
+    anchor:
+      type: structured
+      field: task-dispatch-merge-conflict-handling
+      ref: "@dispatch-remote-branch-sync"
+      section: tasks
+    entries:
+      - _ulid: 01KKZT3MFCNK5NF68RFSD8E5N7
+        author: "@claude"
+        body: "task-dispatch-merge-conflict-handling's description acknowledges an open design question:
+          'who owns the merge — the agent or the dispatcher?' The task says to start with post-hoc
+          detection but notes dispatcher-owned merge is the long-term direction. This is fine as a
+          pragmatic approach, but the AC (ac-task-merge-conflict) is written as if the dispatcher
+          detects the conflict directly ('a reviewer agent attempts to merge... the merge produces
+          conflicts'). If the agent owns the merge, the dispatcher only knows about it after the
+          fact by inspecting state. The AC should be rewritten to match the chosen detection
+          mechanism, or the description should commit to one approach and defer the other. An AC
+          that doesn't match the implementation approach will confuse the implementing agent."
+        created_at: 2026-03-18T06:28:41.068Z
+      - _ulid: 01KKZV62QSSX56CFHMGQZXHBH3
+        author: "@claude"
+        body: Committed to post-hoc detection approach. Updated spec description and task description to
+          remove ambiguity. Dispatcher-owned merge noted as future direction in design decisions.
+        created_at: 2026-03-18T06:47:29.785Z
+    kind: question
+    resolved_at: 2026-03-18T06:47:32.575Z
+    resolved_by: "@claude"
+  - _ulid: 01KKZT3ZRFVB59V8EPCCG63SZN
+    anchor:
+      type: structured
+      field: ac-push-first-invocation
+      ref: "@dispatch-remote-branch-sync"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KKZT3ZRGES7B2PCSFMF9Q1YH
+        author: "@claude"
+        body: "Several ACs reference specific git commands in their then-clauses, which leaks
+          implementation: ac-push-first-invocation says 'pushes with git push -u',
+          ac-remote-branch-stale says 'push uses --force-with-lease', ac-cleanup-remote-branch says
+          'git push origin --delete <branch>', ac-divergence-detection says 'git merge --ff-only
+          fails.' The reference plan's ACs describe behavior, not commands — e.g. 'the process is
+          terminated and an action.failed event is emitted' not 'kill -9 is sent.' Rewrite these to
+          describe the observable outcome: 'upstream tracking is established' instead of 'git push
+          -u'; 'stale remote ref is replaced safely (single-writer guarantee)' instead of
+          '--force-with-lease'; 'remote ref is removed' instead of 'git push origin --delete.' The
+          git commands belong in task descriptions and implementation notes, not ACs."
+        created_at: 2026-03-18T06:28:52.624Z
+      - _ulid: 01KKZV67X6B7FH5YGWW3PKE1FS
+        author: "@claude"
+        body: Removed all git commands from AC then-clauses. ACs now describe observable behavior (e.g.
+          'pushes with upstream tracking established' not 'git push -u', 'safely replaces stale
+          remote ref' not '--force-with-lease'). Implementation details moved to task How sections.
+        created_at: 2026-03-18T06:47:35.078Z
+    kind: blocker
+    resolved_at: 2026-03-18T06:47:37.764Z
+    resolved_by: "@claude"
+  - _ulid: 01KKZT73SR8S5YFBP5M6H6XCR4
+    anchor:
+      type: structured
+      ref: "@dispatch-remote-branch-sync"
+      section: description
+    entries:
+      - _ulid: 01KKZT73SR189S6K80T019EHXF
+        author: "@claude"
+        body: "The spec description is well-written with clear design decisions, non-goals, and rationale.
+          The implementation notes per-task are thorough and give agents good context. The spec-task
+          coverage mapping (Covers: lines) is explicit and complete. The
+          @dispatch-sync-configuration spec is clean and appropriately scoped — all four ACs are
+          testable and independent. The plan overall demonstrates good understanding of the existing
+          dispatch architecture and integrates naturally with existing patterns (workspace
+          provisioning, reconciliation loop, status surfaces)."
+        created_at: 2026-03-18T06:30:35.064Z
+    kind: nit
+    resolved_at: 2026-03-18T06:47:40.493Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: a04a8a537f0b
+    decision: request_changes
+    reviewer: plan-reviewer@kspec
+    role: reviewer
+    created_at: 2026-03-18T06:31:04.294Z
+created_at: 2026-03-18T06:24:50.713Z
+updated_at: 2026-03-18T06:47:40.493Z
+notes: []

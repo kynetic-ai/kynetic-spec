@@ -1,0 +1,165 @@
+_ulid: 01KM7WCJRJW6X62WY1J6H76KB0
+slugs: []
+title: Review per-task core data and notes files (cycle 5)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 6 with pre-existing repository warnings only (orphaned specs/AC coverage warnings,
+      no schema/reference errors).
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-21T09:45:53.730Z
+    completed_at: 2026-03-21T09:45:53.730Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/cli/commands/task.ts, src/parser/split-backend.ts,
+      src/parser/task-data-manager.ts, src/schema/spec.ts, tests/per-task-files.test.ts,
+      src/utils/activity.ts. Commands run: kspec task get, kspec item get @task-core-data-file,
+      kspec item get @task-notes-file, git diff, kspec validate, rg AC annotations, npm test. Claims
+      verified: full suite passed; task get now resolves split manager in task.ts. Categories
+      searched: correctness, AC coverage, error handling, integration, test quality."
+    name: review evidence
+    required: false
+    runner: codex
+    created_at: 2026-03-21T09:46:28.037Z
+    completed_at: 2026-03-21T09:46:28.037Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 300 test files passed; 6825 tests passed; 3 skipped; 0 failed; duration 147.88s.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-21T09:46:28.976Z
+    completed_at: 2026-03-21T09:46:28.976Z
+events:
+  - _ulid: 01KM7WCJRJ44ZQHZMHMC7KG4RH
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T09:42:26.834Z
+  - _ulid: 01KM7WD3M6JBEAKDNFZCACVGA3
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T09:42:44.102Z
+  - _ulid: 01KM7WJ5YT6KYZBM9993B7BM6A
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM7WJ5MYCFCWR33SW4GMJE7Z
+    timestamp: 2026-03-21T09:45:30.330Z
+  - _ulid: 01KM7WJ6VMEEW6CS9AM7FJ8GJW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM7WJ6JYEWN51847MK2K4X6F
+    timestamp: 2026-03-21T09:45:31.252Z
+  - _ulid: 01KM7WJX57FDSS0EX0P5F9VT5J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-21T09:45:54.087Z
+  - _ulid: 01KM7WKYKKH77NNA9GRKGVYCFG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence
+    timestamp: 2026-03-21T09:46:28.339Z
+  - _ulid: 01KM7WKZMB171CQDP3G55HW4KW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-21T09:46:29.387Z
+  - _ulid: 01KM7WM0QA6HG7T0TTBMWMAWRB
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-21T09:46:30.507Z
+  - _ulid: 01KM7WM0QBW9H4BD0ZZ4DF9DR0
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-21T09:46:30.507Z
+examined_commit: 1e88f19f3c0bfbd20f3ece5cb6cd1372fc2fb16e
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YET1A7XY9D0V3YQ9DRASG"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM7WJ5MYCFCWR33SW4GMJE7Z
+    anchor:
+      type: code
+      commit: 1e88f19f3c0bfbd20f3ece5cb6cd1372fc2fb16e
+      line_end: 2062
+      line_start: 2059
+      path: src/cli/commands/task.ts
+      side: head
+    entries:
+      - _ulid: 01KM7WJ5MYTTYQB8PN92T0RVV1
+        author: Jacob Chapel
+        body: The new split-backend history relies on TaskDataManager commit metadata to populate the
+          history command field, but task needs-work still calls mutateTask() without commitOpts
+          here. Once split storage is enabled this status transition will persist a history entry
+          with command set to unknown, so the audit trail no longer identifies which CLI action
+          triggered the change. That violates @task-core-data-file ac-3, which requires each history
+          record to include the triggering command or API call.
+        created_at: 2026-03-21T09:45:30.014Z
+    kind: blocker
+  - _ulid: 01KM7WJ6JYEWN51847MK2K4X6F
+    anchor:
+      type: code
+      commit: 1e88f19f3c0bfbd20f3ece5cb6cd1372fc2fb16e
+      line_end: 3044
+      line_start: 2919
+      path: src/cli/commands/task.ts
+      side: head
+    entries:
+      - _ulid: 01KM7WJ6JYYSZR5S5N8B041PD9
+        author: Jacob Chapel
+        body: Todo mutations now write todos into task.yaml history, but these call sites still feed the
+          wrong command metadata into that history. task todo add passes operation task-note, and
+          task todo done / task todo undone omit commitOpts entirely, so their history entries
+          become either mislabelled or command unknown. Because @task-core-data-file ac-3 requires
+          each history entry to record the actual triggering command, the persisted audit trail is
+          incorrect for the todo commands.
+        created_at: 2026-03-21T09:45:30.974Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-21T09:46:30.506Z
+created_at: 2026-03-21T09:42:26.834Z
+updated_at: 2026-03-21T09:46:30.507Z
+notes: []

@@ -1,0 +1,112 @@
+_ulid: 01KNK4P5C3DED0SM9CWYR78963
+slugs: []
+title: Review task-meta-subdomain-decomposition (cycle 4)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exited with warnings only (repo baseline orphan/alignment/completeness
+      warnings); no validation errors for this task's spec or tests.
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-07T04:59:07.969Z
+    completed_at: 2026-04-07T04:59:07.969Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: NODE_ENV=development npm test -- daemon-entity-cache.test.ts --fresh passed (31/31 suites,
+      131/131 tests).
+    name: daemon-entity-cache
+    required: true
+    runner: npm
+    created_at: 2026-04-07T04:59:44.499Z
+    completed_at: 2026-04-07T04:59:44.499Z
+events:
+  - _ulid: 01KNK4P5C2ZKAQETRMDVZ376AQ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-07T04:54:49.987Z
+  - _ulid: 01KNK4PNGCPT1S3ESYR8HFRSXT
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-07T04:55:06.508Z
+  - _ulid: 01KNK4Y23H7FWDD5XWKA8JFBQT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-04-07T04:59:08.785Z
+  - _ulid: 01KNK4Y4E7VEX30V79CD0K31ZM
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNK4Y3M3RT9KCSAF52XS148V
+    timestamp: 2026-04-07T04:59:11.175Z
+  - _ulid: 01KNK4Z5RCN5XPRFKWE6FV1SH1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: daemon-entity-cache
+    timestamp: 2026-04-07T04:59:45.293Z
+  - _ulid: 01KNK5057HPR34K0H72GCXZ1NZ
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-07T05:00:17.521Z
+  - _ulid: 01KNK5057H5TTYA6M1SV5NY6S9
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-07T05:00:17.521Z
+examined_commit: 3bd80c9d568f431109bc15f19faaf8028c7dcf8b
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNDDJ4BXMWVZSC7G6KMDP8BH"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNK4Y3M3RT9KCSAF52XS148V
+    entries:
+      - _ulid: 01KNK4Y3M3MFQAS9VW6ZNWRQ90
+        author: Jacob Chapel
+        body: "Evidence log: Files read: packages/daemon/src/server.ts, src/daemon/entity-cache.ts,
+          tests/daemon-entity-cache.test.ts. Commands run: kspec task get, kspec item get, kspec
+          validate, grep AC annotations, git diff/stat/show, NODE_ENV=development npm test --
+          daemon-entity-cache.test.ts --fresh, NODE_ENV=development npm test -- --fresh. Claim
+          verified: included meta YAML invalidation now routes through manifest-only reload via
+          cached meta source files. Categories searched: correctness, edge cases, error handling,
+          test quality, integration; no findings."
+        created_at: 2026-04-07T04:59:10.339Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-04-07T05:00:17.521Z
+created_at: 2026-04-07T04:54:49.987Z
+updated_at: 2026-04-07T05:00:17.521Z
+notes: []

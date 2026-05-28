@@ -1,0 +1,245 @@
+_ulid: 01KR4A2SCVG4W718Y9CZS3MG14
+slugs: []
+title: Review detached cleanup timing regressions (cycle 4)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exited 6 due existing repository-wide warnings. Schema/references OK;
+      target specs @daemon-test-guardrail-precision and @daemon-test-harness-guardrails no longer
+      appear in missing own AC coverage.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-08T17:42:50.644Z
+    completed_at: 2026-05-08T17:42:50.644Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts passed: 18 suites, 77/77 tests, duration 23.6s."
+    name: focused daemon lint tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-08T17:42:54.021Z
+    completed_at: 2026-05-08T17:42:54.021Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test exited 1: 2403 suites passed, 5 failed suites reported, 2 failed tests, 8813
+      passed, 5 skipped. Failures were tests/helpers/daemon.test.ts cache_status loading vs ready
+      and tests/daemon-api/websocket-protocol.test.ts STACK_TRACE_ERROR in beforeEach. Immediate
+      focused rerun of those files passed (14 suites, 24/24 tests, 9.8s), git diff origin/dev..HEAD
+      for those files was empty, and follow-up flaky-test task @01KR4AWP was created."
+    name: full npm test
+    required: false
+    runner: npm test
+    created_at: 2026-05-08T17:42:57.277Z
+    completed_at: 2026-05-08T17:42:57.277Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check 227fcb7ef7d06f60567823111394bb2ec0506413..HEAD produced no whitespace
+      errors; git diff origin/dev..HEAD for the flaky failure files was empty.
+    name: diff hygiene
+    required: true
+    runner: git
+    created_at: 2026-05-08T17:43:00.686Z
+    completed_at: 2026-05-08T17:43:00.686Z
+events:
+  - _ulid: 01KR4A2SCV9AMFFF9T4J9ANR0M
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-08T17:27:35.579Z
+  - _ulid: 01KR4A3C8PEZ7H1D8XKYTSJQSM
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-08T17:27:54.903Z
+  - _ulid: 01KR4A6VXN9WFSZR8HK83BHJDF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR4A6T4B3JV01M0WBG46VJSG
+    timestamp: 2026-05-08T17:29:49.237Z
+  - _ulid: 01KR4AYR9BR33FDPZVN7YXDZ6Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-08T17:42:51.948Z
+  - _ulid: 01KR4AYVGMGNPW7B73MYXCFM81
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused daemon lint tests
+    timestamp: 2026-05-08T17:42:55.252Z
+  - _ulid: 01KR4AYYSW42Z4TZM3GS94A0B0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: full npm test
+    timestamp: 2026-05-08T17:42:58.620Z
+  - _ulid: 01KR4AZ22MHGHNAY775Y9GKPZY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff hygiene
+    timestamp: 2026-05-08T17:43:01.972Z
+  - _ulid: 01KR4AZ584WWNA1BWD5K9AYP42
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KR4AZ41AHARMPZQ4PPWFW0E7
+    timestamp: 2026-05-08T17:43:05.220Z
+  - _ulid: 01KR4AZ8JRRXNHVGS46TSKY4F7
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-08T17:43:08.632Z
+  - _ulid: 01KR4AZ8JR7XQRT2A8H79BVVRM
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-08T17:43:08.632Z
+  - _ulid: 01KR4C31ZJJM21AJHNGP2VVN06
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR4A6T4B3JV01M0WBG46VJSG
+    timestamp: 2026-05-08T18:02:41.522Z
+  - _ulid: 01KR4C3AJ6AYS1C83BJ7VEY2S4
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR4A6T4B3JV01M0WBG46VJSG
+    timestamp: 2026-05-08T18:02:50.310Z
+examined_commit: 372133334f5838871372cf48b8ce9cf6c3ddbf36
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR3W7Q0H2FVXHDJ51WCFAVNN"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR4A6T4B3JV01M0WBG46VJSG
+    anchor:
+      type: code
+      commit: 372133334f5838871372cf48b8ce9cf6c3ddbf36
+      line_end: 1230
+      line_start: 1230
+      path: tests/lint-daemon-test-guardrails.test.ts
+      side: head
+    entries:
+      - _ulid: 01KR4A6T4BP489BC3Z3G3DTG31
+        author: Jacob Chapel
+        body: "MUST-FIX: The unsafe cleanup-timing regression cases use bare `it.fails()`. Vitest treats any
+          thrown assertion in an `it.fails` body as the expected failure; this same file documents
+          at lines 917-925 that bare `it.fails` cannot distinguish parser/helper failures from the
+          intended known gap. These AC-bearing cases can therefore pass if `runOxlint` crashes or
+          emits a different diagnostic, because the output assertions throw and `it.fails` marks the
+          test as passing. That means the regression coverage can pass for reasons unrelated to the
+          detached-cleanup timing gap. Replace these with a helper like `expectClassifierGap` that
+          first proves oxlint ran cleanly and then verifies the exact current gap shape, or
+          otherwise explicitly assert the known failure mode. Affected cases: lines 1230, 1260,
+          1287, and 1451."
+        created_at: 2026-05-08T17:29:47.403Z
+      - _ulid: 01KR4C30NZC4A4Z7QQCWTFHPAZ
+        author: "@claude"
+        body: >-
+          Fixed: replaced bare `it.fails()` on the four AC-bearing cleanup-timing regression cases
+          (now lines ~1227, ~1265, ~1295, ~1471 after the rebase) with the existing
+          `expectClassifierGap()` helper from earlier in the same file. Each case now:
+
+
+          1. Calls `expectOxlintRanCleanly()` first to confirm oxlint exited 0 or 1 with no
+          parser/helper/panic output. This is the precondition that bare `it.fails` could not
+          enforce.
+
+          2. Runs the AC's required post-fix assertions in `assertPostFixBehavior` (rule must report
+          the unsafe shape, exit non-zero, mention `no-leaky-test-daemon`, reference safe-shape
+          vocabulary like `serve start --detach|scoped cleanup|onTestFinished`).
+
+          3. On the post-fix assertion throw, asserts the EXACT current gap shape in
+          `assertKnownGapShape` — oxlint exits 0 and emits no `no-leaky-test-daemon` diagnostic. A
+          generic parser/helper failure does NOT match this shape and re-throws, so the regression
+          cannot pass for reasons unrelated to the cleanup-timing gap.
+
+          4. Throws via the helper itself once the post-fix assertions begin to succeed, forcing
+          @task-fix-detached-cleanup-timing-analysis to remove the wrapper.
+
+
+          Updated the file-level docblock above the `daemon test guardrail precision: detached
+          cleanup timing` describe block to document the new precondition-then-gap-shape contract
+          instead of the prior `it.fails` convention.
+
+
+          Verification:
+
+          - `mise exec -- npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+          tests/lint-no-leaky-test-daemon.test.ts` -> 18 suites, 77/77 tests passed (23.1s).
+
+          - `mise exec -- npm test` (full) -> 2409 suites, 8818 passed / 5 skipped / 0 failed
+          (2401.2s).
+
+          - `kspec validate` -> @daemon-test-guardrail-precision is not reported under missing own
+          AC coverage on this branch.
+        created_at: 2026-05-08T18:02:40.186Z
+    kind: blocker
+    resolved_at: 2026-05-08T18:02:48.879Z
+    resolved_by: "@claude"
+  - _ulid: 01KR4AZ41AHARMPZQ4PPWFW0E7
+    entries:
+      - _ulid: 01KR4AZ41AEWGFWP4Q4EEH8TX6
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: kspec-agents.md, task details and prior review cycle 3,
+          @daemon-test-guardrail-precision, @daemon-test-harness-guardrails,
+          tests/lint-daemon-test-guardrails.test.ts diff and surrounding classifier-gap helper
+          documentation, failing test snippets in tests/helpers/daemon.test.ts and
+          tests/daemon-api/websocket-protocol.test.ts. Commands run: git status/diff/log/merge-base,
+          kspec task get, kspec review for-task/get/add/open/comment, kspec item get, kspec
+          validate, rg AC annotations, npm test focused guardrail suites, npm test full suite,
+          focused rerun of full-suite failures, git diff --check. Claims verified: prior cycle bad
+          unrelated-subprocess annotation was removed and replaced by echo/git argv-overlap
+          behavioral coverage; focused guardrail suites pass; full-suite failures rerun clean and
+          have no diff relative to current origin/dev. Categories searched: correctness, test
+          quality, AC coverage, edge cases around unsafe vs allowed cleanup timing, suppression
+          locality, integration with sibling classifier regressions, flaky/pre-existing test triage.
+          Finding recorded: bare it.fails allows false-positive expected-failure coverage for the
+          new AC-bearing cleanup timing regressions."
+        created_at: 2026-05-08T17:43:03.978Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-08T17:43:08.632Z
+created_at: 2026-05-08T17:27:35.579Z
+updated_at: 2026-05-08T18:02:48.879Z
+notes: []

@@ -1,0 +1,134 @@
+_ulid: 01KSDGK9C17EZJ7RJNF54XS399
+slugs: []
+title: Review folder-backed plan/review cache invalidation
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2512 suites, 9563 tests passed, 5 skipped. Log:
+      /tmp/kspec-test-cache/01KSDGH8CE15MW68QZEYFZRWMT/fa4f33160c1a5a43.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-24T17:42:04.552Z
+    completed_at: 2026-05-24T17:42:04.552Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md; src/daemon/entity-cache.ts; packages/daemon/src/watcher.ts;
+      packages/daemon/src/project-context.ts; packages/daemon/src/server.ts;
+      packages/web-ui/src/lib/query/ws-invalidation.ts; tests/daemon-entity-cache.test.ts;
+      tests/daemon-watcher-chokidar.test.ts. Commands: task/spec/review lookups, diff reads, AC
+      annotation search, kspec validate --warnings-ok, git diff --check, npm test. Claims verified:
+      folder-backed plan/review paths map to only plans/reviews; non-YAML folder-backed files are
+      delivered without YAML parsing; parent-index invalidation remains; debounce coalescing is
+      covered; tests are behavioral, not source-scanning. Categories searched: correctness, edge
+      cases, deletion/integration path, test quality, UI invalidation interaction."
+    name: review evidence log
+    required: false
+    runner: codex
+    created_at: 2026-05-24T17:42:10.110Z
+    completed_at: 2026-05-24T17:42:10.110Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check b588e89919cb699a8e1134993f5061c00f1f4f5a...HEAD passed with no whitespace
+      errors.
+    name: diff hygiene
+    required: true
+    runner: git
+    created_at: 2026-05-24T17:42:15.846Z
+    completed_at: 2026-05-24T17:42:15.846Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --warnings-ok passed; only existing repository warnings reported.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-24T17:42:21.447Z
+    completed_at: 2026-05-24T17:42:21.447Z
+events:
+  - _ulid: 01KSDGK9C18DDCGRNYPND4EV34
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-24T17:30:19.393Z
+  - _ulid: 01KSDGKSHA61REN5N5E6NCW26K
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-24T17:30:35.946Z
+  - _ulid: 01KSDH8VZ74E3KAD3EXVMDY71E
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-24T17:42:06.568Z
+  - _ulid: 01KSDH91DCD8WRT79V8NASMG3P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-24T17:42:12.140Z
+  - _ulid: 01KSDH971QE3VY6YA227XJHFDB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff hygiene
+    timestamp: 2026-05-24T17:42:17.911Z
+  - _ulid: 01KSDH9CCZKPAJPPXARPMK5V69
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-24T17:42:23.394Z
+  - _ulid: 01KSDH9QXWTXF5EC24GW1MTJVF
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-24T17:42:35.197Z
+  - _ulid: 01KSDH9QXXQENMCVFRHKHTGAG0
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-24T17:42:35.197Z
+examined_commit: e681162bbb00c3663c1235414a9c8b2c1001c476
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XAZBR1ZS1KKEHZ2PSZ4S5"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-24T17:42:35.196Z
+created_at: 2026-05-24T17:30:19.393Z
+updated_at: 2026-05-24T17:42:35.197Z
+notes: []

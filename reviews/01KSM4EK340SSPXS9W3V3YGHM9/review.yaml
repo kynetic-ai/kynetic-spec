@@ -1,0 +1,157 @@
+_ulid: 01KSM4EK340SSPXS9W3V3YGHM9
+slugs: []
+title: Review folder index consistency mutators
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/plan-rebuild-index.test.ts tests/review-rebuild-index.test.ts
+      tests/parser-plans-folder.test.ts tests/parser-reviews-folder.test.ts
+      tests/plan-folder-migration.test.ts tests/review-folder-migration.test.ts
+      tests/upgrade-folder-storage.test.ts: 16 suites, 114 tests passed. Log:
+      /tmp/kspec-test-cache/01KSM4DFYXBZNYXM8PRYZCFZYB/ca56ffb26b089375.log"
+    name: focused folder index suites
+    required: true
+    runner: npm-test
+    created_at: 2026-05-27T07:26:27.925Z
+    completed_at: 2026-05-27T07:26:27.925Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run typecheck: tsc --noEmit completed successfully."
+    name: typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-27T07:26:41.700Z
+    completed_at: 2026-05-27T07:26:41.700Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test: 2587 suites passed; 9891 tests passed, 5 skipped; duration 2397.4s. Log:
+      /tmp/kspec-test-cache/01KSM4DFYXBZNYXM8PRYZCFZYB/7232f33c729fef69.log"
+    name: full npm test
+    required: true
+    runner: npm-test
+    created_at: 2026-05-27T07:26:53.336Z
+    completed_at: 2026-05-27T07:26:53.336Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate: schema/references OK; exited 6 due repo-wide pre-existing warnings
+      (deprecated refs, alignment/completeness warnings), not introduced by this branch."
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-27T07:27:04.395Z
+    completed_at: 2026-05-27T07:27:04.395Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/cli/commands/plan-import.ts, src/cli/commands/plan-resource.ts,
+      src/parser/folder-backed-entity.ts, src/parser/plan-resource-import.ts,
+      src/parser/plan-storage-manager.ts, src/parser/review-storage-manager.ts,
+      src/parser/review-resource-manager.ts, src/parser/plans.ts, src/parser/reviews.ts,
+      src/parser/entity-local-resources.ts, src/cli/batch-write-buffer.ts, src/parser/yaml.ts,
+      changed regression tests. Commands run: kspec task/item/review lookups, git diff/log/diff
+      --check, rg AC/fails scans, kspec validate, focused npm test --fresh, npm run typecheck, npm
+      test. Claims verified: plan resource add/replace/remove and plan import sibling resources now
+      refresh plan index; review external_links []/omitted equality converges; existing review
+      resource mutators route through saveReviewRecordToFolder. Categories searched: correctness,
+      edge cases/default equality, error handling paths, test quality, integration/merge readiness."
+    name: review evidence log
+    required: false
+    runner: reviewer
+    created_at: 2026-05-27T07:27:18.328Z
+    completed_at: 2026-05-27T07:27:18.328Z
+events:
+  - _ulid: 01KSM4EK34VFQZ8MSZ1C649X29
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-27T07:12:43.620Z
+  - _ulid: 01KSM4F8G56FPFG60H321H53V4
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-27T07:13:05.541Z
+  - _ulid: 01KSM57SP7T9BAXNB0TGSCP643
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused folder index suites
+    timestamp: 2026-05-27T07:26:29.575Z
+  - _ulid: 01KSM5874SGSGA9QD3MQBNMSE5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-27T07:26:43.353Z
+  - _ulid: 01KSM58JG3DAM3JHZW0J27G1YC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full npm test
+    timestamp: 2026-05-27T07:26:54.979Z
+  - _ulid: 01KSM58X8S0TEH4C09DTY8HQ4Z
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-27T07:27:06.009Z
+  - _ulid: 01KSM59B021688FNBS1863ZJFK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-27T07:27:20.067Z
+  - _ulid: 01KSM59MRAEZAACCWZCFGJFPC7
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-27T07:27:30.058Z
+  - _ulid: 01KSM59MRATVPCPS5AB5BPAYTZ
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-27T07:27:30.058Z
+examined_commit: ba68f4e3120b24fcdcb7d2fb780a13ad5c6a0431
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KSKQXJGJQ2R0NBJ426JQ0039"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-27T07:27:30.057Z
+created_at: 2026-05-27T07:12:43.620Z
+updated_at: 2026-05-27T07:27:30.058Z
+notes: []

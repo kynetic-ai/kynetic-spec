@@ -1,0 +1,147 @@
+_ulid: 01KM7F8W3SCWY46HP4K02K0S4E
+slugs: []
+title: Review task-migrate-supporting modules to task data manager
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 298 test files passed; 6756 tests passed, 3 skipped.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-21T05:57:55.597Z
+    completed_at: 2026-03-21T05:57:55.597Z
+events:
+  - _ulid: 01KM7F8W3SMJP18BG380YEVVB0
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T05:53:13.849Z
+  - _ulid: 01KM7FGCN3C61MD7B3WN19GVGZ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T05:57:20.163Z
+  - _ulid: 01KM7FGDGFB7WMAHF47ZKM7SEH
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM7FGD7BZVTKPECAAK8ZK27D
+    timestamp: 2026-03-21T05:57:21.039Z
+  - _ulid: 01KM7FGEBCWQB7WK9H3VRC3CKW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM7FGE3JM6AVRV5VT14ENN9W
+    timestamp: 2026-03-21T05:57:21.900Z
+  - _ulid: 01KM7FGZ20BZ1P393S9RFWS989
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM7FGYT3CHDXD6J2DSBHJ4B3
+    timestamp: 2026-03-21T05:57:39.008Z
+  - _ulid: 01KM7FHD6BKMA1GJNVGCYJXC0M
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-21T05:57:53.483Z
+  - _ulid: 01KM7FHD6BA85KDYFZJTP582EB
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-21T05:57:53.483Z
+  - _ulid: 01KM7FHFH36V6W9CXFEW84RTZX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-21T05:57:55.875Z
+examined_commit: 2bd11ca860e8117d0c5d7c10b61e610c45d9819c
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YEQYJGQ4JF2ECR67DANZQ"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM7FGD7BZVTKPECAAK8ZK27D
+    entries:
+      - _ulid: 01KM7FGD7CT7RYD9VEV2P911JF
+        author: Jacob Chapel
+        body: "Review evidence log:\\nFiles read: src/cli/commands/{derive,inbox,item,meta,plan,tasks}.ts,
+          src/parser/review-task-integration.ts, src/triage/actions.ts,
+          src/parser/{task-data-manager,yaml}.ts, src/cli/validators.ts,
+          src/cli/commands/review.ts.\\nCommands run: git diff --stat/name-only, full git diff for
+          touched files, kspec task get, kspec item get @task-data-manager, kspec review for-task,
+          kspec validate, rg for AC annotations and remaining task I/O call sites, npm
+          test.\\nClaims verified: worker note claimed supporting-module migration and passing
+          tests; I verified the changed files directly and independently ran the full test
+          suite.\\nCategories searched: correctness (found blocker in inbox promote ordering), edge
+          cases (failure after inbox delete), error handling (shadow/IO failure paths), test quality
+          (existing coverage passes but does not catch the ordering regression), integration
+          (review/task manager and plan/task flows checked)."
+        created_at: 2026-03-21T05:57:20.748Z
+    kind: nit
+  - _ulid: 01KM7FGE3JM6AVRV5VT14ENN9W
+    anchor:
+      type: code
+      commit: 2bd11ca860e8117d0c5d7c10b61e610c45d9819c
+      line_end: 300
+      line_start: 294
+      path: src/cli/commands/inbox.ts
+      side: head
+    entries:
+      - _ulid: 01KM7FGE3JCAVPNGE0S53Q9Q7A
+        author: Jacob Chapel
+        body: "MUST-FIX:  now deletes the inbox item before  runs. If task creation or its shadow commit
+          fails after the delete, the inbox item is already gone and no task is created, so
+          promotion can lose user data. The previous flow created/saved the task first and only
+          consumed the inbox item afterwards."
+        created_at: 2026-03-21T05:57:21.650Z
+    kind: blocker
+  - _ulid: 01KM7FGYT3CHDXD6J2DSBHJ4B3
+    anchor:
+      type: code
+      commit: 2bd11ca860e8117d0c5d7c10b61e610c45d9819c
+      line_end: 300
+      line_start: 294
+      path: src/cli/commands/inbox.ts
+      side: head
+    entries:
+      - _ulid: 01KM7FGYT4MHEET591MDBFJ24F
+        author: Jacob Chapel
+        body: "MUST-FIX: `kspec inbox promote` now deletes the inbox item before
+          `taskDataManager.createTask()` runs. If task creation or its shadow commit fails after the
+          delete, the inbox item is already gone and no task is created, so promotion can lose user
+          data. The previous flow created/saved the task first and only consumed the inbox item
+          afterwards."
+        created_at: 2026-03-21T05:57:38.756Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-21T05:57:53.482Z
+created_at: 2026-03-21T05:53:13.849Z
+updated_at: 2026-03-21T05:57:55.597Z
+notes: []

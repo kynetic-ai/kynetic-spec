@@ -1,0 +1,119 @@
+_ulid: 01KMWS0VTFYBJK6YKBXRCB1SKC
+slugs: []
+title: Review task-ui-cache-domain-ready-subscription
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 1994/1994 suites passed, 7200/7205 tests passed, 5 skipped. Elapsed 56m49s.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-29T12:31:50.113Z
+    completed_at: 2026-03-29T12:31:50.113Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation returned exit 6 with repo-wide pre-existing warnings only; no schema or
+      reference errors for this task snapshot.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-29T12:31:51.949Z
+    completed_at: 2026-03-29T12:31:51.949Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: packages/web-ui/src/lib/query/ws-invalidation.ts,
+      packages/web-ui/tests/ws-cache-invalidation.test.ts, packages/web-ui/src/lib/query/keys.ts,
+      packages/web-ui/src/lib/query/client.ts, packages/web-ui/tests/query-client-retry.test.ts,
+      src/daemon/entity-cache.ts, packages/daemon/src/server.ts,
+      packages/daemon/src/routes/command.ts, packages/daemon/src/routes/aggregation.ts,
+      packages/daemon/src/routes/validation.ts, packages/web-ui/src/routes/validate/+page.svelte,
+      packages/web-ui/src/routes/+page.svelte. Commands run: kspec task get, kspec review for-task,
+      git diff, git diff --stat, git diff --name-only, kspec validate, rg AC search, rg cache/domain
+      searches, npm test. Claims verified: cache:status topic subscription and domain_ready mapping
+      exist in ws invalidation layer; daemon publishes cache:status domain_ready; query keys match
+      active web UI queries; full suite passes. Categories searched: correctness, edge cases, error
+      handling, test quality, integration; no task-specific findings."
+    name: review evidence
+    required: false
+    runner: manual
+    created_at: 2026-03-29T12:31:53.758Z
+    completed_at: 2026-03-29T12:31:53.758Z
+events:
+  - _ulid: 01KMWS0VTEQJ5GQT214QKQ02SB
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-29T12:27:40.238Z
+  - _ulid: 01KMWS1GJ5DGZWPN38C8X9R7M2
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-29T12:28:01.477Z
+  - _ulid: 01KMWS8GFBYM1QXRTH5E48SS9T
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-29T12:31:50.763Z
+  - _ulid: 01KMWS8J5WXVY8YHZP08FNWZKQ
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-29T12:31:52.508Z
+  - _ulid: 01KMWS8KZ3H3FJ4DDX2Y7V41PH
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence
+    timestamp: 2026-03-29T12:31:54.339Z
+  - _ulid: 01KMWS910VP5JETKQGNXH26PQ7
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-29T12:32:07.707Z
+  - _ulid: 01KMWS910V40VAJFQ9C3E87EGC
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-29T12:32:07.707Z
+examined_commit: 6423b512795c4cdc2ac7398f5c9bf73137a2b800
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMW68MQ3V3C5PF4NXKB1PAG1"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-29T12:32:07.707Z
+created_at: 2026-03-29T12:27:40.239Z
+updated_at: 2026-03-29T12:32:07.707Z
+notes: []

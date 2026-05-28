@@ -1,0 +1,139 @@
+notes:
+  - _ulid: 01KKFKGMJM1HBXQDE0BDPZ2E7B
+    content: Tighten workspace identity, registry persistence, bootstrap boundaries, scheduler contract,
+      and prerequisite task ordering after holistic review
+    author: Jacob Chapel
+    created_at: 2026-03-11T23:25:36.212Z
+  - _ulid: 01KKFKJDN1BKMJN72RABHAF515
+    content: Clarify canonical branch format, explicit workspace lifecycle transitions, and end-to-end
+      test coverage for orientation and role entrypoints
+    author: Jacob Chapel
+    created_at: 2026-03-11T23:26:34.658Z
+  - _ulid: 01KKFQ9YXZN35ZX08C8NZ3VY44
+    content: Content updated from file
+    author: Jacob Chapel
+    created_at: 2026-03-12T00:31:51.743Z
+  - _ulid: 01KKFQBKPTCFQMRPKNZB9RVPXY
+    content: Content updated from file
+    author: chapel
+    created_at: 2026-03-12T00:32:45.786Z
+  - _ulid: 01KKFQENQQS7X0KNY49ADVCPAG
+    content: Content updated from file
+    author: chapel
+    created_at: 2026-03-12T00:34:26.167Z
+  - _ulid: 01KKFY9KQ4SC6K0TBADFZ1934R
+    content: >-
+      ### Scope boundaries
+
+
+      This plan is intentionally focused on dispatch/runtime behavior, scheduling, and the
+      branch/worktree lifecycle needed to make them reliable. It is not the full review-record
+      system and it is not the full human-facing review package model.
+
+
+      ### Base branch and worktree root assumptions
+
+
+      - The canonical source and integration branch comes from `dispatch.base_branch` in
+      `kspec.config.yaml`.
+
+      - If `dispatch.base_branch` is unset, the dispatcher resolves a deterministic fallback and
+      records it on the workspace at provisioning time so later invocations do not drift.
+
+      - The default dispatch worktree root is `.kspec-worktrees/` under the project root.
+
+      - `/tmp` is intentionally not the default because dispatch workspaces must survive daemon
+      restarts and remain inspectable.
+
+      - Chain-of-work custom ancestry is out of scope here and belongs in the grouped-work plan.
+
+
+      ### Git-safe reviewer model
+
+
+      - One canonical mutable task branch exists per task.
+
+      - That canonical branch may be checked out in at most one mutable worker worktree at a time.
+
+      - Reviewer isolation comes from a separate worktree materialized from the canonical branch
+      head in detached or equivalent read-only mode.
+
+      - Fix-cycle work returns to the same canonical task branch lineage after review.
+
+      - The intended canonical branch format is
+      `dispatch/task/<normalized-task-slug-or-task>/<short-task-ulid>`.
+
+
+      ### Storage assumptions
+
+
+      The workspace registry should be a first-party kspec artifact persisted on the shadow branch,
+      not daemon-only memory. It must carry enough identity to recover base branch, canonical
+      branch, per-role worktrees, integration status, cleanup status, and bootstrap state after
+      restart.
+
+
+      ### Integration and merge assumptions
+
+
+      - Every task workspace records both its canonical task branch and its base or integration
+      branch.
+
+      - Orientation and role-entry content must always name that target branch so agents know where
+      PRs or manual merge-back should land.
+
+      - PR publication should target the recorded base branch when hosted tooling is available.
+
+      - Manual merge-back guidance is part of this plan only at the level of deterministic
+      instructions and conflict escalation; fuller review approval and merge policy remains in the
+      review-system plan.
+
+
+      ### Bootstrap assumptions
+
+
+      Bootstrap should support:
+
+
+      - repository-level setup commands
+
+      - role-specific additions
+
+      - cached reuse with explicit invalidation rules
+
+      - bounded mutation rules so tracked source changes are never introduced accidentally by
+      reviewer or bootstrap flows
+
+
+      ### Scheduler contract
+
+
+      The intended deterministic order is:
+
+
+      1. candidate band (`in_progress`, then `needs_work`, then `pending_review`, then `pending`)
+
+      2. numeric priority
+
+      3. continuity or affinity preference
+
+      4. FIFO enqueue order
+
+
+      Fairness overrides continuity only when an equal-band, equal-priority candidate crosses the
+      starvation threshold. It does not invert `P1` to `P5` ordering.
+
+
+      ### Out of scope for this plan
+
+
+      - generic review record storage and line comments
+
+      - CI check records and approval policy
+
+      - grouped human-facing review packages across multiple tasks
+
+      - chain-of-work ancestry that intentionally forks work from something other than the
+      configured base branch
+    author: Jacob Chapel
+    created_at: 2026-03-12T02:34:00.292Z

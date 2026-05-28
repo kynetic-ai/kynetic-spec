@@ -1,0 +1,32 @@
+_ulid: 01KS8MMWMBN7KNB4BN1A4FFYN6
+slugs:
+  - plan-folder-backed-plans-reviews-and-local-resources
+title: Folder-Backed Plans, Reviews, and Local Resources
+status: completed
+approved_at: 2026-05-22T22:35:13.184Z
+branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
+derived_specs:
+  - "@trait-folder-backed-entity-1"
+  - "@trait-entity-scoped-local-resources-1"
+  - "@folder-backed-plan-storage-1"
+  - "@plan-resource-derivation-semantics-1"
+  - "@folder-backed-review-storage-1"
+  - "@entity-folder-migration-and-compatibility-1"
+  - "@folder-backed-resource-documentation-1"
+derived_tasks:
+  - "@task-update-plan-review-storage-specs-1"
+  - "@task-folder-backed-entity-trait-foundation-1"
+  - "@task-entity-local-resource-model-1"
+  - "@task-entity-storage-version-compatibility-gates-1"
+  - "@task-folder-backed-plan-storage-manager-1"
+  - "@task-folder-backed-review-storage-manager-1"
+  - "@task-plan-review-folder-storage-migration-1"
+  - "@task-folder-backed-plan-review-cache-invalidation-1"
+  - "@task-plan-resource-import-and-derive-1"
+  - "@task-plan-resource-api-ui-static"
+  - "@task-review-screenshot-resource-ui"
+  - "@task-folder-backed-resources-docs"
+module_ref: null
+source_path: /home/chapel/Projects/kynetic-spec/plans/folder-backed-plans-reviews-and-resources.md
+created_at: 2026-05-22T20:04:54.027Z
+completed_at: null

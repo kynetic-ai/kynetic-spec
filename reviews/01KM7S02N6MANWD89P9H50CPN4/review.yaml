@@ -1,0 +1,171 @@
+_ulid: 01KM7S02N6MANWD89P9H50CPN4
+slugs: []
+title: Review task-impl-index (cycle 3)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No validation errors. Warnings-only baseline (orphan/coverage warnings outside this task).
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-21T08:47:58.836Z
+    completed_at: 2026-03-21T08:47:58.836Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 6814 passed, 3 skipped
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-21T08:47:59.847Z
+    completed_at: 2026-03-21T08:47:59.847Z
+events:
+  - _ulid: 01KM7S02N521AA15W5KMS13G38
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T08:43:11.397Z
+  - _ulid: 01KM7S0HA2YD4Z0NJ9H50FPCC6
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T08:43:26.402Z
+  - _ulid: 01KM7S8SSWXEG5YH16DMF64EDG
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM7S8SFR33NK7JYBTV38A9BG
+    timestamp: 2026-03-21T08:47:57.244Z
+  - _ulid: 01KM7S8TPH0A6ES12PPPHSP98Q
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM7S8TDKJ9BJDVR24MAEW5MS
+    timestamp: 2026-03-21T08:47:58.161Z
+  - _ulid: 01KM7S8VPDY36YD84W6W6HK0SF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-21T08:47:59.181Z
+  - _ulid: 01KM7S8WKE7GXSDVYTJEYW9VH6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-21T08:48:00.110Z
+  - _ulid: 01KM7S9G99QNE1Y9TN4YYETRVQ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM7S9FZKS1GG889B298MAX17
+    timestamp: 2026-03-21T08:48:20.265Z
+  - _ulid: 01KM7S9SESDT2DQ4F6KKAJX6R6
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-21T08:48:29.658Z
+  - _ulid: 01KM7S9SETRQCZ7PT9XQ4QR0PD
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-21T08:48:29.658Z
+examined_commit: fc3e4978e676d00c5dc7e84bd16e23a536d2fe14
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YESAF92YTNXT3DF06AC0N"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM7S8SFR33NK7JYBTV38A9BG
+    anchor:
+      type: code
+      commit: fc3e4978e676d00c5dc7e84bd16e23a536d2fe14
+      line_end: 299
+      line_start: 297
+      path: src/parser/split-backend.ts
+      side: head
+    entries:
+      - _ulid: 01KM7S8SFST4GBXM64AYZ5V5GR
+        author: Jacob Chapel
+        body: Excluding  and  from index change detection makes  return stale summaries after normal
+          note/todo mutations. These counts are part of  and are emitted by the task list API/UI, so
+          after  the user-visible list can still show 0 notes until an explicit rebuild. That breaks
+          the task's stated goal of keeping the index in sync with per-task mutations for list
+          surfaces.
+        created_at: 2026-03-21T08:47:56.921Z
+    kind: blocker
+  - _ulid: 01KM7S8TDKJ9BJDVR24MAEW5MS
+    entries:
+      - _ulid: 01KM7S8TDMFX57CYT7A6CGDPJR
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+
+          Files read: src/parser/split-backend.ts, src/parser/task-data-manager.ts,
+          tests/split-backend.test.ts, packages/daemon/src/routes/tasks.ts,
+          packages/web-ui/src/lib/components/TaskList.svelte
+
+          Commands run: git diff --stat, git diff, git log, kspec task get, kspec item get, kspec
+          review for-task, kspec review get, grep/rg for AC annotations and notes_count/todos_count
+          consumers, kspec validate, npm test
+
+          Claims verified: full suite passes locally (6814 passed, 3 skipped); validate has warnings
+          only, no errors; task list surfaces consume TaskSummary.notes_count/todos_count directly
+
+          Categories searched: correctness (found stale summary count regression), edge cases
+          (note-only and rebuild behavior), error handling (no issue found), test quality (new tests
+          codify the stale-count behavior), integration (daemon/UI list consumers affected)
+        created_at: 2026-03-21T08:47:57.876Z
+    kind: nit
+  - _ulid: 01KM7S9FZKS1GG889B298MAX17
+    anchor:
+      type: code
+      commit: fc3e4978e676d00c5dc7e84bd16e23a536d2fe14
+      line_end: 299
+      line_start: 297
+      path: src/parser/split-backend.ts
+      side: head
+    entries:
+      - _ulid: 01KM7S9FZKNSRJZRKH74E0NT4Q
+        author: Jacob Chapel
+        body: Excluding notes_count and todos_count from index change detection makes listTasks() return
+          stale summaries after normal note or todo mutations. Those counts are part of TaskSummary
+          and are sent straight through the task list API/UI, so after addNote() the user-visible
+          list can keep showing 0 notes until someone runs a rebuild. That leaves the index out of
+          sync for user-visible list data.
+        created_at: 2026-03-21T08:48:19.955Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-21T08:48:29.657Z
+created_at: 2026-03-21T08:43:11.398Z
+updated_at: 2026-03-21T08:48:29.658Z
+notes: []

@@ -1,0 +1,92 @@
+_ulid: 01KMGZG90P21B8Y0815PXCNXCH
+slugs: []
+title: Review task-readtestoutput-agent-dispatch-engine (cycle 1)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 123 tests in agent-dispatch-engine.test.ts pass. Full suite: 6826 passed, 2
+      pre-existing failures in unrelated file-lock.test.ts (flaky concurrency test, not modified by
+      this branch)."
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-24T22:36:24.664Z
+    completed_at: 2026-03-24T22:36:24.664Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 warnings, 0 errors on tests/agent-dispatch-engine.test.ts
+    name: oxlint
+    required: true
+    runner: oxlint
+    created_at: 2026-03-24T22:36:32.265Z
+    completed_at: 2026-03-24T22:36:32.265Z
+events:
+  - _ulid: 01KMGZG90N9B8JXTBVF88W5HVA
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-24T22:30:03.542Z
+  - _ulid: 01KMGZHD6Y9E9G5AWWSC82GG3H
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-24T22:30:40.606Z
+  - _ulid: 01KMGZVXJZJD2J7XWRGBV6SZ91
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-24T22:36:25.055Z
+  - _ulid: 01KMGZW5AHVF89KKXYHT2A8XW0
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: oxlint
+    timestamp: 2026-03-24T22:36:32.977Z
+  - _ulid: 01KMGZWE2DYJTTHWKJV6ZC5VAX
+    actor: agent@dispatch
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-24T22:36:41.933Z
+  - _ulid: 01KMGZWE2DMZ336CPKC6SHJX35
+    actor: agent@dispatch
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-24T22:36:41.934Z
+examined_commit: 03adf7c2e9523d50ad151e7cf75d8f066a5d4a26
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMFCP24R2GG8J8DYY4MR1RV7"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: agent@dispatch
+    role: reviewer
+    created_at: 2026-03-24T22:36:41.933Z
+created_at: 2026-03-24T22:30:03.542Z
+updated_at: 2026-03-24T22:36:41.933Z
+notes: []

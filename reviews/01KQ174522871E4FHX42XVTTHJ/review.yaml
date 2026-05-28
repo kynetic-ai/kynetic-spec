@@ -1,0 +1,243 @@
+_ulid: 01KQ174522871E4FHX42XVTTHJ
+slugs: []
+title: Review final validation trust gate
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran kspec validate --refs --warnings-ok -v from detached review workspace: exit 0,
+      schema/references OK, Tasks checked: 0 because this snapshot has no .kspec worktree."
+    name: kspec validate --refs
+    required: true
+    runner: kspec
+    created_at: 2026-04-25T02:33:36.592Z
+    completed_at: 2026-04-25T02:33:36.592Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh: exit 0; 2280/2280 suites passed, 8388/8393 tests passed, 5 skipped,
+      duration 1906.8s."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-25T02:33:39.681Z
+    completed_at: 2026-04-25T02:33:39.681Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran kspec validate --alignment -v: exit 6 warning-only; reproduced 35 alignment warnings
+      (33 orphaned specs, 2 status mismatches)."
+    name: kspec validate --alignment
+    required: true
+    runner: kspec
+    created_at: 2026-04-25T02:33:42.844Z
+    completed_at: 2026-04-25T02:33:42.844Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/validate-task-data-source.test.ts
+      tests/ac-annotation-validation.test.ts tests/coverage-annotation-scope-boundaries.test.ts
+      tests/validate-integration.test.ts tests/validate-exit-codes.test.ts
+      tests/validate-mode-selection.test.ts tests/trait-ac-coverage.test.ts: 107/107 passed."
+    name: focused validation tests
+    required: true
+    runner: npm
+    created_at: 2026-04-25T02:33:46.091Z
+    completed_at: 2026-04-25T02:33:46.091Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran kspec validate --completeness -v: exit 6 with 272 completeness warnings in detached
+      workspace; includes @ac-annotation-integrity-reporting all five ACs uncovered while its
+      annotated tests are excluded from scan coverage."
+    name: kspec validate --completeness
+    required: true
+    runner: kspec
+    created_at: 2026-04-25T02:33:59.057Z
+    completed_at: 2026-04-25T02:33:59.057Z
+events:
+  - _ulid: 01KQ17452236PWT5QVVNQ6RXBE
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-25T02:22:29.442Z
+  - _ulid: 01KQ174T56MNPA4PZC8XVP7T5E
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-25T02:22:51.046Z
+  - _ulid: 01KQ17QZWMRC36NGPAHHT0MG93
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQ17QYV1TG99ZNR82FTPJQW6
+    timestamp: 2026-04-25T02:33:19.508Z
+  - _ulid: 01KQ17RHMDQ0TZKH2E8ACM48JT
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --refs
+    timestamp: 2026-04-25T02:33:37.677Z
+  - _ulid: 01KQ17RMPJVBDC8K4HTVH60RFN
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-25T02:33:40.818Z
+  - _ulid: 01KQ17RQRDJ5KJRX8689DS52ZR
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --alignment
+    timestamp: 2026-04-25T02:33:43.949Z
+  - _ulid: 01KQ17RTXB0DXCPE0ZJ6VX84A4
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused validation tests
+    timestamp: 2026-04-25T02:33:47.179Z
+  - _ulid: 01KQ17S7KVCQ64V9ZPT4DXYK5G
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate --completeness
+    timestamp: 2026-04-25T02:34:00.187Z
+  - _ulid: 01KQ17SQ5Z5AAST3SDJEWY73EB
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KQ17SP371R2K7SE07233XVET
+    timestamp: 2026-04-25T02:34:16.127Z
+  - _ulid: 01KQ17SZSWSZVAP5ACG8075F4E
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-25T02:34:24.956Z
+  - _ulid: 01KQ17SZSXWX1HY8PGD852WQY0
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-25T02:34:24.957Z
+  - _ulid: 01KQ18Y35ETV8XFV5EV3166AV5
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQ17QYV1TG99ZNR82FTPJQW6
+    timestamp: 2026-04-25T02:54:08.046Z
+  - _ulid: 01KQ18YGHMT8GKJ1ZJB20ENQEF
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQ17QYV1TG99ZNR82FTPJQW6
+    timestamp: 2026-04-25T02:54:21.748Z
+  - _ulid: 01KQ18YRPMHN0ZJ6NYC3YG3D8Z
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQ17SP371R2K7SE07233XVET
+    timestamp: 2026-04-25T02:54:30.101Z
+examined_commit: f1ea722698447b572dee4516380639be67d74538
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQ0JDM87XBFC80SW6HQ40VQ1"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQ17QYV1TG99ZNR82FTPJQW6
+    anchor:
+      type: code
+      commit: f1ea722698447b572dee4516380639be67d74538
+      line_end: 26
+      line_start: 26
+      path: kspec.config.yaml
+      side: head
+    entries:
+      - _ulid: 01KQ17QYV1BDPG28SXEJWF0VZB
+        author: codex
+        body: "MUST-FIX: `@ac-annotation-integrity-reporting` is still reported as having no own-AC coverage
+          in the final completeness gate. The only real annotations for its five ACs are in
+          `tests/ac-annotation-validation.test.ts` (for example lines 183, 245, 290, 448, and 545),
+          but this config excludes that entire file from coverage scanning. Evidence: `kspec
+          validate --completeness -v` reports `@ac-annotation-integrity-reporting` with all five ACs
+          uncovered. Impact: the final trust gate defers a plan-owned implemented spec into the
+          broad completeness backlog, so the remaining validation state cannot be trusted for this
+          slice. Fix by making behavioral coverage for those five ACs count in the configured scan
+          surface, or otherwise record valid non-excluded AC annotations."
+        created_at: 2026-04-25T02:33:18.433Z
+      - _ulid: 01KQ18Y239BT0QK0CFZ1TGSXMN
+        author: "@claude"
+        body: "Fixed: Created tests/ac-annotation-integrity.test.ts with 5 unit-level behavioral tests
+          covering all ACs of @ac-annotation-integrity-reporting. This file calls
+          validateACAnnotations() and computeACCoverage() directly with programmatic data (no inline
+          AC annotation strings), so it is not excluded from the coverage scanner. Verified: kspec
+          validate --completeness no longer lists @ac-annotation-integrity-reporting as uncovered.
+          Missing-own-AC-coverage went from 234 to 233, total completeness warnings from 273 to
+          271."
+        created_at: 2026-04-25T02:54:06.953Z
+    kind: blocker
+    resolved_at: 2026-04-25T02:54:20.655Z
+    resolved_by: "@claude"
+  - _ulid: 01KQ17SP371R2K7SE07233XVET
+    entries:
+      - _ulid: 01KQ17SP388F0NY94Y30NYTM5Q
+        author: codex
+        body: >-
+          Review evidence log:
+
+          Files read: `kspec.config.yaml`, `src/parser/validate.ts`, `src/cli/commands/validate.ts`,
+          `tests/validate-task-data-source.test.ts`, `tests/ac-annotation-validation.test.ts`,
+          `tests/coverage-annotation-scope-boundaries.test.ts`, plan/task records for the final gate
+          and prior plan tasks.
+
+          Commands run: `kspec task get @01KQ0JDM87XBFC80SW6HQ40VQ1`, `kspec plan get
+          @plan-spec-catalog-health-and-validation-trust`, `kspec item get` for the three plan
+          specs, `rg` AC annotation searches, `kspec validate --refs --warnings-ok -v`, `kspec
+          validate --alignment -v`, `kspec validate --completeness -v`, focused `npm test -- --run
+          ...`, and `npm test -- --fresh`.
+
+          Claims verified: focused tests pass 107/107; full suite passes with 5 skips; validation
+          warning categories reproduce in the detached workspace, subject to `Tasks checked: 0`
+          because `.kspec` is absent in this snapshot.
+
+          Categories searched: correctness/spec alignment, AC coverage, test quality/source-scanning
+          risk, validation error handling, integration/merge state. One blocker recorded.
+        created_at: 2026-04-25T02:34:15.016Z
+    kind: nit
+    resolved_at: 2026-04-25T02:54:29.010Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-25T02:34:24.956Z
+created_at: 2026-04-25T02:22:29.442Z
+updated_at: 2026-04-25T02:54:29.010Z
+notes: []

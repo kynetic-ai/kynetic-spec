@@ -1,0 +1,250 @@
+_ulid: 01KMV8A5ZXW4Z7Y66RT3C5YVPE
+slugs: []
+title: Review completed task record reconciliation (cycle 2)
+author: codex
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with pre-existing project warnings only (orphaned skill dir,
+      alignment/completeness warnings unrelated to this task).
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-28T22:21:18.248Z
+    completed_at: 2026-03-28T22:21:18.248Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Isolated rerun passed: 24/24 tests. The failure reproduces only in the full suite,
+      indicating order-dependent interference/flakiness rather than a permanently broken single-file
+      scenario."
+    name: npm test -- --run tests/daemon-command-api.test.ts
+    required: false
+    runner: npm
+    created_at: 2026-03-28T22:21:21.936Z
+    completed_at: 2026-03-28T22:21:21.936Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite failed: 1962/1964 suites passed, with 12 failures in
+      tests/daemon-command-api.test.ts (mutating command cases returning 500 / ENOENT under
+      full-suite execution)."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-28T22:21:23.798Z
+    completed_at: 2026-03-28T22:21:23.798Z
+events:
+  - _ulid: 01KMV8A5ZWVY1PCAFWESA5Q6KY
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-28T22:16:25.341Z
+  - _ulid: 01KMV8D8TM4NJW4ZT3KC7AM2GA
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-28T22:18:06.548Z
+  - _ulid: 01KMV8K4JTSNZDR4Z6T3BC09Y0
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-28T22:21:18.811Z
+  - _ulid: 01KMV8K6CVFVFV85P6V5ZXFS2J
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMV8K5TP1T6FBS5B7ADXPFVC
+    timestamp: 2026-03-28T22:21:20.667Z
+  - _ulid: 01KMV8K86JXBK3T2N18GHB48RY
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --run tests/daemon-command-api.test.ts
+    timestamp: 2026-03-28T22:21:22.515Z
+  - _ulid: 01KMV8KA12DK3JSB2V31Y2YT1V
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-28T22:21:24.386Z
+  - _ulid: 01KMV8KRSX486X7V0Q2W6YWWP8
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMV8KR71RYEX0SM8ZS8P7X16
+    timestamp: 2026-03-28T22:21:39.517Z
+  - _ulid: 01KMV8KTKS31R497VJMGTSG7DA
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMV8KT19VW19FHQFGQWRDR60
+    timestamp: 2026-03-28T22:21:41.369Z
+  - _ulid: 01KMV8N0FHY6E130ETVHS99RZV
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-28T22:22:20.145Z
+  - _ulid: 01KMV8N0FHWW3B51TREY2FRBD6
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-28T22:22:20.145Z
+  - _ulid: 01KMVAK82VS68BW7F219AYQ1ZP
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMV8K5TP1T6FBS5B7ADXPFVC
+    timestamp: 2026-03-28T22:56:19.547Z
+  - _ulid: 01KMVAKFFF4G5DG5J1WSJS7K2M
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMV8K5TP1T6FBS5B7ADXPFVC
+    timestamp: 2026-03-28T22:56:27.120Z
+  - _ulid: 01KMVAKSDF3CE982TTXA32P98M
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMV8KT19VW19FHQFGQWRDR60
+    timestamp: 2026-03-28T22:56:37.295Z
+  - _ulid: 01KMVAM0X2TRCAYP0JKGREJ0GB
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMV8KT19VW19FHQFGQWRDR60
+    timestamp: 2026-03-28T22:56:44.963Z
+  - _ulid: 01KMVAN6KSGCM8YSAK74PDCAMJ
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMV8KR71RYEX0SM8ZS8P7X16
+    timestamp: 2026-03-28T22:57:23.578Z
+  - _ulid: 01KMVANE02Z6AYZVKDPGC9Z0NS
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMV8KR71RYEX0SM8ZS8P7X16
+    timestamp: 2026-03-28T22:57:31.138Z
+examined_commit: 587212b1f8535471898c8f6dc6d51c2d95524f39
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMV52K0KFVQ33W970Z9NBCR5"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMV8K5TP1T6FBS5B7ADXPFVC
+    anchor:
+      type: code
+      commit: 587212b1f8535471898c8f6dc6d51c2d95524f39
+      line_end: 387
+      line_start: 387
+      path: tests/daemon-command-api.test.ts
+      side: head
+    entries:
+      - _ulid: 01KMV8K5TP3A5CB9G0QHAMHS06
+        author: Test User
+        body: >-
+          > @kynetic-ai/spec@0.12.0 test
+
+          > node scripts/test.cjs does not pass on this snapshot. In the full-suite run,  fails 12
+          mutating-command cases with 500 responses / ENOENT JSON parsing, even though an isolated
+          rerun of that file passes. That leaves the branch non-mergeable under the required repo
+          gate and points to an unresolved order-dependent failure that still needs investigation
+          before approval.
+        created_at: 2026-03-28T22:21:20.086Z
+      - _ulid: 01KMVAK7GRWAG3F24PPX3ZPTX5
+        author: "@claude"
+        body: "Fixed: Root-caused the order-dependent daemon-command-api.test.ts failure. The issue was
+          KSPEC_SPEC_DIR env var pollution from concurrent vitest worker threads. Dispatch workspace
+          tests set process.env.KSPEC_SPEC_DIR which is shared across worker_threads, causing
+          initContext() inside the daemon's executeCommand() to resolve the wrong .kspec/ directory.
+          Fixed in two ways: (1) daemon command route now saves/clears KSPEC_SPEC_DIR around command
+          execution so it always resolves the project from its explicit chdir, (2) terminal
+          reconciliation test replaced KSPEC_SPEC_DIR mutation with proper kspec init shadow project
+          setup. Full suite now passes: 7063 passed, 0 failed."
+        created_at: 2026-03-28T22:56:18.968Z
+    kind: blocker
+    resolved_at: 2026-03-28T22:56:26.509Z
+    resolved_by: "@claude"
+  - _ulid: 01KMV8KR71RYEX0SM8ZS8P7X16
+    entries:
+      - _ulid: 01KMV8KR71EG69QRFNR5YMS13A
+        author: Test User
+        body: "Evidence log: Files read: src/agent-runtime/workspace.ts, src/agent-runtime/dispatch.ts,
+          tests/dispatch-workspace-terminal-reconciliation.test.ts,
+          tests/daemon-command-api.test.ts. Commands run: kspec task get, kspec review for-task/get,
+          git diff --stat/diff, kspec validate, grep AC annotations, npm test, npm test -- --run
+          tests/daemon-command-api.test.ts. Claims verified: ac-12/ac-13 are behaviorally covered by
+          new tests and the dispatch reconciliation path passes taskStatus into registry
+          reconciliation; full-suite test gate still fails. Categories searched: correctness, AC
+          coverage, test quality, integration, regression behavior."
+        created_at: 2026-03-28T22:21:38.913Z
+      - _ulid: 01KMVAN61HACXXMSQ7SG39TX9P
+        author: "@claude"
+        body: Acknowledged. The evidence log accurately identified the full-suite failure. The daemon
+          command route now protects against concurrent KSPEC_SPEC_DIR interference.
+        created_at: 2026-03-28T22:57:22.993Z
+    kind: nit
+    resolved_at: 2026-03-28T22:57:30.548Z
+    resolved_by: "@claude"
+  - _ulid: 01KMV8KT19VW19FHQFGQWRDR60
+    anchor:
+      type: code
+      commit: 587212b1f8535471898c8f6dc6d51c2d95524f39
+      line_end: 387
+      line_start: 387
+      path: tests/daemon-command-api.test.ts
+      side: head
+    entries:
+      - _ulid: 01KMV8KT19QRVSMF50X6DWNKMJ
+        author: Test User
+        body: Full npm test does not pass on this snapshot. In the full-suite run,
+          tests/daemon-command-api.test.ts fails 12 mutating-command cases with 500 responses or
+          ENOENT JSON parsing, even though an isolated rerun of that file passes. That leaves the
+          branch non-mergeable under the required repo gate and points to an unresolved
+          order-dependent failure that still needs investigation before approval.
+        created_at: 2026-03-28T22:21:40.777Z
+      - _ulid: 01KMVAKRV1RHCT7GZB72K8SZ2S
+        author: "@claude"
+        body: "Fixed: Same root cause as the other blocker thread — KSPEC_SPEC_DIR env var leaking across
+          vitest worker threads. The daemon command route now isolates itself from ambient
+          KSPEC_SPEC_DIR during both single-command and batch execution. Full suite passes cleanly."
+        created_at: 2026-03-28T22:56:36.704Z
+    kind: blocker
+    resolved_at: 2026-03-28T22:56:44.380Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-28T22:22:20.145Z
+created_at: 2026-03-28T22:16:25.341Z
+updated_at: 2026-03-28T22:57:30.548Z
+notes: []

@@ -1,0 +1,256 @@
+_ulid: 01KP8F2JQ61DKVJFRQN7F8PD7Y
+slugs: []
+title: Review @01KNXYJ4YKHSY076Q3CQ42C6CP (cycle 4)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 7897 passed, 5 skipped, 0 failed (7902 total).
+    name: npm test
+    required: true
+    runner: test-runner
+    created_at: 2026-04-15T11:46:40.145Z
+    completed_at: 2026-04-15T11:46:40.145Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fails on pre-existing repo-wide validation issues unrelated to this task: meta schema
+      error in .kspec/modules/meta.yaml plus long-standing alignment/completeness warnings."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-15T11:46:45.622Z
+    completed_at: 2026-04-15T11:46:45.622Z
+events:
+  - _ulid: 01KP8F2JQ699K7ACTKTDCNM2P1
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-15T11:40:25.702Z
+  - _ulid: 01KP8FE18HBMJYCHKF4ESJ68PX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-15T11:46:41.041Z
+  - _ulid: 01KP8FE40FZER4QNY7N5ZKATFB
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-15T11:46:43.855Z
+  - _ulid: 01KP8FE6Q83VC7YM2Z2H3MCT39
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-15T11:46:46.632Z
+  - _ulid: 01KP8FETT573WEHHCQWGJFZ67T
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KP8FESXCE9RDC2ZH5HZZ6A5E
+    timestamp: 2026-04-15T11:47:07.206Z
+  - _ulid: 01KP8FEXJ90ZKJWEA182DEYPGM
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP8FEWHNT2R4Z61EJK4YAY2H
+    timestamp: 2026-04-15T11:47:10.025Z
+  - _ulid: 01KP8FF4333EJ2MZYZ6SHZXRX9
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP8FF372X4JBGNW9V4CNDY2F
+    timestamp: 2026-04-15T11:47:16.707Z
+  - _ulid: 01KP8FFC8R1G420YFQFRTZC09N
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KP8FFBB3M46V3E2R1BRZRE43
+    timestamp: 2026-04-15T11:47:25.080Z
+  - _ulid: 01KP8FFQT7814PK397HS8SN4VV
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-15T11:47:36.903Z
+  - _ulid: 01KP8FFQT7MZVEJBJ1DG0802YT
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-15T11:47:36.903Z
+  - _ulid: 01KP8FGQTNEAY5NTPAKJX621G0
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP8FEWHNT2R4Z61EJK4YAY2H
+    timestamp: 2026-04-15T11:48:09.686Z
+  - _ulid: 01KP8FGTJCWPZF6PTJNM4R434H
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP8FESXCE9RDC2ZH5HZZ6A5E
+    timestamp: 2026-04-15T11:48:12.493Z
+  - _ulid: 01KP8GGX29N1EBJ362K9Z0YN1J
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP8FF372X4JBGNW9V4CNDY2F
+    timestamp: 2026-04-15T12:05:43.625Z
+  - _ulid: 01KP8GH4ZJ1PEJ2M9MQEN9SQRW
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP8FF372X4JBGNW9V4CNDY2F
+    timestamp: 2026-04-15T12:05:51.730Z
+  - _ulid: 01KP8GHEB2MENJWJHF7GE1YGGX
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP8FFBB3M46V3E2R1BRZRE43
+    timestamp: 2026-04-15T12:06:01.314Z
+  - _ulid: 01KP8GHPB1299F0VDSCPH85YE4
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP8FFBB3M46V3E2R1BRZRE43
+    timestamp: 2026-04-15T12:06:09.505Z
+examined_commit: 14aa905f12b918a953625d110336eb5411cb3a14
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNXYJ4YKHSY076Q3CQ42C6CP"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KP8FESXCE9RDC2ZH5HZZ6A5E
+    entries:
+      - _ulid: 01KP8FESXDV7T7WR1RBEJ5XR01
+        author: Jacob Chapel
+        body: "Evidence log:\\n- Files read: src/cli/commands/init.ts, src/cli/commands/setup.ts,
+          src/parser/shadow.ts, src/parser/yaml.ts, tests/derivable-default-module.test.ts\\n-
+          Commands run: kspec task get @01KNXYJ4YKHSY076Q3CQ42C6CP; kspec review for-task
+          @01KNXYJ4YKHSY076Q3CQ42C6CP; kspec item get @derivable-default-module; git diff
+          plan/plan-init-setup-and-upgrade-rough-edges/01knvahv...HEAD; grep for AC annotations;
+          kspec validate; npm test; temp-project repros for setup output\\n- Claims verified: full
+          suite passes on this snapshot;  output follows renamed slug only in the single-module case
+          covered by the new test; multi-module repro shows it can still report the wrong module\\n-
+          Categories searched: correctness, AC coverage, regression risk, edge cases around
+          renamed/default module resolution, integration with setup summary output"
+        created_at: 2026-04-15T11:47:06.285Z
+    kind: nit
+    resolved_at: 2026-04-15T11:48:11.513Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KP8FEWHNT2R4Z61EJK4YAY2H
+    anchor:
+      type: code
+      commit: 14aa905f12b918a953625d110336eb5411cb3a14
+      line_end: 1864
+      line_start: 1856
+      path: src/cli/commands/setup.ts
+      side: head
+    entries:
+      - _ulid: 01KP8FEWHNYJKTKB1TW3S5BTWR
+        author: Jacob Chapel
+        body: " now reports the first loaded module as the default module, but this branch never persists
+          any identity that distinguishes the real default module from other modules. In a project
+          where another module is loaded before , the summary points users at the wrong ref. Repro:
+          init a git-backed project, add another module include before , rename  to , then run ; the
+          summary prints  instead of . That violates the task requirement that follow-up flows track
+          the edited default-module slug."
+        created_at: 2026-04-15T11:47:08.981Z
+    kind: blocker
+    resolved_at: 2026-04-15T11:48:08.808Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KP8FF372X4JBGNW9V4CNDY2F
+    anchor:
+      type: code
+      commit: 14aa905f12b918a953625d110336eb5411cb3a14
+      line_end: 1864
+      line_start: 1856
+      path: src/cli/commands/setup.ts
+      side: head
+    entries:
+      - _ulid: 01KP8FF37284KKB8JYGH7VSJ4C
+        author: Jacob Chapel
+        body: 'setup now reports the first loaded module as the default module, but this branch never
+          persists any identity that distinguishes the real default module from other modules. In a
+          project where another module is loaded before modules/main.yaml, the summary points users
+          at the wrong ref. Repro: init a git-backed project, add another module include before
+          modules/*.yaml, rename @main to @custom-module, then run setup --skip-skills --no-hooks;
+          the summary prints "Default module available: @extra" instead of @custom-module. That
+          violates the task requirement that follow-up flows track the edited default-module slug.'
+        created_at: 2026-04-15T11:47:15.810Z
+      - _ulid: 01KP8GGW530GQHDQDQ34VHE2T9
+        author: "@claude"
+        body: "Fixed: Added a default_module ULID field to the manifest schema (src/schema/spec.ts). At init
+          time, both shadow and non-shadow paths now generate the ULID once and write it to both the
+          manifest and the module file. In setup.ts, the default module is now resolved by matching
+          this ULID against loaded items, with a fallback to first-module-by-type for backward
+          compat with pre-existing projects. New E2E test verifies the multi-module scenario: init,
+          rename @main to @custom-module, add @extra module before main.yaml in includes, run setup
+          — correctly reports @custom-module, not @extra."
+        created_at: 2026-04-15T12:05:42.691Z
+    kind: blocker
+    resolved_at: 2026-04-15T12:05:50.829Z
+    resolved_by: "@claude"
+  - _ulid: 01KP8FFBB3M46V3E2R1BRZRE43
+    entries:
+      - _ulid: 01KP8FFBB34HQ9A0WJ8TDN3R0D
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          - Files read: src/cli/commands/init.ts, src/cli/commands/setup.ts, src/parser/shadow.ts,
+          src/parser/yaml.ts, tests/derivable-default-module.test.ts
+
+          - Commands run: kspec task get @01KNXYJ4YKHSY076Q3CQ42C6CP; kspec review for-task
+          @01KNXYJ4YKHSY076Q3CQ42C6CP; kspec item get @derivable-default-module; git diff
+          plan/plan-init-setup-and-upgrade-rough-edges/01knvahv...HEAD; grep for AC annotations;
+          kspec validate; npm test; temp-project repros for setup output
+
+          - Claims verified: full suite passes on this snapshot; setup output follows renamed slug
+          only in the single-module case covered by the new test; a multi-module repro shows it can
+          still report the wrong module
+
+          - Categories searched: correctness, AC coverage, regression risk, edge cases around
+          renamed/default-module resolution, integration with setup summary output
+        created_at: 2026-04-15T11:47:24.131Z
+      - _ulid: 01KP8GHDEFEQTM0Y4M6WNK4ZY4
+        author: "@claude"
+        body: Acknowledged. The multi-module edge case identified in the evidence log has been addressed by
+          persisting the default module ULID in the manifest.
+        created_at: 2026-04-15T12:06:00.399Z
+    kind: nit
+    resolved_at: 2026-04-15T12:06:08.582Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-04-15T11:47:36.903Z
+created_at: 2026-04-15T11:40:25.702Z
+updated_at: 2026-04-15T12:06:08.582Z
+notes: []

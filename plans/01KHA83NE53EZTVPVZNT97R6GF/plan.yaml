@@ -1,0 +1,23 @@
+_ulid: 01KHA83NE53EZTVPVZNT97R6GF
+slugs:
+  - plan-cli-agent-ux-improvements
+title: CLI Agent-UX Improvements
+status: completed
+approved_at: null
+derived_specs:
+  - "@command-group-default-actions"
+  - "@multi-value-status-filter"
+  - "@output-format-option"
+  - "@module-scoped-item-listing"
+  - "@unified-cross-reference-lookup"
+  - "@observation-content-search"
+derived_tasks:
+  - "@implement-command-group-default-actions"
+  - "@implement-multi-value-status-filter"
+  - "@implement-output-format-option"
+  - "@implement-module-scoped-item-listing"
+  - "@implement-unified-cross-reference-lookup"
+  - "@implement-observation-content-search"
+source_path: /home/chapel/Projects/kynetic-spec/plans/cli-agent-ux-improvements.md
+created_at: 2026-02-13T00:58:40.965Z
+completed_at: 2026-02-14T10:55:07.757Z

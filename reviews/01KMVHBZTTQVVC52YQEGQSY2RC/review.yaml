@@ -1,0 +1,142 @@
+_ulid: 01KMVHBZTTQVVC52YQEGQSY2RC
+slugs: []
+title: Review completed task record reconciliation (cycle 5)
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh --run tests/dispatch-workspace-terminal-reconciliation.test.ts
+      tests/daemon-command-api.test.ts passed: 4 suites, 30 tests, 0 failures."
+    name: targeted daemon+reconciliation repro
+    required: true
+    runner: npm-test
+    created_at: 2026-03-29T00:58:32.114Z
+    completed_at: 2026-03-29T00:58:32.114Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh passed: 1964 suites, 7063 passed, 5 skipped, 0 failures."
+    name: npm test -- --fresh
+    required: true
+    runner: npm-test
+    created_at: 2026-03-29T00:58:33.813Z
+    completed_at: 2026-03-29T00:58:33.813Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exited 6 with repo-wide warnings only; no task-specific errors for
+      @dispatch-workspace-registry AC coverage. Verified AC annotations for ac-12 and ac-13 in
+      tests/dispatch-workspace-terminal-reconciliation.test.ts and trait-error-guidance N/A
+      annotations present.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-29T00:58:35.662Z
+    completed_at: 2026-03-29T00:58:35.662Z
+events:
+  - _ulid: 01KMVHBZTTXN3A1D24G6KSTZQS
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-29T00:54:41.754Z
+  - _ulid: 01KMVHD3FSMXFBGSDEYTBNMJS4
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-29T00:55:18.265Z
+  - _ulid: 01KMVHK19EHR8YN297B88ZCJJ7
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted daemon+reconciliation repro
+    timestamp: 2026-03-29T00:58:32.623Z
+  - _ulid: 01KMVHK32RJEPYY38ERK596XNN
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-03-29T00:58:34.456Z
+  - _ulid: 01KMVHK4RXY3FV66E95CV1YQDW
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-29T00:58:36.189Z
+  - _ulid: 01KMVHK6JWVPQP8ESXKK0B65NB
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMVHK5Z89M4RHV9024E5NB2R
+    timestamp: 2026-03-29T00:58:38.044Z
+  - _ulid: 01KMVHMBG5JWC3TJ20BVEGDRGM
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-29T00:59:15.845Z
+  - _ulid: 01KMVHMBG53EVB0FC9H6WWY3YH
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-29T00:59:15.845Z
+examined_commit: 9b50c4d10bde1740c6515d9e8fc7aaa52f1c7e5f
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMV52K0KFVQ33W970Z9NBCR5"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMVHK5Z89M4RHV9024E5NB2R
+    entries:
+      - _ulid: 01KMVHK5Z8BXZD1GGPXEB0CQA3
+        author: Test User
+        body: >-
+          Evidence log
+
+          Files read: packages/daemon/src/routes/command.ts, src/agent-runtime/workspace.ts,
+          src/parser/yaml.ts, src/parser/config.ts, tests/daemon-command-api.test.ts,
+          tests/dispatch-workspace-terminal-reconciliation.test.ts
+
+          Commands run: git diff --stat/name-only, git diff on each changed file, kspec task get,
+          kspec review for-task/get, grep AC annotations, kspec validate, npm test -- --fresh --run
+          tests/dispatch-workspace-terminal-reconciliation.test.ts tests/daemon-command-api.test.ts,
+          npm test -- --fresh
+
+          Claims verified: worker claim that AsyncLocalStorage replaces process.env mutation without
+          breaking daemon routes; verified by targeted daemon+reconciliation pass and fresh
+          full-suite pass.
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration.
+          No blocking issues found.
+        created_at: 2026-03-29T00:58:37.416Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-29T00:59:15.845Z
+created_at: 2026-03-29T00:54:41.754Z
+updated_at: 2026-03-29T00:59:15.845Z
+notes: []

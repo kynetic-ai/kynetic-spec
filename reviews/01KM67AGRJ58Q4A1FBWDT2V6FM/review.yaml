@@ -1,0 +1,109 @@
+_ulid: 01KM67AGRJ58Q4A1FBWDT2V6FM
+slugs: []
+title: Review task-daemon-api-input-validation (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fails with pre-existing project reference/completeness debt unrelated to this task: 3
+      reference errors, 1 reference warning, 30 alignment warnings, 402 completeness warnings."
+    name: kspec validate
+    required: false
+    created_at: 2026-03-20T18:19:56.635Z
+    completed_at: 2026-03-20T18:19:56.635Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 295 files passed, 6683 tests passed, 3 skipped
+    name: npm test
+    required: true
+    created_at: 2026-03-20T18:19:58.234Z
+    completed_at: 2026-03-20T18:19:58.234Z
+events:
+  - _ulid: 01KM67AGRH46X5VG4M1JG9CQ56
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-20T18:15:04.722Z
+  - _ulid: 01KM67GYVVMW9BNRYE65T272FV
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-20T18:18:35.772Z
+  - _ulid: 01KM67KE1ZGYZ1VRX2FZ899SE0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-03-20T18:19:56.863Z
+  - _ulid: 01KM67KETC2CX48NYFPWRW7NZF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM67KEK39NBV8G6QC03RSE1Q
+    timestamp: 2026-03-20T18:19:57.644Z
+  - _ulid: 01KM67KFM81Z5HYFXFJS0DQSR4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-20T18:19:58.472Z
+  - _ulid: 01KM67KPHGA8GZRD1WAR1Z07X5
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-20T18:20:05.552Z
+  - _ulid: 01KM67KPHG6VX4W490B7PN7MTF
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-20T18:20:05.552Z
+examined_commit: 8334eae8de18d4abe39d8b6e91fcbe1f0642553f
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM5Z4M7YQN173XSB98TPV8Y2"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM67KEK39NBV8G6QC03RSE1Q
+    entries:
+      - _ulid: 01KM67KEK4V09PM95S34BDZSG4
+        author: Jacob Chapel
+        body: |-
+          Review evidence log
+
+          Files read: packages/daemon/src/middleware/project-context.ts, packages/daemon/src/routes/{enum-utils,items,meta,plans,reviews,sessions,tasks,triage,validation,agent-dispatch}.ts, tests/{daemon-api-input-validation,daemon-agent-dispatch-routes,daemon-review-verdicts-api,cli-mutation-input-validation}.test.ts
+          Commands run: git diff/stat, kspec task get, kspec item get, kspec review get/for-task, grep AC annotations, kspec validate, npm test, git worktree list
+          Claims verified: prior blockers fixed by validating /api/reviews subject_type against canonical review subject types and preserving the legacy dispatched session trigger alias at the framework boundary; verified in route schemas and daemon-api-input-validation coverage
+          Categories searched: correctness, edge cases, error handling, test quality, integration; no new findings.
+        created_at: 2026-03-20T18:19:57.412Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-20T18:20:05.552Z
+created_at: 2026-03-20T18:15:04.722Z
+updated_at: 2026-03-20T18:20:05.552Z
+notes: []

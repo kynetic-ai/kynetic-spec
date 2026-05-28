@@ -1,0 +1,120 @@
+_ulid: 01KNN49K7V9VZG3MJ8N21P21CE
+slugs: []
+title: Review extend loadAllTasks to return history alongside task data
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed full suite: 2096/2096 suites, 7642/7647 tests passed, 5 skipped, 0 failed."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-07T23:31:36.118Z
+    completed_at: 2026-04-07T23:31:36.118Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 6 with repo-wide pre-existing warnings only (orphaned skills/spec coverage noise);
+      no task-specific schema/reference failures found during review.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-07T23:31:46.430Z
+    completed_at: 2026-04-07T23:31:46.430Z
+events:
+  - _ulid: 01KNN49K7VZ6QND8W6H39585S8
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-07T23:26:27.067Z
+  - _ulid: 01KNN49ZT205DB4VZG76SYVVGD
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-07T23:26:39.938Z
+  - _ulid: 01KNN4K2S6FVWBKETD6T60016A
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-07T23:31:37.895Z
+  - _ulid: 01KNN4K7WC53QM4WSEH9QK13SV
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNN4K62FZK14MBXVA4NVN25X
+    timestamp: 2026-04-07T23:31:43.116Z
+  - _ulid: 01KNN4KCX2EM5CR5RH300DQZ5X
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-07T23:31:48.258Z
+  - _ulid: 01KNN4KR44AQ3BTJR08QX85SW2
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-07T23:31:59.748Z
+  - _ulid: 01KNN4KR442MFEQ0J29B04S5HW
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-07T23:31:59.748Z
+examined_commit: bc0435b6cd39c76c9ffa63c060e74ccf4196cb4e
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNN24YV6T3TPR7R1Y2CTH66C"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNN4K62FZK14MBXVA4NVN25X
+    entries:
+      - _ulid: 01KNN4K62FDKXNE93AZWPTC7NV
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          Files read: src/daemon/entity-cache.ts, src/parser/task-data-manager.ts,
+          src/parser/split-backend.ts, tests/daemon-entity-cache.test.ts,
+          tests/task-data-manager.test.ts, tests/split-backend.test.ts.
+
+          Commands run: git diff/stat against 09384972c51b, kspec task get, kspec review for-task,
+          kspec validate, rg AC annotations, targeted npm test for daemon/task backend files, full
+          npm test.
+
+          Claims verified: worker claim that cache warm-up now uses bulk history loading verified in
+          src/daemon/entity-cache.ts; worker claim that full suite passes verified by npm test.
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration;
+          no blocking issues found.
+        created_at: 2026-04-07T23:31:41.263Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-07T23:31:59.728Z
+created_at: 2026-04-07T23:26:27.067Z
+updated_at: 2026-04-07T23:31:59.748Z
+notes: []

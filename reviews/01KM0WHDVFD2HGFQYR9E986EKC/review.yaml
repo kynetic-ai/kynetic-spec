@@ -1,0 +1,138 @@
+_ulid: 01KM0WHDVFD2HGFQYR9E986EKC
+slugs: []
+title: Review task-review-skill-version-docs (cycle 2)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: adc729f02246ea1eda02dd89a2591ecb2395d5af
+    evidence: "285/286 files pass, 6510/6511 tests pass. Single failure (review-cli.test.ts: should
+      leave examined_commit null) is pre-existing from auto-derivation dependency commits."
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T16:38:55.179Z
+    completed_at: 2026-03-18T16:38:55.179Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: adc729f02246ea1eda02dd89a2591ecb2395d5af
+    evidence: "Pre-existing validation issues only. No new issues introduced. Skills: OK."
+    name: kspec-validate
+    required: false
+    created_at: 2026-03-18T16:38:58.884Z
+    completed_at: 2026-03-18T16:38:58.884Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: adc729f02246ea1eda02dd89a2591ecb2395d5af
+    evidence: Cycle 1 blocker fully resolved. Zero --version-base/--version-head instances in all 3
+      skill files.
+    name: prior-blocker-resolved
+    required: true
+    created_at: 2026-03-18T16:39:02.051Z
+    completed_at: 2026-03-18T16:39:02.051Z
+events:
+  - _ulid: 01KM0WHDVFMVBJ0ZKQPA9VC9Q5
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T16:30:24.623Z
+  - _ulid: 01KM0WHNRB7BJ4BZYYMTB37JM1
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T16:30:32.715Z
+  - _ulid: 01KM0X08SE8BP55310VDT354S8
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM0X08MMS7RYMRYNMNFHBBKT
+    timestamp: 2026-03-18T16:38:30.958Z
+  - _ulid: 01KM0X10KVVFA29T0CRZT5QJ22
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T16:38:55.355Z
+  - _ulid: 01KM0X14746YD3SM2MMR35RNXW
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-18T16:38:59.045Z
+  - _ulid: 01KM0X17AMT4BJM3TKBBGA12NV
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior-blocker-resolved
+    timestamp: 2026-03-18T16:39:02.228Z
+  - _ulid: 01KM0X1ENKB26Y98W5QH710DN8
+    actor: pr-reviewer-agent
+    event_type: verdict_submitted
+    payload:
+      decision: request_changes
+    timestamp: 2026-03-18T16:39:09.748Z
+  - _ulid: 01KM0X1ENMH9B28G27GJNTS6ZM
+    actor: pr-reviewer-agent
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T16:39:09.748Z
+examined_commit: adc729f02246ea1eda02dd89a2591ecb2395d5af
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-review-skill-version-docs"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM0X08MMS7RYMRYNMNFHBBKT
+    anchor:
+      type: code
+      commit: adc729f02246ea1eda02dd89a2591ecb2395d5af
+      line_end: 144
+      line_start: 119
+      path: src/cli/commands/review.ts
+      side: head
+    entries:
+      - _ulid: 01KM0X08MMKF3NK5JTW3G89DAK
+        author: "@claude"
+        body: "Scope creep: This task is scoped as documentation-only (remove --version-base/--version-head
+          from skill docs), but commits include code changes in src/cli/commands/review.ts that
+          replace shared computeDisposition() and evaluateGates() imports with local simplified
+          versions. The local computeDisposition() ignores version staleness (getEffectiveVerdicts),
+          gate state, and unresolved blocker threads — it only checks verdict decisions. The local
+          computeGateState() ignores version staleness entirely and changes behavior when no
+          required checks exist (returns 'pending' instead of shared 'passing'). This means: (1)
+          disposition can report 'approved' even when gates are failing or blocker threads exist,
+          (2) stale verdicts are counted as current, (3) 'no required checks' now returns 'pending'
+          instead of 'passing' (vacuous truth). The shared implementations in
+          src/parser/review-operations.ts and src/review/checks.ts remain unchanged and are still
+          used elsewhere (e.g. task.ts). Fix: revert the code changes in src/cli/commands/review.ts
+          and tests/review-cli.test.ts — restore the shared imports. The documentation changes are
+          correct and should be kept."
+        created_at: 2026-03-18T16:38:30.804Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: adc729f02246ea1eda02dd89a2591ecb2395d5af
+    decision: request_changes
+    reviewer: pr-reviewer-agent
+    role: reviewer
+    created_at: 2026-03-18T16:39:09.561Z
+created_at: 2026-03-18T16:30:24.623Z
+updated_at: 2026-03-18T16:39:09.561Z
+notes: []

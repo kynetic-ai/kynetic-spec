@@ -1,0 +1,186 @@
+_ulid: 01KN804T5VPQYZ02QBQ4PNF48J
+slugs: []
+title: Review task-test-chokidar-watcher
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh targeted run passed: 67 suites / 218 tests across the changed watcher suites plus
+      tests/cli-serve.test.ts and tests/agent-dispatch-engine.test.ts."
+    name: watcher-targeted-suite
+    required: true
+    runner: npm
+    created_at: 2026-04-02T21:21:34.405Z
+    completed_at: 2026-04-02T21:21:34.405Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh full-suite run failed outside the watcher diff: tests/cli-serve.test.ts:353 and
+      tests/agent-dispatch-engine.test.ts:5845. Both passed in targeted reruns and a follow-up
+      stabilization task was created as @01KN813J."
+    name: full-suite
+    required: false
+    runner: npm
+    created_at: 2026-04-02T21:22:10.344Z
+    completed_at: 2026-04-02T21:22:10.344Z
+events:
+  - _ulid: 01KN804T5VE744J7S9XF304KDP
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-02T21:03:48.411Z
+  - _ulid: 01KN8058ZQK90MAC35HNJWEPS4
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-02T21:04:03.575Z
+  - _ulid: 01KN813GXG37QZ3G7J9NVXSZSS
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN813G2W7T9BN5CH1Q135DTR
+    timestamp: 2026-04-02T21:20:34.736Z
+  - _ulid: 01KN815CG1X6TJ93JFB0DJ4P1N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: watcher-targeted-suite
+    timestamp: 2026-04-02T21:21:35.746Z
+  - _ulid: 01KN815M0QNT7143VEJXAN2H8N
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN815JP9TX783N2TKQQ91P0A
+    timestamp: 2026-04-02T21:21:43.447Z
+  - _ulid: 01KN81638M9DPWRAMXGDQ18N1G
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-02T21:21:59.060Z
+  - _ulid: 01KN81638MAZ27F42S9GF77XK9
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-02T21:21:59.060Z
+  - _ulid: 01KN816FJ53NE1TTAE3XD4AV98
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: full-suite
+    timestamp: 2026-04-02T21:22:11.653Z
+  - _ulid: 01KN81ZWD5R1PRJ5ZJAGQNJ9HJ
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN813G2W7T9BN5CH1Q135DTR
+    timestamp: 2026-04-02T21:36:04.005Z
+  - _ulid: 01KN81ZYRGMBEEXHYPT1ERPEZX
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN815JP9TX783N2TKQQ91P0A
+    timestamp: 2026-04-02T21:36:06.416Z
+  - _ulid: 01KN820B5SRKB0DJMVH8Z159NT
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN815JP9TX783N2TKQQ91P0A
+    timestamp: 2026-04-02T21:36:19.130Z
+  - _ulid: 01KN820DAM18KSVQPBK7FGHVYR
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN813G2W7T9BN5CH1Q135DTR
+    timestamp: 2026-04-02T21:36:21.332Z
+examined_commit: a72d50e8ca41f0625f005c2c94e8183d22378a7c
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN7Q6BHCW3EXFA9SCBQAT05K"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN813G2W7T9BN5CH1Q135DTR
+    anchor:
+      type: code
+      commit: a72d50e8ca41f0625f005c2c94e8183d22378a7c
+      line_end: 212
+      line_start: 179
+      path: tests/session-watcher.test.ts
+      side: head
+    entries:
+      - _ulid: 01KN813G2WMNT0VZJNQ0TDT8SW
+        author: Jacob Chapel
+        body: "AC-3 says the daemon's resource usage is measured and that file descriptor count stays
+          proportional to monitored directories and metadata files. This test only inspects  and
+          asserts that chokidar's internal watched-entry map excludes . That is a weaker proxy: it
+          would still pass if the watcher opened extra descriptors elsewhere or if descriptor usage
+          scaled with blob files despite the same  output. Please replace this with a
+          behavioral/resource-level assertion that actually measures the watcher footprint promised
+          by AC-3, or otherwise add coverage that proves the FD/resource bound directly."
+        created_at: 2026-04-02T21:20:33.884Z
+      - _ulid: 01KN81ZVPGCVRB5W3QAGWXH7EM
+        author: Jacob Chapel
+        body: Replaced the AC-3 proxy assertion in tests/session-watcher.test.ts with a behavioral runtime
+          measurement against /proc/self/fd. The test now starts SessionWatcher twice with identical
+          metadata layout but 1 vs 250 blob files and asserts the open-FD delta stays flat, which
+          directly exercises the resource-bound promised by @daemon-file-monitoring ac-3.
+        created_at: 2026-04-02T21:36:03.279Z
+    kind: blocker
+    resolved_at: 2026-04-02T21:36:20.589Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KN815JP9TX783N2TKQQ91P0A
+    entries:
+      - _ulid: 01KN815JP9WQ034KBSN4WNN7A0
+        author: Jacob Chapel
+        body: "Evidence log: files read: tests/daemon-watcher-fallback.test.ts,
+          tests/session-watcher.test.ts, tests/daemon-watcher-multi-project.test.ts,
+          tests/daemon-watcher-error-handling.test.ts, tests/daemon-context-manager.test.ts,
+          packages/daemon/src/watcher.ts, packages/daemon/src/session-watcher.ts,
+          packages/daemon/src/project-context.ts, tests/cli-serve.test.ts. Commands run: `git diff`,
+          `kspec task get`, `kspec item get`, `kspec validate`, AC annotation grep, targeted watcher
+          suites (`npm test -- --fresh ...`), full suite (`npm test -- --fresh`), targeted
+          flaky-file rerun, base-branch targeted rerun, combined changed-plus-failing suite rerun.
+          Claims verified: changed tests are behavioral rather than source-scanning; the unrelated
+          full-suite failures are non-deterministic and not reproduced in targeted fresh runs or
+          when combined with the changed watcher suites; AC-3 coverage relies on internal watcher
+          state rather than the spec's stated resource metric. Categories searched: correctness,
+          edge cases, error handling, test quality, integration."
+        created_at: 2026-04-02T21:21:42.089Z
+      - _ulid: 01KN81ZXZKVA1R58P5NPWKYFS8
+        author: Jacob Chapel
+        body: Addressed the blocker and re-ran verification from this workspace. Fresh watcher-targeted
+          suites passed, and a fresh full npm test run also passed cleanly on the updated branch.
+        created_at: 2026-04-02T21:36:05.619Z
+    kind: nit
+    resolved_at: 2026-04-02T21:36:18.439Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-02T21:21:59.060Z
+created_at: 2026-04-02T21:03:48.411Z
+updated_at: 2026-04-02T21:36:20.589Z
+notes: []

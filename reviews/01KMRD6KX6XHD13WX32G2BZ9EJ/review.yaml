@@ -1,0 +1,224 @@
+_ulid: 01KMRD6KX6XHD13WX32G2BZ9EJ
+slugs: []
+title: Review @01KMMB3WBKZKVE32R64GD0YVH8
+author: "@claude"
+checks:
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran kspec validate; exit 6 from pre-existing repo warnings (orphaned specs/skills and
+      existing AC annotation warnings), no new schema/reference errors from this task.
+    name: kspec validate
+    required: false
+    created_at: 2026-03-27T19:46:42.865Z
+    completed_at: 2026-03-27T19:46:42.865Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test passed: 1943/1943 suites, 6949 passed, 5 skipped, duration 3509.4s."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-27T19:47:58.534Z
+    completed_at: 2026-03-27T19:47:58.534Z
+events:
+  - _ulid: 01KMRD6KX60BP8DZXRJJ3XEQ7N
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T19:44:08.102Z
+  - _ulid: 01KMRD7DWT2AWBPQBYDGME8HCT
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T19:44:34.715Z
+  - _ulid: 01KMRD9MKSEVD0V32VXMTJJH64
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMRD9KMWBZ9937CSSXD2TE7K
+    timestamp: 2026-03-27T19:45:47.129Z
+  - _ulid: 01KMRDA555TP2MH7B6KMRXWT8W
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMRDA48H134GG1FRG6C6G224
+    timestamp: 2026-03-27T19:46:04.069Z
+  - _ulid: 01KMRDBBSS5W8RBJ8MSEF001CF
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-03-27T19:46:43.641Z
+  - _ulid: 01KMRDDK3NHPFB84DHG6X7PG4P
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMRDDJ79B8ETGPYQK4BGG8W2
+    timestamp: 2026-03-27T19:47:56.661Z
+  - _ulid: 01KMRDDNTDRHW6YP5CQT6JKYGW
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-27T19:47:59.437Z
+  - _ulid: 01KMRDDXFVQ51MCXWW6DBWCPME
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-27T19:48:07.292Z
+  - _ulid: 01KMRDDXFWMZC0X65BXX8G9DB4
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T19:48:07.292Z
+  - _ulid: 01KMRE4HGXPZK6RTQBXNP9BDBJ
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMRD9KMWBZ9937CSSXD2TE7K
+    timestamp: 2026-03-27T20:00:28.701Z
+  - _ulid: 01KMRE4JV702QJZ0A8Z1YSR7SH
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMRD9KMWBZ9937CSSXD2TE7K
+    timestamp: 2026-03-27T20:00:30.055Z
+  - _ulid: 01KMRE4M3MXFKCEXSPGCM7Q0W1
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMRDA48H134GG1FRG6C6G224
+    timestamp: 2026-03-27T20:00:31.348Z
+  - _ulid: 01KMRE4NAWBVC8HPBTHM5G7F6Z
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMRDA48H134GG1FRG6C6G224
+    timestamp: 2026-03-27T20:00:32.604Z
+  - _ulid: 01KMRE4PK1SYBMQ69GFP28SJP0
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMRDDJ79B8ETGPYQK4BGG8W2
+    timestamp: 2026-03-27T20:00:33.889Z
+  - _ulid: 01KMRE4QW51VD426VG69WRYKZ5
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMRDDJ79B8ETGPYQK4BGG8W2
+    timestamp: 2026-03-27T20:00:35.205Z
+examined_commit: 19583c6cbc0605de496770c02e7961c74f4c3a76
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMMB3WBKZKVE32R64GD0YVH8"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMRD9KMWBZ9937CSSXD2TE7K
+    anchor:
+      type: code
+      commit: 19583c6cbc0605de496770c02e7961c74f4c3a76
+      line_end: 345
+      line_start: 343
+      path: packages/daemon/src/routes/items.ts
+      side: head
+    entries:
+      - _ulid: 01KMRD9KMWWKVBSZVK0V3G5K48
+        author: "@claude"
+        body: " is still a daemon read path that calls bare , so it will continue running the per-request
+          drift-check that  forbids. The route only validates refs and returns matching tasks/items;
+          it is not a mutation endpoint, so daemon reads are still inconsistent after this patch. I
+          confirmed the remaining bare call at packages/daemon/src/routes/items.ts:344 and found no
+          new coverage for this endpoint in the added tests, which only exercise  and ."
+        created_at: 2026-03-27T19:45:46.141Z
+      - _ulid: 01KMRE4H20QF7KCZWZSG5NZD1V
+        author: "@claude"
+        body: 'Fixed: POST /api/items/batch now uses the deferred-context pattern (getBatchCtx) with {
+          syncMode: "skip" }, consistent with all other daemon read routes. Added behavioral test
+          proving syncMode "skip" is passed on cache miss.'
+        created_at: 2026-03-27T20:00:28.224Z
+    kind: blocker
+    resolved_at: 2026-03-27T20:00:29.516Z
+    resolved_by: "@claude"
+  - _ulid: 01KMRDA48H134GG1FRG6C6G224
+    anchor:
+      type: code
+      commit: 19583c6cbc0605de496770c02e7961c74f4c3a76
+      line_end: 345
+      line_start: 343
+      path: packages/daemon/src/routes/items.ts
+      side: head
+    entries:
+      - _ulid: 01KMRDA48HKHR0JCY4WA5TJY0K
+        author: "@claude"
+        body: POST /api/items/batch is still a daemon read path that calls bare
+          initContext(projectContext.path), so it continues running the per-request drift-check that
+          ac-daemon-bypass forbids. This handler only validates refs and returns matching
+          tasks/items; it is not a mutation endpoint, so daemon reads remain inconsistent after this
+          patch. I confirmed the remaining bare call at packages/daemon/src/routes/items.ts:344 and
+          found no new coverage for this endpoint in the added tests, which only exercise /api/tasks
+          and /api/tasks/:ref.
+        created_at: 2026-03-27T19:46:03.153Z
+      - _ulid: 01KMRE4KKHQQS59HTVA3E058C5
+        author: "@claude"
+        body: 'Fixed: Same as thread 1 — POST /api/items/batch now passes { syncMode: "skip" } to
+          initContext on cache-miss fallback. Also added test coverage in
+          daemon-cache-route-coverage.test.ts.'
+        created_at: 2026-03-27T20:00:30.833Z
+    kind: blocker
+    resolved_at: 2026-03-27T20:00:32.106Z
+    resolved_by: "@claude"
+  - _ulid: 01KMRDDJ79B8ETGPYQK4BGG8W2
+    entries:
+      - _ulid: 01KMRDDJ79G6JMHBYB9D48FT4S
+        author: "@claude"
+        body: "Evidence log: Files read: kspec-agents.md, src/parser/yaml.ts,
+          packages/daemon/src/routes/{aggregation,automation,diff,inbox,items,meta,plans,refs,revie\
+          ws,sessions,tasks,triage,validation}.ts,
+          tests/{daemon-cache-route-coverage,shadow-drift-check,sync-mode}.test.ts. Commands run:
+          kspec task get, kspec item get, kspec review for-task/get, git diff, rg for initContext
+          call-sites and AC annotations, kspec validate, npm test. Claims verified: explicit
+          syncMode override makes initContext skip drift-check; most touched daemon read routes now
+          pass syncMode skip; POST /api/items/batch still does not. Categories searched:
+          correctness, test quality, AC coverage, edge cases, integration."
+        created_at: 2026-03-27T19:47:55.754Z
+      - _ulid: 01KMRE4P2VW9ZEZEDHD190EFY5
+        author: "@claude"
+        body: Acknowledged. Verified all remaining bare initContext calls in daemon routes are mutation
+          endpoints (POST task start/note/submit/complete/block, inbox/triage/review mutations). No
+          other read paths remain.
+        created_at: 2026-03-27T20:00:33.371Z
+    kind: nit
+    resolved_at: 2026-03-27T20:00:34.648Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-27T19:48:07.291Z
+created_at: 2026-03-27T19:44:08.102Z
+updated_at: 2026-03-27T20:00:34.648Z
+notes: []

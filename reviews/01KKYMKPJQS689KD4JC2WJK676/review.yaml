@@ -1,0 +1,125 @@
+_ulid: 01KKYMKPJQS689KD4JC2WJK676
+slugs: []
+title: Review round-trip stability for plan record YAML writes (cycle 4)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 262 test files passed, 5777 tests passed, 2 pre-existing failures (agent-dispatch-engine
+      orientation test, review-cli examined_commit auto-detection)
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-17T19:33:41.212Z
+    completed_at: 2026-03-17T19:33:41.212Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Build completed cleanly with no errors
+    name: build
+    required: true
+    runner: npm run build
+    created_at: 2026-03-17T19:33:48.703Z
+    completed_at: 2026-03-17T19:33:48.703Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "AC annotation present: // AC: @yaml-serialization-invariants ac-3 at line 510 of
+      tests/yaml-round-trip-stability.test.ts, covering the new savePlan path describe block with 6
+      tests"
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-17T19:33:58.376Z
+    completed_at: 2026-03-17T19:33:58.376Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff dev..HEAD -- src/parser/yaml.ts src/parser/reviews.ts produces zero output — no
+      regressions to inbox or review raw-data-preservation patterns
+    name: no-regression
+    required: true
+    runner: git diff
+    created_at: 2026-03-17T19:34:06.688Z
+    completed_at: 2026-03-17T19:34:06.688Z
+events:
+  - _ulid: 01KKYMKPJQWFKZXGERM68WZEQS
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-17T19:33:21.623Z
+  - _ulid: 01KKYMM0R8Z7R9738W12K9CSGJ
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-17T19:33:32.040Z
+  - _ulid: 01KKYMM9STX1VGN2J8N13FCND3
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-17T19:33:41.307Z
+  - _ulid: 01KKYMMH3KDQ9YFH5RMJ78FNHC
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: build
+    timestamp: 2026-03-17T19:33:48.787Z
+  - _ulid: 01KKYMMTHT2YV1GSPNQRXZEDRR
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-17T19:33:58.458Z
+  - _ulid: 01KKYMN2NBNNCCPNW246J9GVAX
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: no-regression
+    timestamp: 2026-03-17T19:34:06.763Z
+  - _ulid: 01KKYMNBAA1KP8Q8DNVD52JKRN
+    actor: agent@kspec-dispatch
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-17T19:34:15.626Z
+  - _ulid: 01KKYMNBAAC1Q6W69P14HPEKFR
+    actor: agent@kspec-dispatch
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-17T19:34:15.626Z
+examined_commit: 8dabdab7f3df4458dc0e630b24f21b733e532d75
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKX6C83WVQBYBZ5SWTXY1JKA"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: agent@kspec-dispatch
+    role: reviewer
+    created_at: 2026-03-17T19:34:15.549Z
+created_at: 2026-03-17T19:33:21.623Z
+updated_at: 2026-03-17T19:34:15.549Z
+notes: []

@@ -1,0 +1,16 @@
+_ulid: 01KNBJ2M0BB5A4EDCFD7F0WQHR
+slugs:
+  - plan-active-session-scoped-file-monitoring
+title: Active-Session-Scoped File Monitoring
+status: completed
+approved_at: 2026-04-04T06:33:17.987Z
+derived_specs: []
+derived_tasks:
+  - "@task-monitoring-spec-ac3-active-sessions"
+  - "@task-monitoring-spec-active-session-acs"
+  - "@task-refactor-session-watcher-active-scoped"
+  - "@task-fd-regression-test-active-scoping"
+module_ref: null
+source_path: /home/chapel/Projects/kynetic-spec/plans/active-session-scoped-watching.md
+created_at: 2026-04-04T06:14:54.219Z
+completed_at: null

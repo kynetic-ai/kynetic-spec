@@ -1,0 +1,88 @@
+_ulid: 01KKZ9SD26MACSRNBGTBW8MAAJ
+slugs: []
+title: Review fix-session-cache-invalidate-leaves-ghost-in-knownsessionids
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 37 session-summary-cache tests passed, including 2 new regression tests
+    name: vitest (session-summary-cache)
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T01:44:05.277Z
+    completed_at: 2026-03-18T01:44:05.277Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "5810 passed, 2 failed (pre-existing: agent-dispatch-engine AC-12 mutex test + review-cli
+      examined_commit environmental test), 3 skipped. No regressions from this change."
+    name: vitest (full suite)
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T01:44:14.065Z
+    completed_at: 2026-03-18T01:44:14.065Z
+events:
+  - _ulid: 01KKZ9SD25EACSA559D9B2NPBH
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T01:43:28.582Z
+  - _ulid: 01KKZ9T2EQFQRZ4G8FH701Z578
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T01:43:50.487Z
+  - _ulid: 01KKZ9TH28HSG7FQH6E4NWVAY4
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest (session-summary-cache)
+    timestamp: 2026-03-18T01:44:05.448Z
+  - _ulid: 01KKZ9TSMHM1RN1FBRVB9PGFT9
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest (full suite)
+    timestamp: 2026-03-18T01:44:14.226Z
+  - _ulid: 01KKZ9V01JY8REQEJX8YXPPBBD
+    actor: claude-reviewer@kynetic.ai
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-18T01:44:20.786Z
+  - _ulid: 01KKZ9V01J9MHEQSEN9TBDABJN
+    actor: claude-reviewer@kynetic.ai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T01:44:20.786Z
+examined_commit: e3e45dd016439fdc78dd4e028bffbeea1b786a93
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKXGPNP7R08EYVEQCERNX1HS"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: claude-reviewer@kynetic.ai
+    role: reviewer
+    created_at: 2026-03-18T01:44:20.618Z
+created_at: 2026-03-18T01:43:28.582Z
+updated_at: 2026-03-18T01:44:20.618Z
+notes: []

@@ -1,0 +1,26 @@
+_ulid: 01KKK5KNET8MD91734EZH92P62
+slugs:
+  - plan-dispatch-branch-adoption-and-deterministic-task-br
+title: Dispatch Branch Adoption and Deterministic Task Branches
+status: completed
+approved_at: 2026-03-13T09:15:50.526Z
+derived_specs:
+  - "@portable-task-submission-linkage"
+  - "@adopt-existing-task-branch-lineage"
+  - "@branch-provenance-in-dispatch-workspace-registry"
+  - "@adopted-branch-cleanup-and-recoverability"
+  - "@review-and-fix-cycle-workspace-discovery-before-discard"
+  - "@deterministic-task-branch-helper"
+derived_tasks:
+  - "@implement-portable-task-submission-linkage"
+  - "@implement-adopt-existing-task-branch-lineage-for-r"
+  - "@implement-branch-provenance-in-dispatch-workspace-"
+  - "@implement-adopted-branch-cleanup-and-recoverabilit"
+  - "@implement-review-and-fix-cycle-workspace-discovery"
+  - "@implement-deterministic-task-branch-helper"
+  - "@update-branching-conventions-and-agent-docs-for-dispatch-compatible-task-branches"
+  - "@add-regression-coverage-for-adopted-manual-branches-and-fallback-independent-dispatch-review"
+module_ref: null
+source_path: /home/chapel/Projects/kynetic-spec/plans/dispatch-branch-adoption-and-deterministic-task-branches.md
+created_at: 2026-03-13T08:39:33.082Z
+completed_at: null

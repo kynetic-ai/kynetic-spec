@@ -1,0 +1,160 @@
+_ulid: 01KP6RXRJKVT3FCGF6J19K7B1Q
+slugs: []
+title: Review @01KNXYJ3PYYG1ABH6SMQ2KRE1S
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Reviewed @scaffolded-project-config and confirmed matching annotations in
+      tests/scaffold-project-config.test.ts for spec ACs plus @trait-idempotent-file-scaffold and
+      @trait-error-guidance coverage/N-A lines.
+    name: AC annotation scan
+    required: true
+    created_at: 2026-04-14T19:56:24.494Z
+    completed_at: 2026-04-14T19:56:24.494Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repository-wide pre-existing validation noise remains: meta schema error in
+      .kspec/modules/meta.yaml plus broad completeness/alignment warnings unrelated to this task;
+      not treated as task regression."
+    name: kspec validate
+    required: false
+    created_at: 2026-04-14T19:56:31.758Z
+    completed_at: 2026-04-14T19:56:31.758Z
+events:
+  - _ulid: 01KP6RXRJJZP27JAWFYFFT5Y2W
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-14T19:54:04.755Z
+  - _ulid: 01KP6RZRFKRY5YYH7K30VA8NSY
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-14T19:55:10.196Z
+  - _ulid: 01KP6S227GAC9JWTJVK8R477Q2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC annotation scan
+    timestamp: 2026-04-14T19:56:25.713Z
+  - _ulid: 01KP6S25R8WV2DD0NN62K34RZ5
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP6S24H2CC5ES74D536JJ80M
+    timestamp: 2026-04-14T19:56:29.320Z
+  - _ulid: 01KP6S29AVBQA9S85NHCC69S96
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-14T19:56:32.987Z
+  - _ulid: 01KP6S6RXBA6MZVQZD0R90TT18
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-14T19:59:00.012Z
+  - _ulid: 01KP6S6RXCAW4NKQRHXHRQV7NH
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-14T19:59:00.012Z
+  - _ulid: 01KP6VAJ7VH05PE7Q6V485R0FD
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP6S24H2CC5ES74D536JJ80M
+    timestamp: 2026-04-14T20:36:01.404Z
+  - _ulid: 01KP6VASYXYANKY36BRP5QJ6JJ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP6S24H2CC5ES74D536JJ80M
+    timestamp: 2026-04-14T20:36:09.309Z
+examined_commit: af9d75e0a7abb47bcd90459f7ec70d16c51e0769
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNXYJ3PYYG1ABH6SMQ2KRE1S"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KP6S24H2CC5ES74D536JJ80M
+    anchor:
+      type: code
+      commit: af9d75e0a7abb47bcd90459f7ec70d16c51e0769
+      line_end: 40
+      line_start: 1
+      path: src/cli/commands/setup-defaults.ts
+      side: head
+    entries:
+      - _ulid: 01KP6S24H2N9T60TBT5S7XS0RN
+        author: Jacob Chapel
+        body: "This branch is still conflated with unrelated work: the task spec is only about scaffolding
+          kspec.config.yaml, but the review diff also adds a new default-agents/conventions scaffold
+          module and companion reflection-hook tests. From the recorded base
+          (7b1b856564b91f28efc8bbb2d3b8e41034fd9a3f) to this head, git diff still includes 522 added
+          lines in src/cli/commands/setup-defaults.ts, 636 added / 70 removed lines in
+          tests/setup-builtin-agents.test.ts, and 227 added lines in
+          tests/setup-reflection-hook.test.ts, all covering @default-project-agents-and-conventions
+          or @default-session-reflection-hook instead of @scaffolded-project-config. Approving this
+          would merge unrelated behavior under the wrong task and spec lineage, so the branch still
+          needs to be rebased/cherry-picked down to only the scaffold-project-config changes."
+        created_at: 2026-04-14T19:56:28.066Z
+      - _ulid: 01KP6VAHC1VVP6MP0GQPZ88H7N
+        author: "@claude"
+        body: >-
+          The branch was already rebased cleanly onto the current integration target (f205808d2) in
+          fix cycle 5. The files mentioned (setup-defaults.ts, setup-builtin-agents.test.ts,
+          setup-reflection-hook.test.ts) are NOT modified by this branch — they exist identically on
+          both the integration target and this branch's HEAD. The diff from 7b1b856 (old base)
+          includes them because that was the base before other tasks were merged into the
+          integration target. The correct diff base is f205808d2 (current integration target head),
+          which is the parent of our first commit:
+
+
+          git diff --stat f205808d2..HEAD:
+            src/agent-runtime/workspace.ts        |  32 ++-
+            src/cli/commands/init.ts              |  18 +-
+            src/cli/commands/setup.ts             | 193 +++++++++++++-
+            src/parser/config.ts                  |   2 +-
+            tests/scaffold-project-config.test.ts | 458 ++++++++++++++++++++++++++++++
+
+          Only 5 scaffold-related files changed. git diff f205808d2..HEAD --
+          src/cli/commands/setup-defaults.ts tests/setup-builtin-agents.test.ts
+          tests/setup-reflection-hook.test.ts produces empty output confirming no changes to those
+          files. The merge-base between HEAD and f205808d2 is f205808d2 itself.
+        created_at: 2026-04-14T20:36:00.513Z
+    kind: blocker
+    resolved_at: 2026-04-14T20:36:08.414Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-14T19:59:00.011Z
+created_at: 2026-04-14T19:54:04.755Z
+updated_at: 2026-04-14T20:36:08.414Z
+notes: []

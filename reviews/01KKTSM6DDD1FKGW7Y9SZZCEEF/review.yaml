@@ -1,0 +1,255 @@
+_ulid: 01KKTSM6DDD1FKGW7Y9SZZCEEF
+slugs: []
+title: "Review: Review Records Web UI plan (round 3 — granular tasks)"
+author: "@claude"
+checks: []
+events:
+  - _ulid: 01KKTSM6DDJ8D68E4EH6CTZTJC
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-16T07:44:02.989Z
+  - _ulid: 01KKTSMBDHG38W1G7TC2Q6C0QV
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-16T07:44:08.113Z
+  - _ulid: 01KKTSRNPBTQCRTRFXQ8XWWH24
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKTSRNP0YK949MP75Q284DSV
+    timestamp: 2026-03-16T07:46:29.707Z
+  - _ulid: 01KKTSRX41FPXJ6N1H22MQQY0S
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKTSRX3MA37CB0WRZ8JZMXYQ
+    timestamp: 2026-03-16T07:46:37.313Z
+  - _ulid: 01KKTSS763K37QZ8CRFBQV94SN
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKTSS75S23N6YZ9TD25ZXRJZ
+    timestamp: 2026-03-16T07:46:47.619Z
+  - _ulid: 01KKTSSFB7BPGCXGG8S3VP9EPM
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKTSSFAVGC5VN3KYPWE5MKB7
+    timestamp: 2026-03-16T07:46:55.975Z
+  - _ulid: 01KKTSST1M7W5AZQQJE05MS5DT
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKTSST15GSME00YY0MTQ8BT9
+    timestamp: 2026-03-16T07:47:06.932Z
+  - _ulid: 01KKTST17J7CQKRY2QA45XGJXM
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KKTST178N53ZYNH05A0REXR3
+    timestamp: 2026-03-16T07:47:14.290Z
+  - _ulid: 01KKTSTDTXC760SPN491RHKAGT
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKTSTDTFDQ9SJDT7MW1S41JD
+    timestamp: 2026-03-16T07:47:27.197Z
+  - _ulid: 01KKTSTRE7PVA9M68YE47RJJGH
+    actor: plan-review-agent-r3
+    event_type: verdict_submitted
+    payload:
+      decision: request_changes
+    timestamp: 2026-03-16T07:47:38.055Z
+  - _ulid: 01KKTSX723QAN9M6Q72WB5SEC5
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-16T07:48:58.563Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-review-records-web-ui"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KKTSRNP0YK949MP75Q284DSV
+    entries:
+      - _ulid: 01KKTSRNP0S449ZC8209ETQC4X
+        author: "@claude"
+        body: >-
+          **BLOCKER: Wrong daemon route file paths in all API tasks**
+
+
+          All four API tasks (task-review-api-read, task-review-api-threads,
+          task-review-api-verdicts, task-review-api-websocket) reference `src/daemon/routes/` as the
+          location for route files. The actual path is `packages/daemon/src/routes/`.
+
+
+          Evidence: `ls src/daemon/routes/` returns "No such file or directory". Existing route
+          files like tasks.ts, plans.ts, inbox.ts all live at `packages/daemon/src/routes/`.
+
+
+          This will mislead the implementing agent into looking for or creating files in the wrong
+          directory. Fix all "How" sections to reference `packages/daemon/src/routes/`.
+        created_at: 2026-03-16T07:46:29.696Z
+    kind: blocker
+  - _ulid: 01KKTSRX3MA37CB0WRZ8JZMXYQ
+    entries:
+      - _ulid: 01KKTSRX3NGTGV1MV25MV9S1V8
+        author: "@claude"
+        body: >-
+          **BLOCKER: Wrong function name in task-review-api-read**
+
+
+          The task says "Use loadReviews() from parser/reviews.ts". The actual function is
+          `loadReviewRecords()`, not `loadReviews()`. See src/parser/reviews.ts line 95.
+
+
+          This will cause a compilation error or lead the agent to create an unnecessary wrapper
+          function.
+        created_at: 2026-03-16T07:46:37.301Z
+    kind: blocker
+  - _ulid: 01KKTSS75S23N6YZ9TD25ZXRJZ
+    entries:
+      - _ulid: 01KKTSS75STS2F2917ST4XKB46
+        author: "@claude"
+        body: >-
+          **BLOCKER: Wrong function name and location in task-review-api-verdicts**
+
+
+          The task says "Use submitVerdict(), addCheck(), transitionLifecycle() from
+          parser/review-operations.ts". Two problems:
+
+
+          1. `addCheck()` does not exist in review-operations.ts or anywhere in the parser. The
+          check creation functions are `createCheck()` and `createLocalCheck()` in
+          `src/review/checks.ts` (not parser/review-operations.ts).
+
+
+          2. `submitVerdict()` and `transitionLifecycle()` do exist in review-operations.ts, but
+          they are **pure functions** that return new ReviewRecord objects -- they don't persist
+          anything. The route will need to use `mutateReviewAtomically()` from `parser/reviews.ts`
+          to wrap these mutations with file locking and persistence. The task description doesn't
+          mention this pattern, which could lead to data loss under concurrent requests.
+
+
+          Compare with review-threads.ts which has both pure functions (addThread, addReply) AND
+          atomic wrappers (addThreadAtomic, addReplyAtomic) -- the atomic wrappers handle locking
+          and persistence. review-operations.ts does NOT have such wrappers, so the route
+          implementer needs to build that pattern.
+        created_at: 2026-03-16T07:46:47.610Z
+    kind: blocker
+  - _ulid: 01KKTSSFAVGC5VN3KYPWE5MKB7
+    entries:
+      - _ulid: 01KKTSSFAVG7BPXBW7H4WNMX41
+        author: "@claude"
+        body: >-
+          **NIT: WebSocket topic naming inconsistent with existing conventions**
+
+
+          The plan says to add a "reviews" WebSocket topic. Existing topics use a `<domain>:updates`
+          naming pattern:
+
+          - `tasks:updates`
+
+          - `inbox:updates`
+
+          - `triage:updates`
+
+
+          The topic should be `reviews:updates` to match the convention. The
+          task-review-api-websocket description says "reviews" topic in the What section but doesn't
+          specify the exact string.
+        created_at: 2026-03-16T07:46:55.963Z
+    kind: nit
+  - _ulid: 01KKTSST15GSME00YY0MTQ8BT9
+    entries:
+      - _ulid: 01KKTSST15NPWWDGDTR7JA40T5
+        author: "@claude"
+        body: >-
+          **NIT: Plans route does not use limit/offset pagination**
+
+
+          task-review-api-read says "Pagination follows existing daemon conventions (limit/offset
+          with total count header)". However, the plans route (the closest analog for a read-only
+          listing of top-level entities) does NOT use limit/offset pagination — it returns all items
+          with a `total` count. See `packages/daemon/src/routes/plans.ts` lines 108-113.
+
+
+          The tasks route DOES use pagination. The task should specify which pattern to follow.
+          Given the convention note in AGENTS.md ("API list endpoints must use pagination"),
+          pagination is correct — just note that plans.ts is NOT the right template to copy. Use
+          tasks.ts instead.
+        created_at: 2026-03-16T07:47:06.917Z
+    kind: nit
+  - _ulid: 01KKTST178N53ZYNH05A0REXR3
+    entries:
+      - _ulid: 01KKTST178HVMPV3YKS5VEN292
+        author: "@claude"
+        body: >-
+          **QUESTION: Shared types location — task says @kynetic-ai/shared but doesn't mention
+          specific file**
+
+
+          task-review-api-read says "Create ReviewSummary and ReviewDetail types in
+          @kynetic-ai/shared following existing PlanSummary/TaskDetail patterns." These types live
+          in `packages/shared/src/api.ts`. The task should mention this file explicitly so the
+          implementer adds them in the right place and follows the existing export pattern.
+        created_at: 2026-03-16T07:47:14.280Z
+    kind: question
+  - _ulid: 01KKTSTDTFDQ9SJDT7MW1S41JD
+    entries:
+      - _ulid: 01KKTSTDTF8T4QG40QWYS6Y57N
+        author: "@claude"
+        body: >-
+          **POSITIVE: Task scope, dependency chains, and AC coverage are well done**
+
+
+          Strengths of this round:
+
+          1. **Task scoping** is appropriate — API read vs thread mutations vs verdict/lifecycle
+          mutations is a natural split. UI tasks split list/detail/interaction/integration
+          correctly.
+
+          2. **Dependency chains are correct** — no cycles, ordering makes sense (read before
+          mutations, mutations before WebSocket, API before UI, list before detail, detail before
+          interaction).
+
+          3. **AC coverage is complete** — every spec AC maps to exactly one task:
+             - Daemon API: ac-1,2 → read; ac-3,4,5,10 → threads; ac-6,7,8,10 → verdicts; ac-9 → websocket
+             - Web UI: ac-1 → list; ac-2 → detail; ac-3,4,5,6 → interaction; ac-7 → task integration
+          4. **Why/What/How descriptions** are clear and actionable. The "Why" consistently explains
+          the user/system need, "What" specifies the deliverable, and "How" points to implementation
+          approach.
+
+          5. **No missing tasks** — full spec surface is covered.
+        created_at: 2026-03-16T07:47:27.183Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: 01KKTSTR86E3AFZ3K4K0EC39VN
+    decision: request_changes
+    reviewer: plan-review-agent-r3
+    role: reviewer
+    created_at: 2026-03-16T07:47:38.043Z
+created_at: 2026-03-16T07:44:02.989Z
+updated_at: 2026-03-16T07:48:58.532Z
+notes: []

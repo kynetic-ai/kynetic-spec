@@ -1,0 +1,208 @@
+_ulid: 01KQYSHZ90XHVAG0E3FV84A68N
+slugs: []
+title: Review task-daemon-startup-bind-host-metadata
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test: 2360 suites passed; 8651 passed, 5 skipped of 8656; duration 1912.4s; log
+      /tmp/kspec-test-cache/01KQYSGGD4SY2KQJ78TZWTSRFV/92bda318112dae62.log."
+    name: full npm test
+    required: true
+    runner: npm test
+    created_at: 2026-05-06T14:13:50.335Z
+    completed_at: 2026-05-06T14:13:50.335Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate exited 6 with existing project warnings: reference warnings, alignment
+      warnings, missing coverage/invalid AC annotation warnings. Schema, references, skills OK; no
+      changed-file-specific validation error observed."
+    name: kspec validate
+    required: false
+    runner: kspec validate
+    created_at: 2026-05-06T14:13:53.797Z
+    completed_at: 2026-05-06T14:13:53.797Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/parser/daemon-config.test.ts tests/cli-serve.test.ts
+      tests/daemon-server.test.ts: 23 suites passed, 85 tests passed."
+    name: targeted daemon/config tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-06T14:13:57.372Z
+    completed_at: 2026-05-06T14:13:57.372Z
+events:
+  - _ulid: 01KQYSHZ8Z03RKNFSZFRM2BPWD
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-06T14:02:35.167Z
+  - _ulid: 01KQYSJWDDXM67CAM75T6SG81Z
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-06T14:03:05.005Z
+  - _ulid: 01KQYT6KW3F15FHZZFEMWREB2T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full npm test
+    timestamp: 2026-05-06T14:13:51.619Z
+  - _ulid: 01KQYT6Q7B0GSSZ53R8JVS0ZEF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-05-06T14:13:55.051Z
+  - _ulid: 01KQYT6TMNNG40HH4QWKFFAM3M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted daemon/config tests
+    timestamp: 2026-05-06T14:13:58.549Z
+  - _ulid: 01KQYT7AANZ5EQWSSP67W8VH46
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQYT7937KEX03MWX9ESHD5BK
+    timestamp: 2026-05-06T14:14:14.613Z
+  - _ulid: 01KQYT869N3XY7AX6ZGECX653N
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KQYT85367E3CC8RSV1VWYKC1
+    timestamp: 2026-05-06T14:14:43.253Z
+  - _ulid: 01KQYT8Q5S9KKP8XCSMH12RAHP
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-06T14:15:00.538Z
+  - _ulid: 01KQYT8Q5TA1VDFV3ZRKYHA6SS
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-06T14:15:00.538Z
+  - _ulid: 01KQYXF1PSR2SN8QJK3MX9TSSC
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KQYT7937KEX03MWX9ESHD5BK
+    timestamp: 2026-05-06T15:10:53.657Z
+  - _ulid: 01KQYXFACQ4MNSM8KEW1KM6ADH
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KQYT7937KEX03MWX9ESHD5BK
+    timestamp: 2026-05-06T15:11:02.551Z
+examined_commit: 32746e58b5712cb18605f876a1ca8ab6f47aaa63
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQWZZHH1SKQ5DG44EEBMT9H9"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQYT7937KEX03MWX9ESHD5BK
+    anchor:
+      type: code
+      commit: 32746e58b5712cb18605f876a1ca8ab6f47aaa63
+      line_end: 822
+      line_start: 804
+      path: packages/daemon/src/server.ts
+      side: head
+    entries:
+      - _ulid: 01KQYT793845RFPSHYWMFC86GT
+        author: Jacob Chapel
+        body: "MUST-FIX: daemon.connection.json is still written before a successful bind is known. This
+          block runs immediately after app.listen(...), but the Node/Elysia listen path can report
+          EADDRINUSE asynchronously after the call returns. I reproduced this by pre-binding
+          127.0.0.1:45165 and then running serve start --detach --port 45165; the parent returned
+          status 0 and ~/.config/kspec/daemon.connection.json existed with api_url
+          http://127.0.0.1:45165 even though that daemon never successfully owned the port. That
+          violates @daemon-network-endpoint-contract ac-connection-metadata and the task requirement
+          to write complete metadata only after the server is listening. Move the metadata write
+          behind an actual listening success barrier or remove it on listen failure, and add a
+          regression that asserts no connection metadata is advertised on EADDRINUSE."
+        created_at: 2026-05-06T14:14:13.352Z
+      - _ulid: 01KQYXF0EVW0ZMHHSXW19T9QD4
+        author: "@claude"
+        body: >-
+          Fixed in commit 27dd906a1. Root cause confirmed: @elysiajs/node calls srvx's serve() which
+          kicks off http.Server.listen() asynchronously inside a constructor (`if (!options.manual)
+          this.serve().catch(() => {})`), so EADDRINUSE/EADDRNOTAVAIL fire on the 'error' event
+          after Elysia.listen() has already returned. The .catch(() => {}) on the wrapping promise
+          also swallows the error so nothing crashes the process — explaining why the buggy daemon
+          stayed alive and wrote metadata.
+
+
+          Fix: capture serverInfo via the listen() callback, then await raw.ready() (the srvx
+          NodeServer's listening promise) before calling pidManager.writeConnectionMetadata. On Bun,
+          Bun.serve throws synchronously on bind errors so the helper short-circuits.
+
+
+          Regression test (tests/cli-serve.test.ts:'does NOT write connection metadata when listen()
+          fails on EADDRINUSE'): pre-binds 127.0.0.1:PORT with a non-REUSEPORT socket, spawns the
+          daemon directly against the same port, and asserts:
+
+          - daemon exits non-zero within 10s
+
+          - stderr contains EADDRINUSE
+
+          - daemon.connection.json does NOT exist
+
+
+          Verified the test catches the bug by temporarily stubbing the await — daemon stayed alive
+          past 10s and exitCode was null, asserting failed as expected.
+        created_at: 2026-05-06T15:10:52.378Z
+    kind: blocker
+    resolved_at: 2026-05-06T15:11:01.245Z
+    resolved_by: "@claude"
+  - _ulid: 01KQYT85367E3CC8RSV1VWYKC1
+    entries:
+      - _ulid: 01KQYT85365YHX1Z7BY4GJX31P
+        author: Jacob Chapel
+        body: "Evidence log: Files read: packages/daemon/src/server.ts, packages/daemon/src/index.ts,
+          src/cli/commands/serve.ts, src/cli/index.ts, src/daemon-shared/endpoint.ts,
+          tests/cli-serve.test.ts, tests/daemon-server.test.ts, tests/parser/daemon-config.test.ts.
+          Commands run: kspec task get, kspec item get for
+          @daemon-network-endpoint-contract/@daemon-server/@config-daemon, rg AC annotations, git
+          diff, git diff --check, kspec validate, targeted npm test, full npm test, and a manual
+          port-collision reproduction with a temp HOME/project. Claim verified: metadata is not
+          actually delayed until listen success; reproduction showed detached start returned success
+          and wrote daemon.connection.json for an occupied port. Categories searched: correctness,
+          edge cases, error handling, test quality, integration, and AC coverage."
+        created_at: 2026-05-06T14:14:42.022Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-06T14:15:00.537Z
+created_at: 2026-05-06T14:02:35.168Z
+updated_at: 2026-05-06T15:11:01.245Z
+notes: []

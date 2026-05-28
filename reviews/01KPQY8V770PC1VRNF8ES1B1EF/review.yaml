@@ -1,0 +1,244 @@
+_ulid: 01KPQY8V770PC1VRNF8ES1B1EF
+slugs: []
+title: Review task-docs-troubleshooting-content
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      ✗ Validation failed
+
+      ────────────────────────────────────────
+
+      Files checked: 11
+
+      Items checked: 601
+
+      Tasks checked: 0
+
+      Meta: 12 agents, 11 workflows, 11 conventions
+
+
+      Schema errors: 1
+        ✗ /home/chapel/Projects/kynetic-spec-dispatch/.kspec/modules/meta.yaml:modules[0].traits.0
+          Expected string, received object
+      References: OK
+
+
+      Reference warnings: 1
+        ⚠ @skills
+          Orphaned skill directory 'skills' has no corresponding meta entry
+          in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+      Alignment warnings: 36
+        Orphaned specs (no tasks): 34
+          ○ Test Trait
+          ○ Filterable List Commands
+          ○ Dry Run Preview Mode
+          ... and 31 more
+        Status mismatches: 2
+          ! Task Set Batch Support
+            Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+          ! Concurrent Read Command Execution
+            Spec "Concurrent Read Command Execution" status is "implemented" but should be "in_progress" based on task progress
+
+      Alignment stats: 434/601 specs have tasks, 432 aligned
+
+
+      Completeness warnings: 493
+        Missing acceptance criteria: 1
+          ○ @01KJN1WT - Test Trait
+        Missing own AC coverage: 237
+          ! @docs-search - Docs Search
+            Uncovered: ac-1, ac-2, ac-3
+          ! @docs-guides-section - Guides Section
+            Uncovered: ac-1, ac-2, ac-3
+          ! @spec-item - Spec Item
+            Uncovered: ac-item-1, ac-item-2
+          ... and 234 more
+        Invalid AC annotations: 255
+          ! AC annotation references '@01KJE3T7' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-troubleshooting-content-01kppn44-review/tests/agent-detection.test.ts:43
+          ! AC annotation references '@01KJE3T7' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-troubleshooting-content-01kppn44-review/tests/agent-detection.test.ts:61
+          ! AC annotation references '@01KJE3T7' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-troubleshooting-content-01kppn44-review/tests/agent-detection.test.ts:75
+          ! AC annotation references '@01KJE3T7' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-troubleshooting-content-01kppn44-review/tests/agent-detection.test.ts:88
+          ! AC annotation references '@ui-agent-dispatch ac-8' but @ui-agent-dispatch has no acceptance criterion 'ac-8'
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-docs-troubleshooting-content-01kppn44-review/tests/agent-dispatch-engine.test.ts:4965
+          ... and 250 more
+      Skills: OK (10 files checked) failed on pre-existing repo-wide metadata issues unrelated to
+      this docs task: schema error in  () plus existing alignment/completeness warnings.
+    name: validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-21T11:55:17.482Z
+    completed_at: 2026-04-21T11:55:17.482Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: " passed, including the 37 troubleshooting assertions and 166 total assertions in that suite."
+    name: docs-rendering-test
+    required: true
+    runner: npm
+    created_at: 2026-04-21T11:55:21.261Z
+    completed_at: 2026-04-21T11:55:21.261Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tests/web-ui-docs-rendering.test.ts passed, including the troubleshooting assertions in
+      that suite.
+    name: docs-rendering-test
+    required: true
+    runner: npm
+    created_at: 2026-04-21T11:55:43.000Z
+    completed_at: 2026-04-21T11:55:43.000Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: docs/troubleshooting/index.md; the seven troubleshooting entries;
+      tests/web-ui-docs-rendering.test.ts; docs/concepts/web-ui-and-daemon.md;
+      docs/concepts/agents-and-dispatch.md; AGENTS.md; kspec-agents.md. Commands run: git diff
+      stat/name-only/full diff; node dist/cli/index.js task get; item get; review for-task;
+      validate; npm test; rg for AC annotations and dispatch daemon guidance; nl -ba on the flagged
+      file. Claims verified: troubleshooting pages exist and are covered by AC-annotated docs
+      rendering tests; the daemon article contradicts dispatch daemon guidance. Categories searched:
+      correctness, AC coverage, integration, test quality, repo validation state."
+    name: review-evidence
+    required: false
+    runner: codex
+    created_at: 2026-04-21T11:55:46.690Z
+    completed_at: 2026-04-21T11:55:46.690Z
+events:
+  - _ulid: 01KPQY8V76W5P2XYK7JPRBCJTH
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-21T11:54:36.134Z
+  - _ulid: 01KPQY9XK0X1R3T6T15SY6KEVE
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-21T11:55:11.328Z
+  - _ulid: 01KPQYA1B700N1EJEY5Z72GR4P
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPQYA0117HQ57NRNJE51GZE2
+    timestamp: 2026-04-21T11:55:15.175Z
+  - _ulid: 01KPQYA4V3GNAMM2CACQWR1GF3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: validate
+    timestamp: 2026-04-21T11:55:18.755Z
+  - _ulid: 01KPQYA8H4SN6578E0BFRXDE7P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: docs-rendering-test
+    timestamp: 2026-04-21T11:55:22.532Z
+  - _ulid: 01KPQYAXQWPGVH36R6ZJA9NQ54
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: docs-rendering-test
+    timestamp: 2026-04-21T11:55:44.252Z
+  - _ulid: 01KPQYB1DFP1NG23P9MTPC63XR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-04-21T11:55:48.015Z
+  - _ulid: 01KPQYBD4V64WBH4819V04X5T2
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-21T11:56:00.027Z
+  - _ulid: 01KPQYBD4VRKRV4YWC9D4EFKN9
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-21T11:56:00.027Z
+  - _ulid: 01KPQZF68XW3Q5VNRK8FQZSWSD
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPQYA0117HQ57NRNJE51GZE2
+    timestamp: 2026-04-21T12:15:32.637Z
+  - _ulid: 01KPQZFFZWXWCYWRR3ETGPJD81
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPQYA0117HQ57NRNJE51GZE2
+    timestamp: 2026-04-21T12:15:42.588Z
+examined_commit: 10920edde46aec1b8ad86b90177e07fea0ef00fb
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KPPN4435PYT5BK4VFXTPR1F3"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPQYA0117HQ57NRNJE51GZE2
+    anchor:
+      type: code
+      commit: 10920edde46aec1b8ad86b90177e07fea0ef00fb
+      line_end: 27
+      line_start: 23
+      path: docs/troubleshooting/daemon-port-in-use.md
+      side: head
+    entries:
+      - _ulid: 01KPQYA012J7SPXQHK5EXG9S8C
+        author: Jacob Chapel
+        body: This recovery procedure is unsafe in dispatch sessions. Project guidance says that when
+          dispatch is running,  must never be used because the daemon is the host process and
+          killing it terminates the dispatch engine and agent. This page explicitly lists a dispatch
+          session as a common cause, then tells the reader to run  and , so following the documented
+          fix can shut down the very dispatch run the reader is trying to recover. The entry needs a
+          dispatch-safe branch in the procedure instead of unconditional stop/start guidance.
+        created_at: 2026-04-21T11:55:13.826Z
+      - _ulid: 01KPQZF57HWDH4F6W2C5A2QPQZ
+        author: "@claude"
+        body: "Fixed: Split the How to Fix It section into two subsections — 'If you are running inside a
+          dispatch session' (warns against kspec serve stop/restart, explains the daemon is the host
+          process, directs to block and escalate) and 'If you are running outside dispatch' (retains
+          original stop/start procedure). Added cross-link to agents-and-dispatch concept page for
+          context."
+        created_at: 2026-04-21T12:15:31.569Z
+    kind: blocker
+    resolved_at: 2026-04-21T12:15:41.559Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-21T11:56:00.027Z
+created_at: 2026-04-21T11:54:36.135Z
+updated_at: 2026-04-21T12:15:41.559Z
+notes: []

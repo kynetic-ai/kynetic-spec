@@ -1,0 +1,259 @@
+_ulid: 01KP83G1KHSJ451JHTCY91YN1P
+slugs: []
+title: Review @01KNXYJ4YKHSY076Q3CQ42C6CP
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 2140/2140 suites passed on a live run: 7810 passed, 5 skipped, 0 failed. No cache
+      hit. Warnings were limited to existing fixture/workspace diagnostics."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-15T08:35:15.989Z
+    completed_at: 2026-04-15T08:35:15.989Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation fails in untouched project metadata: .kspec/modules/meta.yaml has a
+      pre-existing schema error (modules[0].traits.0 expected string, received object), plus
+      unrelated repository-wide warnings. The task branch diff against the current plan base only
+      touches src/cli/commands/init.ts, src/parser/shadow.ts, and
+      tests/derivable-default-module.test.ts, so this validate failure is not attributable to the
+      submitted change."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-15T08:35:19.020Z
+    completed_at: 2026-04-15T08:35:19.020Z
+events:
+  - _ulid: 01KP83G1KG49VGEE74MABWVS7M
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-15T08:18:04.017Z
+  - _ulid: 01KP83GZVW9DW8100TAPW373F3
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-15T08:18:35.004Z
+  - _ulid: 01KP84ER4FSG9NHZS6JTVTZBXG
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP84EQ62ZM5979GAG1TX8W66
+    timestamp: 2026-04-15T08:34:50.127Z
+  - _ulid: 01KP84EWTX59VA63R253NS464G
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP84EVV3BGTRE1NHTYJ5D9GR
+    timestamp: 2026-04-15T08:34:54.942Z
+  - _ulid: 01KP84EZT1KJQ59TVG6BCVA7CR
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP84EYRKSDCDVF1VMP4AKSE5
+    timestamp: 2026-04-15T08:34:57.986Z
+  - _ulid: 01KP84F2G3N7TKAVKQRZ2KS2H9
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KP84F1J7TKJHY70FE2SG1TZA
+    timestamp: 2026-04-15T08:35:00.739Z
+  - _ulid: 01KP84FJAHBBRQ57PTS1QKXT1C
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-15T08:35:16.945Z
+  - _ulid: 01KP84FNEYHX8T6ANQ36K2YZ56
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-15T08:35:20.159Z
+  - _ulid: 01KP84G0VM74RH7C17RN7MHM03
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-15T08:35:31.828Z
+  - _ulid: 01KP84G0VNHY6KFAHS2YW0T9BW
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-15T08:35:31.829Z
+  - _ulid: 01KP8BJ3SQW8NA3T24PGTVPSYE
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP84EQ62ZM5979GAG1TX8W66
+    timestamp: 2026-04-15T10:39:00.407Z
+  - _ulid: 01KP8BJ8Z73CMHBBZQ9CZBCDQN
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP84EVV3BGTRE1NHTYJ5D9GR
+    timestamp: 2026-04-15T10:39:05.703Z
+  - _ulid: 01KP8BJDZ89PVS3XDNYP7S6C8C
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP84EYRKSDCDVF1VMP4AKSE5
+    timestamp: 2026-04-15T10:39:10.824Z
+  - _ulid: 01KP8BJPJE16YH9S59ABZGR0Q8
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP84EQ62ZM5979GAG1TX8W66
+    timestamp: 2026-04-15T10:39:19.630Z
+  - _ulid: 01KP8BJVP1SNJKQ9RT503D985G
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP84EVV3BGTRE1NHTYJ5D9GR
+    timestamp: 2026-04-15T10:39:24.865Z
+  - _ulid: 01KP8BK0P5HD1M5V1VDKV9DKP8
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP84EYRKSDCDVF1VMP4AKSE5
+    timestamp: 2026-04-15T10:39:29.989Z
+examined_commit: 4c30c4d5047b485b566eef3ae492e25338b141cb
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNXYJ4YKHSY076Q3CQ42C6CP"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KP84EQ62ZM5979GAG1TX8W66
+    anchor:
+      type: code
+      commit: 4c30c4d5047b485b566eef3ae492e25338b141cb
+      line_end: 220
+      line_start: 202
+      path: tests/derivable-default-module.test.ts
+      side: head
+    entries:
+      - _ulid: 01KP84EQ62MN06WS1HPENZTFJ2
+        author: Jacob Chapel
+        body: 'The slug-edit path still behaves like alias addition, not slug replacement. After `init` and
+          `item set @main --slug custom-module`, `item get @custom-module --json` still reports
+          `"ref": "@main"`, and `item list --type module --json` still exposes the module as
+          `@main`. The task requires subsequent derive flows to follow the current slug after a user
+          edits it, but this implementation leaves `main` as the canonical ref and the new test
+          locks that behavior in.'
+        created_at: 2026-04-15T08:34:49.154Z
+      - _ulid: 01KP8BJ2WWQF340CBNV6FXEK51
+        author: "@claude"
+        body: "Fixed: Replaced alias-addition test with true slug replacement test. Now uses --slug to add
+          new slug and --remove-slug to remove old one, then verifies old slug no longer resolves
+          (expectFail: true) and derive works with the new slug only."
+        created_at: 2026-04-15T10:38:59.483Z
+    kind: blocker
+    resolved_at: 2026-04-15T10:39:18.733Z
+    resolved_by: "@claude"
+  - _ulid: 01KP84EVV3BGTRE1NHTYJ5D9GR
+    anchor:
+      type: code
+      commit: 4c30c4d5047b485b566eef3ae492e25338b141cb
+      line_end: 313
+      line_start: 284
+      path: src/cli/commands/init.ts
+      side: head
+    entries:
+      - _ulid: 01KP84EVV4PNAP5WVCBFVVPQHS
+        author: Jacob Chapel
+        body: The init/setup UX requirement is still missing. A fresh `node dist/cli/index.js init
+          --no-prompt` run ends with only the generic `kspec setup` / `kspec help` next steps, and
+          `init --setup` prints the generic setup summary with no mention of the default module or
+          the `@main` ref. The task explicitly called for documenting the default module in init
+          output and in the setup summary, so users still are not told that this module exists or
+          how to target it.
+        created_at: 2026-04-15T08:34:53.924Z
+      - _ulid: 01KP8BJ828X8JK35EY76MP2D6C
+        author: "@claude"
+        body: "Fixed: Added default module mention to init output (after success message: 'Default module
+          created: @main'), setup pipeline summary, and standalone setup command output. Also added
+          to non-shadow init path. New test verifies init output contains '@main' and 'Default
+          module created'."
+        created_at: 2026-04-15T10:39:04.775Z
+    kind: blocker
+    resolved_at: 2026-04-15T10:39:23.949Z
+    resolved_by: "@claude"
+  - _ulid: 01KP84EYRKSDCDVF1VMP4AKSE5
+    anchor:
+      type: code
+      commit: 4c30c4d5047b485b566eef3ae492e25338b141cb
+      line_end: 67
+      line_start: 56
+      path: src/cli/commands/init.ts
+      side: head
+    entries:
+      - _ulid: 01KP84EYRKBKKF1J63N35AGYH4
+        author: Jacob Chapel
+        body: The generated default-module file no longer preserves the old placeholder shape that this task
+          explicitly required for compatibility. A fresh `kspec init --no-prompt` now produces
+          `.kspec/modules/main.yaml` with only a top-level module item (, , , etc.) and no `items:`
+          container at all. That drops the compatibility guarantee for any library code that still
+          expects the existing placeholder structure, so this branch does not satisfy the
+          non-breaking part of the task.
+        created_at: 2026-04-15T08:34:56.915Z
+      - _ulid: 01KP8BJD2MSRVXFAJM23X4MNNC
+        author: "@claude"
+        body: "Fixed: Added 'items: []' back to both generateShadowModule() and generateMainModule() so the
+          generated file has the real module item (with _ulid, slugs, type, etc.) AND the
+          placeholder container for backward compatibility. New test verifies the generated file
+          contains both '_ulid:' and 'items: []'."
+        created_at: 2026-04-15T10:39:09.908Z
+    kind: blocker
+    resolved_at: 2026-04-15T10:39:29.114Z
+    resolved_by: "@claude"
+  - _ulid: 01KP84F1J7TKJHY70FE2SG1TZA
+    entries:
+      - _ulid: 01KP84F1J7HFREHJFQF74CCF34
+        author: Jacob Chapel
+        body: "Evidence log\\n\\nFiles read: src/cli/commands/init.ts, src/parser/shadow.ts,
+          src/cli/commands/plan.ts, src/cli/commands/item.ts, src/parser/yaml.ts,
+          src/cli/commands/setup.ts, tests/derivable-default-module.test.ts,
+          tests/integration.test.ts.\\n\\nCommands run: git diff/stat vs recorded and current plan
+          bases, kspec task get, kspec item get, grep for AC annotations, kspec validate, fresh
+          temp-project `init` / `init --setup` / `item set --slug` probes, and full `npm
+          test`.\\n\\nClaims verified: the default module resolves after init; slug edits keep
+          `@main` canonical; init/setup output still omit the default-module guidance; full suite
+          passes.\\n\\nCategories searched: correctness, compatibility, output/UX requirements, test
+          quality, integration, and AC coverage."
+        created_at: 2026-04-15T08:34:59.783Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-04-15T08:35:31.828Z
+created_at: 2026-04-15T08:18:04.017Z
+updated_at: 2026-04-15T10:39:29.114Z
+notes: []

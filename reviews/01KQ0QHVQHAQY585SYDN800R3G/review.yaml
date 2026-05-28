@@ -1,0 +1,151 @@
+_ulid: 01KQ0QHVQHAQY585SYDN800R3G
+slugs: []
+title: Review task-remove-live-test-trait
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: schema OK and references OK; Files checked: 8, Items checked: 605, Tasks checked: 0."
+    name: kspec validate --refs --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-04-24T22:00:32.433Z
+    completed_at: 2026-04-24T22:00:32.433Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Full kspec validate still exits 4 due pre-existing .kspec/modules/meta.yaml
+      modules.0.traits.0 object for @trait-idempotent-file-scaffold. Verified same malformed entry
+      existed before Delete Item @01KJN1WT commit; existing inbox 01KPAM5ST tracks it.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-24T22:00:35.605Z
+    completed_at: 2026-04-24T22:00:35.605Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran kspec validate --completeness/-v. Exit 6 from pre-existing completeness warnings
+      only: 493 warnings total, down from baseline 494; no missing_acceptance_criteria/Test
+      Trait/@01KJN1WT matches remained."
+    name: kspec validate --completeness
+    required: true
+    runner: kspec
+    created_at: 2026-04-24T22:00:38.937Z
+    completed_at: 2026-04-24T22:00:38.937Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0. 2269/2269 test suites passed; 8362 tests passed, 5 skipped, 8367 total; duration
+      1915.4s.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-24T22:04:18.899Z
+    completed_at: 2026-04-24T22:04:18.899Z
+events:
+  - _ulid: 01KQ0QHVQHXC6A3D07NBYWN35F
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-24T21:50:21.425Z
+  - _ulid: 01KQ0QJRGFYF88VZQC8KDKV1RE
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-24T21:50:50.895Z
+  - _ulid: 01KQ0R4HF3HJNFYPMKVWMNFAGH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --refs --warnings-ok
+    timestamp: 2026-04-24T22:00:33.507Z
+  - _ulid: 01KQ0R4MNFQXNASC1CQBF7VA5B
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-24T22:00:36.784Z
+  - _ulid: 01KQ0R4QVK2DWD6Q1X8CHXET8Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --completeness
+    timestamp: 2026-04-24T22:00:40.051Z
+  - _ulid: 01KQ0RBES5H7CQBMB2V54PKNMB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-24T22:04:20.133Z
+  - _ulid: 01KQ0RBJE2WBG2B92V21AWTSEB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KQ0RBH5AKSW0XWCHD2YWB0VJ
+    timestamp: 2026-04-24T22:04:23.874Z
+  - _ulid: 01KQ0RBW9KNGNZFBGT6FJZAWWD
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-24T22:04:33.971Z
+  - _ulid: 01KQ0RBW9KPCG363P1KHK8TVA6
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-24T22:04:33.971Z
+examined_commit: b66ae0bb2386fcfd194bfda77c91cd9ae50036e2
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQ0JDJBHHP02T25Y6M2NZES7"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQ0RBH5AKSW0XWCHD2YWB0VJ
+    entries:
+      - _ulid: 01KQ0RBH5ATNXKE3WHXEPCC4TX
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: kspec-agents.md; review-gates skill; task details; specs
+          @spec-completeness-policy and @spec-completeness; trait list; @trait-json-output; shadow
+          diff Delete Item @01KJN1WT; tests/e2e fixture references via rg. Commands run: kspec
+          task/item/review lookups, kspec validate variants, rg reference searches, npm test. Claims
+          verified: @01KJN1WT is absent from item lookup and trait list; completeness
+          missing-AC/Test Trait warning is gone; fixture test-trait references are separate test
+          fixtures; full validate schema error predates this delete and is already tracked.
+          Categories searched: correctness, spec alignment, reference impact, validation behavior,
+          test quality, integration."
+        created_at: 2026-04-24T22:04:22.570Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-24T22:04:33.970Z
+created_at: 2026-04-24T21:50:21.425Z
+updated_at: 2026-04-24T22:04:33.971Z
+notes: []

@@ -1,0 +1,120 @@
+_ulid: 01KPVKSC02XM89YBJX7H6746CM
+slugs: []
+title: Review portable skill supporting-file references
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/agent-runtime/prompts.ts, src/parser/skill-render.ts,
+      tests/supporting-file-references.test.ts, tests/portable-skill-references.test.ts,
+      src/agent-runtime/dispatch.ts, src/parser/meta.ts. Commands run: git diff/stat/name-only
+      against dev base; kspec task get; kspec item get; kspec review for-task; grep/rg for AC
+      annotations and runtime call sites; kspec validate; npm test -- --run
+      tests/supporting-file-references.test.ts; npm test -- --run
+      tests/portable-skill-references.test.ts tests/agent-invocation-lifecycle.test.ts; npm test.
+      Claims verified: supporting-file references resolve in render and prompt paths, existing
+      portable skill-reference prompt behavior remains intact, full suite passes on reviewed head.
+      Categories searched: correctness, edge cases, error handling, test quality, integration; no
+      branch-introduced findings."
+    name: review-evidence
+    required: false
+    runner: manual
+    created_at: 2026-04-22T22:21:36.912Z
+    completed_at: 2026-04-22T22:21:36.912Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2261/2261 suites passed; 8349 passed, 5 skipped; duration 2127.5s; log
+      /tmp/kspec-test-cache/01KPVKR2KCMPES2NHMRWN2GJHW/fff1ea4bd3300734.log
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-22T22:21:40.501Z
+    completed_at: 2026-04-22T22:21:40.501Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repository-level baseline failures unrelated to this diff: .kspec/modules/meta.yaml
+      schema error, orphaned skill directory warning, existing completeness/alignment warnings. The
+      reviewed branch does not modify .kspec content."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-22T22:21:44.255Z
+    completed_at: 2026-04-22T22:21:44.255Z
+events:
+  - _ulid: 01KPVKSC017XHSR742EKWZSNKE
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-22T22:08:20.994Z
+  - _ulid: 01KPVKSZ0JHWDYR8DTCDVZ63H8
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-22T22:08:40.466Z
+  - _ulid: 01KPVMHPE9GHYHEADRQMJABHZ1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-04-22T22:21:38.122Z
+  - _ulid: 01KPVMHT0H2ZRDB8ZZVQ3JC305
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-22T22:21:41.778Z
+  - _ulid: 01KPVMHXNKGRC7R0DJ5J0J7VJM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-22T22:21:45.523Z
+  - _ulid: 01KPVMJ84R5VHZ7SRQ8F7STG7Y
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-22T22:21:56.249Z
+  - _ulid: 01KPVMJ84SMXDWZSY39DS8F59K
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-22T22:21:56.249Z
+examined_commit: 2aa7097541700f5ce18e7907d4e7775a31c537ef
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KPVJ8QQCMFRJ3WZSRWHJ4N1Q"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-22T22:21:56.248Z
+created_at: 2026-04-22T22:08:20.994Z
+updated_at: 2026-04-22T22:21:56.249Z
+notes: []

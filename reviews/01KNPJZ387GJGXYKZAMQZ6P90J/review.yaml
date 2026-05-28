@@ -1,0 +1,185 @@
+_ulid: 01KNPJZ387GJGXYKZAMQZ6P90J
+slugs: []
+title: Review task-fix-plan-filter-bidirectional (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2098/2098 suites passed; 7662 passed, 5 skipped; no failures.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-08T13:14:00.059Z
+    completed_at: 2026-04-08T13:14:00.059Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation exited 6 with pre-existing warnings only (orphaned skill dir,
+      alignment/completeness warnings); no schema/reference errors.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-08T13:14:05.194Z
+    completed_at: 2026-04-08T13:14:05.194Z
+events:
+  - _ulid: 01KNPJZ386GF4NFYVPY67F7M1Z
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-08T13:02:06.087Z
+  - _ulid: 01KNPJZP7TDG50KMV9MQM6SXJK
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-08T13:02:25.530Z
+  - _ulid: 01KNPKMTWKVM28HC5Z2WQZE1Z1
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNPKMT22XBVS4Q80M8T8BV6Y
+    timestamp: 2026-04-08T13:13:58.419Z
+  - _ulid: 01KNPKMXB0KXHZAEMSP6ENYSDR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-08T13:14:00.928Z
+  - _ulid: 01KNPKMZTS8WGWSJCF11QYP84A
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNPKMYYQN1DX3M1D26NCKEJG
+    timestamp: 2026-04-08T13:14:03.481Z
+  - _ulid: 01KNPKN2CVY7H55XHXG4Z3KB47
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-04-08T13:14:06.107Z
+  - _ulid: 01KNPKNNRNNTKAT2G4Y2M97CBJ
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-08T13:14:25.941Z
+  - _ulid: 01KNPKNNRN5414KK8EAPP724M0
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-08T13:14:25.941Z
+  - _ulid: 01KNPNMX30FPGYGWBRKY49C6DE
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNPKMT22XBVS4Q80M8T8BV6Y
+    timestamp: 2026-04-08T13:48:57.824Z
+  - _ulid: 01KNPNNH8P7GVEYRMS6T5630C2
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNPKMT22XBVS4Q80M8T8BV6Y
+    timestamp: 2026-04-08T13:49:18.486Z
+  - _ulid: 01KNPNP7NJQ9QZBMZFM86R4XNV
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNPKMYYQN1DX3M1D26NCKEJG
+    timestamp: 2026-04-08T13:49:41.426Z
+  - _ulid: 01KNPNPTS1JEEAVF3YVSCM8JHF
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNPKMYYQN1DX3M1D26NCKEJG
+    timestamp: 2026-04-08T13:50:00.994Z
+examined_commit: 72652dbf3922f76eb3fdb366f475c2adc1483441
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNP0D9JWZ00XZQJMM5G5X7XX"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNPKMT22XBVS4Q80M8T8BV6Y
+    anchor:
+      type: code
+      commit: 72652dbf3922f76eb3fdb366f475c2adc1483441
+      line_end: 185
+      line_start: 179
+      path: packages/web-ui/src/lib/api-static.ts
+      side: head
+    entries:
+      - _ulid: 01KNPKMT22X59BYXC691QK5Y3R
+        author: Jacob Chapel
+        body: "The static task filter still compares reverse links against the raw query string () instead
+          of the resolved plan. When a task stores  in another valid form, the reverse-link-only
+          case is still dropped: for example,  does not match a  query, and  does not match
+          a  query.  already resolves the plan object, and shared plan-link semantics explicitly
+          allow slug/full-ULID/prefix forms interchangeably, so static export still violates / while
+          the daemon path now passes."
+        created_at: 2026-04-08T13:13:57.570Z
+      - _ulid: 01KNPNMV4V051AYVAC5V079BSQ
+        author: "@claude"
+        body: "Fixed: Replaced raw query string comparison with resolved plan identity matching. The static
+          filter now compares task.plan_ref against the resolved plan's _ulid and slugs (matching
+          daemon tasks.ts behavior). Removed the unused matchesPlanRef helper. Added two
+          cross-format tests: slug plan_ref with ULID query, and ULID plan_ref with slug query —
+          both pass."
+        created_at: 2026-04-08T13:48:55.835Z
+    kind: blocker
+    resolved_at: 2026-04-08T13:49:16.406Z
+    resolved_by: "@claude"
+  - _ulid: 01KNPKMYYQN1DX3M1D26NCKEJG
+    entries:
+      - _ulid: 01KNPKMYYQNTSM6S5BT3HR8DYH
+        author: Jacob Chapel
+        body: "Evidence log\\nFiles read: packages/daemon/src/routes/tasks.ts,
+          packages/web-ui/src/lib/api-static.ts, tests/daemon-api/tasks.test.ts,
+          tests/web-ui/api-static.test.ts, tests/plan-summary.test.ts, src/lib/plan-summary.ts,
+          tests/daemon-api/plans.test.ts, tests/e2e/fixtures/project.tasks.yaml,
+          tests/e2e/fixtures/tasks/01KG0RRJCC9N4YGP991WD7XSFF/task.yaml.\\nCommands run: kspec task
+          get @01KNP0D9JWZ00XZQJMM5G5X7XX, kspec review get @01KNPCSJ0VFFGHKBBEGNQFT6M8, git diff
+          1703ee4826ac0695803028d3fcd23d4b21917c5c..72652dbf3922f76eb3fdb366f475c2adc1483441, kspec
+          validate, rg for AC annotations, npm test, and a direct node reproduction of the
+          static  helper against mixed slug/ULID inputs.\\nClaims verified: full npm suite passes on
+          the review snapshot; daemon plan filtering now resolves ULID prefixes; shared plan-summary
+          logic intentionally treats slug/full-ULID/prefix  values as equivalent.\\nCategories
+          searched: correctness, edge cases, test quality, integration, and spec alignment. Finding
+          recorded in static export reverse-link matching; no additional regressions found in the
+          daemon path or test wiring."
+        created_at: 2026-04-08T13:14:02.583Z
+      - _ulid: 01KNPNP5NGVH8GCRD4Z21NNDFN
+        author: "@claude"
+        body: Acknowledged evidence log. The fix addresses the identified gap in static export reverse-link
+          matching.
+        created_at: 2026-04-08T13:49:39.376Z
+    kind: nit
+    resolved_at: 2026-04-08T13:49:59.039Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-08T13:14:25.941Z
+created_at: 2026-04-08T13:02:06.087Z
+updated_at: 2026-04-08T13:49:59.039Z
+notes: []

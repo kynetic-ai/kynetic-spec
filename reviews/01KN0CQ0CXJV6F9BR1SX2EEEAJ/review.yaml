@@ -1,0 +1,279 @@
+_ulid: 01KN0CQ0CXJV6F9BR1SX2EEEAJ
+slugs: []
+title: Review @01KMZ1BVK6C9F7QKYK9DZD4TFQ
+author: Test User
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran npm test in the review snapshot. Result: 2 failed suites, 1 failed test, 2070 passed
+      suites, 7488 passed tests. Reported failure included
+      tests/dispatch-workspace-registry.test.ts; full log:
+      /tmp/kspec-test-cache/01KN0CP0YWA0J73H3TH3PCWXVF/1412b72bd6610747.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-30T22:14:33.567Z
+    completed_at: 2026-03-30T22:14:33.567Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran kspec validate. Schema and references passed, but repo-wide warnings remain (orphaned
+      skills/specs and broad AC coverage warnings unrelated to this snapshot), so treated as
+      informational rather than a task gate.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-30T22:14:37.575Z
+    completed_at: 2026-03-30T22:14:37.575Z
+events:
+  - _ulid: 01KN0CQ0CW5CPR7CWK61K28R4T
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-30T22:09:32.061Z
+  - _ulid: 01KN0CT1Z4QNS7BBRHM1D177H3
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-30T22:11:11.973Z
+  - _ulid: 01KN0CVP3E9CMA5TVV80RG8QF7
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN0CVMQ56TEMQSW8S2XKK6QT
+    timestamp: 2026-03-30T22:12:05.358Z
+  - _ulid: 01KN0CVZPJDK9NQS8QT5FHT75H
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN0CVYZ8E563MVB89C2FQBZ3
+    timestamp: 2026-03-30T22:12:15.186Z
+  - _ulid: 01KN0CZJZQ2QBPBGED9H0GMSMX
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN0CZJB44VFS7H9ZCGJJ3WAP
+    timestamp: 2026-03-30T22:14:13.239Z
+  - _ulid: 01KN0D07FFR1FSF9HEG9ASDW6E
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-30T22:14:34.223Z
+  - _ulid: 01KN0D09DE4QPT69KKBG49RBC5
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN0D08RHTXJ8QKP8DQQSZX7F
+    timestamp: 2026-03-30T22:14:36.206Z
+  - _ulid: 01KN0D0BCMZGT3FTMQP91MDJ10
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-03-30T22:14:38.228Z
+  - _ulid: 01KN0D0NR1HY6XSKTPRSWAEESQ
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-30T22:14:48.833Z
+  - _ulid: 01KN0D0NR1ZE3762HQRTRM8PNQ
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-30T22:14:48.833Z
+  - _ulid: 01KN0E30G26NKF0F9QX2FMX3M7
+    actor: Test User
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN0CZJB44VFS7H9ZCGJJ3WAP
+    timestamp: 2026-03-30T22:33:33.954Z
+  - _ulid: 01KN0E327M75YNCVXPE2DJFH49
+    actor: Test User
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN0CVYZ8E563MVB89C2FQBZ3
+    timestamp: 2026-03-30T22:33:35.732Z
+  - _ulid: 01KN0E3407KSSMGH5634WC614S
+    actor: Test User
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN0CVMQ56TEMQSW8S2XKK6QT
+    timestamp: 2026-03-30T22:33:37.543Z
+  - _ulid: 01KN0E3F1S1FTQ4FMW7HTSQ6SC
+    actor: Test User
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN0CVMQ56TEMQSW8S2XKK6QT
+    timestamp: 2026-03-30T22:33:48.858Z
+  - _ulid: 01KN0E3GVJNN5Z8DHFX8AMAPAB
+    actor: Test User
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN0CZJB44VFS7H9ZCGJJ3WAP
+    timestamp: 2026-03-30T22:33:50.706Z
+  - _ulid: 01KN0E3JM7EA0XN4WRCVMDMET8
+    actor: Test User
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN0CVYZ8E563MVB89C2FQBZ3
+    timestamp: 2026-03-30T22:33:52.519Z
+examined_commit: cf37063d1bdb0f467d1257680859d0acbafab22c
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMZ1BVK6C9F7QKYK9DZD4TFQ"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN0CVMQ56TEMQSW8S2XKK6QT
+    anchor:
+      type: code
+      commit: cf37063d1bdb0f467d1257680859d0acbafab22c
+      line_end: 312
+      line_start: 302
+      path: tests/e2e/connection.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KN0CVMQ54S45MDSEM7A2CZXG
+        author: Test User
+        body: AC-31 is still not covered behaviorally here. After injecting the seq=0 post-reconnect event,
+          the test claims to verify that the event was processed, but the only decisive assertion is
+          , which returns true regardless of the WebSocket manager state. If  were never reset on
+          reconnect, this test would still pass as long as the page kept rendering its existing task
+          list, so the regression that previously triggered review feedback would slip through
+          again. Replace this placeholder assertion with an observable proof that the seq=0 event
+          was accepted after reconnect, such as asserting on the manager state or on a DOM/network
+          effect that only occurs when the event handler runs.
+        created_at: 2026-03-30T22:12:03.941Z
+      - _ulid: 01KN0E33E7JZWBVT2FG5P53HYW
+        author: Test User
+        body: Fixed in 96979f51ac13f6ca691be360c82899c11de83f96. AC-31 no longer ends in a placeholder
+          assertion. After reconnect and confirmed re-subscribe, the test captures the settled
+          /api/tasks baseline, injects a seq=0 tasks:updates event, and waits for the resulting
+          /api/tasks refetch. That refetch only occurs if the post-reconnect seq=0 event is
+          accepted, which proves lastSeqProcessed was reset on reconnect.
+        created_at: 2026-03-30T22:33:36.967Z
+    kind: blocker
+    resolved_at: 2026-03-30T22:33:48.287Z
+    resolved_by: Test User
+  - _ulid: 01KN0CVYZ8E563MVB89C2FQBZ3
+    anchor:
+      type: code
+      commit: cf37063d1bdb0f467d1257680859d0acbafab22c
+      line_end: 312
+      line_start: 302
+      path: tests/e2e/connection.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KN0CVYZ8Z477GW8BZMBSS6PE
+        author: Test User
+        body: AC-31 is still not covered behaviorally here. After injecting the seq=0 post-reconnect event,
+          the test claims to verify that the event was processed, but the only decisive assertion is
+          page.evaluate(() => true), which returns true regardless of the WebSocket manager state.
+          If lastSeqProcessed were never reset on reconnect, this test would still pass as long as
+          the page kept rendering its existing task list, so the regression that previously
+          triggered review feedback would slip through again. Replace this placeholder assertion
+          with an observable proof that the seq=0 event was accepted after reconnect, such as
+          asserting on the manager state or on a DOM/network effect that only occurs when the event
+          handler runs.
+        created_at: 2026-03-30T22:12:14.440Z
+      - _ulid: 01KN0E31MW8G7X0JS6H2YWVFMT
+        author: Test User
+        body: Addressed in the same 96979f51ac13f6ca691be360c82899c11de83f96 fix. The placeholder
+          page.evaluate(() => true) has been removed; the reconnect test now proves seq=0 acceptance
+          through an observable /api/tasks refetch after the reconnect handshake and re-subscribe
+          path completes.
+        created_at: 2026-03-30T22:33:35.132Z
+    kind: blocker
+    resolved_at: 2026-03-30T22:33:51.918Z
+    resolved_by: Test User
+  - _ulid: 01KN0CZJB44VFS7H9ZCGJJ3WAP
+    anchor:
+      type: code
+      commit: cf37063d1bdb0f467d1257680859d0acbafab22c
+      line_end: 200
+      line_start: 172
+      path: tests/e2e/connection.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KN0CZJB538DT1ESSA9HXN4KM
+        author: Test User
+        body: AC-30 is still not proven by this test. It injects a duplicate task_updated event, then only
+          asserts that the number of visible task rows stayed the same. On the tasks page, handling
+          a task_updated broadcast invalidates and refetches the query, and this payload moves a
+          task from pending to in_progress; both statuses are still included in the default active
+          filter, so the row count can remain unchanged whether the duplicate was skipped or
+          processed. That means a broken deduplication path can still satisfy this assertion.
+          Replace the count-only check with an observable that differs between “event skipped” and
+          “event handled”, such as verifying that no refetch or no highlighted update occurs for the
+          duplicate event.
+        created_at: 2026-03-30T22:14:12.581Z
+      - _ulid: 01KN0E2ZYGZJAQBRV6MF32VCSY
+        author: Test User
+        body: "Fixed in 96979f51ac13f6ca691be360c82899c11de83f96. AC-30 now proves deduplication
+          behaviorally: the first injected tasks:updates event with seq=500 triggers a /api/tasks
+          refetch, the test waits for that traffic to settle, then replaying the same seq is
+          asserted to produce no second /api/tasks request. This distinguishes handled-vs-skipped
+          behavior directly in the browser-observable data flow."
+        created_at: 2026-03-30T22:33:33.392Z
+    kind: blocker
+    resolved_at: 2026-03-30T22:33:50.084Z
+    resolved_by: Test User
+  - _ulid: 01KN0D08RHTXJ8QKP8DQQSZX7F
+    entries:
+      - _ulid: 01KN0D08RHX0WEHN66QA0D6AK4
+        author: Test User
+        body: >-
+          Files read: packages/web-ui/src/lib/components/CommandPalette.svelte;
+          packages/web-ui/src/lib/websocket/manager.ts;
+          packages/web-ui/src/routes/tasks/+page.svelte; tests/e2e/search.spec.ts;
+          tests/e2e/connection.spec.ts; tests/e2e/cache-warming-views.spec.ts;
+          tests/e2e/fixtures/test-base.ts; scripts/test.cjs.
+
+          Commands run: kspec task get @01KMZ1BVK6C9F7QKYK9DZD4TFQ; kspec review for-task
+          @01KMZ1BVK6C9F7QKYK9DZD4TFQ; kspec review get @01KN06EX8M9BKVP47YV9BD9SBK; kspec item get
+          @web-dashboard; git diff/stat/show against dev..cf37063d1bdb; grep for AC annotations; npm
+          test; kspec validate.
+
+          Claims verified: the command palette bug is actually fixed in CommandPalette.svelte via
+          input-bound searchText + shouldFilter={false}; search E2Es now exercise real
+          debounce/results/navigation; connection AC-30 and AC-31 coverage is still insufficient
+          because one test only checks stable row count and the other ends with page.evaluate(() =>
+          true).
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration.
+          Findings: two blocker-level coverage regressions remain in tests/e2e/connection.spec.ts.
+        created_at: 2026-03-30T22:14:35.537Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-30T22:14:48.833Z
+created_at: 2026-03-30T22:09:32.061Z
+updated_at: 2026-03-30T22:33:51.918Z
+notes: []

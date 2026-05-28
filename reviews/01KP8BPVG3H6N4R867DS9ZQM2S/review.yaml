@@ -1,0 +1,187 @@
+_ulid: 01KP8BPVG3H6N4R867DS9ZQM2S
+slugs: []
+title: Review @01KNXYJ4YKHSY076Q3CQ42C6CP (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation fails on this snapshot with pre-existing repository-wide issues outside the
+      touched files, including .kspec/modules/meta.yaml schema error and legacy
+      completeness/alignment warnings.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-15T10:51:52.846Z
+    completed_at: 2026-04-15T10:51:52.846Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed on snapshot c93addbafe013d03742d8057fcead5ad084bbb0a: 2140/2140 suites, 7812/7817
+      tests, 5 skipped."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-15T10:51:55.574Z
+    completed_at: 2026-04-15T10:51:55.574Z
+events:
+  - _ulid: 01KP8BPVG22WCQ47S7SRG9ECRA
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-15T10:41:35.747Z
+  - _ulid: 01KP8BQDNTYWW2NYQTZX411P6N
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-15T10:41:54.362Z
+  - _ulid: 01KP8C9HVQYCZCSQXTAWC15BPD
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP8C9GYWRZP3RP8CFMQZPR64
+    timestamp: 2026-04-15T10:51:48.471Z
+  - _ulid: 01KP8C9MEGMJC9G1HX0WVT9FAC
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KP8C9KGKW6C02BHZ7PQWFJSN
+    timestamp: 2026-04-15T10:51:51.120Z
+  - _ulid: 01KP8C9Q2VQKC6GAJME06D94F8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-15T10:51:53.819Z
+  - _ulid: 01KP8C9SRHBXHRXMPWKTT4NA8X
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-15T10:51:56.561Z
+  - _ulid: 01KP8CA2W5A2SRX1FZJQ6CX0QJ
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-15T10:52:05.893Z
+  - _ulid: 01KP8CA2W5DA2T1K8NS0B96M7V
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-15T10:52:05.893Z
+  - _ulid: 01KP8DA15BAY643GY7CNMD8JKM
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP8C9GYWRZP3RP8CFMQZPR64
+    timestamp: 2026-04-15T11:09:32.716Z
+  - _ulid: 01KP8DA9GV3TMFC8Z4JG4DHH8A
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP8C9GYWRZP3RP8CFMQZPR64
+    timestamp: 2026-04-15T11:09:41.275Z
+  - _ulid: 01KP8DAKGDHV1VYAEWENGM7SGE
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP8C9KGKW6C02BHZ7PQWFJSN
+    timestamp: 2026-04-15T11:09:51.501Z
+  - _ulid: 01KP8DAW0Y3009E2ABYFTW98D4
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP8C9KGKW6C02BHZ7PQWFJSN
+    timestamp: 2026-04-15T11:10:00.222Z
+examined_commit: c93addbafe013d03742d8057fcead5ad084bbb0a
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNXYJ4YKHSY076Q3CQ42C6CP"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KP8C9GYWRZP3RP8CFMQZPR64
+    anchor:
+      type: code
+      commit: c93addbafe013d03742d8057fcead5ad084bbb0a
+      line_end: 1669
+      line_start: 1665
+      path: src/cli/commands/setup.ts
+      side: head
+    entries:
+      - _ulid: 01KP8C9GYX4TZM990X3XNZFKZC
+        author: Jacob Chapel
+        body: "After the default module slug is renamed, setup still hardcodes @main here (and again at line
+          1937) instead of the module's current ref. Repro on this snapshot: init a project, run
+          'item set @main --slug custom-module' and 'item set @custom-module --remove-slug main',
+          then run 'kspec setup --skip-skills --no-hooks' and the summary still says 'Default module
+          available: @main'. At that point 'item get @main' exits 1 while '@custom-module' resolves,
+          so the new setup guidance sends users to a ref that no longer exists."
+        created_at: 2026-04-15T10:51:47.549Z
+      - _ulid: 01KP8DA087EKEDJTNTBB12MFMM
+        author: "@claude"
+        body: "Fixed: setup.ts no longer hardcodes @main. Both output locations (pipeline summary at line
+          1681 and standalone command handler at line 1958) now use a dynamically resolved
+          defaultModuleRef from SetupPipelineResult. The pipeline resolves the first module item's
+          current slug via loadAllItems() + find(type=module). Added new E2E test that renames @main
+          to @custom-module, runs setup, and verifies the output mentions @custom-module and not
+          @main. Full suite passes (7813 tests)."
+        created_at: 2026-04-15T11:09:31.783Z
+    kind: blocker
+    resolved_at: 2026-04-15T11:09:40.315Z
+    resolved_by: "@claude"
+  - _ulid: 01KP8C9KGKW6C02BHZ7PQWFJSN
+    entries:
+      - _ulid: 01KP8C9KGMABSS8SEC8BBFVCTY
+        author: Jacob Chapel
+        body: "Evidence log\\n\\nFiles read: src/cli/commands/init.ts, src/cli/commands/setup.ts,
+          src/parser/shadow.ts, src/parser/yaml.ts,
+          tests/derivable-default-module.test.ts.\\nCommands run: kspec task get
+          @01KNXYJ4YKHSY076Q3CQ42C6CP; kspec item get @derivable-default-module; git log --oneline
+          --decorate --graph --max-count=25; git diff
+          4c30c4d5047b485b566eef3ae492e25338b141cb..c93addbafe013d03742d8057fcead5ad084bbb0a --
+          src/cli/commands/init.ts src/cli/commands/setup.ts src/parser/shadow.ts
+          tests/derivable-default-module.test.ts; grep/rg scans for AC annotations and parser
+          behavior; kspec validate; npm test; manual CLI repros for init, item get, item set slug
+          replacement, and setup output after rename.\\nClaims verified: prior blockers fixed for
+          placeholder preservation, init output mention, and slug replacement behavior; setup output
+          after rename is still wrong and points at an unresolved ref.\\nCategories searched:
+          correctness, edge cases, test quality, integration, error handling."
+        created_at: 2026-04-15T10:51:50.164Z
+      - _ulid: 01KP8DAJNFSF6ZC1XN9R378T10
+        author: "@claude"
+        body: Acknowledged. The dynamic resolution approach addresses the gap found in the evidence log —
+          setup output after slug rename now reflects the current module ref.
+        created_at: 2026-04-15T11:09:50.639Z
+    kind: nit
+    resolved_at: 2026-04-15T11:09:59.333Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-04-15T10:52:05.893Z
+created_at: 2026-04-15T10:41:35.747Z
+updated_at: 2026-04-15T11:09:59.333Z
+notes: []

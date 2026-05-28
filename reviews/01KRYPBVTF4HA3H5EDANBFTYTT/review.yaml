@@ -1,0 +1,118 @@
+_ulid: 01KRYPBVTF4HA3H5EDANBFTYTT
+slugs: []
+title: Review stabilize cli-no-daemon runtime PID assertion
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test passed: 2441 suites passed; 9259 tests passed, 5 skipped of 9264; duration
+      2597.0s. Full log: /tmp/kspec-test-cache/01KRYPA9VJNXP6ERCYM3CBY2XE/bd703541c426bcec.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-18T23:37:05.503Z
+    completed_at: 2026-05-18T23:37:05.503Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: tests/cli-no-daemon.test.ts, packages/daemon/src/server.ts,
+      tests/helpers/cli.ts, kspec-agents.md. Commands run: kspec task get, kspec item get
+      @daemon-runtime-adapter, git diff, rg AC annotations, git diff --check, which bun && bun
+      --version, kspec validate, kspec validate --warnings-ok, npm test. Claims verified: PID is
+      written before listen success and daemon.connection.json after listen success; changed test
+      now pins an ephemeral port and waits for connection metadata before ps; Bun path exercised
+      (bun 1.3.11 installed). Categories searched: correctness, edge cases/port collision,
+      cleanup/error handling, test quality/source scanning, spec AC coverage, integration/full-suite
+      regressions."
+    name: review evidence log
+    required: false
+    runner: reviewer
+    created_at: 2026-05-18T23:37:09.614Z
+    completed_at: 2026-05-18T23:37:09.614Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate --warnings-ok passed: schema OK, references OK, skills OK. Baseline
+      warnings remain: deprecated references, alignment/completeness warnings including
+      automation-without-spec for this bug task."
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-18T23:37:13.703Z
+    completed_at: 2026-05-18T23:37:13.703Z
+events:
+  - _ulid: 01KRYPBVT91TSXNMN4J509RZ6Z
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-18T23:22:31.114Z
+  - _ulid: 01KRYPCJZNGB9QK6YZXQ181C7F
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-18T23:22:54.837Z
+  - _ulid: 01KRYQ6K4JGGZSG80BB6P9HMH8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-18T23:37:06.962Z
+  - _ulid: 01KRYQ6Q4WN0ARN47WW7JC1AFS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-18T23:37:11.068Z
+  - _ulid: 01KRYQ6V527Y6DHRGATQ87ECBX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-18T23:37:15.170Z
+  - _ulid: 01KRYQ759YJXRWQYXM94KF5N2P
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-18T23:37:25.566Z
+  - _ulid: 01KRYQ759YASRP6XXKAK1HM96S
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-18T23:37:25.566Z
+examined_commit: 9a922788091d30468d33c6ae25c62e0cdfc76ad6
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRYN42AK2DTVGZBFDX57EV1H"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-18T23:37:25.566Z
+created_at: 2026-05-18T23:22:31.119Z
+updated_at: 2026-05-18T23:37:25.566Z
+notes: []

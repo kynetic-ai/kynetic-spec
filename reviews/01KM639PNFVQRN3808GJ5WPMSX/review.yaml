@@ -1,0 +1,142 @@
+_ulid: 01KM639PNFVQRN3808GJ5WPMSX
+slugs: []
+title: Review task-schema-derived-types (cycle 3)
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 4 with 3 reference errors and 435 warnings; matches pre-existing repository
+      validation debt, not a regression introduced by this task.
+    name: kspec validate
+    required: false
+    runner: codex@openai
+    created_at: 2026-03-20T17:09:58.661Z
+    completed_at: 2026-03-20T17:09:58.661Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exit 0 on commit cdb70fae4e3fc3481147505e3f19023b1113c5fc: 292 files passed, 6669 tests
+      passed, 3 skipped."
+    name: npm test
+    required: true
+    runner: codex@openai
+    created_at: 2026-03-20T17:10:00.128Z
+    completed_at: 2026-03-20T17:10:00.128Z
+events:
+  - _ulid: 01KM639PNEZD36M0QTTCYWABT8
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-20T17:04:43.695Z
+  - _ulid: 01KM63A3P90JV4QQBE2MS0V6VW
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-20T17:04:57.034Z
+  - _ulid: 01KM63J7196WAC9B1J3S6063VA
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM63J6S6B5XR549M43NQV407
+    timestamp: 2026-03-20T17:09:22.601Z
+  - _ulid: 01KM63K0H8T1H1NKN1HVW75D9Q
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM63K03Q5WTEMTRRVEFPMX06
+    timestamp: 2026-03-20T17:09:48.712Z
+  - _ulid: 01KM63KAN0RWXMPCKD8GNQYKD8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-03-20T17:09:59.072Z
+  - _ulid: 01KM63KC3MS55X70FTXYXHSCWY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-20T17:10:00.564Z
+  - _ulid: 01KM63KJPXXZ0AFR1S76RBC8G5
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-20T17:10:07.325Z
+  - _ulid: 01KM63KJPYN6M252VY1B4E82NW
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-20T17:10:07.326Z
+examined_commit: cdb70fae4e3fc3481147505e3f19023b1113c5fc
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM5Z4NK56J72PS2YVKP5EJ8G"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM63J6S6B5XR549M43NQV407
+    anchor:
+      type: code
+      commit: cdb70fae4e3fc3481147505e3f19023b1113c5fc
+      line_end: 507
+      line_start: 507
+      path: src/cli/commands/task.ts
+      side: head
+    entries:
+      - _ulid: 01KM63J6S6HTP05M94J1YPV42X
+        author: Jacob Chapel
+        body: "The CLI still has hand-written automation unions instead of deriving the type from
+          AutomationStatusSchema.  here, and  again at lines 1069-1073, both spell out  manually.
+          That leaves exactly the drift hazard this task is meant to remove: if the canonical schema
+          changes, these local type definitions can silently go stale even though runtime
+          validation/help text were updated."
+        created_at: 2026-03-20T17:09:22.342Z
+    kind: blocker
+  - _ulid: 01KM63K03Q5WTEMTRRVEFPMX06
+    entries:
+      - _ulid: 01KM63K03QX13T867MMMZF89G9
+        author: Jacob Chapel
+        body: "Review evidence log: Files read included
+          packages/daemon/src/routes/{agent-dispatch,aggregation,meta,reviews}.ts,
+          src/schema/{task,event-payloads,meta,review-records}.ts,
+          src/cli/commands/{task,agent,review}.ts, src/cli/enum-help.ts, and the new/updated tests
+          covering schema-derived types and review/dispatch APIs. Commands run: git diff
+          7b22df38c...cdb70fae4, kspec task get, kspec item get @schema-derived-type-definitions,
+          kspec review get @01KM625X0SET7QS06QEF1V0S20, grep AC annotations in tests, rg searches
+          for remaining enum drift, npm test, kspec validate. Claims verified: full test suite
+          reproducibly passes on commit cdb70fae4e3fc3481147505e3f19023b1113c5fc; kspec validate
+          still reports pre-existing repo debt. Categories searched: correctness, test coverage and
+          AC mapping, input-validation behavior, and drift between schema, CLI, daemon routes, and
+          event payload types."
+        created_at: 2026-03-20T17:09:48.279Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-20T17:10:07.325Z
+created_at: 2026-03-20T17:04:43.695Z
+updated_at: 2026-03-20T17:10:07.326Z
+notes: []

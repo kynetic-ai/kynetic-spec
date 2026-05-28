@@ -1,0 +1,213 @@
+_ulid: 01KMF8BTR71VP5CXECN7QZAWFM
+slugs: []
+title: Review task-install-oxlint-oxfmt
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: biome.json deleted, @biomejs/biome removed from devDependencies, old lint script replaced
+    name: biome-removal
+    required: true
+    runner: manual
+    created_at: 2026-03-24T06:27:20.056Z
+    completed_at: 2026-03-24T06:27:20.056Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: .oxlintrc.json created with eslint/typescript/unicorn/oxc/import plugins,
+      correctness:error + suspicious:warn categories, explicit rules for no-unused-vars,
+      prefer-const, prefer-template, prefer-optional-chain. Ignore patterns cover dist,
+      node_modules, .kspec, and web-ui build.
+    name: oxlint-config
+    required: true
+    runner: manual
+    created_at: 2026-03-24T06:27:23.634Z
+    completed_at: 2026-03-24T06:27:23.634Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: .oxfmtrc.json created with tabWidth:2, useTabs:false, semi:true, singleQuote:false
+      (matches Biome quoteStyle:double), importSorting:true (matches Biome organizeImports:on).
+      Ignore patterns match.
+    name: oxfmt-config
+    required: true
+    runner: manual
+    created_at: 2026-03-24T06:27:26.915Z
+    completed_at: 2026-03-24T06:27:26.915Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: lint→oxlint src/ tests/ packages/, format→oxfmt --write ., format:check→oxfmt --check .
+      Scripts correctly separated lint from format (Biome combined both under 'biome check').
+    name: npm-scripts
+    required: true
+    runner: manual
+    created_at: 2026-03-24T06:27:30.613Z
+    completed_at: 2026-03-24T06:27:30.613Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Line 17 of .github/workflows/test.yml still triggers on biome.json. Needs .oxlintrc.json
+      and .oxfmtrc.json.
+    name: ci-path-triggers
+    required: true
+    runner: manual
+    created_at: 2026-03-24T06:27:33.888Z
+    completed_at: 2026-03-24T06:27:33.888Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Only residual Biome references are in rendered skill files (.agents/, .claude/, .factory/)
+      which are stale output. Source templates are clean. Will be fixed by kspec skill render.
+    name: residual-biome-refs
+    required: false
+    runner: manual
+    created_at: 2026-03-24T06:27:37.178Z
+    completed_at: 2026-03-24T06:27:37.178Z
+events:
+  - _ulid: 01KMF8BTR7F1MHB2VHAVN1EK15
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-24T06:26:26.183Z
+  - _ulid: 01KMF8C45SKHYRWWDPK5AVVECM
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-24T06:26:35.833Z
+  - _ulid: 01KMF8CZNCKYRSPWYAY7PSRP5K
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMF8CZA37A6FZ0WFDR03FC05
+    timestamp: 2026-03-24T06:27:03.980Z
+  - _ulid: 01KMF8D84VS1YY7180YK9Z0Y0N
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMF8D7SX902TBT9F34P5PSFX
+    timestamp: 2026-03-24T06:27:12.667Z
+  - _ulid: 01KMF8DFPRFKVGQ9J4SSE1WHFC
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: biome-removal
+    timestamp: 2026-03-24T06:27:20.409Z
+  - _ulid: 01KMF8DK6MY5DXDSH2KV39VEVA
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: oxlint-config
+    timestamp: 2026-03-24T06:27:23.989Z
+  - _ulid: 01KMF8DPDEBGMGV4XX4K47FH2M
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: oxfmt-config
+    timestamp: 2026-03-24T06:27:27.278Z
+  - _ulid: 01KMF8DT0T0WJFSZ5S0ERQKEMX
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm-scripts
+    timestamp: 2026-03-24T06:27:30.970Z
+  - _ulid: 01KMF8DX6GM3M6R13KEV0KQM6G
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: ci-path-triggers
+    timestamp: 2026-03-24T06:27:34.224Z
+  - _ulid: 01KMF8E0DQAFFAPQEV3E86VRQF
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: residual-biome-refs
+    timestamp: 2026-03-24T06:27:37.527Z
+  - _ulid: 01KMF8E7B3EBVCSDEQCJH3ERCG
+    actor: claude@review
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-24T06:27:44.611Z
+  - _ulid: 01KMF8E7B3BJW29TB7V9XEKYPP
+    actor: claude@review
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-24T06:27:44.611Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-install-oxlint-oxfmt"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMF8CZA37A6FZ0WFDR03FC05
+    anchor:
+      type: code
+      commit: ""
+      line_end: 17
+      line_start: 17
+      path: .github/workflows/test.yml
+      side: head
+    entries:
+      - _ulid: 01KMF8CZA3FXNYAX5H6T2GEMVZ
+        author: "@claude"
+        body: CI workflow still triggers on biome.json (deleted file). Should be updated to trigger on
+          .oxlintrc.json and .oxfmtrc.json instead. Without this, config changes to the new
+          linter/formatter won't trigger CI runs.
+        created_at: 2026-03-24T06:27:03.619Z
+    kind: blocker
+  - _ulid: 01KMF8D7SX902TBT9F34P5PSFX
+    anchor:
+      type: code
+      commit: ""
+      line_end: 32
+      line_start: 32
+      path: .agents/skills/work-gates/SKILL.md
+      side: head
+    entries:
+      - _ulid: 01KMF8D7SX6PKBVPMA5RG7QJKB
+        author: "@claude"
+        body: Rendered skill files (.agents/skills/work-gates/SKILL.md, .claude/skills/work-gates/SKILL.md,
+          .factory/skills/work-gates/SKILL.md) still reference 'Biome config' in prose. The source
+          template (templates/skills/) is already clean. A kspec skill render would fix this. Not
+          blocking since it is a downstream task, but worth noting for the chain.
+        created_at: 2026-03-24T06:27:12.317Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: claude@review
+    role: reviewer
+    created_at: 2026-03-24T06:27:44.610Z
+created_at: 2026-03-24T06:26:26.183Z
+updated_at: 2026-03-24T06:27:44.611Z
+notes: []

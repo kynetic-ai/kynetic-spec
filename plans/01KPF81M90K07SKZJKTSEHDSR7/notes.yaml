@@ -1,0 +1,181 @@
+notes:
+  - _ulid: 01KPF8EE3GE80S831QH6DGPH2N
+    content: "address plan-review blockers from @01KPF86S: reframed user-documentation module
+      description to remove implementation-detail leaks, rewrote ac-searchable around observable
+      discoverability, softened agent-mediated mental model description to not claim primacy over
+      @cli, removed @auto-generated-reference spec (deferred to follow-up plan), added
+      task-docs-public-entry-points covering ac-reachable-from-public-surface, added
+      task-docs-troubleshooting to boundary audit depends_on"
+    author: "@claude"
+    created_at: 2026-04-18T02:59:15.184Z
+  - _ulid: 01KPF8M6C1NBDACY295GKVGCVW
+    content: "address cycle 2 blocker @01KPF8GH: reframed @docs-vs-agent-runtime-boundary as
+      @reflective-operational-boundary — spec description now describes the boundary behaviorally
+      (reflective vs operational) without naming concrete artifacts; updated corresponding task;
+      cleaned one implementation-notes reference"
+    author: "@claude"
+    created_at: 2026-04-18T03:02:23.873Z
+  - _ulid: 01KPP5995V8F40HX2ZFHF6EE7Z
+    content: "fix task section format: wrap in yaml code block and add derive_from_specs: false"
+    author: "@claude"
+    created_at: 2026-04-20T19:18:41.595Z
+  - _ulid: 01KPP8H4X8EFMZCAP3WYD0KWDT
+    content: "major rewrite: specs now describe observable behavior only; implementation decisions
+      (docs/ at repo root, web UI rendering, Pagefind, marked pipeline) moved to Implementation
+      Notes; enumerated page/guide/troubleshooting lists in content specs; added @docs-reachability
+      behavioral spec; 12 specs, 12 tasks"
+    author: "@claude"
+    created_at: 2026-04-20T20:15:25.097Z
+  - _ulid: 01KPP8T87Z3E692TQ8N5M0WRNQ
+    content: address cycle-4 blockers @01KPP8PS
+    author: "@claude"
+    created_at: 2026-04-20T20:20:23.424Z
+  - _ulid: 01KPPDDH794JS0N65BZVK53NYY
+    content: apply timelessness refinements
+    author: "@claude"
+    created_at: 2026-04-20T21:40:49.514Z
+  - _ulid: 01KPPMP0BB0H75KVCG68FQ4FMW
+    content: address user AC feedback
+    author: "@claude"
+    created_at: 2026-04-20T23:47:47.180Z
+  - _ulid: 01KPPN4589NJEZ35VVJAMKA6JT
+    content: |-
+      **Why now.** kspec has grown a surface area that a new user
+      cannot discover from `--help` alone, and most users reach
+      kspec by directing an AI coding agent rather than by invoking
+      the CLI themselves. The project needs a single place a human
+      can go to learn what kspec is, install it, connect an agent,
+      and build enough of a mental model to ask their agent for the
+      right thing.
+
+      **Content structure.** Five top-level sections — Getting
+      Started, Guides, Concepts, Troubleshooting, Release Notes —
+      are the full taxonomy. The section shape comes from the
+      task-oriented split common to mature developer-tool CLIs and
+      is deliberately small: more sections invite overlap and decay.
+      Reference-style pages that enumerate every command flag or
+      schema field are intentionally out of scope for this plan and
+      belong to a follow-up that generates reference from canonical
+      sources.
+
+      **Implementation anchors.** The plan's specs describe
+      user-observable behaviour only; the following decisions
+      record how the team intends to realise that behaviour, but
+      they are implementation choices recorded here rather than
+      contractual requirements embedded in specs:
+
+      - **Content source location.** Documentation content is
+        authored as Markdown under `docs/` at the repository root.
+        The directory structure mirrors the URL structure so the
+        file path predicts the rendered URL. The pre-existing
+        `docs/history/` subtree is excluded from rendering via a
+        documented exclusion rule so design history remains in the
+        repo without leaking onto the site.
+      - **Rendering surface.** The existing `packages/web-ui`
+        SvelteKit package is extended with a `[...slug]` dynamic
+        route under `/docs` that reads Markdown from the repo's
+        `docs/` directory at build time and renders pages through
+        the package's existing `marked` + Tailwind typography +
+        `highlight.js` pipeline. This reuses the production-grade
+        static build, theming system, and `gh-pages-ui.yml` deploy
+        workflow the project already maintains. No separate docs
+        generator (VitePress, Docusaurus, Starlight) is introduced.
+      - **Local and public parity.** Because docs are bundled into
+        the static SPA at build time, the same build shipped to the
+        public GitHub Pages deployment is the build installed by
+        npm consumers and served by `kspec serve`. The docs surface
+        makes no daemon calls at runtime, so it works identically
+        across both contexts and offline.
+      - **Search.** Pagefind is the evaluated choice: it indexes
+        rendered HTML after the build, ships static JSON bundles,
+        runs entirely in the browser, and adds no external
+        dependency. A hosted service (Algolia DocSearch) was
+        rejected because it would fail the offline-local
+        requirement; ad-hoc client-side fuzzy search was rejected
+        because it scales poorly past a few dozen pages.
+      - **Release notes.** The existing `RELEASE_NOTES.md` is the
+        single source of truth already consumed by
+        `kspec release-notes`. The `/docs/release-notes` page
+        imports that file at build time and renders it through the
+        same Markdown pipeline as other docs pages.
+
+      These are all implementation details: if the team later
+      switches the renderer, moves the source location, or replaces
+      the search tool, the specs remain valid because they describe
+      what the reader observes, not how it was produced.
+
+      **Maintainability bias.** Every authoring decision is filtered
+      through one question: will this content still be correct a
+      year from now without edits? Pages that answer yes — concept
+      explanations, onboarding shape, workflow procedures,
+      symptom-based troubleshooting — go into docs. Content that
+      answers no — flag enumerations, schema field lists, exact
+      command output — is not hand-transcribed; pages link to the
+      authoritative source. Contribution guidance and the
+      reflective/operational boundary between docs and agent
+      runtime instructions are external process concerns, out of
+      scope for this plan; they should be handled through the
+      project's normal contribution documentation rather than as
+      spec contracts.
+
+      **Enumeration convention for content specs.** Content-section
+      specs (Getting Started, Concepts, Guides, Troubleshooting)
+      name specific pages and entries to make the initial delivery
+      executable and prevent scope creep during authoring. These
+      enumerations are *minimums, not ceilings*: the specs are
+      satisfied as long as the listed content is present, and the
+      sections may grow additional pages over time without breaking
+      the contracts. Adding a new page within an existing section is
+      ordinary content evolution and does not require a spec
+      revision. In contrast, the top-level section taxonomy
+      (@docs-section-taxonomy) is deliberately frozen at exactly five
+      sections — adding a sixth top-level section is an
+      architectural change that *should* require a plan-level
+      decision and a spec revision rather than quiet content creep.
+      This is the line between evolutionary growth (safe) and
+      taxonomic change (deliberate).
+
+      **Agent-mediated users.** A common path users take to reach
+      kspec is by directing an AI coding agent in natural language.
+      The Concepts section includes a dedicated page — Working With
+      kspec Through an Agent — that gives the reader durable rules
+      for framing requests, knowing what the agent should decide
+      versus ask about, and reading the shape of what the agent has
+      done. The rest of the docs remain useful to users who invoke
+      the CLI directly; the agent-mediated framing is additive.
+
+      **Non-scope.** Auto-generated CLI and schema reference (a
+      follow-up plan will design that pipeline); docs localization;
+      multi-version docs builds; marketing content; embedded in-app
+      help beyond what the web UI already renders; contribution
+      guidance and the reflective/operational docs boundary (both
+      are external process concerns rather than specification
+      contracts). `RELEASE_NOTES.md` covers historical behaviour
+      without a separate versioned docs build.
+
+      **Order of operations.** Rendering and section scaffolding
+      come first because everything else depends on them. Navigation
+      integration follows so content has a visible home. Content
+      authoring (Getting Started, Concepts, Guides, Troubleshooting)
+      can proceed in parallel once scaffolding is in place;
+      Troubleshooting depends on Concepts so its entries can link
+      cleanly. Release notes rendering is independent. Docs search
+      depends on the page-producing work so the index covers all
+      content. The README trim depends on Getting Started so the
+      trimmed README can point at real landing pages.
+
+      **Evaluation.** Success is not a page count. Success is that
+      a developer who has never seen kspec before can install it,
+      connect an agent, and direct that agent through a meaningful
+      first action by following Getting Started; a contributor
+      adding a page knows where it goes and what style to follow;
+      and the docs are still correct a year later without a large
+      catch-up effort.
+    author: "@claude"
+    created_at: 2026-04-20T23:55:30.953Z
+  - _ulid: 01KQG85K37G0612AVP9CN5CMQM
+    content: "Hermes closure audit: all derived documentation tasks are completed; docs
+      routes/content/search/README coverage are implemented and focused docs tests passed, so the
+      plan intent is satisfied."
+    author: Jacob Chapel
+    created_at: 2026-04-30T22:29:21.640Z

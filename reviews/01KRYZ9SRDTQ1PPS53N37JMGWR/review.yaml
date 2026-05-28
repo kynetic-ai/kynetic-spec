@@ -1,0 +1,177 @@
+_ulid: 01KRYZ9SRDTQ1PPS53N37JMGWR
+slugs: []
+title: Review suppress recursive daemon command proxying
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/daemon-command-api.test.ts tests/cli-daemon-proxy.test.ts
+      tests/event-bus.test.ts tests/cli-no-daemon.test.ts: 21 suites, 128 tests passed"
+    name: targeted changed-area tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-19T02:14:19.217Z
+    completed_at: 2026-05-19T02:14:19.217Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test: 2447 suites passed; 9288 tests passed; 5 skipped; duration 2392.1s; log
+      /tmp/kspec-test-cache/01KRYZ8FKGRN2SS09QG102SG18/e913205994c3a560.log"
+    name: full npm test
+    required: true
+    runner: npm test
+    created_at: 2026-05-19T02:14:28.420Z
+    completed_at: 2026-05-19T02:14:28.420Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Verified annotations for @daemon-command-api ac-no-recursive-command-proxy in
+      tests/daemon-command-api.test.ts:508, @cli-daemon-proxy
+      ac-daemon-internal-proxy-suppression-is-scoped in
+      tests/cli-daemon-proxy.test.ts:395/410/422/439/454/469, and event-bus AC annotations for the
+      carried dependency commits
+    name: AC coverage annotations
+    required: true
+    runner: rg
+    created_at: 2026-05-19T02:14:39.668Z
+    completed_at: 2026-05-19T02:14:39.668Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate: schema/references OK; exited 6 for existing repository-wide warnings
+      (deprecated refs, orphaned specs, missing historical AC coverage, invalid historical
+      annotations), not introduced by this change"
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-19T02:14:49.612Z
+    completed_at: 2026-05-19T02:14:49.612Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check
+      f688b032ae42aaaac1941fb340c8d5edfe5765e0...308fb19e14e1afb6a28a5d10ac2bf94aec3ba887 passed;
+      changed tests are behavioral, no source-scanning AC coverage found in changed test additions
+    name: diff hygiene
+    required: false
+    runner: git
+    created_at: 2026-05-19T02:15:00.297Z
+    completed_at: 2026-05-19T02:15:00.297Z
+events:
+  - _ulid: 01KRYZ9SRC7KJ6EKN77RBKCEHK
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-19T01:58:40.652Z
+  - _ulid: 01KRYZAG47QHZED3ZH49HF2S4P
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-19T01:59:03.559Z
+  - _ulid: 01KRZ06FQG6B1GYR0TRMSDQWFD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted changed-area tests
+    timestamp: 2026-05-19T02:14:20.656Z
+  - _ulid: 01KRZ06RSM283RY5MG6YW05BR6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full npm test
+    timestamp: 2026-05-19T02:14:29.940Z
+  - _ulid: 01KRZ073QG7R5GF4QKKPN32DRJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage annotations
+    timestamp: 2026-05-19T02:14:41.136Z
+  - _ulid: 01KRZ07DEA32JGW6C4DG4A9ZJ9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-19T02:14:51.082Z
+  - _ulid: 01KRZ07QVBFEK9M3FHP94WBQXS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff hygiene
+    timestamp: 2026-05-19T02:15:01.739Z
+  - _ulid: 01KRZ0880F7BS3SW89BJP0459J
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KRZ086F2VH44AJNCEQVFAJPJ
+    timestamp: 2026-05-19T02:15:18.287Z
+  - _ulid: 01KRZ08HGF0XH1TFN7ENJ99E0Q
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-19T02:15:28.015Z
+  - _ulid: 01KRZ08HGFXMFQPGJJ24F5RF82
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-19T02:15:28.015Z
+examined_commit: 308fb19e14e1afb6a28a5d10ac2bf94aec3ba887
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRYMPBSQV0EWVW3EBCXBPQKC"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRZ086F2VH44AJNCEQVFAJPJ
+    entries:
+      - _ulid: 01KRZ086F2PEVVKEGC1S51J13F
+        author: Jacob Chapel
+        body: "Evidence log: Files read: src/cli/daemon-proxy.ts, packages/daemon/src/routes/command.ts,
+          src/cli/index.ts, src/agent-runtime/event-bus.ts, tests/cli-daemon-proxy.test.ts,
+          tests/daemon-command-api.test.ts, tests/cli-no-daemon.test.ts, tests/event-bus.test.ts.
+          Commands run: kspec task get @01KRYMPBSQV0EWVW3EBCXBPQKC; kspec item get
+          @daemon-command-api; kspec item get @cli-daemon-proxy; kspec item get
+          @dispatch-event-envelope; kspec review get @01KRYRVZSM6B1KVGHZE1SRF3SF; git
+          diff/stat/log/show; rg AC/source-scan checks; git diff --check; kspec validate; targeted
+          npm test; full npm test. Claims verified: daemon command API wraps program.parseAsync in
+          runWithDaemonProxySuppressed; shouldProxyCommand returns direct mode inside the
+          AsyncLocalStorage guard; tests prove inside-scope suppression, outside-scope
+          force-direct/force-proxy/auto-detect behavior, and concurrent async isolation. Categories
+          searched: correctness, async scoping/concurrency, error/force flags, test integrity, AC
+          annotations, carried event-bus dependency changes, integration/full regression."
+        created_at: 2026-05-19T02:15:16.706Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-19T02:15:28.015Z
+created_at: 2026-05-19T01:58:40.653Z
+updated_at: 2026-05-19T02:15:28.015Z
+notes: []

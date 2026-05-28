@@ -1,0 +1,139 @@
+_ulid: 01KM0N6MZGQYNQ2D0EPXQZY1QE
+slugs: []
+title: Review task-hook-cli
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 282/283 test files pass, 6421 tests pass. 1 failure in review-cli.test.ts is pre-existing
+      (detached HEAD picks up commit hash for examined_commit); not related to hook CLI changes.
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T14:22:55.213Z
+    completed_at: 2026-03-18T14:22:55.213Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate reports pre-existing issues (3 ref errors, alignment/completeness
+      warnings). No new issues from hook CLI changes. No trait AC coverage warnings specific to
+      @dispatch-event-cli.
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-18T14:23:02.716Z
+    completed_at: 2026-03-18T14:23:02.716Z
+events:
+  - _ulid: 01KM0N6MZGDYJHQWAK3B42VHC3
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T14:22:11.440Z
+  - _ulid: 01KM0N725VT7C59PCJ492K8CJH
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T14:22:24.955Z
+  - _ulid: 01KM0N7FHA3FEW08476QKW3S01
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM0N7FBWR1KPWVC3DP6E11VZ
+    timestamp: 2026-03-18T14:22:38.634Z
+  - _ulid: 01KM0N7Q1EGYRH1TT6NEW15KSC
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM0N7PWQG5VYMS674DX3J7KD
+    timestamp: 2026-03-18T14:22:46.318Z
+  - _ulid: 01KM0N7ZWQ20YYHWEJ2K5SE698
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T14:22:55.383Z
+  - _ulid: 01KM0N876A1NGGKA48TNZJ1ZE2
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-18T14:23:02.858Z
+  - _ulid: 01KM0N8EVV9JF2S2ECDWAR09P5
+    actor: claude-reviewer@kspec
+    event_type: verdict_submitted
+    payload:
+      decision: request_changes
+    timestamp: 2026-03-18T14:23:10.716Z
+  - _ulid: 01KM0N8EVW1GZPNBX16K49W7FJ
+    actor: claude-reviewer@kspec
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T14:23:10.716Z
+examined_commit: 5241398e3334e6af2260fad4a0fde83e3de7c87b
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-hook-cli"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM0N7FBWR1KPWVC3DP6E11VZ
+    anchor:
+      type: code
+      commit: "5241398e3334"
+      line_end: 693
+      line_start: 681
+      path: tests/hook-cli.test.ts
+      side: head
+    entries:
+      - _ulid: 01KM0N7FBW6V9V89HBZK6TQRPV
+        author: "@claude"
+        body: "Missing N/A annotations for several trait ACs that don't apply to hooks. Missing annotations:
+          @trait-json-output ac-4 (hooks have no @ references), @trait-json-output ac-5 (hooks have
+          no timestamps), @trait-shadow-commit ac-2 (commit message format tested centrally),
+          @trait-shadow-commit ac-3 (ULID prefix in commit tested centrally),
+          @trait-semantic-exit-codes ac-6 (invalid flags handled by Commander.js). Also missing test
+          annotation for @trait-filterable-list ac-7 (summary line) — the implementation exists at
+          hook.ts:236-238 but has no corresponding test annotation."
+        created_at: 2026-03-18T14:22:38.460Z
+    kind: blocker
+  - _ulid: 01KM0N7PWQG5VYMS674DX3J7KD
+    anchor:
+      type: code
+      commit: "5241398e3334"
+      line_end: 27
+      line_start: 23
+      path: tests/hook-cli.test.ts
+      side: head
+    entries:
+      - _ulid: 01KM0N7PWQVXXY45SB5M85Y188
+        author: "@claude"
+        body: writeMetaWithHooks helper function is defined at line 23 but never used in any test. Dead code
+          that should be removed.
+        created_at: 2026-03-18T14:22:46.167Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: claude-reviewer@kspec
+    role: reviewer
+    created_at: 2026-03-18T14:23:10.573Z
+created_at: 2026-03-18T14:22:11.440Z
+updated_at: 2026-03-18T14:23:10.573Z
+notes: []

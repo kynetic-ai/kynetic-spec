@@ -1,0 +1,88 @@
+_ulid: 01KKWC896GZBT077AHDA0DQG3M
+slugs: []
+title: "Review: Store examined commit on review records"
+author: pr-reviewer@kspec
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 163 tests passed across 4 relevant test files
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-16T22:29:19.023Z
+    completed_at: 2026-03-16T22:29:19.023Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "3 tests annotated with AC: @review-fix-cycle-diff ac-1 covering explicit flag, env var
+      fallback, and null default"
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-16T22:29:27.419Z
+    completed_at: 2026-03-16T22:29:27.419Z
+events:
+  - _ulid: 01KKWC896GCJET5S01KTASSYQT
+    actor: pr-reviewer@kspec
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-16T22:28:50.000Z
+  - _ulid: 01KKWC8HY5AHD4YKP2QYBRE8XV
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-16T22:28:58.949Z
+  - _ulid: 01KKWC95JHRKTGEMPFNX0AZHYZ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-16T22:29:19.057Z
+  - _ulid: 01KKWC9DRX8TB6G97DVNBNEFKY
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-16T22:29:27.454Z
+  - _ulid: 01KKWC9MXRFHG87GC17F369WR7
+    actor: pr-reviewer@kspec
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-16T22:29:34.777Z
+  - _ulid: 01KKWC9MXSEFQ25KSRRJJX1VRC
+    actor: pr-reviewer@kspec
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-16T22:29:34.777Z
+examined_commit: e6bcac947eef33b38543de2dd1de19e46e0b117d
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-review-examined-commit"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer@kspec
+    role: reviewer
+    created_at: 2026-03-16T22:29:34.738Z
+created_at: 2026-03-16T22:28:50.000Z
+updated_at: 2026-03-16T22:29:34.738Z
+notes: []

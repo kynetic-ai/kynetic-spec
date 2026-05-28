@@ -1,0 +1,138 @@
+_ulid: 01KMNK6E6DZGG6GWRX9XW49K98
+slugs: []
+title: Review smart error message for task set --status rejection (cycle 5)
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate returned no errors; only existing repo-wide warnings (exit 6) unrelated to
+      this task.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-26T17:37:01.207Z
+    completed_at: 2026-03-26T17:37:01.207Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test passed in this snapshot: 301 files, 6835 tests passed, 5 skipped, 0 failed."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-26T17:37:03.756Z
+    completed_at: 2026-03-26T17:37:03.756Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- tests/task-set-batch.test.ts passed: 28 tests in
+      tests/task-set-batch.test.ts; verified blocked/unblock and pending-status cases."
+    name: task-set-batch
+    required: false
+    runner: vitest
+    created_at: 2026-03-26T17:37:05.037Z
+    completed_at: 2026-03-26T17:37:05.037Z
+events:
+  - _ulid: 01KMNK6E6DGEWAQ32P6SM2DCWH
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-26T17:31:10.413Z
+  - _ulid: 01KMNK6VEJVVQA37GEMDZN19JW
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-26T17:31:23.986Z
+  - _ulid: 01KMNKH55P4BM51Q5E6KA61XER
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-26T17:37:01.622Z
+  - _ulid: 01KMNKH6DH8C4GFWR1V8VCGCPV
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMNKH61108YTS0XW3MR7HNQT
+    timestamp: 2026-03-26T17:37:02.897Z
+  - _ulid: 01KMNKH7N1FAQ6M6F3STSGF0EA
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-26T17:37:04.162Z
+  - _ulid: 01KMNKH8WM5AZ0BTGTC4TJ0A15
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: task-set-batch
+    timestamp: 2026-03-26T17:37:05.428Z
+  - _ulid: 01KMNKHGGDXF131H9699ZE7M6Q
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-26T17:37:13.229Z
+  - _ulid: 01KMNKHGGDFCXPJSH9GMHKY142
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-26T17:37:13.229Z
+examined_commit: e715241e6c198107043fac8a2a99670426f5bd40
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMM6PH4EQBRZW72DXWMMNFP3"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMNKH61108YTS0XW3MR7HNQT
+    entries:
+      - _ulid: 01KMNKH611X3TFKQ6M3Y1YAE12
+        author: Test User
+        body: >-
+          Review evidence log:
+
+          Files read: src/cli/commands/task.ts, src/strings/errors.ts, tests/task-set-batch.test.ts,
+          tests/helpers/cli.ts, .agents/skills/review-gates/SKILL.md, kspec-agents.md.
+
+          Commands run: git diff --stat, git diff, git log, git status, kspec task get, kspec item
+          get, kspec review for-task, kspec review get, kspec validate, rg AC annotations, npm test
+          -- tests/task-set-batch.test.ts, manual CLI repro for task set --status pending --json,
+          npm test.
+
+          Claims verified: pending target no longer suggests task start; blocked tasks restore via
+          unblock; transition guidance matches actual command guards in src/cli/commands/task.ts.
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration;
+          no remaining issues found.
+        created_at: 2026-03-26T17:37:02.497Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-26T17:37:13.229Z
+created_at: 2026-03-26T17:31:10.413Z
+updated_at: 2026-03-26T17:37:13.229Z
+notes: []

@@ -1,0 +1,28 @@
+notes:
+  - _ulid: 01KKB3PG8HAWDDJYD4BG6CECCC
+    content: |-
+      Implementation notes:
+
+      Execution order should be:
+      1. Session summary cache + pagination API (foundation for everything else)
+      2. CLI unified filtering (shares filter logic with daemon)
+      3. Session filter controls + infinite scroll UI (depends on API)
+      4. Task/spec session context (depends on API filtering)
+      5. Session text search (depends on metadata filtering being in place)
+
+      Full-text search strategy: No dedicated search index. Instead, rely on
+      metadata filtering to narrow the scope before scanning events.jsonl.
+      A 7-day window typically contains 20-50 sessions, making substring
+      search over their events feasible (<5s). The CLI already does this.
+      The daemon endpoint wraps the same logic.
+
+      The metadata cache is critical for performance. Reading 700+ session.yaml
+      files on every request is too slow. An in-memory Map<id, CachedSummary>
+      on the daemon, populated on first request and updated incrementally
+      (watch directory or diff listings), makes list/filter/count operations fast.
+
+      The existing @ui-session-history ac-1 will need updating after this work
+      since the load-all behavior changes to paginated. The existing AC describes
+      what fields are shown; the new specs describe how loading and filtering work.
+    author: "@claude"
+    created_at: 2026-03-10T05:32:13.457Z

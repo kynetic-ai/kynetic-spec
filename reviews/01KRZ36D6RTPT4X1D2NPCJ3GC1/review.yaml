@@ -1,0 +1,172 @@
+_ulid: 01KRZ36D6RTPT4X1D2NPCJ3GC1
+slugs: []
+title: Review gate cleanup preservation diagnostics (cycle 3)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/dispatch-workspace-cleanup.test.ts
+      tests/dispatch-workspace-registry.test.ts: 7 suites passed, 62 tests passed."
+    name: targeted cleanup and registry tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-19T03:22:18.573Z
+    completed_at: 2026-05-19T03:22:18.573Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test: 2450 suites passed; 9294 passed, 5 skipped of 9299 tests; duration 2334.8s."
+    name: full npm test
+    required: true
+    runner: npm test
+    created_at: 2026-05-19T03:22:22.652Z
+    completed_at: 2026-05-19T03:22:22.652Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Found annotations for @dispatch-workspace-cleanup-policy
+      ac-preservation-diagnostics-quiet-by-default and ac-preservation-diagnostics-opt-in in
+      tests/dispatch-workspace-cleanup.test.ts; trait-error-guidance N/A annotations present for
+      cleanup and registry internal runtime surfaces.
+    name: AC annotation scan
+    required: true
+    runner: rg
+    created_at: 2026-05-19T03:22:27.092Z
+    completed_at: 2026-05-19T03:22:27.092Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exited 6 with warnings only. Schema and references OK; warnings are
+      repo-wide pre-existing completeness/alignment/reference warnings, not introduced by this
+      scoped diff.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-19T03:22:31.374Z
+    completed_at: 2026-05-19T03:22:31.374Z
+events:
+  - _ulid: 01KRZ36D6RNJJEA7BNDX76X913
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-19T03:06:43.800Z
+  - _ulid: 01KRZ371GSJQG9BGC5GNZJQA5S
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-19T03:07:04.601Z
+  - _ulid: 01KRZ42ZH82NTVTB0N2EP8TAKD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted cleanup and registry tests
+    timestamp: 2026-05-19T03:22:20.073Z
+  - _ulid: 01KRZ433NQKDWS5RSQ9EBFKF8X
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full npm test
+    timestamp: 2026-05-19T03:22:24.311Z
+  - _ulid: 01KRZ437YHPE67NDHR0AKESGX0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC annotation scan
+    timestamp: 2026-05-19T03:22:28.689Z
+  - _ulid: 01KRZ43BZH63QKW2NVSFMDKF46
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-05-19T03:22:32.817Z
+  - _ulid: 01KRZ43VDHR65MTTQ8XWM70H5F
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KRZ43SYW8GBQSAEMGZ45C8GR
+    timestamp: 2026-05-19T03:22:48.625Z
+  - _ulid: 01KRZ4455QR1ERPF9FZK66VG22
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-19T03:22:58.615Z
+  - _ulid: 01KRZ4455Q1X7TMEPCCGN50MHY
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-19T03:22:58.615Z
+examined_commit: 96f8f371db212c31adf360a8123732fa95eef16f
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRYMPCMF46KFWVKKWRDYSJX7"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRZ43SYW8GBQSAEMGZ45C8GR
+    entries:
+      - _ulid: 01KRZ43SYX3Z1874XFFN5ZMM8W
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+
+          Files read: kspec-agents.md; src/agent-runtime/workspace.ts;
+          tests/dispatch-workspace-cleanup.test.ts; tests/dispatch-workspace-registry.test.ts; prior
+          reviews @01KRYT82 and @01KRZ0PN; task/spec context for @dispatch-workspace-cleanup-policy.
+
+
+          Commands run: git fetch origin dev
+          dispatch/task/task-gate-cleanup-preservation-diagnostics/01krympc; git diff --name-status
+          origin/dev...HEAD; git diff --unified=80 origin/dev...HEAD --
+          src/agent-runtime/workspace.ts tests/dispatch-workspace-cleanup.test.ts
+          tests/dispatch-workspace-registry.test.ts; rg AC annotation scans; kspec validate; npm
+          test -- --run tests/dispatch-workspace-cleanup.test.ts
+          tests/dispatch-workspace-registry.test.ts; KSPEC_DISPATCH_CLEANUP_DIAGNOSTICS=1 npm test
+          -- --run tests/dispatch-workspace-registry.test.ts; npm test.
+
+
+          Claims verified: quiet-by-default is enforced by the env-var early return in
+          logArtifactPreservation; opt-in diagnostics still include cleanup surface, artifact, and
+          reason; previous mockRestore issue is fixed by snapshotting debugSpy.mock.calls before
+          restoring; preservation behavior still asserted by workspace/branch survival in both new
+          tests.
+
+
+          Categories searched: correctness, edge cases around inherited opt-in environment,
+          error/diagnostic behavior, test quality including source-scanning checks, AC coverage, and
+          integration with existing cleanup surfaces. No blockers found.
+        created_at: 2026-05-19T03:22:47.133Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-19T03:22:58.615Z
+created_at: 2026-05-19T03:06:43.800Z
+updated_at: 2026-05-19T03:22:58.615Z
+notes: []

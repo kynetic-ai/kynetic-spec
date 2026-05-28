@@ -1,0 +1,136 @@
+_ulid: 01KRD7N9EQB9RHPWT2KHDQBQPH
+slugs: []
+title: Review active-request and bounded-observation teardown regressions
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exits 6 with warnings only; kspec validate --warnings-ok exits 0. Warnings
+      are pre-existing project-wide reference/alignment/completeness warnings, not introduced by
+      this two-test-file diff.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-12T04:51:21.925Z
+    completed_at: 2026-05-12T04:51:21.925Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/helpers/mock-daemon.test.ts tests/helpers/daemon.test.ts
+      tests/cli-serve.test.ts: 18 suites passed; 74 tests passed; duration 52.8s. Covers the new
+      active-request and bounded-observation regression slice."
+    name: targeted regression tests
+    required: true
+    runner: npm
+    created_at: 2026-05-12T04:51:32.038Z
+    completed_at: 2026-05-12T04:51:32.038Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test: 2420 suites passed of 2420; 9058 tests passed and 5 skipped of 9063; duration
+      2227.0s. Full log: /tmp/kspec-test-cache/01KRD7KDP4HXX4413VXXBQ6VSX/712efedd544f7864.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-12T04:51:42.671Z
+    completed_at: 2026-05-12T04:51:42.671Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: tests/cli-serve.test.ts, tests/helpers/mock-daemon.test.ts,
+      tests/helpers/mock-daemon.ts, tests/e2e/fixtures/test-base.ts, tests/cli-daemon-proxy.test.ts,
+      tests/helpers/cli.ts. Commands run: git diff --stat/name-only/patch, kspec task get, kspec
+      item get for related specs, rg AC/fetch call sites, git diff --check, kspec validate, targeted
+      npm test, full npm test. Claims verified: worker claimed 5 regression tests and
+      expected-failing coverage; verified patch, AC annotations, targeted run, and full run.
+      Categories searched: correctness, edge cases, teardown cleanup, bounded observations, test
+      integrity, integration with CLI serve and Playwright fixture call-site context."
+    name: review evidence log
+    required: false
+    runner: reviewer
+    created_at: 2026-05-12T04:51:54.859Z
+    completed_at: 2026-05-12T04:51:54.859Z
+events:
+  - _ulid: 01KRD7N9EP5WY695HDEQ6JWAZK
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-12T04:38:26.007Z
+  - _ulid: 01KRD7P7MFBVR853EPSVK8GJJS
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-12T04:38:56.911Z
+  - _ulid: 01KRD8D0EVR9FN155NCQMQQZ2V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-12T04:51:23.227Z
+  - _ulid: 01KRD8DAE0SM6YAG8T7EERFPMW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted regression tests
+    timestamp: 2026-05-12T04:51:33.440Z
+  - _ulid: 01KRD8DMV7RKJE9Q2P7AE6C06W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-12T04:51:44.103Z
+  - _ulid: 01KRD8E0RG9CFF8Z299SJ51Q0B
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-12T04:51:56.304Z
+  - _ulid: 01KRD8E9QEEADN5G5T30NQM8RT
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-12T04:52:05.486Z
+  - _ulid: 01KRD8E9QECGG1Y9X4GP9F57F0
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-12T04:52:05.486Z
+examined_commit: 9200a23d698d381592a60d9c0419f877d77b19ac
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRCRJRRRS4WDVC1VQQW5GK25"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-12T04:52:05.486Z
+created_at: 2026-05-12T04:38:26.007Z
+updated_at: 2026-05-12T04:52:05.486Z
+notes: []

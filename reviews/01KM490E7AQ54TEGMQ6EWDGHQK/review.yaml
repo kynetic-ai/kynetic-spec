@@ -1,0 +1,137 @@
+_ulid: 01KM490E7AQ54TEGMQ6EWDGHQK
+slugs: []
+title: Review fix shadow commit call sites that omit entity refs (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test -- --run tests/shadow-commit-call-site-regression.test.ts passed (4 tests)
+    name: shadow commit regression
+    required: true
+    runner: npm
+    created_at: 2026-03-20T00:14:13.852Z
+    completed_at: 2026-03-20T00:14:13.852Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full npm test passed on rerun: 287 files, 6602 tests passed, 3 skipped. Initial
+      full-suite run failed once in tests/agent-dispatch-engine.test.ts AC-12, but the isolated
+      rerun of that case passed and the subsequent clean full rerun passed."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-20T00:14:39.457Z
+    completed_at: 2026-03-20T00:14:39.457Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repo-wide pre-existing validation failures remain: 3 broken references in
+      .kspec/modules/meta.yaml plus longstanding alignment/completeness warnings; no new
+      task-specific validation issue identified in this snapshot."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-20T00:14:42.517Z
+    completed_at: 2026-03-20T00:14:42.517Z
+events:
+  - _ulid: 01KM490E798218ZWKPHA2KCR9T
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-20T00:06:02.729Z
+  - _ulid: 01KM4912ZM9CR9D7Q7DZB6E01F
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-20T00:06:23.988Z
+  - _ulid: 01KM49FE792NH6ZN80PPCB0DE1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: shadow commit regression
+    timestamp: 2026-03-20T00:14:14.250Z
+  - _ulid: 01KM49G79VJ7R5YYWRA3KK80K8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-20T00:14:39.932Z
+  - _ulid: 01KM49G8V2Q1D8HAYDF6MPGNH9
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM49G8CDVZK6BACJ7PATMBVY
+    timestamp: 2026-03-20T00:14:41.506Z
+  - _ulid: 01KM49GA9A8Q8BTKMC7W5JAT0D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-03-20T00:14:42.987Z
+  - _ulid: 01KM49H8HTPMPP2ATKJ7GD6Q9N
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-20T00:15:13.978Z
+  - _ulid: 01KM49H8HTEKD8D4MGX0HTNRQF
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-20T00:15:13.978Z
+examined_commit: 5ac40253e2bb3528cd818e098ca4a5639062d7fc
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKX6QPC0374PT4W93CMA7EMX"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM49G8CDVZK6BACJ7PATMBVY
+    entries:
+      - _ulid: 01KM49G8CD2CS48T6WB7904N3M
+        author: Jacob Chapel
+        body: 'Evidence log. Files read: src/parser/shadow.ts, src/cli/commands/inbox.ts,
+          src/cli/commands/setup.ts, src/cli/commands/skill-install.ts, src/cli/commands/tasks.ts,
+          src/cli/commands/workflow.ts, tests/shadow-commit-call-site-regression.test.ts,
+          tests/agent-dispatch-engine.test.ts. Commands run: git diff --stat, git diff, kspec task
+          get, kspec review for-task, kspec review get, rg commitIfShadow, npm test -- --run
+          tests/shadow-commit-call-site-regression.test.ts, kspec validate, npm test, npm test --
+          --run tests/agent-dispatch-engine.test.ts -t "AC-12: Shadow branch mutations serialized
+          via mutex", npm test. Claims verified: the changed call sites now pass entity refs or omit
+          them intentionally for batch operations; verified by reading
+          commitIfShadow/generateCommitMessage and by the new regression test asserting concrete
+          shadow commit subjects. Categories searched: correctness, edge cases, error handling, test
+          quality, integration. Findings: no change-specific defects found; full-suite gate required
+          one rerun after an isolated agent-dispatch-engine flake, then passed cleanly.'
+        created_at: 2026-03-20T00:14:41.037Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-20T00:15:13.978Z
+created_at: 2026-03-20T00:06:02.730Z
+updated_at: 2026-03-20T00:15:13.978Z
+notes: []

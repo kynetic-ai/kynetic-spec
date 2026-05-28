@@ -1,0 +1,311 @@
+_ulid: 01KSEV8T771QWSB7TKKDR9JBQA
+slugs: []
+title: Review task-plan-resource-import-and-derive-1 (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh: 2536 suites passed, 9661 tests passed, 5 skipped (Duration 2703.6s).
+      Full log: /tmp/kspec-test-cache/01KSEV70T5XCA6QAPZH6B85G17/9c2359eab73258ae.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-25T06:12:44.009Z
+    completed_at: 2026-05-25T06:12:44.009Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck completed successfully (tsc --noEmit).
+    name: typecheck
+    required: true
+    runner: npm
+    created_at: 2026-05-25T06:12:49.286Z
+    completed_at: 2026-05-25T06:12:49.286Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/cli-plan-resource.test.ts
+      tests/cli-plan-import-resources.test.ts tests/cli-plan-derive-resources.test.ts
+      tests/plan-document-resource-refs.test.ts: 16 suites passed, 49 tests passed."
+    name: focused resource tests
+    required: false
+    runner: npm
+    created_at: 2026-05-25T06:13:05.706Z
+    completed_at: 2026-05-25T06:13:05.706Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "./node_modules/.bin/oxlint --quiet on the 15 changed source/test files: 0 errors (28
+      warnings). Full npm run lint hit 7 unrelated existing errors outside this task diff."
+    name: changed-file oxlint
+    required: false
+    runner: oxlint
+    created_at: 2026-05-25T06:13:10.798Z
+    completed_at: 2026-05-25T06:13:10.798Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Node repro against dist CLI: existing .kspec/plans/<plan>/resources/sub symlink to an
+      outside temp dir; plan resource add --path sub/leak.txt exited 0 and created outside/leak.txt;
+      plan resource remove --force exited 0 and deleted that outside file."
+    name: symlink escape repro
+    required: false
+    runner: manual
+    created_at: 2026-05-25T06:13:19.604Z
+    completed_at: 2026-05-25T06:13:19.604Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exited 6 with repository-wide warnings. Schema and references were OK;
+      warnings are broad pre-existing completeness/alignment/reference warnings, not specific to
+      @plan-resource-derivation-semantics-1.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-05-25T06:13:24.480Z
+    completed_at: 2026-05-25T06:13:24.480Z
+events:
+  - _ulid: 01KSEV8T77NE8W3BJX8W48KXYG
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-25T05:56:04.967Z
+  - _ulid: 01KSEV9EWXBGCQGJDHZK1718GP
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-25T05:56:26.141Z
+  - _ulid: 01KSEW714X8HAJB204396ZQN2E
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSEW6ZD4SK7P8DP1T1XJN5W8
+    timestamp: 2026-05-25T06:12:35.101Z
+  - _ulid: 01KSEW76AHF456YMHTH39J3H2V
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSEW74GDZAC9E0Q17D8FVBKR
+    timestamp: 2026-05-25T06:12:40.401Z
+  - _ulid: 01KSEW7BPFQ1GFSPX394KNTGZP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-25T06:12:45.903Z
+  - _ulid: 01KSEW7GVD1PY7D2PRGSBGXDAX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-25T06:12:51.182Z
+  - _ulid: 01KSEW80VWMK0MWMKE9BFXC54K
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused resource tests
+    timestamp: 2026-05-25T06:13:07.580Z
+  - _ulid: 01KSEW85T29VX3RRQXB58Z1NPC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file oxlint
+    timestamp: 2026-05-25T06:13:12.642Z
+  - _ulid: 01KSEW8E9V26BGR26Q9H584HN8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: symlink escape repro
+    timestamp: 2026-05-25T06:13:21.340Z
+  - _ulid: 01KSEW8K47BQJFYJRH64ME126Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-05-25T06:13:26.279Z
+  - _ulid: 01KSEW95VR6Z67FQNNTYG5FS94
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSEW943T80G87YV62KM1C5E3
+    timestamp: 2026-05-25T06:13:45.464Z
+  - _ulid: 01KSEW9GFS1H0WW0X6F1D3Y1DG
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-25T06:13:56.345Z
+  - _ulid: 01KSEW9GFS0T1NG6R9BRKNBS1V
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-25T06:13:56.346Z
+  - _ulid: 01KSEZG7CGFNRQYZ4H9DGY34T9
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSEW6ZD4SK7P8DP1T1XJN5W8
+    timestamp: 2026-05-25T07:10:02.128Z
+  - _ulid: 01KSEZGGXDGFSGHZJH9Z0NYTPC
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSEW6ZD4SK7P8DP1T1XJN5W8
+    timestamp: 2026-05-25T07:10:11.886Z
+  - _ulid: 01KSEZGNX91X058D1ADSVWS4VZ
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSEW74GDZAC9E0Q17D8FVBKR
+    timestamp: 2026-05-25T07:10:17.001Z
+  - _ulid: 01KSEZGTHHP4BG486RFET0320J
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSEW74GDZAC9E0Q17D8FVBKR
+    timestamp: 2026-05-25T07:10:21.745Z
+examined_commit: d31b3df0546b893caf3746c64c4aa91a4661e3e9
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XAZQ5478RV2AVKG8MNB0S"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSEW6ZD4SK7P8DP1T1XJN5W8
+    anchor:
+      type: code
+      commit: d31b3df0546b893caf3746c64c4aa91a4661e3e9
+      line_end: 405
+      line_start: 399
+      path: src/cli/commands/plan-resource.ts
+      side: head
+    entries:
+      - _ulid: 01KSEW6ZD46NDN4FZMZTF42JGT
+        author: Jacob Chapel
+        body: "MUST-FIX: `plan resource add` writes through symlinked directories already present under the
+          plan resources tree. I reproduced this by creating `.kspec/plans/<plan>/resources/sub` as
+          a symlink to an outside temp directory, then running `plan resource add
+          @plan-resource-plan <source> --id leak --path sub/leak.txt --json`; the command exited 0
+          and created `outside/leak.txt`. This violates the shared resource contract that symlink
+          escapes are forbidden and lets a manifest path that appears plan-owned write bytes outside
+          `.kspec/plans/<plan>/resources/`. Validate the destination path with symlink-safe
+          containment before copying, including existing intermediate directories and the resources
+          root."
+        created_at: 2026-05-25T06:12:33.316Z
+      - _ulid: 01KSEZG5JV0DYP4TZMQEPA5YYA
+        author: "@claude"
+        body: "Fixed in 7e8ff3aeec. Added shared assertSafeResourceMutationPath helper in
+          src/parser/entity-local-resources.ts that walks the textual chain segment-by-segment with
+          lstat before any disk mutation. runPlanResourceAdd now calls it on both the new
+          destination AND the previous --replace path before fs.copyFile/fs.rm touches disk. The
+          helper rejects: (a) a symlinked resources/ root, (b) any symlinked intermediate directory
+          along the path, and (c) a symlinked or non-regular destination leaf. Rejection surfaces as
+          invalid_resource_path so the existing CLI error contract is preserved. Two regression
+          tests cover this: the exact reviewer reproduction (sub → outside, baseline.png pre-seeded)
+          plus a defence-in-depth case where the resources/ root itself is a symlink. Both verify
+          the outside file is never written."
+        created_at: 2026-05-25T07:10:00.283Z
+    kind: blocker
+    resolved_at: 2026-05-25T07:10:09.914Z
+    resolved_by: "@claude"
+  - _ulid: 01KSEW74GDZAC9E0Q17D8FVBKR
+    anchor:
+      type: code
+      commit: d31b3df0546b893caf3746c64c4aa91a4661e3e9
+      line_end: 600
+      line_start: 598
+      path: src/cli/commands/plan-resource.ts
+      side: head
+    entries:
+      - _ulid: 01KSEW74GDK591KCTVYTWD8X8H
+        author: Jacob Chapel
+        body: "MUST-FIX: `plan resource remove` deletes through the same unchecked joined path. With the
+          escaped resource above in the manifest, `plan resource remove @plan-resource-plan leak
+          --force --json` exited 0 and removed the outside file behind the `resources/sub` symlink.
+          `remove` must resolve the declared resource path through the same symlink-safe containment
+          rules before deleting, otherwise a task-owned manifest entry can delete arbitrary local
+          files reachable through an existing symlink under `resources/`."
+        created_at: 2026-05-25T06:12:38.541Z
+      - _ulid: 01KSEZGKW2Y27KCYXXC48VK8AR
+        author: "@claude"
+        body: "Fixed in 7e8ff3aeec. runPlanResourceRemove now calls the same assertSafeResourceMutationPath
+          helper on the manifest entry's path BEFORE either the confirmation prompt or fs.rm runs.
+          Doing the symlink gate before the prompt avoids a 'yes, delete' answer becoming an
+          outside-file deletion. Rejection surfaces as invalid_resource_path. Regression test
+          reproduces the reviewer scenario by editing the manifest directly (since the add fix now
+          refuses to create such an entry through the CLI): create plan, add a baseline file, plant
+          a sub symlink to an outside dir containing leak.txt, append a poisoned 'leak' entry
+          pointing at sub/leak.txt, then run plan resource remove --force --json. Test asserts exit
+          1 with invalid_resource_path and verifies the outside leak.txt bytes are untouched."
+        created_at: 2026-05-25T07:10:14.914Z
+    kind: blocker
+    resolved_at: 2026-05-25T07:10:19.913Z
+    resolved_by: "@claude"
+  - _ulid: 01KSEW943T80G87YV62KM1C5E3
+    entries:
+      - _ulid: 01KSEW943T5TZRG52BK15NP83V
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: kspec-agents.md; src/cli/commands/plan-resource.ts;
+          src/parser/plan-resource-import.ts; src/parser/entity-local-resources.ts;
+          src/parser/task-resource-resolver.ts; src/schema/resources.ts; src/schema/task.ts;
+          src/parser/plan-document.ts; src/cli/commands/plan.ts; src/cli/commands/plan-import.ts;
+          src/cli/commands/task.ts; src/cli/output.ts; src/agent-runtime/dispatch.ts;
+          tests/cli-plan-resource.test.ts; tests/cli-plan-import-resources.test.ts;
+          tests/cli-plan-derive-resources.test.ts; tests/plan-document-resource-refs.test.ts.
+
+          Commands run: git status/diff/log; kspec task get; kspec item get; kspec review
+          get/for-task; kspec validate; AC annotation rg; focused resource test run; npm test --
+          --fresh; npm run typecheck; npm run lint; changed-file oxlint; two manual Node
+          reproductions for add/remove symlink escapes.
+
+          Claims verified: prior replace atomicity fix was implemented by source-side metadata
+          validation before copy; prior sibling import symlink blocker was fixed for import via
+          lstat/realpath containment and regression tests; current resource add/remove mutation
+          paths still allow existing resources/ symlink escape.
+
+          Categories searched: correctness, symlink/path security, error handling, AC coverage, test
+          quality, prior blocker regression coverage, integration with task get/dispatch drift
+          surfaces.
+        created_at: 2026-05-25T06:13:43.674Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-25T06:13:56.345Z
+created_at: 2026-05-25T05:56:04.967Z
+updated_at: 2026-05-25T07:10:19.913Z
+notes: []

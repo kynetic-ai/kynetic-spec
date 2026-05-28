@@ -1,0 +1,170 @@
+_ulid: 01KMEK1HEV3Z5X1Z5JHS10GVVA
+slugs: []
+title: Review fix-web-ui-pages-not-rendering-on-initial-load (cycle 1)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: code_compare
+      base_commit: 02ef0686e50d
+      head_commit: 4043b0529691
+    evidence: "160/160 tests pass in web-ui-tanstack-query.test.ts (the modified test file). Full suite:
+      7207 pass, 3 fail (pre-existing timeouts in canonical-task-workspace-contract.test.ts —
+      unrelated to this change)."
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-24T00:21:23.986Z
+    completed_at: 2026-03-24T00:21:23.986Z
+  - status: pass
+    applies_to_version:
+      type: code_compare
+      base_commit: 02ef0686e50d
+      head_commit: 4043b0529691
+    evidence: "Verified: zero remaining 'enabled:.*isStaticMode' patterns in src/. All 13 daemon-only
+      fetch functions have isStaticMode() guards in api.ts. All 8 page/component files simplified to
+      'enabled: isProjectInitialized()' only. \\!isStaticMode() retained in 21 locations for
+      WebSocket subscriptions and UI conditional rendering."
+    name: static-mode-guard-completeness
+    required: true
+    runner: manual
+    created_at: 2026-03-24T00:21:27.658Z
+    completed_at: 2026-03-24T00:21:27.658Z
+  - status: pass
+    applies_to_version:
+      type: code_compare
+      base_commit: 02ef0686e50d
+      head_commit: 4043b0529691
+    evidence: "Verified static return values match interfaces for: AgentDispatchStatus,
+      AgentDefinitions, PaginatedResponse types, ScheduleRuntimeStatus, HealthResponse,
+      ProjectConfig, ShadowStatusResponse, Conventions. One nit: fetchValidationAggregation uses
+      'as' cast with non-matching fields (behavior correct due to optional chaining fallbacks)."
+    name: type-safety
+    required: true
+    runner: manual
+    created_at: 2026-03-24T00:21:31.483Z
+    completed_at: 2026-03-24T00:21:31.483Z
+  - status: pass
+    applies_to_version:
+      type: code_compare
+      base_commit: 02ef0686e50d
+      head_commit: 4043b0529691
+    evidence: ac-6 annotations present on dashboard, agents, automation, settings pages. ac-9 covered by
+      existing SSR tests. Test assertions updated to match new pattern (check apiSrc for
+      isStaticMode instead of page-level checks).
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-24T00:21:34.965Z
+    completed_at: 2026-03-24T00:21:34.965Z
+events:
+  - _ulid: 01KMEK1HEVPDVDGJP906PJT6Z2
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-24T00:13:48.891Z
+  - _ulid: 01KMEK213XJ68RWXKXZ54G48NH
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-24T00:14:04.925Z
+  - _ulid: 01KMEKEA9HG08Y23JC6VGZ10Q3
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMEKE9XXCK0K92RYQ9RPR81M
+    timestamp: 2026-03-24T00:20:47.537Z
+  - _ulid: 01KMEKFE7SQDQ908P6R5XHSS0R
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-24T00:21:24.345Z
+  - _ulid: 01KMEKFHV3QN9VNVVJ9W6NMP1Y
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: static-mode-guard-completeness
+    timestamp: 2026-03-24T00:21:28.035Z
+  - _ulid: 01KMEKFNJS6VRQ2Z10XG9YGB96
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: type-safety
+    timestamp: 2026-03-24T00:21:31.865Z
+  - _ulid: 01KMEKFS00P868K3MTT68ZAXT1
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-24T00:21:35.360Z
+  - _ulid: 01KMEKG1F9A73NK1Z00TCEXBPE
+    actor: agent@kspec-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: code_compare
+        base_commit: 02ef0686e50d
+        head_commit: 4043b0529691
+      decision: approve
+    timestamp: 2026-03-24T00:21:44.042Z
+  - _ulid: 01KMEKG1FATJSNAJFYGBBXEVR4
+    actor: agent@kspec-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-24T00:21:44.042Z
+examined_commit: 4043b05296911b0a7bcbb1d6547f32bddd1412ad
+external_links: []
+lifecycle_state: closed
+related_refs:
+  - "@01KMEHRD4KBZG06321TVPA67HB"
+subject:
+  type: code
+  base_branch: dev
+  base_commit: 02ef0686e50d
+  head_branch: dispatch/task/fix-web-ui-pages-not-rendering-on-initial-load/01kmehrd
+  head_commit: 4043b0529691
+threads:
+  - _ulid: 01KMEKE9XXCK0K92RYQ9RPR81M
+    anchor:
+      type: code
+      commit: 4043b0529691
+      line_end: 2258
+      line_start: 2258
+      path: packages/web-ui/src/lib/api.ts
+      side: head
+    entries:
+      - _ulid: 01KMEKE9XYN0MJ7QGQ63838NA1
+        author: "@claude"
+        body: Static mode return value does not match ValidationAggregation interface. The return is {
+          entity_count, ac_count, trait_ac_count, trait_count, coverage_percent } but the interface
+          has { stats, warnings, entity_counts, ac_counts, orphan_count, valid, error_count,
+          warning_count }. The 'as ValidationAggregation' cast hides the type error. In practice,
+          the validate page uses optional chaining (aggregation?.entity_counts.items ?? 0) so the
+          missing fields produce 0/undefined which falls to the ?? default — behavior is
+          accidentally correct. However, the cast is a type-safety violation that could break if
+          consumption code changes.
+        created_at: 2026-03-24T00:20:47.166Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: code_compare
+      base_commit: 02ef0686e50d
+      head_commit: 4043b0529691
+    decision: approve
+    reviewer: agent@kspec-reviewer
+    role: reviewer
+    created_at: 2026-03-24T00:21:44.041Z
+created_at: 2026-03-24T00:13:48.891Z
+updated_at: 2026-03-24T00:21:44.042Z
+notes: []

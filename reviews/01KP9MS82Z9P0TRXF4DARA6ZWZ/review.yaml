@@ -1,0 +1,196 @@
+_ulid: 01KP9MS82Z9P0TRXF4DARA6ZWZ
+slugs: []
+title: Review single-command version upgrade (cycle 9)
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      > @kynetic-ai/spec@0.12.0 test
+
+      > node scripts/test.cjs in this snapshot: 7943 passed, 5 failed, 5 skipped. All 5 failures are
+      pre-existing EACCES mkdir /tmp/.kspec-sessions errors in tests/cli-agent-commands.test.ts from
+      src/sessions/store.ts:173; the failing test file and codepaths are unchanged versus base
+      0501051eb49ee8db8faccedc035f1cb95cef85fc.
+    name: npm test
+    required: false
+    runner: npm
+    created_at: 2026-04-15T22:51:46.245Z
+    completed_at: 2026-04-15T22:51:46.245Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Fails with pre-existing repo validation issues outside this task diff (e.g.
+      .kspec/modules/meta.yaml schema error and broad unrelated AC annotation warnings); this branch
+      does not modify .kspec state.
+    name: kspec validate
+    required: false
+    created_at: 2026-04-15T22:51:49.219Z
+    completed_at: 2026-04-15T22:51:49.219Z
+events:
+  - _ulid: 01KP9MS82ZM2RYK3RB4VBKTAFA
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-15T22:39:25.791Z
+  - _ulid: 01KP9MSTYRWKWXB2F9ME2NVCRM
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-15T22:39:45.112Z
+  - _ulid: 01KP9NFSDBP71WW6VQMH2CP21T
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KP9NFRFVES313B95WZ9YGRDP
+    timestamp: 2026-04-15T22:51:44.427Z
+  - _ulid: 01KP9NFW5GF387TGN2PCQ68YRH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-04-15T22:51:47.248Z
+  - _ulid: 01KP9NFZ2419VG9AD0HXSZKZD1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-15T22:51:50.213Z
+  - _ulid: 01KP9NG1ZRRYQVGJSXQZ69H2X8
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP9NG0XM78PFS5GWX4RPYDVC
+    timestamp: 2026-04-15T22:51:53.208Z
+  - _ulid: 01KP9NGJZ8QJKYQ0634ZCK09BV
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-15T22:52:10.600Z
+  - _ulid: 01KP9NGJZ838S3D2DCBQNE08MC
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-15T22:52:10.600Z
+  - _ulid: 01KP9PAJKDG2WDB4EYB5A5MR6H
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP9NG0XM78PFS5GWX4RPYDVC
+    timestamp: 2026-04-15T23:06:22.189Z
+  - _ulid: 01KP9PATEBQ4PS7FBFAP1FFDFF
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP9NG0XM78PFS5GWX4RPYDVC
+    timestamp: 2026-04-15T23:06:30.219Z
+  - _ulid: 01KP9PB3NYZFNHTMMAPXGHQHND
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP9NFRFVES313B95WZ9YGRDP
+    timestamp: 2026-04-15T23:06:39.678Z
+  - _ulid: 01KP9PB8SVRNHER6D4AXKP7Q92
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP9NFRFVES313B95WZ9YGRDP
+    timestamp: 2026-04-15T23:06:44.923Z
+examined_commit: 0c1332a0dbf124738797fcac0cfdc70300bc5091
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNXYJ5JCR99F76N8N7265E0B"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KP9NFRFVES313B95WZ9YGRDP
+    entries:
+      - _ulid: 01KP9NFRFVNYPKPY02SSY0YG81
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: src/cli/commands/upgrade.ts, src/cli/commands/agents.ts,
+          src/cli/commands/setup.ts, src/cli/commands/task.ts, src/parser/gitignore.ts,
+          src/parser/skill-render.ts, src/cli/commands/setup-defaults.ts, src/parser/meta.ts,
+          src/cli/index.ts, tests/upgrade-command.test.ts, tests/helpers/cli.ts.
+
+          Commands run: kspec task get @01KNXYJ5JCR99F76N8N7265E0B; kspec review for-task
+          @01KNXYJ5JCR99F76N8N7265E0B; kspec review get @01KP9JVSBYFQ0WQ9Q7CCZ8XXYY; kspec review
+          add/open; kspec item get @single-command-version-upgrade; kspec validate; rg AC
+          annotations in tests/upgrade-command.test.ts; git diff/stat/log; npm test.
+
+          Claims verified: full test suite still only fails in pre-existing cli-agent-commands
+          EACCES path unrelated to this diff; upgrade AC annotations exist for the task spec and
+          inherited traits; current fix-cycle changes for skills probe and default-module scaffold
+          are present in code and tests.
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration.
+        created_at: 2026-04-15T22:51:43.483Z
+      - _ulid: 01KP9PB2QRJDC6ZMCQZK8J8848
+        author: "@claude"
+        body: Acknowledged.
+        created_at: 2026-04-15T23:06:38.712Z
+    kind: nit
+    resolved_at: 2026-04-15T23:06:44.007Z
+    resolved_by: "@claude"
+  - _ulid: 01KP9NG0XM78PFS5GWX4RPYDVC
+    anchor:
+      type: code
+      commit: 0c1332a0dbf124738797fcac0cfdc70300bc5091
+      line_end: 865
+      line_start: 861
+      path: src/cli/commands/upgrade.ts
+      side: head
+    entries:
+      - _ulid: 01KP9NG0XNQ5TDQ8GSSC60216K
+        author: Jacob Chapel
+        body: Step 3 silently ignores template-loading failures and keeps regenerating `kspec-agents.md`
+          with `templateSections = []`. The existing `kspec agents generate` path treats missing or
+          empty `templates/agents-sections/` as a fatal error at src/cli/commands/agents.ts:300-311,
+          so upgrade no longer matches the canonical generator behavior it is supposed to reuse. In
+          that state, `kspec upgrade` reports success, can overwrite the agents file with a
+          truncated version that omits template sections, and still records the project as upgraded
+          instead of failing the step.
+        created_at: 2026-04-15T22:51:52.117Z
+      - _ulid: 01KP9PAHPE318331W6BBHF7XBZ
+        author: "@claude"
+        body: "Fixed: loadTemplateSections() errors now propagate as a failed step result instead of being
+          silently caught. The try/catch that set templateSections=[] was replaced with one that
+          returns {status:'failed', message} on error. This matches the canonical agents.ts
+          fatal-error behavior and prevents truncated writes. The priorStepsAllSucceeded guard
+          already blocks version recording when any step fails."
+        created_at: 2026-04-15T23:06:21.262Z
+    kind: blocker
+    resolved_at: 2026-04-15T23:06:29.270Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-15T22:52:10.600Z
+created_at: 2026-04-15T22:39:25.791Z
+updated_at: 2026-04-15T23:06:44.007Z
+notes: []

@@ -1,0 +1,21 @@
+notes:
+  - _ulid: 01KQ0D7GNG8NW8TZ71PE96SEQQ
+    content: "Created manual-only planning tasks tied to each seed plan via plan_ref:
+      @task-convert-cruft-01-spec-catalog-health-plan,
+      @task-convert-cruft-02-backfill-process-retirement-plan,
+      @task-convert-cruft-03-trait-normalization-plan,
+      @task-convert-cruft-04-cli-schema-spec-rewrite-plan,
+      @task-convert-cruft-05-api-daemon-web-contract-split-plan,
+      @task-convert-cruft-06-code-quality-refactors-plan. These tasks are for creating the real
+      derive-ready plans represented by the seeds; the seed plan records remain durable briefs and
+      should not be derived."
+    author: Jacob Chapel
+    created_at: 2026-04-24T18:49:56.656Z
+  - _ulid: 01KQ0FQRC42BB4P97W0N1YMRQZ
+    content: "Seed 01 conversion completed: @cruft-01-spec-catalog-health-seed produced the reviewed
+      draft implementation plan @plan-spec-catalog-health-and-validation-trust. Plan-reviewer cycle
+      1 requested changes in @01KQ0ERKXPS93QMFXVPKWTDWB3; cycle 2 approved the revised plan in
+      @01KQ0FAKTH1FV6YG97H56R426D. This plan is the first downstream cleanup plan for restoring
+      validation/catalog trust before later cruft cleanup plans."
+    author: Jacob Chapel
+    created_at: 2026-04-24T19:33:45.988Z

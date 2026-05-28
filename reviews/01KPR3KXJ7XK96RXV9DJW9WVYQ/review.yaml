@@ -1,0 +1,117 @@
+_ulid: 01KPR3KXJ7XK96RXV9DJW9WVYQ
+slugs: []
+title: Review task-docs-troubleshooting-content (cycle 4)
+author: codex
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Pre-existing repo validation failure unrelated to this docs snapshot:
+      .kspec/modules/meta.yaml modules[0].traits.0 expected string, received object; plus
+      long-standing completeness/alignment warnings."
+    name: validate
+    required: false
+    runner: kspec validate
+    created_at: 2026-04-21T13:28:26.218Z
+    completed_at: 2026-04-21T13:28:26.218Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: docs/troubleshooting/*.md, docs/troubleshooting/index.md,
+      tests/web-ui-docs-rendering.test.ts, package.json, relevant help/tests. Commands run: git
+      diff/stat, task get, review for-task/get, item get, validate, rg for AC annotations and
+      command surfaces, CLI --help lookups, npm test. Claims verified: task-submit/review-refresh
+      semantics, setup --force availability, dispatch watch/status availability, init idempotent
+      behavior. Categories searched: correctness, edge cases, error handling, test quality,
+      integration. Findings: none."
+    name: review-evidence
+    required: false
+    runner: manual-review
+    created_at: 2026-04-21T13:28:29.398Z
+    completed_at: 2026-04-21T13:28:29.398Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran node scripts/test.cjs via npm test from this snapshot. The changed suite
+      tests/web-ui-docs-rendering.test.ts passed, and the full run emitted only PASS lines across
+      the suite with no failing tests observed.
+    name: npm test
+    required: true
+    runner: npm test
+    created_at: 2026-04-21T13:28:32.670Z
+    completed_at: 2026-04-21T13:28:32.670Z
+events:
+  - _ulid: 01KPR3KXJ7ME8S8JGGGRXBQ26Q
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-21T13:28:01.863Z
+  - _ulid: 01KPR3MK601J34RWA9RFYW91QH
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-21T13:28:24.000Z
+  - _ulid: 01KPR3MPE5VTGDMK6STJ9ZDMV1
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: validate
+    timestamp: 2026-04-21T13:28:27.333Z
+  - _ulid: 01KPR3MSMKRWVXKNK8RBYJJ78Y
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-04-21T13:28:30.611Z
+  - _ulid: 01KPR3MWNV4GKRSB584Q1WYCAK
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-21T13:28:33.723Z
+  - _ulid: 01KPR3NDQHG9WQG44185EYYV5Z
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-21T13:28:51.185Z
+  - _ulid: 01KPR3NDQH05M7ZSEYNE9JQ9ZZ
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-21T13:28:51.185Z
+examined_commit: 2e4af779415f5e36db24750589b2fbf49ea7d760
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KPPN4435PYT5BK4VFXTPR1F3"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-21T13:28:51.185Z
+created_at: 2026-04-21T13:28:01.863Z
+updated_at: 2026-04-21T13:28:51.185Z
+notes: []

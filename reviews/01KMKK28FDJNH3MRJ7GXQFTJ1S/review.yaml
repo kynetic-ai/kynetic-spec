@@ -1,0 +1,161 @@
+_ulid: 01KMKK28FDJNH3MRJ7GXQFTJ1S
+slugs: []
+title: Review migrate-all-test-fixtures-and-tests-to-split-task-storage-format
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 299/301 test files passed, 6814 tests passed, 12 skipped. 2 failures are pre-existing
+      timeout flakes in unrelated tests (agent-invocation-lifecycle.test.ts and
+      canonical-task-workspace-contract.test.ts) — neither file was modified in this commit.
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-25T23:00:28.862Z
+    completed_at: 2026-03-25T23:00:28.862Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Build succeeded — CLI, web-ui, and plugin all built without errors.
+    name: build
+    required: true
+    runner: npm run build
+    created_at: 2026-03-25T23:00:37.146Z
+    completed_at: 2026-03-25T23:00:37.146Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed. Warnings are pre-existing (missing AC coverage, orphaned specs, invalid
+      AC annotations) — none introduced by this commit.
+    name: kspec-validate
+    required: true
+    runner: kspec validate
+    created_at: 2026-03-25T23:01:07.628Z
+    completed_at: 2026-03-25T23:01:07.628Z
+events:
+  - _ulid: 01KMKK28FDG32MYNFBKRX62N46
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-25T22:50:24.621Z
+  - _ulid: 01KMKK2M7NC8KBCG1RZ6EYKB71
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-25T22:50:36.661Z
+  - _ulid: 01KMKKM1W6VRYBY2AFWTEYJNK0
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMKKM1FPZT0FGAFGAFWD0BNJ
+    timestamp: 2026-03-25T23:00:07.686Z
+  - _ulid: 01KMKKMC4MFTNQTNFYQNBKCDXM
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMKKMBR1VGHEW7YJBH5SM2D2
+    timestamp: 2026-03-25T23:00:18.196Z
+  - _ulid: 01KMKKMPXN0N21MDRYFCXBZT1G
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-25T23:00:29.238Z
+  - _ulid: 01KMKKMZ0KP0WMB4CCYKGNGATF
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: build
+    timestamp: 2026-03-25T23:00:37.523Z
+  - _ulid: 01KMKKNWRVHBRDAR3MKH18SZER
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-25T23:01:07.996Z
+  - _ulid: 01KMKKPAPB3EB3AVYDQHRKK0NK
+    actor: agent@pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-25T23:01:22.251Z
+  - _ulid: 01KMKKPAPBSCEY51KMH931F5H3
+    actor: agent@pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-25T23:01:22.251Z
+examined_commit: 147d25b6b478d3e17bc5f7b9d98ee56f8b9c2f76
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMK33PK53WC6D21QNJJA8DWJ"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMKKM1FPZT0FGAFGAFWD0BNJ
+    anchor:
+      type: code
+      commit: 147d25b6b478
+      line_end: 80
+      line_start: 57
+      path: tests/cli/session-start-format.test.ts
+      side: head
+    entries:
+      - _ulid: 01KMKKM1FP0YWBEH3FX5KBHG7B
+        author: "@claude"
+        body: "seedSplitTask is duplicated in 3 locations: the canonical export in tests/helpers/cli.ts
+          (line 498), and local copies in tests/cli/session-start-format.test.ts (line 57) and
+          tests/cli/session-start-notes.test.ts (line 21). The canonical version has proper error
+          handling (try/catch for missing index file); the local copies do not. Both test files
+          already import from '../helpers/cli' but don't import seedSplitTask. Should use the
+          exported helper instead of duplicating."
+        created_at: 2026-03-25T23:00:07.286Z
+    kind: nit
+  - _ulid: 01KMKKMBR1VGHEW7YJBH5SM2D2
+    anchor:
+      type: code
+      commit: 147d25b6b478
+      line_end: 102
+      line_start: 68
+      path: tests/review-task-integration.test.ts
+      side: head
+    entries:
+      - _ulid: 01KMKKMBR2HVJGSZM08SJ9G7T1
+        author: "@claude"
+        body: review-task-integration.test.ts has a fourth variant of the split-format writing logic in
+          createAndSaveTask (line 68-102). This version is async and manually enumerates index
+          fields instead of using the destructuring pattern. While functionally different (async,
+          uses createTask), the core logic is the same. Consider extracting a shared async
+          seedSplitTask helper or having createAndSaveTask call the sync seedSplitTask.
+        created_at: 2026-03-25T23:00:17.794Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: agent@pr-reviewer
+    role: reviewer
+    created_at: 2026-03-25T23:01:22.251Z
+created_at: 2026-03-25T22:50:24.621Z
+updated_at: 2026-03-25T23:01:22.251Z
+notes: []

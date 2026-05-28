@@ -1,0 +1,342 @@
+_ulid: 01KNMS23WYFPTZ5CFVH2FWDPY3
+slugs: []
+title: Review task-read-command-concurrency
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- tests/daemon-command-api.test.ts passed: 2/2 suites, 29/29 tests."
+    name: daemon-command-api tests
+    required: true
+    runner: npm
+    created_at: 2026-04-07T20:16:44.909Z
+    completed_at: 2026-04-07T20:16:44.909Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation exited with warnings only (existing repo warning debt); no new schema/reference
+      errors from this task.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-04-07T20:16:47.481Z
+    completed_at: 2026-04-07T20:16:47.481Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- tests/daemon-command-api.test.ts passed: 2/2 suites, 29/29 tests."
+    name: daemon-command-api tests
+    required: true
+    runner: npm
+    created_at: 2026-04-07T20:17:09.816Z
+    completed_at: 2026-04-07T20:17:09.816Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation exited with warnings only (existing repo warning debt); no new schema/reference
+      errors from this task.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-04-07T20:17:12.264Z
+    completed_at: 2026-04-07T20:17:12.264Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2094/2094 suites, 7635 passed, 5 skipped, duration 3028.4s."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-07T20:17:14.720Z
+    completed_at: 2026-04-07T20:17:14.720Z
+events:
+  - _ulid: 01KNMS23WY2BKTHFHZ0W4W0QE7
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-07T20:10:07.646Z
+  - _ulid: 01KNMS2YGX2F6Q28AMWKG07GEM
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-07T20:10:34.909Z
+  - _ulid: 01KNMSE69NRHBTQEHMHSSJJHJJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNMSE5CAYR7PG595TKX4A3KV
+    timestamp: 2026-04-07T20:16:43.317Z
+  - _ulid: 01KNMSE8SSXVKT52SXXY2JF9G9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: daemon-command-api tests
+    timestamp: 2026-04-07T20:16:45.881Z
+  - _ulid: 01KNMSEB81E08R8FZKZHFTBYYQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-07T20:16:48.385Z
+  - _ulid: 01KNMSEDS0A7A6TAJ9BNXAEZEJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNMSECX6CACHE98YX6QWM35J
+    timestamp: 2026-04-07T20:16:50.976Z
+  - _ulid: 01KNMSEGFZ0VW22YZCEABZC2DA
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNMSEFF0JTSV6KR2QCR8VH78
+    timestamp: 2026-04-07T20:16:53.759Z
+  - _ulid: 01KNMSERFESQMMDMF54M049JCD
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNMSEQNM214KVGPGS6JKAQSN
+    timestamp: 2026-04-07T20:17:01.934Z
+  - _ulid: 01KNMSF10H8KQZTEBS3WFNTB6F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: daemon-command-api tests
+    timestamp: 2026-04-07T20:17:10.673Z
+  - _ulid: 01KNMSF3D77SW2N6FXN60MVC0J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-07T20:17:13.127Z
+  - _ulid: 01KNMSF5TZPSBD6AJ7CX4XGSFM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-07T20:17:15.615Z
+  - _ulid: 01KNMSFT35JZERA8NN7MB082GW
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-07T20:17:36.357Z
+  - _ulid: 01KNMSFT353A88ST33XZK0BAQY
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-07T20:17:36.357Z
+  - _ulid: 01KNMTX5X406HP3VMHJZAQ9KFN
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNMSE5CAYR7PG595TKX4A3KV
+    timestamp: 2026-04-07T20:42:23.013Z
+  - _ulid: 01KNMTX8K0KYG44CNQST9WMVZ6
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNMSEFF0JTSV6KR2QCR8VH78
+    timestamp: 2026-04-07T20:42:25.760Z
+  - _ulid: 01KNMTXBAD7HZVW2SEG71VE5CN
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNMSECX6CACHE98YX6QWM35J
+    timestamp: 2026-04-07T20:42:28.557Z
+  - _ulid: 01KNMTYFF2XPNX7QM4KYXSDCHJ
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNMSECX6CACHE98YX6QWM35J
+    timestamp: 2026-04-07T20:43:05.570Z
+  - _ulid: 01KNMTYJ2M2SQ14F199W6J8B4K
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNMSE5CAYR7PG595TKX4A3KV
+    timestamp: 2026-04-07T20:43:08.244Z
+  - _ulid: 01KNMTYMNTMQGZ0K77ZN36TFBE
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNMSEQNM214KVGPGS6JKAQSN
+    timestamp: 2026-04-07T20:43:10.906Z
+  - _ulid: 01KNMV1WYW062B6W4HYJ4A4GTK
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNMSEQNM214KVGPGS6JKAQSN
+    timestamp: 2026-04-07T20:44:57.692Z
+  - _ulid: 01KNMV1ZHSG0WCPM2S3HS5HEEE
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNMSEFF0JTSV6KR2QCR8VH78
+    timestamp: 2026-04-07T20:45:00.345Z
+examined_commit: 1dcde7937b52018f763a0cff9973e4977ab9e72e
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNMBPEM8EBQPTWHSKP7M5JT4"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNMSE5CAYR7PG595TKX4A3KV
+    entries:
+      - _ulid: 01KNMSE5CA2VZRYYEJNJ19A2MV
+        author: Jacob Chapel
+        body: 'Evidence log:\nFiles read: packages/daemon/src/routes/command.ts,
+          tests/daemon-command-api.test.ts, src/cli/commands/task.ts, src/cli/commands/tasks.ts,
+          src/cli/commands/item.ts, src/cli/commands/search.ts, src/cli/commands/plan.ts,
+          src/cli/commands/review.ts, src/cli/commands/inbox.ts.\nCommands run: kspec task get
+          @01KNMBPEM8EBQPTWHSKP7M5JT4; kspec item get @daemon-concurrent-reads; kspec review
+          for-task @01KNMBPEM8EBQPTWHSKP7M5JT4; kspec validate; grep -Rni "AC:
+          @daemon-concurrent-reads\|AC: @trait-" tests; npm test --
+          tests/daemon-command-api.test.ts; npm test; bounded node repro for concurrent cache-backed
+          reads.\nClaims verified: cache-domain allowlist was compared against the underlying CLI
+          handlers; worker claim that concurrent cache-backed reads are safe was disproved with the
+          direct repro above.\nCategories searched: correctness, edge cases, error handling, test
+          quality, integration. Findings: 1 blocker in correctness/integration; no separate AC
+          annotation or validation regression introduced by this task.'
+        created_at: 2026-04-07T20:16:42.378Z
+      - _ulid: 01KNMTX4ZAVZM1VXWST705715F
+        author: Jacob Chapel
+        body: Addressed. The implementation now isolates request-local execution state instead of assuming
+          the old process-global capture path was safe, and the verification set was refreshed with
+          the new concurrency/output-isolation regression plus a fresh full-suite run.
+        created_at: 2026-04-07T20:42:22.057Z
+    kind: nit
+    resolved_at: 2026-04-07T20:43:07.314Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KNMSECX6CACHE98YX6QWM35J
+    anchor:
+      type: code
+      commit: 1dcde7937b52018f763a0cff9973e4977ab9e72e
+      line_end: 562
+      line_start: 561
+      path: packages/daemon/src/routes/command.ts
+      side: head
+    entries:
+      - _ulid: 01KNMSECX64VCW18CE2SPQ9GW4
+        author: Jacob Chapel
+        body: "Bypassing the dispatch mutex here is still unsafe because  mutates shared process-wide state
+          and a shared Commander instance (, , , , and the exit interceptor at lines 135-230). I
+          reproduced this with two concurrent cache-eligible reads ( + ) against a ready mock
+          cache:  output leaked to the parent stdout ( / ) instead of staying in the API response,
+          and the pair never completed before  expired. That means concurrent reads can corrupt
+          captured output or hang, so ac-concurrent-cache-reads is not actually satisfied yet."
+        created_at: 2026-04-07T20:16:50.086Z
+      - _ulid: 01KNMTXACEWMCAW9NK21T900BV
+        author: Jacob Chapel
+        body: Fixed by removing the unsafe shared execution path rather than keeping the old bypass. The
+          daemon route now executes each request with isolated stdout/stderr capture, exit
+          interception, output-mode state, working-directory context, and a fresh Commander program
+          instance, so cache-backed reads no longer share console/process/program state when they
+          skip the mutex. Added a behavioral regression test that runs concurrent allowlisted reads
+          and asserts their outputs stay isolated with no stdout leakage.
+        created_at: 2026-04-07T20:42:27.598Z
+    kind: blocker
+    resolved_at: 2026-04-07T20:43:04.759Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KNMSEFF0JTSV6KR2QCR8VH78
+    anchor:
+      type: code
+      commit: 1dcde7937b52018f763a0cff9973e4977ab9e72e
+      line_end: 562
+      line_start: 561
+      path: packages/daemon/src/routes/command.ts
+      side: head
+    entries:
+      - _ulid: 01KNMSEFF0CRVGVDW2W3EV45TR
+        author: Jacob Chapel
+        body: "Bypassing the dispatch mutex here is still unsafe because executeCommand() mutates shared
+          process-wide state and a shared Commander instance (resetCommandTree(program), console.*,
+          process.stdout/stderr.write, process.chdir(), and the exit interceptor at lines 135-230).
+          I reproduced this with two concurrent cache-eligible reads (tasks list + plan list)
+          against a ready mock cache: plan list output leaked to the parent stdout (B-end / Plans
+          (1): ...) instead of staying in the API response, and the pair never completed before
+          timeout 15s expired. That means concurrent reads can corrupt captured output or hang, so
+          ac-concurrent-cache-reads is not actually satisfied yet."
+        created_at: 2026-04-07T20:16:52.704Z
+      - _ulid: 01KNMTX7KG5KKA0JDJ74TTEQTP
+        author: Jacob Chapel
+        body: "Fixed in the same isolation refactor. Cache-backed concurrent reads now run against
+          per-request execution state and fresh CLI programs, and the new daemon command API
+          coverage exercises the concrete reviewer repro shape by running concurrent read commands
+          and asserting no cross-response leakage. Verification: npm test --
+          tests/daemon-command-api.test.ts and npm test -- --fresh."
+        created_at: 2026-04-07T20:42:24.751Z
+    kind: blocker
+    resolved_at: 2026-04-07T20:44:59.417Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KNMSEQNM214KVGPGS6JKAQSN
+    entries:
+      - _ulid: 01KNMSEQNM0TS4T5JPNZGWAHR9
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          Files read: packages/daemon/src/routes/command.ts, tests/daemon-command-api.test.ts,
+          src/cli/commands/task.ts, src/cli/commands/tasks.ts, src/cli/commands/item.ts,
+          src/cli/commands/search.ts, src/cli/commands/plan.ts, src/cli/commands/review.ts,
+          src/cli/commands/inbox.ts.
+
+          Commands run: kspec task get @01KNMBPEM8EBQPTWHSKP7M5JT4; kspec item get
+          @daemon-concurrent-reads; kspec review for-task @01KNMBPEM8EBQPTWHSKP7M5JT4; kspec
+          validate; grep -Rni "AC: @daemon-concurrent-reads\|AC: @trait-" tests; npm test --
+          tests/daemon-command-api.test.ts; npm test; bounded node repro for concurrent cache-backed
+          reads.
+
+          Claims verified: cache-domain allowlist was compared against the underlying CLI handlers;
+          the claim that concurrent cache-backed reads are safe was disproved with the direct repro
+          above.
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration.
+          Findings: 1 blocker in correctness/integration; no separate AC annotation or validation
+          regression introduced by this task.
+        created_at: 2026-04-07T20:17:01.108Z
+      - _ulid: 01KNMTYKQ1FP6Y5MJJXZ5KSS8T
+        author: Jacob Chapel
+        body: Updated. The fix-cycle verification covered the reviewed route/tests plus a fresh full-suite
+          run to avoid stale cached test artifacts, and the new regression test now checks
+          behavioral isolation for concurrent cache-backed reads.
+        created_at: 2026-04-07T20:43:09.921Z
+    kind: nit
+    resolved_at: 2026-04-07T20:44:56.865Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-07T20:17:36.357Z
+created_at: 2026-04-07T20:10:07.646Z
+updated_at: 2026-04-07T20:44:59.417Z
+notes: []

@@ -1,0 +1,281 @@
+_ulid: 01KRFJZMTV861R70M2R54EW1T4
+slugs: []
+title: Review fix guardrail cleanup-effect classification (cycle 16)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with pre-existing warnings; --warnings-ok exit 0. Schema and references
+      OK; warnings are existing deprecated refs, alignment/completeness warnings, and invalid AC
+      annotations outside this task.
+    name: kspec validate --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-13T02:48:43.425Z
+    completed_at: 2026-05-13T02:48:43.425Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts
+      tests/lint-daemon-test-guardrails.test.ts passed: 23 suites, 379 tests, duration 87.2s"
+    name: targeted lint-rule suites
+    required: true
+    runner: npm
+    created_at: 2026-05-13T02:48:51.675Z
+    completed_at: 2026-05-13T02:48:51.675Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2430 suites, 9166 passed, 5 skipped of 9171; duration 2170.4s; log
+      /tmp/kspec-test-cache/01KRFJYMS2XFKG93ZZCQ0T572C/bddfd2eeaee2e489.log"
+    name: npm test -- --fresh
+    required: true
+    runner: npm
+    created_at: 2026-05-13T02:48:55.958Z
+    completed_at: 2026-05-13T02:48:55.958Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npx oxlint tools/eslint-rules/no-leaky-test-daemon.js
+      tests/lint-no-leaky-test-daemon.test.ts exited 0 with 0 errors and 35 pre-existing warnings.
+    name: changed-file oxlint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-13T02:49:16.211Z
+    completed_at: 2026-05-13T02:49:16.211Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repository lint still fails with 13 errors and 721 warnings. The errors are outside the
+      two files touched by HEAD; touched-file oxlint has 0 errors. This matches the pre-existing
+      lint failure profile from prior cycles.
+    name: npm run lint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-13T02:49:20.337Z
+    completed_at: 2026-05-13T02:49:20.337Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check 0dcbcdd27642e95299a7b77a48da1e5d295df176...HEAD produced no whitespace errors.
+    name: git diff --check
+    required: true
+    runner: git
+    created_at: 2026-05-13T02:49:24.654Z
+    completed_at: 2026-05-13T02:49:24.654Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Synthetic test with import { killPid } from './helpers/daemon' plus 'declare enum killPid
+      { noop }' should keep the approved runtime cleanup helper, but oxlint reported
+      no-leaky-test-daemon missing cleanup at the detached start.
+    name: ad hoc declare-enum cleanup probe
+    required: true
+    runner: oxlint
+    created_at: 2026-05-13T02:49:29.155Z
+    completed_at: 2026-05-13T02:49:29.155Z
+events:
+  - _ulid: 01KRFJZMTVCNSQAR7MPHNCPJFY
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-13T02:34:48.539Z
+  - _ulid: 01KRFK01HWV0D5MJ9KJ2QS82XB
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-13T02:35:01.564Z
+  - _ulid: 01KRFKS5H6BCFMXCJ4HMF6KV70
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --warnings-ok
+    timestamp: 2026-05-13T02:48:44.839Z
+  - _ulid: 01KRFKS9JZB8ED9T2HR9S57DT3
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRFKS84YQDDEGMAPDEW7S635
+    timestamp: 2026-05-13T02:48:48.991Z
+  - _ulid: 01KRFKSDPX0BRVY257DZH6VKP2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted lint-rule suites
+    timestamp: 2026-05-13T02:48:53.213Z
+  - _ulid: 01KRFKSHT3KENYX8R0GM09P0G4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-05-13T02:48:57.411Z
+  - _ulid: 01KRFKT5H2MSRH9J96TJ4XJP6X
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file oxlint
+    timestamp: 2026-05-13T02:49:17.602Z
+  - _ulid: 01KRFKT9QW3KDQGG54STA2WSW9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm run lint
+    timestamp: 2026-05-13T02:49:21.916Z
+  - _ulid: 01KRFKTDXX2QWQED9S28HYNKCW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: git diff --check
+    timestamp: 2026-05-13T02:49:26.205Z
+  - _ulid: 01KRFKTJ8EMY1K0K08S6VG0MC9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: ad hoc declare-enum cleanup probe
+    timestamp: 2026-05-13T02:49:30.638Z
+  - _ulid: 01KRFKV487YGQ2MX7P5MCXFZP1
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KRFKV2T3Z3MYAEDQH71D8N9M
+    timestamp: 2026-05-13T02:49:49.063Z
+  - _ulid: 01KRFKVDRV0R313X7VWM4ZJBVH
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-13T02:49:58.812Z
+  - _ulid: 01KRFKVDRWEHSTBZ760NPXP67B
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-13T02:49:58.812Z
+  - _ulid: 01KRFN53WX8EX94DJABTXTP3MB
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRFKS84YQDDEGMAPDEW7S635
+    timestamp: 2026-05-13T03:12:44.957Z
+  - _ulid: 01KRFN5GX3AXM82T64KRAEZRV9
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KRFKS84YQDDEGMAPDEW7S635
+    timestamp: 2026-05-13T03:12:58.275Z
+examined_commit: ad8fd1d4d3466abc43a47cf9a591e7ff09cdfe6a
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRCRJPMHMHC410TKRC5Y9HF1"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRFKS84YQDDEGMAPDEW7S635
+    anchor:
+      type: code
+      commit: ad8fd1d4d3466abc43a47cf9a591e7ff09cdfe6a
+      line_end: 1762
+      line_start: 1756
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KRFKS84YR6MHH0VWC2J3WEN6
+        author: Jacob Chapel
+        body: "MUST-FIX: TSEnumDeclaration is treated as opaque even when the enum is ambient/type-only. The
+          comment directly below says declare ambient declarations are erased and should not shadow
+          runtime bindings, but this branch returns true for every TSEnumDeclaration without
+          checking stmt.declare. I verified with an oxlint probe using an approved import plus
+          'declare enum killPid { noop }'; the rule reported the detached start as missing cleanup
+          even though runtime cleanup still calls the approved imported killPid. This is a false
+          positive against the precision contract and should be fixed, with a regression test
+          proving declare enum does not shadow the approved helper while non-declare enum still
+          does."
+        created_at: 2026-05-13T02:48:47.518Z
+      - _ulid: 01KRFN52FVYWR79ZE9RRNM4TZ8
+        author: "@claude"
+        body: "Fixed in 493ede939: extended statementBindsNameOpaquely to honour the documented
+          declare-ambient carve-out for TSEnumDeclaration (and aligned ClassDeclaration,
+          VariableDeclaration, TSImportEqualsDeclaration with the same intent). The
+          TSEnumDeclaration branch now consults stmt.declare so a 'declare enum killPid { noop }' is
+          no longer misclassified as opaque; the use site keeps approved-import trust. Behavioral
+          regression in tests/lint-no-leaky-test-daemon.test.ts covers declare-enum / declare-class
+          / declare-const carve-outs and includes a non-declare enum control that proves the
+          cycle-15 enum-shadow rejection is still in place."
+        created_at: 2026-05-13T03:12:43.515Z
+    kind: blocker
+    resolved_at: 2026-05-13T03:12:56.827Z
+    resolved_by: "@claude"
+  - _ulid: 01KRFKV2T3Z3MYAEDQH71D8N9M
+    entries:
+      - _ulid: 01KRFKV2T46E6X68Z9KDAFD3NX
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+
+          Files read: kspec-agents.md; task @01KRCRJPMHMHC410TKRC5Y9HF1; spec
+          @daemon-test-guardrail-precision; prior review @01KRFG8N; HEAD diff for
+          tools/eslint-rules/no-leaky-test-daemon.js and tests/lint-no-leaky-test-daemon.test.ts;
+          surrounding helper-origin functions in tools/eslint-rules/no-leaky-test-daemon.js; AC
+          annotations in tests/lint-no-leaky-test-daemon.test.ts and
+          tests/lint-daemon-test-guardrails.test.ts.
+
+
+          Commands run: git status --short --branch; git rev-parse HEAD; git log --oneline --graph
+          --max-count=40; git show HEAD; git diff --stat/name-only/check 0dcbcdd...HEAD; kspec item
+          get @daemon-test-guardrail-precision; kspec validate and kspec validate --warnings-ok; rg
+          AC annotation scans; npm test -- --fresh tests/lint-no-leaky-test-daemon.test.ts
+          tests/lint-daemon-test-guardrails.test.ts; npm test -- --fresh; npm run lint; npx oxlint
+          on changed files; ad hoc oxlint probes for TSImportEquals and declare enum helper shadow.
+
+
+          Claims verified: cycle-15 enum-shadow fix is implemented for non-declare enum and
+          namespace cases; TSImportEquals probe is rejected. Worker claim that full npm test passes
+          was verified independently. The claimed type-only carve-out is not correct for declare
+          enum, proven by the failing ad hoc probe.
+
+
+          Categories searched: correctness (helper-origin runtime vs type-only bindings), edge cases
+          (enum, namespace, import-equals, declare enum), error handling/regression risk (lint-rule
+          false positives), test quality (new tests are behavioral oxlint runs, not
+          source-scanning), integration (full suite and changed-file lint).
+        created_at: 2026-05-13T02:49:47.588Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-13T02:49:58.811Z
+created_at: 2026-05-13T02:34:48.539Z
+updated_at: 2026-05-13T03:12:56.827Z
+notes: []

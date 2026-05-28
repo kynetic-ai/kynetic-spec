@@ -1,0 +1,185 @@
+_ulid: 01KPQEJ9986HT6F0VY3KY99G47
+slugs: []
+title: Review make-task-reads-immediately-consistent-after-review-verdict-transitions (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed locally: 2220/2220 suites, 8138/8143 tests, 5 skipped."
+    name: npm test
+    required: true
+    runner: vitest
+    created_at: 2026-04-21T07:31:07.045Z
+    completed_at: 2026-04-21T07:31:07.045Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repository-level pre-existing validation failure: meta.yaml trait schema error plus
+      existing warnings; no task-specific validation signal."
+    name: kspec validate
+    required: false
+    created_at: 2026-04-21T07:31:12.285Z
+    completed_at: 2026-04-21T07:31:12.285Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Found stale cached task-history regression: a reviewer reproduction using
+      runWithEntityCache returned the old history immediately after mutateTask because
+      applyTaskMutation updates index/detail only."
+    name: manual review
+    required: false
+    created_at: 2026-04-21T07:31:45.155Z
+    completed_at: 2026-04-21T07:31:45.155Z
+events:
+  - _ulid: 01KPQEJ997C1FP11AMWA3876NM
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-21T07:20:08.231Z
+  - _ulid: 01KPQEM2PR8ZGARF0XXV256YP4
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-21T07:21:07.032Z
+  - _ulid: 01KPQF6DND8YSBF6N7S6PPEA45
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-21T07:31:08.077Z
+  - _ulid: 01KPQF6JS317029YFCTX5Q47N8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-21T07:31:13.315Z
+  - _ulid: 01KPQF7D2644W0T06817TM5NN8
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPQF7C38Y5YX295NWTR459X7
+    timestamp: 2026-04-21T07:31:40.230Z
+  - _ulid: 01KPQF7FZSKQQN3YJE9V3A8BP6
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KPQF7EZ2DWD36N05KC21C775
+    timestamp: 2026-04-21T07:31:43.225Z
+  - _ulid: 01KPQF7JY00F17KK1CQMM9PB16
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: manual review
+    timestamp: 2026-04-21T07:31:46.240Z
+  - _ulid: 01KPQF8096WTTJVKPWH9X47B4K
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-21T07:31:59.910Z
+  - _ulid: 01KPQF8096MK2HSMB9N7JRBJZD
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-21T07:31:59.910Z
+  - _ulid: 01KPQGBBS6WM7S9HBD3N8WZ9VB
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPQF7C38Y5YX295NWTR459X7
+    timestamp: 2026-04-21T07:51:18.567Z
+  - _ulid: 01KPQGBNE68ZVWQATG2XAMQJFA
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPQF7C38Y5YX295NWTR459X7
+    timestamp: 2026-04-21T07:51:28.454Z
+  - _ulid: 01KPQGBYW790MCYF68KBJVGJ8J
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPQF7EZ2DWD36N05KC21C775
+    timestamp: 2026-04-21T07:51:38.120Z
+examined_commit: d73e82876ce1e09e6033de3bc12b018dcbb5def4
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KPQ7RDHXBRGDZSDFF0XG13RT"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPQF7C38Y5YX295NWTR459X7
+    anchor:
+      type: code
+      commit: d73e82876ce1e09e6033de3bc12b018dcbb5def4
+      line_end: 723
+      line_start: 708
+      path: src/daemon/entity-cache.ts
+      side: head
+    entries:
+      - _ulid: 01KPQF7C38M0034Z48FX6WK7M8
+        author: Jacob Chapel
+        body: This new fast-path only patches the task index/detail caches and leaves tasks.historyDetails
+          untouched, so it makes cached task reads only partially consistent.  still returns cached
+          history first (), and I reproduced that an immediate history read after  still returns the
+          old cached entry instead of the newly written history. Because this hook now runs for
+          every cached task mutation, it introduces a stale-history regression for daemon/command
+          contexts that already warmed task history.
+        created_at: 2026-04-21T07:31:39.240Z
+      - _ulid: 01KPQGBAT61TYBDS0FTJT7PMJB
+        author: "@claude"
+        body: "Fixed: applyTaskMutation() now deletes the historyDetails entry for the mutated task
+          (this.tasks.historyDetails.delete(ulid)), so getTaskHistory() and loadTaskWithHistory()
+          return null and fall through to disk where the freshly-written history entry is picked up.
+          Added a unit test that verifies history is invalidated (returns null) after
+          applyTaskMutation while index and detail tiers remain updated. All 8139 tests pass."
+        created_at: 2026-04-21T07:51:17.574Z
+    kind: blocker
+    resolved_at: 2026-04-21T07:51:27.414Z
+    resolved_by: "@claude"
+  - _ulid: 01KPQF7EZ2DWD36N05KC21C775
+    entries:
+      - _ulid: 01KPQF7EZ3EDXJE0KS0G3NMC8D
+        author: Jacob Chapel
+        body: "Evidence log: Files read: src/parser/task-data-manager.ts, src/daemon/entity-cache.ts,
+          tests/task-data-manager.test.ts, tests/daemon-entity-cache.test.ts,
+          tests/daemon-review-verdicts-api.test.ts, tests/per-task-files.test.ts. Commands run: git
+          diff vs dev base, kspec task get, kspec review get/for-task, kspec validate, rg AC
+          annotations, npm test, and a tsx reproduction that mutated a cached task then read history
+          immediately. Claims verified: request_changes immediate task-read path covered by new
+          integration test; full suite still passes; cached history remains stale after mutateTask.
+          Categories searched: correctness, edge cases, test quality, integration, error handling."
+        created_at: 2026-04-21T07:31:42.179Z
+    kind: nit
+    resolved_at: 2026-04-21T07:51:37.090Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-21T07:31:59.910Z
+created_at: 2026-04-21T07:20:08.231Z
+updated_at: 2026-04-21T07:51:37.090Z
+notes: []

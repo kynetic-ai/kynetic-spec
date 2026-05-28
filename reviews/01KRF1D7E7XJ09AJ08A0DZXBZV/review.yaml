@@ -1,0 +1,232 @@
+_ulid: 01KRF1D7E7XJ09AJ08A0DZXBZV
+slugs: []
+title: "Plan re-review: Dispatch Workspace In-Flight Cleanup Protection"
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "`kspec plan import plans/dispatch-workspace-inflight-cleanup-protection.md --dry-run`
+      succeeded with no changes. `kspec plan derive --dry-run` is gated while the plan remains
+      draft, so task materialization could not be previewed yet."
+    name: Plan import preview
+    required: true
+    created_at: 2026-05-12T21:29:35.178Z
+    completed_at: 2026-05-12T21:29:35.178Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Reviewed @agent-dispatch-engine, @dispatch-workspace-cleanup-policy,
+      @dispatch-workspace-registry, @dispatch-remote-branch-sync,
+      @branch-provenance-in-dispatch-workspace-registry, and @dispatch-branch-integration-contract.
+      Found fail-closed conflict with cleanup-policy ac-6 and missing `closing` cleanup-eligible
+      precedence.
+    name: Existing spec neighborhood
+    required: true
+    created_at: 2026-05-12T21:29:38.883Z
+    completed_at: 2026-05-12T21:29:38.883Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Reviewed the superseded durable lease plan and current implementation notes. This plan
+      avoids durable owner IDs, PID/process-start fields, TTLs, renewals, abandoned lease ownership,
+      and CAS lease writes.
+    name: Simplified Path A scope
+    required: true
+    created_at: 2026-05-12T21:29:43.297Z
+    completed_at: 2026-05-12T21:29:43.297Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Positive/regression coverage is present for active/in-flight/provisioning and
+      orphan/closed cases, but the plan lacks explicit coverage for cleanup-eligible `closing`
+      records and leaves duplicate ownership between the main regression test task and guardrail
+      task.
+    name: Coverage and guardrails
+    required: true
+    created_at: 2026-05-12T21:29:46.864Z
+    completed_at: 2026-05-12T21:29:46.864Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "`kspec validate --warnings-ok` exited 0 with existing baseline reference, alignment, and
+      completeness warnings."
+    name: Validation
+    required: true
+    created_at: 2026-05-12T21:29:50.529Z
+    completed_at: 2026-05-12T21:29:50.529Z
+events:
+  - _ulid: 01KRF1D7E6YVFE6RRWY8XC5E5T
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-12T21:27:39.207Z
+  - _ulid: 01KRF1G9Z6Y486D5K1R099S0TX
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-12T21:29:20.103Z
+  - _ulid: 01KRF1GDM85RPYQ1QGR5AXXCWH
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRF1GC66GYJGQFB348VZ3YBD
+    timestamp: 2026-05-12T21:29:23.848Z
+  - _ulid: 01KRF1GJZW3FNDYMC6H3DD336Z
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRF1GFWWXY0F9AQ14TR2EFWM
+    timestamp: 2026-05-12T21:29:29.340Z
+  - _ulid: 01KRF1GPG60HRHQDKEGQSFT21N
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KRF1GN4QZMXZW261K9XWYW7P
+    timestamp: 2026-05-12T21:29:32.934Z
+  - _ulid: 01KRF1GT4YRVK5AV3A0M51JM7P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan import preview
+    timestamp: 2026-05-12T21:29:36.670Z
+  - _ulid: 01KRF1GYCW5ZBYXDZBWRAD6C7S
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Existing spec neighborhood
+    timestamp: 2026-05-12T21:29:41.020Z
+  - _ulid: 01KRF1H1Z9VJBYD4CFKARQWFE9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Simplified Path A scope
+    timestamp: 2026-05-12T21:29:44.682Z
+  - _ulid: 01KRF1H5GJNRP2K5WJ4NQPEPXB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Coverage and guardrails
+    timestamp: 2026-05-12T21:29:48.307Z
+  - _ulid: 01KRF1H9QJHS5XTM3ZSEP6NJYX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Validation
+    timestamp: 2026-05-12T21:29:52.626Z
+  - _ulid: 01KRF1HD86EJ2Y3QAH382M5H80
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-12T21:29:56.230Z
+  - _ulid: 01KRF1HD86KTZV28RED99BRNW3
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-12T21:29:56.230Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-dispatch-workspace-in-flight-cleanup-protection"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRF1GC66GYJGQFB348VZ3YBD
+    anchor:
+      type: structured
+      field: ac-protection-state-unavailable-fails-closed
+      ref: "@task-add-cleanup-preservation-fail-closed-acs"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KRF1GC66PHZXX6QDMJ15ZFVZ
+        author: Jacob Chapel
+        body: "MUST-FIX: The proposed fail-closed AC conflicts with existing
+          @dispatch-workspace-cleanup-policy ac-6. ac-6 currently permits a metadata-backed
+          workspace with no matching registry record to be deterministically blocked or cleaned when
+          metadata cannot be trusted, while the new AC requires skipping destructive removal when
+          registry, metadata, or protection state cannot be trusted. Impact: implementers cannot
+          tell whether corrupt/untrusted metadata should be cleaned or preserved, and tests could
+          encode either behavior. Fix: make Phase 1 update the existing cleanup-policy AC or narrow
+          the new AC so untrusted metadata has one authoritative outcome, then align
+          @task-apply-protection-policy-across-artifact-reconciliation and fail-closed tests to that
+          outcome."
+        created_at: 2026-05-12T21:29:22.374Z
+    kind: blocker
+  - _ulid: 01KRF1GFWWXY0F9AQ14TR2EFWM
+    anchor:
+      type: structured
+      field: description
+      ref: "@task-centralize-dispatch-artifact-protection-decisions"
+      section: tasks
+    entries:
+      - _ulid: 01KRF1GFWW5SK21Q2EEXXQJTCZ
+        author: Jacob Chapel
+        body: "MUST-FIX: The centralized policy task says non-closed registry states, including `closing`,
+          are protection sources until existing cleanup rules classify them terminal, but the plan
+          never defines the classifier precedence that lets a terminal cleanup-eligible `closing`
+          workspace proceed to physical cleanup. Existing @dispatch-workspace-cleanup-policy
+          ac-2/ac-3 and @dispatch-workspace-registry cleanup-completion ACs require
+          completed/cancelled or merged/abandoned workspaces to enter cleanup and then reach
+          `closed`; treating `closing` as protected can make cleanup fail closed forever before the
+          record can become closed. Fix: define the cleanup classification rule explicitly, e.g.
+          active/in-flight/provisioning and unclassified non-closed records are preserved, but
+          `closing` records with terminal task/integration state and no
+          active/in-flight/provisioning protection may proceed through reaping. Add negative-control
+          coverage for that `closing` cleanup-eligible path, not only already-closed or orphaned
+          artifacts."
+        created_at: 2026-05-12T21:29:26.173Z
+    kind: blocker
+  - _ulid: 01KRF1GN4QZMXZW261K9XWYW7P
+    anchor:
+      type: structured
+      field: description
+      ref: "@task-add-cleanup-protection-maintenance-guardrails"
+      section: tasks
+    entries:
+      - _ulid: 01KRF1GN4QCV6NQF0VYRTPXPVG
+        author: Jacob Chapel
+        body: "SHOULD-FIX: This guardrail task still overlaps heavily with
+          @task-test-cleanup-protection-positive-and-regression-cases: both require per-surface
+          protected and cleanup-eligible tests for the same destructive surfaces. Impact: two agents
+          can add duplicate matrices or split AC coverage ambiguously. Fix: either merge the
+          guardrail expectations into the main test task, or state the distinct responsibility of
+          this task, such as a compact helper-contract matrix that supplements the public
+          reconciliation tests without duplicating them."
+        created_at: 2026-05-12T21:29:31.543Z
+    kind: question
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-12T21:29:56.230Z
+created_at: 2026-05-12T21:27:39.207Z
+updated_at: 2026-05-12T21:29:56.230Z
+notes: []

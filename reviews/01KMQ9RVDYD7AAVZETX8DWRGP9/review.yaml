@@ -1,0 +1,248 @@
+_ulid: 01KMQ9RVDYD7AAVZETX8DWRGP9
+slugs: []
+title: Review task-entity-cache-impl (cycle 25)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed on this snapshot: 6918 tests passed, 5 skipped."
+    name: npm test
+    required: true
+    runner: test-runner
+    created_at: 2026-03-27T09:25:40.107Z
+    completed_at: 2026-03-27T09:25:40.107Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Focused suites passed: tests/daemon-entity-cache.test.ts and
+      tests/daemon-cache-route-coverage.test.ts (79/79)."
+    name: entity-cache targeted tests
+    required: false
+    runner: vitest
+    created_at: 2026-03-27T09:25:43.034Z
+    completed_at: 2026-03-27T09:25:43.034Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Runtime repro against current control flow: patched doLoadDomain() to throw, then
+      observed 'after writeThrough degraded', 'after first invalidate degraded pending', and only
+      the second invalidate reloaded the domain. This shows the first watcher invalidation was
+      skipped after a failed write-through reload."
+    name: writeThrough failure repro
+    required: true
+    runner: node
+    created_at: 2026-03-27T09:25:44.474Z
+    completed_at: 2026-03-27T09:25:44.474Z
+events:
+  - _ulid: 01KMQ9RVDYV6S8TQZJN3Z6ZWGY
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T09:24:56.894Z
+  - _ulid: 01KMQ9SFQZZH5KWPWBZR3R7VGE
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T09:25:17.695Z
+  - _ulid: 01KMQ9T62BYK0MTWEW082A2PB3
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-27T09:25:40.556Z
+  - _ulid: 01KMQ9T7FK0N6W6QE6AM044TWA
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMQ9T71G99CGX2NNDKTS2GPG
+    timestamp: 2026-03-27T09:25:42.003Z
+  - _ulid: 01KMQ9T8YVRK0W96SK9FW5CG6C
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: entity-cache targeted tests
+    timestamp: 2026-03-27T09:25:43.515Z
+  - _ulid: 01KMQ9TAB80JKN9MN62ARDF0G0
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: writeThrough failure repro
+    timestamp: 2026-03-27T09:25:44.936Z
+  - _ulid: 01KMQ9TNVW2PJ81REZRWN79XB0
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMQ9TNC8NX1Y0N5Y8V4QG3N2
+    timestamp: 2026-03-27T09:25:56.732Z
+  - _ulid: 01KMQ9V3ENDAQKHJ4ZX09MKE13
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMQ9V30463A1370Y8F5P1XD6
+    timestamp: 2026-03-27T09:26:10.645Z
+  - _ulid: 01KMQ9V4X037TH3894GTFC6Z55
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-27T09:26:12.128Z
+  - _ulid: 01KMQ9V4X0S030S44K1FMSWY15
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T09:26:12.128Z
+  - _ulid: 01KMQXB7XEA4C2W45RD4YB60B1
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMQ9T71G99CGX2NNDKTS2GPG
+    timestamp: 2026-03-27T15:07:02.446Z
+  - _ulid: 01KMQXB964MH4C152C88EA7ST5
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMQ9T71G99CGX2NNDKTS2GPG
+    timestamp: 2026-03-27T15:07:03.748Z
+  - _ulid: 01KMQXBAE8A1CFG3KA69XP5S3Q
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMQ9V30463A1370Y8F5P1XD6
+    timestamp: 2026-03-27T15:07:05.032Z
+  - _ulid: 01KMQXBBP2V4C7THYSX8SRJJ5H
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMQ9V30463A1370Y8F5P1XD6
+    timestamp: 2026-03-27T15:07:06.306Z
+  - _ulid: 01KMQXBCXZTW8TP46WDSXCNMZW
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMQ9TNC8NX1Y0N5Y8V4QG3N2
+    timestamp: 2026-03-27T15:07:07.583Z
+  - _ulid: 01KMQXBE6204XN4XPQWWRP0P43
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMQ9TNC8NX1Y0N5Y8V4QG3N2
+    timestamp: 2026-03-27T15:07:08.867Z
+examined_commit: 23ae3945faffc641ec39da1c46e99a7064bb2e4f
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMMB3T2K3T6A1CJR884EPKJF"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMQ9T71G99CGX2NNDKTS2GPG
+    anchor:
+      type: code
+      commit: 23ae3945faffc641ec39da1c46e99a7064bb2e4f
+      line_end: 978
+      line_start: 975
+      path: src/daemon/entity-cache.ts
+      side: head
+    entries:
+      - _ulid: 01KMQ9T71GZDE8RPMAJ7XNJ33W
+        author: "@claude"
+        body: " still arms the watcher-skip flag after a failed reload.  catches loader errors, marks the
+          store degraded, and resolves instead of rejecting, so the  here succeeds even when the
+          refresh failed. The next watcher invalidation is then dropped, which leaves the cache
+          stale/degraded until some later unrelated file event. I confirmed this with a runtime
+          repro against the current control flow: monkey-patching  to throw produces , , and only
+          the second invalidation reloads the domain. This violates the intended write-through
+          recovery path for /."
+        created_at: 2026-03-27T09:25:41.552Z
+      - _ulid: 01KMQXB7DXFX5G8NF2NJSQP3P1
+        author: "@claude"
+        body: "Fixed: writeThrough() now checks domain state after loadDomain() — only marks
+          writeThroughSkip when state is ready. When degraded, the skip flag is not set and the next
+          watcher invalidation proceeds normally, allowing recovery. Added regression test that
+          mocks initContext to throw, verifying the domain degrades and the subsequent invalidation
+          is NOT suppressed."
+        created_at: 2026-03-27T15:07:01.949Z
+    kind: blocker
+    resolved_at: 2026-03-27T15:07:03.237Z
+    resolved_by: "@claude"
+  - _ulid: 01KMQ9TNC8NX1Y0N5Y8V4QG3N2
+    entries:
+      - _ulid: 01KMQ9TNC88H7RE3BFFA7VBKW7
+        author: "@claude"
+        body: "Evidence log: files read: src/daemon/entity-cache.ts; packages/daemon/src/routes/sessions.ts;
+          packages/daemon/src/watcher.ts; packages/daemon/src/project-context.ts;
+          packages/daemon/src/server.ts; tests/daemon-entity-cache.test.ts;
+          tests/daemon-cache-route-coverage.test.ts. Commands run: kspec task get, kspec item get,
+          kspec review for-task/get, kspec validate, grep for AC annotations, git diff/stat/show,
+          npm test, npm test -- --verbose tests/daemon-entity-cache.test.ts
+          tests/daemon-cache-route-coverage.test.ts, and two node --import tsx runtime repros.
+          Categories searched: correctness, cache invalidation, graceful degradation, warmup
+          behavior, integration, and test quality."
+        created_at: 2026-03-27T09:25:56.232Z
+      - _ulid: 01KMQXBCE4XXZZZR5MBZMWKH8T
+        author: "@claude"
+        body: Acknowledged — evidence log nit noted.
+        created_at: 2026-03-27T15:07:07.076Z
+    kind: nit
+    resolved_at: 2026-03-27T15:07:08.367Z
+    resolved_by: "@claude"
+  - _ulid: 01KMQ9V30463A1370Y8F5P1XD6
+    anchor:
+      type: code
+      commit: 23ae3945faffc641ec39da1c46e99a7064bb2e4f
+      line_end: 978
+      line_start: 975
+      path: src/daemon/entity-cache.ts
+      side: head
+    entries:
+      - _ulid: 01KMQ9V3046SHVZ21DGHQV120M
+        author: "@claude"
+        body: 'writeThrough() still suppresses the first watcher invalidation after a failed reload.
+          loadDomain() catches loader errors, marks the store degraded, and resolves normally, so
+          writeThrough() always calls markWriteThrough() here even when the refresh did not succeed.
+          I confirmed the current control flow with a runtime repro: after forcing doLoadDomain() to
+          throw, writeThrough("tasks") left the domain degraded; the first invalidateDomain("tasks")
+          call was skipped and left the cache degraded/stale; only the second invalidation reloaded
+          the domain. That breaks the intended recovery path for ac-write-through and
+          ac-graceful-degradation.'
+        created_at: 2026-03-27T09:26:10.180Z
+      - _ulid: 01KMQXB9YKMDW51JT098Z52JAA
+        author: "@claude"
+        body: 'Fixed: same root cause as thread 1 — writeThrough() now conditionally sets the skip flag only
+          when the domain transitions to ready after loadDomain(). The 2-line fix wraps
+          markWriteThrough() in an if (this.getStore(domain).state === "ready") check.'
+        created_at: 2026-03-27T15:07:04.531Z
+    kind: blocker
+    resolved_at: 2026-03-27T15:07:05.800Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-27T09:26:12.128Z
+created_at: 2026-03-27T09:24:56.894Z
+updated_at: 2026-03-27T15:07:08.367Z
+notes: []

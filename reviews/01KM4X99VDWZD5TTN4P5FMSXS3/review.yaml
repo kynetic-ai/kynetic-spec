@@ -1,0 +1,173 @@
+_ulid: 01KM4X99VDWZD5TTN4P5FMSXS3
+slugs: []
+title: Review task-fix-sessions-live-freshness (cycle 3)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck passed.
+    name: typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-03-20T06:05:03.148Z
+    completed_at: 2026-03-20T06:05:03.148Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full npm test failed reproducibly: tests/cli-plan.test.ts > Integration: plan commands >
+      plan list > excludes cancelled tasks while preserving plan_ref-linked plan list counts. The
+      failing command was task add --title \"Cancelled work\" --slug cancelled-work --plan-ref
+      @01KM4XGR, which exited with 'Reference \"@01KM4XGR\" is not a plan'. Re-running that single
+      test reproduced the same failure with a different short ref prefix."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-20T06:05:03.967Z
+    completed_at: 2026-03-20T06:05:03.967Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate reports pre-existing repo-wide reference/alignment/completeness issues
+      unrelated to this task.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-20T06:05:04.708Z
+    completed_at: 2026-03-20T06:05:04.708Z
+events:
+  - _ulid: 01KM4X99VCX2APDM3TK4CTYW22
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-20T06:00:24.684Z
+  - _ulid: 01KM4XA0QQKY3X5GE0KPXH5CAY
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-20T06:00:48.119Z
+  - _ulid: 01KM4XHT1W9EKTJ9GRFG9YN28F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-03-20T06:05:03.420Z
+  - _ulid: 01KM4XHTST4FB1MEJM60R5KBA5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-20T06:05:04.186Z
+  - _ulid: 01KM4XHVGF9AZ82TRS7JDDYJTB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-03-20T06:05:04.911Z
+  - _ulid: 01KM4XK7692PTWZ68YTTH80CX3
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM4XK6NY8HJKCVY3B2NA7SM8
+    timestamp: 2026-03-20T06:05:49.641Z
+  - _ulid: 01KM4XM69BT7J1NPT3VTA44VYB
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-20T06:06:21.484Z
+  - _ulid: 01KM4XM69CG71H041DCX3VRKXF
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-20T06:06:21.484Z
+  - _ulid: 01KM4XNEBD4ZAZXE5RNMCS7H1T
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM4XND4FM6JW8M4MZNFK99PE
+    timestamp: 2026-03-20T06:07:02.509Z
+examined_commit: 0bcd918c06e70e6113027d0909aa473c02c705e8
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM4QGVTQR64KQPQ0S24AHV0S"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM4XK6NY8HJKCVY3B2NA7SM8
+    entries:
+      - _ulid: 01KM4XK6NY18GCANQKV1W2VRC4
+        author: Jacob Chapel
+        body: >-
+          Evidence log
+
+          Files read: packages/daemon/src/project-context.ts,
+          packages/daemon/src/session-watcher.ts, packages/web-ui/src/lib/query/ws-invalidation.ts,
+          packages/web-ui/src/routes/sessions/+page.svelte,
+          packages/web-ui/tests/e2e/sessions.spec.ts, packages/web-ui/tests/e2e/api-watcher.spec.ts,
+          tests/session-watcher.test.ts, tests/web-ui-tanstack-query.test.ts,
+          src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts,
+          tests/agent-dispatch-engine.test.ts, tests/cli-plan.test.ts.
+
+          Commands run: kspec task get, kspec item get, kspec review for-task, git diff, rg for AC
+          annotations, kspec validate, npm run typecheck, npm test, targeted npm test --
+          tests/cli-plan.test.ts -t "excludes cancelled tasks while preserving plan_ref-linked plan
+          list counts".
+
+          Claims verified: verified the submitted changes add a daemon sessions watcher, wire
+          sessions topic invalidation, and add /sessions page logic/tests for top vs scrolled
+          freshness.
+
+          Categories searched: correctness, edge cases, test quality, integration, watcher
+          lifecycle.
+        created_at: 2026-03-20T06:05:49.118Z
+    kind: nit
+  - _ulid: 01KM4XND4FM6JW8M4MZNFK99PE
+    anchor:
+      type: code
+      commit: 0bcd918c06e70e6113027d0909aa473c02c705e8
+      line_end: 590
+      line_start: 589
+      path: tests/cli-plan.test.ts
+      side: head
+    entries:
+      - _ulid: 01KM4XND4GX0T078N12J4WWDGM
+        author: Jacob Chapel
+        body: 'Merge gate blocker: this snapshot does not pass the required full test suite. I ran npm test
+          and reproduced the failure twice, including an isolated rerun of this test.
+          tests/cli-plan.test.ts fails when the second task add --plan-ref @<8-char-prefix> resolves
+          that shortened ref to a non-plan entity (Reference "@01KM4XGR" is not a plan). Until the
+          branch is rebased or otherwise fixed so npm test is green, this task cannot advance to
+          merge.'
+        created_at: 2026-03-20T06:07:01.264Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-20T06:06:21.483Z
+created_at: 2026-03-20T06:00:24.685Z
+updated_at: 2026-03-20T06:07:01.264Z
+notes: []

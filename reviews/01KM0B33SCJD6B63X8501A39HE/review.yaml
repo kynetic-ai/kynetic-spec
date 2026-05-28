@@ -1,0 +1,162 @@
+_ulid: 01KM0B33SCJD6B63X8501A39HE
+slugs: []
+title: Review dispatch degraded state (cycle 1)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 6169 tests passed (1 pre-existing failure in review-cli.test.ts:152 unrelated to this
+      task — examined_commit field). 13 new degraded-state tests all pass.
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T11:25:46.660Z
+    completed_at: 2026-03-18T11:25:46.660Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npx tsc --noEmit succeeded with zero errors.
+    name: tsc
+    required: true
+    runner: tsc
+    created_at: 2026-03-18T11:25:53.167Z
+    completed_at: 2026-03-18T11:25:53.167Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 9 task ACs have annotated tests: ac-divergence-enters-degraded,
+      ac-divergence-log-guidance (2 tests), ac-degraded-no-provision, ac-degraded-status-api,
+      ac-degraded-status-broadcast, ac-degraded-auto-recover, ac-degraded-recovery-logged,
+      ac-repeated-transient-escalation (2 tests), ac-repeated-transient-no-degrade. Trait ACs not
+      applicable to this internal state machine (no user-facing CLI error paths introduced)."
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-18T11:26:01.596Z
+    completed_at: 2026-03-18T11:26:01.596Z
+events:
+  - _ulid: 01KM0B33SCPNTM3APGFVX4ZK3S
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T11:25:29.772Z
+  - _ulid: 01KM0B3AWCQ8GX8WWK22WF7EYM
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T11:25:37.036Z
+  - _ulid: 01KM0B3MCYA2P1JD9WXW5BWYME
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T11:25:46.783Z
+  - _ulid: 01KM0B3TR9DQQA699X9ZCX6GHX
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: tsc
+    timestamp: 2026-03-18T11:25:53.289Z
+  - _ulid: 01KM0B430BCFWVHSYEBJ0NCQG0
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-18T11:26:01.740Z
+  - _ulid: 01KM0B4DDQ95426PB9A6VT2V8C
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM0B4D9M60PZ65HMEVJD5X47
+    timestamp: 2026-03-18T11:26:12.407Z
+  - _ulid: 01KM0B4RH12R2CMKTJZAZFWTMM
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM0B4RD2GKA5TM3TN1EY18NW
+    timestamp: 2026-03-18T11:26:23.777Z
+  - _ulid: 01KM0B51DAYR2Y7WYP7F0ADRXH
+    actor: pr-reviewer@kspec-dispatch
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-18T11:26:32.874Z
+  - _ulid: 01KM0B51DAS4S4JR4D3QB2GEMV
+    actor: pr-reviewer@kspec-dispatch
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T11:26:32.875Z
+examined_commit: 8f12b6fdd9df0871ef29d7b862a896d405e5b106
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-dispatch-degraded-state"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM0B4D9M60PZ65HMEVJD5X47
+    anchor:
+      type: code
+      commit: 8f12b6fdd9df
+      line_end: 2916
+      line_start: 2916
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KM0B4D9MM08MD7QJFGCEZ5ME
+        author: "@claude"
+        body: The _classifyDivergence method receives _mergeOutput (underscore-prefixed = unused parameter)
+          but uses git rev-list counting instead. The docstring says 'based on the git merge
+          --ff-only error output' which is misleading since the parameter is ignored. Rename to
+          mergeOutput or remove it since the rev-list approach is actually more reliable.
+        created_at: 2026-03-18T11:26:12.276Z
+    kind: nit
+  - _ulid: 01KM0B4RD2GKA5TM3TN1EY18NW
+    anchor:
+      type: code
+      commit: 8f12b6fdd9df
+      line_end: 207
+      line_start: 201
+      path: tests/dispatch-degraded-state.test.ts
+      side: head
+    entries:
+      - _ulid: 01KM0B4RD2V5SQWKPV1RJPZ3QC
+        author: "@claude"
+        body: "Case 1 (localAhead > 0, remoteAhead === 0) and Case 2 (localAhead === 0, remoteAhead > 0) in
+          _classifyDivergence are effectively unreachable when called from the divergence path:
+          ff-only merge only fails when both sides have diverged (localAhead > 0 AND remoteAhead >
+          0). Having the cases is reasonable as defensive code, but the test comment at line 201
+          ('Case 1: Local has unpushed commits') is misleading — createDivergence creates mutual
+          divergence hitting Case 3, which happens to contain 'unpushed merges' in its text.
+          Similarly, createRemoteRewrite also produces mutual divergence (Case 3) rather than Case
+          2. Not a correctness issue since the messages are appropriate for all divergence
+          scenarios."
+        created_at: 2026-03-18T11:26:23.650Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer@kspec-dispatch
+    role: reviewer
+    created_at: 2026-03-18T11:26:32.745Z
+created_at: 2026-03-18T11:25:29.772Z
+updated_at: 2026-03-18T11:26:32.745Z
+notes: []

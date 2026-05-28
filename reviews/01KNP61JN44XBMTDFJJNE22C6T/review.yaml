@@ -1,0 +1,214 @@
+_ulid: 01KNP61JN44XBMTDFJJNE22C6T
+slugs: []
+title: Review task-coverage-scan-config
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Run twice. First run: 2092/2092 suites passed, 7589 passed and 5 skipped out of 7594
+      tests. Second run matched and reported cached results."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-08T09:28:44.854Z
+    completed_at: 2026-04-08T09:28:44.854Z
+events:
+  - _ulid: 01KNP61JN4G3GS5DMM427B0NCW
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-08T09:16:15.908Z
+  - _ulid: 01KNP62M90ZERMM5JNJV17Y7G1
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-08T09:16:50.336Z
+  - _ulid: 01KNP6R9G5V8Z03DDRGT81R1TF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNP6R8KXH07Z559W0GGZTVJJ
+    timestamp: 2026-04-08T09:28:40.197Z
+  - _ulid: 01KNP6RC8QRDVE84KTZ5K25R13
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNP6RBBVBEAXCG86SAXMFH6F
+    timestamp: 2026-04-08T09:28:43.031Z
+  - _ulid: 01KNP6REYVWCNKMWYB4B7E5FR8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-08T09:28:45.787Z
+  - _ulid: 01KNP6STSCEVYJ9YXS8A3MNNN6
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-08T09:29:30.669Z
+  - _ulid: 01KNP6STSDYMGEK19ZR62EVXM7
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-08T09:29:30.669Z
+  - _ulid: 01KNP6SYZWM9SV40VAS64BQ441
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNP6SY2EY8HE1MCX6MVSSR3G
+    timestamp: 2026-04-08T09:29:34.972Z
+  - _ulid: 01KNP9MVMJ0JRQMDQPW885AVJE
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNP6R8KXH07Z559W0GGZTVJJ
+    timestamp: 2026-04-08T10:19:13.426Z
+  - _ulid: 01KNP9NCBAXFMVAA1W0TMA7DJJ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNP6R8KXH07Z559W0GGZTVJJ
+    timestamp: 2026-04-08T10:19:30.538Z
+  - _ulid: 01KNP9P09M61RRN9KNHPDTTE0V
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNP6SY2EY8HE1MCX6MVSSR3G
+    timestamp: 2026-04-08T10:19:50.964Z
+  - _ulid: 01KNP9PFZHK848VJNHVKM1JYDF
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNP6SY2EY8HE1MCX6MVSSR3G
+    timestamp: 2026-04-08T10:20:07.025Z
+  - _ulid: 01KNP9Q1B6V7GBAZMRMC3ZZJ4D
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNP6RBBVBEAXCG86SAXMFH6F
+    timestamp: 2026-04-08T10:20:24.806Z
+  - _ulid: 01KNP9QH3EP0TPMRA1TZQHCKQC
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNP6RBBVBEAXCG86SAXMFH6F
+    timestamp: 2026-04-08T10:20:40.943Z
+examined_commit: d5219487701ed784f3ba16a03534c851be57ce02
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNNZ6D4P24MB9J94K4Q068AN"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNP6R8KXH07Z559W0GGZTVJJ
+    anchor:
+      type: code
+      commit: d5219487701ed784f3ba16a03534c851be57ce02
+      line_end: 83
+      line_start: 69
+      path: src/parser/coverage-cache.ts
+      side: head
+    entries:
+      - _ulid: 01KNP6R8KXQCNHYCPS8T0M9Y3A
+        author: Jacob Chapel
+        body: " now accepts , but the cache key is still only . That makes the API return incorrect coverage
+          when the same project is queried with different configured scan path sets: I
+          reproduced  and , while  followed by  returned  both times and reused the same  instance.
+          This violates the new config-driven contract and can serve stale/wrong AC coverage after a
+          scan-path change or for any caller that varies the path set. The cache identity and tests
+          need to include ."
+        created_at: 2026-04-08T09:28:39.293Z
+      - _ulid: 01KNP9MTRX70N7WTZ3MPEA03HE
+        author: "@claude"
+        body: "Fixed: cache key now uses buildCacheKey(rootDir, scanPaths) which creates a composite key
+          from the normalized rootDir and sorted scanPaths joined with null bytes. Different scan
+          path configurations for the same rootDir produce independent cache entries.
+          invalidateTestCoverageCache(rootDir) uses prefix matching to clear all scan path variants.
+          Added regression test reproducing the exact repro scenario (same rootDir, different
+          scanPaths returning independent results)."
+        created_at: 2026-04-08T10:19:12.541Z
+    kind: blocker
+    resolved_at: 2026-04-08T10:19:29.575Z
+    resolved_by: "@claude"
+  - _ulid: 01KNP6RBBVBEAXCG86SAXMFH6F
+    entries:
+      - _ulid: 01KNP6RBBVA62A1HKTCD74SDQ0
+        author: Jacob Chapel
+        body: "Review evidence log: files read = kspec.config.yaml, src/parser/config.ts,
+          src/parser/validate.ts, src/parser/coverage-cache.ts, src/export/json.ts,
+          src/cli/commands/task.ts, packages/daemon/src/routes/items.ts,
+          tests/coverage-scan-config.test.ts, tests/ac-annotation-validation.test.ts,
+          tests/coverage-cache.test.ts, tests/trait-ac-coverage.test.ts. Commands run = kspec task
+          get @01KNNZ6D4P24MB9J94K4Q068AN, kspec item get @coverage-scan-config, kspec review
+          for-task @01KNNZ6D4P24MB9J94K4Q068AN, kspec validate, grep -RIn 'AC:
+          @coverage-scan-config|AC: @trait-' tests/, git diff/log/status, two live repros comparing
+          scanTestCoverage vs getCachedTestCoverage with different scan paths, and npm test twice.
+          Categories checked = correctness, test quality, edge cases, integration, error handling;
+          finding recorded in coverage cache correctness."
+        created_at: 2026-04-08T09:28:42.107Z
+      - _ulid: 01KNP9Q0CFD55HWJFCFM62Y6EW
+        author: "@claude"
+        body: Acknowledged. Thorough review evidence — the exact repro scenario was clear and easy to fix.
+        created_at: 2026-04-08T10:20:23.822Z
+    kind: nit
+    resolved_at: 2026-04-08T10:20:39.987Z
+    resolved_by: "@claude"
+  - _ulid: 01KNP6SY2EY8HE1MCX6MVSSR3G
+    anchor:
+      type: code
+      commit: d5219487701ed784f3ba16a03534c851be57ce02
+      line_end: 83
+      line_start: 69
+      path: src/parser/coverage-cache.ts
+      side: head
+    entries:
+      - _ulid: 01KNP6SY2FQ50KDD0QRTS9J67Z
+        author: Jacob Chapel
+        body: "getCachedTestCoverage() now takes scanPaths, but the cache key still only uses rootDir. I
+          reproduced this with two directories under the same temp project: scanTestCoverage(dir,
+          ['a/']) returned @spec-a ac-1 and scanTestCoverage(dir, ['b/']) returned @spec-b ac-1, but
+          getCachedTestCoverage(dir, ['a/']) followed by getCachedTestCoverage(dir, ['b/']) returned
+          @spec-a ac-1 both times and reused the same Set object. That means the configurable
+          scanner can serve stale or incorrect AC coverage whenever the path set changes. Cache
+          identity and regression tests need to include scanPaths."
+        created_at: 2026-04-08T09:29:34.031Z
+      - _ulid: 01KNP9NZE3SP01PKC5G9F52G9M
+        author: "@claude"
+        body: "Fixed: same fix as thread 01KNP6R8KX — cache key is now a composite of rootDir + sorted
+          scanPaths. The regression test confirms: getCachedTestCoverage(dir, ['a/']) and
+          getCachedTestCoverage(dir, ['b/']) return independent results and are not the same Set
+          object. Also added a test verifying invalidateTestCoverageCache(rootDir) clears all scan
+          path variants."
+        created_at: 2026-04-08T10:19:50.083Z
+    kind: blocker
+    resolved_at: 2026-04-08T10:20:06.002Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-08T09:29:30.668Z
+created_at: 2026-04-08T09:16:15.908Z
+updated_at: 2026-04-08T10:20:39.987Z
+notes: []

@@ -1,0 +1,168 @@
+_ulid: 01KM2GMBHE3FS9VQWB3T3SSFZQ
+slugs: []
+title: Review task-ralph-migration-guide cycle
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Compared a576e0c5 against dev b0d1b793: branch is 155 commits ahead and includes
+      unrelated review API/UI changes outside the submitted ralph-cleanup task."
+    name: manual scope
+    required: true
+    runner: review
+    created_at: 2026-03-19T07:46:42.455Z
+    completed_at: 2026-03-19T07:46:42.455Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fails in this snapshot with pre-existing reference/completeness issues: 3 reference
+      errors, 29 alignment warnings, and 398 completeness warnings."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-19T07:46:43.069Z
+    completed_at: 2026-03-19T07:46:43.069Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test failed in this snapshot: 285 test files passed and 1 failed; 6598 tests passed,
+      2 failed, 3 skipped. Failures: tests/agent-dispatch-engine.test.ts cases at lines 2798 and
+      2863."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-19T07:46:52.775Z
+    completed_at: 2026-03-19T07:46:52.775Z
+events:
+  - _ulid: 01KM2GMBHE2E3D035B1236MWR9
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-19T07:40:46.510Z
+  - _ulid: 01KM2GN170W8QJG4FHZMY1VW4N
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-19T07:41:08.704Z
+  - _ulid: 01KM2GZ6R0PRMVG65QYM0WS3YH
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM2GZ6HRGDF3X150YRSHVSPS
+    timestamp: 2026-03-19T07:46:42.048Z
+  - _ulid: 01KM2GZ7AQW53V31GNG61SP3B7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: manual scope
+    timestamp: 2026-03-19T07:46:42.647Z
+  - _ulid: 01KM2GZ7XK8C98S71SNX15BD7H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-03-19T07:46:43.251Z
+  - _ulid: 01KM2GZHEVKRZRZG8XYS217NGP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-19T07:46:53.019Z
+  - _ulid: 01KM2H0DMR6RXKP0ZZDQBA07VZ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM2H0DAG8K6C6CQJP7BBHQQK
+    timestamp: 2026-03-19T07:47:21.880Z
+  - _ulid: 01KM2H0EQZ9G4TRY36XH8JBWTP
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-19T07:47:23.007Z
+  - _ulid: 01KM2H0EQZHR0WKB5HG7MQ2ZCT
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-19T07:47:23.007Z
+examined_commit: a576e0c5bc4f07ffb2ad7b7cf9945f08a6ae28b4
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KJP279FYHBM6995ZVMYGM7M2"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM2GZ6HRGDF3X150YRSHVSPS
+    anchor:
+      type: code
+      commit: a576e0c5bc4f07ffb2ad7b7cf9945f08a6ae28b4
+      line_end: 27
+      line_start: 1
+      path: packages/daemon/src/routes/reviews.ts
+      side: head
+    entries:
+      - _ulid: 01KM2GZ6HRH06E031RT1X24NYS
+        author: Jacob Chapel
+        body: This branch is still not scoped to @01KJP279FYHBM6995ZVMYGM7M2. Relative to dev, the snapshot
+          is 155 commits ahead and includes unrelated review API/UI work such as the new review
+          routes in this file. Approving here would merge a large unrelated feature set, not just
+          the ralph cleanup, so the task must be rebased or reconstructed onto a task-only branch
+          before it can pass review.
+        created_at: 2026-03-19T07:46:41.849Z
+    kind: blocker
+  - _ulid: 01KM2H0DAG8K6C6CQJP7BBHQQK
+    entries:
+      - _ulid: 01KM2H0DAHQ4WEDW84Y81BYAS3
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          - Files read: kspec-agents.md; src/cli/index.ts; src/cli/commands/index.ts;
+          tests/ralph-replacement.test.ts; tests/meta.test.ts; packages/daemon/src/routes/reviews.ts
+
+          - Commands run: git status --short --branch; git show --stat --summary a576e0c5; git diff
+          b0d1b793..a576e0c5 -- <task files>; git diff --stat b0d1b793..a576e0c5; git rev-list
+          --count b0d1b793..a576e0c5; git log --oneline --reverse b0d1b793..a576e0c5; kspec item get
+          @ralph-replacement; kspec review for-task @01KJP279FYHBM6995ZVMYGM7M2; kspec review get
+          @01KM2C9X; kspec review get @01KM2DZG; kspec review get @01KM2F7E; rg -n "ralph" src tests
+          templates .agents .factory packages docs AGENTS.md kspec-agents.md; kspec validate; npm
+          test
+
+          - Claims verified: the branch is still far broader than this task (confirmed by 155-commit
+          diff vs dev and unrelated review API/UI files); the snapshot test suite is failing
+          (confirmed by npm test failure in tests/agent-dispatch-engine.test.ts)
+
+          - Categories searched: correctness, test quality, integration, scope/merge safety
+        created_at: 2026-03-19T07:47:21.553Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-19T07:47:23.007Z
+created_at: 2026-03-19T07:40:46.510Z
+updated_at: 2026-03-19T07:47:23.007Z
+notes: []

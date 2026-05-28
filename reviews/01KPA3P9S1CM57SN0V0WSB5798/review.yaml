@@ -1,0 +1,195 @@
+_ulid: 01KPA3P9S1CM57SN0V0WSB5798
+slugs: []
+title: Review implement single-command version upgrade
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/cli/commands/upgrade.ts, src/cli/commands/setup.ts,
+      src/cli/commands/setup-defaults.ts, src/cli/index.ts, src/cli/commands/index.ts,
+      tests/upgrade-command.test.ts. Commands run: kspec task get, kspec item get, kspec review
+      for-task, kspec validate, grep AC annotations, git diff/stat/show, npm test, npm test --
+      --fresh tests/upgrade-command.test.ts, and a temp-project CLI reproduction of upgrade --force
+      behavior. Claims verified: upgrade test suite passes; version recording commit path present;
+      force-path scaffolding still recreates removed defaults. Categories searched: correctness (1
+      blocker), test quality (missing regression coverage for this force path), edge cases
+      (force/current customization), error handling, integration."
+    name: review evidence
+    required: false
+    runner: codex
+    created_at: 2026-04-16T03:06:15.420Z
+    completed_at: 2026-04-16T03:06:15.420Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: |-
+      Ran 
+      > @kynetic-ai/spec@0.12.0 test
+      > node scripts/test.cjs --fresh tests/upgrade-command.test.ts; 57/57 tests passed in 75.0s.
+    name: upgrade-command tests
+    required: true
+    runner: npm
+    created_at: 2026-04-16T03:07:16.993Z
+    completed_at: 2026-04-16T03:07:16.993Z
+events:
+  - _ulid: 01KPA3P9S15KYZD73QG2HT97Q3
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-16T02:59:57.857Z
+  - _ulid: 01KPA3Q1VGKT9JEVCS98WYWBY6
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-16T03:00:22.512Z
+  - _ulid: 01KPA41RDEQTD858SK2SDP6B14
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KPA41QDFSQQD12XRKN1YD8P5
+    timestamp: 2026-04-16T03:06:13.294Z
+  - _ulid: 01KPA41VHWPERKRGJ89GHKH0PP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence
+    timestamp: 2026-04-16T03:06:16.508Z
+  - _ulid: 01KPA4249VEFE6Z10JE88P013K
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPA4239ABQS1NW90THSKDDJZ
+    timestamp: 2026-04-16T03:06:25.467Z
+  - _ulid: 01KPA42ZV7FRW5S798S7WYWA3B
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-16T03:06:53.671Z
+  - _ulid: 01KPA42ZV8HZVNHN9MC0JX8TEQ
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-16T03:06:53.672Z
+  - _ulid: 01KPA43QJXBYEK5B6Q6984S1GT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: upgrade-command tests
+    timestamp: 2026-04-16T03:07:17.981Z
+  - _ulid: 01KPA576MDE5AGJCTXWE5NAY0P
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPA4239ABQS1NW90THSKDDJZ
+    timestamp: 2026-04-16T03:26:40.270Z
+  - _ulid: 01KPA57DPZ5XAMTPCQZ8CSB70W
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPA4239ABQS1NW90THSKDDJZ
+    timestamp: 2026-04-16T03:26:47.520Z
+  - _ulid: 01KPA57PXBZVRYKRSWWDSGGWJT
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPA41QDFSQQD12XRKN1YD8P5
+    timestamp: 2026-04-16T03:26:56.939Z
+  - _ulid: 01KPA57Y5W9MWF76ZAZJ9P1Q2X
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPA41QDFSQQD12XRKN1YD8P5
+    timestamp: 2026-04-16T03:27:04.380Z
+examined_commit: 2524a7824f0bd6b9c6f84371c1731532b9f9f7dc
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNXYJ5JCR99F76N8N7265E0B"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPA41QDFSQQD12XRKN1YD8P5
+    entries:
+      - _ulid: 01KPA41QDF6PJ48Y3SPFCEKD7S
+        author: Jacob Chapel
+        body: " is still overriding user customization for scaffolded defaults. At
+          [src/cli/commands/upgrade.ts:1201](/home/chapel/Projects/kynetic-spec-dispatch/.kspec-wor\
+          ktrees/task-upgrade-command-01knxyj5-review/src/cli/commands/upgrade.ts:1201) the upgrade
+          pipeline forwards  directly into , which force-reseeds missing default agents/conventions.
+          I reproduced this against the built CLI in a fresh temp project by removing the default
+          scaffolded agents from the meta file and then running ; the command recreated them and
+          reported  for , , , and . That contradicts the task’s only"
+        created_at: 2026-04-16T03:06:12.271Z
+      - _ulid: 01KPA57NZWBYRDENMXT4Y645SX
+        author: "@claude"
+        body: Addressed together with the related blocker — the fix is a single change in upgrade.ts step
+          5b, removing the force forwarding into scaffoldDefaults().
+        created_at: 2026-04-16T03:26:55.996Z
+    kind: nit
+    resolved_at: 2026-04-16T03:27:03.455Z
+    resolved_by: "@claude"
+  - _ulid: 01KPA4239ABQS1NW90THSKDDJZ
+    anchor:
+      type: code
+      commit: 2524a7824f0bd6b9c6f84371c1731532b9f9f7dc
+      line_end: 1201
+      line_start: 1201
+      path: src/cli/commands/upgrade.ts
+      side: head
+    entries:
+      - _ulid: 01KPA4239BMBSZ8P033J7R4T1F
+        author: Jacob Chapel
+        body: "upgrade --force is still overriding user customization for scaffolded defaults. At
+          src/cli/commands/upgrade.ts line 1201 the upgrade pipeline forwards force directly into
+          scaffoldDefaults(), which force-reseeds missing default agents/conventions. I reproduced
+          this against the built CLI in a fresh temp project by removing the default scaffolded
+          agents from the meta file and then running upgrade --force --json; the command recreated
+          them and reported force-recreated for task-worker, pr-reviewer, primary-dev, and
+          plan-reviewer. That contradicts the task's \"only create what is missing; never
+          overwrite\" requirement and the fix-cycle rule already applied to the reflection hook:
+          --force should re-run the upgrade pipeline when current, not restore defaults the user
+          deliberately removed. This will reintroduce deleted scaffolded agents/conventions in
+          customized projects."
+        created_at: 2026-04-16T03:06:24.427Z
+      - _ulid: 01KPA575NFH0HHB80VZXDP8PX4
+        author: "@claude"
+        body: "Fixed: dropped the `force` argument from the step-5b scaffoldDefaults() call in upgrade.ts.
+          The upgrade spec's step 5 says 'only create what is missing; never overwrite', so --force
+          must not re-seed user-removed defaults. setup --force still honors ac-force-reseed because
+          setup.ts continues to pass its own options.force. This mirrors the cycle-15 fix for the
+          reflection hook. Added a behavioral regression test that removes 4 default agents and 1
+          default convention, runs upgrade --force, and asserts no items are force-recreated and the
+          removed items stay removed on disk."
+        created_at: 2026-04-16T03:26:39.279Z
+    kind: blocker
+    resolved_at: 2026-04-16T03:26:46.569Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-16T03:06:53.671Z
+created_at: 2026-04-16T02:59:57.857Z
+updated_at: 2026-04-16T03:27:03.455Z
+notes: []

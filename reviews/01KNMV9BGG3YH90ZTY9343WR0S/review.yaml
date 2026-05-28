@@ -1,0 +1,239 @@
+_ulid: 01KNMV9BGG3YH90ZTY9343WR0S
+slugs: []
+title: Review task-read-command-concurrency (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- tests/daemon-command-api.test.ts --fresh passed: 2 suites, 30 tests, 8.0s."
+    name: daemon-command-api tests
+    required: true
+    runner: vitest
+    created_at: 2026-04-07T20:59:25.309Z
+    completed_at: 2026-04-07T20:59:25.309Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh passed: 2094 suites, 7636 tests passed, 5 skipped, duration 3020.2s."
+    name: npm test
+    required: true
+    runner: vitest
+    created_at: 2026-04-07T20:59:30.459Z
+    completed_at: 2026-04-07T20:59:30.459Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate reported warnings only (exit 6): 1 reference warning, 31 alignment
+      warnings, 519 completeness warnings; no validation errors."
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-04-07T20:59:32.938Z
+    completed_at: 2026-04-07T20:59:32.938Z
+events:
+  - _ulid: 01KNMV9BGGBEFWBC5ZMHS5N4YA
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-07T20:49:01.968Z
+  - _ulid: 01KNMVA6ASM5XV9XGP53QFKTZA
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-07T20:49:29.434Z
+  - _ulid: 01KNMVTVRT5T31FVC4K6J7RW4B
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNMVTTZ2B79TEYFSGSY6HV1A
+    timestamp: 2026-04-07T20:58:35.674Z
+  - _ulid: 01KNMVV7K4FEY18JVJA6FW61SN
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNMVV6QD992T0JYDKSDK3VG3
+    timestamp: 2026-04-07T20:58:47.780Z
+  - _ulid: 01KNMVWD2VSHGZCNJV5RDWP5Y5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: daemon-command-api tests
+    timestamp: 2026-04-07T20:59:26.172Z
+  - _ulid: 01KNMVWFNM8BG9WGFMAVZQJ26N
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNMVWENYN00S1P27SGC4GS2H
+    timestamp: 2026-04-07T20:59:28.820Z
+  - _ulid: 01KNMVWJ4WSKWCRT2ADSQTR095
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-07T20:59:31.356Z
+  - _ulid: 01KNMVWMHNCEC35JV7RQDQJNH6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-07T20:59:33.813Z
+  - _ulid: 01KNMVWZDN6W1JKKE7WFRGNWB3
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-07T20:59:44.949Z
+  - _ulid: 01KNMVWZDN3CAT8TZHSYFJA3H1
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-07T20:59:44.949Z
+  - _ulid: 01KNMWXJCNDZ9XQDWGPM0BH7C8
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNMVTTZ2B79TEYFSGSY6HV1A
+    timestamp: 2026-04-07T21:17:32.949Z
+  - _ulid: 01KNMWXMTBFFMBTNPXY9153MBR
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNMVV6QD992T0JYDKSDK3VG3
+    timestamp: 2026-04-07T21:17:35.435Z
+  - _ulid: 01KNMWXQ8MQHWADFSCWA5B48QS
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNMVTTZ2B79TEYFSGSY6HV1A
+    timestamp: 2026-04-07T21:17:37.940Z
+  - _ulid: 01KNMWYW80KYHCJVXJRM0HJ7Z0
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNMVV6QD992T0JYDKSDK3VG3
+    timestamp: 2026-04-07T21:18:15.809Z
+examined_commit: 6e37e6b9839a0d69b7aaadaa6f2b9c3f2ca74b24
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNMBPEM8EBQPTWHSKP7M5JT4"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNMVTTZ2B79TEYFSGSY6HV1A
+    anchor:
+      type: code
+      commit: 6e37e6b9839a0d69b7aaadaa6f2b9c3f2ca74b24
+      line_end: 146
+      line_start: 125
+      path: src/cli/output.ts
+      side: head
+    entries:
+      - _ulid: 01KNMVTTZ23VGSKQ86JJR43VK5
+        author: Jacob Chapel
+        body: " now stores output mode in request-local async state, but / still read only the old global
+          variables.  depends on that async-local state for daemon requests, so any command path
+          that branches on  or  will mis-detect structured mode under the command API. I reproduced
+          this by running the CLI through  the same way the daemon does and executing : stderr
+          contained a JSON error object followed by a plain-text  line, which breaks JSON response
+          parity for an allowlisted concurrent read command. This needs to read the async-local
+          state as well and add coverage for a daemon-executed command that uses the helper-based
+          error path."
+        created_at: 2026-04-07T20:58:34.850Z
+      - _ulid: 01KNMWXHJQ2F5WQ1CCANS16Q0Q
+        author: Jacob Chapel
+        body: Fixed in 2242eedd6. isJsonMode()/isYamlMode() now read the request-local output state instead
+          of the stale globals, and added concurrent async-local regression coverage in
+          tests/output-format-option.test.ts so daemon requests with conflicting formats stay
+          isolated.
+        created_at: 2026-04-07T21:17:32.119Z
+    kind: blocker
+    resolved_at: 2026-04-07T21:17:37.057Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KNMVV6QD992T0JYDKSDK3VG3
+    anchor:
+      type: code
+      commit: 6e37e6b9839a0d69b7aaadaa6f2b9c3f2ca74b24
+      line_end: 146
+      line_start: 125
+      path: src/cli/output.ts
+      side: head
+    entries:
+      - _ulid: 01KNMVV6QEHMECSM9D0SKPBHA1
+        author: Jacob Chapel
+        body: "src/cli/output.ts now stores output mode in request-local async state, but
+          isJsonMode()/isYamlMode() still read only the old global variables. executeCommand()
+          depends on that async-local state for daemon requests, so any command path that branches
+          on those helpers will mis-detect structured mode under the command API. I reproduced this
+          by running the CLI through runWithOutputState() the same way the daemon does and executing
+          --json review get @does-not-exist: stderr contained a JSON error object followed by a
+          plain-text Suggestion: line, which breaks JSON response parity for an allowlisted
+          concurrent read command. This needs to read the async-local state as well and add coverage
+          for a daemon-executed command that uses the helper-based error path."
+        created_at: 2026-04-07T20:58:46.894Z
+      - _ulid: 01KNMWXKZG1NR45YD87DJ5R2YY
+        author: Jacob Chapel
+        body: Fixed in 2242eedd6. review command handlers now rethrow the daemon's intercepted process-exit
+          sentinel instead of wrapping it in a second error payload, and
+          tests/daemon-command-api.test.ts now verifies review get --json returns a single JSON
+          stderr payload under daemon execution.
+        created_at: 2026-04-07T21:17:34.576Z
+    kind: blocker
+    resolved_at: 2026-04-07T21:18:14.979Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KNMVWENYN00S1P27SGC4GS2H
+    entries:
+      - _ulid: 01KNMVWENYMKK31HD797QNA5S7
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          Files read: packages/daemon/src/routes/command.ts, src/cli/output.ts, src/cli/index.ts,
+          src/parser/yaml.ts, src/cli/commands/review.ts, src/cli/commands/task.ts,
+          src/cli/commands/plan.ts, tests/daemon-command-api.test.ts.
+
+          Commands run: kspec task get @01KNMBPEM8EBQPTWHSKP7M5JT4; kspec review for-task
+          @01KNMBPEM8EBQPTWHSKP7M5JT4; kspec review get @01KNMS23WYFPTZ5CFVH2FWDPY3; kspec item get
+          @daemon-concurrent-reads; kspec validate; rg for AC annotations/usages; npm test --
+          tests/daemon-command-api.test.ts --fresh; npm test -- --fresh; direct repro via
+          runWithOutputState() for --json review get @does-not-exist.
+
+          Claims verified: concurrent-read daemon tests pass; full repo suite passes; async-local
+          output state is active in executeCommand(); helper-based JSON-mode detection is still
+          global and misbehaves under daemon-style execution.
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration.
+          Finding: structured-output regression on helper-based error paths under daemon execution.
+        created_at: 2026-04-07T20:59:27.806Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-07T20:59:44.949Z
+created_at: 2026-04-07T20:49:01.968Z
+updated_at: 2026-04-07T21:18:14.979Z
+notes: []

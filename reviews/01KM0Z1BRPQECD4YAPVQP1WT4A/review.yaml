@@ -1,0 +1,115 @@
+_ulid: 01KM0Z1BRPQECD4YAPVQP1WT4A
+slugs: []
+title: Review task-migrate-triggers (cycle 1)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: code_compare
+      base_commit: 9d5e929d1472e459b4ecb77108c3ba012ed963f9
+      head_commit: cae35ae3ffd1e6af9095ae533906687eaef9b211
+    evidence: 6510 tests passed, 1 pre-existing failure (review-cli.test.ts unrelated to task), 3 skipped
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T17:14:34.560Z
+    completed_at: 2026-03-18T17:14:34.560Z
+  - status: pass
+    applies_to_version:
+      type: code_compare
+      base_commit: 9d5e929d1472e459b4ecb77108c3ba012ed963f9
+      head_commit: cae35ae3ffd1e6af9095ae533906687eaef9b211
+    evidence: Validation errors are pre-existing (3 reference errors in meta.yaml, unrelated to this
+      task). No new issues introduced.
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-18T17:14:42.644Z
+    completed_at: 2026-03-18T17:14:42.644Z
+events:
+  - _ulid: 01KM0Z1BRPYK5VBE50QW32NEJ1
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T17:14:03.926Z
+  - _ulid: 01KM0Z1K95CHBGKEMTZ958FT28
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T17:14:11.621Z
+  - _ulid: 01KM0Z1XJY13M61G8FNV2TVPZA
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM0Z1XDVV75YMNPFQWKJV68Z
+    timestamp: 2026-03-18T17:14:22.174Z
+  - _ulid: 01KM0Z29VJ0E5X6K8ZVJG64TJQ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T17:14:34.738Z
+  - _ulid: 01KM0Z2HQKT7EQ8651GGXBR2YK
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-18T17:14:42.803Z
+  - _ulid: 01KM0Z32X8S3MJFNR8W9SYDGYA
+    actor: pr-reviewer@dispatch
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-18T17:15:00.392Z
+  - _ulid: 01KM0Z32X8PRQB0XZ4WRCYZZQY
+    actor: pr-reviewer@dispatch
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T17:15:00.392Z
+examined_commit: cae35ae3ffd1e6af9095ae533906687eaef9b211
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-migrate-triggers"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM0Z1XDVV75YMNPFQWKJV68Z
+    anchor:
+      type: code
+      commit: cae35ae3ffd1e6af9095ae533906687eaef9b211
+      line_end: 43
+      line_start: 43
+      path: packages/web-ui/src/lib/components/agents/AgentCard.svelte
+      side: head
+    entries:
+      - _ulid: 01KM0Z1XDVHJJDG3F3YCF74S17
+        author: "@claude"
+        body: "Stale AC annotation: references @ui-agent-dispatch ac-4 which no longer exists in the spec.
+          This file was modified in this commit (the ac-4 annotation was removed from the script
+          block at line 2 but this one in the template was missed). Should be removed or replaced
+          with a comment that doesn't use AC annotation syntax."
+        created_at: 2026-03-18T17:14:22.011Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: code_compare
+      base_commit: 9d5e929d1472e459b4ecb77108c3ba012ed963f9
+      head_commit: cae35ae3ffd1e6af9095ae533906687eaef9b211
+    decision: approve
+    reviewer: pr-reviewer@dispatch
+    role: reviewer
+    created_at: 2026-03-18T17:15:00.233Z
+created_at: 2026-03-18T17:14:03.926Z
+updated_at: 2026-03-18T17:15:00.233Z
+notes: []

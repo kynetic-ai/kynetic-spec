@@ -1,0 +1,127 @@
+_ulid: 01KN5RE73CZBHVKK10JETFJMRF
+slugs: []
+title: Review investigate-file-lock concurrency test
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exited with warnings only (code 6); warnings are repo-wide pre-existing
+      completeness/alignment issues unrelated to this task. No schema or reference errors in the
+      reviewed change.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-02T00:17:37.553Z
+    completed_at: 2026-04-02T00:17:37.553Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh passed: 2073/2073 suites, 7472 passed, 5 skipped. Fresh targeted runs
+      also passed for tests/file-lock.test.ts (21/21) and tests/dispatch-workspace-registry.test.ts
+      (27/27)."
+    name: npm test fresh
+    required: true
+    runner: npm
+    created_at: 2026-04-02T00:17:39.563Z
+    completed_at: 2026-04-02T00:17:39.563Z
+events:
+  - _ulid: 01KN5RE73CTD77SAZWA20D86FV
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-02T00:10:39.084Z
+  - _ulid: 01KN5REW1CXYB00K4MSC0BBFSJ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-02T00:11:00.525Z
+  - _ulid: 01KN5RTVEYBBFDMQG4MM2A6SF4
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN5RTTTPJWSX2FNDTET6FZZF
+    timestamp: 2026-04-02T00:17:33.150Z
+  - _ulid: 01KN5RTXE3FJJ10AQJX5NNH8AS
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-02T00:17:35.171Z
+  - _ulid: 01KN5RTXE3Y36SCD4K7519NMS3
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-02T00:17:35.171Z
+  - _ulid: 01KN5RV0CXNAF4QZ4NVZTEQKY2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-02T00:17:38.205Z
+  - _ulid: 01KN5RV2D445JH9373HKAXMPM9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test fresh
+    timestamp: 2026-04-02T00:17:40.260Z
+examined_commit: f0d0a409ede748ea7eec2171748d99178f1ac35a
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN5QB8NSQNT9FTD701GK387V"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN5RTTTPJWSX2FNDTET6FZZF
+    entries:
+      - _ulid: 01KN5RTTTQEYMZ0FFV7XB99ZY0
+        author: Jacob Chapel
+        body: >-
+          Evidence log
+
+
+          Files read: src/parser/file-lock.ts; tests/file-lock.test.ts;
+          tests/dispatch-workspace-registry.test.ts; src/agent-runtime/workspace.ts
+
+          Commands run: git diff/stat; git show; kspec task get @01KN5QB8NSQNT9FTD701GK387V; kspec
+          item get @scoped-dispatch-shadow-serialization; kspec validate; grep -Rni "AC:
+          @scoped-dispatch-shadow-serialization" tests/; rg -n
+          "acquireFileLock\(|withFileLock\(|KSPEC_SHADOW_MUTATION_LOCK_MAX_HOLD_MS|maxHoldMs" src
+          tests; npm test -- --fresh tests/file-lock.test.ts; npm test -- --fresh
+          tests/dispatch-workspace-registry.test.ts; npm test -- --fresh
+
+          Claims verified: same-process duration reclaim was the flake mechanism, confirmed by the
+          new guard in checkStaleLock plus fresh passing targeted/full test runs; cross-process
+          duration reclaim still works because stale-holder tests now use real child PIDs
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration.
+          No blocking findings in this snapshot.
+        created_at: 2026-04-02T00:17:32.503Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-02T00:17:35.171Z
+created_at: 2026-04-02T00:10:39.084Z
+updated_at: 2026-04-02T00:17:39.563Z
+notes: []

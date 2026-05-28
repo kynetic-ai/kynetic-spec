@@ -1,0 +1,137 @@
+_ulid: 01KM52DE4FWS7DXC85FZYSZ0K9
+slugs: []
+title: Review @01KM4QGVTQR64KQPQ0S24AHV0S (cycle 8)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed locally on 2026-03-20: 290 test files, 6660 tests passed, 3 skipped."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-20T07:30:35.860Z
+    completed_at: 2026-03-20T07:30:35.860Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed locally on 2026-03-20 with no TypeScript errors.
+    name: npm run typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-03-20T07:30:36.614Z
+    completed_at: 2026-03-20T07:30:36.614Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Fails due to pre-existing project-wide reference/completeness issues in .kspec metadata
+      unrelated to this task diff; no new task-specific validation regression identified.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-20T07:30:37.377Z
+    completed_at: 2026-03-20T07:30:37.377Z
+events:
+  - _ulid: 01KM52DE4FER830EGRA71AEN5K
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-20T07:30:03.023Z
+  - _ulid: 01KM52DZMC8XDZKGKHANRH3F8M
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM52DZD7GFKCZMBEZ7H9E2XV
+    timestamp: 2026-03-20T07:30:20.940Z
+  - _ulid: 01KM52E0BNEW7X0DAVHS9FEAWC
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-20T07:30:21.685Z
+  - _ulid: 01KM52EEECQHDX6S336T0FTEDE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-20T07:30:36.108Z
+  - _ulid: 01KM52EF5ET7Z2AMCS2PFM4CWJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run typecheck
+    timestamp: 2026-03-20T07:30:36.846Z
+  - _ulid: 01KM52EFX4C59TTCA1SM8KNPSM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-03-20T07:30:37.605Z
+  - _ulid: 01KM52ERBREF2ZGETQVFC0TGSQ
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-20T07:30:46.264Z
+  - _ulid: 01KM52ERBRAQGR9TVQS6NSMSG6
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-20T07:30:46.264Z
+examined_commit: 3fc75afebf2523867deedbea012605cfdf64f0f2
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM4QGVTQR64KQPQ0S24AHV0S"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM52DZD7GFKCZMBEZ7H9E2XV
+    entries:
+      - _ulid: 01KM52DZD7EZ7NKYD2PB6CAGJS
+        author: Jacob Chapel
+        body: "Evidence log: Files read: packages/daemon/src/project-context.ts,
+          packages/daemon/src/session-watcher.ts, packages/web-ui/src/lib/query/ws-invalidation.ts,
+          packages/web-ui/src/routes/sessions/+page.svelte,
+          packages/web-ui/tests/e2e/sessions.spec.ts, packages/web-ui/tests/e2e/api-watcher.spec.ts,
+          tests/session-watcher.test.ts, tests/daemon-context-manager.test.ts,
+          tests/enhanced-setup.test.ts, src/parser/shadow.ts, src/cli/commands/setup.ts,
+          src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts. Commands run: kspec task
+          get, kspec review for-task, git diff/base comparison, kspec validate, npm test, npm run
+          typecheck, git diff --check, AC annotation grep. Claims verified: worker claim that the
+          watcher now survives missing .kspec-sessions at daemon start was verified in code and
+          tests; worker claim that sessions freshness updates flow through centralized invalidation
+          plus page-level scrolled-state handling was verified in daemon/web UI code and E2E
+          coverage. Categories searched: correctness, edge cases, error handling, test quality,
+          integration. Result: no blocking issues found in this snapshot. Note: kspec validate still
+          reports pre-existing project-wide reference/completeness failures outside this task’s
+          diff."
+        created_at: 2026-03-20T07:30:20.711Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-20T07:30:46.263Z
+created_at: 2026-03-20T07:30:03.023Z
+updated_at: 2026-03-20T07:30:46.264Z
+notes: []

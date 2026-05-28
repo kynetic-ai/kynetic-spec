@@ -1,0 +1,266 @@
+_ulid: 01KNK2D8CS9DC0PYFYX3T6DDZ1
+slugs: []
+title: Review task-meta-subdomain-decomposition (cycle 3)
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ad-hoc reproduction on head a756106068e3 created  with , changed , then ran . Observed
+      reload counts were  instead of manifest-only.
+    name: meta-include-refresh-repro
+    required: true
+    runner: manual
+    created_at: 2026-04-07T04:23:30.207Z
+    completed_at: 2026-04-07T04:23:30.207Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      ✓ Validation passed
+
+      ────────────────────────────────────────
+
+      Files checked: 10
+
+      Items checked: 576
+
+      Tasks checked: 0
+
+      Meta: 11 agents, 11 workflows, 10 conventions
+
+
+      Schema: OK
+
+      References: OK
+
+
+      Reference warnings: 1
+        ⚠ @skills
+          Orphaned skill directory 'skills' has no corresponding meta entry
+          in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+      Alignment warnings: 32
+        Orphaned specs (no tasks): 30
+          ○ Test Trait
+          ○ Filterable List Commands
+          ○ Dry Run Preview Mode
+          ... and 27 more
+        Status mismatches: 2
+          ! Task Set Batch Support
+            Spec "Task Set Batch Support" status is "in_progress" but should be "implemented" based on task progress
+          ! Configurable Daemon Runtime
+            Spec "Configurable Daemon Runtime" status is "implemented" but should be "in_progress" based on task progress
+
+      Alignment stats: 413/576 specs have tasks, 411 aligned
+
+
+      Completeness warnings: 521
+        Missing acceptance criteria: 1
+          ○ @01KJN1WT - Test Trait
+        Missing own AC coverage: 234
+          ! @spec-item - Spec Item
+            Uncovered: ac-item-1, ac-item-2
+          ! @ulid-system - ULID Identifier System
+            Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+          ! @slug-system - Slug Alias System
+            Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+          ... and 231 more
+        Invalid AC annotations: 286
+          ! AC annotation references '@slug' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-meta-subdomain-decomposition-01knddj4-review/tests/ac-annotation-validation.test.ts:6
+          ! AC annotation references '@my-spec' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-meta-subdomain-decomposition-01knddj4-review/tests/ac-annotation-validation.test.ts:84
+          ! AC annotation references '@my-spec' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-meta-subdomain-decomposition-01knddj4-review/tests/ac-annotation-validation.test.ts:87
+          ! AC annotation references '@spec-a' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-meta-subdomain-decomposition-01knddj4-review/tests/ac-annotation-validation.test.ts:114
+          ! AC annotation references '@spec-b' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-meta-subdomain-decomposition-01knddj4-review/tests/ac-annotation-validation.test.ts:118
+          ... and 281 more
+      Skills: OK (10 files checked) exited 6 with existing repo-wide warnings only (orphaned
+      skills/spec alignment/AC coverage); no task-specific validation error surfaced in the reviewed
+      change.
+    name: kspec-validate
+    required: false
+    created_at: 2026-04-07T04:23:39.559Z
+    completed_at: 2026-04-07T04:23:39.559Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Full npm test hit unrelated non-deterministic failures in
+      tests/agent-dispatch-engine.test.ts. A second targeted rerun on head passed, and the same
+      targeted run passed on base commit d5cf75d00642de5a31d80d1969cb337194ca1207. Captured
+      follow-up task @01KNK2VK to stabilize those tests.
+    name: npm-test
+    required: false
+    created_at: 2026-04-07T04:25:07.402Z
+    completed_at: 2026-04-07T04:25:07.402Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: packages/daemon/src/server.ts, src/daemon/entity-cache.ts,
+      src/parser/meta.ts, tests/daemon-entity-cache.test.ts. Commands run: kspec task/item/review
+      lookups, git diff/stat/name-only, kspec validate, AC annotation search, ad-hoc meta include
+      reproduction, full npm test, targeted reruns on head and base. Claims verified: prior
+      concurrency fix holds, included meta YAML still triggers full meta reload, unrelated
+      dispatch-engine failures are flaky. Categories searched: correctness, edge cases, error
+      handling, test quality, integration."
+    name: review-evidence
+    required: false
+    created_at: 2026-04-07T04:25:09.829Z
+    completed_at: 2026-04-07T04:25:09.829Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      Full 
+
+      > @kynetic-ai/spec@0.12.0 test
+
+      > node scripts/test.cjs --fresh hit unrelated non-deterministic failures in . A second
+      targeted rerun on head passed (37/37 suites, 126/126 tests), and the same targeted run passed
+      on base commit d5cf75d00642de5a31d80d1969cb337194ca1207. Captured follow-up task @01KNK2VK to
+      stabilize those tests.
+    name: npm-test
+    required: false
+    created_at: 2026-04-07T04:26:27.734Z
+    completed_at: 2026-04-07T04:26:27.734Z
+events:
+  - _ulid: 01KNK2D8CSMZSAJ4D56DMTGM9J
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-07T04:15:01.017Z
+  - _ulid: 01KNK2DTT9ZBTZRQ240V53H7VR
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-07T04:15:19.882Z
+  - _ulid: 01KNK2WPJNKSRDHBA5N60CEKHS
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNK2WN4GTZ0VYFAG6P9B0TZC
+    timestamp: 2026-04-07T04:23:27.061Z
+  - _ulid: 01KNK2WV4KQM8V3DYFNWH051G6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: meta-include-refresh-repro
+    timestamp: 2026-04-07T04:23:31.732Z
+  - _ulid: 01KNK2X4CMBDB0KDV1H9FH0CT1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-04-07T04:23:41.204Z
+  - _ulid: 01KNK2ZSBAAB48K4YQYWCZJ5M5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: npm-test
+    timestamp: 2026-04-07T04:25:08.202Z
+  - _ulid: 01KNK2ZVT340856XBX6KRZCMDK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-04-07T04:25:10.723Z
+  - _ulid: 01KNK305SWGTK5Z454K907PM7V
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-07T04:25:20.956Z
+  - _ulid: 01KNK305SWTX0Y0HZS44M9M597
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-07T04:25:20.956Z
+  - _ulid: 01KNK327SKBZGMRB12DPH8F6FA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: npm-test
+    timestamp: 2026-04-07T04:26:28.532Z
+  - _ulid: 01KNK4C8J9DRHF7DG81SQBJT8C
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNK2WN4GTZ0VYFAG6P9B0TZC
+    timestamp: 2026-04-07T04:49:25.577Z
+  - _ulid: 01KNK4DEWT8H94YKB39QCZJP7M
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNK2WN4GTZ0VYFAG6P9B0TZC
+    timestamp: 2026-04-07T04:50:04.826Z
+examined_commit: a756106068e3feea81055805f98a0510b71aa40a
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNDDJ4BXMWVZSC7G6KMDP8BH"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNK2WN4GTZ0VYFAG6P9B0TZC
+    anchor:
+      type: code
+      commit: a756106068e3feea81055805f98a0510b71aa40a
+      line_end: 1516
+      line_start: 1502
+      path: src/daemon/entity-cache.ts
+      side: head
+    entries:
+      - _ulid: 01KNK2WN4HYRQJV19MVC85R5C6
+        author: Jacob Chapel
+        body: Arbitrary YAML files pulled in through meta includes still miss the targeted manifest-only
+          path.  follows any  glob, but this branch only treats  and  as manifest subdomain changes
+          here; a reproduced change to  instead reloaded all three subdomains (). That still
+          violates @daemon-meta-subdomain ac-manifest-only-reload by re-running git shadow checks
+          and session reads for included meta YAML changes.
+        created_at: 2026-04-07T04:23:25.585Z
+      - _ulid: 01KNK4C7SRJF7G3ZRWKEA5JNM6
+        author: Jacob Chapel
+        body: "Fixed in 3bd80c9d5: the meta cache now remembers the resolved source files for the meta
+          manifest plus all expanded meta includes, and watcher invalidations for those included
+          files route through the manifest-only subdomain reload path. Added a regression test that
+          changes .kspec/meta/roles.yaml and verifies only loadMetaManifestSubdomain runs while
+          shadow/session cached objects stay untouched."
+        created_at: 2026-04-07T04:49:24.792Z
+    kind: blocker
+    resolved_at: 2026-04-07T04:50:04.034Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-04-07T04:25:20.955Z
+created_at: 2026-04-07T04:15:01.017Z
+updated_at: 2026-04-07T04:50:04.034Z
+notes: []

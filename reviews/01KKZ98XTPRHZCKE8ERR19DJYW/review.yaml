@@ -1,0 +1,71 @@
+_ulid: 01KKZ98XTPRHZCKE8ERR19DJYW
+slugs: []
+title: Review replace-hardcoded-branch-names (cycle 1)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 5804 passed, 3 skipped, 1 pre-existing failure (review-cli.test.ts examined_commit
+      auto-detect — not introduced by this commit)
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T01:35:13.766Z
+    completed_at: 2026-03-18T01:35:13.766Z
+events:
+  - _ulid: 01KKZ98XTPVA652JQGF5XDHD60
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T01:34:28.694Z
+  - _ulid: 01KKZ99KSHJGATAPW5QCHC2RE4
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T01:34:51.185Z
+  - _ulid: 01KKZ9A9Y45N3G18WJG9AZ0RDC
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T01:35:13.860Z
+  - _ulid: 01KKZ9AGA9E7YFPBZSAP5BA1JD
+    actor: pr-reviewer@kspec-dispatch
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-18T01:35:20.393Z
+  - _ulid: 01KKZ9AGA9XE8WRAHQA8BWRG5W
+    actor: pr-reviewer@kspec-dispatch
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T01:35:20.393Z
+examined_commit: c7f0fed80c4192706ed6dc4c428abbfdb4f9fe88
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKXEMGJ20X5RB4GMFYGSQH6Y"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer@kspec-dispatch
+    role: reviewer
+    created_at: 2026-03-18T01:35:20.299Z
+created_at: 2026-03-18T01:34:28.694Z
+updated_at: 2026-03-18T01:35:20.299Z
+notes: []

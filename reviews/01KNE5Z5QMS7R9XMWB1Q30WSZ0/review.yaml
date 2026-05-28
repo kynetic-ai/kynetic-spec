@@ -1,0 +1,204 @@
+_ulid: 01KNE5Z5QMS7R9XMWB1Q30WSZ0
+slugs: []
+title: Review task-daemon-compile-js
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran npm test -- tests/daemon-build.test.ts. Result: 2 suites passed, 2 tests passed."
+    name: daemon build targeted tests
+    required: true
+    runner: npm
+    created_at: 2026-04-05T06:45:58.984Z
+    completed_at: 2026-04-05T06:45:58.984Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 6 with repository-wide pre-existing warnings only (orphaned skill dir, orphaned
+      specs, existing AC coverage warnings); no schema or reference errors introduced by this task.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-05T06:46:01.372Z
+    completed_at: 2026-04-05T06:46:01.372Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Built daemon with npm run build:daemon, then ran HOME=/tmp/tmp.Aps1YI7nlS node
+      dist/daemon/index.js --port 45678 --kspec-dir .kspec. Startup failed with 'WebStandard does
+      not support listen' from dist/daemon/server.js:355 after PID/port file setup, so the compiled
+      daemon still cannot actually start under Node.
+    name: node daemon startup smoke
+    required: true
+    runner: manual
+    created_at: 2026-04-05T06:46:03.771Z
+    completed_at: 2026-04-05T06:46:03.771Z
+events:
+  - _ulid: 01KNE5Z5QMKEK53T0Z87RR2X52
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-05T06:41:01.684Z
+  - _ulid: 01KNE5ZT69P3SXJME6BWSFEEMW
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-05T06:41:22.634Z
+  - _ulid: 01KNE688TPWPB6BRWRS97FHKS7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: daemon build targeted tests
+    timestamp: 2026-04-05T06:45:59.766Z
+  - _ulid: 01KNE68B62TPM87089JF70TGH3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-05T06:46:02.179Z
+  - _ulid: 01KNE68DJEP5N203G2V93RCZFD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: node daemon startup smoke
+    timestamp: 2026-04-05T06:46:04.622Z
+  - _ulid: 01KNE68ZFD1G4EATADKESBDA4R
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNE68YQ80SWQ4AN234560BBR
+    timestamp: 2026-04-05T06:46:22.957Z
+  - _ulid: 01KNE691PG7KGGA3Z2AMGC0DFJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNE690XMKTPKMRYTFSRPHEB9
+    timestamp: 2026-04-05T06:46:25.232Z
+  - _ulid: 01KNE69DWMZFDES9BT1VJW0GT0
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-05T06:46:37.716Z
+  - _ulid: 01KNE69DWM3B64PQ2FQY7PXC79
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-05T06:46:37.716Z
+  - _ulid: 01KNE7FEWZEWPNZ4B0V85CGJ5N
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNE690XMKTPKMRYTFSRPHEB9
+    timestamp: 2026-04-05T07:07:23.935Z
+  - _ulid: 01KNE7FH6E9ZQ61BQV42D3054B
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNE68YQ80SWQ4AN234560BBR
+    timestamp: 2026-04-05T07:07:26.286Z
+  - _ulid: 01KNE7G1CTA4XJEBZZH8H49RRP
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNE690XMKTPKMRYTFSRPHEB9
+    timestamp: 2026-04-05T07:07:42.874Z
+  - _ulid: 01KNE7G3MWV81EVNBGJPG0ATE4
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNE68YQ80SWQ4AN234560BBR
+    timestamp: 2026-04-05T07:07:45.180Z
+examined_commit: dbf76f3cc3fabfb650aed85f5988a5c0c71ef54a
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNE1NJVFTB0TMEYXRVQDFH3M"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNE68YQ80SWQ4AN234560BBR
+    entries:
+      - _ulid: 01KNE68YQ9SCF2KRE2A0SSQSJ0
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: scripts/build-daemon.cjs, packages/daemon/src/index.ts,
+          packages/daemon/src/server.ts, src/cli/commands/serve.ts, tests/daemon-build.test.ts,
+          tests/daemon-api/helpers.ts, tests/test-runner.test.ts. Commands run: kspec task get
+          @01KNE1NJVFTB0TMEYXRVQDFH3M; kspec item get @daemon-runtime-adapter; kspec validate; rg -n
+          \"AC: @daemon-runtime-adapter|AC: @trait-\" tests; git diff --stat/name-only; npm run
+          build:daemon; node dist/daemon/index.js --port 0; bun dist/daemon/index.js --port 0; node
+          -e \"import(\\'./dist/daemon/server.js\\')...\"; npm test -- tests/daemon-build.test.ts;
+          HOME=/tmp/tmp.uVeCu8JnKh node dist/daemon/index.js --port 45678 --kspec-dir .kspec. Claims
+          verified: build emits JS artifacts; compiled entrypoint loads under node/bun for
+          invalid-port path; Node startup path fails before listen completes. Categories searched:
+          correctness, runtime startup, serve wiring, import resolution, test quality, integration."
+        created_at: 2026-04-05T06:46:22.185Z
+      - _ulid: 01KNE7FGCW1Q1746PJT7PS5D9K
+        author: Jacob Chapel
+        body: Addressed. The review evidence is now backed by a real startup-path test instead of the
+          invalid-port short circuit, and the implementation was extended far enough for Node to
+          reach a live health endpoint.
+        created_at: 2026-04-05T07:07:25.468Z
+    kind: nit
+    resolved_at: 2026-04-05T07:07:44.360Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KNE690XMKTPKMRYTFSRPHEB9
+    anchor:
+      type: code
+      commit: dbf76f3cc3fabfb650aed85f5988a5c0c71ef54a
+      line_end: 38
+      line_start: 28
+      path: tests/daemon-build.test.ts
+      side: head
+    entries:
+      - _ulid: 01KNE690XMJAVGSXDVZDHWRMCC
+        author: Jacob Chapel
+        body: |-
+          This test only exercises the invalid-port fast-exit path, so it does not verify the task's claim that the compiled daemon actually runs under Node. I reproduced a real startup failure with [daemon] Starting kspec daemon on port 45678...
+          [daemon] Web UI assets found at: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-compile-js-01kne1nj-review/dist/web-ui
+          [daemon] PID file written: 1907896
+          [daemon] Port file written: 45678
+          [daemon] Web UI static file serving enabled: after writing the PID/port files, startup aborts with  from . That means the submission still does not deliver usable Node execution for the daemon, but this AC annotation would let it pass review anyway. The test needs to exercise a real startup path (for example, start the daemon under an isolated HOME and probe ), and the implementation/task scope needs to be corrected so Node can actually start the compiled daemon or the task/spec coverage is narrowed.
+        created_at: 2026-04-05T06:46:24.436Z
+      - _ulid: 01KNE7FE48PRCFPAS9C76ZFZHG
+        author: Jacob Chapel
+        body: "Fixed: the daemon now uses @elysiajs/node when running under Node, SPA fallback serving no
+          longer depends on Bun.file(), and shutdown handles node-style close() as well as Bun
+          stop(). Replaced the fast-fail invalid-port check with a behavioral smoke test that builds
+          the daemon, starts it under isolated node and bun processes, and verifies GET /api/health
+          succeeds from temp fixtures. Re-ran the full suite fresh after fixing stale build
+          artifacts; it passed."
+        created_at: 2026-04-05T07:07:23.144Z
+    kind: blocker
+    resolved_at: 2026-04-05T07:07:42.115Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-05T06:46:37.716Z
+created_at: 2026-04-05T06:41:01.684Z
+updated_at: 2026-04-05T07:07:44.360Z
+notes: []

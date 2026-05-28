@@ -1,0 +1,240 @@
+_ulid: 01KP6VEV0A7GQF95ZBW8FZQWDK
+slugs: []
+title: Review @01KNXYJ3PYYG1ABH6SMQ2KRE1S (cycle 7)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 7772 passed, 5 skipped, 0 failed on af9d75e0a7abb47bcd90459f7ec70d16c51e0769.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-14T20:49:11.512Z
+    completed_at: 2026-04-14T20:49:11.512Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Fails on both af9d75e0a7abb47bcd90459f7ec70d16c51e0769 and the integration branch head
+      f205808d2cf1f58d18f7fdf45435996b4092d52a with the same pre-existing meta.yaml schema error and
+      completeness warnings; not introduced by this task.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-14T20:49:14.540Z
+    completed_at: 2026-04-14T20:49:14.540Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Confirmed scaffold spec and inherited trait AC annotations in
+      tests/scaffold-project-config.test.ts; structured scan via dist/parser/validate.js resolves
+      the expected @scaffolded-project-config, @trait-idempotent-file-scaffold, and
+      @trait-error-guidance refs.
+    name: AC annotation scan
+    required: true
+    runner: rg
+    created_at: 2026-04-14T20:49:17.218Z
+    completed_at: 2026-04-14T20:49:17.218Z
+events:
+  - _ulid: 01KP6VEV0A8ESJ5Y6DCZR305M4
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-14T20:38:21.450Z
+  - _ulid: 01KP6VF55ACZFWJSK4A8W0FG44
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-14T20:38:31.850Z
+  - _ulid: 01KP6W2M14FCMAJBGW7EG04S9S
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP6W2K1VTZ9KMRKEJ0B6A1NC
+    timestamp: 2026-04-14T20:49:09.669Z
+  - _ulid: 01KP6W2PTDZQ7CHQ5VNTP2VSGK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-14T20:49:12.525Z
+  - _ulid: 01KP6W2SR8RGT70RQQC9PJ2094
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-14T20:49:15.528Z
+  - _ulid: 01KP6W2WC7YC2H2717BHWK6JRY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC annotation scan
+    timestamp: 2026-04-14T20:49:18.216Z
+  - _ulid: 01KP6W3EKXYXTCTBCJJ32M9HT9
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KP6W3DPEJ0Y4PNFC3JNJMMDT
+    timestamp: 2026-04-14T20:49:36.893Z
+  - _ulid: 01KP6W3Y7XTJFDFKH5MBV80ZTB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KP6W3X84T441524BVTCP1VB3
+    timestamp: 2026-04-14T20:49:52.894Z
+  - _ulid: 01KP6W4FFKP1AMG8ZWG1TCRCYK
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-14T20:50:10.548Z
+  - _ulid: 01KP6W4FFM7CH5041QN9KTF3HR
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-14T20:50:10.548Z
+  - _ulid: 01KP6X253MYQP1D30Y57156TE2
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP6W2K1VTZ9KMRKEJ0B6A1NC
+    timestamp: 2026-04-14T21:06:22.964Z
+  - _ulid: 01KP6X29ZK9BJQWQZN8QGJ63YK
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KP6W3DPEJ0Y4PNFC3JNJMMDT
+    timestamp: 2026-04-14T21:06:27.955Z
+  - _ulid: 01KP6X2J29GTMFCC5Q83APN1ZW
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP6W2K1VTZ9KMRKEJ0B6A1NC
+    timestamp: 2026-04-14T21:06:36.233Z
+  - _ulid: 01KP6X2PT0PTR7W3GGHDASXE0Z
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KP6W3DPEJ0Y4PNFC3JNJMMDT
+    timestamp: 2026-04-14T21:06:41.088Z
+examined_commit: af9d75e0a7abb47bcd90459f7ec70d16c51e0769
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNXYJ3PYYG1ABH6SMQ2KRE1S"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KP6W2K1VTZ9KMRKEJ0B6A1NC
+    anchor:
+      type: code
+      commit: af9d75e0a7abb47bcd90459f7ec70d16c51e0769
+      line_end: 290
+      line_start: 279
+      path: src/cli/commands/init.ts
+      side: head
+    entries:
+      - _ulid: 01KP6W2K1WM1BZ693NYA172CK7
+        author: Jacob Chapel
+        body: " now reports success whenever the scaffold step succeeds, even if other setup steps fail. In
+          , the old  gate was removed and replaced with a scaffold-only check, so failures like
+          plugin marketplace or memory seeding are silently downgraded to a green footer and exit 0.
+          I reproduced this with : the summary showed failed  and  steps, but the command still
+          printed 'Setup complete. Your project is ready for use.' and exited 0. That is a
+          regression from the base branch behavior, which warned when any setup step failed."
+        created_at: 2026-04-14T20:49:08.668Z
+      - _ulid: 01KP6X24340AEMGPXQQZTAX5C6
+        author: "@claude"
+        body: "Fixed: restored the setupResult.success gate in init.ts. The scaffold-specific check now runs
+          first (hard exit on scaffold failure), then the general gate checks setupResult.success —
+          if false, prints the base-branch-original warning instead of the success footer. Commit
+          b91fc2f0e."
+        created_at: 2026-04-14T21:06:21.924Z
+    kind: blocker
+    resolved_at: 2026-04-14T21:06:35.304Z
+    resolved_by: "@claude"
+  - _ulid: 01KP6W3DPEJ0Y4PNFC3JNJMMDT
+    anchor:
+      type: code
+      commit: af9d75e0a7abb47bcd90459f7ec70d16c51e0769
+      line_end: 290
+      line_start: 279
+      path: src/cli/commands/init.ts
+      side: head
+    entries:
+      - _ulid: 01KP6W3DPF36DP9J8S2QBCHJQW
+        author: Jacob Chapel
+        body: 'init --setup now reports success whenever the scaffold step succeeds, even if other setup
+          steps fail. In src/cli/commands/init.ts, the old setupResult.success gate was removed and
+          replaced with a scaffold-only check, so failures like plugin marketplace or memory seeding
+          are silently downgraded to a green footer and exit 0. I reproduced this with
+          HOME=/dev/null and `node dist/cli/index.js init --no-prompt --setup`: the summary showed
+          failed Register plugin marketplace and Seed memory steps, but the command still printed
+          "Setup complete. Your project is ready for use." and exited 0. The base branch warned when
+          any setup step failed.'
+        created_at: 2026-04-14T20:49:35.951Z
+      - _ulid: 01KP6X292RS8KHRJE4ZBN9N306
+        author: "@claude"
+        body: "Fixed: same change — restored the setupResult.success gate alongside the scaffold-specific
+          check. init --setup now shows warning when any non-scaffold step fails, matching base
+          branch behavior. Commit b91fc2f0e."
+        created_at: 2026-04-14T21:06:27.032Z
+    kind: blocker
+    resolved_at: 2026-04-14T21:06:40.183Z
+    resolved_by: "@claude"
+  - _ulid: 01KP6W3X84T441524BVTCP1VB3
+    entries:
+      - _ulid: 01KP6W3X85M2VTTM5TY0E7AQCY
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          Files read: src/agent-runtime/workspace.ts, src/cli/commands/init.ts,
+          src/cli/commands/setup.ts, src/parser/config.ts, tests/scaffold-project-config.test.ts,
+          tests/helpers/cli.ts.
+
+          Commands run: git diff/stat/log against
+          plan/plan-init-setup-and-upgrade-rough-edges/01knvahv, kspec task get, kspec item get,
+          kspec review get/for-task, rg AC annotation scan, kspec validate on branch and integration
+          head, npm test, and a reproduced `HOME=/dev/null node dist/cli/index.js init --no-prompt
+          --setup` run.
+
+          Claims verified: branch ancestry is clean relative to integration head f205808d2; full
+          test suite passes; kspec validate failure is pre-existing on both branch and integration
+          head; non-scaffold setup failures are now reported as overall init success.
+
+          Categories searched: correctness (found regression), tests (suite passes, but misses this
+          regression), edge cases (forced failing setup environment), error handling (found
+          regression), integration (setup/init interaction), security (no findings).
+        created_at: 2026-04-14T20:49:51.877Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-14T20:50:10.547Z
+created_at: 2026-04-14T20:38:21.450Z
+updated_at: 2026-04-14T21:06:40.183Z
+notes: []

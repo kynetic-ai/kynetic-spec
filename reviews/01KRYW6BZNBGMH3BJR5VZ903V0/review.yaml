@@ -1,0 +1,149 @@
+_ulid: 01KRYW6BZNBGMH3BJR5VZ903V0
+slugs: []
+title: Review bound event bus lineage and source-ordering lifetime (cycle 2)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate: schema/references OK; exited 6 for pre-existing repo-wide warnings, no
+      dispatch-event-envelope completeness warning"
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-19T01:19:18.162Z
+    completed_at: 2026-05-19T01:19:18.162Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/event-bus.test.ts: 9 suites passed, 39 tests passed"
+    name: event-bus focused tests
+    required: true
+    runner: npm
+    created_at: 2026-05-19T01:19:24.357Z
+    completed_at: 2026-05-19T01:19:24.357Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test: 2447 suites passed; 9281 passed, 5 skipped, 0 failed"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-19T01:19:30.622Z
+    completed_at: 2026-05-19T01:19:30.622Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run lint: exit 0, warnings only; no changed event-bus or cli-no-daemon errors"
+    name: lint
+    required: false
+    runner: oxlint
+    created_at: 2026-05-19T01:19:36.791Z
+    completed_at: 2026-05-19T01:19:36.791Z
+events:
+  - _ulid: 01KRYW6BZMHK5DAQ82RVHGK2ZN
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-19T01:04:22.516Z
+  - _ulid: 01KRYW7BBN2373BSXMQNE1C8BV
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-19T01:04:54.645Z
+  - _ulid: 01KRYX1R11HGZTFGRSAFMBQMQ2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-19T01:19:19.585Z
+  - _ulid: 01KRYX1Y3GS7X22PMS0A36W7R3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: event-bus focused tests
+    timestamp: 2026-05-19T01:19:25.808Z
+  - _ulid: 01KRYX247JJ9717QQ02EP3TEY4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-19T01:19:32.083Z
+  - _ulid: 01KRYX2A994WWRTMQ7YB98BAC4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-05-19T01:19:38.282Z
+  - _ulid: 01KRYX2GCR2Q0C2H68WV1XQESV
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KRYX2EYPASCJMZH42AKKQD3H
+    timestamp: 2026-05-19T01:19:44.536Z
+  - _ulid: 01KRYX2PHJKK23J6TC0D8BN1VB
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-19T01:19:50.834Z
+  - _ulid: 01KRYX2PHJG854R6VA5V8847XZ
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-19T01:19:50.834Z
+examined_commit: df446d63387e7a49faa10619d7041444b3d313d9
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRYMPAYBKH8J2HKZPZYGQDA3"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRYX2EYPASCJMZH42AKKQD3H
+    entries:
+      - _ulid: 01KRYX2EYPJ2M6NPWSG5A1N193
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; src/agent-runtime/event-bus.ts;
+          tests/event-bus.test.ts; tests/cli-no-daemon.test.ts; package.json; prior review
+          @01KRYQJ6. Commands run: kspec task get; kspec item get @dispatch-event-envelope; kspec
+          review get/for-task/open; git diff/stat/log/diff-check; rg AC/source-scan/state
+          references; kspec validate; kspec validate --completeness filtered for
+          dispatch-event-envelope; npm test -- --run tests/event-bus.test.ts; npm test; npm run
+          lint. Claims verified: prior stale-lineage pruning blocker fixed by removing size
+          early-return and adding uncorrelated-aging regression; missing AC annotations added;
+          source-ordering cleanup preserves same-source chaining by only deleting if the settled
+          promise is still the current map entry. Categories searched: correctness, edge cases,
+          error handling, test quality, integration, and regression risk. Findings: none blocking."
+        created_at: 2026-05-19T01:19:43.062Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-19T01:19:50.834Z
+created_at: 2026-05-19T01:04:22.517Z
+updated_at: 2026-05-19T01:19:50.834Z
+notes: []

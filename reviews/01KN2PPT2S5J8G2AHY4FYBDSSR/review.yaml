@@ -1,0 +1,200 @@
+_ulid: 01KN2PPT2S5J8G2AHY4FYBDSSR
+slugs: []
+title: Review task-e2e-batch-item-fetch
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run build:e2e && npx playwright test tests/e2e/plans.spec.ts passed; all 35 Chromium
+      tests in tests/e2e/plans.spec.ts succeeded.
+    name: playwright-plans-spec
+    required: true
+    runner: playwright
+    created_at: 2026-03-31T19:50:59.130Z
+    completed_at: 2026-03-31T19:50:59.130Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exited 6 with pre-existing project warnings only (orphaned skill dir,
+      orphaned specs, uncovered AC warnings, invalid AC annotations in test fixtures); no new schema
+      or reference errors attributable to this change.
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-31T19:51:01.013Z
+    completed_at: 2026-03-31T19:51:01.013Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: tests/e2e/plans.spec.ts, tests/e2e/items.spec.ts, tests/e2e/tasks.spec.ts,
+      packages/web-ui/src/lib/api.ts, packages/web-ui/src/lib/components/ReferenceLink.svelte,
+      packages/web-ui/src/lib/components/board/TaskDetailContent.svelte,
+      packages/web-ui/src/lib/utils/plan-embedded-content.ts, package.json, scripts/test.cjs.
+      Commands run: kspec task get, kspec item get @batch-item-fetch-api, kspec item get
+      @trait-api-endpoint, git diff/stat, rg searches, kspec validate, npm test, npm run build:e2e
+      && npx playwright test tests/e2e/plans.spec.ts. Claims verified: current task/item UIs use
+      ReferenceLink rather than fetchBatchItems; plan embedded content is the live fetchBatchItems
+      consumer. Categories searched: correctness, test quality, integration, error handling, edge
+      cases."
+    name: review-evidence-log
+    required: false
+    runner: review
+    created_at: 2026-03-31T19:51:02.961Z
+    completed_at: 2026-03-31T19:51:02.961Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test failed on this snapshot with 16 failing suites / 14 failing tests, concentrated
+      in pre-existing dispatch/runtime and daemon task API areas outside the diff; changed files in
+      this review are limited to tests/e2e/plans.spec.ts. Full log:
+      /tmp/kspec-test-cache/01KN2PNFCC0A45SBRSY7F1CEDY/da52637427d0d492.log"
+    name: npm-test
+    required: false
+    runner: npm
+    created_at: 2026-03-31T19:51:34.701Z
+    completed_at: 2026-03-31T19:51:34.701Z
+events:
+  - _ulid: 01KN2PPT2R1SG7030REW7QBN9D
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-31T19:42:40.216Z
+  - _ulid: 01KN2PRKKNKRMQFDWFAQ50HTPT
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-31T19:43:39.125Z
+  - _ulid: 01KN2Q602GY7DPWWG43Q6KX7KT
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN2Q5ZFG86H766TB1B2G1RHR
+    timestamp: 2026-03-31T19:50:57.872Z
+  - _ulid: 01KN2Q61XC7FDEJ4AAF7B1V7J7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: playwright-plans-spec
+    timestamp: 2026-03-31T19:50:59.757Z
+  - _ulid: 01KN2Q63RQYR0TZYV6WEPHGXJ2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-31T19:51:01.655Z
+  - _ulid: 01KN2Q65NB3NEVA66191FSDGXQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence-log
+    timestamp: 2026-03-31T19:51:03.595Z
+  - _ulid: 01KN2Q74MWCT4GWN9H1GRQSAPZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm-test
+    timestamp: 2026-03-31T19:51:35.325Z
+  - _ulid: 01KN2Q76FTS9T0QPWQB50WCNZ8
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN2Q5ZFG86H766TB1B2G1RHR
+    timestamp: 2026-03-31T19:51:37.210Z
+  - _ulid: 01KN2Q7YPADX88PRYG15MH1QGQ
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-31T19:52:01.994Z
+  - _ulid: 01KN2Q7YPAXNXN77FXEPF9TCPZ
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-31T19:52:01.994Z
+  - _ulid: 01KN2RCQKKBC62NV53HT0BHYWQ
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN2Q5ZFG86H766TB1B2G1RHR
+    timestamp: 2026-03-31T20:12:07.155Z
+  - _ulid: 01KN2RCSD239KW32YDQGE03SKG
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN2Q5ZFG86H766TB1B2G1RHR
+    timestamp: 2026-03-31T20:12:08.995Z
+examined_commit: 922d82d4709a521bba65ef2e842ced72f675720e
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMZ1BWMQGPZRECVEQCT2GS48"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN2Q5ZFG86H766TB1B2G1RHR
+    anchor:
+      type: code
+      commit: 922d82d4709a521bba65ef2e842ced72f675720e
+      line_end: 684
+      line_start: 595
+      path: tests/e2e/plans.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KN2Q5ZFGK93P0D0Q9FJM7B8G
+        author: Jacob Chapel
+        body: "These new tests stub  with , so they never execute the real daemon endpoint. As written,
+          the  and  annotations here claim API-contract coverage at the wrong abstraction layer: the
+          tests will still pass if the actual handler breaks, as long as the UI continues to issue
+          the mocked request. Keep the UI assertions, but remove these API-spec annotations or
+          replace them with real endpoint coverage."
+        created_at: 2026-03-31T19:50:57.264Z
+      - _ulid: 01KN2Q75VKVY1DKKWGFNARFC9M
+        author: Jacob Chapel
+        body: "These tests stub /api/items/batch with page.route(...), so they never execute the real daemon
+          endpoint. That makes the @batch-item-fetch-api and @trait-api-endpoint annotations
+          incorrect: the tests can still pass if the actual handler breaks, as long as the UI
+          continues to issue the mocked request. Keep the UI assertions, but remove these API-spec
+          annotations or replace them with real endpoint-level coverage."
+        created_at: 2026-03-31T19:51:36.563Z
+      - _ulid: 01KN2RCQ0HTX1Q68MQNYG2VS7W
+        author: Jacob Chapel
+        body: "Fixed in f8075c29c: the plans E2E happy-path test now waits on the real POST /api/items/batch
+          request/response from the daemon and asserts the returned spec/task summaries instead of
+          fulfilling the route. The unresolved case now patches only the plan detail payload to add
+          an extra derived task ref, so the live batch handler produces the unresolved array and the
+          UI falls back to raw YAML without mocking the endpoint itself."
+        created_at: 2026-03-31T20:12:06.545Z
+    kind: blocker
+    resolved_at: 2026-03-31T20:12:08.406Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-31T19:52:01.993Z
+created_at: 2026-03-31T19:42:40.217Z
+updated_at: 2026-03-31T20:12:08.406Z
+notes: []

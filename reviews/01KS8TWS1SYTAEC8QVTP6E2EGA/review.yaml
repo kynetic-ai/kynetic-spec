@@ -1,0 +1,258 @@
+_ulid: 01KS8TWS1SYTAEC8QVTP6E2EGA
+slugs: []
+title: "Strict plan review: Folder-Backed Plans, Reviews, and Local Resources"
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran kspec plan import plans/folder-backed-plans-reviews-and-resources.md --dry-run; parsed
+      as draft plan with full document stored and no specs/tasks derived.
+    name: Plan import dry-run
+    required: true
+    created_at: 2026-05-22T21:55:32.108Z
+    completed_at: 2026-05-22T21:55:32.108Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran kspec validate --warnings-ok; schema/references/skills passed. Existing repository
+      warnings remain but validation exited 0 with --warnings-ok.
+    name: Project validation baseline
+    required: true
+    created_at: 2026-05-22T21:55:41.903Z
+    completed_at: 2026-05-22T21:55:41.903Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Reviewed cycles 1-6. Prior findings on final decisions, version compatibility, dependency
+      order, trait duplication, stale refs, review function names, resource_refs semantics,
+      command/API payloads, rebuild JSON, route ownership, docs spec_ref, CLI errors, multipart
+      replace, and missing source-file failures are represented in the current plan.
+    name: Prior blocker verification
+    required: true
+    created_at: 2026-05-22T21:55:52.401Z
+    completed_at: 2026-05-22T21:55:52.401Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: task-update-plan-review-storage-specs names exact existing refs/AC IDs and wording, but
+      does not specify final implementation status for @plan-crud,
+      @review-record-storage-and-identity, or @daemon-entity-cache.
+    name: Existing spec update explicitness
+    required: true
+    created_at: 2026-05-22T21:56:02.253Z
+    completed_at: 2026-05-22T21:56:02.253Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The newly added @daemon-entity-cache ac-folder-backed-entity-directory-invalidation is
+      mentioned in task prose but absent from all Covers lines; implementation ownership is not
+      tracked.
+    name: Coverage and references
+    required: true
+    created_at: 2026-05-22T21:56:13.757Z
+    completed_at: 2026-05-22T21:56:13.757Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Resource tasks specify optional content_type/--content-type but ResourceMetadata requires
+      a string; no task defines exact derivation/default behavior when omitted.
+    name: Standalone task executability
+    required: true
+    created_at: 2026-05-22T21:56:23.708Z
+    completed_at: 2026-05-22T21:56:23.708Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Task dependency chain remains ordered: spec update -> shared folder/resource foundations
+      -> compatibility gates -> plan/review managers -> migration -> plan resource derive/API and
+      review resource UI -> docs. No circular dependency found in the plan task graph."
+    name: Dependency ordering
+    required: true
+    created_at: 2026-05-22T21:56:33.797Z
+    completed_at: 2026-05-22T21:56:33.797Z
+events:
+  - _ulid: 01KS8TWS1PFDJWD1GSPTKEZ4CX
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-22T21:54:03.958Z
+  - _ulid: 01KS8TXFD60QYC7CFXC0JKFJKT
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-22T21:54:26.854Z
+  - _ulid: 01KS8TXYDKBZNCHJDX5MPQ5MN7
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KS8TXWXYAM548NXE3EZ9YX5V
+    timestamp: 2026-05-22T21:54:42.227Z
+  - _ulid: 01KS8TY9R63SZ9MP1JP5A332MW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KS8TY88GJ3DBSH9JY53TH9SW
+    timestamp: 2026-05-22T21:54:53.830Z
+  - _ulid: 01KS8TYN92J1ZD4DABV49Y8BKN
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KS8TYKS4WDB21MNWCBVAGDFN
+    timestamp: 2026-05-22T21:55:05.634Z
+  - _ulid: 01KS8TZGKGQZWWHX48E52QEJ30
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan import dry-run
+    timestamp: 2026-05-22T21:55:33.616Z
+  - _ulid: 01KS8TZT6JXNC2RT4B7HDQRE2X
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Project validation baseline
+    timestamp: 2026-05-22T21:55:43.442Z
+  - _ulid: 01KS8V04FGXP0MCCB6WZYFRZ3C
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Prior blocker verification
+    timestamp: 2026-05-22T21:55:53.968Z
+  - _ulid: 01KS8V0E1VTA5GZXG6HJ8CZ6KE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Existing spec update explicitness
+    timestamp: 2026-05-22T21:56:03.771Z
+  - _ulid: 01KS8V0S9Y6D2QXX19V7V6STT9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Coverage and references
+    timestamp: 2026-05-22T21:56:15.294Z
+  - _ulid: 01KS8V1319KH4G5DVNY7N2YPT3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Standalone task executability
+    timestamp: 2026-05-22T21:56:25.257Z
+  - _ulid: 01KS8V1CW8AEX7PE3PWJX54NCP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-05-22T21:56:35.336Z
+  - _ulid: 01KS8V1P3BXXPDF537D4AHVCZK
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-22T21:56:44.779Z
+  - _ulid: 01KS8V1P3BZC72K5ZHVXKH81W5
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-22T21:56:44.779Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-folder-backed-plans-reviews-and-local-resources"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KS8TXWXYAM548NXE3EZ9YX5V
+    anchor:
+      type: structured
+      field: description
+      ref: "@task-update-plan-review-storage-specs"
+      section: tasks
+    entries:
+      - _ulid: 01KS8TXWXY1FFASGHPAP373KDH
+        author: Jacob Chapel
+        body: Task edits existing specs but does not specify final implementation status for any touched
+          spec. The review requirement asks for exact spec refs, AC IDs, final wording/status, and
+          verification. The task names @plan-crud ac-1/ac-2, @review-record-storage-and-identity
+          ac-3, and @daemon-entity-cache ac-folder-backed-entity-directory-invalidation with wording
+          and verification, but it never says whether @plan-crud remains implemented,
+          @review-record-storage-and-identity remains implemented, and @daemon-entity-cache remains
+          in_progress or changes to another status after the edit. Add explicit final status
+          instructions for each touched existing spec.
+        created_at: 2026-05-22T21:54:40.703Z
+    kind: blocker
+  - _ulid: 01KS8TY88GJ3DBSH9JY53TH9SW
+    anchor:
+      type: structured
+      field: covers
+      ref: "@task-plan-resource-api-ui-static"
+      section: tasks
+    entries:
+      - _ulid: 01KS8TY88GQNKHH34NA15V1CGV
+        author: Jacob Chapel
+        body: The plan adds @daemon-entity-cache ac-folder-backed-entity-directory-invalidation, but no
+          implementation task claims that AC in its Covers line. This task says it updates
+          .kspec/plans/ directory invalidation, and @task-review-screenshot-resource-ui says it
+          updates .kspec/reviews/ invalidation, but neither Covers the new cache AC. A derived
+          worker could complete all claimed ACs while the newly added cache requirement remains
+          untracked. Add explicit Covers ownership for @daemon-entity-cache
+          ac-folder-backed-entity-directory-invalidation, with the plan/review split stated on the
+          relevant task(s), or create a dedicated cache task.
+        created_at: 2026-05-22T21:54:52.304Z
+    kind: blocker
+  - _ulid: 01KS8TYKS4WDB21MNWCBVAGDFN
+    anchor:
+      type: structured
+      field: description
+      ref: "@task-entity-local-resource-model"
+      section: tasks
+    entries:
+      - _ulid: 01KS8TYKS4AS4JNXQQ5H8XRWV4
+        author: Jacob Chapel
+        body: Resource content type derivation is still ambiguous. The shared model requires
+          ResourceMetadata.content_type to be a string, while plan/review CLI and API tasks make
+          --content-type/content_type optional. No task states what value is stored when callers
+          omit it during CLI add, multipart POST, plan import from a sibling resources.yaml, or
+          explicit materialize copy. Implementation agents could choose filename sniffing, multipart
+          MIME, application/octet-stream, text/plain, or null, producing incompatible manifests and
+          API payloads. Define the exact precedence/default rule in the shared resource task and
+          require the plan/review CLI/API/import tests to cover omitted content type.
+        created_at: 2026-05-22T21:55:04.100Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-22T21:56:44.773Z
+created_at: 2026-05-22T21:54:03.960Z
+updated_at: 2026-05-22T21:56:44.779Z
+notes: []

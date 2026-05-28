@@ -1,0 +1,206 @@
+_ulid: 01KMAKP6JS0BKN3MSK84QDAD9H
+slugs: []
+title: Review task-session-prompt-action (cycle 4)
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 6 with repo-wide warnings only; schema and reference checks passed, including the
+      new session_prompt validation path.
+    name: kspec validate
+    required: false
+    created_at: 2026-03-22T11:11:47.466Z
+    completed_at: 2026-03-22T11:11:47.466Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 308 files, 7072 tests passed, 3 skipped. Build bootstrap ran automatically before tests;
+      no failing tests.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-22T11:12:40.483Z
+    completed_at: 2026-03-22T11:12:40.483Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 308 files, 7072 tests passed, 3 skipped. Build bootstrap ran automatically before tests;
+      no failing tests.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-22T11:12:42.559Z
+    completed_at: 2026-03-22T11:12:42.559Z
+events:
+  - _ulid: 01KMAKP6JSQDRXXCK2J4V91DKR
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-22T11:08:08.153Z
+  - _ulid: 01KMAKWW1KRWNE585ZPE9WVV7B
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-22T11:11:46.739Z
+  - _ulid: 01KMAKWX3GK0CWMHYWHTZGJYNN
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-22T11:11:47.824Z
+  - _ulid: 01KMAKYH3ZK09JGTB5B8G57S6M
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-22T11:12:41.087Z
+  - _ulid: 01KMAKYK4RYXAF7XKE2MB095WP
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-22T11:12:43.160Z
+  - _ulid: 01KMAKYX2JDK4FQ0V20D2CY4B9
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMAKYWFQ5WBB36JB739W3WST
+    timestamp: 2026-03-22T11:12:53.330Z
+  - _ulid: 01KMAM0H41RT2WDVNN6GQS1A4R
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMAM0GRFDNYMN09TRXFDWNVY
+    timestamp: 2026-03-22T11:13:46.625Z
+  - _ulid: 01KMAM0MBED9WFW4F4H7C0TD0X
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMAM0M0SJH5P599ANGH5P9EN
+    timestamp: 2026-03-22T11:13:49.934Z
+  - _ulid: 01KMAM1DJ1BK7QR002297BW5SW
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMAM1D60HHKAJYSJ9DD2CHPD
+    timestamp: 2026-03-22T11:14:15.745Z
+  - _ulid: 01KMAM1KJDWFTYH6G1C3NMD8ZK
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-22T11:14:21.901Z
+  - _ulid: 01KMAM1KJDW9NT9ZN1YR7VGGEA
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-22T11:14:21.901Z
+examined_commit: 0a2c33c2e406d71723e924ac121094d68ee3ce5f
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMA74ECH1ZW03KM3403N023Z"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMAKYWFQ5WBB36JB739W3WST
+    anchor:
+      type: code
+      commit: 0a2c33c2e406d71723e924ac121094d68ee3ce5f
+      line_end: 464
+      line_start: 457
+      path: src/agent-runtime/invocation.ts
+      side: head
+    entries:
+      - _ulid: 01KMAKYWFQAZBQ9MK4XP1JA5RF
+        author: Test User
+        body: "The new action is still non-functional on the real runtime path: the only production
+          SessionHandle registered here always rejects follow-up prompts with a single-turn error,
+          so executeSessionPrompt can only succeed against mocked handles in tests. That violates
+          the task/spec contract that an idle or prompting live session accepts a delivered or
+          queued prompt (ac-1/ac-5)."
+        created_at: 2026-03-22T11:12:52.728Z
+    kind: blocker
+  - _ulid: 01KMAM0GRFDNYMN09TRXFDWNVY
+    anchor:
+      type: code
+      commit: 0a2c33c2e406d71723e924ac121094d68ee3ce5f
+      line_end: 2767
+      line_start: 2765
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KMAM0GRFDZ67JZCQXGAVREYG
+        author: Test User
+        body: Successful invocations still publish  rather than , so a hook configured on  never fires in
+          production. This means the new session_prompt action cannot be triggered through the
+          dispatch flow it was added for, even though the schema and executor tests pass.
+        created_at: 2026-03-22T11:13:46.255Z
+    kind: blocker
+  - _ulid: 01KMAM0M0SJH5P599ANGH5P9EN
+    anchor:
+      type: code
+      commit: 0a2c33c2e406d71723e924ac121094d68ee3ce5f
+      line_end: 2767
+      line_start: 2765
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KMAM0M0SSGVJC2KRJEP5NF5E
+        author: Test User
+        body: Successful invocations still publish session.ended rather than session.idle, so a hook
+          configured on session.idle never fires in production. This means the new session_prompt
+          action cannot be triggered through the dispatch flow it was added for, even though the
+          schema and executor tests pass.
+        created_at: 2026-03-22T11:13:49.593Z
+    kind: blocker
+  - _ulid: 01KMAM1D60HHKAJYSJ9DD2CHPD
+    entries:
+      - _ulid: 01KMAM1D608DTX0M4MKD18NV6H
+        author: Test User
+        body: "Review evidence log: Files read: src/schema/action.ts, src/agent-runtime/action-executor.ts,
+          src/agent-runtime/invocation.ts, src/agent-runtime/dispatch.ts, src/parser/validate.ts,
+          src/schema/event-payloads.ts, packages/daemon/src/routes/agent-dispatch.ts,
+          tests/session-prompt-action.test.ts, tests/daemon-agent-dispatch-routes.test.ts, prior
+          review @01KMAHKJH9P6F0TM3H9XNAWK18. Commands run: kspec task get, kspec item get, kspec
+          review for-task/get, git diff, rg for AC annotations and runtime paths, kspec validate,
+          npm test. Claims verified: full suite passes; registry is now threaded through daemon ->
+          dispatch -> invocation; session_prompt still lacks a production idle-capable session
+          handle and a production session.idle emitter. Categories searched: correctness (found
+          blockers), integration (found blockers), test quality (tests pass but rely on mocks for
+          delivery), error handling (messages/warnings looked reasonable), edge cases (explicit vs
+          event-derived session_id validated)."
+        created_at: 2026-03-22T11:14:15.360Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-22T11:14:21.901Z
+created_at: 2026-03-22T11:08:08.153Z
+updated_at: 2026-03-22T11:14:21.901Z
+notes: []

@@ -1,0 +1,175 @@
+_ulid: 01KQWYK75R95SHA3E5RCF4E9QV
+slugs: []
+title: "Plan review: Daemon Network Endpoint Contract (cycle 3)"
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --warnings-ok passed. Existing project warnings remain, but schema and
+      references are OK.
+    name: catalog validation
+    required: true
+    runner: kspec
+    created_at: 2026-05-05T20:53:00.538Z
+    completed_at: 2026-05-05T20:53:00.538Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan states default host is 127.0.0.1, keeps wildcard/non-loopback binding explicit, maps
+      wildcard client destinations away from wildcard bind addresses, and requires visible
+      unauthenticated-exposure warnings.
+    name: loopback default and explicit external binding
+    required: true
+    created_at: 2026-05-05T20:53:00.611Z
+    completed_at: 2026-05-05T20:53:00.611Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@task-daemon-endpoint-regression-tests claims @daemon-network-endpoint-contract all ACs
+      without requiring a regression assertion for ac-external-binding-warning."
+    name: coverage mapping
+    required: true
+    created_at: 2026-05-05T20:53:00.628Z
+    completed_at: 2026-05-05T20:53:00.628Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@trait-daemon-endpoint-consumer ac-wildcard-not-destination mixes communication and
+      user-facing destination reporting, but the plan applies it to @daemon-proxy-detection which is
+      not a reporting surface."
+    name: trait suitability
+    required: true
+    created_at: 2026-05-05T20:53:15.823Z
+    completed_at: 2026-05-05T20:53:15.823Z
+events:
+  - _ulid: 01KQWYK75QKZ1AZRYE71JV4CYW
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-05T20:52:10.040Z
+  - _ulid: 01KQWYKKYD9CVTZ00ZRVYVA0SS
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-05T20:52:23.118Z
+  - _ulid: 01KQWYM5VQJ070NQ7CXEGKKVSS
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQWYM4FNR9BESGCNPX9R6CQF
+    timestamp: 2026-05-05T20:52:41.463Z
+  - _ulid: 01KQWYM81R80XQ5WM993FFMT50
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KQWYM4H6TAJ0S3XKQVB15VKM
+    timestamp: 2026-05-05T20:52:43.704Z
+  - _ulid: 01KQWYMSTT3R280AYT9Y5AAWV3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: catalog validation
+    timestamp: 2026-05-05T20:53:01.914Z
+  - _ulid: 01KQWYMVSZ6W0R7PKC5VXQSW3M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: loopback default and explicit external binding
+    timestamp: 2026-05-05T20:53:03.935Z
+  - _ulid: 01KQWYMXVQX87A3HKS431MXWNJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: coverage mapping
+    timestamp: 2026-05-05T20:53:06.039Z
+  - _ulid: 01KQWYN8S2FP922JEQN5RJ5RMX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: trait suitability
+    timestamp: 2026-05-05T20:53:17.218Z
+  - _ulid: 01KQWYNHTX53BVBCJGK58SNQNW
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-05T20:53:26.493Z
+  - _ulid: 01KQWYNHTX5C0965ZDGS1EP2VR
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-05T20:53:26.493Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-daemon-network-endpoint-contract"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KQWYM4FNR9BESGCNPX9R6CQF
+    anchor:
+      type: structured
+      field: ac-wildcard-not-destination
+      ref: "@trait-daemon-endpoint-consumer"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KQWYM4FNKWMZP9MDJXNVN2M6
+        author: Jacob Chapel
+        body: "The trait AC combines two different consumer surfaces: communicating with the daemon and
+          reporting a destination to a user. The plan then applies this trait to
+          @daemon-proxy-detection, which communicates with a daemon but does not describe
+          user-facing destination reporting. Because inherited trait ACs must be covered by every
+          implementer, this makes the trait broader than the specs it is applied to and leaves
+          ambiguous coverage. Split the reporting behavior into a separate AC/trait or keep
+          @trait-daemon-endpoint-consumer limited to communication-only endpoint use."
+        created_at: 2026-05-05T20:52:40.053Z
+    kind: blocker
+  - _ulid: 01KQWYM4H6TAJ0S3XKQVB15VKM
+    anchor:
+      type: structured
+      field: covers
+      ref: "@task-daemon-endpoint-regression-tests"
+      section: tasks
+    entries:
+      - _ulid: 01KQWYM4H62Y0VZ2GVBSN8R3Y0
+        author: Jacob Chapel
+        body: "The task claims 'Covers: @daemon-network-endpoint-contract all ACs', but its What/Testing
+          sections do not require a behavioral regression for ac-external-binding-warning. It covers
+          configured hosts and client endpoint use, but not the visible unauthenticated-exposure
+          warning when a non-loopback or wildcard bind host is effective. Either add an explicit
+          warning assertion to this task or narrow the Covers line to the ACs it actually tests."
+        created_at: 2026-05-05T20:52:40.102Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-05T20:53:26.493Z
+created_at: 2026-05-05T20:52:10.040Z
+updated_at: 2026-05-05T20:53:26.493Z
+notes: []

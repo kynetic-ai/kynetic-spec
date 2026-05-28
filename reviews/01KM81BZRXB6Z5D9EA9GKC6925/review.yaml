@@ -1,0 +1,157 @@
+_ulid: 01KM81BZRXB6Z5D9EA9GKC6925
+slugs: []
+title: Review per-task core data and notes files (cycle 9)
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KM81BZRXD814FMJ8K644S0X1
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T11:09:30.269Z
+  - _ulid: 01KM81M8Z6SW1ER51HF9YB2T31
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T11:14:01.831Z
+  - _ulid: 01KM81N5T5T70GFBFTKG3T9YNM
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM81N5FF4GH4D39BA4VCJ7TH
+    timestamp: 2026-03-21T11:14:31.365Z
+  - _ulid: 01KM81NS7B0F3C6Y618SDDDJRN
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM81NRQR6Z8XE7MQVMQ28MAM
+    timestamp: 2026-03-21T11:14:51.243Z
+  - _ulid: 01KM81NTVAMDP2SSR23WX2C2XH
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM81NTBDMA3FK945Z1GN1AY5
+    timestamp: 2026-03-21T11:14:52.906Z
+  - _ulid: 01KM81RMES5J41E98PNXBDTSGF
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KM81N5FF4GH4D39BA4VCJ7TH
+    timestamp: 2026-03-21T11:16:24.666Z
+  - _ulid: 01KM81RPJS8ZPFBZPGB7CYYGA8
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-21T11:16:26.841Z
+  - _ulid: 01KM81RPJSSN2HAWPXQXP7CFAJ
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-21T11:16:26.842Z
+examined_commit: 1db83c00f8bd886f9006e661da0bcfcbdc6f228d
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YET1A7XY9D0V3YQ9DRASG"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM81N5FF4GH4D39BA4VCJ7TH
+    anchor:
+      type: code
+      commit: 1db83c00f8bd886f9006e661da0bcfcbdc6f228d
+      line_end: 93
+      line_start: 93
+      path: src/cli/commands/tasks.ts
+      side: head
+    entries:
+      - _ulid: 01KM81N5FF6TECY8BNKHX69ZNV
+        author: Jacob Chapel
+        body: " still rebuilds tasks from , which is only the lean index in split mode. That loader drops
+          per-task  and , so every command in this file that uses it (, , , , , , and ) is reading
+          incomplete task objects under . I reproduced this with a temp split manifest: after adding
+          one note and one todo through ,  returned  and  while  returned  for both. That
+          means  output omits real notes/todos and  cannot match note content in split storage, so
+          the snapshot still fails the per-task-file behavior from user-facing task commands."
+        created_at: 2026-03-21T11:14:31.023Z
+    kind: blocker
+    resolved_at: 2026-03-21T11:16:24.080Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KM81NRQR6Z8XE7MQVMQ28MAM
+    anchor:
+      type: code
+      commit: 1db83c00f8bd886f9006e661da0bcfcbdc6f228d
+      line_end: 93
+      line_start: 93
+      path: src/cli/commands/tasks.ts
+      side: head
+    entries:
+      - _ulid: 01KM81NRQRT4YZ15GEK64JWT37
+        author: Jacob Chapel
+        body: >-
+          `loadAllTasks(ctx)` still rebuilds tasks from `project.tasks.yaml`, which is only the lean
+          index in split mode. That loader drops per-task `notes` and `todos`, so every command in
+          this file that uses it (`tasks list`, `task list`, `tasks ready`, `tasks next`, `tasks
+          blocked`, `tasks in-progress`, and `tasks assess automation`) is reading incomplete task
+          objects under `task_storage.format: split`.
+
+
+          I reproduced this with a temp split manifest: after adding one note and one todo through
+          `resolveTaskDataManager(ctx)`, `loadAllTasks(ctx)` returned `notes.length === 0` and
+          `todos.length === 0` while `manager.loadAllTasks(ctx)` returned `1` for both. That means
+          `--full` output omits real notes/todos and `--grep` cannot match note content in split
+          storage, so the snapshot still fails the per-task-file behavior from user-facing task
+          commands.
+        created_at: 2026-03-21T11:14:50.744Z
+    kind: blocker
+  - _ulid: 01KM81NTBDMA3FK945Z1GN1AY5
+    entries:
+      - _ulid: 01KM81NTBDZ2P580BP2M0R3P1A
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: src/parser/task-data-manager.ts, src/parser/split-backend.ts,
+          src/cli/commands/task.ts, src/cli/commands/tasks.ts, packages/daemon/src/routes/tasks.ts,
+          src/parser/review-task-integration.ts, src/parser/alignment.ts, src/parser/yaml.ts,
+          tests/per-task-files.test.ts, tests/tasks-assess-automation.test.ts.
+
+          Commands run: `kspec task get`, `kspec review for-task`, `git diff --stat`, `git diff`,
+          `kspec item get`, `rg` for AC annotations, `kspec validate`, `npm test`, `node` repro
+          comparing `loadAllTasks(ctx)` vs `resolveTaskDataManager(ctx).loadAllTasks(ctx)` in split
+          mode.
+
+          Claims verified: reproduced that legacy `loadAllTasks(ctx)` drops split-storage
+          notes/todos even after they exist on disk; confirmed new tests cover direct manager
+          behavior but not CLI split-mode paths.
+
+          Categories searched: correctness (found blocker), test coverage (gap for CLI split-mode
+          reads), integration (found blocker in task commands), edge cases/error handling/security
+          (no additional blockers found).
+        created_at: 2026-03-21T11:14:52.397Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-03-21T11:16:26.841Z
+created_at: 2026-03-21T11:09:30.269Z
+updated_at: 2026-03-21T11:16:26.841Z
+notes: []

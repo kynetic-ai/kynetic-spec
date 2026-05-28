@@ -1,0 +1,233 @@
+_ulid: 01KNTQ184G6GT4WK65938S1KXK
+slugs: []
+title: Review task-lint-rule-test-daemon-cleanup (cycle 3)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with --fresh: 10/10 suites, 52/52 tests."
+    name: npm test -- tests/lint-no-leaky-test-daemon.test.ts tests/cli-serve.test.ts
+    required: true
+    runner: npm
+    created_at: 2026-04-10T03:40:11.374Z
+    completed_at: 2026-04-10T03:40:11.374Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with --fresh: 2118/2118 suites, 7743 tests passed, 5 skipped, 0 failures."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-10T03:40:16.700Z
+    completed_at: 2026-04-10T03:40:16.700Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No validation errors; exited 6 due to pre-existing project warnings unrelated to this task.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-10T03:40:21.293Z
+    completed_at: 2026-04-10T03:40:21.293Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: .oxlintrc.json; tools/eslint-rules/no-daemon-ts-imports.js;
+      tools/eslint-rules/no-leaky-test-daemon.js; tests/lint-no-daemon-ts-imports.test.ts;
+      tests/lint-no-leaky-test-daemon.test.ts; tests/cli-serve.test.ts. Commands run: git
+      diff/stat/log/status; kspec task get; kspec review for-task/get; kspec validate; npm test --
+      --fresh tests/lint-no-leaky-test-daemon.test.ts tests/cli-serve.test.ts; npm test -- --fresh;
+      targeted oxlint probe files for false positives. Claims verified: prior blocker fixes verified
+      against current rule and tests; lint pipeline wiring verified in .oxlintrc; full test suite
+      rerun clean. Categories searched: correctness (found blocker false positive), edge cases
+      (checked sibling describe/cleanup ordering), error handling (validated report behavior), test
+      quality (reviewed inline fixture coverage), integration (full suite and tests/ lint
+      baseline)."
+    name: review evidence
+    required: false
+    runner: codex
+    created_at: 2026-04-10T03:40:48.225Z
+    completed_at: 2026-04-10T03:40:48.225Z
+events:
+  - _ulid: 01KNTQ184FEMFWJKR0TTKQTGT8
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-10T03:30:08.655Z
+  - _ulid: 01KNTQ2QGFHVCS790CBYK1RVPG
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-10T03:30:57.167Z
+  - _ulid: 01KNTQKNKMGWJ3CWEMHTMPQFZT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- tests/lint-no-leaky-test-daemon.test.ts tests/cli-serve.test.ts
+    timestamp: 2026-04-10T03:40:12.276Z
+  - _ulid: 01KNTQKR8D5BJAPNN9JAMB258Y
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNTQKQA1ZVP4N1ZE4ZASZTMN
+    timestamp: 2026-04-10T03:40:14.989Z
+  - _ulid: 01KNTQKTSKD0TXYKP8MM9G9FNS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-10T03:40:17.587Z
+  - _ulid: 01KNTQKZ94KJDCJADA8D450BK9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-10T03:40:22.180Z
+  - _ulid: 01KNTQMC7QHZMMAXQRPQ5Q6ZSC
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNTQMBBRQYVP0YC7XW9QMR4S
+    timestamp: 2026-04-10T03:40:35.447Z
+  - _ulid: 01KNTQMSJERE0DXVGH3J5K38RM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence
+    timestamp: 2026-04-10T03:40:49.103Z
+  - _ulid: 01KNTQMY5T3SAFK6DQWH54FFR7
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-10T03:40:53.818Z
+  - _ulid: 01KNTQMY5T78C8D5ZFC69KPRTT
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-10T03:40:53.818Z
+  - _ulid: 01KNTRAN10NJ3J9Y2WRZD46B3P
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNTQKQA1ZVP4N1ZE4ZASZTMN
+    timestamp: 2026-04-10T03:52:45.344Z
+  - _ulid: 01KNTRAXC9JZK1KF9J2K37MFJQ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNTQKQA1ZVP4N1ZE4ZASZTMN
+    timestamp: 2026-04-10T03:52:53.897Z
+  - _ulid: 01KNTRB20Z606Y14A6RK3NQ23V
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNTQMBBRQYVP0YC7XW9QMR4S
+    timestamp: 2026-04-10T03:52:58.655Z
+  - _ulid: 01KNTRB9RZ4KK2BH6MA0G0X51K
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNTQMBBRQYVP0YC7XW9QMR4S
+    timestamp: 2026-04-10T03:53:06.591Z
+examined_commit: bfc112ad754cb512d23d6f95793917495c7cafa4
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNTACP2BXY12MTB2GETNJ7CS"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNTQKQA1ZVP4N1ZE4ZASZTMN
+    anchor:
+      type: code
+      commit: bfc112ad754cb512d23d6f95793917495c7cafa4
+      line_end: 337
+      line_start: 323
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KNTQKQA1WPZ8FSK0GEYZ0N7G
+        author: Jacob Chapel
+        body: " currently treats any call expression with a string/template argument containing 'serve
+          start' and '--detach' as a daemon spawn. That means harmless calls like  or  are reported
+          as violations even though no daemon is spawned. I reproduced both cases by running oxlint
+          against temporary test files, and both fail under this rule. Because the task explicitly
+          says false positives are worse than false negatives, wiring this matcher into the lint
+          pipeline is unsafe until detection is limited to actual spawn-like APIs (for example , ,
+          /, or equivalent command runners) instead of arbitrary call sites."
+        created_at: 2026-04-10T03:40:14.017Z
+      - _ulid: 01KNTRAM54S2M9EQXCEF7FNXX2
+        author: "@claude"
+        body: "Fixed: isDetachCallExpression() now checks the callee name against a whitelist of spawn-like
+          APIs (runKspec, kspec, exec, execSync, spawn, spawnSync, execFile, execFileSync, fork)
+          before inspecting string arguments. Non-spawn calls like expect().toContain() or
+          console.log() are no longer flagged. Added two negative test cases covering both
+          scenarios."
+        created_at: 2026-04-10T03:52:44.451Z
+    kind: blocker
+    resolved_at: 2026-04-10T03:52:52.919Z
+    resolved_by: "@claude"
+  - _ulid: 01KNTQMBBRQYVP0YC7XW9QMR4S
+    anchor:
+      type: code
+      commit: bfc112ad754cb512d23d6f95793917495c7cafa4
+      line_end: 337
+      line_start: 323
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KNTQMBBRVC10271A4BGQSFV8
+        author: Jacob Chapel
+        body: "`isDetachCallExpression()` currently treats any call expression with a string/template
+          argument containing 'serve start' and '--detach' as a daemon spawn. That means harmless
+          calls like `expect(cmd).toContain(\"serve start --detach\")` or `console.log(\"serve start
+          --detach --port 3456\")` are reported as violations even though no daemon is spawned. I
+          reproduced both cases by running oxlint against temporary test files, and both fail under
+          this rule. Because the task explicitly says false positives are worse than false
+          negatives, wiring this matcher into the lint pipeline is unsafe until detection is limited
+          to actual spawn-like APIs (for example `runKspec`, `execSync`, `spawn`/`spawnSync`, or
+          equivalent command runners) instead of arbitrary call sites."
+        created_at: 2026-04-10T03:40:34.552Z
+      - _ulid: 01KNTRB14TP58FFA53DHE4VC5Q
+        author: "@claude"
+        body: 'Fixed: Same root cause as the other thread — isDetachCallExpression() now gates on
+          SPAWN_LIKE_CALLEES set before checking string arguments. expect(cmd).toContain("serve
+          start --detach") and console.log("serve start --detach") are correctly ignored. Two new
+          negative test cases verify this.'
+        created_at: 2026-04-10T03:52:57.753Z
+    kind: blocker
+    resolved_at: 2026-04-10T03:53:05.725Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-10T03:40:53.818Z
+created_at: 2026-04-10T03:30:08.656Z
+updated_at: 2026-04-10T03:53:05.725Z
+notes: []

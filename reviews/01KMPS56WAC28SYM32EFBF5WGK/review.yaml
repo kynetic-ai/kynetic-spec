@@ -1,0 +1,152 @@
+_ulid: 01KMPS56WAC28SYM32EFBF5WGK
+slugs: []
+title: Review wire agent spawner into automation subsystem action executors (cycle 2)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: packages/daemon/src/routes/agent-dispatch.ts,
+      src/agent-runtime/action-executor.ts, src/agent-runtime/invocation.ts,
+      src/agent-runtime/dispatch.ts, src/sessions/types.ts,
+      tests/automation-action-type-completeness.test.ts,
+      tests/daemon-automation-spawner-wiring.test.ts, tests/agent-action-input.test.ts. Commands
+      run: git diff --stat, git diff --name-only, git diff on each changed file, kspec task get,
+      kspec review get, kspec item get, grep for AC annotations, kspec validate, npm test, npm test
+      -- tests/automation-action-type-completeness.test.ts
+      tests/daemon-automation-spawner-wiring.test.ts tests/agent-action-input.test.ts. Claims
+      verified: prior blocker fix verified by code inspection in createAutomationAgentSpawner and
+      targeted tests passing for correlation_id/group_id propagation and agent spawner wiring.
+      Categories searched: correctness (fixed blocker verified), edge cases (missing agent, missing
+      env, error relay), error handling (action.failed payloads), test quality (behavioral tests, no
+      source scanning), integration (daemon route wiring plus runInvocation contract)."
+    name: review-evidence
+    required: false
+    created_at: 2026-03-27T04:44:08.385Z
+    completed_at: 2026-03-27T04:44:08.385Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      > @kynetic-ai/spec@0.12.0 test
+
+      > node scripts/test.cjs exited 1 in this snapshot after the runner rebuilt missing dist
+      artifacts. Failures included tests/activity-display.test.ts,
+      tests/agent-dispatch-engine.test.ts, tests/cli-mutation-input-validation.test.ts,
+      tests/dispatch-workspace-cleanup.test.ts, tests/native-guard-setup.test.ts,
+      tests/review-per-cycle-lifecycle.test.ts, tests/setup-pipeline-unification.test.ts, and
+      tests/shadow-skill-commit.test.ts. Totals: 17 failed suites, 11 failed tests, 1861 passed
+      suites, 6729 passed tests. Required merge gate is not green.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-27T04:44:10.191Z
+    completed_at: 2026-03-27T04:44:10.191Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 6 with warnings only. Schema and references passed. Warnings were repo-level
+      pre-existing validation noise (orphaned skill dir, orphaned specs, AC-annotation fixture
+      references), with no task-specific validation errors for @automation-action-type-completeness
+      or the changed tests.
+    name: kspec validate
+    required: false
+    created_at: 2026-03-27T04:44:11.983Z
+    completed_at: 2026-03-27T04:44:11.983Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: >-
+      > @kynetic-ai/spec@0.12.0 test
+
+      > node scripts/test.cjs tests/automation-action-type-completeness.test.ts
+      tests/daemon-automation-spawner-wiring.test.ts tests/agent-action-input.test.ts exited 0. 15
+      suites passed, 43 tests passed, 0 failed.
+    name: targeted automation tests
+    required: false
+    runner: npm
+    created_at: 2026-03-27T04:44:13.794Z
+    completed_at: 2026-03-27T04:44:13.794Z
+events:
+  - _ulid: 01KMPS56W9RWWN3JB4TMTYDX45
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T04:34:36.041Z
+  - _ulid: 01KMPS5RDCVJQEKV1WJZSWY9GM
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T04:34:53.996Z
+  - _ulid: 01KMPSPPC41CZ5W816C786P4R8
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-03-27T04:44:08.964Z
+  - _ulid: 01KMPSPR3X6BND5METG9WVFTJQ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test
+    timestamp: 2026-03-27T04:44:10.749Z
+  - _ulid: 01KMPSPSWADTBDWEK8GPSMV5VB
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-27T04:44:12.554Z
+  - _ulid: 01KMPSPVMF2XCKDH8ZZZM5QV43
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted automation tests
+    timestamp: 2026-03-27T04:44:14.351Z
+  - _ulid: 01KMPSQ5CXNV5S8DSNFB6HS1P6
+    actor: codex@openai
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-27T04:44:24.350Z
+  - _ulid: 01KMPSQ5CY7WNE351VMNPJ20SJ
+    actor: codex@openai
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T04:44:24.350Z
+examined_commit: fa942efdf3ed157ecc241e9ee94dd91d49a1ceec
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMPNCSGVJHDM47EDN6MXGZV4"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex@openai
+    role: reviewer
+    created_at: 2026-03-27T04:44:24.349Z
+created_at: 2026-03-27T04:34:36.042Z
+updated_at: 2026-03-27T04:44:24.350Z
+notes: []

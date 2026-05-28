@@ -1,0 +1,8 @@
+notes:
+  - _ulid: 01KQ0D7HD366E1FY2XHTP7AEFF
+    content: "Manual-only planning task created to convert this seed into a real derive-ready reviewed
+      plan: @task-convert-cruft-05-api-daemon-web-contract-split-plan. Keep this seed as durable
+      context; create a new clean plan record for the implementation plan rather than replacing this
+      seed content."
+    author: Jacob Chapel
+    created_at: 2026-04-24T18:49:57.412Z

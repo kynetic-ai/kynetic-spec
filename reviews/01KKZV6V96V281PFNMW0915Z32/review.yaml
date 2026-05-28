@@ -1,0 +1,155 @@
+_ulid: 01KKZV6V96V281PFNMW0915Z32
+slugs: []
+title: Review dispatch-remote-sync plan (pass 2)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: 537c5f637817
+    evidence: All 6 bundled ACs from first review have been split into independently testable ACs with
+      single primary assertions.
+    name: blockers-fixed-ac-splits
+    required: true
+    created_at: 2026-03-18T06:56:31.132Z
+    completed_at: 2026-03-18T06:56:31.132Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: 537c5f637817
+    evidence: No git commands in any then-clause. All 30 ACs describe observable behavior, not
+      implementation.
+    name: blockers-fixed-impl-leakage
+    required: true
+    created_at: 2026-03-18T06:56:52.862Z
+    completed_at: 2026-03-18T06:56:52.862Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: 537c5f637817
+    evidence: Original 10-AC task split into target-sync (7 ACs) + degraded-state (9 ACs).
+      Degraded-state is large but tightly coupled state machine — further splitting would fragment.
+    name: blockers-fixed-task-split
+    required: true
+    created_at: 2026-03-18T06:56:55.645Z
+    completed_at: 2026-03-18T06:56:55.645Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: 537c5f637817
+    evidence: All 30 ACs have single primary assertions. Borderline cases (ac-push-non-fatal,
+      ac-pull-target-on-start) are facets of one behavior, not separate assertions. Matches
+      reference plan quality.
+    name: ac-size-scan
+    required: true
+    created_at: 2026-03-18T06:56:58.576Z
+    completed_at: 2026-03-18T06:56:58.576Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: 537c5f637817
+    evidence: All 26 spec ACs + 4 config ACs covered by 5 tasks. ac-no-remote correctly appears in 2
+      tasks. No orphans.
+    name: task-ac-coverage
+    required: true
+    created_at: 2026-03-18T06:57:01.649Z
+    completed_at: 2026-03-18T06:57:01.649Z
+events:
+  - _ulid: 01KKZV6V96F7RVB0JX539PQ21H
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T06:47:54.918Z
+  - _ulid: 01KKZV76XZYXB7C8C8M841RRTC
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T06:48:06.847Z
+  - _ulid: 01KKZVPKHPWYKC7MZHMYTAG293
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: blockers-fixed-ac-splits
+    timestamp: 2026-03-18T06:56:31.286Z
+  - _ulid: 01KKZVQ8R7D2KX965KYE5Z14GP
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: blockers-fixed-impl-leakage
+    timestamp: 2026-03-18T06:56:52.999Z
+  - _ulid: 01KKZVQBF4FPHEGBXHK5VWW4Q2
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: blockers-fixed-task-split
+    timestamp: 2026-03-18T06:56:55.780Z
+  - _ulid: 01KKZVQEAS3RSWC4H3Y7N8SP4D
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-size-scan
+    timestamp: 2026-03-18T06:56:58.713Z
+  - _ulid: 01KKZVQHBFX0P0ERYR1PEAYWQE
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: task-ac-coverage
+    timestamp: 2026-03-18T06:57:01.807Z
+  - _ulid: 01KKZVQM9WMTE9V8MPC2NGPCWQ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKZVQM5QXJX9MTP5MF9NZXXP
+    timestamp: 2026-03-18T06:57:04.829Z
+  - _ulid: 01KKZVR6MZDNZ8FK6CQM5AVA9E
+    actor: plan-reviewer@kspec
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-18T06:57:23.616Z
+  - _ulid: 01KKZVR6N09126VS08FDHFEN5Q
+    actor: plan-reviewer@kspec
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T06:57:23.616Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-dispatch-remote-sync"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KKZVQM5QXJX9MTP5MF9NZXXP
+    entries:
+      - _ulid: 01KKZVQM5QRHJ13PKANN579BCG
+        author: "@claude"
+        body: Spec description still references ac-merge-conflict-blocks-task which was removed per user
+          feedback. The sentence 'If the merge conflicts, ac-merge-conflict-blocks-task applies.'
+          under stale workspace handling should be updated or removed.
+        created_at: 2026-03-18T06:57:04.695Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: 537c5f637817
+    decision: approve
+    reviewer: plan-reviewer@kspec
+    role: reviewer
+    created_at: 2026-03-18T06:57:23.477Z
+created_at: 2026-03-18T06:47:54.918Z
+updated_at: 2026-03-18T06:57:23.477Z
+notes: []

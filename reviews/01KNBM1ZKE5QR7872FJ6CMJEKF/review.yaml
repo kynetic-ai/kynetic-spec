@@ -1,0 +1,182 @@
+_ulid: 01KNBM1ZKE5QR7872FJ6CMJEKF
+slugs: []
+title: Review task-monitoring-spec-active-session-acs
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Schema and reference validation passed. Exit code 6 came from pre-existing repo warnings
+      (orphaned skill directory, orphaned specs, AC coverage debt), not from this task's spec
+      change.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-04-04T06:54:16.664Z
+    completed_at: 2026-04-04T06:54:16.664Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2068/2068 suites passed; 7512 tests passed, 5 skipped. Runner auto-built missing
+      dist/cli/index.js before execution.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-04T06:54:21.453Z
+    completed_at: 2026-04-04T06:54:21.453Z
+events:
+  - _ulid: 01KNBM1ZKEM77FB06H2GZCVWHT
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-04T06:49:30.478Z
+  - _ulid: 01KNBM2S0PHD72VHSTF0EBDPW5
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-04T06:49:56.503Z
+  - _ulid: 01KNBMANHK0D0E63F04DXV04EZ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KNBMAMRXZEXNY1YBPJVJQFZ8
+    timestamp: 2026-04-04T06:54:15.091Z
+  - _ulid: 01KNBMAQX52YDS0HXGH18A639W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-04T06:54:17.509Z
+  - _ulid: 01KNBMAT7BHHMMGXJS57M98BSY
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNBMASE9AEMF548TW063799M
+    timestamp: 2026-04-04T06:54:19.883Z
+  - _ulid: 01KNBMAWK4GWBXB5JZZ8YE18A8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-04T06:54:22.308Z
+  - _ulid: 01KNBMB5WWFQ1AFNZC4GDX03MB
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-04T06:54:31.836Z
+  - _ulid: 01KNBMB5WWYZAFHYP9FEA0MX5T
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-04T06:54:31.836Z
+  - _ulid: 01KNBMK03NJP90BHS3PHFDZ238
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNBMAMRXZEXNY1YBPJVJQFZ8
+    timestamp: 2026-04-04T06:58:48.053Z
+  - _ulid: 01KNBMK24BVCHGW8W0GWK7C99W
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNBMAMRXZEXNY1YBPJVJQFZ8
+    timestamp: 2026-04-04T06:58:50.123Z
+  - _ulid: 01KNBMK44JCAKG2PPP1WAMWBX5
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KNBMASE9AEMF548TW063799M
+    timestamp: 2026-04-04T06:58:52.178Z
+  - _ulid: 01KNBMK620J68NKJJ7Y842BJN7
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KNBMASE9AEMF548TW063799M
+    timestamp: 2026-04-04T06:58:54.144Z
+examined_commit: 0d05e503f03020b11bd11616e265cc09f024f0d3
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNBK4THQFPGXW7B226F7MPM0"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNBMAMRXZEXNY1YBPJVJQFZ8
+    anchor:
+      type: structured
+      field: ac-7
+      ref: "@daemon-file-monitoring"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KNBMAMRXA8G6FF4XTBSZW682
+        author: Jacob Chapel
+        body: "The new active-session-only criteria conflict with existing ac-7. ac-7 still says that when
+          any new session directory is created after monitoring starts, its metadata changes are
+          detected without restart, but ac-new-session-conditional-watch now says a per-session
+          watch is added only if the new session is active. For a new session that is already
+          completed, failed, stalled, abandoned, or timed_out, both statements cannot be true at
+          once: either the daemon keeps watching it to satisfy ac-7, or it skips watching it to
+          satisfy the new criterion. The follow-up implementation plan already assumes the latter,
+          so this task needs to narrow or update ac-7 as part of the spec change instead of leaving
+          the conflict in place."
+        created_at: 2026-04-04T06:54:14.301Z
+      - _ulid: 01KNBMJZBC7R5DXFDB1PKC39TF
+        author: Jacob Chapel
+        body: 'Fixed: narrowed @daemon-file-monitoring ac-7 to "A new session directory for a session with
+          active status is created after monitoring started". That keeps ac-7 focused on
+          restart-free detection for newly created active sessions and removes the contradiction
+          with ac-new-session-conditional-watch, which now owns the conditional watch-add behavior
+          for any newly detected session.'
+        created_at: 2026-04-04T06:58:47.276Z
+    kind: blocker
+    resolved_at: 2026-04-04T06:58:49.343Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KNBMASE9AEMF548TW063799M
+    entries:
+      - _ulid: 01KNBMASE9R4P1MYQ6TKP8QD44
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md, AGENTS.md, @daemon-file-monitoring,
+          @plan-active-session-scoped-file-monitoring, packages/daemon/src/session-watcher.ts,
+          tests/session-watcher.test.ts. Commands run: kspec task get, kspec review for-task, kspec
+          item get, kspec plan get, kspec validate, rg for AC/test usage, npm test. Claims verified:
+          the four new ACs are present on @daemon-file-monitoring; repository tests still pass;
+          current watcher/tests still model broad new-session detection. Categories searched:
+          correctness, spec consistency, test quality, integration."
+        created_at: 2026-04-04T06:54:19.081Z
+      - _ulid: 01KNBMK3BMMMGAE3V5F44WCEXJ
+        author: Jacob Chapel
+        body: "Addressed. The fix cycle was limited to spec consistency: ac-7 was narrowed, the updated item
+          text was rechecked with kspec item get, and kspec validate still reports only the existing
+          repository-wide warnings noted in the prior review."
+        created_at: 2026-04-04T06:58:51.380Z
+    kind: nit
+    resolved_at: 2026-04-04T06:58:53.405Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-04T06:54:31.836Z
+created_at: 2026-04-04T06:49:30.478Z
+updated_at: 2026-04-04T06:58:53.405Z
+notes: []

@@ -1,0 +1,182 @@
+_ulid: 01KKWEBZSZ2R6X6GGTBB3YE5M5
+slugs: []
+title: "Review: normalize activity entries"
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 11 patterns in MESSAGE_PATTERNS, 14+1 test cases. All task-lifecycle operations covered.
+    name: "ac-3: commit message parsing"
+    required: true
+    created_at: 2026-03-16T23:06:24.856Z
+    completed_at: 2026-03-16T23:06:24.856Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: parseDiffChanges extracts scalar field changes and note insertions. 7 diff test cases + 6
+      integration tests.
+    name: "ac-4: diff-based field change detection"
+    required: true
+    created_at: 2026-03-16T23:06:32.027Z
+    completed_at: 2026-03-16T23:06:32.027Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 30/30 tests pass
+    name: tests pass
+    required: true
+    created_at: 2026-03-16T23:06:34.500Z
+    completed_at: 2026-03-16T23:06:34.500Z
+events:
+  - _ulid: 01KKWEBZSY9QE6QK64GT397TGW
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-16T23:05:48.606Z
+  - _ulid: 01KKWEC6FSQARZYXQ9CDYDWQ2N
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-16T23:05:55.450Z
+  - _ulid: 01KKWED37QDPR9J2YTPVSMGR9Q
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: "ac-3: commit message parsing"
+    timestamp: 2026-03-16T23:06:24.888Z
+  - _ulid: 01KKWEDA82HRX4G9PQFTBK3B36
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: "ac-4: diff-based field change detection"
+    timestamp: 2026-03-16T23:06:32.066Z
+  - _ulid: 01KKWEDCN22R3RCXDMAEJPJRA7
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: tests pass
+    timestamp: 2026-03-16T23:06:34.530Z
+  - _ulid: 01KKWEE2TER5XMBM529DD5N69N
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKWEE2S9HCBVWTMFWWB1FAJV
+    timestamp: 2026-03-16T23:06:57.230Z
+  - _ulid: 01KKWEECYSA3PD4NHCJVKD9ZFY
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKWEECXPE7YHX3VHW5YE8FCY
+    timestamp: 2026-03-16T23:07:07.609Z
+  - _ulid: 01KKWEERN92V33VR060GS43ETZ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKWEERM53HNGR625K67RG3BG
+    timestamp: 2026-03-16T23:07:19.593Z
+  - _ulid: 01KKWEFKFYDMWSY6APXCXP9F5V
+    actor: "@claude"
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-16T23:07:47.070Z
+  - _ulid: 01KKWEFKFY4SRB6PWYKBFNP6GG
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-16T23:07:47.070Z
+examined_commit: f6e16b92e3cf47b7a6144407e45d3891435c0e05
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-normalize-activity-entries"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KKWEE2S9HCBVWTMFWWB1FAJV
+    anchor:
+      type: code
+      commit: ""
+      line_end: 450
+      line_start: 443
+      path: src/utils/activity.ts
+      side: head
+    entries:
+      - _ulid: 01KKWEE2S9FRNAT2SAWBKYNVCP
+        author: "@claude"
+        body: '**Dead code: submission_linkage case never fires.** In real YAML diffs, `submission_linkage:`
+          is a map header (no scalar value), so parseDiffChanges never returns `{ field:
+          "submission_linkage" }`. The nested child fields (review_url, branch, captured_at, etc.)
+          are each captured as separate field_updated entries instead. Not a functional problem —
+          submission commits always include a status change that gets correctly detected — but this
+          case is unreachable and misleading.'
+        created_at: 2026-03-16T23:06:57.193Z
+    kind: nit
+  - _ulid: 01KKWEECXPE7YHX3VHW5YE8FCY
+    anchor:
+      type: code
+      commit: ""
+      line_end: 349
+      line_start: 348
+      path: src/utils/activity.ts
+      side: head
+    entries:
+      - _ulid: 01KKWEECXQSYWXXKZBB6E4MVZA
+        author: "@claude"
+        body: "**Nested map fields leak into scalar tracking.** parseDiffChanges has no general nesting
+          awareness — only notes gets special-cased. Fields nested under submission_linkage
+          (review_url, branch, captured_at, commit, remote, remote_url, upstream_ref) are treated as
+          top-level task fields, producing misleading field_updated activity entries. Low impact for
+          now since submission commits always have a high-signal status change, but worth noting if
+          more nested map fields are added to the task schema."
+        created_at: 2026-03-16T23:07:07.575Z
+    kind: nit
+  - _ulid: 01KKWEERM53HNGR625K67RG3BG
+    anchor:
+      type: code
+      commit: ""
+      line_end: 277
+      line_start: 217
+      path: src/utils/activity.ts
+      side: head
+    entries:
+      - _ulid: 01KKWEERM6TBE0MCVNEVEPYV8C
+        author: "@claude"
+        body: "**Missing patterns for review-* commit messages.** The MESSAGE_PATTERNS array covers
+          task-lifecycle operations but not review operations (review-add, review-open,
+          review-check, review-close, review-comment, review-verdict, review-task-link). These fall
+          through to \"unknown\". For task-scoped activity this is acceptable — most review-*
+          commits don't touch the task's YAML block (exception: review-task-link sets review_ref,
+          caught by diff path). But if this parser is ever used for general shadow branch activity,
+          the gap would matter. Could add a catch-all `review-` prefix pattern mapped to a
+          \"review_activity\" type."
+        created_at: 2026-03-16T23:07:19.558Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: "@claude"
+    role: reviewer
+    created_at: 2026-03-16T23:07:47.035Z
+created_at: 2026-03-16T23:05:48.607Z
+updated_at: 2026-03-16T23:07:47.035Z
+notes: []

@@ -1,0 +1,117 @@
+_ulid: 01KQY18TQN0GE4ERS02XXBZE04
+slugs: []
+title: Review task-update-cli-daemon-proxy-endpoint-ac cycle 2
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate --warnings-ok passed: schema and references OK; warnings were pre-existing
+      project-wide coverage/alignment/reference warnings."
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-06T07:08:38.795Z
+    completed_at: 2026-05-06T07:08:38.795Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test passed: 2332 suites passed; 8547 tests passed; 5 skipped. Full log:
+      /tmp/kspec-test-cache/01KQY17VJKHFF9G7DPM44NPK5M/adc1f8d891c6e9c3.log"
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-05-06T07:08:49.673Z
+    completed_at: 2026-05-06T07:08:49.673Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md; src/cli/daemon-proxy.ts; tests/cli-daemon-proxy.test.ts;
+      src/cli/commands/serve.ts references via rg; prior review @01KQXYV8EHEKNRMRG6XEDBY8CH;
+      @cli-daemon-proxy and @daemon-proxy-detection via kspec item get. Commands run: git
+      diff/stat/name-only; rg AC annotations and ac-port-file-check; kspec item get for both specs;
+      kspec validate --warnings-ok; npm test. Claims verified: prior stale ac-port-file-check
+      references are removed; metadata-specific ACs are no longer claimed by legacy port-file tests;
+      ac-force-direct-management-exception has a behavioral E2E and serve commands use
+      ignoreNoDaemon: true. Categories searched: spec alignment, annotation coverage, correctness,
+      edge cases, error handling, test quality, integration. Findings: none."
+    name: review evidence log
+    required: false
+    runner: codex
+    created_at: 2026-05-06T07:09:08.127Z
+    completed_at: 2026-05-06T07:09:08.127Z
+events:
+  - _ulid: 01KQY18TQN1ZYHEA86NRY4Z870
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-06T06:58:09.781Z
+  - _ulid: 01KQY1978CWEJM6NJMGKGHMX81
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-06T06:58:22.604Z
+  - _ulid: 01KQY1W27VPZDPMJNVTDA0WRGA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-06T07:08:40.059Z
+  - _ulid: 01KQY1WCVV4YN2NVNRASCVT6P4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-06T07:08:50.939Z
+  - _ulid: 01KQY1WYVQXF9W2ECMJFWGV17S
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-06T07:09:09.367Z
+  - _ulid: 01KQY1X870C1X00R7ZWB9B1VW8
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-06T07:09:18.944Z
+  - _ulid: 01KQY1X870VVX1J7SY9FD7PZJW
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-06T07:09:18.944Z
+examined_commit: f26b5726ee13f90095b4fd8b662548f960799d08
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KQWZZG0BC74MJ02VRH2V9W4C"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-06T07:09:18.944Z
+created_at: 2026-05-06T06:58:09.781Z
+updated_at: 2026-05-06T07:09:18.944Z
+notes: []

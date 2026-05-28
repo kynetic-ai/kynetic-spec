@@ -1,0 +1,237 @@
+_ulid: 01KSG2ASF3D9NF57BZNME2END0
+slugs: []
+title: Review task-review-screenshot-resource-ui (cycle 7)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full fresh test suite passed: 2563 suites passed; 9783 tests passed, 5 skipped. Duration
+      2603.4s. Log: /tmp/kspec-test-cache/01KSG29ET46G8H7YDD42YTEFBD/fc6b10468c3741be.log"
+    name: npm test -- --fresh
+    required: true
+    runner: npm
+    created_at: 2026-05-25T17:31:40.135Z
+    completed_at: 2026-05-25T17:31:40.135Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit completed with exit 0.
+    name: npm run typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-25T17:31:44.973Z
+    completed_at: 2026-05-25T17:31:44.973Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Behavioral probe: seeded review resource old.png, replaced old.png on disk with a
+      symlink, then called addReviewResource with relativePath new.png and replace:true. Observed
+      replaceOk:true, manifestPaths:[new.png], oldIsSymlink:true. Expected rejection or atomic
+      cleanup per replacement contract."
+    name: replace-path symlink cleanup probe
+    required: true
+    runner: node
+    created_at: 2026-05-25T17:31:50.113Z
+    completed_at: 2026-05-25T17:31:50.113Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with pre-existing project-wide warnings; --warnings-ok exited 0. Plain
+      kspec validate exits 6 because of existing reference/alignment/completeness warnings.
+    name: kspec validate --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-25T17:31:55.104Z
+    completed_at: 2026-05-25T17:31:55.104Z
+events:
+  - _ulid: 01KSG2ASF3HKX393QXZ2QYG8J7
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-25T17:18:44.195Z
+  - _ulid: 01KSG2BQZ2H9PNHM0VZR1HCWPH
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-25T17:19:15.426Z
+  - _ulid: 01KSG2JREK6QERX0JRS6BRERY9
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSG2JPF09FYSTA2H0H4MYA5G
+    timestamp: 2026-05-25T17:23:05.299Z
+  - _ulid: 01KSG32GWJAVS8349M6652ZTDE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-05-25T17:31:41.843Z
+  - _ulid: 01KSG32NS2HCQGM7EBW4ABAYE9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run typecheck
+    timestamp: 2026-05-25T17:31:46.850Z
+  - _ulid: 01KSG32TS7J15Y3DSC9MRAPK3D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: replace-path symlink cleanup probe
+    timestamp: 2026-05-25T17:31:51.975Z
+  - _ulid: 01KSG32ZK08DBSNSN7EPKJ6PSR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --warnings-ok
+    timestamp: 2026-05-25T17:31:56.896Z
+  - _ulid: 01KSG33K5GWW1E1ECVSKX0C8Z0
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSG33HGB7DBXSNH2E40VZGCE
+    timestamp: 2026-05-25T17:32:16.944Z
+  - _ulid: 01KSG33XP2FYEJSX9H5EF74QYJ
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-25T17:32:27.714Z
+  - _ulid: 01KSG33XP2E8JQEZDVKBQWDM53
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-25T17:32:27.714Z
+  - _ulid: 01KSG6R8N3TGPYQFW1C5J9WYHF
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSG2JPF09FYSTA2H0H4MYA5G
+    timestamp: 2026-05-25T18:36:00.036Z
+  - _ulid: 01KSG6RFMZCDKQF77RYSFYQ9NX
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSG2JPF09FYSTA2H0H4MYA5G
+    timestamp: 2026-05-25T18:36:07.199Z
+  - _ulid: 01KSG6RVQS21AGZK5VAMV2MHDJ
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSG33HGB7DBXSNH2E40VZGCE
+    timestamp: 2026-05-25T18:36:19.577Z
+  - _ulid: 01KSG6S2JKAW4GW8QFWWQDT7ZF
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSG33HGB7DBXSNH2E40VZGCE
+    timestamp: 2026-05-25T18:36:26.580Z
+examined_commit: 0ebd97caa924d55e960aac358c093b1979f94455
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XB0EKNTMZS4XJMC4ED4SK"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSG2JPF09FYSTA2H0H4MYA5G
+    anchor:
+      type: code
+      commit: 0ebd97caa924d55e960aac358c093b1979f94455
+      line_end: 479
+      line_start: 476
+      path: src/parser/review-resource-manager.ts
+      side: head
+    entries:
+      - _ulid: 01KSG2JPF02WKDB7H8YHMZQX5Y
+        author: Jacob Chapel
+        body: "MUST-FIX: replace-path cleanup ignores removeResourceFromOwnerResources failures. When
+          replacing an existing resource with a new path, this call can return ok:false for a
+          symlinked old path, but the result is discarded and addReviewResource still reports
+          success, rewrites resources.yaml to the new path, and leaves the unsafe old resource path
+          behind. I reproduced this by seeding old.png, replacing old.png with a symlink, then
+          calling addReviewResource(... relativePath: 'new.png', replace: true): it returned
+          ok:true, manifestPaths ['new.png'], and oldIsSymlink true. This violates the task contract
+          that replacement removes the old file when the path changes and undermines the
+          symlink/path-escape rejection behavior. Check the removal result and fail atomically
+          before updating the manifest when old-path cleanup is rejected."
+        created_at: 2026-05-25T17:23:03.264Z
+      - _ulid: 01KSG6R6W0M9YPMB2MPVQT68RV
+        author: "@claude"
+        body: Fixed in 7650c9f1b4. addReviewResource now checks the result of
+          removeResourceFromOwnerResources during a replace-with-path-move. On rejection (e.g. the
+          on-disk old-path file is a symlink), the just-written new-path file is rolled back via
+          fs.rm and the manager returns invalid_resource_path with the offending old path attached;
+          the manifest is left untouched at the old declared path. Added a behavioral test in
+          tests/review-resource-manager.test.ts that plants your exact attack shape (seed old.png →
+          replace on disk with a symlink to an outside file → call addReviewResource with
+          replace:true and a new path) and asserts (a) ok:false + invalid_resource_path, (b) the
+          manifest still declares the old path, (c) the new-path file is NOT left behind on disk,
+          and (d) the outside symlink target is intact.
+        created_at: 2026-05-25T18:35:58.208Z
+    kind: blocker
+    resolved_at: 2026-05-25T18:36:05.466Z
+    resolved_by: "@claude"
+  - _ulid: 01KSG33HGB7DBXSNH2E40VZGCE
+    entries:
+      - _ulid: 01KSG33HGBMKVG3AP0Y7THVT2G
+        author: Jacob Chapel
+        body: "Review evidence log:\\n\\nFiles read: kspec-agents.md; task/spec context via kspec task get
+          and kspec item get; prior review @01KSFYVE; src/parser/review-resource-manager.ts;
+          src/parser/entity-local-resources.ts; src/schema/resources.ts;
+          src/cli/commands/review-resource.ts; packages/daemon/src/routes/review-resources.ts;
+          packages/daemon/src/middleware/project-context.ts; packages/web-ui/src/lib/api.ts;
+          packages/web-ui/src/lib/api-static.ts;
+          packages/web-ui/src/routes/reviews/[id]/+page.svelte; src/export/json.ts;
+          src/export/types.ts; packages/shared/src/api.ts; tests/review-resource-manager.test.ts;
+          tests/review-resource-cli.test.ts; tests/daemon-api/review-resources.test.ts;
+          tests/web-ui/review-resources-api.test.ts;
+          tests/review-resource-static-export.test.ts.\\n\\nCommands run: git diff --stat/name-only
+          25e55fa...HEAD; git log 25e55fa...HEAD; kspec validate; kspec validate --warnings-ok; npm
+          run typecheck; npm test -- --fresh; rg AC annotations; node --import tsx behavioral probe
+          for replace-path symlink cleanup.\\n\\nClaims verified: cycle 6 static exported-path URL
+          fix encodes # and ? per segment; selected-project bytes URL uses kspec_dir query context;
+          review-resource API/CLI routes share manager validation; replacement cleanup probe
+          disproved the claimed symlink-safe replace cleanup.\\n\\nCategories searched: correctness,
+          edge cases, error handling, security/path traversal, test quality, AC annotation coverage,
+          UI/static export integration, daemon cache/broadcast integration."
+        created_at: 2026-05-25T17:32:15.243Z
+      - _ulid: 01KSG6RT2AKTF3VGRR1P14SJG6
+        author: "@claude"
+        body: Acknowledged — thanks for the thorough evidence log and the behavioral probe that surfaced the
+          replace-path cleanup gap. Resolving as a non-blocking nit.
+        created_at: 2026-05-25T18:36:17.866Z
+    kind: nit
+    resolved_at: 2026-05-25T18:36:24.823Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-25T17:32:27.713Z
+created_at: 2026-05-25T17:18:44.195Z
+updated_at: 2026-05-25T18:36:24.823Z
+notes: []

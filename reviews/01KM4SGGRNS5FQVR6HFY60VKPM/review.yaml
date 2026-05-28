@@ -1,0 +1,134 @@
+_ulid: 01KM4SGGRNS5FQVR6HFY60VKPM
+slugs: []
+title: Review fix-triage-record-cli-reporting-success-without-persisted-record
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/cli/commands/triage.ts, tests/triage-cli.test.ts, src/parser/yaml.ts,
+      tests/triage-parser.test.ts, tests/yaml-round-trip-stability.test.ts. Commands run: git diff
+      --stat, git diff on changed files, kspec task get, kspec item get, rg for AC annotations,
+      kspec validate, manual dist CLI repro, npm test. Claims verified: the CLI now reports the
+      persisted triage ULID after re-recording and interactive triage uses persisted refs too.
+      Categories searched: correctness, edge cases, error handling, test quality, integration; no
+      task-specific defects found."
+    name: review evidence
+    required: false
+    runner: reviewer
+    created_at: 2026-03-20T04:58:03.031Z
+    completed_at: 2026-03-20T04:58:03.031Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide baseline validation failures remain in .kspec/modules/meta.yaml unresolved
+      references plus unrelated completeness warnings; changed files did not introduce new
+      task-specific validation issues.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-20T04:58:05.720Z
+    completed_at: 2026-03-20T04:58:05.720Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 289 files passed, 6639 tests passed, 3 skipped, 0 failures.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-20T04:58:06.987Z
+    completed_at: 2026-03-20T04:58:06.987Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Reproduced triage re-record flow with local dist CLI: second triage record response
+      reused persisted ULID, triage list returned the same single ULID, and triage act on that ULID
+      succeeded."
+    name: manual repro
+    required: false
+    runner: reviewer
+    created_at: 2026-03-20T04:58:20.850Z
+    completed_at: 2026-03-20T04:58:20.850Z
+events:
+  - _ulid: 01KM4SGGRNF50VTWTMWDBTQX5W
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-20T04:54:26.837Z
+  - _ulid: 01KM4SH1WEJ1E41NYTKDRC9PZ1
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-20T04:54:44.367Z
+  - _ulid: 01KM4SQ48K3PBS149V0PXGXV51
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence
+    timestamp: 2026-03-20T04:58:03.411Z
+  - _ulid: 01KM4SQ6WPKSVM5PC0MAPM4F3T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate
+    timestamp: 2026-03-20T04:58:06.102Z
+  - _ulid: 01KM4SQ83PR2015SQEDAJ6CZK0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-20T04:58:07.351Z
+  - _ulid: 01KM4SQNNBHT4NTERS1KRASWDN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: manual repro
+    timestamp: 2026-03-20T04:58:21.228Z
+  - _ulid: 01KM4SQXKWDQ334JW874YGGFHW
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-20T04:58:29.372Z
+  - _ulid: 01KM4SQXKWW2QPHNN5XJJ06PCV
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-20T04:58:29.372Z
+examined_commit: 783b22ef544bed092175027cb2c631b044760c73
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM4MK0N1K71YCJ2PFVZGTSTE"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-03-20T04:58:29.371Z
+created_at: 2026-03-20T04:54:26.837Z
+updated_at: 2026-03-20T04:58:29.372Z
+notes: []

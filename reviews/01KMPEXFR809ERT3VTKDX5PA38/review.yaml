@@ -1,0 +1,278 @@
+_ulid: 01KMPEXFR809ERT3VTKDX5PA38
+slugs: []
+title: Review task-entity-cache-impl (cycle 6)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/daemon/entity-cache.ts; packages/daemon/src/server.ts;
+      packages/daemon/src/project-context.ts;
+      packages/daemon/src/routes/{tasks,items,refs,sessions,session-related,inbox,meta,plans,triage\
+      ,reviews}. Commands run: git diff against dev base, kspec task get, kspec item get, kspec
+      review get/for-task, kspec validate, rg AC annotations, rg cache accessor usage, npm test.
+      Claims verified: full suite passes; prior blockers in tasks/items/session wiring are resolved;
+      searched correctness, edge cases, error handling, test quality, and route integration
+      completeness."
+    name: review-evidence
+    required: false
+    created_at: 2026-03-27T01:40:04.151Z
+    completed_at: 2026-03-27T01:40:04.151Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 6899 passed, 5 skipped, 0 failed. Full suite run in detached review snapshot.
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-27T01:40:06.825Z
+    completed_at: 2026-03-27T01:40:06.825Z
+events:
+  - _ulid: 01KMPEXFR7XV8WBNRD1JGQ3PM5
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T01:35:37.223Z
+  - _ulid: 01KMPEY36JM4SK7JVPTRWAYGYC
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T01:35:57.138Z
+  - _ulid: 01KMPF5KGBS5N36ZJ0D39B8EXD
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMPF5K2YYCF0C50EM4SP247J
+    timestamp: 2026-03-27T01:40:03.211Z
+  - _ulid: 01KMPF5MTV7AR7H7JKQYD27MFR
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-03-27T01:40:04.571Z
+  - _ulid: 01KMPF5P4067T5RGX2TFZC1PTF
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMPF5NQFJ7RFMZWRBKJJYWGV
+    timestamp: 2026-03-27T01:40:05.888Z
+  - _ulid: 01KMPF5QE8P9YTRNJ3XAREXQ3C
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-27T01:40:07.240Z
+  - _ulid: 01KMPF67G8TCFNHZJQ9ST0E452
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMPF672DBXMMBRFM53DFE5PJ
+    timestamp: 2026-03-27T01:40:23.688Z
+  - _ulid: 01KMPF6JBCH0YS9YAWPDX25CGZ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMPF6HYHVB6E208K969M9VD1
+    timestamp: 2026-03-27T01:40:34.796Z
+  - _ulid: 01KMPF6S1KQ4YCPV5YB97EQMD0
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-27T01:40:41.652Z
+  - _ulid: 01KMPF6S1MN8KYGAKK3HRQTYQC
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T01:40:41.652Z
+  - _ulid: 01KMPFSMDXGVDXJ004V3XM9P41
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMPF5K2YYCF0C50EM4SP247J
+    timestamp: 2026-03-27T01:50:59.517Z
+  - _ulid: 01KMPFSNG6ASBWC162BN6M2B3K
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPF5K2YYCF0C50EM4SP247J
+    timestamp: 2026-03-27T01:51:00.614Z
+  - _ulid: 01KMPFSPK3W9M9ZPWMJSXP8PB2
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMPF5NQFJ7RFMZWRBKJJYWGV
+    timestamp: 2026-03-27T01:51:01.731Z
+  - _ulid: 01KMPFSQN6WW7BTN39J9H4FDK3
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPF5NQFJ7RFMZWRBKJJYWGV
+    timestamp: 2026-03-27T01:51:02.822Z
+  - _ulid: 01KMPFSRMRM126PX13T491669K
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMPF672DBXMMBRFM53DFE5PJ
+    timestamp: 2026-03-27T01:51:03.832Z
+  - _ulid: 01KMPFSST65FK5FD0VKXQF76PY
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPF672DBXMMBRFM53DFE5PJ
+    timestamp: 2026-03-27T01:51:05.030Z
+  - _ulid: 01KMPFSTX94H605G2NWF8KQD9N
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMPF6HYHVB6E208K969M9VD1
+    timestamp: 2026-03-27T01:51:06.153Z
+  - _ulid: 01KMPFSVY20A8964GW0HNWC150
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPF6HYHVB6E208K969M9VD1
+    timestamp: 2026-03-27T01:51:07.202Z
+examined_commit: 12ac2a14ed2cf4a3dfcbc2c8f464c4ca60cfd2d0
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMMB3T2K3T6A1CJR884EPKJF"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMPF5K2YYCF0C50EM4SP247J
+    anchor:
+      type: code
+      commit: 12ac2a14ed2cf4a3dfcbc2c8f464c4ca60cfd2d0
+      line_end: 39
+      line_start: 24
+      path: packages/daemon/src/routes/entity-cache-types.ts
+      side: head
+    entries:
+      - _ulid: 01KMPF5K2ZNPGBRPC365GNY1H4
+        author: "@claude"
+        body: The two-tier cache is still incomplete outside tasks/items/sessions.  exposes detail
+          getters/setters only for those three domains, and the single-record handlers for plans,
+          reviews, and triage therefore still reload from disk on every request (, , ). That misses
+          the task’s per-domain detail tier and leaves  unimplemented for three cached domains.
+        created_at: 2026-03-27T01:40:02.783Z
+      - _ulid: 01KMPFSM1A105V1XJC0YK2HWQD
+        author: "@claude"
+        body: "Fixed: Added detail getters/setters for plans, reviews, and triage to RouteEntityCache and
+          ProjectEntityCache. Plan detail route now searches cached plans index. Review detail route
+          searches cached reviews index. Triage detail route searches cached triage index. All fall
+          back to disk when cache is unavailable."
+        created_at: 2026-03-27T01:50:59.114Z
+    kind: blocker
+    resolved_at: 2026-03-27T01:51:00.182Z
+    resolved_by: "@claude"
+  - _ulid: 01KMPF5NQFJ7RFMZWRBKJJYWGV
+    anchor:
+      type: code
+      commit: 12ac2a14ed2cf4a3dfcbc2c8f464c4ca60cfd2d0
+      line_end: 65
+      line_start: 62
+      path: packages/daemon/src/routes/meta.ts
+      side: head
+    entries:
+      - _ulid: 01KMPF5NQF1D25NN658J3KMF4W
+        author: "@claude"
+        body: Meta reads still bypass the new cache.  now accepts , but the GET handlers in this file still
+          go straight to / and none consult . That means the meta domain never actually serves from
+          memory, so the manifest watcher invalidation and  work added in this task provide no
+          read-path benefit for , , , or , which misses .
+        created_at: 2026-03-27T01:40:05.487Z
+      - _ulid: 01KMPFSP4M3ZMEHHZBRD377YF8
+        author: "@claude"
+        body: "Fixed: Meta GET routes (agents, workflows, observations, conventions) now serve from cached
+          MetaContext when the meta domain is ready. The meta domain doLoadDomain loads full
+          MetaContext into a detail tier alongside the existing MetaSummary index. All four GET
+          handlers check cache.getMetaDetail() before falling back to initContext() +
+          loadMetaContext()."
+        created_at: 2026-03-27T01:51:01.268Z
+    kind: blocker
+    resolved_at: 2026-03-27T01:51:02.402Z
+    resolved_by: "@claude"
+  - _ulid: 01KMPF672DBXMMBRFM53DFE5PJ
+    anchor:
+      type: code
+      commit: 12ac2a14ed2cf4a3dfcbc2c8f464c4ca60cfd2d0
+      line_end: 65
+      line_start: 62
+      path: packages/daemon/src/routes/meta.ts
+      side: head
+    entries:
+      - _ulid: 01KMPF672DJWB19VGMMJ3G8ERF
+        author: "@claude"
+        body: Meta reads still bypass the new cache. createMetaRoutes() now accepts getEntityCache, but the
+          GET handlers in this file still go straight to initContext()/loadMetaContext() and none
+          consult getMetaIndex(). That means the meta domain never actually serves from memory, so
+          the manifest watcher invalidation and writeThrough("meta") work added in this task provide
+          no read-path benefit for /api/meta/agents, /api/meta/workflows, /api/meta/observations, or
+          /api/meta/conventions, which misses @daemon-entity-cache ac-serve-from-memory.
+        created_at: 2026-03-27T01:40:23.245Z
+      - _ulid: 01KMPFSR8EA9HZQM6BPQRNQPF3
+        author: "@claude"
+        body: "Fixed: Duplicate of thread 01KMPF5NQFJ7RFMZWRBKJJYWGV. All meta GET routes now serve from
+          cached MetaContext."
+        created_at: 2026-03-27T01:51:03.438Z
+    kind: blocker
+    resolved_at: 2026-03-27T01:51:04.541Z
+    resolved_by: "@claude"
+  - _ulid: 01KMPF6HYHVB6E208K969M9VD1
+    anchor:
+      type: code
+      commit: 12ac2a14ed2cf4a3dfcbc2c8f464c4ca60cfd2d0
+      line_end: 39
+      line_start: 24
+      path: packages/daemon/src/routes/entity-cache-types.ts
+      side: head
+    entries:
+      - _ulid: 01KMPF6HYH5JCHKFH2HYXDV60Z
+        author: "@claude"
+        body: The two-tier cache is still incomplete outside tasks, items, and sessions. RouteEntityCache
+          exposes detail getters/setters only for those three domains, and the single-record
+          handlers for plans, reviews, and triage therefore still reload from disk on every request
+          (see packages/daemon/src/routes/plans.ts:128, packages/daemon/src/routes/reviews.ts:295,
+          and packages/daemon/src/routes/triage.ts:291). That misses the per-domain detail tier
+          promised by this task and leaves @daemon-entity-cache ac-detail-on-demand unimplemented
+          for three cached domains.
+        created_at: 2026-03-27T01:40:34.385Z
+      - _ulid: 01KMPFSTEMSN4HMM919KJJ241H
+        author: "@claude"
+        body: "Fixed: Duplicate of thread 01KMPF5K2YYCF0C50EM4SP247J. All domains now have detail tier
+          support wired to their routes."
+        created_at: 2026-03-27T01:51:05.684Z
+    kind: blocker
+    resolved_at: 2026-03-27T01:51:06.805Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-27T01:40:41.651Z
+created_at: 2026-03-27T01:35:37.224Z
+updated_at: 2026-03-27T01:51:06.805Z
+notes: []

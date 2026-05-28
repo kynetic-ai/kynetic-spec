@@ -1,0 +1,165 @@
+_ulid: 01KNQKPAAWW4ZQ56XYFG1JJ3TS
+slugs: []
+title: Review task-fix-worktree-linkage-capture
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- tests/submission-linkage-worktree.test.ts passed: 2 suites, 5 tests"
+    name: targeted-tests-submission-linkage
+    required: true
+    runner: npm test
+    created_at: 2026-04-08T22:52:52.949Z
+    completed_at: 2026-04-08T22:52:52.949Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- tests/dispatch-workspace-adopt-branch-lineage.test.ts passed: 2 suites, 12 tests"
+    name: targeted-tests-branch-adoption
+    required: true
+    runner: npm test
+    created_at: 2026-04-08T22:53:05.214Z
+    completed_at: 2026-04-08T22:53:05.214Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate exited with warnings only (code 6): repo-global
+      orphan/alignment/completeness warnings, no task-specific validation errors"
+    name: kspec-validate
+    required: true
+    runner: kspec validate
+    created_at: 2026-04-08T22:53:17.464Z
+    completed_at: 2026-04-08T22:53:17.464Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Attempted npm test three times in this review snapshot; runner did not converge to a
+      result and remained idle for multiple minutes, so verdict is based on code inspection plus
+      targeted behavioral suites.
+    name: full-suite
+    required: false
+    runner: npm test
+    created_at: 2026-04-08T22:53:29.779Z
+    completed_at: 2026-04-08T22:53:29.779Z
+events:
+  - _ulid: 01KNQKPAAWNSFBG3A0QQ1J550Z
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-08T22:34:01.436Z
+  - _ulid: 01KNQMRG69XXTD6Z206M3YJ1VT
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-08T22:52:41.546Z
+  - _ulid: 01KNQMRW5JS2JCE1N7PA32CGDQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted-tests-submission-linkage
+    timestamp: 2026-04-08T22:52:53.811Z
+  - _ulid: 01KNQMS84FMADSXJQG2VHTNQ7J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted-tests-branch-adoption
+    timestamp: 2026-04-08T22:53:06.063Z
+  - _ulid: 01KNQMSM3Z6V3CPH9EJKCAG6D9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-04-08T22:53:18.335Z
+  - _ulid: 01KNQMT05AP16715E5VFE54R82
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: full-suite
+    timestamp: 2026-04-08T22:53:30.666Z
+  - _ulid: 01KNQMTC5HEWHWEXZA8FXX8TAV
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNQMTBA5F3CW9TJQ6DNF4DNS
+    timestamp: 2026-04-08T22:53:42.961Z
+  - _ulid: 01KNQMTR47RQEQ7BCW7ZZP14PC
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-08T22:53:55.208Z
+  - _ulid: 01KNQMTR48BWZ59HFNG1WAV7VE
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-08T22:53:55.208Z
+examined_commit: a6698d0d7053638669479e3bd101f8f3c6a2c693
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNQJ4TX3ZR80MSV8Q38RHG06"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNQMTBA5F3CW9TJQ6DNF4DNS
+    entries:
+      - _ulid: 01KNQMTBA6TR7R6R9JHYSG22YT
+        author: Jacob Chapel
+        body: >-
+          Evidence log
+
+
+          Files read: src/cli/commands/task.ts, src/agent-runtime/workspace.ts, src/utils/git.ts,
+          tests/submission-linkage-worktree.test.ts,
+          tests/dispatch-workspace-adopt-branch-lineage.test.ts, tests/helpers/cli.ts,
+          src/agent-runtime/dispatch.ts.
+
+
+          Commands run: git diff/stat/log, kspec task get, kspec review for-task, kspec item get
+          @portable-task-submission-linkage, kspec item get @adopt-existing-task-branch-lineage,
+          kspec validate, rg for AC annotations, npm test --
+          tests/submission-linkage-worktree.test.ts, npm test --
+          tests/dispatch-workspace-adopt-branch-lineage.test.ts, repeated npm test attempts.
+
+
+          Claims verified: captureSubmissionLinkage shells into the provided cwd and therefore the
+          call-site change from ctx.projectRoot to ctx.rootDir changes real behavior;
+          provisionDispatchWorkspace receives the dispatcher project root in runtime, so the
+          main-checkout adoption guard is on the real path.
+
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration.
+          No blocking defects found.
+        created_at: 2026-04-08T22:53:42.086Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-08T22:53:55.207Z
+created_at: 2026-04-08T22:34:01.436Z
+updated_at: 2026-04-08T22:53:55.208Z
+notes: []

@@ -1,0 +1,193 @@
+_ulid: 01KMPCAVJ30KJXM0KVZW1GNN8R
+slugs: []
+title: Review task-entity-cache-impl (cycle 4)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/daemon/entity-cache.ts, packages/daemon/src/server.ts,
+      packages/daemon/src/project-context.ts,
+      packages/daemon/src/routes/{tasks,items,refs,sessions,session-related}.ts, src/parser/yaml.ts,
+      scripts/test.cjs, package.json, tests/daemon-entity-cache.test.ts, tests/test-runner.test.ts,
+      tests/task-set-batch.test.ts. Commands run: kspec task get, kspec item get, kspec review
+      for-task, kspec validate, rg AC annotations, git diff/stat, npm test, targeted tsx repros for
+      manifest-backed item invalidation. Claims verified: full suite passes; item loading depends on
+      manifest + includes; current invalidation leaves items stale after manifest-only changes.
+      Categories searched: correctness, edge cases, test quality, integration, packaging/build."
+    name: review-evidence
+    required: false
+    created_at: 2026-03-27T00:56:41.202Z
+    completed_at: 2026-03-27T00:56:41.202Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 6898 passed, 5 skipped, 0 failed via npm test (test runner rebuilt dist first).
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-27T00:56:42.609Z
+    completed_at: 2026-03-27T00:56:42.609Z
+events:
+  - _ulid: 01KMPCAVJ2G8SC06MPXZZTN4ZG
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-27T00:50:29.570Z
+  - _ulid: 01KMPCBDGW0FE6ZAJG6QKWK6CZ
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-27T00:50:47.964Z
+  - _ulid: 01KMPCP5M0S6WBCVF5XZ0NCYZS
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMPCP563BARWGZ5EPS0PYWCN
+    timestamp: 2026-03-27T00:56:40.321Z
+  - _ulid: 01KMPCP6XGBN4P8CP0GQB4WP8P
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-03-27T00:56:41.649Z
+  - _ulid: 01KMPCP89K071V3NWW3Y5B95S0
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-27T00:56:43.059Z
+  - _ulid: 01KMPCPX3VXKB5TZ4VKQD3560H
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMPCPWPD0K5MH0VVSNR70WQ1
+    timestamp: 2026-03-27T00:57:04.379Z
+  - _ulid: 01KMPCQDFPNY81F6D0YJ32JP0D
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-27T00:57:21.142Z
+  - _ulid: 01KMPCQDFPBKRQ202GR3KG4FAK
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-27T00:57:21.142Z
+  - _ulid: 01KMPDASKD0QZ7WPV3B5R4VNPY
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMPCP563BARWGZ5EPS0PYWCN
+    timestamp: 2026-03-27T01:07:56.141Z
+  - _ulid: 01KMPDAX3XE7DPSPF42BGS2WNG
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMPCPWPD0K5MH0VVSNR70WQ1
+    timestamp: 2026-03-27T01:07:59.741Z
+  - _ulid: 01KMPDB5CD9D84SB7W3ERF7SAF
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPCP563BARWGZ5EPS0PYWCN
+    timestamp: 2026-03-27T01:08:08.205Z
+  - _ulid: 01KMPDB8SMCG71B4GVA38M79WE
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMPCPWPD0K5MH0VVSNR70WQ1
+    timestamp: 2026-03-27T01:08:11.700Z
+examined_commit: 37294e673fe67d970ae172f4d510c5ca5116d0fe
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMMB3T2K3T6A1CJR884EPKJF"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMPCP563BARWGZ5EPS0PYWCN
+    anchor:
+      type: code
+      commit: 37294e673fe67d970ae172f4d510c5ca5116d0fe
+      line_end: 180
+      line_start: 178
+      path: src/daemon/entity-cache.ts
+      side: head
+    entries:
+      - _ulid: 01KMPCP563NH85Q59KZJ59VX4M
+        author: "@claude"
+        body: " maps  only to the  domain, but  rebuilds the items index from the manifest itself plus its .
+          That leaves manifest-backed item data stale after watcher invalidation. I reproduced this
+          with a temp copy of : after , removing  from  and calling  kept the items index unchanged
+          (, ,  still present). Any inline item edits or include list changes in the manifest will
+          therefore remain stale until some unrelated items-domain reload happens, which violates
+          watcher invalidation for the affected domain."
+        created_at: 2026-03-27T00:56:39.875Z
+      - _ulid: 01KMPDAS637N7V4YK9Q8XXX78E
+        author: "@claude"
+        body: 'Fixed: fileToDomain() now returns CacheDomain[] instead of CacheDomain|null. kynetic.yaml
+          maps to ["meta", "items"] so handleFileChange invalidates both domains when the manifest
+          changes. handleFileChange uses Promise.all to invalidate all returned domains. Added
+          behavioral test verifying both meta and items domains are reloaded when manifest changes.
+          Full suite: 6899 passed, 5 skipped, 0 failures.'
+        created_at: 2026-03-27T01:07:55.715Z
+    kind: blocker
+    resolved_at: 2026-03-27T01:08:07.766Z
+    resolved_by: "@claude"
+  - _ulid: 01KMPCPWPD0K5MH0VVSNR70WQ1
+    anchor:
+      type: code
+      commit: 37294e673fe67d970ae172f4d510c5ca5116d0fe
+      line_end: 180
+      line_start: 178
+      path: src/daemon/entity-cache.ts
+      side: head
+    entries:
+      - _ulid: 01KMPCPWPD9QES7P97Y3YEDT4Q
+        author: "@claude"
+        body: "fileToDomain() maps kynetic.yaml only to the meta domain, but loadAllItems() rebuilds the
+          items index from the manifest itself plus its includes. That leaves manifest-backed item
+          data stale after watcher invalidation. I reproduced this with a temp copy of
+          tests/fixtures: after ProjectEntityCache.loadDomain('items'), removing modules/core.yaml
+          from kynetic.yaml and calling handleFileChange(tmp, manifestPath) kept the items index
+          unchanged (before_count=3, after_count=3, Core Module still present). Any inline item
+          edits or include list changes in the manifest will therefore remain stale until some
+          unrelated items-domain reload happens, which violates watcher invalidation for the
+          affected domain."
+        created_at: 2026-03-27T00:57:03.949Z
+      - _ulid: 01KMPDAWPDD71MQ12CKJZ47G57
+        author: "@claude"
+        body: 'Fixed: same root cause as thread 1 — duplicate thread. fileToDomain() now returns ["meta",
+          "items"] for kynetic.yaml, ensuring both domains are invalidated on manifest changes.'
+        created_at: 2026-03-27T01:07:59.309Z
+    kind: blocker
+    resolved_at: 2026-03-27T01:08:11.289Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-27T00:57:21.142Z
+created_at: 2026-03-27T00:50:29.571Z
+updated_at: 2026-03-27T01:08:11.289Z
+notes: []

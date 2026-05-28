@@ -1,0 +1,212 @@
+_ulid: 01KMWDV038KPCXHVBV14CRX4YN
+slugs: []
+title: Review add domain ready event AC to entity cache spec (cycle 5)
+author: Test User
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran npm test in this snapshot. Result: 7123/7133 tests passed, 5 skipped, 5 failed across
+      6 suites. Failures were reported in tests/agent-dispatch-engine.test.ts,
+      tests/dispatch-workspace-cleanup.test.ts, and tests/native-guard-setup.test.ts. Full log:
+      /tmp/kspec-test-cache/01KMWDS840DZGE1Z993TCCB0SQ/45bdf8cc0bcfa0a4.log"
+    name: npm-test
+    required: true
+    runner: npm
+    created_at: 2026-03-29T09:19:13.302Z
+    completed_at: 2026-03-29T09:19:13.302Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran kspec validate. Exit 6 with repo-level warnings only (orphaned skills/spec
+      alignment/completeness warnings); no validation errors tied to this task.
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-29T09:19:17.252Z
+    completed_at: 2026-03-29T09:19:17.252Z
+events:
+  - _ulid: 01KMWDV037N0D6HX6FRJQVCT4J
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-29T09:12:13.671Z
+  - _ulid: 01KMWDVJ2NC21BH127B3885CXR
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-29T09:12:32.085Z
+  - _ulid: 01KMWE7RTGF1201EMHC9A5HVA6
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMWE7R8WVGCSM8964H93P2HY
+    timestamp: 2026-03-29T09:19:12.208Z
+  - _ulid: 01KMWE7TDHH68PNJED5183M8GJ
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm-test
+    timestamp: 2026-03-29T09:19:13.841Z
+  - _ulid: 01KMWE7W9K8MTTYC7RHB2XM91N
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMWE7VQC2AKN0964NWBKN1TK
+    timestamp: 2026-03-29T09:19:15.763Z
+  - _ulid: 01KMWE7YC6C7DR6QVXHF3QCVX2
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-29T09:19:17.894Z
+  - _ulid: 01KMWE805MD9BMHEZFSE2G6YH7
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KMWE7ZH5893D4ZBXS8NTTVYM
+    timestamp: 2026-03-29T09:19:19.732Z
+  - _ulid: 01KMWE8AMBQ1QZR7E8WTRKCKK0
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-03-29T09:19:30.443Z
+  - _ulid: 01KMWE8AMBEKMJMEDA061Z29W7
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-29T09:19:30.443Z
+  - _ulid: 01KMWEW1JNT10JMV4SD02CCWQJ
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMWE7R8WVGCSM8964H93P2HY
+    timestamp: 2026-03-29T09:30:16.533Z
+  - _ulid: 01KMWEW91XFTBFYS3WJ8K3TC23
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMWE7R8WVGCSM8964H93P2HY
+    timestamp: 2026-03-29T09:30:24.189Z
+  - _ulid: 01KMWEWRYTG0MWWKE5BDM72Y3W
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMWE7VQC2AKN0964NWBKN1TK
+    timestamp: 2026-03-29T09:30:40.474Z
+  - _ulid: 01KMWEX0HHD21G40QS0ZSR2P9X
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMWE7VQC2AKN0964NWBKN1TK
+    timestamp: 2026-03-29T09:30:48.241Z
+examined_commit: 82976814d411e8a10eed4d34c3bb531089798d47
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMW68JT108S4RS3G1GNYH5A9"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMWE7R8WVGCSM8964H93P2HY
+    anchor:
+      type: code
+      commit: 82976814d411e8a10eed4d34c3bb531089798d47
+      line_end: 289
+      line_start: 285
+      path: packages/daemon/src/server.ts
+      side: head
+    entries:
+      - _ulid: 01KMWE7R8WSS8V9HVK27KPRX5M
+        author: Test User
+        body: ac-domain-ready-event says the client-visible event must identify both the domain and the
+          project. This broadcast only puts { domain, previousState, timestamp } into the message
+          payload; the fourth argument is just PubSubManager's server-side project filter, and
+          pubsub.ts does not serialize it into the BroadcastEvent. Connected clients therefore
+          receive no project identifier at all.
+        created_at: 2026-03-29T09:19:11.644Z
+      - _ulid: 01KMWEW0Z6N7D246E7BF59DCW6
+        author: "@claude"
+        body: "Fixed: added projectPath: cachePath to the broadcast data payload in server.ts. Previously
+          projectPath was only passed as PubSubManager's 4th argument (server-side filter) and never
+          serialized into the BroadcastEvent. Now clients receive { domain, projectPath,
+          previousState, timestamp } in the event data."
+        created_at: 2026-03-29T09:30:15.910Z
+    kind: blocker
+    resolved_at: 2026-03-29T09:30:23.637Z
+    resolved_by: "@claude"
+  - _ulid: 01KMWE7VQC2AKN0964NWBKN1TK
+    anchor:
+      type: code
+      commit: 82976814d411e8a10eed4d34c3bb531089798d47
+      line_end: 1806
+      line_start: 1785
+      path: tests/daemon-entity-cache.test.ts
+      side: head
+    entries:
+      - _ulid: 01KMWE7VQCGEDA1Y51BH49864Q
+        author: Test User
+        body: This test claims to cover the AC's "domain and project identifier in the broadcast event"
+          requirement, but it only asserts the internal onDomainReady callback arguments. The
+          client-visible WebSocket message is assembled later in server.ts/pubsub.ts, so this test
+          never exercises the layer the AC is about and misses the regression above. For this AC,
+          coverage has to inspect the broadcast payload delivered to subscribers.
+        created_at: 2026-03-29T09:19:15.180Z
+      - _ulid: 01KMWEWRBK20MBP370E8G8NM6G
+        author: "@claude"
+        body: "Fixed: replaced the internal-callback-only test with an integration test that exercises the
+          full broadcast path. The test now creates a PubSubManager with a mock WebSocket subscribed
+          to cache:status, wires onDomainReady → pubsub.broadcast exactly as server.ts does, loads
+          domains, and asserts on the JSON-parsed WebSocket message payload — verifying domain,
+          projectPath, previousState, and timestamp are all present in the serialized BroadcastEvent
+          data."
+        created_at: 2026-03-29T09:30:39.859Z
+    kind: blocker
+    resolved_at: 2026-03-29T09:30:47.662Z
+    resolved_by: "@claude"
+  - _ulid: 01KMWE7ZH5893D4ZBXS8NTTVYM
+    entries:
+      - _ulid: 01KMWE7ZH5Y9E14AANJVK5XG4E
+        author: Test User
+        body: "Evidence log: Files read: packages/daemon/src/server.ts,
+          packages/daemon/src/websocket/pubsub.ts, packages/daemon/src/websocket/types.ts,
+          src/daemon/entity-cache.ts, tests/daemon-entity-cache.test.ts,
+          tests/daemon-pubsub.test.ts. Commands run: kspec task get @01KMW68JT108S4RS3G1GNYH5A9,
+          kspec review for-task @01KMW68JT108S4RS3G1GNYH5A9, kspec item get @daemon-entity-cache,
+          kspec validate, git diff/stat/log on the task commits, rg for AC annotations and pubsub
+          usage, npm test -- tests/daemon-entity-cache.test.ts, npm test. Claims verified: the new
+          AC exists on @daemon-entity-cache; the focused entity-cache suite passes (95/95); the full
+          suite does not pass in this snapshot; the production broadcast payload omits project
+          identity. Categories searched: correctness, test quality, integration, error handling,
+          edge cases."
+        created_at: 2026-03-29T09:19:19.077Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-29T09:19:30.443Z
+created_at: 2026-03-29T09:12:13.672Z
+updated_at: 2026-03-29T09:30:47.662Z
+notes: []

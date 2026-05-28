@@ -1,0 +1,31 @@
+notes:
+  - _ulid: 01KHVXK254D32X2CHAYXX7F5MG
+    content: >-
+      Implementation notes:
+
+
+      The config system is loaded in `initContext()` between `getGitRoot()` and `detectShadow()`.
+      The `KspecContext` interface gains a `config: ResolvedKspecConfig` field that all commands can
+      access via `ctx.config`.
+
+
+      Circular dependency avoidance is critical: `config.ts` is a leaf module — it must not import
+      from `yaml.ts` (which imports `shadow.ts`) or `shadow.ts`. Enforce this boundary with an
+      import graph test or lint rule.
+
+
+      Shadow functions gain optional config parameters that default to current constants — this
+      preserves backward compat for any direct callers while enabling config-driven behavior through
+      the standard `initContext()` path. There are 10+ functions in shadow.ts that hardcode the
+      constants — all must be threaded.
+
+
+      The shadow remote configuration is the most architecturally significant piece. `shadow.remote`
+      can be a remote name ("origin", "specs-origin"), a local filesystem path
+      ("/path/to/bare/repo"), or a full git URL ("git@github.com:org/specs.git"). Detection
+      algorithm: starts with `/`, `./`, or `~` = path; contains `://` or starts with `git@` = URL;
+      otherwise = remote name. Authentication for URLs is delegated to git credential helpers —
+      config should not contain tokens. Error messages should recommend remote names over inline
+      URLs.
+    author: "@claude"
+    created_at: 2026-02-19T21:41:10.948Z

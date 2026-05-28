@@ -1,0 +1,252 @@
+_ulid: 01KREVDS9XYG0933RSJPPD5WEC
+slugs: []
+title: "Focused plan review: Dispatch Workspace Provisioning Lease Protection (necessity and scope)"
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Observed code shows an in-memory in-flight marker exists before provisioning/bootstrap,
+      but _activeTaskRefs excludes it while cleanup already blocks reaping for activeTaskRefs. The
+      plan does not show evidence that restart-surviving durable leases are required.
+    name: Necessity evidence
+    required: true
+    created_at: 2026-05-12T19:45:31.244Z
+    completed_at: 2026-05-12T19:45:31.244Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "The plan does not evaluate smaller alternatives: expanded activeTaskRefs,
+      delaying/skipping destructive cleanup during bootstrap, in-memory guards, recently-created-dir
+      grace, lockfiles, or startup-only/manual cleanup."
+    name: Alternatives analysis
+    required: true
+    created_at: 2026-05-12T19:45:31.301Z
+    completed_at: 2026-05-12T19:45:31.301Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Existing @dispatch-workspace-cleanup-policy ac-4, @dispatch-workspace-registry ac-6, and
+      @agent-dispatch-engine ac-26 cover active/provisioning cleanup ownership closely enough that
+      the race may be an implementation bug rather than broad new spec work.
+    name: Existing spec coverage
+    required: true
+    created_at: 2026-05-12T19:45:53.012Z
+    completed_at: 2026-05-12T19:45:53.012Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The plan adds durable lease schema, owner/liveness semantics, recovery lifecycle, and many
+      ACs for a race that appears preventable by a smaller cleanup interlock unless additional
+      evidence is supplied.
+    name: Proportionality
+    required: true
+    created_at: 2026-05-12T19:46:10.295Z
+    completed_at: 2026-05-12T19:46:10.295Z
+events:
+  - _ulid: 01KREVDS9XFDTD63BNFYSWQE6Z
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-12T19:43:06.045Z
+  - _ulid: 01KREVE9B8TM2ESP50A3E391SD
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-12T19:43:22.472Z
+  - _ulid: 01KREVFCPAQ0TQEF4V7GW1VN5X
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KREVFB1DY33PQK357RJ60C24
+    timestamp: 2026-05-12T19:43:58.666Z
+  - _ulid: 01KREVFX379Q83EA0FS7SJ2EJY
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KREVFVFJCYJFQZ2HA55J025M
+    timestamp: 2026-05-12T19:44:15.463Z
+  - _ulid: 01KREVGCQVYAHR4MR80HD1VAV2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KREVGB2Q592C5MJA3WV05GSM
+    timestamp: 2026-05-12T19:44:31.483Z
+  - _ulid: 01KREVGW84S7BSW428B8D8XNPC
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KREVGTMANPKED46K9QY1DXK5
+    timestamp: 2026-05-12T19:44:47.365Z
+  - _ulid: 01KREVHEZN3QSPAHQ9970M5HSQ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KREVHDBDSWRDNWASPEB4D3DF
+    timestamp: 2026-05-12T19:45:06.549Z
+  - _ulid: 01KREVJ8QTJJ63WDF8ED4CPKEV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Necessity evidence
+    timestamp: 2026-05-12T19:45:32.922Z
+  - _ulid: 01KREVJB953T8HKAW76E10B1AZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Alternatives analysis
+    timestamp: 2026-05-12T19:45:35.525Z
+  - _ulid: 01KREVJXYT41BVRS7JMPGAZ349
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Existing spec coverage
+    timestamp: 2026-05-12T19:45:54.650Z
+  - _ulid: 01KREVKEV33JKFXD2S48TA8WEJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Proportionality
+    timestamp: 2026-05-12T19:46:11.939Z
+  - _ulid: 01KREVKV4A834XHWR18QR0M20X
+    actor: Codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-12T19:46:24.522Z
+  - _ulid: 01KREVKV4AVKG3Y4STEF89NMMC
+    actor: Codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-12T19:46:24.522Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-dispatch-workspace-provisioning-lease-protection"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KREVFB1DY33PQK357RJ60C24
+    anchor:
+      type: structured
+      ref: "@plan-dispatch-workspace-provisioning-lease-protection"
+      section: context
+    entries:
+      - _ulid: 01KREVFB1DZGWDGK36QPRMQQVW
+        author: Jacob Chapel
+        body: "MUST-FIX: The plan does not prove that a durable provisioning lease is necessary for the
+          observed cleanup/bootstrap race. The direct evidence points to a narrower gap:
+          _spawnInvocation adds an in-flight key before provisioning/bootstrap, reconciliation
+          passes only _activeTaskRefs(), _activeTaskRefs() excludes inFlightTaskKeys, and
+          reapDispatchWorkspace already blocks cleanup when activeTaskRefs contains the task. Before
+          adding registry-backed leases, owner tuples, TTLs, and abandoned recovery, the plan needs
+          to either narrow to the smaller fix or document concrete evidence that cleanup must
+          protect bootstrap work across daemon restart or a separate process owner."
+        created_at: 2026-05-12T19:43:56.973Z
+    kind: blocker
+  - _ulid: 01KREVFVFJCYJFQZ2HA55J025M
+    anchor:
+      type: structured
+      ref: "@task-add-dispatch-workspace-provisioning-lease-schema"
+      section: tasks
+    entries:
+      - _ulid: 01KREVFVFJT64WAWYG67V6M7FZ
+        author: Jacob Chapel
+        body: "MUST-FIX: The schema task commits the durable registry format to owner_daemon_id, owner_pid,
+          process start time, owner_spawn_id, lease phases, expires_at, and bootstrap in_progress
+          before the plan establishes that those durable fields are required. This is a migration
+          and API commitment, and it can create a false safety signal if cleanup still has
+          unprotected deletion paths or if restart ownership semantics are wrong. Defer this schema
+          surface unless the plan rejects simpler options such as including in-flight refs in
+          cleanup inputs, delaying cleanup until bootstrap completion, a scoped in-memory
+          provisioning guard, or startup-only/manual artifact sweeps."
+        created_at: 2026-05-12T19:44:13.810Z
+    kind: blocker
+  - _ulid: 01KREVGB2Q592C5MJA3WV05GSM
+    anchor:
+      type: structured
+      field: ac-4
+      ref: "@dispatch-workspace-cleanup-policy"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KREVGB2R1VX0N3AY5WR764JW
+        author: Jacob Chapel
+        body: "SHOULD-FIX: Existing specs already appear to require the core safety property.
+          @dispatch-workspace-cleanup-policy ac-4 says active invocation ownership prevents branch
+          deletion, @dispatch-workspace-registry ac-6 already has a provisioning lifecycle state,
+          and @agent-dispatch-engine ac-26 treats in-flight work as active for scheduler ownership.
+          That makes the reported race look like a direct implementation bug in cleanup inputs and
+          destructive-path checks, not necessarily plan-level spec expansion. Reframe the plan
+          around the existing contracts, or explain which specific behavior remains unspecified
+          after those contracts are applied."
+        created_at: 2026-05-12T19:44:29.784Z
+    kind: question
+  - _ulid: 01KREVGTMANPKED46K9QY1DXK5
+    anchor:
+      type: structured
+      ref: "@task-make-artifact-reconciliation-lease-aware"
+      section: tasks
+    entries:
+      - _ulid: 01KREVGTMB4A597D9WRMXD555Q
+        author: Jacob Chapel
+        body: "SHOULD-FIX: The plan lists many cleanup paths to make lease-aware, but it does not compare
+          that to simpler cleanup policy changes: fail closed when registry state is unavailable,
+          ignore recently-created directories under the dispatch root, skip periodic destructive
+          cleanup while any spawn is in flight, or make periodic cleanup startup-only/manual until
+          bootstrap has a terminal state. These alternatives may prevent the reported ENOENT failure
+          with much less durable state and fewer lifecycle edge cases. Add an alternatives section
+          with explicit rejection criteria, or reduce scope to the smallest cleanup interlock."
+        created_at: 2026-05-12T19:44:45.707Z
+    kind: question
+  - _ulid: 01KREVHDBDSWRDNWASPEB4D3DF
+    anchor:
+      type: structured
+      ref: "@plan-dispatch-workspace-provisioning-lease-protection"
+      section: implementation_notes
+    entries:
+      - _ulid: 01KREVHDBDPVE7TQNE3271D4R5
+        author: Jacob Chapel
+        body: "WATCH: If a durable lease remains in scope, the plan should state the smallest viable
+          retained version. A proportionate scope looks like one implementation task that includes
+          in-flight task refs in cleanup protection, one cleanup task that skips every destructive
+          path for in-flight/provisioning work and fails closed on unreadable registry state, and
+          focused regression tests. Durable owner recovery, abandoned lease retention, operator
+          lease diagnostics, and cross-daemon ownership can be deferred unless a reproduced
+          restart/orphan-bootstrap case shows they are needed now."
+        created_at: 2026-05-12T19:45:04.878Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: Codex
+    role: reviewer
+    created_at: 2026-05-12T19:46:24.521Z
+created_at: 2026-05-12T19:43:06.045Z
+updated_at: 2026-05-12T19:46:24.522Z
+notes: []

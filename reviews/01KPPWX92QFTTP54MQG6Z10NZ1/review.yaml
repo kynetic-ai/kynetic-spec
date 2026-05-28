@@ -1,0 +1,229 @@
+_ulid: 01KPPWX92QFTTP54MQG6Z10NZ1
+slugs: []
+title: Review task-docs-rendering (cycle 3)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Build passed on the reviewed snapshot after rerun; initial failure was an environment-prep
+      issue around missing SvelteKit output, and the same build also passed on base commit
+      9d65ad244237659c2a29a45679392595ae0135ee.
+    name: npm run build
+    required: true
+    runner: npm
+    created_at: 2026-04-21T02:22:52.413Z
+    completed_at: 2026-04-21T02:22:52.413Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed on reviewed snapshot: 8083 passed, 5 skipped. Test runner repaired missing
+      dist/web-ui/index.html by rebuilding first."
+    name: npm test
+    required: true
+    runner: test-runner
+    created_at: 2026-04-21T02:22:55.905Z
+    completed_at: 2026-04-21T02:22:55.905Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Fails due to pre-existing repository-wide schema/completeness issues outside this task
+      (e.g. .kspec/modules/meta.yaml traits shape, orphaned skill directory, many unrelated AC
+      coverage warnings).
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-21T02:22:59.292Z
+    completed_at: 2026-04-21T02:22:59.292Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Focused docs E2E passed: 6/6 tests."
+    name: npm run test:e2e -- tests/e2e/docs.spec.ts
+    required: true
+    runner: playwright
+    created_at: 2026-04-21T02:23:02.679Z
+    completed_at: 2026-04-21T02:23:02.679Z
+events:
+  - _ulid: 01KPPWX92QNK2MMXNYHGEE5PAY
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-21T02:11:34.103Z
+  - _ulid: 01KPPWXQ25PXSHYDDS23D2YV2Z
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-21T02:11:48.421Z
+  - _ulid: 01KPPXJ0MMEJ7Z4VZ9HRNZNKDR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run build
+    timestamp: 2026-04-21T02:22:53.588Z
+  - _ulid: 01KPPXJ4211TVWFA2DNQCV16ZY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-21T02:22:57.090Z
+  - _ulid: 01KPPXJ7BRGJ23JFFT86KN9MKN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-04-21T02:23:00.473Z
+  - _ulid: 01KPPXJAPW7QYZ9CNT5MNY7DQY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run test:e2e -- tests/e2e/docs.spec.ts
+    timestamp: 2026-04-21T02:23:03.900Z
+  - _ulid: 01KPPXJWD6DNG6YBASJXMG3EBK
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KPPXJV6TSRG480GZ6S6XG6FN
+    timestamp: 2026-04-21T02:23:22.022Z
+  - _ulid: 01KPPXJZQVPA64YJ5A5J1RCFBJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KPPXJYJF58RQM43P5XTS9YPF
+    timestamp: 2026-04-21T02:23:25.435Z
+  - _ulid: 01KPPXKBB4GAG6W8KZBB45N3X1
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-21T02:23:37.316Z
+  - _ulid: 01KPPXKBB4WVAGE3511SJ98XKT
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-21T02:23:37.316Z
+  - _ulid: 01KPPYMWP9R47DVT85KW7H6JKW
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPPXJV6TSRG480GZ6S6XG6FN
+    timestamp: 2026-04-21T02:41:56.425Z
+  - _ulid: 01KPPYN1W2JHPB35F357V419R7
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KPPXJYJF58RQM43P5XTS9YPF
+    timestamp: 2026-04-21T02:42:01.730Z
+  - _ulid: 01KPPYNAZX8ZDR5D2TPD2R7Z8W
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPPXJV6TSRG480GZ6S6XG6FN
+    timestamp: 2026-04-21T02:42:11.069Z
+  - _ulid: 01KPPYNFY63ETQTBA7MQ8C7JT4
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KPPXJYJF58RQM43P5XTS9YPF
+    timestamp: 2026-04-21T02:42:16.135Z
+examined_commit: e8ab506968146ff436879a0cf79c3190095ebffa
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KPPN42CDKS6A6951ZATDPKXP"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPPXJV6TSRG480GZ6S6XG6FN
+    anchor:
+      type: code
+      commit: e8ab506968146ff436879a0cf79c3190095ebffa
+      line_end: 52
+      line_start: 46
+      path: packages/web-ui/src/routes/docs/[...slug]/+page.svelte
+      side: head
+    entries:
+      - _ulid: 01KPPXJV6TYC71D1ZMX00QHC0V
+        author: Jacob Chapel
+        body: "This click handler unconditionally prevents the browser from following any relative .md link,
+          then silently does nothing when resolveDocsLink() returns null. That breaks real links in
+          shipped docs content: docs/getting-started.md links to ../INSTALL.md and ../AGENTS.md, and
+          a direct runtime check on this snapshot returns null for both targets. In the UI those
+          links become dead clicks instead of opening the referenced document, so the docs surface
+          now ships broken navigation for existing content."
+        created_at: 2026-04-21T02:23:20.794Z
+      - _ulid: 01KPPYMVQNKEK4S2VQV10YKA0G
+        author: "@claude"
+        body: "Fixed: Two-part fix for the dead click issue. (1) Moved event.preventDefault() in the click
+          handler to after resolveDocsLink() returns a non-null result, so out-of-tree links like
+          ../INSTALL.md now fall through to browser default behavior instead of being silently
+          swallowed. (2) Added render-time link rewriting in the markdown renderer — in-tree .md
+          links are now rewritten to SPA routes at render time using the docs manifest, so they work
+          correctly regardless of click interception. Added 7 unit tests for the link rewriting and
+          2 E2E tests verifying in-tree links are rewritten and out-of-tree links are preserved."
+        created_at: 2026-04-21T02:41:55.445Z
+    kind: blocker
+    resolved_at: 2026-04-21T02:42:10.080Z
+    resolved_by: "@claude"
+  - _ulid: 01KPPXJYJF58RQM43P5XTS9YPF
+    entries:
+      - _ulid: 01KPPXJYJGK1YSZ3Z5TWN81BVE
+        author: Jacob Chapel
+        body: 'Evidence log:\nFiles read: packages/daemon/src/server.ts,
+          packages/web-ui/src/lib/components/{Sidebar.svelte,MobileNav.svelte},
+          packages/web-ui/src/lib/{docs.ts,docs-types.ts},
+          packages/web-ui/src/lib/utils/{docs-markdown.ts,docs-utils.ts,sanitize.ts},
+          packages/web-ui/src/routes/docs/{+page.svelte,[...slug]/+page.svelte},
+          packages/web-ui/vite-plugin-docs.ts, packages/web-ui/vite.config.ts,
+          tests/{web-ui-docs-rendering.test.ts,e2e/docs.spec.ts},
+          docs/{getting-started.md,history/KYNETIC_SPEC_DESIGN.md}.\nCommands run: git diff
+          --stat/name-only/log, kspec task get, kspec item get @docs-reachability, kspec item get
+          @docs-navigation-shape, kspec review get @01KPPT34JR4RSCYAJHQWBGK1WC, grep/rg for AC
+          coverage, kspec validate, npm test, npm run build, npm run test:e2e --
+          tests/e2e/docs.spec.ts, node --input-type=module -e "resolveDocsLink(...)".\nClaims
+          verified: full test suite passes; focused docs E2E passes; build passes on the reviewed
+          snapshot; prior review blockers for docs nav routing and AC-1 behavioral coverage are
+          addressed.\nCategories searched: correctness (found broken off-tree markdown links), edge
+          cases (relative link resolution inside vs outside docs tree), error handling
+          (missing-resolution path in click interceptor), test quality (behavioral E2E now present),
+          integration (daemon SPA routes and bundled docs build path).'
+        created_at: 2026-04-21T02:23:24.240Z
+      - _ulid: 01KPPYN0WHQ8K2QJT01SYW9YS5
+        author: "@claude"
+        body: Acknowledged. The evidence log confirms the broken link issue that was addressed in the
+          blocker thread fix.
+        created_at: 2026-04-21T02:42:00.721Z
+    kind: nit
+    resolved_at: 2026-04-21T02:42:15.162Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-21T02:23:37.316Z
+created_at: 2026-04-21T02:11:34.103Z
+updated_at: 2026-04-21T02:42:15.162Z
+notes: []

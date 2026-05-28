@@ -1,0 +1,168 @@
+_ulid: 01KKZZGZQFP5YVVGDAYZKBCKER
+slugs: []
+title: Review round-trip stability for meta manifest YAML writes (cycle 2)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 5864 tests passed, 1 failed (pre-existing review-cli examined_commit env-dependent issue).
+      All 56 round-trip stability tests pass including 7 new meta manifest tests.
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T08:04:04.087Z
+    completed_at: 2026-03-18T08:04:04.087Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 4 @yaml-serialization-invariants ACs have test annotations. ac-3 covered by 11 test
+      describe blocks in yaml-round-trip-stability.test.ts (including 2 new meta manifest blocks).
+      ac-1, ac-2, ac-4 covered in yaml-canonical-key-order.test.ts.
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-18T08:04:12.000Z
+    completed_at: 2026-03-18T08:04:12.000Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Worker resolved merge with dev cleanly. Merge commit 872e1d0ec shows combined test
+      additions from dev (inbox, triage, workflow-run, dispatch-workspace) with task tests (meta
+      manifest). Fix commit 9bbc04d7a removes duplicate withFileLock import.
+    name: merge-conflict
+    required: true
+    runner: manual
+    created_at: 2026-03-18T08:04:20.433Z
+    completed_at: 2026-03-18T08:04:20.433Z
+events:
+  - _ulid: 01KKZZGZQFHYWV9BEBT5394E2D
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T08:03:21.455Z
+  - _ulid: 01KKZZH8SHD8Q8CR74619VBJ1R
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T08:03:30.737Z
+  - _ulid: 01KKZZHYKRPH959EVFY0SFFJYC
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKZZHYD8N7HKKWJ04W89SDH2
+    timestamp: 2026-03-18T08:03:53.080Z
+  - _ulid: 01KKZZJ9HKMEXD9M8S179QYCM8
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T08:04:04.275Z
+  - _ulid: 01KKZZJH79PNDHCJQF1VMHBM3X
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-18T08:04:12.137Z
+  - _ulid: 01KKZZJSE6YZV75H2ZEFDYV5TH
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: merge-conflict
+    timestamp: 2026-03-18T08:04:20.550Z
+  - _ulid: 01KKZZK007TT7MTDC8S1JRW22F
+    actor: pr-reviewer@kspec-dispatch
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-18T08:04:27.271Z
+  - _ulid: 01KKZZK007HFY3PTD83FBWZMEP
+    actor: pr-reviewer@kspec-dispatch
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T08:04:27.271Z
+examined_commit: 9bbc04d7ab08b2c26aed873d58a40332421cb0d7
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKX6CBDFNMXPC405SRZ3RG0N"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KKZZHYD8N7HKKWJ04W89SDH2
+    entries:
+      - _ulid: 01KKZZHYD8BMNVKRBS9R3MWX3N
+        author: "@claude"
+        body: >-
+          Review evidence log:
+
+
+          Files read: src/parser/meta.ts (full diff + surrounding context for all changed
+          functions), tests/yaml-round-trip-stability.test.ts (all 7 new test cases),
+          src/schema/meta.ts (ObservationSchema definition), src/parser/meta.ts loadMetaFile (schema
+          parse path)
+
+
+          Commands run: npm test (5864 passed, 1 failed — pre-existing review-cli examined_commit
+          env-dependent), kspec validate (pre-existing reference/alignment warnings only), grep for
+          AC annotations (all 4 @yaml-serialization-invariants ACs covered)
+
+
+          Claims verified: Worker claim "All 56 round-trip stability tests pass" — confirmed, all 56
+          pass. Worker claim "pre-existing review-cli examined_commit failure" — confirmed, same
+          environment-dependent failure. Worker claim "resolved merge conflicts in
+          tests/yaml-round-trip-stability.test.ts" — confirmed via git log showing merge commit
+          872e1d0ec.
+
+
+          Categories searched:
+
+          - Correctness: Raw-data-preservation pattern correctly applied. writeRawMetaManifest
+          preserves field order and only includes fields present in original or updates.
+          mergeMetaItemPreservingRawShape filters Zod defaults (empty arrays, null, false) from new
+          fields while preserving existing raw fields. No correctness issues.
+
+          - Edge cases: Empty manifest (no wrapperObj) handled with kynetic_meta: "1.0" default.
+          Missing array fields default to empty via getRawArray. Item not found returns -1
+          correctly.
+
+          - Error handling: All mutations wrapped in withFileLock for TOCTOU safety.
+          deleteObservation/deleteMetaItem catch errors and return false. Consistent with existing
+          patterns.
+
+          - Test quality: Tests actually prove the ACs — they write minimal YAML, mutate, and verify
+          absent sections don't appear AND data integrity is maintained. Round-trip test confirms
+          byte-identical output.
+
+          - Integration: Pattern matches existing raw-data-preservation in reviews.ts, yaml.ts
+          (inbox), and workflow runs. No incompatibilities.
+
+          - Security: No new input validation concerns — all paths use existing
+          readYamlFile/writeYamlFilePreserveFormat.
+        created_at: 2026-03-18T08:03:52.873Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer@kspec-dispatch
+    role: reviewer
+    created_at: 2026-03-18T08:04:27.153Z
+created_at: 2026-03-18T08:03:21.455Z
+updated_at: 2026-03-18T08:04:27.153Z
+notes: []

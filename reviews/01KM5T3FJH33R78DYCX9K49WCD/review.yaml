@@ -1,0 +1,115 @@
+_ulid: 01KM5T3FJH33R78DYCX9K49WCD
+slugs: []
+title: Review auto-unregister stale projects
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: packages/daemon/src/project-context.ts, packages/daemon/src/watcher.ts,
+      tests/daemon-context-manager.test.ts, tests/daemon-watcher-error-handling.test.ts, plus
+      surrounding routes/server/middleware files. Commands run: git diff/stat/log, kspec task get,
+      kspec item get, kspec validate, rg AC annotations, npm test. Claims verified: watcher now
+      invokes permanent-failure callback after ENOENT exhaustion; ProjectContextManager unregisters
+      the project from that callback; full test suite passes. Categories searched: correctness, edge
+      cases, error handling, test quality, integration; no task-specific blockers found."
+    name: review-evidence
+    required: false
+    runner: reviewer
+    created_at: 2026-03-20T14:28:14.431Z
+    completed_at: 2026-03-20T14:28:14.431Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full npm test passed in reviewer snapshot: 290 files, 6662 passed, 3 skipped."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-03-20T14:28:15.177Z
+    completed_at: 2026-03-20T14:28:15.177Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide pre-existing validation failures remain in this snapshot (3 broken meta
+      references, orphaned skill warning, broad completeness warnings). No new validation issue
+      attributable to this task's code-only diff was identified.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-20T14:28:15.964Z
+    completed_at: 2026-03-20T14:28:15.964Z
+events:
+  - _ulid: 01KM5T3FJHFF1YR1RTG194QY0Z
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-20T14:24:02.641Z
+  - _ulid: 01KM5T4KCRFGCSZBRFW3S2TK3Q
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-20T14:24:39.320Z
+  - _ulid: 01KM5TB5PJ8T2MYM6F7DEACJNR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review-evidence
+    timestamp: 2026-03-20T14:28:14.675Z
+  - _ulid: 01KM5TB6DK82PTRFX2E0APJ7J3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-20T14:28:15.411Z
+  - _ulid: 01KM5TB76SJQWDWEXCJDYTTFZ2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-03-20T14:28:16.217Z
+  - _ulid: 01KM5TBCEADH6G8WGH27SCHX1C
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-20T14:28:21.579Z
+  - _ulid: 01KM5TBCEBXQHV2XQ8H73AAMSY
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-20T14:28:21.579Z
+examined_commit: 28988e187a61dfc78211068ce94987f0fcdb39fe
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM28A020C9M06YC8MA2E96NW"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-20T14:28:21.578Z
+created_at: 2026-03-20T14:24:02.641Z
+updated_at: 2026-03-20T14:28:21.579Z
+notes: []

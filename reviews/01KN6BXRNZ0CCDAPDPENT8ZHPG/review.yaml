@@ -1,0 +1,192 @@
+_ulid: 01KN6BXRNZ0CCDAPDPENT8ZHPG
+slugs: []
+title: Review stabilize flaky full-suite failures in dispatch workspace config and enhanced setup tests
+author: Jacob Chapel
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "On snapshot cda3fa8053f5, full suite failed after 4701.1s with introduced regressions in
+      tests/clone-for-testing.test.ts and tests/session-create.test.ts. Targeted repro: npm test --
+      --fresh tests/clone-for-testing.test.ts tests/session-create.test.ts -> 2 failed tests / 4
+      failed suites. Base comparison: same targeted command passed on 190827af3c1f (15 suites, 78
+      tests)."
+    name: npm test -- --fresh
+    required: true
+    runner: npm
+    created_at: 2026-04-02T05:59:49.507Z
+    completed_at: 2026-04-02T05:59:49.507Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with the repository's existing warning backlog only (orphaned
+      skills/alignment/completeness warnings); no new task-specific validation errors were
+      introduced by this snapshot.
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-02T05:59:52.151Z
+    completed_at: 2026-04-02T05:59:52.151Z
+events:
+  - _ulid: 01KN6BXRNYRJC64SDEAQABZZC8
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-02T05:51:11.550Z
+  - _ulid: 01KN6BY9X4PQVZZKA3F2PHDEFN
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-02T05:51:29.188Z
+  - _ulid: 01KN6CDGR8NNE38GYD1DXS41PB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN6CDFSD1WEF35F7PN4TS5S7
+    timestamp: 2026-04-02T05:59:47.720Z
+  - _ulid: 01KN6CDKDCXRJRVWE0RDH39VF7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm test -- --fresh
+    timestamp: 2026-04-02T05:59:50.444Z
+  - _ulid: 01KN6CDNWDYBADWEZQ6KVV0ZE2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-02T05:59:52.973Z
+  - _ulid: 01KN6CDR9ZP9YMG96SYPRDFAWA
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN6CDQFKNMX1TYMPSVQQ8S00
+    timestamp: 2026-04-02T05:59:55.455Z
+  - _ulid: 01KN6CE867AN7S7TS8JJH73S3S
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-02T06:00:11.719Z
+  - _ulid: 01KN6CE8679D2TXPG254AJJW8N
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-02T06:00:11.719Z
+  - _ulid: 01KN6E8D2QZVP9G47NMA8957S6
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN6CDQFKNMX1TYMPSVQQ8S00
+    timestamp: 2026-04-02T06:31:57.271Z
+  - _ulid: 01KN6E8FADSYR1P63SG8E8SYS3
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN6CDFSD1WEF35F7PN4TS5S7
+    timestamp: 2026-04-02T06:31:59.565Z
+  - _ulid: 01KN6E93BS41T71J61SV66N2TC
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN6CDFSD1WEF35F7PN4TS5S7
+    timestamp: 2026-04-02T06:32:20.089Z
+  - _ulid: 01KN6E95K777ZA0669CYTJ94TD
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN6CDQFKNMX1TYMPSVQQ8S00
+    timestamp: 2026-04-02T06:32:22.375Z
+examined_commit: cda3fa8053f55b86d64a76eb05aa00ab1e7ed5db
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN6AAH0TMTBBPB8DSK8PP4K3"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN6CDFSD1WEF35F7PN4TS5S7
+    anchor:
+      type: code
+      commit: cda3fa8053f55b86d64a76eb05aa00ab1e7ed5db
+      line_end: 164
+      line_start: 163
+      path: tests/helpers/cli.ts
+      side: head
+    entries:
+      - _ulid: 01KN6CDFSDNVR5660TF3EMXANJ
+        author: Jacob Chapel
+        body: The new isolated-home setup also changes the failure mode for tests that deliberately invoke
+          the CLI with an invalid working directory.  is supposed to assert the command exits
+          non-zero on a runtime error from , but  now throws first inside the test helper. The
+          targeted repro fails on this branch and passes on base commit , so the branch regresses
+          runtime-error-path coverage outside the flaky suites it was meant to stabilize.
+        created_at: 2026-04-02T05:59:46.734Z
+      - _ulid: 01KN6E8EGZ2GEV5K05FRJTT5ZB
+        author: Jacob Chapel
+        body: "Fixed in tests/helpers/cli.ts: isolated-home bootstrap now only runs when the helper can stat
+          a real directory root. Invalid cwd values are left intact so runtime-error-path tests
+          still execute the CLI and assert its non-zero exit behavior. Repro now passes with npm
+          test -- --fresh tests/session-create.test.ts."
+        created_at: 2026-04-02T06:31:58.751Z
+    kind: blocker
+    resolved_at: 2026-04-02T06:32:19.344Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KN6CDQFKNMX1TYMPSVQQ8S00
+    anchor:
+      type: code
+      commit: cda3fa8053f55b86d64a76eb05aa00ab1e7ed5db
+      line_end: 164
+      line_start: 163
+      path: tests/helpers/cli.ts
+      side: head
+    entries:
+      - _ulid: 01KN6CDQFK8YV187HHBBFJCDS8
+        author: Jacob Chapel
+        body: >2-
+           now assumes  is always a valid string and immediately does . That breaks existing
+          callers that intentionally omit :  now throws  before the CLI runs. I reproduced the
+          failure with  > @kynetic-ai/spec@0.12.0 test
+
+          > node scripts/test.cjs --fresh tests/clone-for-testing.test.ts
+          tests/session-create.test.ts, and the same targeted run passes on base commit . This
+          helper hardening therefore introduced a regression in unrelated clone-for-testing
+          coverage.
+        created_at: 2026-04-02T05:59:54.611Z
+      - _ulid: 01KN6E8CCTPEWT0SF56W5Q7A4P
+        author: Jacob Chapel
+        body: "Fixed in tests/helpers/cli.ts: kspec() accepts omitted cwd again and falls back to
+          process.cwd() when choosing an isolation root, so clone-for-testing coverage still runs
+          from the current repo while the isolation hardening stays in place. Repro now passes with
+          npm test -- --fresh tests/clone-for-testing.test.ts tests/session-create.test.ts."
+        created_at: 2026-04-02T06:31:56.570Z
+    kind: blocker
+    resolved_at: 2026-04-02T06:32:21.566Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-02T06:00:11.718Z
+created_at: 2026-04-02T05:51:11.551Z
+updated_at: 2026-04-02T06:32:21.566Z
+notes: []

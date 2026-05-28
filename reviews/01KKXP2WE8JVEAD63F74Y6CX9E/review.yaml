@@ -1,0 +1,129 @@
+_ulid: 01KKXP2WE8JVEAD63F74Y6CX9E
+slugs: []
+title: Review task-review-api-verdicts (cycle 2)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 5765 tests passed, 1 pre-existing failure in review-cli.test.ts (examined_commit
+      auto-populate, not modified by this branch)
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-17T10:51:37.119Z
+    completed_at: 2026-03-17T10:51:37.119Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "ac-6: 5 tests (verdict recording, comment, auto-close approve, auto-close
+      request_changes, slug ref). ac-7: 5 tests (passing check, failing check, non-required, slug
+      ref, applies_to_version). ac-8: 7 tests (draft→open, draft→closed, open→closed, closed→open,
+      closed→archived, slug ref, plus 3 invalid transitions). ac-10: 10+ validation error tests. All
+      trait ACs annotated N/A with valid reasons."
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-17T10:51:47.871Z
+    completed_at: 2026-03-17T10:51:47.871Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation errors are all pre-existing (3 broken refs in meta.yaml, 231 missing AC
+      coverage across project). No new warnings introduced by this task.
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-17T10:51:59.214Z
+    completed_at: 2026-03-17T10:51:59.214Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Blocker fixed: archived review guard added for verdict (line 115) and check (line 265)
+      endpoints with 3 new tests (approve on archived, comment on archived, check on archived). Nit
+      addressed: VALID_TRANSITIONS imported from review-operations.ts instead of duplicated."
+    name: cycle-1-fixes
+    required: true
+    runner: manual
+    created_at: 2026-03-17T10:52:07.621Z
+    completed_at: 2026-03-17T10:52:07.621Z
+events:
+  - _ulid: 01KKXP2WE8PHTDZ77QKC74MQ16
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-17T10:39:53.288Z
+  - _ulid: 01KKXP340DNKCVM0TP9B9CW4J9
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-17T10:40:01.037Z
+  - _ulid: 01KKXPRBV1JE91W55AF4PQRC42
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-17T10:51:37.186Z
+  - _ulid: 01KKXPRPAQWH4YVQ5AEW0F7JSX
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-17T10:51:47.927Z
+  - _ulid: 01KKXPS1DBBR5RQ4BD82PZRKRT
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-17T10:51:59.275Z
+  - _ulid: 01KKXPS9KZT2QY3RRVCTAAEPH7
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: cycle-1-fixes
+    timestamp: 2026-03-17T10:52:07.680Z
+  - _ulid: 01KKXPSKDVPAPTAJES5KK4V1TZ
+    actor: pr-reviewer@kspec
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-17T10:52:17.723Z
+  - _ulid: 01KKXPSKDVYTM70RWXDPAYTSRW
+    actor: pr-reviewer@kspec
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-17T10:52:17.724Z
+examined_commit: adaaef6230426b5b880e6f3ab93d6882b96e9cc0
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKTW6GRPMVH8M9WVGH9NTJCF"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer@kspec
+    role: reviewer
+    created_at: 2026-03-17T10:52:17.666Z
+created_at: 2026-03-17T10:39:53.288Z
+updated_at: 2026-03-17T10:52:17.666Z
+notes: []

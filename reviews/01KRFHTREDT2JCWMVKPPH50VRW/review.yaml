@@ -1,0 +1,239 @@
+_ulid: 01KRFHTREDT2JCWMVKPPH50VRW
+slugs: []
+title: Review centralize dispatch artifact protection decisions
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "2435 test suites passed; 9105 tests passed; 5 skipped. Full log:
+      /tmp/kspec-test-cache/01KRFHSP4YWKWNVBRNC2A1XTTM/1a890db0c6862a73.log"
+    name: npm test -- --fresh
+    required: true
+    runner: npm
+    created_at: 2026-05-13T02:27:11.982Z
+    completed_at: 2026-05-13T02:27:11.982Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Schema/references OK; command exited 0 with existing repo-wide warnings (reference,
+      alignment, completeness, invalid AC annotation warnings not introduced by this diff).
+    name: kspec validate --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-13T02:27:22.353Z
+    completed_at: 2026-05-13T02:27:22.353Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit completed with exit 0.
+    name: npm run typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-13T02:27:33.064Z
+    completed_at: 2026-05-13T02:27:33.064Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "./node_modules/.bin/oxlint src/agent-runtime/workspace.ts
+      tests/dispatch-artifact-protection.test.ts tests/dispatch-workspace-cleanup.test.ts: 0
+      warnings, 0 errors. Full npm run lint currently reports unrelated repo-wide pre-existing lint
+      debt outside this diff."
+    name: oxlint changed files
+    required: true
+    runner: oxlint
+    created_at: 2026-05-13T02:27:44.233Z
+    completed_at: 2026-05-13T02:27:44.233Z
+events:
+  - _ulid: 01KRFHTRECANVBC4KF11JMREVP
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-13T02:14:39.821Z
+  - _ulid: 01KRFHVQF8GQZJR52CJR5684CX
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-13T02:15:11.592Z
+  - _ulid: 01KRFJHB3TK10A0EJCV8H8KNFR
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KRFJH9MTW1GSKNP0XNCQSQTG
+    timestamp: 2026-05-13T02:26:59.834Z
+  - _ulid: 01KRFJHRD41YE7GZRTN5TRSF9J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-05-13T02:27:13.445Z
+  - _ulid: 01KRFJJ2GVPZB2J7H3PW55PNQE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --warnings-ok
+    timestamp: 2026-05-13T02:27:23.804Z
+  - _ulid: 01KRFJJCZ5SJ4MJ0TSAN4MAV4F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run typecheck
+    timestamp: 2026-05-13T02:27:34.501Z
+  - _ulid: 01KRFJJQXGKP6SYYHDGBTP7P3Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: oxlint changed files
+    timestamp: 2026-05-13T02:27:45.712Z
+  - _ulid: 01KRFJK5M1YHQH42J9PK458MFE
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KRFJK47M2D0BDPN1G9F809V7
+    timestamp: 2026-05-13T02:27:59.745Z
+  - _ulid: 01KRFJKH6N5GH7FSKNCN23DQ1H
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-13T02:28:11.606Z
+  - _ulid: 01KRFJKH6P8TD2G7F32HE592RG
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-13T02:28:11.606Z
+  - _ulid: 01KRFKYS3YWGT6WRG2XR3Q5QMR
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRFJH9MTW1GSKNP0XNCQSQTG
+    timestamp: 2026-05-13T02:51:48.734Z
+  - _ulid: 01KRFKZ21MX2W211QQK8TR80G6
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KRFJH9MTW1GSKNP0XNCQSQTG
+    timestamp: 2026-05-13T02:51:57.876Z
+  - _ulid: 01KRFKZC1X729HMQ11TS9MTDYB
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KRFJK47M2D0BDPN1G9F809V7
+    timestamp: 2026-05-13T02:52:08.125Z
+  - _ulid: 01KRFKZNWK2WVRC7WKNW7H5H81
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KRFJK47M2D0BDPN1G9F809V7
+    timestamp: 2026-05-13T02:52:18.195Z
+examined_commit: 8b076968ac2a7ff19dae267fe2334325c028cacd
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KRF37Y941E2T8D1ATFV63JB0"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KRFJH9MTW1GSKNP0XNCQSQTG
+    anchor:
+      type: code
+      commit: 8b076968ac2a7ff19dae267fe2334325c028cacd
+      line_end: 3527
+      line_start: 3514
+      path: src/agent-runtime/workspace.ts
+      side: head
+    entries:
+      - _ulid: 01KRFJH9MTA41QQDMEHF70RJK5
+        author: Jacob Chapel
+        body: 'MUST-FIX: active/in-flight task refs do not protect the corresponding dispatch branch when
+          the trusted registry has no record yet. The helper marks
+          evaluateTaskRef(@01KRF37Y941E2T8D1ATFV63JB0) as preserve=true, but
+          evaluateDispatchBranch("dispatch/task/task-centralize-dispatch-artifact-protection-decisions/01krf37y")
+          returns preserve=false with registry={status:"loaded",records:[]}. In reconciliation, that
+          branch path reaches listDispatchBranches() and deleteDispatchBranch(), so the
+          queue-to-spawn window can still delete a canonical branch for active/in-flight work before
+          a registry record exists. This violates ac-active-inflight-provisioning-artifact-preserved
+          and the task requirement that caller-supplied active/in-flight task refs are protection
+          sources across destructive surfaces.'
+        created_at: 2026-05-13T02:26:58.330Z
+      - _ulid: 01KRFKYQQC1179QRR770DBS67E
+        author: "@claude"
+        body: >-
+          Fixed: Derived activeOrInFlightShortIds via shortTaskId() and routed
+          evaluateDispatchBranch() and evaluateWorkspacePath() through it. Any canonical
+          dispatch/task/<slug>/<short-id> branch whose trailing segment matches an active/in-flight
+          ref now returns preserve=true, and so do worker (<slug>-<short-id>) and reviewer
+          (<slug>-<short-id>-review) worktree basenames under the configured worktree root — even
+          when the registry has no record yet. Verified by:
+
+
+          - New unit test (tests/dispatch-artifact-protection.test.ts) exercising the exact blocker
+          scenario: activeOrInFlightTaskRefs=[@01KRF37Y941E2T8D1ATFV63JB0], registry={status:loaded,
+          records:[]}, asserting evaluateDispatchBranch and evaluateWorkspacePath both return
+          preserve=true for the canonical branch and worker/reviewer dirs.
+
+          - A second unit test that asserts the derivation does not over-protect: non-canonical
+          dispatch branches (wrong segment count) and paths outside worktreeRoot remain unprotected.
+
+          - New E2E regression in tests/dispatch-workspace-cleanup.test.ts that reserves
+          dispatch/task/task-queue-to-spawn-protection/01task00 with an empty registry and an active
+          task ref, then proves reconcileDispatchWorkspaceArtifacts() does not delete the branch.
+        created_at: 2026-05-13T02:51:47.308Z
+    kind: blocker
+    resolved_at: 2026-05-13T02:51:56.438Z
+    resolved_by: "@claude"
+  - _ulid: 01KRFJK47M2D0BDPN1G9F809V7
+    entries:
+      - _ulid: 01KRFJK47MJAMKRAAKA9TPNK9E
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; src/agent-runtime/workspace.ts;
+          src/parser/dispatch-workspaces.ts; tests/dispatch-artifact-protection.test.ts;
+          tests/dispatch-workspace-cleanup.test.ts. Commands run: kspec task get
+          @01KRF37Y941E2T8D1ATFV63JB0; kspec item get @dispatch-workspace-cleanup-policy; kspec item
+          get @dispatch-workspace-registry; rg AC annotations; kspec validate; kspec validate
+          --warnings-ok; npm test -- --fresh; npm run lint; ./node_modules/.bin/oxlint on changed
+          files; npm run typecheck; direct node --import tsx helper probe. Claims verified: worker's
+          full test and typecheck claims verified; changed-file oxlint verified; full npm lint
+          currently fails on unrelated existing repo-wide lint issues. Categories searched:
+          correctness, destructive cleanup edge cases, registry failure behavior, active/in-flight
+          race handling, AC coverage, test integrity, integration with reap/branch/root cleanup."
+        created_at: 2026-05-13T02:27:58.324Z
+      - _ulid: 01KRFKZAMZHX675093D66GPX12
+        author: "@claude"
+        body: Acknowledged — evidence log retained as the reviewer's audit trail for the prior verdict. No
+          code change required.
+        created_at: 2026-05-13T02:52:06.687Z
+    kind: nit
+    resolved_at: 2026-05-13T02:52:16.692Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-13T02:28:11.605Z
+created_at: 2026-05-13T02:14:39.821Z
+updated_at: 2026-05-13T02:52:16.692Z
+notes: []

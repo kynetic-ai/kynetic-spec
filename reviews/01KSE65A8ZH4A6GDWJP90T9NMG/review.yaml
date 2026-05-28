@@ -1,0 +1,216 @@
+_ulid: 01KSE65A8ZH4A6GDWJP90T9NMG
+slugs: []
+title: Review task-plan-review-folder-storage-migration-1 cycle 5
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "2519 suites passed; 9597 tests passed; 5 skipped of 9602. Full log:
+      /tmp/kspec-test-cache/01KSE646SH8AT29EFYQG3ZNSR9/7c8dc25a26bfe28b.log"
+    name: npm test
+    required: true
+    runner: npm test
+    created_at: 2026-05-24T23:59:53.959Z
+    completed_at: 2026-05-24T23:59:53.959Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Schema and references passed, but command exited 6 because existing warnings remain: 7
+      reference warnings, 37 alignment warnings, 266 completeness warnings. No new task-specific
+      validation error found."
+    name: kspec validate
+    required: false
+    runner: kspec validate
+    created_at: 2026-05-25T00:00:08.702Z
+    completed_at: 2026-05-25T00:00:08.702Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Scanned tests for AC: @entity-folder-migration-and-compatibility-1. Coverage annotations
+      exist for all ACs, including upgrade dry-run, executing migration, identity/unknown-field
+      preservation, incompatible/stale layout guidance, partial layout blocking, daemon conflict
+      responses, and new project manifest declarations."
+    name: AC annotation scan
+    required: false
+    runner: rg
+    created_at: 2026-05-25T00:00:21.373Z
+    completed_at: 2026-05-25T00:00:21.373Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Disposable temp project, downgraded manifest to kynetic 1.1 with no monolithic plan/review
+      records, then ran runUpgradePipeline with KSPEC_PROTECTED_PROJECT_PATHS set to that project
+      root. Expected ProtectedLiveProjectError/no mutation; observed success=true, plan/review
+      skipped, Storage manifest done, manifest promoted to kynetic 1.2 with folder/resource
+      declarations.
+    name: protected-tripwire repro
+    required: false
+    runner: manual temp project
+    created_at: 2026-05-25T00:00:33.509Z
+    completed_at: 2026-05-25T00:00:33.509Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/cli/commands/upgrade.ts, src/parser/plan-folder-migration.ts,
+      src/parser/review-folder-migration.ts, src/parser/migration-safety.ts,
+      src/cli/batch-write-buffer.ts, folder-backed/yaml helpers, migration tests. Commands run:
+      kspec task get, kspec item get, kspec review get/for-task/add/open/comment/check, kspec
+      validate, rg AC scan/source-scan checks, git diff/log/status/diff --check, npm test,
+      disposable protected-tripwire repro. Claims verified: cycle-4 fixes for task gate, orphan lean
+      entries, hardcoded production path removal, resources dir/rollback preview behavior; found
+      remaining tripwire bypass. Categories searched: correctness, edge cases, error handling, test
+      quality, integration, work-gate hardcoded paths."
+    name: review evidence log
+    required: false
+    runner: reviewer
+    created_at: 2026-05-25T00:00:47.405Z
+    completed_at: 2026-05-25T00:00:47.405Z
+events:
+  - _ulid: 01KSE65A8Z29PHA2DDYVEZ6WGP
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-24T23:47:10.239Z
+  - _ulid: 01KSE6601N6GNETSF7XQQ4DVCZ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-24T23:47:32.533Z
+  - _ulid: 01KSE6ETF8DYGHE1J418JDAWWH
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSE6ERC8Y46DABB83NA3PBE1
+    timestamp: 2026-05-24T23:52:21.736Z
+  - _ulid: 01KSE6WNVTE9FZAZWX9KCA49HM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-24T23:59:55.771Z
+  - _ulid: 01KSE6X447VAR7A3CNZ1HRZEHT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate
+    timestamp: 2026-05-25T00:00:10.375Z
+  - _ulid: 01KSE6XGF5AFVA2R8SKS3SNG83
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC annotation scan
+    timestamp: 2026-05-25T00:00:23.013Z
+  - _ulid: 01KSE6XWBRVYZVS17JVF310WDM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: protected-tripwire repro
+    timestamp: 2026-05-25T00:00:35.192Z
+  - _ulid: 01KSE6Y9Z31RVYHM6BCB34MVER
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-25T00:00:49.123Z
+  - _ulid: 01KSE6YMXBVCQ1AAB1DSEFN1V7
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-25T00:01:00.331Z
+  - _ulid: 01KSE6YMXBM1QT2ACF25C3R5MQ
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-25T00:01:00.331Z
+  - _ulid: 01KSE8AAJWXB3DHGWYT1VN1B55
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSE6ERC8Y46DABB83NA3PBE1
+    timestamp: 2026-05-25T00:24:51.548Z
+  - _ulid: 01KSE8AF36EE5HZCTZAKV8S18T
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSE6ERC8Y46DABB83NA3PBE1
+    timestamp: 2026-05-25T00:24:56.166Z
+examined_commit: 27cdba765eb04262bdf35f28dac0b22c2e639360
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KS8XAYZTG0MN48Z78D45PBV6"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KSE6ERC8Y46DABB83NA3PBE1
+    anchor:
+      type: code
+      commit: 27cdba765eb04262bdf35f28dac0b22c2e639360
+      line_end: 769
+      line_start: 752
+      path: src/cli/commands/upgrade.ts
+      side: head
+    entries:
+      - _ulid: 01KSE6ERC861VF5P8DZNEC14HX
+        author: Jacob Chapel
+        body: "MUST-FIX: the opt-in protected-project tripwire is not enforced for every executing
+          folder-storage upgrade path. In this block the executing atomic migration runs plan,
+          review, then manifest promotion, but the safety check only happens later inside the
+          non-dry-run plan/review apply paths. If both reports are already migrated or empty, those
+          functions return before calling assertSafeMigrationTarget, and
+          runStorageManifestPromotionStep still mutates the protected project. I reproduced this
+          with a disposable project where KSPEC_PROTECTED_PROJECT_PATHS was set to that project root
+          and the downgraded manifest had no monolithic plan/review records: runUpgradePipeline
+          returned success, plan/review steps were skipped, and the manifest changed to kynetic 1.2
+          with folder/resource storage declarations. The tripwire must run before any executing
+          upgrade mutation for a protected target, including no-op plan/review migrations followed
+          by manifest promotion."
+        created_at: 2026-05-24T23:52:19.592Z
+      - _ulid: 01KSE8A8WJCXXF6ZDZ418Q3CB9
+        author: "@claude"
+        body: "Fixed in 8547337160: hoisted assertSafeMigrationTarget to runAtomicStorageMigration so it
+          fires once before any executing storage mutation. Plan/review skipped-as-alreadyMigrated
+          paths no longer bypass the tripwire because the orchestrator-level check runs first. On
+          trip-wire failure the orchestrator returns a synthetic Storage migration safety preflight
+          failed step plus skipped records for plan/review/manifest. Two regression tests in
+          tests/upgrade-folder-storage.test.ts cover both the no-monolithic-records repro from your
+          evidence and the symmetric case with real migration work — both assert manifest is
+          byte-identical after the failed upgrade and no plan/review folders are written."
+        created_at: 2026-05-25T00:24:49.810Z
+    kind: blocker
+    resolved_at: 2026-05-25T00:24:54.455Z
+    resolved_by: "@claude"
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-25T00:01:00.331Z
+created_at: 2026-05-24T23:47:10.239Z
+updated_at: 2026-05-25T00:24:54.455Z
+notes: []

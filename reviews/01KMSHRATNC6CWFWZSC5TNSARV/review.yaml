@@ -1,0 +1,123 @@
+_ulid: 01KMSHRATNC6CWFWZSC5TNSARV
+slugs: []
+title: Review task-fix-ws-watcher-registration
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate exited 6 with known repo-wide warnings only (orphaned skills/spec
+      coverage), no schema/reference errors introduced by this task.
+    name: validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-28T06:26:24.542Z
+    completed_at: 2026-03-28T06:26:24.542Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Unable to complete npm test in this snapshot: scripts/test.cjs failed during the required
+      build step in packages/web-ui with ERR_MODULE_NOT_FOUND for
+      .svelte-kit/output/server/manifest-full.js after multiple Svelte warnings."
+    name: npm-test
+    required: true
+    runner: npm
+    created_at: 2026-03-28T06:26:35.403Z
+    completed_at: 2026-03-28T06:26:35.403Z
+events:
+  - _ulid: 01KMSHRATMVHBDKNCT744WX0AY
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-28T06:22:57.364Z
+  - _ulid: 01KMSHRRZJ85H11ZBX0Q0WYMK8
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-28T06:23:11.858Z
+  - _ulid: 01KMSHYE1P7DB7TNE0BYT470FQ
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KMSHYCKA711V3ZD59AH17ZWC
+    timestamp: 2026-03-28T06:26:17.270Z
+  - _ulid: 01KMSHYPF1ZA3JTHSS8DRQ9ZHR
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: validate
+    timestamp: 2026-03-28T06:26:25.889Z
+  - _ulid: 01KMSHZ18B1RGM4YT3C9PKSNXZ
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: npm-test
+    timestamp: 2026-03-28T06:26:36.939Z
+  - _ulid: 01KMSK0BFHTNGQ5Q1KHZ1J20Z2
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KMSHYCKA711V3ZD59AH17ZWC
+    timestamp: 2026-03-28T06:44:48.753Z
+  - _ulid: 01KMSK0FDCZ3K1WZ5PRK1YGZQC
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KMSHYCKA711V3ZD59AH17ZWC
+    timestamp: 2026-03-28T06:44:52.780Z
+examined_commit: c45892c3a5f17357eb44f4b1ea3a2fb318559aad
+external_links: []
+lifecycle_state: open
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMSFMG5AJNYD4PWW8MNPVH5C"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KMSHYCKA711V3ZD59AH17ZWC
+    anchor:
+      type: code
+      commit: c45892c3a5f17357eb44f4b1ea3a2fb318559aad
+      line_end: 66
+      line_start: 56
+      path: packages/daemon/src/websocket/project-resolution.ts
+      side: head
+    entries:
+      - _ulid: 01KMSHYCKBVMC6VBCD2C7RF5DG
+        author: Test User
+        body: WebSocket auto-registration still does not satisfy the watcher-start contract. In
+          resolveWebSocketProject(), startWatcher() is fired and forgotten, then
+          onProjectRegistered() is launched immediately afterward. onProjectRegistered() initializes
+          session sync and entity-cache loading in server.ts, so cached data can begin loading
+          before the watcher is actually running. Worse, if startWatcher() fails, the connection
+          still succeeds because the rejection is only logged; the new test at
+          tests/daemon-session-sync-multi-project.test.ts:539 explicitly encodes that
+          success-on-failure behavior. That contradicts @multi-directory-daemon ac-19 (registration
+          failure on watcher creation failure) and ac-35 (watcher started before cached data is
+          served). This path needs to await successful watcher startup before continuing, or reject
+          the WebSocket registration when watcher startup fails.
+        created_at: 2026-03-28T06:26:15.787Z
+      - _ulid: 01KMSK0AXJRV6P2EQQWGRS6982
+        author: "@claude"
+        body: "Fixed: resolveWebSocketProject is now async and awaits startWatcher() before calling
+          onProjectRegistered. Watcher errors propagate to reject the WebSocket connection
+          (satisfies AC-19). onProjectRegistered only fires after watcher is confirmed running
+          (satisfies AC-35). The success-on-failure test was replaced with one that verifies watcher
+          failure rejects resolution and prevents onProjectRegistered from running."
+        created_at: 2026-03-28T06:44:48.178Z
+    kind: blocker
+    resolved_at: 2026-03-28T06:44:52.197Z
+    resolved_by: "@claude"
+verdicts: []
+created_at: 2026-03-28T06:22:57.365Z
+updated_at: 2026-03-28T06:44:52.197Z
+notes: []

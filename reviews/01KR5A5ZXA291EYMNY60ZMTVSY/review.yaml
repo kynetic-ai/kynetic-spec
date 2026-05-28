@@ -1,0 +1,385 @@
+_ulid: 01KR5A5ZXA291EYMNY60ZMTVSY
+slugs: []
+title: Review fix guardrail daemon command classification (cycle 9)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh: 8891 passed, 5 skipped, 0 failed in 2001.9s"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-05-09T02:59:17.346Z
+    completed_at: 2026-05-09T02:59:17.346Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/lint-daemon-test-guardrails.test.ts
+      tests/lint-no-leaky-test-daemon.test.ts: 138 passed in 38.4s"
+    name: targeted guardrail tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-09T02:59:21.245Z
+    completed_at: 2026-05-09T02:59:21.245Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npx oxlint on the 11 changed files found 1 error in
+      tools/eslint-rules/no-leaky-test-daemon.js:1359: META_RULE_NAME is declared but never used."
+    name: changed-file lint
+    required: true
+    runner: npx oxlint
+    created_at: 2026-05-09T02:59:25.197Z
+    completed_at: 2026-05-09T02:59:25.197Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Schema and references OK; command exited 6 due to existing warnings
+      (reference/alignment/completeness), no validation errors.
+    name: kspec validate
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-09T02:59:28.966Z
+    completed_at: 2026-05-09T02:59:28.966Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Synthetic probes found false positives for node --eval / --version argv forms and false
+      negatives for quoted shell paths plus static template-literal daemon args; blocker threads
+      added with exact examples.
+    name: manual classifier probes
+    required: true
+    runner: npx oxlint
+    created_at: 2026-05-09T03:00:31.482Z
+    completed_at: 2026-05-09T03:00:31.482Z
+events:
+  - _ulid: 01KR5A5ZX9XGAMXMV46K1RRK5K
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-09T02:48:34.985Z
+  - _ulid: 01KR5A6HDSTYZJ142FK2V0MRR6
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-09T02:48:52.921Z
+  - _ulid: 01KR5ASMHQA5RJGTACATH3WFRF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-09T02:59:18.711Z
+  - _ulid: 01KR5ASREF1469P1CEVPV6ZM3Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted guardrail tests
+    timestamp: 2026-05-09T02:59:22.703Z
+  - _ulid: 01KR5ASW4MRV6MJWDS9NZXM6GV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: changed-file lint
+    timestamp: 2026-05-09T02:59:26.484Z
+  - _ulid: 01KR5ASZWPDCRXQEHTH1T1F3YX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-09T02:59:30.326Z
+  - _ulid: 01KR5AV35AKEFFVYE8294PZX2F
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR5AV1XT865M9DM1Z8Q97AA9
+    timestamp: 2026-05-09T03:00:06.442Z
+  - _ulid: 01KR5AV6YDDNZEEPAV5RD0Z4F2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR5AV5FYXQ6NW4G6AYSPVY0A
+    timestamp: 2026-05-09T03:00:10.318Z
+  - _ulid: 01KR5AVAPYFW1M25TR1CEX3XQW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR5AV9F7CW13FP3V0M44QN8G
+    timestamp: 2026-05-09T03:00:14.174Z
+  - _ulid: 01KR5AVE8WTZB2VHVEEEMSE9XN
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KR5AVD37EJJ8RVTRTNX5DARR
+    timestamp: 2026-05-09T03:00:17.820Z
+  - _ulid: 01KR5AVWZTH7MN94BR0ZCFTCR1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: manual classifier probes
+    timestamp: 2026-05-09T03:00:32.891Z
+  - _ulid: 01KR5AWE207HWYKJBWB06JCVJQ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KR5AWCT0YX3XTY61JKKQD9VQ
+    timestamp: 2026-05-09T03:00:50.368Z
+  - _ulid: 01KR5AWQVSF5V7KZNBB1C0X0GN
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-09T03:01:00.410Z
+  - _ulid: 01KR5AWQVT5Y4X3WEJ48YT3E4V
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-09T03:01:00.410Z
+  - _ulid: 01KR5CGT1K74496GSHGA1H3FFJ
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR5AV1XT865M9DM1Z8Q97AA9
+    timestamp: 2026-05-09T03:29:26.579Z
+  - _ulid: 01KR5CGX2Y1HC8K3WAYMN58J6K
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR5AV1XT865M9DM1Z8Q97AA9
+    timestamp: 2026-05-09T03:29:29.695Z
+  - _ulid: 01KR5CH0AMG3ZDC6HSW1QVGS52
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR5AV5FYXQ6NW4G6AYSPVY0A
+    timestamp: 2026-05-09T03:29:33.012Z
+  - _ulid: 01KR5CH3H5QZ65JNZPPTTDSQ5J
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR5AV5FYXQ6NW4G6AYSPVY0A
+    timestamp: 2026-05-09T03:29:36.294Z
+  - _ulid: 01KR5CH6T1B1KFWFE5R6ZBYX3N
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR5AV9F7CW13FP3V0M44QN8G
+    timestamp: 2026-05-09T03:29:39.650Z
+  - _ulid: 01KR5CH9ZRYKYPK0RE1K93ZSH4
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR5AV9F7CW13FP3V0M44QN8G
+    timestamp: 2026-05-09T03:29:42.904Z
+  - _ulid: 01KR5CHD6H3RH9TZXRKC440Y09
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KR5AVD37EJJ8RVTRTNX5DARR
+    timestamp: 2026-05-09T03:29:46.193Z
+  - _ulid: 01KR5CHGAQ5YZ9KP12X5J2KQDJ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KR5AVD37EJJ8RVTRTNX5DARR
+    timestamp: 2026-05-09T03:29:49.399Z
+examined_commit: 7d4c4dd9a78ddeed65efbb9ba8190cf7726c1824
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KR3W7PPVDFR8F03VQ6J54M3K"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KR5AV1XT865M9DM1Z8Q97AA9
+    anchor:
+      type: code
+      commit: 7d4c4dd9a78ddeed65efbb9ba8190cf7726c1824
+      line_end: 438
+      line_start: 431
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KR5AV1XT0MCXS747TEDF3FYF
+        author: Jacob Chapel
+        body: 'MUST-FIX: `isDaemonEntryArg` only accepts identifiers and string literals, so static
+          template-literal daemon paths in spawn-like arguments are silently accepted. Manual probe
+          with `spawn(`dist/daemon/index.js`, ["--port", "0"])` and `execFile("node",
+          [`dist/daemon/index.js`, "--port", "0"])` exited 0 with no diagnostics even though both
+          are statically provable direct daemon-entry launches. This violates
+          @daemon-test-guardrail-precision ac-direct-daemon-entry-invocations-flagged.'
+        created_at: 2026-05-09T03:00:05.178Z
+      - _ulid: 01KR5CGRS1VTKW6TW7FDRHM651
+        author: "@claude"
+        body: 'Fixed. isDaemonEntryArg now also accepts no-substitution template literals — both the strict
+          daemon-entry literal (`dist/daemon/index.js`) and any path-suffixed form ending in
+          `/dist/daemon/index.js`. Verified on the reviewer probes: spawn(`dist/daemon/index.js`,
+          ["--port", "0"]) and execFile("node", [`dist/daemon/index.js`, "--port", "0"]) both emit
+          directDaemonSpawn diagnostics now (manual oxlint shows 4 errors on the probe file). Added
+          3 positive regressions covering literal, argv-element, and absolute-path template-literal
+          forms across spawn/execFile/spawnSync.'
+        created_at: 2026-05-09T03:29:25.277Z
+    kind: blocker
+    resolved_at: 2026-05-09T03:29:28.508Z
+    resolved_by: "@claude"
+  - _ulid: 01KR5AV5FYXQ6NW4G6AYSPVY0A
+    anchor:
+      type: code
+      commit: 7d4c4dd9a78ddeed65efbb9ba8190cf7726c1824
+      line_end: 882
+      line_start: 873
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KR5AV5FYMKW9JZ2449EK8B8M
+        author: Jacob Chapel
+        body: 'MUST-FIX: the spawn/execFile runtime branch treats any daemon-entry-looking argv element as a
+          daemon launch once args[0] is a recognized runtime. That over-reports runtime modes where
+          Node does not execute a script. Manual probe: `spawn("node", ["--eval",
+          "dist/daemon/index.js"])` and `execFile("node", ["--version", DAEMON_ENTRY])` both produce
+          direct-daemon diagnostics, but neither starts the daemon entry as the main script. This
+          violates @daemon-test-guardrail-precision ac-unrelated-subprocesses-not-reported. The
+          argv-array path needs script-position modelling like the exec/execSync shell-string path,
+          including eval/version/value-consuming option cases, plus regression coverage.'
+        created_at: 2026-05-09T03:00:08.830Z
+      - _ulid: 01KR5CGZ2CZAEPRQ3HN44BWQQC
+        author: "@claude"
+        body: Fixed. The spawn/spawnSync/execFile/execFileSync runtime branch now walks the argv
+          ArrayExpression with the same script-position model as the exec/execSync shell-string
+          walker — see the new findScriptPositionInArgvArray helper. Standalone flags skip one
+          element, value-consuming flags skip the flag AND its separately-passed value, and
+          no-script flags abort the walk entirely. The shared no-script predicate (renamed from
+          isShellRuntimeEvalFlag to isShellRuntimeNoScriptFlag) now also recognises -v / --version /
+          -h / --help so the reviewer probes spawn("node", ["--eval", "dist/daemon/index.js"]) and
+          execFile("node", ["--version", DAEMON_ENTRY]) no longer emit direct-daemon diagnostics —
+          both exit 0 cleanly under manual oxlint. Added 8 negative regressions (--eval / --version
+          / -v / --help / -h / --print / daemon-as-require-value / other-script-then-daemon) and 4
+          positive regressions to keep real launches like spawn("node", ["--require", "./pre.js",
+          DAEMON_ENTRY, "--port", "0"]) flagged. Sibling shell-string negatives for --version and
+          --help also added.
+        created_at: 2026-05-09T03:29:31.724Z
+    kind: blocker
+    resolved_at: 2026-05-09T03:29:35.081Z
+    resolved_by: "@claude"
+  - _ulid: 01KR5AV9F7CW13FP3V0M44QN8G
+    anchor:
+      type: code
+      commit: 7d4c4dd9a78ddeed65efbb9ba8190cf7726c1824
+      line_end: 1359
+      line_start: 1359
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KR5AV9F78YP1CSQ3ECANPFEB
+        author: Jacob Chapel
+        body: "MUST-FIX: this changed rule file now declares `META_RULE_NAME` but never uses it. Targeted
+          lint on the 11 changed files reports this as `eslint(no-unused-vars)` at this line, so the
+          submitted change leaves a lint error in modified code even though the repository-wide lint
+          script also has unrelated baseline failures elsewhere."
+        created_at: 2026-05-09T03:00:12.903Z
+      - _ulid: 01KR5CH5HACE4CJAFC0QWQ32W7
+        author: "@claude"
+        body: "Fixed. Removed the unused META_RULE_NAME constant from the localizedDisable section — it was
+          a leftover from an earlier draft and never referenced anywhere in the rule file. Verified
+          with `npx oxlint` on the changed files: 0 errors (was 1 — `META_RULE_NAME is declared but
+          never used`)."
+        created_at: 2026-05-09T03:29:38.346Z
+    kind: blocker
+    resolved_at: 2026-05-09T03:29:41.671Z
+    resolved_by: "@claude"
+  - _ulid: 01KR5AVD37EJJ8RVTRTNX5DARR
+    anchor:
+      type: code
+      commit: 7d4c4dd9a78ddeed65efbb9ba8190cf7726c1824
+      line_end: 605
+      line_start: 600
+      path: tools/eslint-rules/no-leaky-test-daemon.js
+      side: head
+    entries:
+      - _ulid: 01KR5AVD37JCTZY18BFJE2K1SA
+        author: Jacob Chapel
+        body: "MUST-FIX: shell-token daemon-entry matching does not handle simple quoted tokens, so direct
+          shell launches with quoted static paths are missed. Manual probe with `exec(\"node
+          'dist/daemon/index.js' --port 0\")` and `exec(\"'dist/daemon/index.js' --port 0\")` exited
+          0 with no diagnostics, even though those shell commands execute the daemon entry. This
+          violates @daemon-test-guardrail-precision ac-direct-daemon-entry-invocations-flagged."
+        created_at: 2026-05-09T03:00:16.615Z
+      - _ulid: 01KR5CHC03JE8W16S59B87EZ5K
+        author: "@claude"
+        body: "Fixed. Added a stripShellQuotes helper that strips a single matched pair of leading +
+          trailing single OR double quotes from a token, and applied it in both shellCommandTokens
+          (every tokenised shell argument) and shellCommandLeadsWithKspec (the leading
+          kspec-executable check). Mixed pairs and unbalanced quotes are deliberately not stripped,
+          so apostrophes mid-token (`script's`) remain unchanged. Verified on the reviewer probes:
+          exec(\"'dist/daemon/index.js' --port 0\") and exec(\"node 'dist/daemon/index.js' --port
+          0\") now both emit directDaemonSpawn diagnostics. Added 4 positive regressions covering
+          single-quoted leading-token, single-quoted runtime form, double-quoted runtime+entry, and
+          single-quoted absolute path."
+        created_at: 2026-05-09T03:29:44.963Z
+    kind: blocker
+    resolved_at: 2026-05-09T03:29:48.147Z
+    resolved_by: "@claude"
+  - _ulid: 01KR5AWCT0YX3XTY61JKKQD9VQ
+    entries:
+      - _ulid: 01KR5AWCT0F6F6V880ATJMYJYX
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: kspec-agents.md; task/spec context for @01KR3W7PPVDFR8F03VQ6J54M3K; previous
+          cycle review @01KR57XGHXEQ8FTVWDHGJJMXRM; git diff for
+          tools/eslint-rules/no-leaky-test-daemon.js, tests/lint-daemon-test-guardrails.test.ts,
+          daemon helper/fixture files; current line-numbered classifier and test sections.
+
+          Commands run: kspec task get; kspec review for-task/get/add/open/check/comment; kspec item
+          get @daemon-test-guardrail-precision and @daemon-test-harness-guardrails; git
+          diff/stat/name-only; kspec validate; npm test -- --fresh
+          tests/lint-daemon-test-guardrails.test.ts tests/lint-no-leaky-test-daemon.test.ts; npm
+          test -- --fresh; npm run lint; npx oxlint on changed files; manual npx oxlint probes for
+          argv eval/version, quoted shell paths, and template-literal daemon args.
+
+          Claims verified: latest standalone flag fix covers the submitted tests, but manual probes
+          found remaining classifier precision gaps; full test suite passes; changed-file lint fails
+          on an unused constant in the modified rule file.
+
+          Categories searched: correctness, false positives, false negatives, AC annotation
+          coverage, test quality, lint/build hygiene, integration with helper allowlists and
+          detached-serve classification.
+        created_at: 2026-05-09T03:00:49.088Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-09T03:01:00.409Z
+created_at: 2026-05-09T02:48:34.986Z
+updated_at: 2026-05-09T03:29:48.147Z
+notes: []

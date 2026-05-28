@@ -1,0 +1,140 @@
+_ulid: 01KM0HF0TMB9B8B81BTS69D2BV
+slugs: []
+title: Review task-schedule-engine (cycle 2)
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 6306/6307 tests pass (1 pre-existing failure in review-cli.test.ts unrelated to this task)
+    name: npm test
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T13:17:18.023Z
+    completed_at: 2026-03-18T13:17:18.023Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Clean — no type errors
+    name: tsc --noEmit
+    required: true
+    runner: tsc
+    created_at: 2026-03-18T13:17:23.431Z
+    completed_at: 2026-03-18T13:17:23.431Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No new errors or warnings from this task. All issues are pre-existing (3 reference errors,
+      alignment/completeness warnings all in other specs).
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-03-18T13:17:29.635Z
+    completed_at: 2026-03-18T13:17:29.635Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 11 ACs (6 entities + 5 runtime) have annotated tests. 22 total test cases. Trait
+      @trait-error-guidance ACs annotated as N/A with valid reasoning (internal runtime engine, not
+      CLI). Fix cycle findings from cycle 1 both addressed: AC-4 now exercises eval loop enabled
+      check, AC-6 now uses hot-reload via eval loop."
+    name: AC coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-18T13:17:38.848Z
+    completed_at: 2026-03-18T13:17:38.848Z
+events:
+  - _ulid: 01KM0HF0TK5QPYQJCDKW646MY1
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T13:16:51.411Z
+  - _ulid: 01KM0HF82Y73VT9Q7SYATXJZ08
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T13:16:58.846Z
+  - _ulid: 01KM0HFJEA66HS2E6Z7SKKCR2H
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM0HFJ8TX37JJYQZQ54Q25J1
+    timestamp: 2026-03-18T13:17:09.450Z
+  - _ulid: 01KM0HFTYHYQGGHJGCQSR2J8KN
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-03-18T13:17:18.161Z
+  - _ulid: 01KM0HG07F8SY1011Q9JHPB4VH
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: tsc --noEmit
+    timestamp: 2026-03-18T13:17:23.567Z
+  - _ulid: 01KM0HG69FSR68E8YN8GPJMP76
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-03-18T13:17:29.776Z
+  - _ulid: 01KM0HGF9HFSAF5ZMNHR7EJCEE
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage
+    timestamp: 2026-03-18T13:17:38.993Z
+  - _ulid: 01KM0HGMSH4XHXJRSJWRSAYK8P
+    actor: pr-reviewer@kspec
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-18T13:17:44.625Z
+  - _ulid: 01KM0HGMSH8YJM6KQHMDCJ8175
+    actor: pr-reviewer@kspec
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T13:17:44.625Z
+examined_commit: 3f77adc28aaab00f2bd7b123d89ad803857fffe8
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-schedule-engine"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM0HFJ8TX37JJYQZQ54Q25J1
+    entries:
+      - _ulid: 01KM0HFJ8V7MGCETECTCQ6TRA3
+        author: "@claude"
+        body: "Unused import: ActionRunEvent is imported on line 19 of src/agent-runtime/schedule-engine.ts
+          but never used in the file. Zero correctness impact."
+        created_at: 2026-03-18T13:17:09.275Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer@kspec
+    role: reviewer
+    created_at: 2026-03-18T13:17:44.476Z
+created_at: 2026-03-18T13:16:51.412Z
+updated_at: 2026-03-18T13:17:44.476Z
+notes: []

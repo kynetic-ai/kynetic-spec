@@ -1,0 +1,136 @@
+_ulid: 01KN0K11CXBPZ7AXRZC8DY8A7N
+slugs: []
+title: Review task-fix-ws-invalidation-storm
+author: Test User
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: ./dist/cli/index.js validate exited 6 with repository-wide pre-existing warnings only;
+      schema and references OK for this snapshot.
+    name: validation
+    required: false
+    runner: kspec
+    created_at: 2026-03-31T00:08:54.030Z
+    completed_at: 2026-03-31T00:08:54.030Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --run tests/web-ui/ws-cache-invalidation.test.ts: 10 suites, 31 tests passed."
+    name: targeted-web-ui-test
+    required: true
+    runner: npm
+    created_at: 2026-03-31T00:08:56.082Z
+    completed_at: 2026-03-31T00:08:56.082Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test failed outside the changed files (40 suites/74 tests failed); representative
+      failing suite tests/dispatch-workspace-registry.test.ts passes in isolation, supporting
+      existing suite instability rather than regression from this web-ui change.
+    name: full-test-suite
+    required: false
+    runner: npm
+    created_at: 2026-03-31T00:08:58.287Z
+    completed_at: 2026-03-31T00:08:58.287Z
+events:
+  - _ulid: 01KN0K11CW3EQ6T8WCT9YAVGQ6
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-30T23:59:52.220Z
+  - _ulid: 01KN0K1HR74XFF4K4J6635ST5N
+    actor: Test User
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-31T00:00:08.967Z
+  - _ulid: 01KN0KHH73XX001DF2HXQYANSP
+    actor: Test User
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN0KHGJW34WWKB1QXC97JE0S
+    timestamp: 2026-03-31T00:08:52.707Z
+  - _ulid: 01KN0KHK4YK2C40NGZW7120A2M
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: validation
+    timestamp: 2026-03-31T00:08:54.686Z
+  - _ulid: 01KN0KHN9TN72SFS008DRXC909
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted-web-ui-test
+    timestamp: 2026-03-31T00:08:56.890Z
+  - _ulid: 01KN0KHQA94HHAKDCK5T3TQAWK
+    actor: Test User
+    event_type: check_added
+    payload:
+      status: fail
+      name: full-test-suite
+    timestamp: 2026-03-31T00:08:58.953Z
+  - _ulid: 01KN0KHZ0XF2NZHPSJ8WQSN74M
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-03-31T00:09:06.845Z
+  - _ulid: 01KN0KHZ0X1T5YBG1GXCXASCYV
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-31T00:09:06.845Z
+examined_commit: 5bc377fbb83935a722989cc4f22a3ebb4dfcbae5
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMZ1BXDQRXEGC4DAS1F8T9H5"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN0KHGJW34WWKB1QXC97JE0S
+    entries:
+      - _ulid: 01KN0KHGJWJ5GJ0CGP1NKXEFTW
+        author: Test User
+        body: "Evidence log: Files read: packages/web-ui/src/lib/query/ws-invalidation.ts;
+          tests/web-ui/ws-cache-invalidation.test.ts; packages/shared/src/websocket.ts;
+          packages/web-ui/src/routes/agents/+page.svelte;
+          packages/web-ui/src/routes/sessions/[id]/+page.svelte; task metadata and prior review
+          @01KN0HEN. Commands run: git diff dev..HEAD; git diff 76a99bcf..HEAD; git log --left-right
+          dev...HEAD; ./dist/cli/index.js item get @ui-data-freshness; ./dist/cli/index.js validate;
+          grep -Rni AC annotations; npm test -- --run tests/web-ui/ws-cache-invalidation.test.ts;
+          npm test; npm test -- --run tests/dispatch-workspace-registry.test.ts. Claims verified:
+          completion events now scope invalidation to sessions-only; agent_invocation still
+          invalidates agents and sessions; non-session agent status events still invalidate agents;
+          full-suite failures are not in changed files and at least one representative failing suite
+          passes in isolation. Categories searched: correctness, edge cases, test quality,
+          integration, error handling."
+        created_at: 2026-03-31T00:08:52.060Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-03-31T00:09:06.844Z
+created_at: 2026-03-30T23:59:52.221Z
+updated_at: 2026-03-31T00:09:06.845Z
+notes: []

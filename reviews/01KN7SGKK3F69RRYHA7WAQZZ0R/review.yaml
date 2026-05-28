@@ -1,0 +1,195 @@
+_ulid: 01KN7SGKK3F69RRYHA7WAQZZ0R
+slugs: []
+title: Review task-update-multi-dir-ac19
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate exited 6 with only repository warning baseline: 1 orphaned skill dir, 31
+      alignment warnings, 521 completeness warnings; no new validation errors introduced by this
+      task."
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-04-02T19:15:53.500Z
+    completed_at: 2026-04-02T19:15:53.500Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test on commit d72162fe5 reproduced a pre-existing file-lock failure on the same tree
+      (tests/file-lock.test.ts:223 expected count: 5, got count: 4). Since the task branch matches
+      the integration head, this task did not introduce the failure."
+    name: npm test
+    required: true
+    runner: npm
+    created_at: 2026-04-02T19:15:55.846Z
+    completed_at: 2026-04-02T19:15:55.846Z
+events:
+  - _ulid: 01KN7SGKK2CHR62Z6BGQFK03HB
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-02T19:07:54.850Z
+  - _ulid: 01KN7SHAW40N4XEGB9AKY1QBKC
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-02T19:08:18.693Z
+  - _ulid: 01KN7SZ7QPZQ6P5XCRH3E2GJMS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-02T19:15:54.230Z
+  - _ulid: 01KN7SZA21PZFYPRFNMF57F4G6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-02T19:15:56.609Z
+  - _ulid: 01KN7T0JPR6GXFB1TMPWZF1EA3
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN7T0J0AP4F8ZPA743ZHNYHP
+    timestamp: 2026-04-02T19:16:38.232Z
+  - _ulid: 01KN7T16V0G2CR48PTD7VFBVPP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN7T16214366ERNWPJA6CD5M
+    timestamp: 2026-04-02T19:16:58.848Z
+  - _ulid: 01KN7T195M22061FK7JAJ8VNSD
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-02T19:17:01.236Z
+  - _ulid: 01KN7T195MGC7XCTV7SJ8PRXQ3
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-02T19:17:01.236Z
+  - _ulid: 01KN7TQ9KGJCEAGYASTKGEGEPK
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN7T0J0AP4F8ZPA743ZHNYHP
+    timestamp: 2026-04-02T19:29:02.577Z
+  - _ulid: 01KN7TQBXAQYZN6BP267JVV3MZ
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN7T0J0AP4F8ZPA743ZHNYHP
+    timestamp: 2026-04-02T19:29:04.939Z
+  - _ulid: 01KN7TQT7FM26X78R0W1G1MRKB
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN7T16214366ERNWPJA6CD5M
+    timestamp: 2026-04-02T19:29:19.599Z
+  - _ulid: 01KN7TQW8XC5186RVXHD2QW1YY
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN7T16214366ERNWPJA6CD5M
+    timestamp: 2026-04-02T19:29:21.693Z
+examined_commit: d72162fe5d9b9ec0bab4b67f47e626491a6c32ec
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KN7Q6AG"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN7T0J0AP4F8ZPA743ZHNYHP
+    anchor:
+      type: structured
+      field: ac-19
+      ref: "@multi-directory-daemon"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KN7T0J0AS7Q69PB9VKEB8T2J
+        author: Jacob Chapel
+        body: The new ac-19 text now promises detection during health monitoring and containment so one
+          project's monitoring cannot degrade other registered projects, but the existing annotated
+          coverage still only proves startup-time watcher failures. The three ac-19 tests in
+          tests/daemon-watcher-multi-project.test.ts:249-313 only mock EMFILE/ENFILE or a generic
+          start() failure, and the ac-19 test in
+          tests/daemon-session-sync-multi-project.test.ts:550-579 only proves WebSocket registration
+          rejects when startWatcher() fails. None of those tests exercises the new health-monitoring
+          path or verifies that other registered projects remain unaffected, so ac-19 now has false
+          coverage.
+        created_at: 2026-04-02T19:16:37.514Z
+      - _ulid: 01KN7TQ8Z0YJD4J7J00VS94TPZ
+        author: Jacob Chapel
+        body: Fixed by narrowing @multi-directory-daemon ac-19 to the behavior currently covered by the
+          existing annotated tests. The AC still frames resource pressure in terms of large
+          directories or OS limits, but it now scopes detection to monitoring initialization and
+          requires actionable guidance plus refusal to start monitoring for the affected project,
+          instead of promising later health-monitor detection or broader cross-project containment.
+        created_at: 2026-04-02T19:29:01.920Z
+    kind: blocker
+    resolved_at: 2026-04-02T19:29:04.161Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KN7T16214366ERNWPJA6CD5M
+    entries:
+      - _ulid: 01KN7T16219K5F9BTKTACBF9WY
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: modules/web-ui.yaml (via shadow diff for commit e5d116c3b),
+          tests/daemon-watcher-multi-project.test.ts,
+          tests/daemon-session-sync-multi-project.test.ts, tests/file-lock.test.ts.
+
+          Commands run: kspec task get @01KN7Q6AG; kspec item get @multi-directory-daemon; kspec
+          validate; rg -n "AC: @multi-directory-daemon ac-19|AC: @trait-" tests; git show/log on the
+          kspec-meta branch; kspec review for-task @01KN7Q6AG; npm test (plus cached rerun); rg on
+          the test log.
+
+          Claims verified: ac-19 was changed from startup EMFILE/ENFILE wording to broader
+          resource-bounding language in shadow commit e5d116c3b; existing ac-19 annotations still
+          cover only watcher-start failure paths; npm test failure is pre-existing on the exact
+          integration-head tree, not introduced by this task.
+
+          Categories searched: correctness/spec alignment, test quality, edge cases, integration,
+          validation baseline.
+        created_at: 2026-04-02T19:16:58.049Z
+      - _ulid: 01KN7TQSK3TV1VCZX9HDT6V8GX
+        author: Jacob Chapel
+        body: Noted. The blocker was addressed by tightening ac-19 back to initialization-time resource
+          constraint handling, which restores alignment with the existing annotated watcher-start
+          failure coverage and avoids false coverage for health-monitor behavior.
+        created_at: 2026-04-02T19:29:18.947Z
+    kind: nit
+    resolved_at: 2026-04-02T19:29:20.949Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-02T19:17:01.235Z
+created_at: 2026-04-02T19:07:54.851Z
+updated_at: 2026-04-02T19:29:20.949Z
+notes: []

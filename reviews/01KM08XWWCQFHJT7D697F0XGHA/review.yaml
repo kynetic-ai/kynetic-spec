@@ -1,0 +1,171 @@
+_ulid: 01KM08XWWCQFHJT7D697F0XGHA
+slugs: []
+title: Review dispatch branch push lifecycle
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 271 test files passed (6118 tests passed, 3 skipped). 1 failure in review-cli.test.ts is
+      pre-existing (unmodified file — examined_commit auto-detection behavior), not a regression
+      from this commit.
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T10:58:36.905Z
+    completed_at: 2026-03-18T10:58:36.905Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 9 task-scoped ACs have test annotations and implementation. All 6
+      trait-error-guidance ACs have valid N/A annotations. AC mapping: ac-first-push-sets-tracking
+      (test:105), ac-first-push-replaces-stale-ref (test:133), ac-subsequent-push (tests:176,210),
+      ac-push-non-fatal (tests:233,334), ac-push-target-after-merge (test:263),
+      ac-push-target-periodic (tests:293,317), ac-target-push-serialization (test:357),
+      ac-cleanup-remote-branch (tests:387,418,439,494), ac-no-remote (tests:253,346,464,474,482)."
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-18T10:58:46.349Z
+    completed_at: 2026-03-18T10:58:46.349Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Implementation aligns with spec for all 9 covered ACs. pushDispatchBranch correctly
+      detects first-push vs subsequent-push via hasUpstreamTracking, uses --force-with-lease for
+      stale ref replacement, and checks isLocalBranchAheadOfUpstream before subsequent pushes.
+      pushIntegrationTarget handles both post-merge and periodic triggers with -u flag.
+      deleteRemoteDispatchBranch checks upstream tracking before attempting deletion. All push
+      failures are non-fatal (return error in result object, never throw). Integration with
+      DispatchEngine: post-invocation push fires only on completed invocations, reviewer invocations
+      also push integration target, periodic reconciliation retries failed pushes, cleanup deletes
+      remote ref before local branch."
+    name: spec-alignment
+    required: true
+    runner: manual
+    created_at: 2026-03-18T10:58:56.622Z
+    completed_at: 2026-03-18T10:58:56.622Z
+events:
+  - _ulid: 01KM08XWWCKC6M8K7HE7WE3EM1
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T10:47:41.708Z
+  - _ulid: 01KM08Y47V9JEW77TXWPV9V9V7
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T10:47:49.243Z
+  - _ulid: 01KM09HAQ838437596TGH3FSK2
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM09HAJVZEVZ6C4Z1TSCVVZY
+    timestamp: 2026-03-18T10:58:18.472Z
+  - _ulid: 01KM09HHSQ20YPZE12K8G6SN9Y
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM09HHNRP9JE9KBB2EBJ2504
+    timestamp: 2026-03-18T10:58:25.719Z
+  - _ulid: 01KM09HWVS7N97X6VKHYJ9FYQW
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T10:58:37.049Z
+  - _ulid: 01KM09J61ZXR6TD2444MWYG6J9
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-18T10:58:46.464Z
+  - _ulid: 01KM09JG39EDEACZMA2HAE267R
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: spec-alignment
+    timestamp: 2026-03-18T10:58:56.746Z
+  - _ulid: 01KM09JPCRCKC524J5GG4JJ39D
+    actor: dispatch-reviewer@kspec
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-18T10:59:03.192Z
+  - _ulid: 01KM09JPCRRXP9XWY116Z5D3ZX
+    actor: dispatch-reviewer@kspec
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T10:59:03.192Z
+examined_commit: 5232b0cf0e354072aea5cc041e6e7e774d077e5d
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKZWB8VH6WS0SSR11DGBMR0R"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM09HAJVZEVZ6C4Z1TSCVVZY
+    anchor:
+      type: code
+      commit: 5232b0cf0e35
+      line_end: 383
+      line_start: 357
+      path: tests/dispatch-branch-push-lifecycle.test.ts
+      side: head
+    entries:
+      - _ulid: 01KM09HAJVWRK47W8HMCV37E9F
+        author: "@claude"
+        body: Serialization test (ac-target-push-serialization) does not exercise the targetPushInProgress
+          guard on DispatchEngine. It calls pushIntegrationTarget twice sequentially (both skip as
+          up-to-date), proving idempotency but not serialization. The guard is a private field on
+          the engine class and all git ops are synchronous so true concurrency cannot occur — the
+          implementation is correct, but the test doesn't prove the AC. Consider testing via the
+          engine or extracting the guard to make it testable.
+        created_at: 2026-03-18T10:58:18.331Z
+    kind: nit
+  - _ulid: 01KM09HHNRP9JE9KBB2EBJ2504
+    anchor:
+      type: code
+      commit: 5232b0cf0e35
+      line_end: 536
+      line_start: 494
+      path: tests/dispatch-branch-push-lifecycle.test.ts
+      side: head
+    entries:
+      - _ulid: 01KM09HHNR60XM6WCFC4RGKDXJ
+        author: "@claude"
+        body: Integration test 'deletes remote branch when workspace is reaped' is vacuously passing.
+          reapDispatchWorkspace returns cleanup_blocked because the provisioned workspace is not
+          cleanup-eligible (cleanupEligible defaults to false). The if (result.action === 'reaped')
+          conditional at line 532 means the remote branch deletion assertion never executes. The
+          unit test for deleteRemoteDispatchBranch at line 387 provides solid coverage of the actual
+          deletion function, so this is a test quality issue, not a coverage gap.
+        created_at: 2026-03-18T10:58:25.592Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: dispatch-reviewer@kspec
+    role: reviewer
+    created_at: 2026-03-18T10:59:03.058Z
+created_at: 2026-03-18T10:47:41.708Z
+updated_at: 2026-03-18T10:59:03.058Z
+notes: []

@@ -1,0 +1,105 @@
+_ulid: 01KKWAWS4GA3A3JFJ13HGAJC2A
+slugs: []
+title: Review task-auto-close-review-on-verdict
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 84/84 tests passed in review-cli test suites
+    name: vitest-review-cli
+    required: true
+    runner: vitest
+    created_at: 2026-03-16T22:05:21.244Z
+    completed_at: 2026-03-16T22:05:21.244Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No new validation errors; 3 pre-existing reference errors unrelated to this change
+    name: kspec-validate
+    required: false
+    runner: kspec
+    created_at: 2026-03-16T22:05:27.759Z
+    completed_at: 2026-03-16T22:05:27.759Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "AC: @review-record-per-cycle-lifecycle ac-1 covered by 3 tests: approve auto-closes,
+      request_changes auto-closes, comment stays open"
+    name: ac-coverage
+    required: true
+    runner: manual
+    created_at: 2026-03-16T22:05:34.223Z
+    completed_at: 2026-03-16T22:05:34.223Z
+events:
+  - _ulid: 01KKWAWS4GFN2WK41H12815ARF
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-16T22:05:04.528Z
+  - _ulid: 01KKWAX1AD231QPFEQJDMF60BQ
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-16T22:05:12.909Z
+  - _ulid: 01KKWAX9G1MZPYD5KY9QJGSBF0
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest-review-cli
+    timestamp: 2026-03-16T22:05:21.282Z
+  - _ulid: 01KKWAXFVQDCYAAA7TTZMTYKGF
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec-validate
+    timestamp: 2026-03-16T22:05:27.799Z
+  - _ulid: 01KKWAXP5JKY5FAVYB34FPFYZP
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: ac-coverage
+    timestamp: 2026-03-16T22:05:34.258Z
+  - _ulid: 01KKWAXWD1V9FJ3DMB7DC6BV0C
+    actor: pr-reviewer-agent
+    event_type: verdict_submitted
+    payload:
+      decision: approve
+    timestamp: 2026-03-16T22:05:40.642Z
+  - _ulid: 01KKWAXWD2NRAP883XZDHV9SYF
+    actor: pr-reviewer-agent
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-16T22:05:40.642Z
+examined_commit: null
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-auto-close-review-on-verdict"
+  shadow_commit: ""
+threads: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer-agent
+    role: reviewer
+    created_at: 2026-03-16T22:05:40.604Z
+created_at: 2026-03-16T22:05:04.528Z
+updated_at: 2026-03-16T22:05:40.604Z
+notes: []

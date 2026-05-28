@@ -1,0 +1,126 @@
+_ulid: 01KNPHZYVQX3451SNQB8JTYE0D
+slugs: []
+title: Review task-coverage-scan-config (cycle 4)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2093 suites passed; 7602 passed, 5 skipped; duration 3816.8s.
+    name: npm test
+    required: true
+    runner: test.cjs
+    created_at: 2026-04-08T12:59:02.258Z
+    completed_at: 2026-04-08T12:59:02.258Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Workspace-local validate exits with warnings only. Invalid AC annotation warnings dropped
+      from 286 on base (source-level validate) to 239 on head; excluded self-host fixture files no
+      longer appear.
+    name: coverage validation regression check
+    required: true
+    runner: kspec
+    created_at: 2026-04-08T12:59:12.122Z
+    completed_at: 2026-04-08T12:59:12.122Z
+events:
+  - _ulid: 01KNPHZYVPQNAVHMNHS1TNXQFT
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-08T12:45:05.782Z
+  - _ulid: 01KNPJ1417BCCVA2XZDJEXSCCX
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-08T12:45:43.847Z
+  - _ulid: 01KNPJSGKQASJJJ2DS3SMEPXD6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-04-08T12:59:03.159Z
+  - _ulid: 01KNPJSK222N1F9TWZ4KJE6Y7J
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KNPJSJ7K94WR2TKE9ARJ2QXT
+    timestamp: 2026-04-08T12:59:05.666Z
+  - _ulid: 01KNPJST7WNB60D7YGBSMSF354
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: coverage validation regression check
+    timestamp: 2026-04-08T12:59:13.020Z
+  - _ulid: 01KNPJT66Q485DSM5GDD9N8XG1
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-08T12:59:25.272Z
+  - _ulid: 01KNPJT66RSF7064NYF40R3RNR
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-08T12:59:25.272Z
+examined_commit: 5aaffcd7d574a1c0ae6557dd72e1aa1862425e14
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNNZ6D4P24MB9J94K4Q068AN"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KNPJSJ7K94WR2TKE9ARJ2QXT
+    entries:
+      - _ulid: 01KNPJSJ7KH9SEJH2SXWAYSAN0
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: kspec.config.yaml, src/parser/config.ts, src/parser/yaml.ts,
+          src/parser/validate.ts, src/parser/coverage-cache.ts, src/cli/commands/task.ts,
+          src/export/json.ts, packages/daemon/src/routes/items.ts,
+          tests/coverage-scan-config.test.ts, tests/worktree-context.test.ts,
+          tests/coverage-cache.test.ts, tests/ac-annotation-validation.test.ts,
+          tests/trait-ac-coverage.test.ts.
+
+          Commands run: kspec task get @01KNNZ6D4P24MB9J94K4Q068AN; kspec review for-task
+          @01KNNZ6D4P24MB9J94K4Q068AN; kspec item get @coverage-scan-config; grep -RIn "AC:
+          @coverage-scan-config" tests/; npm test; node dist/cli/index.js validate; source-level
+          scan/validate comparisons against base.
+
+          Claims verified: detached worktree config loading now resolves coverage config from the
+          worktree root; excluded fixture files are no longer scanned in the reviewed build;
+          remaining invalid annotation warnings are pre-existing debt reduced vs base (286 on base
+          source-level validate, 239 on head local CLI validate).
+
+          Categories searched: correctness, edge cases, error handling, integration, test quality.
+        created_at: 2026-04-08T12:59:04.819Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-08T12:59:25.271Z
+created_at: 2026-04-08T12:45:05.783Z
+updated_at: 2026-04-08T12:59:25.272Z
+notes: []

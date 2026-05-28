@@ -1,0 +1,121 @@
+_ulid: 01KPA754G332G0B37S7CP2NP63
+slugs: []
+title: Review implement single-command version upgrade (cycle 19)
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- upgrade-command: 58/58 tests passed in 73.3s."
+    name: upgrade-command tests
+    required: true
+    runner: npm
+    created_at: 2026-04-16T04:13:08.196Z
+    completed_at: 2026-04-16T04:13:08.196Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test: reproduced 5 pre-existing EACCES failures in tests/cli-agent-commands.test.ts
+      (createSession mkdir /tmp/.kspec-sessions); 7952 passed, 5 skipped. Cached rerun matched the
+      same failures."
+    name: full test suite
+    required: false
+    runner: npm
+    created_at: 2026-04-16T04:13:11.053Z
+    completed_at: 2026-04-16T04:13:11.053Z
+events:
+  - _ulid: 01KPA754G32EBKJG2X1N7HQ7M3
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-16T04:00:29.699Z
+  - _ulid: 01KPA75W0MFAAP4SFKX36K5TCQ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-16T04:00:53.780Z
+  - _ulid: 01KPA7WA52AQ0ZHZ25P6PY536V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: upgrade-command tests
+    timestamp: 2026-04-16T04:13:09.154Z
+  - _ulid: 01KPA7WD0VCVMQ5FGQ4G8S1V7R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: full test suite
+    timestamp: 2026-04-16T04:13:12.091Z
+  - _ulid: 01KPA7WFW342P4AWJ7TQGKY457
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KPA7WEX0V8AA0D57A3JGN8A7
+    timestamp: 2026-04-16T04:13:15.011Z
+  - _ulid: 01KPA7WTWV3J4F6H6ZTZ9ZHZ2Q
+    actor: codex@openai.com
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-04-16T04:13:26.299Z
+  - _ulid: 01KPA7WTWV204PAA6M2R4RMYNJ
+    actor: codex@openai.com
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-16T04:13:26.299Z
+examined_commit: 130ac7bcf81a1d8c73435c2b105019beb4aa4a0e
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KNXYJ5JCR99F76N8N7265E0B"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KPA7WEX0V8AA0D57A3JGN8A7
+    entries:
+      - _ulid: 01KPA7WEX1J0NXY642FVJ1CZ6G
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          Files read: src/cli/commands/upgrade.ts, src/cli/commands/setup.ts,
+          src/cli/commands/index.ts, src/cli/index.ts, src/parser/shadow.ts,
+          tests/upgrade-command.test.ts.
+
+          Commands run: git diff --stat, git diff, git log, kspec task get, kspec review get, kspec
+          validate, rg AC annotations, npm test -- upgrade-command, npm test, manual temp-project
+          upgrade repro.
+
+          Claims verified: worker claim that upgrade-command tests pass; worker claim that the only
+          full-suite failures are pre-existing /tmp/.kspec-sessions EACCES errors outside this diff.
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration.
+          No task-local regressions found.
+        created_at: 2026-04-16T04:13:14.017Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex@openai.com
+    role: reviewer
+    created_at: 2026-04-16T04:13:26.298Z
+created_at: 2026-04-16T04:00:29.699Z
+updated_at: 2026-04-16T04:13:26.299Z
+notes: []

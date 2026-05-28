@@ -1,0 +1,87 @@
+_ulid: 01KM7PFAFKDTEGFM4GXDF2VZJX
+slugs: []
+title: Review task-impl-index
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KM7PFAFK51MGWRPD0CG60HZ5
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-21T07:59:05.203Z
+  - _ulid: 01KM7PG2RDNKMAP8YNEGCX1M45
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-21T07:59:30.061Z
+  - _ulid: 01KM7PG3Q6H4GNPBERQJ9A3NBY
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KM7PG3F75D8R9NP5Q2CSCB6F
+    timestamp: 2026-03-21T07:59:31.047Z
+  - _ulid: 01KM7PG4HV1EKJSP35ED5QYXMT
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KM7PG49VDC3CVVVJ2NETP7A2
+    timestamp: 2026-03-21T07:59:31.899Z
+  - _ulid: 01KM7PMDGW6DHWM97GPVBETDSE
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: archived
+    timestamp: 2026-03-21T08:01:52.156Z
+examined_commit: 6023a5e30180743cd13485125c05f5975f5bf0da
+external_links: []
+lifecycle_state: archived
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KM6YESAF92YTNXT3DF06AC0N"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KM7PG3F75D8R9NP5Q2CSCB6F
+    anchor:
+      type: code
+      commit: 6023a5e30180743cd13485125c05f5975f5bf0da
+      line_end: 295
+      line_start: 225
+      path: src/parser/split-backend.ts
+      side: head
+    entries:
+      - _ulid: 01KM7PG3F7KPFFA82K851S7NWN
+        author: Jacob Chapel
+        body: " persists  and  into the index, but  explicitly excludes those fields from change detection.
+          As a result, note-only mutations leave the summary index stale: I reproduced  and the task
+          still reported  after the note was written. That breaks the current  contract for list
+          data, because  reads those counters only from the index in split mode."
+        created_at: 2026-03-21T07:59:30.791Z
+    kind: blocker
+  - _ulid: 01KM7PG49VDC3CVVVJ2NETP7A2
+    anchor:
+      type: code
+      commit: 6023a5e30180743cd13485125c05f5975f5bf0da
+      line_end: 892
+      line_start: 882
+      path: tests/split-backend.test.ts
+      side: head
+    entries:
+      - _ulid: 01KM7PG49V484KHHV5A39GJ1PT
+        author: Jacob Chapel
+        body: The new summary test only asserts , so it doesn’t catch the stale-counter regression above.
+          Tightening this to the exact expected count would close the gap once the implementation is
+          fixed.
+        created_at: 2026-03-21T07:59:31.643Z
+    kind: nit
+verdicts: []
+created_at: 2026-03-21T07:59:05.203Z
+updated_at: 2026-03-21T08:01:51.860Z
+notes: []

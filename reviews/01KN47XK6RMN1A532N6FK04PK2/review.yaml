@@ -1,0 +1,213 @@
+_ulid: 01KN47XK6RMN1A532N6FK04PK2
+slugs: []
+title: Review @01KMZ1BXPTATS8CAVJ2NMYADPW
+author: Jacob Chapel
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 207 passed, 0 failed, 1 flaky, 48 skipped in ~5.0m.
+    name: npm run test:e2e:ci -- --shard=1/2
+    required: true
+    runner: playwright
+    created_at: 2026-04-01T10:17:16.556Z
+    completed_at: 2026-04-01T10:17:16.556Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 7522 passed, 5 skipped in ~55m57s. A prior single failure in unchanged
+      tests/cli-serve.test.ts did not reproduce on fresh rerun.
+    name: npm test --fresh
+    required: true
+    runner: npm
+    created_at: 2026-04-01T10:17:18.518Z
+    completed_at: 2026-04-01T10:17:18.518Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 253 passed, 0 failed, 1 flaky, 1 skipped in ~4.0m.
+    name: npm run test:e2e:ci -- --shard=2/2
+    required: true
+    runner: playwright
+    created_at: 2026-04-01T10:17:20.522Z
+    completed_at: 2026-04-01T10:17:20.522Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with warnings only (exit 6): schema/reference OK; known repo-wide
+      alignment/completeness warnings remain."
+    name: kspec validate
+    required: false
+    runner: kspec
+    created_at: 2026-04-01T10:17:24.621Z
+    completed_at: 2026-04-01T10:17:24.621Z
+events:
+  - _ulid: 01KN47XK6QVEP2FR6FBPQ2ZFK7
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-04-01T10:02:42.775Z
+  - _ulid: 01KN47YC96RGREVYFX997GF0FA
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-04-01T10:03:08.454Z
+  - _ulid: 01KN48R756J5TQ9V58CH8GS7T0
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KN48R6HFWCF1DTP3HFAWGMNV
+    timestamp: 2026-04-01T10:17:15.174Z
+  - _ulid: 01KN48R93SAZG4QEQEQW219SEK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run test:e2e:ci -- --shard=1/2
+    timestamp: 2026-04-01T10:17:17.177Z
+  - _ulid: 01KN48RB26FFY159EAS9MJTE26
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test --fresh
+    timestamp: 2026-04-01T10:17:19.174Z
+  - _ulid: 01KN48RD2CCZ971JMGY1GTT988
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run test:e2e:ci -- --shard=2/2
+    timestamp: 2026-04-01T10:17:21.229Z
+  - _ulid: 01KN48RF11NB0KZZ0ST2FX2876
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KN48RECZPZWPZ8YBRYHQQX7N
+    timestamp: 2026-04-01T10:17:23.233Z
+  - _ulid: 01KN48RH04VH4S3KYTSAF6SJA1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-04-01T10:17:25.253Z
+  - _ulid: 01KN48RSA0G75M50JX78E7Q52P
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-04-01T10:17:33.760Z
+  - _ulid: 01KN48RSA0NHJ8FZX6H3J4Y19S
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-04-01T10:17:33.760Z
+  - _ulid: 01KN490SJYC7JNDEEBMD4KR9GM
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN48R6HFWCF1DTP3HFAWGMNV
+    timestamp: 2026-04-01T10:21:56.191Z
+  - _ulid: 01KN490VFFX67Q4ENQZ5VK10PH
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KN48RECZPZWPZ8YBRYHQQX7N
+    timestamp: 2026-04-01T10:21:58.127Z
+  - _ulid: 01KN490XT6B89JFW3E9BKD93NE
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN48R6HFWCF1DTP3HFAWGMNV
+    timestamp: 2026-04-01T10:22:00.518Z
+  - _ulid: 01KN490ZRT8GK0FBKWTWZ9CSWZ
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KN48RECZPZWPZ8YBRYHQQX7N
+    timestamp: 2026-04-01T10:22:02.522Z
+examined_commit: abee02938cb6766756ca3c93240afb6ed1710184
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KMZ1BXPTATS8CAVJ2NMYADPW"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KN48R6HFWCF1DTP3HFAWGMNV
+    anchor:
+      type: code
+      commit: abee02938cb6766756ca3c93240afb6ed1710184
+      line_end: 19
+      line_start: 7
+      path: .github/workflows/test.yml
+      side: head
+    entries:
+      - _ulid: 01KN48R6HFK1KRYPPJ6Z8TP63Z
+        author: Jacob Chapel
+        body: The pull_request path filter still omits playwright.config.ts, so a PR that changes only
+          Playwright test selection/retries/workers will skip this workflow entirely. That undercuts
+          the full-suite CI gate this task is introducing, because the gate can be weakened or
+          broken without any E2E job running. Please add playwright.config.ts to pull_request.paths
+          so configuration-only changes are covered.
+        created_at: 2026-04-01T10:17:14.543Z
+      - _ulid: 01KN490RZ8JTM7S31JM638AJYK
+        author: Jacob Chapel
+        body: "Fixed in commit 0235550eb: added playwright.config.ts to pull_request.paths in
+          .github/workflows/test.yml, so PRs that only adjust Playwright workers/retries/test
+          selection still trigger the full E2E workflow."
+        created_at: 2026-04-01T10:21:55.560Z
+    kind: blocker
+    resolved_at: 2026-04-01T10:21:59.878Z
+    resolved_by: Jacob Chapel
+  - _ulid: 01KN48RECZPZWPZ8YBRYHQQX7N
+    entries:
+      - _ulid: 01KN48RECZFYZF6G1GGB3XZADS
+        author: Jacob Chapel
+        body: "Review evidence log:\\nFiles read: .github/workflows/test.yml, package.json,
+          playwright.config.ts, tests/cli-serve.test.ts.\\nCommands run: git diff origin/dev...HEAD,
+          kspec validate, npm test, npm test -- --fresh, npm run test:e2e:ci -- --shard=1/2, npm run
+          test:e2e:ci -- --shard=2/2, targeted cli-serve test rerun.\\nClaims verified: the branch
+          delta against origin/dev is limited to the CI workflow/scripts/reporter; both CI shards
+          pass within budget; non-CI reporter no longer hangs; the earlier npm test failure was not
+          reproducible on a fresh rerun.\\nCategories searched: correctness (found blocker in
+          trigger coverage), edge cases (config-only PRs), test quality (verified real command
+          execution), integration (workflow/script/config interplay), error handling/security (no
+          additional findings in changed files)."
+        created_at: 2026-04-01T10:17:22.591Z
+      - _ulid: 01KN490TWC4SNV4R67V7YXYA2R
+        author: Jacob Chapel
+        body: Noted. No separate code change was needed for the evidence-log nit; the task note for fix
+          cycle 1 records the verification scope for this follow-up.
+        created_at: 2026-04-01T10:21:57.515Z
+    kind: nit
+    resolved_at: 2026-04-01T10:22:01.859Z
+    resolved_by: Jacob Chapel
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-04-01T10:17:33.760Z
+created_at: 2026-04-01T10:02:42.776Z
+updated_at: 2026-04-01T10:22:01.859Z
+notes: []

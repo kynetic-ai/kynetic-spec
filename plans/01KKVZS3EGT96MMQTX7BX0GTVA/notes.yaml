@@ -1,0 +1,107 @@
+notes:
+  - _ulid: 01KKW0JZ2892P48CXK2KZ2RV90
+    content: "Revised per feedback: explicit tasks with why/what/how, separated review convention vs
+      code changes, added diff summaries, per-cycle review model, documentation tasks"
+    author: "@claude"
+    created_at: 2026-03-16T19:04:57.160Z
+  - _ulid: 01KKW40KQG4AWK0FBQCKWF6NDB
+    content: "Revised per review feedback: amend existing review lifecycle spec instead of conflicting,
+      task-add ref is a bug fix against @trait-shadow-commit not a new spec, submission linkage
+      folded into existing spec as new AC, diff summaries deferred to separate plan, explicit tasks
+      with why/what/how, documentation tasks for convention reinforcement"
+    author: "@claude"
+    created_at: 2026-03-16T20:04:50.032Z
+  - _ulid: 01KKW4CNZ6WNHET0NN866XRWBA
+    content: Removed amends language from review spec, added task to rewrite
+      @review-verdicts-and-resolution-lifecycle ac-3 as prerequisite for review lifecycle changes
+    author: "@claude"
+    created_at: 2026-03-16T20:11:25.542Z
+  - _ulid: 01KKW4VTDGMHJCQEMTE738A7BW
+    content: |-
+      The activity timeline is derived from two sources merged chronologically:
+
+      1. Shadow branch git history: git log --grep filtered by task ref in the
+         .kspec worktree. Commit messages encode operation type and ref per
+         @trait-shadow-commit. The task-add ref bug is the only known gap.
+
+      2. Linked review records: review.events array provides lifecycle changes,
+         verdicts, and thread activity with timestamps. With the per-cycle model,
+         each review record is a discrete artifact — the timeline collects all
+         review records for a task (current + historical closed ones) and merges
+         their events into the git-derived timeline by timestamp.
+
+      The per-cycle review model requires rewriting
+      @review-verdicts-and-resolution-lifecycle ac-3 which currently describes a
+      single-record iteration model. A separate task handles that rewrite to
+      remove the conflict. The per-cycle model is analogous to GitHub PR reviews:
+      each reviewer's review is a discrete artifact with a verdict, and the
+      collection of reviews across cycles comprises the full review history.
+
+      Diff summaries (diffs against merge target and since prior review in the
+      timeline view) are deferred to @plan-activity-timeline-diff-summaries to
+      keep this plan focused. The review-fix-cycle-diff spec in this plan covers
+      the reviewer orientation use case (diff in the dispatch prompt), which is
+      the highest-value diff consumer.
+
+      Dependency ordering: task-add commit fix is a standalone foundation.
+      Submission linkage fallback is independent. Review lifecycle changes form
+      a chain (auto-close → new-per-cycle → examined-commit → diff orientation).
+      Timeline implementation depends on the commit fix. Documentation tasks
+      depend on the review lifecycle changes they document.
+
+      Related work not in this plan:
+      - @01KKW3VH: Audit all shadow commit messages for ref consistency gaps
+      - Inbox item @01KKW3VQ: Enriching commit message detail for auditability
+      - @plan-activity-timeline-diff-summaries: Diff summaries in the timeline
+      - @01KKVW67 / @01KKVX1X: YAML serialization invariants (canonical field
+        ordering enables reliable git log -L queries as an alternative to
+        git log --grep)
+    author: "@claude"
+    created_at: 2026-03-16T20:19:41.616Z
+  - _ulid: 01KKW6C76N54EP601D1SCDJ2PX
+    content: "Revision: Switched git query mechanism from git log --grep (commit message filtering) to
+      git log -L (YAML block boundary tracking). This captures complete history regardless of commit
+      message content, works retroactively, and handles manual edits/batch operations. Prerequisite
+      changed from @task-fix-task-add-commit-ref to @01KKVW67 (YAML field ordering). Specs and tasks
+      updated directly via CLI. Plan text reflects the change but could not be re-imported (active
+      plan)."
+    author: "@claude"
+    created_at: 2026-03-16T20:46:07.573Z
+  - _ulid: 01KKW6Q478B0FX9KBA1ZF6PT79
+    content: "Split @task-implement-activity-git-query into two tasks: raw git extraction (ac-1, ac-2)
+      stays on the original task, normalization of diffs into typed activity entries is now
+      @task-normalize-activity-entries (ac-3, ac-4). Display task depends on normalizer. Added ac-4
+      to spec for field-level diff translation."
+    author: "@claude"
+    created_at: 2026-03-16T20:52:04.968Z
+  - _ulid: 01KKW6XQSS3N570750A91Z5G0N
+    content: >-
+      Post-derive changes summary:
+
+
+      1. Switched git query from --grep (commit message filtering) to -L (YAML block boundary
+      tracking). Prerequisite changed from @task-fix-task-add-commit-ref to @01KKVW67 (YAML field
+      ordering).
+
+
+      2. Rewrote @task-activity-git-query spec and ACs to use behavioral language instead of
+      implementation details.
+
+
+      3. Split @task-implement-activity-git-query into two tasks:
+         - @task-implement-activity-git-query: raw git extraction (ac-1, ac-2)
+         - @task-normalize-activity-entries: diff-to-activity normalization (ac-3, ac-4)
+         Added ac-4 to spec for field-level diff translation.
+
+      4. Updated @task-implement-activity-display to depend on @task-normalize-activity-entries
+      instead of @task-implement-activity-git-query.
+
+
+      5. @task-fix-task-add-commit-ref remains in plan as a standalone bug fix against
+      @trait-shadow-commit but is no longer a timeline prerequisite.
+
+
+      Total: 5 specs (13 ACs), 13 tasks (was 12). Plan text could not be re-imported (active plan)
+      but specs/tasks updated directly via CLI.
+    author: "@claude"
+    created_at: 2026-03-16T20:55:41.625Z

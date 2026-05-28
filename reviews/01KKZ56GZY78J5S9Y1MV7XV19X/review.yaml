@@ -1,0 +1,175 @@
+_ulid: 01KKZ56GZY78J5S9Y1MV7XV19X
+slugs: []
+title: Review round-trip stability for workflow runs YAML writes
+author: "@claude"
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 5797 passed, 1 failed (pre-existing review-cli.test.ts examined_commit issue), 3 skipped
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-18T00:24:10.236Z
+    completed_at: 2026-03-18T00:24:10.236Z
+events:
+  - _ulid: 01KKZ56GZYZGF1AGRVSEZXZ9ZK
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-03-18T00:23:15.710Z
+  - _ulid: 01KKZ56RJKAG2F9SBZ92JKXFVN
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-18T00:23:23.476Z
+  - _ulid: 01KKZ57BXGCYD2NMP7351JBS91
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKZ57BSZ3TSZGKWRXH2SYR94
+    timestamp: 2026-03-18T00:23:43.280Z
+  - _ulid: 01KKZ57X7KSF0BSTEYFS73HNEX
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KKZ57X51MW328022BSRSRJK3
+    timestamp: 2026-03-18T00:24:01.011Z
+  - _ulid: 01KKZ586AETMF5WZZECNKQ0ZSZ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: vitest
+    timestamp: 2026-03-18T00:24:10.318Z
+  - _ulid: 01KKZ58G43CFGBXWMQ6BJ4ENAE
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KKZ58G18BZPPSDDD0AFGQWEG
+    timestamp: 2026-03-18T00:24:20.355Z
+  - _ulid: 01KKZ58QZFGW2GYWFJK07SKRDA
+    actor: pr-reviewer@kspec-dispatch
+    event_type: verdict_submitted
+    payload:
+      decision: request_changes
+    timestamp: 2026-03-18T00:24:28.399Z
+  - _ulid: 01KKZ58QZF7AXR5T6D45V4V1GP
+    actor: pr-reviewer@kspec-dispatch
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-03-18T00:24:28.399Z
+examined_commit: 9a8ef3b3aaa8174957c0fd61fe641149fc6cc222
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KKX6CGBRT6J6F804PJ1QJW3G"
+  shadow_commit: ""
+threads:
+  - _ulid: 01KKZ57BSZ3TSZGKWRXH2SYR94
+    anchor:
+      type: code
+      commit: 9a8ef3b3aaa8
+      line_end: 311
+      line_start: 221
+      path: src/parser/dispatch-workspaces.ts
+      side: head
+    entries:
+      - _ulid: 01KKZ57BSZ2A6WGZGKQBCX05QJ
+        author: "@claude"
+        body: "**Regression: dispatch workspace round-trip stability removed.** This commit removes the
+          raw-data-preservation pattern from `dispatch-workspaces.ts` — the functions
+          `normalizeLegacyWorkspaceRaw`, `extractRawWorkspaceArray`, `writeRawWorkspaceArray`,
+          `findRawWorkspaceIndex`, `mergeWorkspacePreservingRawShape`, `deepEqual`,
+          `isTrivialDefault`, `isRawClosedBeyondRetention`, and
+          `validateSingleOpenWorkspacePerTaskRaw` are all deleted. The `saveDispatchWorkspaceRecord`
+          and `mutateDispatchWorkspaceRecordAtomically` functions now use `loadRegistryFile` which
+          schema-parses ALL workspaces through `DispatchWorkspaceRegistryFileSchema.safeParse()`,
+          re-introducing Zod defaults (e.g. `branch_provenance`, `roleStates`) on every write. The
+          tests covering dispatch workspace round-trip stability (7 tests) are also deleted. This is
+          a direct regression against ac-3 of @yaml-serialization-invariants for the dispatch
+          workspace path, which was the subject of a prior completed task."
+        created_at: 2026-03-18T00:23:43.167Z
+    kind: blocker
+  - _ulid: 01KKZ57X51MW328022BSRSRJK3
+    entries:
+      - _ulid: 01KKZ57X52AQSX5AACFDZGP966
+        author: "@claude"
+        body: >-
+          **Out-of-scope deletions: review detail page, shared API types, daemon route filters, E2E
+          tests, and fixtures.** This commit deletes ~1850 lines of code unrelated to the task
+          "Round-trip stability for workflow runs YAML writes":
+
+
+          - `packages/web-ui/src/routes/reviews/[id]/+page.svelte` (617 lines) — entire review
+          detail page
+
+          - `packages/web-ui/src/routes/reviews/[id]/+page.ts` — page config
+
+          - `packages/web-ui/tests/e2e/review-detail-page.spec.ts` (88 lines) — E2E tests
+
+          - `packages/web-ui/tests/e2e/reviews-detail.spec.ts` (599 lines) — route-mocked E2E tests
+
+          - `packages/shared/src/api.ts` — `ReviewDetail`, `ReviewThread`, `ReviewThreadEntry`,
+          `ReviewAnchor`, `ReviewCheck`, `ReviewVerdict`, `ReviewSubject`, `ReviewSubjectVersion`
+          type interfaces removed (133 lines)
+
+          - `packages/web-ui/src/lib/api.ts` — `fetchReview`, `fetchReviewSiblings` functions
+          removed (49 lines)
+
+          - `packages/web-ui/src/lib/query/keys.ts` — `siblings` query key removed
+
+          - `packages/daemon/src/routes/reviews.ts` — `head_branch` field and
+          `subject_ref`/`head_branch` filters removed (15 lines)
+
+          - `packages/web-ui/tests/fixtures/project.reviews.yaml` — 3 review fixtures removed,
+          existing fixture data simplified (153→21 lines)
+
+          - `packages/web-ui/tests/e2e/api-reviews-list.spec.ts` — sibling/filter tests removed,
+          assertion counts adjusted
+
+
+          None of these changes relate to workflow runs YAML round-trip stability. These deletions
+          remove AC coverage for `@review-records-web-ui` (ac-2, ac-8, ac-9, ac-10, ac-11) and
+          `@review-records-daemon-api` (ac-2). They must be reverted or handled as a separate task
+          with proper spec tracking.
+        created_at: 2026-03-18T00:24:00.930Z
+    kind: blocker
+  - _ulid: 01KKZ58G18BZPPSDDD0AFGQWEG
+    entries:
+      - _ulid: 01KKZ58G18BR6074D7V22HJY05
+        author: "@claude"
+        body: "**Positive: workflow runs implementation is correct and well-tested.** The core task
+          deliverable — applying the raw-data-preservation pattern to `saveWorkflowRun`,
+          `deleteWorkflowRuns`, and the new `mutateWorkflowRunAtomically` — is well implemented. The
+          helpers (`extractRawRunArray`, `writeRawRunArray`, `findRawRunIndex`,
+          `mergeRunPreservingRawShape`) follow the established pattern. File locking via
+          `withFileLock` was correctly added. The 7 new tests comprehensively cover: identity save,
+          Zod default suppression, identity mutation, multi-run stability, non-target pollution
+          prevention, delete preservation, and multi-cycle stability. AC annotations reference
+          ac-3."
+        created_at: 2026-03-18T00:24:20.265Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer@kspec-dispatch
+    role: reviewer
+    created_at: 2026-03-18T00:24:28.314Z
+created_at: 2026-03-18T00:23:15.710Z
+updated_at: 2026-03-18T00:24:28.314Z
+notes: []
