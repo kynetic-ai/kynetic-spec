@@ -192,6 +192,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-05-29T05:26:44.738Z
+  - _ulid: 01KSS4HWGDQWVWE73W07WQBSZW
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSS35TJST8Q6J3FPF294RV2G
+    timestamp: 2026-05-29T05:50:43.725Z
 examined_commit: 1168b50bec236cb5c328be5c4fae5b21624f9c80
 external_links: []
 lifecycle_state: closed
@@ -226,6 +232,36 @@ threads:
           untracked/ignored hazards that Git reports at a parent or child path, not just exact file
           path matches."
         created_at: 2026-05-29T05:26:39.962Z
+      - _ulid: 01KSS4HWA7PW63261ETBEEFN0W
+        author: "@claude"
+        body: >-
+          Fixed: detectUntrackedOverwriteHazards (src/agent-runtime/workspace.ts) now compares paths
+          as Git tree entries, not as raw strings. New pathsCollideAsTreeEntries helper returns true
+          on exact match, untracked-file-is-ancestor-of-changed-path (your conflict-dir /
+          conflict-dir/remote.txt repro), and untracked-file-is-descendant-of-changed-path (the
+          directory-vs-file inverse). The "/" boundary check prevents false positives like config vs
+          config.yaml. I reproduced your exact scenario against the updated build and the resolver
+          now throws DispatchWorkspaceError with code occupied-checkout naming "conflict-dir" before
+          any merge attempt, so dispatch classifies degraded.kind as occupied-checkout with
+          remove/stash/commit/detach guidance, not divergence with reset/remote-rewrite guidance.
+
+
+          The shell helper grep was also extended
+          (templates/skills/merge/scripts/detached-reviewer-merge.sh, mirrored in .agents/ and
+          .factory/ rendered copies) from "would be overwritten by merge" to also match "would lose
+          untracked files" — Git emits the second wording for the directory-vs-file case.
+
+
+          Regression coverage in tests/dispatch-target-sync.test.ts: "refuses a sync when the
+          occupied checkout has an untracked file blocking a directory the incoming commit creates"
+          (your repro), "refuses a sync when the occupied checkout has an untracked directory
+          blocking a file the incoming commit creates" (inverse direction), and "does not refuse a
+          sync when an untracked file is only a string prefix of a changed path (not a path-segment
+          prefix)" (proves the / boundary check). Helper coverage added in
+          tests/detached-reviewer-merge.test.ts: "refuses when the required merge would lose
+          untracked files in a directory at a path the merge would write" (directory-variant of the
+          existing exact-path test).
+        created_at: 2026-05-29T05:50:43.527Z
     kind: blocker
   - _ulid: 01KSS35WSV8FZD3EJTQW078JYZ
     entries:
@@ -254,5 +290,5 @@ verdicts:
     role: reviewer
     created_at: 2026-05-29T05:26:44.738Z
 created_at: 2026-05-29T05:10:41.027Z
-updated_at: 2026-05-29T05:26:44.738Z
+updated_at: 2026-05-29T05:50:43.527Z
 notes: []
