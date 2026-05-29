@@ -80,6 +80,17 @@ checks:
     required: true
     created_at: 2026-05-29T20:23:55.979Z
     completed_at: 2026-05-29T20:23:55.979Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok, --alignment --warnings-ok, and --completeness
+      --warnings-ok all exited 0. Existing repository warnings remain but are unrelated to this
+      draft plan.
+    name: kspec validation
+    required: true
+    created_at: 2026-05-29T20:24:05.178Z
+    completed_at: 2026-05-29T20:24:05.178Z
 events:
   - _ulid: 01KSTPECJKWHXAHNXFNGGP6EYZ
     actor: Jacob Chapel
@@ -143,6 +154,13 @@ events:
       status: pass
       name: Security and scope containment
     timestamp: 2026-05-29T20:23:56.228Z
+  - _ulid: 01KSTPH22J0R7S7JG8HTQ5ZY34
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validation
+    timestamp: 2026-05-29T20:24:05.458Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -155,5 +173,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-05-29T20:22:37.907Z
-updated_at: 2026-05-29T20:23:55.979Z
+updated_at: 2026-05-29T20:24:05.178Z
 notes: []
