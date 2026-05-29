@@ -1,0 +1,27 @@
+_ulid: 01KSTXE9W0BQTZ6SGB9G0ER48G
+slugs:
+  - review-agent-runner-config-ablation
+title: "Ablation review: Agent Runner Configuration Layer"
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KSTXE9W0M47CWP8W0PKE3TZ9
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-29T22:24:55.168Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-agent-runner-configuration-layer"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-05-29T22:24:55.168Z
+updated_at: null
+notes: []
