@@ -58,6 +58,18 @@ checks:
     required: true
     created_at: 2026-05-29T22:15:29.003Z
     completed_at: 2026-05-29T22:15:29.003Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@task-update-existing-agent-runner-specs is first and dependency-free; schema/types
+      depend on it; meta CLI depends on schema/types; resolver depends on schema/types and meta CLI;
+      env/runtime hardening follows resolver; dispatch/API/UI/docs/E2E follow the required runtime
+      and surface dependencies."
+    name: Dependency ordering
+    required: true
+    created_at: 2026-05-29T22:15:28.965Z
+    completed_at: 2026-05-29T22:15:28.965Z
 events:
   - _ulid: 01KSTWVVY7YT5JXB6B5R5WY3SS
     actor: Jacob Chapel
@@ -114,6 +126,13 @@ events:
       status: fail
       name: Downstream existing-spec Covers mapping
     timestamp: 2026-05-29T22:15:29.942Z
+  - _ulid: 01KSTWX2816827N7Q4E5NQ6F85
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-05-29T22:15:30.305Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -157,5 +176,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-05-29T22:14:51.080Z
-updated_at: 2026-05-29T22:15:29.003Z
+updated_at: 2026-05-29T22:15:28.965Z
 notes: []
