@@ -107,3 +107,35 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-29T03:47:12.733Z
+  - _ulid: 01KSRYWV4SRTB6MVSRCWMZP583
+    content: >-
+      Fix cycle 1: addressed both review blockers.
+
+
+      1. Rendered merge helper sync (.agents/skills/kspec-merge/scripts/,
+      .factory/skills/kspec-merge/scripts/): the previous submission updated
+      templates/skills/merge/scripts/detached-reviewer-merge.sh but the rendered platform copies
+      retained the older 'occupied target always refuses' contract. Re-ran kspec skill install-core
+      (via local source so it picks up the updated template rather than the globally-installed
+      v0.14.0 copy) and kspec skill render --force, producing rendered scripts that are now
+      byte-identical to the template. Executable bit preserved on the rendered scripts via the
+      amended commit.
+
+
+      2. Changed-file oxlint clean: replaced 6 JSON.stringify(...) + '\n' concatenations with
+      template-literal form across tests/dispatch-plan-target-lock-e2e.test.ts:536,
+      tests/dispatch-target-sync.test.ts:1444, tests/detached-reviewer-merge.test.ts:732,
+      tests/dispatch-degraded-state.test.ts:840/924/990. npx oxlint on the four changed test files
+      now reports 0 warnings/0 errors; repo lint dropped from 749 to 743 warnings (the six new
+      findings are eliminated, no new warnings introduced).
+
+
+      Re-verified gates: npm run typecheck pass; npm run format:check pass; npm run lint -- --quiet
+      0 errors; kspec validate --refs --alignment --completeness --warnings-ok pass; focused tests
+      pass (detached-reviewer-merge 19/19, dispatch-target-sync + dispatch-degraded-state 66/66,
+      dispatch-plan-target-lock-e2e 1/1); full suite 9915 passed of 9920 (5 skipped, 0 failures). No
+      behavioral implementation changes — only rendered-artifact regen and lint hygiene on test
+      edits.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-29T04:11:51.321Z
