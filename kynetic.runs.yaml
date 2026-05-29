@@ -55848,7 +55848,7 @@ runs:
     completed_at: 2026-05-27T09:03:14.427Z
   - _ulid: 01KSRXHVW0HD31CE8XPCTFCHZS
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -55862,7 +55862,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-29T03:49:42.953Z
-        completed_at: 2026-05-29T03:49:42.953Z
+        completed_at: 2026-05-29T03:49:52.516Z
+        notes: "Friction: generated/supporting artifacts are easy to miss in review because the changed
+          tracked template file and the runtime .agents copy can diverge. Secondary friction:
+          changed-file oxlint warnings required manual aggregation across several files, but that
+          gate is already documented in review-gates and worked as intended."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-29T03:49:52.516Z
+        completed_at: 2026-05-29T03:49:52.516Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-29T03:48:23.040Z
