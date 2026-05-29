@@ -2323,6 +2323,14 @@ type TargetCheckoutClassification =
  * clobbered, instead of attempting the merge and misclassifying the resulting
  * Git error as divergence.
  *
+ * Git refuses three overwrite shapes, all of which must be caught here:
+ *   1. Exact-path collision: untracked file "foo.txt" vs merge writing "foo.txt".
+ *   2. Directory-blocked-by-file: untracked file "foo" vs merge writing
+ *      "foo/bar". Git cannot create the directory because a file holds the name.
+ *   3. File-blocked-by-directory: untracked file "foo/bar" (so the directory
+ *      "foo/" exists with untracked content) vs merge writing the path "foo"
+ *      as a file. Git refuses to lose the directory's untracked entries.
+ *
  * AC: @dispatch-integration-mutation-scope ac-dirty-occupied-target-refusal-identifies-blocker
  * AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
  */
@@ -2363,7 +2371,6 @@ async function detectUntrackedOverwriteHazards(
   if (changedPaths.length === 0) {
     return [];
   }
-  const changedSet = new Set(changedPaths);
 
   // Untracked and ignored files together: Git's checkout-time overwrite check
   // refuses to clobber either category. `--others` without --exclude-standard
@@ -2373,9 +2380,38 @@ async function detectUntrackedOverwriteHazards(
     return [];
   }
   const otherPaths = others.stdout.split("\0").filter((p) => p.length > 0);
+  if (otherPaths.length === 0) {
+    return [];
+  }
 
-  const hazards = otherPaths.filter((p) => changedSet.has(p));
-  return hazards.toSorted();
+  const hazards = new Set<string>();
+  for (const other of otherPaths) {
+    for (const changed of changedPaths) {
+      if (pathsCollideAsTreeEntries(other, changed)) {
+        hazards.add(other);
+        break;
+      }
+    }
+  }
+  return [...hazards].toSorted();
+}
+
+/**
+ * Whether two repo-relative paths collide as Git tree entries — i.e., Git
+ * cannot have both populated in the working tree at the same time.
+ *
+ * Returns true for exact match, or when one path is a directory-segment
+ * ancestor of the other (so creating one implies removing the other). Uses
+ * "/" boundary checks so "foo" does not falsely match "foobar".
+ */
+function pathsCollideAsTreeEntries(a: string, b: string): boolean {
+  if (a === b) {
+    return true;
+  }
+  if (a.length < b.length) {
+    return b.startsWith(`${a}/`);
+  }
+  return a.startsWith(`${b}/`);
 }
 
 async function classifyTargetWorktreeCheckout(

@@ -1742,6 +1742,200 @@ describe("dispatch target branch sync", () => {
     }
   });
 
+  // AC: @dispatch-integration-mutation-scope ac-dirty-occupied-target-refusal-identifies-blocker
+  // AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
+  //
+  // Directory/file hazard direction 1: remote adds a path under a directory
+  // that does not yet exist locally, but the occupied checkout has an
+  // untracked FILE at the same name. Git refuses the fast-forward with
+  // "untracked working tree files would be overwritten by merge: <dir>".
+  // Dispatch must detect this before attempting the merge so degraded state
+  // is occupied-checkout (with cleanup guidance) and not divergence.
+  it("refuses a sync when the occupied checkout has an untracked file blocking a directory the incoming commit creates", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout -b human-feature");
+
+    const hazardOccupied = `${projectDir}-user-dev-dirfile`;
+    execSync(`git worktree add "${hazardOccupied}" dev`, {
+      cwd: projectDir,
+      stdio: "pipe",
+      env: workspaceModule.buildDispatchGitEnv(),
+    });
+
+    // Push a remote commit that adds a file under conflict-dir/, then drop
+    // an untracked FILE named conflict-dir in the occupied checkout. The
+    // merge cannot create the directory because the name is taken.
+    const hazardName = "conflict-dir";
+    const cloneDir = await createTempDir("kspec-target-sync-dirfile-clone-");
+    try {
+      git(cloneDir, `clone "${remoteDir}" .`);
+      git(cloneDir, 'config user.email "test@example.com"');
+      git(cloneDir, 'config user.name "Test User"');
+      git(cloneDir, "checkout dev");
+      await fs.mkdir(path.join(cloneDir, hazardName), { recursive: true });
+      await fs.writeFile(path.join(cloneDir, hazardName, "remote.txt"), "remote\n", "utf-8");
+      git(cloneDir, `add ${hazardName}/remote.txt`);
+      git(cloneDir, 'commit -m "remote adds file under conflict-dir"');
+      git(cloneDir, "push origin dev");
+    } finally {
+      await cleanupTempDir(cloneDir);
+    }
+
+    await fs.writeFile(path.join(hazardOccupied, hazardName), "local untracked\n", "utf-8");
+
+    const localDevBefore = git(projectDir, "rev-parse dev");
+    const hazardHeadBefore = git(hazardOccupied, "rev-parse HEAD");
+
+    try {
+      const engine = new DispatchEngine({
+        projectDir,
+        reconcileIntervalMs: 0,
+        coalesceWindowMs: 0,
+      });
+      await engine.start();
+
+      expect(engine.getDegradedState()).toHaveLength(1);
+      const degraded = engine.getDegradedState()[0];
+      expect(degraded.kind).toBe("occupied-checkout");
+      expect(degraded.reason).toContain(hazardOccupied);
+      expect(degraded.reason).toContain(hazardName);
+      expect(degraded.reason.toLowerCase()).toMatch(/remove|stash|commit|detach/);
+      expect(degraded.reason.toLowerCase()).not.toMatch(/rewritten|reset --hard/);
+
+      expect(await engine._syncTarget()).toBe("unsafe_target");
+
+      // Refs and worktree state untouched.
+      expect(git(projectDir, "rev-parse dev")).toBe(localDevBefore);
+      expect(git(hazardOccupied, "rev-parse HEAD")).toBe(hazardHeadBefore);
+
+      await engine.stop();
+    } finally {
+      await fs.rm(path.join(hazardOccupied, hazardName), { force: true });
+      git(projectDir, `worktree remove --force "${hazardOccupied}"`);
+    }
+  });
+
+  // AC: @dispatch-integration-mutation-scope ac-dirty-occupied-target-refusal-identifies-blocker
+  // AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
+  //
+  // Directory/file hazard direction 2: remote adds a FILE at a name that the
+  // occupied checkout already holds as a directory of untracked content. Git
+  // refuses with "Updating the following directories would lose untracked
+  // files in them". Same dispatch contract: this is an occupied-checkout
+  // blocker, not divergence.
+  it("refuses a sync when the occupied checkout has an untracked directory blocking a file the incoming commit creates", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout -b human-feature");
+
+    const hazardOccupied = `${projectDir}-user-dev-filedir`;
+    execSync(`git worktree add "${hazardOccupied}" dev`, {
+      cwd: projectDir,
+      stdio: "pipe",
+      env: workspaceModule.buildDispatchGitEnv(),
+    });
+
+    // Remote commits a file at path "config-blob". The occupied checkout
+    // has an untracked directory of the same name with files inside.
+    const hazardName = "config-blob";
+    await pushRemoteCommit(
+      remoteDir,
+      "dev",
+      hazardName,
+      "remote file content\n",
+      "remote adds config-blob as a file",
+    );
+
+    await fs.mkdir(path.join(hazardOccupied, hazardName), { recursive: true });
+    await fs.writeFile(
+      path.join(hazardOccupied, hazardName, "user-notes.txt"),
+      "local untracked\n",
+      "utf-8",
+    );
+
+    const localDevBefore = git(projectDir, "rev-parse dev");
+    const hazardHeadBefore = git(hazardOccupied, "rev-parse HEAD");
+
+    try {
+      const engine = new DispatchEngine({
+        projectDir,
+        reconcileIntervalMs: 0,
+        coalesceWindowMs: 0,
+      });
+      await engine.start();
+
+      expect(engine.getDegradedState()).toHaveLength(1);
+      const degraded = engine.getDegradedState()[0];
+      expect(degraded.kind).toBe("occupied-checkout");
+      expect(degraded.reason).toContain(hazardOccupied);
+      // The untracked path Git would name is the file inside the directory.
+      expect(degraded.reason).toContain(hazardName);
+      expect(degraded.reason.toLowerCase()).toMatch(/remove|stash|commit|detach/);
+      expect(degraded.reason.toLowerCase()).not.toMatch(/rewritten|reset --hard/);
+
+      expect(await engine._syncTarget()).toBe("unsafe_target");
+
+      expect(git(projectDir, "rev-parse dev")).toBe(localDevBefore);
+      expect(git(hazardOccupied, "rev-parse HEAD")).toBe(hazardHeadBefore);
+
+      await engine.stop();
+    } finally {
+      await fs.rm(path.join(hazardOccupied, hazardName), { recursive: true, force: true });
+      git(projectDir, `worktree remove --force "${hazardOccupied}"`);
+    }
+  });
+
+  // AC: @dispatch-integration-mutation-scope ac-clean-occupied-target-checkout-is-valid-mutation-surface
+  //
+  // Path-prefix tightness: an untracked file whose name shares a leading
+  // string with a changed path but is not a directory-segment prefix (e.g.,
+  // "config" vs "config.yaml") must NOT be flagged as a hazard. Otherwise
+  // the hazard check would over-refuse clean eligible checkouts.
+  it("does not refuse a sync when an untracked file is only a string prefix of a changed path (not a path-segment prefix)", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout -b human-feature");
+
+    const cleanOccupied = `${projectDir}-user-dev-prefix`;
+    execSync(`git worktree add "${cleanOccupied}" dev`, {
+      cwd: projectDir,
+      stdio: "pipe",
+      env: workspaceModule.buildDispatchGitEnv(),
+    });
+
+    // Remote adds "config.yaml"; occupied checkout has unrelated untracked
+    // file "config". These are sibling entries — Git is fine with both.
+    const remotePath = "config.yaml";
+    const remoteTip = await pushRemoteCommit(
+      remoteDir,
+      "dev",
+      remotePath,
+      "yaml: true\n",
+      "remote adds config.yaml",
+    );
+    await fs.writeFile(path.join(cleanOccupied, "config"), "unrelated\n", "utf-8");
+
+    try {
+      const engine = new DispatchEngine({
+        projectDir,
+        reconcileIntervalMs: 0,
+        coalesceWindowMs: 0,
+      });
+      await engine.start();
+
+      expect(engine.getDegradedState()).toEqual([]);
+      const result = await engine._syncTarget();
+      expect(["synced", "up_to_date"]).toContain(result);
+      expect(git(projectDir, "rev-parse dev")).toBe(remoteTip);
+      expect(git(cleanOccupied, "rev-parse HEAD")).toBe(remoteTip);
+
+      await engine.stop();
+    } finally {
+      git(projectDir, `worktree remove --force "${cleanOccupied}"`);
+    }
+  });
+
   // AC: @dispatch-integration-mutation-scope ac-auxiliary-target-checkout-refusal-identifies-blocker
   it("refuses to use a worker-style auxiliary worktree under the dispatch worktree root as a mutation surface", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());

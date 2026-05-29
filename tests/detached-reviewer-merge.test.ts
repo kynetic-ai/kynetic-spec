@@ -714,6 +714,58 @@ describe("detached-reviewer-merge helper", () => {
       // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- temp git repo fixture
       expect(fileContent).toBe("untracked locally-authored\n");
     });
+
+    // AC: @detached-reviewer-merge-helper ac-helper-refuses-dirty-target
+    //
+    // Directory/file hazard direction 2: the merge would write a FILE at a
+    // path the occupied checkout holds as an untracked DIRECTORY. Git emits
+    // a different error shape here ("Updating the following directories
+    // would lose untracked files in them") than the file-vs-file case, but
+    // the helper must still recognize it as an untracked-overwrite hazard
+    // and emit cleanup guidance rather than a generic merge-failed message.
+    it("refuses when the required merge would lose untracked files in a directory at a path the merge would write", async () => {
+      const env = await setupMergeTestEnv({ checkoutTarget: true });
+      const occupied = env.integrationWorktreeDir!;
+
+      // The canonical branch added feature.txt as a file. Replace it locally
+      // with an untracked directory of the same name containing untracked
+      // content. Git refuses such a checkout because the merge would have to
+      // lose the directory's untracked entries to create the incoming file.
+      await fs.mkdir(path.join(occupied, "feature.txt"), { recursive: true });
+      await fs.writeFile(
+        path.join(occupied, "feature.txt", "user-notes.md"),
+        "scratch notes that must not be lost\n",
+      );
+
+      const targetHeadBefore = revParse(env.projectDir, `refs/heads/${env.mergeTarget}`);
+
+      const result = runMergeHelper(env.reviewerWorktreeDir, {
+        KSPEC_DISPATCH_CANONICAL_BRANCH: env.canonicalBranch,
+        KSPEC_DISPATCH_CANONICAL_HEAD: env.canonicalHead,
+        KSPEC_DISPATCH_MERGE_TARGET: env.mergeTarget,
+      });
+
+      expect(result.exitCode).toBe(1);
+      // Helper-emitted line names the unsafe checkout; underlying git error
+      // is included in stderr and uses the directory variant of the message.
+      expect(result.stderr.toLowerCase()).toContain("would overwrite");
+      expect(result.stderr.toLowerCase()).toContain("would lose untracked files");
+      expect(result.stderr).toContain(occupied);
+      expect(result.stderr).toContain("NOT been moved");
+
+      // Target ref unchanged.
+      const targetHeadAfter = revParse(env.projectDir, `refs/heads/${env.mergeTarget}`);
+      expect(targetHeadAfter).toBe(targetHeadBefore);
+
+      // The untracked directory and its contents are preserved unchanged.
+      // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- temp git repo fixture
+      const fileContent = await fs.readFile(
+        path.join(occupied, "feature.txt", "user-notes.md"),
+        "utf-8",
+      );
+      // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- temp git repo fixture
+      expect(fileContent).toBe("scratch notes that must not be lost\n");
+    });
   });
 
   // AC: @detached-reviewer-merge-helper ac-helper-refuses-auxiliary-target-lock
