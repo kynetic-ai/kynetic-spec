@@ -2,7 +2,86 @@ _ulid: 01KSTTDKFR3HJS8FPTR7Y31B74
 slugs: []
 title: "Plan review: Agent Runner Configuration Layer (cycle 2)"
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec plan import plans/agent-runner-configuration-layer.md --dry-run parsed the updated
+      document successfully and made no changes.
+    name: Plan import dry-run
+    required: true
+    runner: kspec plan import --dry-run
+    created_at: 2026-05-29T21:32:49.437Z
+    completed_at: 2026-05-29T21:32:49.437Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Checked @agent-integration, @agent-definition-schema, @agent-invocation-lifecycle,
+      @agent-dispatch-engine, @cli-agent-commands, adapter-related specs, and kspec search results
+      for agent runner/adapter. No existing runner config spec or contradiction found.
+    name: Existing spec neighborhood
+    required: true
+    created_at: 2026-05-29T21:32:52.433Z
+    completed_at: 2026-05-29T21:32:52.433Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Parsed plan YAML: 6 specs, 11 tasks, 51 ACs, 0 uncovered ACs, 0 invalid Covers refs, and
+      no duplicate AC ids."
+    name: AC coverage and cover refs
+    required: true
+    created_at: 2026-05-29T21:32:55.488Z
+    completed_at: 2026-05-29T21:32:55.488Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Parsed task graph: all depends_on refs resolve, no cycles, no priority inversions.
+      Config/types precede metadata, resolver, env/runtime, dispatch, operator surfaces, docs, and
+      E2E regression work."
+    name: Dependency ordering
+    required: true
+    created_at: 2026-05-29T21:32:58.426Z
+    completed_at: 2026-05-29T21:32:58.426Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Previous blocker resolved: project config is exactly project.runners.yaml in the shadow
+      worktree root, visible as .kspec/project.runners.yaml after shadow context is available and
+      never root-branch kspec.config.yaml; system config is exactly
+      <daemon-config-dir>/projects/<project-key>/runners.yaml; <project-key> is full lowercase hex
+      SHA-256 of realpath-normalized absolute project root."
+    name: Storage location specificity
+    required: true
+    created_at: 2026-05-29T21:33:01.578Z
+    completed_at: 2026-05-29T21:33:01.578Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Project layer is limited to portable non-secret values and rejects harness logic plus
+      secret/API-token-looking keys; system layer owns harness mechanics, local paths, and secret
+      source bindings without inline secret values; only acp_process is accepted and headed sidecar
+      implementation remains out of scope.
+    name: Security and sidecar scope
+    required: true
+    created_at: 2026-05-29T21:33:04.602Z
+    completed_at: 2026-05-29T21:33:04.602Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok, --alignment --warnings-ok, and --completeness
+      --warnings-ok all exited 0. Existing repo warnings remain unrelated to this draft plan review.
+    name: Kspec validation baseline
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-29T21:33:07.522Z
+    completed_at: 2026-05-29T21:33:07.522Z
 events:
   - _ulid: 01KSTTDKFRX1S84PQSVB5QP2R2
     actor: Jacob Chapel
@@ -10,6 +89,55 @@ events:
     payload:
       to: draft
     timestamp: 2026-05-29T21:32:06.520Z
+  - _ulid: 01KSTTEXP8N41Y39KZWYVQ05PW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan import dry-run
+    timestamp: 2026-05-29T21:32:49.736Z
+  - _ulid: 01KSTTF0JXD6E5GTHBB643Y4VY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Existing spec neighborhood
+    timestamp: 2026-05-29T21:32:52.701Z
+  - _ulid: 01KSTTF3H880N0PKVQPFV2GSH3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage and cover refs
+    timestamp: 2026-05-29T21:32:55.720Z
+  - _ulid: 01KSTTF6EY674WT3TEKSNGDBPQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-05-29T21:32:58.718Z
+  - _ulid: 01KSTTF9GD4RP5HEXZ1SPJ011H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Storage location specificity
+    timestamp: 2026-05-29T21:33:01.837Z
+  - _ulid: 01KSTTFCDVDTF2JWFH1EB7FBY1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Security and sidecar scope
+    timestamp: 2026-05-29T21:33:04.827Z
+  - _ulid: 01KSTTFF90V30YKC6GSBVPB25G
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Kspec validation baseline
+    timestamp: 2026-05-29T21:33:07.744Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -22,5 +150,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-05-29T21:32:06.520Z
-updated_at: null
+updated_at: 2026-05-29T21:33:07.522Z
 notes: []
