@@ -13,6 +13,18 @@ checks:
     required: true
     created_at: 2026-05-29T20:23:01.108Z
     completed_at: 2026-05-29T20:23:01.108Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified prior review @01KSTNXX threads: inherited traits were removed; exact command
+      surface is kspec agent runners validate [--runner <name>] [--json]; daemon agent, active
+      dispatch, and queued dispatch API ACs are split; runner kind is limited to acp_process with
+      headed_acp_sidecar explicitly not accepted in this plan."
+    name: Cycle 1 blocker verification
+    required: true
+    created_at: 2026-05-29T20:23:10.402Z
+    completed_at: 2026-05-29T20:23:10.402Z
 events:
   - _ulid: 01KSTPECJKWHXAHNXFNGGP6EYZ
     actor: Jacob Chapel
@@ -34,6 +46,13 @@ events:
       status: pass
       name: Plan import dry-run
     timestamp: 2026-05-29T20:23:01.342Z
+  - _ulid: 01KSTPFCKQYM4V502R658CDN8W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Cycle 1 blocker verification
+    timestamp: 2026-05-29T20:23:10.711Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -46,5 +65,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-05-29T20:22:37.907Z
-updated_at: 2026-05-29T20:23:01.108Z
+updated_at: 2026-05-29T20:23:10.402Z
 notes: []
