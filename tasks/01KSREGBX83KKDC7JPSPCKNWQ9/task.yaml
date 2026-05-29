@@ -179,7 +179,7 @@ description: >
 spec_ref: "@detached-reviewer-merge-helper"
 meta_ref: null
 plan_ref: null
-status: needs_work
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -194,12 +194,12 @@ review_ref: "@01KSRZHQY3DJ4CN3TWV3DWH8BZ"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-merge-helper-clean-occupied-target-checkout/01ksregb
-  captured_at: 2026-05-29T04:12:12.466Z
-  commit: dd78e7404698ffac42d2b04f0fcd23e6e65b19d2
+  captured_at: 2026-05-29T05:06:37.491Z
+  commit: 1168b50bec236cb5c328be5c4fae5b21624f9c80
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-merge-helper-clean-occupied-target-checkout/01ksregb
-session_id: null
+session_id: 01KSS0P1MPK4H2YJKA3SKDHXSF
 history:
   - author: Jacob Chapel
     changes:
@@ -315,8 +315,48 @@ history:
         previous: 01KSRXQTBJJV5XW5XBP8J05787
     command: review-verdict-needs-work
     timestamp: 2026-05-29T04:39:22.020Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KSS0P1MPK4H2YJKA3SKDHXSF
+        previous: null
+      started_at:
+        new: 2026-05-29T05:06:26.813Z
+        previous: 2026-05-29T04:12:06.521Z
+    command: task-start
+    timestamp: 2026-05-29T05:06:26.813Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-merge-helper-clean-occupied-target-checkout/01ksregb
+          captured_at: 2026-05-29T05:06:37.491Z
+          commit: 1168b50bec236cb5c328be5c4fae5b21624f9c80
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-merge-helper-clean-occupied-target-checkout/01ksregb
+        previous:
+          review_url: null
+          branch: dispatch/task/task-merge-helper-clean-occupied-target-checkout/01ksregb
+          captured_at: 2026-05-29T04:12:12.466Z
+          commit: dd78e7404698ffac42d2b04f0fcd23e6e65b19d2
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-merge-helper-clean-occupied-target-checkout/01ksregb
+      submitted_at:
+        new: 2026-05-29T05:06:37.495Z
+        previous: 2026-05-29T04:12:12.470Z
+    command: task-submit
+    timestamp: 2026-05-29T05:06:37.495Z
 created_at: 2026-05-28T23:25:25.288Z
-started_at: 2026-05-29T04:12:06.521Z
-submitted_at: 2026-05-29T04:12:12.470Z
+started_at: 2026-05-29T05:06:26.813Z
+submitted_at: 2026-05-29T05:06:37.495Z
 todos: []
 automation: eligible

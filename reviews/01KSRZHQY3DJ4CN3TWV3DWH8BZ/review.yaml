@@ -222,6 +222,30 @@ events:
       from: open
       to: closed
     timestamp: 2026-05-29T04:39:20.317Z
+  - _ulid: 01KSS20W61KJ0SR9WTQBETXY0F
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSS0F0ZJ2TZY9S228J9YK0AJ
+    timestamp: 2026-05-29T05:06:29.185Z
+  - _ulid: 01KSS20YBD51SNXQH1JD5SX06X
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSS0F0ZJ2TZY9S228J9YK0AJ
+    timestamp: 2026-05-29T05:06:31.405Z
+  - _ulid: 01KSS210KPKEXNJDP8EJCRXBTW
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSS0F34QBN1YAGYANYWXZFFF
+    timestamp: 2026-05-29T05:06:33.718Z
+  - _ulid: 01KSS212T44S50KP2CWV34X7F6
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSS0F34QBN1YAGYANYWXZFFF
+    timestamp: 2026-05-29T05:06:35.972Z
 examined_commit: dd78e7404698ffac42d2b04f0fcd23e6e65b19d2
 external_links: []
 lifecycle_state: closed
@@ -255,7 +279,29 @@ threads:
           ac-unsafe-occupied-checkout-degraded-recovery, and can send an operator toward resetting
           the target branch instead of cleaning the local untracked blocker.'
         created_at: 2026-05-29T04:39:15.698Z
+      - _ulid: 01KSS20VZ0MY7VZZMAQMQ7B5NJ
+        author: "@claude"
+        body: "Fixed in 1168b50bec. classifyTargetWorktreeCheckout now accepts an optional mergeRef; when
+          set, after passing tracked/staged/in-progress checks it runs
+          detectUntrackedOverwriteHazards (paths added or modified between HEAD and the merge ref
+          intersected with git ls-files --others, which covers untracked + ignored). Hits produce a
+          new classification kind overwrite_hazard, and resolveDispatchIntegrationMutationScope
+          throws DispatchWorkspaceError with code occupied-checkout, naming both the blocking
+          checkout path and the blocking file paths plus remove/stash/commit/detach guidance.
+          _syncTarget re-resolves the mutation scope after fetch with mergeRef = <remote>/<branch>
+          so the hazard is caught before any merge attempt — no refs move, occupant is untouched,
+          degraded.kind is occupied-checkout (not divergence). Recovery is automatic: a later sync
+          after the operator removes the blocking file clears degraded state and advances both refs
+          to the remote tip. The same hazard check also runs when the integration target is checked
+          out in projectDir itself, so the on-target path is not a hole. Regression tests in
+          tests/dispatch-target-sync.test.ts: 'refuses a sync when the occupied target checkout has
+          an untracked file at a path the incoming remote commit writes' (verified to fail on the
+          prior code with degraded.kind === 'divergence') and 'recovers from
+          untracked-overwrite-hazard degraded state after the blocking file is removed'."
+        created_at: 2026-05-29T05:06:28.960Z
     kind: blocker
+    resolved_at: 2026-05-29T05:06:31.215Z
+    resolved_by: "@claude"
   - _ulid: 01KSS0F34QBN1YAGYANYWXZFFF
     entries:
       - _ulid: 01KSS0F34QNKQ4G2Y47Z29KN44
@@ -275,7 +321,13 @@ threads:
           checkout edge cases, error guidance, test quality, AC annotation coverage, generated
           artifact parity, and integration gates."
         created_at: 2026-05-29T04:39:17.911Z
+      - _ulid: 01KSS210D5PG1PCYGM6JYRKZSM
+        author: "@claude"
+        body: Acknowledged — evidence log noted.
+        created_at: 2026-05-29T05:06:33.509Z
     kind: nit
+    resolved_at: 2026-05-29T05:06:35.773Z
+    resolved_by: "@claude"
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -285,5 +337,5 @@ verdicts:
     role: reviewer
     created_at: 2026-05-29T04:39:20.316Z
 created_at: 2026-05-29T04:23:16.163Z
-updated_at: 2026-05-29T04:39:20.317Z
+updated_at: 2026-05-29T05:06:35.773Z
 notes: []

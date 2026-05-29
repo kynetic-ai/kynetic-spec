@@ -144,3 +144,43 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-29T04:39:22.020Z
+  - _ulid: 01KSS213G2H044BMPT7GK1QNKH
+    content: >-
+      Fix cycle 2: addressed the untracked-overwrite-hazard blocker (review
+      @01KSRZHQY3DJ4CN3TWV3DWH8BZ).
+
+
+      classifyTargetWorktreeCheckout (src/agent-runtime/workspace.ts) now takes an optional
+      mergeRef. When supplied, after the auxiliary/in-progress/dirty/staged checks pass, it runs
+      detectUntrackedOverwriteHazards: it diffs HEAD..mergeRef for added/modified paths (-z,
+      --diff-filter=ACMRT), then intersects with git ls-files --others -z (untracked + ignored). Any
+      hits become a new overwrite_hazard classification; resolveDispatchIntegrationMutationScope
+      converts that into a DispatchWorkspaceError with code occupied-checkout and a message naming
+      both the blocking checkout path and the first few blocking files, plus
+      remove/stash/commit/detach guidance.
+
+
+      The same hazard check runs when projectDir itself holds the integration target — so the
+      on-target path is not a hole.
+
+
+      _syncTarget (src/agent-runtime/dispatch.ts) re-resolves the mutation scope after fetch with
+      mergeRef = <remote>/<branch>. Hazards now refuse before ref movement, degraded.kind is
+      occupied-checkout (not divergence), and recovery from the hazard happens automatically on the
+      next sync once the blocking file is removed.
+
+
+      Tests in tests/dispatch-target-sync.test.ts: regression test 'refuses a sync when the occupied
+      target checkout has an untracked file at a path the incoming remote commit writes' (verified
+      to fail on the prior code with degraded.kind === 'divergence') and 'recovers from
+      untracked-overwrite-hazard degraded state after the blocking file is removed'.
+
+
+      Gates: typecheck pass, format:check pass, repo lint 743 warnings 0 errors (unchanged),
+      changed-file oxlint 0 warnings 0 errors, kspec validate refs/alignment/completeness pass,
+      focused detached-reviewer-merge / dispatch-target-sync / dispatch-degraded-state /
+      dispatch-plan-target-lock-e2e all pass, full suite 9917 passed of 9922 (5 skipped, 0 failures,
+      2591 suites).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-29T05:06:36.674Z
