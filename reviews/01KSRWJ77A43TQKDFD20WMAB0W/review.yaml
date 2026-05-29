@@ -179,6 +179,13 @@ events:
       kind: blocker
       thread_ulid: 01KSRXEJ48VW6X74SJ9W99FBPM
     timestamp: 2026-05-29T03:46:34.961Z
+  - _ulid: 01KSRXEZJ0EAPC23DFVC58GN28
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSRXEZC1R7D2HYHDZ93G2H4S
+    timestamp: 2026-05-29T03:46:48.512Z
 examined_commit: ef1370a7a7dcd6dd87c7a1f277bb2c442fc4ee45
 external_links: []
 lifecycle_state: open
@@ -213,7 +220,28 @@ threads:
           render/build step and ensure the supporting script copy matches the updated template."
         created_at: 2026-05-29T03:46:34.760Z
     kind: blocker
+  - _ulid: 01KSRXEZC1R7D2HYHDZ93G2H4S
+    anchor:
+      type: code
+      commit: ef1370a7a7dcd6dd87c7a1f277bb2c442fc4ee45
+      line_end: 536
+      line_start: 536
+      path: tests/dispatch-plan-target-lock-e2e.test.ts
+      side: head
+    entries:
+      - _ulid: 01KSRXEZC1HW201GQ5RJJVC1DA
+        author: Jacob Chapel
+        body: 'Changed-file oxlint gate is not clean. Running npx oxlint on the changed TypeScript/test
+          files reports six new prefer-template warnings from the submitted edits:
+          tests/dispatch-plan-target-lock-e2e.test.ts:536, tests/dispatch-target-sync.test.ts:1444,
+          tests/detached-reviewer-merge.test.ts:732, and tests/dispatch-degraded-state.test.ts:840,
+          924, 990. Project review gates require changed-file warnings to be inspected and treated
+          as review findings even when repo-wide lint has a warning baseline. Replace these
+          JSON.stringify(...) + "\n" concatenations with template literals or another warning-free
+          construction.'
+        created_at: 2026-05-29T03:46:48.321Z
+    kind: blocker
 verdicts: []
 created_at: 2026-05-29T03:31:06.090Z
-updated_at: 2026-05-29T03:46:34.760Z
+updated_at: 2026-05-29T03:46:48.321Z
 notes: []
