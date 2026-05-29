@@ -17,3 +17,7 @@ notes:
     content: Add explicit existing-spec update task for runner semantics
     author: Jacob Chapel
     created_at: 2026-05-29T21:56:51.635Z
+  - _ulid: 01KSTWRE03FS2V6KEW5CSSQ9QX
+    content: Make existing-spec update task exact and reviewer-approved
+    author: Jacob Chapel
+    created_at: 2026-05-29T22:12:58.500Z

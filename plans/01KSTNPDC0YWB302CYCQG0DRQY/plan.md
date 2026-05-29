@@ -454,28 +454,50 @@ derive_from_specs: false
   description: |
     What:
     - Update existing implemented kspec contracts that the runner layer extends. Do not rely on plan-local `## Specs` entries to update existing specs; those entries materialize new specs during derivation.
-    - Update `@agent-definition-schema` so the existing Agent Definition Schema contract explicitly includes the new optional `runner` field:
-      - Add a new AC `ac-runner-field-accepted`: Given an agent definition includes a `runner` field, when the meta manifest is loaded and validated, then the runner field is accepted as an optional string reference to a named runner.
-      - Update existing compatibility/default wording in `ac-8` so legacy agent definitions without `runner` validate successfully with `runner: undefined` in addition to the existing default fields.
-      - Add a new AC `ac-meta-set-runner-preserves-fields`: Given an agent definition exists, when `kspec meta set <agent>` sets or clears `runner`, then the agent definition is updated while unrelated fields, including `adapter`, are preserved.
-    - Update `@dispatch-event-payload` so existing invocation payload contracts include runner-backed metadata without breaking legacy consumers:
-      - Add or amend an AC so runner-backed invocation events include `runner` and `resolved_adapter`; legacy adapter-backed invocation events continue to expose adapter identity and omit `runner` when no runner is configured.
-      - Keep `task_ref`, `session_id`, `agent_id`, `trigger`, and terminal `duration_ms` semantics unchanged.
-    - Update `@codex-acp-adapter-registration` if the implementation moves Codex session injection behind the runner resolver/env builder:
-      - Preserve the behavior that Codex receives `KSPEC_SESSION_ID` through its configured environment policy.
-      - Preserve cleanup/restoration behavior after invocation close or startup failure.
-      - Rewrite AC wording away from the exact helper names `injectEnvForAdapter`/`removeEnvForAdapter` if those helpers are replaced, so the existing spec continues to describe behavior rather than obsolete implementation mechanics.
-    - Update statuses for touched existing specs intentionally: keep implemented specs implemented if the task only broadens their contract and immediately implements/tests the updates in the same task chain; otherwise set touched specs to in_progress with `--no-cascade` before implementation work begins.
-    - Add notes to touched specs summarizing that the runner configuration plan extends their existing contracts.
-    - Verify every new or edited AC is covered by a later implementation task's `Covers:` line before marking this task complete.
+    - Reopen exactly these existing specs before editing ACs because the runner plan broadens implemented contracts that later tasks will implement:
+      - `kspec item set @agent-definition-schema --status in_progress --no-cascade`
+      - `kspec item set @dispatch-event-payload --status in_progress --no-cascade`
+      - `kspec item set @codex-acp-adapter-registration --status in_progress --no-cascade`
+    - Apply exactly these `@agent-definition-schema` AC changes:
+      - Add AC `ac-runner-field-accepted` with this final text:
+        - Given: `An agent definition includes a runner field`
+        - When: `The meta manifest is loaded and validated`
+        - Then: `The runner field is accepted as an optional string reference to a named runner; runner name resolution happens at invocation/preflight time rather than schema validation time`
+      - Update existing AC `ac-8` to this final text:
+        - Given: `Existing agent definitions in meta lack the new dispatch, adapter, or runner fields`
+        - When: `The meta manifest is loaded`
+        - Then: `The schema validates successfully with all new fields using their defaults (dispatch: [], adapter: undefined, runner: undefined, skills: [], budget: undefined, concurrency: {max_concurrent: 1}, auto_approve: false)`
+      - Add AC `ac-meta-set-runner-preserves-fields` with this final text:
+        - Given: `An agent definition exists`
+        - When: `kspec meta set <agent> sets or clears the runner field`
+        - Then: `The runner field is updated while every unspecified field, including adapter, dispatch, skills, budget, concurrency, session, prompt template, tags, and auto_approve, is preserved`
+    - Apply exactly these `@dispatch-event-payload` AC changes:
+      - Update existing AC `ac-2` to this final text:
+        - Given: `An invocation.* event is emitted`
+        - When: `A consumer reads the payload`
+        - Then: `The payload includes session_id (which is the invocation's canonical identifier), agent_id, trigger, adapter_id, resolved_adapter, and duration_ms (for terminal events); runner is present when the invocation used a named runner and absent when no named runner was configured; task_ref is present when the invocation is task-scoped and absent otherwise`
+    - Apply exactly these `@codex-acp-adapter-registration` AC changes:
+      - Update existing AC `ac-2` to this final text:
+        - Given: `An invocation uses the codex-acp adapter and has a kspec session id`
+        - When: `The adapter process environment or adapter-specific configuration is prepared`
+        - Then: `KSPEC_SESSION_ID is made available to child kspec commands launched by Codex through the resolved invocation environment/configuration path`
+      - Update existing AC `ac-3` to this final text:
+        - Given: `An invocation uses the codex-acp adapter and the invocation closes or fails during startup`
+        - When: `Adapter or runner cleanup runs`
+        - Then: `Any temporary Codex environment/configuration changes made for the invocation are restored or removed without leaking the session id into later invocations`
+    - Add these exact notes after the AC updates:
+      - `kspec item note @agent-definition-schema "Runner configuration plan @plan-agent-runner-configuration-layer extends this schema with optional runner references and meta set/clear behavior."`
+      - `kspec item note @dispatch-event-payload "Runner configuration plan @plan-agent-runner-configuration-layer extends invocation payloads with resolved adapter and optional runner metadata."`
+      - `kspec item note @codex-acp-adapter-registration "Runner configuration plan @plan-agent-runner-configuration-layer preserves Codex session-id injection and cleanup through the runner-aware invocation environment path."`
 
     Why:
-    The plan-local Specs block creates new runner specs. It does not patch existing implemented specs such as Agent Definition Schema, Dispatch Event Payload Contracts, or Codex adapter registration. Without this explicit task, derivation would leave the current specs stale or conflicting while implementation changes their behavior.
+    The plan-local Specs block creates new runner specs. It does not patch existing implemented specs such as Agent Definition Schema, Dispatch Event Payload Contracts, or Codex adapter registration. Without this explicit task, derivation would leave the current specs stale or conflicting while implementation changes their behavior. Spec-update tasks must carry the exact target specs, AC IDs, and final AC wording so review approves the contract change before an implementation agent starts work.
 
     How:
     - Use `kspec item get` to capture current target spec text before editing.
-    - Use `kspec item ac add` for new ACs and the appropriate item/AC update command for amended ACs; do not hand-edit shadow YAML unless the CLI lacks the needed mutation surface.
-    - Keep AC IDs exact and stable so implementation tests can annotate against them.
+    - Use `kspec item ac add` for new ACs and `kspec item ac set` for amended ACs with the exact text above.
+    - Do not choose alternate AC IDs, alternate field names, or weaker compatibility wording.
+    - Do not hand-edit shadow YAML unless the CLI command fails and the failure is recorded in the task notes with the manual patch diff.
     - Keep the plan-local runner specs as the new high-level contract; use existing-spec edits only for contracts that already own adjacent behavior.
 
     Testing:
@@ -484,7 +506,7 @@ derive_from_specs: false
     - `kspec item get @codex-acp-adapter-registration`
     - `kspec validate --refs --warnings-ok`
 
-    Covers: existing @agent-definition-schema agent field/default/mutation AC updates; existing @dispatch-event-payload invocation payload metadata update; existing @codex-acp-adapter-registration Codex session env and cleanup behavior update
+    Covers: existing @agent-definition-schema ac-runner-field-accepted, ac-8, ac-meta-set-runner-preserves-fields; existing @dispatch-event-payload ac-2; existing @codex-acp-adapter-registration ac-2, ac-3
 
 - title: Define layered runner config storage, schema, and shared TypeScript types
   slug: task-runner-config-schema-types
