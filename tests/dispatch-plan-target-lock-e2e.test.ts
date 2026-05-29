@@ -533,7 +533,7 @@ describe("dispatch plan-target lock E2E regression (manual_merge)", () => {
       });
       await fs.writeFile(
         path.join(occupantWorktree, ".kspec-dispatch-workspace.json"),
-        JSON.stringify({ role: "helper", purpose: "test" }) + "\n",
+        `${JSON.stringify({ role: "helper", purpose: "test" })}\n`,
         "utf-8",
       );
 

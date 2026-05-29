@@ -837,7 +837,7 @@ describe("dispatch engine degraded state", () => {
     // Auxiliary marker so the mutation-scope resolver refuses the surface.
     await fs.writeFile(
       path.join(occupiedWorktreeDir, ".kspec-dispatch-workspace.json"),
-      JSON.stringify({ role: "helper", purpose: "test" }) + "\n",
+      `${JSON.stringify({ role: "helper", purpose: "test" })}\n`,
       "utf-8",
     );
 
@@ -921,7 +921,7 @@ describe("dispatch engine degraded state", () => {
     });
     await fs.writeFile(
       path.join(occupiedWorktreeDir, ".kspec-dispatch-workspace.json"),
-      JSON.stringify({ role: "helper", purpose: "test" }) + "\n",
+      `${JSON.stringify({ role: "helper", purpose: "test" })}\n`,
       "utf-8",
     );
 
@@ -987,7 +987,7 @@ describe("dispatch engine degraded state", () => {
     // (a plain user-occupied checkout is now an eligible mutation surface).
     await fs.writeFile(
       path.join(occupiedWorktreeDir, ".kspec-dispatch-workspace.json"),
-      JSON.stringify({ role: "helper", purpose: "test" }) + "\n",
+      `${JSON.stringify({ role: "helper", purpose: "test" })}\n`,
       "utf-8",
     );
 

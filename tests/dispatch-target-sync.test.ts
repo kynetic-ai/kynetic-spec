@@ -1441,7 +1441,7 @@ describe("dispatch target branch sync", () => {
     // classification signal.
     await fs.writeFile(
       path.join(auxiliaryWorktreeDir, ".kspec-dispatch-workspace.json"),
-      JSON.stringify({ role: "helper", purpose: "test" }) + "\n",
+      `${JSON.stringify({ role: "helper", purpose: "test" })}\n`,
       "utf-8",
     );
 

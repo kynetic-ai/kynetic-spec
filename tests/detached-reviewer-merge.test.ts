@@ -729,7 +729,7 @@ describe("detached-reviewer-merge helper", () => {
       // the integration target branch checked out.
       await fs.writeFile(
         path.join(occupied, ".kspec-dispatch-workspace.json"),
-        JSON.stringify({ role: "helper", purpose: "test" }) + "\n",
+        `${JSON.stringify({ role: "helper", purpose: "test" })}\n`,
       );
 
       const targetHeadBefore = revParse(env.projectDir, `refs/heads/${env.mergeTarget}`);
