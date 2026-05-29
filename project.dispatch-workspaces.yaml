@@ -12971,7 +12971,7 @@ workspaces:
         head: 5c2307763523de8901f2b373e3602318268446ef
         last_seen_at: 2026-05-27T08:41:01.818Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-validate-folder-index-consistency-hardening-01kskqxk
-  - active_role: null
+  - active_role: worker
     base_branch_point: 2b53df016aaff17a475a2e150a438ef4c4d07553
     bootstrap:
       status: succeeded
@@ -13301,7 +13301,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-29T02:29:06.430Z
+      updated_at: 2026-05-29T02:29:32.151Z
     integration:
       status: pending
       detail: null
@@ -13310,16 +13310,16 @@ workspaces:
       target_branch: dev
       target_commit: 2b53df016aaff17a475a2e150a438ef4c4d07553
       updated_at: 2026-05-29T02:29:06.430Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KSREGBX83KKDC7JPSPCKNWQ9"
     task_slug: task-merge-helper-clean-occupied-target-checkout
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-05-29T02:29:06.430Z
+      last_active_at: 2026-05-29T02:29:32.151Z
+      last_reconciled_at: 2026-05-29T02:29:32.151Z
       created_at: 2026-05-29T02:29:06.430Z
-      updated_at: 2026-05-29T02:29:30.934Z
+      updated_at: 2026-05-29T02:29:32.151Z
     workspace_id: dispatch-workspace-01KSREGBX83KKDC7JPSPCKNWQ9
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
