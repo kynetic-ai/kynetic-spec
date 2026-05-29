@@ -1700,3 +1700,13 @@ plans:
     notes_count: 3
     source_path: /home/chapel/Projects/kynetic-spec-dispatch/plans/folder-backed-index-consistency-hardening.md
     created_at: 2026-05-26T16:50:25.104Z
+  - _ulid: 01KSTNPDC0YWB302CYCQG0DRQY
+    slugs:
+      - plan-agent-runner-configuration-layer
+    title: Agent Runner Configuration Layer
+    status: draft
+    derived_specs: []
+    derived_tasks: []
+    notes_count: 0
+    source_path: /home/chapel/Projects/kynetic-spec-dispatch/plans/agent-runner-configuration-layer.md
+    created_at: 2026-05-29T20:09:32.288Z
