@@ -2,7 +2,128 @@ _ulid: 01KSS4XF3RRQN4TK83NBAZ7ST8
 slugs: []
 title: Review branch-coherent merge helper (cycle 4)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed; existing reference warnings only.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-29T06:11:50.068Z
+    completed_at: 2026-05-29T06:11:50.068Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed; existing alignment warning baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-29T06:11:52.366Z
+    completed_at: 2026-05-29T06:11:52.366Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed; existing completeness warning baseline.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-29T06:11:54.620Z
+    completed_at: 2026-05-29T06:11:54.620Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run format:check passed: all matched files formatted."
+    name: format:check
+    required: true
+    runner: npm
+    created_at: 2026-05-29T06:11:56.830Z
+    completed_at: 2026-05-29T06:11:56.830Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run lint -- --quiet passed: 743 warnings, 0 errors (repo warning baseline)."
+    name: repo lint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-29T06:11:59.135Z
+    completed_at: 2026-05-29T06:11:59.135Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npx oxlint on changed TS/test files passed: 0 warnings, 0 errors."
+    name: changed-file oxlint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-29T06:12:01.351Z
+    completed_at: 2026-05-29T06:12:01.351Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck passed.
+    name: typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-29T06:12:03.580Z
+    completed_at: 2026-05-29T06:12:03.580Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/detached-reviewer-merge.test.ts passed: 20/20 tests."
+    name: focused detached reviewer merge tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-29T06:12:05.829Z
+    completed_at: 2026-05-29T06:12:05.829Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/dispatch-target-sync.test.ts
+      tests/dispatch-degraded-state.test.ts passed: 71/71 tests."
+    name: focused dispatch sync/degraded tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-29T06:12:08.136Z
+    completed_at: 2026-05-29T06:12:08.136Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/dispatch-plan-target-lock-e2e.test.ts passed: 1/1 test."
+    name: focused dispatch plan target lock test
+    required: true
+    runner: npm test
+    created_at: 2026-05-29T06:12:10.333Z
+    completed_at: 2026-05-29T06:12:10.333Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh passed: 2591/2591 suites, 9921 passed, 5 skipped of 9926 tests."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-05-29T06:12:12.571Z
+    completed_at: 2026-05-29T06:12:12.571Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Template merge helper matches both rendered .agents and .factory copies.
+    name: rendered merge helper sync
+    required: true
+    runner: cmp
+    created_at: 2026-05-29T06:12:14.798Z
+    completed_at: 2026-05-29T06:12:14.798Z
 events:
   - _ulid: 01KSS4XF3QBBYVWFV46M1G00XE
     actor: Jacob Chapel
@@ -17,6 +138,97 @@ events:
       from: draft
       to: open
     timestamp: 2026-05-29T05:57:13.322Z
+  - _ulid: 01KSS5RHC5DRBY25WB8JEF2W51
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-05-29T06:11:50.277Z
+  - _ulid: 01KSS5RKKYR6JTZKCEFGH7Y1CB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-05-29T06:11:52.575Z
+  - _ulid: 01KSS5RNT9T8CGHXBMCM1AM50T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-05-29T06:11:54.825Z
+  - _ulid: 01KSS5RQZDEKDZ14DG2YXX5AYK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format:check
+    timestamp: 2026-05-29T06:11:57.037Z
+  - _ulid: 01KSS5RT6RQW2HD26RGHQHE69H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: repo lint
+    timestamp: 2026-05-29T06:11:59.320Z
+  - _ulid: 01KSS5RWD8A1X0FC5FAF6BDE91
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file oxlint
+    timestamp: 2026-05-29T06:12:01.576Z
+  - _ulid: 01KSS5RYJ6H0GMYFBTDTGAB4A2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-29T06:12:03.782Z
+  - _ulid: 01KSS5S0S75V8D0VC822KGR57Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused detached reviewer merge tests
+    timestamp: 2026-05-29T06:12:06.055Z
+  - _ulid: 01KSS5S308K5GNC8XPWJG4EQ0N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused dispatch sync/degraded tests
+    timestamp: 2026-05-29T06:12:08.328Z
+  - _ulid: 01KSS5S55JACB8M5AT0ET7NK9S
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused dispatch plan target lock test
+    timestamp: 2026-05-29T06:12:10.547Z
+  - _ulid: 01KSS5S7B2E9CFZ1NGF6MDR7CW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-29T06:12:12.770Z
+  - _ulid: 01KSS5S9H9T2ME0ZVCHGKBJN5K
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: rendered merge helper sync
+    timestamp: 2026-05-29T06:12:15.017Z
+  - _ulid: 01KSS5SBPF7XFYP9B413ZM98TX
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSS5SBFSNB52FNN9P4ZYKV0Q
+    timestamp: 2026-05-29T06:12:17.231Z
 examined_commit: 3d321b69448ad990342297f1dd76d187fddbc21f
 external_links: []
 lifecycle_state: open
@@ -26,8 +238,26 @@ subject:
   content_hash: ""
   ref: "@01KSREGBX83KKDC7JPSPCKNWQ9"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KSS5SBFSNB52FNN9P4ZYKV0Q
+    entries:
+      - _ulid: 01KSS5SBFS2C3FHE1VCFHKYHJ6
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; task details and prior reviews @01KSRWJ7,
+          @01KSRZHQ, @01KSS28J; specs @detached-reviewer-merge-helper,
+          @dispatch-integration-mutation-scope, @dispatch-remote-branch-sync; diffs and surrounding
+          code in src/agent-runtime/workspace.ts, src/agent-runtime/dispatch.ts,
+          templates/skills/merge/scripts/detached-reviewer-merge.sh; behavioral tests in
+          tests/detached-reviewer-merge.test.ts, tests/dispatch-target-sync.test.ts,
+          tests/dispatch-degraded-state.test.ts, tests/dispatch-plan-target-lock-e2e.test.ts. Claims
+          verified: rendered helper copies are byte-identical to the template; prior
+          overwrite-hazard blockers are covered by directory/file collision tests and pass in
+          focused/full suites; clean occupied target sync/merge uses existing checkout without
+          degrading. Categories searched: correctness, edge cases, error handling/recovery guidance,
+          test quality, integration/worktree safety. No blockers found."
+        created_at: 2026-05-29T06:12:17.017Z
+    kind: nit
 verdicts: []
 created_at: 2026-05-29T05:57:03.224Z
-updated_at: 2026-05-29T05:57:13.139Z
+updated_at: 2026-05-29T06:12:17.017Z
 notes: []
