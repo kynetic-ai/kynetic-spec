@@ -24,6 +24,17 @@ checks:
     required: true
     created_at: 2026-05-29T20:15:21.725Z
     completed_at: 2026-05-29T20:15:21.725Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Manual task graph is acyclic and follows storage/types -> agent metadata -> resolver ->
+      env/runtime -> dispatch -> CLI/API/UI/docs/regression order. Minor API/CLI serialization is
+      not a blocker compared with the recorded plan-quality issues.
+    name: Dependency ordering
+    required: true
+    created_at: 2026-05-29T20:15:31.205Z
+    completed_at: 2026-05-29T20:15:31.205Z
 events:
   - _ulid: 01KSTNXXY95WXGX2PEQBWC3MS8
     actor: Jacob Chapel
@@ -87,6 +98,13 @@ events:
       status: fail
       name: AC coverage mapping
     timestamp: 2026-05-29T20:15:21.978Z
+  - _ulid: 01KSTP1C4FHZXQYXAF43KNWYNA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-05-29T20:15:31.471Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -178,5 +196,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-05-29T20:13:38.633Z
-updated_at: 2026-05-29T20:15:21.725Z
+updated_at: 2026-05-29T20:15:31.205Z
 notes: []
