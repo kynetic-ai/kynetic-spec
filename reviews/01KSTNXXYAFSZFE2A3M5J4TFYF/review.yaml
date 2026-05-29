@@ -45,6 +45,13 @@ events:
       kind: blocker
       thread_ulid: 01KSTNZQQRBWP6587W604JG7WR
     timestamp: 2026-05-29T20:14:38.096Z
+  - _ulid: 01KSTP01WZ5378Q1A8WD4TGQHK
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSTP01KY06WWPM6PJT28EBHS
+    timestamp: 2026-05-29T20:14:48.224Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -117,7 +124,24 @@ threads:
           so each behavior has a single observable outcome.
         created_at: 2026-05-29T20:14:37.816Z
     kind: blocker
+  - _ulid: 01KSTP01KY06WWPM6PJT28EBHS
+    anchor:
+      type: structured
+      ref: "@task-runner-config-schema-types"
+      section: tasks
+    entries:
+      - _ulid: 01KSTP01KYMKTZT6YQ4CM489S4
+        author: Jacob Chapel
+        body: "The task leaves the runner kind enum and out-of-scope sidecar behavior for the worker to
+          decide: it says kind has 'at least acp_process' and to reserve 'headed_acp_sidecar' as a
+          parsed value if the launcher is out of scope. That is not precise enough for a
+          compatibility/security boundary. Define the exact accepted kind enum values and, if
+          headed_acp_sidecar is accepted before implementation, specify whether validation fails
+          closed, what diagnostic is emitted, and what sidecar-specific security/loopback fields are
+          intentionally absent or reserved."
+        created_at: 2026-05-29T20:14:47.934Z
+    kind: blocker
 verdicts: []
 created_at: 2026-05-29T20:13:38.633Z
-updated_at: 2026-05-29T20:14:37.816Z
+updated_at: 2026-05-29T20:14:47.934Z
 notes: []
