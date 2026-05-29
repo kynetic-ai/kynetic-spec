@@ -2,7 +2,86 @@ _ulid: 01KSTVZV6AVB58B15TTWR8WBAT
 slugs: []
 title: "Plan review: Agent Runner Configuration Layer"
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec plan import plans/agent-runner-configuration-layer.md --dry-run parsed the full
+      document and made no changes; dry-run reported derived specs: 0 and derived tasks: 0."
+    name: Plan import dry-run
+    required: true
+    created_at: 2026-05-29T22:00:04.288Z
+    completed_at: 2026-05-29T22:00:04.288Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed. Only existing deprecated-reference warnings
+      were reported outside this plan review.
+    name: Reference validation
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-29T22:00:06.832Z
+    completed_at: 2026-05-29T22:00:06.832Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@task-update-existing-agent-runner-specs explicitly states plan-local Specs entries
+      create new specs and do not patch existing specs, and requires direct updates to implemented
+      contracts."
+    name: Existing-spec update gap
+    required: true
+    created_at: 2026-05-29T22:00:09.403Z
+    completed_at: 2026-05-29T22:00:09.403Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Inspected @agent-definition-schema, @dispatch-event-payload,
+      @codex-acp-adapter-registration, plus adjacent invocation/session specs. The three named
+      targets are the contracts that need explicit patching for runner field/defaults, invocation
+      payload metadata, and Codex env/cleanup wording.
+    name: Existing target selection
+    required: true
+    created_at: 2026-05-29T22:00:11.959Z
+    completed_at: 2026-05-29T22:00:11.959Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All new plan-local runner ACs are claimed by task Covers lines. New/edited existing-spec
+      ACs are named in the update task and claimed later by @task-agent-runner-meta-cli,
+      @task-runner-resolver-invocation-contract, @task-runner-env-secret-boundary, and
+      @task-daemon-api-runner-surfaces.
+    name: Coverage mapping
+    required: true
+    created_at: 2026-05-29T22:00:14.560Z
+    completed_at: 2026-05-29T22:00:14.560Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@task-update-existing-agent-runner-specs is first and @task-runner-config-schema-types
+      depends on it. Downstream dependencies follow schema/types -> meta CLI -> resolver ->
+      env/runtime -> dispatch -> CLI/API/UI/docs/E2E with no circular dependency or priority
+      inversion found."
+    name: Dependency ordering
+    required: true
+    created_at: 2026-05-29T22:00:17.112Z
+    completed_at: 2026-05-29T22:00:17.112Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Tasks are standalone with What/Why/How/Testing/Covers sections, security boundaries are
+      explicit, behavioral specs are testable, and implementation notes are current after the latest
+      edit.
+    name: Task and spec quality
+    required: true
+    created_at: 2026-05-29T22:00:19.672Z
+    completed_at: 2026-05-29T22:00:19.672Z
 events:
   - _ulid: 01KSTVZV67S0ZEBDVMGYT3EQK2
     actor: Jacob Chapel
@@ -10,9 +89,81 @@ events:
     payload:
       to: draft
     timestamp: 2026-05-29T21:59:32.807Z
+  - _ulid: 01KSTW0QFYGZZ5K6E34E7MSJNF
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-29T22:00:01.790Z
+  - _ulid: 01KSTW0T4QVCM6WPB89RMD9141
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan import dry-run
+    timestamp: 2026-05-29T22:00:04.503Z
+  - _ulid: 01KSTW0WM5MW079RV1V4P6Q182
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Reference validation
+    timestamp: 2026-05-29T22:00:07.045Z
+  - _ulid: 01KSTW0Z5KAXXYT70S0KE4MPWH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Existing-spec update gap
+    timestamp: 2026-05-29T22:00:09.651Z
+  - _ulid: 01KSTW11NDRWF1656MZKWK6WQN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Existing target selection
+    timestamp: 2026-05-29T22:00:12.205Z
+  - _ulid: 01KSTW146BDY72JZC250WDBXMG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Coverage mapping
+    timestamp: 2026-05-29T22:00:14.796Z
+  - _ulid: 01KSTW16N2HBAKR5XTCVAA1TDB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-05-29T22:00:17.314Z
+  - _ulid: 01KSTW1952N5JY55EB36X8HM29
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Task and spec quality
+    timestamp: 2026-05-29T22:00:19.875Z
+  - _ulid: 01KSTW1BK3QEJ3N1MDHKJA259M
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-29T22:00:22.371Z
+  - _ulid: 01KSTW1BK3ME0T34X828DR4X0F
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-29T22:00:22.371Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -20,7 +171,14 @@ subject:
   ref: "@plan-agent-runner-configuration-layer"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-29T22:00:22.371Z
 created_at: 2026-05-29T21:59:32.810Z
-updated_at: null
+updated_at: 2026-05-29T22:00:22.371Z
 notes: []

@@ -22893,10 +22893,10 @@ reviews:
   - _ulid: 01KSTVZV6AVB58B15TTWR8WBAT
     slugs: []
     title: "Plan review: Agent Runner Configuration Layer"
-    disposition: pending
+    disposition: approved
     author: Jacob Chapel
-    check_count: 0
-    lifecycle_state: draft
+    check_count: 7
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -22905,5 +22905,6 @@ reviews:
       shadow_commit: ""
     thread_count: 0
     unresolved_blocker_count: 0
-    verdict_count: 0
+    verdict_count: 1
     created_at: 2026-05-29T21:59:32.810Z
+    updated_at: 2026-05-29T22:00:22.371Z
