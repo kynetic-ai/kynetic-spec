@@ -13,6 +13,17 @@ checks:
     required: true
     created_at: 2026-05-29T20:15:01.330Z
     completed_at: 2026-05-29T20:15:01.330Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Plan-local ACs are covered and Covers refs resolve, but inherited trait ACs are orphaned:
+      @trait-json-output ac-4/ac-5/ac-6 and @trait-error-guidance ac-1 through ac-6 have no task
+      coverage."
+    name: AC coverage mapping
+    required: true
+    created_at: 2026-05-29T20:15:21.725Z
+    completed_at: 2026-05-29T20:15:21.725Z
 events:
   - _ulid: 01KSTNXXY95WXGX2PEQBWC3MS8
     actor: Jacob Chapel
@@ -69,6 +80,13 @@ events:
       status: pass
       name: Plan import dry-run
     timestamp: 2026-05-29T20:15:01.655Z
+  - _ulid: 01KSTP12VT23AGY28W2YXGJ18V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: AC coverage mapping
+    timestamp: 2026-05-29T20:15:21.978Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -160,5 +178,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-05-29T20:13:38.633Z
-updated_at: 2026-05-29T20:15:01.330Z
+updated_at: 2026-05-29T20:15:21.725Z
 notes: []
