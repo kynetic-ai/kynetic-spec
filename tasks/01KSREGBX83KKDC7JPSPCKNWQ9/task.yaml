@@ -190,7 +190,7 @@ tags:
   - git
   - worktree
 vcs_refs: []
-review_ref: "@01KSRZHQY3DJ4CN3TWV3DWH8BZ"
+review_ref: "@01KSS28J430DHQM34ERZHZXD03"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-merge-helper-clean-occupied-target-checkout/01ksregb
@@ -355,6 +355,13 @@ history:
         previous: 2026-05-29T04:12:12.470Z
     command: task-submit
     timestamp: 2026-05-29T05:06:37.495Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KSS28J430DHQM34ERZHZXD03"
+        previous: "@01KSRZHQY3DJ4CN3TWV3DWH8BZ"
+    command: review-link
+    timestamp: 2026-05-29T05:10:43.248Z
 created_at: 2026-05-28T23:25:25.288Z
 started_at: 2026-05-29T05:06:26.813Z
 submitted_at: 2026-05-29T05:06:37.495Z
