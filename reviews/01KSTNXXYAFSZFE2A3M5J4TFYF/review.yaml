@@ -142,9 +142,25 @@ events:
       status: fail
       name: Task standalone executability
     timestamp: 2026-05-29T20:15:54.227Z
+  - _ulid: 01KSTP2AHAR2TAT0D16SVD62P8
+    actor: Jacob Chapel
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-29T20:16:02.602Z
+  - _ulid: 01KSTP2AHAECPGW9G1WBDDHQN4
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-29T20:16:02.602Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -231,7 +247,14 @@ threads:
           intentionally absent or reserved."
         created_at: 2026-05-29T20:14:47.934Z
     kind: blocker
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: Jacob Chapel
+    role: reviewer
+    created_at: 2026-05-29T20:16:02.602Z
 created_at: 2026-05-29T20:13:38.633Z
-updated_at: 2026-05-29T20:15:53.990Z
+updated_at: 2026-05-29T20:16:02.602Z
 notes: []
