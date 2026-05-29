@@ -396,8 +396,12 @@ if ! MERGE_OUTPUT=$(git -C "$MERGE_SURFACE" merge --no-ff "$CANONICAL_HEAD" -m "
     git -C "$MERGE_SURFACE" merge --abort 2>/dev/null || true
   fi
 
-  # Recognize the untracked-overwrite case and report it as such.
-  if printf '%s\n' "$MERGE_OUTPUT" | grep -q -i "would be overwritten by merge"; then
+  # Recognize the untracked-overwrite case and report it as such. Git emits
+  # two different error shapes depending on whether the collision is a file
+  # vs file ("would be overwritten by merge") or a file vs directory
+  # ("would lose untracked files in them"). Both mean the same thing: the
+  # merge would have clobbered untracked content in the occupied checkout.
+  if printf '%s\n' "$MERGE_OUTPUT" | grep -q -i -e "would be overwritten by merge" -e "would lose untracked files"; then
     echo "error: integration target branch '$MERGE_TARGET' is checked out at '$MERGE_SURFACE' and the required merge would overwrite untracked/ignored files in that checkout." >&2
     echo "" >&2
     echo "$MERGE_OUTPUT" >&2
