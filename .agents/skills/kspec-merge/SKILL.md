@@ -57,7 +57,7 @@ In the examples below, `<integration-branch>` is a placeholder for the actual ta
 
 ## Detached Reviewer Context
 
-In `manual_merge` publication mode, reviewers work from a **detached snapshot** of the task branch — you are NOT on the integration branch, and you must not check it out anywhere as a recovery step.
+In `manual_merge` publication mode, reviewers work from a **detached snapshot** of the task branch — you are NOT on the integration branch, and you must not check it out inside the detached snapshot as a recovery step.
 
 **Use the supported merge helper.** It is the one supported merge path in this mode. Do not improvise git merge commands in the detached snapshot:
 
@@ -65,23 +65,29 @@ In `manual_merge` publication mode, reviewers work from a **detached snapshot** 
 bash .agents/skills/kspec-merge/scripts/detached-reviewer-merge.sh
 ```
 
-The helper reads the dispatch environment variables (`KSPEC_DISPATCH_CANONICAL_BRANCH`, `KSPEC_DISPATCH_MERGE_TARGET`, `KSPEC_DISPATCH_CANONICAL_HEAD`), creates a helper-owned temporary worktree on the integration target, performs the merge there, advances the target ref on success, and removes the temporary worktree before exiting. No persistent target worktree is created or left behind on any path.
+The helper reads the dispatch environment variables (`KSPEC_DISPATCH_CANONICAL_BRANCH`, `KSPEC_DISPATCH_MERGE_TARGET`, `KSPEC_DISPATCH_CANONICAL_HEAD`) and selects a branch-coherent merge surface:
+
+- If the integration target is **not checked out anywhere**, the helper creates a helper-owned temporary worktree on the target branch, performs the merge there, and removes that temporary worktree before exiting.
+- If the integration target is checked out in **exactly one clean, non-auxiliary project/user checkout** (for example the project root already has `main` or `dev` checked out), the helper performs the merge through that existing checkout so Git advances the branch, index, and working tree together.
+- If the integration target is checked out in an unsafe location or state, the helper refuses before moving refs and prints recovery guidance naming the blocker.
+
+The helper never asks the reviewer to check out the integration target inside the detached snapshot, and it must not leave a new persistent target-branch worktree behind.
 
 ### Helper Outcomes
 
-| Outcome             | What happens                                                                                                                        | What to do next                                                                                    |
-| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| **Success**         | Helper creates a temporary target worktree, advances the integration target ref, and removes the temporary worktree                 | `kspec task complete @ref`, `kspec review close @review-ref`                                       |
-| **No-op**           | Canonical branch already integrated at target tip — no ref move, no helper worktree created                                         | Report no-op, complete the task                                                                    |
-| **Occupied target** | Target branch is checked out in another non-helper worktree — helper refuses before moving any refs                                 | Follow the recovery guidance the helper prints to free or detach the blocking checkout, then retry |
-| **Dirty target**    | The blocking non-helper worktree has uncommitted changes                                                                            | Follow the recovery guidance the helper prints, then retry                                         |
-| **Conflict**        | Merge conflicts in the helper-owned temporary worktree — helper aborts, removes the temporary worktree, leaves target ref unchanged | Move task to `needs_work` with conflict details — do not attempt manual resolution in the snapshot |
+| Outcome                         | What happens                                                                                                                                      | What to do next                                                                                    |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| **Success: target free**         | Helper creates a temporary target worktree, merges there, advances the integration target, and removes the temporary worktree                      | `kspec task complete @ref`, `kspec review close @review-ref`                                       |
+| **Success: clean occupied target** | Helper merges through the existing clean non-auxiliary target checkout; that checkout remains on the target branch, coherent at the new merge tip | `kspec task complete @ref`, `kspec review close @review-ref`                                       |
+| **No-op**                       | Canonical branch already integrated at target tip — no ref move, no helper worktree created, no existing checkout dirtied                         | Report no-op, complete the task                                                                    |
+| **Unsafe occupied target**       | Target branch is checked out in an auxiliary, dirty/staged, in-progress, ambiguous, or untracked-overwrite-hazard checkout; helper refuses         | Follow the recovery guidance the helper prints to free, clean, detach, or remove the blocker, then retry |
+| **Conflict**                    | Merge conflicts in the selected merge surface — helper aborts; temporary worktrees are removed and existing target checkouts are restored          | Move task to `needs_work` with conflict details — do not attempt manual resolution in the snapshot |
 
 ### What NOT to Do in a Detached Snapshot
 
-- Do **not** run `git checkout <integration-branch>` — the helper performs all target-branch checkouts itself in its own temporary worktree
+- Do **not** run `git checkout <integration-branch>` in the detached reviewer snapshot — the helper selects the safe merge surface for you
 - Do **not** create an auxiliary worktree on the integration target to "free" or "stage" anything — that recreates the branch lock the helper is designed to avoid
-- Do **not** run `git merge` manually — the helper handles merge mechanics, temporary-worktree lifecycle, and conflict cleanup
+- Do **not** run `git merge` manually — the helper handles merge mechanics, merge-surface selection, temporary-worktree lifecycle, and conflict cleanup
 - Do **not** attempt to resolve merge conflicts inside the detached snapshot — send the task back to the worker via `needs_work`
 
 ## Merge Process (Non-Dispatch)
