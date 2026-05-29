@@ -1,0 +1,26 @@
+_ulid: 01KSRZHQY3DJ4CN3TWV3DWH8BZ
+slugs: []
+title: Review branch-coherent merges and sync/push (cycle 2)
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KSRZHQY2EZJ8R0QT7TW70NFA
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-29T04:23:16.162Z
+examined_commit: dd78e7404698ffac42d2b04f0fcd23e6e65b19d2
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KSREGBX83KKDC7JPSPCKNWQ9"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-05-29T04:23:16.163Z
+updated_at: null
+notes: []
