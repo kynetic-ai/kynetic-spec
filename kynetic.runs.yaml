@@ -55962,7 +55962,7 @@ runs:
     started_at: 2026-05-29T04:40:24.286Z
     completed_at: 2026-05-29T04:42:12.776Z
   - _ulid: 01KSS37791XQDJ2A3RXT9KD2Y9
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -56007,10 +56007,15 @@ runs:
         notes: Skipped discussion because no untracked improvement was proposed. All candidate
           friction/success points were already covered by current review feedback or existing
           tasks/inbox/observations.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-29T05:29:45.943Z
-        completed_at: 2026-05-29T05:29:45.943Z
+        completed_at: 2026-05-29T05:29:53.295Z
+        notes: "No capture performed: overwrite-hazard work is already captured as review blocker on
+          @01KSS28J/current task; workflow-show friction and reflect examples are already tracked;
+          systematic repro success pattern is already represented by existing observation
+          @01KFD0A8."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-29T05:27:25.729Z
+    completed_at: 2026-05-29T05:29:53.295Z
