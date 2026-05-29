@@ -22872,3 +22872,20 @@ reviews:
     verdict_count: 1
     created_at: 2026-05-29T21:27:21.154Z
     updated_at: 2026-05-29T21:28:18.578Z
+  - _ulid: 01KSTTDKFR3HJS8FPTR7Y31B74
+    slugs: []
+    title: "Plan review: Agent Runner Configuration Layer (cycle 2)"
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-agent-runner-configuration-layer"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-05-29T21:32:06.520Z
