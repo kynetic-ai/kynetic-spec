@@ -17,6 +17,13 @@ events:
       kind: blocker
       thread_ulid: 01KSTWWENC1YK038X148NMVZZH
     timestamp: 2026-05-29T22:15:10.509Z
+  - _ulid: 01KSTWWF7FZ9Y8BJM1H6X1P1W5
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSTWWENG7D3YJ5T0SJX2ZXMH
+    timestamp: 2026-05-29T22:15:10.831Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -43,7 +50,22 @@ threads:
           responsible for."
         created_at: 2026-05-29T22:15:10.252Z
     kind: blocker
+  - _ulid: 01KSTWWENG7D3YJ5T0SJX2ZXMH
+    anchor:
+      type: structured
+      ref: "@task-runner-env-secret-boundary"
+      section: tasks
+    entries:
+      - _ulid: 01KSTWWENHYB7Y2JDY1BE92HG4
+        author: Jacob Chapel
+        body: "Covers line still uses a prose label for the existing Codex adapter contract: 'existing
+          @codex-acp-adapter-registration Codex session env and cleanup behavior update'. Because
+          @task-update-existing-agent-runner-specs defines the reviewer-approved contract updates as
+          @codex-acp-adapter-registration ac-2 and ac-3, this downstream implementation task must
+          name those exact AC IDs."
+        created_at: 2026-05-29T22:15:10.257Z
+    kind: blocker
 verdicts: []
 created_at: 2026-05-29T22:14:51.080Z
-updated_at: 2026-05-29T22:15:10.252Z
+updated_at: 2026-05-29T22:15:10.257Z
 notes: []
