@@ -67,8 +67,6 @@ This plan is scoped to kspec's storage format, TypeScript types, resolver/runtim
   slug: runner-resolution-and-preflight
   type: requirement
   parent: "@agent-integration"
-  traits:
-    - "@trait-error-guidance"
   tags: [agents, runtime, validation]
   description: |
     Agent invocation resolves a runner before spawning an adapter process. Resolution
@@ -298,9 +296,6 @@ This plan is scoped to kspec's storage format, TypeScript types, resolver/runtim
   slug: runner-operator-surfaces
   type: requirement
   parent: "@agent-integration"
-  traits:
-    - "@trait-json-output"
-    - "@trait-error-guidance"
   tags: [agents, cli, daemon, web-ui]
   description: |
     Operators can inspect and configure agent runner usage through the same
@@ -322,20 +317,48 @@ This plan is scoped to kspec's storage format, TypeScript types, resolver/runtim
         kspec meta set is used to set or clear the agent runner field
       then: |
         The agent definition is updated without changing unrelated fields
-    - id: ac-runner-validation-command
+    - id: ac-runner-validation-human-output
       given: |
         A project has runner configuration
       when: |
-        An operator runs the runner validation or doctor surface
+        An operator runs `kspec agent runners validate`
       then: |
-        The output reports each runner's validation state and redacted diagnostics
+        The human-readable output reports each runner's validation state and redacted diagnostics
+    - id: ac-runner-validation-json-output
+      given: |
+        A project has runner configuration
+      when: |
+        An operator runs `kspec agent runners validate --json`
+      then: |
+        The command emits a JSON object with a `runners` array whose entries contain `runner`, `kind`, `resolved_adapter`, `runtime_source`, `status`, and redacted `diagnostics` fields
+    - id: ac-runner-validation-exit-status
+      given: |
+        A project has runner configuration
+      when: |
+        An operator runs `kspec agent runners validate` or `kspec agent runners validate --json`
+      then: |
+        The command exits with status 0 only when every selected runner is valid
     - id: ac-daemon-agent-api-includes-runner
       given: |
-        The daemon serves agent definition or dispatch status data
+        The daemon serves agent definition data
       when: |
-        A client requests agent or dispatch state
+        A client requests agent state
       then: |
-        The response includes runner name, resolved adapter identity, and redacted runner diagnostics where available
+        The response includes runner name, resolved adapter identity, and redacted runner diagnostics where available for each agent
+    - id: ac-daemon-dispatch-active-api-includes-runner
+      given: |
+        The daemon serves dispatch status data
+      when: |
+        A client requests active invocation state
+      then: |
+        The response includes runner name with resolved adapter identity for active invocations
+    - id: ac-daemon-dispatch-queued-api-includes-runner
+      given: |
+        The daemon serves dispatch status data
+      when: |
+        A client requests queued invocation state
+      then: |
+        The response includes runner name with resolved adapter identity for queued invocations
     - id: ac-web-ui-agent-cards-include-runner
       given: |
         The Web UI displays the agents page
@@ -345,11 +368,18 @@ This plan is scoped to kspec's storage format, TypeScript types, resolver/runtim
         Agent cards display runner identity when present and resolved adapter identity for all agents
     - id: ac-web-ui-active-invocations-include-runner
       given: |
-        The Web UI displays active or queued agent invocations
+        The Web UI displays active agent invocations
       when: |
         Invocation data is loaded from the daemon API
       then: |
-        Active and queued invocation rows display runner identity when present
+        Active invocation rows display runner identity when present
+    - id: ac-web-ui-queued-invocations-include-runner
+      given: |
+        The Web UI displays queued agent invocations
+      when: |
+        Invocation data is loaded from the daemon API
+      then: |
+        Queued invocation rows display runner identity when present
     - id: ac-web-ui-agent-edit-supports-runner
       given: |
         The Web UI agent edit form is available
@@ -374,7 +404,7 @@ derive_from_specs: false
     - Extend `src/parser/config.ts` so `KspecConfigSchema` accepts a top-level `runners` mapping.
     - Add resolved config types for named runners under `ResolvedKspecConfig.runners`.
     - Define the initial runner shape with these explicit fields and defaults:
-      - `kind`: required string enum with at least `acp_process`; reserve `headed_acp_sidecar` as a parsed value if implementing the sidecar launcher is not part of this task.
+      - `kind`: required string enum whose only accepted value in this plan is `acp_process`.
       - `adapter`: required string adapter or package reference.
       - `env.inherit`: enum `ambient`, `minimal`, or `none`, default `ambient` for backward compatibility only on legacy implicit runners and `minimal` for configured runners.
       - `env.pass`: string array of allowed inherited variable names, default empty.
@@ -396,6 +426,7 @@ derive_from_specs: false
     How:
     - Prefer Zod schema definitions beside the existing daemon, dispatch, and agent config schemas in `src/parser/config.ts`.
     - Keep secret values out of the schema shape. `env.secrets` entries name sources only; they must not include fields named `value`, `token`, `api_key`, or `secret`.
+    - Do not parse, accept, or partially validate a `headed_acp_sidecar` runner kind in this plan. A future headed sidecar implementation must add its own kind, loopback binding rules, hook/log ingestion contract, and security tests in a separate reviewed plan.
     - Add or update tests in the existing config parser test suite. If no narrow suite exists, create `tests/config-runners.test.ts` using the existing config fixture helpers.
     - Use project-relative path validation for `runtime.cache_dir`; do not resolve or create directories in the parser task.
 
@@ -427,7 +458,7 @@ derive_from_specs: false
 
     How:
     - Follow existing patterns for `adapter`, `auto_approve`, `budget`, and `session` fields in meta schema and CLI update code.
-    - Do not validate the referenced runner name in schema parsing; missing-runner validation belongs to the runtime resolver and doctor/preflight surfaces.
+    - Do not validate the referenced runner name in schema parsing; missing-runner validation belongs to the runtime resolver, dispatch preflight, and `kspec agent runners validate` surfaces.
     - Do not migrate existing agent records in this task.
     - Use `@agent-definition-schema` as the existing adjacent contract when adding AC annotations in code or tests.
 
@@ -602,7 +633,8 @@ derive_from_specs: false
     What:
     - Update `kspec agent list` to show runner name, resolved adapter, and validation state for every agent. JSON output must include machine-readable `runner`, `adapter`, `resolved_adapter`, and `runner_validation` fields.
     - Update `kspec agent run --dry-run` so it reports the runner name, resolved adapter, environment policy summary, runtime source summary, and validation state without spawning an adapter process.
-    - Add or extend a validation/doctor command surface so operators can validate all configured runners without running a prompt. If the existing `kspec doctor` surface is the best fit, add a runner section there; otherwise add `kspec agent runners validate` and document it in command help.
+    - Add `kspec agent runners validate [--runner <name>] [--json]` so operators can validate all configured runners or one selected runner without running a prompt.
+    - Document the new command in `kspec agent --help` and `kspec agent runners --help`.
     - Runner validation output must support human-readable and JSON modes.
     - Error output must include actionable guidance for unknown runner, invalid adapter, invalid runtime, and missing required secret source.
     - Error output and JSON diagnostics must redact all secret values.
@@ -617,10 +649,10 @@ derive_from_specs: false
     - Preserve existing `kspec agent list` fields so scripts that consume adapter information keep working.
 
     Testing:
-    - `npm test -- --fresh tests/cli-agent.test.ts tests/doctor-command.test.ts tests/agent-runner-cli.test.ts`
+    - `npm test -- --fresh tests/cli-agent.test.ts tests/agent-runner-cli.test.ts`
     - `npm run typecheck`
 
-    Covers: @runner-operator-surfaces ac-agent-list-shows-runner, ac-runner-validation-command; @runner-resolution-and-preflight ac-unknown-runner-reports-guidance; @runner-environment-secret-boundaries ac-diagnostics-redact-secrets; @trait-json-output ac-1, ac-2, ac-3
+    Covers: @runner-operator-surfaces ac-agent-list-shows-runner, ac-runner-validation-human-output, ac-runner-validation-json-output, ac-runner-validation-exit-status; @runner-resolution-and-preflight ac-unknown-runner-reports-guidance; @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
 
 - title: Add runner fields to daemon API and dispatch status payloads
   slug: task-daemon-api-runner-surfaces
@@ -651,7 +683,7 @@ derive_from_specs: false
     - `npm test -- --fresh tests/daemon-agent-api.test.ts tests/agent-dispatch-api.test.ts`
     - `npm run typecheck`
 
-    Covers: @runner-operator-surfaces ac-daemon-agent-api-includes-runner; @runner-resolution-and-preflight ac-session-metadata-records-runner, ac-dispatched-event-records-runner; @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+    Covers: @runner-operator-surfaces ac-daemon-agent-api-includes-runner, ac-daemon-dispatch-active-api-includes-runner, ac-daemon-dispatch-queued-api-includes-runner; @runner-resolution-and-preflight ac-session-metadata-records-runner, ac-dispatched-event-records-runner; @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
 
 - title: Update Web UI agent and dispatch surfaces for runners
   slug: task-web-ui-runner-surfaces
@@ -683,7 +715,7 @@ derive_from_specs: false
     - `npm run typecheck`
     - `npm run check`
 
-    Covers: @runner-operator-surfaces ac-web-ui-agent-cards-include-runner, ac-web-ui-active-invocations-include-runner, ac-web-ui-agent-edit-supports-runner, ac-daemon-agent-api-includes-runner; @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+    Covers: @runner-operator-surfaces ac-web-ui-agent-cards-include-runner, ac-web-ui-active-invocations-include-runner, ac-web-ui-queued-invocations-include-runner, ac-web-ui-agent-edit-supports-runner, ac-daemon-agent-api-includes-runner, ac-daemon-dispatch-active-api-includes-runner, ac-daemon-dispatch-queued-api-includes-runner; @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
 
 - title: Document runner configuration and migration path
   slug: task-document-runner-config-migration
@@ -703,8 +735,8 @@ derive_from_specs: false
       - pinned runtime selection with runner-owned cache storage;
       - agent definition that uses `runner` while retaining `adapter` only as legacy metadata.
     - Document migration guidance: existing projects do not need immediate changes; new projects should prefer runner references for adapter-specific auth/runtime settings; do not put secret values in kspec.config.yaml.
-    - Document validation commands and the meaning of common failure diagnostics.
-    - Document that the full headed Claude Code sidecar is separate implementation scope; this plan provides the kspec runner contract it will plug into.
+    - Document `kspec agent runners validate` and `kspec agent runners validate --json`, including output fields, exit-status behavior, and the meaning of common failure diagnostics.
+    - Document that the full headed Claude Code sidecar is separate implementation scope; this plan provides the kspec runner contract it will plug into, but this plan accepts only the `acp_process` runner kind.
     - Update generated or static agent instructions only if the runner workflow changes what task workers or reviewers need to know.
 
     Why:
@@ -719,7 +751,7 @@ derive_from_specs: false
     - `npm run check`
     - `kspec validate --refs --warnings-ok`
 
-    Covers: @agent-runner-configuration ac-runner-storage-is-project-config, ac-adapter-field-backcompat; @runner-operator-surfaces ac-runner-validation-command; @runner-environment-secret-boundaries ac-secret-values-not-stored-inline, ac-diagnostics-redact-secrets
+    Covers: @agent-runner-configuration ac-runner-storage-is-project-config, ac-adapter-field-backcompat; @runner-operator-surfaces ac-runner-validation-human-output, ac-runner-validation-json-output, ac-runner-validation-exit-status; @runner-environment-secret-boundaries ac-secret-values-not-stored-inline, ac-diagnostics-redact-secrets
 
 - title: Add end-to-end runner compatibility and regression coverage
   slug: task-runner-compatibility-regressions
@@ -761,7 +793,7 @@ derive_from_specs: false
     - `kspec validate --refs --warnings-ok`
     - `kspec validate --completeness --warnings-ok`
 
-    Covers: @agent-runner-configuration ac-named-runners-loaded, ac-agent-runner-reference, ac-adapter-field-backcompat, ac-runner-precedence-over-adapter; @runner-resolution-and-preflight ac-one-shot-uses-runner-resolution, ac-dispatch-uses-runner-resolution, ac-unknown-runner-blocks-before-spawn, ac-session-metadata-records-runner, ac-dispatched-event-records-runner; @runner-environment-secret-boundaries ac-required-secret-missing-blocks, ac-diagnostics-redact-secrets; @runner-runtime-version-isolation ac-pinned-runtime-precedence, ac-version-mismatch-blocks; @runner-invocation-semantics ac-dispatch-preflight-accepts-configured-runners, ac-dispatch-preflight-rejects-invalid-runners; @runner-operator-surfaces ac-daemon-agent-api-includes-runner, ac-web-ui-agent-cards-include-runner, ac-web-ui-active-invocations-include-runner
+    Covers: @agent-runner-configuration ac-named-runners-loaded, ac-agent-runner-reference, ac-adapter-field-backcompat, ac-runner-precedence-over-adapter; @runner-resolution-and-preflight ac-one-shot-uses-runner-resolution, ac-dispatch-uses-runner-resolution, ac-unknown-runner-blocks-before-spawn, ac-session-metadata-records-runner, ac-dispatched-event-records-runner; @runner-environment-secret-boundaries ac-required-secret-missing-blocks, ac-diagnostics-redact-secrets; @runner-runtime-version-isolation ac-pinned-runtime-precedence, ac-version-mismatch-blocks; @runner-invocation-semantics ac-dispatch-preflight-accepts-configured-runners, ac-dispatch-preflight-rejects-invalid-runners; @runner-operator-surfaces ac-daemon-agent-api-includes-runner, ac-daemon-dispatch-active-api-includes-runner, ac-daemon-dispatch-queued-api-includes-runner, ac-web-ui-agent-cards-include-runner, ac-web-ui-active-invocations-include-runner, ac-web-ui-queued-invocations-include-runner
 ```
 
 ## Implementation Notes
@@ -773,7 +805,7 @@ derive_from_specs: false
 - Secret values must come from runtime secret sources such as user environment variables. The project config stores secret references, not token values.
 - Existing agents with only `adapter` remain supported. This plan must not force a metadata migration or break default agents.
 - A runner-backed agent may retain an `adapter` field for compatibility, but invocation uses the runner's adapter.
-- The sidecar that maps a headed TUI to ACP is out of scope here. This plan supplies the kspec contract that such a sidecar uses: configured runner, explicit env/secrets, runtime pinning, diagnostics, dispatch compatibility, and operator visibility.
+- The sidecar that maps a headed TUI to ACP is out of scope here. This plan supplies the kspec contract that such a sidecar uses: configured runner, explicit env/secrets, runtime pinning, diagnostics, dispatch compatibility, and operator visibility. This plan intentionally accepts only the `acp_process` runner kind; a future sidecar kind must be introduced by a separate reviewed plan.
 
 ### Dependency ordering
 

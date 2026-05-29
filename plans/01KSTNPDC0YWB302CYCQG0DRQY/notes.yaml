@@ -1,0 +1,6 @@
+notes:
+  - _ulid: 01KSTP8PHYHG0NK6SJ7CW2ZYE8
+    content: "Address cycle 1 review: remove uncovered inherited traits, choose exact runner validation
+      command, split daemon dispatch API ACs, and make sidecar runner kind explicitly out of scope"
+    author: Jacob Chapel
+    created_at: 2026-05-29T20:19:31.519Z
