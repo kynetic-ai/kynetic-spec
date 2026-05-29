@@ -168,9 +168,25 @@ events:
       status: pass
       name: Plan remains draft
     timestamp: 2026-05-29T22:15:52.974Z
+  - _ulid: 01KSTWY3JJC2PKN569SYYRRTB3
+    actor: Jacob Chapel
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-29T22:16:04.434Z
+  - _ulid: 01KSTWY3JJ5S822B9B8FYTJ0RN
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: closed
+    timestamp: 2026-05-29T22:16:04.434Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -209,7 +225,14 @@ threads:
           name those exact AC IDs."
         created_at: 2026-05-29T22:15:10.257Z
     kind: blocker
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: Jacob Chapel
+    role: reviewer
+    created_at: 2026-05-29T22:16:04.433Z
 created_at: 2026-05-29T22:14:51.080Z
-updated_at: 2026-05-29T22:15:52.392Z
+updated_at: 2026-05-29T22:16:04.434Z
 notes: []
