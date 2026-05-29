@@ -1,0 +1,26 @@
+_ulid: 01KSTNXXYAFSZFE2A3M5J4TFYF
+slugs: []
+title: "Plan review: Agent Runner Configuration Layer"
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KSTNXXY95WXGX2PEQBWC3MS8
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-29T20:13:38.633Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-agent-runner-configuration-layer"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-05-29T20:13:38.633Z
+updated_at: null
+notes: []
