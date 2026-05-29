@@ -33,6 +33,16 @@ checks:
     runner: npm run lint -- --quiet
     created_at: 2026-05-29T03:45:45.703Z
     completed_at: 2026-05-29T03:45:45.703Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt --check . reported all matched files use correct format."
+    name: format:check
+    required: true
+    runner: npm run format:check
+    created_at: 2026-05-29T03:45:48.213Z
+    completed_at: 2026-05-29T03:45:48.213Z
 events:
   - _ulid: 01KSRWJ774BB7SQ9P22H7Z3NTY
     actor: Jacob Chapel
@@ -68,6 +78,13 @@ events:
       status: pass
       name: repo lint
     timestamp: 2026-05-29T03:45:45.926Z
+  - _ulid: 01KSRXD4VZ74QYX3788AEBFVTD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format:check
+    timestamp: 2026-05-29T03:45:48.416Z
 examined_commit: ef1370a7a7dcd6dd87c7a1f277bb2c442fc4ee45
 external_links: []
 lifecycle_state: open
@@ -80,5 +97,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-05-29T03:31:06.090Z
-updated_at: 2026-05-29T03:45:45.703Z
+updated_at: 2026-05-29T03:45:48.213Z
 notes: []
