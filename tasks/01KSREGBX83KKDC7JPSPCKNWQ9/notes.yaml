@@ -40,3 +40,60 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-29T02:35:42.170Z
+  - _ulid: 01KSRVYSW308J4Y77SNVA6ZFR1
+    content: |-
+      Implementation complete and validated.
+
+      Helper script (templates/skills/merge/scripts/detached-reviewer-merge.sh):
+      - Detects all worktrees holding the target ref; classifies each as auxiliary
+        (metadata file or under KSPEC_DISPATCH_WORKTREE_ROOT), in-progress git op,
+        dirty/staged, or eligible.
+      - Auxiliary, dirty/staged, in-progress, untracked-overwrite-hazard, and
+        ambiguous (multiple eligible) refuse before any ref movement and identify
+        the blocker path with actionable cleanup guidance.
+      - Exactly one eligible occupied checkout becomes the merge surface; merge
+        flows through git's checkout-aware mechanics (branch/index/worktree advance
+        together).
+      - Free target keeps the existing helper-owned temporary worktree path with
+        EXIT trap cleanup.
+      - On conflict in either surface, abort and restore worktree state; never
+        leave the target ref advanced. Recovery guidance does not direct reviewer
+        to check out the target manually.
+      - Rebuilt plugin/ via scripts/build-plugin.cjs so distributable script matches.
+
+      Dispatch mutation scope (src/agent-runtime/workspace.ts):
+      - resolveDispatchIntegrationMutationScope now returns mutationCwd:
+        projectDir when current branch is the target; the eligible occupied
+        worktree path when exactly one is found; null when target is free.
+      - Auxiliary/dirty/in-progress/ambiguous occupancy throws DispatchWorkspaceError
+        with code 'occupied-checkout' and blocker-path-aware suggestion.
+      - Added runGitInMutationSurface for working-tree-mutating git calls.
+
+      Dispatch sync/push (src/agent-runtime/dispatch.ts):
+      - ff-only merge step routed through mutationScope.mutationCwd so clean
+        eligible occupied targets sync without degrading.
+      - Ref-only fast-forward retained for unoccupied targets.
+
+      Tests added/updated:
+      - detached-reviewer-merge.test.ts: clean eligible occupied merge succeeds,
+        harmless untracked/ignored files don't block, untracked-overwrite hazard
+        refuses, in-progress merge refuses, auxiliary refuses (metadata file +
+        worktree-root path), ambiguous (multi-eligible) refuses, conflict via
+        occupied checkout restores worktree.
+      - dispatch-target-sync.test.ts: clean eligible occupied sync succeeds, no
+        degraded state on startup or sync; dirty occupied refuses; auxiliary
+        (under dispatch root) refuses; merge timeouts preserved via mutation
+        surface helper.
+      - dispatch-degraded-state.test.ts: updated existing 'foreign worktree blocks
+        target' tests to mark the occupant as auxiliary (the only kind of
+        occupancy that still refuses), and proved recovery clears degraded state.
+      - dispatch-plan-target-lock-e2e.test.ts: Phase B updated to use auxiliary
+        occupant for the refusal contract; Phase A (clean merge + push) and Phase
+        C (recovery without restart) unchanged.
+
+      Quality gates: typecheck clean, lint 749 warnings 0 errors (no new), format
+      check passes, kspec validate --refs --alignment --completeness passes (no new
+      warnings), full test suite 9915 passed of 9920 (5 skipped, no failures).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-29T03:20:29.827Z
