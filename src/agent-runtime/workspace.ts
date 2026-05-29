@@ -1117,16 +1117,6 @@ function normalizeBranchRef(branch: string | null | undefined): string | null {
   return branch ? branch.replace(/^refs\/heads\//, "") : null;
 }
 
-async function findExistingWorktreeForBranch(
-  projectDir: string,
-  canonicalBranch: string,
-): Promise<string | null> {
-  const branchRef = `refs/heads/${canonicalBranch}`;
-  return (
-    (await parseWorktreeList(projectDir)).find((entry) => entry.branch === branchRef)?.path ?? null
-  );
-}
-
 async function findExistingWorktreeForBranchUnderRoot(
   projectDir: string,
   canonicalBranch: string,
@@ -2253,6 +2243,14 @@ export interface DispatchIntegrationMutationScope {
   integrationBranch: string;
   currentBranch: string | null;
   targetBranchCheckedOut: boolean;
+  /**
+   * The cwd to use when running git commands that mutate working-tree state for
+   * the integration target branch. Set when the target branch is checked out
+   * somewhere safe to mutate (projectDir itself, or exactly one eligible clean
+   * non-auxiliary worktree). Null when the target is not checked out anywhere
+   * (callers should use ref-only operations like update-ref).
+   */
+  mutationCwd: string | null;
 }
 
 async function ensureLocalDispatchIntegrationBranchExists(
@@ -2284,39 +2282,328 @@ async function ensureLocalDispatchIntegrationBranchExists(
   return false;
 }
 
+const IN_PROGRESS_GIT_OPERATION_MARKERS: Array<{ marker: string; label: string }> = [
+  { marker: "MERGE_HEAD", label: "merge" },
+  { marker: "REBASE_HEAD", label: "rebase" },
+  { marker: "rebase-apply", label: "rebase" },
+  { marker: "rebase-merge", label: "rebase" },
+  { marker: "CHERRY_PICK_HEAD", label: "cherry-pick" },
+  { marker: "REVERT_HEAD", label: "revert" },
+  { marker: "BISECT_LOG", label: "bisect" },
+];
+
+async function detectInProgressGitOperation(worktreePath: string): Promise<string | null> {
+  for (const { marker, label } of IN_PROGRESS_GIT_OPERATION_MARKERS) {
+    const markerPathResult = await runGit(worktreePath, ["rev-parse", "--git-path", marker]);
+    if (markerPathResult.status !== 0 || !markerPathResult.stdout) {
+      continue;
+    }
+    const markerPath = path.isAbsolute(markerPathResult.stdout)
+      ? markerPathResult.stdout
+      : path.join(worktreePath, markerPathResult.stdout);
+    if (await pathExists(markerPath)) {
+      return label;
+    }
+  }
+  return null;
+}
+
+type TargetCheckoutClassification =
+  | { kind: "eligible"; path: string }
+  | { kind: "auxiliary"; path: string }
+  | { kind: "dirty"; path: string; details: string }
+  | { kind: "in_progress"; path: string; operation: string }
+  | { kind: "overwrite_hazard"; path: string; hazardPaths: string[] };
+
+/**
+ * Detect untracked/ignored working-tree files that would be overwritten by
+ * merging or fast-forwarding the worktree to `mergeRef`. Returns the list of
+ * blocking paths (empty if none). Used so dispatch sync/push can refuse before
+ * moving refs when an occupied checkout would have its untracked content
+ * clobbered, instead of attempting the merge and misclassifying the resulting
+ * Git error as divergence.
+ *
+ * Git refuses three overwrite shapes, all of which must be caught here:
+ *   1. Exact-path collision: untracked file "foo.txt" vs merge writing "foo.txt".
+ *   2. Directory-blocked-by-file: untracked file "foo" vs merge writing
+ *      "foo/bar". Git cannot create the directory because a file holds the name.
+ *   3. File-blocked-by-directory: untracked file "foo/bar" (so the directory
+ *      "foo/" exists with untracked content) vs merge writing the path "foo"
+ *      as a file. Git refuses to lose the directory's untracked entries.
+ *
+ * AC: @dispatch-integration-mutation-scope ac-dirty-occupied-target-refusal-identifies-blocker
+ * AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
+ */
+async function detectUntrackedOverwriteHazards(
+  worktreePath: string,
+  mergeRef: string,
+): Promise<string[]> {
+  const headResult = await runGit(worktreePath, ["rev-parse", "HEAD"]);
+  if (headResult.status !== 0 || !headResult.stdout) {
+    return [];
+  }
+  const refResult = await runGit(worktreePath, ["rev-parse", "--verify", `${mergeRef}^{commit}`]);
+  if (refResult.status !== 0 || !refResult.stdout) {
+    return [];
+  }
+  const head = headResult.stdout.trim();
+  const ref = refResult.stdout.trim();
+  if (!head || !ref || head === ref) {
+    return [];
+  }
+
+  // Paths added or modified between HEAD and the merge target. Includes only
+  // paths the merge would write into the working tree; deletions cannot
+  // collide with untracked working-tree files. -z gives NUL-separated entries
+  // so paths with whitespace survive intact.
+  const diff = await runGit(worktreePath, [
+    "diff",
+    "--name-only",
+    "--diff-filter=ACMRT",
+    "-z",
+    head,
+    ref,
+  ]);
+  if (diff.status !== 0) {
+    return [];
+  }
+  const changedPaths = diff.stdout.split("\0").filter((p) => p.length > 0);
+  if (changedPaths.length === 0) {
+    return [];
+  }
+
+  // Untracked and ignored files together: Git's checkout-time overwrite check
+  // refuses to clobber either category. `--others` without --exclude-standard
+  // returns both untracked and ignored entries.
+  const others = await runGit(worktreePath, ["ls-files", "--others", "-z"]);
+  if (others.status !== 0) {
+    return [];
+  }
+  const otherPaths = others.stdout.split("\0").filter((p) => p.length > 0);
+  if (otherPaths.length === 0) {
+    return [];
+  }
+
+  const hazards = new Set<string>();
+  for (const other of otherPaths) {
+    for (const changed of changedPaths) {
+      if (pathsCollideAsTreeEntries(other, changed)) {
+        hazards.add(other);
+        break;
+      }
+    }
+  }
+  return [...hazards].toSorted();
+}
+
+/**
+ * Whether two repo-relative paths collide as Git tree entries — i.e., Git
+ * cannot have both populated in the working tree at the same time.
+ *
+ * Returns true for exact match, or when one path is a directory-segment
+ * ancestor of the other (so creating one implies removing the other). Uses
+ * "/" boundary checks so "foo" does not falsely match "foobar".
+ */
+function pathsCollideAsTreeEntries(a: string, b: string): boolean {
+  if (a === b) {
+    return true;
+  }
+  if (a.length < b.length) {
+    return b.startsWith(`${a}/`);
+  }
+  return a.startsWith(`${b}/`);
+}
+
+async function classifyTargetWorktreeCheckout(
+  worktreePath: string,
+  worktreeRoot: string,
+  options?: { mergeRef?: string },
+): Promise<TargetCheckoutClassification> {
+  // Auxiliary classification: either a dispatch-created worktree (inside the
+  // configured worktree root) or any worktree carrying the dispatch workspace
+  // metadata file. Catches worker, reviewer, helper, plan-scoped, and detached
+  // reviewer snapshots even if they were placed outside the default root.
+  if (isPathInside(worktreeRoot, worktreePath)) {
+    return { kind: "auxiliary", path: worktreePath };
+  }
+  if (await pathExists(path.join(worktreePath, DISPATCH_WORKSPACE_METADATA_FILE))) {
+    return { kind: "auxiliary", path: worktreePath };
+  }
+
+  const inProgress = await detectInProgressGitOperation(worktreePath);
+  if (inProgress) {
+    return { kind: "in_progress", path: worktreePath, operation: inProgress };
+  }
+
+  const trackedDiff = await runGit(worktreePath, ["diff", "--quiet"]);
+  if (trackedDiff.status === 1) {
+    return { kind: "dirty", path: worktreePath, details: "tracked modifications" };
+  }
+  const stagedDiff = await runGit(worktreePath, ["diff", "--cached", "--quiet"]);
+  if (stagedDiff.status === 1) {
+    return { kind: "dirty", path: worktreePath, details: "staged drift" };
+  }
+
+  if (options?.mergeRef) {
+    const hazards = await detectUntrackedOverwriteHazards(worktreePath, options.mergeRef);
+    if (hazards.length > 0) {
+      return { kind: "overwrite_hazard", path: worktreePath, hazardPaths: hazards };
+    }
+  }
+
+  return { kind: "eligible", path: worktreePath };
+}
+
+async function findAllWorktreesForBranch(projectDir: string, branch: string): Promise<string[]> {
+  const branchRef = `refs/heads/${branch}`;
+  return (await parseWorktreeList(projectDir))
+    .filter((entry) => entry.branch === branchRef)
+    .map((entry) => entry.path);
+}
+
+export interface ResolveDispatchIntegrationMutationScopeOptions {
+  /**
+   * When set, occupied target checkouts are additionally checked for
+   * untracked/ignored working-tree paths that would be overwritten by merging
+   * `mergeRef` into the target. Such a checkout is reported as an
+   * `occupied-checkout` blocker instead of being treated as eligible, so the
+   * caller does not attempt a merge that would surface as a divergence-style
+   * Git failure.
+   *
+   * AC: @dispatch-integration-mutation-scope ac-dirty-occupied-target-refusal-identifies-blocker
+   * AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
+   */
+  mergeRef?: string;
+}
+
 export async function resolveDispatchIntegrationMutationScope(
   projectDir: string,
   integrationBranch: string,
+  options?: ResolveDispatchIntegrationMutationScopeOptions,
 ): Promise<DispatchIntegrationMutationScope> {
   const currentBranch = await resolveCurrentBranch(projectDir);
-  if (!currentBranch || currentBranch !== integrationBranch) {
-    if (!(await ensureLocalDispatchIntegrationBranchExists(projectDir, integrationBranch))) {
-      throw new DispatchWorkspaceError(
-        `Dispatch cannot determine a safe mutation surface for integration target "${integrationBranch}" in ${projectDir}.`,
-        `Create or fetch "${integrationBranch}" in ${projectDir}, or verify that a remote branch named "${integrationBranch}" exists before retrying.`,
-      );
-    }
-
-    const checkedOutWorktree = await findExistingWorktreeForBranch(projectDir, integrationBranch);
-    if (checkedOutWorktree) {
-      throw new DispatchWorkspaceError(
-        `Dispatch cannot safely mutate integration target "${integrationBranch}" from ${projectDir} because that branch is currently checked out in worktree "${checkedOutWorktree}".`,
-        `Check out a different branch in "${checkedOutWorktree}" or run the integration-target operation from that worktree before retrying.`,
-        "occupied-checkout",
-      );
-    }
-  }
 
   if (currentBranch === integrationBranch) {
     await ensureDispatchIntegrationTargetCheckoutCoherence(projectDir, integrationBranch);
+    if (options?.mergeRef) {
+      const hazards = await detectUntrackedOverwriteHazards(projectDir, options.mergeRef);
+      if (hazards.length > 0) {
+        const preview = formatHazardPathsPreview(hazards);
+        throw new DispatchWorkspaceError(
+          `Dispatch cannot safely mutate integration target "${integrationBranch}" from ${projectDir} because the required sync would overwrite untracked/ignored files in that checkout: ${preview}.`,
+          `Remove, stash, or commit the blocking files in "${projectDir}" (${preview}), or detach that checkout, before retrying.`,
+          "occupied-checkout",
+        );
+      }
+    }
+    return {
+      projectDir,
+      integrationBranch,
+      currentBranch,
+      targetBranchCheckedOut: true,
+      mutationCwd: projectDir,
+    };
   }
 
+  if (!(await ensureLocalDispatchIntegrationBranchExists(projectDir, integrationBranch))) {
+    throw new DispatchWorkspaceError(
+      `Dispatch cannot determine a safe mutation surface for integration target "${integrationBranch}" in ${projectDir}.`,
+      `Create or fetch "${integrationBranch}" in ${projectDir}, or verify that a remote branch named "${integrationBranch}" exists before retrying.`,
+    );
+  }
+
+  const occupied = await findAllWorktreesForBranch(projectDir, integrationBranch);
+  const otherOccupied = occupied.filter(
+    (candidate) => path.resolve(candidate) !== path.resolve(projectDir),
+  );
+
+  if (otherOccupied.length === 0) {
+    return {
+      projectDir,
+      integrationBranch,
+      currentBranch,
+      targetBranchCheckedOut: false,
+      mutationCwd: null,
+    };
+  }
+
+  const workspaceConfig = await resolveDispatchWorkspaceConfig(projectDir);
+  const classifyOptions = options?.mergeRef ? { mergeRef: options.mergeRef } : undefined;
+  const classifications = await Promise.all(
+    otherOccupied.map((p) =>
+      classifyTargetWorktreeCheckout(p, workspaceConfig.worktreeRoot, classifyOptions),
+    ),
+  );
+
+  const auxiliary = classifications.filter((c) => c.kind === "auxiliary");
+  const dirty = classifications.filter((c) => c.kind === "dirty");
+  const inProgress = classifications.filter((c) => c.kind === "in_progress");
+  const overwriteHazard = classifications.filter((c) => c.kind === "overwrite_hazard");
+  const eligible = classifications.filter((c) => c.kind === "eligible");
+
+  if (auxiliary.length > 0) {
+    const blocker = auxiliary[0];
+    throw new DispatchWorkspaceError(
+      `Dispatch cannot safely mutate integration target "${integrationBranch}" from ${projectDir} because that branch is currently checked out in dispatch auxiliary worktree "${blocker.path}".`,
+      `Remove or detach the auxiliary worktree at "${blocker.path}" (for example: 'git worktree remove --force "${blocker.path}"' or 'git -C "${blocker.path}" checkout --detach') before retrying.`,
+      "occupied-checkout",
+    );
+  }
+
+  if (dirty.length > 0) {
+    const blocker = dirty[0];
+    throw new DispatchWorkspaceError(
+      `Dispatch cannot safely mutate integration target "${integrationBranch}" from ${projectDir} because that branch is currently checked out in worktree "${blocker.path}" with ${blocker.details}.`,
+      `Commit, stash, or discard the ${blocker.details} in "${blocker.path}", or detach that checkout, before retrying.`,
+      "occupied-checkout",
+    );
+  }
+
+  if (inProgress.length > 0) {
+    const blocker = inProgress[0];
+    throw new DispatchWorkspaceError(
+      `Dispatch cannot safely mutate integration target "${integrationBranch}" from ${projectDir} because that branch is currently checked out in worktree "${blocker.path}" with an in-progress ${blocker.operation} operation.`,
+      `Finish or abort the in-progress ${blocker.operation} in "${blocker.path}" (e.g. 'git -C "${blocker.path}" ${blocker.operation} --abort') before retrying.`,
+      "occupied-checkout",
+    );
+  }
+
+  if (overwriteHazard.length > 0) {
+    const blocker = overwriteHazard[0];
+    const preview = formatHazardPathsPreview(blocker.hazardPaths);
+    throw new DispatchWorkspaceError(
+      `Dispatch cannot safely mutate integration target "${integrationBranch}" from ${projectDir} because the required sync would overwrite untracked/ignored files in the occupied checkout "${blocker.path}": ${preview}.`,
+      `Remove, stash, or commit the blocking files in "${blocker.path}" (${preview}), or detach that checkout, before retrying.`,
+      "occupied-checkout",
+    );
+  }
+
+  if (eligible.length > 1) {
+    const paths = eligible.map((c) => c.path).join(", ");
+    throw new DispatchWorkspaceError(
+      `Dispatch cannot safely mutate integration target "${integrationBranch}" from ${projectDir} because that branch is checked out in multiple eligible worktrees: ${paths}.`,
+      `Detach or remove all but one of: ${paths}, then retry.`,
+      "occupied-checkout",
+    );
+  }
+
+  const surface = eligible[0]!;
   return {
     projectDir,
     integrationBranch,
     currentBranch,
-    targetBranchCheckedOut: currentBranch === integrationBranch,
+    targetBranchCheckedOut: true,
+    mutationCwd: surface.path,
   };
+}
+
+function formatHazardPathsPreview(paths: string[]): string {
+  if (paths.length === 0) return "";
+  const PREVIEW_COUNT = 3;
+  const shown = paths.slice(0, PREVIEW_COUNT);
+  const remaining = paths.length - shown.length;
+  const preview = shown.join(", ");
+  return remaining > 0 ? `${preview} (+${remaining} more)` : preview;
 }
 
 export async function fastForwardDispatchIntegrationBranch(
@@ -2365,6 +2652,24 @@ export async function runDispatchIntegrationTargetGit(
 ): Promise<GitResult> {
   const scope = await resolveDispatchIntegrationMutationScope(projectDir, integrationBranch);
   return await runGit(scope.projectDir, args, options);
+}
+
+/**
+ * Run a git command in the resolved mutation surface for an integration target.
+ * Use this when the command must execute in a worktree where the target branch
+ * is checked out (e.g. `git merge --ff-only`). For ref-only/read-only commands
+ * (fetch, push, rev-list), use `runDispatchIntegrationTargetGit` instead.
+ *
+ * AC: @dispatch-integration-mutation-scope ac-1
+ * AC: @dispatch-integration-mutation-scope ac-clean-occupied-target-checkout-is-valid-mutation-surface
+ */
+export async function runGitInMutationSurface(
+  scope: DispatchIntegrationMutationScope,
+  args: string[],
+  options: RunGitOptions = {},
+): Promise<GitResult> {
+  const cwd = scope.mutationCwd ?? scope.projectDir;
+  return await runGit(cwd, args, options);
 }
 
 export function resolveDispatchWorkspaceCleanupState(

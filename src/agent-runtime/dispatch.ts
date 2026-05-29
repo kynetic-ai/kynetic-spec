@@ -58,6 +58,7 @@ import {
   pushDispatchBranch,
   pushIntegrationTarget,
   runDispatchIntegrationTargetGit,
+  runGitInMutationSurface,
   resolveDispatchIntegrationMutationScope,
   resolveDispatchRemote,
   resolveDispatchWorkspaceConfig,
@@ -747,7 +748,7 @@ export type TargetSyncResult =
  * - `other`: Other unsafe mutation states (missing ref, dirty checkout, ambiguous
  *   surface). Recovery requires the next sync to fully succeed.
  *
- * AC: @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery
+ * AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
  */
 export type DegradedTargetKind = "occupied-checkout" | "divergence" | "other";
 
@@ -1481,7 +1482,7 @@ export class DispatchEngine {
    * AC: @dispatch-remote-branch-sync ac-push-target-periodic
    * AC: @dispatch-remote-branch-sync ac-target-push-serialization
    * AC: @dispatch-remote-branch-sync ac-push-non-fatal
-   * AC: @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery
+   * AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
    */
   private async _pushIntegrationTargetAsync(
     branch: string | undefined,
@@ -1494,7 +1495,7 @@ export class DispatchEngine {
     // Always re-evaluate occupied-checkout-degraded targets so the periodic sync
     // can clear stale degraded state once the blocking worktree is released, even
     // when no commits are waiting to push.
-    // AC: @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery
+    // AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
     const existingDegraded = this._degradedTargets.get(targetBranch);
     const isOccupiedCheckoutDegraded = existingDegraded?.kind === "occupied-checkout";
     if (
@@ -1539,7 +1540,7 @@ export class DispatchEngine {
       // checkout that previously degraded this target has been released. Other
       // degraded kinds (divergence, dirty checkout, missing ref) still require
       // a successful sync to clear so we don't mask genuine hard failures.
-      // AC: @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery
+      // AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
       if (this._degradedTargets.get(targetBranch)?.kind === "occupied-checkout") {
         this._exitDegradedState(targetBranch);
       }
@@ -3357,12 +3358,34 @@ export class DispatchEngine {
         return "transient_failure";
       }
 
-      // Step 2: Fast-forward merge the target branch
-      // AC: @dispatch-remote-branch-sync ac-pull-ff-only — no merge commits
-      const mergeResult = mutationScope.targetBranchCheckedOut
-        ? await runDispatchIntegrationTargetGit(
+      // After fetch, re-resolve the mutation scope with the now-available
+      // remote ref so the occupied checkout is also checked for untracked /
+      // ignored files that the upcoming fast-forward would overwrite. Without
+      // this pre-check, the merge below would fail with a generic Git error
+      // and be misclassified as divergence — sending the operator toward
+      // resetting the branch instead of cleaning the blocking checkout.
+      // AC: @dispatch-integration-mutation-scope ac-dirty-occupied-target-refusal-identifies-blocker
+      // AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
+      if (mutationScope.mutationCwd) {
+        try {
+          mutationScope = await resolveDispatchIntegrationMutationScope(
             this.projectDir,
             baseBranch,
+            { mergeRef: `${this._syncRemote}/${baseBranch}` },
+          );
+        } catch (err) {
+          const { reason, kind } = this._classifyMutationScopeError(err, baseBranch);
+          this._enterDegradedState(baseBranch, reason, kind);
+          return "unsafe_target";
+        }
+      }
+
+      // Step 2: Fast-forward merge the target branch
+      // AC: @dispatch-remote-branch-sync ac-pull-ff-only — no merge commits
+      // AC: @dispatch-integration-mutation-scope ac-clean-occupied-target-checkout-is-valid-mutation-surface
+      const mergeResult = mutationScope.mutationCwd
+        ? await runGitInMutationSurface(
+            mutationScope,
             ["merge", "--ff-only", `${this._syncRemote}/${baseBranch}`],
             { timeout: 10_000 },
           )
@@ -3412,7 +3435,7 @@ export class DispatchEngine {
       // sync can clear stale degraded state once the blocking worktree is
       // released. The staleness gate would otherwise pin the engine in degraded
       // state until sync_interval elapsed.
-      // AC: @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery
+      // AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
       const isOccupiedCheckoutDegraded =
         this._degradedTargets.get(branch)?.kind === "occupied-checkout";
       if (options.staleOnly && !isOccupiedCheckoutDegraded && !this._isTargetSyncStale(branch)) {
@@ -3531,7 +3554,7 @@ export class DispatchEngine {
    * AC: @dispatch-remote-branch-sync ac-divergence-log-classification
    * AC: @dispatch-remote-branch-sync ac-divergence-log-resolution
    * AC: @dispatch-remote-branch-sync ac-degraded-status-broadcast
-   * AC: @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery
+   * AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
    */
   private _enterDegradedState(
     branch: string,
@@ -3547,7 +3570,7 @@ export class DispatchEngine {
       // no longer fire against a stale classification. Other kinds keep their
       // existing entry; we never downgrade strictness, and we preserve
       // enteredAt so recovery duration tracking stays accurate.
-      // AC: @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery
+      // AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
       if (existing.kind === "occupied-checkout" && kind !== "occupied-checkout") {
         this._degradedTargets.set(branch, {
           reason,
@@ -3697,8 +3720,8 @@ export class DispatchEngine {
    * Occupied-checkout failures are auto-recoverable once the blocking worktree
    * is released; other unsafe states require a real sync/push to clear.
    *
-   * AC: @dispatch-integration-mutation-scope ac-occupied-target-refusal-identifies-blocker
-   * AC: @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery
+   * AC: @dispatch-integration-mutation-scope ac-dirty-occupied-target-refusal-identifies-blocker
+   * AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
    */
   private _classifyMutationScopeError(
     err: unknown,

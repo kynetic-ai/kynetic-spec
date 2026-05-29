@@ -291,11 +291,11 @@ describe("dispatch plan-target lock E2E regression (manual_merge)", () => {
     remoteDir = undefined;
   });
 
-  // AC: @dispatch-integration-mutation-scope ac-auxiliary-worktrees-do-not-hold-target-locks
-  // AC: @dispatch-integration-mutation-scope ac-occupied-target-refusal-identifies-blocker
+  // AC: @dispatch-integration-mutation-scope ac-helper-created-target-locks-are-released
+  // AC: @dispatch-integration-mutation-scope ac-dirty-occupied-target-refusal-identifies-blocker
   // AC: @dispatch-remote-branch-sync ac-push-target-periodic
-  // AC: @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery
-  // AC: @detached-reviewer-merge-helper ac-helper-leaves-no-target-branch-lock
+  // AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
+  // AC: @detached-reviewer-merge-helper ac-helper-leaves-no-new-target-branch-lock
   it("drives the plan-target merge → periodic push → occupied refusal → recovery cycle without operator restart", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
     await setupProjectFiles(projectDir);
@@ -483,8 +483,8 @@ describe("dispatch plan-target lock E2E regression (manual_merge)", () => {
       // Helper-lock invariant: NO worktree — auxiliary, helper-owned, or
       // otherwise — holds the plan target branch after the helper exits.
       // This is the incident's primary structural invariant and what
-      // ac-helper-leaves-no-target-branch-lock /
-      // ac-auxiliary-worktrees-do-not-hold-target-locks demand.
+      // ac-helper-leaves-no-new-target-branch-lock /
+      // ac-helper-created-target-locks-are-released demand.
       expect(worktreesOnBranch(projectDir, planTarget)).toEqual([]);
 
       const auxWorktrees = parseWorktreeList(projectDir).filter(
@@ -514,20 +514,28 @@ describe("dispatch plan-target lock E2E regression (manual_merge)", () => {
       expect(phaseAStatus.degraded.active).toBe(false);
       expect(phaseAStatus.degradedTargets).toEqual([]);
 
-      // ───── PHASE B: occupied-target refusal via periodic-sync push ─────
+      // ───── PHASE B: auxiliary-target refusal via periodic-sync push ─────
       //
-      // Manufacture a foreign worktree that holds the plan target branch.
+      // Manufacture an auxiliary worktree that holds the plan target branch.
       // This is the structural failure mode the incident produced — an
-      // unexpected checkout of the integration target blocking dispatch
-      // sync/push. Placed OUTSIDE .kspec-worktrees to model a foreign
-      // operator checkout rather than a dispatch-owned aux worktree, and
-      // to keep helper-lock invariants in earlier assertions unambiguous.
-      occupantWorktree = `${projectDir}-plan-target-occupant`;
+      // unexpected dispatch-owned checkout of the integration target blocking
+      // dispatch sync/push. Placed outside .kspec-worktrees and marked with
+      // the dispatch workspace metadata file so the mutation-scope resolver
+      // classifies it as auxiliary, the only kind of occupancy that still
+      // refuses (eligible non-auxiliary occupancy is now a valid mutation
+      // surface).
+      // AC: @dispatch-integration-mutation-scope ac-auxiliary-target-checkout-refusal-identifies-blocker
+      occupantWorktree = `${projectDir}-plan-target-auxiliary-occupant`;
       execSync(`git worktree add "${occupantWorktree}" "${planTarget}"`, {
         cwd: projectDir,
         stdio: "pipe",
         env: workspaceModule.buildDispatchGitEnv(),
       });
+      await fs.writeFile(
+        path.join(occupantWorktree, ".kspec-dispatch-workspace.json"),
+        `${JSON.stringify({ role: "helper", purpose: "test" })}\n`,
+        "utf-8",
+      );
 
       // Advance the plan target locally so the periodic-sync push path
       // does NOT take the no-commits-to-push early return. The occupant
@@ -549,11 +557,11 @@ describe("dispatch plan-target lock E2E regression (manual_merge)", () => {
       );
       expect(planRemoteBeforeRefusal).toBe(planHeadAfter);
 
-      // Drive the periodic-sync push path with the occupant in place.
-      // The mutation-scope resolver must refuse before moving any refs,
-      // identify the blocking worktree path, and surface operator-
-      // actionable recovery guidance via degraded state.
-      // AC: @dispatch-integration-mutation-scope ac-occupied-target-refusal-identifies-blocker
+      // Drive the periodic-sync push path with the auxiliary occupant in
+      // place. The mutation-scope resolver must refuse before moving any
+      // refs, identify the auxiliary blocker path, and surface operator-
+      // actionable cleanup guidance via degraded state.
+      // AC: @dispatch-integration-mutation-scope ac-auxiliary-target-checkout-refusal-identifies-blocker
       // AC: @dispatch-remote-branch-sync ac-push-target-periodic
       await drivePeriodicSyncPush();
 
@@ -574,12 +582,12 @@ describe("dispatch plan-target lock E2E regression (manual_merge)", () => {
         `expected plan target "${planTarget}" to be in degraded state but got: ${JSON.stringify(degradedDuringRefusal)}`,
       ).toBeTruthy();
       expect(planDegraded?.kind).toBe("occupied-checkout");
+      expect(planDegraded?.reason.toLowerCase()).toContain("auxiliary");
       expect(planDegraded?.reason).toContain(occupantWorktree);
       expect(planDegraded?.reason).toContain(planTarget);
       // The resolver's suggestion text must call out a concrete operator
-      // action ("Check out a different branch in <worktree>") rather than
-      // a generic failure message.
-      expect(planDegraded?.reason).toMatch(/Check out a different branch/i);
+      // action (worktree remove or detach) rather than a generic failure.
+      expect(planDegraded?.reason.toLowerCase()).toMatch(/git worktree remove|checkout --detach/);
 
       // Scoped degradation: the configured base branch is not degraded.
       // Other targets must continue normal sync operations even when the
@@ -604,7 +612,8 @@ describe("dispatch plan-target lock E2E regression (manual_merge)", () => {
       // Release the lock — this is the operator action the refusal
       // guidance directs to. The next periodic-sync push must clear the
       // degraded entry AND push the still-unpushed plan target commits.
-      // AC: @dispatch-remote-branch-sync ac-occupied-checkout-degraded-recovery
+      // AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
+      // AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
       // AC: @dispatch-remote-branch-sync ac-push-target-periodic
       execSync(`git worktree remove --force "${occupantWorktree}"`, {
         cwd: projectDir,
