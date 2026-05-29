@@ -19915,6 +19915,18 @@ observations:
     resolved: false
     workflow_ref: "@01KSMAJM"
     created_at: 2026-05-27T09:03:07.202Z
+  - _ulid: 01KSRXNWQ5BKAC984VBESDES1C
+    type: success
+    content: "Review success pattern: for tasks that change generated or supporting-runtime artifacts,
+      explicitly compare the source template against the artifact the workflow will actually
+      execute. In this session, diffing templates/skills/merge/scripts/detached-reviewer-merge.sh
+      against .agents/skills/kspec-merge/scripts/detached-reviewer-merge.sh caught a stale rendered
+      helper before approval, even though focused behavioral tests passed."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-29T03:50:34.982Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
