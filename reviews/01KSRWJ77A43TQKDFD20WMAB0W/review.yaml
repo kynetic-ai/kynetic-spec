@@ -64,6 +64,16 @@ checks:
     runner: npm test -- --fresh tests/detached-reviewer-merge.test.ts
     created_at: 2026-05-29T03:46:08.472Z
     completed_at: 2026-05-29T03:46:08.472Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 66 tests across dispatch-target-sync and dispatch-degraded-state."
+    name: focused dispatch sync/degraded tests
+    required: true
+    runner: npm test -- --fresh tests/dispatch-target-sync.test.ts tests/dispatch-degraded-state.test.ts
+    created_at: 2026-05-29T03:46:11.088Z
+    completed_at: 2026-05-29T03:46:11.088Z
 events:
   - _ulid: 01KSRWJ774BB7SQ9P22H7Z3NTY
     actor: Jacob Chapel
@@ -120,6 +130,13 @@ events:
       status: pass
       name: focused detached reviewer merge tests
     timestamp: 2026-05-29T03:46:08.670Z
+  - _ulid: 01KSRXDV8SWZ0SP0P0M5519YNH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused dispatch sync/degraded tests
+    timestamp: 2026-05-29T03:46:11.353Z
 examined_commit: ef1370a7a7dcd6dd87c7a1f277bb2c442fc4ee45
 external_links: []
 lifecycle_state: open
@@ -132,5 +149,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-05-29T03:31:06.090Z
-updated_at: 2026-05-29T03:46:08.472Z
+updated_at: 2026-05-29T03:46:11.088Z
 notes: []
