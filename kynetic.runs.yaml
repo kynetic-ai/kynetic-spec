@@ -56063,7 +56063,7 @@ runs:
     completed_at: 2026-05-29T05:55:31.061Z
   - _ulid: 01KSS5Z0D4FY4PDQ4VPMRJJZ9D
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -56100,7 +56100,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-29T06:17:11.761Z
-        completed_at: 2026-05-29T06:17:11.761Z
+        completed_at: 2026-05-29T06:17:24.386Z
+        notes: "Proposed improvement: update detached-reviewer merge helper recovery guidance for auxiliary
+          or unsafe occupied target checkouts to include copy-paste-safe 'git -C <path> checkout
+          --detach' commands, and/or clarify that blocker cleanup commands may be run from the
+          assigned review workspace without cd. Helps reviewers obey dispatch workspace constraints
+          while following helper guidance. Scope: small documentation/script-output change with
+          focused helper-output tests."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-29T06:17:24.386Z
+        completed_at: 2026-05-29T06:17:24.386Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-29T06:15:22.276Z
