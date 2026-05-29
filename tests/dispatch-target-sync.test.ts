@@ -967,6 +967,7 @@ describe("dispatch target branch sync", () => {
         integrationBranch: branch,
         currentBranch: "dev",
         targetBranchCheckedOut: false,
+        mutationCwd: null,
       }),
     );
     vi.spyOn(workspaceModule, "pushIntegrationTarget").mockImplementation(
@@ -1036,6 +1037,7 @@ describe("dispatch target branch sync", () => {
         integrationBranch: branch,
         currentBranch: "dev",
         targetBranchCheckedOut: false,
+        mutationCwd: null,
       }),
     );
     vi.spyOn(workspaceModule, "pushIntegrationTarget").mockImplementation(
@@ -1104,6 +1106,7 @@ describe("dispatch target branch sync", () => {
         integrationBranch: branch,
         currentBranch: "dev",
         targetBranchCheckedOut: false,
+        mutationCwd: null,
       }),
     );
     vi.spyOn(workspaceModule, "pushIntegrationTarget").mockImplementation(
@@ -1421,29 +1424,38 @@ describe("dispatch target branch sync", () => {
   // AC: @dispatch-integration-mutation-scope ac-1
   // AC: @dispatch-integration-mutation-scope ac-2
   // AC: @dispatch-integration-mutation-scope ac-4
-  it("refuses non-checked-out sync when another worktree has the integration branch checked out", async () => {
+  // AC: @dispatch-integration-mutation-scope ac-auxiliary-target-checkout-refusal-identifies-blocker
+  it("refuses non-checked-out sync when an auxiliary worktree has the integration branch checked out", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
     await setupProjectFiles(projectDir);
     git(projectDir, "checkout -b human-feature");
 
-    const foreignWorktreeDir = `${projectDir}-integration-owner`;
-    execSync(`git worktree add "${foreignWorktreeDir}" dev`, {
+    const auxiliaryWorktreeDir = `${projectDir}-integration-owner`;
+    execSync(`git worktree add "${auxiliaryWorktreeDir}" dev`, {
       cwd: projectDir,
       stdio: "pipe",
       env: workspaceModule.buildDispatchGitEnv(),
     });
+    // Mark the worktree as a dispatch auxiliary worktree by writing the
+    // workspace metadata marker file. This is the canonical auxiliary
+    // classification signal.
+    await fs.writeFile(
+      path.join(auxiliaryWorktreeDir, ".kspec-dispatch-workspace.json"),
+      JSON.stringify({ role: "helper", purpose: "test" }) + "\n",
+      "utf-8",
+    );
 
     try {
       const humanHeadBefore = git(projectDir, "rev-parse human-feature");
       const localDevBefore = git(projectDir, "rev-parse dev");
-      const foreignHeadBefore = git(foreignWorktreeDir, "rev-parse HEAD");
+      const auxiliaryHeadBefore = git(auxiliaryWorktreeDir, "rev-parse HEAD");
 
       await pushRemoteCommit(
         remoteDir,
         "dev",
         "remote-blocked.txt",
         "blocked\n",
-        "blocked by foreign worktree",
+        "blocked by aux worktree",
       );
 
       const engine = new DispatchEngine({
@@ -1454,16 +1466,199 @@ describe("dispatch target branch sync", () => {
       await engine.start();
 
       expect(engine.getDegradedState()).toHaveLength(1);
-      expect(engine.getDegradedState()[0].reason).toContain("currently checked out");
+      expect(engine.getDegradedState()[0].kind).toBe("occupied-checkout");
+      expect(engine.getDegradedState()[0].reason.toLowerCase()).toContain("auxiliary");
+      expect(engine.getDegradedState()[0].reason).toContain(auxiliaryWorktreeDir);
       expect(git(projectDir, "branch --show-current")).toBe("human-feature");
       expect(git(projectDir, "rev-parse human-feature")).toBe(humanHeadBefore);
       expect(git(projectDir, "rev-parse dev")).toBe(localDevBefore);
-      expect(git(foreignWorktreeDir, "rev-parse HEAD")).toBe(foreignHeadBefore);
+      expect(git(auxiliaryWorktreeDir, "rev-parse HEAD")).toBe(auxiliaryHeadBefore);
       expect(await engine._syncTarget()).toBe("unsafe_target");
 
       await engine.stop();
     } finally {
-      git(projectDir, `worktree remove --force "${foreignWorktreeDir}"`);
+      git(projectDir, `worktree remove --force "${auxiliaryWorktreeDir}"`);
+    }
+  });
+
+  // AC: @dispatch-integration-mutation-scope ac-clean-occupied-target-checkout-is-valid-mutation-surface
+  // AC: @dispatch-remote-branch-sync ac-clean-occupied-target-sync-and-push
+  it("syncs through a clean eligible non-auxiliary occupied target checkout without entering degraded state", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout -b human-feature");
+
+    // A plain, user/project-owned worktree that happens to have the
+    // integration target branch checked out. No dispatch metadata, not
+    // under the dispatch worktree root.
+    const eligibleOccupied = `${projectDir}-user-dev-checkout`;
+    execSync(`git worktree add "${eligibleOccupied}" dev`, {
+      cwd: projectDir,
+      stdio: "pipe",
+      env: workspaceModule.buildDispatchGitEnv(),
+    });
+
+    try {
+      const humanHeadBefore = git(projectDir, "rev-parse human-feature");
+
+      const remoteTip = await pushRemoteCommit(
+        remoteDir,
+        "dev",
+        "eligible-occupied-sync.txt",
+        "eligible\n",
+        "advance remote during clean occupancy",
+      );
+
+      const engine = new DispatchEngine({
+        projectDir,
+        reconcileIntervalMs: 0,
+        coalesceWindowMs: 0,
+      });
+      await engine.start();
+
+      // Sync should not degrade the engine: the occupied checkout is an
+      // eligible mutation surface and the sync flows through it.
+      const result = await engine._syncTarget();
+      expect(["synced", "up_to_date"]).toContain(result);
+      expect(engine.getDegradedState()).toEqual([]);
+
+      // Dispatch root stays on its current branch — sync did not move it.
+      expect(git(projectDir, "branch --show-current")).toBe("human-feature");
+      expect(git(projectDir, "rev-parse human-feature")).toBe(humanHeadBefore);
+
+      // The eligible occupied worktree advanced to the remote tip and the
+      // local dev ref matches it (branch-coherent merge).
+      expect(git(projectDir, "rev-parse dev")).toBe(remoteTip);
+      expect(git(eligibleOccupied, "rev-parse HEAD")).toBe(remoteTip);
+      expect(git(eligibleOccupied, "branch --show-current")).toBe("dev");
+
+      // No tracked drift in the occupied checkout after the merge.
+      const status = execSync("git status --porcelain --untracked-files=no", {
+        cwd: eligibleOccupied,
+        encoding: "utf-8",
+        stdio: ["pipe", "pipe", "pipe"],
+      });
+      expect(status).toBe("");
+
+      await engine.stop();
+    } finally {
+      git(projectDir, `worktree remove --force "${eligibleOccupied}"`);
+    }
+  });
+
+  // AC: @dispatch-remote-branch-sync ac-clean-occupied-target-sync-and-push
+  // AC: @dispatch-integration-mutation-scope ac-clean-occupied-target-checkout-is-valid-mutation-surface
+  it("does not degrade a clean eligible occupied target during start-time sync", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout -b human-feature");
+
+    const eligibleOccupied = `${projectDir}-user-dev-start`;
+    execSync(`git worktree add "${eligibleOccupied}" dev`, {
+      cwd: projectDir,
+      stdio: "pipe",
+      env: workspaceModule.buildDispatchGitEnv(),
+    });
+
+    try {
+      const engine = new DispatchEngine({
+        projectDir,
+        reconcileIntervalMs: 0,
+        coalesceWindowMs: 0,
+      });
+      await engine.start();
+
+      // Start-time target sync ran without entering degraded state because the
+      // occupied checkout is an eligible mutation surface.
+      expect(engine.getDegradedState()).toEqual([]);
+      expect(engine.getTargetSyncStatus().degraded.active).toBe(false);
+
+      await engine.stop();
+    } finally {
+      git(projectDir, `worktree remove --force "${eligibleOccupied}"`);
+    }
+  });
+
+  // AC: @dispatch-integration-mutation-scope ac-dirty-occupied-target-refusal-identifies-blocker
+  it("refuses a sync when the eligible occupied target checkout has tracked modifications", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout -b human-feature");
+
+    const dirtyOccupied = `${projectDir}-user-dev-dirty`;
+    execSync(`git worktree add "${dirtyOccupied}" dev`, {
+      cwd: projectDir,
+      stdio: "pipe",
+      env: workspaceModule.buildDispatchGitEnv(),
+    });
+    // Add tracked modifications to make the eligible occupied checkout
+    // unsafe to mutate.
+    await fs.writeFile(path.join(dirtyOccupied, "dev.txt"), "dev\nuser tracked drift\n", "utf-8");
+
+    try {
+      const engine = new DispatchEngine({
+        projectDir,
+        reconcileIntervalMs: 0,
+        coalesceWindowMs: 0,
+      });
+      await engine.start();
+
+      expect(engine.getDegradedState()).toHaveLength(1);
+      const degraded = engine.getDegradedState()[0];
+      expect(degraded.kind).toBe("occupied-checkout");
+      expect(degraded.reason.toLowerCase()).toMatch(/tracked modifications|uncommitted/);
+      expect(degraded.reason).toContain(dirtyOccupied);
+      expect(degraded.reason.toLowerCase()).toMatch(/commit|stash|discard|detach/);
+
+      // The dirty tracked drift in the occupant remains untouched.
+      const occupiedStatus = execSync("git status --porcelain -- dev.txt", {
+        cwd: dirtyOccupied,
+        encoding: "utf-8",
+        stdio: ["pipe", "pipe", "pipe"],
+      });
+      expect(occupiedStatus).toBe(" M dev.txt\n");
+
+      await engine.stop();
+    } finally {
+      // Clean up tracked drift before removal.
+      execSync(`git -C "${dirtyOccupied}" checkout -- dev.txt`, { stdio: "pipe" });
+      git(projectDir, `worktree remove --force "${dirtyOccupied}"`);
+    }
+  });
+
+  // AC: @dispatch-integration-mutation-scope ac-auxiliary-target-checkout-refusal-identifies-blocker
+  it("refuses to use a worker-style auxiliary worktree under the dispatch worktree root as a mutation surface", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout -b human-feature");
+
+    // Place the occupied worktree under the project's .kspec-worktrees/
+    // directory, which is the configured dispatch worktree root by default.
+    const dispatchRoot = path.join(projectDir, ".kspec-worktrees");
+    await fs.mkdir(dispatchRoot, { recursive: true });
+    const auxOccupied = path.join(dispatchRoot, "leaked-dev");
+    execSync(`git worktree add "${auxOccupied}" dev`, {
+      cwd: projectDir,
+      stdio: "pipe",
+      env: workspaceModule.buildDispatchGitEnv(),
+    });
+
+    try {
+      const engine = new DispatchEngine({
+        projectDir,
+        reconcileIntervalMs: 0,
+        coalesceWindowMs: 0,
+      });
+      await engine.start();
+
+      expect(engine.getDegradedState()).toHaveLength(1);
+      expect(engine.getDegradedState()[0].kind).toBe("occupied-checkout");
+      expect(engine.getDegradedState()[0].reason.toLowerCase()).toContain("auxiliary");
+      expect(engine.getDegradedState()[0].reason).toContain(auxOccupied);
+
+      await engine.stop();
+    } finally {
+      git(projectDir, `worktree remove --force "${auxOccupied}"`);
     }
   });
 
@@ -1961,6 +2156,7 @@ describe("dispatch target branch sync", () => {
     await engine.start();
 
     const targetGitSpy = vi.spyOn(workspaceModule, "runDispatchIntegrationTargetGit");
+    const mutationSurfaceSpy = vi.spyOn(workspaceModule, "runGitInMutationSurface");
 
     await pushRemoteCommit(remoteDir, "dev", "timeout-check.txt", "timeout\n", "timeout check");
 
@@ -1970,10 +2166,14 @@ describe("dispatch target branch sync", () => {
     expect(targetGitSpy).toHaveBeenNthCalledWith(1, projectDir, "dev", ["fetch", "origin", "dev"], {
       timeout: 30_000,
     });
-    expect(targetGitSpy).toHaveBeenNthCalledWith(
-      2,
-      projectDir,
-      "dev",
+    // The working-tree merge now runs through runGitInMutationSurface so the
+    // command can target an eligible occupied checkout when one exists. The
+    // ff-only merge must still preserve its 10s timeout.
+    expect(mutationSurfaceSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        integrationBranch: "dev",
+        mutationCwd: projectDir,
+      }),
       ["merge", "--ff-only", "origin/dev"],
       { timeout: 10_000 },
     );
