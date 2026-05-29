@@ -2,7 +2,70 @@ _ulid: 01KSTT4WT2QRGGCT2DS98BHMMC
 slugs: []
 title: "Plan review: Agent Runner Configuration Layer"
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec plan import plans/agent-runner-configuration-layer.md --dry-run parsed the document
+      and made no changes.
+    name: Plan import dry-run
+    required: true
+    runner: kspec plan import --dry-run
+    created_at: 2026-05-29T21:27:56.825Z
+    completed_at: 2026-05-29T21:27:56.825Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: New specs are under @agent-integration; checked @agent-integration,
+      @agent-definition-schema, @agent-invocation-lifecycle, and @agent-dispatch-engine. No direct
+      contradiction found.
+    name: Existing spec neighborhood
+    required: true
+    created_at: 2026-05-29T21:27:59.922Z
+    completed_at: 2026-05-29T21:27:59.922Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Parsed plan YAML: 6 specs, 11 tasks, 0 invalid Covers refs, 0 uncovered ACs."
+    name: AC coverage and cover refs
+    required: true
+    created_at: 2026-05-29T21:28:02.938Z
+    completed_at: 2026-05-29T21:28:02.938Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Parsed task graph: all dependency refs resolve, no cycles, no P1 task depends on
+      lower-priority work. Storage/schema tasks precede resolver, runtime, API, and UI work."
+    name: Dependency ordering
+    required: true
+    created_at: 2026-05-29T21:28:06.037Z
+    completed_at: 2026-05-29T21:28:06.037Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan blocks project-layer harness logic and secret-looking literal keys, keeps secret
+      bindings system-only, requires redaction, and explicitly limits runner kind to acp_process
+      while excluding headed Claude sidecar implementation.
+    name: Security and sidecar scope
+    required: true
+    created_at: 2026-05-29T21:28:09.283Z
+    completed_at: 2026-05-29T21:28:09.283Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: System config path uses an example path and says project key may use canonical root path
+      or an existing stable project identity. Existing code has getDefaultDaemonConfigDir() for
+      ~/.config/kspec but no project-key convention found.
+    name: Storage location specificity
+    required: true
+    created_at: 2026-05-29T21:28:12.249Z
+    completed_at: 2026-05-29T21:28:12.249Z
 events:
   - _ulid: 01KSTT4WSYK4PBBFRP7HECN0KB
     actor: Jacob Chapel
@@ -10,17 +73,114 @@ events:
     payload:
       to: draft
     timestamp: 2026-05-29T21:27:21.150Z
+  - _ulid: 01KSTT5ZXPR9KYPP9XH5CCKMFZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan import dry-run
+    timestamp: 2026-05-29T21:27:57.110Z
+  - _ulid: 01KSTT62WZQ1E31N9QEY1GTQVB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Existing spec neighborhood
+    timestamp: 2026-05-29T21:28:00.159Z
+  - _ulid: 01KSTT65WNQMJH0N7WQ8KJQVCT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage and cover refs
+    timestamp: 2026-05-29T21:28:03.221Z
+  - _ulid: 01KSTT68W3NYF424TRSF2G8605
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-05-29T21:28:06.275Z
+  - _ulid: 01KSTT6C1RFWHCG8AE4DMH1XXY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Security and sidecar scope
+    timestamp: 2026-05-29T21:28:09.528Z
+  - _ulid: 01KSTT6EZ4XQNM7C6M6ZTZYC7T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Storage location specificity
+    timestamp: 2026-05-29T21:28:12.516Z
+  - _ulid: 01KSTT6HSJ4XEHG79H9RW0A4TY
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSTT6HJPG0SB51R5JN6K27JC
+    timestamp: 2026-05-29T21:28:15.410Z
+  - _ulid: 01KSTT6MWJMGHPG5DYEZXX56MR
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-29T21:28:18.578Z
+  - _ulid: 01KSTT6MWJ795YPQ7BKAA7MM9G
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: closed
+    timestamp: 2026-05-29T21:28:18.578Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
   content_hash: ""
   ref: "@plan-agent-runner-configuration-layer"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KSTT6HJPG0SB51R5JN6K27JC
+    anchor:
+      type: structured
+      field: storage-location
+      ref: "@task-runner-config-schema-types"
+      section: description
+    entries:
+      - _ulid: 01KSTT6HJP1G4SAP63T09WDYX4
+        author: Jacob Chapel
+        body: "MUST-FIX: The system runner storage location is not deterministic enough for implementation.
+          Lines 456-459 and 870 say to store under a path such as
+          ~/.config/kspec/projects/<project-key>/runners.yaml and to derive <project-key> from the
+          canonical root path or an existing stable project identity. I found an existing global
+          daemon config helper at src/daemon-shared/endpoint.ts:117-123, but no existing project-key
+          convention. Impact: independent tasks can choose incompatible key algorithms or locations,
+          making resolver/API/UI tests disagree and making local runner config hard to find after
+          implementation. Suggested fix: replace the example/choice language with one exact storage
+          contract, for example
+          <daemon-config-dir>/projects/<url-safe-sha256(realpath(projectRoot))>/runners.yaml,
+          explicitly using getDefaultDaemonConfigDir() or the daemon config-dir override in tests.
+          Also state whether .kspec/project.runners.yaml is the shadow-worktree root sidecar and is
+          auto-committed by normal kspec shadow saves, while the system file is never written to the
+          shadow branch."
+        created_at: 2026-05-29T21:28:15.190Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-29T21:28:18.578Z
 created_at: 2026-05-29T21:27:21.154Z
-updated_at: null
+updated_at: 2026-05-29T21:28:18.578Z
 notes: []
