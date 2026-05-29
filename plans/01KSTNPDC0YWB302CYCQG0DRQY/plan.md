@@ -246,7 +246,7 @@ This plan is scoped to kspec's storage format, TypeScript types, layered resolve
   acceptance_criteria:
     - id: ac-no-adapter-install-management
       given: |
-        A runner references an adapter, package-backed adapter, executable, or headed sidecar command
+        A runner references an existing registered adapter and optionally an existing executable or command path
       when: |
         kspec validates, preflights, dry-runs, or invokes the runner
       then: |
@@ -517,7 +517,7 @@ derive_from_specs: false
     - Project runner config must reject known adapter/harness secret keys and secret-looking names in `env.set`, including names containing `API_KEY`, `AUTH_TOKEN`, `ACCESS_TOKEN`, `OAUTH_TOKEN`, `SECRET`, `PASSWORD`, and known Claude/Codex/OpenAI credential variable names.
     - System runner config must accept the full initial effective runner shape with these explicit fields and defaults:
       - `kind`: required string enum whose only accepted value in this plan is `acp_process`.
-      - `adapter`: required string adapter or package reference resolved by the existing adapter registry; it is a reference only and does not authorize kspec to install or mutate that adapter.
+      - `adapter`: required string reference to an existing registered adapter. The runner layer must not treat arbitrary package names as installable adapters.
       - `process.executable`: optional existing executable or command path. If omitted, the adapter's normal spawn command is used.
       - `process.args`: optional string array of additional non-secret arguments appended to the ACP process invocation, default empty.
       - `process.cwd`: optional system-config-relative or absolute cwd override for the child process only.
@@ -598,7 +598,7 @@ derive_from_specs: false
     - The resolver input must include the agent definition, effective runner registry, invocation cwd, session id, auto-approve setting, and base invocation env.
     - The resolver output must include at minimum:
       - `runnerId`: configured runner name or a stable legacy implicit runner id.
-      - `adapterId`: resolved adapter id or package reference.
+      - `adapterId`: resolved existing registered adapter id.
       - `adapter`: the `AgentAdapter` spawn contract.
       - `cwd`: invocation cwd.
       - `env`: complete runner-scoped env overlay for the adapter process.
@@ -610,7 +610,7 @@ derive_from_specs: false
     - When both `runner` and `adapter` are present, use the runner's adapter for spawn, skill-formatting, auto-approve args, and session metadata.
     - Add `runner` and `adapter` to session metadata and `agent.dispatched` events for runner-backed invocations.
     - Keep existing `agent_type` or adapter metadata populated so older consumers continue to work.
-    - Add resolver unit tests for legacy adapter agents, default adapter agents, system-only runner-backed agents, project-plus-system merged runner-backed agents, runner-overrides-adapter precedence, unknown runner failure, unknown built-in adapter package fallback, invalid project-layer config diagnostics, and invalid effective runner diagnostics.
+    - Add resolver unit tests for legacy adapter agents, default adapter agents, system-only runner-backed agents, project-plus-system merged runner-backed agents, runner-overrides-adapter precedence, unknown runner failure, unknown adapter reference failure, invalid project-layer config diagnostics, and invalid effective runner diagnostics.
 
     Why:
     Runtime code needs one source of truth for runner selection so the daemon, CLI, sessions, and dispatch all launch agents through the same harness contract.
@@ -680,7 +680,7 @@ derive_from_specs: false
       - optional `process.args` appended to the adapter process arguments;
       - optional `process.cwd` for the child process only;
       - redacted source metadata for each of those fields.
-    - Explicitly reject or ignore unsupported adapter-management fields such as runtime package pins, install commands, package-manager strategy, cache/materialization directory, upgrade policy, or download URLs. The first implementation must fail validation if any such field appears.
+    - Explicitly reject unsupported adapter-management fields such as runtime package pins, install commands, package-manager strategy, cache/materialization directory, upgrade policy, or download URLs. The first implementation must fail validation if any such field appears.
     - Ensure `process.executable` is treated as an existing command reference only. Validation may check that it is syntactically usable/spawnable, but must not create, download, install, upgrade, cache, or modify it.
     - Ensure `process.args` cannot contain literal secret-looking values; secret material must flow through env secret bindings rather than command-line arguments.
     - Ensure `process.cwd` applies only to the spawned child process and never changes daemon, CLI parent, or dispatch process cwd.
@@ -714,15 +714,15 @@ derive_from_specs: false
   description: |
     What:
     - Replace dispatch preflight code that directly calls `getAdapter(agent.adapter)` with runner-aware validation.
-    - Dispatch preflight must accept configured runners whose adapters resolve through the same path used by `resolveRunnerInvocation(...)`, including registered adapters and package-backed ACP adapters.
+    - Dispatch preflight must accept configured runners whose adapters resolve through the same existing registered adapter path used by `resolveRunnerInvocation(...)`.
     - Dispatch preflight must reject unknown runner names, malformed runner configs, missing required secrets, blocked adapter-management fields, unspawnable existing command references, and unspawnable adapter contracts before queueing or spawning an invocation.
     - When preflight rejects an agent for a task, log the reason with runner name and resolved adapter when available.
     - When preflight rejects a task-bound dispatch, add an actionable task note that names the agent and runner but redacts secret values.
     - Preserve existing behavior for legacy adapter-backed agents with no runner.
-    - Add dispatch tests for valid runner-backed worker pickup, valid runner-backed reviewer pickup, unknown runner rejection, missing required secret rejection, blocked adapter-management field rejection, unspawnable command-reference rejection, package-backed adapter acceptance, and legacy adapter compatibility.
+    - Add dispatch tests for valid runner-backed worker pickup, valid runner-backed reviewer pickup, unknown runner rejection, unknown adapter reference rejection, missing required secret rejection, blocked adapter-management field rejection, unspawnable command-reference rejection, and legacy adapter compatibility.
 
     Why:
-    Dispatch currently has a hardcoded adapter registry check that blocks ad-hoc or sidecar-backed adapters even when invocation code could launch them. Preflight and invocation need to agree.
+    Dispatch currently has adapter validation paths that can diverge between one-shot invocation and queued automation. Preflight and invocation need to agree on the same existing adapter reference, optional existing command reference, env, args, cwd, and redacted diagnostics before dispatch accepts work.
 
     How:
     - Keep validation side-effect free. Runner preflight must not install, download, materialize, or mutate adapter/harness binaries; it only validates configured references, env, args, cwd, and adapter spawnability.
