@@ -55847,7 +55847,7 @@ runs:
     started_at: 2026-05-27T08:59:48.028Z
     completed_at: 2026-05-27T09:03:14.427Z
   - _ulid: 01KSRXHVW0HD31CE8XPCTFCHZS
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -55896,7 +55896,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-29T03:50:25.857Z
-        completed_at: 2026-05-29T03:50:25.857Z
+        completed_at: 2026-05-29T03:50:44.501Z
+        notes: Captured success observation @01KSRXNW. Did not add a new friction item because rendered
+          helper artifact drift is already tracked by observation 01KSK0KQ and related
+          skill-rendering specs/tasks.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-29T03:48:23.040Z
+    completed_at: 2026-05-29T03:50:44.501Z
