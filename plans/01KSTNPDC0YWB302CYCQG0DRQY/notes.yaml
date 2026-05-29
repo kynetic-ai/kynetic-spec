@@ -4,3 +4,8 @@ notes:
       command, split daemon dispatch API ACs, and make sidecar runner kind explicitly out of scope"
     author: Jacob Chapel
     created_at: 2026-05-29T20:19:31.519Z
+  - _ulid: 01KSTSZBNWTGXPJSERE8H4XJDC
+    content: "Address layered runner config review: project values only, local system override, and
+      project secret/API-key blocking"
+    author: Jacob Chapel
+    created_at: 2026-05-29T21:24:19.772Z
