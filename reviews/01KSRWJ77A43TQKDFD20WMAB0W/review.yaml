@@ -85,6 +85,16 @@ checks:
     runner: npm test -- --fresh
     created_at: 2026-05-29T03:46:14.039Z
     completed_at: 2026-05-29T03:46:14.039Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 1 test in tests/dispatch-plan-target-lock-e2e.test.ts."
+    name: focused dispatch plan target lock test
+    required: true
+    runner: npm test -- --fresh tests/dispatch-plan-target-lock-e2e.test.ts
+    created_at: 2026-05-29T03:46:16.702Z
+    completed_at: 2026-05-29T03:46:16.702Z
 events:
   - _ulid: 01KSRWJ774BB7SQ9P22H7Z3NTY
     actor: Jacob Chapel
@@ -155,6 +165,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-05-29T03:46:14.247Z
+  - _ulid: 01KSRXE0P2C0C062DHF83GBKDY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused dispatch plan target lock test
+    timestamp: 2026-05-29T03:46:16.898Z
 examined_commit: ef1370a7a7dcd6dd87c7a1f277bb2c442fc4ee45
 external_links: []
 lifecycle_state: open
@@ -167,5 +184,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-05-29T03:31:06.090Z
-updated_at: 2026-05-29T03:46:14.039Z
+updated_at: 2026-05-29T03:46:16.702Z
 notes: []
