@@ -13290,18 +13290,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-merge-helper-clean-occupied-target-checkout/01ksregb
-    canonical_branch_head: 2b53df016aaff17a475a2e150a438ef4c4d07553
+    canonical_branch_head: ef1370a7a7dcd6dd87c7a1f277bb2c442fc4ee45
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-29T02:29:06.430Z
+      updated_at: 2026-05-29T03:11:35.223Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-29T02:29:32.151Z
+      updated_at: 2026-05-29T03:11:35.223Z
     integration:
       status: pending
       detail: null
@@ -13309,7 +13309,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 2b53df016aaff17a475a2e150a438ef4c4d07553
-      updated_at: 2026-05-29T02:29:06.430Z
+      updated_at: 2026-05-29T03:11:35.223Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KSREGBX83KKDC7JPSPCKNWQ9"
@@ -13317,9 +13317,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-29T02:29:32.151Z
-      last_reconciled_at: 2026-05-29T02:29:32.151Z
+      last_reconciled_at: 2026-05-29T03:11:35.223Z
       created_at: 2026-05-29T02:29:06.430Z
-      updated_at: 2026-05-29T02:29:32.151Z
+      updated_at: 2026-05-29T03:11:35.223Z
     workspace_id: dispatch-workspace-01KSREGBX83KKDC7JPSPCKNWQ9
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
