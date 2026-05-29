@@ -13,6 +13,17 @@ checks:
     required: true
     created_at: 2026-05-29T22:15:10.252Z
     completed_at: 2026-05-29T22:15:10.252Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@task-update-existing-agent-runner-specs names @agent-definition-schema,
+      @dispatch-event-payload, and @codex-acp-adapter-registration; exact status commands; exact AC
+      IDs; final Given/When/Then text; and exact note commands."
+    name: Spec-update task explicitness
+    required: true
+    created_at: 2026-05-29T22:15:10.258Z
+    completed_at: 2026-05-29T22:15:10.258Z
 events:
   - _ulid: 01KSTWVVY7YT5JXB6B5R5WY3SS
     actor: Jacob Chapel
@@ -41,6 +52,13 @@ events:
       status: pass
       name: Plan import dry-run
     timestamp: 2026-05-29T22:15:11.203Z
+  - _ulid: 01KSTWWFWYJ3SPK5VK2YYPCWFQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec-update task explicitness
+    timestamp: 2026-05-29T22:15:11.518Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -84,5 +102,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-05-29T22:14:51.080Z
-updated_at: 2026-05-29T22:15:10.252Z
+updated_at: 2026-05-29T22:15:10.258Z
 notes: []
