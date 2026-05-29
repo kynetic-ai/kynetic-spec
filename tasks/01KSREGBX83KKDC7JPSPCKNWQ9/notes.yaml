@@ -1,1 +1,42 @@
-notes: []
+notes:
+  - _ulid: 01KSRSCS6TGJ63G0W69VH6ERMM
+    content: >-
+      Approach: 
+
+
+      1. Add classification helper for target worktree checkouts (auxiliary vs eligible vs unsafe).
+      Auxiliary = inside dispatch worktree_root OR contains .kspec-dispatch-workspace.json metadata
+      file. Unsafe = tracked mods, staged drift, in-progress git op
+      (MERGE_HEAD/REBASE_HEAD/CHERRY_PICK_HEAD/REVERT_HEAD/BISECT_LOG). Eligible = otherwise.
+
+
+      2. resolveDispatchIntegrationMutationScope returns a new mutationCwd field. When projectDir is
+      on the target, mutationCwd = projectDir. When exactly one eligible non-auxiliary worktree owns
+      the target, mutationCwd = that path. When unsafe/auxiliary/ambiguous: throw
+      DispatchWorkspaceError with appropriate code. When free, mutationCwd = null (ref-only path).
+
+
+      3. dispatch.ts merge call uses mutationScope.mutationCwd directly for the working-tree merge
+      step. fetch/push remain in projectDir.
+
+
+      4. Shell helper: detects worktrees on target branch, classifies each (auxiliary by metadata
+      file or path under worktree_root from KSPEC_DISPATCH_WORKTREE_ROOT env hint, dirty/in-progress
+      checks). Selects eligible cleanly: refuse for auxiliary/unsafe/multiple-eligible, merge
+      through eligible worktree for exactly-one-eligible, ephemeral helper-owned worktree for free
+      branch.
+
+
+      5. Tests: rework existing 'occupied-blocks-sync' tests to use auxiliary marker (write
+      .kspec-dispatch-workspace.json or place under .kspec-worktrees) to keep refusal semantics. Add
+      new tests for clean eligible occupied checkout = valid mutation surface. Add tests for
+      dirty/staged/in-progress/overwrite-hazard refusal. Add tests for auxiliary refusal.
+
+
+      Edge cases: ensure projectDir checkout coherence still fires when projectDir is on target.
+      Ensure no leaked target locks by helper across all paths. Validate that helper does NOT
+      instruct reviewer to manually check out target. Use temp repos only — no live workspace
+      damage.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-29T02:35:42.170Z
