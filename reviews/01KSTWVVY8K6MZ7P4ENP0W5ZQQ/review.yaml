@@ -35,6 +35,18 @@ checks:
     required: true
     created_at: 2026-05-29T22:15:28.944Z
     completed_at: 2026-05-29T22:15:28.944Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Compared kspec item get output for @agent-definition-schema, @dispatch-event-payload, and
+      @codex-acp-adapter-registration. Proposed AC changes extend their current agent schema,
+      invocation payload, and Codex env/cleanup contracts without moving ownership to the new runner
+      specs.
+    name: Existing contract fit
+    required: true
+    created_at: 2026-05-29T22:15:29.026Z
+    completed_at: 2026-05-29T22:15:29.026Z
 events:
   - _ulid: 01KSTWVVY7YT5JXB6B5R5WY3SS
     actor: Jacob Chapel
@@ -77,6 +89,13 @@ events:
       status: pass
       name: Forbidden ambiguity scan
     timestamp: 2026-05-29T22:15:29.234Z
+  - _ulid: 01KSTWX1GRYEBTX90YKM68AEPD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Existing contract fit
+    timestamp: 2026-05-29T22:15:29.560Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -120,5 +139,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-05-29T22:14:51.080Z
-updated_at: 2026-05-29T22:15:28.944Z
+updated_at: 2026-05-29T22:15:29.026Z
 notes: []
