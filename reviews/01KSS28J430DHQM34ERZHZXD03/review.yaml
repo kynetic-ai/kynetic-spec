@@ -2,7 +2,96 @@ _ulid: 01KSS28J430DHQM34ERZHZXD03
 slugs: []
 title: Review branch-coherent merges and sync/push (cycle 3)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run format:check passed: all matched files use the correct format (956 files)."
+    name: format:check
+    required: true
+    runner: oxfmt
+    created_at: 2026-05-29T05:26:21.707Z
+    completed_at: 2026-05-29T05:26:21.707Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run lint -- --quiet passed with 0 errors (repo warning baseline: 743 warnings)."
+    name: repo lint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-29T05:26:24.009Z
+    completed_at: 2026-05-29T05:26:24.009Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npx oxlint on changed TS/test files passed with 0 warnings and 0 errors.
+    name: changed-file oxlint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-29T05:26:26.277Z
+    completed_at: 2026-05-29T05:26:26.277Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck passed (tsc --noEmit).
+    name: typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-29T05:26:28.526Z
+    completed_at: 2026-05-29T05:26:28.526Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok, --alignment --warnings-ok, and --completeness
+      --warnings-ok all exited 0. Existing warning baselines remain.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-29T05:26:30.777Z
+    completed_at: 2026-05-29T05:26:30.777Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/detached-reviewer-merge.test.ts
+      tests/dispatch-target-sync.test.ts tests/dispatch-degraded-state.test.ts
+      tests/dispatch-plan-target-lock-e2e.test.ts passed: 88/88 tests."
+    name: focused merge/dispatch tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-29T05:26:33.021Z
+    completed_at: 2026-05-29T05:26:33.021Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh passed: 2591 suites, 9917 passed, 5 skipped; log
+      /tmp/kspec-test-cache/01KSS27128V0VPSWRHHR40QA9C/07d40cfcf00a4fad.log."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-05-29T05:26:35.312Z
+    completed_at: 2026-05-29T05:26:35.312Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Created temp repo where remote dev adds conflict-dir/remote.txt and eligible occupied dev
+      checkout has untracked file conflict-dir. resolveDispatchIntegrationMutationScope(..., {
+      mergeRef: 'origin/dev' }) returned mutationCwd as eligible; git merge --ff-only then failed
+      with 'untracked working tree files would be overwritten by merge: conflict-dir';
+      DispatchEngine._syncTarget('dev') returned diverged and degraded kind divergence with reset
+      guidance instead of occupied-checkout cleanup guidance."
+    name: manual directory/file overwrite hazard repro
+    required: true
+    runner: manual tsx repro
+    created_at: 2026-05-29T05:26:37.621Z
+    completed_at: 2026-05-29T05:26:37.621Z
 events:
   - _ulid: 01KSS28J42R683Q7YEQ819XBEY
     actor: Jacob Chapel
@@ -17,17 +106,153 @@ events:
       from: draft
       to: open
     timestamp: 2026-05-29T05:11:00.556Z
+  - _ulid: 01KSS358Z5NG0FRTK6FASTN36D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format:check
+    timestamp: 2026-05-29T05:26:21.925Z
+  - _ulid: 01KSS35B6EY2CS9JER32GTV0CW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: repo lint
+    timestamp: 2026-05-29T05:26:24.206Z
+  - _ulid: 01KSS35DD9ZZT4K84J6V1652YV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file oxlint
+    timestamp: 2026-05-29T05:26:26.473Z
+  - _ulid: 01KSS35FKGAHAEBHCW7GAQWGZD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-29T05:26:28.720Z
+  - _ulid: 01KSS35HSKNNRY8K8P1ZS23ZVB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-29T05:26:30.963Z
+  - _ulid: 01KSS35KZZ3AX3MA20MGE3PG3Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused merge/dispatch tests
+    timestamp: 2026-05-29T05:26:33.215Z
+  - _ulid: 01KSS35P7WHG6942545PG0SXVX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-29T05:26:35.516Z
+  - _ulid: 01KSS35RG0GQZC6AX2RHD81ZV9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: manual directory/file overwrite hazard repro
+    timestamp: 2026-05-29T05:26:37.824Z
+  - _ulid: 01KSS35TSD5X4ZKXTY5YCRPVDZ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSS35TJST8Q6J3FPF294RV2G
+    timestamp: 2026-05-29T05:26:40.173Z
+  - _ulid: 01KSS35WZV3JWM224V3RV1SPSB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSS35WSV8FZD3EJTQW078JYZ
+    timestamp: 2026-05-29T05:26:42.427Z
+  - _ulid: 01KSS35Z821H8R78W0KAA48PZX
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-29T05:26:44.738Z
+  - _ulid: 01KSS35Z820ZY38MMM88M0EZX2
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-29T05:26:44.738Z
 examined_commit: 1168b50bec236cb5c328be5c4fae5b21624f9c80
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KSREGBX83KKDC7JPSPCKNWQ9"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KSS35TJST8Q6J3FPF294RV2G
+    anchor:
+      type: code
+      commit: 1168b50bec236cb5c328be5c4fae5b21624f9c80
+      line_end: 2378
+      line_start: 2377
+      path: src/agent-runtime/workspace.ts
+      side: head
+    entries:
+      - _ulid: 01KSS35TJTATFKASM7QZ5TJK5Q
+        author: Jacob Chapel
+        body: "MUST-FIX: `detectUntrackedOverwriteHazards` only intersects exact path names, so it misses
+          Git directory/file overwrite hazards. I reproduced a sync where remote `origin/dev` adds
+          `conflict-dir/remote.txt` while the eligible occupied target checkout has an untracked
+          file named `conflict-dir`. The preflight returned the checkout as eligible because
+          `changedSet.has('conflict-dir')` is false, but the actual `git merge --ff-only origin/dev`
+          failed with `untracked working tree files would be overwritten by merge: conflict-dir`.
+          Dispatch then classified the failure as `divergence` and produced reset/remote-rewrite
+          guidance instead of the required occupied-checkout cleanup guidance. This violates
+          @dispatch-integration-mutation-scope ac-dirty-occupied-target-refusal-identifies-blocker
+          and @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery for
+          untracked/ignored hazards that Git reports at a parent or child path, not just exact file
+          path matches."
+        created_at: 2026-05-29T05:26:39.962Z
+    kind: blocker
+  - _ulid: 01KSS35WSV8FZD3EJTQW078JYZ
+    entries:
+      - _ulid: 01KSS35WSV7VG0V92EAMVZFYEM
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; review-gates/work-gates skills; prior reviews
+          @01KSRWJ7 and @01KSRZHQ; task @01KSREGBX83KKDC7JPSPCKNWQ9; specs
+          @detached-reviewer-merge-helper, @dispatch-integration-mutation-scope,
+          @dispatch-remote-branch-sync; diffs for src/agent-runtime/workspace.ts,
+          src/agent-runtime/dispatch.ts, merge helper script, and changed tests. Commands run: kspec
+          validations, npm run format:check, npm run lint -- --quiet, npx oxlint changed files, npm
+          run typecheck, focused npm test, full npm test, rendered-script cmp checks, and manual tsx
+          repros for directory/file overwrite hazards. Claims verified: rendered helper copies are
+          byte-identical; prior stale-render and oxlint blockers are fixed; prior exact-path
+          overwrite hazard is covered; new directory/file hazard is still missed. Categories
+          searched: correctness, edge cases, error handling, test quality, integration, generated
+          artifacts."
+        created_at: 2026-05-29T05:26:42.235Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-29T05:26:44.738Z
 created_at: 2026-05-29T05:10:41.027Z
-updated_at: 2026-05-29T05:11:00.344Z
+updated_at: 2026-05-29T05:26:44.738Z
 notes: []
