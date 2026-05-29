@@ -161,9 +161,25 @@ events:
       status: pass
       name: kspec validation
     timestamp: 2026-05-29T20:24:05.458Z
+  - _ulid: 01KSTPHAWJW7P694AQBWN0W3ZJ
+    actor: Codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-29T20:24:14.482Z
+  - _ulid: 01KSTPHAWJYYKH24SF91323YBR
+    actor: Codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-29T20:24:14.482Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -171,7 +187,14 @@ subject:
   ref: "@plan-agent-runner-configuration-layer"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: Codex
+    role: reviewer
+    created_at: 2026-05-29T20:24:14.482Z
 created_at: 2026-05-29T20:22:37.907Z
-updated_at: 2026-05-29T20:24:05.178Z
+updated_at: 2026-05-29T20:24:14.482Z
 notes: []
