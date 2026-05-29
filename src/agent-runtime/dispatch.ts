@@ -3358,6 +3358,28 @@ export class DispatchEngine {
         return "transient_failure";
       }
 
+      // After fetch, re-resolve the mutation scope with the now-available
+      // remote ref so the occupied checkout is also checked for untracked /
+      // ignored files that the upcoming fast-forward would overwrite. Without
+      // this pre-check, the merge below would fail with a generic Git error
+      // and be misclassified as divergence — sending the operator toward
+      // resetting the branch instead of cleaning the blocking checkout.
+      // AC: @dispatch-integration-mutation-scope ac-dirty-occupied-target-refusal-identifies-blocker
+      // AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
+      if (mutationScope.mutationCwd) {
+        try {
+          mutationScope = await resolveDispatchIntegrationMutationScope(
+            this.projectDir,
+            baseBranch,
+            { mergeRef: `${this._syncRemote}/${baseBranch}` },
+          );
+        } catch (err) {
+          const { reason, kind } = this._classifyMutationScopeError(err, baseBranch);
+          this._enterDegradedState(baseBranch, reason, kind);
+          return "unsafe_target";
+        }
+      }
+
       // Step 2: Fast-forward merge the target branch
       // AC: @dispatch-remote-branch-sync ac-pull-ff-only — no merge commits
       // AC: @dispatch-integration-mutation-scope ac-clean-occupied-target-checkout-is-valid-mutation-surface

@@ -2312,11 +2312,76 @@ type TargetCheckoutClassification =
   | { kind: "eligible"; path: string }
   | { kind: "auxiliary"; path: string }
   | { kind: "dirty"; path: string; details: string }
-  | { kind: "in_progress"; path: string; operation: string };
+  | { kind: "in_progress"; path: string; operation: string }
+  | { kind: "overwrite_hazard"; path: string; hazardPaths: string[] };
+
+/**
+ * Detect untracked/ignored working-tree files that would be overwritten by
+ * merging or fast-forwarding the worktree to `mergeRef`. Returns the list of
+ * blocking paths (empty if none). Used so dispatch sync/push can refuse before
+ * moving refs when an occupied checkout would have its untracked content
+ * clobbered, instead of attempting the merge and misclassifying the resulting
+ * Git error as divergence.
+ *
+ * AC: @dispatch-integration-mutation-scope ac-dirty-occupied-target-refusal-identifies-blocker
+ * AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
+ */
+async function detectUntrackedOverwriteHazards(
+  worktreePath: string,
+  mergeRef: string,
+): Promise<string[]> {
+  const headResult = await runGit(worktreePath, ["rev-parse", "HEAD"]);
+  if (headResult.status !== 0 || !headResult.stdout) {
+    return [];
+  }
+  const refResult = await runGit(worktreePath, ["rev-parse", "--verify", `${mergeRef}^{commit}`]);
+  if (refResult.status !== 0 || !refResult.stdout) {
+    return [];
+  }
+  const head = headResult.stdout.trim();
+  const ref = refResult.stdout.trim();
+  if (!head || !ref || head === ref) {
+    return [];
+  }
+
+  // Paths added or modified between HEAD and the merge target. Includes only
+  // paths the merge would write into the working tree; deletions cannot
+  // collide with untracked working-tree files. -z gives NUL-separated entries
+  // so paths with whitespace survive intact.
+  const diff = await runGit(worktreePath, [
+    "diff",
+    "--name-only",
+    "--diff-filter=ACMRT",
+    "-z",
+    head,
+    ref,
+  ]);
+  if (diff.status !== 0) {
+    return [];
+  }
+  const changedPaths = diff.stdout.split("\0").filter((p) => p.length > 0);
+  if (changedPaths.length === 0) {
+    return [];
+  }
+  const changedSet = new Set(changedPaths);
+
+  // Untracked and ignored files together: Git's checkout-time overwrite check
+  // refuses to clobber either category. `--others` without --exclude-standard
+  // returns both untracked and ignored entries.
+  const others = await runGit(worktreePath, ["ls-files", "--others", "-z"]);
+  if (others.status !== 0) {
+    return [];
+  }
+  const otherPaths = others.stdout.split("\0").filter((p) => p.length > 0);
+
+  const hazards = otherPaths.filter((p) => changedSet.has(p));
+  return hazards.toSorted();
+}
 
 async function classifyTargetWorktreeCheckout(
   worktreePath: string,
   worktreeRoot: string,
+  options?: { mergeRef?: string },
 ): Promise<TargetCheckoutClassification> {
   // Auxiliary classification: either a dispatch-created worktree (inside the
   // configured worktree root) or any worktree carrying the dispatch workspace
@@ -2343,6 +2408,13 @@ async function classifyTargetWorktreeCheckout(
     return { kind: "dirty", path: worktreePath, details: "staged drift" };
   }
 
+  if (options?.mergeRef) {
+    const hazards = await detectUntrackedOverwriteHazards(worktreePath, options.mergeRef);
+    if (hazards.length > 0) {
+      return { kind: "overwrite_hazard", path: worktreePath, hazardPaths: hazards };
+    }
+  }
+
   return { kind: "eligible", path: worktreePath };
 }
 
@@ -2353,14 +2425,41 @@ async function findAllWorktreesForBranch(projectDir: string, branch: string): Pr
     .map((entry) => entry.path);
 }
 
+export interface ResolveDispatchIntegrationMutationScopeOptions {
+  /**
+   * When set, occupied target checkouts are additionally checked for
+   * untracked/ignored working-tree paths that would be overwritten by merging
+   * `mergeRef` into the target. Such a checkout is reported as an
+   * `occupied-checkout` blocker instead of being treated as eligible, so the
+   * caller does not attempt a merge that would surface as a divergence-style
+   * Git failure.
+   *
+   * AC: @dispatch-integration-mutation-scope ac-dirty-occupied-target-refusal-identifies-blocker
+   * AC: @dispatch-remote-branch-sync ac-unsafe-occupied-checkout-degraded-recovery
+   */
+  mergeRef?: string;
+}
+
 export async function resolveDispatchIntegrationMutationScope(
   projectDir: string,
   integrationBranch: string,
+  options?: ResolveDispatchIntegrationMutationScopeOptions,
 ): Promise<DispatchIntegrationMutationScope> {
   const currentBranch = await resolveCurrentBranch(projectDir);
 
   if (currentBranch === integrationBranch) {
     await ensureDispatchIntegrationTargetCheckoutCoherence(projectDir, integrationBranch);
+    if (options?.mergeRef) {
+      const hazards = await detectUntrackedOverwriteHazards(projectDir, options.mergeRef);
+      if (hazards.length > 0) {
+        const preview = formatHazardPathsPreview(hazards);
+        throw new DispatchWorkspaceError(
+          `Dispatch cannot safely mutate integration target "${integrationBranch}" from ${projectDir} because the required sync would overwrite untracked/ignored files in that checkout: ${preview}.`,
+          `Remove, stash, or commit the blocking files in "${projectDir}" (${preview}), or detach that checkout, before retrying.`,
+          "occupied-checkout",
+        );
+      }
+    }
     return {
       projectDir,
       integrationBranch,
@@ -2393,13 +2492,17 @@ export async function resolveDispatchIntegrationMutationScope(
   }
 
   const workspaceConfig = await resolveDispatchWorkspaceConfig(projectDir);
+  const classifyOptions = options?.mergeRef ? { mergeRef: options.mergeRef } : undefined;
   const classifications = await Promise.all(
-    otherOccupied.map((p) => classifyTargetWorktreeCheckout(p, workspaceConfig.worktreeRoot)),
+    otherOccupied.map((p) =>
+      classifyTargetWorktreeCheckout(p, workspaceConfig.worktreeRoot, classifyOptions),
+    ),
   );
 
   const auxiliary = classifications.filter((c) => c.kind === "auxiliary");
   const dirty = classifications.filter((c) => c.kind === "dirty");
   const inProgress = classifications.filter((c) => c.kind === "in_progress");
+  const overwriteHazard = classifications.filter((c) => c.kind === "overwrite_hazard");
   const eligible = classifications.filter((c) => c.kind === "eligible");
 
   if (auxiliary.length > 0) {
@@ -2429,6 +2532,16 @@ export async function resolveDispatchIntegrationMutationScope(
     );
   }
 
+  if (overwriteHazard.length > 0) {
+    const blocker = overwriteHazard[0];
+    const preview = formatHazardPathsPreview(blocker.hazardPaths);
+    throw new DispatchWorkspaceError(
+      `Dispatch cannot safely mutate integration target "${integrationBranch}" from ${projectDir} because the required sync would overwrite untracked/ignored files in the occupied checkout "${blocker.path}": ${preview}.`,
+      `Remove, stash, or commit the blocking files in "${blocker.path}" (${preview}), or detach that checkout, before retrying.`,
+      "occupied-checkout",
+    );
+  }
+
   if (eligible.length > 1) {
     const paths = eligible.map((c) => c.path).join(", ");
     throw new DispatchWorkspaceError(
@@ -2446,6 +2559,15 @@ export async function resolveDispatchIntegrationMutationScope(
     targetBranchCheckedOut: true,
     mutationCwd: surface.path,
   };
+}
+
+function formatHazardPathsPreview(paths: string[]): string {
+  if (paths.length === 0) return "";
+  const PREVIEW_COUNT = 3;
+  const shown = paths.slice(0, PREVIEW_COUNT);
+  const remaining = paths.length - shown.length;
+  const preview = shown.join(", ");
+  return remaining > 0 ? `${preview} (+${remaining} more)` : preview;
 }
 
 export async function fastForwardDispatchIntegrationBranch(
