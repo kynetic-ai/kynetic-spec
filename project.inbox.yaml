@@ -3835,3 +3835,45 @@ inbox:
       - reflection
     added_by: "@claude"
     created_at: 2026-05-27T05:02:59.394Z
+  - _ulid: 01KSRZEMEWM2E8B1CSYZE8H3E3
+    text: "Bug: kspec skill render and skill install-core copy file content but drop the source file
+      mode, so executable scripts (e.g. templates/skills/merge/scripts/detached-reviewer-merge.sh at
+      100755) become 100644 in rendered .agents/skills/<id>/scripts/ and
+      .factory/skills/<id>/scripts/ output. Reproducible: chmod +x source script, run kspec skill
+      install-core --force + kspec skill render --force, observe rendered copy is 0644. Locations:
+      copyDirRecursive at src/cli/commands/skill-install.ts:180 and copyDirectory at
+      src/parser/skill-render.ts:552 both go through fs.readFile + writeFileBufferAware with no
+      fs.chmod or fs.copyFile-with-mode call. Discovered during fix cycle for
+      @task-merge-helper-clean-occupied-target-checkout — had to manually chmod +x after
+      regenerating rendered helper. Fix scope: have both copy helpers fstat the source and apply
+      source mode to the destination (or switch to fs.copyFile which preserves mode by default).
+      Likely needs an AC under @platform-renderer-trait/@skill-rendering for executable bit
+      preservation on supporting scripts."
+    tags:
+      - bug
+      - cli
+      - skill-render
+      - mvp
+    added_by: "@claude"
+    created_at: 2026-05-29T04:21:34.301Z
+  - _ulid: 01KSRZEMHRZ1MQVP6B1NZ2F5AG
+    text: "Friction: kspec skill install-core (getTemplatesDir at src/cli/commands/skill-install.ts:123)
+      resolves templates via import.meta.dirname relative to the running binary, so when dogfooding
+      the kspec repo with the globally-installed kspec binary it silently reads the published
+      v0.14.0 templates from /home/.../node_modules/@kynetic-ai/spec/templates/skills/ instead of
+      the local checkout templates/skills/. The command still reports Updated: 13 skill(s) so it
+      looks successful, but local template changes never reach .kspec/skills/ or downstream rendered
+      output. This caused the prior submission on @task-merge-helper-clean-occupied-target-checkout
+      to ship a stale .agents/skills/kspec-merge/scripts/detached-reviewer-merge.sh and block the
+      review. The workaround is npm run dev -- skill install-core. Possible mitigations: (a) detect
+      when CWD is the kspec source repo and use local templates/, (b) add a --templates-dir flag,
+      (c) warn/error when getTemplatesDir resolves outside the project root being targeted, (d)
+      document the dogfooding workflow in AGENTS.md."
+    tags:
+      - friction
+      - cli
+      - skill-render
+      - dogfood
+      - docs
+    added_by: "@claude"
+    created_at: 2026-05-29T04:21:34.392Z

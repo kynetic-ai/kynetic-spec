@@ -19927,6 +19927,22 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-05-29T03:50:34.982Z
+  - _ulid: 01KSRZEMMB1T133R149TVGZVGA
+    type: friction
+    content: "Two-step regeneration of rendered skill platform copies (templates -> .kspec/skills via
+      install-core, then .kspec/skills -> .agents/skills + .factory/skills via render) is invisible
+      to the worker until a reviewer cmp-checks the rendered files. The prior fix cycle on
+      @task-merge-helper-clean-occupied-target-checkout shipped a passing test suite while
+      .agents/skills/kspec-merge/scripts/detached-reviewer-merge.sh still ran the old
+      occupied-target-refuses contract. Tests cover behavior via the template, not via the rendered
+      platform output, so test green does not imply rendered output is current. Possible
+      mitigations: a render-drift gate in npm test or in kspec validate, a kspec skill render
+      --check mode that fails when rendered output drifts from sources, or making
+      install-core/render print explicit drift warnings before exit."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-29T04:21:34.475Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
