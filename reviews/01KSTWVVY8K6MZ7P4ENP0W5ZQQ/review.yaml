@@ -10,6 +10,13 @@ events:
     payload:
       to: draft
     timestamp: 2026-05-29T22:14:51.079Z
+  - _ulid: 01KSTWWEXDGP0X3C4DM9J7W79K
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSTWWENC1YK038X148NMVZZH
+    timestamp: 2026-05-29T22:15:10.509Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -19,8 +26,24 @@ subject:
   content_hash: ""
   ref: "@plan-agent-runner-configuration-layer"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KSTWWENC1YK038X148NMVZZH
+    anchor:
+      type: structured
+      ref: "@task-runner-resolver-invocation-contract"
+      section: tasks
+    entries:
+      - _ulid: 01KSTWWENCVWZ5N8NVQYG1WQ86
+        author: Jacob Chapel
+        body: "Covers line still uses a prose label for the existing dispatch payload contract: 'existing
+          @dispatch-event-payload runner-backed invocation metadata update'. Because
+          @task-update-existing-agent-runner-specs defines the reviewer-approved contract update as
+          @dispatch-event-payload ac-2, this downstream implementation task must name that exact AC
+          ID. Otherwise an implementation agent has to infer which existing contract change it is
+          responsible for."
+        created_at: 2026-05-29T22:15:10.252Z
+    kind: blocker
 verdicts: []
 created_at: 2026-05-29T22:14:51.080Z
-updated_at: null
+updated_at: 2026-05-29T22:15:10.252Z
 notes: []
