@@ -56062,7 +56062,7 @@ runs:
     started_at: 2026-05-29T05:52:37.975Z
     completed_at: 2026-05-29T05:55:31.061Z
   - _ulid: 01KSS5Z0D4FY4PDQ4VPMRJJZ9D
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -56117,7 +56117,13 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-29T06:17:33.709Z
-        completed_at: 2026-05-29T06:17:33.709Z
+        completed_at: 2026-05-29T06:17:54.256Z
+        notes: Captured one inbox item tagged reflection/dispatch/merge-helper for non-cd merge-helper
+          recovery guidance. Captured one success observation about batching review checks and
+          evidence logs. Did not capture the full-suite duration as a new item because existing
+          test-runner caching/shard conventions already partially cover it and this task warranted a
+          full fresh run.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-29T06:15:22.276Z
+    completed_at: 2026-05-29T06:17:54.256Z
