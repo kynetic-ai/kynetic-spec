@@ -446,11 +446,53 @@ This plan is scoped to kspec's storage format, TypeScript types, layered resolve
 derive_from_specs: false
 
 ```yaml
+- title: Update existing agent, event, and adapter specs for runner semantics
+  slug: task-update-existing-agent-runner-specs
+  priority: 1
+  tags: [specs, agents, runners, compatibility]
+  spec_ref: "@agent-definition-schema"
+  description: |
+    What:
+    - Update existing implemented kspec contracts that the runner layer extends. Do not rely on plan-local `## Specs` entries to update existing specs; those entries materialize new specs during derivation.
+    - Update `@agent-definition-schema` so the existing Agent Definition Schema contract explicitly includes the new optional `runner` field:
+      - Add a new AC `ac-runner-field-accepted`: Given an agent definition includes a `runner` field, when the meta manifest is loaded and validated, then the runner field is accepted as an optional string reference to a named runner.
+      - Update existing compatibility/default wording in `ac-8` so legacy agent definitions without `runner` validate successfully with `runner: undefined` in addition to the existing default fields.
+      - Add a new AC `ac-meta-set-runner-preserves-fields`: Given an agent definition exists, when `kspec meta set <agent>` sets or clears `runner`, then the agent definition is updated while unrelated fields, including `adapter`, are preserved.
+    - Update `@dispatch-event-payload` so existing invocation payload contracts include runner-backed metadata without breaking legacy consumers:
+      - Add or amend an AC so runner-backed invocation events include `runner` and `resolved_adapter`; legacy adapter-backed invocation events continue to expose adapter identity and omit `runner` when no runner is configured.
+      - Keep `task_ref`, `session_id`, `agent_id`, `trigger`, and terminal `duration_ms` semantics unchanged.
+    - Update `@codex-acp-adapter-registration` if the implementation moves Codex session injection behind the runner resolver/env builder:
+      - Preserve the behavior that Codex receives `KSPEC_SESSION_ID` through its configured environment policy.
+      - Preserve cleanup/restoration behavior after invocation close or startup failure.
+      - Rewrite AC wording away from the exact helper names `injectEnvForAdapter`/`removeEnvForAdapter` if those helpers are replaced, so the existing spec continues to describe behavior rather than obsolete implementation mechanics.
+    - Update statuses for touched existing specs intentionally: keep implemented specs implemented if the task only broadens their contract and immediately implements/tests the updates in the same task chain; otherwise set touched specs to in_progress with `--no-cascade` before implementation work begins.
+    - Add notes to touched specs summarizing that the runner configuration plan extends their existing contracts.
+    - Verify every new or edited AC is covered by a later implementation task's `Covers:` line before marking this task complete.
+
+    Why:
+    The plan-local Specs block creates new runner specs. It does not patch existing implemented specs such as Agent Definition Schema, Dispatch Event Payload Contracts, or Codex adapter registration. Without this explicit task, derivation would leave the current specs stale or conflicting while implementation changes their behavior.
+
+    How:
+    - Use `kspec item get` to capture current target spec text before editing.
+    - Use `kspec item ac add` for new ACs and the appropriate item/AC update command for amended ACs; do not hand-edit shadow YAML unless the CLI lacks the needed mutation surface.
+    - Keep AC IDs exact and stable so implementation tests can annotate against them.
+    - Keep the plan-local runner specs as the new high-level contract; use existing-spec edits only for contracts that already own adjacent behavior.
+
+    Testing:
+    - `kspec item get @agent-definition-schema`
+    - `kspec item get @dispatch-event-payload`
+    - `kspec item get @codex-acp-adapter-registration`
+    - `kspec validate --refs --warnings-ok`
+
+    Covers: existing @agent-definition-schema agent field/default/mutation AC updates; existing @dispatch-event-payload invocation payload metadata update; existing @codex-acp-adapter-registration Codex session env and cleanup behavior update
+
 - title: Define layered runner config storage, schema, and shared TypeScript types
   slug: task-runner-config-schema-types
   priority: 1
   tags: [config, schema, agents, runners]
   spec_ref: "@agent-runner-configuration"
+  depends_on:
+    - "@task-update-existing-agent-runner-specs"
   description: |
     What:
     - Add storage and loader support for two runner config layers:
@@ -529,7 +571,7 @@ derive_from_specs: false
     - `npm run typecheck`
     - `kspec validate --refs --warnings-ok`
 
-    Covers: @agent-runner-configuration ac-agent-runner-reference, ac-adapter-field-backcompat, ac-runner-precedence-over-adapter; @runner-operator-surfaces ac-agent-set-updates-runner, ac-agent-list-shows-runner
+    Covers: @agent-runner-configuration ac-agent-runner-reference, ac-adapter-field-backcompat, ac-runner-precedence-over-adapter; @runner-operator-surfaces ac-agent-set-updates-runner, ac-agent-list-shows-runner; existing @agent-definition-schema ac-runner-field-accepted, ac-meta-set-runner-preserves-fields, ac-8 default compatibility update
 
 - title: Implement the runner resolver and invocation contract
   slug: task-runner-resolver-invocation-contract
@@ -572,7 +614,7 @@ derive_from_specs: false
     - `npm test -- --fresh tests/agent-runner-resolver.test.ts tests/agent-invocation.test.ts`
     - `npm run typecheck`
 
-    Covers: @runner-resolution-and-preflight ac-one-shot-uses-runner-resolution, ac-invalid-runner-blocks-before-prompt, ac-session-metadata-records-runner, ac-dispatched-event-records-runner; @agent-runner-configuration ac-adapter-field-backcompat, ac-runner-precedence-over-adapter; @runner-invocation-semantics ac-skill-formatting-uses-resolved-adapter, ac-auto-approve-from-resolved-contract
+    Covers: @runner-resolution-and-preflight ac-one-shot-uses-runner-resolution, ac-invalid-runner-blocks-before-prompt, ac-session-metadata-records-runner, ac-dispatched-event-records-runner; @agent-runner-configuration ac-adapter-field-backcompat, ac-runner-precedence-over-adapter; @runner-invocation-semantics ac-skill-formatting-uses-resolved-adapter, ac-auto-approve-from-resolved-contract; existing @dispatch-event-payload runner-backed invocation metadata update
 
 - title: Build runner environment and secret resolution boundaries
   slug: task-runner-env-secret-boundary
@@ -611,7 +653,7 @@ derive_from_specs: false
     - `npm test -- --fresh tests/agent-runner-env.test.ts tests/agent-invocation.test.ts`
     - `npm run typecheck`
 
-    Covers: @runner-environment-secret-boundaries ac-env-inheritance-policy-applied, ac-env-set-overrides-allowed-values, ac-project-env-literals-are-non-secret, ac-secret-env-names-use-bindings, ac-secret-bindings-system-only, ac-secret-values-not-stored-inline, ac-required-secret-missing-blocks, ac-diagnostics-redact-secrets, ac-privacy-defaults-applied; @runner-invocation-semantics ac-session-env-injected-through-runner, ac-runner-cleanup-restores-state
+    Covers: @runner-environment-secret-boundaries ac-env-inheritance-policy-applied, ac-env-set-overrides-allowed-values, ac-project-env-literals-are-non-secret, ac-secret-env-names-use-bindings, ac-secret-bindings-system-only, ac-secret-values-not-stored-inline, ac-required-secret-missing-blocks, ac-diagnostics-redact-secrets, ac-privacy-defaults-applied; @runner-invocation-semantics ac-session-env-injected-through-runner, ac-runner-cleanup-restores-state; existing @codex-acp-adapter-registration Codex session env and cleanup behavior update
 
 - title: Add runner runtime version resolution and materialization
   slug: task-runner-runtime-version-isolation
@@ -877,13 +919,14 @@ derive_from_specs: false
 
 ### Dependency ordering
 
-1. Layered runner config schema and types establish the storage and merge vocabulary.
-2. Agent meta and CLI mutation support allow agents to reference runners.
-3. Runtime resolver makes one-shot invocation use effective runner contracts.
-4. Env/secret and runtime-isolation tasks harden the resolved contract.
-5. Dispatch preflight moves daemon automation onto the same resolver.
-6. CLI, daemon API, and Web UI surfaces expose the resolved state to operators.
-7. Documentation and end-to-end regressions close compatibility and migration gaps.
+1. Existing agent, event, and adapter specs are updated first so workers do not implement against stale implemented contracts.
+2. Layered runner config schema and types establish the storage and merge vocabulary.
+3. Agent meta and CLI mutation support allow agents to reference runners.
+4. Runtime resolver makes one-shot invocation use effective runner contracts.
+5. Env/secret and runtime-isolation tasks harden the resolved contract.
+6. Dispatch preflight moves daemon automation onto the same resolver.
+7. CLI, daemon API, and Web UI surfaces expose the resolved state to operators.
+8. Documentation and end-to-end regressions close compatibility and migration gaps.
 
 ### Live-project safety
 

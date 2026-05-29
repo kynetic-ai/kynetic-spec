@@ -13,3 +13,7 @@ notes:
     content: "Address review @01KSTT4W: specify shadow sidecar path and deterministic system project key"
     author: Jacob Chapel
     created_at: 2026-05-29T21:29:21.561Z
+  - _ulid: 01KSTVTXSJKGH67G54SWKTZANK
+    content: Add explicit existing-spec update task for runner semantics
+    author: Jacob Chapel
+    created_at: 2026-05-29T21:56:51.635Z
