@@ -19956,6 +19956,36 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-29T05:09:03.841Z
+  - _ulid: 01KSS4TBJWNNQ2MDMJ3J56FBRW
+    type: success
+    content: 'When a reviewer reports a bug of the form "X only catches exact match," enumerate the
+      OTHER shapes of the same root cause before implementing — especially inverse directions. Today
+      on fix cycle 3 of @task-merge-helper-clean-occupied-target-checkout: reviewer reported
+      direction 1 (untracked file blocks incoming directory). I deliberately checked direction 2
+      (untracked directory blocks incoming file), found it had the same root cause (string match
+      instead of tree-entry match) but a DIFFERENT git error wording (would lose untracked files vs
+      would be overwritten by merge), so the shell helper grep also needed extending. Without the
+      inverse check, the fix would have been partial and rebounded as another review cycle. The
+      technique generalizes: for any "only checks A" bug, ask what B/C/D the same broken predicate
+      also fails to catch.'
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-29T05:55:21.309Z
+  - _ulid: 01KSS4TBWCF3Q1QSKBS1CHFDRD
+    type: success
+    content: 'For path-prefix collision logic, write an explicit negative test for a sibling that shares
+      a leading string but is NOT a path-segment ancestor (e.g., untracked file "config" vs incoming
+      path "config.yaml"). Without this guard test, a naive a.startsWith(b) fix over-refuses clean
+      checkouts. Today the test "does not refuse a sync when an untracked file is only a string
+      prefix of a changed path (not a path-segment prefix)" in tests/dispatch-target-sync.test.ts
+      pins the / boundary in pathsCollideAsTreeEntries. The pattern: any time you intersect path
+      sets with prefix semantics, add a same-prefix-different-segment negative test in the same
+      change.'
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-29T05:55:21.612Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
