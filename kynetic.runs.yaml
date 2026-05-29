@@ -56021,7 +56021,7 @@ runs:
     completed_at: 2026-05-29T05:29:53.295Z
   - _ulid: 01KSS4NC2P8091C113PN82APG5
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -56031,7 +56031,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-29T05:53:14.379Z
-        completed_at: 2026-05-29T05:53:14.379Z
+        completed_at: 2026-05-29T05:54:57.194Z
+        notes: "Step 2: identified 2 high-confidence success patterns from fix cycle 3. (1) When reviewer
+          reports 'only matches exact', enumerate inverse directions of the same root cause before
+          implementing. Today: reviewer reported file-blocking-dir; I checked dir-blocking-file,
+          found same root cause but different git error wording (would lose untracked files),
+          shipped both fixes together. (2) For path-prefix logic, write a negative test for
+          sibling-prefix (config vs config.yaml) to lock in the / boundary. No existing observations
+          cover these specific operational techniques."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-29T05:54:57.194Z
+        completed_at: 2026-05-29T05:54:57.194Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-29T05:52:37.975Z
