@@ -55848,7 +55848,7 @@ runs:
     completed_at: 2026-05-27T09:03:14.427Z
   - _ulid: 01KSRXHVW0HD31CE8XPCTFCHZS
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -55881,7 +55881,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-29T03:50:06.645Z
-        completed_at: 2026-05-29T03:50:06.645Z
+        completed_at: 2026-05-29T03:50:15.765Z
+        notes: "Proposed improvements: no new friction item because rendered-helper drift is already
+          captured by observation 01KSK0KQ and related skill-rendering specs/tasks. Capture one
+          success pattern instead: when reviewing generated/supporting-runtime changes, compare the
+          source template to the actual runtime artifact that workflow commands will execute; this
+          caught a stale rendered helper despite passing focused tests."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-29T03:50:15.765Z
+        completed_at: 2026-05-29T03:50:15.765Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-29T03:48:23.040Z
