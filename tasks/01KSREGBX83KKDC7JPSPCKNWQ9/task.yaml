@@ -179,7 +179,7 @@ description: >
 spec_ref: "@detached-reviewer-merge-helper"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -194,8 +194,8 @@ review_ref: "@01KSRWJ77A43TQKDFD20WMAB0W"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-merge-helper-clean-occupied-target-checkout/01ksregb
-  captured_at: 2026-05-29T03:20:43.471Z
-  commit: ef1370a7a7dcd6dd87c7a1f277bb2c442fc4ee45
+  captured_at: 2026-05-29T04:12:12.466Z
+  commit: dd78e7404698ffac42d2b04f0fcd23e6e65b19d2
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-merge-helper-clean-occupied-target-checkout/01ksregb
@@ -271,8 +271,35 @@ history:
         previous: 2026-05-29T02:29:54.294Z
     command: task-start
     timestamp: 2026-05-29T04:12:06.522Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-merge-helper-clean-occupied-target-checkout/01ksregb
+          captured_at: 2026-05-29T04:12:12.466Z
+          commit: dd78e7404698ffac42d2b04f0fcd23e6e65b19d2
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-merge-helper-clean-occupied-target-checkout/01ksregb
+        previous:
+          review_url: null
+          branch: dispatch/task/task-merge-helper-clean-occupied-target-checkout/01ksregb
+          captured_at: 2026-05-29T03:20:43.471Z
+          commit: ef1370a7a7dcd6dd87c7a1f277bb2c442fc4ee45
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-merge-helper-clean-occupied-target-checkout/01ksregb
+      submitted_at:
+        new: 2026-05-29T04:12:12.470Z
+        previous: 2026-05-29T03:20:43.480Z
+    command: task-submit
+    timestamp: 2026-05-29T04:12:12.470Z
 created_at: 2026-05-28T23:25:25.288Z
 started_at: 2026-05-29T04:12:06.521Z
-submitted_at: 2026-05-29T03:20:43.480Z
+submitted_at: 2026-05-29T04:12:12.470Z
 todos: []
 automation: eligible
