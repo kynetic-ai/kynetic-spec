@@ -56063,7 +56063,7 @@ runs:
     completed_at: 2026-05-29T05:55:31.061Z
   - _ulid: 01KSS5Z0D4FY4PDQ4VPMRJJZ9D
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -56078,7 +56078,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-29T06:16:51.778Z
-        completed_at: 2026-05-29T06:16:51.778Z
+        completed_at: 2026-05-29T06:17:02.421Z
+        notes: "Friction: the merge helper correctly refused a clean auxiliary checkout on dev, but its
+          recovery output used 'cd <path> && git checkout --detach' while the detached reviewer
+          prompt says to run all commands from the assigned workspace. I used a safe non-cd 'git -C
+          <path> checkout --detach' equivalent after inspecting cleanliness. This is repeatable
+          whenever helper recovery requires operating on a blocker outside the review snapshot. Also
+          noted that a full fresh suite took about 39 minutes; this is expensive but expected for
+          broad dispatch/worktree changes."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-29T06:17:02.421Z
+        completed_at: 2026-05-29T06:17:02.421Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-29T06:15:22.276Z
