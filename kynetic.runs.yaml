@@ -55963,7 +55963,7 @@ runs:
     completed_at: 2026-05-29T04:42:12.776Z
   - _ulid: 01KSS37791XQDJ2A3RXT9KD2Y9
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -55986,7 +55986,15 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-29T05:29:15.976Z
-        completed_at: 2026-05-29T05:29:15.976Z
+        completed_at: 2026-05-29T05:29:23.078Z
+        notes: "Friction points: the workflow show example in the reflect guidance omits the run ref, but
+          the CLI required one in this workspace. The full suite is also long, but that is a known
+          project tradeoff and the review-gates require it for approval. No new source or task
+          lifecycle friction beyond the already-recorded review blocker."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-29T05:29:23.078Z
+        completed_at: 2026-05-29T05:29:23.078Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-29T05:27:25.729Z
