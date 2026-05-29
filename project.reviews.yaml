@@ -22821,7 +22821,7 @@ reviews:
   - _ulid: 01KSTNXXYAFSZFE2A3M5J4TFYF
     slugs: []
     title: "Plan review: Agent Runner Configuration Layer"
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
     check_count: 0
     lifecycle_state: open
@@ -22831,8 +22831,8 @@ reviews:
       content_hash: ""
       ref: "@plan-agent-runner-configuration-layer"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
+    thread_count: 1
+    unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-05-29T20:13:38.633Z
-    updated_at: 2026-05-29T20:13:57.743Z
+    updated_at: 2026-05-29T20:14:07.593Z
