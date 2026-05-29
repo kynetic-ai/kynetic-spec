@@ -172,6 +172,13 @@ events:
       status: pass
       name: focused dispatch plan target lock test
     timestamp: 2026-05-29T03:46:16.898Z
+  - _ulid: 01KSRXEJAHB1J9C53SX1K164JX
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSRXEJ48VW6X74SJ9W99FBPM
+    timestamp: 2026-05-29T03:46:34.961Z
 examined_commit: ef1370a7a7dcd6dd87c7a1f277bb2c442fc4ee45
 external_links: []
 lifecycle_state: open
@@ -181,8 +188,32 @@ subject:
   content_hash: ""
   ref: "@01KSREGBX83KKDC7JPSPCKNWQ9"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KSRXEJ48VW6X74SJ9W99FBPM
+    anchor:
+      type: code
+      commit: ef1370a7a7dcd6dd87c7a1f277bb2c442fc4ee45
+      line_end: 11
+      line_start: 8
+      path: .agents/skills/kspec-merge/scripts/detached-reviewer-merge.sh
+      side: head
+    entries:
+      - _ulid: 01KSRXEJ48AJAHPYBVBQTKSP3G
+        author: Jacob Chapel
+        body: "Rendered merge helper is stale. The task explicitly required regenerating rendered
+          merge-skill artifacts after changing
+          templates/skills/merge/scripts/detached-reviewer-merge.sh, but cmp shows the template and
+          .agents/skills/kspec-merge/scripts/detached-reviewer-merge.sh differ. The rendered
+          supporting script still says it always uses a helper-owned temporary worktree and refuses
+          any occupied target checkout, so the actual detached-reviewer completion path would run
+          old behavior instead of the reviewed branch-coherent merge logic. Evidence: cmp -s
+          templates/skills/merge/scripts/detached-reviewer-merge.sh
+          .agents/skills/kspec-merge/scripts/detached-reviewer-merge.sh returned 1, and lines 8-11
+          in the rendered script contain the obsolete occupied-target refusal contract. Run the
+          render/build step and ensure the supporting script copy matches the updated template."
+        created_at: 2026-05-29T03:46:34.760Z
+    kind: blocker
 verdicts: []
 created_at: 2026-05-29T03:31:06.090Z
-updated_at: 2026-05-29T03:46:16.702Z
+updated_at: 2026-05-29T03:46:34.760Z
 notes: []
