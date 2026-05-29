@@ -636,7 +636,7 @@ derive_from_specs: false
     - `npm test -- --fresh tests/agent-runner-resolver.test.ts tests/agent-invocation.test.ts`
     - `npm run typecheck`
 
-    Covers: @runner-resolution-and-preflight ac-one-shot-uses-runner-resolution, ac-invalid-runner-blocks-before-prompt, ac-session-metadata-records-runner, ac-dispatched-event-records-runner; @agent-runner-configuration ac-adapter-field-backcompat, ac-runner-precedence-over-adapter; @runner-invocation-semantics ac-skill-formatting-uses-resolved-adapter, ac-auto-approve-from-resolved-contract; existing @dispatch-event-payload runner-backed invocation metadata update
+    Covers: @runner-resolution-and-preflight ac-one-shot-uses-runner-resolution, ac-invalid-runner-blocks-before-prompt, ac-session-metadata-records-runner, ac-dispatched-event-records-runner; @agent-runner-configuration ac-adapter-field-backcompat, ac-runner-precedence-over-adapter; @runner-invocation-semantics ac-skill-formatting-uses-resolved-adapter, ac-auto-approve-from-resolved-contract; existing @dispatch-event-payload ac-2
 
 - title: Build runner environment and secret resolution boundaries
   slug: task-runner-env-secret-boundary
@@ -675,7 +675,7 @@ derive_from_specs: false
     - `npm test -- --fresh tests/agent-runner-env.test.ts tests/agent-invocation.test.ts`
     - `npm run typecheck`
 
-    Covers: @runner-environment-secret-boundaries ac-env-inheritance-policy-applied, ac-env-set-overrides-allowed-values, ac-project-env-literals-are-non-secret, ac-secret-env-names-use-bindings, ac-secret-bindings-system-only, ac-secret-values-not-stored-inline, ac-required-secret-missing-blocks, ac-diagnostics-redact-secrets, ac-privacy-defaults-applied; @runner-invocation-semantics ac-session-env-injected-through-runner, ac-runner-cleanup-restores-state; existing @codex-acp-adapter-registration Codex session env and cleanup behavior update
+    Covers: @runner-environment-secret-boundaries ac-env-inheritance-policy-applied, ac-env-set-overrides-allowed-values, ac-project-env-literals-are-non-secret, ac-secret-env-names-use-bindings, ac-secret-bindings-system-only, ac-secret-values-not-stored-inline, ac-required-secret-missing-blocks, ac-diagnostics-redact-secrets, ac-privacy-defaults-applied; @runner-invocation-semantics ac-session-env-injected-through-runner, ac-runner-cleanup-restores-state; existing @codex-acp-adapter-registration ac-2, ac-3
 
 - title: Add runner runtime version resolution and materialization
   slug: task-runner-runtime-version-isolation
