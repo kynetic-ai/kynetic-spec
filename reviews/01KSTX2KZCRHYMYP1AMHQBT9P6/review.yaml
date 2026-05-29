@@ -2,7 +2,74 @@ _ulid: 01KSTX2KZCRHYMYP1AMHQBT9P6
 slugs: []
 title: "Plan review: Agent Runner Configuration Layer (cycle 2)"
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@task-runner-resolver-invocation-contract Covers now ends with exact existing AC ID:
+      existing @dispatch-event-payload ac-2."
+    name: "Prior blocker: dispatch Covers mapping"
+    required: true
+    runner: manual
+    created_at: 2026-05-29T22:18:59.057Z
+    completed_at: 2026-05-29T22:18:59.057Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@task-runner-env-secret-boundary Covers now ends with exact existing AC IDs: existing
+      @codex-acp-adapter-registration ac-2, ac-3."
+    name: "Prior blocker: Codex Covers mapping"
+    required: true
+    runner: manual
+    created_at: 2026-05-29T22:19:01.706Z
+    completed_at: 2026-05-29T22:19:01.706Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@task-update-existing-agent-runner-specs still names the exact target specs, status
+      commands, AC IDs, final Given/When/Then text, exact notes, and leaves no implementation-agent
+      decisions for those updates."
+    name: Spec-update task exactness
+    required: true
+    runner: manual
+    created_at: 2026-05-29T22:19:04.386Z
+    completed_at: 2026-05-29T22:19:04.386Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec plan import plans/agent-runner-configuration-layer.md --dry-run reported Status:
+      draft, Content stored: full document, Derived specs: 0, Derived tasks: 0."
+    name: Plan import dry-run
+    required: true
+    runner: kspec
+    created_at: 2026-05-29T22:19:07.097Z
+    completed_at: 2026-05-29T22:19:07.097Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate --refs --warnings-ok passed: Schema OK, References OK; only existing
+      deprecated-reference warnings were reported."
+    name: Reference validation
+    required: true
+    runner: kspec
+    created_at: 2026-05-29T22:19:09.794Z
+    completed_at: 2026-05-29T22:19:09.794Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec plan get @plan-agent-runner-configuration-layer reports Status: draft; no status,
+      derive, or automation eligibility changes were made."
+    name: Plan remains draft
+    required: true
+    runner: kspec
+    created_at: 2026-05-29T22:19:12.418Z
+    completed_at: 2026-05-29T22:19:12.418Z
 events:
   - _ulid: 01KSTX2KZAHSED49D2PD5M7ABZ
     actor: Jacob Chapel
@@ -10,9 +77,67 @@ events:
     payload:
       to: draft
     timestamp: 2026-05-29T22:18:32.298Z
+  - _ulid: 01KSTX3EANCYYX5E9MCK010HTZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: "Prior blocker: dispatch Covers mapping"
+    timestamp: 2026-05-29T22:18:59.286Z
+  - _ulid: 01KSTX3GY0BBCAM38MR9MW0QKX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: "Prior blocker: Codex Covers mapping"
+    timestamp: 2026-05-29T22:19:01.952Z
+  - _ulid: 01KSTX3KHCR9W062MRKR94F4T6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec-update task exactness
+    timestamp: 2026-05-29T22:19:04.620Z
+  - _ulid: 01KSTX3P7BKZ61FBBPNPZNTZEA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan import dry-run
+    timestamp: 2026-05-29T22:19:07.371Z
+  - _ulid: 01KSTX3RSEVP07CZG0KK5XXXT7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Reference validation
+    timestamp: 2026-05-29T22:19:09.998Z
+  - _ulid: 01KSTX3VBKT5WZTFJ61HR3S95C
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan remains draft
+    timestamp: 2026-05-29T22:19:12.627Z
+  - _ulid: 01KSTX3XY53HA18RRD1K5XGJC2
+    actor: Jacob Chapel
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-29T22:19:15.269Z
+  - _ulid: 01KSTX3XY5NJ39HQG18GXP6DY4
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: closed
+    timestamp: 2026-05-29T22:19:15.269Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -20,7 +145,14 @@ subject:
   ref: "@plan-agent-runner-configuration-layer"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: Jacob Chapel
+    role: reviewer
+    created_at: 2026-05-29T22:19:15.269Z
 created_at: 2026-05-29T22:18:32.300Z
-updated_at: null
+updated_at: 2026-05-29T22:19:15.269Z
 notes: []
