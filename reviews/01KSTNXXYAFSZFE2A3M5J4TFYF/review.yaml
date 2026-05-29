@@ -35,6 +35,18 @@ checks:
     required: true
     created_at: 2026-05-29T20:15:31.205Z
     completed_at: 2026-05-29T20:15:31.205Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Inspected @agent-integration children and adjacent contracts @agent-definition-schema,
+      @dispatch-agent-action-input, @dispatch-event-payload, @doctor-command, @trait-json-output,
+      and @trait-error-guidance. No direct conflict found beyond inherited trait coverage and
+      command-surface ambiguity recorded as blockers.
+    name: Existing spec neighborhood
+    required: true
+    created_at: 2026-05-29T20:15:42.082Z
+    completed_at: 2026-05-29T20:15:42.082Z
 events:
   - _ulid: 01KSTNXXY95WXGX2PEQBWC3MS8
     actor: Jacob Chapel
@@ -105,6 +117,13 @@ events:
       status: pass
       name: Dependency ordering
     timestamp: 2026-05-29T20:15:31.471Z
+  - _ulid: 01KSTP1PRKF61TJJ4EB38EREWY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Existing spec neighborhood
+    timestamp: 2026-05-29T20:15:42.355Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -196,5 +215,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-05-29T20:13:38.633Z
-updated_at: 2026-05-29T20:15:31.205Z
+updated_at: 2026-05-29T20:15:42.082Z
 notes: []
