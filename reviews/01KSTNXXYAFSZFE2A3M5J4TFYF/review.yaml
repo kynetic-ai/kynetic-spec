@@ -31,6 +31,13 @@ events:
       kind: blocker
       thread_ulid: 01KSTNZ3YQ89BF74DVYXQZ53Q5
     timestamp: 2026-05-29T20:14:17.859Z
+  - _ulid: 01KSTNZEKXV8KJYEPQTSG0VFWF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSTNZECEBQ90WPZRN6NBHV03
+    timestamp: 2026-05-29T20:14:28.477Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -71,7 +78,23 @@ threads:
           that do not apply to the runner operator surfaces.
         created_at: 2026-05-29T20:14:17.559Z
     kind: blocker
+  - _ulid: 01KSTNZECEBQ90WPZRN6NBHV03
+    anchor:
+      type: structured
+      field: ac-runner-validation-command
+      ref: "@runner-operator-surfaces"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KSTNZECFYBTTZ696YDPEJCBQ
+        author: Jacob Chapel
+        body: The AC leaves the product surface undefined by saying 'runner validation or doctor surface',
+          and @task-cli-runner-surfaces repeats the ambiguity by allowing either a doctor section or
+          'kspec agent runners validate'. A worker could implement incompatible commands while still
+          satisfying the wording. Choose the exact command surface, flags, JSON fields, human output
+          expectations, and exit/status semantics in the plan before derivation.
+        created_at: 2026-05-29T20:14:28.239Z
+    kind: blocker
 verdicts: []
 created_at: 2026-05-29T20:13:38.633Z
-updated_at: 2026-05-29T20:14:17.559Z
+updated_at: 2026-05-29T20:14:28.239Z
 notes: []
