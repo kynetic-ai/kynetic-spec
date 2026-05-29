@@ -23,6 +23,16 @@ checks:
     runner: kspec validate --refs --alignment --completeness --warnings-ok
     created_at: 2026-05-29T03:45:43.187Z
     completed_at: 2026-05-29T03:45:43.187Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 0 errors; repo baseline reported 749 warnings.
+    name: repo lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-05-29T03:45:45.703Z
+    completed_at: 2026-05-29T03:45:45.703Z
 events:
   - _ulid: 01KSRWJ774BB7SQ9P22H7Z3NTY
     actor: Jacob Chapel
@@ -51,6 +61,13 @@ events:
       status: pass
       name: kspec validate
     timestamp: 2026-05-29T03:45:43.380Z
+  - _ulid: 01KSRXD2E5DYAHSHM0ZNFS2G0W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: repo lint
+    timestamp: 2026-05-29T03:45:45.926Z
 examined_commit: ef1370a7a7dcd6dd87c7a1f277bb2c442fc4ee45
 external_links: []
 lifecycle_state: open
@@ -63,5 +80,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-05-29T03:31:06.090Z
-updated_at: 2026-05-29T03:45:43.187Z
+updated_at: 2026-05-29T03:45:45.703Z
 notes: []
