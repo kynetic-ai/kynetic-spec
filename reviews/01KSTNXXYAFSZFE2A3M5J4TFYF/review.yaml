@@ -47,6 +47,17 @@ checks:
     required: true
     created_at: 2026-05-29T20:15:42.082Z
     completed_at: 2026-05-29T20:15:42.082Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Most tasks include What/Why/How/Testing/Covers, but @task-cli-runner-surfaces leaves the
+      validation command choice open and @task-runner-config-schema-types leaves sidecar kind
+      acceptance/security behavior open.
+    name: Task standalone executability
+    required: true
+    created_at: 2026-05-29T20:15:53.990Z
+    completed_at: 2026-05-29T20:15:53.990Z
 events:
   - _ulid: 01KSTNXXY95WXGX2PEQBWC3MS8
     actor: Jacob Chapel
@@ -124,6 +135,13 @@ events:
       status: pass
       name: Existing spec neighborhood
     timestamp: 2026-05-29T20:15:42.355Z
+  - _ulid: 01KSTP22BK9N68038XHBFYXG89
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Task standalone executability
+    timestamp: 2026-05-29T20:15:54.227Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -215,5 +233,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-05-29T20:13:38.633Z
-updated_at: 2026-05-29T20:15:42.082Z
+updated_at: 2026-05-29T20:15:53.990Z
 notes: []

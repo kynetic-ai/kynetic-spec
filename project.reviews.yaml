@@ -22823,7 +22823,7 @@ reviews:
     title: "Plan review: Agent Runner Configuration Layer"
     disposition: changes_requested
     author: Jacob Chapel
-    check_count: 4
+    check_count: 5
     lifecycle_state: open
     related_refs: []
     subject:
@@ -22835,4 +22835,4 @@ reviews:
     unresolved_blocker_count: 5
     verdict_count: 0
     created_at: 2026-05-29T20:13:38.633Z
-    updated_at: 2026-05-29T20:15:42.082Z
+    updated_at: 2026-05-29T20:15:53.990Z
