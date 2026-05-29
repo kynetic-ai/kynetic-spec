@@ -30116,7 +30116,7 @@
   title: Implement branch-coherent merges and sync/push for clean occupied integration targets
   type: task
   spec_ref: "@detached-reviewer-merge-helper"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   priority: 1
@@ -30126,7 +30126,7 @@
     - git
     - worktree
   review_ref: "@01KSRWJ77A43TQKDFD20WMAB0W"
-  notes_count: 3
+  notes_count: 4
   todos_count: 0
   created_at: 2026-05-28T23:25:25.288Z
   started_at: 2026-05-29T02:29:54.294Z
