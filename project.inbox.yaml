@@ -3877,3 +3877,15 @@ inbox:
       - docs
     added_by: "@claude"
     created_at: 2026-05-29T04:21:34.392Z
+  - _ulid: 01KSS63EHY7W1AES290BHHHECX
+    text: Update detached-reviewer merge helper recovery guidance for auxiliary/unsafe occupied target
+      checkouts to include copy-paste-safe non-cd commands such as git -C <path> checkout --detach.
+      During review of @01KSREGBX83KKDC7JPSPCKNWQ9, the helper correctly refused a clean auxiliary
+      dev checkout but printed cd-based recovery guidance, while reviewer prompts require commands
+      to run from the assigned workspace.
+    tags:
+      - reflection
+      - dispatch
+      - merge-helper
+    added_by: Jacob Chapel
+    created_at: 2026-05-29T06:17:47.839Z

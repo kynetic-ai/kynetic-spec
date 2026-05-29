@@ -19986,6 +19986,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-29T05:55:21.612Z
+  - _ulid: 01KSS63EMWF7PS0M6XV7KWNAA8
+    type: success
+    content: Batch-recording kspec review checks after running gates made the approval auditable with a
+      single atomic shadow-branch write. The evidence log plus required checks on @01KSS4XF gave
+      clear merge-gate state before invoking the detached reviewer merge helper.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-05-29T06:17:47.932Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
