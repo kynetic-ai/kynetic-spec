@@ -38,6 +38,13 @@ events:
       kind: blocker
       thread_ulid: 01KSTNZECEBQ90WPZRN6NBHV03
     timestamp: 2026-05-29T20:14:28.477Z
+  - _ulid: 01KSTNZR0FT43VENZC2SK8Q9EJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSTNZQQRBWP6587W604JG7WR
+    timestamp: 2026-05-29T20:14:38.096Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -94,7 +101,23 @@ threads:
           expectations, and exit/status semantics in the plan before derivation.
         created_at: 2026-05-29T20:14:28.239Z
     kind: blocker
+  - _ulid: 01KSTNZQQRBWP6587W604JG7WR
+    anchor:
+      type: structured
+      field: ac-daemon-agent-api-includes-runner
+      ref: "@runner-operator-surfaces"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KSTNZQQREPHHBD3EP2HRYCD8
+        author: Jacob Chapel
+        body: This AC combines daemon agent-definition responses and dispatch status responses into one
+          criterion, which makes coverage ambiguous and lets one half pass while the other half is
+          missed. Split it into separate ACs for agent-definition API payloads and dispatch-status
+          payloads. The same split should be considered for active versus queued invocation UI rows
+          so each behavior has a single observable outcome.
+        created_at: 2026-05-29T20:14:37.816Z
+    kind: blocker
 verdicts: []
 created_at: 2026-05-29T20:13:38.633Z
-updated_at: 2026-05-29T20:14:28.239Z
+updated_at: 2026-05-29T20:14:37.816Z
 notes: []
