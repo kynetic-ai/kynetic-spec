@@ -55906,7 +55906,7 @@ runs:
     completed_at: 2026-05-29T03:50:44.501Z
   - _ulid: 01KSS0H3YYGN858VSP59YVN8J7
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -55920,7 +55920,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-29T04:41:17.325Z
-        completed_at: 2026-05-29T04:41:17.325Z
+        completed_at: 2026-05-29T04:41:29.436Z
+        notes: "Friction points: reproducing the dispatch untracked-overwrite sync edge required an ad hoc
+          Node/tsx temp-repo script outside the checked-in focused tests, and the standard test
+          suite still passed despite the spec-level regression. Evidence-log capture again used a
+          review nit thread, but that friction appears already tracked separately."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-29T04:41:29.436Z
+        completed_at: 2026-05-29T04:41:29.436Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-29T04:40:24.286Z
