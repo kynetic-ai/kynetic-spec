@@ -24,6 +24,17 @@ checks:
     required: true
     created_at: 2026-05-29T22:15:10.258Z
     completed_at: 2026-05-29T22:15:10.258Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: rg over plans/agent-runner-configuration-layer.md found no occurrences of 'add or amend',
+      'if needed', or 'if implementation moves'; the spec-update task uses exact AC operations and
+      final text.
+    name: Forbidden ambiguity scan
+    required: true
+    created_at: 2026-05-29T22:15:28.944Z
+    completed_at: 2026-05-29T22:15:28.944Z
 events:
   - _ulid: 01KSTWVVY7YT5JXB6B5R5WY3SS
     actor: Jacob Chapel
@@ -59,6 +70,13 @@ events:
       status: pass
       name: Spec-update task explicitness
     timestamp: 2026-05-29T22:15:11.518Z
+  - _ulid: 01KSTWX16JJ1JNZ4NEKN4AE7CK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Forbidden ambiguity scan
+    timestamp: 2026-05-29T22:15:29.234Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -102,5 +120,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-05-29T22:14:51.080Z
-updated_at: 2026-05-29T22:15:10.258Z
+updated_at: 2026-05-29T22:15:28.944Z
 notes: []
