@@ -3,7 +3,31 @@ slugs:
   - review-agent-runner-config-ablation
 title: "Ablation review: Agent Runner Configuration Layer"
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Reviewed component ablation, six alternative solution shapes, existing
+      adapter/invocation/dispatch implementation, and long-term maintenance risks requested by the
+      prompt.
+    name: Ablation lenses covered
+    required: true
+    runner: manual-ablation
+    created_at: 2026-05-29T22:26:48.095Z
+    completed_at: 2026-05-29T22:26:48.095Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Core runner resolver, env boundary, agent metadata, dispatch preflight, and CLI validation
+      are justified; runtime materialization plus daemon/Web UI/E2E surfaces should be split or
+      deferred before approval.
+    name: Plan reduction decision
+    required: true
+    runner: manual-ablation
+    created_at: 2026-05-29T22:26:50.675Z
+    completed_at: 2026-05-29T22:26:50.675Z
 events:
   - _ulid: 01KSTXE9W0M47CWP8W0PKE3TZ9
     actor: Jacob Chapel
@@ -11,17 +35,235 @@ events:
     payload:
       to: draft
     timestamp: 2026-05-29T22:24:55.168Z
+  - _ulid: 01KSTXH3MXFHT1S5Q46XK5V1CK
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-05-29T22:26:27.101Z
+  - _ulid: 01KSTXH671WFVJA4KMJZ68C8XV
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSTXH5ZVRY73DE7PYJVQQ16E
+    timestamp: 2026-05-29T22:26:29.729Z
+  - _ulid: 01KSTXH8PVQ2YNT1R891041CK2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSTXH8FMV52H7F92NHZ87ZWN
+    timestamp: 2026-05-29T22:26:32.283Z
+  - _ulid: 01KSTXHB89HQGJC0D645JXZ368
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSTXHB1Z0GE6DDGASBKQPEFN
+    timestamp: 2026-05-29T22:26:34.889Z
+  - _ulid: 01KSTXHDVD0FS2VTQBJXPMT4R2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSTXHDKRDZJDGKC1Q112QQXY
+    timestamp: 2026-05-29T22:26:37.549Z
+  - _ulid: 01KSTXHGM584454CPTBPY6KW28
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KSTXHGAS8FAWYD6EWS4GVPWH
+    timestamp: 2026-05-29T22:26:40.389Z
+  - _ulid: 01KSTXHK596KFRCVWY1A30Y7AA
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KSTXHJXA44JC3ENAJPG2WZDB
+    timestamp: 2026-05-29T22:26:42.985Z
+  - _ulid: 01KSTXHNSQ2R73K4Q426W8594W
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSTXHNK06PMGCG4WM7T0BN0B
+    timestamp: 2026-05-29T22:26:45.687Z
+  - _ulid: 01KSTXHRBG6CJCT751XRJ6KJ50
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Ablation lenses covered
+    timestamp: 2026-05-29T22:26:48.304Z
+  - _ulid: 01KSTXHTVT39SWJ1PW9MWC51CA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Plan reduction decision
+    timestamp: 2026-05-29T22:26:50.874Z
+  - _ulid: 01KSTXHXB81P939AS8BFCRWM61
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-29T22:26:53.416Z
+  - _ulid: 01KSTXHXB8PCJ8G7JJV98YWKY3
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-29T22:26:53.416Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
   content_hash: ""
   ref: "@plan-agent-runner-configuration-layer"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KSTXH5ZVRY73DE7PYJVQQ16E
+    anchor:
+      type: structured
+      ref: "@task-runner-runtime-version-isolation"
+      section: tasks
+    entries:
+      - _ulid: 01KSTXH5ZV4QFFGC0Z37FN173K
+        author: Jacob Chapel
+        body: "Runtime pinning and materialization should not be in the first approval slice. Failure mode:
+          this task requires package-manager strategy design, cache promotion semantics,
+          version-probe security, and offline or partial-download behavior before the headed sidecar
+          contract is known, and it also makes dispatch preflight depend on materialization failures
+          that are not needed to prove runner selection. Concrete plan edit: remove
+          @runner-runtime-version-isolation and @task-runner-runtime-version-isolation from this
+          plan or move them to an explicit follow-up plan/spike; keep first slice to explicit
+          executable/PATH selection plus redacted diagnostics, and remove runtime materialization
+          dependencies from @task-dispatch-runner-preflight, docs, and E2E tasks."
+        created_at: 2026-05-29T22:26:29.499Z
+    kind: blocker
+  - _ulid: 01KSTXH8FMV52H7F92NHZ87ZWN
+    anchor:
+      type: structured
+      ref: "@task-runner-config-schema-types"
+      section: tasks
+    entries:
+      - _ulid: 01KSTXH8FMV7VE9EZ2D96T1MQ4
+        author: Jacob Chapel
+        body: "The system config path keyed only by realpath hash needs an operational recovery surface
+          before approval. Failure mode: moving a checkout, using a symlinked path, or creating
+          disposable clones silently changes the project key and makes previously valid local runner
+          config disappear under <daemon-config-dir>/projects/<hash>/runners.yaml; users get
+          missing-runner failures with no way to discover the old key or intended config path.
+          Concrete plan edit: either defer the repo/project layer and start with a single local
+          system config, or add a P1 CLI diagnostic such as kspec agent runners path/show/init that
+          prints the canonical root, project key, project config path, system config path, and
+          orphan/moved-config guidance, with tests for symlink and moved clone cases."
+        created_at: 2026-05-29T22:26:32.052Z
+    kind: blocker
+  - _ulid: 01KSTXHB1Z0GE6DDGASBKQPEFN
+    anchor:
+      type: structured
+      ref: "@task-agent-runner-meta-cli"
+      section: tasks
+    entries:
+      - _ulid: 01KSTXHB1ZB6SWF5EHRM2DY00S
+        author: Jacob Chapel
+        body: "The plan allows agent.runner and agent.adapter to disagree but does not require a mismatch
+          diagnostic at the metadata boundary. Failure mode: existing scripts, CLI output, daemon
+          clients, and Web UI cards that read adapter can report one adapter while invocation uses a
+          different runner-resolved adapter, creating two-source-of-truth bugs that normal
+          implementation tests may miss. Concrete plan edit: add an AC and task requirement that all
+          list/validate/API surfaces expose configured_adapter, runner, resolved_adapter, and a
+          mismatch warning/status when runner.adapter differs from agent.adapter; alternatively
+          forbid setting both unless they resolve to the same adapter."
+        created_at: 2026-05-29T22:26:34.687Z
+    kind: blocker
+  - _ulid: 01KSTXHDKRDZJDGKC1Q112QQXY
+    anchor:
+      type: structured
+      ref: "@task-daemon-api-runner-surfaces"
+      section: tasks
+    entries:
+      - _ulid: 01KSTXHDKR50DHG79XBPXNYZR7
+        author: Jacob Chapel
+        body: "Daemon API, Web UI, and broad E2E coverage should be split from the first runner contract
+          approval. Failure mode: deriving this plan creates UI/API tasks before the runner contract
+          has been proven by a real headed-sidecar or acp_process integration, increasing schema
+          churn and migration burden across external clients. Concrete plan edit: make the first
+          plan end at schema/types, agent runner metadata, resolver, env/secret boundary, dispatch
+          preflight, and CLI validate/dry-run; move @task-daemon-api-runner-surfaces,
+          @task-web-ui-runner-surfaces, and the Web UI portions of
+          @task-runner-compatibility-regressions into a follow-up operator-surfaces plan after the
+          CLI contract stabilizes."
+        created_at: 2026-05-29T22:26:37.304Z
+    kind: blocker
+  - _ulid: 01KSTXHGAS8FAWYD6EWS4GVPWH
+    anchor:
+      type: structured
+      ref: "@task-runner-env-secret-boundary"
+      section: tasks
+    entries:
+      - _ulid: 01KSTXHGAS6APAKT8V3RQ9B3FD
+        author: Jacob Chapel
+        body: "The secret binding model is too implicit for long-term use. Failure mode: source: user_env
+          with the same source and child variable name forces daemon environment setup and cannot
+          map host variable names to child variable names, so operators either leak ambient daemon
+          env or duplicate secrets in fragile shell startup files. Concrete plan edit: define
+          env.secrets entries with source kind plus source name, target child env name, required
+          flag, and redacted label; document that the first source kind is user_env only, while
+          keeping the schema open for later credential stores."
+        created_at: 2026-05-29T22:26:40.089Z
+    kind: question
+  - _ulid: 01KSTXHJXA44JC3ENAJPG2WZDB
+    anchor:
+      type: structured
+      field: ac-diagnostics-redact-secrets
+      ref: "@runner-environment-secret-boundaries"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KSTXHJXA722QRMTFMJWVWXW5
+        author: Jacob Chapel
+        body: "Redaction is specified as an outcome but not as a single serialization boundary. Failure
+          mode: CLI/session/task-note/daemon/Web UI surfaces can drift and leak a secret through one
+          late-added diagnostic path even if resolver diagnostics are redacted. Concrete plan edit:
+          add a task requirement and AC that all runner diagnostic structs are passed through one
+          redaction helper before serialization, with a test fixture that injects a sentinel secret
+          and scans CLI output, session events, task notes, API JSON, and Web UI fixture data for
+          absence of that sentinel."
+        created_at: 2026-05-29T22:26:42.730Z
+    kind: question
+  - _ulid: 01KSTXHNK06PMGCG4WM7T0BN0B
+    anchor:
+      type: structured
+      ref: "@task-runner-compatibility-regressions"
+      section: tasks
+    entries:
+      - _ulid: 01KSTXHNK089C99QCAQDDV6SF9
+        author: Jacob Chapel
+        body: "The final compatibility suite is likely to become slow and brittle if it mixes parser,
+          invocation, daemon API, and browser rendering in one E2E target. Concrete plan edit: keep
+          most flows as behavioral integration tests with fake adapters and temp dirs; use one
+          narrow browser fixture test only for display of API-provided runner fields and redacted
+          diagnostics."
+        created_at: 2026-05-29T22:26:45.472Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-29T22:26:53.416Z
 created_at: 2026-05-29T22:24:55.168Z
-updated_at: null
+updated_at: 2026-05-29T22:26:53.416Z
 notes: []
