@@ -189,3 +189,46 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-29T05:26:46.447Z
+  - _ulid: 01KSS4KE538X0YJ3DDG8QT6YA3
+    content: >-
+      Fix cycle 3: addressed the directory/file overwrite hazard blocker (review @01KSS28J).
+
+
+      detectUntrackedOverwriteHazards (src/agent-runtime/workspace.ts) now compares paths as Git
+      tree entries via new pathsCollideAsTreeEntries helper: exact match,
+      untracked-file-is-ancestor-of-changed-path, or untracked-file-is-descendant-of-changed-path,
+      all with "/" boundary checks so config does not falsely match config.yaml. This catches both
+      hazard directions Git refuses:
+
+      - direction 1: untracked file "foo" vs incoming "foo/bar" — Git: "would be overwritten by
+      merge: foo"
+
+      - direction 2: untracked dir foo/ (via untracked "foo/bar") vs incoming file "foo" — Git:
+      "would lose untracked files in them"
+
+
+      The shell merge helper grep (templates/skills/merge/scripts/detached-reviewer-merge.sh,
+      mirrored to .agents/ and .factory/ rendered copies) was extended from a single "would be
+      overwritten by merge" pattern to also match "would lose untracked files" so direction-2 cases
+      produce the cleanup-guidance branch rather than the generic merge-failed branch.
+
+
+      Verified the exact reviewer scenario against the updated build:
+      resolveDispatchIntegrationMutationScope throws DispatchWorkspaceError(code=occupied-checkout)
+      before any ref movement, naming "conflict-dir" as the blocker; dispatch _syncTarget surfaces
+      degraded.kind="occupied-checkout" with remove/stash/commit/detach guidance, not divergence.
+
+
+      Regression coverage: tests/dispatch-target-sync.test.ts adds 3 tests (your repro, the inverse
+      direction, and a sibling-vs-prefix negative case proving the "/" boundary).
+      tests/detached-reviewer-merge.test.ts adds 1 helper-script test for the directory variant.
+      Existing exact-path coverage retained.
+
+
+      Gates: typecheck pass, format:check pass, repo lint 743 warnings 0 errors (unchanged
+      baseline), changed-file oxlint 0 warnings/errors, kspec validate refs/alignment/completeness
+      pass, focused merge/dispatch tests 92/92, full suite 9921 passed of 9926 (5 skipped, 0
+      failures, 2591 suites).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-29T05:51:34.563Z
