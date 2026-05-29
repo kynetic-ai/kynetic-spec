@@ -454,9 +454,9 @@ derive_from_specs: false
   description: |
     What:
     - Add storage and loader support for two runner config layers:
-      - Project runner config stored as a repo-managed artifact in the shadow branch, using a dedicated `.kspec/project.runners.yaml` sidecar file rather than `kspec.config.yaml`.
-      - System runner config stored under the default user-level daemon config directory, scoped to the current project, such as `~/.config/kspec/projects/<project-key>/runners.yaml`.
-    - Define a deterministic local project key for system config scoping using the canonical project root path or an existing stable project identity if one already exists.
+      - Project runner config stored as a repo-managed artifact at `project.runners.yaml` in the shadow worktree root, alongside `kynetic.yaml`; when viewed from the main checkout this appears as `.kspec/project.runners.yaml`. It is loaded only after shadow branch context is available and is never read from root-branch `kspec.config.yaml`.
+      - System runner config stored at `<daemon-config-dir>/projects/<project-key>/runners.yaml`, where `<daemon-config-dir>` is the same directory returned by `getDefaultDaemonConfigDir()` unless tests override it.
+    - Define `<project-key>` as the lowercase hex SHA-256 digest of the canonical absolute project root path after realpath normalization. Do not truncate it, do not include the raw path in the directory name, and use the same helper in CLI, daemon, and tests.
     - Define separate raw schemas for project runner config and system runner config, plus a merged effective runner type under a shared module such as `src/agents/runner-config.ts`.
     - Project runner config must accept only portable project-specific values, initially limited to non-secret runner values such as `env.set`, `privacy.disable_nonessential_traffic`, and diagnostics preferences that are safe to commit.
     - Project runner config must reject harness logic fields including `kind`, `adapter`, `runtime.executable`, `runtime.package`, `runtime.version`, `runtime.cache_dir`, hook transport settings, and `env.secrets`.
@@ -867,7 +867,7 @@ derive_from_specs: false
 ### Boundary decisions
 
 - Runner is the public config term. Internal code may call strategy classes harnesses, but user-facing YAML, CLI, API, and UI surfaces should say runner consistently.
-- Runner config is layered. Project runner config belongs in a repo-managed shadow sidecar (`project.runners.yaml`) and is intentionally limited to portable, non-secret project-specific values. System runner config belongs under the user-level daemon config directory, scoped to the current project, and owns harness mechanics, local paths, credential source bindings, and runtime materialization settings.
+- Runner config is layered. Project runner config belongs in the repo-managed shadow sidecar at `project.runners.yaml` in the shadow worktree root, visible from the main checkout as `.kspec/project.runners.yaml`, and is intentionally limited to portable, non-secret project-specific values. System runner config belongs at `<daemon-config-dir>/projects/<project-key>/runners.yaml`, where `<project-key>` is the full lowercase hex SHA-256 digest of the canonical absolute project root path after realpath normalization; it owns harness mechanics, local paths, credential source bindings, and runtime materialization settings.
 - The project layer must not define harness logic. If a value selects how to run an adapter, how to materialize a runtime, how hooks are transported, or how secrets are sourced, it belongs in the system layer.
 - System config overrides project config field-by-field for the same runner name. Validation and diagnostics should show source layers and override facts without showing raw secrets.
 - Secret values must come from runtime secret sources such as user environment variables. Config stores secret references or bindings, not token values; project config additionally rejects known API key/token variable names and secret-looking literal keys.
