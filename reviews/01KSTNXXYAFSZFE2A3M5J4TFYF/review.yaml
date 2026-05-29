@@ -24,6 +24,13 @@ events:
       kind: blocker
       thread_ulid: 01KSTNYT779Z6CMA4Q3A1MKBKP
     timestamp: 2026-05-29T20:14:07.863Z
+  - _ulid: 01KSTNZ4835C5E1FCT0XA2N4QR
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSTNZ3YQ89BF74DVYXQZ53Q5
+    timestamp: 2026-05-29T20:14:17.859Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -49,7 +56,22 @@ threads:
           coverage for each inherited trait AC with any N/A annotations spelled out in the task.
         created_at: 2026-05-29T20:14:07.593Z
     kind: blocker
+  - _ulid: 01KSTNZ3YQ89BF74DVYXQZ53Q5
+    anchor:
+      type: structured
+      ref: "@runner-operator-surfaces"
+      section: traits
+    entries:
+      - _ulid: 01KSTNZ3YQNEE3QBYJFJMF3MNM
+        author: Jacob Chapel
+        body: This spec applies @trait-json-output and @trait-error-guidance, but the task coverage only
+          claims @trait-json-output ac-1, ac-2, and ac-3, and claims none of @trait-error-guidance
+          ac-1 through ac-6. @trait-json-output ac-4, ac-5, and ac-6 are also orphaned. Fix the plan
+          by either covering every inherited trait AC in concrete tasks or removing/replacing traits
+          that do not apply to the runner operator surfaces.
+        created_at: 2026-05-29T20:14:17.559Z
+    kind: blocker
 verdicts: []
 created_at: 2026-05-29T20:13:38.633Z
-updated_at: 2026-05-29T20:14:07.593Z
+updated_at: 2026-05-29T20:14:17.559Z
 notes: []
