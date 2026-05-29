@@ -19943,6 +19943,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-29T04:21:34.475Z
+  - _ulid: 01KSS25K70PMXQ5FHESG5W3E7E
+    type: success
+    content: "Before committing a regression test for a fix, stash the production-code change and re-run
+      the new test to confirm it fails on the prior code with the expected assertion message. Today:
+      stashed src/agent-runtime/{workspace,dispatch}.ts, re-ran the new untracked-overwrite-hazard
+      test, saw 'expected divergence to be occupied-checkout' — confirmed the test exercises the bug
+      rather than tautologically passing. Complements the work-gates rule against 'tests that pass
+      regardless of whether the feature works' by giving the operational technique that detects
+      tautologies before review."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-29T05:09:03.841Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
