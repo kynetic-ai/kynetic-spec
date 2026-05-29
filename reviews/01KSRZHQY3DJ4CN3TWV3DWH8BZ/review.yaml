@@ -2,7 +2,112 @@ _ulid: 01KSRZHQY3DJ4CN3TWV3DWH8BZ
 slugs: []
 title: Review branch-coherent merges and sync/push (cycle 2)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run format:check: all matched files use the correct format."
+    name: format:check
+    required: true
+    runner: oxfmt
+    created_at: 2026-05-29T04:38:53.430Z
+    completed_at: 2026-05-29T04:38:53.430Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run lint -- --quiet: 743 warnings, 0 errors."
+    name: repo lint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-29T04:38:55.702Z
+    completed_at: 2026-05-29T04:38:55.702Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npx oxlint on changed TS/test files: 0 warnings, 0 errors."
+    name: changed-file oxlint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-29T04:38:57.954Z
+    completed_at: 2026-05-29T04:38:57.954Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run typecheck: tsc --noEmit exited 0."
+    name: typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-29T04:39:00.199Z
+    completed_at: 2026-05-29T04:39:00.199Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs/--alignment/--completeness --warnings-ok all passed with existing
+      warnings accepted by --warnings-ok.
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-05-29T04:39:02.416Z
+    completed_at: 2026-05-29T04:39:02.416Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/detached-reviewer-merge.test.ts: 19/19 passed."
+    name: focused detached reviewer merge tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-29T04:39:04.632Z
+    completed_at: 2026-05-29T04:39:04.632Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/dispatch-target-sync.test.ts
+      tests/dispatch-degraded-state.test.ts: 66/66 passed."
+    name: focused dispatch sync/degraded tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-29T04:39:06.857Z
+    completed_at: 2026-05-29T04:39:06.857Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/dispatch-plan-target-lock-e2e.test.ts: 1/1 passed."
+    name: focused dispatch plan target lock test
+    required: true
+    runner: npm test
+    created_at: 2026-05-29T04:39:09.044Z
+    completed_at: 2026-05-29T04:39:09.044Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh: 9915 passed, 5 skipped, 0 failures; 2591 suites passed."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-05-29T04:39:11.249Z
+    completed_at: 2026-05-29T04:39:11.249Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Temp-repo DispatchEngine._syncTarget reproduction with an eligible occupied dev checkout
+      containing an untracked file overwritten by remote sync returned diverged and entered degraded
+      kind divergence with remote-rewrite/reset guidance instead of occupied-checkout blocker
+      guidance naming the checkout.
+    name: manual overwrite-hazard repro
+    required: true
+    runner: node --import tsx
+    created_at: 2026-05-29T04:39:13.481Z
+    completed_at: 2026-05-29T04:39:13.481Z
 events:
   - _ulid: 01KSRZHQY2EZJ8R0QT7TW70NFA
     actor: Jacob Chapel
@@ -17,17 +122,168 @@ events:
       from: draft
       to: open
     timestamp: 2026-05-29T04:23:31.824Z
+  - _ulid: 01KSS0EBE87QD8A9SDGSX2G2AW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format:check
+    timestamp: 2026-05-29T04:38:53.640Z
+  - _ulid: 01KSS0EDMR8VEVGJSGA500QQKZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: repo lint
+    timestamp: 2026-05-29T04:38:55.896Z
+  - _ulid: 01KSS0EFTYKX9N0J2X78W59NZ7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file oxlint
+    timestamp: 2026-05-29T04:38:58.142Z
+  - _ulid: 01KSS0EJ1CVCCWXQ8QC2QT5XCZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-29T04:39:00.396Z
+  - _ulid: 01KSS0EM6PJBJ9F0J6FYJNDP7R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-05-29T04:39:02.614Z
+  - _ulid: 01KSS0EPBZEAF62A10WQ0FJG6N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused detached reviewer merge tests
+    timestamp: 2026-05-29T04:39:04.831Z
+  - _ulid: 01KSS0ERH8KV943MNQQ8DDF5D7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused dispatch sync/degraded tests
+    timestamp: 2026-05-29T04:39:07.048Z
+  - _ulid: 01KSS0ETP8C988635KM6M1D5DF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused dispatch plan target lock test
+    timestamp: 2026-05-29T04:39:09.256Z
+  - _ulid: 01KSS0EWTAB22GZN1AE8AG9V8T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-29T04:39:11.435Z
+  - _ulid: 01KSS0EZ0EDQKF7WAX7P5XMW6M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: manual overwrite-hazard repro
+    timestamp: 2026-05-29T04:39:13.678Z
+  - _ulid: 01KSS0F15VF2CEWDRWYQ5NTEWP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSS0F0ZJ2TZY9S228J9YK0AJ
+    timestamp: 2026-05-29T04:39:15.899Z
+  - _ulid: 01KSS0F3AY97B461XBVJ550WBF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSS0F34QBN1YAGYANYWXZFFF
+    timestamp: 2026-05-29T04:39:18.110Z
+  - _ulid: 01KSS0F5FWD6QBB8CJHDNVDT48
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-29T04:39:20.317Z
+  - _ulid: 01KSS0F5FXRR1100QXBGF2ZBJX
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-29T04:39:20.317Z
 examined_commit: dd78e7404698ffac42d2b04f0fcd23e6e65b19d2
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KSREGBX83KKDC7JPSPCKNWQ9"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KSS0F0ZJ2TZY9S228J9YK0AJ
+    anchor:
+      type: code
+      commit: dd78e7404698ffac42d2b04f0fcd23e6e65b19d2
+      line_end: 2346
+      line_start: 2337
+      path: src/agent-runtime/workspace.ts
+      side: head
+    entries:
+      - _ulid: 01KSS0F0ZJ0QQH1SD2S4M5559P
+        author: Jacob Chapel
+        body: 'MUST-FIX: Dispatch occupied-target sync misclassifies untracked overwrite hazards as
+          divergence. classifyTargetWorktreeCheckout only checks tracked and staged changes before
+          returning an occupied checkout as eligible. In a temp repo reproduction, I put an
+          untracked file in the eligible dev checkout with the same path as a new remote commit,
+          then ran DispatchEngine._syncTarget(). The result was "diverged" and degraded state kind
+          "divergence" with reason "remote history appears rewritten" plus reset guidance; it did
+          not name the occupied checkout or tell the operator to clean/stash/detach it. That
+          violates @dispatch-integration-mutation-scope
+          ac-dirty-occupied-target-refusal-identifies-blocker and @dispatch-remote-branch-sync
+          ac-unsafe-occupied-checkout-degraded-recovery, and can send an operator toward resetting
+          the target branch instead of cleaning the local untracked blocker.'
+        created_at: 2026-05-29T04:39:15.698Z
+    kind: blocker
+  - _ulid: 01KSS0F34QBN1YAGYANYWXZFFF
+    entries:
+      - _ulid: 01KSS0F34QNKQ4G2Y47Z29KN44
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; prior review @01KSRWJ77A43TQKDFD20WMAB0W; task
+          @01KSREGBX83KKDC7JPSPCKNWQ9; specs @detached-reviewer-merge-helper,
+          @dispatch-integration-mutation-scope, @dispatch-remote-branch-sync; changed implementation
+          and tests in src/agent-runtime/{workspace,dispatch}.ts, templates/.agents/.factory merge
+          helper scripts, and dispatch/merge tests. Commands run: git diff/stat/name-status, cmp
+          rendered helper scripts, git diff --check, kspec validate refs/alignment/completeness, npm
+          run format:check, npm run lint -- --quiet, npx oxlint changed TS/test files, npm run
+          typecheck, focused npm tests, full npm test -- --fresh, and a temp-repo node --import tsx
+          reproduction of the untracked-overwrite hazard. Claims verified: prior rendered-helper
+          blocker is fixed by byte-identical executable rendered scripts; prior changed-file oxlint
+          blocker is fixed; clean occupied helper path has focused test coverage; dispatch
+          untracked-overwrite hazard remains broken. Categories searched: correctness, unsafe
+          checkout edge cases, error guidance, test quality, AC annotation coverage, generated
+          artifact parity, and integration gates."
+        created_at: 2026-05-29T04:39:17.911Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-29T04:39:20.316Z
 created_at: 2026-05-29T04:23:16.163Z
-updated_at: 2026-05-29T04:23:31.613Z
+updated_at: 2026-05-29T04:39:20.317Z
 notes: []
