@@ -229,9 +229,25 @@ events:
       kind: nit
       thread_ulid: 01KSS5SBFSNB52FNN9P4ZYKV0Q
     timestamp: 2026-05-29T06:12:17.231Z
+  - _ulid: 01KSS5SPB4Q0EYQH2AA1JCC1BN
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-29T06:12:28.132Z
+  - _ulid: 01KSS5SPB423XS22AF13SK0AD1
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-29T06:12:28.132Z
 examined_commit: 3d321b69448ad990342297f1dd76d187fddbc21f
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -257,7 +273,14 @@ threads:
           test quality, integration/worktree safety. No blockers found."
         created_at: 2026-05-29T06:12:17.017Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-29T06:12:28.132Z
 created_at: 2026-05-29T05:57:03.224Z
-updated_at: 2026-05-29T06:12:17.017Z
+updated_at: 2026-05-29T06:12:28.132Z
 notes: []
