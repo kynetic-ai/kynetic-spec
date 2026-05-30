@@ -4,7 +4,7 @@
 
 Introduce a first-class runner layer for kspec agent execution. A runner is an execution harness selected from layered configuration: a repo/project layer stores only portable project-specific values, while a local system layer stores machine/user-specific process settings, executable references, arguments, working-directory policy, and credential bindings. The system layer overrides the project layer field-by-field. Agents may reference a runner, while the existing adapter field remains a backward-compatible shortcut.
 
-This plan is scoped to kspec's storage format, TypeScript types, layered resolver/invocation path, daemon and CLI behavior, API data shapes, and Web UI surfaces. It does not implement a full headed Claude Code sidecar and it does not install, upgrade, download, materialize, or otherwise manage adapter or harness binaries. It makes kspec capable of describing, validating, launching, and observing runner-backed ACP processes with explicit env/args/cwd configuration beyond what ACP defines, so a headed sidecar can be integrated without PATH shims or daemon-owned ambient credentials.
+This plan makes kspec capable of describing, validating, launching, and observing runner-backed ACP processes with explicit env/args/cwd configuration beyond what ACP defines, so a headed sidecar can integrate through the same invocation contract as other ACP processes.
 
 ## Specs
 
@@ -50,13 +50,13 @@ This plan is scoped to kspec's storage format, TypeScript types, layered resolve
         The effective runner config is resolved
       then: |
         The system value is used for that field
-    - id: ac-project-layer-blocks-harness-logic
+    - id: ac-project-layer-accepts-portable-runner-values
       given: |
-        Project runner config contains process-control fields such as kind, adapter, executable path, adapter package/install/materialization settings, hook transport, working-directory policy, argument templates, or secret source bindings
+        Project runner config contains supported portable runner values such as non-secret env.set entries, privacy defaults, or diagnostics preferences
       when: |
         Project runner config is validated
       then: |
-        The project config is rejected with guidance to move those fields to system runner config
+        Those values are accepted as project-layer runner inputs and retain project-layer source metadata
     - id: ac-project-layer-blocks-known-secret-keys
       given: |
         Project runner config contains a known adapter or harness API key, auth token, OAuth token, credential variable, or secret-looking literal field
@@ -231,33 +231,24 @@ This plan is scoped to kspec's storage format, TypeScript types, layered resolve
       then: |
         The process receives kspec's default nonessential-traffic and telemetry suppression variables unless the effective runner config explicitly disables that default
 
-- title: Runner Process Invocation Boundary
-  slug: runner-process-invocation-boundary
-  type: constraint
+- title: Runner Process Invocation Inputs
+  slug: runner-process-invocation-inputs
+  type: requirement
   parent: "@agent-integration"
-  tags: [agents, runtime, isolation]
+  tags: [agents, runtime, invocation]
   description: |
-    Runners configure how kspec invokes an already-available ACP process without
-    installing, upgrading, downloading, materializing, or otherwise managing the
-    adapter or harness implementation. The runner layer may select an existing
-    adapter reference, pass explicit arguments, set cwd, and build the child
-    environment around ACP, but adapter ownership and version management remain
-    outside kspec runtime scope.
+    Runners describe the process inputs kspec applies while preparing an ACP
+    adapter invocation. The resolved contract identifies the existing adapter,
+    optional command reference, child-process arguments, child-process cwd,
+    environment policy, and redacted diagnostics used for that invocation.
   acceptance_criteria:
-    - id: ac-no-adapter-install-management
-      given: |
-        A runner references an existing registered adapter and optionally an existing executable or command path
-      when: |
-        kspec validates, preflights, dry-runs, or invokes the runner
-      then: |
-        kspec does not install, upgrade, download, materialize, cache, or mutate that adapter or harness implementation
-    - id: ac-existing-executable-reference-only
+    - id: ac-existing-executable-reference-resolves
       given: |
         A runner configures an executable or command path
       when: |
         Runner preflight validates the invocation contract
       then: |
-        kspec treats the value as an existing command reference and fails with diagnostics if it cannot be spawned
+        The resolved invocation contract identifies the command reference that will be spawned or returns a typed unspawnable-command diagnostic
     - id: ac-runner-args-extend-acp-invocation
       given: |
         A runner declares additional non-secret arguments or argument templates
@@ -513,11 +504,10 @@ derive_from_specs: false
     - Define `<project-key>` as the lowercase hex SHA-256 digest of the canonical absolute project root path after realpath normalization. Do not truncate it, do not include the raw path in the directory name, and use the same helper in CLI, daemon, and tests.
     - Define separate raw schemas for project runner config and system runner config, plus a merged effective runner type under a shared module such as `src/agents/runner-config.ts`.
     - Project runner config must accept only portable project-specific values, initially limited to non-secret runner values such as `env.set`, `privacy.disable_nonessential_traffic`, and diagnostics preferences that are safe to commit.
-    - Project runner config must reject process-control and local-machine fields including `kind`, `adapter`, `process.executable`, `process.args`, `process.cwd`, adapter package/install/materialization settings, hook transport settings, and `env.secrets`.
     - Project runner config must reject known adapter/harness secret keys and secret-looking names in `env.set`, including names containing `API_KEY`, `AUTH_TOKEN`, `ACCESS_TOKEN`, `OAUTH_TOKEN`, `SECRET`, `PASSWORD`, and known Claude/Codex/OpenAI credential variable names.
     - System runner config must accept the full initial effective runner shape with these explicit fields and defaults:
       - `kind`: required string enum whose only accepted value in this plan is `acp_process`.
-      - `adapter`: required string reference to an existing registered adapter. The runner layer must not treat arbitrary package names as installable adapters.
+      - `adapter`: required string reference to an existing registered adapter.
       - `process.executable`: optional existing executable or command path. If omitted, the adapter's normal spawn command is used.
       - `process.args`: optional string array of additional non-secret arguments appended to the ACP process invocation, default empty.
       - `process.cwd`: optional system-config-relative or absolute cwd override for the child process only.
@@ -531,25 +521,24 @@ derive_from_specs: false
     - Merge project and system config into effective runners by runner name, with system scalar values replacing project scalar values and system map keys overriding project map keys.
     - Preserve source metadata for validation and diagnostics so each effective runner can report which layer supplied or overrode each field.
     - Export named TypeScript interfaces or inferred aliases for project, system, and effective runner config so runtime, CLI, API, and Web UI serialization code can share the vocabulary.
-    - Add parser/loader tests for omitted runner files, project-only portable values, system-only runners, system-over-project overrides, invalid project harness logic, invalid project secret-looking env values, invalid missing effective `kind`, invalid missing effective `adapter`, invalid enum values, and preservation of existing config behavior.
+    - Add parser/loader tests for omitted runner files, project-only portable values, system-only runners, system-over-project overrides, invalid project secret-looking env values, invalid missing effective `kind`, invalid missing effective `adapter`, invalid enum values, and preservation of existing config behavior.
 
     Why:
-    kspec needs a durable layered storage format for execution harnesses before agents, dispatch, CLI, daemon, or UI code can reference them consistently. The repo layer should carry portable project values only; local system config owns machine-specific process settings, argument/env/cwd configuration, and credentials, while adapter installation and version ownership stay outside kspec runtime scope.
+    kspec needs a durable layered storage format for execution harnesses before agents, dispatch, CLI, daemon, or UI code can reference them consistently. The repo layer carries portable project values; local system config owns machine-specific process settings, argument/env/cwd configuration, and credentials.
 
     How:
-    - Keep existing `kspec.config.yaml` behavior unchanged. Do not add runner configuration to `src/parser/config.ts` except for any shared helper plumbing needed to locate the project root.
+    - Keep existing `kspec.config.yaml` behavior unchanged. Use shared helper plumbing only when needed to locate the project root.
     - Prefer a dedicated loader module over embedding runner config in the root manifest. The chosen sidecar keeps operational runner values separate from behavioral kspec items while remaining repo-managed in the shadow branch.
     - Use Zod schemas for both layers and include a custom project-layer validator that blocks known secret/API-key names.
     - Keep secret values out of every schema shape. `env.secrets` entries name sources only; they must not include fields named `value`, `token`, `api_key`, or `secret`.
-    - Do not parse, accept, or partially validate a `headed_acp_sidecar` runner kind in this plan. A future headed sidecar implementation must add its own kind, loopback binding rules, hook/log ingestion contract, and security tests in a separate reviewed plan.
     - Add or update tests in the existing parser/config test area. If no narrow suite exists, create `tests/runner-config.test.ts` using temp project and temp user-config fixtures.
-    - Use system-config-relative or absolute path validation for `process.cwd`; do not create directories or install/materialize adapter runtimes in the parser task.
+    - Validate `process.cwd` values with system-config-relative and absolute path cases.
 
     Testing:
     - `npm test -- --fresh tests/runner-config.test.ts`
     - `npm run typecheck`
 
-    Covers: @agent-runner-configuration ac-named-runners-loaded, ac-project-runner-storage-is-repo-managed, ac-system-runner-storage-is-local, ac-system-overrides-project-values, ac-project-layer-blocks-harness-logic, ac-project-layer-blocks-known-secret-keys, ac-effective-runner-kind-and-adapter-required; @runner-environment-secret-boundaries ac-project-env-literals-are-non-secret, ac-secret-env-names-use-bindings, ac-secret-bindings-system-only, ac-secret-values-not-stored-inline
+    Covers: @agent-runner-configuration ac-named-runners-loaded, ac-project-runner-storage-is-repo-managed, ac-system-runner-storage-is-local, ac-system-overrides-project-values, ac-project-layer-accepts-portable-runner-values, ac-project-layer-blocks-known-secret-keys, ac-effective-runner-kind-and-adapter-required; @runner-environment-secret-boundaries ac-project-env-literals-are-non-secret, ac-secret-env-names-use-bindings, ac-secret-bindings-system-only, ac-secret-values-not-stored-inline
 
 - title: Add agent runner metadata and CLI mutation support
   slug: task-agent-runner-meta-cli
@@ -666,41 +655,39 @@ derive_from_specs: false
 
     Covers: @runner-environment-secret-boundaries ac-env-inheritance-policy-applied, ac-env-set-overrides-allowed-values, ac-project-env-literals-are-non-secret, ac-secret-env-names-use-bindings, ac-secret-bindings-system-only, ac-secret-values-not-stored-inline, ac-required-secret-missing-blocks, ac-diagnostics-redact-secrets, ac-privacy-defaults-applied; @runner-invocation-semantics ac-session-env-injected-through-runner, ac-runner-cleanup-restores-state; existing @codex-acp-adapter-registration ac-2, ac-3
 
-- title: Enforce runner process invocation boundaries
-  slug: task-runner-process-invocation-boundary
+- title: Apply runner process invocation inputs
+  slug: task-runner-process-invocation-inputs
   priority: 1
-  tags: [agents, runtime, isolation, runners]
-  spec_ref: "@runner-process-invocation-boundary"
+  tags: [agents, runtime, invocation, runners]
+  spec_ref: "@runner-process-invocation-inputs"
   depends_on:
     - "@task-runner-resolver-invocation-contract"
   description: |
     What:
-    - Update the runner resolver/spawn contract so system runner config may supply only invocation-time process settings around an already-available ACP adapter process:
-      - optional `process.executable` existing command/path reference;
+    - Update the runner resolver/spawn contract so system runner config supplies invocation-time process settings around an ACP adapter process:
+      - optional `process.executable` command/path reference;
       - optional `process.args` appended to the adapter process arguments;
-      - optional `process.cwd` for the child process only;
+      - optional `process.cwd` for the child process;
       - redacted source metadata for each of those fields.
-    - Explicitly reject unsupported adapter-management fields such as runtime package pins, install commands, package-manager strategy, cache/materialization directory, upgrade policy, or download URLs. The first implementation must fail validation if any such field appears.
-    - Ensure `process.executable` is treated as an existing command reference only. Validation may check that it is syntactically usable/spawnable, but must not create, download, install, upgrade, cache, or modify it.
-    - Ensure `process.args` cannot contain literal secret-looking values; secret material must flow through env secret bindings rather than command-line arguments.
-    - Ensure `process.cwd` applies only to the spawned child process and never changes daemon, CLI parent, or dispatch process cwd.
+    - Resolve `process.executable` into the command reference reported by dry-run, preflight, and spawn diagnostics.
+    - Return a typed unspawnable-command diagnostic when the configured command cannot be spawned.
+    - Validate `process.args` as non-secret invocation arguments and report secret-looking argument values as typed validation diagnostics.
+    - Apply `process.cwd` only to the spawned child process.
     - Report runner name, resolved adapter, command source, cwd source, args source, and env policy in redacted diagnostics.
-    - Add fake adapter tests proving runner invocation prep does not write to global npm, bun, pnpm, system PATH, user-level Claude/Codex config, or any runner cache/materialization directory.
+    - Add fake adapter tests for configured command references, unspawnable command diagnostics, argument appending, cwd behavior, and diagnostic source metadata.
 
     Why:
-    kspec's runtime should not own adapter or harness installation. The runner layer exists to make the environment, arguments, cwd, and diagnostics around an ACP invocation explicit beyond what ACP itself defines, while adapter implementation and version management remain owned by the adapter/harness distribution.
+    Operators need the runner contract to make ACP invocation inputs explicit and inspectable across CLI, dispatch, daemon, and Web UI surfaces.
 
     How:
     - Keep all tests in temp project directories with fake commands and fake adapters.
-    - Do not call real Claude, Codex, Droid, network package registries, or global package managers.
-    - If future work needs adapter version pinning or sidecar installation, capture it as a separate reviewed plan owned by adapter/harness setup, not this runtime invocation layer.
     - Make executable spawnability checks bounded by a timeout and surface typed diagnostics on timeout.
 
     Testing:
     - `npm test -- --fresh tests/agent-runner-process.test.ts tests/agent-runner-resolver.test.ts`
     - `npm run typecheck`
 
-    Covers: @runner-process-invocation-boundary ac-no-adapter-install-management, ac-existing-executable-reference-only, ac-runner-args-extend-acp-invocation, ac-runner-cwd-is-invocation-only, ac-invocation-diagnostics-identify-inputs
+    Covers: @runner-process-invocation-inputs ac-existing-executable-reference-resolves, ac-runner-args-extend-acp-invocation, ac-runner-cwd-is-invocation-only, ac-invocation-diagnostics-identify-inputs
 
 - title: Make dispatch preflight runner-aware
   slug: task-dispatch-runner-preflight
@@ -710,24 +697,24 @@ derive_from_specs: false
   depends_on:
     - "@task-runner-resolver-invocation-contract"
     - "@task-runner-env-secret-boundary"
-    - "@task-runner-process-invocation-boundary"
+    - "@task-runner-process-invocation-inputs"
   description: |
     What:
     - Replace dispatch preflight code that directly calls `getAdapter(agent.adapter)` with runner-aware validation.
     - Dispatch preflight must accept configured runners whose adapters resolve through the same existing registered adapter path used by `resolveRunnerInvocation(...)`.
-    - Dispatch preflight must reject unknown runner names, malformed runner configs, missing required secrets, blocked adapter-management fields, unspawnable existing command references, and unspawnable adapter contracts before queueing or spawning an invocation.
+    - Dispatch preflight must reject unknown runner names, malformed runner configs, missing required secrets, unspawnable existing command references, and unspawnable adapter contracts before queueing or spawning an invocation.
     - When preflight rejects an agent for a task, log the reason with runner name and resolved adapter when available.
     - When preflight rejects a task-bound dispatch, add an actionable task note that names the agent and runner but redacts secret values.
     - Preserve existing behavior for legacy adapter-backed agents with no runner.
-    - Add dispatch tests for valid runner-backed worker pickup, valid runner-backed reviewer pickup, unknown runner rejection, unknown adapter reference rejection, missing required secret rejection, blocked adapter-management field rejection, unspawnable command-reference rejection, and legacy adapter compatibility.
+    - Add dispatch tests for valid runner-backed worker pickup, valid runner-backed reviewer pickup, unknown runner rejection, unknown adapter reference rejection, missing required secret rejection, unspawnable command-reference rejection, and legacy adapter compatibility.
 
     Why:
     Dispatch currently has adapter validation paths that can diverge between one-shot invocation and queued automation. Preflight and invocation need to agree on the same existing adapter reference, optional existing command reference, env, args, cwd, and redacted diagnostics before dispatch accepts work.
 
     How:
-    - Keep validation side-effect free. Runner preflight must not install, download, materialize, or mutate adapter/harness binaries; it only validates configured references, env, args, cwd, and adapter spawnability.
-    - Use fake runners and fake adapters in tests. Do not invoke real Claude, Codex, network package downloads, or package managers.
-    - Verify failed preflight does not create an agent process, active invocation, or prompt event.
+    - Reuse the runner resolver in validation mode. Runner preflight validates configured references, env, args, cwd, and adapter spawnability.
+    - Use fake runners and fake adapters in tests.
+    - Verify failed preflight prevents agent process creation, active invocation creation, and prompt-event creation.
 
     Testing:
     - `npm test -- --fresh tests/agent-dispatch-engine.test.ts tests/agent-runner-resolver.test.ts`
@@ -750,7 +737,7 @@ derive_from_specs: false
     - Add `kspec agent runners validate [--runner <name>] [--json]` so operators can validate all effective runners or one selected runner without running a prompt.
     - Document the new command in `kspec agent --help` and `kspec agent runners --help`.
     - Runner validation output must support human-readable and JSON modes and must identify project/system source layers plus system-over-project overrides without exposing raw secret material.
-    - Error output must include actionable guidance for unknown runner, invalid adapter, blocked adapter-management fields, invalid process command/cwd/args, and missing required secret source.
+    - Error output must include actionable guidance for unknown runner, invalid adapter, invalid process command/cwd/args, and missing required secret source.
     - Error output and JSON diagnostics must redact all secret values.
     - Add CLI tests for human output, JSON output, dry-run output, validation success, validation failure, and redaction.
 
@@ -847,12 +834,11 @@ derive_from_specs: false
       - named `acp_process` runner defined in system config and referenced by an agent;
       - project runner config containing portable non-secret values only;
       - system runner config overriding project values for the same runner;
-      - system runner config with minimal env inheritance, explicit pass list, required user-env secret binding, privacy defaults, non-secret process args, and child-process cwd policy;
-      - explicit existing executable/command references, if used, are not installed, upgraded, downloaded, materialized, cached, or mutated by kspec;
+      - system runner config with minimal env inheritance, explicit pass list, required user-env secret binding, privacy defaults, non-secret process args, child-process cwd policy, and optional command reference;
       - agent definition that uses `runner` while retaining `adapter` only as legacy metadata.
-    - Document migration guidance: existing projects do not need immediate changes; new projects should prefer runner references for adapter-specific env/args/cwd settings; do not put secret values in either project or system runner config, do not put process-control fields or credential bindings in project runner config, and do not expect kspec runners to install or manage adapter/harness binaries.
+    - Document migration guidance: existing projects do not need immediate changes; new projects should prefer runner references for adapter-specific env/args/cwd settings, keep secret values in system secret bindings, and keep project runner config limited to portable values.
     - Document `kspec agent runners validate` and `kspec agent runners validate --json`, including output fields, exit-status behavior, and the meaning of common failure diagnostics.
-    - Document that the full headed Claude Code sidecar is separate implementation scope; this plan provides the kspec runner contract it will plug into, but this plan accepts only the `acp_process` runner kind.
+    - Document the headed Claude Code sidecar as a separate runner kind that can use this plan's runner contract: layered runner config, explicit env/secrets, invocation args/cwd, diagnostics, dispatch compatibility, and operator visibility.
     - Update generated or static agent instructions only if the runner workflow changes what task workers or reviewers need to know.
 
     Why:
@@ -889,18 +875,17 @@ derive_from_specs: false
       - runner-backed dispatch invocation queues and starts with runner diagnostics visible through daemon status;
       - invalid runner blocks before prompt forwarding and records actionable redacted diagnostics;
       - missing required secret blocks before spawn and no secret literal appears in any serialized output;
-      - existing command reference is used only as an invocation input and no adapter/harness install, download, materialization, cache, or package-manager mutation occurs;
+      - existing command reference appears in dry-run, preflight, session metadata, and diagnostics as an invocation input;
       - Web UI agents route renders runner-backed and legacy agents from daemon payload fixtures.
     - Add AC annotations in tests for the plan specs covered by each flow.
     - Keep all test projects, fake command roots, and session directories inside temp directories.
-    - Do not call real Claude, Codex, Droid, network package registries, or global package managers from this suite.
 
     Why:
     The runner layer cuts across storage, runtime, daemon, CLI, and UI. Focused unit tests are necessary but not sufficient to prevent regressions at the boundaries between those surfaces.
 
     How:
     - Prefer fake ACP adapters that speak the minimum protocol needed for existing invocation tests.
-    - Assert both positive behavior and absence of leaks, global mutations, or adapter/harness materialization side effects.
+    - Assert the configured behavior at each boundary: storage merge, resolver output, preflight diagnostics, daemon payloads, and Web UI rendering.
     - Include a final `kspec validate --completeness --warnings-ok` run after AC annotations are added.
 
     Testing:
@@ -910,7 +895,7 @@ derive_from_specs: false
     - `kspec validate --refs --warnings-ok`
     - `kspec validate --completeness --warnings-ok`
 
-    Covers: @agent-runner-configuration ac-named-runners-loaded, ac-project-runner-storage-is-repo-managed, ac-system-runner-storage-is-local, ac-system-overrides-project-values, ac-project-layer-blocks-harness-logic, ac-project-layer-blocks-known-secret-keys, ac-agent-runner-reference, ac-adapter-field-backcompat, ac-runner-precedence-over-adapter; @runner-resolution-and-preflight ac-one-shot-uses-runner-resolution, ac-dispatch-uses-runner-resolution, ac-unknown-runner-blocks-before-spawn, ac-session-metadata-records-runner, ac-dispatched-event-records-runner; @runner-environment-secret-boundaries ac-project-env-literals-are-non-secret, ac-secret-env-names-use-bindings, ac-required-secret-missing-blocks, ac-diagnostics-redact-secrets; @runner-process-invocation-boundary ac-no-adapter-install-management, ac-existing-executable-reference-only; @runner-invocation-semantics ac-dispatch-preflight-accepts-configured-runners, ac-dispatch-preflight-rejects-invalid-runners; @runner-operator-surfaces ac-daemon-agent-api-includes-runner, ac-daemon-dispatch-active-api-includes-runner, ac-daemon-dispatch-queued-api-includes-runner, ac-web-ui-agent-cards-include-runner, ac-web-ui-active-invocations-include-runner, ac-web-ui-queued-invocations-include-runner
+    Covers: @agent-runner-configuration ac-named-runners-loaded, ac-project-runner-storage-is-repo-managed, ac-system-runner-storage-is-local, ac-system-overrides-project-values, ac-project-layer-accepts-portable-runner-values, ac-project-layer-blocks-known-secret-keys, ac-agent-runner-reference, ac-adapter-field-backcompat, ac-runner-precedence-over-adapter; @runner-resolution-and-preflight ac-one-shot-uses-runner-resolution, ac-dispatch-uses-runner-resolution, ac-unknown-runner-blocks-before-spawn, ac-session-metadata-records-runner, ac-dispatched-event-records-runner; @runner-environment-secret-boundaries ac-project-env-literals-are-non-secret, ac-secret-env-names-use-bindings, ac-required-secret-missing-blocks, ac-diagnostics-redact-secrets; @runner-process-invocation-inputs ac-existing-executable-reference-resolves; @runner-invocation-semantics ac-dispatch-preflight-accepts-configured-runners, ac-dispatch-preflight-rejects-invalid-runners; @runner-operator-surfaces ac-daemon-agent-api-includes-runner, ac-daemon-dispatch-active-api-includes-runner, ac-daemon-dispatch-queued-api-includes-runner, ac-web-ui-agent-cards-include-runner, ac-web-ui-active-invocations-include-runner, ac-web-ui-queued-invocations-include-runner
 ```
 
 ## Implementation Notes
@@ -919,13 +904,11 @@ derive_from_specs: false
 
 - Runner is the public config term. Internal code may call strategy classes harnesses, but user-facing YAML, CLI, API, and UI surfaces should say runner consistently.
 - Runner config is layered. Project runner config belongs in the repo-managed shadow sidecar at `project.runners.yaml` in the shadow worktree root, visible from the main checkout as `.kspec/project.runners.yaml`, and is intentionally limited to portable, non-secret project-specific values. System runner config belongs at `<daemon-config-dir>/projects/<project-key>/runners.yaml`, where `<project-key>` is the full lowercase hex SHA-256 digest of the canonical absolute project root path after realpath normalization; it owns process settings, local command references, args/cwd/env policy, and credential source bindings.
-- The project layer must not define process-control logic. If a value selects how to run an adapter, what executable/args/cwd to use, how hooks are transported, or how secrets are sourced, it belongs in the system layer.
-- Runners never install, upgrade, download, materialize, cache, or otherwise manage adapter/harness binaries. Any `process.executable` value is an existing command reference only; adapter implementation and version ownership remain outside kspec runtime scope.
 - System config overrides project config field-by-field for the same runner name. Validation and diagnostics should show source layers and override facts without showing raw secrets.
-- Secret values must come from runtime secret sources such as user environment variables. Config stores secret references or bindings, not token values; project config additionally rejects known API key/token variable names and secret-looking literal keys.
-- Existing agents with only `adapter` remain supported. This plan must not force a metadata migration or break default agents.
+- Secret values come from runtime secret sources such as user environment variables. Config stores secret references or bindings, not token values; project config rejects known API key/token variable names and secret-looking literal keys.
+- Existing agents with only `adapter` remain supported.
 - A runner-backed agent may retain an `adapter` field for compatibility, but invocation uses the runner's adapter.
-- The sidecar that maps a headed TUI to ACP is out of scope here. This plan supplies the kspec contract that such a sidecar uses: layered runner config, explicit env/secrets, invocation args/cwd, diagnostics, dispatch compatibility, and operator visibility. This plan intentionally accepts only the `acp_process` runner kind; a future sidecar kind must be introduced by a separate reviewed plan.
+- A headed TUI-to-ACP sidecar can be introduced as a separate runner kind that consumes this runner contract: layered config, explicit env/secrets, invocation args/cwd, diagnostics, dispatch compatibility, and operator visibility.
 
 ### Dependency ordering
 
@@ -933,14 +916,14 @@ derive_from_specs: false
 2. Layered runner config schema and types establish the storage and merge vocabulary.
 3. Agent meta and CLI mutation support allow agents to reference runners.
 4. Runtime resolver makes one-shot invocation use effective runner contracts.
-5. Env/secret and process-boundary tasks harden the resolved contract.
+5. Env/secret and process-input tasks harden the resolved contract.
 6. Dispatch preflight moves daemon automation onto the same resolver.
 7. CLI, daemon API, and Web UI surfaces expose the resolved state to operators.
 8. Documentation and end-to-end regressions close compatibility and migration gaps.
 
 ### Live-project safety
 
-Process invocation, env injection, and migration/compatibility tests must use temp projects, disposable clones, fake adapters, and fake command roots. They must not run against live `~/Projects/kynetic-spec` or `~/Projects/kynetic-spec-dispatch` as mutation or migration targets. They must not invoke real Claude, Codex, network package registries, package managers, or adapter/harness installers. If a worker finds generated runner configs or partial adapter/harness installation artifacts in either live checkout while testing, stop and report the exact path before making further writes.
+Process invocation, env injection, and migration/compatibility tests use temp projects, disposable clones, fake adapters, and fake command roots. Test fixtures should exercise configured runner behavior without depending on live `~/Projects/kynetic-spec` or `~/Projects/kynetic-spec-dispatch` mutation state.
 
 ### Review focus
 
