@@ -2,7 +2,18 @@ _ulid: 01KSVHPMRSSC0YHK2RNVRHPD0X
 slugs: []
 title: "Plan review: Agent Runner Configuration Layer cleanup"
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No install-management, download, cache, package-manager, adapter-management, or old
+      boundary-spec scope language remains; the only materialize hit describes normal plan
+      derivation for specs.
+    name: Adapter-management omission cleanup
+    required: true
+    created_at: 2026-05-30T04:19:19.359Z
+    completed_at: 2026-05-30T04:19:19.359Z
 events:
   - _ulid: 01KSVHPMRHHE122PYWF4E79PJS
     actor: Jacob Chapel
@@ -10,6 +21,13 @@ events:
     payload:
       to: draft
     timestamp: 2026-05-30T04:18:59.986Z
+  - _ulid: 01KSVHQ7WX9ESM8XM4DF1138GY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Adapter-management omission cleanup
+    timestamp: 2026-05-30T04:19:19.581Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -22,5 +40,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-05-30T04:18:59.993Z
-updated_at: null
+updated_at: 2026-05-30T04:19:19.359Z
 notes: []
