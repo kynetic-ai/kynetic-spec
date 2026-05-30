@@ -14,6 +14,16 @@ checks:
     required: true
     created_at: 2026-05-30T04:19:19.359Z
     completed_at: 2026-05-30T04:19:19.359Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Covers lines reference @runner-process-invocation-inputs, all plan-local AC refs resolve,
+      and task dependencies point to plan task slugs in the expected order.
+    name: Renamed refs and dependency coherence
+    required: true
+    created_at: 2026-05-30T04:19:19.356Z
+    completed_at: 2026-05-30T04:19:19.356Z
 events:
   - _ulid: 01KSVHPMRHHE122PYWF4E79PJS
     actor: Jacob Chapel
@@ -28,6 +38,13 @@ events:
       status: pass
       name: Adapter-management omission cleanup
     timestamp: 2026-05-30T04:19:19.581Z
+  - _ulid: 01KSVHQ88CNPCKWSVCMT00RDYB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Renamed refs and dependency coherence
+    timestamp: 2026-05-30T04:19:19.948Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -40,5 +57,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-05-30T04:18:59.993Z
-updated_at: 2026-05-30T04:19:19.359Z
+updated_at: 2026-05-30T04:19:19.356Z
 notes: []
