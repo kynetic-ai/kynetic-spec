@@ -59,6 +59,17 @@ checks:
     required: true
     created_at: 2026-05-30T04:24:43.159Z
     completed_at: 2026-05-30T04:24:43.159Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec plan import plans/agent-runner-configuration-layer.md --dry-run completed without
+      changes. kspec validate --refs --warnings-ok, --alignment --warnings-ok, and --completeness
+      --warnings-ok all exited 0 with existing repo warnings.
+    name: Plan parse and repo validation
+    required: true
+    created_at: 2026-05-30T04:24:52.877Z
+    completed_at: 2026-05-30T04:24:52.877Z
 events:
   - _ulid: 01KSVHZHDPZEYJ747YFYCVZBJR
     actor: Jacob Chapel
@@ -101,6 +112,13 @@ events:
       status: pass
       name: Covers and dependency coherence
     timestamp: 2026-05-30T04:24:43.386Z
+  - _ulid: 01KSVJ1DKA6TVGPHS8WHC6SDDD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan parse and repo validation
+    timestamp: 2026-05-30T04:24:53.099Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -113,5 +131,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-05-30T04:23:51.483Z
-updated_at: 2026-05-30T04:24:43.159Z
+updated_at: 2026-05-30T04:24:52.877Z
 notes: []
