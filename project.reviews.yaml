@@ -22994,8 +22994,8 @@ reviews:
       content_hash: ""
       ref: "@plan-agent-runner-configuration-layer"
       shadow_commit: ""
-    thread_count: 1
-    unresolved_blocker_count: 1
+    thread_count: 2
+    unresolved_blocker_count: 2
     verdict_count: 0
     created_at: 2026-05-30T04:18:59.993Z
-    updated_at: 2026-05-30T04:19:36.009Z
+    updated_at: 2026-05-30T04:19:36.010Z

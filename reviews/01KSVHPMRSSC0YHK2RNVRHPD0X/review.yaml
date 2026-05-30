@@ -69,6 +69,13 @@ events:
       kind: blocker
       thread_ulid: 01KSVHQQY9ED4SAKS52QHZ9YV8
     timestamp: 2026-05-30T04:19:36.252Z
+  - _ulid: 01KSVHQRFP029TYZPQNSP621ZR
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSVHQQYASVKX67K1AH0S8M06
+    timestamp: 2026-05-30T04:19:36.566Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -93,7 +100,23 @@ threads:
           sentence under it."
         created_at: 2026-05-30T04:19:36.009Z
     kind: blocker
+  - _ulid: 01KSVHQQYASVKX67K1AH0S8M06
+    anchor:
+      type: structured
+      field: description
+      ref: "@task-update-existing-agent-runner-specs"
+      section: tasks
+    entries:
+      - _ulid: 01KSVHQQYARWQZMMCR0KEJYDWY
+        author: Jacob Chapel
+        body: "The Why section still says the exact AC wording is needed 'so review approves the contract
+          change before an implementation agent starts work.' That reads as review-process/meta
+          commentary. Exact edit: replace that sentence with implementation-oriented wording, e.g.
+          'This task carries the exact target specs, AC IDs, and final AC wording so later
+          implementation tasks target the updated contracts.'"
+        created_at: 2026-05-30T04:19:36.010Z
+    kind: blocker
 verdicts: []
 created_at: 2026-05-30T04:18:59.993Z
-updated_at: 2026-05-30T04:19:36.009Z
+updated_at: 2026-05-30T04:19:36.010Z
 notes: []
