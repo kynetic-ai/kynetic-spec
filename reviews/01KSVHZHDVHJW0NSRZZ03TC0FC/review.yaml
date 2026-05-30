@@ -14,6 +14,18 @@ checks:
     required: true
     created_at: 2026-05-30T04:24:08.240Z
     completed_at: 2026-05-30T04:24:08.240Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Targeted scan found no install/download/cache/package-manager adapter-management
+      refutation language. Remaining 'materialize' usage is ordinary kspec derivation wording, and
+      remaining harness wording describes runner/runtime behavior rather than install-management
+      scope.
+    name: Adapter-management omission cleanup
+    required: true
+    created_at: 2026-05-30T04:24:16.578Z
+    completed_at: 2026-05-30T04:24:16.578Z
 events:
   - _ulid: 01KSVHZHDPZEYJ747YFYCVZBJR
     actor: Jacob Chapel
@@ -28,6 +40,13 @@ events:
       status: pass
       name: Plan-local AC behavior
     timestamp: 2026-05-30T04:24:08.465Z
+  - _ulid: 01KSVJ0A49XDNXC2RYRNP7EPNX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Adapter-management omission cleanup
+    timestamp: 2026-05-30T04:24:16.777Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -40,5 +59,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-05-30T04:23:51.483Z
-updated_at: 2026-05-30T04:24:08.240Z
+updated_at: 2026-05-30T04:24:16.578Z
 notes: []
