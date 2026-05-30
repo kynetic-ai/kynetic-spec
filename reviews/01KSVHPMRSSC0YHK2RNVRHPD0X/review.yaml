@@ -94,9 +94,25 @@ events:
       status: fail
       name: Plan-meta prose cleanup
     timestamp: 2026-05-30T04:19:36.923Z
+  - _ulid: 01KSVHR0JN35TT5FJ6WQQN7KWP
+    actor: Jacob Chapel
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-30T04:19:44.853Z
+  - _ulid: 01KSVHR0JNRERVW3FHE4NNABAT
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: closed
+    timestamp: 2026-05-30T04:19:44.853Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -134,7 +150,14 @@ threads:
           implementation tasks target the updated contracts.'"
         created_at: 2026-05-30T04:19:36.010Z
     kind: blocker
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: Jacob Chapel
+    role: reviewer
+    created_at: 2026-05-30T04:19:44.853Z
 created_at: 2026-05-30T04:18:59.993Z
-updated_at: 2026-05-30T04:19:36.011Z
+updated_at: 2026-05-30T04:19:44.853Z
 notes: []
