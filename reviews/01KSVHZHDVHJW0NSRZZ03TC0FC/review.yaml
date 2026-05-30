@@ -37,6 +37,17 @@ checks:
     required: true
     created_at: 2026-05-30T04:24:25.510Z
     completed_at: 2026-05-30T04:24:25.510Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The previous 'Review focus' subsection is absent. Targeted scan found no prior-review,
+      review-cycle, approval-mechanics, or change-request meta prose in the plan content; ordinary
+      task role words remain only in worker/reviewer dispatch examples.
+    name: Review-meta prose cleanup
+    required: true
+    created_at: 2026-05-30T04:24:33.870Z
+    completed_at: 2026-05-30T04:24:33.870Z
 events:
   - _ulid: 01KSVHZHDPZEYJ747YFYCVZBJR
     actor: Jacob Chapel
@@ -65,6 +76,13 @@ events:
       status: pass
       name: Renamed refs and dependencies
     timestamp: 2026-05-30T04:24:25.751Z
+  - _ulid: 01KSVJ0V1ZB4Z5K03EPVBHKTQG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Review-meta prose cleanup
+    timestamp: 2026-05-30T04:24:34.112Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -77,5 +95,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-05-30T04:23:51.483Z
-updated_at: 2026-05-30T04:24:25.510Z
+updated_at: 2026-05-30T04:24:33.870Z
 notes: []

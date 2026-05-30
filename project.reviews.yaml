@@ -23004,7 +23004,7 @@ reviews:
     title: "Plan review: Agent Runner Configuration Layer cleanup recheck"
     disposition: pending
     author: Jacob Chapel
-    check_count: 3
+    check_count: 4
     lifecycle_state: draft
     related_refs: []
     subject:
@@ -23016,4 +23016,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-05-30T04:23:51.483Z
-    updated_at: 2026-05-30T04:24:25.510Z
+    updated_at: 2026-05-30T04:24:33.870Z
