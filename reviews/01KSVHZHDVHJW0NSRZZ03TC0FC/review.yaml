@@ -48,6 +48,17 @@ checks:
     required: true
     created_at: 2026-05-30T04:24:33.870Z
     completed_at: 2026-05-30T04:24:33.870Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Parsed plan YAML: 48/48 plan-local ACs are claimed by Covers lines; 0 malformed Covers
+      entries; 0 missing plan-local AC refs; 0 missing plan-local task dependencies. Existing-spec
+      Covers refs align with the first task's explicit existing-spec update scope."
+    name: Covers and dependency coherence
+    required: true
+    created_at: 2026-05-30T04:24:43.159Z
+    completed_at: 2026-05-30T04:24:43.159Z
 events:
   - _ulid: 01KSVHZHDPZEYJ747YFYCVZBJR
     actor: Jacob Chapel
@@ -83,6 +94,13 @@ events:
       status: pass
       name: Review-meta prose cleanup
     timestamp: 2026-05-30T04:24:34.112Z
+  - _ulid: 01KSVJ143T1AN88WQQA0TVD98K
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Covers and dependency coherence
+    timestamp: 2026-05-30T04:24:43.386Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -95,5 +113,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-05-30T04:23:51.483Z
-updated_at: 2026-05-30T04:24:33.870Z
+updated_at: 2026-05-30T04:24:43.159Z
 notes: []
