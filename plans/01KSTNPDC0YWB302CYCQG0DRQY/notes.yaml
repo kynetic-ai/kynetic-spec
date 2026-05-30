@@ -37,3 +37,8 @@ notes:
     content: Remove negative adapter-management rebuttal language and keep runner process specs behavioral
     author: Jacob Chapel
     created_at: 2026-05-30T04:16:01.040Z
+  - _ulid: 01KSVHT7ACNSWJAV5DQB1XH60X
+    content: "Address verifiable-only review cleanup: remove review-meta section and implementation
+      review wording"
+    author: Jacob Chapel
+    created_at: 2026-05-30T04:20:57.292Z

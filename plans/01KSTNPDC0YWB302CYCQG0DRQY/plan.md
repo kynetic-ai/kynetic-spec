@@ -472,7 +472,7 @@ derive_from_specs: false
       - `kspec item note @codex-acp-adapter-registration "Runner configuration plan @plan-agent-runner-configuration-layer preserves Codex session-id injection and cleanup through the runner-aware invocation environment path."`
 
     Why:
-    The plan-local Specs block creates new runner specs. It does not patch existing implemented specs such as Agent Definition Schema, Dispatch Event Payload Contracts, or Codex adapter registration. Without this explicit task, derivation would leave the current specs stale or conflicting while implementation changes their behavior. Spec-update tasks must carry the exact target specs, AC IDs, and final AC wording so review approves the contract change before an implementation agent starts work.
+    The plan-local Specs block creates new runner specs. It does not patch existing implemented specs such as Agent Definition Schema, Dispatch Event Payload Contracts, or Codex adapter registration. Without this explicit task, derivation would leave the current specs stale or conflicting while implementation changes their behavior. This task carries the exact target specs, AC IDs, and final AC wording so later implementation tasks target the updated contracts.
 
     How:
     - Use `kspec item get` to capture current target spec text before editing.
@@ -925,6 +925,3 @@ derive_from_specs: false
 
 Process invocation, env injection, and migration/compatibility tests use temp projects, disposable clones, fake adapters, and fake command roots. Test fixtures should exercise configured runner behavior without depending on live `~/Projects/kynetic-spec` or `~/Projects/kynetic-spec-dispatch` mutation state.
 
-### Review focus
-
-Reviewers should check that each task is executable without chat history, that no task leaves runner field names or env policies for a worker to invent, that every security-sensitive behavior has a test path, and that UI/API/CLI surfaces all carry the same redacted runner diagnostics.
