@@ -26,6 +26,17 @@ checks:
     required: true
     created_at: 2026-05-30T04:24:16.578Z
     completed_at: 2026-05-30T04:24:16.578Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Found the renamed spec @runner-process-invocation-inputs and task
+      @task-runner-process-invocation-inputs. The dispatch preflight task depends on the renamed
+      task ref. Parsed dependency graph has 12 task slugs and 0 missing dependencies.
+    name: Renamed refs and dependencies
+    required: true
+    created_at: 2026-05-30T04:24:25.510Z
+    completed_at: 2026-05-30T04:24:25.510Z
 events:
   - _ulid: 01KSVHZHDPZEYJ747YFYCVZBJR
     actor: Jacob Chapel
@@ -47,6 +58,13 @@ events:
       status: pass
       name: Adapter-management omission cleanup
     timestamp: 2026-05-30T04:24:16.777Z
+  - _ulid: 01KSVJ0JWQB6H773N9C7GC1N9N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Renamed refs and dependencies
+    timestamp: 2026-05-30T04:24:25.751Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -59,5 +77,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-05-30T04:23:51.483Z
-updated_at: 2026-05-30T04:24:16.578Z
+updated_at: 2026-05-30T04:24:25.510Z
 notes: []
