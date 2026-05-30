@@ -34,6 +34,17 @@ checks:
     required: true
     created_at: 2026-05-30T04:19:19.353Z
     completed_at: 2026-05-30T04:19:19.353Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Implementation Notes contains a Review focus subsection, and
+      task-update-existing-agent-runner-specs includes review-approval process wording in its Why
+      section.
+    name: Plan-meta prose cleanup
+    required: true
+    created_at: 2026-05-30T04:19:36.011Z
+    completed_at: 2026-05-30T04:19:36.011Z
 events:
   - _ulid: 01KSVHPMRHHE122PYWF4E79PJS
     actor: Jacob Chapel
@@ -76,6 +87,13 @@ events:
       kind: blocker
       thread_ulid: 01KSVHQQYASVKX67K1AH0S8M06
     timestamp: 2026-05-30T04:19:36.566Z
+  - _ulid: 01KSVHQRTVEZ7W9G7T5YZCY7GY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Plan-meta prose cleanup
+    timestamp: 2026-05-30T04:19:36.923Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -118,5 +136,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-05-30T04:18:59.993Z
-updated_at: 2026-05-30T04:19:36.010Z
+updated_at: 2026-05-30T04:19:36.011Z
 notes: []
