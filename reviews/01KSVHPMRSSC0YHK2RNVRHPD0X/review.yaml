@@ -24,6 +24,16 @@ checks:
     required: true
     created_at: 2026-05-30T04:19:19.356Z
     completed_at: 2026-05-30T04:19:19.356Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Parsed 6 plan specs and 12 tasks; every plan-local AC is referenced by at least one task
+      Covers line.
+    name: Plan-local AC coverage
+    required: true
+    created_at: 2026-05-30T04:19:19.353Z
+    completed_at: 2026-05-30T04:19:19.353Z
 events:
   - _ulid: 01KSVHPMRHHE122PYWF4E79PJS
     actor: Jacob Chapel
@@ -45,6 +55,13 @@ events:
       status: pass
       name: Renamed refs and dependency coherence
     timestamp: 2026-05-30T04:19:19.948Z
+  - _ulid: 01KSVHQ8KWXC4DKXJT1C4RC3WS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan-local AC coverage
+    timestamp: 2026-05-30T04:19:20.316Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -57,5 +74,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-05-30T04:18:59.993Z
-updated_at: 2026-05-30T04:19:19.356Z
+updated_at: 2026-05-30T04:19:19.353Z
 notes: []
