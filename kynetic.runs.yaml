@@ -56376,7 +56376,7 @@ runs:
     completed_at: 2026-05-31T08:17:43.165Z
   - _ulid: 01KSYJTG1VRTRJYNX895JB15V5
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -56414,7 +56414,20 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-31T08:37:57.614Z
-        completed_at: 2026-05-31T08:37:57.614Z
+        completed_at: 2026-05-31T08:38:13.103Z
+        notes: "Proposal: capture one friction observation for stale dispatch auxiliary checkout metadata
+          blocking detached reviewer manual_merge even when the checkout is clean. Improvement idea:
+          dispatch cleanup/reconciliation could clear or ignore stale .kspec-dispatch-workspace.json
+          markers on clean, already-integrated root checkouts, or the merge helper could distinguish
+          stale closed metadata from active auxiliary workspaces. Helps reviewers avoid manual
+          detachment during otherwise clean approvals. Rough scope: medium because it touches
+          dispatch workspace classification and merge-helper safety rules. No proposal for
+          format:check because it is already tracked; no proposal for full-suite duration from this
+          single session."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-31T08:38:13.103Z
+        completed_at: 2026-05-31T08:38:13.103Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T08:36:18.107Z
