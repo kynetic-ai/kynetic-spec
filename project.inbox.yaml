@@ -3900,3 +3900,14 @@ inbox:
       - specs
     added_by: Jacob Chapel
     created_at: 2026-05-31T07:08:49.545Z
+  - _ulid: 01KSYHR8XK2D7V77S08KCYTZXD
+    text: "Reformat templates/skills/merge/SKILL.md to satisfy oxfmt --check (file last touched in
+      80bb7c7c22 'docs: update merge skill for branch-coherent helper' on dev; every downstream task
+      currently skips the format:check gate for this single unrelated file). Fix is one command:
+      oxfmt templates/skills/merge/SKILL.md && git commit."
+    tags:
+      - reflection
+      - chore
+      - formatting
+    added_by: "@claude"
+    created_at: 2026-05-31T08:17:36.691Z
