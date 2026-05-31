@@ -56172,7 +56172,7 @@ runs:
     completed_at: 2026-05-31T06:48:23.299Z
   - _ulid: 01KSYDNB1PJN8MDMNKWMPD68Y8
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -56210,7 +56210,18 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-31T07:08:06.406Z
-        completed_at: 2026-05-31T07:08:06.406Z
+        completed_at: 2026-05-31T07:08:14.949Z
+        notes: "Proposed improvement: Update reviewer/merge completion guidance to call out kspec task
+          complete --no-sync when the reviewed task intentionally reopens or preserves linked specs
+          as in_progress for downstream implementation. It should also suggest verifying linked spec
+          implementation status after completion for spec-only/reopened-contract tasks. Benefit:
+          avoids reviewers accidentally undoing explicit spec-state changes and needing a corrective
+          item set afterward. Scope: small documentation/process update in kspec-review/kspec-merge
+          or generated agent guidance."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-31T07:08:14.949Z
+        completed_at: 2026-05-31T07:08:14.949Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T07:06:06.262Z
