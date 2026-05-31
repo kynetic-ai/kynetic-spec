@@ -2,7 +2,113 @@ _ulid: 01KSYFMASTJJ3TBF11YFEZ4P1R
 slugs: []
 title: Review task-runner-config-schema-types
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed; existing reference warnings only.
+    name: kspec validate --refs --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-31T07:53:39.687Z
+    completed_at: 2026-05-31T07:53:39.687Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed; existing alignment warnings only.
+    name: kspec validate --alignment --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-31T07:53:42.129Z
+    completed_at: 2026-05-31T07:53:42.129Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed; existing completeness warning baseline only.
+    name: kspec validate --completeness --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-31T07:53:44.503Z
+    completed_at: 2026-05-31T07:53:44.503Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Command failed only on templates/skills/merge/SKILL.md, which is not in this diff; git
+      diff base...HEAD does not include it, and the same file from integration base also fails oxfmt
+      --check.
+    name: npm run format:check
+    required: false
+    runner: oxfmt
+    created_at: 2026-05-31T07:53:46.843Z
+    completed_at: 2026-05-31T07:53:46.843Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 errors; repo warning baseline unchanged.
+    name: npm run lint -- --quiet
+    required: true
+    runner: oxlint
+    created_at: 2026-05-31T07:53:49.252Z
+    completed_at: 2026-05-31T07:53:49.252Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Found 0 warnings and 0 errors for src/agents/index.ts, src/agents/runner-config.ts,
+      tests/runner-config.test.ts.
+    name: npx oxlint changed files
+    required: true
+    runner: oxlint
+    created_at: 2026-05-31T07:53:51.747Z
+    completed_at: 2026-05-31T07:53:51.747Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit completed successfully.
+    name: npm run typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-31T07:53:54.199Z
+    completed_at: 2026-05-31T07:53:54.199Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 34 tests passed.
+    name: npm test -- --fresh tests/runner-config.test.ts
+    required: true
+    runner: vitest
+    created_at: 2026-05-31T07:53:56.712Z
+    completed_at: 2026-05-31T07:53:56.712Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2599 test suites passed; 9955 passed, 5 skipped of 9960. Full log
+      /tmp/kspec-test-cache/01KSYFK6FM28CX26PPQY1V8CET/c4bba5768c8ae0f4.log
+    name: npm test -- --fresh
+    required: true
+    runner: vitest
+    created_at: 2026-05-31T07:53:59.226Z
+    completed_at: 2026-05-31T07:53:59.226Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: SystemRunnerConfigSchema accepted adapter definitely-not-registered even though getAdapter
+      returned null and registered adapters are claude-agent-acp, claude-code-acp, codex-acp,
+      droid-acp, mock-acp.
+    name: adapter validation probe
+    required: true
+    runner: node --import tsx
+    created_at: 2026-05-31T07:54:01.762Z
+    completed_at: 2026-05-31T07:54:01.762Z
 events:
   - _ulid: 01KSYFMASSRS9KGVSE1X4Z3VBK
     actor: Jacob Chapel
@@ -24,6 +130,76 @@ events:
       kind: blocker
       thread_ulid: 01KSYFT34A6TE6T7GDRAF2M1W5
     timestamp: 2026-05-31T07:43:39.417Z
+  - _ulid: 01KSYGCDTBR2T0PK1YZPJRAAEJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --refs --warnings-ok
+    timestamp: 2026-05-31T07:53:39.915Z
+  - _ulid: 01KSYGCG69W40VJHQEPKN94A2B
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --alignment --warnings-ok
+    timestamp: 2026-05-31T07:53:42.345Z
+  - _ulid: 01KSYGCJH4BVY81RKNA0XDH0DM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --completeness --warnings-ok
+    timestamp: 2026-05-31T07:53:44.740Z
+  - _ulid: 01KSYGCMS9M3ZCYESFY5MSG48K
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: npm run format:check
+    timestamp: 2026-05-31T07:53:47.050Z
+  - _ulid: 01KSYGCQ4QDSSJQ9V4Z8NBAJM4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run lint -- --quiet
+    timestamp: 2026-05-31T07:53:49.463Z
+  - _ulid: 01KSYGCSJ7XMWDJ6JTZJQYBQ7J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npx oxlint changed files
+    timestamp: 2026-05-31T07:53:51.943Z
+  - _ulid: 01KSYGCVYKHSCC7R717W27MH9T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run typecheck
+    timestamp: 2026-05-31T07:53:54.387Z
+  - _ulid: 01KSYGCYDGWVWSBX98B3RBTH21
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh tests/runner-config.test.ts
+    timestamp: 2026-05-31T07:53:56.912Z
+  - _ulid: 01KSYGD0X0ANXBCRGJ9HFGZHW9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-05-31T07:53:59.456Z
+  - _ulid: 01KSYGD3BYAQ4QWPZF6N0H5C7B
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: adapter validation probe
+    timestamp: 2026-05-31T07:54:01.982Z
 examined_commit: 2cdce4953569d8ad0b9087dcec038d62e0344824
 external_links: []
 lifecycle_state: open
@@ -58,5 +234,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-05-31T07:40:30.394Z
-updated_at: 2026-05-31T07:43:39.147Z
+updated_at: 2026-05-31T07:54:01.762Z
 notes: []
