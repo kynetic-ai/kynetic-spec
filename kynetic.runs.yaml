@@ -56789,7 +56789,7 @@ runs:
     completed_at: 2026-05-31T12:52:51.702Z
   - _ulid: 01KSZ2G301DKMKHJAE5MQV9GTC
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -56814,7 +56814,19 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-31T13:10:50.740Z
-        completed_at: 2026-05-31T13:10:50.740Z
+        completed_at: 2026-05-31T13:11:42.493Z
+        notes: "Coverage check: searched for KNOWN_EVENT_FIELDS, action template validation invocation
+          fields, event payload fields template variables, template variables, dispatch action
+          model, payload fields, and batch heredoc quoting. Existing coverage:
+          @dispatch-event-payload and @dispatch-action-model describe the behavior area; current
+          review @01KSZ1K1 tracks the immediate defect. Untracked broader friction: action template
+          validation keeps a separate hard-coded invocation field set instead of deriving from
+          PAYLOAD_FIELDS_BY_EVENT_TYPE / canonical schemas, which allows schema and
+          template-validation drift."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-31T13:11:42.493Z
+        completed_at: 2026-05-31T13:11:42.493Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T13:10:14.274Z
