@@ -2,7 +2,17 @@ _ulid: 01KSZ7120MMV73GW8XS0Q1X940
 slugs: []
 title: Review runner env secret boundary
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with --warnings-ok; baseline reference warnings only.
+    name: kspec validate --refs
+    required: true
+    runner: kspec
+    created_at: 2026-05-31T14:41:32.754Z
+    completed_at: 2026-05-31T14:41:32.754Z
 events:
   - _ulid: 01KSZ7120MVE984DC6NJ64GRR1
     actor: Jacob Chapel
@@ -17,6 +27,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-05-31T14:29:44.059Z
+  - _ulid: 01KSZ7Q99YXM89TGDNN1YY1WJD
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --refs
+    timestamp: 2026-05-31T14:41:32.990Z
 examined_commit: e190bb2414297d83bd2980dfc8fec97b43556634
 external_links: []
 lifecycle_state: open
@@ -29,5 +46,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-05-31T14:29:24.628Z
-updated_at: 2026-05-31T14:29:43.851Z
+updated_at: 2026-05-31T14:41:32.754Z
 notes: []
