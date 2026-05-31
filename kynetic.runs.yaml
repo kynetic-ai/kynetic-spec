@@ -56333,7 +56333,7 @@ runs:
     completed_at: 2026-05-31T07:56:48.839Z
   - _ulid: 01KSYHM3ERB13PXEKXQWK9WTW5
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -56349,7 +56349,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-31T08:16:54.016Z
-        completed_at: 2026-05-31T08:16:54.016Z
+        completed_at: 2026-05-31T08:17:05.242Z
+        notes: "Friction point (high confidence): templates/skills/merge/SKILL.md fails npm run format:check
+          on dev — last touched in commit 80bb7c7c22 'docs: update merge skill for branch-coherent
+          helper'. Every downstream task's format gate has to skip this file as 'not in this diff'.
+          Same skip annotation appeared in this task's prior review checks. Quick fix: run oxfmt
+          templates/skills/merge/SKILL.md on dev and commit. Already verified with npx oxfmt --check
+          templates/skills/merge/SKILL.md returns 1 failing file as of HEAD."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-31T08:17:05.242Z
+        completed_at: 2026-05-31T08:17:05.242Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-31T08:15:20.024Z
