@@ -1,1 +1,15 @@
-notes: []
+notes:
+  - _ulid: 01KSYCG2GRRM36AY405BCDGGN7
+    content: "Applied all spec edits via single atomic batch (11 commands): reopened
+      @agent-definition-schema, @dispatch-event-payload, @codex-acp-adapter-registration to
+      in_progress (no-cascade); added ac-runner-field-accepted and
+      ac-meta-set-runner-preserves-fields and updated ac-8 on @agent-definition-schema; updated ac-2
+      on @dispatch-event-payload; updated ac-2 and ac-3 on @codex-acp-adapter-registration; added
+      plan-link notes referencing @plan-agent-runner-configuration-layer on each spec. AC text
+      matches task instructions verbatim. No source code touched. Shadow commit: 37e7cca5bc. Worker
+      branch tree clean. kspec validate --refs/--alignment/--completeness all pass; alignment
+      warnings expected (status mismatches for the three reopened specs will clear when downstream
+      runner tasks complete)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-31T06:45:45.112Z
