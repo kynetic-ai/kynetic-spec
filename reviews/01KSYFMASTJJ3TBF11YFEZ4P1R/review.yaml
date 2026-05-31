@@ -223,6 +223,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-05-31T07:54:26.058Z
+  - _ulid: 01KSYHHVCYE8MDRTJSQQWHN6SM
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSYFT34A6TE6T7GDRAF2M1W5
+    timestamp: 2026-05-31T08:14:06.238Z
 examined_commit: 2cdce4953569d8ad0b9087dcec038d62e0344824
 external_links: []
 lifecycle_state: closed
@@ -254,6 +260,20 @@ threads:
           runner configs become effective and fail later during invocation instead of being rejected
           at config validation."
         created_at: 2026-05-31T07:43:39.147Z
+      - _ulid: 01KSYHHV6Y4MKM1GA1HN82TJJV
+        author: "@claude"
+        body: "Fixed in 646a1f8690. SystemRunnerEntrySchema.adapter is now a refined string that calls
+          getAdapter() at parse time. Unknown adapter ids are rejected with a message listing
+          registered adapters. The refine is lazy so adapters registered at runtime via
+          registerAdapter() also pass. Re-ran the same probe: SystemRunnerConfigSchema.safeParse
+          with adapter 'definitely-not-registered' now returns success=false with issue at
+          runners.<name>.adapter and message 'Adapter \"definitely-not-registered\" is not a
+          registered adapter. Registered adapters: claude-agent-acp, claude-code-acp, codex-acp,
+          droid-acp, mock-acp.' Registered adapters still parse successfully. Added 4 behavioral
+          tests in tests/runner-config.test.ts: rejects unknown adapter at schema layer, accepts
+          each built-in adapter, accepts registerAdapter()-added adapters, and propagates rejection
+          through loadSystemRunnerConfig as a load-time issue."
+        created_at: 2026-05-31T08:14:06.040Z
     kind: blocker
   - _ulid: 01KSYGDRA90VWEZBFMDF44AG4N
     entries:
@@ -281,5 +301,5 @@ verdicts:
     role: reviewer
     created_at: 2026-05-31T07:54:26.058Z
 created_at: 2026-05-31T07:40:30.394Z
-updated_at: 2026-05-31T07:54:26.058Z
+updated_at: 2026-05-31T08:14:06.040Z
 notes: []
