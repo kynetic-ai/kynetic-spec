@@ -208,9 +208,25 @@ events:
       kind: nit
       thread_ulid: 01KSZC91P9ZJGVTMAJ3DX86YX4
     timestamp: 2026-05-31T16:01:09.564Z
+  - _ulid: 01KSZC9GNDPJ0MQGBC8YFFEB5P
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-31T16:01:24.653Z
+  - _ulid: 01KSZC9GNDV4G6J8PTH5DTYJ57
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-31T16:01:24.653Z
 examined_commit: c18fc6ea96f9d1b48b17c1397eba5f0d7c747ccb
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -256,7 +272,14 @@ threads:
           error handling, diagnostics secrecy, test quality, integration with spawnAgent."
         created_at: 2026-05-31T16:01:09.322Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-31T16:01:24.653Z
 created_at: 2026-05-31T15:48:43.898Z
-updated_at: 2026-05-31T16:01:09.322Z
+updated_at: 2026-05-31T16:01:24.653Z
 notes: []
