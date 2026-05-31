@@ -57158,9 +57158,22 @@ runs:
     completed_at: 2026-05-31T16:04:42.928Z
   - _ulid: 01KSZCZ0HBN6VG7VW4MMSVK981
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-31T16:13:09.035Z
+        completed_at: 2026-05-31T16:15:48.670Z
+        notes: "Session was a focused fix cycle (cycle 2) on the runner env/secret boundary task. What
+          worked: reading reviewer's evidence carefully (the probe technique was explicit),
+          splitting the contract into adapter env + mutation env + secret strip list, writing a
+          behavioral test that mirrors the reviewer's probe approach. No new high-confidence
+          patterns to surface."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-31T16:15:48.670Z
+        completed_at: 2026-05-31T16:15:48.670Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-31T16:13:09.035Z
