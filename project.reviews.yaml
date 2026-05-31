@@ -23017,3 +23017,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-05-30T04:23:51.483Z
     updated_at: 2026-05-30T04:25:03.447Z
+  - _ulid: 01KSYCQR2CMVTNS7SJJDDK6A2S
+    slugs: []
+    title: Review task-update-existing-agent-runner-specs
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: 28770407cf3ca944af1bee0c0ed6e6bf1577a460
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KSYAZ3RAS2DVT910ZQ42A4DS"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-05-31T06:49:56.556Z
