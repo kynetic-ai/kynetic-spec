@@ -56172,7 +56172,7 @@ runs:
     completed_at: 2026-05-31T06:48:23.299Z
   - _ulid: 01KSYDNB1PJN8MDMNKWMPD68Y8
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -56188,7 +56188,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-31T07:06:45.275Z
-        completed_at: 2026-05-31T07:06:45.275Z
+        completed_at: 2026-05-31T07:07:54.096Z
+        notes: "Friction points: (1) Task completion auto-synced the linked spec @agent-definition-schema
+          from in_progress to implemented, even though this task explicitly reopened
+          runner-broadened specs to in_progress for downstream work. I had to notice the sync
+          message and run kspec item set @agent-definition-schema --status in_progress --no-cascade
+          to restore the intended contract state. (2) npm run format:check failed on pre-existing
+          dev drift, but this is already tracked separately and was not caused by this task."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-31T07:07:54.096Z
+        completed_at: 2026-05-31T07:07:54.096Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T07:06:06.262Z
