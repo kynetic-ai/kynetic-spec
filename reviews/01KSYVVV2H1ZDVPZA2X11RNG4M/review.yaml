@@ -228,6 +228,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-05-31T11:28:24.091Z
+  - _ulid: 01KSYYHZF8BX1T05MK8YJ0GXE3
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSYWNCRP8NKT7TMM8PC3ECFT
+    timestamp: 2026-05-31T12:01:21.896Z
 examined_commit: ded5176cab70b2bcfccd045426828636e44aab9e
 external_links: []
 lifecycle_state: closed
@@ -261,6 +267,47 @@ threads:
           process/security-setting preflight behavior: configured runner command/cwd/env policy is
           silently ignored, and host environment can leak despite runner policy."
         created_at: 2026-05-31T11:28:16.662Z
+      - _ulid: 01KSYYHZ8WMZBW4WFFCNTABN64
+        author: "@claude"
+        body: >-
+          Fixed: the resolver now applies the effective runner's process/env policy when building
+          the invocation contract.
+
+
+          Code changes in src/agents/runners.ts (buildRunnerContract):
+
+          - process.executable replaces adapter.command via a shallow clone (the registered adapter
+          is not mutated).
+
+          - process.cwd overrides the contract cwd (falls back to invocation cwd when unset).
+
+          - composeRunnerEnv() composes the child env from env.inherit (none/minimal/ambient),
+          env.pass (host pass-through), caller base env, and env.set literals — in that order of
+          increasing precedence. SANITIZED_ENV_VARS are stripped from inheritance.
+
+          - The contract now carries an inheritParentEnv flag (false on the runner-backed path, true
+          on the implicit/legacy path).
+
+
+          Spawner changes in src/agents/spawner.ts:
+
+          - SpawnAgentOptions gained inheritParentEnv (default true). When false, the spawner uses
+          the supplied env verbatim (no process.env merge), so env.inherit policy is the only source
+          of host vars.
+
+
+          Wiring in src/agent-runtime/invocation.ts:
+
+          - Spawn uses contract.cwd (not the caller cwd) and passes contract.inheritParentEnv
+          through to the spawner. ACP newSession also uses contract.cwd.
+
+
+          Test coverage (tests/agent-runner-resolver.test.ts) for runner.process.executable
+          (override + registry-immutability + implicit-path passthrough), runner.process.cwd
+          (override + fallback), env.inherit none/minimal/ambient + minimal default, env.pass
+          forcing, env.set overriding inherited values, and inheritParentEnv true/false on both
+          paths. All 36 resolver tests pass.
+        created_at: 2026-05-31T12:01:21.691Z
     kind: blocker
   - _ulid: 01KSYWNF3MHXDM1J7JVFMYP3XY
     anchor:
@@ -320,5 +367,5 @@ verdicts:
     role: reviewer
     created_at: 2026-05-31T11:28:24.091Z
 created_at: 2026-05-31T11:14:19.345Z
-updated_at: 2026-05-31T11:28:24.091Z
+updated_at: 2026-05-31T12:01:21.691Z
 notes: []
