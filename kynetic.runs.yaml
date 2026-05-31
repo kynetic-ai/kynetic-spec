@@ -57773,7 +57773,7 @@ runs:
     completed_at: 2026-05-31T20:07:34.159Z
   - _ulid: 01KSZYS6CYPST7VSRGNRC2A6KF
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -57788,7 +57788,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-31T21:25:34.766Z
-        completed_at: 2026-05-31T21:25:34.766Z
+        completed_at: 2026-05-31T21:25:44.603Z
+        notes: "Friction points: The workflow instructions say to run , but the CLI expects a run ref after
+          a workflow is started; this friction is already tracked. Review-specific friction: the
+          daemon broadcast payload was updated while the exported shared WebSocket event type stayed
+          stale, and existing shared type tests only checked generic WebSocket type shape rather
+          than event-specific payload fields."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-31T21:25:44.603Z
+        completed_at: 2026-05-31T21:25:44.603Z
     task_ref: "@01KSYAZ6MNX6EZCHZANWAT6X8T"
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
