@@ -56172,9 +56172,23 @@ runs:
     completed_at: 2026-05-31T06:48:23.299Z
   - _ulid: 01KSYDNB1PJN8MDMNKWMPD68Y8
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-31T07:06:06.262Z
+        completed_at: 2026-05-31T07:06:45.275Z
+        notes: "Worked well: exact JSON verification against kspec item get --json gave a reliable way to
+          confirm required AC IDs, text, statuses, and notes without depending on formatted CLI
+          output. The detached-reviewer merge helper cleanly handled the already-integrated branch
+          as a no-op, so the review could complete without manual checkout or merge commands.
+          Recording review checks before verdict made the approval evidence durable and
+          inspectable."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-31T07:06:45.275Z
+        completed_at: 2026-05-31T07:06:45.275Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T07:06:06.262Z
