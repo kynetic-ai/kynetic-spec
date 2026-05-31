@@ -3955,3 +3955,16 @@ inbox:
       - workflow
     added_by: Jacob Chapel
     created_at: 2026-05-31T17:53:11.298Z
+  - _ulid: 01KSZTBW0094MQGRZDZD2F45KE
+    text: Consider adding a reusable runner CLI fixture/reproduction helper. Reviews and focused tests
+      for runner operator surfaces currently repeat boilerplate to create a temp kspec project,
+      initialize git, write minimal manifest/meta/task files, derive the daemon project key, create
+      isolated HOME/USERPROFILE system runners.yaml, add fake executables, and run the CLI from the
+      temp project cwd. A shared helper could reduce setup duplication and prevent wrong-cwd
+      reproductions when validating runner config diagnostics.
+    tags:
+      - reflection
+      - runners
+      - testing
+    added_by: Jacob Chapel
+    created_at: 2026-05-31T20:07:21.856Z
