@@ -7347,6 +7347,9 @@ modules:
           resolved harness explicit. Skill reference formatting, auto-approval flags,
           session environment injection, lifecycle cleanup, and dispatch preflight all
           operate from the resolved runner contract.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
