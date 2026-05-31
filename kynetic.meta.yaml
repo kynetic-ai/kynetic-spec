@@ -20153,6 +20153,20 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-31T15:24:31.536Z
+  - _ulid: 01KSZBDTGVTNAEP2BZECHEECSJ
+    type: success
+    content: Runner secret-boundary reviews benefit from an adversarial subprocess-env capture probe. In
+      @task-runner-env-secret-boundary, a focused Node probe routed internal kspec
+      task-note/task-block subprocesses through tests/mocks/kspec-capture-mock.cjs while placing a
+      sentinel secret in the resolved runner env; it exposed that failure-path lifecycle mutations
+      inherited adapter secrets even though format/lint/typecheck/focused tests/full tests were
+      green. This complements static redaction caller searches by proving runtime process-boundary
+      isolation at the exact subprocess spawn surface.
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-05-31T15:46:17.243Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
