@@ -190,6 +190,8 @@ export function registerAgentCommands(program: Command): void {
 
         // AC: @trait-json-output ac-1 through ac-5
         // AC: @trait-json-output ac-2 - JSON includes all data available in human-readable mode
+        // AC: @runner-operator-surfaces ac-agent-list-shows-runner — JSON includes runner when present
+        // AC: @agent-runner-configuration ac-adapter-field-backcompat — adapter still emitted
         output(
           {
             items: paginated.map((a) => {
@@ -200,6 +202,7 @@ export function registerAgentCommands(program: Command): void {
                 dispatch: a.dispatch ?? [],
                 concurrency: a.concurrency ?? { max_concurrent: 1 },
               };
+              if (a.runner) item.runner = a.runner;
               if (a.session) item.session = a.session;
               if (a.budget) item.budget = a.budget;
               if (a.skills && a.skills.length > 0) item.skills = a.skills;
@@ -226,6 +229,11 @@ export function registerAgentCommands(program: Command): void {
 
             for (const a of paginated) {
               console.log(`  ${chalk.cyan(a.id)}  ${chalk.gray(a.adapter ?? "claude-agent-acp")}`);
+              // AC: @runner-operator-surfaces ac-agent-list-shows-runner
+              // AC: @agent-runner-configuration ac-agent-runner-reference
+              if (a.runner) {
+                console.log(`    ${chalk.gray("runner:")} ${a.runner}`);
+              }
               console.log(`    ${chalk.gray("dispatch:")} ${formatDispatchRules(a)}`);
               console.log(
                 `    ${chalk.gray("concurrency:")} max ${a.concurrency?.max_concurrent ?? 1}`,
