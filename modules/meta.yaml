@@ -7415,6 +7415,9 @@ modules:
           surfaces that already expose agents and dispatch state. CLI, daemon API,
           WebSocket status data, and the Web UI show runner identity, resolved adapter,
           validation state, and redacted diagnostics.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
