@@ -2,7 +2,17 @@ _ulid: 01KSZPS66K290GQATCC69245RB
 slugs: []
 title: Review task-cli-runner-surfaces
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed; existing reference warnings only
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-05-31T19:19:31.499Z
+    completed_at: 2026-05-31T19:19:31.499Z
 events:
   - _ulid: 01KSZPS66JQ9FHXE7DG5MMWCKN
     actor: Jacob Chapel
@@ -17,6 +27,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-05-31T19:05:05.528Z
+  - _ulid: 01KSZQM93QW16C62JJCJB9783A
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-05-31T19:19:31.703Z
 examined_commit: 0ce7045814f098535dc27ade2b6a4a1d00b9c202
 external_links: []
 lifecycle_state: open
@@ -29,5 +46,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-05-31T19:04:43.987Z
-updated_at: 2026-05-31T19:05:05.196Z
+updated_at: 2026-05-31T19:19:31.499Z
 notes: []
