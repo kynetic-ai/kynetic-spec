@@ -74,6 +74,16 @@ checks:
     runner: npm run typecheck
     created_at: 2026-05-31T18:32:28.077Z
     completed_at: 2026-05-31T18:32:28.077Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 58 suites passed, 189 tests passed; dispatch engine and runner resolver tests green
+    name: focused tests
+    required: true
+    runner: npm test -- --fresh tests/agent-dispatch-engine.test.ts tests/agent-runner-resolver.test.ts
+    created_at: 2026-05-31T18:32:37.201Z
+    completed_at: 2026-05-31T18:32:37.201Z
 events:
   - _ulid: 01KSZM44WFS0YJP2K532VFMN6J
     actor: Jacob Chapel
@@ -137,6 +147,13 @@ events:
       status: pass
       name: typecheck
     timestamp: 2026-05-31T18:32:28.296Z
+  - _ulid: 01KSZMYCS001GJR0EENMJZ9PYZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused tests
+    timestamp: 2026-05-31T18:32:37.409Z
 examined_commit: ca631996909c20503cb820c62f9439e0b3e72ac7
 external_links: []
 lifecycle_state: open
@@ -149,5 +166,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-05-31T18:18:17.359Z
-updated_at: 2026-05-31T18:32:28.077Z
+updated_at: 2026-05-31T18:32:37.201Z
 notes: []
