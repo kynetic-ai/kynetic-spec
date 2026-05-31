@@ -20120,6 +20120,39 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-05-31T14:46:31.851Z
+  - _ulid: 01KSZA5Z4X342DQSQ17WGQTDJ0
+    type: friction
+    content: "Cross-cutting sanitization/redaction helpers ship without production callers. The runner
+      secret redactor (src/agents/redaction.ts + contract.redact in src/agents/runners.ts) was
+      introduced and unit-tested but no production caller actually applied it; the agent.failed
+      event, session close_reason, [AGENT-FAIL] task notes, retry block reason,
+      InvocationResult.error, adapter stderr forwarder, and ACP framing layer's error log all still
+      wrote raw error text. Reviewer caught it via rg evidence
+      ('\\.redact\\(|redactSecretValues\\(|createRedactor\\('). Same risk applies to any future
+      helper of this shape (formatter, sanitizer, validator) introduced in a leaf module.
+      Mitigation: behavioral tests for cross-cutting helpers must exercise the actual production
+      caller chain and assert both ABSENCE of the leaked value AND PRESENCE of the helper's effect
+      (e.g. [REDACTED] marker) at every operator-visible surface."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-31T15:24:31.261Z
+  - _ulid: 01KSZA5ZDGX2DARCHNGSX9T6Z2
+    type: success
+    content: Redaction/sanitization behavioral tests should assert BOTH absence of the secret literal
+      AND presence of the redaction marker at each diagnostic surface. Asserting only absence lets a
+      silent no-op regression pass — if a future refactor drops the redact() call entirely, the
+      secret literal may never reach the surface anyway (depending on the test fixture), so
+      absence-only assertions go green. Asserting marker presence forces the test to drive the
+      helper through every code path. Used in tests/agent-invocation-secret-redaction.test.ts for
+      events.jsonl, session.yaml close_reason, kspec task note args, InvocationResult.error, and
+      process.stderr writes — each checks NOT contain SECRET_LITERAL AND DOES contain
+      REDACTION_MARKER. The negative-control test on the implicit/legacy path proves the no-op
+      redactor is preserved when no secrets are resolved (asserts marker is NOT present).
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-31T15:24:31.536Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
