@@ -13462,7 +13462,7 @@ workspaces:
         head: ca631996909c20503cb820c62f9439e0b3e72ac7
         last_seen_at: 2026-05-31T18:17:16.015Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-runner-preflight-01ksyaz5
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 22315eeee6db635cdef845640e2ff39bb226c694
     bootstrap:
       status: succeeded
@@ -13951,9 +13951,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-31T19:46:22.802Z
-      last_reconciled_at: 2026-05-31T20:04:59.078Z
+      last_reconciled_at: 2026-05-31T20:07:52.118Z
       created_at: 2026-05-31T18:34:06.812Z
-      updated_at: 2026-05-31T20:04:59.078Z
+      updated_at: 2026-05-31T20:07:52.118Z
     workspace_id: dispatch-workspace-01KSYAZ69M6PK5W28417VS2VJ9
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
