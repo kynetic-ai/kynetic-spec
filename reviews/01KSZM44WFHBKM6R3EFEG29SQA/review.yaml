@@ -54,6 +54,16 @@ checks:
     runner: npm run lint -- --quiet
     created_at: 2026-05-31T18:32:08.359Z
     completed_at: 2026-05-31T18:32:08.359Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Changed test file: 0 warnings, 0 errors"
+    name: changed-file oxlint
+    required: true
+    runner: npx oxlint tests/agent-dispatch-engine.test.ts
+    created_at: 2026-05-31T18:32:17.623Z
+    completed_at: 2026-05-31T18:32:17.623Z
 events:
   - _ulid: 01KSZM44WFS0YJP2K532VFMN6J
     actor: Jacob Chapel
@@ -103,6 +113,13 @@ events:
       status: pass
       name: lint
     timestamp: 2026-05-31T18:32:08.566Z
+  - _ulid: 01KSZMXSNF0P1NZ45047YT4ZES
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file oxlint
+    timestamp: 2026-05-31T18:32:17.839Z
 examined_commit: ca631996909c20503cb820c62f9439e0b3e72ac7
 external_links: []
 lifecycle_state: open
@@ -115,5 +132,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-05-31T18:18:17.359Z
-updated_at: 2026-05-31T18:32:08.359Z
+updated_at: 2026-05-31T18:32:17.623Z
 notes: []
