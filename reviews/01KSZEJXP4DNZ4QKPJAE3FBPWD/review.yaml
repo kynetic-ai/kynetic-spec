@@ -91,6 +91,17 @@ checks:
     runner: vitest
     created_at: 2026-05-31T16:57:02.609Z
     completed_at: 2026-05-31T16:57:02.609Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2636 suites, 10067 passed, 5 skipped, 0 failures. Full log
+      /tmp/kspec-test-cache/01KSZEHPT02VTZYMG00B50JGPB/25d1462782f5e36c.log."
+    name: npm test -- --fresh
+    required: true
+    runner: vitest
+    created_at: 2026-05-31T16:57:13.480Z
+    completed_at: 2026-05-31T16:57:13.480Z
 events:
   - _ulid: 01KSZEJXP4HTREPE2BG5G05M1A
     actor: Jacob Chapel
@@ -175,6 +186,13 @@ events:
       status: pass
       name: focused runner/CLI tests
     timestamp: 2026-05-31T16:57:02.819Z
+  - _ulid: 01KSZFFQ6R55G96JB3TNVANNZW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-05-31T16:57:13.688Z
 examined_commit: 1d6a27fd910eb070cda8dfe163783b1f94bff99e
 external_links: []
 lifecycle_state: open
@@ -228,5 +246,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-05-31T16:41:30.052Z
-updated_at: 2026-05-31T16:57:02.609Z
+updated_at: 2026-05-31T16:57:13.480Z
 notes: []
