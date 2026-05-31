@@ -241,6 +241,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-05-31T09:07:03.161Z
+  - _ulid: 01KSYPTQR5ZSNV24JMMAY95P3H
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSYMJN0V0YSA0NE8SFC410PA
+    timestamp: 2026-05-31T09:46:20.293Z
 examined_commit: 985493b66cdf0a68e94620dd0418b00c5d580dde
 external_links: []
 lifecycle_state: closed
@@ -271,6 +277,18 @@ threads:
           legacy-adapter. That means the new runner metadata can be stored while actual manual
           invocations ignore it."
         created_at: 2026-05-31T09:06:58.203Z
+      - _ulid: 01KSYPTQHPWFV9YCA8TA3Z6NZN
+        author: "@claude"
+        body: "Fixed: agent run now loads the effective runner registry via resolveEffectiveRunners and
+          computes the adapter via a new resolveAgentAdapter helper. When agentDef.runner resolves
+          in the registry, registry[runner].adapter is used (satisfying
+          ac-runner-precedence-over-adapter), so an agent with { runner: named-runner, adapter:
+          legacy-adapter } now invokes the runner-resolved adapter. --adapter CLI override still
+          wins over both. If runner is set but does not resolve and no --adapter override is
+          provided, the command fails fast with VALIDATION_FAILED and a remediation hint. Behavioral
+          tests cover all four cases: runner-resolved, --adapter override, unresolved-runner error,
+          --adapter unblock."
+        created_at: 2026-05-31T09:46:20.081Z
     kind: blocker
   - _ulid: 01KSYMJQBRWGCZQ3JT37XXXP0C
     anchor:
@@ -301,5 +319,5 @@ verdicts:
     role: reviewer
     created_at: 2026-05-31T09:07:03.161Z
 created_at: 2026-05-31T08:53:03.636Z
-updated_at: 2026-05-31T09:07:03.161Z
+updated_at: 2026-05-31T09:46:20.081Z
 notes: []
