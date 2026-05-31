@@ -1,1 +1,27 @@
-notes: []
+notes:
+  - _ulid: 01KSYDV7PWCCT0CJBN1DTFSX3T
+    content: "Approach: create src/agents/runner-config.ts with three Zod schemas (project, system,
+      effective) plus loaders. Project loader reads .kspec/project.runners.yaml (gated on shadow
+      context). System loader reads
+      <daemonConfigDir>/projects/<sha256(realpath(projectRoot))>/runners.yaml (defaults to
+      getDefaultDaemonConfigDir but accepts test override). Helpers: deriveProjectKey(rootDir),
+      getSystemRunnersPath(projectRoot, overrides?), getProjectRunnersPath(shadowDir). Project
+      schema is strict allowlist (only env.set, privacy, diagnostics) and rejects secret-looking
+      env.set keys. System schema is the full effective runner shape with kind enum (acp_process
+      only), required adapter ref, optional process.executable/args/cwd,
+      env.{inherit,pass,set,secrets}, privacy and diagnostics. Both layers reject secret-looking
+      env.set names; env.secrets bindings only allowed from system. Merge: per-runner-name
+      field-level overlay with system winning on scalars and map entries; env.set/env.pass merged so
+      system keys/values replace project entries; output keeps source metadata per field (which
+      layer supplied it + override info). Tests in tests/runner-config.test.ts using
+      createTempDir+initGitRepo for project layer (.kspec/ subdir) and a temp dir as injected daemon
+      config root. Cover ACs: ac-named-runners-loaded, ac-project-runner-storage-is-repo-managed,
+      ac-system-runner-storage-is-local, ac-system-overrides-project-values,
+      ac-project-layer-accepts-portable-runner-values, ac-project-layer-blocks-known-secret-keys,
+      ac-effective-runner-kind-and-adapter-required + secret boundary ACs
+      ac-project-env-literals-are-non-secret, ac-secret-env-names-use-bindings,
+      ac-secret-bindings-system-only, ac-secret-values-not-stored-inline. kspec.config.yaml behavior
+      left unchanged. No agent meta or runtime changes (those are downstream tasks)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-31T07:09:19.452Z
