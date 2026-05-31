@@ -2,7 +2,91 @@ _ulid: 01KSZ8KET3PHHYA5ECMM63A4Q6
 slugs: []
 title: Review task-runner-process-invocation-inputs
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed. Existing reference warnings only; command exited 0 with --warnings-ok.
+    name: kspec validate --refs --warnings-ok
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-31T15:10:50.623Z
+    completed_at: 2026-05-31T15:10:50.623Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed. Existing alignment warnings only; command exited 0 with --warnings-ok.
+    name: kspec validate --alignment --warnings-ok
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-31T15:10:53.461Z
+    completed_at: 2026-05-31T15:10:53.461Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed. Existing completeness warnings only; command exited 0 with --warnings-ok. New
+      @runner-process-invocation-inputs annotations are present.
+    name: kspec validate --completeness --warnings-ok
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-31T15:10:56.330Z
+    completed_at: 2026-05-31T15:10:56.330Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All matched files use the correct format; 964 files checked.
+    name: npm run format:check
+    required: true
+    runner: oxfmt
+    created_at: 2026-05-31T15:10:59.919Z
+    completed_at: 2026-05-31T15:10:59.919Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 errors. Repo warning baseline remains (743 warnings), and focused changed-file oxlint
+      was clean.
+    name: npm run lint -- --quiet
+    required: true
+    runner: oxlint
+    created_at: 2026-05-31T15:11:02.647Z
+    completed_at: 2026-05-31T15:11:02.647Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 warnings and 0 errors on src/agent-runtime/invocation.ts, src/agents/runner-config.ts,
+      src/agents/runners.ts, tests/agent-runner-process.test.ts.
+    name: npx oxlint changed files
+    required: true
+    runner: oxlint
+    created_at: 2026-05-31T15:11:05.275Z
+    completed_at: 2026-05-31T15:11:05.275Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit exited 0.
+    name: npm run typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-31T15:11:07.954Z
+    completed_at: 2026-05-31T15:11:07.954Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "2635 test suites passed; 10062 tests passed; 5 skipped; duration 2336.5s. Full log:
+      /tmp/kspec-test-cache/01KSZ8HV3WRDSYA95MXZMDV838/433579eb16f1631c.log"
+    name: npm test
+    required: true
+    runner: scripts/test.cjs
+    created_at: 2026-05-31T15:11:10.636Z
+    completed_at: 2026-05-31T15:11:10.636Z
 events:
   - _ulid: 01KSZ8KET36P9NBK7Z2EJK0GQN
     actor: Jacob Chapel
@@ -17,6 +101,76 @@ events:
       from: draft
       to: open
     timestamp: 2026-05-31T14:57:06.558Z
+  - _ulid: 01KSZ9CXZD6MAA99MDAKT8TANC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --refs --warnings-ok
+    timestamp: 2026-05-31T15:10:50.861Z
+  - _ulid: 01KSZ9D0QSABQG30GV1FMWT1MH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --alignment --warnings-ok
+    timestamp: 2026-05-31T15:10:53.689Z
+  - _ulid: 01KSZ9D3J27M4Z10GZR76RT3EH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --completeness --warnings-ok
+    timestamp: 2026-05-31T15:10:56.578Z
+  - _ulid: 01KSZ9D734SBCG52KXQWE2R44G
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run format:check
+    timestamp: 2026-05-31T15:11:00.196Z
+  - _ulid: 01KSZ9D9Q364C44YNFJ68EG4W0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run lint -- --quiet
+    timestamp: 2026-05-31T15:11:02.883Z
+  - _ulid: 01KSZ9DC95V82BYEV3SY4SEVZ1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npx oxlint changed files
+    timestamp: 2026-05-31T15:11:05.509Z
+  - _ulid: 01KSZ9DEX3WP7CWM260F0SY7VX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run typecheck
+    timestamp: 2026-05-31T15:11:08.195Z
+  - _ulid: 01KSZ9DHG627RZS2DBP4FTKCG8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test
+    timestamp: 2026-05-31T15:11:10.854Z
+  - _ulid: 01KSZ9DM0RJPY4HKP4AYXTW5FS
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSZ9DKSPRFECFWPNHZXEWC1N
+    timestamp: 2026-05-31T15:11:13.432Z
+  - _ulid: 01KSZ9DPP5B6H3EB5JEGB05ZQF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSZ9DPF9JHS12MYP1NSVBNJY
+    timestamp: 2026-05-31T15:11:16.165Z
 examined_commit: 02f8525a7a4658486afbbbe727266bb27ff3e774
 external_links: []
 lifecycle_state: open
@@ -26,8 +180,46 @@ subject:
   content_hash: ""
   ref: "@01KSYAZ5MMTH53RFXMSTK9400S"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KSZ9DKSPRFECFWPNHZXEWC1N
+    anchor:
+      type: code
+      commit: 02f8525a7a4658486afbbbe727266bb27ff3e774
+      line_end: 812
+      line_start: 809
+      path: src/agents/runners.ts
+      side: head
+    entries:
+      - _ulid: 01KSZ9DKSP7EPW5KFXWREGHG89
+        author: Jacob Chapel
+        body: "MUST-FIX: preflightRunnerInvocation probes bare process.executable names against
+          process.env.PATH instead of the resolved invocation environment PATH. Runner-backed spawns
+          call spawn(adapter.command, ..., { env: processEnv }) with processEnv built from the
+          runner contract, so Node resolves bare commands using that env.PATH. I verified this with
+          spawnSync('path-only-cmd', [], { env: { PATH: tempBin } }) succeeding. With the current
+          code, a runner that sets env.inherit: none and env.set.PATH to its tool directory will
+          fail preflight with unspawnable_command even though spawn would work; conversely a daemon
+          PATH hit can pass preflight when the child env cannot spawn it. This violates the command
+          reference preflight contract and can incorrectly skip valid configured runners."
+        created_at: 2026-05-31T15:11:13.206Z
+    kind: blocker
+  - _ulid: 01KSZ9DPF9JHS12MYP1NSVBNJY
+    entries:
+      - _ulid: 01KSZ9DPF9BK3X8BD8AEEB6900
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: src/agents/runners.ts, src/agents/runner-config.ts,
+          src/agent-runtime/invocation.ts, src/agent-runtime/dispatch.ts, src/agents/spawner.ts,
+          src/cli/commands/agent.ts, tests/agent-runner-process.test.ts,
+          tests/agent-runner-resolver.test.ts. Commands run: git diff/stat/log, kspec task get,
+          kspec item get, three kspec validate modes, AC annotation rg, npm run format:check, npm
+          run lint -- --quiet, focused npx oxlint, npm run typecheck, npm test, and a Node spawnSync
+          PATH probe. Claims verified: AC annotations exist; process.args do not mutate adapter
+          definitions; preflight is wired into runInvocation; child spawn uses contract
+          cwd/env/args; Node bare command lookup honors options.env.PATH. Categories searched:
+          correctness, edge cases, error handling, test quality, integration, and secret leakage."
+        created_at: 2026-05-31T15:11:15.945Z
+    kind: nit
 verdicts: []
 created_at: 2026-05-31T14:56:56.131Z
-updated_at: 2026-05-31T14:57:06.355Z
+updated_at: 2026-05-31T15:11:15.945Z
 notes: []

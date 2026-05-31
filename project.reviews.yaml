@@ -23210,9 +23210,9 @@ reviews:
   - _ulid: 01KSZ8KET3PHHYA5ECMM63A4Q6
     slugs: []
     title: Review task-runner-process-invocation-inputs
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
-    check_count: 0
+    check_count: 8
     examined_commit: 02f8525a7a4658486afbbbe727266bb27ff3e774
     lifecycle_state: open
     related_refs: []
@@ -23221,8 +23221,8 @@ reviews:
       content_hash: ""
       ref: "@01KSYAZ5MMTH53RFXMSTK9400S"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
+    thread_count: 2
+    unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-05-31T14:56:56.131Z
-    updated_at: 2026-05-31T14:57:06.355Z
+    updated_at: 2026-05-31T15:11:15.945Z
