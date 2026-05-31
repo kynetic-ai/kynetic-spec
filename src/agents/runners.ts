@@ -34,6 +34,7 @@
  * AC: @agent-runner-configuration ac-runner-precedence-over-adapter
  * AC: @runner-invocation-semantics ac-skill-formatting-uses-resolved-adapter
  * AC: @runner-invocation-semantics ac-auto-approve-from-resolved-contract
+ * AC: @runner-environment-secret-boundaries ac-required-secret-missing-blocks
  */
 
 import type { Agent } from "../schema/meta.js";
@@ -220,9 +221,11 @@ export interface RunnerInvocation {
   /**
    * Complete runner-scoped env for the adapter process. Composed from the
    * effective runner's `env.inherit` policy, `env.pass` host pass-through,
-   * caller-supplied invocation env, and `env.set` literals (in that order
-   * of increasing precedence). Secret bindings from `env.secrets` are NOT
-   * resolved here — that responsibility belongs to the secret-source task.
+   * caller-supplied invocation env, `env.set` literals, and resolved
+   * `env.secrets` bindings (in that order of increasing precedence).
+   * Required secret bindings whose source cannot be resolved cause the
+   * resolver to throw `missing_secret` before the spawn contract is
+   * returned.
    */
   env: Record<string, string>;
   /** Adapter args to append (auto-approve flags + runner process.args). */
@@ -418,6 +421,23 @@ function buildRunnerContract(inputs: RunnerContractInputs): RunnerInvocation {
     hostEnv,
   });
 
+  // Resolve declared secret bindings. Required bindings that cannot be
+  // resolved throw `missing_secret` so the invocation is blocked before any
+  // prompt content reaches the adapter. Optional bindings that fail to
+  // resolve are silently omitted (operator's explicit opt-in).
+  //
+  // AC: @runner-environment-secret-boundaries ac-required-secret-missing-blocks
+  const secretEnv = resolveSecretEnv({
+    secrets: runner.env.secrets,
+    hostEnv,
+    runnerName: runner.name,
+  });
+  // Secret values take final precedence over env.set literals so a runner
+  // that binds the same key both ways receives the resolved secret value.
+  for (const [key, value] of Object.entries(secretEnv)) {
+    composedEnv[key] = value;
+  }
+
   const autoApproveArgs: readonly string[] = autoApprove
     ? (effectiveAdapter.autoApproveArgs ?? [])
     : [];
@@ -475,9 +495,10 @@ function buildRunnerContract(inputs: RunnerContractInputs): RunnerInvocation {
  *      KSPEC_NO_DAEMON, KSPEC_SHADOW_MUTATION_LOCK_FILE)
  *   4. `env.set` literals from runner config (operator-controlled overrides)
  *
- * Secret bindings (`env.secrets`) are intentionally NOT resolved here — that
- * is the responsibility of the secret-source preflight task. Resolved secret
- * values overlay this map at spawn time.
+ * Secret bindings (`env.secrets`) are resolved by `resolveSecretEnv` after
+ * this function returns; resolved secret values overlay the composed env
+ * with the highest precedence. Required bindings that cannot be resolved
+ * cause the resolver to throw `missing_secret`.
  *
  * AC: @runner-environment-secret-boundaries ac-env-inheritance-policy-applied
  * AC: @runner-environment-secret-boundaries ac-env-set-overrides-allowed-values
@@ -525,6 +546,64 @@ function composeRunnerEnv(params: {
   }
 
   return result;
+}
+
+/**
+ * Resolve declared secret bindings into env values. Throws
+ * `RunnerResolutionError("missing_secret")` for any binding marked
+ * `required: true` whose source cannot be resolved.
+ *
+ * Supported source kinds:
+ *   - `user_env`: read from `hostEnv[envVarName]`. The binding key names the
+ *     child env var; the source is the host env entry with the same name.
+ *
+ * Unknown sources are treated as unresolved. Optional (`required: false`)
+ * bindings that fail to resolve are silently omitted — this preserves the
+ * explicit opt-in contract for operator-configured fallbacks.
+ *
+ * AC: @runner-environment-secret-boundaries ac-required-secret-missing-blocks
+ * AC: @runner-environment-secret-boundaries ac-secret-values-not-stored-inline
+ */
+function resolveSecretEnv(params: {
+  secrets: Readonly<Record<string, { source: string; required: boolean }>>;
+  hostEnv: NodeJS.ProcessEnv;
+  runnerName: string;
+}): Record<string, string> {
+  const resolved: Record<string, string> = {};
+  for (const [envVarName, binding] of Object.entries(params.secrets)) {
+    const value = lookupSecretValue(binding.source, envVarName, params.hostEnv);
+    if (value === undefined) {
+      if (binding.required) {
+        throw new RunnerResolutionError(
+          "missing_secret",
+          `Runner "${params.runnerName}" requires secret binding "${envVarName}" ` +
+            `from source "${binding.source}", but the value could not be resolved. ` +
+            `Verify the secret source is configured in the system runner config ` +
+            `and that the named source can supply a value for this variable.`,
+          { runner: params.runnerName, secret_var: envVarName, source: binding.source },
+        );
+      }
+      continue;
+    }
+    resolved[envVarName] = value;
+  }
+  return resolved;
+}
+
+/**
+ * Resolve a single secret binding's value from the named source. Returns
+ * `undefined` when the source is unknown or the source cannot supply a
+ * value for `envVarName`.
+ */
+function lookupSecretValue(
+  source: string,
+  envVarName: string,
+  hostEnv: NodeJS.ProcessEnv,
+): string | undefined {
+  if (source === "user_env") {
+    return hostEnv[envVarName];
+  }
+  return undefined;
 }
 
 function computeSourceLayer(runner: EffectiveRunner): SourceLayerDiagnostic {

@@ -182,7 +182,7 @@ async function handlePrompt(id, params) {
   // adapter-specific prompt content (e.g. resolved skill reference formatting).
   if (verifyPromptFile) {
     try {
-      fs.appendFileSync(verifyPromptFile, JSON.stringify(params) + "\n");
+      fs.appendFileSync(verifyPromptFile, `${JSON.stringify(params)}\n`);
     } catch {
       // Best-effort: test-only artifact, never fail the mock for I/O issues.
     }

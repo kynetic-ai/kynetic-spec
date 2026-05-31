@@ -2374,6 +2374,7 @@ export class DispatchEngine {
     agent: LoadedAgent,
     change: TaskStateChange,
     workspace: ProvisionedDispatchWorkspace,
+    resolvedAdapterId: string,
   ): Promise<string> {
     const trigger = (STATUS_TO_EVENT[change.toStatus] ?? "task.ready") as SessionTrigger;
     const taskRef = change.taskRef;
@@ -2429,7 +2430,7 @@ export class DispatchEngine {
     );
     const roleEntry = await buildRoleEntryContext(
       this.projectDir,
-      agent.adapter ?? "claude-agent-acp",
+      resolvedAdapterId,
       trigger,
       workspace.metadata,
     );
@@ -2738,38 +2739,18 @@ export class DispatchEngine {
         return false;
       }
 
-      let prompt: string;
-      try {
-        prompt = await this._buildDispatchPrompt(agent, entry.change, workspace);
-      } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        const guidance =
-          err instanceof DispatchPromptError
-            ? err.suggestion
-            : "Inspect dispatch role-entry configuration and workspace metadata.";
-        console.error(`[dispatch] Failed to build prompt for ${entry.change.taskRef}: ${message}`);
-        if (this.kspecCliPath) {
-          // AC: @agent-dispatch-engine ac-28 — fire-and-forget async error recovery
-          await this._addTaskNote(
-            entry.change.taskRef,
-            `[DISPATCH-PROMPT] ${message} Suggested action: ${guidance}`,
-          );
-        }
-        return false;
-      }
-
-      // Increment active count
-      this.activeCount.set(agentId, (this.activeCount.get(agentId) ?? 0) + 1);
-
       // AC: @agent-dispatch-engine ac-10 - Check adapter resolvability before spawn
       // AC: @runner-resolution-and-preflight ac-dispatch-uses-runner-resolution
       // AC: @runner-resolution-and-preflight ac-unknown-runner-blocks-before-spawn
       // AC: @runner-resolution-and-preflight ac-unknown-runner-reports-guidance
       // AC: @runner-resolution-and-preflight ac-invalid-runner-blocks-before-prompt
       //
-      // Resolve the runner contract before invocation so unknown runners,
-      // unknown adapters, or invalid runner config block the spawn with
-      // structured guidance instead of crashing inside the spawner.
+      // Resolve the runner contract before building the prompt so unknown
+      // runners, unknown adapters, or invalid runner config block the spawn
+      // (and the role-entry workflow render) with structured guidance.
+      // Building the prompt before resolution would expand role-entry
+      // adapter-specific tokens against the legacy agent.adapter field,
+      // breaking runner precedence for dispatch.
       let preflightContract: RunnerInvocation;
       let preflightRegistry: EffectiveRunnerRegistry;
       try {
@@ -2797,8 +2778,6 @@ export class DispatchEngine {
         console.error(
           `[dispatch] Cannot resolve runner contract for agent "${agentId}" (${reason}). Skipping invocation. ${message}`,
         );
-        const currentActive = this.activeCount.get(agentId) ?? 1;
-        this.activeCount.set(agentId, Math.max(0, currentActive - 1));
         if (this.kspecCliPath) {
           await this._addTaskNote(
             entry.change.taskRef,
@@ -2810,6 +2789,33 @@ export class DispatchEngine {
       const adapterId = preflightContract.adapterId;
       const adapter = preflightContract.adapter;
       const runnerId = preflightContract.runnerId;
+
+      let prompt: string;
+      try {
+        // AC: @runner-resolution-and-preflight ac-dispatch-uses-runner-resolution
+        // Pass the resolved adapter id so adapter-specific role-entry tokens
+        // (e.g., `/skill` vs `$skill`) match the runner that will actually
+        // spawn — never the legacy agent.adapter field.
+        prompt = await this._buildDispatchPrompt(agent, entry.change, workspace, adapterId);
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        const guidance =
+          err instanceof DispatchPromptError
+            ? err.suggestion
+            : "Inspect dispatch role-entry configuration and workspace metadata.";
+        console.error(`[dispatch] Failed to build prompt for ${entry.change.taskRef}: ${message}`);
+        if (this.kspecCliPath) {
+          // AC: @agent-dispatch-engine ac-28 — fire-and-forget async error recovery
+          await this._addTaskNote(
+            entry.change.taskRef,
+            `[DISPATCH-PROMPT] ${message} Suggested action: ${guidance}`,
+          );
+        }
+        return false;
+      }
+
+      // Increment active count
+      this.activeCount.set(agentId, (this.activeCount.get(agentId) ?? 0) + 1);
       // The resolver falls back to an ad-hoc npx adapter when the legacy
       // `agent.adapter` field is not a registered id. Dispatch is stricter
       // than one-shot `kspec agent run`: it requires a registered adapter so

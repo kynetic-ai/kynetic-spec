@@ -18,6 +18,8 @@
  *   @runner-environment-secret-boundaries (resolver-side enforcement)
  *     ac-env-inheritance-policy-applied
  *     ac-env-set-overrides-allowed-values
+ *     ac-required-secret-missing-blocks
+ *     ac-secret-values-not-stored-inline
  */
 
 import { describe, it, expect } from "vitest";
@@ -778,6 +780,189 @@ describe("resolveRunnerInvocation: env.inherit policy", () => {
     // inheritParentEnv: true).
     expect(result.env.FOO).toBe("bar");
     expect(result.env.PATH).toBeUndefined();
+  });
+});
+
+// ─── env.secrets resolution and missing_secret preflight ───────────────────
+
+describe("resolveRunnerInvocation: env.secrets preflight", () => {
+  // AC: @runner-environment-secret-boundaries ac-required-secret-missing-blocks
+  it("throws missing_secret when a required binding's source cannot be resolved", () => {
+    const registry: EffectiveRunnerRegistry = {
+      runners: {
+        codex: {
+          name: "codex",
+          kind: "acp_process",
+          adapter: "codex-acp",
+          process: { executable: null, args: [], cwd: null },
+          env: {
+            inherit: "minimal",
+            pass: [],
+            set: {},
+            secrets: { API_TOKEN: { source: "missing-source", required: true } },
+          },
+          privacy: { disable_nonessential_traffic: true },
+          diagnostics: { retain_raw_logs: "on_failure" },
+          sources: {
+            kind: "system",
+            adapter: "system",
+            processExecutable: null,
+            processArgs: null,
+            processCwd: null,
+            envInherit: "default",
+            envPass: "default",
+            envSet: { keys: {} },
+            envSecrets: "system",
+            privacyDisableNonessentialTraffic: "default",
+            diagnosticsRetainRawLogs: "default",
+            overriddenBySystem: [],
+          },
+        },
+      },
+    };
+    const agent = makeAgent({ runner: "codex" });
+
+    try {
+      resolveRunnerInvocation(makeInput({ agent, registry, hostEnv: {} }));
+      throw new Error("expected RunnerResolutionError");
+    } catch (err) {
+      expect(err).toBeInstanceOf(RunnerResolutionError);
+      const e = err as RunnerResolutionError;
+      expect(e.reason).toBe("missing_secret");
+      expect(e.message).toContain("API_TOKEN");
+      expect(e.message).toContain("missing-source");
+      expect(e.details.runner).toBe("codex");
+      expect(e.details.secret_var).toBe("API_TOKEN");
+      expect(e.details.source).toBe("missing-source");
+    }
+  });
+
+  // AC: @runner-environment-secret-boundaries ac-required-secret-missing-blocks
+  it("throws missing_secret when a required user_env binding has no value on the host", () => {
+    const registry = buildRegistry(null, {
+      runners: {
+        codex: {
+          kind: "acp_process",
+          adapter: "codex-acp",
+          env: { secrets: { API_TOKEN: { source: "user_env", required: true } } },
+        },
+      },
+    });
+    const agent = makeAgent({ runner: "codex" });
+
+    try {
+      // hostEnv intentionally omits API_TOKEN so user_env cannot resolve it.
+      resolveRunnerInvocation(makeInput({ agent, registry, hostEnv: { PATH: "/bin" } }));
+      throw new Error("expected RunnerResolutionError");
+    } catch (err) {
+      expect(err).toBeInstanceOf(RunnerResolutionError);
+      const e = err as RunnerResolutionError;
+      expect(e.reason).toBe("missing_secret");
+      expect(e.message).toContain("API_TOKEN");
+    }
+  });
+
+  // AC: @runner-environment-secret-boundaries ac-required-secret-missing-blocks
+  it("resolves user_env bindings from hostEnv and injects them into the contract env", () => {
+    const registry = buildRegistry(null, {
+      runners: {
+        codex: {
+          kind: "acp_process",
+          adapter: "codex-acp",
+          env: {
+            inherit: "none",
+            secrets: { ANTHROPIC_API_KEY: { source: "user_env", required: true } },
+          },
+        },
+      },
+    });
+    const agent = makeAgent({ runner: "codex" });
+    const result = resolveRunnerInvocation(
+      makeInput({
+        agent,
+        registry,
+        hostEnv: { ANTHROPIC_API_KEY: "host-token-value" },
+      }),
+    );
+
+    expect(result.env.ANTHROPIC_API_KEY).toBe("host-token-value");
+  });
+
+  it("omits optional bindings that cannot resolve without throwing", () => {
+    const registry = buildRegistry(null, {
+      runners: {
+        codex: {
+          kind: "acp_process",
+          adapter: "codex-acp",
+          env: {
+            secrets: {
+              OPTIONAL_TOKEN: { source: "user_env" }, // required defaults to false
+              ANOTHER_TOKEN: { source: "missing-source" },
+            },
+          },
+        },
+      },
+    });
+    const agent = makeAgent({ runner: "codex" });
+    const result = resolveRunnerInvocation(makeInput({ agent, registry, hostEnv: {} }));
+
+    expect(result.env.OPTIONAL_TOKEN).toBeUndefined();
+    expect(result.env.ANOTHER_TOKEN).toBeUndefined();
+  });
+
+  // AC: @runner-environment-secret-boundaries ac-secret-values-not-stored-inline
+  it("does not leak resolved secret values into diagnostics", () => {
+    const registry = buildRegistry(null, {
+      runners: {
+        codex: {
+          kind: "acp_process",
+          adapter: "codex-acp",
+          env: { secrets: { ANTHROPIC_API_KEY: { source: "user_env", required: true } } },
+        },
+      },
+    });
+    const agent = makeAgent({ runner: "codex" });
+    const result = resolveRunnerInvocation(
+      makeInput({
+        agent,
+        registry,
+        hostEnv: { ANTHROPIC_API_KEY: "must-not-appear-in-diagnostics" },
+      }),
+    );
+
+    const diagJson = JSON.stringify(result.diagnostics);
+    expect(diagJson).not.toContain("must-not-appear-in-diagnostics");
+  });
+
+  it("does not resolve env.secrets on the implicit/legacy path", () => {
+    // Legacy/adapter agents don't have a runner — env.secrets only lives on
+    // the runner-backed path. Sanity check: implicit path returns without
+    // throwing even when no secrets are configured.
+    const agent = makeAgent({ adapter: "claude-agent-acp" });
+    const result = resolveRunnerInvocation(makeInput({ agent }));
+    expect(result.runnerId).toBeNull();
+    expect(result.env).toEqual({});
+  });
+
+  it("overlays secret values on top of env.set literals when both bind the same key", () => {
+    const registry = buildRegistry(null, {
+      runners: {
+        codex: {
+          kind: "acp_process",
+          adapter: "codex-acp",
+          env: {
+            set: { MY_VAR: "literal-value" },
+            secrets: { MY_VAR: { source: "user_env", required: true } },
+          },
+        },
+      },
+    });
+    const agent = makeAgent({ runner: "codex" });
+    const result = resolveRunnerInvocation(
+      makeInput({ agent, registry, hostEnv: { MY_VAR: "secret-value" } }),
+    );
+    // The resolved secret value wins over the env.set literal.
+    expect(result.env.MY_VAR).toBe("secret-value");
   });
 });
 
