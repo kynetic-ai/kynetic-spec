@@ -56677,7 +56677,7 @@ runs:
     started_at: 2026-05-31T11:29:06.414Z
     completed_at: 2026-05-31T11:30:05.617Z
   - _ulid: 01KSYZVBVXF4EDWXM2XE5V8E1H
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -56730,10 +56730,14 @@ runs:
         notes: Skipped discussion because there are no new improvement proposals. Existing tracked items
           cover the systemic friction, and this request was to run reflection to completion rather
           than pause for additional triage.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-31T12:25:31.339Z
-        completed_at: 2026-05-31T12:25:31.339Z
+        completed_at: 2026-05-31T12:25:42.644Z
+        notes: No capture performed. The session produced review blockers in @01KSYYSRG9QEWPCDNTED7FD476,
+          and reflection searches showed the systemic friction patterns already have coverage.
+          Avoided duplicate inbox or observation entries.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T12:23:58.077Z
+    completed_at: 2026-05-31T12:25:42.645Z
