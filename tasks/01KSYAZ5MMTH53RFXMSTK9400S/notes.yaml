@@ -91,3 +91,25 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-31T16:57:52.215Z
+  - _ulid: 01KSZHAC7YN94A8R5XSQWE81X0
+    content: "Fix cycle 3: addressed both reviewer blockers from review @01KSZEJX. (1)
+      src/cli/commands/agent.ts:464-510 — agent run --dry-run now resolves the runner invocation
+      contract via buildDryRunInvocationSummary() and emits a typed runner_invocation block in JSON
+      output (command, command_source, cwd, cwd_source, runner_args, runner_args_source, env policy
+      with key names only, typed preflight outcome). Implementation reuses a new
+      summarizeRunnerInvocation() helper added to src/agents/runners.ts so the same shape is
+      available to other diagnostic surfaces later. (2) src/agent-runtime/dispatch.ts:2789-2818 —
+      dispatch preflight now calls preflightRunnerInvocation immediately after contract resolution.
+      Unspawnable runner-configured commands surface as a typed unspawnable_command error caught at
+      the dispatch preflight gate, lands in the AGENT-SKIP path (skip + task note, retryCount stays
+      0), and never reaches runInvocation/retry. Added probeRunnerInvocationExecutable() as a
+      non-throwing variant so dry-run and dispatch share the same env-aware PATH lookup. New
+      behavioral tests: tests/cli-agent.test.ts has 4 dry-run summary tests (runner-backed happy
+      path, unspawnable preflight, implicit/legacy, runner-args/auto-approve split);
+      tests/agent-dispatch-engine.test.ts has 1 dispatch preflight test (verifies runInvocation
+      isn't called, retryCount stays 0, AGENT-SKIP note contains 'unspawnable_command' + missing
+      path). All gates: full test suite 10113/10118 passes (5 pre-existing skips, 0 failures);
+      typecheck/format/lint clean; oxlint on changed files clean."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-31T17:29:15.774Z
