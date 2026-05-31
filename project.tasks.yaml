@@ -30194,6 +30194,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-31T06:19:01.638Z
+  automation: eligible
 - _ulid: 01KSYAZ4YAGQG4JTV4P8VAW078
   slugs:
     - task-runner-resolver-invocation-contract
