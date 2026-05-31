@@ -11774,12 +11774,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-31T08:51:28.556Z
+      updated_at: 2026-05-31T08:51:35.146Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-31T08:51:28.556Z
+      updated_at: 2026-05-31T08:51:35.146Z
     integration:
       status: pending
       detail: null
@@ -11787,24 +11787,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 6558e035006699147dbd66051bde46f802869d9a
-      updated_at: 2026-05-31T08:51:28.556Z
-    lifecycle_state: ready
+      updated_at: 2026-05-31T08:51:35.146Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KSYAZ4M60BVN8Y7A7HJCSFNZ"
     task_slug: task-agent-runner-meta-cli
     timestamps:
       closed_at: null
       last_active_at: 2026-05-31T08:36:34.833Z
-      last_reconciled_at: 2026-05-31T08:51:28.556Z
+      last_reconciled_at: 2026-05-31T08:51:35.146Z
       created_at: 2026-05-31T08:36:08.476Z
-      updated_at: 2026-05-31T08:51:28.556Z
+      updated_at: 2026-05-31T08:51:35.146Z
     workspace_id: dispatch-workspace-01KSYAZ4M60BVN8Y7A7HJCSFNZ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 985493b66cdf0a68e94620dd0418b00c5d580dde
+        last_seen_at: 2026-05-31T08:51:35.146Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-agent-runner-meta-cli-01ksyaz4-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-agent-runner-meta-cli/01ksyaz4
-        head: 6558e035006699147dbd66051bde46f802869d9a
-        last_seen_at: 2026-05-31T08:36:08.476Z
+        head: 985493b66cdf0a68e94620dd0418b00c5d580dde
+        last_seen_at: 2026-05-31T08:51:35.146Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-agent-runner-meta-cli-01ksyaz4
