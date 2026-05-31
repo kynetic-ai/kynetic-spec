@@ -12425,12 +12425,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-31T13:38:45.769Z
+      updated_at: 2026-05-31T13:38:52.680Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-31T13:38:45.769Z
+      updated_at: 2026-05-31T13:38:52.680Z
     integration:
       status: pending
       detail: null
@@ -12438,24 +12438,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: fbb13cbe731c48363c2eaaf86d6be99ae80ddf9d
-      updated_at: 2026-05-31T13:38:45.769Z
-    lifecycle_state: ready
+      updated_at: 2026-05-31T13:38:52.680Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KSYAZ4YAGQG4JTV4P8VAW078"
     task_slug: task-runner-resolver-invocation-contract
     timestamps:
       closed_at: null
       last_active_at: 2026-05-31T13:13:34.386Z
-      last_reconciled_at: 2026-05-31T13:38:45.769Z
+      last_reconciled_at: 2026-05-31T13:38:52.680Z
       created_at: 2026-05-31T10:28:11.658Z
-      updated_at: 2026-05-31T13:38:45.769Z
+      updated_at: 2026-05-31T13:38:52.680Z
     workspace_id: dispatch-workspace-01KSYAZ4YAGQG4JTV4P8VAW078
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 4402679d5459ba6115d9b6417039f6368b4f8ab1
+        last_seen_at: 2026-05-31T13:38:52.680Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-runner-resolver-invocation-contract-01ksyaz4-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-runner-resolver-invocation-contract/01ksyaz4
-        head: da77a15827d9adb86c35b04c3c39a56858342c3e
-        last_seen_at: 2026-05-31T13:13:10.335Z
+        head: 4402679d5459ba6115d9b6417039f6368b4f8ab1
+        last_seen_at: 2026-05-31T13:38:52.680Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-runner-resolver-invocation-contract-01ksyaz4
