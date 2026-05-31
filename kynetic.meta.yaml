@@ -20006,6 +20006,17 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-05-31T07:09:09.141Z
+  - _ulid: 01KSYGJ71X4BCVCSEYXG0YNYJ0
+    type: success
+    content: "Review success pattern: for schema-only or type-only changes, run a small executable probe
+      against the exported schema and the adjacent real registry/helper it claims to validate. In
+      review @01KSYFMA, node --import tsx proved SystemRunnerConfigSchema accepted an unknown
+      adapter while getAdapter returned null, giving precise evidence without modifying code."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-05-31T07:56:49.598Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
