@@ -109,3 +109,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-31T13:09:28.595Z
+  - _ulid: 01KSZ3H865V2CSJMV828M1WAE4
+    content: "Fix cycle 3: addressed the single blocker. The action template validator's
+      KNOWN_EVENT_FIELDS.invocation set was still the pre-runner list, so templates using runner /
+      adapter_id / resolved_adapter were reported as unknown variables. Added the three fields to
+      the invocation set in src/agent-runtime/action-executor.ts and added a behavioral test in
+      tests/action-model.test.ts asserting validateActionTemplates returns no warnings for them on
+      both invocation.started and invocation.completed. Verified end-to-end with a Node probe
+      (returns []). Quality gates green: format:check / lint --quiet (0 errors) / focused oxlint (0
+      new warnings on changed lines, only pre-existing vi.fn warnings) / typecheck / focused tests
+      (308/308) / full suite (10038 passed, 5 skipped, 0 failed)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-31T13:28:20.933Z
