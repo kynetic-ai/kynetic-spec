@@ -200,6 +200,13 @@ events:
       kind: blocker
       thread_ulid: 01KSYZQQFRY1360T5FAK6KEYKW
     timestamp: 2026-05-31T12:21:59.102Z
+  - _ulid: 01KSYZR7ZPQ7PEJSDV0RA56V86
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSYZR7SDZ5RPV9RR2FA1NXWX
+    timestamp: 2026-05-31T12:22:15.798Z
 examined_commit: da7b1cff51e452cd9aa4edc844062ac0fa23830c
 external_links: []
 lifecycle_state: open
@@ -233,7 +240,28 @@ threads:
           contract as one-shot invocation."
         created_at: 2026-05-31T12:21:58.904Z
     kind: blocker
+  - _ulid: 01KSYZR7SDZ5RPV9RR2FA1NXWX
+    anchor:
+      type: code
+      commit: da7b1cff51e452cd9aa4edc844062ac0fa23830c
+      line_end: 419
+      line_start: 413
+      path: src/agents/runners.ts
+      side: head
+    entries:
+      - _ulid: 01KSYZR7SDHRGFFX90EJB8E8M5
+        author: Jacob Chapel
+        body: "MUST-FIX: the resolver ignores required secret bindings and never emits the advertised
+          missing_secret preflight failure. buildRunnerContract composes env.inherit/pass/set only;
+          runner.env.secrets is not inspected. I verified with a probe using an EffectiveRunner
+          whose env.secrets contained API_TOKEN { source: 'missing-source', required: true };
+          resolveRunnerInvocation returned ok with an empty env instead of throwing
+          RunnerResolutionError('missing_secret'). That allows a runner requiring a secret to spawn
+          without the secret and violates the task's typed error contract plus the invalid
+          security-setting preflight behavior."
+        created_at: 2026-05-31T12:22:15.598Z
+    kind: blocker
 verdicts: []
 created_at: 2026-05-31T12:05:36.905Z
-updated_at: 2026-05-31T12:21:58.904Z
+updated_at: 2026-05-31T12:22:15.598Z
 notes: []
