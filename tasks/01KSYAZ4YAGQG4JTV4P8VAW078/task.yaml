@@ -76,7 +76,7 @@ description: >
 spec_ref: "@runner-resolution-and-preflight"
 plan_ref: "@plan-agent-runner-configuration-layer"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-runner-config-schema-types"
@@ -89,6 +89,14 @@ tags:
   - invocation
   - runners
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-runner-resolver-invocation-contract/01ksyaz4
+  captured_at: 2026-05-31T11:00:39.495Z
+  commit: ded5176cab70b2bcfccd045426828636e44aab9e
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KSYS85NYHBKCMCF9GQKT1330
 history:
   - author: Jacob Chapel
@@ -111,7 +119,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-31T10:29:32.195Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-runner-resolver-invocation-contract/01ksyaz4
+          captured_at: 2026-05-31T11:00:39.495Z
+          commit: ded5176cab70b2bcfccd045426828636e44aab9e
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-31T11:00:39.497Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-31T11:00:39.497Z
 created_at: 2026-05-31T06:19:01.962Z
 started_at: 2026-05-31T10:29:32.195Z
+submitted_at: 2026-05-31T11:00:39.497Z
 todos: []
 automation: eligible
