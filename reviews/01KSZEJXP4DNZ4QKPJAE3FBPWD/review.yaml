@@ -17,6 +17,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-05-31T16:41:46.788Z
+  - _ulid: 01KSZEVC8AM058XBNMY77S9MFM
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSZEVC0V42FTMJW161NFKH3F
+    timestamp: 2026-05-31T16:46:07.114Z
 examined_commit: 1d6a27fd910eb070cda8dfe163783b1f94bff99e
 external_links: []
 lifecycle_state: open
@@ -26,8 +33,29 @@ subject:
   content_hash: ""
   ref: "@01KSYAZ5MMTH53RFXMSTK9400S"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KSZEVC0V42FTMJW161NFKH3F
+    anchor:
+      type: code
+      commit: 1d6a27fd910eb070cda8dfe163783b1f94bff99e
+      line_end: 486
+      line_start: 477
+      path: src/cli/commands/agent.ts
+      side: head
+    entries:
+      - _ulid: 01KSZEVC0VPNQ1RH9Y2WP3A64K
+        author: Jacob Chapel
+        body: 'MUST-FIX: agent run --dry-run still reports only the runner-resolved adapter id and prompt;
+          it never resolves or reports the runner process invocation contract. I reproduced a runner
+          with process.executable=/tmp/review-runner-command, process.args, and process.cwd: `kspec
+          agent run dry --dry-run --json` exited 0 with JSON containing adapter:"codex-acp" and no
+          command reference, process origin metadata, cwd source, args source, or env policy. This
+          violates the task requirement that process.executable be resolved into the command
+          reference reported by dry-run and the AC requiring diagnostics to identify
+          command/cwd/args/env sources without exposing secrets.'
+        created_at: 2026-05-31T16:46:06.875Z
+    kind: blocker
 verdicts: []
 created_at: 2026-05-31T16:41:30.052Z
-updated_at: 2026-05-31T16:41:46.577Z
+updated_at: 2026-05-31T16:46:06.875Z
 notes: []
