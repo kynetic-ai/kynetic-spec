@@ -42,3 +42,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-31T15:11:30.438Z
+  - _ulid: 01KSZBATGZVBEY6607Y01QZV54
+    content: "Fix cycle 1: addressed reviewer blocker on src/agents/runners.ts:809.
+      preflightRunnerInvocation was probing bare process.executable names against process.env.PATH,
+      but the runner-backed spawn passes the contract env verbatim so Node uses contract.env.PATH
+      for bare-command lookup. Introduced resolveInvocationSearchPath() that mirrors spawner.ts env
+      composition (inheritedHostEnv -> adapter.env -> contract.env) and pass its result as
+      searchPath to preflightExecutable. Re-verified all ACs against full implementation; only the
+      existing-executable-reference-resolves AC was affected by the bug. Added 3 behavioral tests
+      covering env.set.PATH scoping, daemon-PATH leakage trap, and env.inherit: ambient. Targeted
+      tests + full suite (10065 passed) + typecheck + lint + format all clean."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-31T15:44:38.943Z
