@@ -186,9 +186,25 @@ events:
       kind: nit
       thread_ulid: 01KSZJES74D98Y7P085MY485HN
     timestamp: 2026-05-31T17:49:08.924Z
+  - _ulid: 01KSZJF49JS6ZM9WV73RAEC34V
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-31T17:49:20.051Z
+  - _ulid: 01KSZJF49K7DDJHJV2DK2BA6QV
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-31T17:49:20.051Z
 examined_commit: 02aa284a09030d0176fd82e26b6753bdbf093060
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -217,7 +233,14 @@ threads:
           test quality, integration with dispatch and one-shot invocation."
         created_at: 2026-05-31T17:49:08.709Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-31T17:49:20.050Z
 created_at: 2026-05-31T17:34:42.235Z
-updated_at: 2026-05-31T17:49:08.709Z
+updated_at: 2026-05-31T17:49:20.051Z
 notes: []
