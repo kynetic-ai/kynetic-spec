@@ -20222,6 +20222,17 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-05-31T18:36:54.739Z
+  - _ulid: 01KSZQZ1YQ568846Y05E2A5A98
+    type: success
+    content: "Review pattern: after deterministic gates pass, run at least one task-specific negative
+      CLI reproduction for AC-stated error cases. In this runner validation review, the full suite
+      and focused tests passed, but a manual nonexistent process.cwd case exposed a false valid
+      status and produced the blocker."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-31T19:25:24.823Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
