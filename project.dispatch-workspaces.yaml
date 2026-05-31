@@ -11454,3 +11454,79 @@ workspaces:
         head: 646a1f8690f8627f3d65fc3a6babe655408bbeb8
         last_seen_at: 2026-05-31T08:18:06.848Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-runner-config-schema-types-01ksyaz4
+  - active_role: null
+    base_branch_point: 6558e035006699147dbd66051bde46f802869d9a
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-agent-runner-meta-cli/01ksyaz4
+    canonical_branch_head: 6558e035006699147dbd66051bde46f802869d9a
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-05-31T08:36:08.476Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-05-31T08:36:08.476Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 6558e035006699147dbd66051bde46f802869d9a
+      updated_at: 2026-05-31T08:36:08.476Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KSYAZ4M60BVN8Y7A7HJCSFNZ"
+    task_slug: task-agent-runner-meta-cli
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-05-31T08:36:08.476Z
+      created_at: 2026-05-31T08:36:08.476Z
+      updated_at: 2026-05-31T08:36:08.476Z
+    workspace_id: dispatch-workspace-01KSYAZ4M60BVN8Y7A7HJCSFNZ
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-agent-runner-meta-cli/01ksyaz4
+        head: 6558e035006699147dbd66051bde46f802869d9a
+        last_seen_at: 2026-05-31T08:36:08.476Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-agent-runner-meta-cli-01ksyaz4
