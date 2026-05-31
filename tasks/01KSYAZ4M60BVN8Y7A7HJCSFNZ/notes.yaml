@@ -17,3 +17,30 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-31T08:40:02.315Z
+  - _ulid: 01KSYKGGVF5WVAMZHXTT0ZHP1M
+    content: >-
+      Implementation complete. Added optional runner: z.string() to AgentSchema; LoadedAgent
+      inherits it. CLI: meta add agent gained --runner; meta set <agent> gained --runner and
+      --clear-runner (clear-runner deletes the field while preserving everything else, mirroring
+      --clear-session). Display: kspec agent list now emits runner in both JSON (when present) and
+      human-readable output ('runner: <name>' line) alongside adapter for backcompat; kspec meta
+      agents JSON includes runner.
+
+
+      Tests added in two new files:
+
+      - tests/meta-agent-schema.test.ts (6 tests): runner accepted as optional string, no name
+      validation at parse time, legacy no-runner agent parses, defaults runner undefined,
+      runner+adapter coexist, non-string runner rejected.
+
+      - tests/cli-agent.test.ts (11 tests): meta add --runner; legacy adapter-only agent has no
+      runner; runner+adapter dual; meta set --runner; --clear-runner; preserves fields on set;
+      preserves fields on clear; agent list JSON includes/omits runner; agent list human shows/hides
+      runner line.
+
+
+      All gates green: typecheck, format, lint (0 errors), focused tests (17 pass), meta.test.ts +
+      cli-agent-commands.test.ts regressions (278 pass).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-31T08:48:19.824Z
