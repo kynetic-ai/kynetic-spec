@@ -10946,7 +10946,7 @@ workspaces:
         head: 28770407cf3ca944af1bee0c0ed6e6bf1577a460
         last_seen_at: 2026-05-31T06:48:46.167Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-update-existing-agent-runner-specs-01ksyaz3
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 28770407cf3ca944af1bee0c0ed6e6bf1577a460
     bootstrap:
       status: succeeded
@@ -11409,12 +11409,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-31T07:39:23.550Z
+      updated_at: 2026-05-31T07:57:21.187Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-31T07:39:53.297Z
+      updated_at: 2026-05-31T07:57:21.187Z
     integration:
       status: pending
       detail: null
@@ -11422,7 +11422,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 28770407cf3ca944af1bee0c0ed6e6bf1577a460
-      updated_at: 2026-05-31T07:39:23.550Z
+      updated_at: 2026-05-31T07:57:21.187Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KSYAZ43RRZAYW67V72VKG61V"
@@ -11430,9 +11430,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-31T07:39:53.297Z
-      last_reconciled_at: 2026-05-31T07:39:53.297Z
+      last_reconciled_at: 2026-05-31T07:57:21.187Z
       created_at: 2026-05-31T07:05:07.771Z
-      updated_at: 2026-05-31T07:39:53.297Z
+      updated_at: 2026-05-31T07:57:21.187Z
     workspace_id: dispatch-workspace-01KSYAZ43RRZAYW67V72VKG61V
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
