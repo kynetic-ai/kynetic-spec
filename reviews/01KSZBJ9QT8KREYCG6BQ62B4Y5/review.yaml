@@ -224,6 +224,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-05-31T16:01:24.653Z
+  - _ulid: 01KSZE92CFCYD1ZDB3KKB4DE1E
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSZBSK4E2QXQS7F83CGFNKMC
+    timestamp: 2026-05-31T16:36:07.183Z
 examined_commit: c18fc6ea96f9d1b48b17c1397eba5f0d7c747ccb
 external_links: []
 lifecycle_state: closed
@@ -254,6 +260,38 @@ threads:
           the distinction between PATH unset and PATH explicitly set to empty, and mirror
           child_process.spawn lookup behavior for the unset case."
         created_at: 2026-05-31T15:52:42.894Z
+      - _ulid: 01KSZE9267WDT3JSY8MWCFN7VT
+        author: "@claude"
+        body: >-
+          Fixed in commit 1d6a27fd91. resolveInvocationSearchPath now preserves the distinction
+          between "PATH key absent from the contract env" and "PATH explicitly set to empty":
+
+
+          - Absent PATH (env.inherit=none + no env.set.PATH): falls back to
+          POSIX_DEFAULT_SEARCH_PATH ("/usr/bin:/bin") so preflight mirrors the libc _PATH_DEFPATH
+          that posix_spawnp / execvp consults when the spawned env has no PATH. The reviewer's exact
+          case (sh under env: {}) now resolves.
+
+          - Explicit empty PATH: preserved verbatim; preflight searches no segments, matching
+          spawn's behavior in that case.
+
+
+          Added two parity tests in tests/agent-runner-process.test.ts that probe
+          child_process.spawn directly before asserting preflight, so the parity claim is pinned to
+          spawn's actual behavior rather than to a theory:
+
+          - "preflight resolves a bare command via the libc default PATH when env.inherit=none and
+          env.set.PATH is unset" — reproduces the original blocker scenario and asserts spawn
+          parity.
+
+          - "preflight rejects the same bare command when env.set.PATH is explicitly empty" — pins
+          the opposite half so the two cases cannot regress to a shared codepath again.
+
+
+          The previously asserted "host PATH leak prevention" test still passes because its bare
+          command lives in a tempdir not under /usr/bin:/bin; updated that test's description to
+          drop the misleading "runner-scoped PATH is empty" wording.
+        created_at: 2026-05-31T16:36:06.983Z
     kind: blocker
   - _ulid: 01KSZC91P9ZJGVTMAJ3DX86YX4
     entries:
@@ -281,5 +319,5 @@ verdicts:
     role: reviewer
     created_at: 2026-05-31T16:01:24.653Z
 created_at: 2026-05-31T15:48:43.898Z
-updated_at: 2026-05-31T16:01:24.653Z
+updated_at: 2026-05-31T16:36:06.983Z
 notes: []
