@@ -30189,7 +30189,7 @@
   type: task
   spec_ref: "@agent-runner-configuration"
   plan_ref: "@plan-agent-runner-configuration-layer"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-runner-config-schema-types"
@@ -30202,6 +30202,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-31T06:19:01.638Z
+  started_at: 2026-05-31T08:37:56.140Z
   automation: eligible
 - _ulid: 01KSYAZ4YAGQG4JTV4P8VAW078
   slugs:
