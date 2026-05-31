@@ -57772,7 +57772,7 @@ runs:
     started_at: 2026-05-31T20:04:50.051Z
     completed_at: 2026-05-31T20:07:34.159Z
   - _ulid: 01KSZYS6CYPST7VSRGNRC2A6KF
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -57825,8 +57825,13 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-31T21:26:36.100Z
-        completed_at: 2026-05-31T21:26:36.100Z
+        completed_at: 2026-05-31T21:26:53.137Z
+        notes: Captured one friction observation @01KSZYX8 about shared WebSocket event type/test drift when
+          daemon broadcast payloads change. Did not duplicate existing workflow-show/run-ref
+          documentation tracking. No tasks created because the immediate fix is already represented
+          by the blocking review thread on @01KSZXSD.
     task_ref: "@01KSYAZ6MNX6EZCHZANWAT6X8T"
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T21:24:32.798Z
+    completed_at: 2026-05-31T21:26:53.137Z
