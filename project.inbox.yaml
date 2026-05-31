@@ -3911,3 +3911,16 @@ inbox:
       - formatting
     added_by: "@claude"
     created_at: 2026-05-31T08:17:36.691Z
+  - _ulid: 01KSZ43XVGHCYF4PRN2XDQJNBE
+    text: "Derive KNOWN_EVENT_FIELDS (src/agent-runtime/action-executor.ts) from the payload schemas in
+      src/schema/event-payloads.ts instead of hand-maintaining parallel sets. Schemas already export
+      *_PAYLOAD_FIELDS via Object.keys(schema.shape). Options: runtime derivation (single source of
+      truth), or a schema-coverage assertion test that fails CI when a payload schema adds a field
+      not in KNOWN_EVENT_FIELDS. Surfaced by fix cycle 3 of
+      @task-runner-resolver-invocation-contract."
+    tags:
+      - agents
+      - schema
+      - reflection
+    added_by: "@claude"
+    created_at: 2026-05-31T13:38:32.944Z

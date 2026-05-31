@@ -20083,6 +20083,20 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-31T13:12:11.827Z
+  - _ulid: 01KSZ43XJBSQJMXWT4WRCE4G6D
+    type: friction
+    content: KNOWN_EVENT_FIELDS in src/agent-runtime/action-executor.ts is a hand-maintained parallel
+      list of payload fields per event domain. When InvocationStartedPayloadSchema or
+      InvocationTerminalPayloadSchema gains a new field, KNOWN_EVENT_FIELDS.invocation must be
+      updated manually or templates referencing the new field get false unknown-field warnings. The
+      schema already derives INVOCATION_STARTED_PAYLOAD_FIELDS via Object.keys(schema.shape) in
+      src/schema/event-payloads.ts — KNOWN_EVENT_FIELDS could do the same. The
+      runner-resolver-invocation-contract task hit this in fix cycle 3 (reviewer caught it via a
+      node probe); the universal-envelope and other domain sets have the same drift risk.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-31T13:38:32.652Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
