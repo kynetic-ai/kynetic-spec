@@ -345,25 +345,53 @@ interface InvocationState {
   acpSessionId: string | null;
   /** Resolver cleanup hook to run after session close. */
   runnerCleanup?: (() => Promise<void>) | undefined;
+  /**
+   * Runner contract redactor — scrubs resolved secret values from any
+   * diagnostic string written to session events, task notes, close reasons,
+   * block reasons, or other operator-visible surfaces.
+   *
+   * AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+   */
+  redact: (text: string) => string;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 /**
  * Run a kspec CLI command asynchronously.
+ *
+ * `env` is overlaid on top of the inherited host `process.env`. When
+ * `stripFromHostEnv` is supplied, those keys are removed from the host
+ * inheritance *before* the overlay — used by mutation helpers to drop
+ * runner-resolved `env.secrets` so a `user_env`-sourced binding cannot
+ * leak from the parent's process.env into kspec subprocesses.
+ *
  * AC: @agent-dispatch-engine ac-28 — async to avoid blocking the event loop
+ * AC: @runner-environment-secret-boundaries ac-secret-values-not-stored-inline
+ * AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
  */
 async function runKspecCli(
   args: string[],
   cwd: string,
   kspecCliPath: string,
   env?: Record<string, string>,
+  stripFromHostEnv?: readonly string[],
 ): Promise<{ stdout: string; stderr: string; status: number | null }> {
   try {
+    let spawnEnv: NodeJS.ProcessEnv;
+    if (stripFromHostEnv && stripFromHostEnv.length > 0) {
+      const sanitizedHost: NodeJS.ProcessEnv = { ...process.env };
+      for (const key of stripFromHostEnv) {
+        delete sanitizedHost[key];
+      }
+      spawnEnv = env ? { ...sanitizedHost, ...env } : sanitizedHost;
+    } else {
+      spawnEnv = env ? { ...process.env, ...env } : process.env;
+    }
     const result = await execFileAsync(process.execPath, [kspecCliPath, ...args], {
       encoding: "utf-8",
       cwd,
-      env: env ? { ...process.env, ...env } : process.env,
+      env: spawnEnv,
     });
     return {
       stdout: result.stdout ?? "",
@@ -390,8 +418,15 @@ async function addTaskNote(
   kspecCliPath: string,
   env?: Record<string, string>,
   strict = false,
+  stripFromHostEnv?: readonly string[],
 ): Promise<void> {
-  const result = await runKspecCli(["task", "note", taskRef, note], cwd, kspecCliPath, env);
+  const result = await runKspecCli(
+    ["task", "note", taskRef, note],
+    cwd,
+    kspecCliPath,
+    env,
+    stripFromHostEnv,
+  );
   if (strict && result.status !== 0) {
     throw new DispatchMutationError(
       `Dispatch mutation failed while writing task note for ${taskRef}: ${result.stderr || result.stdout || "kspec task note exited non-zero"}`,
@@ -409,12 +444,14 @@ async function blockTask(
   kspecCliPath: string,
   env?: Record<string, string>,
   strict = false,
+  stripFromHostEnv?: readonly string[],
 ): Promise<void> {
   const result = await runKspecCli(
     ["task", "block", taskRef, "--reason", reason],
     cwd,
     kspecCliPath,
     env,
+    stripFromHostEnv,
   );
   if (strict && result.status !== 0) {
     throw new DispatchMutationError(
@@ -550,13 +587,12 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
   // AC: @runner-resolution-and-preflight ac-invalid-runner-blocks-before-prompt
   //
   // The resolver runs BEFORE any prompt is built or sent — failures here
-  // surface as exceptions without spawning the adapter process.
-  const baseInvocationEnv: Record<string, string> = {
-    ...env,
-    KSPEC_NO_DAEMON: "1",
-    ...(mutationLockFile ? { KSPEC_SHADOW_MUTATION_LOCK_FILE: mutationLockFile } : {}),
-  };
-
+  // surface as exceptions without spawning the adapter process. The resolver
+  // synthesizes the kspec-required invocation variables
+  // (KSPEC_NO_DAEMON, KSPEC_SESSION_ID, KSPEC_SHADOW_MUTATION_LOCK_FILE) so
+  // they are part of the resolved contract for both runner-backed and
+  // implicit/legacy paths.
+  // AC: @runner-invocation-semantics ac-session-env-injected-through-runner
   const runnerRegistry: EffectiveRunnerRegistry =
     options.runnerRegistry ?? (await loadRunnerRegistrySafely(specDir));
 
@@ -566,13 +602,19 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     cwd,
     sessionId,
     autoApprove,
-    env: baseInvocationEnv,
+    env,
+    mutationLockFile,
     adapterOverride: options.adapterOverride,
   });
 
   const adapterId = contract.adapterId;
   const adapter = contract.adapter;
   const extraArgs = contract.extraArgs;
+  // Capture the runner contract's redactor so every diagnostic write below
+  // (session events, close reasons, task notes, block reasons, adapter
+  // stderr) scrubs any resolved secret value before persisting.
+  // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+  const redact = contract.redact;
 
   // Resolve timeout: option overrides agent budget (applies to total session duration)
   const timeoutMinutes = options.timeoutMinutes ?? agent.budget?.timeout_minutes ?? 30;
@@ -601,9 +643,29 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     agent: null,
     acpSessionId: null,
     runnerCleanup: contract.cleanup,
+    redact,
   };
 
   const invocationEnv: Record<string, string> = contract.env;
+  // Sanitized env passed to internal kspec mutation subprocesses
+  // (`kspec task note`, `kspec task block`). Resolved env.secrets and
+  // runner env.set/env.pass/env.inherit values live in `contract.env` and
+  // are intended for the adapter spawn only; they must NEVER reach kspec
+  // subprocesses whose only need is the dispatch contract (KSPEC_NO_DAEMON,
+  // KSPEC_SESSION_ID, KSPEC_SHADOW_MUTATION_LOCK_FILE).
+  //
+  // Two defenses run together below:
+  //   - `mutationEnv` contains only kspec-required vars, so the overlay
+  //     itself can never inject a secret.
+  //   - `mutationSecretStripKeys` lists the env var names that were
+  //     resolved from `env.secrets`, so the spawner strips them from
+  //     `process.env` before overlay — closing the `user_env` leak path
+  //     where the parent's process.env already mirrors the secret.
+  //
+  // AC: @runner-environment-secret-boundaries ac-secret-values-not-stored-inline
+  // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+  const mutationEnv: Record<string, string> = contract.mutationEnv;
+  const mutationSecretStripKeys: readonly string[] = contract.secretEnvKeys;
 
   // ─── Prompt queue for multi-turn ─────────────────────────────────────────
   // AC: @multi-turn-session-lifecycle ac-8, ac-9, ac-17
@@ -709,18 +771,23 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     state.previousEnvValue = injectionResult?.previousValue;
 
     // ─── Spawn agent ──────────────────────────────────────────────────────
+    // The contract env already contains KSPEC_SESSION_ID + KSPEC_NO_DAEMON
+    // (synthesized by the resolver), so the spawner consumes it verbatim
+    // without re-overlaying session-id mid-flight.
+    // AC: @runner-invocation-semantics ac-session-env-injected-through-runner
     state.agent = await spawnAndInitialize(adapter, {
       cwd: contract.cwd,
-      env: {
-        ...invocationEnv,
-        KSPEC_SESSION_ID: sessionId,
-      },
+      env: invocationEnv,
       extraArgs: [...extraArgs],
       // Runner-backed invocations turn off host process.env inheritance so
       // the runner's env.inherit/pass/set policy is the only source of host
       // env in the child.
       // AC: @runner-environment-secret-boundaries ac-env-inheritance-policy-applied
       inheritParentEnv: contract.inheritParentEnv,
+      // Pass the resolved redactor so adapter stderr cannot leak resolved
+      // secret values to operator-visible output.
+      // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+      redact,
       clientOptions: {
         methodTimeouts: {
           "session/prompt": promptRequestTimeoutMs,
@@ -1073,12 +1140,13 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     const discardedPrompts = promptQueue.close();
     if (discardedPrompts.length > 0) {
       // AC: @multi-turn-session-lifecycle ac-16 — log discarded prompts
+      // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
       await appendSessionEvent({
         type: "session.prompts_discarded",
         data: {
           session_id: sessionId,
           discarded_count: discardedPrompts.length,
-          reason: err instanceof Error ? err.message : String(err),
+          reason: redact(err instanceof Error ? err.message : String(err)),
         },
       });
     }
@@ -1118,15 +1186,16 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
           `[AGENT-TIMEOUT] Invocation timed out after ${timeoutMinutes} minutes`,
           cwd,
           kspecCliPath,
-          invocationEnv,
+          mutationEnv,
           Boolean(mutationLockFile),
+          mutationSecretStripKeys,
         );
       }
 
       return {
         session: finalSession ?? session,
         outcome: "timed_out",
-        error: err.message,
+        error: redact(err.message),
         durationMs,
         turnCount,
       };
@@ -1153,7 +1222,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       return {
         session: finalSession ?? session,
         outcome: "failed",
-        error: err.message,
+        error: redact(err.message),
         durationMs,
         turnCount,
       };
@@ -1191,7 +1260,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       return {
         session: finalSession ?? session,
         outcome: "timed_out",
-        error: err.message,
+        error: redact(err.message),
         durationMs,
         turnCount,
       };
@@ -1231,7 +1300,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       return {
         session: finalSession ?? session,
         outcome: "stalled",
-        error: err.message,
+        error: redact(err.message),
         durationMs,
         turnCount,
       };
@@ -1240,7 +1309,16 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     // ─── Handle failure ──────────────────────────────────────────────────
     // AC: @agent-invocation-lifecycle ac-5
     // AC: @multi-turn-session-lifecycle ac-15
-    const errorMessage = err instanceof Error ? err.message : String(err);
+    //
+    // Scrub the raw error message through the runner contract's redactor
+    // before it touches any operator-visible surface (session event, session
+    // close reason, task note, block reason, returned InvocationResult).
+    // Spawn errors and ACP RPC errors can include adapter-side text that
+    // happens to contain a resolved secret literal — redaction at the
+    // boundary blocks the leak regardless of the failure origin.
+    // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+    const rawErrorMessage = err instanceof Error ? err.message : String(err);
+    const errorMessage = redact(rawErrorMessage);
 
     await appendSessionEvent({
       type: "agent.failed",
@@ -1268,8 +1346,9 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         `[AGENT-FAIL] Invocation failed: ${errorMessage}`,
         cwd,
         kspecCliPath,
-        invocationEnv,
+        mutationEnv,
         Boolean(mutationLockFile),
+        mutationSecretStripKeys,
       );
 
       // ─── Check retry threshold ────────────────────────────────────────────
@@ -1283,8 +1362,9 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
           `Agent ${agent.id} failed ${consecutiveFailures} consecutive times: ${errorMessage}`,
           cwd,
           kspecCliPath,
-          invocationEnv,
+          mutationEnv,
           Boolean(mutationLockFile),
+          mutationSecretStripKeys,
         );
       }
     }

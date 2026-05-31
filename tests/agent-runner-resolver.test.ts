@@ -937,11 +937,13 @@ describe("resolveRunnerInvocation: env.secrets preflight", () => {
   it("does not resolve env.secrets on the implicit/legacy path", () => {
     // Legacy/adapter agents don't have a runner — env.secrets only lives on
     // the runner-backed path. Sanity check: implicit path returns without
-    // throwing even when no secrets are configured.
+    // throwing even when no secrets are configured. The contract env
+    // contains only the kspec-required invocation variables — no
+    // secret-derived entries.
     const agent = makeAgent({ adapter: "claude-agent-acp" });
     const result = resolveRunnerInvocation(makeInput({ agent }));
     expect(result.runnerId).toBeNull();
-    expect(result.env).toEqual({});
+    expect(Object.keys(result.env).toSorted()).toEqual(["KSPEC_NO_DAEMON", "KSPEC_SESSION_ID"]);
   });
 
   it("overlays secret values on top of env.set literals when both bind the same key", () => {
@@ -963,6 +965,124 @@ describe("resolveRunnerInvocation: env.secrets preflight", () => {
     );
     // The resolved secret value wins over the env.set literal.
     expect(result.env.MY_VAR).toBe("secret-value");
+  });
+
+  // AC: @runner-environment-secret-boundaries ac-secret-values-not-stored-inline
+  // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+  it("exposes a sanitized mutationEnv that excludes resolved env.secrets", () => {
+    const registry = buildRegistry(null, {
+      runners: {
+        codex: {
+          kind: "acp_process",
+          adapter: "codex-acp",
+          env: {
+            inherit: "ambient",
+            pass: ["HOST_VAR"],
+            set: { CODEX_MODEL: "gpt-5", CODEX_PROFILE: "fast" },
+            secrets: {
+              ANTHROPIC_API_KEY: { source: "user_env", required: true },
+              OPTIONAL_TOKEN: { source: "user_env" },
+            },
+          },
+        },
+      },
+    });
+    const agent = makeAgent({ runner: "codex" });
+    const sessionId = testUlid("SESS");
+    const mutationLockFile = "/tmp/dispatch.lock";
+    const result = resolveRunnerInvocation(
+      makeInput({
+        agent,
+        registry,
+        sessionId,
+        mutationLockFile,
+        env: { CALLER_OVERRIDE: "base" },
+        hostEnv: {
+          HOST_VAR: "from-host",
+          ANTHROPIC_API_KEY: "anthropic-secret-value",
+          OPTIONAL_TOKEN: "optional-token-value",
+          AMBIENT_HOST: "ambient-value",
+        },
+      }),
+    );
+
+    // Adapter env carries everything (inherit, pass, base, set, secrets,
+    // kspec-required vars). Confirm the secret is present in adapter env.
+    expect(result.env.ANTHROPIC_API_KEY).toBe("anthropic-secret-value");
+    expect(result.env.OPTIONAL_TOKEN).toBe("optional-token-value");
+    expect(result.env.HOST_VAR).toBe("from-host");
+    expect(result.env.AMBIENT_HOST).toBe("ambient-value");
+    expect(result.env.CODEX_MODEL).toBe("gpt-5");
+    expect(result.env.CALLER_OVERRIDE).toBe("base");
+    expect(result.env.KSPEC_SESSION_ID).toBe(sessionId);
+
+    // mutationEnv contains ONLY the kspec-required invocation variables.
+    // No host inherit, no env.pass, no base env, no env.set, no secrets.
+    expect(Object.keys(result.mutationEnv).toSorted()).toEqual([
+      "KSPEC_NO_DAEMON",
+      "KSPEC_SESSION_ID",
+      "KSPEC_SHADOW_MUTATION_LOCK_FILE",
+    ]);
+    expect(result.mutationEnv.KSPEC_NO_DAEMON).toBe("1");
+    expect(result.mutationEnv.KSPEC_SESSION_ID).toBe(sessionId);
+    expect(result.mutationEnv.KSPEC_SHADOW_MUTATION_LOCK_FILE).toBe(mutationLockFile);
+
+    // Strictly: no secret literal anywhere in mutationEnv (even values).
+    const mutationJson = JSON.stringify(result.mutationEnv);
+    expect(mutationJson).not.toContain("anthropic-secret-value");
+    expect(mutationJson).not.toContain("optional-token-value");
+    expect(mutationJson).not.toContain("ambient-value");
+    expect(mutationJson).not.toContain("from-host");
+    expect(mutationJson).not.toContain("base");
+    expect(mutationJson).not.toContain("gpt-5");
+
+    // secretEnvKeys lists the env var names sourced from env.secrets so the
+    // mutation subprocess spawner can strip them from inherited host env.
+    expect([...result.secretEnvKeys].toSorted()).toEqual(["ANTHROPIC_API_KEY", "OPTIONAL_TOKEN"]);
+  });
+
+  // AC: @runner-environment-secret-boundaries ac-secret-values-not-stored-inline
+  it("omits unresolved optional secrets from secretEnvKeys", () => {
+    const registry = buildRegistry(null, {
+      runners: {
+        codex: {
+          kind: "acp_process",
+          adapter: "codex-acp",
+          env: {
+            secrets: {
+              REQUIRED_TOKEN: { source: "user_env", required: true },
+              UNRESOLVED_OPTIONAL: { source: "user_env" },
+            },
+          },
+        },
+      },
+    });
+    const agent = makeAgent({ runner: "codex" });
+    const result = resolveRunnerInvocation(
+      makeInput({
+        agent,
+        registry,
+        hostEnv: { REQUIRED_TOKEN: "required-value" },
+      }),
+    );
+
+    // Only the actually-resolved secret is in secretEnvKeys.
+    expect([...result.secretEnvKeys]).toEqual(["REQUIRED_TOKEN"]);
+  });
+
+  // AC: @runner-environment-secret-boundaries ac-secret-values-not-stored-inline
+  it("returns empty secretEnvKeys and mutationEnv-only contract on the implicit path", () => {
+    const agent = makeAgent({ adapter: "claude-agent-acp" });
+    const sessionId = testUlid("SESS");
+    const result = resolveRunnerInvocation(makeInput({ agent, sessionId }));
+
+    expect(result.runnerId).toBeNull();
+    expect([...result.secretEnvKeys]).toEqual([]);
+    expect(Object.keys(result.mutationEnv).toSorted()).toEqual([
+      "KSPEC_NO_DAEMON",
+      "KSPEC_SESSION_ID",
+    ]);
+    expect(result.mutationEnv.KSPEC_SESSION_ID).toBe(sessionId);
   });
 });
 

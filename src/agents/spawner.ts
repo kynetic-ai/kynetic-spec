@@ -35,6 +35,15 @@ export interface SpawnAgentOptions {
    * AC: @runner-environment-secret-boundaries ac-env-inheritance-policy-applied
    */
   inheritParentEnv?: boolean;
+  /**
+   * Optional redactor applied to adapter stderr lines before they are
+   * forwarded to `process.stderr`. Runner-backed invocations pass the
+   * resolved runner contract's redactor so any secret value that leaks into
+   * adapter diagnostics is scrubbed before reaching operator-visible output.
+   *
+   * AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+   */
+  redact?: (text: string) => string;
 }
 
 /**
@@ -77,15 +86,23 @@ function isNonActionableAdapterStderrLine(line: string): boolean {
   }
 }
 
-function forwardFilteredAdapterStderr(child: ChildProcess): void {
+function forwardFilteredAdapterStderr(
+  child: ChildProcess,
+  redact?: (text: string) => string,
+): void {
   if (!child.stderr) return;
 
   child.stderr.setEncoding("utf-8");
   let pending = "";
 
+  // Redact each line before forwarding so resolved secret values cannot leak
+  // through adapter stderr into operator-visible output. The redactor is a
+  // no-op when the runner contract had no resolved secrets.
+  // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
   const forward = (line: string, withNewline: boolean): void => {
     if (isNonActionableAdapterStderrLine(line)) return;
-    process.stderr.write(withNewline ? `${line}\n` : line);
+    const scrubbed = redact ? redact(line) : line;
+    process.stderr.write(withNewline ? `${scrubbed}\n` : scrubbed);
   };
 
   child.stderr.on("data", (chunk: string | Buffer) => {
@@ -118,7 +135,7 @@ function forwardFilteredAdapterStderr(child: ChildProcess): void {
  * @returns SpawnedAgent with client, process, and kill function
  */
 export function spawnAgent(adapter: AgentAdapter, options: SpawnAgentOptions): SpawnedAgent {
-  const { cwd, env = {}, extraArgs, clientOptions = {}, inheritParentEnv = true } = options;
+  const { cwd, env = {}, extraArgs, clientOptions = {}, inheritParentEnv = true, redact } = options;
 
   // Strip host-environment variables that interfere with agent startup
   // (e.g. CLAUDECODE=1 causes nested-session detection in Claude Code)
@@ -166,7 +183,10 @@ export function spawnAgent(adapter: AgentAdapter, options: SpawnAgentOptions): S
   spawnError.catch(() => {});
 
   // Keep actionable adapter stderr visible while dropping known non-actionable noise.
-  forwardFilteredAdapterStderr(child);
+  // Apply the runner contract's redactor so any secret value that surfaces in
+  // adapter diagnostics is scrubbed before reaching operator-visible output.
+  // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+  forwardFilteredAdapterStderr(child, redact);
 
   // Ensure stdin/stdout are available
   if (!child.stdin || !child.stdout) {
@@ -178,10 +198,17 @@ export function spawnAgent(adapter: AgentAdapter, options: SpawnAgentOptions): S
   // Note: From the client's perspective:
   // - stdin is where we READ from (child's stdout)
   // - stdout is where we WRITE to (child's stdin)
+  //
+  // Forward the runner contract redactor into ACP framing so JSON-RPC error
+  // logs (`JSON-RPC error: <message>`) cannot leak resolved secret values to
+  // parent stderr when an adapter rejects a request with secret-containing
+  // text.
+  // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
   const client = new ACPClient({
     ...clientOptions,
     stdin: child.stdout, // We read from child's stdout
     stdout: child.stdin as NodeJS.WritableStream, // We write to child's stdin
+    redact,
   });
 
   // Forward process exit to client close, surfacing exit code/signal

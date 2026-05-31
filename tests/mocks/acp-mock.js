@@ -26,6 +26,12 @@
  * - MOCK_ACP_SUPPRESS_UPDATES: If true, send no session updates before response
  * - MOCK_ACP_SEND_NON_MEANINGFUL_ONLY: If true, send only available_commands_update (not meaningful)
  * - MOCK_ACP_CUSTOM_UPDATE_TYPE: Send a specific sessionUpdate type (e.g., "tool_call", "plan")
+ * - MOCK_ACP_FAIL_TEMPLATE: When the mock fails, use this string as the JSON-RPC error
+ *     message. The literal "{VAR}" is substituted with the value of the env var
+ *     named in MOCK_ACP_FAIL_VAR. Used by redaction tests to inject a resolved
+ *     secret value into the failure path.
+ * - MOCK_ACP_FAIL_VAR: Env var name whose value substitutes for "{VAR}" in
+ *     MOCK_ACP_FAIL_TEMPLATE.
  */
 
 import * as fs from "node:fs";
@@ -98,6 +104,19 @@ function sendError(id, code, message) {
 function sendNotification(method, params) {
   const notification = { jsonrpc: "2.0", method, params };
   console.log(JSON.stringify(notification));
+}
+
+// ─── Failure Composition ─────────────────────────────────────────────────────
+
+function buildFailureMessage() {
+  const template = process.env.MOCK_ACP_FAIL_TEMPLATE;
+  if (!template) return "Mock failure";
+  const varName = process.env.MOCK_ACP_FAIL_VAR;
+  const value = varName ? process.env[varName] : null;
+  if (varName && value) {
+    return template.split("{VAR}").join(value);
+  }
+  return template;
 }
 
 // ─── Failure Tracking ────────────────────────────────────────────────────────
@@ -193,18 +212,21 @@ async function handlePrompt(id, params) {
     await new Promise((resolve) => setTimeout(resolve, delayMs));
   }
 
-  // Check if we should fail
-  if (shouldFail()) {
-    sendError(id, -32000, "Mock failure");
-    return;
-  }
-
+  // Emit stderr lines BEFORE the failure check so failure-path tests can
+  // assert that adapter stderr is forwarded (and, where applicable, redacted)
+  // even when the prompt fails.
   if (emitRateLimitEvent) {
     console.error('Unexpected case: {"type":"rate_limit_event","detail":"mock rate limit info"}');
   }
 
   if (actionableStderr) {
     console.error(actionableStderr);
+  }
+
+  // Check if we should fail
+  if (shouldFail()) {
+    sendError(id, -32000, buildFailureMessage());
+    return;
   }
 
   // Optionally send a permission request before responding (for ac-11 tests)
