@@ -57260,7 +57260,7 @@ runs:
     completed_at: 2026-05-31T16:35:34.329Z
   - _ulid: 01KSZEC26JYQJG21SAWCGFW3P3
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -57274,7 +57274,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-31T16:39:28.536Z
-        completed_at: 2026-05-31T16:39:28.536Z
+        completed_at: 2026-05-31T16:39:44.974Z
+        notes: "Friction observed: spawn-parity edge cases (daemon-PATH vs contract-PATH in cycle 1,
+          PATH-unset vs PATH-empty in cycle 2) led to two consecutive fix cycles on the same task.
+          Already tracked by reviewer's observation @01KSZCF4 (friction: 'Preflight code that models
+          child_process.spawn command lookup needs explicit runtime parity probes for absent vs
+          empty PATH'). Not capturing a duplicate."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-31T16:39:44.974Z
+        completed_at: 2026-05-31T16:39:44.974Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-31T16:37:45.298Z
