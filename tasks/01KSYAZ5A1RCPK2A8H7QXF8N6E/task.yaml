@@ -79,7 +79,7 @@ description: >
 spec_ref: "@runner-environment-secret-boundaries"
 plan_ref: "@plan-agent-runner-configuration-layer"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-runner-resolver-invocation-contract"
@@ -95,8 +95,8 @@ review_ref: "@01KSZAAJNZ68WPCAVB02RA8MSE"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-runner-env-secret-boundary/01ksyaz5
-  captured_at: 2026-05-31T15:21:52.491Z
-  commit: 5698dbfa7f8107ff3cc750158bbf090d57df758f
+  captured_at: 2026-05-31T16:12:49.916Z
+  commit: 3fd6d6b8d443b0fa1d789045f94ff569190cd7aa
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-runner-env-secret-boundary/01ksyaz5
@@ -229,8 +229,35 @@ history:
         previous: 2026-05-31T15:21:46.156Z
     command: task-start
     timestamp: 2026-05-31T16:12:46.669Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-runner-env-secret-boundary/01ksyaz5
+          captured_at: 2026-05-31T16:12:49.916Z
+          commit: 3fd6d6b8d443b0fa1d789045f94ff569190cd7aa
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-runner-env-secret-boundary/01ksyaz5
+        previous:
+          review_url: null
+          branch: dispatch/task/task-runner-env-secret-boundary/01ksyaz5
+          captured_at: 2026-05-31T15:21:52.491Z
+          commit: 5698dbfa7f8107ff3cc750158bbf090d57df758f
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-runner-env-secret-boundary/01ksyaz5
+      submitted_at:
+        new: 2026-05-31T16:12:49.921Z
+        previous: 2026-05-31T15:21:52.493Z
+    command: task-submit
+    timestamp: 2026-05-31T16:12:49.921Z
 created_at: 2026-05-31T06:19:02.337Z
 started_at: 2026-05-31T16:12:46.669Z
-submitted_at: 2026-05-31T15:21:52.493Z
+submitted_at: 2026-05-31T16:12:49.921Z
 todos: []
 automation: eligible
