@@ -77,6 +77,7 @@ tags:
   - validation
   - runners
 vcs_refs: []
+review_ref: "@01KSZM44WFHBKM6R3EFEG29SQA"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-dispatch-runner-preflight/01ksyaz5
@@ -127,6 +128,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-05-31T18:13:36.460Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KSZM44WFHBKM6R3EFEG29SQA"
+        previous: null
+    command: review-link
+    timestamp: 2026-05-31T18:18:19.686Z
 created_at: 2026-05-31T06:19:03.013Z
 started_at: 2026-05-31T17:52:41.852Z
 submitted_at: 2026-05-31T18:13:36.460Z
