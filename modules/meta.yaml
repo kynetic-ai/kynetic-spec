@@ -7293,6 +7293,9 @@ modules:
           adapter invocation. The resolved contract identifies the existing adapter,
           optional command reference, child-process arguments, child-process cwd,
           environment policy, and redacted diagnostics used for that invocation.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
