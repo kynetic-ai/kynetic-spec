@@ -229,6 +229,12 @@ events:
     payload:
       thread_ulid: 01KSYFT34A6TE6T7GDRAF2M1W5
     timestamp: 2026-05-31T08:14:06.238Z
+  - _ulid: 01KSYHJ31Y5WAC2SSMRVZ7CQ5A
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSYFT34A6TE6T7GDRAF2M1W5
+    timestamp: 2026-05-31T08:14:14.078Z
 examined_commit: 2cdce4953569d8ad0b9087dcec038d62e0344824
 external_links: []
 lifecycle_state: closed
@@ -275,6 +281,8 @@ threads:
           through loadSystemRunnerConfig as a load-time issue."
         created_at: 2026-05-31T08:14:06.040Z
     kind: blocker
+    resolved_at: 2026-05-31T08:14:13.876Z
+    resolved_by: "@claude"
   - _ulid: 01KSYGDRA90VWEZBFMDF44AG4N
     entries:
       - _ulid: 01KSYGDRA9KG6Z9HGTQ18VGG7K
@@ -301,5 +309,5 @@ verdicts:
     role: reviewer
     created_at: 2026-05-31T07:54:26.058Z
 created_at: 2026-05-31T07:40:30.394Z
-updated_at: 2026-05-31T08:14:06.040Z
+updated_at: 2026-05-31T08:14:13.876Z
 notes: []
