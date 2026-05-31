@@ -1,1 +1,39 @@
-notes: []
+notes:
+  - _ulid: 01KSZ77RSFAZNRRHTX2047FV8J
+    content: >-
+      Approach: dependency task already implemented resolver-side process.executable replacement,
+      process.args appending, and process.cwd routing.
+
+
+      Gaps to close:
+
+      1. Expose process.executable/process.args/process.cwd sources in
+      RunnerInvocationDiagnostics.fieldOrigins (data exists in EffectiveRunnerSources but not
+      surfaced)
+
+      2. Add preflightExecutable() async helper with bounded timeout; returns typed PreflightResult
+      (spawnable | not_found | not_executable | timeout)
+
+      3. Add new RunnerResolutionReason 'unspawnable_command' + integrate preflight into invocation
+      spawn path so spawn-time failures surface typed diagnostics
+
+      4. Add schema-level secret-arg detection for process.args (refine SystemProcessSchema.args
+      with findSecretArgIndices)
+
+
+      Tests in tests/agent-runner-process.test.ts:
+
+      - AC ac-existing-executable-reference-resolves: real fake script in tmp gets resolved +
+      spawned; missing path returns unspawnable diagnostic
+
+      - AC ac-runner-args-extend-acp-invocation: extra args appended only at invocation; adapter
+      definition unchanged; secret-looking values rejected at config load
+
+      - AC ac-runner-cwd-is-invocation-only: process.cwd applied to spawned child via contract.cwd;
+      daemon/parent process.cwd unchanged
+
+      - AC ac-invocation-diagnostics-identify-inputs: diagnostics surface runner, adapter, command
+      source, cwd source, args source, env policy without leaking secret values
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-31T14:33:04.559Z
