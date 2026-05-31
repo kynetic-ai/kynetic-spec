@@ -76,7 +76,7 @@ description: >
 spec_ref: "@runner-resolution-and-preflight"
 plan_ref: "@plan-agent-runner-configuration-layer"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-runner-config-schema-types"
@@ -98,7 +98,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: null
+session_id: 01KSYWTW59MCCP0E7V295T5VMR
 history:
   - author: Jacob Chapel
     changes:
@@ -157,8 +157,21 @@ history:
         previous: 01KSYS85NYHBKCMCF9GQKT1330
     command: review-verdict-needs-work
     timestamp: 2026-05-31T11:28:25.950Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KSYWTW59MCCP0E7V295T5VMR
+        previous: null
+      started_at:
+        new: 2026-05-31T12:02:15.041Z
+        previous: 2026-05-31T10:29:32.195Z
+    command: task-start
+    timestamp: 2026-05-31T12:02:15.041Z
 created_at: 2026-05-31T06:19:01.962Z
-started_at: 2026-05-31T10:29:32.195Z
+started_at: 2026-05-31T12:02:15.041Z
 submitted_at: 2026-05-31T11:00:39.497Z
 todos: []
 automation: eligible
