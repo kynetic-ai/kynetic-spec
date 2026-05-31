@@ -12465,7 +12465,7 @@ workspaces:
         head: 3fd6d6b8d443b0fa1d789045f94ff569190cd7aa
         last_seen_at: 2026-05-31T16:17:04.867Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-runner-env-secret-boundary-01ksyaz5
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: ac4142f968c489ddf073a6337d9040b12a248944
     bootstrap:
       status: succeeded
@@ -12931,12 +12931,12 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-05-31T17:49:40.939Z
+      updated_at: 2026-05-31T17:49:57.903Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-31T17:49:40.939Z
+      updated_at: 2026-05-31T17:49:57.903Z
     integration:
       status: merged
       detail: integration:merged
@@ -12944,7 +12944,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: ac4142f968c489ddf073a6337d9040b12a248944
-      updated_at: 2026-05-31T17:49:40.939Z
+      updated_at: 2026-05-31T17:49:57.903Z
     lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KSYAZ5MMTH53RFXMSTK9400S"
@@ -12952,9 +12952,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-31T17:33:54.315Z
-      last_reconciled_at: 2026-05-31T17:49:40.939Z
+      last_reconciled_at: 2026-05-31T17:49:57.903Z
       created_at: 2026-05-31T14:28:06.577Z
-      updated_at: 2026-05-31T17:49:40.939Z
+      updated_at: 2026-05-31T17:49:57.903Z
     workspace_id: dispatch-workspace-01KSYAZ5MMTH53RFXMSTK9400S
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
