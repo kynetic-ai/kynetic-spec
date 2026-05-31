@@ -23345,7 +23345,7 @@ reviews:
     title: Review task-cli-runner-surfaces
     disposition: pending
     author: Jacob Chapel
-    check_count: 6
+    check_count: 7
     examined_commit: 0ce7045814f098535dc27ade2b6a4a1d00b9c202
     lifecycle_state: open
     related_refs: []
@@ -23358,4 +23358,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-05-31T19:04:43.987Z
-    updated_at: 2026-05-31T19:20:21.014Z
+    updated_at: 2026-05-31T19:20:31.952Z
