@@ -2,7 +2,18 @@ _ulid: 01KSZEJXP4DNZ4QKPJAE3FBPWD
 slugs: []
 title: Review task-runner-process-invocation-inputs (cycle 3)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing reference warnings only: 6 deprecated-reference warnings; exit 0
+      under --warnings-ok."
+    name: kspec validate --refs --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-31T16:55:54.489Z
+    completed_at: 2026-05-31T16:55:54.489Z
 events:
   - _ulid: 01KSZEJXP4HTREPE2BG5G05M1A
     actor: Jacob Chapel
@@ -31,6 +42,13 @@ events:
       kind: blocker
       thread_ulid: 01KSZEVF9MCGWRD107MQEV2N4C
     timestamp: 2026-05-31T16:46:10.493Z
+  - _ulid: 01KSZFDA210N4JBWM4VP021AGK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --refs --warnings-ok
+    timestamp: 2026-05-31T16:55:54.689Z
 examined_commit: 1d6a27fd910eb070cda8dfe163783b1f94bff99e
 external_links: []
 lifecycle_state: open
@@ -84,5 +102,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-05-31T16:41:30.052Z
-updated_at: 2026-05-31T16:46:10.228Z
+updated_at: 2026-05-31T16:55:54.489Z
 notes: []
