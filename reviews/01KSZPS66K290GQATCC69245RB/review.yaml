@@ -193,6 +193,13 @@ events:
       status: fail
       name: manual invalid cwd reproduction
     timestamp: 2026-05-31T19:20:59.526Z
+  - _ulid: 01KSZQQB9ZMZH5GN2852N6WJ3N
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSZQQB31AA1RBPKMXPBKP1X5
+    timestamp: 2026-05-31T19:21:12.255Z
 examined_commit: 0ce7045814f098535dc27ade2b6a4a1d00b9c202
 external_links: []
 lifecycle_state: open
@@ -202,8 +209,31 @@ subject:
   content_hash: ""
   ref: "@01KSYAZ69M6PK5W28417VS2VJ9"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KSZQQB31AA1RBPKMXPBKP1X5
+    anchor:
+      type: code
+      commit: 0ce7045814f098535dc27ade2b6a4a1d00b9c202
+      line_end: 223
+      line_start: 198
+      path: src/agents/runner-validation.ts
+      side: head
+    entries:
+      - _ulid: 01KSZQQB31PD9C3BTC9YWRQPM9
+        author: Jacob Chapel
+        body: 'MUST-FIX: Runner validation does not validate a configured process.cwd. The new validate path
+          only probes the executable when process.executable has an origin, then marks the runner
+          valid when no issue was added. I reproduced this through the CLI with a runner whose
+          process.cwd points at a nonexistent directory and whose process.executable is an existing
+          absolute executable; `kspec agent runners validate --json` exited 0 and returned `ok:
+          true`, `status: "valid"`, and empty diagnostics. That violates the task requirement that
+          invalid process cwd errors include actionable guidance, and it can let operators believe a
+          runner is spawnable even though the actual child process will fail before startup. Add cwd
+          validation for runner.process.cwd (including a behavioral CLI test) and report an
+          invalid_cwd diagnostic/non-zero validate exit when the directory cannot be used.'
+        created_at: 2026-05-31T19:21:12.033Z
+    kind: blocker
 verdicts: []
 created_at: 2026-05-31T19:04:43.987Z
-updated_at: 2026-05-31T19:20:59.276Z
+updated_at: 2026-05-31T19:21:12.033Z
 notes: []
