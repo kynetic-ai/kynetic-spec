@@ -33,6 +33,7 @@ let app: Elysia;
 const RUNNER_BACKED_AGENT_ULID = testUlid("AGNT", 1);
 const LEGACY_AGENT_ULID = testUlid("AGNT", 2);
 const UNKNOWN_RUNNER_AGENT_ULID = testUlid("AGNT", 3);
+const RUNNER_ONLY_AGENT_ULID = testUlid("AGNT", 4);
 
 // Synthetic env secret value — assert this never appears in API responses.
 // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
@@ -72,6 +73,18 @@ agents:
     description: Agent referencing a runner that is not registered
     adapter: claude-agent-acp
     runner: missing-runner
+    dispatch: []
+    capabilities: []
+    tools: []
+    skills: []
+    concurrency:
+      max_concurrent: 1
+    auto_approve: false
+  - _ulid: ${RUNNER_ONLY_AGENT_ULID}
+    id: runner-only-worker
+    name: Runner-Only Worker
+    description: Runner-backed agent that omits the legacy adapter field
+    runner: configured-runner
     dispatch: []
     capabilities: []
     tools: []
@@ -171,6 +184,24 @@ describe("GET /api/meta/agents — runner-aware response", () => {
     expect(agent.resolved_adapter).toBe("claude-agent-acp");
     expect(agent.runner).toBeUndefined();
     expect(agent.runner_validation).toBeUndefined();
+  });
+
+  // AC: @runner-operator-surfaces ac-daemon-agent-api-includes-runner
+  // AC: @agent-runner-configuration ac-adapter-field-backcompat
+  it("populates the legacy adapter field with the resolved adapter when the agent omits adapter", async () => {
+    const response = await request("/api/meta/agents");
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    const agent = body.data.find((a: { id: string }) => a.id === "runner-only-worker");
+    expect(agent).toBeDefined();
+    expect(agent.runner).toBe("configured-runner");
+    // The fixture omits `adapter`; the daemon must still emit the resolved
+    // adapter on the legacy field so clients that read only `adapter` keep
+    // seeing a valid adapter identity. Mirrors the CLI JSON behavior.
+    expect(agent.adapter).toBe("claude-agent-acp");
+    expect(agent.resolved_adapter).toBe("claude-agent-acp");
+    expect(agent.runner_validation).toBeDefined();
+    expect(agent.runner_validation.status).toBe("valid");
   });
 
   // AC: @runner-operator-surfaces ac-daemon-agent-api-includes-runner

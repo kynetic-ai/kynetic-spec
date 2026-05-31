@@ -150,8 +150,14 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
         const agents = meta.agents.map((a) => {
           const runnerEntry = a.runner ? runnerRegistry.runners[a.runner] : undefined;
           const resolvedAdapter = runnerEntry?.adapter ?? a.adapter ?? "claude-agent-acp";
+          // Legacy `adapter` field is always populated so clients that only
+          // read `adapter` still see an adapter identity for runner-backed
+          // agents that omit the field. Mirrors the CLI JSON output and the
+          // dispatch status response (agent-dispatch.ts agent_definitions).
+          // AC: @agent-runner-configuration ac-adapter-field-backcompat
           const result: Record<string, unknown> = {
             ...a,
+            adapter: resolvedAdapter,
             resolved_adapter: resolvedAdapter,
           };
           if (a.runner) {
