@@ -89,8 +89,12 @@ description: >
 spec_ref: "@agent-definition-schema"
 plan_ref: "@plan-agent-runner-configuration-layer"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved in review @01KSYCQR. Merge helper reported no-op because canonical branch
+  dispatch/task/task-update-existing-agent-runner-specs/01ksyaz3 at
+  28770407cf3ca944af1bee0c0ed6e6bf1577a460 is already integrated at dev. Verified requested runner
+  semantics spec updates, required notes, validations, lint/typecheck, and full npm test.
 depends_on: []
 context: []
 priority: 1
@@ -158,8 +162,26 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-31T06:49:59.141Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved in review @01KSYCQR. Merge helper reported no-op because canonical branch
+          dispatch/task/task-update-existing-agent-runner-specs/01ksyaz3 at
+          28770407cf3ca944af1bee0c0ed6e6bf1577a460 is already integrated at dev. Verified requested
+          runner semantics spec updates, required notes, validations, lint/typecheck, and full npm
+          test.
+        previous: null
+      completed_at:
+        new: 2026-05-31T07:04:30.630Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-31T07:04:30.645Z
 created_at: 2026-05-31T06:19:00.746Z
 started_at: 2026-05-31T06:42:37.819Z
 submitted_at: 2026-05-31T06:45:51.500Z
+completed_at: 2026-05-31T07:04:30.630Z
 todos: []
 automation: eligible
