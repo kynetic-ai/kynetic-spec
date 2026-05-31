@@ -42,6 +42,7 @@ import type {
   CommandAck,
   ConnectedEvent,
   BroadcastEvent,
+  AgentInvocationEventData,
 } from "../src/index";
 
 describe("Core Schema Types", () => {
@@ -342,6 +343,53 @@ describe("WebSocket Types", () => {
     expectTypeOf<BroadcastEvent["timestamp"]>().toEqualTypeOf<string>();
     expectTypeOf<BroadcastEvent["topic"]>().toEqualTypeOf<string>();
     expectTypeOf<BroadcastEvent["event"]>().toEqualTypeOf<string>();
+  });
+
+  // AC: @runner-resolution-and-preflight ac-dispatched-event-records-runner
+  it("AgentInvocationEventData exposes optional runner and resolved_adapter fields", () => {
+    expectTypeOf<AgentInvocationEventData>().toHaveProperty("session_id");
+    expectTypeOf<AgentInvocationEventData>().toHaveProperty("agent_id");
+    expectTypeOf<AgentInvocationEventData>().toHaveProperty("task_id");
+    expectTypeOf<AgentInvocationEventData>().toHaveProperty("task_title");
+    expectTypeOf<AgentInvocationEventData>().toHaveProperty("status");
+    expectTypeOf<AgentInvocationEventData>().toHaveProperty("timestamp");
+    expectTypeOf<AgentInvocationEventData>().toHaveProperty("runner");
+    expectTypeOf<AgentInvocationEventData>().toHaveProperty("resolved_adapter");
+
+    expectTypeOf<AgentInvocationEventData["session_id"]>().toEqualTypeOf<string>();
+    expectTypeOf<AgentInvocationEventData["agent_id"]>().toEqualTypeOf<string>();
+    expectTypeOf<AgentInvocationEventData["task_id"]>().toEqualTypeOf<string | null>();
+    expectTypeOf<AgentInvocationEventData["task_title"]>().toEqualTypeOf<string | null>();
+    expectTypeOf<AgentInvocationEventData["status"]>().toEqualTypeOf<string>();
+    expectTypeOf<AgentInvocationEventData["timestamp"]>().toEqualTypeOf<number>();
+    expectTypeOf<AgentInvocationEventData["runner"]>().toEqualTypeOf<string | undefined>();
+    expectTypeOf<AgentInvocationEventData["resolved_adapter"]>().toEqualTypeOf<
+      string | undefined
+    >();
+
+    // Legacy consumers omitting the new fields still satisfy the contract.
+    const legacy: AgentInvocationEventData = {
+      session_id: "sess-legacy",
+      agent_id: "task-worker",
+      task_id: null,
+      task_title: null,
+      status: "started",
+      timestamp: 0,
+    };
+    expectTypeOf(legacy).toMatchTypeOf<AgentInvocationEventData>();
+
+    // Runner-backed broadcasts populate both fields.
+    const runnerBacked: AgentInvocationEventData = {
+      session_id: "sess-runner",
+      agent_id: "task-worker",
+      task_id: "@task-foo",
+      task_title: "Implement foo",
+      status: "started",
+      timestamp: 1,
+      resolved_adapter: "claude-code",
+      runner: "production",
+    };
+    expectTypeOf(runnerBacked).toMatchTypeOf<AgentInvocationEventData>();
   });
 });
 

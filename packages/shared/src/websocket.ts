@@ -92,6 +92,8 @@ export interface InboxItemCreatedEventData {
 /**
  * Data payload for agent_invocation broadcast events.
  * Includes task_title for display alongside task_id.
+ *
+ * AC: @runner-resolution-and-preflight ac-dispatched-event-records-runner
  */
 export interface AgentInvocationEventData {
   session_id: string;
@@ -100,6 +102,10 @@ export interface AgentInvocationEventData {
   task_title: string | null;
   status: string;
   timestamp: number;
+  /** Resolved adapter identity for this invocation, when known. */
+  resolved_adapter?: string;
+  /** Named runner that resolved this invocation, when one was configured. */
+  runner?: string;
 }
 
 // ─── Session Event Broadcast Types ──────────────────────────────────────────
