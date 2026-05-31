@@ -211,6 +211,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-05-31T21:23:08.641Z
+  - _ulid: 01KSZZXVJAQFWFEPJRPEBJPHYM
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSZYPHFW76DHP362ZFRQWT69
+    timestamp: 2026-05-31T21:44:34.122Z
 examined_commit: c20c037375f8008d1321b30c69f128561e9c72fc
 external_links: []
 lifecycle_state: closed
@@ -242,6 +248,16 @@ threads:
           and cover them in the shared type tests so the public contract matches the daemon
           payload."
         created_at: 2026-05-31T21:23:05.852Z
+      - _ulid: 01KSZZXVACY5VDRH4JM4STHT50
+        author: "@claude"
+        body: Fixed in 4d427ee3e4. Added optional `runner` and `resolved_adapter` fields to
+          `AgentInvocationEventData` in packages/shared/src/websocket.ts so the shared contract
+          matches what the dispatch runtime broadcasts. Covered the contract in
+          packages/shared/tests/types.test.ts (legacy payloads without the new fields still satisfy
+          the type; runner-backed payloads with both fields satisfy it too). Also added a behavioral
+          assertion in tests/daemon-pubsub.test.ts that PubSubManager forwards `runner` and
+          `resolved_adapter` on broadcast `agent_invocation` events end-to-end.
+        created_at: 2026-05-31T21:44:33.861Z
     kind: blocker
 verdicts:
   - applies_to_version:
@@ -252,5 +268,5 @@ verdicts:
     role: reviewer
     created_at: 2026-05-31T21:23:08.641Z
 created_at: 2026-05-31T21:07:11.774Z
-updated_at: 2026-05-31T21:23:08.641Z
+updated_at: 2026-05-31T21:44:33.861Z
 notes: []
