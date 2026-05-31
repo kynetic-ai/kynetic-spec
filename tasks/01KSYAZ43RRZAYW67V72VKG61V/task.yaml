@@ -113,6 +113,7 @@ tags:
   - agents
   - runners
 vcs_refs: []
+review_ref: "@01KSYFMASTJJ3TBF11YFEZ4P1R"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-runner-config-schema-types/01ksyaz4
@@ -163,6 +164,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-05-31T07:28:16.109Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KSYFMASTJJ3TBF11YFEZ4P1R"
+        previous: null
+    command: review-link
+    timestamp: 2026-05-31T07:40:33.004Z
 created_at: 2026-05-31T06:19:01.112Z
 started_at: 2026-05-31T07:07:08.033Z
 submitted_at: 2026-05-31T07:28:16.109Z
