@@ -217,6 +217,12 @@ events:
     payload:
       thread_ulid: 01KSZYPHFW76DHP362ZFRQWT69
     timestamp: 2026-05-31T21:44:34.122Z
+  - _ulid: 01KSZZY32Y8HJYZ79ZNJPX822C
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSZYPHFW76DHP362ZFRQWT69
+    timestamp: 2026-05-31T21:44:41.822Z
 examined_commit: c20c037375f8008d1321b30c69f128561e9c72fc
 external_links: []
 lifecycle_state: closed
@@ -259,6 +265,8 @@ threads:
           `resolved_adapter` on broadcast `agent_invocation` events end-to-end.
         created_at: 2026-05-31T21:44:33.861Z
     kind: blocker
+    resolved_at: 2026-05-31T21:44:41.578Z
+    resolved_by: "@claude"
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -268,5 +276,5 @@ verdicts:
     role: reviewer
     created_at: 2026-05-31T21:23:08.641Z
 created_at: 2026-05-31T21:07:11.774Z
-updated_at: 2026-05-31T21:44:33.861Z
+updated_at: 2026-05-31T21:44:41.578Z
 notes: []
