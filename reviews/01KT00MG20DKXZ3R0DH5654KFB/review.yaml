@@ -2,7 +2,111 @@ _ulid: 01KT00MG20DKXZ3R0DH5654KFB
 slugs: []
 title: Review task-daemon-api-runner-surfaces cycle 2
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate --refs --warnings-ok; --alignment --warnings-ok; --completeness
+      --warnings-ok all exited 0. Existing project warning baseline: refs 6, alignment 42,
+      completeness 265."
+    name: kspec validation
+    required: true
+    runner: kspec
+    created_at: 2026-05-31T22:12:48.674Z
+    completed_at: 2026-05-31T22:12:48.674Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run format:check exited 0; all matched files formatted.
+    name: format
+    required: true
+    runner: format
+    created_at: 2026-05-31T22:12:51.407Z
+    completed_at: 2026-05-31T22:12:51.407Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run lint -- --quiet exited 0; 743 warning baseline, 0 errors.
+    name: lint
+    required: true
+    runner: lint
+    created_at: 2026-05-31T22:12:54.030Z
+    completed_at: 2026-05-31T22:12:54.030Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npx oxlint on 10 changed TS/test files exited 0; 9 warnings, all in pre-existing
+      tests/daemon-pubsub.test.ts lines outside the new hunk.
+    name: changed-file oxlint
+    required: true
+    runner: changed-file
+    created_at: 2026-05-31T22:12:56.603Z
+    completed_at: 2026-05-31T22:12:56.603Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck exited 0.
+    name: typecheck
+    required: true
+    runner: typecheck
+    created_at: 2026-05-31T22:12:59.260Z
+    completed_at: 2026-05-31T22:12:59.260Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test -- --fresh tests/daemon-api/agent-runner-surfaces.test.ts
+      tests/daemon-pubsub.test.ts packages/shared/tests/types.test.ts exited 0; 15 suites / 64 tests
+      passed.
+    name: focused tests
+    required: true
+    runner: focused
+    created_at: 2026-05-31T22:13:01.802Z
+    completed_at: 2026-05-31T22:13:01.802Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test -- --fresh exited 0; 2664 suites passed, 10152 tests passed, 5 skipped.
+    name: full test suite
+    required: true
+    runner: full
+    created_at: 2026-05-31T22:13:04.415Z
+    completed_at: 2026-05-31T22:13:04.415Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check
+      86e8c5642d3c7983b182d5e0b11c7b149d57f5c9...4d427ee3e46f81f825c791a9949e19a12ffe844b exited 0.
+    name: diff whitespace
+    required: true
+    runner: diff
+    created_at: 2026-05-31T22:13:06.962Z
+    completed_at: 2026-05-31T22:13:06.962Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: packages/daemon/src/routes/meta.ts,
+      packages/daemon/src/routes/agent-dispatch.ts, src/agent-runtime/dispatch.ts,
+      packages/shared/src/schemas.ts, packages/shared/src/websocket.ts,
+      packages/web-ui/src/lib/api.ts, tests/daemon-api/agent-runner-surfaces.test.ts,
+      tests/daemon-pubsub.test.ts, packages/shared/tests/types.test.ts. Claims verified: prior
+      WebSocket contract blocker fixed via shared type and pubsub behavioral tests; daemon meta API
+      compatibility gap reproduced with a runner-only fixture. Categories searched: correctness,
+      backward compatibility, secret redaction, API/type contracts, test quality, integration,
+      regression gates."
+    name: review evidence log
+    required: true
+    runner: codex-reviewer
+    created_at: 2026-05-31T22:13:09.517Z
+    completed_at: 2026-05-31T22:13:09.517Z
 events:
   - _ulid: 01KT00MG1T06SRESFNC2BPFG1B
     actor: Jacob Chapel
@@ -17,17 +121,131 @@ events:
       from: draft
       to: open
     timestamp: 2026-05-31T21:57:18.603Z
+  - _ulid: 01KT01HJMR7F516ZWNGGCQEPEK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validation
+    timestamp: 2026-05-31T22:12:48.920Z
+  - _ulid: 01KT01HNAHX0R4KFNNBJR8KGQX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-05-31T22:12:51.665Z
+  - _ulid: 01KT01HQTBKZR1TGHRW9XH9Z7G
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-05-31T22:12:54.219Z
+  - _ulid: 01KT01HTB2KAV5VNB8Z901C3BM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file oxlint
+    timestamp: 2026-05-31T22:12:56.802Z
+  - _ulid: 01KT01HWXX05M8MPTMPZNRHW64
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-31T22:12:59.453Z
+  - _ulid: 01KT01HZEYTY3YZHW3PARV0EWF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused tests
+    timestamp: 2026-05-31T22:13:02.046Z
+  - _ulid: 01KT01J20GRH0Y6YQB4YWK4TAR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-31T22:13:04.656Z
+  - _ulid: 01KT01J4FHVWNZNSAPG81WE4T6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff whitespace
+    timestamp: 2026-05-31T22:13:07.185Z
+  - _ulid: 01KT01J6YJ6BTVADGPRC89S2Y8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-31T22:13:09.715Z
+  - _ulid: 01KT01J9C7K8630D4HQYYNRWC4
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KT01J95YZH01G5MAXWTT0AMJ
+    timestamp: 2026-05-31T22:13:12.199Z
+  - _ulid: 01KT01JBSQ0E40FW9D41BAS0ZA
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-31T22:13:14.679Z
+  - _ulid: 01KT01JBSQPXHJXT6H2BHJMYSG
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-31T22:13:14.680Z
 examined_commit: 4d427ee3e46f81f825c791a9949e19a12ffe844b
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KSYAZ6MNX6EZCHZANWAT6X8T"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KT01J95YZH01G5MAXWTT0AMJ
+    anchor:
+      type: code
+      commit: 4d427ee3e46f81f825c791a9949e19a12ffe844b
+      line_end: 156
+      line_start: 153
+      path: packages/daemon/src/routes/meta.ts
+      side: head
+    entries:
+      - _ulid: 01KT01J95YNAK8NFPHWPV1309D
+        author: Jacob Chapel
+        body: 'MUST-FIX: `/api/meta/agents` does not populate the legacy `adapter` field with the resolved
+          adapter for runner-backed agents that omit `adapter`. The task explicitly requires legacy
+          clients that only read `adapter` to continue receiving an adapter identity, and the CLI
+          JSON path already emits `adapter: adapterId` for this same runner-only case. I reproduced
+          the daemon behavior with an in-process `/api/meta/agents` request against an agent
+          containing `runner: configured-runner` and no `adapter`; the 200 response included
+          `resolved_adapter: "claude-agent-acp"` but no `adapter` field. Clients still reading only
+          `adapter` would therefore see no adapter identity for valid runner-backed agents.'
+        created_at: 2026-05-31T22:13:11.998Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-31T22:13:14.679Z
 created_at: 2026-05-31T21:56:56.000Z
-updated_at: 2026-05-31T21:57:18.378Z
+updated_at: 2026-05-31T22:13:14.679Z
 notes: []
