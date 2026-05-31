@@ -33,3 +33,19 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-31T19:21:43.793Z
+  - _ulid: 01KSZRY8ENJCY7TY6TTB5GVG0D
+    content: "Fix cycle 1: addressed reviewer blocker. Added runner.process.cwd validation in
+      src/agents/runner-validation.ts via a new probeRunnerCwd helper that checks fs.stat + X_OK
+      access and maps ENOENT/ENOTDIR/EACCES into structured RunnerCwdProbeResult outcomes. The
+      validateOneRunner path now emits an invalid_cwd diagnostic (with cwd_source layer and
+      invalid_cwd_reason details) and the validator exits non-zero whenever any selected runner has
+      an invalid cwd. Added behavioral CLI coverage in tests/agent-runner-cli.test.ts: nonexistent
+      cwd (JSON), file-as-cwd (JSON), human-output rendering with [invalid] and invalid_cwd, plus an
+      unset-cwd negative case. Re-verified ACs ac-agent-list-shows-runner,
+      ac-runner-validation-human-output, ac-runner-validation-json-output,
+      ac-runner-validation-exit-status, ac-unknown-runner-reports-guidance,
+      ac-diagnostics-redact-secrets — all still covered. Full test suite (10138 tests) green;
+      format/lint/typecheck/kspec validate all pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-31T19:42:27.285Z
