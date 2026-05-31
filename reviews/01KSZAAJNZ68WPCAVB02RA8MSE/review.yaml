@@ -223,6 +223,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-05-31T15:41:46.010Z
+  - _ulid: 01KSZCVKNAX8APPDNEH3SG1Q01
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSZB5CRMSRC6E2FM628YKBPV
+    timestamp: 2026-05-31T16:11:17.546Z
 examined_commit: 5698dbfa7f8107ff3cc750158bbf090d57df758f
 external_links: []
 lifecycle_state: closed
@@ -253,6 +259,55 @@ threads:
           subprocess environment. Keep the adapter env boundary intact by passing a sanitized kspec
           mutation env that excludes runner secret bindings."
         created_at: 2026-05-31T15:41:41.012Z
+      - _ulid: 01KSZCVKEZW1BJK7NFDPN3SBP3
+        author: "@claude"
+        body: >-
+          Fixed: split the adapter spawn env from the kspec-mutation env at the runner contract
+          boundary, then strip resolved env.secrets from the inherited host env when spawning
+          mutation subprocesses.
+
+
+          Changes:
+
+          - src/agents/runners.ts: RunnerInvocation now exposes mutationEnv (only KSPEC_NO_DAEMON,
+          KSPEC_SESSION_ID, KSPEC_SHADOW_MUTATION_LOCK_FILE) and secretEnvKeys (the env var names
+          sourced from env.secrets). buildRunnerEnv returns secretEnvKeys alongside secretValues.
+          buildKspecRequiredEnv is the single source of truth for the dispatch contract vars; it is
+          used to build mutationEnv directly so that runner
+          env.set/env.pass/env.inherit/env.secrets/privacy defaults/baseEnv never leak into it. Both
+          runner-backed and implicit/legacy paths set both fields (implicit secretEnvKeys is empty).
+
+          - src/agent-runtime/invocation.ts: failure/timeout paths now pass contract.mutationEnv
+          (not invocationEnv) to addTaskNote/blockTask, and pass contract.secretEnvKeys via a new
+          stripFromHostEnv param. runKspecCli removes those keys from { ...process.env } before
+          overlaying the supplied env, which closes the secondary leak path where source: user_env
+          means process.env naturally mirrors the secret.
+
+
+          Tests:
+
+          - tests/agent-runner-resolver.test.ts: three new tests verifying mutationEnv contains only
+          kspec-required vars and zero secret material, secretEnvKeys lists only actually-resolved
+          bindings (not unresolved optional ones), and the implicit path returns empty
+          secretEnvKeys.
+
+          - tests/agent-invocation-secret-redaction.test.ts: new behavioral describe block that runs
+          a real failure-path invocation with REVIEW-style host secret planted, then asserts via
+          kspec-capture-mock + KSPEC_CAPTURE_ENV_VARS that the resolved secret var is null in the
+          captured task-note subprocess env, kspec dispatch vars are present, and PATH is still
+          inherited (proving the strip is precise, not broad).
+
+
+          The existing redaction test had been relying on the leak path to ferry KSPEC_CAPTURE_FILE
+          from invocation baseEnv into the mutation subprocess; that path is now closed by design,
+          so the test now sets KSPEC_CAPTURE_FILE on process.env in beforeEach to reach the
+          subprocess via host env inheritance.
+
+
+          Gates: format:check, lint --quiet (0 errors), changed-file oxlint on 4 files (0 warnings),
+          typecheck, full npm test (10079 passed, 5 expected skips), kspec validate
+          --refs/--alignment/--completeness all green within baseline.
+        created_at: 2026-05-31T16:11:17.343Z
     kind: blocker
   - _ulid: 01KSZB5F2VHVY74WK8AQHXP5FC
     entries:
@@ -293,5 +348,5 @@ verdicts:
     role: reviewer
     created_at: 2026-05-31T15:41:46.010Z
 created_at: 2026-05-31T15:27:02.335Z
-updated_at: 2026-05-31T15:41:46.010Z
+updated_at: 2026-05-31T16:11:17.343Z
 notes: []
