@@ -57403,9 +57403,22 @@ runs:
     completed_at: 2026-05-31T17:33:07.171Z
   - _ulid: 01KSZJGZVM8Y5313QJK80GYQG8
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-31T17:50:21.044Z
+        completed_at: 2026-05-31T17:51:24.101Z
+        notes: "Worked well: the detached-reviewer merge helper cleanly merged the approved snapshot into
+          dev without checking out dev in the review worktree; prior review notes gave focused
+          claims to verify; comparing against the current dev merge-base kept the final cycle review
+          scoped to the actual task delta despite the prompt's older integration-target commit;
+          recording review checks produced a durable gate before merge."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-31T17:51:24.101Z
+        completed_at: 2026-05-31T17:51:24.101Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T17:50:21.044Z
