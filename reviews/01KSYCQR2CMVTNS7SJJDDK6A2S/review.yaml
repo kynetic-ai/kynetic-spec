@@ -47,6 +47,18 @@ checks:
     runner: node
     created_at: 2026-05-31T07:03:18.212Z
     completed_at: 2026-05-31T07:03:18.212Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run format:check failed on templates/skills/merge/SKILL.md, but git diff --name-only
+      dev...HEAD is empty and dev/HEAD are the same commit, so this is pre-existing
+      integration-target drift unrelated to this shadow-spec task.
+    name: format:check
+    required: false
+    runner: oxfmt
+    created_at: 2026-05-31T07:03:23.270Z
+    completed_at: 2026-05-31T07:03:23.270Z
 events:
   - _ulid: 01KSYCQR25C7Z4PSSGPPDFFW2V
     actor: Jacob Chapel
@@ -89,6 +101,13 @@ events:
       status: pass
       name: exact spec verification
     timestamp: 2026-05-31T07:03:18.456Z
+  - _ulid: 01KSYDGC2DMYZZ2H5XXPP3FSPK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: format:check
+    timestamp: 2026-05-31T07:03:23.469Z
 examined_commit: 28770407cf3ca944af1bee0c0ed6e6bf1577a460
 external_links: []
 lifecycle_state: open
@@ -101,5 +120,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-05-31T06:49:56.556Z
-updated_at: 2026-05-31T07:03:18.212Z
+updated_at: 2026-05-31T07:03:23.270Z
 notes: []
