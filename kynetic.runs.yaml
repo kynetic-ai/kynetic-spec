@@ -57513,9 +57513,23 @@ runs:
     completed_at: 2026-05-31T18:16:53.342Z
   - _ulid: 01KSZN1Z0B4MTRP3P0K9CAB4YB
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-31T18:34:34.379Z
+        completed_at: 2026-05-31T18:35:59.384Z
+        notes: "What worked well: The detached reviewer flow was cohesive end-to-end. The review record held
+          checks, evidence, and verdict cleanly; the supported merge helper advanced dev without
+          checking out the target branch in the detached snapshot; completing the task after merge
+          preserved the task audit trail. The task notes were also useful: they separated prior
+          implementation from new test coverage, which made it faster to verify the submitted diff
+          independently."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-31T18:35:59.384Z
+        completed_at: 2026-05-31T18:35:59.384Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T18:34:34.379Z
