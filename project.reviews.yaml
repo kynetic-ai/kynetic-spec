@@ -23022,7 +23022,7 @@ reviews:
     title: Review task-update-existing-agent-runner-specs
     disposition: pending
     author: Jacob Chapel
-    check_count: 6
+    check_count: 7
     examined_commit: 28770407cf3ca944af1bee0c0ed6e6bf1577a460
     lifecycle_state: open
     related_refs: []
@@ -23035,4 +23035,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-05-31T06:49:56.556Z
-    updated_at: 2026-05-31T07:03:27.964Z
+    updated_at: 2026-05-31T07:03:32.780Z
