@@ -179,6 +179,13 @@ events:
       kind: blocker
       thread_ulid: 01KSZ7T42Y32Y0EWF7DAN1GEMN
     timestamp: 2026-05-31T14:43:06.194Z
+  - _ulid: 01KSZ7TJY73K2MMTGFWVDB46Q8
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSZ7TJPRJ3FBT71YG18QFVE8
+    timestamp: 2026-05-31T14:43:21.159Z
 examined_commit: e190bb2414297d83bd2980dfc8fec97b43556634
 external_links: []
 lifecycle_state: open
@@ -212,7 +219,33 @@ threads:
           resolved secret appears in session events, task notes, CLI output, or stderr diagnostics.
         created_at: 2026-05-31T14:43:05.951Z
     kind: blocker
+  - _ulid: 01KSZ7TJPRJ3FBT71YG18QFVE8
+    entries:
+      - _ulid: 01KSZ7TJPS83T860HFKVKVAYBT
+        author: codex
+        body: >-
+          Evidence log:
+
+          Files read: kspec-agents.md; src/agents/runners.ts; src/agents/redaction.ts;
+          src/agent-runtime/invocation.ts; src/agents/spawner.ts; src/agents/runner-config.ts;
+          tests/agent-runner-env.test.ts; tests/agent-runner-resolver.test.ts;
+          tests/runner-config.test.ts; tests/agent-invocation.test.ts.
+
+          Commands run: git diff/stat/name-only against dev; kspec task get; kspec item get
+          @runner-environment-secret-boundaries; AC annotation rg; production redaction usage rg;
+          kspec validate --refs/--alignment/--completeness --warnings-ok; npm run format:check; npm
+          run lint -- --quiet; npx oxlint on changed files; npm run typecheck; focused npm test;
+          full npm test -- --fresh.
+
+          Claims verified: worker's green-gate claim verified locally; env composition and
+          required-secret behavior checked against implementation/tests; redaction claim disproved
+          by production usage search and failure-path read-through.
+
+          Categories searched: correctness, security, error handling, test quality, AC coverage,
+          integration with invocation/spawner/dispatch.
+        created_at: 2026-05-31T14:43:20.921Z
+    kind: nit
 verdicts: []
 created_at: 2026-05-31T14:29:24.628Z
-updated_at: 2026-05-31T14:43:05.951Z
+updated_at: 2026-05-31T14:43:20.921Z
 notes: []
