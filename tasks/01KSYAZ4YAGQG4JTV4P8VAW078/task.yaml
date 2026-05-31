@@ -76,7 +76,7 @@ description: >
 spec_ref: "@runner-resolution-and-preflight"
 plan_ref: "@plan-agent-runner-configuration-layer"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-runner-config-schema-types"
@@ -89,6 +89,7 @@ tags:
   - invocation
   - runners
 vcs_refs: []
+session_id: 01KSYS85NYHBKCMCF9GQKT1330
 history:
   - author: Jacob Chapel
     changes:
@@ -97,6 +98,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-05-31T06:22:09.604Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KSYS85NYHBKCMCF9GQKT1330
+        previous: null
+      started_at:
+        new: 2026-05-31T10:29:32.195Z
+        previous: null
+    command: task-start
+    timestamp: 2026-05-31T10:29:32.195Z
 created_at: 2026-05-31T06:19:01.962Z
+started_at: 2026-05-31T10:29:32.195Z
 todos: []
 automation: eligible
