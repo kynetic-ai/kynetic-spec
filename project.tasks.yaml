@@ -30237,6 +30237,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-31T06:19:02.337Z
+  automation: eligible
 - _ulid: 01KSYAZ5MMTH53RFXMSTK9400S
   slugs:
     - task-runner-process-invocation-inputs
