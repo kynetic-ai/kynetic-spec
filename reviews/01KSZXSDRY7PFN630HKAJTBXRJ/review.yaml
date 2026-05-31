@@ -1,0 +1,26 @@
+_ulid: 01KSZXSDRY7PFN630HKAJTBXRJ
+slugs: []
+title: Review task-daemon-api-runner-surfaces
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KSZXSDRYNJ4BHTF3FTNGMG1H
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-31T21:07:11.774Z
+examined_commit: c20c037375f8008d1321b30c69f128561e9c72fc
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KSYAZ6MNX6EZCHZANWAT6X8T"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-05-31T21:07:11.774Z
+updated_at: null
+notes: []
