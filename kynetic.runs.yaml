@@ -56678,9 +56678,23 @@ runs:
     completed_at: 2026-05-31T11:30:05.617Z
   - _ulid: 01KSYZVBVXF4EDWXM2XE5V8E1H
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-31T12:23:58.077Z
+        completed_at: 2026-05-31T12:24:46.829Z
+        notes: "What worked well: The review-record workflow handled the fix cycle cleanly: creating a fresh
+          review, reading the prior closed review, and verifying the worker's claims against the
+          exact blockers made the re-review focused. Targeted runtime probes were useful alongside
+          deterministic gates: they exposed dispatch prompt adapter drift and missing
+          required-secret preflight behavior that the existing tests did not catch. Full gate
+          evidence was recorded in the review before verdicting."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-31T12:24:46.829Z
+        completed_at: 2026-05-31T12:24:46.829Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T12:23:58.077Z
