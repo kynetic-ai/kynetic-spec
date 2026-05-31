@@ -56171,7 +56171,7 @@ runs:
     started_at: 2026-05-31T06:46:30.086Z
     completed_at: 2026-05-31T06:48:23.299Z
   - _ulid: 01KSYDNB1PJN8MDMNKWMPD68Y8
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -56229,7 +56229,13 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-31T07:08:37.710Z
-        completed_at: 2026-05-31T07:08:37.710Z
+        completed_at: 2026-05-31T07:09:17.800Z
+        notes: "Captured approved/high-confidence items: inbox @01KSYDTA for reviewer/merge guidance around
+          kspec task complete --no-sync when linked specs should remain in_progress; success
+          observation @01KSYDTX for using kspec item get --json with structured exact comparison
+          during spec-only reviews. Did not duplicate format:check friction because inbox @01KS9FFH
+          already tracks it."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T07:06:06.262Z
+    completed_at: 2026-05-31T07:09:17.800Z
