@@ -2,7 +2,116 @@ _ulid: 01KT03FM5ZRTVG48Q6MWXJD4HG
 slugs: []
 title: Review task-daemon-api-runner-surfaces cycle 3
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate --refs --warnings-ok, --alignment --warnings-ok, and --completeness
+      --warnings-ok all exited 0. Existing warning baselines: refs 6, alignment 42, completeness
+      265."
+    name: kspec validation
+    required: true
+    runner: kspec
+    created_at: 2026-05-31T23:02:28.366Z
+    completed_at: 2026-05-31T23:02:28.366Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run format:check exited 0; all matched files use the correct format.
+    name: format
+    required: true
+    runner: oxfmt
+    created_at: 2026-05-31T23:02:31.006Z
+    completed_at: 2026-05-31T23:02:31.006Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run lint -- --quiet exited 0; 743 existing warnings, 0 errors.
+    name: lint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-31T23:02:33.486Z
+    completed_at: 2026-05-31T23:02:33.486Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npx oxlint on all 10 changed TS/test files exited 0 with 9 warnings, all in
+      tests/daemon-pubsub.test.ts outside the submitted hunk.
+    name: changed-file oxlint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-31T23:02:36.099Z
+    completed_at: 2026-05-31T23:02:36.099Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck exited 0.
+    name: typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-31T23:02:38.733Z
+    completed_at: 2026-05-31T23:02:38.733Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test -- --fresh tests/daemon-api/agent-runner-surfaces.test.ts
+      tests/daemon-pubsub.test.ts packages/shared/tests/types.test.ts
+      tests/agent-dispatch-engine.test.ts exited 0; 56 suites / 208 tests passed.
+    name: focused tests
+    required: true
+    runner: vitest
+    created_at: 2026-05-31T23:02:41.433Z
+    completed_at: 2026-05-31T23:02:41.433Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh exited 0; 2664 suites passed, 10153 tests passed, 5 skipped. Log:
+      /tmp/kspec-test-cache/01KT03DVXFZ7030FZPSFR2V9XF/c17ceeeb5be55f3d.log"
+    name: full test suite
+    required: true
+    runner: vitest
+    created_at: 2026-05-31T23:02:44.001Z
+    completed_at: 2026-05-31T23:02:44.001Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check dev...HEAD exited 0.
+    name: diff whitespace
+    required: true
+    runner: git
+    created_at: 2026-05-31T23:02:46.442Z
+    completed_at: 2026-05-31T23:02:46.442Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md; prior reviews @01KSZXSD and @01KT00MG; task/spec context;
+      full diff; packages/daemon/src/routes/meta.ts; packages/daemon/src/routes/agent-dispatch.ts;
+      src/agent-runtime/dispatch.ts; packages/shared/src/schemas.ts;
+      packages/shared/src/websocket.ts; packages/web-ui/src/lib/api.ts;
+      tests/daemon-api/agent-runner-surfaces.test.ts; tests/daemon-pubsub.test.ts;
+      packages/shared/tests/types.test.ts; related runner validation/config code. Commands run: git
+      diff/status/log, kspec task/item/review lookups, kspec validations, format, lint, changed-file
+      oxlint, typecheck, focused tests, full test suite. Claims verified: prior WebSocket shared
+      contract blocker fixed by shared type plus PubSub behavioral test; prior /api/meta/agents
+      legacy adapter blocker fixed by response assignment plus runner-only daemon API test; daemon
+      status active/queued surfaces expose runner/resolved adapter; secret sentinel is not present
+      in daemon payloads. Categories searched: correctness, backward compatibility, API/type
+      contracts, secret redaction, AC annotation/test quality, integration, edge cases around
+      missing runners and runner-only agents. Findings: none."
+    name: review evidence log
+    required: true
+    runner: codex-reviewer
+    created_at: 2026-05-31T23:02:48.976Z
+    completed_at: 2026-05-31T23:02:48.976Z
 events:
   - _ulid: 01KT03FM5QSR666XJN2TW71JK5
     actor: Jacob Chapel
@@ -17,9 +126,88 @@ events:
       from: draft
       to: open
     timestamp: 2026-05-31T22:46:57.354Z
+  - _ulid: 01KT04CGFTX6XEBHQ869FR0ER6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validation
+    timestamp: 2026-05-31T23:02:28.602Z
+  - _ulid: 01KT04CK0ZEYKYDS6FZYV8RRQZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-05-31T23:02:31.200Z
+  - _ulid: 01KT04CNF18K5RY1GEYPHS80VX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-05-31T23:02:33.697Z
+  - _ulid: 01KT04CR0FQPCD9HDBS6VG9QZR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file oxlint
+    timestamp: 2026-05-31T23:02:36.303Z
+  - _ulid: 01KT04CTKMSRM95W95V8KKR50K
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-31T23:02:38.964Z
+  - _ulid: 01KT04CX7KAFH4QKTBBWVSWZD0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused tests
+    timestamp: 2026-05-31T23:02:41.651Z
+  - _ulid: 01KT04CZPP3CH5T2ACH2QJVDPT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-31T23:02:44.182Z
+  - _ulid: 01KT04D23BVT4K9815FWEKHT3K
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff whitespace
+    timestamp: 2026-05-31T23:02:46.635Z
+  - _ulid: 01KT04D4JHB6NGRBS7BC59QZ69
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-31T23:02:49.170Z
+  - _ulid: 01KT04D71AX5BQW2CT9WC5H1AT
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-31T23:02:51.690Z
+  - _ulid: 01KT04D71AV9ZVNWK6M1D7695G
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-31T23:02:51.690Z
 examined_commit: dc2184ee5f5a2fa342e1d9f0e4ef192e9f56e414
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -27,7 +215,14 @@ subject:
   ref: "@01KSYAZ6MNX6EZCHZANWAT6X8T"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-31T23:02:51.690Z
 created_at: 2026-05-31T22:46:42.111Z
-updated_at: 2026-05-31T22:46:57.104Z
+updated_at: 2026-05-31T23:02:51.690Z
 notes: []
