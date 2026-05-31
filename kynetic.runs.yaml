@@ -57512,7 +57512,7 @@ runs:
     started_at: 2026-05-31T18:14:23.958Z
     completed_at: 2026-05-31T18:16:53.342Z
   - _ulid: 01KSZN1Z0B4MTRP3P0K9CAB4YB
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -57563,7 +57563,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-31T18:36:46.858Z
-        completed_at: 2026-05-31T18:36:46.858Z
+        completed_at: 2026-05-31T18:37:04.170Z
+        notes: Captured success observation @01KSZN68. No inbox/task items created because friction
+          candidates were already tracked by @01KP6PS1Q and @01KR2JD1, and no new untracked friction
+          met the capture bar.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T18:34:34.379Z
+    completed_at: 2026-05-31T18:37:04.170Z
