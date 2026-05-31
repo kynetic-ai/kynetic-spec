@@ -13432,12 +13432,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-31T17:33:20.862Z
+      updated_at: 2026-05-31T17:33:26.945Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-31T17:33:20.862Z
+      updated_at: 2026-05-31T17:33:26.945Z
     integration:
       status: pending
       detail: null
@@ -13445,24 +13445,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: ac4142f968c489ddf073a6337d9040b12a248944
-      updated_at: 2026-05-31T17:33:20.862Z
-    lifecycle_state: ready
+      updated_at: 2026-05-31T17:33:26.945Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KSYAZ5MMTH53RFXMSTK9400S"
     task_slug: task-runner-process-invocation-inputs
     timestamps:
       closed_at: null
       last_active_at: 2026-05-31T17:02:08.935Z
-      last_reconciled_at: 2026-05-31T17:33:20.862Z
+      last_reconciled_at: 2026-05-31T17:33:26.945Z
       created_at: 2026-05-31T14:28:06.577Z
-      updated_at: 2026-05-31T17:33:20.862Z
+      updated_at: 2026-05-31T17:33:26.945Z
     workspace_id: dispatch-workspace-01KSYAZ5MMTH53RFXMSTK9400S
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 02aa284a09030d0176fd82e26b6753bdbf093060
+        last_seen_at: 2026-05-31T17:33:26.945Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-runner-process-invocation-inputs-01ksyaz5-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-runner-process-invocation-inputs/01ksyaz5
-        head: 1d6a27fd910eb070cda8dfe163783b1f94bff99e
-        last_seen_at: 2026-05-31T17:01:44.118Z
+        head: 02aa284a09030d0176fd82e26b6753bdbf093060
+        last_seen_at: 2026-05-31T17:33:26.945Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-runner-process-invocation-inputs-01ksyaz5
