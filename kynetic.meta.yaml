@@ -20196,6 +20196,20 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-31T17:00:42.862Z
+  - _ulid: 01KSZHGAPZ6G6NSJD54H6A80QW
+    type: friction
+    content: Per-field RunnerFieldOrigin ("project"|"system"|"default") and overall
+      SourceLayerDiagnostic ("project"|"system"|"merged"|"implicit") share string values but have
+      different semantics. The "merged" state is computed across all fields collectively; no
+      individual field origin can be "merged". Building per-field-to-source-layer mapping logic on
+      the wrong type compiles (when written carelessly) and only fails as 'no overlap' under strict
+      checks. Future runner diagnostic surfaces (Web UI, daemon HTTP, telemetry) will likely
+      re-derive this mapping — encountered during dry-run summary work on
+      @task-runner-process-invocation-inputs cycle 3.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-31T17:32:30.815Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
