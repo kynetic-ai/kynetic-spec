@@ -56855,7 +56855,7 @@ runs:
     completed_at: 2026-05-31T13:12:23.667Z
   - _ulid: 01KSZ56TGXJXWGBGYGP400AR5X
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -56869,7 +56869,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-31T13:59:30.329Z
-        completed_at: 2026-05-31T13:59:30.329Z
+        completed_at: 2026-05-31T13:59:42.540Z
+        notes: "Friction: review evidence logs still need to be recorded as unresolved nit comments; this is
+          already tracked as @01KR2JD1. Focused changed-file oxlint runs on whole files, so
+          pre-existing warnings outside submitted diff require manual git diff attribution before
+          the reviewer can mark the check clean. The full fresh test suite is long but expected for
+          merge ownership and not captured as new friction."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-31T13:59:42.540Z
+        completed_at: 2026-05-31T13:59:42.540Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T13:57:36.413Z
