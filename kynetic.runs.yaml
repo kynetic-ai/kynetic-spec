@@ -57402,7 +57402,7 @@ runs:
     started_at: 2026-05-31T17:30:15.057Z
     completed_at: 2026-05-31T17:33:07.171Z
   - _ulid: 01KSZJGZVM8Y5313QJK80GYQG8
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -57456,7 +57456,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-31T17:53:04.850Z
-        completed_at: 2026-05-31T17:53:04.850Z
+        completed_at: 2026-05-31T17:53:20.664Z
+        notes: Captured inbox @01KSZJP6 for detached-review orientation around stale dispatch target commits
+          and task-specific diff boundaries. Did not capture duplicate items for review-check
+          batching (@01KQEFTM already tracks it) or full-suite duration (@01KNTB8Z4 already tracks
+          it; @01KS0997 covers related failure triage).
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T17:50:21.044Z
+    completed_at: 2026-05-31T17:53:20.664Z
