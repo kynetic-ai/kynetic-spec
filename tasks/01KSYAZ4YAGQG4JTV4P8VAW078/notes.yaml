@@ -1,1 +1,23 @@
-notes: []
+notes:
+  - _ulid: 01KSYSKQS3YJPPSM1EQJM4A6YH
+    content: "Approach: Build pure resolveRunnerInvocation() in src/agents/runners.ts that takes (agent,
+      registry, cwd, sessionId, autoApprove, env, adapterOverride) and returns {runnerId, adapterId,
+      adapter, cwd, env, extraArgs, diagnostics, cleanup}. Throws RunnerResolutionError with reason
+      codes: unknown_runner, invalid_adapter, invalid_command_reference, invalid_cwd, invalid_args,
+      missing_secret, preflight_failure. Legacy path (no agent.runner): runnerId=null,
+      source='implicit', adapter from agent.adapter ?? default. Named runner path: lookup in
+      registry, use runner.adapter, layer runner.env.set on top of base env, append
+      runner.process.args to extraArgs. Diagnostics include sourceLayer
+      (project/system/merged/implicit), overrides list, selectedAdapter source. Cleanup hook returns
+      no-op for now (follow-up tasks add temp state). Wire into runInvocation: load registry if not
+      provided, replace direct resolveAdapter call. Surface runner+adapter in session metadata (add
+      SessionMetadataSchema.runner) and agent.dispatched event. Update dispatch.ts adapter-preflight
+      to use resolver (catches unknown_runner before spawn) and emit runner+adapter on invocation.*
+      event payloads (also adds adapter_id, resolved_adapter to InvocationStartedPayloadSchema and
+      InvocationTerminalPayloadSchema). CLI agent run: when --adapter is passed, clear runner field
+      on effectiveAgent so resolver takes implicit path with override. Tests: behavioral tests
+      against resolver function plus runInvocation integration tests asserting session.yaml.runner
+      and agent.dispatched event payload."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-31T10:34:56.675Z
