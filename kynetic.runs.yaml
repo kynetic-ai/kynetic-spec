@@ -56678,7 +56678,7 @@ runs:
     completed_at: 2026-05-31T11:30:05.617Z
   - _ulid: 01KSYZVBVXF4EDWXM2XE5V8E1H
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -56694,7 +56694,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-31T12:24:46.829Z
-        completed_at: 2026-05-31T12:24:46.829Z
+        completed_at: 2026-05-31T12:24:56.984Z
+        notes: "Friction points: The role-entry prompt is built before dispatch runner preflight, so
+          runner-backed dispatch has two adapter-resolution moments to keep aligned; this created a
+          subtle correctness gap despite resolver integration elsewhere. Required secret bindings
+          are represented in EffectiveRunner but the resolver has no secret-source preflight yet, so
+          the advertised missing_secret reason was easy to omit. Focused changed-file oxlint caught
+          a warning that repo-wide lint --quiet did not make actionable. Full npm test -- --fresh
+          provided useful confidence but took 2274.7s, which is expensive during review."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-31T12:24:56.984Z
+        completed_at: 2026-05-31T12:24:56.984Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T12:23:58.077Z
