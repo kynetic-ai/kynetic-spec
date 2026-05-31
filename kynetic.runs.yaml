@@ -57657,7 +57657,7 @@ runs:
     completed_at: 2026-05-31T19:25:34.717Z
   - _ulid: 01KSZRZEW2MSSH00EDNEK65KVH
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -57669,10 +57669,19 @@ runs:
           the executable preflight pattern, (3) add 4 behavioral CLI tests covering
           missing/file/human-render/negative-case before resubmission. Batched review reply+resolve
           via kspec batch for atomic shadow-branch commit."
-      - status: completed
+      - status: skipped
         step_index: 1
         started_at: 2026-05-31T19:45:02.119Z
-        completed_at: 2026-05-31T19:45:02.119Z
+        completed_at: 2026-05-31T19:45:16.845Z
+        notes: Searched existing tracking via kspec search for 'preflight', 'cwd validation', 'validation
+          completeness gap', 'behavioral coverage'. The gap I closed (validator only probed
+          processExecutable, not processCwd) is now fixed in-task — no systemic friction beyond it.
+          Behavioral-coverage migration is already an established theme (multiple completed tasks).
+          Nothing high-confidence to capture without producing noise.
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-31T19:45:16.845Z
+        completed_at: 2026-05-31T19:45:16.845Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-31T19:43:06.626Z
