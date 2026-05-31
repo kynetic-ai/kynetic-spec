@@ -35,6 +35,18 @@ checks:
     runner: kspec
     created_at: 2026-05-31T07:03:13.506Z
     completed_at: 2026-05-31T07:03:13.506Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Verified @agent-definition-schema, @dispatch-event-payload, and
+      @codex-acp-adapter-registration implementation status, target AC text, and required plan-link
+      notes exactly match task instructions.
+    name: exact spec verification
+    required: true
+    runner: node
+    created_at: 2026-05-31T07:03:18.212Z
+    completed_at: 2026-05-31T07:03:18.212Z
 events:
   - _ulid: 01KSYCQR25C7Z4PSSGPPDFFW2V
     actor: Jacob Chapel
@@ -70,6 +82,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-05-31T07:03:13.704Z
+  - _ulid: 01KSYDG75RD7RZFSGMBTFJPD6X
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: exact spec verification
+    timestamp: 2026-05-31T07:03:18.456Z
 examined_commit: 28770407cf3ca944af1bee0c0ed6e6bf1577a460
 external_links: []
 lifecycle_state: open
@@ -82,5 +101,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-05-31T06:49:56.556Z
-updated_at: 2026-05-31T07:03:13.506Z
+updated_at: 2026-05-31T07:03:18.212Z
 notes: []
