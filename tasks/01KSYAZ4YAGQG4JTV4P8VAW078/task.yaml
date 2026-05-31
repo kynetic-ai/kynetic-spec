@@ -89,7 +89,7 @@ tags:
   - invocation
   - runners
 vcs_refs: []
-review_ref: "@01KSYYSRG9QEWPCDNTED7FD476"
+review_ref: "@01KSZ1K1R253CXQ46XANF984SJ"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-runner-resolver-invocation-contract/01ksyaz4
@@ -254,6 +254,13 @@ history:
         previous: 2026-05-31T12:02:18.281Z
     command: task-submit
     timestamp: 2026-05-31T12:50:06.880Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KSZ1K1R253CXQ46XANF984SJ"
+        previous: "@01KSYYSRG9QEWPCDNTED7FD476"
+    command: review-link
+    timestamp: 2026-05-31T12:54:24.997Z
 created_at: 2026-05-31T06:19:01.962Z
 started_at: 2026-05-31T12:50:03.356Z
 submitted_at: 2026-05-31T12:50:06.879Z
