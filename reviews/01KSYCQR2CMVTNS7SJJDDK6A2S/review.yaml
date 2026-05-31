@@ -184,9 +184,25 @@ events:
       kind: nit
       thread_ulid: 01KSYDHB9PPQVA3YMM9NWTJ81K
     timestamp: 2026-05-31T07:03:55.667Z
+  - _ulid: 01KSYDHS72CKJNJWEJX2H28JGQ
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-31T07:04:09.698Z
+  - _ulid: 01KSYDHS72MY48B7RTXJ10TBSK
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-31T07:04:09.698Z
 examined_commit: 28770407cf3ca944af1bee0c0ed6e6bf1577a460
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -212,7 +228,14 @@ threads:
           there is no code diff."
         created_at: 2026-05-31T07:03:55.446Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-31T07:04:09.697Z
 created_at: 2026-05-31T06:49:56.556Z
-updated_at: 2026-05-31T07:03:55.446Z
+updated_at: 2026-05-31T07:04:09.698Z
 notes: []
