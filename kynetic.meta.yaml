@@ -20097,6 +20097,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-31T13:38:32.652Z
+  - _ulid: 01KSZ5CF02QVTNV8M26HK2YMEX
+    type: friction
+    content: Focused changed-file oxlint during review reports warnings from unchanged lines in changed
+      files, so reviewers must manually compare against the diff before marking the changed-file
+      lint gate clean. A changed-line-aware review lint helper or documented attribution mode would
+      reduce repeated manual triage while preserving full-file error visibility.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KSZ56T"
+    created_at: 2026-05-31T14:00:41.218Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
