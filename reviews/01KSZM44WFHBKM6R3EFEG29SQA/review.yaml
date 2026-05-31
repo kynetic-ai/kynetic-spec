@@ -84,6 +84,17 @@ checks:
     runner: npm test -- --fresh tests/agent-dispatch-engine.test.ts tests/agent-runner-resolver.test.ts
     created_at: 2026-05-31T18:32:37.201Z
     completed_at: 2026-05-31T18:32:37.201Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2652 suites passed; 10118 tests passed, 5 skipped; duration 2376.8s; log
+      /tmp/kspec-test-cache/01KSZM34AANVSF0WPQXEJX00DF/6cd4405d690f8718.log
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-05-31T18:32:47.889Z
+    completed_at: 2026-05-31T18:32:47.889Z
 events:
   - _ulid: 01KSZM44WFS0YJP2K532VFMN6J
     actor: Jacob Chapel
@@ -154,6 +165,13 @@ events:
       status: pass
       name: focused tests
     timestamp: 2026-05-31T18:32:37.409Z
+  - _ulid: 01KSZMYQ71PTPY94S40ECVE6AV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-31T18:32:48.097Z
 examined_commit: ca631996909c20503cb820c62f9439e0b3e72ac7
 external_links: []
 lifecycle_state: open
@@ -166,5 +184,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-05-31T18:18:17.359Z
-updated_at: 2026-05-31T18:32:37.201Z
+updated_at: 2026-05-31T18:32:47.889Z
 notes: []
