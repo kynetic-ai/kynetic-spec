@@ -56,7 +56,7 @@ description: >
 spec_ref: "@runner-process-invocation-inputs"
 plan_ref: "@plan-agent-runner-configuration-layer"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-runner-resolver-invocation-contract"
@@ -72,8 +72,8 @@ review_ref: "@01KSZBJ9QT8KREYCG6BQ62B4Y5"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-runner-process-invocation-inputs/01ksyaz5
-  captured_at: 2026-05-31T15:44:53.065Z
-  commit: c18fc6ea96f9d1b48b17c1397eba5f0d7c747ccb
+  captured_at: 2026-05-31T16:37:08.895Z
+  commit: 1d6a27fd910eb070cda8dfe163783b1f94bff99e
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-runner-process-invocation-inputs/01ksyaz5
@@ -206,8 +206,35 @@ history:
         previous: 2026-05-31T15:44:49.786Z
     command: task-start
     timestamp: 2026-05-31T16:37:05.474Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-runner-process-invocation-inputs/01ksyaz5
+          captured_at: 2026-05-31T16:37:08.895Z
+          commit: 1d6a27fd910eb070cda8dfe163783b1f94bff99e
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-runner-process-invocation-inputs/01ksyaz5
+        previous:
+          review_url: null
+          branch: dispatch/task/task-runner-process-invocation-inputs/01ksyaz5
+          captured_at: 2026-05-31T15:44:53.065Z
+          commit: c18fc6ea96f9d1b48b17c1397eba5f0d7c747ccb
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-runner-process-invocation-inputs/01ksyaz5
+      submitted_at:
+        new: 2026-05-31T16:37:08.900Z
+        previous: 2026-05-31T15:44:53.071Z
+    command: task-submit
+    timestamp: 2026-05-31T16:37:08.900Z
 created_at: 2026-05-31T06:19:02.676Z
 started_at: 2026-05-31T16:37:05.474Z
-submitted_at: 2026-05-31T15:44:53.071Z
+submitted_at: 2026-05-31T16:37:08.900Z
 todos: []
 automation: eligible
