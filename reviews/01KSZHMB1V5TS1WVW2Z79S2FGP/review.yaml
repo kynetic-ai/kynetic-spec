@@ -25,6 +25,18 @@ checks:
     runner: kspec
     created_at: 2026-05-31T17:47:33.140Z
     completed_at: 2026-05-31T17:47:33.140Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with existing completeness warnings outside this task;
+      @runner-process-invocation-inputs AC annotations are present across behavioral
+      runner/CLI/dispatch tests.
+    name: kspec validate --completeness --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-31T17:47:47.677Z
+    completed_at: 2026-05-31T17:47:47.677Z
 events:
   - _ulid: 01KSZHMB1TK6RPRR2J5M8H130J
     actor: Jacob Chapel
@@ -53,6 +65,13 @@ events:
       status: pass
       name: kspec validate --alignment --warnings-ok
     timestamp: 2026-05-31T17:47:33.347Z
+  - _ulid: 01KSZJCA95TJD7EAYRE2MDF0AW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --completeness --warnings-ok
+    timestamp: 2026-05-31T17:47:47.877Z
 examined_commit: 02aa284a09030d0176fd82e26b6753bdbf093060
 external_links: []
 lifecycle_state: open
@@ -65,5 +84,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-05-31T17:34:42.235Z
-updated_at: 2026-05-31T17:47:33.140Z
+updated_at: 2026-05-31T17:47:47.677Z
 notes: []
