@@ -982,12 +982,38 @@ function timeoutResult(ms: number): Promise<PreflightExecutableResult> {
 }
 
 /**
+ * Default PATH the C library (`execvp` / `posix_spawnp`) falls back to when
+ * the spawned process env contains no `PATH` key. On Linux/macOS this is
+ * `_PATH_DEFPATH` from `<paths.h>` — typically `/usr/bin:/bin`. Mirroring it
+ * here keeps bare-command preflight in parity with `child_process.spawn`:
+ * when a runner with `env.inherit: none` and no `env.set.PATH` produces a
+ * PATH-less child env, spawn would still resolve `sh` / `cat` / `ls`
+ * because the libc default path is searched. Treating "PATH absent" as
+ * "search nothing" was rejecting commands the child could actually spawn.
+ *
+ * Windows uses a different lookup model (CreateProcess + PATHEXT) that the
+ * preflight probe does not model. Returning an empty default there keeps
+ * the bare-name probe conservative ("not found" rather than misreporting).
+ */
+const POSIX_DEFAULT_SEARCH_PATH = "/usr/bin:/bin";
+
+function defaultSearchPath(): string {
+  return process.platform === "win32" ? "" : POSIX_DEFAULT_SEARCH_PATH;
+}
+
+/**
  * Compute the PATH the spawned child will see, mirroring `spawnAgent`'s env
  * composition exactly. The runner-backed path uses the contract env verbatim
  * (`inheritParentEnv: false`), so PATH lookup for bare commands must use that
  * same env — not `process.env.PATH`. Otherwise preflight can pass when spawn
  * will fail, or fail when spawn would succeed, whenever the runner's
  * `env.inherit` / `env.set.PATH` differs from the daemon's host PATH.
+ *
+ * The distinction between "PATH key absent" and "PATH set to empty string"
+ * is preserved end-to-end: an absent PATH triggers the spawn-time libc
+ * default path (`POSIX_DEFAULT_SEARCH_PATH`), while an explicitly empty PATH
+ * searches no segments — matching what Node's spawn actually does in each
+ * case.
  */
 function resolveInvocationSearchPath(invocation: RunnerInvocation): string {
   // Precedence (low → high) must match spawner.ts:
@@ -1000,10 +1026,12 @@ function resolveInvocationSearchPath(invocation: RunnerInvocation): string {
   if (adapterPath !== undefined) pathValue = adapterPath;
   const contractPath = invocation.env.PATH;
   if (contractPath !== undefined) pathValue = contractPath;
-  // Empty string means "no PATH segments to search" — distinct from the
-  // host-PATH fallback used by `preflightExecutable` when searchPath is
-  // omitted entirely.
-  return pathValue ?? "";
+  // undefined → no env source set PATH → mirror the libc default path that
+  //   `child_process.spawn` (`posix_spawnp` / `execvp`) consults when PATH
+  //   is absent from the spawned process env.
+  // "" → PATH explicitly set to empty → spawn searches no segments, so
+  //   preflight must do the same; preserve the empty string verbatim.
+  return pathValue ?? defaultSearchPath();
 }
 
 /**

@@ -11,6 +11,7 @@
  * so nothing depends on the host filesystem layout or registered packages.
  */
 
+import { spawnSync } from "node:child_process";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -296,11 +297,14 @@ describe("preflightRunnerInvocation: bare command lookup uses invocation env PAT
   });
 
   // AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
-  it("fails preflight when the bare command is only on host PATH but runner-scoped PATH is empty", async () => {
-    // The bare command exists in the daemon's process.env.PATH but the
-    // runner config strips PATH from the child env. Spawn would fail
-    // with ENOENT; preflight must report unspawnable_command so we never
-    // silently rely on a host PATH leak.
+  it("fails preflight for a host-only bare command when the runner strips host PATH", async () => {
+    // The bare command exists only in the daemon's process.env.PATH (under a
+    // tempdir not in `_PATH_DEFPATH`). The runner uses env.inherit=none and
+    // does not set PATH, so the contract env has no PATH key. Node spawn
+    // would then resolve bare commands against the libc default path
+    // (`/usr/bin:/bin` on POSIX) — neither of which contains this tempdir.
+    // Preflight must report unspawnable_command so we never silently rely on
+    // a host PATH leak.
     const bareName = "host-only-tool";
     await writeExecutable(path.join(daemonBin, bareName));
     process.env.PATH = daemonBin;
@@ -369,6 +373,101 @@ describe("preflightRunnerInvocation: bare command lookup uses invocation env PAT
 
     await expect(preflightRunnerInvocation(contract)).resolves.toBeUndefined();
   });
+
+  // Direct parity probes against `child_process.spawn`. These two tests pin
+  // the distinction between "PATH absent from child env" (spawn falls back
+  // to the libc `_PATH_DEFPATH` ≈ `/usr/bin:/bin`) and "PATH explicitly set
+  // to empty" (spawn searches no segments). Earlier the preflight collapsed
+  // both cases into "search nothing", rejecting commands the child could
+  // actually spawn. The tests use `sh` because POSIX guarantees its presence
+  // under both `/usr/bin` and `/bin`; they skip on Windows where the lookup
+  // model differs.
+  const isPosix = process.platform !== "win32";
+
+  // AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+  it.skipIf(!isPosix)(
+    "preflight resolves a bare command via the libc default PATH when env.inherit=none and env.set.PATH is unset",
+    async () => {
+      // Sanity-check the parity claim against the real spawn first: if this
+      // host genuinely cannot spawn `sh` with env: {}, the test environment
+      // is too unusual to assert against and we'd want to know.
+      const spawnProbe = spawnSync("sh", ["-c", "exit 0"], { env: {} });
+      expect(spawnProbe.error).toBeUndefined();
+      expect(spawnProbe.status).toBe(0);
+
+      process.env.PATH = daemonBin; // host PATH cannot be the source of the hit
+
+      const registry = buildRegistry({
+        runners: {
+          fake: {
+            kind: "acp_process",
+            adapter: FAKE_ADAPTER_ID,
+            process: { executable: "sh" },
+            env: { inherit: "none" },
+          },
+        },
+      });
+      const contract = resolveRunnerInvocation(
+        makeInput({
+          agent: makeAgent({ runner: "fake" }),
+          registry,
+          hostEnv: { PATH: daemonBin },
+        }),
+      );
+      expect(contract.inheritParentEnv).toBe(false);
+      expect(contract.env.PATH).toBeUndefined();
+
+      // Preflight must mirror the spawn-time fallback to the libc default
+      // search path; otherwise it false-rejects this contract.
+      await expect(preflightRunnerInvocation(contract)).resolves.toBeUndefined();
+    },
+  );
+
+  // AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+  it.skipIf(!isPosix)(
+    "preflight rejects the same bare command when env.set.PATH is explicitly empty",
+    async () => {
+      // Spawn parity in the opposite direction: an explicitly empty PATH
+      // tells Node to search no segments, so `sh` cannot resolve even though
+      // `sh` exists in the libc default path. Preflight must reject — the
+      // empty-string case is preserved end-to-end and not collapsed into
+      // the libc-default fallback.
+      const spawnProbe = spawnSync("sh", ["-c", "exit 0"], { env: { PATH: "" } });
+      expect(spawnProbe.error?.code).toBe("ENOENT");
+
+      process.env.PATH = daemonBin;
+
+      const registry = buildRegistry({
+        runners: {
+          fake: {
+            kind: "acp_process",
+            adapter: FAKE_ADAPTER_ID,
+            process: { executable: "sh" },
+            env: { inherit: "none", set: { PATH: "" } },
+          },
+        },
+      });
+      const contract = resolveRunnerInvocation(
+        makeInput({
+          agent: makeAgent({ runner: "fake" }),
+          registry,
+          hostEnv: { PATH: daemonBin },
+        }),
+      );
+      expect(contract.inheritParentEnv).toBe(false);
+      expect(contract.env.PATH).toBe("");
+
+      let captured: RunnerResolutionError | null = null;
+      try {
+        await preflightRunnerInvocation(contract);
+      } catch (err) {
+        captured = err as RunnerResolutionError;
+      }
+      expect(captured).toBeInstanceOf(RunnerResolutionError);
+      expect(captured!.reason).toBe("unspawnable_command");
+      expect(captured!.details.unspawnable_reason).toBe("not_found");
+    },
+  );
 });
 
 describe("preflightExecutable: timeout and probe semantics", () => {
