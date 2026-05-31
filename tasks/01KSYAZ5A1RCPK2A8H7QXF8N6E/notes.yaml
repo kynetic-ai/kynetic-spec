@@ -1,1 +1,40 @@
-notes: []
+notes:
+  - _ulid: 01KSZ6T4WD0J2F9295K58VK21V
+    content: >-
+      Implementation summary:
+
+      - Added buildRunnerEnv() in src/agents/runners.ts that composes the adapter env: host
+      inheritance (none/minimal/ambient) with SANITIZED_ENV_VARS stripped, env.pass overlay (also
+      stripped), caller base env, env.set literals, privacy defaults
+      (CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC/DISABLE_TELEMETRY/DO_NOT_TRACK) gated on
+      disable_nonessential_traffic and overridable via env.set, env.secrets resolution (user_env
+      source) with a typed missing_secret preflight failure on required bindings, and a final
+      kspec-required invocation var overlay (KSPEC_NO_DAEMON, KSPEC_SESSION_ID,
+      KSPEC_SHADOW_MUTATION_LOCK_FILE when supplied) so env.set cannot accidentally override the
+      dispatch contract.
+
+      - Added src/agents/redaction.ts with createRedactor() + redactSecretValues(); the runner
+      contract exposes a redact(text) closure that captures resolved secret values without
+      re-exposing them.
+
+      - Routed session id injection through the runner contract on both runner-backed and
+      implicit/legacy paths. The implicit path receives a no-op redactor.
+      injectEnvForAdapter/removeEnvForAdapter remain for harness-specific config-file writes.
+
+      - Threaded mutationLockFile through ResolveRunnerInvocationInput so it lands as a
+      kspec-required var.
+
+
+      Tests added in tests/agent-runner-env.test.ts cover every inheritance mode, pass list, literal
+      overrides, required secret failure, optional secret omission, privacy default injection,
+      explicit privacy override via env.set, nested-agent env stripping from inherit and env.pass,
+      kspec-required var overlay (including overriding env.set attempts), and redaction helper
+      behavior plus contract.redact end-to-end.
+
+
+      Gates: format:check, lint --quiet (0 errors), oxlint on changed files (0 warnings), typecheck,
+      full npm test (10073 passed, 5 expected skips). kspec validate --refs/--alignment produced
+      only pre-existing baseline warnings.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-31T14:25:38.189Z
