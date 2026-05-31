@@ -6,6 +6,7 @@
  * - AC: @agent-definition-schema ac-meta-set-runner-preserves-fields
  * - AC: @agent-runner-configuration ac-agent-runner-reference
  * - AC: @agent-runner-configuration ac-adapter-field-backcompat
+ * - AC: @agent-runner-configuration ac-runner-precedence-over-adapter
  * - AC: @runner-operator-surfaces ac-agent-set-updates-runner
  * - AC: @runner-operator-surfaces ac-agent-list-shows-runner
  */
@@ -23,6 +24,7 @@ import {
   initGitRepo,
   testUlid,
 } from "./helpers/cli.js";
+import { deriveProjectKeySync } from "../src/agents/runner-config.js";
 
 interface AgentJsonRow {
   id: string;
@@ -321,5 +323,228 @@ describe("CLI: kspec agent list runner field", () => {
     const result = kspecRun("agent list", testDir);
     expect(result.exitCode).toBe(0);
     expect(result.stdout).not.toContain("runner:");
+  });
+});
+
+// ─── runner precedence over adapter (list + run) ────────────────────────────
+
+/**
+ * Write a system runner config under the CLI's isolated HOME so the
+ * subprocess loads it via the standard `~/.config/kspec/projects/<key>/runners.yaml`
+ * path. The test helper sets HOME to `<cwd>/.test-home` and creates the
+ * config dir at the first kspec invocation; this writer creates the file
+ * eagerly so the registry is populated before the CLI runs.
+ */
+function writeSystemRunnersForProject(projectDir: string, runners: object): void {
+  const projectKey = deriveProjectKeySync(projectDir);
+  const sysRunnersDir = path.join(
+    projectDir,
+    ".test-home",
+    ".config",
+    "kspec",
+    "projects",
+    projectKey,
+  );
+  fsSync.mkdirSync(sysRunnersDir, { recursive: true });
+  fsSync.writeFileSync(path.join(sysRunnersDir, "runners.yaml"), YAML.stringify({ runners }));
+}
+
+describe("CLI: runner precedence over adapter", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-agent-runner-precedence-");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  // AC: @agent-runner-configuration ac-runner-precedence-over-adapter
+  // AC: @runner-operator-surfaces ac-agent-list-shows-runner
+  it("agent list shows the runner-resolved adapter when both runner and adapter are set", () => {
+    writeAgentListProject(testDir, [
+      {
+        _ulid: testUlid("AGNT"),
+        id: "dual",
+        name: "Dual",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        adapter: "claude-agent-acp",
+        runner: "named-runner",
+        auto_approve: false,
+      },
+    ]);
+    writeSystemRunnersForProject(testDir, {
+      "named-runner": { kind: "acp_process", adapter: "codex-acp" },
+    });
+
+    const result = kspecRun("agent list --json", testDir);
+    expect(result.exitCode).toBe(0);
+    const data = JSON.parse(result.stdout) as AgentListJson;
+    expect(data.items[0].runner).toBe("named-runner");
+    expect(data.items[0].adapter).toBe("codex-acp");
+  });
+
+  // AC: @agent-runner-configuration ac-runner-precedence-over-adapter
+  // AC: @runner-operator-surfaces ac-agent-list-shows-runner
+  it("agent list shows the runner-resolved adapter for a runner-only agent", () => {
+    writeAgentListProject(testDir, [
+      {
+        _ulid: testUlid("AGNT"),
+        id: "runner-only",
+        name: "Runner Only",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        runner: "named-runner",
+        auto_approve: false,
+      },
+    ]);
+    writeSystemRunnersForProject(testDir, {
+      "named-runner": { kind: "acp_process", adapter: "codex-acp" },
+    });
+
+    const result = kspecRun("agent list --json", testDir);
+    expect(result.exitCode).toBe(0);
+    const data = JSON.parse(result.stdout) as AgentListJson;
+    expect(data.items[0].runner).toBe("named-runner");
+    expect(data.items[0].adapter).toBe("codex-acp");
+  });
+
+  // AC: @runner-operator-surfaces ac-agent-list-shows-runner — human-readable shows runner-resolved adapter
+  it("agent list human-readable shows runner-resolved adapter", () => {
+    writeAgentListProject(testDir, [
+      {
+        _ulid: testUlid("AGNT"),
+        id: "dual-human",
+        name: "Dual Human",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        adapter: "claude-agent-acp",
+        runner: "named-runner",
+        auto_approve: false,
+      },
+    ]);
+    writeSystemRunnersForProject(testDir, {
+      "named-runner": { kind: "acp_process", adapter: "codex-acp" },
+    });
+
+    const result = kspecRun("agent list", testDir);
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("codex-acp");
+    expect(result.stdout).not.toContain("claude-agent-acp");
+    expect(result.stdout).toContain("runner: named-runner");
+  });
+
+  // AC: @agent-runner-configuration ac-adapter-field-backcompat — adapter still surfaces when no runner
+  it("agent list falls back to agent.adapter when no runner is configured", () => {
+    writeAgentListProject(testDir, [
+      {
+        _ulid: testUlid("AGNT"),
+        id: "legacy",
+        name: "Legacy",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        adapter: "codex-acp",
+        auto_approve: false,
+      },
+    ]);
+
+    const result = kspecRun("agent list --json", testDir);
+    expect(result.exitCode).toBe(0);
+    const data = JSON.parse(result.stdout) as AgentListJson;
+    expect(data.items[0].adapter).toBe("codex-acp");
+  });
+
+  // AC: @agent-runner-configuration ac-runner-precedence-over-adapter
+  // AC: @cli-agent-commands ac-7 — overrides visible in dry-run
+  it("agent run --dry-run reports the runner-resolved adapter when runner is set", () => {
+    writeAgentListProject(testDir, [
+      {
+        _ulid: testUlid("AGNT"),
+        id: "dual-run",
+        name: "Dual Run",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        adapter: "claude-agent-acp",
+        runner: "named-runner",
+        auto_approve: false,
+      },
+    ]);
+    writeSystemRunnersForProject(testDir, {
+      "named-runner": { kind: "acp_process", adapter: "codex-acp" },
+    });
+
+    const data = kspecJson<{ adapter: string }>('agent run dual-run --dry-run "run me"', testDir);
+    expect(data.adapter).toBe("codex-acp");
+  });
+
+  // AC: @cli-agent-commands ac-7 — --adapter CLI override wins over runner resolution
+  it("agent run --adapter explicit override wins over runner resolution", () => {
+    writeAgentListProject(testDir, [
+      {
+        _ulid: testUlid("AGNT"),
+        id: "override",
+        name: "Override",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        adapter: "claude-agent-acp",
+        runner: "named-runner",
+        auto_approve: false,
+      },
+    ]);
+    writeSystemRunnersForProject(testDir, {
+      "named-runner": { kind: "acp_process", adapter: "codex-acp" },
+    });
+
+    const data = kspecJson<{ adapter: string }>(
+      'agent run override --dry-run --adapter claude-code-acp "run me"',
+      testDir,
+    );
+    expect(data.adapter).toBe("claude-code-acp");
+  });
+
+  // AC: @agent-runner-configuration ac-runner-precedence-over-adapter
+  // Unresolved runner reference fails fast at invocation rather than falling
+  // back silently to a stale adapter — the validation surface owns this gate.
+  it("agent run fails fast when runner reference does not resolve and no --adapter override is given", () => {
+    writeAgentListProject(testDir, [
+      {
+        _ulid: testUlid("AGNT"),
+        id: "broken",
+        name: "Broken",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        adapter: "claude-agent-acp",
+        runner: "missing-runner",
+        auto_approve: false,
+      },
+    ]);
+
+    const result = kspecRun('agent run broken --dry-run "run me"', testDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
+    expect(`${result.stdout}\n${result.stderr}`).toContain("missing-runner");
+  });
+
+  // AC: @cli-agent-commands ac-7 — --adapter unblocks a broken runner reference
+  it("agent run --adapter unblocks an unresolved runner reference", () => {
+    writeAgentListProject(testDir, [
+      {
+        _ulid: testUlid("AGNT"),
+        id: "rescue",
+        name: "Rescue",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        adapter: "claude-agent-acp",
+        runner: "missing-runner",
+        auto_approve: false,
+      },
+    ]);
+
+    const data = kspecJson<{ adapter: string }>(
+      'agent run rescue --dry-run --adapter codex-acp "run me"',
+      testDir,
+    );
+    expect(data.adapter).toBe("codex-acp");
   });
 });

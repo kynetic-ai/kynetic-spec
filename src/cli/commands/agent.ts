@@ -20,6 +20,10 @@ import { runInvocation } from "../../agent-runtime/invocation.js";
 import type { SessionUpdate } from "../../acp/index.js";
 import { buildPromptWithSkills, interpolateTemplate } from "../../agent-runtime/prompts.js";
 import { resolveAdapter } from "../../agents/adapters.js";
+import {
+  resolveEffectiveRunners,
+  type EffectiveRunnerRegistry,
+} from "../../agents/runner-config.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, output, success, warn, isJsonMode } from "../output.js";
 import { parseIntOption, validateEnumOption } from "../validators.js";
@@ -42,6 +46,44 @@ export function _setWebSocketCtor(ctor: typeof WebSocket | null): void {
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
+
+/**
+ * Resolve the effective adapter identity for an agent definition.
+ *
+ * When the agent declares a `runner` field that resolves in the effective
+ * runner registry, the runner's adapter wins over the legacy `adapter`
+ * field. When the runner is missing from the registry (or no runner is
+ * configured at all), the legacy `adapter` field is used. The final
+ * fallback is the documented default "claude-agent-acp" so display
+ * surfaces remain backwards-compatible for legacy agents.
+ *
+ * Returns both the resolved adapter and whether the runner reference was
+ * resolved, so callers (e.g., `kspec agent run`) can decide whether to
+ * reject an unresolved runner reference at invocation time.
+ *
+ * AC: @agent-runner-configuration ac-runner-precedence-over-adapter
+ * AC: @agent-runner-configuration ac-adapter-field-backcompat
+ * AC: @runner-operator-surfaces ac-agent-list-shows-runner
+ */
+function resolveAgentAdapter(
+  agentDef: { runner?: string; adapter?: string },
+  registry: EffectiveRunnerRegistry,
+): { adapterId: string; runnerResolved: boolean } {
+  if (agentDef.runner) {
+    const runner = registry.runners[agentDef.runner];
+    if (runner) {
+      return { adapterId: runner.adapter, runnerResolved: true };
+    }
+    return {
+      adapterId: agentDef.adapter ?? "claude-agent-acp",
+      runnerResolved: false,
+    };
+  }
+  return {
+    adapterId: agentDef.adapter ?? "claude-agent-acp",
+    runnerResolved: false,
+  };
+}
 
 /**
  * Format dispatch rules summary for display.
@@ -106,6 +148,24 @@ export function registerAgentCommands(program: Command): void {
         }
 
         const meta = await loadMetaContext(ctx);
+        // AC: @agent-runner-configuration ac-runner-precedence-over-adapter
+        // AC: @runner-operator-surfaces ac-agent-list-shows-runner
+        // Resolve the effective runner registry once so each entry can show
+        // its runner-derived adapter identity rather than the raw legacy
+        // adapter field. Loading failures degrade silently — agents without
+        // runner references fall back to the legacy adapter and remain
+        // listable.
+        let runnerRegistry: EffectiveRunnerRegistry = { runners: {} };
+        try {
+          const resolved = await resolveEffectiveRunners({
+            projectRoot: ctx.projectRoot,
+            shadowWorktreeDir: ctx.specDir,
+          });
+          runnerRegistry = resolved.registry;
+        } catch {
+          // Runner config is optional for list — agents without runner fields
+          // remain unaffected when the registry cannot be loaded.
+        }
         let agents = meta.agents;
 
         // AC: @trait-filterable-list ac-1 - automation status filter
@@ -192,13 +252,15 @@ export function registerAgentCommands(program: Command): void {
         // AC: @trait-json-output ac-2 - JSON includes all data available in human-readable mode
         // AC: @runner-operator-surfaces ac-agent-list-shows-runner — JSON includes runner when present
         // AC: @agent-runner-configuration ac-adapter-field-backcompat — adapter still emitted
+        // AC: @agent-runner-configuration ac-runner-precedence-over-adapter — emit runner-resolved adapter
         output(
           {
             items: paginated.map((a) => {
+              const { adapterId } = resolveAgentAdapter(a, runnerRegistry);
               const item: Record<string, unknown> = {
                 id: a.id,
                 name: a.name,
-                adapter: a.adapter ?? "claude-agent-acp",
+                adapter: adapterId,
                 dispatch: a.dispatch ?? [],
                 concurrency: a.concurrency ?? { max_concurrent: 1 },
               };
@@ -228,7 +290,10 @@ export function registerAgentCommands(program: Command): void {
             console.log();
 
             for (const a of paginated) {
-              console.log(`  ${chalk.cyan(a.id)}  ${chalk.gray(a.adapter ?? "claude-agent-acp")}`);
+              // AC: @runner-operator-surfaces ac-agent-list-shows-runner — show runner-resolved adapter
+              // AC: @agent-runner-configuration ac-runner-precedence-over-adapter
+              const { adapterId } = resolveAgentAdapter(a, runnerRegistry);
+              console.log(`  ${chalk.cyan(a.id)}  ${chalk.gray(adapterId)}`);
               // AC: @runner-operator-surfaces ac-agent-list-shows-runner
               // AC: @agent-runner-configuration ac-agent-runner-reference
               if (a.runner) {
@@ -305,8 +370,37 @@ export function registerAgentCommands(program: Command): void {
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
 
+        // AC: @agent-runner-configuration ac-runner-precedence-over-adapter
+        // Load the effective runner registry so a configured runner reference
+        // determines the resolved adapter / execution harness for this
+        // invocation rather than the legacy adapter field.
+        let runRegistry: EffectiveRunnerRegistry = { runners: {} };
+        try {
+          const resolved = await resolveEffectiveRunners({
+            projectRoot: ctx.projectRoot,
+            shadowWorktreeDir: ctx.specDir,
+          });
+          runRegistry = resolved.registry;
+        } catch {
+          // Defer to the registry's empty fallback — unresolved runner
+          // references are caught explicitly below.
+        }
+
         // Resolve the effective adapter
-        const adapterId = opts.adapter ?? agentDef.adapter ?? "claude-agent-acp";
+        // AC: @agent-runner-configuration ac-runner-precedence-over-adapter — runner wins over adapter
+        // AC: @agent-runner-configuration ac-adapter-field-backcompat — legacy adapter still works
+        // AC: @cli-agent-commands ac-7 — --adapter CLI override still wins over both
+        const { adapterId: runnerResolvedAdapter, runnerResolved } = resolveAgentAdapter(
+          agentDef,
+          runRegistry,
+        );
+        if (agentDef.runner && !runnerResolved && !opts.adapter) {
+          error(`Agent "${agentId}" references unknown runner "${agentDef.runner}".`, {
+            suggestion: `Configure the runner via system or project runner config, or run with --adapter <id> to override.`,
+          });
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+        const adapterId = opts.adapter ?? runnerResolvedAdapter;
         const _adapter = resolveAdapter(adapterId);
 
         // Build the prompt — respect agent prompt_template when --task is used
