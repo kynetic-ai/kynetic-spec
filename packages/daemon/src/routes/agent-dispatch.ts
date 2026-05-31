@@ -48,6 +48,10 @@ import { TaskStatusSchema } from "../../schema/common.js";
 import type { PubSubManager } from "../websocket/pubsub.js";
 import type { SessionEventData } from "@kynetic-ai/shared";
 import { enumUnion } from "./enum-utils.js";
+import {
+  resolveEffectiveRunners,
+  type EffectiveRunnerRegistry,
+} from "../../agents/runner-config.js";
 
 const VALID_TASK_STATUSES = new Set(TaskStatusSchema.options);
 
@@ -83,6 +87,7 @@ function createEngine(projectDir: string, cwd?: string, pubsub?: PubSubManager):
     onInvocationEvent: pubsub
       ? (event: InvocationEvent) => {
           // AC: @ui-api-aggregation ac-4 - Include task_title for display
+          // AC: @runner-resolution-and-preflight ac-dispatched-event-records-runner
           pubsub.broadcast(
             "agents",
             "agent_invocation",
@@ -93,6 +98,8 @@ function createEngine(projectDir: string, cwd?: string, pubsub?: PubSubManager):
               task_title: event.task_title ?? null,
               status: event.status,
               timestamp: event.timestamp,
+              ...(event.resolved_adapter ? { resolved_adapter: event.resolved_adapter } : {}),
+              ...(event.runner ? { runner: event.runner } : {}),
             },
             projectDir,
           );
@@ -652,6 +659,8 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
       // AC: @daemon-agent-dispatch ac-5 - Public status endpoint
       // AC: @ui-api-ref-resolution ac-1 - Include task_title for active invocations
       // AC: @dispatch-remote-branch-sync ac-degraded-status-api
+      // AC: @runner-operator-surfaces ac-daemon-dispatch-active-api-includes-runner
+      // AC: @runner-operator-surfaces ac-daemon-dispatch-queued-api-includes-runner
       .get("/status", async ({ projectContext }) => {
         const projectDir = projectContext.path;
         const engine = engines.get(projectDir);
@@ -661,10 +670,13 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
           id: string;
           name: string;
           adapter: string;
+          resolved_adapter: string;
+          runner?: string;
           completed_sessions: number;
         }> = [];
         let completedCounts: Record<string, number> = {};
         let refIndex: ReferenceIndex | null = null;
+        let runnerRegistry: EffectiveRunnerRegistry = { runners: {} };
         try {
           const ctx = await initContext(projectDir);
           const [meta, counts, tasks, items] = await Promise.all([
@@ -675,12 +687,34 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
           ]);
           completedCounts = counts;
           refIndex = new ReferenceIndex(tasks, items);
-          agentDefinitions = meta.agents.map((a) => ({
-            id: a.id,
-            name: a.name,
-            adapter: a.adapter ?? "claude-agent-acp",
-            completed_sessions: completedCounts[a.id] ?? 0,
-          }));
+          // AC: @runner-operator-surfaces ac-daemon-agent-api-includes-runner
+          // Resolve runner registry once per status request so each agent's
+          // resolved adapter mirrors what the dispatch engine would observe
+          // at preflight. Failures degrade silently — agents without runner
+          // references keep working off the legacy adapter field.
+          try {
+            const resolved = await resolveEffectiveRunners({
+              projectRoot: ctx.projectRoot,
+              shadowWorktreeDir: ctx.specDir,
+            });
+            runnerRegistry = resolved.registry;
+          } catch {
+            // Optional: runner registry is not required for this endpoint.
+          }
+          agentDefinitions = meta.agents.map((a) => {
+            const runnerEntry = a.runner ? runnerRegistry.runners[a.runner] : undefined;
+            const resolved = runnerEntry?.adapter ?? a.adapter ?? "claude-agent-acp";
+            return {
+              id: a.id,
+              name: a.name,
+              // Legacy `adapter` field preserved for clients that read it.
+              // AC: @agent-runner-configuration ac-adapter-field-backcompat
+              adapter: resolved,
+              resolved_adapter: resolved,
+              ...(a.runner ? { runner: a.runner } : {}),
+              completed_sessions: completedCounts[a.id] ?? 0,
+            };
+          });
         } catch {
           // Agent definitions unavailable — return empty array
         }
@@ -703,6 +737,30 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
                 task_ref: inv.taskRef ?? null,
                 task_title,
                 elapsed_ms: inv.elapsedMs,
+                // AC: @runner-operator-surfaces ac-daemon-dispatch-active-api-includes-runner
+                resolved_adapter: inv.resolvedAdapter,
+                ...(inv.runner ? { runner: inv.runner } : {}),
+              };
+            }) ?? [],
+          // AC: @runner-operator-surfaces ac-daemon-dispatch-queued-api-includes-runner
+          queued_invocations:
+            engineStatus?.queued?.map((q) => {
+              let task_title: string | null = null;
+              if (q.taskRef && refIndex) {
+                const result = refIndex.resolve(q.taskRef);
+                if (result.ok) {
+                  task_title = (result.item as { title?: string }).title ?? null;
+                }
+              }
+              const runnerEntry = q.runner ? runnerRegistry.runners[q.runner] : undefined;
+              const resolved = runnerEntry?.adapter ?? q.adapter ?? "claude-agent-acp";
+              return {
+                agent_id: q.agentId,
+                task_ref: q.taskRef ?? null,
+                task_title,
+                wait_ms: q.waitMs,
+                resolved_adapter: resolved,
+                ...(q.runner ? { runner: q.runner } : {}),
               };
             }) ?? [],
           queue_depth: engineStatus?.queuedInvocations ?? 0,

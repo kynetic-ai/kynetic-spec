@@ -1,0 +1,463 @@
+/**
+ * API tests for runner surfaces on daemon agent + dispatch routes.
+ *
+ * Covered ACs:
+ * - @runner-operator-surfaces ac-daemon-agent-api-includes-runner
+ * - @runner-operator-surfaces ac-daemon-dispatch-active-api-includes-runner
+ * - @runner-operator-surfaces ac-daemon-dispatch-queued-api-includes-runner
+ * - @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+ * - @agent-runner-configuration ac-adapter-field-backcompat
+ */
+
+import { mkdirSync, writeFileSync } from "node:fs";
+import * as path from "node:path";
+import type { Elysia } from "elysia";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { getDispatchEngine, stopAllEngines } from "../../dist/daemon/routes/agent-dispatch.js";
+import { deriveProjectKeySync } from "../../dist/agents/runner-config.js";
+import {
+  cleanupTempDir,
+  createTempDir,
+  createTestApp,
+  initGitRepo,
+  makeRequest,
+  setupInlineFixtures,
+  testUlid,
+} from "./helpers.js";
+
+let tempDir: string;
+let homeDir: string;
+let originalHome: string | undefined;
+let app: Elysia;
+
+const RUNNER_BACKED_AGENT_ULID = testUlid("AGNT", 1);
+const LEGACY_AGENT_ULID = testUlid("AGNT", 2);
+const UNKNOWN_RUNNER_AGENT_ULID = testUlid("AGNT", 3);
+
+// Synthetic env secret value — assert this never appears in API responses.
+// AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+const SECRET_SENTINEL = "kspec-secret-sentinel-do-not-leak-xY9";
+
+function buildMetaFixture(): string {
+  return `kynetic_meta: "1.0"
+agents:
+  - _ulid: ${RUNNER_BACKED_AGENT_ULID}
+    id: runner-worker
+    name: Runner Worker
+    description: Runner-backed worker agent
+    adapter: claude-agent-acp
+    runner: configured-runner
+    dispatch: []
+    capabilities: []
+    tools: []
+    skills: []
+    concurrency:
+      max_concurrent: 1
+    auto_approve: false
+  - _ulid: ${LEGACY_AGENT_ULID}
+    id: legacy-worker
+    name: Legacy Worker
+    description: Legacy adapter-only worker
+    adapter: claude-agent-acp
+    dispatch: []
+    capabilities: []
+    tools: []
+    skills: []
+    concurrency:
+      max_concurrent: 1
+    auto_approve: false
+  - _ulid: ${UNKNOWN_RUNNER_AGENT_ULID}
+    id: orphan-runner-worker
+    name: Orphan Runner Worker
+    description: Agent referencing a runner that is not registered
+    adapter: claude-agent-acp
+    runner: missing-runner
+    dispatch: []
+    capabilities: []
+    tools: []
+    skills: []
+    concurrency:
+      max_concurrent: 1
+    auto_approve: false
+`;
+}
+
+function writeSystemRunnerConfig(projectDir: string, home: string): void {
+  const projectKey = deriveProjectKeySync(projectDir);
+  const dir = path.join(home, ".config", "kspec", "projects", projectKey);
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(
+    path.join(dir, "runners.yaml"),
+    `runners:
+  configured-runner:
+    kind: acp_process
+    adapter: claude-agent-acp
+    env:
+      inherit: minimal
+      secrets:
+        FAKE_API_KEY:
+          source: env:KSPEC_TEST_SECRET
+          required: false
+`,
+  );
+}
+
+beforeEach(async () => {
+  tempDir = await createTempDir("kspec-daemon-api-runner-surfaces-");
+  homeDir = await createTempDir("kspec-daemon-api-runner-surfaces-home-");
+  originalHome = process.env.HOME;
+  process.env.HOME = homeDir;
+  // Force os.homedir() callers that cache through getuid() pwent on Linux to
+  // pick up the override — Node only consults HOME when the env var is set.
+  initGitRepo(tempDir);
+  setupInlineFixtures(tempDir, {
+    meta: buildMetaFixture(),
+    splitTasks: [],
+  });
+  writeSystemRunnerConfig(tempDir, homeDir);
+  // Make a sentinel value visible to the resolver so any failure to redact
+  // would surface it in the response body.
+  process.env.KSPEC_TEST_SECRET = SECRET_SENTINEL;
+  ({ app } = createTestApp());
+});
+
+afterEach(async () => {
+  await stopAllEngines();
+  delete process.env.KSPEC_TEST_SECRET;
+  if (originalHome === undefined) {
+    delete process.env.HOME;
+  } else {
+    process.env.HOME = originalHome;
+  }
+  await cleanupTempDir(tempDir);
+  await cleanupTempDir(homeDir);
+});
+
+function request(urlPath: string, init?: RequestInit): Promise<Response> {
+  return makeRequest(app, tempDir, urlPath, init);
+}
+
+// ─── GET /api/meta/agents — runner fields and validation ────────────────────
+
+describe("GET /api/meta/agents — runner-aware response", () => {
+  // AC: @runner-operator-surfaces ac-daemon-agent-api-includes-runner
+  // AC: @agent-runner-configuration ac-adapter-field-backcompat
+  it("returns runner-backed agent with runner, resolved_adapter, and valid runner_validation", async () => {
+    const response = await request("/api/meta/agents");
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    const agent = body.data.find((a: { id: string }) => a.id === "runner-worker");
+    expect(agent).toBeDefined();
+    // Legacy `adapter` field preserved for old clients.
+    expect(agent.adapter).toBe("claude-agent-acp");
+    // Runner-resolved adapter identity.
+    expect(agent.resolved_adapter).toBe("claude-agent-acp");
+    expect(agent.runner).toBe("configured-runner");
+    expect(agent.runner_validation).toBeDefined();
+    expect(agent.runner_validation.status).toBe("valid");
+    expect(Array.isArray(agent.runner_validation.diagnostics)).toBe(true);
+    expect(agent.runner_validation.diagnostics.length).toBe(0);
+  });
+
+  // AC: @runner-operator-surfaces ac-daemon-agent-api-includes-runner
+  // AC: @agent-runner-configuration ac-adapter-field-backcompat
+  it("returns legacy adapter-backed agent with resolved_adapter and no runner_validation block", async () => {
+    const response = await request("/api/meta/agents");
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    const agent = body.data.find((a: { id: string }) => a.id === "legacy-worker");
+    expect(agent).toBeDefined();
+    expect(agent.adapter).toBe("claude-agent-acp");
+    expect(agent.resolved_adapter).toBe("claude-agent-acp");
+    expect(agent.runner).toBeUndefined();
+    expect(agent.runner_validation).toBeUndefined();
+  });
+
+  // AC: @runner-operator-surfaces ac-daemon-agent-api-includes-runner
+  // AC: @runner-resolution-and-preflight ac-unknown-runner-reports-guidance
+  it("reports unknown_runner diagnostic when agent references a runner that is not registered", async () => {
+    const response = await request("/api/meta/agents");
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    const agent = body.data.find((a: { id: string }) => a.id === "orphan-runner-worker");
+    expect(agent).toBeDefined();
+    expect(agent.runner).toBe("missing-runner");
+    expect(agent.runner_validation).toBeDefined();
+    expect(agent.runner_validation.status).toBe("invalid");
+    const reasons = agent.runner_validation.diagnostics.map((d: { reason: string }) => d.reason);
+    expect(reasons).toContain("unknown_runner");
+  });
+
+  // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+  it("does not expose env secret literals or process env dump in the response payload", async () => {
+    const response = await request("/api/meta/agents");
+    expect(response.status).toBe(200);
+    const rawBody = await response.text();
+    // The secret env value must never appear anywhere in the serialized
+    // payload — diagnostics are pre-redacted and the daemon must not dump
+    // resolved env into the response shape.
+    expect(rawBody).not.toContain(SECRET_SENTINEL);
+    // Defensive: the source identifier appears in the config; surfacing the
+    // literal env var binding leaks no secret value, but the daemon should
+    // not echo the bound source map into the agent response.
+    expect(rawBody).not.toContain("KSPEC_TEST_SECRET");
+  });
+});
+
+// ─── PATCH /api/meta/agents/:id — runner field write path ───────────────────
+
+describe("PATCH /api/meta/agents/:id — runner field updates", () => {
+  // AC: @runner-operator-surfaces ac-web-ui-agent-edit-supports-runner
+  it("sets the runner field on an agent definition", async () => {
+    const response = await request("/api/meta/agents/legacy-worker", {
+      method: "PATCH",
+      body: JSON.stringify({ runner: "configured-runner" }),
+    });
+    expect(response.status).toBe(200);
+    const updated = await response.json();
+    expect(updated.runner).toBe("configured-runner");
+
+    // Reload via list to confirm persistence.
+    const listResponse = await request("/api/meta/agents");
+    const listBody = await listResponse.json();
+    const reloaded = listBody.data.find((a: { id: string }) => a.id === "legacy-worker");
+    expect(reloaded.runner).toBe("configured-runner");
+  });
+
+  // AC: @runner-operator-surfaces ac-web-ui-agent-edit-supports-runner
+  it("clears the runner field when null is supplied", async () => {
+    // First set, then clear.
+    await request("/api/meta/agents/legacy-worker", {
+      method: "PATCH",
+      body: JSON.stringify({ runner: "configured-runner" }),
+    });
+
+    const clearResponse = await request("/api/meta/agents/legacy-worker", {
+      method: "PATCH",
+      body: JSON.stringify({ runner: null }),
+    });
+    expect(clearResponse.status).toBe(200);
+    const updated = await clearResponse.json();
+    expect(updated.runner).toBeUndefined();
+
+    const listResponse = await request("/api/meta/agents");
+    const listBody = await listResponse.json();
+    const reloaded = listBody.data.find((a: { id: string }) => a.id === "legacy-worker");
+    expect(reloaded.runner).toBeUndefined();
+  });
+});
+
+// ─── GET /api/agent/status — runner fields on dispatch state ────────────────
+
+interface FakeQueueEntry {
+  agent: { id: string; name: string; runner?: string; adapter?: string };
+  change: { taskRef: string; toStatus: string };
+  retryCount: number;
+  nextRetryAt: number;
+  enqueuedAtMs: number;
+  sequence: number;
+  starvationDeferrals: number;
+}
+
+interface FakeActiveRecord {
+  invocationId: string;
+  sessionId: string;
+  agentId: string;
+  agentName: string;
+  taskRef: string | undefined;
+  role: "worker" | "reviewer";
+  startedAtMs: number;
+  resolvedAdapter: string;
+  runner: string | undefined;
+}
+
+interface EngineInternals {
+  queues: Map<string, FakeQueueEntry[]>;
+  activeInvocationDetails: Map<string, FakeActiveRecord>;
+  activeCount: Map<string, number>;
+  nextQueueSequence: number;
+}
+
+describe("GET /api/agent/status — runner fields on active and queued invocations", () => {
+  // AC: @runner-operator-surfaces ac-daemon-dispatch-active-api-includes-runner
+  it("includes resolved_adapter and runner on active invocations", async () => {
+    await request("/api/agent/dispatch", {
+      method: "POST",
+      body: JSON.stringify({ action: "start" }),
+    });
+
+    const engine = getDispatchEngine(tempDir);
+    expect(engine).toBeDefined();
+    const internal = engine as unknown as EngineInternals;
+    const invocationId = "INVK-runner-active";
+    const sessionId = "SESS-runner-active";
+    internal.activeInvocationDetails.set(invocationId, {
+      invocationId,
+      sessionId,
+      agentId: "runner-worker",
+      agentName: "Runner Worker",
+      taskRef: undefined,
+      role: "worker",
+      startedAtMs: Date.now() - 1000,
+      resolvedAdapter: "claude-agent-acp",
+      runner: "configured-runner",
+    });
+    internal.activeCount.set("runner-worker", 1);
+
+    const response = await request("/api/agent/status");
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body.active_invocations.length).toBeGreaterThanOrEqual(1);
+    const active = body.active_invocations.find(
+      (a: { session_id: string }) => a.session_id === sessionId,
+    );
+    expect(active).toBeDefined();
+    expect(active.resolved_adapter).toBe("claude-agent-acp");
+    expect(active.runner).toBe("configured-runner");
+  });
+
+  // AC: @runner-operator-surfaces ac-daemon-dispatch-active-api-includes-runner
+  it("omits the runner field on active invocations for legacy adapter-only agents", async () => {
+    await request("/api/agent/dispatch", {
+      method: "POST",
+      body: JSON.stringify({ action: "start" }),
+    });
+
+    const engine = getDispatchEngine(tempDir);
+    expect(engine).toBeDefined();
+    const internal = engine as unknown as EngineInternals;
+    const invocationId = "INVK-legacy-active";
+    const sessionId = "SESS-legacy-active";
+    internal.activeInvocationDetails.set(invocationId, {
+      invocationId,
+      sessionId,
+      agentId: "legacy-worker",
+      agentName: "Legacy Worker",
+      taskRef: undefined,
+      role: "worker",
+      startedAtMs: Date.now() - 500,
+      resolvedAdapter: "claude-agent-acp",
+      runner: undefined,
+    });
+    internal.activeCount.set("legacy-worker", 1);
+
+    const response = await request("/api/agent/status");
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    const active = body.active_invocations.find(
+      (a: { session_id: string }) => a.session_id === sessionId,
+    );
+    expect(active).toBeDefined();
+    expect(active.resolved_adapter).toBe("claude-agent-acp");
+    expect(active.runner).toBeUndefined();
+  });
+
+  // AC: @runner-operator-surfaces ac-daemon-dispatch-queued-api-includes-runner
+  it("exposes queued_invocations with runner and registry-resolved adapter", async () => {
+    await request("/api/agent/dispatch", {
+      method: "POST",
+      body: JSON.stringify({ action: "start" }),
+    });
+
+    const engine = getDispatchEngine(tempDir);
+    expect(engine).toBeDefined();
+    const internal = engine as unknown as EngineInternals;
+    const enqueuedAtMs = Date.now() - 250;
+    internal.queues.set("runner-worker", [
+      {
+        agent: {
+          id: "runner-worker",
+          name: "Runner Worker",
+          runner: "configured-runner",
+          adapter: "claude-agent-acp",
+        },
+        change: { taskRef: "@queued-task", toStatus: "in_progress" },
+        retryCount: 0,
+        nextRetryAt: 0,
+        enqueuedAtMs,
+        sequence: internal.nextQueueSequence++,
+        starvationDeferrals: 0,
+      },
+    ]);
+
+    const response = await request("/api/agent/status");
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(Array.isArray(body.queued_invocations)).toBe(true);
+    expect(body.queued_invocations.length).toBe(1);
+    const queued = body.queued_invocations[0];
+    expect(queued.agent_id).toBe("runner-worker");
+    expect(queued.runner).toBe("configured-runner");
+    expect(queued.resolved_adapter).toBe("claude-agent-acp");
+    expect(queued.task_ref).toBe("@queued-task");
+    expect(typeof queued.wait_ms).toBe("number");
+    expect(body.queue_depth).toBe(1);
+  });
+
+  // AC: @runner-operator-surfaces ac-daemon-dispatch-queued-api-includes-runner
+  it("omits the runner field on queued invocations for legacy adapter-only agents", async () => {
+    await request("/api/agent/dispatch", {
+      method: "POST",
+      body: JSON.stringify({ action: "start" }),
+    });
+
+    const engine = getDispatchEngine(tempDir);
+    expect(engine).toBeDefined();
+    const internal = engine as unknown as EngineInternals;
+    internal.queues.set("legacy-worker", [
+      {
+        agent: {
+          id: "legacy-worker",
+          name: "Legacy Worker",
+          adapter: "claude-agent-acp",
+        },
+        change: { taskRef: "@legacy-queue", toStatus: "in_progress" },
+        retryCount: 0,
+        nextRetryAt: 0,
+        enqueuedAtMs: Date.now(),
+        sequence: internal.nextQueueSequence++,
+        starvationDeferrals: 0,
+      },
+    ]);
+
+    const response = await request("/api/agent/status");
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body.queued_invocations.length).toBe(1);
+    const queued = body.queued_invocations[0];
+    expect(queued.agent_id).toBe("legacy-worker");
+    expect(queued.runner).toBeUndefined();
+    expect(queued.resolved_adapter).toBe("claude-agent-acp");
+  });
+
+  // AC: @runner-operator-surfaces ac-daemon-agent-api-includes-runner
+  it("agent_definitions entries include resolved_adapter and runner identity", async () => {
+    const response = await request("/api/agent/status");
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    const runner = body.agent_definitions.find((d: { id: string }) => d.id === "runner-worker");
+    expect(runner).toBeDefined();
+    expect(runner.runner).toBe("configured-runner");
+    expect(runner.resolved_adapter).toBe("claude-agent-acp");
+    // Legacy adapter field still populated for backwards compat.
+    expect(runner.adapter).toBe("claude-agent-acp");
+
+    const legacy = body.agent_definitions.find((d: { id: string }) => d.id === "legacy-worker");
+    expect(legacy).toBeDefined();
+    expect(legacy.runner).toBeUndefined();
+    expect(legacy.resolved_adapter).toBe("claude-agent-acp");
+    expect(legacy.adapter).toBe("claude-agent-acp");
+  });
+
+  // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+  it("dispatch status response never includes raw env secret values", async () => {
+    await request("/api/agent/dispatch", {
+      method: "POST",
+      body: JSON.stringify({ action: "start" }),
+    });
+    const response = await request("/api/agent/status");
+    expect(response.status).toBe(200);
+    const rawBody = await response.text();
+    expect(rawBody).not.toContain(SECRET_SENTINEL);
+  });
+});
