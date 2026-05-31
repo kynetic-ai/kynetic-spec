@@ -207,6 +207,13 @@ events:
       kind: blocker
       thread_ulid: 01KSYZR7SDZ5RPV9RR2FA1NXWX
     timestamp: 2026-05-31T12:22:15.798Z
+  - _ulid: 01KSYZRRMW97KCY96X6EKS2ABK
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSYZRREHEN6QW24S3KXSP83K
+    timestamp: 2026-05-31T12:22:32.860Z
 examined_commit: da7b1cff51e452cd9aa4edc844062ac0fa23830c
 external_links: []
 lifecycle_state: open
@@ -261,7 +268,24 @@ threads:
           security-setting preflight behavior."
         created_at: 2026-05-31T12:22:15.598Z
     kind: blocker
+  - _ulid: 01KSYZRREHEN6QW24S3KXSP83K
+    anchor:
+      type: code
+      commit: da7b1cff51e452cd9aa4edc844062ac0fa23830c
+      line_end: 185
+      line_start: 185
+      path: tests/mocks/acp-mock.js
+      side: head
+    entries:
+      - _ulid: 01KSYZRREJXJQR5Z63P92G9FXH
+        author: Jacob Chapel
+        body: "MUST-FIX: changed-file oxlint is not clean. Running npx oxlint on the changed files reports
+          eslint(prefer-template) at this newly added line: Unexpected string concatenation. The
+          review workflow requires focused changed-file lint to be clean, and the prior worker note
+          claimed focused oxlint was clean. Use a template literal for the JSON line append."
+        created_at: 2026-05-31T12:22:32.658Z
+    kind: blocker
 verdicts: []
 created_at: 2026-05-31T12:05:36.905Z
-updated_at: 2026-05-31T12:22:15.598Z
+updated_at: 2026-05-31T12:22:32.658Z
 notes: []
