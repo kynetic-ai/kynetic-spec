@@ -61,7 +61,7 @@ description: >
 spec_ref: "@agent-runner-configuration"
 plan_ref: "@plan-agent-runner-configuration-layer"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-runner-config-schema-types"
@@ -77,11 +77,11 @@ review_ref: "@01KSYKS60MMMDWBEC5N212NSM3"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-agent-runner-meta-cli/01ksyaz4
-  captured_at: 2026-05-31T08:48:26.079Z
-  commit: 985493b66cdf0a68e94620dd0418b00c5d580dde
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-05-31T09:46:59.649Z
+  commit: bf97a7ada6d476c76d9d7f043f15fd7b74ab7a07
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-agent-runner-meta-cli/01ksyaz4
 session_id: 01KSYMSPFCJCWWQFDGXDP0W1JR
 history:
   - author: Jacob Chapel
@@ -154,8 +154,35 @@ history:
         previous: 2026-05-31T08:37:56.140Z
     command: task-start
     timestamp: 2026-05-31T09:46:53.739Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-agent-runner-meta-cli/01ksyaz4
+          captured_at: 2026-05-31T09:46:59.649Z
+          commit: bf97a7ada6d476c76d9d7f043f15fd7b74ab7a07
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-agent-runner-meta-cli/01ksyaz4
+        previous:
+          review_url: null
+          branch: dispatch/task/task-agent-runner-meta-cli/01ksyaz4
+          captured_at: 2026-05-31T08:48:26.079Z
+          commit: 985493b66cdf0a68e94620dd0418b00c5d580dde
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-05-31T09:46:59.654Z
+        previous: 2026-05-31T08:48:26.081Z
+    command: task-submit
+    timestamp: 2026-05-31T09:46:59.654Z
 created_at: 2026-05-31T06:19:01.638Z
 started_at: 2026-05-31T09:46:53.739Z
-submitted_at: 2026-05-31T08:48:26.081Z
+submitted_at: 2026-05-31T09:46:59.654Z
 todos: []
 automation: eligible
