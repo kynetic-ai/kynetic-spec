@@ -87,6 +87,17 @@ checks:
     runner: oxlint
     created_at: 2026-05-31T15:53:36.275Z
     completed_at: 2026-05-31T15:53:36.275Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed fresh: 2636 suites passed; 10065 passed, 5 skipped of 10070; duration
+      2354.1s."
+    name: npm test -- --fresh
+    required: true
+    runner: npm test
+    created_at: 2026-05-31T16:00:49.944Z
+    completed_at: 2026-05-31T16:00:49.944Z
 events:
   - _ulid: 01KSZBJ9QT6R4TV2KSNAEF2GMF
     actor: Jacob Chapel
@@ -164,6 +175,13 @@ events:
       status: pass
       name: npx oxlint changed files
     timestamp: 2026-05-31T15:53:36.569Z
+  - _ulid: 01KSZC8EZP7FQKXWB51VAGQH8V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-05-31T16:00:50.166Z
 examined_commit: c18fc6ea96f9d1b48b17c1397eba5f0d7c747ccb
 external_links: []
 lifecycle_state: open
@@ -197,5 +215,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-05-31T15:48:43.898Z
-updated_at: 2026-05-31T15:53:36.275Z
+updated_at: 2026-05-31T16:00:49.944Z
 notes: []
