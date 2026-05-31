@@ -30368,6 +30368,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-31T06:19:04.383Z
+  automation: eligible
 - _ulid: 01KSYAZ7N9PA8VKT13R9V3P72K
   slugs:
     - task-runner-compatibility-regressions
