@@ -14437,7 +14437,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-31T21:27:31.179Z
+      updated_at: 2026-05-31T21:27:33.001Z
     integration:
       status: pending
       detail: null
@@ -14446,25 +14446,20 @@ workspaces:
       target_branch: dev
       target_commit: 86e8c5642d3c7983b182d5e0b11c7b149d57f5c9
       updated_at: 2026-05-31T21:27:31.179Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KSYAZ6MNX6EZCHZANWAT6X8T"
     task_slug: task-daemon-api-runner-surfaces
     timestamps:
       closed_at: null
       last_active_at: 2026-05-31T21:06:16.075Z
-      last_reconciled_at: 2026-05-31T21:27:31.179Z
+      last_reconciled_at: 2026-05-31T21:27:33.001Z
       created_at: 2026-05-31T20:05:09.183Z
-      updated_at: 2026-05-31T21:27:31.179Z
+      updated_at: 2026-05-31T21:27:33.001Z
     workspace_id: dispatch-workspace-01KSYAZ6MNX6EZCHZANWAT6X8T
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: c20c037375f8008d1321b30c69f128561e9c72fc
-        last_seen_at: 2026-05-31T21:05:48.963Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-api-runner-surfaces-01ksyaz6-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-daemon-api-runner-surfaces/01ksyaz6
