@@ -550,13 +550,12 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
   // AC: @runner-resolution-and-preflight ac-invalid-runner-blocks-before-prompt
   //
   // The resolver runs BEFORE any prompt is built or sent — failures here
-  // surface as exceptions without spawning the adapter process.
-  const baseInvocationEnv: Record<string, string> = {
-    ...env,
-    KSPEC_NO_DAEMON: "1",
-    ...(mutationLockFile ? { KSPEC_SHADOW_MUTATION_LOCK_FILE: mutationLockFile } : {}),
-  };
-
+  // surface as exceptions without spawning the adapter process. The resolver
+  // synthesizes the kspec-required invocation variables
+  // (KSPEC_NO_DAEMON, KSPEC_SESSION_ID, KSPEC_SHADOW_MUTATION_LOCK_FILE) so
+  // they are part of the resolved contract for both runner-backed and
+  // implicit/legacy paths.
+  // AC: @runner-invocation-semantics ac-session-env-injected-through-runner
   const runnerRegistry: EffectiveRunnerRegistry =
     options.runnerRegistry ?? (await loadRunnerRegistrySafely(specDir));
 
@@ -566,7 +565,8 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     cwd,
     sessionId,
     autoApprove,
-    env: baseInvocationEnv,
+    env,
+    mutationLockFile,
     adapterOverride: options.adapterOverride,
   });
 
@@ -709,12 +709,13 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     state.previousEnvValue = injectionResult?.previousValue;
 
     // ─── Spawn agent ──────────────────────────────────────────────────────
+    // The contract env already contains KSPEC_SESSION_ID + KSPEC_NO_DAEMON
+    // (synthesized by the resolver), so the spawner consumes it verbatim
+    // without re-overlaying session-id mid-flight.
+    // AC: @runner-invocation-semantics ac-session-env-injected-through-runner
     state.agent = await spawnAndInitialize(adapter, {
       cwd: contract.cwd,
-      env: {
-        ...invocationEnv,
-        KSPEC_SESSION_ID: sessionId,
-      },
+      env: invocationEnv,
       extraArgs: [...extraArgs],
       // Runner-backed invocations turn off host process.env inheritance so
       // the runner's env.inherit/pass/set policy is the only source of host

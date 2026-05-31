@@ -937,11 +937,13 @@ describe("resolveRunnerInvocation: env.secrets preflight", () => {
   it("does not resolve env.secrets on the implicit/legacy path", () => {
     // Legacy/adapter agents don't have a runner — env.secrets only lives on
     // the runner-backed path. Sanity check: implicit path returns without
-    // throwing even when no secrets are configured.
+    // throwing even when no secrets are configured. The contract env
+    // contains only the kspec-required invocation variables — no
+    // secret-derived entries.
     const agent = makeAgent({ adapter: "claude-agent-acp" });
     const result = resolveRunnerInvocation(makeInput({ agent }));
     expect(result.runnerId).toBeNull();
-    expect(result.env).toEqual({});
+    expect(Object.keys(result.env).toSorted()).toEqual(["KSPEC_NO_DAEMON", "KSPEC_SESSION_ID"]);
   });
 
   it("overlays secret values on top of env.set literals when both bind the same key", () => {
