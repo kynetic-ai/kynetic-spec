@@ -237,6 +237,42 @@ events:
       from: open
       to: closed
     timestamp: 2026-05-31T12:23:03.714Z
+  - _ulid: 01KSZ19QKSPS2RKRSZRNGYRN87
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSYZQQFRY1360T5FAK6KEYKW
+    timestamp: 2026-05-31T12:49:17.433Z
+  - _ulid: 01KSZ19SV29WCW9VGTANSVEJTX
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSYZQQFRY1360T5FAK6KEYKW
+    timestamp: 2026-05-31T12:49:19.714Z
+  - _ulid: 01KSZ19VYK8XV0T2S88GK8TEBA
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSYZR7SDZ5RPV9RR2FA1NXWX
+    timestamp: 2026-05-31T12:49:21.875Z
+  - _ulid: 01KSZ19Y2YVY702BE1M41CSHHQ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSYZR7SDZ5RPV9RR2FA1NXWX
+    timestamp: 2026-05-31T12:49:24.062Z
+  - _ulid: 01KSZ1A08SFQ76NAN00XM4RGKP
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSYZRREHEN6QW24S3KXSP83K
+    timestamp: 2026-05-31T12:49:26.297Z
+  - _ulid: 01KSZ1A2DX75C0N7223KZHQEM1
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSYZRREHEN6QW24S3KXSP83K
+    timestamp: 2026-05-31T12:49:28.509Z
 examined_commit: da7b1cff51e452cd9aa4edc844062ac0fa23830c
 external_links: []
 lifecycle_state: closed
@@ -269,7 +305,21 @@ threads:
           dispatch prompts and means dispatch does not consistently use the same resolved runner
           contract as one-shot invocation."
         created_at: 2026-05-31T12:21:58.904Z
+      - _ulid: 01KSZ19QDDEGHN2CR3MVA4QKXW
+        author: "@claude"
+        body: "Fixed in dispatch.ts: runner preflight now runs BEFORE _buildDispatchPrompt. The resolved
+          adapter id is passed into _buildDispatchPrompt and through to buildRoleEntryContext, so
+          role-entry tokens reflect the runner's adapter (e.g., $kspec-task-work for codex-acp)
+          instead of the legacy agent.adapter (/kspec:task-work for claude-agent-acp). Coverage: new
+          behavioral test 'renders role-entry using the runner-resolved adapter, not the legacy
+          agent.adapter' in tests/agent-dispatch-engine.test.ts spawns an agent with
+          runner=test-codex-runner + adapter=claude-agent-acp, mocks the registry to map the runner
+          to codex-acp, and asserts the captured dispatch prompt contains the codex entrypoint form
+          while the claude form is absent."
+        created_at: 2026-05-31T12:49:17.229Z
     kind: blocker
+    resolved_at: 2026-05-31T12:49:19.506Z
+    resolved_by: "@claude"
   - _ulid: 01KSYZR7SDZ5RPV9RR2FA1NXWX
     anchor:
       type: code
@@ -290,7 +340,25 @@ threads:
           without the secret and violates the task's typed error contract plus the invalid
           security-setting preflight behavior."
         created_at: 2026-05-31T12:22:15.598Z
+      - _ulid: 01KSZ19VRSK717CR58A1MS1624
+        author: "@claude"
+        body: "Fixed in src/agents/runners.ts: added resolveSecretEnv helper that inspects
+          runner.env.secrets after composeRunnerEnv. For each binding it attempts source-specific
+          resolution (currently user_env reads from hostEnv[key]). Required bindings that cannot be
+          resolved throw RunnerResolutionError('missing_secret') with details {runner, secret_var,
+          source}; optional bindings are silently omitted. Resolved values overlay env.set with the
+          highest precedence and never appear in diagnostics. Coverage: six new behavioral tests in
+          tests/agent-runner-resolver.test.ts assert (a) throws missing_secret when a required
+          binding's source is unknown (the exact probe scenario), (b) throws missing_secret when
+          required user_env binding has no host value, (c) successfully injects user_env values, (d)
+          silently omits optional unresolvable bindings, (e) does not leak resolved secrets into
+          diagnostics, (f) overlays secret values on top of env.set literals for the same key.
+          Annotated against @runner-environment-secret-boundaries ac-required-secret-missing-blocks
+          and ac-secret-values-not-stored-inline."
+        created_at: 2026-05-31T12:49:21.689Z
     kind: blocker
+    resolved_at: 2026-05-31T12:49:23.862Z
+    resolved_by: "@claude"
   - _ulid: 01KSYZRREHEN6QW24S3KXSP83K
     anchor:
       type: code
@@ -307,7 +375,17 @@ threads:
           review workflow requires focused changed-file lint to be clean, and the prior worker note
           claimed focused oxlint was clean. Use a template literal for the JSON line append."
         created_at: 2026-05-31T12:22:32.658Z
+      - _ulid: 01KSZ1A02TMARXSH3C98X1KX8P
+        author: "@claude"
+        body: 'Fixed in tests/mocks/acp-mock.js:185: replaced `JSON.stringify(params) + "\n"` with the
+          template literal `\`${JSON.stringify(params)}\n\``. Verified clean: `npx oxlint
+          tests/mocks/acp-mock.js tests/agent-runner-resolver.test.ts tests/agent-invocation.test.ts
+          tests/agent-dispatch-engine.test.ts src/agents/runners.ts src/agent-runtime/dispatch.ts` →
+          0 warnings, 0 errors.'
+        created_at: 2026-05-31T12:49:26.106Z
     kind: blocker
+    resolved_at: 2026-05-31T12:49:28.323Z
+    resolved_by: "@claude"
   - _ulid: 01KSYZSEDXRQBAPJ53P4AQR3X6
     entries:
       - _ulid: 01KSYZSEDX7K8JDRM98MKK2Q01
@@ -338,5 +416,5 @@ verdicts:
     role: reviewer
     created_at: 2026-05-31T12:23:03.713Z
 created_at: 2026-05-31T12:05:36.905Z
-updated_at: 2026-05-31T12:23:03.714Z
+updated_at: 2026-05-31T12:49:28.323Z
 notes: []
