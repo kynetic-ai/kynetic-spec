@@ -23,6 +23,7 @@ import { resolveAdapter } from "../../agents/adapters.js";
 import {
   resolveEffectiveRunners,
   type EffectiveRunnerRegistry,
+  type ResolveRunnersResult,
 } from "../../agents/runner-config.js";
 import {
   probeRunnerInvocationExecutable,
@@ -32,6 +33,11 @@ import {
   type PreflightUnspawnableReason,
   type RunnerInvocationSummary,
 } from "../../agents/runners.js";
+import {
+  buildRunnerValidationReport,
+  type RunnerValidationEntry,
+  type RunnerValidationReport,
+} from "../../agents/runner-validation.js";
 import { ulid } from "ulid";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, output, success, warn, isJsonMode } from "../output.js";
@@ -197,6 +203,98 @@ async function buildDryRunInvocationSummary(input: {
   return { resolved: true, summary };
 }
 
+type DryRunValidationState =
+  | (RunnerValidationEntry & { selected: true })
+  | { selected: false; reason: "no_runner" | "adapter_override" | "unknown_runner" }
+  | null;
+
+function renderDryRunValidationState(state: DryRunValidationState): void {
+  console.log();
+  console.log(chalk.gray("--- Runner validation ---"));
+  if (state === null || state.selected === false) {
+    const reason = state?.selected === false ? state.reason : "no_runner";
+    if (reason === "no_runner") {
+      console.log(chalk.gray("Validation: skipped (no runner configured — legacy adapter path)"));
+    } else if (reason === "adapter_override") {
+      console.log(chalk.gray("Validation: skipped (--adapter override bypasses runner)"));
+    } else {
+      console.log(
+        chalk.red(
+          "Validation: invalid (runner not present in effective registry — run `kspec agent runners validate`)",
+        ),
+      );
+    }
+    return;
+  }
+  if (state.status === "valid") {
+    console.log(chalk.green(`Validation: valid`));
+  } else {
+    console.log(chalk.red(`Validation: invalid`));
+    for (const issue of state.diagnostics) {
+      console.log(chalk.red(`  ✗ ${issue.reason}: ${issue.message}`));
+    }
+  }
+}
+
+function renderRunnerValidationReport(
+  report: RunnerValidationReport,
+  filter: string | undefined,
+): void {
+  if (filter) {
+    console.log(chalk.bold(`Runner: ${filter}`));
+  } else {
+    console.log(chalk.bold(`Runner validation`));
+  }
+  console.log();
+
+  // Report-level issues (config layer YAML errors, unknown runner filter, ...).
+  if (report.issues.length > 0) {
+    console.log(chalk.red("Configuration issues:"));
+    for (const issue of report.issues) {
+      console.log(chalk.red(`  ✗ ${issue.reason}: ${issue.message}`));
+    }
+    console.log();
+  }
+
+  if (report.runners.length === 0) {
+    if (report.issues.length === 0) {
+      console.log(chalk.gray("(no runners configured)"));
+    }
+    if (report.ok) {
+      console.log(`${chalk.green("OK")} runner validation passed (no entries to validate)`);
+    } else {
+      console.log(`${chalk.red("✗")} runner validation failed`);
+    }
+    return;
+  }
+
+  for (const entry of report.runners) {
+    const statusLabel = entry.status === "valid" ? chalk.green("[valid]") : chalk.red("[invalid]");
+    console.log(`  ${chalk.cyan(entry.runner)} ${statusLabel}`);
+    console.log(`    ${chalk.gray("kind:")} ${entry.kind}`);
+    console.log(`    ${chalk.gray("resolved_adapter:")} ${entry.resolved_adapter}`);
+    console.log(`    ${chalk.gray("command_source:")} ${entry.command_source}`);
+    console.log(`    ${chalk.gray("cwd_source:")} ${entry.cwd_source}`);
+    console.log(`    ${chalk.gray("args_source:")} ${entry.args_source}`);
+    if (entry.overrides.length > 0) {
+      console.log(`    ${chalk.gray("overrides:")} ${entry.overrides.join(", ")}`);
+    }
+    if (entry.diagnostics.length > 0) {
+      console.log(`    ${chalk.gray("diagnostics:")}`);
+      for (const issue of entry.diagnostics) {
+        console.log(`      ${chalk.red("✗")} ${chalk.gray(issue.reason)}: ${issue.message}`);
+      }
+    }
+  }
+
+  console.log();
+  if (report.ok) {
+    console.log(`${chalk.green("OK")} runner validation passed`);
+  } else {
+    console.log(`${chalk.red("✗")} runner validation failed`);
+  }
+}
+
 function renderDryRunInvocationSummary(diag: DryRunRunnerInvocationDiagnostic): void {
   if (!diag.resolved) {
     console.log();
@@ -313,18 +411,27 @@ export function registerAgentCommands(program: Command): void {
         const meta = await loadMetaContext(ctx);
         // AC: @agent-runner-configuration ac-runner-precedence-over-adapter
         // AC: @runner-operator-surfaces ac-agent-list-shows-runner
+        // AC: @runner-operator-surfaces ac-runner-validation-human-output
+        // AC: @runner-operator-surfaces ac-runner-validation-json-output
         // Resolve the effective runner registry once so each entry can show
         // its runner-derived adapter identity rather than the raw legacy
-        // adapter field. Loading failures degrade silently — agents without
-        // runner references fall back to the legacy adapter and remain
-        // listable.
+        // adapter field, and validate the runners in the same pass so the
+        // JSON output exposes a machine-readable `runner_validation` block
+        // per agent without re-running the resolver per-row. Loading
+        // failures degrade silently — agents without runner references fall
+        // back to the legacy adapter and remain listable.
         let runnerRegistry: EffectiveRunnerRegistry = { runners: {} };
+        const validationByRunner = new Map<string, RunnerValidationEntry>();
         try {
           const resolved = await resolveEffectiveRunners({
             projectRoot: ctx.projectRoot,
             shadowWorktreeDir: ctx.specDir,
           });
           runnerRegistry = resolved.registry;
+          const report = await buildRunnerValidationReport(resolved, { cwd: ctx.rootDir });
+          for (const entry of report.runners) {
+            validationByRunner.set(entry.runner, entry);
+          }
         } catch {
           // Runner config is optional for list — agents without runner fields
           // remain unaffected when the registry cannot be loaded.
@@ -416,18 +523,62 @@ export function registerAgentCommands(program: Command): void {
         // AC: @runner-operator-surfaces ac-agent-list-shows-runner — JSON includes runner when present
         // AC: @agent-runner-configuration ac-adapter-field-backcompat — adapter still emitted
         // AC: @agent-runner-configuration ac-runner-precedence-over-adapter — emit runner-resolved adapter
+        // AC: @runner-operator-surfaces ac-runner-validation-json-output — emit resolved_adapter + runner_validation
         output(
           {
             items: paginated.map((a) => {
-              const { adapterId } = resolveAgentAdapter(a, runnerRegistry);
+              const { adapterId, runnerResolved } = resolveAgentAdapter(a, runnerRegistry);
               const item: Record<string, unknown> = {
                 id: a.id,
                 name: a.name,
                 adapter: adapterId,
+                resolved_adapter: adapterId,
                 dispatch: a.dispatch ?? [],
                 concurrency: a.concurrency ?? { max_concurrent: 1 },
               };
               if (a.runner) item.runner = a.runner;
+              // Always emit `runner_validation` when an agent declares a
+              // runner so operators can read the validation outcome from
+              // structured output without re-running the validator. Agents
+              // without a runner field do not get the field — null would
+              // imply an outcome where there is none to report.
+              if (a.runner) {
+                const entry = validationByRunner.get(a.runner);
+                if (entry) {
+                  item.runner_validation = {
+                    status: entry.status,
+                    diagnostics: entry.diagnostics,
+                  };
+                } else if (runnerResolved) {
+                  // Defensive: registry contains the runner but validation
+                  // was skipped (e.g. resolveEffectiveRunners threw). Report
+                  // the gap rather than silently dropping the field.
+                  item.runner_validation = {
+                    status: "invalid",
+                    diagnostics: [
+                      {
+                        reason: "preflight_failure",
+                        message:
+                          "Runner registry loaded but validation report unavailable; rerun with `kspec agent runners validate` for details.",
+                      },
+                    ],
+                  };
+                } else {
+                  item.runner_validation = {
+                    status: "invalid",
+                    diagnostics: [
+                      {
+                        reason: "unknown_runner",
+                        message:
+                          `Runner "${a.runner}" is not present in the effective runner registry. ` +
+                          `Check the project runner config (project.runners.yaml in the kspec shadow worktree), ` +
+                          `the system runner config (runners.yaml under the daemon config dir), and the agent definition's runner field.`,
+                        details: { runner: a.runner, agent: a.id },
+                      },
+                    ],
+                  };
+                }
+              }
               if (a.session) item.session = a.session;
               if (a.budget) item.budget = a.budget;
               if (a.skills && a.skills.length > 0) item.skills = a.skills;
@@ -458,9 +609,25 @@ export function registerAgentCommands(program: Command): void {
               const { adapterId } = resolveAgentAdapter(a, runnerRegistry);
               console.log(`  ${chalk.cyan(a.id)}  ${chalk.gray(adapterId)}`);
               // AC: @runner-operator-surfaces ac-agent-list-shows-runner
+              // AC: @runner-operator-surfaces ac-runner-validation-human-output
               // AC: @agent-runner-configuration ac-agent-runner-reference
               if (a.runner) {
-                console.log(`    ${chalk.gray("runner:")} ${a.runner}`);
+                const entry = validationByRunner.get(a.runner);
+                let statusLabel: string;
+                if (!entry) {
+                  statusLabel = chalk.red("[invalid: unknown_runner]");
+                } else if (entry.status === "valid") {
+                  statusLabel = chalk.green("[valid]");
+                } else {
+                  statusLabel = chalk.red("[invalid]");
+                }
+                console.log(`    ${chalk.gray("runner:")} ${a.runner} ${statusLabel}`);
+                const diagnostics = entry?.diagnostics ?? [];
+                for (const issue of diagnostics) {
+                  console.log(
+                    `      ${chalk.red("✗")} ${chalk.gray(issue.reason)}: ${issue.message}`,
+                  );
+                }
               }
               console.log(`    ${chalk.gray("dispatch:")} ${formatDispatchRules(a)}`);
               console.log(
@@ -538,12 +705,13 @@ export function registerAgentCommands(program: Command): void {
         // determines the resolved adapter / execution harness for this
         // invocation rather than the legacy adapter field.
         let runRegistry: EffectiveRunnerRegistry = { runners: {} };
+        let resolvedRunners: ResolveRunnersResult | null = null;
         try {
-          const resolved = await resolveEffectiveRunners({
+          resolvedRunners = await resolveEffectiveRunners({
             projectRoot: ctx.projectRoot,
             shadowWorktreeDir: ctx.specDir,
           });
-          runRegistry = resolved.registry;
+          runRegistry = resolvedRunners.registry;
         } catch {
           // Defer to the registry's empty fallback — unresolved runner
           // references are caught explicitly below.
@@ -653,6 +821,37 @@ export function registerAgentCommands(program: Command): void {
             cwd: ctx.rootDir,
           });
 
+          // Reuse the runner validator so the dry-run JSON reports the
+          // same validation state operators would see from
+          // `kspec agent runners validate`. The validator never spawns
+          // processes; it shares the resolver + preflight probe path.
+          //
+          // AC: @runner-operator-surfaces ac-runner-validation-human-output
+          // AC: @runner-operator-surfaces ac-runner-validation-json-output
+          // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+          let validationState:
+            | (RunnerValidationEntry & { selected: true })
+            | { selected: false; reason: "no_runner" | "adapter_override" | "unknown_runner" }
+            | null = null;
+          if (opts.adapter) {
+            validationState = { selected: false, reason: "adapter_override" };
+          } else if (!agentDef.runner) {
+            validationState = { selected: false, reason: "no_runner" };
+          } else if (resolvedRunners) {
+            const report = await buildRunnerValidationReport(resolvedRunners, {
+              cwd: ctx.rootDir,
+              runner: agentDef.runner,
+            });
+            const entry = report.runners.find((r) => r.runner === agentDef.runner);
+            if (entry) {
+              validationState = { ...entry, selected: true };
+            } else {
+              validationState = { selected: false, reason: "unknown_runner" };
+            }
+          } else {
+            validationState = { selected: false, reason: "unknown_runner" };
+          }
+
           // AC: @trait-dry-run ac-6 - JSON output includes dry_run field
           output(
             {
@@ -664,6 +863,7 @@ export function registerAgentCommands(program: Command): void {
               max_tasks: effectiveMaxTasks ?? null,
               prompt: fullPromptForPreview,
               runner_invocation: dryRunSummary,
+              validation_state: validationState,
             },
             () => {
               console.log(chalk.yellow("DRY RUN - No agent will be spawned"));
@@ -677,6 +877,7 @@ export function registerAgentCommands(program: Command): void {
                 console.log(chalk.gray(`Timeout: ${effectiveTimeoutMinutes} min`));
               }
               renderDryRunInvocationSummary(dryRunSummary);
+              renderDryRunValidationState(validationState);
               console.log();
               console.log(chalk.gray("--- Prompt that would be sent ---"));
               console.log(fullPromptForPreview);
@@ -1440,6 +1641,69 @@ export function registerAgentCommands(program: Command): void {
       await new Promise<void>(() => {
         /* intentionally never resolves */
       });
+    });
+
+  // ─── kspec agent runners ──────────────────────────────────────────────────
+
+  // AC: @runner-operator-surfaces ac-runner-validation-human-output
+  // AC: @runner-operator-surfaces ac-runner-validation-json-output
+  // AC: @runner-operator-surfaces ac-runner-validation-exit-status
+  const runners = agent
+    .command("runners")
+    .description("Inspect and validate agent runner configuration");
+
+  runners
+    .command("validate")
+    .description("Validate effective runner configuration without spawning processes")
+    .option("--runner <name>", "Validate a single named runner")
+    .option("--json", "Output as JSON")
+    .action(async (opts) => {
+      try {
+        const ctx = await initContext();
+        if (!ctx.manifestPath) {
+          error(errors.project.noKspecProject);
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+
+        let resolved: ResolveRunnersResult;
+        try {
+          resolved = await resolveEffectiveRunners({
+            projectRoot: ctx.projectRoot,
+            shadowWorktreeDir: ctx.specDir,
+          });
+        } catch (err) {
+          error("Failed to resolve runner configuration", err);
+          process.exit(EXIT_CODES.ERROR);
+          return;
+        }
+
+        const report = await buildRunnerValidationReport(resolved, {
+          cwd: ctx.rootDir,
+          runner: opts.runner as string | undefined,
+        });
+
+        // AC: @runner-operator-surfaces ac-runner-validation-json-output
+        // AC: @runner-operator-surfaces ac-runner-validation-human-output
+        // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+        output(
+          {
+            ok: report.ok,
+            runners: report.runners,
+            issues: report.issues,
+          },
+          () => {
+            renderRunnerValidationReport(report, opts.runner as string | undefined);
+          },
+        );
+
+        // AC: @runner-operator-surfaces ac-runner-validation-exit-status
+        if (!report.ok) {
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+      } catch (err) {
+        error("Failed to validate runners", err);
+        process.exit(EXIT_CODES.ERROR);
+      }
     });
 
   // ─── kspec agent end-loop ─────────────────────────────────────────────────
