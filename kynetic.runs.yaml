@@ -56513,7 +56513,7 @@ runs:
     started_at: 2026-05-31T09:08:04.272Z
     completed_at: 2026-05-31T09:09:56.539Z
   - _ulid: 01KSYS8PJHQWB2YZPC7CQX8WEN
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -56569,7 +56569,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-31T10:31:24.810Z
-        completed_at: 2026-05-31T10:31:24.810Z
+        completed_at: 2026-05-31T10:31:49.082Z
+        notes: "Capture: no new inbox items, tasks, or observations created. Actionable friction was already
+          tracked by @01KQ1272 and @01KJJT519 / @task-stabilize-fresh-shard-test-runs. Success
+          patterns are already represented by the detached reviewer merge helper feature and review
+          evidence log observation @01KR2JD1, so duplicate capture was avoided."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T10:28:54.993Z
+    completed_at: 2026-05-31T10:31:49.085Z
