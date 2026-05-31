@@ -4236,7 +4236,7 @@ features:
           and enable the commented-out Codex env injection path.
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
@@ -4250,23 +4250,25 @@ features:
               a registered adapter is returned (not an ad-hoc npx fallback)
             when: |
               resolveAdapter("codex-acp") is called
-          - given: |
-              a ralph session uses codex-acp adapter
+          - given: An invocation uses the codex-acp adapter and has a kspec session id
             id: ac-2
-            then: |
-              KSPEC_SESSION_ID is injected into Codex config (shell_environment_policy.set)
-            when: |
-              injectEnvForAdapter is called
-          - given: |
-              a ralph session with codex-acp adapter exits
+            then: KSPEC_SESSION_ID is made available to child kspec commands launched by Codex through the
+              resolved invocation environment/configuration path
+            when: The adapter process environment or adapter-specific configuration is prepared
+          - given: An invocation uses the codex-acp adapter and the invocation closes or fails during startup
             id: ac-3
-            then: |
-              the Codex config is restored to its previous state
-            when: |
-              removeEnvForAdapter is called
+            then: Any temporary Codex environment/configuration changes made for the invocation are restored or
+              removed without leaking the session id into later invocations
+            when: Adapter or runner cleanup runs
         tags: []
         created: 2026-02-26T16:36:48.456Z
-        notes: []
+        notes:
+          - _ulid: 01KSYCDP95DW55C0MPR8QWZF6Y
+            content: Runner configuration plan @plan-agent-runner-configuration-layer preserves Codex session-id
+              injection and cleanup through the runner-aware invocation environment path.
+            supersedes: null
+            author: "@claude"
+            created_at: 2026-05-31T06:44:27.045Z
     created: 2026-01-17T05:27:36.354Z
   - _ulid: 01KF68D20XCSVJMJW2YZPBJGV7
     slugs:

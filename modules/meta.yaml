@@ -2542,16 +2542,12 @@ features:
           auto_approve defaults to false when omitted
         when: |
           The schema is validated
-      - given: |
-          Existing agent definitions in meta lack the new dispatch/adapter fields
+      - given: Existing agent definitions in meta lack the new dispatch, adapter, or runner fields
         id: ac-8
-        then: |
-          The schema validates successfully with all new fields using their
-          defaults (dispatch: [], adapter: undefined, skills: [],
-          budget: undefined, concurrency: {max_concurrent: 1},
-          auto_approve: false)
-        when: |
-          The meta manifest is loaded
+        then: "The schema validates successfully with all new fields using their defaults (dispatch: [],
+          adapter: undefined, runner: undefined, skills: [], budget: undefined, concurrency:
+          {max_concurrent: 1}, auto_approve: false)"
+        when: The meta manifest is loaded
       - given: |
           A user runs kspec meta add agent with required fields
         id: ac-9
@@ -2598,9 +2594,26 @@ features:
         then: The specified items are removed from the array field, or tags are added to or removed from the
           tags array
         when: kspec meta set <id> is run with remove or tag operations
+      - given: An agent definition includes a runner field
+        id: ac-runner-field-accepted
+        then: The runner field is accepted as an optional string reference to a named runner; runner name
+          resolution happens at invocation/preflight time rather than schema validation time
+        when: The meta manifest is loaded and validated
+      - given: An agent definition exists
+        id: ac-meta-set-runner-preserves-fields
+        then: The runner field is updated while every unspecified field, including adapter, dispatch,
+          skills, budget, concurrency, session, prompt template, tags, and auto_approve, is
+          preserved
+        when: kspec meta set <agent> sets or clears the runner field
     tags: []
     created: 2026-03-02T01:22:19.832Z
-    notes: []
+    notes:
+      - _ulid: 01KSYCDK82YD94Y038BF007CEK
+        content: Runner configuration plan @plan-agent-runner-configuration-layer extends this schema with
+          optional runner references and meta set/clear behavior.
+        supersedes: null
+        author: "@claude"
+        created_at: 2026-05-31T06:44:23.938Z
 modules:
   - _ulid: 01KHFBSP8ABF1QSGXRW86P323E
     slugs:
@@ -4519,7 +4532,7 @@ modules:
               can match on and template variables can reference.
             status:
               maturity: draft
-              implementation: implemented
+              implementation: in_progress
             depends_on: []
             implements: []
             relates_to: []
@@ -4534,16 +4547,14 @@ modules:
                   task_title, tags, priority, and automation status
                 when: |
                   A consumer reads the payload
-              - given: |
-                  An invocation.* event is emitted
+              - given: An invocation.* event is emitted
                 id: ac-2
-                then: |
-                  The payload includes session_id (which is the invocation's
-                  canonical identifier), agent_id, trigger, and duration_ms (for
-                  terminal events); task_ref is present when the invocation is
-                  task-scoped, absent otherwise
-                when: |
-                  A consumer reads the payload
+                then: The payload includes session_id (which is the invocation's canonical identifier), agent_id,
+                  trigger, adapter_id, resolved_adapter, and duration_ms (for terminal events);
+                  runner is present when the invocation used a named runner and absent when no named
+                  runner was configured; task_ref is present when the invocation is task-scoped and
+                  absent otherwise
+                when: A consumer reads the payload
               - given: |
                   A session.* event is emitted
                 id: ac-3
@@ -4574,7 +4585,13 @@ modules:
                   A consumer reads the payload
             tags: []
             created: 2026-03-18T05:31:44.534Z
-            notes: []
+            notes:
+              - _ulid: 01KSYCDMQZAXPZ7Q298BP90WV8
+                content: Runner configuration plan @plan-agent-runner-configuration-layer extends invocation
+                  payloads with resolved adapter and optional runner metadata.
+                supersedes: null
+                author: "@claude"
+                created_at: 2026-05-31T06:44:25.471Z
           - _ulid: 01KMA74DDSHC9GKD4C41Z94V4T
             slugs:
               - session-idle-event
