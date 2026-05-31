@@ -57880,9 +57880,22 @@ runs:
     completed_at: 2026-05-31T21:55:18.648Z
   - _ulid: 01KT01MES8RSJG4P6DQKNEVPA5
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-31T22:14:23.272Z
+        completed_at: 2026-05-31T22:14:51.291Z
+        notes: "What worked well: the detached review workflow was effective for a fix-cycle review. Reading
+          the previous review before the worker notes kept focus on the actual prior blocker; the
+          in-process daemon reproduction quickly disproved the apparent happy-path coverage and
+          exposed the runner-only legacy adapter gap; recording checks and verdict atomically with
+          kspec batch kept the review artifact coherent."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-31T22:14:51.291Z
+        completed_at: 2026-05-31T22:14:51.291Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T22:14:23.272Z
