@@ -56580,7 +56580,7 @@ runs:
     completed_at: 2026-05-31T10:31:49.085Z
   - _ulid: 01KSYVGNNG955RGWWYBPYVRND5
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -56595,7 +56595,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-31T11:09:03.782Z
-        completed_at: 2026-05-31T11:09:03.782Z
+        completed_at: 2026-05-31T11:10:12.666Z
+        notes: "Step 2 - searched for friction candidates: (a) dispatch._buildDispatchPrompt still passes
+          agent.adapter to buildRoleEntryContext, so runner-resolved adapters won't drive role-entry
+          text. Searched: @task-dispatch-runner-preflight is the follow-up task that will reuse the
+          resolver in validation mode and could naturally cover this. Not capturing — risk of
+          duplicating that task's scope. (b) Resolver errors throw out of runInvocation without
+          creating a session record. Correct behavior per ac-unknown-runner-blocks-before-spawn but
+          a possible UX gap for one-shot users. Speculative future enhancement, not a current
+          friction. Not capturing in loop mode. Conclusion: no high-confidence captures."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-31T11:10:12.666Z
+        completed_at: 2026-05-31T11:10:12.666Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-31T11:08:13.360Z
