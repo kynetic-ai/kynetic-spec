@@ -71,3 +71,54 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-31T15:41:47.866Z
+  - _ulid: 01KSZCXSJP63VXY6JB2WMJJZEC
+    content: >-
+      Fix cycle 2: closed the kspec mutation subprocess env boundary leak flagged by codex review
+      (probe captured REVIEW_SECRET_LEAK_PROBE in the task-note subprocess env via the resolved
+      runner env.secret binding).
+
+
+      Two-layer fix:
+
+      1) Contract boundary - src/agents/runners.ts: RunnerInvocation now exposes mutationEnv (only
+      KSPEC_NO_DAEMON, KSPEC_SESSION_ID, KSPEC_SHADOW_MUTATION_LOCK_FILE) and secretEnvKeys (env var
+      names sourced from env.secrets). buildRunnerEnv returns secretEnvKeys alongside secretValues.
+      The runner-backed and implicit/legacy paths both set both fields. buildKspecRequiredEnv is the
+      single source of truth for the dispatch contract vars; mutationEnv is built directly from it
+      so that env.set/env.pass/env.inherit/env.secrets/privacy defaults/baseEnv cannot bleed in.
+
+      2) Spawn boundary - src/agent-runtime/invocation.ts: failure/timeout paths pass
+      contract.mutationEnv (not invocationEnv) to addTaskNote/blockTask, plus contract.secretEnvKeys
+      via a new stripFromHostEnv param. runKspecCli now removes those keys from { ...process.env }
+      before overlaying the supplied env, closing the secondary leak where source: user_env
+      naturally mirrors the secret into the daemon's process.env.
+
+
+      Tests:
+
+      - tests/agent-runner-resolver.test.ts: three new tests verifying mutationEnv contains only the
+      three kspec-required vars (no secret/env.set/env.pass/baseEnv/host-inherit values present),
+      secretEnvKeys lists only actually-resolved bindings (not unresolved optionals), and the
+      implicit path returns empty secretEnvKeys with a 2-key mutationEnv.
+
+      - tests/agent-invocation-secret-redaction.test.ts: new describe block "mutation subprocess env
+      boundary (failure path)" runs a real failure-path runner-backed invocation with the secret
+      planted in host env (mirroring the reviewer's probe), uses kspec-capture-mock +
+      KSPEC_CAPTURE_ENV_VARS to record the task-note subprocess env, and asserts the secret var is
+      null in the captured env while KSPEC_NO_DAEMON/KSPEC_SESSION_ID are set and PATH is still
+      inherited (proving the strip is targeted, not broad).
+
+
+      Pre-existing redaction test had been silently relying on the leak path (KSPEC_CAPTURE_FILE was
+      being ferried via invocationEnv from invocation baseEnv into the mutation subprocess). After
+      my fix the boundary closes that path - the test was updated to set KSPEC_CAPTURE_FILE on
+      process.env in beforeEach so the subprocess inherits it via host env. This is itself a small
+      confirmation that the boundary now works.
+
+
+      Gates: format:check, lint --quiet (0 errors), changed-file oxlint on 4 files (0 warnings),
+      typecheck, full npm test (10079 passed, 5 expected skips), kspec validate
+      --refs/--alignment/--completeness all green within baseline.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-31T16:12:29.143Z
