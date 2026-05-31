@@ -532,6 +532,10 @@ export function registerAgentCommands(program: Command): void {
 
         const effectiveAgent = {
           ...agentDef,
+          // AC: @cli-agent-commands ac-7 — --adapter override bypasses the
+          // configured runner so the resolver takes the implicit path with
+          // the override adapter.
+          runner: opts.adapter ? undefined : agentDef.runner,
           adapter: adapterId,
           budget:
             timeoutOverride !== undefined || budgetOverride !== undefined
@@ -562,6 +566,9 @@ export function registerAgentCommands(program: Command): void {
 
         // AC: @cli-agent-commands ac-3 - no task binding when --task not provided
         // Pass basePrompt (not fullPromptForPreview) — runInvocation expands skills internally
+        // AC: @runner-resolution-and-preflight ac-one-shot-uses-runner-resolution
+        // Pass the pre-loaded runner registry so the resolver sees the same
+        // state as the CLI did for runner display + override decisions.
         const result = await runInvocation({
           agent: effectiveAgent,
           specDir: ctx.specDir,
@@ -570,6 +577,7 @@ export function registerAgentCommands(program: Command): void {
           prompt: basePrompt,
           trigger: "manual",
           onUpdate,
+          runnerRegistry: runRegistry,
         });
 
         // Ensure summary starts on its own line after streamed content

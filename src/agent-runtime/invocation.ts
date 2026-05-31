@@ -29,7 +29,12 @@ import { fileURLToPath } from "node:url";
 import { ulid } from "ulid";
 import type { Agent, SessionMode } from "../schema/meta.js";
 import { buildPromptWithSkills } from "./prompts.js";
-import { resolveAdapter } from "../agents/adapters.js";
+import {
+  resolveRunnerInvocation,
+  RunnerResolutionError,
+  type RunnerInvocation,
+} from "../agents/runners.js";
+import { resolveEffectiveRunners, type EffectiveRunnerRegistry } from "../agents/runner-config.js";
 import { spawnAndInitialize } from "../agents/spawner.js";
 import type { SpawnedAgent } from "../agents/spawner.js";
 import type { RequestPermissionRequest, SessionUpdate } from "../acp/index.js";
@@ -229,6 +234,20 @@ export interface InvocationOptions {
   timeoutMinutes?: number;
   /** Whether to use auto-approve (yolo) args for adapter */
   autoApprove?: boolean;
+  /**
+   * Explicit adapter override (e.g., `kspec agent run --adapter <id>`).
+   * Bypasses runner resolution and uses the override adapter directly.
+   * AC: @cli-agent-commands ac-7
+   */
+  adapterOverride?: string;
+  /**
+   * Pre-loaded effective runner registry. When omitted, runInvocation
+   * loads the layered runner config from the project root derived from
+   * `specDir`. Tests can pass `{ runners: {} }` to skip the load entirely.
+   * AC: @runner-resolution-and-preflight ac-one-shot-uses-runner-resolution
+   * AC: @runner-resolution-and-preflight ac-dispatch-uses-runner-resolution
+   */
+  runnerRegistry?: EffectiveRunnerRegistry;
   /** Extra environment variables for the spawned agent */
   env?: Record<string, string>;
   /** Shared lock file used to serialize shadow mutations across dispatch worktrees */
@@ -320,9 +339,12 @@ interface InvocationState {
   specDir: string;
   taskRef: string | undefined;
   adapterId: string;
+  runnerId: string | null;
   previousEnvValue?: string | null;
   agent: SpawnedAgent | null;
   acpSessionId: string | null;
+  /** Resolver cleanup hook to run after session close. */
+  runnerCleanup?: (() => Promise<void>) | undefined;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -522,12 +544,35 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
   const startTime = Date.now();
   const sessionId = options.sessionId ?? ulid();
 
-  // Resolve adapter
-  const adapterId = agent.adapter ?? "claude-agent-acp";
-  const adapter = resolveAdapter(adapterId);
+  // ─── Resolve runner invocation contract ─────────────────────────────────
+  // AC: @runner-resolution-and-preflight ac-one-shot-uses-runner-resolution
+  // AC: @runner-resolution-and-preflight ac-dispatch-uses-runner-resolution
+  // AC: @runner-resolution-and-preflight ac-invalid-runner-blocks-before-prompt
+  //
+  // The resolver runs BEFORE any prompt is built or sent — failures here
+  // surface as exceptions without spawning the adapter process.
+  const baseInvocationEnv: Record<string, string> = {
+    ...env,
+    KSPEC_NO_DAEMON: "1",
+    ...(mutationLockFile ? { KSPEC_SHADOW_MUTATION_LOCK_FILE: mutationLockFile } : {}),
+  };
 
-  // Build extra args for auto-approve
-  const extraArgs = autoApprove ? (adapter.autoApproveArgs ?? []) : [];
+  const runnerRegistry: EffectiveRunnerRegistry =
+    options.runnerRegistry ?? (await loadRunnerRegistrySafely(specDir));
+
+  const contract: RunnerInvocation = resolveRunnerInvocation({
+    agent,
+    registry: runnerRegistry,
+    cwd,
+    sessionId,
+    autoApprove,
+    env: baseInvocationEnv,
+    adapterOverride: options.adapterOverride,
+  });
+
+  const adapterId = contract.adapterId;
+  const adapter = contract.adapter;
+  const extraArgs = contract.extraArgs;
 
   // Resolve timeout: option overrides agent budget (applies to total session duration)
   const timeoutMinutes = options.timeoutMinutes ?? agent.budget?.timeout_minutes ?? 30;
@@ -538,6 +583,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
 
   // Resolve skill content for prompt
   // AC: @agent-invocation-lifecycle ac-7
+  // AC: @runner-invocation-semantics ac-skill-formatting-uses-resolved-adapter
   const fullPrompt = await buildPromptWithSkills({
     basePrompt: options.prompt,
     skillIds: agent.skills ?? [],
@@ -550,16 +596,14 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     specDir,
     taskRef,
     adapterId,
+    runnerId: contract.runnerId,
     previousEnvValue: undefined,
     agent: null,
     acpSessionId: null,
+    runnerCleanup: contract.cleanup,
   };
 
-  const invocationEnv: Record<string, string> = {
-    ...env,
-    KSPEC_NO_DAEMON: "1",
-    ...(mutationLockFile ? { KSPEC_SHADOW_MUTATION_LOCK_FILE: mutationLockFile } : {}),
-  };
+  const invocationEnv: Record<string, string> = contract.env;
 
   // ─── Prompt queue for multi-turn ─────────────────────────────────────────
   // AC: @multi-turn-session-lifecycle ac-8, ac-9, ac-17
@@ -633,15 +677,19 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
 
   // ─── Create session ───────────────────────────────────────────────────────
   // AC: @agent-invocation-lifecycle ac-1
+  // AC: @runner-resolution-and-preflight ac-session-metadata-records-runner
   const session = await createSession(sessionsDir, {
     id: sessionId,
     agent_type: adapterId,
     agent_id: agent.id,
     trigger,
     task_id: taskRef,
+    // Conditionally include runner so legacy invocations omit the field.
+    ...(contract.runnerId ? { runner: contract.runnerId } : {}),
   });
 
   // ─── Log agent.dispatched event ───────────────────────────────────────────
+  // AC: @runner-resolution-and-preflight ac-dispatched-event-records-runner
   await appendSessionEvent({
     type: "agent.dispatched",
     data: {
@@ -649,6 +697,8 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       agent_id: agent.id,
       adapter: adapterId,
       trigger,
+      // runner is present only when a named runner resolved the invocation.
+      ...(contract.runnerId ? { runner: contract.runnerId } : {}),
     },
   });
 
@@ -665,7 +715,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         ...invocationEnv,
         KSPEC_SESSION_ID: sessionId,
       },
-      extraArgs,
+      extraArgs: [...extraArgs],
       clientOptions: {
         methodTimeouts: {
           "session/prompt": promptRequestTimeoutMs,
@@ -1271,6 +1321,15 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
 
     // Restore env injection
     await removeEnvForAdapter(adapterId, state.previousEnvValue);
+
+    // Run resolver cleanup hook (no-op for runner kinds without temp state).
+    if (state.runnerCleanup) {
+      try {
+        await state.runnerCleanup();
+      } catch {
+        // Best-effort: cleanup must never propagate failures.
+      }
+    }
   }
 }
 
@@ -1339,3 +1398,29 @@ export class PromptQueueFullError extends Error {
     this.name = "PromptQueueFullError";
   }
 }
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+/**
+ * Load the effective runner registry from the project derived from `specDir`.
+ *
+ * Returns an empty registry on failure so legacy invocations (no project or
+ * system runner config on disk) behave identically to the pre-runner code
+ * path. Runner-backed agents that reference an undefined runner will throw
+ * `RunnerResolutionError("unknown_runner")` from the resolver instead.
+ */
+async function loadRunnerRegistrySafely(specDir: string): Promise<EffectiveRunnerRegistry> {
+  try {
+    const projectRoot = path.dirname(specDir);
+    const result = await resolveEffectiveRunners({
+      projectRoot,
+      shadowWorktreeDir: specDir,
+    });
+    return result.registry;
+  } catch {
+    return { runners: {} };
+  }
+}
+
+// Surface RunnerResolutionError to callers without re-importing from agents.
+export { RunnerResolutionError };

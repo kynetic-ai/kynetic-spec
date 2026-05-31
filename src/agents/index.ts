@@ -21,6 +21,21 @@ export {
   spawnAndInitialize,
 } from "./spawner.js";
 
+// Runner resolver and invocation contract
+export {
+  type ResolveRunnerInvocationInput,
+  type RunnerInvocation,
+  type RunnerInvocationDiagnostics,
+  type RunnerResolutionDetails,
+  type RunnerResolutionReason,
+  type SelectedAdapterDiagnostic,
+  type SelectedRunnerDiagnostic,
+  type SourceLayerDiagnostic,
+  DEFAULT_ADAPTER_ID,
+  RunnerResolutionError,
+  resolveRunnerInvocation,
+} from "./runners.js";
+
 // Runner configuration
 export {
   type DiagnosticsRetain,
