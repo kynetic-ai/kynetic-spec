@@ -25,3 +25,26 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-31T07:09:19.452Z
+  - _ulid: 01KSYEXPK3NNQZD4TQMXN3X5E0
+    content: "Implemented per planned approach. Files: src/agents/runner-config.ts (706 lines, Zod
+      schemas + merge + helpers), src/agents/index.ts (re-exports), tests/runner-config.test.ts (34
+      behavioral tests). Gates: typecheck OK, oxlint clean on changed files, oxfmt clean, full
+      9955-test suite passes. ACs covered: @agent-runner-configuration ac-named-runners-loaded,
+      ac-project-runner-storage-is-repo-managed, ac-system-runner-storage-is-local,
+      ac-system-overrides-project-values, ac-project-layer-accepts-portable-runner-values,
+      ac-project-layer-blocks-known-secret-keys, ac-effective-runner-kind-and-adapter-required;
+      @runner-environment-secret-boundaries ac-project-env-literals-are-non-secret,
+      ac-secret-env-names-use-bindings, ac-secret-bindings-system-only,
+      ac-secret-values-not-stored-inline. Out of scope per task: ac-agent-runner-reference /
+      ac-adapter-field-backcompat / ac-runner-precedence-over-adapter (handled by downstream
+      @task-agent-runner-meta-cli that adds runner field to AgentSchema). Schema decisions:
+      env.secrets binding only accepts {source, required}; no 'value', 'token', 'api_key', or
+      'secret' fields. Project layer is .strict() so
+      kind/adapter/process/env.secrets/env.inherit/env.pass all rejected. Project loader takes
+      resolved shadow worktree dir as input so this module does not bind to shadow detection logic.
+      System loader takes daemonConfigDir override option for tests. resolveEffectiveRunners()
+      short-circuits the project layer when no shadow dir is supplied so callers that load before
+      shadow detection do not accidentally read project state."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-31T07:28:08.803Z
