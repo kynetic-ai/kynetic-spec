@@ -19,3 +19,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-31T21:23:10.714Z
+  - _ulid: 01KSZZYD3Z2SG1PWWS19ZRSFRG
+    content: "Fix cycle 1: addressed review blocker on shared WebSocket contract. Added optional
+      runner/resolved_adapter fields to AgentInvocationEventData in packages/shared/src/websocket.ts
+      (matching the dispatch runtime broadcast), with new type tests in
+      packages/shared/tests/types.test.ts and a behavioral broadcast test in
+      tests/daemon-pubsub.test.ts. Re-verified all daemon agent API, dispatch active/queued, runner
+      validation, secret redaction, and shared API/response type ACs against the implementation.
+      Full suite green (2664 suites / 10152 tests). Typecheck/lint/format clean."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-31T21:44:52.095Z
