@@ -30214,7 +30214,7 @@
   type: task
   spec_ref: "@runner-resolution-and-preflight"
   plan_ref: "@plan-agent-runner-configuration-layer"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-runner-config-schema-types"
@@ -30226,7 +30226,7 @@
     - invocation
     - runners
   review_ref: "@01KSZ1K1R253CXQ46XANF984SJ"
-  notes_count: 6
+  notes_count: 7
   todos_count: 0
   created_at: 2026-05-31T06:19:01.962Z
   started_at: 2026-05-31T12:50:03.356Z

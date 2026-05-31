@@ -2,7 +2,121 @@ _ulid: 01KSZ1K1R253CXQ46XANF984SJ
 slugs: []
 title: Review task-runner-resolver-invocation-contract cycle 3
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed; existing reference warnings accepted by --warnings-ok.
+    name: kspec validate --refs --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-31T13:08:57.112Z
+    completed_at: 2026-05-31T13:08:57.112Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed; existing alignment warnings accepted by --warnings-ok.
+    name: kspec validate --alignment --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-31T13:08:59.448Z
+    completed_at: 2026-05-31T13:08:59.448Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed; existing completeness warnings accepted by --warnings-ok.
+    name: kspec validate --completeness --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-31T13:09:01.874Z
+    completed_at: 2026-05-31T13:09:01.874Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All matched files use the correct format; 963 files checked.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-05-31T13:09:04.210Z
+    completed_at: 2026-05-31T13:09:04.210Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 errors; repo warning baseline remains 743 warnings.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-05-31T13:09:06.457Z
+    completed_at: 2026-05-31T13:09:06.457Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 warnings and 0 errors on 13 changed files.
+    name: changed-file oxlint
+    required: true
+    runner: npx oxlint
+    created_at: 2026-05-31T13:09:08.712Z
+    completed_at: 2026-05-31T13:09:08.712Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit completed successfully.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-05-31T13:09:10.963Z
+    completed_at: 2026-05-31T13:09:10.963Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 188 tests passed across focused runner/invocation/dispatch coverage.
+    name: focused tests
+    required: true
+    runner: npm test -- --fresh tests/agent-runner-resolver.test.ts tests/agent-invocation.test.ts
+      tests/agent-dispatch-engine.test.ts
+    created_at: 2026-05-31T13:09:13.204Z
+    completed_at: 2026-05-31T13:09:13.204Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "10037 passed, 5 skipped, 0 failed. Log:
+      /tmp/kspec-test-cache/01KSZ1HRXEF9V44Z8Q4ST92F31/65b7f686c294fceb.log"
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-05-31T13:09:15.461Z
+    completed_at: 2026-05-31T13:09:15.461Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Found annotations for the runner-resolution, runner-configuration, runner-invocation, and
+      dispatch-event payload ACs in behavioral tests.
+    name: focused AC coverage sweep
+    required: true
+    runner: rg
+    created_at: 2026-05-31T13:09:17.728Z
+    completed_at: 2026-05-31T13:09:17.728Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: validateActionTemplates([runner/adapter_id/resolved_adapter], invocation.started) returns
+      unknown-field warnings for all three new payload fields.
+    name: action template field probe
+    required: true
+    runner: node --import tsx
+    created_at: 2026-05-31T13:09:19.937Z
+    completed_at: 2026-05-31T13:09:19.937Z
 events:
   - _ulid: 01KSZ1K1R1JDXSAR5FG8B4MMGF
     actor: Jacob Chapel
@@ -17,17 +131,182 @@ events:
       from: draft
       to: open
     timestamp: 2026-05-31T12:54:42.917Z
+  - _ulid: 01KSZ2DQV7GG5E9CBMZBCXJQSP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --refs --warnings-ok
+    timestamp: 2026-05-31T13:08:57.319Z
+  - _ulid: 01KSZ2DT409M225MY2X9HBAW79
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --alignment --warnings-ok
+    timestamp: 2026-05-31T13:08:59.648Z
+  - _ulid: 01KSZ2DWFD0C8S2PPWFVRJXZR8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --completeness --warnings-ok
+    timestamp: 2026-05-31T13:09:02.061Z
+  - _ulid: 01KSZ2DYREZEH7KXZDND6DWEPE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-05-31T13:09:04.398Z
+  - _ulid: 01KSZ2E0ZC1FK8RMSDCRHNHAMP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-05-31T13:09:06.668Z
+  - _ulid: 01KSZ2E35NSW4XD01NSRK9BVMV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file oxlint
+    timestamp: 2026-05-31T13:09:08.917Z
+  - _ulid: 01KSZ2E5BNH6EW5Y23ZGDKYNH1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-31T13:09:11.157Z
+  - _ulid: 01KSZ2E7H4AW1E7R5C2M5DEDJZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused tests
+    timestamp: 2026-05-31T13:09:13.381Z
+  - _ulid: 01KSZ2E9R23QNWJS1V24TGATVH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-31T13:09:15.650Z
+  - _ulid: 01KSZ2EBZ0NHXW8W897725HXEP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused AC coverage sweep
+    timestamp: 2026-05-31T13:09:17.920Z
+  - _ulid: 01KSZ2EE3XRVYF4K59T4DNRHQ2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: action template field probe
+    timestamp: 2026-05-31T13:09:20.125Z
+  - _ulid: 01KSZ2EG9FSKTEGKF1QK62CTME
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSZ2EG37FJQWQ08G1SQXAMST
+    timestamp: 2026-05-31T13:09:22.351Z
+  - _ulid: 01KSZ2EJG7NS6A1NEV6S5A70EG
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSZ2EJ9P4JYS8QY151EFM921
+    timestamp: 2026-05-31T13:09:24.615Z
+  - _ulid: 01KSZ2EMR4K5A2DT4RC9RYB7XA
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-31T13:09:26.916Z
+  - _ulid: 01KSZ2EMR4F92PDK8W05D4TKZ3
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-31T13:09:26.916Z
 examined_commit: da77a15827d9adb86c35b04c3c39a56858342c3e
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KSYAZ4YAGQG4JTV4P8VAW078"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KSZ2EG37FJQWQ08G1SQXAMST
+    anchor:
+      type: code
+      commit: da77a15827d9adb86c35b04c3c39a56858342c3e
+      line_end: 254
+      line_start: 254
+      path: src/agent-runtime/action-executor.ts
+      side: head
+    entries:
+      - _ulid: 01KSZ2EG37JN0B7D2VX9ZYY985
+        author: Jacob Chapel
+        body: "MUST-FIX: the invocation payload contract was extended with runner, adapter_id, and
+          resolved_adapter, but the action template validator still exposes only the old invocation
+          field list. Evidence: running node --import tsx with
+          validateActionTemplates([\"runner={{runner}} adapter={{adapter_id}}
+          resolved={{resolved_adapter}}\"], \"invocation.started\") returns unknown-field warnings
+          for all three variables. Impact: hooks/actions using the new invocation payload fields in
+          templates get false validation warnings, violating @dispatch-event-payload ac-2's contract
+          that payload fields are available to template variables. Update
+          KNOWN_EVENT_FIELDS.invocation and the related tests to include the new invocation fields."
+        created_at: 2026-05-31T13:09:22.151Z
+    kind: blocker
+  - _ulid: 01KSZ2EJ9P4JYS8QY151EFM921
+    entries:
+      - _ulid: 01KSZ2EJ9QAV8K2K5FHBXTGJWJ
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: kspec-agents.md; prior review @01KSYYSRG9QEWPCDNTED7FD476;
+          src/agents/runners.ts; src/agent-runtime/invocation.ts; src/agent-runtime/dispatch.ts;
+          src/agents/spawner.ts; src/schema/event-payloads.ts; src/sessions/types.ts;
+          src/sessions/store.ts; src/cli/commands/agent.ts; src/agents/runner-config.ts;
+          src/agent-runtime/action-executor.ts; tests/agent-runner-resolver.test.ts;
+          tests/agent-invocation.test.ts; tests/agent-dispatch-engine.test.ts;
+          tests/event-payloads.test.ts.
+
+          Commands run: kspec task get; kspec item get for @runner-resolution-and-preflight,
+          @agent-runner-configuration, @runner-invocation-semantics, @dispatch-event-payload; kspec
+          validate refs/alignment/completeness; npm run format:check; npm run lint -- --quiet; npx
+          oxlint changed files; npm run typecheck; focused npm test; full npm test;
+          validateActionTemplates node probe.
+
+          Claims verified: prior blockers for dispatch role-entry, required secret bindings, and
+          changed-file oxlint are addressed; runner-backed prompt formatting and dispatch preflight
+          tests pass.
+
+          Categories searched: correctness, edge cases, error handling, security/secret handling,
+          test quality, integration/event payload surfaces.
+        created_at: 2026-05-31T13:09:24.407Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-31T13:09:26.916Z
 created_at: 2026-05-31T12:54:22.722Z
-updated_at: 2026-05-31T12:54:42.680Z
+updated_at: 2026-05-31T13:09:26.916Z
 notes: []
