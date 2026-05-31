@@ -76,7 +76,7 @@ description: >
 spec_ref: "@runner-resolution-and-preflight"
 plan_ref: "@plan-agent-runner-configuration-layer"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-runner-config-schema-types"
@@ -93,8 +93,8 @@ review_ref: "@01KSYYSRG9QEWPCDNTED7FD476"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-runner-resolver-invocation-contract/01ksyaz4
-  captured_at: 2026-05-31T12:02:18.278Z
-  commit: da7b1cff51e452cd9aa4edc844062ac0fa23830c
+  captured_at: 2026-05-31T12:50:06.875Z
+  commit: da77a15827d9adb86c35b04c3c39a56858342c3e
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-runner-resolver-invocation-contract/01ksyaz4
@@ -227,8 +227,35 @@ history:
         previous: 2026-05-31T12:02:15.041Z
     command: task-start
     timestamp: 2026-05-31T12:50:03.356Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-runner-resolver-invocation-contract/01ksyaz4
+          captured_at: 2026-05-31T12:50:06.875Z
+          commit: da77a15827d9adb86c35b04c3c39a56858342c3e
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-runner-resolver-invocation-contract/01ksyaz4
+        previous:
+          review_url: null
+          branch: dispatch/task/task-runner-resolver-invocation-contract/01ksyaz4
+          captured_at: 2026-05-31T12:02:18.278Z
+          commit: da7b1cff51e452cd9aa4edc844062ac0fa23830c
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-runner-resolver-invocation-contract/01ksyaz4
+      submitted_at:
+        new: 2026-05-31T12:50:06.879Z
+        previous: 2026-05-31T12:02:18.281Z
+    command: task-submit
+    timestamp: 2026-05-31T12:50:06.880Z
 created_at: 2026-05-31T06:19:01.962Z
 started_at: 2026-05-31T12:50:03.356Z
-submitted_at: 2026-05-31T12:02:18.281Z
+submitted_at: 2026-05-31T12:50:06.879Z
 todos: []
 automation: eligible
