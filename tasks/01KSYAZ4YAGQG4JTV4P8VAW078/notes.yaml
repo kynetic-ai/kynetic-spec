@@ -49,3 +49,34 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-31T11:28:25.949Z
+  - _ulid: 01KSYYK91RAKVRTE4DS0Z5J0N1
+    content: >-
+      Fix cycle 1: addressed both review blockers.
+
+
+      Blocker 1 (runner process/env policy ignored): The resolver now applies process.executable
+      (overrides adapter.command via shallow clone — registered adapter is not mutated), process.cwd
+      (overrides contract.cwd), and composes the child env per env.inherit (none/minimal/ambient) +
+      env.pass + env.set. Added an inheritParentEnv flag on the contract; the spawner uses the
+      contract env verbatim when the resolver sets the flag false (runner-backed path), so
+      env.inherit: none/minimal is now actually enforced rather than overwritten by host process
+      env. The implicit/legacy path still inherits process.env for backward compatibility.
+
+
+      Blocker 2 (missing AC coverage): Added behavioral tests for both ACs.
+
+      - ac-dispatch-uses-runner-resolution: DispatchEngine._spawnInvocation with an unknown runner
+      is blocked by the resolver's typed unknown_runner error — proves dispatch routes through
+      resolveRunnerInvocation.
+
+      - ac-skill-formatting-uses-resolved-adapter: end-to-end runInvocation with runner=codex-runner
+      (codex-acp) and intentionally mismatched agent.adapter=claude-agent-acp produces a prompt with
+      codex-style skill references ($other-helper), not claude-style. The mock ACP gained a
+      MOCK_ACP_VERIFY_PROMPT_FILE option to capture the prompt for assertion.
+
+
+      Also re-verified the other task ACs are still covered. Full test suite green (10029 passed / 5
+      skipped / 0 failed). typecheck/format/focused-oxlint all clean.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-31T12:02:04.472Z
