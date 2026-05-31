@@ -57113,7 +57113,7 @@ runs:
     completed_at: 2026-05-31T15:46:27.598Z
   - _ulid: 01KSZCBNARRVJWXJ0GCXX9BGRF
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -57126,7 +57126,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-31T16:03:36.361Z
-        completed_at: 2026-05-31T16:03:36.361Z
+        completed_at: 2026-05-31T16:04:04.323Z
+        notes: "High-confidence items: (1) Friction: preflight code that attempts to model
+          child_process.spawn command lookup needs explicit parity probes against real spawn
+          behavior, especially absent vs empty PATH. Cause/effect was demonstrated by
+          spawnSync('sh', {env:{}}) succeeding while preflightExecutable('sh', {searchPath:''})
+          failed. (2) Existing friction already covered: reflection baseline list commands are too
+          noisy for large projects; found @01KSDZFN, so no duplicate capture. No success capture:
+          similar review-probe success patterns already exist in observations."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-31T16:04:04.323Z
+        completed_at: 2026-05-31T16:04:04.323Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-31T16:02:34.969Z
