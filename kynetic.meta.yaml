@@ -20178,6 +20178,24 @@ observations:
     resolved: false
     workflow_ref: "@01KSZCBN"
     created_at: 2026-05-31T16:04:28.499Z
+  - _ulid: 01KSZFP35VXA4VKE9M9VXR0YQY
+    type: success
+    content: Manual CLI repro during review exposed a missing dry-run diagnostic surface that
+      resolver-level tests did not cover. For runner/process work, reviewers should exercise every
+      named operator surface in the task, not only the core resolver.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-05-31T17:00:42.555Z
+  - _ulid: 01KSZFP3FENQDZ7ME62C2JYM5R
+    type: friction
+    content: Recording review check evidence and comments through shell arguments is fragile for
+      markdown or command text; a check evidence string triggered shell command substitution while
+      being recorded.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-05-31T17:00:42.862Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

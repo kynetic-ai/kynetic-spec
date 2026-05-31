@@ -3924,3 +3924,22 @@ inbox:
       - reflection
     added_by: "@claude"
     created_at: 2026-05-31T13:38:32.944Z
+  - _ulid: 01KSZFP3PJ90PX2K82RECQ3X2Q
+    text: Add or document file-based payload support for kspec review comment bodies and review check
+      evidence, so reviewers can avoid shell quoting issues when recording long markdown or command
+      text.
+    tags:
+      - reflection
+      - review
+    added_by: Jacob Chapel
+    created_at: 2026-05-31T17:00:43.090Z
+  - _ulid: 01KSZFP3RVE8BJXK0JE5BRRJJW
+    text: "Review the full-suite requirement for review cycles after a confirmed blocker: consider
+      guidance for when cached or CI evidence is sufficient before request_changes, while preserving
+      full-suite gates before approval and merge."
+    tags:
+      - reflection
+      - review
+      - testing
+    added_by: Jacob Chapel
+    created_at: 2026-05-31T17:00:43.163Z
