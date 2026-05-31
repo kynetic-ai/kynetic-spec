@@ -201,6 +201,13 @@ events:
       status: fail
       name: manual spawn/preflight parity
     timestamp: 2026-05-31T16:00:53.233Z
+  - _ulid: 01KSZC91XW1G6TRSYKD06B2RKD
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSZC91P9ZJGVTMAJ3DX86YX4
+    timestamp: 2026-05-31T16:01:09.564Z
 examined_commit: c18fc6ea96f9d1b48b17c1397eba5f0d7c747ccb
 external_links: []
 lifecycle_state: open
@@ -232,7 +239,24 @@ threads:
           child_process.spawn lookup behavior for the unset case."
         created_at: 2026-05-31T15:52:42.894Z
     kind: blocker
+  - _ulid: 01KSZC91P9ZJGVTMAJ3DX86YX4
+    entries:
+      - _ulid: 01KSZC91PAX9X1FFN6VG1Z4VYW
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: kspec-agents.md, src/agents/runners.ts,
+          src/agents/runner-config.ts, src/agents/spawner.ts, src/agents/adapters.ts,
+          src/agent-runtime/invocation.ts, tests/agent-runner-process.test.ts,
+          tests/agent-runner-resolver.test.ts, prior review @01KSZ8KET3PHHYA5ECMM63A4Q6. Commands
+          run: kspec task get, kspec item get, kspec review for-task/get/add/open/comment/check, git
+          diff/log/show, kspec validate refs/alignment/completeness, npm run format:check, npm run
+          lint -- --quiet, npx oxlint changed files, npm run typecheck, npm test focused fresh, npm
+          test full fresh, node spawnSync parity probe, tsx preflightExecutable probe. Claims
+          verified: fix-cycle PATH claim partially verified; runner env PATH tests pass, but
+          absent-PATH spawn parity remains wrong. Categories searched: correctness, edge cases,
+          error handling, diagnostics secrecy, test quality, integration with spawnAgent."
+        created_at: 2026-05-31T16:01:09.322Z
+    kind: nit
 verdicts: []
 created_at: 2026-05-31T15:48:43.898Z
-updated_at: 2026-05-31T16:00:52.985Z
+updated_at: 2026-05-31T16:01:09.322Z
 notes: []
