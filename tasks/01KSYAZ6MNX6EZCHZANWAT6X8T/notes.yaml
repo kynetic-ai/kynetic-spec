@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KSZW5T8DHF5WN98RV9GEV8QK
+    content: "Plan: extend ActiveInvocationRecord + InvocationEvent with runner/resolved_adapter; thread
+      runner registry through /api/meta/agents and /api/agent/status; surface
+      runner+resolved_adapter on agent_invocation WebSocket payload; expose AgentRunnerValidation in
+      shared types; add AgentDispatchStatus queued_invocations array. Validation report enrichment
+      guards against initContext on warm-cache reads by resolving runner registry directly from
+      projectContext.path."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-31T20:39:00.621Z
