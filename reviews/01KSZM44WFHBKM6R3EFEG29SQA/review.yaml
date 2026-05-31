@@ -44,6 +44,16 @@ checks:
     runner: kspec
     created_at: 2026-05-31T18:31:52.735Z
     completed_at: 2026-05-31T18:31:52.735Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "oxlint src/ tests/ packages/ --quiet: 0 errors (repo warning baseline: 743 warnings)"
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-05-31T18:32:08.359Z
+    completed_at: 2026-05-31T18:32:08.359Z
 events:
   - _ulid: 01KSZM44WFS0YJP2K532VFMN6J
     actor: Jacob Chapel
@@ -86,6 +96,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-05-31T18:31:52.963Z
+  - _ulid: 01KSZMXGKP2HWKQ94X64W7WX07
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-05-31T18:32:08.566Z
 examined_commit: ca631996909c20503cb820c62f9439e0b3e72ac7
 external_links: []
 lifecycle_state: open
@@ -98,5 +115,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-05-31T18:18:17.359Z
-updated_at: 2026-05-31T18:31:52.735Z
+updated_at: 2026-05-31T18:32:08.359Z
 notes: []
