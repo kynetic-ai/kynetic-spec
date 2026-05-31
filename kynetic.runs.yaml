@@ -56789,7 +56789,7 @@ runs:
     completed_at: 2026-05-31T12:52:51.702Z
   - _ulid: 01KSZ2G301DKMKHJAE5MQV9GTC
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -56804,7 +56804,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-31T13:10:40.305Z
-        completed_at: 2026-05-31T13:10:40.305Z
+        completed_at: 2026-05-31T13:10:50.740Z
+        notes: "Friction points: dispatch invocation payload fields are declared in canonical
+          schemas/registry, but action template validation still keeps a separate hard-coded
+          KNOWN_EVENT_FIELDS list, so new fields can be emitted and registry-visible while template
+          validation remains stale. A minor workflow friction also appeared when a large kspec batch
+          command with nested quotes and template braces failed via inline JSON; the existing
+          heredoc convention handled it, so this does not need new tracking."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-31T13:10:50.740Z
+        completed_at: 2026-05-31T13:10:50.740Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T13:10:14.274Z
