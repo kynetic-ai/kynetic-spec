@@ -172,6 +172,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-05-31T18:32:48.097Z
+  - _ulid: 01KSZMZD64HE1X5X2RS635E5TW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSZMZCZKHMTZTPMAHFRVGG0F
+    timestamp: 2026-05-31T18:33:10.596Z
 examined_commit: ca631996909c20503cb820c62f9439e0b3e72ac7
 external_links: []
 lifecycle_state: open
@@ -181,8 +188,26 @@ subject:
   content_hash: ""
   ref: "@01KSYAZ5Z5S4GHWAZBTYGSCTTM"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KSZMZCZKHMTZTPMAHFRVGG0F
+    entries:
+      - _ulid: 01KSZMZCZKM56PZCGH8FY7MV7T
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md, task @01KSYAZ5Z5S4GHWAZBTYGSCTTM, specs
+          @runner-invocation-semantics, @runner-resolution-and-preflight,
+          @runner-environment-secret-boundaries, tests/agent-dispatch-engine.test.ts,
+          src/agent-runtime/dispatch.ts, src/agents/runners.ts, src/agent-runtime/invocation.ts,
+          src/agents/adapters.ts. Commands run: git diff/stat/check against dev snapshot, AC
+          annotation search, kspec validate refs/alignment/completeness, format, lint, changed-file
+          oxlint, typecheck, focused tests, full npm test. Claims verified: worker/reviewer
+          runner-backed dispatch reaches runInvocation with runner registry; invalid adapter,
+          missing secret, unknown runner, and unspawnable command paths skip before runInvocation
+          and add task notes; legacy adapter path still starts invocation. Categories searched:
+          correctness, edge cases, error handling, secret diagnostics, test quality, integration. No
+          blocking findings."
+        created_at: 2026-05-31T18:33:10.387Z
+    kind: nit
 verdicts: []
 created_at: 2026-05-31T18:18:17.359Z
-updated_at: 2026-05-31T18:32:47.889Z
+updated_at: 2026-05-31T18:33:10.387Z
 notes: []
