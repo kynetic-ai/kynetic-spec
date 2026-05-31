@@ -37,6 +37,8 @@
  * AC: @runner-environment-secret-boundaries ac-required-secret-missing-blocks
  */
 
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
 import type { Agent } from "../schema/meta.js";
 import { getAdapter, resolveAdapter, type AgentAdapter } from "./adapters.js";
 import { SANITIZED_ENV_VARS } from "./spawner.js";
@@ -97,6 +99,7 @@ export type RunnerResolutionReason =
   | "unknown_runner"
   | "invalid_adapter"
   | "invalid_command_reference"
+  | "unspawnable_command"
   | "invalid_cwd"
   | "invalid_args"
   | "missing_secret"
@@ -168,6 +171,28 @@ export interface RunnerInvocationDiagnostics {
   fieldOrigins?: {
     kind: RunnerFieldOrigin;
     adapter: RunnerFieldOrigin;
+    /**
+     * Origin of `process.executable` (the configured command reference). `null`
+     * when the runner did not declare an executable and the adapter's
+     * registered command is used.
+     *
+     * AC: @runner-process-invocation-inputs ac-invocation-diagnostics-identify-inputs
+     */
+    processExecutable: RunnerFieldOrigin | null;
+    /**
+     * Origin of `process.args`. `null` when the runner did not declare extra
+     * arguments.
+     *
+     * AC: @runner-process-invocation-inputs ac-invocation-diagnostics-identify-inputs
+     */
+    processArgs: RunnerFieldOrigin | null;
+    /**
+     * Origin of `process.cwd`. `null` when the runner did not override the
+     * invocation cwd.
+     *
+     * AC: @runner-process-invocation-inputs ac-invocation-diagnostics-identify-inputs
+     */
+    processCwd: RunnerFieldOrigin | null;
     envInherit: RunnerFieldOrigin;
     envPass: RunnerFieldOrigin;
     /** Per-key origin map for env.set. Values are never recorded. */
@@ -533,6 +558,9 @@ function buildRunnerContract(inputs: RunnerContractInputs): RunnerInvocation {
   const fieldOrigins: RunnerInvocationDiagnostics["fieldOrigins"] = {
     kind: runner.sources.kind,
     adapter: runner.sources.adapter,
+    processExecutable: runner.sources.processExecutable,
+    processArgs: runner.sources.processArgs,
+    processCwd: runner.sources.processCwd,
     envInherit: runner.sources.envInherit,
     envPass: runner.sources.envPass,
     envSetKeys: { ...runner.sources.envSet.keys },
@@ -815,4 +843,178 @@ function computeSourceLayer(runner: EffectiveRunner): SourceLayerDiagnostic {
 
 function noopCleanup(): Promise<void> {
   return Promise.resolve();
+}
+
+// ─── Executable preflight ────────────────────────────────────────────────────
+
+/**
+ * Reason an executable could not be confirmed spawnable. Stable identifiers
+ * so callers (CLI, dispatch, daemon, Web UI) can format guidance uniformly.
+ */
+export type PreflightUnspawnableReason = "not_found" | "not_executable" | "timeout";
+
+export type PreflightExecutableResult =
+  | { spawnable: true; resolved: string }
+  | { spawnable: false; reason: PreflightUnspawnableReason; message: string };
+
+export interface PreflightExecutableOptions {
+  /**
+   * Working directory used to resolve relative executable paths. Defaults to
+   * `process.cwd()` so callers that do not pass a cwd still resolve sanely.
+   */
+  cwd?: string;
+  /**
+   * `PATH`-shaped string consulted when the command is a bare name. Defaults
+   * to `process.env.PATH`. Tests pass a controlled value to avoid host-PATH
+   * dependence.
+   */
+  searchPath?: string;
+  /**
+   * Hard timeout for the spawnability check in milliseconds. The check
+   * resolves to `{ spawnable: false, reason: "timeout" }` when the underlying
+   * filesystem probes do not complete within this window. Defaults to
+   * 1500ms — fast enough to keep dry-run interactive, long enough to cover
+   * slow filesystems and network mounts.
+   */
+  timeoutMs?: number;
+}
+
+const DEFAULT_PREFLIGHT_TIMEOUT_MS = 1500;
+
+/**
+ * Probe whether `command` can be spawned, bounded by a timeout.
+ *
+ * - Absolute paths and paths with a directory separator are resolved against
+ *   `cwd` (when relative) and then checked for the executable bit.
+ * - Bare command names are looked up against `PATH` segment-by-segment until
+ *   an executable hit is found.
+ * - The whole probe is wrapped in a single timeout race; if filesystem
+ *   probes hang (e.g., dead network mount), the result is the `timeout`
+ *   diagnostic — never an indefinite hang.
+ *
+ * AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+ */
+export async function preflightExecutable(
+  command: string,
+  options: PreflightExecutableOptions = {},
+): Promise<PreflightExecutableResult> {
+  const timeoutMs = options.timeoutMs ?? DEFAULT_PREFLIGHT_TIMEOUT_MS;
+  const cwd = options.cwd ?? process.cwd();
+  const searchPath = options.searchPath ?? process.env.PATH ?? "";
+
+  const work = (async (): Promise<PreflightExecutableResult> => {
+    if (!command) {
+      return {
+        spawnable: false,
+        reason: "not_found",
+        message: "Executable reference is empty",
+      };
+    }
+
+    if (path.isAbsolute(command) || command.includes(path.sep)) {
+      const resolved = path.isAbsolute(command) ? command : path.resolve(cwd, command);
+      return checkAccess(resolved);
+    }
+
+    const segments = searchPath.split(path.delimiter).filter((s) => s.length > 0);
+    for (const segment of segments) {
+      const candidate = path.join(segment, command);
+      try {
+        await fs.access(candidate, fs.constants.X_OK);
+        return { spawnable: true, resolved: candidate };
+      } catch {
+        // continue searching the next PATH segment
+      }
+    }
+    return {
+      spawnable: false,
+      reason: "not_found",
+      message: `Command "${command}" not found in PATH`,
+    };
+  })();
+
+  return Promise.race([work, timeoutResult(timeoutMs)]);
+}
+
+async function checkAccess(resolvedPath: string): Promise<PreflightExecutableResult> {
+  try {
+    await fs.access(resolvedPath, fs.constants.X_OK);
+    return { spawnable: true, resolved: resolvedPath };
+  } catch (err) {
+    const code = (err as NodeJS.ErrnoException).code;
+    if (code === "ENOENT") {
+      return {
+        spawnable: false,
+        reason: "not_found",
+        message: `Executable not found: ${resolvedPath}`,
+      };
+    }
+    if (code === "EACCES") {
+      return {
+        spawnable: false,
+        reason: "not_executable",
+        message: `Executable bit not set on: ${resolvedPath}`,
+      };
+    }
+    return {
+      spawnable: false,
+      reason: "not_executable",
+      message: `Cannot probe executable ${resolvedPath}: ${(err as Error).message}`,
+    };
+  }
+}
+
+function timeoutResult(ms: number): Promise<PreflightExecutableResult> {
+  const diagnostic: PreflightExecutableResult = {
+    spawnable: false,
+    reason: "timeout",
+    message: `Executable spawnability check timed out after ${ms}ms`,
+  };
+  // A non-positive budget short-circuits to the timeout diagnostic so callers
+  // that want to assert "no probe time" get a deterministic typed result
+  // without racing the underlying fs.access.
+  if (ms <= 0) return Promise.resolve(diagnostic);
+  return new Promise<PreflightExecutableResult>((resolve) => {
+    const t = setTimeout(() => resolve(diagnostic), ms);
+    // Don't keep the event loop alive for the timer itself.
+    if (typeof t.unref === "function") t.unref();
+  });
+}
+
+/**
+ * Preflight the resolved runner invocation contract. Runs the executable
+ * spawnability probe and throws `RunnerResolutionError("unspawnable_command")`
+ * when the configured command cannot be spawned. No-op on the implicit/legacy
+ * path or when the resolved adapter command did not come from runner config.
+ *
+ * AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+ * AC: @runner-process-invocation-inputs ac-invocation-diagnostics-identify-inputs
+ */
+export async function preflightRunnerInvocation(
+  invocation: RunnerInvocation,
+  options: PreflightExecutableOptions = {},
+): Promise<void> {
+  // Only preflight when a runner explicitly configured the executable. The
+  // implicit path uses pre-resolved package-runner commands (npx, bun x) that
+  // are validated at module load.
+  const fromConfig = invocation.diagnostics.fieldOrigins?.processExecutable;
+  if (!fromConfig) return;
+
+  const result = await preflightExecutable(invocation.adapter.command, {
+    cwd: invocation.cwd,
+    ...options,
+  });
+  if (result.spawnable) return;
+
+  throw new RunnerResolutionError(
+    "unspawnable_command",
+    `Runner "${invocation.runnerId ?? "(implicit)"}" configured executable ` +
+      `"${invocation.adapter.command}" is not spawnable: ${result.message}.`,
+    {
+      ...(invocation.runnerId ? { runner: invocation.runnerId } : {}),
+      adapter: invocation.adapterId,
+      command: invocation.adapter.command,
+      unspawnable_reason: result.reason,
+    },
+  );
 }

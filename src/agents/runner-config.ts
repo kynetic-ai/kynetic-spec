@@ -91,6 +91,76 @@ export function isSecretEnvName(name: string): boolean {
   return false;
 }
 
+/**
+ * Treat a CLI flag name as secret-bearing when its hyphen-and-equals
+ * normalization matches the same secret-name predicate used for env vars.
+ * `--api-key` -> `API_KEY`, `--anthropic-auth-token` -> `ANTHROPIC_AUTH_TOKEN`.
+ */
+function isSecretFlagName(flag: string): boolean {
+  const normalized = flag.toUpperCase().replace(/-/g, "_");
+  return isSecretEnvName(normalized);
+}
+
+/**
+ * Identify indices in a process-args array whose value is likely a secret.
+ *
+ * The detection runs over two shapes operators commonly use to pass
+ * credentials on the command line, intentionally erring toward false positives
+ * since the consequence of accepting a secret here is irreversible disclosure
+ * via process listings and ACP diagnostics:
+ *
+ *   1. `--api-key=<value>` and `-k=<value>` — flagged when the flag name is
+ *      secret-looking and a non-empty value follows the `=`.
+ *   2. `--api-key <value>` and `-k <value>` — the value position is flagged
+ *      when the preceding token is a flag (not another value) with a
+ *      secret-looking name.
+ *   3. `Bearer <token>` — flagged anywhere it appears, since it is the
+ *      universal HTTP Authorization shape.
+ *
+ * Args that legitimately need credentials must come through `env.secrets`
+ * bindings instead.
+ *
+ * AC: @runner-process-invocation-inputs ac-runner-args-extend-acp-invocation
+ */
+export function findSecretArgIndices(args: readonly string[]): number[] {
+  const indices = new Set<number>();
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+    if (typeof arg !== "string" || arg.length === 0) continue;
+
+    // Bearer-token shape: matched regardless of position.
+    if (/^Bearer\s+\S+$/i.test(arg)) {
+      indices.add(i);
+      continue;
+    }
+
+    // `--flag=value` shape.
+    if (arg.startsWith("-")) {
+      const eq = arg.indexOf("=");
+      if (eq !== -1) {
+        const prefix = arg.startsWith("--") ? arg.slice(2, eq) : arg.slice(1, eq);
+        const value = arg.slice(eq + 1);
+        if (value.length > 0 && isSecretFlagName(prefix)) {
+          indices.add(i);
+        }
+      }
+      continue;
+    }
+
+    // `--flag value` shape: previous arg is a flag with a secret-looking name.
+    if (i > 0) {
+      const prev = args[i - 1];
+      if (typeof prev === "string" && prev.startsWith("-") && !prev.includes("=")) {
+        const flag = prev.startsWith("--") ? prev.slice(2) : prev.slice(1);
+        if (isSecretFlagName(flag)) {
+          indices.add(i);
+        }
+      }
+    }
+  }
+  return [...indices].toSorted((a, b) => a - b);
+}
+
 // ── Shared schema fragments ─────────────────────────────────────────────
 
 /**
@@ -188,8 +258,28 @@ const SystemProcessSchema = z
   .object({
     /** Optional executable / command reference for the adapter spawn. */
     executable: z.string().min(1).optional(),
-    /** Additional non-secret arguments appended to the ACP process invocation. */
-    args: z.array(z.string()).optional(),
+    /**
+     * Additional non-secret arguments appended to the ACP process invocation.
+     * Secret-looking values (Bearer tokens, --api-key/--auth-token style
+     * flag values) are rejected here so credential material never enters
+     * process.args; use env.secrets bindings instead.
+     *
+     * AC: @runner-process-invocation-inputs ac-runner-args-extend-acp-invocation
+     */
+    args: z
+      .array(z.string())
+      .optional()
+      .superRefine((value, ctx) => {
+        if (!value) return;
+        const flagged = findSecretArgIndices(value);
+        for (const i of flagged) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: [i],
+            message: `process.args[${i}] looks like a secret value. Use env.secrets bindings in system runner config for credential variables.`,
+          });
+        }
+      }),
     /** System-config-relative or absolute cwd override for the child process. */
     cwd: z.string().min(1).optional(),
   })

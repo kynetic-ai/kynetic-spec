@@ -30,6 +30,7 @@ import { ulid } from "ulid";
 import type { Agent, SessionMode } from "../schema/meta.js";
 import { buildPromptWithSkills } from "./prompts.js";
 import {
+  preflightRunnerInvocation,
   resolveRunnerInvocation,
   RunnerResolutionError,
   type RunnerInvocation,
@@ -606,6 +607,15 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     mutationLockFile,
     adapterOverride: options.adapterOverride,
   });
+
+  // Preflight runner-configured executables before any prompt is built.
+  // Surfaces unspawnable commands as typed diagnostics (RunnerResolutionError
+  // with reason "unspawnable_command") so failures are visible in the same
+  // shape as other runner-resolution errors and never leak as anonymous spawn
+  // ENOENTs.
+  //
+  // AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+  await preflightRunnerInvocation(contract);
 
   const adapterId = contract.adapterId;
   const adapter = contract.adapter;
