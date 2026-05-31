@@ -1,5 +1,7 @@
 <script lang="ts">
 	// AC: @ui-agent-dispatch ac-1 — Agent card showing name, triggers, active/completed counts
+	// AC: @runner-operator-surfaces ac-web-ui-agent-cards-include-runner — runner identity and resolved adapter
+	// AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets — render daemon-redacted diagnostics only
 	import type { AgentDefinition } from '$lib/api';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
 	import { Badge } from '$lib/components/ui/badge';
@@ -18,6 +20,13 @@
 	}
 
 	let { agent, activeCount, completedCount, onEdit }: Props = $props();
+
+	// AC: @runner-operator-surfaces ac-web-ui-agent-cards-include-runner
+	// Daemon resolves adapter identity via the runner registry (or legacy
+	// adapter fallback). Falls back to the raw `adapter` field for clients
+	// that pre-date the runner-aware response shape.
+	let resolvedAdapter = $derived(agent.resolved_adapter ?? agent.adapter ?? '');
+	let runnerValidation = $derived(agent.runner_validation);
 </script>
 
 <!-- AC: @ui-agent-dispatch ac-1 -->
@@ -58,6 +67,56 @@
 	{#if agent.description}
 		<p class="text-sm text-muted-foreground">{agent.description}</p>
 	{/if}
+
+	<!-- AC: @runner-operator-surfaces ac-web-ui-agent-cards-include-runner -->
+	<!-- AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets -->
+	<div class="flex flex-col gap-1.5 rounded-md border bg-muted/30 px-3 py-2 text-xs" data-testid="agent-execution-identity">
+		{#if agent.runner}
+			<div class="flex flex-wrap items-center gap-2">
+				<span class="text-muted-foreground">Runner:</span>
+				<Badge variant="outline" class="text-xs" data-testid="agent-runner-name">{agent.runner}</Badge>
+				{#if runnerValidation}
+					{#if runnerValidation.status === 'valid'}
+						<Badge
+							class="text-xs bg-status-completed text-status-completed-fg"
+							data-testid="agent-runner-validation"
+						>
+							Valid
+						</Badge>
+					{:else}
+						<Badge
+							variant="destructive"
+							class="text-xs"
+							data-testid="agent-runner-validation"
+						>
+							Invalid
+						</Badge>
+					{/if}
+				{/if}
+			</div>
+		{/if}
+		{#if resolvedAdapter}
+			<div class="flex flex-wrap items-center gap-2">
+				<span class="text-muted-foreground">Adapter:</span>
+				<span class="font-mono" data-testid="agent-resolved-adapter">{resolvedAdapter}</span>
+			</div>
+		{/if}
+		{#if runnerValidation && runnerValidation.diagnostics.length > 0}
+			<ul class="mt-1 flex flex-col gap-1" data-testid="agent-runner-diagnostics">
+				{#each runnerValidation.diagnostics as diag}
+					<li
+						class="rounded border-l-2 border-destructive/60 bg-destructive/5 px-2 py-1"
+						data-testid="agent-runner-diagnostic"
+					>
+						<span class="font-mono text-[10px] uppercase tracking-wide text-muted-foreground" data-testid="agent-runner-diagnostic-reason">
+							{diag.reason}
+						</span>
+						<p class="text-xs" data-testid="agent-runner-diagnostic-message">{diag.message}</p>
+					</li>
+				{/each}
+			</ul>
+		{/if}
+	</div>
 
 	<div class="flex flex-wrap gap-1.5">
 		{#if agent.dispatch.length > 0}
