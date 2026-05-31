@@ -30216,6 +30216,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-31T06:19:01.962Z
+  automation: eligible
 - _ulid: 01KSYAZ5A1RCPK2A8H7QXF8N6E
   slugs:
     - task-runner-env-secret-boundary
