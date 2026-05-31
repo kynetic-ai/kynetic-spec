@@ -193,6 +193,13 @@ events:
       status: pass
       name: focused AC coverage sweep
     timestamp: 2026-05-31T12:21:37.059Z
+  - _ulid: 01KSYZQQNYSWM0NH2ZD2J3FF6C
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSYZQQFRY1360T5FAK6KEYKW
+    timestamp: 2026-05-31T12:21:59.102Z
 examined_commit: da7b1cff51e452cd9aa4edc844062ac0fa23830c
 external_links: []
 lifecycle_state: open
@@ -202,8 +209,31 @@ subject:
   content_hash: ""
   ref: "@01KSYAZ4YAGQG4JTV4P8VAW078"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KSYZQQFRY1360T5FAK6KEYKW
+    anchor:
+      type: code
+      commit: da7b1cff51e452cd9aa4edc844062ac0fa23830c
+      line_end: 2433
+      line_start: 2430
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KSYZQQFRVWP9ZY7BVKXQGF96
+        author: Jacob Chapel
+        body: "MUST-FIX: dispatch still renders the role-entry workflow with the legacy agent adapter before
+          runner preflight. _buildDispatchPrompt passes agent.adapter ?? \"claude-agent-acp\" into
+          buildRoleEntryContext, and that prompt is built before resolveRunnerInvocation runs. I
+          verified with a runtime probe: an agent with runner=codex-runner and
+          adapter=claude-agent-acp rendered 'Workflow entrypoint: `/task-work`'. If the resolved
+          runner adapter is codex-acp, dispatch should render the Codex entrypoint syntax. Because
+          this text is already expanded before runInvocation receives it, the later resolved-adapter
+          prompt build cannot recover the portable token. This violates runner precedence for
+          dispatch prompts and means dispatch does not consistently use the same resolved runner
+          contract as one-shot invocation."
+        created_at: 2026-05-31T12:21:58.904Z
+    kind: blocker
 verdicts: []
 created_at: 2026-05-31T12:05:36.905Z
-updated_at: 2026-05-31T12:21:36.858Z
+updated_at: 2026-05-31T12:21:58.904Z
 notes: []
