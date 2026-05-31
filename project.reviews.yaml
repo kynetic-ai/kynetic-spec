@@ -23347,7 +23347,7 @@ reviews:
     author: Jacob Chapel
     check_count: 10
     examined_commit: 0ce7045814f098535dc27ade2b6a4a1d00b9c202
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -23356,6 +23356,6 @@ reviews:
       shadow_commit: ""
     thread_count: 2
     unresolved_blocker_count: 1
-    verdict_count: 0
+    verdict_count: 1
     created_at: 2026-05-31T19:04:43.987Z
-    updated_at: 2026-05-31T19:21:32.863Z
+    updated_at: 2026-05-31T19:21:42.014Z

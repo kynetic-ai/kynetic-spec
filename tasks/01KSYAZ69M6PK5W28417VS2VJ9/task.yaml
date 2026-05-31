@@ -63,7 +63,7 @@ description: >
 spec_ref: "@runner-operator-surfaces"
 plan_ref: "@plan-agent-runner-configuration-layer"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-agent-runner-meta-cli"
@@ -85,7 +85,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: 01KSZN1VHGF80SPKMEBNR3A9VM
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -134,6 +134,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-31T19:04:46.277Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KSZN1VHGF80SPKMEBNR3A9VM
+    command: review-verdict-needs-work
+    timestamp: 2026-05-31T19:21:43.793Z
 created_at: 2026-05-31T06:19:03.348Z
 started_at: 2026-05-31T18:34:57.811Z
 submitted_at: 2026-05-31T19:01:23.340Z
