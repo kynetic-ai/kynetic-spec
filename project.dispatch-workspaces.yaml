@@ -12968,29 +12968,29 @@ workspaces:
     base_branch_point: ac4142f968c489ddf073a6337d9040b12a248944
     bootstrap:
       status: succeeded
-      canonicalBranchHead: 1d6a27fd910eb070cda8dfe163783b1f94bff99e
+      canonicalBranchHead: 02aa284a09030d0176fd82e26b6753bdbf093060
       configHash: 726d8dab5f5ed6733d984381b40e07b53bf3966b5a6239aefc441d36d5f23631
       failureMessage: null
       invalidationReasons:
         - canonical-branch-head-changed
-      lastRole: worker
-      lastRunAt: 2026-05-31T17:02:08.163Z
+      lastRole: reviewer
+      lastRunAt: 2026-05-31T17:33:50.840Z
       roleStates:
         reviewer:
           status: succeeded
-          canonicalBranchHead: 1d6a27fd910eb070cda8dfe163783b1f94bff99e
+          canonicalBranchHead: 02aa284a09030d0176fd82e26b6753bdbf093060
           configHash: 726d8dab5f5ed6733d984381b40e07b53bf3966b5a6239aefc441d36d5f23631
           failureMessage: null
           invalidationReasons:
             - canonical-branch-head-changed
-          lastRunAt: 2026-05-31T16:40:46.708Z
+          lastRunAt: 2026-05-31T17:33:50.840Z
           steps:
             - status: succeeded
               allowTrackedChanges: false
               idempotent: true
               name: install-workspace-dependencies
               output: |-
-                added 298 packages, and audited 302 packages in 4s
+                added 298 packages, and audited 302 packages in 3s
 
                 67 packages are looking for funding
                   run `npm fund` for details
@@ -13009,13 +13009,11 @@ workspaces:
               allowTrackedChanges: false
               idempotent: true
               name: build-workspace-artifacts
-              output: >-
-                182:     <div class="flex flex-wrap gap-1.5"
-                data-testid="session-filter-status-group">
-
+              output: >2-
+                    <div class="flex flex-wrap gap-1.5" data-testid="session-filter-status-group">
                 183:       <button
 
-                9:40:35 AM [vite-plugin-svelte]
+                10:33:39 AM [vite-plugin-svelte]
                 src/lib/components/content/StructuredContentViewer.svelte:280:11 Buttons and links
                 should either contain text or have an `aria-label`, `aria-labelledby` or `title`
                 attribute
@@ -13038,7 +13036,7 @@ workspaces:
                 "../../node_modules/@tanstack/svelte-query/dist/createMutation.svelte.js" and
                 "../../node_modules/@tanstack/svelte-query/dist/useMutationState.svelte.js".
 
-                9:40:38 AM [vite-plugin-svelte] src/routes/observations/+page.svelte:104:8
+                10:33:42 AM [vite-plugin-svelte] src/routes/observations/+page.svelte:104:8
                 `<svelte:component>` is deprecated in runes mode — components are dynamic by default
 
                 https://svelte.dev/e/svelte_component_deprecated
@@ -13054,7 +13052,7 @@ workspaces:
 
                 106:               <div class="flex-1">
 
-                9:40:38 AM [vite-plugin-svelte]
+                10:33:43 AM [vite-plugin-svelte]
                 src/lib/components/automation/DispatchTriggersSection.svelte:293:7 A form label must
                 be associated with a control
 
@@ -13072,7 +13070,7 @@ workspaces:
                 295:                 <div class="flex flex-wrap gap-1 mb-1"
                 data-testid="trigger-tags-{trigger.on}">
 
-                9:40:38 AM [vite-plugin-svelte]
+                10:33:43 AM [vite-plugin-svelte]
                 src/lib/components/automation/DispatchTriggersSection.svelte:345:7 A form label must
                 be associated with a control
 
@@ -13089,7 +13087,7 @@ workspaces:
 
                 347:                 class="h-7 text-xs flex-1"
 
-                9:40:39 AM [vite-plugin-svelte]
+                10:33:43 AM [vite-plugin-svelte]
                 src/lib/components/session/SessionFilters.svelte:181:2 A form label must be
                 associated with a control
 
@@ -13107,7 +13105,7 @@ workspaces:
 
                 183:       <button
 
-                9:40:41 AM [vite-plugin-svelte]
+                10:33:45 AM [vite-plugin-svelte]
                 src/lib/components/content/StructuredContentViewer.svelte:280:11 Buttons and links
                 should either contain text or have an `aria-label`, `aria-labelledby` or `title`
                 attribute
@@ -13284,7 +13282,7 @@ workspaces:
           idempotent: true
           name: install-workspace-dependencies
           output: |-
-            added 298 packages, and audited 302 packages in 4s
+            added 298 packages, and audited 302 packages in 3s
 
             67 packages are looking for funding
               run `npm fund` for details
@@ -13296,7 +13294,7 @@ workspaces:
 
             Run `npm audit` for details.
           reviewerRerunAllowed: true
-          role: worker
+          role: reviewer
           run: npm ci --ignore-scripts=false
           source: dispatch
         - status: succeeded
@@ -13307,7 +13305,7 @@ workspaces:
                 <div class="flex flex-wrap gap-1.5" data-testid="session-filter-status-group">
             183:       <button
 
-            10:01:57 AM [vite-plugin-svelte]
+            10:33:39 AM [vite-plugin-svelte]
             src/lib/components/content/StructuredContentViewer.svelte:280:11 Buttons and links
             should either contain text or have an `aria-label`, `aria-labelledby` or `title`
             attribute
@@ -13330,7 +13328,7 @@ workspaces:
             "../../node_modules/@tanstack/svelte-query/dist/createMutation.svelte.js" and
             "../../node_modules/@tanstack/svelte-query/dist/useMutationState.svelte.js".
 
-            10:02:00 AM [vite-plugin-svelte] src/routes/observations/+page.svelte:104:8
+            10:33:42 AM [vite-plugin-svelte] src/routes/observations/+page.svelte:104:8
             `<svelte:component>` is deprecated in runes mode — components are dynamic by default
 
             https://svelte.dev/e/svelte_component_deprecated
@@ -13346,7 +13344,7 @@ workspaces:
 
             106:               <div class="flex-1">
 
-            10:02:00 AM [vite-plugin-svelte]
+            10:33:43 AM [vite-plugin-svelte]
             src/lib/components/automation/DispatchTriggersSection.svelte:293:7 A form label must be
             associated with a control
 
@@ -13364,7 +13362,7 @@ workspaces:
             295:                 <div class="flex flex-wrap gap-1 mb-1"
             data-testid="trigger-tags-{trigger.on}">
 
-            10:02:00 AM [vite-plugin-svelte]
+            10:33:43 AM [vite-plugin-svelte]
             src/lib/components/automation/DispatchTriggersSection.svelte:345:7 A form label must be
             associated with a control
 
@@ -13381,7 +13379,7 @@ workspaces:
 
             347:                 class="h-7 text-xs flex-1"
 
-            10:02:01 AM [vite-plugin-svelte] src/lib/components/session/SessionFilters.svelte:181:2
+            10:33:43 AM [vite-plugin-svelte] src/lib/components/session/SessionFilters.svelte:181:2
             A form label must be associated with a control
 
             https://svelte.dev/e/a11y_label_has_associated_control
@@ -13397,7 +13395,7 @@ workspaces:
 
             183:       <button
 
-            10:02:03 AM [vite-plugin-svelte]
+            10:33:45 AM [vite-plugin-svelte]
             src/lib/components/content/StructuredContentViewer.svelte:280:11 Buttons and links
             should either contain text or have an `aria-label`, `aria-labelledby` or `title`
             attribute
@@ -13415,7 +13413,7 @@ workspaces:
             282:                         class="opacity-0 group-hover/ac:opacity-100
             transition-opacity text-xs text-muted-foreground hover:text-foreground shrink-0"
           reviewerRerunAllowed: true
-          role: worker
+          role: reviewer
           run: npm run build
           source: dispatch
     branch_provenance:
@@ -13455,7 +13453,7 @@ workspaces:
       last_active_at: 2026-05-31T17:02:08.935Z
       last_reconciled_at: 2026-05-31T17:33:26.945Z
       created_at: 2026-05-31T14:28:06.577Z
-      updated_at: 2026-05-31T17:33:26.945Z
+      updated_at: 2026-05-31T17:33:50.840Z
     workspace_id: dispatch-workspace-01KSYAZ5MMTH53RFXMSTK9400S
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
