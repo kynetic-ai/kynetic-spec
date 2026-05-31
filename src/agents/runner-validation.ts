@@ -18,6 +18,7 @@
  * @module
  */
 
+import * as fs from "node:fs/promises";
 import { ulid } from "ulid";
 import { getAdapter, listAdapters } from "./adapters.js";
 import type {
@@ -222,6 +223,30 @@ async function validateOneRunner(
     }
   }
 
+  // Validate runner.process.cwd when the runner overrides the invocation cwd.
+  // The resolver currently records the configured path but does not probe it;
+  // operators expect `kspec agent runners validate` to flag a cwd that the
+  // dispatch engine cannot enter before any process is spawned.
+  // AC: @runner-resolution-and-preflight ac-unknown-runner-reports-guidance
+  if (runner.process.cwd && runner.sources.processCwd) {
+    const cwdProbe = await probeRunnerCwd(runner.process.cwd);
+    if (!cwdProbe.ok) {
+      issues.push({
+        reason: "invalid_cwd",
+        message: redactor(
+          `Configured working directory "${runner.process.cwd}" is not usable: ${cwdProbe.message} ` +
+            `Update runner.process.cwd in the ${runner.sources.processCwd} runner config to point at an existing, accessible directory.`,
+        ),
+        details: {
+          runner: runner.name,
+          cwd: runner.process.cwd,
+          cwd_source: runner.sources.processCwd,
+          invalid_cwd_reason: cwdProbe.reason,
+        },
+      });
+    }
+  }
+
   const fieldOrigins = contract?.diagnostics.fieldOrigins ?? null;
   const sources: RunnerValidationEntry["sources"] = {
     kind: fieldOrigins?.kind ?? runner.sources.kind,
@@ -258,6 +283,71 @@ async function validateOneRunner(
       ...(issue.details ? { details: issue.details } : {}),
     })),
   };
+}
+
+/**
+ * Outcome of a runner.process.cwd probe. Mirrors the spawn-time failure modes
+ * an operator would observe so the diagnostic message can point at the same
+ * underlying cause (missing directory, wrong path type, permission denied).
+ */
+type RunnerCwdProbeResult =
+  | { ok: true }
+  | {
+      ok: false;
+      reason: "not_found" | "not_directory" | "not_accessible";
+      message: string;
+    };
+
+/**
+ * Probe whether a configured runner working directory is usable. Returns
+ * structured failure info so the validation report can include the spawn-time
+ * failure mode in `details` rather than raw error text.
+ *
+ * AC: @runner-resolution-and-preflight ac-unknown-runner-reports-guidance
+ */
+async function probeRunnerCwd(cwdPath: string): Promise<RunnerCwdProbeResult> {
+  try {
+    const stats = await fs.stat(cwdPath);
+    if (!stats.isDirectory()) {
+      return {
+        ok: false,
+        reason: "not_directory",
+        message: `path exists but is not a directory.`,
+      };
+    }
+    // X_OK on a directory == "can enter / chdir into it"; this is the
+    // permission the spawner needs before starting the child process.
+    await fs.access(cwdPath, fs.constants.X_OK);
+    return { ok: true };
+  } catch (err) {
+    const code = (err as NodeJS.ErrnoException).code;
+    if (code === "ENOENT") {
+      return {
+        ok: false,
+        reason: "not_found",
+        message: `directory does not exist.`,
+      };
+    }
+    if (code === "EACCES") {
+      return {
+        ok: false,
+        reason: "not_accessible",
+        message: `directory is not accessible (EACCES — process lacks execute/search permission).`,
+      };
+    }
+    if (code === "ENOTDIR") {
+      return {
+        ok: false,
+        reason: "not_directory",
+        message: `a parent component of the path is not a directory.`,
+      };
+    }
+    return {
+      ok: false,
+      reason: "not_accessible",
+      message: `cannot probe directory: ${(err as Error).message}.`,
+    };
+  }
 }
 
 function redactDetails(

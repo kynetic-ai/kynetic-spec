@@ -297,6 +297,120 @@ describe("CLI: kspec agent runners validate --runner", () => {
   });
 });
 
+describe("CLI: kspec agent runners validate (process.cwd)", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-runners-validate-cwd-");
+    writeAgentProject(testDir, []);
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  // AC: @runner-resolution-and-preflight ac-unknown-runner-reports-guidance
+  // AC: @runner-operator-surfaces ac-runner-validation-exit-status
+  // AC: @runner-operator-surfaces ac-runner-validation-json-output
+  it("reports invalid_cwd and exits non-zero when runner.process.cwd does not exist", () => {
+    const fake = makeFakeExecutable(testDir, "fake-bin");
+    const missingCwd = path.join(testDir, "no-such-directory");
+    writeSystemRunners(testDir, {
+      "bad-cwd-runner": {
+        kind: "acp_process",
+        adapter: "claude-agent-acp",
+        process: { executable: fake, cwd: missingCwd },
+      },
+    });
+
+    const result = kspecRun("agent runners validate --json", testDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
+    const data = JSON.parse(result.stdout) as ValidationReportPayload;
+    expect(data.ok).toBe(false);
+    expect(data.runners).toHaveLength(1);
+    const entry = data.runners[0];
+    expect(entry.status).toBe("invalid");
+    const diag = entry.diagnostics.find((d) => d.reason === "invalid_cwd");
+    expect(diag).toBeDefined();
+    expect(diag!.message).toContain(missingCwd);
+    expect(diag!.message).toContain("does not exist");
+    // The guidance must name the layer that owns the fix.
+    expect(diag!.message).toContain("runner.process.cwd");
+    expect(diag!.message).toContain("system");
+    // Details carry the structured failure mode for telemetry.
+    expect(diag!.details).toBeDefined();
+    expect(diag!.details!.invalid_cwd_reason).toBe("not_found");
+    expect(diag!.details!.cwd_source).toBe("system");
+  });
+
+  // AC: @runner-resolution-and-preflight ac-unknown-runner-reports-guidance
+  // AC: @runner-operator-surfaces ac-runner-validation-exit-status
+  it("reports invalid_cwd when runner.process.cwd points at a non-directory path", () => {
+    const fake = makeFakeExecutable(testDir, "fake-bin");
+    const filePath = path.join(testDir, "not-a-directory");
+    fsSync.writeFileSync(filePath, "I am a file, not a directory.\n");
+    writeSystemRunners(testDir, {
+      "file-cwd-runner": {
+        kind: "acp_process",
+        adapter: "claude-agent-acp",
+        process: { executable: fake, cwd: filePath },
+      },
+    });
+
+    const result = kspecRun("agent runners validate --json", testDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
+    const data = JSON.parse(result.stdout) as ValidationReportPayload;
+    expect(data.ok).toBe(false);
+    const entry = data.runners[0];
+    expect(entry.status).toBe("invalid");
+    const diag = entry.diagnostics.find((d) => d.reason === "invalid_cwd");
+    expect(diag).toBeDefined();
+    expect(diag!.message).toContain(filePath);
+    expect(diag!.message).toContain("not a directory");
+    expect(diag!.details!.invalid_cwd_reason).toBe("not_directory");
+  });
+
+  // AC: @runner-operator-surfaces ac-runner-validation-human-output
+  // AC: @runner-operator-surfaces ac-runner-validation-exit-status
+  it("renders invalid_cwd guidance in the human-readable output and exits non-zero", () => {
+    const fake = makeFakeExecutable(testDir, "fake-bin");
+    const missingCwd = path.join(testDir, "human-missing-cwd");
+    writeSystemRunners(testDir, {
+      "human-bad-cwd": {
+        kind: "acp_process",
+        adapter: "claude-agent-acp",
+        process: { executable: fake, cwd: missingCwd },
+      },
+    });
+
+    const result = kspecRun("agent runners validate", testDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stdout).toContain("human-bad-cwd");
+    expect(result.stdout).toContain("[invalid]");
+    expect(result.stdout).toContain("invalid_cwd");
+    expect(result.stdout).toContain(missingCwd);
+    expect(result.stdout).toContain("runner validation failed");
+  });
+
+  // AC: @runner-operator-surfaces ac-runner-validation-json-output
+  it("does not raise invalid_cwd when runner.process.cwd is unset", () => {
+    const fake = makeFakeExecutable(testDir, "fake-bin");
+    writeSystemRunners(testDir, {
+      "no-cwd-runner": {
+        kind: "acp_process",
+        adapter: "claude-agent-acp",
+        process: { executable: fake },
+      },
+    });
+
+    const data = kspecJson<ValidationReportPayload>("agent runners validate --json", testDir);
+    expect(data.ok).toBe(true);
+    const entry = data.runners[0];
+    expect(entry.status).toBe("valid");
+    expect(entry.diagnostics).toEqual([]);
+  });
+});
+
 describe("CLI: kspec agent runners validate redacts secret values", () => {
   let testDir: string;
 
