@@ -13926,11 +13926,11 @@ workspaces:
     canonical_branch: dispatch/task/task-cli-runner-surfaces/01ksyaz6
     canonical_branch_head: e62d1076e9e7d63700a4bb1c6153db63999ea922
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-05-31T20:04:59.078Z
+      updated_at: 2026-05-31T20:08:03.195Z
     health:
       status: healthy
       issues: []
@@ -13944,16 +13944,16 @@ workspaces:
       target_branch: dev
       target_commit: 22315eeee6db635cdef845640e2ff39bb226c694
       updated_at: 2026-05-31T20:04:59.078Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KSYAZ69M6PK5W28417VS2VJ9"
     task_slug: task-cli-runner-surfaces
     timestamps:
-      closed_at: null
+      closed_at: 2026-05-31T20:08:03.195Z
       last_active_at: 2026-05-31T19:46:22.802Z
       last_reconciled_at: 2026-05-31T20:07:53.778Z
       created_at: 2026-05-31T18:34:06.812Z
-      updated_at: 2026-05-31T20:07:53.778Z
+      updated_at: 2026-05-31T20:08:03.195Z
     workspace_id: dispatch-workspace-01KSYAZ69M6PK5W28417VS2VJ9
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
