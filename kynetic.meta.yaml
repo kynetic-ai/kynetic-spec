@@ -20108,6 +20108,18 @@ observations:
     resolved: false
     workflow_ref: "@01KSZ56T"
     created_at: 2026-05-31T14:00:41.218Z
+  - _ulid: 01KSZ80D5B4783HWRRX54J5RBQ
+    type: success
+    content: Security-boundary reviews benefit from a production-usage search for new safety
+      helpers/closures after reading tests. In @task-runner-env-secret-boundary, rg for
+      contract.redact/redactSecretValues showed the redaction helper was tested and returned but
+      never applied to invocation failure events, task notes, close reasons, or adapter stderr,
+      turning a green test run into a valid blocker finding.
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-31T14:46:31.851Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
