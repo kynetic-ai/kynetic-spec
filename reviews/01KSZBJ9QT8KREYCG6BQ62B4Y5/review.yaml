@@ -25,6 +25,16 @@ checks:
     runner: kspec
     created_at: 2026-05-31T15:53:03.964Z
     completed_at: 2026-05-31T15:53:03.964Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed; existing reference warnings only.
+    name: kspec validate --refs --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-31T15:53:07.038Z
+    completed_at: 2026-05-31T15:53:07.038Z
 events:
   - _ulid: 01KSZBJ9QT6R4TV2KSNAEF2GMF
     actor: Jacob Chapel
@@ -60,6 +70,13 @@ events:
       status: pass
       name: kspec validate --completeness --warnings-ok
     timestamp: 2026-05-31T15:53:04.201Z
+  - _ulid: 01KSZBTAYXHB9WX4WB9AEJ5NYZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --refs --warnings-ok
+    timestamp: 2026-05-31T15:53:07.294Z
 examined_commit: c18fc6ea96f9d1b48b17c1397eba5f0d7c747ccb
 external_links: []
 lifecycle_state: open
@@ -93,5 +110,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-05-31T15:48:43.898Z
-updated_at: 2026-05-31T15:53:03.964Z
+updated_at: 2026-05-31T15:53:07.038Z
 notes: []
