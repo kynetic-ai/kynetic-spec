@@ -60,3 +60,29 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-31T16:01:26.972Z
+  - _ulid: 01KSZEA47XK2B2XM2114XDESB2
+    content: >-
+      Fix cycle 2: addressed blocker on src/agents/runners.ts:812. resolveInvocationSearchPath was
+      collapsing "PATH key absent from the contract env" and "PATH explicitly set to empty" into the
+      same "search nothing" branch, but Node's child_process.spawn / posix_spawnp distinguishes the
+      two — absent PATH falls back to the libc _PATH_DEFPATH (/usr/bin:/bin on POSIX) while empty
+      PATH searches no segments. The reviewer's exact case (spawnSync('sh', ['-c','exit 0'], { env:
+      {} }) succeeds but preflightExecutable('sh', { searchPath: '' }) returned not_found) was
+      wrong.
+
+
+      Fix: added POSIX_DEFAULT_SEARCH_PATH constant + defaultSearchPath() helper;
+      resolveInvocationSearchPath now returns defaultSearchPath() when no env source contributed
+      PATH, and preserves the empty string verbatim when one did. Added two spawn-parity tests that
+      probe child_process.spawn first before asserting preflight outcome, so the parity claim is
+      anchored to real spawn behavior. The existing 'host PATH leak prevention' test still passes
+      (the leaked command lives in a tempdir not under /usr/bin:/bin) and its description was
+      tightened to drop the inaccurate 'runner-scoped PATH is empty' wording.
+
+
+      Re-verified all ACs after the fix; only ac-existing-executable-reference-resolves was
+      affected. Gates: focused 29-test runner-process file passes; full suite passes (10067/10072, 5
+      pre-existing skips, 0 failures); typecheck/format/lint clean; oxlint on changed files clean.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-31T16:36:41.853Z
