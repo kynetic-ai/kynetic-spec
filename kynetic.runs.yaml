@@ -57879,7 +57879,7 @@ runs:
     started_at: 2026-05-31T21:53:10.924Z
     completed_at: 2026-05-31T21:55:18.648Z
   - _ulid: 01KT01MES8RSJG4P6DQKNEVPA5
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -57927,10 +57927,15 @@ runs:
         completed_at: 2026-05-31T22:16:06.363Z
         notes: Skipped discussion because there are no untracked improvement proposals requiring user
           approval.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-05-31T22:16:06.363Z
-        completed_at: 2026-05-31T22:16:06.363Z
+        completed_at: 2026-05-31T22:16:15.076Z
+        notes: No capture performed. All concrete friction was already tracked (@01KQ1272 for batch optional
+          review checks, @01KSZ5CF for changed-file oxlint warning noise, existing
+          full-suite-duration observations for long reviewer gates). Avoided duplicating inbox or
+          observations.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T22:14:23.272Z
+    completed_at: 2026-05-31T22:16:15.079Z
