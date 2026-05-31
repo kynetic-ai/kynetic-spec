@@ -21,3 +21,26 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-31T10:34:56.675Z
+  - _ulid: 01KSYV2JFWB4RQ5YY7PR9KFRYT
+    content: "Implemented resolveRunnerInvocation in src/agents/runners.ts as a pure function returning
+      {runnerId, adapterId, adapter, cwd, env, extraArgs, diagnostics, cleanup} and throwing
+      RunnerResolutionError with structured reason codes (unknown_runner, invalid_adapter,
+      invalid_command_reference, invalid_cwd, invalid_args, missing_secret, preflight_failure).
+      Wired into runInvocation (loads registry if not provided; passes contract through to spawn)
+      and into dispatch.ts (preflight resolves runner before spawning; emits
+      adapter_id/resolved_adapter/runner on invocation.started + terminal events). Added runner
+      field to SessionMetadataSchema; persisted in session.yaml and agent.dispatched event payloads
+      only when runner-backed. Added adapter_id/resolved_adapter/runner optional fields to
+      InvocationStartedPayloadSchema + InvocationTerminalPayloadSchema (covers
+      @dispatch-event-payload ac-2). CLI agent run now clears agent.runner when --adapter override
+      is supplied so the resolver takes the implicit path with the override. Coverage:
+      tests/agent-runner-resolver.test.ts (21 tests) for legacy adapter, default adapter,
+      system-only runner, project+system merged runner, runner-overrides-adapter precedence,
+      unknown-runner failure with guidance pointing at project/system/agent, unknown-adapter
+      failure, project/system layer-issue diagnostics, secret-value redaction, and adapter override.
+      tests/agent-invocation.test.ts (6 tests) verify session.yaml.runner + agent.dispatched event
+      payload + unknown-runner blocks before session creation. Full suite: 10011 passed / 5 skipped
+      / 0 failed. typecheck + lint (0 errors) + format all green."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-31T11:00:31.356Z
