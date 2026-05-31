@@ -35,3 +35,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-31T22:13:16.726Z
+  - _ulid: 01KT02T2VPXJVC40J4DWH3MQNF
+    content: "Fix cycle 2: addressed review blocker on /api/meta/agents legacy adapter field. The
+      previous spread (...a) only carried adapter when the source agent had one — runner-only agents
+      (no adapter field) shipped a response with resolved_adapter but no adapter, breaking clients
+      that only read adapter. Set adapter: resolvedAdapter after the spread so the legacy field
+      always carries the resolved identity, mirroring CLI JSON output and the existing
+      /api/agent/status agent_definitions code path. Added a runner-only YAML fixture and a
+      behavioral test against /api/meta/agents asserting both fields are populated. Re-verified
+      daemon agent API, dispatch active/queued, runner validation, secret redaction, and shared
+      API/response type ACs against the implementation. Format/lint/typecheck clean; focused tests
+      pass; full suite green (2664 suites / 10153 tests)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-31T22:34:56.247Z
