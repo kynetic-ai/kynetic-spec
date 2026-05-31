@@ -20245,6 +20245,19 @@ observations:
     resolved: false
     workflow_ref: "@01KSZYS6CYPST7VSRGNRC2A6KF"
     created_at: 2026-05-31T21:26:46.031Z
+  - _ulid: 01KT03BZNMHX2KPNFMYBNNE3NT
+    type: friction
+    content: "Back-compat ACs that say 'field X is still emitted when condition Y' need a test fixture
+      where Y holds. In task-daemon-api-runner-surfaces cycle 1, the AC was 'adapter field still
+      emitted for runner-backed agents' but every fixture agent had adapter explicitly set, so the
+      spread '...a' carried it regardless of the implementation. The test passed trivially; the
+      reviewer caught the bug by reproducing /api/meta/agents with a runner-only fixture (no adapter
+      field). Self-review check before submit: for each back-compat AC, can I name a fixture that
+      would expose the missing-field path?"
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-31T22:44:42.804Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
