@@ -57113,7 +57113,7 @@ runs:
     completed_at: 2026-05-31T15:46:27.598Z
   - _ulid: 01KSZCBNARRVJWXJ0GCXX9BGRF
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -57137,7 +57137,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-31T16:04:04.323Z
-        completed_at: 2026-05-31T16:04:04.323Z
+        completed_at: 2026-05-31T16:04:18.178Z
+        notes: "Duplicate checks: kspec search 'preflight PATH spawn', 'child_process spawn PATH', 'spawn
+          parity', and 'PATH absent' returned no matches. kspec search 'review evidence log' found
+          existing observation @01KR3W7Q0 and @01KR2JD1, so evidence-log reflection is skipped.
+          Baseline list output also showed @01KSDZFN covering noisy reflection baseline commands, so
+          that is skipped. Decision: capture one unique high-confidence friction observation about
+          spawn/preflight parity testing."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-31T16:04:18.178Z
+        completed_at: 2026-05-31T16:04:18.178Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-31T16:02:34.969Z
