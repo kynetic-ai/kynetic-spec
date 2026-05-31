@@ -12926,11 +12926,11 @@ workspaces:
     canonical_branch: dispatch/task/task-runner-env-secret-boundary/01ksyaz5
     canonical_branch_head: 3fd6d6b8d443b0fa1d789045f94ff569190cd7aa
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-05-31T16:32:56.700Z
+      updated_at: 2026-05-31T16:36:03.442Z
     health:
       status: healthy
       issues: []
@@ -12944,16 +12944,16 @@ workspaces:
       target_branch: dev
       target_commit: ac4142f968c489ddf073a6337d9040b12a248944
       updated_at: 2026-05-31T16:32:56.700Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KSYAZ5A1RCPK2A8H7QXF8N6E"
     task_slug: task-runner-env-secret-boundary
     timestamps:
-      closed_at: null
+      closed_at: 2026-05-31T16:36:03.442Z
       last_active_at: 2026-05-31T16:17:33.442Z
       last_reconciled_at: 2026-05-31T16:35:53.305Z
       created_at: 2026-05-31T13:57:09.961Z
-      updated_at: 2026-05-31T16:35:53.305Z
+      updated_at: 2026-05-31T16:36:03.442Z
     workspace_id: dispatch-workspace-01KSYAZ5A1RCPK2A8H7QXF8N6E
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
