@@ -13424,11 +13424,11 @@ workspaces:
     canonical_branch: dispatch/task/task-dispatch-runner-preflight/01ksyaz5
     canonical_branch_head: ca631996909c20503cb820c62f9439e0b3e72ac7
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-05-31T18:33:56.806Z
+      updated_at: 2026-05-31T18:38:01.266Z
     health:
       status: healthy
       issues: []
@@ -13442,16 +13442,16 @@ workspaces:
       target_branch: dev
       target_commit: 4f2c29fbe7f128a8950eebf50941d966747f676e
       updated_at: 2026-05-31T18:33:56.806Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KSYAZ5Z5S4GHWAZBTYGSCTTM"
     task_slug: task-dispatch-runner-preflight
     timestamps:
-      closed_at: null
+      closed_at: 2026-05-31T18:38:01.266Z
       last_active_at: 2026-05-31T18:17:44.098Z
       last_reconciled_at: 2026-05-31T18:37:26.661Z
       created_at: 2026-05-31T17:50:07.676Z
-      updated_at: 2026-05-31T18:37:26.661Z
+      updated_at: 2026-05-31T18:38:01.266Z
     workspace_id: dispatch-workspace-01KSYAZ5Z5S4GHWAZBTYGSCTTM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
