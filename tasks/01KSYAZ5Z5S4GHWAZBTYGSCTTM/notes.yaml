@@ -15,3 +15,17 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-05-31T17:57:29.928Z
+  - _ulid: 01KSZKVAFWG7G261BAK0DRZMPA
+    content: "Implementation: dispatch preflight already routed through resolveRunnerInvocation +
+      preflightRunnerInvocation (dispatch.ts:2755-2815) from prior task commits. Added 5
+      dispatch-engine tests in tests/agent-dispatch-engine.test.ts to cover the runner-aware
+      preflight scenarios called out in the task description: (1) accepts runner-backed worker with
+      custom-registered non-built-in adapter, (2) accepts runner-backed reviewer pickup, (3) rejects
+      runner referencing unregistered adapter (invalid_adapter), (4) rejects when required user_env
+      secret binding cannot resolve (missing_secret), (5) preserves legacy adapter compatibility for
+      agents without runner field. Existing tests already covered unknown_runner and
+      unspawnable_command paths. All 7 preflight tests pass; full shard1/shard2/shard3 also green;
+      format/lint/typecheck clean."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-31T18:13:28.188Z
