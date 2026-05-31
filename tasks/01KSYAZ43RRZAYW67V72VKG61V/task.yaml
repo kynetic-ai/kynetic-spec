@@ -101,7 +101,7 @@ description: >
 spec_ref: "@agent-runner-configuration"
 plan_ref: "@plan-agent-runner-configuration-layer"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-update-existing-agent-runner-specs"
@@ -113,6 +113,7 @@ tags:
   - agents
   - runners
 vcs_refs: []
+session_id: 01KSYDMC4HJ8Q5S4N0VG8AG3DK
 history:
   - author: Jacob Chapel
     changes:
@@ -121,6 +122,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-05-31T06:22:08.619Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KSYDMC4HJ8Q5S4N0VG8AG3DK
+        previous: null
+      started_at:
+        new: 2026-05-31T07:07:08.033Z
+        previous: null
+    command: task-start
+    timestamp: 2026-05-31T07:07:08.035Z
 created_at: 2026-05-31T06:19:01.112Z
+started_at: 2026-05-31T07:07:08.033Z
 todos: []
 automation: eligible
