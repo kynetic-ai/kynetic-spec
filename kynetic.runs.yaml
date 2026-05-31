@@ -57362,7 +57362,7 @@ runs:
     completed_at: 2026-05-31T17:00:52.560Z
   - _ulid: 01KSZHC64HDEKB39253AMAC2TB
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -57376,7 +57376,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-31T17:32:39.305Z
-        completed_at: 2026-05-31T17:32:39.305Z
+        completed_at: 2026-05-31T17:32:50.452Z
+        notes: "Identified one untracked high-confidence systemic friction: per-field RunnerFieldOrigin and
+          overall SourceLayerDiagnostic share string vocab but have different semantics — 'merged'
+          exists at the layer level only. Tripped on this during summarizeRunnerInvocation design.
+          Other potential reflection items (summarize+probe helper as success pattern, three review
+          cycles for one task) are either already captured upstream (@01KSZFP35) or too
+          session-specific to be systemic."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-31T17:32:50.452Z
+        completed_at: 2026-05-31T17:32:50.452Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-31T17:30:15.057Z
