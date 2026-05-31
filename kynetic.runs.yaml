@@ -57158,7 +57158,7 @@ runs:
     completed_at: 2026-05-31T16:04:42.928Z
   - _ulid: 01KSZCZ0HBN6VG7VW4MMSVK981
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -57173,7 +57173,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-31T16:15:48.670Z
-        completed_at: 2026-05-31T16:15:48.670Z
+        completed_at: 2026-05-31T16:15:57.507Z
+        notes: "Friction: existing redaction test was implicitly relying on the leak path to ferry
+          KSPEC_CAPTURE_FILE from invocation baseEnv into mutation subprocess; test passed even
+          though the leak was real. Discovery only when post-fix test failed. Pattern (regression
+          tests should verify they catch the bug with prior code stashed) is already captured by
+          observation @01KSS25K. No new friction worth capturing."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-31T16:15:57.507Z
+        completed_at: 2026-05-31T16:15:57.507Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-31T16:13:09.035Z
