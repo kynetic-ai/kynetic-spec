@@ -23362,11 +23362,11 @@ reviews:
   - _ulid: 01KSZS715V8ST1DAXFTTJARKT6
     slugs: []
     title: Review runner validation CLI surfaces
-    disposition: pending
+    disposition: approved
     author: Jacob Chapel
     check_count: 12
     examined_commit: e62d1076e9e7d63700a4bb1c6153db63999ea922
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -23375,6 +23375,6 @@ reviews:
       shadow_commit: ""
     thread_count: 1
     unresolved_blocker_count: 0
-    verdict_count: 0
+    verdict_count: 1
     created_at: 2026-05-31T19:47:14.747Z
-    updated_at: 2026-05-31T20:03:19.960Z
+    updated_at: 2026-05-31T20:03:38.906Z
