@@ -253,6 +253,34 @@ export interface RunnerInvocation {
    * returned.
    */
   env: Record<string, string>;
+  /**
+   * Sanitized env for internal kspec mutation subprocesses (e.g.
+   * `kspec task note`, `kspec task block`) spawned during failure and
+   * timeout handling. Contains only the kspec-required invocation
+   * variables — never resolved `env.secrets`, runner `env.set` literals,
+   * `env.pass` host pass-through, or `env.inherit` host vars. The adapter
+   * secret boundary stops at the adapter spawn; kspec-internal mutation
+   * helpers run with the dispatch contract only.
+   *
+   * AC: @runner-environment-secret-boundaries ac-secret-values-not-stored-inline
+   * AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+   */
+  mutationEnv: Record<string, string>;
+  /**
+   * Names of env vars resolved from runner `env.secrets` bindings. The
+   * adapter spawn consumes these via `env`; every other subprocess kspec
+   * spawns (mutation helpers, diagnostic shells) must strip these keys
+   * from inherited host env so a `user_env`-sourced binding does not
+   * silently leak via `process.env` inheritance even though `mutationEnv`
+   * itself contains no secret material.
+   *
+   * Empty for the implicit/legacy path and for runner contracts that did
+   * not resolve any secret bindings.
+   *
+   * AC: @runner-environment-secret-boundaries ac-secret-values-not-stored-inline
+   * AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+   */
+  secretEnvKeys: readonly string[];
   /** Adapter args to append (auto-approve flags + runner process.args). */
   extraArgs: readonly string[];
   /**
@@ -421,6 +449,7 @@ function buildImplicitContract(inputs: ImplicitContractInputs): RunnerInvocation
   // AC: @runner-invocation-semantics ac-session-env-injected-through-runner
   const contractEnv: Record<string, string> = { ...env };
   applyKspecRequiredEnv(contractEnv, sessionId, mutationLockFile);
+  const mutationEnv = buildKspecRequiredEnv(sessionId, mutationLockFile);
 
   return {
     runnerId: null,
@@ -428,6 +457,10 @@ function buildImplicitContract(inputs: ImplicitContractInputs): RunnerInvocation
     adapter,
     cwd,
     env: contractEnv,
+    mutationEnv,
+    // Implicit/legacy path never resolves env.secrets — nothing to strip
+    // from host env on mutation subprocess spawn.
+    secretEnvKeys: [],
     extraArgs,
     // Implicit/legacy path keeps the pre-runner-config behavior where the
     // spawner inherits the host process env. Runner-backed invocations turn
@@ -478,7 +511,11 @@ function buildRunnerContract(inputs: RunnerContractInputs): RunnerInvocation {
   // AC: @runner-environment-secret-boundaries ac-privacy-defaults-applied
   // AC: @runner-environment-secret-boundaries ac-required-secret-missing-blocks
   // AC: @runner-invocation-semantics ac-session-env-injected-through-runner
-  const { env: composedEnv, secretValues } = buildRunnerEnv({
+  const {
+    env: composedEnv,
+    secretValues,
+    secretEnvKeys,
+  } = buildRunnerEnv({
     runner,
     baseEnv: env,
     hostEnv,
@@ -514,12 +551,23 @@ function buildRunnerContract(inputs: RunnerContractInputs): RunnerInvocation {
     ...(inputs.systemLayerIssues ? { systemLayerIssues: inputs.systemLayerIssues } : {}),
   };
 
+  // Sanitized env for kspec-internal mutation subprocesses. The adapter
+  // env (composedEnv) carries the resolved env.secrets, env.set, env.pass,
+  // and inherited host vars — none of which belong in the env passed to
+  // `kspec task note` or `kspec task block` child processes. Build the
+  // mutation env from kspec-required vars only.
+  // AC: @runner-environment-secret-boundaries ac-secret-values-not-stored-inline
+  // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+  const mutationEnv = buildKspecRequiredEnv(sessionId, mutationLockFile);
+
   return {
     runnerId: runner.name,
     adapterId: runner.adapter,
     adapter: effectiveAdapter,
     cwd: effectiveCwd,
     env: composedEnv,
+    mutationEnv,
+    secretEnvKeys,
     extraArgs,
     // Runner-backed: spawner uses the contract env verbatim so env.inherit
     // policy is the only source of host environment in the child.
@@ -565,6 +613,16 @@ export interface BuildRunnerEnvResult {
    * AC: @runner-environment-secret-boundaries ac-secret-values-not-stored-inline
    */
   secretValues: readonly string[];
+  /**
+   * Env var names that were populated by resolved `env.secrets` bindings.
+   * The adapter spawn consumes them through `env`; mutation subprocesses
+   * must strip these names from inherited host env so a `user_env` source
+   * (which by definition mirrors a host variable) does not leak via
+   * `process.env` inheritance.
+   *
+   * AC: @runner-environment-secret-boundaries ac-secret-values-not-stored-inline
+   */
+  secretEnvKeys: readonly string[];
 }
 
 /**
@@ -656,6 +714,7 @@ export function buildRunnerEnv(input: BuildRunnerEnvInput): BuildRunnerEnvResult
 
   // 6) Resolve declared secret bindings.
   const secretValueSet = new Set<string>();
+  const secretEnvKeys: string[] = [];
   for (const [envVarName, binding] of Object.entries(runner.env.secrets)) {
     const value = lookupSecretValue(binding.source, envVarName, hostEnv);
     if (value === undefined) {
@@ -673,35 +732,56 @@ export function buildRunnerEnv(input: BuildRunnerEnvInput): BuildRunnerEnvResult
     }
     env[envVarName] = value;
     secretValueSet.add(value);
+    secretEnvKeys.push(envVarName);
   }
 
   // 7) kspec-required invocation variables — applied last so env.set cannot
   //    accidentally override the dispatch contract.
   applyKspecRequiredEnv(env, sessionId, mutationLockFile);
 
-  return { env, secretValues: Array.from(secretValueSet) };
+  return { env, secretValues: Array.from(secretValueSet), secretEnvKeys };
+}
+
+/**
+ * Build the kspec-required invocation variables. These vars are always
+ * present in the resolved contract regardless of runner inheritance/set/
+ * secrets configuration so kspec subprocesses spawned by the agent
+ * (e.g. `kspec task note`) inherit the dispatch contract.
+ *
+ * Returned as a fresh dictionary so callers can either overlay onto the
+ * adapter env (high precedence) or use it verbatim as the sanitized
+ * mutation env for internal kspec subprocesses — which must NEVER inherit
+ * resolved `env.secrets`, runner env.set, env.pass, or host inheritance.
+ *
+ * AC: @runner-environment-secret-boundaries ac-env-inheritance-policy-applied
+ * AC: @runner-environment-secret-boundaries ac-secret-values-not-stored-inline
+ * AC: @runner-invocation-semantics ac-session-env-injected-through-runner
+ */
+function buildKspecRequiredEnv(
+  sessionId: string,
+  mutationLockFile: string | undefined,
+): Record<string, string> {
+  const env: Record<string, string> = {
+    KSPEC_NO_DAEMON: "1",
+    KSPEC_SESSION_ID: sessionId,
+  };
+  if (mutationLockFile) {
+    env.KSPEC_SHADOW_MUTATION_LOCK_FILE = mutationLockFile;
+  }
+  return env;
 }
 
 /**
  * Overlay the kspec-required invocation variables onto the supplied env
- * map. These vars are always present in the resolved contract regardless
- * of runner inheritance/set/secrets configuration so kspec subprocesses
- * spawned by the agent (e.g. `kspec task note`) inherit the dispatch
- * contract.
- *
- * AC: @runner-environment-secret-boundaries ac-env-inheritance-policy-applied
- * AC: @runner-invocation-semantics ac-session-env-injected-through-runner
+ * map. Thin wrapper around `buildKspecRequiredEnv` used where the adapter
+ * env is assembled in place.
  */
 function applyKspecRequiredEnv(
   env: Record<string, string>,
   sessionId: string,
   mutationLockFile: string | undefined,
 ): void {
-  env.KSPEC_NO_DAEMON = "1";
-  env.KSPEC_SESSION_ID = sessionId;
-  if (mutationLockFile) {
-    env.KSPEC_SHADOW_MUTATION_LOCK_FILE = mutationLockFile;
-  }
+  Object.assign(env, buildKspecRequiredEnv(sessionId, mutationLockFile));
 }
 
 /**

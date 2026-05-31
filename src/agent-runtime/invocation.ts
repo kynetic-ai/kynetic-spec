@@ -359,19 +359,39 @@ interface InvocationState {
 
 /**
  * Run a kspec CLI command asynchronously.
+ *
+ * `env` is overlaid on top of the inherited host `process.env`. When
+ * `stripFromHostEnv` is supplied, those keys are removed from the host
+ * inheritance *before* the overlay — used by mutation helpers to drop
+ * runner-resolved `env.secrets` so a `user_env`-sourced binding cannot
+ * leak from the parent's process.env into kspec subprocesses.
+ *
  * AC: @agent-dispatch-engine ac-28 — async to avoid blocking the event loop
+ * AC: @runner-environment-secret-boundaries ac-secret-values-not-stored-inline
+ * AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
  */
 async function runKspecCli(
   args: string[],
   cwd: string,
   kspecCliPath: string,
   env?: Record<string, string>,
+  stripFromHostEnv?: readonly string[],
 ): Promise<{ stdout: string; stderr: string; status: number | null }> {
   try {
+    let spawnEnv: NodeJS.ProcessEnv;
+    if (stripFromHostEnv && stripFromHostEnv.length > 0) {
+      const sanitizedHost: NodeJS.ProcessEnv = { ...process.env };
+      for (const key of stripFromHostEnv) {
+        delete sanitizedHost[key];
+      }
+      spawnEnv = env ? { ...sanitizedHost, ...env } : sanitizedHost;
+    } else {
+      spawnEnv = env ? { ...process.env, ...env } : process.env;
+    }
     const result = await execFileAsync(process.execPath, [kspecCliPath, ...args], {
       encoding: "utf-8",
       cwd,
-      env: env ? { ...process.env, ...env } : process.env,
+      env: spawnEnv,
     });
     return {
       stdout: result.stdout ?? "",
@@ -398,8 +418,15 @@ async function addTaskNote(
   kspecCliPath: string,
   env?: Record<string, string>,
   strict = false,
+  stripFromHostEnv?: readonly string[],
 ): Promise<void> {
-  const result = await runKspecCli(["task", "note", taskRef, note], cwd, kspecCliPath, env);
+  const result = await runKspecCli(
+    ["task", "note", taskRef, note],
+    cwd,
+    kspecCliPath,
+    env,
+    stripFromHostEnv,
+  );
   if (strict && result.status !== 0) {
     throw new DispatchMutationError(
       `Dispatch mutation failed while writing task note for ${taskRef}: ${result.stderr || result.stdout || "kspec task note exited non-zero"}`,
@@ -417,12 +444,14 @@ async function blockTask(
   kspecCliPath: string,
   env?: Record<string, string>,
   strict = false,
+  stripFromHostEnv?: readonly string[],
 ): Promise<void> {
   const result = await runKspecCli(
     ["task", "block", taskRef, "--reason", reason],
     cwd,
     kspecCliPath,
     env,
+    stripFromHostEnv,
   );
   if (strict && result.status !== 0) {
     throw new DispatchMutationError(
@@ -618,6 +647,25 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
   };
 
   const invocationEnv: Record<string, string> = contract.env;
+  // Sanitized env passed to internal kspec mutation subprocesses
+  // (`kspec task note`, `kspec task block`). Resolved env.secrets and
+  // runner env.set/env.pass/env.inherit values live in `contract.env` and
+  // are intended for the adapter spawn only; they must NEVER reach kspec
+  // subprocesses whose only need is the dispatch contract (KSPEC_NO_DAEMON,
+  // KSPEC_SESSION_ID, KSPEC_SHADOW_MUTATION_LOCK_FILE).
+  //
+  // Two defenses run together below:
+  //   - `mutationEnv` contains only kspec-required vars, so the overlay
+  //     itself can never inject a secret.
+  //   - `mutationSecretStripKeys` lists the env var names that were
+  //     resolved from `env.secrets`, so the spawner strips them from
+  //     `process.env` before overlay — closing the `user_env` leak path
+  //     where the parent's process.env already mirrors the secret.
+  //
+  // AC: @runner-environment-secret-boundaries ac-secret-values-not-stored-inline
+  // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+  const mutationEnv: Record<string, string> = contract.mutationEnv;
+  const mutationSecretStripKeys: readonly string[] = contract.secretEnvKeys;
 
   // ─── Prompt queue for multi-turn ─────────────────────────────────────────
   // AC: @multi-turn-session-lifecycle ac-8, ac-9, ac-17
@@ -1138,8 +1186,9 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
           `[AGENT-TIMEOUT] Invocation timed out after ${timeoutMinutes} minutes`,
           cwd,
           kspecCliPath,
-          invocationEnv,
+          mutationEnv,
           Boolean(mutationLockFile),
+          mutationSecretStripKeys,
         );
       }
 
@@ -1297,8 +1346,9 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         `[AGENT-FAIL] Invocation failed: ${errorMessage}`,
         cwd,
         kspecCliPath,
-        invocationEnv,
+        mutationEnv,
         Boolean(mutationLockFile),
+        mutationSecretStripKeys,
       );
 
       // ─── Check retry threshold ────────────────────────────────────────────
@@ -1312,8 +1362,9 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
           `Agent ${agent.id} failed ${consecutiveFailures} consecutive times: ${errorMessage}`,
           cwd,
           kspecCliPath,
-          invocationEnv,
+          mutationEnv,
           Boolean(mutationLockFile),
+          mutationSecretStripKeys,
         );
       }
     }
