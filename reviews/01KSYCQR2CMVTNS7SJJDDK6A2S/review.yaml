@@ -2,7 +2,17 @@ _ulid: 01KSYCQR2CMVTNS7SJJDDK6A2S
 slugs: []
 title: Review task-update-existing-agent-runner-specs
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed; schema/references OK; warning baseline allowed.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-05-31T07:03:03.823Z
+    completed_at: 2026-05-31T07:03:03.823Z
 events:
   - _ulid: 01KSYCQR25C7Z4PSSGPPDFFW2V
     actor: Jacob Chapel
@@ -17,6 +27,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-05-31T06:50:20.427Z
+  - _ulid: 01KSYDFS2WVG567FRDVK8TWQ7Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-05-31T07:03:04.028Z
 examined_commit: 28770407cf3ca944af1bee0c0ed6e6bf1577a460
 external_links: []
 lifecycle_state: open
@@ -29,5 +46,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-05-31T06:49:56.556Z
-updated_at: 2026-05-31T06:50:20.194Z
+updated_at: 2026-05-31T07:03:03.823Z
 notes: []
