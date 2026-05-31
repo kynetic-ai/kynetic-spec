@@ -98,6 +98,18 @@ checks:
     runner: npm test
     created_at: 2026-05-31T16:00:49.944Z
     completed_at: 2026-05-31T16:00:49.944Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "node spawnSync('sh', ['-c','exit 0'], { env: {} }) succeeded, but
+      preflightExecutable('sh', { searchPath: '' }) returned not_found via tsx. This violates
+      spawnability parity for absent PATH."
+    name: manual spawn/preflight parity
+    required: true
+    runner: node
+    created_at: 2026-05-31T16:00:52.985Z
+    completed_at: 2026-05-31T16:00:52.985Z
 events:
   - _ulid: 01KSZBJ9QT6R4TV2KSNAEF2GMF
     actor: Jacob Chapel
@@ -182,6 +194,13 @@ events:
       status: pass
       name: npm test -- --fresh
     timestamp: 2026-05-31T16:00:50.166Z
+  - _ulid: 01KSZC8HZGBASKB2XCYRZCN4XT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: manual spawn/preflight parity
+    timestamp: 2026-05-31T16:00:53.233Z
 examined_commit: c18fc6ea96f9d1b48b17c1397eba5f0d7c747ccb
 external_links: []
 lifecycle_state: open
@@ -215,5 +234,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-05-31T15:48:43.898Z
-updated_at: 2026-05-31T16:00:49.944Z
+updated_at: 2026-05-31T16:00:52.985Z
 notes: []
