@@ -30317,7 +30317,7 @@
   type: task
   spec_ref: "@runner-operator-surfaces"
   plan_ref: "@plan-agent-runner-configuration-layer"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-agent-runner-meta-cli"
@@ -30333,7 +30333,7 @@
   todos_count: 0
   created_at: 2026-05-31T06:19:03.348Z
   started_at: 2026-05-31T19:42:38.844Z
-  submitted_at: 2026-05-31T19:01:23.340Z
+  submitted_at: 2026-05-31T19:42:42.318Z
   automation: eligible
 - _ulid: 01KSYAZ6MNX6EZCHZANWAT6X8T
   slugs:
