@@ -1704,7 +1704,8 @@ plans:
     slugs:
       - plan-agent-runner-configuration-layer
     title: Agent Runner Configuration Layer
-    status: draft
+    status: approved
+    approved_at: 2026-05-31T06:18:18.282Z
     derived_specs: []
     derived_tasks: []
     notes_count: 10
