@@ -79,6 +79,18 @@ checks:
     runner: tsc
     created_at: 2026-05-31T16:56:53.747Z
     completed_at: 2026-05-31T16:56:53.747Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/agent-runner-process.test.ts
+      tests/agent-runner-resolver.test.ts tests/cli-agent.test.ts tests/agent-invocation.test.ts
+      passed: 99 tests across 34 suites."
+    name: focused runner/CLI tests
+    required: true
+    runner: vitest
+    created_at: 2026-05-31T16:57:02.609Z
+    completed_at: 2026-05-31T16:57:02.609Z
 events:
   - _ulid: 01KSZEJXP4HTREPE2BG5G05M1A
     actor: Jacob Chapel
@@ -156,6 +168,13 @@ events:
       status: pass
       name: npm run typecheck
     timestamp: 2026-05-31T16:56:53.941Z
+  - _ulid: 01KSZFFCK3WFABSGS7JPM97GXR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused runner/CLI tests
+    timestamp: 2026-05-31T16:57:02.819Z
 examined_commit: 1d6a27fd910eb070cda8dfe163783b1f94bff99e
 external_links: []
 lifecycle_state: open
@@ -209,5 +228,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-05-31T16:41:30.052Z
-updated_at: 2026-05-31T16:56:53.747Z
+updated_at: 2026-05-31T16:57:02.609Z
 notes: []
