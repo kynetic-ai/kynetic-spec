@@ -89,7 +89,7 @@ description: >
 spec_ref: "@agent-definition-schema"
 plan_ref: "@plan-agent-runner-configuration-layer"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -100,6 +100,14 @@ tags:
   - runners
   - compatibility
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-update-existing-agent-runner-specs/01ksyaz3
+  captured_at: 2026-05-31T06:45:51.497Z
+  commit: 28770407cf3ca944af1bee0c0ed6e6bf1577a460
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KSYC918KX5911HX7F2K26S0J
 history:
   - author: Jacob Chapel
@@ -122,7 +130,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-05-31T06:42:37.819Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-update-existing-agent-runner-specs/01ksyaz3
+          captured_at: 2026-05-31T06:45:51.497Z
+          commit: 28770407cf3ca944af1bee0c0ed6e6bf1577a460
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-05-31T06:45:51.500Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-05-31T06:45:51.500Z
 created_at: 2026-05-31T06:19:00.746Z
 started_at: 2026-05-31T06:42:37.819Z
+submitted_at: 2026-05-31T06:45:51.500Z
 todos: []
 automation: eligible

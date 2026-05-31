@@ -30140,7 +30140,7 @@
   type: task
   spec_ref: "@agent-definition-schema"
   plan_ref: "@plan-agent-runner-configuration-layer"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 1
@@ -30153,6 +30153,7 @@
   todos_count: 0
   created_at: 2026-05-31T06:19:00.746Z
   started_at: 2026-05-31T06:42:37.819Z
+  submitted_at: 2026-05-31T06:45:51.500Z
   automation: eligible
 - _ulid: 01KSYAZ43RRZAYW67V72VKG61V
   slugs:
