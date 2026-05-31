@@ -57023,7 +57023,7 @@ runs:
     completed_at: 2026-05-31T15:13:34.374Z
   - _ulid: 01KSZA1V7KAMRKM7W3HAE8B125
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -57038,7 +57038,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-31T15:23:17.002Z
-        completed_at: 2026-05-31T15:23:17.002Z
+        completed_at: 2026-05-31T15:24:10.227Z
+        notes: "Searched: 'redact', 'helper not wired', 'missing caller', 'behavioral test', 'unused
+          helper', 'dead code', 'redaction marker'. No existing observations match the specific
+          pattern 'cross-cutting helper introduced but no production caller applies it'. The closest
+          existing item is the dead-code sweep task (01KHQQTR) which is about removal, not about
+          preventing the gap. Two high-confidence candidates: (1) friction pattern around
+          redaction/sanitization helpers being added without wiring callers — caught by reviewer rg
+          evidence; (2) success pattern that redaction behavioral tests must assert both
+          absence-of-secret AND presence-of-marker so a silent no-op regression cannot pass."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-31T15:24:10.227Z
+        completed_at: 2026-05-31T15:24:10.227Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-31T15:22:16.179Z
