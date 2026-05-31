@@ -56514,7 +56514,7 @@ runs:
     completed_at: 2026-05-31T09:09:56.539Z
   - _ulid: 01KSYS8PJHQWB2YZPC7CQX8WEN
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -56530,7 +56530,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-31T10:29:30.453Z
-        completed_at: 2026-05-31T10:29:30.453Z
+        completed_at: 2026-05-31T10:29:42.053Z
+        notes: "Friction points: (1) Full fresh test suite took 2469.3s, so review closure is highly
+          latency-bound even after focused tests pass; this may already be addressed by test
+          cache/shards, but full gate remains long. (2) While recording checks through kspec batch,
+          setting required:false did not produce an optional check in the review record; the review
+          showed those checks as required, suggesting batch/CLI handling for negated boolean options
+          such as --no-required is easy to misuse or underdocumented. (3) kspec skill render
+          --dry-run emitted unrelated drifted-skill warnings while checking a changed skill
+          template, which added noise but did not block the review."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-31T10:29:42.053Z
+        completed_at: 2026-05-31T10:29:42.053Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T10:28:54.993Z
