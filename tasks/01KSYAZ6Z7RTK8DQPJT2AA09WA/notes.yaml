@@ -1,1 +1,49 @@
-notes: []
+notes:
+  - _ulid: 01KT06VD1Q619GV0HYHCWN2GZ0
+    content: >-
+      Implemented runner-aware web UI surfaces.
+
+
+      Components:
+
+      - AgentCard: runner name badge, valid/invalid validation badge, and redacted diagnostics list
+      when runner_validation present; resolved adapter shown for all agents; legacy adapter
+      preserved when no runner.
+
+      - ActiveInvocationRow: runner badge with adapter tooltip when invocation.runner present.
+
+      - QueuedInvocationRow (new): mirrors ActiveInvocationRow shape but uses wait_ms.
+
+      - AgentEditForm: new Runner input that diffs against initialRunner. Empty form clears
+      (payload.runner = null), filled sets (payload.runner = 'name'), unchanged omits from PATCH.
+      Adapter field remains editable independently.
+
+      - /agents +page: queued invocations section renders QueuedInvocationRow when present.
+
+
+      Tests in tests/e2e/agents.spec.ts (new Runner Surfaces describe block, all 12 pass):
+
+      - ac-web-ui-agent-cards-include-runner: runner name visible, resolved adapter for all agents,
+      legacy agent omits runner.
+
+      - runner validation badges (valid/invalid) and diagnostics rendering.
+
+      - ac-diagnostics-redact-secrets: card renders daemon-supplied redacted message verbatim and
+      does not surface structured details sentinel or binding: key.
+
+      - ac-web-ui-active-invocations-include-runner and ac-web-ui-queued-invocations-include-runner:
+      runner badge present only on runner-backed rows.
+
+      - ac-web-ui-agent-edit-supports-runner: pre-populated, set without adapter change (PATCH
+      carries runner='new-runner', adapter='claude-agent-acp'), clear via Clear button (PATCH
+      carries runner=null), unchanged (PATCH omits runner key).
+
+
+      Gates: oxlint, oxfmt, tsc --noEmit pass. svelte-check shows same 61-error baseline as
+      origin/dev (pre-existing in reviews/sessions/plans routes, unrelated to my changes). npm test
+      = 10153 passed / 5 skipped. agents.spec.ts and automation.spec.ts both fully green. Full e2e
+      suite running in background; only flake observed is the pre-existing api-websocket
+      daemon-restart timeout test.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-31T23:45:33.751Z
