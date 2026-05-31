@@ -23039,7 +23039,7 @@ reviews:
   - _ulid: 01KSYFMASTJJ3TBF11YFEZ4P1R
     slugs: []
     title: Review task-runner-config-schema-types
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
     check_count: 0
     examined_commit: 2cdce4953569d8ad0b9087dcec038d62e0344824
@@ -23050,8 +23050,8 @@ reviews:
       content_hash: ""
       ref: "@01KSYAZ43RRZAYW67V72VKG61V"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
+    thread_count: 1
+    unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-05-31T07:40:30.394Z
-    updated_at: 2026-05-31T07:41:39.232Z
+    updated_at: 2026-05-31T07:43:39.147Z

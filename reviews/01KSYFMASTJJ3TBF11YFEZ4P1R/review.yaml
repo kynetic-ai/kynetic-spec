@@ -17,6 +17,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-05-31T07:41:39.462Z
+  - _ulid: 01KSYFT3CS4EKF070193HBT5Y5
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSYFT34A6TE6T7GDRAF2M1W5
+    timestamp: 2026-05-31T07:43:39.417Z
 examined_commit: 2cdce4953569d8ad0b9087dcec038d62e0344824
 external_links: []
 lifecycle_state: open
@@ -26,8 +33,30 @@ subject:
   content_hash: ""
   ref: "@01KSYAZ43RRZAYW67V72VKG61V"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KSYFT34A6TE6T7GDRAF2M1W5
+    anchor:
+      type: code
+      commit: 2cdce4953569d8ad0b9087dcec038d62e0344824
+      line_end: 242
+      line_start: 238
+      path: src/agents/runner-config.ts
+      side: head
+    entries:
+      - _ulid: 01KSYFT34B0AMXR58J6SJEAFP9
+        author: Jacob Chapel
+        body: "MUST-FIX: System runner config does not enforce that adapter references an existing
+          registered adapter. The task requires system runner config adapter to be a required string
+          reference to an existing registered adapter, but the schema only checks non-empty string.
+          I verified this by running SystemRunnerConfigSchema.safeParse with adapter
+          'definitely-not-registered': it returned success=true, while
+          getAdapter('definitely-not-registered') returned null and listAdapters() only contains
+          claude-agent-acp, claude-code-acp, codex-acp, droid-acp, and mock-acp. This lets invalid
+          runner configs become effective and fail later during invocation instead of being rejected
+          at config validation."
+        created_at: 2026-05-31T07:43:39.147Z
+    kind: blocker
 verdicts: []
 created_at: 2026-05-31T07:40:30.394Z
-updated_at: 2026-05-31T07:41:39.232Z
+updated_at: 2026-05-31T07:43:39.147Z
 notes: []
