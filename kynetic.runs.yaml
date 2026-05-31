@@ -57260,9 +57260,21 @@ runs:
     completed_at: 2026-05-31T16:35:34.329Z
   - _ulid: 01KSZEC26JYQJG21SAWCGFW3P3
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-31T16:37:45.298Z
+        completed_at: 2026-05-31T16:39:28.536Z
+        notes: "Worked well: anchored parity claim to a real child_process.spawn probe at the top of each
+          new test before asserting the preflight outcome. This pinned the spawn-contract reference
+          inline with the test rather than leaving the claim implicit; if a future libc change
+          shifted defaults, the same test would surface the divergence."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-31T16:39:28.536Z
+        completed_at: 2026-05-31T16:39:28.536Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-31T16:37:45.298Z
