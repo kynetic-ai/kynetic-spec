@@ -3889,3 +3889,14 @@ inbox:
       - merge-helper
     added_by: Jacob Chapel
     created_at: 2026-05-29T06:17:47.839Z
+  - _ulid: 01KSYDTAG99QZJQ9C9BC09873N
+    text: Reviewer and merge completion guidance should mention kspec task complete --no-sync for tasks
+      that intentionally leave linked specs in_progress, and should tell reviewers to verify linked
+      spec implementation status after completion for spec-only or reopened-contract tasks.
+    tags:
+      - reflection
+      - review
+      - merge
+      - specs
+    added_by: Jacob Chapel
+    created_at: 2026-05-31T07:08:49.545Z
