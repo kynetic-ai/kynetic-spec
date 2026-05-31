@@ -2,7 +2,129 @@ _ulid: 01KSYRADFE8ADWSK8BC7CE4NBX
 slugs: []
 title: Review task-agent-runner-meta-cli cycle 2
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation passed: schema OK, references OK; existing reference warnings accepted under
+      --warnings-ok."
+    name: kspec validate --refs --warnings-ok
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-31T10:26:45.114Z
+    completed_at: 2026-05-31T10:26:45.114Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation passed: alignment check completed with existing warnings accepted under
+      --warnings-ok."
+    name: kspec validate --alignment --warnings-ok
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-31T10:26:47.530Z
+    completed_at: 2026-05-31T10:26:47.530Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation passed: completeness check completed with existing coverage/annotation
+      warnings accepted under --warnings-ok; changed tests include runner AC annotations."
+    name: kspec validate --completeness --warnings-ok
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-31T10:26:49.948Z
+    completed_at: 2026-05-31T10:26:49.948Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All matched files use correct format; 960 files checked.
+    name: npm run format:check
+    required: true
+    runner: oxfmt
+    created_at: 2026-05-31T10:26:52.350Z
+    completed_at: 2026-05-31T10:26:52.350Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo lint completed with 0 errors under --quiet; warning baseline remains.
+    name: npm run lint -- --quiet
+    required: true
+    runner: oxlint
+    created_at: 2026-05-31T10:26:54.796Z
+    completed_at: 2026-05-31T10:26:54.796Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Changed-file lint completed with 0 errors. It reported 6 no-shadow warnings in
+      pre-existing declarations in src/cli/commands/meta.ts, not introduced by the runner edits.
+    name: npx oxlint changed TS/test files
+    required: true
+    runner: oxlint
+    created_at: 2026-05-31T10:26:57.300Z
+    completed_at: 2026-05-31T10:26:57.300Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit completed successfully.
+    name: npm run typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-31T10:26:59.847Z
+    completed_at: 2026-05-31T10:26:59.847Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/meta-agent-schema.test.ts tests/cli-agent.test.ts: 7 suites
+      passed, 25 tests passed."
+    name: focused tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-31T10:27:02.204Z
+    completed_at: 2026-05-31T10:27:02.204Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2606 test suites passed; 9984 tests passed, 5 skipped; duration 2469.3s."
+    name: npm test -- --fresh
+    required: true
+    runner: npm test
+    created_at: 2026-05-31T10:27:04.590Z
+    completed_at: 2026-05-31T10:27:04.590Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec skill render --dry-run reported no changes needed; unrelated drifted skills were
+      skipped by renderer policy.
+    name: skill render dry-run
+    required: true
+    runner: kspec skill render
+    created_at: 2026-05-31T10:27:07.005Z
+    completed_at: 2026-05-31T10:27:07.005Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md, task/spec/plan context, prior review, src/schema/meta.ts,
+      src/parser/meta.ts, src/cli/commands/meta.ts, src/cli/commands/agent.ts,
+      src/agents/runner-config.ts, src/agent-runtime/invocation.ts, tests/cli-agent.test.ts,
+      tests/meta-agent-schema.test.ts, templates/skills/merge/SKILL.md. Claims verified: runner
+      field schema/load, meta add/set/clear preserves fields, agent list/run use runner-resolved
+      adapter for this metadata step, prior blockers resolved. Categories searched: correctness,
+      edge cases, error handling, test quality, integration, generated-skill consistency."
+    name: review evidence log
+    required: true
+    runner: codex reviewer
+    created_at: 2026-05-31T10:27:09.352Z
+    completed_at: 2026-05-31T10:27:09.352Z
 events:
   - _ulid: 01KSYRADFCEZ1YB3NHS06212P7
     actor: Jacob Chapel
@@ -17,6 +139,83 @@ events:
       from: draft
       to: open
     timestamp: 2026-05-31T10:12:54.518Z
+  - _ulid: 01KSYS4QZD3KD3ZSZ10HDTBRMW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --refs --warnings-ok
+    timestamp: 2026-05-31T10:26:45.358Z
+  - _ulid: 01KSYS4TANRC54ZGEW058QE12V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --alignment --warnings-ok
+    timestamp: 2026-05-31T10:26:47.766Z
+  - _ulid: 01KSYS4WNWJ6E0BXFX4BZ47YAW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --completeness --warnings-ok
+    timestamp: 2026-05-31T10:26:50.172Z
+  - _ulid: 01KSYS4Z0RXBS123JA1XH90QT6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run format:check
+    timestamp: 2026-05-31T10:26:52.568Z
+  - _ulid: 01KSYS51CGX729JMMNK92DE5HP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run lint -- --quiet
+    timestamp: 2026-05-31T10:26:54.992Z
+  - _ulid: 01KSYS53VAF0PGJQMSACRZT0MT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npx oxlint changed TS/test files
+    timestamp: 2026-05-31T10:26:57.514Z
+  - _ulid: 01KSYS56APTRKA58M76RH1MD7Z
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run typecheck
+    timestamp: 2026-05-31T10:27:00.054Z
+  - _ulid: 01KSYS58NA6AK4SR8505X8EM9R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused tests
+    timestamp: 2026-05-31T10:27:02.442Z
+  - _ulid: 01KSYS5AYNXCVBTVH0V2S8AM0Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-05-31T10:27:04.789Z
+  - _ulid: 01KSYS5D9QKYE8H2A8PKZ6K8AQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: skill render dry-run
+    timestamp: 2026-05-31T10:27:07.191Z
+  - _ulid: 01KSYS5FKYGMTXNC1QCAEDS4EE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-31T10:27:09.566Z
 examined_commit: bf97a7ada6d476c76d9d7f043f15fd7b74ab7a07
 external_links: []
 lifecycle_state: open
@@ -29,5 +228,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-05-31T10:12:22.638Z
-updated_at: 2026-05-31T10:12:54.284Z
+updated_at: 2026-05-31T10:27:09.352Z
 notes: []
