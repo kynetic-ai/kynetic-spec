@@ -36,6 +36,18 @@ checks:
     runner: kspec
     created_at: 2026-05-31T08:32:47.598Z
     completed_at: 2026-05-31T08:32:47.598Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Skipped as a required gate for this diff because it fails only on pre-existing unrelated
+      templates/skills/merge/SKILL.md, which is not in base...head changed files. Changed TS/test
+      files were covered by oxlint and typecheck.
+    name: npm run format:check
+    required: false
+    runner: oxfmt
+    created_at: 2026-05-31T08:32:57.465Z
+    completed_at: 2026-05-31T08:32:57.465Z
 events:
   - _ulid: 01KSYHVSPBYVMWWBCE9616SFQ8
     actor: Jacob Chapel
@@ -71,6 +83,13 @@ events:
       status: pass
       name: kspec validate --completeness --warnings-ok
     timestamp: 2026-05-31T08:32:47.796Z
+  - _ulid: 01KSYJMC9ZP7ZRABBCC6FHRXTM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: npm run format:check
+    timestamp: 2026-05-31T08:32:57.663Z
 examined_commit: 646a1f8690f8627f3d65fc3a6babe655408bbeb8
 external_links: []
 lifecycle_state: open
@@ -83,5 +102,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-05-31T08:19:32.173Z
-updated_at: 2026-05-31T08:32:47.598Z
+updated_at: 2026-05-31T08:32:57.465Z
 notes: []
