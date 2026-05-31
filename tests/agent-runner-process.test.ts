@@ -237,6 +237,140 @@ describe("runner.process.executable: command reference resolution", () => {
   });
 });
 
+// ─── Bare-command preflight honors invocation env PATH ──────────────────────
+
+/**
+ * Runner-backed invocations spawn with `inheritParentEnv: false`, so the
+ * child sees only the runner-composed env. Node's `child_process.spawn`
+ * resolves bare commands against `options.env.PATH`, NOT the daemon's host
+ * `process.env.PATH`. Preflight must mirror that lookup, or it will skip
+ * valid runners (false negative) or pass invalid ones (false positive)
+ * whenever the runner-scoped PATH differs from the host PATH.
+ */
+describe("preflightRunnerInvocation: bare command lookup uses invocation env PATH", () => {
+  let runnerBin: string;
+  let daemonBin: string;
+  let originalPath: string | undefined;
+  beforeEach(async () => {
+    runnerBin = await createTempDir("kspec-runner-process-bin-");
+    daemonBin = await createTempDir("kspec-runner-process-host-bin-");
+    originalPath = process.env.PATH;
+    registerFakeAdapter();
+  });
+  afterEach(async () => {
+    if (originalPath === undefined) delete process.env.PATH;
+    else process.env.PATH = originalPath;
+    await cleanupTempDir(runnerBin);
+    await cleanupTempDir(daemonBin);
+  });
+
+  // AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+  it("resolves a bare command via env.set.PATH when env.inherit is none", async () => {
+    const bareName = "scoped-tool";
+    await writeExecutable(path.join(runnerBin, bareName));
+    // Daemon PATH does not contain the command, so the only way the
+    // probe can find it is via the runner-scoped env.set.PATH.
+    process.env.PATH = daemonBin;
+
+    const registry = buildRegistry({
+      runners: {
+        fake: {
+          kind: "acp_process",
+          adapter: FAKE_ADAPTER_ID,
+          process: { executable: bareName },
+          env: { inherit: "none", set: { PATH: runnerBin } },
+        },
+      },
+    });
+    const contract = resolveRunnerInvocation(
+      makeInput({
+        agent: makeAgent({ runner: "fake" }),
+        registry,
+        hostEnv: { PATH: daemonBin },
+      }),
+    );
+    expect(contract.inheritParentEnv).toBe(false);
+    expect(contract.env.PATH).toBe(runnerBin);
+
+    await expect(preflightRunnerInvocation(contract)).resolves.toBeUndefined();
+  });
+
+  // AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+  it("fails preflight when the bare command is only on host PATH but runner-scoped PATH is empty", async () => {
+    // The bare command exists in the daemon's process.env.PATH but the
+    // runner config strips PATH from the child env. Spawn would fail
+    // with ENOENT; preflight must report unspawnable_command so we never
+    // silently rely on a host PATH leak.
+    const bareName = "host-only-tool";
+    await writeExecutable(path.join(daemonBin, bareName));
+    process.env.PATH = daemonBin;
+
+    const registry = buildRegistry({
+      runners: {
+        fake: {
+          kind: "acp_process",
+          adapter: FAKE_ADAPTER_ID,
+          process: { executable: bareName },
+          env: { inherit: "none" },
+        },
+      },
+    });
+    const contract = resolveRunnerInvocation(
+      makeInput({
+        agent: makeAgent({ runner: "fake" }),
+        registry,
+        // Even with the daemon's PATH containing the command, the
+        // runner's inherit=none policy must scope the child to an empty
+        // PATH.
+        hostEnv: { PATH: daemonBin },
+      }),
+    );
+    expect(contract.inheritParentEnv).toBe(false);
+    expect(contract.env.PATH).toBeUndefined();
+
+    let captured: RunnerResolutionError | null = null;
+    try {
+      await preflightRunnerInvocation(contract);
+    } catch (err) {
+      captured = err as RunnerResolutionError;
+    }
+    expect(captured).toBeInstanceOf(RunnerResolutionError);
+    expect(captured!.reason).toBe("unspawnable_command");
+    expect(captured!.details.unspawnable_reason).toBe("not_found");
+  });
+
+  // AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+  it("uses inherited PATH from env.inherit=ambient via hostEnv snapshot", async () => {
+    // env.inherit: ambient copies hostEnv into the contract env. The
+    // contract env's PATH is then what Node consults at spawn — and what
+    // preflight must consult. The daemon's process.env.PATH is unrelated.
+    const bareName = "ambient-tool";
+    await writeExecutable(path.join(runnerBin, bareName));
+    process.env.PATH = daemonBin;
+
+    const registry = buildRegistry({
+      runners: {
+        fake: {
+          kind: "acp_process",
+          adapter: FAKE_ADAPTER_ID,
+          process: { executable: bareName },
+          env: { inherit: "ambient" },
+        },
+      },
+    });
+    const contract = resolveRunnerInvocation(
+      makeInput({
+        agent: makeAgent({ runner: "fake" }),
+        registry,
+        hostEnv: { PATH: runnerBin },
+      }),
+    );
+    expect(contract.env.PATH).toBe(runnerBin);
+
+    await expect(preflightRunnerInvocation(contract)).resolves.toBeUndefined();
+  });
+});
+
 describe("preflightExecutable: timeout and probe semantics", () => {
   let tempDir: string;
   beforeEach(async () => {

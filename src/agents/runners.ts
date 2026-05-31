@@ -982,10 +982,41 @@ function timeoutResult(ms: number): Promise<PreflightExecutableResult> {
 }
 
 /**
+ * Compute the PATH the spawned child will see, mirroring `spawnAgent`'s env
+ * composition exactly. The runner-backed path uses the contract env verbatim
+ * (`inheritParentEnv: false`), so PATH lookup for bare commands must use that
+ * same env — not `process.env.PATH`. Otherwise preflight can pass when spawn
+ * will fail, or fail when spawn would succeed, whenever the runner's
+ * `env.inherit` / `env.set.PATH` differs from the daemon's host PATH.
+ */
+function resolveInvocationSearchPath(invocation: RunnerInvocation): string {
+  // Precedence (low → high) must match spawner.ts:
+  //   inheritedHostEnv (only when inheritParentEnv) → adapter.env → contract.env
+  let pathValue: string | undefined;
+  if (invocation.inheritParentEnv) {
+    pathValue = process.env.PATH;
+  }
+  const adapterPath = invocation.adapter.env?.PATH;
+  if (adapterPath !== undefined) pathValue = adapterPath;
+  const contractPath = invocation.env.PATH;
+  if (contractPath !== undefined) pathValue = contractPath;
+  // Empty string means "no PATH segments to search" — distinct from the
+  // host-PATH fallback used by `preflightExecutable` when searchPath is
+  // omitted entirely.
+  return pathValue ?? "";
+}
+
+/**
  * Preflight the resolved runner invocation contract. Runs the executable
  * spawnability probe and throws `RunnerResolutionError("unspawnable_command")`
  * when the configured command cannot be spawned. No-op on the implicit/legacy
  * path or when the resolved adapter command did not come from runner config.
+ *
+ * Bare-command lookup uses the invocation env's PATH (the same PATH Node's
+ * `child_process.spawn` will consult given the contract env), not the daemon
+ * host's PATH. Runner-backed invocations spawn with `inheritParentEnv: false`,
+ * so a runner that scopes PATH via `env.inherit: none` + `env.set.PATH` is
+ * what the child actually sees at spawn — preflight mirrors that.
  *
  * AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
  * AC: @runner-process-invocation-inputs ac-invocation-diagnostics-identify-inputs
@@ -1002,6 +1033,7 @@ export async function preflightRunnerInvocation(
 
   const result = await preflightExecutable(invocation.adapter.command, {
     cwd: invocation.cwd,
+    searchPath: resolveInvocationSearchPath(invocation),
     ...options,
   });
   if (result.spawnable) return;
