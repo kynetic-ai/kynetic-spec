@@ -38,14 +38,38 @@
 
 import type { Agent } from "../schema/meta.js";
 import { getAdapter, resolveAdapter, type AgentAdapter } from "./adapters.js";
+import { SANITIZED_ENV_VARS } from "./spawner.js";
 import type {
   EffectiveRunner,
   EffectiveRunnerRegistry,
+  RunnerEnvInherit,
   RunnerFieldOrigin,
 } from "./runner-config.js";
 
 /** Built-in adapter id used when neither runner nor adapter is configured. */
 export const DEFAULT_ADAPTER_ID = "claude-agent-acp";
+
+/**
+ * Variable names inherited when `env.inherit: minimal`. Intentionally narrow:
+ * just the locale, shell, and command-resolution basics a spawned process
+ * needs to operate. Operators add anything else explicitly via `env.pass` or
+ * `env.set`.
+ */
+export const MINIMAL_INHERIT_ENV_KEYS: readonly string[] = [
+  "PATH",
+  "HOME",
+  "USER",
+  "LOGNAME",
+  "SHELL",
+  "LANG",
+  "LC_ALL",
+  "LC_CTYPE",
+  "TERM",
+  "TMPDIR",
+  "TMP",
+  "TEMP",
+  "PWD",
+] as const;
 
 // ─── Errors ──────────────────────────────────────────────────────────────────
 
@@ -158,6 +182,12 @@ export interface ResolveRunnerInvocationInput {
    * Bypasses runner resolution entirely and uses the override adapter.
    */
   adapterOverride?: string;
+  /**
+   * Host environment snapshot used to apply `env.inherit` and `env.pass`. Defaults
+   * to `process.env` when omitted. Tests pass an explicit snapshot to avoid host
+   * leakage in assertions.
+   */
+  hostEnv?: NodeJS.ProcessEnv;
   /** Validation issues from the project-layer load step. */
   projectLayerIssues?: ReadonlyArray<{ path: string; message: string }>;
   /** Validation issues from the system-layer load step. */
@@ -173,14 +203,42 @@ export interface RunnerInvocation {
   runnerId: string | null;
   /** Resolved adapter id (registered or override). */
   adapterId: string;
-  /** The adapter spawn contract (command, args, env, autoApproveArgs). */
+  /**
+   * Adapter spawn contract (command, args, env, autoApproveArgs).
+   *
+   * When the resolved runner sets `process.executable`, the contract returns a
+   * shallow clone of the registered adapter with `command` replaced. This way
+   * the spawner does not need to know about runner.process — it spawns the
+   * adapter exactly as described.
+   */
   adapter: AgentAdapter;
-  /** Invocation working directory. */
+  /**
+   * Invocation working directory. Equals `runner.process.cwd` when set, else
+   * the caller's invocation cwd. The spawner does not consult runner state.
+   */
   cwd: string;
-  /** Complete runner-scoped env overlay for the adapter process. */
+  /**
+   * Complete runner-scoped env for the adapter process. Composed from the
+   * effective runner's `env.inherit` policy, `env.pass` host pass-through,
+   * caller-supplied invocation env, and `env.set` literals (in that order
+   * of increasing precedence). Secret bindings from `env.secrets` are NOT
+   * resolved here — that responsibility belongs to the secret-source task.
+   */
   env: Record<string, string>;
   /** Adapter args to append (auto-approve flags + runner process.args). */
   extraArgs: readonly string[];
+  /**
+   * Whether the spawner should additionally inherit the host process env.
+   *
+   * - `true` on the implicit/legacy path: spawner merges `process.env` under
+   *   the contract env (preserves pre-runner-config behavior).
+   * - `false` on the runner-backed path: spawner uses the contract env
+   *   verbatim. Required so `env.inherit: none`/`minimal` policies are
+   *   enforced rather than overwritten by host process env at spawn time.
+   *
+   * AC: @runner-environment-secret-boundaries ac-env-inheritance-policy-applied
+   */
+  inheritParentEnv: boolean;
   /** Diagnostics for telemetry / display. */
   diagnostics: RunnerInvocationDiagnostics;
   /** Optional async cleanup hook — invoked after the session closes. */
@@ -204,6 +262,7 @@ export function resolveRunnerInvocation(input: ResolveRunnerInvocationInput): Ru
     autoApprove,
     env,
     adapterOverride,
+    hostEnv = process.env,
     projectLayerIssues,
     systemLayerIssues,
   } = input;
@@ -266,6 +325,7 @@ export function resolveRunnerInvocation(input: ResolveRunnerInvocationInput): Ru
     adapter,
     cwd,
     env,
+    hostEnv,
     autoApprove,
     projectLayerIssues,
     systemLayerIssues,
@@ -309,6 +369,10 @@ function buildImplicitContract(inputs: ImplicitContractInputs): RunnerInvocation
     cwd,
     env: { ...env },
     extraArgs,
+    // Implicit/legacy path keeps the pre-runner-config behavior where the
+    // spawner inherits the host process env. Runner-backed invocations turn
+    // this off so env.inherit policy is the only source of host vars.
+    inheritParentEnv: true,
     diagnostics,
     cleanup: noopCleanup,
   };
@@ -319,17 +383,44 @@ interface RunnerContractInputs {
   adapter: AgentAdapter;
   cwd: string;
   env: Record<string, string>;
+  hostEnv: NodeJS.ProcessEnv;
   autoApprove: boolean;
   projectLayerIssues?: ReadonlyArray<{ path: string; message: string }>;
   systemLayerIssues?: ReadonlyArray<{ path: string; message: string }>;
 }
 
 function buildRunnerContract(inputs: RunnerContractInputs): RunnerInvocation {
-  const { runner, adapter, cwd, env, autoApprove } = inputs;
+  const { runner, adapter, cwd, env, hostEnv, autoApprove } = inputs;
 
-  const overlayEnv: Record<string, string> = { ...env, ...runner.env.set };
+  // Replace the adapter command when runner.process.executable is set. The
+  // returned adapter is a shallow clone so the registered adapter shared by
+  // other invocations remains untouched.
+  // AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+  const effectiveAdapter: AgentAdapter = runner.process.executable
+    ? { ...adapter, command: runner.process.executable }
+    : adapter;
 
-  const autoApproveArgs: readonly string[] = autoApprove ? (adapter.autoApproveArgs ?? []) : [];
+  // Apply runner.process.cwd when set so the spawned process runs in the
+  // operator-configured directory.
+  // AC: @runner-process-invocation-inputs ac-runner-cwd-is-invocation-only
+  const effectiveCwd: string = runner.process.cwd ?? cwd;
+
+  // Compose the child env per the inheritance policy. The spawner consumes
+  // this env verbatim (inheritParentEnv: false), so any host variable that
+  // is not listed here will not reach the child.
+  // AC: @runner-environment-secret-boundaries ac-env-inheritance-policy-applied
+  // AC: @runner-environment-secret-boundaries ac-env-set-overrides-allowed-values
+  const composedEnv = composeRunnerEnv({
+    inherit: runner.env.inherit,
+    pass: runner.env.pass,
+    setEntries: runner.env.set,
+    baseEnv: env,
+    hostEnv,
+  });
+
+  const autoApproveArgs: readonly string[] = autoApprove
+    ? (effectiveAdapter.autoApproveArgs ?? [])
+    : [];
   const extraArgs: readonly string[] = [...autoApproveArgs, ...runner.process.args];
 
   const sourceLayer = computeSourceLayer(runner);
@@ -358,16 +449,83 @@ function buildRunnerContract(inputs: RunnerContractInputs): RunnerInvocation {
   return {
     runnerId: runner.name,
     adapterId: runner.adapter,
-    adapter,
-    cwd,
-    env: overlayEnv,
+    adapter: effectiveAdapter,
+    cwd: effectiveCwd,
+    env: composedEnv,
     extraArgs,
+    // Runner-backed: spawner uses the contract env verbatim so env.inherit
+    // policy is the only source of host environment in the child.
+    inheritParentEnv: false,
     diagnostics,
     cleanup: noopCleanup,
   };
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
+
+/**
+ * Compose the child-process env from the runner's inheritance policy. The
+ * precedence (low → high) is:
+ *
+ *   1. host inheritance per `env.inherit` (`none` / `minimal` / `ambient`),
+ *      minus the SANITIZED_ENV_VARS that interfere with adapter startup
+ *   2. `env.pass` host pass-through (specific allowed names regardless of
+ *      inherit policy)
+ *   3. caller-supplied invocation env (kspec-required vars like
+ *      KSPEC_NO_DAEMON, KSPEC_SHADOW_MUTATION_LOCK_FILE)
+ *   4. `env.set` literals from runner config (operator-controlled overrides)
+ *
+ * Secret bindings (`env.secrets`) are intentionally NOT resolved here — that
+ * is the responsibility of the secret-source preflight task. Resolved secret
+ * values overlay this map at spawn time.
+ *
+ * AC: @runner-environment-secret-boundaries ac-env-inheritance-policy-applied
+ * AC: @runner-environment-secret-boundaries ac-env-set-overrides-allowed-values
+ */
+function composeRunnerEnv(params: {
+  inherit: RunnerEnvInherit;
+  pass: readonly string[];
+  setEntries: Readonly<Record<string, string>>;
+  baseEnv: Record<string, string>;
+  hostEnv: NodeJS.ProcessEnv;
+}): Record<string, string> {
+  const { inherit, pass, setEntries, baseEnv, hostEnv } = params;
+  const result: Record<string, string> = {};
+  const sanitized = new Set<string>(SANITIZED_ENV_VARS);
+
+  if (inherit === "ambient") {
+    for (const [key, value] of Object.entries(hostEnv)) {
+      if (value === undefined) continue;
+      if (sanitized.has(key)) continue;
+      result[key] = value;
+    }
+  } else if (inherit === "minimal") {
+    for (const key of MINIMAL_INHERIT_ENV_KEYS) {
+      const value = hostEnv[key];
+      if (value === undefined) continue;
+      if (sanitized.has(key)) continue;
+      result[key] = value;
+    }
+  }
+  // "none" → no host inheritance.
+
+  for (const key of pass) {
+    if (sanitized.has(key)) continue;
+    const value = hostEnv[key];
+    if (value === undefined) continue;
+    result[key] = value;
+  }
+
+  for (const [key, value] of Object.entries(baseEnv)) {
+    result[key] = value;
+  }
+
+  for (const [key, value] of Object.entries(setEntries)) {
+    result[key] = value;
+  }
+
+  return result;
+}
 
 function computeSourceLayer(runner: EffectiveRunner): SourceLayerDiagnostic {
   // System always supplies kind+adapter; check whether project contributed

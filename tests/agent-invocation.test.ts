@@ -15,6 +15,8 @@
  *   @agent-runner-configuration
  *     ac-adapter-field-backcompat
  *     ac-runner-precedence-over-adapter
+ *   @runner-invocation-semantics
+ *     ac-skill-formatting-uses-resolved-adapter
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
@@ -24,7 +26,8 @@ import * as YAML from "yaml";
 // fs is used only for fs.access in the "no session directory" check.
 
 import { runInvocation, RunnerResolutionError } from "../src/agent-runtime/invocation.js";
-import { registerAdapter } from "../src/agents/adapters.js";
+import { getAdapter, registerAdapter } from "../src/agents/adapters.js";
+import type { AgentAdapter } from "../src/agents/adapters.js";
 import { mergeRunnerConfigs } from "../src/agents/runner-config.js";
 import type { EffectiveRunnerRegistry } from "../src/agents/runner-config.js";
 import type { Agent } from "../src/schema/meta.js";
@@ -296,5 +299,187 @@ describe("runInvocation: unknown runner blocks before spawn", { timeout: 30_000 
       const entries = await fs.readdir(sessionsDir);
       expect(entries).toHaveLength(0);
     }
+  });
+});
+
+// ─── ac-skill-formatting-uses-resolved-adapter ───────────────────────────────
+
+describe("runInvocation: skill formatting uses the resolved adapter", { timeout: 120_000 }, () => {
+  let testDir: string;
+  let sessionsDir: string;
+  let originalCodexAdapter: AgentAdapter | undefined;
+  let originalClaudeAdapter: AgentAdapter | undefined;
+  let promptCaptureFile: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-runner-skill-format-");
+    sessionsDir = path.join(testDir, "sessions");
+    promptCaptureFile = path.join(testDir, "captured-prompts.jsonl");
+
+    // Snapshot the real adapters so the test can restore them after running.
+    originalCodexAdapter = getAdapter("codex-acp");
+    originalClaudeAdapter = getAdapter("claude-agent-acp");
+
+    // Replace both production adapters with the mock so a) we can spawn them
+    // safely from a unit test and b) tests do not require codex/claude
+    // binaries on PATH. The skill formatter still keys off the registered
+    // adapter id (claude-agent-acp → claude-code, codex-acp → codex), so
+    // overriding the spawn implementation does not change the prompt-rewrite
+    // platform the resolver picks.
+    const mockSpawn = {
+      command: "node",
+      args: [MOCK_ACP],
+      env: {
+        MOCK_ACP_PROJECT_DIR: process.cwd(),
+        MOCK_ACP_VERIFY_PROMPT_FILE: promptCaptureFile,
+      },
+    } satisfies AgentAdapter;
+    registerAdapter("codex-acp", { ...mockSpawn });
+    registerAdapter("claude-agent-acp", { ...mockSpawn });
+  });
+
+  afterEach(async () => {
+    if (originalCodexAdapter) registerAdapter("codex-acp", originalCodexAdapter);
+    if (originalClaudeAdapter) registerAdapter("claude-agent-acp", originalClaudeAdapter);
+    await cleanupTempDir(testDir);
+  });
+
+  async function writeProjectMetaWithSkill(): Promise<void> {
+    await fs.writeFile(
+      path.join(testDir, "kynetic.yaml"),
+      YAML.stringify({ kynetic: "1.0", project: { name: "Skill Formatter Test" } }),
+    );
+    await fs.writeFile(
+      path.join(testDir, "kynetic.meta.yaml"),
+      YAML.stringify({
+        kynetic_meta: "1.0",
+        skills: [
+          {
+            _ulid: testUlid("SKIL", 11),
+            id: "helper",
+            name: "Helper",
+            description: "Project helper skill",
+            origin: "project",
+          },
+          {
+            _ulid: testUlid("SKIL", 12),
+            id: "other-helper",
+            name: "Other Helper",
+            description: "A second project helper for cross-skill references",
+            origin: "project",
+          },
+        ],
+      }),
+    );
+
+    const skillDir = path.join(testDir, "skills", "helper");
+    await fs.mkdir(skillDir, { recursive: true });
+    // The portable `{skill:other-helper}` reference must be rewritten using
+    // the resolved adapter's platform formatter. Claude-style invocation is
+    // `/other-helper`; codex-style is `$other-helper`. The two forms are
+    // mutually exclusive and easy to distinguish in the captured prompt.
+    await fs.writeFile(
+      path.join(skillDir, "SKILL.md"),
+      "# Helper\n\nWhen extending behavior, use {skill:other-helper}.\n",
+    );
+  }
+
+  function buildRegistryForAdapter(name: string, adapterId: string): EffectiveRunnerRegistry {
+    return mergeRunnerConfigs(null, {
+      runners: {
+        [name]: { kind: "acp_process", adapter: adapterId },
+      },
+    });
+  }
+
+  async function readCapturedPrompts(): Promise<Array<{ prompt: Array<{ text?: string }> }>> {
+    const raw = await readTestOutput(promptCaptureFile);
+    return raw
+      .split("\n")
+      .filter((line) => line.trim())
+      .map((line) => JSON.parse(line) as { prompt: Array<{ text?: string }> });
+  }
+
+  // AC: @runner-invocation-semantics ac-skill-formatting-uses-resolved-adapter
+  it("rewrites skill references using the runner's resolved adapter, not agent.adapter", async () => {
+    await writeProjectMetaWithSkill();
+
+    // Runner resolves to codex-acp; agent.adapter falsely points at the
+    // claude-agent-acp formatter to prove the resolver wins.
+    const agent = makeTestAgent({
+      id: "skill-format-runner-worker",
+      adapter: "claude-agent-acp",
+      runner: "codex-runner",
+      skills: ["helper"],
+    });
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      sessionsDir,
+      cwd: testDir,
+      taskRef: `@${testUlid("TASK")}`,
+      prompt: "Drive the helper",
+      trigger: "task.ready",
+      runnerRegistry: buildRegistryForAdapter("codex-runner", "codex-acp"),
+    });
+
+    expect(result.outcome).toBe("success");
+    // The resolved adapter is codex-acp (runner-resolved), not the agent's
+    // legacy adapter field.
+    expect(result.session.agent_type).toBe("codex-acp");
+
+    const prompts = await readCapturedPrompts();
+    expect(prompts.length).toBeGreaterThan(0);
+    const promptText = prompts[0].prompt
+      .map((chunk) => (typeof chunk.text === "string" ? chunk.text : ""))
+      .join("");
+
+    // The runner resolved to codex-acp, so skill references must use
+    // codex-style invocation (`$other-helper`), NOT claude-style
+    // (`/other-helper`). The portable `{skill:...}` token must also be
+    // rewritten — if rewriting were skipped, both forms would be absent and
+    // the literal token would still be present.
+    expect(promptText).toContain("$other-helper");
+    expect(promptText).not.toContain("/other-helper");
+    expect(promptText).not.toContain("{skill:other-helper}");
+  });
+
+  // AC: @runner-invocation-semantics ac-skill-formatting-uses-resolved-adapter
+  it("rewrites skill references using agent.adapter on the legacy/implicit path", async () => {
+    await writeProjectMetaWithSkill();
+
+    // No runner configured — the implicit path resolves agent.adapter
+    // (claude-agent-acp), so skill formatting must use claude-style refs.
+    const agent = makeTestAgent({
+      id: "skill-format-legacy-worker",
+      adapter: "claude-agent-acp",
+      runner: undefined,
+      skills: ["helper"],
+    });
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      sessionsDir,
+      cwd: testDir,
+      taskRef: `@${testUlid("TASK")}`,
+      prompt: "Drive the helper",
+      trigger: "task.ready",
+      runnerRegistry: { runners: {} },
+    });
+
+    expect(result.outcome).toBe("success");
+    expect(result.session.agent_type).toBe("claude-agent-acp");
+
+    const prompts = await readCapturedPrompts();
+    expect(prompts.length).toBeGreaterThan(0);
+    const promptText = prompts[0].prompt
+      .map((chunk) => (typeof chunk.text === "string" ? chunk.text : ""))
+      .join("");
+
+    expect(promptText).toContain("/other-helper");
+    expect(promptText).not.toContain("$other-helper");
+    expect(promptText).not.toContain("{skill:other-helper}");
   });
 });

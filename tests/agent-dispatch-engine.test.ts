@@ -355,6 +355,7 @@ async function setupProjectWithAgents(dir: string, agents: Agent[]): Promise<voi
         adapter: a.adapter,
         budget: a.budget,
         auto_approve: a.auto_approve ?? false,
+        ...(a.runner && { runner: a.runner }),
         ...(a.prompt_template && { prompt_template: a.prompt_template }),
       })),
     }),
@@ -1809,6 +1810,94 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
       expect(spawned).toBe(false);
       expect(runSpy).not.toHaveBeenCalled();
       expect(internal.inFlightTaskKeys.has(`${agent.id}:${taskRef}`)).toBe(false);
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+      vi.restoreAllMocks();
+    }
+  });
+});
+
+// ─── Dispatch uses the runner resolver ──────────────────────────────────────
+
+// AC: @runner-resolution-and-preflight ac-dispatch-uses-runner-resolution
+// AC: @runner-resolution-and-preflight ac-unknown-runner-blocks-before-spawn
+// AC: @runner-resolution-and-preflight ac-unknown-runner-reports-guidance
+describe("Dispatch runner resolution preflight", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-dispatch-runner-preflight-");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  // AC: @runner-resolution-and-preflight ac-dispatch-uses-runner-resolution
+  it("blocks dispatch before spawn when the configured runner is not in the effective registry", async () => {
+    // No project.runners.yaml or system runners.yaml on disk → the effective
+    // registry is empty. The agent points at an unknown runner, which can
+    // only fail if dispatch routes the invocation through the same
+    // resolveRunnerInvocation contract that one-shot agent run uses.
+    const agentMissingRunner = makeTestAgent({
+      id: "runner-missing-agent",
+      runner: "absent-runner",
+      adapter: undefined,
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agentMissingRunner]);
+
+    const captureFile = path.join(testDir, "kspec-runner-preflight-capture.json");
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    try {
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+      });
+      (engine as unknown as { running: boolean }).running = true;
+
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      const runSpy = vi.spyOn(invocationModule, "runInvocation");
+
+      const taskRef = `@${testUlid("TASK")}`;
+      const change = makeStateChange({
+        toStatus: "pending",
+        fromStatus: "in_progress",
+        taskRef,
+      });
+      const entry = { agent: agentMissingRunner, change, retryCount: 0, nextRetryAt: 0 };
+
+      type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
+      const spawned = await (engine as unknown as EngineInternal)._spawnInvocation(
+        agentMissingRunner,
+        entry,
+      );
+
+      // Dispatch skipped the invocation entirely — runInvocation never ran.
+      expect(spawned).toBe(false);
+      expect(runSpy).not.toHaveBeenCalled();
+
+      // The dispatch path surfaced the resolver's typed error to the operator
+      // (unknown_runner is a RunnerResolutionError reason code, not a
+      // generic adapter-resolution failure).
+      const errorMessage = errorSpy.mock.calls.map((c) => String(c[0])).join("\n");
+      expect(errorMessage).toContain("unknown_runner");
+      expect(errorMessage).toContain("absent-runner");
+
+      // Dispatch recorded the resolver guidance on the task so the next
+      // operator can find both layers + the agent definition.
+      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
+      const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
+      expect(noteCall, "expected dispatch to add an AGENT-SKIP task note").toBeDefined();
+      const noteText = noteCall!.args.join(" ");
+      expect(noteText).toContain("AGENT-SKIP");
+      expect(noteText).toContain("absent-runner");
+      expect(noteText).toContain("unknown_runner");
+
+      errorSpy.mockRestore();
+      runSpy.mockRestore();
     } finally {
       delete process.env.KSPEC_CAPTURE_FILE;
       vi.restoreAllMocks();

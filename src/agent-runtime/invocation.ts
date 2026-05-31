@@ -710,12 +710,17 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
 
     // ─── Spawn agent ──────────────────────────────────────────────────────
     state.agent = await spawnAndInitialize(adapter, {
-      cwd,
+      cwd: contract.cwd,
       env: {
         ...invocationEnv,
         KSPEC_SESSION_ID: sessionId,
       },
       extraArgs: [...extraArgs],
+      // Runner-backed invocations turn off host process.env inheritance so
+      // the runner's env.inherit/pass/set policy is the only source of host
+      // env in the child.
+      // AC: @runner-environment-secret-boundaries ac-env-inheritance-policy-applied
+      inheritParentEnv: contract.inheritParentEnv,
       clientOptions: {
         methodTimeouts: {
           "session/prompt": promptRequestTimeoutMs,
@@ -724,8 +729,9 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     });
 
     // ─── Create ACP session ───────────────────────────────────────────────
+    // AC: @runner-process-invocation-inputs ac-runner-cwd-is-invocation-only
     state.acpSessionId = await state.agent.client.newSession({
-      cwd,
+      cwd: contract.cwd,
       mcpServers: [],
     });
 

@@ -11,8 +11,13 @@
  *     ac-adapter-field-backcompat
  *     ac-runner-precedence-over-adapter
  *   @runner-invocation-semantics
- *     ac-skill-formatting-uses-resolved-adapter (via adapterId field)
  *     ac-auto-approve-from-resolved-contract
+ *   @runner-process-invocation-inputs (resolver-side enforcement)
+ *     ac-existing-executable-reference-resolves
+ *     ac-runner-cwd-is-invocation-only
+ *   @runner-environment-secret-boundaries (resolver-side enforcement)
+ *     ac-env-inheritance-policy-applied
+ *     ac-env-set-overrides-allowed-values
  */
 
 import { describe, it, expect } from "vitest";
@@ -27,7 +32,7 @@ import {
   type ProjectRunnerConfig,
   type SystemRunnerConfig,
 } from "../src/agents/runner-config.js";
-import { registerAdapter } from "../src/agents/adapters.js";
+import { getAdapter, registerAdapter } from "../src/agents/adapters.js";
 import type { Agent } from "../src/schema/meta.js";
 import { testUlid } from "./helpers/cli.js";
 
@@ -495,3 +500,296 @@ describe("resolveRunnerInvocation: cleanup hook", () => {
     await expect(result.cleanup!()).resolves.toBeUndefined();
   });
 });
+
+// ─── inheritParentEnv flag ───────────────────────────────────────────────────
+
+describe("resolveRunnerInvocation: inheritParentEnv flag", () => {
+  it("sets inheritParentEnv=true on the implicit/legacy path", () => {
+    const agent = makeAgent({ adapter: "claude-agent-acp" });
+    const result = resolveRunnerInvocation(makeInput({ agent }));
+    expect(result.inheritParentEnv).toBe(true);
+  });
+
+  it("sets inheritParentEnv=true when --adapter override is supplied", () => {
+    const agent = makeAgent({ runner: "codex" });
+    const registry = buildRegistry(null, {
+      runners: { codex: { kind: "acp_process", adapter: "codex-acp" } },
+    });
+    const result = resolveRunnerInvocation(
+      makeInput({ agent, registry, adapterOverride: "claude-agent-acp" }),
+    );
+    expect(result.inheritParentEnv).toBe(true);
+  });
+
+  // AC: @runner-environment-secret-boundaries ac-env-inheritance-policy-applied
+  it("sets inheritParentEnv=false on the runner-backed path so env policy is enforced", () => {
+    const registry = buildRegistry(null, {
+      runners: { codex: { kind: "acp_process", adapter: "codex-acp" } },
+    });
+    const agent = makeAgent({ runner: "codex" });
+    const result = resolveRunnerInvocation(makeInput({ agent, registry }));
+    expect(result.inheritParentEnv).toBe(false);
+  });
+});
+
+// ─── process.executable override ─────────────────────────────────────────────
+
+describe("resolveRunnerInvocation: process.executable", () => {
+  // AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+  it("replaces adapter.command with runner.process.executable when set", () => {
+    const registry = buildRegistry(null, {
+      runners: {
+        codex: {
+          kind: "acp_process",
+          adapter: "codex-acp",
+          process: { executable: "/usr/local/bin/codex-wrapper" },
+        },
+      },
+    });
+    const agent = makeAgent({ runner: "codex" });
+    const result = resolveRunnerInvocation(makeInput({ agent, registry }));
+
+    expect(result.adapter.command).toBe("/usr/local/bin/codex-wrapper");
+  });
+
+  // AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+  it("does not mutate the registered adapter when overriding the command", () => {
+    const registry = buildRegistry(null, {
+      runners: {
+        codex: {
+          kind: "acp_process",
+          adapter: "codex-acp",
+          process: { executable: "/bin/echo" },
+        },
+      },
+    });
+    const agent = makeAgent({ runner: "codex" });
+    const beforeResolution = (
+      [...listRegisteredAdapterCommands()].find(([id]) => id === "codex-acp") as
+        | [string, string]
+        | undefined
+    )?.[1];
+
+    const result = resolveRunnerInvocation(makeInput({ agent, registry }));
+    expect(result.adapter.command).toBe("/bin/echo");
+
+    const afterResolution = (
+      [...listRegisteredAdapterCommands()].find(([id]) => id === "codex-acp") as
+        | [string, string]
+        | undefined
+    )?.[1];
+    // The registered adapter's command is unchanged.
+    expect(afterResolution).toBe(beforeResolution);
+    expect(afterResolution).not.toBe("/bin/echo");
+  });
+
+  it("preserves the adapter command on the implicit/legacy path", () => {
+    const agent = makeAgent({ adapter: "claude-agent-acp" });
+    const result = resolveRunnerInvocation(makeInput({ agent }));
+    // Implicit path keeps the registered adapter command unchanged.
+    expect(result.adapter.command).toBeDefined();
+    // The runner-backed override should never apply on the implicit path.
+    expect(result.adapter.command).not.toBe("/bin/echo");
+  });
+});
+
+// ─── process.cwd override ────────────────────────────────────────────────────
+
+describe("resolveRunnerInvocation: process.cwd", () => {
+  // AC: @runner-process-invocation-inputs ac-runner-cwd-is-invocation-only
+  it("uses runner.process.cwd when set", () => {
+    const registry = buildRegistry(null, {
+      runners: {
+        codex: {
+          kind: "acp_process",
+          adapter: "codex-acp",
+          process: { cwd: "/tmp/runner-managed-cwd" },
+        },
+      },
+    });
+    const agent = makeAgent({ runner: "codex" });
+    const result = resolveRunnerInvocation(
+      makeInput({ agent, registry, cwd: "/tmp/invocation-default-cwd" }),
+    );
+    expect(result.cwd).toBe("/tmp/runner-managed-cwd");
+  });
+
+  // AC: @runner-process-invocation-inputs ac-runner-cwd-is-invocation-only
+  it("falls back to invocation cwd when runner.process.cwd is unset", () => {
+    const registry = buildRegistry(null, {
+      runners: {
+        codex: { kind: "acp_process", adapter: "codex-acp" },
+      },
+    });
+    const agent = makeAgent({ runner: "codex" });
+    const result = resolveRunnerInvocation(
+      makeInput({ agent, registry, cwd: "/tmp/invocation-default-cwd" }),
+    );
+    expect(result.cwd).toBe("/tmp/invocation-default-cwd");
+  });
+});
+
+// ─── env.inherit policy ─────────────────────────────────────────────────────
+
+describe("resolveRunnerInvocation: env.inherit policy", () => {
+  const hostEnv: NodeJS.ProcessEnv = {
+    PATH: "/usr/bin:/bin",
+    HOME: "/home/runner-test",
+    USER: "runner-test",
+    LANG: "en_US.UTF-8",
+    SECRET_LOOKING_API_KEY: "leak-me-if-you-can",
+    CUSTOM_HOST_VAR: "from-host",
+    ANTHROPIC_API_KEY: "must-not-leak",
+  };
+
+  // AC: @runner-environment-secret-boundaries ac-env-inheritance-policy-applied
+  it("env.inherit: 'none' produces a child env with no host process vars", () => {
+    const registry = buildRegistry(null, {
+      runners: {
+        codex: {
+          kind: "acp_process",
+          adapter: "codex-acp",
+          env: { inherit: "none" },
+        },
+      },
+    });
+    const agent = makeAgent({ runner: "codex" });
+    const result = resolveRunnerInvocation(
+      makeInput({ agent, registry, env: { KSPEC_NO_DAEMON: "1" }, hostEnv }),
+    );
+
+    expect(result.env.PATH).toBeUndefined();
+    expect(result.env.HOME).toBeUndefined();
+    expect(result.env.CUSTOM_HOST_VAR).toBeUndefined();
+    expect(result.env.SECRET_LOOKING_API_KEY).toBeUndefined();
+    expect(result.env.ANTHROPIC_API_KEY).toBeUndefined();
+    // caller-supplied kspec-required env still appears.
+    expect(result.env.KSPEC_NO_DAEMON).toBe("1");
+  });
+
+  // AC: @runner-environment-secret-boundaries ac-env-inheritance-policy-applied
+  it("env.inherit: 'minimal' inherits only PATH/HOME/USER/LANG-class basics", () => {
+    const registry = buildRegistry(null, {
+      runners: {
+        codex: {
+          kind: "acp_process",
+          adapter: "codex-acp",
+          env: { inherit: "minimal" },
+        },
+      },
+    });
+    const agent = makeAgent({ runner: "codex" });
+    const result = resolveRunnerInvocation(makeInput({ agent, registry, hostEnv }));
+
+    expect(result.env.PATH).toBe("/usr/bin:/bin");
+    expect(result.env.HOME).toBe("/home/runner-test");
+    expect(result.env.USER).toBe("runner-test");
+    expect(result.env.LANG).toBe("en_US.UTF-8");
+    // Non-minimal host vars are excluded.
+    expect(result.env.CUSTOM_HOST_VAR).toBeUndefined();
+    expect(result.env.SECRET_LOOKING_API_KEY).toBeUndefined();
+    expect(result.env.ANTHROPIC_API_KEY).toBeUndefined();
+  });
+
+  // AC: @runner-environment-secret-boundaries ac-env-inheritance-policy-applied
+  it("env.inherit: 'ambient' inherits the host process env in full", () => {
+    const registry = buildRegistry(null, {
+      runners: {
+        codex: {
+          kind: "acp_process",
+          adapter: "codex-acp",
+          env: { inherit: "ambient" },
+        },
+      },
+    });
+    const agent = makeAgent({ runner: "codex" });
+    const result = resolveRunnerInvocation(makeInput({ agent, registry, hostEnv }));
+
+    expect(result.env.PATH).toBe("/usr/bin:/bin");
+    expect(result.env.CUSTOM_HOST_VAR).toBe("from-host");
+    // Note: ambient inheritance is the operator's explicit opt-in, so
+    // secret-looking host names are inherited. The secrets-rejection
+    // boundary is at config validation time, not at env composition.
+    expect(result.env.ANTHROPIC_API_KEY).toBe("must-not-leak");
+  });
+
+  // AC: @runner-environment-secret-boundaries ac-env-inheritance-policy-applied
+  it("env.pass forces specific host vars through regardless of inherit policy", () => {
+    const registry = buildRegistry(null, {
+      runners: {
+        codex: {
+          kind: "acp_process",
+          adapter: "codex-acp",
+          env: { inherit: "none", pass: ["CUSTOM_HOST_VAR"] },
+        },
+      },
+    });
+    const agent = makeAgent({ runner: "codex" });
+    const result = resolveRunnerInvocation(makeInput({ agent, registry, hostEnv }));
+
+    expect(result.env.PATH).toBeUndefined();
+    expect(result.env.CUSTOM_HOST_VAR).toBe("from-host");
+  });
+
+  // AC: @runner-environment-secret-boundaries ac-env-set-overrides-allowed-values
+  it("env.set overrides inherited host values for the same keys", () => {
+    const registry = buildRegistry(null, {
+      runners: {
+        codex: {
+          kind: "acp_process",
+          adapter: "codex-acp",
+          env: {
+            inherit: "minimal",
+            set: { PATH: "/runner-only/bin" },
+          },
+        },
+      },
+    });
+    const agent = makeAgent({ runner: "codex" });
+    const result = resolveRunnerInvocation(makeInput({ agent, registry, hostEnv }));
+
+    expect(result.env.PATH).toBe("/runner-only/bin");
+  });
+
+  it("env.inherit defaults to 'minimal' when neither layer specifies it", () => {
+    const registry = buildRegistry(null, {
+      runners: {
+        codex: { kind: "acp_process", adapter: "codex-acp" },
+      },
+    });
+    const agent = makeAgent({ runner: "codex" });
+    const result = resolveRunnerInvocation(makeInput({ agent, registry, hostEnv }));
+
+    // PATH/HOME come through the minimal default.
+    expect(result.env.PATH).toBe("/usr/bin:/bin");
+    expect(result.env.HOME).toBe("/home/runner-test");
+    // Non-minimal vars are excluded.
+    expect(result.env.CUSTOM_HOST_VAR).toBeUndefined();
+  });
+
+  it("legacy/implicit invocations still pass through the supplied env unchanged", () => {
+    const agent = makeAgent({ adapter: "claude-agent-acp" });
+    const result = resolveRunnerInvocation(
+      makeInput({ agent, env: { FOO: "bar" }, hostEnv: { PATH: "/host/path" } }),
+    );
+
+    // Implicit path returns the caller env as-is — no inheritance composition
+    // happens on this path (the spawner inherits host env via
+    // inheritParentEnv: true).
+    expect(result.env.FOO).toBe("bar");
+    expect(result.env.PATH).toBeUndefined();
+  });
+});
+
+/**
+ * Snapshot the registered adapter list with their current command strings.
+ * Used by tests that verify resolver does not mutate the shared registry.
+ */
+function listRegisteredAdapterCommands(): Map<string, string> {
+  const out = new Map<string, string>();
+  for (const id of ["claude-agent-acp", "codex-acp", "droid-acp", "mock-acp"]) {
+    const adapter = getAdapter(id);
+    if (adapter) out.set(id, adapter.command);
+  }
+  return out;
+}

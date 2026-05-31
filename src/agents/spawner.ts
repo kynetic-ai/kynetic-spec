@@ -21,6 +21,20 @@ export interface SpawnAgentOptions {
   extraArgs?: string[];
   /** ACP client options */
   clientOptions?: Omit<ACPClientOptions, "stdin" | "stdout">;
+  /**
+   * Whether to merge the host process env under `env` when building the child
+   * environment.
+   *
+   * - `true` (default): preserves pre-runner-config behavior. The legacy
+   *   adapter invocation path relies on inheriting PATH/HOME and other host
+   *   vars implicitly.
+   * - `false`: the spawner uses `env` verbatim (after adapter.env merge but
+   *   without `process.env`). Runner-backed invocations set this to enforce
+   *   the runner's `env.inherit` policy.
+   *
+   * AC: @runner-environment-secret-boundaries ac-env-inheritance-policy-applied
+   */
+  inheritParentEnv?: boolean;
 }
 
 /**
@@ -104,18 +118,24 @@ function forwardFilteredAdapterStderr(child: ChildProcess): void {
  * @returns SpawnedAgent with client, process, and kill function
  */
 export function spawnAgent(adapter: AgentAdapter, options: SpawnAgentOptions): SpawnedAgent {
-  const { cwd, env = {}, extraArgs, clientOptions = {} } = options;
+  const { cwd, env = {}, extraArgs, clientOptions = {}, inheritParentEnv = true } = options;
 
   // Strip host-environment variables that interfere with agent startup
   // (e.g. CLAUDECODE=1 causes nested-session detection in Claude Code)
-  const cleanProcessEnv = { ...process.env };
-  for (const key of SANITIZED_ENV_VARS) {
-    delete cleanProcessEnv[key];
+  // Only inherited when inheritParentEnv is true — runner-backed invocations
+  // pass an already-composed env per the runner's inherit policy.
+  // AC: @runner-environment-secret-boundaries ac-env-inheritance-policy-applied
+  const inheritedHostEnv: NodeJS.ProcessEnv = {};
+  if (inheritParentEnv) {
+    Object.assign(inheritedHostEnv, process.env);
+    for (const key of SANITIZED_ENV_VARS) {
+      delete inheritedHostEnv[key];
+    }
   }
 
   // Merge environment variables
   const processEnv = {
-    ...cleanProcessEnv,
+    ...inheritedHostEnv,
     ...adapter.env,
     ...env,
   };
