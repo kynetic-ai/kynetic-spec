@@ -57158,7 +57158,7 @@ runs:
     completed_at: 2026-05-31T16:04:42.928Z
   - _ulid: 01KSZCZ0HBN6VG7VW4MMSVK981
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -57182,7 +57182,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-31T16:15:57.507Z
-        completed_at: 2026-05-31T16:15:57.507Z
+        completed_at: 2026-05-31T16:16:06.544Z
+        notes: "Searched: 'test silently leverage leak path', 'test passes via bug', 'test exercises the
+          bug' (found @01KSS25K - stash production code and re-run new test to confirm it catches
+          the bug), 'mutation subprocess env boundary' (only this task's notes), 'reviewer evidence
+          probe', 'reproduce reviewer evidence', 'fix beyond literal wording', 'reviewer probe
+          technique'. The closest related observation @01KSS25K already covers the underlying
+          principle."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-31T16:16:06.544Z
+        completed_at: 2026-05-31T16:16:06.544Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-31T16:13:09.035Z
