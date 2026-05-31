@@ -57603,7 +57603,7 @@ runs:
     completed_at: 2026-05-31T19:03:19.202Z
   - _ulid: 01KSZQSGHB785SNQQGCRN51036
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -57637,10 +57637,17 @@ runs:
         notes: "Discussion step skipped: user asked to run reflection directly. Existing friction is already
           tracked; no new friction task or inbox item needs approval. Proceeding only with a
           high-confidence success observation."
-      - status: completed
+      - status: skipped
         step_index: 4
         started_at: 2026-05-31T19:25:04.283Z
-        completed_at: 2026-05-31T19:25:04.283Z
+        completed_at: 2026-05-31T19:25:12.961Z
+        notes: Discussion skipped because this run was requested as a direct reflection execution. No
+          untracked friction improvement was proposed; existing workflow and review-check friction
+          are already tracked. Capturing one high-confidence success pattern only.
+      - status: completed
+        step_index: 5
+        started_at: 2026-05-31T19:25:12.961Z
+        completed_at: 2026-05-31T19:25:12.961Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T19:22:23.147Z
