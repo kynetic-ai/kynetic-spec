@@ -76,8 +76,11 @@ description: >
 spec_ref: "@runner-resolution-and-preflight"
 plan_ref: "@plan-agent-runner-configuration-layer"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev via detached reviewer merge helper. Implemented runner
+  resolver/invocation contract with runner-backed spawn resolution, dispatch preflight,
+  session/event metadata, and behavioral coverage.
 depends_on:
   - "@task-runner-config-schema-types"
   - "@task-agent-runner-meta-cli"
@@ -318,8 +321,24 @@ history:
         previous: "@01KSZ1K1R253CXQ46XANF984SJ"
     command: review-link
     timestamp: 2026-05-31T13:40:03.680Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev via detached reviewer merge helper. Implemented runner resolver/invocation
+          contract with runner-backed spawn resolution, dispatch preflight, session/event metadata,
+          and behavioral coverage.
+        previous: null
+      completed_at:
+        new: 2026-05-31T13:56:39.884Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-31T13:56:39.902Z
 created_at: 2026-05-31T06:19:01.962Z
 started_at: 2026-05-31T13:28:38.877Z
 submitted_at: 2026-05-31T13:28:42.206Z
+completed_at: 2026-05-31T13:56:39.884Z
 todos: []
 automation: eligible
