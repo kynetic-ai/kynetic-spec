@@ -2,7 +2,135 @@ _ulid: 01KSZS715V8ST1DAXFTTJARKT6
 slugs: []
 title: Review runner validation CLI surfaces
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed; existing deprecated-reference warning baseline only
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-05-31T20:02:51.463Z
+    completed_at: 2026-05-31T20:02:51.463Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed; existing alignment warning baseline only
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-05-31T20:02:53.870Z
+    completed_at: 2026-05-31T20:02:53.870Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed; existing completeness warning baseline only
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-05-31T20:02:56.234Z
+    completed_at: 2026-05-31T20:02:56.234Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run format:check passed: all 969 matched files use correct format"
+    name: format
+    required: true
+    runner: oxfmt
+    created_at: 2026-05-31T20:02:58.659Z
+    completed_at: 2026-05-31T20:02:58.659Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run lint -- --quiet passed with 0 errors; repo warning baseline remains under
+      non-quiet lint
+    name: lint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-31T20:03:01.086Z
+    completed_at: 2026-05-31T20:03:01.086Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npx oxlint src/agents/runner-validation.ts src/cli/commands/agent.ts
+      tests/agent-runner-cli.test.ts passed with 0 warnings and 0 errors
+    name: changed-file oxlint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-31T20:03:03.590Z
+    completed_at: 2026-05-31T20:03:03.590Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck passed
+    name: typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-31T20:03:05.994Z
+    completed_at: 2026-05-31T20:03:05.994Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/cli-agent.test.ts tests/agent-runner-cli.test.ts passed: 14
+      suites, 43 tests; log /tmp/kspec-test-cache/01KSZS5EBN45NP4JR8QGSDBA2R/7c9c29ebba8332da.log"
+    name: focused CLI tests
+    required: true
+    runner: vitest
+    created_at: 2026-05-31T20:03:08.380Z
+    completed_at: 2026-05-31T20:03:08.380Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh passed: 2660 suites, 10138 passed, 5 skipped; log
+      /tmp/kspec-test-cache/01KSZS5EBN45NP4JR8QGSDBA2R/5e90216e1ca282a7.log"
+    name: full test suite
+    required: true
+    runner: vitest
+    created_at: 2026-05-31T20:03:10.681Z
+    completed_at: 2026-05-31T20:03:10.681Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Temp project runner with existing executable and nonexistent process.cwd returned exit 4,
+      JSON ok=false/status=invalid, invalid_cwd diagnostic with cwd_source=system and
+      invalid_cwd_reason=not_found
+    name: manual invalid cwd reproduction
+    required: true
+    runner: cli
+    created_at: 2026-05-31T20:03:13.042Z
+    completed_at: 2026-05-31T20:03:13.042Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: node dist/cli/index.js agent --help lists runners; node dist/cli/index.js agent runners
+      --help lists validate [options]
+    name: help surfaces
+    required: true
+    runner: cli
+    created_at: 2026-05-31T20:03:15.376Z
+    completed_at: 2026-05-31T20:03:15.376Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: rg found behavioral AC annotations for task ACs in tests/agent-runner-cli.test.ts; no
+      readFile/readFileSync/source-scanning tests in the changed test file; git diff --check clean
+    name: AC annotation and test integrity scan
+    required: true
+    runner: rg
+    created_at: 2026-05-31T20:03:17.717Z
+    completed_at: 2026-05-31T20:03:17.717Z
 events:
   - _ulid: 01KSZS715TW7Y7J2ANT3VJZN29
     actor: Jacob Chapel
@@ -17,6 +145,97 @@ events:
       from: draft
       to: open
     timestamp: 2026-05-31T19:47:33.700Z
+  - _ulid: 01KSZT3M57JBV1YBWVG1XPS7E4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-05-31T20:02:51.687Z
+  - _ulid: 01KSZT3PFZF8B2HKQJ99EG5ZMB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-05-31T20:02:54.079Z
+  - _ulid: 01KSZT3RSA11SPGSQC7CGNRWTE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-05-31T20:02:56.426Z
+  - _ulid: 01KSZT3V58RB5YASS0X1M1AY2A
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-05-31T20:02:58.857Z
+  - _ulid: 01KSZT3XH1A0F064FPCEBXHVQR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-05-31T20:03:01.281Z
+  - _ulid: 01KSZT3ZZEAY8G751RCB291XAR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file oxlint
+    timestamp: 2026-05-31T20:03:03.790Z
+  - _ulid: 01KSZT42AEAW9C1GVD3YVFRHTT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-31T20:03:06.190Z
+  - _ulid: 01KSZT44NJ24MMF8BASNG2V5RB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused CLI tests
+    timestamp: 2026-05-31T20:03:08.594Z
+  - _ulid: 01KSZT46WQ2E517E6AKSNRPX0G
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-31T20:03:10.871Z
+  - _ulid: 01KSZT496C6P2SW7ZG488KZGSA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: manual invalid cwd reproduction
+    timestamp: 2026-05-31T20:03:13.228Z
+  - _ulid: 01KSZT4BFSZW64VW13RKB978JE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: help surfaces
+    timestamp: 2026-05-31T20:03:15.577Z
+  - _ulid: 01KSZT4DRQFPF5S5QZS9FD3VRR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC annotation and test integrity scan
+    timestamp: 2026-05-31T20:03:17.911Z
+  - _ulid: 01KSZT4FYKB6MCFT30YWE5SMQZ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSZT4FRRBPMDKY2JGYV6XVWA
+    timestamp: 2026-05-31T20:03:20.147Z
 examined_commit: e62d1076e9e7d63700a4bb1c6153db63999ea922
 external_links: []
 lifecycle_state: open
@@ -26,8 +245,27 @@ subject:
   content_hash: ""
   ref: "@01KSYAZ69M6PK5W28417VS2VJ9"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KSZT4FRRBPMDKY2JGYV6XVWA
+    entries:
+      - _ulid: 01KSZT4FRRXE58S8Y43C1AZWGG
+        author: Jacob Chapel
+        body: "Evidence log: Files read: src/agents/runner-validation.ts, src/cli/commands/agent.ts,
+          tests/agent-runner-cli.test.ts, src/agents/runners.ts, src/agents/runner-config.ts, prior
+          review @01KSZPS66K290GQATCC69245RB, and linked specs @runner-operator-surfaces,
+          @runner-resolution-and-preflight, @runner-environment-secret-boundaries. Commands run:
+          kspec validate --refs/--alignment/--completeness --warnings-ok; npm run format:check; npm
+          run lint -- --quiet; npx oxlint changed files; npm run typecheck; npm test -- --fresh
+          tests/cli-agent.test.ts tests/agent-runner-cli.test.ts; npm test -- --fresh; manual
+          invalid-cwd CLI reproduction; help checks; AC annotation/source-scan rg checks; git diff
+          --check. Claims verified: fix-cycle invalid process.cwd now reports invalid_cwd and
+          non-zero exit; runner validation/list/dry-run surfaces are behaviorally covered; secrets
+          are not exposed by the tested diagnostic paths. Categories searched: correctness, edge
+          cases, error handling, redaction/security, test quality, AC coverage, and CLI integration.
+          No blocking findings."
+        created_at: 2026-05-31T20:03:19.960Z
+    kind: nit
 verdicts: []
 created_at: 2026-05-31T19:47:14.747Z
-updated_at: 2026-05-31T19:47:33.472Z
+updated_at: 2026-05-31T20:03:19.960Z
 notes: []
