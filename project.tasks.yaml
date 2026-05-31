@@ -30265,7 +30265,7 @@
   type: task
   spec_ref: "@runner-process-invocation-inputs"
   plan_ref: "@plan-agent-runner-configuration-layer"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-runner-resolver-invocation-contract"
@@ -30280,7 +30280,7 @@
   todos_count: 0
   created_at: 2026-05-31T06:19:02.676Z
   started_at: 2026-05-31T17:29:26.529Z
-  submitted_at: 2026-05-31T16:37:08.900Z
+  submitted_at: 2026-05-31T17:29:29.954Z
   automation: eligible
 - _ulid: 01KSYAZ5Z5S4GHWAZBTYGSCTTM
   slugs:
