@@ -63,8 +63,12 @@ description: >
 spec_ref: "@runner-invocation-semantics"
 plan_ref: "@plan-agent-runner-configuration-layer"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev at 22315eeee6db635cdef845640e2ff39bb226c694 after approved review
+  @01KSZM44. Changes add dispatch runner preflight coverage for valid runner-backed worker/reviewer
+  pickup, invalid runner adapter, missing required secret, and legacy adapter compatibility;
+  existing unknown-runner and unspawnable-command coverage remained green.
 depends_on:
   - "@task-runner-resolver-invocation-contract"
   - "@task-runner-env-secret-boundary"
@@ -135,8 +139,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-05-31T18:18:19.686Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev at 22315eeee6db635cdef845640e2ff39bb226c694 after approved review @01KSZM44.
+          Changes add dispatch runner preflight coverage for valid runner-backed worker/reviewer
+          pickup, invalid runner adapter, missing required secret, and legacy adapter compatibility;
+          existing unknown-runner and unspawnable-command coverage remained green.
+        previous: null
+      completed_at:
+        new: 2026-05-31T18:33:49.484Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-31T18:33:49.492Z
 created_at: 2026-05-31T06:19:03.013Z
 started_at: 2026-05-31T17:52:41.852Z
 submitted_at: 2026-05-31T18:13:36.460Z
+completed_at: 2026-05-31T18:33:49.484Z
 todos: []
 automation: eligible

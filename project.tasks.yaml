@@ -30290,7 +30290,7 @@
   type: task
   spec_ref: "@runner-invocation-semantics"
   plan_ref: "@plan-agent-runner-configuration-layer"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-runner-resolver-invocation-contract"
@@ -30308,6 +30308,7 @@
   created_at: 2026-05-31T06:19:03.013Z
   started_at: 2026-05-31T17:52:41.852Z
   submitted_at: 2026-05-31T18:13:36.460Z
+  completed_at: 2026-05-31T18:33:49.484Z
   automation: eligible
 - _ulid: 01KSYAZ69M6PK5W28417VS2VJ9
   slugs:
