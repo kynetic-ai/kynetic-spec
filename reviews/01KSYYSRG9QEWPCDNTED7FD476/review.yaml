@@ -214,6 +214,13 @@ events:
       kind: blocker
       thread_ulid: 01KSYZRREHEN6QW24S3KXSP83K
     timestamp: 2026-05-31T12:22:32.860Z
+  - _ulid: 01KSYZSEMXD2DQMK3FDMSECYT0
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSYZSEDXRQBAPJ53P4AQR3X6
+    timestamp: 2026-05-31T12:22:55.389Z
 examined_commit: da7b1cff51e452cd9aa4edc844062ac0fa23830c
 external_links: []
 lifecycle_state: open
@@ -285,7 +292,28 @@ threads:
           claimed focused oxlint was clean. Use a template literal for the JSON line append."
         created_at: 2026-05-31T12:22:32.658Z
     kind: blocker
+  - _ulid: 01KSYZSEDXRQBAPJ53P4AQR3X6
+    entries:
+      - _ulid: 01KSYZSEDX7K8JDRM98MKK2Q01
+        author: Jacob Chapel
+        body: "Review evidence log:\\nFiles read: kspec-agents.md; prior review @01KSYVVV2H1ZDVPZA2X11RNG4M;
+          task/spec context; src/agents/runners.ts; src/agent-runtime/invocation.ts;
+          src/agent-runtime/dispatch.ts; src/agents/runner-config.ts; src/agents/spawner.ts;
+          src/agents/adapters.ts; src/cli/commands/agent.ts; src/schema/event-payloads.ts;
+          src/sessions/store.ts; src/sessions/types.ts; tests/agent-runner-resolver.test.ts;
+          tests/agent-invocation.test.ts; tests/agent-dispatch-engine.test.ts;
+          tests/mocks/acp-mock.js.\\nCommands run: task/spec/review lookups; git diff/stat/name/log;
+          kspec validate refs/alignment/completeness; npm run format:check; npm run lint -- --quiet;
+          npx oxlint changed files; npm run typecheck; focused npm test; full npm test; AC
+          annotation rg sweep; dispatch prompt probe; required-secret resolver probe.\\nClaims
+          verified: fix-cycle process/cwd/env policy was re-read and covered; missing AC annotations
+          now exist and focused tests pass; full-suite/typecheck/lint claims were rerun; focused
+          oxlint clean claim was disproved.\\nCategories searched: correctness, dispatch
+          integration, runner precedence, secret/security preflight, process/env edge cases, error
+          handling, test quality, AC coverage, hygiene gates."
+        created_at: 2026-05-31T12:22:55.165Z
+    kind: nit
 verdicts: []
 created_at: 2026-05-31T12:05:36.905Z
-updated_at: 2026-05-31T12:22:32.658Z
+updated_at: 2026-05-31T12:22:55.165Z
 notes: []
