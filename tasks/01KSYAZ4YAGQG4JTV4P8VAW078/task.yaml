@@ -76,7 +76,7 @@ description: >
 spec_ref: "@runner-resolution-and-preflight"
 plan_ref: "@plan-agent-runner-configuration-layer"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-runner-config-schema-types"
@@ -98,7 +98,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-runner-resolver-invocation-contract/01ksyaz4
-session_id: 01KSYWTW59MCCP0E7V295T5VMR
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -204,6 +204,16 @@ history:
         previous: "@01KSYVVV2H1ZDVPZA2X11RNG4M"
     command: review-link
     timestamp: 2026-05-31T12:05:38.935Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KSYWTW59MCCP0E7V295T5VMR
+    command: review-verdict-needs-work
+    timestamp: 2026-05-31T12:23:05.446Z
 created_at: 2026-05-31T06:19:01.962Z
 started_at: 2026-05-31T12:02:15.041Z
 submitted_at: 2026-05-31T12:02:18.281Z

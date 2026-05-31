@@ -221,9 +221,25 @@ events:
       kind: nit
       thread_ulid: 01KSYZSEDXRQBAPJ53P4AQR3X6
     timestamp: 2026-05-31T12:22:55.389Z
+  - _ulid: 01KSYZSPS1RKP9FYSB2YVFW7WV
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-31T12:23:03.714Z
+  - _ulid: 01KSYZSPS2JC5QJ2ZHF781Y4RZ
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-31T12:23:03.714Z
 examined_commit: da7b1cff51e452cd9aa4edc844062ac0fa23830c
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -313,7 +329,14 @@ threads:
           handling, test quality, AC coverage, hygiene gates."
         created_at: 2026-05-31T12:22:55.165Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-31T12:23:03.713Z
 created_at: 2026-05-31T12:05:36.905Z
-updated_at: 2026-05-31T12:22:55.165Z
+updated_at: 2026-05-31T12:23:03.714Z
 notes: []
