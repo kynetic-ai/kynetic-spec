@@ -57697,9 +57697,25 @@ runs:
     completed_at: 2026-05-31T19:45:35.480Z
   - _ulid: 01KSZT77R2M9BZFBXHPMQ91WJT
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-31T20:04:50.051Z
+        completed_at: 2026-05-31T20:05:12.996Z
+        notes: "What worked well: The review-record workflow gave a clear gate: create a fresh fix-cycle
+          review, record deterministic checks, add an evidence-log thread, then approve. The
+          detached-reviewer merge helper was effective: it merged the approved branch into dev
+          without checking out dev in the reviewer snapshot and reported the exact new target
+          commit. Re-running the previous invalid-cwd reproduction was especially useful because it
+          verified the fix against the exact failure mode from the prior review instead of relying
+          on the worker note. Full-suite execution through scripts/test.cjs produced a
+          high-confidence merge decision."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-31T20:05:12.996Z
+        completed_at: 2026-05-31T20:05:12.996Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T20:04:50.051Z
