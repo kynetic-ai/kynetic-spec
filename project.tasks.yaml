@@ -30152,6 +30152,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-31T06:19:00.746Z
+  automation: eligible
 - _ulid: 01KSYAZ43RRZAYW67V72VKG61V
   slugs:
     - task-runner-config-schema-types
