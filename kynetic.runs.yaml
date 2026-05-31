@@ -57837,7 +57837,7 @@ runs:
     completed_at: 2026-05-31T21:26:53.137Z
   - _ulid: 01KT00DM8CR2WWV61JAQQVYR4C
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -57853,7 +57853,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-31T21:54:38.430Z
-        completed_at: 2026-05-31T21:54:38.430Z
+        completed_at: 2026-05-31T21:54:53.446Z
+        notes: "Search results: (a) 'WebSocket shared types drift' - no matches. (b)
+          'AgentInvocationEventData' - matched existing observation @01KSZYX8GFW1ACYDAEKJZRP2K6
+          (friction, 2026-05-31) already capturing the exact pattern: runtime broadcast payloads can
+          drift from exported @kynetic-ai/shared event data types; future changes to broadcast
+          payloads should update shared event contracts and add field-level type tests in the same
+          task. This is the same friction this fix cycle addressed — no new capture needed. No
+          proposals beyond what is already tracked."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-31T21:54:53.446Z
+        completed_at: 2026-05-31T21:54:53.446Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-31T21:53:10.924Z
