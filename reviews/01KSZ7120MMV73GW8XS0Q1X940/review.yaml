@@ -172,6 +172,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-05-31T14:42:53.196Z
+  - _ulid: 01KSZ7T4AJ5C867ZXTJC18VW4X
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSZ7T42Y32Y0EWF7DAN1GEMN
+    timestamp: 2026-05-31T14:43:06.194Z
 examined_commit: e190bb2414297d83bd2980dfc8fec97b43556634
 external_links: []
 lifecycle_state: open
@@ -181,8 +188,31 @@ subject:
   content_hash: ""
   ref: "@01KSYAZ5A1RCPK2A8H7QXF8N6E"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KSZ7T42Y32Y0EWF7DAN1GEMN
+    anchor:
+      type: code
+      commit: e190bb2414297d83bd2980dfc8fec97b43556634
+      line_end: 1270
+      line_start: 1246
+      path: src/agent-runtime/invocation.ts
+      side: head
+    entries:
+      - _ulid: 01KSZ7T42ZZN12HPER4YBQHS2Q
+        author: codex
+        body: AC @runner-environment-secret-boundaries ac-diagnostics-redact-secrets is not actually
+          enforced on the diagnostic surfaces. The change returns `contract.redact`, but `rg
+          "\.redact\(|redactSecretValues\(|createRedactor\(" src tests` shows no production caller
+          applies it after construction. Failure handling still writes the raw `errorMessage` into
+          the `agent.failed` session event, session close reason, task note, and retry block reason
+          here; adapter stderr is also forwarded raw in `src/agents/spawner.ts`. If adapter
+          startup/RPC errors include a resolved secret value, kspec will persist or display that
+          secret despite the new helper. Wire the resolved redactor through
+          invocation/spawner/CLI/daemon diagnostic paths and add behavioral tests that fail if a
+          resolved secret appears in session events, task notes, CLI output, or stderr diagnostics.
+        created_at: 2026-05-31T14:43:05.951Z
+    kind: blocker
 verdicts: []
 created_at: 2026-05-31T14:29:24.628Z
-updated_at: 2026-05-31T14:42:52.947Z
+updated_at: 2026-05-31T14:43:05.951Z
 notes: []
