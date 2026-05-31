@@ -57304,7 +57304,7 @@ runs:
     completed_at: 2026-05-31T16:40:01.242Z
   - _ulid: 01KSZFJB892K77GQGS6WY2TXZS
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -57318,7 +57318,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-31T16:59:29.398Z
-        completed_at: 2026-05-31T16:59:29.398Z
+        completed_at: 2026-05-31T16:59:41.404Z
+        notes: "Friction points: review check and comment bodies are fragile to pass through shell
+          arguments; evidence containing command substitution syntax triggered an unintended shell
+          command while recording a check. The required full fresh test suite also took 2363.9
+          seconds after blockers had already been found, which lengthens review feedback loops."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-31T16:59:41.404Z
+        completed_at: 2026-05-31T16:59:41.404Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T16:58:39.754Z
