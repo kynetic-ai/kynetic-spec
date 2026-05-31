@@ -1,1 +1,19 @@
-notes: []
+notes:
+  - _ulid: 01KSYK1B0BF96CXHGV60KXEP3E
+    content: >-
+      Approach: add optional runner field to AgentSchema (z.string().optional()) alongside existing
+      adapter. LoadedAgent extends Agent so it inherits automatically. Update meta add agent to
+      accept --runner; update meta set <agent> to support --runner <name> and --clear-runner
+      (mirrors --clear-session pattern). Update agent list output (kspec agent list) to include
+      runner in JSON and human-readable when present, preserving adapter. Update kspec meta agents
+      JSON to include runner. No runner-name validation at schema/CLI layer — that's runtime
+      resolver/preflight responsibility per task spec.
+
+
+      Tests to add: parse legacy agent (no runner) succeeds; parse runner-backed agent succeeds;
+      meta add --runner sets field; meta set --runner sets and --clear-runner clears; preserve
+      unrelated fields on runner set/clear; agent list shows runner human + JSON; runner+adapter
+      coexist in storage.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-31T08:40:02.315Z
