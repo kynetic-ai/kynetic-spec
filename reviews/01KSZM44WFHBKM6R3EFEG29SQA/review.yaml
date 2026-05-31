@@ -64,6 +64,16 @@ checks:
     runner: npx oxlint tests/agent-dispatch-engine.test.ts
     created_at: 2026-05-31T18:32:17.623Z
     completed_at: 2026-05-31T18:32:17.623Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit completed with exit code 0
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-05-31T18:32:28.077Z
+    completed_at: 2026-05-31T18:32:28.077Z
 events:
   - _ulid: 01KSZM44WFS0YJP2K532VFMN6J
     actor: Jacob Chapel
@@ -120,6 +130,13 @@ events:
       status: pass
       name: changed-file oxlint
     timestamp: 2026-05-31T18:32:17.839Z
+  - _ulid: 01KSZMY3W85Y1H9JHDNHXH3B69
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-31T18:32:28.296Z
 examined_commit: ca631996909c20503cb820c62f9439e0b3e72ac7
 external_links: []
 lifecycle_state: open
@@ -132,5 +149,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-05-31T18:18:17.359Z
-updated_at: 2026-05-31T18:32:17.623Z
+updated_at: 2026-05-31T18:32:28.077Z
 notes: []
