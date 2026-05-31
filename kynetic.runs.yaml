@@ -57603,7 +57603,7 @@ runs:
     completed_at: 2026-05-31T19:03:19.202Z
   - _ulid: 01KSZQSGHB785SNQQGCRN51036
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -57617,7 +57617,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-31T19:24:20.609Z
-        completed_at: 2026-05-31T19:24:20.609Z
+        completed_at: 2026-05-31T19:24:31.238Z
+        notes: "Friction points: (1) The reflect skill example says  but this CLI requires a run ref,
+          causing an avoidable failed command. (2) Recording many review checks is still repetitive
+          as individual CLI calls. Both are systemic workflow friction rather than task code
+          issues."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-31T19:24:31.238Z
+        completed_at: 2026-05-31T19:24:31.238Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T19:22:23.147Z
