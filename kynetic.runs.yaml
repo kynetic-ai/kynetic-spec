@@ -56743,7 +56743,7 @@ runs:
     completed_at: 2026-05-31T12:25:42.645Z
   - _ulid: 01KSZ1C1CH83FAA5D1PD20R0N3
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -56758,7 +56758,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-31T12:52:05.075Z
-        completed_at: 2026-05-31T12:52:05.075Z
+        completed_at: 2026-05-31T12:52:29.973Z
+        notes: "Step 2 (friction candidates - high confidence only): Considered three friction patterns but
+          none clear enough to capture. (a) Dispatch _spawnInvocation interleaved activeCount
+          tracking with preflight ordering, making sequencing bugs easy to miss — task-specific,
+          fixed now. (b) RunnerResolutionError declared missing_secret reason but no code path
+          emitted it — declaration without implementation, also task-specific. (c)
+          getDefaultDaemonConfigDir has no env-var override forcing tests to vi.spyOn the module —
+          borderline; vi.spyOn worked fine, classifying as polish not friction."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-31T12:52:29.973Z
+        completed_at: 2026-05-31T12:52:29.973Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-31T12:50:32.977Z
