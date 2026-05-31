@@ -28,6 +28,7 @@ import { realpathSync } from "node:fs";
 import * as path from "node:path";
 import * as YAML from "yaml";
 import { z } from "zod";
+import { getAdapter, listAdapters } from "./adapters.js";
 import { getDefaultDaemonConfigDir } from "../daemon-shared/endpoint.js";
 
 // ── Source metadata ─────────────────────────────────────────────────────
@@ -235,10 +236,31 @@ const SystemDiagnosticsSchema = z
   })
   .strict();
 
+/**
+ * Adapter reference that must resolve to a registered adapter at parse time.
+ *
+ * The registry is dynamic (callers may register additional adapters via
+ * `registerAdapter`), so validation queries it inside the refine callback
+ * instead of capturing the registered set at schema construction. Unknown
+ * adapter IDs are rejected so invalid configs fail at load rather than at
+ * invocation time.
+ *
+ * AC: @agent-runner-configuration ac-effective-runner-kind-and-adapter-required
+ */
+const SystemAdapterRefSchema = z
+  .string()
+  .min(1)
+  .refine(
+    (id) => getAdapter(id) !== undefined,
+    (id) => ({
+      message: `Adapter "${id}" is not a registered adapter. Registered adapters: ${listAdapters().join(", ")}.`,
+    }),
+  );
+
 const SystemRunnerEntrySchema = z
   .object({
     kind: RunnerKindEnum,
-    adapter: z.string().min(1),
+    adapter: SystemAdapterRefSchema,
     process: SystemProcessSchema.optional(),
     env: SystemEnvSchema.optional(),
     privacy: SystemPrivacySchema.optional(),

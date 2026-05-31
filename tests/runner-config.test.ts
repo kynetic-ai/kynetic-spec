@@ -38,6 +38,7 @@ import {
   type ProjectRunnerConfig,
   type SystemRunnerConfig,
 } from "../src/agents/runner-config.js";
+import { listAdapters, registerAdapter } from "../src/agents/adapters.js";
 
 import { cleanupTempDir, createTempDir, initGitRepo } from "./helpers/cli.js";
 
@@ -331,6 +332,72 @@ describe("runner-config: system layer schema", () => {
       },
     });
     expect(result.success).toBe(false);
+  });
+
+  // AC: @agent-runner-configuration ac-effective-runner-kind-and-adapter-required
+  it("rejects an adapter that is not in the registered adapter list", () => {
+    const result = SystemRunnerConfigSchema.safeParse({
+      runners: {
+        claude: { kind: "acp_process", adapter: "definitely-not-registered" },
+      },
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const adapterIssue = result.error.issues.find((i) => i.path[i.path.length - 1] === "adapter");
+      expect(adapterIssue).toBeDefined();
+      expect(adapterIssue?.message).toMatch(/not a registered adapter/i);
+      // Message should also surface the registered adapter list so operators
+      // can self-correct without reading source.
+      expect(adapterIssue?.message).toMatch(/claude-agent-acp/);
+    }
+  });
+
+  // AC: @agent-runner-configuration ac-effective-runner-kind-and-adapter-required
+  it("accepts each built-in registered adapter", () => {
+    for (const adapter of listAdapters()) {
+      const result = SystemRunnerConfigSchema.safeParse({
+        runners: { x: { kind: "acp_process", adapter } },
+      });
+      expect(result.success, `expected ${adapter} to be accepted`).toBe(true);
+    }
+  });
+
+  // AC: @agent-runner-configuration ac-effective-runner-kind-and-adapter-required
+  it("accepts adapters registered at runtime via registerAdapter", () => {
+    const customId = "test-runner-config-custom-adapter";
+    registerAdapter(customId, { command: "node", args: [] });
+    const result = SystemRunnerConfigSchema.safeParse({
+      runners: { x: { kind: "acp_process", adapter: customId } },
+    });
+    expect(result.success).toBe(true);
+  });
+
+  // AC: @agent-runner-configuration ac-effective-runner-kind-and-adapter-required
+  it("propagates unknown adapter rejection through the loader", async () => {
+    const fixture = await createFixture();
+    try {
+      await writeSystemLayer(
+        fixture,
+        `
+runners:
+  claude:
+    kind: acp_process
+    adapter: not-a-real-adapter
+`.trimStart(),
+      );
+      const systemLoad = await loadSystemRunnerConfig(fixture.projectRoot, {
+        daemonConfigDir: fixture.daemonConfigDir,
+      });
+      expect(systemLoad.loaded).toBe(true);
+      expect(systemLoad.config).toBeNull();
+      expect(systemLoad.issues).not.toBeNull();
+      const adapterPath = systemLoad.issues?.find((i) => i.path.endsWith("adapter"));
+      expect(adapterPath).toBeDefined();
+      expect(adapterPath?.message).toMatch(/not a registered adapter/i);
+    } finally {
+      await cleanupTempDir(fixture.projectRoot);
+      await cleanupTempDir(fixture.daemonConfigDir);
+    }
   });
 
   it("accepts process.cwd as both absolute and relative paths", () => {
