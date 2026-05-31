@@ -279,6 +279,30 @@ describe("PubSubManager", () => {
       expect(sentMessage.data.task_id).toBe("@task-auth");
     });
 
+    // AC: @runner-resolution-and-preflight ac-dispatched-event-records-runner
+    it("agent_invocation payload carries runner and resolved_adapter when present", () => {
+      const projectA = "/tmp/project-a";
+      const ws = createMockWebSocket(connectionState, "conn-1", projectA, ["agents"]);
+      manager.addConnection("conn-1", ws);
+
+      const payload: AgentInvocationEventData = {
+        session_id: "sess-1",
+        agent_id: "task-worker",
+        task_id: "@task-auth",
+        task_title: "Implement authentication",
+        status: "started",
+        timestamp: 1710374400000,
+        runner: "production",
+        resolved_adapter: "claude-code",
+      };
+
+      manager.broadcast("agents", "agent_invocation", payload, projectA);
+
+      const sentMessage = JSON.parse((ws.send as any).mock.calls[0][0]);
+      expect(sentMessage.data.runner).toBe("production");
+      expect(sentMessage.data.resolved_adapter).toBe("claude-code");
+    });
+
     it("agent_invocation payload has null task_title when no task", () => {
       const projectA = "/tmp/project-a";
       const ws = createMockWebSocket(connectionState, "conn-1", projectA, ["agents"]);

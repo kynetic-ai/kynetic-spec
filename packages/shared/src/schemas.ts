@@ -139,11 +139,40 @@ export interface AgentConcurrency {
 }
 
 /**
+ * Single runner validation diagnostic returned by the daemon API.
+ * Mirrors `RunnerValidationIssue` in src/agents/runner-validation.ts.
+ *
+ * AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+ */
+export interface AgentRunnerValidationDiagnostic {
+  /** Stable reason code so structured callers can branch without parsing text. */
+  reason: string;
+  /** Operator-facing diagnostic — already redacted of any secret material. */
+  message: string;
+  /** Free-form structured details. Never contains secret values. */
+  details?: Record<string, unknown>;
+}
+
+/**
+ * Runner validation summary attached to agent API entries when the agent
+ * declares a `runner` field. Mirrors the structured block emitted by
+ * `kspec agent list --json` so daemon/Web UI surfaces share the same shape.
+ *
+ * AC: @runner-operator-surfaces ac-daemon-agent-api-includes-runner
+ * AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+ */
+export interface AgentRunnerValidation {
+  status: "valid" | "invalid";
+  diagnostics: AgentRunnerValidationDiagnostic[];
+}
+
+/**
  * Full agent definition — mirrors AgentSchema from src/schema/meta.ts.
  * This is the canonical API contract type for the web layer.
  * The Zod schema (AgentSchema) is the authoritative definition;
  * this interface must be kept in sync with it.
  * AC: @ui-agent-dispatch ac-4
+ * AC: @runner-operator-surfaces ac-daemon-agent-api-includes-runner
  */
 export interface AgentDefinition {
   _ulid: string;
@@ -155,6 +184,25 @@ export interface AgentDefinition {
   session_protocol?: { start?: string | null; checkpoint?: string | null; end?: string | null };
   conventions: string[];
   adapter?: string;
+  /**
+   * Optional reference to a named runner from the layered runner config.
+   * Mirrors AgentSchema.runner in src/schema/meta.ts.
+   * AC: @agent-runner-configuration ac-agent-runner-reference
+   */
+  runner?: string;
+  /**
+   * Adapter identity the daemon resolved through the runner registry (or
+   * the legacy `adapter` field when no runner is configured). Present on
+   * read responses; not editable.
+   * AC: @runner-operator-surfaces ac-daemon-agent-api-includes-runner
+   */
+  resolved_adapter?: string;
+  /**
+   * Runner validation summary. Present on read responses when the agent
+   * declares a runner field; absent for legacy adapter-backed agents.
+   * AC: @runner-operator-surfaces ac-daemon-agent-api-includes-runner
+   */
+  runner_validation?: AgentRunnerValidation;
   dispatch: AgentDispatchRule[];
   skills: string[];
   budget?: AgentBudget;
@@ -169,6 +217,7 @@ export interface AgentDefinition {
  * Editable fields for PATCH /api/meta/agents/:id — derived from AgentDefinition.
  * Excludes identity fields (_ulid, id) that cannot be changed via edit.
  * AC: @ui-agent-dispatch ac-4
+ * AC: @runner-operator-surfaces ac-web-ui-agent-edit-supports-runner
  */
 export type AgentUpdatePayload = Partial<
   Pick<
@@ -185,4 +234,11 @@ export type AgentUpdatePayload = Partial<
     | "auto_approve"
     | "prompt_template"
   >
->;
+> & {
+  /**
+   * Runner reference update. `null` clears the runner field, a string
+   * sets it. Omit the property entirely to leave the runner unchanged.
+   * AC: @runner-operator-surfaces ac-web-ui-agent-edit-supports-runner
+   */
+  runner?: string | null;
+};

@@ -886,6 +886,7 @@ export type { AgentDefinition, AgentUpdatePayload };
 
 /**
  * Active invocation from GET /api/agent/status
+ * AC: @runner-operator-surfaces ac-daemon-dispatch-active-api-includes-runner
  */
 export interface ActiveInvocation {
   session_id: string;
@@ -893,6 +894,25 @@ export interface ActiveInvocation {
   task_ref: string | null;
   task_title: string | null;
   elapsed_ms: number;
+  /** Resolved adapter identity for the active invocation. */
+  resolved_adapter?: string;
+  /** Named runner that resolved this invocation, when one was configured. */
+  runner?: string;
+}
+
+/**
+ * Queued invocation from GET /api/agent/status
+ * AC: @runner-operator-surfaces ac-daemon-dispatch-queued-api-includes-runner
+ */
+export interface QueuedInvocation {
+  agent_id: string;
+  task_ref: string | null;
+  task_title: string | null;
+  wait_ms: number;
+  /** Resolved adapter identity (registry lookup or legacy adapter fallback). */
+  resolved_adapter?: string;
+  /** Runner reference declared on the agent definition, when present. */
+  runner?: string;
 }
 
 /**
@@ -901,11 +921,16 @@ export interface ActiveInvocation {
 export interface AgentDispatchStatus {
   dispatch_enabled: boolean;
   active_invocations: ActiveInvocation[];
+  queued_invocations?: QueuedInvocation[];
   queue_depth: number;
   agent_definitions: Array<{
     id: string;
     name: string;
     adapter: string;
+    /** Resolved adapter identity (runner-aware). */
+    resolved_adapter?: string;
+    /** Runner reference declared on the agent definition. */
+    runner?: string;
     completed_sessions?: number;
   }>;
 }
@@ -919,6 +944,7 @@ export async function fetchAgentStatus(): Promise<AgentDispatchStatus> {
     return {
       dispatch_enabled: false,
       active_invocations: [],
+      queued_invocations: [],
       queue_depth: 0,
       agent_definitions: [],
     };

@@ -8424,6 +8424,8 @@ describe("In-flight spawn refs are included in cleanup protection inputs", () =>
     taskRef: string | undefined;
     role: "worker" | "reviewer";
     startedAtMs: number;
+    resolvedAdapter: string;
+    runner: string | undefined;
   };
 
   function makeActiveRecord(overrides: Partial<ActiveInvocationRecord>): ActiveInvocationRecord {
@@ -8435,6 +8437,8 @@ describe("In-flight spawn refs are included in cleanup protection inputs", () =>
       taskRef: undefined,
       role: "worker",
       startedAtMs: Date.now(),
+      resolvedAdapter: "claude-agent-acp",
+      runner: undefined,
       ...overrides,
     };
   }

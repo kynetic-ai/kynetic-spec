@@ -20,6 +20,7 @@
  * - @ui-settings-view ac-1: GET /api/meta/config, /shadow, /conventions
  */
 
+import path from "node:path";
 import { Elysia, t } from "elysia";
 import {
   initContext,
@@ -34,6 +35,14 @@ import { AgentDispatchAutomationFilterSchema } from "../../schema/task.js";
 import { enumArrayUnion, enumUnion } from "./enum-utils.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import { wrapResponse } from "./response-envelope.js";
+import {
+  resolveEffectiveRunners,
+  type EffectiveRunnerRegistry,
+} from "../../agents/runner-config.js";
+import {
+  buildRunnerValidationReport,
+  type RunnerValidationEntry,
+} from "../../agents/runner-validation.js";
 
 interface MetaRouteOptions {
   getEntityCache?: EntityCacheAccessor;
@@ -81,6 +90,8 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
 
       // AC: @api-contract ac-16 - List agents
       // AC: @daemon-entity-cache ac-serve-from-memory — serve from cache when available
+      // AC: @runner-operator-surfaces ac-daemon-agent-api-includes-runner
+      // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
       .get("/agents", async ({ projectContext }) => {
         // AC: @daemon-entity-cache ac-serve-from-memory — try cached MetaContext first
         const cache = getEntityCache?.(projectContext.path);
@@ -102,8 +113,92 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
           meta = await loadMetaContext(ctx);
         }
 
+        // AC: @runner-operator-surfaces ac-daemon-agent-api-includes-runner
+        // AC: @daemon-read-path ac-no-per-request-sync — resolve runner registry
+        // directly from the project path so warm-cache reads do not call
+        // initContext or any git-backed helper. The runner loader treats both
+        // the project layer (shadow worktree `project.runners.yaml`) and the
+        // system layer (daemon config dir) as optional, so an absent file or
+        // missing shadow worktree returns an empty registry without erroring.
+        // Failures degrade silently — agents without runner references remain
+        // unaffected when the registry cannot load.
+        const runnerProjectRoot = projectContext.path;
+        const runnerShadowDir = path.join(runnerProjectRoot, ".kspec");
+        let runnerRegistry: EffectiveRunnerRegistry = { runners: {} };
+        const validationByRunner = new Map<string, RunnerValidationEntry>();
+        try {
+          const resolved = await resolveEffectiveRunners({
+            projectRoot: runnerProjectRoot,
+            shadowWorktreeDir: runnerShadowDir,
+          });
+          runnerRegistry = resolved.registry;
+          const report = await buildRunnerValidationReport(resolved, {
+            cwd: runnerProjectRoot,
+          });
+          for (const entry of report.runners) {
+            validationByRunner.set(entry.runner, entry);
+          }
+        } catch {
+          // Runner config is optional — agents without runner fields remain
+          // unaffected. Clients that read the legacy `adapter` field keep
+          // working without any runner state attached.
+        }
+
         // AC: @api-contract ac-16 - Return all defined agents
-        const agents = meta.agents;
+        // AC: @agent-runner-configuration ac-adapter-field-backcompat
+        // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+        const agents = meta.agents.map((a) => {
+          const runnerEntry = a.runner ? runnerRegistry.runners[a.runner] : undefined;
+          const resolvedAdapter = runnerEntry?.adapter ?? a.adapter ?? "claude-agent-acp";
+          // Legacy `adapter` field is always populated so clients that only
+          // read `adapter` still see an adapter identity for runner-backed
+          // agents that omit the field. Mirrors the CLI JSON output and the
+          // dispatch status response (agent-dispatch.ts agent_definitions).
+          // AC: @agent-runner-configuration ac-adapter-field-backcompat
+          const result: Record<string, unknown> = {
+            ...a,
+            adapter: resolvedAdapter,
+            resolved_adapter: resolvedAdapter,
+          };
+          if (a.runner) {
+            const entry = validationByRunner.get(a.runner);
+            if (entry) {
+              result.runner_validation = {
+                status: entry.status,
+                diagnostics: entry.diagnostics,
+              };
+            } else if (runnerEntry) {
+              // Registry contains the runner but no validation entry was
+              // produced (e.g. the validation pass threw). Report the gap
+              // rather than silently dropping the field.
+              result.runner_validation = {
+                status: "invalid",
+                diagnostics: [
+                  {
+                    reason: "preflight_failure",
+                    message:
+                      "Runner registry loaded but validation report unavailable; rerun `kspec agent runners validate` for details.",
+                  },
+                ],
+              };
+            } else {
+              result.runner_validation = {
+                status: "invalid",
+                diagnostics: [
+                  {
+                    reason: "unknown_runner",
+                    message:
+                      `Runner "${a.runner}" is not present in the effective runner registry. ` +
+                      `Check the project runner config (project.runners.yaml in the kspec shadow worktree), ` +
+                      `the system runner config (runners.yaml under the daemon config dir), and the agent definition's runner field.`,
+                    details: { runner: a.runner, agent: a.id },
+                  },
+                ],
+              };
+            }
+          }
+          return result;
+        });
 
         return wrapResponse(agents, { total: agents.length, cacheDomainState: metaDomainState });
       })
@@ -123,8 +218,19 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
             throw new Error(`Agent not found: ${params.id}`);
           }
 
-          // Apply partial updates from body — result satisfies Agent type from schema
-          const updated: Agent = { ...agent, ...body };
+          // Apply partial updates from body — result satisfies Agent type from schema.
+          // AC: @runner-operator-surfaces ac-web-ui-agent-edit-supports-runner
+          // Treat an explicit `runner: null` as a clear operation since
+          // AgentSchema models the field as optional, not nullable.
+          const { runner: runnerUpdate, ...restBody } = body as typeof body & {
+            runner?: string | null;
+          };
+          const updated: Agent = { ...agent, ...restBody };
+          if (runnerUpdate === null) {
+            delete (updated as { runner?: string }).runner;
+          } else if (typeof runnerUpdate === "string") {
+            (updated as { runner?: string }).runner = runnerUpdate;
+          }
 
           await saveMetaItem(ctx, updated, "agent");
           await commitIfShadow(ctx.shadow, `meta: update agent ${params.id}`);
@@ -146,6 +252,11 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
             name: t.Optional(t.String()),
             description: t.Optional(t.String()),
             adapter: t.Optional(t.String()),
+            // AC: @runner-operator-surfaces ac-web-ui-agent-edit-supports-runner
+            // Allow nullable so callers can clear the runner field
+            // explicitly. The Zod schema treats an absent field the same
+            // as null on update.
+            runner: t.Optional(t.Union([t.String(), t.Null()])),
             dispatch: t.Optional(
               t.Array(
                 t.Object({

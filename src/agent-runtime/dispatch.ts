@@ -716,6 +716,7 @@ interface KspecCommandResult {
 /**
  * Tracking record for an active invocation.
  * AC: @cli-agent-commands ac-6
+ * AC: @runner-operator-surfaces ac-daemon-dispatch-active-api-includes-runner
  */
 interface ActiveInvocationRecord {
   invocationId: string;
@@ -725,6 +726,10 @@ interface ActiveInvocationRecord {
   taskRef: string | undefined;
   role: "worker" | "reviewer";
   startedAtMs: number;
+  /** Resolved adapter identity captured at dispatch preflight. */
+  resolvedAdapter: string;
+  /** Named runner that resolved this invocation, when one was configured. */
+  runner: string | undefined;
 }
 
 /**
@@ -794,6 +799,7 @@ export interface SyncStateEvent {
 /**
  * Invocation lifecycle event payload.
  * AC: @daemon-agent-dispatch ac-3, ac-4
+ * AC: @runner-resolution-and-preflight ac-dispatched-event-records-runner
  */
 export interface InvocationEvent {
   type: "started" | "completed" | "failed";
@@ -803,6 +809,10 @@ export interface InvocationEvent {
   task_title: string | null;
   status: "started" | "completed" | "failed";
   timestamp: number;
+  /** Resolved adapter identity for this invocation. */
+  resolved_adapter?: string;
+  /** Named runner that resolved this invocation, when one was configured. */
+  runner?: string;
 }
 
 /**
@@ -1325,6 +1335,8 @@ export class DispatchEngine {
   /**
    * Returns current engine status info including per-invocation details.
    * AC: @cli-agent-commands ac-6
+   * AC: @runner-operator-surfaces ac-daemon-dispatch-active-api-includes-runner
+   * AC: @runner-operator-surfaces ac-daemon-dispatch-queued-api-includes-runner
    */
   getStatus(): {
     running: boolean;
@@ -1337,12 +1349,20 @@ export class DispatchEngine {
       agentName: string;
       taskRef: string | undefined;
       elapsedMs: number;
+      /** Resolved adapter identity for this invocation. */
+      resolvedAdapter: string;
+      /** Named runner that resolved this invocation, when one was configured. */
+      runner: string | undefined;
     }>;
     queued: Array<{
       agentId: string;
       agentName: string;
       taskRef: string | undefined;
       waitMs: number;
+      /** Runner reference declared on the agent definition, when present. */
+      runner: string | undefined;
+      /** Adapter override declared on the agent definition, when present. */
+      adapter: string | undefined;
     }>;
   } {
     let active = 0;
@@ -1357,6 +1377,8 @@ export class DispatchEngine {
       agentName: r.agentName,
       taskRef: r.taskRef,
       elapsedMs: now - r.startedAtMs,
+      resolvedAdapter: r.resolvedAdapter,
+      runner: r.runner,
     }));
     const queuedItems = Array.from(this.queues.values()).flatMap((entries) =>
       entries.map((e) => ({
@@ -1364,6 +1386,12 @@ export class DispatchEngine {
         agentName: e.agent.name,
         taskRef: e.change.taskRef,
         waitMs: now - e.enqueuedAtMs,
+        // Queued entries report the runner/adapter declared on the agent
+        // definition. The dispatch preflight has not run yet, so the daemon
+        // route is responsible for projecting these to a `resolved_adapter`
+        // via the runner registry when serving the public status payload.
+        runner: e.agent.runner,
+        adapter: e.agent.adapter,
       })),
     );
     return {
@@ -2884,6 +2912,9 @@ export class DispatchEngine {
         taskRef: entry.change.taskRef,
         role,
         startedAtMs: Date.now(),
+        // AC: @runner-operator-surfaces ac-daemon-dispatch-active-api-includes-runner
+        resolvedAdapter: adapterId,
+        runner: runnerId ?? undefined,
       };
       this.activeInvocationDetails.set(invocationId, trackingRecord);
       this.recentTaskAffinityRef = entry.change.taskRef;
@@ -2900,6 +2931,9 @@ export class DispatchEngine {
           task_title: entry.change.task?.title ?? null,
           status: "started",
           timestamp: Date.now(),
+          // AC: @runner-resolution-and-preflight ac-dispatched-event-records-runner
+          resolved_adapter: adapterId,
+          ...(runnerId ? { runner: runnerId } : {}),
         };
         this.onInvocationEvent?.(invEvent);
         // AC: @dispatch-event-envelope ac-1 - Route invocation lifecycle through bus
@@ -3063,6 +3097,9 @@ export class DispatchEngine {
               task_title: entry.change.task?.title ?? null,
               status: "completed",
               timestamp: Date.now(),
+              // AC: @runner-resolution-and-preflight ac-dispatched-event-records-runner
+              resolved_adapter: adapterId,
+              ...(runnerId ? { runner: runnerId } : {}),
             };
           } catch (err) {
             markInvocationStarted();
@@ -3101,6 +3138,9 @@ export class DispatchEngine {
                 task_title: entry.change.task?.title ?? null,
                 status: "failed",
                 timestamp: Date.now(),
+                // AC: @runner-resolution-and-preflight ac-dispatched-event-records-runner
+                resolved_adapter: adapterId,
+                ...(runnerId ? { runner: runnerId } : {}),
               };
             }
           }
