@@ -57403,7 +57403,7 @@ runs:
     completed_at: 2026-05-31T17:33:07.171Z
   - _ulid: 01KSZJGZVM8Y5313QJK80GYQG8
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -57438,7 +57438,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-05-31T17:52:25.789Z
-        completed_at: 2026-05-31T17:52:25.789Z
+        completed_at: 2026-05-31T17:52:37.404Z
+        notes: "Proposed improvement for the untracked gap: add a detached-review orientation/check helper
+          that reports the dispatch-provided target commit, the current integration target tip, the
+          merge-base used for task-specific review, and a concise changed-file summary for
+          current-target..snapshot. This would help reviewers avoid dependency-inclusive diffs when
+          dev advances between dispatch preparation and review. Rough scope: medium, likely in
+          dispatch review bootstrap/orientation rather than merge mechanics."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-31T17:52:37.404Z
+        completed_at: 2026-05-31T17:52:37.404Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T17:50:21.044Z
