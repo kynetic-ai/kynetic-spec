@@ -3943,3 +3943,15 @@ inbox:
       - testing
     added_by: Jacob Chapel
     created_at: 2026-05-31T17:00:43.163Z
+  - _ulid: 01KSZJP642N0Z4GWBE0V4ME7EC
+    text: Detached reviewer orientation should report when the dispatch-provided integration target
+      commit is stale relative to the current target tip, including the current target tip,
+      merge-base used for task-specific review, and concise current-target..snapshot changed-file
+      summary so reviewers do not accidentally review dependency-inclusive diffs.
+    tags:
+      - reflection
+      - review
+      - detached-review
+      - workflow
+    added_by: Jacob Chapel
+    created_at: 2026-05-31T17:53:11.298Z
