@@ -20233,6 +20233,18 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-05-31T19:25:24.823Z
+  - _ulid: 01KSZYX8GFW1ACYDAEKJZRP2K6
+    type: friction
+    content: "Session reflection after daemon runner-surface review found that runtime WebSocket
+      broadcast payloads can drift from exported @kynetic-ai/shared event data types: the daemon
+      added runner/resolved_adapter on agent_invocation, but AgentInvocationEventData and shared
+      type tests did not assert those fields. Future changes to broadcast payloads should update
+      shared event contracts and add field-level type tests in the same task."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KSZYS6CYPST7VSRGNRC2A6KF"
+    created_at: 2026-05-31T21:26:46.031Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
