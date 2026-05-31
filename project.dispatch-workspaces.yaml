@@ -12965,7 +12965,7 @@ workspaces:
         head: 02aa284a09030d0176fd82e26b6753bdbf093060
         last_seen_at: 2026-05-31T17:33:26.945Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-runner-process-invocation-inputs-01ksyaz5
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 4f2c29fbe7f128a8950eebf50941d966747f676e
     bootstrap:
       status: succeeded
@@ -13433,7 +13433,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-31T18:17:16.015Z
+      updated_at: 2026-05-31T18:17:44.098Z
     integration:
       status: pending
       detail: null
@@ -13448,10 +13448,10 @@ workspaces:
     task_slug: task-dispatch-runner-preflight
     timestamps:
       closed_at: null
-      last_active_at: 2026-05-31T17:50:32.615Z
-      last_reconciled_at: 2026-05-31T18:17:16.015Z
+      last_active_at: 2026-05-31T18:17:44.098Z
+      last_reconciled_at: 2026-05-31T18:17:44.098Z
       created_at: 2026-05-31T17:50:07.676Z
-      updated_at: 2026-05-31T18:17:40.424Z
+      updated_at: 2026-05-31T18:17:44.098Z
     workspace_id: dispatch-workspace-01KSYAZ5Z5S4GHWAZBTYGSCTTM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
