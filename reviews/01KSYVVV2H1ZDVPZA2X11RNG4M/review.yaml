@@ -2,7 +2,111 @@ _ulid: 01KSYVVV2H1ZDVPZA2X11RNG4M
 slugs: []
 title: Review task-runner-resolver-invocation-contract
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with warnings allowed: schema OK, references OK; 6 existing deprecated-reference
+      warnings."
+    name: kspec validate --refs --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-31T11:27:52.360Z
+    completed_at: 2026-05-31T11:27:52.360Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with warnings allowed: 42 existing alignment warnings."
+    name: kspec validate --alignment --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-31T11:27:54.887Z
+    completed_at: 2026-05-31T11:27:54.887Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with warnings allowed: baseline completeness warnings remain; focused AC coverage
+      sweep recorded separately."
+    name: kspec validate --completeness --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-31T11:27:57.405Z
+    completed_at: 2026-05-31T11:27:57.405Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All matched files use the correct format.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-05-31T11:27:59.925Z
+    completed_at: 2026-05-31T11:27:59.925Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 errors; repo warning baseline reported 743 warnings.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-05-31T11:28:02.301Z
+    completed_at: 2026-05-31T11:28:02.301Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Changed TS/test files: 0 warnings, 0 errors."
+    name: changed-file oxlint
+    required: true
+    runner: npx oxlint
+    created_at: 2026-05-31T11:28:04.688Z
+    completed_at: 2026-05-31T11:28:04.688Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit exited 0.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-05-31T11:28:07.079Z
+    completed_at: 2026-05-31T11:28:07.079Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 16 suites passed; 27 tests passed.
+    name: focused tests
+    required: true
+    runner: npm test -- --fresh tests/agent-runner-resolver.test.ts tests/agent-invocation.test.ts
+    created_at: 2026-05-31T11:28:09.481Z
+    completed_at: 2026-05-31T11:28:09.481Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "2622 suites passed; 10011 tests passed; 5 skipped. Full log:
+      /tmp/kspec-test-cache/01KSYVPBY2P6SX3TV8VPPXFAKS/cb2bce19377084c4.log"
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-05-31T11:28:11.914Z
+    completed_at: 2026-05-31T11:28:11.914Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "No tests contain AC: @runner-resolution-and-preflight ac-dispatch-uses-runner-resolution
+      or AC: @runner-invocation-semantics ac-skill-formatting-uses-resolved-adapter."
+    name: focused AC coverage sweep
+    required: true
+    runner: rg
+    created_at: 2026-05-31T11:28:14.318Z
+    completed_at: 2026-05-31T11:28:14.318Z
 events:
   - _ulid: 01KSYVVV2DQNVHMBSN491SSDN0
     actor: Jacob Chapel
@@ -17,17 +121,204 @@ events:
       from: draft
       to: open
     timestamp: 2026-05-31T11:14:31.406Z
+  - _ulid: 01KSYWMN7VADR80JM86YB3WF14
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --refs --warnings-ok
+    timestamp: 2026-05-31T11:27:52.571Z
+  - _ulid: 01KSYWMQQPG4R9X8FEN0G5PY44
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --alignment --warnings-ok
+    timestamp: 2026-05-31T11:27:55.126Z
+  - _ulid: 01KSYWMT4WN2M0JQGB038R1H1A
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --completeness --warnings-ok
+    timestamp: 2026-05-31T11:27:57.596Z
+  - _ulid: 01KSYWMWKKRH6TSZ0H294X7JPB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-05-31T11:28:00.115Z
+  - _ulid: 01KSYWMYXWS4AK1KA7NBMWHR43
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-05-31T11:28:02.492Z
+  - _ulid: 01KSYWN189GX8BCQ2ZKVD56SXJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file oxlint
+    timestamp: 2026-05-31T11:28:04.873Z
+  - _ulid: 01KSYWN3KBW94K8EG37KX69D6X
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-31T11:28:07.275Z
+  - _ulid: 01KSYWN5YYTPWMHMBSNDA3E0DP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused tests
+    timestamp: 2026-05-31T11:28:09.694Z
+  - _ulid: 01KSYWN8B8H2DSPE5S1VYT2MG0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-31T11:28:12.136Z
+  - _ulid: 01KSYWNANMPV2HE99DGX0XEX6Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: focused AC coverage sweep
+    timestamp: 2026-05-31T11:28:14.516Z
+  - _ulid: 01KSYWNCZD494DY177JR4ZZJAJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSYWNCRP8NKT7TMM8PC3ECFT
+    timestamp: 2026-05-31T11:28:16.877Z
+  - _ulid: 01KSYWNFB2X5JG7YA1A995WGH8
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSYWNF3MHXDM1J7JVFMYP3XY
+    timestamp: 2026-05-31T11:28:19.298Z
+  - _ulid: 01KSYWNHN46R7769ECNBJPGWWK
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSYWNHETTA04T9CFPZFRC2DC
+    timestamp: 2026-05-31T11:28:21.668Z
+  - _ulid: 01KSYWNM0V85F8D57DG91FY110
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-31T11:28:24.091Z
+  - _ulid: 01KSYWNM0V3NT8XYZPWX8AR2G9
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-31T11:28:24.091Z
 examined_commit: ded5176cab70b2bcfccd045426828636e44aab9e
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KSYAZ4YAGQG4JTV4P8VAW078"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KSYWNCRP8NKT7TMM8PC3ECFT
+    anchor:
+      type: code
+      commit: ded5176cab70b2bcfccd045426828636e44aab9e
+      line_end: 363
+      line_start: 330
+      path: src/agents/runners.ts
+      side: head
+    entries:
+      - _ulid: 01KSYWNCRPBRA4G0R6S9PYES0N
+        author: Jacob Chapel
+        body: "MUST-FIX: the resolver accepts effective runner process/env policy but does not apply it to
+          the invocation contract. `EffectiveRunner` carries `process.executable`, `process.cwd`,
+          `env.inherit`, `env.pass`, `env.secrets`, and privacy defaults, but `buildRunnerContract`
+          only overlays `runner.env.set`, appends `runner.process.args`, and returns the original
+          adapter object plus the caller cwd. `spawnAgent` then unconditionally merges `process.env`
+          into the child env, so `env.inherit: none`/`minimal` is not enforced. I verified this with
+          a resolver probe: a runner configured with `process.executable: /bin/echo`, `process.cwd:
+          /tmp/runner-cwd`, and `env.inherit: none` still resolved to the registered adapter command
+          and `/tmp/invocation-cwd`. This violates the runner invocation contract and the
+          process/security-setting preflight behavior: configured runner command/cwd/env policy is
+          silently ignored, and host environment can leak despite runner policy."
+        created_at: 2026-05-31T11:28:16.662Z
+    kind: blocker
+  - _ulid: 01KSYWNF3MHXDM1J7JVFMYP3XY
+    anchor:
+      type: code
+      commit: ded5176cab70b2bcfccd045426828636e44aab9e
+      line_end: 15
+      line_start: 14
+      path: tests/agent-runner-resolver.test.ts
+      side: head
+    entries:
+      - _ulid: 01KSYWNF3NRADKWTGN09QR50CF
+        author: Jacob Chapel
+        body: "MUST-FIX: task-covered ACs are missing behavioral test coverage. `rg` found no test
+          annotation for `AC: @runner-resolution-and-preflight ac-dispatch-uses-runner-resolution`
+          and no test annotation for `AC: @runner-invocation-semantics
+          ac-skill-formatting-uses-resolved-adapter`. The header says skill formatting is covered
+          \"via adapterId field\", but checking the resolver's `adapterId` does not prove
+          `runInvocation` builds a prompt with adapter-specific skill formatting from the resolved
+          runner. Source comments in dispatch/invocation are not behavioral tests. Add tests that
+          exercise the dispatch preflight path using a configured runner and tests that build/send a
+          prompt with skills through a runner whose resolved adapter has distinct formatting."
+        created_at: 2026-05-31T11:28:19.061Z
+    kind: blocker
+  - _ulid: 01KSYWNHETTA04T9CFPZFRC2DC
+    entries:
+      - _ulid: 01KSYWNHETY6MA0YAAXBW0J43V
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: kspec-agents.md; kspec-review/kspec-merge/review-gates/work-gates skills;
+          src/agents/runners.ts; src/agent-runtime/invocation.ts; src/agent-runtime/dispatch.ts;
+          src/agents/runner-config.ts; src/agents/spawner.ts; src/agents/adapters.ts;
+          src/cli/commands/agent.ts; src/schema/event-payloads.ts; src/sessions/store.ts;
+          src/sessions/types.ts; tests/agent-runner-resolver.test.ts;
+          tests/agent-invocation.test.ts; relevant cli-agent tests.
+
+          Commands run: kspec task/item lookups; git diff/name/stat; kspec validate
+          refs/alignment/completeness; npm run format:check; npm run lint -- --quiet; npx oxlint on
+          changed files; npm run typecheck; focused npm test; full npm test; AC annotation rg sweep;
+          resolver tsx probe.
+
+          Claims verified: worker's full-suite/typecheck/lint claims were independently rerun;
+          runner precedence and metadata tests exist; runner process/cwd/env policy claim was
+          disproved by code read plus probe.
+
+          Categories searched: correctness, process/env edge cases, preflight/error handling,
+          security/env leakage, test quality/AC coverage, dispatch integration.
+        created_at: 2026-05-31T11:28:21.466Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-05-31T11:28:24.091Z
 created_at: 2026-05-31T11:14:19.345Z
-updated_at: 2026-05-31T11:14:31.166Z
+updated_at: 2026-05-31T11:28:24.091Z
 notes: []
