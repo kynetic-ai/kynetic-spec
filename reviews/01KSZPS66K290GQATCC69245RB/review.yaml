@@ -1,0 +1,26 @@
+_ulid: 01KSZPS66K290GQATCC69245RB
+slugs: []
+title: Review task-cli-runner-surfaces
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KSZPS66JQ9FHXE7DG5MMWCKN
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-31T19:04:43.987Z
+examined_commit: 0ce7045814f098535dc27ade2b6a4a1d00b9c202
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KSYAZ69M6PK5W28417VS2VJ9"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-05-31T19:04:43.987Z
+updated_at: null
+notes: []
