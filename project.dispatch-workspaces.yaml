@@ -13784,12 +13784,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-31T19:03:30.705Z
+      updated_at: 2026-05-31T19:03:37.823Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-31T19:03:30.705Z
+      updated_at: 2026-05-31T19:03:37.823Z
     integration:
       status: pending
       detail: null
@@ -13797,24 +13797,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 22315eeee6db635cdef845640e2ff39bb226c694
-      updated_at: 2026-05-31T19:03:30.705Z
-    lifecycle_state: ready
+      updated_at: 2026-05-31T19:03:37.823Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KSYAZ69M6PK5W28417VS2VJ9"
     task_slug: task-cli-runner-surfaces
     timestamps:
       closed_at: null
       last_active_at: 2026-05-31T18:34:30.927Z
-      last_reconciled_at: 2026-05-31T19:03:30.705Z
+      last_reconciled_at: 2026-05-31T19:03:37.823Z
       created_at: 2026-05-31T18:34:06.812Z
-      updated_at: 2026-05-31T19:03:30.705Z
+      updated_at: 2026-05-31T19:03:37.823Z
     workspace_id: dispatch-workspace-01KSYAZ69M6PK5W28417VS2VJ9
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 0ce7045814f098535dc27ade2b6a4a1d00b9c202
+        last_seen_at: 2026-05-31T19:03:37.823Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-runner-surfaces-01ksyaz6-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-cli-runner-surfaces/01ksyaz6
-        head: 22315eeee6db635cdef845640e2ff39bb226c694
-        last_seen_at: 2026-05-31T18:34:06.812Z
+        head: 0ce7045814f098535dc27ade2b6a4a1d00b9c202
+        last_seen_at: 2026-05-31T19:03:37.823Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-runner-surfaces-01ksyaz6
