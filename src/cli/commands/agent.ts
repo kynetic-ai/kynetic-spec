@@ -24,6 +24,15 @@ import {
   resolveEffectiveRunners,
   type EffectiveRunnerRegistry,
 } from "../../agents/runner-config.js";
+import {
+  probeRunnerInvocationExecutable,
+  resolveRunnerInvocation,
+  RunnerResolutionError,
+  summarizeRunnerInvocation,
+  type PreflightUnspawnableReason,
+  type RunnerInvocationSummary,
+} from "../../agents/runners.js";
+import { ulid } from "ulid";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, output, success, warn, isJsonMode } from "../output.js";
 import { parseIntOption, validateEnumOption } from "../validators.js";
@@ -102,6 +111,160 @@ function formatDispatchRules(agent: LoadedAgent): string {
       return `${r.on}${filterStr}`;
     })
     .join(", ");
+}
+
+/**
+ * Build the runner invocation diagnostic block for `kspec agent run --dry-run`.
+ *
+ * Resolves the runner invocation contract the same way `runInvocation` would,
+ * then probes the configured executable (when the runner contributed one) so
+ * the dry-run output reports the spawnability outcome alongside the rest of
+ * the process inputs. Resolution failures (unknown runner, invalid adapter,
+ * missing secret, etc.) are reported in the summary as a typed `error` block
+ * instead of throwing — the dry-run is a preview surface and should never
+ * abort solely because the runner is misconfigured.
+ *
+ * AC: @runner-process-invocation-inputs ac-invocation-diagnostics-identify-inputs
+ * AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+ */
+type DryRunRunnerInvocationDiagnostic =
+  | { resolved: true; summary: RunnerInvocationSummary }
+  | {
+      resolved: false;
+      error: { reason: string; message: string; details?: Record<string, unknown> };
+    };
+
+type DryRunPreflightOutcome =
+  | { status: "ok"; resolved: string }
+  | { status: "unspawnable"; reason: PreflightUnspawnableReason; message: string }
+  | { status: "skipped" };
+
+async function buildDryRunInvocationSummary(input: {
+  agentDef: LoadedAgent;
+  runnerRegistry: EffectiveRunnerRegistry;
+  adapterOverride: string | undefined;
+  cwd: string;
+}): Promise<DryRunRunnerInvocationDiagnostic> {
+  let contract;
+  try {
+    contract = resolveRunnerInvocation({
+      agent: input.agentDef,
+      registry: input.runnerRegistry,
+      cwd: input.cwd,
+      sessionId: ulid(),
+      autoApprove: input.agentDef.auto_approve,
+      env: {},
+      adapterOverride: input.adapterOverride,
+    });
+  } catch (err) {
+    if (err instanceof RunnerResolutionError) {
+      return {
+        resolved: false,
+        error: { reason: err.reason, message: err.message, details: { ...err.details } },
+      };
+    }
+    return {
+      resolved: false,
+      error: {
+        reason: "preflight_failure",
+        message: err instanceof Error ? err.message : String(err),
+      },
+    };
+  }
+
+  // Probe the runner-configured executable using the same env-aware
+  // searchPath the spawn path would consult. Failures are reported as a
+  // typed preflight diagnostic rather than thrown — dry-run is a preview
+  // surface and operators want to inspect unspawnable diagnostics, not have
+  // the preview abort partway through.
+  let preflight: DryRunPreflightOutcome;
+  const probe = await probeRunnerInvocationExecutable(contract);
+  if (probe === null) {
+    preflight = { status: "skipped" };
+  } else if (probe.spawnable) {
+    preflight = { status: "ok", resolved: probe.resolved };
+  } else {
+    preflight = { status: "unspawnable", reason: probe.reason, message: probe.message };
+  }
+
+  const effectiveRunner = contract.runnerId
+    ? input.runnerRegistry.runners[contract.runnerId]
+    : undefined;
+  const summary = summarizeRunnerInvocation(contract, {
+    effectiveRunner,
+    preflight,
+  });
+  return { resolved: true, summary };
+}
+
+function renderDryRunInvocationSummary(diag: DryRunRunnerInvocationDiagnostic): void {
+  if (!diag.resolved) {
+    console.log();
+    console.log(chalk.yellow(`Runner invocation: unresolved (${diag.error.reason})`));
+    console.log(chalk.gray(`  ${diag.error.message}`));
+    return;
+  }
+  const s = diag.summary;
+  console.log();
+  console.log(chalk.gray("--- Runner invocation contract ---"));
+  if (s.runner.name) {
+    console.log(chalk.gray(`Runner:  ${s.runner.name} (source: ${s.source_layer})`));
+  } else {
+    console.log(chalk.gray(`Runner:  (implicit / legacy path)`));
+  }
+  console.log(chalk.gray(`Adapter: ${s.adapter.id} (source: ${s.adapter.source})`));
+  console.log(chalk.gray(`Command: ${s.process.command} (source: ${s.process.command_source})`));
+  console.log(chalk.gray(`Cwd:     ${s.process.cwd} (source: ${s.process.cwd_source})`));
+  if (s.process.runner_args.length > 0) {
+    console.log(
+      chalk.gray(
+        `Args:    [${s.process.runner_args.join(" ")}] (source: ${s.process.runner_args_source})`,
+      ),
+    );
+  } else {
+    console.log(chalk.gray(`Args:    (none from runner)`));
+  }
+  if (s.process.auto_approve_args.length > 0) {
+    console.log(chalk.gray(`Auto-approve args: [${s.process.auto_approve_args.join(" ")}]`));
+  }
+  if (s.env_policy.inherit !== null) {
+    console.log(chalk.gray(`Env policy:`));
+    console.log(chalk.gray(`  inherit: ${s.env_policy.inherit}`));
+    if (s.env_policy.pass_keys.length > 0) {
+      console.log(
+        chalk.gray(
+          `  pass:    [${s.env_policy.pass_keys.join(", ")}] (source: ${s.env_policy.pass_source})`,
+        ),
+      );
+    }
+    if (s.env_policy.set_keys.length > 0) {
+      console.log(chalk.gray(`  set:     [${s.env_policy.set_keys.join(", ")}]`));
+    }
+    if (s.env_policy.secret_keys.length > 0) {
+      console.log(
+        chalk.gray(
+          `  secrets: [${s.env_policy.secret_keys.join(", ")}] (source: ${s.env_policy.secret_source})`,
+        ),
+      );
+    }
+  } else {
+    console.log(
+      chalk.gray(
+        `Env policy: implicit (host process env inherited: ${s.env_policy.inherit_parent_env})`,
+      ),
+    );
+  }
+  if (s.preflight.status === "ok") {
+    console.log(chalk.gray(`Preflight: ok (resolved: ${s.preflight.resolved ?? ""})`));
+  } else if (s.preflight.status === "unspawnable") {
+    console.log(
+      chalk.yellow(
+        `Preflight: unspawnable (${s.preflight.reason ?? ""}) — ${s.preflight.message ?? ""}`,
+      ),
+    );
+  } else {
+    console.log(chalk.gray(`Preflight: skipped (no runner-configured command)`));
+  }
 }
 
 // ─── Command Registration ─────────────────────────────────────────────────────
@@ -473,6 +636,23 @@ export function registerAgentCommands(program: Command): void {
           const effectiveTimeoutMinutes = dryTimeoutOverride ?? agentDef.budget?.timeout_minutes;
           const effectiveMaxTasks = dryBudgetOverride ?? agentDef.budget?.max_tasks;
 
+          // Resolve the runner invocation contract so dry-run reports the
+          // command reference, cwd, args, and env policy that the actual
+          // spawn would apply. This surfaces the runner process inputs in
+          // the same shape they are described in the task spec — without
+          // ever spawning the adapter or exposing env values.
+          //
+          // AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+          // AC: @runner-process-invocation-inputs ac-runner-args-extend-acp-invocation
+          // AC: @runner-process-invocation-inputs ac-runner-cwd-is-invocation-only
+          // AC: @runner-process-invocation-inputs ac-invocation-diagnostics-identify-inputs
+          const dryRunSummary = await buildDryRunInvocationSummary({
+            agentDef,
+            runnerRegistry: runRegistry,
+            adapterOverride: opts.adapter as string | undefined,
+            cwd: ctx.rootDir,
+          });
+
           // AC: @trait-dry-run ac-6 - JSON output includes dry_run field
           output(
             {
@@ -483,6 +663,7 @@ export function registerAgentCommands(program: Command): void {
               timeout_minutes: effectiveTimeoutMinutes ?? null,
               max_tasks: effectiveMaxTasks ?? null,
               prompt: fullPromptForPreview,
+              runner_invocation: dryRunSummary,
             },
             () => {
               console.log(chalk.yellow("DRY RUN - No agent will be spawned"));
@@ -495,6 +676,7 @@ export function registerAgentCommands(program: Command): void {
               if (effectiveTimeoutMinutes !== undefined) {
                 console.log(chalk.gray(`Timeout: ${effectiveTimeoutMinutes} min`));
               }
+              renderDryRunInvocationSummary(dryRunSummary);
               console.log();
               console.log(chalk.gray("--- Prompt that would be sent ---"));
               console.log(fullPromptForPreview);

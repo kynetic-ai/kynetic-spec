@@ -46,6 +46,7 @@ import { createRedactor } from "./redaction.js";
 import type {
   EffectiveRunner,
   EffectiveRunnerRegistry,
+  RunnerEnvInherit,
   RunnerFieldOrigin,
 } from "./runner-config.js";
 
@@ -1035,6 +1036,28 @@ function resolveInvocationSearchPath(invocation: RunnerInvocation): string {
 }
 
 /**
+ * Probe the runner invocation contract's executable using the same env-aware
+ * PATH lookup the spawn path would consult. Returns `null` when the runner
+ * did not configure an executable (implicit/legacy path) so the caller can
+ * record the skip without forwarding a synthetic outcome. Never throws —
+ * use `preflightRunnerInvocation` for the throwing variant.
+ *
+ * AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+ */
+export async function probeRunnerInvocationExecutable(
+  invocation: RunnerInvocation,
+  options: PreflightExecutableOptions = {},
+): Promise<PreflightExecutableResult | null> {
+  const fromConfig = invocation.diagnostics.fieldOrigins?.processExecutable;
+  if (!fromConfig) return null;
+  return preflightExecutable(invocation.adapter.command, {
+    cwd: invocation.cwd,
+    searchPath: resolveInvocationSearchPath(invocation),
+    ...options,
+  });
+}
+
+/**
  * Preflight the resolved runner invocation contract. Runs the executable
  * spawnability probe and throws `RunnerResolutionError("unspawnable_command")`
  * when the configured command cannot be spawned. No-op on the implicit/legacy
@@ -1053,18 +1076,8 @@ export async function preflightRunnerInvocation(
   invocation: RunnerInvocation,
   options: PreflightExecutableOptions = {},
 ): Promise<void> {
-  // Only preflight when a runner explicitly configured the executable. The
-  // implicit path uses pre-resolved package-runner commands (npx, bun x) that
-  // are validated at module load.
-  const fromConfig = invocation.diagnostics.fieldOrigins?.processExecutable;
-  if (!fromConfig) return;
-
-  const result = await preflightExecutable(invocation.adapter.command, {
-    cwd: invocation.cwd,
-    searchPath: resolveInvocationSearchPath(invocation),
-    ...options,
-  });
-  if (result.spawnable) return;
+  const result = await probeRunnerInvocationExecutable(invocation, options);
+  if (!result || result.spawnable) return;
 
   throw new RunnerResolutionError(
     "unspawnable_command",
@@ -1077,4 +1090,198 @@ export async function preflightRunnerInvocation(
       unspawnable_reason: result.reason,
     },
   );
+}
+
+// ─── Runner invocation summary ───────────────────────────────────────────────
+
+/**
+ * Source labels for each process input. Distinguishes runner-config layers
+ * from non-runner sources (adapter registry, invocation cwd, auto-approve).
+ * Used by diagnostic surfaces (CLI dry-run, dispatch logs, Web UI) to tell
+ * operators where each effective input came from without exposing env values.
+ */
+export type ProcessInputSource =
+  | "runner.project"
+  | "runner.system"
+  | "runner.merged"
+  | "adapter"
+  | "invocation"
+  | "auto_approve"
+  | "none";
+
+/**
+ * Redacted summary of the runner-resolved process invocation contract.
+ *
+ * Designed to feed structured diagnostic surfaces (CLI `--dry-run`, dispatch
+ * preflight logs, daemon telemetry, Web UI) without exposing env values,
+ * secret material, or prompt content. Env entries are reported as key names
+ * only — values never leave the contract.
+ *
+ * AC: @runner-process-invocation-inputs ac-invocation-diagnostics-identify-inputs
+ */
+export interface RunnerInvocationSummary {
+  /** Selected runner identity. `name: null` on the implicit/legacy path. */
+  runner: {
+    name: string | null;
+    source: SelectedRunnerDiagnostic["source"];
+  };
+  /** Selected adapter identity and where it came from. */
+  adapter: {
+    id: string;
+    source: SelectedAdapterDiagnostic["source"];
+  };
+  /** Which config layer(s) supplied the effective runner config. */
+  source_layer: SourceLayerDiagnostic;
+  /** Field paths the system layer overrode from the project layer. */
+  overrides: readonly string[];
+  /** Process inputs that will be applied around the spawned ACP adapter. */
+  process: {
+    /** Effective executable path or bare command name to spawn. */
+    command: string;
+    /** Where the command came from. */
+    command_source: ProcessInputSource;
+    /** Effective working directory for the child process. */
+    cwd: string;
+    /** Where the cwd came from. */
+    cwd_source: ProcessInputSource;
+    /** Extra arguments contributed by the runner's `process.args`. */
+    runner_args: readonly string[];
+    /** Where the runner args came from. `none` when no runner args were appended. */
+    runner_args_source: ProcessInputSource;
+    /** Auto-approve args contributed by the adapter when auto-approve is on. */
+    auto_approve_args: readonly string[];
+  };
+  /** Environment policy applied to the spawn. Never contains env values. */
+  env_policy: {
+    /**
+     * Whether the spawner additionally inherits the host process env.
+     * `true` on the implicit/legacy path, `false` on the runner-backed path.
+     */
+    inherit_parent_env: boolean;
+    /** Host inheritance policy (runner-backed only). */
+    inherit: RunnerEnvInherit | null;
+    /** Allow-listed host env keys to pass through (key names only). */
+    pass_keys: readonly string[];
+    /** Where the pass list came from. `none` when no pass entries are set. */
+    pass_source: ProcessInputSource;
+    /** Keys whose values were set literally by the runner config. */
+    set_keys: readonly string[];
+    /** Per-key origin of `env.set` entries. */
+    set_keys_origin: Readonly<Record<string, RunnerFieldOrigin>>;
+    /** Names of declared secret bindings (variable names only). */
+    secret_keys: readonly string[];
+    /** Where the secret bindings came from. `none` when no secrets are declared. */
+    secret_source: ProcessInputSource;
+  };
+  /** Preflight outcome for the configured executable, when available. */
+  preflight: {
+    status: "ok" | "unspawnable" | "skipped";
+    /** Typed reason for unspawnable outcome. */
+    reason?: PreflightUnspawnableReason;
+    /** Human-readable diagnostic message for unspawnable outcome. */
+    message?: string;
+    /** Resolved absolute path when status is `ok`. */
+    resolved?: string;
+  };
+}
+
+function originToProcessSource(
+  origin: RunnerFieldOrigin | null,
+  fallback: ProcessInputSource,
+): ProcessInputSource {
+  if (origin === "project") return "runner.project";
+  if (origin === "system") return "runner.system";
+  // origin === "default" or null → not contributed by runner config; the
+  // caller's fallback (adapter, invocation, none, ...) is the real source.
+  return fallback;
+}
+
+/**
+ * Build a redacted, JSON-safe summary of the resolved runner invocation
+ * contract. Intended for diagnostic surfaces that must identify the runner
+ * name, resolved adapter, command source, cwd policy, argument source, and
+ * env policy without exposing env values or secrets.
+ *
+ * When `effectiveRunner` is supplied (the lookup from the registry that
+ * produced this contract), the summary fills in the runner's full env policy.
+ * On the implicit/legacy path or when the runner is not available, env policy
+ * fields collapse to their non-runner defaults.
+ *
+ * When `preflight` is supplied, the summary records the preflight outcome.
+ * Callers should run `preflightRunnerInvocation` (or `preflightExecutable`
+ * directly) and pass the result so the summary reflects the actual spawnability
+ * check the spawn path will see.
+ *
+ * AC: @runner-process-invocation-inputs ac-invocation-diagnostics-identify-inputs
+ * AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+ */
+export function summarizeRunnerInvocation(
+  contract: RunnerInvocation,
+  options: {
+    effectiveRunner?: EffectiveRunner;
+    preflight?:
+      | { status: "ok"; resolved: string }
+      | { status: "unspawnable"; reason: PreflightUnspawnableReason; message: string }
+      | { status: "skipped" };
+  } = {},
+): RunnerInvocationSummary {
+  const fieldOrigins = contract.diagnostics.fieldOrigins;
+  const runner = options.effectiveRunner;
+
+  // The contract's extraArgs is [autoApproveArgs..., runner.process.args...]
+  // when runner-backed, or [autoApproveArgs...] alone on the implicit/legacy
+  // path. Split it back so each segment can be attributed to its source. When
+  // no runner is supplied, assume everything is auto-approve so the runner
+  // segment is empty rather than mislabeling adapter args as runner args.
+  const runnerArgsLen = runner?.process.args.length ?? 0;
+  const autoApproveSegmentLen = Math.max(0, contract.extraArgs.length - runnerArgsLen);
+  const splitAutoApproveArgs: readonly string[] = contract.extraArgs.slice(
+    0,
+    autoApproveSegmentLen,
+  );
+  const splitRunnerArgs: readonly string[] = contract.extraArgs.slice(autoApproveSegmentLen);
+
+  const passKeys: readonly string[] = runner?.env.pass ?? [];
+  const setKeys: readonly string[] = runner ? Object.keys(runner.env.set) : [];
+  const setKeysOrigin: Record<string, RunnerFieldOrigin> = fieldOrigins?.envSetKeys
+    ? { ...fieldOrigins.envSetKeys }
+    : {};
+  const secretKeys: readonly string[] = runner ? Object.keys(runner.env.secrets) : [];
+
+  return {
+    runner: {
+      name: contract.diagnostics.selectedRunner.name,
+      source: contract.diagnostics.selectedRunner.source,
+    },
+    adapter: {
+      id: contract.diagnostics.selectedAdapter.id,
+      source: contract.diagnostics.selectedAdapter.source,
+    },
+    source_layer: contract.diagnostics.sourceLayer,
+    overrides: [...contract.diagnostics.overrides],
+    process: {
+      command: contract.adapter.command,
+      command_source: originToProcessSource(fieldOrigins?.processExecutable ?? null, "adapter"),
+      cwd: contract.cwd,
+      cwd_source: originToProcessSource(fieldOrigins?.processCwd ?? null, "invocation"),
+      runner_args: [...splitRunnerArgs],
+      runner_args_source: originToProcessSource(fieldOrigins?.processArgs ?? null, "none"),
+      auto_approve_args: [...splitAutoApproveArgs],
+    },
+    env_policy: {
+      inherit_parent_env: contract.inheritParentEnv,
+      inherit: runner ? runner.env.inherit : null,
+      pass_keys: [...passKeys],
+      pass_source:
+        passKeys.length > 0 ? originToProcessSource(fieldOrigins?.envPass ?? null, "none") : "none",
+      set_keys: [...setKeys],
+      set_keys_origin: setKeysOrigin,
+      secret_keys: [...secretKeys],
+      secret_source:
+        secretKeys.length > 0
+          ? originToProcessSource(fieldOrigins?.envSecrets ?? null, "none")
+          : "none",
+    },
+    preflight: options.preflight ?? { status: "skipped" },
+  };
 }
