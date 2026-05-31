@@ -56241,7 +56241,7 @@ runs:
     completed_at: 2026-05-31T07:09:17.800Z
   - _ulid: 01KSYFDWAEXJVQB6RZPPHGRKWN
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -56255,7 +56255,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-31T07:38:14.148Z
-        completed_at: 2026-05-31T07:38:14.148Z
+        completed_at: 2026-05-31T07:38:46.753Z
+        notes: "Session was a well-scoped greenfield task with a precise plan. Candidate observations: (1)
+          oxfmt --write . reformatted unrelated templates/skills/merge/SKILL.md whitespace, required
+          revert before commit — but uncertain if systemic (could be drift on main rather than
+          non-idempotent oxfmt). (2) 'kspec workflow show' requires run-ref while skill examples
+          show it argless — already captured in inbox @01KGGPJ6. No high-confidence unique items
+          remain."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-31T07:38:46.753Z
+        completed_at: 2026-05-31T07:38:46.753Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-31T07:36:58.958Z
