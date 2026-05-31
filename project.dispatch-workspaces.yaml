@@ -10449,7 +10449,7 @@ workspaces:
         head: 3d321b69448ad990342297f1dd76d187fddbc21f
         last_seen_at: 2026-05-29T05:55:52.002Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-merge-helper-clean-occupied-target-checkout-01ksregb
-  - active_role: null
+  - active_role: worker
     base_branch_point: 28770407cf3ca944af1bee0c0ed6e6bf1577a460
     bootstrap:
       status: succeeded
@@ -10776,7 +10776,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-31T06:41:15.605Z
+      updated_at: 2026-05-31T06:41:55.243Z
     integration:
       status: pending
       detail: null
@@ -10785,16 +10785,16 @@ workspaces:
       target_branch: dev
       target_commit: 28770407cf3ca944af1bee0c0ed6e6bf1577a460
       updated_at: 2026-05-31T06:41:15.605Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KSYAZ3RAS2DVT910ZQ42A4DS"
     task_slug: task-update-existing-agent-runner-specs
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-05-31T06:41:15.605Z
+      last_active_at: 2026-05-31T06:41:55.243Z
+      last_reconciled_at: 2026-05-31T06:41:55.243Z
       created_at: 2026-05-31T06:41:15.605Z
-      updated_at: 2026-05-31T06:41:53.296Z
+      updated_at: 2026-05-31T06:41:55.243Z
     workspace_id: dispatch-workspace-01KSYAZ3RAS2DVT910ZQ42A4DS
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
