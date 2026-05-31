@@ -20210,6 +20210,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-31T17:32:30.815Z
+  - _ulid: 01KSZN682KCDJ19DAJH6DT4F2Z
+    type: success
+    content: "Detached reviewer review-to-merge flow worked cleanly when executed as a single sequence:
+      create a fresh task review, record required checks and an evidence log, approve once gate is
+      passing, run the supported detached-reviewer merge helper, then complete the task with the
+      merge SHA. The helper advanced dev without target checkout in the detached snapshot and
+      preserved a clear task/review audit trail."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-05-31T18:36:54.739Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
