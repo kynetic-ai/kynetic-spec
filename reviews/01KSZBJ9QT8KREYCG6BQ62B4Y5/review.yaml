@@ -65,6 +65,17 @@ checks:
     runner: tsc
     created_at: 2026-05-31T15:53:30.081Z
     completed_at: 2026-05-31T15:53:30.081Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/agent-runner-process.test.ts
+      tests/agent-runner-resolver.test.ts: 70 passed."
+    name: focused runner tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-31T15:53:33.159Z
+    completed_at: 2026-05-31T15:53:33.159Z
 events:
   - _ulid: 01KSZBJ9QT6R4TV2KSNAEF2GMF
     actor: Jacob Chapel
@@ -128,6 +139,13 @@ events:
       status: pass
       name: npm run typecheck
     timestamp: 2026-05-31T15:53:30.335Z
+  - _ulid: 01KSZBV4FPHMA4NT0XQ5RKJMNE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused runner tests
+    timestamp: 2026-05-31T15:53:33.431Z
 examined_commit: c18fc6ea96f9d1b48b17c1397eba5f0d7c747ccb
 external_links: []
 lifecycle_state: open
@@ -161,5 +179,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-05-31T15:48:43.898Z
-updated_at: 2026-05-31T15:53:30.081Z
+updated_at: 2026-05-31T15:53:33.159Z
 notes: []
