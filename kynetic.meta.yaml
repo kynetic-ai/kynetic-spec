@@ -20037,6 +20037,41 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-31T11:30:04.756Z
+  - _ulid: 01KSYYQBWN3JZ4SDGDN2ZMP8F3
+    type: friction
+    content: "Contract types that accept structured input but silently drop fields create review-cycle
+      traps. The runner invocation contract accepted process.executable, process.cwd, env.inherit,
+      env.pass on its input but only forwarded env.set + process.args to the spawner — reviewer
+      caught the gap with a runner-config probe. Lesson for future contract layers: when a type
+      claims to be the source of truth for X, every accepted X field must reach the consumer, OR be
+      explicitly typed out of scope at the input boundary."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-31T12:04:18.454Z
+  - _ulid: 01KSYYQC5YEGQ2XWN7CN2M8FJ8
+    type: success
+    content: "Layered-policy contracts benefit from an explicit consumer-direction flag at the contract
+      boundary. Adding inheritParentEnv: boolean to RunnerInvocation (true on implicit/legacy, false
+      on runner-backed) kept the spawner change minimal (just an option) while making the resolver
+      the single source of truth for env policy. Future runner work (env.secrets resolution, privacy
+      default vars) can follow the same shape: compose at the resolver, signal to the spawner via a
+      typed flag, default the flag to legacy behavior for safe roll-forward."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-31T12:04:18.750Z
+  - _ulid: 01KSYYQCD98GX8K5GC5DVN0ZAM
+    type: success
+    content: Env-driven extension of test mocks scales well. Adding MOCK_ACP_VERIFY_PROMPT_FILE to
+      acp-mock.js gave end-to-end prompt-content assertions in a few lines without standing up new
+      infrastructure. The pattern — mock reads an opt-in env var, writes a JSONL artifact at a
+      test-controlled path — matches MOCK_ACP_VERIFY_ARGS_FILE / MOCK_ACP_VERIFY_ENV_FILE precedent
+      and stays out of every other test's way.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-05-31T12:04:18.985Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
