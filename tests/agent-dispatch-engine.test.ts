@@ -41,6 +41,7 @@ import { provisionDispatchWorkspace } from "../src/agent-runtime/workspace.js";
 import * as bootstrapModule from "../src/agent-runtime/bootstrap.js";
 import * as runnerConfigModule from "../src/agents/runner-config.js";
 import { mergeRunnerConfigs } from "../src/agents/runner-config.js";
+import { registerAdapter } from "../src/agents/adapters.js";
 
 // ─── Fixtures ────────────────────────────────────────────────────────────────
 
@@ -1989,6 +1990,438 @@ describe("Dispatch runner resolution preflight", () => {
       runSpy.mockRestore();
     } finally {
       delete process.env.KSPEC_CAPTURE_FILE;
+      vi.restoreAllMocks();
+    }
+  });
+
+  // AC: @runner-invocation-semantics ac-dispatch-preflight-accepts-configured-runners
+  // AC: @runner-resolution-and-preflight ac-dispatch-uses-runner-resolution
+  //
+  // Spec wording is "whose adapter is not a built-in adapter id". Register
+  // a custom adapter at runtime so the runner cannot fall through to a
+  // built-in default — only the runner-aware preflight can keep the
+  // dispatch flow open here.
+  it("accepts dispatch for a runner-backed worker whose adapter is a custom-registered (non-built-in) adapter", async () => {
+    const customAdapterId = `custom-dispatch-adapter-${testUlid("ADPT").toLowerCase()}`;
+    registerAdapter(customAdapterId, {
+      command: "node",
+      args: [],
+      description: "Custom test adapter for dispatch preflight",
+    });
+
+    const agent = makeTestAgent({
+      id: "runner-worker-custom-adapter",
+      adapter: undefined,
+      runner: "test-custom-runner",
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    try {
+      vi.spyOn(runnerConfigModule, "resolveEffectiveRunners").mockResolvedValue({
+        project: { config: null, path: "", loaded: false, issues: null },
+        system: { config: null, path: "", loaded: false, issues: null },
+        registry: mergeRunnerConfigs(null, {
+          runners: {
+            "test-custom-runner": { kind: "acp_process", adapter: customAdapterId },
+          },
+        }),
+      });
+
+      const mockMetadata = buildMockWorkspaceMetadata(testDir);
+      vi.spyOn(workspaceModule, "provisionDispatchWorkspace").mockResolvedValue({
+        cwd: testDir,
+        metadataPath: path.join(testDir, ".kspec-dispatch-workspace.json"),
+        metadata: mockMetadata,
+      });
+      vi.spyOn(bootstrapModule, "ensureWorkspaceBootstrap").mockResolvedValue({
+        metadata: mockMetadata,
+      });
+      vi.spyOn(workspaceModule, "getDispatchWorkspaceHealth").mockResolvedValue({
+        exists: true,
+        healthy: true,
+        reason: null,
+        metadata: null,
+      });
+
+      const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+        session: {} as any,
+        outcome: "success",
+        durationMs: 1,
+      });
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+      });
+      (engine as unknown as { running: boolean }).running = true;
+
+      const taskRef = `@${testUlid("TASK")}`;
+      const change = makeStateChange({
+        toStatus: "pending",
+        fromStatus: "in_progress",
+        taskRef,
+      });
+      const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
+      type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
+      const spawned = await (engine as unknown as EngineInternal)._spawnInvocation(agent, entry);
+      await waitForMockCall(runSpy);
+
+      // Dispatch accepted the runner: invocation was actually started.
+      expect(spawned).toBe(true);
+      expect(runSpy).toHaveBeenCalledTimes(1);
+
+      // The runner-resolved registry was forwarded so runInvocation produces
+      // the same contract — dispatch did not bypass the resolver.
+      const invocationOpts = runSpy.mock.calls[0][0] as {
+        agent: Agent;
+        runnerRegistry?: { runners: Record<string, unknown> };
+      };
+      expect(invocationOpts.agent.id).toBe(agent.id);
+      expect(invocationOpts.runnerRegistry?.runners?.["test-custom-runner"]).toBeDefined();
+    } finally {
+      vi.restoreAllMocks();
+    }
+  });
+
+  // AC: @runner-invocation-semantics ac-dispatch-preflight-accepts-configured-runners
+  // AC: @runner-resolution-and-preflight ac-dispatch-uses-runner-resolution
+  //
+  // Reviewer pickup routes through the same _spawnInvocation pathway as a
+  // worker. Verify the runner preflight accepts a valid configured runner
+  // for the reviewer role too — same resolver, just a different role tag.
+  it("accepts dispatch for a runner-backed reviewer with a configured runner", async () => {
+    const customAdapterId = `custom-reviewer-adapter-${testUlid("ADPT").toLowerCase()}`;
+    registerAdapter(customAdapterId, {
+      command: "node",
+      args: [],
+      description: "Custom test reviewer adapter",
+    });
+
+    const reviewerAgent = makeTestAgent({
+      id: "runner-reviewer",
+      adapter: undefined,
+      runner: "test-reviewer-runner",
+      dispatch: [{ on: "task.pending_review" }],
+    });
+    await setupProjectWithAgents(testDir, [reviewerAgent]);
+
+    try {
+      vi.spyOn(runnerConfigModule, "resolveEffectiveRunners").mockResolvedValue({
+        project: { config: null, path: "", loaded: false, issues: null },
+        system: { config: null, path: "", loaded: false, issues: null },
+        registry: mergeRunnerConfigs(null, {
+          runners: {
+            "test-reviewer-runner": { kind: "acp_process", adapter: customAdapterId },
+          },
+        }),
+      });
+
+      const mockMetadata = buildMockWorkspaceMetadata(testDir);
+      vi.spyOn(workspaceModule, "provisionDispatchWorkspace").mockResolvedValue({
+        cwd: testDir,
+        metadataPath: path.join(testDir, ".kspec-dispatch-workspace.json"),
+        metadata: mockMetadata,
+      });
+      vi.spyOn(bootstrapModule, "ensureWorkspaceBootstrap").mockResolvedValue({
+        metadata: mockMetadata,
+      });
+      vi.spyOn(workspaceModule, "getDispatchWorkspaceHealth").mockResolvedValue({
+        exists: true,
+        healthy: true,
+        reason: null,
+        metadata: null,
+      });
+
+      const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+        session: {} as any,
+        outcome: "success",
+        durationMs: 1,
+      });
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+      });
+      (engine as unknown as { running: boolean }).running = true;
+
+      const taskRef = `@${testUlid("TASK")}`;
+      const change = makeStateChange({
+        toStatus: "pending_review",
+        fromStatus: "in_progress",
+        taskRef,
+      });
+      const entry = { agent: reviewerAgent, change, retryCount: 0, nextRetryAt: 0 };
+      type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
+      const spawned = await (engine as unknown as EngineInternal)._spawnInvocation(
+        reviewerAgent,
+        entry,
+      );
+      await waitForMockCall(runSpy);
+
+      expect(spawned).toBe(true);
+      expect(runSpy).toHaveBeenCalledTimes(1);
+      const invocationOpts = runSpy.mock.calls[0][0] as {
+        agent: Agent;
+        runnerRegistry?: { runners: Record<string, unknown> };
+      };
+      expect(invocationOpts.agent.id).toBe(reviewerAgent.id);
+      expect(invocationOpts.runnerRegistry?.runners?.["test-reviewer-runner"]).toBeDefined();
+    } finally {
+      vi.restoreAllMocks();
+    }
+  });
+
+  // AC: @runner-invocation-semantics ac-dispatch-preflight-rejects-invalid-runners
+  // AC: @runner-resolution-and-preflight ac-invalid-runner-blocks-before-prompt
+  //
+  // Regression: previously dispatch validated the agent.adapter field via a
+  // bare getAdapter() call, which would have either accepted (synthesizing
+  // an npx fallback) or rejected based purely on the legacy field — without
+  // ever looking at the runner registry. Now the runner-aware preflight
+  // routes through the resolver, which rejects unregistered runner adapters
+  // with a typed invalid_adapter reason before any spawn or prompt build.
+  it("rejects dispatch when the configured runner references an unregistered adapter", async () => {
+    const agent = makeTestAgent({
+      id: "runner-invalid-adapter-agent",
+      adapter: undefined,
+      runner: "runner-pointing-at-missing-adapter",
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const captureFile = path.join(testDir, "kspec-runner-invalid-adapter-capture.json");
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    try {
+      vi.spyOn(runnerConfigModule, "resolveEffectiveRunners").mockResolvedValue({
+        project: { config: null, path: "", loaded: false, issues: null },
+        system: { config: null, path: "", loaded: false, issues: null },
+        registry: mergeRunnerConfigs(null, {
+          runners: {
+            "runner-pointing-at-missing-adapter": {
+              kind: "acp_process",
+              adapter: "never-registered-adapter-id-xyz",
+            },
+          },
+        }),
+      });
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+      });
+      (engine as unknown as { running: boolean }).running = true;
+
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      const runSpy = vi.spyOn(invocationModule, "runInvocation");
+
+      const taskRef = `@${testUlid("TASK")}`;
+      const change = makeStateChange({
+        toStatus: "pending",
+        fromStatus: "in_progress",
+        taskRef,
+      });
+      const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
+
+      type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
+      const spawned = await (engine as unknown as EngineInternal)._spawnInvocation(agent, entry);
+
+      expect(spawned).toBe(false);
+      expect(runSpy).not.toHaveBeenCalled();
+
+      const errorMessage = errorSpy.mock.calls.map((c) => String(c[0])).join("\n");
+      expect(errorMessage).toContain("invalid_adapter");
+      expect(errorMessage).toContain("runner-pointing-at-missing-adapter");
+      expect(errorMessage).toContain("never-registered-adapter-id-xyz");
+
+      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
+      const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
+      expect(noteCall, "expected dispatch to add an AGENT-SKIP task note").toBeDefined();
+      const noteText = noteCall!.args.join(" ");
+      expect(noteText).toContain("AGENT-SKIP");
+      expect(noteText).toContain("invalid_adapter");
+      expect(noteText).toContain("runner-pointing-at-missing-adapter");
+      expect(noteText).toContain("never-registered-adapter-id-xyz");
+
+      errorSpy.mockRestore();
+      runSpy.mockRestore();
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+      vi.restoreAllMocks();
+    }
+  });
+
+  // AC: @runner-environment-secret-boundaries ac-required-secret-missing-blocks
+  // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+  // AC: @runner-invocation-semantics ac-dispatch-preflight-rejects-invalid-runners
+  //
+  // A required secret binding that cannot resolve must block dispatch
+  // before any adapter spawn. The diagnostic surfaces must reference the
+  // binding name and source identifier — but never a secret value (none
+  // could be resolved here, so the test also asserts the env var name is
+  // the only secret-related token leaked).
+  it("rejects dispatch when a required runner secret binding cannot be resolved", async () => {
+    // Unique env var name guaranteed to be absent from process.env.
+    const missingSecretEnvName = `KSPEC_MISSING_SECRET_${testUlid("VAR")}`;
+    delete process.env[missingSecretEnvName];
+
+    const agent = makeTestAgent({
+      id: "runner-missing-secret-agent",
+      adapter: undefined,
+      runner: "runner-with-required-secret",
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const captureFile = path.join(testDir, "kspec-runner-missing-secret-capture.json");
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    try {
+      vi.spyOn(runnerConfigModule, "resolveEffectiveRunners").mockResolvedValue({
+        project: { config: null, path: "", loaded: false, issues: null },
+        system: { config: null, path: "", loaded: false, issues: null },
+        registry: mergeRunnerConfigs(null, {
+          runners: {
+            "runner-with-required-secret": {
+              kind: "acp_process",
+              adapter: "claude-agent-acp",
+              env: {
+                secrets: {
+                  [missingSecretEnvName]: { source: "user_env", required: true },
+                },
+              },
+            },
+          },
+        }),
+      });
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+      });
+      (engine as unknown as { running: boolean }).running = true;
+
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      const runSpy = vi.spyOn(invocationModule, "runInvocation");
+
+      const taskRef = `@${testUlid("TASK")}`;
+      const change = makeStateChange({
+        toStatus: "pending",
+        fromStatus: "in_progress",
+        taskRef,
+      });
+      const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
+
+      type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
+      const spawned = await (engine as unknown as EngineInternal)._spawnInvocation(agent, entry);
+
+      expect(spawned).toBe(false);
+      expect(runSpy).not.toHaveBeenCalled();
+
+      const errorMessage = errorSpy.mock.calls.map((c) => String(c[0])).join("\n");
+      expect(errorMessage).toContain("missing_secret");
+      expect(errorMessage).toContain("runner-with-required-secret");
+      expect(errorMessage).toContain(missingSecretEnvName);
+
+      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
+      const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
+      expect(noteCall, "expected dispatch to add an AGENT-SKIP task note").toBeDefined();
+      const noteText = noteCall!.args.join(" ");
+      expect(noteText).toContain("AGENT-SKIP");
+      expect(noteText).toContain("missing_secret");
+      expect(noteText).toContain("runner-with-required-secret");
+      expect(noteText).toContain(missingSecretEnvName);
+
+      errorSpy.mockRestore();
+      runSpy.mockRestore();
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+      delete process.env[missingSecretEnvName];
+      vi.restoreAllMocks();
+    }
+  });
+
+  // AC: @agent-runner-configuration ac-adapter-field-backcompat
+  // AC: @runner-invocation-semantics ac-dispatch-preflight-accepts-configured-runners
+  //
+  // Legacy adapter compatibility: agents with no runner field still flow
+  // through the runner-aware preflight (the resolver takes the implicit
+  // path) and dispatch must continue to accept them when agent.adapter
+  // names a registered built-in adapter. This guards against a regression
+  // where preflight could start requiring a runner on every agent.
+  it("accepts dispatch for a legacy agent (no runner field) with a registered built-in adapter", async () => {
+    const agent = makeTestAgent({
+      id: "legacy-adapter-agent",
+      adapter: "mock-acp",
+      runner: undefined,
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    try {
+      // No runner registry: the resolver should take the implicit/legacy
+      // path keyed off agent.adapter alone.
+      vi.spyOn(runnerConfigModule, "resolveEffectiveRunners").mockResolvedValue({
+        project: { config: null, path: "", loaded: false, issues: null },
+        system: { config: null, path: "", loaded: false, issues: null },
+        registry: mergeRunnerConfigs(null, null),
+      });
+
+      const mockMetadata = buildMockWorkspaceMetadata(testDir);
+      vi.spyOn(workspaceModule, "provisionDispatchWorkspace").mockResolvedValue({
+        cwd: testDir,
+        metadataPath: path.join(testDir, ".kspec-dispatch-workspace.json"),
+        metadata: mockMetadata,
+      });
+      vi.spyOn(bootstrapModule, "ensureWorkspaceBootstrap").mockResolvedValue({
+        metadata: mockMetadata,
+      });
+      vi.spyOn(workspaceModule, "getDispatchWorkspaceHealth").mockResolvedValue({
+        exists: true,
+        healthy: true,
+        reason: null,
+        metadata: null,
+      });
+
+      const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+        session: {} as any,
+        outcome: "success",
+        durationMs: 1,
+      });
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+      });
+      (engine as unknown as { running: boolean }).running = true;
+
+      const taskRef = `@${testUlid("TASK")}`;
+      const change = makeStateChange({
+        toStatus: "pending",
+        fromStatus: "in_progress",
+        taskRef,
+      });
+      const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
+      type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
+      const spawned = await (engine as unknown as EngineInternal)._spawnInvocation(agent, entry);
+      await waitForMockCall(runSpy);
+
+      expect(spawned).toBe(true);
+      expect(runSpy).toHaveBeenCalledTimes(1);
+      const invocationOpts = runSpy.mock.calls[0][0] as { agent: Agent };
+      expect(invocationOpts.agent.id).toBe(agent.id);
+      expect(invocationOpts.agent.runner).toBeUndefined();
+      expect(invocationOpts.agent.adapter).toBe("mock-acp");
+    } finally {
       vi.restoreAllMocks();
     }
   });
