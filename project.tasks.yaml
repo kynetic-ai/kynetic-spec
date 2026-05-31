@@ -30240,7 +30240,7 @@
   type: task
   spec_ref: "@runner-environment-secret-boundaries"
   plan_ref: "@plan-agent-runner-configuration-layer"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-runner-resolver-invocation-contract"
@@ -30254,6 +30254,7 @@
   todos_count: 0
   created_at: 2026-05-31T06:19:02.337Z
   started_at: 2026-05-31T13:58:11.692Z
+  submitted_at: 2026-05-31T14:25:44.299Z
   automation: eligible
 - _ulid: 01KSYAZ5MMTH53RFXMSTK9400S
   slugs:
