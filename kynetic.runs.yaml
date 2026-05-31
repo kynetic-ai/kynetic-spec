@@ -56376,7 +56376,7 @@ runs:
     completed_at: 2026-05-31T08:17:43.165Z
   - _ulid: 01KSYJTG1VRTRJYNX895JB15V5
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -56402,7 +56402,19 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-05-31T08:37:12.353Z
-        completed_at: 2026-05-31T08:37:12.353Z
+        completed_at: 2026-05-31T08:37:57.614Z
+        notes: "Coverage check: format:check friction is already tracked by inbox @01KSYHR8 (reformat
+          templates/skills/merge/SKILL.md) and related inbox @01KS9FFH (format gate in review
+          quality gates), so no duplicate capture. Merge-helper auxiliary-worktree behavior is
+          broadly covered by @detached-reviewer-merge-helper and completed task
+          @task-merge-helper-clean-occupied-target-checkout, but this specific stale root checkout
+          with .kspec-dispatch-workspace.json blocking manual_merge had no direct match. Full-suite
+          duration had no direct tracking from search, but no concrete improvement is proposed from
+          this single session because full npm test is an intentional review gate."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-31T08:37:57.614Z
+        completed_at: 2026-05-31T08:37:57.614Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T08:36:18.107Z
