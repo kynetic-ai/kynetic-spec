@@ -1,1 +1,17 @@
-notes: []
+notes:
+  - _ulid: 01KSZJY2P8G6MJZNZFRX6A6Y8G
+    content: "Analysis: dispatch preflight already routes through resolveRunnerInvocation
+      (dispatch.ts:2767) + preflightRunnerInvocation (line 2800) per prior task commits. The
+      remaining getAdapter(adapterId) check at line 2853 is intentional dispatch-strictness for the
+      implicit/legacy path where resolveAdapter falls back to an ad-hoc npx adapter (resolver does
+      not throw for unregistered legacy adapters). For runner-backed agents, runners.ts:413 already
+      validates the adapter via getAdapter and throws invalid_adapter. Plan: (1) keep the
+      implementation as-is, (2) enhance error logs to also surface structured runner+adapter ids
+      from RunnerResolutionError.details for clearer task notes, (3) add new tests for: accepts
+      valid runner with custom-registered adapter (worker), accepts valid runner-backed reviewer
+      pickup, rejects runner referencing unregistered adapter (invalid_adapter), rejects when
+      required user_env secret missing, legacy adapter compatibility (no runner field still
+      dispatches). Existing tests already cover unknown_runner and unspawnable_command."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-31T17:57:29.928Z
