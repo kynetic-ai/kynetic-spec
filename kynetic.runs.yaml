@@ -57067,7 +57067,7 @@ runs:
     completed_at: 2026-05-31T15:24:47.632Z
   - _ulid: 01KSZB8XJXE1MTVH28KEBQZVJG
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -57083,7 +57083,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-31T15:45:12.478Z
-        completed_at: 2026-05-31T15:45:12.478Z
+        completed_at: 2026-05-31T15:45:55.745Z
+        notes: "Identified one high-confidence success candidate: an adversarial runtime probe that routes
+          task mutation subprocesses through tests/mocks/kspec-capture-mock.cjs with a sentinel
+          secret in env can expose runner secret-boundary violations that static redaction checks
+          and nominal tests miss. Skipped duplicate friction/success candidates: noisy reflection
+          baseline is covered by @01KSDZFN; workflow show run-ref docs are covered by
+          @01KQ0RH7/@01KQBGKT/@01KR293G/@01KRYTG7; cross-cutting redaction caller-chain coverage is
+          covered by @01KSZ80D and @01KSZA5Z."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-31T15:45:55.745Z
+        completed_at: 2026-05-31T15:45:55.745Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-31T15:43:36.541Z
