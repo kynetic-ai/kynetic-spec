@@ -1,0 +1,77 @@
+_ulid: 01KSYAZ4M60BVN8Y7A7HJCSFNZ
+slugs:
+  - task-agent-runner-meta-cli
+title: Add agent runner metadata and CLI mutation support
+type: task
+description: >
+  What:
+
+  - Add optional `runner: string` to `AgentSchema` in `src/schema/meta.ts`.
+
+  - Update loaded agent types so `runner` is available everywhere an agent definition is consumed.
+
+  - Update `kspec meta add agent` and `kspec meta set <agent>` surfaces to set and clear runner
+  references.
+
+  - Preserve existing `adapter` behavior for agents without `runner`.
+
+  - When an agent has both `runner` and `adapter`, store both fields but document and display that
+  runner takes invocation precedence.
+
+  - Update `kspec agent list` human-readable and JSON output so it includes `runner` when present
+  and still includes `adapter` for backward compatibility.
+
+  - Add tests for parsing legacy agents, parsing runner-backed agents, setting a runner, clearing a
+  runner, and preserving unrelated agent fields during runner updates.
+
+
+  Why:
+
+  Agents need a stable pointer to the execution harness while existing projects and default agents
+  continue to rely on the legacy adapter field.
+
+
+  How:
+
+  - Follow existing patterns for `adapter`, `auto_approve`, `budget`, and `session` fields in meta
+  schema and CLI update code.
+
+  - Do not validate the referenced runner name in schema parsing; missing-runner validation belongs
+  to the runtime resolver, dispatch preflight, and `kspec agent runners validate` surfaces.
+
+  - Do not migrate existing agent records in this task.
+
+  - Use `@agent-definition-schema` as the existing adjacent contract when adding AC annotations in
+  code or tests.
+
+
+  Testing:
+
+  - `npm test -- --fresh tests/meta-agent-schema.test.ts tests/cli-agent.test.ts`
+
+  - `npm run typecheck`
+
+  - `kspec validate --refs --warnings-ok`
+
+
+  Covers: @agent-runner-configuration ac-agent-runner-reference, ac-adapter-field-backcompat,
+  ac-runner-precedence-over-adapter; @runner-operator-surfaces ac-agent-set-updates-runner,
+  ac-agent-list-shows-runner; existing @agent-definition-schema ac-runner-field-accepted,
+  ac-meta-set-runner-preserves-fields, ac-8 default compatibility update
+spec_ref: "@agent-runner-configuration"
+plan_ref: "@plan-agent-runner-configuration-layer"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-runner-config-schema-types"
+context: []
+priority: 1
+tags:
+  - agents
+  - meta
+  - cli
+  - runners
+vcs_refs: []
+created_at: 2026-05-31T06:19:01.638Z
+todos: []

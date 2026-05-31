@@ -1,0 +1,95 @@
+_ulid: 01KSYAZ5A1RCPK2A8H7QXF8N6E
+slugs:
+  - task-runner-env-secret-boundary
+title: Build runner environment and secret resolution boundaries
+type: task
+description: >
+  What:
+
+  - Implement a `buildRunnerEnv(...)` helper consumed by the runner resolver.
+
+  - Support `env.inherit` policies exactly as follows:
+    - `ambient`: start from sanitized `process.env` for legacy compatibility.
+    - `minimal`: start from an empty env and copy only runner `env.pass` names plus process variables required to spawn the configured command on the host platform.
+    - `none`: start from an empty env except kspec-required invocation variables and literal runner settings.
+  - Preserve existing stripping of nested-agent variables such as `CLAUDECODE` and
+  `CLAUDE_CODE_SESSION` before any inheritance policy is applied.
+
+  - Apply `env.set` after inheritance.
+
+  - Resolve `env.secrets` from approved system-layer sources. The initial implementation must
+  support `source: user_env` by reading the host environment variable with the same name as the
+  target secret name.
+
+  - If a required secret cannot be resolved, return a typed preflight failure before adapter spawn.
+
+  - Add kspec-required invocation variables, including `KSPEC_NO_DAEMON=1`, `KSPEC_SESSION_ID`, and
+  `KSPEC_SHADOW_MUTATION_LOCK_FILE` when provided, after runner environment policy is applied.
+
+  - Apply privacy defaults when `privacy.disable_nonessential_traffic` is true:
+  `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1`, `DISABLE_TELEMETRY=1`, and `DO_NOT_TRACK=1` unless
+  the runner explicitly sets a different value in `env.set`.
+
+  - Add a shared redaction helper for diagnostics that replaces secret values with a redaction
+  marker in CLI output, session events, task notes, daemon responses, and Web UI payloads.
+
+  - Replace or route existing `injectEnvForAdapter(...)` usage so session id injection is part of
+  the resolved runner contract while preserving existing Claude/Codex harness-specific injection
+  behavior.
+
+  - Add tests for every inheritance mode, pass list behavior, literal overrides, required secret
+  failure, optional secret omission, privacy default injection, explicit privacy override,
+  nested-agent env stripping, and diagnostic redaction.
+
+
+  Why:
+
+  Headed and non-headed agent runtimes cannot rely on daemon ambient auth or user shell state. kspec
+  needs an explicit boundary for credentials and configuration that is portable across daemon and
+  dispatch contexts while keeping repo/project config free of harness secrets.
+
+
+  How:
+
+  - Keep secret values in local variables only long enough to populate the child process env.
+
+  - Do not write secret values into project runner config, system runner config, session JSONL, task
+  notes, review records, WebSocket events, or Web UI stores.
+
+  - Tests must assert negative cases by checking absence of secret literals in serialized
+  diagnostics and by verifying secret-looking keys are rejected from literal env values.
+
+  - Do not change global `process.env` as part of a runner invocation.
+
+
+  Testing:
+
+  - `npm test -- --fresh tests/agent-runner-env.test.ts tests/agent-invocation.test.ts`
+
+  - `npm run typecheck`
+
+
+  Covers: @runner-environment-secret-boundaries ac-env-inheritance-policy-applied,
+  ac-env-set-overrides-allowed-values, ac-project-env-literals-are-non-secret,
+  ac-secret-env-names-use-bindings, ac-secret-bindings-system-only,
+  ac-secret-values-not-stored-inline, ac-required-secret-missing-blocks,
+  ac-diagnostics-redact-secrets, ac-privacy-defaults-applied; @runner-invocation-semantics
+  ac-session-env-injected-through-runner, ac-runner-cleanup-restores-state; existing
+  @codex-acp-adapter-registration ac-2, ac-3
+spec_ref: "@runner-environment-secret-boundaries"
+plan_ref: "@plan-agent-runner-configuration-layer"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-runner-resolver-invocation-contract"
+context: []
+priority: 1
+tags:
+  - agents
+  - env
+  - security
+  - runners
+vcs_refs: []
+created_at: 2026-05-31T06:19:02.337Z
+todos: []

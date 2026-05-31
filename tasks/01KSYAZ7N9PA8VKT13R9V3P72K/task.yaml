@@ -1,0 +1,92 @@
+_ulid: 01KSYAZ7N9PA8VKT13R9V3P72K
+slugs:
+  - task-runner-compatibility-regressions
+title: Add end-to-end runner compatibility and regression coverage
+type: task
+description: >
+  What:
+
+  - Add an end-to-end compatibility test suite that exercises the runner layer across parser, meta,
+  CLI, invocation, dispatch, daemon API, and Web UI boundaries using fake adapters and
+  existing-command fixtures.
+
+  - Cover these flows:
+    - existing legacy agent with only `adapter` still runs through one-shot invocation;
+    - existing legacy dispatch worker still passes dispatch preflight;
+    - system-only runner-backed one-shot invocation records runner and resolved adapter in session metadata/events;
+    - project-plus-system runner config merges with system overrides and reports source-layer diagnostics;
+    - project runner config containing a known API key or harness logic field is rejected before any invocation;
+    - runner-backed dispatch invocation queues and starts with runner diagnostics visible through daemon status;
+    - invalid runner blocks before prompt forwarding and records actionable redacted diagnostics;
+    - missing required secret blocks before spawn and no secret literal appears in any serialized output;
+    - existing command reference appears in dry-run, preflight, session metadata, and diagnostics as an invocation input;
+    - Web UI agents route renders runner-backed and legacy agents from daemon payload fixtures.
+  - Add AC annotations in tests for the plan specs covered by each flow.
+
+  - Keep all test projects, fake command roots, and session directories inside temp directories.
+
+
+  Why:
+
+  The runner layer cuts across storage, runtime, daemon, CLI, and UI. Focused unit tests are
+  necessary but not sufficient to prevent regressions at the boundaries between those surfaces.
+
+
+  How:
+
+  - Prefer fake ACP adapters that speak the minimum protocol needed for existing invocation tests.
+
+  - Assert the configured behavior at each boundary: storage merge, resolver output, preflight
+  diagnostics, daemon payloads, and Web UI rendering.
+
+  - Include a final `kspec validate --completeness --warnings-ok` run after AC annotations are
+  added.
+
+
+  Testing:
+
+  - `npm test -- --fresh tests/agent-runner-e2e.test.ts packages/web-ui/tests/e2e/agents.spec.ts`
+
+  - `npm run typecheck`
+
+  - `npm run check`
+
+  - `kspec validate --refs --warnings-ok`
+
+  - `kspec validate --completeness --warnings-ok`
+
+
+  Covers: @agent-runner-configuration ac-named-runners-loaded,
+  ac-project-runner-storage-is-repo-managed, ac-system-runner-storage-is-local,
+  ac-system-overrides-project-values, ac-project-layer-accepts-portable-runner-values,
+  ac-project-layer-blocks-known-secret-keys, ac-agent-runner-reference, ac-adapter-field-backcompat,
+  ac-runner-precedence-over-adapter; @runner-resolution-and-preflight
+  ac-one-shot-uses-runner-resolution, ac-dispatch-uses-runner-resolution,
+  ac-unknown-runner-blocks-before-spawn, ac-session-metadata-records-runner,
+  ac-dispatched-event-records-runner; @runner-environment-secret-boundaries
+  ac-project-env-literals-are-non-secret, ac-secret-env-names-use-bindings,
+  ac-required-secret-missing-blocks, ac-diagnostics-redact-secrets;
+  @runner-process-invocation-inputs ac-existing-executable-reference-resolves;
+  @runner-invocation-semantics ac-dispatch-preflight-accepts-configured-runners,
+  ac-dispatch-preflight-rejects-invalid-runners; @runner-operator-surfaces
+  ac-daemon-agent-api-includes-runner, ac-daemon-dispatch-active-api-includes-runner,
+  ac-daemon-dispatch-queued-api-includes-runner, ac-web-ui-agent-cards-include-runner,
+  ac-web-ui-active-invocations-include-runner, ac-web-ui-queued-invocations-include-runner
+spec_ref: "@runner-invocation-semantics"
+plan_ref: "@plan-agent-runner-configuration-layer"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-web-ui-runner-surfaces"
+  - "@task-document-runner-config-migration"
+context: []
+priority: 3
+tags:
+  - testing
+  - agents
+  - dispatch
+  - runners
+vcs_refs: []
+created_at: 2026-05-31T06:19:04.745Z
+todos: []

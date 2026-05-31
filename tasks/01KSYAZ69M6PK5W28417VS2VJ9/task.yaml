@@ -1,0 +1,80 @@
+_ulid: 01KSYAZ69M6PK5W28417VS2VJ9
+slugs:
+  - task-cli-runner-surfaces
+title: Expose runner validation and diagnostics in CLI surfaces
+type: task
+description: >
+  What:
+
+  - Update `kspec agent list` to show runner name, resolved adapter, and validation state for every
+  agent. JSON output must include machine-readable `runner`, `adapter`, `resolved_adapter`, and
+  `runner_validation` fields.
+
+  - Update `kspec agent run --dry-run` so it reports the runner name, resolved adapter, environment
+  policy summary, process command/args/cwd summary, and validation state without spawning an adapter
+  process.
+
+  - Add `kspec agent runners validate [--runner <name>] [--json]` so operators can validate all
+  effective runners or one selected runner without running a prompt.
+
+  - Document the new command in `kspec agent --help` and `kspec agent runners --help`.
+
+  - Runner validation output must support human-readable and JSON modes and must identify
+  project/system source layers plus system-over-project overrides without exposing raw secret
+  material.
+
+  - Error output must include actionable guidance for unknown runner, invalid adapter, invalid
+  process command/cwd/args, and missing required secret source.
+
+  - Error output and JSON diagnostics must redact all secret values.
+
+  - Add CLI tests for human output, JSON output, dry-run output, validation success, validation
+  failure, and redaction.
+
+
+  Why:
+
+  Operators need to see how an agent will run before dispatch picks it up, especially when
+  credentials and process arguments/cwd differ from their shell environment.
+
+
+  How:
+
+  - Reuse the runner resolver in validation mode so CLI status matches real invocation behavior.
+
+  - Do not spawn real external agent binaries in CLI surface tests; use mock adapters and fake
+  existing-command fixtures.
+
+  - Preserve existing `kspec agent list` fields so scripts that consume adapter information keep
+  working.
+
+
+  Testing:
+
+  - `npm test -- --fresh tests/cli-agent.test.ts tests/agent-runner-cli.test.ts`
+
+  - `npm run typecheck`
+
+
+  Covers: @runner-operator-surfaces ac-agent-list-shows-runner, ac-runner-validation-human-output,
+  ac-runner-validation-json-output, ac-runner-validation-exit-status;
+  @runner-resolution-and-preflight ac-unknown-runner-reports-guidance;
+  @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+spec_ref: "@runner-operator-surfaces"
+plan_ref: "@plan-agent-runner-configuration-layer"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-agent-runner-meta-cli"
+  - "@task-dispatch-runner-preflight"
+context: []
+priority: 2
+tags:
+  - cli
+  - agents
+  - diagnostics
+  - runners
+vcs_refs: []
+created_at: 2026-05-31T06:19:03.348Z
+todos: []

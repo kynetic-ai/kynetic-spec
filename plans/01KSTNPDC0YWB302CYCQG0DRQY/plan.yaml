@@ -2,11 +2,29 @@ _ulid: 01KSTNPDC0YWB302CYCQG0DRQY
 slugs:
   - plan-agent-runner-configuration-layer
 title: Agent Runner Configuration Layer
-status: approved
+status: active
 approved_at: 2026-05-31T06:18:18.282Z
 branch: null
-derived_specs: []
-derived_tasks: []
+derived_specs:
+  - "@agent-runner-configuration"
+  - "@runner-resolution-and-preflight"
+  - "@runner-environment-secret-boundaries"
+  - "@runner-process-invocation-inputs"
+  - "@runner-invocation-semantics"
+  - "@runner-operator-surfaces"
+derived_tasks:
+  - "@task-update-existing-agent-runner-specs"
+  - "@task-runner-config-schema-types"
+  - "@task-agent-runner-meta-cli"
+  - "@task-runner-resolver-invocation-contract"
+  - "@task-runner-env-secret-boundary"
+  - "@task-runner-process-invocation-inputs"
+  - "@task-dispatch-runner-preflight"
+  - "@task-cli-runner-surfaces"
+  - "@task-daemon-api-runner-surfaces"
+  - "@task-web-ui-runner-surfaces"
+  - "@task-document-runner-config-migration"
+  - "@task-runner-compatibility-regressions"
 module_ref: null
 source_path: /home/chapel/Projects/kynetic-spec-dispatch/plans/agent-runner-configuration-layer.md
 created_at: 2026-05-29T20:09:32.288Z

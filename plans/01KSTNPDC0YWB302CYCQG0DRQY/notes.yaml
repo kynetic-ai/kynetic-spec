@@ -42,3 +42,67 @@ notes:
       review wording"
     author: Jacob Chapel
     created_at: 2026-05-30T04:20:57.292Z
+  - _ulid: 01KSYAZ81ZYFJS80M2RAF21870
+    content: >-
+      ### Boundary decisions
+
+
+      - Runner is the public config term. Internal code may call strategy classes harnesses, but
+      user-facing YAML, CLI, API, and UI surfaces should say runner consistently.
+
+      - Runner config is layered. Project runner config belongs in the repo-managed shadow sidecar
+      at `project.runners.yaml` in the shadow worktree root, visible from the main checkout as
+      `.kspec/project.runners.yaml`, and is intentionally limited to portable, non-secret
+      project-specific values. System runner config belongs at
+      `<daemon-config-dir>/projects/<project-key>/runners.yaml`, where `<project-key>` is the full
+      lowercase hex SHA-256 digest of the canonical absolute project root path after realpath
+      normalization; it owns process settings, local command references, args/cwd/env policy, and
+      credential source bindings.
+
+      - System config overrides project config field-by-field for the same runner name. Validation
+      and diagnostics should show source layers and override facts without showing raw secrets.
+
+      - Secret values come from runtime secret sources such as user environment variables. Config
+      stores secret references or bindings, not token values; project config rejects known API
+      key/token variable names and secret-looking literal keys.
+
+      - Existing agents with only `adapter` remain supported.
+
+      - A runner-backed agent may retain an `adapter` field for compatibility, but invocation uses
+      the runner's adapter.
+
+      - A headed TUI-to-ACP sidecar can be introduced as a separate runner kind that consumes this
+      runner contract: layered config, explicit env/secrets, invocation args/cwd, diagnostics,
+      dispatch compatibility, and operator visibility.
+
+
+      ### Dependency ordering
+
+
+      1. Existing agent, event, and adapter specs are updated first so workers do not implement
+      against stale implemented contracts.
+
+      2. Layered runner config schema and types establish the storage and merge vocabulary.
+
+      3. Agent meta and CLI mutation support allow agents to reference runners.
+
+      4. Runtime resolver makes one-shot invocation use effective runner contracts.
+
+      5. Env/secret and process-input tasks harden the resolved contract.
+
+      6. Dispatch preflight moves daemon automation onto the same resolver.
+
+      7. CLI, daemon API, and Web UI surfaces expose the resolved state to operators.
+
+      8. Documentation and end-to-end regressions close compatibility and migration gaps.
+
+
+      ### Live-project safety
+
+
+      Process invocation, env injection, and migration/compatibility tests use temp projects,
+      disposable clones, fake adapters, and fake command roots. Test fixtures should exercise
+      configured runner behavior without depending on live `~/Projects/kynetic-spec` or
+      `~/Projects/kynetic-spec-dispatch` mutation state.
+    author: Jacob Chapel
+    created_at: 2026-05-31T06:19:05.151Z

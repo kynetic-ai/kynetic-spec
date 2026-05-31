@@ -30133,3 +30133,249 @@
   submitted_at: 2026-05-29T05:51:50.454Z
   completed_at: 2026-05-29T06:14:20.662Z
   automation: eligible
+- _ulid: 01KSYAZ3RAS2DVT910ZQ42A4DS
+  slugs:
+    - task-update-existing-agent-runner-specs
+  title: Update existing agent, event, and adapter specs for runner semantics
+  type: task
+  spec_ref: "@agent-definition-schema"
+  plan_ref: "@plan-agent-runner-configuration-layer"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - specs
+    - agents
+    - runners
+    - compatibility
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-31T06:19:00.746Z
+- _ulid: 01KSYAZ43RRZAYW67V72VKG61V
+  slugs:
+    - task-runner-config-schema-types
+  title: Define layered runner config storage, schema, and shared TypeScript types
+  type: task
+  spec_ref: "@agent-runner-configuration"
+  plan_ref: "@plan-agent-runner-configuration-layer"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-update-existing-agent-runner-specs"
+  priority: 1
+  tags:
+    - config
+    - schema
+    - agents
+    - runners
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-31T06:19:01.112Z
+- _ulid: 01KSYAZ4M60BVN8Y7A7HJCSFNZ
+  slugs:
+    - task-agent-runner-meta-cli
+  title: Add agent runner metadata and CLI mutation support
+  type: task
+  spec_ref: "@agent-runner-configuration"
+  plan_ref: "@plan-agent-runner-configuration-layer"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-runner-config-schema-types"
+  priority: 1
+  tags:
+    - agents
+    - meta
+    - cli
+    - runners
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-31T06:19:01.638Z
+- _ulid: 01KSYAZ4YAGQG4JTV4P8VAW078
+  slugs:
+    - task-runner-resolver-invocation-contract
+  title: Implement the runner resolver and invocation contract
+  type: task
+  spec_ref: "@runner-resolution-and-preflight"
+  plan_ref: "@plan-agent-runner-configuration-layer"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-runner-config-schema-types"
+    - "@task-agent-runner-meta-cli"
+  priority: 1
+  tags:
+    - agents
+    - runtime
+    - invocation
+    - runners
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-31T06:19:01.962Z
+- _ulid: 01KSYAZ5A1RCPK2A8H7QXF8N6E
+  slugs:
+    - task-runner-env-secret-boundary
+  title: Build runner environment and secret resolution boundaries
+  type: task
+  spec_ref: "@runner-environment-secret-boundaries"
+  plan_ref: "@plan-agent-runner-configuration-layer"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-runner-resolver-invocation-contract"
+  priority: 1
+  tags:
+    - agents
+    - env
+    - security
+    - runners
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-31T06:19:02.337Z
+- _ulid: 01KSYAZ5MMTH53RFXMSTK9400S
+  slugs:
+    - task-runner-process-invocation-inputs
+  title: Apply runner process invocation inputs
+  type: task
+  spec_ref: "@runner-process-invocation-inputs"
+  plan_ref: "@plan-agent-runner-configuration-layer"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-runner-resolver-invocation-contract"
+  priority: 1
+  tags:
+    - agents
+    - runtime
+    - invocation
+    - runners
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-31T06:19:02.676Z
+- _ulid: 01KSYAZ5Z5S4GHWAZBTYGSCTTM
+  slugs:
+    - task-dispatch-runner-preflight
+  title: Make dispatch preflight runner-aware
+  type: task
+  spec_ref: "@runner-invocation-semantics"
+  plan_ref: "@plan-agent-runner-configuration-layer"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-runner-resolver-invocation-contract"
+    - "@task-runner-env-secret-boundary"
+    - "@task-runner-process-invocation-inputs"
+  priority: 1
+  tags:
+    - dispatch
+    - agents
+    - validation
+    - runners
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-31T06:19:03.013Z
+- _ulid: 01KSYAZ69M6PK5W28417VS2VJ9
+  slugs:
+    - task-cli-runner-surfaces
+  title: Expose runner validation and diagnostics in CLI surfaces
+  type: task
+  spec_ref: "@runner-operator-surfaces"
+  plan_ref: "@plan-agent-runner-configuration-layer"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-agent-runner-meta-cli"
+    - "@task-dispatch-runner-preflight"
+  priority: 2
+  tags:
+    - cli
+    - agents
+    - diagnostics
+    - runners
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-31T06:19:03.348Z
+- _ulid: 01KSYAZ6MNX6EZCHZANWAT6X8T
+  slugs:
+    - task-daemon-api-runner-surfaces
+  title: Add runner fields to daemon API and dispatch status payloads
+  type: task
+  spec_ref: "@runner-operator-surfaces"
+  plan_ref: "@plan-agent-runner-configuration-layer"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-dispatch-runner-preflight"
+    - "@task-cli-runner-surfaces"
+  priority: 2
+  tags:
+    - daemon
+    - api
+    - agents
+    - runners
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-31T06:19:03.701Z
+- _ulid: 01KSYAZ6Z7RTK8DQPJT2AA09WA
+  slugs:
+    - task-web-ui-runner-surfaces
+  title: Update Web UI agent and dispatch surfaces for runners
+  type: task
+  spec_ref: "@runner-operator-surfaces"
+  plan_ref: "@plan-agent-runner-configuration-layer"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-daemon-api-runner-surfaces"
+  priority: 3
+  tags:
+    - web-ui
+    - agents
+    - dispatch
+    - runners
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-31T06:19:04.039Z
+- _ulid: 01KSYAZ79ZYNT3J9FM76BBVXMW
+  slugs:
+    - task-document-runner-config-migration
+  title: Document runner configuration and migration path
+  type: task
+  spec_ref: "@agent-runner-configuration"
+  plan_ref: "@plan-agent-runner-configuration-layer"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-cli-runner-surfaces"
+    - "@task-web-ui-runner-surfaces"
+  priority: 3
+  tags:
+    - docs
+    - agents
+    - config
+    - runners
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-31T06:19:04.383Z
+- _ulid: 01KSYAZ7N9PA8VKT13R9V3P72K
+  slugs:
+    - task-runner-compatibility-regressions
+  title: Add end-to-end runner compatibility and regression coverage
+  type: task
+  spec_ref: "@runner-invocation-semantics"
+  plan_ref: "@plan-agent-runner-configuration-layer"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-web-ui-runner-surfaces"
+    - "@task-document-runner-config-migration"
+  priority: 3
+  tags:
+    - testing
+    - agents
+    - dispatch
+    - runners
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-05-31T06:19:04.745Z

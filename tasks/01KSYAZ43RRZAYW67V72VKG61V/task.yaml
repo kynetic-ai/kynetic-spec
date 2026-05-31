@@ -1,0 +1,117 @@
+_ulid: 01KSYAZ43RRZAYW67V72VKG61V
+slugs:
+  - task-runner-config-schema-types
+title: Define layered runner config storage, schema, and shared TypeScript types
+type: task
+description: >
+  What:
+
+  - Add storage and loader support for two runner config layers:
+    - Project runner config stored as a repo-managed artifact at `project.runners.yaml` in the shadow worktree root, alongside `kynetic.yaml`; when viewed from the main checkout this appears as `.kspec/project.runners.yaml`. It is loaded only after shadow branch context is available and is never read from root-branch `kspec.config.yaml`.
+    - System runner config stored at `<daemon-config-dir>/projects/<project-key>/runners.yaml`, where `<daemon-config-dir>` is the same directory returned by `getDefaultDaemonConfigDir()` unless tests override it.
+  - Define `<project-key>` as the lowercase hex SHA-256 digest of the canonical absolute project
+  root path after realpath normalization. Do not truncate it, do not include the raw path in the
+  directory name, and use the same helper in CLI, daemon, and tests.
+
+  - Define separate raw schemas for project runner config and system runner config, plus a merged
+  effective runner type under a shared module such as `src/agents/runner-config.ts`.
+
+  - Project runner config must accept only portable project-specific values, initially limited to
+  non-secret runner values such as `env.set`, `privacy.disable_nonessential_traffic`, and
+  diagnostics preferences that are safe to commit.
+
+  - Project runner config must reject known adapter/harness secret keys and secret-looking names in
+  `env.set`, including names containing `API_KEY`, `AUTH_TOKEN`, `ACCESS_TOKEN`, `OAUTH_TOKEN`,
+  `SECRET`, `PASSWORD`, and known Claude/Codex/OpenAI credential variable names.
+
+  - System runner config must accept the full initial effective runner shape with these explicit
+  fields and defaults:
+    - `kind`: required string enum whose only accepted value in this plan is `acp_process`.
+    - `adapter`: required string reference to an existing registered adapter.
+    - `process.executable`: optional existing executable or command path. If omitted, the adapter's normal spawn command is used.
+    - `process.args`: optional string array of additional non-secret arguments appended to the ACP process invocation, default empty.
+    - `process.cwd`: optional system-config-relative or absolute cwd override for the child process only.
+    - `env.inherit`: enum `ambient`, `minimal`, or `none`, default `minimal` for configured runners.
+    - `env.pass`: string array of allowed inherited variable names, default empty.
+    - `env.set`: string record for non-secret literals, default empty.
+    - `env.secrets`: record keyed by child environment variable name, where each binding has `source` and `required`, default empty.
+    - `privacy.disable_nonessential_traffic`: boolean default true.
+    - `diagnostics.retain_raw_logs`: enum `never`, `on_failure`, or `always`, default `on_failure`.
+  - System runner config must reject known adapter/harness secret keys and secret-looking names in
+  `env.set`; use `env.secrets` bindings for those child environment variables instead.
+
+  - Merge project and system config into effective runners by runner name, with system scalar values
+  replacing project scalar values and system map keys overriding project map keys.
+
+  - Preserve source metadata for validation and diagnostics so each effective runner can report
+  which layer supplied or overrode each field.
+
+  - Export named TypeScript interfaces or inferred aliases for project, system, and effective runner
+  config so runtime, CLI, API, and Web UI serialization code can share the vocabulary.
+
+  - Add parser/loader tests for omitted runner files, project-only portable values, system-only
+  runners, system-over-project overrides, invalid project secret-looking env values, invalid missing
+  effective `kind`, invalid missing effective `adapter`, invalid enum values, and preservation of
+  existing config behavior.
+
+
+  Why:
+
+  kspec needs a durable layered storage format for execution harnesses before agents, dispatch, CLI,
+  daemon, or UI code can reference them consistently. The repo layer carries portable project
+  values; local system config owns machine-specific process settings, argument/env/cwd
+  configuration, and credentials.
+
+
+  How:
+
+  - Keep existing `kspec.config.yaml` behavior unchanged. Use shared helper plumbing only when
+  needed to locate the project root.
+
+  - Prefer a dedicated loader module over embedding runner config in the root manifest. The chosen
+  sidecar keeps operational runner values separate from behavioral kspec items while remaining
+  repo-managed in the shadow branch.
+
+  - Use Zod schemas for both layers and include a custom project-layer validator that blocks known
+  secret/API-key names.
+
+  - Keep secret values out of every schema shape. `env.secrets` entries name sources only; they must
+  not include fields named `value`, `token`, `api_key`, or `secret`.
+
+  - Add or update tests in the existing parser/config test area. If no narrow suite exists, create
+  `tests/runner-config.test.ts` using temp project and temp user-config fixtures.
+
+  - Validate `process.cwd` values with system-config-relative and absolute path cases.
+
+
+  Testing:
+
+  - `npm test -- --fresh tests/runner-config.test.ts`
+
+  - `npm run typecheck`
+
+
+  Covers: @agent-runner-configuration ac-named-runners-loaded,
+  ac-project-runner-storage-is-repo-managed, ac-system-runner-storage-is-local,
+  ac-system-overrides-project-values, ac-project-layer-accepts-portable-runner-values,
+  ac-project-layer-blocks-known-secret-keys, ac-effective-runner-kind-and-adapter-required;
+  @runner-environment-secret-boundaries ac-project-env-literals-are-non-secret,
+  ac-secret-env-names-use-bindings, ac-secret-bindings-system-only,
+  ac-secret-values-not-stored-inline
+spec_ref: "@agent-runner-configuration"
+plan_ref: "@plan-agent-runner-configuration-layer"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-update-existing-agent-runner-specs"
+context: []
+priority: 1
+tags:
+  - config
+  - schema
+  - agents
+  - runners
+vcs_refs: []
+created_at: 2026-05-31T06:19:01.112Z
+todos: []

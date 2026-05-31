@@ -1,0 +1,70 @@
+_ulid: 01KSYAZ6MNX6EZCHZANWAT6X8T
+slugs:
+  - task-daemon-api-runner-surfaces
+title: Add runner fields to daemon API and dispatch status payloads
+type: task
+description: >
+  What:
+
+  - Update daemon agent-definition responses so each agent includes runner name, configured adapter,
+  resolved adapter, and redacted runner validation diagnostics.
+
+  - Update dispatch status responses so active and queued invocations include runner name when
+  present and resolved adapter identity.
+
+  - Update WebSocket event payloads for agent dispatched/started/failed/status updates if those
+  payloads expose adapter or invocation details today.
+
+  - Ensure legacy clients that only read the adapter field continue to receive an adapter identity.
+
+  - Add API tests for runner-backed agents, legacy adapter-backed agents, invalid runner
+  diagnostics, active invocation status, queued invocation status, and secret redaction.
+
+  - If shared API response TypeScript types exist, update them in the same task.
+
+
+  Why:
+
+  The Web UI and external automation should not infer runner state from raw config files. Daemon
+  payloads need to expose the same resolved runner information that CLI users see.
+
+
+  How:
+
+  - Locate the existing agent and dispatch status endpoint handlers before editing response types.
+
+  - Keep diagnostics bounded and redacted; do not send full child process env maps to clients.
+
+  - Add compatibility assertions that existing adapter fields remain populated for old consumers.
+
+
+  Testing:
+
+  - `npm test -- --fresh tests/daemon-agent-api.test.ts tests/agent-dispatch-api.test.ts`
+
+  - `npm run typecheck`
+
+
+  Covers: @runner-operator-surfaces ac-daemon-agent-api-includes-runner,
+  ac-daemon-dispatch-active-api-includes-runner, ac-daemon-dispatch-queued-api-includes-runner;
+  @runner-resolution-and-preflight ac-session-metadata-records-runner,
+  ac-dispatched-event-records-runner; @runner-environment-secret-boundaries
+  ac-diagnostics-redact-secrets
+spec_ref: "@runner-operator-surfaces"
+plan_ref: "@plan-agent-runner-configuration-layer"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-dispatch-runner-preflight"
+  - "@task-cli-runner-surfaces"
+context: []
+priority: 2
+tags:
+  - daemon
+  - api
+  - agents
+  - runners
+vcs_refs: []
+created_at: 2026-05-31T06:19:03.701Z
+todos: []

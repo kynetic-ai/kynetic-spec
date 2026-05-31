@@ -1,0 +1,72 @@
+_ulid: 01KSYAZ5MMTH53RFXMSTK9400S
+slugs:
+  - task-runner-process-invocation-inputs
+title: Apply runner process invocation inputs
+type: task
+description: >
+  What:
+
+  - Update the runner resolver/spawn contract so system runner config supplies invocation-time
+  process settings around an ACP adapter process:
+    - optional `process.executable` command/path reference;
+    - optional `process.args` appended to the adapter process arguments;
+    - optional `process.cwd` for the child process;
+    - redacted source metadata for each of those fields.
+  - Resolve `process.executable` into the command reference reported by dry-run, preflight, and
+  spawn diagnostics.
+
+  - Return a typed unspawnable-command diagnostic when the configured command cannot be spawned.
+
+  - Validate `process.args` as non-secret invocation arguments and report secret-looking argument
+  values as typed validation diagnostics.
+
+  - Apply `process.cwd` only to the spawned child process.
+
+  - Report runner name, resolved adapter, command source, cwd source, args source, and env policy in
+  redacted diagnostics.
+
+  - Add fake adapter tests for configured command references, unspawnable command diagnostics,
+  argument appending, cwd behavior, and diagnostic source metadata.
+
+
+  Why:
+
+  Operators need the runner contract to make ACP invocation inputs explicit and inspectable across
+  CLI, dispatch, daemon, and Web UI surfaces.
+
+
+  How:
+
+  - Keep all tests in temp project directories with fake commands and fake adapters.
+
+  - Make executable spawnability checks bounded by a timeout and surface typed diagnostics on
+  timeout.
+
+
+  Testing:
+
+  - `npm test -- --fresh tests/agent-runner-process.test.ts tests/agent-runner-resolver.test.ts`
+
+  - `npm run typecheck`
+
+
+  Covers: @runner-process-invocation-inputs ac-existing-executable-reference-resolves,
+  ac-runner-args-extend-acp-invocation, ac-runner-cwd-is-invocation-only,
+  ac-invocation-diagnostics-identify-inputs
+spec_ref: "@runner-process-invocation-inputs"
+plan_ref: "@plan-agent-runner-configuration-layer"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-runner-resolver-invocation-contract"
+context: []
+priority: 1
+tags:
+  - agents
+  - runtime
+  - invocation
+  - runners
+vcs_refs: []
+created_at: 2026-05-31T06:19:02.676Z
+todos: []

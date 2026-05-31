@@ -1,0 +1,81 @@
+_ulid: 01KSYAZ5Z5S4GHWAZBTYGSCTTM
+slugs:
+  - task-dispatch-runner-preflight
+title: Make dispatch preflight runner-aware
+type: task
+description: >
+  What:
+
+  - Replace dispatch preflight code that directly calls `getAdapter(agent.adapter)` with
+  runner-aware validation.
+
+  - Dispatch preflight must accept configured runners whose adapters resolve through the same
+  existing registered adapter path used by `resolveRunnerInvocation(...)`.
+
+  - Dispatch preflight must reject unknown runner names, malformed runner configs, missing required
+  secrets, unspawnable existing command references, and unspawnable adapter contracts before
+  queueing or spawning an invocation.
+
+  - When preflight rejects an agent for a task, log the reason with runner name and resolved adapter
+  when available.
+
+  - When preflight rejects a task-bound dispatch, add an actionable task note that names the agent
+  and runner but redacts secret values.
+
+  - Preserve existing behavior for legacy adapter-backed agents with no runner.
+
+  - Add dispatch tests for valid runner-backed worker pickup, valid runner-backed reviewer pickup,
+  unknown runner rejection, unknown adapter reference rejection, missing required secret rejection,
+  unspawnable command-reference rejection, and legacy adapter compatibility.
+
+
+  Why:
+
+  Dispatch currently has adapter validation paths that can diverge between one-shot invocation and
+  queued automation. Preflight and invocation need to agree on the same existing adapter reference,
+  optional existing command reference, env, args, cwd, and redacted diagnostics before dispatch
+  accepts work.
+
+
+  How:
+
+  - Reuse the runner resolver in validation mode. Runner preflight validates configured references,
+  env, args, cwd, and adapter spawnability.
+
+  - Use fake runners and fake adapters in tests.
+
+  - Verify failed preflight prevents agent process creation, active invocation creation, and
+  prompt-event creation.
+
+
+  Testing:
+
+  - `npm test -- --fresh tests/agent-dispatch-engine.test.ts tests/agent-runner-resolver.test.ts`
+
+  - `npm run typecheck`
+
+
+  Covers: @runner-resolution-and-preflight ac-dispatch-uses-runner-resolution,
+  ac-unknown-runner-blocks-before-spawn, ac-unknown-runner-reports-guidance;
+  @runner-invocation-semantics ac-dispatch-preflight-accepts-configured-runners,
+  ac-dispatch-preflight-rejects-invalid-runners; @runner-environment-secret-boundaries
+  ac-required-secret-missing-blocks, ac-diagnostics-redact-secrets
+spec_ref: "@runner-invocation-semantics"
+plan_ref: "@plan-agent-runner-configuration-layer"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-runner-resolver-invocation-contract"
+  - "@task-runner-env-secret-boundary"
+  - "@task-runner-process-invocation-inputs"
+context: []
+priority: 1
+tags:
+  - dispatch
+  - agents
+  - validation
+  - runners
+vcs_refs: []
+created_at: 2026-05-31T06:19:03.013Z
+todos: []

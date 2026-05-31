@@ -2615,6 +2615,98 @@ modules:
     tests: []
     traits: []
     tags: []
+    constraints:
+      - _ulid: 01KSYAZ3FKAF5M5WYZFFK5A56M
+        slugs:
+          - runner-environment-secret-boundaries
+        title: Runner Environment and Secret Boundaries
+        type: constraint
+        description: |
+          Runner-launched adapter processes receive an explicit environment assembled
+          from the effective runner config. Project config may provide only portable
+          non-secret values. Secret bindings and machine-local credential sources live
+          in system config, and diagnostics never expose secret values. Host, daemon,
+          and nested-agent environment variables do not leak into runners unless the
+          effective runner policy allows them.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              The effective runner config declares an environment inheritance policy
+            id: ac-env-inheritance-policy-applied
+            then: >
+              The resulting process environment contains only variables allowed by that policy plus
+              kspec-required invocation variables
+            when: |
+              kspec builds the adapter process environment
+          - given: |
+              The effective runner config declares literal non-secret environment values
+            id: ac-env-set-overrides-allowed-values
+            then: |
+              The declared values override inherited values for the same keys
+            when: |
+              kspec builds the adapter process environment
+          - given: |
+              Project runner config declares literal environment values
+            id: ac-project-env-literals-are-non-secret
+            then: >
+              Known API key, auth token, OAuth token, credential variable, and secret-looking
+              environment names are rejected from the project layer
+            when: |
+              Project runner config is validated
+          - given: |
+              Any runner config layer declares literal environment values
+            id: ac-secret-env-names-use-bindings
+            then: >
+              Known secret-looking environment names are rejected from literal values with guidance
+              to use system secret source bindings
+            when: |
+              Runner configuration is validated
+          - given: |
+              A runner declares a secret source binding
+            id: ac-secret-bindings-system-only
+            then: >
+              The binding is accepted only from system runner config and not from project runner
+              config
+            when: |
+              Runner configuration is validated
+          - given: |
+              A runner declares a secret reference or source binding
+            id: ac-secret-values-not-stored-inline
+            then: >
+              The secret source reference is retained without persisting or displaying the secret
+              value from either config layer
+            when: |
+              The runner configuration is parsed or shown in diagnostics
+          - given: |
+              The effective runner config declares a required secret source
+            id: ac-required-secret-missing-blocks
+            then: |
+              The invocation is blocked before adapter spawn
+            when: |
+              That secret source cannot be resolved for an invocation
+          - given: |
+              Runner resolution, preflight, spawn, or adapter startup fails
+            id: ac-diagnostics-redact-secrets
+            then: |
+              Secret values are redacted from every diagnostic surface
+            when: >
+              Diagnostics are recorded in CLI output, session events, task notes, daemon API
+              responses, or Web UI state
+          - given: |
+              A runner launches an external agent runtime
+            id: ac-privacy-defaults-applied
+            then: >
+              The process receives kspec's default nonessential-traffic and telemetry suppression
+              variables unless the effective runner config explicitly disables that default
+            when: |
+              The adapter process environment is built
+        tags: []
+        created: 2026-05-31T06:19:00.467Z
+        notes: []
     decisions:
       - _ulid: 01KKZPVBRMZCGV3JGQMMTS23KH
         slugs:
@@ -6992,6 +7084,403 @@ modules:
               The skill is validated, rendered, or injected into a prompt
         tags: []
         created: 2026-04-22T21:41:47.168Z
+        notes: []
+      - _ulid: 01KSYAZ3AZ8SENT73Y8X244BNR
+        slugs:
+          - agent-runner-configuration
+        title: Layered Agent Runner Configuration
+        type: requirement
+        description: |
+          kspec resolves named agent runners from two simple configuration layers. The
+          repo/project layer stores portable project-specific values only. The local
+          system layer stores machine/user-specific process settings, executable
+          references, arguments, working-directory policy, credential bindings, and
+          local overrides. The effective runner is the merged result, with system
+          values overriding project values for the same runner.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: >
+              The project runner config or system runner config contains one or more named runner
+              entries
+            id: ac-named-runners-loaded
+            then: |
+              Each named runner is available to agent resolution by its configured name
+            when: |
+              Runner configuration is loaded for a project
+          - given: |
+              Portable project-specific runner values are defined for a project
+            id: ac-project-runner-storage-is-repo-managed
+            then: >
+              They are stored in a repo-managed runner config artifact rather than in agent meta
+              records or process environment variables
+            when: |
+              Those values are persisted
+          - given: |
+              Local runner values are defined for a project
+            id: ac-system-runner-storage-is-local
+            then: >
+              They are stored under the user-level kspec daemon config directory and are not
+              committed to the project repository or shadow branch
+            when: |
+              Those values are persisted
+          - given: |
+              The same runner field is present in both project and system runner config
+            id: ac-system-overrides-project-values
+            then: |
+              The system value is used for that field
+            when: |
+              The effective runner config is resolved
+          - given: >
+              Project runner config contains supported portable runner values such as non-secret
+              env.set entries, privacy defaults, or diagnostics preferences
+            id: ac-project-layer-accepts-portable-runner-values
+            then: >
+              Those values are accepted as project-layer runner inputs and retain project-layer
+              source metadata
+            when: |
+              Project runner config is validated
+          - given: >
+              Project runner config contains a known adapter or harness API key, auth token, OAuth
+              token, credential variable, or secret-looking literal field
+            id: ac-project-layer-blocks-known-secret-keys
+            then: |
+              The project config is rejected before it can become the effective runner configuration
+            when: |
+              Project runner config is validated
+          - given: |
+              A merged effective runner definition is loaded
+            id: ac-effective-runner-kind-and-adapter-required
+            then: >
+              The effective runner has a kind and an adapter reference before it can be used to
+              spawn an agent
+            when: |
+              The runner is validated for invocation
+          - given: |
+              An agent definition contains a runner field
+            id: ac-agent-runner-reference
+            then: |
+              The runner field is accepted as an optional string reference to a named runner
+            when: |
+              The agent definition is loaded from meta storage
+          - given: |
+              An existing agent definition has an adapter field and no runner field
+            id: ac-adapter-field-backcompat
+            then: >
+              The adapter field continues to work with the same behavior as before the runner layer
+              exists
+            when: |
+              The agent is invoked or listed
+          - given: |
+              An agent definition has both runner and adapter fields
+            id: ac-runner-precedence-over-adapter
+            then: >
+              The named runner determines the resolved adapter and execution harness for that
+              invocation
+            when: |
+              The agent is invoked
+        tags: []
+        created: 2026-05-31T06:19:00.319Z
+        notes: []
+      - _ulid: 01KSYAZ3D62KVPZK77VP2RVBWM
+        slugs:
+          - runner-resolution-and-preflight
+        title: Runner Resolution and Preflight
+        type: requirement
+        description: |
+          Agent invocation resolves a runner before spawning an adapter process. Resolution
+          produces a single invocation contract containing runner identity, adapter identity,
+          command, arguments, environment, cwd, process diagnostics, and cleanup hooks. Invalid
+          runner configuration fails before prompt forwarding.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              kspec agent run starts a one-shot invocation for an agent with a runner field
+            id: ac-one-shot-uses-runner-resolution
+            then: >
+              The invocation uses the resolved runner contract instead of directly resolving the
+              agent adapter field
+            when: |
+              The invocation is prepared
+          - given: >
+              The dispatch engine prepares an eligible queued invocation for an agent with a runner
+              field
+            id: ac-dispatch-uses-runner-resolution
+            then: |
+              The dispatch engine uses the same resolved runner contract as one-shot agent run
+            when: |
+              The invocation is prepared
+          - given: |
+              An agent references a runner name that is not present in the effective runner registry
+            id: ac-unknown-runner-blocks-before-spawn
+            then: |
+              No adapter process is spawned
+            when: |
+              kspec prepares a one-shot or dispatched invocation
+          - given: |
+              An invocation is blocked because the configured runner name is unknown
+            id: ac-unknown-runner-reports-guidance
+            then: >
+              The report names the missing runner and suggests checking both project runner config,
+              system runner config, and the agent definition
+            when: |
+              The failure is reported to the user, session, or task
+          - given: >
+              Runner validation fails because a required field, adapter reference, process setting,
+              or security setting is invalid
+            id: ac-invalid-runner-blocks-before-prompt
+            then: |
+              The invocation fails before any prompt content is sent to an adapter process
+            when: |
+              kspec prepares an invocation
+          - given: |
+              An invocation uses a runner-backed agent
+            id: ac-session-metadata-records-runner
+            then: |
+              The metadata includes the runner name and the resolved adapter id
+            when: |
+              Session metadata is written
+          - given: |
+              An invocation uses a runner-backed agent
+            id: ac-dispatched-event-records-runner
+            then: |
+              The event includes the runner name and the resolved adapter id
+            when: |
+              The agent.dispatched event is written
+        tags: []
+        created: 2026-05-31T06:19:00.390Z
+        notes: []
+      - _ulid: 01KSYAZ3HKGBTTGXBNN1EV1QM5
+        slugs:
+          - runner-process-invocation-inputs
+        title: Runner Process Invocation Inputs
+        type: requirement
+        description: |
+          Runners describe the process inputs kspec applies while preparing an ACP
+          adapter invocation. The resolved contract identifies the existing adapter,
+          optional command reference, child-process arguments, child-process cwd,
+          environment policy, and redacted diagnostics used for that invocation.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              A runner configures an executable or command path
+            id: ac-existing-executable-reference-resolves
+            then: >
+              The resolved invocation contract identifies the command reference that will be spawned
+              or returns a typed unspawnable-command diagnostic
+            when: |
+              Runner preflight validates the invocation contract
+          - given: |
+              A runner declares additional non-secret arguments or argument templates
+            id: ac-runner-args-extend-acp-invocation
+            then: >
+              Those arguments are appended only to the spawned process invocation and are not
+              persisted into adapter definitions
+            when: |
+              kspec prepares an ACP process invocation
+          - given: |
+              A runner declares a working-directory policy or cwd override
+            id: ac-runner-cwd-is-invocation-only
+            then: >
+              The cwd is applied only to that child process invocation and does not change the
+              daemon or parent process cwd
+            when: |
+              kspec prepares an ACP process invocation
+          - given: |
+              Runner validation, dry-run, preflight, or spawn preparation succeeds or fails
+            id: ac-invocation-diagnostics-identify-inputs
+            then: >
+              Diagnostics identify the runner name, resolved adapter, command source, cwd policy,
+              argument source, and env policy without exposing secrets
+            when: |
+              Diagnostics are shown
+        tags: []
+        created: 2026-05-31T06:19:00.531Z
+        notes: []
+      - _ulid: 01KSYAZ3KMW9NN4PBSJR8Y8PPV
+        slugs:
+          - runner-invocation-semantics
+        title: Runner Invocation Semantics
+        type: requirement
+        description: |
+          Runner-backed invocations preserve existing agent semantics while making the
+          resolved harness explicit. Skill reference formatting, auto-approval flags,
+          session environment injection, lifecycle cleanup, and dispatch preflight all
+          operate from the resolved runner contract.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              A runner resolves to an adapter with adapter-specific skill invocation formatting
+            id: ac-skill-formatting-uses-resolved-adapter
+            then: |
+              Skill references are formatted according to the resolved adapter
+            when: |
+              kspec builds the agent prompt with skills
+          - given: |
+              An agent invocation runs with auto_approve enabled
+            id: ac-auto-approve-from-resolved-contract
+            then: |
+              Those arguments are appended to the spawned process for that invocation
+            when: |
+              The resolved runner contract supplies adapter or runner auto-approval arguments
+          - given: |
+              An invocation has a kspec session id
+            id: ac-session-env-injected-through-runner
+            then: >
+              KSPEC_SESSION_ID reaches child kspec commands through the resolved runner injection
+              path
+            when: |
+              The runner contract requires environment or harness-specific session injection
+          - given: >
+              A runner modifies temporary config, environment files, hook settings, or
+              invocation-local process state
+            id: ac-runner-cleanup-restores-state
+            then: |
+              Runner cleanup restores prior mutable state or removes temporary state best-effort
+            when: |
+              The invocation closes or fails during startup
+          - given: >
+              Dispatch evaluates an agent that references a valid configured runner whose adapter is
+              not a built-in adapter id
+            id: ac-dispatch-preflight-accepts-configured-runners
+            then: |
+              The agent is accepted if the runner resolves to a spawnable ACP adapter contract
+            when: |
+              Dispatch preflight validates the agent
+          - given: >
+              Dispatch evaluates an agent whose runner cannot resolve to a spawnable adapter contract
+            id: ac-dispatch-preflight-rejects-invalid-runners
+            then: >
+              Dispatch reports the runner validation failure instead of relying on a later spawn
+              error
+            when: |
+              Dispatch preflight validates the agent
+        tags: []
+        created: 2026-05-31T06:19:00.597Z
+        notes: []
+      - _ulid: 01KSYAZ3NTDVZ2TY226H2SMH7F
+        slugs:
+          - runner-operator-surfaces
+        title: Runner Operator Surfaces
+        type: requirement
+        description: |
+          Operators can inspect and configure agent runner usage through the same
+          surfaces that already expose agents and dispatch state. CLI, daemon API,
+          WebSocket status data, and the Web UI show runner identity, resolved adapter,
+          validation state, and redacted diagnostics.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              Agent definitions include runner-backed and legacy adapter-backed agents
+            id: ac-agent-list-shows-runner
+            then: |
+              Each agent entry shows its runner name when present and its resolved adapter identity
+            when: |
+              kspec agent list is run in human-readable or JSON mode
+          - given: |
+              An agent definition exists
+            id: ac-agent-set-updates-runner
+            then: |
+              The agent definition is updated without changing unrelated fields
+            when: |
+              kspec meta set is used to set or clear the agent runner field
+          - given: |
+              A project has runner configuration
+            id: ac-runner-validation-human-output
+            then: >
+              The human-readable output reports each runner's validation state and redacted
+              diagnostics
+            when: |
+              An operator runs `kspec agent runners validate`
+          - given: |
+              A project has runner configuration
+            id: ac-runner-validation-json-output
+            then: >
+              The command emits a JSON object with a `runners` array whose entries contain `runner`,
+              `kind`, `resolved_adapter`, `command_source`, `cwd_source`, `args_source`, `status`,
+              `sources`, `overrides`, and redacted `diagnostics` fields
+            when: |
+              An operator runs `kspec agent runners validate --json`
+          - given: |
+              A project has runner configuration
+            id: ac-runner-validation-exit-status
+            then: |
+              The command exits with status 0 only when every selected runner is valid
+            when: >
+              An operator runs `kspec agent runners validate` or `kspec agent runners validate
+              --json`
+          - given: |
+              The daemon serves agent definition data
+            id: ac-daemon-agent-api-includes-runner
+            then: >
+              The response includes runner name, resolved adapter identity, and redacted runner
+              diagnostics where available for each agent
+            when: |
+              A client requests agent state
+          - given: |
+              The daemon serves dispatch status data
+            id: ac-daemon-dispatch-active-api-includes-runner
+            then: >
+              The response includes runner name with resolved adapter identity for active invocations
+            when: |
+              A client requests active invocation state
+          - given: |
+              The daemon serves dispatch status data
+            id: ac-daemon-dispatch-queued-api-includes-runner
+            then: >
+              The response includes runner name with resolved adapter identity for queued invocations
+            when: |
+              A client requests queued invocation state
+          - given: |
+              The Web UI displays the agents page
+            id: ac-web-ui-agent-cards-include-runner
+            then: >
+              Agent cards display runner identity when present and resolved adapter identity for all
+              agents
+            when: |
+              Agents are loaded from the daemon API
+          - given: |
+              The Web UI displays active agent invocations
+            id: ac-web-ui-active-invocations-include-runner
+            then: |
+              Active invocation rows display runner identity when present
+            when: |
+              Invocation data is loaded from the daemon API
+          - given: |
+              The Web UI displays queued agent invocations
+            id: ac-web-ui-queued-invocations-include-runner
+            then: |
+              Queued invocation rows display runner identity when present
+            when: |
+              Invocation data is loaded from the daemon API
+          - given: |
+              The Web UI agent edit form is available
+            id: ac-web-ui-agent-edit-supports-runner
+            then: |
+              The form can set or clear the runner field without forcing a raw adapter edit
+            when: |
+              A user edits an agent's execution settings
+        tags: []
+        created: 2026-05-31T06:19:00.666Z
         notes: []
     created: 2026-02-15T00:39:20.586Z
     notes: []

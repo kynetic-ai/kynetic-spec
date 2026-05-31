@@ -1,0 +1,93 @@
+_ulid: 01KSYAZ4YAGQG4JTV4P8VAW078
+slugs:
+  - task-runner-resolver-invocation-contract
+title: Implement the runner resolver and invocation contract
+type: task
+description: >
+  What:
+
+  - Add a runner resolver module such as `src/agents/runners.ts` that exports a
+  `resolveRunnerInvocation(...)` function.
+
+  - The resolver input must include the agent definition, effective runner registry, invocation cwd,
+  session id, auto-approve setting, and base invocation env.
+
+  - The resolver output must include at minimum:
+    - `runnerId`: configured runner name or a stable legacy implicit runner id.
+    - `adapterId`: resolved existing registered adapter id.
+    - `adapter`: the `AgentAdapter` spawn contract.
+    - `cwd`: invocation cwd.
+    - `env`: complete runner-scoped env overlay for the adapter process.
+    - `extraArgs`: auto-approve or runner args to append.
+    - `diagnostics`: redacted selected-runner, source-layer, override, and selected-adapter details.
+    - `cleanup`: optional async cleanup hook.
+  - Update `src/agent-runtime/invocation.ts` so one-shot and dispatch invocations call the resolver
+  before spawning instead of directly calling `resolveAdapter(agent.adapter)`.
+
+  - Preserve legacy behavior by treating an agent without `runner` as an implicit `acp_process`
+  runner around the existing adapter/default adapter resolution.
+
+  - When both `runner` and `adapter` are present, use the runner's adapter for spawn,
+  skill-formatting, auto-approve args, and session metadata.
+
+  - Add `runner` and `adapter` to session metadata and `agent.dispatched` events for runner-backed
+  invocations.
+
+  - Keep existing `agent_type` or adapter metadata populated so older consumers continue to work.
+
+  - Add resolver unit tests for legacy adapter agents, default adapter agents, system-only
+  runner-backed agents, project-plus-system merged runner-backed agents, runner-overrides-adapter
+  precedence, unknown runner failure, unknown adapter reference failure, invalid project-layer
+  config diagnostics, and invalid effective runner diagnostics.
+
+
+  Why:
+
+  Runtime code needs one source of truth for runner selection so the daemon, CLI, sessions, and
+  dispatch all launch agents through the same harness contract.
+
+
+  How:
+
+  - Build the resolver as a pure or mostly pure function first; keep process spawning in
+  `spawnAndInitialize`.
+
+  - Return typed errors with machine-readable reason codes for unknown runner, invalid adapter,
+  invalid command reference, invalid cwd, invalid args, missing secret, and preflight failure.
+
+  - The resolver must never forward prompt content to an adapter; it only prepares a spawn contract.
+
+  - Keep adapter-specific skill reference rewriting keyed off the resolved `adapterId`.
+
+
+  Testing:
+
+  - `npm test -- --fresh tests/agent-runner-resolver.test.ts tests/agent-invocation.test.ts`
+
+  - `npm run typecheck`
+
+
+  Covers: @runner-resolution-and-preflight ac-one-shot-uses-runner-resolution,
+  ac-invalid-runner-blocks-before-prompt, ac-session-metadata-records-runner,
+  ac-dispatched-event-records-runner; @agent-runner-configuration ac-adapter-field-backcompat,
+  ac-runner-precedence-over-adapter; @runner-invocation-semantics
+  ac-skill-formatting-uses-resolved-adapter, ac-auto-approve-from-resolved-contract; existing
+  @dispatch-event-payload ac-2
+spec_ref: "@runner-resolution-and-preflight"
+plan_ref: "@plan-agent-runner-configuration-layer"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-runner-config-schema-types"
+  - "@task-agent-runner-meta-cli"
+context: []
+priority: 1
+tags:
+  - agents
+  - runtime
+  - invocation
+  - runners
+vcs_refs: []
+created_at: 2026-05-31T06:19:01.962Z
+todos: []

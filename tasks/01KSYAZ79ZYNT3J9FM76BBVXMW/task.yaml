@@ -1,0 +1,82 @@
+_ulid: 01KSYAZ79ZYNT3J9FM76BBVXMW
+slugs:
+  - task-document-runner-config-migration
+title: Document runner configuration and migration path
+type: task
+description: >
+  What:
+
+  - Add user-facing documentation for the runner layer in the appropriate docs location for agent
+  integration or configuration.
+
+  - Include examples for:
+    - legacy adapter-backed agent with no runner;
+    - named `acp_process` runner defined in system config and referenced by an agent;
+    - project runner config containing portable non-secret values only;
+    - system runner config overriding project values for the same runner;
+    - system runner config with minimal env inheritance, explicit pass list, required user-env secret binding, privacy defaults, non-secret process args, child-process cwd policy, and optional command reference;
+    - agent definition that uses `runner` while retaining `adapter` only as legacy metadata.
+  - Document migration guidance: existing projects do not need immediate changes; new projects
+  should prefer runner references for adapter-specific env/args/cwd settings, keep secret values in
+  system secret bindings, and keep project runner config limited to portable values.
+
+  - Document `kspec agent runners validate` and `kspec agent runners validate --json`, including
+  output fields, exit-status behavior, and the meaning of common failure diagnostics.
+
+  - Document the headed Claude Code sidecar as a separate runner kind that can use this plan's
+  runner contract: layered runner config, explicit env/secrets, invocation args/cwd, diagnostics,
+  dispatch compatibility, and operator visibility.
+
+  - Update generated or static agent instructions only if the runner workflow changes what task
+  workers or reviewers need to know.
+
+
+  Why:
+
+  Runner configuration adds a new operator-facing abstraction. Users need examples and migration
+  guidance that make the security and compatibility model clear.
+
+
+  How:
+
+  - Keep docs generic to kspec. Do not reference private chat context, local credential values, or
+  machine-specific paths.
+
+  - Ensure every example uses placeholder secret names and redacted values.
+
+  - If templates or skills are changed, run the required render/generate command and commit
+  generated artifacts together.
+
+
+  Testing:
+
+  - `npm run check`
+
+  - `kspec validate --refs --warnings-ok`
+
+
+  Covers: @agent-runner-configuration ac-project-runner-storage-is-repo-managed,
+  ac-system-runner-storage-is-local, ac-system-overrides-project-values,
+  ac-adapter-field-backcompat; @runner-operator-surfaces ac-runner-validation-human-output,
+  ac-runner-validation-json-output, ac-runner-validation-exit-status;
+  @runner-environment-secret-boundaries ac-project-env-literals-are-non-secret,
+  ac-secret-env-names-use-bindings, ac-secret-bindings-system-only,
+  ac-secret-values-not-stored-inline, ac-diagnostics-redact-secrets
+spec_ref: "@agent-runner-configuration"
+plan_ref: "@plan-agent-runner-configuration-layer"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-cli-runner-surfaces"
+  - "@task-web-ui-runner-surfaces"
+context: []
+priority: 3
+tags:
+  - docs
+  - agents
+  - config
+  - runners
+vcs_refs: []
+created_at: 2026-05-31T06:19:04.383Z
+todos: []

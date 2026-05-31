@@ -1,0 +1,77 @@
+_ulid: 01KSYAZ6Z7RTK8DQPJT2AA09WA
+slugs:
+  - task-web-ui-runner-surfaces
+title: Update Web UI agent and dispatch surfaces for runners
+type: task
+description: >
+  What:
+
+  - Update `packages/web-ui/src/routes/agents/+page.svelte` and the agent components under
+  `packages/web-ui/src/lib/components/agents/` so runner-backed agents show runner name and resolved
+  adapter identity.
+
+  - Update `AgentCard.svelte` to display runner validation state and redacted diagnostic summaries
+  when the daemon reports them.
+
+  - Update `ActiveInvocationRow.svelte` and dispatch status components so active and queued
+  invocations show runner identity when present.
+
+  - Update `AgentEditForm.svelte` so users can set or clear the runner field without editing raw
+  YAML and without being forced to change the adapter field.
+
+  - Preserve legacy adapter display for agents that do not have a runner.
+
+  - Add Web UI unit/component tests or E2E coverage for runner-backed agent display, legacy adapter
+  display, edit-form runner set/clear behavior, invalid runner diagnostic display, and secret
+  redaction.
+
+
+  Why:
+
+  The Web UI is an operator surface for dispatch and agent health. Runner-backed agents must be
+  visible and editable there so operators do not need to cross-check YAML while debugging
+  automation.
+
+
+  How:
+
+  - Use API-provided resolved fields; do not parse kspec.config.yaml in the browser.
+
+  - Use existing Svelte 5 patterns in the agents route and components.
+
+  - Do not display raw env maps or secret source values beyond non-secret names and redacted status.
+
+  - Use `goto()` from `$app/navigation` if this task changes URL state.
+
+
+  Testing:
+
+  - `npm test -- --fresh packages/web-ui/tests/e2e/agents.spec.ts`
+
+  - `npm run typecheck`
+
+  - `npm run check`
+
+
+  Covers: @runner-operator-surfaces ac-web-ui-agent-cards-include-runner,
+  ac-web-ui-active-invocations-include-runner, ac-web-ui-queued-invocations-include-runner,
+  ac-web-ui-agent-edit-supports-runner, ac-daemon-agent-api-includes-runner,
+  ac-daemon-dispatch-active-api-includes-runner, ac-daemon-dispatch-queued-api-includes-runner;
+  @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+spec_ref: "@runner-operator-surfaces"
+plan_ref: "@plan-agent-runner-configuration-layer"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-daemon-api-runner-surfaces"
+context: []
+priority: 3
+tags:
+  - web-ui
+  - agents
+  - dispatch
+  - runners
+vcs_refs: []
+created_at: 2026-05-31T06:19:04.039Z
+todos: []
