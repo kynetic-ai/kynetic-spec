@@ -251,7 +251,19 @@ export const KNOWN_EVENT_FIELDS: Record<string, Set<string>> = {
     "automation",
   ]),
   // Invocation event payload fields — AC: @dispatch-event-payload ac-2
-  invocation: new Set(["session_id", "agent_id", "trigger", "duration_ms", "task_ref", "outcome"]),
+  invocation: new Set([
+    "session_id",
+    "agent_id",
+    "trigger",
+    "duration_ms",
+    "task_ref",
+    "outcome",
+    // Runner-resolved invocation contract fields exposed to template variables.
+    // AC: @runner-resolution-and-preflight ac-dispatched-event-records-runner
+    "adapter_id",
+    "resolved_adapter",
+    "runner",
+  ]),
   // Session event payload fields — AC: @dispatch-event-payload ac-3, @multi-turn-session-lifecycle ac-3
   session: new Set([
     "session_id",
