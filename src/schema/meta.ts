@@ -140,6 +140,21 @@ export const AgentSchema = z.object({
   conventions: z.array(z.string()).default([]),
   // New dispatch/runtime fields (AC: @agent-definition-schema ac-1 through ac-8)
   adapter: z.string().optional(),
+  /**
+   * Optional reference to a named runner from the layered runner config
+   * (project/system layers). When set, the runner determines the resolved
+   * adapter and execution harness at invocation time; the adapter field
+   * remains accepted for backward compatibility.
+   *
+   * Runner-name resolution happens at invocation/preflight time, not at
+   * schema validation time.
+   *
+   * AC: @agent-definition-schema ac-runner-field-accepted
+   * AC: @agent-runner-configuration ac-agent-runner-reference
+   * AC: @agent-runner-configuration ac-adapter-field-backcompat
+   * AC: @agent-runner-configuration ac-runner-precedence-over-adapter
+   */
+  runner: z.string().optional(),
   dispatch: z.array(AgentDispatchRuleSchema).default([]),
   skills: z.array(z.string()).default([]),
   budget: AgentBudgetSchema.optional(),
