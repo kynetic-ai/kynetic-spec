@@ -345,6 +345,14 @@ interface InvocationState {
   acpSessionId: string | null;
   /** Resolver cleanup hook to run after session close. */
   runnerCleanup?: (() => Promise<void>) | undefined;
+  /**
+   * Runner contract redactor — scrubs resolved secret values from any
+   * diagnostic string written to session events, task notes, close reasons,
+   * block reasons, or other operator-visible surfaces.
+   *
+   * AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+   */
+  redact: (text: string) => string;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -573,6 +581,11 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
   const adapterId = contract.adapterId;
   const adapter = contract.adapter;
   const extraArgs = contract.extraArgs;
+  // Capture the runner contract's redactor so every diagnostic write below
+  // (session events, close reasons, task notes, block reasons, adapter
+  // stderr) scrubs any resolved secret value before persisting.
+  // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+  const redact = contract.redact;
 
   // Resolve timeout: option overrides agent budget (applies to total session duration)
   const timeoutMinutes = options.timeoutMinutes ?? agent.budget?.timeout_minutes ?? 30;
@@ -601,6 +614,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     agent: null,
     acpSessionId: null,
     runnerCleanup: contract.cleanup,
+    redact,
   };
 
   const invocationEnv: Record<string, string> = contract.env;
@@ -722,6 +736,10 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       // env in the child.
       // AC: @runner-environment-secret-boundaries ac-env-inheritance-policy-applied
       inheritParentEnv: contract.inheritParentEnv,
+      // Pass the resolved redactor so adapter stderr cannot leak resolved
+      // secret values to operator-visible output.
+      // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+      redact,
       clientOptions: {
         methodTimeouts: {
           "session/prompt": promptRequestTimeoutMs,
@@ -1074,12 +1092,13 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     const discardedPrompts = promptQueue.close();
     if (discardedPrompts.length > 0) {
       // AC: @multi-turn-session-lifecycle ac-16 — log discarded prompts
+      // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
       await appendSessionEvent({
         type: "session.prompts_discarded",
         data: {
           session_id: sessionId,
           discarded_count: discardedPrompts.length,
-          reason: err instanceof Error ? err.message : String(err),
+          reason: redact(err instanceof Error ? err.message : String(err)),
         },
       });
     }
@@ -1127,7 +1146,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       return {
         session: finalSession ?? session,
         outcome: "timed_out",
-        error: err.message,
+        error: redact(err.message),
         durationMs,
         turnCount,
       };
@@ -1154,7 +1173,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       return {
         session: finalSession ?? session,
         outcome: "failed",
-        error: err.message,
+        error: redact(err.message),
         durationMs,
         turnCount,
       };
@@ -1192,7 +1211,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       return {
         session: finalSession ?? session,
         outcome: "timed_out",
-        error: err.message,
+        error: redact(err.message),
         durationMs,
         turnCount,
       };
@@ -1232,7 +1251,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       return {
         session: finalSession ?? session,
         outcome: "stalled",
-        error: err.message,
+        error: redact(err.message),
         durationMs,
         turnCount,
       };
@@ -1241,7 +1260,16 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     // ─── Handle failure ──────────────────────────────────────────────────
     // AC: @agent-invocation-lifecycle ac-5
     // AC: @multi-turn-session-lifecycle ac-15
-    const errorMessage = err instanceof Error ? err.message : String(err);
+    //
+    // Scrub the raw error message through the runner contract's redactor
+    // before it touches any operator-visible surface (session event, session
+    // close reason, task note, block reason, returned InvocationResult).
+    // Spawn errors and ACP RPC errors can include adapter-side text that
+    // happens to contain a resolved secret literal — redaction at the
+    // boundary blocks the leak regardless of the failure origin.
+    // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+    const rawErrorMessage = err instanceof Error ? err.message : String(err);
+    const errorMessage = redact(rawErrorMessage);
 
     await appendSessionEvent({
       type: "agent.failed",

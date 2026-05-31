@@ -28,6 +28,14 @@ export interface JsonRpcFramingOptions {
   stdin?: NodeJS.ReadableStream;
   /** Output stream (default: process.stdout) */
   stdout?: NodeJS.WritableStream;
+  /**
+   * Optional redactor applied to JSON-RPC error messages before they are
+   * logged to `console.error`. Used by runner-backed invocations to scrub
+   * resolved secret values out of adapter-returned RPC error text.
+   *
+   * AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+   */
+  redact?: (text: string) => string;
 }
 
 /**
@@ -86,6 +94,7 @@ export class JsonRpcFraming extends EventEmitter {
   private stdout: NodeJS.WritableStream;
   private buffer = "";
   private closed = false;
+  private redact: (text: string) => string;
 
   constructor(options: JsonRpcFramingOptions = {}) {
     super();
@@ -97,6 +106,11 @@ export class JsonRpcFraming extends EventEmitter {
     };
     this.stdin = options.stdin ?? process.stdin;
     this.stdout = options.stdout ?? process.stdout;
+    // Default is a passthrough; runner-backed invocations install the
+    // contract redactor so adapter-returned error messages cannot leak
+    // resolved secret values into operator-visible stderr.
+    // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+    this.redact = options.redact ?? ((text: string) => text);
 
     // Set up stdin to receive data
     if ("setEncoding" in this.stdin) {
@@ -374,8 +388,14 @@ export class JsonRpcFraming extends EventEmitter {
         pending.options?.silentMethodNotFound && error.error.code === METHOD_NOT_FOUND;
 
       if (!isSilentMethodNotFound) {
+        // Redact resolved secret values from the message before logging to
+        // parent stderr. The rejected Error message is left as-is so the
+        // outer invocation catch block sees the raw text; that catch block
+        // applies its own redactor before persisting to any session event,
+        // task note, or close reason.
+        // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
         console.error(
-          `JSON-RPC error: ${error.error.message} (code: ${error.error.code}, method: ${pending.method})`,
+          `JSON-RPC error: ${this.redact(error.error.message)} (code: ${error.error.code}, method: ${pending.method})`,
         );
       }
 
