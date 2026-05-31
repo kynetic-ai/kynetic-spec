@@ -548,3 +548,259 @@ describe("CLI: runner precedence over adapter", () => {
     expect(data.adapter).toBe("codex-acp");
   });
 });
+
+// ─── agent run --dry-run reports runner process invocation contract ─────────
+
+/**
+ * Shape of the `runner_invocation` block surfaced by `kspec agent run --dry-run`.
+ * Mirrors `RunnerInvocationSummary` from `src/agents/runners.ts` minus the
+ * implementation-level type aliases — tests only assert on the shape that
+ * crosses the JSON output boundary.
+ */
+interface DryRunSummary {
+  resolved: true;
+  summary: {
+    runner: { name: string | null; source: string };
+    adapter: { id: string; source: string };
+    source_layer: string;
+    overrides: string[];
+    process: {
+      command: string;
+      command_source: string;
+      cwd: string;
+      cwd_source: string;
+      runner_args: string[];
+      runner_args_source: string;
+      auto_approve_args: string[];
+    };
+    env_policy: {
+      inherit_parent_env: boolean;
+      inherit: string | null;
+      pass_keys: string[];
+      pass_source: string;
+      set_keys: string[];
+      set_keys_origin: Record<string, string>;
+      secret_keys: string[];
+      secret_source: string;
+    };
+    preflight: { status: string; reason?: string; message?: string; resolved?: string };
+  };
+}
+
+interface DryRunSummaryError {
+  resolved: false;
+  error: { reason: string; message: string; details?: Record<string, unknown> };
+}
+
+type DryRunPayload = {
+  dry_run: true;
+  adapter: string;
+  runner_invocation: DryRunSummary | DryRunSummaryError;
+};
+
+describe("CLI: agent run --dry-run runner process invocation contract", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-agent-dry-run-process-");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  // AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+  // AC: @runner-process-invocation-inputs ac-invocation-diagnostics-identify-inputs
+  it("reports the runner-configured command reference, sources, and env policy", () => {
+    const fakeExecutable = path.join(testDir, "fake-runner-binary");
+    fsSync.writeFileSync(fakeExecutable, "#!/bin/sh\nexit 0\n", "utf-8");
+    fsSync.chmodSync(fakeExecutable, 0o755);
+
+    writeAgentListProject(testDir, [
+      {
+        _ulid: testUlid("AGNT"),
+        id: "proc-diag",
+        name: "Process Diagnostic",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        runner: "configured-runner",
+        auto_approve: false,
+      },
+    ]);
+    writeSystemRunnersForProject(testDir, {
+      "configured-runner": {
+        kind: "acp_process",
+        adapter: "claude-agent-acp",
+        process: {
+          executable: fakeExecutable,
+          args: ["--scope=runner"],
+          cwd: testDir,
+        },
+        env: {
+          inherit: "none",
+          pass: ["TZ"],
+          set: { KSPEC_CHILD_FLAG: "1" },
+          secrets: {
+            ANTHROPIC_API_KEY: { source: "user_env", required: false },
+          },
+        },
+      },
+    });
+
+    const data = kspecJson<DryRunPayload>('agent run proc-diag --dry-run "run me"', testDir);
+    expect(data.dry_run).toBe(true);
+    expect(data.runner_invocation.resolved).toBe(true);
+    if (!data.runner_invocation.resolved) throw new Error("unreachable");
+    const s = data.runner_invocation.summary;
+
+    // Runner identity + adapter wired through the runner.
+    expect(s.runner.name).toBe("configured-runner");
+    expect(s.runner.source).toBe("agent.runner");
+    expect(s.adapter.id).toBe("claude-agent-acp");
+    expect(s.adapter.source).toBe("runner");
+
+    // Process inputs: configured command + args + cwd, each with source attribution.
+    expect(s.process.command).toBe(fakeExecutable);
+    expect(s.process.command_source).toBe("runner.system");
+    expect(s.process.cwd).toBe(testDir);
+    expect(s.process.cwd_source).toBe("runner.system");
+    expect(s.process.runner_args).toEqual(["--scope=runner"]);
+    expect(s.process.runner_args_source).toBe("runner.system");
+
+    // Env policy reports key names + inheritance policy without exposing values.
+    expect(s.env_policy.inherit).toBe("none");
+    expect(s.env_policy.inherit_parent_env).toBe(false);
+    expect(s.env_policy.pass_keys).toEqual(["TZ"]);
+    expect(s.env_policy.set_keys).toEqual(["KSPEC_CHILD_FLAG"]);
+    expect(s.env_policy.secret_keys).toEqual(["ANTHROPIC_API_KEY"]);
+
+    // Secret values are never carried into the diagnostic surface.
+    const wholeOutput = JSON.stringify(data);
+    expect(wholeOutput).not.toContain("user_env_value");
+    // Set key values must not leak either — only key names.
+    expect(wholeOutput).not.toMatch(/KSPEC_CHILD_FLAG.*1.*"value"/i);
+
+    // Preflight outcome reflects the executable check the spawn would see.
+    expect(s.preflight.status).toBe("ok");
+    expect(s.preflight.resolved).toBe(fakeExecutable);
+  });
+
+  // AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+  // AC: @runner-process-invocation-inputs ac-invocation-diagnostics-identify-inputs
+  it("reports a typed unspawnable preflight diagnostic when the configured executable is missing", () => {
+    const missingExecutable = path.join(testDir, "no-such-runner");
+
+    writeAgentListProject(testDir, [
+      {
+        _ulid: testUlid("AGNT"),
+        id: "proc-unspawnable",
+        name: "Process Unspawnable",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        runner: "broken-runner",
+        auto_approve: false,
+      },
+    ]);
+    writeSystemRunnersForProject(testDir, {
+      "broken-runner": {
+        kind: "acp_process",
+        adapter: "claude-agent-acp",
+        process: { executable: missingExecutable },
+      },
+    });
+
+    const data = kspecJson<DryRunPayload>(
+      'agent run proc-unspawnable --dry-run "preview"',
+      testDir,
+    );
+    expect(data.runner_invocation.resolved).toBe(true);
+    if (!data.runner_invocation.resolved) throw new Error("unreachable");
+    const s = data.runner_invocation.summary;
+
+    // The contract still identifies the configured command so the operator
+    // sees what the spawn would attempt — but the preflight block flips to
+    // unspawnable with a typed reason instead of leaking a generic spawn ENOENT.
+    expect(s.process.command).toBe(missingExecutable);
+    expect(s.process.command_source).toBe("runner.system");
+    expect(s.preflight.status).toBe("unspawnable");
+    expect(s.preflight.reason).toBe("not_found");
+    expect(s.preflight.message).toContain(missingExecutable);
+  });
+
+  // AC: @runner-process-invocation-inputs ac-invocation-diagnostics-identify-inputs
+  it("reports the implicit/legacy path when no runner is configured", () => {
+    writeAgentListProject(testDir, [
+      {
+        _ulid: testUlid("AGNT"),
+        id: "legacy-proc",
+        name: "Legacy",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        adapter: "claude-agent-acp",
+        auto_approve: false,
+      },
+    ]);
+
+    const data = kspecJson<DryRunPayload>('agent run legacy-proc --dry-run "preview"', testDir);
+    expect(data.runner_invocation.resolved).toBe(true);
+    if (!data.runner_invocation.resolved) throw new Error("unreachable");
+    const s = data.runner_invocation.summary;
+
+    expect(s.runner.name).toBeNull();
+    expect(s.runner.source).toBe("implicit");
+    expect(s.source_layer).toBe("implicit");
+    // Implicit path: command source falls back to the adapter registry.
+    expect(s.process.command_source).toBe("adapter");
+    expect(s.process.cwd_source).toBe("invocation");
+    // Env policy collapses to the implicit (host-inherited) shape.
+    expect(s.env_policy.inherit).toBeNull();
+    expect(s.env_policy.inherit_parent_env).toBe(true);
+    expect(s.env_policy.set_keys).toEqual([]);
+    expect(s.env_policy.secret_keys).toEqual([]);
+    // No runner-configured executable to preflight.
+    expect(s.preflight.status).toBe("skipped");
+  });
+
+  // AC: @runner-process-invocation-inputs ac-runner-args-extend-acp-invocation
+  it("splits auto-approve args from runner.process.args so each segment's source is identifiable", () => {
+    const fakeExecutable = path.join(testDir, "fake-runner-args");
+    fsSync.writeFileSync(fakeExecutable, "#!/bin/sh\nexit 0\n", "utf-8");
+    fsSync.chmodSync(fakeExecutable, 0o755);
+
+    writeAgentListProject(testDir, [
+      {
+        _ulid: testUlid("AGNT"),
+        id: "split-args",
+        name: "Split Args",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        runner: "args-runner",
+        auto_approve: true,
+      },
+    ]);
+    writeSystemRunnersForProject(testDir, {
+      "args-runner": {
+        kind: "acp_process",
+        adapter: "claude-agent-acp",
+        process: {
+          executable: fakeExecutable,
+          args: ["--runner-flag", "value"],
+        },
+      },
+    });
+
+    const data = kspecJson<DryRunPayload>('agent run split-args --dry-run "preview"', testDir);
+    expect(data.runner_invocation.resolved).toBe(true);
+    if (!data.runner_invocation.resolved) throw new Error("unreachable");
+    const s = data.runner_invocation.summary;
+
+    // Runner-process args are reported under their own source attribution.
+    expect(s.process.runner_args).toEqual(["--runner-flag", "value"]);
+    expect(s.process.runner_args_source).toBe("runner.system");
+    // Auto-approve args from the adapter never get mislabeled as runner args
+    // — the segments are split deterministically.
+    for (const arg of s.process.auto_approve_args) {
+      expect(s.process.runner_args).not.toContain(arg);
+    }
+  });
+});

@@ -38,6 +38,7 @@ import { EventBus, type EventBusOptions } from "./event-bus.js";
 import { interpolateTemplate, rewriteSkillReferencesForAdapter } from "./prompts.js";
 import { getAdapter } from "../agents/adapters.js";
 import {
+  preflightRunnerInvocation,
   resolveRunnerInvocation,
   RunnerResolutionError,
   type RunnerInvocation,
@@ -2786,6 +2787,33 @@ export class DispatchEngine {
         }
         return false;
       }
+
+      // AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+      // Run the executable preflight at dispatch preflight time so an
+      // unspawnable runner-configured command is treated as a deterministic
+      // configuration error (skip + task note) instead of an invocation
+      // failure that the retry path keeps re-attempting. Without this step,
+      // the unspawnable_command exception would only fire inside
+      // runInvocation, where the dispatch catch path retries it like any
+      // transient error.
+      try {
+        await preflightRunnerInvocation(preflightContract);
+      } catch (preflightErr) {
+        const reason =
+          preflightErr instanceof RunnerResolutionError ? preflightErr.reason : "preflight_failure";
+        const message = preflightErr instanceof Error ? preflightErr.message : String(preflightErr);
+        console.error(
+          `[dispatch] Runner executable preflight failed for agent "${agentId}" (${reason}). Skipping invocation. ${message}`,
+        );
+        if (this.kspecCliPath) {
+          await this._addTaskNote(
+            entry.change.taskRef,
+            `[AGENT-SKIP] Runner executable preflight failed for agent "${agentId}" (${reason}). ${message}`,
+          );
+        }
+        return false;
+      }
+
       const adapterId = preflightContract.adapterId;
       const adapter = preflightContract.adapter;
       const runnerId = preflightContract.runnerId;

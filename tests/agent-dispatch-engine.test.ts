@@ -1905,6 +1905,93 @@ describe("Dispatch runner resolution preflight", () => {
       vi.restoreAllMocks();
     }
   });
+
+  // AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+  // AC: @runner-process-invocation-inputs ac-invocation-diagnostics-identify-inputs
+  //
+  // Without dispatch-level executable preflight, an unspawnable runner-
+  // configured command would only surface inside runInvocation, where the
+  // dispatch retry path would treat it as a transient invocation failure and
+  // re-attempt it on backoff. Dispatch must run the typed preflight up front
+  // so deterministic runner configuration errors land in the AGENT-SKIP path
+  // (skip + task note + no retry) rather than the retry loop.
+  it("skips invocation with a typed unspawnable_command diagnostic when the runner executable cannot be spawned", async () => {
+    const agent = makeTestAgent({
+      id: "unspawnable-runner-agent",
+      runner: "unspawnable-runner",
+      adapter: undefined,
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const missingExecutable = path.join(testDir, "no-such-runner-binary");
+
+    const captureFile = path.join(testDir, "kspec-runner-unspawnable-preflight-capture.json");
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    try {
+      vi.spyOn(runnerConfigModule, "resolveEffectiveRunners").mockResolvedValue({
+        project: { config: null, path: "", loaded: false, issues: null },
+        system: { config: null, path: "", loaded: false, issues: null },
+        registry: mergeRunnerConfigs(null, {
+          runners: {
+            "unspawnable-runner": {
+              kind: "acp_process",
+              adapter: "claude-agent-acp",
+              process: { executable: missingExecutable },
+            },
+          },
+        }),
+      });
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+      });
+      (engine as unknown as { running: boolean }).running = true;
+
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      const runSpy = vi.spyOn(invocationModule, "runInvocation");
+
+      const taskRef = `@${testUlid("TASK")}`;
+      const change = makeStateChange({
+        toStatus: "pending",
+        fromStatus: "in_progress",
+        taskRef,
+      });
+      const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
+
+      type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
+      const spawned = await (engine as unknown as EngineInternal)._spawnInvocation(agent, entry);
+
+      // Dispatch skipped the invocation entirely — runInvocation never ran,
+      // which means the retry path never saw a runner configuration error.
+      expect(spawned).toBe(false);
+      expect(runSpy).not.toHaveBeenCalled();
+      // Retry counter must NOT have advanced: this is a deterministic
+      // configuration error, not a transient invocation failure.
+      expect(entry.retryCount).toBe(0);
+
+      const errorMessage = errorSpy.mock.calls.map((c) => String(c[0])).join("\n");
+      expect(errorMessage).toContain("unspawnable_command");
+      expect(errorMessage).toContain(missingExecutable);
+
+      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
+      const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
+      expect(noteCall, "expected dispatch to add an AGENT-SKIP task note").toBeDefined();
+      const noteText = noteCall!.args.join(" ");
+      expect(noteText).toContain("AGENT-SKIP");
+      expect(noteText).toContain("unspawnable_command");
+      expect(noteText).toContain(missingExecutable);
+
+      errorSpy.mockRestore();
+      runSpy.mockRestore();
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+      vi.restoreAllMocks();
+    }
+  });
 });
 
 // ─── AC-11: Graceful shutdown ─────────────────────────────────────────────────

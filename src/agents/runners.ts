@@ -37,6 +37,8 @@
  * AC: @runner-environment-secret-boundaries ac-required-secret-missing-blocks
  */
 
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
 import type { Agent } from "../schema/meta.js";
 import { getAdapter, resolveAdapter, type AgentAdapter } from "./adapters.js";
 import { SANITIZED_ENV_VARS } from "./spawner.js";
@@ -44,6 +46,7 @@ import { createRedactor } from "./redaction.js";
 import type {
   EffectiveRunner,
   EffectiveRunnerRegistry,
+  RunnerEnvInherit,
   RunnerFieldOrigin,
 } from "./runner-config.js";
 
@@ -97,6 +100,7 @@ export type RunnerResolutionReason =
   | "unknown_runner"
   | "invalid_adapter"
   | "invalid_command_reference"
+  | "unspawnable_command"
   | "invalid_cwd"
   | "invalid_args"
   | "missing_secret"
@@ -168,6 +172,28 @@ export interface RunnerInvocationDiagnostics {
   fieldOrigins?: {
     kind: RunnerFieldOrigin;
     adapter: RunnerFieldOrigin;
+    /**
+     * Origin of `process.executable` (the configured command reference). `null`
+     * when the runner did not declare an executable and the adapter's
+     * registered command is used.
+     *
+     * AC: @runner-process-invocation-inputs ac-invocation-diagnostics-identify-inputs
+     */
+    processExecutable: RunnerFieldOrigin | null;
+    /**
+     * Origin of `process.args`. `null` when the runner did not declare extra
+     * arguments.
+     *
+     * AC: @runner-process-invocation-inputs ac-invocation-diagnostics-identify-inputs
+     */
+    processArgs: RunnerFieldOrigin | null;
+    /**
+     * Origin of `process.cwd`. `null` when the runner did not override the
+     * invocation cwd.
+     *
+     * AC: @runner-process-invocation-inputs ac-invocation-diagnostics-identify-inputs
+     */
+    processCwd: RunnerFieldOrigin | null;
     envInherit: RunnerFieldOrigin;
     envPass: RunnerFieldOrigin;
     /** Per-key origin map for env.set. Values are never recorded. */
@@ -533,6 +559,9 @@ function buildRunnerContract(inputs: RunnerContractInputs): RunnerInvocation {
   const fieldOrigins: RunnerInvocationDiagnostics["fieldOrigins"] = {
     kind: runner.sources.kind,
     adapter: runner.sources.adapter,
+    processExecutable: runner.sources.processExecutable,
+    processArgs: runner.sources.processArgs,
+    processCwd: runner.sources.processCwd,
     envInherit: runner.sources.envInherit,
     envPass: runner.sources.envPass,
     envSetKeys: { ...runner.sources.envSet.keys },
@@ -815,4 +844,444 @@ function computeSourceLayer(runner: EffectiveRunner): SourceLayerDiagnostic {
 
 function noopCleanup(): Promise<void> {
   return Promise.resolve();
+}
+
+// ─── Executable preflight ────────────────────────────────────────────────────
+
+/**
+ * Reason an executable could not be confirmed spawnable. Stable identifiers
+ * so callers (CLI, dispatch, daemon, Web UI) can format guidance uniformly.
+ */
+export type PreflightUnspawnableReason = "not_found" | "not_executable" | "timeout";
+
+export type PreflightExecutableResult =
+  | { spawnable: true; resolved: string }
+  | { spawnable: false; reason: PreflightUnspawnableReason; message: string };
+
+export interface PreflightExecutableOptions {
+  /**
+   * Working directory used to resolve relative executable paths. Defaults to
+   * `process.cwd()` so callers that do not pass a cwd still resolve sanely.
+   */
+  cwd?: string;
+  /**
+   * `PATH`-shaped string consulted when the command is a bare name. Defaults
+   * to `process.env.PATH`. Tests pass a controlled value to avoid host-PATH
+   * dependence.
+   */
+  searchPath?: string;
+  /**
+   * Hard timeout for the spawnability check in milliseconds. The check
+   * resolves to `{ spawnable: false, reason: "timeout" }` when the underlying
+   * filesystem probes do not complete within this window. Defaults to
+   * 1500ms — fast enough to keep dry-run interactive, long enough to cover
+   * slow filesystems and network mounts.
+   */
+  timeoutMs?: number;
+}
+
+const DEFAULT_PREFLIGHT_TIMEOUT_MS = 1500;
+
+/**
+ * Probe whether `command` can be spawned, bounded by a timeout.
+ *
+ * - Absolute paths and paths with a directory separator are resolved against
+ *   `cwd` (when relative) and then checked for the executable bit.
+ * - Bare command names are looked up against `PATH` segment-by-segment until
+ *   an executable hit is found.
+ * - The whole probe is wrapped in a single timeout race; if filesystem
+ *   probes hang (e.g., dead network mount), the result is the `timeout`
+ *   diagnostic — never an indefinite hang.
+ *
+ * AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+ */
+export async function preflightExecutable(
+  command: string,
+  options: PreflightExecutableOptions = {},
+): Promise<PreflightExecutableResult> {
+  const timeoutMs = options.timeoutMs ?? DEFAULT_PREFLIGHT_TIMEOUT_MS;
+  const cwd = options.cwd ?? process.cwd();
+  const searchPath = options.searchPath ?? process.env.PATH ?? "";
+
+  const work = (async (): Promise<PreflightExecutableResult> => {
+    if (!command) {
+      return {
+        spawnable: false,
+        reason: "not_found",
+        message: "Executable reference is empty",
+      };
+    }
+
+    if (path.isAbsolute(command) || command.includes(path.sep)) {
+      const resolved = path.isAbsolute(command) ? command : path.resolve(cwd, command);
+      return checkAccess(resolved);
+    }
+
+    const segments = searchPath.split(path.delimiter).filter((s) => s.length > 0);
+    for (const segment of segments) {
+      const candidate = path.join(segment, command);
+      try {
+        await fs.access(candidate, fs.constants.X_OK);
+        return { spawnable: true, resolved: candidate };
+      } catch {
+        // continue searching the next PATH segment
+      }
+    }
+    return {
+      spawnable: false,
+      reason: "not_found",
+      message: `Command "${command}" not found in PATH`,
+    };
+  })();
+
+  return Promise.race([work, timeoutResult(timeoutMs)]);
+}
+
+async function checkAccess(resolvedPath: string): Promise<PreflightExecutableResult> {
+  try {
+    await fs.access(resolvedPath, fs.constants.X_OK);
+    return { spawnable: true, resolved: resolvedPath };
+  } catch (err) {
+    const code = (err as NodeJS.ErrnoException).code;
+    if (code === "ENOENT") {
+      return {
+        spawnable: false,
+        reason: "not_found",
+        message: `Executable not found: ${resolvedPath}`,
+      };
+    }
+    if (code === "EACCES") {
+      return {
+        spawnable: false,
+        reason: "not_executable",
+        message: `Executable bit not set on: ${resolvedPath}`,
+      };
+    }
+    return {
+      spawnable: false,
+      reason: "not_executable",
+      message: `Cannot probe executable ${resolvedPath}: ${(err as Error).message}`,
+    };
+  }
+}
+
+function timeoutResult(ms: number): Promise<PreflightExecutableResult> {
+  const diagnostic: PreflightExecutableResult = {
+    spawnable: false,
+    reason: "timeout",
+    message: `Executable spawnability check timed out after ${ms}ms`,
+  };
+  // A non-positive budget short-circuits to the timeout diagnostic so callers
+  // that want to assert "no probe time" get a deterministic typed result
+  // without racing the underlying fs.access.
+  if (ms <= 0) return Promise.resolve(diagnostic);
+  return new Promise<PreflightExecutableResult>((resolve) => {
+    const t = setTimeout(() => resolve(diagnostic), ms);
+    // Don't keep the event loop alive for the timer itself.
+    if (typeof t.unref === "function") t.unref();
+  });
+}
+
+/**
+ * Default PATH the C library (`execvp` / `posix_spawnp`) falls back to when
+ * the spawned process env contains no `PATH` key. On Linux/macOS this is
+ * `_PATH_DEFPATH` from `<paths.h>` — typically `/usr/bin:/bin`. Mirroring it
+ * here keeps bare-command preflight in parity with `child_process.spawn`:
+ * when a runner with `env.inherit: none` and no `env.set.PATH` produces a
+ * PATH-less child env, spawn would still resolve `sh` / `cat` / `ls`
+ * because the libc default path is searched. Treating "PATH absent" as
+ * "search nothing" was rejecting commands the child could actually spawn.
+ *
+ * Windows uses a different lookup model (CreateProcess + PATHEXT) that the
+ * preflight probe does not model. Returning an empty default there keeps
+ * the bare-name probe conservative ("not found" rather than misreporting).
+ */
+const POSIX_DEFAULT_SEARCH_PATH = "/usr/bin:/bin";
+
+function defaultSearchPath(): string {
+  return process.platform === "win32" ? "" : POSIX_DEFAULT_SEARCH_PATH;
+}
+
+/**
+ * Compute the PATH the spawned child will see, mirroring `spawnAgent`'s env
+ * composition exactly. The runner-backed path uses the contract env verbatim
+ * (`inheritParentEnv: false`), so PATH lookup for bare commands must use that
+ * same env — not `process.env.PATH`. Otherwise preflight can pass when spawn
+ * will fail, or fail when spawn would succeed, whenever the runner's
+ * `env.inherit` / `env.set.PATH` differs from the daemon's host PATH.
+ *
+ * The distinction between "PATH key absent" and "PATH set to empty string"
+ * is preserved end-to-end: an absent PATH triggers the spawn-time libc
+ * default path (`POSIX_DEFAULT_SEARCH_PATH`), while an explicitly empty PATH
+ * searches no segments — matching what Node's spawn actually does in each
+ * case.
+ */
+function resolveInvocationSearchPath(invocation: RunnerInvocation): string {
+  // Precedence (low → high) must match spawner.ts:
+  //   inheritedHostEnv (only when inheritParentEnv) → adapter.env → contract.env
+  let pathValue: string | undefined;
+  if (invocation.inheritParentEnv) {
+    pathValue = process.env.PATH;
+  }
+  const adapterPath = invocation.adapter.env?.PATH;
+  if (adapterPath !== undefined) pathValue = adapterPath;
+  const contractPath = invocation.env.PATH;
+  if (contractPath !== undefined) pathValue = contractPath;
+  // undefined → no env source set PATH → mirror the libc default path that
+  //   `child_process.spawn` (`posix_spawnp` / `execvp`) consults when PATH
+  //   is absent from the spawned process env.
+  // "" → PATH explicitly set to empty → spawn searches no segments, so
+  //   preflight must do the same; preserve the empty string verbatim.
+  return pathValue ?? defaultSearchPath();
+}
+
+/**
+ * Probe the runner invocation contract's executable using the same env-aware
+ * PATH lookup the spawn path would consult. Returns `null` when the runner
+ * did not configure an executable (implicit/legacy path) so the caller can
+ * record the skip without forwarding a synthetic outcome. Never throws —
+ * use `preflightRunnerInvocation` for the throwing variant.
+ *
+ * AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+ */
+export async function probeRunnerInvocationExecutable(
+  invocation: RunnerInvocation,
+  options: PreflightExecutableOptions = {},
+): Promise<PreflightExecutableResult | null> {
+  const fromConfig = invocation.diagnostics.fieldOrigins?.processExecutable;
+  if (!fromConfig) return null;
+  return preflightExecutable(invocation.adapter.command, {
+    cwd: invocation.cwd,
+    searchPath: resolveInvocationSearchPath(invocation),
+    ...options,
+  });
+}
+
+/**
+ * Preflight the resolved runner invocation contract. Runs the executable
+ * spawnability probe and throws `RunnerResolutionError("unspawnable_command")`
+ * when the configured command cannot be spawned. No-op on the implicit/legacy
+ * path or when the resolved adapter command did not come from runner config.
+ *
+ * Bare-command lookup uses the invocation env's PATH (the same PATH Node's
+ * `child_process.spawn` will consult given the contract env), not the daemon
+ * host's PATH. Runner-backed invocations spawn with `inheritParentEnv: false`,
+ * so a runner that scopes PATH via `env.inherit: none` + `env.set.PATH` is
+ * what the child actually sees at spawn — preflight mirrors that.
+ *
+ * AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+ * AC: @runner-process-invocation-inputs ac-invocation-diagnostics-identify-inputs
+ */
+export async function preflightRunnerInvocation(
+  invocation: RunnerInvocation,
+  options: PreflightExecutableOptions = {},
+): Promise<void> {
+  const result = await probeRunnerInvocationExecutable(invocation, options);
+  if (!result || result.spawnable) return;
+
+  throw new RunnerResolutionError(
+    "unspawnable_command",
+    `Runner "${invocation.runnerId ?? "(implicit)"}" configured executable ` +
+      `"${invocation.adapter.command}" is not spawnable: ${result.message}.`,
+    {
+      ...(invocation.runnerId ? { runner: invocation.runnerId } : {}),
+      adapter: invocation.adapterId,
+      command: invocation.adapter.command,
+      unspawnable_reason: result.reason,
+    },
+  );
+}
+
+// ─── Runner invocation summary ───────────────────────────────────────────────
+
+/**
+ * Source labels for each process input. Distinguishes runner-config layers
+ * from non-runner sources (adapter registry, invocation cwd, auto-approve).
+ * Used by diagnostic surfaces (CLI dry-run, dispatch logs, Web UI) to tell
+ * operators where each effective input came from without exposing env values.
+ */
+export type ProcessInputSource =
+  | "runner.project"
+  | "runner.system"
+  | "runner.merged"
+  | "adapter"
+  | "invocation"
+  | "auto_approve"
+  | "none";
+
+/**
+ * Redacted summary of the runner-resolved process invocation contract.
+ *
+ * Designed to feed structured diagnostic surfaces (CLI `--dry-run`, dispatch
+ * preflight logs, daemon telemetry, Web UI) without exposing env values,
+ * secret material, or prompt content. Env entries are reported as key names
+ * only — values never leave the contract.
+ *
+ * AC: @runner-process-invocation-inputs ac-invocation-diagnostics-identify-inputs
+ */
+export interface RunnerInvocationSummary {
+  /** Selected runner identity. `name: null` on the implicit/legacy path. */
+  runner: {
+    name: string | null;
+    source: SelectedRunnerDiagnostic["source"];
+  };
+  /** Selected adapter identity and where it came from. */
+  adapter: {
+    id: string;
+    source: SelectedAdapterDiagnostic["source"];
+  };
+  /** Which config layer(s) supplied the effective runner config. */
+  source_layer: SourceLayerDiagnostic;
+  /** Field paths the system layer overrode from the project layer. */
+  overrides: readonly string[];
+  /** Process inputs that will be applied around the spawned ACP adapter. */
+  process: {
+    /** Effective executable path or bare command name to spawn. */
+    command: string;
+    /** Where the command came from. */
+    command_source: ProcessInputSource;
+    /** Effective working directory for the child process. */
+    cwd: string;
+    /** Where the cwd came from. */
+    cwd_source: ProcessInputSource;
+    /** Extra arguments contributed by the runner's `process.args`. */
+    runner_args: readonly string[];
+    /** Where the runner args came from. `none` when no runner args were appended. */
+    runner_args_source: ProcessInputSource;
+    /** Auto-approve args contributed by the adapter when auto-approve is on. */
+    auto_approve_args: readonly string[];
+  };
+  /** Environment policy applied to the spawn. Never contains env values. */
+  env_policy: {
+    /**
+     * Whether the spawner additionally inherits the host process env.
+     * `true` on the implicit/legacy path, `false` on the runner-backed path.
+     */
+    inherit_parent_env: boolean;
+    /** Host inheritance policy (runner-backed only). */
+    inherit: RunnerEnvInherit | null;
+    /** Allow-listed host env keys to pass through (key names only). */
+    pass_keys: readonly string[];
+    /** Where the pass list came from. `none` when no pass entries are set. */
+    pass_source: ProcessInputSource;
+    /** Keys whose values were set literally by the runner config. */
+    set_keys: readonly string[];
+    /** Per-key origin of `env.set` entries. */
+    set_keys_origin: Readonly<Record<string, RunnerFieldOrigin>>;
+    /** Names of declared secret bindings (variable names only). */
+    secret_keys: readonly string[];
+    /** Where the secret bindings came from. `none` when no secrets are declared. */
+    secret_source: ProcessInputSource;
+  };
+  /** Preflight outcome for the configured executable, when available. */
+  preflight: {
+    status: "ok" | "unspawnable" | "skipped";
+    /** Typed reason for unspawnable outcome. */
+    reason?: PreflightUnspawnableReason;
+    /** Human-readable diagnostic message for unspawnable outcome. */
+    message?: string;
+    /** Resolved absolute path when status is `ok`. */
+    resolved?: string;
+  };
+}
+
+function originToProcessSource(
+  origin: RunnerFieldOrigin | null,
+  fallback: ProcessInputSource,
+): ProcessInputSource {
+  if (origin === "project") return "runner.project";
+  if (origin === "system") return "runner.system";
+  // origin === "default" or null → not contributed by runner config; the
+  // caller's fallback (adapter, invocation, none, ...) is the real source.
+  return fallback;
+}
+
+/**
+ * Build a redacted, JSON-safe summary of the resolved runner invocation
+ * contract. Intended for diagnostic surfaces that must identify the runner
+ * name, resolved adapter, command source, cwd policy, argument source, and
+ * env policy without exposing env values or secrets.
+ *
+ * When `effectiveRunner` is supplied (the lookup from the registry that
+ * produced this contract), the summary fills in the runner's full env policy.
+ * On the implicit/legacy path or when the runner is not available, env policy
+ * fields collapse to their non-runner defaults.
+ *
+ * When `preflight` is supplied, the summary records the preflight outcome.
+ * Callers should run `preflightRunnerInvocation` (or `preflightExecutable`
+ * directly) and pass the result so the summary reflects the actual spawnability
+ * check the spawn path will see.
+ *
+ * AC: @runner-process-invocation-inputs ac-invocation-diagnostics-identify-inputs
+ * AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+ */
+export function summarizeRunnerInvocation(
+  contract: RunnerInvocation,
+  options: {
+    effectiveRunner?: EffectiveRunner;
+    preflight?:
+      | { status: "ok"; resolved: string }
+      | { status: "unspawnable"; reason: PreflightUnspawnableReason; message: string }
+      | { status: "skipped" };
+  } = {},
+): RunnerInvocationSummary {
+  const fieldOrigins = contract.diagnostics.fieldOrigins;
+  const runner = options.effectiveRunner;
+
+  // The contract's extraArgs is [autoApproveArgs..., runner.process.args...]
+  // when runner-backed, or [autoApproveArgs...] alone on the implicit/legacy
+  // path. Split it back so each segment can be attributed to its source. When
+  // no runner is supplied, assume everything is auto-approve so the runner
+  // segment is empty rather than mislabeling adapter args as runner args.
+  const runnerArgsLen = runner?.process.args.length ?? 0;
+  const autoApproveSegmentLen = Math.max(0, contract.extraArgs.length - runnerArgsLen);
+  const splitAutoApproveArgs: readonly string[] = contract.extraArgs.slice(
+    0,
+    autoApproveSegmentLen,
+  );
+  const splitRunnerArgs: readonly string[] = contract.extraArgs.slice(autoApproveSegmentLen);
+
+  const passKeys: readonly string[] = runner?.env.pass ?? [];
+  const setKeys: readonly string[] = runner ? Object.keys(runner.env.set) : [];
+  const setKeysOrigin: Record<string, RunnerFieldOrigin> = fieldOrigins?.envSetKeys
+    ? { ...fieldOrigins.envSetKeys }
+    : {};
+  const secretKeys: readonly string[] = runner ? Object.keys(runner.env.secrets) : [];
+
+  return {
+    runner: {
+      name: contract.diagnostics.selectedRunner.name,
+      source: contract.diagnostics.selectedRunner.source,
+    },
+    adapter: {
+      id: contract.diagnostics.selectedAdapter.id,
+      source: contract.diagnostics.selectedAdapter.source,
+    },
+    source_layer: contract.diagnostics.sourceLayer,
+    overrides: [...contract.diagnostics.overrides],
+    process: {
+      command: contract.adapter.command,
+      command_source: originToProcessSource(fieldOrigins?.processExecutable ?? null, "adapter"),
+      cwd: contract.cwd,
+      cwd_source: originToProcessSource(fieldOrigins?.processCwd ?? null, "invocation"),
+      runner_args: [...splitRunnerArgs],
+      runner_args_source: originToProcessSource(fieldOrigins?.processArgs ?? null, "none"),
+      auto_approve_args: [...splitAutoApproveArgs],
+    },
+    env_policy: {
+      inherit_parent_env: contract.inheritParentEnv,
+      inherit: runner ? runner.env.inherit : null,
+      pass_keys: [...passKeys],
+      pass_source:
+        passKeys.length > 0 ? originToProcessSource(fieldOrigins?.envPass ?? null, "none") : "none",
+      set_keys: [...setKeys],
+      set_keys_origin: setKeysOrigin,
+      secret_keys: [...secretKeys],
+      secret_source:
+        secretKeys.length > 0
+          ? originToProcessSource(fieldOrigins?.envSecrets ?? null, "none")
+          : "none",
+    },
+    preflight: options.preflight ?? { status: "skipped" },
+  };
 }
