@@ -2,7 +2,113 @@ _ulid: 01KSZAAJNZ68WPCAVB02RA8MSE
 slugs: []
 title: Review runner env secret boundary cycle 2
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with --warnings-ok; reference warnings are existing baseline deprecated-item references.
+    name: kspec validate --refs
+    required: true
+    runner: kspec
+    created_at: 2026-05-31T15:41:17.607Z
+    completed_at: 2026-05-31T15:41:17.607Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with --warnings-ok; alignment warnings are existing baseline orphan/status warnings.
+    name: kspec validate --alignment
+    required: true
+    runner: kspec
+    created_at: 2026-05-31T15:41:19.939Z
+    completed_at: 2026-05-31T15:41:19.939Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with --warnings-ok; completeness warnings are existing baseline missing/invalid AC
+      coverage outside this task.
+    name: kspec validate --completeness
+    required: true
+    runner: kspec
+    created_at: 2026-05-31T15:41:22.268Z
+    completed_at: 2026-05-31T15:41:22.268Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run format:check: all matched files use correct format."
+    name: format:check
+    required: true
+    runner: oxfmt
+    created_at: 2026-05-31T15:41:24.564Z
+    completed_at: 2026-05-31T15:41:24.564Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run lint -- --quiet: 0 errors; repo warning baseline remains."
+    name: lint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-31T15:41:26.971Z
+    completed_at: 2026-05-31T15:41:26.971Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npx oxlint on 8 changed TS/test files: 0 warnings, 0 errors."
+    name: changed-file oxlint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-31T15:41:29.230Z
+    completed_at: 2026-05-31T15:41:29.230Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck exited 0.
+    name: typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-31T15:41:31.542Z
+    completed_at: 2026-05-31T15:41:31.542Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/agent-runner-env.test.ts
+      tests/agent-invocation-secret-redaction.test.ts tests/agent-runner-resolver.test.ts: 80
+      passed."
+    name: focused tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-31T15:41:33.835Z
+    completed_at: 2026-05-31T15:41:33.835Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh: 10075 passed, 5 skipped; full log
+      /tmp/kspec-test-cache/01KSZA8Z4CDQQ2VCF978QDKRH6/238b0bb059e1ab27.log."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-05-31T15:41:36.215Z
+    completed_at: 2026-05-31T15:41:36.215Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: A node --import tsx probe using kspec-capture-mock showed the failure-path task note
+      subprocess received REVIEW_SECRET_LEAK_PROBE=review-secret-leak-value-12345 from the resolved
+      runner env.secret binding.
+    name: secret env boundary probe
+    required: true
+    runner: manual-node-probe
+    created_at: 2026-05-31T15:41:38.555Z
+    completed_at: 2026-05-31T15:41:38.555Z
 events:
   - _ulid: 01KSZAAJNYV8GVDYT151TRWP4G
     actor: Jacob Chapel
@@ -17,17 +123,175 @@ events:
       from: draft
       to: open
     timestamp: 2026-05-31T15:27:20.515Z
+  - _ulid: 01KSZB4P3BJGQ8R3HYSC05WP03
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --refs
+    timestamp: 2026-05-31T15:41:17.803Z
+  - _ulid: 01KSZB4RCKR5Q6W1HCG25AGE0F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --alignment
+    timestamp: 2026-05-31T15:41:20.148Z
+  - _ulid: 01KSZB4TMXWNCCNZQMGMWVBBVX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --completeness
+    timestamp: 2026-05-31T15:41:22.461Z
+  - _ulid: 01KSZB4WXN2WWQCK3EXPNWF2HE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format:check
+    timestamp: 2026-05-31T15:41:24.789Z
+  - _ulid: 01KSZB4Z7Y8QRSTSC9RJTCEHF5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-05-31T15:41:27.167Z
+  - _ulid: 01KSZB51EJQYBNNSF08BB57AT3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file oxlint
+    timestamp: 2026-05-31T15:41:29.426Z
+  - _ulid: 01KSZB53QDPVEPR63XBDE7GH5C
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-31T15:41:31.757Z
+  - _ulid: 01KSZB55YVS86RCDY80MD17P6B
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused tests
+    timestamp: 2026-05-31T15:41:34.043Z
+  - _ulid: 01KSZB588VS9MMCTAHXQVV9EJ7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-31T15:41:36.411Z
+  - _ulid: 01KSZB5AJHCY13VKMQ8JPJ55EC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: secret env boundary probe
+    timestamp: 2026-05-31T15:41:38.769Z
+  - _ulid: 01KSZB5CZ7YP02G4KE3J3R6WZP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSZB5CRMSRC6E2FM628YKBPV
+    timestamp: 2026-05-31T15:41:41.223Z
+  - _ulid: 01KSZB5F9C61WP5WF0RTEDY1RT
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSZB5F2VHVY74WK8AQHXP5FC
+    timestamp: 2026-05-31T15:41:43.596Z
+  - _ulid: 01KSZB5HMTY5WXFWRCGZSR6QZD
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-31T15:41:46.010Z
+  - _ulid: 01KSZB5HMTMJP1SPHKQQS8M7AR
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-31T15:41:46.010Z
 examined_commit: 5698dbfa7f8107ff3cc750158bbf090d57df758f
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KSYAZ5A1RCPK2A8H7QXF8N6E"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KSZB5CRMSRC6E2FM628YKBPV
+    anchor:
+      type: code
+      commit: 5698dbfa7f8107ff3cc750158bbf090d57df758f
+      line_end: 1317
+      line_start: 1295
+      path: src/agent-runtime/invocation.ts
+      side: head
+    entries:
+      - _ulid: 01KSZB5CRMJJ45CCJ4C2YAAPKY
+        author: Jacob Chapel
+        body: "MUST-FIX: failure-path task/retry mutations pass the full runner invocationEnv into internal
+          kspec subprocesses. Because invocationEnv includes resolved env.secrets, adapter secrets
+          are exposed to `kspec task note` and `kspec task block` child processes even though those
+          mutation commands only need kspec-required vars such as KSPEC_SESSION_ID, KSPEC_NO_DAEMON,
+          and the shadow lock. Evidence: an executed node --import tsx probe with kspec-capture-mock
+          captured REVIEW_SECRET_LEAK_PROBE=review-secret-leak-value-12345 in the task-note
+          subprocess environment. Keep the adapter env boundary intact by passing a sanitized kspec
+          mutation env that excludes runner secret bindings."
+        created_at: 2026-05-31T15:41:41.012Z
+    kind: blocker
+  - _ulid: 01KSZB5F2VHVY74WK8AQHXP5FC
+    entries:
+      - _ulid: 01KSZB5F2VW74W7MDH16MAR9TA
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          Files read: kspec-agents.md; src/agents/runners.ts; src/agents/redaction.ts;
+          src/agents/spawner.ts; src/acp/framing.ts; src/agent-runtime/invocation.ts;
+          tests/agent-runner-env.test.ts; tests/agent-invocation-secret-redaction.test.ts;
+          tests/agent-runner-resolver.test.ts; tests/mocks/acp-mock.js;
+          tests/mocks/kspec-capture-mock.cjs; src/agent-runtime/dispatch.ts;
+          src/cli/commands/agent.ts; src/sessions/store.ts.
+
+          Commands run: git status/log/diff; kspec task get; kspec item get for
+          @runner-environment-secret-boundaries and @runner-invocation-semantics; kspec review
+          get/for-task/add/open; AC annotation search; kspec validate
+          --refs/--alignment/--completeness --warnings-ok; npm run format:check; npm run lint --
+          --quiet; npx oxlint changed files; npm run typecheck; focused npm test; full npm test --
+          --fresh; node --import tsx secret-boundary probe.
+
+          Claims verified: prior blocker is fixed for persisted/visible diagnostic strings;
+          contract.redact is applied to adapter stderr, JSON-RPC error logging, failed events, close
+          reasons, task notes, block reasons, and InvocationResult.error. New blocker found:
+          resolved secrets still leave the adapter boundary via kspec mutation subprocess env.
+
+          Categories searched: correctness, security boundaries, error handling, AC coverage, test
+          quality, integration, regression gates.
+        created_at: 2026-05-31T15:41:43.387Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-31T15:41:46.010Z
 created_at: 2026-05-31T15:27:02.335Z
-updated_at: 2026-05-31T15:27:20.228Z
+updated_at: 2026-05-31T15:41:46.010Z
 notes: []
