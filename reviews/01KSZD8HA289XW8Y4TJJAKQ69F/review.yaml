@@ -2,7 +2,103 @@ _ulid: 01KSZD8HA289XW8Y4TJJAKQ69F
 slugs: []
 title: Review runner env secret boundary cycle 3
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing reference-warning baseline under --warnings-ok: schema OK,
+      references OK, 6 deprecated-reference warnings."
+    name: kspec validate --refs
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-31T16:31:54.052Z
+    completed_at: 2026-05-31T16:31:54.052Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing alignment-warning baseline under --warnings-ok: 42 warnings, no errors."
+    name: kspec validate --alignment
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-31T16:31:56.519Z
+    completed_at: 2026-05-31T16:31:56.519Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing completeness-warning baseline under --warnings-ok: 267 warnings, no
+      errors."
+    name: kspec validate --completeness
+    required: true
+    runner: kspec validate
+    created_at: 2026-05-31T16:31:58.952Z
+    completed_at: 2026-05-31T16:31:58.952Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run format:check passed: all matched files formatted, 966 files checked."
+    name: format:check
+    required: true
+    runner: oxfmt
+    created_at: 2026-05-31T16:32:01.398Z
+    completed_at: 2026-05-31T16:32:01.398Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run lint -- --quiet passed: 0 errors, repo warning baseline unchanged (743 warnings
+      hidden from quiet failure gate)."
+    name: lint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-31T16:32:03.827Z
+    completed_at: 2026-05-31T16:32:03.827Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npx oxlint on all changed TS/test/mock files passed with 0 warnings and 0 errors.
+    name: changed-file oxlint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-31T16:32:07.251Z
+    completed_at: 2026-05-31T16:32:07.251Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck passed (tsc --noEmit).
+    name: typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-31T16:32:09.676Z
+    completed_at: 2026-05-31T16:32:09.676Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/agent-runner-env.test.ts
+      tests/agent-invocation-secret-redaction.test.ts tests/agent-runner-resolver.test.ts
+      tests/agent-invocation.test.ts tests/runner-config.test.ts passed: 45 suites, 130 tests."
+    name: focused tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-31T16:32:12.082Z
+    completed_at: 2026-05-31T16:32:12.082Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh passed: 2644 suites, 10079 passed, 5 skipped. Log:
+      /tmp/kspec-test-cache/01KSZD72MEDYPZRXTWKSM98JSY/c060cf218ac18890.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-05-31T16:32:14.522Z
+    completed_at: 2026-05-31T16:32:14.522Z
 events:
   - _ulid: 01KSZD8HA1JH40N6PFEEGX9YPR
     actor: Jacob Chapel
@@ -17,17 +113,142 @@ events:
       from: draft
       to: open
     timestamp: 2026-05-31T16:18:40.635Z
+  - _ulid: 01KSZE1BCQA5C8WM4K1FNNP9KQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --refs
+    timestamp: 2026-05-31T16:31:54.263Z
+  - _ulid: 01KSZE1DSKYDWMN1EGT8CP881E
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --alignment
+    timestamp: 2026-05-31T16:31:56.723Z
+  - _ulid: 01KSZE1G6AHMT7CYGZBSQ7CG47
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --completeness
+    timestamp: 2026-05-31T16:31:59.178Z
+  - _ulid: 01KSZE1JK3M34CD77PPHGXEYE2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format:check
+    timestamp: 2026-05-31T16:32:01.635Z
+  - _ulid: 01KSZE1MXQJT63RH5RWVAEHA2Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-05-31T16:32:04.023Z
+  - _ulid: 01KSZE1R9BB77NBZHAFBQS7GD6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file oxlint
+    timestamp: 2026-05-31T16:32:07.467Z
+  - _ulid: 01KSZE1TMM3EMGX120NAX6Z228
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-05-31T16:32:09.876Z
+  - _ulid: 01KSZE1X0GM9V11Q6MN65B24FT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused tests
+    timestamp: 2026-05-31T16:32:12.304Z
+  - _ulid: 01KSZE1ZC3NHXMAXEC133KJ5ND
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-05-31T16:32:14.724Z
+  - _ulid: 01KSZE21SC24GC1B3YVJ7FBSED
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KSZE21KFDJG1ARCV5PM9DKKY
+    timestamp: 2026-05-31T16:32:17.196Z
+  - _ulid: 01KSZE242QH0A1H2H4VH8RFQWM
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-05-31T16:32:19.543Z
+  - _ulid: 01KSZE242Q1Y4SXAFY7M00XJCA
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-31T16:32:19.543Z
 examined_commit: 3fd6d6b8d443b0fa1d789045f94ff569190cd7aa
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KSYAZ5A1RCPK2A8H7QXF8N6E"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KSZE21KFDJG1ARCV5PM9DKKY
+    entries:
+      - _ulid: 01KSZE21KFA31SV27Z6JNVFHJX
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          Files read: kspec-agents.md; src/agents/runners.ts; src/agent-runtime/invocation.ts;
+          src/agents/redaction.ts; src/agents/spawner.ts; src/acp/framing.ts;
+          src/agents/runner-config.ts; tests/agent-runner-env.test.ts;
+          tests/agent-invocation-secret-redaction.test.ts; tests/agent-runner-resolver.test.ts;
+          tests/runner-config.test.ts; tests/mocks/acp-mock.js.
+
+          Commands run: git status/diff; kspec task get; kspec item get
+          @runner-environment-secret-boundaries and @runner-invocation-semantics; kspec review
+          for-task/get prior cycles; rg AC/source-scanning checks; kspec validate
+          --refs/--alignment/--completeness --warnings-ok; npm run format:check; npm run lint --
+          --quiet; npx oxlint changed files; npm run typecheck; focused npm test -- --fresh; full
+          npm test -- --fresh.
+
+          Claims verified: prior mutation subprocess env leak is closed by contract.mutationEnv plus
+          secretEnvKeys stripping, verified by code path and focused behavioral test capturing kspec
+          task-note subprocess env; redaction is applied to adapter stderr, JSON-RPC error logs,
+          session events, session close_reason, task notes, and InvocationResult.error;
+          project/system config validation rejects literal secret-looking env keys and project-layer
+          secret bindings.
+
+          Categories searched: correctness, edge cases for inherit/pass/set/secrets/privacy
+          precedence, error handling, security/secret leakage, test quality and AC annotations,
+          integration with spawner/framing/invocation mutation subprocesses. No blocking findings.
+        created_at: 2026-05-31T16:32:17.007Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-31T16:32:19.543Z
 created_at: 2026-05-31T16:18:21.122Z
-updated_at: 2026-05-31T16:18:40.434Z
+updated_at: 2026-05-31T16:32:19.543Z
 notes: []
