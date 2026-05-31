@@ -23203,10 +23203,10 @@ reviews:
       ref: "@01KSYAZ5A1RCPK2A8H7QXF8N6E"
       shadow_commit: ""
     thread_count: 2
-    unresolved_blocker_count: 1
+    unresolved_blocker_count: 0
     verdict_count: 1
     created_at: 2026-05-31T14:29:24.628Z
-    updated_at: 2026-05-31T14:43:29.449Z
+    updated_at: 2026-05-31T15:21:50.742Z
   - _ulid: 01KSZ8KET3PHHYA5ECMM63A4Q6
     slugs: []
     title: Review task-runner-process-invocation-inputs

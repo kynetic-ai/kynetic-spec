@@ -43,3 +43,26 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-05-31T14:43:31.719Z
+  - _ulid: 01KSZA13A2XFEM7F2Q8NVFS68A
+    content: "Fix cycle 1: addressed the blocker that contract.redact was constructed but never applied.
+      Wired the runner contract redactor through every diagnostic surface flagged in the review:
+      agent.failed session event (error + reason fields), session.prompts_discarded reason, session
+      close_reason, [AGENT-FAIL] task note + retry block reason via kspec CLI,
+      InvocationResult.error, and adapter stderr forwarded through spawner. Also threaded the
+      redactor into ACP framing (src/acp/framing.ts) so the 'JSON-RPC error: ...' log emitted from
+      the parent's framing layer cannot leak adapter-returned RPC error text either. Added
+      tests/agent-invocation-secret-redaction.test.ts as a behavioral test that runs a real
+      runner-backed invocation, drives the mock adapter into emitting the resolved secret value via
+      both stderr and a JSON-RPC error reply, then asserts the literal does not appear in
+      events.jsonl, session.yaml close_reason, captured kspec task note args,
+      InvocationResult.error, or process.stderr writes — each assertion also requires the [REDACTED]
+      marker so a silent no-op regression cannot pass. Negative-control test on the implicit/legacy
+      path confirms the no-op redactor is preserved. Mock acp-mock.js gained
+      MOCK_ACP_FAIL_TEMPLATE/MOCK_ACP_FAIL_VAR (substitutes a host env value into the JSON-RPC error
+      message) and the existing actionable stderr emission was reordered to fire before the failure
+      check so failure-path stderr forwarding can be exercised. Gates: format:check, lint (0
+      errors), changed-file oxlint (0 warnings), typecheck, full npm test (10075 passed, 5 expected
+      skips), kspec validate --refs/--alignment/--completeness all green within baseline."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-31T15:21:51.682Z

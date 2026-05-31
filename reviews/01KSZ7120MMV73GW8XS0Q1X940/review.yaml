@@ -202,6 +202,18 @@ events:
       from: open
       to: closed
     timestamp: 2026-05-31T14:43:29.449Z
+  - _ulid: 01KSZA10ADKZZ3B4JTY2EGVY7G
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSZ7T42Y32Y0EWF7DAN1GEMN
+    timestamp: 2026-05-31T15:21:48.621Z
+  - _ulid: 01KSZA12JR28H2GPKWMEX1A6Q4
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSZ7T42Y32Y0EWF7DAN1GEMN
+    timestamp: 2026-05-31T15:21:50.936Z
 examined_commit: e190bb2414297d83bd2980dfc8fec97b43556634
 external_links: []
 lifecycle_state: closed
@@ -234,7 +246,33 @@ threads:
           invocation/spawner/CLI/daemon diagnostic paths and add behavioral tests that fail if a
           resolved secret appears in session events, task notes, CLI output, or stderr diagnostics.
         created_at: 2026-05-31T14:43:05.951Z
+      - _ulid: 01KSZA103DF8C7VWVAV2BHNHR1
+        author: "@claude"
+        body: "Fixed. Wired contract.redact through every diagnostic surface so a resolved secret cannot
+          leak. Specifically: invocation.ts catch block now redacts errorMessage before it reaches
+          the agent.failed event (error and reason), the session close_reason, the [AGENT-FAIL] task
+          note, the retry block reason, and the returned InvocationResult.error. The
+          session.prompts_discarded reason and the err.message returned by the
+          timeout/abort/idle/stall handlers are also redacted. spawner.ts
+          forwardFilteredAdapterStderr now scrubs each child stderr line before forwarding to
+          process.stderr. ACP framing (src/acp/framing.ts) takes an optional redact option and
+          applies it to the 'JSON-RPC error: ...' parent-stderr log so adapter-returned RPC error
+          text cannot leak there either. tests/agent-invocation-secret-redaction.test.ts is a
+          behavioral test: it plants a host env secret, configures a runner with env.secrets: { ...:
+          { source: user_env, required: true } }, drives the mock into emitting that exact secret
+          value over both stderr (MOCK_ACP_EMIT_ACTIONABLE_STDERR with the literal substring) and
+          the JSON-RPC error reply (new MOCK_ACP_FAIL_TEMPLATE/FAIL_VAR substitution), then asserts
+          the literal does not appear in events.jsonl, session.yaml.close_reason, the captured kspec
+          task note args (via kspec-capture-mock.cjs), the InvocationResult.error, or the
+          spy-captured process.stderr writes. Each assertion also requires the [REDACTED] marker so
+          a regression that silently drops the redactor (no-op) cannot pass. A negative-control test
+          on the implicit/legacy path verifies the no-op redactor is preserved when no env.secrets
+          resolved. Full npm test (10075 passed, 5 skipped) + lint + typecheck + format:check are
+          green."
+        created_at: 2026-05-31T15:21:48.397Z
     kind: blocker
+    resolved_at: 2026-05-31T15:21:50.742Z
+    resolved_by: "@claude"
   - _ulid: 01KSZ7TJPRJ3FBT71YG18QFVE8
     entries:
       - _ulid: 01KSZ7TJPS83T860HFKVKVAYBT
@@ -270,5 +308,5 @@ verdicts:
     role: reviewer
     created_at: 2026-05-31T14:43:29.448Z
 created_at: 2026-05-31T14:29:24.628Z
-updated_at: 2026-05-31T14:43:29.449Z
+updated_at: 2026-05-31T15:21:50.742Z
 notes: []
