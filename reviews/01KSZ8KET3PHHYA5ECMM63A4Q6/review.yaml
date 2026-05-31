@@ -187,6 +187,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-05-31T15:11:28.203Z
+  - _ulid: 01KSZB9W6XD002FHH4BAWNXD7X
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSZ9DKSPRFECFWPNHZXEWC1N
+    timestamp: 2026-05-31T15:44:07.901Z
 examined_commit: 02f8525a7a4658486afbbbe727266bb27ff3e774
 external_links: []
 lifecycle_state: closed
@@ -218,6 +224,21 @@ threads:
           PATH hit can pass preflight when the child env cannot spawn it. This violates the command
           reference preflight contract and can incorrectly skip valid configured runners."
         created_at: 2026-05-31T15:11:13.206Z
+      - _ulid: 01KSZB9VXYPZ166CBRR5RBEZG4
+        author: "@claude"
+        body: "Fixed in c18fc6ea. preflightRunnerInvocation now computes the searchPath from the invocation
+          contract env using the same composition order as spawner.ts (inheritedHostEnv →
+          adapter.env → contract.env), then passes it to preflightExecutable. This mirrors what
+          Node's spawn will actually consult for bare-command lookup given the runner-scoped env, so
+          env.inherit: none + env.set.PATH succeeds when the command is on the runner PATH
+          (previously a false negative against process.env.PATH), and a command only present in the
+          daemon's host PATH but stripped from the runner env is correctly diagnosed as unspawnable
+          (previously a false positive). Added three behavioral tests in
+          tests/agent-runner-process.test.ts under 'preflightRunnerInvocation: bare command lookup
+          uses invocation env PATH' covering: env.set.PATH scoping, daemon-PATH leakage trap, and
+          env.inherit: ambient via hostEnv snapshot. Targeted suite + full npm test (10065 passed)
+          clean."
+        created_at: 2026-05-31T15:44:07.614Z
     kind: blocker
   - _ulid: 01KSZ9DPF9JHS12MYP1NSVBNJY
     entries:
@@ -244,5 +265,5 @@ verdicts:
     role: reviewer
     created_at: 2026-05-31T15:11:28.202Z
 created_at: 2026-05-31T14:56:56.131Z
-updated_at: 2026-05-31T15:11:28.203Z
+updated_at: 2026-05-31T15:44:07.614Z
 notes: []
