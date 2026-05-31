@@ -30214,7 +30214,7 @@
   type: task
   spec_ref: "@runner-resolution-and-preflight"
   plan_ref: "@plan-agent-runner-configuration-layer"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-runner-config-schema-types"
@@ -30229,7 +30229,7 @@
   notes_count: 8
   todos_count: 0
   created_at: 2026-05-31T06:19:01.962Z
-  started_at: 2026-05-31T12:50:03.356Z
+  started_at: 2026-05-31T13:28:38.877Z
   submitted_at: 2026-05-31T12:50:06.879Z
   automation: eligible
 - _ulid: 01KSYAZ5A1RCPK2A8H7QXF8N6E
