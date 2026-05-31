@@ -24,6 +24,17 @@ checks:
     runner: kspec
     created_at: 2026-05-31T07:03:08.652Z
     completed_at: 2026-05-31T07:03:08.652Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed with existing repository coverage
+      warning baseline.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-05-31T07:03:13.506Z
+    completed_at: 2026-05-31T07:03:13.506Z
 events:
   - _ulid: 01KSYCQR25C7Z4PSSGPPDFFW2V
     actor: Jacob Chapel
@@ -52,6 +63,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-05-31T07:03:08.857Z
+  - _ulid: 01KSYDG2H82PD7BD765M9X0SD7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-05-31T07:03:13.704Z
 examined_commit: 28770407cf3ca944af1bee0c0ed6e6bf1577a460
 external_links: []
 lifecycle_state: open
@@ -64,5 +82,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-05-31T06:49:56.556Z
-updated_at: 2026-05-31T07:03:08.652Z
+updated_at: 2026-05-31T07:03:13.506Z
 notes: []
