@@ -13426,18 +13426,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-runner-process-invocation-inputs/01ksyaz5
-    canonical_branch_head: 1d6a27fd910eb070cda8dfe163783b1f94bff99e
+    canonical_branch_head: 2873ce002eee246316159f0e174fc0cd1de17718
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-05-31T17:01:44.118Z
+      updated_at: 2026-05-31T17:04:59.618Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-05-31T17:02:08.935Z
+      updated_at: 2026-05-31T17:04:59.618Z
     integration:
       status: pending
       detail: null
@@ -13445,7 +13445,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: ac4142f968c489ddf073a6337d9040b12a248944
-      updated_at: 2026-05-31T17:01:44.118Z
+      updated_at: 2026-05-31T17:04:59.618Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KSYAZ5MMTH53RFXMSTK9400S"
@@ -13453,9 +13453,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-31T17:02:08.935Z
-      last_reconciled_at: 2026-05-31T17:02:08.935Z
+      last_reconciled_at: 2026-05-31T17:04:59.618Z
       created_at: 2026-05-31T14:28:06.577Z
-      updated_at: 2026-05-31T17:02:08.935Z
+      updated_at: 2026-05-31T17:04:59.618Z
     workspace_id: dispatch-workspace-01KSYAZ5MMTH53RFXMSTK9400S
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
