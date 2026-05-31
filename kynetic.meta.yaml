@@ -20167,6 +20167,17 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-05-31T15:46:17.243Z
+  - _ulid: 01KSZCF46KGQYFNVKK2XA33RSR
+    type: friction
+    content: "Preflight code that models child_process.spawn command lookup needs explicit runtime
+      parity probes for absent vs empty PATH. A review of runner process invocation inputs found
+      spawnSync('sh', { env: {} }) succeeded while preflightExecutable('sh', { searchPath: '' })
+      reported not_found, so green resolver tests missed a real spawn/preflight contract mismatch."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KSZCBN"
+    created_at: 2026-05-31T16:04:28.499Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
