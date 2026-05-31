@@ -1,0 +1,26 @@
+_ulid: 01KSYKS60MMMDWBEC5N212NSM3
+slugs: []
+title: Review task-agent-runner-meta-cli
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KSYKS60KSFREM4R63EC1C9NT
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-05-31T08:53:03.635Z
+examined_commit: 985493b66cdf0a68e94620dd0418b00c5d580dde
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KSYAZ4M60BVN8Y7A7HJCSFNZ"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-05-31T08:53:03.636Z
+updated_at: null
+notes: []
