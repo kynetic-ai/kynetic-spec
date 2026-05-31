@@ -57696,7 +57696,7 @@ runs:
     started_at: 2026-05-31T19:43:06.626Z
     completed_at: 2026-05-31T19:45:35.480Z
   - _ulid: 01KSZT77R2M9BZFBXHPMQ91WJT
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -57761,7 +57761,13 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-05-31T20:06:42.117Z
-        completed_at: 2026-05-31T20:06:42.117Z
+        completed_at: 2026-05-31T20:07:34.159Z
+        notes: "Captured one inbox item: @01KSZTBW, tagged reflection/runners/testing, for a reusable runner
+          CLI fixture or reproduction helper. Did not capture a new success observation because
+          detached reviewer merge helper success is already covered by
+          @detached-reviewer-merge-helper and related completed tasks; review evidence-log friction
+          is already represented by existing observation @01KR2JD1. No additional captures."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T20:04:50.051Z
+    completed_at: 2026-05-31T20:07:34.159Z
