@@ -2,7 +2,124 @@ _ulid: 01KSYKS60MMMDWBEC5N212NSM3
 slugs: []
 title: Review task-agent-runner-meta-cli
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with known reference warnings under --warnings-ok.
+    name: kspec validate --refs --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-31T09:06:31.531Z
+    completed_at: 2026-05-31T09:06:31.531Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with existing alignment warnings under --warnings-ok.
+    name: kspec validate --alignment --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-31T09:06:33.977Z
+    completed_at: 2026-05-31T09:06:33.977Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with existing completeness warnings under --warnings-ok.
+    name: kspec validate --completeness --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-05-31T09:06:36.431Z
+    completed_at: 2026-05-31T09:06:36.431Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All matched files use the correct format.
+    name: npm run format:check
+    required: true
+    runner: oxfmt
+    created_at: 2026-05-31T09:06:38.870Z
+    completed_at: 2026-05-31T09:06:38.870Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Found 743 warnings and 0 errors; hard lint gate has no errors.
+    name: npm run lint -- --quiet
+    required: true
+    runner: oxlint
+    created_at: 2026-05-31T09:06:41.277Z
+    completed_at: 2026-05-31T09:06:41.277Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 errors; 6 no-shadow warnings in src/cli/commands/meta.ts are pre-existing in unchanged
+      surrounding code, not introduced by this diff.
+    name: npx oxlint changed TS/test files
+    required: true
+    runner: oxlint
+    created_at: 2026-05-31T09:06:43.652Z
+    completed_at: 2026-05-31T09:06:43.652Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit completed successfully.
+    name: npm run typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-05-31T09:06:46.019Z
+    completed_at: 2026-05-31T09:06:46.019Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/meta-agent-schema.test.ts tests/cli-agent.test.ts: 6 suites, 17
+      tests passed."
+    name: focused tests
+    required: true
+    runner: npm test
+    created_at: 2026-05-31T09:06:48.433Z
+    completed_at: 2026-05-31T09:06:48.433Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2605 suites passed; 9976 passed, 5 skipped of 9981 tests."
+    name: npm test -- --fresh
+    required: true
+    runner: npm test
+    created_at: 2026-05-31T09:06:50.814Z
+    completed_at: 2026-05-31T09:06:50.814Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Temporary project with agent { runner: named-runner, adapter: legacy-adapter }; kspec
+      agent run dual --dry-run --json emitted adapter: legacy-adapter and no runner-derived
+      resolution."
+    name: manual runner precedence probe
+    required: true
+    runner: node dist/cli/index.js
+    created_at: 2026-05-31T09:06:53.208Z
+    completed_at: 2026-05-31T09:06:53.208Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/cli/commands/agent.ts, src/cli/commands/meta.ts, src/schema/meta.ts,
+      src/agent-runtime/invocation.ts, src/agent-runtime/dispatch.ts, tests/cli-agent.test.ts,
+      tests/meta-agent-schema.test.ts. Categories: correctness, AC alignment, edge cases, test
+      quality, integration, error handling."
+    name: review evidence log
+    required: false
+    runner: reviewer
+    created_at: 2026-05-31T09:06:55.673Z
+    completed_at: 2026-05-31T09:06:55.673Z
 events:
   - _ulid: 01KSYKS60KSFREM4R63EC1C9NT
     actor: Jacob Chapel
@@ -17,17 +134,172 @@ events:
       from: draft
       to: open
     timestamp: 2026-05-31T08:53:33.479Z
+  - _ulid: 01KSYMHV6HZN05M0N3YAKYJKRS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --refs --warnings-ok
+    timestamp: 2026-05-31T09:06:31.761Z
+  - _ulid: 01KSYMHXJCZ9WN92N384QKS58F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --alignment --warnings-ok
+    timestamp: 2026-05-31T09:06:34.188Z
+  - _ulid: 01KSYMHZZK1BNDDTQ1Z1Y781HV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --completeness --warnings-ok
+    timestamp: 2026-05-31T09:06:36.659Z
+  - _ulid: 01KSYMJ2C7X02VD0DQFZ53KETX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run format:check
+    timestamp: 2026-05-31T09:06:39.111Z
+  - _ulid: 01KSYMJ4PECBZNAD4WGT83ZCRY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run lint -- --quiet
+    timestamp: 2026-05-31T09:06:41.486Z
+  - _ulid: 01KSYMJ6ZWJ05BQCGNW8ZFFZNN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npx oxlint changed TS/test files
+    timestamp: 2026-05-31T09:06:43.836Z
+  - _ulid: 01KSYMJ99NNJN1MC2X7HMWY87A
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run typecheck
+    timestamp: 2026-05-31T09:06:46.197Z
+  - _ulid: 01KSYMJBP3RP8Q666T3DZ9MG8Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused tests
+    timestamp: 2026-05-31T09:06:48.643Z
+  - _ulid: 01KSYMJE0YAH5TX5BXQRSRDGT0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-05-31T09:06:51.038Z
+  - _ulid: 01KSYMJGC2N3ESEF4AFEW8EDBR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: manual runner precedence probe
+    timestamp: 2026-05-31T09:06:53.442Z
+  - _ulid: 01KSYMJJT21F4ZAPCFX0D2XZ59
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-05-31T09:06:55.938Z
+  - _ulid: 01KSYMJN7J5B4GXGTJ70X0GD4P
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSYMJN0V0YSA0NE8SFC410PA
+    timestamp: 2026-05-31T09:06:58.418Z
+  - _ulid: 01KSYMJQJQRC71BGAQBT1G7H22
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KSYMJQBRWGCZQ3JT37XXXP0C
+    timestamp: 2026-05-31T09:07:00.823Z
+  - _ulid: 01KSYMJSVS2HJ45AJVY9RASFFR
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-05-31T09:07:03.161Z
+  - _ulid: 01KSYMJSVS7QSDV8FJAS32HZW1
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-05-31T09:07:03.161Z
 examined_commit: 985493b66cdf0a68e94620dd0418b00c5d580dde
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KSYAZ4M60BVN8Y7A7HJCSFNZ"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KSYMJN0V0YSA0NE8SFC410PA
+    anchor:
+      type: code
+      commit: 985493b66cdf0a68e94620dd0418b00c5d580dde
+      line_end: 309
+      line_start: 309
+      path: src/cli/commands/agent.ts
+      side: head
+    entries:
+      - _ulid: 01KSYMJN0V704STHKF92Q5FMWQ
+        author: Jacob Chapel
+        body: "MUST-FIX: Runner-backed agents are still invoked through the legacy adapter field. The task
+          and @agent-runner-configuration ac-runner-precedence-over-adapter require runner to
+          determine the resolved adapter/execution harness when both fields exist, but this path
+          computes adapterId from opts.adapter ?? agentDef.adapter ?? default and never consults
+          agentDef.runner. I confirmed behavior with a temporary project: an agent with runner:
+          named-runner and adapter: legacy-adapter produced dry-run JSON with adapter:
+          legacy-adapter. That means the new runner metadata can be stored while actual manual
+          invocations ignore it."
+        created_at: 2026-05-31T09:06:58.203Z
+    kind: blocker
+  - _ulid: 01KSYMJQBRWGCZQ3JT37XXXP0C
+    anchor:
+      type: code
+      commit: 985493b66cdf0a68e94620dd0418b00c5d580dde
+      line_end: 205
+      line_start: 201
+      path: src/cli/commands/agent.ts
+      side: head
+    entries:
+      - _ulid: 01KSYMJQBSQYBB33A1VRP5VWJZ
+        author: Jacob Chapel
+        body: "MUST-FIX: The list JSON reports the raw/default adapter instead of the runner-resolved
+          adapter identity for runner-backed agents. @runner-operator-surfaces
+          ac-agent-list-shows-runner says each entry shows the runner name when present and its
+          resolved adapter identity. This code emits a.adapter ?? default even when a.runner is
+          present, so a runner-only agent is displayed as claude-agent-acp regardless of the named
+          runner's effective adapter, and an agent with both fields shows the legacy adapter rather
+          than the runner-selected one."
+        created_at: 2026-05-31T09:07:00.601Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-05-31T09:07:03.161Z
 created_at: 2026-05-31T08:53:03.636Z
-updated_at: 2026-05-31T08:53:33.249Z
+updated_at: 2026-05-31T09:07:03.161Z
 notes: []
