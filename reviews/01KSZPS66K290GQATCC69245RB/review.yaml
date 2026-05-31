@@ -54,6 +54,17 @@ checks:
     runner: oxlint
     created_at: 2026-05-31T19:20:09.592Z
     completed_at: 2026-05-31T19:20:09.592Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npx oxlint src/agents/runner-validation.ts src/cli/commands/agent.ts
+      tests/agent-runner-cli.test.ts passed with 0 warnings and 0 errors
+    name: changed-file oxlint
+    required: true
+    runner: oxlint
+    created_at: 2026-05-31T19:20:21.014Z
+    completed_at: 2026-05-31T19:20:21.014Z
 events:
   - _ulid: 01KSZPS66JQ9FHXE7DG5MMWCKN
     actor: Jacob Chapel
@@ -103,6 +114,13 @@ events:
       status: pass
       name: lint
     timestamp: 2026-05-31T19:20:09.802Z
+  - _ulid: 01KSZQNSFAMFSNFWNH8YTJWMDM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed-file oxlint
+    timestamp: 2026-05-31T19:20:21.226Z
 examined_commit: 0ce7045814f098535dc27ade2b6a4a1d00b9c202
 external_links: []
 lifecycle_state: open
@@ -115,5 +133,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-05-31T19:04:43.987Z
-updated_at: 2026-05-31T19:20:09.592Z
+updated_at: 2026-05-31T19:20:21.014Z
 notes: []
