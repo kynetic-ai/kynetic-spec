@@ -7215,6 +7215,9 @@ modules:
           produces a single invocation contract containing runner identity, adapter identity,
           command, arguments, environment, cwd, process diagnostics, and cleanup hooks. Invalid
           runner configuration fails before prompt forwarding.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
