@@ -1,1 +1,30 @@
-notes: []
+notes:
+  - _ulid: 01KSZN6JTCS74C04WSR85MN5G7
+    content: >-
+      Approach: 1) Add validateRunner() helper in src/agents/runners.ts (or new validation.ts) that
+      takes EffectiveRunner + ResolveRunnersResult and produces a validation report: status, runner
+      identity, resolved adapter, source/cwd/args attribution, overrides, redacted diagnostics.
+      Validates: adapter is registered; if process.executable set, preflight executable; required
+      env.secrets bindings resolve. Never exposes secret values.
+
+
+      2) Update agent list JSON to emit runner, adapter, resolved_adapter, runner_validation per AC.
+      Human output already shows runner+adapter; add lightweight validation indicator next to runner
+      when present.
+
+
+      3) Update agent run --dry-run: existing flow already surfaces
+      runner/adapter/process/env/preflight. Add explicit 'validation_state' summary field
+      (ok|invalid|skipped) reflecting the validation outcome of the resolved runner.
+
+
+      4) Add 'kspec agent runners validate [--runner <name>] [--json]' subcommand. Reuses
+      resolveEffectiveRunners + new validator. Exit 0 only when every selected runner is valid; exit
+      1 otherwise. Output redacts via createRedactor over resolved secret values.
+
+
+      5) Tests: tests/agent-runner-cli.test.ts new file for validate cases. Reuse tempDir +
+      writeSystemRunnersForProject pattern from tests/cli-agent.test.ts.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-05-31T18:37:05.740Z
