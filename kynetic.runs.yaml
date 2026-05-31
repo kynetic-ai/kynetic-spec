@@ -57202,9 +57202,22 @@ runs:
     completed_at: 2026-05-31T16:16:14.462Z
   - _ulid: 01KSZE487WJ43Q38GM2E7E03S8
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-31T16:33:29.341Z
+        completed_at: 2026-05-31T16:34:45.565Z
+        notes: "What worked well: The detached-reviewer merge helper handled the manual_merge path cleanly
+          and advanced dev without requiring checkout inside the detached snapshot. The per-cycle
+          review record plus batch-recorded checks gave a durable approval trail. The review was
+          strongest where it verified the previous blocker with a behavioral mutation-subprocess env
+          probe instead of relying on code inspection."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-31T16:34:45.565Z
+        completed_at: 2026-05-31T16:34:45.565Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T16:33:29.341Z
