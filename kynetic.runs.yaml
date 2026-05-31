@@ -56376,7 +56376,7 @@ runs:
     completed_at: 2026-05-31T08:17:43.165Z
   - _ulid: 01KSYJTG1VRTRJYNX895JB15V5
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -56391,7 +56391,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-31T08:37:01.057Z
-        completed_at: 2026-05-31T08:37:01.057Z
+        completed_at: 2026-05-31T08:37:12.353Z
+        notes: "Friction points: (1) npm run format:check failed on unrelated
+          templates/skills/merge/SKILL.md, forcing manual changed-file reasoning and a documented
+          review skip instead of a clean required gate. (2) The merge helper refused because dev was
+          checked out in a stale auxiliary root checkout with .kspec-dispatch-workspace.json;
+          recovery required inspecting another checkout and detaching it before rerunning. (3) Full
+          npm test -- --fresh took about 2455s during review; acceptable as a gate, but expensive
+          for rapid reviewer cycles."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-31T08:37:12.353Z
+        completed_at: 2026-05-31T08:37:12.353Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T08:36:18.107Z
