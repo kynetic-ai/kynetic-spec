@@ -57697,7 +57697,7 @@ runs:
     completed_at: 2026-05-31T19:45:35.480Z
   - _ulid: 01KSZT77R2M9BZFBXHPMQ91WJT
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -57715,7 +57715,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-31T20:05:12.996Z
-        completed_at: 2026-05-31T20:05:12.996Z
+        completed_at: 2026-05-31T20:05:24.726Z
+        notes: "Friction points: Manual reproduction of runner CLI behavior is still boilerplate-heavy. To
+          test invalid process.cwd outside the test suite, I had to create a temp project,
+          initialize git, write kynetic.yaml/kynetic.meta.yaml/project.tasks.yaml, derive the daemon
+          project key, create the system runners.yaml path under a fake HOME, write a fake
+          executable, and then remember to run the CLI from the temp project cwd. I initially ran
+          the command from the review workspace and got a misleading empty-runner result. This is a
+          repeatable review/debug workflow risk for runner/operator-surface work. Secondary
+          friction: reflection workflow show requires the run ref even immediately after start; low
+          impact."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-31T20:05:24.726Z
+        completed_at: 2026-05-31T20:05:24.726Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T20:04:50.051Z
