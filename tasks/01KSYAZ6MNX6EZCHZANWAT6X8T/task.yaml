@@ -53,8 +53,13 @@ description: >
 spec_ref: "@runner-operator-surfaces"
 plan_ref: "@plan-agent-runner-configuration-layer"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev via detached-reviewer-merge.sh at
+  a3d14de838fdbd65181cb0de7e03bb065974d6c7. Review cycle 3 approved after daemon/meta API runner
+  fields, dispatch active/queued runner payloads, shared WebSocket/API types, legacy adapter
+  compatibility, and redaction coverage all passed validation, lint, typecheck, focused tests, and
+  full suite.
 depends_on:
   - "@task-dispatch-runner-preflight"
   - "@task-cli-runner-surfaces"
@@ -238,8 +243,25 @@ history:
         previous: "@01KT00MG20DKXZ3R0DH5654KFB"
     command: review-link
     timestamp: 2026-05-31T22:46:44.556Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev via detached-reviewer-merge.sh at a3d14de838fdbd65181cb0de7e03bb065974d6c7.
+          Review cycle 3 approved after daemon/meta API runner fields, dispatch active/queued runner
+          payloads, shared WebSocket/API types, legacy adapter compatibility, and redaction coverage
+          all passed validation, lint, typecheck, focused tests, and full suite.
+        previous: null
+      completed_at:
+        new: 2026-05-31T23:03:23.967Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-05-31T23:03:23.983Z
 created_at: 2026-05-31T06:19:03.701Z
 started_at: 2026-05-31T22:35:07.448Z
 submitted_at: 2026-05-31T22:35:11.166Z
+completed_at: 2026-05-31T23:03:23.967Z
 todos: []
 automation: eligible
