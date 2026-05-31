@@ -38,6 +38,12 @@ import { EventBus, type EventBusOptions } from "./event-bus.js";
 import { interpolateTemplate, rewriteSkillReferencesForAdapter } from "./prompts.js";
 import { getAdapter } from "../agents/adapters.js";
 import {
+  resolveRunnerInvocation,
+  RunnerResolutionError,
+  type RunnerInvocation,
+} from "../agents/runners.js";
+import { resolveEffectiveRunners, type EffectiveRunnerRegistry } from "../agents/runner-config.js";
+import {
   buildDispatchGitEnv,
   provisionDispatchWorkspace,
   DispatchWorkspaceError,
@@ -2368,6 +2374,7 @@ export class DispatchEngine {
     agent: LoadedAgent,
     change: TaskStateChange,
     workspace: ProvisionedDispatchWorkspace,
+    resolvedAdapterId: string,
   ): Promise<string> {
     const trigger = (STATUS_TO_EVENT[change.toStatus] ?? "task.ready") as SessionTrigger;
     const taskRef = change.taskRef;
@@ -2423,7 +2430,7 @@ export class DispatchEngine {
     );
     const roleEntry = await buildRoleEntryContext(
       this.projectDir,
-      agent.adapter ?? "claude-agent-acp",
+      resolvedAdapterId,
       trigger,
       workspace.metadata,
     );
@@ -2732,9 +2739,64 @@ export class DispatchEngine {
         return false;
       }
 
+      // AC: @agent-dispatch-engine ac-10 - Check adapter resolvability before spawn
+      // AC: @runner-resolution-and-preflight ac-dispatch-uses-runner-resolution
+      // AC: @runner-resolution-and-preflight ac-unknown-runner-blocks-before-spawn
+      // AC: @runner-resolution-and-preflight ac-unknown-runner-reports-guidance
+      // AC: @runner-resolution-and-preflight ac-invalid-runner-blocks-before-prompt
+      //
+      // Resolve the runner contract before building the prompt so unknown
+      // runners, unknown adapters, or invalid runner config block the spawn
+      // (and the role-entry workflow render) with structured guidance.
+      // Building the prompt before resolution would expand role-entry
+      // adapter-specific tokens against the legacy agent.adapter field,
+      // breaking runner precedence for dispatch.
+      let preflightContract: RunnerInvocation;
+      let preflightRegistry: EffectiveRunnerRegistry;
+      try {
+        const resolved = await resolveEffectiveRunners({
+          projectRoot: this.projectDir,
+          shadowWorktreeDir: this.specDir,
+        });
+        preflightRegistry = resolved.registry;
+      } catch {
+        preflightRegistry = { runners: {} };
+      }
+      try {
+        preflightContract = resolveRunnerInvocation({
+          agent,
+          registry: preflightRegistry,
+          cwd: workspace.cwd,
+          sessionId: ulid(),
+          autoApprove: agent.auto_approve,
+          env: {},
+        });
+      } catch (resolverErr) {
+        const reason =
+          resolverErr instanceof RunnerResolutionError ? resolverErr.reason : "preflight_failure";
+        const message = resolverErr instanceof Error ? resolverErr.message : String(resolverErr);
+        console.error(
+          `[dispatch] Cannot resolve runner contract for agent "${agentId}" (${reason}). Skipping invocation. ${message}`,
+        );
+        if (this.kspecCliPath) {
+          await this._addTaskNote(
+            entry.change.taskRef,
+            `[AGENT-SKIP] Runner resolution failed for agent "${agentId}" (${reason}). ${message}`,
+          );
+        }
+        return false;
+      }
+      const adapterId = preflightContract.adapterId;
+      const adapter = preflightContract.adapter;
+      const runnerId = preflightContract.runnerId;
+
       let prompt: string;
       try {
-        prompt = await this._buildDispatchPrompt(agent, entry.change, workspace);
+        // AC: @runner-resolution-and-preflight ac-dispatch-uses-runner-resolution
+        // Pass the resolved adapter id so adapter-specific role-entry tokens
+        // (e.g., `/skill` vs `$skill`) match the runner that will actually
+        // spawn — never the legacy agent.adapter field.
+        prompt = await this._buildDispatchPrompt(agent, entry.change, workspace, adapterId);
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
         const guidance =
@@ -2754,19 +2816,18 @@ export class DispatchEngine {
 
       // Increment active count
       this.activeCount.set(agentId, (this.activeCount.get(agentId) ?? 0) + 1);
-
-      // AC: @agent-dispatch-engine ac-10 - Check adapter resolvability before spawn
-      const adapterId = agent.adapter ?? "claude-agent-acp";
-      const adapter = getAdapter(adapterId);
-      if (!adapter) {
+      // The resolver falls back to an ad-hoc npx adapter when the legacy
+      // `agent.adapter` field is not a registered id. Dispatch is stricter
+      // than one-shot `kspec agent run`: it requires a registered adapter so
+      // unknown ids fail fast with guidance instead of attempting to npx the
+      // typo. Runner-resolved adapters are always registered (the runner
+      // schema validates them at load time).
+      if (!getAdapter(adapterId)) {
         console.error(
           `[dispatch] Cannot resolve adapter "${adapterId}" for agent "${agentId}". Skipping invocation.`,
         );
-        // Decrement active count since we're not actually running
         const currentActive = this.activeCount.get(agentId) ?? 1;
         this.activeCount.set(agentId, Math.max(0, currentActive - 1));
-        // AC: @agent-dispatch-engine ac-10 - Add task note for unresolvable adapter
-        // AC: @agent-dispatch-engine ac-28 — async fire-and-forget
         if (this.kspecCliPath) {
           await this._addTaskNote(
             entry.change.taskRef,
@@ -2775,6 +2836,10 @@ export class DispatchEngine {
         }
         return false;
       }
+      // Reference the adapter to keep its bound contract pinned for later
+      // (currently the spawner re-resolves via the adapter object passed in
+      // the invocation options).
+      void adapter;
 
       // AC: @agent-dispatch-engine ac-11 - Create abort controller for graceful cancellation
       const abortController = new AbortController();
@@ -2810,11 +2875,20 @@ export class DispatchEngine {
         };
         this.onInvocationEvent?.(invEvent);
         // AC: @dispatch-event-envelope ac-1 - Route invocation lifecycle through bus
+        // AC: @dispatch-event-payload ac-2 — adapter_id, resolved_adapter, runner
+        // AC: @runner-resolution-and-preflight ac-dispatched-event-records-runner
         this._eventBus.emit({
           event_type: "invocation.started",
           source_type: "invocation_lifecycle",
           source_id: preSessionId,
-          payload: { ...invEvent },
+          payload: {
+            ...invEvent,
+            trigger: STATUS_TO_EVENT[entry.change.toStatus] ?? "task.ready",
+            task_ref: entry.change.taskRef ?? undefined,
+            adapter_id: agent.adapter ?? adapterId,
+            resolved_adapter: adapterId,
+            ...(runnerId ? { runner: runnerId } : {}),
+          },
         });
       };
 
@@ -2847,6 +2921,10 @@ export class DispatchEngine {
         abortSignal: abortController.signal,
         sessionId: preSessionId,
         mutationLockFile: getDispatchShadowMutationLockPath(this.projectDir),
+        // AC: @runner-resolution-and-preflight ac-dispatch-uses-runner-resolution
+        // Reuse the registry loaded for preflight so the resolver inside
+        // runInvocation produces the same contract.
+        runnerRegistry: preflightRegistry,
         env: {
           KSPEC_DISPATCH_BASE_BRANCH: workspace.metadata.baseBranch,
           KSPEC_DISPATCH_MERGE_TARGET: workspace.metadata.mergeTargetBranch,
@@ -3057,12 +3135,17 @@ export class DispatchEngine {
             this.onInvocationEvent?.(terminalEvent);
             // AC: @dispatch-event-envelope ac-1 - Route invocation lifecycle through bus
             // AC: @multi-turn-session-lifecycle ac-14 — include turn_count in terminal payload
+            // AC: @dispatch-event-payload ac-2 — adapter_id, resolved_adapter, runner
+            // AC: @runner-resolution-and-preflight ac-dispatched-event-records-runner
             const terminalPayload: Record<string, unknown> = {
               ...terminalEvent,
               trigger: STATUS_TO_EVENT[entry.change.toStatus] ?? "task.ready",
               task_ref: terminalEvent.task_id ?? undefined,
               duration_ms: invocationResult?.durationMs ?? Date.now() - trackingRecord.startedAtMs,
               turn_count: invocationResult?.turnCount ?? 1,
+              adapter_id: agent.adapter ?? adapterId,
+              resolved_adapter: adapterId,
+              ...(runnerId ? { runner: runnerId } : {}),
             };
             this._eventBus.emit({
               event_type: `invocation.${terminalEvent.type}`,

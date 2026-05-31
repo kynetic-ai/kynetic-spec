@@ -67,6 +67,24 @@ export const InvocationStartedPayloadSchema = z.object({
   trigger: z.string(),
   /** Task reference when the invocation is task-scoped */
   task_ref: z.string().nullable().optional(),
+  /**
+   * Adapter id requested by the agent (or the override that was applied).
+   * AC: @dispatch-event-payload ac-2
+   */
+  adapter_id: z.string().optional(),
+  /**
+   * Adapter id that actually resolved for the spawn. Equal to `adapter_id`
+   * on the legacy path; equal to the runner's adapter on the runner path.
+   * AC: @dispatch-event-payload ac-2
+   */
+  resolved_adapter: z.string().optional(),
+  /**
+   * Named runner that resolved this invocation. Present when a named
+   * runner was configured; absent otherwise.
+   * AC: @dispatch-event-payload ac-2
+   * AC: @runner-resolution-and-preflight ac-dispatched-event-records-runner
+   */
+  runner: z.string().optional(),
 });
 
 /**
@@ -90,6 +108,23 @@ export const InvocationTerminalPayloadSchema = z.object({
    * AC: @multi-turn-session-lifecycle ac-14
    */
   turn_count: z.number().int().positive(),
+  /**
+   * Adapter id requested by the agent (or the override that was applied).
+   * AC: @dispatch-event-payload ac-2
+   */
+  adapter_id: z.string().optional(),
+  /**
+   * Adapter id that actually resolved for the spawn.
+   * AC: @dispatch-event-payload ac-2
+   */
+  resolved_adapter: z.string().optional(),
+  /**
+   * Named runner that resolved this invocation. Present when a named
+   * runner was configured; absent otherwise.
+   * AC: @dispatch-event-payload ac-2
+   * AC: @runner-resolution-and-preflight ac-dispatched-event-records-runner
+   */
+  runner: z.string().optional(),
 });
 
 export type InvocationStartedPayload = z.infer<typeof InvocationStartedPayloadSchema>;

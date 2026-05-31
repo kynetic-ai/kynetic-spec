@@ -180,6 +180,8 @@ export async function createSession(
     agent_type: input.agent_type,
     agent_id: input.agent_id,
     trigger: input.trigger,
+    // AC: @runner-resolution-and-preflight ac-session-metadata-records-runner
+    runner: input.runner,
     status: input.status ?? "active",
     started_at: input.started_at ?? new Date().toISOString(),
     ended_at: undefined,

@@ -20,6 +20,7 @@
  * - MOCK_ACP_PROJECT_DIR: Working directory for kspec commands
  * - MOCK_ACP_CLI_PATH: Path to kspec CLI entry point (required in CI where kspec isn't global)
  * - MOCK_ACP_VERIFY_ARGS_FILE: Write process.argv to this file for verifying command-line args
+ * - MOCK_ACP_VERIFY_PROMPT_FILE: Write each session/prompt params payload to this file as JSON (newline-delimited)
  * - MOCK_ACP_EMIT_RATE_LIMIT_EVENT: If true, emit a simulated non-actionable rate_limit_event stderr line
  * - MOCK_ACP_EMIT_ACTIONABLE_STDERR: Emit this stderr line during prompt handling
  * - MOCK_ACP_SUPPRESS_UPDATES: If true, send no session updates before response
@@ -55,6 +56,10 @@ const verifyEnvFile = process.env.MOCK_ACP_VERIFY_ENV_FILE;
 const verifyEnvVars = process.env.MOCK_ACP_VERIFY_ENV_VARS; // comma-separated var names
 // Write process.argv to a file for verifying command-line args
 const verifyArgsFile = process.env.MOCK_ACP_VERIFY_ARGS_FILE;
+// Write the params payload of each session/prompt request to this file
+// (one JSON line per prompt) so tests can assert on prompt content like
+// adapter-specific skill reference formatting.
+const verifyPromptFile = process.env.MOCK_ACP_VERIFY_PROMPT_FILE;
 const sendPermissionRequest = process.env.MOCK_ACP_SEND_PERMISSION_REQUEST === "true";
 const emitRateLimitEvent = process.env.MOCK_ACP_EMIT_RATE_LIMIT_EVENT === "true";
 const actionableStderr = process.env.MOCK_ACP_EMIT_ACTIONABLE_STDERR;
@@ -171,6 +176,16 @@ async function handlePrompt(id, params) {
   if (!sessionId || params.sessionId !== sessionId) {
     sendError(id, -32003, "Invalid session");
     return;
+  }
+
+  // Append the prompt params to the verify file so tests can assert on
+  // adapter-specific prompt content (e.g. resolved skill reference formatting).
+  if (verifyPromptFile) {
+    try {
+      fs.appendFileSync(verifyPromptFile, `${JSON.stringify(params)}\n`);
+    } catch {
+      // Best-effort: test-only artifact, never fail the mock for I/O issues.
+    }
   }
 
   // Optional delay

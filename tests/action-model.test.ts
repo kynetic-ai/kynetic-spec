@@ -776,6 +776,22 @@ process.exit(0);`,
       expect(warnings[0].variable).toBe("bogus_field");
       expect(warnings[0].available_fields.length).toBeGreaterThan(0);
     });
+
+    // AC: @dispatch-event-payload ac-2
+    // AC: @runner-resolution-and-preflight ac-dispatched-event-records-runner
+    it("treats runner, adapter_id, and resolved_adapter as known invocation fields", () => {
+      const warnings = validateActionTemplates(
+        ["runner={{runner}} adapter={{adapter_id}} resolved={{resolved_adapter}}"],
+        "invocation.started",
+      );
+      expect(warnings).toEqual([]);
+
+      const terminalWarnings = validateActionTemplates(
+        ["runner={{runner}} adapter={{adapter_id}} resolved={{resolved_adapter}}"],
+        "invocation.completed",
+      );
+      expect(terminalWarnings).toEqual([]);
+    });
   });
 
   // AC: @dispatch-action-model ac-8

@@ -99,6 +99,15 @@ export const SessionMetadataSchema = z.object({
    */
   trigger: SessionTriggerSchema.optional(),
 
+  /**
+   * Named runner that resolved this invocation. Present when the agent
+   * referenced a runner from the layered runner config; absent for legacy
+   * adapter-only agents.
+   *
+   * AC: @runner-resolution-and-preflight ac-session-metadata-records-runner
+   */
+  runner: z.string().optional(),
+
   /** Current session status */
   status: SessionStatusSchema,
 

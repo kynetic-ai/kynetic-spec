@@ -39,6 +39,8 @@ import * as http from "node:http";
 import type { Agent } from "../src/schema/meta.js";
 import { provisionDispatchWorkspace } from "../src/agent-runtime/workspace.js";
 import * as bootstrapModule from "../src/agent-runtime/bootstrap.js";
+import * as runnerConfigModule from "../src/agents/runner-config.js";
+import { mergeRunnerConfigs } from "../src/agents/runner-config.js";
 
 // ─── Fixtures ────────────────────────────────────────────────────────────────
 
@@ -355,6 +357,7 @@ async function setupProjectWithAgents(dir: string, agents: Agent[]): Promise<voi
         adapter: a.adapter,
         budget: a.budget,
         auto_approve: a.auto_approve ?? false,
+        ...(a.runner && { runner: a.runner }),
         ...(a.prompt_template && { prompt_template: a.prompt_template }),
       })),
     }),
@@ -1816,6 +1819,94 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
   });
 });
 
+// ─── Dispatch uses the runner resolver ──────────────────────────────────────
+
+// AC: @runner-resolution-and-preflight ac-dispatch-uses-runner-resolution
+// AC: @runner-resolution-and-preflight ac-unknown-runner-blocks-before-spawn
+// AC: @runner-resolution-and-preflight ac-unknown-runner-reports-guidance
+describe("Dispatch runner resolution preflight", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-dispatch-runner-preflight-");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  // AC: @runner-resolution-and-preflight ac-dispatch-uses-runner-resolution
+  it("blocks dispatch before spawn when the configured runner is not in the effective registry", async () => {
+    // No project.runners.yaml or system runners.yaml on disk → the effective
+    // registry is empty. The agent points at an unknown runner, which can
+    // only fail if dispatch routes the invocation through the same
+    // resolveRunnerInvocation contract that one-shot agent run uses.
+    const agentMissingRunner = makeTestAgent({
+      id: "runner-missing-agent",
+      runner: "absent-runner",
+      adapter: undefined,
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agentMissingRunner]);
+
+    const captureFile = path.join(testDir, "kspec-runner-preflight-capture.json");
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    try {
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+      });
+      (engine as unknown as { running: boolean }).running = true;
+
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      const runSpy = vi.spyOn(invocationModule, "runInvocation");
+
+      const taskRef = `@${testUlid("TASK")}`;
+      const change = makeStateChange({
+        toStatus: "pending",
+        fromStatus: "in_progress",
+        taskRef,
+      });
+      const entry = { agent: agentMissingRunner, change, retryCount: 0, nextRetryAt: 0 };
+
+      type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
+      const spawned = await (engine as unknown as EngineInternal)._spawnInvocation(
+        agentMissingRunner,
+        entry,
+      );
+
+      // Dispatch skipped the invocation entirely — runInvocation never ran.
+      expect(spawned).toBe(false);
+      expect(runSpy).not.toHaveBeenCalled();
+
+      // The dispatch path surfaced the resolver's typed error to the operator
+      // (unknown_runner is a RunnerResolutionError reason code, not a
+      // generic adapter-resolution failure).
+      const errorMessage = errorSpy.mock.calls.map((c) => String(c[0])).join("\n");
+      expect(errorMessage).toContain("unknown_runner");
+      expect(errorMessage).toContain("absent-runner");
+
+      // Dispatch recorded the resolver guidance on the task so the next
+      // operator can find both layers + the agent definition.
+      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
+      const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
+      expect(noteCall, "expected dispatch to add an AGENT-SKIP task note").toBeDefined();
+      const noteText = noteCall!.args.join(" ");
+      expect(noteText).toContain("AGENT-SKIP");
+      expect(noteText).toContain("absent-runner");
+      expect(noteText).toContain("unknown_runner");
+
+      errorSpy.mockRestore();
+      runSpy.mockRestore();
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+      vi.restoreAllMocks();
+    }
+  });
+});
+
 // ─── AC-11: Graceful shutdown ─────────────────────────────────────────────────
 
 // AC: @agent-dispatch-engine ac-11
@@ -3184,6 +3275,115 @@ describe("Dispatch role workflow entrypoints", () => {
         expect(invocation.prompt).toContain("Publish target: `main`");
         expect(invocation.prompt).toContain("create or update a PR");
         expect(invocation.env?.KSPEC_DISPATCH_PUBLICATION_MODE).toBe("pull_request");
+      } finally {
+        await engine.stop();
+      }
+    } finally {
+      fakeGh.restore();
+    }
+  });
+
+  // AC: @runner-resolution-and-preflight ac-dispatch-uses-runner-resolution
+  // AC: @agent-runner-configuration ac-runner-precedence-over-adapter
+  //
+  // Regression: dispatch previously rendered the role-entry workflow using
+  // `agent.adapter ?? "claude-agent-acp"` BEFORE the runner resolver ran,
+  // which made adapter-specific tokens (`/skill` vs `$skill`) always reflect
+  // the legacy adapter even when a runner was configured to spawn a
+  // different platform.
+  it("renders role-entry using the runner-resolved adapter, not the legacy agent.adapter", async () => {
+    const agent = makeTestAgent({
+      id: "runner-worker",
+      // Legacy adapter intentionally points at claude — the runner must win
+      // and render codex-style entrypoint tokens instead.
+      adapter: "claude-agent-acp",
+      runner: "test-codex-runner",
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+    await fs.writeFile(
+      path.join(testDir, "kspec.config.yaml"),
+      [
+        "dispatch:",
+        "  base_branch: main",
+        "agent:",
+        "  skills:",
+        '    task_work: "/kspec:task-work"',
+      ].join("\n"),
+      "utf-8",
+    );
+    execSync("git remote add origin https://github.com/example/repo.git", {
+      cwd: testDir,
+      stdio: "pipe",
+    });
+    const fakeGh = await installFakeGh(testDir);
+
+    try {
+      vi.spyOn(configModule, "resolveDispatchRemoteSync").mockReturnValue(false);
+      // Inject a runner registry containing the runner used by the agent so
+      // dispatch resolves it without depending on host ~/.config/kspec state.
+      vi.spyOn(runnerConfigModule, "resolveEffectiveRunners").mockResolvedValue({
+        project: { config: null, path: "", loaded: false, issues: null },
+        system: { config: null, path: "", loaded: false, issues: null },
+        registry: mergeRunnerConfigs(null, {
+          runners: {
+            "test-codex-runner": { kind: "acp_process", adapter: "codex-acp" },
+          },
+        }),
+      });
+      const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+        session: {} as any,
+        outcome: "success",
+        durationMs: 1,
+      });
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+      });
+
+      await engine.start();
+      try {
+        const taskId = testUlid("TASK");
+        await engine.handleStateChange({
+          taskId,
+          taskRef: `@${taskId}`,
+          fromStatus: "in_progress",
+          toStatus: "pending",
+          timestamp: Date.now(),
+          task: {
+            _ulid: taskId,
+            title: "Runner-resolved role entry task",
+            slugs: ["runner-resolved-role-entry-task"],
+            status: "pending",
+            type: "task",
+            priority: 1,
+            blocked_by: [],
+            depends_on: [],
+            context: [],
+            tags: [],
+            vcs_refs: [],
+            notes: [],
+            todos: [],
+            created_at: new Date().toISOString(),
+            automation: "eligible",
+          } as any,
+        });
+
+        await waitForMockCall(runSpy);
+
+        expect(runSpy).toHaveBeenCalled();
+        const invocation = runSpy.mock.calls[0][0];
+        // Codex-style entrypoint syntax — proves the resolver-supplied
+        // adapter (codex-acp) drove role-entry, not the legacy claude
+        // agent.adapter field.
+        expect(invocation.prompt).toContain("Workflow entrypoint: `$kspec-task-work`");
+        // Negative: the claude-style entrypoint MUST NOT appear, since
+        // rendering it would mean the legacy adapter won the role-entry
+        // build instead of the resolved runner adapter.
+        expect(invocation.prompt).not.toContain("Workflow entrypoint: `/kspec:task-work`");
       } finally {
         await engine.stop();
       }
