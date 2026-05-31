@@ -235,6 +235,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-05-31T16:57:50.414Z
+  - _ulid: 01KSZH8MR4GG805K1RAMH8Y8AA
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSZEVC0V42FTMJW161NFKH3F
+    timestamp: 2026-05-31T17:28:18.948Z
 examined_commit: 1d6a27fd910eb070cda8dfe163783b1f94bff99e
 external_links: []
 lifecycle_state: closed
@@ -265,6 +271,20 @@ threads:
           reference reported by dry-run and the AC requiring diagnostics to identify
           command/cwd/args/env sources without exposing secrets.'
         created_at: 2026-05-31T16:46:06.875Z
+      - _ulid: 01KSZH8MHSHJ2Y4KBXVFR9DRE3
+        author: "@claude"
+        body: "Fix cycle 3: agent run --dry-run now resolves the runner invocation contract and emits a
+          typed runner_invocation block alongside the existing dry-run JSON. The block surfaces
+          runner name, source layer, resolved adapter, command + command_source, cwd + cwd_source,
+          runner_args + runner_args_source, env_policy (inherit policy, pass keys, set keys with
+          per-key origin, secret keys, secret source), overrides, and a typed preflight outcome.
+          Implementation lives in summarizeRunnerInvocation() in src/agents/runners.ts:1080+; the
+          CLI wiring is src/cli/commands/agent.ts:464-510 (buildDryRunInvocationSummary +
+          renderDryRunInvocationSummary). Env values and secret values are never carried into the
+          diagnostic surface — only key names. Four new behavioral tests in tests/cli-agent.test.ts
+          cover the runner-backed happy path, an unspawnable preflight diagnostic, the
+          implicit/legacy path, and the auto-approve/runner-args split."
+        created_at: 2026-05-31T17:28:18.745Z
     kind: blocker
   - _ulid: 01KSZEVF9MCGWRD107MQEV2N4C
     anchor:
@@ -314,5 +334,5 @@ verdicts:
     role: reviewer
     created_at: 2026-05-31T16:57:50.414Z
 created_at: 2026-05-31T16:41:30.052Z
-updated_at: 2026-05-31T16:57:50.414Z
+updated_at: 2026-05-31T17:28:18.745Z
 notes: []
