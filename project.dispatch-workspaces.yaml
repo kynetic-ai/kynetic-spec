@@ -12459,7 +12459,7 @@ workspaces:
         head: 4402679d5459ba6115d9b6417039f6368b4f8ab1
         last_seen_at: 2026-05-31T13:38:52.680Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-runner-resolver-invocation-contract-01ksyaz4
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: ac4142f968c489ddf073a6337d9040b12a248944
     bootstrap:
       status: succeeded
@@ -12951,9 +12951,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-05-31T16:17:33.442Z
-      last_reconciled_at: 2026-05-31T16:32:56.700Z
+      last_reconciled_at: 2026-05-31T16:35:51.633Z
       created_at: 2026-05-31T13:57:09.961Z
-      updated_at: 2026-05-31T16:32:56.700Z
+      updated_at: 2026-05-31T16:35:51.633Z
     workspace_id: dispatch-workspace-01KSYAZ5A1RCPK2A8H7QXF8N6E
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
