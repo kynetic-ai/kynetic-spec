@@ -223,6 +223,30 @@ events:
       from: open
       to: closed
     timestamp: 2026-05-31T19:21:42.014Z
+  - _ulid: 01KSZRXM7BNX6FRSRKYYBQAXZN
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSZQQB31AA1RBPKMXPBKP1X5
+    timestamp: 2026-05-31T19:42:06.571Z
+  - _ulid: 01KSZRXPM6Q3ACAQ52Y32WC5MV
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSZQQB31AA1RBPKMXPBKP1X5
+    timestamp: 2026-05-31T19:42:09.030Z
+  - _ulid: 01KSZRXS473CZ0ZKACJCAW1Y9B
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSZQQZDZJHMF5WV596E43ZTD
+    timestamp: 2026-05-31T19:42:11.591Z
+  - _ulid: 01KSZRXVH8K16B8PN4JBDZ91DV
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSZQQZDZJHMF5WV596E43ZTD
+    timestamp: 2026-05-31T19:42:14.056Z
 examined_commit: 0ce7045814f098535dc27ade2b6a4a1d00b9c202
 external_links: []
 lifecycle_state: closed
@@ -255,7 +279,21 @@ threads:
           validation for runner.process.cwd (including a behavioral CLI test) and report an
           invalid_cwd diagnostic/non-zero validate exit when the directory cannot be used.'
         created_at: 2026-05-31T19:21:12.033Z
+      - _ulid: 01KSZRXM1055AB96WB4PRJTTQN
+        author: "@claude"
+        body: "Fixed in e62d1076e9. Runner validation now probes runner.process.cwd when set: missing
+          directory, non-directory path, ENOTDIR, and EACCES each surface an invalid_cwd diagnostic
+          with the configured path, the layer that owns the fix (project/system), and a structured
+          invalid_cwd_reason for telemetry. The validator now exits non-zero whenever any selected
+          runner reports invalid_cwd, matching the executable-preflight contract. Added behavioral
+          CLI coverage in tests/agent-runner-cli.test.ts (kspec agent runners validate process.cwd
+          describe block) covering nonexistent directory, file-as-cwd, human-output rendering with
+          [invalid] + invalid_cwd + the configured path, and the unset-cwd negative case. Full
+          vitest suite (10138 tests) green."
+        created_at: 2026-05-31T19:42:06.368Z
     kind: blocker
+    resolved_at: 2026-05-31T19:42:08.823Z
+    resolved_by: "@claude"
   - _ulid: 01KSZQQZDZJHMF5WV596E43ZTD
     entries:
       - _ulid: 01KSZQQZDZS5EWQQTFZMBBNVKE
@@ -271,7 +309,16 @@ threads:
           searched: correctness, edge cases, error handling, redaction/security, test quality, and
           integration."
         created_at: 2026-05-31T19:21:32.863Z
+      - _ulid: 01KSZRXRWPC4Y64VZXMZRWZ6C3
+        author: "@claude"
+        body: Acknowledged — evidence log noted. The invalid_cwd gap it documented is now closed with both
+          code (probeRunnerCwd in src/agents/runner-validation.ts) and behavioral CLI coverage; the
+          rest of the categories surveyed (correctness, redaction, JSON schema, error guidance,
+          runner filter) remain covered by the prior test additions.
+        created_at: 2026-05-31T19:42:11.350Z
     kind: nit
+    resolved_at: 2026-05-31T19:42:13.849Z
+    resolved_by: "@claude"
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -281,5 +328,5 @@ verdicts:
     role: reviewer
     created_at: 2026-05-31T19:21:42.013Z
 created_at: 2026-05-31T19:04:43.987Z
-updated_at: 2026-05-31T19:21:42.014Z
+updated_at: 2026-05-31T19:42:13.849Z
 notes: []
