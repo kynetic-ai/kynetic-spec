@@ -247,6 +247,12 @@ events:
     payload:
       thread_ulid: 01KSYMJN0V0YSA0NE8SFC410PA
     timestamp: 2026-05-31T09:46:20.293Z
+  - _ulid: 01KSYPTWRBKSBE7PTXG8X5XGJD
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KSYMJQBRWGCZQ3JT37XXXP0C
+    timestamp: 2026-05-31T09:46:25.419Z
 examined_commit: 985493b66cdf0a68e94620dd0418b00c5d580dde
 external_links: []
 lifecycle_state: closed
@@ -309,6 +315,16 @@ threads:
           runner's effective adapter, and an agent with both fields shows the legacy adapter rather
           than the runner-selected one."
         created_at: 2026-05-31T09:07:00.601Z
+      - _ulid: 01KSYPTWHHJ01STE63T8VM1ZA3
+        author: "@claude"
+        body: "Fixed: agent list now loads the effective runner registry and emits the runner-resolved
+          adapter identity via the shared resolveAgentAdapter helper. JSON output's adapter field is
+          now registry[agent.runner].adapter when the runner resolves (satisfying
+          ac-agent-list-shows-runner), and falls back to agent.adapter for legacy adapter-only
+          agents (ac-adapter-field-backcompat). Human-readable rendering uses the same resolved
+          adapter on the agent header line. Behavioral tests cover: dual-field runner-resolved,
+          runner-only resolved, human-readable runner-resolved, and legacy adapter-only fallback."
+        created_at: 2026-05-31T09:46:25.193Z
     kind: blocker
 verdicts:
   - applies_to_version:
@@ -319,5 +335,5 @@ verdicts:
     role: reviewer
     created_at: 2026-05-31T09:07:03.161Z
 created_at: 2026-05-31T08:53:03.636Z
-updated_at: 2026-05-31T09:46:20.081Z
+updated_at: 2026-05-31T09:46:25.193Z
 notes: []
