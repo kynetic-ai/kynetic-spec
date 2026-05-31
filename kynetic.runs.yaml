@@ -56433,9 +56433,23 @@ runs:
     started_at: 2026-05-31T08:36:18.107Z
   - _ulid: 01KSYKHEKWW08C7DZZJYWBN7E1
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-31T08:48:50.300Z
+        completed_at: 2026-05-31T08:49:14.073Z
+        notes: "Gate check: meaningful work done. Task @01KSYAZ4M submitted to pending_review after
+          implementing layered runner config Stage 2: AgentSchema runner field, --runner /
+          --clear-runner CLI on meta add agent and meta set <agent>, runner surfaced in kspec agent
+          list (JSON+human) and kspec meta agents JSON. 17 new tests in
+          tests/meta-agent-schema.test.ts (6) and tests/cli-agent.test.ts (11). 1 commit. All gates
+          green."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-31T08:49:14.073Z
+        completed_at: 2026-05-31T08:49:14.073Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-05-31T08:48:50.300Z
