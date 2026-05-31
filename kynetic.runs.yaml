@@ -57880,7 +57880,7 @@ runs:
     completed_at: 2026-05-31T21:55:18.648Z
   - _ulid: 01KT01MES8RSJG4P6DQKNEVPA5
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -57895,7 +57895,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-31T22:14:51.291Z
-        completed_at: 2026-05-31T22:14:51.291Z
+        completed_at: 2026-05-31T22:15:10.409Z
+        notes: "Friction points: (1) batch review check structured args still do not preserve optional check
+          intent:  produced a required review evidence log check, matching existing
+          inbox/observation @01KQ1272. (2) full fresh test suite for a review took 2614.7s, which is
+          already covered by existing reviewer-suite-duration observations such as @01KSJZQ3. (3)
+          changed-file oxlint surfaced unrelated pre-existing warnings in touched files, already
+          covered by @01KSZ5CF. No new high-confidence untracked friction identified."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-31T22:15:10.409Z
+        completed_at: 2026-05-31T22:15:10.409Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T22:14:23.272Z
