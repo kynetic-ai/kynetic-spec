@@ -30325,6 +30325,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-05-31T06:19:03.701Z
+  automation: eligible
 - _ulid: 01KSYAZ6Z7RTK8DQPJT2AA09WA
   slugs:
     - task-web-ui-runner-surfaces

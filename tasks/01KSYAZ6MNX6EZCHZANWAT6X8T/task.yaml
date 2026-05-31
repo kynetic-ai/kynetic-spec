@@ -66,5 +66,14 @@ tags:
   - agents
   - runners
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-05-31T06:22:13.309Z
 created_at: 2026-05-31T06:19:03.701Z
 todos: []
+automation: eligible
