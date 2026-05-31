@@ -12421,11 +12421,11 @@ workspaces:
     canonical_branch: dispatch/task/task-runner-resolver-invocation-contract/01ksyaz4
     canonical_branch_head: 4402679d5459ba6115d9b6417039f6368b4f8ab1
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-05-31T13:56:59.124Z
+      updated_at: 2026-05-31T14:02:02.200Z
     health:
       status: healthy
       issues: []
@@ -12439,16 +12439,16 @@ workspaces:
       target_branch: dev
       target_commit: fbb13cbe731c48363c2eaaf86d6be99ae80ddf9d
       updated_at: 2026-05-31T13:56:59.124Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KSYAZ4YAGQG4JTV4P8VAW078"
     task_slug: task-runner-resolver-invocation-contract
     timestamps:
-      closed_at: null
+      closed_at: 2026-05-31T14:02:02.200Z
       last_active_at: 2026-05-31T13:39:19.292Z
       last_reconciled_at: 2026-05-31T14:01:19.473Z
       created_at: 2026-05-31T10:28:11.658Z
-      updated_at: 2026-05-31T14:01:19.473Z
+      updated_at: 2026-05-31T14:02:02.200Z
     workspace_id: dispatch-workspace-01KSYAZ4YAGQG4JTV4P8VAW078
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
