@@ -56622,10 +56622,57 @@ runs:
     started_at: 2026-05-31T11:08:13.360Z
     completed_at: 2026-05-31T11:10:28.061Z
   - _ulid: 01KSYWPXBETT5MEYPRWM3QH0MV
-    status: active
-    current_step: 0
+    status: completed
+    current_step: 5
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-05-31T11:29:06.414Z
+        completed_at: 2026-05-31T11:29:58.924Z
+        notes: "Worked well: review records gave a durable place to attach gates, evidence, and blocker
+          threads; running an explicit AC annotation sweep with rg caught missing coverage that
+          broader validation hid in baseline warnings; a small tsx resolver probe quickly verified
+          whether pure resolver output honored effective runner fields."
+      - status: completed
+        step_index: 1
+        started_at: 2026-05-31T11:29:58.924Z
+        completed_at: 2026-05-31T11:30:00.253Z
+        notes: "Friction: task-focused AC coverage still required manual rg loops because kspec validate
+          --completeness reports repo-wide baseline warnings rather than the reviewed task/spec
+          subset; this makes it easy to miss missing AC annotations unless the reviewer builds a
+          custom sweep."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-31T11:30:00.253Z
+        completed_at: 2026-05-31T11:30:01.492Z
+        notes: "Coverage searched before capture: kspec search 'review AC coverage annotation missing';
+          kspec search 'runner environment inheritance policy process cwd executable'; kspec search
+          'reflection review evidence log full suite AC sweep'. No matches found, so the
+          task-focused AC coverage friction appears untracked."
+      - status: completed
+        step_index: 3
+        started_at: 2026-05-31T11:30:01.492Z
+        completed_at: 2026-05-31T11:30:02.734Z
+        notes: "Proposed improvement: add or expose a task/spec-scoped AC coverage check for reviews that
+          reports missing own and related AC annotations for the task under review without requiring
+          custom rg loops over all tests. Scope: small to medium, likely CLI/reporting around
+          existing coverage index."
+      - status: completed
+        step_index: 4
+        started_at: 2026-05-31T11:30:02.734Z
+        completed_at: 2026-05-31T11:30:03.952Z
+        notes: "Discussion step resolved in this requested run: capturing only high-confidence, searched
+          items as observations; no tasks created because implementation scope should be triaged
+          separately."
+      - status: completed
+        step_index: 5
+        started_at: 2026-05-31T11:30:03.952Z
+        completed_at: 2026-05-31T11:30:05.617Z
+        notes: "Captured observations: friction for task-scoped AC coverage reporting; success for using a
+          narrow executable resolver probe to validate pure contract semantics. No inbox/task
+          created."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T11:29:06.414Z
+    completed_at: 2026-05-31T11:30:05.617Z

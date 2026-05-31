@@ -20017,6 +20017,26 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-05-31T07:56:49.598Z
+  - _ulid: 01KSYWRP2ZE9HP662FDB4T8RBS
+    type: friction
+    content: Reviewing task-scoped AC coverage required manual rg sweeps because kspec validate
+      --completeness reports repo-wide baseline warnings instead of a focused task/spec coverage
+      report. A task-scoped review coverage command would reduce missed missing annotations and make
+      review evidence easier to record.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-05-31T11:30:04.512Z
+  - _ulid: 01KSYWRPAK2G1MH6VE4SSF6XG6
+    type: success
+    content: "During review of a pure resolver, a tiny executable probe against the exported function
+      quickly validated whether effective config fields were actually reflected in the contract.
+      This is an effective review pattern for pure config/contract code: read the code, then run a
+      narrow probe for the edge case."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-05-31T11:30:04.756Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
