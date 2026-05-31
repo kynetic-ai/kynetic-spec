@@ -247,6 +247,12 @@ events:
     payload:
       thread_ulid: 01KSZEVF9MCGWRD107MQEV2N4C
     timestamp: 2026-05-31T17:28:24.241Z
+  - _ulid: 01KSZH92CZ78H7XB05XJVB2DWB
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KSZEVC0V42FTMJW161NFKH3F
+    timestamp: 2026-05-31T17:28:32.927Z
 examined_commit: 1d6a27fd910eb070cda8dfe163783b1f94bff99e
 external_links: []
 lifecycle_state: closed
@@ -292,6 +298,8 @@ threads:
           implicit/legacy path, and the auto-approve/runner-args split."
         created_at: 2026-05-31T17:28:18.745Z
     kind: blocker
+    resolved_at: 2026-05-31T17:28:32.713Z
+    resolved_by: "@claude"
   - _ulid: 01KSZEVF9MCGWRD107MQEV2N4C
     anchor:
       type: code
@@ -355,5 +363,5 @@ verdicts:
     role: reviewer
     created_at: 2026-05-31T16:57:50.414Z
 created_at: 2026-05-31T16:41:30.052Z
-updated_at: 2026-05-31T17:28:24.034Z
+updated_at: 2026-05-31T17:28:32.713Z
 notes: []
