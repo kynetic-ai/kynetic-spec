@@ -57941,7 +57941,7 @@ runs:
     completed_at: 2026-05-31T22:16:15.079Z
   - _ulid: 01KT04FWD59FBFQWKTDDSYX8TM
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -57957,7 +57957,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-05-31T23:04:37.127Z
-        completed_at: 2026-05-31T23:04:37.127Z
+        completed_at: 2026-05-31T23:04:50.213Z
+        notes: "Friction points: (1) Recording the required review checks and evidence log is repetitive and
+          verbose; a clean review still required manually constructing nine review check entries
+          plus a verdict. (2) Full-suite verification is a long wall-clock wait; this run passed but
+          took 2616.4s, so reviewers spend substantial time waiting for the final summary. (3) Minor
+          CLI discoverability friction: kspec workflow show requires the run ref even immediately
+          after starting a workflow."
+      - status: completed
+        step_index: 2
+        started_at: 2026-05-31T23:04:50.213Z
+        completed_at: 2026-05-31T23:04:50.213Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-05-31T23:04:19.109Z
