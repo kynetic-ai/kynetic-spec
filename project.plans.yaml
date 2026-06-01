@@ -1733,7 +1733,8 @@ plans:
     slugs:
       - plan-agent-runner-contract-hardening-follow-up
     title: Agent Runner Contract Hardening Follow-up
-    status: draft
+    status: approved
+    approved_at: 2026-06-01T16:36:38.627Z
     derived_specs: []
     derived_tasks: []
     notes_count: 1
