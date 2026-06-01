@@ -16437,12 +16437,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-01T19:35:21.495Z
+      updated_at: 2026-06-01T19:35:31.646Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-01T19:35:21.495Z
+      updated_at: 2026-06-01T19:35:31.646Z
     integration:
       status: pending
       detail: null
@@ -16450,24 +16450,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: eb681fdfe108842ceb267de751ab4f98dc249bb0
-      updated_at: 2026-06-01T19:35:21.495Z
-    lifecycle_state: ready
+      updated_at: 2026-06-01T19:35:31.646Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KT20R8QKE7PMXPDS5A5FPJ3N"
     task_slug: task-runner-registry-load-failure-diagnostics
     timestamps:
       closed_at: null
       last_active_at: 2026-06-01T19:04:56.097Z
-      last_reconciled_at: 2026-06-01T19:35:21.495Z
+      last_reconciled_at: 2026-06-01T19:35:31.646Z
       created_at: 2026-06-01T17:51:52.345Z
-      updated_at: 2026-06-01T19:35:21.495Z
+      updated_at: 2026-06-01T19:35:31.646Z
     workspace_id: dispatch-workspace-01KT20R8QKE7PMXPDS5A5FPJ3N
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: d424a19f3dd23edfeafcbcaa5360deb1552f15d2
+        last_seen_at: 2026-06-01T19:35:31.646Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-runner-registry-load-failure-diagnostics-01kt20r8-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-runner-registry-load-failure-diagnostics/01kt20r8
-        head: c660a4ce459a36d5b7cce433363c66874c67be3d
-        last_seen_at: 2026-06-01T19:04:22.887Z
+        head: d424a19f3dd23edfeafcbcaa5360deb1552f15d2
+        last_seen_at: 2026-06-01T19:35:31.646Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-runner-registry-load-failure-diagnostics-01kt20r8
