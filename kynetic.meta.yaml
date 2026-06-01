@@ -20271,6 +20271,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-01T01:14:30.473Z
+  - _ulid: 01KT0CX21AN5CMNMTVTR6PCHBJ
+    type: success
+    content: For docs tasks that document CLI/API surfaces, verify every flag/command/option claim
+      against the live dev CLI (npm run dev -- <cmd> --help) and the source enum/schema values
+      before writing — not after. The installed kspec binary may lag the worktree branch, so the
+      installed --help cannot be trusted for unreleased surface. Catching CLI inaccuracies
+      pre-submission was high-leverage during the runner config docs task; relying on the installed
+      kspec --help would have produced two wrong examples (nonexistent kspec adapter list, --runner
+      empty-string vs --clear-runner).
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-01T01:31:19.466Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
