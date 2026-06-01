@@ -58810,7 +58810,7 @@ runs:
     completed_at: 2026-06-01T20:00:16.001Z
   - _ulid: 01KT2F27DNCXZ7WYMPR7QXZ1G2
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -58824,7 +58824,14 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-01T20:48:23.765Z
-        completed_at: 2026-06-01T20:48:23.765Z
+        completed_at: 2026-06-01T20:48:45.033Z
+        notes: "Friction: the full fresh npm test run had long quiet intervals near the tail. It eventually
+          completed successfully, but reviewers need to keep polling and distinguish normal
+          long-tail execution from a hung test runner before recording evidence."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-01T20:48:45.033Z
+        completed_at: 2026-06-01T20:48:45.033Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-01T20:47:34.837Z
