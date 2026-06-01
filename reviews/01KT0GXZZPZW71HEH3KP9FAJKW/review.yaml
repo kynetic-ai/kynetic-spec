@@ -233,6 +233,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-01T02:57:44.860Z
+  - _ulid: 01KT0KPFZ75WQRV4518Y3ESNA2
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KT0HTZKHDXVX30DK1AJ5W0J9
+    timestamp: 2026-06-01T03:30:04.391Z
 examined_commit: dacb75e03421617863403ed36dcfc31c0d8551e2
 external_links: []
 lifecycle_state: closed
@@ -268,6 +274,30 @@ threads:
           regressed. Move these annotations to behavioral tests that actually exercise those
           runner-backed flows, or add the missing tests."
         created_at: 2026-06-01T02:57:34.321Z
+      - _ulid: 01KT0KPFQ501T85JX84C15AKJP
+        author: "@claude"
+        body: >-
+          Fixed: removed the two inaccurate AC annotations from the legacy adapter-only tests. The
+          legacy-adapter one-shot test now only carries ac-adapter-field-backcompat, and the
+          legacy-adapter dispatch-preflight test was relabeled to ac-adapter-field-backcompat only.
+
+
+          Coverage for the runner-backed ACs now sits on tests that actually exercise the
+          runner-backed paths:
+
+          - ac-one-shot-uses-runner-resolution moved to the Flow 3 test that runs runInvocation with
+          a configured runner and asserts the resolver-supplied adapter reaches session metadata and
+          the agent.dispatched event.
+
+          - ac-dispatch-uses-runner-resolution moved to a new behavioral dispatch test (Flow 6b)
+          that drives DispatchEngine.handleStateChange() and asserts the engine populated
+          activeInvocationDetails with the runner identity and the custom-registered adapter id the
+          runner resolved to.
+
+          - ac-dispatch-preflight-accepts-configured-runners is now covered by a new test that
+          resolves a runner pointing at a non-built-in (locally registered) adapter id and asserts
+          preflightRunnerInvocation resolves.
+        created_at: 2026-06-01T03:30:04.133Z
     kind: blocker
   - _ulid: 01KT0HV21PH80N717M5EMAZA14
     anchor:
@@ -338,5 +368,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-01T02:57:44.859Z
 created_at: 2026-06-01T02:41:44.438Z
-updated_at: 2026-06-01T02:57:44.860Z
+updated_at: 2026-06-01T03:30:04.133Z
 notes: []
