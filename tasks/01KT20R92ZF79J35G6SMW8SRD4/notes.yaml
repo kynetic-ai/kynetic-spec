@@ -1,1 +1,40 @@
-notes: []
+notes:
+  - _ulid: 01KT2CM4MT79YHC56AAKEJR0FK
+    content: >-
+      Approach:
+
+      1. runners.ts probeRunnerInvocationExecutable — switch guard from fromConfig
+      (process.executable origin) to runnerId-based: implicit/legacy (runnerId===null) returns null;
+      named runner-backed always preflights effective adapter command under runner cwd + invocation
+      search PATH.
+
+      2. runner-validation.ts — drop external if-processExecutable guard so validation surface
+      mirrors new behavior (agent list/validate report adapter-command preflight outcomes for named
+      runners).
+
+      3. dispatch.ts — allocate preSessionId = ulid() BEFORE preflight resolver call; reuse it for
+      sessionId in resolveRunnerInvocation (preflight) and InvocationOptions handed to
+      runInvocation. Remove duplicate ulid() at active-tracking site.
+
+      Tests:
+
+      - agent-runner-process.test.ts: replace 'does not preflight when the runner did not configure
+      an executable' with positive AC coverage (preflight runs against registered adapter command
+      for named runners); keep implicit/legacy no-op test; add coverage for adapter command under
+      runner env.set.PATH and for unspawnable adapter command rejection.
+
+      - agent-dispatch-engine.test.ts: add ac-dispatch-preflight-uses-canonical-session-id — spy
+      resolveRunnerInvocation + runInvocation, assert preflight sessionId === options.sessionId.
+
+      Edges:
+
+      - One-shot runInvocation still allocates sessionId when not provided.
+
+      - Diagnostic details bounded to runner id, adapter id, command, unspawnable_reason.
+
+      - Legacy adapter-only agents keep no-preflight behavior.
+
+      - Dispatch retry counter unchanged on deterministic unspawnable_command.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-01T20:04:56.091Z
