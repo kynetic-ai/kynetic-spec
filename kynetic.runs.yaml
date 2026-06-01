@@ -58265,7 +58265,7 @@ runs:
     started_at: 2026-06-01T02:02:54.690Z
     completed_at: 2026-06-01T02:06:53.632Z
   - _ulid: 01KT0GAX2G6KNPB4PBA3TQD8TX
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -58309,10 +58309,16 @@ runs:
         completed_at: 2026-06-01T02:32:59.727Z
         notes: Skipped discussion because there were no untracked improvement proposals. Existing tracking
           covers the reflection candidates, so no user approval is needed for new capture.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-06-01T02:32:59.727Z
-        completed_at: 2026-06-01T02:32:59.727Z
+        completed_at: 2026-06-01T02:33:11.306Z
+        notes: "No capture performed. High-confidence reflection candidates were already tracked: test-suite
+          duration inbox 01KNTB8Z4, review-check batching observation 01KSS63E / related
+          review-check items, and detached-reviewer merge helper success through implemented
+          @detached-reviewer-merge-helper plus prior observations. Avoided duplicate
+          inbox/observation noise."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-01T02:31:18.864Z
+    completed_at: 2026-06-01T02:33:11.306Z
