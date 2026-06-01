@@ -20328,6 +20328,26 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-01T02:39:43.764Z
+  - _ulid: 01KT0KVY4X01VHDWJWT5KHYPZE
+    type: friction
+    content: "AC annotation correctness is unenforced: an // AC: comment marker counts as coverage in
+      kspec validate --completeness regardless of whether the annotated test actually exercises the
+      claimed behavior. In this fix cycle, three legacy adapter-only tests carried annotations for
+      runner-backed ACs (ac-one-shot-uses-runner-resolution, ac-dispatch-uses-runner-resolution,
+      ac-dispatch-preflight-accepts-configured-runners) and one missing-secret test carried
+      ac-unknown-runner-blocks-before-spawn. Coverage tooling reported them all as covered; only
+      human code review surfaced the mismatch. Related pattern flagged in the same review: a test
+      that fabricates engine internals (e.g., engine.activeInvocationDetails.set /
+      engine.queues.set) and asserts on the fabricated state passes even when the engine's real
+      queueing/resolution path regresses. Both classes of test produce false coverage and false
+      stability. Possible mitigations: a validate rule that pairs each AC annotation with a
+      behavioral fingerprint (function called, module loaded, route hit) and warns when the
+      annotation's spec ref does not appear in the test's runtime call graph; a convention requiring
+      'behavioral' tests to avoid direct internal-state mutation on the object under test."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-01T03:33:02.749Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
