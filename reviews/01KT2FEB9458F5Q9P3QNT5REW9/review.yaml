@@ -46,6 +46,17 @@ checks:
     runner: oxfmt
     created_at: 2026-06-01T21:09:11.476Z
     completed_at: 2026-06-01T21:09:11.476Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 0 errors. Repo baseline still reports 742 warnings under --quiet output; no
+      lint errors.
+    name: npm run lint -- --quiet
+    required: true
+    runner: oxlint
+    created_at: 2026-06-01T21:09:24.509Z
+    completed_at: 2026-06-01T21:09:24.509Z
 events:
   - _ulid: 01KT2FEB93RV1PVRY0ZGEWW2SF
     actor: Jacob Chapel
@@ -88,6 +99,13 @@ events:
       status: pass
       name: npm run format:check
     timestamp: 2026-06-01T21:09:11.696Z
+  - _ulid: 01KT2GA6M4SWKRV706N520DF0N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run lint -- --quiet
+    timestamp: 2026-06-01T21:09:24.740Z
 examined_commit: 360cb36d88effdc5d14e96e8aa324a65c9f70df2
 external_links: []
 lifecycle_state: open
@@ -100,5 +118,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-01T20:54:12.004Z
-updated_at: 2026-06-01T21:09:11.476Z
+updated_at: 2026-06-01T21:09:24.509Z
 notes: []
