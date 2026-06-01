@@ -17297,12 +17297,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-01T20:51:50.652Z
+      updated_at: 2026-06-01T20:51:56.937Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-01T20:51:50.652Z
+      updated_at: 2026-06-01T20:51:56.937Z
     integration:
       status: pending
       detail: null
@@ -17310,24 +17310,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 3e77fab2475397c1539d2cd58c98c12c55e9ae5b
-      updated_at: 2026-06-01T20:51:50.652Z
-    lifecycle_state: ready
+      updated_at: 2026-06-01T20:51:56.937Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KT20R9G2BY67EDEA63J690TR"
     task_slug: task-runner-operator-surface-parity
     timestamps:
       closed_at: null
       last_active_at: 2026-06-01T20:30:36.660Z
-      last_reconciled_at: 2026-06-01T20:51:50.652Z
+      last_reconciled_at: 2026-06-01T20:51:56.937Z
       created_at: 2026-06-01T20:30:12.163Z
-      updated_at: 2026-06-01T20:51:50.652Z
+      updated_at: 2026-06-01T20:51:56.937Z
     workspace_id: dispatch-workspace-01KT20R9G2BY67EDEA63J690TR
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 360cb36d88effdc5d14e96e8aa324a65c9f70df2
+        last_seen_at: 2026-06-01T20:51:56.937Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-runner-operator-surface-parity-01kt20r9-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-runner-operator-surface-parity/01kt20r9
-        head: 3e77fab2475397c1539d2cd58c98c12c55e9ae5b
-        last_seen_at: 2026-06-01T20:30:12.163Z
+        head: 360cb36d88effdc5d14e96e8aa324a65c9f70df2
+        last_seen_at: 2026-06-01T20:51:56.937Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-runner-operator-surface-parity-01kt20r9
