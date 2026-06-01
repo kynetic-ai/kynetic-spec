@@ -17296,18 +17296,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-runner-operator-surface-parity/01kt20r9
-    canonical_branch_head: 3e77fab2475397c1539d2cd58c98c12c55e9ae5b
+    canonical_branch_head: 360cb36d88effdc5d14e96e8aa324a65c9f70df2
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-01T20:30:12.163Z
+      updated_at: 2026-06-01T20:50:00.390Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-01T20:30:36.660Z
+      updated_at: 2026-06-01T20:50:00.390Z
     integration:
       status: pending
       detail: null
@@ -17315,7 +17315,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 3e77fab2475397c1539d2cd58c98c12c55e9ae5b
-      updated_at: 2026-06-01T20:30:12.163Z
+      updated_at: 2026-06-01T20:50:00.390Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KT20R9G2BY67EDEA63J690TR"
@@ -17323,9 +17323,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-01T20:30:36.660Z
-      last_reconciled_at: 2026-06-01T20:30:36.660Z
+      last_reconciled_at: 2026-06-01T20:50:00.390Z
       created_at: 2026-06-01T20:30:12.163Z
-      updated_at: 2026-06-01T20:30:36.660Z
+      updated_at: 2026-06-01T20:50:00.390Z
     workspace_id: dispatch-workspace-01KT20R9G2BY67EDEA63J690TR
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
