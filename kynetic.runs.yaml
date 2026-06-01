@@ -58603,7 +58603,7 @@ runs:
     started_at: 2026-06-01T16:49:41.328Z
     completed_at: 2026-06-01T16:51:29.768Z
   - _ulid: 01KT22YS1F9QR16WMY6QSRW1BZ
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -58649,7 +58649,10 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-01T17:17:58.940Z
-        completed_at: 2026-06-01T17:17:58.940Z
+        completed_at: 2026-06-01T17:18:09.195Z
+        notes: No capture performed. Existing records already cover the friction points, and the positive
+          review-flow pattern does not need a new observation beyond this workflow note.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-01T17:15:58.895Z
+    completed_at: 2026-06-01T17:18:09.195Z
