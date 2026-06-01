@@ -3968,3 +3968,15 @@ inbox:
       - testing
     added_by: Jacob Chapel
     created_at: 2026-05-31T20:07:21.856Z
+  - _ulid: 01KT0AEVVC5BTCBZ9DJW1APX6W
+    text: Web UI svelte-check has a pre-existing 61-error/5-warning baseline across unrelated files,
+      which makes npm --prefix packages/web-ui run check unusable as a hard review gate for focused
+      Svelte UI work. Fix or quarantine the baseline so reviewers can distinguish introduced
+      Svelte/type errors from existing debt.
+    tags:
+      - reflection
+      - web-ui
+      - testing
+      - typecheck
+    added_by: Jacob Chapel
+    created_at: 2026-06-01T00:48:37.228Z
