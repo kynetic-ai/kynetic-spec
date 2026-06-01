@@ -65,8 +65,12 @@ description: >
 spec_ref: "@runner-invocation-semantics"
 plan_ref: "@plan-agent-runner-contract-hardening-follow-up"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev at 780f40c03dc602564a3bd4a72d9765ed2d01ad67 after approved review
+  @01KT2E3D. Verified dispatch preflight now uses the canonical session id shared with active
+  tracking and runInvocation, and named runner-backed adapter commands preflight under the
+  runner-resolved cwd/env search path while legacy adapter-only invocations remain skipped.
 depends_on:
   - "@task-tighten-runner-closure-gap-specs"
   - "@task-resolve-system-runner-cwd-deterministically"
@@ -137,8 +141,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-01T20:30:47.042Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev at 780f40c03dc602564a3bd4a72d9765ed2d01ad67 after approved review @01KT2E3D.
+          Verified dispatch preflight now uses the canonical session id shared with active tracking
+          and runInvocation, and named runner-backed adapter commands preflight under the
+          runner-resolved cwd/env search path while legacy adapter-only invocations remain skipped.
+        previous: null
+      completed_at:
+        new: 2026-06-01T20:46:51.176Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-01T20:46:51.183Z
 created_at: 2026-06-01T16:37:28.799Z
 started_at: 2026-06-01T19:58:12.017Z
 submitted_at: 2026-06-01T20:24:29.178Z
+completed_at: 2026-06-01T20:46:51.176Z
 todos: []
 automation: eligible
