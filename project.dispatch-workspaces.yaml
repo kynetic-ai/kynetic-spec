@@ -17436,11 +17436,11 @@ workspaces:
     canonical_branch: dispatch/task/task-runner-operator-surface-parity/01kt20r9
     canonical_branch_head: 360cb36d88effdc5d14e96e8aa324a65c9f70df2
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-01T21:12:00.453Z
+      updated_at: 2026-06-01T21:15:07.575Z
     health:
       status: healthy
       issues: []
@@ -17454,16 +17454,16 @@ workspaces:
       target_branch: dev
       target_commit: 3e77fab2475397c1539d2cd58c98c12c55e9ae5b
       updated_at: 2026-06-01T21:12:00.453Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KT20R9G2BY67EDEA63J690TR"
     task_slug: task-runner-operator-surface-parity
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-01T21:15:07.575Z
       last_active_at: 2026-06-01T20:52:24.821Z
       last_reconciled_at: 2026-06-01T21:14:27.724Z
       created_at: 2026-06-01T20:30:12.163Z
-      updated_at: 2026-06-01T21:14:27.724Z
+      updated_at: 2026-06-01T21:15:07.575Z
     workspace_id: dispatch-workspace-01KT20R9G2BY67EDEA63J690TR
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
