@@ -20258,6 +20258,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-05-31T22:44:42.804Z
+  - _ulid: 01KT0BY8P8R3Z87PB2CX3TW0H5
+    type: friction
+    content: kspec task start can silently no-op when the task is already past pending — the command
+      prints the spec AC list and exits 0 but does not perform a state transition, and there is no
+      explicit feedback line distinguishing transitioned vs no-change. Caught in autonomous dispatch
+      by needing to re-run kspec task start after the first invocation left the task in pending; a
+      downstream kspec task submit then failed with Cannot submit task with status pending. Fix
+      scope unclear (always print resulting status, hard error on no-op, or state-aware messaging) —
+      capturing as friction rather than promoting to a task.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-01T01:14:30.473Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
