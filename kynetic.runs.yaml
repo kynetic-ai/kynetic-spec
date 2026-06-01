@@ -58566,9 +58566,21 @@ runs:
     completed_at: 2026-06-01T03:53:55.932Z
   - _ulid: 01KT21EMEG5NHN8QAWYXJC0QM0
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-01T16:49:41.328Z
+        completed_at: 2026-06-01T16:50:46.638Z
+        notes: Spec-update task only — 7 ACs and 4 notes added across 4 runner specs via single atomic kspec
+          batch (11 ops). File-based JSON payload avoided shell interpolation issues with backticks
+          and multi-line text. Dry-run before execute confirmed approach. Validation passed cleanly.
+          Task description was precise enough to execute directly without ambiguity.
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-01T16:50:46.638Z
+        completed_at: 2026-06-01T16:50:46.638Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-01T16:49:41.328Z
