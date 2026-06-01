@@ -15948,7 +15948,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-01T01:50:59.411Z
+      updated_at: 2026-06-01T01:55:26.975Z
     integration:
       status: merged
       detail: integration:merged
@@ -15964,18 +15964,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-01T01:32:52.341Z
-      last_reconciled_at: 2026-06-01T01:55:25.392Z
+      last_reconciled_at: 2026-06-01T01:55:26.975Z
       created_at: 2026-06-01T01:15:53.593Z
-      updated_at: 2026-06-01T01:55:25.392Z
+      updated_at: 2026-06-01T01:55:26.975Z
     workspace_id: dispatch-workspace-01KSYAZ79ZYNT3J9FM76BBVXMW
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: d37847902a448909ea6952e50b46e2815f91556c
-        last_seen_at: 2026-06-01T01:32:17.925Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-document-runner-config-migration-01ksyaz7-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-document-runner-config-migration/01ksyaz7
