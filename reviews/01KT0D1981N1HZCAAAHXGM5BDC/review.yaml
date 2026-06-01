@@ -2,7 +2,114 @@ _ulid: 01KT0D1981N1HZCAAAHXGM5BDC
 slugs: []
 title: Review task-document-runner-config-migration
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed; existing reference warnings only.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate
+    created_at: 2026-06-01T01:49:12.586Z
+    completed_at: 2026-06-01T01:49:12.586Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed; existing alignment warnings only.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate
+    created_at: 2026-06-01T01:49:15.916Z
+    completed_at: 2026-06-01T01:49:15.916Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed; existing completeness warning baseline
+      only.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate
+    created_at: 2026-06-01T01:49:19.855Z
+    completed_at: 2026-06-01T01:49:19.855Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run format:check passed; all 973 matched files formatted.
+    name: format:check
+    required: true
+    runner: npm
+    created_at: 2026-06-01T01:49:23.982Z
+    completed_at: 2026-06-01T01:49:23.982Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run lint -- --quiet passed with 0 errors and 743 existing warnings.
+    name: lint quiet
+    required: true
+    runner: npm
+    created_at: 2026-06-01T01:49:27.602Z
+    completed_at: 2026-06-01T01:49:27.602Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Skipped: changed files are Markdown docs only; no TypeScript or test files changed."
+    name: changed-file oxlint
+    required: true
+    runner: npx oxlint
+    created_at: 2026-06-01T01:49:30.780Z
+    completed_at: 2026-06-01T01:49:30.780Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck passed.
+    name: typecheck
+    required: true
+    runner: npm
+    created_at: 2026-06-01T01:49:34.486Z
+    completed_at: 2026-06-01T01:49:34.486Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test passed: 2664 suites passed; 10153 tests passed, 5 skipped; full log
+      /tmp/kspec-test-cache/01KT0CZWN0KD07KPHATAYD1R46/9438a84946942ba0.log."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-01T01:49:37.966Z
+    completed_at: 2026-06-01T01:49:37.966Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run dev -- agent runners validate and --json both passed; empty-runner output matched
+      documented ok shape.
+    name: runner CLI smoke
+    required: true
+    runner: npm run dev
+    created_at: 2026-06-01T01:49:41.220Z
+    completed_at: 2026-06-01T01:49:41.220Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md, all 7 changed docs, runner config/validation/agent CLI
+      source, linked specs. Claims verified: validate command shape through npm run dev; runner
+      layer fields against source schemas; AC coverage annotations via rg. Categories searched:
+      correctness, docs accuracy, secret-boundary guidance, migration path, troubleshooting
+      diagnostics, integration links, test quality."
+    name: review evidence log
+    required: true
+    runner: codex-reviewer
+    created_at: 2026-06-01T01:49:44.544Z
+    completed_at: 2026-06-01T01:49:44.544Z
 events:
   - _ulid: 01KT0D1981P2CV31CKPS86MSX5
     actor: Jacob Chapel
@@ -17,9 +124,95 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-01T01:33:58.566Z
+  - _ulid: 01KT0DXT96G5C2ERH5EVYCQ55N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-01T01:49:12.870Z
+  - _ulid: 01KT0DXXJTA0XZ02KVXR9TTES7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-01T01:49:16.250Z
+  - _ulid: 01KT0DY1EFXBH6W0ND0ZJ1N7YG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-01T01:49:20.207Z
+  - _ulid: 01KT0DY5CJNAS184F2NG8WKP51
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format:check
+    timestamp: 2026-06-01T01:49:24.242Z
+  - _ulid: 01KT0DY8YH5XMSH1KKGH5WTK4T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint quiet
+    timestamp: 2026-06-01T01:49:27.889Z
+  - _ulid: 01KT0DYC28WPSWJVRNRA3HYRDQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: changed-file oxlint
+    timestamp: 2026-06-01T01:49:31.080Z
+  - _ulid: 01KT0DYFMWSFZ8JYDJ5EX54Y8S
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-01T01:49:34.748Z
+  - _ulid: 01KT0DYK3A07TDA4WP8MB1CTZV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-01T01:49:38.282Z
+  - _ulid: 01KT0DYP88502CGEPC48NHMTFZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: runner CLI smoke
+    timestamp: 2026-06-01T01:49:41.512Z
+  - _ulid: 01KT0DYSEGDZPWA404VMFY3YHG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-06-01T01:49:44.784Z
+  - _ulid: 01KT0DYWPPTBR420A440V68KQR
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-01T01:49:48.118Z
+  - _ulid: 01KT0DYWPPHKKJNSSBHRJA1M34
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-01T01:49:48.118Z
 examined_commit: d37847902a448909ea6952e50b46e2815f91556c
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -27,7 +220,14 @@ subject:
   ref: "@01KSYAZ79ZYNT3J9FM76BBVXMW"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-06-01T01:49:48.118Z
 created_at: 2026-06-01T01:33:37.921Z
-updated_at: 2026-06-01T01:33:58.305Z
+updated_at: 2026-06-01T01:49:48.118Z
 notes: []
