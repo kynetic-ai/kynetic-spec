@@ -4024,3 +4024,23 @@ inbox:
       - reflection
     added_by: "@claude"
     created_at: 2026-06-01T02:39:43.421Z
+  - _ulid: 01KT2AX6WMJNNV7E1674E0730H
+    text: "Daemon routes diverge on shadow worktree path resolution: packages/daemon/src/routes/meta.ts
+      hardcodes shadowWorktreeDir = path.join(projectRoot, '.kspec') for
+      loadRunnerEnrichmentContext, while packages/daemon/src/routes/agent-dispatch.ts uses
+      ctx.specDir from initContext(). In shadow layouts these agree, but in non-shadow layouts
+      (manifest at projectRoot, no .kspec/ worktree) they diverge — meta.ts reads
+      project.runners.yaml from <projectRoot>/.kspec/ while dispatch.ts reads from ctx.specDir which
+      is typically <projectRoot>. Effect: GET /api/meta/agents and GET /api/agent/status can
+      disagree about whether the project runner layer exists. Discovered while writing mixed-layer
+      registry-load failure tests in tests/daemon-api/agent-runner-surfaces.test.ts which had to
+      write the malformed project.runners.yaml at both locations to test both endpoints. Fix: make
+      both routes use the same path-resolution helper (ideally initContext-based) so they always
+      agree."
+    tags:
+      - runners
+      - daemon
+      - bug
+      - reflection
+    added_by: "@claude"
+    created_at: 2026-06-01T19:34:56.148Z
