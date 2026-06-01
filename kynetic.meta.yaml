@@ -20380,8 +20380,12 @@ observations:
       state, detach /home/chapel/Projects/kynetic-spec-dispatch, and rerun the helper before the
       approved task could merge.
     author: codex
-    resolution: null
-    resolved: false
+    resolution: Duplicate of existing detached-reviewer/manual_merge friction observations (for example
+      @01KSBHFQ and related manual_merge entries surfaced by kspec meta observations --search
+      manual_merge --all). Kept this session's success observation only.
+    resolved: true
+    resolved_at: 2026-06-01T18:12:30.901Z
+    resolved_by: codex
     workflow_ref: "@session-reflect"
     created_at: 2026-06-01T18:11:26.098Z
   - _ulid: 01KT264AKBE2RK73W5W9HYGABM
