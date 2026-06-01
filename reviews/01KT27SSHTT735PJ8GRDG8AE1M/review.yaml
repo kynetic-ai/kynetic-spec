@@ -98,6 +98,18 @@ checks:
     runner: npm-test
     created_at: 2026-06-01T18:58:27.199Z
     completed_at: 2026-06-01T18:58:27.199Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Manual behavioral probe: malformed project runner config plus valid system runner
+      produced diagnoseRegistryLoad failures=[project], but resolveRunnerInvocation still returned
+      {resolved:true, runnerId:'ok'} instead of runner_registry_unavailable."
+    name: mixed-layer registry-unavailable probe
+    required: true
+    runner: tsx
+    created_at: 2026-06-01T18:58:36.615Z
+    completed_at: 2026-06-01T18:58:36.615Z
 events:
   - _ulid: 01KT27SSH893JW4Y86YAS6FK0T
     actor: Jacob Chapel
@@ -175,6 +187,13 @@ events:
       status: pass
       name: full npm test
     timestamp: 2026-06-01T18:58:27.418Z
+  - _ulid: 01KT28TPMX02JC0146E1NFF2FT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: mixed-layer registry-unavailable probe
+    timestamp: 2026-06-01T18:58:36.829Z
 examined_commit: c660a4ce459a36d5b7cce433363c66874c67be3d
 external_links: []
 lifecycle_state: open
@@ -187,5 +206,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-01T18:40:38.458Z
-updated_at: 2026-06-01T18:58:27.199Z
+updated_at: 2026-06-01T18:58:36.615Z
 notes: []
