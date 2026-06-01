@@ -208,6 +208,13 @@ events:
       kind: blocker
       thread_ulid: 01KT28VF76MSS2EG5A7W7K8734
     timestamp: 2026-06-01T18:59:02.208Z
+  - _ulid: 01KT28W6X3QPYSF3E3A7VNFW9T
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KT28W6NPQ5FJXXH22VDCS3JY
+    timestamp: 2026-06-01T18:59:26.243Z
 examined_commit: c660a4ce459a36d5b7cce433363c66874c67be3d
 external_links: []
 lifecycle_state: open
@@ -263,7 +270,28 @@ threads:
           layer/path/reason, not hidden by a surviving runner entry."
         created_at: 2026-06-01T18:59:01.990Z
     kind: blocker
+  - _ulid: 01KT28W6NPQ5FJXXH22VDCS3JY
+    anchor:
+      type: code
+      commit: c660a4ce459a36d5b7cce433363c66874c67be3d
+      line_end: 138
+      line_start: 132
+      path: packages/daemon/src/routes/meta.ts
+      side: head
+    entries:
+      - _ulid: 01KT28W6NQF3FKDB6405W4A2GH
+        author: Jacob Chapel
+        body: "MUST-FIX: GET /api/meta/agents and PATCH /api/meta/agents/:id also prefer a surviving
+          per-runner validation entry over registry-load failures. When project config is malformed
+          but system config still defines the agent runner, validationByRunner has an entry and this
+          early return sends status/diagnostics from that entry instead of attaching
+          runner_registry_unavailable. The task explicitly requires daemon agent list and PATCH
+          responses to attach the registry-load diagnostic to runner-backed agents whenever the
+          registry is unavailable, with the failing layer and config path. Check
+          context.registryLoadFailures before returning entry diagnostics."
+        created_at: 2026-06-01T18:59:26.007Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-01T18:40:38.458Z
-updated_at: 2026-06-01T18:59:01.990Z
+updated_at: 2026-06-01T18:59:26.007Z
 notes: []
