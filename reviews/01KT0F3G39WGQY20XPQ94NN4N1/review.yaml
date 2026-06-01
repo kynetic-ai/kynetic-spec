@@ -75,6 +75,17 @@ checks:
     runner: tsc
     created_at: 2026-06-01T02:28:51.098Z
     completed_at: 2026-06-01T02:28:51.098Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- tests/helpers/daemon.test.ts tests/e2e-fixture-daemon-cleanup.test.ts passed:
+      22/22 helpers tests and 16/16 e2e fixture cleanup tests, 38 total."
+    name: focused daemon tests
+    required: true
+    runner: npm test
+    created_at: 2026-06-01T02:29:01.664Z
+    completed_at: 2026-06-01T02:29:01.664Z
 events:
   - _ulid: 01KT0F3G32CBKSAMJ26N69FGKB
     actor: Jacob Chapel
@@ -138,6 +149,13 @@ events:
       status: pass
       name: typecheck
     timestamp: 2026-06-01T02:28:51.319Z
+  - _ulid: 01KT0G6QA1TGATH0WCGKHPD6MT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused daemon tests
+    timestamp: 2026-06-01T02:29:01.889Z
 examined_commit: faa3e056dccd97805519b24c458f5c3a568997fc
 external_links: []
 lifecycle_state: open
@@ -150,5 +168,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-01T02:09:47.625Z
-updated_at: 2026-06-01T02:28:51.098Z
+updated_at: 2026-06-01T02:29:01.664Z
 notes: []
