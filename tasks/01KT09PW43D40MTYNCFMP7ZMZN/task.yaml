@@ -11,7 +11,7 @@ description: "Fresh npm test in review snapshot reproduced deterministic timeout
 spec_ref: "@daemon-test-teardown-boundedness"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -24,11 +24,11 @@ review_ref: "@01KT0C2G7MD6191D1NQBKY92V7"
 submission_linkage:
   review_url: null
   branch: dispatch/task/stabilize-daemon-fixture-cleanup-tests-timing-out/01kt09pw
-  captured_at: 2026-06-01T01:11:45.968Z
-  commit: b8f8ed94f9fe3bd36a1ed8f1ab58bee394529f10
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-06-01T02:01:46.771Z
+  commit: faa3e056dccd97805519b24c458f5c3a568997fc
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/stabilize-daemon-fixture-cleanup-tests-timing-out/01kt09pw
 session_id: 01KT0D8TGN5MSTERZXSE9HM4NH
 history:
   - author: "@claude"
@@ -120,8 +120,35 @@ history:
         previous: 2026-06-01T01:11:29.215Z
     command: task-start
     timestamp: 2026-06-01T02:01:33.441Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/stabilize-daemon-fixture-cleanup-tests-timing-out/01kt09pw
+          captured_at: 2026-06-01T02:01:46.771Z
+          commit: faa3e056dccd97805519b24c458f5c3a568997fc
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/stabilize-daemon-fixture-cleanup-tests-timing-out/01kt09pw
+        previous:
+          review_url: null
+          branch: dispatch/task/stabilize-daemon-fixture-cleanup-tests-timing-out/01kt09pw
+          captured_at: 2026-06-01T01:11:45.968Z
+          commit: b8f8ed94f9fe3bd36a1ed8f1ab58bee394529f10
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-06-01T02:01:46.775Z
+        previous: 2026-06-01T01:11:45.976Z
+    command: task-submit
+    timestamp: 2026-06-01T02:01:46.776Z
 created_at: 2026-06-01T00:35:31.073Z
 started_at: 2026-06-01T02:01:33.441Z
-submitted_at: 2026-06-01T01:11:45.976Z
+submitted_at: 2026-06-01T02:01:46.775Z
 todos: []
 automation: eligible

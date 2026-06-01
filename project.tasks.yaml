@@ -30440,7 +30440,7 @@
   title: Stabilize daemon fixture cleanup tests timing out
   type: bug
   spec_ref: "@daemon-test-teardown-boundedness"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 2
@@ -30452,5 +30452,5 @@
   todos_count: 0
   created_at: 2026-06-01T00:35:31.073Z
   started_at: 2026-06-01T02:01:33.441Z
-  submitted_at: 2026-06-01T01:11:45.976Z
+  submitted_at: 2026-06-01T02:01:46.775Z
   automation: eligible
