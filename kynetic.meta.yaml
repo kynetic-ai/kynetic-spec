@@ -20306,6 +20306,28 @@ observations:
     resolved: false
     workflow_ref: "@01KT0EPW"
     created_at: 2026-06-01T02:06:32.099Z
+  - _ulid: 01KT0GT9WBP1TGWPXBYSJSCKMP
+    type: success
+    content: Spawning a single Explore sub-agent to map existing infrastructure (test files, helpers,
+      fixtures, source modules) before writing any test code paid off enormously for an
+      e2e/multi-surface task. The map surfaced reusable patterns (createTestApp, mock-acp.js,
+      deriveProjectKeySync, sentinel-secret idiom) and let the 1140-line agent-runner-e2e.test.ts
+      file get written straight-through with only two narrow iteration cycles on shape/path issues.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-01T02:39:43.499Z
+  - _ulid: 01KT0GTA4KSJ0PET6T2GSC544S
+    type: friction
+    content: Heavy default test suite (10168 tests, ~45 min cold) is disproportionate for test-only
+      diffs where no production code changed. The session-scoped cache amortizes repeat runs, but
+      the first cold run is the bottleneck. A vitest smoke profile (npm run test:smoke) that
+      excludes integration/e2e/heavy-serial when the diff touches only tests/ would speed pre-submit
+      verification dramatically. Related but distinct from @task-stabilize-fresh-shard-test-runs.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-01T02:39:43.764Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

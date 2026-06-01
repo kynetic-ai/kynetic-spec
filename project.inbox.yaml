@@ -3980,3 +3980,47 @@ inbox:
       - typecheck
     added_by: Jacob Chapel
     created_at: 2026-06-01T00:48:37.228Z
+  - _ulid: 01KT0GT9J1460B7MNHSQRV4CNP
+    text: "Document the runner-config loader parameter semantics: shadowWorktreeDir falls back to
+      projectRoot in non-shadow (traditional) mode. Add a doc comment on
+      getProjectRunnersPath/loadProjectRunnerConfig/resolveEffectiveRunners
+      (src/agents/runner-config.ts) so future test authors and runner-feature contributors do not
+      assume project.runners.yaml lives under .kspec/. Optionally rename to projectSpecDir for
+      clarity. Surfaced during e2e compatibility test authoring — required source-reading
+      initContext() to discover."
+    tags:
+      - runners
+      - docs
+      - dx
+      - reflection
+    added_by: "@claude"
+    created_at: 2026-06-01T02:39:43.169Z
+  - _ulid: 01KT0GT9P0X4F4VDZKGY5PXKJH
+    text: "Document or expose a schema for kspec agent run --dry-run --json output. The shape is {
+      runner_invocation: { resolved, summary: { process: { command, command_source }, runner: { name
+      }, adapter: { id }, env_policy, preflight } } } — discovering this required source-reading
+      DryRunRunnerInvocationDiagnostic in src/cli/commands/agent.ts. Options: doc page for the agent
+      CLI, exported zod schema in src/agents/runners.ts, or expanded --help text. Surfaced during
+      e2e compatibility test authoring."
+    tags:
+      - runners
+      - cli
+      - docs
+      - dx
+      - reflection
+    added_by: "@claude"
+    created_at: 2026-06-01T02:39:43.296Z
+  - _ulid: 01KT0GT9SX8XZ98NXEFN19E5S6
+    text: Resolve the 'npm run check' convention vs reality mismatch. Several runner-plan task
+      descriptions list 'npm run check' as a Testing step, but there is no root-level check script
+      in package.json (only packages/web-ui/package.json has one — svelte-kit sync && svelte-check).
+      Either add a root check script that wraps typecheck/format:check/lint, or update the task
+      derivation template/convention to use 'npm run typecheck'. Caused brief confusion about
+      whether a gate was being skipped.
+    tags:
+      - cli
+      - convention
+      - dx
+      - reflection
+    added_by: "@claude"
+    created_at: 2026-06-01T02:39:43.421Z
