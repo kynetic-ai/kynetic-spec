@@ -75,7 +75,7 @@ description: >
 spec_ref: "@runner-invocation-semantics"
 plan_ref: "@plan-agent-runner-configuration-layer"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-web-ui-runner-surfaces"
@@ -88,6 +88,14 @@ tags:
   - dispatch
   - runners
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-runner-compatibility-regressions/01ksyaz7
+  captured_at: 2026-06-01T02:35:53.690Z
+  commit: dacb75e03421617863403ed36dcfc31c0d8551e2
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KT0F0XVTARZPBZ7VEY3Z9BV4
 history:
   - author: Jacob Chapel
@@ -110,7 +118,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-01T02:08:44.632Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-runner-compatibility-regressions/01ksyaz7
+          captured_at: 2026-06-01T02:35:53.690Z
+          commit: dacb75e03421617863403ed36dcfc31c0d8551e2
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-06-01T02:35:53.697Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-01T02:35:53.698Z
 created_at: 2026-05-31T06:19:04.745Z
 started_at: 2026-06-01T02:08:44.632Z
+submitted_at: 2026-06-01T02:35:53.697Z
 todos: []
 automation: eligible
