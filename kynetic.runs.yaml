@@ -58658,9 +58658,23 @@ runs:
     completed_at: 2026-06-01T17:18:09.195Z
   - _ulid: 01KT260W7YRX3W1N9J91B5ENFP
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-01T18:09:33.438Z
+        completed_at: 2026-06-01T18:10:33.758Z
+        notes: "Worked well: the review record flow supported a clean audit trail when checks and the
+          approval verdict were recorded atomically with kspec batch. The detached-reviewer merge
+          helper gave precise recovery guidance and prevented unsafe ref movement. Behavioral tests
+          in runner-config, runner-process, and CLI layers made it straightforward to verify that
+          normalized cwd reached config resolution, preflight, diagnostics, and spawn-facing
+          contracts."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-01T18:10:33.758Z
+        completed_at: 2026-06-01T18:10:33.758Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-01T18:09:33.438Z
