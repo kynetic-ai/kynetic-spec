@@ -16297,18 +16297,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-runner-compatibility-regressions/01ksyaz7
-    canonical_branch_head: f59983f0cd55efe39c50bba0fc78a3d24cae79bd
+    canonical_branch_head: dacb75e03421617863403ed36dcfc31c0d8551e2
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-01T02:07:54.627Z
+      updated_at: 2026-06-01T02:36:02.291Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-01T02:08:23.500Z
+      updated_at: 2026-06-01T02:36:02.291Z
     integration:
       status: pending
       detail: null
@@ -16316,7 +16316,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: f59983f0cd55efe39c50bba0fc78a3d24cae79bd
-      updated_at: 2026-06-01T02:07:54.627Z
+      updated_at: 2026-06-01T02:36:02.291Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KSYAZ7N9PA8VKT13R9V3P72K"
@@ -16324,9 +16324,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-01T02:08:23.500Z
-      last_reconciled_at: 2026-06-01T02:08:23.500Z
+      last_reconciled_at: 2026-06-01T02:36:02.291Z
       created_at: 2026-06-01T02:07:54.627Z
-      updated_at: 2026-06-01T02:08:23.500Z
+      updated_at: 2026-06-01T02:36:02.291Z
     workspace_id: dispatch-workspace-01KSYAZ7N9PA8VKT13R9V3P72K
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
