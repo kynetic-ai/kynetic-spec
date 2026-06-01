@@ -177,6 +177,13 @@ events:
       status: pass
       name: full npm test
     timestamp: 2026-06-01T19:55:39.485Z
+  - _ulid: 01KT2C3MM602MMMDJZ1GZH1RVV
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KT2C3MDBB28VQ8K4ZGVSV20X
+    timestamp: 2026-06-01T19:55:55.398Z
 examined_commit: d424a19f3dd23edfeafcbcaa5360deb1552f15d2
 external_links: []
 lifecycle_state: open
@@ -186,8 +193,39 @@ subject:
   content_hash: ""
   ref: "@01KT20R8QKE7PMXPDS5A5FPJ3N"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KT2C3MDBB28VQ8K4ZGVSV20X
+    entries:
+      - _ulid: 01KT2C3MDBNKTTXWAJG2S6YYYG
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: kspec-agents.md; task @01KT20R8QKE7PMXPDS5A5FPJ3N; prior review
+          @01KT27SSHTT735PJ8GRDG8AE1M; spec @runner-resolution-and-preflight; spec
+          @runner-environment-secret-boundaries; diffs for
+          packages/daemon/src/routes/agent-dispatch.ts, packages/daemon/src/routes/meta.ts,
+          src/agent-runtime/dispatch.ts, src/agent-runtime/invocation.ts,
+          src/agents/registry-load-failure.ts, src/agents/runner-config.ts,
+          src/agents/runner-validation.ts, src/agents/runners.ts, src/cli/commands/agent.ts, and
+          changed tests.
+
+          Commands run: kspec validate --refs/--alignment/--completeness --warnings-ok; npm run
+          format:check; npm run lint -- --quiet; npx oxlint changed files; npm run typecheck; rg AC
+          annotations and source-scanning patterns; npm test -- --fresh focused runner diagnostics
+          files; npm test -- --fresh full suite.
+
+          Claims verified: fix-cycle claim that mixed-layer registry failures dominate surviving
+          runner entries was checked in resolver, CLI list/run, daemon GET/PATCH/status, dispatch
+          preflight, and focused tests; legacy adapter-only agents remain unaffected by
+          registry-load failures.
+
+          Categories searched: correctness, edge cases (mixed project/system layer), error handling,
+          redaction surfaces, test quality/source-scanning, daemon/dispatch integration. No blocking
+          findings.
+        created_at: 2026-06-01T19:55:55.179Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-01T19:37:00.816Z
-updated_at: 2026-06-01T19:55:39.260Z
+updated_at: 2026-06-01T19:55:55.179Z
 notes: []
