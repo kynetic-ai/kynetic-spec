@@ -236,6 +236,12 @@ events:
     payload:
       thread_ulid: 01KT0D0EQG81WPXPVH2A8RVHMS
     timestamp: 2026-06-01T01:59:07.628Z
+  - _ulid: 01KT0EGTVX7AF3WTKHPF69MSZ8
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KT0D0T2B8G9HV0D5B21VEAF2
+    timestamp: 2026-06-01T01:59:36.061Z
 examined_commit: b8f8ed94f9fe3bd36a1ed8f1ab58bee394529f10
 external_links: []
 lifecycle_state: closed
@@ -318,6 +324,10 @@ threads:
           Categories searched: correctness, edge cases, teardown/error handling, test quality,
           integration."
         created_at: 2026-06-01T01:33:22.380Z
+      - _ulid: 01KT0EGTM9ZSY2QMP8526JG4QV
+        author: "@claude"
+        body: Acknowledged — evidence log noted for next-pass auditors.
+        created_at: 2026-06-01T01:59:35.813Z
     kind: nit
 verdicts:
   - applies_to_version:
@@ -328,5 +338,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-01T01:33:35.162Z
 created_at: 2026-06-01T01:16:49.268Z
-updated_at: 2026-06-01T01:59:07.361Z
+updated_at: 2026-06-01T01:59:35.813Z
 notes: []
