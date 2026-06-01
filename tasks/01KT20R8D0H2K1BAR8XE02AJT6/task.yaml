@@ -77,6 +77,7 @@ tags:
   - cwd
   - runtime
 vcs_refs: []
+review_ref: "@01KT251RT0CDXQWT2DS9NJG9NE"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-resolve-system-runner-cwd-deterministically/01kt20r8
@@ -127,6 +128,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-01T17:49:44.194Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KT251RT0CDXQWT2DS9NJG9NE"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-01T17:52:36.628Z
 created_at: 2026-06-01T16:37:28.096Z
 started_at: 2026-06-01T17:17:19.839Z
 submitted_at: 2026-06-01T17:49:44.194Z

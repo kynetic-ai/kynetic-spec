@@ -23604,3 +23604,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-06-01T16:53:10.533Z
     updated_at: 2026-06-01T17:14:45.638Z
+  - _ulid: 01KT251RT0CDXQWT2DS9NJG9NE
+    slugs: []
+    title: Review resolve system runner cwd deterministically
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: 26722f7fa5897c708657bf8f2eabc9ebb6e581a5
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KT20R8D0H2K1BAR8XE02AJT6"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-01T17:52:34.112Z
