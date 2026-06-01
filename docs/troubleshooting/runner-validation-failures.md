@@ -63,7 +63,7 @@ For the full configuration walkthrough, see [Configuring Agent Runners](../guide
 **Recovery.**
 
 1. Create the directory or fix its permissions.
-2. If the path is incorrect, edit the runner's `process.cwd` field.
+2. If the path is incorrect, edit the runner's `process.cwd` field. Relative values are resolved against the directory containing this system `runners.yaml` file — not against the daemon or CLI parent process cwd — so the diagnostic message reports the fully resolved path.
 3. If you do not need a cwd override, remove the field — the invocation cwd will be used (`cwd_source` becomes `invocation`).
 
 ## `invalid_args`
