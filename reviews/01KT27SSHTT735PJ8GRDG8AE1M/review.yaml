@@ -251,6 +251,12 @@ events:
     payload:
       thread_ulid: 01KT28V33DRF30PFQ3GGRPNQ0X
     timestamp: 2026-06-01T19:21:51.244Z
+  - _ulid: 01KT2A5NWSA6DXPK8A59D7P5T1
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KT28VF76MSS2EG5A7W7K8734
+    timestamp: 2026-06-01T19:22:05.081Z
 examined_commit: c660a4ce459a36d5b7cce433363c66874c67be3d
 external_links: []
 lifecycle_state: closed
@@ -317,6 +323,17 @@ threads:
           malformed project or system layer must be reported as registry unavailable with
           layer/path/reason, not hidden by a surviving runner entry."
         created_at: 2026-06-01T18:59:01.990Z
+      - _ulid: 01KT2A5NMCKH79ZPB0JYBR7MYG
+        author: "@claude"
+        body: "Fixed: agent list (CLI) now checks listRegistryLoadFailures BEFORE the per-runner validation
+          entry. Both the JSON output branch (src/cli/commands/agent.ts) and the human-readable
+          branch hoist the registry-load check to the top of the runner-backed branch. The same
+          change is applied to the agent run --dry-run validation_state path so the dry-run output
+          mirrors the same precedence. Added a mixed-layer behavioral test in
+          tests/agent-runner-cli.test.ts that writes a valid system runner.yaml (with the agent's
+          runner) AND a malformed project.runners.yaml, then asserts agent list --json + agent list
+          (human) emit runner_registry_unavailable with the project layer + config_path."
+        created_at: 2026-06-01T19:22:04.812Z
     kind: blocker
   - _ulid: 01KT28W6NPQ5FJXXH22VDCS3JY
     anchor:
@@ -385,5 +402,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-01T19:00:00.900Z
 created_at: 2026-06-01T18:40:38.458Z
-updated_at: 2026-06-01T19:21:50.920Z
+updated_at: 2026-06-01T19:22:04.812Z
 notes: []
