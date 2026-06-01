@@ -16477,3 +16477,79 @@ workspaces:
         head: 26722f7fa5897c708657bf8f2eabc9ebb6e581a5
         last_seen_at: 2026-06-01T17:51:13.794Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-resolve-system-runner-cwd-deterministically-01kt20r8
+  - active_role: null
+    base_branch_point: eb681fdfe108842ceb267de751ab4f98dc249bb0
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-runner-registry-load-failure-diagnostics/01kt20r8
+    canonical_branch_head: eb681fdfe108842ceb267de751ab4f98dc249bb0
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-06-01T17:51:52.345Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-06-01T17:51:52.345Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: eb681fdfe108842ceb267de751ab4f98dc249bb0
+      updated_at: 2026-06-01T17:51:52.345Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KT20R8QKE7PMXPDS5A5FPJ3N"
+    task_slug: task-runner-registry-load-failure-diagnostics
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-06-01T17:51:52.345Z
+      created_at: 2026-06-01T17:51:52.345Z
+      updated_at: 2026-06-01T17:51:52.345Z
+    workspace_id: dispatch-workspace-01KT20R8QKE7PMXPDS5A5FPJ3N
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-runner-registry-load-failure-diagnostics/01kt20r8
+        head: eb681fdfe108842ceb267de751ab4f98dc249bb0
+        last_seen_at: 2026-06-01T17:51:52.345Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-runner-registry-load-failure-diagnostics-01kt20r8
