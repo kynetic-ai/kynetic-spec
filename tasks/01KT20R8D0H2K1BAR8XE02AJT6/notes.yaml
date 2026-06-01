@@ -35,3 +35,55 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-01T17:21:39.414Z
+  - _ulid: 01KT24WCRW0MKHSKG70BBJNN35
+    content: >-
+      Implementation complete. Changes:
+
+
+      1. src/agents/runner-config.ts: Added MergeRunnerConfigsOptions and made mergeRunnerConfigs
+      accept { systemConfigPath?: string }. When provided, relative process.cwd resolves against
+      path.dirname(systemConfigPath); absolute paths pass through path.resolve.
+      resolveEffectiveRunners always passes system.path. Updated SystemProcessSchema and
+      EffectiveRunner.process.cwd docs to describe the new contract.
+
+
+      2. src/agents/index.ts: Export MergeRunnerConfigsOptions type.
+
+
+      3. tests/runner-config.test.ts: 7 new tests covering relative cwd resolution from system
+      config dir, absolute cwd normalization, parent-process-cwd independence,
+      resolveEffectiveRunners end-to-end, and the raw merge backwards-compatibility contract.
+
+
+      4. tests/agent-runner-process.test.ts: 4 new tests covering contract.cwd normalization,
+      absolute cwd pass-through, parent cwd immutability, and preflight + contract sharing the same
+      normalized cwd (via a real on-disk executable in the resolved cwd).
+
+
+      5. tests/agent-runner-cli.test.ts: End-to-end CLI test asserting that 'kspec agent runners
+      validate' resolves a relative cwd against the system config dir before probing — and that the
+      diagnostic message names the resolved path, not the raw relative string.
+
+
+      6. docs/guides/configuring-agent-runners.md +
+      docs/troubleshooting/runner-validation-failures.md: Expanded the process.cwd description to
+      spell out the deterministic resolution behavior.
+
+
+      Quality gates:
+
+      - npm run format:check: passes
+
+      - npm run lint --quiet: 0 errors (existing 742 warnings; 0 on changed files)
+
+      - npm run typecheck: passes
+
+      - npm run kspec validate --refs --warnings-ok: passes
+
+      - Targeted: tests/runner-config.test.ts (45), agent-runner-resolver.test.ts (46),
+      agent-runner-process.test.ts (33), agent-runner-cli.test.ts (21) → 145 passed
+
+      - Full npm test: 10186 passed, 5 skipped, 0 failures.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-01T17:49:37.948Z
