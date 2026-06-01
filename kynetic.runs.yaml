@@ -58324,7 +58324,7 @@ runs:
     completed_at: 2026-06-01T02:33:11.306Z
   - _ulid: 01KT0GKZ8Z8NBGX6TBHPCFJ9FW
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -58387,7 +58387,30 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-06-01T02:37:14.675Z
-        completed_at: 2026-06-01T02:37:14.675Z
+        completed_at: 2026-06-01T02:38:47.782Z
+        notes: >-
+          Searched specs, tasks, and inbox for each friction point:
+
+
+          1. project.runners.yaml path / shadowWorktreeDir parameter naming
+             - Searched: "project.runners.yaml shadow", "shadowWorktreeDir", "runner config path", "loader documentation parameter", "runner config documentation"
+             - Result: NOT TRACKED. No existing spec/task/inbox item covers the conceptual gotcha that shadowWorktreeDir defaults to the project root in traditional mode.
+
+          2. Dry-run --json output shape under-documented
+             - Searched: "dry-run JSON shape", "kspec agent run dry-run"
+             - Result: NOT TRACKED. No inbox item for documenting the runner_invocation.summary structure.
+
+          3. npm run check missing at root / convention referencing nonexistent script
+             - Searched: "npm run check"
+             - Result: Only this task's description and adjacent runner-plan tasks mention it (in their Testing lists). Not tracked as a convention or task gap.
+
+          4. Heavy full-test-suite cost for test-only diffs
+             - Searched: "test runner cache", "fast test smoke", "test-only diff fast"
+             - Result: Related but distinct items exist (@task-stabilize-fresh-shard-test-runs covers fresh-shard stability; e2e/dev-mode inbox items cover Playwright iteration speed). A vitest smoke mode for test-only diffs is NOT tracked.
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-01T02:38:47.782Z
+        completed_at: 2026-06-01T02:38:47.782Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-01T02:36:16.031Z
