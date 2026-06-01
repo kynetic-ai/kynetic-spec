@@ -2,7 +2,111 @@ _ulid: 01KT0KZ8FYQRGQHP9WRE99B4JG
 slugs: []
 title: Review task-runner-compatibility-regressions cycle 2
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing warning baseline: 6 reference warnings, exit 0 due to --warnings-ok."
+    name: kspec validate --refs --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-06-01T03:50:16.512Z
+    completed_at: 2026-06-01T03:50:16.512Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing warning baseline: 42 alignment warnings, exit 0 due to --warnings-ok."
+    name: kspec validate --alignment --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-06-01T03:50:19.223Z
+    completed_at: 2026-06-01T03:50:19.223Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing warning baseline: 264 completeness warnings, exit 0 due to
+      --warnings-ok."
+    name: kspec validate --completeness --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-06-01T03:50:21.776Z
+    completed_at: 2026-06-01T03:50:21.776Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All matched files use the correct format; 974 files checked.
+    name: npm run format:check
+    required: true
+    runner: oxfmt
+    created_at: 2026-06-01T03:50:24.371Z
+    completed_at: 2026-06-01T03:50:24.371Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 errors; repo warning baseline reported 742 warnings.
+    name: npm run lint -- --quiet
+    required: true
+    runner: oxlint
+    created_at: 2026-06-01T03:50:26.870Z
+    completed_at: 2026-06-01T03:50:26.870Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 warnings and 0 errors on tests/agent-runner-e2e.test.ts, tests/helpers/daemon.test.ts,
+      tests/helpers/daemon.ts.
+    name: npx oxlint changed files
+    required: true
+    runner: oxlint
+    created_at: 2026-06-01T03:50:29.317Z
+    completed_at: 2026-06-01T03:50:29.317Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit completed successfully.
+    name: npm run typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-06-01T03:50:33.308Z
+    completed_at: 2026-06-01T03:50:33.308Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Focused runner/daemon target passed: tests/agent-runner-e2e.test.ts (16 tests),
+      tests/helpers/daemon.test.ts (22 tests), 27 suites / 38 tests total."
+    name: npm test -- --fresh focused runner tests
+    required: true
+    runner: vitest
+    created_at: 2026-06-01T03:50:35.854Z
+    completed_at: 2026-06-01T03:50:35.854Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Build completed; Playwright agents route passed 40/40 tests. Build emitted existing Svelte
+      warnings only.
+    name: npm run test:e2e -- tests/e2e/agents.spec.ts
+    required: true
+    runner: playwright
+    created_at: 2026-06-01T03:50:38.781Z
+    completed_at: 2026-06-01T03:50:38.781Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2676 suites passed; 10174 tests passed, 5 skipped; duration 2676.8s."
+    name: npm test -- --fresh
+    required: true
+    runner: vitest
+    created_at: 2026-06-01T03:50:41.411Z
+    completed_at: 2026-06-01T03:50:41.411Z
 events:
   - _ulid: 01KT0KZ8FTGH4C1BYHKY81NSYG
     actor: Jacob Chapel
@@ -17,17 +121,137 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-01T03:35:14.101Z
+  - _ulid: 01KT0MVFXH2MJSYJA1XNH76MDF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --refs --warnings-ok
+    timestamp: 2026-06-01T03:50:16.754Z
+  - _ulid: 01KT0MVJHRNH03SSGY2P5X3AWM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --alignment --warnings-ok
+    timestamp: 2026-06-01T03:50:19.448Z
+  - _ulid: 01KT0MVN281A2EN8C0E2M54GSE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --completeness --warnings-ok
+    timestamp: 2026-06-01T03:50:22.025Z
+  - _ulid: 01KT0MVQK9JZFCHJ3CJK6XDDG2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run format:check
+    timestamp: 2026-06-01T03:50:24.617Z
+  - _ulid: 01KT0MVSZTV62G7ZP6SY3YW4RW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run lint -- --quiet
+    timestamp: 2026-06-01T03:50:27.066Z
+  - _ulid: 01KT0MVWD33B96GPYHNSADHBH5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npx oxlint changed files
+    timestamp: 2026-06-01T03:50:29.539Z
+  - _ulid: 01KT0MW094RA64QHS5G0JAJKKK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run typecheck
+    timestamp: 2026-06-01T03:50:33.508Z
+  - _ulid: 01KT0MW2SMJ34CVJF0CB26MNAK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh focused runner tests
+    timestamp: 2026-06-01T03:50:36.084Z
+  - _ulid: 01KT0MW5NM1MCP56WQ85DVYWTZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run test:e2e -- tests/e2e/agents.spec.ts
+    timestamp: 2026-06-01T03:50:39.028Z
+  - _ulid: 01KT0MW87KWP9Q1T9GT8F2KE1E
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-06-01T03:50:41.651Z
+  - _ulid: 01KT0MWAQFAQ6MTMQFW93E2F7G
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KT0MWAG8BBCME3SMQ2XE65H3
+    timestamp: 2026-06-01T03:50:44.207Z
+  - _ulid: 01KT0MWD5JME5B8YJQ4CM5XKCM
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-01T03:50:46.706Z
+  - _ulid: 01KT0MWD5JW6MY749BJX7JD6Z0
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-01T03:50:46.706Z
 examined_commit: 788636f977ea9194c3e018be38e2b1fb43dd4d37
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KSYAZ7N9PA8VKT13R9V3P72K"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KT0MWAG8BBCME3SMQ2XE65H3
+    entries:
+      - _ulid: 01KT0MWAG8XXWA27P0JK5YS2ZQ
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md, prior review @01KT0GXZZPZW71HEH3KP9FAJKW,
+          tests/agent-runner-e2e.test.ts, tests/helpers/daemon.ts, tests/helpers/daemon.test.ts,
+          runner-related specs, tests/daemon-api/agent-runner-surfaces.test.ts,
+          src/agent-runtime/dispatch.ts, packages/daemon/src/routes/agent-dispatch.ts. Commands run:
+          kspec task get; git diff/stat/name-only; kspec item get for runner and daemon teardown
+          specs; kspec validate --refs/--alignment/--completeness --warnings-ok; npm run
+          format:check; npm run lint -- --quiet; npx oxlint changed files; npm run typecheck; npm
+          test -- --fresh focused targets; npm run test:e2e -- tests/e2e/agents.spec.ts; npm test --
+          --fresh. Claims verified: prior fabricated dispatch-state blocker is addressed by driving
+          DispatchEngine.handleStateChange; legacy adapter annotations no longer claim runner
+          resolution; missing-secret test no longer claims unknown-runner behavior; daemon lock
+          recovery reaches bounded outcomes. Categories searched: correctness, AC annotation
+          quality, source-scanning risk, error paths, secret redaction, daemon/dispatch integration,
+          and test isolation. No blockers found."
+        created_at: 2026-06-01T03:50:43.976Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-01T03:50:46.706Z
 created_at: 2026-06-01T03:34:51.646Z
-updated_at: 2026-06-01T03:35:13.835Z
+updated_at: 2026-06-01T03:50:46.706Z
 notes: []
