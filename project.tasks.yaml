@@ -30459,3 +30459,107 @@
   submitted_at: 2026-06-01T02:01:46.775Z
   completed_at: 2026-06-01T02:30:12.063Z
   automation: eligible
+- _ulid: 01KT20R80MDABB1TZJZ18D4X6A
+  slugs:
+    - task-tighten-runner-closure-gap-specs
+  title: Tighten existing runner contracts for closure gaps
+  type: task
+  spec_ref: "@runner-process-invocation-inputs"
+  plan_ref: "@plan-agent-runner-contract-hardening-follow-up"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - spec-update
+    - agents
+    - runners
+    - diagnostics
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-01T16:37:27.700Z
+- _ulid: 01KT20R8D0H2K1BAR8XE02AJT6
+  slugs:
+    - task-resolve-system-runner-cwd-deterministically
+  title: Resolve system runner cwd deterministically
+  type: task
+  spec_ref: "@runner-process-invocation-inputs"
+  plan_ref: "@plan-agent-runner-contract-hardening-follow-up"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-tighten-runner-closure-gap-specs"
+  priority: 1
+  tags:
+    - agents
+    - runners
+    - cwd
+    - runtime
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-01T16:37:28.096Z
+- _ulid: 01KT20R8QKE7PMXPDS5A5FPJ3N
+  slugs:
+    - task-runner-registry-load-failure-diagnostics
+  title: Preserve registry-load failures as first-class runner diagnostics
+  type: task
+  spec_ref: "@runner-resolution-and-preflight"
+  plan_ref: "@plan-agent-runner-contract-hardening-follow-up"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-tighten-runner-closure-gap-specs"
+  priority: 1
+  tags:
+    - agents
+    - runners
+    - diagnostics
+    - daemon
+    - dispatch
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-01T16:37:28.435Z
+- _ulid: 01KT20R92ZF79J35G6SMW8SRD4
+  slugs:
+    - task-dispatch-runner-preflight-invocation-equivalence
+  title: Make dispatch preflight match the eventual runner invocation
+  type: task
+  spec_ref: "@runner-invocation-semantics"
+  plan_ref: "@plan-agent-runner-contract-hardening-follow-up"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-tighten-runner-closure-gap-specs"
+    - "@task-resolve-system-runner-cwd-deterministically"
+    - "@task-runner-registry-load-failure-diagnostics"
+  priority: 1
+  tags:
+    - dispatch
+    - agents
+    - runners
+    - preflight
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-01T16:37:28.799Z
+- _ulid: 01KT20R9G2BY67EDEA63J690TR
+  slugs:
+    - task-runner-operator-surface-parity
+  title: Align daemon mutation responses and Web UI invocation rows with runner state
+  type: task
+  spec_ref: "@runner-operator-surfaces"
+  plan_ref: "@plan-agent-runner-contract-hardening-follow-up"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-tighten-runner-closure-gap-specs"
+    - "@task-runner-registry-load-failure-diagnostics"
+  priority: 2
+  tags:
+    - daemon
+    - web-ui
+    - agents
+    - runners
+    - accessibility
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-01T16:37:29.218Z

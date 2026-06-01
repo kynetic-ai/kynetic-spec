@@ -1,0 +1,83 @@
+_ulid: 01KT20R92ZF79J35G6SMW8SRD4
+slugs:
+  - task-dispatch-runner-preflight-invocation-equivalence
+title: Make dispatch preflight match the eventual runner invocation
+type: task
+description: >
+  What:
+
+  - Generate the dispatch invocation's canonical session id before runner preflight, and pass that
+  same id to preflight, active invocation tracking, event emission, session context, and
+  `runInvocation`.
+
+  - Update dispatch preflight tests so any runner env/session injection or diagnostic interpolation
+  sees the same `KSPEC_SESSION_ID` that appears in active invocation records and invocation
+  lifecycle events.
+
+  - Update runner preflight so runner-backed invocations check the effective adapter command under
+  the resolved runner cwd and env search path even when `process.executable` is omitted and the
+  command comes from the registered adapter.
+
+  - Keep implicit/legacy adapter-only agents on their current compatibility path unless they are
+  explicitly runner-backed.
+
+  - Ensure deterministic unspawnable-command failures still take the AGENT-SKIP path: no active
+  invocation, no prompt forwarding, no retry counter increment, and a redacted task note.
+
+
+  Why:
+
+  Dispatch currently runs a runner preflight before allocating the final tracked session id, so
+  future session-scoped runner behavior can diverge between preflight and the actual invocation.
+  Preflight also skips adapter command spawnability when no runner executable override exists, even
+  though a runner's env/PATH policy still controls whether the adapter command can spawn.
+
+
+  How:
+
+  - Move `preSessionId = ulid()` before the preflight resolver call in
+  `src/agent-runtime/dispatch.ts` and reuse it for every later session-id field.
+
+  - Adjust `probeRunnerInvocationExecutable(...)` / `preflightRunnerInvocation(...)` to distinguish
+  implicit legacy invocations from named runner-backed invocations; named runner-backed contracts
+  should preflight the effective adapter command under runner env/cwd whether the command source is
+  runner config or adapter registry.
+
+  - Keep diagnostic details bounded to runner id, adapter id, command reference, and unspawnable
+  reason.
+
+
+  Testing:
+
+  - `npm test -- --fresh tests/agent-dispatch-engine.test.ts tests/agent-runner-process.test.ts
+  tests/agent-runner-e2e.test.ts`
+
+  - `npm run typecheck`
+
+  - `kspec validate --refs --warnings-ok`
+
+
+  Covers: @runner-invocation-semantics ac-dispatch-preflight-uses-canonical-session-id,
+  ac-dispatch-preflight-accepts-configured-runners, ac-dispatch-preflight-rejects-invalid-runners;
+  @runner-process-invocation-inputs ac-effective-adapter-command-preflighted,
+  ac-existing-executable-reference-resolves; @runner-resolution-and-preflight
+  ac-dispatch-uses-runner-resolution, ac-invalid-runner-blocks-before-prompt
+spec_ref: "@runner-invocation-semantics"
+plan_ref: "@plan-agent-runner-contract-hardening-follow-up"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-tighten-runner-closure-gap-specs"
+  - "@task-resolve-system-runner-cwd-deterministically"
+  - "@task-runner-registry-load-failure-diagnostics"
+context: []
+priority: 1
+tags:
+  - dispatch
+  - agents
+  - runners
+  - preflight
+vcs_refs: []
+created_at: 2026-06-01T16:37:28.799Z
+todos: []

@@ -1,0 +1,81 @@
+_ulid: 01KT20R8D0H2K1BAR8XE02AJT6
+slugs:
+  - task-resolve-system-runner-cwd-deterministically
+title: Resolve system runner cwd deterministically
+type: task
+description: >
+  What:
+
+  - Update runner config loading/resolution so a relative `process.cwd` from system runner config is
+  normalized against the directory containing the system `runners.yaml` file, not against the daemon
+  or CLI parent process cwd.
+
+  - Keep absolute `process.cwd` values unchanged except for normal path normalization.
+
+  - Preserve the existing rule that project runner config cannot supply `process.cwd`; only system
+  runner config owns machine-local cwd policy.
+
+  - Ensure the resolved invocation contract, preflight executable checks, session
+  metadata/diagnostics summaries, and actual adapter spawn all consume the same normalized cwd
+  string.
+
+  - Update docs that currently describe `process.cwd` as system-config-relative so they match the
+  implemented behavior.
+
+  - Add regression tests covering:
+    - relative system cwd resolves from the system config directory;
+    - absolute system cwd remains absolute;
+    - changing the parent process cwd does not change the resolved child cwd;
+    - preflight and spawn use the normalized cwd.
+
+  Why:
+
+  The original plan said `process.cwd` could be system-config-relative, but the implementation
+  stored and spawned the raw string. A relative cwd would therefore be interpreted relative to
+  whichever shell, daemon, or test process launched kspec, which is not a stable machine-local
+  runner policy.
+
+
+  How:
+
+  - Prefer resolving cwd during effective runner construction or immediately after loading the
+  system layer, while the system config file path is still known.
+
+  - If `mergeRunnerConfigs(...)` needs the system config path, extend its inputs or add a wrapper so
+  tests cannot call the old raw merge path accidentally for cwd-sensitive behavior.
+
+  - Keep diagnostics redacted as today; do not expose secret env values while adding cwd source/path
+  details.
+
+  - Do not change legacy adapter-backed invocation cwd behavior.
+
+
+  Testing:
+
+  - `npm test -- --fresh tests/runner-config.test.ts tests/agent-runner-resolver.test.ts
+  tests/agent-runner-process.test.ts`
+
+  - `npm run typecheck`
+
+  - `kspec validate --refs --warnings-ok`
+
+
+  Covers: @runner-process-invocation-inputs ac-relative-system-cwd-resolves-from-config-dir,
+  ac-runner-cwd-is-invocation-only, ac-invocation-diagnostics-identify-inputs
+spec_ref: "@runner-process-invocation-inputs"
+plan_ref: "@plan-agent-runner-contract-hardening-follow-up"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-tighten-runner-closure-gap-specs"
+context: []
+priority: 1
+tags:
+  - agents
+  - runners
+  - cwd
+  - runtime
+vcs_refs: []
+created_at: 2026-06-01T16:37:28.096Z
+todos: []

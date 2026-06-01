@@ -1,0 +1,84 @@
+_ulid: 01KT20R8QKE7PMXPDS5A5FPJ3N
+slugs:
+  - task-runner-registry-load-failure-diagnostics
+title: Preserve registry-load failures as first-class runner diagnostics
+type: task
+description: >
+  What:
+
+  - Add a shared redacted diagnostic shape for runner registry load failures. The shape must include
+  a stable reason such as `runner_registry_unavailable`, the failing layer (`project` or `system`
+  when known), the config path, and parse/validation issue messages with secret-looking values
+  redacted.
+
+  - Update runner validation/listing surfaces so malformed project or system runner config is
+  reported as a registry-load/config error, not as an absent runner name.
+
+  - Update one-shot invocation and dispatch preflight so a runner-backed agent blocks before
+  spawn/prompt when the registry cannot be loaded.
+
+  - Update daemon agent list, daemon agent PATCH, and dispatch-status API enrichment so they attach
+  the registry-load diagnostic to runner-backed agents when the registry is unavailable instead of
+  returning only legacy adapter fallback state.
+
+  - Preserve legacy adapter-backed behavior for agents without `runner`: they may continue to list
+  and invoke through the adapter path when runner config is absent or invalid.
+
+  - Add tests proving malformed project config, malformed system config, and validation issues
+  distinguish registry-unavailable from true unknown-runner diagnostics.
+
+
+  Why:
+
+  Collapsing loader failures into an empty registry makes a malformed YAML/schema problem look like
+  `unknown_runner`, and daemon responses may fabricate a resolved adapter from legacy fields.
+  Operators need the real config-layer error so they know which file to fix before dispatch retries
+  or UI debugging begins.
+
+
+  How:
+
+  - Reuse the existing `LayerLoadResult.issues` and config paths from `resolveEffectiveRunners(...)`
+  instead of reparsing files in each surface.
+
+  - Keep redaction at one helper boundary and reuse it for CLI output, task notes, daemon responses,
+  session events, and Web UI payloads.
+
+  - Do not include raw config contents in diagnostics.
+
+  - In dispatch, task notes should include the stable reason and config path but no secret values.
+
+
+  Testing:
+
+  - `npm test -- --fresh tests/agent-runner-cli.test.ts tests/cli-agent.test.ts
+  tests/daemon-api/agent-runner-surfaces.test.ts tests/agent-dispatch-engine.test.ts
+  tests/daemon-api/agent-dispatch.test.ts`
+
+  - `npm run typecheck`
+
+  - `kspec validate --refs --warnings-ok`
+
+
+  Covers: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error,
+  ac-registry-load-failure-blocks-runner-spawn, ac-invalid-runner-blocks-before-prompt;
+  @runner-environment-secret-boundaries ac-diagnostics-redact-secrets; @runner-operator-surfaces
+  ac-daemon-agent-api-includes-runner
+spec_ref: "@runner-resolution-and-preflight"
+plan_ref: "@plan-agent-runner-contract-hardening-follow-up"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-tighten-runner-closure-gap-specs"
+context: []
+priority: 1
+tags:
+  - agents
+  - runners
+  - diagnostics
+  - daemon
+  - dispatch
+vcs_refs: []
+created_at: 2026-06-01T16:37:28.435Z
+todos: []

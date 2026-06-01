@@ -1,0 +1,121 @@
+_ulid: 01KT20R80MDABB1TZJZ18D4X6A
+slugs:
+  - task-tighten-runner-closure-gap-specs
+title: Tighten existing runner contracts for closure gaps
+type: task
+description: >
+  What:
+
+  - Update only existing runner-related specs. Do not create duplicate runner specs from this
+  follow-up plan.
+
+  - Reopen exactly these specs before adding ACs because the follow-up broadens implemented
+  contracts that later tasks will implement:
+    - `kspec item set @runner-process-invocation-inputs --status in_progress --no-cascade`
+    - `kspec item set @runner-resolution-and-preflight --status in_progress --no-cascade`
+    - `kspec item set @runner-invocation-semantics --status in_progress --no-cascade`
+    - `kspec item set @runner-operator-surfaces --status in_progress --no-cascade`
+  - Add these ACs to `@runner-process-invocation-inputs`:
+
+    AC id: ac-relative-system-cwd-resolves-from-config-dir
+    Given: A system runner config declares `process.cwd` as a relative path.
+    When: kspec resolves the runner invocation contract, runs preflight, or spawns the adapter process.
+    Then: The child-process cwd is the normalized path resolved relative to the directory that contains that system runner config file.
+
+    AC id: ac-effective-adapter-command-preflighted
+    Given: A runner-backed agent resolves to a registered adapter command and the runner does not override `process.executable`.
+    When: runner validation or dispatch preflight checks whether the invocation can spawn.
+    Then: The effective adapter command is checked under the runner-resolved cwd and process environment search path before prompt forwarding or dispatch acceptance.
+
+  - Add these ACs to `@runner-resolution-and-preflight`:
+
+    AC id: ac-registry-load-failure-reports-config-error
+    Given: Project or system runner config exists but cannot be parsed or validated into an effective runner registry.
+    When: kspec validates, lists, edits, or prepares an agent that references a runner.
+    Then: The diagnostic identifies the runner registry as unavailable, identifies the failing config layer and config path, includes the validation or parse reason, and redacts secret-looking values.
+
+    AC id: ac-registry-load-failure-blocks-runner-spawn
+    Given: Project or system runner config exists but cannot be parsed or validated into an effective runner registry.
+    When: kspec prepares a runner-backed one-shot or dispatched invocation.
+    Then: No adapter process is spawned and no prompt content is forwarded until the registry-load error is fixed.
+
+  - Add this AC to `@runner-invocation-semantics`:
+
+    AC id: ac-dispatch-preflight-uses-canonical-session-id
+    Given: Dispatch prepares a runner-backed task invocation and preflight needs session-scoped environment, diagnostics, or interpolation.
+    When: the same invocation is later recorded as active and passed to `runInvocation`.
+    Then: dispatch preflight and the actual invocation use the same canonical session id.
+
+  - Add these ACs to `@runner-operator-surfaces`:
+
+    AC id: ac-daemon-agent-patch-returns-runner-state
+    Given: A daemon client updates an agent definition through the agent PATCH endpoint.
+    When: the saved agent has a runner field or resolves through legacy adapter compatibility.
+    Then: the response includes the same `adapter`, `resolved_adapter`, and redacted `runner_validation` shape that the agent list endpoint would return for that saved agent.
+
+    AC id: ac-web-ui-invocation-rows-show-resolved-adapter
+    Given: The Web UI displays active or queued invocation rows whose daemon payload includes a runner name and resolved adapter identity.
+    When: the rows are rendered.
+    Then: visible row text and the row's accessible label include both the runner identity and the resolved adapter identity.
+
+  - Add notes to the touched specs naming this follow-up plan and the closure evidence that
+  motivated the stricter ACs.
+
+
+  Why:
+
+  The runner layer landed functionally, but closure validation found several places where the specs
+  let implementations satisfy the letter while preserving ambiguous runtime behavior: relative
+  system cwd values were accepted without a deterministic base, registry-load failures could be
+  collapsed into unknown-runner fallbacks, dispatch preflight could diverge from the actual
+  invocation session, daemon mutation responses could be less enriched than list responses, and
+  active/queued Web UI rows could hide resolved adapter identity behind weak presentation.
+
+
+  How:
+
+  - Use `kspec item get` to capture each touched spec before editing.
+
+  - Use `kspec item ac add` for each new AC id exactly as written above.
+
+  - Use `kspec item note` to record the follow-up context; do not edit unrelated ACs.
+
+  - Do not mark any touched spec back to `implemented` in this task; implementation tasks provide
+  that evidence later.
+
+
+  Testing:
+
+  - `kspec item get @runner-process-invocation-inputs`
+
+  - `kspec item get @runner-resolution-and-preflight`
+
+  - `kspec item get @runner-invocation-semantics`
+
+  - `kspec item get @runner-operator-surfaces`
+
+  - `kspec validate --refs --warnings-ok`
+
+
+  Covers: @runner-process-invocation-inputs ac-relative-system-cwd-resolves-from-config-dir,
+  ac-effective-adapter-command-preflighted; @runner-resolution-and-preflight
+  ac-registry-load-failure-reports-config-error, ac-registry-load-failure-blocks-runner-spawn;
+  @runner-invocation-semantics ac-dispatch-preflight-uses-canonical-session-id;
+  @runner-operator-surfaces ac-daemon-agent-patch-returns-runner-state,
+  ac-web-ui-invocation-rows-show-resolved-adapter
+spec_ref: "@runner-process-invocation-inputs"
+plan_ref: "@plan-agent-runner-contract-hardening-follow-up"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - spec-update
+  - agents
+  - runners
+  - diagnostics
+vcs_refs: []
+created_at: 2026-06-01T16:37:27.700Z
+todos: []

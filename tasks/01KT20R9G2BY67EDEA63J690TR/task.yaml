@@ -1,0 +1,82 @@
+_ulid: 01KT20R9G2BY67EDEA63J690TR
+slugs:
+  - task-runner-operator-surface-parity
+title: Align daemon mutation responses and Web UI invocation rows with runner state
+type: task
+description: >
+  What:
+
+  - Refactor daemon agent enrichment so GET agent-list responses and PATCH `/api/meta/agents/:id`
+  responses share the same code path for `adapter`, `resolved_adapter`, and redacted
+  `runner_validation` fields.
+
+  - Add daemon API tests where PATCH sets a valid runner, clears a runner, sets an unknown runner,
+  and runs while the runner registry is unavailable. Assert the returned body matches the list
+  endpoint's runner-state shape for the updated agent.
+
+  - Update active and queued invocation row components so runner identity and resolved adapter
+  identity are both visible in row text and available to assistive technology.
+
+  - Preserve current compact display for legacy adapter-only rows, but ensure resolved adapter is
+  still visible for those rows when daemon payloads provide it.
+
+  - Add or update Web UI tests/E2E fixtures for runner-backed active rows, runner-backed queued
+  rows, legacy rows, and invalid-runner diagnostics. The tests must assert rendered text or
+  accessible labels, not only `title` attributes.
+
+
+  Why:
+
+  The list endpoint was enriched, but PATCH returned the raw saved agent, so API clients could
+  observe a less complete contract immediately after editing runner fields. Active and queued rows
+  also displayed runner identity while leaving resolved adapter identity weakly exposed. Operator
+  surfaces should make the resolved harness visible wherever dispatch state is shown.
+
+
+  How:
+
+  - Prefer extracting a local helper in `packages/daemon/src/routes/meta.ts` or a shared daemon
+  utility rather than duplicating enrichment logic.
+
+  - Use daemon-provided fields in the Web UI; do not parse runner config in browser code.
+
+  - Do not expose raw env maps or secret source values in UI or API payloads.
+
+
+  Testing:
+
+  - `npm test -- --fresh tests/daemon-api/agent-runner-surfaces.test.ts`
+
+  - `npm run test:e2e -- tests/e2e/agents.spec.ts`
+
+  - `npm --workspace packages/web-ui run check`
+
+  - `npm run typecheck`
+
+  - `kspec validate --refs --warnings-ok`
+
+
+  Covers: @runner-operator-surfaces ac-daemon-agent-patch-returns-runner-state,
+  ac-web-ui-invocation-rows-show-resolved-adapter, ac-daemon-agent-api-includes-runner,
+  ac-daemon-dispatch-active-api-includes-runner, ac-daemon-dispatch-queued-api-includes-runner,
+  ac-web-ui-active-invocations-include-runner, ac-web-ui-queued-invocations-include-runner;
+  @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+spec_ref: "@runner-operator-surfaces"
+plan_ref: "@plan-agent-runner-contract-hardening-follow-up"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-tighten-runner-closure-gap-specs"
+  - "@task-runner-registry-load-failure-diagnostics"
+context: []
+priority: 2
+tags:
+  - daemon
+  - web-ui
+  - agents
+  - runners
+  - accessibility
+vcs_refs: []
+created_at: 2026-06-01T16:37:29.218Z
+todos: []

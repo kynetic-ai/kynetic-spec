@@ -4,3 +4,23 @@ notes:
       suites and exact E2E command"
     author: Jacob Chapel
     created_at: 2026-06-01T15:15:03.844Z
+  - _ulid: 01KT20R9WM0N0S1BWK4VWQEGCH
+    content: >-
+      - This is an existing-spec hardening plan. The `## Specs` block is intentionally empty so
+      derivation does not create duplicate runner specs.
+
+      - The first task is the contract update. Later implementation tasks should treat the new ACs
+      as already-approved behavior and should not invent alternate AC ids, field names, or UI/API
+      payload shapes.
+
+      - The closure audit also observed broad `svelte-check` and dependency-audit failures. This
+      follow-up includes the Web UI check where runner UI work touches that surface, but it does not
+      turn unrelated dependency vulnerabilities into runner behavior specs. If those vulnerabilities
+      remain after runner hardening, they should be handled by a separate dependency/security
+      maintenance item.
+
+      - All runner process tests must use temp projects, temp daemon config dirs, fake adapters, and
+      fake command roots. Do not run cwd/preflight/spawn tests against the live self-hosting
+      checkout.
+    author: Jacob Chapel
+    created_at: 2026-06-01T16:37:29.620Z
