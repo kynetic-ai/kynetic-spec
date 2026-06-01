@@ -67,7 +67,7 @@ description: >
 spec_ref: "@runner-resolution-and-preflight"
 plan_ref: "@plan-agent-runner-contract-hardening-follow-up"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-tighten-runner-closure-gap-specs"
@@ -80,6 +80,14 @@ tags:
   - daemon
   - dispatch
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-runner-registry-load-failure-diagnostics/01kt20r8
+  captured_at: 2026-06-01T18:37:01.380Z
+  commit: c660a4ce459a36d5b7cce433363c66874c67be3d
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KT251ANHAZ5968MG0B23ZPV4
 history:
   - author: Jacob Chapel
@@ -102,7 +110,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-01T17:52:40.606Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-runner-registry-load-failure-diagnostics/01kt20r8
+          captured_at: 2026-06-01T18:37:01.380Z
+          commit: c660a4ce459a36d5b7cce433363c66874c67be3d
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-06-01T18:37:01.382Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-01T18:37:01.382Z
 created_at: 2026-06-01T16:37:28.435Z
 started_at: 2026-06-01T17:52:40.605Z
+submitted_at: 2026-06-01T18:37:01.382Z
 todos: []
 automation: eligible
