@@ -122,6 +122,19 @@ checks:
     runner: playwright
     created_at: 2026-06-01T00:40:59.122Z
     completed_at: 2026-06-01T00:40:59.122Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: AgentCard.svelte, AgentEditForm.svelte, ActiveInvocationRow.svelte,
+      QueuedInvocationRow.svelte, routes/agents/+page.svelte, tests/e2e/agents.spec.ts, web-ui API
+      types, daemon agent/meta routes. Verified runner display, resolved adapter fallback, queued
+      row rendering, runner set/clear payload semantics, and diagnostics rendering avoids details."
+    name: manual code review
+    required: false
+    runner: codex
+    created_at: 2026-06-01T00:41:08.955Z
+    completed_at: 2026-06-01T00:41:08.955Z
 events:
   - _ulid: 01KT0814AEN0XMMBAR0Y9RA6FA
     actor: Jacob Chapel
@@ -213,6 +226,13 @@ events:
       status: skipped
       name: agents e2e
     timestamp: 2026-06-01T00:40:59.375Z
+  - _ulid: 01KT0A169QGSKER080T7CPPB68
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: manual code review
+    timestamp: 2026-06-01T00:41:09.175Z
 examined_commit: ea7854deac76fae800fc773a46fc19514e3843e4
 external_links: []
 lifecycle_state: open
@@ -225,5 +245,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-01T00:06:10.003Z
-updated_at: 2026-06-01T00:40:59.122Z
+updated_at: 2026-06-01T00:41:08.955Z
 notes: []
