@@ -86,6 +86,17 @@ checks:
     runner: vite
     created_at: 2026-06-01T00:40:26.488Z
     completed_at: 2026-06-01T00:40:26.488Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm --prefix packages/web-ui run check reports the existing 61-error/5-warning baseline in
+      unrelated files; changed agents files are not in diagnostics.
+    name: svelte-check
+    required: false
+    runner: svelte-check
+    created_at: 2026-06-01T00:40:39.363Z
+    completed_at: 2026-06-01T00:40:39.363Z
 events:
   - _ulid: 01KT0814AEN0XMMBAR0Y9RA6FA
     actor: Jacob Chapel
@@ -156,6 +167,13 @@ events:
       status: pass
       name: web-ui build
     timestamp: 2026-06-01T00:40:26.729Z
+  - _ulid: 01KT0A09DKGX88XNFT6KWDSQQN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: svelte-check
+    timestamp: 2026-06-01T00:40:39.603Z
 examined_commit: ea7854deac76fae800fc773a46fc19514e3843e4
 external_links: []
 lifecycle_state: open
@@ -168,5 +186,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-01T00:06:10.003Z
-updated_at: 2026-06-01T00:40:26.488Z
+updated_at: 2026-06-01T00:40:39.363Z
 notes: []
