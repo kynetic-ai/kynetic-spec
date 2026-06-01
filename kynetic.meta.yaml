@@ -20284,6 +20284,28 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-01T01:31:19.466Z
+  - _ulid: 01KT0EXH53C85NECS6WG691ESQ
+    type: success
+    content: "When a test helper installs a process-level signal handler that re-raises the signal for
+      default disposition (e.g. process.on('SIGTERM', () => process.kill(process.pid, 'SIGTERM'))),
+      the listener MUST remove itself before re-raising or the handler re-enters in an infinite
+      loop. Node suppresses default termination while any listener is installed for that signal, so
+      a self-targeted process.kill re-fires this same listener instead of exiting. Fix recipe: name
+      the handler so it can call process.removeListener(signal, handler) before re-raising. Test
+      recipe: extract the handler creation as an exported factory taking the release/reRaise
+      side-effects as injectable parameters; in tests install the factory's output on a benign
+      SIGUSR2 listener, invoke directly, and assert (a) process.listeners(signal) no longer contains
+      the handler, (b) injected release ran exactly once, (c) injected reRaise was called with the
+      same signal. Optionally complement with a subprocess test that spawns a Node replica and
+      asserts bounded SIGTERM exit. See tests/helpers/daemon.ts __createPortStartLockSignalHandler
+      and tests/helpers/daemon.test.ts 'registerPortStartLockExitHandlers signal-handler
+      boundedness' for the worked example from @stabilize-daemon-fixture-cleanup-tests-timing-out
+      fix cycle 1."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KT0EPW"
+    created_at: 2026-06-01T02:06:32.099Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
