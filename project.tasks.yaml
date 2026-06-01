@@ -30515,7 +30515,7 @@
   type: task
   spec_ref: "@runner-resolution-and-preflight"
   plan_ref: "@plan-agent-runner-contract-hardening-follow-up"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-tighten-runner-closure-gap-specs"
@@ -30527,7 +30527,7 @@
     - daemon
     - dispatch
   review_ref: "@01KT27SSHTT735PJ8GRDG8AE1M"
-  notes_count: 1
+  notes_count: 2
   todos_count: 0
   created_at: 2026-06-01T16:37:28.435Z
   started_at: 2026-06-01T17:52:40.605Z

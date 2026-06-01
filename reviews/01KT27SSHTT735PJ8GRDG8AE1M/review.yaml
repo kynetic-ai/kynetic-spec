@@ -229,9 +229,25 @@ events:
       kind: nit
       thread_ulid: 01KT28WZA9A4J9CTBDXXJQY119
     timestamp: 2026-06-01T18:59:51.514Z
+  - _ulid: 01KT28X8RC5F6WJYMCC3VN8PSD
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-01T19:00:00.908Z
+  - _ulid: 01KT28X8RC9ZPXZH5X37A5B9RD
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-01T19:00:00.908Z
 examined_commit: c660a4ce459a36d5b7cce433363c66874c67be3d
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -342,7 +358,14 @@ threads:
           daemon/CLI integration, test quality, AC coverage."
         created_at: 2026-06-01T18:59:51.241Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-01T19:00:00.900Z
 created_at: 2026-06-01T18:40:38.458Z
-updated_at: 2026-06-01T18:59:51.241Z
+updated_at: 2026-06-01T19:00:00.908Z
 notes: []
