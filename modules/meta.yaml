@@ -7280,9 +7280,33 @@ modules:
               The event includes the runner name and the resolved adapter id
             when: |
               The agent.dispatched event is written
+          - given: Project or system runner config exists but cannot be parsed or validated into an effective
+              runner registry.
+            id: ac-registry-load-failure-reports-config-error
+            then: The diagnostic identifies the runner registry as unavailable, identifies the failing config
+              layer and config path, includes the validation or parse reason, and redacts
+              secret-looking values.
+            when: kspec validates, lists, edits, or prepares an agent that references a runner.
+          - given: Project or system runner config exists but cannot be parsed or validated into an effective
+              runner registry.
+            id: ac-registry-load-failure-blocks-runner-spawn
+            then: No adapter process is spawned and no prompt content is forwarded until the registry-load error
+              is fixed.
+            when: kspec prepares a runner-backed one-shot or dispatched invocation.
         tags: []
         created: 2026-05-31T06:19:00.390Z
-        notes: []
+        notes:
+          - _ulid: 01KT21BK7HACC99123CFZ8AFYP
+            content: "Follow-up plan @plan-agent-runner-contract-hardening-follow-up: closure validation found
+              that runner registry load/parse failures could be silently collapsed into the
+              unknown-runner fallback, hiding the actual config layer, path, and validation reason.
+              Added ac-registry-load-failure-reports-config-error and
+              ac-registry-load-failure-blocks-runner-spawn so registry-load failures must report the
+              failing layer and must block adapter spawn and prompt forwarding. No prior ACs were
+              edited."
+            supersedes: null
+            author: "@claude"
+            created_at: 2026-06-01T16:48:01.777Z
       - _ulid: 01KSYAZ3HKGBTTGXBNN1EV1QM5
         slugs:
           - runner-process-invocation-inputs
@@ -7334,9 +7358,31 @@ modules:
               argument source, and env policy without exposing secrets
             when: |
               Diagnostics are shown
+          - given: A system runner config declares `process.cwd` as a relative path.
+            id: ac-relative-system-cwd-resolves-from-config-dir
+            then: The child-process cwd is the normalized path resolved relative to the directory that contains
+              that system runner config file.
+            when: kspec resolves the runner invocation contract, runs preflight, or spawns the adapter process.
+          - given: A runner-backed agent resolves to a registered adapter command and the runner does not
+              override `process.executable`.
+            id: ac-effective-adapter-command-preflighted
+            then: The effective adapter command is checked under the runner-resolved cwd and process environment
+              search path before prompt forwarding or dispatch acceptance.
+            when: runner validation or dispatch preflight checks whether the invocation can spawn.
         tags: []
         created: 2026-05-31T06:19:00.531Z
-        notes: []
+        notes:
+          - _ulid: 01KT21BHGQEJSNKETRB4PH70MS
+            content: "Follow-up plan @plan-agent-runner-contract-hardening-follow-up: closure validation found
+              that relative `process.cwd` values from a system runner config were accepted without a
+              deterministic resolution base, and that the effective adapter command was not
+              preflighted under the runner-resolved cwd and PATH before prompt forwarding. Added
+              ac-relative-system-cwd-resolves-from-config-dir and
+              ac-effective-adapter-command-preflighted to remove that ambiguity. No prior ACs were
+              edited; implementation evidence belongs to later tasks."
+            supersedes: null
+            author: "@claude"
+            created_at: 2026-06-01T16:48:00.024Z
       - _ulid: 01KSYAZ3KMW9NN4PBSJR8Y8PPV
         slugs:
           - runner-invocation-semantics
@@ -7402,9 +7448,24 @@ modules:
               error
             when: |
               Dispatch preflight validates the agent
+          - given: Dispatch prepares a runner-backed task invocation and preflight needs session-scoped
+              environment, diagnostics, or interpolation.
+            id: ac-dispatch-preflight-uses-canonical-session-id
+            then: dispatch preflight and the actual invocation use the same canonical session id.
+            when: the same invocation is later recorded as active and passed to `runInvocation`.
         tags: []
         created: 2026-05-31T06:19:00.597Z
-        notes: []
+        notes:
+          - _ulid: 01KT21BMVW996GJD2GXRFWZNGH
+            content: "Follow-up plan @plan-agent-runner-contract-hardening-follow-up: closure validation found
+              that dispatch preflight could compute session-scoped env, diagnostics, or
+              interpolation against a different session id than the one later recorded as active and
+              passed to runInvocation, allowing preflight/invocation drift. Added
+              ac-dispatch-preflight-uses-canonical-session-id to require a single canonical session
+              id across preflight and execution. No prior ACs were edited."
+            supersedes: null
+            author: "@claude"
+            created_at: 2026-06-01T16:48:03.452Z
       - _ulid: 01KSYAZ3NTDVZ2TY226H2SMH7F
         slugs:
           - runner-operator-surfaces
@@ -7514,9 +7575,31 @@ modules:
               The form can set or clear the runner field without forcing a raw adapter edit
             when: |
               A user edits an agent's execution settings
+          - given: A daemon client updates an agent definition through the agent PATCH endpoint.
+            id: ac-daemon-agent-patch-returns-runner-state
+            then: the response includes the same `adapter`, `resolved_adapter`, and redacted `runner_validation`
+              shape that the agent list endpoint would return for that saved agent.
+            when: the saved agent has a runner field or resolves through legacy adapter compatibility.
+          - given: The Web UI displays active or queued invocation rows whose daemon payload includes a runner
+              name and resolved adapter identity.
+            id: ac-web-ui-invocation-rows-show-resolved-adapter
+            then: visible row text and the row's accessible label include both the runner identity and the
+              resolved adapter identity.
+            when: the rows are rendered.
         tags: []
         created: 2026-05-31T06:19:00.666Z
-        notes: []
+        notes:
+          - _ulid: 01KT21BPMSP1X5TCHEXTWAVGTF
+            content: "Follow-up plan @plan-agent-runner-contract-hardening-follow-up: closure validation found
+              that the daemon agent PATCH response could return a less-enriched payload than the
+              list endpoint (missing resolved adapter and redacted runner validation), and that
+              active/queued Web UI invocation rows could omit the resolved adapter identity even
+              when the daemon supplied it. Added ac-daemon-agent-patch-returns-runner-state and
+              ac-web-ui-invocation-rows-show-resolved-adapter for response parity and
+              visible/accessible adapter identity in invocation rows. No prior ACs were edited."
+            supersedes: null
+            author: "@claude"
+            created_at: 2026-06-01T16:48:05.273Z
     created: 2026-02-15T00:39:20.586Z
     notes: []
 requirements:
