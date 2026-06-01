@@ -106,7 +106,7 @@ description: >
 spec_ref: "@runner-process-invocation-inputs"
 plan_ref: "@plan-agent-runner-contract-hardening-follow-up"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -117,6 +117,14 @@ tags:
   - runners
   - diagnostics
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-tighten-runner-closure-gap-specs/01kt20r8
+  captured_at: 2026-06-01T16:49:10.081Z
+  commit: eb681fdfe108842ceb267de751ab4f98dc249bb0
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KT215S129FWD35CQSDHC1MYB
 history:
   - author: Jacob Chapel
@@ -139,7 +147,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-01T16:45:22.858Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-tighten-runner-closure-gap-specs/01kt20r8
+          captured_at: 2026-06-01T16:49:10.081Z
+          commit: eb681fdfe108842ceb267de751ab4f98dc249bb0
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-06-01T16:49:10.092Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-01T16:49:10.092Z
 created_at: 2026-06-01T16:37:27.700Z
 started_at: 2026-06-01T16:45:22.857Z
+submitted_at: 2026-06-01T16:49:10.092Z
 todos: []
 automation: eligible
