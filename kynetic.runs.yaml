@@ -58092,9 +58092,24 @@ runs:
     completed_at: 2026-06-01T01:14:38.525Z
   - _ulid: 01KT0CT4M9FSK6BXGAGCTNHZKV
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-01T01:29:43.817Z
+        completed_at: 2026-06-01T01:30:28.673Z
+        notes: "What worked well: (1) Single thorough Explore agent run captured schema field names, paths,
+          validation reason codes, and registered adapter ids in one pass — enabled writing accurate
+          YAML examples without iterating. (2) Verifying CLI claims against the dev CLI (npm run dev
+          -- agent runners --help, meta set --help, agent run --help) before writing them caught two
+          real inaccuracies: nonexistent 'kspec adapter list' command and wrong clear-runner syntax
+          ('--runner \"\"' vs '--clear-runner'). (3) Cross-checking PreflightUnspawnableReason enum
+          values in source caught probe_failed vs timeout mismatch in draft."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-01T01:30:28.673Z
+        completed_at: 2026-06-01T01:30:28.673Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-01T01:29:43.817Z
