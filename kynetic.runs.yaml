@@ -59018,9 +59018,22 @@ runs:
     completed_at: 2026-06-01T20:50:05.264Z
   - _ulid: 01KT2GFY80SX2PHTR2D3N63MMC
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-01T21:12:32.768Z
+        completed_at: 2026-06-01T21:13:01.245Z
+        notes: "Worked well: detached reviewer merge helper cleanly merged the approved branch into dev
+          without checking out dev in the snapshot; kspec review records made gate evidence durable
+          and disposition-gated; task/spec output gave precise ACs for daemon PATCH/list parity and
+          invocation row accessibility; focused daemon API plus E2E tests exercised behavior rather
+          than source text."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-01T21:13:01.245Z
+        completed_at: 2026-06-01T21:13:01.245Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-01T21:12:32.768Z
