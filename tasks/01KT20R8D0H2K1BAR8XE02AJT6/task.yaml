@@ -65,7 +65,7 @@ description: >
 spec_ref: "@runner-process-invocation-inputs"
 plan_ref: "@plan-agent-runner-contract-hardening-follow-up"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-tighten-runner-closure-gap-specs"
@@ -77,6 +77,14 @@ tags:
   - cwd
   - runtime
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-resolve-system-runner-cwd-deterministically/01kt20r8
+  captured_at: 2026-06-01T17:49:44.191Z
+  commit: 26722f7fa5897c708657bf8f2eabc9ebb6e581a5
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KT2304XEMMFDF32XBNB50N9Y
 history:
   - author: Jacob Chapel
@@ -99,7 +107,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-01T17:17:19.844Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-resolve-system-runner-cwd-deterministically/01kt20r8
+          captured_at: 2026-06-01T17:49:44.191Z
+          commit: 26722f7fa5897c708657bf8f2eabc9ebb6e581a5
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-06-01T17:49:44.194Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-01T17:49:44.194Z
 created_at: 2026-06-01T16:37:28.096Z
 started_at: 2026-06-01T17:17:19.839Z
+submitted_at: 2026-06-01T17:49:44.194Z
 todos: []
 automation: eligible
