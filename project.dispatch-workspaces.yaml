@@ -15478,7 +15478,7 @@ workspaces:
         head: b8f8ed94f9fe3bd36a1ed8f1ab58bee394529f10
         last_seen_at: 2026-06-01T01:15:17.564Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-daemon-fixture-cleanup-tests-timing-out-01kt09pw
-  - active_role: null
+  - active_role: worker
     base_branch_point: 5e04dd7c8b0660ef5703a69187dc3edc55252346
     bootstrap:
       status: succeeded
@@ -15808,7 +15808,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-01T01:15:53.593Z
+      updated_at: 2026-06-01T01:16:21.739Z
     integration:
       status: pending
       detail: null
@@ -15817,16 +15817,16 @@ workspaces:
       target_branch: dev
       target_commit: 5e04dd7c8b0660ef5703a69187dc3edc55252346
       updated_at: 2026-06-01T01:15:53.593Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KSYAZ79ZYNT3J9FM76BBVXMW"
     task_slug: task-document-runner-config-migration
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-06-01T01:15:53.593Z
+      last_active_at: 2026-06-01T01:16:21.739Z
+      last_reconciled_at: 2026-06-01T01:16:21.739Z
       created_at: 2026-06-01T01:15:53.593Z
-      updated_at: 2026-06-01T01:16:21.009Z
+      updated_at: 2026-06-01T01:16:21.739Z
     workspace_id: dispatch-workspace-01KSYAZ79ZYNT3J9FM76BBVXMW
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
