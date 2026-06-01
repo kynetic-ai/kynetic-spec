@@ -15946,7 +15946,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-01T17:16:04.159Z
+      updated_at: 2026-06-01T17:18:35.178Z
     integration:
       status: merged
       detail: integration:merged
@@ -15962,18 +15962,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-01T16:52:23.059Z
-      last_reconciled_at: 2026-06-01T17:18:33.560Z
+      last_reconciled_at: 2026-06-01T17:18:35.178Z
       created_at: 2026-06-01T16:44:18.119Z
-      updated_at: 2026-06-01T17:18:33.560Z
+      updated_at: 2026-06-01T17:18:35.178Z
     workspace_id: dispatch-workspace-01KT20R80MDABB1TZJZ18D4X6A
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: eb681fdfe108842ceb267de751ab4f98dc249bb0
-        last_seen_at: 2026-06-01T16:51:50.838Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-tighten-runner-closure-gap-specs-01kt20r8-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-tighten-runner-closure-gap-specs/01kt20r8
