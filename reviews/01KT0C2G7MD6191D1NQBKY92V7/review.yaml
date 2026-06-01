@@ -1,0 +1,26 @@
+_ulid: 01KT0C2G7MD6191D1NQBKY92V7
+slugs: []
+title: Review stabilize daemon fixture cleanup tests timing out
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KT0C2G7F0JA7DM9XANKB73NX
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-01T01:16:49.263Z
+examined_commit: b8f8ed94f9fe3bd36a1ed8f1ab58bee394529f10
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KT09PW43D40MTYNCFMP7ZMZN"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-01T01:16:49.268Z
+updated_at: null
+notes: []
