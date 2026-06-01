@@ -16434,11 +16434,11 @@ workspaces:
     canonical_branch: dispatch/task/task-runner-registry-load-failure-diagnostics/01kt20r8
     canonical_branch_head: d424a19f3dd23edfeafcbcaa5360deb1552f15d2
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-01T19:57:00.441Z
+      updated_at: 2026-06-01T20:01:04.817Z
     health:
       status: healthy
       issues: []
@@ -16452,16 +16452,16 @@ workspaces:
       target_branch: dev
       target_commit: eb681fdfe108842ceb267de751ab4f98dc249bb0
       updated_at: 2026-06-01T19:57:00.441Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KT20R8QKE7PMXPDS5A5FPJ3N"
     task_slug: task-runner-registry-load-failure-diagnostics
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-01T20:01:04.817Z
       last_active_at: 2026-06-01T19:36:14.749Z
       last_reconciled_at: 2026-06-01T20:00:29.686Z
       created_at: 2026-06-01T17:51:52.345Z
-      updated_at: 2026-06-01T20:00:29.686Z
+      updated_at: 2026-06-01T20:01:04.817Z
     workspace_id: dispatch-workspace-01KT20R8QKE7PMXPDS5A5FPJ3N
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
