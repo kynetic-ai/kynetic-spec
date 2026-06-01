@@ -4044,3 +4044,13 @@ inbox:
       - reflection
     added_by: "@claude"
     created_at: 2026-06-01T19:34:56.148Z
+  - _ulid: 01KT2F6H2RJ83CHWKHN6N967AG
+    text: Improve npm test fresh full-suite progress visibility during long quiet tail periods, for
+      example by adding a lightweight heartbeat or clearer end-of-suite progress indicator so
+      reviewers can distinguish normal long-running tests from a hung process before recording final
+      aggregate evidence.
+    tags:
+      - reflection
+      - testing
+    added_by: Jacob Chapel
+    created_at: 2026-06-01T20:49:55.800Z
