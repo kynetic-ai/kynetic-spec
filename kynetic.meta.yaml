@@ -20372,6 +20372,27 @@ observations:
     resolved: false
     workflow_ref: "@01KT0MYR"
     created_at: 2026-06-01T03:53:47.082Z
+  - _ulid: 01KT264A8J5V04PMPCDEZC3G7H
+    type: friction
+    content: Detached-reviewer merge recovery still needs manual intervention when the integration
+      target branch is checked out in a project-root worktree classified as auxiliary. In this
+      review, the helper correctly refused to move refs for dev, but the reviewer had to inspect
+      state, detach /home/chapel/Projects/kynetic-spec-dispatch, and rerun the helper before the
+      approved task could merge.
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-06-01T18:11:26.098Z
+  - _ulid: 01KT264AKBE2RK73W5W9HYGABM
+    type: success
+    content: Batching review checks and the final approval verdict with kspec batch produced a complete
+      review audit trail in one atomic shadow-branch commit after all deterministic gates passed.
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-06-01T18:11:26.443Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
