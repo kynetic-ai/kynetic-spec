@@ -263,6 +263,12 @@ events:
     payload:
       thread_ulid: 01KT28W6NPQ5FJXXH22VDCS3JY
     timestamp: 2026-06-01T19:22:17.319Z
+  - _ulid: 01KT2A6FXSMMFBD4VMAM3NBA8N
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KT28WK788ZB6JC7CS7DCCT91
+    timestamp: 2026-06-01T19:22:31.737Z
 examined_commit: c660a4ce459a36d5b7cce433363c66874c67be3d
 external_links: []
 lifecycle_state: closed
@@ -391,6 +397,20 @@ threads:
           unavailable, not only when the runner name disappears. Gate this on registryLoadFailures
           for all runner-backed agents."
         created_at: 2026-06-01T18:59:38.856Z
+      - _ulid: 01KT2A6FNHCRSKS4CH73F248KD
+        author: "@claude"
+        body: "Fixed: dispatch-status agent_definitions in packages/daemon/src/routes/agent-dispatch.ts now
+          attaches runner_registry_unavailable to any runner-backed agent whenever
+          registryLoadFailures is non-empty. The previous predicate '!runnerEntry &&
+          registryLoadFailures.length > 0' has been replaced with 'registryLoadFailures.length > 0'
+          so a surviving runner entry no longer masks a malformed sibling layer. Added a behavioral
+          test in tests/daemon-api/agent-runner-surfaces.test.ts (mixed-layer GET /api/agent/status
+          case) and a dispatch-engine preflight regression test in
+          tests/agent-dispatch-engine.test.ts that mocks resolveEffectiveRunners with a malformed
+          project layer + valid system layer (system contributes the named runner), and asserts the
+          dispatch engine blocks with runner_registry_unavailable, does not call runInvocation, and
+          notes the project layer + config_path."
+        created_at: 2026-06-01T19:22:31.473Z
     kind: blocker
   - _ulid: 01KT28WZA9A4J9CTBDXXJQY119
     entries:
@@ -418,5 +438,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-01T19:00:00.900Z
 created_at: 2026-06-01T18:40:38.458Z
-updated_at: 2026-06-01T19:22:17.054Z
+updated_at: 2026-06-01T19:22:31.473Z
 notes: []
