@@ -215,6 +215,13 @@ events:
       kind: blocker
       thread_ulid: 01KT28W6NPQ5FJXXH22VDCS3JY
     timestamp: 2026-06-01T18:59:26.243Z
+  - _ulid: 01KT28WKFASF57DJCZSPQCYQC8
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KT28WK788ZB6JC7CS7DCCT91
+    timestamp: 2026-06-01T18:59:39.114Z
 examined_commit: c660a4ce459a36d5b7cce433363c66874c67be3d
 external_links: []
 lifecycle_state: open
@@ -291,7 +298,27 @@ threads:
           context.registryLoadFailures before returning entry diagnostics."
         created_at: 2026-06-01T18:59:26.007Z
     kind: blocker
+  - _ulid: 01KT28WK788ZB6JC7CS7DCCT91
+    anchor:
+      type: code
+      commit: c660a4ce459a36d5b7cce433363c66874c67be3d
+      line_end: 738
+      line_start: 734
+      path: packages/daemon/src/routes/agent-dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KT28WK78GYR43C3053FQ1VDZ
+        author: Jacob Chapel
+        body: "MUST-FIX: dispatch-status agent_definitions attach runner_registry_unavailable only when the
+          runner cannot resolve. In the mixed-layer failure case, runnerEntry is present from the
+          surviving layer, so the endpoint reports resolved_adapter and omits runner_validation even
+          though registryLoadFailures is non-empty. The task requires dispatch-status API enrichment
+          to attach the registry-load diagnostic to runner-backed agents when the registry is
+          unavailable, not only when the runner name disappears. Gate this on registryLoadFailures
+          for all runner-backed agents."
+        created_at: 2026-06-01T18:59:38.856Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-01T18:40:38.458Z
-updated_at: 2026-06-01T18:59:26.007Z
+updated_at: 2026-06-01T18:59:38.856Z
 notes: []
