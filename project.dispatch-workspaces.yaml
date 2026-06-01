@@ -17445,7 +17445,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-01T21:12:00.453Z
+      updated_at: 2026-06-01T21:14:27.724Z
     integration:
       status: merged
       detail: integration:merged
@@ -17461,18 +17461,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-01T20:52:24.821Z
-      last_reconciled_at: 2026-06-01T21:14:26.044Z
+      last_reconciled_at: 2026-06-01T21:14:27.724Z
       created_at: 2026-06-01T20:30:12.163Z
-      updated_at: 2026-06-01T21:14:26.044Z
+      updated_at: 2026-06-01T21:14:27.724Z
     workspace_id: dispatch-workspace-01KT20R9G2BY67EDEA63J690TR
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 360cb36d88effdc5d14e96e8aa324a65c9f70df2
-        last_seen_at: 2026-06-01T20:51:56.937Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-runner-operator-surface-parity-01kt20r9-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-runner-operator-surface-parity/01kt20r9
