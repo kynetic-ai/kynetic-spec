@@ -30430,3 +30430,19 @@
   todos_count: 0
   created_at: 2026-05-31T06:19:04.745Z
   automation: eligible
+- _ulid: 01KT09PW43D40MTYNCFMP7ZMZN
+  slugs: []
+  title: Stabilize daemon fixture cleanup tests timing out
+  type: bug
+  spec_ref: "@daemon-test-teardown-boundedness"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - tests
+    - daemon
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-01T00:35:31.073Z
+  automation: eligible

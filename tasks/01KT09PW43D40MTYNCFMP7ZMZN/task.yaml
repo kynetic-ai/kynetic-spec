@@ -1,0 +1,25 @@
+_ulid: 01KT09PW43D40MTYNCFMP7ZMZN
+slugs: []
+title: Stabilize daemon fixture cleanup tests timing out
+type: bug
+description: "Fresh npm test in review snapshot reproduced deterministic timeouts outside the
+  reviewed diff: tests/e2e-fixture-daemon-cleanup.test.ts times out in two
+  acquirePlaywrightFixtureResources setup-failure cases, and tests/helpers/daemon.test.ts times out
+  in nine startTestDaemon cases. The task branch only changes web UI agent components and
+  tests/e2e/agents.spec.ts, so these daemon fixture failures appear unrelated to the runner web UI
+  work. Investigate why daemon fixture startup/cleanup hangs and restore the full npm test gate."
+spec_ref: "@daemon-test-teardown-boundedness"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - tests
+  - daemon
+vcs_refs: []
+created_at: 2026-06-01T00:35:31.073Z
+todos: []
+automation: eligible
