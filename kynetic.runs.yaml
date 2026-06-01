@@ -58324,7 +58324,7 @@ runs:
     completed_at: 2026-06-01T02:33:11.306Z
   - _ulid: 01KT0GKZ8Z8NBGX6TBHPCFJ9FW
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -58410,7 +58410,34 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-06-01T02:38:47.782Z
-        completed_at: 2026-06-01T02:38:47.782Z
+        completed_at: 2026-06-01T02:39:07.291Z
+        notes: >-
+          Untracked items → proposed improvements:
+
+
+          1. Document the runner-config loader's parameter semantics
+             - What: Add a doc comment on getProjectRunnersPath / loadProjectRunnerConfig / resolveEffectiveRunners explaining that shadowWorktreeDir falls back to the project root in non-shadow (traditional) mode. Optionally rename parameter to projectSpecDir for clarity.
+             - How it helps: Future test authors and runner-feature contributors stop hitting the same dead-end where they assume the file lives under .kspec/.
+             - Scope: SMALL (doc-only) or MEDIUM (rename with safe codemod).
+
+          2. Add a schema example for kspec agent run --dry-run --json output
+             - What: Document the runner_invocation.summary shape (process.command, runner.name, adapter.id, env_policy, preflight) either in a docs page for the agent CLI, in the help text, or as a typed schema exported from src/agents/runners.ts.
+             - How it helps: Operators and test authors can write assertions and tooling against the dry-run JSON without source-reading.
+             - Scope: SMALL (help/docs) or MEDIUM (exported zod schema + reference doc).
+
+          3. Fix the "npm run check" convention vs reality mismatch
+             - What: Either add a root-level "check" script that wraps typecheck + format:check + lint, OR update the runner-plan task derivation template to say "npm run typecheck" instead. The task derivation generator is the durable source.
+             - How it helps: Eliminates the recurring confusion when task templates list a gate that does not exist at the root.
+             - Scope: SMALL.
+
+          4. Vitest smoke profile for test-only diffs
+             - What: A npm script like test:smoke that excludes the heavy integration/e2e suites (vitest --exclude pattern) for quick pre-submit gating when no production code changed.
+             - How it helps: A 1140-line test-file diff like this one could verify in ~5 minutes instead of ~45.
+             - Scope: SMALL-MEDIUM (script + a convention rule on when smoke is sufficient).
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-01T02:39:07.291Z
+        completed_at: 2026-06-01T02:39:07.291Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-01T02:36:16.031Z
