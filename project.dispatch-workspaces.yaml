@@ -16788,18 +16788,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-dispatch-runner-preflight-invocation-equivalence/01kt20r9
-    canonical_branch_head: 3e77fab2475397c1539d2cd58c98c12c55e9ae5b
+    canonical_branch_head: b3ee001851142c921936eac9f8a46cc7e1db27c3
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-01T19:57:10.398Z
+      updated_at: 2026-06-01T20:25:04.158Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-01T19:57:37.720Z
+      updated_at: 2026-06-01T20:25:04.158Z
     integration:
       status: pending
       detail: null
@@ -16807,7 +16807,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 3e77fab2475397c1539d2cd58c98c12c55e9ae5b
-      updated_at: 2026-06-01T19:57:10.398Z
+      updated_at: 2026-06-01T20:25:04.158Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KT20R92ZF79J35G6SMW8SRD4"
@@ -16815,9 +16815,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-01T19:57:37.720Z
-      last_reconciled_at: 2026-06-01T19:57:37.720Z
+      last_reconciled_at: 2026-06-01T20:25:04.158Z
       created_at: 2026-06-01T19:57:10.398Z
-      updated_at: 2026-06-01T19:57:37.720Z
+      updated_at: 2026-06-01T20:25:04.158Z
     workspace_id: dispatch-workspace-01KT20R92ZF79J35G6SMW8SRD4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
