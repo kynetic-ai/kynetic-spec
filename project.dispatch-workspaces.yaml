@@ -16788,18 +16788,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-runner-registry-load-failure-diagnostics/01kt20r8
-    canonical_branch_head: eb681fdfe108842ceb267de751ab4f98dc249bb0
+    canonical_branch_head: c660a4ce459a36d5b7cce433363c66874c67be3d
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-01T17:51:52.345Z
+      updated_at: 2026-06-01T18:37:04.161Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-01T17:52:19.712Z
+      updated_at: 2026-06-01T18:37:04.161Z
     integration:
       status: pending
       detail: null
@@ -16807,7 +16807,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: eb681fdfe108842ceb267de751ab4f98dc249bb0
-      updated_at: 2026-06-01T17:51:52.345Z
+      updated_at: 2026-06-01T18:37:04.161Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KT20R8QKE7PMXPDS5A5FPJ3N"
@@ -16815,9 +16815,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-01T17:52:19.712Z
-      last_reconciled_at: 2026-06-01T17:52:19.712Z
+      last_reconciled_at: 2026-06-01T18:37:04.161Z
       created_at: 2026-06-01T17:51:52.345Z
-      updated_at: 2026-06-01T17:52:19.712Z
+      updated_at: 2026-06-01T18:37:04.161Z
     workspace_id: dispatch-workspace-01KT20R8QKE7PMXPDS5A5FPJ3N
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
