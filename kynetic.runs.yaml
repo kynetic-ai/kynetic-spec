@@ -58765,7 +58765,7 @@ runs:
     completed_at: 2026-06-01T19:03:48.523Z
   - _ulid: 01KT2C61RQPK6GDA426BNBTMWQ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -58780,7 +58780,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-01T19:58:23.369Z
-        completed_at: 2026-06-01T19:58:23.369Z
+        completed_at: 2026-06-01T19:59:57.895Z
+        notes: "Coverage check completed. Candidate reflections from this session are already tracked:
+          review evidence/check payload friction is covered by @01KSZFP3P / observation @01KSZFP3,
+          detached reviewer merge success is covered by observation @01KSZN68, long full-suite
+          review gate cost is covered by @01KR4B3 / observation @01KT0GTA, and noisy reflection-loop
+          baseline output is covered by observation @01KSDZFN. No high-confidence untracked
+          improvement remains."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-01T19:59:57.895Z
+        completed_at: 2026-06-01T19:59:57.895Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-01T19:57:14.392Z
