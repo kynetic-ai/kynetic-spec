@@ -210,7 +210,13 @@ async function validateOneRunner(
     });
   }
 
-  if (contract && contract.diagnostics.fieldOrigins?.processExecutable) {
+  // AC: @runner-process-invocation-inputs ac-effective-adapter-command-preflighted
+  // The probe now covers the effective adapter command for every named
+  // runner-backed contract, not only `process.executable` overrides. Runner
+  // env/PATH policy controls spawnability regardless of where the command
+  // came from, so validation must surface the same outcome dispatch and
+  // one-shot invocation would see.
+  if (contract) {
     let probeResult: PreflightExecutableResult | null = null;
     try {
       probeResult = await probeRunnerInvocationExecutable(contract);
@@ -225,7 +231,7 @@ async function validateOneRunner(
       issues.push({
         reason: "unspawnable_command",
         message: redactor(
-          `Configured executable "${contract.adapter.command}" is not spawnable: ${probeResult.message}.`,
+          `Effective command "${contract.adapter.command}" is not spawnable: ${probeResult.message}.`,
         ),
         details: {
           runner: runner.name,

@@ -2425,6 +2425,129 @@ describe("Dispatch runner resolution preflight", () => {
       vi.restoreAllMocks();
     }
   });
+
+  // AC: @runner-invocation-semantics ac-dispatch-preflight-uses-canonical-session-id
+  //
+  // Dispatch must allocate the tracked invocation's canonical session id
+  // BEFORE the runner preflight resolver call. Otherwise preflight builds a
+  // contract with one KSPEC_SESSION_ID (a throwaway ulid) while the eventual
+  // runInvocation builds a contract with a different KSPEC_SESSION_ID (the
+  // tracked id), and any session-scoped runner env/diagnostic interpolation
+  // would see one id at preflight and another at spawn time.
+  it("uses the same canonical session id for preflight and the tracked invocation", async () => {
+    const customAdapterId = `custom-canonical-session-adapter-${testUlid("ADPT").toLowerCase()}`;
+    registerAdapter(customAdapterId, {
+      command: "node",
+      args: [],
+      description: "Custom adapter for canonical session id test",
+    });
+
+    const agent = makeTestAgent({
+      id: "runner-canonical-session-agent",
+      adapter: undefined,
+      runner: "canonical-session-runner",
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    // Capture the contract dispatch passes to runner preflight. The contract
+    // env carries KSPEC_SESSION_ID, which the resolver injected from the
+    // dispatch-supplied session id. Observing this captures the preflight
+    // session id even when ESM import bindings would shadow a direct
+    // resolveRunnerInvocation spy.
+    const runnersModule = await import("../src/agents/runners.js");
+    const capturedPreflightSessionIds: string[] = [];
+    vi.spyOn(runnersModule, "preflightRunnerInvocation").mockImplementation(async (contract) => {
+      const sid = contract.env.KSPEC_SESSION_ID;
+      if (typeof sid === "string") capturedPreflightSessionIds.push(sid);
+    });
+
+    try {
+      vi.spyOn(runnerConfigModule, "resolveEffectiveRunners").mockResolvedValue({
+        project: { config: null, path: "", loaded: false, issues: null },
+        system: { config: null, path: "", loaded: false, issues: null },
+        registry: mergeRunnerConfigs(null, {
+          runners: {
+            "canonical-session-runner": { kind: "acp_process", adapter: customAdapterId },
+          },
+        }),
+      });
+
+      const mockMetadata = buildMockWorkspaceMetadata(testDir);
+      vi.spyOn(workspaceModule, "provisionDispatchWorkspace").mockResolvedValue({
+        cwd: testDir,
+        metadataPath: path.join(testDir, ".kspec-dispatch-workspace.json"),
+        metadata: mockMetadata,
+      });
+      vi.spyOn(bootstrapModule, "ensureWorkspaceBootstrap").mockResolvedValue({
+        metadata: mockMetadata,
+      });
+      vi.spyOn(workspaceModule, "getDispatchWorkspaceHealth").mockResolvedValue({
+        exists: true,
+        healthy: true,
+        reason: null,
+        metadata: null,
+      });
+
+      const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+        session: {} as any,
+        outcome: "success",
+        durationMs: 1,
+      });
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+      });
+      (engine as unknown as { running: boolean }).running = true;
+
+      const taskRef = `@${testUlid("TASK")}`;
+      const change = makeStateChange({
+        toStatus: "pending",
+        fromStatus: "in_progress",
+        taskRef,
+      });
+      const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
+      type EngineInternal = {
+        _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean>;
+        activeInvocationDetails: Map<string, { sessionId: string; taskRef: string | undefined }>;
+      };
+      const internal = engine as unknown as EngineInternal;
+      const spawned = await internal._spawnInvocation(agent, entry);
+      await waitForMockCall(runSpy);
+
+      expect(spawned).toBe(true);
+      expect(runSpy).toHaveBeenCalledTimes(1);
+
+      // Dispatch builds the preflight contract using the dispatch-allocated
+      // canonical session id. The contract env therefore carries that same
+      // id under KSPEC_SESSION_ID — exactly the value that downstream
+      // child kspec commands would see at spawn time.
+      expect(capturedPreflightSessionIds.length).toBeGreaterThanOrEqual(1);
+      const preflightSessionId = capturedPreflightSessionIds[0];
+      expect(typeof preflightSessionId).toBe("string");
+      expect(preflightSessionId.length).toBeGreaterThan(0);
+
+      // The runInvocation options carry the canonical session id used for
+      // active tracking, lifecycle events, and the runtime-built contract.
+      const invocationOpts = runSpy.mock.calls[0][0] as {
+        sessionId?: string;
+        env?: Record<string, string>;
+      };
+      expect(invocationOpts.sessionId).toBe(preflightSessionId);
+
+      // The active invocation record exposes the same session id to status
+      // surfaces (dispatch status, daemon API, Web UI).
+      const activeRecords = Array.from(internal.activeInvocationDetails.values());
+      const activeForTask = activeRecords.find((r) => r.taskRef === taskRef);
+      expect(activeForTask).toBeDefined();
+      expect(activeForTask!.sessionId).toBe(preflightSessionId);
+    } finally {
+      vi.restoreAllMocks();
+    }
+  });
 });
 
 // ─── Dispatch preflight registry-load failure diagnostics ───────────────────

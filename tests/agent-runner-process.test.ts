@@ -209,8 +209,14 @@ describe("runner.process.executable: command reference resolution", () => {
     );
   });
 
-  it("does not preflight when the runner did not configure an executable", async () => {
+  // AC: @runner-process-invocation-inputs ac-effective-adapter-command-preflighted
+  // AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+  it("preflights the effective adapter command when the runner does not override process.executable", async () => {
     // No process.executable → resolver keeps the adapter's registered command.
+    // The adapter command is an absolute path that does not exist on disk, so
+    // preflight must reject the contract before any spawn or prompt forwarding.
+    // This guards against runner env/PATH policies that would silently fail at
+    // spawn time when the registered adapter command cannot be located.
     const registry = buildRegistry({
       runners: {
         fake: { kind: "acp_process", adapter: FAKE_ADAPTER_ID },
@@ -220,19 +226,92 @@ describe("runner.process.executable: command reference resolution", () => {
       makeInput({ agent: makeAgent({ runner: "fake" }), registry }),
     );
     expect(contract.adapter.command).toBe(FAKE_ADAPTER_COMMAND);
+    expect(contract.runnerId).toBe("fake");
 
-    // preflightRunnerInvocation must be a no-op here even though the
-    // adapter's registered command points at a path that does not exist on
-    // disk. The fake adapter's command is never preflighted because no
-    // runner-configured executable was supplied.
+    let captured: RunnerResolutionError | null = null;
+    try {
+      await preflightRunnerInvocation(contract);
+    } catch (err) {
+      captured = err as RunnerResolutionError;
+    }
+    expect(captured).toBeInstanceOf(RunnerResolutionError);
+    expect(captured!.reason).toBe("unspawnable_command");
+    expect(captured!.details.unspawnable_reason).toBe("not_found");
+    expect(captured!.details.command).toBe(FAKE_ADAPTER_COMMAND);
+    expect(captured!.details.adapter).toBe(FAKE_ADAPTER_ID);
+    expect(captured!.details.runner).toBe("fake");
+  });
+
+  // AC: @runner-process-invocation-inputs ac-effective-adapter-command-preflighted
+  // AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+  it("accepts the effective adapter command when it points at a spawnable file", async () => {
+    // Adapter command is a real executable; runner does not override it. The
+    // adapter-sourced command must still be checked under the runner's resolved
+    // cwd and env search path, and a spawnable result must not throw.
+    const adapterCommand = path.join(tempDir, "spawnable-adapter");
+    await writeExecutable(adapterCommand);
+    const adapterId = `${FAKE_ADAPTER_ID}-spawnable`;
+    registerAdapter(adapterId, { command: adapterCommand, args: [] });
+
+    const registry = buildRegistry({
+      runners: {
+        fake: { kind: "acp_process", adapter: adapterId },
+      },
+    });
+    const contract = resolveRunnerInvocation(
+      makeInput({ agent: makeAgent({ runner: "fake" }), registry }),
+    );
+    expect(contract.adapter.command).toBe(adapterCommand);
+
     await expect(preflightRunnerInvocation(contract)).resolves.toBeUndefined();
+  });
+
+  // AC: @runner-process-invocation-inputs ac-effective-adapter-command-preflighted
+  // AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+  it("resolves bare adapter commands via the runner's env search PATH", async () => {
+    // Adapter registers a bare command that does not exist on the daemon
+    // PATH; the runner's env.set.PATH points at a tempdir containing the
+    // command. Preflight must mirror the spawn-time lookup against the
+    // runner-resolved PATH (not the host PATH) and succeed.
+    const bareName = "bare-adapter-tool";
+    const runnerBin = await createTempDir("kspec-runner-process-adapter-bare-");
+    try {
+      await writeExecutable(path.join(runnerBin, bareName));
+      const adapterId = `${FAKE_ADAPTER_ID}-bare`;
+      registerAdapter(adapterId, { command: bareName, args: [] });
+
+      const registry = buildRegistry({
+        runners: {
+          fake: {
+            kind: "acp_process",
+            adapter: adapterId,
+            env: { inherit: "none", set: { PATH: runnerBin } },
+          },
+        },
+      });
+      const contract = resolveRunnerInvocation(
+        makeInput({
+          agent: makeAgent({ runner: "fake" }),
+          registry,
+          hostEnv: { PATH: "" },
+        }),
+      );
+      expect(contract.adapter.command).toBe(bareName);
+      expect(contract.env.PATH).toBe(runnerBin);
+
+      await expect(preflightRunnerInvocation(contract)).resolves.toBeUndefined();
+    } finally {
+      await cleanupTempDir(runnerBin);
+    }
   });
 
   it("does not preflight on the implicit/legacy path", async () => {
     const agent = makeAgent({ adapter: FAKE_ADAPTER_ID });
     const contract = resolveRunnerInvocation(makeInput({ agent }));
     // Legacy path uses the registered adapter command verbatim — preflight
-    // skips it because no runner contributed the command reference.
+    // skips it because no runner contributed the invocation contract.
+    // Implicit/legacy compatibility means a missing adapter command does
+    // not regress to an AGENT-SKIP under the new runner-aware preflight.
     expect(contract.runnerId).toBeNull();
     await expect(preflightRunnerInvocation(contract)).resolves.toBeUndefined();
   });
