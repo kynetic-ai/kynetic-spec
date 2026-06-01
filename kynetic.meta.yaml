@@ -20348,6 +20348,30 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-01T03:33:02.749Z
+  - _ulid: 01KT0N1X13V7BDKJ3CRYCN96MM
+    type: friction
+    content: During review of @task-runner-compatibility-regressions, the task Testing section
+      referenced packages/web-ui/tests/e2e/agents.spec.ts, but the actual Playwright test path is
+      tests/e2e/agents.spec.ts. This stale path caused avoidable command friction during AC
+      annotation verification. Searched 'web ui e2e agents path', 'packages/web-ui/tests/e2e', and
+      'agents.spec.ts'; related runner/Web UI tasks exist, but no item directly tracks stale
+      test-path references in task/review instructions.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KT0MYR"
+    created_at: 2026-06-01T03:53:46.787Z
+  - _ulid: 01KT0N1XAAYABAPPJQJ45QWP9T
+    type: success
+    content: "Detached reviewer merge flow worked cleanly for @task-runner-compatibility-regressions:
+      after recording required review checks and approval,
+      .agents/skills/kspec-merge/scripts/detached-reviewer-merge.sh merged the canonical task branch
+      to dev without checking out the target in the detached snapshot."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KT0MYR"
+    created_at: 2026-06-01T03:53:47.082Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
