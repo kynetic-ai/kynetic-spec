@@ -1,1 +1,16 @@
-notes: []
+notes:
+  - _ulid: 01KT0CBAA3H4Y8DZMCZ48J5RGC
+    content: "Approach: Add three new docs files. (1) docs/concepts/agent-runners.md — concept page
+      covering the two-layer runner model, file paths, resolution, secret boundary, operator
+      surfaces. (2) docs/guides/configuring-agent-runners.md — guide with seven worked examples
+      covering legacy adapter, named runner, project-only config, system override, full system
+      config with env/secrets/args/cwd/executable, agent referencing runner, migration guidance,
+      validation command (text + JSON), headed Claude Code sidecar as a separate runner kind that
+      consumes this contract. (3) docs/troubleshooting/runner-validation-failures.md — diagnostic
+      reasons (unknown_runner, invalid_adapter, unspawnable_command, invalid_cwd, missing_secret,
+      missing_adapter_registration, etc.). Update three index files and
+      concepts/agents-and-dispatch.md cross-link. Generic, no machine-specific paths, placeholder
+      secret names only."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-01T01:21:38.115Z
