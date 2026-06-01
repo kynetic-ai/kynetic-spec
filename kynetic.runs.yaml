@@ -58501,7 +58501,7 @@ runs:
     completed_at: 2026-06-01T03:00:26.782Z
   - _ulid: 01KT0MYR67HYANCXH5WT0X2NSN
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -58517,7 +58517,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-01T03:52:42.612Z
-        completed_at: 2026-06-01T03:52:42.612Z
+        completed_at: 2026-06-01T03:52:51.465Z
+        notes: "Friction points: The task Testing section named packages/web-ui/tests/e2e/agents.spec.ts,
+          but the actual Playwright spec lives at tests/e2e/agents.spec.ts. That caused an avoidable
+          failed grep during AC annotation verification. This looks like documentation/path drift
+          rather than a code issue. The full required test suite also took about 44 minutes, but
+          that is expected for this repo and already supported by the cache/shard workflow, so I am
+          not treating it as new friction."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-01T03:52:51.465Z
+        completed_at: 2026-06-01T03:52:51.465Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-01T03:52:03.527Z
