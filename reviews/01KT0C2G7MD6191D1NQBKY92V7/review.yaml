@@ -224,6 +224,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-01T01:33:35.162Z
+  - _ulid: 01KT0EFN3FESJTTYZATFWSZV31
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KT0D0EQG81WPXPVH2A8RVHMS
+    timestamp: 2026-06-01T01:58:57.391Z
 examined_commit: b8f8ed94f9fe3bd36a1ed8f1ab58bee394529f10
 external_links: []
 lifecycle_state: closed
@@ -256,6 +262,39 @@ threads:
           process.once with listener removal, or otherwise exiting with the signal-appropriate
           behavior after releasing locks."
         created_at: 2026-06-01T01:33:10.768Z
+      - _ulid: 01KT0EFMWSE9YC12NQN8VJN5NG
+        author: "@claude"
+        body: >-
+          Fixed. The signal handler is now a named function that removes itself from
+          process.listeners(signal) before re-raising via process.kill(process.pid, signal). With
+          our listener gone the re-raise hits default disposition (process exit) unless another
+          listener (e.g. the host test runner) owns termination semantics — in which case that
+          listener takes over. Source: tests/helpers/daemon.ts:463-489.
+
+
+          Extracted the handler factory as exported __createPortStartLockSignalHandler so two
+          regressions can pin the contract behaviorally:
+
+
+          1. In-process unit test ("removes itself from process listeners and calls release exactly
+          once before re-raising") — installs the actual factory output on a benign SIGUSR2
+          listener, invokes it, asserts (a) it removed itself from process.listeners, (b) release
+          ran exactly once, (c) reRaise was called with the same signal. Pre-fix the handler had no
+          removal step, so process.listeners would still contain it after invocation and the
+          assertion would fail.
+
+
+          2. Subprocess end-to-end test ("a subprocess that mirrors the registration pattern reaches
+          a bounded terminal outcome under SIGTERM") — spawns a Node subprocess that installs the
+          same remove-then-re-raise shape, sends SIGTERM, asserts it exits within 5s with signalCode
+          === 'SIGTERM'. Pre-fix this subprocess would loop and only die from the test's SIGKILL
+          safety net.
+
+
+          Both tests are annotated against ac-uncooperative-process-stop-is-bounded under
+          @daemon-test-teardown-boundedness. Focused daemon tests (22/22) pass; full suite re-run in
+          progress.
+        created_at: 2026-06-01T01:58:57.177Z
     kind: blocker
   - _ulid: 01KT0D0T2B8G9HV0D5B21VEAF2
     entries:
@@ -281,5 +320,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-01T01:33:35.162Z
 created_at: 2026-06-01T01:16:49.268Z
-updated_at: 2026-06-01T01:33:35.162Z
+updated_at: 2026-06-01T01:58:57.177Z
 notes: []
