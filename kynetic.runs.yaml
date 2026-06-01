@@ -58604,7 +58604,7 @@ runs:
     completed_at: 2026-06-01T16:51:29.768Z
   - _ulid: 01KT22YS1F9QR16WMY6QSRW1BZ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -58619,7 +58619,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-01T17:17:21.295Z
-        completed_at: 2026-06-01T17:17:21.295Z
+        completed_at: 2026-06-01T17:17:29.860Z
+        notes: "Friction points: the required full npm test run took 4256.2 seconds, which is expensive for
+          a spec-only review even though it provides strong regression evidence. Also, the
+          reflection skill example says kspec workflow show without a run ref, but the CLI required
+          an explicit run ref in this workspace."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-01T17:17:29.860Z
+        completed_at: 2026-06-01T17:17:29.860Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-01T17:15:58.895Z
