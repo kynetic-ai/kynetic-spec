@@ -98,6 +98,19 @@ checks:
     runner: npm test
     created_at: 2026-06-01T02:29:11.990Z
     completed_at: 2026-06-01T02:29:11.990Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified @daemon-test-teardown-boundedness annotations: existing ACs plus new
+      ac-shared-startup-lock-recovers-from-crashed-holder at
+      tests/helpers/daemon.test.ts:1402,1456,1495 and fix-cycle
+      ac-uncooperative-process-stop-is-bounded at 1566,1607."
+    name: AC annotation search
+    required: false
+    runner: rg
+    created_at: 2026-06-01T02:29:21.745Z
+    completed_at: 2026-06-01T02:29:21.745Z
 events:
   - _ulid: 01KT0F3G32CBKSAMJ26N69FGKB
     actor: Jacob Chapel
@@ -175,6 +188,13 @@ events:
       status: pass
       name: full npm test
     timestamp: 2026-06-01T02:29:12.217Z
+  - _ulid: 01KT0G7AXQRPJ3DERNJ643VZAM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC annotation search
+    timestamp: 2026-06-01T02:29:21.976Z
 examined_commit: faa3e056dccd97805519b24c458f5c3a568997fc
 external_links: []
 lifecycle_state: open
@@ -187,5 +207,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-01T02:09:47.625Z
-updated_at: 2026-06-01T02:29:11.990Z
+updated_at: 2026-06-01T02:29:21.745Z
 notes: []
