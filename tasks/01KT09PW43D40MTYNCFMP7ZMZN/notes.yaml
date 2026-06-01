@@ -92,3 +92,38 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-01T02:00:29.271Z
+  - _ulid: 01KT0EKAQ97SC9CE86QRYVREB7
+    content: >-
+      Fix cycle 1 - addressed blocker thread from review @01KT0C2G7MD6191D1NQBKY92V7.
+
+
+      Root cause: registerPortStartLockExitHandlers installed anonymous signal listeners that called
+      process.kill(process.pid, signal) without removing themselves first. Node suppresses default
+      termination while a listener is installed, so the re-raise re-entered the same handler in an
+      infinite loop. Test runners holding the port-start lock would not terminate under SIGTERM —
+      violating the daemon teardown boundedness contract.
+
+
+      Fix (tests/helpers/daemon.ts:463-489): named the handler so it calls
+      process.removeListener(signal, handler) before re-raising. With our listener gone, re-raise
+      hits default disposition (process exit) unless another listener (e.g. host test runner) owns
+      termination semantics. Extracted handler factory as exported
+      __createPortStartLockSignalHandler so regressions can exercise the shape in-process via stub
+      release/reRaise callables.
+
+
+      Regression coverage (tests/helpers/daemon.test.ts): (1) factory unit test installs handler on
+      benign SIGUSR2, invokes it, asserts it removed itself from process.listeners + release ran
+      exactly once + reRaise called with same signal. (2) subprocess e2e test spawns a Node
+      subprocess mirroring the remove-then-re-raise shape, sends SIGTERM, asserts exit within 5s
+      with signalCode SIGTERM. Both annotated against @daemon-test-teardown-boundedness
+      ac-uncooperative-process-stop-is-bounded. Pre-fix both fail; post-fix both pass.
+
+
+      Quality gates: format:check green, lint 0 errors, changed-file oxlint clean, typecheck green,
+      focused daemon tests 22/22 pass, focused e2e fixture cleanup 16/16 pass, full npm test green
+      (2666 suites / 10158 tests / 5 skipped / 2707s), kspec validate refs/alignment/completeness
+      all green with warning baseline only.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-01T02:00:57.833Z
