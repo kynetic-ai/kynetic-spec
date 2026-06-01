@@ -906,6 +906,244 @@ test.describe("Agent and Dispatch View", () => {
       await expect(queuedRunner.first()).toContainText("claude-cli");
     });
 
+    // AC: @runner-operator-surfaces ac-web-ui-invocation-rows-show-resolved-adapter
+    test("runner-backed active invocation row shows resolved adapter in row text", async ({
+      page,
+      daemon: _daemon,
+    }) => {
+      await mockRunnerSurfaces(page);
+
+      await page.goto("/agents");
+      await expect(page.getByTestId("agents-loading")).toHaveCount(0);
+
+      const section = page.getByTestId("active-invocations-section");
+      const rows = section.getByTestId("active-invocation-row");
+
+      // Runner-backed row (task-worker) has both runner and resolved adapter
+      // rendered as visible badge text — not just on a title attribute. This
+      // is what assistive technology and ordinary readers actually see.
+      const runnerRow = rows.first();
+      const runnerBadge = runnerRow.getByTestId("invocation-runner");
+      await expect(runnerBadge).toBeVisible();
+      await expect(runnerBadge).toContainText("claude-cli");
+
+      const adapterBadge = runnerRow.getByTestId("invocation-resolved-adapter");
+      await expect(adapterBadge).toBeVisible();
+      await expect(adapterBadge).toContainText("claude-agent-acp");
+    });
+
+    // AC: @runner-operator-surfaces ac-web-ui-invocation-rows-show-resolved-adapter
+    test("runner-backed active invocation row exposes accessible label with runner and resolved adapter", async ({
+      page,
+      daemon: _daemon,
+    }) => {
+      await mockRunnerSurfaces(page);
+
+      await page.goto("/agents");
+      await expect(page.getByTestId("agents-loading")).toHaveCount(0);
+
+      const section = page.getByTestId("active-invocations-section");
+      const rows = section.getByTestId("active-invocation-row");
+
+      // The accessible label on the row itself includes runner identity AND
+      // resolved adapter identity so screen readers receive the full
+      // dispatch harness rather than only the visible badge text.
+      const runnerRow = rows.first();
+      const ariaLabel = await runnerRow.getAttribute("aria-label");
+      expect(ariaLabel).not.toBeNull();
+      expect(ariaLabel).toContain("task-worker");
+      expect(ariaLabel).toContain("claude-cli");
+      expect(ariaLabel).toContain("claude-agent-acp");
+    });
+
+    // AC: @runner-operator-surfaces ac-web-ui-invocation-rows-show-resolved-adapter
+    test("legacy adapter-only active row still surfaces resolved adapter in text and aria", async ({
+      page,
+      daemon: _daemon,
+    }) => {
+      await mockRunnerSurfaces(page);
+
+      await page.goto("/agents");
+      await expect(page.getByTestId("agents-loading")).toHaveCount(0);
+
+      const section = page.getByTestId("active-invocations-section");
+      const rows = section.getByTestId("active-invocation-row");
+
+      // The legacy adapter-only row (pr-reviewer) has no runner badge but
+      // still gets resolved adapter identity in both row text and aria-label.
+      const legacyRow = rows.nth(1);
+      await expect(legacyRow.getByTestId("invocation-runner")).toHaveCount(0);
+
+      const adapterBadge = legacyRow.getByTestId("invocation-resolved-adapter");
+      await expect(adapterBadge).toBeVisible();
+      await expect(adapterBadge).toContainText("claude-agent-acp");
+
+      const ariaLabel = await legacyRow.getAttribute("aria-label");
+      expect(ariaLabel).not.toBeNull();
+      expect(ariaLabel).toContain("pr-reviewer");
+      expect(ariaLabel).toContain("claude-agent-acp");
+      // Legacy row has no runner — the accessible label must not invent one.
+      expect(ariaLabel).not.toContain("runner ");
+    });
+
+    // AC: @runner-operator-surfaces ac-web-ui-invocation-rows-show-resolved-adapter
+    test("runner-backed queued invocation row shows resolved adapter in row text and aria", async ({
+      page,
+      daemon: _daemon,
+    }) => {
+      await mockRunnerSurfaces(page);
+
+      await page.goto("/agents");
+      await expect(page.getByTestId("agents-loading")).toHaveCount(0);
+
+      const section = page.getByTestId("queued-invocations-section");
+      const rows = section.getByTestId("queued-invocation-row");
+
+      const runnerRow = rows.first();
+      const runnerBadge = runnerRow.getByTestId("queued-invocation-runner");
+      await expect(runnerBadge).toBeVisible();
+      await expect(runnerBadge).toContainText("claude-cli");
+
+      const adapterBadge = runnerRow.getByTestId("queued-invocation-resolved-adapter");
+      await expect(adapterBadge).toBeVisible();
+      await expect(adapterBadge).toContainText("claude-agent-acp");
+
+      const ariaLabel = await runnerRow.getAttribute("aria-label");
+      expect(ariaLabel).not.toBeNull();
+      expect(ariaLabel).toContain("task-worker");
+      expect(ariaLabel).toContain("claude-cli");
+      expect(ariaLabel).toContain("claude-agent-acp");
+    });
+
+    // AC: @runner-operator-surfaces ac-web-ui-invocation-rows-show-resolved-adapter
+    test("legacy adapter-only queued row still surfaces resolved adapter in text and aria", async ({
+      page,
+      daemon: _daemon,
+    }) => {
+      await mockRunnerSurfaces(page);
+
+      await page.goto("/agents");
+      await expect(page.getByTestId("agents-loading")).toHaveCount(0);
+
+      const section = page.getByTestId("queued-invocations-section");
+      const rows = section.getByTestId("queued-invocation-row");
+
+      const legacyRow = rows.nth(1);
+      await expect(legacyRow.getByTestId("queued-invocation-runner")).toHaveCount(0);
+
+      const adapterBadge = legacyRow.getByTestId("queued-invocation-resolved-adapter");
+      await expect(adapterBadge).toBeVisible();
+      await expect(adapterBadge).toContainText("claude-agent-acp");
+
+      const ariaLabel = await legacyRow.getAttribute("aria-label");
+      expect(ariaLabel).not.toBeNull();
+      expect(ariaLabel).toContain("pr-reviewer");
+      expect(ariaLabel).toContain("claude-agent-acp");
+      expect(ariaLabel).not.toContain("runner ");
+    });
+
+    // AC: @runner-operator-surfaces ac-web-ui-active-invocations-include-runner
+    // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+    test("invocation rows handling of invalid-runner agents stays consistent with diagnostics", async ({
+      page,
+      daemon: _daemon,
+    }) => {
+      // When an agent has runner_validation.status = invalid (e.g. unknown
+      // runner), the agents page still renders any invocation rows the
+      // daemon emits for it. The daemon attaches the resolved adapter to
+      // those rows so the operator can still see the harness identity even
+      // if the runner is unknown.
+      const invalidRunnerStatus = {
+        dispatch_enabled: true,
+        active_invocations: [
+          {
+            session_id: "01KSESSION00000000000000099",
+            agent_id: "broken-runner-agent",
+            task_ref: null,
+            task_title: null,
+            elapsed_ms: 7_500,
+            resolved_adapter: "claude-agent-acp",
+            runner: "missing-runner",
+          },
+        ],
+        queued_invocations: [
+          {
+            agent_id: "broken-runner-agent",
+            task_ref: null,
+            task_title: null,
+            wait_ms: 900,
+            resolved_adapter: "claude-agent-acp",
+            runner: "missing-runner",
+          },
+        ],
+        queue_depth: 1,
+        agent_definitions: [
+          {
+            id: "broken-runner-agent",
+            name: "Broken Runner Agent",
+            adapter: "claude-agent-acp",
+            resolved_adapter: "claude-agent-acp",
+            runner: "missing-runner",
+            completed_sessions: 0,
+          },
+        ],
+      };
+      await page.route("**/api/meta/agents", (route) =>
+        route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify(RUNNER_AGENTS_ENVELOPE),
+        }),
+      );
+      await page.route("**/api/agent/status", (route) =>
+        route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify(invalidRunnerStatus),
+        }),
+      );
+
+      await page.goto("/agents");
+      await expect(page.getByTestId("agents-loading")).toHaveCount(0);
+
+      // Active row exposes the invalid runner name and the resolved adapter
+      // in row text + accessible label. The runner is invalid in the agent
+      // card, but the invocation row's job is to surface the harness shape
+      // the daemon reported — diagnostics live on the agent card.
+      const activeRow = page
+        .getByTestId("active-invocations-section")
+        .getByTestId("active-invocation-row")
+        .first();
+      await expect(activeRow.getByTestId("invocation-runner")).toContainText("missing-runner");
+      await expect(activeRow.getByTestId("invocation-resolved-adapter")).toContainText(
+        "claude-agent-acp",
+      );
+      const activeLabel = await activeRow.getAttribute("aria-label");
+      expect(activeLabel).toContain("missing-runner");
+      expect(activeLabel).toContain("claude-agent-acp");
+
+      // Queued row shows the same.
+      const queuedRow = page
+        .getByTestId("queued-invocations-section")
+        .getByTestId("queued-invocation-row")
+        .first();
+      await expect(queuedRow.getByTestId("queued-invocation-runner")).toContainText(
+        "missing-runner",
+      );
+      await expect(queuedRow.getByTestId("queued-invocation-resolved-adapter")).toContainText(
+        "claude-agent-acp",
+      );
+
+      // The invalid-runner diagnostic still renders on the agent card,
+      // confirming the row-level resolved adapter rendering doesn't mask the
+      // separate invalid-runner diagnostic surface.
+      const brokenCard = page.getByTestId("agent-card-broken-runner-agent");
+      const diag = brokenCard.getByTestId("agent-runner-diagnostic").first();
+      await expect(diag.getByTestId("agent-runner-diagnostic-reason")).toContainText(
+        "unknown_runner",
+      );
+    });
+
     // AC: @runner-operator-surfaces ac-web-ui-agent-edit-supports-runner
     test("edit form exposes runner field pre-populated from agent definition", async ({
       page,
