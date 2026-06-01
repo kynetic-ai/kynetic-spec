@@ -43,3 +43,52 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-01T01:33:37.305Z
+  - _ulid: 01KT0EJETQYJEJF7HHTN78D41F
+    content: >-
+      Fix cycle 1 — addressed the blocker thread from review @01KT0C2G7MD6191D1NQBKY92V7.
+
+
+      Root cause: registerPortStartLockExitHandlers installed an anonymous SIGINT/SIGTERM/SIGHUP
+      listener that called process.kill(process.pid, signal) without removing itself first. Node
+      suppresses default termination while a signal listener is installed, so the re-raise
+      re-entered the same handler in a tight loop. Test runners that had acquired the port-start
+      lock would not terminate under SIGTERM — a direct violation of the daemon teardown boundedness
+      contract this task is meant to enforce.
+
+
+      Fix (tests/helpers/daemon.ts:463-489): named the handler so it can call
+      process.removeListener(signal, handler) before re-raising. With our listener gone, re-raise
+      hits default disposition (process exit) unless another listener (e.g. the host test runner)
+      owns termination semantics — in which case that listener takes over. Extracted the handler
+      factory as exported __createPortStartLockSignalHandler so contract regressions can exercise it
+      in-process with stub release / reRaise callables rather than actually sending signals to the
+      test runner.
+
+
+      Regression coverage (tests/helpers/daemon.test.ts):
+
+      - Factory unit test: installs the actual factory output on benign SIGUSR2, invokes it, asserts
+      (a) handler removed itself from process.listeners, (b) release ran exactly once, (c) reRaise
+      was called with the same signal. Pre-fix the handler had no removal step, so process.listeners
+      would still contain it after invocation.
+
+      - Subprocess e2e test: spawns a Node subprocess that mirrors the remove-then-re-raise shape,
+      sends SIGTERM, asserts it exits within 5s with signalCode === SIGTERM. Pre-fix the subprocess
+      would loop and only die from the test's SIGKILL safety net.
+
+
+      Both tests annotated against @daemon-test-teardown-boundedness
+      ac-uncooperative-process-stop-is-bounded.
+
+
+      Quality gates: format:check green, lint 0 errors, changed-file oxlint 0 warnings/0 errors,
+      typecheck green, focused daemon tests pass (22/22 in tests/helpers/daemon.test.ts including
+      the 2 new ones, 16/16 in tests/e2e-fixture-daemon-cleanup.test.ts), full npm test green (2666
+      suites / 10158 tests, 5 skipped, 2707s). kspec validate refs/alignment/completeness all green
+      with warning baseline only.
+
+
+      Also rebased onto origin/dev to pick up the runner-surfaces merges.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-01T02:00:29.271Z
