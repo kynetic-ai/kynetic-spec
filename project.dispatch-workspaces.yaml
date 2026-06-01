@@ -16303,12 +16303,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-01T02:40:04.068Z
+      updated_at: 2026-06-01T02:40:12.017Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-01T02:40:04.068Z
+      updated_at: 2026-06-01T02:40:12.017Z
     integration:
       status: pending
       detail: null
@@ -16316,24 +16316,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: f59983f0cd55efe39c50bba0fc78a3d24cae79bd
-      updated_at: 2026-06-01T02:40:04.068Z
-    lifecycle_state: ready
+      updated_at: 2026-06-01T02:40:12.017Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KSYAZ7N9PA8VKT13R9V3P72K"
     task_slug: task-runner-compatibility-regressions
     timestamps:
       closed_at: null
       last_active_at: 2026-06-01T02:08:23.500Z
-      last_reconciled_at: 2026-06-01T02:40:04.068Z
+      last_reconciled_at: 2026-06-01T02:40:12.017Z
       created_at: 2026-06-01T02:07:54.627Z
-      updated_at: 2026-06-01T02:40:04.068Z
+      updated_at: 2026-06-01T02:40:12.017Z
     workspace_id: dispatch-workspace-01KSYAZ7N9PA8VKT13R9V3P72K
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: dacb75e03421617863403ed36dcfc31c0d8551e2
+        last_seen_at: 2026-06-01T02:40:12.017Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-runner-compatibility-regressions-01ksyaz7-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-runner-compatibility-regressions/01ksyaz7
-        head: f59983f0cd55efe39c50bba0fc78a3d24cae79bd
-        last_seen_at: 2026-06-01T02:07:54.627Z
+        head: dacb75e03421617863403ed36dcfc31c0d8551e2
+        last_seen_at: 2026-06-01T02:40:12.017Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-runner-compatibility-regressions-01ksyaz7
