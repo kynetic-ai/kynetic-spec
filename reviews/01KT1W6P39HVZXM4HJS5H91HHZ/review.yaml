@@ -1,0 +1,26 @@
+_ulid: 01KT1W6P39HVZXM4HJS5H91HHZ
+slugs: []
+title: "Plan review: Agent Runner Contract Hardening Follow-up (cycle 2)"
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KT1W6P388A6W47DEPDNWK04C
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-01T15:17:57.993Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-agent-runner-contract-hardening-follow-up"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-01T15:17:57.993Z
+updated_at: null
+notes: []
