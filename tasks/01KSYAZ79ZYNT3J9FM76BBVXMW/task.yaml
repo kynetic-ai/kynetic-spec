@@ -65,8 +65,12 @@ description: >
 spec_ref: "@agent-runner-configuration"
 plan_ref: "@plan-agent-runner-configuration-layer"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved review 01KT0D19 and merged
+  dispatch/task/task-document-runner-config-migration/01ksyaz7 into dev at
+  f59983f0cd55efe39c50bba0fc78a3d24cae79bd. Added runner configuration, migration, and validation
+  troubleshooting documentation.
 depends_on:
   - "@task-cli-runner-surfaces"
   - "@task-web-ui-runner-surfaces"
@@ -136,8 +140,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-01T01:33:40.457Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved review 01KT0D19 and merged
+          dispatch/task/task-document-runner-config-migration/01ksyaz7 into dev at
+          f59983f0cd55efe39c50bba0fc78a3d24cae79bd. Added runner configuration, migration, and
+          validation troubleshooting documentation.
+        previous: null
+      completed_at:
+        new: 2026-06-01T01:50:36.840Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-01T01:50:36.855Z
 created_at: 2026-05-31T06:19:04.383Z
 started_at: 2026-06-01T01:17:22.823Z
 submitted_at: 2026-06-01T01:29:19.241Z
+completed_at: 2026-06-01T01:50:36.840Z
 todos: []
 automation: eligible
