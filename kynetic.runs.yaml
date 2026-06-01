@@ -58324,9 +58324,39 @@ runs:
     completed_at: 2026-06-01T02:33:11.306Z
   - _ulid: 01KT0GKZ8Z8NBGX6TBHPCFJ9FW
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-01T02:36:16.031Z
+        completed_at: 2026-06-01T02:36:57.272Z
+        notes: >-
+          - Explore sub-agent for infrastructure mapping: spending one parallel agent to map all
+          runner-related test files, helpers, fixtures, and source modules BEFORE writing a single
+          line of test code paid off enormously. It surfaced reusable patterns (createTestApp +
+          makeRequest for in-process daemon tests, mock-acp.js for the minimum ACP protocol,
+          deriveProjectKeySync for system-config dir paths, setupInlineFixtures for ad-hoc YAML,
+          sentinel-secret pattern for redaction assertions) and made writing the 1140-line test file
+          straight-through.
+
+          - AC annotations as a self-documenting table of contents: listing every covered AC at the
+          file-level docstring then re-annotating each test made the file's coverage legible and let
+          kspec validate --completeness see zero issues against the new file on first try.
+
+          - Reading sibling test files for patterns rather than rolling my own:
+          agent-runner-resolver.test.ts gave me the fake-adapter + makeAgent + makeInput pattern;
+          daemon-api/agent-runner-surfaces.test.ts gave me HOME-isolation + dispatch-engine internal
+          injection; agent-invocation.test.ts gave me readSessionYaml + readEventsJsonl helpers.
+
+          - Tight iteration on test failures: ran the new file, hit 2 narrow failures (CLI exit code
+          in Flow 5 and dry-run JSON shape in Flow 9), located the bug each time by reading the
+          production source (buildRunnerValidationReport for issue surfacing;
+          DryRunRunnerInvocationDiagnostic.summary for the actual shape), fixed in minutes.
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-01T02:36:57.272Z
+        completed_at: 2026-06-01T02:36:57.272Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-01T02:36:16.031Z
