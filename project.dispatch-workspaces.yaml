@@ -16972,7 +16972,7 @@ workspaces:
         head: b3ee001851142c921936eac9f8a46cc7e1db27c3
         last_seen_at: 2026-06-01T20:29:41.000Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-runner-preflight-invocation-equivalence-01kt20r9
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 3e77fab2475397c1539d2cd58c98c12c55e9ae5b
     bootstrap:
       status: succeeded
@@ -17461,9 +17461,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-01T20:52:24.821Z
-      last_reconciled_at: 2026-06-01T21:12:00.453Z
+      last_reconciled_at: 2026-06-01T21:14:26.044Z
       created_at: 2026-06-01T20:30:12.163Z
-      updated_at: 2026-06-01T21:12:00.453Z
+      updated_at: 2026-06-01T21:14:26.044Z
     workspace_id: dispatch-workspace-01KT20R9G2BY67EDEA63J690TR
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
