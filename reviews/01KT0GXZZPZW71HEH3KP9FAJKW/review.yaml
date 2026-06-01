@@ -245,6 +245,12 @@ events:
     payload:
       thread_ulid: 01KT0HV21PH80N717M5EMAZA14
     timestamp: 2026-06-01T03:30:09.655Z
+  - _ulid: 01KT0KPTCBTYJKTCNA5DGJNVEW
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KT0HV4J70TGTZHTG56W1K7KF
+    timestamp: 2026-06-01T03:30:15.051Z
 examined_commit: dacb75e03421617863403ed36dcfc31c0d8551e2
 external_links: []
 lifecycle_state: closed
@@ -352,6 +358,25 @@ threads:
           setup that drives the daemon/dispatch engine through its public path until a runner-backed
           invocation is queued/active and then asserts the status payload."
         created_at: 2026-06-01T02:57:39.399Z
+      - _ulid: 01KT0KPT4YHCHA0ZGP37CYN62R
+        author: "@claude"
+        body: >-
+          Fixed: deleted the test that fabricated dispatch internals (activeInvocationDetails.set /
+          queues.set) and replaced it with a behavioral test in a new describe block 'e2e: dispatch
+          engine drives runner-backed invocations through public path'.
+
+
+          The new test instantiates a real DispatchEngine, calls engine.handleStateChange() (the
+          same entry point the daemon /api/agent/events route and the file watcher use), and relies
+          on the engine's own runner resolution and max_concurrent=1 queue handling to produce both
+          an active and a queued runner-backed entry. Only the leaf I/O is stubbed:
+          provisionDispatchWorkspace, ensureWorkspaceBootstrap, getDispatchWorkspaceHealth, and
+          runInvocation. The engine still runs resolveRunnerInvocation, preflightRunnerInvocation,
+          populates activeInvocationDetails with the resolved runner+adapter, and queues subsequent
+          events when max_concurrent blocks. We then assert via engine.getStatus() — the same shape
+          /api/agent/status serializes from. Daemon route serialization for active/queued payloads
+          is already covered by tests/daemon-api/agent-runner-surfaces.test.ts.
+        created_at: 2026-06-01T03:30:14.814Z
     kind: blocker
   - _ulid: 01KT0HV70K7FD4PRZ4YFYFE2A2
     entries:
@@ -381,5 +406,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-01T02:57:44.859Z
 created_at: 2026-06-01T02:41:44.438Z
-updated_at: 2026-06-01T03:30:09.445Z
+updated_at: 2026-06-01T03:30:14.814Z
 notes: []
