@@ -2,7 +2,113 @@ _ulid: 01KT21N0R5HWTRY66YQ9PNAP2F
 slugs: []
 title: Review task-tighten-runner-closure-gap-specs
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation passed: schema OK, references OK; 6 pre-existing deprecated-ref warnings
+      allowed by --warnings-ok."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-01T17:14:19.164Z
+    completed_at: 2026-06-01T17:14:19.164Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation passed with baseline warnings: 34 orphaned specs and 8 unrelated status
+      mismatches; touched runner specs individually report Current status in_progress and Expected
+      status in_progress."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-01T17:14:21.793Z
+    completed_at: 2026-06-01T17:14:21.793Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation passed with baseline completeness warnings: 236 missing own AC coverage and 32
+      invalid annotations, accepted due to --warnings-ok for this spec-only in_progress contract
+      update."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-01T17:14:24.292Z
+    completed_at: 2026-06-01T17:14:24.292Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "oxfmt --check . passed: all matched files use the correct format, 974 files checked."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-01T17:14:27.238Z
+    completed_at: 2026-06-01T17:14:27.238Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: oxlint src/ tests/ packages/ --quiet passed with 0 errors and existing warning baseline
+      reported as 742 warnings.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-01T17:14:29.761Z
+    completed_at: 2026-06-01T17:14:29.761Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Skipped: git diff dev...HEAD showed no main-tree file changes and no changed TypeScript
+      or test files in this review snapshot."
+    name: changed-file oxlint
+    required: false
+    runner: npx oxlint <changed-ts-or-test-files>
+    created_at: 2026-06-01T17:14:32.333Z
+    completed_at: 2026-06-01T17:14:32.333Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-01T17:14:34.886Z
+    completed_at: 2026-06-01T17:14:34.886Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full test suite passed: 2676 suites passed of 2676; 10174 tests passed of 10179 with 5
+      skipped; duration 4256.2s; log
+      /tmp/kspec-test-cache/01KT21KJ9CEZEH10K966K8JR08/e5df0ff77be735d4.log."
+    name: tests
+    required: true
+    runner: npm test
+    created_at: 2026-06-01T17:14:37.437Z
+    completed_at: 2026-06-01T17:14:37.437Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md, task @01KT20R80MDABB1TZJZ18D4X6A, four touched runner specs
+      via kspec item get, four spec notes, four item status reports. Commands run: git
+      status/rev-parse/diff, kspec item get/notes/status/search, kspec validate
+      refs/alignment/completeness, format/lint/typecheck/test. Claims verified: exactly four
+      existing specs reopened to in_progress, seven requested AC IDs present with requested text,
+      follow-up notes present, no duplicate runner specs found by targeted searches, no main-tree
+      diff. Categories searched: spec alignment, duplicates, status/linkage, diagnostics wording,
+      validation, hygiene gates, full regression suite."
+    name: review evidence log
+    required: false
+    runner: manual review
+    created_at: 2026-06-01T17:14:42.169Z
+    completed_at: 2026-06-01T17:14:42.169Z
 events:
   - _ulid: 01KT21N0QWVZJFEYHQZEMT35FZ
     actor: Jacob Chapel
@@ -17,9 +123,88 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-01T16:53:26.174Z
+  - _ulid: 01KT22VQX0S75AYZG4CKNAF21M
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-01T17:14:19.424Z
+  - _ulid: 01KT22VTEDJ8MRQYDZBH7Q8Q8D
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-01T17:14:22.030Z
+  - _ulid: 01KT22VWW4MWC5S7Z95FV6PW20
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-01T17:14:24.516Z
+  - _ulid: 01KT22VZQDAJY8FFQ00Q146ZJ7
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-01T17:14:27.437Z
+  - _ulid: 01KT22W27SEWZS63YEY48TAZEZ
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-01T17:14:30.009Z
+  - _ulid: 01KT22W4R4KME6F6N5XSD71W69
+    actor: codex
+    event_type: check_added
+    payload:
+      status: skipped
+      name: changed-file oxlint
+    timestamp: 2026-06-01T17:14:32.580Z
+  - _ulid: 01KT22W780Y1AT2CTX4KFHCYGF
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-01T17:14:35.136Z
+  - _ulid: 01KT22WABA7KJ045R46J5GHZYK
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: tests
+    timestamp: 2026-06-01T17:14:38.315Z
+  - _ulid: 01KT22WEC4MQWS42SK10VE31SV
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-06-01T17:14:42.436Z
+  - _ulid: 01KT22WHG5AC3QKENP0F695S0Y
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-01T17:14:45.638Z
+  - _ulid: 01KT22WHG6T61K8EBJ6H0M9MZV
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-01T17:14:45.638Z
 examined_commit: eb681fdfe108842ceb267de751ab4f98dc249bb0
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -27,7 +212,14 @@ subject:
   ref: "@01KT20R80MDABB1TZJZ18D4X6A"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-01T17:14:45.637Z
 created_at: 2026-06-01T16:53:10.533Z
-updated_at: 2026-06-01T16:53:25.948Z
+updated_at: 2026-06-01T17:14:45.638Z
 notes: []
