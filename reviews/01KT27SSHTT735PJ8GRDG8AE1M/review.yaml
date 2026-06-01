@@ -201,6 +201,13 @@ events:
       kind: blocker
       thread_ulid: 01KT28V33DRF30PFQ3GGRPNQ0X
     timestamp: 2026-06-01T18:58:49.788Z
+  - _ulid: 01KT28VFE0M8FEZV9F9W3YMW0F
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KT28VF76MSS2EG5A7W7K8734
+    timestamp: 2026-06-01T18:59:02.208Z
 examined_commit: c660a4ce459a36d5b7cce433363c66874c67be3d
 external_links: []
 lifecycle_state: open
@@ -234,7 +241,29 @@ threads:
           before looking up or using a surviving runner entry.'
         created_at: 2026-06-01T18:58:49.581Z
     kind: blocker
+  - _ulid: 01KT28VF76MSS2EG5A7W7K8734
+    anchor:
+      type: code
+      commit: c660a4ce459a36d5b7cce433363c66874c67be3d
+      line_end: 580
+      line_start: 574
+      path: src/cli/commands/agent.ts
+      side: head
+    entries:
+      - _ulid: 01KT28VF766R8EZ5MWGX55W4ZM
+        author: Jacob Chapel
+        body: "MUST-FIX: agent list prefers a per-runner validation entry over registry-load failures, so a
+          runner-backed agent whose runner survives from the other layer is reported as valid and
+          never receives the first-class runner_registry_unavailable diagnostic. The same
+          mixed-layer case from the failing probe has registryLoadFailures non-empty and
+          validationByRunner contains the surviving runner, so this branch emits the entry
+          diagnostics (often empty) and bypasses the registry-load diagnostic at lines 595-615. This
+          violates ac-registry-load-failure-reports-config-error for list/validation surfaces: any
+          malformed project or system layer must be reported as registry unavailable with
+          layer/path/reason, not hidden by a surviving runner entry."
+        created_at: 2026-06-01T18:59:01.990Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-01T18:40:38.458Z
-updated_at: 2026-06-01T18:58:49.581Z
+updated_at: 2026-06-01T18:59:01.990Z
 notes: []
