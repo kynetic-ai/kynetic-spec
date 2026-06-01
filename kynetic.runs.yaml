@@ -58501,7 +58501,7 @@ runs:
     completed_at: 2026-06-01T03:00:26.782Z
   - _ulid: 01KT0MYR67HYANCXH5WT0X2NSN
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -58539,7 +58539,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-06-01T03:53:00.926Z
-        completed_at: 2026-06-01T03:53:00.926Z
+        completed_at: 2026-06-01T03:53:17.527Z
+        notes: "Proposed improvement: Capture a small friction observation that task descriptions and
+          review/testing instructions can drift from actual test paths, using the stale
+          packages/web-ui/tests/e2e/agents.spec.ts reference as evidence. This would help future
+          triage decide whether to add a validation/checklist item for task testing commands or
+          update stale runner/Web UI task templates. Rough scope: small if it is just documentation
+          cleanup; medium if automated command/path validation is added."
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-01T03:53:17.527Z
+        completed_at: 2026-06-01T03:53:17.527Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-01T03:52:03.527Z
