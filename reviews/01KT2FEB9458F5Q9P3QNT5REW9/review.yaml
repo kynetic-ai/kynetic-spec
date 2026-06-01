@@ -2,7 +2,18 @@ _ulid: 01KT2FEB9458F5Q9P3QNT5REW9
 slugs: []
 title: Review task-runner-operator-surface-parity
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with --warnings-ok. Existing reference warnings only: deprecated refs such as
+      @session-summary-cache and @task-activity-git-query."
+    name: kspec validate --refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-01T21:08:29.237Z
+    completed_at: 2026-06-01T21:08:29.237Z
 events:
   - _ulid: 01KT2FEB93RV1PVRY0ZGEWW2SF
     actor: Jacob Chapel
@@ -17,6 +28,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-01T20:54:49.933Z
+  - _ulid: 01KT2G8GNXXJP3RBYP520ZWBJZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --refs
+    timestamp: 2026-06-01T21:08:29.501Z
 examined_commit: 360cb36d88effdc5d14e96e8aa324a65c9f70df2
 external_links: []
 lifecycle_state: open
@@ -29,5 +47,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-01T20:54:12.004Z
-updated_at: 2026-06-01T20:54:49.718Z
+updated_at: 2026-06-01T21:08:29.237Z
 notes: []
