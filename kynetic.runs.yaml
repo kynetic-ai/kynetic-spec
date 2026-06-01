@@ -58220,7 +58220,7 @@ runs:
     completed_at: 2026-06-01T01:54:55.294Z
   - _ulid: 01KT0EPWV2973VYX3KHBVX9QFK
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -58237,7 +58237,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-01T02:03:37.966Z
-        completed_at: 2026-06-01T02:03:37.966Z
+        completed_at: 2026-06-01T02:06:15.025Z
+        notes: "Step 2: searched all sources for duplicates. Found 4 prior observations for 'kspec task note
+          positional message' friction (01KR6BP6, 01KRGDDN, 01KRH3YN, 01KSE62M) — well-tracked, no
+          value in adding a 5th. Found existing __testWs Playwright-seam success (01KJD309) which is
+          the closest match to today's __createPortStartLockSignalHandler factory-seam pattern but
+          in a different domain. Signal-handler re-entry antipattern has no prior coverage; this is
+          the candidate worth capturing as a success observation."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-01T02:06:15.025Z
+        completed_at: 2026-06-01T02:06:15.025Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-01T02:02:54.690Z
