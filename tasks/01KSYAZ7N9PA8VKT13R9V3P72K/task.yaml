@@ -75,7 +75,7 @@ description: >
 spec_ref: "@runner-invocation-semantics"
 plan_ref: "@plan-agent-runner-configuration-layer"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-web-ui-runner-surfaces"
@@ -92,11 +92,11 @@ review_ref: "@01KT0GXZZPZW71HEH3KP9FAJKW"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-runner-compatibility-regressions/01ksyaz7
-  captured_at: 2026-06-01T02:35:53.690Z
-  commit: dacb75e03421617863403ed36dcfc31c0d8551e2
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-06-01T03:30:47.763Z
+  commit: 788636f977ea9194c3e018be38e2b1fb43dd4d37
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-runner-compatibility-regressions/01ksyaz7
 session_id: 01KT0J1W67JXAKBCQ2H892T4YW
 history:
   - author: Jacob Chapel
@@ -169,8 +169,35 @@ history:
         previous: 2026-06-01T02:08:44.632Z
     command: task-start
     timestamp: 2026-06-01T03:02:05.964Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-runner-compatibility-regressions/01ksyaz7
+          captured_at: 2026-06-01T03:30:47.763Z
+          commit: 788636f977ea9194c3e018be38e2b1fb43dd4d37
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-runner-compatibility-regressions/01ksyaz7
+        previous:
+          review_url: null
+          branch: dispatch/task/task-runner-compatibility-regressions/01ksyaz7
+          captured_at: 2026-06-01T02:35:53.690Z
+          commit: dacb75e03421617863403ed36dcfc31c0d8551e2
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-06-01T03:30:47.767Z
+        previous: 2026-06-01T02:35:53.697Z
+    command: task-submit
+    timestamp: 2026-06-01T03:30:47.768Z
 created_at: 2026-05-31T06:19:04.745Z
 started_at: 2026-06-01T03:02:05.957Z
-submitted_at: 2026-06-01T02:35:53.697Z
+submitted_at: 2026-06-01T03:30:47.767Z
 todos: []
 automation: eligible
