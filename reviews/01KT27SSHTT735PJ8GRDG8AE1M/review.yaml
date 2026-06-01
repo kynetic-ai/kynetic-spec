@@ -222,6 +222,13 @@ events:
       kind: blocker
       thread_ulid: 01KT28WK788ZB6JC7CS7DCCT91
     timestamp: 2026-06-01T18:59:39.114Z
+  - _ulid: 01KT28WZJTGA7PH9N5B7W8D342
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KT28WZA9A4J9CTBDXXJQY119
+    timestamp: 2026-06-01T18:59:51.514Z
 examined_commit: c660a4ce459a36d5b7cce433363c66874c67be3d
 external_links: []
 lifecycle_state: open
@@ -318,7 +325,24 @@ threads:
           for all runner-backed agents."
         created_at: 2026-06-01T18:59:38.856Z
     kind: blocker
+  - _ulid: 01KT28WZA9A4J9CTBDXXJQY119
+    entries:
+      - _ulid: 01KT28WZA9Z65EJRK07SWEVRZP
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: kspec-agents.md; task @01KT20R8QKE7PMXPDS5A5FPJ3N; specs
+          @runner-resolution-and-preflight, @runner-environment-secret-boundaries,
+          @runner-operator-surfaces; changed files in src/agents, src/agent-runtime,
+          src/cli/commands/agent.ts, packages/daemon routes, and changed tests. Commands run: kspec
+          validate --refs/--alignment/--completeness --warnings-ok; npm run format:check; npm run
+          lint -- --quiet; npx oxlint on changed files; npm run typecheck; focused npm test --
+          --fresh for runner/dispatch tests; npm test full suite; manual tsx mixed-layer probe.
+          Claims verified: malformed config surfaces runner_registry_unavailable for absent-runner
+          cases via tests, but mixed malformed-project plus valid-system runner still
+          resolves/spawns. Categories searched: correctness, edge cases, error handling/redaction,
+          daemon/CLI integration, test quality, AC coverage."
+        created_at: 2026-06-01T18:59:51.241Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-01T18:40:38.458Z
-updated_at: 2026-06-01T18:59:38.856Z
+updated_at: 2026-06-01T18:59:51.241Z
 notes: []
