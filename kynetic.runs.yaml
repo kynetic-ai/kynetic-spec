@@ -58323,7 +58323,7 @@ runs:
     started_at: 2026-06-01T02:31:18.864Z
     completed_at: 2026-06-01T02:33:11.306Z
   - _ulid: 01KT0GKZ8Z8NBGX6TBHPCFJ9FW
-    status: active
+    status: completed
     current_step: 5
     initiated_by: "@claude"
     step_results:
@@ -58443,7 +58443,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-01T02:39:21.993Z
-        completed_at: 2026-06-01T02:39:21.993Z
+        completed_at: 2026-06-01T02:39:51.239Z
+        notes: "Captured: 3 inbox items (runner-config loader docs, dry-run JSON schema docs, npm run check
+          mismatch) and 2 meta observations (Explore-first success pattern, heavy-test-suite
+          friction). All atomic via batch. Workflow complete."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-01T02:36:16.031Z
+    completed_at: 2026-06-01T02:39:51.240Z
