@@ -44,6 +44,7 @@ import {
   type RunnerInvocation,
 } from "../agents/runners.js";
 import { resolveEffectiveRunners, type EffectiveRunnerRegistry } from "../agents/runner-config.js";
+import { diagnoseRegistryLoad, type RegistryLoadFailure } from "../agents/registry-load-failure.js";
 import {
   buildDispatchGitEnv,
   provisionDispatchWorkspace,
@@ -2782,12 +2783,20 @@ export class DispatchEngine {
       // breaking runner precedence for dispatch.
       let preflightContract: RunnerInvocation;
       let preflightRegistry: EffectiveRunnerRegistry;
+      let preflightRegistryLoadFailures: readonly RegistryLoadFailure[] = [];
       try {
         const resolved = await resolveEffectiveRunners({
           projectRoot: this.projectDir,
           shadowWorktreeDir: this.specDir,
         });
         preflightRegistry = resolved.registry;
+        // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+        // AC: @runner-resolution-and-preflight ac-registry-load-failure-blocks-runner-spawn
+        // Capture layer-load failures so the resolver can surface them as
+        // `runner_registry_unavailable` for runner-backed agents. Without
+        // this, a malformed YAML/schema problem would look like a missing
+        // runner name and the task note would point at the wrong file.
+        preflightRegistryLoadFailures = diagnoseRegistryLoad(resolved);
       } catch {
         preflightRegistry = { runners: {} };
       }
@@ -2799,6 +2808,8 @@ export class DispatchEngine {
           sessionId: ulid(),
           autoApprove: agent.auto_approve,
           env: {},
+          // AC: @runner-resolution-and-preflight ac-registry-load-failure-blocks-runner-spawn
+          registryLoadFailures: preflightRegistryLoadFailures,
         });
       } catch (resolverErr) {
         const reason =
@@ -2808,10 +2819,25 @@ export class DispatchEngine {
           `[dispatch] Cannot resolve runner contract for agent "${agentId}" (${reason}). Skipping invocation. ${message}`,
         );
         if (this.kspecCliPath) {
-          await this._addTaskNote(
-            entry.change.taskRef,
-            `[AGENT-SKIP] Runner resolution failed for agent "${agentId}" (${reason}). ${message}`,
-          );
+          // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+          // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+          // For registry-unavailable failures, include the stable reason and
+          // the failing config paths in the task note so reviewers can find
+          // the broken file without rerunning the validator. Secret values
+          // are never present in these diagnostics — `describeRegistryLoadFailures`
+          // emits redacted issue messages only.
+          let note = `[AGENT-SKIP] Runner resolution failed for agent "${agentId}" (${reason}). ${message}`;
+          if (
+            resolverErr instanceof RunnerResolutionError &&
+            resolverErr.reason === "runner_registry_unavailable" &&
+            preflightRegistryLoadFailures.length > 0
+          ) {
+            const paths = preflightRegistryLoadFailures
+              .map((failure) => `${failure.layer}=${failure.config_path}`)
+              .join(", ");
+            note = `[AGENT-SKIP] Runner registry unavailable for agent "${agentId}" (${reason}). Failing layers: ${paths}. ${message}`;
+          }
+          await this._addTaskNote(entry.change.taskRef, note);
         }
         return false;
       }
@@ -2987,6 +3013,8 @@ export class DispatchEngine {
         // Reuse the registry loaded for preflight so the resolver inside
         // runInvocation produces the same contract.
         runnerRegistry: preflightRegistry,
+        // AC: @runner-resolution-and-preflight ac-registry-load-failure-blocks-runner-spawn
+        runnerRegistryLoadFailures: preflightRegistryLoadFailures,
         env: {
           KSPEC_DISPATCH_BASE_BRANCH: workspace.metadata.baseBranch,
           KSPEC_DISPATCH_MERGE_TARGET: workspace.metadata.mergeTargetBranch,

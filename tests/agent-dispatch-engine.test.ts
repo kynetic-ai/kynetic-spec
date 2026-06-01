@@ -2427,6 +2427,284 @@ describe("Dispatch runner resolution preflight", () => {
   });
 });
 
+// ─── Dispatch preflight registry-load failure diagnostics ───────────────────
+
+// AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+// AC: @runner-resolution-and-preflight ac-registry-load-failure-blocks-runner-spawn
+describe("Dispatch preflight surfaces runner_registry_unavailable", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-dispatch-registry-load-");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-blocks-runner-spawn
+  it("blocks dispatch with runner_registry_unavailable when system runner config is malformed", async () => {
+    const agent = makeTestAgent({
+      id: "runner-backed-agent",
+      runner: "configured-runner",
+      adapter: undefined,
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const sysConfigPath = path.join(testDir, "fake-system-runners.yaml");
+
+    const captureFile = path.join(testDir, "kspec-dispatch-registry-load-capture.json");
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    try {
+      // Simulate the loader returning a layer-load failure rather than a
+      // healthy registry. Real disk path would also work, but the spy keeps
+      // the test fast and independent of the home-dir HOME override.
+      vi.spyOn(runnerConfigModule, "resolveEffectiveRunners").mockResolvedValue({
+        project: { config: null, path: "", loaded: false, issues: null },
+        system: {
+          config: null,
+          path: sysConfigPath,
+          loaded: true,
+          issues: [
+            { path: "runners.configured-runner", message: "Expected object, received array" },
+          ],
+        },
+        registry: { runners: {} },
+      });
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+      });
+      (engine as unknown as { running: boolean }).running = true;
+
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      const runSpy = vi.spyOn(invocationModule, "runInvocation");
+
+      const taskRef = `@${testUlid("TASK")}`;
+      const change = makeStateChange({
+        toStatus: "pending",
+        fromStatus: "in_progress",
+        taskRef,
+      });
+      const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
+
+      type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
+      const spawned = await (engine as unknown as EngineInternal)._spawnInvocation(agent, entry);
+
+      // Dispatch must NOT invoke runInvocation when the registry is
+      // unavailable — the prompt would never be forwarded.
+      expect(spawned).toBe(false);
+      expect(runSpy).not.toHaveBeenCalled();
+      // Retry counter does not advance — this is a configuration error,
+      // not a transient invocation failure.
+      expect(entry.retryCount).toBe(0);
+
+      // Console error must surface the stable reason, not collapse it to
+      // unknown_runner.
+      const errorMessage = errorSpy.mock.calls.map((c) => String(c[0])).join("\n");
+      expect(errorMessage).toContain("runner_registry_unavailable");
+      expect(errorMessage).not.toContain("unknown_runner");
+
+      // Task note carries the stable reason and the failing config path so
+      // operators can find which file to fix without rerunning the validator.
+      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
+      const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
+      expect(noteCall, "expected dispatch to add an AGENT-SKIP task note").toBeDefined();
+      const noteText = noteCall!.args.join(" ");
+      expect(noteText).toContain("AGENT-SKIP");
+      expect(noteText).toContain("runner_registry_unavailable");
+      expect(noteText).toContain(sysConfigPath);
+      expect(noteText).toContain("system=");
+
+      errorSpy.mockRestore();
+      runSpy.mockRestore();
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+      vi.restoreAllMocks();
+    }
+  });
+
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-blocks-runner-spawn
+  // Mixed-layer regression: even when the malformed project layer leaves a
+  // valid sibling system layer that contributes the referenced runner,
+  // dispatch must still block on runner_registry_unavailable rather than
+  // resolving against the partial registry.
+  it("blocks dispatch with runner_registry_unavailable when project layer is malformed even if system layer contributes the runner", async () => {
+    const agent = makeTestAgent({
+      id: "runner-backed-agent",
+      runner: "configured-runner",
+      adapter: undefined,
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const projectConfigPath = path.join(testDir, "fake-project-runners.yaml");
+
+    const captureFile = path.join(testDir, "kspec-dispatch-mixed-layer-capture.json");
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    try {
+      // System layer succeeds and contributes a runner with the agent's name.
+      // Project layer fails to load. The dispatch preflight must still block.
+      vi.spyOn(runnerConfigModule, "resolveEffectiveRunners").mockResolvedValue({
+        project: {
+          config: null,
+          path: projectConfigPath,
+          loaded: true,
+          issues: [{ path: "", message: "unterminated flow sequence" }],
+        },
+        system: {
+          config: { runners: {} },
+          path: path.join(testDir, "fake-system-runners.yaml"),
+          loaded: true,
+          issues: null,
+        },
+        registry: {
+          runners: {
+            "configured-runner": {
+              name: "configured-runner",
+              kind: "acp_process",
+              adapter: "claude-agent-acp",
+              process: { executable: null, args: [], cwd: null },
+              env: { inherit: "minimal", pass: [], set: {}, secrets: {} },
+              privacy: { disable_nonessential_traffic: true },
+              diagnostics: { retain_raw_logs: "on_failure" },
+              sources: {
+                kind: "system",
+                adapter: "system",
+                processExecutable: null,
+                processArgs: null,
+                processCwd: null,
+                envInherit: "system",
+                envPass: "default",
+                envSet: { keys: {} },
+                envSecrets: null,
+                privacyDisableNonessentialTraffic: "system",
+                diagnosticsRetainRawLogs: "system",
+                overriddenBySystem: [],
+              },
+            },
+          },
+        },
+      });
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+      });
+      (engine as unknown as { running: boolean }).running = true;
+
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      const runSpy = vi.spyOn(invocationModule, "runInvocation");
+
+      const taskRef = `@${testUlid("TASK")}`;
+      const change = makeStateChange({
+        toStatus: "pending",
+        fromStatus: "in_progress",
+        taskRef,
+      });
+      const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
+
+      type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
+      const spawned = await (engine as unknown as EngineInternal)._spawnInvocation(agent, entry);
+
+      // Even though the surviving system layer contains the runner, the
+      // malformed project layer must block dispatch and runInvocation must
+      // not run.
+      expect(spawned).toBe(false);
+      expect(runSpy).not.toHaveBeenCalled();
+      expect(entry.retryCount).toBe(0);
+
+      const errorMessage = errorSpy.mock.calls.map((c) => String(c[0])).join("\n");
+      expect(errorMessage).toContain("runner_registry_unavailable");
+
+      // Task note carries the failing layer + config path.
+      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
+      const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
+      expect(noteCall).toBeDefined();
+      const noteText = noteCall!.args.join(" ");
+      expect(noteText).toContain("runner_registry_unavailable");
+      expect(noteText).toContain(projectConfigPath);
+      expect(noteText).toContain("project=");
+
+      errorSpy.mockRestore();
+      runSpy.mockRestore();
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+      vi.restoreAllMocks();
+    }
+  });
+
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+  it("emits runner_registry_unavailable for malformed project runner config too", async () => {
+    const agent = makeTestAgent({
+      id: "runner-backed-agent",
+      runner: "configured-runner",
+      adapter: undefined,
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const projectConfigPath = path.join(testDir, "fake-project-runners.yaml");
+
+    const captureFile = path.join(testDir, "kspec-dispatch-project-load-capture.json");
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    try {
+      vi.spyOn(runnerConfigModule, "resolveEffectiveRunners").mockResolvedValue({
+        project: {
+          config: null,
+          path: projectConfigPath,
+          loaded: true,
+          issues: [{ path: "", message: "unterminated flow sequence" }],
+        },
+        system: { config: null, path: "", loaded: false, issues: null },
+        registry: { runners: {} },
+      });
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+      });
+      (engine as unknown as { running: boolean }).running = true;
+
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+      const taskRef = `@${testUlid("TASK")}`;
+      const change = makeStateChange({
+        toStatus: "pending",
+        fromStatus: "in_progress",
+        taskRef,
+      });
+      const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
+
+      type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
+      const spawned = await (engine as unknown as EngineInternal)._spawnInvocation(agent, entry);
+
+      expect(spawned).toBe(false);
+
+      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
+      const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
+      expect(noteCall).toBeDefined();
+      const noteText = noteCall!.args.join(" ");
+      expect(noteText).toContain("runner_registry_unavailable");
+      expect(noteText).toContain(projectConfigPath);
+      expect(noteText).toContain("project=");
+
+      errorSpy.mockRestore();
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+      vi.restoreAllMocks();
+    }
+  });
+});
+
 // ─── AC-11: Graceful shutdown ─────────────────────────────────────────────────
 
 // AC: @agent-dispatch-engine ac-11

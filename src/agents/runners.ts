@@ -43,6 +43,7 @@ import type { Agent } from "../schema/meta.js";
 import { getAdapter, resolveAdapter, type AgentAdapter } from "./adapters.js";
 import { SANITIZED_ENV_VARS } from "./spawner.js";
 import { createRedactor } from "./redaction.js";
+import { describeRegistryLoadFailures, type RegistryLoadFailure } from "./registry-load-failure.js";
 import type {
   EffectiveRunner,
   EffectiveRunnerRegistry,
@@ -98,6 +99,7 @@ export const PRIVACY_DEFAULT_ENV: Readonly<Record<string, string>> = {
  */
 export type RunnerResolutionReason =
   | "unknown_runner"
+  | "runner_registry_unavailable"
   | "invalid_adapter"
   | "invalid_command_reference"
   | "unspawnable_command"
@@ -244,6 +246,16 @@ export interface ResolveRunnerInvocationInput {
   projectLayerIssues?: ReadonlyArray<{ path: string; message: string }>;
   /** Validation issues from the system-layer load step. */
   systemLayerIssues?: ReadonlyArray<{ path: string; message: string }>;
+  /**
+   * Structured registry-load failures (one per failing config layer). When
+   * `agent.runner` resolves and these are non-empty, the resolver throws
+   * `RunnerResolutionError("runner_registry_unavailable")` so the failure is
+   * reported as a config-layer error rather than as a missing runner name.
+   *
+   * AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+   * AC: @runner-resolution-and-preflight ac-registry-load-failure-blocks-runner-spawn
+   */
+  registryLoadFailures?: readonly RegistryLoadFailure[];
 }
 
 /**
@@ -362,6 +374,7 @@ export function resolveRunnerInvocation(input: ResolveRunnerInvocationInput): Ru
     mutationLockFile,
     projectLayerIssues,
     systemLayerIssues,
+    registryLoadFailures,
   } = input;
 
   if (adapterOverride) {
@@ -396,6 +409,34 @@ export function resolveRunnerInvocation(input: ResolveRunnerInvocationInput): Ru
       projectLayerIssues,
       systemLayerIssues,
     });
+  }
+
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-blocks-runner-spawn
+  // Block runner-backed invocations whenever any layer failed to load — even
+  // if another layer still contributes a runner entry with the referenced
+  // name. A malformed layer means operators are looking at a partial registry
+  // they did not intend; resolving against the surviving layer would mask the
+  // real config error and may produce a different runner than the operator
+  // expects. The diagnostic carries the failing layer and config path so the
+  // operator knows which file to fix.
+  if (registryLoadFailures && registryLoadFailures.length > 0) {
+    throw new RunnerResolutionError(
+      "runner_registry_unavailable",
+      `Agent "${agent.id}" references runner "${agent.runner}" but the ` +
+        `runner registry is unavailable. ${describeRegistryLoadFailures(registryLoadFailures)} ` +
+        `Fix the failing config layer(s) and rerun.`,
+      {
+        runner: agent.runner,
+        agent: agent.id,
+        failures: registryLoadFailures.map((failure) => ({
+          reason: failure.reason,
+          layer: failure.layer,
+          config_path: failure.config_path,
+          issues: failure.issues.map((issue) => ({ ...issue })),
+        })),
+      },
+    );
   }
 
   const runner = registry.runners[agent.runner];

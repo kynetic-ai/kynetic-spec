@@ -549,15 +549,42 @@ export interface ResolveRunnersResult {
 
 // ── Layer loaders ──────────────────────────────────────────────────────
 
-async function readYamlFile(filePath: string): Promise<unknown | null> {
+/**
+ * Outcome of attempting to read and parse a YAML file. Distinct from the
+ * layer-level `LayerLoadResult` because the parse step happens before schema
+ * validation — a parse failure needs to be reported as a registry-load
+ * issue even though the layer never produced a parsed config object.
+ */
+type ReadYamlResult =
+  | { kind: "missing" }
+  | { kind: "ok"; data: unknown }
+  | { kind: "parse_error"; issue: { path: string; message: string } };
+
+async function readYamlFile(filePath: string): Promise<ReadYamlResult> {
   let content: string;
   try {
     content = await fs.readFile(filePath, "utf-8");
   } catch (err) {
-    if ((err as NodeJS.ErrnoException).code === "ENOENT") return null;
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return { kind: "missing" };
     throw err;
   }
-  return YAML.parse(content);
+  try {
+    return { kind: "ok", data: YAML.parse(content) };
+  } catch (err) {
+    // Capture YAML parse failures as a registry-load issue so the loader can
+    // attach them to the layer result instead of propagating an uncaught
+    // exception. Downstream surfaces translate this into a redacted
+    // `runner_registry_unavailable` diagnostic.
+    //
+    // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+    return {
+      kind: "parse_error",
+      issue: {
+        path: "",
+        message: err instanceof Error ? err.message : String(err),
+      },
+    };
+  }
 }
 
 function collectZodIssues(error: z.ZodError): Array<{ path: string; message: string }> {
@@ -590,11 +617,14 @@ export async function loadProjectRunnerConfig(
 ): Promise<LayerLoadResult<ProjectRunnerConfig>> {
   const filePath = getProjectRunnersPath(shadowWorktreeDir);
   const raw = await readYamlFile(filePath);
-  if (raw === null) {
+  if (raw.kind === "missing") {
     return { config: null, path: filePath, loaded: false, issues: null };
   }
+  if (raw.kind === "parse_error") {
+    return { config: null, path: filePath, loaded: true, issues: [raw.issue] };
+  }
 
-  const parsed = ProjectRunnerConfigSchema.safeParse(raw);
+  const parsed = ProjectRunnerConfigSchema.safeParse(raw.data);
   if (!parsed.success) {
     return {
       config: null,
@@ -623,11 +653,14 @@ export async function loadSystemRunnerConfig(
 ): Promise<LayerLoadResult<SystemRunnerConfig>> {
   const filePath = await getSystemRunnersPath(projectRoot, options);
   const raw = await readYamlFile(filePath);
-  if (raw === null) {
+  if (raw.kind === "missing") {
     return { config: null, path: filePath, loaded: false, issues: null };
   }
+  if (raw.kind === "parse_error") {
+    return { config: null, path: filePath, loaded: true, issues: [raw.issue] };
+  }
 
-  const parsed = SystemRunnerConfigSchema.safeParse(raw);
+  const parsed = SystemRunnerConfigSchema.safeParse(raw.data);
   if (!parsed.success) {
     return {
       config: null,

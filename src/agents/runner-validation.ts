@@ -21,6 +21,11 @@
 import * as fs from "node:fs/promises";
 import { ulid } from "ulid";
 import { getAdapter, listAdapters } from "./adapters.js";
+import {
+  diagnoseRegistryLoad,
+  summarizeRegistryLoadFailure,
+  type RegistryLoadFailure,
+} from "./registry-load-failure.js";
 import type {
   EffectiveRunner,
   EffectiveRunnerRegistry,
@@ -127,6 +132,15 @@ export interface RunnerValidationReport {
   runners: readonly RunnerValidationEntry[];
   /** Issues raised against the registry as a whole rather than a single runner. */
   issues: readonly RunnerValidationIssue[];
+  /**
+   * Structured registry-load failures (one per failing config layer). When
+   * present, downstream surfaces should treat the registry as unavailable
+   * and surface the failure as a `runner_registry_unavailable` diagnostic
+   * rather than as missing-name (`unknown_runner`) issues.
+   *
+   * AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+   */
+  registry_load_failures: readonly RegistryLoadFailure[];
 }
 
 /**
@@ -394,21 +408,23 @@ export async function buildRunnerValidationReport(
 ): Promise<RunnerValidationReport> {
   const issues: RunnerValidationIssue[] = [];
 
-  if (resolved.project.loaded && resolved.project.issues && resolved.project.issues.length > 0) {
-    for (const issue of resolved.project.issues) {
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+  // Surface project/system layer load failures as first-class
+  // `runner_registry_unavailable` diagnostics so operators know the
+  // registry is unloadable (not that the runner name is missing). The
+  // structured failures travel on `registry_load_failures` so daemon and
+  // CLI surfaces can render them without parsing the message text.
+  const registryLoadFailures = diagnoseRegistryLoad(resolved);
+  for (const failure of registryLoadFailures) {
+    for (const issue of failure.issues) {
       issues.push({
-        reason: "preflight_failure",
-        message: `project runner config issue at "${issue.path}": ${issue.message}`,
-        details: { layer: "project", path: issue.path, file: resolved.project.path },
-      });
-    }
-  }
-  if (resolved.system.loaded && resolved.system.issues && resolved.system.issues.length > 0) {
-    for (const issue of resolved.system.issues) {
-      issues.push({
-        reason: "preflight_failure",
-        message: `system runner config issue at "${issue.path}": ${issue.message}`,
-        details: { layer: "system", path: issue.path, file: resolved.system.path },
+        reason: "runner_registry_unavailable",
+        message: `${failure.layer} runner config at ${failure.config_path} cannot be loaded: at "${issue.path}": ${issue.message}`,
+        details: {
+          layer: failure.layer,
+          config_path: failure.config_path,
+          issue_path: issue.path,
+        },
       });
     }
   }
@@ -419,15 +435,36 @@ export async function buildRunnerValidationReport(
   if (options.runner) {
     const candidate = resolved.registry.runners[options.runner];
     if (!candidate) {
-      issues.push({
-        reason: "unknown_runner",
-        message:
-          `Runner "${options.runner}" is not present in the effective runner registry. ` +
-          `Check the project runner config (project.runners.yaml in the kspec shadow worktree), ` +
-          `the system runner config (runners.yaml under the daemon config dir), and the runner name spelling.`,
-        details: { runner: options.runner },
-      });
-      return { ok: false, runners: [], issues };
+      // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+      // When the runner is missing because a layer failed to load, the
+      // top-level issues array already carries the registry-load failures.
+      // Avoid layering a confusing `unknown_runner` diagnostic on top —
+      // the registry-load failure IS the reason the runner isn't present.
+      if (registryLoadFailures.length === 0) {
+        issues.push({
+          reason: "unknown_runner",
+          message:
+            `Runner "${options.runner}" is not present in the effective runner registry. ` +
+            `Check the project runner config (project.runners.yaml in the kspec shadow worktree), ` +
+            `the system runner config (runners.yaml under the daemon config dir), and the runner name spelling.`,
+          details: { runner: options.runner },
+        });
+      } else {
+        issues.push({
+          reason: "runner_registry_unavailable",
+          message:
+            `Runner "${options.runner}" cannot be validated because the runner registry is ` +
+            `unavailable. ${registryLoadFailures.map(summarizeRegistryLoadFailure).join("; ")}.`,
+          details: {
+            runner: options.runner,
+            failures: registryLoadFailures.map((failure) => ({
+              layer: failure.layer,
+              config_path: failure.config_path,
+            })),
+          },
+        });
+      }
+      return { ok: false, runners: [], issues, registry_load_failures: registryLoadFailures };
     }
     selected = [candidate];
   } else {
@@ -440,5 +477,5 @@ export async function buildRunnerValidationReport(
   }
 
   const ok = issues.length === 0 && entries.every((entry) => entry.status === "valid");
-  return { ok, runners: entries, issues };
+  return { ok, runners: entries, issues, registry_load_failures: registryLoadFailures };
 }
