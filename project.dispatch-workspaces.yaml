@@ -16434,11 +16434,11 @@ workspaces:
     canonical_branch: dispatch/task/task-resolve-system-runner-cwd-deterministically/01kt20r8
     canonical_branch_head: 26722f7fa5897c708657bf8f2eabc9ebb6e581a5
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-01T18:09:02.594Z
+      updated_at: 2026-06-01T18:13:10.648Z
     health:
       status: healthy
       issues: []
@@ -16452,16 +16452,16 @@ workspaces:
       target_branch: dev
       target_commit: eb681fdfe108842ceb267de751ab4f98dc249bb0
       updated_at: 2026-06-01T18:09:02.594Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KT20R8D0H2K1BAR8XE02AJT6"
     task_slug: task-resolve-system-runner-cwd-deterministically
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-01T18:13:10.648Z
       last_active_at: 2026-06-01T17:51:49.041Z
       last_reconciled_at: 2026-06-01T18:12:58.182Z
       created_at: 2026-06-01T17:16:13.661Z
-      updated_at: 2026-06-01T18:12:58.182Z
+      updated_at: 2026-06-01T18:13:10.648Z
     workspace_id: dispatch-workspace-01KT20R8D0H2K1BAR8XE02AJT6
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
