@@ -15447,7 +15447,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-01T02:30:58.690Z
+      updated_at: 2026-06-01T02:33:31.714Z
     integration:
       status: merged
       detail: integration:merged
@@ -15463,18 +15463,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-01T02:07:51.190Z
-      last_reconciled_at: 2026-06-01T02:33:29.873Z
+      last_reconciled_at: 2026-06-01T02:33:31.714Z
       created_at: 2026-06-01T00:36:07.857Z
-      updated_at: 2026-06-01T02:33:29.873Z
+      updated_at: 2026-06-01T02:33:31.714Z
     workspace_id: dispatch-workspace-01KT09PW43D40MTYNCFMP7ZMZN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: faa3e056dccd97805519b24c458f5c3a568997fc
-        last_seen_at: 2026-06-01T02:07:18.971Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-daemon-fixture-cleanup-tests-timing-out-01kt09pw-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/stabilize-daemon-fixture-cleanup-tests-timing-out/01kt09pw
