@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KT21DFKZ8XQTC4T61TED4Q1A
+    content: Reopened 4 runner specs (process-invocation-inputs, resolution-and-preflight,
+      invocation-semantics, operator-surfaces) to in_progress with --no-cascade. Added 7 new ACs
+      verbatim per plan (2+2+1+2) and added a follow-up note to each spec naming
+      @plan-agent-runner-contract-hardening-follow-up and the closure evidence that motivated the
+      new ACs. No existing ACs edited; no spec marked back to implemented. kspec validate --refs
+      --warnings-ok passes (only pre-existing deprecated-ref warnings, unrelated to this task).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-01T16:49:03.616Z
