@@ -23628,7 +23628,7 @@ reviews:
     title: Review registry-load runner diagnostics
     disposition: pending
     author: Jacob Chapel
-    check_count: 8
+    check_count: 9
     examined_commit: c660a4ce459a36d5b7cce433363c66874c67be3d
     lifecycle_state: open
     related_refs: []
@@ -23641,4 +23641,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-01T18:40:38.458Z
-    updated_at: 2026-06-01T18:58:17.124Z
+    updated_at: 2026-06-01T18:58:27.199Z

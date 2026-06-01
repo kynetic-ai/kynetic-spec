@@ -88,6 +88,16 @@ checks:
     runner: npm-test
     created_at: 2026-06-01T18:58:17.124Z
     completed_at: 2026-06-01T18:58:17.124Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test passed: 2679 suites passed; 10191 passed, 5 skipped of 10196 tests."
+    name: full npm test
+    required: true
+    runner: npm-test
+    created_at: 2026-06-01T18:58:27.199Z
+    completed_at: 2026-06-01T18:58:27.199Z
 events:
   - _ulid: 01KT27SSH893JW4Y86YAS6FK0T
     actor: Jacob Chapel
@@ -158,6 +168,13 @@ events:
       status: pass
       name: focused runner diagnostics tests
     timestamp: 2026-06-01T18:58:17.352Z
+  - _ulid: 01KT28TDETVNRJVPYW63EWWNRC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full npm test
+    timestamp: 2026-06-01T18:58:27.418Z
 examined_commit: c660a4ce459a36d5b7cce433363c66874c67be3d
 external_links: []
 lifecycle_state: open
@@ -170,5 +187,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-01T18:40:38.458Z
-updated_at: 2026-06-01T18:58:17.124Z
+updated_at: 2026-06-01T18:58:27.199Z
 notes: []
