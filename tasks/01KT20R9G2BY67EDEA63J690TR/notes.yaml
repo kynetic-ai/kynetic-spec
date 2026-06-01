@@ -21,3 +21,35 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-01T20:32:36.410Z
+  - _ulid: 01KT2F6XMSPK6SSV18VR04S9BS
+    content: >-
+      Implementation summary:
+
+      - Daemon PATCH/GET runner-state parity already shared helpers (loadRunnerEnrichmentContext +
+      buildAgentRunnerFields in packages/daemon/src/routes/meta.ts). Added explicit parity tests for
+      the four PATCH scenarios called out in the task: valid runner set, runner clear, unknown
+      runner, and registry unavailable. Each test now asserts full shape match (adapter,
+      resolved_adapter, runner, runner_validation) between PATCH response and GET list reload.
+      Strengthened the existing registry-unavailable PATCH test to compare full runner_validation
+      equality.
+
+      - Web UI active/queued invocation rows: resolved_adapter is now rendered as a visible compact
+      badge (data-testid=invocation-resolved-adapter and queued-invocation-resolved-adapter) instead
+      of being hidden in a title attribute. The row exposes an aria-label combining agent id, runner
+      identity (when present), resolved adapter identity, and task ref so assistive technology gets
+      the full dispatch harness. Legacy adapter-only rows preserve compact layout — only one extra
+      adapter badge is added when daemon supplies resolved_adapter.
+
+      - New E2E coverage: 6 new tests in tests/e2e/agents.spec.ts asserting visible text and
+      aria-label for runner-backed active, runner-backed queued, legacy active, legacy queued,
+      invalid-runner rows.
+
+
+      Gates: format:check (pass), lint --quiet (0 errors, pre-existing 742 warnings), focused oxlint
+      on changed files (0 warnings, 0 errors), npm run typecheck (pass), npm test full suite (2681
+      suites, 10215 passed, 5 skipped), npm run test:e2e -- tests/e2e/agents.spec.ts (46/46 pass
+      including 6 new), kspec validate (warnings-ok, all pre-existing). svelte-check failures
+      pre-exist baseline (verified via git stash) and are unrelated to changed files.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-01T20:50:08.665Z
