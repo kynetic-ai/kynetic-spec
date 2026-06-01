@@ -80,6 +80,7 @@ tags:
   - daemon
   - dispatch
 vcs_refs: []
+review_ref: "@01KT27SSHTT735PJ8GRDG8AE1M"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-runner-registry-load-failure-diagnostics/01kt20r8
@@ -130,6 +131,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-01T18:37:01.382Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KT27SSHTT735PJ8GRDG8AE1M"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-01T18:40:41.216Z
 created_at: 2026-06-01T16:37:28.435Z
 started_at: 2026-06-01T17:52:40.605Z
 submitted_at: 2026-06-01T18:37:01.382Z

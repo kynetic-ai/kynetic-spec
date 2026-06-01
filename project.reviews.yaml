@@ -23623,3 +23623,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-06-01T17:52:34.112Z
     updated_at: 2026-06-01T18:07:30.331Z
+  - _ulid: 01KT27SSHTT735PJ8GRDG8AE1M
+    slugs: []
+    title: Review registry-load runner diagnostics
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: c660a4ce459a36d5b7cce433363c66874c67be3d
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KT20R8QKE7PMXPDS5A5FPJ3N"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-01T18:40:38.458Z
