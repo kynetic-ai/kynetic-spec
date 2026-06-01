@@ -79,6 +79,18 @@ checks:
     runner: npm
     created_at: 2026-06-01T20:45:36.325Z
     completed_at: 2026-06-01T20:45:36.325Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/agent-dispatch-engine.test.ts
+      tests/agent-runner-process.test.ts tests/agent-runner-e2e.test.ts passed: 198 tests across 60
+      suites."
+    name: focused tests
+    required: true
+    runner: npm
+    created_at: 2026-06-01T20:45:45.592Z
+    completed_at: 2026-06-01T20:45:45.592Z
 events:
   - _ulid: 01KT2E3D7B0V5C2GCFGEVXZ7AW
     actor: Jacob Chapel
@@ -142,6 +154,13 @@ events:
       status: pass
       name: typecheck
     timestamp: 2026-06-01T20:45:36.534Z
+  - _ulid: 01KT2EYWY0X5XF7GFT4PMFV45M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused tests
+    timestamp: 2026-06-01T20:45:45.792Z
 examined_commit: b3ee001851142c921936eac9f8a46cc7e1db27c3
 external_links: []
 lifecycle_state: open
@@ -154,5 +173,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-01T20:30:44.972Z
-updated_at: 2026-06-01T20:45:36.325Z
+updated_at: 2026-06-01T20:45:45.592Z
 notes: []
