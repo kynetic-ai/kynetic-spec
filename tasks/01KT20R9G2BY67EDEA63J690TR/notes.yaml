@@ -1,1 +1,23 @@
-notes: []
+notes:
+  - _ulid: 01KT2E6T1T4985B30PC5PQ36RQ
+    content: >-
+      Approach: Daemon GET/PATCH already share buildAgentRunnerFields + loadRunnerEnrichmentContext
+      helpers (packages/daemon/src/routes/meta.ts:74-193). Existing parity tests cover registry-load
+      failure. Need to add explicit PATCH parity tests for: valid runner set, runner clear (null),
+      unknown runner. Will assert returned body matches GET shape per-field.
+
+
+      Web UI: ActiveInvocationRow and QueuedInvocationRow currently render runner as visible badge
+      text but resolved_adapter is only in a title attribute (not assistive-tech accessible). Plan:
+      add resolved_adapter as visible text adjacent to runner badge and provide row-level aria-label
+      combining runner identity and resolved adapter identity. For legacy adapter-only rows, render
+      resolved_adapter compactly when daemon supplies it.
+
+
+      Test plan: PATCH parity tests (vitest) in tests/daemon-api/agent-runner-surfaces.test.ts. Web
+      UI E2E test updates in tests/e2e/agents.spec.ts that assert visible text and aria-label (not
+      just title) for: runner-backed active, runner-backed queued, legacy active, legacy queued,
+      invalid-runner diagnostics still present.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-01T20:32:36.410Z
