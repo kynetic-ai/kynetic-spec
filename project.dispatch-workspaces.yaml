@@ -16291,18 +16291,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-resolve-system-runner-cwd-deterministically/01kt20r8
-    canonical_branch_head: eb681fdfe108842ceb267de751ab4f98dc249bb0
+    canonical_branch_head: 26722f7fa5897c708657bf8f2eabc9ebb6e581a5
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-01T17:16:13.661Z
+      updated_at: 2026-06-01T17:50:02.359Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-01T17:16:43.917Z
+      updated_at: 2026-06-01T17:50:02.359Z
     integration:
       status: pending
       detail: null
@@ -16310,7 +16310,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: eb681fdfe108842ceb267de751ab4f98dc249bb0
-      updated_at: 2026-06-01T17:16:13.661Z
+      updated_at: 2026-06-01T17:50:02.359Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KT20R8D0H2K1BAR8XE02AJT6"
@@ -16318,9 +16318,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-01T17:16:43.917Z
-      last_reconciled_at: 2026-06-01T17:16:43.917Z
+      last_reconciled_at: 2026-06-01T17:50:02.359Z
       created_at: 2026-06-01T17:16:13.661Z
-      updated_at: 2026-06-01T17:16:43.917Z
+      updated_at: 2026-06-01T17:50:02.359Z
     workspace_id: dispatch-workspace-01KT20R8D0H2K1BAR8XE02AJT6
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
