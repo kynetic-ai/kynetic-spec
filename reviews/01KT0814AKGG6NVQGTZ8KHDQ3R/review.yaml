@@ -75,6 +75,17 @@ checks:
     runner: tsc
     created_at: 2026-06-01T00:40:15.529Z
     completed_at: 2026-06-01T00:40:15.529Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run test:e2e -- tests/e2e/agents.spec.ts completed build:e2e successfully: tsc,
+      shared build, daemon bundle, SvelteKit/Vite web UI build, docs search."
+    name: web-ui build
+    required: true
+    runner: vite
+    created_at: 2026-06-01T00:40:26.488Z
+    completed_at: 2026-06-01T00:40:26.488Z
 events:
   - _ulid: 01KT0814AEN0XMMBAR0Y9RA6FA
     actor: Jacob Chapel
@@ -138,6 +149,13 @@ events:
       status: pass
       name: typecheck
     timestamp: 2026-06-01T00:40:15.747Z
+  - _ulid: 01KT09ZWV9NH0ADENB6KHFJP0Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: web-ui build
+    timestamp: 2026-06-01T00:40:26.729Z
 examined_commit: ea7854deac76fae800fc773a46fc19514e3843e4
 external_links: []
 lifecycle_state: open
@@ -150,5 +168,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-01T00:06:10.003Z
-updated_at: 2026-06-01T00:40:15.529Z
+updated_at: 2026-06-01T00:40:26.488Z
 notes: []
