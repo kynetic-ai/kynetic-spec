@@ -1,1 +1,37 @@
-notes: []
+notes:
+  - _ulid: 01KT2395JNAQKR2P9E2F39PD47
+    content: >-
+      Approach: Normalize system process.cwd inside mergeRunnerConfigs by adding a third options
+      parameter { systemConfigPath?: string }. When systemConfigPath is provided, resolve relative
+      cwd against dirname(systemConfigPath); absolute paths pass through path.resolve (which
+      normalizes . and ..). resolveEffectiveRunners always passes system.path so production callers
+      get the normalized cwd. Tests calling mergeRunnerConfigs(null, system) directly with absolute
+      cwd remain valid. Downstream buildRunnerContract, summarizeRunnerInvocation, and
+      runner-validation probe see the already-normalized string from EffectiveRunner.process.cwd —
+      so preflight, diagnostics, and spawn all consume the same normalized string by construction.
+
+
+      Edge cases:
+
+      - Relative cwd + no systemConfigPath (test-only path): leave as-is (no regression for existing
+      tests)
+
+      - Absolute cwd + systemConfigPath: pass through path.resolve (normalizes . and ..)
+
+      - Relative cwd + systemConfigPath: path.resolve(dirname(systemConfigPath), cwd)
+
+      - Project layer never supplies cwd (schema rejects), so we don't need a project-config-path
+
+
+      Test plan (regression tests):
+
+      - runner-config.test.ts: relative cwd resolves from system config dir; absolute cwd remains
+      absolute; parent process cwd change has no effect; resolveEffectiveRunners produces normalized
+      cwd
+
+      - agent-runner-process.test.ts: contract.cwd equals normalized path; preflight uses normalized
+      cwd; spawn (via contract.cwd) uses normalized cwd; mergeRunnerConfigs without systemConfigPath
+      leaves relative cwd unchanged (so we keep tests honest)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-01T17:21:39.414Z
