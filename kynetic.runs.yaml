@@ -58044,9 +58044,24 @@ runs:
     completed_at: 2026-06-01T00:48:48.770Z
   - _ulid: 01KT0BT9K1B4S89TV2YE529GK7
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-01T01:12:20.321Z
+        completed_at: 2026-06-01T01:13:14.190Z
+        notes: "Reproduced timeout deterministically by 'mkdir /tmp/kspec-test-daemon-port-start.lock'
+          before npm test — matched exactly the 2 fixture failures and 9 startTestDaemon failures
+          the review snapshot reported, confirming the global filesystem lock as root cause.
+          Targeted test-file runs (npm test -- --run <files>) plus an isolated --__testLockPath seam
+          kept the regressions deterministic without racing concurrent test workers on the shared
+          global lock. spec-first principle held: added @daemon-test-teardown-boundedness
+          ac-shared-startup-lock-recovers-from-crashed-holder before implementing."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-01T01:13:14.190Z
+        completed_at: 2026-06-01T01:13:14.190Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-01T01:12:20.321Z
