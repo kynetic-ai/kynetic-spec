@@ -9,11 +9,21 @@
  */
 import { describe, expect, it, onTestFinished } from "vitest";
 import type { ChildProcess } from "node:child_process";
-import { chmodSync, existsSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import {
+  chmodSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
+import { hostname, tmpdir } from "node:os";
 import { basename, dirname, join } from "node:path";
 
 import {
+  acquireTestDaemonPortStartLock,
   buildDaemonChildEnv,
   createTestDaemonProject,
   DaemonReadinessError,
@@ -1343,3 +1353,200 @@ describe(
     });
   },
 );
+
+/**
+ * Locate an OS PID that does not currently exist. We probe upward from
+ * `process.pid + 1` because the kernel almost never re-uses the next
+ * sequential PID immediately after the helper starts; if a probe hits an
+ * occupied slot we step past it. The loop is bounded so a degenerate
+ * environment (e.g. a system saturated with PIDs) still terminates.
+ */
+function findDeadPid(): number {
+  let candidate = process.pid + 1;
+  for (let i = 0; i < 256; i += 1) {
+    try {
+      process.kill(candidate, 0);
+    } catch (error) {
+      if ((error as { code?: string }).code === "ESRCH") return candidate;
+    }
+    candidate += 1;
+  }
+  // Fall back to a sentinel that virtually no host will assign. The
+  // recovery code only depends on `process.kill(pid, 0)` rejecting; any
+  // unassigned slot satisfies that contract.
+  return 0x7fff_ffff;
+}
+
+function makeIsolatedLockPath(label: string): string {
+  return join(
+    tmpdir(),
+    `kspec-test-daemon-port-start-${label}-${process.pid}-${Date.now()}-${Math.random()
+      .toString(36)
+      .slice(2, 8)}.lock`,
+  );
+}
+
+describe("acquireTestDaemonPortStartLock stale-holder recovery", () => {
+  // The shared port startup lock is a filesystem primitive that survives
+  // process death. Before the recovery fix, a SIGKILL/OOM that killed a
+  // prior test runner mid-startup left a stale lock that blocked every
+  // subsequent acquirer for the full 120s default timeout, surfacing as
+  // the cluster of "timed out" failures recorded in
+  // @stabilize-daemon-fixture-cleanup-tests-timing-out. The regressions
+  // below pin the new contract: acquisition reaches a bounded terminal
+  // outcome when the recorded holder no longer exists, regardless of
+  // whether the leftover was the current file format or a legacy
+  // directory-only artifact from earlier helper versions.
+
+  // AC: @daemon-test-teardown-boundedness ac-shared-startup-lock-recovers-from-crashed-holder
+  it("reclaims the lock when the recorded holder PID is no longer alive", async () => {
+    const lockPath = makeIsolatedLockPath("dead-pid");
+    onTestFinished(() => {
+      try {
+        rmSync(lockPath, { recursive: true, force: true });
+      } catch {
+        // Best effort.
+      }
+    });
+
+    const deadPid = findDeadPid();
+    writeFileSync(
+      lockPath,
+      JSON.stringify({
+        pid: deadPid,
+        hostname: hostname(),
+        startedAt: Date.now() - 60_000,
+      }),
+    );
+
+    const startedAt = Date.now();
+    const release = await acquireTestDaemonPortStartLock(2_000, { __testLockPath: lockPath });
+    const elapsed = Date.now() - startedAt;
+
+    try {
+      // ac-shared-startup-lock-recovers-from-crashed-holder — bounded
+      // outcome. The recovery path checks for stale holders every poll
+      // tick after a short grace window, so reclaim should complete in
+      // hundreds of milliseconds — well under the 2s budget we passed
+      // in. The pre-fix implementation would have blocked for the full
+      // 2s timeout and rejected.
+      expect(elapsed).toBeLessThan(1_500);
+
+      // The lock file now belongs to us — owner metadata reflects this
+      // process and the file is parseable JSON.
+      // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- Lock owner info written by acquireTestDaemonPortStartLock; this is test-generated output, not project source.
+      const ownerContents = readFileSync(lockPath, "utf-8");
+      const owner = JSON.parse(ownerContents) as {
+        pid: number;
+        hostname: string;
+        startedAt: number;
+      };
+      expect(owner.pid).toBe(process.pid);
+      expect(owner.hostname).toBe(hostname());
+    } finally {
+      release();
+    }
+
+    // Release dropped the lock file so a subsequent acquirer would not
+    // observe contention from this test.
+    expect(existsSync(lockPath)).toBe(false);
+  });
+
+  // AC: @daemon-test-teardown-boundedness ac-shared-startup-lock-recovers-from-crashed-holder
+  it("reclaims a legacy mkdir-only directory left behind by a prior helper version", async () => {
+    const lockPath = makeIsolatedLockPath("legacy-dir");
+    onTestFinished(() => {
+      try {
+        rmSync(lockPath, { recursive: true, force: true });
+      } catch {
+        // Best effort.
+      }
+    });
+
+    // The prior helper implementation used `mkdirSync(lockPath)` as the
+    // atomic acquisition primitive and never wrote owner content. A
+    // crashed prior process leaves an empty directory at the lock path,
+    // and the new file-based recovery must clear it.
+    mkdirSync(lockPath);
+    expect(statSync(lockPath).isDirectory()).toBe(true);
+
+    const startedAt = Date.now();
+    const release = await acquireTestDaemonPortStartLock(2_000, { __testLockPath: lockPath });
+    const elapsed = Date.now() - startedAt;
+
+    try {
+      // ac-shared-startup-lock-recovers-from-crashed-holder — legacy
+      // leftover is a stale resource even without owner content because
+      // the path persists across process death. Recovery must remove it
+      // within the bounded budget.
+      expect(elapsed).toBeLessThan(1_500);
+
+      // The path is now our file, not the legacy directory.
+      const stat = statSync(lockPath);
+      expect(stat.isFile()).toBe(true);
+    } finally {
+      release();
+    }
+
+    expect(existsSync(lockPath)).toBe(false);
+  });
+
+  // AC: @daemon-test-teardown-boundedness ac-shared-startup-lock-recovers-from-crashed-holder
+  it("does not evict a live holder — the bounded deadline still governs", async () => {
+    const lockPath = makeIsolatedLockPath("live-holder");
+    onTestFinished(() => {
+      try {
+        rmSync(lockPath, { recursive: true, force: true });
+      } catch {
+        // Best effort.
+      }
+    });
+
+    // The recovery path must short-circuit when the recorded holder is
+    // alive, even when the recorded PID looks "old". We record this
+    // process as the holder — `process.kill(pid, 0)` always succeeds for
+    // ourselves, so liveness detection cannot misclassify us as stale.
+    writeFileSync(
+      lockPath,
+      JSON.stringify({
+        pid: process.pid,
+        hostname: hostname(),
+        startedAt: Date.now() - 60_000,
+      }),
+    );
+
+    const startedAt = Date.now();
+    let thrown: unknown = null;
+    try {
+      const release = await acquireTestDaemonPortStartLock(500, { __testLockPath: lockPath });
+      // Defensive: if acquisition unexpectedly succeeded, release so the
+      // test cleanup is consistent before the assertion below fails.
+      release();
+    } catch (error) {
+      thrown = error;
+    }
+    const elapsed = Date.now() - startedAt;
+
+    // ac-shared-startup-lock-recovers-from-crashed-holder — recovery
+    // must not race-evict a live holder. The acquire honors the
+    // configured 500ms budget and surfaces the timeout once the live
+    // holder remains in place. Pre-fix the timeout would also reject
+    // (live holder still blocks), but a regression that incorrectly
+    // treated live holders as stale would surface here by *succeeding*
+    // acquisition with `thrown === null`.
+    expect(thrown).toBeInstanceOf(Error);
+    expect((thrown as Error).message).toContain("Timed out");
+    expect((thrown as Error).message).toContain(`pid=${process.pid}`);
+
+    // Bounded: still respects the deadline. We allow generous slack
+    // because the recovery loop polls every 25ms.
+    expect(elapsed).toBeLessThan(2_000);
+    expect(elapsed).toBeGreaterThanOrEqual(500);
+
+    // The live holder's lock file remains intact.
+    // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- Lock owner info written by the test itself; this is test-generated output, not project source.
+    const ownerContents = readFileSync(lockPath, "utf-8");
+    const owner = JSON.parse(ownerContents) as { pid: number };
+    expect(owner.pid).toBe(process.pid);
+  });
+});

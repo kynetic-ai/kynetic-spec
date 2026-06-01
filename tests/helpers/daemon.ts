@@ -20,10 +20,10 @@
  *     never kills by port number or by reading the ambient pid file.
  */
 import { execSync, spawn, type ChildProcess } from "node:child_process";
-import { existsSync, mkdirSync, rmSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, rmSync, unlinkSync, writeFileSync } from "node:fs";
 import { cp as fsCp } from "node:fs/promises";
 import { createServer as createNetServer } from "node:net";
-import { tmpdir } from "node:os";
+import { hostname, tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -58,8 +58,14 @@ const WEB_UI_BUILD_CANDIDATES = [
   join(PROJECT_ROOT, "dist", "web-ui"),
   join(PROJECT_ROOT, "packages", "web-ui", "build"),
 ];
-const PORT_START_LOCK_DIR = join(tmpdir(), "kspec-test-daemon-port-start.lock");
+const PORT_START_LOCK_FILE = join(tmpdir(), "kspec-test-daemon-port-start.lock");
 const PORT_START_LOCK_MIN_TIMEOUT_MS = 120_000;
+const PORT_START_LOCK_POLL_INTERVAL_MS = 25;
+// Stale-holder detection must not race a fresh acquirer that has just created
+// the lock file but not yet finished writing owner info. The acquirer writes
+// the owner file in the same synchronous tick as creating the lock, so a
+// short grace window is sufficient.
+const PORT_START_LOCK_OWNER_GRACE_MS = 100;
 
 // ── Public types ──────────────────────────────────────────────────────
 
@@ -349,31 +355,218 @@ function computePortStartLockTimeout(opts: StartTestDaemonOptions): number {
   return Math.max(PORT_START_LOCK_MIN_TIMEOUT_MS, readinessBudgetMs + 15_000);
 }
 
+interface PortStartLockOwner {
+  pid: number;
+  hostname: string;
+  startedAt: number;
+}
+
+function readPortStartLockOwner(lockPath: string): PortStartLockOwner | null {
+  let contents: string;
+  try {
+    // oxlint-disable-next-line no-source-scanning/no-source-file-reads -- Lock owner info written by acquireTestDaemonPortStartLock; not project source.
+    contents = readFileSync(lockPath, "utf-8");
+  } catch {
+    return null;
+  }
+  if (contents.length === 0) return null;
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(contents);
+  } catch {
+    return null;
+  }
+  if (
+    typeof parsed !== "object" ||
+    parsed === null ||
+    typeof (parsed as { pid?: unknown }).pid !== "number" ||
+    typeof (parsed as { hostname?: unknown }).hostname !== "string" ||
+    typeof (parsed as { startedAt?: unknown }).startedAt !== "number"
+  ) {
+    return null;
+  }
+  return parsed as PortStartLockOwner;
+}
+
+function isPortStartLockOwnerAlive(owner: PortStartLockOwner): boolean {
+  if (owner.hostname !== hostname()) {
+    // Foreign hostname (shared tmpfs across hosts is unusual but possible).
+    // We cannot inspect remote PIDs, so conservatively treat the owner as
+    // alive and let the deadline govern.
+    return true;
+  }
+  try {
+    process.kill(owner.pid, 0);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Attempt to reclaim a stale lock left behind by a crashed prior holder.
+ * Only fires after the contention grace window, so this never races a fresh
+ * acquirer that has just created the lock file but is mid-write of its owner
+ * info — `writeFileSync` finishes in microseconds, far shorter than the
+ * grace window. Reclamation handles three cases:
+ *
+ *   - Lock file holds a dead PID → reclaim.
+ *   - Lock path has unreadable / unparseable owner info → reclaim (covers
+ *     legacy mkdir-only directory leftovers from before this helper wrote
+ *     owner content).
+ *   - Lock holder is alive on this host → leave alone.
+ *
+ * Returns true when the caller should retry acquisition.
+ */
+function tryReclaimStalePortStartLock(lockPath: string): boolean {
+  const owner = readPortStartLockOwner(lockPath);
+  if (owner !== null && isPortStartLockOwnerAlive(owner)) return false;
+
+  // Re-read just before removal so we only evict the holder we observed.
+  // Skip the cross-check when the original read returned null (unreadable
+  // path / legacy directory leftover) — in that case there is nothing to
+  // compare against and the recovery semantics are "force-clear".
+  if (owner !== null) {
+    const currentOwner = readPortStartLockOwner(lockPath);
+    if (
+      currentOwner !== null &&
+      (currentOwner.pid !== owner.pid || currentOwner.startedAt !== owner.startedAt)
+    ) {
+      return false;
+    }
+  }
+
+  // rmSync handles both files (the current implementation) and directories
+  // (legacy mkdir-only leftovers from previous helper versions).
+  try {
+    rmSync(lockPath, { recursive: true, force: true });
+  } catch {
+    // Another worker may have already cleared the path; the caller will
+    // retry the writeFileSync step regardless.
+  }
+  return true;
+}
+
+const activePortStartLockReleases = new Set<() => void>();
+let portStartLockExitHandlersRegistered = false;
+
+function releaseActivePortStartLocks(): void {
+  for (const release of activePortStartLockReleases) {
+    try {
+      release();
+    } catch {
+      // Best effort during process teardown.
+    }
+  }
+}
+
+function registerPortStartLockExitHandlers(): void {
+  if (portStartLockExitHandlersRegistered) return;
+  portStartLockExitHandlersRegistered = true;
+  // Best-effort cleanup on normal exit. If the process is SIGKILLed there is
+  // no opportunity to run this; subsequent acquirers fall back to the
+  // stale-holder recovery path above.
+  process.on("exit", releaseActivePortStartLocks);
+  for (const signal of ["SIGINT", "SIGTERM", "SIGHUP"] as const) {
+    process.on(signal, () => {
+      releaseActivePortStartLocks();
+      // Re-raise the signal with default disposition so the process exits
+      // with the appropriate code rather than hanging if other listeners
+      // suppress it.
+      process.kill(process.pid, signal);
+    });
+  }
+}
+
+/**
+ * Test-only seam: allows the contract regressions to exercise the lock
+ * acquisition / stale-recovery path against an isolated lock file rather than
+ * the shared global one. Production callers omit `__testLockPath` and the
+ * helper coordinates through `PORT_START_LOCK_FILE`.
+ */
+export interface AcquireTestDaemonPortStartLockOptions {
+  __testLockPath?: string;
+}
+
 export async function acquireTestDaemonPortStartLock(
   timeoutMs = PORT_START_LOCK_MIN_TIMEOUT_MS,
+  opts: AcquireTestDaemonPortStartLockOptions = {},
 ): Promise<() => void> {
+  const lockPath = opts.__testLockPath ?? PORT_START_LOCK_FILE;
   const deadline = Date.now() + timeoutMs;
+  let firstContentionAt: number | null = null;
 
   while (true) {
     try {
-      mkdirSync(PORT_START_LOCK_DIR);
+      writeFileSync(
+        lockPath,
+        JSON.stringify({
+          pid: process.pid,
+          hostname: hostname(),
+          startedAt: Date.now(),
+        }),
+        { flag: "wx" },
+      );
+      const ownerSnapshot = readPortStartLockOwner(lockPath);
       let released = false;
-      return () => {
+      const release = (): void => {
         if (released) return;
-        rmSync(PORT_START_LOCK_DIR, { recursive: true, force: true });
         released = true;
+        activePortStartLockReleases.delete(release);
+        // Only unlink if we still appear to be the recorded owner; a
+        // takeover by stale-recovery in a parallel worker should not have
+        // its file deleted here.
+        const current = readPortStartLockOwner(lockPath);
+        if (
+          current === null ||
+          ownerSnapshot === null ||
+          (current.pid === ownerSnapshot.pid && current.startedAt === ownerSnapshot.startedAt)
+        ) {
+          try {
+            unlinkSync(lockPath);
+          } catch {
+            // Best effort — file may have been reclaimed concurrently.
+          }
+        }
       };
+      activePortStartLockReleases.add(release);
+      registerPortStartLockExitHandlers();
+      return release;
     } catch (error) {
       const code = (error as { code?: string }).code;
       if (code !== "EEXIST") throw error;
 
-      if (Date.now() >= deadline) {
+      const now = Date.now();
+      if (firstContentionAt === null) firstContentionAt = now;
+      const contendedFor = now - firstContentionAt;
+
+      if (now >= deadline) {
+        // Last-chance stale recovery before surfacing the timeout.
+        if (tryReclaimStalePortStartLock(lockPath)) continue;
+        const owner = readPortStartLockOwner(lockPath);
+        const ownerSuffix =
+          owner !== null
+            ? ` (held by pid=${owner.pid} on ${owner.hostname}, started ${
+                now - owner.startedAt
+              }ms ago)`
+            : "";
         throw new Error(
-          `Timed out waiting ${timeoutMs}ms for daemon port startup lock at ${PORT_START_LOCK_DIR}`,
+          `Timed out waiting ${timeoutMs}ms for daemon port startup lock at ${lockPath}${ownerSuffix}`,
+          { cause: error },
         );
       }
 
-      await new Promise<void>((resolveSleep) => setTimeout(resolveSleep, 25));
+      // Give a brief grace window so we never race-evict an acquirer that
+      // has just created the file but is still writing its owner info. Past
+      // the grace window, attempt stale recovery on every tick — the
+      // recovery path itself short-circuits if the lock holder is alive.
+      if (contendedFor >= PORT_START_LOCK_OWNER_GRACE_MS) {
+        if (tryReclaimStalePortStartLock(lockPath)) continue;
+      }
+
+      await new Promise<void>((resolveSleep) =>
+        setTimeout(resolveSleep, PORT_START_LOCK_POLL_INTERVAL_MS),
+      );
     }
   }
 }
