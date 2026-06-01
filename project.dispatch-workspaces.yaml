@@ -15940,11 +15940,11 @@ workspaces:
     canonical_branch: dispatch/task/task-runner-compatibility-regressions/01ksyaz7
     canonical_branch_head: 788636f977ea9194c3e018be38e2b1fb43dd4d37
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-01T03:52:01.018Z
+      updated_at: 2026-06-01T03:55:02.395Z
     health:
       status: healthy
       issues: []
@@ -15958,16 +15958,16 @@ workspaces:
       target_branch: dev
       target_commit: f59983f0cd55efe39c50bba0fc78a3d24cae79bd
       updated_at: 2026-06-01T03:52:01.018Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KSYAZ7N9PA8VKT13R9V3P72K"
     task_slug: task-runner-compatibility-regressions
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-01T03:55:02.395Z
       last_active_at: 2026-06-01T03:34:04.003Z
       last_reconciled_at: 2026-06-01T03:54:45.412Z
       created_at: 2026-06-01T02:07:54.627Z
-      updated_at: 2026-06-01T03:54:45.412Z
+      updated_at: 2026-06-01T03:55:02.395Z
     workspace_id: dispatch-workspace-01KSYAZ7N9PA8VKT13R9V3P72K
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
