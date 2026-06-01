@@ -97,6 +97,19 @@ checks:
     runner: svelte-check
     created_at: 2026-06-01T00:40:39.363Z
     completed_at: 2026-06-01T00:40:39.363Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh progressed broadly but hit unrelated daemon fixture timeouts. Direct
+      reruns reproduce tests/e2e-fixture-daemon-cleanup.test.ts (2 timeout failures) and
+      tests/helpers/daemon.test.ts (9 timeout failures). No files in that area changed in this task.
+      Follow-up task created: @01KT09PW."
+    name: npm test
+    required: false
+    runner: vitest
+    created_at: 2026-06-01T00:40:49.334Z
+    completed_at: 2026-06-01T00:40:49.334Z
 events:
   - _ulid: 01KT0814AEN0XMMBAR0Y9RA6FA
     actor: Jacob Chapel
@@ -174,6 +187,13 @@ events:
       status: skipped
       name: svelte-check
     timestamp: 2026-06-01T00:40:39.603Z
+  - _ulid: 01KT0A0K3ZEFWJ93X2TYWV8R09
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: npm test
+    timestamp: 2026-06-01T00:40:49.535Z
 examined_commit: ea7854deac76fae800fc773a46fc19514e3843e4
 external_links: []
 lifecycle_state: open
@@ -186,5 +206,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-01T00:06:10.003Z
-updated_at: 2026-06-01T00:40:39.363Z
+updated_at: 2026-06-01T00:40:49.334Z
 notes: []
