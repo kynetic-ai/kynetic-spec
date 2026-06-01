@@ -88,7 +88,7 @@ tags:
   - dispatch
   - runners
 vcs_refs: []
-review_ref: "@01KT0GXZZPZW71HEH3KP9FAJKW"
+review_ref: "@01KT0KZ8FYQRGQHP9WRE99B4JG"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-runner-compatibility-regressions/01ksyaz7
@@ -196,6 +196,13 @@ history:
         previous: 2026-06-01T02:35:53.697Z
     command: task-submit
     timestamp: 2026-06-01T03:30:47.768Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KT0KZ8FYQRGQHP9WRE99B4JG"
+        previous: "@01KT0GXZZPZW71HEH3KP9FAJKW"
+    command: review-link
+    timestamp: 2026-06-01T03:34:54.219Z
 created_at: 2026-05-31T06:19:04.745Z
 started_at: 2026-06-01T03:02:05.957Z
 submitted_at: 2026-06-01T03:30:47.767Z

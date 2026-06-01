@@ -1,0 +1,26 @@
+_ulid: 01KT0KZ8FYQRGQHP9WRE99B4JG
+slugs: []
+title: Review task-runner-compatibility-regressions cycle 2
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KT0KZ8FTGH4C1BYHKY81NSYG
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-01T03:34:51.642Z
+examined_commit: 788636f977ea9194c3e018be38e2b1fb43dd4d37
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KSYAZ7N9PA8VKT13R9V3P72K"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-01T03:34:51.646Z
+updated_at: null
+notes: []
