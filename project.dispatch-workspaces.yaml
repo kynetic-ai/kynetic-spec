@@ -15939,11 +15939,11 @@ workspaces:
     canonical_branch: dispatch/task/task-document-runner-config-migration/01ksyaz7
     canonical_branch_head: d37847902a448909ea6952e50b46e2815f91556c
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-01T01:50:59.411Z
+      updated_at: 2026-06-01T01:56:05.415Z
     health:
       status: healthy
       issues: []
@@ -15957,16 +15957,16 @@ workspaces:
       target_branch: dev
       target_commit: 5e04dd7c8b0660ef5703a69187dc3edc55252346
       updated_at: 2026-06-01T01:50:59.411Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KSYAZ79ZYNT3J9FM76BBVXMW"
     task_slug: task-document-runner-config-migration
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-01T01:56:05.415Z
       last_active_at: 2026-06-01T01:32:52.341Z
       last_reconciled_at: 2026-06-01T01:55:26.975Z
       created_at: 2026-06-01T01:15:53.593Z
-      updated_at: 2026-06-01T01:55:26.975Z
+      updated_at: 2026-06-01T01:56:05.415Z
     workspace_id: dispatch-workspace-01KSYAZ79ZYNT3J9FM76BBVXMW
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
