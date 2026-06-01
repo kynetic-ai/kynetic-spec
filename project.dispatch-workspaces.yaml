@@ -15975,7 +15975,7 @@ workspaces:
         head: eb681fdfe108842ceb267de751ab4f98dc249bb0
         last_seen_at: 2026-06-01T16:51:50.838Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-tighten-runner-closure-gap-specs-01kt20r8
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: eb681fdfe108842ceb267de751ab4f98dc249bb0
     bootstrap:
       status: succeeded
@@ -16459,9 +16459,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-01T17:51:49.041Z
-      last_reconciled_at: 2026-06-01T18:09:02.594Z
+      last_reconciled_at: 2026-06-01T18:12:56.017Z
       created_at: 2026-06-01T17:16:13.661Z
-      updated_at: 2026-06-01T18:09:02.594Z
+      updated_at: 2026-06-01T18:12:56.017Z
     workspace_id: dispatch-workspace-01KT20R8D0H2K1BAR8XE02AJT6
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
