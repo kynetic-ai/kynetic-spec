@@ -102,6 +102,24 @@ checks:
     runner: npm
     created_at: 2026-06-01T20:45:55.873Z
     completed_at: 2026-06-01T20:45:55.873Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/agent-runtime/dispatch.ts, src/agents/runners.ts,
+      src/agents/runner-validation.ts, src/agent-runtime/invocation.ts, src/cli/commands/agent.ts,
+      tests/agent-dispatch-engine.test.ts, tests/agent-runner-process.test.ts. Commands run:
+      task/spec lookups, base..head diff, AC annotation search, source-scan check, kspec validate
+      refs/alignment/completeness, format, lint, changed-file oxlint, typecheck, focused tests, full
+      npm test. Claims verified: canonical dispatch session id reaches preflight contract, active
+      tracking, and runInvocation options; named runner-backed adapter commands preflight under
+      runner PATH; legacy adapter-only path still skips. Categories searched: correctness, edge
+      cases, error handling, test quality, integration. Findings: none."
+    name: review evidence log
+    required: false
+    runner: reviewer
+    created_at: 2026-06-01T20:46:13.151Z
+    completed_at: 2026-06-01T20:46:13.151Z
 events:
   - _ulid: 01KT2E3D7B0V5C2GCFGEVXZ7AW
     actor: Jacob Chapel
@@ -179,6 +197,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-06-01T20:45:56.076Z
+  - _ulid: 01KT2EZQVG3Z37D3K3FYPFFMSJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-06-01T20:46:13.360Z
 examined_commit: b3ee001851142c921936eac9f8a46cc7e1db27c3
 external_links: []
 lifecycle_state: open
@@ -191,5 +216,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-01T20:30:44.972Z
-updated_at: 2026-06-01T20:45:55.873Z
+updated_at: 2026-06-01T20:46:13.151Z
 notes: []
