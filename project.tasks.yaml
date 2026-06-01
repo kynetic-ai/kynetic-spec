@@ -30420,7 +30420,7 @@
   type: task
   spec_ref: "@runner-invocation-semantics"
   plan_ref: "@plan-agent-runner-configuration-layer"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-web-ui-runner-surfaces"
@@ -30437,6 +30437,7 @@
   created_at: 2026-05-31T06:19:04.745Z
   started_at: 2026-06-01T03:02:05.957Z
   submitted_at: 2026-06-01T03:30:47.767Z
+  completed_at: 2026-06-01T03:51:16.121Z
   automation: eligible
 - _ulid: 01KT09PW43D40MTYNCFMP7ZMZN
   slugs: []
