@@ -15975,7 +15975,7 @@ workspaces:
         head: eb681fdfe108842ceb267de751ab4f98dc249bb0
         last_seen_at: 2026-06-01T16:51:50.838Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-tighten-runner-closure-gap-specs-01kt20r8
-  - active_role: worker
+  - active_role: null
     base_branch_point: eb681fdfe108842ceb267de751ab4f98dc249bb0
     bootstrap:
       status: succeeded
@@ -16297,12 +16297,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-01T17:50:02.359Z
+      updated_at: 2026-06-01T17:51:06.426Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-01T17:50:02.359Z
+      updated_at: 2026-06-01T17:51:06.426Z
     integration:
       status: pending
       detail: null
@@ -16310,17 +16310,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: eb681fdfe108842ceb267de751ab4f98dc249bb0
-      updated_at: 2026-06-01T17:50:02.359Z
-    lifecycle_state: active
+      updated_at: 2026-06-01T17:51:06.426Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KT20R8D0H2K1BAR8XE02AJT6"
     task_slug: task-resolve-system-runner-cwd-deterministically
     timestamps:
       closed_at: null
       last_active_at: 2026-06-01T17:16:43.917Z
-      last_reconciled_at: 2026-06-01T17:50:02.359Z
+      last_reconciled_at: 2026-06-01T17:51:06.426Z
       created_at: 2026-06-01T17:16:13.661Z
-      updated_at: 2026-06-01T17:50:02.359Z
+      updated_at: 2026-06-01T17:51:06.426Z
     workspace_id: dispatch-workspace-01KT20R8D0H2K1BAR8XE02AJT6
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
