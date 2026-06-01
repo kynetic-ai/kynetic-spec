@@ -20444,6 +20444,16 @@ observations:
     resolved: false
     workflow_ref: "@01KT28ZF"
     created_at: 2026-06-01T19:02:04.584Z
+  - _ulid: 01KT2AXHJD7CN2GC5T0MKWY1Z9
+    type: success
+    content: Hoisting registry-load failure precedence above per-runner validation as a single mental
+      model unified the fix across 4 surfaces (resolver, CLI list/run, daemon meta, daemon
+      dispatch). One sentence — 'load failure always wins over surviving runner entry' — drove
+      identical structural changes in each surface and made the regression contract obvious.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-01T19:35:07.085Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
