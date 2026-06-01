@@ -30515,7 +30515,7 @@
   type: task
   spec_ref: "@runner-resolution-and-preflight"
   plan_ref: "@plan-agent-runner-contract-hardening-follow-up"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-tighten-runner-closure-gap-specs"
@@ -30530,7 +30530,7 @@
   notes_count: 3
   todos_count: 0
   created_at: 2026-06-01T16:37:28.435Z
-  started_at: 2026-06-01T17:52:40.605Z
+  started_at: 2026-06-01T19:32:53.735Z
   submitted_at: 2026-06-01T18:37:01.382Z
   automation: eligible
 - _ulid: 01KT20R92ZF79J35G6SMW8SRD4
