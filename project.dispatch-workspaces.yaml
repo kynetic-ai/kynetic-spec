@@ -15937,11 +15937,11 @@ workspaces:
     canonical_branch: dispatch/task/task-tighten-runner-closure-gap-specs/01kt20r8
     canonical_branch_head: eb681fdfe108842ceb267de751ab4f98dc249bb0
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-01T17:16:04.159Z
+      updated_at: 2026-06-01T17:19:04.819Z
     health:
       status: healthy
       issues: []
@@ -15955,16 +15955,16 @@ workspaces:
       target_branch: dev
       target_commit: eb681fdfe108842ceb267de751ab4f98dc249bb0
       updated_at: 2026-06-01T17:16:04.159Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KT20R80MDABB1TZJZ18D4X6A"
     task_slug: task-tighten-runner-closure-gap-specs
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-01T17:19:04.819Z
       last_active_at: 2026-06-01T16:52:23.059Z
       last_reconciled_at: 2026-06-01T17:18:35.178Z
       created_at: 2026-06-01T16:44:18.119Z
-      updated_at: 2026-06-01T17:18:35.178Z
+      updated_at: 2026-06-01T17:19:04.819Z
     workspace_id: dispatch-workspace-01KT20R80MDABB1TZJZ18D4X6A
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
