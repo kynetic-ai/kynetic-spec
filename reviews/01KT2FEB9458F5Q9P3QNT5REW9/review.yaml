@@ -79,6 +79,17 @@ checks:
     runner: tsc
     created_at: 2026-06-01T21:09:45.214Z
     completed_at: 2026-06-01T21:09:45.214Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/daemon-api/agent-runner-surfaces.test.ts passed: 5 suites, 24
+      tests."
+    name: daemon agent runner surfaces test
+    required: true
+    runner: vitest
+    created_at: 2026-06-01T21:09:58.974Z
+    completed_at: 2026-06-01T21:09:58.974Z
 events:
   - _ulid: 01KT2FEB93RV1PVRY0ZGEWW2SF
     actor: Jacob Chapel
@@ -142,6 +153,13 @@ events:
       status: pass
       name: npm run typecheck
     timestamp: 2026-06-01T21:09:45.427Z
+  - _ulid: 01KT2GB89DWAQKKFWZQ60BH3EX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: daemon agent runner surfaces test
+    timestamp: 2026-06-01T21:09:59.214Z
 examined_commit: 360cb36d88effdc5d14e96e8aa324a65c9f70df2
 external_links: []
 lifecycle_state: open
@@ -154,5 +172,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-01T20:54:12.004Z
-updated_at: 2026-06-01T21:09:45.214Z
+updated_at: 2026-06-01T21:09:58.974Z
 notes: []
