@@ -58765,9 +58765,22 @@ runs:
     completed_at: 2026-06-01T19:03:48.523Z
   - _ulid: 01KT2C61RQPK6GDA426BNBTMWQ
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-01T19:57:14.392Z
+        completed_at: 2026-06-01T19:58:23.369Z
+        notes: "What worked well: The detached-reviewer merge helper gave a clean, supported merge path for
+          a detached snapshot and advanced dev without manual checkout. The prior review threads
+          made the fix-cycle scope precise: mixed-layer registry-load failures needed to dominate
+          surviving runner entries. Focused tests plus full fresh suite provided strong confidence
+          before approval."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-01T19:58:23.369Z
+        completed_at: 2026-06-01T19:58:23.369Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-01T19:57:14.392Z
