@@ -38,3 +38,46 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-01T20:04:56.091Z
+  - _ulid: 01KT2DQMA9X635F30GC3DS8MFM
+    content: >-
+      Implementation complete.
+
+
+      Changes:
+
+      - src/agents/runners.ts: probeRunnerInvocationExecutable guard switched from
+      process.executable origin to runnerId-based. Named runner-backed contracts now preflight the
+      effective adapter command under runner cwd + invocation search PATH; implicit/legacy stays a
+      no-op. preflightRunnerInvocation message updated to 'command' (vs 'configured executable') to
+      reflect the broader scope; structured details unchanged (runner id, adapter id, command,
+      unspawnable_reason).
+
+      - src/agents/runner-validation.ts: dropped the external if-processExecutable guard at
+      validateOneRunner so CLI validation surfaces (agent list, agent runners validate, agent run
+      --dry-run) report the same effective-adapter preflight outcome dispatch and one-shot would
+      see.
+
+      - src/agent-runtime/dispatch.ts: allocated preSessionId = ulid() BEFORE the preflight resolver
+      call. The same id flows into resolveRunnerInvocation (preflight), activeInvocationDetails,
+      started/completed/failed events, sessionCtx, InvocationOptions.sessionId, and the live-counter
+      cache. The duplicate ulid() at the active-tracking site was removed.
+
+
+      Tests:
+
+      - tests/agent-runner-process.test.ts: replaced the legacy 'does not preflight when the runner
+      did not configure an executable' test with three new tests proving
+      ac-effective-adapter-command-preflighted (rejects unspawnable adapter command for named
+      runners, accepts spawnable adapter command, resolves bare adapter commands via runner
+      env.set.PATH). Kept the implicit/legacy no-op test.
+
+      - tests/agent-dispatch-engine.test.ts: added ac-dispatch-preflight-uses-canonical-session-id —
+      spy on preflightRunnerInvocation to read KSPEC_SESSION_ID from the contract env; assert it
+      equals InvocationOptions.sessionId and activeInvocationDetails.sessionId.
+
+
+      Gates: typecheck OK, full test suite OK (10215 passed / 5 skipped / 0 failed), oxlint 0
+      warnings/0 errors on changed files, oxfmt clean, kspec validate --refs --warnings-ok OK.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-01T20:24:19.017Z
