@@ -17,3 +17,19 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-01T02:57:47.021Z
+  - _ulid: 01KT0KQJCE552EY3K39GFYZBA8
+    content: "Fix cycle 1: addressed all 3 blocker threads in review @01KT0GXZZPZW71HEH3KP9FAJKW. (1)
+      Removed inaccurate AC annotations from the two legacy adapter-only tests (lines ~199-247) and
+      re-homed ac-one-shot-uses-runner-resolution to the Flow 3 runner-backed test. Added new
+      behavioral coverage for ac-dispatch-uses-runner-resolution and
+      ac-dispatch-preflight-accepts-configured-runners in a new Flow 6b describe block. (2) Removed
+      ac-unknown-runner-blocks-before-spawn annotation from the missing-secret test in Flow 8. (3)
+      Replaced the test that mutated dispatch engine internals (activeInvocationDetails.set /
+      queues.set) with a behavioral test that drives DispatchEngine.handleStateChange() through
+      max_concurrent=1 to deterministically produce active + queued runner-backed entries, asserting
+      via engine.getStatus() (the same shape /api/agent/status serializes). All 16 tests in
+      tests/agent-runner-e2e.test.ts pass; full suite (2676 suites / 10174 tests) passes; format,
+      lint, typecheck, and kspec validate gates all green."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-01T03:30:39.631Z

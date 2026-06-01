@@ -251,6 +251,24 @@ events:
     payload:
       thread_ulid: 01KT0HV4J70TGTZHTG56W1K7KF
     timestamp: 2026-06-01T03:30:15.051Z
+  - _ulid: 01KT0KQCBSBA5ZP5W4QD4W05CP
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KT0HTZKHDXVX30DK1AJ5W0J9
+    timestamp: 2026-06-01T03:30:33.465Z
+  - _ulid: 01KT0KQEVV6RC1FTGZCR74ZYFH
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KT0HV21PH80N717M5EMAZA14
+    timestamp: 2026-06-01T03:30:36.028Z
+  - _ulid: 01KT0KQHB1KWMS5PD0FY9YRAXV
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KT0HV4J70TGTZHTG56W1K7KF
+    timestamp: 2026-06-01T03:30:38.561Z
 examined_commit: dacb75e03421617863403ed36dcfc31c0d8551e2
 external_links: []
 lifecycle_state: closed
@@ -311,6 +329,8 @@ threads:
           preflightRunnerInvocation resolves.
         created_at: 2026-06-01T03:30:04.133Z
     kind: blocker
+    resolved_at: 2026-06-01T03:30:33.248Z
+    resolved_by: "@claude"
   - _ulid: 01KT0HV21PH80N717M5EMAZA14
     anchor:
       type: code
@@ -337,6 +357,8 @@ threads:
           actually reference an absent runner and assert reason=unknown_runner."
         created_at: 2026-06-01T03:30:09.445Z
     kind: blocker
+    resolved_at: 2026-06-01T03:30:35.822Z
+    resolved_by: "@claude"
   - _ulid: 01KT0HV4J70TGTZHTG56W1K7KF
     anchor:
       type: code
@@ -378,6 +400,8 @@ threads:
           is already covered by tests/daemon-api/agent-runner-surfaces.test.ts.
         created_at: 2026-06-01T03:30:14.814Z
     kind: blocker
+    resolved_at: 2026-06-01T03:30:38.340Z
+    resolved_by: "@claude"
   - _ulid: 01KT0HV70K7FD4PRZ4YFYFE2A2
     entries:
       - _ulid: 01KT0HV70KG29WA2N5WB6MS5N7
@@ -406,5 +430,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-01T02:57:44.859Z
 created_at: 2026-06-01T02:41:44.438Z
-updated_at: 2026-06-01T03:30:14.814Z
+updated_at: 2026-06-01T03:30:38.340Z
 notes: []
