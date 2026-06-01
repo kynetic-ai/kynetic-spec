@@ -58324,7 +58324,7 @@ runs:
     completed_at: 2026-06-01T02:33:11.306Z
   - _ulid: 01KT0GKZ8Z8NBGX6TBHPCFJ9FW
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -58356,7 +58356,38 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-01T02:36:57.272Z
-        completed_at: 2026-06-01T02:36:57.272Z
+        completed_at: 2026-06-01T02:37:14.675Z
+        notes: >-
+          - "project.runners.yaml" path discovery is non-obvious in non-shadow projects. The loader
+          API names the parameter shadowWorktreeDir, but for a traditional-mode CLI subprocess (no
+          shadow worktree configured) the spec dir IS the project root, so project.runners.yaml
+          lives at <projectRoot>/project.runners.yaml, NOT under .kspec/. I had to fail a test,
+          trace through initContext() in src/parser/yaml.ts, and confirm the resolution before
+          fixing my fixture. The parameter name shadowWorktreeDir misleads — a comment on
+          getProjectRunnersPath/loadProjectRunnerConfig explaining the traditional-mode fallback
+          would have saved that round-trip.
+
+          - kspec agent run --dry-run --json output shape is under-documented. The top-level key is
+          runner_invocation, but its real shape is { resolved, summary: { process: { command,
+          command_source, ... }, runner, adapter, env_policy, preflight } }. Source-reading
+          DryRunRunnerInvocationDiagnostic in src/cli/commands/agent.ts was the only way to find the
+          right path. A small schema example in the dry-run section of the agent-runner skill or CLI
+          help would shortcut this.
+
+          - The task description lists "npm run check" as a Testing step, but there is no root-level
+          "check" script in package.json — only packages/web-ui/package.json has one (svelte-kit
+          sync && svelte-check). Caused brief confusion about whether I was missing a gate. Either
+          the convention rule or the task derivation template should be updated to use npm run
+          typecheck (which exists at root) or to clarify that "npm run check" is web-UI only.
+
+          - Full test suite (10168 tests, ~45 min cold) is heavyweight when the only change is a new
+          test file with no production code touched. The session-scoped cache amortizes second runs,
+          but for a test-only diff the first cold run is overkill. A faster smoke-mode (skip
+          e2e/integration) for test-only diffs would let pre-submit verification finish in <5 min.
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-01T02:37:14.675Z
+        completed_at: 2026-06-01T02:37:14.675Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-01T02:36:16.031Z
