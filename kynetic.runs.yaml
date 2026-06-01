@@ -58810,7 +58810,7 @@ runs:
     completed_at: 2026-06-01T20:00:16.001Z
   - _ulid: 01KT2F27DNCXZ7WYMPR7QXZ1G2
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -58831,7 +58831,169 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-06-01T20:48:45.033Z
-        completed_at: 2026-06-01T20:48:45.033Z
+        completed_at: 2026-06-01T20:49:15.126Z
+        notes: >-
+          Coverage search: No matches found for "test runner progress quiet tail" returned no
+          matches; No matches found for "full suite progress" returned no matches; 01KNXYJ3P
+          [completed] P1 Scaffold project config file during init setup
+          @task-scaffold-project-config
+            matched: notes[12]
+          01KP6QNN [inbox] Add an automated review/merge guard that detects task-bra...
+            matched: text
+
+          2 result(s) found unrelated prior items. 01KPVJ8QK [feature] Detached Reviewer Merge
+          Helper @detached-reviewer-merge-helper implemented
+            matched: title
+          01KPVJ8R0 [completed] P1 Implement detached reviewer merge helper mechanics
+          @task-detached-reviewer-merge-helper
+            matched: title, closed_reason
+          01KPVJ8RA [completed] P1 Wire reviewer guidance and merge skill usage to the detached
+          merge helper @task-detached-reviewer-merge-guidance
+            matched: closed_reason
+          01KPWBHM [completed] P2 Align detached reviewer conflict guidance to the single supported
+          merge path @task-align-detached-reviewer-conflict-guidance
+            matched: description
+          01KQ0JDKG [completed] P2 Enforce coverage annotation scan boundaries
+          @task-coverage-annotation-scope-boundaries
+            matched: closed_reason
+          01KQ0JDM [completed] P2 Final validation trust gate @task-validation-trust-final-gate
+            matched: closed_reason
+          01KQ93NED [completed] P1 Enforce AC identifier format at catalog write boundaries
+          @task-enforce-ac-id-format
+            matched: closed_reason
+          01KQ93NF0 [completed] P2 Align annotation parser tests and guidance with required AC id
+          format @task-align-ac-annotation-format-tests
+            matched: closed_reason
+          01KQ93NFA [completed] P2 Final AC id format validation gate @task-ac-id-format-final-gate
+            matched: closed_reason
+          01KQB9J1X [completed] P2 Reject malformed AC annotation tokens instead of truncating them
+          @task-strict-ac-annotation-token-parsing
+            matched: closed_reason
+          01KQD419 [completed] P2 Verify daemon-served entry documents only reference available
+          startup assets @task-daemon-web-ui-startup-asset-coherence
+            matched: closed_reason
+          01KQWZZFD [completed] P1 Update configurable daemon settings spec for endpoint resolution
+          @task-update-config-daemon-endpoint-ac
+            matched: closed_reason
+          01KQWZZG0 [completed] P1 Update daemon proxy and direct-mode specs for endpoint metadata
+          @task-update-cli-daemon-proxy-endpoint-ac
+            matched: closed_reason
+          01KQWZZJ3 [completed] P1 Centralize web UI development daemon endpoints and CORS origins
+          @task-centralize-web-ui-daemon-endpoints
+            matched: closed_reason
+          01KQZWWG [completed] P3 Retag localhost-security tests to current AC ids
+          @task-retag-localhost-security-ac-annotations
+            matched: closed_reason
+          01KR22GJE [completed] P1 Update existing daemon test specs for shared fixture standards
+          @task-update-daemon-test-specs
+            matched: closed_reason
+          01KR22GJR [completed] P1 Implement shared daemon test fixture core
+          @task-implement-shared-daemon-test-fixture
+            matched: closed_reason
+          01KR22GME [completed] P5 Validate daemon fixture standardization across the suite
+          @task-validate-daemon-test-fixture-standardization
+            matched: closed_reason
+          01KR3W7PP [completed] P1 Fix guardrail daemon command classification
+          @task-fix-guardrail-daemon-command-classification
+            matched: closed_reason
+          01KR3W7Q0 [completed] P1 Add guardrail regression tests for detached cleanup timing
+          @task-add-detached-cleanup-timing-regressions
+            matched: closed_reason
+          01KR3W7R7 [completed] P2 Harden Playwright daemon fixture cleanup registration
+          @task-harden-playwright-daemon-fixture-cleanup
+            matched: closed_reason
+          01KR3W7RH [completed] P1 Add mock daemon helper failure-path contract tests
+          @task-add-mock-daemon-failure-contract-tests
+            matched: closed_reason
+          01KR3W7RT [completed] P1 Fix mock daemon helper cleanup and environment hygiene
+          @task-fix-mock-daemon-cleanup-env-hygiene
+            matched: closed_reason
+          01KR3W7SD [completed] P2 Clarify in-process daemon API helper boundary
+          @task-clarify-in-process-daemon-api-helper-boundary
+            matched: closed_reason
+          01KR4AWP [completed] P2 Stabilize flaky daemon startup review tests
+            matched: closed_reason
+          01KR52YX [completed] P3 Stabilize websocket protocol runtime parity test
+          @task-stabilize-websocket-protocol-runtime-parity-test
+            matched: closed_reason
+          01KR6M74 [completed] P2 Add guardrail regressions for unbound cleanup callbacks and local
+          wrappers @task-add-guardrail-binding-wrapper-regressions
+            matched: closed_reason
+          01KR6M77 [completed] P2 Fix guardrail cleanup-binding and approved-helper analysis
+          @task-fix-guardrail-binding-wrapper-analysis
+            matched: closed_reason
+          01KRC2R0 [completed] P3 Stabilize Bun websocket runtime parity startup hook
+          @task-stabilize-bun-websocket-runtime-parity-startup-hook
+            matched: closed_reason
+          01KRCRJPM [completed] P1 Fix guardrail cleanup-effect classification
+          @task-fix-guardrail-cleanup-effect-classification
+            matched: closed_reason
+          01KRCRJPY [completed] P1 Add adversarial guardrail regressions for cleanup boundaries
+          @task-add-guardrail-cleanup-boundary-regressions
+            matched: closed_reason
+          01KRCRJQV [completed] P2 Fix implicit auto-start daemon cleanup coverage
+          @task-fix-implicit-autostart-cleanup-coverage
+            matched: closed_reason
+          01KRCRJRF [completed] P1 Implement bounded process-stop primitives
+          @task-implement-bounded-process-stop-primitives
+            matched: closed_reason
+          01KRCRJS2 [completed] P2 Fix active-request teardown and daemon observation bounds
+          @task-fix-active-request-teardown-and-observation-bounds
+            matched: closed_reason
+          01KRF37Y9 [completed] P1 Centralize dispatch artifact protection decisions
+          @task-centralize-dispatch-artifact-protection-decisions
+            matched: closed_reason
+          01KRF37YP [completed] P1 Include in-flight spawn refs in cleanup inputs
+          @task-include-inflight-spawn-refs-in-cleanup-inputs
+            matched: closed_reason
+          01KRF37Z4 [completed] P1 Apply protection policy across artifact reconciliation surfaces
+          @task-apply-protection-policy-across-artifact-reconciliation
+            matched: closed_reason
+          01KRF37ZH [completed] P1 Add positive and regression coverage for cleanup protection
+          @task-test-cleanup-protection-positive-and-regression-cases
+            matched: closed_reason
+          01KRF37ZZ [completed] P1 Add dispatch-level in-flight bootstrap race regression
+          @task-test-dispatch-inflight-bootstrap-race-regression
+            matched: closed_reason
+          01KRH3KX [completed] P1 Add cleanup classification regression coverage
+          @task-add-cleanup-classification-regression-coverage
+            matched: closed_reason
+          01KRYMPBS [completed] P1 Suppress recursive daemon command proxying
+          @task-suppress-recursive-daemon-command-proxying
+            matched: closed_reason
+          01KRYMPCM [completed] P1 Gate cleanup preservation diagnostics behind explicit opt-in
+          @task-gate-cleanup-preservation-diagnostics
+            matched: closed_reason
+          01KRYN42 [completed] P2 Stabilize cli-no-daemon runtime PID assertion
+          @task-stabilize-cli-no-daemon-runtime-pid-assertion
+            matched: closed_reason
+          01KRZ0EW [completed] P2 Stabilize Bun daemon auto-start runtime test
+            matched: closed_reason
+          01KS090W [completed] P3 Stabilize cli-no-daemon auto-start process assertion
+          @task-stabilize-cli-no-daemon-auto-start-process-assertion
+            matched: closed_reason
+          01KSJNVP0 [completed] P1 Align merge-helper and integration-target specs around
+          branch-lock ownership @task-align-merge-helper-branch-lock-specs
+            matched: closed_reason
+          01KSJNVPD [completed] P1 Rework detached reviewer merge helper to use an ephemeral target
+          worktree @task-rework-detached-reviewer-merge-helper-ephemeral-target
+            matched: title
+          01KSJNVPS [completed] P1 Add regression coverage for helper branch-lock release
+          @task-add-detached-merge-helper-branch-lock-regressions
+            matched: closed_reason
+          01KSJNVQJ [completed] P2 Add end-to-end plan-target lock regression for manual_merge
+          dispatch @task-add-plan-target-lock-e2e-regression
+            matched: closed_reason
+          01KSKQXJ0 [completed] P1 Add red tests for plan and review index consistency after every
+          folder mutation @task-add-folder-index-consistency-regressions
+            matched: closed_reason
+
+          50 result(s) (showing first 50) showed the merge-helper success pattern is already tracked
+          and implemented, so no duplicate capture needed for that.
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-01T20:49:15.126Z
+        completed_at: 2026-06-01T20:49:15.126Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-01T20:47:34.837Z
