@@ -16472,7 +16472,7 @@ workspaces:
         head: d424a19f3dd23edfeafcbcaa5360deb1552f15d2
         last_seen_at: 2026-06-01T19:35:31.646Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-runner-registry-load-failure-diagnostics-01kt20r8
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 3e77fab2475397c1539d2cd58c98c12c55e9ae5b
     bootstrap:
       status: succeeded
@@ -16959,9 +16959,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-01T20:30:08.576Z
-      last_reconciled_at: 2026-06-01T20:47:02.606Z
+      last_reconciled_at: 2026-06-01T20:50:26.058Z
       created_at: 2026-06-01T19:57:10.398Z
-      updated_at: 2026-06-01T20:47:02.606Z
+      updated_at: 2026-06-01T20:50:26.058Z
     workspace_id: dispatch-workspace-01KT20R92ZF79J35G6SMW8SRD4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
