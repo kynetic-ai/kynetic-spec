@@ -26,6 +26,7 @@
 	import AgentEditForm from '$lib/components/agents/AgentEditForm.svelte';
 	import DispatchStatusComponent from '$lib/components/agents/DispatchStatus.svelte';
 	import ActiveInvocationRow from '$lib/components/agents/ActiveInvocationRow.svelte';
+	import QueuedInvocationRow from '$lib/components/agents/QueuedInvocationRow.svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import Bot from 'lucide-svelte/icons/bot';
@@ -240,6 +241,19 @@
 					</div>
 				{/if}
 			</section>
+
+			<!-- Queued Invocations Section -->
+			<!-- AC: @runner-operator-surfaces ac-web-ui-queued-invocations-include-runner -->
+			{#if dispatchStatus.queued_invocations && dispatchStatus.queued_invocations.length > 0}
+				<section data-testid="queued-invocations-section">
+					<h2 class="text-lg font-semibold mb-3">Queued Invocations</h2>
+					<div class="flex flex-col gap-2">
+						{#each dispatchStatus.queued_invocations as invocation, index (`${invocation.agent_id}-${invocation.task_ref ?? 'no-task'}-${index}`)}
+							<QueuedInvocationRow {invocation} taskTitle={invocation.task_title ?? null} />
+						{/each}
+					</div>
+				</section>
+			{/if}
 		{/if}
 
 		<!-- Screen reader live announcement for invocation changes -->

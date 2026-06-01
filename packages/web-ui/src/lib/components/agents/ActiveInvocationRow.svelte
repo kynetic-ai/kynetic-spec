@@ -29,6 +29,7 @@
 </script>
 
 <!-- AC: @ui-agent-dispatch ac-2 -->
+<!-- AC: @runner-operator-surfaces ac-web-ui-active-invocations-include-runner -->
 <div
 	class="flex items-center justify-between rounded-md border px-3 py-2 ds-breathe"
 	data-testid="active-invocation-row"
@@ -37,6 +38,20 @@
 		<Badge class="bg-status-in-progress text-status-in-progress-fg shrink-0">
 			{invocation.agent_id}
 		</Badge>
+
+		{#if invocation.runner}
+			<!-- AC: @runner-operator-surfaces ac-web-ui-active-invocations-include-runner -->
+			<Badge
+				variant="outline"
+				class="text-xs shrink-0"
+				data-testid="invocation-runner"
+				title={invocation.resolved_adapter
+					? `Adapter: ${invocation.resolved_adapter}`
+					: undefined}
+			>
+				runner: {invocation.runner}
+			</Badge>
+		{/if}
 
 		{#if invocation.task_ref}
 			<span data-testid="invocation-task-ref">
