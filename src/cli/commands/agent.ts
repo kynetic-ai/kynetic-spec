@@ -26,6 +26,11 @@ import {
   type ResolveRunnersResult,
 } from "../../agents/runner-config.js";
 import {
+  diagnoseRegistryLoad,
+  summarizeRegistryLoadFailure,
+  type RegistryLoadFailure,
+} from "../../agents/registry-load-failure.js";
+import {
   probeRunnerInvocationExecutable,
   resolveRunnerInvocation,
   RunnerResolutionError,
@@ -148,6 +153,7 @@ type DryRunPreflightOutcome =
 async function buildDryRunInvocationSummary(input: {
   agentDef: LoadedAgent;
   runnerRegistry: EffectiveRunnerRegistry;
+  registryLoadFailures: readonly RegistryLoadFailure[];
   adapterOverride: string | undefined;
   cwd: string;
 }): Promise<DryRunRunnerInvocationDiagnostic> {
@@ -161,6 +167,8 @@ async function buildDryRunInvocationSummary(input: {
       autoApprove: input.agentDef.auto_approve,
       env: {},
       adapterOverride: input.adapterOverride,
+      // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+      registryLoadFailures: input.registryLoadFailures,
     });
   } catch (err) {
     if (err instanceof RunnerResolutionError) {
@@ -205,7 +213,11 @@ async function buildDryRunInvocationSummary(input: {
 
 type DryRunValidationState =
   | (RunnerValidationEntry & { selected: true })
-  | { selected: false; reason: "no_runner" | "adapter_override" | "unknown_runner" }
+  | {
+      selected: false;
+      reason: "no_runner" | "adapter_override" | "unknown_runner" | "runner_registry_unavailable";
+      registry_load_failures?: readonly RegistryLoadFailure[];
+    }
   | null;
 
 function renderDryRunValidationState(state: DryRunValidationState): void {
@@ -217,6 +229,20 @@ function renderDryRunValidationState(state: DryRunValidationState): void {
       console.log(chalk.gray("Validation: skipped (no runner configured — legacy adapter path)"));
     } else if (reason === "adapter_override") {
       console.log(chalk.gray("Validation: skipped (--adapter override bypasses runner)"));
+    } else if (reason === "runner_registry_unavailable") {
+      // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+      console.log(
+        chalk.red(
+          "Validation: invalid (runner registry unavailable — fix the failing config layer before invocation)",
+        ),
+      );
+      if (state?.selected === false && state.registry_load_failures) {
+        for (const failure of state.registry_load_failures) {
+          console.log(
+            chalk.red(`  ✗ runner_registry_unavailable: ${summarizeRegistryLoadFailure(failure)}`),
+          );
+        }
+      }
     } else {
       console.log(
         chalk.red(
@@ -422,6 +448,7 @@ export function registerAgentCommands(program: Command): void {
         // back to the legacy adapter and remain listable.
         let runnerRegistry: EffectiveRunnerRegistry = { runners: {} };
         const validationByRunner = new Map<string, RunnerValidationEntry>();
+        let listRegistryLoadFailures: readonly RegistryLoadFailure[] = [];
         try {
           const resolved = await resolveEffectiveRunners({
             projectRoot: ctx.projectRoot,
@@ -432,6 +459,8 @@ export function registerAgentCommands(program: Command): void {
           for (const entry of report.runners) {
             validationByRunner.set(entry.runner, entry);
           }
+          // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+          listRegistryLoadFailures = report.registry_load_failures;
         } catch {
           // Runner config is optional for list — agents without runner fields
           // remain unaffected when the registry cannot be loaded.
@@ -563,6 +592,27 @@ export function registerAgentCommands(program: Command): void {
                       },
                     ],
                   };
+                } else if (listRegistryLoadFailures.length > 0) {
+                  // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+                  // The runner is missing because a config layer failed to
+                  // load. Surface the registry-load failure rather than
+                  // `unknown_runner` so operators know which file to fix.
+                  item.runner_validation = {
+                    status: "invalid",
+                    diagnostics: listRegistryLoadFailures.map((failure) => ({
+                      reason: "runner_registry_unavailable",
+                      message:
+                        `Runner registry unavailable: ${summarizeRegistryLoadFailure(failure)}. ` +
+                        `Fix the ${failure.layer} runner config before relying on runner "${a.runner}".`,
+                      details: {
+                        runner: a.runner,
+                        agent: a.id,
+                        layer: failure.layer,
+                        config_path: failure.config_path,
+                        issues: failure.issues.map((issue) => ({ ...issue })),
+                      },
+                    })),
+                  };
                 } else {
                   item.runner_validation = {
                     status: "invalid",
@@ -614,16 +664,23 @@ export function registerAgentCommands(program: Command): void {
               if (a.runner) {
                 const entry = validationByRunner.get(a.runner);
                 let statusLabel: string;
-                if (!entry) {
-                  statusLabel = chalk.red("[invalid: unknown_runner]");
-                } else if (entry.status === "valid") {
-                  statusLabel = chalk.green("[valid]");
+                let humanDiagnostics: Array<{ reason: string; message: string }> = [];
+                if (entry) {
+                  statusLabel =
+                    entry.status === "valid" ? chalk.green("[valid]") : chalk.red("[invalid]");
+                  humanDiagnostics = [...entry.diagnostics];
+                } else if (listRegistryLoadFailures.length > 0) {
+                  // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+                  statusLabel = chalk.red("[invalid: runner_registry_unavailable]");
+                  humanDiagnostics = listRegistryLoadFailures.map((failure) => ({
+                    reason: "runner_registry_unavailable",
+                    message: `Runner registry unavailable: ${summarizeRegistryLoadFailure(failure)}.`,
+                  }));
                 } else {
-                  statusLabel = chalk.red("[invalid]");
+                  statusLabel = chalk.red("[invalid: unknown_runner]");
                 }
                 console.log(`    ${chalk.gray("runner:")} ${a.runner} ${statusLabel}`);
-                const diagnostics = entry?.diagnostics ?? [];
-                for (const issue of diagnostics) {
+                for (const issue of humanDiagnostics) {
                   console.log(
                     `      ${chalk.red("✗")} ${chalk.gray(issue.reason)}: ${issue.message}`,
                   );
@@ -706,12 +763,14 @@ export function registerAgentCommands(program: Command): void {
         // invocation rather than the legacy adapter field.
         let runRegistry: EffectiveRunnerRegistry = { runners: {} };
         let resolvedRunners: ResolveRunnersResult | null = null;
+        let runRegistryLoadFailures: readonly RegistryLoadFailure[] = [];
         try {
           resolvedRunners = await resolveEffectiveRunners({
             projectRoot: ctx.projectRoot,
             shadowWorktreeDir: ctx.specDir,
           });
           runRegistry = resolvedRunners.registry;
+          runRegistryLoadFailures = diagnoseRegistryLoad(resolvedRunners);
         } catch {
           // Defer to the registry's empty fallback — unresolved runner
           // references are caught explicitly below.
@@ -726,9 +785,27 @@ export function registerAgentCommands(program: Command): void {
           runRegistry,
         );
         if (agentDef.runner && !runnerResolved && !opts.adapter) {
-          error(`Agent "${agentId}" references unknown runner "${agentDef.runner}".`, {
-            suggestion: `Configure the runner via system or project runner config, or run with --adapter <id> to override.`,
-          });
+          // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+          // AC: @runner-resolution-and-preflight ac-registry-load-failure-blocks-runner-spawn
+          // When the runner is missing because a config layer failed to
+          // load, surface the registry-load failure rather than collapsing
+          // to a missing-name (`unknown_runner`) message. The block happens
+          // before any prompt is built or sent.
+          if (runRegistryLoadFailures.length > 0) {
+            const failureSummary = runRegistryLoadFailures
+              .map(summarizeRegistryLoadFailure)
+              .join("; ");
+            error(
+              `Agent "${agentId}" cannot run: runner registry is unavailable. ${failureSummary}.`,
+              {
+                suggestion: `Fix the failing runner config layer and rerun, or run with --adapter <id> to override.`,
+              },
+            );
+          } else {
+            error(`Agent "${agentId}" references unknown runner "${agentDef.runner}".`, {
+              suggestion: `Configure the runner via system or project runner config, or run with --adapter <id> to override.`,
+            });
+          }
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
         const adapterId = opts.adapter ?? runnerResolvedAdapter;
@@ -817,6 +894,8 @@ export function registerAgentCommands(program: Command): void {
           const dryRunSummary = await buildDryRunInvocationSummary({
             agentDef,
             runnerRegistry: runRegistry,
+            // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+            registryLoadFailures: runRegistryLoadFailures,
             adapterOverride: opts.adapter as string | undefined,
             cwd: ctx.rootDir,
           });
@@ -829,10 +908,7 @@ export function registerAgentCommands(program: Command): void {
           // AC: @runner-operator-surfaces ac-runner-validation-human-output
           // AC: @runner-operator-surfaces ac-runner-validation-json-output
           // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
-          let validationState:
-            | (RunnerValidationEntry & { selected: true })
-            | { selected: false; reason: "no_runner" | "adapter_override" | "unknown_runner" }
-            | null = null;
+          let validationState: DryRunValidationState = null;
           if (opts.adapter) {
             validationState = { selected: false, reason: "adapter_override" };
           } else if (!agentDef.runner) {
@@ -845,6 +921,13 @@ export function registerAgentCommands(program: Command): void {
             const entry = report.runners.find((r) => r.runner === agentDef.runner);
             if (entry) {
               validationState = { ...entry, selected: true };
+            } else if (report.registry_load_failures.length > 0) {
+              // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+              validationState = {
+                selected: false,
+                reason: "runner_registry_unavailable",
+                registry_load_failures: report.registry_load_failures,
+              };
             } else {
               validationState = { selected: false, reason: "unknown_runner" };
             }
@@ -961,6 +1044,8 @@ export function registerAgentCommands(program: Command): void {
           trigger: "manual",
           onUpdate,
           runnerRegistry: runRegistry,
+          // AC: @runner-resolution-and-preflight ac-registry-load-failure-blocks-runner-spawn
+          runnerRegistryLoadFailures: runRegistryLoadFailures,
         });
 
         // Ensure summary starts on its own line after streamed content
@@ -1685,11 +1770,13 @@ export function registerAgentCommands(program: Command): void {
         // AC: @runner-operator-surfaces ac-runner-validation-json-output
         // AC: @runner-operator-surfaces ac-runner-validation-human-output
         // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+        // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
         output(
           {
             ok: report.ok,
             runners: report.runners,
             issues: report.issues,
+            registry_load_failures: report.registry_load_failures,
           },
           () => {
             renderRunnerValidationReport(report, opts.runner as string | undefined);

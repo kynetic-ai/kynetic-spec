@@ -492,3 +492,190 @@ describe("GET /api/agent/status — runner fields on active and queued invocatio
     expect(rawBody).not.toContain(SECRET_SENTINEL);
   });
 });
+
+// ─── Registry-load failure diagnostics on daemon agent + dispatch surfaces ──
+
+describe("Daemon agent + dispatch surfaces — registry-load failures", () => {
+  let regTempDir: string;
+  let regHomeDir: string;
+  let regOriginalHome: string | undefined;
+  let regApp: Elysia;
+
+  beforeEach(async () => {
+    regTempDir = await createTempDir("kspec-daemon-api-registry-load-");
+    regHomeDir = await createTempDir("kspec-daemon-api-registry-load-home-");
+    regOriginalHome = process.env.HOME;
+    process.env.HOME = regHomeDir;
+    initGitRepo(regTempDir);
+    setupInlineFixtures(regTempDir, {
+      meta: buildMetaFixture(),
+      splitTasks: [],
+    });
+    ({ app: regApp } = createTestApp());
+  });
+
+  afterEach(async () => {
+    await stopAllEngines();
+    if (regOriginalHome === undefined) {
+      delete process.env.HOME;
+    } else {
+      process.env.HOME = regOriginalHome;
+    }
+    await cleanupTempDir(regTempDir);
+    await cleanupTempDir(regHomeDir);
+  });
+
+  function writeMalformedSystemRunners(projectDir: string, home: string, content: string): string {
+    const projectKey = deriveProjectKeySync(projectDir);
+    const dir = path.join(home, ".config", "kspec", "projects", projectKey);
+    mkdirSync(dir, { recursive: true });
+    const filePath = path.join(dir, "runners.yaml");
+    writeFileSync(filePath, content);
+    return filePath;
+  }
+
+  function regRequest(urlPath: string, init?: RequestInit): Promise<Response> {
+    return makeRequest(regApp, regTempDir, urlPath, init);
+  }
+
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+  // AC: @runner-operator-surfaces ac-daemon-agent-api-includes-runner
+  it("GET /api/meta/agents returns runner_registry_unavailable for runner-backed agents when system YAML is malformed", async () => {
+    const sysPath = writeMalformedSystemRunners(
+      regTempDir,
+      regHomeDir,
+      "runners:\n  configured-runner: [unterminated\n",
+    );
+
+    const response = await regRequest("/api/meta/agents");
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    const runnerAgent = body.data.find((a: { id: string }) => a.id === "runner-worker");
+    expect(runnerAgent).toBeDefined();
+    expect(runnerAgent.runner).toBe("configured-runner");
+    expect(runnerAgent.runner_validation).toBeDefined();
+    expect(runnerAgent.runner_validation.status).toBe("invalid");
+    const diag = runnerAgent.runner_validation.diagnostics[0];
+    expect(diag.reason).toBe("runner_registry_unavailable");
+    expect(diag.reason).not.toBe("unknown_runner");
+    expect(diag.details.layer).toBe("system");
+    expect(diag.details.config_path).toBe(sysPath);
+    expect(Array.isArray(diag.details.issues)).toBe(true);
+
+    // Legacy adapter-only agents remain unaffected.
+    const legacy = body.data.find((a: { id: string }) => a.id === "legacy-worker");
+    expect(legacy).toBeDefined();
+    expect(legacy.runner_validation).toBeUndefined();
+    expect(legacy.resolved_adapter).toBe("claude-agent-acp");
+  });
+
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+  // AC: @runner-operator-surfaces ac-daemon-agent-api-includes-runner
+  it("GET /api/meta/agents surfaces system schema violations as runner_registry_unavailable", async () => {
+    writeMalformedSystemRunners(
+      regTempDir,
+      regHomeDir,
+      "runners:\n  configured-runner:\n    process:\n      args: []\n",
+    );
+
+    const response = await regRequest("/api/meta/agents");
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    const runnerAgent = body.data.find((a: { id: string }) => a.id === "runner-worker");
+    expect(runnerAgent).toBeDefined();
+    const diag = runnerAgent.runner_validation.diagnostics[0];
+    expect(diag.reason).toBe("runner_registry_unavailable");
+    expect(diag.details.layer).toBe("system");
+  });
+
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+  // AC: @runner-operator-surfaces ac-daemon-agent-api-includes-runner
+  it("PATCH /api/meta/agents/:id returns the same runner_registry_unavailable shape as GET", async () => {
+    writeMalformedSystemRunners(
+      regTempDir,
+      regHomeDir,
+      "runners:\n  configured-runner: [malformed\n",
+    );
+
+    // PATCH the agent (e.g., flip a non-runner field). Even when the body
+    // doesn't touch the runner field, the response must include the runner
+    // validation block matching what GET would return.
+    const patchResponse = await regRequest("/api/meta/agents/runner-worker", {
+      method: "PATCH",
+      body: JSON.stringify({ description: "Updated description" }),
+    });
+    expect(patchResponse.status).toBe(200);
+    const updated = await patchResponse.json();
+    expect(updated.runner).toBe("configured-runner");
+    expect(updated.resolved_adapter).toBeDefined();
+    expect(updated.runner_validation).toBeDefined();
+    expect(updated.runner_validation.status).toBe("invalid");
+    expect(updated.runner_validation.diagnostics[0].reason).toBe("runner_registry_unavailable");
+    expect(updated.runner_validation.diagnostics[0].details.layer).toBe("system");
+
+    // Reload via GET to confirm the same shape.
+    const getResponse = await regRequest("/api/meta/agents");
+    const getBody = await getResponse.json();
+    const reloaded = getBody.data.find((a: { id: string }) => a.id === "runner-worker");
+    expect(reloaded.runner_validation.diagnostics[0].reason).toBe(
+      updated.runner_validation.diagnostics[0].reason,
+    );
+    expect(reloaded.runner_validation.diagnostics[0].details.layer).toBe(
+      updated.runner_validation.diagnostics[0].details.layer,
+    );
+  });
+
+  // AC: @runner-operator-surfaces ac-daemon-agent-api-includes-runner
+  it("PATCH /api/meta/agents/:id returns enriched runner shape when the registry is healthy", async () => {
+    // Provide a valid system runner config so the validation pass succeeds.
+    const projectKey = deriveProjectKeySync(regTempDir);
+    const dir = path.join(regHomeDir, ".config", "kspec", "projects", projectKey);
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(
+      path.join(dir, "runners.yaml"),
+      `runners:
+  configured-runner:
+    kind: acp_process
+    adapter: claude-agent-acp
+    env:
+      inherit: minimal
+`,
+    );
+
+    const patchResponse = await regRequest("/api/meta/agents/runner-worker", {
+      method: "PATCH",
+      body: JSON.stringify({ description: "Just touching description" }),
+    });
+    expect(patchResponse.status).toBe(200);
+    const updated = await patchResponse.json();
+    expect(updated.resolved_adapter).toBe("claude-agent-acp");
+    expect(updated.adapter).toBe("claude-agent-acp");
+    expect(updated.runner_validation).toBeDefined();
+    expect(updated.runner_validation.status).toBe("valid");
+    expect(updated.runner_validation.diagnostics).toEqual([]);
+  });
+
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+  // AC: @runner-operator-surfaces ac-daemon-agent-api-includes-runner
+  it("GET /api/agent/status agent_definitions attach runner_registry_unavailable when the registry cannot load", async () => {
+    writeMalformedSystemRunners(
+      regTempDir,
+      regHomeDir,
+      "runners:\n  configured-runner: [malformed\n",
+    );
+
+    const response = await regRequest("/api/agent/status");
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    const runnerDef = body.agent_definitions.find((d: { id: string }) => d.id === "runner-worker");
+    expect(runnerDef).toBeDefined();
+    expect(runnerDef.runner).toBe("configured-runner");
+    expect(runnerDef.runner_validation).toBeDefined();
+    expect(runnerDef.runner_validation.diagnostics[0].reason).toBe("runner_registry_unavailable");
+
+    // Legacy agent definitions remain unaffected.
+    const legacyDef = body.agent_definitions.find((d: { id: string }) => d.id === "legacy-worker");
+    expect(legacyDef).toBeDefined();
+    expect(legacyDef.runner_validation).toBeUndefined();
+  });
+});

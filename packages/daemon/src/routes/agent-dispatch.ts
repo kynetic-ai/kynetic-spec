@@ -52,6 +52,11 @@ import {
   resolveEffectiveRunners,
   type EffectiveRunnerRegistry,
 } from "../../agents/runner-config.js";
+import {
+  diagnoseRegistryLoad,
+  summarizeRegistryLoadFailure,
+  type RegistryLoadFailure,
+} from "../../agents/registry-load-failure.js";
 
 const VALID_TASK_STATUSES = new Set(TaskStatusSchema.options);
 
@@ -672,11 +677,20 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
           adapter: string;
           resolved_adapter: string;
           runner?: string;
+          runner_validation?: {
+            status: "valid" | "invalid";
+            diagnostics: ReadonlyArray<{
+              reason: string;
+              message: string;
+              details?: Readonly<Record<string, unknown>>;
+            }>;
+          };
           completed_sessions: number;
         }> = [];
         let completedCounts: Record<string, number> = {};
         let refIndex: ReferenceIndex | null = null;
         let runnerRegistry: EffectiveRunnerRegistry = { runners: {} };
+        let registryLoadFailures: readonly RegistryLoadFailure[] = [];
         try {
           const ctx = await initContext(projectDir);
           const [meta, counts, tasks, items] = await Promise.all([
@@ -690,21 +704,24 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
           // AC: @runner-operator-surfaces ac-daemon-agent-api-includes-runner
           // Resolve runner registry once per status request so each agent's
           // resolved adapter mirrors what the dispatch engine would observe
-          // at preflight. Failures degrade silently — agents without runner
-          // references keep working off the legacy adapter field.
+          // at preflight. Capture registry-load failures so runner-backed
+          // agents report `runner_registry_unavailable` rather than
+          // collapsing the diagnostic into a missing-name message.
           try {
             const resolved = await resolveEffectiveRunners({
               projectRoot: ctx.projectRoot,
               shadowWorktreeDir: ctx.specDir,
             });
             runnerRegistry = resolved.registry;
+            // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+            registryLoadFailures = diagnoseRegistryLoad(resolved);
           } catch {
             // Optional: runner registry is not required for this endpoint.
           }
           agentDefinitions = meta.agents.map((a) => {
             const runnerEntry = a.runner ? runnerRegistry.runners[a.runner] : undefined;
             const resolved = runnerEntry?.adapter ?? a.adapter ?? "claude-agent-acp";
-            return {
+            const definition: (typeof agentDefinitions)[number] = {
               id: a.id,
               name: a.name,
               // Legacy `adapter` field preserved for clients that read it.
@@ -714,6 +731,28 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
               ...(a.runner ? { runner: a.runner } : {}),
               completed_sessions: completedCounts[a.id] ?? 0,
             };
+            // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+            // Attach the registry-load diagnostic when a runner-backed agent
+            // cannot resolve because the config layer is unloadable.
+            if (a.runner && !runnerEntry && registryLoadFailures.length > 0) {
+              definition.runner_validation = {
+                status: "invalid",
+                diagnostics: registryLoadFailures.map((failure) => ({
+                  reason: "runner_registry_unavailable",
+                  message:
+                    `Runner registry unavailable: ${summarizeRegistryLoadFailure(failure)}. ` +
+                    `Fix the ${failure.layer} runner config before relying on runner "${a.runner}".`,
+                  details: {
+                    runner: a.runner,
+                    agent: a.id,
+                    layer: failure.layer,
+                    config_path: failure.config_path,
+                    issues: failure.issues.map((issue) => ({ ...issue })),
+                  },
+                })),
+              };
+            }
+            return definition;
           });
         } catch {
           // Agent definitions unavailable — return empty array

@@ -40,12 +40,150 @@ import {
   type EffectiveRunnerRegistry,
 } from "../../agents/runner-config.js";
 import {
+  summarizeRegistryLoadFailure,
+  type RegistryLoadFailure,
+} from "../../agents/registry-load-failure.js";
+import {
   buildRunnerValidationReport,
   type RunnerValidationEntry,
 } from "../../agents/runner-validation.js";
 
 interface MetaRouteOptions {
   getEntityCache?: EntityCacheAccessor;
+}
+
+interface RunnerEnrichmentContext {
+  registry: EffectiveRunnerRegistry;
+  validationByRunner: Map<string, RunnerValidationEntry>;
+  registryLoadFailures: readonly RegistryLoadFailure[];
+}
+
+/**
+ * Load the effective runner registry, run the validation pass once, and
+ * capture any registry-load failures. Used by both the agent list and the
+ * agent PATCH endpoints so the runner-aware response shape stays in sync
+ * across read and write paths.
+ *
+ * Failures degrade silently — agents without a runner field continue to
+ * resolve through the legacy adapter path even when the registry cannot
+ * be loaded.
+ *
+ * AC: @runner-operator-surfaces ac-daemon-agent-api-includes-runner
+ * AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+ */
+async function loadRunnerEnrichmentContext(projectRoot: string): Promise<RunnerEnrichmentContext> {
+  const shadowDir = path.join(projectRoot, ".kspec");
+  let registry: EffectiveRunnerRegistry = { runners: {} };
+  const validationByRunner = new Map<string, RunnerValidationEntry>();
+  let registryLoadFailures: readonly RegistryLoadFailure[] = [];
+  try {
+    const resolved = await resolveEffectiveRunners({
+      projectRoot,
+      shadowWorktreeDir: shadowDir,
+    });
+    registry = resolved.registry;
+    const report = await buildRunnerValidationReport(resolved, { cwd: projectRoot });
+    for (const entry of report.runners) {
+      validationByRunner.set(entry.runner, entry);
+    }
+    registryLoadFailures = report.registry_load_failures;
+  } catch {
+    // Runner config is optional — agents without runner fields remain
+    // unaffected. Clients that read the legacy `adapter` field keep
+    // working without any runner state attached.
+  }
+  return { registry, validationByRunner, registryLoadFailures };
+}
+
+/**
+ * Build the runner-aware fields that decorate an agent record for daemon
+ * responses. Returns the legacy `adapter`, the runner-resolved
+ * `resolved_adapter`, and (when the agent declares a runner) a structured
+ * `runner_validation` block that prefers registry-load failures over a
+ * generic `unknown_runner` message.
+ *
+ * AC: @runner-operator-surfaces ac-daemon-agent-api-includes-runner
+ * AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+ * AC: @agent-runner-configuration ac-adapter-field-backcompat
+ */
+function buildAgentRunnerFields(
+  agent: { id: string; runner?: string; adapter?: string },
+  context: RunnerEnrichmentContext,
+): {
+  adapter: string;
+  resolved_adapter: string;
+  runner_validation?: {
+    status: "valid" | "invalid";
+    diagnostics: ReadonlyArray<{
+      reason: string;
+      message: string;
+      details?: Readonly<Record<string, unknown>>;
+    }>;
+  };
+} {
+  const runnerEntry = agent.runner ? context.registry.runners[agent.runner] : undefined;
+  const resolvedAdapter = runnerEntry?.adapter ?? agent.adapter ?? "claude-agent-acp";
+  const out: ReturnType<typeof buildAgentRunnerFields> = {
+    adapter: resolvedAdapter,
+    resolved_adapter: resolvedAdapter,
+  };
+  if (!agent.runner) return out;
+
+  const entry = context.validationByRunner.get(agent.runner);
+  if (entry) {
+    out.runner_validation = {
+      status: entry.status,
+      diagnostics: entry.diagnostics,
+    };
+    return out;
+  }
+  if (runnerEntry) {
+    out.runner_validation = {
+      status: "invalid",
+      diagnostics: [
+        {
+          reason: "preflight_failure",
+          message:
+            "Runner registry loaded but validation report unavailable; rerun `kspec agent runners validate` for details.",
+        },
+      ],
+    };
+    return out;
+  }
+  if (context.registryLoadFailures.length > 0) {
+    // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+    out.runner_validation = {
+      status: "invalid",
+      diagnostics: context.registryLoadFailures.map((failure) => ({
+        reason: "runner_registry_unavailable",
+        message:
+          `Runner registry unavailable: ${summarizeRegistryLoadFailure(failure)}. ` +
+          `Fix the ${failure.layer} runner config before relying on runner "${agent.runner}".`,
+        details: {
+          runner: agent.runner,
+          agent: agent.id,
+          layer: failure.layer,
+          config_path: failure.config_path,
+          issues: failure.issues.map((issue) => ({ ...issue })),
+        },
+      })),
+    };
+    return out;
+  }
+  out.runner_validation = {
+    status: "invalid",
+    diagnostics: [
+      {
+        reason: "unknown_runner",
+        message:
+          `Runner "${agent.runner}" is not present in the effective runner registry. ` +
+          `Check the project runner config (project.runners.yaml in the kspec shadow worktree), ` +
+          `the system runner config (runners.yaml under the daemon config dir), and the agent definition's runner field.`,
+        details: { runner: agent.runner, agent: agent.id },
+      },
+    ],
+  };
+  return out;
 }
 
 export function createMetaRoutes(_options: MetaRouteOptions = {}) {
@@ -122,81 +260,15 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
         // missing shadow worktree returns an empty registry without erroring.
         // Failures degrade silently — agents without runner references remain
         // unaffected when the registry cannot load.
-        const runnerProjectRoot = projectContext.path;
-        const runnerShadowDir = path.join(runnerProjectRoot, ".kspec");
-        let runnerRegistry: EffectiveRunnerRegistry = { runners: {} };
-        const validationByRunner = new Map<string, RunnerValidationEntry>();
-        try {
-          const resolved = await resolveEffectiveRunners({
-            projectRoot: runnerProjectRoot,
-            shadowWorktreeDir: runnerShadowDir,
-          });
-          runnerRegistry = resolved.registry;
-          const report = await buildRunnerValidationReport(resolved, {
-            cwd: runnerProjectRoot,
-          });
-          for (const entry of report.runners) {
-            validationByRunner.set(entry.runner, entry);
-          }
-        } catch {
-          // Runner config is optional — agents without runner fields remain
-          // unaffected. Clients that read the legacy `adapter` field keep
-          // working without any runner state attached.
-        }
+        const enrichment = await loadRunnerEnrichmentContext(projectContext.path);
 
         // AC: @api-contract ac-16 - Return all defined agents
         // AC: @agent-runner-configuration ac-adapter-field-backcompat
         // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+        // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
         const agents = meta.agents.map((a) => {
-          const runnerEntry = a.runner ? runnerRegistry.runners[a.runner] : undefined;
-          const resolvedAdapter = runnerEntry?.adapter ?? a.adapter ?? "claude-agent-acp";
-          // Legacy `adapter` field is always populated so clients that only
-          // read `adapter` still see an adapter identity for runner-backed
-          // agents that omit the field. Mirrors the CLI JSON output and the
-          // dispatch status response (agent-dispatch.ts agent_definitions).
-          // AC: @agent-runner-configuration ac-adapter-field-backcompat
-          const result: Record<string, unknown> = {
-            ...a,
-            adapter: resolvedAdapter,
-            resolved_adapter: resolvedAdapter,
-          };
-          if (a.runner) {
-            const entry = validationByRunner.get(a.runner);
-            if (entry) {
-              result.runner_validation = {
-                status: entry.status,
-                diagnostics: entry.diagnostics,
-              };
-            } else if (runnerEntry) {
-              // Registry contains the runner but no validation entry was
-              // produced (e.g. the validation pass threw). Report the gap
-              // rather than silently dropping the field.
-              result.runner_validation = {
-                status: "invalid",
-                diagnostics: [
-                  {
-                    reason: "preflight_failure",
-                    message:
-                      "Runner registry loaded but validation report unavailable; rerun `kspec agent runners validate` for details.",
-                  },
-                ],
-              };
-            } else {
-              result.runner_validation = {
-                status: "invalid",
-                diagnostics: [
-                  {
-                    reason: "unknown_runner",
-                    message:
-                      `Runner "${a.runner}" is not present in the effective runner registry. ` +
-                      `Check the project runner config (project.runners.yaml in the kspec shadow worktree), ` +
-                      `the system runner config (runners.yaml under the daemon config dir), and the agent definition's runner field.`,
-                    details: { runner: a.runner, agent: a.id },
-                  },
-                ],
-              };
-            }
-          }
+          const runnerFields = buildAgentRunnerFields(a, enrichment);
+          const result: Record<string, unknown> = { ...a, ...runnerFields };
           return result;
         });
 
@@ -241,7 +313,16 @@ export function createMetaRoutes(_options: MetaRouteOptions = {}) {
             await agentCache.writeThrough("meta");
           }
 
-          return updated;
+          // AC: @runner-operator-surfaces ac-daemon-agent-api-includes-runner
+          // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+          // Enrich the response with the same `adapter`, `resolved_adapter`,
+          // and redacted `runner_validation` block the list endpoint
+          // returns. Without this, API clients would observe a less complete
+          // contract immediately after editing runner fields than they see
+          // from a follow-up list call.
+          const patchEnrichment = await loadRunnerEnrichmentContext(projectContext.path);
+          const runnerFields = buildAgentRunnerFields(updated, patchEnrichment);
+          return { ...updated, ...runnerFields };
         },
         {
           params: t.Object({

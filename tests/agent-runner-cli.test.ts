@@ -93,6 +93,24 @@ function writeSystemRunners(projectDir: string, runners: object): void {
   fsSync.writeFileSync(path.join(sysDir, "runners.yaml"), YAML.stringify({ runners }));
 }
 
+function writeMalformedSystemRunners(projectDir: string, content: string): string {
+  const projectKey = deriveProjectKeySync(projectDir);
+  const sysDir = path.join(projectDir, ".test-home", ".config", "kspec", "projects", projectKey);
+  fsSync.mkdirSync(sysDir, { recursive: true });
+  const filePath = path.join(sysDir, "runners.yaml");
+  fsSync.writeFileSync(filePath, content);
+  return filePath;
+}
+
+function writeMalformedProjectRunners(projectDir: string, content: string): string {
+  // The CLI test helper uses a non-shadow layout (manifest in projectDir
+  // directly), so `ctx.specDir` resolves to projectDir and the project
+  // runner config path is `<projectDir>/project.runners.yaml`.
+  const filePath = path.join(projectDir, "project.runners.yaml");
+  fsSync.writeFileSync(filePath, content);
+  return filePath;
+}
+
 function makeFakeExecutable(dir: string, name: string): string {
   const filePath = path.join(dir, name);
   fsSync.writeFileSync(filePath, "#!/bin/sh\nexit 0\n", "utf-8");
@@ -700,5 +718,273 @@ describe("CLI: kspec agent run --dry-run validation_state", () => {
     const vs = data.validation_state as { selected: false; reason: string };
     expect(vs.selected).toBe(false);
     expect(vs.reason).toBe("no_runner");
+  });
+});
+
+// ─── Registry-load failure diagnostics ──────────────────────────────────────
+
+describe("CLI: registry-load failures distinguish from unknown_runner", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-cli-registry-load-");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+  // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+  it("agent runners validate --json reports runner_registry_unavailable for malformed system YAML", () => {
+    writeAgentProject(testDir, []);
+    // Use a clearly broken YAML document: opening flow sequence with no
+    // closing bracket and EOF. The YAML parser must raise a parse error,
+    // which the loader captures as a layer-load issue.
+    const sysPath = writeMalformedSystemRunners(testDir, "runners: [unterminated_flow_sequence");
+
+    const result = kspecRun("agent runners validate --json", testDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
+    const data = JSON.parse(result.stdout) as ValidationReportPayload & {
+      registry_load_failures: Array<{ layer: string; config_path: string; issues: object[] }>;
+    };
+    expect(data.ok).toBe(false);
+    const reasons = data.issues.map((i) => i.reason);
+    expect(reasons).toContain("runner_registry_unavailable");
+    expect(reasons).not.toContain("unknown_runner");
+    expect(Array.isArray(data.registry_load_failures)).toBe(true);
+    expect(data.registry_load_failures.length).toBeGreaterThan(0);
+    const failure = data.registry_load_failures.find((f) => f.layer === "system");
+    expect(failure).toBeDefined();
+    expect(failure!.config_path).toBe(sysPath);
+    expect(failure!.issues.length).toBeGreaterThan(0);
+  });
+
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+  it("agent runners validate --json reports runner_registry_unavailable for system schema violations", () => {
+    writeAgentProject(testDir, []);
+    // System schema requires `kind` and `adapter` on every runner. Omitting
+    // them produces Zod validation issues that the loader records as
+    // LayerLoadResult.issues.
+    const sysPath = writeMalformedSystemRunners(
+      testDir,
+      "runners:\n  bad-runner:\n    process:\n      args: []\n",
+    );
+
+    const result = kspecRun("agent runners validate --json", testDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
+    const data = JSON.parse(result.stdout) as ValidationReportPayload & {
+      registry_load_failures: Array<{ layer: string; config_path: string }>;
+    };
+    expect(data.ok).toBe(false);
+    expect(data.issues.some((i) => i.reason === "runner_registry_unavailable")).toBe(true);
+    const failure = data.registry_load_failures.find((f) => f.layer === "system");
+    expect(failure).toBeDefined();
+    expect(failure!.config_path).toBe(sysPath);
+  });
+
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+  it("agent runners validate --runner <name> emits registry_load_failures instead of unknown_runner when registry cannot load", () => {
+    writeAgentProject(testDir, []);
+    writeMalformedSystemRunners(testDir, "runners: [malformed_flow_sequence");
+
+    const result = kspecRun("agent runners validate --runner partial --json", testDir, {
+      expectFail: true,
+    });
+    expect(result.exitCode).not.toBe(0);
+    const data = JSON.parse(result.stdout) as ValidationReportPayload & {
+      registry_load_failures: Array<{ layer: string; config_path: string }>;
+    };
+    expect(data.ok).toBe(false);
+    const reasons = data.issues.map((i) => i.reason);
+    // Registry-load failure dominates: do not surface unknown_runner alongside it.
+    expect(reasons).toContain("runner_registry_unavailable");
+    expect(reasons).not.toContain("unknown_runner");
+    expect(data.registry_load_failures.length).toBeGreaterThan(0);
+  });
+
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+  it("agent list --json emits runner_validation with runner_registry_unavailable for runner-backed agents when system config is malformed", () => {
+    writeAgentProject(testDir, [
+      {
+        _ulid: testUlid("AGNT"),
+        id: "runner-backed",
+        name: "Runner Backed",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        runner: "any-runner",
+        auto_approve: false,
+      },
+      {
+        _ulid: testUlid("AGNT"),
+        id: "legacy-only",
+        name: "Legacy",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        adapter: "claude-agent-acp",
+        auto_approve: false,
+      },
+    ]);
+    writeMalformedSystemRunners(testDir, "runners:\n  any-runner: [malformed\n");
+
+    const data = kspecJson<AgentListJson>("agent list", testDir);
+    const runnerBacked = data.items.find((i) => i.id === "runner-backed");
+    expect(runnerBacked).toBeDefined();
+    expect(runnerBacked!.runner_validation).toBeDefined();
+    expect(runnerBacked!.runner_validation!.status).toBe("invalid");
+    const reason = runnerBacked!.runner_validation!.diagnostics[0].reason;
+    expect(reason).toBe("runner_registry_unavailable");
+    expect(reason).not.toBe("unknown_runner");
+    const details = runnerBacked!.runner_validation!.diagnostics[0].details as {
+      layer?: string;
+      config_path?: string;
+    };
+    expect(details.layer).toBe("system");
+    expect(typeof details.config_path).toBe("string");
+
+    // Legacy agents remain unaffected: no runner field, no runner_validation block.
+    const legacy = data.items.find((i) => i.id === "legacy-only");
+    expect(legacy).toBeDefined();
+    expect(legacy!.runner_validation).toBeUndefined();
+    expect(legacy!.adapter).toBe("claude-agent-acp");
+  });
+
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+  it("agent list (human output) shows [invalid: runner_registry_unavailable] when registry cannot load", () => {
+    writeAgentProject(testDir, [
+      {
+        _ulid: testUlid("AGNT"),
+        id: "runner-backed",
+        name: "Runner Backed",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        runner: "any-runner",
+        auto_approve: false,
+      },
+    ]);
+    writeMalformedSystemRunners(testDir, "runners:\n  any-runner: [malformed\n");
+
+    const result = kspecRun("agent list", testDir);
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("runner_registry_unavailable");
+    expect(result.stdout).not.toContain("[invalid: unknown_runner]");
+  });
+
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+  it("agent list emits runner_registry_unavailable for malformed project runner config too", () => {
+    writeAgentProject(testDir, [
+      {
+        _ulid: testUlid("AGNT"),
+        id: "runner-backed",
+        name: "Runner Backed",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        runner: "ghost-runner",
+        auto_approve: false,
+      },
+    ]);
+    const projectPath = writeMalformedProjectRunners(
+      testDir,
+      "runners:\n  ghost-runner: [unterminated\n",
+    );
+
+    const data = kspecJson<AgentListJson>("agent list", testDir);
+    const runnerBacked = data.items.find((i) => i.id === "runner-backed");
+    expect(runnerBacked).toBeDefined();
+    expect(runnerBacked!.runner_validation).toBeDefined();
+    const diag = runnerBacked!.runner_validation!.diagnostics[0];
+    expect(diag.reason).toBe("runner_registry_unavailable");
+    const details = diag.details as { layer?: string; config_path?: string };
+    expect(details.layer).toBe("project");
+    expect(details.config_path).toBe(projectPath);
+  });
+
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-blocks-runner-spawn
+  // AC: @runner-resolution-and-preflight ac-invalid-runner-blocks-before-prompt
+  it("agent run blocks runner-backed invocation when system runner config is malformed", () => {
+    writeAgentProject(testDir, [
+      {
+        _ulid: testUlid("AGNT"),
+        id: "runner-backed",
+        name: "Runner Backed",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        runner: "any-runner",
+        auto_approve: false,
+      },
+    ]);
+    writeMalformedSystemRunners(testDir, "runners:\n  any-runner: [malformed\n");
+
+    const result = kspecRun('agent run runner-backed "preview"', testDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
+    const combined = `${result.stdout}\n${result.stderr}`;
+    expect(combined).toContain("runner registry is unavailable");
+    expect(combined).not.toContain("references unknown runner");
+  });
+
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-blocks-runner-spawn
+  it("agent run still works for legacy adapter-only agents when the registry cannot load", () => {
+    writeAgentProject(testDir, [
+      {
+        _ulid: testUlid("AGNT"),
+        id: "legacy-only",
+        name: "Legacy",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        adapter: "claude-agent-acp",
+        auto_approve: false,
+      },
+    ]);
+    writeMalformedSystemRunners(testDir, "runners:\n  any-runner: [malformed\n");
+
+    // Use --dry-run so we don't actually spawn an adapter. The flow proves
+    // the legacy adapter path remains reachable even with a broken registry.
+    const data = kspecJson<DryRunPayload>('agent run legacy-only --dry-run "preview"', testDir);
+    expect(data.dry_run).toBe(true);
+    expect(data.adapter).toBe("claude-agent-acp");
+    const vs = data.validation_state as { selected: false; reason: string };
+    expect(vs.selected).toBe(false);
+    expect(vs.reason).toBe("no_runner");
+  });
+
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+  it("agent run --dry-run JSON reports validation_state.reason=runner_registry_unavailable when registry cannot load", () => {
+    writeAgentProject(testDir, [
+      {
+        _ulid: testUlid("AGNT"),
+        id: "runner-backed",
+        name: "Runner Backed",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        runner: "any-runner",
+        auto_approve: false,
+      },
+    ]);
+    writeMalformedSystemRunners(testDir, "runners:\n  any-runner: [malformed\n");
+
+    const result = kspecRun('agent run runner-backed --dry-run --json "preview"', testDir, {
+      expectFail: true,
+    });
+    // Dry-run blocks BEFORE entering the dry-run preview body because the
+    // runner reference cannot resolve. The blocking error is surfaced via
+    // stderr; assert on the combined output for stability.
+    const combined = `${result.stdout}\n${result.stderr}`;
+    expect(combined).toContain("runner registry is unavailable");
+  });
+
+  // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+  it("redacts known secret env names that appear in issue messages", () => {
+    writeAgentProject(testDir, []);
+    // Embed a string that looks like a secret literal so the redactor has
+    // something to scrub. The malformed YAML keeps the loader in the parse-
+    // error path so the failing line text reaches issue.message.
+    const secret = "sk-ant-do-not-leak-12345";
+    writeMalformedSystemRunners(testDir, `runners:\n  bad-runner: [ANTHROPIC_API_KEY=${secret}\n`);
+
+    const result = kspecRun("agent runners validate --json", testDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
+    // The literal secret value must not appear anywhere in the diagnostic
+    // payload, regardless of whether the YAML parser echoed the line.
+    expect(result.stdout).not.toContain(secret);
   });
 });

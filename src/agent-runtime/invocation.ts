@@ -36,6 +36,7 @@ import {
   type RunnerInvocation,
 } from "../agents/runners.js";
 import { resolveEffectiveRunners, type EffectiveRunnerRegistry } from "../agents/runner-config.js";
+import { diagnoseRegistryLoad, type RegistryLoadFailure } from "../agents/registry-load-failure.js";
 import { spawnAndInitialize } from "../agents/spawner.js";
 import type { SpawnedAgent } from "../agents/spawner.js";
 import type { RequestPermissionRequest, SessionUpdate } from "../acp/index.js";
@@ -249,6 +250,17 @@ export interface InvocationOptions {
    * AC: @runner-resolution-and-preflight ac-dispatch-uses-runner-resolution
    */
   runnerRegistry?: EffectiveRunnerRegistry;
+  /**
+   * Pre-computed registry-load failures (one per failing config layer).
+   * When supplied alongside `runnerRegistry`, the resolver surfaces a
+   * `runner_registry_unavailable` diagnostic before any prompt is sent.
+   * Omitted callers fall back to the internal layered loader, which
+   * derives both fields itself.
+   *
+   * AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+   * AC: @runner-resolution-and-preflight ac-registry-load-failure-blocks-runner-spawn
+   */
+  runnerRegistryLoadFailures?: readonly RegistryLoadFailure[];
   /** Extra environment variables for the spawned agent */
   env?: Record<string, string>;
   /** Shared lock file used to serialize shadow mutations across dispatch worktrees */
@@ -594,8 +606,22 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
   // they are part of the resolved contract for both runner-backed and
   // implicit/legacy paths.
   // AC: @runner-invocation-semantics ac-session-env-injected-through-runner
-  const runnerRegistry: EffectiveRunnerRegistry =
-    options.runnerRegistry ?? (await loadRunnerRegistrySafely(specDir));
+  let runnerRegistry: EffectiveRunnerRegistry;
+  let runnerRegistryLoadFailures: readonly RegistryLoadFailure[];
+  if (options.runnerRegistry !== undefined) {
+    runnerRegistry = options.runnerRegistry;
+    runnerRegistryLoadFailures = options.runnerRegistryLoadFailures ?? [];
+  } else {
+    // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+    // AC: @runner-resolution-and-preflight ac-registry-load-failure-blocks-runner-spawn
+    // Load layer state ourselves so the resolver sees both the registry
+    // and any registry-load failures. A runner-backed agent that cannot
+    // resolve because the registry is unloadable surfaces as
+    // `runner_registry_unavailable` rather than `unknown_runner`.
+    const loaded = await loadRunnerRegistrySafely(specDir);
+    runnerRegistry = loaded.registry;
+    runnerRegistryLoadFailures = loaded.failures;
+  }
 
   const contract: RunnerInvocation = resolveRunnerInvocation({
     agent,
@@ -606,6 +632,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     env,
     mutationLockFile,
     adapterOverride: options.adapterOverride,
+    registryLoadFailures: runnerRegistryLoadFailures,
   });
 
   // Preflight runner-configured executables before any prompt is built.
@@ -1500,21 +1527,28 @@ export class PromptQueueFullError extends Error {
 /**
  * Load the effective runner registry from the project derived from `specDir`.
  *
- * Returns an empty registry on failure so legacy invocations (no project or
- * system runner config on disk) behave identically to the pre-runner code
- * path. Runner-backed agents that reference an undefined runner will throw
- * `RunnerResolutionError("unknown_runner")` from the resolver instead.
+ * Returns an empty registry on I/O failure so legacy invocations (no project
+ * or system runner config on disk) behave identically to the pre-runner code
+ * path. Parse / validation failures are captured as `failures` so the
+ * resolver can surface them as `runner_registry_unavailable` for runner-backed
+ * agents instead of collapsing them into `unknown_runner`.
  */
-async function loadRunnerRegistrySafely(specDir: string): Promise<EffectiveRunnerRegistry> {
+async function loadRunnerRegistrySafely(specDir: string): Promise<{
+  registry: EffectiveRunnerRegistry;
+  failures: readonly RegistryLoadFailure[];
+}> {
   try {
     const projectRoot = path.dirname(specDir);
     const result = await resolveEffectiveRunners({
       projectRoot,
       shadowWorktreeDir: specDir,
     });
-    return result.registry;
+    return {
+      registry: result.registry,
+      failures: diagnoseRegistryLoad(result),
+    };
   } catch {
-    return { runners: {} };
+    return { registry: { runners: {} }, failures: [] };
   }
 }
 
