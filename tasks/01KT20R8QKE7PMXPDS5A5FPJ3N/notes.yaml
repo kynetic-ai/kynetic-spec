@@ -53,3 +53,52 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-01T19:00:02.882Z
+  - _ulid: 01KT2A8E7PW8RSDKX3SRYBE4WC
+    content: >-
+      Fix cycle 1: addressed all 4 review blockers from @01KT27SSHTT735PJ8GRDG8AE1M (codex).
+
+
+      Root cause: registry-load failures were only attached when the named runner was missing. In
+      mixed-layer cases (one layer malformed, sibling layer still contributes the runner), surfaces
+      silently resolved against the partial registry and never reported runner_registry_unavailable
+      — operators saw a "valid" runner and no failing config path.
+
+
+      Fixes:
+
+      1. src/agents/runners.ts: resolveRunnerInvocation now throws runner_registry_unavailable
+      whenever registryLoadFailures is non-empty, before the runner lookup. Removes the prior
+      !runner gate.
+
+      2. src/cli/commands/agent.ts: agent list (JSON + human) and agent run --dry-run
+      validation_state hoist the listRegistryLoadFailures check above the per-runner validation
+      entry.
+
+      3. packages/daemon/src/routes/meta.ts: buildAgentRunnerFields checks registryLoadFailures
+      before validationByRunner — applies to GET /api/meta/agents and PATCH /api/meta/agents/:id.
+
+      4. packages/daemon/src/routes/agent-dispatch.ts: dispatch-status agent_definitions attaches
+      runner_registry_unavailable for any runner-backed agent when registryLoadFailures is non-empty
+      (removed the !runnerEntry condition).
+
+
+      Tests added (5 new behavioral tests):
+
+      - tests/agent-runner-env.test.ts: resolveRunnerInvocation unit test for mixed-layer + legacy
+      adapter unaffected
+
+      - tests/agent-runner-cli.test.ts: agent list --json + human + agent run mixed-layer cases
+
+      - tests/daemon-api/agent-runner-surfaces.test.ts: GET /api/meta/agents, PATCH, GET
+      /api/agent/status mixed-layer cases
+
+      - tests/agent-dispatch-engine.test.ts: dispatch preflight mixed-layer blocking with task note
+      assertion
+
+
+      Gates: format:check pass, lint --quiet 0 errors, oxlint changed files 0 warnings, typecheck
+      pass, focused tests pass (241/241), kspec validate --refs/--alignment/--completeness
+      --warnings-ok pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-01T19:23:35.542Z
