@@ -75,7 +75,7 @@ description: >
 spec_ref: "@runner-invocation-semantics"
 plan_ref: "@plan-agent-runner-configuration-layer"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-web-ui-runner-surfaces"
@@ -97,7 +97,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: null
+session_id: 01KT0J1W67JXAKBCQ2H892T4YW
 history:
   - author: Jacob Chapel
     changes:
@@ -156,8 +156,21 @@ history:
         previous: 01KT0F0XVTARZPBZ7VEY3Z9BV4
     command: review-verdict-needs-work
     timestamp: 2026-06-01T02:57:47.022Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KT0J1W67JXAKBCQ2H892T4YW
+        previous: null
+      started_at:
+        new: 2026-06-01T03:02:05.957Z
+        previous: 2026-06-01T02:08:44.632Z
+    command: task-start
+    timestamp: 2026-06-01T03:02:05.964Z
 created_at: 2026-05-31T06:19:04.745Z
-started_at: 2026-06-01T02:08:44.632Z
+started_at: 2026-06-01T03:02:05.957Z
 submitted_at: 2026-06-01T02:35:53.697Z
 todos: []
 automation: eligible
