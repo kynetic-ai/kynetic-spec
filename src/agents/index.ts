@@ -43,6 +43,7 @@ export {
   type EffectiveRunnerRegistry,
   type EffectiveRunnerSources,
   type LayerLoadResult,
+  type MergeRunnerConfigsOptions,
   type ProjectRunnerConfig,
   type ProjectRunnerEntry,
   type ResolveRunnersResult,

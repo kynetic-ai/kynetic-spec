@@ -663,6 +663,142 @@ describe("runner.process.args: argument appending", () => {
   });
 });
 
+// ─── AC: ac-relative-system-cwd-resolves-from-config-dir ────────────────────
+
+describe("runner.process.cwd: relative system cwd resolves from config dir", () => {
+  let tempDir: string;
+  beforeEach(async () => {
+    tempDir = await createTempDir("kspec-runner-cwd-resolve-");
+    registerFakeAdapter();
+  });
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @runner-process-invocation-inputs ac-relative-system-cwd-resolves-from-config-dir
+  it("contract.cwd is the resolved absolute path when system cwd is relative", () => {
+    const systemConfigDir = path.join(tempDir, "config");
+    const systemConfigPath = path.join(systemConfigDir, "runners.yaml");
+    const registry = mergeRunnerConfigs(
+      null,
+      {
+        runners: {
+          fake: {
+            kind: "acp_process",
+            adapter: FAKE_ADAPTER_ID,
+            process: { cwd: "workdir/agents" },
+          },
+        },
+      },
+      { systemConfigPath },
+    );
+    const contract = resolveRunnerInvocation(
+      makeInput({
+        agent: makeAgent({ runner: "fake" }),
+        registry,
+        // The caller-supplied cwd MUST NOT influence the resolved value.
+        cwd: "/some/other/place",
+      }),
+    );
+    expect(contract.cwd).toBe(path.join(systemConfigDir, "workdir/agents"));
+    expect(path.isAbsolute(contract.cwd)).toBe(true);
+  });
+
+  // AC: @runner-process-invocation-inputs ac-relative-system-cwd-resolves-from-config-dir
+  it("contract.cwd is unchanged when system cwd is already absolute (normalized)", () => {
+    const systemConfigPath = path.join(tempDir, "config", "runners.yaml");
+    const registry = mergeRunnerConfigs(
+      null,
+      {
+        runners: {
+          fake: {
+            kind: "acp_process",
+            adapter: FAKE_ADAPTER_ID,
+            process: { cwd: "/absolute/runner/cwd/./." },
+          },
+        },
+      },
+      { systemConfigPath },
+    );
+    const contract = resolveRunnerInvocation(
+      makeInput({ agent: makeAgent({ runner: "fake" }), registry, cwd: "/some/other/place" }),
+    );
+    expect(contract.cwd).toBe("/absolute/runner/cwd");
+  });
+
+  // AC: @runner-process-invocation-inputs ac-relative-system-cwd-resolves-from-config-dir
+  it("changing process.cwd between merge and resolve does not change the contract cwd", () => {
+    const systemConfigDir = path.join(tempDir, "config");
+    const systemConfigPath = path.join(systemConfigDir, "runners.yaml");
+    const registry = mergeRunnerConfigs(
+      null,
+      {
+        runners: {
+          fake: {
+            kind: "acp_process",
+            adapter: FAKE_ADAPTER_ID,
+            process: { cwd: "child-cwd" },
+          },
+        },
+      },
+      { systemConfigPath },
+    );
+    const originalCwd = process.cwd();
+    process.chdir(tempDir);
+    try {
+      const contract = resolveRunnerInvocation(
+        makeInput({ agent: makeAgent({ runner: "fake" }), registry, cwd: tempDir }),
+      );
+      expect(contract.cwd).toBe(path.join(systemConfigDir, "child-cwd"));
+      // The parent process cwd must remain untouched by resolution.
+      expect(process.cwd()).toBe(tempDir);
+    } finally {
+      process.chdir(originalCwd);
+    }
+  });
+
+  // AC: @runner-process-invocation-inputs ac-relative-system-cwd-resolves-from-config-dir
+  it("preflight and contract.cwd consume the same normalized cwd", async () => {
+    // Build a real directory tree where the system config and the cwd live
+    // side by side. Place an executable at the resolved cwd so the preflight
+    // probe can resolve a relative executable against the same cwd the spawn
+    // path will use.
+    const systemConfigDir = path.join(tempDir, "config");
+    await fs.mkdir(systemConfigDir, { recursive: true });
+    const cwdDir = path.join(systemConfigDir, "agents-cwd");
+    await fs.mkdir(cwdDir, { recursive: true });
+    const exeName = "agent-bin";
+    await writeExecutable(path.join(cwdDir, exeName));
+    const systemConfigPath = path.join(systemConfigDir, "runners.yaml");
+
+    const registry = mergeRunnerConfigs(
+      null,
+      {
+        runners: {
+          fake: {
+            kind: "acp_process",
+            adapter: FAKE_ADAPTER_ID,
+            process: {
+              cwd: "agents-cwd",
+              executable: `./${exeName}`,
+            },
+          },
+        },
+      },
+      { systemConfigPath },
+    );
+    const contract = resolveRunnerInvocation(
+      makeInput({ agent: makeAgent({ runner: "fake" }), registry, cwd: tempDir }),
+    );
+    expect(contract.cwd).toBe(cwdDir);
+
+    // Preflight must resolve the relative executable against the normalized
+    // cwd. If preflight consulted process.cwd() or the invocation default
+    // cwd instead of contract.cwd, this would fail.
+    await expect(preflightRunnerInvocation(contract)).resolves.toBeUndefined();
+  });
+});
+
 // ─── AC: ac-runner-cwd-is-invocation-only ────────────────────────────────────
 
 describe("runner.process.cwd: cwd is invocation-only", () => {

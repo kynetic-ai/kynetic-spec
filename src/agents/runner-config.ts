@@ -280,7 +280,16 @@ const SystemProcessSchema = z
           });
         }
       }),
-    /** System-config-relative or absolute cwd override for the child process. */
+    /**
+     * Cwd override for the child process. Absolute paths are kept as-is
+     * (after normal path normalization). Relative paths are resolved by
+     * `mergeRunnerConfigs` against the directory containing this system
+     * runners.yaml file, not against the daemon/CLI parent process cwd, so
+     * that the resolved cwd is stable regardless of which process launches
+     * kspec.
+     *
+     * AC: @runner-process-invocation-inputs ac-relative-system-cwd-resolves-from-config-dir
+     */
     cwd: z.string().min(1).optional(),
   })
   .strict();
@@ -417,6 +426,15 @@ export interface EffectiveRunner {
   process: {
     executable: string | null;
     args: readonly string[];
+    /**
+     * Resolved child-process cwd, or `null` when the runner did not configure
+     * one. Always an absolute, normalized path when set — relative system
+     * config values are pre-resolved against the system runners.yaml
+     * directory by `mergeRunnerConfigs`, so downstream consumers (preflight,
+     * diagnostics, spawn) never see an unresolved relative path.
+     *
+     * AC: @runner-process-invocation-inputs ac-relative-system-cwd-resolves-from-config-dir
+     */
     cwd: string | null;
   };
   env: {
@@ -624,6 +642,28 @@ export async function loadSystemRunnerConfig(
 // ── Merge ──────────────────────────────────────────────────────────────
 
 /**
+ * Options that adjust how `mergeRunnerConfigs` resolves system-layer values
+ * whose meaning depends on the on-disk location of the system runners.yaml
+ * file.
+ */
+export interface MergeRunnerConfigsOptions {
+  /**
+   * Absolute path to the system runners.yaml file. When provided, a relative
+   * `process.cwd` value from the system layer is resolved against
+   * `path.dirname(systemConfigPath)`, so the effective cwd does not depend on
+   * the daemon/CLI parent process cwd. Absolute `process.cwd` values are
+   * normalized via `path.resolve` but otherwise unchanged.
+   *
+   * When omitted (the test-only raw merge path), relative cwd values are
+   * preserved verbatim. Production code paths always go through
+   * `resolveEffectiveRunners`, which supplies this option.
+   *
+   * AC: @runner-process-invocation-inputs ac-relative-system-cwd-resolves-from-config-dir
+   */
+  systemConfigPath?: string;
+}
+
+/**
  * Merge project and system runner configs into the effective runner registry.
  *
  * Merge semantics (per runner name):
@@ -633,6 +673,10 @@ export async function loadSystemRunnerConfig(
  *     privacy.disable_nonessential_traffic, diagnostics.retain_raw_logs):
  *     system replaces project. Defaults fill in when neither layer sets a
  *     value.
+ *   - `process.cwd` is normalized when `options.systemConfigPath` is
+ *     supplied: relative values resolve against the system config directory,
+ *     and absolute values are normalized via `path.resolve`. This makes the
+ *     resolved cwd deterministic and independent of the parent process cwd.
  *   - Array fields (process.args, env.pass): system replaces project when
  *     present; otherwise the project value is used, otherwise empty.
  *   - Map fields (env.set): merged key-by-key. System keys override project
@@ -648,35 +692,65 @@ export async function loadSystemRunnerConfig(
  * AC: @agent-runner-configuration ac-named-runners-loaded
  * AC: @agent-runner-configuration ac-system-overrides-project-values
  * AC: @agent-runner-configuration ac-effective-runner-kind-and-adapter-required
+ * AC: @runner-process-invocation-inputs ac-relative-system-cwd-resolves-from-config-dir
  */
 export function mergeRunnerConfigs(
   project: ProjectRunnerConfig | null,
   system: SystemRunnerConfig | null,
+  options: MergeRunnerConfigsOptions = {},
 ): EffectiveRunnerRegistry {
   const projectRunners = project?.runners ?? {};
   const systemRunners = system?.runners ?? {};
+
+  const systemConfigDir = options.systemConfigPath ? path.dirname(options.systemConfigPath) : null;
 
   const runners: Record<string, EffectiveRunner> = {};
 
   for (const [name, systemEntry] of Object.entries(systemRunners)) {
     const projectEntry: ProjectRunnerEntry | undefined = projectRunners[name];
-    runners[name] = mergeOne(name, projectEntry, systemEntry);
+    runners[name] = mergeOne(name, projectEntry, systemEntry, systemConfigDir);
   }
 
   return { runners };
+}
+
+/**
+ * Normalize a raw `process.cwd` string from system runner config.
+ *
+ * - Absolute paths pass through `path.resolve` so `.` / `..` segments are
+ *   collapsed but the absolute root is preserved.
+ * - Relative paths resolve against `systemConfigDir` when known so the
+ *   effective cwd is independent of the parent process cwd.
+ * - When `systemConfigDir` is null (raw merge path used only by tests),
+ *   the value is returned verbatim so existing callers keep working.
+ *
+ * AC: @runner-process-invocation-inputs ac-relative-system-cwd-resolves-from-config-dir
+ */
+function normalizeSystemProcessCwd(rawCwd: string, systemConfigDir: string | null): string {
+  if (path.isAbsolute(rawCwd)) {
+    return path.resolve(rawCwd);
+  }
+  if (systemConfigDir === null) {
+    return rawCwd;
+  }
+  return path.resolve(systemConfigDir, rawCwd);
 }
 
 function mergeOne(
   name: string,
   projectEntry: ProjectRunnerEntry | undefined,
   systemEntry: SystemRunnerEntry,
+  systemConfigDir: string | null,
 ): EffectiveRunner {
   const overridden: string[] = [];
 
   // process.* ────────────────────────────────────────────────
   const processExecutable = systemEntry.process?.executable ?? null;
   const processArgs = systemEntry.process?.args ?? [];
-  const processCwd = systemEntry.process?.cwd ?? null;
+  const processCwd =
+    systemEntry.process?.cwd !== undefined
+      ? normalizeSystemProcessCwd(systemEntry.process.cwd, systemConfigDir)
+      : null;
 
   // env.inherit ────────────────────────────────────────────────
   const envInheritOrigin: RunnerFieldOrigin =
@@ -814,6 +888,12 @@ export async function resolveEffectiveRunners(options: {
     daemonConfigDir: options.daemonConfigDir,
   });
 
-  const registry = mergeRunnerConfigs(project.config, system.config);
+  // Pass the system config path so `mergeRunnerConfigs` can resolve any
+  // relative `process.cwd` against the system runners.yaml directory rather
+  // than the daemon/CLI parent process cwd.
+  // AC: @runner-process-invocation-inputs ac-relative-system-cwd-resolves-from-config-dir
+  const registry = mergeRunnerConfigs(project.config, system.config, {
+    systemConfigPath: system.path,
+  });
   return { project, system, registry };
 }

@@ -409,6 +409,45 @@ describe("CLI: kspec agent runners validate (process.cwd)", () => {
     expect(entry.status).toBe("valid");
     expect(entry.diagnostics).toEqual([]);
   });
+
+  // AC: @runner-process-invocation-inputs ac-relative-system-cwd-resolves-from-config-dir
+  // AC: @runner-process-invocation-inputs ac-runner-cwd-is-invocation-only
+  it("resolves a relative process.cwd against the system runners.yaml directory before probing", () => {
+    // Place a real directory next to the system runners.yaml file. The
+    // relative cwd entry points at the same name. The validator must resolve
+    // it against the system config dir and pass the probe.
+    const projectKey = deriveProjectKeySync(testDir);
+    const sysDir = path.join(testDir, ".test-home", ".config", "kspec", "projects", projectKey);
+    fsSync.mkdirSync(sysDir, { recursive: true });
+    fsSync.mkdirSync(path.join(sysDir, "agents-cwd"), { recursive: true });
+    const fake = makeFakeExecutable(testDir, "fake-bin");
+    writeSystemRunners(testDir, {
+      "relative-cwd-runner": {
+        kind: "acp_process",
+        adapter: "claude-agent-acp",
+        process: { executable: fake, cwd: "agents-cwd" },
+      },
+    });
+
+    const data = kspecJson<ValidationReportPayload>("agent runners validate --json", testDir);
+    expect(data.ok).toBe(true);
+    const entry = data.runners[0];
+    expect(entry.status).toBe("valid");
+    expect(entry.cwd_source).toBe("runner.system");
+    // No raw relative cwd should ever surface in diagnostics or details on
+    // the validated path — but the resolved cwd is what later spawn calls
+    // will receive. We confirm by removing the resolved directory and
+    // re-running to observe a `not_found` diagnostic naming the resolved path
+    // (not the raw "agents-cwd" string).
+    fsSync.rmdirSync(path.join(sysDir, "agents-cwd"));
+    const fail = kspecRun("agent runners validate --json", testDir, { expectFail: true });
+    expect(fail.exitCode).not.toBe(0);
+    const failed = JSON.parse(fail.stdout) as ValidationReportPayload;
+    const diag = failed.runners[0].diagnostics.find((d) => d.reason === "invalid_cwd");
+    expect(diag).toBeDefined();
+    expect(diag!.message).toContain(path.join(sysDir, "agents-cwd"));
+    expect(diag!.details!.cwd).toBe(path.join(sysDir, "agents-cwd"));
+  });
 });
 
 describe("CLI: kspec agent runners validate redacts secret values", () => {

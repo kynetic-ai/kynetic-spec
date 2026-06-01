@@ -731,6 +731,182 @@ describe("runner-config: merge semantics", () => {
   });
 });
 
+// ─── AC: ac-relative-system-cwd-resolves-from-config-dir ─────────────────────
+
+describe("runner-config: system process.cwd resolves deterministically", () => {
+  let fixture: Fixture;
+  beforeEach(async () => {
+    fixture = await createFixture();
+  });
+  afterEach(async () => {
+    await cleanupTempDir(fixture.projectRoot);
+    await cleanupTempDir(fixture.daemonConfigDir);
+  });
+
+  // AC: @runner-process-invocation-inputs ac-relative-system-cwd-resolves-from-config-dir
+  it("mergeRunnerConfigs resolves relative system cwd against the system config dir", () => {
+    const system: SystemRunnerConfig = {
+      runners: {
+        claude: {
+          kind: "acp_process",
+          adapter: "claude-agent-acp",
+          process: { cwd: "workdir/runner" },
+        },
+      },
+    };
+    const systemConfigPath = "/etc/kspec/projects/abc/runners.yaml";
+    const registry = mergeRunnerConfigs(null, system, { systemConfigPath });
+    expect(registry.runners.claude.process.cwd).toBe("/etc/kspec/projects/abc/workdir/runner");
+    expect(registry.runners.claude.sources.processCwd).toBe("system");
+  });
+
+  // AC: @runner-process-invocation-inputs ac-relative-system-cwd-resolves-from-config-dir
+  it("mergeRunnerConfigs keeps absolute system cwd absolute (normalized)", () => {
+    const system: SystemRunnerConfig = {
+      runners: {
+        claude: {
+          kind: "acp_process",
+          adapter: "claude-agent-acp",
+          process: { cwd: "/var/lib/kspec/./runner/../runner" },
+        },
+      },
+    };
+    const systemConfigPath = "/etc/kspec/projects/abc/runners.yaml";
+    const registry = mergeRunnerConfigs(null, system, { systemConfigPath });
+    // path.resolve normalizes `.` and `..` but the value remains absolute.
+    expect(path.isAbsolute(registry.runners.claude.process.cwd!)).toBe(true);
+    expect(registry.runners.claude.process.cwd).toBe("/var/lib/kspec/runner");
+  });
+
+  // AC: @runner-process-invocation-inputs ac-relative-system-cwd-resolves-from-config-dir
+  it("mergeRunnerConfigs does not consult the parent process cwd for relative system cwd", () => {
+    const system: SystemRunnerConfig = {
+      runners: {
+        claude: {
+          kind: "acp_process",
+          adapter: "claude-agent-acp",
+          process: { cwd: "relative-subdir" },
+        },
+      },
+    };
+    const systemConfigPath = "/etc/kspec/projects/abc/runners.yaml";
+    const originalCwd = process.cwd();
+    // Move the parent process cwd to a different directory and re-merge.
+    // The resolved cwd must not depend on process.cwd().
+    process.chdir(fixture.projectRoot);
+    try {
+      const registry = mergeRunnerConfigs(null, system, { systemConfigPath });
+      expect(registry.runners.claude.process.cwd).toBe("/etc/kspec/projects/abc/relative-subdir");
+      expect(registry.runners.claude.process.cwd).not.toContain(fixture.projectRoot);
+    } finally {
+      process.chdir(originalCwd);
+    }
+  });
+
+  // AC: @runner-process-invocation-inputs ac-relative-system-cwd-resolves-from-config-dir
+  it("resolveEffectiveRunners passes the system config path so relative cwd resolves there", async () => {
+    await writeSystemLayer(
+      fixture,
+      [
+        "runners:",
+        "  claude:",
+        "    kind: acp_process",
+        "    adapter: claude-agent-acp",
+        "    process:",
+        "      cwd: ./agents-cwd",
+        "",
+      ].join("\n"),
+    );
+
+    const resolved = await resolveEffectiveRunners({
+      projectRoot: fixture.projectRoot,
+      shadowWorktreeDir: fixture.shadowDir,
+      daemonConfigDir: fixture.daemonConfigDir,
+    });
+    const expectedDir = path.dirname(resolved.system.path);
+    expect(resolved.registry.runners.claude.process.cwd).toBe(path.join(expectedDir, "agents-cwd"));
+    expect(path.isAbsolute(resolved.registry.runners.claude.process.cwd!)).toBe(true);
+  });
+
+  // AC: @runner-process-invocation-inputs ac-relative-system-cwd-resolves-from-config-dir
+  it("resolveEffectiveRunners keeps absolute system cwd absolute", async () => {
+    await writeSystemLayer(
+      fixture,
+      [
+        "runners:",
+        "  claude:",
+        "    kind: acp_process",
+        "    adapter: claude-agent-acp",
+        "    process:",
+        "      cwd: /opt/kspec/agents-cwd",
+        "",
+      ].join("\n"),
+    );
+
+    const resolved = await resolveEffectiveRunners({
+      projectRoot: fixture.projectRoot,
+      shadowWorktreeDir: fixture.shadowDir,
+      daemonConfigDir: fixture.daemonConfigDir,
+    });
+    expect(resolved.registry.runners.claude.process.cwd).toBe("/opt/kspec/agents-cwd");
+  });
+
+  // AC: @runner-process-invocation-inputs ac-relative-system-cwd-resolves-from-config-dir
+  it("resolveEffectiveRunners produces the same cwd regardless of parent process cwd", async () => {
+    await writeSystemLayer(
+      fixture,
+      [
+        "runners:",
+        "  claude:",
+        "    kind: acp_process",
+        "    adapter: claude-agent-acp",
+        "    process:",
+        "      cwd: relative-from-config",
+        "",
+      ].join("\n"),
+    );
+
+    const originalCwd = process.cwd();
+    const resolvedFromRoot = await resolveEffectiveRunners({
+      projectRoot: fixture.projectRoot,
+      shadowWorktreeDir: fixture.shadowDir,
+      daemonConfigDir: fixture.daemonConfigDir,
+    });
+
+    process.chdir(fixture.projectRoot);
+    try {
+      const resolvedFromProject = await resolveEffectiveRunners({
+        projectRoot: fixture.projectRoot,
+        shadowWorktreeDir: fixture.shadowDir,
+        daemonConfigDir: fixture.daemonConfigDir,
+      });
+      expect(resolvedFromProject.registry.runners.claude.process.cwd).toBe(
+        resolvedFromRoot.registry.runners.claude.process.cwd,
+      );
+    } finally {
+      process.chdir(originalCwd);
+    }
+  });
+
+  // AC: @runner-process-invocation-inputs ac-relative-system-cwd-resolves-from-config-dir
+  it("mergeRunnerConfigs preserves a relative cwd verbatim when no systemConfigPath is supplied", () => {
+    // This is the test-only raw-merge contract: callers that did not load the
+    // system file from disk cannot get cwd resolution. resolveEffectiveRunners
+    // is the supported entry point for cwd-sensitive behavior.
+    const system: SystemRunnerConfig = {
+      runners: {
+        claude: {
+          kind: "acp_process",
+          adapter: "claude-agent-acp",
+          process: { cwd: "still-relative" },
+        },
+      },
+    };
+    const registry = mergeRunnerConfigs(null, system);
+    expect(registry.runners.claude.process.cwd).toBe("still-relative");
+  });
+});
+
 describe("runner-config: existing kspec.config.yaml behavior", () => {
   // Regression check — this task must not change project config behavior.
   it("does not introduce any read of kspec.config.yaml", async () => {

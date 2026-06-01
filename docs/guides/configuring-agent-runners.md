@@ -176,7 +176,7 @@ A few things to call out:
 
 - **`env.secrets` is system-only.** The project layer schema rejects any `env.secrets` block. The source identifier (`user_env`) names where to fetch the value at invocation time; the actual secret value never appears in this file, in session metadata, in diagnostics, or in `kspec agent runners validate` output.
 - **`required: true` blocks invocation when the secret cannot be resolved.** If `ANTHROPIC_API_KEY` is not set in the user environment when an agent invocation prepares, the spawn fails before the adapter starts with a `missing_secret` diagnostic.
-- **`process.cwd` is invocation-local.** It applies only to the spawned child process. The daemon and any other parent processes keep their own cwd.
+- **`process.cwd` is invocation-local.** It applies only to the spawned child process. The daemon and any other parent processes keep their own cwd. Absolute paths (like the `cwd: /opt/kspec/work-roots/agents` above) are used as-is after normal path normalization. Relative paths are resolved against the directory containing this system `runners.yaml` file — never against the daemon or CLI parent process cwd — so the effective cwd is stable regardless of which process launched kspec.
 - **`process.executable` is optional.** When set, it overrides the adapter's registered command. When omitted, the adapter's registered command is used and the validator reports `command_source: adapter`.
 - **`process.args` are appended to the spawn**, never persisted into the adapter definition. They reach the child process only for runner-backed invocations of this runner.
 
