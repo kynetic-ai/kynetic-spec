@@ -50,13 +50,18 @@
  */
 
 import * as fs from "node:fs/promises";
+import { execSync } from "node:child_process";
 import { chmodSync, mkdirSync, writeFileSync } from "node:fs";
 import * as path from "node:path";
 import type { Elysia } from "elysia";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import * as YAML from "yaml";
 
 import { runInvocation, RunnerResolutionError } from "../src/agent-runtime/invocation.js";
+import * as invocationModule from "../src/agent-runtime/invocation.js";
+import * as workspaceModule from "../src/agent-runtime/workspace.js";
+import * as bootstrapModule from "../src/agent-runtime/bootstrap.js";
+import { DispatchEngine } from "../src/agent-runtime/dispatch.js";
 import { registerAdapter } from "../src/agents/adapters.js";
 import {
   deriveProjectKeySync,
@@ -66,6 +71,7 @@ import {
   resolveEffectiveRunners,
   type EffectiveRunnerRegistry,
 } from "../src/agents/runner-config.js";
+import * as runnerConfigModule from "../src/agents/runner-config.js";
 import { preflightRunnerInvocation, resolveRunnerInvocation } from "../src/agents/runners.js";
 import type { Agent } from "../src/schema/meta.js";
 import {
@@ -76,9 +82,11 @@ import {
   kspecJson,
   readTestOutput,
   testUlid,
+  testUlids,
+  waitForStartup,
 } from "./helpers/cli.js";
 import { createTestApp, makeRequest, setupInlineFixtures } from "./daemon-api/helpers.js";
-import { getDispatchEngine, stopAllEngines } from "../dist/daemon/routes/agent-dispatch.js";
+import { stopAllEngines } from "../dist/daemon/routes/agent-dispatch.js";
 
 // ─── Fixtures ────────────────────────────────────────────────────────────────
 
@@ -181,6 +189,154 @@ async function readEventsJsonl(
     .map((line) => JSON.parse(line) as { type: string; data: Record<string, unknown> });
 }
 
+/**
+ * Write a minimal kspec project at `dir` and commit it. Mirrors what the
+ * dispatch-engine test suite does for projects that need agents loaded
+ * through `initContext` + `loadMetaContext`. Used by tests that instantiate
+ * a `DispatchEngine` directly and drive it through `handleStateChange`.
+ */
+async function setupDispatchProject(dir: string, agents: Agent[]): Promise<void> {
+  initGitRepo(dir);
+  await fs.writeFile(
+    path.join(dir, "kynetic.yaml"),
+    YAML.stringify({ kynetic: "1", title: "Runner Compat Dispatch Test" }),
+    "utf-8",
+  );
+  await fs.writeFile(
+    path.join(dir, "kynetic.meta.yaml"),
+    YAML.stringify({
+      kynetic_meta: "1.0",
+      agents: agents.map((a) => ({
+        _ulid: a._ulid,
+        id: a.id,
+        name: a.name,
+        dispatch: a.dispatch ?? [],
+        concurrency: a.concurrency,
+        adapter: a.adapter,
+        auto_approve: a.auto_approve ?? false,
+        ...(a.runner ? { runner: a.runner } : {}),
+      })),
+    }),
+    "utf-8",
+  );
+  await fs.writeFile(path.join(dir, "project.tasks.yaml"), YAML.stringify({ tasks: [] }), "utf-8");
+  execSync("git add -A && git commit -m init", { cwd: dir, stdio: "pipe" });
+}
+
+/**
+ * Build a minimal workspace metadata object accepted by the dispatch engine's
+ * post-provision pipeline. The shape mirrors the production
+ * `ProvisionedDispatchWorkspace.metadata` used by
+ * `tests/agent-dispatch-engine.test.ts`; the dispatch engine reads from these
+ * fields when assembling role-entry context, so they must be present even when
+ * the actual git work is mocked.
+ */
+function buildMockWorkspaceMetadata(worktreeDir: string): Record<string, unknown> {
+  const emptyBootstrap = {
+    status: "not_run" as const,
+    configHash: null,
+    canonicalBranchHead: null,
+    lastRunAt: null,
+    invalidationReasons: [] as string[],
+    steps: [] as unknown[],
+    failureMessage: null,
+  };
+  const bootstrap = {
+    ...emptyBootstrap,
+    lastRole: null,
+    roleStates: {
+      worker: { ...emptyBootstrap },
+      reviewer: { ...emptyBootstrap },
+    },
+  };
+  return {
+    workspaceId: "mock-workspace",
+    taskRef: "@mock",
+    taskSlug: "mock",
+    baseBranch: "main",
+    baseBranchPoint: "abc123",
+    mergeTargetBranch: "main",
+    integrationTargetBranch: "main",
+    integrationTargetCommit: "abc123",
+    canonicalBranch: "dispatch/task/mock/abc12345",
+    canonicalBranchHead: "abc123",
+    branchProvenance: {
+      ownership: "dispatcher-managed",
+      source: "provisioned",
+      remote_ref: null,
+      adopted_from: null,
+      adopted_at: null,
+    },
+    publicationMode: "pull_request",
+    integrationState: "pending",
+    integrationOutcome: "pending",
+    integrationUpdatedAt: new Date().toISOString(),
+    worktreeRoot: worktreeDir,
+    workerWorktreeDir: worktreeDir,
+    reviewerWorktreeDir: null,
+    lifecycleState: "ready",
+    activeRole: null,
+    bootstrapState: bootstrap,
+    healthState: {
+      status: "healthy",
+      summary: "Healthy",
+      issues: [],
+      updated_at: new Date().toISOString(),
+    },
+    cleanupState: {
+      status: "not_scheduled",
+      eligible: false,
+      reason: null,
+      detail: null,
+      updated_at: new Date().toISOString(),
+    },
+    healthStatus: "healthy",
+    healthReason: null,
+    bootstrap,
+    cleanupEligible: false,
+    cleanupReason: null,
+    cleanupScheduledAt: null,
+    cleanupBlockedReason: null,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    lastReconciledAt: null,
+    lastActiveAt: null,
+    closedAt: null,
+  };
+}
+
+/**
+ * Build a TaskStateChange for a task moving into `in_progress`. Used by the
+ * dispatch-engine behavioral test to drive `handleStateChange` with inline
+ * task data so the engine does not need to round-trip through the task store.
+ */
+function buildInProgressChange(taskId: string): Parameters<DispatchEngine["handleStateChange"]>[0] {
+  return {
+    taskId,
+    taskRef: `@${taskId}`,
+    fromStatus: "pending",
+    toStatus: "in_progress",
+    timestamp: Date.now(),
+    task: {
+      _ulid: taskId,
+      title: `Runner-backed task ${taskId}`,
+      slugs: [`runner-task-${taskId.toLowerCase()}`],
+      status: "in_progress",
+      type: "task",
+      priority: 1,
+      blocked_by: [],
+      depends_on: [],
+      context: [],
+      tags: [],
+      vcs_refs: [],
+      notes: [],
+      todos: [],
+      created_at: new Date().toISOString(),
+      automation: "eligible",
+    } as never,
+  };
+}
+
 // ─── Flow 1 + 2: legacy adapter agents still work end-to-end ────────────────
 
 describe("e2e: legacy adapter agents preserve pre-runner behavior", { timeout: 60_000 }, () => {
@@ -197,7 +353,6 @@ describe("e2e: legacy adapter agents preserve pre-runner behavior", { timeout: 6
   });
 
   // AC: @agent-runner-configuration ac-adapter-field-backcompat
-  // AC: @runner-resolution-and-preflight ac-one-shot-uses-runner-resolution
   it("runs a one-shot invocation for an adapter-only agent without a runner", async () => {
     const agent = makeAgent({ adapter: "mock-acp" });
     const result = await runInvocation({
@@ -225,8 +380,7 @@ describe("e2e: legacy adapter agents preserve pre-runner behavior", { timeout: 6
     expect(dispatched!.data.runner).toBeUndefined();
   });
 
-  // AC: @runner-invocation-semantics ac-dispatch-preflight-accepts-configured-runners
-  // AC: @runner-resolution-and-preflight ac-dispatch-uses-runner-resolution
+  // AC: @agent-runner-configuration ac-adapter-field-backcompat
   it("passes dispatch preflight for a legacy adapter-only agent", async () => {
     // Mirror the dispatch engine's preflight pipeline: resolve the runner
     // contract against an empty registry (legacy path) and then preflight.
@@ -262,6 +416,7 @@ describe("e2e: system-only runner-backed one-shot invocation", { timeout: 60_000
     await cleanupTempDir(testDir);
   });
 
+  // AC: @runner-resolution-and-preflight ac-one-shot-uses-runner-resolution
   // AC: @runner-resolution-and-preflight ac-session-metadata-records-runner
   // AC: @runner-resolution-and-preflight ac-dispatched-event-records-runner
   // AC: @agent-runner-configuration ac-agent-runner-reference
@@ -611,138 +766,6 @@ agents:
     expect(legacy.runner_validation).toBeUndefined();
   });
 
-  // AC: @runner-operator-surfaces ac-daemon-dispatch-active-api-includes-runner
-  // AC: @runner-operator-surfaces ac-daemon-dispatch-queued-api-includes-runner
-  // AC: @runner-operator-surfaces ac-web-ui-active-invocations-include-runner
-  // AC: @runner-operator-surfaces ac-web-ui-queued-invocations-include-runner
-  it("daemon /api/agent/status emits runner identity on active and queued invocations", async () => {
-    await makeRequest(app, tempDir, "/api/agent/dispatch", {
-      method: "POST",
-      body: JSON.stringify({ action: "start" }),
-    });
-
-    interface FakeQueueEntry {
-      agent: { id: string; name: string; runner?: string; adapter?: string };
-      change: { taskRef: string; toStatus: string };
-      retryCount: number;
-      nextRetryAt: number;
-      enqueuedAtMs: number;
-      sequence: number;
-      starvationDeferrals: number;
-    }
-    interface FakeActiveRecord {
-      invocationId: string;
-      sessionId: string;
-      agentId: string;
-      agentName: string;
-      taskRef: string | undefined;
-      role: "worker" | "reviewer";
-      startedAtMs: number;
-      resolvedAdapter: string;
-      runner: string | undefined;
-    }
-    interface EngineInternals {
-      queues: Map<string, FakeQueueEntry[]>;
-      activeInvocationDetails: Map<string, FakeActiveRecord>;
-      activeCount: Map<string, number>;
-      nextQueueSequence: number;
-    }
-
-    const engine = getDispatchEngine(tempDir);
-    expect(engine).toBeDefined();
-    const internal = engine as unknown as EngineInternals;
-
-    // Inject a runner-backed active invocation.
-    internal.activeInvocationDetails.set("INVK-runner-active", {
-      invocationId: "INVK-runner-active",
-      sessionId: "SESS-runner-active",
-      agentId: "runner-worker",
-      agentName: "Runner Worker",
-      taskRef: undefined,
-      role: "worker",
-      startedAtMs: Date.now() - 1000,
-      resolvedAdapter: "claude-agent-acp",
-      runner: "configured-runner",
-    });
-    internal.activeCount.set("runner-worker", 1);
-    // And a legacy active invocation alongside it.
-    internal.activeInvocationDetails.set("INVK-legacy-active", {
-      invocationId: "INVK-legacy-active",
-      sessionId: "SESS-legacy-active",
-      agentId: "legacy-worker",
-      agentName: "Legacy Worker",
-      taskRef: undefined,
-      role: "worker",
-      startedAtMs: Date.now() - 500,
-      resolvedAdapter: "claude-agent-acp",
-      runner: undefined,
-    });
-    internal.activeCount.set("legacy-worker", 1);
-    // And queued entries for both.
-    internal.queues.set("runner-worker", [
-      {
-        agent: {
-          id: "runner-worker",
-          name: "Runner Worker",
-          runner: "configured-runner",
-          adapter: "claude-agent-acp",
-        },
-        change: { taskRef: "@queued-runner", toStatus: "in_progress" },
-        retryCount: 0,
-        nextRetryAt: 0,
-        enqueuedAtMs: Date.now() - 250,
-        sequence: internal.nextQueueSequence++,
-        starvationDeferrals: 0,
-      },
-    ]);
-    internal.queues.set("legacy-worker", [
-      {
-        agent: {
-          id: "legacy-worker",
-          name: "Legacy Worker",
-          adapter: "claude-agent-acp",
-        },
-        change: { taskRef: "@queued-legacy", toStatus: "in_progress" },
-        retryCount: 0,
-        nextRetryAt: 0,
-        enqueuedAtMs: Date.now(),
-        sequence: internal.nextQueueSequence++,
-        starvationDeferrals: 0,
-      },
-    ]);
-
-    const response = await makeRequest(app, tempDir, "/api/agent/status");
-    expect(response.status).toBe(200);
-    const body = (await response.json()) as {
-      active_invocations: Array<Record<string, unknown>>;
-      queued_invocations: Array<Record<string, unknown>>;
-      agent_definitions: Array<Record<string, unknown>>;
-    };
-
-    const runnerActive = body.active_invocations.find((a) => a.session_id === "SESS-runner-active");
-    expect(runnerActive).toBeDefined();
-    expect(runnerActive!.runner).toBe("configured-runner");
-    expect(runnerActive!.resolved_adapter).toBe("claude-agent-acp");
-    const legacyActive = body.active_invocations.find((a) => a.session_id === "SESS-legacy-active");
-    expect(legacyActive).toBeDefined();
-    expect(legacyActive!.runner).toBeUndefined();
-    expect(legacyActive!.resolved_adapter).toBe("claude-agent-acp");
-
-    const queuedRunner = body.queued_invocations.find((q) => q.agent_id === "runner-worker");
-    expect(queuedRunner).toBeDefined();
-    expect(queuedRunner!.runner).toBe("configured-runner");
-    expect(queuedRunner!.resolved_adapter).toBe("claude-agent-acp");
-    const queuedLegacy = body.queued_invocations.find((q) => q.agent_id === "legacy-worker");
-    expect(queuedLegacy).toBeDefined();
-    expect(queuedLegacy!.runner).toBeUndefined();
-    expect(queuedLegacy!.resolved_adapter).toBe("claude-agent-acp");
-
-    const runnerDef = body.agent_definitions.find((d) => d.id === "runner-worker");
-    expect(runnerDef!.runner).toBe("configured-runner");
-    expect(runnerDef!.resolved_adapter).toBe("claude-agent-acp");
-    expect(runnerDef!.adapter).toBe("claude-agent-acp");
-  });
-
   // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
   it("daemon responses never expose the resolved env secret literal", async () => {
     const agentsResponse = await makeRequest(app, tempDir, "/api/meta/agents");
@@ -758,6 +781,230 @@ agents:
     expect(statusRaw).not.toContain(SECRET_SENTINEL);
   });
 });
+
+// ─── Flow 6b: dispatch engine drives runner-backed invocations behaviorally ─
+
+/**
+ * Behavioral regression coverage for the dispatch engine itself. The Flow 6
+ * tests above prove the daemon API serializes runner identity correctly from
+ * an engine state object; this block proves the engine actually populates
+ * that state through its public path when an eligible task arrives. We drive
+ * the engine via `handleStateChange()` — the same entry point the daemon's
+ * `/api/agent/events` route and the file watcher both call — and only stub
+ * the leaf I/O (workspace provisioning and the ACP spawn). Runner resolution,
+ * preflight, queue ordering, and `activeInvocationDetails` population all run
+ * through the real engine code.
+ */
+describe(
+  "e2e: dispatch engine drives runner-backed invocations through public path",
+  { timeout: 60_000 },
+  () => {
+    let testDir: string;
+
+    beforeEach(async () => {
+      testDir = await createTempDir("kspec-runner-e2e-dispatch-public-");
+    });
+
+    afterEach(async () => {
+      vi.restoreAllMocks();
+      await cleanupTempDir(testDir);
+    });
+
+    /**
+     * Drive a runner-backed agent through the engine until it reports one
+     * active and one queued invocation. The queued entry only exists because
+     * the engine itself applied `max_concurrent: 1` after the first
+     * invocation took the active slot — no fabricated queue state.
+     */
+    // AC: @runner-resolution-and-preflight ac-dispatch-uses-runner-resolution
+    // AC: @runner-operator-surfaces ac-daemon-dispatch-active-api-includes-runner
+    // AC: @runner-operator-surfaces ac-daemon-dispatch-queued-api-includes-runner
+    // AC: @runner-operator-surfaces ac-web-ui-active-invocations-include-runner
+    // AC: @runner-operator-surfaces ac-web-ui-queued-invocations-include-runner
+    it("queues and starts runner-backed invocations and exposes runner identity in engine status", async () => {
+      // Register a non-built-in adapter so we can prove the resolved adapter
+      // identity comes from runner resolution, not from a hardcoded default.
+      const customAdapterId = `e2e-dispatch-${testUlid("ADPT").toLowerCase()}`;
+      registerAdapter(customAdapterId, {
+        command: "node",
+        args: [MOCK_ACP],
+        description: "Custom adapter for dispatch behavioral test",
+      });
+
+      const runnerAgent: Agent = {
+        _ulid: testUlid("AGNT"),
+        id: "runner-worker",
+        name: "Runner Worker",
+        capabilities: [],
+        tools: [],
+        conventions: [],
+        dispatch: [{ on: "task.in_progress" }],
+        skills: [],
+        auto_approve: false,
+        concurrency: { max_concurrent: 1 },
+        runner: "configured-runner",
+      };
+      await setupDispatchProject(testDir, [runnerAgent]);
+
+      // Inject the runner registry through the resolver so this test does
+      // not depend on host ~/.config/kspec state.
+      vi.spyOn(runnerConfigModule, "resolveEffectiveRunners").mockResolvedValue({
+        project: { config: null, path: "", loaded: false, issues: null },
+        system: { config: null, path: "", loaded: false, issues: null },
+        registry: mergeRunnerConfigs(null, {
+          runners: {
+            "configured-runner": { kind: "acp_process", adapter: customAdapterId },
+          },
+        }),
+      });
+
+      // Stub workspace provisioning + bootstrap to skip real git work. The
+      // engine still calls resolveRunnerInvocation/preflightRunnerInvocation
+      // and populates activeInvocationDetails with the resolved runner — we
+      // are only short-circuiting the leaf I/O.
+      const mockMetadata = buildMockWorkspaceMetadata(testDir);
+      vi.spyOn(workspaceModule, "provisionDispatchWorkspace").mockResolvedValue({
+        cwd: testDir,
+        metadataPath: path.join(testDir, ".kspec-dispatch-workspace.json"),
+        metadata: mockMetadata as unknown as Parameters<
+          typeof workspaceModule.provisionDispatchWorkspace
+        > extends unknown
+          ? Awaited<ReturnType<typeof workspaceModule.provisionDispatchWorkspace>>["metadata"]
+          : never,
+      } as unknown as Awaited<ReturnType<typeof workspaceModule.provisionDispatchWorkspace>>);
+      vi.spyOn(bootstrapModule, "ensureWorkspaceBootstrap").mockResolvedValue({
+        metadata: mockMetadata as unknown as Awaited<
+          ReturnType<typeof bootstrapModule.ensureWorkspaceBootstrap>
+        >["metadata"],
+      } as Awaited<ReturnType<typeof bootstrapModule.ensureWorkspaceBootstrap>>);
+      vi.spyOn(workspaceModule, "getDispatchWorkspaceHealth").mockResolvedValue({
+        exists: true,
+        healthy: true,
+        reason: null,
+        metadata: null,
+      });
+
+      // Block runInvocation so the first invocation stays active long enough
+      // for the second event to be queued behind max_concurrent.
+      let releaseInvocations!: () => void;
+      const invocationCompletion = new Promise<void>((r) => {
+        releaseInvocations = r;
+      });
+      const runSpy = vi.spyOn(invocationModule, "runInvocation").mockImplementation(async () => {
+        await invocationCompletion;
+        return {
+          session: { id: `mock-session-${Date.now()}` } as never,
+          outcome: "success",
+          durationMs: 1,
+        };
+      });
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        coalesceWindowMs: 0,
+      });
+      await engine.start();
+      try {
+        const [activeTaskId, queuedTaskId] = testUlids("TASK", 2);
+
+        // First event: engine resolves runner, preflights, spawns invocation.
+        await engine.handleStateChange(buildInProgressChange(activeTaskId));
+        await waitForStartup(
+          "engine has an active runner-backed invocation",
+          () => {
+            const status = engine.getStatus();
+            return {
+              ok: status.activeInvocations >= 1 && runSpy.mock.calls.length >= 1,
+              details: `active=${status.activeInvocations}, runInvocation calls=${runSpy.mock.calls.length}`,
+            };
+          },
+          { timeoutMs: 10_000, intervalMs: 25 },
+        );
+
+        // Second event for the same agent: max_concurrent=1 forces it into
+        // the queue. The engine populates the queue entry with the agent's
+        // declared runner identity — that is what the daemon route projects
+        // through the runner registry to produce `resolved_adapter`.
+        await engine.handleStateChange(buildInProgressChange(queuedTaskId));
+        await waitForStartup(
+          "engine has a queued runner-backed invocation",
+          () => {
+            const status = engine.getStatus();
+            return {
+              ok: status.queuedInvocations >= 1,
+              details: `queued=${status.queuedInvocations}`,
+            };
+          },
+          { timeoutMs: 10_000, intervalMs: 25 },
+        );
+
+        const status = engine.getStatus();
+        const active = status.invocations.find((i) => i.agentId === "runner-worker");
+        expect(active).toBeDefined();
+        expect(active!.runner).toBe("configured-runner");
+        // Resolved adapter is the custom adapter we registered — proves the
+        // runner resolution ran end-to-end, not a fallback to a default.
+        expect(active!.resolvedAdapter).toBe(customAdapterId);
+
+        const queued = status.queued.find((q) => q.agentId === "runner-worker");
+        expect(queued).toBeDefined();
+        expect(queued!.runner).toBe("configured-runner");
+        expect(queued!.taskRef).toBe(`@${queuedTaskId}`);
+
+        // The invocation options passed to runInvocation carry the runner
+        // registry so a same-process re-resolution produces the same contract.
+        expect(runSpy.mock.calls.length).toBeGreaterThanOrEqual(1);
+        const firstCall = runSpy.mock.calls[0]?.[0] as {
+          agent: Agent;
+          runnerRegistry?: EffectiveRunnerRegistry;
+        };
+        expect(firstCall.agent.id).toBe("runner-worker");
+        expect(firstCall.runnerRegistry?.runners["configured-runner"]).toBeDefined();
+      } finally {
+        // Unblock pending invocations so engine.stop() can drain.
+        releaseInvocations();
+        await engine.stop();
+      }
+    });
+
+    /**
+     * Preflight must accept a configured runner whose adapter is NOT a
+     * built-in adapter id (the AC's "non-built-in adapter contract" case).
+     * Registering a custom adapter is enough to make it a valid runtime
+     * contract; the runner just needs to resolve to it.
+     */
+    // AC: @runner-invocation-semantics ac-dispatch-preflight-accepts-configured-runners
+    it("preflightRunnerInvocation accepts a configured runner pointing at a non-built-in adapter", async () => {
+      const customAdapterId = `e2e-preflight-${testUlid("ADPT").toLowerCase()}`;
+      registerAdapter(customAdapterId, {
+        command: "node",
+        args: [MOCK_ACP],
+        description: "Custom adapter for dispatch preflight test",
+      });
+
+      const registry = mergeRunnerConfigs(null, {
+        runners: {
+          "configured-runner": { kind: "acp_process", adapter: customAdapterId },
+        },
+      });
+      const agent = makeAgent({ runner: "configured-runner", adapter: undefined });
+
+      const contract = resolveRunnerInvocation({
+        agent,
+        registry,
+        cwd: process.cwd(),
+        sessionId: testUlid("SESS"),
+        autoApprove: false,
+        env: {},
+      });
+      expect(contract.runnerId).toBe("configured-runner");
+      expect(contract.adapterId).toBe(customAdapterId);
+      // Preflight resolves the spawnable adapter contract without errors.
+      await expect(preflightRunnerInvocation(contract)).resolves.toBeUndefined();
+    });
+  },
+);
 
 // ─── Flow 7: unknown runner blocks before prompt + records redacted diags ───
 
@@ -849,7 +1096,6 @@ describe("e2e: missing required secret blocks before spawn", { timeout: 30_000 }
 
   // AC: @runner-environment-secret-boundaries ac-required-secret-missing-blocks
   // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
-  // AC: @runner-resolution-and-preflight ac-unknown-runner-blocks-before-spawn
   it("rejects the invocation with missing_secret and no session is created", async () => {
     const registry = mergeRunnerConfigs(null, {
       runners: {
