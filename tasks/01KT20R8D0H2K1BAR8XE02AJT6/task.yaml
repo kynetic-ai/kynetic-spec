@@ -65,7 +65,7 @@ description: >
 spec_ref: "@runner-process-invocation-inputs"
 plan_ref: "@plan-agent-runner-contract-hardening-follow-up"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-tighten-runner-closure-gap-specs"
@@ -77,6 +77,7 @@ tags:
   - cwd
   - runtime
 vcs_refs: []
+session_id: 01KT2304XEMMFDF32XBNB50N9Y
 history:
   - author: Jacob Chapel
     changes:
@@ -85,6 +86,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-06-01T16:43:13.454Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KT2304XEMMFDF32XBNB50N9Y
+        previous: null
+      started_at:
+        new: 2026-06-01T17:17:19.839Z
+        previous: null
+    command: task-start
+    timestamp: 2026-06-01T17:17:19.844Z
 created_at: 2026-06-01T16:37:28.096Z
+started_at: 2026-06-01T17:17:19.839Z
 todos: []
 automation: eligible
