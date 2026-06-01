@@ -1500,6 +1500,11 @@ features:
               The probe reaches a bounded terminal outcome
             when: |
               The endpoint accepts a connection but does not respond
+          - given: A daemon-backed test fixture uses a shared filesystem-based serialization lock, and a
+              previous lock holder has exited without releasing the lock
+            id: ac-shared-startup-lock-recovers-from-crashed-holder
+            then: Acquisition reaches a bounded terminal outcome by reclaiming the lock from the crashed holder
+            when: A new daemon-backed test attempts to acquire the lock
         tags: []
         created: 2026-05-12T00:14:51.847Z
         notes: []
