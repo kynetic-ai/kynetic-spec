@@ -11,3 +11,4 @@ The Troubleshooting section is an index of recovery procedures keyed by the symp
 - [Plan or Review Index Has Drifted From Folder Contents](./plan-or-review-index-drift.md) — the project-wide index disagrees with the on-disk folders; rebuild it
 - [Agent Dispatch Refuses to Assign a Task](./dispatch-refuses-to-assign.md) — a task is not being picked up by the dispatch engine
 - [A Review Is Blocking Merge With an Unresolved Thread](./review-blocking-merge.md) — merge gate rejects work due to an open blocker thread
+- [Runner Validation Failures](./runner-validation-failures.md) — diagnose `kspec agent runners validate` errors by `reason` code

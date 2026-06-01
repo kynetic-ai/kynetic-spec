@@ -50,3 +50,9 @@ Tasks must be explicitly marked as eligible for automation to be picked up by di
 **For one-off work.** `kspec agent run <agent-id>` runs an agent outside the dispatch loop for a single task. This is useful for testing agent behavior or handling specific tasks manually.
 
 Agents and dispatch are optional. You can use kspec entirely through manual CLI commands and never enable automated dispatch. The system works the same way — dispatch just removes the human from the routing step.
+
+## How Agents Get Spawned: Runners
+
+An agent definition points at either an adapter (the legacy path) or a named runner. A runner is an execution harness with its own configuration — command, args, working directory, environment policy, and credential bindings — layered across project-level and machine-local files. Runners are the right place to put project-wide non-secret settings and machine-specific overrides without leaking them into agent definitions or into the repository.
+
+For the mental model, see [Agent Runners](./agent-runners.md). For configuration walkthroughs and migration guidance, see [Configuring Agent Runners](../guides/configuring-agent-runners.md).

@@ -10,4 +10,5 @@ The Concepts section gives you durable mental models for how kspec works. Each p
 - [Reviews](./reviews.md) — the per-cycle review record model and how it gates work
 - [Local Resources for Plans and Reviews](./local-resources.md) — how plans and reviews own supporting files, the folder layout, and the copy-vs-reference rule for derivation
 - [Agents and Dispatch](./agents-and-dispatch.md) — how agents execute work and how dispatch assigns it
+- [Agent Runners](./agent-runners.md) — named execution harnesses, the two-layer config model, and the security boundary between project and system runner config
 - [The Web UI and the Daemon](./web-ui-and-daemon.md) — what each surface is for and when to use them

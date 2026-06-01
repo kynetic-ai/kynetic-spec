@@ -8,5 +8,6 @@ The Guides section covers common kspec workflows as step-by-step procedures fram
 - [Authoring and Completing a Task](./authoring-and-completing-a-task.md) — work a task through the full lifecycle with AC coverage
 - [Reviewing an Agent's Work](./reviewing-an-agents-work.md) — evaluate submitted work against acceptance criteria
 - [Working With Local Resources](./working-with-local-resources.md) — attach files to plans and reviews, reference them from markdown and tasks, and serve them through the daemon API and static export
+- [Configuring Agent Runners](./configuring-agent-runners.md) — define named runners, split project and system config, bind credentials, validate the effective contract, and migrate existing agents
 - [Upgrading kspec to a New Version](./upgrading-kspec.md) — install a new release and update your project
 - [Recovering From Shadow Branch Issues](./recovering-from-shadow-branch-issues.md) — diagnose and fix shadow branch problems
