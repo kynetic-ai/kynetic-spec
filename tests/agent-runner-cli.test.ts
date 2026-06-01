@@ -987,4 +987,115 @@ describe("CLI: registry-load failures distinguish from unknown_runner", () => {
     // payload, regardless of whether the YAML parser echoed the line.
     expect(result.stdout).not.toContain(secret);
   });
+
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-blocks-runner-spawn
+  // Mixed-layer regression: when one layer is malformed but the referenced
+  // runner still survives via the other layer, surfaces must still report
+  // runner_registry_unavailable. Resolving against the partial registry
+  // would mask the malformed sibling file.
+  it("agent list --json reports runner_registry_unavailable when project layer is malformed even if system layer still contains the runner", () => {
+    const fake = makeFakeExecutable(testDir, "fake-bin");
+    writeAgentProject(testDir, [
+      {
+        _ulid: testUlid("AGNT"),
+        id: "runner-backed",
+        name: "Runner Backed",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        runner: "ok",
+        auto_approve: false,
+      },
+    ]);
+    // System layer defines the runner the agent references.
+    writeSystemRunners(testDir, {
+      ok: {
+        kind: "acp_process",
+        adapter: "claude-agent-acp",
+        process: { executable: fake },
+        env: { inherit: "minimal" },
+      },
+    });
+    // Project layer is malformed.
+    const projectPath = writeMalformedProjectRunners(
+      testDir,
+      "runners:\n  ok: [unterminated_flow\n",
+    );
+
+    const data = kspecJson<AgentListJson>("agent list", testDir);
+    const runnerBacked = data.items.find((i) => i.id === "runner-backed");
+    expect(runnerBacked).toBeDefined();
+    expect(runnerBacked!.runner_validation).toBeDefined();
+    expect(runnerBacked!.runner_validation!.status).toBe("invalid");
+    const diag = runnerBacked!.runner_validation!.diagnostics[0];
+    // The surviving system runner must NOT mask the malformed project layer.
+    expect(diag.reason).toBe("runner_registry_unavailable");
+    const details = diag.details as { layer?: string; config_path?: string };
+    expect(details.layer).toBe("project");
+    expect(details.config_path).toBe(projectPath);
+  });
+
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-blocks-runner-spawn
+  it("agent run blocks invocation when project layer is malformed even if the system layer still contains the runner", () => {
+    const fake = makeFakeExecutable(testDir, "fake-bin");
+    writeAgentProject(testDir, [
+      {
+        _ulid: testUlid("AGNT"),
+        id: "runner-backed",
+        name: "Runner Backed",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        runner: "ok",
+        auto_approve: false,
+      },
+    ]);
+    writeSystemRunners(testDir, {
+      ok: {
+        kind: "acp_process",
+        adapter: "claude-agent-acp",
+        process: { executable: fake },
+        env: { inherit: "minimal" },
+      },
+    });
+    writeMalformedProjectRunners(testDir, "runners:\n  ok: [unterminated_flow\n");
+
+    const result = kspecRun('agent run runner-backed "preview"', testDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
+    const combined = `${result.stdout}\n${result.stderr}`;
+    // Resolver must surface the registry-load failure rather than treat the
+    // surviving system runner as runnable.
+    expect(combined).toContain("runner registry is unavailable");
+    expect(combined).not.toContain("references unknown runner");
+  });
+
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+  it("agent list (human output) shows [invalid: runner_registry_unavailable] in mixed-layer case", () => {
+    const fake = makeFakeExecutable(testDir, "fake-bin");
+    writeAgentProject(testDir, [
+      {
+        _ulid: testUlid("AGNT"),
+        id: "runner-backed",
+        name: "Runner Backed",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        runner: "ok",
+        auto_approve: false,
+      },
+    ]);
+    writeSystemRunners(testDir, {
+      ok: {
+        kind: "acp_process",
+        adapter: "claude-agent-acp",
+        process: { executable: fake },
+        env: { inherit: "minimal" },
+      },
+    });
+    writeMalformedProjectRunners(testDir, "runners:\n  ok: [unterminated_flow\n");
+
+    const result = kspecRun("agent list", testDir);
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("runner_registry_unavailable");
+    expect(result.stdout).not.toContain("[valid]");
+    expect(result.stdout).not.toContain("[invalid: unknown_runner]");
+  });
 });

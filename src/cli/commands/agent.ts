@@ -572,31 +572,13 @@ export function registerAgentCommands(program: Command): void {
               // without a runner field do not get the field — null would
               // imply an outcome where there is none to report.
               if (a.runner) {
-                const entry = validationByRunner.get(a.runner);
-                if (entry) {
-                  item.runner_validation = {
-                    status: entry.status,
-                    diagnostics: entry.diagnostics,
-                  };
-                } else if (runnerResolved) {
-                  // Defensive: registry contains the runner but validation
-                  // was skipped (e.g. resolveEffectiveRunners threw). Report
-                  // the gap rather than silently dropping the field.
-                  item.runner_validation = {
-                    status: "invalid",
-                    diagnostics: [
-                      {
-                        reason: "preflight_failure",
-                        message:
-                          "Runner registry loaded but validation report unavailable; rerun with `kspec agent runners validate` for details.",
-                      },
-                    ],
-                  };
-                } else if (listRegistryLoadFailures.length > 0) {
-                  // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
-                  // The runner is missing because a config layer failed to
-                  // load. Surface the registry-load failure rather than
-                  // `unknown_runner` so operators know which file to fix.
+                // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+                // Registry-load failures take precedence over per-runner
+                // validation entries. A surviving runner from one layer must
+                // not mask a malformed sibling layer — operators need to see
+                // which config file to fix before relying on any runner
+                // resolved from a partial registry.
+                if (listRegistryLoadFailures.length > 0) {
                   item.runner_validation = {
                     status: "invalid",
                     diagnostics: listRegistryLoadFailures.map((failure) => ({
@@ -614,19 +596,41 @@ export function registerAgentCommands(program: Command): void {
                     })),
                   };
                 } else {
-                  item.runner_validation = {
-                    status: "invalid",
-                    diagnostics: [
-                      {
-                        reason: "unknown_runner",
-                        message:
-                          `Runner "${a.runner}" is not present in the effective runner registry. ` +
-                          `Check the project runner config (project.runners.yaml in the kspec shadow worktree), ` +
-                          `the system runner config (runners.yaml under the daemon config dir), and the agent definition's runner field.`,
-                        details: { runner: a.runner, agent: a.id },
-                      },
-                    ],
-                  };
+                  const entry = validationByRunner.get(a.runner);
+                  if (entry) {
+                    item.runner_validation = {
+                      status: entry.status,
+                      diagnostics: entry.diagnostics,
+                    };
+                  } else if (runnerResolved) {
+                    // Defensive: registry contains the runner but validation
+                    // was skipped (e.g. resolveEffectiveRunners threw). Report
+                    // the gap rather than silently dropping the field.
+                    item.runner_validation = {
+                      status: "invalid",
+                      diagnostics: [
+                        {
+                          reason: "preflight_failure",
+                          message:
+                            "Runner registry loaded but validation report unavailable; rerun with `kspec agent runners validate` for details.",
+                        },
+                      ],
+                    };
+                  } else {
+                    item.runner_validation = {
+                      status: "invalid",
+                      diagnostics: [
+                        {
+                          reason: "unknown_runner",
+                          message:
+                            `Runner "${a.runner}" is not present in the effective runner registry. ` +
+                            `Check the project runner config (project.runners.yaml in the kspec shadow worktree), ` +
+                            `the system runner config (runners.yaml under the daemon config dir), and the agent definition's runner field.`,
+                          details: { runner: a.runner, agent: a.id },
+                        },
+                      ],
+                    };
+                  }
                 }
               }
               if (a.session) item.session = a.session;
@@ -662,22 +666,26 @@ export function registerAgentCommands(program: Command): void {
               // AC: @runner-operator-surfaces ac-runner-validation-human-output
               // AC: @agent-runner-configuration ac-agent-runner-reference
               if (a.runner) {
-                const entry = validationByRunner.get(a.runner);
                 let statusLabel: string;
                 let humanDiagnostics: Array<{ reason: string; message: string }> = [];
-                if (entry) {
-                  statusLabel =
-                    entry.status === "valid" ? chalk.green("[valid]") : chalk.red("[invalid]");
-                  humanDiagnostics = [...entry.diagnostics];
-                } else if (listRegistryLoadFailures.length > 0) {
-                  // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+                // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+                // Registry-load failures take precedence: a surviving runner
+                // from one layer must not mask a malformed sibling layer.
+                if (listRegistryLoadFailures.length > 0) {
                   statusLabel = chalk.red("[invalid: runner_registry_unavailable]");
                   humanDiagnostics = listRegistryLoadFailures.map((failure) => ({
                     reason: "runner_registry_unavailable",
                     message: `Runner registry unavailable: ${summarizeRegistryLoadFailure(failure)}.`,
                   }));
                 } else {
-                  statusLabel = chalk.red("[invalid: unknown_runner]");
+                  const entry = validationByRunner.get(a.runner);
+                  if (entry) {
+                    statusLabel =
+                      entry.status === "valid" ? chalk.green("[valid]") : chalk.red("[invalid]");
+                    humanDiagnostics = [...entry.diagnostics];
+                  } else {
+                    statusLabel = chalk.red("[invalid: unknown_runner]");
+                  }
                 }
                 console.log(`    ${chalk.gray("runner:")} ${a.runner} ${statusLabel}`);
                 for (const issue of humanDiagnostics) {
@@ -918,18 +926,22 @@ export function registerAgentCommands(program: Command): void {
               cwd: ctx.rootDir,
               runner: agentDef.runner,
             });
-            const entry = report.runners.find((r) => r.runner === agentDef.runner);
-            if (entry) {
-              validationState = { ...entry, selected: true };
-            } else if (report.registry_load_failures.length > 0) {
-              // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+            // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+            // Registry-load failures take precedence: a surviving runner from
+            // one layer must not mask a malformed sibling layer.
+            if (report.registry_load_failures.length > 0) {
               validationState = {
                 selected: false,
                 reason: "runner_registry_unavailable",
                 registry_load_failures: report.registry_load_failures,
               };
             } else {
-              validationState = { selected: false, reason: "unknown_runner" };
+              const entry = report.runners.find((r) => r.runner === agentDef.runner);
+              if (entry) {
+                validationState = { ...entry, selected: true };
+              } else {
+                validationState = { selected: false, reason: "unknown_runner" };
+              }
             }
           } else {
             validationState = { selected: false, reason: "unknown_runner" };

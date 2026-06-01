@@ -411,32 +411,36 @@ export function resolveRunnerInvocation(input: ResolveRunnerInvocationInput): Ru
     });
   }
 
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-blocks-runner-spawn
+  // Block runner-backed invocations whenever any layer failed to load — even
+  // if another layer still contributes a runner entry with the referenced
+  // name. A malformed layer means operators are looking at a partial registry
+  // they did not intend; resolving against the surviving layer would mask the
+  // real config error and may produce a different runner than the operator
+  // expects. The diagnostic carries the failing layer and config path so the
+  // operator knows which file to fix.
+  if (registryLoadFailures && registryLoadFailures.length > 0) {
+    throw new RunnerResolutionError(
+      "runner_registry_unavailable",
+      `Agent "${agent.id}" references runner "${agent.runner}" but the ` +
+        `runner registry is unavailable. ${describeRegistryLoadFailures(registryLoadFailures)} ` +
+        `Fix the failing config layer(s) and rerun.`,
+      {
+        runner: agent.runner,
+        agent: agent.id,
+        failures: registryLoadFailures.map((failure) => ({
+          reason: failure.reason,
+          layer: failure.layer,
+          config_path: failure.config_path,
+          issues: failure.issues.map((issue) => ({ ...issue })),
+        })),
+      },
+    );
+  }
+
   const runner = registry.runners[agent.runner];
   if (!runner) {
-    // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
-    // AC: @runner-resolution-and-preflight ac-registry-load-failure-blocks-runner-spawn
-    // When the runner is missing because a config layer failed to load,
-    // surface the registry-load failure as the cause rather than collapsing
-    // it into a generic `unknown_runner`. Operators need to see which file
-    // to fix; an empty registry would hide the real config-layer error.
-    if (registryLoadFailures && registryLoadFailures.length > 0) {
-      throw new RunnerResolutionError(
-        "runner_registry_unavailable",
-        `Agent "${agent.id}" references runner "${agent.runner}" but the ` +
-          `runner registry is unavailable. ${describeRegistryLoadFailures(registryLoadFailures)} ` +
-          `Fix the failing config layer(s) and rerun.`,
-        {
-          runner: agent.runner,
-          agent: agent.id,
-          failures: registryLoadFailures.map((failure) => ({
-            reason: failure.reason,
-            layer: failure.layer,
-            config_path: failure.config_path,
-            issues: failure.issues.map((issue) => ({ ...issue })),
-          })),
-        },
-      );
-    }
     throw new RunnerResolutionError(
       "unknown_runner",
       `Agent "${agent.id}" references unknown runner "${agent.runner}". ` +

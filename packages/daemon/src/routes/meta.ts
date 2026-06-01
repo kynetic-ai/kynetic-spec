@@ -129,6 +129,32 @@ function buildAgentRunnerFields(
   };
   if (!agent.runner) return out;
 
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+  // Registry-load failures take precedence over per-runner validation
+  // entries. A surviving runner from one layer must not mask a malformed
+  // sibling layer — operators need the failing config path attached to the
+  // daemon agent response, not a "valid" entry resolved from the partial
+  // registry.
+  if (context.registryLoadFailures.length > 0) {
+    out.runner_validation = {
+      status: "invalid",
+      diagnostics: context.registryLoadFailures.map((failure) => ({
+        reason: "runner_registry_unavailable",
+        message:
+          `Runner registry unavailable: ${summarizeRegistryLoadFailure(failure)}. ` +
+          `Fix the ${failure.layer} runner config before relying on runner "${agent.runner}".`,
+        details: {
+          runner: agent.runner,
+          agent: agent.id,
+          layer: failure.layer,
+          config_path: failure.config_path,
+          issues: failure.issues.map((issue) => ({ ...issue })),
+        },
+      })),
+    };
+    return out;
+  }
+
   const entry = context.validationByRunner.get(agent.runner);
   if (entry) {
     out.runner_validation = {
@@ -147,26 +173,6 @@ function buildAgentRunnerFields(
             "Runner registry loaded but validation report unavailable; rerun `kspec agent runners validate` for details.",
         },
       ],
-    };
-    return out;
-  }
-  if (context.registryLoadFailures.length > 0) {
-    // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
-    out.runner_validation = {
-      status: "invalid",
-      diagnostics: context.registryLoadFailures.map((failure) => ({
-        reason: "runner_registry_unavailable",
-        message:
-          `Runner registry unavailable: ${summarizeRegistryLoadFailure(failure)}. ` +
-          `Fix the ${failure.layer} runner config before relying on runner "${agent.runner}".`,
-        details: {
-          runner: agent.runner,
-          agent: agent.id,
-          layer: failure.layer,
-          config_path: failure.config_path,
-          issues: failure.issues.map((issue) => ({ ...issue })),
-        },
-      })),
     };
     return out;
   }

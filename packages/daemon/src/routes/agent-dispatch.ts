@@ -732,9 +732,13 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
               completed_sessions: completedCounts[a.id] ?? 0,
             };
             // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
-            // Attach the registry-load diagnostic when a runner-backed agent
-            // cannot resolve because the config layer is unloadable.
-            if (a.runner && !runnerEntry && registryLoadFailures.length > 0) {
+            // Attach the registry-load diagnostic to any runner-backed agent
+            // when the registry is unavailable — including the mixed-layer
+            // case where the agent's runner survives from one layer but
+            // another layer is malformed. A surviving runner entry must not
+            // mask the failing layer; operators need the failing config path
+            // before relying on a runner resolved from a partial registry.
+            if (a.runner && registryLoadFailures.length > 0) {
               definition.runner_validation = {
                 status: "invalid",
                 diagnostics: registryLoadFailures.map((failure) => ({

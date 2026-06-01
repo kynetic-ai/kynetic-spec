@@ -725,4 +725,85 @@ describe("resolveRunnerInvocation: contract redactor + routed session id", () =>
       RunnerResolutionError,
     );
   });
+
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-blocks-runner-spawn
+  // Mixed-layer regression: when one config layer fails to load but another
+  // layer still contributes the referenced runner, resolution must still
+  // throw runner_registry_unavailable. Resolving against the surviving layer
+  // would mask the malformed file and may return a different runner than the
+  // operator expects.
+  it("blocks with runner_registry_unavailable when one layer fails to load even if the named runner survives from the other layer", () => {
+    // Build a registry where the runner name "ok" is contributed by the
+    // (surviving) system layer. Project layer is treated as failed via the
+    // registryLoadFailures argument.
+    const registry = buildRegistry(null, {
+      runners: { ok: { kind: "acp_process", adapter: "claude-agent-acp" } },
+    });
+    const agent = makeAgent({ runner: "ok" });
+    expect(() =>
+      resolveRunnerInvocation(
+        makeInput({
+          agent,
+          registry,
+          registryLoadFailures: [
+            {
+              reason: "runner_registry_unavailable",
+              layer: "project",
+              config_path: "/tmp/project.runners.yaml",
+              issues: [{ path: "runners.broken", message: "unterminated flow sequence" }],
+            },
+          ],
+        }),
+      ),
+    ).toThrowError(RunnerResolutionError);
+
+    try {
+      resolveRunnerInvocation(
+        makeInput({
+          agent,
+          registry,
+          registryLoadFailures: [
+            {
+              reason: "runner_registry_unavailable",
+              layer: "project",
+              config_path: "/tmp/project.runners.yaml",
+              issues: [{ path: "runners.broken", message: "unterminated flow sequence" }],
+            },
+          ],
+        }),
+      );
+    } catch (err) {
+      const e = err as RunnerResolutionError;
+      expect(e.reason).toBe("runner_registry_unavailable");
+      const failures = (e.details as { failures?: Array<{ layer: string; config_path: string }> })
+        .failures;
+      expect(Array.isArray(failures)).toBe(true);
+      expect(failures!.length).toBeGreaterThan(0);
+      expect(failures![0].layer).toBe("project");
+      expect(failures![0].config_path).toBe("/tmp/project.runners.yaml");
+    }
+  });
+
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-blocks-runner-spawn
+  // Legacy adapter-only agents must remain resolvable even when registry
+  // load fails — they do not depend on the runner registry.
+  it("does not block legacy adapter-only agents when the registry has load failures", () => {
+    const agent = makeAgent({ adapter: "claude-agent-acp" });
+    const result = resolveRunnerInvocation(
+      makeInput({
+        agent,
+        registry: { runners: {} },
+        registryLoadFailures: [
+          {
+            reason: "runner_registry_unavailable",
+            layer: "system",
+            config_path: "/tmp/system-runners.yaml",
+            issues: [{ path: "", message: "malformed YAML" }],
+          },
+        ],
+      }),
+    );
+    expect(result.diagnostics.selectedRunner.source).toBe("implicit");
+    expect(result.diagnostics.selectedAdapter.id).toBe("claude-agent-acp");
+  });
 });

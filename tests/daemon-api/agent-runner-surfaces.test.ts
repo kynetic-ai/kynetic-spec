@@ -678,4 +678,105 @@ describe("Daemon agent + dispatch surfaces — registry-load failures", () => {
     expect(legacyDef).toBeDefined();
     expect(legacyDef.runner_validation).toBeUndefined();
   });
+
+  // Helper: write a valid system runner config for mixed-layer tests.
+  function writeValidSystemRunners(projectDir: string, home: string): void {
+    const projectKey = deriveProjectKeySync(projectDir);
+    const dir = path.join(home, ".config", "kspec", "projects", projectKey);
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(
+      path.join(dir, "runners.yaml"),
+      `runners:
+  configured-runner:
+    kind: acp_process
+    adapter: claude-agent-acp
+    env:
+      inherit: minimal
+`,
+    );
+  }
+
+  function writeMalformedProjectRunners(
+    projectDir: string,
+    content: string,
+  ): {
+    metaPath: string;
+    dispatchPath: string;
+  } {
+    // /api/meta/agents resolves the shadow worktree dir explicitly as
+    // `<projectRoot>/.kspec`. /api/agent/status calls initContext, which in
+    // this non-shadow inline test layout sets specDir = projectDir. Write
+    // both locations so the test can assert against either endpoint without
+    // depending on which path the route resolved.
+    const metaPath = path.join(projectDir, ".kspec", "project.runners.yaml");
+    const dispatchPath = path.join(projectDir, "project.runners.yaml");
+    writeFileSync(metaPath, content);
+    writeFileSync(dispatchPath, content);
+    return { metaPath, dispatchPath };
+  }
+
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+  // Mixed-layer regression: malformed project layer must not be masked by a
+  // surviving runner entry from the system layer.
+  it("GET /api/meta/agents reports runner_registry_unavailable when project layer is malformed even if system contributes the runner", async () => {
+    writeValidSystemRunners(regTempDir, regHomeDir);
+    const { metaPath } = writeMalformedProjectRunners(
+      regTempDir,
+      "runners:\n  configured-runner: [unterminated\n",
+    );
+
+    const response = await regRequest("/api/meta/agents");
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    const runnerAgent = body.data.find((a: { id: string }) => a.id === "runner-worker");
+    expect(runnerAgent).toBeDefined();
+    expect(runnerAgent.runner_validation).toBeDefined();
+    expect(runnerAgent.runner_validation.status).toBe("invalid");
+    const diag = runnerAgent.runner_validation.diagnostics[0];
+    // Must surface the malformed layer rather than the surviving runner.
+    expect(diag.reason).toBe("runner_registry_unavailable");
+    expect(diag.details.layer).toBe("project");
+    expect(diag.details.config_path).toBe(metaPath);
+  });
+
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+  it("PATCH /api/meta/agents/:id returns runner_registry_unavailable in mixed-layer case", async () => {
+    writeValidSystemRunners(regTempDir, regHomeDir);
+    const { metaPath } = writeMalformedProjectRunners(
+      regTempDir,
+      "runners:\n  configured-runner: [unterminated\n",
+    );
+
+    const patchResponse = await regRequest("/api/meta/agents/runner-worker", {
+      method: "PATCH",
+      body: JSON.stringify({ description: "Touch description" }),
+    });
+    expect(patchResponse.status).toBe(200);
+    const updated = await patchResponse.json();
+    expect(updated.runner_validation).toBeDefined();
+    expect(updated.runner_validation.status).toBe("invalid");
+    expect(updated.runner_validation.diagnostics[0].reason).toBe("runner_registry_unavailable");
+    expect(updated.runner_validation.diagnostics[0].details.layer).toBe("project");
+    expect(updated.runner_validation.diagnostics[0].details.config_path).toBe(metaPath);
+  });
+
+  // AC: @runner-resolution-and-preflight ac-registry-load-failure-reports-config-error
+  it("GET /api/agent/status agent_definitions attach runner_registry_unavailable in mixed-layer case", async () => {
+    writeValidSystemRunners(regTempDir, regHomeDir);
+    const { dispatchPath } = writeMalformedProjectRunners(
+      regTempDir,
+      "runners:\n  configured-runner: [unterminated\n",
+    );
+
+    const response = await regRequest("/api/agent/status");
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    const runnerDef = body.agent_definitions.find((d: { id: string }) => d.id === "runner-worker");
+    expect(runnerDef).toBeDefined();
+    expect(runnerDef.runner_validation).toBeDefined();
+    const diag = runnerDef.runner_validation.diagnostics[0];
+    expect(diag.reason).toBe("runner_registry_unavailable");
+    expect(diag.details.layer).toBe("project");
+    expect(diag.details.config_path).toBe(dispatchPath);
+  });
 });
