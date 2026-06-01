@@ -11,7 +11,7 @@ description: "Fresh npm test in review snapshot reproduced deterministic timeout
 spec_ref: "@daemon-test-teardown-boundedness"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -20,6 +20,14 @@ tags:
   - tests
   - daemon
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/stabilize-daemon-fixture-cleanup-tests-timing-out/01kt09pw
+  captured_at: 2026-06-01T01:11:45.968Z
+  commit: b8f8ed94f9fe3bd36a1ed8f1ab58bee394529f10
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KT09RVR6F25P0GMQT2598KAD
 history:
   - author: "@claude"
@@ -61,7 +69,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-01T01:11:29.219Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/stabilize-daemon-fixture-cleanup-tests-timing-out/01kt09pw
+          captured_at: 2026-06-01T01:11:45.968Z
+          commit: b8f8ed94f9fe3bd36a1ed8f1ab58bee394529f10
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-06-01T01:11:45.976Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-01T01:11:45.976Z
 created_at: 2026-06-01T00:35:31.073Z
 started_at: 2026-06-01T01:11:29.215Z
+submitted_at: 2026-06-01T01:11:45.976Z
 todos: []
 automation: eligible
