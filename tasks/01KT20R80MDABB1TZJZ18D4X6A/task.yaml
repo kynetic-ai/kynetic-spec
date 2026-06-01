@@ -106,8 +106,13 @@ description: >
 spec_ref: "@runner-process-invocation-inputs"
 plan_ref: "@plan-agent-runner-contract-hardening-follow-up"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Review approved in @01KT21N0. Merge helper reported no-op:
+  dispatch/task/task-tighten-runner-closure-gap-specs/01kt20r8 at
+  eb681fdfe108842ceb267de751ab4f98dc249bb0 is already integrated at dev. Verified four existing
+  runner specs were reopened to in_progress, seven closure-gap ACs were added, spec notes recorded
+  follow-up evidence, validation and repository gates passed."
 depends_on: []
 context: []
 priority: 1
@@ -175,8 +180,26 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-01T16:53:12.915Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Review approved in @01KT21N0. Merge helper reported no-op:
+          dispatch/task/task-tighten-runner-closure-gap-specs/01kt20r8 at
+          eb681fdfe108842ceb267de751ab4f98dc249bb0 is already integrated at dev. Verified four
+          existing runner specs were reopened to in_progress, seven closure-gap ACs were added, spec
+          notes recorded follow-up evidence, validation and repository gates passed."
+        previous: null
+      completed_at:
+        new: 2026-06-01T17:15:18.861Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-01T17:15:18.881Z
 created_at: 2026-06-01T16:37:27.700Z
 started_at: 2026-06-01T16:45:22.857Z
 submitted_at: 2026-06-01T16:49:10.092Z
+completed_at: 2026-06-01T17:15:18.861Z
 todos: []
 automation: eligible
