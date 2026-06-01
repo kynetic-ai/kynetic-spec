@@ -194,6 +194,13 @@ events:
       status: fail
       name: signal handler probe
     timestamp: 2026-06-01T01:32:57.154Z
+  - _ulid: 01KT0D0EYDARQH3EQH70WD3VH0
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KT0D0EQG81WPXPVH2A8RVHMS
+    timestamp: 2026-06-01T01:33:10.989Z
 examined_commit: b8f8ed94f9fe3bd36a1ed8f1ab58bee394529f10
 external_links: []
 lifecycle_state: open
@@ -203,8 +210,31 @@ subject:
   content_hash: ""
   ref: "@01KT09PW43D40MTYNCFMP7ZMZN"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KT0D0EQG81WPXPVH2A8RVHMS
+    anchor:
+      type: code
+      commit: b8f8ed94f9fe3bd36a1ed8f1ab58bee394529f10
+      line_end: 477
+      line_start: 470
+      path: tests/helpers/daemon.ts
+      side: head
+    entries:
+      - _ulid: 01KT0D0EQGHSPGA51V4TW8NVHT
+        author: Jacob Chapel
+        body: "MUST-FIX: The new signal cleanup handlers call process.kill(process.pid, signal) without
+          first removing/restoring the signal handler. In Node, installing a signal listener
+          suppresses the default termination behavior for that signal, so re-sending
+          SIGTERM/SIGINT/SIGHUP re-enters this same handler instead of exiting. I reproduced the
+          pattern in a subprocess: after SIGTERM it printed the handler repeatedly until I killed
+          it. Any test runner that has acquired the port-start lock can now hang on termination
+          rather than reaching a bounded terminal outcome, which violates this task's daemon
+          teardown boundedness contract. Fix by restoring default behavior before re-raising, using
+          process.once with listener removal, or otherwise exiting with the signal-appropriate
+          behavior after releasing locks."
+        created_at: 2026-06-01T01:33:10.768Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-01T01:16:49.268Z
-updated_at: 2026-06-01T01:32:56.906Z
+updated_at: 2026-06-01T01:33:10.768Z
 notes: []
