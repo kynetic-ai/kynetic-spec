@@ -276,6 +276,98 @@ describe("PATCH /api/meta/agents/:id — runner field updates", () => {
     const reloaded = listBody.data.find((a: { id: string }) => a.id === "legacy-worker");
     expect(reloaded.runner).toBeUndefined();
   });
+
+  // ─── PATCH/GET runner-state parity ─────────────────────────────────────────
+  // The PATCH endpoint must emit the same runner-aware response shape that
+  // GET /api/meta/agents returns for the saved agent. Without this, API
+  // clients could observe a less complete contract immediately after editing
+  // runner fields than the list endpoint provides.
+
+  async function getAgentFromList(agentId: string): Promise<Record<string, unknown>> {
+    const response = await request("/api/meta/agents");
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    const agent = body.data.find((a: { id: string }) => a.id === agentId);
+    expect(agent).toBeDefined();
+    return agent as Record<string, unknown>;
+  }
+
+  function assertRunnerStateParity(
+    patched: Record<string, unknown>,
+    fromList: Record<string, unknown>,
+  ): void {
+    // Per ac-daemon-agent-patch-returns-runner-state: PATCH must return the
+    // same `adapter`, `resolved_adapter`, and redacted `runner_validation`
+    // shape that the list endpoint would return for the saved agent.
+    expect(patched.adapter).toBe(fromList.adapter);
+    expect(patched.resolved_adapter).toBe(fromList.resolved_adapter);
+    expect(patched.runner).toBe(fromList.runner);
+    expect(patched.runner_validation).toEqual(fromList.runner_validation);
+  }
+
+  // AC: @runner-operator-surfaces ac-daemon-agent-patch-returns-runner-state
+  it("PATCH sets a valid runner and returns the same runner-state shape as GET", async () => {
+    const patchResponse = await request("/api/meta/agents/legacy-worker", {
+      method: "PATCH",
+      body: JSON.stringify({ runner: "configured-runner" }),
+    });
+    expect(patchResponse.status).toBe(200);
+    const updated = await patchResponse.json();
+
+    // Response must include the enriched runner shape, not the raw saved agent.
+    expect(updated.runner).toBe("configured-runner");
+    expect(updated.adapter).toBe("claude-agent-acp");
+    expect(updated.resolved_adapter).toBe("claude-agent-acp");
+    expect(updated.runner_validation).toBeDefined();
+    expect(updated.runner_validation.status).toBe("valid");
+    expect(updated.runner_validation.diagnostics).toEqual([]);
+
+    const reloaded = await getAgentFromList("legacy-worker");
+    assertRunnerStateParity(updated, reloaded);
+  });
+
+  // AC: @runner-operator-surfaces ac-daemon-agent-patch-returns-runner-state
+  it("PATCH clearing a runner returns the same runner-state shape as GET", async () => {
+    // Start from a runner-backed agent (runner-worker), clear it, then compare.
+    const patchResponse = await request("/api/meta/agents/runner-worker", {
+      method: "PATCH",
+      body: JSON.stringify({ runner: null }),
+    });
+    expect(patchResponse.status).toBe(200);
+    const updated = await patchResponse.json();
+
+    // After clearing: no runner, no runner_validation block. Resolved adapter
+    // falls back to the legacy adapter field.
+    expect(updated.runner).toBeUndefined();
+    expect(updated.runner_validation).toBeUndefined();
+    expect(updated.adapter).toBe("claude-agent-acp");
+    expect(updated.resolved_adapter).toBe("claude-agent-acp");
+
+    const reloaded = await getAgentFromList("runner-worker");
+    assertRunnerStateParity(updated, reloaded);
+  });
+
+  // AC: @runner-operator-surfaces ac-daemon-agent-patch-returns-runner-state
+  // AC: @runner-resolution-and-preflight ac-unknown-runner-reports-guidance
+  it("PATCH setting an unknown runner returns the same runner-state shape as GET", async () => {
+    const patchResponse = await request("/api/meta/agents/legacy-worker", {
+      method: "PATCH",
+      body: JSON.stringify({ runner: "definitely-not-registered" }),
+    });
+    expect(patchResponse.status).toBe(200);
+    const updated = await patchResponse.json();
+
+    expect(updated.runner).toBe("definitely-not-registered");
+    expect(updated.adapter).toBe("claude-agent-acp");
+    expect(updated.resolved_adapter).toBe("claude-agent-acp");
+    expect(updated.runner_validation).toBeDefined();
+    expect(updated.runner_validation.status).toBe("invalid");
+    const reasons = updated.runner_validation.diagnostics.map((d: { reason: string }) => d.reason);
+    expect(reasons).toContain("unknown_runner");
+
+    const reloaded = await getAgentFromList("legacy-worker");
+    assertRunnerStateParity(updated, reloaded);
+  });
 });
 
 // ─── GET /api/agent/status — runner fields on dispatch state ────────────────
@@ -613,16 +705,15 @@ describe("Daemon agent + dispatch surfaces — registry-load failures", () => {
     expect(updated.runner_validation.diagnostics[0].reason).toBe("runner_registry_unavailable");
     expect(updated.runner_validation.diagnostics[0].details.layer).toBe("system");
 
-    // Reload via GET to confirm the same shape.
+    // Reload via GET to confirm full runner-state parity.
+    // AC: @runner-operator-surfaces ac-daemon-agent-patch-returns-runner-state
     const getResponse = await regRequest("/api/meta/agents");
     const getBody = await getResponse.json();
     const reloaded = getBody.data.find((a: { id: string }) => a.id === "runner-worker");
-    expect(reloaded.runner_validation.diagnostics[0].reason).toBe(
-      updated.runner_validation.diagnostics[0].reason,
-    );
-    expect(reloaded.runner_validation.diagnostics[0].details.layer).toBe(
-      updated.runner_validation.diagnostics[0].details.layer,
-    );
+    expect(reloaded.adapter).toBe(updated.adapter);
+    expect(reloaded.resolved_adapter).toBe(updated.resolved_adapter);
+    expect(reloaded.runner).toBe(updated.runner);
+    expect(reloaded.runner_validation).toEqual(updated.runner_validation);
   });
 
   // AC: @runner-operator-surfaces ac-daemon-agent-api-includes-runner
