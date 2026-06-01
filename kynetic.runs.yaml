@@ -58044,7 +58044,7 @@ runs:
     completed_at: 2026-06-01T00:48:48.770Z
   - _ulid: 01KT0BT9K1B4S89TV2YE529GK7
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -58061,7 +58061,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-01T01:13:14.190Z
-        completed_at: 2026-06-01T01:13:14.190Z
+        completed_at: 2026-06-01T01:13:32.258Z
+        notes: "Friction: kspec task start command output finishes with the spec AC list but does NOT
+          confirm the actual state transition — first invocation of 'kspec task start
+          @01KT09PW43D40MTYNCFMP7ZMZN' completed without an OK line and the task remained in
+          'pending'. Only a second invocation actually moved it to in_progress. Caused a wasted
+          submit attempt that surfaced 'Cannot submit task with status: pending'. The CLI should
+          either always print the resulting state line or fail loudly when the transition was a
+          no-op."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-01T01:13:32.258Z
+        completed_at: 2026-06-01T01:13:32.258Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-01T01:12:20.321Z
