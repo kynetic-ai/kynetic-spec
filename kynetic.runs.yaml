@@ -58604,9 +58604,22 @@ runs:
     completed_at: 2026-06-01T16:51:29.768Z
   - _ulid: 01KT22YS1F9QR16WMY6QSRW1BZ
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-01T17:15:58.895Z
+        completed_at: 2026-06-01T17:17:21.295Z
+        notes: "What worked well: the kspec review record flow gave a clean audit trail for a spec-only
+          review. Creating the review first, attaching required checks, and using the
+          detached-reviewer merge helper made the approval/no-op completion path explicit. The
+          task's own spec notes and item status commands were enough to verify the intended contract
+          tightening without inspecting shadow YAML directly."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-01T17:17:21.295Z
+        completed_at: 2026-06-01T17:17:21.295Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-01T17:15:58.895Z
