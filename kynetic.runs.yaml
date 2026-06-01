@@ -58091,7 +58091,7 @@ runs:
     started_at: 2026-06-01T01:12:20.321Z
     completed_at: 2026-06-01T01:14:38.525Z
   - _ulid: 01KT0CT4M9FSK6BXGAGCTNHZKV
-    status: active
+    status: completed
     current_step: 3
     initiated_by: "@claude"
     step_results:
@@ -58130,3 +58130,4 @@ runs:
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-01T01:29:43.817Z
+    completed_at: 2026-06-01T01:31:49.864Z
