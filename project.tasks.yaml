@@ -30541,7 +30541,7 @@
   type: task
   spec_ref: "@runner-invocation-semantics"
   plan_ref: "@plan-agent-runner-contract-hardening-follow-up"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-tighten-runner-closure-gap-specs"
@@ -30557,6 +30557,7 @@
   todos_count: 0
   created_at: 2026-06-01T16:37:28.799Z
   started_at: 2026-06-01T19:58:12.017Z
+  submitted_at: 2026-06-01T20:24:29.178Z
   automation: eligible
 - _ulid: 01KT20R9G2BY67EDEA63J690TR
   slugs:
