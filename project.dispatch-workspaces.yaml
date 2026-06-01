@@ -15435,18 +15435,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/stabilize-daemon-fixture-cleanup-tests-timing-out/01kt09pw
-    canonical_branch_head: b3c36679018c1891653684e2d3b9ad90010e92cd
+    canonical_branch_head: faa3e056dccd97805519b24c458f5c3a568997fc
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-01T01:40:59.180Z
+      updated_at: 2026-06-01T01:58:02.596Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-01T01:40:59.180Z
+      updated_at: 2026-06-01T01:58:02.596Z
     integration:
       status: pending
       detail: null
@@ -15454,7 +15454,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: a3d14de838fdbd65181cb0de7e03bb065974d6c7
-      updated_at: 2026-06-01T01:40:59.180Z
+      updated_at: 2026-06-01T01:58:02.596Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KT09PW43D40MTYNCFMP7ZMZN"
@@ -15462,9 +15462,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-01T01:37:45.188Z
-      last_reconciled_at: 2026-06-01T01:40:59.180Z
+      last_reconciled_at: 2026-06-01T01:58:02.596Z
       created_at: 2026-06-01T00:36:07.857Z
-      updated_at: 2026-06-01T01:40:59.180Z
+      updated_at: 2026-06-01T01:58:02.596Z
     workspace_id: dispatch-workspace-01KT09PW43D40MTYNCFMP7ZMZN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
