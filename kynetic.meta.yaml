@@ -20397,6 +20397,32 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-06-01T18:11:26.443Z
+  - _ulid: 01KT27Q3X0H6WCQ438DDQA4R34
+    type: friction
+    content: CLI JSON output drift from extended report shapes — when adding a new field to a
+      validation/report type (e.g. RunnerValidationReport.registry_load_failures), the CLI command’s
+      output() call does not automatically pick it up. Today this was caught by a new test that
+      asserted the field directly; without the test, the report would carry the field server-side
+      but clients reading the CLI JSON would silently miss it. Consider an audit lint or a wrapper
+      that serializes the report verbatim instead of re-listing fields per command.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-01T18:39:10.752Z
+  - _ulid: 01KT27Q47N4N5VHRZP65CQ7DQ6
+    type: success
+    content: Shared enrichment helper kept daemon GET and PATCH responses in sync. In
+      packages/daemon/src/routes/meta.ts, extracting loadRunnerEnrichmentContext() and
+      buildAgentRunnerFields() and reusing both in GET /api/meta/agents and PATCH
+      /api/meta/agents/:id meant the runner_validation block (including the new
+      runner_registry_unavailable diagnostic) appears identically on read and write paths. This is
+      the parity pattern the runner-operator-surface-parity follow-up task asks for, applied at the
+      API layer where it belongs. Worth replicating for other mutation endpoints whose response
+      shape must mirror the corresponding list endpoint.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-01T18:39:11.093Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
