@@ -2781,6 +2781,16 @@ export class DispatchEngine {
       // Building the prompt before resolution would expand role-entry
       // adapter-specific tokens against the legacy agent.adapter field,
       // breaking runner precedence for dispatch.
+      //
+      // AC: @runner-invocation-semantics ac-dispatch-preflight-uses-canonical-session-id
+      // AC: @cli-agent-commands ac-6 - Pre-assign session ID for status tracking
+      // Allocate the canonical session id BEFORE the preflight resolver so
+      // the preflight contract, every active-tracking field, lifecycle event
+      // payload, session context, and the eventual `runInvocation` all
+      // observe the same `KSPEC_SESSION_ID`. Without this, runner env/session
+      // injection or diagnostic interpolation at preflight time would see a
+      // throwaway id distinct from the tracked invocation id.
+      const preSessionId = ulid();
       let preflightContract: RunnerInvocation;
       let preflightRegistry: EffectiveRunnerRegistry;
       let preflightRegistryLoadFailures: readonly RegistryLoadFailure[] = [];
@@ -2805,7 +2815,8 @@ export class DispatchEngine {
           agent,
           registry: preflightRegistry,
           cwd: workspace.cwd,
-          sessionId: ulid(),
+          // AC: @runner-invocation-semantics ac-dispatch-preflight-uses-canonical-session-id
+          sessionId: preSessionId,
           autoApprove: agent.auto_approve,
           env: {},
           // AC: @runner-resolution-and-preflight ac-registry-load-failure-blocks-runner-spawn
@@ -2927,8 +2938,6 @@ export class DispatchEngine {
       const abortController = new AbortController();
       this.invocationAbortControllers.add(abortController);
 
-      // AC: @cli-agent-commands ac-6 - Pre-assign session ID for status tracking
-      const preSessionId = ulid();
       const invocationId = ulid();
       const trackingRecord: ActiveInvocationRecord = {
         invocationId,

@@ -1078,19 +1078,23 @@ function resolveInvocationSearchPath(invocation: RunnerInvocation): string {
 
 /**
  * Probe the runner invocation contract's executable using the same env-aware
- * PATH lookup the spawn path would consult. Returns `null` when the runner
- * did not configure an executable (implicit/legacy path) so the caller can
- * record the skip without forwarding a synthetic outcome. Never throws —
- * use `preflightRunnerInvocation` for the throwing variant.
+ * PATH lookup the spawn path would consult. Returns `null` only for the
+ * implicit/legacy compatibility path (no resolved runner) so callers can
+ * record the skip without forwarding a synthetic outcome. Named runner-
+ * backed contracts always preflight the effective adapter command — whether
+ * the command came from runner config (`process.executable` override) or
+ * from the registered adapter — because the runner's env/PATH policy
+ * controls spawnability regardless of command source. Never throws — use
+ * `preflightRunnerInvocation` for the throwing variant.
  *
  * AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+ * AC: @runner-process-invocation-inputs ac-effective-adapter-command-preflighted
  */
 export async function probeRunnerInvocationExecutable(
   invocation: RunnerInvocation,
   options: PreflightExecutableOptions = {},
 ): Promise<PreflightExecutableResult | null> {
-  const fromConfig = invocation.diagnostics.fieldOrigins?.processExecutable;
-  if (!fromConfig) return null;
+  if (invocation.runnerId === null) return null;
   return preflightExecutable(invocation.adapter.command, {
     cwd: invocation.cwd,
     searchPath: resolveInvocationSearchPath(invocation),
@@ -1101,8 +1105,11 @@ export async function probeRunnerInvocationExecutable(
 /**
  * Preflight the resolved runner invocation contract. Runs the executable
  * spawnability probe and throws `RunnerResolutionError("unspawnable_command")`
- * when the configured command cannot be spawned. No-op on the implicit/legacy
- * path or when the resolved adapter command did not come from runner config.
+ * when the effective adapter command cannot be spawned. No-op on the
+ * implicit/legacy path; named runner-backed contracts always preflight the
+ * effective command — whether the command came from a runner-config
+ * `process.executable` override or from the registered adapter — so the
+ * runner's env/PATH policy is honored before any prompt forwarding.
  *
  * Bare-command lookup uses the invocation env's PATH (the same PATH Node's
  * `child_process.spawn` will consult given the contract env), not the daemon
@@ -1111,6 +1118,7 @@ export async function probeRunnerInvocationExecutable(
  * what the child actually sees at spawn — preflight mirrors that.
  *
  * AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+ * AC: @runner-process-invocation-inputs ac-effective-adapter-command-preflighted
  * AC: @runner-process-invocation-inputs ac-invocation-diagnostics-identify-inputs
  */
 export async function preflightRunnerInvocation(
@@ -1122,7 +1130,7 @@ export async function preflightRunnerInvocation(
 
   throw new RunnerResolutionError(
     "unspawnable_command",
-    `Runner "${invocation.runnerId ?? "(implicit)"}" configured executable ` +
+    `Runner "${invocation.runnerId ?? "(implicit)"}" command ` +
       `"${invocation.adapter.command}" is not spawnable: ${result.message}.`,
     {
       ...(invocation.runnerId ? { runner: invocation.runnerId } : {}),
