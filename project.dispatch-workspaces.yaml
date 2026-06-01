@@ -15946,7 +15946,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-01T03:00:41.619Z
+      updated_at: 2026-06-01T03:00:43.193Z
     integration:
       status: pending
       detail: null
@@ -15955,25 +15955,20 @@ workspaces:
       target_branch: dev
       target_commit: f59983f0cd55efe39c50bba0fc78a3d24cae79bd
       updated_at: 2026-06-01T03:00:41.619Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KSYAZ7N9PA8VKT13R9V3P72K"
     task_slug: task-runner-compatibility-regressions
     timestamps:
       closed_at: null
       last_active_at: 2026-06-01T02:40:45.625Z
-      last_reconciled_at: 2026-06-01T03:00:41.619Z
+      last_reconciled_at: 2026-06-01T03:00:43.193Z
       created_at: 2026-06-01T02:07:54.627Z
-      updated_at: 2026-06-01T03:00:41.619Z
+      updated_at: 2026-06-01T03:00:43.193Z
     workspace_id: dispatch-workspace-01KSYAZ7N9PA8VKT13R9V3P72K
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: dacb75e03421617863403ed36dcfc31c0d8551e2
-        last_seen_at: 2026-06-01T02:40:12.017Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-runner-compatibility-regressions-01ksyaz7-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-runner-compatibility-regressions/01ksyaz7
