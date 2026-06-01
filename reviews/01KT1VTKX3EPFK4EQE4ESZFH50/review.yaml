@@ -2,7 +2,47 @@ _ulid: 01KT1VTKX3EPFK4EQE4ESZFH50
 slugs: []
 title: "Plan review: Agent Runner Contract Hardening Follow-up"
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan uses an empty Specs block and a first manual spec-update task targeting existing
+      runner specs only; kspec search/item get found the intended runner specs already exist.
+    name: Existing spec placement
+    required: true
+    created_at: 2026-06-01T15:12:45.771Z
+    completed_at: 2026-06-01T15:12:45.771Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All later Covers AC ids match existing AC ids from kspec item get or AC ids introduced by
+      task-tighten-runner-closure-gap-specs.
+    name: AC and Covers references
+    required: true
+    created_at: 2026-06-01T15:12:48.380Z
+    completed_at: 2026-06-01T15:12:48.380Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Dependency graph is acyclic and all implementation tasks depend on the spec-update task
+      before referencing newly added AC ids.
+    name: Dependency ordering
+    required: true
+    created_at: 2026-06-01T15:12:51.018Z
+    completed_at: 2026-06-01T15:12:51.018Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan cites non-existent test paths and routes Web UI Playwright E2E coverage through npm
+      test even though tests/e2e is excluded from Vitest.
+    name: Testing command validity
+    required: true
+    created_at: 2026-06-01T15:12:53.590Z
+    completed_at: 2026-06-01T15:12:53.590Z
 events:
   - _ulid: 01KT1VTKWT901WAGH76HTE7MSZ
     actor: Jacob Chapel
@@ -10,17 +50,122 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-01T15:11:22.522Z
+  - _ulid: 01KT1VWXFT6V7C1FRQ6EH2NHCV
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-06-01T15:12:37.882Z
+  - _ulid: 01KT1VX030Z73C04Q8P7DW1KV7
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KT1VWZW5XQDDD599A2W5AC1Y
+    timestamp: 2026-06-01T15:12:40.544Z
+  - _ulid: 01KT1VX2QCKFRR7PBC16G04PGM
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KT1VX2GS72Q0HKN7HMB99D4R
+    timestamp: 2026-06-01T15:12:43.244Z
+  - _ulid: 01KT1VX5E69XGD5T76XTA1HRDB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Existing spec placement
+    timestamp: 2026-06-01T15:12:46.022Z
+  - _ulid: 01KT1VX7ZYB3R9RC2XGXDTSSPZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC and Covers references
+    timestamp: 2026-06-01T15:12:48.638Z
+  - _ulid: 01KT1VXAJP7SHFBPQV3ZQJN4HD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-06-01T15:12:51.286Z
+  - _ulid: 01KT1VXD23BH0ZY6Q2V67MPCZX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Testing command validity
+    timestamp: 2026-06-01T15:12:53.827Z
+  - _ulid: 01KT1VXFJ8G8NG5ZJWRZNQX78R
+    actor: Jacob Chapel
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-01T15:12:56.392Z
+  - _ulid: 01KT1VXFJ82HB4TXG6YWZEMM2S
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-01T15:12:56.392Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
   content_hash: ""
   ref: "@plan-agent-runner-contract-hardening-follow-up"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KT1VWZW5XQDDD599A2W5AC1Y
+    anchor:
+      type: structured
+      field: Testing
+      ref: "@task-runner-registry-load-failure-diagnostics"
+      section: tasks
+    entries:
+      - _ulid: 01KT1VWZW5FNX0YMMTPWD5K63C
+        author: Jacob Chapel
+        body: The Testing command references non-existent suites `tests/daemon-agent-api.test.ts` and
+          `tests/agent-dispatch-api.test.ts`. A fresh task agent following this plan would skip the
+          daemon/API surfaces needed for registry-load diagnostics. Replace them with existing
+          suites such as `tests/daemon-api/agent-runner-surfaces.test.ts` and
+          `tests/daemon-api/agent-dispatch.test.ts` in the npm test command.
+        created_at: 2026-06-01T15:12:40.325Z
+    kind: blocker
+  - _ulid: 01KT1VX2GS72Q0HKN7HMB99D4R
+    anchor:
+      type: structured
+      field: Testing
+      ref: "@task-runner-operator-surface-parity"
+      section: tasks
+    entries:
+      - _ulid: 01KT1VX2GSNEGHPQCH13YCZ2ES
+        author: Jacob Chapel
+        body: The Testing command references missing paths `tests/daemon-agent-api.test.ts` and
+          `packages/web-ui/tests/e2e/agents.spec.ts`, and Playwright E2E tests are excluded from
+          `npm test`. Split verification into `npm test -- --fresh
+          tests/daemon-api/agent-runner-surfaces.test.ts` plus `npm run test:e2e --
+          tests/e2e/agents.spec.ts`, while keeping `npm --workspace packages/web-ui run check`, `npm
+          run typecheck`, and `kspec validate --refs --warnings-ok`.
+        created_at: 2026-06-01T15:12:43.033Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: Jacob Chapel
+    role: reviewer
+    created_at: 2026-06-01T15:12:56.392Z
 created_at: 2026-06-01T15:11:22.531Z
-updated_at: null
+updated_at: 2026-06-01T15:12:56.392Z
 notes: []
