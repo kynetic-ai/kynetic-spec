@@ -2,7 +2,17 @@ _ulid: 01KT0F3G39WGQY20XPQ94NN4N1
 slugs: []
 title: Review stabilize daemon fixture cleanup tests timing out (cycle 2)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed; reference warnings only (deprecated-item baseline).
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-01T02:27:33.628Z
+    completed_at: 2026-06-01T02:27:33.628Z
 events:
   - _ulid: 01KT0F3G32CBKSAMJ26N69FGKB
     actor: Jacob Chapel
@@ -17,6 +27,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-01T02:10:44.520Z
+  - _ulid: 01KT0G41AEPKDEX3GGZ2SQC7FD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-01T02:27:33.838Z
 examined_commit: faa3e056dccd97805519b24c458f5c3a568997fc
 external_links: []
 lifecycle_state: open
@@ -29,5 +46,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-01T02:09:47.625Z
-updated_at: 2026-06-01T02:10:44.282Z
+updated_at: 2026-06-01T02:27:33.628Z
 notes: []
