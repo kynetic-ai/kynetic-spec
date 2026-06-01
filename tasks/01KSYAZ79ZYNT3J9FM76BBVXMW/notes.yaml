@@ -14,3 +14,17 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-01T01:21:38.115Z
+  - _ulid: 01KT0CS8Q9TK9J52FAFEDN9RE0
+    content: "Implementation complete. Added three new docs: concepts/agent-runners.md (mental model +
+      layering), guides/configuring-agent-runners.md (7 worked examples spanning legacy adapter,
+      named runner, project-only, system override, full system config with
+      env/secrets/args/cwd/executable, agent reference, migration, and a forward-looking sidecar
+      section), and troubleshooting/runner-validation-failures.md (9 reason codes plus report-level
+      issues). Also added cross-link from concepts/agents-and-dispatch.md and updated three section
+      index files. Verified CLI claims against dev CLI (kspec agent runners validate, kspec meta set
+      --runner / --clear-runner, kspec agent run --dry-run). Gates: format:check (passes), lint
+      --quiet (0 errors, 743 unchanged baseline warnings), typecheck (passes), kspec validate
+      --refs/--alignment/--completeness (passes with pre-existing warnings unrelated to docs)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-01T01:29:15.241Z
