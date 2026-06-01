@@ -153,7 +153,7 @@ derive_from_specs: false
     - In dispatch, task notes should include the stable reason and config path but no secret values.
 
     Testing:
-    - `npm test -- --fresh tests/agent-runner-cli.test.ts tests/cli-agent.test.ts tests/daemon-agent-api.test.ts tests/agent-dispatch-engine.test.ts tests/agent-dispatch-api.test.ts`
+    - `npm test -- --fresh tests/agent-runner-cli.test.ts tests/cli-agent.test.ts tests/daemon-api/agent-runner-surfaces.test.ts tests/agent-dispatch-engine.test.ts tests/daemon-api/agent-dispatch.test.ts`
     - `npm run typecheck`
     - `kspec validate --refs --warnings-ok`
 
@@ -216,7 +216,8 @@ derive_from_specs: false
     - Do not expose raw env maps or secret source values in UI or API payloads.
 
     Testing:
-    - `npm test -- --fresh tests/daemon-agent-api.test.ts packages/web-ui/tests/e2e/agents.spec.ts`
+    - `npm test -- --fresh tests/daemon-api/agent-runner-surfaces.test.ts`
+    - `npm run test:e2e -- tests/e2e/agents.spec.ts`
     - `npm --workspace packages/web-ui run check`
     - `npm run typecheck`
     - `kspec validate --refs --warnings-ok`

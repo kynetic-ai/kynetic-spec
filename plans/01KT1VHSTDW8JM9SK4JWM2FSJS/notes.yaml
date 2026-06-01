@@ -1,0 +1,6 @@
+notes:
+  - _ulid: 01KT1W1C13ECTC8R5KJ5V04SF1
+    content: "Address review @01KT1VTK: replace missing daemon/API/Web UI test paths with existing
+      suites and exact E2E command"
+    author: Jacob Chapel
+    created_at: 2026-06-01T15:15:03.844Z
