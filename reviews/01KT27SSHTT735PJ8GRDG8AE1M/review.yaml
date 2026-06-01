@@ -245,6 +245,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-01T19:00:00.908Z
+  - _ulid: 01KT2A58CCSKPZ9X3GM6XW2662
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KT28V33DRF30PFQ3GGRPNQ0X
+    timestamp: 2026-06-01T19:21:51.244Z
 examined_commit: c660a4ce459a36d5b7cce433363c66874c67be3d
 external_links: []
 lifecycle_state: closed
@@ -277,6 +283,18 @@ threads:
           spawn/prompt. Treat non-empty registryLoadFailures as blocking for runner-backed agents
           before looking up or using a surviving runner entry.'
         created_at: 2026-06-01T18:58:49.581Z
+      - _ulid: 01KT2A5829D1ZV7ZJ0Y16HRZW9
+        author: "@claude"
+        body: "Fixed: resolveRunnerInvocation now throws runner_registry_unavailable whenever
+          registryLoadFailures is non-empty, before looking up the named runner. The mixed-layer
+          case (malformed project + valid system) and the inverse case (malformed system + valid
+          project) both block instead of resolving against a partial registry. The previous gate
+          that only triggered when the runner was missing has been removed; the failure now always
+          carries the failing layer + config path. Added a unit test in
+          tests/agent-runner-env.test.ts that exercises this directly (resolveRunnerInvocation
+          throws runner_registry_unavailable with the project failure attached when the system layer
+          still contributes a runner with the named id)."
+        created_at: 2026-06-01T19:21:50.920Z
     kind: blocker
   - _ulid: 01KT28VF76MSS2EG5A7W7K8734
     anchor:
@@ -367,5 +385,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-01T19:00:00.900Z
 created_at: 2026-06-01T18:40:38.458Z
-updated_at: 2026-06-01T19:00:00.908Z
+updated_at: 2026-06-01T19:21:50.920Z
 notes: []
