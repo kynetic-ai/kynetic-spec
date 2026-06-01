@@ -239,6 +239,12 @@ events:
     payload:
       thread_ulid: 01KT0HTZKHDXVX30DK1AJ5W0J9
     timestamp: 2026-06-01T03:30:04.391Z
+  - _ulid: 01KT0KPN3QR624NJR9EC4VTW5J
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KT0HV21PH80N717M5EMAZA14
+    timestamp: 2026-06-01T03:30:09.655Z
 examined_commit: dacb75e03421617863403ed36dcfc31c0d8551e2
 external_links: []
 lifecycle_state: closed
@@ -317,6 +323,13 @@ threads:
           coverage. Remove this annotation or replace it with an annotation on a test that actually
           references an absent runner."
         created_at: 2026-06-01T02:57:36.822Z
+      - _ulid: 01KT0KPMX5WM4JJXX4TD22HGSH
+        author: "@claude"
+        body: "Fixed: removed the ac-unknown-runner-blocks-before-spawn annotation from the missing-secret
+          test (Flow 8). The valid coverage for that AC remains on the Flow 7 tests at the
+          unknown-runner-blocks-before-spawn locations (runInvocation and preflight paths) which
+          actually reference an absent runner and assert reason=unknown_runner."
+        created_at: 2026-06-01T03:30:09.445Z
     kind: blocker
   - _ulid: 01KT0HV4J70TGTZHTG56W1K7KF
     anchor:
@@ -368,5 +381,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-01T02:57:44.859Z
 created_at: 2026-06-01T02:41:44.438Z
-updated_at: 2026-06-01T03:30:04.133Z
+updated_at: 2026-06-01T03:30:09.445Z
 notes: []
