@@ -15983,7 +15983,7 @@ workspaces:
         head: d37847902a448909ea6952e50b46e2815f91556c
         last_seen_at: 2026-06-01T01:32:17.925Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-document-runner-config-migration-01ksyaz7
-  - active_role: null
+  - active_role: worker
     base_branch_point: f59983f0cd55efe39c50bba0fc78a3d24cae79bd
     bootstrap:
       status: succeeded
@@ -16313,7 +16313,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-01T02:07:54.627Z
+      updated_at: 2026-06-01T02:08:23.500Z
     integration:
       status: pending
       detail: null
@@ -16322,16 +16322,16 @@ workspaces:
       target_branch: dev
       target_commit: f59983f0cd55efe39c50bba0fc78a3d24cae79bd
       updated_at: 2026-06-01T02:07:54.627Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KSYAZ7N9PA8VKT13R9V3P72K"
     task_slug: task-runner-compatibility-regressions
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-06-01T02:07:54.627Z
+      last_active_at: 2026-06-01T02:08:23.500Z
+      last_reconciled_at: 2026-06-01T02:08:23.500Z
       created_at: 2026-06-01T02:07:54.627Z
-      updated_at: 2026-06-01T02:08:22.132Z
+      updated_at: 2026-06-01T02:08:23.500Z
     workspace_id: dispatch-workspace-01KSYAZ7N9PA8VKT13R9V3P72K
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
