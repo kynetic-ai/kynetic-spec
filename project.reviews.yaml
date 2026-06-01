@@ -23514,19 +23514,19 @@ reviews:
   - _ulid: 01KT0GXZZPZW71HEH3KP9FAJKW
     slugs: []
     title: Review task-runner-compatibility-regressions
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
-    check_count: 0
+    check_count: 10
     examined_commit: dacb75e03421617863403ed36dcfc31c0d8551e2
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
       content_hash: ""
       ref: "@01KSYAZ7N9PA8VKT13R9V3P72K"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
-    verdict_count: 0
+    thread_count: 4
+    unresolved_blocker_count: 3
+    verdict_count: 1
     created_at: 2026-06-01T02:41:44.438Z
-    updated_at: 2026-06-01T02:42:04.219Z
+    updated_at: 2026-06-01T02:57:44.860Z

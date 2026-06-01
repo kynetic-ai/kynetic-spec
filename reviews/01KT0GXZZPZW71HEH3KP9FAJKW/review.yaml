@@ -2,7 +2,109 @@ _ulid: 01KT0GXZZPZW71HEH3KP9FAJKW
 slugs: []
 title: Review task-runner-compatibility-regressions
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing reference warnings allowed: 6 warnings, 0 errors."
+    name: kspec validate --refs --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-06-01T02:57:08.085Z
+    completed_at: 2026-06-01T02:57:08.085Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing alignment warnings allowed: 42 warnings, 0 errors."
+    name: kspec validate --alignment --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-06-01T02:57:10.949Z
+    completed_at: 2026-06-01T02:57:10.949Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing completeness warnings allowed: 265 warnings, 0 errors."
+    name: kspec validate --completeness --warnings-ok
+    required: true
+    runner: kspec
+    created_at: 2026-06-01T02:57:13.868Z
+    completed_at: 2026-06-01T02:57:13.868Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All matched files use the correct format; 974 files checked.
+    name: npm run format:check
+    required: true
+    runner: oxfmt
+    created_at: 2026-06-01T02:57:16.369Z
+    completed_at: 2026-06-01T02:57:16.369Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Found 743 warnings and 0 errors; repo warning baseline present.
+    name: npm run lint -- --quiet
+    required: true
+    runner: oxlint
+    created_at: 2026-06-01T02:57:18.925Z
+    completed_at: 2026-06-01T02:57:18.925Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Changed file lint found 0 warnings and 0 errors.
+    name: npx oxlint tests/agent-runner-e2e.test.ts
+    required: true
+    runner: oxlint
+    created_at: 2026-06-01T02:57:21.528Z
+    completed_at: 2026-06-01T02:57:21.528Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit exited 0.
+    name: npm run typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-06-01T02:57:24.107Z
+    completed_at: 2026-06-01T02:57:24.107Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Selected command exited 0; tests/agent-runner-e2e.test.ts passed 15 tests. The supplied
+      packages/web-ui path is stale in this repo.
+    name: npm test -- --fresh tests/agent-runner-e2e.test.ts packages/web-ui/tests/e2e/agents.spec.ts
+    required: true
+    runner: vitest
+    created_at: 2026-06-01T02:57:26.745Z
+    completed_at: 2026-06-01T02:57:26.745Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2673 suites, 10168 tests passed, 5 skipped. Full log
+      /tmp/kspec-test-cache/01KT0GW6ETN192TCW4DCYSPJCY/6bd27001e903d656.log."
+    name: npm test -- --fresh
+    required: true
+    runner: vitest
+    created_at: 2026-06-01T02:57:29.319Z
+    completed_at: 2026-06-01T02:57:29.319Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: build:e2e completed and Playwright agents spec passed 40/40 tests.
+    name: npm run test:e2e -- tests/e2e/agents.spec.ts
+    required: true
+    runner: playwright
+    created_at: 2026-06-01T02:57:31.805Z
+    completed_at: 2026-06-01T02:57:31.805Z
 events:
   - _ulid: 01KT0GXZZGRGFN3TYFKV93VECE
     actor: Jacob Chapel
@@ -17,17 +119,224 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-01T02:42:04.459Z
+  - _ulid: 01KT0HT669JTSEHYDYFW2QN84V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --refs --warnings-ok
+    timestamp: 2026-06-01T02:57:08.297Z
+  - _ulid: 01KT0HT96Z24DV7ZMJX7R8457H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --alignment --warnings-ok
+    timestamp: 2026-06-01T02:57:11.392Z
+  - _ulid: 01KT0HTBTHEXP381GYAY0J5C1W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --completeness --warnings-ok
+    timestamp: 2026-06-01T02:57:14.065Z
+  - _ulid: 01KT0HTE9X3314NJJ00BE23TR0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run format:check
+    timestamp: 2026-06-01T02:57:16.605Z
+  - _ulid: 01KT0HTGTBTKCEA9APE7RB661A
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run lint -- --quiet
+    timestamp: 2026-06-01T02:57:19.179Z
+  - _ulid: 01KT0HTKAXBR5295CRRB4BNQ3B
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npx oxlint tests/agent-runner-e2e.test.ts
+    timestamp: 2026-06-01T02:57:21.757Z
+  - _ulid: 01KT0HTNX86TZ359DYG3MPG5CR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run typecheck
+    timestamp: 2026-06-01T02:57:24.392Z
+  - _ulid: 01KT0HTRD9K6Z4CA07HD6D3GT4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh tests/agent-runner-e2e.test.ts packages/web-ui/tests/e2e/agents.spec.ts
+    timestamp: 2026-06-01T02:57:26.953Z
+  - _ulid: 01KT0HTTY9SBB00Z8YYAWV52EP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm test -- --fresh
+    timestamp: 2026-06-01T02:57:29.545Z
+  - _ulid: 01KT0HTXC0ASEF8NYEZ9TVSHJV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm run test:e2e -- tests/e2e/agents.spec.ts
+    timestamp: 2026-06-01T02:57:32.032Z
+  - _ulid: 01KT0HTZSN9M4AD8YFFETK6GD4
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KT0HTZKHDXVX30DK1AJ5W0J9
+    timestamp: 2026-06-01T02:57:34.517Z
+  - _ulid: 01KT0HV29E2DT86XHFHCDXRPCT
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KT0HV21PH80N717M5EMAZA14
+    timestamp: 2026-06-01T02:57:37.070Z
+  - _ulid: 01KT0HV4SEMPQFBQ81B5FEA54J
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KT0HV4J70TGTZHTG56W1K7KF
+    timestamp: 2026-06-01T02:57:39.630Z
+  - _ulid: 01KT0HV76XC5QD46YXC6JGJKZ1
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KT0HV70K7FD4PRZ4YFYFE2A2
+    timestamp: 2026-06-01T02:57:42.109Z
+  - _ulid: 01KT0HV9WWQS2H2G2PNNFTTPC5
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-01T02:57:44.860Z
+  - _ulid: 01KT0HV9WWGF4B0PBEW0F3G2VA
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-01T02:57:44.860Z
 examined_commit: dacb75e03421617863403ed36dcfc31c0d8551e2
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KSYAZ7N9PA8VKT13R9V3P72K"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KT0HTZKHDXVX30DK1AJ5W0J9
+    anchor:
+      type: code
+      commit: dacb75e03421617863403ed36dcfc31c0d8551e2
+      line_end: 229
+      line_start: 200
+      path: tests/agent-runner-e2e.test.ts
+      side: head
+    entries:
+      - _ulid: 01KT0HTZKHD6DDQA8AQE0APNMM
+        author: Jacob Chapel
+        body: "These AC annotations claim runner-backed resolution and dispatch-preflight coverage on legacy
+          adapter-only tests. The first test constructs an agent with only adapter=mock-acp and an
+          empty runner registry, so it does not prove @runner-resolution-and-preflight
+          ac-one-shot-uses-runner-resolution for an agent with a runner field. The second test also
+          uses an adapter-only agent and directly calls
+          resolveRunnerInvocation/preflightRunnerInvocation; it does not exercise a valid configured
+          runner, a non-built-in runner adapter contract, or a queued dispatch invocation, so it
+          does not prove @runner-invocation-semantics
+          ac-dispatch-preflight-accepts-configured-runners or @runner-resolution-and-preflight
+          ac-dispatch-uses-runner-resolution. Impact: coverage tooling can report these
+          runner-backed ACs covered while the tests would still pass if the runner-backed paths
+          regressed. Move these annotations to behavioral tests that actually exercise those
+          runner-backed flows, or add the missing tests."
+        created_at: 2026-06-01T02:57:34.321Z
+    kind: blocker
+  - _ulid: 01KT0HV21PH80N717M5EMAZA14
+    anchor:
+      type: code
+      commit: dacb75e03421617863403ed36dcfc31c0d8551e2
+      line_end: 852
+      line_start: 852
+      path: tests/agent-runner-e2e.test.ts
+      side: head
+    entries:
+      - _ulid: 01KT0HV21PX12NWRTD6GA1EEEN
+        author: Jacob Chapel
+        body: "This annotation claims @runner-resolution-and-preflight
+          ac-unknown-runner-blocks-before-spawn, but the test configures a known runner named gated
+          and asserts a missing_secret failure. That is a different behavior from an unknown runner.
+          Impact: the AC coverage record is inaccurate and could mask missing unknown-runner
+          coverage. Remove this annotation or replace it with an annotation on a test that actually
+          references an absent runner."
+        created_at: 2026-06-01T02:57:36.822Z
+    kind: blocker
+  - _ulid: 01KT0HV4J70TGTZHTG56W1K7KF
+    anchor:
+      type: code
+      commit: dacb75e03421617863403ed36dcfc31c0d8551e2
+      line_end: 682
+      line_start: 655
+      path: tests/agent-runner-e2e.test.ts
+      side: head
+    entries:
+      - _ulid: 01KT0HV4J7VDQJSM6M7YXM18G7
+        author: Jacob Chapel
+        body: "The task requires covering a runner-backed dispatch invocation that queues and starts with
+          runner diagnostics visible through daemon status, but this test fabricates both
+          activeInvocationDetails and queues by mutating dispatch-engine internals. The dispatch
+          engine never selects an eligible task, resolves the runner contract, queues the
+          invocation, or starts it. Impact: regressions in the actual dispatch queue/start path for
+          runner-backed agents would not fail this end-to-end suite; only status serialization of
+          injected data is tested. Please replace or supplement this with a behavioral dispatch
+          setup that drives the daemon/dispatch engine through its public path until a runner-backed
+          invocation is queued/active and then asserts the status payload."
+        created_at: 2026-06-01T02:57:39.399Z
+    kind: blocker
+  - _ulid: 01KT0HV70K7FD4PRZ4YFYFE2A2
+    entries:
+      - _ulid: 01KT0HV70KG29WA2N5WB6MS5N7
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md, tests/agent-runner-e2e.test.ts,
+          tests/e2e/agents.spec.ts runner-surface matches, package scripts, relevant runner specs.
+          Commands run: kspec task get, kspec item get for
+          @runner-invocation-semantics/@agent-runner-configuration/@runner-resolution-and-preflight\
+          /@runner-environment-secret-boundaries/@runner-process-invocation-inputs/@runner-operator\
+          -surfaces, kspec validate refs/alignment/completeness, npm run format:check, npm run lint
+          -- --quiet, npx oxlint tests/agent-runner-e2e.test.ts, npm run typecheck, focused npm
+          test, full npm test -- --fresh, npm run test:e2e -- tests/e2e/agents.spec.ts. Claims
+          verified: new tests are behavioral rather than source scanning; Web UI runner-surface
+          Playwright tests exist at tests/e2e/agents.spec.ts and pass; changed-file lint has no
+          warnings. Categories searched: correctness, AC/spec alignment, test quality, dispatch
+          integration, daemon/API surfaces, Web UI coverage, secret redaction, and regression
+          gates."
+        created_at: 2026-06-01T02:57:41.907Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-01T02:57:44.859Z
 created_at: 2026-06-01T02:41:44.438Z
-updated_at: 2026-06-01T02:42:04.219Z
+updated_at: 2026-06-01T02:57:44.860Z
 notes: []
