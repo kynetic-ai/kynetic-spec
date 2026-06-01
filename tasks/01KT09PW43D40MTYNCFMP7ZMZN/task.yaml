@@ -11,7 +11,7 @@ description: "Fresh npm test in review snapshot reproduced deterministic timeout
 spec_ref: "@daemon-test-teardown-boundedness"
 meta_ref: null
 plan_ref: null
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -29,7 +29,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: null
+session_id: 01KT0D8TGN5MSTERZXSE9HM4NH
 history:
   - author: "@claude"
     changes:
@@ -107,8 +107,21 @@ history:
         previous: 01KT09RVR6F25P0GMQT2598KAD
     command: review-verdict-needs-work
     timestamp: 2026-06-01T01:33:37.305Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KT0D8TGN5MSTERZXSE9HM4NH
+        previous: null
+      started_at:
+        new: 2026-06-01T02:01:33.441Z
+        previous: 2026-06-01T01:11:29.215Z
+    command: task-start
+    timestamp: 2026-06-01T02:01:33.441Z
 created_at: 2026-06-01T00:35:31.073Z
-started_at: 2026-06-01T01:11:29.215Z
+started_at: 2026-06-01T02:01:33.441Z
 submitted_at: 2026-06-01T01:11:45.976Z
 todos: []
 automation: eligible
