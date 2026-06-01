@@ -64,7 +64,7 @@ description: >
 spec_ref: "@runner-operator-surfaces"
 plan_ref: "@plan-agent-runner-contract-hardening-follow-up"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-tighten-runner-closure-gap-specs"
@@ -78,6 +78,14 @@ tags:
   - runners
   - accessibility
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-runner-operator-surface-parity/01kt20r9
+  captured_at: 2026-06-01T20:50:15.367Z
+  commit: 360cb36d88effdc5d14e96e8aa324a65c9f70df2
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KT2E350R06Z62V707ZAK87VE
 history:
   - author: Jacob Chapel
@@ -100,7 +108,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-01T20:31:13.141Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-runner-operator-surface-parity/01kt20r9
+          captured_at: 2026-06-01T20:50:15.367Z
+          commit: 360cb36d88effdc5d14e96e8aa324a65c9f70df2
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-06-01T20:50:15.369Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-01T20:50:15.369Z
 created_at: 2026-06-01T16:37:29.218Z
 started_at: 2026-06-01T20:31:13.141Z
+submitted_at: 2026-06-01T20:50:15.369Z
 todos: []
 automation: eligible
