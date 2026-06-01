@@ -58092,7 +58092,7 @@ runs:
     completed_at: 2026-06-01T01:14:38.525Z
   - _ulid: 01KT0CT4M9FSK6BXGAGCTNHZKV
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -58109,7 +58109,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-01T01:30:28.673Z
-        completed_at: 2026-06-01T01:30:28.673Z
+        completed_at: 2026-06-01T01:31:27.544Z
+        notes: "Searched inbox/tasks/observations for 'Explore agent docs', 'dev CLI verify', 'verify CLI',
+          'docs accuracy' — no existing coverage. Captured one high-confidence success observation:
+          verifying CLI/API claims against the live dev CLI and source enum values before writing
+          docs is high-leverage when documenting unreleased surface (installed binary lags worktree
+          branch). No friction patterns met the high-confidence bar."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-01T01:31:27.544Z
+        completed_at: 2026-06-01T01:31:27.544Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-01T01:29:43.817Z
