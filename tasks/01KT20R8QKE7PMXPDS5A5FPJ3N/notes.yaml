@@ -1,1 +1,50 @@
-notes: []
+notes:
+  - _ulid: 01KT27JXA3VRWSYA7HKD9NHZ01
+    content: >-
+      Implemented runner registry-load failure diagnostics.
+
+
+      Approach:
+
+      - New src/agents/registry-load-failure.ts defines the shared RegistryLoadFailure shape (reason
+      runner_registry_unavailable, layer, config_path, redacted issues) with
+      diagnoseRegistryLoad/summarizeRegistryLoadFailure/describeRegistryLoadFailures helpers and a
+      defense-in-depth secret redactor for issue messages.
+
+      - Added runner_registry_unavailable to RunnerResolutionReason. resolveRunnerInvocation accepts
+      registryLoadFailures and throws runner_registry_unavailable (not unknown_runner) when an
+      agent.runner cannot resolve because of layer issues.
+
+      - runner-validation emits runner_registry_unavailable for layer load issues and surfaces
+      registry_load_failures on RunnerValidationReport so consumers can read the structured shape
+      directly.
+
+      - invocation.ts loads layer issues alongside the registry and passes them to the resolver. CLI
+      agent run blocks runner-backed invocations before any prompt with the new reason. CLI agent
+      list (JSON + human) and dry-run validation_state prefer registry_load_failures over
+      unknown_runner. The validate command emits registry_load_failures in JSON output.
+
+      - Dispatch preflight reads diagnoseRegistryLoad from resolveEffectiveRunners and passes
+      registryLoadFailures into the resolver. Task notes include the stable reason and failing
+      config paths. Legacy adapter-only agents stay on their existing path.
+
+      - Daemon meta.ts extracts a shared loadRunnerEnrichmentContext + buildAgentRunnerFields helper
+      used by GET /api/meta/agents and PATCH /api/meta/agents/:id so both responses return the same
+      adapter/resolved_adapter/runner_validation block. Dispatch status agent_definitions attach the
+      same diagnostic for runner-backed agents.
+
+      - runner-config readYamlFile catches YAML parse errors and records them as
+      LayerLoadResult.issues so the diagnostic chain works for both parse failures and Zod schema
+      violations.
+
+
+      Tests: 17 new behavioral tests added across CLI (10), daemon API (5), and dispatch preflight
+      (2). Each scenario distinguishes registry-load failure from unknown_runner and asserts
+      redaction defense-in-depth.
+
+
+      Gates: format:check passes, lint --quiet 0 errors, typecheck clean, npm test full suite
+      10191/10191 pass, kspec validate --refs --warnings-ok passes.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-01T18:36:52.931Z
