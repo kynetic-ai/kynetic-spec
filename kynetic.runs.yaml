@@ -58810,9 +58810,21 @@ runs:
     completed_at: 2026-06-01T20:00:16.001Z
   - _ulid: 01KT2F27DNCXZ7WYMPR7QXZ1G2
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-01T20:47:34.837Z
+        completed_at: 2026-06-01T20:48:23.765Z
+        notes: "Worked well: the required review record gave a clean audit trail for deterministic gates and
+          analytical evidence; the detached reviewer merge helper handled dev integration safely
+          from the detached snapshot; focused tests plus full suite provided strong confidence for
+          the dispatch/runner preflight change."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-01T20:48:23.765Z
+        completed_at: 2026-06-01T20:48:23.765Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-01T20:47:34.837Z
