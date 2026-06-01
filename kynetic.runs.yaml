@@ -58721,7 +58721,7 @@ runs:
     completed_at: 2026-06-01T18:11:32.217Z
   - _ulid: 01KT28ZF24S9STTC526D4H3DEH
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -58735,7 +58735,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-01T19:02:39.506Z
-        completed_at: 2026-06-01T19:02:39.506Z
+        completed_at: 2026-06-01T19:03:07.949Z
+        notes: "Identified two high-confidence items. Success: a small behavioral probe against a
+          mixed-layer runner registry found the AC gap after all deterministic gates and submitted
+          tests passed. Friction: registry-load tests covered malformed-layer/absent-runner cases
+          but missed the mixed-layer surviving-runner case, allowing logic to depend on runner
+          absence instead of load-failure presence. Baseline list/search showed related broad
+          review/testing observations but no exact existing tracking for this mixed-layer
+          registry-load pattern."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-01T19:03:07.949Z
+        completed_at: 2026-06-01T19:03:07.949Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-01T19:01:12.900Z
