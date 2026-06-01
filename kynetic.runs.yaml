@@ -59018,7 +59018,7 @@ runs:
     completed_at: 2026-06-01T20:50:05.264Z
   - _ulid: 01KT2GFY80SX2PHTR2D3N63MMC
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -59033,7 +59033,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-01T21:13:01.245Z
-        completed_at: 2026-06-01T21:13:01.245Z
+        completed_at: 2026-06-01T21:13:22.009Z
+        notes: "Friction: full npm test took 2571 seconds and had long quiet periods after visible suite
+          output, making it unclear whether the runner was still working or stuck until I inspected
+          process trees and cache logs. Friction: web UI svelte-check currently fails on a broad
+          pre-existing baseline outside the task diff, so reviewers must manually classify and
+          record it as optional/non-regression evidence. Minor friction: focused oxlint on a mixed
+          Svelte/TS changed-file list reported only two processed files, which can make Svelte
+          changed-file lint coverage ambiguous."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-01T21:13:22.009Z
+        completed_at: 2026-06-01T21:13:22.009Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-01T21:12:32.768Z
