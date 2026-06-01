@@ -75,7 +75,7 @@ description: >
 spec_ref: "@runner-invocation-semantics"
 plan_ref: "@plan-agent-runner-configuration-layer"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-web-ui-runner-surfaces"
@@ -88,6 +88,7 @@ tags:
   - dispatch
   - runners
 vcs_refs: []
+session_id: 01KT0F0XVTARZPBZ7VEY3Z9BV4
 history:
   - author: Jacob Chapel
     changes:
@@ -96,6 +97,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-05-31T06:22:15.640Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KT0F0XVTARZPBZ7VEY3Z9BV4
+        previous: null
+      started_at:
+        new: 2026-06-01T02:08:44.632Z
+        previous: null
+    command: task-start
+    timestamp: 2026-06-01T02:08:44.632Z
 created_at: 2026-05-31T06:19:04.745Z
+started_at: 2026-06-01T02:08:44.632Z
 todos: []
 automation: eligible
