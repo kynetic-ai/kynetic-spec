@@ -20423,6 +20423,27 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-01T18:39:11.093Z
+  - _ulid: 01KT29116VV3X4Y1YXAS4MFHQS
+    type: success
+    content: "Review success pattern: a small behavioral probe against a mixed-layer runner registry
+      state caught an AC gap after deterministic gates and focused tests passed; adversarial reviews
+      should include at least one scenario that disproves the happy-path shape of new diagnostics."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KT28ZF"
+    created_at: 2026-06-01T19:02:04.251Z
+  - _ulid: 01KT2911H8ANRBH6671QYFADEH
+    type: friction
+    content: Runner registry-load tests covered malformed-layer cases where the referenced runner
+      disappeared, but not mixed-layer cases where one config layer failed while another still
+      contributed the runner; this allowed registry-unavailable diagnostics to be gated on runner
+      absence instead of load failure presence.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KT28ZF"
+    created_at: 2026-06-01T19:02:04.584Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
