@@ -25,6 +25,18 @@ checks:
     runner: kspec
     created_at: 2026-06-01T20:44:46.537Z
     completed_at: 2026-06-01T20:44:46.537Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed; existing completeness warning baseline
+      allowed by --warnings-ok. New task AC annotations present for canonical session id and
+      effective adapter command preflight.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-01T20:44:55.399Z
+    completed_at: 2026-06-01T20:44:55.399Z
 events:
   - _ulid: 01KT2E3D7B0V5C2GCFGEVXZ7AW
     actor: Jacob Chapel
@@ -53,6 +65,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-01T20:44:46.743Z
+  - _ulid: 01KT2EXBXTAWS8KEZ1FY2VGB47
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-01T20:44:55.610Z
 examined_commit: b3ee001851142c921936eac9f8a46cc7e1db27c3
 external_links: []
 lifecycle_state: open
@@ -65,5 +84,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-01T20:30:44.972Z
-updated_at: 2026-06-01T20:44:46.537Z
+updated_at: 2026-06-01T20:44:55.399Z
 notes: []
