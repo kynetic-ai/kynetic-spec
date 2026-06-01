@@ -58266,9 +58266,22 @@ runs:
     completed_at: 2026-06-01T02:06:53.632Z
   - _ulid: 01KT0GAX2G6KNPB4PBA3TQD8TX
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-01T02:31:18.864Z
+        completed_at: 2026-06-01T02:32:19.579Z
+        notes: "What worked well: the detached reviewer workflow stayed coherent end-to-end. Review records
+          gave a durable place to record checks and evidence, the previous blocker was easy to
+          verify against the fix-cycle diff, focused daemon tests quickly confirmed the intended
+          behavior, and the detached-reviewer merge helper merged the approved branch into dev
+          without manual checkout or conflict handling."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-01T02:32:19.579Z
+        completed_at: 2026-06-01T02:32:19.579Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-01T02:31:18.864Z
