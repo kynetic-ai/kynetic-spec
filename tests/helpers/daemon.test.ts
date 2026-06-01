@@ -8,7 +8,7 @@
  * for why annotations must be line comments rather than docstring entries.
  */
 import { describe, expect, it, onTestFinished } from "vitest";
-import type { ChildProcess } from "node:child_process";
+import { spawn, type ChildProcess } from "node:child_process";
 import {
   chmodSync,
   existsSync,
@@ -23,6 +23,7 @@ import { hostname, tmpdir } from "node:os";
 import { basename, dirname, join } from "node:path";
 
 import {
+  __createPortStartLockSignalHandler,
   acquireTestDaemonPortStartLock,
   buildDaemonChildEnv,
   createTestDaemonProject,
@@ -1548,5 +1549,167 @@ describe("acquireTestDaemonPortStartLock stale-holder recovery", () => {
     const ownerContents = readFileSync(lockPath, "utf-8");
     const owner = JSON.parse(ownerContents) as { pid: number };
     expect(owner.pid).toBe(process.pid);
+  });
+});
+
+describe("registerPortStartLockExitHandlers signal-handler boundedness", () => {
+  // The port-start-lock exit handlers install per-signal cleanup that releases
+  // active locks then re-raises the signal so the process exits with the
+  // signal-appropriate disposition. The handler MUST remove itself from
+  // process.listeners before re-raising — Node suppresses default termination
+  // while a listener is installed, so a re-raise that re-enters this same
+  // handler would loop indefinitely. That recursion would leave any test
+  // runner holding the port-start lock unable to terminate under SIGTERM,
+  // violating the bounded-teardown contract for daemon-backed test
+  // infrastructure that owns this lock.
+
+  // AC: @daemon-test-teardown-boundedness ac-uncooperative-process-stop-is-bounded
+  it("removes itself from process listeners and calls release exactly once before re-raising", () => {
+    // Use SIGUSR2 to avoid colliding with vitest's own signal handling and
+    // any other listeners on the test runner process.
+    let releaseCalls = 0;
+    const reRaised: NodeJS.Signals[] = [];
+    const handler = __createPortStartLockSignalHandler(
+      "SIGUSR2",
+      () => {
+        releaseCalls++;
+      },
+      (sig) => {
+        reRaised.push(sig);
+      },
+    );
+
+    onTestFinished(() => {
+      // Defensive: if an assertion fails before the handler removes itself,
+      // remove it here so SIGUSR2 from another source cannot affect the
+      // test runner after this test exits.
+      process.removeListener("SIGUSR2", handler);
+    });
+
+    process.on("SIGUSR2", handler);
+    expect(process.listeners("SIGUSR2")).toContain(handler);
+
+    // Invoke the handler directly to simulate the signal arrival without
+    // actually sending SIGUSR2 (which would race other listeners).
+    handler();
+
+    // ac-uncooperative-process-stop-is-bounded — bounded outcome requires
+    // that the handler does not re-enter itself. Removing the listener
+    // before re-raise is what guarantees the re-raise hits default
+    // disposition (process exit) instead of looping back into this
+    // handler. Pre-fix this expectation fails because the unnamed
+    // arrow handler had no removal step.
+    expect(process.listeners("SIGUSR2")).not.toContain(handler);
+    expect(releaseCalls).toBe(1);
+    expect(reRaised).toEqual(["SIGUSR2"]);
+  });
+
+  // AC: @daemon-test-teardown-boundedness ac-uncooperative-process-stop-is-bounded
+  it("a subprocess that mirrors the registration pattern reaches a bounded terminal outcome under SIGTERM", async () => {
+    // End-to-end proof: spawn a Node subprocess that installs the same
+    // remove-then-re-raise handler shape used by
+    // registerPortStartLockExitHandlers, signal it with SIGTERM, and
+    // assert that it exits via the signal disposition within a bounded
+    // budget. Pre-fix (unnamed arrow handler that re-raises without
+    // removal) this subprocess loops indefinitely and is only killed by
+    // the test's SIGKILL escalation. Post-fix the subprocess exits
+    // promptly with signalCode === 'SIGTERM'.
+    //
+    // The subprocess is intentionally a small JS replica rather than an
+    // import of the real helper because the helper is TypeScript and the
+    // test runner already covers the in-process handler factory above.
+    // Drift risk is low: any future change to the production pattern
+    // that breaks the boundedness contract would still surface as either
+    // a subprocess hang here or a failure in the handler factory test.
+    const scriptDir = await createTempDir("kspec-signal-handler-bounded-");
+    onTestFinished(async () => {
+      await cleanupTempDir(scriptDir);
+    });
+    const scriptPath = join(scriptDir, "signal-handler-bounded.cjs");
+    writeFileSync(
+      scriptPath,
+      `#!/usr/bin/env node
+const signals = ["SIGINT", "SIGTERM", "SIGHUP"];
+for (const signal of signals) {
+  const handler = () => {
+    process.removeListener(signal, handler);
+    // Mirrors the production handler: re-raise after removal so the
+    // signal hits default disposition instead of re-entering.
+    process.kill(process.pid, signal);
+  };
+  process.on(signal, handler);
+}
+process.stdout.write("ready\\n");
+setInterval(() => {}, 60_000);
+`,
+    );
+    chmodSync(scriptPath, 0o755);
+
+    const child = spawn("node", [scriptPath], { stdio: ["ignore", "pipe", "pipe"] });
+    onTestFinished(() => {
+      if (child.exitCode === null && child.signalCode === null) {
+        try {
+          child.kill("SIGKILL");
+        } catch {
+          /* already gone */
+        }
+      }
+    });
+
+    // Wait for the subprocess to install its handlers before signaling.
+    await new Promise<void>((resolveReady, rejectReady) => {
+      const readyTimer = setTimeout(() => {
+        rejectReady(new Error("subprocess never wrote ready handshake"));
+      }, 3_000);
+      let buf = "";
+      const onData = (chunk: Buffer): void => {
+        buf += chunk.toString();
+        if (buf.includes("ready")) {
+          clearTimeout(readyTimer);
+          child.stdout?.off("data", onData);
+          resolveReady();
+        }
+      };
+      child.stdout?.on("data", onData);
+    });
+
+    // Capture exit before sending the signal so we have a stable
+    // observation point for the bounded assertion.
+    const exitObservation = new Promise<{
+      code: number | null;
+      signal: NodeJS.Signals | null;
+    }>((resolveExit) => {
+      child.on("exit", (code, signal) => {
+        resolveExit({ code, signal });
+      });
+    });
+
+    const signaledAt = Date.now();
+    child.kill("SIGTERM");
+
+    // ac-uncooperative-process-stop-is-bounded — the bounded contract
+    // requires that the subprocess terminate within a finite budget.
+    // 5s is generous enough for slow CI without masking a regression
+    // that would hang. Pre-fix the subprocess would never exit on its
+    // own under SIGTERM (it would loop until SIGKILLed at teardown).
+    const exit = await Promise.race([
+      exitObservation,
+      new Promise<{ code: number | null; signal: NodeJS.Signals | null }>((_, rejectTimeout) => {
+        setTimeout(() => {
+          rejectTimeout(
+            new Error(
+              `subprocess did not exit within 5s of SIGTERM (still running with pid=${child.pid})`,
+            ),
+          );
+        }, 5_000);
+      }),
+    ]);
+    const elapsed = Date.now() - signaledAt;
+
+    expect(elapsed).toBeLessThan(5_000);
+    // Re-raise after removal must let the signal reach default
+    // disposition: the child terminates via the signal, not via a
+    // graceful process.exit. signalCode reflects this.
+    expect(exit.signal).toBe("SIGTERM");
   });
 });

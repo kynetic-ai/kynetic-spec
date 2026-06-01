@@ -460,6 +460,35 @@ function releaseActivePortStartLocks(): void {
   }
 }
 
+/**
+ * Build the signal handler installed for SIGINT/SIGTERM/SIGHUP cleanup. The
+ * handler is named so it can remove itself before re-raising — without
+ * removeListener the re-raise re-enters this same handler (Node suppresses
+ * default termination while a listener is installed) and the process loops
+ * indefinitely instead of reaching a bounded terminal outcome.
+ *
+ * Extracted so contract tests can exercise the handler shape in-process by
+ * driving `release` and `reRaise` callables instead of actually sending
+ * signals to the test runner.
+ */
+export function __createPortStartLockSignalHandler(
+  signal: NodeJS.Signals,
+  release: () => void = releaseActivePortStartLocks,
+  reRaise: (sig: NodeJS.Signals) => void = (sig) => {
+    process.kill(process.pid, sig);
+  },
+): () => void {
+  const handler = (): void => {
+    process.removeListener(signal, handler);
+    release();
+    // With our handler removed, re-raising hits default disposition unless
+    // another listener (e.g. the host test runner) is installed for this
+    // signal. In that case the other listener owns termination semantics.
+    reRaise(signal);
+  };
+  return handler;
+}
+
 function registerPortStartLockExitHandlers(): void {
   if (portStartLockExitHandlersRegistered) return;
   portStartLockExitHandlersRegistered = true;
@@ -468,13 +497,7 @@ function registerPortStartLockExitHandlers(): void {
   // stale-holder recovery path above.
   process.on("exit", releaseActivePortStartLocks);
   for (const signal of ["SIGINT", "SIGTERM", "SIGHUP"] as const) {
-    process.on(signal, () => {
-      releaseActivePortStartLocks();
-      // Re-raise the signal with default disposition so the process exits
-      // with the appropriate code rather than hanging if other listeners
-      // suppress it.
-      process.kill(process.pid, signal);
-    });
+    process.on(signal, __createPortStartLockSignalHandler(signal));
   }
 }
 
