@@ -217,6 +217,13 @@ events:
       status: fail
       name: web-ui svelte-check baseline
     timestamp: 2026-06-01T21:10:31.653Z
+  - _ulid: 01KT2GCT2KYZP4HVYZZ5CT27QH
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KT2GCSV33CP8475RNJTXPF29
+    timestamp: 2026-06-01T21:10:50.195Z
 examined_commit: 360cb36d88effdc5d14e96e8aa324a65c9f70df2
 external_links: []
 lifecycle_state: open
@@ -226,8 +233,31 @@ subject:
   content_hash: ""
   ref: "@01KT20R9G2BY67EDEA63J690TR"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KT2GCSV33CP8475RNJTXPF29
+    entries:
+      - _ulid: 01KT2GCSV34ZBXZ8B9DT2NRG1K
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; task/spec output;
+          packages/daemon/src/routes/meta.ts; packages/daemon/src/routes/agent-dispatch.ts;
+          packages/web-ui/src/lib/api.ts; packages/web-ui/src/routes/agents/+page.svelte;
+          packages/web-ui/src/lib/components/agents/ActiveInvocationRow.svelte;
+          packages/web-ui/src/lib/components/agents/QueuedInvocationRow.svelte;
+          tests/daemon-api/agent-runner-surfaces.test.ts; tests/e2e/agents.spec.ts. Commands run:
+          kspec task get; kspec item get; kspec review add/open; git diff/status/log; kspec validate
+          refs/alignment/completeness; npm run format:check; npm run lint -- --quiet; npx oxlint on
+          changed TS tests; npm run typecheck; npm test -- --fresh
+          tests/daemon-api/agent-runner-surfaces.test.ts; npm run test:e2e --
+          tests/e2e/agents.spec.ts; npm --workspace packages/web-ui run check; npm test -- --fresh.
+          Claims verified: PATCH/list runner-state parity is covered by direct PATCH then GET
+          comparisons; invocation rows render daemon-provided runner/resolved_adapter as visible
+          text and expose aria-label; Chromium AX tree exposes aria-label on a generic div.
+          Categories searched: correctness, edge cases for set/clear/unknown/unavailable runner,
+          error/diagnostic redaction, accessibility surface, test quality, and integration
+          regressions. No blocking findings."
+        created_at: 2026-06-01T21:10:49.955Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-01T20:54:12.004Z
-updated_at: 2026-06-01T21:10:31.392Z
+updated_at: 2026-06-01T21:10:49.955Z
 notes: []
