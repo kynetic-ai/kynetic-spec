@@ -78,6 +78,7 @@ tags:
   - runners
   - accessibility
 vcs_refs: []
+review_ref: "@01KT2FEB9458F5Q9P3QNT5REW9"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-runner-operator-surface-parity/01kt20r9
@@ -128,6 +129,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-01T20:50:15.369Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KT2FEB9458F5Q9P3QNT5REW9"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-01T20:54:14.122Z
 created_at: 2026-06-01T16:37:29.218Z
 started_at: 2026-06-01T20:31:13.141Z
 submitted_at: 2026-06-01T20:50:15.369Z
