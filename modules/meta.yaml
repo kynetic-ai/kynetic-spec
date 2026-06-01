@@ -7220,7 +7220,7 @@ modules:
           runner configuration fails before prompt forwarding.
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
@@ -7295,7 +7295,7 @@ modules:
           environment policy, and redacted diagnostics used for that invocation.
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
@@ -7349,7 +7349,7 @@ modules:
           operate from the resolved runner contract.
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
@@ -7417,7 +7417,7 @@ modules:
           validation state, and redacted diagnostics.
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
