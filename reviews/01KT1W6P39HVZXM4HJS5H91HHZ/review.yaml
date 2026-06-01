@@ -2,7 +2,87 @@ _ulid: 01KT1W6P39HVZXM4HJS5H91HHZ
 slugs: []
 title: "Plan review: Agent Runner Contract Hardening Follow-up (cycle 2)"
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Prior blockers named missing daemon-agent-api and agent-dispatch-api paths plus incorrect
+      Web UI E2E location. Current plan uses existing
+      tests/daemon-api/agent-runner-surfaces.test.ts, tests/daemon-api/agent-dispatch.test.ts, and
+      npm run test:e2e -- tests/e2e/agents.spec.ts; all referenced files and scripts exist.
+    name: Cycle 1 testing blockers
+    required: true
+    created_at: 2026-06-01T15:18:42.376Z
+    completed_at: 2026-06-01T15:18:42.376Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Specs block is an explicit empty array and the first task updates existing runner specs
+      only: @runner-process-invocation-inputs, @runner-resolution-and-preflight,
+      @runner-invocation-semantics, and @runner-operator-surfaces. kspec search/item get confirmed
+      the runner specs already exist."
+    name: Existing spec placement
+    required: true
+    created_at: 2026-06-01T15:18:45.340Z
+    completed_at: 2026-06-01T15:18:45.340Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: New ACs are direct behavioral contracts for cwd resolution, registry-load
+      diagnostics/blocking, canonical dispatch session identity, daemon response parity, and Web UI
+      row visibility. Every Covers AC id is either introduced by the first task or already present
+      on the referenced existing runner/secret-boundary specs.
+    name: AC quality and Covers references
+    required: true
+    created_at: 2026-06-01T15:18:47.937Z
+    completed_at: 2026-06-01T15:18:47.937Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Each task includes concrete What, Why, How, Testing, and Covers sections with file/surface
+      guidance. No task depends on chat-only background context to identify the intended
+      implementation or verification surface.
+    name: Task standalone executability
+    required: true
+    created_at: 2026-06-01T15:18:50.515Z
+    completed_at: 2026-06-01T15:18:50.515Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Dependency graph is acyclic. All implementation tasks depend on
+      @task-tighten-runner-closure-gap-specs before covering newly introduced ACs;
+      task-dispatch-runner-preflight-invocation-equivalence also waits on cwd and registry
+      diagnostics that it consumes.
+    name: Dependency ordering
+    required: true
+    created_at: 2026-06-01T15:18:53.142Z
+    completed_at: 2026-06-01T15:18:53.142Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan confines work to runner contract hardening, daemon/API response parity, and Web UI
+      runner metadata. It explicitly excludes unrelated dependency/security maintenance and avoids
+      hidden product decisions beyond the existing runner behavior surfaces.
+    name: Scope control
+    required: true
+    created_at: 2026-06-01T15:18:55.722Z
+    completed_at: 2026-06-01T15:18:55.722Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed. kspec validate --alignment --warnings-ok and
+      kspec validate --completeness --warnings-ok also exited 0 with existing baseline warnings.
+    name: kspec validation
+    required: true
+    created_at: 2026-06-01T15:18:58.289Z
+    completed_at: 2026-06-01T15:18:58.289Z
 events:
   - _ulid: 01KT1W6P388A6W47DEPDNWK04C
     actor: Jacob Chapel
@@ -10,9 +90,81 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-01T15:17:57.993Z
+  - _ulid: 01KT1W7YPC7MH83J5W4524BWQV
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-06-01T15:18:39.564Z
+  - _ulid: 01KT1W81NK9V59QM5ERZR8VC38
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Cycle 1 testing blockers
+    timestamp: 2026-06-01T15:18:42.611Z
+  - _ulid: 01KT1W84HX8NCWNXNCY3VQYFXT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Existing spec placement
+    timestamp: 2026-06-01T15:18:45.565Z
+  - _ulid: 01KT1W872FTV6SXXX9Y9F3CSJ6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC quality and Covers references
+    timestamp: 2026-06-01T15:18:48.143Z
+  - _ulid: 01KT1W89JFC7S30PJS97W8TKYH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Task standalone executability
+    timestamp: 2026-06-01T15:18:50.703Z
+  - _ulid: 01KT1W8C6B5C2KCHH16T97XJWZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-06-01T15:18:53.387Z
+  - _ulid: 01KT1W8EPW9TQ9WC2Q5QD2SDP6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Scope control
+    timestamp: 2026-06-01T15:18:55.964Z
+  - _ulid: 01KT1W8H69ZQTE7YWCCBBR61K1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validation
+    timestamp: 2026-06-01T15:18:58.505Z
+  - _ulid: 01KT1W8KMSNDWXS3C8B9G0TPNH
+    actor: Jacob Chapel
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-01T15:19:01.017Z
+  - _ulid: 01KT1W8KMSDS0DZE1H3H6JH0ZZ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-01T15:19:01.017Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -20,7 +172,14 @@ subject:
   ref: "@plan-agent-runner-contract-hardening-follow-up"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: Jacob Chapel
+    role: reviewer
+    created_at: 2026-06-01T15:19:01.017Z
 created_at: 2026-06-01T15:17:57.993Z
-updated_at: null
+updated_at: 2026-06-01T15:19:01.017Z
 notes: []
