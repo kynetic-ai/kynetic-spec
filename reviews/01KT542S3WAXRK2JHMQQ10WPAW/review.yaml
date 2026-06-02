@@ -74,6 +74,17 @@ checks:
     runner: manual-review
     created_at: 2026-06-02T21:34:35.278Z
     completed_at: 2026-06-02T21:34:35.278Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed. Existing reference warnings are unrelated
+      deprecated-item warnings and were accepted under --warnings-ok.
+    name: kspec reference validation
+    required: true
+    runner: kspec
+    created_at: 2026-06-02T21:34:43.882Z
+    completed_at: 2026-06-02T21:34:43.882Z
 events:
   - _ulid: 01KT542S3TN266YF7C18VCZX29
     actor: Jacob Chapel
@@ -130,6 +141,13 @@ events:
       status: pass
       name: Boundary and artifact scope
     timestamp: 2026-06-02T21:34:35.499Z
+  - _ulid: 01KT5459CJ9QHEW1PWF1T88RB8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec reference validation
+    timestamp: 2026-06-02T21:34:44.114Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -142,5 +160,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-02T21:33:21.916Z
-updated_at: 2026-06-02T21:34:35.278Z
+updated_at: 2026-06-02T21:34:43.882Z
 notes: []
