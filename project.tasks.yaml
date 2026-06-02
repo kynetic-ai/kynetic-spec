@@ -30588,3 +30588,21 @@
   submitted_at: 2026-06-01T20:50:15.369Z
   completed_at: 2026-06-01T21:11:50.804Z
   automation: eligible
+- _ulid: 01KT58K6APZ8R5M0JWPGFCT5B2
+  slugs:
+    - task-plan-branch-git-error-details
+  title: Preserve Git checkout failure details in `kspec plan branch` text errors
+  type: bug
+  spec_ref: "@plan-branch-creation"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - cli
+    - plan-branch
+    - errors
+    - regression
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-02T22:52:14.035Z

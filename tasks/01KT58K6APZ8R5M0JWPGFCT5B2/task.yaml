@@ -1,0 +1,125 @@
+_ulid: 01KT58K6APZ8R5M0JWPGFCT5B2
+slugs:
+  - task-plan-branch-git-error-details
+title: Preserve Git checkout failure details in `kspec plan branch` text errors
+type: bug
+description: >-
+  What:
+
+  - Fix the text-mode error path for `kspec plan branch <ref>` when Git checkout/branch creation
+  fails because local worktree contents would be overwritten.
+
+  - The human-readable stderr must include the underlying Git failure text, such as `The following
+  untracked working tree files would be overwritten by checkout`, the affected path(s), and Git's
+  `Please move or remove them before you switch branches` guidance.
+
+  - The human-readable stderr must not print `[object Object]` for structured details objects.
+
+  - Preserve structured output behavior: `--json` and YAML/error-object output must continue to
+  include the top-level error, `details.message`, and `details.suggestion` without ANSI color codes
+  in JSON mode.
+
+
+  Why:
+
+  - `kspec plan branch` already captures Git's stderr through `branch-helper.runGit()`, but
+  text-mode `error()` currently stringifies the wrapped details object as `[object Object]`.
+
+  - This hides the actionable reason for the branch failure and makes dirty/untracked worktree
+  conflicts look like a mangled kspec error instead of a normal Git safety refusal.
+
+  - Plan branch creation is the command users are told to run for shared plan branches, so its
+  runtime Git failures need to satisfy the existing error-guidance and semantic-exit-code traits.
+
+
+  How:
+
+  - Start from `src/cli/commands/plan.ts`, `src/cli/branch-helper.ts`, `src/cli/output.ts`, and
+  `tests/plan-branch-helper.test.ts`.
+
+  - Add a focused regression test in `tests/plan-branch-helper.test.ts` that uses a disposable
+  fixture repo and `KSPEC_NO_DAEMON=1`/direct CLI execution to avoid daemon/proxy interference.
+
+  - The regression should create a branch-creation checkout conflict by configuring dispatch base
+  branch to a branch that contains a tracked path, then leaving an untracked file with the same path
+  in the current worktree before running `plan branch`.
+
+  - Assert the text-mode command exits with runtime-error exit code `3`, stderr includes the real
+  Git checkout refusal and the conflicted filename, and stderr does not include `[object Object]`.
+
+  - Assert `plan get` still shows no `branch` value for the plan after the failed checkout, because
+  plan metadata must only update after a successful branch checkout/create.
+
+  - Add or update a JSON-mode assertion for the same failure class: the command exits with
+  runtime-error exit code `3`, stderr parses as JSON, has `success: false`, has `error: "Failed to
+  create or resume plan branch"`, includes the Git failure in `details.message`, includes guidance
+  in `details.suggestion`, and contains no ANSI escape codes.
+
+  - Implement the smallest production change that makes structured error details render usefully in
+  text mode. Prefer a shared formatter in `src/cli/output.ts` if other commands pass `{ message,
+  suggestion }` details objects; avoid special-casing only one test string if a general formatter
+  cleanly preserves existing behavior.
+
+  - If the generic formatter changes text output for other commands, update/add focused tests for
+  `error()` or affected command tests so JSON/YAML output remains unchanged and text output stays
+  readable.
+
+  - Do not change branch naming, branch source selection, remote rehydration, shadow commit
+  behavior, or daemon dispatch target-sync logic in this task.
+
+
+  Testing:
+
+  - `npm test -- --run tests/plan-branch-helper.test.ts`
+
+  - If `src/cli/output.ts` is changed generically, also run the smallest existing
+  output-format/error tests that cover `error()` behavior; if no focused test exists, add one and
+  include it in the verification command.
+
+  - `npm run format:check`
+
+  - `npm run lint -- --quiet`
+
+  - `npx oxlint src/cli/output.ts src/cli/commands/plan.ts tests/plan-branch-helper.test.ts`
+
+  - `npm run typecheck`
+
+  - `KSPEC_NO_DAEMON=1 node dist/cli/index.js validate --warnings-ok` only if the implementation
+  changes kspec metadata; otherwise no metadata validation is required for source-only code changes.
+
+
+  Covers:
+
+  - `@trait-error-guidance ac-1`
+
+  - `@trait-error-guidance ac-2`
+
+  - `@trait-error-guidance ac-6`
+
+  - `@trait-json-output ac-1`
+
+  - `@trait-json-output ac-3`
+
+  - `@trait-semantic-exit-codes ac-4`
+
+
+  Coverage note:
+
+  - Existing inherited trait coverage on `@plan-branch-creation` is sufficient for this bug; no new
+  spec or AC is required.
+spec_ref: "@plan-branch-creation"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - cli
+  - plan-branch
+  - errors
+  - regression
+vcs_refs: []
+created_at: 2026-06-02T22:52:14.035Z
+todos: []
