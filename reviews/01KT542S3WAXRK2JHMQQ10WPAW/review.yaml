@@ -62,6 +62,18 @@ checks:
     runner: manual-review
     created_at: 2026-06-02T21:34:26.783Z
     completed_at: 2026-06-02T21:34:26.783Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan separates package-shipped neutral guidance from Kynetic local context and covers
+      source templates, plugin package copies, .agents outputs, .factory outputs, generated
+      kspec-agents.md, and dependent tests.
+    name: Boundary and artifact scope
+    required: true
+    runner: manual-review
+    created_at: 2026-06-02T21:34:35.278Z
+    completed_at: 2026-06-02T21:34:35.278Z
 events:
   - _ulid: 01KT542S3TN266YF7C18VCZX29
     actor: Jacob Chapel
@@ -111,6 +123,13 @@ events:
       status: pass
       name: Dependency ordering
     timestamp: 2026-06-02T21:34:27.000Z
+  - _ulid: 01KT5450ZB8QCDAMJQ7Q34YRVH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Boundary and artifact scope
+    timestamp: 2026-06-02T21:34:35.499Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -123,5 +142,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-02T21:33:21.916Z
-updated_at: 2026-06-02T21:34:26.783Z
+updated_at: 2026-06-02T21:34:35.278Z
 notes: []
