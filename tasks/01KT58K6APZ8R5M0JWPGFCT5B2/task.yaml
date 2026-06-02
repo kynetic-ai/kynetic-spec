@@ -110,8 +110,9 @@ description: >-
 spec_ref: "@plan-branch-creation"
 meta_ref: null
 plan_ref: null
-status: pending_review
-blocked_by: []
+status: blocked
+blocked_by:
+  - "Agent pr-reviewer failed 3 consecutive times: Internal error"
 depends_on: []
 context: []
 priority: 1
@@ -171,6 +172,21 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-02T23:28:24.596Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: blocked
+        previous: pending_review
+      blocked_by:
+        new:
+          - "Agent pr-reviewer failed 3 consecutive times: Internal error"
+        previous: []
+      prior_status:
+        new: pending_review
+        previous: null
+    command: task-block
+    timestamp: 2026-06-02T23:39:15.606Z
+prior_status: pending_review
 created_at: 2026-06-02T22:52:14.035Z
 started_at: 2026-06-02T22:54:29.034Z
 submitted_at: 2026-06-02T23:28:24.596Z

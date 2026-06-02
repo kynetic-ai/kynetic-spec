@@ -30594,8 +30594,9 @@
   title: Preserve Git checkout failure details in `kspec plan branch` text errors
   type: bug
   spec_ref: "@plan-branch-creation"
-  status: pending_review
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - "Agent pr-reviewer failed 3 consecutive times: Internal error"
   depends_on: []
   priority: 1
   tags:
