@@ -63,5 +63,14 @@ tags:
   - plugin
   - tests
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-06-02T23:59:10.154Z
 created_at: 2026-06-02T23:58:08.739Z
 todos: []
+automation: eligible

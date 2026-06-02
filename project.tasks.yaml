@@ -30729,6 +30729,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-02T23:58:08.739Z
+  automation: eligible
 - _ulid: 01KT5CBX1MEPE79Z8PXRNP9DJ5
   slugs:
     - task-close-shared-template-neutrality-cleanup
