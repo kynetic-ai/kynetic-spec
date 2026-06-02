@@ -184,9 +184,25 @@ events:
       status: pass
       name: kspec completeness validation
     timestamp: 2026-06-02T21:35:01.529Z
+  - _ulid: 01KT546924MFJB7JMFT43ES6TM
+    actor: Jacob Chapel
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-02T21:35:16.548Z
+  - _ulid: 01KT546924H0MX31X51G47K0Q6
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-02T21:35:16.548Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -194,7 +210,14 @@ subject:
   ref: "@plan-shared-template-project-neutrality-cleanup"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: Jacob Chapel
+    role: reviewer
+    created_at: 2026-06-02T21:35:16.548Z
 created_at: 2026-06-02T21:33:21.916Z
-updated_at: 2026-06-02T21:35:01.314Z
+updated_at: 2026-06-02T21:35:16.548Z
 notes: []

@@ -23702,10 +23702,10 @@ reviews:
   - _ulid: 01KT542S3WAXRK2JHMQQ10WPAW
     slugs: []
     title: "Plan review: Shared Template Project-Neutrality Cleanup"
-    disposition: pending
+    disposition: approved
     author: Jacob Chapel
     check_count: 9
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -23714,6 +23714,6 @@ reviews:
       shadow_commit: ""
     thread_count: 0
     unresolved_blocker_count: 0
-    verdict_count: 0
+    verdict_count: 1
     created_at: 2026-06-02T21:33:21.916Z
-    updated_at: 2026-06-02T21:35:01.314Z
+    updated_at: 2026-06-02T21:35:16.548Z
