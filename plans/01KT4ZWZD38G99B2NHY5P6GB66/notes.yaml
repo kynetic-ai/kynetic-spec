@@ -3,3 +3,7 @@ notes:
     content: "Address fallback review cycle 1: cover existing-spec ACs and make audit origin-aware"
     author: Jacob Chapel
     created_at: 2026-06-02T20:26:46.360Z
+  - _ulid: 01KT50HVFF7FW6GFHH78MTAZFK
+    content: "Address fallback review cycle 2: include .agents outputs and split audit red/green staging"
+    author: Jacob Chapel
+    created_at: 2026-06-02T20:31:41.551Z
