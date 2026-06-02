@@ -38,6 +38,18 @@ checks:
     runner: manual-review
     created_at: 2026-06-02T21:34:08.504Z
     completed_at: 2026-06-02T21:34:08.504Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 7 new-plan ACs are claimed by one or more task Covers lines. Existing-spec ACs to be
+      added for @agent-templates, @core-skill-install, and @core-skill-update are also explicitly
+      covered by later neutralization/regeneration tasks.
+    name: AC coverage mapping
+    required: true
+    runner: manual-review
+    created_at: 2026-06-02T21:34:17.449Z
+    completed_at: 2026-06-02T21:34:17.449Z
 events:
   - _ulid: 01KT542S3TN266YF7C18VCZX29
     actor: Jacob Chapel
@@ -73,6 +85,13 @@ events:
       status: pass
       name: Spec language quality
     timestamp: 2026-06-02T21:34:08.740Z
+  - _ulid: 01KT544FJZEREWH0TRC8D3ZW3R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage mapping
+    timestamp: 2026-06-02T21:34:17.695Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -85,5 +104,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-02T21:33:21.916Z
-updated_at: 2026-06-02T21:34:08.504Z
+updated_at: 2026-06-02T21:34:17.449Z
 notes: []
