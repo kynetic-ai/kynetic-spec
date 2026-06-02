@@ -30687,6 +30687,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-02T23:58:07.377Z
+  automation: eligible
 - _ulid: 01KT5CBVGVNX2MF3TK6WJZ4FRR
   slugs:
     - task-preserve-kynetic-local-template-maintenance-context
