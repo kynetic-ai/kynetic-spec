@@ -2,8 +2,8 @@ _ulid: 01KT4ZWZD38G99B2NHY5P6GB66
 slugs:
   - plan-shared-template-project-neutrality-cleanup
 title: Shared Template Project-Neutrality Cleanup
-status: draft
-approved_at: null
+status: approved
+approved_at: 2026-06-02T23:57:24.427Z
 branch: null
 derived_specs: []
 derived_tasks: []
