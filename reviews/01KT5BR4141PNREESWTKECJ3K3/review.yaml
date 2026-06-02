@@ -1,0 +1,26 @@
+_ulid: 01KT5BR4141PNREESWTKECJ3K3
+slugs: []
+title: "Plan re-review: Shared Template Project-Neutrality Cleanup"
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KT5BR40Y0645PHD1RSEGKMKA
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-02T23:47:21.246Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-shared-template-project-neutrality-cleanup"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-02T23:47:21.252Z
+updated_at: null
+notes: []

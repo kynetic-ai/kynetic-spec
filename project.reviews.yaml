@@ -23717,3 +23717,20 @@ reviews:
     verdict_count: 1
     created_at: 2026-06-02T21:33:21.916Z
     updated_at: 2026-06-02T21:35:16.548Z
+  - _ulid: 01KT5BR4141PNREESWTKECJ3K3
+    slugs: []
+    title: "Plan re-review: Shared Template Project-Neutrality Cleanup"
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-shared-template-project-neutrality-cleanup"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-02T23:47:21.252Z
