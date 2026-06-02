@@ -1704,7 +1704,7 @@ plans:
     slugs:
       - plan-agent-runner-configuration-layer
     title: Agent Runner Configuration Layer
-    status: active
+    status: completed
     approved_at: 2026-05-31T06:18:18.282Z
     derived_specs:
       - "@agent-runner-configuration"
@@ -1726,14 +1726,14 @@ plans:
       - "@task-web-ui-runner-surfaces"
       - "@task-document-runner-config-migration"
       - "@task-runner-compatibility-regressions"
-    notes_count: 11
+    notes_count: 12
     source_path: /home/chapel/Projects/kynetic-spec-dispatch/plans/agent-runner-configuration-layer.md
     created_at: 2026-05-29T20:09:32.288Z
   - _ulid: 01KT1VHSTDW8JM9SK4JWM2FSJS
     slugs:
       - plan-agent-runner-contract-hardening-follow-up
     title: Agent Runner Contract Hardening Follow-up
-    status: active
+    status: completed
     approved_at: 2026-06-01T16:36:38.627Z
     derived_specs: []
     derived_tasks:
@@ -1742,6 +1742,6 @@ plans:
       - "@task-runner-registry-load-failure-diagnostics"
       - "@task-dispatch-runner-preflight-invocation-equivalence"
       - "@task-runner-operator-surface-parity"
-    notes_count: 2
+    notes_count: 3
     source_path: /home/chapel/Projects/kynetic-spec-dispatch/plans/agent-runner-contract-hardening-followup.md
     created_at: 2026-06-01T15:06:33.677Z

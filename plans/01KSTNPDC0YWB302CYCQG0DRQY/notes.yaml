@@ -106,3 +106,15 @@ notes:
       `~/Projects/kynetic-spec-dispatch` mutation state.
     author: Jacob Chapel
     created_at: 2026-05-31T06:19:05.151Z
+  - _ulid: 01KT4SJP1TJKS1AB3Y0K3B69GW
+    content: "Closure approved by Jacob after read-only validation. Evidence: 12/12 derived tasks
+      completed; all associated reviews closed/approved/passing; reviewed submission commits
+      contained in dev/origin/dev; runner specs implemented; dispatch idle/not degraded; root and
+      shadow worktrees clean. Gates: typecheck, lint, format:check, build, git diff --check, kspec
+      validate --warnings-ok, full npm test -- --fresh (2681 suites / 10218 tests passed), and
+      agents E2E (46/46) passed. Caveats are baseline/non-runner: existing svelte-check route-param
+      errors, npm audit advisories, and project-wide kspec warning debt. Legacy adapter behavior was
+      spot-checked as preserved: adapter-only agents keep fallback behavior, runner-backed agents
+      use runner precedence, and legacy paths are not blocked by runner registry failures."
+    author: Jacob Chapel
+    created_at: 2026-06-02T18:29:48.730Z

@@ -24,3 +24,16 @@ notes:
       checkout.
     author: Jacob Chapel
     created_at: 2026-06-01T16:37:29.620Z
+  - _ulid: 01KT4SJPA6F4GQWSNX106MKX5T
+    content: "Closure approved by Jacob after read-only validation. Evidence: 5/5 derived hardening
+      tasks completed; all associated reviews closed/approved/passing; reviewed submission commits
+      contained in dev/origin/dev; tightened runner specs implemented; dispatch idle/not degraded;
+      root and shadow worktrees clean. Gates: typecheck, lint, format:check, build, git diff
+      --check, kspec validate --warnings-ok, full npm test -- --fresh (2681 suites / 10218 tests
+      passed), and agents E2E (46/46) passed. The follow-up intent is satisfied: deterministic
+      system cwd resolution, registry-load diagnostics that block runner-backed spawn before prompt
+      forwarding, canonical dispatch preflight session id reuse, and daemon/Web UI operator-surface
+      parity for runner plus resolved adapter. Caveats are baseline/non-runner: existing
+      svelte-check route-param errors, npm audit advisories, and project-wide kspec warning debt."
+    author: Jacob Chapel
+    created_at: 2026-06-02T18:29:48.998Z

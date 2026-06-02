@@ -2,7 +2,7 @@ _ulid: 01KSTNPDC0YWB302CYCQG0DRQY
 slugs:
   - plan-agent-runner-configuration-layer
 title: Agent Runner Configuration Layer
-status: active
+status: completed
 approved_at: 2026-05-31T06:18:18.282Z
 branch: null
 derived_specs:
