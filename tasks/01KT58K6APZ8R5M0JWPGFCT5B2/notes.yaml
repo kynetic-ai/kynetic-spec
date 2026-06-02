@@ -5,3 +5,29 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-02T22:52:17.759Z
+  - _ulid: 01KT5AND3YWVDNPM7XGJNJGWNY
+    content: >-
+      Implementation:
+
+      - Added formatErrorDetailsForText() helper in src/cli/output.ts that returns details.message
+      for plain object details (instead of [object Object]) while preserving existing Error and
+      string handling. The suggestion-printing block is unchanged.
+
+      - Changed catch-block exit in `kspec plan branch` from EXIT_CODES.ERROR (1) to literal 3 with
+      a comment, aligning with @trait-semantic-exit-codes ac-4 (runtime error = 3). This was
+      required by the task spec.
+
+      - New regression test in tests/plan-branch-helper.test.ts forces a git checkout-clobber
+      failure by configuring dispatch.base_branch to a dev branch that owns a tracked file, then
+      leaves an untracked file with the same path on main before running plan branch. Asserts
+      text-mode exit 3, no [object Object], git refusal text + filename present; plan.branch remains
+      null; JSON-mode exit 3, no ANSI, structured error with details.message containing git failure
+      text and details.suggestion present.
+
+      - Removed the now-covered N/A annotation for @trait-semantic-exit-codes ac-4.
+
+      Gates: format:check, lint --quiet, oxlint on changed files, typecheck, and full npm test
+      (10219 passed / 5 skipped) all green.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-02T23:28:23.678Z
