@@ -201,6 +201,29 @@ export function success(message: string, data?: Record<string, unknown>): void {
 }
 
 /**
+ * Render a `details` value for text-mode error output.
+ *
+ * Returns the textual portion to print under the main error line. Plain
+ * structured objects (e.g. `{ message, suggestion }`) surface their `message`
+ * field so the caller's underlying failure text is preserved instead of
+ * collapsing to `[object Object]`. Returns `null` when there is nothing
+ * meaningful to render so the caller can suppress the secondary line entirely.
+ */
+function formatErrorDetailsForText(details: unknown): string | null {
+  if (details === null || details === undefined) return null;
+  if (typeof details === "string") return details;
+  if (details instanceof Error) return String(details);
+  if (typeof details === "object") {
+    const message = (details as { message?: unknown }).message;
+    if (typeof message === "string" && message.length > 0) {
+      return message;
+    }
+    return null;
+  }
+  return String(details);
+}
+
+/**
  * Output error message
  * AC: @output-format-option ac-format-json, ac-format-yaml
  */
@@ -213,9 +236,12 @@ export function error(message: string, details?: unknown): void {
   } else {
     console.error(chalk.red("✗"), message);
     if (details) {
-      console.error(chalk.gray(String(details)));
+      const detailText = formatErrorDetailsForText(details);
+      if (detailText !== null) {
+        console.error(chalk.gray(detailText));
+      }
       // Show suggestion if it's a ShadowError with a suggestion
-      if (details && typeof details === "object" && "suggestion" in details) {
+      if (typeof details === "object" && "suggestion" in details) {
         const suggestion = (details as { suggestion?: string }).suggestion;
         if (suggestion) {
           console.error(chalk.yellow("  Suggestion:"), suggestion);

@@ -1215,7 +1215,8 @@ Examples:
                   'Check the plan ref with "kspec plan list", verify the target branch exists or the dispatch base branch is configured, then retry.',
               };
         error("Failed to create or resume plan branch", details);
-        process.exit(EXIT_CODES.ERROR);
+        // Runtime git failure exit code per @trait-semantic-exit-codes ac-4.
+        process.exit(3);
       }
     });
 
