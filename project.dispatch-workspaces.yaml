@@ -14285,12 +14285,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-02T23:37:28.575Z
+      updated_at: 2026-06-02T23:37:37.176Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-02T23:37:28.575Z
+      updated_at: 2026-06-02T23:37:37.176Z
     integration:
       status: pending
       detail: null
@@ -14298,24 +14298,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 9ec889988c6cabb1f9aa1d9424cebb546092c287
-      updated_at: 2026-06-02T23:37:28.575Z
-    lifecycle_state: ready
+      updated_at: 2026-06-02T23:37:37.176Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KT58K6APZ8R5M0JWPGFCT5B2"
     task_slug: task-plan-branch-git-error-details
     timestamps:
       closed_at: null
       last_active_at: 2026-06-02T22:54:03.745Z
-      last_reconciled_at: 2026-06-02T23:37:28.575Z
+      last_reconciled_at: 2026-06-02T23:37:37.176Z
       created_at: 2026-06-02T22:53:25.048Z
-      updated_at: 2026-06-02T23:37:28.575Z
+      updated_at: 2026-06-02T23:37:37.176Z
     workspace_id: dispatch-workspace-01KT58K6APZ8R5M0JWPGFCT5B2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: f9be38dc0e6350c57d99d620531e5ef90b96340a
+        last_seen_at: 2026-06-02T23:37:37.176Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-branch-git-error-details-01kt58k6-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-plan-branch-git-error-details/01kt58k6
-        head: 9ec889988c6cabb1f9aa1d9424cebb546092c287
-        last_seen_at: 2026-06-02T22:53:25.048Z
+        head: f9be38dc0e6350c57d99d620531e5ef90b96340a
+        last_seen_at: 2026-06-02T23:37:37.176Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-branch-git-error-details-01kt58k6
