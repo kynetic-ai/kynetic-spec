@@ -1,0 +1,83 @@
+_ulid: 01KT5CBSRZ1GGNNKM5V0W9JCT0
+slugs:
+  - task-add-shared-guidance-neutrality-review-gate
+title: Add shared-guidance neutrality convention and review guidance
+type: task
+description: |
+  What:
+  - Add or update project-local convention/reviewer guidance for this
+    self-hosting repository so changes to package-shipped external guidance are
+    reviewed for project neutrality before approval.
+  - The guidance must apply when a task or plan changes any of these shared or
+    package-derived surfaces:
+    - `templates/skills/`
+    - `templates/agents-sections/`
+    - `templates/skills/manifest.yaml`
+    - `plugin/plugins/kspec/skills/`
+    - rendered package/core skill outputs under `.agents/skills/` when their
+      source is a package core skill rather than a project-local `.kspec/skills/`
+      skill
+    - rendered package/core skill outputs under `.factory/skills/` when they
+      are generated from package core skill sources
+    - generated `kspec-agents.md` sections that come from package templates
+  - The convention/reviewer guidance must state the semantic review rule:
+    package-shipped guidance describes universal kspec mechanics only;
+    Kynetic self-hosting branch policy, repo paths, quality gates, generated
+    artifact maintenance rules, dispatch workflow choices, agent ids, and
+    external review policy belong in project-local context.
+  - The guidance must require reviewers to check both directions:
+    - shared/package text does not hard-code Kynetic-only policy as universal;
+    - any still-needed Kynetic self-hosting instruction removed from shared
+      text has a project-local home such as `AGENTS.md`, project-local
+      `.kspec/skills/`, or project meta conventions.
+  - Prefer a project-local kspec convention domain plus reviewer skill/checklist
+    wording over new specs or AC-tagged tests. Attach the convention/checklist
+    to the reviewer agents that review task work and plans in this repository,
+    using `kspec agent list` and `kspec meta get` to identify the current agent
+    ids before editing.
+  - Do not add a broad markdown scanner or string-denylist test in this task.
+    If implementation discovers an already-existing obvious-token lint, keep
+    any changes narrow and non-semantic; do not present it as proof of prose
+    neutrality.
+
+  Why:
+  Project-neutrality of prose is semantic and brittle to validate by scanning
+  strings in markdown. Reviewers and agents can judge whether guidance is
+  universal, while mechanical tests should stay focused on rendering,
+  installation, and generated-artifact consistency.
+
+  How:
+  - Use kspec CLI/meta commands for project-local convention and agent metadata
+    edits; do not manually edit `.kspec` YAML files.
+  - Keep the guidance self-contained so a future reviewer has no chat history:
+    define shared/package surfaces, allowed local homes, and examples of
+    Kynetic-specific material that must not be framed as universal.
+  - If a project-local reviewer skill is added or edited, render skills and
+    regenerate agent instructions as needed so the guidance reaches reviewer
+    agents.
+
+  Testing:
+  - `kspec agent list`
+  - `kspec meta get <reviewer-agent-ref>` for the affected reviewer agents
+  - `kspec validate --refs --warnings-ok`
+  - If conventions, skills, or generated agent instructions change, run
+    `kspec agents generate` and/or `kspec skill render` as appropriate and
+    inspect the generated reviewer guidance.
+
+  Covers: convention/reviewer-gate prerequisite only; no spec AC is claimed.
+spec_ref: null
+plan_ref: "@plan-shared-template-project-neutrality-cleanup"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - conventions
+  - review
+  - skills
+  - agents
+vcs_refs: []
+created_at: 2026-06-02T23:58:06.111Z
+todos: []

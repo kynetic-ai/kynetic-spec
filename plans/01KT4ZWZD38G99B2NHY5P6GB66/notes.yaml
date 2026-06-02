@@ -12,3 +12,59 @@ notes:
       and broad scanner scope"
     author: Jacob Chapel
     created_at: 2026-06-02T23:42:36.733Z
+  - _ulid: 01KT5CBXV740KEVN8HP3PQ02S3
+    content: >-
+      ### Spec updates and removals
+
+
+      This plan intentionally proposes no new specs, no existing-spec updates, and no spec removals.
+
+
+      The neutrality problem is a semantic documentation/review problem rather than a stable runtime
+      behavior. Broad markdown scanners or AC-tagged tests against prose would be brittle because
+      wording changes frequently and semantically equivalent leaks can evade string checks. For now,
+      enforcement belongs in project-local conventions and reviewer guidance. If future regressions
+      show that review guidance is insufficient, create a separate hardening plan for narrowly
+      scoped linting of obvious forbidden tokens.
+
+
+      ### Leak classes reviewers must check
+
+
+      The initial audit identified these leak classes in shared guidance. They are review
+      heuristics, not a request to build a broad scanner in this plan:
+
+
+      - Source-layout and package-maintainer paths presented as consumer instructions, including
+      `templates/skills/`, `templates/skills/manifest.yaml`, `templates/agents-sections/`, and
+      `src/parser/validate.ts` examples.
+
+      - Branch and external-review policy presented as universal, including `main`, `dev`, GitHub PR
+      examples, and `PR #...` resolution examples.
+
+      - Toolchain gates presented as universal, including npm format/lint/typecheck commands, oxlint
+      changed-file checks, and Vitest-specific checks.
+
+      - Fixed self-hosting agent/meta names presented as universal, including `task-worker`,
+      `pr-reviewer`, and `kynetic.meta.yaml`.
+
+      - Runtime-specific tool names presented as universal skill guidance, including
+      `AskUserQuestion`.
+
+      - Concrete workflow refs or trait refs presented as guaranteed in every consumer project when
+      they are not actually seeded for every project.
+
+
+      ### Dependency ordering
+
+
+      The convention/reviewer-guidance task comes first so every later cleanup task has the semantic
+      gate it should satisfy. Agent-section cleanup and skill cleanup can proceed independently
+      after that gate exists, but each cleanup task should keep notes about the exact local-only
+      guidance it removes so the local-context task can preserve it without relying on chat history.
+      Local Kynetic context is preserved after shared sources are neutralized so moved instructions
+      have an obvious home. Generated artifacts and tests are refreshed only after both source and
+      local-context edits are complete. Closure verifies reviewer-guidance attachment, mechanical
+      gates, semantic review of shared guidance, and local self-hosting continuity.
+    author: Jacob Chapel
+    created_at: 2026-06-02T23:58:10.279Z

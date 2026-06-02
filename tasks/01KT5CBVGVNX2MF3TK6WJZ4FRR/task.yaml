@@ -1,0 +1,67 @@
+_ulid: 01KT5CBVGVNX2MF3TK6WJZ4FRR
+slugs:
+  - task-preserve-kynetic-local-template-maintenance-context
+title: Preserve Kynetic self-hosting conventions in local context
+type: task
+description: |
+  What:
+  - Add or update project-local context so Kynetic self-hosting agents still
+    see the conventions removed from shared package templates.
+  - Ensure `AGENTS.md` or another project-local agent context document covers:
+    - package-maintainer source locations for `templates/skills/`,
+      `templates/skills/manifest.yaml`, and `templates/agents-sections/`;
+    - regeneration expectations for `kspec skill render`,
+      `kspec agents generate`, generated plugin copies, and `.factory` copies;
+    - Kynetic's local TypeScript/Node quality gates and any sharded test
+      conventions that task workers and reviewers must use;
+    - Kynetic's branch/review/dispatch expectations when they are local
+      repository policy rather than package-universal behavior.
+  - If a procedural checklist is too large for `AGENTS.md`, create or update a
+    project-local skill under `.kspec/skills/` and attach it to the relevant
+    Kynetic worker/reviewer agents through kspec meta commands.
+  - Do not put consumer-neutral guidance back into local-only form; only move
+    instructions that are genuinely specific to maintaining this repository or
+    this repository's generated package artifacts.
+
+  Why:
+  Neutralizing shared templates should not weaken self-hosting execution. The
+  removed project conventions still need a durable home that future Kynetic
+  task workers and reviewers receive without chat history.
+
+  How:
+  - Prefer `AGENTS.md` for concise repository-wide facts and local skills for
+    procedural checklists.
+  - Use kspec CLI/meta commands for project-local skill registration when a
+    local skill is added or changed.
+  - Run `kspec skill render` when a project-local skill is added or changed,
+    then regenerate `kspec-agents.md` after project-local context or meta
+    changes.
+
+  Testing:
+  - `kspec agents generate`
+  - Inspect generated `kspec-agents.md` for the self-hosting guidance via local
+    context rather than static shared templates.
+  - Reviewer verifies the local-preservation side of the shared-guidance
+    neutrality convention: Kynetic-only guidance removed from shared text is
+    still reachable from local project context.
+
+  Covers: local self-hosting guidance preservation; no spec AC is claimed.
+spec_ref: null
+plan_ref: "@plan-shared-template-project-neutrality-cleanup"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-neutralize-agent-section-templates"
+  - "@task-neutralize-work-review-merge-skills"
+  - "@task-neutralize-planning-writing-triage-skills"
+context: []
+priority: 2
+tags:
+  - local-context
+  - skills
+  - agents
+  - self-hosting
+vcs_refs: []
+created_at: 2026-06-02T23:58:07.899Z
+todos: []

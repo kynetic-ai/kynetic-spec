@@ -1,0 +1,59 @@
+_ulid: 01KT5CBX1MEPE79Z8PXRNP9DJ5
+slugs:
+  - task-close-shared-template-neutrality-cleanup
+title: Close shared-template neutrality cleanup
+type: task
+description: |
+  What:
+  - Run final validation for the full cleanup after all shared-source,
+    local-context, generated-artifact, and test updates are complete.
+  - Verify the reviewer/convention guidance exists and is attached to the
+    relevant reviewers for future changes to package-shipped external guidance.
+  - Verify package-shipped/shared guidance has been semantically reviewed as
+    universal kspec mechanics, not Kynetic self-hosting policy.
+  - Verify the Kynetic self-hosting context still exposes local template source,
+    regeneration, quality-gate, branch/review, and plugin-build conventions.
+  - Add release-note or documentation entries explaining that package core
+    guidance is now project-neutral and self-hosting policy lives in local
+    project context.
+  - Do not change spec statuses or mark new specs implemented; this plan does
+    not create or update specs.
+
+  Why:
+  This plan changes both shared package content and local self-hosting context.
+  Closure needs to prove mechanical artifact consistency and reviewer-confirmed
+  semantic neutrality, not just that a text scan is green.
+
+  How:
+  - Inspect the final diff for accidental removal of universal kspec mechanics.
+  - Confirm any removed Kynetic-only instruction has a durable local home or is
+    intentionally obsolete.
+  - Record any desired future hardening as a follow-up inbox item or plan idea
+    instead of adding scanner scope here.
+
+  Testing:
+  - `npm run format:check`
+  - `npm run lint -- --quiet`
+  - `npm run typecheck`
+  - Relevant focused tests from prior tasks.
+  - `kspec validate --refs --warnings-ok`
+  - Final reviewer check using the shared-guidance neutrality convention.
+
+  Covers: closure and reviewer-confirmed neutrality workflow; no spec AC is
+  claimed.
+spec_ref: null
+plan_ref: "@plan-shared-template-project-neutrality-cleanup"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-regenerate-shared-template-artifacts-and-tests"
+context: []
+priority: 4
+tags:
+  - validation
+  - review
+  - release
+vcs_refs: []
+created_at: 2026-06-02T23:58:09.460Z
+todos: []

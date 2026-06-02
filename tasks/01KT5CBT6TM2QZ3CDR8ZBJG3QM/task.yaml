@@ -1,0 +1,70 @@
+_ulid: 01KT5CBT6TM2QZ3CDR8ZBJG3QM
+slugs:
+  - task-neutralize-agent-section-templates
+title: Neutralize static agent-section templates
+type: task
+description: |
+  What:
+  - Edit static agent-section templates so consumer projects receive only
+    universal kspec mechanics.
+  - Update `templates/agents-sections/01-quick-start.md` so "edit skill
+    sources" guidance directs normal consumers to project-local `.kspec`
+    skill/convention sources and supported kspec commands. Keep package
+    `templates/skills/` and `templates/skills/manifest.yaml` guidance only in
+    package-maintainer/self-hosting context.
+  - Update `templates/agents-sections/02-shadow-branch.md` so it does not
+    assume a branch named `main`, a GitHub PR workflow, or a universal main
+    branch ignore policy. Describe shadow state as separate from the user's
+    configured code/integration branch instead.
+  - Update `templates/agents-sections/06-agent-dispatch-mode.md` so it refers
+    to configured worker/reviewer agents from project meta data instead of
+    fixed `task-worker`, `pr-reviewer`, or `kynetic.meta.yaml` names. Keep the
+    dispatch mechanics that are truly part of kspec.
+  - Remove or generalize the universal "Do NOT create GitHub PRs" wording so
+    static guidance says dispatched work is reviewed through kspec review
+    records, while external PR use is project/human policy.
+  - Review the remaining files in `templates/agents-sections/` for similar
+    leaks and neutralize any found by the semantic review guidance added in
+    the prerequisite task.
+
+  Why:
+  Static sections are copied into generated agent instructions for every
+  project. They should not make a new consumer believe their repository must
+  have Kynetic's source tree, branch names, GitHub policy, or default agent ids.
+
+  How:
+  - Keep user-facing commands like `kspec init`, `kspec setup`,
+    `kspec task submit`, and `kspec agent dispatch status` when they are
+    universal kspec commands.
+  - When guidance needs a variable value, point to project config, project
+    meta, `kspec agent list`, or the generated dynamic data section.
+  - Preserve Kynetic-specific source-maintenance guidance by moving it to the
+    local context task in this plan rather than deleting it.
+
+  Testing:
+  - Run the project-defined focused tests for agent instruction generation,
+    including `npm test -- --fresh tests/agents-instruction-gen.test.ts` unless
+    the local context names a replacement gate.
+  - `kspec agents generate` and inspect `kspec-agents.md` for neutral static
+    wording and preserved local context.
+  - Reviewer applies the shared-guidance neutrality convention to the changed
+    static sections; do not rely on a broad string scan as the main evidence.
+
+  Covers: package agent-section neutralization and local-preservation workflow;
+  no spec AC is claimed.
+spec_ref: null
+plan_ref: "@plan-shared-template-project-neutrality-cleanup"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-add-shared-guidance-neutrality-review-gate"
+context: []
+priority: 1
+tags:
+  - agents
+  - templates
+  - docs
+vcs_refs: []
+created_at: 2026-06-02T23:58:06.554Z
+todos: []

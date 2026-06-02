@@ -1,0 +1,71 @@
+_ulid: 01KT5CBV0H0SQ2V6D6G8GB1EJZ
+slugs:
+  - task-neutralize-planning-writing-triage-skills
+title: Neutralize planning, writing, workflow, and triage skills
+type: task
+description: |
+  What:
+  - Edit the remaining package core skills and supporting docs that encode
+    self-hosting examples as universal instructions.
+  - In `templates/skills/create-workflow/SKILL.md`, move package template
+    authoring instructions (`templates/skills/<name>/SKILL.md`, manifest
+    edits, manual commits to a branch) out of consumer workflow guidance.
+    Normal consumers should create project-local workflows/skills through
+    kspec project state or project-local skill sources.
+  - In `templates/skills/plan/SKILL.md` and
+    `templates/skills/writing-specs/SKILL.md`, keep kspec plan/spec writing
+    principles while replacing implementation-domain examples such as
+    `passport.js`, ACP/JSON-RPC/WebSocket/client-function examples, and
+    concrete workflow refs when those refs are not guaranteed in every
+    consumer project.
+  - In `templates/skills/observe/SKILL.md`, `templates/skills/reflect/SKILL.md`,
+    `templates/skills/triage-inbox/SKILL.md`, and
+    `templates/skills/triage/docs/*.md`, replace PR-number examples,
+    `AskUserQuestion`, and self-hosting CLI-feature examples with neutral
+    examples or project-defined wording.
+  - Review `templates/skills/manifest.yaml` for descriptions like "Task/PR
+    review" and update them to neutral kspec review terminology.
+
+  Why:
+  These skills are less central than task-work/review, but they still ship to
+  every project. They should teach reusable kspec practice without assuming the
+  consumer has Kynetic's workflow catalog, trait catalog, source layout, or
+  agent runtime tools.
+
+  How:
+  - For concrete trait refs, first verify whether each trait is present in the
+    shipped/default catalog for every initialized project. If a trait is
+    universal, describe it as a built-in kspec trait. If it is only
+    self-hosting catalog content, replace the hard-coded ref with "run
+    `kspec item list --type trait` and apply matching project traits".
+  - For workflow refs, use "if this workflow exists in the project" wording
+    unless the workflow is guaranteed by `kspec setup` for every consumer.
+  - Keep examples short and neutral so the shared skill remains portable.
+
+  Testing:
+  - Run skill parser/render tests for changed skill files.
+  - Run `kspec skill render` in this repository after source edits so rendered
+    copies can be compared in the later artifact task.
+  - Reviewer applies the shared-guidance neutrality convention to the changed
+    planning/writing/workflow/triage skills; do not rely on a broad string scan
+    as the main evidence.
+
+  Covers: package core-skill neutralization and reviewer-evidence workflow; no
+  spec AC is claimed.
+spec_ref: null
+plan_ref: "@plan-shared-template-project-neutrality-cleanup"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-add-shared-guidance-neutrality-review-gate"
+context: []
+priority: 2
+tags:
+  - skills
+  - planning
+  - triage
+  - workflows
+vcs_refs: []
+created_at: 2026-06-02T23:58:07.377Z
+todos: []
