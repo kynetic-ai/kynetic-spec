@@ -2,7 +2,18 @@ _ulid: 01KT542S3WAXRK2JHMQQ10WPAW
 slugs: []
 title: "Plan review: Shared Template Project-Neutrality Cleanup"
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec plan import plans/shared-template-project-neutrality.md --dry-run parsed the
+      document as draft, stored full content, and derived 0 specs/tasks without mutating state.
+    name: Plan import dry-run
+    required: true
+    runner: kspec
+    created_at: 2026-06-02T21:33:46.756Z
+    completed_at: 2026-06-02T21:33:46.756Z
 events:
   - _ulid: 01KT542S3TN266YF7C18VCZX29
     actor: Jacob Chapel
@@ -17,6 +28,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-02T21:33:37.306Z
+  - _ulid: 01KT543HJX5JTCPCM5WNG7B2M8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan import dry-run
+    timestamp: 2026-06-02T21:33:46.973Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -29,5 +47,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-02T21:33:21.916Z
-updated_at: 2026-06-02T21:33:37.084Z
+updated_at: 2026-06-02T21:33:46.756Z
 notes: []
