@@ -30647,6 +30647,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-02T23:58:06.554Z
+  automation: eligible
 - _ulid: 01KT5CBTKEA5K1K9WGEE4SWSW5
   slugs:
     - task-neutralize-work-review-merge-skills
