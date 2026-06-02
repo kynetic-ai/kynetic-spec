@@ -26,6 +26,18 @@ checks:
     runner: kspec
     created_at: 2026-06-02T21:33:56.665Z
     completed_at: 2026-06-02T21:33:56.665Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Reviewed new ACs against kspec-writing-specs rules. ACs are testable, behavioral for this
+      package-guidance domain, and avoid implementation-only requirements; task-level file paths and
+      commands are kept in task descriptions.
+    name: Spec language quality
+    required: true
+    runner: manual-review
+    created_at: 2026-06-02T21:34:08.504Z
+    completed_at: 2026-06-02T21:34:08.504Z
 events:
   - _ulid: 01KT542S3TN266YF7C18VCZX29
     actor: Jacob Chapel
@@ -54,6 +66,13 @@ events:
       status: pass
       name: Spec neighborhood and references
     timestamp: 2026-06-02T21:33:56.908Z
+  - _ulid: 01KT5446V426SR7K67QD2AA9CS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec language quality
+    timestamp: 2026-06-02T21:34:08.740Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -66,5 +85,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-02T21:33:21.916Z
-updated_at: 2026-06-02T21:33:56.665Z
+updated_at: 2026-06-02T21:34:08.504Z
 notes: []
