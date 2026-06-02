@@ -30709,6 +30709,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-02T23:58:07.899Z
+  automation: eligible
 - _ulid: 01KT5CBWB38JYB60TD5EN9P30K
   slugs:
     - task-regenerate-shared-template-artifacts-and-tests
