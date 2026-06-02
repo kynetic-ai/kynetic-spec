@@ -96,6 +96,17 @@ checks:
     runner: kspec
     created_at: 2026-06-02T21:34:52.539Z
     completed_at: 2026-06-02T21:34:52.539Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed. Existing missing/invalid AC annotation
+      warnings are repository baseline and not caused by this draft plan.
+    name: kspec completeness validation
+    required: true
+    runner: kspec
+    created_at: 2026-06-02T21:35:01.314Z
+    completed_at: 2026-06-02T21:35:01.314Z
 events:
   - _ulid: 01KT542S3TN266YF7C18VCZX29
     actor: Jacob Chapel
@@ -166,6 +177,13 @@ events:
       status: pass
       name: kspec alignment validation
     timestamp: 2026-06-02T21:34:52.789Z
+  - _ulid: 01KT545TCRGPMF4V56T1WGZM2H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec completeness validation
+    timestamp: 2026-06-02T21:35:01.529Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -178,5 +196,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-02T21:33:21.916Z
-updated_at: 2026-06-02T21:34:52.539Z
+updated_at: 2026-06-02T21:35:01.314Z
 notes: []
