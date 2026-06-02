@@ -323,7 +323,7 @@ agents:
       - npm
   - _ulid: 01KN5TNDAEJ1R1EB6SP2EPMBWT
     description: Reviews draft plans for spec quality, task completeness, and readiness
-    adapter: codex-acp
+    adapter: claude-agent-acp
     auto_approve: true
     budget:
       timeout_minutes: 60
