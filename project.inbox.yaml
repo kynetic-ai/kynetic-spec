@@ -4054,3 +4054,17 @@ inbox:
       - testing
     added_by: Jacob Chapel
     created_at: 2026-06-01T20:49:55.800Z
+  - _ulid: 01KT5B5JFH5SG2MQKM5040CDGB
+    text: "Audit other text-mode error() callers for [object Object] bleed-through. The fix in task
+      @task-plan-branch-git-error-details made src/cli/output.ts:error() render details.message
+      correctly for plain object details, but ~30 callsites (upgrade.ts, agent.ts, schedule.ts,
+      item.ts, review.ts, etc.) were previously passing { suggestion: '...' } objects that printed
+      '[object Object]' followed by the suggestion. The new formatter cleans this up, but there is
+      no regression coverage for those commands' text-mode error output. Worth a focused sweep +
+      minimal test per command that verifies stderr never contains '[object Object]'."
+    tags:
+      - cli
+      - output
+      - regression-coverage
+    added_by: "@claude"
+    created_at: 2026-06-02T23:37:13.457Z

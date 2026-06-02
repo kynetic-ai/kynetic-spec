@@ -20454,6 +20454,22 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-01T19:35:07.085Z
+  - _ulid: 01KT5B5J5Z45K7SRXK158TVA8F
+    type: friction
+    content: "Spec conflict between @cli-exit-codes (requirement) and @trait-semantic-exit-codes
+      (trait): the requirement maps exit code 3 to NOT_FOUND and exit code 4 to VALIDATION_FAILED,
+      but the trait maps exit code 3 to runtime error and exit code 1 to validation error. Both
+      specs are status=implemented. When task @task-plan-branch-git-error-details required
+      satisfying trait ac-4 (runtime error → 3), the implementation had to use a literal 3 in
+      plan.ts because there is no RUNTIME_ERROR constant and reusing EXIT_CODES.NOT_FOUND would be
+      semantically wrong. This forces magic numbers and will recur for any future task that covers
+      the trait. Worth reconciling the trait vs requirement (rewrite the trait to match the
+      implementation, or add a RUNTIME_ERROR constant aliased to 3 and update other trait-covered
+      commands)."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-02T23:37:13.151Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
