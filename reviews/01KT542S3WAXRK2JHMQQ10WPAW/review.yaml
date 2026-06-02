@@ -14,6 +14,18 @@ checks:
     runner: kspec
     created_at: 2026-06-02T21:33:46.756Z
     completed_at: 2026-06-02T21:33:46.756Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Verified parent @agent-integration and existing specs @agent-templates,
+      @core-skill-install, and @core-skill-update with kspec item/list/search. New specs extend the
+      existing package agent/core-skill boundary without contradicting adjacent specs.
+    name: Spec neighborhood and references
+    required: true
+    runner: kspec
+    created_at: 2026-06-02T21:33:56.665Z
+    completed_at: 2026-06-02T21:33:56.665Z
 events:
   - _ulid: 01KT542S3TN266YF7C18VCZX29
     actor: Jacob Chapel
@@ -35,6 +47,13 @@ events:
       status: pass
       name: Plan import dry-run
     timestamp: 2026-06-02T21:33:46.973Z
+  - _ulid: 01KT543V9CZYAYF8M9J1ET7ZEY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec neighborhood and references
+    timestamp: 2026-06-02T21:33:56.908Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -47,5 +66,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-02T21:33:21.916Z
-updated_at: 2026-06-02T21:33:46.756Z
+updated_at: 2026-06-02T21:33:56.665Z
 notes: []
