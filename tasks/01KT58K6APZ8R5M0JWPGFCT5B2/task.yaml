@@ -121,5 +121,14 @@ tags:
   - errors
   - regression
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-06-02T22:52:17.759Z
 created_at: 2026-06-02T22:52:14.035Z
 todos: []
+automation: eligible
