@@ -7,3 +7,8 @@ notes:
     content: "Address fallback review cycle 2: include .agents outputs and split audit red/green staging"
     author: Jacob Chapel
     created_at: 2026-06-02T20:31:41.551Z
+  - _ulid: 01KT5BFE5X66PN55K7X4XPB37Q
+    content: "Revise to convention/reviewer enforcement: remove plan-local specs, existing-spec updates,
+      and broad scanner scope"
+    author: Jacob Chapel
+    created_at: 2026-06-02T23:42:36.733Z

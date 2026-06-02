@@ -1752,6 +1752,6 @@ plans:
     status: draft
     derived_specs: []
     derived_tasks: []
-    notes_count: 2
+    notes_count: 3
     source_path: /home/chapel/Projects/kynetic-spec/plans/shared-template-project-neutrality.md
     created_at: 2026-06-02T20:20:17.443Z

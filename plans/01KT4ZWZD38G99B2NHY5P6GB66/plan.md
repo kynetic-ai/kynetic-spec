@@ -2,102 +2,14 @@
 
 ## Summary
 
-Shared kspec package templates currently mix universal kspec mechanics with self-hosting Kynetic project conventions. This plan makes the package-shipped agent sections and core skills portable for arbitrary kspec projects, relocates the Kynetic-specific instructions to local project context, and adds regression coverage so future template edits do not reintroduce project-specific leakage.
+Shared kspec package templates currently mix universal kspec mechanics with self-hosting Kynetic project conventions. This plan makes the package-shipped agent sections and core skills portable for arbitrary kspec projects, relocates the Kynetic-specific instructions to local project context, and adds reviewer/convention guardrails so future edits to shared external guidance are checked semantically instead of relying on brittle markdown string tests.
 
-The cleanup is staged because rendered agent instructions, package plugin skill copies, generated `.factory` skill copies, and tests may all depend on the existing wording. The plan also tightens the existing specs that currently describe package agent templates and core skill installation without stating the project-neutrality boundary.
+The cleanup is staged because rendered agent instructions, package plugin skill copies, generated `.factory` skill copies, and tests may all depend on the existing wording. The plan intentionally does not add or update specs in this slice: project-neutral prose guidance is difficult to validate with stable AC-tagged tests, so the durable enforcement mechanism is project-local convention plus reviewer guidance. If leakage continues after this cleanup, a later hardening plan can add narrowly scoped linting for obvious forbidden tokens.
 
 ## Specs
 
 ```yaml
-- title: Shared Package Guidance Neutrality
-  slug: shared-package-guidance-neutrality
-  type: requirement
-  parent: "@agent-integration"
-  description: |
-    Guidance that ships in kspec's package templates is portable across
-    consumer projects. Package core skills and static agent sections describe
-    kspec mechanics, while project-specific branch policy, review policy,
-    quality gates, source paths, agent ids, and toolchain choices come from
-    project-local context.
-  acceptance_criteria:
-    - id: ac-core-guidance-uses-project-inputs
-      given: |
-        A package core skill or static agent template explains branch policy,
-        quality gates, source layout, agent ids, or external review integration
-      when: |
-        The guidance is installed, rendered, or read in a consuming project
-      then: |
-        The guidance identifies the value as project-defined instead of
-        hard-coding the Kynetic self-hosting repository's value
-    - id: ac-static-agent-sections-are-universal
-      given: |
-        A kspec project whose repository layout differs from the Kynetic
-        self-hosting repository generates agent instructions
-      when: |
-        An agent reads the static template sections in the generated output
-      then: |
-        The static sections remain applicable without the project having the
-        Kynetic source tree or branch names
-    - id: ac-project-specific-guidance-has-local-home
-      given: |
-        The Kynetic self-hosting repository needs instructions for maintaining
-        package template sources, TypeScript gates, generated plugin copies,
-        or its own dispatch agent conventions
-      when: |
-        Those instructions are removed from package-shipped shared guidance
-      then: |
-        Equivalent Kynetic-specific instructions are available from project-local
-        agent context or project-local skills
-    - id: ac-rendered-copies-match-neutral-sources
-      given: |
-        Package plugin skills, rendered runtime skills, and generated agent
-        instructions are rebuilt from source templates
-      when: |
-        The generated artifacts are inspected
-      then: |
-        The artifacts contain the same project-neutral guidance as their source
-        templates
-
-- title: Shared Template Portability Guardrails
-  slug: shared-template-portability-guardrails
-  type: requirement
-  parent: "@agent-integration"
-  description: |
-    The repository provides repeatable checks that distinguish universal kspec
-    mechanics from Kynetic self-hosting conventions in package-shipped guidance.
-    The checks report non-universal terms in shared template artifacts while
-    allowing those same terms in approved project-local context.
-  acceptance_criteria:
-    - id: ac-leak-scan-reports-offenders
-      given: |
-        Package-shipped template sources and generated package/runtime copies
-        are scanned for non-universal conventions
-      when: |
-        a non-allowlisted self-hosting source path, branch policy, quality gate,
-        fixed agent id, runtime-specific tool name, or external review reference
-        appears in shared guidance
-      then: |
-        the check reports the file path and offending phrase
-    - id: ac-consumer-setup-omits-self-hosting-defaults
-      given: |
-        A temporary consumer project with project-local settings that differ
-        from the Kynetic self-hosting repository runs kspec setup or core skill
-        installation
-      when: |
-        generated instructions and installed skills are read from that project
-      then: |
-        the output does not introduce Kynetic source paths, fixed Kynetic branch
-        names, Kynetic quality-gate commands, or fixed self-hosting agent ids
-    - id: ac-self-hosting-gates-remain-visible-locally
-      given: |
-        The Kynetic self-hosting repository generates or reads its own agent
-        context after the shared templates are neutralized
-      when: |
-        a worker or reviewer looks for repository-specific test, lint, render,
-        branch, and plugin-build expectations
-      then: |
-        those expectations are visible through local project context instead of
-        package-shipped shared guidance
+[]
 ```
 
 ## Tasks
@@ -105,187 +17,79 @@ The cleanup is staged because rendered agent instructions, package plugin skill 
 derive_from_specs: false
 
 ```yaml
-- title: Tighten existing specs for the shared-template boundary
-  slug: task-tighten-shared-template-boundary-specs
+- title: Add shared-guidance neutrality convention and review guidance
+  slug: task-add-shared-guidance-neutrality-review-gate
   priority: 1
-  tags: [spec-update, skills, agents]
-  spec_ref: "@shared-package-guidance-neutrality"
+  tags: [conventions, review, skills, agents]
   description: |
     What:
-    - Update existing specs before editing template content so the contract
-      being changed is explicit and reviewable.
-    - Reopen these implemented specs without cascading before editing them:
-      - `kspec item set @agent-templates --status in_progress --no-cascade`
-      - `kspec item set @core-skill-install --status in_progress --no-cascade`
-      - `kspec item set @core-skill-update --status in_progress --no-cascade`
-    - Update `@agent-templates` description to this final wording:
-
-      Static markdown templates ship with kspec in `templates/agents-sections/`.
-      They cover package-universal kspec mechanics such as project setup,
-      shadow state, task lifecycle, review lifecycle, commit conventions,
-      dispatch mechanics, and batch usage. Project-specific facts such as
-      branch names, external review systems, source-tree paths, toolchain gates,
-      configured agent ids, and local workflow policy come from project config,
-      project meta data, or project-local documentation rather than static
-      package templates.
-
-    - Update `@agent-templates` AC `ac-2` to this final text:
-
-      Given: Package template files for the current kspec release exist in
-      `templates/agents-sections/`.
-      When: The template files are assembled into `kspec-agents.md`.
-      Then: Every package template section appears in the generated output with
-      project-specific facts supplied by dynamic project data or local project
-      documentation.
-
-    - Add this AC to `@agent-templates`:
-
-      AC id: ac-static-sections-project-neutral
-      Given: A consuming project has branch names, source layout, agent ids,
-      external review practices, and quality gates that differ from the Kynetic
-      self-hosting repository.
-      When: `kspec agents generate` emits static template sections for that
-      project.
-      Then: The static section text remains applicable because it describes
-      kspec mechanics rather than Kynetic self-hosting conventions.
-
-    - Add this AC to `@agent-templates`:
-
-      AC id: ac-package-source-guidance-scoped
-      Given: Generated agent instructions describe where skill or agent-section
-      sources live.
-      When: The instructions are read in a consumer project.
-      Then: Package template paths are presented only as package-maintainer
-      inputs, while project-local skill and convention changes point to kspec
-      project state and supported kspec commands.
-
-    - Add this AC to `@core-skill-install`:
-
-      AC id: ac-installed-core-skills-project-neutral
-      Given: `kspec skill install-core` copies package core skills into a
-      project.
-      When: an agent reads the installed core skill content.
-      Then: The installed core skill content describes project-agnostic kspec
-      mechanics and obtains project-specific branches, quality gates, source
-      paths, agent ids, and external review policy from project-local context.
-
-    - Add this AC to `@core-skill-update`:
-
-      AC id: ac-updated-core-skills-project-neutral
-      Given: `kspec skill update` refreshes package core skills in a project.
-      When: an agent reads the refreshed core skill content.
-      Then: The refreshed core skill content describes project-agnostic kspec
-      mechanics and obtains project-specific branches, quality gates, source
-      paths, agent ids, and external review policy from project-local context.
-
-    - Add notes to the touched specs naming this plan and explaining that no
-      existing spec item is removed in this slice. The existing `@agent-templates`
-      spec remains, but its PR-workflow-era wording is generalized to the current
-      work/review lifecycle. If implementation later finds a separate spec that
-      only describes self-hosting process rather than kspec behavior, stop and
-      report it instead of deleting it inside this task.
-
-    Why:
-    The existing specs prove static sections are included and core skills are
-    copied, but they do not state the consumer-portability boundary. Tightening
-    the contract first prevents later template edits from being treated as mere
-    wording cleanup.
-
-    How:
-    - Use `kspec item get` before editing each target spec.
-    - Use `kspec item set --description`, `kspec item ac set`, and
-      `kspec item ac add` with the final text above.
-    - Keep each touched spec `in_progress`; implementation and tests later in
-      this plan provide the evidence for returning them to `implemented`.
-
-    Testing:
-    - `kspec item get @agent-templates`
-    - `kspec item get @core-skill-install`
-    - `kspec item get @core-skill-update`
-    - `kspec validate --refs --warnings-ok`
-
-    Covers: @shared-package-guidance-neutrality ac-core-guidance-uses-project-inputs, ac-static-agent-sections-are-universal
-
-- title: Add a shared-template portability audit
-  slug: task-shared-template-portability-audit
-  priority: 1
-  tags: [tests, skills, agents, audit]
-  spec_ref: "@shared-template-portability-guardrails"
-  depends_on:
-    - "@task-tighten-shared-template-boundary-specs"
-  description: |
-    What:
-    - Add a repeatable audit script or test helper that scans shared guidance
-      sources and generated/shared copies for known project-specific leakage.
-    - Include at least these shared source and generated roots in the scan:
+    - Add or update project-local convention/reviewer guidance for this
+      self-hosting repository so changes to package-shipped external guidance are
+      reviewed for project neutrality before approval.
+    - The guidance must apply when a task or plan changes any of these shared or
+      package-derived surfaces:
       - `templates/skills/`
       - `templates/agents-sections/`
+      - `templates/skills/manifest.yaml`
       - `plugin/plugins/kspec/skills/`
-      - rendered core skill outputs under `.agents/skills/` whose source is a
-        package core skill, not a project-local `.kspec/skills/` skill
-      - rendered core skill outputs under `.factory/skills/` whose source is a
-        package core skill, not a project-local `.kspec/skills/` skill
-      - generated `kspec-agents.md` when it is present in the repository
-    - Make the audit origin-aware so it can distinguish package-shipped/shared
-      guidance from project-local rendered guidance. A rendered local skill that
-      originates from `.kspec/skills/*` is outside the shared-leak scan unless
-      its content is copied into a package-shipped artifact.
-    - Flag non-allowlisted instances of these leak classes:
-      - self-hosting source paths such as `src/parser/validate.ts`,
-        `templates/skills/<name>/SKILL.md`, and
-        `templates/agents-sections/` when presented as consumer instructions;
-      - fixed branch or external review policy such as `main`, `dev`, GitHub
-        PRs, or `PR #...` when presented as universal process;
-      - Kynetic-specific quality gates such as `npm run format:check`,
-        `npm run lint`, `npm run typecheck`, `npx oxlint`, or Vitest-specific
-        checks when presented as universal gates;
-      - fixed self-hosting agent ids or meta file names such as `task-worker`,
-        `pr-reviewer`, and `kynetic.meta.yaml` when presented as universal;
-      - runtime-specific helper names such as `AskUserQuestion` in shared skill
-        prose.
-    - Support an explicit allowlist for legitimate package-maintainer or code
-      references so the check can distinguish "this package source path exists"
-      from "every consumer should edit this source path".
-    - Add the scanner and focused scanner unit tests to a concrete normal-test
-      target, preferably `tests/shared-template-portability.test.ts`, so the
-      scanner behavior is protected immediately without making the normal suite
-      fail on the current known leaks.
-    - Keep the repository-wide shared-guidance scan as a manual diagnostic or
-      expected-offender baseline in this task. Do not wire the current-repo scan
-      as a required passing test until the later neutralization/regeneration
-      task has made the shared guidance clean.
+      - rendered package/core skill outputs under `.agents/skills/` when their
+        source is a package core skill rather than a project-local `.kspec/skills/`
+        skill
+      - rendered package/core skill outputs under `.factory/skills/` when they
+        are generated from package core skill sources
+      - generated `kspec-agents.md` sections that come from package templates
+    - The convention/reviewer guidance must state the semantic review rule:
+      package-shipped guidance describes universal kspec mechanics only;
+      Kynetic self-hosting branch policy, repo paths, quality gates, generated
+      artifact maintenance rules, dispatch workflow choices, agent ids, and
+      external review policy belong in project-local context.
+    - The guidance must require reviewers to check both directions:
+      - shared/package text does not hard-code Kynetic-only policy as universal;
+      - any still-needed Kynetic self-hosting instruction removed from shared
+        text has a project-local home such as `AGENTS.md`, project-local
+        `.kspec/skills/`, or project meta conventions.
+    - Prefer a project-local kspec convention domain plus reviewer skill/checklist
+      wording over new specs or AC-tagged tests. Attach the convention/checklist
+      to the reviewer agents that review task work and plans in this repository,
+      using `kspec agent list` and `kspec meta get` to identify the current agent
+      ids before editing.
+    - Do not add a broad markdown scanner or string-denylist test in this task.
+      If implementation discovers an already-existing obvious-token lint, keep
+      any changes narrow and non-semantic; do not present it as proof of prose
+      neutrality.
 
     Why:
-    A manual audit found the current leaks, but without a repeatable guard the
-    shared templates can regress the next time a self-hosting task patches a
-    core skill.
+    Project-neutrality of prose is semantic and brittle to validate by scanning
+    strings in markdown. Reviewers and agents can judge whether guidance is
+    universal, while mechanical tests should stay focused on rendering,
+    installation, and generated-artifact consistency.
 
     How:
-    - Prefer a data-driven phrase/class allowlist over a broad regex-only test.
-    - Keep the scanner output actionable: each failure should include file path,
-      matched phrase, and leak class.
-    - Do not ban these terms from `AGENTS.md`, `.kspec/` project-local skills,
-      rendered local skill copies whose source is `.kspec/skills/*`, docs that
-      explicitly discuss maintaining this repository, or source code comments
-      that are not rendered as shared guidance.
+    - Use kspec CLI/meta commands for project-local convention and agent metadata
+      edits; do not manually edit `.kspec` YAML files.
+    - Keep the guidance self-contained so a future reviewer has no chat history:
+      define shared/package surfaces, allowed local homes, and examples of
+      Kynetic-specific material that must not be framed as universal.
+    - If a project-local reviewer skill is added or edited, render skills and
+      regenerate agent instructions as needed so the guidance reaches reviewer
+      agents.
 
     Testing:
-    - Run the new repository-wide scan manually or through its expected-offender
-      baseline and verify it identifies the current leaks before the template
-      neutralization tasks are complete.
-    - Add focused tests for at least one allowed package-maintainer reference,
-      one allowed project-local rendered skill reference, and one blocked
-      universal-guidance leak.
+    - `kspec agent list`
+    - `kspec meta get <reviewer-agent-ref>` for the affected reviewer agents
+    - `kspec validate --refs --warnings-ok`
+    - If conventions, skills, or generated agent instructions change, run
+      `kspec agents generate` and/or `kspec skill render` as appropriate and
+      inspect the generated reviewer guidance.
 
-    Covers: @shared-template-portability-guardrails ac-leak-scan-reports-offenders
+    Covers: convention/reviewer-gate prerequisite only; no spec AC is claimed.
 
 - title: Neutralize static agent-section templates
   slug: task-neutralize-agent-section-templates
   priority: 1
   tags: [agents, templates, docs]
-  spec_ref: "@shared-package-guidance-neutrality"
   depends_on:
-    - "@task-shared-template-portability-audit"
+    - "@task-add-shared-guidance-neutrality-review-gate"
   description: |
     What:
     - Edit static agent-section templates so consumer projects receive only
@@ -307,7 +111,8 @@ derive_from_specs: false
       static guidance says dispatched work is reviewed through kspec review
       records, while external PR use is project/human policy.
     - Review the remaining files in `templates/agents-sections/` for similar
-      leaks and neutralize any found by the audit.
+      leaks and neutralize any found by the semantic review guidance added in
+      the prerequisite task.
 
     Why:
     Static sections are copied into generated agent instructions for every
@@ -324,19 +129,23 @@ derive_from_specs: false
       local context task in this plan rather than deleting it.
 
     Testing:
-    - Run the portability audit from `@task-shared-template-portability-audit`.
-    - `npm test -- --fresh tests/agents-instruction-gen.test.ts`
-    - `kspec agents generate` and inspect `kspec-agents.md` for neutral wording.
+    - Run the project-defined focused tests for agent instruction generation,
+      including `npm test -- --fresh tests/agents-instruction-gen.test.ts` unless
+      the local context names a replacement gate.
+    - `kspec agents generate` and inspect `kspec-agents.md` for neutral static
+      wording and preserved local context.
+    - Reviewer applies the shared-guidance neutrality convention to the changed
+      static sections; do not rely on a broad string scan as the main evidence.
 
-    Covers: @shared-package-guidance-neutrality ac-static-agent-sections-are-universal; @agent-templates ac-static-sections-project-neutral, ac-package-source-guidance-scoped; @shared-template-portability-guardrails ac-consumer-setup-omits-self-hosting-defaults
+    Covers: package agent-section neutralization and local-preservation workflow;
+    no spec AC is claimed.
 
 - title: Neutralize worker, reviewer, and merge core skills
   slug: task-neutralize-work-review-merge-skills
   priority: 1
   tags: [skills, review, merge, testing]
-  spec_ref: "@shared-package-guidance-neutrality"
   depends_on:
-    - "@task-shared-template-portability-audit"
+    - "@task-add-shared-guidance-neutrality-review-gate"
   description: |
     What:
     - Edit package core skills that guide task execution, review, and merge so
@@ -369,27 +178,28 @@ derive_from_specs: false
     - Use neutral placeholders like `path/to/file.ext` for anchored review
       examples.
     - Make sure review approval still requires real evidence: project-defined
-      gates, focused tests for changed behavior, AC coverage, and unresolved
-      blocker closure.
+      gates, focused tests for changed behavior, AC coverage where specs exist,
+      and unresolved blocker closure.
 
     Testing:
-    - Run the portability audit.
     - Run focused tests for skill rendering/status/diff if the rendered content
       or supporting files change.
-    - Run `npm test -- --fresh tests/core-skill-install.test.ts` after the
-      core-skill source edits so install/update behavior is checked against the
-      new neutrality contract.
+    - Run `npm test -- --fresh tests/core-skill-install.test.ts` and
+      `npm test -- --fresh tests/core-skill-update.test.ts` unless the local
+      context names replacement focused gates.
     - Run any changed-file lint/test gates required by local Kynetic context.
+    - Reviewer applies the shared-guidance neutrality convention to the changed
+      core skills; do not rely on a broad string scan as the main evidence.
 
-    Covers: @shared-package-guidance-neutrality ac-core-guidance-uses-project-inputs; @core-skill-install ac-installed-core-skills-project-neutral; @core-skill-update ac-updated-core-skills-project-neutral; @shared-template-portability-guardrails ac-consumer-setup-omits-self-hosting-defaults
+    Covers: package core-skill neutralization and reviewer-evidence workflow; no
+    spec AC is claimed.
 
 - title: Neutralize planning, writing, workflow, and triage skills
   slug: task-neutralize-planning-writing-triage-skills
   priority: 2
   tags: [skills, planning, triage, workflows]
-  spec_ref: "@shared-package-guidance-neutrality"
   depends_on:
-    - "@task-shared-template-portability-audit"
+    - "@task-add-shared-guidance-neutrality-review-gate"
   description: |
     What:
     - Edit the remaining package core skills and supporting docs that encode
@@ -430,18 +240,20 @@ derive_from_specs: false
     - Keep examples short and neutral so the shared skill remains portable.
 
     Testing:
-    - Run the portability audit.
     - Run skill parser/render tests for changed skill files.
     - Run `kspec skill render` in this repository after source edits so rendered
       copies can be compared in the later artifact task.
+    - Reviewer applies the shared-guidance neutrality convention to the changed
+      planning/writing/workflow/triage skills; do not rely on a broad string scan
+      as the main evidence.
 
-    Covers: @shared-package-guidance-neutrality ac-core-guidance-uses-project-inputs; @shared-template-portability-guardrails ac-leak-scan-reports-offenders
+    Covers: package core-skill neutralization and reviewer-evidence workflow; no
+    spec AC is claimed.
 
 - title: Preserve Kynetic self-hosting conventions in local context
   slug: task-preserve-kynetic-local-template-maintenance-context
   priority: 2
   tags: [local-context, skills, agents, self-hosting]
-  spec_ref: "@shared-package-guidance-neutrality"
   depends_on:
     - "@task-neutralize-agent-section-templates"
     - "@task-neutralize-work-review-merge-skills"
@@ -484,16 +296,16 @@ derive_from_specs: false
     - `kspec agents generate`
     - Inspect generated `kspec-agents.md` for the self-hosting guidance via local
       context rather than static shared templates.
-    - Run the portability audit and verify local-only files are either outside
-      scope or explicitly allowlisted by source origin.
+    - Reviewer verifies the local-preservation side of the shared-guidance
+      neutrality convention: Kynetic-only guidance removed from shared text is
+      still reachable from local project context.
 
-    Covers: @shared-package-guidance-neutrality ac-project-specific-guidance-has-local-home; @shared-template-portability-guardrails ac-self-hosting-gates-remain-visible-locally
+    Covers: local self-hosting guidance preservation; no spec AC is claimed.
 
 - title: Regenerate shared artifacts and update dependent tests
   slug: task-regenerate-shared-template-artifacts-and-tests
   priority: 3
   tags: [skills, agents, plugin, tests]
-  spec_ref: "@shared-package-guidance-neutrality"
   depends_on:
     - "@task-preserve-kynetic-local-template-maintenance-context"
   description: |
@@ -508,21 +320,17 @@ derive_from_specs: false
       tracked/generated by the repository workflow.
     - Refresh `.factory/skills/` copies if they are generated from the same core
       skill sources in the current repository workflow.
-    - Update tests that currently assert old leaked wording so they assert the
-      new project-neutral contract instead.
-    - Add at least one consumer-project fixture or temp-project test proving
-      setup/install/generate output does not introduce Kynetic source paths,
-      fixed Kynetic branch names, Kynetic quality gates, or fixed self-hosting
-      agent ids.
-    - After the shared guidance is clean, enable the repository-wide
-      shared-guidance scan from `@task-shared-template-portability-audit` as a
-      required passing normal test and remove any temporary expected-offender
-      baseline for resolved leaks.
+    - Update tests that currently assert old leaked wording so they assert
+      mechanical rendering/install/update behavior or project-defined guidance
+      boundaries rather than a brittle list of forbidden markdown strings.
+    - Do not add a broad scanner test or AC-tagged prose-neutrality test in this
+      slice. If future regressions continue, capture that as follow-up hardening
+      work for a narrow lint/convention-enforcement plan.
 
     Why:
     Source template edits are incomplete if generated/package copies still ship
-    the old text. Tests that depended on the old wording must become portability
-    tests rather than blockers for neutralization.
+    the old text. Tests that depended on the old wording must become mechanical
+    render/install/update checks rather than brittle semantic-prose checks.
 
     How:
     - Use the repository's existing build scripts rather than hand-editing
@@ -534,78 +342,75 @@ derive_from_specs: false
       same task branch.
 
     Testing:
-    - Portability audit passes.
     - `npm test -- --fresh tests/agents-instruction-gen.test.ts`
     - `npm test -- --fresh tests/core-skill-install.test.ts`
     - `npm test -- --fresh tests/core-skill-update.test.ts`
     - Focused skill render/update tests that cover core skill content.
     - Focused plugin-build test or script smoke proving plugin copies are current.
     - `kspec validate --refs --warnings-ok`
+    - Reviewer applies the shared-guidance neutrality convention to the final
+      generated/package artifacts.
 
-    Covers: @shared-package-guidance-neutrality ac-rendered-copies-match-neutral-sources; @core-skill-install ac-installed-core-skills-project-neutral; @core-skill-update ac-updated-core-skills-project-neutral; @shared-template-portability-guardrails ac-consumer-setup-omits-self-hosting-defaults
+    Covers: generated artifact refresh and mechanical test update workflow; no
+    spec AC is claimed.
 
-- title: Close portability cleanup and restore spec statuses
-  slug: task-close-shared-template-portability-cleanup
+- title: Close shared-template neutrality cleanup
+  slug: task-close-shared-template-neutrality-cleanup
   priority: 4
-  tags: [validation, specs, release]
-  spec_ref: "@shared-template-portability-guardrails"
+  tags: [validation, review, release]
   depends_on:
     - "@task-regenerate-shared-template-artifacts-and-tests"
   description: |
     What:
-    - Run final validation for the full cleanup and restore spec statuses only
-      after implementation evidence exists.
-    - Verify the portability audit passes across all scanned shared guidance
-      roots and generated copies.
+    - Run final validation for the full cleanup after all shared-source,
+      local-context, generated-artifact, and test updates are complete.
+    - Verify the reviewer/convention guidance exists and is attached to the
+      relevant reviewers for future changes to package-shipped external guidance.
+    - Verify package-shipped/shared guidance has been semantically reviewed as
+      universal kspec mechanics, not Kynetic self-hosting policy.
     - Verify the Kynetic self-hosting context still exposes local template source,
       regeneration, quality-gate, branch/review, and plugin-build conventions.
-    - Set the touched existing specs back to `implemented` only after the
-      corresponding tests and generated artifact checks pass:
-      - `kspec item set @agent-templates --status implemented --no-cascade`
-      - `kspec item set @core-skill-install --status implemented --no-cascade`
-      - `kspec item set @core-skill-update --status implemented --no-cascade`
-    - Mark the new plan-derived specs implemented only after their ACs have
-      direct test or inspection evidence.
     - Add release-note or documentation entries explaining that package core
       guidance is now project-neutral and self-hosting policy lives in local
       project context.
+    - Do not change spec statuses or mark new specs implemented; this plan does
+      not create or update specs.
 
     Why:
     This plan changes both shared package content and local self-hosting context.
-    Closure needs to prove consumer portability and self-hosting continuity, not
-    just that a text scan is green.
+    Closure needs to prove mechanical artifact consistency and reviewer-confirmed
+    semantic neutrality, not just that a text scan is green.
 
     How:
     - Inspect the final diff for accidental removal of universal kspec mechanics.
-    - Verify no spec item was removed. If implementation discovered a truly
-      self-hosting-only existing spec, report it for a separate reviewed plan
-      rather than deleting it here.
-    - Keep audit allowlist entries narrow and explain each one in comments.
+    - Confirm any removed Kynetic-only instruction has a durable local home or is
+      intentionally obsolete.
+    - Record any desired future hardening as a follow-up inbox item or plan idea
+      instead of adding scanner scope here.
 
     Testing:
-    - Portability audit passes.
     - `npm run format:check`
     - `npm run lint -- --quiet`
     - `npm run typecheck`
     - Relevant focused tests from prior tasks.
     - `kspec validate --refs --warnings-ok`
+    - Final reviewer check using the shared-guidance neutrality convention.
 
-    Covers: @shared-template-portability-guardrails ac-leak-scan-reports-offenders, ac-consumer-setup-omits-self-hosting-defaults, ac-self-hosting-gates-remain-visible-locally; @shared-package-guidance-neutrality ac-rendered-copies-match-neutral-sources
+    Covers: closure and reviewer-confirmed neutrality workflow; no spec AC is
+    claimed.
 ```
 
 ## Implementation Notes
 
 ### Spec updates and removals
 
-This plan proposes updating existing specs rather than removing them:
+This plan intentionally proposes no new specs, no existing-spec updates, and no spec removals.
 
-- Update `@agent-templates` because its current description and `ac-2` still frame static agent sections around older fixed topics such as PR workflow. The spec should remain because static agent-section generation is a real package behavior.
-- Update `@core-skill-install` and `@core-skill-update` because they own the behavior that copies or refreshes package core skill content into consumer projects. The new ACs make content neutrality part of the installation/update contract.
-- Do not remove any existing spec in this slice. If implementation finds a spec whose only purpose is to encode self-hosting repository policy, the worker must stop and report it for a separate reviewed spec-retirement plan.
+The neutrality problem is a semantic documentation/review problem rather than a stable runtime behavior. Broad markdown scanners or AC-tagged tests against prose would be brittle because wording changes frequently and semantically equivalent leaks can evade string checks. For now, enforcement belongs in project-local conventions and reviewer guidance. If future regressions show that review guidance is insufficient, create a separate hardening plan for narrowly scoped linting of obvious forbidden tokens.
 
-### Leak classes the implementation must address
+### Leak classes reviewers must check
 
-The initial audit identified these leak classes in shared guidance:
+The initial audit identified these leak classes in shared guidance. They are review heuristics, not a request to build a broad scanner in this plan:
 
 - Source-layout and package-maintainer paths presented as consumer instructions, including `templates/skills/`, `templates/skills/manifest.yaml`, `templates/agents-sections/`, and `src/parser/validate.ts` examples.
 - Branch and external-review policy presented as universal, including `main`, `dev`, GitHub PR examples, and `PR #...` resolution examples.
@@ -616,4 +421,4 @@ The initial audit identified these leak classes in shared guidance:
 
 ### Dependency ordering
 
-The spec update task comes first so the contract is explicit. The audit task comes before template cleanup so workers can see failures turn green. Agent-section cleanup and skill cleanup can proceed independently after the audit exists, but each cleanup task should keep notes about the exact local-only guidance it removes so the local-context task can preserve it without relying on chat history. Local Kynetic context is preserved after shared sources are neutralized so moved instructions have an obvious home and can be origin-allowlisted by the audit. Generated artifacts and tests are refreshed only after both source and local-context edits are complete. Closure restores spec statuses only after all evidence exists.
+The convention/reviewer-guidance task comes first so every later cleanup task has the semantic gate it should satisfy. Agent-section cleanup and skill cleanup can proceed independently after that gate exists, but each cleanup task should keep notes about the exact local-only guidance it removes so the local-context task can preserve it without relying on chat history. Local Kynetic context is preserved after shared sources are neutralized so moved instructions have an obvious home. Generated artifacts and tests are refreshed only after both source and local-context edits are complete. Closure verifies reviewer-guidance attachment, mechanical gates, semantic review of shared guidance, and local self-hosting continuity.
