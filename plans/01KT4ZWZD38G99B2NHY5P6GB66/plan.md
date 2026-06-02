@@ -217,12 +217,17 @@ derive_from_specs: false
     What:
     - Add a repeatable audit script or test helper that scans shared guidance
       sources and generated/shared copies for known project-specific leakage.
-    - Include at least these source roots in the scan:
+    - Include at least these shared source and generated roots in the scan:
       - `templates/skills/`
       - `templates/agents-sections/`
       - `plugin/plugins/kspec/skills/`
-      - `.factory/skills/`
+      - rendered core skill outputs under `.factory/skills/` whose source is a
+        package core skill, not a project-local `.kspec/skills/` skill
       - generated `kspec-agents.md` when it is present in the repository
+    - Make the audit origin-aware so it can distinguish package-shipped/shared
+      guidance from project-local rendered guidance. A rendered local skill that
+      originates from `.kspec/skills/*` is outside the shared-leak scan unless
+      its content is copied into a package-shipped artifact.
     - Flag non-allowlisted instances of these leak classes:
       - self-hosting source paths such as `src/parser/validate.ts`,
         `templates/skills/<name>/SKILL.md`, and
@@ -239,8 +244,9 @@ derive_from_specs: false
     - Support an explicit allowlist for legitimate package-maintainer or code
       references so the check can distinguish "this package source path exists"
       from "every consumer should edit this source path".
-    - Add the audit to the relevant test file or package script so future
-      template changes run it with the rest of the skill/agent guidance tests.
+    - Add the audit to a concrete normal-test target, preferably
+      `tests/shared-template-portability.test.ts`, so future template changes
+      run it with the rest of the skill/agent guidance tests.
 
     Why:
     A manual audit found the current leaks, but without a repeatable guard the
@@ -252,14 +258,16 @@ derive_from_specs: false
     - Keep the scanner output actionable: each failure should include file path,
       matched phrase, and leak class.
     - Do not ban these terms from `AGENTS.md`, `.kspec/` project-local skills,
-      docs that explicitly discuss maintaining this repository, or source code
-      comments that are not rendered as shared guidance.
+      rendered local skill copies whose source is `.kspec/skills/*`, docs that
+      explicitly discuss maintaining this repository, or source code comments
+      that are not rendered as shared guidance.
 
     Testing:
     - Run the new audit against the current repository and verify it fails before
       the template neutralization tasks are complete.
-    - Add focused tests for at least one allowed package-maintainer reference and
-      one blocked universal-guidance leak.
+    - Add focused tests for at least one allowed package-maintainer reference,
+      one allowed project-local rendered skill reference, and one blocked
+      universal-guidance leak.
 
     Covers: @shared-template-portability-guardrails ac-leak-scan-reports-offenders
 
@@ -312,7 +320,7 @@ derive_from_specs: false
     - `npm test -- --fresh tests/agents-instruction-gen.test.ts`
     - `kspec agents generate` and inspect `kspec-agents.md` for neutral wording.
 
-    Covers: @shared-package-guidance-neutrality ac-static-agent-sections-are-universal; @shared-template-portability-guardrails ac-consumer-setup-omits-self-hosting-defaults
+    Covers: @shared-package-guidance-neutrality ac-static-agent-sections-are-universal; @agent-templates ac-static-sections-project-neutral, ac-package-source-guidance-scoped; @shared-template-portability-guardrails ac-consumer-setup-omits-self-hosting-defaults
 
 - title: Neutralize worker, reviewer, and merge core skills
   slug: task-neutralize-work-review-merge-skills
@@ -360,9 +368,12 @@ derive_from_specs: false
     - Run the portability audit.
     - Run focused tests for skill rendering/status/diff if the rendered content
       or supporting files change.
+    - Run `npm test -- --fresh tests/core-skill-install.test.ts` after the
+      core-skill source edits so install/update behavior is checked against the
+      new neutrality contract.
     - Run any changed-file lint/test gates required by local Kynetic context.
 
-    Covers: @shared-package-guidance-neutrality ac-core-guidance-uses-project-inputs; @shared-template-portability-guardrails ac-consumer-setup-omits-self-hosting-defaults
+    Covers: @shared-package-guidance-neutrality ac-core-guidance-uses-project-inputs; @core-skill-install ac-installed-core-skills-project-neutral; @core-skill-update ac-updated-core-skills-project-neutral; @shared-template-portability-guardrails ac-consumer-setup-omits-self-hosting-defaults
 
 - title: Neutralize planning, writing, workflow, and triage skills
   slug: task-neutralize-planning-writing-triage-skills
@@ -457,14 +468,16 @@ derive_from_specs: false
       procedural checklists.
     - Use kspec CLI/meta commands for project-local skill registration when a
       local skill is added or changed.
-    - Regenerate `kspec-agents.md` after project-local context or meta changes.
+    - Run `kspec skill render` when a project-local skill is added or changed,
+      then regenerate `kspec-agents.md` after project-local context or meta
+      changes.
 
     Testing:
     - `kspec agents generate`
     - Inspect generated `kspec-agents.md` for the self-hosting guidance via local
       context rather than static shared templates.
     - Run the portability audit and verify local-only files are either outside
-      scope or explicitly allowlisted.
+      scope or explicitly allowlisted by source origin.
 
     Covers: @shared-package-guidance-neutrality ac-project-specific-guidance-has-local-home; @shared-template-portability-guardrails ac-self-hosting-gates-remain-visible-locally
 
@@ -509,11 +522,12 @@ derive_from_specs: false
     Testing:
     - Portability audit passes.
     - `npm test -- --fresh tests/agents-instruction-gen.test.ts`
-    - Focused skill install/render/update tests that cover core skill content.
+    - `npm test -- --fresh tests/core-skill-install.test.ts`
+    - Focused skill render/update tests that cover core skill content.
     - Focused plugin-build test or script smoke proving plugin copies are current.
     - `kspec validate --refs --warnings-ok`
 
-    Covers: @shared-package-guidance-neutrality ac-rendered-copies-match-neutral-sources; @shared-template-portability-guardrails ac-consumer-setup-omits-self-hosting-defaults
+    Covers: @shared-package-guidance-neutrality ac-rendered-copies-match-neutral-sources; @core-skill-install ac-installed-core-skills-project-neutral; @core-skill-update ac-updated-core-skills-project-neutral; @shared-template-portability-guardrails ac-consumer-setup-omits-self-hosting-defaults
 
 - title: Close portability cleanup and restore spec statuses
   slug: task-close-shared-template-portability-cleanup
@@ -587,4 +601,4 @@ The initial audit identified these leak classes in shared guidance:
 
 ### Dependency ordering
 
-The spec update task comes first so the contract is explicit. The audit task comes before template cleanup so workers can see failures turn green. Agent-section cleanup and skill cleanup can proceed independently after the audit exists. Local Kynetic context is preserved after shared sources are neutralized so moved instructions have an obvious home. Generated artifacts and tests are refreshed only after both source and local-context edits are complete. Closure restores spec statuses only after all evidence exists.
+The spec update task comes first so the contract is explicit. The audit task comes before template cleanup so workers can see failures turn green. Agent-section cleanup and skill cleanup can proceed independently after the audit exists, but each cleanup task should keep notes about the exact local-only guidance it removes so the local-context task can preserve it without relying on chat history. Local Kynetic context is preserved after shared sources are neutralized so moved instructions have an obvious home and can be origin-allowlisted by the audit. Generated artifacts and tests are refreshed only after both source and local-context edits are complete. Closure restores spec statuses only after all evidence exists.
