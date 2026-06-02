@@ -2,7 +2,66 @@ _ulid: 01KT5BR4141PNREESWTKECJ3K3
 slugs: []
 title: "Plan re-review: Shared Template Project-Neutrality Cleanup"
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Dry-run of plans/shared-template-project-neutrality.md succeeded; Specs parsed as [];
+      derive_from_specs is false; derived specs/tasks count is 0.
+    name: Plan import shape
+    required: true
+    runner: kspec plan import --dry-run
+    created_at: 2026-06-02T23:48:06.123Z
+    completed_at: 2026-06-02T23:48:06.123Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation exited 0. Reference warnings are pre-existing deprecated-item references
+      outside this draft plan.
+    name: Reference validation
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-02T23:48:08.847Z
+    completed_at: 2026-06-02T23:48:08.847Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Both commands exited 0 with warnings-ok. Reported warnings are repo-wide pre-existing
+      alignment and AC-coverage debt, not introduced by this no-spec draft plan.
+    name: Alignment and completeness validation
+    required: true
+    runner: kspec validate --alignment/--completeness --warnings-ok
+    created_at: 2026-06-02T23:48:11.746Z
+    completed_at: 2026-06-02T23:48:11.746Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Confirmed no plan-local specs or existing-spec update/removal tasks; no broad scanner or
+      denylist dependency; guidance task names touched surfaces, allowed local homes, semantic
+      review rule, and reviewer attachment verification; tasks are standalone; dependency order is
+      guidance first, source neutralization, local preservation, regeneration/tests, closure; tests
+      are mechanical/stable; local Kynetic context is preserved; no task asks workers to approve,
+      derive, mark automation eligible, or change plan status.
+    name: Review objectives
+    required: true
+    created_at: 2026-06-02T23:48:14.909Z
+    completed_at: 2026-06-02T23:48:14.909Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Agent list shows reviewer, ux-reviewer, pr-reviewer, and plan-reviewer surfaces, so the
+      first task has concrete reviewer agents to inspect and attach guidance to instead of assuming
+      a fixed id.
+    name: Current reviewer surface
+    required: true
+    runner: kspec agent list
+    created_at: 2026-06-02T23:48:17.616Z
+    completed_at: 2026-06-02T23:48:17.616Z
 events:
   - _ulid: 01KT5BR40Y0645PHD1RSEGKMKA
     actor: Jacob Chapel
@@ -10,9 +69,67 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-02T23:47:21.246Z
+  - _ulid: 01KT5BSDDD9V6SZ6ANMMNX84FF
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-06-02T23:48:03.629Z
+  - _ulid: 01KT5BSG2Q5XAHA8EF4SSGXRKS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan import shape
+    timestamp: 2026-06-02T23:48:06.359Z
+  - _ulid: 01KT5BSJQQPBKYE2RSAKNXCHJA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Reference validation
+    timestamp: 2026-06-02T23:48:09.079Z
+  - _ulid: 01KT5BSNK3TA9VEK9R1DS2V3K6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Alignment and completeness validation
+    timestamp: 2026-06-02T23:48:12.004Z
+  - _ulid: 01KT5BSRMFAGD408GTYFBEGWD1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Review objectives
+    timestamp: 2026-06-02T23:48:15.119Z
+  - _ulid: 01KT5BSV8VYNK5FHRM7831KPAA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Current reviewer surface
+    timestamp: 2026-06-02T23:48:17.819Z
+  - _ulid: 01KT5BSXSNAYFK9HTS289CEE69
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-02T23:48:20.406Z
+  - _ulid: 01KT5BSXSP9M66819JRFHMF7DN
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-02T23:48:20.406Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -20,7 +137,14 @@ subject:
   ref: "@plan-shared-template-project-neutrality-cleanup"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: plan-reviewer
+    created_at: 2026-06-02T23:48:20.405Z
 created_at: 2026-06-02T23:47:21.252Z
-updated_at: null
+updated_at: 2026-06-02T23:48:20.406Z
 notes: []
