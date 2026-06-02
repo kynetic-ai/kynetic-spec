@@ -46,3 +46,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-02T23:39:11.604Z
+  - _ulid: 01KT5C1D0M7TEGNBW4MM3P3MEW
+    content: "Unblocking per Jacob after operational reviewer/bot failure: the task submitted commit
+      f9be38dc0e6350c57d99d620531e5ef90b96340a on
+      dispatch/task/task-plan-branch-git-error-details/01kt58k6, no review record was created, and
+      the only blocker was pr-reviewer failing three consecutive times with Internal error. This is
+      not a task-scope or implementation blocker; retry review under the corrected bot/daemon
+      environment."
+    supersedes: null
+    author: Hermes
+    created_at: 2026-06-02T23:52:25.364Z
