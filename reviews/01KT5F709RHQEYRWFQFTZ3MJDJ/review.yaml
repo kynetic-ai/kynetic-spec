@@ -129,6 +129,28 @@ checks:
     runner: manual-inspection
     created_at: 2026-06-03T01:01:24.576Z
     completed_at: 2026-06-03T01:01:24.576Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md, templates/agents-sections/01-quick-start.md,
+      02-shadow-branch.md, 03-task-lifecycle.md, 04-pr-workflow.md, 05-commit-convention.md,
+      06-agent-dispatch-mode.md, 07-batch-usage.md, task and plan context. Commands run: git
+      diff/stat/name-only/log/show, rg neutrality scan, kspec task get, kspec plan get, kspec
+      validate refs/alignment/completeness, npm run format:check, npm run lint -- --quiet, npm run
+      typecheck, npm test focused slices, npm test -- --fresh, npm run dev -- agents generate
+      --dry-run --json. Claims verified: template source dry-run renders neutral text; committed
+      generated kspec-agents.md remains stale. Categories searched: shared-guidance direction 1 and
+      direction 2, generated artifact refresh, correctness of documentation behavior, test quality,
+      integration. Shared surfaces touched: templates/agents-sections/ and generated kspec-agents.md
+      sections derived from them. Preserved Kynetic local context found in AGENTS.md Agent
+      Instructions Generation and Skill Source of Truth sections; remaining generated file still
+      needs refresh."
+    name: review evidence log
+    required: false
+    runner: reviewer
+    created_at: 2026-06-03T01:02:06.285Z
+    completed_at: 2026-06-03T01:02:06.285Z
 events:
   - _ulid: 01KT5F709RXV0W38W42QSSEFSS
     actor: Jacob Chapel
@@ -241,6 +263,13 @@ events:
       kind: blocker
       thread_ulid: 01KT5G0F8HEXC46YXNDC3CG330
     timestamp: 2026-06-03T01:01:49.438Z
+  - _ulid: 01KT5G105T7MPKQFN1FFP1QNTQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-06-03T01:02:06.522Z
 examined_commit: aea00e34e121ab35ac77694e04b757c68f669dbf
 external_links: []
 lifecycle_state: open
@@ -293,5 +322,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-03T00:47:54.680Z
-updated_at: 2026-06-03T01:01:49.202Z
+updated_at: 2026-06-03T01:02:06.285Z
 notes: []
