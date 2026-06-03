@@ -23830,3 +23830,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-06-03T01:48:55.127Z
     updated_at: 2026-06-03T02:03:55.492Z
+  - _ulid: 01KT5P7HVQ6DC2NBY5870JTSDF
+    slugs: []
+    title: Review neutralize static agent-section templates (cycle 2)
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: 250f1ab62734f0911f4cfd4ff3d2fa5ee4a2e53a
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KT5CBT6TM2QZ3CDR8ZBJG3QM"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-03T02:50:32.695Z
