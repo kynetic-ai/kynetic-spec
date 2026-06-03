@@ -304,6 +304,12 @@ events:
     payload:
       thread_ulid: 01KT5G0F8HEXC46YXNDC3CG330
     timestamp: 2026-06-03T02:04:43.266Z
+  - _ulid: 01KT5KKWJB1K61D1ZXXX7D9MAE
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KT5G0F8HEXC46YXNDC3CG330
+    timestamp: 2026-06-03T02:04:51.147Z
 examined_commit: aea00e34e121ab35ac77694e04b757c68f669dbf
 external_links: []
 lifecycle_state: closed
@@ -377,6 +383,8 @@ threads:
           called out as per-project policy. Commit: 250f1ab627."
         created_at: 2026-06-03T02:04:42.923Z
     kind: blocker
+    resolved_at: 2026-06-03T02:04:50.930Z
+    resolved_by: "@claude"
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -386,5 +394,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-03T01:02:17.198Z
 created_at: 2026-06-03T00:47:54.680Z
-updated_at: 2026-06-03T02:04:42.923Z
+updated_at: 2026-06-03T02:04:50.930Z
 notes: []
