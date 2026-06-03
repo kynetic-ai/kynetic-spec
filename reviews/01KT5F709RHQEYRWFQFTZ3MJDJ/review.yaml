@@ -53,6 +53,17 @@ checks:
     runner: oxlint
     created_at: 2026-06-03T01:00:45.838Z
     completed_at: 2026-06-03T01:00:45.838Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed; baseline completeness warnings include
+      this no-spec plan task by design.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-03T01:00:48.593Z
+    completed_at: 2026-06-03T01:00:48.593Z
 events:
   - _ulid: 01KT5F709RXV0W38W42QSSEFSS
     actor: Jacob Chapel
@@ -102,6 +113,13 @@ events:
       status: pass
       name: lint
     timestamp: 2026-06-03T01:00:46.108Z
+  - _ulid: 01KT5FYM93AYX96ZK8ASD1NPPR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-03T01:00:48.804Z
 examined_commit: aea00e34e121ab35ac77694e04b757c68f669dbf
 external_links: []
 lifecycle_state: open
@@ -114,5 +132,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-03T00:47:54.680Z
-updated_at: 2026-06-03T01:00:45.838Z
+updated_at: 2026-06-03T01:00:48.593Z
 notes: []
