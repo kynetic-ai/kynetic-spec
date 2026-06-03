@@ -58,3 +58,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-03T19:52:58.159Z
+  - _ulid: 01KT7H0ZTJ5K9HGK1CY53DMXE8
+    content: "Operational review retry: review cycle 2 examined stale commit 49b4e1ec3e even though task
+      submission linkage had been advanced to 9008219bb7. The dispatch clone canonical task worktree
+      was still one commit behind origin; it has now been fast-forwarded to 9008219bb7 so the retry
+      can review the actual submitted fix."
+    supersedes: null
+    author: Hermes
+    created_at: 2026-06-03T19:58:03.603Z
