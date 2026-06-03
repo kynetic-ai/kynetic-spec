@@ -14787,12 +14787,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-03T00:17:50.121Z
+      updated_at: 2026-06-03T00:17:56.362Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-03T00:17:50.121Z
+      updated_at: 2026-06-03T00:17:56.362Z
     integration:
       status: pending
       detail: null
@@ -14800,24 +14800,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 9ec889988c6cabb1f9aa1d9424cebb546092c287
-      updated_at: 2026-06-03T00:17:50.121Z
-    lifecycle_state: ready
+      updated_at: 2026-06-03T00:17:56.362Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KT5CBSRZ1GGNNKM5V0W9JCT0"
     task_slug: task-add-shared-guidance-neutrality-review-gate
     timestamps:
       closed_at: null
       last_active_at: 2026-06-03T00:01:24.072Z
-      last_reconciled_at: 2026-06-03T00:17:50.121Z
+      last_reconciled_at: 2026-06-03T00:17:56.362Z
       created_at: 2026-06-03T00:00:58.185Z
-      updated_at: 2026-06-03T00:17:50.121Z
+      updated_at: 2026-06-03T00:17:56.362Z
     workspace_id: dispatch-workspace-01KT5CBSRZ1GGNNKM5V0W9JCT0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 99e44609f5fcefd4f5b483d068dba48456633121
+        last_seen_at: 2026-06-03T00:17:56.362Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-shared-guidance-neutrality-review-gate-01kt5cbs-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-add-shared-guidance-neutrality-review-gate/01kt5cbs
-        head: 9ec889988c6cabb1f9aa1d9424cebb546092c287
-        last_seen_at: 2026-06-03T00:00:58.185Z
+        head: 99e44609f5fcefd4f5b483d068dba48456633121
+        last_seen_at: 2026-06-03T00:17:56.362Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-shared-guidance-neutrality-review-gate-01kt5cbs
