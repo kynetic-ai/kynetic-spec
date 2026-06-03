@@ -59858,7 +59858,7 @@ runs:
     completed_at: 2026-06-03T04:57:29.192Z
   - _ulid: 01KT5Y6Y8Z0PQPSBRQFVV56C95
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -59875,7 +59875,26 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-03T05:10:48.619Z
-        completed_at: 2026-06-03T05:10:48.619Z
+        completed_at: 2026-06-03T05:13:03.261Z
+        notes: "Identified high-confidence items: (1) FRICTION: Plans that stage 'neutralize templates' and
+          'regenerate derived artifacts' as separate tasks end up with the regeneration task being a
+          no-op when the neutralization tasks correctly commit their regenerated outputs as part of
+          the same commit (per the 'regenerate before commit' convention). The standalone regenerate
+          task has nothing to commit, requiring a verification-only path. Specific, systemic, clear
+          cause-effect, no existing observation captures this exact pattern (existing related ones
+          cover Direction-2 preservation ordering, not regeneration-task-redundancy). (2) SUCCESS:
+          Mechanical-only template-driven tests survived the entire neutralization wave without any
+          test updates. tests/agents-instruction-gen.test.ts reads the actual template files at test
+          time to extract headings and first non-empty content lines, then asserts presence in
+          generated output. This pattern is durable against template wording changes — a
+          wording-pinned test would have failed and required updates per neutralization task. Worth
+          promoting as a template-test design pattern. SKIPPED: kspec task note --file (heavily
+          duplicated in inbox). SKIPPED: droid-status /tmp.* platform pollution (pre-existing local
+          misconfig, not systemic)."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-03T05:13:03.261Z
+        completed_at: 2026-06-03T05:13:03.261Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-03T05:10:01.247Z
