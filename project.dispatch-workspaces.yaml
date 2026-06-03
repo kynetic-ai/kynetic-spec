@@ -16300,12 +16300,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-03T04:38:08.634Z
+      updated_at: 2026-06-03T04:38:16.159Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-03T04:38:08.634Z
+      updated_at: 2026-06-03T04:38:16.159Z
     integration:
       status: pending
       detail: null
@@ -16313,24 +16313,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: e4672637655989cdd98f018fdabe5497985bddad
-      updated_at: 2026-06-03T04:38:08.634Z
-    lifecycle_state: ready
+      updated_at: 2026-06-03T04:38:16.159Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KT5CBVGVNX2MF3TK6WJZ4FRR"
     task_slug: task-preserve-kynetic-local-template-maintenance-context
     timestamps:
       closed_at: null
       last_active_at: 2026-06-03T04:28:40.443Z
-      last_reconciled_at: 2026-06-03T04:38:08.634Z
+      last_reconciled_at: 2026-06-03T04:38:16.159Z
       created_at: 2026-06-03T04:28:14.993Z
-      updated_at: 2026-06-03T04:38:08.634Z
+      updated_at: 2026-06-03T04:38:16.159Z
     workspace_id: dispatch-workspace-01KT5CBVGVNX2MF3TK6WJZ4FRR
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 8179df1ac4dae772cb698eda35c254e10cbd7eac
+        last_seen_at: 2026-06-03T04:38:16.159Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-preserve-kynetic-local-template-maintenance-context-01kt5cbv-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-preserve-kynetic-local-template-maintenance-context/01kt5cbv
-        head: e4672637655989cdd98f018fdabe5497985bddad
-        last_seen_at: 2026-06-03T04:28:14.993Z
+        head: 8179df1ac4dae772cb698eda35c254e10cbd7eac
+        last_seen_at: 2026-06-03T04:38:16.159Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-preserve-kynetic-local-template-maintenance-context-01kt5cbv
