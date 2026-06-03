@@ -20739,6 +20739,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-03T05:13:58.781Z
+  - _ulid: 01KT5ZGFW4W9W539X73G420GK7
+    type: success
+    content: "Review evidence log plus the detached merge helper made a no-diff/no-op review safe to
+      complete: recording artifact, neutrality, and gate evidence in the review before approval
+      preserved auditability even when the task branch had no code diff and the merge helper
+      reported already integrated."
+    author: pr-reviewer
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-06-03T05:32:42.756Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
