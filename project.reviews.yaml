@@ -23925,3 +23925,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-06-03T04:39:18.528Z
     updated_at: 2026-06-03T04:54:11.932Z
+  - _ulid: 01KT5YH3JY9ZR6408WQPSR42E6
+    slugs: []
+    title: Review regenerate shared artifacts
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: 54ede3e7d3e0fc139b2a6cd73af83eac7ddaca72
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KT5CBWB38JYB60TD5EN9P30K"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-03T05:15:34.366Z

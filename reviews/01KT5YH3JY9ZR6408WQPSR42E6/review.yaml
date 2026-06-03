@@ -1,0 +1,26 @@
+_ulid: 01KT5YH3JY9ZR6408WQPSR42E6
+slugs: []
+title: Review regenerate shared artifacts
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KT5YH3JYTFRYZ50K98KPBREW
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-03T05:15:34.366Z
+examined_commit: 54ede3e7d3e0fc139b2a6cd73af83eac7ddaca72
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KT5CBWB38JYB60TD5EN9P30K"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-03T05:15:34.366Z
+updated_at: null
+notes: []
