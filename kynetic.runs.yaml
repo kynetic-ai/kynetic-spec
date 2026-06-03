@@ -59131,7 +59131,7 @@ runs:
     completed_at: 2026-06-03T00:11:53.280Z
   - _ulid: 01KT5DAHWVTM9AQVDPDSX6Q81X
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -59149,7 +59149,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-03T00:16:54.186Z
-        completed_at: 2026-06-03T00:16:54.186Z
+        completed_at: 2026-06-03T00:17:03.403Z
+        notes: "High-confidence friction candidates: (a) kspec batch fails on meta set --add-skill with
+          TypeError: options.removeCapability is not iterable — confirmed by direct observation
+          today (4-attach batch failed atomically, then 4 sequential meta set --add-skill calls all
+          succeeded); (b) no kspec skill content-update command — confirmed after kspec skill add
+          --content-file there is no kspec skill update <id> --content-file equivalent, only kspec
+          skill set for metadata, forcing direct edit of .kspec/skills/<id>/SKILL.md + kspec skill
+          render --force."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-03T00:17:03.403Z
+        completed_at: 2026-06-03T00:17:03.403Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-03T00:14:53.851Z
