@@ -215,6 +215,12 @@ events:
     payload:
       thread_ulid: 01KT5H46ETKWWKQVEMA35VG17T
     timestamp: 2026-06-03T03:01:50.306Z
+  - _ulid: 01KT5PWGHVTCAJ98KS40NQ7HQX
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KT5H46ETKWWKQVEMA35VG17T
+    timestamp: 2026-06-03T03:01:59.483Z
 examined_commit: a46a66f66c4d65e4a6bece12dacba5dd20645129
 external_links: []
 lifecycle_state: closed
@@ -295,6 +301,8 @@ threads:
           cover any other self-hosting context unrelated to this diff.
         created_at: 2026-06-03T03:01:50.021Z
     kind: blocker
+    resolved_at: 2026-06-03T03:01:59.212Z
+    resolved_by: "@claude"
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -304,5 +312,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-03T01:21:30.195Z
 created_at: 2026-06-03T01:05:51.315Z
-updated_at: 2026-06-03T03:01:50.021Z
+updated_at: 2026-06-03T03:01:59.212Z
 notes: []
