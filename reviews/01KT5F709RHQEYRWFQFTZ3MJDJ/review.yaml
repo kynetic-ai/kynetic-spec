@@ -227,6 +227,13 @@ events:
       status: fail
       name: committed rendered agent instructions
     timestamp: 2026-06-03T01:01:24.786Z
+  - _ulid: 01KT5G0CX9ZNETZQ213RRHXPYH
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KT5G0CPPRBG0CY9SVAAW8J6D
+    timestamp: 2026-06-03T01:01:46.793Z
 examined_commit: aea00e34e121ab35ac77694e04b757c68f669dbf
 external_links: []
 lifecycle_state: open
@@ -236,8 +243,29 @@ subject:
   content_hash: ""
   ref: "@01KT5CBT6TM2QZ3CDR8ZBJG3QM"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KT5G0CPPRBG0CY9SVAAW8J6D
+    anchor:
+      type: code
+      commit: aea00e34e121ab35ac77694e04b757c68f669dbf
+      line_end: 179
+      line_start: 179
+      path: kspec-agents.md
+      side: head
+    entries:
+      - _ulid: 01KT5G0CPPBZ72BMQ9DHF1JCRT
+        author: Jacob Chapel
+        body: "MUST-FIX: kspec-agents.md was not regenerated after changing the quick-start template. The
+          submitted template now frames package core skill sources as maintainer-only, but the
+          committed generated file still tells every agent that core skills live in
+          templates/skills/ and templates/skills/manifest.yaml. This leaves a shared/generated
+          guidance surface with the Kynetic package-maintainer path leak the task was meant to
+          neutralize. The task testing explicitly called for kspec agents generate and inspection of
+          kspec-agents.md, and project guidance says to regenerate kspec-agents.md after changing
+          templates/agents-sections/."
+        created_at: 2026-06-03T01:01:46.582Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-03T00:47:54.680Z
-updated_at: 2026-06-03T01:01:24.576Z
+updated_at: 2026-06-03T01:01:46.582Z
 notes: []
