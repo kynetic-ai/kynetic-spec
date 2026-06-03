@@ -7467,6 +7467,11 @@ modules:
             id: ac-dispatch-preflight-uses-canonical-session-id
             then: dispatch preflight and the actual invocation use the same canonical session id.
             when: the same invocation is later recorded as active and passed to `runInvocation`.
+          - given: An agent invocation runs with `auto_approve` enabled and resolves to the generic ACP process
+              adapter.
+            id: ac-generic-acp-auto-approve-contributes-no-args
+            then: The generic adapter contributes no adapter-specific auto-approval arguments.
+            when: kspec prepares the invocation argument list.
         tags: []
         created: 2026-05-31T06:19:00.597Z
         notes:
