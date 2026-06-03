@@ -20536,6 +20536,21 @@ observations:
     resolved: false
     workflow_ref: "@01KT5EDG"
     created_at: 2026-06-03T00:36:36.509Z
+  - _ulid: 01KT5F3HGEX76W2GPJSF5CT4T1
+    type: friction
+    content: "When a dispatch worktree edits package templates under `templates/` (e.g.
+      `templates/agents-sections/`), the installed `kspec` binary still reads templates from its
+      globally-linked package, not from the worktree's edited files. `kspec agents generate` and
+      `kspec agents status` therefore report stale-state based on the upstream package, and
+      consumer-style verification of the generated output cannot be done with the `kspec` binary
+      alone. Workaround: `npm run dev -- agents generate --dry-run --json` (tsx-runs the worktree
+      source against the worktree's `getPackageRoot()`) confirms what the regenerated output would
+      look like. Task descriptions that say 'run kspec agents generate and inspect kspec-agents.md'
+      miss this when authored generically for any template-editing task."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-03T00:46:01.230Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
