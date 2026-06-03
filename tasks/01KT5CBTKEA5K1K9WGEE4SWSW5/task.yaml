@@ -53,7 +53,7 @@ description: |
 spec_ref: null
 plan_ref: "@plan-shared-template-project-neutrality-cleanup"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-add-shared-guidance-neutrality-review-gate"
@@ -65,6 +65,14 @@ tags:
   - merge
   - testing
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-neutralize-work-review-merge-skills/01kt5cbt
+  captured_at: 2026-06-03T01:02:10.604Z
+  commit: a46a66f66c4d65e4a6bece12dacba5dd20645129
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KT5F5TWPNVSPCA9WXETZ1FHV
 history:
   - author: Jacob Chapel
@@ -87,7 +95,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-03T00:47:43.966Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-neutralize-work-review-merge-skills/01kt5cbt
+          captured_at: 2026-06-03T01:02:10.604Z
+          commit: a46a66f66c4d65e4a6bece12dacba5dd20645129
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-06-03T01:02:10.607Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-03T01:02:10.607Z
 created_at: 2026-06-02T23:58:06.958Z
 started_at: 2026-06-03T00:47:43.966Z
+submitted_at: 2026-06-03T01:02:10.607Z
 todos: []
 automation: eligible
