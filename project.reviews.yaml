@@ -23873,7 +23873,7 @@ reviews:
     title: Review neutralize planning/writing/triage skills (cycle 2)
     disposition: pending
     author: Jacob Chapel
-    check_count: 1
+    check_count: 2
     examined_commit: 8f215bac791cf4dc5dc6e65a984cc18dc23e5720
     lifecycle_state: open
     related_refs: []
@@ -23886,4 +23886,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-03T03:37:19.664Z
-    updated_at: 2026-06-03T03:51:19.649Z
+    updated_at: 2026-06-03T03:51:24.640Z
