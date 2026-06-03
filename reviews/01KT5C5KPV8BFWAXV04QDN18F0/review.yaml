@@ -34,6 +34,18 @@ checks:
     runner: npm
     created_at: 2026-06-03T00:07:35.931Z
     completed_at: 2026-06-03T00:07:35.931Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npx oxlint src/cli/output.ts src/cli/commands/plan.ts tests/plan-branch-helper.test.ts
+      exited 0 with 4 warnings in unchanged regions of src/cli/commands/plan.ts; diff touches only
+      line 1218 catch-block exit behavior in that file.
+    name: focused oxlint
+    required: true
+    runner: oxlint
+    created_at: 2026-06-03T00:07:44.841Z
+    completed_at: 2026-06-03T00:07:44.841Z
 events:
   - _ulid: 01KT5C5KPP5Z2ZA82V92HXPY59
     actor: Jacob Chapel
@@ -69,6 +81,13 @@ events:
       status: pass
       name: lint
     timestamp: 2026-06-03T00:07:36.133Z
+  - _ulid: 01KT5CXF4XMY48XG6TMZE77AT8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused oxlint
+    timestamp: 2026-06-03T00:07:45.053Z
 examined_commit: f9be38dc0e6350c57d99d620531e5ef90b96340a
 external_links: []
 lifecycle_state: open
@@ -81,5 +100,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-02T23:54:43.291Z
-updated_at: 2026-06-03T00:07:35.931Z
+updated_at: 2026-06-03T00:07:44.841Z
 notes: []
