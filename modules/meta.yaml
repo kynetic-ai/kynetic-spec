@@ -7293,6 +7293,12 @@ modules:
             then: No adapter process is spawned and no prompt content is forwarded until the registry-load error
               is fixed.
             when: kspec prepares a runner-backed one-shot or dispatched invocation.
+          - given: An invocation selects the generic ACP process adapter without a runner contract.
+            id: ac-generic-acp-direct-invocation-requires-runner
+            then: 'The invocation is rejected before spawning an adapter process with reason
+              `missing_process_executable` and details `{ adapter: "generic-acp", missing_field:
+              "process.executable" }`.'
+            when: kspec prepares the invocation.
         tags: []
         created: 2026-05-31T06:19:00.390Z
         notes:
