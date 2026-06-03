@@ -59952,7 +59952,7 @@ runs:
     completed_at: 2026-06-03T05:33:30.435Z
   - _ulid: 01KT5ZT5363ZP6N0Q8N9DZH4SC
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -59967,7 +59967,23 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-03T05:39:23.765Z
-        completed_at: 2026-06-03T05:39:23.765Z
+        completed_at: 2026-06-03T05:39:36.743Z
+        notes: "Session was a clean closure: verify reviewer attachment, semantic neutrality, local context
+          preservation, add release note, run gates, submit. Candidate friction: (a) 'kspec task
+          note --message' rejected because the command takes positional message — one-off muscle
+          memory from git -m, not clearly systemic across kspec CLI surface. (b) Release notes
+          'Documentation' category was an imperfect fit for a structural policy change but it is a
+          one-off authorial judgment. Candidate successes: (c) kspec review for-task @ref made
+          cross-task closure verification a clean loop, but this is normal usage, not a new pattern.
+          (d) Shared-guidance-neutrality skill already attached to all four reviewer agents made the
+          'attached to reviewers' criterion verifiable in one kspec agent list call — convention
+          design working as intended. None of these pass the high-confidence/systemic bar; the only
+          systemic friction (sibling task ordering for Direction-2 conventions) is already captured
+          in @01KT5QPF."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-03T05:39:36.743Z
+        completed_at: 2026-06-03T05:39:36.743Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-03T05:37:59.398Z
