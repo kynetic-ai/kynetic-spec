@@ -85,6 +85,28 @@ checks:
     runner: npm-test
     created_at: 2026-06-03T01:01:13.765Z
     completed_at: 2026-06-03T01:01:13.765Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run dev -- agents generate --dry-run --json produced neutral template output:
+      Configured Agents, configured integration branch, no task-worker/pr-reviewer/kynetic.meta.yaml
+      in the rendered dispatch section."
+    name: agent instruction generation dry-run
+    required: true
+    runner: kspec-dev
+    created_at: 2026-06-03T01:01:16.539Z
+    completed_at: 2026-06-03T01:01:16.539Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/setup-builtin-agents.test.ts passed: 28/28 tests, 6/6 suites."
+    name: focused setup builtin agents tests
+    required: true
+    runner: npm-test
+    created_at: 2026-06-03T01:01:19.106Z
+    completed_at: 2026-06-03T01:01:19.106Z
 events:
   - _ulid: 01KT5F709RXV0W38W42QSSEFSS
     actor: Jacob Chapel
@@ -155,6 +177,20 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-06-03T01:01:13.983Z
+  - _ulid: 01KT5FZFJRAGBB0W63H6RJQES6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: agent instruction generation dry-run
+    timestamp: 2026-06-03T01:01:16.760Z
+  - _ulid: 01KT5FZJ2P4VMP29STNH80F70W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused setup builtin agents tests
+    timestamp: 2026-06-03T01:01:19.318Z
 examined_commit: aea00e34e121ab35ac77694e04b757c68f669dbf
 external_links: []
 lifecycle_state: open
@@ -167,5 +203,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-03T00:47:54.680Z
-updated_at: 2026-06-03T01:01:13.765Z
+updated_at: 2026-06-03T01:01:19.106Z
 notes: []
