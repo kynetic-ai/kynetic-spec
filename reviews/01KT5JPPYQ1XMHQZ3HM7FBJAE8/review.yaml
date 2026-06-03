@@ -38,6 +38,16 @@ checks:
     runner: oxlint
     created_at: 2026-06-03T02:02:49.062Z
     completed_at: 2026-06-03T02:02:49.062Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck exited 0 (tsc --noEmit).
+    name: typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-06-03T02:02:52.019Z
+    completed_at: 2026-06-03T02:02:52.019Z
 events:
   - _ulid: 01KT5JPPYQ9C93FFHAHNBHFECJ
     actor: Jacob Chapel
@@ -73,6 +83,13 @@ events:
       status: skipped
       name: changed-file oxlint
     timestamp: 2026-06-03T02:02:49.314Z
+  - _ulid: 01KT5KG8EGR46YENXCS1V583BP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-03T02:02:52.240Z
 examined_commit: 58ed812655e61eebaedc05fa7d1e71d3e3f887df
 external_links: []
 lifecycle_state: open
@@ -85,5 +102,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-03T01:48:55.127Z
-updated_at: 2026-06-03T02:02:49.062Z
+updated_at: 2026-06-03T02:02:52.019Z
 notes: []
