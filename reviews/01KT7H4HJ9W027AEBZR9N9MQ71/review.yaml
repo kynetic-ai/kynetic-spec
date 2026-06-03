@@ -217,6 +217,12 @@ events:
     payload:
       thread_ulid: 01KT7H9D06S9626FGJ8TF2WNZ1
     timestamp: 2026-06-03T20:47:55.752Z
+  - _ulid: 01KT7KWJ4H6AHN893Y2YFKYCAQ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KT7HYH9NGCJK35MTP1TMNBZB
+    timestamp: 2026-06-03T20:48:04.241Z
 examined_commit: 9008219bb7775a345224df1765b5bd1c537a1c87
 external_links: []
 lifecycle_state: closed
@@ -305,6 +311,8 @@ threads:
           Shared/package guidance surfaces touched: none.
         created_at: 2026-06-03T20:14:11.766Z
     kind: nit
+    resolved_at: 2026-06-03T20:48:04.020Z
+    resolved_by: "@claude"
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -314,5 +322,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-03T20:14:20.566Z
 created_at: 2026-06-03T20:00:00.073Z
-updated_at: 2026-06-03T20:47:55.543Z
+updated_at: 2026-06-03T20:48:04.020Z
 notes: []
