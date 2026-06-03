@@ -17435,11 +17435,11 @@ workspaces:
     canonical_branch: dispatch/task/task-close-shared-template-neutrality-cleanup/01kt5cbx
     canonical_branch_head: c8deb5670f444d13fcff80cc2bffdfead9079421
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-03T05:57:02.415Z
+      updated_at: 2026-06-03T06:00:09.043Z
     health:
       status: healthy
       issues: []
@@ -17453,16 +17453,16 @@ workspaces:
       target_branch: dev
       target_commit: 54ede3e7d3e0fc139b2a6cd73af83eac7ddaca72
       updated_at: 2026-06-03T05:57:02.415Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KT5CBX1MEPE79Z8PXRNP9DJ5"
     task_slug: task-close-shared-template-neutrality-cleanup
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-03T06:00:09.043Z
       last_active_at: 2026-06-03T05:40:42.342Z
       last_reconciled_at: 2026-06-03T05:59:37.148Z
       created_at: 2026-06-03T05:30:15.093Z
-      updated_at: 2026-06-03T05:59:37.148Z
+      updated_at: 2026-06-03T06:00:09.043Z
     workspace_id: dispatch-workspace-01KT5CBX1MEPE79Z8PXRNP9DJ5
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
