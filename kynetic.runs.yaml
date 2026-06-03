@@ -60204,7 +60204,7 @@ runs:
     completed_at: 2026-06-03T20:16:41.296Z
   - _ulid: 01KT7KZV08F0FSNVCE103EXHAM
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -60217,7 +60217,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-03T20:51:22.282Z
-        completed_at: 2026-06-03T20:51:22.282Z
+        completed_at: 2026-06-03T20:51:32.319Z
+        notes: "High-confidence friction (1): Editing files containing literal source-code Unicode escapes
+          (e.g., test fixtures using \\u001b as 6-char source) via the Edit tool fails because the
+          JSON input layer parses \\u001b as a single ESC byte before reaching the file matcher.
+          Multiple Edit attempts wasted before workaround (Python with chr(92)+'u001b'). Systemic
+          across any JS/TS/Python edit that needs to keep escape sources literal. Lower-confidence
+          items skipped: smoke-testing fix in head before full suite (generic), splitting mega-regex
+          by grammar layer (design choice, not tooling)."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-03T20:51:32.319Z
+        completed_at: 2026-06-03T20:51:32.319Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-03T20:49:51.624Z
