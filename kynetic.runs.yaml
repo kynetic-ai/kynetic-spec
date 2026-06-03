@@ -60069,7 +60069,7 @@ runs:
     started_at: 2026-06-03T19:30:32.850Z
   - _ulid: 01KT7FEMY6MDT8XR79SN0VHQVX
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -60083,7 +60083,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-03T19:32:23.053Z
-        completed_at: 2026-06-03T19:32:23.053Z
+        completed_at: 2026-06-03T19:32:24.553Z
+        notes: "High-confidence reflection candidates: success pattern of diff-first review plus direct
+          exported-helper probes caught a missed edge case despite passing tests; friction that
+          request_changes on a task already blocked by stale dispatch bootstrap metadata left the
+          task blocked, requiring manual unblock then task needs-work to complete the review
+          lifecycle."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-03T19:32:24.553Z
+        completed_at: 2026-06-03T19:32:24.553Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-03T19:30:34.054Z
