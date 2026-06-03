@@ -24006,7 +24006,7 @@ reviews:
     title: Review task-fleet-buffer-preview-sanitization cycle 3
     disposition: changes_requested
     author: Jacob Chapel
-    check_count: 1
+    check_count: 2
     examined_commit: 9008219bb7775a345224df1765b5bd1c537a1c87
     lifecycle_state: open
     related_refs: []
@@ -24019,4 +24019,4 @@ reviews:
     unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-06-03T20:00:00.073Z
-    updated_at: 2026-06-03T20:12:28.409Z
+    updated_at: 2026-06-03T20:12:37.827Z
