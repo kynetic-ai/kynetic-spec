@@ -60001,9 +60001,21 @@ runs:
     completed_at: 2026-06-03T05:39:52.201Z
   - _ulid: 01KT60X8GMKKQP8N2WF7D5V849
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-03T05:57:09.781Z
+        completed_at: 2026-06-03T05:57:36.368Z
+        notes: "What worked well: detached reviewer flow was coherent end-to-end. The review record made
+          gate evidence explicit, the semantic shared-guidance checklist gave a concrete way to
+          assess the release-note-only closure diff, and the detached reviewer merge helper advanced
+          dev without requiring manual checkout in the snapshot."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-03T05:57:36.368Z
+        completed_at: 2026-06-03T05:57:36.368Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-03T05:57:09.781Z
