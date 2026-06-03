@@ -2,7 +2,18 @@ _ulid: 01KT7M6YH108S8DFV4KQSCC9TD
 slugs: []
 title: Review task-fleet-buffer-preview-sanitization cycle 4
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: Found 0 warnings and 0 errors on the changed fleet-buffer files."
+    name: focused-lint
+    required: true
+    runner: npx oxlint packages/web-ui/src/lib/components/board/fleet-buffer.ts
+      tests/web-ui/fleet-buffer.test.ts
+    created_at: 2026-06-03T21:07:20.573Z
+    completed_at: 2026-06-03T21:07:20.573Z
 events:
   - _ulid: 01KT7M6YH0AGPEJN4R7722W217
     actor: Jacob Chapel
@@ -17,6 +28,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-03T20:53:59.399Z
+  - _ulid: 01KT7MZVK1CW3Q5R3QA55HY1E5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-03T21:07:20.801Z
 examined_commit: 4416c1713adc4e40fb71ccbe87877843cbc4c201
 external_links: []
 lifecycle_state: open
@@ -29,5 +47,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-03T20:53:44.609Z
-updated_at: 2026-06-03T20:53:59.164Z
+updated_at: 2026-06-03T21:07:20.573Z
 notes: []
