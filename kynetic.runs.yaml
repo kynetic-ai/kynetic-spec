@@ -59716,9 +59716,23 @@ runs:
     completed_at: 2026-06-03T03:55:45.076Z
   - _ulid: 01KT5TR0PB2S9GZPHFK16MJGKC
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-03T04:09:26.475Z
+        completed_at: 2026-06-03T04:10:04.857Z
+        notes: "Step 1 (search-recent-work): Reviewed session activity. Work completed: fixed cycle-2 review
+          blocker for task @01KT5CBTKEA5K1K9WGEE4SWSW5 (Neutralize work/review/merge core skills).
+          Resolved drift on .agents/skills + .factory/skills for codex/droid by syncing shadow
+          source (.kspec/skills/) to neutralized templates, deleting stale rendered files, then
+          force-rendering to refresh .render-hash sidecars. Dispatch branch unchanged; fix lived
+          entirely on kspec-meta shadow branch. Resubmitted at HEAD 600cc12a44."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-03T04:10:04.857Z
+        completed_at: 2026-06-03T04:10:04.857Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-03T04:09:26.475Z
