@@ -55,7 +55,7 @@ description: |
 spec_ref: null
 plan_ref: "@plan-shared-template-project-neutrality-cleanup"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-add-shared-guidance-neutrality-review-gate"
@@ -67,6 +67,7 @@ tags:
   - triage
   - workflows
 vcs_refs: []
+session_id: 01KT5G6WSF9KYA16WE5ZGFZZJA
 history:
   - author: Jacob Chapel
     changes:
@@ -75,6 +76,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-06-02T23:59:08.191Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KT5G6WSF9KYA16WE5ZGFZZJA
+        previous: null
+      started_at:
+        new: 2026-06-03T01:05:56.851Z
+        previous: null
+    command: task-start
+    timestamp: 2026-06-03T01:05:56.852Z
 created_at: 2026-06-02T23:58:07.377Z
+started_at: 2026-06-03T01:05:56.851Z
 todos: []
 automation: eligible
