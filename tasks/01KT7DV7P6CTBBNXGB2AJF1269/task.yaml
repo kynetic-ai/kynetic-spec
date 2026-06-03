@@ -125,7 +125,7 @@ tags:
   - terminal-output
   - regression
 vcs_refs: []
-review_ref: "@01KT7FWZTDP3BPD8C4X2T7SPRX"
+review_ref: "@01KT7H4HJ9W027AEBZR9N9MQ71"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-fleet-buffer-preview-sanitization/01kt7dv7
@@ -426,6 +426,13 @@ history:
         previous: 2026-06-03T19:37:10.647Z
     command: task-submit
     timestamp: 2026-06-03T19:58:13.783Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KT7H4HJ9W027AEBZR9N9MQ71"
+        previous: "@01KT7FWZTDP3BPD8C4X2T7SPRX"
+    command: review-link
+    timestamp: 2026-06-03T20:00:02.465Z
 prior_status: null
 created_at: 2026-06-03T19:02:29.317Z
 started_at: 2026-06-03T19:58:07.017Z
