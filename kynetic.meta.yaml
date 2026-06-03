@@ -20762,6 +20762,18 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-06-03T05:58:45.018Z
+  - _ulid: 01KT7FJME1DXNJYFZ4FMSR0KWC
+    type: friction
+    content: "Review lifecycle friction: a request_changes verdict on a task already blocked by stale
+      dispatch bootstrap metadata can leave the task blocked instead of needs_work. In review
+      @01KT7EHK for task @01KT7DV7P6CTBBNXGB2AJF1269, the reviewer had to manually run task unblock
+      followed by task needs-work after verdicting. This can hide actionable review feedback from
+      the normal needs_work worker queue until lifecycle repair is done."
+    author: pr-reviewer
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-06-03T19:32:44.609Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
