@@ -51,7 +51,7 @@ description: |
 spec_ref: null
 plan_ref: "@plan-shared-template-project-neutrality-cleanup"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-preserve-kynetic-local-template-maintenance-context"
@@ -63,6 +63,14 @@ tags:
   - plugin
   - tests
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-regenerate-shared-template-artifacts-and-tests/01kt5cbw
+  captured_at: 2026-06-03T05:09:33.703Z
+  commit: 54ede3e7d3e0fc139b2a6cd73af83eac7ddaca72
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KT5XCNMY1G7RYNXBVERW869J
 history:
   - author: Jacob Chapel
@@ -85,7 +93,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-03T04:56:23.265Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-regenerate-shared-template-artifacts-and-tests/01kt5cbw
+          captured_at: 2026-06-03T05:09:33.703Z
+          commit: 54ede3e7d3e0fc139b2a6cd73af83eac7ddaca72
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-06-03T05:09:33.705Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-03T05:09:33.706Z
 created_at: 2026-06-02T23:58:08.739Z
 started_at: 2026-06-03T04:56:23.264Z
+submitted_at: 2026-06-03T05:09:33.705Z
 todos: []
 automation: eligible

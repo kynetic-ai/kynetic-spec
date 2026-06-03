@@ -30737,7 +30737,7 @@
   title: Regenerate shared artifacts and update dependent tests
   type: task
   plan_ref: "@plan-shared-template-project-neutrality-cleanup"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-preserve-kynetic-local-template-maintenance-context"
@@ -30751,6 +30751,7 @@
   todos_count: 0
   created_at: 2026-06-02T23:58:08.739Z
   started_at: 2026-06-03T04:56:23.264Z
+  submitted_at: 2026-06-03T05:09:33.705Z
   automation: eligible
 - _ulid: 01KT5CBX1MEPE79Z8PXRNP9DJ5
   slugs:
