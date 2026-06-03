@@ -206,6 +206,13 @@ events:
       status: pass
       name: shared-guidance neutrality review
     timestamp: 2026-06-03T02:03:38.996Z
+  - _ulid: 01KT5KHRXTZWZVMJ4ZHVP1SA9H
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KT5KHRQ6HGB586HC89DSPT7D
+    timestamp: 2026-06-03T02:03:41.882Z
 examined_commit: 58ed812655e61eebaedc05fa7d1e71d3e3f887df
 external_links: []
 lifecycle_state: open
@@ -250,7 +257,24 @@ threads:
           resulting source/rendered output."
         created_at: 2026-06-03T02:03:35.942Z
     kind: blocker
+  - _ulid: 01KT5KHRQ6HGB586HC89DSPT7D
+    anchor:
+      type: code
+      commit: 58ed812655e61eebaedc05fa7d1e71d3e3f887df
+      line_end: 75
+      line_start: 71
+      path: templates/skills/triage/docs/observations.md
+      side: head
+    entries:
+      - _ulid: 01KT5KHRQ76NBRKR5M0HJDN95W
+        author: Jacob Chapel
+        body: "MUST-FIX: Formatting drift in this changed skill doc blocks approval. Evidence: npm run
+          format:check exited non-zero and listed templates/skills/triage/docs/observations.md.
+          Impact: the repository's required format gate is red; run the project formatter and commit
+          the resulting source/rendered output."
+        created_at: 2026-06-03T02:03:41.671Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-03T01:48:55.127Z
-updated_at: 2026-06-03T02:03:38.734Z
+updated_at: 2026-06-03T02:03:41.671Z
 notes: []
