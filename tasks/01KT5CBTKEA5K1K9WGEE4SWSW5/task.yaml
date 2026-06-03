@@ -53,7 +53,7 @@ description: |
 spec_ref: null
 plan_ref: "@plan-shared-template-project-neutrality-cleanup"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-add-shared-guidance-neutrality-review-gate"
@@ -74,7 +74,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-neutralize-work-review-merge-skills/01kt5cbt
-session_id: 01KT5P4291R0WMZC0K39MXGCEG
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -180,6 +180,16 @@ history:
         previous: "@01KT5G7VPKKBJES6WJ7JJASN4N"
     command: review-link
     timestamp: 2026-06-03T03:18:28.248Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KT5P4291R0WMZC0K39MXGCEG
+    command: review-verdict-needs-work
+    timestamp: 2026-06-03T03:35:26.535Z
 created_at: 2026-06-02T23:58:06.958Z
 started_at: 2026-06-03T03:12:56.627Z
 submitted_at: 2026-06-03T03:13:02.900Z
