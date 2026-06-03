@@ -30778,3 +30778,21 @@
   submitted_at: 2026-06-03T05:37:18.664Z
   completed_at: 2026-06-03T05:56:03.565Z
   automation: eligible
+- _ulid: 01KT7DV7P6CTBBNXGB2AJF1269
+  slugs:
+    - task-fleet-buffer-preview-sanitization
+  title: Sanitize Active Fleet preview terminal output
+  type: bug
+  spec_ref: "@ui-task-board"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - web-ui
+    - active-fleet
+    - terminal-output
+    - regression
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-03T19:02:29.317Z
