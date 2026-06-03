@@ -53,8 +53,13 @@ description: |
 spec_ref: null
 plan_ref: "@plan-shared-template-project-neutrality-cleanup"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev via detached reviewer merge helper at
+  e4672637655989cdd98f018fdabe5497985bddad. Neutralized shared task-work, review, and merge core
+  skill guidance; preserved Kynetic-specific quality gates and generated-artifact maintenance in
+  local work-gates/review-gates; verified render status, plugin build, validation, and full test
+  suite.
 depends_on:
   - "@task-add-shared-guidance-neutrality-review-gate"
 context: []
@@ -237,8 +242,26 @@ history:
         previous: "@01KT5QTKJ355MK3H1GBV78S255"
     command: review-link
     timestamp: 2026-06-03T04:13:09.505Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev via detached reviewer merge helper at e4672637655989cdd98f018fdabe5497985bddad.
+          Neutralized shared task-work, review, and merge core skill guidance; preserved
+          Kynetic-specific quality gates and generated-artifact maintenance in local
+          work-gates/review-gates; verified render status, plugin build, validation, and full test
+          suite.
+        previous: null
+      completed_at:
+        new: 2026-06-03T04:27:45.552Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-03T04:27:45.561Z
 created_at: 2026-06-02T23:58:06.958Z
 started_at: 2026-06-03T04:08:49.415Z
 submitted_at: 2026-06-03T04:08:52.855Z
+completed_at: 2026-06-03T04:27:45.552Z
 todos: []
 automation: eligible
