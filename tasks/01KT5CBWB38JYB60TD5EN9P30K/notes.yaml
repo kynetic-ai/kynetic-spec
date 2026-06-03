@@ -1,1 +1,44 @@
-notes: []
+notes:
+  - _ulid: 01KT5Y5MJP1499E7B5K7W7G7BB
+    content: >-
+      Regeneration verification complete. Prior neutralization tasks in this plan
+      (task-neutralize-agent-section-templates @aea00e34e1, task-neutralize-work-review-merge-skills
+      @a46a66f66c, task-neutralize-planning-writing-triage-skills @6f36d05d67, rendered-output
+      update @600cc12a44, kspec-agents.md regen @250f1ab627) already committed regenerated outputs
+      alongside their source-template edits, so this task found no drift to commit.
+
+
+      Artifacts verified in sync: `kspec skill render --force` reports No changes needed for all 13
+      codex + 13 droid SKILL.md outputs. `kspec agents generate` reports already up to date (7
+      template files contributing 9 headings + dynamic conventions/workflows). `npm run
+      build:plugin` rebuilds plugin/plugins/kspec/skills cleanly (13 skills, v0.14.0; plugin/ is
+      gitignored). Diff between templates and rendered codex/.claude/plugin outputs shows only
+      intended {skill:foo} -> $kspec-foo / /kspec:foo token transforms.
+
+
+      Dependent tests verified mechanical, not brittle: tests/agents-instruction-gen.test.ts (32
+      pass) reads template files at test time and asserts headings + first non-empty line +
+      templates.length === 7 (file count). tests/core-skill-install.test.ts (28 pass) verifies
+      install/dry-run/force/JSON mechanics, content copied from templates.
+      tests/core-skill-update.test.ts (20 pass) verifies version transition + drift guidance
+      mechanics. skill-rendering, skill-cli, platform-renderer, upgrade-command,
+      setup-builtin-agents, setup-pipeline-unification, claude-plugin-registry,
+      kspec-skill-validation, shadow-skill-commit, setup, scaffold-project-config,
+      init-setup-integration, parser/doctor, enhanced-setup, droid-setup-status all pass.
+
+
+      No brittle-wording patterns in tests/ (no `not.toContain` of dispatch/task / kynetic / GitHub
+      PR / Built-In; no denyMarkdown/forbiddenTokens/projectNeutral identifiers). No
+      prose-neutrality scanner present, consistent with the plan instruction.
+
+
+      Quality gates: npm run format:check (975 files), npm run lint -- --quiet (0 errors,
+      pre-existing 742-warning baseline), npm run typecheck, kspec validate
+      --refs/--alignment/--completeness all pass.
+
+
+      No source-template gaps requiring a new regeneration command. No tests required updating. No
+      diff to commit on this task branch.
+    supersedes: null
+    author: "@task-worker"
+    created_at: 2026-06-03T05:09:18.551Z
