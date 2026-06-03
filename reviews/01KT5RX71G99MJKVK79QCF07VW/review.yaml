@@ -23,6 +23,17 @@ checks:
     runner: npm run lint -- --quiet
     created_at: 2026-06-03T03:51:24.640Z
     completed_at: 2026-06-03T03:51:24.640Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Skipped: task changed markdown skill/template/rendered guidance only; no changed
+      TypeScript or test files."
+    name: focused-lint
+    required: false
+    runner: npx oxlint <changed-ts-or-test-files>
+    created_at: 2026-06-03T03:51:29.559Z
+    completed_at: 2026-06-03T03:51:29.559Z
 events:
   - _ulid: 01KT5RX71G9257X9GG9S3A5TM9
     actor: Jacob Chapel
@@ -51,6 +62,13 @@ events:
       status: pass
       name: lint
     timestamp: 2026-06-03T03:51:24.860Z
+  - _ulid: 01KT5SQ57MG07597BGW7T4Y4KE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: focused-lint
+    timestamp: 2026-06-03T03:51:29.780Z
 examined_commit: 8f215bac791cf4dc5dc6e65a984cc18dc23e5720
 external_links: []
 lifecycle_state: open
@@ -63,5 +81,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-03T03:37:19.664Z
-updated_at: 2026-06-03T03:51:24.640Z
+updated_at: 2026-06-03T03:51:29.559Z
 notes: []
