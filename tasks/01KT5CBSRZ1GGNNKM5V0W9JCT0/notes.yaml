@@ -1,1 +1,92 @@
-notes: []
+notes:
+  - _ulid: 01KT5D9FNM2C78D9P83ST6P7BD
+    content: >-
+      Implementation summary
+
+
+      Added the project-local enforcement layer for shared-guidance neutrality so later cleanup
+      tasks (@task-neutralize-agent-section-templates, @task-neutralize-work-review-merge-skills,
+      @task-neutralize-planning-writing-triage-skills,
+      @task-preserve-kynetic-local-template-maintenance-context,
+      @task-regenerate-shared-template-artifacts-and-tests,
+      @task-close-shared-template-neutrality-cleanup) have a semantic gate to review against.
+
+
+      What was added:
+
+
+      1. Convention domain 'shared-guidance' (5 rules) via kspec meta add. Lists shared/package
+      surfaces, the universal-mechanics-only rule, the both-directions review obligation, allowed
+      local homes, and the explicit prohibition on broad markdown scanners / string-denylist tests
+      as primary enforcement. Now appears in the global ## Conventions section of kspec-agents.md so
+      every agent sees it.
+
+
+      2. Project-local skill 'shared-guidance-neutrality' (origin: project, platforms: claude-code,
+      codex, droid). Self-contained reviewer checklist that covers exact shared/package surfaces
+      (including the .agents/ and .factory/ rendered-package-skill case and template-derived
+      kspec-agents.md sections), a class table of Kynetic-only material that must not be framed as
+      universal (branch policy, external review, repo paths, toolchain gates, generated-artifact
+      maintenance, dispatch policy, fixed agent ids, runtime-specific tool names, non-seeded refs),
+      and a two-direction reviewer checklist: Direction 1 — shared text does not hard-code
+      Kynetic-only policy as universal; Direction 2 — any Kynetic-only instruction removed from
+      shared text has a project-local home (AGENTS.md, project-local .kspec/skills/, or project meta
+      convention). Includes worked examples, an explanation of why prose-neutrality scanners are
+      insufficient, verdict guidance using existing review-gates severity classes, and an
+      evidence-log addition: surfaces touched, checks applied, where preserved instructions now
+      live, generated-artifact refresh confirmation.
+
+
+      3. Skill attached to the four reviewer agents that review task work and plans in this
+      repository: pr-reviewer (auto-dispatches on task.pending_review), reviewer (manual review
+      fallback), plan-reviewer (plan review), ux-reviewer (UI work review). Worker agents are not
+      attached: the convention already lands in their conventions list, and workers execute work
+      rather than approve it.
+
+
+      Workflow:
+
+
+      - kspec batch added the convention (one atomic shadow commit).
+
+      - kspec skill add --content-file created the skill.
+
+      - kspec meta set --add-skill attached the skill to each reviewer agent. Batch attach hit a
+      known options.removeCapability iteration bug in the batch dispatcher path, so the four
+      attaches were run sequentially.
+
+      - Skill source was then updated to use the {skill:review-gates} / {skill:work-gates} reference
+      syntax so factory/claude renders resolve to /review-gates and agents render resolves to
+      $review-gates, matching the project's existing cross-skill-reference convention.
+
+      - kspec skill render --force shared-guidance-neutrality regenerated the three platform copies
+      under .agents/.claude/.factory.
+
+      - kspec agents generate refreshed kspec-agents.md so the new convention section appears in
+      dynamic data.
+
+
+      Out of scope (per task description):
+
+
+      - No new specs, no spec AC tagging, no broad markdown scanner.
+
+      - Did not touch the already-drifted plan/task-work/review skills under codex/droid platforms —
+      they pre-date this task and belong to other cleanup work.
+
+
+      Verification:
+
+
+      - kspec agent list confirms shared-guidance-neutrality on pr-reviewer, reviewer,
+      plan-reviewer, ux-reviewer.
+
+      - kspec meta get pr-reviewer shows skill present in the skills array.
+
+      - kspec validate --refs/--alignment/--completeness --warnings-ok all pass.
+
+      - npm run format:check, npm run lint -- --quiet, npm run typecheck all green (no code changes
+      were made; gates run for hygiene).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-03T00:14:18.804Z
