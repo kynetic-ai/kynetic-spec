@@ -152,12 +152,12 @@ kspec meta observations --pending-resolution
 
 For each observation:
 
-| Type         | How to Process                                                              |
-| ------------ | --------------------------------------------------------------------------- |
-| **friction** | Reveals spec gap? → Create spec or inbox item. Already addressed? → Resolve |
+| Type         | How to Process                                                                  |
+| ------------ | ------------------------------------------------------------------------------- |
+| **friction** | Reveals spec gap? → Create spec or inbox item. Already addressed? → Resolve     |
 | **success**  | Document in relevant spec or project-local guidance if broadly useful → Resolve |
-| **question** | Answer if you can. Needs investigation? → Promote to task                   |
-| **idea**     | Clear scope? → Inbox or task. Unclear? → Leave or delete if stale           |
+| **question** | Answer if you can. Needs investigation? → Promote to task                       |
+| **idea**     | Clear scope? → Inbox or task. Unclear? → Leave or delete if stale               |
 
 ```bash
 # Promote observation to task
