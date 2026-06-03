@@ -7374,6 +7374,10 @@ modules:
             then: 'Resolution fails with reason `missing_process_executable` and details `{ runner, adapter:
               "generic-acp", missing_field: "process.executable" }`.'
             when: kspec resolves the runner invocation contract.
+          - given: A system runner selects the generic ACP process adapter and declares `process.executable`.
+            id: ac-generic-acp-process-uses-runner-executable
+            then: The spawned command is the runner-declared executable.
+            when: kspec prepares the ACP process invocation.
         tags: []
         created: 2026-05-31T06:19:00.531Z
         notes:
