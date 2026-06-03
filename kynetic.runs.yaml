@@ -59716,7 +59716,7 @@ runs:
     completed_at: 2026-06-03T03:55:45.076Z
   - _ulid: 01KT5TR0PB2S9GZPHFK16MJGKC
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -59732,7 +59732,32 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-03T04:10:04.857Z
-        completed_at: 2026-06-03T04:10:04.857Z
+        completed_at: 2026-06-03T04:11:19.042Z
+        notes: >-
+          Step 2 (identify-patterns): High-confidence friction patterns identified.
+
+
+          1. kspec skill render --force does NOT update .render-hash-codex / .render-hash-droid
+          sidecars when the rendered file already matches what would be produced. The render reports
+          'Unchanged: N skill(s)' and exits successfully, yet kspec skill status / verify continue
+          to report drift because the stored hash still reflects the previous rendered content.
+          Workaround: delete the rendered file first, then run --force, which forces a Create action
+          and updates the sidecar. This caused the cycle-2 review blocker on the task I just
+          completed: the prior cycle ran --force, saw success, and assumed drift was cleared.
+
+
+          2. Discovery friction around skill source-of-truth path. kspec skill render reads from
+          .kspec/skills/<id>/SKILL.md (shadow), not templates/skills/<id>/SKILL.md (the package
+          source). Anyone editing core skill templates and committing the rendered output also needs
+          to sync shadow source — but kspec skill install-core has no per-skill scope, so a focused
+          sync of one skill's templates → shadow means touching all 13 core skills' shadow state
+          (and risks reverting intentional shadow-only customizations). Both prior fix cycles on
+          this task missed this. Searched existing tracking — no specs or tasks cover the
+          render-hash-after-unchanged behavior or the install-core scoping gap.
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-03T04:11:19.042Z
+        completed_at: 2026-06-03T04:11:19.042Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-03T04:09:26.475Z
