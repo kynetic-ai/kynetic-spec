@@ -7369,6 +7369,11 @@ modules:
             then: The effective adapter command is checked under the runner-resolved cwd and process environment
               search path before prompt forwarding or dispatch acceptance.
             when: runner validation or dispatch preflight checks whether the invocation can spawn.
+          - given: A system runner selects the generic ACP process adapter and omits `process.executable`.
+            id: ac-generic-acp-process-requires-executable
+            then: 'Resolution fails with reason `missing_process_executable` and details `{ runner, adapter:
+              "generic-acp", missing_field: "process.executable" }`.'
+            when: kspec resolves the runner invocation contract.
         tags: []
         created: 2026-05-31T06:19:00.531Z
         notes:
