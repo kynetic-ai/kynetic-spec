@@ -2,7 +2,17 @@ _ulid: 01KT5YH3JY9ZR6408WQPSR42E6
 slugs: []
 title: Review regenerate shared artifacts
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 975 files; all matched files use correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-03T05:28:51.800Z
+    completed_at: 2026-06-03T05:28:51.800Z
 events:
   - _ulid: 01KT5YH3JYTFRYZ50K98KPBREW
     actor: Jacob Chapel
@@ -17,6 +27,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-03T05:15:46.665Z
+  - _ulid: 01KT5Z9EH6A54XNVNRBWPV91EQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-03T05:28:52.006Z
 examined_commit: 54ede3e7d3e0fc139b2a6cd73af83eac7ddaca72
 external_links: []
 lifecycle_state: open
@@ -29,5 +46,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-03T05:15:34.366Z
-updated_at: 2026-06-03T05:15:46.463Z
+updated_at: 2026-06-03T05:28:51.800Z
 notes: []
