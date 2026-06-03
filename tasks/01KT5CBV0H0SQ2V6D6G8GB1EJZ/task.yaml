@@ -55,7 +55,7 @@ description: |
 spec_ref: null
 plan_ref: "@plan-shared-template-project-neutrality-cleanup"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-add-shared-guidance-neutrality-review-gate"
@@ -71,11 +71,11 @@ review_ref: "@01KT5JPPYQ1XMHQZ3HM7FBJAE8"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-neutralize-planning-writing-triage-skills/01kt5cbv
-  captured_at: 2026-06-03T01:36:37.838Z
-  commit: 58ed812655e61eebaedc05fa7d1e71d3e3f887df
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-06-03T03:33:53.121Z
+  commit: 8f215bac791cf4dc5dc6e65a984cc18dc23e5720
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-neutralize-planning-writing-triage-skills/01kt5cbv
 session_id: 01KT5QR4QJQ34KYGAHWW6HGTTB
 history:
   - author: Jacob Chapel
@@ -148,8 +148,35 @@ history:
         previous: 2026-06-03T01:05:56.851Z
     command: task-start
     timestamp: 2026-06-03T03:18:03.823Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-neutralize-planning-writing-triage-skills/01kt5cbv
+          captured_at: 2026-06-03T03:33:53.121Z
+          commit: 8f215bac791cf4dc5dc6e65a984cc18dc23e5720
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-neutralize-planning-writing-triage-skills/01kt5cbv
+        previous:
+          review_url: null
+          branch: dispatch/task/task-neutralize-planning-writing-triage-skills/01kt5cbv
+          captured_at: 2026-06-03T01:36:37.838Z
+          commit: 58ed812655e61eebaedc05fa7d1e71d3e3f887df
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-06-03T03:33:53.125Z
+        previous: 2026-06-03T01:36:37.841Z
+    command: task-submit
+    timestamp: 2026-06-03T03:33:53.125Z
 created_at: 2026-06-02T23:58:07.377Z
 started_at: 2026-06-03T03:18:03.822Z
-submitted_at: 2026-06-03T01:36:37.841Z
+submitted_at: 2026-06-03T03:33:53.125Z
 todos: []
 automation: eligible
