@@ -79,7 +79,7 @@ For every Kynetic-only instruction removed from or weakened in shared text:
 
 Use these as concrete anchors when judging neutrality. They are illustrative, not exhaustive — apply the rule semantically, not as a string match.
 
-- Universal-sounding text that says "before committing, run `npm run format:check`, `npm run lint -- --quiet`, `npm run typecheck`" — Kynetic toolchain; describe as "the project-defined quality gates" in shared text and keep the concrete commands in `AGENTS.md` or `work-gates`.
+- Universal-sounding text that says "before committing, run `npm run format:check`, `npm run lint -- --quiet`, `npm run typecheck`" — Kynetic toolchain; describe as "the project-defined quality gates" in shared text and keep the concrete commands in `AGENTS.md` or `{skill:work-gates}`.
 - Universal-sounding text that says "rebase onto `dev`" or "open a PR against `main`" — Kynetic branch/review policy; describe as "the project-defined integration branch" / "the project's review process" in shared text.
 - Universal-sounding text that says "edit `templates/skills/<name>/SKILL.md` to change a skill" — Kynetic package-maintainer instruction; consumers should be directed to project-local skill sources and the supported `kspec skill` commands.
 - Universal-sounding text that names `task-worker`, `pr-reviewer`, or `kynetic.meta.yaml` — Kynetic-specific identifiers; describe as "the configured worker/reviewer agents" and point at `kspec agent list`.
@@ -99,7 +99,7 @@ Apply this skill semantically. If a future hardening plan introduces a narrow li
 
 ## Verdict Guidance
 
-Apply existing severity classes from `$review-gates`:
+Apply existing severity classes from `{skill:review-gates}`:
 
 - **MUST-FIX** — shared text hard-codes Kynetic-only policy as universal, OR a Kynetic-only instruction was removed without a project-local home. Either failure breaks the contract this skill protects.
 - **SHOULD-FIX** — wording is neutral but a discovery command, dynamic-data pointer, or local-home pointer would make the guidance noticeably clearer for consumers or future Kynetic agents.
@@ -109,7 +109,7 @@ When a change is mixed (some neutral edits, some leaks), submit `request_changes
 
 ## Evidence Log Addition
 
-For changes touching shared/package guidance surfaces, the review evidence log (required by `$review-gates`) must additionally record:
+For changes touching shared/package guidance surfaces, the review evidence log (required by `{skill:review-gates}`) must additionally record:
 
 - Which shared/package surfaces were touched.
 - Which direction-1 / direction-2 checks were applied.
