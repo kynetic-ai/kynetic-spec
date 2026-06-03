@@ -2,6 +2,25 @@
 
 Project-specific review criteria for kspec. Supplements the core `{skill:review}` skill with severity classification, regression patterns, and quality checks specific to this codebase.
 
+## Kynetic Quality Gate Checks
+
+The shared `{skill:review}` skill defers to "project-defined" quality gates. In this repository those gates are the ones enumerated in `{skill:work-gates}` Kynetic Quality Gate Commands. Reviewers must record passing evidence for each required gate as a `kspec review check`, or explicitly note a documented reason for skipping it:
+
+| Gate                          | Command                                | `kspec review check --name` / `--runner` |
+| ----------------------------- | -------------------------------------- | ---------------------------------------- |
+| Formatting                    | `npm run format:check`                 | `--name "format" --runner "npm run format:check"` |
+| Repo-wide lint                | `npm run lint -- --quiet`              | `--name "lint" --runner "npm run lint -- --quiet"` |
+| Focused changed-file lint     | `npx oxlint <changed-ts-or-test-files>` | Recorded inline in evidence on the lint check or as an optional `--name "focused-lint"` |
+| Typecheck                     | `npm run typecheck`                    | `--name "typecheck" --runner "npm run typecheck"` |
+| Tests                         | `npm test` (or shards / `npm test -- --fresh`) | `--name "full test suite" --runner "npm test"` |
+| kspec reference validation    | `kspec validate --refs --warnings-ok`  | `--name "kspec validate refs" --runner "kspec"` |
+| kspec alignment validation    | `kspec validate --alignment --warnings-ok` | `--name "kspec validate alignment" --runner "kspec"` |
+| kspec completeness validation | `kspec validate --completeness --warnings-ok` | `--name "kspec validate completeness" --runner "kspec"` |
+
+Failures of any required gate are review blockers. Request changes rather than approving when a gate is red or missing without a documented reason. Lint warnings inside the changed diff are review findings even when the repo-wide lint baseline passes — verify pre-existing status before downgrading.
+
+For skill-touching changes, also record the optional check `kspec skill status`/`kspec skill verify` against the rendered outputs in `.agents/skills/`, `.factory/skills/`, and (when applicable) `plugin/plugins/kspec/skills/` so render drift is captured in the review.
+
 ## Reviewer Philosophy
 
 **You own the merge.** When you approve, you are vouching that the code is correct, complete, and ready. If something bad gets through, the review failed — not just the implementation.
