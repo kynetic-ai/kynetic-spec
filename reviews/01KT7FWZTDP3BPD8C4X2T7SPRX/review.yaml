@@ -2,7 +2,92 @@ _ulid: 01KT7FWZTDP3BPD8C4X2T7SPRX
 slugs: []
 title: Review task-fleet-buffer-preview-sanitization cycle 2
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: all matched files use correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-03T19:52:30.889Z
+    completed_at: 2026-06-03T19:52:30.889Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with repo warning baseline: 742 warnings, 0 errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-03T19:52:33.476Z
+    completed_at: 2026-06-03T19:52:33.476Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 0 warnings, 0 errors on changed TypeScript/test files."
+    name: focused-lint
+    required: true
+    runner: npx oxlint packages/web-ui/src/lib/components/board/fleet-buffer.ts
+      tests/web-ui/fleet-buffer.test.ts
+    created_at: 2026-06-03T19:52:35.994Z
+    completed_at: 2026-06-03T19:52:35.994Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: tsc --noEmit exited 0."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-03T19:52:38.530Z
+    completed_at: 2026-06-03T19:52:38.530Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with --fresh: 2681/2681 suites passed; 10225/10230 tests passed with 5 skipped.
+      Full log: /tmp/kspec-test-cache/01KT7FVP2Z9KV79GN1HNEKZN1M/d3cbf58453dfd3ba.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-03T19:52:41.089Z
+    completed_at: 2026-06-03T19:52:41.089Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok exited 0; warnings are existing deprecated reference
+      warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-03T19:52:43.574Z
+    completed_at: 2026-06-03T19:52:43.574Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok exited 0; warnings are existing orphan/status
+      alignment baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-03T19:52:46.132Z
+    completed_at: 2026-06-03T19:52:46.132Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok exited 0; warnings are existing
+      missing/invalid AC annotation baseline.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-03T19:52:48.605Z
+    completed_at: 2026-06-03T19:52:48.605Z
 events:
   - _ulid: 01KT7FWZTCSBWA0P9FAAW2AYXB
     actor: Jacob Chapel
@@ -17,17 +102,160 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-03T19:38:53.755Z
+  - _ulid: 01KT7GPV47EBA51WB2HDM8T4SX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-03T19:52:31.111Z
+  - _ulid: 01KT7GPXMTAJSPY0ZFEFBAHYV5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-03T19:52:33.690Z
+  - _ulid: 01KT7GQ03FW8734HJ1Z686KT7R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-03T19:52:36.207Z
+  - _ulid: 01KT7GQ2JQ1ZBA05XGPTWWW9S3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-03T19:52:38.743Z
+  - _ulid: 01KT7GQ52BEJC2PWMQB8YEWA5Z
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-03T19:52:41.291Z
+  - _ulid: 01KT7GQ7G97GRP4W9N44QNCN34
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-03T19:52:43.785Z
+  - _ulid: 01KT7GQA09SNY2FZJJ82QVW3MF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-03T19:52:46.345Z
+  - _ulid: 01KT7GQCDT8MTTJBCJSY28T8HZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-03T19:52:48.826Z
+  - _ulid: 01KT7GQEWDXGS40A07064J6MZ6
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KT7GQEP588MRVQTG7QZH1NX5
+    timestamp: 2026-06-03T19:52:51.341Z
+  - _ulid: 01KT7GQH964WGZVA4M3JZB0GAJ
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KT7GQH2H2DYM0F0SCBW6RRP5
+    timestamp: 2026-06-03T19:52:53.798Z
+  - _ulid: 01KT7GQKR4FA95P9B1RN6E1APC
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-03T19:52:56.324Z
+  - _ulid: 01KT7GQKR4CY3MKH6QBSQVK4CE
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-03T19:52:56.324Z
 examined_commit: 49b4e1ec3e5b3ca85438575f29485559371d0abc
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KT7DV7P6CTBBNXGB2AJF1269"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KT7GQEP588MRVQTG7QZH1NX5
+    entries:
+      - _ulid: 01KT7GQEP5659QV3ND8CW7WVJB
+        author: pr-reviewer
+        body: >-
+          Review evidence log:
+
+          Files read: kspec-agents.md; task @01KT7DV7P6CTBBNXGB2AJF1269; spec @ui-task-board; prior
+          review @01KT7EHKYYZT7V8SNNAW4N9S45;
+          packages/web-ui/src/lib/components/board/fleet-buffer.ts;
+          tests/web-ui/fleet-buffer.test.ts.
+
+          Commands run: git status/log/diff; kspec item get @ui-task-board; kspec review get prior
+          review; npm test -- --fresh --run tests/web-ui/fleet-buffer.test.ts; focused Node
+          sanitizer probe; npm run format:check; npm run lint -- --quiet; npx oxlint changed files;
+          npm run typecheck; npm test -- --fresh; kspec validate refs/alignment/completeness with
+          --warnings-ok.
+
+          Claims verified: worker claim that the ANSI/backspace blocker was fixed and a mixed
+          regression test was added is not true in this snapshot; the code still applies backspaces
+          before ANSI stripping, the fleet-buffer test file contains 19 tests, and a focused probe
+          reproduced incorrect mixed SGR/backspace output.
+
+          Categories searched: correctness, edge cases, error handling, security/data preservation,
+          test quality, integration. Shared-guidance neutrality: not applicable; no shared/package
+          guidance surfaces changed.
+        created_at: 2026-06-03T19:52:51.141Z
+    kind: nit
+  - _ulid: 01KT7GQH2H2DYM0F0SCBW6RRP5
+    anchor:
+      type: code
+      commit: 49b4e1ec3e5b3ca85438575f29485559371d0abc
+      line_end: 65
+      line_start: 65
+      path: packages/web-ui/src/lib/components/board/fleet-buffer.ts
+      side: head
+    entries:
+      - _ulid: 01KT7GQH2HCXW96QEHXD8K09PQ
+        author: pr-reviewer
+        body: "MUST-FIX: sanitizeDisplayLine still applies terminal backspaces before stripping ANSI/CSI
+          escapes. That lets a backspace delete bytes from an escape sequence instead of the
+          preceding visible character. I reproduced this against the current logic: a completed line
+          shaped as abc + SGR-red + backspace + de displays as abcde, while stripping ANSI before
+          applying backspace yields abde. This means mixed color/control output can still render
+          incorrect compact Active Fleet preview lines. The submitted tests also do not include the
+          claimed mixed ANSI+backspace regression; tests/web-ui/fleet-buffer.test.ts has 19 tests in
+          this snapshot. Strip ANSI/CSI first, then apply backspaces, and add behavioral coverage
+          for the mixed case."
+        created_at: 2026-06-03T19:52:53.585Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-03T19:52:56.324Z
 created_at: 2026-06-03T19:38:23.949Z
-updated_at: 2026-06-03T19:38:53.552Z
+updated_at: 2026-06-03T19:52:56.324Z
 notes: []
