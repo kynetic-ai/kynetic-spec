@@ -28,3 +28,10 @@ notes:
     supersedes: null
     author: Hermes
     created_at: 2026-06-03T19:12:34.276Z
+  - _ulid: 01KT7EG9H7GKMXBTETT5REBHTC
+    content: "[DISPATCH-BOOTSTRAP] Cannot persist dispatch metadata for @01KT7DV7P6CTBBNXGB2AJF1269:
+      workspace registry record is missing. Suggested action: Inspect dispatch bootstrap
+      configuration, dependency prerequisites, and workspace health."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-03T19:13:59.335Z
