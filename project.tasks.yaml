@@ -30686,7 +30686,7 @@
   title: Neutralize planning, writing, workflow, and triage skills
   type: task
   plan_ref: "@plan-shared-template-project-neutrality-cleanup"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-add-shared-guidance-neutrality-review-gate"
@@ -30700,7 +30700,7 @@
   notes_count: 2
   todos_count: 0
   created_at: 2026-06-02T23:58:07.377Z
-  started_at: 2026-06-03T01:05:56.851Z
+  started_at: 2026-06-03T03:18:03.822Z
   submitted_at: 2026-06-03T01:36:37.841Z
   automation: eligible
 - _ulid: 01KT5CBVGVNX2MF3TK6WJZ4FRR
