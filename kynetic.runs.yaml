@@ -60000,7 +60000,7 @@ runs:
     started_at: 2026-06-03T05:37:59.398Z
     completed_at: 2026-06-03T05:39:52.201Z
   - _ulid: 01KT60X8GMKKQP8N2WF7D5V849
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -60049,7 +60049,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-03T05:58:46.226Z
-        completed_at: 2026-06-03T05:58:46.226Z
+        completed_at: 2026-06-03T05:58:56.462Z
+        notes: "Captured one friction observation: @01KT6105 about npm test/full-suite finalization
+          ambiguity during long review gates. Did not duplicate existing review-evidence or
+          detached-merge-helper observations, and did not create tasks because implementation scope
+          needs triage."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-03T05:57:09.781Z
+    completed_at: 2026-06-03T05:58:56.462Z
