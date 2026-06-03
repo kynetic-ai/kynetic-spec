@@ -227,6 +227,12 @@ events:
     payload:
       thread_ulid: 01KT5H43T31759WNTAPZVKG9FZ
     timestamp: 2026-06-03T03:02:15.441Z
+  - _ulid: 01KT5PX805451ZACNK40SS7G6S
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KT5H43T31759WNTAPZVKG9FZ
+    timestamp: 2026-06-03T03:02:23.493Z
 examined_commit: a46a66f66c4d65e4a6bece12dacba5dd20645129
 external_links: []
 lifecycle_state: closed
@@ -278,6 +284,8 @@ threads:
           rendered output (.agents/.claude/.factory) regenerated and committed alongside source.
         created_at: 2026-06-03T03:02:15.170Z
     kind: nit
+    resolved_at: 2026-06-03T03:02:23.243Z
+    resolved_by: "@claude"
   - _ulid: 01KT5H46ETKWWKQVEMA35VG17T
     anchor:
       type: code
@@ -342,5 +350,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-03T01:21:30.195Z
 created_at: 2026-06-03T01:05:51.315Z
-updated_at: 2026-06-03T03:02:15.170Z
+updated_at: 2026-06-03T03:02:23.243Z
 notes: []
