@@ -59600,7 +59600,7 @@ runs:
     completed_at: 2026-06-03T03:40:27.158Z
   - _ulid: 01KT5STVSA3YMH1NW7H6P4WJ9M
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -59699,7 +59699,14 @@ runs:
       - status: completed
         step_index: 4
         started_at: 2026-06-03T03:54:58.428Z
-        completed_at: 2026-06-03T03:54:58.428Z
+        completed_at: 2026-06-03T03:55:36.889Z
+        notes: "Captured one success observation: @01KT5SYD. No new friction tasks or inbox items were
+          created because the friction candidates were already tracked by existing
+          tasks/observations."
+      - status: completed
+        step_index: 5
+        started_at: 2026-06-03T03:55:36.889Z
+        completed_at: 2026-06-03T03:55:36.889Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-03T03:53:31.178Z
