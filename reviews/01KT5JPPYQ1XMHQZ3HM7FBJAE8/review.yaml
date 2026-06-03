@@ -169,6 +169,13 @@ events:
       kind: blocker
       thread_ulid: 01KT5KHG8AY8E7AER92GVWGCBE
     timestamp: 2026-06-03T02:03:33.246Z
+  - _ulid: 01KT5KHKB8BKE9FHYD3D8MQJ5T
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KT5KHK4508VMP9EDXGHW79B0
+    timestamp: 2026-06-03T02:03:36.168Z
 examined_commit: 58ed812655e61eebaedc05fa7d1e71d3e3f887df
 external_links: []
 lifecycle_state: open
@@ -196,7 +203,24 @@ threads:
           resulting source/rendered output."
         created_at: 2026-06-03T02:03:33.002Z
     kind: blocker
+  - _ulid: 01KT5KHK4508VMP9EDXGHW79B0
+    anchor:
+      type: code
+      commit: 58ed812655e61eebaedc05fa7d1e71d3e3f887df
+      line_end: 213
+      line_start: 206
+      path: templates/skills/plan/SKILL.md
+      side: head
+    entries:
+      - _ulid: 01KT5KHK46TYMY06H19A18VY4Y
+        author: Jacob Chapel
+        body: "MUST-FIX: Formatting drift in this changed skill source blocks approval. Evidence: npm run
+          format:check exited non-zero and listed templates/skills/plan/SKILL.md. Impact: the
+          repository's required format gate is red; run the project formatter and commit the
+          resulting source/rendered output."
+        created_at: 2026-06-03T02:03:35.942Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-03T01:48:55.127Z
-updated_at: 2026-06-03T02:03:33.002Z
+updated_at: 2026-06-03T02:03:35.942Z
 notes: []
