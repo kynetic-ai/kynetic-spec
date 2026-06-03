@@ -234,6 +234,13 @@ events:
       kind: blocker
       thread_ulid: 01KT5G0CPPRBG0CY9SVAAW8J6D
     timestamp: 2026-06-03T01:01:46.793Z
+  - _ulid: 01KT5G0FFYAV8PXV1BR53DYYWR
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KT5G0F8HEXC46YXNDC3CG330
+    timestamp: 2026-06-03T01:01:49.438Z
 examined_commit: aea00e34e121ab35ac77694e04b757c68f669dbf
 external_links: []
 lifecycle_state: open
@@ -265,7 +272,26 @@ threads:
           templates/agents-sections/."
         created_at: 2026-06-03T01:01:46.582Z
     kind: blocker
+  - _ulid: 01KT5G0F8HEXC46YXNDC3CG330
+    anchor:
+      type: code
+      commit: aea00e34e121ab35ac77694e04b757c68f669dbf
+      line_end: 421
+      line_start: 368
+      path: kspec-agents.md
+      side: head
+    entries:
+      - _ulid: 01KT5G0F8JRSJ8G5NANX7TYVWB
+        author: Jacob Chapel
+        body: "MUST-FIX: the committed generated dispatch section is still the old non-neutral text. It
+          still has Built-In Agents, kynetic.meta.yaml, task-worker/pr-reviewer as universal handler
+          ids, and the universal Do NOT create GitHub PRs policy. The dry-run generated from local
+          source does produce the neutral Configured Agents wording, so the source edit is on the
+          right track, but the reviewed snapshot still ships stale generated guidance to agents and
+          consumers. Regenerate and commit kspec-agents.md for this template change."
+        created_at: 2026-06-03T01:01:49.202Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-03T00:47:54.680Z
-updated_at: 2026-06-03T01:01:46.582Z
+updated_at: 2026-06-03T01:01:49.202Z
 notes: []
