@@ -47,6 +47,16 @@ checks:
     runner: npm test
     created_at: 2026-06-03T21:07:29.039Z
     completed_at: 2026-06-03T21:07:29.039Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed fresh: 5 suites, 25/25 tests passed."
+    name: focused fleet-buffer test
+    required: false
+    runner: npm test -- --fresh --run tests/web-ui/fleet-buffer.test.ts
+    created_at: 2026-06-03T21:07:31.802Z
+    completed_at: 2026-06-03T21:07:31.802Z
 events:
   - _ulid: 01KT7M6YH0AGPEJN4R7722W217
     actor: Jacob Chapel
@@ -89,6 +99,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-06-03T21:07:29.272Z
+  - _ulid: 01KT7N06JCM9PYA7JX98M36DYF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused fleet-buffer test
+    timestamp: 2026-06-03T21:07:32.045Z
 examined_commit: 4416c1713adc4e40fb71ccbe87877843cbc4c201
 external_links: []
 lifecycle_state: open
@@ -101,5 +118,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-03T20:53:44.609Z
-updated_at: 2026-06-03T21:07:29.039Z
+updated_at: 2026-06-03T21:07:31.802Z
 notes: []
