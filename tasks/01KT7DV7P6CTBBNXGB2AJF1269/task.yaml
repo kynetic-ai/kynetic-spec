@@ -114,7 +114,7 @@ description: "What:
 spec_ref: "@ui-task-board"
 meta_ref: null
 plan_ref: null
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -368,8 +368,18 @@ history:
         previous: null
     command: review-verdict-needs-work
     timestamp: 2026-06-03T19:52:58.160Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      started_at:
+        new: 2026-06-03T19:58:07.017Z
+        previous: 2026-06-03T19:37:03.997Z
+    command: task-start
+    timestamp: 2026-06-03T19:58:07.018Z
 prior_status: null
 created_at: 2026-06-03T19:02:29.317Z
-started_at: 2026-06-03T19:37:03.997Z
+started_at: 2026-06-03T19:58:07.017Z
 submitted_at: 2026-06-03T19:37:10.647Z
 todos: []
