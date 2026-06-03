@@ -60243,7 +60243,7 @@ runs:
     completed_at: 2026-06-03T20:52:01.834Z
   - _ulid: 01KT7N5RNA1TF5QJMSRJPMEYJG
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -60259,7 +60259,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-03T21:11:37.192Z
-        completed_at: 2026-06-03T21:11:37.192Z
+        completed_at: 2026-06-03T21:11:59.915Z
+        notes: "High-confidence candidates checked against baseline and targeted search results. Success
+          candidate: deterministic review sequence with prior-blocker verification, manual runtime
+          probes, review checks, approval, and detached helper merge; already covered by existing
+          review/merge success observations including @01KT5ZGF, @01KT264A, @01KREWDWD, and runtime
+          probe observation @01KMQ9ZH1. Friction candidate: full npm test has long quiet/progress
+          periods before final aggregate evidence; already covered by @01KT6105 and @01KT2F6H.
+          Friction candidate: helper refused clean auxiliary dev checkout before merge; existing
+          detached reviewer helper specs/tasks/inbox cover occupied target recovery guidance,
+          including @01KSS63E and @01KSJXQZ. No new high-confidence untracked items identified."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-03T21:11:59.915Z
+        completed_at: 2026-06-03T21:11:59.915Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-03T21:10:34.410Z
