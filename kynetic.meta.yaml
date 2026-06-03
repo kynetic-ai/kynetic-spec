@@ -20551,6 +20551,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-03T00:46:01.230Z
+  - _ulid: 01KT5G5NR10YS0M7TPM3TYVPJ0
+    type: success
+    content: Generated-guidance reviews benefit from checking source templates, local dry-run rendered
+      output, and committed generated artifacts as separate surfaces. In review @01KT5F70, the
+      template diff and dry-run output were neutral, but committed kspec-agents.md was stale and
+      still contained package-shipped Kynetic-specific guidance.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-03T01:04:39.681Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
