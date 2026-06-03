@@ -20525,6 +20525,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-03T00:17:27.433Z
+  - _ulid: 01KT5EJA0W200XPVH6CZ2X341G
+    type: friction
+    content: "Reviewing generated skill artifacts can produce false drift signals when using raw file
+      equality across platforms: Codex renders portable skill references as $skill while
+      Claude/factory render them as /skill. Reviewers need platform-aware comparison guidance or a
+      helper that distinguishes expected renderer rewrites from stale generated output."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KT5EDG"
+    created_at: 2026-06-03T00:36:36.509Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
