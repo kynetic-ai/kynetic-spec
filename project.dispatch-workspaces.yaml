@@ -15974,7 +15974,7 @@ workspaces:
         head: 600cc12a44941be362ec12bd56c6708b3c58ed03
         last_seen_at: 2026-06-03T03:41:09.904Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-neutralize-work-review-merge-skills-01kt5cbt
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: ce84317f65d0d22664fe1e95623e97dcb802e376
     bootstrap:
       status: succeeded
@@ -16466,9 +16466,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-03T03:36:11.158Z
-      last_reconciled_at: 2026-06-03T03:53:04.576Z
+      last_reconciled_at: 2026-06-03T03:56:19.036Z
       created_at: 2026-06-03T01:04:53.132Z
-      updated_at: 2026-06-03T03:53:04.576Z
+      updated_at: 2026-06-03T03:56:19.036Z
     workspace_id: dispatch-workspace-01KT5CBV0H0SQ2V6D6G8GB1EJZ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
