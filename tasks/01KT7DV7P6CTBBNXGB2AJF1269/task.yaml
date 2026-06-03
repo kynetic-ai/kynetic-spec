@@ -129,11 +129,11 @@ review_ref: "@01KT7EHKYYZT7V8SNNAW4N9S45"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-fleet-buffer-preview-sanitization/01kt7dv7
-  captured_at: 2026-06-03T19:36:34.527Z
+  captured_at: 2026-06-03T19:37:07.759Z
   commit: 9008219bb7775a345224df1765b5bd1c537a1c87
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-fleet-buffer-preview-sanitization/01kt7dv7
 history:
   - author: Jacob Chapel
     changes:
@@ -303,6 +303,27 @@ history:
         previous: 2026-06-03T19:05:15.644Z
     command: task-start
     timestamp: 2026-06-03T19:37:03.997Z
+  - author: Jacob Chapel
+    changes:
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-fleet-buffer-preview-sanitization/01kt7dv7
+          captured_at: 2026-06-03T19:37:07.759Z
+          commit: 9008219bb7775a345224df1765b5bd1c537a1c87
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-fleet-buffer-preview-sanitization/01kt7dv7
+        previous:
+          review_url: null
+          branch: dispatch/task/task-fleet-buffer-preview-sanitization/01kt7dv7
+          captured_at: 2026-06-03T19:36:34.527Z
+          commit: 9008219bb7775a345224df1765b5bd1c537a1c87
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+    command: task-set
+    timestamp: 2026-06-03T19:37:07.760Z
 prior_status: null
 created_at: 2026-06-03T19:02:29.317Z
 started_at: 2026-06-03T19:37:03.997Z
