@@ -45,6 +45,17 @@ checks:
     runner: npm test
     created_at: 2026-06-03T05:29:05.826Z
     completed_at: 2026-06-03T05:29:05.826Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --refs --warnings-ok exited 0 with known reference warnings
+      accepted by --warnings-ok."
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-03T05:29:10.689Z
+    completed_at: 2026-06-03T05:29:10.689Z
 events:
   - _ulid: 01KT5YH3JYTFRYZ50K98KPBREW
     actor: Jacob Chapel
@@ -87,6 +98,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-06-03T05:29:06.026Z
+  - _ulid: 01KT5ZA0ZW0DGPP18SM7TJDX8F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-03T05:29:10.908Z
 examined_commit: 54ede3e7d3e0fc139b2a6cd73af83eac7ddaca72
 external_links: []
 lifecycle_state: open
@@ -99,5 +117,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-03T05:15:34.366Z
-updated_at: 2026-06-03T05:29:05.826Z
+updated_at: 2026-06-03T05:29:10.689Z
 notes: []
