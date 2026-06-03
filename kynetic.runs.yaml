@@ -59599,7 +59599,7 @@ runs:
     started_at: 2026-06-03T03:36:56.897Z
     completed_at: 2026-06-03T03:40:27.158Z
   - _ulid: 01KT5STVSA3YMH1NW7H6P4WJ9M
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -59706,7 +59706,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-03T03:55:36.889Z
-        completed_at: 2026-06-03T03:55:36.889Z
+        completed_at: 2026-06-03T03:55:45.075Z
+        notes: "Capture complete: success observation @01KT5SYD recorded. Skipped duplicate friction
+          captures for scoped skill-verify drift and review-check batching because existing coverage
+          was found during search."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-03T03:53:31.178Z
+    completed_at: 2026-06-03T03:55:45.076Z
