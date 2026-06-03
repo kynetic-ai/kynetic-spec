@@ -430,6 +430,9 @@ conventions:
         naming contract.
       - Dispatched task work uses 'dev' as the integration target; dispatch worker branches under
         'dispatch/task/' merge back into 'dev' via the supported merge helper after review approval.
+      - Feature-level merges from 'dev' to 'main' are human-directed (typically via GitHub PRs); do
+        not open GitHub PRs for dispatched task work — that is reviewed via kspec review records and
+        merged via the supported merge helper.
   - _ulid: 01KF8BNQXGBBFYRDJKYQHAEDCC
     domain: documentation
     examples: []
