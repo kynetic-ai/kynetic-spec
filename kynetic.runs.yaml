@@ -59858,9 +59858,24 @@ runs:
     completed_at: 2026-06-03T04:57:29.192Z
   - _ulid: 01KT5Y6Y8Z0PQPSBRQFVV56C95
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-03T05:10:01.247Z
+        completed_at: 2026-06-03T05:10:48.619Z
+        notes: "Searched: 1837 observations, 346 inbox items, 23 pending tasks. Most relevant existing
+          observations on shared-guidance regeneration/drift workflow: (1) Reviewing generated skill
+          artifacts produces false drift signals via raw file equality; (2) Editing
+          templates/skills/<id>/SKILL.md does not propagate to .kspec/skills/; (3) kspec skill
+          render --force does not refresh sidecar hashes; (4) Editing core skill templates requires
+          syncing two source-of-truth locations; (5) kspec agents generate reads static templates
+          from kspec package install path. Established baseline for evaluation in next step."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-03T05:10:48.619Z
+        completed_at: 2026-06-03T05:10:48.619Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-03T05:10:01.247Z
