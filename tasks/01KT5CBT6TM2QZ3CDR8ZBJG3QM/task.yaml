@@ -55,8 +55,11 @@ description: |
 spec_ref: null
 plan_ref: "@plan-shared-template-project-neutrality-cleanup"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev via detached reviewer merge helper. Neutralized static agent-section
+  templates and regenerated kspec-agents.md; review @01KT5P7H approved with validation, format,
+  lint, typecheck, focused tests, full npm test, and generation dry-run checks passing.
 depends_on:
   - "@task-add-shared-guidance-neutrality-review-gate"
 context: []
@@ -181,8 +184,24 @@ history:
         previous: "@01KT5F709RHQEYRWFQFTZ3MJDJ"
     command: review-link
     timestamp: 2026-06-03T02:50:35.092Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev via detached reviewer merge helper. Neutralized static agent-section templates
+          and regenerated kspec-agents.md; review @01KT5P7H approved with validation, format, lint,
+          typecheck, focused tests, full npm test, and generation dry-run checks passing.
+        previous: null
+      completed_at:
+        new: 2026-06-03T03:06:39.906Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-03T03:06:39.915Z
 created_at: 2026-06-02T23:58:06.554Z
 started_at: 2026-06-03T02:05:17.262Z
 submitted_at: 2026-06-03T02:05:20.728Z
+completed_at: 2026-06-03T03:06:39.906Z
 todos: []
 automation: eligible
