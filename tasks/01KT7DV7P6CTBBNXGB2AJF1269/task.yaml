@@ -114,15 +114,8 @@ description: "What:
 spec_ref: "@ui-task-board"
 meta_ref: null
 plan_ref: null
-status: blocked
-blocked_by:
-  - "Dispatch workspace provisioning failed: Cannot adopt branch
-    \"dispatch/task/task-fleet-buffer-preview-sanitization/01kt7dv7\" for task
-    @01KT7DV7P6CTBBNXGB2AJF1269: it is currently checked out in the main repository working tree
-    (/home/chapel/Projects/kynetic-spec-dispatch). This usually means submission linkage was
-    captured from the wrong checkout.. Suggested action: Repair the task's submission linkage to
-    reference the correct task branch: kspec task set @01KT7DV7P6CTBBNXGB2AJF1269
-    --submission-linkage"
+status: pending_review
+blocked_by: []
 depends_on: []
 context: []
 priority: 2
@@ -212,7 +205,30 @@ history:
           upstream_ref: refs/heads/dispatch/task/task-fleet-buffer-preview-sanitization/01kt7dv7
     command: task-set
     timestamp: 2026-06-03T19:12:18.988Z
-prior_status: pending_review
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: blocked
+      blocked_by:
+        new: []
+        previous:
+          - "Dispatch workspace provisioning failed: Cannot adopt branch
+            \"dispatch/task/task-fleet-buffer-preview-sanitization/01kt7dv7\" for task
+            @01KT7DV7P6CTBBNXGB2AJF1269: it is currently checked out in the main repository working
+            tree (/home/chapel/Projects/kynetic-spec-dispatch). This usually means submission
+            linkage was captured from the wrong checkout.. Suggested action: Repair the task's
+            submission linkage to reference the correct task branch: kspec task set
+            @01KT7DV7P6CTBBNXGB2AJF1269 --submission-linkage"
+      session_id:
+        new: null
+        previous: null
+      prior_status:
+        new: null
+        previous: pending_review
+    command: task-unblock
+    timestamp: 2026-06-03T19:12:38.102Z
+prior_status: null
 created_at: 2026-06-03T19:02:29.317Z
 started_at: 2026-06-03T19:05:15.644Z
 submitted_at: 2026-06-03T19:07:28.704Z
