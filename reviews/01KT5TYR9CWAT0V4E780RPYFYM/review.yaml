@@ -2,7 +2,119 @@ _ulid: 01KT5TYR9CWAT0V4E780RPYFYM
 slugs: []
 title: Review neutralize worker, reviewer, and merge core skills (cycle 3)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Pass: oxfmt --check . reported all 975 matched files use correct formatting."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-03T04:26:47.428Z
+    completed_at: 2026-06-03T04:26:47.428Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Pass: oxlint src/ tests/ packages/ --quiet completed with 742 warnings and 0 errors. No
+      changed TypeScript/test files in this diff, so focused changed-file lint was not applicable."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-03T04:26:49.785Z
+    completed_at: 2026-06-03T04:26:49.785Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Pass: tsc --noEmit completed successfully."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-03T04:26:52.172Z
+    completed_at: 2026-06-03T04:26:52.172Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Pass with warnings-ok: schema/references OK; known deprecated-reference warnings remain
+      as baseline."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-03T04:26:54.519Z
+    completed_at: 2026-06-03T04:26:54.519Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Pass with warnings-ok: alignment validation completed; existing orphan/status mismatch
+      warning baseline remains."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-03T04:26:56.872Z
+    completed_at: 2026-06-03T04:26:56.872Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Pass with warnings-ok: completeness validation completed; existing warning baseline
+      remains, including this no-spec guidance task's automation-without-spec warning."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-03T04:26:59.157Z
+    completed_at: 2026-06-03T04:26:59.157Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Pass: 2681/2681 test suites passed; 10219 tests passed, 5 skipped. Full log:
+      /tmp/kspec-test-cache/01KT5TXCNAJ5028SWD8F7ZXBVF/60b41478d0141191.log"
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-06-03T04:27:01.515Z
+    completed_at: 2026-06-03T04:27:01.515Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Covered by the fresh full suite: core-skill-install (28), core-skill-update (20),
+      skill-rendering (89), skill-diff (3), agents-instruction-gen (32), core-skill-namespace (15),
+      claude-plugin-registry (14), cross-platform-robustness (16), and related skill/platform tests
+      passed."
+    name: focused skill tests
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-06-03T04:27:03.983Z
+    completed_at: 2026-06-03T04:27:03.983Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Touched skills task-work, review, merge, work-gates, and review-gates show in-sync for
+      relevant rendered platforms. npm run dev -- skill verify exits 1 only for unrelated
+      pre-existing drift (reflect, triage-inbox, writing-specs, plan, create-workflow, observe) plus
+      one unregistered temp droid platform; touched skills are absent from the drift list and 39
+      OK/plugin-provided rows verified.
+    name: changed skill render status
+    required: false
+    runner: npm run dev -- skill status / npm run dev -- skill verify
+    created_at: 2026-06-03T04:27:06.368Z
+    completed_at: 2026-06-03T04:27:06.368Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Pass: scripts/build-plugin.cjs built 13 plugin skills for version 0.14.0."
+    name: plugin build smoke
+    required: false
+    runner: npm run build:plugin
+    created_at: 2026-06-03T04:27:08.601Z
+    completed_at: 2026-06-03T04:27:08.601Z
 events:
   - _ulid: 01KT5TYR9BJAF50PRV6MR0H83D
     actor: Jacob Chapel
@@ -17,17 +129,140 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-03T04:13:33.815Z
+  - _ulid: 01KT5VQSEKWSM2ZP4PH0FJS63C
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-03T04:26:47.635Z
+  - _ulid: 01KT5VQVRC231WPWQCQHBHKMMF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-03T04:26:49.996Z
+  - _ulid: 01KT5VQY24Y4BNA44HY8TNAE84
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-03T04:26:52.356Z
+  - _ulid: 01KT5VR0BM2DEBTHNWRQ16B2H2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-03T04:26:54.708Z
+  - _ulid: 01KT5VR2NQXS26HEDHEYG0F7HP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-03T04:26:57.079Z
+  - _ulid: 01KT5VR4XA0WWF37T5QGF5ZN91
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-03T04:26:59.370Z
+  - _ulid: 01KT5VR771357F6K5G0NZKX4DF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-03T04:27:01.729Z
+  - _ulid: 01KT5VR9MP0KJQ2KZ6V9BT52VS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused skill tests
+    timestamp: 2026-06-03T04:27:04.214Z
+  - _ulid: 01KT5VRBXS1EAF9278J3R54MK1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: changed skill render status
+    timestamp: 2026-06-03T04:27:06.553Z
+  - _ulid: 01KT5VRE4957T9QJZ4CE9AV3YY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: plugin build smoke
+    timestamp: 2026-06-03T04:27:08.809Z
+  - _ulid: 01KT5VRGENVC11JWNZNTRMD3W9
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KT5VRG8MC5W6X7NZWSFTYA0Y
+    timestamp: 2026-06-03T04:27:11.189Z
+  - _ulid: 01KT5VRJN5J9E4T5670ARVSBBW
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-03T04:27:13.445Z
+  - _ulid: 01KT5VRJN5F21HCQPJEKK37A7M
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-03T04:27:13.445Z
 examined_commit: 600cc12a44941be362ec12bd56c6708b3c58ed03
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KT5CBTKEA5K1K9WGEE4SWSW5"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KT5VRG8MC5W6X7NZWSFTYA0Y
+    entries:
+      - _ulid: 01KT5VRG8MCN42WY0X9ME2BYZH
+        author: Jacob Chapel
+        body: "Evidence log: Files read: AGENTS-provided instructions, full kspec-agents.md include, task
+          details and plan, prior reviews @01KT5G7V/@01KT5QTK including thread bodies,
+          templates/skills/task-work, templates/skills/review, templates/skills/merge, rendered
+          .agents/.factory/.claude skill outputs, project-local work-gates/review-gates via kspec
+          skill get, and core skill sources via kspec skill get. Commands run: git
+          status/log/diff/diff --check, kspec task get, kspec plan get, kspec review
+          add/open/get/for-task, kspec skill status/verify/get/diff, npm run dev -- skill
+          status/verify, npm run build:plugin, rg neutrality/AC scans, npm run format:check, npm run
+          lint -- --quiet, npm run typecheck, kspec validate refs/alignment/completeness with
+          warnings-ok, npm test -- --fresh. Claims verified: direction-1 shared text is
+          project-neutral; direction-2 Kynetic gates and artifact rules live in
+          work-gates/review-gates; prior cycle-2 drift blocker is resolved for
+          task-work/review/merge; rendered/plugin skill surfaces build; full tests and validation
+          pass. Categories searched: correctness of guidance, neutrality direction 1 and 2,
+          generated artifact consistency, test quality/no source-scanning additions, integration
+          with skill render/verify/plugin build, formatting/lint/type/test gates, merge readiness.
+          No blockers found."
+        created_at: 2026-06-03T04:27:10.996Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-03T04:27:13.445Z
 created_at: 2026-06-03T04:13:07.244Z
-updated_at: 2026-06-03T04:13:33.613Z
+updated_at: 2026-06-03T04:27:13.445Z
 notes: []
