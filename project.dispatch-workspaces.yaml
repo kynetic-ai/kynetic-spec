@@ -16295,12 +16295,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-03T01:47:19.996Z
+      updated_at: 2026-06-03T01:47:56.011Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-03T01:47:19.996Z
+      updated_at: 2026-06-03T01:47:56.011Z
     integration:
       status: pending
       detail: null
@@ -16308,24 +16308,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: ce84317f65d0d22664fe1e95623e97dcb802e376
-      updated_at: 2026-06-03T01:47:19.996Z
-    lifecycle_state: ready
+      updated_at: 2026-06-03T01:47:56.011Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KT5CBV0H0SQ2V6D6G8GB1EJZ"
     task_slug: task-neutralize-planning-writing-triage-skills
     timestamps:
       closed_at: null
       last_active_at: 2026-06-03T01:05:20.068Z
-      last_reconciled_at: 2026-06-03T01:47:19.996Z
+      last_reconciled_at: 2026-06-03T01:47:56.011Z
       created_at: 2026-06-03T01:04:53.132Z
-      updated_at: 2026-06-03T01:47:19.996Z
+      updated_at: 2026-06-03T01:47:56.011Z
     workspace_id: dispatch-workspace-01KT5CBV0H0SQ2V6D6G8GB1EJZ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 58ed812655e61eebaedc05fa7d1e71d3e3f887df
+        last_seen_at: 2026-06-03T01:47:56.011Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-neutralize-planning-writing-triage-skills-01kt5cbv-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-neutralize-planning-writing-triage-skills/01kt5cbv
-        head: ce84317f65d0d22664fe1e95623e97dcb802e376
-        last_seen_at: 2026-06-03T01:04:53.132Z
+        head: 58ed812655e61eebaedc05fa7d1e71d3e3f887df
+        last_seen_at: 2026-06-03T01:47:56.011Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-neutralize-planning-writing-triage-skills-01kt5cbv
