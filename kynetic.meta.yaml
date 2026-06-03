@@ -20610,6 +20610,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-03T03:16:09.859Z
+  - _ulid: 01KT5RX3YQFMSH8XFJTJKDCFPV
+    type: friction
+    content: Review comments entered via shell command arguments are easy to corrupt when the body
+      contains backticks or command-like text. During review @01KT5QTK, a blocker comment body with
+      backticked command names triggered shell command substitution, ran an unintended skill render
+      command, and polluted the stored review body until a clarification reply was added. Agents
+      should have a safer file-based or stdin-based pattern for long kspec review comments.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-03T03:37:16.503Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
