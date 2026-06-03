@@ -59492,7 +59492,7 @@ runs:
     completed_at: 2026-06-03T03:09:23.851Z
   - _ulid: 01KT5QHZGWT9W68YPWS9VTJ5S3
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -59505,7 +59505,42 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-03T03:15:33.548Z
-        completed_at: 2026-06-03T03:15:33.548Z
+        completed_at: 2026-06-03T03:15:49.064Z
+        notes: >-
+          High-confidence candidates identified:
+
+
+          1. FRICTION (new, not duplicate): Cross-task Direction-2 preservation ordering in plans
+          that stage shared-guidance neutralization alongside a separate local-preservation task.
+          The neutralization task assumed @task-preserve-kynetic-local-template-maintenance-context
+          would shoulder Direction-2; the reviewer correctly enforced the shared-guidance-neutrality
+          convention requiring local preservation to already exist BEFORE shared text changes ship.
+          The plan staged both tasks as siblings without ordering preservation first, so the worker
+          had to co-ship the diff-specific preservation as a fix cycle. Systemic: any future
+          neutrality/extraction plan with sibling preservation tasks will hit this. Concrete cause
+          and effect (already happened, fixed in this cycle).
+
+
+          2. SUCCESS (low capture priority — likely already-known reviewer pattern): Reviewer naming
+          exact removed commands (npm run format:check, npm run lint -- --quiet, npx oxlint <changed
+          files>, npm run typecheck) and the specific delegating line (task-work line 234) made the
+          fix surgical. Considered too project-policy-specific to capture as a standalone
+          observation.
+
+
+          3. FRICTION (already tracked): No CLI for updating existing skill SKILL.md content —
+          @01KSK0KQY. SKIP duplicate.
+
+
+          4. FRICTION (already tracked): Shadow source drift across upgrades — @01KSK0KQQ. SKIP
+          duplicate.
+
+
+          Will capture only #1.
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-03T03:15:49.064Z
+        completed_at: 2026-06-03T03:15:49.064Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-03T03:13:42.940Z
