@@ -35,3 +35,10 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-03T19:13:59.335Z
+  - _ulid: 01KT7FD77QRT5PFXBXAEV2Z7HQ
+    content: "[FIX_CYCLE: 1] Review findings: Review @01KT7EHKYYZT7V8SNNAW4N9S45 requested changes:
+      Active Fleet sanitizer applies backspaces before stripping ANSI escapes, causing mixed
+      ANSI+backspace output to render incorrectly."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-03T19:29:47.255Z
