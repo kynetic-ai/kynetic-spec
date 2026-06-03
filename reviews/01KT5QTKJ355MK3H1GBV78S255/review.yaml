@@ -168,6 +168,12 @@ events:
       kind: blocker
       thread_ulid: 01KT5RQKDKJWWMM9E0S33GJQMH
     timestamp: 2026-06-03T03:34:15.947Z
+  - _ulid: 01KT5RRPFHGQB0KVP49BTQR9TF
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KT5RQKDKJWWMM9E0S33GJQMH
+    timestamp: 2026-06-03T03:34:51.633Z
 examined_commit: 600cc12a44941be362ec12bd56c6708b3c58ed03
 external_links: []
 lifecycle_state: open
@@ -588,8 +594,18 @@ threads:
           the touched skills no longer appear as drifted, or adjust the local maintenance guidance
           to name the correct regeneration/verification path and make that path pass.
         created_at: 2026-06-03T03:34:15.731Z
+      - _ulid: 01KT5RRP8XNWQ4G5S74JBW1RF7
+        author: Jacob Chapel
+        body: "Clarification for the blocker above: the concrete failing evidence is that both `kspec skill
+          status` and `npm run dev -- skill verify` report the touched package-core skills
+          `task-work`, `review`, and `merge` as drifted for codex and droid. The branch also adds
+          local guidance on this line saying touched rendered `.agents/skills` and `.factory/skills`
+          outputs must stay in sync and `kspec skill verify` should report no drift for touched
+          skills. Please make the touched core skills pass the project-defined render/verify path,
+          or update the guidance to name the correct path and make that path pass."
+        created_at: 2026-06-03T03:34:51.421Z
     kind: blocker
 verdicts: []
 created_at: 2026-06-03T03:18:25.603Z
-updated_at: 2026-06-03T03:34:15.731Z
+updated_at: 2026-06-03T03:34:51.421Z
 notes: []
