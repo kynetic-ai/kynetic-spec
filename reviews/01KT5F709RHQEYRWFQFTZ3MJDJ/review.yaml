@@ -33,6 +33,16 @@ checks:
     runner: oxfmt
     created_at: 2026-06-03T01:00:40.344Z
     completed_at: 2026-06-03T01:00:40.344Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck passed.
+    name: typecheck
+    required: true
+    runner: tsc
+    created_at: 2026-06-03T01:00:43.146Z
+    completed_at: 2026-06-03T01:00:43.146Z
 events:
   - _ulid: 01KT5F709RXV0W38W42QSSEFSS
     actor: Jacob Chapel
@@ -68,6 +78,13 @@ events:
       status: pass
       name: format
     timestamp: 2026-06-03T01:00:40.566Z
+  - _ulid: 01KT5FYEYRBE8GYA4J7YZ1F8Q8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-03T01:00:43.352Z
 examined_commit: aea00e34e121ab35ac77694e04b757c68f669dbf
 external_links: []
 lifecycle_state: open
@@ -80,5 +97,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-03T00:47:54.680Z
-updated_at: 2026-06-03T01:00:40.344Z
+updated_at: 2026-06-03T01:00:43.146Z
 notes: []
