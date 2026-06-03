@@ -35,6 +35,16 @@ checks:
     runner: kspec
     created_at: 2026-06-03T03:04:04.821Z
     completed_at: 2026-06-03T03:04:04.821Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run format:check passed: all 975 matched files formatted."
+    name: format
+    required: true
+    runner: oxfmt
+    created_at: 2026-06-03T03:04:14.060Z
+    completed_at: 2026-06-03T03:04:14.060Z
 events:
   - _ulid: 01KT5P7HVGGKDGSEDS2X93SK0Y
     actor: Jacob Chapel
@@ -70,6 +80,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-03T03:04:05.116Z
+  - _ulid: 01KT5Q0M7P3E29HZWWC46855AB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-03T03:04:14.326Z
 examined_commit: 250f1ab62734f0911f4cfd4ff3d2fa5ee4a2e53a
 external_links: []
 lifecycle_state: open
@@ -82,5 +99,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-03T02:50:32.695Z
-updated_at: 2026-06-03T03:04:04.821Z
+updated_at: 2026-06-03T03:04:14.060Z
 notes: []
