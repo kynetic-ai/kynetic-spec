@@ -60059,9 +60059,10 @@ runs:
     started_at: 2026-06-03T05:57:09.781Z
     completed_at: 2026-06-03T05:58:56.462Z
   - _ulid: 01KT7FEKRJVJPQFCZHVQZXJBHY
-    status: active
+    status: paused
     current_step: 0
     initiated_by: Jacob Chapel
+    paused_at: 2026-06-03T19:31:15.972Z
     step_results: []
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
