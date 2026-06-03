@@ -16976,7 +16976,7 @@ workspaces:
         head: 54ede3e7d3e0fc139b2a6cd73af83eac7ddaca72
         last_seen_at: 2026-06-03T05:14:28.467Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-regenerate-shared-template-artifacts-and-tests-01kt5cbw
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 54ede3e7d3e0fc139b2a6cd73af83eac7ddaca72
     bootstrap:
       status: succeeded
@@ -17439,12 +17439,12 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-03T05:56:09.928Z
+      updated_at: 2026-06-03T05:57:02.415Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-03T05:56:09.928Z
+      updated_at: 2026-06-03T05:57:02.415Z
     integration:
       status: merged
       detail: integration:merged
@@ -17452,7 +17452,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 54ede3e7d3e0fc139b2a6cd73af83eac7ddaca72
-      updated_at: 2026-06-03T05:56:09.928Z
+      updated_at: 2026-06-03T05:57:02.415Z
     lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KT5CBX1MEPE79Z8PXRNP9DJ5"
@@ -17460,9 +17460,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-03T05:40:42.342Z
-      last_reconciled_at: 2026-06-03T05:56:09.928Z
+      last_reconciled_at: 2026-06-03T05:57:02.415Z
       created_at: 2026-06-03T05:30:15.093Z
-      updated_at: 2026-06-03T05:56:09.928Z
+      updated_at: 2026-06-03T05:57:02.415Z
     workspace_id: dispatch-workspace-01KT5CBX1MEPE79Z8PXRNP9DJ5
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
