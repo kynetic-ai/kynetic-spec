@@ -15979,7 +15979,7 @@ workspaces:
         head: 600cc12a44941be362ec12bd56c6708b3c58ed03
         last_seen_at: 2026-06-03T03:17:10.367Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-neutralize-work-review-merge-skills-01kt5cbt
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: ce84317f65d0d22664fe1e95623e97dcb802e376
     bootstrap:
       status: succeeded
@@ -16455,7 +16455,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-03T03:35:41.862Z
+      updated_at: 2026-06-03T03:36:11.158Z
     integration:
       status: pending
       detail: null
@@ -16470,10 +16470,10 @@ workspaces:
     task_slug: task-neutralize-planning-writing-triage-skills
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-03T03:17:05.348Z
-      last_reconciled_at: 2026-06-03T03:35:41.862Z
+      last_active_at: 2026-06-03T03:36:11.158Z
+      last_reconciled_at: 2026-06-03T03:36:11.158Z
       created_at: 2026-06-03T01:04:53.132Z
-      updated_at: 2026-06-03T03:36:06.114Z
+      updated_at: 2026-06-03T03:36:11.158Z
     workspace_id: dispatch-workspace-01KT5CBV0H0SQ2V6D6G8GB1EJZ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
