@@ -20621,6 +20621,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-03T03:37:16.503Z
+  - _ulid: 01KT5RX4B9AZTM4EERBHGH65JP
+    type: friction
+    content: Skill-touching reviews need a branch-aware verification path for package core templates. In
+      task @task-neutralize-work-review-merge-skills, direct file inspection showed the submitted
+      shared templates and rendered copies contained the intended neutralized text, but kspec skill
+      status/verify still reported the touched package-core skills task-work, review, and merge as
+      drifted because verification compared against installed/project skill state. This makes it
+      hard to distinguish expected package-template edits from real render drift.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-03T03:37:16.905Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
