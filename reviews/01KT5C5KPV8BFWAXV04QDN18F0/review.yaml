@@ -77,6 +77,23 @@ checks:
     runner: npm
     created_at: 2026-06-03T00:08:10.166Z
     completed_at: 2026-06-03T00:08:10.166Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/cli/output.ts, src/cli/commands/plan.ts,
+      tests/plan-branch-helper.test.ts, kspec-agents.md, task/spec context. Commands run: git
+      diff/stat/log/status, kspec task get, kspec item get, AC annotation search, error() call-site
+      search, validations, format/lint/oxlint/typecheck, focused test, full npm test. Claims
+      verified: text errors now render details.message instead of [object Object]; plan branch
+      runtime git failures exit 3; JSON error details remain structured/no ANSI; plan branch does
+      not update plan.branch after failed checkout. Categories searched: correctness, error
+      handling, edge cases, test quality, AC coverage, integration/shared output helper."
+    name: review evidence log
+    required: false
+    runner: reviewer
+    created_at: 2026-06-03T00:08:22.429Z
+    completed_at: 2026-06-03T00:08:22.429Z
 events:
   - _ulid: 01KT5C5KPP5Z2ZA82V92HXPY59
     actor: Jacob Chapel
@@ -140,6 +157,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-06-03T00:08:10.385Z
+  - _ulid: 01KT5CYKV5XZKKGQ6XZFT28TEQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-06-03T00:08:22.629Z
 examined_commit: f9be38dc0e6350c57d99d620531e5ef90b96340a
 external_links: []
 lifecycle_state: open
@@ -152,5 +176,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-02T23:54:43.291Z
-updated_at: 2026-06-03T00:08:10.166Z
+updated_at: 2026-06-03T00:08:22.429Z
 notes: []
