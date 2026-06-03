@@ -59370,7 +59370,7 @@ runs:
     completed_at: 2026-06-03T01:23:57.739Z
   - _ulid: 01KT5JFBP86WKZRSATFG17B2EW
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -59382,7 +59382,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-03T01:45:15.835Z
-        completed_at: 2026-06-03T01:45:15.835Z
+        completed_at: 2026-06-03T01:46:11.309Z
+        notes: "High-confidence friction: editing templates/skills/ does not auto-sync to .kspec/skills/
+          (where renderer reads from). First 'kspec skill render' reported 'Unchanged' for edited
+          skills, hiding the fact that the templates needed to be propagated via 'kspec skill
+          install-core --force' first. Workflow is: edit templates -> install-core --force -> render
+          --force. Verified no existing observation/inbox covers this."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-03T01:46:11.309Z
+        completed_at: 2026-06-03T01:46:11.309Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-03T01:44:54.216Z
