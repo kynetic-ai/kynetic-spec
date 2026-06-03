@@ -13960,7 +13960,7 @@ workspaces:
         head: 360cb36d88effdc5d14e96e8aa324a65c9f70df2
         last_seen_at: 2026-06-01T20:51:56.937Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-runner-operator-surface-parity-01kt20r9
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 9ec889988c6cabb1f9aa1d9424cebb546092c287
     bootstrap:
       status: succeeded
@@ -14449,9 +14449,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-02T23:53:36.032Z
-      last_reconciled_at: 2026-06-03T00:10:04.086Z
+      last_reconciled_at: 2026-06-03T00:12:13.537Z
       created_at: 2026-06-02T22:53:25.048Z
-      updated_at: 2026-06-03T00:10:04.086Z
+      updated_at: 2026-06-03T00:12:13.537Z
     workspace_id: dispatch-workspace-01KT58K6APZ8R5M0JWPGFCT5B2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
