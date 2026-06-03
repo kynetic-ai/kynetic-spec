@@ -114,7 +114,7 @@ description: "What:
 spec_ref: "@ui-task-board"
 meta_ref: null
 plan_ref: null
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -134,6 +134,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-fleet-buffer-preview-sanitization/01kt7dv7
+session_id: 01KT7JMBH5SBK69T3PT11YKMGZ
 history:
   - author: Jacob Chapel
     changes:
@@ -450,9 +451,22 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-06-03T20:24:54.644Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KT7JMBH5SBK69T3PT11YKMGZ
+        previous: null
+      started_at:
+        new: 2026-06-03T20:49:09.167Z
+        previous: 2026-06-03T19:58:07.017Z
+    command: task-start
+    timestamp: 2026-06-03T20:49:09.167Z
 prior_status: null
 created_at: 2026-06-03T19:02:29.317Z
-started_at: 2026-06-03T19:58:07.017Z
+started_at: 2026-06-03T20:49:09.167Z
 submitted_at: 2026-06-03T19:58:13.783Z
 todos: []
 automation: eligible

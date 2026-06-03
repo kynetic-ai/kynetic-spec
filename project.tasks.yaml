@@ -30784,7 +30784,7 @@
   title: Sanitize Active Fleet preview terminal output
   type: bug
   spec_ref: "@ui-task-board"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 2
@@ -30797,6 +30797,6 @@
   notes_count: 12
   todos_count: 0
   created_at: 2026-06-03T19:02:29.317Z
-  started_at: 2026-06-03T19:58:07.017Z
+  started_at: 2026-06-03T20:49:09.167Z
   submitted_at: 2026-06-03T19:58:13.783Z
   automation: eligible
