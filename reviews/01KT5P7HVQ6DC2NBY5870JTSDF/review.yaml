@@ -107,6 +107,17 @@ checks:
     runner: npm-test
     created_at: 2026-06-03T03:05:19.008Z
     completed_at: 2026-06-03T03:05:19.008Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run --silent dev -- agents generate --dry-run --json produced content matching
+      committed kspec-agents.md after stripping the generated timestamp.
+    name: agent instruction generation dry-run
+    required: true
+    runner: kspec
+    created_at: 2026-06-03T03:05:29.580Z
+    completed_at: 2026-06-03T03:05:29.580Z
 events:
   - _ulid: 01KT5P7HVGGKDGSEDS2X93SK0Y
     actor: Jacob Chapel
@@ -191,6 +202,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-06-03T03:05:19.281Z
+  - _ulid: 01KT5Q2XYXXBZ2K95KJ9968Y9X
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: agent instruction generation dry-run
+    timestamp: 2026-06-03T03:05:29.821Z
 examined_commit: 250f1ab62734f0911f4cfd4ff3d2fa5ee4a2e53a
 external_links: []
 lifecycle_state: open
@@ -203,5 +221,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-03T02:50:32.695Z
-updated_at: 2026-06-03T03:05:19.008Z
+updated_at: 2026-06-03T03:05:29.580Z
 notes: []
