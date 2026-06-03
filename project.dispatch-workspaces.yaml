@@ -15954,18 +15954,18 @@ workspaces:
       remote_ref: origin/dispatch/task/task-fleet-buffer-preview-sanitization/01kt7dv7
       source: task-submission-linkage
     canonical_branch: dispatch/task/task-fleet-buffer-preview-sanitization/01kt7dv7
-    canonical_branch_head: 9008219bb7775a345224df1765b5bd1c537a1c87
+    canonical_branch_head: 4416c1713adc4e40fb71ccbe87877843cbc4c201
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-03T20:26:05.577Z
+      updated_at: 2026-06-03T20:49:14.846Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-03T20:26:07.274Z
+      updated_at: 2026-06-03T20:49:14.846Z
     integration:
       status: pending
       detail: null
@@ -15973,7 +15973,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: ab46ef576b5d10bb7dca97d35f248586645356af
-      updated_at: 2026-06-03T20:26:05.577Z
+      updated_at: 2026-06-03T20:49:14.846Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KT7DV7P6CTBBNXGB2AJF1269"
@@ -15981,9 +15981,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-03T20:26:07.274Z
-      last_reconciled_at: 2026-06-03T20:26:07.274Z
+      last_reconciled_at: 2026-06-03T20:49:14.846Z
       created_at: 2026-06-03T19:13:20.531Z
-      updated_at: 2026-06-03T20:26:07.274Z
+      updated_at: 2026-06-03T20:49:14.846Z
     workspace_id: dispatch-workspace-01KT7DV7P6CTBBNXGB2AJF1269
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
