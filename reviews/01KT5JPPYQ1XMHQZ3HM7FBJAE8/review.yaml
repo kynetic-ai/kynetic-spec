@@ -162,6 +162,13 @@ events:
       status: pass
       name: lint
     timestamp: 2026-06-03T02:03:03.884Z
+  - _ulid: 01KT5KHGFYXA1511MSGGNV9EMF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KT5KHG8AY8E7AER92GVWGCBE
+    timestamp: 2026-06-03T02:03:33.246Z
 examined_commit: 58ed812655e61eebaedc05fa7d1e71d3e3f887df
 external_links: []
 lifecycle_state: open
@@ -171,8 +178,25 @@ subject:
   content_hash: ""
   ref: "@01KT5CBV0H0SQ2V6D6G8GB1EJZ"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KT5KHG8AY8E7AER92GVWGCBE
+    anchor:
+      type: code
+      commit: 58ed812655e61eebaedc05fa7d1e71d3e3f887df
+      line_end: 152
+      line_start: 148
+      path: templates/skills/triage-inbox/SKILL.md
+      side: head
+    entries:
+      - _ulid: 01KT5KHG8AEH0XKRD9284D8MFW
+        author: Jacob Chapel
+        body: "MUST-FIX: Formatting drift in this changed skill source blocks approval. Evidence: npm run
+          format:check exited non-zero and listed templates/skills/triage-inbox/SKILL.md. Impact:
+          the repository's required format gate is red; run the project formatter and commit the
+          resulting source/rendered output."
+        created_at: 2026-06-03T02:03:33.002Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-03T01:48:55.127Z
-updated_at: 2026-06-03T02:03:03.642Z
+updated_at: 2026-06-03T02:03:33.002Z
 notes: []
