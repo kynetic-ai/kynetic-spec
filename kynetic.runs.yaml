@@ -59916,9 +59916,21 @@ runs:
     completed_at: 2026-06-03T05:14:07.047Z
   - _ulid: 01KT5ZDQXYM5KXMB3KY8297FHM
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-03T05:31:12.702Z
+        completed_at: 2026-06-03T05:32:45.907Z
+        notes: "Worked well: review evidence log captured files read, commands run, neutrality checks,
+          generated artifact checks, and no-op merge evidence before approval. Friction considered:
+          workflow show run-ref docs, noisy reflection baselines, and skill verify filtering; all
+          had existing coverage, so no duplicate capture. Captured one success observation."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-03T05:32:45.907Z
+        completed_at: 2026-06-03T05:32:45.907Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-03T05:31:12.702Z
