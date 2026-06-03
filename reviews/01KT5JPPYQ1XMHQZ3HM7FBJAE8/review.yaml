@@ -27,6 +27,17 @@ checks:
     runner: kspec
     created_at: 2026-06-03T02:02:46.200Z
     completed_at: 2026-06-03T02:02:46.200Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Skipped: no TypeScript or test files changed; diff is markdown skill guidance and
+      rendered skill copies."
+    name: changed-file oxlint
+    required: false
+    runner: oxlint
+    created_at: 2026-06-03T02:02:49.062Z
+    completed_at: 2026-06-03T02:02:49.062Z
 events:
   - _ulid: 01KT5JPPYQ9C93FFHAHNBHFECJ
     actor: Jacob Chapel
@@ -55,6 +66,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-03T02:02:46.402Z
+  - _ulid: 01KT5KG5K14XVH3EAXH3WEVCP4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: changed-file oxlint
+    timestamp: 2026-06-03T02:02:49.314Z
 examined_commit: 58ed812655e61eebaedc05fa7d1e71d3e3f887df
 external_links: []
 lifecycle_state: open
@@ -67,5 +85,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-03T01:48:55.127Z
-updated_at: 2026-06-03T02:02:46.200Z
+updated_at: 2026-06-03T02:02:49.062Z
 notes: []
