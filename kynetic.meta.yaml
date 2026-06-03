@@ -282,6 +282,7 @@ agents:
       - review
       - review-gates
       - merge
+      - shared-guidance-neutrality
     tools:
       - kspec
       - git
