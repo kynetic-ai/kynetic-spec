@@ -51,3 +51,59 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-03T00:37:53.587Z
+  - _ulid: 01KT5EZ9ERF85M0907SX7RVAG0
+    content: >-
+      Implementation complete. Changes:
+
+
+      1. templates/agents-sections/01-quick-start.md
+         - Rule 8 reframed: normal consumers see project-local .kspec/skills/ + kspec skill commands. Package maintainer paths (templates/skills/, manifest.yaml) are mentioned only as parenthetical guidance for projects working on kspec itself.
+
+      2. templates/agents-sections/02-shadow-branch.md
+         - 'main branch history' → 'your code branches' history'
+         - 'Code PRs' → 'Code-branch reviews'
+         - 'Main branch gitignores .kspec/' → 'Your project's code branches gitignore .kspec/'
+
+      3. templates/agents-sections/06-agent-dispatch-mode.md
+         - 'Built-In Agents' → 'Configured Agents' section
+         - Hard-coded task-worker/pr-reviewer agent ids and kynetic.meta.yaml removed; replaced with project meta data + kspec agent list guidance
+         - Trigger event table uses 'configured worker' / 'configured reviewer' instead of fixed agent ids
+         - 'Do NOT create GitHub PRs for dispatched work...merging feature groups into main' → 'Dispatched work is reviewed via kspec review records and merged to the configured integration branch...external review platforms (such as GitHub PRs) are a per-project policy choice'
+
+      Files 03-task-lifecycle.md, 04-pr-workflow.md (already titled 'Work and Review Lifecycle'),
+      05-commit-convention.md, 07-batch-usage.md reviewed: all describe universal kspec mechanics
+      only; no edits needed.
+
+
+      Gates run from worktree:
+
+      - npm test -- --fresh tests/agents-instruction-gen.test.ts: 32/32 PASS
+
+      - npm test -- --fresh tests/setup-builtin-agents.test.ts: 28/28 PASS
+
+      - npm run format:check: PASS (oxfmt re-aligned one table; no semantic change)
+
+      - npm run lint -- --quiet: 0 errors (742 baseline warnings unchanged)
+
+      - npm run typecheck: PASS
+
+      - kspec validate --refs/--alignment/--completeness: PASS with pre-existing baseline warnings
+
+      - npm run dev -- agents generate --dry-run --json: verified neutralized content appears in
+      generated output
+
+
+      Note on kspec-agents.md regeneration: this worktree's kspec CLI is npm-linked to the upstream
+      package at /home/chapel/Projects/kynetic-spec/. The dispatch project's static kspec-agents.md
+      will be refreshed by @task-regenerate-shared-template-artifacts-and-tests using the updated
+      templates after merge. The npm run dev -- agents generate --dry-run output (run against the
+      worktree's templates and tsx source) confirmed neutral static wording is produced.
+
+
+      Preservation check: AGENTS.md already covers 'Agent Instructions Generation'
+      (templates/agents-sections/ source-of-truth) and 'Skill Source of Truth' (templates/skills/,
+      manifest.yaml). The follow-up @task-preserve-kynetic-local-template-maintenance-context will
+      validate completeness.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-03T00:43:41.913Z
