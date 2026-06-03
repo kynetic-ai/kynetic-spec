@@ -20686,6 +20686,25 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-03T04:11:44.348Z
+  - _ulid: 01KT5WC27JX2CX9G2VZ765EWSB
+    type: friction
+    content: "kspec agents generate (and similar template-reading commands) reads static templates from
+      the kspec CLI binary's install location via getPackageRoot() in src/cli/commands/agents.ts
+      (path.resolve(__dirname, ..., ..., ...)), NOT from the current working directory. In dispatch
+      mode this means a worktree whose templates are ahead of the CLI's source (e.g., neutralization
+      commits not yet built into the linked CLI) regenerates a kspec-agents.md that REGRESSES the
+      static template portion while correctly picking up shadow-branch convention changes. The
+      artifact is a mixed bag and easy to commit by accident. Observed while working
+      @task-preserve-kynetic-local-template-maintenance-context: the linked CLI was built from
+      /home/chapel/Projects/kynetic-spec on an older dev commit than the dispatch worktree, so the
+      regenerated kspec-agents.md showed pre-neutralization template text alongside the new
+      convention rules. Likely affects every dispatched task that touches
+      conventions/workflows/skills/templates and is asked to regenerate kspec-agents.md as a
+      verification step."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-03T04:37:51.987Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
