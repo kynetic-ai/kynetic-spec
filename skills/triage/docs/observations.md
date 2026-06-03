@@ -68,14 +68,14 @@ Use `--dry-run` to preview. See `{skill:help}` for full batch documentation.
 
 ## Common Patterns
 
-| Pattern                | Action                                                         |
-| ---------------------- | -------------------------------------------------------------- |
-| Friction already fixed | Verify fix → resolve with note                                 |
-| Friction needs work    | Check spec → create if needed → promote or inbox               |
+| Pattern                | Action                                                            |
+| ---------------------- | ----------------------------------------------------------------- |
+| Friction already fixed | Verify fix → resolve with note                                    |
+| Friction needs work    | Check spec → create if needed → promote or inbox                  |
 | Success pattern        | Document in project-local guidance or the relevant spec → resolve |
-| Open question          | Answer if possible → resolve. If needs investigation → promote |
-| Idea with clear scope  | Promote to task or inbox                                       |
-| Vague idea             | Leave or delete if stale                                       |
+| Open question          | Answer if possible → resolve. If needs investigation → promote    |
+| Idea with clear scope  | Promote to task or inbox                                          |
+| Vague idea             | Leave or delete if stale                                          |
 
 ## Key Principles
 

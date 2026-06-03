@@ -169,16 +169,16 @@ Use this section for cross-spec implementation context.
 
 ### Spec Fields
 
-| Field                  | Required | Description                                                             |
-| ---------------------- | -------- | ----------------------------------------------------------------------- |
-| `title`                | Yes      | Spec title                                                              |
-| `slug`                 | No       | Human-friendly ID (auto-generated if omitted)                           |
-| `type`                 | No       | `feature`, `requirement`, `constraint`, `decision` (default: `feature`) |
-| `parent`               | No       | Parent ref (e.g., `"@parent-slug"`)                                     |
-| `description`          | No       | What and why                                                            |
-| `acceptance_criteria`  | No       | Array of `{id, given, when, then}`                                      |
+| Field                  | Required | Description                                                                |
+| ---------------------- | -------- | -------------------------------------------------------------------------- |
+| `title`                | Yes      | Spec title                                                                 |
+| `slug`                 | No       | Human-friendly ID (auto-generated if omitted)                              |
+| `type`                 | No       | `feature`, `requirement`, `constraint`, `decision` (default: `feature`)    |
+| `parent`               | No       | Parent ref (e.g., `"@parent-slug"`)                                        |
+| `description`          | No       | What and why                                                               |
+| `acceptance_criteria`  | No       | Array of `{id, given, when, then}`                                         |
 | `traits`               | No       | Array of trait slugs from the project's trait catalog (`kspec trait list`) |
-| `implementation_notes` | No       | Scoped to this spec's derived task                                      |
+| `implementation_notes` | No       | Scoped to this spec's derived task                                         |
 
 ### Spec Language Quality
 
