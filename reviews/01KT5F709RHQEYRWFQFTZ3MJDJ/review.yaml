@@ -292,6 +292,12 @@ events:
     payload:
       thread_ulid: 01KT5G0CPPRBG0CY9SVAAW8J6D
     timestamp: 2026-06-03T02:04:23.878Z
+  - _ulid: 01KT5KK997VRQWYFSNGNF5XJ64
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KT5G0CPPRBG0CY9SVAAW8J6D
+    timestamp: 2026-06-03T02:04:31.399Z
 examined_commit: aea00e34e121ab35ac77694e04b757c68f669dbf
 external_links: []
 lifecycle_state: closed
@@ -333,6 +339,8 @@ threads:
           the worktree's templates. Commit: 250f1ab627."
         created_at: 2026-06-03T02:04:23.653Z
     kind: blocker
+    resolved_at: 2026-06-03T02:04:31.198Z
+    resolved_by: "@claude"
   - _ulid: 01KT5G0F8HEXC46YXNDC3CG330
     anchor:
       type: code
@@ -361,5 +369,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-03T01:02:17.198Z
 created_at: 2026-06-03T00:47:54.680Z
-updated_at: 2026-06-03T02:04:23.653Z
+updated_at: 2026-06-03T02:04:31.198Z
 notes: []
