@@ -59230,7 +59230,7 @@ runs:
     completed_at: 2026-06-03T00:35:55.597Z
   - _ulid: 01KT5G1WZYR2GJ543KXPRMCPB0
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -59245,7 +59245,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-03T01:03:30.420Z
-        completed_at: 2026-06-03T01:03:30.420Z
+        completed_at: 2026-06-03T01:03:42.953Z
+        notes: "High-confidence candidates: (1) Dispatch worktree edits to templates/ are invisible to
+          system-installed kspec — duplicate of @01KT5F3H, exact same workaround. (2) Plugin/
+          rebuild is gitignored and requires manually running node scripts/build-plugin.cjs after
+          templates change; this is project-specific shipping mechanic, not systemic kspec friction.
+          (3) Two duplicate numbered headers in templates/skills/task-work/SKILL.md (two '9.' and
+          two '10.') noticed during edits but left out of scope per don't-expand-scope guidance —
+          one-off doc bug, not systemic. No unique high-confidence frictions or successes worth
+          capturing."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-03T01:03:42.953Z
+        completed_at: 2026-06-03T01:03:42.953Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-03T01:02:36.030Z
