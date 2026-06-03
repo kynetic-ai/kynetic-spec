@@ -34,6 +34,17 @@ checks:
     runner: npm run typecheck
     created_at: 2026-06-03T03:32:53.047Z
     completed_at: 2026-06-03T03:32:53.047Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Pass with warnings-ok: schema/references OK; known deprecated-reference warnings remain
+      as baseline."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-03T03:33:06.295Z
+    completed_at: 2026-06-03T03:33:06.295Z
 events:
   - _ulid: 01KT5QTKJ2JB4VFNSZE4PNN256
     actor: Jacob Chapel
@@ -69,6 +80,13 @@ events:
       status: pass
       name: typecheck
     timestamp: 2026-06-03T03:32:53.274Z
+  - _ulid: 01KT5RNFV66RJWSQTN7WYRAVYS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-03T03:33:06.534Z
 examined_commit: 600cc12a44941be362ec12bd56c6708b3c58ed03
 external_links: []
 lifecycle_state: open
@@ -81,5 +99,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-03T03:18:25.603Z
-updated_at: 2026-06-03T03:32:53.047Z
+updated_at: 2026-06-03T03:33:06.295Z
 notes: []
