@@ -15428,18 +15428,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-neutralize-agent-section-templates/01kt5cbt
-    canonical_branch_head: aea00e34e121ab35ac77694e04b757c68f669dbf
+    canonical_branch_head: 250f1ab62734f0911f4cfd4ff3d2fa5ee4a2e53a
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-03T01:47:26.490Z
+      updated_at: 2026-06-03T02:05:02.089Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-03T01:47:52.259Z
+      updated_at: 2026-06-03T02:05:02.089Z
     integration:
       status: pending
       detail: null
@@ -15447,7 +15447,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: ce84317f65d0d22664fe1e95623e97dcb802e376
-      updated_at: 2026-06-03T01:47:26.490Z
+      updated_at: 2026-06-03T02:05:02.089Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KT5CBT6TM2QZ3CDR8ZBJG3QM"
@@ -15455,9 +15455,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-03T01:47:52.259Z
-      last_reconciled_at: 2026-06-03T01:47:52.259Z
+      last_reconciled_at: 2026-06-03T02:05:02.089Z
       created_at: 2026-06-03T00:34:14.001Z
-      updated_at: 2026-06-03T01:47:52.259Z
+      updated_at: 2026-06-03T02:05:02.089Z
     workspace_id: dispatch-workspace-01KT5CBT6TM2QZ3CDR8ZBJG3QM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
