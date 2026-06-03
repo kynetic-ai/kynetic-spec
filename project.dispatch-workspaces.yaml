@@ -16443,18 +16443,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-neutralize-planning-writing-triage-skills/01kt5cbv
-    canonical_branch_head: 6f36d05d675e646b4ddf18a437e6823b6abe511b
+    canonical_branch_head: 8f215bac791cf4dc5dc6e65a984cc18dc23e5720
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-03T03:19:03.328Z
+      updated_at: 2026-06-03T03:34:04.590Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-03T03:19:03.328Z
+      updated_at: 2026-06-03T03:34:04.590Z
     integration:
       status: pending
       detail: null
@@ -16462,7 +16462,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: ce84317f65d0d22664fe1e95623e97dcb802e376
-      updated_at: 2026-06-03T03:19:03.328Z
+      updated_at: 2026-06-03T03:34:04.590Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KT5CBV0H0SQ2V6D6G8GB1EJZ"
@@ -16470,9 +16470,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-03T03:17:05.348Z
-      last_reconciled_at: 2026-06-03T03:19:03.328Z
+      last_reconciled_at: 2026-06-03T03:34:04.590Z
       created_at: 2026-06-03T01:04:53.132Z
-      updated_at: 2026-06-03T03:19:03.328Z
+      updated_at: 2026-06-03T03:34:04.590Z
     workspace_id: dispatch-workspace-01KT5CBV0H0SQ2V6D6G8GB1EJZ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
