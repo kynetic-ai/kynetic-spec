@@ -184,5 +184,14 @@ tags:
   - runners
   - acp
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-06-03T23:53:23.760Z
 created_at: 2026-06-03T23:48:57.289Z
 todos: []
+automation: eligible
