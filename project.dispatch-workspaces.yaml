@@ -15959,11 +15959,11 @@ workspaces:
     canonical_branch: dispatch/task/task-fleet-buffer-preview-sanitization/01kt7dv7
     canonical_branch_head: 4416c1713adc4e40fb71ccbe87877843cbc4c201
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-03T21:10:10.927Z
+      updated_at: 2026-06-03T21:13:13.655Z
     health:
       status: healthy
       issues: []
@@ -15977,16 +15977,16 @@ workspaces:
       target_branch: dev
       target_commit: ab46ef576b5d10bb7dca97d35f248586645356af
       updated_at: 2026-06-03T21:10:10.927Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KT7DV7P6CTBBNXGB2AJF1269"
     task_slug: task-fleet-buffer-preview-sanitization
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-03T21:13:13.655Z
       last_active_at: 2026-06-03T20:52:52.564Z
       last_reconciled_at: 2026-06-03T21:12:34.495Z
       created_at: 2026-06-03T19:13:20.531Z
-      updated_at: 2026-06-03T21:12:34.495Z
+      updated_at: 2026-06-03T21:13:13.655Z
     workspace_id: dispatch-workspace-01KT7DV7P6CTBBNXGB2AJF1269
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
