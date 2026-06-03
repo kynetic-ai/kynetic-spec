@@ -55,7 +55,7 @@ description: |
 spec_ref: null
 plan_ref: "@plan-shared-template-project-neutrality-cleanup"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-add-shared-guidance-neutrality-review-gate"
@@ -67,6 +67,14 @@ tags:
   - triage
   - workflows
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-neutralize-planning-writing-triage-skills/01kt5cbv
+  captured_at: 2026-06-03T01:36:37.838Z
+  commit: 58ed812655e61eebaedc05fa7d1e71d3e3f887df
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KT5G6WSF9KYA16WE5ZGFZZJA
 history:
   - author: Jacob Chapel
@@ -89,7 +97,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-03T01:05:56.852Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-neutralize-planning-writing-triage-skills/01kt5cbv
+          captured_at: 2026-06-03T01:36:37.838Z
+          commit: 58ed812655e61eebaedc05fa7d1e71d3e3f887df
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-06-03T01:36:37.841Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-03T01:36:37.841Z
 created_at: 2026-06-02T23:58:07.377Z
 started_at: 2026-06-03T01:05:56.851Z
+submitted_at: 2026-06-03T01:36:37.841Z
 todos: []
 automation: eligible
