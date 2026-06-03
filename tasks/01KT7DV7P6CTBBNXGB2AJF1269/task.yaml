@@ -114,7 +114,7 @@ description: "What:
 spec_ref: "@ui-task-board"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -129,7 +129,7 @@ review_ref: "@01KT7EHKYYZT7V8SNNAW4N9S45"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-fleet-buffer-preview-sanitization/01kt7dv7
-  captured_at: 2026-06-03T19:37:07.759Z
+  captured_at: 2026-06-03T19:37:10.638Z
   commit: 9008219bb7775a345224df1765b5bd1c537a1c87
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
@@ -324,8 +324,35 @@ history:
           upstream_ref: dev
     command: task-set
     timestamp: 2026-06-03T19:37:07.760Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-fleet-buffer-preview-sanitization/01kt7dv7
+          captured_at: 2026-06-03T19:37:10.638Z
+          commit: 9008219bb7775a345224df1765b5bd1c537a1c87
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-fleet-buffer-preview-sanitization/01kt7dv7
+        previous:
+          review_url: null
+          branch: dispatch/task/task-fleet-buffer-preview-sanitization/01kt7dv7
+          captured_at: 2026-06-03T19:37:07.759Z
+          commit: 9008219bb7775a345224df1765b5bd1c537a1c87
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-fleet-buffer-preview-sanitization/01kt7dv7
+      submitted_at:
+        new: 2026-06-03T19:37:10.647Z
+        previous: 2026-06-03T19:07:28.704Z
+    command: task-submit
+    timestamp: 2026-06-03T19:37:10.647Z
 prior_status: null
 created_at: 2026-06-03T19:02:29.317Z
 started_at: 2026-06-03T19:37:03.997Z
-submitted_at: 2026-06-03T19:07:28.704Z
+submitted_at: 2026-06-03T19:37:10.647Z
 todos: []
