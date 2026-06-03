@@ -23778,7 +23778,7 @@ reviews:
     title: Review neutralize static agent-section templates
     disposition: pending
     author: Jacob Chapel
-    check_count: 4
+    check_count: 5
     examined_commit: aea00e34e121ab35ac77694e04b757c68f669dbf
     lifecycle_state: open
     related_refs: []
@@ -23791,4 +23791,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-03T00:47:54.680Z
-    updated_at: 2026-06-03T01:00:43.146Z
+    updated_at: 2026-06-03T01:00:45.838Z
