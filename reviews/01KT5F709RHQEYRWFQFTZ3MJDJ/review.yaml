@@ -117,6 +117,18 @@ checks:
     runner: oxlint
     created_at: 2026-06-03T01:01:21.916Z
     completed_at: 2026-06-03T01:01:21.916Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Committed kspec-agents.md is stale: lines 179 and 368-421 still contain the old generated
+      template text, including templates/skills/ as general guidance, Built-In Agents,
+      kynetic.meta.yaml, task-worker/pr-reviewer, and Do NOT create GitHub PRs."
+    name: committed rendered agent instructions
+    required: true
+    runner: manual-inspection
+    created_at: 2026-06-03T01:01:24.576Z
+    completed_at: 2026-06-03T01:01:24.576Z
 events:
   - _ulid: 01KT5F709RXV0W38W42QSSEFSS
     actor: Jacob Chapel
@@ -208,6 +220,13 @@ events:
       status: skipped
       name: changed-file oxlint
     timestamp: 2026-06-03T01:01:22.119Z
+  - _ulid: 01KT5FZQDJYPPYBW8WY9RGBY06
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: committed rendered agent instructions
+    timestamp: 2026-06-03T01:01:24.786Z
 examined_commit: aea00e34e121ab35ac77694e04b757c68f669dbf
 external_links: []
 lifecycle_state: open
@@ -220,5 +239,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-03T00:47:54.680Z
-updated_at: 2026-06-03T01:01:21.916Z
+updated_at: 2026-06-03T01:01:24.576Z
 notes: []
