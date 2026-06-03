@@ -89,6 +89,18 @@ checks:
     runner: kspec agent list; kspec meta get
     created_at: 2026-06-03T04:53:46.233Z
     completed_at: 2026-06-03T04:53:46.233Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Not rerun: changed file is AGENTS.md, not a generator input; worker note explains current
+      linked CLI would regress prior neutralized templates. Next task owns generated artifact
+      refresh."
+    name: agents generate
+    required: false
+    runner: kspec agents generate
+    created_at: 2026-06-03T04:53:51.102Z
+    completed_at: 2026-06-03T04:53:51.102Z
 events:
   - _ulid: 01KT5WEPR0WEF1RDDGHHA84RWR
     actor: Jacob Chapel
@@ -159,6 +171,13 @@ events:
       status: pass
       name: local context reachability
     timestamp: 2026-06-03T04:53:46.456Z
+  - _ulid: 01KT5X9B30WFTM637HAG1FZFQW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: agents generate
+    timestamp: 2026-06-03T04:53:51.328Z
 examined_commit: 8179df1ac4dae772cb698eda35c254e10cbd7eac
 external_links: []
 lifecycle_state: open
@@ -171,5 +190,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-03T04:39:18.528Z
-updated_at: 2026-06-03T04:53:46.233Z
+updated_at: 2026-06-03T04:53:51.102Z
 notes: []
