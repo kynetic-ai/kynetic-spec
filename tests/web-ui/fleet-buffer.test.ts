@@ -114,6 +114,58 @@ describe("processTextChunk", () => {
     expect(state.lines).toEqual(["driven", "form"]);
     expect(state.buffer).toBe(".");
   });
+
+  // AC: @ui-task-board ac-4
+  it("strips terminal ANSI escape sequences from displayed lines", () => {
+    const state = createSessionState();
+    const result = processTextChunk(state, "\u001b[31merror:\u001b[0m failed\n");
+    expect(result.lines).toEqual(["error: failed"]);
+    expect(result.buffer).toBe("");
+  });
+
+  // AC: @ui-task-board ac-4
+  it("waits to sanitize split ANSI sequences until a complete line arrives", () => {
+    let state = createSessionState();
+    state = processTextChunk(state, "\u001b[3");
+    expect(state.lines).toEqual([]);
+    expect(state.buffer).toBe("\u001b[3");
+
+    state = processTextChunk(state, "1merror\u001b[0m\n");
+    expect(state.lines).toEqual(["error"]);
+    expect(state.buffer).toBe("");
+  });
+
+  // AC: @ui-task-board ac-4
+  it("strips non-color CSI terminal control sequences from displayed lines", () => {
+    const state = createSessionState();
+    const result = processTextChunk(state, "\u001b[2K\u001b[1Gstatus: ready\n");
+    expect(result.lines).toEqual(["status: ready"]);
+    expect(result.buffer).toBe("");
+  });
+
+  // AC: @ui-task-board ac-4
+  it("treats bare carriage returns as terminal progress-line rewrites", () => {
+    const state = createSessionState();
+    const result = processTextChunk(state, "Checking 10%\rChecking 95%\rerror: failed\n");
+    expect(result.lines).toEqual(["error: failed"]);
+    expect(result.buffer).toBe("");
+  });
+
+  // AC: @ui-task-board ac-4
+  it("normalizes CRLF newlines without dropping lines", () => {
+    const state = createSessionState();
+    const result = processTextChunk(state, "one\r\ntwo\r\n");
+    expect(result.lines).toEqual(["one", "two"]);
+    expect(result.buffer).toBe("");
+  });
+
+  // AC: @ui-task-board ac-4
+  it("applies terminal backspace controls before display", () => {
+    const state = createSessionState();
+    const result = processTextChunk(state, "erroo\br\n");
+    expect(result.lines).toEqual(["error"]);
+    expect(result.buffer).toBe("");
+  });
 });
 
 describe("getDisplayState", () => {
