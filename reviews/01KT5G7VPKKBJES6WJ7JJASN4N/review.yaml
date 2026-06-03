@@ -209,6 +209,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-03T01:21:30.195Z
+  - _ulid: 01KT5PW7K2EWH0CGCCS8MWHQRF
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KT5H46ETKWWKQVEMA35VG17T
+    timestamp: 2026-06-03T03:01:50.306Z
 examined_commit: a46a66f66c4d65e4a6bece12dacba5dd20645129
 external_links: []
 lifecycle_state: closed
@@ -261,6 +267,33 @@ threads:
           Kynetic-only instructions must already have a durable local home before this shared
           guidance change is approved."
         created_at: 2026-06-03T01:21:19.835Z
+      - _ulid: 01KT5PW7A53P9GXWXVNF6DYWJW
+        author: "@claude"
+        body: >-
+          Fixed: Added local homes for the removed Kynetic-specific gates and artifact maintenance
+          in the always-loaded work-gates and review-gates project skills
+          (.kspec/skills/work-gates/SKILL.md and .kspec/skills/review-gates/SKILL.md, rendered to
+          .agents/.claude/.factory).
+
+
+          work-gates now names the concrete Kynetic quality gates: npm run format:check, npm run
+          lint -- --quiet, npx oxlint <changed files>, npm run typecheck, npm test (and shards),
+          plus the kspec validate gates. A Generated Artifact Maintenance table documents that kspec
+          skill render produces both .agents/skills and .factory/skills, and that npm run
+          build:plugin regenerates plugin/plugins/kspec/skills from core skill sources.
+
+
+          review-gates now names the matching kspec review check name/runner mapping for each
+          Kynetic gate so reviewers have concrete evidence-recording commands. It also names kspec
+          skill status / kspec skill verify as the drift check for skill-touching changes.
+
+
+          Both skills are loaded into the dispatch context for worker/reviewer agents respectively,
+          so the Direction-2 requirement (removed Kynetic-only instruction must have a durable local
+          home) is now satisfied without waiting on
+          @task-preserve-kynetic-local-template-maintenance-context. That broader task can still
+          cover any other self-hosting context unrelated to this diff.
+        created_at: 2026-06-03T03:01:50.021Z
     kind: blocker
 verdicts:
   - applies_to_version:
@@ -271,5 +304,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-03T01:21:30.195Z
 created_at: 2026-06-03T01:05:51.315Z
-updated_at: 2026-06-03T01:21:30.195Z
+updated_at: 2026-06-03T03:01:50.021Z
 notes: []
