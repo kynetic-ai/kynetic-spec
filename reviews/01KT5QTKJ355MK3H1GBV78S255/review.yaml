@@ -161,6 +161,13 @@ events:
       status: fail
       name: changed skill render status
     timestamp: 2026-06-03T03:33:49.372Z
+  - _ulid: 01KT5RQKMBY2BR390FFC2N00B6
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KT5RQKDKJWWMM9E0S33GJQMH
+    timestamp: 2026-06-03T03:34:15.947Z
 examined_commit: 600cc12a44941be362ec12bd56c6708b3c58ed03
 external_links: []
 lifecycle_state: open
@@ -170,8 +177,419 @@ subject:
   content_hash: ""
   ref: "@01KT5CBTKEA5K1K9WGEE4SWSW5"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KT5RQKDKJWWMM9E0S33GJQMH
+    anchor:
+      type: code
+      commit: 600cc12a44941be362ec12bd56c6708b3c58ed03
+      line_end: 128
+      line_start: 128
+      path: .agents/skills/work-gates/SKILL.md
+      side: head
+    entries:
+      - _ulid: 01KT5RQKDKE5GNKMT6AVXXV4SR
+        author: Jacob Chapel
+        body: >-
+          MUST-FIX: The branch adds local guidance that rendered .agents/.factory skill outputs must
+          stay in sync and that kspec skill verify should report no drift for touched skills, but
+          the submitted snapshot still fails that check for the package-core skills this task
+          changes. Evidence: both
+          ┌────────────────────────────┬─────────────────────┬──────────────────┬─────────┐
+
+          │ ID                         │ Platform            │ Status           │ Docs    │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ help                       │ claude-code         │ plugin-provided  │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ help                       │ codex               │ in-sync          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ help                       │ droid               │ in-sync          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ triage                     │ claude-code         │ plugin-provided  │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ triage                     │ codex               │ in-sync          │ drifted │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ triage                     │ droid               │ in-sync          │ drifted │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ reflect                    │ claude-code         │ plugin-provided  │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ reflect                    │ codex               │ drifted          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ reflect                    │ droid               │ drifted          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ triage-inbox               │ claude-code         │ plugin-provided  │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ triage-inbox               │ codex               │ drifted          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ triage-inbox               │ droid               │ drifted          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ triage-automation          │ claude-code         │ plugin-provided  │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ triage-automation          │ codex               │ in-sync          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ triage-automation          │ droid               │ in-sync          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ writing-specs              │ claude-code         │ plugin-provided  │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ writing-specs              │ codex               │ drifted          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ writing-specs              │ droid               │ drifted          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ plan                       │ claude-code         │ plugin-provided  │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ plan                       │ codex               │ drifted          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ plan                       │ droid               │ drifted          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ task-work                  │ claude-code         │ plugin-provided  │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ task-work                  │ codex               │ drifted          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ task-work                  │ droid               │ drifted          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ create-workflow            │ claude-code         │ plugin-provided  │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ create-workflow            │ codex               │ drifted          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ create-workflow            │ droid               │ drifted          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ review                     │ claude-code         │ plugin-provided  │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ review                     │ codex               │ drifted          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ review                     │ droid               │ drifted          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ audit                      │ claude-code         │ in-sync          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ audit                      │ codex               │ in-sync          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ codex                      │ claude-code         │ in-sync          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ codex                      │ codex               │ in-sync          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ e2e                        │ claude-code         │ in-sync          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ e2e                        │ codex               │ in-sync          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ eval-agents                │ claude-code         │ in-sync          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ eval-agents                │ codex               │ in-sync          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ release                    │ claude-code         │ in-sync          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ release                    │ codex               │ in-sync          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ svelte-5                   │ claude-code         │ in-sync          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ svelte-5                   │ codex               │ in-sync          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ observe                    │ claude-code         │ plugin-provided  │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ observe                    │ codex               │ drifted          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ observe                    │ droid               │ drifted          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ observe                    │ claude-code         │ plugin-provided  │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ observe                    │ codex               │ drifted          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ observe                    │ droid               │ drifted          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ droid-status               │ droid               │ in-sync          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ droid-status               │ /tmp/tmp.OuD6TXPJvr │ not-rendered (!) │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ ui-data-layer              │ claude-code         │ in-sync          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ ui-data-layer              │ codex               │ in-sync          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ work-gates                 │ claude-code         │ in-sync          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ work-gates                 │ codex               │ in-sync          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ work-gates                 │ droid               │ in-sync          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ review-gates               │ claude-code         │ in-sync          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ review-gates               │ codex               │ in-sync          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ review-gates               │ droid               │ in-sync          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ merge                      │ claude-code         │ plugin-provided  │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ merge                      │ codex               │ drifted          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ merge                      │ droid               │ drifted          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ review-plan                │ claude-code         │ plugin-provided  │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ review-plan                │ codex               │ in-sync          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ review-plan                │ droid               │ in-sync          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ ui-design                  │ claude-code         │ in-sync          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ shared-guidance-neutrality │ claude-code         │ in-sync          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ shared-guidance-neutrality │ codex               │ in-sync          │ no-docs │
+
+          ├────────────────────────────┼─────────────────────┼──────────────────┼─────────┤
+
+          │ shared-guidance-neutrality │ droid               │ in-sync          │ no-docs │
+
+          └────────────────────────────┴─────────────────────┴──────────────────┴─────────┘
+
+
+          20 skill(s) drifted - run 'kspec skill render' to sync
+
+          1 skill(s) not rendered
+
+          14 skill(s) plugin-provided
+
+          1 skill(s) with warnings and 
+
+          > @kynetic-ai/spec@0.14.0 dev
+
+          > tsx src/cli/index.ts skill verify
+
+
+
+          Drifted (20):
+            ● reflect [codex]
+              Rendered file has been modified. Run 'kspec skill render reflect --force' to overwrite with source, or 'kspec skill diff reflect' to review changes.
+            ● reflect [droid]
+              Rendered file has been modified. Run 'kspec skill render reflect --force' to overwrite with source, or 'kspec skill diff reflect' to review changes.
+            ● triage-inbox [codex]
+              Rendered file has been modified. Run 'kspec skill render triage-inbox --force' to overwrite with source, or 'kspec skill diff triage-inbox' to review changes.
+            ● triage-inbox [droid]
+              Rendered file has been modified. Run 'kspec skill render triage-inbox --force' to overwrite with source, or 'kspec skill diff triage-inbox' to review changes.
+            ● writing-specs [codex]
+              Rendered file has been modified. Run 'kspec skill render writing-specs --force' to overwrite with source, or 'kspec skill diff writing-specs' to review changes.
+            ● writing-specs [droid]
+              Rendered file has been modified. Run 'kspec skill render writing-specs --force' to overwrite with source, or 'kspec skill diff writing-specs' to review changes.
+            ● plan [codex]
+              Rendered file has been modified. Run 'kspec skill render plan --force' to overwrite with source, or 'kspec skill diff plan' to review changes.
+            ● plan [droid]
+              Rendered file has been modified. Run 'kspec skill render plan --force' to overwrite with source, or 'kspec skill diff plan' to review changes.
+            ● task-work [codex]
+              Rendered file has been modified. Run 'kspec skill render task-work --force' to overwrite with source, or 'kspec skill diff task-work' to review changes.
+            ● task-work [droid]
+              Rendered file has been modified. Run 'kspec skill render task-work --force' to overwrite with source, or 'kspec skill diff task-work' to review changes.
+            ● create-workflow [codex]
+              Rendered file has been modified. Run 'kspec skill render create-workflow --force' to overwrite with source, or 'kspec skill diff create-workflow' to review changes.
+            ● create-workflow [droid]
+              Rendered file has been modified. Run 'kspec skill render create-workflow --force' to overwrite with source, or 'kspec skill diff create-workflow' to review changes.
+            ● review [codex]
+              Rendered file has been modified. Run 'kspec skill render review --force' to overwrite with source, or 'kspec skill diff review' to review changes.
+            ● review [droid]
+              Rendered file has been modified. Run 'kspec skill render review --force' to overwrite with source, or 'kspec skill diff review' to review changes.
+            ● observe [codex]
+              Rendered file has been modified. Run 'kspec skill render observe --force' to overwrite with source, or 'kspec skill diff observe' to review changes.
+            ● observe [droid]
+              Rendered file has been modified. Run 'kspec skill render observe --force' to overwrite with source, or 'kspec skill diff observe' to review changes.
+            ● observe [codex]
+              Rendered file has been modified. Run 'kspec skill render observe --force' to overwrite with source, or 'kspec skill diff observe' to review changes.
+            ● observe [droid]
+              Rendered file has been modified. Run 'kspec skill render observe --force' to overwrite with source, or 'kspec skill diff observe' to review changes.
+            ● merge [codex]
+              Rendered file has been modified. Run 'kspec skill render merge --force' to overwrite with source, or 'kspec skill diff merge' to review changes.
+            ● merge [droid]
+              Rendered file has been modified. Run 'kspec skill render merge --force' to overwrite with source, or 'kspec skill diff merge' to review changes.
+
+          Not rendered (1):
+            ○ droid-status [/tmp/tmp.OuD6TXPJvr]
+              Unregistered platform '/tmp/tmp.OuD6TXPJvr'. No renderer available.
+
+          Plugin-provided (14):
+            ◆ help [claude-code]
+            ◆ triage [claude-code]
+            ◆ reflect [claude-code]
+            ◆ triage-inbox [claude-code]
+            ◆ triage-automation [claude-code]
+            ◆ writing-specs [claude-code]
+            ◆ plan [claude-code]
+            ◆ task-work [claude-code]
+            ◆ create-workflow [claude-code]
+            ◆ review [claude-code]
+            ◆ observe [claude-code]
+            ◆ observe [claude-code]
+            ◆ merge [claude-code]
+            ◆ review-plan [claude-code]
+
+          33 OK, 14 plugin-provided skill(s) verified.
+
+
+          To sync all drifted skills: kspec skill render --force report , , and  as drifted for
+          codex and droid. Impact: future Warnings:
+            ! droid-status: unregistered platform '/tmp/tmp.OuD6TXPJvr' (skipped)
+
+
+          Skipped: 20 drifted skill(s)
+            ! reflect [codex]: drifted (use --force to overwrite)
+            ! reflect [droid]: drifted (use --force to overwrite)
+            ! triage-inbox [codex]: drifted (use --force to overwrite)
+            ! triage-inbox [droid]: drifted (use --force to overwrite)
+            ! writing-specs [codex]: drifted (use --force to overwrite)
+            ! writing-specs [droid]: drifted (use --force to overwrite)
+            ! plan [codex]: drifted (use --force to overwrite)
+            ! plan [droid]: drifted (use --force to overwrite)
+            ! task-work [codex]: drifted (use --force to overwrite)
+            ! task-work [droid]: drifted (use --force to overwrite)
+            ! create-workflow [codex]: drifted (use --force to overwrite)
+            ! create-workflow [droid]: drifted (use --force to overwrite)
+            ! review [codex]: drifted (use --force to overwrite)
+            ! review [droid]: drifted (use --force to overwrite)
+            ! observe [codex]: drifted (use --force to overwrite)
+            ! observe [droid]: drifted (use --force to overwrite)
+            ! observe [codex]: drifted (use --force to overwrite)
+            ! observe [droid]: drifted (use --force to overwrite)
+            ! merge [codex]: drifted (use --force to overwrite)
+            ! merge [droid]: drifted (use --force to overwrite)
+
+          Use --force to overwrite drifted skills
+
+
+          No changes needed/verification sees these submitted rendered copies as modified artifacts
+          rather than synchronized outputs, so the task's generated-artifact maintenance guarantee
+          is not actually satisfied. Please update the relevant core skill source/render state so
+          the touched skills no longer appear as drifted, or adjust the local maintenance guidance
+          to name the correct regeneration/verification path and make that path pass.
+        created_at: 2026-06-03T03:34:15.731Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-03T03:18:25.603Z
-updated_at: 2026-06-03T03:33:49.165Z
+updated_at: 2026-06-03T03:34:15.731Z
 notes: []
