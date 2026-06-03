@@ -57,6 +57,16 @@ checks:
     runner: npm test -- --fresh --run tests/web-ui/fleet-buffer.test.ts
     created_at: 2026-06-03T21:07:31.802Z
     completed_at: 2026-06-03T21:07:31.802Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 975 files; all matched files use correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-03T21:07:34.608Z
+    completed_at: 2026-06-03T21:07:34.608Z
 events:
   - _ulid: 01KT7M6YH0AGPEJN4R7722W217
     actor: Jacob Chapel
@@ -106,6 +116,13 @@ events:
       status: pass
       name: focused fleet-buffer test
     timestamp: 2026-06-03T21:07:32.045Z
+  - _ulid: 01KT7N099DF5QDJPA7FEWC0HG7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-03T21:07:34.829Z
 examined_commit: 4416c1713adc4e40fb71ccbe87877843cbc4c201
 external_links: []
 lifecycle_state: open
@@ -118,5 +135,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-03T20:53:44.609Z
-updated_at: 2026-06-03T21:07:31.802Z
+updated_at: 2026-06-03T21:07:34.608Z
 notes: []
