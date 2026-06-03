@@ -115,24 +115,24 @@ Immediately after starting and before any file edits, create or switch to a dedi
 kspec task branch @ref
 ```
 
-`kspec task branch` creates or resumes the branch `dispatch/task/<normalized-slug>/<short-task-ref>`. This ensures:
+`kspec task branch` creates or resumes a deterministic dispatch-compatible branch for the task. This ensures:
 
 - **Dispatch continuity** — reviewer and fix-cycle agents can find and resume the branch
-- **No naming collisions** — the branch name is deterministic from the task identity
+- **No naming collisions** — the branch name is derived from the task identity
 - **Remote rehydration** — if the branch exists only on the remote, the command fetches it
 
-If you need a non-dispatch branch (e.g., for work not tied to a task), use conventional prefixes (`feat/`, `fix/`, etc.) instead.
+If you need a non-dispatch branch (e.g., for work not tied to a task), use the branch naming convention defined in your project's branching guidance.
 
 ### 4a. Rebase on Target (Required Before Starting Work)
 
-Before writing any code, rebase onto the integration target to stay current:
+Before writing any code, rebase onto the project-defined integration target to stay current:
 
 ```bash
 git fetch origin
-git rebase origin/<integration-branch>  # e.g., dev or main
+git rebase origin/<integration-branch>  # the project-defined integration branch
 ```
 
-In dispatch mode, the dispatch engine handles branch creation (step 4), so only the rebase in this step is needed.
+The integration branch name comes from project configuration — in dispatch mode it is provided via the dispatch prompt context (the `Integration target:` line) and the `KSPEC_DISPATCH_MERGE_TARGET` environment variable; in manual mode, consult the project's branching guidance. The dispatch engine handles branch creation (step 4), so in dispatch mode only the rebase in this step is needed.
 
 This keeps your branch fresh with the latest integrated work and lets you resolve conflicts early — while you have full context of your changes. If the rebase has conflicts:
 
@@ -234,14 +234,11 @@ Annotations must be standalone line comments, not embedded inside block comments
 
 ### 9. Regenerate Derived Files
 
-If your task modified any of these source files, regenerate before committing:
+If your task modified skill sources, regenerate the rendered skill output with `kspec skill render` before committing.
 
-| Modified                                                | Regenerate with         |
-| ------------------------------------------------------- | ----------------------- |
-| `templates/skills/` or `.kspec/skills/`                 | `kspec skill render`    |
-| `templates/agents-sections/`, conventions, or workflows | `kspec agents generate` |
+If your task changed conventions, workflows, agents, or other meta inputs that feed `kspec-agents.md`, regenerate it with `kspec agents generate`.
 
-Commit the regenerated output alongside your source changes.
+For any project-specific source files that produce additional generated artifacts (package templates, plugin copies, platform-specific renders, etc.), follow the regeneration steps named in your project's maintenance guidance and commit the regenerated output alongside your source changes.
 
 ### 10. Commit
 
@@ -264,25 +261,22 @@ Before submitting, verify:
 
 - **Own AC coverage** — Each spec AC has an annotated test
 - **Trait AC coverage** — Each inherited trait AC has an annotated test (or N/A annotation)
-- **Formatting gate** — `npm run format:check` passes. If it fails, run `npm run format`, commit the formatting changes, and rerun the check.
-- **Lint gate** — `npm run lint -- --quiet` passes with 0 errors. Do not submit while lint is red, even for "simple" or formatting-only issues.
-- **Focused changed-file lint** — For changed TypeScript/test files, run `npx oxlint <changed files>` and inspect warnings as well as errors. Repo-wide lint may have a warning baseline; new warnings in your changed files are your responsibility.
-- **Typecheck gate** — `npm run typecheck` passes for code changes.
-- **Tests pass** — Task-specific tests pass; run the full suite or shards for broad/closure-risk changes, not just new tests.
-- **Code quality** — Matches existing patterns, no duplicated utilities
-- **No regressions** — Existing tests still pass
+- **Project-defined quality gates** — Run the project-defined format, lint, type, test, and any focused changed-file gates named in project context. Do not submit while any required gate is red, even for "simple" or formatting-only issues.
+- **Tests pass** — Task-specific tests pass; run the full suite or other broader test scopes named in project context for changes with broad or closure-risk impact, not just new tests.
+- **Code quality** — Matches existing patterns, no duplicated utilities.
+- **No regressions** — Existing tests still pass.
+- **kspec validation** — Reference, alignment, and completeness validation succeed.
 
 ```bash
-npm run format:check
-npm run lint -- --quiet
-npx oxlint <changed-ts-or-test-files>
-npm run typecheck
+# Run the project-defined format / lint / type / test gates
+# (commands are named in your project's quality-gate guidance)
+
 kspec validate --refs --warnings-ok
 kspec validate --alignment --warnings-ok
 kspec validate --completeness --warnings-ok
 ```
 
-Treat any red formatting/lint/typecheck gate as in-scope task work. Fix it before `kspec task submit @ref`; do not leave hygiene cleanup for plan closure.
+Treat any red project-defined gate as in-scope task work. Fix it before `kspec task submit @ref`; do not leave hygiene cleanup for plan closure.
 
 ### 10. Submit
 
