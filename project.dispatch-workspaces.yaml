@@ -16947,7 +16947,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-03T05:31:02.484Z
+      updated_at: 2026-06-03T05:33:50.938Z
     integration:
       status: merged
       detail: integration:merged
@@ -16963,18 +16963,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-03T05:14:55.216Z
-      last_reconciled_at: 2026-06-03T05:33:49.215Z
+      last_reconciled_at: 2026-06-03T05:33:50.938Z
       created_at: 2026-06-03T04:55:14.981Z
-      updated_at: 2026-06-03T05:33:49.215Z
+      updated_at: 2026-06-03T05:33:50.938Z
     workspace_id: dispatch-workspace-01KT5CBWB38JYB60TD5EN9P30K
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 54ede3e7d3e0fc139b2a6cd73af83eac7ddaca72
-        last_seen_at: 2026-06-03T05:14:28.467Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-regenerate-shared-template-artifacts-and-tests-01kt5cbw-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-regenerate-shared-template-artifacts-and-tests/01kt5cbw
