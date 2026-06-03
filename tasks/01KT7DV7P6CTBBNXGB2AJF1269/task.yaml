@@ -1,3 +1,9 @@
+# CONFLICT: Field "history" modified with different values in both branches
+# Path: history
+# Ours:   [6 items]
+# Theirs: [6 items]
+# Resolution: Using ours (run merge interactively to resolve)
+
 _ulid: 01KT7DV7P6CTBBNXGB2AJF1269
 slugs:
   - task-fleet-buffer-preview-sanitization
@@ -5,55 +11,39 @@ title: Sanitize Active Fleet preview terminal output
 type: bug
 description: "What:
 
-  - Improve the compact Active Fleet/task-board preview of running agent output so raw terminal
-  control bytes do not render as mangled-looking text in fleet cards.
+  - Improve the compact Active Fleet/task-board preview of running agent output so raw terminal control bytes do not render as mangled-looking text in fleet cards.
 
-  - In `packages/web-ui/src/lib/components/board/fleet-buffer.ts`, sanitize completed display lines
-  before they enter the compact `lines` array used by Active Fleet cards.
+  - In `packages/web-ui/src/lib/components/board/fleet-buffer.ts`, sanitize completed display lines before they enter the compact `lines` array used by Active Fleet cards.
 
-  - Strip ANSI/CSI terminal escape sequences from preview lines, normalize CRLF newlines to LF,
-  treat bare carriage returns as terminal progress-line rewrites, apply backspace controls, and
-  strip remaining non-printing terminal control characters.
+  - Strip ANSI/CSI terminal escape sequences from preview lines, normalize CRLF newlines to LF, treat bare carriage returns as terminal progress-line rewrites, apply backspace controls, and strip remaining non-printing terminal control characters.
 
-  - Preserve the existing bounded preview behavior (`MAX_DISPLAY_LINES`) and line-buffering
-  semantics.
+  - Preserve the existing bounded preview behavior (`MAX_DISPLAY_LINES`) and line-buffering semantics.
 
-  - Preserve split escape sequence handling by keeping incomplete buffered text raw until a newline
-  completes the display line.
+  - Preserve split escape sequence handling by keeping incomplete buffered text raw until a newline completes the display line.
 
 
   Why:
 
-  - Agent/CLI streams can contain color codes, cursor/progress rewrites, backspaces, and other
-  terminal bytes that are meaningful in a terminal but confusing in the browser card preview.
+  - Agent/CLI streams can contain color codes, cursor/progress rewrites, backspaces, and other terminal bytes that are meaningful in a terminal but confusing in the browser card preview.
 
-  - The Active Fleet row promises the last few lines of output; those lines should be readable
-  enough for status scanning without requiring users to open full logs.
+  - The Active Fleet row promises the last few lines of output; those lines should be readable enough for status scanning without requiring users to open full logs.
 
-  - This is separate from the CLI `[object Object]` error-formatting fix: this task only addresses
-  web UI compact preview rendering of terminal-like streams.
+  - This is separate from the CLI `[object Object]` error-formatting fix: this task only addresses web UI compact preview rendering of terminal-like streams.
 
 
   How:
 
-  - Keep the sanitizer preview-only and pure; do not mutate backend event payloads, session event
-  storage, canonical logs, or the session-event accumulator.
+  - Keep the sanitizer preview-only and pure; do not mutate backend event payloads, session event storage, canonical logs, or the session-event accumulator.
 
-  - Implement small helper functions in `fleet-buffer.ts` rather than adding a full terminal
-  emulator/xterm dependency.
+  - Implement small helper functions in `fleet-buffer.ts` rather than adding a full terminal emulator/xterm dependency.
 
-  - Apply sanitization only when a line is complete; do not sanitize `state.buffer` while the line
-  is still partial.
+  - Apply sanitization only when a line is complete; do not sanitize `state.buffer` while the line is still partial.
 
-  - Treat remaining bare `\r` characters as terminal-style line rewrites after CRLF has been
-  normalized.
+  - Treat remaining bare `\r` characters as terminal-style line rewrites after CRLF has been normalized.
 
-  - Avoid broad product/UI changes outside
-  `packages/web-ui/src/lib/components/board/fleet-buffer.ts` unless tests reveal the preview path
-  requires them.
+  - Avoid broad product/UI changes outside `packages/web-ui/src/lib/components/board/fleet-buffer.ts` unless tests reveal the preview path requires them.
 
-  - Fix any formatter issues in the existing exploratory edits before submitting the task for
-  review.
+  - Fix any formatter issues in the existing exploratory edits before submitting the task for review.
 
 
   Testing:
@@ -74,15 +64,13 @@ description: "What:
 
   \  - `npm test -- --fresh --run tests/web-ui/fleet-buffer.test.ts`
 
-  \  - `npx oxlint packages/web-ui/src/lib/components/board/fleet-buffer.ts
-  tests/web-ui/fleet-buffer.test.ts`
+  \  - `npx oxlint packages/web-ui/src/lib/components/board/fleet-buffer.ts tests/web-ui/fleet-buffer.test.ts`
 
   \  - `npm run format:check`
 
   \  - `npm run typecheck`
 
-  - If implementation touches other web UI files, also run the smallest relevant additional web-ui
-  test slice and include those commands in the task note.
+  - If implementation touches other web UI files, also run the smallest relevant additional web-ui test slice and include those commands in the task note.
 
 
   Covers:
@@ -92,32 +80,26 @@ description: "What:
 
   Out of scope:
 
-  - Do not change `src/cli/output.ts`, plan-branch error formatting, CLI JSON/YAML/text output
-  contracts, or exit-code semantics.
+  - Do not change `src/cli/output.ts`, plan-branch error formatting, CLI JSON/YAML/text output contracts, or exit-code semantics.
 
-  - Do not change backend stream/event payloads, WebSocket event schema, session-event accumulation,
-  stored session logs, or full-log rendering.
+  - Do not change backend stream/event payloads, WebSocket event schema, session-event accumulation, stored session logs, or full-log rendering.
 
-  - Do not attempt full terminal emulation, cursor positioning, alternate screen handling, or
-  xterm-style rendering in fleet cards.
+  - Do not attempt full terminal emulation, cursor positioning, alternate screen handling, or xterm-style rendering in fleet cards.
 
-  - Do not change Active Fleet card layout, task ordering, dispatch status semantics, or
-  `MAX_DISPLAY_LINES`.
+  - Do not change Active Fleet card layout, task ordering, dispatch status semantics, or `MAX_DISPLAY_LINES`.
 
 
   Proposal review:
 
   - Native `plan-reviewer` read-only review returned CLEAR before task creation.
 
-  - Reviewer agreed existing `@ui-task-board ac-4` is sufficient coverage and noted optional extra
-  coverage for non-SGR CSI sequences is not blocking.\n"
+  - Reviewer agreed existing `@ui-task-board ac-4` is sufficient coverage and noted optional extra coverage for non-SGR CSI sequences is not blocking.\n"
 spec_ref: "@ui-task-board"
 meta_ref: null
 plan_ref: null
 status: blocked
 blocked_by:
-  - "Dispatch bootstrap failed: Cannot persist dispatch metadata for @01KT7DV7P6CTBBNXGB2AJF1269:
-    workspace registry record is missing."
+  - "Dispatch bootstrap failed: Cannot persist dispatch metadata for @01KT7DV7P6CTBBNXGB2AJF1269: workspace registry record is missing."
 depends_on: []
 context: []
 priority: 2
@@ -173,13 +155,7 @@ history:
         previous: pending_review
       blocked_by:
         new:
-          - "Dispatch workspace provisioning failed: Cannot adopt branch
-            \"dispatch/task/task-fleet-buffer-preview-sanitization/01kt7dv7\" for task
-            @01KT7DV7P6CTBBNXGB2AJF1269: it is currently checked out in the main repository working
-            tree (/home/chapel/Projects/kynetic-spec-dispatch). This usually means submission
-            linkage was captured from the wrong checkout.. Suggested action: Repair the task's
-            submission linkage to reference the correct task branch: kspec task set
-            @01KT7DV7P6CTBBNXGB2AJF1269 --submission-linkage"
+          - "Dispatch workspace provisioning failed: Cannot adopt branch \"dispatch/task/task-fleet-buffer-preview-sanitization/01kt7dv7\" for task @01KT7DV7P6CTBBNXGB2AJF1269: it is currently checked out in the main repository working tree (/home/chapel/Projects/kynetic-spec-dispatch). This usually means submission linkage was captured from the wrong checkout.. Suggested action: Repair the task's submission linkage to reference the correct task branch: kspec task set @01KT7DV7P6CTBBNXGB2AJF1269 --submission-linkage"
         previous: []
       prior_status:
         new: pending_review
@@ -215,13 +191,7 @@ history:
       blocked_by:
         new: []
         previous:
-          - "Dispatch workspace provisioning failed: Cannot adopt branch
-            \"dispatch/task/task-fleet-buffer-preview-sanitization/01kt7dv7\" for task
-            @01KT7DV7P6CTBBNXGB2AJF1269: it is currently checked out in the main repository working
-            tree (/home/chapel/Projects/kynetic-spec-dispatch). This usually means submission
-            linkage was captured from the wrong checkout.. Suggested action: Repair the task's
-            submission linkage to reference the correct task branch: kspec task set
-            @01KT7DV7P6CTBBNXGB2AJF1269 --submission-linkage"
+          - "Dispatch workspace provisioning failed: Cannot adopt branch \"dispatch/task/task-fleet-buffer-preview-sanitization/01kt7dv7\" for task @01KT7DV7P6CTBBNXGB2AJF1269: it is currently checked out in the main repository working tree (/home/chapel/Projects/kynetic-spec-dispatch). This usually means submission linkage was captured from the wrong checkout.. Suggested action: Repair the task's submission linkage to reference the correct task branch: kspec task set @01KT7DV7P6CTBBNXGB2AJF1269 --submission-linkage"
       session_id:
         new: null
         previous: null
@@ -237,8 +207,7 @@ history:
         previous: pending_review
       blocked_by:
         new:
-          - "Dispatch bootstrap failed: Cannot persist dispatch metadata for
-            @01KT7DV7P6CTBBNXGB2AJF1269: workspace registry record is missing."
+          - "Dispatch bootstrap failed: Cannot persist dispatch metadata for @01KT7DV7P6CTBBNXGB2AJF1269: workspace registry record is missing."
         previous: []
       prior_status:
         new: pending_review
@@ -250,3 +219,4 @@ created_at: 2026-06-03T19:02:29.317Z
 started_at: 2026-06-03T19:05:15.644Z
 submitted_at: 2026-06-03T19:07:28.704Z
 todos: []
+review_ref: "@01KT7EHKYYZT7V8SNNAW4N9S45"

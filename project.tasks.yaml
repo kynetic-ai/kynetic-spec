@@ -2778,11 +2778,7 @@
   type: infra
   status: cancelled
   blocked_by:
-    - "Needs clearer scope. Investigation shows Result pattern is well-implemented with proper .ok
-      checks throughout codebase. No concrete bugs or problems identified. Task suggests multiple
-      potential improvements but unclear which would add value. Needs: (1) Concrete examples of
-      missed checks or bugs, OR (2) Narrower scope focusing on specific improvement (e.g., just
-      documentation, or just lint rules)"
+    - "Needs clearer scope. Investigation shows Result pattern is well-implemented with proper .ok checks throughout codebase. No concrete bugs or problems identified. Task suggests multiple potential improvements but unclear which would add value. Needs: (1) Concrete examples of missed checks or bugs, OR (2) Narrower scope focusing on specific improvement (e.g., just documentation, or just lint rules)"
   depends_on: []
   priority: 3
   tags: []
@@ -5362,9 +5358,7 @@
   spec_ref: "@multi-directory-daemon"
   status: completed
   blocked_by:
-    - Watcher unit tests complete (17 tests, all ACs covered) but skip in CI due to GitHub Actions
-      fs.watch limitations. AC-19 HTTP 503 response verification requires E2E/integration test
-      blocked on @01KFMMZW. Tests pass locally and implementation verified correct.
+    - Watcher unit tests complete (17 tests, all ACs covered) but skip in CI due to GitHub Actions fs.watch limitations. AC-19 HTTP 503 response verification requires E2E/integration test blocked on @01KFMMZW. Tests pass locally and implementation verified correct.
   depends_on:
     - "@01KFQABQ"
   priority: 1
@@ -9760,8 +9754,7 @@
   completed_at: 2026-02-23T08:00:33.185Z
 - _ulid: 01KJ4SM4DTQA7D7GE81GARBBX6
   slugs: []
-  title: "Error message consistency: task needs-work uses inline error string instead of centralized
-    error str"
+  title: "Error message consistency: task needs-work uses inline error string instead of centralized error str"
   type: task
   status: completed
   blocked_by: []
@@ -9776,8 +9769,7 @@
   automation: eligible
 - _ulid: 01KJ4SM5NXME299C3KB4FG7J0A
   slugs: []
-  title: "Input ref normalization layer: Add normalizeRefInput() in schema/common.ts that ensures @
-    prefix on "
+  title: "Input ref normalization layer: Add normalizeRefInput() in schema/common.ts that ensures @ prefix on "
   type: task
   status: completed
   blocked_by: []
@@ -9792,8 +9784,7 @@
   automation: eligible
 - _ulid: 01KJ4SM6RN06C487QWRWABJ86J
   slugs: []
-  title: kspec plan import should place type:trait items with no parent in the project-level traits
-    array (ky
+  title: kspec plan import should place type:trait items with no parent in the project-level traits array (ky
   type: task
   status: completed
   blocked_by: []
@@ -9808,8 +9799,7 @@
   automation: eligible
 - _ulid: 01KJ4SM7SSXD7S0ZN6VDXTDD85
   slugs: []
-  title: kspec item add needs --root flag for adding traits to project-level kynetic.yaml without
-    --under. Cu
+  title: kspec item add needs --root flag for adding traits to project-level kynetic.yaml without --under. Cu
   type: task
   status: completed
   blocked_by: []
@@ -9825,8 +9815,7 @@
   automation: manual_only
 - _ulid: 01KJ4SM8TEBGJ7WXRTTVQKTY3S
   slugs: []
-  title: kspec-agents.md Finding Information table shows skill IDs as /help instead of /kspec:help —
-    generate
+  title: kspec-agents.md Finding Information table shows skill IDs as /help instead of /kspec:help — generate
   type: task
   status: completed
   blocked_by: []
@@ -9841,8 +9830,7 @@
   automation: eligible
 - _ulid: 01KJ4SM9TQ4TMDAZ5HHY0PDS94
   slugs: []
-  title: task complete --force should bypass the submit requirement. Currently --force does not skip
-    the in_p
+  title: task complete --force should bypass the submit requirement. Currently --force does not skip the in_p
   type: task
   status: completed
   blocked_by: []
@@ -9857,8 +9845,7 @@
   automation: eligible
 - _ulid: 01KJ4SMATMC7TD3H0C2S5K9W4T
   slugs: []
-  title: kspec batch cannot handle task patch with nested --data JSON argument. The data object gets
-    stringif
+  title: kspec batch cannot handle task patch with nested --data JSON argument. The data object gets stringif
   type: task
   status: completed
   blocked_by: []
@@ -9873,8 +9860,7 @@
   automation: eligible
 - _ulid: 01KJ4SMBV2YAJV75E3Y7VWQ4NZ
   slugs: []
-  title: "Bug: `kspec plan import` ignores spec_ref on manual tasks. AC @plan-import ac-27 says manual
-    tasks g"
+  title: "Bug: `kspec plan import` ignores spec_ref on manual tasks. AC @plan-import ac-27 says manual tasks g"
   type: task
   status: completed
   blocked_by: []
@@ -9889,8 +9875,7 @@
   automation: eligible
 - _ulid: 01KJ4SMCWBGEWF6MD1VS0AS0JH
   slugs: []
-  title: "Bug: `kspec session start --json` (and other --json commands) mix info lines (ℹ Synced
-    shadow branch"
+  title: "Bug: `kspec session start --json` (and other --json commands) mix info lines (ℹ Synced shadow branch"
   type: task
   status: completed
   blocked_by: []
@@ -9905,8 +9890,7 @@
   automation: eligible
 - _ulid: 01KJ4SNECVEF1DWQTDK9KK5ASN
   slugs: []
-  title: task set --spec-ref has no way to clear the field. --plan-ref supports 'null' to clear but
-    --spec-re
+  title: task set --spec-ref has no way to clear the field. --plan-ref supports 'null' to clear but --spec-re
   type: task
   status: completed
   blocked_by: []
@@ -9921,8 +9905,7 @@
   automation: eligible
 - _ulid: 01KJ4SNFKB1FKXDGWAJB5Q1V23
   slugs: []
-  title: "plan import: add depends_on field to plan YAML spec format so specs/tasks get structural
-    dependencie"
+  title: "plan import: add depends_on field to plan YAML spec format so specs/tasks get structural dependencie"
   type: task
   spec_ref: "@plan-import"
   status: completed
@@ -9938,8 +9921,7 @@
   automation: eligible
 - _ulid: 01KJ4SNGM76D56HTXHR6HQ02E2
   slugs: []
-  title: "Plan import should support task priority: plan document specs can specify priority, and
-    derived task"
+  title: "Plan import should support task priority: plan document specs can specify priority, and derived task"
   type: task
   spec_ref: "@plan-import"
   status: completed
@@ -9955,8 +9937,7 @@
   automation: eligible
 - _ulid: 01KJ4SNHRE8SZT8NG5N9K8ENV9
   slugs: []
-  title: "kspec plan import should detect and report YAML-unsafe values in AC fields (colons in then:
-    values) "
+  title: "kspec plan import should detect and report YAML-unsafe values in AC fields (colons in then: values) "
   type: task
   status: completed
   blocked_by: []
@@ -9971,8 +9952,7 @@
   automation: eligible
 - _ulid: 01KJ4T45FMV4TV07MWX7RNA8F8
   slugs: []
-  title: "Bug: kspec task add returned OK with ULID but task was not findable via task get or tasks
-    list. Had "
+  title: "Bug: kspec task add returned OK with ULID but task was not findable via task get or tasks list. Had "
   type: task
   status: completed
   blocked_by: []
@@ -9987,8 +9967,7 @@
   automation: eligible
 - _ulid: 01KJ4T46TRY4JSDJW2WBEY8Z6B
   slugs: []
-  title: Codex skill prompt needs ralph-loop safety guard. During ralph loop session
-    01KJ3N2N8V38823H87PG09V7
+  title: Codex skill prompt needs ralph-loop safety guard. During ralph loop session 01KJ3N2N8V38823H87PG09V7
   type: task
   status: completed
   blocked_by: []
@@ -10003,8 +9982,7 @@
   automation: eligible
 - _ulid: 01KJ4T480J60WY0ESJWQY08G82
   slugs: []
-  title: "kspec batch silently fails on malformed JSON input - exits with code 1 and no error message.
-    Should "
+  title: "kspec batch silently fails on malformed JSON input - exits with code 1 and no error message. Should "
   type: task
   status: completed
   blocked_by: []
@@ -11429,8 +11407,7 @@
   completed_at: 2026-02-26T18:42:57.046Z
 - _ulid: 01KJDQ0YXVQCR1ZY2ZY80G670Q
   slugs: []
-  title: "Shadow repair: handle missing /bin/sh — use direct git commands instead of spawning shell,
-    fails on "
+  title: "Shadow repair: handle missing /bin/sh — use direct git commands instead of spawning shell, fails on "
   type: task
   spec_ref: "@shadow-repair-cmd"
   status: completed
@@ -11447,8 +11424,7 @@
   automation: eligible
 - _ulid: 01KJDQ107WAD90WTAVFFQDW0B1
   slugs: []
-  title: kspec task patch appears to hang indefinitely — had to kill and use task set + task note as
-    workarou
+  title: kspec task patch appears to hang indefinitely — had to kill and use task set + task note as workarou
   type: task
   spec_ref: "@task-patch"
   status: completed
@@ -11465,8 +11441,7 @@
   automation: eligible
 - _ulid: 01KJDQ11EVH8RKBV4CHZ7R0C89
   slugs: []
-  title: "Fix @observations slug ambiguity — kspec validate reports 6 errors for duplicate slug.
-    Pre-existing "
+  title: "Fix @observations slug ambiguity — kspec validate reports 6 errors for duplicate slug. Pre-existing "
   type: task
   status: completed
   blocked_by: []
@@ -11482,8 +11457,7 @@
   automation: eligible
 - _ulid: 01KJDQ12GB09XHW1HVNMC7YJC4
   slugs: []
-  title: "Ralph PR merge should auto-delete remote branches after merge. Currently accumulates stale
-    branches "
+  title: "Ralph PR merge should auto-delete remote branches after merge. Currently accumulates stale branches "
   type: task
   status: completed
   blocked_by: []
@@ -11499,8 +11473,7 @@
   automation: eligible
 - _ulid: 01KJDQ139SP70H2H9GNBH8BM72
   slugs: []
-  title: kspec agents generate should include package version in content hash (or add --force flag) so
-    versio
+  title: kspec agents generate should include package version in content hash (or add --force flag) so versio
   type: task
   spec_ref: "@agents-cli"
   status: completed
@@ -11517,8 +11490,7 @@
   automation: eligible
 - _ulid: 01KJDQ142M8AM5HAYQBBG12VRS
   slugs: []
-  title: kspec setup should work without CLAUDECODE=1 env var in non-interactive contexts. Either add
-    a --age
+  title: kspec setup should work without CLAUDECODE=1 env var in non-interactive contexts. Either add a --age
   type: task
   spec_ref: "@enhanced-setup"
   status: completed
@@ -11535,8 +11507,7 @@
   automation: eligible
 - _ulid: 01KJDQ1513YJA4PKRTA8CZDE4P
   slugs: []
-  title: kspec task set --priority accepts numbers (1-5) but all documentation, conventions, and plan
-    documen
+  title: kspec task set --priority accepts numbers (1-5) but all documentation, conventions, and plan documen
   type: task
   spec_ref: "@batch-exec"
   status: completed
@@ -11553,8 +11524,7 @@
   automation: eligible
 - _ulid: 01KJDQ1677X9VQ0DGK550NBGZX
   slugs: []
-  title: "Tests fail when run inside ralph loop due to environment contamination: (1) ralph.test.ts
-    KSPEC_RALP"
+  title: "Tests fail when run inside ralph loop due to environment contamination: (1) ralph.test.ts KSPEC_RALP"
   type: task
   status: completed
   blocked_by: []
@@ -11570,8 +11540,7 @@
   automation: eligible
 - _ulid: 01KJDQ173NEFK9RFZGRS22VG6M
   slugs: []
-  title: "Shadow branch index inconsistency: observation @01KJ73ME appeared in search results but
-    failed on ks"
+  title: "Shadow branch index inconsistency: observation @01KJ73ME appeared in search results but failed on ks"
   type: task
   status: completed
   blocked_by: []
@@ -11587,8 +11556,7 @@
   automation: eligible
 - _ulid: 01KJDQ17W53F5NN0CWTVSEY53R
   slugs: []
-  title: Ralph loop needs iteration-level timeout. When a spawned agent gets stuck (e.g., tool call
-    hanging o
+  title: Ralph loop needs iteration-level timeout. When a spawned agent gets stuck (e.g., tool call hanging o
   type: task
   spec_ref: "@cli-ralph"
   status: completed
@@ -11605,8 +11573,7 @@
   automation: needs_review
 - _ulid: 01KJDQ18VNYYAXETR8WREAJW2X
   slugs: []
-  title: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail fast
-    with a cle
+  title: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail fast with a cle
   type: task
   spec_ref: "@batch-exec"
   status: completed
@@ -11623,8 +11590,7 @@
   automation: eligible
 - _ulid: 01KJDQ19N46AK8JQT0KQFQV1KH
   slugs: []
-  title: CLI args should accept both kebab-case and underscore variants (e.g. depends-on and
-    depends_on). Cur
+  title: CLI args should accept both kebab-case and underscore variants (e.g. depends-on and depends_on). Cur
   type: task
   spec_ref: "@batch-exec"
   status: completed
@@ -11641,8 +11607,7 @@
   automation: eligible
 - _ulid: 01KJDQ1AF125H0FK29HE769R4P
   slugs: []
-  title: Ralph event handler iteration attribution should use session-scoped mapping instead of shared
-    mutabl
+  title: Ralph event handler iteration attribution should use session-scoped mapping instead of shared mutabl
   type: task
   spec_ref: "@cli-ralph"
   status: completed
@@ -11659,8 +11624,7 @@
   automation: eligible
 - _ulid: 01KJDQ1B9C62DT55EK8WK01BP0
   slugs: []
-  title: Plan import warnings treated as errors in batch mode. The no YAML code block in specs section
-    warnin
+  title: Plan import warnings treated as errors in batch mode. The no YAML code block in specs section warnin
   type: task
   spec_ref: "@plan-import"
   status: completed
@@ -11677,8 +11641,7 @@
   automation: needs_review
 - _ulid: 01KJDQ1C22TH9SEXXGBYQT8Y3Z
   slugs: []
-  title: Plan import --update replaces all ACs instead of merging. When extending an existing spec
-    with a new
+  title: Plan import --update replaces all ACs instead of merging. When extending an existing spec with a new
   type: task
   spec_ref: "@plan-import"
   status: completed
@@ -11695,8 +11658,7 @@
   automation: eligible
 - _ulid: 01KJDQ1CTV35WDA9G51NEH943K
   slugs: []
-  title: Agents should check plan_ref when starting tasks. If a task has plan_ref, run kspec plan get
-    @plan-r
+  title: Agents should check plan_ref when starting tasks. If a task has plan_ref, run kspec plan get @plan-r
   type: task
   status: completed
   blocked_by: []
@@ -11712,8 +11674,7 @@
   automation: eligible
 - _ulid: 01KJDQ1DQMCBX32KDVWBJBF8W1
   slugs: []
-  title: "ULID short ref ambiguity in batch operations: when two ULIDs share a prefix (e.g. 01KJ4SNE9
-    and 01KJ"
+  title: "ULID short ref ambiguity in batch operations: when two ULIDs share a prefix (e.g. 01KJ4SNE9 and 01KJ"
   type: task
   spec_ref: "@batch-exec"
   status: completed
@@ -11730,8 +11691,7 @@
   automation: needs_review
 - _ulid: 01KJDQ1EKVV4V60V7WT6DCK3H3
   slugs: []
-  title: Triage promote action should optionally delete the inbox item after creating the task.
-    Currently pro
+  title: Triage promote action should optionally delete the inbox item after creating the task. Currently pro
   type: task
   spec_ref: "@triage-cli-commands"
   status: completed
@@ -11748,8 +11708,7 @@
   automation: eligible
 - _ulid: 01KJDQ1FCWDDH5FM5JKSWNYVBX
   slugs: []
-  title: "Web UI: persist all filter state and current view in URL query params so refreshing the page
-    preserv"
+  title: "Web UI: persist all filter state and current view in URL query params so refreshing the page preserv"
   type: task
   spec_ref: "@web-ui"
   status: completed
@@ -11766,8 +11725,7 @@
   automation: eligible
 - _ulid: 01KJDQ1G6HBSJRXVSWEWQ9W9E4
   slugs: []
-  title: "Web UI triage page: add filter controls for triage action types (promote, delete, defer,
-    spec-gap, d"
+  title: "Web UI triage page: add filter controls for triage action types (promote, delete, defer, spec-gap, d"
   type: task
   spec_ref: "@interactive-triage-ui"
   status: completed
@@ -11784,8 +11742,7 @@
   automation: eligible
 - _ulid: 01KJDQ1GZVK77Y8CETXW2E56TG
   slugs: []
-  title: Web UI WebSocket connection unreliable - continually disconnects and reconnects. Needs
-    investigation
+  title: Web UI WebSocket connection unreliable - continually disconnects and reconnects. Needs investigation
   type: task
   spec_ref: "@daemon-server"
   status: completed
@@ -12695,8 +12652,7 @@
   automation: eligible
 - _ulid: 01KJS6ZK9H1MZFBDZV5QBR6XKY
   slugs: []
-  title: "eval-agents/SKILL.md line 144: scenario table label still reads Ralph continuation —
-    scenario conten"
+  title: "eval-agents/SKILL.md line 144: scenario table label still reads Ralph continuation — scenario conten"
   type: task
   status: completed
   blocked_by: []
@@ -12712,8 +12668,7 @@
   automation: eligible
 - _ulid: 01KJS6ZMZH9X9V5C15QHRT9HAT
   slugs: []
-  title: Shadow branch auto-push silently swallows failures — fire-and-forget push
-    (shadow.ts:1159-1164) uses
+  title: Shadow branch auto-push silently swallows failures — fire-and-forget push (shadow.ts:1159-1164) uses
   type: task
   spec_ref: "@shadow-sync"
   status: completed
@@ -12730,8 +12685,7 @@
   automation: eligible
 - _ulid: 01KJS6ZPKDDGDB5YP1K0180RZZ
   slugs: []
-  title: Handle EPIPE in ACP framing layer — src/acp/framing.ts send() throws uncaught EPIPE when
-    child proce
+  title: Handle EPIPE in ACP framing layer — src/acp/framing.ts send() throws uncaught EPIPE when child proce
   type: task
   status: completed
   blocked_by: []
@@ -12747,8 +12701,7 @@
   automation: eligible
 - _ulid: 01KJS6ZRR71WCNJQ5KC9WSDTXB
   slugs: []
-  title: "kspec validate uses ambiguous exit codes in automation: prints Validation passed but returns
-    non-zer"
+  title: "kspec validate uses ambiguous exit codes in automation: prints Validation passed but returns non-zer"
   type: task
   status: completed
   blocked_by: []
@@ -12764,8 +12717,7 @@
   automation: eligible
 - _ulid: 01KJS6ZTEGGSXT60KYK4YDRANY
   slugs: []
-  title: kspec validate --json appends human-readable summary text after JSON payload, causing invalid
-    JSON f
+  title: kspec validate --json appends human-readable summary text after JSON payload, causing invalid JSON f
   type: task
   status: completed
   blocked_by: []
@@ -12781,8 +12733,7 @@
   automation: eligible
 - _ulid: 01KJS6ZW51AVVEKHSP2J0AWXHY
   slugs: []
-  title: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail fast
-    with a cle
+  title: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail fast with a cle
   type: task
   status: completed
   blocked_by: []
@@ -13634,8 +13585,7 @@
   automation: eligible
 - _ulid: 01KJX36X6HDRWZ4H39XSVSMNK9
   slugs: []
-  title: Add branch check warning to kspec task start — when current branch is not main and does not
-    match th
+  title: Add branch check warning to kspec task start — when current branch is not main and does not match th
   type: task
   status: pending
   blocked_by: []
@@ -15959,8 +15909,7 @@
   automation: eligible
 - _ulid: 01KKBBS1HGRR363BSDMG07EC19
   slugs: []
-  title: "core-skill-install.test.ts codex auto-detect test failing: expects codex platform when
-    CODEX_THREAD_"
+  title: "core-skill-install.test.ts codex auto-detect test failing: expects codex platform when CODEX_THREAD_"
   type: task
   spec_ref: "@platform-renderer-trait"
   status: completed
@@ -15977,8 +15926,7 @@
   automation: eligible
 - _ulid: 01KKBBS4SDEHGFVFT1D10851EB
   slugs: []
-  title: "enhanced-setup.test.ts: 'should render core skills to codex output when codex is detected'
-    fails — ."
+  title: "enhanced-setup.test.ts: 'should render core skills to codex output when codex is detected' fails — ."
   type: task
   spec_ref: "@platform-renderer-trait"
   status: completed
@@ -15995,8 +15943,7 @@
   automation: eligible
 - _ulid: 01KKBBS7YHFWP6RT427884JV12
   slugs: []
-  title: kspec shadow repair removes the .kspec worktree before verifying it can recreate it. If git
-    is not o
+  title: kspec shadow repair removes the .kspec worktree before verifying it can recreate it. If git is not o
   type: task
   status: cancelled
   blocked_by: []
@@ -16026,8 +15973,7 @@
   automation: eligible
 - _ulid: 01KKBBSH7HHMK1XRAEAA7PTRH2
   slugs: []
-  title: Task budget false-positive outside ralph loop when stale KSPEC_SESSION_ID is present
-    (observed in co
+  title: Task budget false-positive outside ralph loop when stale KSPEC_SESSION_ID is present (observed in co
   type: task
   spec_ref: "@session-model-evolution"
   status: completed
@@ -16044,8 +15990,7 @@
   automation: eligible
 - _ulid: 01KKBD4ZAXFGV54EPZZHFSDMJ5
   slugs: []
-  title: Clarify @task-work submit timing and pending_review ownership semantics. Current wording can
-    imply b
+  title: Clarify @task-work submit timing and pending_review ownership semantics. Current wording can imply b
   type: task
   status: completed
   blocked_by: []
@@ -16061,8 +16006,7 @@
   automation: eligible
 - _ulid: 01KKBD52ND0SRD9WXYT6ZXZ776
   slugs: []
-  title: "Workflow UX: allow kspec workflow show (and related workflow run commands where safe) to
-    default to "
+  title: "Workflow UX: allow kspec workflow show (and related workflow run commands where safe) to default to "
   type: task
   status: pending
   blocked_by: []
@@ -16075,8 +16019,7 @@
   automation: needs_review
 - _ulid: 01KKBD55V7YZ70F6SHZZ9JB9GM
   slugs: []
-  title: "Reflection: Add workflow introspection to CLI output. 'kspec workflow show --json' should
-    include cu"
+  title: "Reflection: Add workflow introspection to CLI output. 'kspec workflow show --json' should include cu"
   type: task
   status: pending
   blocked_by: []
@@ -16089,8 +16032,7 @@
   automation: needs_review
 - _ulid: 01KKBD5BAX4M5G9C5FH431MSMF
   slugs: []
-  title: "Reflection: Harden machine-readable output contracts for JSON commands (especially 'kspec
-    validate -"
+  title: "Reflection: Harden machine-readable output contracts for JSON commands (especially 'kspec validate -"
   type: task
   spec_ref: "@trait-json-output"
   status: completed
@@ -16107,8 +16049,7 @@
   automation: eligible
 - _ulid: 01KKBD5GFNBY509D4R4BTW2PP9
   slugs: []
-  title: When running `kspec setup` or `kspec init --setup`, automatically install default workflows
-    referenc
+  title: When running `kspec setup` or `kspec init --setup`, automatically install default workflows referenc
   type: task
   status: pending
   blocked_by: []
@@ -16121,8 +16062,7 @@
   automation: needs_review
 - _ulid: 01KKBD5NVA05J5XM039Y5XVNT0
   slugs: []
-  title: "Add --no-cascade flag to kspec item set: skip child status cascade prompt, apply change only
-    to targ"
+  title: "Add --no-cascade flag to kspec item set: skip child status cascade prompt, apply change only to targ"
   type: task
   spec_ref: "@trait-confirmation-prompt"
   status: completed
@@ -16139,8 +16079,7 @@
   automation: eligible
 - _ulid: 01KKBD5S4GBP3E8ZWK92B76J7V
   slugs: []
-  title: "Add AC annotation validation to kspec validate: scan test files for // AC: @slug ac-N
-    comments and v"
+  title: "Add AC annotation validation to kspec validate: scan test files for // AC: @slug ac-N comments and v"
   type: task
   spec_ref: "@ref-validation"
   status: completed
@@ -16157,8 +16096,7 @@
   automation: eligible
 - _ulid: 01KKBD5WH8X3XD8Q69K54WD6J3
   slugs: []
-  title: "Fix kspec item list --json output structure: currently returns nested [items, count] pairs
-    which are"
+  title: "Fix kspec item list --json output structure: currently returns nested [items, count] pairs which are"
   type: task
   spec_ref: "@trait-json-output"
   status: completed
@@ -16175,8 +16113,7 @@
   automation: eligible
 - _ulid: 01KKBD5ZVMAE1PYCVFHZTRKF2N
   slugs: []
-  title: "Alignment status calculation should treat needs_work and pending_review as active work
-    states (maps "
+  title: "Alignment status calculation should treat needs_work and pending_review as active work states (maps "
   type: task
   status: pending
   blocked_by: []
@@ -16189,8 +16126,7 @@
   automation: needs_review
 - _ulid: 01KKBD6389SFFMQH6645YXWCVK
   slugs: []
-  title: "Document skill update workflow in AGENTS.md or task-work skill: when a task modifies a
-    SKILL.md, the"
+  title: "Document skill update workflow in AGENTS.md or task-work skill: when a task modifies a SKILL.md, the"
   type: task
   spec_ref: "@platform-renderer-trait"
   status: completed
@@ -16207,8 +16143,7 @@
   automation: eligible
 - _ulid: 01KKBD66B1RFDQTSD3YKDQB3Q1
   slugs: []
-  title: "Multi-project agent dashboard — tmux-style live view of all running agent sessions across
-    projects. "
+  title: "Multi-project agent dashboard — tmux-style live view of all running agent sessions across projects. "
   type: task
   status: pending
   blocked_by: []
@@ -16221,8 +16156,7 @@
   automation: manual_only
 - _ulid: 01KKBD69TY1M3FMTQ6ZV1FNTBT
   slugs: []
-  title: "Improve kspec agent review ergonomics: direct 'kspec agent run --task <ref>' ignores agent
-    prompt_te"
+  title: "Improve kspec agent review ergonomics: direct 'kspec agent run --task <ref>' ignores agent prompt_te"
   type: task
   spec_ref: "@trait-task-readiness"
   status: completed
@@ -16239,8 +16173,7 @@
   automation: eligible
 - _ulid: 01KKBD6D2XVXHJB82Y0XB0KPCC
   slugs: []
-  title: kspec setup should update existing agent definitions on version bumps. Currently skips agents
-    with m
+  title: kspec setup should update existing agent definitions on version bumps. Currently skips agents with m
   type: task
   status: pending
   blocked_by: []
@@ -16253,8 +16186,7 @@
   automation: needs_review
 - _ulid: 01KKBD6GBCWTZA2ECFWN62F92F
   slugs: []
-  title: "Dispatch trigger expansion ideas for flexible agent orchestration: (1) Cron-style scheduled
-    triggers"
+  title: "Dispatch trigger expansion ideas for flexible agent orchestration: (1) Cron-style scheduled triggers"
   type: task
   status: cancelled
   blocked_by: []
@@ -16267,8 +16199,7 @@
   automation: manual_only
 - _ulid: 01KKBD6KH5F5MVC5BXV2NQG474
   slugs: []
-  title: "SHOULD-FIX from PR #723: extend daemon session-branch sync beyond startupProjectPath so
-    additional r"
+  title: "SHOULD-FIX from PR #723: extend daemon session-branch sync beyond startupProjectPath so additional r"
   type: task
   spec_ref: "@config-daemon"
   status: completed
@@ -16285,8 +16216,7 @@
   automation: eligible
 - _ulid: 01KKBD6Q77H016BZD3G0JFE16E
   slugs: []
-  title: CLI mutation commands should show what changed (before → after) in output, especially for
-    array fiel
+  title: CLI mutation commands should show what changed (before → after) in output, especially for array fiel
   type: task
   spec_ref: "@trait-confirmation-prompt"
   status: completed
@@ -26769,8 +26699,7 @@
 - _ulid: 01KPRQRNM3T4WA8NYES8KACZWD
   slugs:
     - task-dispatch-bootstrap-project-agnostic-and-env-isolation
-  title: Remove project-specific inference from dispatch bootstrap; prevent dispatcher runtime
-    environment from leaking into bootstrap step subprocesses
+  title: Remove project-specific inference from dispatch bootstrap; prevent dispatcher runtime environment from leaking into bootstrap step subprocesses
   type: task
   spec_ref: "@dispatch-runtime-bootstrap-contract"
   status: completed
@@ -26792,8 +26721,7 @@
 - _ulid: 01KPRZ17RC7NPM3BSCAZX3ZJ0C
   slugs:
     - task-narrow-dispatcher-runtime-mode-env-isolation
-  title: Narrow dispatcher runtime-mode env isolation set to runtime-mode keys only (align
-    implementation with bootstrap contract ac-12 scope)
+  title: Narrow dispatcher runtime-mode env isolation set to runtime-mode keys only (align implementation with bootstrap contract ac-12 scope)
   type: task
   spec_ref: "@dispatch-runtime-bootstrap-contract"
   status: completed
@@ -26815,8 +26743,7 @@
 - _ulid: 01KPS7HJYRRHQ7SECQXBH19N4G
   slugs:
     - task-gitignore-cover-file-lock-directory-suffix
-  title: Gitignore entries miss the .lock/ directory suffix created by acquireFileLock, so dispatch
-    mutation locks appear as untracked content while held
+  title: Gitignore entries miss the .lock/ directory suffix created by acquireFileLock, so dispatch mutation locks appear as untracked content while held
   type: bug
   spec_ref: "@complete-auto-gitignore"
   status: completed
@@ -30786,8 +30713,7 @@
   spec_ref: "@ui-task-board"
   status: blocked
   blocked_by:
-    - "Dispatch bootstrap failed: Cannot persist dispatch metadata for @01KT7DV7P6CTBBNXGB2AJF1269:
-      workspace registry record is missing."
+    - "Dispatch bootstrap failed: Cannot persist dispatch metadata for @01KT7DV7P6CTBBNXGB2AJF1269: workspace registry record is missing."
   depends_on: []
   priority: 2
   tags:
@@ -30800,3 +30726,4 @@
   created_at: 2026-06-03T19:02:29.317Z
   started_at: 2026-06-03T19:05:15.644Z
   submitted_at: 2026-06-03T19:07:28.704Z
+  review_ref: "@01KT7EHKYYZT7V8SNNAW4N9S45"

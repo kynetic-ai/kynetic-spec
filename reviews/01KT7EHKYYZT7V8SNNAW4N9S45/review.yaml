@@ -1,0 +1,26 @@
+_ulid: 01KT7EHKYYZT7V8SNNAW4N9S45
+slugs: []
+title: Review task-fleet-buffer-preview-sanitization
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KT7EHKYYXHSNDQXP6PFF40JZ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-03T19:14:42.782Z
+examined_commit: 49b4e1ec3e5b3ca85438575f29485559371d0abc
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KT7DV7P6CTBBNXGB2AJF1269"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-03T19:14:42.782Z
+updated_at: null
+notes: []
