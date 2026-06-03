@@ -6,3 +6,8 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-03T23:53:23.757Z
+  - _ulid: 01KT7YSN09F3ME9FCP6706TDDV
+    content: "[AGENT-FAIL] Invocation failed: Claude headed turn timed out after 120000ms"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-03T23:58:43.209Z
