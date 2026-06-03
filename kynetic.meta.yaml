@@ -428,6 +428,8 @@ conventions:
       - The dispatch/task/ branch namespace is reserved for task-scoped branches. Do not manually
         create branches under dispatch/task/ — use kspec task branch to ensure the deterministic
         naming contract.
+      - Dispatched task work uses 'dev' as the integration target; dispatch worker branches under
+        'dispatch/task/' merge back into 'dev' via the supported merge helper after review approval.
   - _ulid: 01KF8BNQXGBBFYRDJKYQHAEDCC
     domain: documentation
     examples: []
