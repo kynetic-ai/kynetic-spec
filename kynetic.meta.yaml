@@ -20647,6 +20647,36 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-03T03:55:27.355Z
+  - _ulid: 01KT5TW71S66SNHYQQJZMMDJHW
+    type: friction
+    content: "kspec skill render --force does not refresh .render-hash-codex / .render-hash-droid
+      sidecars when the action is reported as Unchanged. If a rendered file already matches what
+      render would produce (e.g., it was hand-edited to a value that later became the canonical
+      source), --force exits successfully and reports Unchanged, yet kspec skill status / verify
+      continue to report drift because the stored hash still reflects the previous render.
+      Workaround: rm the rendered file, then run --force, which triggers a Create action and updates
+      the sidecar. Hit during fix cycle 2 of @task-neutralize-work-review-merge-skills — prior cycle
+      saw --force succeed and assumed drift was cleared, then verify still failed."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-03T04:11:44.057Z
+  - _ulid: 01KT5TW7AWTAKM8Z912XEGS5FG
+    type: friction
+    content: "Editing core skill templates requires syncing two source-of-truth locations but kspec
+      install-core only operates at all-13-skills granularity. kspec skill render reads from
+      .kspec/skills/<id>/SKILL.md (shadow), not templates/skills/<id>/SKILL.md. So changing one core
+      skill template requires also updating the shadow source. The only CLI path for
+      templates→shadow sync is kspec skill install-core, which has no per-skill flag and processes
+      all 13 core skills; running it can revert intentional shadow-only customizations on unrelated
+      skills (observed pre-existing drift on
+      observe/reflect/triage-inbox/writing-specs/plan/create-workflow in this repo). Resolving the
+      cycle-2 blocker on @task-neutralize-work-review-merge-skills required a workaround: manually
+      copy 3 files into the shadow worktree and commit with KSPEC_SHADOW_COMMIT=1."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-03T04:11:44.348Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
