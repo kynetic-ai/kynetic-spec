@@ -1,0 +1,188 @@
+_ulid: 01KT7Y7RTBX6D8RJC5E71SEMB7
+slugs:
+  - task-generic-acp-process-adapter
+title: Add generic ACP process adapter profile
+type: task
+description: >-
+  Add a production-safe generic ACP process adapter profile so custom ACP-compatible executables can
+  be configured without pretending to be the mock ACP test adapter and without inheriting
+  package-specific argv from `claude-agent-acp`, `codex-acp`, or any other model-specific built-in
+  adapter.
+
+
+  Why:
+
+  - Runner-backed invocations currently let `process.executable` replace only the adapter command
+  while keeping the selected adapter's base args and auto-approve args.
+
+  - That is correct for package-backed adapters, but it forces custom ACP executables to use
+  `adapter: mock-acp` solely to get empty argv.
+
+  - The runner registry needs a generic adapter profile for "spawn this ACP executable exactly as
+  configured by the runner" without adding headed-Claude-specific support.
+
+
+  What:
+
+  - In `src/agents/adapters.ts`, extend `AgentAdapter` with optional metadata
+  `requiresProcessExecutable?: boolean`. Non-generic adapters keep required `command: string`;
+  adapters with `requiresProcessExecutable: true` have no adapter-level command and may be resolved
+  only through a runner that supplies `process.executable`.
+
+  - Register a new built-in adapter id `generic-acp` with `requiresProcessExecutable: true`, `args:
+  []`, no `command`, no model-specific launch args, no `autoApproveArgs`, and a description that
+  identifies it as a generic ACP process profile for runner-supplied executables.
+
+  - Extend `RunnerResolutionReason` in `src/agents/runners.ts` with `missing_process_executable` and
+  use that stable reason for all generic ACP missing-executable failures.
+
+  - Extend runner resolution so `generic-acp` runner-backed invocations require
+  `runner.process.executable` during runner contract resolution. Runner-backed failures must use
+  `RunnerResolutionError("missing_process_executable", ...)` with details `{ runner, adapter:
+  "generic-acp", missing_field: "process.executable" }`.
+
+  - When a `generic-acp` runner supplies `process.executable`, the returned effective
+  adapter/contract must contain that executable as the command before preflight/spawn. The generic
+  adapter must not expose, preflight, or spawn any placeholder command.
+
+  - Reject direct/legacy `generic-acp` usage before spawn through the `resolveRunnerInvocation`
+  implicit/adapter-override path in `src/agents/runners.ts`. If an agent sets `adapter: generic-acp`
+  without a runner contract, or a one-shot command selects `--adapter generic-acp` without a runner,
+  resolution must fail with `RunnerResolutionError("missing_process_executable", ...)` and details
+  `{ adapter: "generic-acp", missing_field: "process.executable" }`; do not spawn a placeholder
+  command.
+
+  - In CLI and validation surfaces, make the missing-executable failures operator-actionable.
+  Diagnostics must identify the adapter id `generic-acp`; runner-backed diagnostics must also
+  identify the runner name and missing `process.executable` field. Expected files include
+  `src/agents/runner-validation.ts` and `src/cli/commands/agent.ts`.
+
+  - Preserve existing semantics for all package-backed adapters: `process.executable` continues to
+  replace only the command while keeping that adapter's base args and auto-approve args.
+
+  - Preserve runner `process.args` semantics: for `generic-acp`, runner args are appended to the
+  invocation exactly as configured after the empty generic adapter contribution.
+
+  - Preserve prompt behavior for `generic-acp`: do not map it to `claude-code`, `codex`, or `droid`
+  skill-reference formatting unless a separate future spec adds an explicit formatting-profile
+  field.
+
+  - Add or update CLI/operator diagnostics so `kspec agent runners validate` surfaces `generic-acp`
+  as a registered adapter and reports missing `process.executable` as invalid rather than as a later
+  spawn failure.
+
+
+  Testing:
+
+  - Add adapter registry tests in `tests/agent-runtime/adapter-auto-approve.test.ts` proving
+  `getAdapter("generic-acp")` is registered with `requiresProcessExecutable: true`, has `args: []`,
+  has no `command`, and has no `autoApproveArgs`.
+
+  - Add runner resolver tests in `tests/agent-runner-resolver.test.ts` proving a `generic-acp`
+  runner with `process.executable` resolves to that executable and has `extraArgs` equal only to
+  runner `process.args`, even with `autoApprove: true`.
+
+  - Add a package-backed regression test in `tests/agent-runner-resolver.test.ts` using a
+  non-generic registered adapter with `args`, `autoApproveArgs`, runner `process.executable`, runner
+  `process.args`, and `autoApprove: true`; assert the command is overridden, adapter base args
+  remain on the adapter, and `extraArgs` contains adapter auto-approve args followed by runner args.
+
+  - Add a negative runner resolver test in `tests/agent-runner-resolver.test.ts` proving a
+  `generic-acp` runner without `process.executable` fails during contract resolution with reason
+  `missing_process_executable` and details `{ runner, adapter: "generic-acp", missing_field:
+  "process.executable" }`.
+
+  - Add preflight/process coverage in `tests/agent-runner-process.test.ts` proving a valid
+  `generic-acp` runner preflights only the runner-declared executable and never preflights or spawns
+  a placeholder generic command.
+
+  - Add CLI diagnostics coverage in `tests/agent-runner-cli.test.ts` so `kspec agent runners
+  validate --json` reports missing `process.executable` for `generic-acp` as an invalid runner with
+  reason `missing_process_executable` and details `{ runner, adapter: "generic-acp", missing_field:
+  "process.executable" }`, and human output includes redacted guidance.
+
+  - Add direct/legacy invocation coverage in `tests/agent-runner-resolver.test.ts` for
+  `resolveRunnerInvocation` implicit `agent.adapter: generic-acp` and `adapterOverride:
+  "generic-acp"`; both must fail before spawn with reason `missing_process_executable` and details
+  `{ adapter: "generic-acp", missing_field: "process.executable" }`.
+
+  - Add CLI dry-run coverage in `tests/cli-agent.test.ts` for `agent.adapter: generic-acp` and
+  `--adapter generic-acp` without a runner; both must fail before spawn with guidance to use a
+  runner-backed config.
+
+  - Add prompt-formatting coverage in `tests/agent-invocation-lifecycle.test.ts` showing `adapterId:
+  "generic-acp"` leaves skill references in portable form and does not rewrite them as Claude,
+  Codex, or Droid platform references.
+
+  - Run `npm run format:check`.
+
+  - Run `npm run lint -- --quiet`.
+
+  - Run focused lint for touched files, for example `npx oxlint src/agents/adapters.ts
+  src/agents/runners.ts src/agent-runtime/prompts.ts
+  tests/agent-runtime/adapter-auto-approve.test.ts tests/agent-runner-resolver.test.ts
+  tests/agent-runner-process.test.ts tests/agent-runner-cli.test.ts tests/cli-agent.test.ts
+  tests/agent-invocation-lifecycle.test.ts`.
+
+  - Run `npm run typecheck`.
+
+  - Run `npm test -- adapter-auto-approve agent-runner-resolver agent-runner-process
+  agent-runner-cli agent-invocation-lifecycle`
+
+  - Run `kspec validate --schema --warnings-ok`.
+
+  - Run `kspec validate --refs --warnings-ok`.
+
+  - Run `kspec validate --alignment --completeness --warnings-ok`.
+
+
+  Covers:
+
+  - @runner-process-invocation-inputs ac-generic-acp-process-requires-executable
+
+  - @runner-process-invocation-inputs ac-generic-acp-process-uses-runner-executable
+
+  - @runner-process-invocation-inputs ac-generic-acp-process-omits-built-in-launch-args
+
+  - @runner-operator-surfaces ac-generic-acp-validation-reports-missing-executable
+
+  - @runner-invocation-semantics ac-generic-acp-auto-approve-contributes-no-args
+
+  - @runner-invocation-semantics ac-generic-acp-skill-formatting-is-neutral
+
+  - @runner-resolution-and-preflight ac-generic-acp-direct-invocation-requires-runner
+
+
+  Out of scope:
+
+  - Do not add `headed-claude`, Claude-specific auth, browser automation, or terminal/PTY-specific
+  branches to kspec.
+
+  - Do not change global `process.executable` override semantics for `claude-agent-acp`,
+  `codex-acp`, `droid-acp`, or other package/model-specific adapters.
+
+  - Do not change legacy/ad-hoc adapter compatibility except for the explicit `generic-acp`
+  missing-executable rejection.
+
+  - Do not allow arbitrary unknown adapter refs in system runner config.
+
+  - Do not add runner-level auto-approval args or a separate prompt-formatting profile in this task;
+  those are larger schema decisions.
+
+  - Do not migrate local machine runner configs as part of the implementation task; after the code
+  lands, operators can switch local configs from `mock-acp` to `generic-acp` separately.
+spec_ref: "@runner-process-invocation-inputs"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - agents
+  - runners
+  - acp
+vcs_refs: []
+created_at: 2026-06-03T23:48:57.289Z
+todos: []
