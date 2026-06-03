@@ -21,13 +21,34 @@ const MAX_DISPLAY_LINES = 3;
 // Strip terminal escape/control sequences before displaying text in compact fleet cards.
 // Full session logs preserve the original stream; this lossy cleanup is only for the
 // short Active Fleet preview where raw terminal bytes create mangled-looking output.
-const ESC = String.fromCharCode(27);
-const CSI = String.fromCharCode(155);
-const BEL = String.fromCharCode(7);
-const ANSI_ESCAPE_PATTERN = new RegExp(
-  `[${ESC}${CSI}][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[a-zA-Z\\d]*)*)?${BEL})|(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-nq-uy=><~]))`,
+const ESC = String.fromCharCode(0x1b);
+const BEL = String.fromCharCode(0x07);
+const CSI_8BIT = String.fromCharCode(0x9b);
+const OSC_8BIT = String.fromCharCode(0x9d);
+const ST_8BIT = String.fromCharCode(0x9c);
+
+// OSC (Operating System Command): ESC ] or 0x9D, arbitrary payload, terminated by
+// BEL (0x07), ST (ESC \ or 0x9C), or — for malformed/truncated sequences within a
+// single complete line — end-of-line. Examples: terminal hyperlinks (`ESC]8;;URL BEL`),
+// window-title sequences (`ESC]0;title ESC\`). The payload may contain control bytes
+// that would otherwise be picked up by CSI/control-char passes, so OSC must run first.
+const OSC_PATTERN = new RegExp(
+  `(?:${ESC}\\]|${OSC_8BIT})[\\s\\S]*?(?:${BEL}|${ESC}\\\\|${ST_8BIT}|$)`,
   "g",
 );
+
+// CSI (Control Sequence Introducer): ESC [ or 0x9B, parameter bytes (0x30–0x3F),
+// intermediate bytes (0x20–0x2F), and a final byte (0x40–0x7E). The final byte is
+// optional so a CSI fragment that survives line buffering still gets stripped.
+const CSI_PATTERN = new RegExp(
+  `(?:${ESC}\\[|${CSI_8BIT})[\\x30-\\x3f]*[\\x20-\\x2f]*[\\x40-\\x7e]?`,
+  "g",
+);
+
+// Other ESC-introduced sequences (Fp/Fe/Fs): ESC followed by a single byte in
+// 0x20–0x7E. The trailing byte is optional so a stray ESC is also stripped.
+const ESC_PATTERN = new RegExp(`${ESC}[\\x20-\\x7e]?`, "g");
+
 function isStrippableControlChar(char: string): boolean {
   const code = char.charCodeAt(0);
   return (
@@ -59,11 +80,14 @@ function applyBackspaces(text: string): string {
 }
 
 function sanitizeDisplayLine(line: string): string {
+  // Strip OSC sequences first: their payload can contain bytes (including \r and
+  // BEL) that the later passes would otherwise misinterpret as visible content.
+  const withoutOsc = line.replace(OSC_PATTERN, "");
   // Treat bare carriage returns as terminal progress-line rewrites. CRLF has already
   // been normalized to LF, so any remaining \r means "return to line start" output.
-  const rewritten = line.split("\r").pop() ?? "";
-  const withoutAnsi = rewritten.replace(ANSI_ESCAPE_PATTERN, "");
-  return stripControlChars(applyBackspaces(withoutAnsi)).trim();
+  const rewritten = withoutOsc.split("\r").pop() ?? "";
+  const withoutEscapes = rewritten.replace(CSI_PATTERN, "").replace(ESC_PATTERN, "");
+  return stripControlChars(applyBackspaces(withoutEscapes)).trim();
 }
 
 /**

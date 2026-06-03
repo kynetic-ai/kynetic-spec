@@ -174,6 +174,59 @@ describe("processTextChunk", () => {
     expect(result.lines).toEqual(["safX"]);
     expect(result.buffer).toBe("");
   });
+
+  // AC: @ui-task-board ac-4
+  it("strips OSC terminal hyperlink sequences terminated by BEL", () => {
+    const state = createSessionState();
+    const result = processTextChunk(
+      state,
+      "\u001b]8;;https://example.com\u0007link\u001b]8;;\u0007\n",
+    );
+    expect(result.lines).toEqual(["link"]);
+    expect(result.buffer).toBe("");
+  });
+
+  // AC: @ui-task-board ac-4
+  it("strips OSC sequences terminated by ST (ESC backslash)", () => {
+    const state = createSessionState();
+    const result = processTextChunk(state, "\u001b]0;window title\u001b\\hello\n");
+    expect(result.lines).toEqual(["hello"]);
+    expect(result.buffer).toBe("");
+  });
+
+  // AC: @ui-task-board ac-4
+  it("strips OSC sequences terminated by single-byte ST (0x9C)", () => {
+    const state = createSessionState();
+    const result = processTextChunk(state, "\u001b]0;title\u009cready\n");
+    expect(result.lines).toEqual(["ready"]);
+    expect(result.buffer).toBe("");
+  });
+
+  // AC: @ui-task-board ac-4
+  it("waits to sanitize split OSC sequences until a complete line arrives", () => {
+    let state = createSessionState();
+    state = processTextChunk(state, "\u001b]8;;https://exa");
+    expect(state.lines).toEqual([]);
+    expect(state.buffer).toBe("\u001b]8;;https://exa");
+
+    state = processTextChunk(state, "mple.com\u0007link\u001b]8;;\u0007\n");
+    expect(state.lines).toEqual(["link"]);
+    expect(state.buffer).toBe("");
+  });
+
+  // AC: @ui-task-board ac-4
+  it("does not leave OSC payload text behind when payload contains URL punctuation", () => {
+    // Regression for review cycle 3 blocker: arbitrary OSC payloads (URLs with
+    // colons, slashes, dots, query strings) previously bled through the sanitizer
+    // and produced mangled output like "ttps://example.comlink".
+    const state = createSessionState();
+    const result = processTextChunk(
+      state,
+      "\u001b]8;;https://example.com/path?q=1&r=2\u0007label\u001b]8;;\u0007\n",
+    );
+    expect(result.lines).toEqual(["label"]);
+    expect(result.buffer).toBe("");
+  });
 });
 
 describe("getDisplayState", () => {
