@@ -7378,6 +7378,11 @@ modules:
             id: ac-generic-acp-process-uses-runner-executable
             then: The spawned command is the runner-declared executable.
             when: kspec prepares the ACP process invocation.
+          - given: A system runner selects the generic ACP process adapter.
+            id: ac-generic-acp-process-omits-built-in-launch-args
+            then: The invocation does not include package-runner or model-specific launch arguments from other
+              built-in adapters.
+            when: kspec prepares the ACP process invocation.
         tags: []
         created: 2026-05-31T06:19:00.531Z
         notes:
