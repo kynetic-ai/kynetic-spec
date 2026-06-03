@@ -16439,11 +16439,11 @@ workspaces:
     canonical_branch: dispatch/task/task-preserve-kynetic-local-template-maintenance-context/01kt5cbv
     canonical_branch_head: 8179df1ac4dae772cb698eda35c254e10cbd7eac
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-03T04:55:04.484Z
+      updated_at: 2026-06-03T04:58:06.903Z
     health:
       status: healthy
       issues: []
@@ -16457,16 +16457,16 @@ workspaces:
       target_branch: dev
       target_commit: e4672637655989cdd98f018fdabe5497985bddad
       updated_at: 2026-06-03T04:55:04.484Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KT5CBVGVNX2MF3TK6WJZ4FRR"
     task_slug: task-preserve-kynetic-local-template-maintenance-context
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-03T04:58:06.903Z
       last_active_at: 2026-06-03T04:38:42.939Z
       last_reconciled_at: 2026-06-03T04:57:49.504Z
       created_at: 2026-06-03T04:28:14.993Z
-      updated_at: 2026-06-03T04:57:49.504Z
+      updated_at: 2026-06-03T04:58:06.903Z
     workspace_id: dispatch-workspace-01KT5CBVGVNX2MF3TK6WJZ4FRR
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
