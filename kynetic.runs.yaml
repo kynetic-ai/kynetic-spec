@@ -59448,7 +59448,7 @@ runs:
     completed_at: 2026-06-03T02:06:16.630Z
   - _ulid: 01KT5Q6JXS6TQ7K9MDSV8M0WJN
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -59463,7 +59463,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-03T03:08:04.377Z
-        completed_at: 2026-06-03T03:08:04.377Z
+        completed_at: 2026-06-03T03:09:00.168Z
+        notes: "High-confidence candidates checked against baseline/search results. Success candidate:
+          generator-guidance review should compare source templates and dry-run generated output
+          before approval; already tracked by observation @01KT5G5N. Friction candidate: full npm
+          test review gate took 2483s for this Markdown/template review and had a long quiet tail;
+          already covered by inbox @01KRZ4B3, observation @01KT0GTA, and progress-visibility inbox
+          @01KT2F6H. Reflection-loop baseline commands produced very large unbounded output; already
+          covered by inbox @01KSDZFN. Decision: no new captures to avoid duplicates."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-03T03:09:00.168Z
+        completed_at: 2026-06-03T03:09:00.168Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-03T03:07:29.593Z
