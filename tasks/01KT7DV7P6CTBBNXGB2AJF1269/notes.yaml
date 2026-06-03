@@ -87,3 +87,26 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-03T20:24:54.644Z
+  - _ulid: 01KT7KY7DSACRWMNQS4ZJ5388G
+    content: "Fix cycle 3: addressed OSC blocker from review @01KT7H4HJ9W027AEBZR9N9MQ71 in
+      packages/web-ui/src/lib/components/board/fleet-buffer.ts. Root cause was a single mega-regex
+      whose alternation only consumed alphanumeric+semicolon bytes in OSC payloads before BEL, so
+      URL hyperlinks (ESC]8;;https://... BEL) broke the match and left URL bytes + the
+      BEL/second-OSC remnant visible (producing 'ttps://example.comlink' for the reviewer's probe).
+      Replaced with three focused patterns applied in order: OSC (ESC ] or 0x9D, non-greedy
+      arbitrary payload, terminator BEL | ESC\\\\ (ST) | 0x9C | end-of-line), CSI (structured
+      grammar with params/intermediates/final byte), and ESC fallback (Fp/Fe/Fs + stray ESC). OSC
+      strip runs before the \\r split so OSC payloads containing \\r are not misinterpreted as
+      progress-line rewrites. Added five behavioral regression tests in
+      tests/web-ui/fleet-buffer.test.ts: BEL-terminated hyperlink (reviewer's exact case),
+      ST-terminated, single-byte ST, split OSC across chunks staying buffered, and URL with
+      colons/slashes/dots/query string. Verification: npm test (2681/2681 suites, 10231/10236 tests
+      passed, 5 pre-existing skipped); npm test -- --fresh --run tests/web-ui/fleet-buffer.test.ts
+      (25/25 passed); npx oxlint target files (0 warnings/errors); npm run format:check (passed);
+      npm run lint -- --quiet (0 errors, pre-existing 742 warning baseline); npm run typecheck
+      (passed); kspec validate --refs/--alignment/--completeness --warnings-ok (passed, pre-existing
+      baseline warnings). Replied to and resolved both threads on review
+      @01KT7H4HJ9W027AEBZR9N9MQ71."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-03T20:48:58.809Z
