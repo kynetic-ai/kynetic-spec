@@ -64,3 +64,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-03T02:03:57.332Z
+  - _ulid: 01KT5RPNDJRJRMYKAHCH5KAE0F
+    content: "Fix cycle 1: addressed all 3 review blockers (format:check failure on
+      templates/skills/triage-inbox/SKILL.md, templates/skills/plan/SKILL.md,
+      templates/skills/triage/docs/observations.md). Ran npm run format which rewrapped markdown
+      table column widths to match the new cell content from the prior commit — no semantic changes.
+      Regenerated codex and droid rendered output via kspec skill render --force so source and
+      rendered output stay in sync. Reverted unrelated work-gates/review-gates rendered drift that
+      --force also touched, since that is pre-existing rendered/.kspec drift from the dependency
+      task and out of scope. All gates green: format:check, lint 0 errors, typecheck, kspec validate
+      refs/alignment/completeness, npm test 2681/2681 suites passed. All 3 review threads replied
+      and resolved."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-03T03:33:45.010Z
