@@ -60001,7 +60001,7 @@ runs:
     completed_at: 2026-06-03T05:39:52.201Z
   - _ulid: 01KT60X8GMKKQP8N2WF7D5V849
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -60033,7 +60033,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-06-03T05:58:17.543Z
-        completed_at: 2026-06-03T05:58:17.543Z
+        completed_at: 2026-06-03T05:58:32.975Z
+        notes: "Proposed improvement: improve full-suite review ergonomics by making npm test/test runner
+          emit clearer alive/finalization status when late suites are still running after most
+          visible output has stopped, or by making the final aggregate/active-suite state easier to
+          query from the printed full log path. Scope: small to medium, depending on whether this is
+          runner output only or needs deeper process accounting."
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-03T05:58:32.975Z
+        completed_at: 2026-06-03T05:58:32.975Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-03T05:57:09.781Z
