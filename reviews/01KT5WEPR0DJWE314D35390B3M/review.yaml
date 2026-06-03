@@ -1,0 +1,26 @@
+_ulid: 01KT5WEPR0DJWE314D35390B3M
+slugs: []
+title: Review task-preserve-kynetic-local-template-maintenance-context
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KT5WEPR0WEF1RDDGHHA84RWR
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-03T04:39:18.528Z
+examined_commit: 8179df1ac4dae772cb698eda35c254e10cbd7eac
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KT5CBVGVNX2MF3TK6WJZ4FRR"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-03T04:39:18.528Z
+updated_at: null
+notes: []

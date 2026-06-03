@@ -63,6 +63,7 @@ tags:
   - agents
   - self-hosting
 vcs_refs: []
+review_ref: "@01KT5WEPR0DJWE314D35390B3M"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-preserve-kynetic-local-template-maintenance-context/01kt5cbv
@@ -113,6 +114,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-03T04:36:10.136Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KT5WEPR0DJWE314D35390B3M"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-03T04:39:20.652Z
 created_at: 2026-06-02T23:58:07.899Z
 started_at: 2026-06-03T04:29:33.991Z
 submitted_at: 2026-06-03T04:36:10.136Z
