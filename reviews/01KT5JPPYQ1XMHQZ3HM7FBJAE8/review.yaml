@@ -92,6 +92,29 @@ checks:
     runner: oxlint
     created_at: 2026-06-03T02:03:03.642Z
     completed_at: 2026-06-03T02:03:03.642Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: changed templates/skills create-workflow, observe, plan, reflect,
+      triage-inbox, triage docs, writing-specs; manifest; rendered .agents/.factory diffs. Commands
+      run: task/plan/review lookups, git diff/stat/name-only, rg neutrality search, cmp generated
+      copies, deterministic gates. Claims verified: worker claim that
+      PR-number/AskUserQuestion/domain-specific examples were neutralized; manifest already used
+      neutral review wording; rendered core copies were refreshed for codex/droid outputs with
+      platform-specific skill-token differences. Categories searched: semantic neutrality direction
+      1 and 2, generated output consistency, test quality/AC scope, validation,
+      format/lint/type/test gates. Shared surfaces touched: templates/skills plus rendered
+      .agents/.factory core skills. Local preservation: Kynetic-only detailed maintenance context is
+      explicitly deferred to the dependent local-context task in the approved plan; this task's
+      removals are documented in task notes. Generated artifacts: .agents and .factory refreshed
+      here; plugin copies and kspec-agents.md intentionally deferred to the later artifact task per
+      plan."
+    name: shared-guidance neutrality review
+    required: false
+    runner: reviewer
+    created_at: 2026-06-03T02:03:38.734Z
+    completed_at: 2026-06-03T02:03:38.734Z
 events:
   - _ulid: 01KT5JPPYQ9C93FFHAHNBHFECJ
     actor: Jacob Chapel
@@ -176,6 +199,13 @@ events:
       kind: blocker
       thread_ulid: 01KT5KHK4508VMP9EDXGHW79B0
     timestamp: 2026-06-03T02:03:36.168Z
+  - _ulid: 01KT5KHP3MGVE5XNF2615M5TC9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: shared-guidance neutrality review
+    timestamp: 2026-06-03T02:03:38.996Z
 examined_commit: 58ed812655e61eebaedc05fa7d1e71d3e3f887df
 external_links: []
 lifecycle_state: open
@@ -222,5 +252,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-03T01:48:55.127Z
-updated_at: 2026-06-03T02:03:35.942Z
+updated_at: 2026-06-03T02:03:38.734Z
 notes: []
