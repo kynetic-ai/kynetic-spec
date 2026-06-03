@@ -20750,6 +20750,18 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-06-03T05:32:42.756Z
+  - _ulid: 01KT6105GSH9FFX5PGYV7507HG
+    type: friction
+    content: "During review, the full npm test gate can appear ambiguous near the end: after many suites
+      pass, the process may stay alive through long 30-60s quiet waits before emitting late passing
+      suites and the final aggregate. Reviewers should wait for the process exit, but a clearer
+      runner heartbeat/finalization status or queryable active-suite summary would reduce
+      uncertainty."
+    author: codex-reviewer
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-06-03T05:58:45.018Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
