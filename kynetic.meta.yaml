@@ -528,6 +528,10 @@ conventions:
       - "Daemon cache troubleshooting: GET /api/debug/cache-status returns per-project cache state
         (domain states, entry counts, watcher status, last invalidation timestamps). Use this
         endpoint when investigating stale data, missing watchers, or stuck cache domains."
+      - After modifying package core skill sources (templates/skills/), run 'kspec skill render' to
+        refresh .agents/skills/ and .factory/skills/, and 'npm run build:plugin' to refresh
+        plugin/plugins/kspec/skills/ (plugin/ is gitignored). Commit the tracked rendered outputs
+        alongside the source change.
   - _ulid: 01KJ9BCWSFHEJFHW7024Y4K68Y
     domain: cli-lookups
     examples: []
