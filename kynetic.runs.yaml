@@ -59600,7 +59600,7 @@ runs:
     completed_at: 2026-06-03T03:40:27.158Z
   - _ulid: 01KT5STVSA3YMH1NW7H6P4WJ9M
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -59616,7 +59616,69 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-03T03:54:25.653Z
-        completed_at: 2026-06-03T03:54:25.653Z
+        completed_at: 2026-06-03T03:54:38.032Z
+        notes: >-
+          Friction points: (1) 
+
+          Drifted (12):
+            ● task-work [codex]
+              Rendered file has been modified. Run 'kspec skill render task-work --force' to overwrite with source, or 'kspec skill diff task-work' to review changes.
+            ● task-work [droid]
+              Rendered file has been modified. Run 'kspec skill render task-work --force' to overwrite with source, or 'kspec skill diff task-work' to review changes.
+            ● review [codex]
+              Rendered file has been modified. Run 'kspec skill render review --force' to overwrite with source, or 'kspec skill diff review' to review changes.
+            ● review [droid]
+              Rendered file has been modified. Run 'kspec skill render review --force' to overwrite with source, or 'kspec skill diff review' to review changes.
+            ● work-gates [claude-code]
+              Rendered file has been modified. Run 'kspec skill render work-gates --force' to overwrite with source, or 'kspec skill diff work-gates' to review changes.
+            ● work-gates [codex]
+              Rendered file has been modified. Run 'kspec skill render work-gates --force' to overwrite with source, or 'kspec skill diff work-gates' to review changes.
+            ● work-gates [droid]
+              Rendered file has been modified. Run 'kspec skill render work-gates --force' to overwrite with source, or 'kspec skill diff work-gates' to review changes.
+            ● review-gates [claude-code]
+              Rendered file has been modified. Run 'kspec skill render review-gates --force' to overwrite with source, or 'kspec skill diff review-gates' to review changes.
+            ● review-gates [codex]
+              Rendered file has been modified. Run 'kspec skill render review-gates --force' to overwrite with source, or 'kspec skill diff review-gates' to review changes.
+            ● review-gates [droid]
+              Rendered file has been modified. Run 'kspec skill render review-gates --force' to overwrite with source, or 'kspec skill diff review-gates' to review changes.
+            ● merge [codex]
+              Rendered file has been modified. Run 'kspec skill render merge --force' to overwrite with source, or 'kspec skill diff merge' to review changes.
+            ● merge [droid]
+              Rendered file has been modified. Run 'kspec skill render merge --force' to overwrite with source, or 'kspec skill diff merge' to review changes.
+
+          Not rendered (1):
+            ○ droid-status [/tmp/tmp.OuD6TXPJvr]
+              Unregistered platform '/tmp/tmp.OuD6TXPJvr'. No renderer available.
+
+          Plugin-provided (14):
+            ◆ help [claude-code]
+            ◆ triage [claude-code]
+            ◆ reflect [claude-code]
+            ◆ triage-inbox [claude-code]
+            ◆ triage-automation [claude-code]
+            ◆ writing-specs [claude-code]
+            ◆ plan [claude-code]
+            ◆ task-work [claude-code]
+            ◆ create-workflow [claude-code]
+            ◆ review [claude-code]
+            ◆ observe [claude-code]
+            ◆ observe [claude-code]
+            ◆ merge [claude-code]
+            ◆ review-plan [claude-code]
+
+          41 OK, 14 plugin-provided skill(s) verified.
+
+
+          To sync all drifted skills: kspec skill render --force still surfaced unrelated global
+          drift for work-gates/review-gates and an unregistered droid-status platform, which made
+          scoped verification evidence noisy. Search found existing completed tracking around skill
+          verify drift/no-hash for plugin-provided core skills, so I am not duplicating it. (2)
+          Recording review checks one-by-one was repetitive; search found existing
+          observations/inbox items about batching review checks, so this is already covered.
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-03T03:54:38.032Z
+        completed_at: 2026-06-03T03:54:38.032Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-03T03:53:31.178Z
