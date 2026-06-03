@@ -203,6 +203,12 @@ events:
     payload:
       thread_ulid: 01KT5RQKDKJWWMM9E0S33GJQMH
     timestamp: 2026-06-03T03:58:53.119Z
+  - _ulid: 01KT5T514TWNY2CHMXWT8HSTYJ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KT5RQKDKJWWMM9E0S33GJQMH
+    timestamp: 2026-06-03T03:59:04.346Z
 examined_commit: 600cc12a44941be362ec12bd56c6708b3c58ed03
 external_links: []
 lifecycle_state: closed
@@ -664,6 +670,8 @@ threads:
           writing-specs, plan, create-workflow, observe) is unchanged and outside this task's scope.
         created_at: 2026-06-03T03:58:52.862Z
     kind: blocker
+    resolved_at: 2026-06-03T03:59:04.081Z
+    resolved_by: "@claude"
   - _ulid: 01KT5RSC2GVMXYHB3GRZESBYWF
     entries:
       - _ulid: 01KT5RSC2G8V1ZVWNMXG3BC6FK
@@ -694,5 +702,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-03T03:35:24.632Z
 created_at: 2026-06-03T03:18:25.603Z
-updated_at: 2026-06-03T03:58:52.862Z
+updated_at: 2026-06-03T03:59:04.081Z
 notes: []
