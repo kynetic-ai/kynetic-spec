@@ -5,7 +5,7 @@ Systematically process inbox items using the **record → act** pattern. Records
 ## When to Use
 
 - Processing accumulated inbox items
-- During a triage session (`kspec workflow start @inbox-triage`)
+- During a project-defined inbox triage workflow, if one exists
 - When inbox count is growing and needs attention
 
 ## Core Concept: Record → Act
