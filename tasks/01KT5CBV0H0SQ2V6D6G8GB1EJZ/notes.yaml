@@ -1,1 +1,61 @@
-notes: []
+notes:
+  - _ulid: 01KT5HZ8ABP23RCKJVJ6TABVMY
+    content: >-
+      Edited package core skills to neutralize self-hosting references:
+
+
+      - create-workflow/SKILL.md: moved package template authoring
+      (templates/skills/<name>/SKILL.md, manifest edits, manual main-branch commits) out of consumer
+      guidance; replaced with project-local skill source guidance.
+
+      - plan/SKILL.md: replaced OAuth/passport.js example specs with neutral example placeholders;
+      conditionalized @spec-plan-design/@spec-plan-import/@spec-plan-manual workflow refs with 'if
+      the project defines' wording; replaced hard-coded @trait-* table with project-catalog
+      discovery guidance; neutralized dev integration branch example.
+
+      - writing-specs/SKILL.md: replaced
+      ACP/JSON-RPC/WebSocket/session_id/client.prompt()/closeSession() implementation-domain
+      examples with neutral 'internal field/protocol/function' categories; replaced hard-coded
+      @trait-* table with project-catalog discovery guidance.
+
+      - observe/SKILL.md: replaced PR #123 and @spec-plan-import workflow ref examples with neutral
+      wording.
+
+      - reflect/SKILL.md: conditionalized @session-reflect/@session-reflect-loop workflow refs;
+      replaced AGENTS.md reference with neutral 'project-local agent guidance'.
+
+      - triage-inbox/SKILL.md: replaced PR #123 and AGENTS.md references with neutral wording.
+
+      - triage/docs/inbox.md: replaced PR #123, kspec item list grep example, AskUserQuestion
+      reference, and AGENTS.md with neutral wording.
+
+      - triage/docs/observations.md: replaced PR #100 and AGENTS.md references with neutral wording.
+
+
+      manifest.yaml descriptions were reviewed and found already neutral (no Task/PR wording to
+      update).
+
+
+      Verification:
+
+      - Synced templates to shadow .kspec/skills/ via npm run dev -- skill install-core --force.
+
+      - Regenerated .agents/skills/ and .factory/skills/ renders via skill render --force
+      (codex/droid platforms; claude-code is plugin-provided and handled by the artifact
+      regeneration task).
+
+      - skill-parser-integration, skill-rendering, skill-content-model, core-skill-install,
+      core-skill-update, agents-instruction-gen, portable-skill-references, kspec-skill-validation
+      all PASS.
+
+      - Full suite: 2681 suites / 10219 tests pass.
+
+      - kspec validate --refs/--alignment/--completeness all pass (warnings only, pre-existing and
+      unrelated).
+
+
+      Plugin/plugins/kspec/skills/ and kspec-agents.md regeneration intentionally deferred to
+      task-regenerate-shared-template-artifacts-and-tests per the plan.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-03T01:36:06.475Z
