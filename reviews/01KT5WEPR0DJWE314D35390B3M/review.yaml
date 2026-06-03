@@ -185,9 +185,25 @@ events:
       kind: nit
       thread_ulid: 01KT5X9FPBMS4T58CX4X5JK19P
     timestamp: 2026-06-03T04:53:56.270Z
+  - _ulid: 01KT5X9Z6W73GSYTVB9MAZVHGZ
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-03T04:54:11.932Z
+  - _ulid: 01KT5X9Z6W4CAKE81PE9CMKWAY
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-03T04:54:11.932Z
 examined_commit: 8179df1ac4dae772cb698eda35c254e10cbd7eac
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -229,7 +245,14 @@ threads:
           refresh is explicitly delegated to the next plan task.
         created_at: 2026-06-03T04:53:56.044Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-06-03T04:54:11.932Z
 created_at: 2026-06-03T04:39:18.528Z
-updated_at: 2026-06-03T04:53:56.044Z
+updated_at: 2026-06-03T04:54:11.932Z
 notes: []
