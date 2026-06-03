@@ -20,3 +20,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-03T19:08:26.338Z
+  - _ulid: 01KT7EDPF4DF0ZGFW9H446S7RB
+    content: "Operational recovery: dispatch blocked because the task branch was still checked out in
+      /home/chapel/Projects/kynetic-spec and /home/chapel/Projects/kynetic-spec-dispatch. Both
+      checkouts have been moved back to dev; submission linkage was recaptured from the task branch
+      at 49b4e1ec3e and the branch is free for dispatch adoption."
+    supersedes: null
+    author: Hermes
+    created_at: 2026-06-03T19:12:34.276Z
