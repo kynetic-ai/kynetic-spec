@@ -23854,7 +23854,7 @@ reviews:
     title: Review neutralize worker, reviewer, and merge core skills (cycle 2)
     disposition: pending
     author: Jacob Chapel
-    check_count: 0
+    check_count: 1
     examined_commit: 600cc12a44941be362ec12bd56c6708b3c58ed03
     lifecycle_state: open
     related_refs: []
@@ -23867,4 +23867,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-03T03:18:25.603Z
-    updated_at: 2026-06-03T03:18:57.279Z
+    updated_at: 2026-06-03T03:32:14.274Z
