@@ -55,6 +55,7 @@ tags:
   - review
   - release
 vcs_refs: []
+review_ref: "@01KT600VAZW7XVNDTHKGZM05G1"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-close-shared-template-neutrality-cleanup/01kt5cbx
@@ -105,6 +106,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-03T05:37:18.664Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KT600VAZW7XVNDTHKGZM05G1"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-03T05:41:40.903Z
 created_at: 2026-06-02T23:58:09.460Z
 started_at: 2026-06-03T05:31:09.290Z
 submitted_at: 2026-06-03T05:37:18.664Z
