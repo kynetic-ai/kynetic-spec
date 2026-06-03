@@ -2,7 +2,19 @@ _ulid: 01KT5JPPYQ1XMHQZ3HM7FBJAE8
 slugs: []
 title: Review neutralize planning/writing/triage skills
 author: Jacob Chapel
-checks: []
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run format:check failed: oxfmt reported formatting issues in
+      templates/skills/plan/SKILL.md, templates/skills/triage-inbox/SKILL.md, and
+      templates/skills/triage/docs/observations.md."
+    name: format:check
+    required: true
+    runner: oxfmt
+    created_at: 2026-06-03T02:02:43.354Z
+    completed_at: 2026-06-03T02:02:43.354Z
 events:
   - _ulid: 01KT5JPPYQ9C93FFHAHNBHFECJ
     actor: Jacob Chapel
@@ -17,6 +29,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-03T01:49:17.635Z
+  - _ulid: 01KT5KG00F8SREX377VPGE8HYG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: format:check
+    timestamp: 2026-06-03T02:02:43.599Z
 examined_commit: 58ed812655e61eebaedc05fa7d1e71d3e3f887df
 external_links: []
 lifecycle_state: open
@@ -29,5 +48,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-03T01:48:55.127Z
-updated_at: 2026-06-03T01:49:17.426Z
+updated_at: 2026-06-03T02:02:43.354Z
 notes: []

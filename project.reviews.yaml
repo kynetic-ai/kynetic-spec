@@ -23814,9 +23814,9 @@ reviews:
   - _ulid: 01KT5JPPYQ1XMHQZ3HM7FBJAE8
     slugs: []
     title: Review neutralize planning/writing/triage skills
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
-    check_count: 0
+    check_count: 1
     examined_commit: 58ed812655e61eebaedc05fa7d1e71d3e3f887df
     lifecycle_state: open
     related_refs: []
@@ -23829,4 +23829,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-03T01:48:55.127Z
-    updated_at: 2026-06-03T01:49:17.426Z
+    updated_at: 2026-06-03T02:02:43.354Z
