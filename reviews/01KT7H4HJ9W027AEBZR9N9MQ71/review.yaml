@@ -182,6 +182,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-03T20:13:52.119Z
+  - _ulid: 01KT7HYHGE21A2GBQRDQ167253
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KT7HYH9NGCJK35MTP1TMNBZB
+    timestamp: 2026-06-03T20:14:11.982Z
 examined_commit: 9008219bb7775a345224df1765b5bd1c537a1c87
 external_links: []
 lifecycle_state: open
@@ -214,7 +221,44 @@ threads:
           backspaces/control-character cleanup.'
         created_at: 2026-06-03T20:02:39.238Z
     kind: blocker
+  - _ulid: 01KT7HYH9NGCJK35MTP1TMNBZB
+    entries:
+      - _ulid: 01KT7HYH9PTD2VBBKA61HE0S0Q
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: kspec-agents.md; task @01KT7DV7P6CTBBNXGB2AJF1269; prior reviews
+          @01KT7EHKYYZT7V8SNNAW4N9S45 and @01KT7FWZTDP3BPD8C4X2T7SPRX;
+          packages/web-ui/src/lib/components/board/fleet-buffer.ts;
+          tests/web-ui/fleet-buffer.test.ts; packages/web-ui/src/routes/tasks/board/+page.svelte;
+          packages/web-ui/src/routes/+page.svelte;
+          packages/web-ui/src/lib/components/board/ActiveFleetRow.svelte;
+          packages/web-ui/src/lib/utils/ansi.ts.
+
+          Commands run: git status --short --branch; git diff --stat/name-only/diff against
+          ab46ef576b5d10bb7dca97d35f248586645356af; git log ab46ef..9008219; kspec task get; kspec
+          item get @ui-task-board; kspec review for-task/get/add/open/comment/check; rg AC
+          annotations and source-scanning patterns; npm run format:check; npm run lint -- --quiet;
+          npx oxlint changed files; npm run typecheck; npm test; npm test -- --fresh --run
+          tests/web-ui/fleet-buffer.test.ts; kspec validate --refs/--alignment/--completeness
+          --warnings-ok; manual Node processTextChunk probes.
+
+          Claims verified: current snapshot includes 9008219 fix commit; prior backspace-before-ANSI
+          blocker is fixed by stripping ANSI before backspaces and covered by the new safX
+          regression; split escape sequences remain raw in state.buffer until newline;
+          MAX_DISPLAY_LINES behavior remains covered; full session/event payload paths were not
+          changed.
+
+          Categories searched: correctness, edge cases, error handling/control-byte cleanup,
+          security/data exposure in preview output, test quality, AC annotations, integration call
+          sites. Finding recorded: OSC terminal sequences are not fully stripped and leave URL
+          payload text in compact preview.
+
+          Shared/package guidance surfaces touched: none.
+        created_at: 2026-06-03T20:14:11.766Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-03T20:00:00.073Z
-updated_at: 2026-06-03T20:13:51.903Z
+updated_at: 2026-06-03T20:14:11.766Z
 notes: []
