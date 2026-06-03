@@ -59322,7 +59322,7 @@ runs:
     completed_at: 2026-06-03T01:05:04.119Z
   - _ulid: 01KT5H5VB6EZMZW47XN5HAKHVF
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -59336,7 +59336,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-03T01:22:43.951Z
-        completed_at: 2026-06-03T01:22:43.951Z
+        completed_at: 2026-06-03T01:23:26.528Z
+        notes: "High-confidence friction: the shared-guidance neutrality reviewer gate requires Direction 2
+          preservation before approving each shared-guidance change, but the active plan schedules
+          the local-preservation task after multiple neutralization tasks. This produced a
+          predictable needs_work verdict because removed concrete Kynetic gates/artifact-maintenance
+          commands had no current durable local home. Existing coverage checked: no targeted search
+          hits for this sequencing/local-home-before-approval issue; noisy reflection baseline and
+          workflow run-ref docs are already tracked, so not capturing those. Success pattern:
+          reading diff before notes plus the Direction 1/2 checklist caught a false worker claim and
+          gave a crisp blocker."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-03T01:23:26.528Z
+        completed_at: 2026-06-03T01:23:26.528Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-03T01:22:13.990Z
