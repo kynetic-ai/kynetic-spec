@@ -1,0 +1,26 @@
+_ulid: 01KT5TYR9CWAT0V4E780RPYFYM
+slugs: []
+title: Review neutralize worker, reviewer, and merge core skills (cycle 3)
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KT5TYR9BJAF50PRV6MR0H83D
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-03T04:13:07.243Z
+examined_commit: 600cc12a44941be362ec12bd56c6708b3c58ed03
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KT5CBTKEA5K1K9WGEE4SWSW5"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-03T04:13:07.244Z
+updated_at: null
+notes: []
