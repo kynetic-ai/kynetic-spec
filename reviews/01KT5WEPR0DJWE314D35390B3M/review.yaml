@@ -178,6 +178,13 @@ events:
       status: skipped
       name: agents generate
     timestamp: 2026-06-03T04:53:51.328Z
+  - _ulid: 01KT5X9FXE4PXWWZMM8EX9XA7B
+    actor: codex-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KT5X9FPBMS4T58CX4X5JK19P
+    timestamp: 2026-06-03T04:53:56.270Z
 examined_commit: 8179df1ac4dae772cb698eda35c254e10cbd7eac
 external_links: []
 lifecycle_state: open
@@ -187,8 +194,42 @@ subject:
   content_hash: ""
   ref: "@01KT5CBVGVNX2MF3TK6WJZ4FRR"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KT5X9FPBMS4T58CX4X5JK19P
+    entries:
+      - _ulid: 01KT5X9FPCCGN46A7AHAXEGD0A
+        author: codex-reviewer
+        body: >-
+          Evidence log:
+
+          - Files read: kspec-agents.md, AGENTS.md, plan
+          @plan-shared-template-project-neutrality-cleanup, task @01KT5CBVGVNX2MF3TK6WJZ4FRR.
+
+          - Commands run: kspec task get, kspec review add/open, git diff dev...HEAD, git log
+          dev..HEAD, kspec plan get, kspec agent list, kspec meta get @task-worker/@pr-reviewer,
+          kspec skill list/status, npm run format:check, npm run lint -- --quiet, npm run typecheck,
+          npm test, kspec validate --refs/--alignment/--completeness --warnings-ok.
+
+          - Claims verified: AGENTS.md now preserves package-maintainer source layout, local
+          branch/review/dispatch policy, and regeneration pointers; project-local
+          work-gates/review-gates/shared-guidance-neutrality skills are reachable by configured
+          worker/reviewer agents.
+
+          - Categories searched: local-context correctness, shared-guidance preservation direction
+          2, project-neutrality boundaries, generated-artifact expectations, quality-gate evidence,
+          test/validation regressions.
+
+          - Shared/package surfaces touched: none directly; local AGENTS.md only. Direction 2
+          applied by confirming Kynetic-only guidance lives in AGENTS.md plus project-local skills.
+          Direction 1 checked for accidental consumer-facing guidance and found no package-shipped
+          surface changes.
+
+          - Generated artifacts: kspec-agents.md was not regenerated because AGENTS.md is not an
+          input and the worker documented a current CLI-template source mismatch; generated artifact
+          refresh is explicitly delegated to the next plan task.
+        created_at: 2026-06-03T04:53:56.044Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-03T04:39:18.528Z
-updated_at: 2026-06-03T04:53:51.102Z
+updated_at: 2026-06-03T04:53:56.044Z
 notes: []
