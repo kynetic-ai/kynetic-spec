@@ -2,7 +2,94 @@ _ulid: 01KT7EHKYYZT7V8SNNAW4N9S45
 slugs: []
 title: Review task-fleet-buffer-preview-sanitization
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt --check . reported all matched files use the correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-03T19:28:29.902Z
+    completed_at: 2026-06-03T19:28:29.902Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing repo warning baseline: 742 warnings, 0 errors. Focused changed-file
+      oxlint also passed with 0 warnings and 0 errors for
+      packages/web-ui/src/lib/components/board/fleet-buffer.ts and
+      tests/web-ui/fleet-buffer.test.ts."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-03T19:28:32.508Z
+    completed_at: 2026-06-03T19:28:32.508Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 0 warnings and 0 errors on both changed files."
+    name: focused-lint
+    required: false
+    runner: npx oxlint packages/web-ui/src/lib/components/board/fleet-buffer.ts
+      tests/web-ui/fleet-buffer.test.ts
+    created_at: 2026-06-03T19:28:35.047Z
+    completed_at: 2026-06-03T19:28:35.047Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: tsc --noEmit exited 0."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-03T19:28:37.561Z
+    completed_at: 2026-06-03T19:28:37.561Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2681 suites passed; 10225 tests passed, 5 skipped. Focused fresh run npm test --
+      --fresh --run tests/web-ui/fleet-buffer.test.ts also passed 19/19."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-03T19:28:40.060Z
+    completed_at: 2026-06-03T19:28:40.060Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with warnings-ok: schema OK, references OK; existing reference warning baseline
+      reported."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-03T19:28:42.550Z
+    completed_at: 2026-06-03T19:28:42.550Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with warnings-ok: existing orphan/status mismatch warning baseline reported."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-03T19:28:45.051Z
+    completed_at: 2026-06-03T19:28:45.051Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with warnings-ok: existing missing AC/invalid annotation warning baseline
+      reported. Changed tests include behavioral @ui-task-board ac-4 annotations."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-03T19:28:47.487Z
+    completed_at: 2026-06-03T19:28:47.487Z
 events:
   - _ulid: 01KT7EHKYYXHSNDQXP6PFF40JZ
     actor: Jacob Chapel
@@ -17,17 +104,160 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-03T19:15:04.813Z
+  - _ulid: 01KT7FAVXX0RDVBY6SWTWTVBTK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-03T19:28:30.141Z
+  - _ulid: 01KT7FAYEMX193PD6Y4SE32SFD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-03T19:28:32.724Z
+  - _ulid: 01KT7FB0Y42FDH0KS90CN7061A
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-03T19:28:35.268Z
+  - _ulid: 01KT7FB3CG936DBJQQFKYSJGT4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-03T19:28:37.776Z
+  - _ulid: 01KT7FB5T8Z5AH02ZSNVHJGJAZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-03T19:28:40.264Z
+  - _ulid: 01KT7FB88YBZJ3J8RKB0GNHZVF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-03T19:28:42.782Z
+  - _ulid: 01KT7FBAPKKRHE4DTF4F6QM2W7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-03T19:28:45.267Z
+  - _ulid: 01KT7FBD2NP9B4AR7QFD9N5NV1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-03T19:28:47.702Z
+  - _ulid: 01KT7FBFHSJXEKAANJ6BR6798R
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KT7FBFBAZSXFSATVRH3TAZP6
+    timestamp: 2026-06-03T19:28:50.233Z
+  - _ulid: 01KT7FBJ158HQEXB4A6W8J9RXF
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KT7FBHTJ8B6TCBTHWNM77D0V
+    timestamp: 2026-06-03T19:28:52.773Z
+  - _ulid: 01KT7FBMG7ZQHZ55F28HBW4BB9
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-03T19:28:55.303Z
+  - _ulid: 01KT7FBMG88XXN19EYTR84706R
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-03T19:28:55.304Z
 examined_commit: 49b4e1ec3e5b3ca85438575f29485559371d0abc
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KT7DV7P6CTBBNXGB2AJF1269"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KT7FBFBAZSXFSATVRH3TAZP6
+    entries:
+      - _ulid: 01KT7FBFBA88JQFV8EKY7KJ0GQ
+        author: pr-reviewer
+        body: >-
+          Review evidence log:
+
+          Files read: kspec-agents.md, task @01KT7DV7P6CTBBNXGB2AJF1269, spec @ui-task-board,
+          packages/web-ui/src/lib/components/board/fleet-buffer.ts,
+          tests/web-ui/fleet-buffer.test.ts, packages/web-ui/src/routes/tasks/board/+page.svelte,
+          packages/web-ui/src/routes/+page.svelte.
+
+          Commands run: git status, git diff/stat/log/show, kspec task get, kspec item get, kspec
+          review for-task/add/open, kspec validate refs/alignment/completeness with --warnings-ok,
+          npm run format:check, npm run lint -- --quiet, npx oxlint changed files, npm run
+          typecheck, npm test, npm test -- --fresh --run tests/web-ui/fleet-buffer.test.ts, direct
+          node --import tsx sanitizer probes.
+
+          Claims verified: worker's focused test, focused lint, format, typecheck, and validation
+          claims were independently rerun; full suite was also run.
+
+          Categories searched: correctness, terminal edge cases, error handling/control characters,
+          test quality/AC annotations, integration call sites, and data exposure boundary.
+          Shared/package guidance neutrality was not applicable because no shared guidance surfaces
+          changed.
+        created_at: 2026-06-03T19:28:50.026Z
+    kind: nit
+  - _ulid: 01KT7FBHTJ8B6TCBTHWNM77D0V
+    anchor:
+      type: code
+      commit: 49b4e1ec3e5b3ca85438575f29485559371d0abc
+      line_end: 65
+      line_start: 65
+      path: packages/web-ui/src/lib/components/board/fleet-buffer.ts
+      side: head
+    entries:
+      - _ulid: 01KT7FBHTK11734JKF9B71DCF0
+        author: pr-reviewer
+        body: 'MUST-FIX: `sanitizeDisplayLine` applies backspaces before stripping ANSI escape sequences, so
+          mixed colored output plus backspace controls can corrupt the preview. Reproduction against
+          the exported helper: `processTextChunk(createSessionState(), "a\x1b[31mb\x1b[0m\bc\n")`
+          returns `lines: ["ab"]`. In a terminal the escape sequences are zero-width; the backspace
+          moves over the visible `b` and `c` overwrites it, so the preview should show `ac`. Here
+          the backspace pops the `m` from the reset escape, then the regex treats the following `c`
+          as the CSI final byte and removes it. This violates the task requirement to strip ANSI/CSI
+          sequences and apply backspace controls before display. Please strip or parse zero-width
+          escape sequences before applying cursor edits, and add a regression test for the mixed
+          ANSI+backspace case.'
+        created_at: 2026-06-03T19:28:52.563Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-03T19:28:55.303Z
 created_at: 2026-06-03T19:14:42.782Z
-updated_at: 2026-06-03T19:15:04.583Z
+updated_at: 2026-06-03T19:28:55.304Z
 notes: []
