@@ -1,1 +1,41 @@
-notes: []
+notes:
+  - _ulid: 01KT5ZRJN4JYF5ZZH1ET384F4A
+    content: >-
+      Closure verification complete:
+
+
+      1. Reviewer/convention guidance exists and is attached:
+         - Convention @shared-guidance (5 rules) registered in project meta.
+         - Skill shared-guidance-neutrality (project origin) attached to reviewer, ux-reviewer, pr-reviewer, and plan-reviewer agents per kspec agent list.
+
+      2. Package-shipped guidance semantically reviewed as universal:
+         - All six prior plan tasks (gate, agent-sections, work/review/merge, planning/writing/triage, kynetic-context, regenerate-artifacts) have closed/approved reviews.
+         - Grep across templates/ shows no leaks of task-worker, pr-reviewer, kynetic.meta.yaml, AskUserQuestion, hard-coded dev/main branch defaults, npm/oxlint/Vitest toolchain commands, or templates/skills/ path references presented as consumer guidance.
+         - Remaining references to GitHub PRs in templates frame external review as project policy, not universal kspec mechanics.
+
+      3. Kynetic self-hosting context preserves local conventions in AGENTS.md:
+         - Package Maintainer Source Layout (templates/skills/, templates/agents-sections/, templates/skills/manifest.yaml).
+         - Local Repository Policy: Branch and Merge Targets (dev, main), External Review (GitHub PRs), Dispatch Agents (task-worker, pr-reviewer).
+         - Quality Gates and Generated Artifact Maintenance pointer to work-gates, review-gates, shared-guidance-neutrality skills.
+         - Agent Instructions Generation table (kspec agents generate flow).
+         - Skill Source of Truth section (package vs project-local skills).
+         - work-gates skill contains the concrete Kynetic toolchain commands (npm format/lint/typecheck/test, kspec validate) and the regeneration table (kspec skill render, kspec agents generate, npm run build:plugin).
+         - review-gates skill maps gates to kspec review check runners.
+
+      4. Release-note entry added to RELEASE_NOTES.md (Unreleased > Documentation) describing the
+      project-neutrality cleanup and the new project-local shared-guidance-neutrality reviewer
+      skill.
+
+
+      5. Quality gates run:
+         - npm run format:check (passes)
+         - npm run lint -- --quiet (0 errors)
+         - npm run typecheck (passes)
+         - kspec validate --refs/--alignment/--completeness --warnings-ok (passes; pre-existing warnings only)
+         - Focused tests from prior plan tasks pass: tests/agents-instruction-gen.test.ts (32 tests), tests/core-skill-install.test.ts (28 tests), tests/core-skill-update.test.ts (20 tests), tests/release-notes-parser.test.ts + tests/release-notes-command.test.ts (32 tests).
+         - kspec skill verify reports 53 OK with no drift on touched skills.
+
+      No spec AC is claimed; this plan does not create or update specs.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-03T05:37:07.748Z
