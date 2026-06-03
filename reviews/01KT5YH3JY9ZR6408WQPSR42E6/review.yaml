@@ -177,6 +177,13 @@ events:
       status: pass
       name: agent instructions generation
     timestamp: 2026-06-03T05:29:29.616Z
+  - _ulid: 01KT5ZAQYV0D3X03BYFBJFEX11
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KT5ZAQQM2ZMJAEGEBME38767
+    timestamp: 2026-06-03T05:29:34.427Z
 examined_commit: 54ede3e7d3e0fc139b2a6cd73af83eac7ddaca72
 external_links: []
 lifecycle_state: open
@@ -186,8 +193,34 @@ subject:
   content_hash: ""
   ref: "@01KT5CBWB38JYB60TD5EN9P30K"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KT5ZAQQM2ZMJAEGEBME38767
+    entries:
+      - _ulid: 01KT5ZAQQN0R3RMJ7MHJVHBMS2
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md, AGENTS-provided context,
+          templates/agents-sections/06-agent-dispatch-mode.md,
+          templates/skills/merge/scripts/detached-reviewer-merge.sh,
+          tests/agents-instruction-gen.test.ts, tests/core-skill-install.test.ts,
+          tests/core-skill-update.test.ts, task and plan records. Commands run: kspec task get,
+          kspec plan get, kspec review add/open/get, git diff/status/log/branch, rg searches for
+          brittle wording/source-scanner patterns, kspec skill render --force, kspec agents
+          generate, npm run build:plugin, kspec skill verify, npm run format:check, npm run lint --
+          --quiet, npm run typecheck, npm test, kspec validate --refs/--alignment/--completeness
+          --warnings-ok. Claims verified: task branch equals dev/no diff; generated artifacts are in
+          sync; dependent tests assert mechanical render/install/update behavior instead of
+          forbidden-token prose scanning; plugin build succeeds. Categories searched: artifact
+          drift, neutrality framing, test quality, integration/gates, source-scanning risks.
+          Shared-guidance neutrality: inspected shared/package surfaces templates/agents-sections,
+          templates/skills, rendered .agents/.factory outputs, kspec-agents.md, and dependent tests;
+          direction 1 found no Kynetic-only policy framed as universal (dispatch branch and GitHub
+          PR mentions are framed as kspec mechanics/per-project policy); direction 2 local homes are
+          AGENTS.md plus project-local review-gates/work-gates/shared-guidance-neutrality skills.
+          Generated artifacts refreshed/verified by render, agents generate, and plugin build.
+          Findings: none blocking."
+        created_at: 2026-06-03T05:29:34.197Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-03T05:15:34.366Z
-updated_at: 2026-06-03T05:29:29.401Z
+updated_at: 2026-06-03T05:29:34.197Z
 notes: []
