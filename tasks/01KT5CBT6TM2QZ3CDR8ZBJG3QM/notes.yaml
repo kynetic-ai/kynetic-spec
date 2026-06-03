@@ -112,3 +112,20 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-03T01:02:19.006Z
+  - _ulid: 01KT5KMBFMF1B8AAKFCZF8F7CF
+    content: "Fix cycle 1: regenerated kspec-agents.md from the updated templates. The previous
+      submission committed the neutralized templates but left the generated kspec-agents.md stale,
+      which was the entire point of both review blockers. Used 'npm run dev -- agents generate' to
+      render with this worktree's templates (the global 'kspec' CLI is npm-linked to
+      /home/chapel/Projects/kynetic-spec/, so it would have rendered from the upstream package
+      templates, not the worktree's). Verified line 179 (neutralized quick-start rule 8) and lines
+      368-421 (Configured Agents heading, project-meta references, generalized review-platform
+      policy) match the dry-run output that passed dry-run review last cycle. Gates re-run:
+      format:check PASS, lint -- --quiet 0 errors (742 baseline warnings unchanged), typecheck PASS,
+      focused agents-instruction-gen tests 32/32 PASS, focused setup-builtin-agents tests 28/28
+      PASS, full suite 10219/10224 (5 skipped) PASS, validate --refs/--alignment/--completeness PASS
+      with baseline warnings only. No template files changed in this commit — only the regenerated
+      output. Both blocker threads replied to and resolved on review @01KT5F70."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-03T02:05:06.420Z
