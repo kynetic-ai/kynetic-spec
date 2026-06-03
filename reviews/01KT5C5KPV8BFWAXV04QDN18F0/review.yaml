@@ -2,7 +2,18 @@ _ulid: 01KT5C5KPV8BFWAXV04QDN18F0
 slugs: []
 title: Review task-plan-branch-git-error-details
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: refs/alignment/completeness validations passed with --warnings-ok; existing repo warning
+      baseline observed (reference, alignment, completeness warnings).
+    name: kspec validate
+    required: true
+    runner: kspec
+    created_at: 2026-06-03T00:07:17.025Z
+    completed_at: 2026-06-03T00:07:17.025Z
 events:
   - _ulid: 01KT5C5KPP5Z2ZA82V92HXPY59
     actor: Jacob Chapel
@@ -17,6 +28,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-02T23:55:04.810Z
+  - _ulid: 01KT5CWKZTRAD0633S5MMQRYEF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate
+    timestamp: 2026-06-03T00:07:17.242Z
 examined_commit: f9be38dc0e6350c57d99d620531e5ef90b96340a
 external_links: []
 lifecycle_state: open
@@ -29,5 +47,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-02T23:54:43.291Z
-updated_at: 2026-06-02T23:55:04.580Z
+updated_at: 2026-06-03T00:07:17.025Z
 notes: []
