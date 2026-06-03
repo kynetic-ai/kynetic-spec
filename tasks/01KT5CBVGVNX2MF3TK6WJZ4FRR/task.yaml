@@ -49,7 +49,7 @@ description: |
 spec_ref: null
 plan_ref: "@plan-shared-template-project-neutrality-cleanup"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-neutralize-agent-section-templates"
@@ -63,6 +63,14 @@ tags:
   - agents
   - self-hosting
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-preserve-kynetic-local-template-maintenance-context/01kt5cbv
+  captured_at: 2026-06-03T04:36:10.134Z
+  commit: 8179df1ac4dae772cb698eda35c254e10cbd7eac
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KT5VV7GDZ7EVQD785AWMW1KJ
 history:
   - author: Jacob Chapel
@@ -85,7 +93,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-03T04:29:33.991Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-preserve-kynetic-local-template-maintenance-context/01kt5cbv
+          captured_at: 2026-06-03T04:36:10.134Z
+          commit: 8179df1ac4dae772cb698eda35c254e10cbd7eac
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-06-03T04:36:10.136Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-03T04:36:10.136Z
 created_at: 2026-06-02T23:58:07.899Z
 started_at: 2026-06-03T04:29:33.991Z
+submitted_at: 2026-06-03T04:36:10.136Z
 todos: []
 automation: eligible
