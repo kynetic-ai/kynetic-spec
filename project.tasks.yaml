@@ -30617,7 +30617,7 @@
   title: Add shared-guidance neutrality convention and review guidance
   type: task
   plan_ref: "@plan-shared-template-project-neutrality-cleanup"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 1
@@ -30630,6 +30630,7 @@
   todos_count: 0
   created_at: 2026-06-02T23:58:06.111Z
   started_at: 2026-06-03T00:01:48.633Z
+  submitted_at: 2026-06-03T00:14:24.670Z
   automation: eligible
 - _ulid: 01KT5CBT6TM2QZ3CDR8ZBJG3QM
   slugs:
