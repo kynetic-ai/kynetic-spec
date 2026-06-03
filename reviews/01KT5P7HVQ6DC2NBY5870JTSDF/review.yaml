@@ -76,6 +76,16 @@ checks:
     runner: oxlint
     created_at: 2026-06-03T03:04:45.830Z
     completed_at: 2026-06-03T03:04:45.830Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh tests/agents-instruction-gen.test.ts passed: 14 suites, 32/32 tests."
+    name: focused agent instruction tests
+    required: true
+    runner: npm-test
+    created_at: 2026-06-03T03:04:56.793Z
+    completed_at: 2026-06-03T03:04:56.793Z
 events:
   - _ulid: 01KT5P7HVGGKDGSEDS2X93SK0Y
     actor: Jacob Chapel
@@ -139,6 +149,13 @@ events:
       status: skipped
       name: changed-file oxlint
     timestamp: 2026-06-03T03:04:46.088Z
+  - _ulid: 01KT5Q1Y04STA6N5TEKW8TBQZB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused agent instruction tests
+    timestamp: 2026-06-03T03:04:57.092Z
 examined_commit: 250f1ab62734f0911f4cfd4ff3d2fa5ee4a2e53a
 external_links: []
 lifecycle_state: open
@@ -151,5 +168,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-03T02:50:32.695Z
-updated_at: 2026-06-03T03:04:45.830Z
+updated_at: 2026-06-03T03:04:56.793Z
 notes: []
