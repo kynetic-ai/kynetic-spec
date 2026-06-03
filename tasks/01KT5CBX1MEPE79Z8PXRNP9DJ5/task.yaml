@@ -44,8 +44,10 @@ description: |
 spec_ref: null
 plan_ref: "@plan-shared-template-project-neutrality-cleanup"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev via detached reviewer merge helper. Added release notes documenting the
+  project-neutral package guidance cleanup and verified reviewer/local-context safeguards.
 depends_on:
   - "@task-regenerate-shared-template-artifacts-and-tests"
 context: []
@@ -113,8 +115,23 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-03T05:41:40.903Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev via detached reviewer merge helper. Added release notes documenting the
+          project-neutral package guidance cleanup and verified reviewer/local-context safeguards.
+        previous: null
+      completed_at:
+        new: 2026-06-03T05:56:03.565Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-03T05:56:03.573Z
 created_at: 2026-06-02T23:58:09.460Z
 started_at: 2026-06-03T05:31:09.290Z
 submitted_at: 2026-06-03T05:37:18.664Z
+completed_at: 2026-06-03T05:56:03.565Z
 todos: []
 automation: eligible
