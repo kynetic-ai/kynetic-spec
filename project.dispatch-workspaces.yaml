@@ -17292,18 +17292,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-close-shared-template-neutrality-cleanup/01kt5cbx
-    canonical_branch_head: 54ede3e7d3e0fc139b2a6cd73af83eac7ddaca72
+    canonical_branch_head: c8deb5670f444d13fcff80cc2bffdfead9079421
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-03T05:30:15.093Z
+      updated_at: 2026-06-03T05:38:06.017Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-03T05:30:39.324Z
+      updated_at: 2026-06-03T05:38:06.017Z
     integration:
       status: pending
       detail: null
@@ -17311,7 +17311,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 54ede3e7d3e0fc139b2a6cd73af83eac7ddaca72
-      updated_at: 2026-06-03T05:30:15.093Z
+      updated_at: 2026-06-03T05:38:06.017Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KT5CBX1MEPE79Z8PXRNP9DJ5"
@@ -17319,9 +17319,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-03T05:30:39.324Z
-      last_reconciled_at: 2026-06-03T05:30:39.324Z
+      last_reconciled_at: 2026-06-03T05:38:06.017Z
       created_at: 2026-06-03T05:30:15.093Z
-      updated_at: 2026-06-03T05:30:39.324Z
+      updated_at: 2026-06-03T05:38:06.017Z
     workspace_id: dispatch-workspace-01KT5CBX1MEPE79Z8PXRNP9DJ5
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
