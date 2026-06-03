@@ -15940,12 +15940,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-03T03:40:53.076Z
+      updated_at: 2026-06-03T03:41:09.904Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-03T03:40:55.213Z
+      updated_at: 2026-06-03T03:41:09.904Z
     integration:
       status: pending
       detail: null
@@ -15953,7 +15953,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: ce84317f65d0d22664fe1e95623e97dcb802e376
-      updated_at: 2026-06-03T03:40:53.076Z
+      updated_at: 2026-06-03T03:41:09.904Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KT5CBTKEA5K1K9WGEE4SWSW5"
@@ -15961,9 +15961,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-03T03:17:39.304Z
-      last_reconciled_at: 2026-06-03T03:40:55.213Z
+      last_reconciled_at: 2026-06-03T03:41:09.904Z
       created_at: 2026-06-03T00:46:52.338Z
-      updated_at: 2026-06-03T03:40:55.213Z
+      updated_at: 2026-06-03T03:41:09.904Z
     workspace_id: dispatch-workspace-01KT5CBTKEA5K1K9WGEE4SWSW5
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -15972,7 +15972,7 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-neutralize-work-review-merge-skills/01kt5cbt
         head: 600cc12a44941be362ec12bd56c6708b3c58ed03
-        last_seen_at: 2026-06-03T03:17:10.367Z
+        last_seen_at: 2026-06-03T03:41:09.904Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-neutralize-work-review-merge-skills-01kt5cbt
   - active_role: reviewer
     base_branch_point: ce84317f65d0d22664fe1e95623e97dcb802e376
