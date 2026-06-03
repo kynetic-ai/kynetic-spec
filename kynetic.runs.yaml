@@ -60001,7 +60001,7 @@ runs:
     completed_at: 2026-06-03T05:39:52.201Z
   - _ulid: 01KT60X8GMKKQP8N2WF7D5V849
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -60015,7 +60015,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-03T05:57:36.368Z
-        completed_at: 2026-06-03T05:57:36.368Z
+        completed_at: 2026-06-03T05:57:59.691Z
+        notes: "Friction points: full-suite review evidence took about 39 minutes, and near the end npm test
+          stayed alive across multiple 30-60s waits before emitting late passing suites and the
+          final aggregate. The correct action was to keep waiting, but from the reviewer seat it was
+          difficult to tell whether the runner was draining real late suites or hung before summary
+          output."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-03T05:57:59.691Z
+        completed_at: 2026-06-03T05:57:59.691Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-03T05:57:09.781Z
