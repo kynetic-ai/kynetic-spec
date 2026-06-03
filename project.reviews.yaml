@@ -23795,7 +23795,7 @@ reviews:
   - _ulid: 01KT5G7VPKKBJES6WJ7JJASN4N
     slugs: []
     title: Review neutralize worker, reviewer, and merge core skills
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
     check_count: 9
     examined_commit: a46a66f66c4d65e4a6bece12dacba5dd20645129
@@ -23806,8 +23806,8 @@ reviews:
       content_hash: ""
       ref: "@01KT5CBTKEA5K1K9WGEE4SWSW5"
       shadow_commit: ""
-    thread_count: 1
-    unresolved_blocker_count: 0
+    thread_count: 2
+    unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-06-03T01:05:51.315Z
-    updated_at: 2026-06-03T01:21:17.124Z
+    updated_at: 2026-06-03T01:21:19.835Z

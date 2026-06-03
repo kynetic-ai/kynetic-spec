@@ -186,6 +186,13 @@ events:
       kind: nit
       thread_ulid: 01KT5H43T31759WNTAPZVKG9FZ
     timestamp: 2026-06-03T01:21:17.340Z
+  - _ulid: 01KT5H46Q0ZYFWPE1SWRW4S5G6
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KT5H46ETKWWKQVEMA35VG17T
+    timestamp: 2026-06-03T01:21:20.097Z
 examined_commit: a46a66f66c4d65e4a6bece12dacba5dd20645129
 external_links: []
 lifecycle_state: open
@@ -213,7 +220,33 @@ threads:
           integration/merge readiness."
         created_at: 2026-06-03T01:21:17.124Z
     kind: nit
+  - _ulid: 01KT5H46ETKWWKQVEMA35VG17T
+    anchor:
+      type: code
+      commit: a46a66f66c4d65e4a6bece12dacba5dd20645129
+      line_end: 234
+      line_start: 234
+      path: templates/skills/task-work/SKILL.md
+      side: head
+    entries:
+      - _ulid: 01KT5H46EVTBG6B0MZQFGTVXYZ
+        author: Jacob Chapel
+        body: "MUST-FIX: This shared skill now delegates Kynetic-specific gates and artifact maintenance to
+          project-local guidance, but the removed concrete instructions are not currently preserved
+          in an always-loaded local home. The diff removed explicit review/task gates like npm run
+          format:check, npm run lint -- --quiet, npx oxlint <changed files>, and npm run typecheck,
+          and line 234 delegates plugin/.factory-style artifact maintenance to project guidance. I
+          checked AGENTS.md, kspec-agents.md, work-gates, review-gates, and
+          shared-guidance-neutrality with rg: current local guidance names npm test and general
+          oxlint/oxfmt config concerns, but it does not name the concrete format/lint/typecheck gate
+          commands or plugin/.factory refresh/build commands. The task note says this is handled by
+          @task-preserve-kynetic-local-template-maintenance-context, but kspec task get shows that
+          task is still pending. Under the shared-guidance neutrality Direction 2 rule, removed
+          Kynetic-only instructions must already have a durable local home before this shared
+          guidance change is approved."
+        created_at: 2026-06-03T01:21:19.835Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-03T01:05:51.315Z
-updated_at: 2026-06-03T01:21:17.124Z
+updated_at: 2026-06-03T01:21:19.835Z
 notes: []
