@@ -100,6 +100,19 @@ release workflow before tagging.
   with the 1.2 manifest fields, folder layout, and rollback procedure.
 - Updated [Importing and Approving a Plan](docs/guides/importing-and-approving-a-plan.md)
   with `--materialize-resources` derivation guidance.
+- **Project-neutral package guidance.** Package-shipped agent sections
+  (`templates/agents-sections/`) and core skills (`templates/skills/`) now
+  describe universal kspec mechanics only. Hard-coded branch names (`dev`,
+  `main`), toolchain commands (`npm test`, `oxlint`, Vitest), GitHub PR policy,
+  fixed agent ids (`task-worker`, `pr-reviewer`), and `kynetic.meta.yaml`
+  references have been replaced with project-defined wording or pointers to
+  `kspec agent list`, project meta, and project-local skill sources. Consumer
+  projects can adopt their own branch policy, toolchain, and external review
+  process without inheriting the Kynetic self-hosting repository's defaults.
+  Self-hosting policy now lives in local project context (`AGENTS.md`,
+  project-local `.kspec/skills/`, project meta conventions). A new project-local
+  `shared-guidance-neutrality` reviewer skill encodes the semantic checklist
+  reviewers apply to future changes to these shared surfaces.
 
 ## v0.14.0
 
