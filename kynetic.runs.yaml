@@ -59600,9 +59600,23 @@ runs:
     completed_at: 2026-06-03T03:40:27.158Z
   - _ulid: 01KT5STVSA3YMH1NW7H6P4WJ9M
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-03T03:53:31.178Z
+        completed_at: 2026-06-03T03:54:25.653Z
+        notes: "What worked well: The detached review flow stayed coherent when the review record was
+          created for the fix cycle, required gates were recorded as checks, and the supported merge
+          helper handled integration without checking out dev in the detached snapshot. The
+          shared-guidance neutrality checklist gave a concrete structure for reviewing package
+          guidance: changed surfaces, Direction 1 leaks, Direction 2 local-home preservation, and
+          generated artifact refresh."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-03T03:54:25.653Z
+        completed_at: 2026-06-03T03:54:25.653Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-03T03:53:31.178Z
