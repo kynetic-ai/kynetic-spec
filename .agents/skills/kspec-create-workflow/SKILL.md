@@ -28,7 +28,7 @@ Look for processes that are:
 | Repeated command sequences           | "Start daemon, run tests, check output, stop daemon"         |
 | Quality gates with multiple criteria | "Review: AC coverage, test quality, code style, regressions" |
 
-Good sources: AGENTS.md, existing skills, task notes, session reflections.
+Good sources: project-local agent guidance, existing skills, task notes, session reflections.
 
 ## Workflow Structure
 
@@ -122,24 +122,21 @@ A workflow may benefit from a matching skill when:
 | Users need a `/command` entrypoint | Workflow is internal/automated |
 | Complex decision logic             | Simple sequential steps        |
 
-If creating a skill, write it to `templates/skills/<name>/SKILL.md` and add a manifest entry.
+If creating a skill, add it as a project-local skill so the workflow's matching guidance lives in the project's shadow state. Project-local skill sources live under `.kspec/skills/`; register them with kspec meta commands and render them via `kspec skill render` so agents pick up the change.
+
+Project-local skill authoring follows the same source/render rules as other shadow state: edit the project-local source, then render. The project's own maintenance context (for example, package-skill authoring, manifest edits, or commits to a specific branch) belongs in that project's local guidance, not in this shared workflow skill.
 
 ### Step 5: Commit
 
-```bash
-# Workflow definition auto-committed to shadow branch by kspec
-# Skill files (if created) need manual commit to main branch
-git add templates/skills/<name>/SKILL.md
-git commit -m "feat: add <name> skill for workflow integration"
-```
+Workflow definitions are auto-committed to the shadow branch by kspec when you run `kspec meta add workflow` or `kspec meta set`. If you created or edited project-local skill sources alongside the workflow, follow your project's commit guidance for those files. For projects that maintain package-shipped skill sources, follow the project-local maintenance instructions in that project's context.
 
 ### Cross-Skill Consistency Check (When Updating Existing Skills)
 
 If your workflow or wording change is cross-cutting, run this quick consistency pass before committing:
 
-1. List related skills/templates that describe the same concept (for example: `codex`, `pr-review`, `local-review`, review templates).
-2. Verify each related file is either updated in the same PR or explicitly noted as intentionally unchanged.
-3. Add a short checklist in PR notes showing which related files were reviewed.
+1. List related skills, templates, or project-local docs that describe the same concept.
+2. Verify each related file is either updated in the same change or explicitly noted as intentionally unchanged.
+3. Note which related files were reviewed when you submit the change for review.
 
 This prevents partial updates where one skill changes but sibling skills keep outdated guidance.
 
