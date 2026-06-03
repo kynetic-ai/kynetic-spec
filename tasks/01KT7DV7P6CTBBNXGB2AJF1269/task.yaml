@@ -114,8 +114,10 @@ description: "What:
 spec_ref: "@ui-task-board"
 meta_ref: null
 plan_ref: null
-status: pending_review
-blocked_by: []
+status: blocked
+blocked_by:
+  - "Dispatch bootstrap failed: Cannot persist dispatch metadata for @01KT7DV7P6CTBBNXGB2AJF1269:
+    workspace registry record is missing."
 depends_on: []
 context: []
 priority: 2
@@ -228,7 +230,22 @@ history:
         previous: pending_review
     command: task-unblock
     timestamp: 2026-06-03T19:12:38.102Z
-prior_status: null
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: blocked
+        previous: pending_review
+      blocked_by:
+        new:
+          - "Dispatch bootstrap failed: Cannot persist dispatch metadata for
+            @01KT7DV7P6CTBBNXGB2AJF1269: workspace registry record is missing."
+        previous: []
+      prior_status:
+        new: pending_review
+        previous: null
+    command: task-block
+    timestamp: 2026-06-03T19:14:18.294Z
+prior_status: pending_review
 created_at: 2026-06-03T19:02:29.317Z
 started_at: 2026-06-03T19:05:15.644Z
 submitted_at: 2026-06-03T19:07:28.704Z

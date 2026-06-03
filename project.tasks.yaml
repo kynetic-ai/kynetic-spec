@@ -30784,8 +30784,10 @@
   title: Sanitize Active Fleet preview terminal output
   type: bug
   spec_ref: "@ui-task-board"
-  status: pending_review
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - "Dispatch bootstrap failed: Cannot persist dispatch metadata for @01KT7DV7P6CTBBNXGB2AJF1269:
+      workspace registry record is missing."
   depends_on: []
   priority: 2
   tags:
