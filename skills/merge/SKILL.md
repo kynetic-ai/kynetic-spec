@@ -5,10 +5,10 @@ Merge approved work into an integration branch. Local-first — uses git merge d
 ## When to Use
 
 - After work has been reviewed and approved via `{skill:review}`
-- Merging a task branch into the project-defined integration branch
+- Merging a task branch into a dev or integration branch
 - Completing the work lifecycle after review approval
 
-**Not for:** Creating pull requests against external review systems (e.g., GitHub, GitLab). Whether and when to open external PRs is project policy, controlled by your project's review process, not by kspec.
+**Not for:** Creating pull requests to remote repositories (that's a human-directed activity for feature-level merges into main).
 
 ## Merge Gate
 
@@ -44,7 +44,7 @@ If any gate fails, do not merge. Address the issue first:
 The merge target depends on context:
 
 - **Dispatch mode** — The integration branch is provided in the dispatch prompt context (the `Integration target:` line) and via the `KSPEC_DISPATCH_MERGE_TARGET` environment variable. **Use the dispatch-provided target verbatim — never assume a branch name.**
-- **Manual mode** — Use the project-defined integration branch. Check your project's branching guidance, or ask if unsure.
+- **Manual mode** — The integration branch is typically `dev`, but check your project's branching convention or ask if unsure.
 
 In the examples below, `<integration-branch>` is a placeholder for the actual target branch.
 
@@ -61,7 +61,7 @@ bash {supporting:scripts/detached-reviewer-merge.sh}
 The helper reads the dispatch environment variables (`KSPEC_DISPATCH_CANONICAL_BRANCH`, `KSPEC_DISPATCH_MERGE_TARGET`, `KSPEC_DISPATCH_CANONICAL_HEAD`) and selects a branch-coherent merge surface:
 
 - If the integration target is **not checked out anywhere**, the helper creates a helper-owned temporary worktree on the target branch, performs the merge there, and removes that temporary worktree before exiting.
-- If the integration target is checked out in **exactly one clean, non-auxiliary project/user checkout** (for example the project root already has the integration branch checked out), the helper performs the merge through that existing checkout so Git advances the branch, index, and working tree together.
+- If the integration target is checked out in **exactly one clean, non-auxiliary project/user checkout** (for example the project root already has `main` or `dev` checked out), the helper performs the merge through that existing checkout so Git advances the branch, index, and working tree together.
 - If the integration target is checked out in an unsafe location or state, the helper refuses before moving refs and prints recovery guidance naming the blocker.
 
 The helper never asks the reviewer to check out the integration target inside the detached snapshot, and it must not leave a new persistent target-branch worktree behind.
