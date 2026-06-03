@@ -30711,7 +30711,7 @@
   title: Preserve Kynetic self-hosting conventions in local context
   type: task
   plan_ref: "@plan-shared-template-project-neutrality-cleanup"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-neutralize-agent-section-templates"
@@ -30726,6 +30726,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-02T23:58:07.899Z
+  started_at: 2026-06-03T04:29:33.991Z
   automation: eligible
 - _ulid: 01KT5CBWB38JYB60TD5EN9P30K
   slugs:
