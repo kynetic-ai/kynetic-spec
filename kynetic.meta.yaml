@@ -20497,6 +20497,34 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-02T23:37:13.151Z
+  - _ulid: 01KT5DF7K45BDKS1ZVZWHCSVCT
+    type: friction
+    content: "kspec batch with meta set --add-skill (and likely other meta set --add/--remove array
+      options) throws 'TypeError: options.removeCapability is not iterable' atomically — the batch
+      dispatcher invokes the meta set handler without first initializing the option arrays it
+      iterates. Direct CLI invocation works because commander supplies the [] default. Workaround
+      today: run the four reviewer-agent attaches sequentially. Distinct from prior batch frictions
+      (01KKAZ94 task add, 01KNMC9Y arg shape, 01KQBRFN cascade prompt). Fix would be to initialize
+      default empty arrays for meta set options in the batch wrapper, or share commander defaults
+      across both entry paths."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-03T00:17:27.141Z
+  - _ulid: 01KT5DF7W92G761FS9ZEE7GQQV
+    type: friction
+    content: There is no kspec CLI command to update a project-local skill's SKILL.md body after
+      creation. kspec skill add --content-file writes the body once; kspec skill set covers metadata
+      only; kspec skill import expects a fresh import path. To correct skill content (in this case,
+      switching $review-gates to the canonical {skill:review-gates} reference syntax) the only path
+      was to edit .kspec/skills/<id>/SKILL.md directly and then run kspec skill render --force. This
+      contradicts the 'use the CLI, not manual edits' convention and is distinct from 01KKX2NN
+      (templates→shadow sync) and 01KJGAKM (version-gated update). A kspec skill update <id>
+      --content-file or kspec skill set --content-file flag would close the gap.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-03T00:17:27.433Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
