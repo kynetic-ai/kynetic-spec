@@ -7600,6 +7600,13 @@ modules:
             then: visible row text and the row's accessible label include both the runner identity and the
               resolved adapter identity.
             when: the rows are rendered.
+          - given: A project has a runner that selects the generic ACP process adapter and omits
+              `process.executable`.
+            id: ac-generic-acp-validation-reports-missing-executable
+            then: The validation output reports that runner as invalid and includes a redacted diagnostic with
+              reason `missing_process_executable`, adapter `generic-acp`, and missing field
+              `process.executable`.
+            when: An operator runs `kspec agent runners validate`.
         tags: []
         created: 2026-05-31T06:19:00.666Z
         notes:
