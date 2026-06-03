@@ -1,0 +1,26 @@
+_ulid: 01KT5F709RHQEYRWFQFTZ3MJDJ
+slugs: []
+title: Review neutralize static agent-section templates
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KT5F709RXV0W38W42QSSEFSS
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-03T00:47:54.680Z
+examined_commit: aea00e34e121ab35ac77694e04b757c68f669dbf
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KT5CBT6TM2QZ3CDR8ZBJG3QM"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-03T00:47:54.680Z
+updated_at: null
+notes: []
