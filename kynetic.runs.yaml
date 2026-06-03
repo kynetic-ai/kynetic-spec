@@ -59075,7 +59075,7 @@ runs:
     started_at: 2026-06-01T21:12:32.768Z
   - _ulid: 01KT5D2278FV8J6HZSTVDCG7ZH
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -59089,7 +59089,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-03T00:11:03.347Z
-        completed_at: 2026-06-03T00:11:03.347Z
+        completed_at: 2026-06-03T00:11:14.539Z
+        notes: "Friction: the merge helper refused because dev was checked out in the project root, and its
+          recovery guidance suggested cd-based commands even though dispatch prompts require all
+          commands from the assigned workspace. I used git -C
+          /home/chapel/Projects/kynetic-spec-dispatch checkout --detach, then reran the helper
+          successfully. Secondary note: the required full npm test was long but completed cleanly,
+          so no new friction item from that alone."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-03T00:11:14.539Z
+        completed_at: 2026-06-03T00:11:14.539Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-03T00:10:15.657Z
