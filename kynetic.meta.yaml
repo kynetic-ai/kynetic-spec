@@ -20876,6 +20876,23 @@ skills:
     name: UI Design
     platforms:
       - claude-code
+  - _ulid: 01KT5CVCWB66XWQ3T68ZTT1V0Q
+    description: Reviewer checklist for changes to package-shipped guidance surfaces. Enforces semantic
+      project-neutrality and project-local preservation of removed Kynetic context.
+    origin: project
+    depends_on: []
+    tags:
+      - review
+      - shared-guidance
+      - neutrality
+    _type: skill
+    allowed_tools: []
+    id: shared-guidance-neutrality
+    name: Shared-Guidance Neutrality
+    platforms:
+      - claude-code
+      - codex
+      - droid
 workflows:
   - _ulid: 01KF782ZSH8JG4CCJRWVQQ9G5R
     description: |
