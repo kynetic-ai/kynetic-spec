@@ -44,7 +44,7 @@ description: |
 spec_ref: null
 plan_ref: "@plan-shared-template-project-neutrality-cleanup"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-regenerate-shared-template-artifacts-and-tests"
@@ -55,6 +55,7 @@ tags:
   - review
   - release
 vcs_refs: []
+session_id: 01KT5ZCQ7JHW93M9YKQ2Z2G5BQ
 history:
   - author: Jacob Chapel
     changes:
@@ -63,6 +64,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-06-02T23:59:11.421Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KT5ZCQ7JHW93M9YKQ2Z2G5BQ
+        previous: null
+      started_at:
+        new: 2026-06-03T05:31:09.290Z
+        previous: null
+    command: task-start
+    timestamp: 2026-06-03T05:31:09.290Z
 created_at: 2026-06-02T23:58:09.460Z
+started_at: 2026-06-03T05:31:09.290Z
 todos: []
 automation: eligible
