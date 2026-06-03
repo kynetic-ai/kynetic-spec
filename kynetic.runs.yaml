@@ -59131,9 +59131,25 @@ runs:
     completed_at: 2026-06-03T00:11:53.280Z
   - _ulid: 01KT5DAHWVTM9AQVDPDSX6Q81X
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-03T00:14:53.851Z
+        completed_at: 2026-06-03T00:16:54.186Z
+        notes: "Searched meta observations, inbox, and tasks. Identified two high-confidence frictions
+          specific to this session that are not duplicates: (1) kspec batch + meta set --add-skill
+          throws TypeError on internal options array, distinct from prior batch frictions 01KKAZ94
+          (task add), 01KNMC9Y (arg shape), 01KQBRFN (cascade prompt); (2) no CLI to update a
+          project-local skill's body content after creation, related to but distinct from 01KKX2NN
+          (templates→shadow sync) and 01KJGAKM (update version gating). Skipping reference-syntax
+          friction because 01KJEVMQ already documents the {skill:<id>} token success and the
+          canonical form is discoverable via kspec skill diff."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-03T00:16:54.186Z
+        completed_at: 2026-06-03T00:16:54.186Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-03T00:14:53.851Z
