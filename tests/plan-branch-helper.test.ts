@@ -211,11 +211,72 @@ describe("plan branch helper", () => {
     expect(failureResult.exitCode).toBeGreaterThan(0);
   });
 
+  // AC: @trait-error-guidance ac-1
+  // AC: @trait-error-guidance ac-2
+  // AC: @trait-error-guidance ac-6
+  // AC: @trait-json-output ac-1
+  // AC: @trait-json-output ac-3
+  // AC: @trait-semantic-exit-codes ac-4
+  it("preserves Git checkout failure details in text and JSON error output when the working tree blocks branch creation", async () => {
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: dev\n",
+      "utf-8",
+    );
+
+    git("checkout -b dev", tempDir);
+    await fs.writeFile(path.join(tempDir, "checkout-conflict.txt"), "from dev\n", "utf-8");
+    git("add checkout-conflict.txt", tempDir);
+    git('commit -m "dev-only file"', tempDir);
+    git("checkout main", tempDir);
+
+    await fs.writeFile(
+      path.join(tempDir, "checkout-conflict.txt"),
+      "untracked conflict\n",
+      "utf-8",
+    );
+
+    await addPlan("checkout-conflict-plan");
+
+    const textResult = kspecRun("plan branch @checkout-conflict-plan", tempDir, {
+      expectFail: true,
+    });
+    expect(textResult.exitCode).toBe(3);
+    expect(textResult.stderr).not.toContain("[object Object]");
+    expect(textResult.stderr).toContain("Failed to create or resume plan branch");
+    expect(textResult.stderr).toContain("checkout-conflict.txt");
+    expect(textResult.stderr).toMatch(/would be overwritten|untracked working tree/);
+    expect(textResult.stderr).toMatch(/move or remove them|Suggestion:/);
+
+    const afterFailure = kspecJson<{ branch: string | null }>(
+      "plan get @checkout-conflict-plan",
+      tempDir,
+    );
+    expect(afterFailure.branch).toBeNull();
+
+    const jsonResult = kspecRun("plan branch @checkout-conflict-plan --json", tempDir, {
+      expectFail: true,
+    });
+    expect(jsonResult.exitCode).toBe(3);
+    // No ANSI escape sequences in --json stderr payload.
+    expect(jsonResult.stderr).not.toMatch(/\[/);
+
+    const parsed = JSON.parse(jsonResult.stderr) as {
+      success: boolean;
+      error: string;
+      details: { message?: string; suggestion?: string };
+    };
+    expect(parsed.success).toBe(false);
+    expect(parsed.error).toBe("Failed to create or resume plan branch");
+    expect(parsed.details.message).toMatch(/would be overwritten|untracked working tree/);
+    expect(parsed.details.message).toContain("checkout-conflict.txt");
+    expect(parsed.details.suggestion).toBeTruthy();
+  });
+
   // AC: @trait-json-output ac-5 — N/A: plan branch output contains no timestamps
   // AC: @trait-json-output ac-6 — N/A: plan branch exposes no competing format flags
   // AC: @trait-semantic-exit-codes ac-2 — N/A: invalid-ref handling exits through not-found guidance, not a field validation path
   // AC: @trait-semantic-exit-codes ac-3 — N/A: plan branch has no confirmation prompt
-  // AC: @trait-semantic-exit-codes ac-4 — N/A: runtime git failures are not forced in this integration test file
   // AC: @trait-semantic-exit-codes ac-5 — N/A: plan branch targets one plan, not a query
   // AC: @trait-semantic-exit-codes ac-7 — N/A: plan branch is not a batch operation
   // AC: @trait-error-guidance ac-4 — N/A: plan branch performs no state transition validation
