@@ -30663,7 +30663,7 @@
   title: Neutralize worker, reviewer, and merge core skills
   type: task
   plan_ref: "@plan-shared-template-project-neutrality-cleanup"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-add-shared-guidance-neutrality-review-gate"
@@ -30677,7 +30677,7 @@
   notes_count: 5
   todos_count: 0
   created_at: 2026-06-02T23:58:06.958Z
-  started_at: 2026-06-03T03:12:56.627Z
+  started_at: 2026-06-03T04:08:49.415Z
   submitted_at: 2026-06-03T03:13:02.900Z
   automation: eligible
 - _ulid: 01KT5CBV0H0SQ2V6D6G8GB1EJZ
