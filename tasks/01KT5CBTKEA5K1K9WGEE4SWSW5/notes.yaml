@@ -67,3 +67,60 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-03T03:35:26.534Z
+  - _ulid: 01KT5TPJ1KFEP3B935S3B1XFZD
+    content: >-
+      Fix cycle 2: addressed the cycle-2 blocker about kspec skill verify reporting task-work,
+      review, and merge as drifted on codex and droid.
+
+
+      Root cause: prior cycles updated templates/skills/{task-work,review,merge}/SKILL.md and the
+      rendered .agents/skills + .factory/skills outputs, but did not sync the shadow source at
+      .kspec/skills/{task-work,review,merge}/SKILL.md. kspec skill render reads from the shadow
+      source, so kspec skill verify saw the committed rendered output diverge from what would be
+      re-rendered from the (un-neutralized) shadow source.
+
+
+      Resolution:
+
+      1. Synced shadow source to match the neutralized templates for the three touched core skills
+      (kspec-meta commit 1dbe3c32c4).
+
+      2. Ran kspec skill render task-work / review / merge --force. After deleting the stale
+      rendered files first, the force render re-created byte-identical content (matching what was
+      already committed in a46a66f66c) and updated the .render-hash-codex / .render-hash-droid
+      sidecars in shadow so drift detection now matches.
+
+      3. kspec skill status / verify now report task-work, review, merge in-sync on codex and droid;
+      the touched core skills no longer appear in the drifted list. Other pre-existing drift on
+      unrelated skills is unchanged and out of scope.
+
+
+      No dispatch-branch code changes were required for this fix; the dispatch branch tree is
+      byte-identical to the cycle-2 submission (HEAD: 600cc12a44). The fix lives on the shadow
+      branch (kspec-meta) and in the regenerated render-hash sidecars.
+
+
+      Validation evidence:
+
+      - npm run format:check pass
+
+      - npm run lint -- --quiet: 742 warnings, 0 errors (unchanged baseline)
+
+      - npm run typecheck pass
+
+      - kspec validate --refs/--alignment/--completeness --warnings-ok pass (pre-existing warning
+      baseline)
+
+      - Focused skill tests pass: tests/core-skill-install.test.ts (28),
+      tests/core-skill-update.test.ts (20), tests/skill-rendering.test.ts (89),
+      tests/skill-diff.test.ts (3)
+
+      - Full suite: 2681/2681 suites passed, 10219 tests passed, 5 skipped
+
+      - kspec skill verify: task-work, review, merge no longer in drifted list for codex/droid
+      platforms
+
+      - Both review threads replied and resolved.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-03T04:08:38.707Z
