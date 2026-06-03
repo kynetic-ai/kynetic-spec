@@ -1,1 +1,19 @@
-notes: []
+notes:
+  - _ulid: 01KT5G0A99T8WRETEQFEW4XANW
+    content: "Neutralized templates/skills/task-work, review, and merge per shared-guidance convention.
+      Removed hard-coded npm/oxlint/Vitest gates, dev/main/feat branch examples, GitHub PR
+      analogies, src/parser/validate.ts example paths, and templates/* regeneration table from
+      shared text; replaced with project-defined gate references and path/to/file.ext placeholders.
+      Kept universal kspec mechanics (review-record lifecycle, AC annotation syntax, trait coverage,
+      supported merge helper, dispatch env-var contract) and retained @trait-json-output example per
+      task constraint. Regenerated .agents/skills and .factory/skills via npm run dev -- skill
+      render --force; plugin/ rebuilt via build-plugin.cjs (gitignored). Focused tests passed:
+      core-skill-install (28), core-skill-update (20), skill-rendering (89), skill-diff (3),
+      agents-instruction-gen (32), core-skill-namespace (15), claude-plugin-registry (14),
+      cross-platform-robustness (16). Format, lint, typecheck, and kspec validation gates pass
+      (warnings pre-existing in unrelated tasks/specs). Direction-2 preservation (npm gate commands,
+      dev/main branch names, templates/* maintenance rules) is handled by the dependent task
+      @task-preserve-kynetic-local-template-maintenance-context."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-03T01:01:44.106Z
