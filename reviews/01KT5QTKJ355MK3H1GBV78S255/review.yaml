@@ -197,6 +197,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-03T03:35:24.632Z
+  - _ulid: 01KT5T4P5Z8DXJ3MQ7VJ4BNS0G
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KT5RQKDKJWWMM9E0S33GJQMH
+    timestamp: 2026-06-03T03:58:53.119Z
 examined_commit: 600cc12a44941be362ec12bd56c6708b3c58ed03
 external_links: []
 lifecycle_state: closed
@@ -627,6 +633,36 @@ threads:
           skills. Please make the touched core skills pass the project-defined render/verify path,
           or update the guidance to name the correct path and make that path pass."
         created_at: 2026-06-03T03:34:51.421Z
+      - _ulid: 01KT5T4NXZR7AM2RHEJ3FQB6K0
+        author: "@claude"
+        body: >-
+          Fixed in fix cycle 2.
+
+
+          Root cause: the prior fix cycle updated templates/skills/{task-work,review,merge}/SKILL.md
+          and the rendered .agents/skills + .factory/skills outputs, but did not sync the shadow
+          source at .kspec/skills/{task-work,review,merge}/SKILL.md. kspec skill render reads from
+          the shadow source, so kspec skill verify saw the committed rendered output diverge from
+          what would be re-rendered from the (un-neutralized) shadow source for codex and droid.
+
+
+          Resolution path (the project-defined render/verify path the local guidance names):
+
+
+          1. Synced shadow source to match the neutralized templates for the three touched core
+          skills (kspec-meta commit 1dbe3c32c4).
+
+          2. Ran kspec skill render task-work / review / merge --force; the renders produced
+          byte-identical output to what was already committed in commit a46a66f66c, so no rendered
+          files changed in this dispatch branch. The render commits on kspec-meta updated the stored
+          render-hash sidecars (.render-hash-codex / .render-hash-droid) so drift detection now
+          matches the actual rendered content.
+
+          3. kspec skill status / npm run dev -- skill verify now report task-work, review, and
+          merge as in-sync on codex and droid; the touched core skills no longer appear in the
+          drifted list. Other pre-existing drift on unrelated skills (reflect, triage-inbox,
+          writing-specs, plan, create-workflow, observe) is unchanged and outside this task's scope.
+        created_at: 2026-06-03T03:58:52.862Z
     kind: blocker
   - _ulid: 01KT5RSC2GVMXYHB3GRZESBYWF
     entries:
@@ -658,5 +694,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-03T03:35:24.632Z
 created_at: 2026-06-03T03:18:25.603Z
-updated_at: 2026-06-03T03:35:24.632Z
+updated_at: 2026-06-03T03:58:52.862Z
 notes: []
