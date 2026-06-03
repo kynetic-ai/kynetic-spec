@@ -343,6 +343,7 @@ agents:
       - review
       - writing-specs
       - plan
+      - shared-guidance-neutrality
     tools:
       - kspec
   - _ulid: 01KP8MGJ5J6M35S39A3KTAPXSH
