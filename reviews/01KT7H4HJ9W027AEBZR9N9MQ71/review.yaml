@@ -205,6 +205,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-03T20:14:20.566Z
+  - _ulid: 01KT7KW1TXHKQG81Z2AKD0763P
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KT7H9D06S9626FGJ8TF2WNZ1
+    timestamp: 2026-06-03T20:47:47.549Z
 examined_commit: 9008219bb7775a345224df1765b5bd1c537a1c87
 external_links: []
 lifecycle_state: closed
@@ -236,6 +242,23 @@ threads:
           for OSC/BEL (and ideally ST-terminated OSC) and strip the entire sequence before applying
           backspaces/control-character cleanup.'
         created_at: 2026-06-03T20:02:39.238Z
+      - _ulid: 01KT7KW1KVXYFW61FMDTFEPSJA
+        author: "@claude"
+        body: "Fixed in this fix cycle. Root cause: ANSI_ESCAPE_PATTERN had a single mega-regex whose
+          alternation only consumed alphanumeric + semicolon payload bytes before BEL, so URL
+          payloads like https://example.com would break the match and leave URL bytes (and the
+          BEL/second OSC remnant) in the preview. Replaced the single pattern with three focused
+          patterns applied in order: (1) OSC_PATTERN: matches \\x1b] or 0x9D, non-greedy arbitrary
+          payload (incl. punctuation), terminator BEL | ESC\\\\ (ST) | 0x9C | end-of-line; (2)
+          CSI_PATTERN: structured CSI grammar (params 0x30-0x3F, intermediates 0x20-0x2F, optional
+          final 0x40-0x7E); (3) ESC_PATTERN: any remaining Fp/Fe/Fs 2-byte sequences plus stray ESC.
+          OSC strip runs before \\r split (its payload may contain \\r) and before CSI/ESC strip.
+          Added five behavioral regression tests in tests/web-ui/fleet-buffer.test.ts:
+          BEL-terminated hyperlink (your exact case), ST-terminated, single-byte ST, split OSC
+          across chunks staying buffered, and URL payload with colons/slashes/dots/query. All 25
+          fleet-buffer tests pass; full suite passes (2681/2681 suites, 10231/10236 tests, 5
+          pre-existing skipped); format/lint/focused-lint/typecheck/kspec validate all pass."
+        created_at: 2026-06-03T20:47:47.323Z
     kind: blocker
   - _ulid: 01KT7HYH9NGCJK35MTP1TMNBZB
     entries:
@@ -283,5 +306,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-03T20:14:20.566Z
 created_at: 2026-06-03T20:00:00.073Z
-updated_at: 2026-06-03T20:14:20.566Z
+updated_at: 2026-06-03T20:47:47.323Z
 notes: []
