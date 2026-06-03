@@ -24004,7 +24004,7 @@ reviews:
   - _ulid: 01KT7H4HJ9W027AEBZR9N9MQ71
     slugs: []
     title: Review task-fleet-buffer-preview-sanitization cycle 3
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
     check_count: 0
     examined_commit: 9008219bb7775a345224df1765b5bd1c537a1c87
@@ -24015,8 +24015,8 @@ reviews:
       content_hash: ""
       ref: "@01KT7DV7P6CTBBNXGB2AJF1269"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
+    thread_count: 1
+    unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-06-03T20:00:00.073Z
-    updated_at: 2026-06-03T20:00:17.559Z
+    updated_at: 2026-06-03T20:02:39.238Z
