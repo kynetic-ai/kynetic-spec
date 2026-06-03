@@ -24,6 +24,17 @@ checks:
     runner: npm run lint -- --quiet
     created_at: 2026-06-03T20:12:37.827Z
     completed_at: 2026-06-03T20:12:37.827Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 0 warnings and 0 errors on the two changed TypeScript/test files."
+    name: focused-lint
+    required: true
+    runner: npx oxlint packages/web-ui/src/lib/components/board/fleet-buffer.ts
+      tests/web-ui/fleet-buffer.test.ts
+    created_at: 2026-06-03T20:12:48.588Z
+    completed_at: 2026-06-03T20:12:48.588Z
 events:
   - _ulid: 01KT7H4HJ8P21E6VGAFJ7451V8
     actor: Jacob Chapel
@@ -59,6 +70,13 @@ events:
       status: pass
       name: lint
     timestamp: 2026-06-03T20:12:38.049Z
+  - _ulid: 01KT7HW094MWSD1BN0J53WXB5R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-03T20:12:48.804Z
 examined_commit: 9008219bb7775a345224df1765b5bd1c537a1c87
 external_links: []
 lifecycle_state: open
@@ -93,5 +111,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-03T20:00:00.073Z
-updated_at: 2026-06-03T20:12:37.827Z
+updated_at: 2026-06-03T20:12:48.588Z
 notes: []
