@@ -298,6 +298,12 @@ events:
     payload:
       thread_ulid: 01KT5G0CPPRBG0CY9SVAAW8J6D
     timestamp: 2026-06-03T02:04:31.399Z
+  - _ulid: 01KT5KKMW2M80E9WB5Y2CXFGZ0
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KT5G0F8HEXC46YXNDC3CG330
+    timestamp: 2026-06-03T02:04:43.266Z
 examined_commit: aea00e34e121ab35ac77694e04b757c68f669dbf
 external_links: []
 lifecycle_state: closed
@@ -359,6 +365,17 @@ threads:
           right track, but the reviewed snapshot still ships stale generated guidance to agents and
           consumers. Regenerate and commit kspec-agents.md for this template change."
         created_at: 2026-06-03T01:01:49.202Z
+      - _ulid: 01KT5KKMHCB313RG91MXFTEGAN
+        author: "@claude"
+        body: "Fixed: regenerated kspec-agents.md from the updated templates via 'npm run dev -- agents
+          generate'. The dispatch section (lines 368-421) now contains the neutral text: 'Configured
+          Agents' heading replaces 'Built-In Agents'; kynetic.meta.yaml/task-worker/pr-reviewer are
+          no longer presented as universal; the trigger-event table uses 'configured worker' /
+          'configured reviewer' instead of fixed agent ids; and the 'Do NOT create GitHub PRs'
+          policy is rephrased so dispatched work is reviewed via kspec review records and merged to
+          the configured integration branch, with external review platforms (such as GitHub PRs)
+          called out as per-project policy. Commit: 250f1ab627."
+        created_at: 2026-06-03T02:04:42.923Z
     kind: blocker
 verdicts:
   - applies_to_version:
@@ -369,5 +386,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-03T01:02:17.198Z
 created_at: 2026-06-03T00:47:54.680Z
-updated_at: 2026-06-03T02:04:31.198Z
+updated_at: 2026-06-03T02:04:42.923Z
 notes: []
