@@ -4068,3 +4068,16 @@ inbox:
       - regression-coverage
     added_by: "@claude"
     created_at: 2026-06-02T23:37:13.457Z
+  - _ulid: 01KT5VY784YAG0F9PK38J944QD
+    text: Add scoped filtering to kspec skill status/verify so reviewers can verify only selected or
+      touched skills. During review of @task-neutralize-work-review-merge-skills, global skill
+      verify exited nonzero for unrelated pre-existing drift while the touched skills were in sync,
+      forcing manual table inspection. A filter such as kspec skill verify <skill...> or --skill
+      <id> would let review gates record precise render-drift evidence without conflating unrelated
+      drift.
+    tags:
+      - reflection
+      - skills
+      - review
+    added_by: Jacob Chapel
+    created_at: 2026-06-03T04:30:18.373Z
