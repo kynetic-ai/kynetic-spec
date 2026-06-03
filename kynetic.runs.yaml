@@ -59075,9 +59075,21 @@ runs:
     started_at: 2026-06-01T21:12:32.768Z
   - _ulid: 01KT5D2278FV8J6HZSTVDCG7ZH
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-03T00:10:15.657Z
+        completed_at: 2026-06-03T00:11:03.347Z
+        notes: "What worked well: the kspec review record workflow gave a durable gate trail; the focused
+          regression plus full suite verified the shared error formatter safely; the
+          detached-reviewer merge helper refused an unsafe occupied dev checkout before moving refs
+          and gave actionable recovery."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-03T00:11:03.347Z
+        completed_at: 2026-06-03T00:11:03.347Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-03T00:10:15.657Z
