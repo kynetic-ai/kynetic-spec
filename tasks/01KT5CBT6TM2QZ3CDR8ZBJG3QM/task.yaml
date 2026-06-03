@@ -55,7 +55,7 @@ description: |
 spec_ref: null
 plan_ref: "@plan-shared-template-project-neutrality-cleanup"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-add-shared-guidance-neutrality-review-gate"
@@ -70,11 +70,11 @@ review_ref: "@01KT5F709RHQEYRWFQFTZ3MJDJ"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-neutralize-agent-section-templates/01kt5cbt
-  captured_at: 2026-06-03T00:43:48.847Z
-  commit: aea00e34e121ab35ac77694e04b757c68f669dbf
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-06-03T02:05:20.725Z
+  commit: 250f1ab62734f0911f4cfd4ff3d2fa5ee4a2e53a
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-neutralize-agent-section-templates/01kt5cbt
 session_id: 01KT5JMSBQBZN2ANGG5NR8FNZH
 history:
   - author: Jacob Chapel
@@ -147,8 +147,35 @@ history:
         previous: 2026-06-03T00:35:14.770Z
     command: task-start
     timestamp: 2026-06-03T02:05:17.262Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-neutralize-agent-section-templates/01kt5cbt
+          captured_at: 2026-06-03T02:05:20.725Z
+          commit: 250f1ab62734f0911f4cfd4ff3d2fa5ee4a2e53a
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-neutralize-agent-section-templates/01kt5cbt
+        previous:
+          review_url: null
+          branch: dispatch/task/task-neutralize-agent-section-templates/01kt5cbt
+          captured_at: 2026-06-03T00:43:48.847Z
+          commit: aea00e34e121ab35ac77694e04b757c68f669dbf
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-06-03T02:05:20.728Z
+        previous: 2026-06-03T00:43:48.850Z
+    command: task-submit
+    timestamp: 2026-06-03T02:05:20.729Z
 created_at: 2026-06-02T23:58:06.554Z
 started_at: 2026-06-03T02:05:17.262Z
-submitted_at: 2026-06-03T00:43:48.850Z
+submitted_at: 2026-06-03T02:05:20.728Z
 todos: []
 automation: eligible
