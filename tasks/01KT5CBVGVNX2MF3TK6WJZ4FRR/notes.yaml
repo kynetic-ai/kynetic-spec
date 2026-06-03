@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KT5W6Q2V6TN61P11YD5SEMJ8
+    content: "Did not commit regenerated kspec-agents.md: the linked kspec CLI binary reads templates
+      from its own install location (the source repo on older 'dev' state), not from this worktree.
+      Regenerating here REGRESSES the static-template neutralization done by the three preceding
+      tasks while correctly adding the new convention rules. The next task
+      (task-regenerate-shared-template-artifacts-and-tests) handles artifact refresh after the
+      source build is current."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-03T04:34:56.731Z
