@@ -15,7 +15,7 @@ kspec meta observations --pending-resolution
 | Type         | How to Process                                                                         |
 | ------------ | -------------------------------------------------------------------------------------- |
 | **friction** | Does it reveal a spec gap? → Create spec or inbox item. If already addressed → resolve |
-| **success**  | Document in relevant spec or AGENTS.md if broadly useful → resolve                     |
+| **success**  | Document in relevant spec or project-local guidance if broadly useful → resolve        |
 | **question** | Answer it if you can. If needs investigation → promote to task                         |
 | **idea**     | Evaluate scope. Clear → inbox or task. Unclear → leave or delete                       |
 
@@ -58,7 +58,7 @@ When resolving many observations at once, use `kspec batch`:
 
 ```bash
 kspec batch --commands '[
-  {"command":"meta resolve","args":{"ref":"@obs1","resolution":"Fixed in PR #100"}},
+  {"command":"meta resolve","args":{"ref":"@obs1","resolution":"Addressed by the recent change to the affected workflow"}},
   {"command":"meta resolve","args":{"ref":"@obs2","resolution":"No longer relevant"}},
   {"command":"meta resolve","args":{"refs":["@obs3","@obs4"],"resolution":"Addressed by new workflow"}}
 ]'
@@ -68,14 +68,14 @@ Use `--dry-run` to preview. See `$kspec-help` for full batch documentation.
 
 ## Common Patterns
 
-| Pattern                | Action                                                         |
-| ---------------------- | -------------------------------------------------------------- |
-| Friction already fixed | Verify fix → resolve with note                                 |
-| Friction needs work    | Check spec → create if needed → promote or inbox               |
-| Success pattern        | Document in AGENTS.md or relevant spec → resolve               |
-| Open question          | Answer if possible → resolve. If needs investigation → promote |
-| Idea with clear scope  | Promote to task or inbox                                       |
-| Vague idea             | Leave or delete if stale                                       |
+| Pattern                | Action                                                            |
+| ---------------------- | ----------------------------------------------------------------- |
+| Friction already fixed | Verify fix → resolve with note                                    |
+| Friction needs work    | Check spec → create if needed → promote or inbox                  |
+| Success pattern        | Document in project-local guidance or the relevant spec → resolve |
+| Open question          | Answer if possible → resolve. If needs investigation → promote    |
+| Idea with clear scope  | Promote to task or inbox                                          |
+| Vague idea             | Leave or delete if stale                                          |
 
 ## Key Principles
 

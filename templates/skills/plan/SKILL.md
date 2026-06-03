@@ -52,9 +52,13 @@ kspec derive @slug
 
 Always start here — never skip research.
 
+If the project defines a plan-design workflow (for example `@spec-plan-design`), start it now:
+
 ```bash
 kspec workflow start @spec-plan-design
 ```
+
+Otherwise follow these steps directly:
 
 1. **Explore** — Read relevant code, understand current state
 2. **Clarify** — Identify ambiguities, resolve with user
@@ -65,7 +69,7 @@ Design concludes by choosing import or manual path.
 
 ### Phase 2: Execute
 
-Run the chosen workflow:
+If the project defines plan-execution workflows, start the matching one:
 
 ```bash
 # Import path
@@ -74,6 +78,8 @@ kspec workflow start @spec-plan-import
 # Manual path
 kspec workflow start @spec-plan-manual
 ```
+
+Otherwise run the import or manual path commands directly (see the path examples above).
 
 Before deriving, ask the user: **should this plan use a shared branch
 for task stacking?** If yes, run `kspec plan branch @ref` after approval
@@ -99,34 +105,34 @@ The import parser extracts specs, tasks, and notes from this markdown structure:
 ## Specs
 
 ```yaml
-- title: OAuth Provider Support
-  slug: oauth-provider
+- title: Example Feature
+  slug: example-feature
   type: feature
-  parent: "@auth"
-  description: Support third-party OAuth providers for authentication
+  parent: "@parent-module"
+  description: One-line description of the user-visible capability
   traits:
-    - trait-error-guidance
+    - example-project-trait
   acceptance_criteria:
     - id: ac-1
-      given: User clicks sign-in with Google
-      when: OAuth flow completes successfully
-      then: User session is created with provider metadata
+      given: A described precondition
+      when: A user-visible action happens
+      then: A specific observable outcome
     - id: ac-2
-      given: OAuth provider returns an error
-      when: Error callback is received
-      then: User sees descriptive error with retry option
+      given: A described error precondition
+      when: The error path is triggered
+      then: A specific recovery or guidance outcome
   implementation_notes: |
-    Use passport.js for OAuth. Per-spec notes go to this spec's derived task.
+    Per-spec implementation notes. Attached to this spec's derived task.
 
-- title: Token Refresh
-  slug: token-refresh
+- title: Example Requirement
+  slug: example-requirement
   type: requirement
-  parent: "@oauth-provider"
+  parent: "@example-feature"
   acceptance_criteria:
     - id: ac-1
-      given: Access token is within 5 minutes of expiry
-      when: User makes an API request
-      then: Token is silently refreshed before the request proceeds
+      given: A described precondition
+      when: A user-visible action happens
+      then: A specific observable outcome
 ```
 
 ## Tasks
@@ -134,23 +140,23 @@ The import parser extracts specs, tasks, and notes from this markdown structure:
 derive_from_specs: true
 
 ```yaml
-- title: Write migration guide
-  slug: migration-guide
+- title: Example task title
+  slug: example-task
   description: |
-    Document breaking changes and provide step-by-step upgrade instructions
-    for users migrating from v1 to v2.
+    Brief description of the task — what to do and why. Include scope
+    boundaries when they are not obvious from the spec.
   priority: 2
   tags:
     - docs
-  spec_ref: "@oauth-provider"
+  spec_ref: "@example-feature"
   depends_on:
-    - "@token-refresh"
+    - "@example-requirement"
 ```
 
 ## Implementation Notes
 
-General architecture notes. Attached to the plan record.
-Use passport.js for OAuth, following existing auth patterns.
+General architecture notes attached to the plan record.
+Use this section for cross-spec implementation context.
 ````
 
 ### Section Reference
@@ -163,16 +169,16 @@ Use passport.js for OAuth, following existing auth patterns.
 
 ### Spec Fields
 
-| Field                  | Required | Description                                                             |
-| ---------------------- | -------- | ----------------------------------------------------------------------- |
-| `title`                | Yes      | Spec title                                                              |
-| `slug`                 | No       | Human-friendly ID (auto-generated if omitted)                           |
-| `type`                 | No       | `feature`, `requirement`, `constraint`, `decision` (default: `feature`) |
-| `parent`               | No       | Parent ref (e.g., `"@parent-slug"`)                                     |
-| `description`          | No       | What and why                                                            |
-| `acceptance_criteria`  | No       | Array of `{id, given, when, then}`                                      |
-| `traits`               | No       | Array of trait slugs (e.g., `trait-json-output`)                        |
-| `implementation_notes` | No       | Scoped to this spec's derived task                                      |
+| Field                  | Required | Description                                                                |
+| ---------------------- | -------- | -------------------------------------------------------------------------- |
+| `title`                | Yes      | Spec title                                                                 |
+| `slug`                 | No       | Human-friendly ID (auto-generated if omitted)                              |
+| `type`                 | No       | `feature`, `requirement`, `constraint`, `decision` (default: `feature`)    |
+| `parent`               | No       | Parent ref (e.g., `"@parent-slug"`)                                        |
+| `description`          | No       | What and why                                                               |
+| `acceptance_criteria`  | No       | Array of `{id, given, when, then}`                                         |
+| `traits`               | No       | Array of trait slugs from the project's trait catalog (`kspec trait list`) |
+| `implementation_notes` | No       | Scoped to this spec's derived task                                         |
 
 ### Spec Language Quality
 
@@ -197,38 +203,27 @@ Specs in plan documents must follow the same behavioral language rules as any sp
 
 ## Trait Selection
 
-Before writing specs, review available traits:
+Traits are not shipped by `kspec init` — each project defines its own trait catalog. Before writing specs, review what's available in this project and pick matching ones:
 
 ```bash
-kspec trait list
-kspec trait get @trait-json-output  # See inherited ACs
+kspec trait list                       # See the project's trait catalog
+kspec trait get @<trait-slug>          # See a trait's inherited ACs
 ```
 
-### Common Trait Applications
-
-| Building...             | Consider these traits                              |
-| ----------------------- | -------------------------------------------------- |
-| CLI command with output | `@trait-json-output`, `@trait-semantic-exit-codes` |
-| Destructive operation   | `@trait-confirmation-prompt`, `@trait-dry-run`     |
-| List/search command     | `@trait-filterable-list`, `@trait-json-output`     |
-| Shadow branch mutation  | `@trait-shadow-commit`                             |
-| User-facing error paths | `@trait-error-guidance`                            |
-| Batch operations        | `@trait-multi-ref-batch`                           |
-| API endpoint            | `@trait-api-endpoint`, `@trait-localhost-security` |
-| WebSocket feature       | `@trait-websocket-protocol`                        |
+For each spec you write, scan the catalog for traits whose behavior the spec implements (for example: output formatting, destructive-operation prompts, list filtering, error guidance, batch refs, shadow-state mutation). If no matching trait exists and the cross-cutting behavior recurs across 3+ specs, consider defining a new trait. See [Creating New Traits](#creating-new-traits) — covered in `{skill:writing-specs}`.
 
 ### Trait Naming in Plan Documents
 
-Use the **full trait slug** — import only auto-prefixes `@`, not `@trait-`:
+Use the **full trait slug** as it appears in `kspec trait list` — import only auto-prefixes `@`, not any specific trait namespace prefix:
 
 ```yaml
-# Wrong — resolves to nonexistent item
+# Wrong — uses the un-prefixed name
 traits:
-  - json-output
+  - some-trait
 
-# Correct — full slug
+# Correct — full slug from the project trait catalog
 traits:
-  - trait-json-output
+  - example-project-trait
 ```
 
 ## YAML Pitfalls
@@ -358,7 +353,7 @@ kspec plan set @plan --status completed
 > fork from and merge back into that branch. Task work accumulates on the
 > plan branch as tasks are completed. Once all tasks are done and the plan
 > is marked completed, the plan branch requires manual merging into the
-> project's integration branch (e.g., `git merge --no-ff plan/... into dev`).
+> project's integration branch using the project-defined merge command.
 > A future `kspec plan merge` command may automate this, but for now it is
 > a manual step.
 
@@ -379,7 +374,7 @@ Atomic — all succeed or all roll back. Use `--dry-run` to preview.
 ## Command Reference
 
 ```bash
-# Design phase
+# Design phase — start the project's plan-design workflow if it exists
 kspec workflow start @spec-plan-design
 
 # Import path

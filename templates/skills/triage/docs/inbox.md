@@ -39,8 +39,8 @@ kspec triage start
 
 ```bash
 kspec triage record @ref --action promote --reasoning "Clear feature request with spec coverage"
-kspec triage record @ref --action delete --reasoning "Already implemented in PR #123"
-kspec triage record @ref --action defer --reasoning "Depends on auth system redesign"
+kspec triage record @ref --action delete --reasoning "Already implemented and merged"
+kspec triage record @ref --action defer --reasoning "Depends on a larger upstream redesign"
 kspec triage record @ref --action spec-gap --reasoning "No spec covers error handling for this flow"
 kspec triage record @ref --action duplicate --reasoning "Covered by @existing-spec"
 ```
@@ -74,7 +74,7 @@ kspec triage act @triage-ref
 
 For behavior changes, check spec coverage before promoting:
 
-1. **Check coverage**: `kspec item list | grep <relevant>`
+1. **Check coverage**: `kspec search "<relevant keyword>"`
 2. **Identify gaps**: Does spec have description AND acceptance criteria?
 3. **Update spec**:
    ```bash
@@ -138,7 +138,7 @@ Use `--dry-run` to preview. See `{skill:help}` for full batch documentation.
 ## Key Principles
 
 - **Record before act** - Decisions are separated from execution
-- **Ask one question at a time** - Use AskUserQuestion for decisions
+- **Ask one question at a time** - Surface each decision individually rather than batching
 - **Spec before task** - Fill spec gaps before promoting to tasks
 - **AC is required** - Specs without acceptance criteria are incomplete
 - **Use CLI, not YAML** - All changes through kspec commands

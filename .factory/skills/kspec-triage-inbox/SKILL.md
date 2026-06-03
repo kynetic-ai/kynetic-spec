@@ -86,8 +86,8 @@ kspec triage start
 
 ```bash
 kspec triage record @ref --action promote --reasoning "Clear feature request with spec coverage"
-kspec triage record @ref --action delete --reasoning "Already implemented in PR #123"
-kspec triage record @ref --action defer --reasoning "Depends on auth system redesign"
+kspec triage record @ref --action delete --reasoning "Already implemented and merged"
+kspec triage record @ref --action defer --reasoning "Depends on a larger upstream redesign"
 kspec triage record @ref --action spec-gap --reasoning "No spec covers error handling for this flow"
 kspec triage record @ref --action duplicate --reasoning "Covered by @existing-spec"
 ```
@@ -152,12 +152,12 @@ kspec meta observations --pending-resolution
 
 For each observation:
 
-| Type         | How to Process                                                              |
-| ------------ | --------------------------------------------------------------------------- |
-| **friction** | Reveals spec gap? → Create spec or inbox item. Already addressed? → Resolve |
-| **success**  | Document in relevant spec or AGENTS.md if broadly useful → Resolve          |
-| **question** | Answer if you can. Needs investigation? → Promote to task                   |
-| **idea**     | Clear scope? → Inbox or task. Unclear? → Leave or delete if stale           |
+| Type         | How to Process                                                                  |
+| ------------ | ------------------------------------------------------------------------------- |
+| **friction** | Reveals spec gap? → Create spec or inbox item. Already addressed? → Resolve     |
+| **success**  | Document in relevant spec or project-local guidance if broadly useful → Resolve |
+| **question** | Answer if you can. Needs investigation? → Promote to task                       |
+| **idea**     | Clear scope? → Inbox or task. Unclear? → Leave or delete if stale               |
 
 ```bash
 # Promote observation to task
