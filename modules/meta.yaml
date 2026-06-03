@@ -7472,6 +7472,12 @@ modules:
             id: ac-generic-acp-auto-approve-contributes-no-args
             then: The generic adapter contributes no adapter-specific auto-approval arguments.
             when: kspec prepares the invocation argument list.
+          - given: kspec builds a skill-bearing prompt for a runner that resolves to the generic ACP process
+              adapter.
+            id: ac-generic-acp-skill-formatting-is-neutral
+            then: The prompt keeps the generic portable skill-reference text instead of applying an
+              adapter-specific platform rewrite.
+            when: skill references are rewritten for adapter delivery.
         tags: []
         created: 2026-05-31T06:19:00.597Z
         notes:
