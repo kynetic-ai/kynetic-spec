@@ -42,3 +42,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-03T19:29:47.255Z
+  - _ulid: 01KT7FSQR7A3EVZ91ER5F88NHG
+    content: "Fix cycle for review @01KT7EHKYYZT7V8SNNAW4N9S45: addressed blocker in
+      packages/web-ui/src/lib/components/board/fleet-buffer.ts by stripping ANSI escape sequences
+      before applying terminal backspace controls. Added regression coverage in
+      tests/web-ui/fleet-buffer.test.ts for an ANSI SGR sequence followed by backspace before
+      display. Verification after fix: npm test -- --fresh --run tests/web-ui/fleet-buffer.test.ts
+      (20/20 passed); npx oxlint target files (0 warnings/errors); npm run format:check (passed);
+      npm run typecheck (passed); kspec validate --warnings-ok exited 0 with pre-existing warnings."
+    supersedes: null
+    author: Hermes
+    created_at: 2026-06-03T19:36:37.383Z
