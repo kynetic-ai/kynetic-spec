@@ -20705,6 +20705,40 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-03T04:37:51.987Z
+  - _ulid: 01KT5YE5YS9XKS6Z8GX5PH6C9M
+    type: friction
+    content: "Plans that stage 'neutralize source templates' and 'regenerate derived artifacts' as
+      separate sibling tasks become structurally redundant when the neutralization tasks correctly
+      regenerate their derived outputs in the same commit (per the existing 'regenerate before
+      commit' convention). The follow-up regenerate task then has nothing to commit and degrades
+      into a verification-only no-op task. Concrete example:
+      @plan-shared-template-project-neutrality-cleanup staged five neutralize-* tasks plus
+      @task-regenerate-shared-template-artifacts-and-tests, but commits
+      aea00e34e1/a46a66f66c/6f36d05d67/250f1ab627/600cc12a44 already shipped regenerated .agents/,
+      .factory/, and kspec-agents.md outputs. When planning template-neutralization work, either
+      fold the regeneration check into each neutralize-* task's quality gate, or scope the follow-up
+      task explicitly as 'verify no drift and update brittle tests' rather than 'regenerate every
+      derived artifact'."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-03T05:13:58.489Z
+  - _ulid: 01KT5YE67XCC84GNYVCPDMWSBN
+    type: success
+    content: "Template-driven (mechanical) tests survived the entire shared-guidance neutralization wave
+      without any test updates. tests/agents-instruction-gen.test.ts reads the actual
+      templates/agents-sections/*.md files at test time, extracts each file's first ## heading and
+      first non-empty content line, then asserts those substrings appear in the generated
+      kspec-agents.md. Because the assertions are derived from the current template content rather
+      than pinned to specific phrases, neutralizing template wording does not require touching the
+      test — it self-updates. Worth replicating in any test that verifies a 'rendered output
+      reflects source X' invariant: read X at test time, extract a content-derived fingerprint, then
+      assert presence in the rendered output. The pattern also kept tests/core-skill-install.test.ts
+      and tests/core-skill-update.test.ts stable across the same neutralization wave."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-03T05:13:58.781Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
