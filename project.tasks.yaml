@@ -30784,8 +30784,15 @@
   title: Sanitize Active Fleet preview terminal output
   type: bug
   spec_ref: "@ui-task-board"
-  status: pending_review
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - "Dispatch workspace provisioning failed: Cannot adopt branch
+      \"dispatch/task/task-fleet-buffer-preview-sanitization/01kt7dv7\" for task
+      @01KT7DV7P6CTBBNXGB2AJF1269: it is currently checked out in the main repository working tree
+      (/home/chapel/Projects/kynetic-spec-dispatch). This usually means submission linkage was
+      captured from the wrong checkout.. Suggested action: Repair the task's submission linkage to
+      reference the correct task branch: kspec task set @01KT7DV7P6CTBBNXGB2AJF1269
+      --submission-linkage"
   depends_on: []
   priority: 2
   tags:
