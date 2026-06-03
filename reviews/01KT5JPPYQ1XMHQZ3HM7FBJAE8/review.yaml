@@ -81,6 +81,17 @@ checks:
     runner: kspec
     created_at: 2026-06-03T02:03:00.659Z
     completed_at: 2026-06-03T02:03:00.659Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run lint -- --quiet exited 0: 0 errors; repo warning baseline still present (742
+      warnings)."
+    name: lint
+    required: true
+    runner: oxlint
+    created_at: 2026-06-03T02:03:03.642Z
+    completed_at: 2026-06-03T02:03:03.642Z
 events:
   - _ulid: 01KT5JPPYQ9C93FFHAHNBHFECJ
     actor: Jacob Chapel
@@ -144,6 +155,13 @@ events:
       status: pass
       name: kspec validate refs
     timestamp: 2026-06-03T02:03:00.897Z
+  - _ulid: 01KT5KGKTCHXHZ5N1C4MEZYB21
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-03T02:03:03.884Z
 examined_commit: 58ed812655e61eebaedc05fa7d1e71d3e3f887df
 external_links: []
 lifecycle_state: open
@@ -156,5 +174,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-03T01:48:55.127Z
-updated_at: 2026-06-03T02:03:00.659Z
+updated_at: 2026-06-03T02:03:03.642Z
 notes: []
