@@ -20588,6 +20588,28 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-03T01:46:26.649Z
+  - _ulid: 01KT5QPF03Q2T0VZZQZ2QT004M
+    type: friction
+    content: "Plans that stage shared-guidance neutralization alongside a sibling local-preservation
+      task (rather than ordering preservation first) hit a Direction-2 review block. Concrete
+      instance: plan-shared-template-project-neutrality-cleanup placed
+      task-neutralize-work-review-merge-skills and
+      task-preserve-kynetic-local-template-maintenance-context as siblings depending on the
+      convention task. The neutralization landed first and was correctly blocked by the
+      shared-guidance-neutrality convention because the concrete Kynetic gates (npm run
+      format:check, npm run lint -- --quiet, npx oxlint <changed files>, npm run typecheck) and
+      plugin/.factory artifact maintenance rules removed from shared templates had no always-loaded
+      local home yet. The fix was to co-ship the diff-specific portion of the local-preservation
+      work into the neutralization fix-cycle (added to work-gates and review-gates SKILL.md on the
+      shadow branch). Systemic pattern: when a plan introduces a Direction-2-style convention AND
+      removes shared-text content in the same slice, the preservation step must either (a) land
+      before any neutralization task or (b) be co-shipped within each neutralization task's diff.
+      Sibling-task ordering with a shared dependency does not enforce this and produces predictable
+      fix cycles."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-03T03:16:09.859Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
