@@ -13,6 +13,17 @@ checks:
     runner: npm run format:check
     created_at: 2026-06-03T05:28:51.800Z
     completed_at: 2026-06-03T05:28:51.800Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 0 errors; existing repo warning baseline reported 742 warnings. Focused
+      changed-file lint not applicable because git diff dev..HEAD is empty."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-03T05:28:56.446Z
+    completed_at: 2026-06-03T05:28:56.446Z
 events:
   - _ulid: 01KT5YH3JYTFRYZ50K98KPBREW
     actor: Jacob Chapel
@@ -34,6 +45,13 @@ events:
       status: pass
       name: format
     timestamp: 2026-06-03T05:28:52.006Z
+  - _ulid: 01KT5Z9K28C5MYHCREG7Z7RYGK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-03T05:28:56.648Z
 examined_commit: 54ede3e7d3e0fc139b2a6cd73af83eac7ddaca72
 external_links: []
 lifecycle_state: open
@@ -46,5 +64,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-03T05:15:34.366Z
-updated_at: 2026-06-03T05:28:51.800Z
+updated_at: 2026-06-03T05:28:56.446Z
 notes: []
