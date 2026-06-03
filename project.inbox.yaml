@@ -4081,3 +4081,17 @@ inbox:
       - review
     added_by: Jacob Chapel
     created_at: 2026-06-03T04:30:18.373Z
+  - _ulid: 01KT7DN8N0B1KAVKFT9J2098PM
+    text: Investigate semantic exit-code spec/constant mismatch observed during validation of
+      @task-plan-branch-git-error-details. Current @trait-semantic-exit-codes says runtime errors
+      exit 3, but @cli-exit-codes and src/cli/exit-codes.ts define 3 as NOT_FOUND and still document
+      older meanings. Reconcile the source-of-truth exit-code contract, update constants/docs/specs
+      consistently, and avoid future command-local magic numbers like process.exit(3) for runtime
+      errors until the contract is unified.
+    tags:
+      - cli
+      - exit-codes
+      - spec-mismatch
+      - follow-up
+    added_by: Jacob Chapel
+    created_at: 2026-06-03T18:59:13.697Z
