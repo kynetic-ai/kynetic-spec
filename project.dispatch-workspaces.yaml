@@ -16938,11 +16938,11 @@ workspaces:
     canonical_branch: dispatch/task/task-regenerate-shared-template-artifacts-and-tests/01kt5cbw
     canonical_branch_head: 54ede3e7d3e0fc139b2a6cd73af83eac7ddaca72
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-03T05:31:02.484Z
+      updated_at: 2026-06-03T05:34:08.442Z
     health:
       status: healthy
       issues: []
@@ -16956,16 +16956,16 @@ workspaces:
       target_branch: dev
       target_commit: 54ede3e7d3e0fc139b2a6cd73af83eac7ddaca72
       updated_at: 2026-06-03T05:31:02.484Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KT5CBWB38JYB60TD5EN9P30K"
     task_slug: task-regenerate-shared-template-artifacts-and-tests
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-03T05:34:08.442Z
       last_active_at: 2026-06-03T05:14:55.216Z
       last_reconciled_at: 2026-06-03T05:33:50.938Z
       created_at: 2026-06-03T04:55:14.981Z
-      updated_at: 2026-06-03T05:33:50.938Z
+      updated_at: 2026-06-03T05:34:08.442Z
     workspace_id: dispatch-workspace-01KT5CBWB38JYB60TD5EN9P30K
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
