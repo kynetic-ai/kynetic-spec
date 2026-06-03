@@ -15,6 +15,18 @@ checks:
     runner: oxfmt
     created_at: 2026-06-03T02:02:43.354Z
     completed_at: 2026-06-03T02:02:43.354Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed; warning baseline includes missing AC
+      coverage and automation-without-spec warnings, including this plan task's intentional no-spec
+      scope.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-03T02:02:46.200Z
+    completed_at: 2026-06-03T02:02:46.200Z
 events:
   - _ulid: 01KT5JPPYQ9C93FFHAHNBHFECJ
     actor: Jacob Chapel
@@ -36,6 +48,13 @@ events:
       status: fail
       name: format:check
     timestamp: 2026-06-03T02:02:43.599Z
+  - _ulid: 01KT5KG2R2T6C4TP7WVFYC8HFW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-03T02:02:46.402Z
 examined_commit: 58ed812655e61eebaedc05fa7d1e71d3e3f887df
 external_links: []
 lifecycle_state: open
@@ -48,5 +67,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-03T01:48:55.127Z
-updated_at: 2026-06-03T02:02:43.354Z
+updated_at: 2026-06-03T02:02:46.200Z
 notes: []
