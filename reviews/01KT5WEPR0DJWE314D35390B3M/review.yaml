@@ -2,7 +2,17 @@ _ulid: 01KT5WEPR0DJWE314D35390B3M
 slugs: []
 title: Review task-preserve-kynetic-local-template-maintenance-context
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 975 files; all matched files formatted."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-03T04:53:12.605Z
+    completed_at: 2026-06-03T04:53:12.605Z
 events:
   - _ulid: 01KT5WEPR0WEF1RDDGHHA84RWR
     actor: Jacob Chapel
@@ -17,6 +27,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-03T04:39:34.044Z
+  - _ulid: 01KT5X85FRBW8BVVBHS28Q1VZS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-03T04:53:12.824Z
 examined_commit: 8179df1ac4dae772cb698eda35c254e10cbd7eac
 external_links: []
 lifecycle_state: open
@@ -29,5 +46,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-03T04:39:18.528Z
-updated_at: 2026-06-03T04:39:33.831Z
+updated_at: 2026-06-03T04:53:12.605Z
 notes: []
