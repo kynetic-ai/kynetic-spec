@@ -16477,7 +16477,7 @@ workspaces:
         head: 8179df1ac4dae772cb698eda35c254e10cbd7eac
         last_seen_at: 2026-06-03T04:38:16.159Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-preserve-kynetic-local-template-maintenance-context-01kt5cbv
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 54ede3e7d3e0fc139b2a6cd73af83eac7ddaca72
     bootstrap:
       status: succeeded
@@ -16963,9 +16963,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-03T05:14:55.216Z
-      last_reconciled_at: 2026-06-03T05:31:02.484Z
+      last_reconciled_at: 2026-06-03T05:33:49.215Z
       created_at: 2026-06-03T04:55:14.981Z
-      updated_at: 2026-06-03T05:31:02.484Z
+      updated_at: 2026-06-03T05:33:49.215Z
     workspace_id: dispatch-workspace-01KT5CBWB38JYB60TD5EN9P30K
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
