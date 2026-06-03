@@ -178,6 +178,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-03T21:08:11.401Z
+  - _ulid: 01KT7N1Z1AD24PK85N39VYG6F0
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KT7N1YTD1456YEPRS1HPHCAR
+    timestamp: 2026-06-03T21:08:29.866Z
 examined_commit: 4416c1713adc4e40fb71ccbe87877843cbc4c201
 external_links: []
 lifecycle_state: open
@@ -187,8 +194,38 @@ subject:
   content_hash: ""
   ref: "@01KT7DV7P6CTBBNXGB2AJF1269"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KT7N1YTD1456YEPRS1HPHCAR
+    entries:
+      - _ulid: 01KT7N1YTDJXPJWWF7H3315JT4
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: kspec-agents.md; task @01KT7DV7P6CTBBNXGB2AJF1269; spec @ui-task-board; prior
+          review @01KT7H4HJ9W027AEBZR9N9MQ71;
+          packages/web-ui/src/lib/components/board/fleet-buffer.ts;
+          tests/web-ui/fleet-buffer.test.ts; diffs from dev and prior reviewed commit.
+
+          Commands run: git diff/stat/status; rg AC/source-scan check; node runtime probes for OSC,
+          split OSC, CR/ANSI/backspace behavior; npm run format:check; npm run lint -- --quiet; npx
+          oxlint changed files; npm run typecheck; npm test -- --fresh --run
+          tests/web-ui/fleet-buffer.test.ts; npm test; kspec validate
+          --refs/--alignment/--completeness --warnings-ok.
+
+          Claims verified: prior OSC hyperlink blocker fixed by stripping OSC before
+          CR/backspace/control cleanup; split escape sequences remain buffered until newline;
+          preview-only buffering still preserves MAX_DISPLAY_LINES behavior; tests are behavioral
+          and AC-annotated for @ui-task-board ac-4.
+
+          Categories searched: correctness, OSC/CSI/control edge cases, CRLF/bare CR handling,
+          backspace ordering, test quality, source-scanning risk, integration with existing
+          line-buffer semantics. No blocking issues found.
+
+          Shared/package guidance surfaces touched: none.
+        created_at: 2026-06-03T21:08:29.645Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-03T20:53:44.609Z
-updated_at: 2026-06-03T21:08:11.190Z
+updated_at: 2026-06-03T21:08:29.645Z
 notes: []
