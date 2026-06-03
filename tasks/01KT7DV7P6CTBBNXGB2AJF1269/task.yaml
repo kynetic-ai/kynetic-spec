@@ -443,8 +443,16 @@ history:
         previous: null
     command: review-verdict-needs-work
     timestamp: 2026-06-03T20:14:22.417Z
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-06-03T20:24:54.644Z
 prior_status: null
 created_at: 2026-06-03T19:02:29.317Z
 started_at: 2026-06-03T19:58:07.017Z
 submitted_at: 2026-06-03T19:58:13.783Z
 todos: []
+automation: eligible

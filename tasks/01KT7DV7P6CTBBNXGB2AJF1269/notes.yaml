@@ -71,3 +71,19 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-03T20:14:22.417Z
+  - _ulid: 01KT7JJ3ZDAP24EPBK03XE82K3
+    content: "Automation handoff per Jacob: remaining work is the bounded review cycle 3 blocker on
+      @01KT7H4HJ9W027AEBZR9N9MQ71. Dispatch should complete the OSC terminal escape sequence
+      sanitization fix, add focused regression coverage, rerun the task verification commands,
+      resubmit for review, and complete/merge only after reviewer approval. Prior manual fix cycles
+      are recorded in task notes; current submitted branch is
+      dispatch/task/task-fleet-buffer-preview-sanitization/01kt7dv7 at 9008219bb7."
+    supersedes: null
+    author: Hermes
+    created_at: 2026-06-03T20:24:53.485Z
+  - _ulid: 01KT7JJ53MGT7KR403PGPAN4V0
+    content: "Automation status set to eligible: Jacob requested dispatch finish the bounded review/fix
+      cycle autonomously."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-03T20:24:54.644Z
