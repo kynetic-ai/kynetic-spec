@@ -76,6 +76,17 @@ checks:
     runner: kspec validate --alignment --warnings-ok
     created_at: 2026-06-03T05:54:39.879Z
     completed_at: 2026-06-03T05:54:39.879Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with warnings allowed: completeness baseline includes this intentionally spec-less
+      closure task plus unrelated missing/invalid AC coverage warnings."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-03T05:54:44.507Z
+    completed_at: 2026-06-03T05:54:44.507Z
 events:
   - _ulid: 01KT600VAY45QX8WHDFP4PA4AT
     actor: Jacob Chapel
@@ -139,6 +150,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-03T05:54:40.071Z
+  - _ulid: 01KT60RTVH22Z6WMY2GSC3VXGD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-03T05:54:44.721Z
 examined_commit: c8deb5670f444d13fcff80cc2bffdfead9079421
 external_links: []
 lifecycle_state: open
@@ -151,5 +169,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-03T05:41:38.783Z
-updated_at: 2026-06-03T05:54:39.879Z
+updated_at: 2026-06-03T05:54:44.507Z
 notes: []
