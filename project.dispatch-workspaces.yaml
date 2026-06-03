@@ -14964,7 +14964,7 @@ workspaces:
         head: 99e44609f5fcefd4f5b483d068dba48456633121
         last_seen_at: 2026-06-03T00:17:56.362Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-shared-guidance-neutrality-review-gate-01kt5cbs
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: ce84317f65d0d22664fe1e95623e97dcb802e376
     bootstrap:
       status: succeeded
@@ -15437,7 +15437,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-03T00:46:22.025Z
+      updated_at: 2026-06-03T00:46:49.494Z
     integration:
       status: pending
       detail: null
@@ -15452,10 +15452,10 @@ workspaces:
     task_slug: task-neutralize-agent-section-templates
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-03T00:34:38.686Z
-      last_reconciled_at: 2026-06-03T00:46:22.025Z
+      last_active_at: 2026-06-03T00:46:49.494Z
+      last_reconciled_at: 2026-06-03T00:46:49.494Z
       created_at: 2026-06-03T00:34:14.001Z
-      updated_at: 2026-06-03T00:46:45.801Z
+      updated_at: 2026-06-03T00:46:49.494Z
     workspace_id: dispatch-workspace-01KT5CBT6TM2QZ3CDR8ZBJG3QM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
