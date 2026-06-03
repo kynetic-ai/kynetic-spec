@@ -20774,6 +20774,21 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-06-03T19:32:44.609Z
+  - _ulid: 01KT7M3ED7STR5M4S6GYQ44675
+    type: friction
+    content: "Edit tool input parses Unicode escapes (e.g., \\u001b) as actual bytes before the
+      file-content matcher runs. When editing JS/TS/Python source files that contain literal
+      6-character escape sequences (e.g., test fixtures with \"safe\\u001b[31m\" as readable
+      source), the Edit tool's old_string/new_string with \\u001b becomes a single ESC byte and
+      fails to match the literal source text. Workaround: write \\\\u001b in the JSON input to get a
+      literal backslash + u001b in the file value, or build the string in a sidecar Python script
+      using chr(92)+\"u001b\". This cost roughly 3 failed Edit attempts and a revert/re-insert cycle
+      on the fleet-buffer OSC fix-cycle 3. Systemic for any agent task that needs to preserve
+      literal escape sources in code files."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-03T20:51:49.799Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
