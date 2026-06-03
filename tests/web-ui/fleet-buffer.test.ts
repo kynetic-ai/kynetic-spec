@@ -166,6 +166,14 @@ describe("processTextChunk", () => {
     expect(result.lines).toEqual(["error"]);
     expect(result.buffer).toBe("");
   });
+
+  // AC: @ui-task-board ac-4
+  it("strips ANSI sequences before applying backspace controls", () => {
+    const state = createSessionState();
+    const result = processTextChunk(state, "safe\u001b[31m\bX\u001b[0m\n");
+    expect(result.lines).toEqual(["safX"]);
+    expect(result.buffer).toBe("");
+  });
 });
 
 describe("getDisplayState", () => {

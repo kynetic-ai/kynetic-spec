@@ -62,7 +62,8 @@ function sanitizeDisplayLine(line: string): string {
   // Treat bare carriage returns as terminal progress-line rewrites. CRLF has already
   // been normalized to LF, so any remaining \r means "return to line start" output.
   const rewritten = line.split("\r").pop() ?? "";
-  return stripControlChars(applyBackspaces(rewritten).replace(ANSI_ESCAPE_PATTERN, "")).trim();
+  const withoutAnsi = rewritten.replace(ANSI_ESCAPE_PATTERN, "");
+  return stripControlChars(applyBackspaces(withoutAnsi)).trim();
 }
 
 /**
