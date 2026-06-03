@@ -20,4 +20,4 @@ Verify shadow branch health with `kspec shadow status` if you encounter issues.
 5. **Always confirm** — Ask before creating or modifying spec items.
 6. **Batch mutations** — Use `kspec batch` for 2+ sequential write operations (one atomic commit).
 7. **Regenerate agent instructions** — Run `kspec agents generate` after changing conventions, workflows, or skills. These are the inputs to `kspec-agents.md`.
-8. **Edit skill sources, not rendered output** — Do not edit `.agents/skills/` directly. Core skills live in `templates/skills/` (+ `templates/skills/manifest.yaml`), while project/local skills live in `.kspec/skills/`. Regenerate rendered files with `kspec skill render`/`kspec setup`.
+8. **Edit skill sources, not rendered output** — Do not edit `.agents/skills/` directly; that directory is regenerated. Project/local skills live in `.kspec/skills/` and are managed through the `kspec skill` commands. Regenerate rendered files with `kspec skill render` or `kspec setup`. (Core skills that ship with the kspec package have separate maintainer sources; consult your project's local context if you are working on the package itself.)
