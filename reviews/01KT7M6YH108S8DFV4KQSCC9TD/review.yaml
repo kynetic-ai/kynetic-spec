@@ -89,6 +89,18 @@ checks:
     runner: kspec
     created_at: 2026-06-03T21:07:59.991Z
     completed_at: 2026-06-03T21:07:59.991Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --completeness --warnings-ok exited 0. Completeness warnings are
+      existing missing/invalid AC annotation baseline; changed test has standalone @ui-task-board
+      ac-4 behavioral annotations."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-03T21:08:11.190Z
+    completed_at: 2026-06-03T21:08:11.190Z
 events:
   - _ulid: 01KT7M6YH0AGPEJN4R7722W217
     actor: Jacob Chapel
@@ -159,6 +171,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-03T21:08:00.229Z
+  - _ulid: 01KT7N1D09N455ZQ841NXCBNNE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-03T21:08:11.401Z
 examined_commit: 4416c1713adc4e40fb71ccbe87877843cbc4c201
 external_links: []
 lifecycle_state: open
@@ -171,5 +190,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-03T20:53:44.609Z
-updated_at: 2026-06-03T21:07:59.991Z
+updated_at: 2026-06-03T21:08:11.190Z
 notes: []
