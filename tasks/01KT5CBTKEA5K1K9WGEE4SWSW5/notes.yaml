@@ -22,3 +22,43 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-03T01:21:32.170Z
+  - _ulid: 01KT5PZJWW45AQGWWYR1GB2ZG5
+    content: >-
+      Fix cycle 1: Addressed the MUST-FIX blocker (Direction-2 preservation) by extending the
+      always-loaded local work-gates and review-gates project skills (in .kspec/skills/) with
+      concrete Kynetic guidance.
+
+
+      - work-gates SKILL.md now names the concrete Kynetic quality gates the shared task-work skill
+      defers to: npm run format:check, npm run lint -- --quiet, npx oxlint <changed files>, npm run
+      typecheck, npm test (with shard guidance), and the three kspec validate gates. A Generated
+      Artifact Maintenance section documents that kspec skill render produces .agents/skills and
+      .factory/skills, kspec agents generate produces kspec-agents.md, and npm run build:plugin
+      produces plugin/plugins/kspec/skills.
+
+      - review-gates SKILL.md now names the matching --name/--runner mapping for each Kynetic gate
+      as kspec review check commands, plus an optional kspec skill status/verify drift check for
+      skill-touching changes.
+
+      - Sources committed on the kspec-meta shadow branch; rendered output regenerated via kspec
+      skill render and committed on the task branch (.agents/skills, .claude/skills, .factory/skills
+      for both skills).
+
+      - Nit thread acknowledged; both review threads replied and resolved.
+
+
+      Direction-1 (semantic project-neutrality of shared text) was already accepted in the prior
+      review. Direction-2 is now satisfied without waiting for
+      @task-preserve-kynetic-local-template-maintenance-context — that broader task can still cover
+      any additional self-hosting context unrelated to this diff's removals.
+
+
+      Validation evidence: npm run format:check pass, npm run lint -- --quiet 0 errors (742 warning
+      baseline unchanged), npm run typecheck pass, kspec validate --refs/--alignment/--completeness
+      --warnings-ok pass, focused skill tests pass (core-skill-install, core-skill-update,
+      skill-rendering, skill-diff), kspec skill status/verify clean for work-gates and review-gates
+      across all platforms (pre-existing drift on other unrelated skills not introduced here). Full
+      npm test -- --fresh run in progress at resubmission time.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-03T03:03:40.188Z
