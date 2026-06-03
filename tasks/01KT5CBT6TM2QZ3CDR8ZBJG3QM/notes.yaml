@@ -1,1 +1,53 @@
-notes: []
+notes:
+  - _ulid: 01KT5EMN9KA60BJ1JK8VQ2JAM4
+    content: >-
+      Approach: Neutralize 4 templates (01, 02, 06, plus verify others), keep universal kspec
+      mechanics intact.
+
+
+      Identified leaks:
+
+      - 01-quick-start.md rule 8: package-maintainer paths (templates/skills/, manifest.yaml)
+      presented as consumer guidance. Reframe for consumer projects to focus on project-local
+      .kspec/skills/ and supported CLI; reference templates/skills/ only when explaining the package
+      internals would help.
+
+      - 02-shadow-branch.md lines 13, 15: assumes 'main branch' and GitHub PRs as universal. Replace
+      with neutral 'integration branch' / 'project code branches' wording.
+
+      - 06-agent-dispatch-mode.md lines 23-41: hard-codes 'kynetic.meta.yaml', 'task-worker',
+      'pr-reviewer' agent ids as universal. Replace with project meta / configured agent references;
+      keep dispatch mechanics.
+
+      - 06 line 74: 'Do NOT create GitHub PRs' + 'merging feature groups into main' presents Kynetic
+      external-review policy as universal. Generalize to say dispatched work is reviewed via kspec
+      review records; external PR use is project/human policy.
+
+
+      Files left as-is after review:
+
+      - 03-task-lifecycle.md: refers to universal kspec layout (.kspec/modules/,
+      .kspec/project.tasks.yaml) and CLI mechanics; neutral.
+
+      - 04-pr-workflow.md: already titled 'Work and Review Lifecycle' and describes integration
+      branch / kspec review mechanics neutrally.
+
+      - 05-commit-convention.md: kspec mechanics only.
+
+      - 07-batch-usage.md: kspec mechanics only.
+
+
+      Preservation: Kynetic source-of-truth guidance (templates/skills/, templates/agents-sections/,
+      generated artifacts) is already covered in AGENTS.md 'Agent Instructions Generation' and
+      'Skill Source of Truth' sections. The follow-up
+      @task-preserve-kynetic-local-template-maintenance-context will validate and extend local
+      context as needed.
+
+
+      Test plan: mechanical agents-instruction-gen tests verify headings and first-non-empty content
+      lines remain present, so neutralizing prose within sections is safe. Will run focused test
+      slice + npm run format:check + lint + typecheck, then regenerate kspec-agents.md and visually
+      inspect for neutral static wording.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-03T00:37:53.587Z
