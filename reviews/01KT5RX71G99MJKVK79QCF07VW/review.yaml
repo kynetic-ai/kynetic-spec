@@ -100,6 +100,25 @@ checks:
     runner: kspec skill status / kspec skill verify
     created_at: 2026-06-03T03:51:58.382Z
     completed_at: 2026-06-03T03:51:58.382Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Reviewed changed shared surfaces:
+      templates/skills/{create-workflow,observe,plan,reflect,triage-inbox,writing-specs},
+      templates/skills/triage/docs/{inbox,observations}, .agents/.factory rendered copies. Direction
+      1 passed: task-specific leaks (PR # examples, AskUserQuestion, AGENTS.md as universal,
+      passport.js/OAuth examples, ACP/JSON-RPC/WebSocket/client-function examples, fixed trait refs,
+      unconditional workflow refs, dev merge example) were removed or framed as project-defined.
+      Direction 2 passed: removed Kynetic-only maintenance/gate/branch instructions are covered by
+      AGENTS.md/project-local guidance and later local-context/artifact tasks in the approved plan.
+      Generated codex/droid .agents/.factory outputs were refreshed; plugin copies and
+      kspec-agents.md are explicitly deferred to a later dependent task."
+    name: shared-guidance neutrality review
+    required: false
+    runner: manual semantic review
+    created_at: 2026-06-03T03:52:03.319Z
+    completed_at: 2026-06-03T03:52:03.319Z
 events:
   - _ulid: 01KT5RX71G9257X9GG9S3A5TM9
     actor: Jacob Chapel
@@ -177,6 +196,13 @@ events:
       status: pass
       name: skill render verification
     timestamp: 2026-06-03T03:51:58.595Z
+  - _ulid: 01KT5SR678T65AGHVVR6SA1GNE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: shared-guidance neutrality review
+    timestamp: 2026-06-03T03:52:03.560Z
 examined_commit: 8f215bac791cf4dc5dc6e65a984cc18dc23e5720
 external_links: []
 lifecycle_state: open
@@ -189,5 +215,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-03T03:37:19.664Z
-updated_at: 2026-06-03T03:51:58.382Z
+updated_at: 2026-06-03T03:52:03.319Z
 notes: []
