@@ -543,6 +543,29 @@ conventions:
     examples: []
     rules:
       - "PLACEHOLDER: Replace this rule with your project's architectural constraints and patterns"
+  - _ulid: 01KT5CRWWVG7HVZ5JQHWS03MTJ
+    domain: shared-guidance
+    examples: []
+    rules:
+      - "Treat the following as shared/package guidance surfaces that ship to consumer projects:
+        templates/skills/, templates/agents-sections/, templates/skills/manifest.yaml,
+        plugin/plugins/kspec/skills/, rendered package/core skill output under .agents/skills/ and
+        .factory/skills/ when the source is a package core skill, and generated kspec-agents.md
+        sections derived from package templates."
+      - Package-shipped guidance must describe universal kspec mechanics only. Kynetic self-hosting
+        branch policy, repo paths, quality gates, generated artifact maintenance rules, dispatch
+        workflow choices, agent ids, and external review policy belong in project-local context
+        (AGENTS.md, .kspec/skills/, or project meta conventions), not in shared guidance.
+      - When a task or plan changes any shared/package guidance surface, the reviewer must confirm
+        semantic project-neutrality before approval. Mechanical render/install/update tests are not
+        sufficient evidence that prose is project-neutral.
+      - "Reviewers must check both directions: shared/package text does not hard-code Kynetic-only
+        policy as universal, AND any Kynetic self-hosting instruction removed from shared text still
+        has a project-local home (AGENTS.md, project-local .kspec/skills/ skill, or project meta
+        convention)."
+      - Project-neutrality enforcement belongs in convention and reviewer judgment, not in broad
+        markdown scanners or string-denylist tests. Do not add prose-neutrality AC-tagged tests or
+        broad markdown scanners as the primary enforcement mechanism.
 hooks:
   - _ulid: 01KP8MGJN5FW5NSD46MAHGCF25
     action:
