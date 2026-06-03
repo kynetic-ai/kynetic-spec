@@ -107,6 +107,16 @@ checks:
     runner: npm-test
     created_at: 2026-06-03T01:01:19.106Z
     completed_at: 2026-06-03T01:01:19.106Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Skipped: no changed TypeScript or test files in this docs/template-only diff."
+    name: changed-file oxlint
+    required: false
+    runner: oxlint
+    created_at: 2026-06-03T01:01:21.916Z
+    completed_at: 2026-06-03T01:01:21.916Z
 events:
   - _ulid: 01KT5F709RXV0W38W42QSSEFSS
     actor: Jacob Chapel
@@ -191,6 +201,13 @@ events:
       status: pass
       name: focused setup builtin agents tests
     timestamp: 2026-06-03T01:01:19.318Z
+  - _ulid: 01KT5FZMT7ESM29F50Q19PJRKA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: changed-file oxlint
+    timestamp: 2026-06-03T01:01:22.119Z
 examined_commit: aea00e34e121ab35ac77694e04b757c68f669dbf
 external_links: []
 lifecycle_state: open
@@ -203,5 +220,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-03T00:47:54.680Z
-updated_at: 2026-06-03T01:01:19.106Z
+updated_at: 2026-06-03T01:01:21.916Z
 notes: []
