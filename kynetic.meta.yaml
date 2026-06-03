@@ -20561,6 +20561,20 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-03T01:04:39.681Z
+  - _ulid: 01KT5H8NMKQ9FHYTG7MAA7J2GQ
+    type: friction
+    content: Shared-guidance neutrality cleanup plans should satisfy Direction 2 local-preservation
+      before each neutralization task reaches review, or explicitly sequence the local-context task
+      first. In review of @task-neutralize-work-review-merge-skills, the shared skills correctly
+      delegated concrete Kynetic gates/artifact-maintenance commands to project-local guidance, but
+      the plan scheduled @task-preserve-kynetic-local-template-maintenance-context after the
+      neutralization tasks. The reviewer had to request changes because the removed instructions had
+      no current durable local home even though a later task planned to add one.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-06-03T01:23:46.451Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
