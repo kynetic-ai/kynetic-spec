@@ -20575,6 +20575,19 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-06-03T01:23:46.451Z
+  - _ulid: 01KT5JJ5YS02MS40T6ZX65P3AA
+    type: friction
+    content: "Editing templates/skills/<id>/SKILL.md does not propagate to .kspec/skills/ (where 'kspec
+      skill render' reads from). First render after source edits reports 'Unchanged' because the
+      shadow copy is still the previous version, masking that the edits did not reach the renderer.
+      Required workflow: edit templates -> 'kspec skill install-core --force' (or 'npm run dev --
+      skill install-core --force' when iterating locally) -> 'kspec skill render --force'. This is
+      non-obvious for task workers neutralizing package skills; the 'Unchanged' message looks like
+      success."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-03T01:46:26.649Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
