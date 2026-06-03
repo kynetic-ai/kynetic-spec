@@ -158,6 +158,13 @@ events:
       status: pass
       name: npm test
     timestamp: 2026-06-03T00:32:17.209Z
+  - _ulid: 01KT5EB1BGZYD8XEKSHRPFYSN9
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KT5EB155QBJABF6XA4R933XD
+    timestamp: 2026-06-03T00:32:38.256Z
 examined_commit: 99e44609f5fcefd4f5b483d068dba48456633121
 external_links: []
 lifecycle_state: open
@@ -167,8 +174,33 @@ subject:
   content_hash: ""
   ref: "@01KT5CBSRZ1GGNNKM5V0W9JCT0"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KT5EB155QBJABF6XA4R933XD
+    entries:
+      - _ulid: 01KT5EB156505BXB9V690KHV2F
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; .agents/.claude/.factory
+          shared-guidance-neutrality skill outputs; task and plan records; reviewer-agent metadata;
+          shared-guidance convention metadata. Commands run: kspec task get; kspec plan get; kspec
+          review for-task/add/open; git diff/stat/name-only/log; kspec agent list; kspec meta get
+          shared-guidance/pr-reviewer/reviewer/plan-reviewer/ux-reviewer; kspec validate
+          refs/alignment/completeness with warnings-ok; npm run format:check; npm run lint --
+          --quiet; npm run typecheck; npm test; skill list and rendered-copy diffs. Claims verified:
+          project-local skill exists on codex/claude/factory platforms and is attached to
+          pr-reviewer, reviewer, plan-reviewer, and ux-reviewer; shared-guidance convention appears
+          in generated kspec-agents.md; no TypeScript/test files changed; platform render
+          differences are only expected skill-reference syntax. Categories searched:
+          correctness/spec-plan alignment, integration with reviewer agents, test quality/gates,
+          generated-artifact consistency, and semantic neutrality. Shared-guidance review: touched
+          surfaces are generated kspec-agents.md convention plus project-local rendered skill
+          outputs; direction 1 passes because the new shared/package rule is local guidance guarding
+          shared text, not package-shipped consumer guidance; direction 2 passes because the
+          Kynetic-specific enforcement lives in project meta convention and the project-local
+          shared-guidance-neutrality skill attached to reviewer agents. No blocker or should-fix
+          findings."
+        created_at: 2026-06-03T00:32:38.054Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-03T00:19:15.369Z
-updated_at: 2026-06-03T00:32:17.010Z
+updated_at: 2026-06-03T00:32:38.054Z
 notes: []
