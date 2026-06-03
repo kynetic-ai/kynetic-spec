@@ -14781,18 +14781,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-add-shared-guidance-neutrality-review-gate/01kt5cbs
-    canonical_branch_head: 9ec889988c6cabb1f9aa1d9424cebb546092c287
+    canonical_branch_head: 99e44609f5fcefd4f5b483d068dba48456633121
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-03T00:00:58.185Z
+      updated_at: 2026-06-03T00:14:03.857Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-03T00:01:24.072Z
+      updated_at: 2026-06-03T00:14:03.857Z
     integration:
       status: pending
       detail: null
@@ -14800,7 +14800,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 9ec889988c6cabb1f9aa1d9424cebb546092c287
-      updated_at: 2026-06-03T00:00:58.185Z
+      updated_at: 2026-06-03T00:14:03.857Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KT5CBSRZ1GGNNKM5V0W9JCT0"
@@ -14808,9 +14808,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-03T00:01:24.072Z
-      last_reconciled_at: 2026-06-03T00:01:24.072Z
+      last_reconciled_at: 2026-06-03T00:14:03.857Z
       created_at: 2026-06-03T00:00:58.185Z
-      updated_at: 2026-06-03T00:01:24.072Z
+      updated_at: 2026-06-03T00:14:03.857Z
     workspace_id: dispatch-workspace-01KT5CBSRZ1GGNNKM5V0W9JCT0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
