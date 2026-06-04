@@ -30,3 +30,18 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-04T00:04:10.579Z
+  - _ulid: 01KT7ZB778XEMWTJHSC6813GXB
+    content: "Approach: (1) adapters.ts — make AgentAdapter.command optional, add
+      requiresProcessExecutable?: boolean, register generic-acp (requiresProcessExecutable:true,
+      args:[], no command, no autoApproveArgs). (2) runners.ts — add 'missing_process_executable'
+      reason; buildRunnerContract throws it when adapter.requiresProcessExecutable &&
+      !runner.process.executable (details {runner,adapter,missing_field}); buildImplicitContract
+      throws it for requiresProcessExecutable adapters via override/legacy path (details
+      {adapter,missing_field}); fix command-optional type sites + guard spawner. (3) prompts.ts
+      already returns null for generic-acp (default) — neutral skill formatting preserved; add test
+      only. (4) runner-validation.ts + agent.ts dry-run/validate propagate the resolver error
+      automatically. Tests across 6 files cover registry, resolver pos/neg, package-backed
+      regression, preflight, CLI validate, CLI dry-run, prompt-neutrality."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-04T00:08:18.921Z
