@@ -174,8 +174,9 @@ description: >-
 spec_ref: "@runner-process-invocation-inputs"
 meta_ref: null
 plan_ref: null
-status: pending_review
-blocked_by: []
+status: blocked
+blocked_by:
+  - "Agent task-worker failed 4 consecutive times: Claude exited before Stop hook (exit=1, signal=0)"
 depends_on: []
 context: []
 priority: 2
@@ -260,6 +261,22 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-04T00:29:01.617Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: blocked
+        previous: pending_review
+      blocked_by:
+        new:
+          - "Agent task-worker failed 4 consecutive times: Claude exited before Stop hook (exit=1,
+            signal=0)"
+        previous: []
+      prior_status:
+        new: pending_review
+        previous: null
+    command: task-block
+    timestamp: 2026-06-04T00:29:21.050Z
+prior_status: pending_review
 created_at: 2026-06-03T23:48:57.289Z
 started_at: 2026-06-04T00:05:33.829Z
 submitted_at: 2026-06-04T00:29:01.617Z
