@@ -1749,7 +1749,7 @@ plans:
     slugs:
       - plan-shared-template-project-neutrality-cleanup
     title: Shared Template Project-Neutrality Cleanup
-    status: active
+    status: completed
     approved_at: 2026-06-02T23:57:24.427Z
     derived_specs: []
     derived_tasks:
