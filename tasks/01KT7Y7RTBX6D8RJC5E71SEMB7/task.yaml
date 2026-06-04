@@ -174,7 +174,7 @@ description: >-
 spec_ref: "@runner-process-invocation-inputs"
 meta_ref: null
 plan_ref: null
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -184,6 +184,7 @@ tags:
   - runners
   - acp
 vcs_refs: []
+session_id: 01KT7YY45C69BGTKX9PYCSJB4D
 history:
   - author: Jacob Chapel
     changes:
@@ -192,6 +193,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-06-03T23:53:23.760Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KT7YY45C69BGTKX9PYCSJB4D
+        previous: null
+      started_at:
+        new: 2026-06-04T00:01:44.410Z
+        previous: null
+    command: task-start
+    timestamp: 2026-06-04T00:01:44.410Z
 created_at: 2026-06-03T23:48:57.289Z
+started_at: 2026-06-04T00:01:44.410Z
 todos: []
 automation: eligible
