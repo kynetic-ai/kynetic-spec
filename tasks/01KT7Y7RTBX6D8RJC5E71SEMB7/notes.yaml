@@ -45,3 +45,21 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-04T00:08:18.921Z
+  - _ulid: 01KT80GN4J059EVZJFVKZW218R
+    content: "Implemented generic-acp adapter profile. Changes: adapters.ts (command now optional +
+      requiresProcessExecutable flag; registered generic-acp with args:[], no command, no
+      autoApproveArgs); runners.ts (new missing_process_executable reason; buildRunnerContract
+      rejects generic runner without process.executable with details {runner,adapter,missing_field};
+      buildImplicitContract rejects implicit/override generic-acp with details
+      {adapter,missing_field}; command-optional type sites guarded); spawner.ts (defensive guard
+      against command-less spawn); cli/commands/agent.ts (fail-fast in 'agent run' when a
+      requiresProcessExecutable adapter is selected directly or via --adapter, before prompt
+      build/spawn). prompts.ts unchanged — generic-acp already falls to the null/default branch so
+      skill refs stay portable (verified by test). All package-backed adapter semantics preserved
+      (executable replaces only command, base args + autoApproveArgs retained). Gates: typecheck OK;
+      targeted suites 185 pass; full npm test exit 0; format OK; focused oxlint 0 warnings in
+      changed files; kspec validate schema/refs/alignment/completeness pass (pre-existing warnings
+      only)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-04T00:28:45.586Z
