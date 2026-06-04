@@ -1145,6 +1145,35 @@ describe("Skill resolution for agent invocations", { timeout: 120_000 }, () => {
 
     expect(result).toContain("{skill:task-work}");
   });
+
+  // AC: @runner-invocation-semantics ac-generic-acp-skill-formatting-is-neutral
+  it("buildPromptWithSkills keeps portable skill references for the generic-acp adapter", async () => {
+    const skillDir = path.join(testDir, "skills", "task-work");
+    await fs.mkdir(skillDir, { recursive: true });
+    await fs.writeFile(
+      path.join(skillDir, "SKILL.md"),
+      "# Task Work\n\nRun {skill:task-work} then {skill:pr}.",
+    );
+
+    // Even when rendered skills exist (which would let an adapter-specific
+    // rewrite resolve), generic-acp must keep the portable {skill:...} form.
+    await fs.mkdir(path.join(testDir, ".agents", "skills", "kspec-task-work"), { recursive: true });
+
+    const result = await buildPromptWithSkills({
+      basePrompt: "Base prompt",
+      skillIds: ["task-work"],
+      specDir: testDir,
+      adapterId: "generic-acp",
+    });
+
+    // Portable form preserved...
+    expect(result).toContain("{skill:task-work}");
+    expect(result).toContain("{skill:pr}");
+    // ...and not rewritten to any platform-specific form.
+    expect(result).not.toContain("/kspec:task-work"); // claude-code
+    expect(result).not.toContain("$kspec-task-work"); // codex / droid
+    expect(result).not.toContain("/pr");
+  });
 });
 
 // ─── AC-8: Cleanup on completion or failure ───────────────────────────────────

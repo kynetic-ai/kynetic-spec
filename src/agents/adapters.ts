@@ -11,8 +11,17 @@ import { execSync } from "node:child_process";
  * Adapter definition for spawning ACP agents.
  */
 export interface AgentAdapter {
-  /** Command to execute (e.g., 'npx', 'node') */
-  command: string;
+  /**
+   * Command to execute (e.g., 'npx', 'node').
+   *
+   * Required for package-backed and model-specific adapters. Absent only for
+   * adapters with `requiresProcessExecutable: true`, which carry no
+   * adapter-level command and may be resolved only through a runner that
+   * supplies `process.executable`. The resolver never returns a contract whose
+   * effective adapter lacks a command — a generic adapter without a runner
+   * executable fails with `missing_process_executable` before spawn.
+   */
+  command?: string;
   /** Arguments to pass to the command */
   args: string[];
   /** Environment variables to set */
@@ -23,6 +32,14 @@ export interface AgentAdapter {
   description?: string;
   /** Arguments to append for auto-approve / yolo mode */
   autoApproveArgs?: string[];
+  /**
+   * When true, the adapter carries no built-in command and must be resolved
+   * through a runner that supplies `process.executable`. Used by the generic
+   * ACP process profile so custom ACP executables can be spawned exactly as
+   * configured by the runner — without inheriting package-runner or
+   * model-specific argv, and without pretending to be the mock test adapter.
+   */
+  requiresProcessExecutable?: boolean;
 }
 
 /**
@@ -116,6 +133,23 @@ const ADAPTERS: Record<string, AgentAdapter> = {
     args: [], // Path to mock script set at runtime via env
     env: {},
     description: "Mock ACP agent for testing",
+  },
+
+  /**
+   * Generic ACP process adapter profile.
+   *
+   * Carries no built-in command, no package-runner or model-specific launch
+   * args, and no auto-approve args. It exists so custom ACP-compatible
+   * executables can be configured through a runner that supplies
+   * `process.executable` without pretending to be the mock test adapter and
+   * without inheriting argv from `claude-agent-acp`, `codex-acp`, or any other
+   * model-specific built-in adapter. Resolution requires a runner-supplied
+   * executable — direct/legacy use fails with `missing_process_executable`.
+   */
+  "generic-acp": {
+    args: [],
+    description: "Generic ACP process profile for runner-supplied executables",
+    requiresProcessExecutable: true,
   },
 };
 

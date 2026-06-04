@@ -819,6 +819,26 @@ export function registerAgentCommands(program: Command): void {
         const adapterId = opts.adapter ?? runnerResolvedAdapter;
         const _adapter = resolveAdapter(adapterId);
 
+        // Generic ACP process adapters carry no built-in command and may only
+        // be resolved through a runner that supplies process.executable. A
+        // direct selection (legacy `agent.adapter`) or an `--adapter` override
+        // bypasses runner resolution, so neither can supply the executable.
+        // Reject before building any prompt or attempting to spawn, with
+        // guidance pointing at a runner-backed config.
+        // AC: @runner-resolution-and-preflight ac-generic-acp-direct-invocation-requires-runner
+        const resolvedViaRunner = runnerResolved && !opts.adapter;
+        if (_adapter.requiresProcessExecutable && !resolvedViaRunner) {
+          error(
+            `Adapter "${adapterId}" is a generic ACP process profile with no built-in command (missing process.executable).`,
+            {
+              suggestion:
+                `Configure a runner-backed agent whose runner sets process.executable, ` +
+                `then run without selecting "${adapterId}" directly.`,
+            },
+          );
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+
         // Build the prompt — respect agent prompt_template when --task is used
         const taskRef = opts.task as string | undefined;
         let basePrompt: string;

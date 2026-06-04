@@ -160,6 +160,19 @@ export function spawnAgent(adapter: AgentAdapter, options: SpawnAgentOptions): S
   // Build args from fresh copy to prevent cross-call leakage
   const args = [...adapter.args, ...(extraArgs || [])];
 
+  // Defensive guard: an adapter without a resolved command must never reach
+  // spawn. The runner resolver replaces a generic adapter's absent command
+  // with the runner-supplied executable, and rejects generic invocations that
+  // lack one (`missing_process_executable`) before this point — so a missing
+  // command here means a resolver bug, not an operator-fixable condition.
+  // Throwing keeps us from spawning a placeholder generic command.
+  if (adapter.command === undefined) {
+    throw new Error(
+      "Adapter has no command to spawn. A generic ACP process adapter must be " +
+        "resolved through a runner that supplies process.executable.",
+    );
+  }
+
   // Spawn the agent process. On POSIX, create a dedicated process group so
   // package runners such as npx cannot orphan the real adapter binary during
   // cleanup. Killing the group terminates the runner and any descendants that

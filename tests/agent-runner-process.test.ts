@@ -19,6 +19,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
   preflightExecutable,
   preflightRunnerInvocation,
+  probeRunnerInvocationExecutable,
   resolveRunnerInvocation,
   RunnerResolutionError,
   type RunnerInvocation,
@@ -314,6 +315,80 @@ describe("runner.process.executable: command reference resolution", () => {
     // not regress to an AGENT-SKIP under the new runner-aware preflight.
     expect(contract.runnerId).toBeNull();
     await expect(preflightRunnerInvocation(contract)).resolves.toBeUndefined();
+  });
+});
+
+// ─── generic-acp preflight uses only the runner executable ──────────────────
+
+describe("generic-acp: preflight covers only the runner-declared executable", () => {
+  let tempDir: string;
+  beforeEach(async () => {
+    tempDir = await createTempDir("kspec-runner-process-generic-");
+  });
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @runner-process-invocation-inputs ac-generic-acp-process-uses-runner-executable
+  // AC: @runner-process-invocation-inputs ac-generic-acp-process-omits-built-in-launch-args
+  it("preflights the runner executable and never probes a placeholder generic command", async () => {
+    const genericExecutable = path.join(tempDir, "my-generic-acp");
+    await writeExecutable(genericExecutable);
+
+    const registry = buildRegistry({
+      runners: {
+        custom: {
+          kind: "acp_process",
+          adapter: "generic-acp",
+          process: { executable: genericExecutable },
+        },
+      },
+    });
+    const contract = resolveRunnerInvocation(
+      makeInput({ agent: makeAgent({ runner: "custom" }), registry }),
+    );
+
+    // The only command on the contract is the runner-declared executable —
+    // there is no placeholder generic command to spawn or probe.
+    expect(contract.adapterId).toBe("generic-acp");
+    expect(contract.adapter.command).toBe(genericExecutable);
+
+    // The probe resolves the runner executable, proving preflight targets it
+    // (and not some built-in generic command name).
+    const probe = await probeRunnerInvocationExecutable(contract);
+    expect(probe).not.toBeNull();
+    expect(probe!.spawnable).toBe(true);
+    if (probe!.spawnable) {
+      expect(probe!.resolved).toBe(genericExecutable);
+    }
+
+    // Full preflight passes without throwing.
+    await expect(preflightRunnerInvocation(contract)).resolves.toBeUndefined();
+  });
+
+  // AC: @runner-process-invocation-inputs ac-generic-acp-process-requires-executable
+  it("never reaches preflight for a generic-acp runner without process.executable", () => {
+    const registry = buildRegistry({
+      runners: {
+        custom: { kind: "acp_process", adapter: "generic-acp" },
+      },
+    });
+
+    // Resolution itself throws — there is no contract to preflight, so a
+    // placeholder generic command can never be probed or spawned.
+    let captured: RunnerResolutionError | null = null;
+    try {
+      resolveRunnerInvocation(makeInput({ agent: makeAgent({ runner: "custom" }), registry }));
+    } catch (err) {
+      captured = err as RunnerResolutionError;
+    }
+    expect(captured).toBeInstanceOf(RunnerResolutionError);
+    expect(captured!.reason).toBe("missing_process_executable");
+    expect(captured!.details).toEqual({
+      runner: "custom",
+      adapter: "generic-acp",
+      missing_field: "process.executable",
+    });
   });
 });
 

@@ -549,6 +549,72 @@ describe("CLI: runner precedence over adapter", () => {
   });
 });
 
+// ─── agent run rejects direct/legacy generic-acp selection ──────────────────
+
+describe("CLI: generic-acp requires a runner-backed config", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-agent-generic-acp-");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  // AC: @runner-resolution-and-preflight ac-generic-acp-direct-invocation-requires-runner
+  it("fails before spawn when an agent sets adapter: generic-acp without a runner", () => {
+    writeAgentListProject(testDir, [
+      {
+        _ulid: testUlid("AGNT"),
+        id: "legacy-generic",
+        name: "Legacy Generic",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        adapter: "generic-acp",
+        auto_approve: false,
+      },
+    ]);
+
+    const result = kspecRun('agent run legacy-generic --dry-run "run me"', testDir, {
+      expectFail: true,
+    });
+    expect(result.exitCode).not.toBe(0);
+    const combined = `${result.stdout}\n${result.stderr}`;
+    expect(combined).toContain("generic-acp");
+    expect(combined).toContain("process.executable");
+    expect(combined).toContain("runner");
+  });
+
+  // AC: @runner-resolution-and-preflight ac-generic-acp-direct-invocation-requires-runner
+  it("fails before spawn when --adapter generic-acp is selected without a runner", () => {
+    writeAgentListProject(testDir, [
+      {
+        _ulid: testUlid("AGNT"),
+        id: "override-generic",
+        name: "Override Generic",
+        dispatch: [],
+        concurrency: { max_concurrent: 1 },
+        adapter: "claude-agent-acp",
+        auto_approve: false,
+      },
+    ]);
+
+    const result = kspecRun(
+      'agent run override-generic --dry-run --adapter generic-acp "run me"',
+      testDir,
+      {
+        expectFail: true,
+      },
+    );
+    expect(result.exitCode).not.toBe(0);
+    const combined = `${result.stdout}\n${result.stderr}`;
+    expect(combined).toContain("generic-acp");
+    expect(combined).toContain("process.executable");
+    expect(combined).toContain("runner");
+  });
+});
+
 // ─── agent run --dry-run reports runner process invocation contract ─────────
 
 /**

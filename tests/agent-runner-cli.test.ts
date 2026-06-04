@@ -255,6 +255,67 @@ describe("CLI: kspec agent runners validate (JSON output)", () => {
   });
 });
 
+describe("CLI: kspec agent runners validate (generic-acp missing executable)", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-runners-validate-generic-");
+    writeAgentProject(testDir, []);
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  // AC: @runner-operator-surfaces ac-generic-acp-validation-reports-missing-executable
+  it("reports a generic-acp runner without process.executable as invalid with missing_process_executable (JSON)", () => {
+    writeSystemRunners(testDir, {
+      "generic-runner": {
+        kind: "acp_process",
+        adapter: "generic-acp",
+      },
+    });
+
+    const result = kspecRun("agent runners validate --json", testDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
+    const data = JSON.parse(result.stdout) as ValidationReportPayload;
+    expect(data.ok).toBe(false);
+    expect(data.runners).toHaveLength(1);
+
+    const entry = data.runners[0];
+    expect(entry.runner).toBe("generic-runner");
+    expect(entry.resolved_adapter).toBe("generic-acp");
+    expect(entry.status).toBe("invalid");
+
+    const diag = entry.diagnostics.find((d) => d.reason === "missing_process_executable");
+    expect(diag).toBeDefined();
+    expect(diag!.details).toEqual({
+      runner: "generic-runner",
+      adapter: "generic-acp",
+      missing_field: "process.executable",
+    });
+  });
+
+  // AC: @runner-operator-surfaces ac-generic-acp-validation-reports-missing-executable
+  it("renders missing_process_executable guidance in human output and exits non-zero", () => {
+    writeSystemRunners(testDir, {
+      "generic-runner": {
+        kind: "acp_process",
+        adapter: "generic-acp",
+      },
+    });
+
+    const result = kspecRun("agent runners validate", testDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stdout).toContain("generic-runner");
+    expect(result.stdout).toContain("[invalid]");
+    expect(result.stdout).toContain("missing_process_executable");
+    expect(result.stdout).toContain("generic-acp");
+    expect(result.stdout).toContain("process.executable");
+    expect(result.stdout).toContain("runner validation failed");
+  });
+});
+
 describe("CLI: kspec agent runners validate --runner", () => {
   let testDir: string;
 
