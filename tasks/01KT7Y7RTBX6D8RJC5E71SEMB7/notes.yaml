@@ -63,3 +63,8 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-04T00:28:45.586Z
+  - _ulid: 01KT80HM70HWP2652QJHRQAM94
+    content: "[AGENT-FAIL] Invocation failed: Claude exited before Stop hook (exit=1, signal=0)"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-04T00:29:17.408Z
