@@ -30807,7 +30807,7 @@
   title: Add generic ACP process adapter profile
   type: task
   spec_ref: "@runner-process-invocation-inputs"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 2
@@ -30819,4 +30819,5 @@
   todos_count: 0
   created_at: 2026-06-03T23:48:57.289Z
   started_at: 2026-06-04T00:05:33.829Z
+  submitted_at: 2026-06-04T00:29:01.617Z
   automation: eligible

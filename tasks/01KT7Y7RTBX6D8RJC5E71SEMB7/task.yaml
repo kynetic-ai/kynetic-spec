@@ -174,7 +174,7 @@ description: >-
 spec_ref: "@runner-process-invocation-inputs"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -184,6 +184,14 @@ tags:
   - runners
   - acp
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-generic-acp-process-adapter/01kt7y7r
+  captured_at: 2026-06-04T00:29:01.614Z
+  commit: 044eccda44dc11c7360897665d1ea5d8e6462e84
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-generic-acp-process-adapter/01kt7y7r
 session_id: 01KT7Z4Y55F3AC3XZNND4T571T
 history:
   - author: Jacob Chapel
@@ -232,7 +240,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-04T00:05:33.829Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-generic-acp-process-adapter/01kt7y7r
+          captured_at: 2026-06-04T00:29:01.614Z
+          commit: 044eccda44dc11c7360897665d1ea5d8e6462e84
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-generic-acp-process-adapter/01kt7y7r
+        previous: null
+      submitted_at:
+        new: 2026-06-04T00:29:01.617Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-04T00:29:01.617Z
 created_at: 2026-06-03T23:48:57.289Z
 started_at: 2026-06-04T00:05:33.829Z
+submitted_at: 2026-06-04T00:29:01.617Z
 todos: []
 automation: eligible
