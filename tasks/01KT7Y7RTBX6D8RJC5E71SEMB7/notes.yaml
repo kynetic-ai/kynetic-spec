@@ -16,3 +16,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-04T00:00:58.408Z
+  - _ulid: 01KT7Z3HFPNXMNH91VNQ2ZECT7
+    content: "Operational retry after headed Claude timeout: previous headed-claude worker sessions
+      failed because the runner was configured with CLAUDE_HEADED_PROMPT_TIMEOUT_MS=120000, which is
+      too short for this implementation task. Hermes raised the dispatch checkout system runner
+      timeout to 1800000ms; resetting to pending so dispatch can retry under the corrected runner
+      environment."
+    supersedes: null
+    author: Hermes
+    created_at: 2026-06-04T00:04:07.286Z
