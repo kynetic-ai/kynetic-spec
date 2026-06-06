@@ -2999,6 +2999,9 @@ features:
           The task detail UI rewrites `./resources/<relative-path>` references in task descriptions
           through the task API's resolved resource projection for both default plan-owned refs and
           explicit materialized task-owned copies.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
