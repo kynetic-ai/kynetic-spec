@@ -2,7 +2,17 @@ _ulid: 01KTDQ38SYZTP5PNMYTRWENS5F
 slugs: []
 title: Review task-generic-acp-process-adapter cycle 2
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All matched files use the correct format; 975 files checked.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-06T05:52:31.171Z
+    completed_at: 2026-06-06T05:52:31.171Z
 events:
   - _ulid: 01KTDQ38SYWFVB2KTVDKSSA3FG
     actor: Jacob Chapel
@@ -17,6 +27,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-06T05:40:02.669Z
+  - _ulid: 01KTDQTXMH5T2Y6AQ5Z0Z0N5W3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-06T05:52:31.378Z
 examined_commit: 0c9772d7e5806cbe8fadfc5e82a775c5801e9c90
 external_links: []
 lifecycle_state: open
@@ -29,5 +46,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-06T05:39:36.382Z
-updated_at: 2026-06-06T05:40:02.443Z
+updated_at: 2026-06-06T05:52:31.171Z
 notes: []
