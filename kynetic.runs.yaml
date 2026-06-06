@@ -60860,9 +60860,24 @@ runs:
     completed_at: 2026-06-06T11:28:24.864Z
   - _ulid: 01KTED8QRAAGY2AAJWS9M2KE5C
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-06T12:07:04.202Z
+        completed_at: 2026-06-06T12:07:37.622Z
+        notes: "What worked well: the detached reviewer merge helper handled manual_merge cleanly from the
+          detached snapshot and advanced dev without needing any manual checkout. The kspec review
+          record flow also worked well: checks, evidence log, approval verdict, merge, and task
+          completion formed a clear audit trail. Behavioral tests were strong across the risky
+          identity surfaces: scheduler dedupe/exclusivity, workspace alias
+          reuse/backfill/conflict/discovery, cleanup protection, session/event payload identity
+          separation, and the final session log --task regression."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-06T12:07:37.622Z
+        completed_at: 2026-06-06T12:07:37.622Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-06T12:07:04.202Z
