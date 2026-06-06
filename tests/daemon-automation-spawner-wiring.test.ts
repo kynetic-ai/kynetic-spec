@@ -12,14 +12,21 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { testUlid } from "./helpers/cli.js";
 
-// Mock state must be hoisted above vi.mock calls
+// Mock state must be hoisted above vi.mock calls.
+// Explicit vi.fn type parameters satisfy eslint-plugin-vitest
+// (require-mock-type-parameters); they intentionally use permissive shapes so
+// per-test mockResolvedValue/mockImplementation partials stay assignable. The
+// runInvocation args stay `any[]` so the captured InvocationOptions remain
+// freely inspectable in assertions (including optional env fields).
+type MockTask = { _ulid: string; slugs: string[] };
 const mockState = vi.hoisted(() => ({
-  runInvocation: vi.fn(),
-  initContext: vi.fn(),
-  loadMetaContext: vi.fn(),
-  resolveTaskDataManager: vi.fn(),
+  runInvocation: vi.fn<(...args: any[]) => unknown>(),
+  initContext: vi.fn<(...args: unknown[]) => Promise<unknown>>(),
+  loadMetaContext: vi.fn<(...args: unknown[]) => Promise<unknown>>(),
+  resolveTaskDataManager:
+    vi.fn<(...args: unknown[]) => { loadAllTasks: (...args: unknown[]) => Promise<MockTask[]> }>(),
   // Tasks returned by the mocked data manager; tests override per-case.
-  tasks: [] as Array<{ _ulid: string; slugs: string[] }>,
+  tasks: [] as MockTask[],
 }));
 
 // Mock the invocation module to capture runInvocation calls
