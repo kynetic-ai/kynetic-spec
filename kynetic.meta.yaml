@@ -20949,6 +20949,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-06T21:39:38.151Z
+  - _ulid: 01KTFH9RX8HGFRBJT0SQRJA1B5
+    type: friction
+    content: Detached-reviewer merge recovery can leave a clean project-root checkout detached. In
+      review @01KTFG86, the merge helper correctly refused to move refs while dev was checked out in
+      /home/chapel/Projects/kynetic-spec-dispatch and classified that checkout as auxiliary.
+      Following the helper guidance required git checkout --detach in that root checkout; the retry
+      merged safely, but the root checkout remained detached afterward. Existing merge-helper specs
+      cover refusing auxiliary target locks, but the operator cleanup/restoration friction is not
+      directly tracked.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-06T22:36:46.889Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
