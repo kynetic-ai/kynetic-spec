@@ -41,3 +41,30 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-06T05:05:17.148Z
+  - _ulid: 01KTDNC619ENZ7WX0EBM163Y07
+    content: >-
+      Resuming after prior timeouts. Stub util packages/web-ui/src/lib/utils/task-resource-links.ts
+      already present (no-op, returns markdown unchanged). Writing two contract test files using the
+      repo's it.fails FLIPPED-ON-FIX protocol:
+
+
+      1) tests/web-ui/task-resource-links.test.ts — exercises rewriteTaskResourceLinks() for the 5
+      task ACs. Sets a selected non-default project and asserts ./resources/<path> rewrites to the
+      task-scoped bytes URL ${base}/<id>/bytes?kspec_dir=<enc-path> for present plan-owned AND
+      materialized task-owned resolved resources (it.fails until sibling
+      @generalize-live-ui-resource-markdown-rewriting lands). Unmatched + drift/missing stays-raw
+      asserted as normal it (stub already satisfies; guards regression).
+
+
+      2) tests/web-ui/resource-url-project-context.test.ts — plan ACs via buildPlanContentBlocks
+      rendering seam assert rewritten plan URL carries ?kspec_dir for a selected non-default project
+      (it.fails until plan rewrite becomes project-aware). Review ACs via existing
+      reviewResourceBytesUrl are the passing comparator (normal it). Mocks
+      project/mode/constants/api-static stores per tests/web-ui/review-resources-api.test.ts.
+
+
+      Expected URL shape mirrors reviewResourceBytesUrl: project path travels as ?kspec_dir= query
+      because <img>/<a> cannot send X-Kspec-Dir.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-06T05:09:31.305Z
