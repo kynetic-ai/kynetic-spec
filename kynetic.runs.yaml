@@ -60654,9 +60654,24 @@ runs:
     completed_at: 2026-06-06T09:21:15.874Z
   - _ulid: 01KTE6A43EM2QE8Q05DX1JCR4J
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-06T10:05:29.582Z
+        completed_at: 2026-06-06T10:08:19.831Z
+        notes: "Step 1 done. Searched meta observations, inbox, tasks, and kspec search. Baseline of
+          directly-related existing items: 01KTE3Q9 (review: dispatch tests mock runInvocation,
+          hiding real persistence regressions), 01KTE2M9 (reconcileDispatchWorkspaceRegistry
+          key-format asymmetry / typed CanonicalTaskId wrapper), 01KSZ43X + 01KSZ2KN
+          (KNOWN_EVENT_FIELDS hand-maintained parallel payload-field lists / drift risk), 01KT2F6H
+          (npm test full-suite progress visibility), 01KTDZ3W inbox (review thread backtick
+          stripping), 01KTDPZZ (fix-cycle needs_work->submit lifecycle wall)."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-06T10:08:19.831Z
+        completed_at: 2026-06-06T10:08:19.831Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-06T10:05:29.582Z
