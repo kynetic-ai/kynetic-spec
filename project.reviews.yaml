@@ -24194,7 +24194,7 @@ reviews:
   - _ulid: 01KTFE6X3VX1DWDPTK6XH1JFQB
     slugs: []
     title: Review canonical project invocation task identity
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
     check_count: 0
     examined_commit: 7246f0004d549408f7bf81c974a3ce1ea5d85d80
@@ -24205,8 +24205,8 @@ reviews:
       content_hash: ""
       ref: "@01KTFB19ZQDA8YK3GJYWF08TS1"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
+    thread_count: 1
+    unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-06-06T21:42:47.163Z
-    updated_at: 2026-06-06T21:43:13.256Z
+    updated_at: 2026-06-06T21:44:27.547Z

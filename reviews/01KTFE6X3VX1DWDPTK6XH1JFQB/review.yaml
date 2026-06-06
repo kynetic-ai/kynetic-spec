@@ -17,6 +17,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-06T21:43:13.553Z
+  - _ulid: 01KTFE9ZHE5M61T3PX42T1FKJW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTFE9Z4VX9RKAMTXPBRSB9P5
+    timestamp: 2026-06-06T21:44:27.950Z
 examined_commit: 7246f0004d549408f7bf81c974a3ce1ea5d85d80
 external_links: []
 lifecycle_state: open
@@ -26,8 +33,27 @@ subject:
   content_hash: ""
   ref: "@01KTFB19ZQDA8YK3GJYWF08TS1"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTFE9Z4VX9RKAMTXPBRSB9P5
+    anchor:
+      type: code
+      commit: 7246f0004d549408f7bf81c974a3ce1ea5d85d80
+      line_end: 20
+      line_start: 20
+      path: tests/daemon-automation-spawner-wiring.test.ts
+      side: head
+    entries:
+      - _ulid: 01KTFE9Z4V51GK2R5TPNFQHWJ7
+        author: Jacob Chapel
+        body: Focused changed-file lint reports a newly introduced
+          eslint-plugin-vitest(require-mock-type-parameters) warning on this added mock. Project
+          review gates require changed-file lint warnings in the diff to be treated as review
+          findings even when repo-wide `--quiet` passes. Please type the new mock, e.g. give
+          `resolveTaskDataManager` an explicit vi.fn signature matching the data-manager factory
+          shape, so focused lint has no new warning for this diff.
+        created_at: 2026-06-06T21:44:27.547Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-06T21:42:47.163Z
-updated_at: 2026-06-06T21:43:13.256Z
+updated_at: 2026-06-06T21:44:27.547Z
 notes: []
