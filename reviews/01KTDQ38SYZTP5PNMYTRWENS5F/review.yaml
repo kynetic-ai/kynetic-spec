@@ -23,6 +23,18 @@ checks:
     runner: npm run lint -- --quiet
     created_at: 2026-06-06T05:52:40.692Z
     completed_at: 2026-06-06T05:52:40.692Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Focused oxlint on 11 changed TS/test files exited 0 with 0 errors. It reported 12 warnings
+      in tests/agent-invocation-lifecycle.test.ts around pre-existing vi.fn mock lines 509-833; git
+      diff --unified=0 shows this task only added lines 1148-1176 in that file.
+    name: focused-lint
+    required: false
+    runner: npx oxlint <changed files>
+    created_at: 2026-06-06T05:52:54.453Z
+    completed_at: 2026-06-06T05:52:54.453Z
 events:
   - _ulid: 01KTDQ38SYWFVB2KTVDKSSA3FG
     actor: Jacob Chapel
@@ -51,6 +63,13 @@ events:
       status: pass
       name: lint
     timestamp: 2026-06-06T05:52:40.914Z
+  - _ulid: 01KTDQVMC63PEQK0MBYMTWF3DP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-06T05:52:54.663Z
 examined_commit: 0c9772d7e5806cbe8fadfc5e82a775c5801e9c90
 external_links: []
 lifecycle_state: open
@@ -63,5 +82,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-06T05:39:36.382Z
-updated_at: 2026-06-06T05:52:40.692Z
+updated_at: 2026-06-06T05:52:54.453Z
 notes: []
