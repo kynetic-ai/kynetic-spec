@@ -176,3 +176,20 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-06T11:25:08.585Z
+  - _ulid: 01KTEC4JYQNE7MJZ02WD4BYF0P
+    content: "Fix cycle 6: addressed the single MUST-FIX blocker from review @01KTEA08 (session log
+      --task canonical ref matching). filterSessions (src/cli/commands/session/log.ts) compared the
+      raw --task option only by strict equality against s.task_id and s.task_ref, so the standard
+      canonical @<ULID> ref missed canonicalized dispatch sessions whose task_id is the bare ULID
+      and whose task_ref is a different slug display ref. Added normalizeTaskFilterForm (drop
+      leading @, lowercase) and compare both filter and stored forms through it, so @<ULID>, bare
+      <ULID>, and @slug/slug all resolve the session while preserving id/display-ref separation.
+      Added a behavioral 'canonical task identity filter' describe block in
+      tests/session-log-list.test.ts: @<ULID> matches bare-ULID task_id, bare ULID matches, slug
+      display ref still matches via task_ref, and an unrelated task's canonical ref does not match.
+      Gates: format:check, lint --quiet (0 errors), focused oxlint (0/0), typecheck, full npm test
+      (10281 passed/5 skipped), and kspec validate --schema/--refs/--alignment/--completeness all
+      pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-06T11:47:19.639Z
