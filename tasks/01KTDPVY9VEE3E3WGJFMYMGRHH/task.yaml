@@ -156,8 +156,11 @@ description: >
 spec_ref: "@dispatch-canonical-task-identity"
 plan_ref: "@plan-dispatch-canonical-task-identity-plan"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev via detached reviewer merge helper. Canonical dispatch task identity
+  now uses resolved task ULID for scheduler, workspace, cleanup, session, and event identity while
+  preserving display refs separately; review @01KTECB6 approved with all gates passing.
 depends_on: []
 context: []
 priority: 1
@@ -511,8 +514,24 @@ history:
         previous: "@01KTEA080PJMN4HXT3ZGYKFYFY"
     command: review-link
     timestamp: 2026-06-06T11:50:57.978Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev via detached reviewer merge helper. Canonical dispatch task identity now uses
+          resolved task ULID for scheduler, workspace, cleanup, session, and event identity while
+          preserving display refs separately; review @01KTECB6 approved with all gates passing.
+        previous: null
+      completed_at:
+        new: 2026-06-06T12:06:10.752Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-06T12:06:10.765Z
 created_at: 2026-06-06T05:35:36.251Z
 started_at: 2026-06-06T11:47:31.018Z
 submitted_at: 2026-06-06T11:47:34.580Z
+completed_at: 2026-06-06T12:06:10.752Z
 todos: []
 automation: eligible
