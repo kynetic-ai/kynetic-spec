@@ -179,6 +179,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-06T07:33:17.448Z
+  - _ulid: 01KTDYZK9935F4PFYDP9PKCRT5
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTDXH46Y856T3WRHYC5V13WN
+    timestamp: 2026-06-06T07:57:24.649Z
 examined_commit: 1fd1cc2aa970f950ad2c2fe4f0ed20dc6f4d1347
 external_links: []
 lifecycle_state: closed
@@ -224,6 +230,22 @@ threads:
           task_ref inputs. Impact: malformed dispatch events are accepted instead of producing the
           required diagnostic for the bad ref.'
         created_at: 2026-06-06T07:32:43.717Z
+      - _ulid: 01KTDYZK2TAKM69GQD46TN1Q05
+        author: "@claude"
+        body: "Fixed in 2d8e34d8c8. Changed the rejection gate in normalizeTaskIdentity from `rawRef &&
+          !refUlid && !idUlid` to `rawRef && !refUlid`, so a present-but-unresolvable task_ref now
+          rejects the input even when an authoritative task_id is supplied — matching the function's
+          own documented policy and ac-invalid-or-mismatched-task-ref-rejected. The legitimate
+          id-only flow uses the @<id> display form, which is short-circuited above the rejection
+          branch (line 182), so { taskId, taskRef: '@<id>' } still returns ok (added a regression
+          guard test for this). Rejection diagnostics now carry the known canonical id
+          (canonicalTaskId) and name it in the message. The test at
+          tests/dispatch-task-identity.test.ts that previously encoded acceptance under the
+          missing-display-ref AC was rewritten to assert rejection under
+          ac-invalid-or-mismatched-task-ref-rejected. The dispatch ingress at dispatch.ts:1146
+          already returns on !resolution.ok, so { taskId: valid, taskRef: '@stale-slug' } events are
+          now rejected before any queue/active/workspace/session state is created."
+        created_at: 2026-06-06T07:57:24.441Z
     kind: blocker
   - _ulid: 01KTDXK0KN9H388G3NK021G8HK
     entries:
@@ -254,5 +276,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-06T07:33:17.448Z
 created_at: 2026-06-06T07:17:12.172Z
-updated_at: 2026-06-06T07:33:17.448Z
+updated_at: 2026-06-06T07:57:24.441Z
 notes: []
