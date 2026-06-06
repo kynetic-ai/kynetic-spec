@@ -20816,6 +20816,21 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-06T05:37:48.967Z
+  - _ulid: 01KTDWK2YWCJN8DJAQNDT7F0Y0
+    type: friction
+    content: "tsconfig.json excludes **/*.test.ts from 'npm run typecheck' (include: src/**/* only).
+      When a src/ function signature or options field is renamed (e.g. activeTaskRefs ->
+      activeTaskIds on reconcileDispatchWorkspaceArtifacts/reapDispatchWorkspace), test call sites
+      passing the old shape are NOT caught by typecheck — TS excess-property/missing-arg errors over
+      test files never run. The mismatch surfaces only at runtime in the full ~40-min suite (here:
+      10 cleanup tests silently lost protection and reaped artifacts). This delayed detection by a
+      full suite cycle and contributes to dispatch 60-min timeouts. Candidate fix: a fast type-only
+      gate over tests (separate tsconfig with noEmit covering tests/**) run alongside typecheck, so
+      API/option drift in test call sites fails in seconds, not after the full suite."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-06T07:15:37.564Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
