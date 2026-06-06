@@ -17740,7 +17740,7 @@ workspaces:
         head: 8d1c789e0d848c904449c56d165e648f656e4b1b
         last_seen_at: 2026-06-06T22:23:51.461Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-canonicalize-project-invocation-task-identity-01ktfb19
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 14bc103395dc68abdafa5ce00e41cdc8b449a997
     bootstrap:
       status: succeeded
@@ -18204,34 +18204,34 @@ workspaces:
     canonical_branch: dispatch/task/task-canonicalize-workspace-identity-lookups/01ktfb1b
     canonical_branch_head: cc7fb4e3cc613e478e2ddebbba176c6d0510416e
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-06-06T22:16:11.760Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-06-06T22:33:39.058Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-06T22:16:40.430Z
+      updated_at: 2026-06-06T22:33:39.058Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 14bc103395dc68abdafa5ce00e41cdc8b449a997
-      updated_at: 2026-06-06T22:16:11.760Z
-    lifecycle_state: integrating
+      updated_at: 2026-06-06T22:33:39.058Z
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KTFB1B182ZQJSHNVK8MFXJFJ"
     task_slug: task-canonicalize-workspace-identity-lookups
     timestamps:
       closed_at: null
       last_active_at: 2026-06-06T22:16:40.430Z
-      last_reconciled_at: 2026-06-06T22:16:40.430Z
+      last_reconciled_at: 2026-06-06T22:33:39.058Z
       created_at: 2026-06-06T21:42:05.044Z
-      updated_at: 2026-06-06T22:16:40.430Z
+      updated_at: 2026-06-06T22:33:39.058Z
     workspace_id: dispatch-workspace-01KTFB1B182ZQJSHNVK8MFXJFJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
