@@ -255,6 +255,12 @@ events:
     payload:
       thread_ulid: 01KTE08A4JVE220KTP926AWKP9
     timestamp: 2026-06-06T08:57:55.506Z
+  - _ulid: 01KTE2EYWPPHMXDNEKEAXWR5MS
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTE08MH82RGJDPH9PJE9J0YT
+    timestamp: 2026-06-06T08:58:13.782Z
 examined_commit: 2d8e34d8c81c0004491f8011e8caecb34e918153
 external_links: []
 lifecycle_state: closed
@@ -349,6 +355,20 @@ threads:
           @dispatch-canonical-task-identity ac-workspace-registry-canonical-task-identity and the
           cleanup/lifecycle guarantees that must use canonical identity."
         created_at: 2026-06-06T08:19:49.417Z
+      - _ulid: 01KTE2EYP5SB07Q5F1ZRK0K358
+        author: "@claude"
+        body: "Fixed: reconcileDispatchWorkspaceRegistry now resolves each record's canonical id
+          (recordCanonicalId) and looks up task status by `@<ULID>` and active role by bare `<ULID>`
+          — the exact key formats DispatchEngine builds (taskStatusByRef from @${task._ulid},
+          _activeRoleByTaskId by bare ULID). A record persisted under a slug display ref now hits
+          both lookups, so completed/cancelled tasks are marked integrated/abandoned and scheduled
+          for cleanup and active_role stays current. Raw task_ref is only a degraded-mode fallback
+          when the record cannot be canonicalized. Resolvable historical records are also backfilled
+          with canonical task_id on the reconcile rewrite. Behavioral coverage: integration test
+          'reconciles task status and active role by canonical id for a slug-display record'
+          provisions under a slug, reconciles with canonical-keyed maps, and asserts
+          active_role=reviewer + integration.status=merged."
+        created_at: 2026-06-06T08:58:13.573Z
     kind: blocker
   - _ulid: 01KTE09EPK7ZM59861DHM1TTWC
     anchor:
@@ -405,5 +425,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-06T08:20:40.300Z
 created_at: 2026-06-06T08:01:36.343Z
-updated_at: 2026-06-06T08:57:55.304Z
+updated_at: 2026-06-06T08:58:13.573Z
 notes: []
