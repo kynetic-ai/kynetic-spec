@@ -168,9 +168,25 @@ events:
       kind: nit
       thread_ulid: 01KTFHFRR56RSWB499WZGAT8TD
     timestamp: 2026-06-06T22:40:03.539Z
+  - _ulid: 01KTFHG63AZN3BJJMSQW99617A
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-06T22:40:17.002Z
+  - _ulid: 01KTFHG63AJE75ZZE9808FTNWB
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-06T22:40:17.002Z
 examined_commit: 8d1c789e0d848c904449c56d165e648f656e4b1b
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -217,7 +233,14 @@ threads:
           path), regression from prior review (focused lint blocker resolved). No blocking findings.
         created_at: 2026-06-06T22:40:03.333Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-06T22:40:17.002Z
 created_at: 2026-06-06T22:24:57.566Z
-updated_at: 2026-06-06T22:40:03.333Z
+updated_at: 2026-06-06T22:40:17.002Z
 notes: []
