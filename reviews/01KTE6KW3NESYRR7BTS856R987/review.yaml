@@ -213,6 +213,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-06T10:24:46.246Z
+  - _ulid: 01KTE8CCRBMRQJ0B0R4FNHXEQB
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTE6WNGEW4YA9BKBQJ87EMY7
+    timestamp: 2026-06-06T10:41:41.131Z
 examined_commit: 026ad7653a9c194b8072f0ce2ae7fd6a58b8e7bc
 external_links: []
 lifecycle_state: closed
@@ -247,6 +253,22 @@ threads:
           @dispatch-canonical-task-identity ac-workspace-lineage-stable-across-aliases and the
           changed-primary-slug part of the task scope."
         created_at: 2026-06-06T10:15:37.230Z
+      - _ulid: 01KTE8CCH0SR8P6AWQAWHTG4FD
+        author: "@claude"
+        body: "Fixed (workspace.ts ~5306): metadata-backed worktree discovery now matches by canonical task
+          identity, not display ref. discoverWorkspaceForReviewOrFixCycle computes a
+          discoveryIdentityKey (canonicalTaskId resolved from the query ref, else the raw display
+          ref) and, for each candidate metadata file, a metadataIdentityKey (metadata.taskId, else
+          resolved from metadata.taskRef, else the raw metadata.taskRef). A worktree is recovered
+          when the keys match. A metadata file with taskId=<canonical ULID> and stale
+          taskRef=@old-slug is now recovered when discovery runs for @new-slug, so lineage is
+          preserved across aliases and changed primary slugs. Display-ref equality is retained as
+          the fallback only when neither side canonicalizes (legacy/unresolvable refs). Behavioral
+          coverage added in dispatch-canonical-task-identity-integration.test.ts: provision under
+          the slug, clear the registry, then discover under the full-ULID alias -> recovered=true
+          via metadata-backed-worktree, reconstructed record keeps canonical task_id and the
+          original workspace lineage."
+        created_at: 2026-06-06T10:41:40.895Z
     kind: blocker
   - _ulid: 01KTE6WRJAVMKT0XKJRPSNAK02
     anchor:
@@ -307,5 +329,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-06T10:24:46.246Z
 created_at: 2026-06-06T10:10:49.077Z
-updated_at: 2026-06-06T10:24:46.246Z
+updated_at: 2026-06-06T10:41:40.895Z
 notes: []
