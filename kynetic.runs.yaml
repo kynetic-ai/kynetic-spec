@@ -60300,7 +60300,7 @@ runs:
     started_at: 2026-06-06T05:06:35.451Z
   - _ulid: 01KTDN72CXM1FAHEKMZ13WZ476
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -60316,7 +60316,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-06T05:07:27.649Z
-        completed_at: 2026-06-06T05:07:27.649Z
+        completed_at: 2026-06-06T05:08:21.676Z
+        notes: "High-confidence items checked against baseline/search results. Already tracked: noisy
+          reflection baseline commands (@01KSDZFN), long/full-suite review gate friction (@01KRZ4B3,
+          @01KSZFP3R, @01KT2F6H), workflow show run-ref mismatch (@01KRYTG7), and
+          duplicate/malformed review thread friction from shell-passed review comments (@01KPQQKXG).
+          No new untracked high-confidence friction or success item identified for capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-06T05:08:21.676Z
+        completed_at: 2026-06-06T05:08:21.676Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-06T05:06:43.742Z
