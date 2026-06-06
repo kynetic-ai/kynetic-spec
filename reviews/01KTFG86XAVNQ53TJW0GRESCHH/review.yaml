@@ -141,6 +141,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-06T22:31:57.515Z
+  - _ulid: 01KTFH1ETXKV3H65PWBRK8P70J
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTFH1EM9WEBTQHWVWJYGCQCQ
+    timestamp: 2026-06-06T22:32:14.429Z
 examined_commit: cc7fb4e3cc613e478e2ddebbba176c6d0510416e
 external_links: []
 lifecycle_state: open
@@ -150,8 +157,44 @@ subject:
   content_hash: ""
   ref: "@01KTFB1B182ZQJSHNVK8MFXJFJ"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTFH1EM9WEBTQHWVWJYGCQCQ
+    entries:
+      - _ulid: 01KTFH1EM92R44Y54JRZAYJRGV
+        author: Jacob Chapel
+        body: >-
+          Evidence log (clean review):
+
+
+          Files read: kspec-agents.md; src/agent-runtime/dispatch.ts;
+          src/agent-runtime/workspace-identity.ts; src/agent-runtime/workspace.ts;
+          src/parser/dispatch-workspaces.ts;
+          tests/dispatch-canonical-task-identity-integration.test.ts;
+          tests/dispatch-workspace-adopted-branch-cleanup.test.ts;
+          tests/dispatch-workspace-branch-provenance.test.ts;
+          tests/dispatch-workspace-registry.test.ts; surrounding task identity and workspace
+          reconciliation call sites.
+
+
+          Commands run: git status/rev-parse/diff; kspec task get @01KTFB1B182ZQJSHNVK8MFXJFJ; kspec
+          item get @dispatch-workspace-registry; rg call-site/AC searches; kspec validate --refs
+          --warnings-ok; kspec validate --alignment --warnings-ok; kspec validate --completeness
+          --warnings-ok; npm run format:check; npm run lint -- --quiet; npx oxlint on all 8 changed
+          TS/test files; npm run typecheck; npm test.
+
+
+          Claims verified: old exact task_ref helper is renamed/deprecated and has no production src
+          call sites; production workspace target cleanup uses findDispatchWorkspaceByCanonicalTask;
+          changed tests cover historical slug-only records, alias-equivalent lookup, duplicate
+          canonical records, and degraded raw fallback; no source-scanning AC tests were added.
+
+
+          Categories searched: correctness, alias edge cases, ambiguous duplicate handling, degraded
+          resolver/error behavior, test quality, AC annotation coverage, and integration with
+          dispatch cleanup/reconciliation. No blocker or should-fix findings found.
+        created_at: 2026-06-06T22:32:14.217Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-06T22:18:27.114Z
-updated_at: 2026-06-06T22:31:57.259Z
+updated_at: 2026-06-06T22:32:14.217Z
 notes: []
