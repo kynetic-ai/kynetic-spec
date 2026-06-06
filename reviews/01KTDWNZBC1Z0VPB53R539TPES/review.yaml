@@ -163,9 +163,25 @@ events:
       kind: nit
       thread_ulid: 01KTDXK0KN9H388G3NK021G8HK
     timestamp: 2026-06-06T07:33:03.946Z
+  - _ulid: 01KTDXKE08VY0JRSVQ4Y2QGBBQ
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-06T07:33:17.448Z
+  - _ulid: 01KTDXKE080ZCJ7ZCFGG55N3Z9
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-06T07:33:17.448Z
 examined_commit: 1fd1cc2aa970f950ad2c2fe4f0ed20dc6f4d1347
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -229,7 +245,14 @@ threads:
           integration, runner side effects. Shared/package guidance surfaces touched: none."
         created_at: 2026-06-06T07:33:03.733Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-06T07:33:17.448Z
 created_at: 2026-06-06T07:17:12.172Z
-updated_at: 2026-06-06T07:33:03.733Z
+updated_at: 2026-06-06T07:33:17.448Z
 notes: []
