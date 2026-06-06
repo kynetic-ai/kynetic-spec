@@ -1,0 +1,13 @@
+_ulid: 01KTD6WY4VRAJKCZ3A87RFH4YS
+slugs:
+  - plan-resource-ui-hardening-plan
+title: Resource UI Hardening Plan
+status: draft
+approved_at: null
+branch: null
+derived_specs: []
+derived_tasks: []
+module_ref: "@core"
+source_path: /home/chapel/Projects/kynetic-spec/plans/resource-ui-hardening.md
+created_at: 2026-06-06T00:56:31.643Z
+completed_at: null
