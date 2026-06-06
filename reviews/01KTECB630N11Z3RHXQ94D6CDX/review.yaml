@@ -2,7 +2,103 @@ _ulid: 01KTECB630N11Z3RHXQ94D6CDX
 slugs: []
 title: Review canonical dispatch task identity cycle 6
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "oxfmt --check . completed successfully: all 978 matched files use correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-06T12:05:07.490Z
+    completed_at: 2026-06-06T12:05:07.490Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide oxlint completed with 0 errors; existing warning baseline remains.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-06T12:05:09.930Z
+    completed_at: 2026-06-06T12:05:09.930Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Focused oxlint over changed TypeScript/test files completed with 0 errors. Reported
+      warnings are outside changed diff (existing sort() helper and pre-existing vi.fn mock typing
+      warnings).
+    name: focused-lint
+    required: false
+    runner: npx oxlint <changed ts/test files>
+    created_at: 2026-06-06T12:05:12.384Z
+    completed_at: 2026-06-06T12:05:12.384Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit completed successfully.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-06T12:05:14.722Z
+    completed_at: 2026-06-06T12:05:14.722Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "2694/2694 suites passed; 10281 tests passed, 5 skipped. Full log:
+      /tmp/kspec-test-cache/01KTEC9TT49T4587PDQZZZCYDZ/cb20c097a1f5459e.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-06T12:05:17.114Z
+    completed_at: 2026-06-06T12:05:17.114Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: KSPEC_NO_DAEMON=1 kspec validate --schema --warnings-ok exited 0.
+    name: kspec validate schema
+    required: true
+    runner: kspec
+    created_at: 2026-06-06T12:05:19.480Z
+    completed_at: 2026-06-06T12:05:19.480Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: KSPEC_NO_DAEMON=1 kspec validate --refs --warnings-ok exited 0 with existing reference
+      warning baseline.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-06T12:05:21.902Z
+    completed_at: 2026-06-06T12:05:21.902Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: KSPEC_NO_DAEMON=1 kspec validate --alignment --warnings-ok exited 0 with existing
+      alignment warning baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-06T12:05:24.169Z
+    completed_at: 2026-06-06T12:05:24.169Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: KSPEC_NO_DAEMON=1 kspec validate --completeness --warnings-ok exited 0 with existing
+      completeness warning baseline.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-06T12:05:26.459Z
+    completed_at: 2026-06-06T12:05:26.459Z
 events:
   - _ulid: 01KTECB630F91RTJB05C8KXP02
     actor: Jacob Chapel
@@ -17,6 +113,76 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-06T11:51:19.033Z
+  - _ulid: 01KTED55ZX7P9SEW7NFRJACS9J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-06T12:05:07.709Z
+  - _ulid: 01KTED58C3CVX867D2GB7WVR5H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-06T12:05:10.148Z
+  - _ulid: 01KTED5ARPXRYQBW9SDXZ1J1XC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-06T12:05:12.598Z
+  - _ulid: 01KTED5D23GS8MJDECXGWPHAQJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-06T12:05:14.947Z
+  - _ulid: 01KTED5FBT9MBE1RS6WJ0FQ473
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-06T12:05:17.306Z
+  - _ulid: 01KTED5HPRXHRJFEG3RV4WB0KK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate schema
+    timestamp: 2026-06-06T12:05:19.704Z
+  - _ulid: 01KTED5M1C2TB8G9C8F72Z32XX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-06T12:05:22.092Z
+  - _ulid: 01KTED5P86C965RR9MZKG3VDFZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-06T12:05:24.358Z
+  - _ulid: 01KTED5RGB4GRJTJHJ2M0WPW5Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-06T12:05:26.667Z
+  - _ulid: 01KTED5TSRJ207752XS6F3W1X4
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTED5TKS7M0BZD5B9N3BBTD2
+    timestamp: 2026-06-06T12:05:29.016Z
 examined_commit: 8afd5837e054936cfdcbc0901d56abc00195771f
 external_links: []
 lifecycle_state: open
@@ -26,8 +192,36 @@ subject:
   content_hash: ""
   ref: "@01KTDPVY9VEE3E3WGJFMYMGRHH"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTED5TKS7M0BZD5B9N3BBTD2
+    entries:
+      - _ulid: 01KTED5TKSMHBM94K6A6APFWJM
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: kspec-agents.md, task/spec details for
+          @01KTDPVY9VEE3E3WGJFMYMGRHH and @dispatch-canonical-task-identity, prior review
+          @01KTEA080PJMN4HXT3ZGYKFYFY, full changed-file list/stat, final fix diff,
+          src/agent-runtime/task-identity.ts, src/agent-runtime/dispatch.ts scheduler/session
+          sections, src/agent-runtime/workspace.ts registry/provisioning/discovery/cleanup sections,
+          src/agent-runtime/invocation.ts session persistence sections, src/cli/commands/agent.ts
+          task resolution, src/cli/commands/session/log.ts, src/parser/dispatch-workspaces.ts,
+          tests/dispatch-task-identity.test.ts,
+          tests/dispatch-canonical-task-identity-integration.test.ts,
+          tests/agent-dispatch-engine.test.ts cleanup sections, tests/dispatch-target-sync.test.ts,
+          tests/agent-invocation-lifecycle.test.ts, tests/session-lifecycle-events.test.ts,
+          tests/session-log-list.test.ts. Commands run: kspec item get
+          @dispatch-canonical-task-identity; kspec review get prior review; git diff/show/rg
+          inspections; git diff --check; focused source-scan search; npm run format:check; npm run
+          lint -- --quiet; npx oxlint changed TS/test files; npm run typecheck; KSPEC_NO_DAEMON=1
+          kspec validate --schema/--refs/--alignment/--completeness --warnings-ok; npm test. Claims
+          verified: prior blocker fixed by running/reading session log --task canonical @<ULID>
+          coverage; canonical id/display ref separation verified in dispatch, invocation, schemas,
+          session log filtering, and behavioral tests; workspace alias
+          reuse/backfill/conflict/discovery/cleanup coverage verified. Categories searched:
+          correctness, edge cases, error handling, test quality, integration, source-scanning risk;
+          no blockers found."
+        created_at: 2026-06-06T12:05:28.826Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-06T11:50:55.840Z
-updated_at: 2026-06-06T11:51:18.829Z
+updated_at: 2026-06-06T12:05:28.826Z
 notes: []
