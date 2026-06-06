@@ -342,6 +342,13 @@ events:
       kind: blocker
       thread_ulid: 01KTDN46NBZD9PXJ21B7TVF238
     timestamp: 2026-06-06T05:05:10.042Z
+  - _ulid: 01KTDN4R29RNAST3M7S02JGDC5
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTDN4QV90C9R8CYDAYJJTPK9
+    timestamp: 2026-06-06T05:05:27.625Z
 examined_commit: 044eccda44dc11c7360897665d1ea5d8e6462e84
 external_links: []
 lifecycle_state: closed
@@ -439,6 +446,30 @@ threads:
           must fail with a typed resolver/validation diagnostic before spawn.'
         created_at: 2026-06-06T05:05:09.803Z
     kind: blocker
+  - _ulid: 01KTDN4QV90C9R8CYDAYJJTPK9
+    entries:
+      - _ulid: 01KTDN4QV9WF933F9T3QQ98G6T
+        author: pr-reviewer
+        body: "Evidence log: Files read: kspec-agents.md, task context, src/agents/adapters.ts,
+          src/agents/runners.ts, src/agents/spawner.ts, src/agents/runner-validation.ts,
+          src/cli/commands/agent.ts, src/agent-runtime/invocation.ts, src/agent-runtime/dispatch.ts,
+          changed tests in tests/agent-runtime/adapter-auto-approve.test.ts,
+          tests/agent-runner-resolver.test.ts, tests/agent-runner-process.test.ts,
+          tests/agent-runner-cli.test.ts, tests/cli-agent.test.ts,
+          tests/agent-invocation-lifecycle.test.ts. Commands run: git diff/stat/name-only/log, kspec
+          item get for @runner-process-invocation-inputs @runner-operator-surfaces
+          @runner-invocation-semantics @runner-resolution-and-preflight, AC annotation/source-scan
+          rg checks, git diff --check, npm run format:check, npm run lint -- --quiet, npx oxlint
+          changed files, npm run typecheck, npm test, kspec validate
+          --schema/--refs/--alignment/--completeness --warnings-ok, one-off node --import tsx
+          resolver probe. Claims verified: generic-acp registry shape, runner executable
+          replacement, no generic auto-approve args, package-backed executable override retains
+          base/auto-approve args, missing process.executable diagnostics, direct generic-acp
+          rejection, portable skill formatting. Categories searched: correctness, edge cases, error
+          handling, test quality, integration, security/secret diagnostics, shared-guidance
+          neutrality. Shared/package guidance surfaces touched: none."
+        created_at: 2026-06-06T05:05:27.401Z
+    kind: nit
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -448,5 +479,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-06T05:04:55.147Z
 created_at: 2026-06-06T04:46:38.098Z
-updated_at: 2026-06-06T05:05:09.803Z
+updated_at: 2026-06-06T05:05:27.401Z
 notes: []
