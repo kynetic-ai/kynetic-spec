@@ -20913,6 +20913,17 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-06-06T11:49:17.492Z
+  - _ulid: 01KTEDDED4662S5T3K86JPAMKW
+    type: friction
+    content: During review, focused oxlint over changed TypeScript files reports warnings from unchanged
+      lines in those files, so reviewers must manually inspect the diff to decide whether warnings
+      are new. A diff-aware focused-lint helper or review-gates command could report warnings
+      intersecting changed hunks while preserving full changed-file lint as optional context.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-06-06T12:09:38.469Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
