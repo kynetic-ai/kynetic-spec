@@ -60518,7 +60518,7 @@ runs:
     started_at: 2026-06-06T05:56:41.148Z
     completed_at: 2026-06-06T05:59:36.470Z
   - _ulid: 01KTDXMX5VY1WNNGDM50KAXTMH
-    status: active
+    status: completed
     current_step: 3
     initiated_by: Jacob Chapel
     step_results:
@@ -60555,7 +60555,10 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-06-06T07:36:56.477Z
-        completed_at: 2026-06-06T07:36:56.477Z
+        completed_at: 2026-06-06T07:37:05.524Z
+        notes: No captures made. All high confidence friction was already tracked, and remaining notes did
+          not meet the loop mode bar for new inbox or observation entries.
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-06T07:34:05.755Z
+    completed_at: 2026-06-06T07:37:05.524Z
