@@ -250,7 +250,7 @@ describe("dispatch workspace cleanup", () => {
     });
 
     const result = await reapDispatchWorkspace(tempDir, taskRef, {
-      activeTaskRefs: [taskRef],
+      activeTaskIds: [taskRef],
       task: {
         title: "Blocked Cleanup Workspace",
         slugs: ["task-blocked-cleanup-workspace"],
@@ -470,7 +470,7 @@ describe("dispatch workspace cleanup", () => {
     await fs.rm(workspaceMetadataPath(reviewerWorkspace.cwd), { force: true });
 
     await reconcileDispatchWorkspaceArtifacts(tempDir, {
-      activeTaskRefs: [taskRef],
+      activeTaskIds: [taskRef],
     });
 
     await fs.access(workerWorkspace.cwd);
@@ -503,7 +503,7 @@ describe("dispatch workspace cleanup", () => {
     );
 
     await reconcileDispatchWorkspaceArtifacts(tempDir, {
-      activeTaskRefs: [taskRef],
+      activeTaskIds: [taskRef],
     });
 
     // The reserved branch shares the short-id segment with the active task ref
@@ -629,7 +629,7 @@ describe("dispatch workspace cleanup", () => {
     let capturedCalls: string[] = [];
     try {
       await reconcileDispatchWorkspaceArtifacts(tempDir, {
-        activeTaskRefs: [taskRef],
+        activeTaskIds: [taskRef],
       });
       capturedCalls = diag.capture();
     } finally {
@@ -691,7 +691,7 @@ describe("dispatch workspace cleanup", () => {
     let capturedCalls: string[] = [];
     try {
       await reconcileDispatchWorkspaceArtifacts(tempDir, {
-        activeTaskRefs: [taskRef],
+        activeTaskIds: [taskRef],
       });
       capturedCalls = diag.capture();
     } finally {
@@ -750,7 +750,7 @@ describe("dispatch workspace cleanup", () => {
     const debugSpy = vi.spyOn(console, "debug").mockImplementation(() => undefined);
     let diagnosticCalls: string[] = [];
     try {
-      await reconcileDispatchWorkspaceArtifacts(tempDir, { activeTaskRefs: [taskRef] });
+      await reconcileDispatchWorkspaceArtifacts(tempDir, { activeTaskIds: [taskRef] });
       // Snapshot the spy's call history BEFORE mockRestore(): mockRestore
       // clears the recorded calls, so reading them after restore would
       // always observe an empty array and silently pass even if a
@@ -804,7 +804,7 @@ describe("dispatch workspace cleanup", () => {
     const diag = captureDispatchCleanupDiagnostics();
     let capturedCalls: string[] = [];
     try {
-      await reconcileDispatchWorkspaceArtifacts(tempDir, { activeTaskRefs: [taskRef] });
+      await reconcileDispatchWorkspaceArtifacts(tempDir, { activeTaskIds: [taskRef] });
       capturedCalls = diag.capture();
     } finally {
       diag.restore();
@@ -1093,7 +1093,7 @@ describe("dispatch artifact cleanup protection (positive and regression cases)",
     const diag = captureDispatchCleanupDiagnostics();
     let diagnostics: string[] = [];
     try {
-      await reconcileDispatchWorkspaceArtifacts(tempDir, { activeTaskRefs: [taskRef] });
+      await reconcileDispatchWorkspaceArtifacts(tempDir, { activeTaskIds: [taskRef] });
       diagnostics = diag.capture();
     } finally {
       diag.restore();
@@ -1255,7 +1255,7 @@ describe("dispatch artifact cleanup protection (positive and regression cases)",
   // Regression: a dispatcher-managed worktree whose .kspec-dispatch-workspace.json
   // is unparseable must be classified as cleanup-eligible (not preserved
   // indefinitely) when the registry is loaded successfully, no non-closed
-  // record protects the workspace, and no activeTaskRefs option protects the
+  // record protects the workspace, and no activeTaskIds option protects the
   // task. Without this classification the artifact would survive every
   // reconciliation pass and silently accumulate as dispatch-owned cruft under
   // the worktree root.
@@ -1275,7 +1275,7 @@ describe("dispatch artifact cleanup protection (positive and regression cases)",
 
     // Corrupt the on-disk metadata so it cannot be parsed. The registry loads
     // successfully (no parse error) but contains no record protecting this
-    // workspace, and no activeTaskRefs option is supplied. Under the clarified
+    // workspace, and no activeTaskIds option is supplied. Under the clarified
     // policy this is a "trusted registry/protection state + untrusted artifact
     // metadata + no protected owner" classification — cleanup-eligible.
     await fs.writeFile(
@@ -1320,7 +1320,7 @@ describe("dispatch artifact cleanup protection (positive and regression cases)",
     await fs.writeFile(path.join(unknownDir, "inner.txt"), "inner\n", "utf-8");
 
     // Registry loads successfully and contains no record. With no
-    // activeTaskRefs option and no protected path overlap, both entries
+    // activeTaskIds option and no protected path overlap, both entries
     // classify as dispatch-owned garbage.
     await fs.writeFile(
       path.join(tempDir, "project.dispatch-workspaces.yaml"),
@@ -1461,7 +1461,7 @@ describe("dispatch artifact cleanup protection (positive and regression cases)",
     const diag = captureDispatchCleanupDiagnostics();
     let diagnostics: string[] = [];
     try {
-      await reconcileDispatchWorkspaceArtifacts(tempDir, { activeTaskRefs: [taskRef] });
+      await reconcileDispatchWorkspaceArtifacts(tempDir, { activeTaskIds: [taskRef] });
       diagnostics = diag.capture();
     } finally {
       diag.restore();
@@ -1534,7 +1534,7 @@ describe("dispatch artifact cleanup protection (positive and regression cases)",
     );
 
     await reconcileDispatchWorkspaceArtifacts(tempDir, {
-      activeTaskRefs: [taskRef],
+      activeTaskIds: [taskRef],
     });
 
     // Parent worker workspace and every nested bootstrap file must survive.

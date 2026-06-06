@@ -74,6 +74,7 @@ import {
   validateDispatchWorkspaceForInvocation,
 } from "./workspace.js";
 import { ensureWorkspaceBootstrap, DispatchBootstrapError } from "./bootstrap.js";
+import { normalizeTaskIdentity, buildTaskRefResolver } from "./task-identity.js";
 import type { AgentDispatchRule, AgentDispatchFilter } from "../schema/meta.js";
 import { matchesAutomationFilter } from "../schema/task.js";
 import type { SessionTrigger } from "../sessions/types.js";
@@ -724,6 +725,13 @@ interface ActiveInvocationRecord {
   sessionId: string;
   agentId: string;
   agentName: string;
+  /**
+   * Canonical full task ULID — the authoritative identity for scheduler
+   * dedupe, cross-agent exclusivity, and cleanup protection.
+   * AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+   */
+  taskId: string | undefined;
+  /** Display ref for status text only; never an identity key. */
   taskRef: string | undefined;
   role: "worker" | "reviewer";
   startedAtMs: number;
@@ -806,7 +814,14 @@ export interface InvocationEvent {
   type: "started" | "completed" | "failed";
   session_id: string;
   agent_id: string;
+  /**
+   * Canonical full task ULID — the authoritative task identity. Downstream
+   * dispatch consumers use this for identity decisions, never the display ref.
+   * AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+   */
   task_id: string | undefined;
+  /** Display task ref for human-readable surfaces only; never an identity key. */
+  task_ref?: string;
   task_title: string | null;
   status: "started" | "completed" | "failed";
   timestamp: number;
@@ -1059,7 +1074,7 @@ export class DispatchEngine {
       console.error("[dispatch] Workspace registry reconciliation error:", err);
     }
     await reconcileDispatchWorkspaceArtifacts(this.projectDir, {
-      activeTaskRefs: this._activeTaskRefs(),
+      activeTaskIds: this._activeTaskIds(),
     });
 
     // AC: @dispatch-remote-branch-sync ac-no-remote — resolve remote sync at start time
@@ -1105,7 +1120,41 @@ export class DispatchEngine {
   async handleStateChange(change: TaskStateChange): Promise<void> {
     if (!this.running) return;
 
-    // AC: @agent-dispatch-engine ac-7 - Deduplication
+    // AC: @dispatch-canonical-task-identity ac-event-ingress-canonicalizes-task-identity
+    // AC: @dispatch-canonical-task-identity ac-invalid-or-mismatched-task-ref-rejected
+    // AC: @dispatch-canonical-task-identity ac-missing-display-ref-normalizes-from-task-id
+    // Resolve the incoming task-scoped input to canonical task identity before
+    // any dedup/scheduling/lifecycle state is created. A rejection here means no
+    // queue entry, active marker, in-flight key, workspace record, cleanup
+    // protection entry, or session/event payload is ever keyed on an invalid or
+    // mismatched raw ref.
+    let preloadedTasks: LoadedTask[] | undefined;
+    try {
+      const ctx = await initContext(this.projectDir);
+      preloadedTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+      // A task object carried on the change (watcher/bootstrap/reconcile paths)
+      // is itself authoritative — include it in the resolver so its ULID resolves
+      // even if the on-disk snapshot lags behind.
+      const resolverTasks =
+        change.task && !preloadedTasks.some((t) => t._ulid === change.task!._ulid)
+          ? [...preloadedTasks, change.task]
+          : preloadedTasks;
+      const resolution = normalizeTaskIdentity(
+        { taskId: change.taskId, taskRef: change.taskRef, source: "dispatch/handleStateChange" },
+        buildTaskRefResolver(resolverTasks),
+      );
+      if (!resolution.ok) {
+        console.warn(`[dispatch] Rejected task state change: ${resolution.diagnostic}`);
+        return;
+      }
+      change.taskId = resolution.identity.taskId;
+      change.taskRef = resolution.identity.displayRef;
+    } catch {
+      // Project context unavailable — proceed leniently with the input as-is so
+      // a transient load failure does not silently drop legitimate work.
+    }
+
+    // AC: @agent-dispatch-engine ac-7 - Deduplication (keyed on canonical task id)
     if (this._isDuplicate(change)) {
       return;
     }
@@ -1113,7 +1162,7 @@ export class DispatchEngine {
 
     const cleanupState = resolveCleanupStateForTaskChange(change);
     if (cleanupState) {
-      const cleanupTargetBranch = await this._loadWorkspaceTargetForTask(change.taskRef);
+      const cleanupTargetBranch = await this._loadWorkspaceTargetForTask(change.taskId);
       try {
         await this.shadowMutex.runExclusive(async () => {
           await reconcileDispatchWorkspaceLifecycle({
@@ -1168,9 +1217,10 @@ export class DispatchEngine {
     // AC: @agent-dispatch-engine ac-1 - Match against dispatch rules
     const agents = await this._loadAgents();
 
-    // Load all tasks for filter evaluation (needed for dependency checks)
-    let allTasks: LoadedTask[] | undefined;
-    let taskData = change.task;
+    // Load all tasks for filter evaluation (needed for dependency checks).
+    // Reuse the snapshot loaded during identity canonicalization when available.
+    let allTasks: LoadedTask[] | undefined = preloadedTasks;
+    let taskData = change.task ?? allTasks?.find((t) => t._ulid === change.taskId);
     if (!taskData && change.taskId) {
       try {
         const ctx = await initContext(this.projectDir);
@@ -1445,7 +1495,7 @@ export class DispatchEngine {
         await reconcileDispatchWorkspaceRegistry(
           this.projectDir,
           taskStatusByRef,
-          this._activeRoleByTaskRef(),
+          this._activeRoleByTaskId(),
         );
       });
       // AC: @multi-turn-session-lifecycle ac-11 — reload session.idle hook presence
@@ -1456,7 +1506,7 @@ export class DispatchEngine {
       console.error("[dispatch] Workspace registry reconciliation error:", err);
     }
     await reconcileDispatchWorkspaceArtifacts(this.projectDir, {
-      activeTaskRefs: this._activeTaskRefs(),
+      activeTaskIds: this._activeTaskIds(),
     });
 
     // AC: @dispatch-remote-branch-sync ac-push-target-periodic
@@ -1672,12 +1722,13 @@ export class DispatchEngine {
    * AC: @agent-dispatch-engine ac-19
    */
   private _hasActiveOrQueuedInvocation(agentId: string, taskId: string): boolean {
-    if (this.inFlightTaskKeys.has(`${agentId}:@${taskId}`)) {
+    // In-flight markers are keyed on canonical task identity. AC: @dispatch-canonical-task-identity ac-scheduler-alias-dedupe
+    if (this.inFlightTaskKeys.has(`${agentId}:${taskId}`)) {
       return true;
     }
-    // Check active invocations
+    // Check active invocations by canonical task identity
     for (const record of this.activeInvocationDetails.values()) {
-      if (record.agentId === agentId && record.taskRef === `@${taskId}`) {
+      if (record.agentId === agentId && record.taskId === taskId) {
         return true;
       }
     }
@@ -1686,71 +1737,79 @@ export class DispatchEngine {
     return queue.some((entry) => entry.change.taskId === taskId);
   }
 
-  private _activeRoleByTaskRef(): Map<string, "worker" | "reviewer"> {
+  /**
+   * Map canonical task identity → active role. Keyed on the canonical task ULID
+   * so any alias of the same task resolves to the same role.
+   * AC: @dispatch-canonical-task-identity ac-cross-agent-exclusivity-uses-canonical-task
+   */
+  private _activeRoleByTaskId(): Map<string, "worker" | "reviewer"> {
     const roles = new Map<string, "worker" | "reviewer">();
     for (const record of this.activeInvocationDetails.values()) {
-      if (record.taskRef) {
-        roles.set(record.taskRef, record.role);
+      if (record.taskId) {
+        roles.set(record.taskId, record.role);
       }
     }
     return roles;
   }
 
   /**
-   * Parse the task ref portion of an in-flight key.
-   * In-flight keys are formatted as `${agentId}:${taskRef}`. Splitting on the
-   * first `:` preserves any `:` characters that may appear within a task ref.
-   * Returns null for malformed keys that lack a separator.
+   * Parse the canonical task id portion of an in-flight key.
+   * In-flight keys are formatted as `${agentId}:${taskId}` where taskId is a
+   * full ULID (no `:` characters). Splitting on the first `:` is therefore
+   * unambiguous. Returns null for malformed keys that lack a separator.
    */
-  private _parseInFlightTaskRef(key: string): string | null {
+  private _parseInFlightTaskId(key: string): string | null {
     const colonIdx = key.indexOf(":");
     if (colonIdx < 0) return null;
-    const taskRef = key.slice(colonIdx + 1);
-    return taskRef.length > 0 ? taskRef : null;
+    const taskId = key.slice(colonIdx + 1);
+    return taskId.length > 0 ? taskId : null;
   }
 
   /**
-   * Task refs currently protected from workspace artifact cleanup.
+   * Canonical task ULIDs currently protected from workspace artifact cleanup.
    * Includes both registered active invocations (activeInvocationDetails) and
    * tasks that have been dequeued for spawn but not yet registered as active
-   * (inFlightTaskKeys), so cleanup sees the same protection set the scheduler
-   * uses for deduplication.
+   * (inFlightTaskKeys), so cleanup sees the same canonical protection set the
+   * scheduler uses for deduplication.
    *
    * AC: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup
+   * AC: @dispatch-canonical-task-identity ac-cleanup-protection-uses-canonical-task
    */
-  private _activeTaskRefs(): Set<string> {
-    const refs = new Set<string>();
+  private _activeTaskIds(): Set<string> {
+    const ids = new Set<string>();
     for (const record of this.activeInvocationDetails.values()) {
-      if (record.taskRef) {
-        refs.add(record.taskRef);
+      if (record.taskId) {
+        ids.add(record.taskId);
       }
     }
     for (const key of this.inFlightTaskKeys) {
-      const taskRef = this._parseInFlightTaskRef(key);
-      if (taskRef) {
-        refs.add(taskRef);
+      const taskId = this._parseInFlightTaskId(key);
+      if (taskId) {
+        ids.add(taskId);
       }
     }
-    return refs;
+    return ids;
   }
 
   /**
-   * Check whether any agent has an active or in-flight invocation for a task.
-   * Considers both registered active invocations (activeInvocationDetails) and
-   * tasks that are between queue removal and active registration (inFlightTaskKeys).
+   * Check whether any agent has an active or in-flight invocation for a task,
+   * comparing by canonical task identity. Considers both registered active
+   * invocations (activeInvocationDetails) and tasks that are between queue
+   * removal and active registration (inFlightTaskKeys).
    *
    * AC: @agent-dispatch-engine ac-26
+   * AC: @dispatch-canonical-task-identity ac-cross-agent-exclusivity-uses-canonical-task
    */
-  private _hasActiveInvocationForTask(taskRef: string): boolean {
-    // Check active invocations across all agents
+  private _hasActiveInvocationForTask(taskId: string): boolean {
+    // Check active invocations across all agents by canonical task identity
     for (const record of this.activeInvocationDetails.values()) {
-      if (record.taskRef === taskRef) {
+      if (record.taskId === taskId) {
         return true;
       }
     }
-    // Check in-flight keys (format: "agentId:taskRef") across all agents
+    // Check in-flight keys (format: "agentId:taskId") across all agents
     for (const key of this.inFlightTaskKeys) {
-      if (this._parseInFlightTaskRef(key) === taskRef) {
+      if (this._parseInFlightTaskId(key) === taskId) {
         return true;
       }
     }
@@ -1942,7 +2001,9 @@ export class DispatchEngine {
 
   private _hasContinuityAffinity(entry: QueueEntry): boolean {
     if (!this.recentTaskAffinityRef) return false;
-    return entry.change.taskRef === this.recentTaskAffinityRef;
+    // Affinity is keyed on canonical task identity so any alias of the recently
+    // selected task matches. AC: @dispatch-canonical-task-identity ac-scheduler-alias-dedupe
+    return entry.change.taskId === this.recentTaskAffinityRef;
   }
 
   private _compareSchedulerCandidates(a: SchedulerCandidate, b: SchedulerCandidate): number {
@@ -2255,7 +2316,7 @@ export class DispatchEngine {
         // skip candidates whose task already has an active invocation by any
         // agent. The entry stays queued and will be picked up after the active
         // invocation completes (post-invocation drain via ac-24).
-        if (this._hasActiveInvocationForTask(entry.change.taskRef)) continue;
+        if (this._hasActiveInvocationForTask(entry.change.taskId)) continue;
         candidates.push({ agent, queue, queueIndex: index, entry });
       }
     }
@@ -2573,7 +2634,10 @@ export class DispatchEngine {
     if (!this.running) return false;
 
     const agentId = agent.id;
-    const inFlightKey = `${agentId}:${entry.change.taskRef}`;
+    // In-flight markers are keyed on canonical task identity so aliases of the
+    // same task collapse to one marker per agent.
+    // AC: @dispatch-canonical-task-identity ac-scheduler-alias-dedupe
+    const inFlightKey = `${agentId}:${entry.change.taskId}`;
     this.inFlightTaskKeys.add(inFlightKey);
     let invocationRegistered = false;
     let workspace: Awaited<ReturnType<typeof provisionDispatchWorkspace>>;
@@ -2944,6 +3008,7 @@ export class DispatchEngine {
         sessionId: preSessionId,
         agentId,
         agentName: agent.name,
+        taskId: entry.change.taskId,
         taskRef: entry.change.taskRef,
         role,
         startedAtMs: Date.now(),
@@ -2952,7 +3017,9 @@ export class DispatchEngine {
         runner: runnerId ?? undefined,
       };
       this.activeInvocationDetails.set(invocationId, trackingRecord);
-      this.recentTaskAffinityRef = entry.change.taskRef;
+      // Affinity is a canonical-task signal so aliases of the same task share it.
+      // AC: @dispatch-canonical-task-identity ac-scheduler-alias-dedupe
+      this.recentTaskAffinityRef = entry.change.taskId;
 
       let startedEventEmitted = false;
       const emitStartedEvent = (): void => {
@@ -2962,7 +3029,8 @@ export class DispatchEngine {
           type: "started",
           session_id: preSessionId,
           agent_id: agentId,
-          task_id: entry.change.taskRef,
+          task_id: entry.change.taskId,
+          task_ref: entry.change.taskRef,
           task_title: entry.change.task?.title ?? null,
           status: "started",
           timestamp: Date.now(),
@@ -2991,7 +3059,9 @@ export class DispatchEngine {
 
       // AC: @session-event-broadcast ac-newline-streaming, ac-boundary-flush, ac-per-session-state
       // AC: @cli-agent-commands ac-13, @daemon-agent-dispatch ac-8 - stream session events to watchers
-      const taskId = entry.change.taskRef ?? null;
+      // AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+      // Session metadata carries the canonical task ULID as identity, not the display ref.
+      const taskId = entry.change.taskId ?? null;
       const taskTitle = entry.change.task?.title ?? null;
       const sessionCtx = {
         sessionId: preSessionId,
@@ -3125,12 +3195,13 @@ export class DispatchEngine {
             // Reset retry count on success
             entry.retryCount = 0;
             entry.starvationDeferrals = 0;
-            this.recentTaskAffinityRef = entry.change.taskRef;
+            this.recentTaskAffinityRef = entry.change.taskId;
             terminalEvent = {
               type: "completed",
               session_id: preSessionId,
               agent_id: agentId,
-              task_id: entry.change.taskRef,
+              task_id: entry.change.taskId,
+              task_ref: entry.change.taskRef,
               task_title: entry.change.task?.title ?? null,
               status: "completed",
               timestamp: Date.now(),
@@ -3171,7 +3242,8 @@ export class DispatchEngine {
                 type: "failed",
                 session_id: preSessionId,
                 agent_id: agentId,
-                task_id: entry.change.taskRef,
+                task_id: entry.change.taskId,
+                task_ref: entry.change.taskRef,
                 task_title: entry.change.task?.title ?? null,
                 status: "failed",
                 timestamp: Date.now(),
@@ -4048,11 +4120,17 @@ export class DispatchEngine {
     }
   }
 
-  private async _loadWorkspaceTargetForTask(taskRef: string): Promise<string | null> {
+  private async _loadWorkspaceTargetForTask(taskId: string): Promise<string | null> {
     const ctx = await initContext(this.projectDir);
     const records = await loadDispatchWorkspaceRegistry(ctx);
+    // Match by canonical task identity so a record persisted under any display
+    // alias of this task is found. AC: @dispatch-canonical-task-identity ac-cleanup-protection-uses-canonical-task
     const record = records
-      .filter((entry) => entry.task_ref === taskRef && entry.lifecycle_state !== "closed")
+      .filter(
+        (entry) =>
+          (entry.task_id === taskId || entry.task_ref === `@${taskId}`) &&
+          entry.lifecycle_state !== "closed",
+      )
       .toSorted((a, b) => (a.timestamps.updated_at < b.timestamps.updated_at ? 1 : -1))[0];
     return record?.integration.target_branch ?? null;
   }

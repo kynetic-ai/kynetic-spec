@@ -818,7 +818,7 @@ describe("Dispatch scheduling priority model", () => {
 
     await engine.start();
     drainSpy.mockRestore();
-    internal.recentTaskAffinityRef = `@${taskB}`;
+    internal.recentTaskAffinityRef = taskB; // affinity is keyed on canonical task id
 
     const spawned: string[] = [];
     vi.spyOn(
@@ -876,7 +876,7 @@ describe("Dispatch scheduling priority model", () => {
 
     await engine.start();
     drainSpy.mockRestore();
-    internal.recentTaskAffinityRef = `@${taskB}`;
+    internal.recentTaskAffinityRef = taskB; // affinity is keyed on canonical task id
 
     const queue = internal.queues.get(reviewer.id) ?? [];
     const older = queue.find((entry) => entry.change.taskRef === `@${taskA}`);
@@ -5684,7 +5684,7 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
     expect(fsSync.existsSync(workspace.cwd)).toBe(true);
 
     // Corrupt the artifact metadata so it cannot be parsed, AND clear the
-    // registry so no record protects the workspace. With no activeTaskRefs
+    // registry so no record protects the workspace. With no activeTaskIds
     // passed in, reconcileDispatchWorkspaceArtifacts must classify the
     // artifact as cleanup-eligible and remove both the worker worktree and
     // its canonical dispatch branch.
@@ -8813,8 +8813,8 @@ describe("In-flight spawn refs are included in cleanup protection inputs", () =>
   type EngineInternal = {
     inFlightTaskKeys: Set<string>;
     activeInvocationDetails: Map<string, ActiveInvocationRecord>;
-    _activeTaskRefs: () => Set<string>;
-    _hasActiveInvocationForTask: (taskRef: string) => boolean;
+    _activeTaskIds: () => Set<string>;
+    _hasActiveInvocationForTask: (taskId: string) => boolean;
   };
 
   type ActiveInvocationRecord = {
@@ -8822,6 +8822,7 @@ describe("In-flight spawn refs are included in cleanup protection inputs", () =>
     sessionId: string;
     agentId: string;
     agentName: string;
+    taskId: string | undefined;
     taskRef: string | undefined;
     role: "worker" | "reviewer";
     startedAtMs: number;
@@ -8835,6 +8836,7 @@ describe("In-flight spawn refs are included in cleanup protection inputs", () =>
       sessionId: testUlid("SESS"),
       agentId: "test-worker",
       agentName: "Test Worker",
+      taskId: undefined,
       taskRef: undefined,
       role: "worker",
       startedAtMs: Date.now(),
@@ -8845,7 +8847,8 @@ describe("In-flight spawn refs are included in cleanup protection inputs", () =>
   }
 
   // AC: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup
-  it("_activeTaskRefs() includes a task ref from inFlightTaskKeys when no active invocation is registered yet", async () => {
+  // AC: @dispatch-canonical-task-identity ac-cleanup-protection-uses-canonical-task
+  it("_activeTaskIds() includes a canonical task id from inFlightTaskKeys when no active invocation is registered yet", async () => {
     const engine = new DispatchEngine({
       projectDir: testDir,
       specDir: testDir,
@@ -8854,16 +8857,18 @@ describe("In-flight spawn refs are included in cleanup protection inputs", () =>
     });
     const internal = engine as unknown as EngineInternal;
 
-    const taskRef = `@${testUlid("TASK")}`;
-    internal.inFlightTaskKeys.add(`test-worker:${taskRef}`);
+    const taskId = testUlid("TASK");
+    // In-flight keys are formatted `${agentId}:${canonicalTaskId}` (bare ULID).
+    internal.inFlightTaskKeys.add(`test-worker:${taskId}`);
 
-    const refs = internal._activeTaskRefs();
-    expect(refs.has(taskRef)).toBe(true);
-    expect(refs.size).toBe(1);
+    const ids = internal._activeTaskIds();
+    expect(ids.has(taskId)).toBe(true);
+    expect(ids.size).toBe(1);
   });
 
   // AC: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup
-  it("_activeTaskRefs() merges in-flight and active invocation refs with deduplication", async () => {
+  // AC: @dispatch-canonical-task-identity ac-cleanup-protection-uses-canonical-task
+  it("_activeTaskIds() merges in-flight and active invocation canonical ids with deduplication", async () => {
     const engine = new DispatchEngine({
       projectDir: testDir,
       specDir: testDir,
@@ -8873,30 +8878,27 @@ describe("In-flight spawn refs are included in cleanup protection inputs", () =>
     const internal = engine as unknown as EngineInternal;
 
     const [sharedId, inflightOnlyId, activeOnlyId] = testUlids("TASK", 3);
-    const sharedTaskRef = `@${sharedId}`;
-    const inflightOnlyRef = `@${inflightOnlyId}`;
-    const activeOnlyRef = `@${activeOnlyId}`;
 
-    internal.inFlightTaskKeys.add(`test-worker:${sharedTaskRef}`);
-    internal.inFlightTaskKeys.add(`test-worker:${inflightOnlyRef}`);
+    internal.inFlightTaskKeys.add(`test-worker:${sharedId}`);
+    internal.inFlightTaskKeys.add(`test-worker:${inflightOnlyId}`);
     internal.activeInvocationDetails.set(
       "invocation-shared",
-      makeActiveRecord({ taskRef: sharedTaskRef }),
+      makeActiveRecord({ taskId: sharedId }),
     );
     internal.activeInvocationDetails.set(
       "invocation-active-only",
-      makeActiveRecord({ taskRef: activeOnlyRef }),
+      makeActiveRecord({ taskId: activeOnlyId }),
     );
 
-    const refs = internal._activeTaskRefs();
-    expect(refs.has(sharedTaskRef)).toBe(true);
-    expect(refs.has(inflightOnlyRef)).toBe(true);
-    expect(refs.has(activeOnlyRef)).toBe(true);
-    expect(refs.size).toBe(3);
+    const ids = internal._activeTaskIds();
+    expect(ids.has(sharedId)).toBe(true);
+    expect(ids.has(inflightOnlyId)).toBe(true);
+    expect(ids.has(activeOnlyId)).toBe(true);
+    expect(ids.size).toBe(3);
   });
 
   // AC: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup
-  it("parsing splits on the first ':' so task refs containing ':' remain intact", async () => {
+  it("parsing splits on the first ':' so the canonical task id remains intact", async () => {
     const engine = new DispatchEngine({
       projectDir: testDir,
       specDir: testDir,
@@ -8905,12 +8907,12 @@ describe("In-flight spawn refs are included in cleanup protection inputs", () =>
     });
     const internal = engine as unknown as EngineInternal;
 
-    const taskRefWithColon = `@task:with:colons`;
-    internal.inFlightTaskKeys.add(`test-worker:${taskRefWithColon}`);
+    const taskId = testUlid("TASK");
+    internal.inFlightTaskKeys.add(`test-worker:${taskId}`);
 
-    const refs = internal._activeTaskRefs();
-    expect(refs.has(taskRefWithColon)).toBe(true);
-    expect(internal._hasActiveInvocationForTask(taskRefWithColon)).toBe(true);
+    const ids = internal._activeTaskIds();
+    expect(ids.has(taskId)).toBe(true);
+    expect(internal._hasActiveInvocationForTask(taskId)).toBe(true);
   });
 
   // AC: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup
@@ -8925,12 +8927,13 @@ describe("In-flight spawn refs are included in cleanup protection inputs", () =>
 
     internal.inFlightTaskKeys.add(`no-separator-here`);
 
-    const refs = internal._activeTaskRefs();
-    expect(refs.size).toBe(0);
+    const ids = internal._activeTaskIds();
+    expect(ids.size).toBe(0);
   });
 
   // AC: @agent-dispatch-engine ac-inflight-spawn-refs-protect-cleanup
-  it("reconciliation passes the in-flight task ref to reconcileDispatchWorkspaceArtifacts", async () => {
+  // AC: @dispatch-canonical-task-identity ac-cleanup-protection-uses-canonical-task
+  it("reconciliation passes the in-flight canonical task id to reconcileDispatchWorkspaceArtifacts", async () => {
     const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
     await setupProjectWithAgents(testDir, [agent]);
 
@@ -8951,24 +8954,24 @@ describe("In-flight spawn refs are included in cleanup protection inputs", () =>
       _reconcile: () => Promise<void>;
     };
 
-    const inFlightTaskRef = `@${testUlid("TASK")}`;
-    internal.inFlightTaskKeys.add(`${agent.id}:${inFlightTaskRef}`);
+    const inFlightTaskId = testUlid("TASK");
+    internal.inFlightTaskKeys.add(`${agent.id}:${inFlightTaskId}`);
 
     await engine.start();
 
     const callsAfterStart = reconcileArtifactsSpy.mock.calls.length;
     expect(callsAfterStart).toBeGreaterThan(0);
     const startCallArg = reconcileArtifactsSpy.mock.calls[callsAfterStart - 1]?.[1];
-    const startActiveRefs = new Set(startCallArg?.activeTaskRefs ?? []);
-    expect(startActiveRefs.has(inFlightTaskRef)).toBe(true);
+    const startActiveIds = new Set(startCallArg?.activeTaskIds ?? []);
+    expect(startActiveIds.has(inFlightTaskId)).toBe(true);
 
     reconcileArtifactsSpy.mockClear();
     await internal._reconcile();
 
     expect(reconcileArtifactsSpy.mock.calls.length).toBeGreaterThan(0);
     const reconcileCallArg = reconcileArtifactsSpy.mock.calls[0]?.[1];
-    const reconcileActiveRefs = new Set(reconcileCallArg?.activeTaskRefs ?? []);
-    expect(reconcileActiveRefs.has(inFlightTaskRef)).toBe(true);
+    const reconcileActiveIds = new Set(reconcileCallArg?.activeTaskIds ?? []);
+    expect(reconcileActiveIds.has(inFlightTaskId)).toBe(true);
 
     await engine.stop();
   });
@@ -9059,8 +9062,8 @@ describe(
       });
 
       // Spy on the real artifact reconciliation (call-through). We use it to
-      // assert that the in-flight task ref flowed into activeTaskRefs as the
-      // protection input — and we let it run for real so the workspace dir is
+      // assert that the in-flight canonical task id flowed into activeTaskIds as
+      // the protection input — and we let it run for real so the workspace dir is
       // exercised by the cleanup logic, not just inspected.
       const reconcileArtifactsSpy = vi.spyOn(
         workspaceModule,
@@ -9127,21 +9130,22 @@ describe(
         inFlightTaskKeys: Set<string>;
         activeInvocationDetails: Map<string, { taskRef: string | undefined }>;
         _reconcile: () => Promise<void>;
-        _activeTaskRefs: () => Set<string>;
+        _activeTaskIds: () => Set<string>;
       };
 
       // Pre-active window invariants — the very state the regression test exists
-      // to protect: in-flight has it, active does not.
+      // to protect: in-flight has it, active does not. In-flight keys are now
+      // keyed on canonical task identity (`${agentId}:${taskId}`).
       expect(
-        Array.from(engineInternal.inFlightTaskKeys).some((key) => key.endsWith(`:${taskRef}`)),
+        Array.from(engineInternal.inFlightTaskKeys).some((key) => key.endsWith(`:${taskId}`)),
       ).toBe(true);
       expect(
         Array.from(engineInternal.activeInvocationDetails.values()).some(
           (record) => record.taskRef === taskRef,
         ),
       ).toBe(false);
-      // The engine's protection input set must include the in-flight task ref.
-      expect(engineInternal._activeTaskRefs().has(taskRef)).toBe(true);
+      // The engine's protection input set must include the in-flight canonical task id.
+      expect(engineInternal._activeTaskIds().has(taskId)).toBe(true);
 
       // Force the registry record + per-worker metadata into a cleanup-eligible
       // closing state with resolved integration. Without this mutation the
@@ -9149,8 +9153,8 @@ describe(
       // provisioning are in DISPATCH_PROTECTED_LIFECYCLE_STATES), and the test
       // would not actually exercise the in-flight cleanup-protection branch.
       // With this mutation, the ONLY thing standing between reap and
-      // workspace deletion is the in-flight task ref being passed into
-      // activeTaskRefs — which is exactly what the AC requires.
+      // workspace deletion is the in-flight canonical task id being passed into
+      // activeTaskIds — which is exactly what the AC requires.
       const registryPath = path.join(testDir, "project.dispatch-workspaces.yaml");
       const registryRaw = YAML.parse(await fs.readFile(registryPath, "utf-8")) as {
         kynetic_dispatch_workspaces?: string;
@@ -9220,10 +9224,10 @@ describe(
       reconcileArtifactsSpy.mockClear();
 
       // Trigger reconciliation while the spawn remains in-flight at bootstrap.
-      // The fix under regression: _reconcile() builds activeTaskRefs via
-      // _activeTaskRefs(), which includes inFlightTaskKeys entries, and passes
+      // The fix under regression: _reconcile() builds activeTaskIds via
+      // _activeTaskIds(), which includes inFlightTaskKeys entries, and passes
       // the merged set to reconcileDispatchWorkspaceArtifacts. The cleanup
-      // surface then routes the task ref through the shared protection state
+      // surface then routes the canonical task id through the shared protection state
       // and preserves the worker workspace despite the cleanup-eligible record.
       await engineInternal._reconcile();
 
@@ -9231,8 +9235,8 @@ describe(
       // protection input.
       expect(reconcileArtifactsSpy).toHaveBeenCalled();
       const reconcileArgs = reconcileArtifactsSpy.mock.calls[0]?.[1];
-      const reconcileActiveRefs = new Set(reconcileArgs?.activeTaskRefs ?? []);
-      expect(reconcileActiveRefs.has(taskRef)).toBe(true);
+      const reconcileActiveIds = new Set(reconcileArgs?.activeTaskIds ?? []);
+      expect(reconcileActiveIds.has(taskId)).toBe(true);
 
       // Behavioral assertion: workspace directory and bootstrap-created
       // sentinel both survive the cleanup pass.

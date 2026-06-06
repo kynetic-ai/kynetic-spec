@@ -197,18 +197,23 @@ function isOpenWorkspace(record: DispatchWorkspaceRecord): boolean {
 }
 
 function _validateSingleOpenWorkspacePerTask(records: DispatchWorkspaceRecord[]): void {
+  // Key uniqueness on canonical task identity (task_id) when present so two
+  // non-closed records for different display aliases of the same task are
+  // rejected. Historical records without task_id fall back to task_ref.
+  // AC: @dispatch-canonical-task-identity ac-workspace-registry-canonical-task-identity
   const openCounts = new Map<string, string[]>();
   for (const record of records) {
     if (!isOpenWorkspace(record)) continue;
-    const existing = openCounts.get(record.task_ref) ?? [];
+    const key = record.task_id ?? record.task_ref;
+    const existing = openCounts.get(key) ?? [];
     existing.push(record.workspace_id);
-    openCounts.set(record.task_ref, existing);
+    openCounts.set(key, existing);
   }
 
-  for (const [taskRef, workspaceIds] of openCounts) {
+  for (const [taskKey, workspaceIds] of openCounts) {
     if (workspaceIds.length > 1) {
       throw new Error(
-        `Task ${taskRef} has multiple active dispatch workspace records: ${workspaceIds.join(", ")}`,
+        `Task ${taskKey} has multiple active dispatch workspace records: ${workspaceIds.join(", ")}`,
       );
     }
   }
@@ -431,23 +436,27 @@ function deepEqual(a: unknown, b: unknown): boolean {
  * Operates on untyped raw records to avoid schema parsing.
  */
 function validateSingleOpenWorkspacePerTaskRaw(rawWorkspaces: unknown[]): void {
+  // Key uniqueness on canonical task identity (task_id) when present.
+  // AC: @dispatch-canonical-task-identity ac-workspace-registry-canonical-task-identity
   const openCounts = new Map<string, string[]>();
   for (const rawWs of rawWorkspaces) {
     if (!rawWs || typeof rawWs !== "object") continue;
     const rec = rawWs as Record<string, unknown>;
     if (rec.lifecycle_state === "closed") continue;
     const taskRef = rec.task_ref as string;
+    const taskId = typeof rec.task_id === "string" ? rec.task_id : null;
     const workspaceId = rec.workspace_id as string;
     if (!taskRef || !workspaceId) continue;
-    const existing = openCounts.get(taskRef) ?? [];
+    const key = taskId ?? taskRef;
+    const existing = openCounts.get(key) ?? [];
     existing.push(workspaceId);
-    openCounts.set(taskRef, existing);
+    openCounts.set(key, existing);
   }
 
-  for (const [taskRef, workspaceIds] of openCounts) {
+  for (const [taskKey, workspaceIds] of openCounts) {
     if (workspaceIds.length > 1) {
       throw new Error(
-        `Task ${taskRef} has multiple active dispatch workspace records: ${workspaceIds.join(", ")}`,
+        `Task ${taskKey} has multiple active dispatch workspace records: ${workspaceIds.join(", ")}`,
       );
     }
   }
