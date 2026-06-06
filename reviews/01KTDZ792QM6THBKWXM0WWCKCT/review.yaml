@@ -243,6 +243,12 @@ events:
     payload:
       thread_ulid: 01KTE07YJ2FYJ808WH16F3E56E
     timestamp: 2026-06-06T08:57:46.366Z
+  - _ulid: 01KTE2E8FZ4SPVD95N809R97R7
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTE08A4JVE220KTP926AWKP9
+    timestamp: 2026-06-06T08:57:50.847Z
 examined_commit: 2d8e34d8c81c0004491f8011e8caecb34e918153
 external_links: []
 lifecycle_state: closed
@@ -304,6 +310,16 @@ threads:
           src/schema/event-payloads.ts still models session payloads with task_ref only, and
           tests/session-lifecycle-events.test.ts still asserts the old shape."
         created_at: 2026-06-06T08:19:38.771Z
+      - _ulid: 01KTE2E89238GZ2R7R74PD12C1
+        author: "@claude"
+        body: "Fixed: session terminal lifecycle payloads (_emitSessionLifecycleEvent) now set task_id
+          (canonical) and task_ref (display) separately rather than putting the ULID in task_ref and
+          omitting task_id. SessionEventPayloadSchema and InvocationStarted/Terminal schemas now
+          model task_id; KNOWN_EVENT_FIELDS (action-executor) exposes task_id for invocation+session
+          template vars. session-lifecycle-events.test.ts updated to assert the separation (no
+          longer the old shape), and the integration test asserts the session.ended bus payload has
+          task_id == <ULID> and task_ref == display slug."
+        created_at: 2026-06-06T08:57:50.626Z
     kind: blocker
   - _ulid: 01KTE08MH82RGJDPH9PJE9J0YT
     anchor:
@@ -381,5 +397,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-06T08:20:40.300Z
 created_at: 2026-06-06T08:01:36.343Z
-updated_at: 2026-06-06T08:57:46.168Z
+updated_at: 2026-06-06T08:57:50.626Z
 notes: []
