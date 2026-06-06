@@ -31016,7 +31016,7 @@
   title: Canonicalize workspace target and registry lookup boundaries
   type: task
   spec_ref: "@dispatch-canonical-task-identity"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 1
@@ -31033,4 +31033,5 @@
   created_at: 2026-06-06T20:47:19.080Z
   started_at: 2026-06-06T21:55:29.907Z
   submitted_at: 2026-06-06T22:12:39.042Z
+  completed_at: 2026-06-06T22:33:34.828Z
   automation: eligible

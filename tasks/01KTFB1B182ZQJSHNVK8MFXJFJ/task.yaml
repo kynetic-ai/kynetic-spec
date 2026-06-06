@@ -109,8 +109,12 @@ description: >-
 spec_ref: "@dispatch-canonical-task-identity"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev at 68e7b2036caf2d9a8cf4627df49e203cbebcd0e7 after clean review.
+  Canonical workspace identity lookup boundaries now use canonical task ULID matching for cleanup
+  target resolution and task-scoped registry lookup, with tests covering historical alias records,
+  alias-equivalent lookups, duplicate canonical records, and degraded raw fallback.
 depends_on: []
 context: []
 priority: 1
@@ -173,8 +177,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-06T22:18:29.282Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev at 68e7b2036caf2d9a8cf4627df49e203cbebcd0e7 after clean review. Canonical
+          workspace identity lookup boundaries now use canonical task ULID matching for cleanup
+          target resolution and task-scoped registry lookup, with tests covering historical alias
+          records, alias-equivalent lookups, duplicate canonical records, and degraded raw fallback.
+        previous: null
+      completed_at:
+        new: 2026-06-06T22:33:34.828Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-06T22:33:34.835Z
 created_at: 2026-06-06T20:47:19.080Z
 started_at: 2026-06-06T21:55:29.907Z
 submitted_at: 2026-06-06T22:12:39.042Z
+completed_at: 2026-06-06T22:33:34.828Z
 todos: []
 automation: eligible
