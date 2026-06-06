@@ -140,7 +140,7 @@ tags:
   - cli
   - regression
 vcs_refs: []
-review_ref: "@01KTFE6X3VX1DWDPTK6XH1JFQB"
+review_ref: "@01KTFGM46Y9Y6EH5EMPQEJGQ4H"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-canonicalize-project-invocation-task-identity/01ktfb19
@@ -241,6 +241,13 @@ history:
         previous: 2026-06-06T21:36:22.755Z
     command: task-submit
     timestamp: 2026-06-06T22:21:41.015Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KTFGM46Y9Y6EH5EMPQEJGQ4H"
+        previous: "@01KTFE6X3VX1DWDPTK6XH1JFQB"
+    command: review-link
+    timestamp: 2026-06-06T22:24:59.876Z
 created_at: 2026-06-06T20:47:18.007Z
 started_at: 2026-06-06T22:21:37.207Z
 submitted_at: 2026-06-06T22:21:41.015Z
