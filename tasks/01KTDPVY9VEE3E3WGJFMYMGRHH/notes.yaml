@@ -45,3 +45,21 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-06T07:33:19.278Z
+  - _ulid: 01KTDZ0TA9JTTMTAZW6A5MVHJX
+    content: "Fix cycle 1: addressed the single review blocker (task-identity.ts:214).
+      normalizeTaskIdentity was accepting a valid task_id paired with an unresolvable task_ref by
+      silently deriving @<task_id> as the display ref, violating
+      ac-invalid-or-mismatched-task-ref-rejected (a present-but-unresolvable ref must be rejected
+      before scheduling/provisioning/cleanup/session creation). Changed the rejection gate from
+      'rawRef && !refUlid && !idUlid' to 'rawRef && !refUlid' so a present ref that cannot resolve
+      rejects the input regardless of whether an authoritative task_id is also present. The
+      legitimate id-only flow uses the @<id> display form, short-circuited above the rejection
+      branch, so it is unaffected (added a regression-guard test). Rejection diagnostics now carry
+      the known canonical id. Rewrote the test that encoded the buggy acceptance to assert rejection
+      under the invalid-ref AC. Re-verified other ACs: id-only-no-ref still normalizes,
+      matching/prefix/full-ULID refs still canonicalize, mismatch still rejects. Gates green:
+      format, lint (0 errors), focused oxlint (0 warnings), typecheck, focused dispatch/workspace
+      suites, full npm test (10271 passed / 5 skipped / 0 failed), all kspec validate gates exit 0."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-06T07:58:04.617Z
