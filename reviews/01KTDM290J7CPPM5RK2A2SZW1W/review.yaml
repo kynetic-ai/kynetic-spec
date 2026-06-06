@@ -24,6 +24,19 @@ checks:
     runner: kspec
     created_at: 2026-06-06T04:50:31.898Z
     completed_at: 2026-06-06T04:50:31.898Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed hard gate: oxlint reported 742 existing warnings and 0 errors. Focused
+      changed-file lint reported 12 warnings in tests/agent-invocation-lifecycle.test.ts lines
+      509-515 and 819-833; verified those lines exist unchanged on base and are outside this task
+      diff."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-06T04:50:38.226Z
+    completed_at: 2026-06-06T04:50:38.226Z
 events:
   - _ulid: 01KTDM290HBX8GSWTBXYMF8Z63
     actor: Jacob Chapel
@@ -52,6 +65,13 @@ events:
       status: pass
       name: kspec validate refs
     timestamp: 2026-06-06T04:50:32.323Z
+  - _ulid: 01KTDM9KX5N8PPQRFCNJ0YBFYP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-06T04:50:38.629Z
 examined_commit: 044eccda44dc11c7360897665d1ea5d8e6462e84
 external_links: []
 lifecycle_state: open
@@ -64,5 +84,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-06T04:46:38.098Z
-updated_at: 2026-06-06T04:50:31.898Z
+updated_at: 2026-06-06T04:50:38.226Z
 notes: []
