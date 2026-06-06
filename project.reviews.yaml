@@ -24039,3 +24039,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-06-03T20:53:44.609Z
     updated_at: 2026-06-03T21:08:38.983Z
+  - _ulid: 01KTDM290J7CPPM5RK2A2SZW1W
+    slugs: []
+    title: Review task-generic-acp-process-adapter
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: 044eccda44dc11c7360897665d1ea5d8e6462e84
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-generic-acp-process-adapter"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-06T04:46:38.098Z
