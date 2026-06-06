@@ -61018,7 +61018,7 @@ runs:
     completed_at: 2026-06-06T22:02:36.069Z
   - _ulid: 01KTFH5EFJ4JC9EAGBVFA2BP6X
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -61042,7 +61042,18 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-06-06T22:35:56.052Z
-        completed_at: 2026-06-06T22:35:56.052Z
+        completed_at: 2026-06-06T22:36:07.230Z
+        notes: "Coverage checked with kspec search: 'review evidence log' found existing friction @01KR2JD1
+          and success @01KT5ZGF, so no duplicate evidence-log capture. 'detached merge helper' and
+          'auxiliary worktree' found @detached-reviewer-merge-helper plus completed merge-helper
+          tasks, covering the intended safety contract. Searches for 'detached reviewer merge
+          auxiliary checkout' and 'merge helper detach checkout' found no direct tracking for the
+          operational friction where the recovery path leaves the clean project-root checkout
+          detached after a dispatched review merge."
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-06T22:36:07.230Z
+        completed_at: 2026-06-06T22:36:07.230Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-06T22:34:25.138Z
