@@ -79,6 +79,18 @@ checks:
     runner: kspec
     created_at: 2026-06-06T21:59:04.580Z
     completed_at: 2026-06-06T21:59:04.580Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --completeness --warnings-ok exited 0. Existing completeness
+      warning baseline remained under --warnings-ok; changed AC annotations for this task were
+      present and behavioral."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-06T21:59:18.548Z
+    completed_at: 2026-06-06T21:59:18.548Z
 events:
   - _ulid: 01KTFE6X3V77WAKX5R5PH5S3ZP
     actor: Jacob Chapel
@@ -149,6 +161,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-06T21:59:04.825Z
+  - _ulid: 01KTFF55FYV9MQ78F8YM0TY196
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-06T21:59:18.783Z
 examined_commit: 7246f0004d549408f7bf81c974a3ce1ea5d85d80
 external_links: []
 lifecycle_state: open
@@ -180,5 +199,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-06T21:42:47.163Z
-updated_at: 2026-06-06T21:59:04.580Z
+updated_at: 2026-06-06T21:59:18.548Z
 notes: []
