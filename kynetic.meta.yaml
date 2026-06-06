@@ -20790,6 +20790,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-03T20:51:49.799Z
+  - _ulid: 01KTDN9RQ2Q2TCDRMG555VGXRW
+    type: friction
+    content: During detached review of @task-generic-acp-process-adapter, review @01KTDM29 ended up with
+      duplicate checks/verdicts and two blocker/evidence threads for the same review cycle even
+      though the review flow intended one set of mutations. The symptom suggests review CLI mutation
+      idempotency, author attribution, or dispatch-trigger retry behavior needs investigation before
+      reviewers can trust review records as clean single-source audit artifacts.
+    author: pr-reviewer
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KTDN6T"
+    created_at: 2026-06-06T05:08:12.130Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
