@@ -61018,7 +61018,7 @@ runs:
     completed_at: 2026-06-06T22:02:36.069Z
   - _ulid: 01KTFH5EFJ4JC9EAGBVFA2BP6X
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -61060,10 +61060,16 @@ runs:
           helper/recovery command that safely restores the detached root checkout to the integration
           branch after the merge completes. This would preserve the current no-ref-move safety
           invariant while reducing post-merge cleanup surprises."
-      - status: completed
+      - status: skipped
         step_index: 4
         started_at: 2026-06-06T22:36:18.041Z
-        completed_at: 2026-06-06T22:36:18.041Z
+        completed_at: 2026-06-06T22:36:35.602Z
+        notes: Skipped interactive approval in this run. The only untracked item is being captured as a
+          low-commitment friction observation, not promoted directly to task/spec work.
+      - status: completed
+        step_index: 5
+        started_at: 2026-06-06T22:36:35.602Z
+        completed_at: 2026-06-06T22:36:35.602Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-06T22:34:25.138Z
