@@ -60811,7 +60811,7 @@ runs:
     completed_at: 2026-06-06T11:08:19.830Z
   - _ulid: 01KTEAXCAEFK1CXSMCQ98XHJ7V
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -60827,7 +60827,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-06T11:27:44.081Z
-        completed_at: 2026-06-06T11:27:44.081Z
+        completed_at: 2026-06-06T11:27:53.707Z
+        notes: "High-confidence candidates: (1) Success: side-effect-light exported CLI helpers such as
+          filterSessions can be imported with node --import tsx for fast review repros of CLI
+          semantics, avoiding slower scratch-project setup. (2) Friction duplicate: reflection-loop
+          baseline commands are unbounded/noisy in large projects, already tracked by @01KSDZFN. (3)
+          Friction duplicate: npm test has long quiet tail periods, already tracked by @01KT2F6H.
+          (4) Friction duplicate: workflow show requires explicit run ref despite reflect guidance,
+          already tracked by existing workflow UX items. (5) The session log canonical @ULID filter
+          bug is not a reflection capture candidate because it is already the active review
+          blocker."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-06T11:27:53.707Z
+        completed_at: 2026-06-06T11:27:53.707Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-06T11:25:54.895Z
