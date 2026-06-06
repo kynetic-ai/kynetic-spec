@@ -24210,3 +24210,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-06-06T21:42:47.163Z
     updated_at: 2026-06-06T21:59:47.243Z
+  - _ulid: 01KTFG86XAVNQ53TJW0GRESCHH
+    slugs: []
+    title: Review task-canonicalize-workspace-identity-lookups
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: cc7fb4e3cc613e478e2ddebbba176c6d0510416e
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KTFB1B182ZQJSHNVK8MFXJFJ"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-06T22:18:27.114Z
