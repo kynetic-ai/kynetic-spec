@@ -30829,8 +30829,9 @@
   type: task
   spec_ref: "@live-task-resource-markdown-rendering"
   plan_ref: "@plan-resource-ui-hardening-plan"
-  status: in_progress
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - "Agent task-worker failed 3 consecutive times: Claude headed turn timed out after 600000ms"
   depends_on: []
   priority: 1
   tags:
