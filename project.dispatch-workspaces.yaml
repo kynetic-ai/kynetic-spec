@@ -17230,3 +17230,79 @@ workspaces:
         head: 8afd5837e054936cfdcbc0901d56abc00195771f
         last_seen_at: 2026-06-06T11:49:47.873Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-canonicalize-dispatch-task-identity-01ktdpvy
+  - active_role: null
+    base_branch_point: 14bc103395dc68abdafa5ce00e41cdc8b449a997
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-canonicalize-project-invocation-task-identity/01ktfb19
+    canonical_branch_head: 14bc103395dc68abdafa5ce00e41cdc8b449a997
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-06-06T20:47:53.351Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-06-06T20:47:53.351Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 14bc103395dc68abdafa5ce00e41cdc8b449a997
+      updated_at: 2026-06-06T20:47:53.351Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KTFB19ZQDA8YK3GJYWF08TS1"
+    task_slug: task-canonicalize-project-invocation-task-identity
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-06-06T20:47:53.351Z
+      created_at: 2026-06-06T20:47:53.351Z
+      updated_at: 2026-06-06T20:47:53.351Z
+    workspace_id: dispatch-workspace-01KTFB19ZQDA8YK3GJYWF08TS1
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-canonicalize-project-invocation-task-identity/01ktfb19
+        head: 14bc103395dc68abdafa5ce00e41cdc8b449a997
+        last_seen_at: 2026-06-06T20:47:53.351Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-canonicalize-project-invocation-task-identity-01ktfb19
