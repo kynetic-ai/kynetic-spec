@@ -60396,9 +60396,21 @@ runs:
     completed_at: 2026-06-06T05:08:45.697Z
   - _ulid: 01KTDPWAXYM4VPG7ACN6FVPM58
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-06T05:35:49.182Z
+        completed_at: 2026-06-06T05:36:55.992Z
+        notes: "Baseline searched: meta observations list (13 items), kspec search 'adapter command
+          invariant' (none), 'discriminated union' (this task + 2 unrelated). Relevant existing
+          coverage: 01KTDN9R already captures the duplicate review checks/verdicts/threads symptom
+          from review @01KTDM29 (which I saw as duplicate blocker threads on the worker side)."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-06T05:36:55.992Z
+        completed_at: 2026-06-06T05:36:55.992Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-06T05:35:49.182Z
