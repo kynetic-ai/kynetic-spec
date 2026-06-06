@@ -20802,6 +20802,20 @@ observations:
     resolved: false
     workflow_ref: "@01KTDN6T"
     created_at: 2026-06-06T05:08:12.130Z
+  - _ulid: 01KTDPZZX7H8E0044QVKCVEVYS
+    type: friction
+    content: "Dispatched fix-cycle resubmit hits a lifecycle wall: 'kspec task submit' rejects a task in
+      needs_work ('Cannot submit task with status: needs_work. Task must be in_progress'), but the
+      task-work fix-cycle steps go straight from commit/note to 'kspec task submit' with no
+      intervening 'kspec task start'. A worker following the documented fix cycle exactly stalls
+      until it discovers it must first run 'task start' (needs_work -> in_progress) before 'task
+      submit'. Observed this cycle on @task-generic-acp-process-adapter. Fix options: have submit
+      auto-transition needs_work -> in_progress, or make the fix-cycle resubmit step explicitly
+      include 'kspec task start' before 'kspec task submit'."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-06T05:37:48.967Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
