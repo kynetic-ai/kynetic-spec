@@ -156,7 +156,7 @@ description: >
 spec_ref: "@dispatch-canonical-task-identity"
 plan_ref: "@plan-dispatch-canonical-task-identity-plan"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -168,6 +168,7 @@ tags:
   - workspaces
   - regression
 vcs_refs: []
+session_id: 01KTDQ2PJDAGHWKWHG4TYRVF8K
 history:
   - author: Jacob Chapel
     changes:
@@ -176,6 +177,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-06-06T05:36:30.566Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KTDQ2PJDAGHWKWHG4TYRVF8K
+        previous: null
+      started_at:
+        new: 2026-06-06T05:39:44.670Z
+        previous: null
+    command: task-start
+    timestamp: 2026-06-06T05:39:44.670Z
 created_at: 2026-06-06T05:35:36.251Z
+started_at: 2026-06-06T05:39:44.670Z
 todos: []
 automation: eligible
