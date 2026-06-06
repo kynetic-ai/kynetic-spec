@@ -150,6 +150,12 @@ events:
       kind: blocker
       thread_ulid: 01KTDXH46Y856T3WRHYC5V13WN
     timestamp: 2026-06-06T07:32:02.093Z
+  - _ulid: 01KTDXJD92NCZAPGQXW9R58VN9
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTDXH46Y856T3WRHYC5V13WN
+    timestamp: 2026-06-06T07:32:43.938Z
 examined_commit: 1fd1cc2aa970f950ad2c2fe4f0ed20dc6f4d1347
 external_links: []
 lifecycle_state: open
@@ -181,8 +187,22 @@ threads:
           accepted instead of producing the required operator-actionable diagnostic for the bad
           ref."
         created_at: 2026-06-06T07:32:01.886Z
+      - _ulid: 01KTDXJD264Q6S9AP9HPH4GW1R
+        author: Jacob Chapel
+        body: 'Clean finding text: MUST-FIX: `normalizeTaskIdentity` accepts `task_id` paired with an
+          unresolved `task_ref`, even though `@dispatch-canonical-task-identity`
+          ac-invalid-or-mismatched-task-ref-rejected requires inputs with unresolved task refs to be
+          rejected before scheduling, workspace provisioning, cleanup protection, session creation,
+          or event emission. Because the branch at src/agent-runtime/task-identity.ts:214-219 only
+          rejects unresolved refs when no `idUlid` is present, `{ taskId: <valid ULID>, taskRef:
+          "@stale-slug" }` falls through and returns ok with `@<task_id>` as the display ref. The
+          new test at tests/dispatch-task-identity.test.ts:152-165 encodes that behavior under the
+          missing-display-ref AC, but the invalid-ref AC explicitly covers task_id plus invalid
+          task_ref inputs. Impact: malformed dispatch events are accepted instead of producing the
+          required diagnostic for the bad ref.'
+        created_at: 2026-06-06T07:32:43.717Z
     kind: blocker
 verdicts: []
 created_at: 2026-06-06T07:17:12.172Z
-updated_at: 2026-06-06T07:32:01.886Z
+updated_at: 2026-06-06T07:32:43.717Z
 notes: []
