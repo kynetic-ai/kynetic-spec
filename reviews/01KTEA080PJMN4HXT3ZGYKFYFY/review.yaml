@@ -225,6 +225,12 @@ events:
     payload:
       thread_ulid: 01KTEAVKH5EJT0EWBGZY3YBC8S
     timestamp: 2026-06-06T11:46:57.092Z
+  - _ulid: 01KTEC41KDE912JBX0M1D5ZV6D
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTEAVKH5EJT0EWBGZY3YBC8S
+    timestamp: 2026-06-06T11:47:01.869Z
 examined_commit: 3f966b914cac0325024a70527dbd82e287cf603a
 external_links: []
 lifecycle_state: closed
@@ -300,6 +306,8 @@ threads:
           with behavioral coverage.
         created_at: 2026-06-06T11:46:56.869Z
     kind: nit
+    resolved_at: 2026-06-06T11:47:01.669Z
+    resolved_by: "@claude"
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -309,5 +317,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-06T11:25:06.760Z
 created_at: 2026-06-06T11:10:00.214Z
-updated_at: 2026-06-06T11:46:56.869Z
+updated_at: 2026-06-06T11:47:01.669Z
 notes: []
