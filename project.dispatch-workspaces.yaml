@@ -18213,7 +18213,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-06T22:33:47.276Z
+      updated_at: 2026-06-06T22:37:16.270Z
     integration:
       status: merged
       detail: integration:merged
@@ -18229,18 +18229,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-06T22:16:40.430Z
-      last_reconciled_at: 2026-06-06T22:37:14.503Z
+      last_reconciled_at: 2026-06-06T22:37:16.270Z
       created_at: 2026-06-06T21:42:05.044Z
-      updated_at: 2026-06-06T22:37:14.503Z
+      updated_at: 2026-06-06T22:37:16.270Z
     workspace_id: dispatch-workspace-01KTFB1B182ZQJSHNVK8MFXJFJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: cc7fb4e3cc613e478e2ddebbba176c6d0510416e
-        last_seen_at: 2026-06-06T22:16:11.760Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-canonicalize-workspace-identity-lookups-01ktfb1b-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-canonicalize-workspace-identity-lookups/01ktfb1b
