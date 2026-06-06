@@ -3081,6 +3081,10 @@ export class DispatchEngine {
         specDir: this.specDir,
         sessionsDir: path.join(this.projectDir, ".kspec-sessions"),
         cwd: workspace.cwd,
+        // Carry the canonical task identity separately from the display ref so
+        // persisted session metadata and session event history record identity,
+        // not a display alias. AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+        taskId: entry.change.taskId,
         taskRef: entry.change.taskRef,
         prompt,
         trigger: (STATUS_TO_EVENT[entry.change.toStatus] ?? "task.ready") as SessionTrigger,
@@ -3137,6 +3141,9 @@ export class DispatchEngine {
             payload: {
               session_id: ctx.sessionId,
               agent_id: ctx.agentId,
+              // Canonical identity separate from the display ref.
+              // AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+              task_id: ctx.taskId ?? undefined,
               task_ref: ctx.taskRef ?? undefined,
               turn_count: ctx.turnCount,
               stop_reason: ctx.stopReason,

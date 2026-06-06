@@ -226,7 +226,13 @@ export const SessionIdlePayloadSchema = z.object({
   session_id: z.string(),
   /** The agent definition running the session */
   agent_id: z.string(),
-  /** Task reference if the session is task-scoped */
+  /**
+   * Canonical full task ULID — the authoritative task identity when the session
+   * is task-scoped. Consumers key identity off this, never the display ref.
+   * AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+   */
+  task_id: z.string().nullable().optional(),
+  /** Display task ref for human-readable surfaces only; never an identity key. */
   task_ref: z.string().nullable().optional(),
   /** Number of turns completed so far (including the turn that just ended) */
   turn_count: z.number().int().positive(),

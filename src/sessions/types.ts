@@ -79,8 +79,21 @@ export const SessionMetadataSchema = z.object({
   /** Session ULID */
   id: z.string(),
 
-  /** Optional task being worked on */
+  /**
+   * Canonical full task ULID — the authoritative task identity for a
+   * task-scoped session. Dispatch identity consumers key off this, never the
+   * display ref. Legacy/manual sessions that never resolved a canonical id may
+   * still carry a display-form ref here.
+   * AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+   */
   task_id: z.string().optional(),
+
+  /**
+   * Display task ref (slug or `@ULID`) preserved for human-readable surfaces
+   * (CLI targeting, logs, status) only. Never an identity key.
+   * AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+   */
+  task_ref: z.string().optional(),
 
   /** Type of agent running the session */
   agent_type: z.string(),

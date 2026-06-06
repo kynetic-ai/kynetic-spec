@@ -171,9 +171,12 @@ export function filterSessions(
   }
 
   // AC: @session-cli-unified-filtering ac-task-filter
+  // Match the canonical task_id or the human-readable display task_ref so a
+  // slug/@ULID filter still finds dispatch sessions whose task_id is the bare
+  // canonical ULID. AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
   if (options.task) {
     const taskFilter = options.task;
-    result = result.filter((s) => s.task_id === taskFilter);
+    result = result.filter((s) => s.task_id === taskFilter || s.task_ref === taskFilter);
   }
 
   if (options.since) {

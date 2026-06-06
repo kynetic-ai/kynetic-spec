@@ -208,6 +208,13 @@ export class PromptQueue {
 export interface SessionIdleContext {
   sessionId: string;
   agentId: string;
+  /**
+   * Canonical full task ULID — the authoritative task identity when the session
+   * is task-scoped. Identity consumers key off this, never the display ref.
+   * AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+   */
+  taskId: string | undefined;
+  /** Display task ref for human-readable surfaces only; never an identity key. */
   taskRef: string | undefined;
   turnCount: number;
   stopReason: string | undefined;
@@ -226,6 +233,16 @@ export interface InvocationOptions {
   sessionsDir?: string;
   /** Working directory for spawned agent */
   cwd: string;
+  /**
+   * Canonical full task ULID — the authoritative task identity for this
+   * invocation. Dispatch resolves this via task-identity normalization and
+   * passes it separately from the display ref so persisted session metadata and
+   * session event history record identity (not a display alias). When omitted
+   * (legacy/manual callers that never canonicalized), the display ref is used as
+   * a best-effort identity fallback.
+   * AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+   */
+  taskId?: string;
   /** Task reference being worked on (e.g., "@01KJP277A"). Optional — omit for unbound invocations. */
   taskRef?: string;
   /** The prompt to send to the agent */
@@ -497,7 +514,8 @@ function toInvocationOutcome(metadata: SessionMetadata): InvocationResult["outco
  */
 async function getConsecutiveFailureCount(
   sessionsDir: string,
-  taskRef: string,
+  canonicalTaskId: string,
+  displayRef: string | undefined,
   agentId: string,
 ): Promise<number> {
   const sessionIds = await listSessions(sessionsDir);
@@ -505,12 +523,21 @@ async function getConsecutiveFailureCount(
     sessionIds.map((sessionId) => getSession(sessionsDir, sessionId)),
   );
 
+  // Match by canonical task identity. Fall back to the display ref so historical
+  // sessions persisted before task_id carried the canonical ULID (task_id held a
+  // display ref) still count toward the same task's failure streak.
+  // AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
   const relevantSessions = sessions
     .filter((session): session is SessionMetadata => session !== null)
-    .filter(
-      (session) =>
-        session.task_id === taskRef && (session.agent_id ?? session.agent_type) === agentId,
-    )
+    .filter((session) => {
+      const sameAgent = (session.agent_id ?? session.agent_type) === agentId;
+      if (!sameAgent) return false;
+      if (session.task_id === canonicalTaskId) return true;
+      if (displayRef !== undefined) {
+        return session.task_ref === displayRef || session.task_id === displayRef;
+      }
+      return false;
+    })
     .map((session) => ({
       ...session,
       invocationOutcome: toInvocationOutcome(session),
@@ -570,6 +597,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     agent,
     specDir,
     cwd,
+    taskId,
     taskRef,
     trigger,
     autoApprove = agent.auto_approve,
@@ -586,6 +614,14 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     sessionMode = "auto_close",
     idleTimeoutMs,
   } = options;
+
+  // Canonical task identity for persisted session metadata and session event
+  // history: prefer the resolved canonical task id, falling back to the display
+  // ref only for legacy/manual callers that never canonicalized. The display
+  // ref is retained separately for human-readable surfaces and CLI command text.
+  // AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+  const canonicalTaskId = taskId ?? taskRef;
+  const displayTaskRef = taskRef;
 
   // AC: @session-storage-path-resolution ac-resolver
   // Sessions live in .kspec-sessions/ at project root, not inside .kspec/
@@ -782,7 +818,10 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     agent_type: adapterId,
     agent_id: agent.id,
     trigger,
-    task_id: taskRef,
+    // Canonical task identity is the persisted task_id; the display ref is kept
+    // separate. AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+    task_id: canonicalTaskId,
+    task_ref: displayTaskRef,
     // Conditionally include runner so legacy invocations omit the field.
     ...(contract.runnerId ? { runner: contract.runnerId } : {}),
   });
@@ -792,7 +831,8 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
   await appendSessionEvent({
     type: "agent.dispatched",
     data: {
-      task_id: taskRef,
+      task_id: canonicalTaskId,
+      task_ref: displayTaskRef,
       agent_id: agent.id,
       adapter: adapterId,
       trigger,
@@ -843,7 +883,8 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     await appendSessionEvent({
       type: "agent.started",
       data: {
-        task_id: taskRef,
+        task_id: canonicalTaskId,
+        task_ref: displayTaskRef,
         agent_id: agent.id,
         acp_session_id: state.acpSessionId,
       },
@@ -999,7 +1040,8 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         await appendSessionEvent({
           type: "agent.turn_completed",
           data: {
-            task_id: taskRef,
+            task_id: canonicalTaskId,
+            task_ref: displayTaskRef,
             turn_count: turnCount,
             stop_reason: promptResult.stopReason,
             turn_duration_ms: turnDurationMs,
@@ -1022,7 +1064,8 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         onIdle?.({
           sessionId,
           agentId: agent.id,
-          taskRef,
+          taskId: canonicalTaskId,
+          taskRef: displayTaskRef,
           turnCount,
           stopReason: promptResult.stopReason,
           turnDurationMs,
@@ -1145,7 +1188,8 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     await appendSessionEvent({
       type: "agent.completed",
       data: {
-        task_id: taskRef,
+        task_id: canonicalTaskId,
+        task_ref: displayTaskRef,
         outcome: "success",
         stop_reason: lastStopReason,
         duration_ms: durationMs,
@@ -1202,7 +1246,8 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       await appendSessionEvent({
         type: "agent.timeout",
         data: {
-          task_id: taskRef,
+          task_id: canonicalTaskId,
+          task_ref: displayTaskRef,
           timeout_minutes: timeoutMinutes,
           duration_ms: durationMs,
           turn_count: turnCount,
@@ -1280,7 +1325,8 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         type: "session.idle_timeout",
         data: {
           session_id: sessionId,
-          task_id: taskRef,
+          task_id: canonicalTaskId,
+          task_ref: displayTaskRef,
           idle_timeout_ms: err.idleTimeoutMs,
           duration_ms: durationMs,
           turn_count: turnCount,
@@ -1317,7 +1363,8 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       await appendSessionEvent({
         type: "agent.stalled",
         data: {
-          task_id: taskRef,
+          task_id: canonicalTaskId,
+          task_ref: displayTaskRef,
           stall_timeout_seconds: err.stallTimeoutSeconds,
           duration_ms: durationMs,
         },
@@ -1360,7 +1407,8 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     await appendSessionEvent({
       type: "agent.failed",
       data: {
-        task_id: taskRef,
+        task_id: canonicalTaskId,
+        task_ref: displayTaskRef,
         outcome: "failed",
         error: errorMessage,
         reason: errorMessage,
@@ -1391,7 +1439,12 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       // ─── Check retry threshold ────────────────────────────────────────────
       // AC: @agent-invocation-lifecycle ac-9
       const retryLimit = agent.budget?.max_retries ?? 3;
-      const consecutiveFailures = await getConsecutiveFailureCount(sessionsDir, taskRef, agent.id);
+      const consecutiveFailures = await getConsecutiveFailureCount(
+        sessionsDir,
+        canonicalTaskId ?? taskRef,
+        displayTaskRef,
+        agent.id,
+      );
 
       if (consecutiveFailures >= retryLimit) {
         await blockTask(
