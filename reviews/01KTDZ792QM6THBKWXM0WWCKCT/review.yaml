@@ -201,6 +201,13 @@ events:
       kind: blocker
       thread_ulid: 01KTE08MH82RGJDPH9PJE9J0YT
     timestamp: 2026-06-06T08:19:49.621Z
+  - _ulid: 01KTE09EX7S9519PP5NZZN090R
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTE09EPK7ZM59861DHM1TTWC
+    timestamp: 2026-06-06T08:20:16.423Z
 examined_commit: 2d8e34d8c81c0004491f8011e8caecb34e918153
 external_links: []
 lifecycle_state: open
@@ -273,7 +280,29 @@ threads:
           cleanup/lifecycle guarantees that must use canonical identity."
         created_at: 2026-06-06T08:19:49.417Z
     kind: blocker
+  - _ulid: 01KTE09EPK7ZM59861DHM1TTWC
+    anchor:
+      type: code
+      commit: 2d8e34d8c81c0004491f8011e8caecb34e918153
+      line_end: 1738
+      line_start: 1732
+      path: src/agent-runtime/workspace.ts
+      side: head
+    entries:
+      - _ulid: 01KTE09EPKNWAWBG0TKYWHYWQP
+        author: Jacob Chapel
+        body: "MUST-FIX: Multiple non-closed historical alias records for the same canonical task can still
+          be silently collapsed instead of rejected or reported. loadWorkspaceRecordForWorktreeRoot
+          canonicalizes matching, but if two open records under different historical aliases both
+          match the queried task and worktree root it sorts and returns the newest record. The
+          registry validator also keys historical records without task_id by raw task_ref, so @slug
+          and @<ULID> records for the same task do not collide there. This violates
+          @dispatch-canonical-task-identity ac-workspace-registry-canonical-task-identity, which
+          requires rejecting or reporting more than one non-closed workspace record for the same
+          canonical task identity."
+        created_at: 2026-06-06T08:20:16.211Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-06T08:01:36.343Z
-updated_at: 2026-06-06T08:19:49.417Z
+updated_at: 2026-06-06T08:20:16.211Z
 notes: []
