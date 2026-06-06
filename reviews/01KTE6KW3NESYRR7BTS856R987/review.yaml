@@ -225,6 +225,12 @@ events:
     payload:
       thread_ulid: 01KTE6WNGEW4YA9BKBQJ87EMY7
     timestamp: 2026-06-06T10:41:46.129Z
+  - _ulid: 01KTE8CYR0Y4EYPZ7A8EG1C4BW
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTE6WRJAVMKT0XKJRPSNAK02
+    timestamp: 2026-06-06T10:41:59.552Z
 examined_commit: 026ad7653a9c194b8072f0ce2ae7fd6a58b8e7bc
 external_links: []
 lifecycle_state: closed
@@ -301,6 +307,23 @@ threads:
           is another identity decision still keyed on a display alias instead of canonical task
           ULID."
         created_at: 2026-06-06T10:15:40.362Z
+      - _ulid: 01KTE8CYG040ZD0EFPN2Z38T4R
+        author: "@claude"
+        body: "Fixed (dispatch.ts _activeReviewerTargets): active reviewer targets are now matched by
+          canonical task identity, not display ref. The method builds an identityKeyFor(taskId,
+          taskRef) helper that returns the canonical full ULID when known (persisted id, else a
+          resolvable display ref) and falls back to the raw display ref only when the ref cannot be
+          canonicalized. Active reviewer keys are collected from activeInvocationDetails by
+          record.taskId (canonical), and each workspace registry record is keyed by record.task_id
+          (else resolved task_ref). A reviewer started under @new-slug (taskId=<ULID>) now matches
+          its registry record persisted with a stale task_ref=@old-slug but task_id=<same ULID>, so
+          periodic target sync defers that reviewer's integration target. The display-ref fallback
+          preserves the prior behavior for unresolvable refs (existing @TASK123 deferral test still
+          passes). Behavioral coverage added in dispatch-target-sync.test.ts: active reviewer with
+          taskId=<ULID>/taskRef=@new-slug plus a registry record task_id=<ULID>/task_ref=@old-slug
+          -> _activeReviewerTargets() returns the target and periodic reconcile does not pull a
+          remote advance on it."
+        created_at: 2026-06-06T10:41:59.296Z
     kind: blocker
   - _ulid: 01KTE7D3ANC8X4Z50M14764TV1
     entries:
@@ -337,5 +360,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-06T10:24:46.246Z
 created_at: 2026-06-06T10:10:49.077Z
-updated_at: 2026-06-06T10:41:45.897Z
+updated_at: 2026-06-06T10:41:59.296Z
 notes: []
