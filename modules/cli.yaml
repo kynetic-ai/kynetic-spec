@@ -10561,7 +10561,11 @@ features:
               rejection, or preservation reason.
             when: |
               Diagnostics or status output identify the decision
-        tags: []
+        tags:
+          - dispatch
+          - identity
+          - scheduler
+          - workspaces
         created: 2026-06-06T05:35:36.128Z
         notes: []
     created: 2026-03-02T01:22:19.943Z
